@@ -45,7 +45,7 @@ public final class DashboardRebuild {
 
     /** Gate then confirm then start. {@code anchor} is where the "busy"/"no internet"/"started"
      *  snackbars show. A visible dashboard card refreshes itself on
-     *  {@link DashboardRebuildService#ACTION_DONE} (ADFA-5333), so there is no completion callback to
+     *  {@link DashboardRebuildService#ACTION_STATE} (ADFA-5333), so there is no completion callback to
      *  pass here — the background update outlives this fragment. */
     public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor) {
         Context ctx = host.requireContext();

@@ -33,6 +33,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+
 import org.iiab.controller.R;
 import org.iiab.controller.util.AppExecutors;
 
@@ -44,16 +46,25 @@ public class DashboardDetailFragment extends Fragment {
     private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
+    private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label)
+    private boolean updating;      // ADFA-5333: a background rebuild is in flight; don't re-emphasize Rebuild
 
-    /** ADFA-5333: the live update now runs in the background (DashboardRebuildService). When it reaches a
-     *  terminal state the service broadcasts; if this card is on screen we refresh the version/pill in
-     *  place, exactly as the old in-modal completion did. Registered only while STARTED, so there is no
-     *  callback captured across the multi-minute detached rebuild. */
-    private final BroadcastReceiver rebuildDone = new BroadcastReceiver() {
+    /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
+     *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
+     *  the version/pill in place — exactly as the old in-modal completion did. Registered only while
+     *  STARTED, so there is no callback captured across the multi-minute detached rebuild. */
+    private final BroadcastReceiver rebuildState = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) {
             if (!isAdded()) return;
-            if (DashboardRebuildService.RESULT_DONE.equals(i.getStringExtra(DashboardRebuildService.EXTRA_RESULT))) {
+            String state = i.getStringExtra(DashboardRebuildService.EXTRA_STATE);
+            if (DashboardRebuildService.STATE_RUNNING.equals(state)) {
+                setUpdating(true);
+            } else if (DashboardRebuildService.STATE_DONE.equals(state)) {
+                setUpdating(false);
                 refreshAfterLiveUpdate();
+            } else if (DashboardRebuildService.STATE_ERROR.equals(state)) {
+                setUpdating(false);
+                fetchUpdateStatus();   // version unchanged; re-resolve the pill/emphasis
             }
         }
     };
@@ -93,6 +104,7 @@ public class DashboardDetailFragment extends Fragment {
         rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root));
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
+        updatingRow = buildUpdatingRow(rebuild);   // ADFA-5333: in-progress bar (hidden until updating)
 
         // ADFA-5026: resolve the live update status (falls back to the last-known cache when offline).
         fetchUpdateStatus();
@@ -100,23 +112,44 @@ public class DashboardDetailFragment extends Fragment {
         return root;
     }
 
-    /** ADFA-5333: listen for the background update's completion only while visible. Explicit-package,
-     *  not-exported — an internal signal from our own service. */
+    /** ADFA-5333: while visible, listen for the background update's state changes and resolve the current
+     *  state on open — so a card entered mid-update (e.g. from the notification) shows the bar. Explicit-
+     *  package, not-exported — an internal signal from our own service. */
     @Override
     public void onStart() {
         super.onStart();
-        IntentFilter f = new IntentFilter(DashboardRebuildService.ACTION_DONE);
+        IntentFilter f = new IntentFilter(DashboardRebuildService.ACTION_STATE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireContext().registerReceiver(rebuildDone, f, Context.RECEIVER_NOT_EXPORTED);
+            requireContext().registerReceiver(rebuildState, f, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            requireContext().registerReceiver(rebuildDone, f);
+            requireContext().registerReceiver(rebuildState, f);
         }
+        resolveInitialUpdatingState();
     }
 
     @Override
     public void onStop() {
-        try { requireContext().unregisterReceiver(rebuildDone); } catch (IllegalArgumentException ignore) { /* not registered */ }
+        try { requireContext().unregisterReceiver(rebuildState); } catch (IllegalArgumentException ignore) { /* not registered */ }
         super.onStop();
+    }
+
+    /** Show the bar if an update is in flight. The live service is the fast answer; if it isn't running
+     *  but the box itself still reports a rebuild (e.g. our process was killed mid-update), re-own it by
+     *  starting the service again — the box replies 409 and the service re-attaches the notification and
+     *  the completion broadcast. */
+    private void resolveInitialUpdatingState() {
+        if (DashboardRebuildService.isRunning()) { setUpdating(true); return; }
+        final Context ctx = requireContext().getApplicationContext();
+        DashboardClient.rebuildStatus(new DashboardClient.RebuildStatusCb() {
+            @Override public void onState(String state) {
+                if (!isAdded()) return;
+                if (DashboardRebuildService.STATE_RUNNING.equals(state) && !DashboardRebuildService.isRunning()) {
+                    setUpdating(true);
+                    DashboardRebuildService.start(ctx);
+                }
+            }
+            @Override public void onErr(String message) { /* box stopped/offline — nothing in flight to show */ }
+        });
     }
 
     /** ADFA-5026: ask the box whether a newer build exists and reflect it in the status pill + Rebuild
@@ -147,6 +180,7 @@ public class DashboardDetailFragment extends Fragment {
             else styleChip(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf);
             statusChip.setVisibility(View.VISIBLE);
         }
+        if (updating) return;   // ADFA-5333: a rebuild is in flight — keep Rebuild disabled and the bar shown
         if (rebuild != null) rebuild.setAlpha(updateAvailable ? 1f : 0.6f);
         if (rebuildHint != null) rebuildHint.setVisibility(updateAvailable ? View.GONE : View.VISIBLE);
     }
@@ -172,6 +206,53 @@ public class DashboardDetailFragment extends Fragment {
         hint.setVisibility(View.GONE);
         parent.addView(hint, parent.indexOfChild(rebuildBtn));
         return hint;
+    }
+
+    /** ADFA-5333: an in-progress indicator inserted just above Rebuild — an M3 indeterminate bar plus a
+     *  label — shown only while a background update runs (the rebuild reports no percentage, so the bar
+     *  is indeterminate). Built in code so the shared module-detail layout is untouched. */
+    private View buildUpdatingRow(Button rebuildBtn) {
+        ViewGroup parent = (ViewGroup) rebuildBtn.getParent();
+        if (parent == null) return null;
+        float d = getResources().getDisplayMetrics().density;
+        int side = Math.round(20 * d);
+
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rlp.leftMargin = side;
+        rlp.rightMargin = side;
+        rlp.topMargin = Math.round(8 * d);
+        row.setLayoutParams(rlp);
+
+        TextView label = new TextView(requireContext());
+        label.setText(R.string.k2go_dash_live_running);
+        label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        row.addView(label);
+
+        LinearProgressIndicator bar = new LinearProgressIndicator(requireContext());
+        bar.setIndeterminate(true);
+        bar.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        blp.topMargin = Math.round(4 * d);
+        bar.setLayoutParams(blp);
+        row.addView(bar);
+
+        row.setVisibility(View.GONE);
+        parent.addView(row, parent.indexOfChild(rebuildBtn));
+        return row;
+    }
+
+    /** Toggle the in-progress state: show/hide the bar and disable Rebuild so it can't be re-triggered
+     *  mid-update. On exit, the caller re-resolves the pill/emphasis via {@link #fetchUpdateStatus}. */
+    private void setUpdating(boolean on) {
+        updating = on;
+        if (updatingRow != null) updatingRow.setVisibility(on ? View.VISIBLE : View.GONE);
+        if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
+        if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
     }
 
     /** Read the installed version from the rootfs package.json on disk (authoritative, always present;

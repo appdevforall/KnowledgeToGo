@@ -34,6 +34,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
     /** ADFA-4958: deep-link to a specific module's detail from Home (opens the hub, then the detail). */
     public static final String EXTRA_MODULE_DETAIL = "moduleDetail";
+    /** ADFA-5333: deep-link straight to the dashboard detail (opens the hub, then the dashboard card) —
+     *  used by the background-update notification so tapping it lands on the in-progress indicator. */
+    public static final String EXTRA_DASHBOARD_DETAIL = "dashboardDetail";
     /** ADFA-4958: open the maps content selector directly from Home (maps is a module with a selector step). */
     public static final String EXTRA_MAPS_SETUP = "mapsSetup";
     /** ADFA-5004: open the Wikipedia & ZIM content screen directly (from the reader's Get-more shortcut). */
@@ -127,6 +130,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
+            final boolean dashboardDetail = getIntent().getBooleanExtra(EXTRA_DASHBOARD_DETAIL, false);   // ADFA-5333
             boolean mapsSetup = getIntent().getBooleanExtra(EXTRA_MAPS_SETUP, false);
             boolean zimSetup = getIntent().getBooleanExtra(EXTRA_ZIM_SETUP, false);
             boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
@@ -137,7 +141,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 first = BackupJobFragment.newInstance(brJobMode);   // ADFA-4957: land on the live op screen
             } else if (backupRestore) {
                 first = new BackupRestoreFragment();   // ADFA-4952
-            } else if (moduleMgmt || moduleDetail != null) {
+            } else if (moduleMgmt || moduleDetail != null || dashboardDetail) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
             } else if (mapsSetup) {
@@ -169,6 +173,23 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                     .commit();
             if (moduleDetail != null) {
                 findViewById(R.id.k2go_setup_host).post(() -> openModuleDetail(moduleDetail));
+            } else if (dashboardDetail) {   // ADFA-5333: land on the dashboard card (its in-progress indicator)
+                findViewById(R.id.k2go_setup_host).post(this::openDashboardDetail);
+            }
+        }
+    }
+
+    /** ADFA-5333: the background-update notification uses SINGLE_TOP|CLEAR_TOP, so when this activity is
+     *  already alive the tap arrives here rather than through onCreate. Route to the dashboard detail
+     *  unless it is already on top (don't stack duplicates). */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent != null && intent.getBooleanExtra(EXTRA_DASHBOARD_DETAIL, false)) {
+            Fragment top = getSupportFragmentManager().findFragmentById(R.id.k2go_setup_host);
+            if (!(top instanceof DashboardDetailFragment)) {
+                findViewById(R.id.k2go_setup_host).post(this::openDashboardDetail);
             }
         }
     }
