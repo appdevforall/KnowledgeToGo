@@ -167,6 +167,11 @@ public class ServerController {
             final SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
             ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
 
+            // ADFA-5343 (Phase 1): feed the same snapshot to the log-only reconciler — no second liveness
+            // source, no actuation. It logs desired-vs-actual each poll. Removing this line + the class is
+            // the full rollback.
+            org.iiab.controller.env.ServerLifecycleReconciler.get().observe(activity, liveness);
+
             // STATE MACHINE: Has the target state been reached?
             Boolean target = host.getTargetServerState();
             if (target != null && ServerStateRepository.get().current().alive == target) {
