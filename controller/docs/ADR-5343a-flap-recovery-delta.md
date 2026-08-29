@@ -132,13 +132,13 @@ The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofe
 
 **Layering (one owner per fact).**
 - *Android app / reconciler* owns box up/down (the proot and dash-node liveness). It does **not** manage or reap individual box services.
-- *Dashboard REST core (in-proot)* owns its own service tree: it already detects a down service (the served page's `fetch("/kiwix/")` HEAD → 000) and restarts it via `pdsm restart <svc>` in the **same** proot. Recovery is **auto-heal** here (the box heals itself; the tile only reflects status), with the existing manual "Retry" as a backstop that triggers the same in-proot restart.
+- *Dashboard REST core (in-proot)* owns its own service tree. **Auto-heal is server-side** in dash-node — an in-proot watcher HEAD-probes the content services and restarts a present-but-wedged one via `pdsm restart <svc>` in the **same** proot (works with no browser open, which "the box heals itself" requires). The restart endpoint is **loopback-only** (behind `/k2go-api`'s `allow 127.0.0.1; deny all`), so captive-portal clients on the hotspot can *detect* a down tile but **cannot** trigger a restart — the served page only reflects status. The manual **Retry** backstop is the on-box Android module card (loopback, owned by the merged **ADFA-4842**), out of scope for the dashboard change; the endpoint is ready for it. Probe classification splits **absent** (404 → not installed, left alone) from **down** (5xx / timeout / refused → heal), so a box without a service is never restart-looped.
 - *pdsm* is the per-service mechanism (already complete: `enable/start/stop/restart`).
 
 **Consequence for D2.** The host-side reap (§9) shrinks to the narrow **genuine proot-death** case only (nginx orphaning while holding `:8085`); the common **wedged-service-on-a-live-proot** case moves to the in-proot REST restart and never orphans. D2 is still retired with the guest-side service-lifetime fix (§9).
 
 **Scope split.**
-- *Here (this effort):* `static/dashboard` — a per-service `pdsm restart <svc>` for content-service recovery (kiwix first, generalizable to the other supported services), auto-healed on a detected-down service, Retry as backstop.
+- *Here (this effort):* `static/dashboard` — a per-service `pdsm restart <svc>` for content-service recovery, auto-healed on a detected-down service, Retry as backstop. **The watcher wires `kiwix` only today** (the device-confirmed wedge); the other supported services are added to `WATCHED` **one at a time as each is device-verified** — the restart endpoint already accepts the full supported set.
 
   **Supported services (source of truth — do not invent).** The authoritative list is
   `pdsm_installed_services` in `iiab/iiab` `roles/proot_services/defaults/main.yml`. As of today:
