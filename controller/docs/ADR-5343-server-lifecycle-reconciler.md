@@ -203,18 +203,37 @@ lifecycle - and make everything else an **observer** or an **intent-setter**.
    holder wants it down:
 
    ```
-   desired = (SystemFacts.installed ? SystemFacts.healthy)
-             ? userWantsOn
-             ? EnvironmentLock.currentHolder == NONE
+   desired = SystemFacts.installed && SystemFacts.healthy
+             && userWantsOn
+             && EnvironmentLock.currentHolder.executionClass != STOPPED
    ```
 
    Every input already exists: `installed`/`healthy` come from `system/data/SystemFactsReader.java:72-89`
-   (which already folds `InstallGuard` + `InterruptedInstallDetector`); "a holder wants it down" is
-   exactly `env/EnvironmentLock.currentHolder()` (`env/EnvironmentLock.java:172-188`, already the one
-   enumerator of CLONE/BACKUP/RESTORE/INSTALL/DOWNLOAD/DASHBOARD). `userWantsOn` is the persisted
+   (which already folds `InstallGuard` + `InterruptedInstallDetector`); `userWantsOn` is the persisted
    intent that `Preferences.WatchdogEnable` is *already* standing in for today
-   (`ServerController.java:342,461`). **No new source of truth is created - desired is a pure function
-   of existing facts.**
+   (`ServerController.java:342,461`).
+
+   The last term keys on the **holder's execution class, not on `== NONE`.** Not every holder wants the
+   server down. ADR-5061 **already** owns that split in one pure-JVM type,
+   `system/domain/Operation.ExecutionClass { LIVE, STOPPED }` (`system/domain/Operation.java:49-61`),
+   whose own doc is exactly our distinction: `LIVE` = "the box stays up; the device POSTs and polls the
+   in-server REST core"; `STOPPED` = "the box goes down: `pdsm stop`, then Ansible in a transient proot."
+   - **STOPPED holders want it DOWN** — CLONE, BACKUP, RESTORE, INSTALL each `pdsm stop` the box and run
+     a transient `proot` runrole (`deepop/DeepOpService.java:124,127`; `redesign/CloneFragment.java:475,1322`).
+   - **LIVE holders run *against* the live server and want it UP** — DOWNLOAD (the device only POSTs +
+     polls; the work runs on the live server, `redesign/ZimDownloadService.java:10`) and DASHBOARD (a live
+     dash-node self-update, `EnvironmentLock.java:184-186`, ADFA-5333). Forcing `desired=DOWN` for these
+     two would stop the very server they depend on — and would directly contradict §6, which already says
+     `DASHBOARD` must stay `UP` (expect only a blip).
+
+   **Reuse that type; do not add a parallel one.** Give the existing `Holder` enum one property that
+   returns `Operation.ExecutionClass` (STOPPED for CLONE/BACKUP/RESTORE/INSTALL; LIVE for
+   DOWNLOAD/DASHBOARD, and for `NONE` — no holder is forcing the box down). `EnvironmentLock.currentHolder()`
+   (`env/EnvironmentLock.java:172-188`) stays the one enumerator of holders; `desired` asks the returned
+   holder its class instead of comparing to a magic `NONE`. A new `HolderClass` enum would be a second
+   type saying what `ExecutionClass` already says — the same duplicate-truth this ADR exists to remove.
+   **No new source of truth is created — `desired` is a pure function of existing facts, the LIVE/STOPPED
+   vocabulary has one owner (ADR-5061), and the holder just names its class.**
 
 2. **One liveness source.** A single `ServerLiveness` snapshot, freshness-windowed, replacing the four:
 
@@ -243,8 +262,9 @@ lifecycle - and make everything else an **observer** or an **intent-setter**.
    published `ServerPhase` from the reconciler (the way `onNewIntent` already only monitors,
    `redesign/LibraryActivity.java:870`). The user button calls `reconciler.setUserWantsOn(boolean)` -
    it *sets desired*, it does not start-XOR-stop on a cache. Deep operations call
-   `EnvironmentLock.acquire(...)` (already the signal) and the reconciler observes the holder and
-   stops; on `release(...)` it observes `NONE` and brings the box back **wherever the app is** - no
+   `EnvironmentLock.acquire(...)` (already the signal); the reconciler observes a **STOPPED-class**
+   holder (`executionClass == STOPPED`) and stops, while a LIVE-class holder (DOWNLOAD/DASHBOARD) leaves
+   `desired=UP`. On `release(...)` it observes `NONE` and brings the box back **wherever the app is** - no
    Activity owns the reboot.
 
 5. **Home for the owner.** The reconciler is an **app-scoped singleton** (created in
@@ -282,7 +302,7 @@ stateDiagram-v2
     STARTING --> UP: liveness: servicesAnswering (NOOP_HEALTHY)
     STARTING --> STARTING: reconcile: WAIT (progress fresh)
     STARTING --> DOWN: reconcile: no progress  kill, relaunch next tick
-    UP --> STOPPING: reconcile(desired=DOWN): a holder wants it down / user off
+    UP --> STOPPING: reconcile(desired=DOWN): a STOPPED-class holder wants it down / user off
     UP --> STARTING: liveness: !servicesAnswering && desired=UP (auto-heals flap)
     STOPPING --> DOWN: pdsm stop exits
     DOWN --> UP: reconcile keeps desired=UP until achieved
