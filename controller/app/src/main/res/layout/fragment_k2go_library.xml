@@ -107,17 +107,14 @@
         android:paddingTop="8dp"
         android:paddingBottom="12dp">
 
-        <TextView
+        <Button
             android:id="@+id/k2go_get_more"
+            style="@style/Widget.K2Go.Button.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:gravity="center"
             android:text="@string/k2go_get_more"
-            android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textColor="@color/k2go_teal"
-            android:background="@drawable/k2go_getmore_bg"
-            android:clickable="true"
-            android:focusable="true" />
+            android:textAppearance="?attr/textAppearanceTitleLarge" />
     </LinearLayout>
 </LinearLayout>

@@ -88,24 +88,21 @@
 
             <Button
                 android:id="@+id/k2go_zprep_pause"
+                style="@style/Widget.K2Go.Button.Outlined"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:text="@string/k2go_dl_pause"
-                android:textColor="@color/k2go_teal"
-                android:textAllCaps="false"
-                android:background="@drawable/k2go_getmore_bg" />
+                android:text="@string/k2go_dl_pause" />
 
             <Button
                 android:id="@+id/k2go_zprep_cancel"
+                style="@style/Widget.K2Go.Button.Outlined"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_weight="1"
                 android:text="@string/k2go_zim_notif_cancel"
-                android:textColor="@color/k2go_ink"
-                android:textAllCaps="false"
-                android:background="@drawable/k2go_getmore_bg" />
+                android:textColor="@color/k2go_ink" />
         </LinearLayout>
 
         <LinearLayout

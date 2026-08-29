@@ -75,21 +75,21 @@
         <!-- SET UP LIBRARY -->
         <LinearLayout android:id="@+id/wiz_setup" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="20dp" android:visibility="gone">
-            <TextView android:id="@+id/setup_download" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp"
-                android:gravity="center" android:text="@string/k2go_internet_download" android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            <Button android:id="@+id/setup_download" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp"
+                android:gravity="center" android:text="@string/k2go_internet_download" android:textAppearance="?attr/textAppearanceTitleLarge" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="4dp"
                 android:text="@string/k2go_internet_download_sub" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
-            <TextView android:id="@+id/setup_copy" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:layout_marginTop="14dp"
-                android:gravity="center" android:text="@string/k2go_copy_from_phone" android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            <Button android:id="@+id/setup_copy" style="@style/Widget.K2Go.Button.Outlined" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:layout_marginTop="14dp"
+                android:gravity="center" android:text="@string/k2go_copy_from_phone" android:textAppearance="?attr/textAppearanceTitleLarge" />
         </LinearLayout>
 
         <!-- Push the primary CTA to the bottom (fixed position across steps, per the wizard diagram). -->
         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
             android:minHeight="24dp" />
 
-        <TextView android:id="@+id/wiz_primary" android:layout_width="match_parent" android:layout_height="wrap_content"
+        <Button android:id="@+id/wiz_primary" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="28dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_get_started"
-            android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            android:textAppearance="?attr/textAppearanceTitleLarge" />
         <TextView android:id="@+id/wiz_back" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
             android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal"
