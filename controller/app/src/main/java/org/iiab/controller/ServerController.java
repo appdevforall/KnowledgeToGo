@@ -87,9 +87,17 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     private volatile boolean ensuring = false;
     // ADFA-5343a (D1): the last liveness snapshot from the poll, threaded so servicesDownSinceMs
     // measures CONTINUOUS observed downtime (reset on an observation gap). Read by the ensure-up
-    // decision to key the kill on service downtime, not proot age. Volatile: written on the poll's IO
-    // thread, read by the (also-IO) ensure-up decision; the poll is the single writer.
+    // decision to key the kill on service downtime, not proot age.
+    //
+    // ADFA-5343 (Phase 2): TWO writers, not one — the poll advances it, and doLaunchEnvironment resets
+    // it to null when a fresh proot starts (so the new proot gets its full grace, not the old one's
+    // inherited downtime). They are serialised by livenessLock: the poll reads prev and writes the next
+    // snapshot atomically under the lock (AFTER probing, so the ~2.5s network probe never holds it), and
+    // the boot reset takes the same lock — so a reset can never be clobbered by a poll that had read prev
+    // before it. Still volatile, for the lock-free read on the ensure-up decision path.
     private volatile org.iiab.controller.env.domain.ServerLiveness lastLiveness;
+    /** Guards the read-prev-then-write of {@link #lastLiveness} against the boot-time reset (Phase 2). */
+    private final Object livenessLock = new Object();
     private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
@@ -172,17 +180,21 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
             // alive stays a 1-bit fact (phase == UP) so ServerStateRepository and every reader are
             // unchanged here — the only shift is that "up" now means the services answer, not nginx.
             long now = android.os.SystemClock.elapsedRealtime();
-            // ADFA-5343a (D1): thread the snapshot so servicesDownSinceMs measures CONTINUOUS observed
-            // downtime; next() resets it on an observation gap (a stale previous snapshot), so a
-            // background gap can never read as long downtime and re-drive the kill loop on resume.
-            org.iiab.controller.env.domain.ServerLiveness liveness =
-                    org.iiab.controller.env.domain.ServerLiveness.next(
-                            lastLiveness,
-                            org.iiab.controller.env.EnvironmentProcess.isRunning(activity),
-                            org.iiab.controller.redesign.RestReadiness.apiReady(),
-                            now,
-                            org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
-            lastLiveness = liveness;
+            // Probe OUTSIDE the lock — RestReadiness.apiReady() can block ~2.5s and must never hold
+            // livenessLock (that would stall a concurrent boot reset).
+            boolean processPresent = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
+            boolean servicesAnswering = org.iiab.controller.redesign.RestReadiness.apiReady();
+            // ADFA-5343a (D1) / ADFA-5343 (Phase 2): read prev and write the next snapshot atomically
+            // under livenessLock, so a boot-time reset (doLaunchEnvironment) is never clobbered by this
+            // poll writing a prev it had read before the reset. next() still measures CONTINUOUS downtime
+            // and resets it on an observation gap (a stale prev — e.g. the app was backgrounded).
+            org.iiab.controller.env.domain.ServerLiveness liveness;
+            synchronized (livenessLock) {
+                liveness = org.iiab.controller.env.domain.ServerLiveness.next(
+                        lastLiveness, processPresent, servicesAnswering, now,
+                        org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
+                lastLiveness = liveness;
+            }
             boolean localAlive =
                     liveness.phase(now) == org.iiab.controller.env.domain.ServerLiveness.Phase.UP;
 
@@ -355,7 +367,10 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
         // ADFA-5343a (D1): a fresh environment is starting — restart the service-downtime clock so the
         // new proot gets its full boot grace. Without this a KILL_AND_RELAUNCH keeps the accumulated
         // downtime and re-kills the booting proot every tick, before its services can come up.
-        lastLiveness = null;
+        // ADFA-5343 (Phase 2): under livenessLock so the poll cannot clobber this reset with a snapshot
+        // whose prev it read before the reset (the two-writer race). Runs on the UI thread; the critical
+        // section is a single field write, so it never blocks on the poll's probe.
+        synchronized (livenessLock) { lastLiveness = null; }
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
         serverEngine = new PRootEngine();
