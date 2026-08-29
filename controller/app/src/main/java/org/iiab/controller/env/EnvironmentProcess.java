@@ -47,6 +47,11 @@ public final class EnvironmentProcess {
 
     private static final String TAG = "K2Go-Env";
 
+    /** ADFA-5343a (D2): the box's nginx HTTP port ({@code config/BoxEndpoints.java:21}). Its listener is
+     *  the reparented orphan that keeps the port after a proot kill; reclaiming it is what lets a fresh
+     *  proot's {@code pdsm start} rebind. */
+    private static final int ENV_HTTP_PORT = 8085;
+
     private EnvironmentProcess() {
     }
 
@@ -184,18 +189,67 @@ public final class EnvironmentProcess {
         if (ctx == null) {
             return false;
         }
+        boolean signalled = false;
         int pid = findPid(ctx);
-        if (pid <= 0) {
+        if (pid > 0) {
+            try {
+                android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
+                Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
+                signalled = true;
+            } catch (Exception e) {
+                Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
+            }
+        }
+        // ADFA-5343a (D2): killing the proot is not enough. Its services daemonise — nginx setsid()s and
+        // reparents to init — so they survive the proot and keep :8085, and every relaunched proot's
+        // `pdsm start` then cannot rebind (the ADFA-5336 unrecoverable loop). Reclaim the HTTP front too.
+        boolean reaped = reapEnvironmentHttpFront();
+        return signalled || reaped;
+    }
+
+    /**
+     * ADFA-5343a (D2): reclaim the environment's orphaned nginx — the box's HTTP front on {@code :8085}
+     * ({@code config/BoxEndpoints.java:21}) — which daemonises ({@code setsid}, reparents to init) and
+     * survives the proot, keeping the port so a relaunched proot's {@code pdsm start} cannot rebind (the
+     * ADFA-5336 loop).
+     *
+     * <p><b>Found by cmdline, not by the port.</b> An app cannot read {@code /proc/net/tcp} on modern
+     * Android (blocked since API 29), so the socket→pid path is unavailable here; nginx is instead
+     * matched on {@code /proc/<pid>/cmdline} ({@code "nginx: master process nginx"} / worker). That is
+     * still scoped to us: nginx runs in the app's own uid <em>and</em> SELinux domain (device-verified,
+     * ADR-5343a §2), so it is killable, and the box's only nginx is ours. Killing each matching pid reaps
+     * master and workers together; idempotent — a no-op when none is running.
+     *
+     * @return true when at least one nginx process was signalled.
+     */
+    public static boolean reapEnvironmentHttpFront() {
+        File[] entries = new File("/proc").listFiles();
+        if (entries == null) {
             return false;
         }
-        try {
-            android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
-            Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
-            return true;
-        } catch (Exception e) {
-            Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
-            return false;
+        boolean reaped = false;
+        for (File dir : entries) {
+            int pid;
+            try {
+                pid = Integer.parseInt(dir.getName());
+            } catch (NumberFormatException notAPid) {
+                continue;
+            }
+            String cmd = readCmdline(new File(dir, "cmdline"));
+            if (cmd != null && cmd.contains("nginx")) {
+                try {
+                    android.os.Process.killProcess(pid);   // same uid + SELinux domain as us
+                    reaped = true;
+                } catch (Exception ignored) {
+                    // vanished mid-scan, or not ours to signal
+                }
+            }
         }
+        if (reaped) {
+            Log.i(TAG, "ADFA-5343a: reclaimed the orphaned nginx holding the HTTP front (:"
+                    + ENV_HTTP_PORT + ")");
+        }
+        return reaped;
     }
 
     /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */

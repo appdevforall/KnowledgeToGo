@@ -79,4 +79,58 @@ public class ServerLivenessTest {
         ServerLiveness live = ServerLiveness.of(true, false, NOW);
         assertEquals(live.phase(NOW, ServerLiveness.DEFAULT_FRESH_MS), live.phase(NOW));
     }
+
+    // --- ADFA-5343a (D1): service-downtime clock ---------------------------------------------------
+
+    @Test
+    public void servicesDownMsIsZeroTheTickTheServicesDrop() {
+        // First tick where the proot is up but /k2go-api stops answering: downtime starts at 0.
+        ServerLiveness up = ServerLiveness.of(true, true, 1_000L);
+        ServerLiveness dropped = ServerLiveness.next(up, true, false, 4_000L, FRESH);
+        assertEquals(0L, dropped.servicesDownMs(4_000L, FRESH));
+    }
+
+    @Test
+    public void servicesDownMsAccumulatesAcrossFreshTicks() {
+        // A continuous streak of fresh 3 s ticks accumulates real downtime from the drop, not per-tick.
+        ServerLiveness t0 = ServerLiveness.next(null, true, false, 1_000L, FRESH);   // dropped at 1000
+        ServerLiveness t1 = ServerLiveness.next(t0, true, false, 4_000L, FRESH);
+        ServerLiveness t2 = ServerLiveness.next(t1, true, false, 7_000L, FRESH);
+        assertEquals(3_000L, t1.servicesDownMs(4_000L, FRESH));
+        assertEquals(6_000L, t2.servicesDownMs(7_000L, FRESH));
+    }
+
+    @Test
+    public void theClockResetsOnAnObservationGap() {
+        // GUARDRAIL: the poll went quiet longer than the freshness window (app backgrounded). The
+        // previous snapshot is stale, so the streak breaks and downtime restarts from now — a calendar
+        // gap must not read as downtime and re-drive the kill loop when the app returns.
+        ServerLiveness before = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        long afterGap = 1_000L + FRESH + 1L;   // one ms past the window since `before`
+        ServerLiveness resumed = ServerLiveness.next(before, true, false, afterGap, FRESH);
+        assertEquals(0L, resumed.servicesDownMs(afterGap, FRESH));   // reset, not FRESH+1 of "downtime"
+    }
+
+    @Test
+    public void aStaleSnapshotReportsUnknownDowntime() {
+        // Read side of the same guardrail: even a snapshot that WAS timing downtime reports -1 once it
+        // is itself stale — never time a kill off a reading the poll has not refreshed.
+        ServerLiveness dropped = ServerLiveness.of(true, false, 1_000L);   // down since 1000
+        assertEquals(-1L, dropped.servicesDownMs(1_000L + FRESH + 1L, FRESH));
+    }
+
+    @Test
+    public void servicesAnsweringClearsTheClock() {
+        ServerLiveness down = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        ServerLiveness up = ServerLiveness.next(down, true, true, 4_000L, FRESH);
+        assertEquals(-1L, up.servicesDownMs(4_000L, FRESH));
+    }
+
+    @Test
+    public void aGoneProotIsNotATrackedDowntime() {
+        // Proot absent → DOWN → LAUNCH is the caller's business; there is no service downtime to time.
+        ServerLiveness down = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        ServerLiveness gone = ServerLiveness.next(down, false, false, 4_000L, FRESH);
+        assertEquals(-1L, gone.servicesDownMs(4_000L, FRESH));
+    }
 }

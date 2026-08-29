@@ -1,0 +1,120 @@
+# ADR-5343a - Flap auto-recovery: correcting the Phase-2 actuation (delta to ADR-5343)
+
+**Status:** Approved (2026-08-29) - D1 + D2 approved for implementation (including the two deviations, §9); D3 deferred to Phase 4 (recorded, not pulled forward).
+**Date:** 2026-08-29
+**Deciders:** Luis (sign-off required).
+**Ticket:** ADFA-5343 (Task under Epic ADFA-1028). Revises **ADR-5343** (`controller/docs/ADR-5343-server-lifecycle-reconciler.md`); resolves the open bug **ADFA-5336** whose Phase-2-v1 implementation regressed.
+**Scope of this delta:** it revises exactly three things in ADR-5343 - the �2.6 grace (concretizes it), the �5 collapse row for 5336, and the �7 Phase-2 migration row. Everything else in ADR-5343 stands.
+
+> Method note. Produced read-only against Phase-2 commit `1f5cb0f6`, with the mechanism re-confirmed on device `a026a310` (OnePlus7T). Every structural claim cites `File.java:line`. The reduction gate (ADR-5343 �8 / `CLAUDE.local.md`) still binds: this delta must not add a state, flag, source of truth, or "who may act" special-case.
+
+---
+
+## 1. What Phase-2 device verification found
+
+ADR-5343's reasoning layer verified correct on every flow (one liveness source, the holder-execution-class `desired` predicate, monitoractuator split). But the **key** flow - flap auto-recovery (ADFA-5336) - **regressed**: Phase-2 actuation turns a *self-healing* service flap into an *unrecoverable* loop.
+
+**A/B evidence (same box, same induction `kill <dash-node pid>`, `/k2go-api`=502 while nginx still serves `/home`):**
+
+| Build | Result |
+|-------|--------|
+| `ACTUATES=true` (Phase 2 v1) | Reconciler re-drives correctly, but the box **never returns to UP** - it loops `KILL_AND_RELAUNCH` every ~24 s (proots 16255164371649616550.), `actual=STARTING` for 70 s+, endpoints degrade to `000`. |
+| `ACTUATES=false` (rollback, = pre-Phase-2 behavior) | **pdsm respawns dash-node in ~3 s, same proot; box fine.** No relaunch, no loop. |
+
+So Phase-2 actuation is **worse than log-only** for a mid-life flap. The reconciler's *reasoning* is not at fault; the *boot mechanism it delegates to* is.
+
+## 2. Mechanism - device-confirmed (this delta hinges on it; it is not different from the finding)
+
+Re-confirmed on `a026a310` by freezing the reconciler (background the app  `ServerController.onPause` stops the poll, `ServerController.java:122-127`) and issuing `kill -9 <proot>` - exactly what `killOrphan` does (`android.os.Process.killProcess`, `env/EnvironmentProcess.java:192`):
+
+```
+# healthy: nginx master is already reparented to init
+18572     1 nginx: master process nginx        # PPID=1
+18526 18467 libproot.so                         # proot, child of the app
+netstat: 0.0.0.0:8085 LISTEN 18572/nginx: master process nginx
+
+# after kill -9 18526 (the proot):
+18572     1 nginx: master process nginx        # SURVIVES, still PPID=1
+netstat: 0.0.0.0:8085 LISTEN 18572/nginx: master process nginx   # STILL owns :8085
+home:000  api:000                               # orphan holds the port but no longer serves
+```
+
+**Two independent defects:**
+
+- **D1 - the escalation clock is proot-age, not service-downtime.** `EnvironmentEnsure.decide(...)` escalates to `KILL_AND_RELAUNCH` when `envAlive && !servicesAlive && envAgeMs >= bootGraceMs` (`env/domain/EnvironmentEnsure.java:66-69`), with `bootGraceMs = BOOT_GRACE_MS = 20_000` (`ServerController.java:41`). On a **mature** proot `envAgeMs` is already � 20 s, so the *first* ensure-up tick after any transient service death escalates immediately (device: `KILL_AND_RELAUNCH . age 134229ms` at ~t+2 s) - **before** pdsm's ~3 s respawn. The grace guards the *initial* boot (the ADFA-5103 3.5 s double-boot) but gives a mid-life flap **no** window at all.
+- **D2 - `killOrphan` does not reclaim the orphaned services.** It SIGKILLs only the proot pid (`env/EnvironmentProcess.java:183-199`). nginx (and node) are **reparented to PID 1** and survive, still holding `:8085` (netstat above). Every relaunched proot's `pdsm start` then cannot rebind  services never answer  infinite loop. This is a correctness bug **independent of D1**: even a legitimately-stuck orphan cannot be recovered by the current relaunch.
+- **D3 (secondary, orthogonal) - a second un-gated boot owner.** `LibraryActivity`'s launch auto-start calls `handleServerLaunchClick` gated on `(systemInstalled && !alive)`, **not** on `desired` (`redesign/LibraryActivity.java:414-425`, boot at `:422`). Device: after a user turn-off (`userWantsOn=false`, `desired=DOWN`) a relaunch re-booted the box and flipped `userWantsOn=true`. It did **not** cause the flap loop; it is the two-owners tension ADR-5343 �4 already names.
+
+ADR-5343 **anticipated D1's shape** (�2.6 "progress-aware grace, not a fixed 20 s"; �6 risk "killing a healthy-but-slow boot . the exact 5336/flap regression, in reverse") but Phase-2 v1 shipped with the fixed `envAgeMs` grace still in force via unchanged `EnvironmentEnsure`. ADR-5343 **did not anticipate D2** - �5's 5336 row assumed the relaunch works.
+
+## 3. Decision (approved fix direction - encode this, do not redesign)
+
+**Fix D1 - one clock: service-downtime, held in the single `ServerLiveness` source (concretizes ADR-5343 �2.6).**
+The escalation grace is measured from **how long `servicesAnswering` has been false while `processPresent` stays true**, not from proot age. `ServerLiveness` already carries `processPresent` / `servicesAnswering` / `observedAtMs` (`env/domain/ServerLiveness.java:63-65`); it gains **one derived field**, `servicesDownSinceMs`, threaded across consecutive snapshots by the single owner (which already holds `lastLiveness`, `ServerLifecycleReconciler.java:68`):
+
+```
+servicesDownSinceMs(prev, now, probes) =
+    servicesAnswering             0
+  | processPresent && prev>0      prev            (still down since prev)
+  | processPresent                now             (just went down)
+  | else                          0               (proot gone  DOWN  LAUNCH, not KILL)
+```
+
+`EnvironmentEnsure.decide` then escalates on **`servicesDownMs >= serviceDownGraceMs`** instead of `envAgeMs >= bootGraceMs`. One clock subsumes both cases it must cover:
+- **Initial boot:** services have been down since the proot started  the grace still protects the 3.5 s double-boot (ADFA-5103).
+- **Mid-life flap:** the clock resets when the service drops  WAIT lets pdsm respawn (~3 s); escalate only if it stays down past `serviceDownGraceMs` (~pdsm respawn + margin, a small constant to tune on device).
+
+This **replaces** the fixed `BOOT_GRACE_MS` guess and **drops `envAgeMs` from the decision** - a strict reduction, and it realizes �2.6 without parsing the pdsm service-line stream.
+
+**Fix D2 - `killOrphan` must reclaim the orphaned services so a legitimate relaunch can rebind.**
+A correctness fix to the one existing actuator path, adding no new state. The requirement: after `killOrphan`, nothing of ours holds `:8085`. Candidate mechanisms (implementation-time, device-verified, not decided here): launch the proot in its own **process group** and signal the group; set `PR_SET_PDEATHSIG` on the service tree; or have `killOrphan` additionally terminate the box's service processes it can identify as ours. Whichever lands must be proven by the re-run (flow 2 rebinds `:8085` and reaches UP).
+
+**Fix D3 - record now, gate in Phase 4 (do not pull forward).**
+`LibraryActivity:422` is exactly the scaffolding ADR-5343 �7 Phase 4 deletes ("replace the toggle; delete the . re-boot loops"). Gating it on `desired` now would be an out-of-phase change touching a legacy god-class flow that the flap fix does not require - against `CLAUDE.local.md`'s "one phase at a time." **Decision: defer to Phase 4; record the device-observed behavior here so Phase 4 addresses it deliberately** (it is the last second-owner of "boot the box"). Tracked, not patched.
+
+## 4. Reduction re-check (the hard gate)
+
+| Fix | States / flags / sources | Verdict |
+|-----|--------------------------|---------|
+| D1 | Removes fixed `BOOT_GRACE_MS` (a guess flag ADR-5343 �8 already counts for removal) and drops `envAgeMs` from `decide`; adds **one derived field** to the **existing** single `ServerLiveness` source - no new source, no external flag. | **Reduces / neutral** |
+| D2 | Correctness fix to the one actuator (`killOrphan`); no new state. | **Neutral** |
+| D3 | Deferred; nothing added now; slated for deletion in Phase 4. | **Neutral now, reduces later** |
+
+No new source of truth, no new "who may act" special-case, no compensating flag. Gate satisfied.
+
+## 5. Revised collapse-table row for ADFA-5336 (supersedes ADR-5343 �5's 5336 row)
+
+> **ADFA-5336** - post-install / mid-life server **flap**  stuck (v1: **unrecoverable relaunch loop**). **Subsumed by the reconciler's `UPSTARTING` re-drive (ADR-5343 �2.1), corrected by:** (D1) the re-drive WAITs on a **service-downtime** grace so a transient dash-node death lets pdsm self-heal (~3 s), escalating to relaunch only past that grace - the escalation clock is service-downtime, not proot-age; (D2) `killOrphan` reclaims the orphaned services (the reparented nginx holding `:8085`) so a legitimate relaunch can rebind. Both are required: without D1 the reconciler preempts pdsm; without D2 its own relaunch cannot recover. Device-confirmed that the rollback (`ACTUATES=false`) self-heals in ~3 s, isolating the defect to these two.
+
+## 6. Revised migration note for ADR-5343 �7 (Phase 2)
+
+Phase 2 is **re-opened** to include D1 + D2 before actuation is considered done (the ADR-5343 �7 rollback lever - `ACTUATES=false` - stays the escape hatch and is already device-proven to be safe/self-healing). No later phase is pulled forward. First gate unchanged: `:app:testDebugUnitTest` + `:app:lintDebug` green, with the pure decision (`EnvironmentEnsure` + the new `ServerLiveness.servicesDownSinceMs` reducer) JVM-tested off device.
+
+## 7. Post-approval re-verification (device-only, `a026a310`)
+
+- **Flow 2 (flap):** kill dash-node on a mature proot  box **auto-recovers to `actual=UP` with no manual toggle**; log shows WAIT during the service-down grace, and if it escalates, the relaunch **rebinds `:8085`** (netstat shows the new proot's nginx, not an orphan). Must pass.
+- **Flow 3 (timeout):** a real module-batch hand-off with `/k2go-api` kept down >45 s  `SetupProgressActivity` "taking longer" + Finish appears, reconciler keeps re-driving, Finish lands on a Home it keeps driven - no dead Home.
+- Re-run the rest of the Phase-2 matrix to confirm no regression (flows 1, 4, 5, 6).
+
+## 8. For approval
+
+1. Approve D1 (service-downtime grace in `ServerLiveness`, dropping `envAgeMs` from `decide`) and D2 (`killOrphan` reclaims orphaned services)?
+2. Approve **deferring D3** (LibraryActivity:422 desired-gating) to Phase 4, recorded here?
+3. Land this as **ADR-5343a** (this file), or fold it into ADR-5343 as a revision section? (No production code until this is signed off.)
+
+**Resolution (2026-08-29):** D1 + D2 approved for implementation, including the two deviations recorded in §9. D3 deferred to Phase 4 (recorded, not pulled forward). Landed as ADR-5343a (this file).
+
+---
+
+## 9. Known compensator: the host-side nginx reap (D2) — retire when the guest kills its own services
+
+D2's `EnvironmentProcess.reapEnvironmentHttpFront()` (`env/EnvironmentProcess.java:225-253`) is a **compensator**, accepted knowingly so the flap fix can land now. It is not the clean end-state.
+
+**Root cause it papers over (guest-side).** The box's HTTP front daemonises inside the proot: nginx `setsid()`s and reparents to init, so it **survives the proot's death** and keeps `:8085` (device evidence, §2). The clean end-state is **guest-side — the environment's services should die with the proot** (e.g. the runrole/`pdsm` teardown or a `PR_SET_PDEATHSIG`-style parent-death signal on the service tree, so no service outlives the container). With that, a relaunched proot's `pdsm start` rebinds with nothing to reclaim, and D2's host-side reap becomes unnecessary.
+
+**The two deviations this compensator carries (to retire together with it):**
+1. **Host-side reclamation of a guest concern.** The app reaches into `/proc` and SIGKILLs the box's own service processes — work that belongs inside the guest. It is only *safe* here because those processes share the app's uid and SELinux domain (device-verified, §2), which is a property we should not lean on long-term.
+2. **Imprecise identity.** It matches `cmdline.contains("nginx")` — a broad substring, host-side, unlike the precise rootfs-tail `EnvironmentProcessMatcher` used to find the proot — and it reaps **nginx only** (the listener holding `:8085`), not the full guest service tree. `/proc/net/tcp` → pid is unavailable (blocked since API 29), so socket-scoped reaping is not an option from the app; the guest-side fix is what removes the need for any of this.
+
+**Disposition.** Keep D2 as-is now (required: without it a legitimate relaunch cannot rebind `:8085`, §5). **Retire it when the guest-side service-lifetime fix lands** — at which point `reapEnvironmentHttpFront()` and the `ENV_HTTP_PORT` constant come out and `killOrphan` returns to signalling the proot alone. Tracked here; not a Phase-4 blocker, but the natural companion to the rootfs/runrole work that owns guest teardown.
+
