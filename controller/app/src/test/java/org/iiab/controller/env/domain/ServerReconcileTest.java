@@ -119,4 +119,30 @@ public class ServerReconcileTest {
         assertFalse(ServerReconcile.ensuresUp(ServerReconcile.Intent.STOP));
         assertFalse(ServerReconcile.ensuresUp(ServerReconcile.Intent.HOLD));
     }
+
+    // --- shouldEnsureUp (self-restarting holder defer, ADR-5343a Phase 3B) -------
+
+    @Test
+    public void aSelfRestartingHolderSuppressesActuation() {
+        // DASHBOARD's live rebuild owns the restart: even a START/WAIT intent must NOT actuate while it
+        // holds — a mid-swap relaunch would fight it.
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.START, true));
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.WAIT, true));
+    }
+
+    @Test
+    public void aNonSelfRestartingHolderActuatesNormally() {
+        // No self-restarting holder (NONE / STOPPED holders): START/WAIT drive up as in Phase 2.
+        assertTrue(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.START, false));
+        assertTrue(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.WAIT, false));
+    }
+
+    @Test
+    public void shouldEnsureUpNeverActsOnNonUpIntents() {
+        // The self-restart gate only ever narrows ensuresUp; NOOP/STOP/HOLD never actuate regardless.
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.NOOP, false));
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.STOP, false));
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.HOLD, false));
+        assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.HOLD, true));
+    }
 }

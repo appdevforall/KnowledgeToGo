@@ -170,3 +170,37 @@ php-fpm log guard becomes defense-in-depth, not the primary fix. Then generalise
 other daemonised services (kolibri, mariadb, calibre-web), one at a time, device-verified. Not a
 blocker for Phase 3, but the disk-fill severity makes it the next dashboard follow-up.
 
+
+---
+
+## 11. Phase 3B: the DASHBOARD self-restart defer, and the Phase-4 collapse cluster (recorded)
+
+**Decision (approved 2026-08-29).** `DASHBOARD` is a LIVE holder (desired stays UP), but the live
+blue-green rebuild (`DashboardRebuildService`) restarts dash-node itself; the reconciler must not fight
+that. Rather than bet on D1's 20 s service-downtime grace covering the swap (a slow/large rebuild could
+exceed it and trigger a wrongful `KILL_AND_RELAUNCH` mid-rebuild), the reconciler **defers actuation
+entirely while a self-restarting holder holds** — one predicate on the existing `Holder` enum
+(`selfRestartsServer`, DASHBOARD = true), not a new flag or source. On release it resumes and reconciles
+to `desired`/`actual`.
+
+**The defer is bounded.** DASHBOARD's lock is `DashboardRebuildService.RUNNING`, cleared on every
+terminal (`finish` done/error, `finishCancelled`, `onDestroy`) and process-scoped (resets on process
+recreation), so there is no durable stale-lock — a *failed* rebuild resumes reconciliation. The service
+had **no time cap** (completion is the server's signal), which would leave a *wedged* rebuild deferring
+forever; Phase 3B adds a generous wall-clock **stall backstop** (`REBUILD_STALL_MS`, well above any real
+rebuild so a slow-but-live one is never failed) that fails a stuck rebuild → releases the lock → the
+reconciler resumes. The durable crash / session-token case stays Phase 5 and does not apply to DASHBOARD.
+
+**Phase-4 collapse cluster (recorded now; do not pull forward).** Phase 3 routes the STOPPED deep ops
+(clone / backup / restore) through desired. The remaining second boot-owners collapse together in
+**Phase 4** (replace the toggle; delete the scaffolding), not piecemeal in Phase 3:
+
+- **The LibraryActivity boot cluster** — the D3 launch autostart (`LibraryActivity.java:422`), the
+  **install post-success boot** (`LibraryActivity.java:347`), and the recovering-path boot
+  (`LibraryActivity.java:403`) — all gated on `!alive`/conditions rather than `desired`. Same cluster,
+  collapsed as one in Phase 4.
+- **The STOPPED proot rebuild scaffolding** (dash-node < 1.2.0 bridge, superseded by the LIVE rebuild;
+  only < 1.2.0 boxes reach it — current ≥ 1.2.0 take the LIVE path): `rebuildStartKicked`,
+  `rebuildServerUp`, `rebuildServerFailed`, and its `serverUpPoll` loop in `SetupProgressActivity`.
+  Recorded as **Phase-4 scorecard reductions** (route through desired like the Phase-2 module hand-off,
+  or delete with the path).
