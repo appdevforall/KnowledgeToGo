@@ -150,13 +150,23 @@ The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofe
 - *Separate, upstream `iiab/iiab` (via `tools/upstream-patches`):* a php-fpm guard so it cannot busy-loop-log on `epoll_wait` ENOSYS and fill the disk — defense-in-depth, and far less likely once services stop orphaning. Its own ticket.
 - *Non-issue:* the "kernel 6.17" — proot's spoofed version; no action, recorded so no one chases it again.
 
-**Device-verified status (dash-node 1.2.10, `a026a310`).** *Confirmed:* (1) watcher auto-heal on a
-clean kill — kiwix-serve killed → watcher probes `down` → `pdsm restart kiwix` → `/kiwix/` back to 200
-in ~17 s, zero manual action; (2) loopback-only restart — LAN POST to the restart endpoint is refused
-(404) while `/kiwix/` still serves the LAN, so a captive-portal client sees the tile but cannot trigger
-a restart. *Open:* (3) the **orphan-reclaim** path — the real env-relaunch wedge where kiwix is
-orphaned off proot (`:3000` hung). It is logically covered (a wedged kiwix probes `down` → `pdsm
-restart kiwix` reclaims it) but **not yet device-confirmed**; the reproduction also orphans php-fpm,
-which busy-loops and fills the disk (§10 scope-split, upstream item), so it needs a **disk-guarded
-run** — best done once the upstream php-fpm guard lands. Not a blocker for the rest of ADR-5343.
+**Device-verified status (dash-node 1.2.10, `a026a310`).** *All three confirmed.* (1) Clean-kill
+auto-heal — kiwix-serve killed → watcher probes `down` → `pdsm restart kiwix` → `/kiwix/` back to 200
+in ~17 s, zero manual action. (2) Loopback-only restart — LAN POST to the restart endpoint is refused
+while `/kiwix/` still serves the LAN, so a captive-portal client sees the tile but cannot trigger a
+restart. (3) **Orphan-reclaim** — a controlled env-relaunch orphaned kiwix off proot (`:3000` wedged,
+`/kiwix/`=000); the watcher fired and `pdsm restart kiwix` **reclaimed the orphaned instance** → 200 in
+~40 s, no manual action. So `pdsm restart` recovers a wedged/orphaned service, not just a cleanly
+killed one.
+
+**Live residual (elevated by test 3) — php-fpm orphan disk-fill.** The same relaunch orphans
+**php-fpm**, which is **not** in the heal watcher's `WATCHED` set: orphaned, it busy-loop-logs
+`epoll_wait` ENOSYS (~1.3 GB/min) and fills the disk. Test 3 stayed safe only because php-fpm was
+**manually stopped first**; in production nothing pre-stops it, so a real env-relaunch is still a
+disk-fill risk. **Primary fix: extend the heal watcher to php-fpm** — add it to `WATCHED` with a
+php-backed probe, device-verified; the same in-proot pattern both auto-heals php-fpm and removes the
+disk-eater at the source (a fresh php-fpm under the new proot does not busy-loop). The upstream
+php-fpm log guard becomes defense-in-depth, not the primary fix. Then generalise `WATCHED` to the
+other daemonised services (kolibri, mariadb, calibre-web), one at a time, device-verified. Not a
+blocker for Phase 3, but the disk-fill severity makes it the next dashboard follow-up.
 
