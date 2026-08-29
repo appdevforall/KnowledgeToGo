@@ -92,4 +92,15 @@ public final class ServerReconcile {
                 return Intent.STOP;
         }
     }
+
+    /**
+     * Whether an {@link Intent} means "drive the server up now". {@code START} (down) and {@code WAIT}
+     * (still coming up, or a stuck flap) both do — the reconciler routes both to the idempotent,
+     * self-gating boot, which decides launch / leave-in-grace / relaunch-stuck. {@code NOOP} / {@code
+     * STOP} / {@code HOLD} do not (STOP is owned elsewhere until a later phase; HOLD never acts on an
+     * unobserved snapshot).
+     */
+    public static boolean ensuresUp(Intent intent) {
+        return intent == Intent.START || intent == Intent.WAIT;
+    }
 }

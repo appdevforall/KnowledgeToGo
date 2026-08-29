@@ -28,7 +28,7 @@ import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
 
-public class ServerController {
+public class ServerController implements org.iiab.controller.env.ServerLifecycleReconciler.Actuator {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
@@ -114,10 +114,23 @@ public class ServerController {
         updateConnectivityStatus(); // instant refresh when returning to the app
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
         serverCheckHandler.post(serverCheckRunnable);
+        // ADFA-5343 (Phase 2): register as the foreground actuator the reconciler drives. Whichever
+        // Activity is resumed owns this slot; the reconciler boots through it (the one existing boot).
+        org.iiab.controller.env.ServerLifecycleReconciler.get().setActuator(this);
     }
 
     public void onPause() {
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
+        // ADFA-5343 (Phase 2): release the actuator slot — but clearActuator only clears if we still
+        // hold it, so a resume/pause overlap does not wipe the next Activity's registration.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().clearActuator(this);
+    }
+
+    /** ADFA-5343 (Phase 2): the reconciler's boot entry point. Delegates to the one existing, idempotent
+     *  boot path so no second actuator is introduced. */
+    @Override
+    public void ensureServerUp() {
+        startEnvironment();
     }
 
     public String getCurrentTargetUrl() { return currentTargetUrl; }

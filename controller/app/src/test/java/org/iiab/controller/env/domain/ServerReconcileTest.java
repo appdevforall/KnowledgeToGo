@@ -103,4 +103,20 @@ public class ServerReconcileTest {
         assertEquals(ServerReconcile.Intent.NOOP,
                 ServerReconcile.intent(false, ServerLiveness.Phase.DOWN));
     }
+
+    // --- ensuresUp (which intents drive a boot) ----------------------------------
+
+    @Test
+    public void startAndWaitEnsureUp() {
+        // START (down) and WAIT (coming up / stuck flap) both route to the idempotent ensureServerUp.
+        assertTrue(ServerReconcile.ensuresUp(ServerReconcile.Intent.START));
+        assertTrue(ServerReconcile.ensuresUp(ServerReconcile.Intent.WAIT));
+    }
+
+    @Test
+    public void noopStopHoldDoNotEnsureUp() {
+        assertFalse(ServerReconcile.ensuresUp(ServerReconcile.Intent.NOOP));
+        assertFalse(ServerReconcile.ensuresUp(ServerReconcile.Intent.STOP));
+        assertFalse(ServerReconcile.ensuresUp(ServerReconcile.Intent.HOLD));
+    }
 }
