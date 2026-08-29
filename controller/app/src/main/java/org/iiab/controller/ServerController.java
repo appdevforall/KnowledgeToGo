@@ -27,8 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class ServerController {
 
@@ -141,27 +139,26 @@ public class ServerController {
         // The repository is updated by the poll (checkServerStatus) right after this.
     }
 
-    private boolean pingUrl(String urlStr) {
-        try {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setUseCaches(false);
-            conn.setConnectTimeout(1500);
-            conn.setReadTimeout(1500);
-            conn.setRequestMethod("GET");
-            return (conn.getResponseCode() >= 200 && conn.getResponseCode() < 400);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     // --- status poll ------------------------------------------------------------
 
     private void checkServerStatus() {
         if (host.isNegotiating()) return;
 
         AppExecutors.get().io().execute(() -> {
-            boolean localAlive = pingUrl(BoxEndpoints.BASE + "/home");
+            // ADFA-5343 (Phase 0): one honest liveness snapshot instead of a single /home ping.
+            // nginx answers /home before its dash-node upstream is ready, so a restarting engine read
+            // as "up" (the flap). servicesAnswering probes /k2go-api (the usable signal); processPresent
+            // (/proc) is recorded for the richer phase the reconciler will consume in a later phase.
+            // alive stays a 1-bit fact (phase == UP) so ServerStateRepository and every reader are
+            // unchanged here — the only shift is that "up" now means the services answer, not nginx.
+            long now = android.os.SystemClock.elapsedRealtime();
+            org.iiab.controller.env.domain.ServerLiveness liveness =
+                    org.iiab.controller.env.domain.ServerLiveness.of(
+                            org.iiab.controller.env.EnvironmentProcess.isRunning(activity),
+                            org.iiab.controller.redesign.RestReadiness.apiReady(),
+                            now);
+            boolean localAlive =
+                    liveness.phase(now) == org.iiab.controller.env.domain.ServerLiveness.Phase.UP;
 
             updateServerAlive(localAlive);
 
