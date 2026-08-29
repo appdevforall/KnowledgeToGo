@@ -150,3 +150,13 @@ The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofe
 - *Separate, upstream `iiab/iiab` (via `tools/upstream-patches`):* a php-fpm guard so it cannot busy-loop-log on `epoll_wait` ENOSYS and fill the disk — defense-in-depth, and far less likely once services stop orphaning. Its own ticket.
 - *Non-issue:* the "kernel 6.17" — proot's spoofed version; no action, recorded so no one chases it again.
 
+**Device-verified status (dash-node 1.2.10, `a026a310`).** *Confirmed:* (1) watcher auto-heal on a
+clean kill — kiwix-serve killed → watcher probes `down` → `pdsm restart kiwix` → `/kiwix/` back to 200
+in ~17 s, zero manual action; (2) loopback-only restart — LAN POST to the restart endpoint is refused
+(404) while `/kiwix/` still serves the LAN, so a captive-portal client sees the tile but cannot trigger
+a restart. *Open:* (3) the **orphan-reclaim** path — the real env-relaunch wedge where kiwix is
+orphaned off proot (`:3000` hung). It is logically covered (a wedged kiwix probes `down` → `pdsm
+restart kiwix` reclaims it) but **not yet device-confirmed**; the reproduction also orphans php-fpm,
+which busy-loops and fills the disk (§10 scope-split, upstream item), so it needs a **disk-guarded
+run** — best done once the upstream php-fpm guard lands. Not a blocker for the rest of ADR-5343.
+
