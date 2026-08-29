@@ -20,6 +20,7 @@ import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogi
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
+import { isRestartableService, restartService } from './sockets/services';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
@@ -416,6 +417,23 @@ apiRouter.get('/system/dashboard/update-check', async (_req: Request, res: Respo
         res.status(503).json({ installed, available: 'unknown', updateAvailable: false,
             error: 'update check unavailable' });
     }
+});
+
+// --- System: in-proot per-service restart for content-service recovery (ADFA-5343, ADR-5343a §10) ---
+// A content service wedged after an environment relaunch (kiwix "Unavailable") lost proot's syscall
+// emulation by being orphaned off proot. Recover it IN PLACE via `pdsm restart <svc>` inside the one
+// living proot — the app must NOT hunt or reap box services (§10 layering). Loopback-only, like the
+// whole /k2go-api surface (dash-node-nginx.conf): the on-box callers reach it (the in-proot auto-heal
+// watcher, and the app's future module-card Retry backstop); a client device cannot. Fire-and-forget:
+// the restart takes a few seconds and the caller re-probes to reflect status, so we answer 202 at once.
+apiRouter.post('/system/service/:svc/restart', (req: Request, res: Response): void => {
+    const svc = String(req.params.svc || '');
+    if (!isRestartableService(svc)) {
+        res.status(400).json({ error: 'unknown service', service: svc });
+        return;
+    }
+    restartService(svc);
+    res.status(202).json({ ok: true, service: svc, restarting: true });
 });
 
 // --- Kolibri: readiness, catalogue and selection (ADFA-4949) ----------------------

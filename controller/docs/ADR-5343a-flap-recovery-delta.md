@@ -118,3 +118,35 @@ D2's `EnvironmentProcess.reapEnvironmentHttpFront()` (`env/EnvironmentProcess.ja
 
 **Disposition.** Keep D2 as-is now (required: without it a legitimate relaunch cannot rebind `:8085`, §5). **Retire it when the guest-side service-lifetime fix lands** — at which point `reapEnvironmentHttpFront()` and the `ENV_HTTP_PORT` constant come out and `killOrphan` returns to signalling the proot alone. Tracked here; not a Phase-4 blocker, but the natural companion to the rootfs/runrole work that owns guest teardown.
 
+---
+
+## 10. Corrected root cause (device testing) and the in-proot recovery direction
+
+Post-D1/D2 device testing surfaced that a **wedged content service does not recover after an environment relaunch** (Kiwix "Unavailable"; the network-dashboard tiles stuck on "connecting"), and traced it to a single root cause broader than §9's nginx case.
+
+**Root cause — an orphan off proot loses proot's syscall emulation.** proot traces the box's processes and emulates syscalls the host kernel does not serve. When a service is reparented to init by a relaunch (it `setsid`s away and outlives the proot), it runs **without proot's emulation**: its `epoll_wait` hits the bare host kernel and returns **ENOSYS (38)**, so it malfunctions. This one defect is behind three device-observed symptoms: kiwix-serve **hangs** (`:3000` accepting but never serving; curl → 000), nginx **crashes** (`epoll_wait() failed (38)`), and php-fpm **busy-loops logging the error** (~1.3 GB/min → filled `/data`).
+
+The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofed* kernel version** (proot presents an invented version to escape the phone kernel's restrictions), not the device's real kernel (~4.x). The kernel version is a **red herring**; the defect is the loss of proot tracing on orphaning, not any kernel release.
+
+**Direction (decided) — recover in place, in one proot, via the dashboard REST core; do not relaunch proots to fix a wedged service.** Recovery of a content service that is wedged **while the proot is alive** (dash-node / `k2go-api` still answering) must be an **in-proot `pdsm restart <svc>`** issued through the dashboard REST core (`static/dashboard` — dash-node, which already execs per-service in-proot and already calls `pdsm restart dash-node`, `routes.ts:283`). Because the service is never detached from the proot, the orphan → ENOSYS class **cannot arise**. This **supersedes** "extend the host-side reap to more services" (which would grow a compensator that chases the whole service tree): the app must not hunt or kill the box's services at all.
+
+**Layering (one owner per fact).**
+- *Android app / reconciler* owns box up/down (the proot and dash-node liveness). It does **not** manage or reap individual box services.
+- *Dashboard REST core (in-proot)* owns its own service tree: it already detects a down service (the served page's `fetch("/kiwix/")` HEAD → 000) and restarts it via `pdsm restart <svc>` in the **same** proot. Recovery is **auto-heal** here (the box heals itself; the tile only reflects status), with the existing manual "Retry" as a backstop that triggers the same in-proot restart.
+- *pdsm* is the per-service mechanism (already complete: `enable/start/stop/restart`).
+
+**Consequence for D2.** The host-side reap (§9) shrinks to the narrow **genuine proot-death** case only (nginx orphaning while holding `:8085`); the common **wedged-service-on-a-live-proot** case moves to the in-proot REST restart and never orphans. D2 is still retired with the guest-side service-lifetime fix (§9).
+
+**Scope split.**
+- *Here (this effort):* `static/dashboard` — a per-service `pdsm restart <svc>` for content-service recovery (kiwix first, generalizable to the other supported services), auto-healed on a detected-down service, Retry as backstop.
+
+  **Supported services (source of truth — do not invent).** The authoritative list is
+  `pdsm_installed_services` in `iiab/iiab` `roles/proot_services/defaults/main.yml`. As of today:
+  **`nginx`, `php-fpm`, `mariadb`, `kolibri`, `kiwix`, `calibre-web`** (only `nginx` enabled by
+  default). This list **lives upstream in `iiab/iiab` and will grow** — keep an eye on that role
+  rather than hard-coding a fixed set; the restart capability should accept a service name from the
+  supported set, not a baked-in enum. **`dash-node` is the exception:** it is the k2go-side service
+  (it lives in this repo, `static/dashboard`), not in `iiab/iiab`.
+- *Separate, upstream `iiab/iiab` (via `tools/upstream-patches`):* a php-fpm guard so it cannot busy-loop-log on `epoll_wait` ENOSYS and fill the disk — defense-in-depth, and far less likely once services stop orphaning. Its own ticket.
+- *Non-issue:* the "kernel 6.17" — proot's spoofed version; no action, recorded so no one chases it again.
+
