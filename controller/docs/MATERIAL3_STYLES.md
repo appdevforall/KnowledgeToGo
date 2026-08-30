@@ -48,6 +48,55 @@ so every button reads and measures the same regardless of screen. **Do NOT** set
 "Next" sit next to a shorter Step-2 "Continue". Tune the height/text once in the style if the whole app
 needs to change. Complements ADFA-5019 (size consistency) — now enforced structurally.
 
+### Code-built or role-switching buttons — use a ThemeOverlay, not a Java recipe
+For a button created in code, or one that morphs between roles at runtime, do NOT reproduce the role look
+in Java (`setBackgroundTintList` / `setStrokeColor` / `setTextColor` per role) — that duplicates the styles
+and drifts. Point the button at a style via a ThemeOverlay instead:
+
+```java
+MaterialButton b = new MaterialButton(
+        new ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Destructive), null);
+```
+
+`ThemeOverlay.K2Go.Button.Filled | Outlined | Destructive` only set `materialButtonStyle` to the matching
+style, so the whole look (shape, size, colors) comes from the one style — nothing is spelled in Java. See
+`SettingsFragment`'s "Turn off" and the DNS/auth `accept`/`save` for the code-built case.
+
+**Two ways to morph, by how the click is wired (both keep the look in the styles):**
+- *Rebuild per role* — when a button changes its whole role (filled ↔ outlined ↔ destructive) AND its
+  click per state, rebuild it with the overlay for the current role. `CloneFragment.setStopRole(...)`
+  swaps the single footer child and re-applies text + click each time (it re-sets the id so it stays
+  stable across rebuilds).
+- *Toggle emphasis in place* — when a button keeps its shape/size and only shifts emphasis (filled ↔
+  teal-text) AND its click is set once / it sits among siblings, keep the same button and change only the
+  fill + label via `K2GoButtons.setFilledEmphasis(button, filled)` (one shared helper, so the two-line
+  recipe isn't copied across fragments). The Clone/Connect "advance" CTAs use this.
+
+### Not every "button" is a full-width CTA — the taxonomy (why some are left alone)
+The shared styles above are for **actions the user commits to**: the full-width (or near-full-width)
+primary/secondary/destructive buttons — Continue, Next, Get more, Turn off, Save, "Installed? copy the
+library". Those all take the one pill shape + 52dp size, on purpose.
+
+Several tappable, drawable-styled elements are **deliberately NOT** those, and applying the 52dp CTA style
+would make them wrong. They are different Material 3 components and belong to a separate, structured pass:
+
+- **Segmented tabs / pills** — Hotspot | Wi-Fi and Send | Receive (`paintTab` in Clone/Connect, and the
+  chip rows in Books / LibraryHome). These are a *selected-state* control, not a button; the correct M3
+  component is a **segmented button / tab**, sized to the row, with a selected fill. A 52dp pill each would
+  break the segmented look.
+- **Compact / inline actions** — e.g. the `retry` chip inside a `ProvisioningChecklist` row. It sits beside
+  text at row height; the 52dp CTA size would tower over the row. This wants a **compact/text button** or a
+  small chip, not the CTA style.
+- **Selectable rows / list items** — the language selector box (`lang_box`) and version rows
+  (`WikiVersionPicker`). These are **list items with a selection background**, not buttons; they take a
+  container/outline drawable, not a button style.
+- **Toggles** — on/off state uses `MaterialSwitch`, not a button.
+
+Rule of thumb: if it's a *commit-to-this* action the user reads and presses, it's a button → shared style.
+If it *selects among options*, *toggles*, or is a *compact inline affordance in a row*, it is a different
+component and stays out of the CTA styles until its own M3 treatment is chosen. Documented here so a later
+analysis can pick the right component per case rather than forcing everything into one button.
+
 ### Retired / to retire
 - `k2go_getmore_bg`, `k2go_primary_bg`, `k2go_turnoff_bg` — button shape drawables, replaced by the styles.
   Delete once no layout references them.
@@ -63,22 +112,22 @@ needs to change. Complements ADFA-5019 (size consistency) — now enforced struc
 - Size normalized: per-button `padding` / `textAppearance` / `height` were stripped from the converted
   buttons so they all take the style's size (52dp / 16sp). This is what fixes the Step-1-vs-Step-2 size
   mismatch on the K2Go screens.
+- **"Turn off K2Go"** (`SettingsFragment`) — the code-built destructive button now uses the
+  `ThemeOverlay.K2Go.Button.Destructive` overlay (no drawable, no Java color recipe).
+- **`CloneFragment`** — the 8 static clone buttons converted to `<Button>` with the styles; the morphing
+  footer action (`stop`) is now a `MaterialButton` rebuilt per role via `setStopRole(...)` + the overlays,
+  so the recover/share-anyway/stop/start looks live only in the styles.
 
 ### Known follow-up (drawables not retired yet)
 The three shape drawables (`k2go_primary_bg`, `k2go_getmore_bg`, `k2go_turnoff_bg`) can't be deleted yet —
-these still use them and need a device-verified pass:
-- **`CloneFragment`** — its `stop` button (and the clone screen) swaps the background drawable + text color
-  at runtime by state (`setBackgroundResource(...)`), which is exactly what you must NOT do on a
-  MaterialButton. Converting it means reworking that stateful styling via `setBackgroundTintList` /
-  `setStrokeColor` / `setStrokeWidth` / `setTextColor` (the M3 shape is unaffected).
+these still reference them and need a device-verified pass:
 - **Programmatic uses in other Java** — `BooksLandingFragment`, `LibraryHomeFragment`,
-  `ProvisioningChecklist`, `ConnectFragment`, `SettingsSubFragment`, `WikiVersionPicker`, `SettingsFragment`
-  set these drawables in code.
+  `ProvisioningChecklist`, `ConnectFragment`, `SettingsSubFragment`, `WikiVersionPicker` set these
+  drawables in code (and `CloneFragment`'s tab/`advance` selected-state fill toggles `k2go_primary_bg` on/
+  off — a selection indicator, not a button; convert or give it its own selector drawable).
 - **Container backgrounds** — the `lang_box` selector rows (`fragment_k2go_kolibri_browse`,
   `fragment_k2go_zim_category`, `fragment_k2go_zim_landing`) use `k2go_getmore_bg` as a `LinearLayout`
   background. Those are NOT buttons; give them their own outline drawable so the button drawable can retire.
-- **"Turn off K2Go"** (`SettingsFragment`) — destructive button built in code with
-  `setBackgroundResource(k2go_turnoff_bg)`; convert to `Widget.K2Go.Button.Destructive` (Java).
 
 Retire the three drawables once all of the above are migrated. (`k2go_ok_bg` is a notice/banner, unrelated.)
 

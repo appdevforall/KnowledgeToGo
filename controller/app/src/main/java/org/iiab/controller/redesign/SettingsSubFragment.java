@@ -294,16 +294,10 @@ public class SettingsSubFragment extends Fragment {
         final EditText secondary = dnsInput(ctx);
         fields.addView(secondary);
 
-        final TextView accept = new TextView(ctx);
+        // ADFA-5346: filled M3 button via the shared style overlay (no drawable / color recipe in code).
+        final com.google.android.material.button.MaterialButton accept = new com.google.android.material.button.MaterialButton(
+                new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Filled), null);
         accept.setText(getString(R.string.dns_accept));
-        accept.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
-        accept.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
-        accept.setGravity(Gravity.CENTER);
-        accept.setBackgroundResource(R.drawable.k2go_primary_bg);
-        int ap = SettingsUi.dp(ctx, 14);
-        accept.setPadding(ap, ap, ap, ap);
-        accept.setClickable(true);
-        accept.setFocusable(true);
         LinearLayout.LayoutParams aclp = new LinearLayout.LayoutParams(-1, -2);
         aclp.topMargin = SettingsUi.dp(ctx, 20);
         fields.addView(accept, aclp);
@@ -554,14 +548,10 @@ public class SettingsSubFragment extends Fragment {
         eyeHint.setLayoutParams(ehlp);
         fields.addView(eyeHint);
 
-        final TextView save = new TextView(ctx);
+        // ADFA-5346: filled M3 button via the shared style overlay.
+        final com.google.android.material.button.MaterialButton save = new com.google.android.material.button.MaterialButton(
+                new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Filled), null);
         save.setText(getString(R.string.k2go_auth_save));
-        save.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
-        save.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
-        save.setGravity(Gravity.CENTER);
-        save.setBackgroundResource(R.drawable.k2go_primary_bg);
-        int ap = SettingsUi.dp(ctx, 14);
-        save.setPadding(ap, ap, ap, ap);
         LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(-1, -2);
         svlp.topMargin = SettingsUi.dp(ctx, 16);
         fields.addView(save, svlp);

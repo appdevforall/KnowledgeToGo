@@ -88,6 +88,20 @@
         <item name="strokeWidth">2dp</item>
     </style>
 
+    <!-- ADFA-5346: overlays that only POINT a code-built or role-switching MaterialButton at one of the
+         styles above (via ContextThemeWrapper + new MaterialButton(ctx, null)). The role look stays ONLY
+         in the styles — no color/recipe is duplicated in Java. Used by SettingsFragment's "Turn off" and
+         CloneFragment's morphing action button. -->
+    <style name="ThemeOverlay.K2Go.Button.Filled" parent="">
+        <item name="materialButtonStyle">@style/Widget.K2Go.Button</item>
+    </style>
+    <style name="ThemeOverlay.K2Go.Button.Outlined" parent="">
+        <item name="materialButtonStyle">@style/Widget.K2Go.Button.Outlined</item>
+    </style>
+    <style name="ThemeOverlay.K2Go.Button.Destructive" parent="">
+        <item name="materialButtonStyle">@style/Widget.K2Go.Button.Destructive</item>
+    </style>
+
     <style name="TextAppearance.K2Go.Display" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="fontFamily">@font/atkinson_hyperlegible</item>
         <item name="android:textSize">28sp</item>

@@ -97,10 +97,9 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
 
             <!-- Wi-Fi Join: share this Wi-Fi from Android settings (shown for the Wi-Fi tab, under ①). -->
-            <TextView android:id="@+id/k2go_clone_sharewifi" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_share_wifi_settings"
-                android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
-                android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
+            <Button android:id="@+id/k2go_clone_sharewifi" style="@style/Widget.K2Go.Button.Outlined" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" android:gravity="center" android:text="@string/k2go_clone_share_wifi_settings"
+                android:visibility="gone" />
 
             <!-- Section ② Get the app -->
             <include android:id="@+id/k2go_clone_sec_getapp" layout="@layout/view_k2go_qr_section"
@@ -198,9 +197,8 @@
         </LinearLayout>
 
         <!-- Advance: the gate "Installed? Copy the library ›" (Page 1) / "‹ Back to step 2" (Page 2). -->
-        <TextView android:id="@+id/k2go_clone_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:clickable="true" android:focusable="true" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_advance" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:gravity="center" android:visibility="gone" />
 
         <LinearLayout android:id="@+id/k2go_clone_receive_box" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="16dp" android:visibility="gone">
@@ -235,18 +233,15 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView android:id="@+id/k2go_rcv_scan" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_scan_to_join"
-                android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
-                android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            <Button android:id="@+id/k2go_rcv_scan" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:gravity="center" android:text="@string/k2go_clone_scan_to_join" />
 
             <TextView android:id="@+id/k2go_rcv_sub" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="8dp" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
 
-            <TextView android:id="@+id/k2go_rcv_skip" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_already_wifi_skip" android:drawableEnd="@drawable/ic_chevron_right" app:drawableTint="@color/k2go_muted" android:drawablePadding="6dp"
-                android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
-                android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
+            <Button android:id="@+id/k2go_rcv_skip" style="@style/Widget.K2Go.Button.Outlined" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" android:gravity="center" android:text="@string/k2go_clone_already_wifi_skip" android:drawableEnd="@drawable/ic_chevron_right" app:drawableTint="@color/k2go_muted" android:drawablePadding="6dp"
+                android:visibility="gone" />
 
             <TextView android:id="@+id/k2go_rcv_skiphint" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="8dp"
@@ -268,10 +263,8 @@
                     android:gravity="top|start" android:minLines="3" android:maxLines="6" android:inputType="textMultiLine"
                     android:hint="@string/k2go_clone_paste_hint" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
                     android:textAppearance="?attr/textAppearanceBodySmall" android:importantForAutofill="no" />
-                <TextView android:id="@+id/k2go_clone_receive_start" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_use_this_code"
-                    android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
-                    android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+                <Button android:id="@+id/k2go_clone_receive_start" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" android:gravity="center" android:text="@string/k2go_clone_use_this_code" />
             </LinearLayout>
 
             <!-- ADFA-5155: success-exit status zone (below the scan button on receive step 2). One place
@@ -343,14 +336,10 @@
                             android:text="@string/k2go_clone_no_library_fresh" android:textColor="@color/k2go_ok_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
-                <TextView android:id="@+id/k2go_rcv_confirm_go" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_continue_copying"
-                    android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
-                    android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
-                <TextView android:id="@+id/k2go_rcv_confirm_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_cancel"
-                    android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_muted"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" />
+                <Button android:id="@+id/k2go_rcv_confirm_go" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" android:gravity="center" android:text="@string/k2go_clone_continue_copying" />
+                <Button android:id="@+id/k2go_rcv_confirm_cancel" style="@style/Widget.K2Go.Button.Outlined" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" android:gravity="center" android:text="@string/k2go_cancel" />
             </LinearLayout>
 
             <!-- ADFA-4784: "these phones aren't compatible" hard-block state (no arch jargon; raw
@@ -453,10 +442,8 @@
                         android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_info_ink" />
                 </LinearLayout>
 
-                <TextView android:id="@+id/k2go_clone_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_cancel"
-                    android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
-                    android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+                <Button android:id="@+id/k2go_clone_cancel" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp" android:gravity="center" android:text="@string/k2go_cancel" />
             </LinearLayout>
         </LinearLayout>
         </LinearLayout>
@@ -469,9 +456,7 @@
         android:orientation="vertical" android:background="@color/k2go_paper"
         android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="8dp" android:paddingBottom="12dp"
         android:visibility="gone">
-        <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
-            android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
-            android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_stop" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:text="@string/k2go_clone_stop_sharing" />
     </LinearLayout>
 </LinearLayout>
