@@ -176,21 +176,14 @@
         <!-- Terminal action: the module index owns this navigation; here the screen does. GONE until done.
              A styled TextView-as-button (like Clone's) so the custom background isn't overridden by
              MaterialButton's backgroundTint. -->
-        <TextView
+        <Button
             android:id="@+id/k2go_bj_finish"
+            style="@style/Widget.K2Go.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:visibility="gone"
             android:text="@string/k2go_bj_finish"
-            android:gravity="center"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/k2go_primary_bg"
-            android:textColor="@color/k2go_on_teal"
-            android:textAppearance="?attr/textAppearanceTitleMedium" />
+            android:gravity="center" />
     </LinearLayout>
 </ScrollView>

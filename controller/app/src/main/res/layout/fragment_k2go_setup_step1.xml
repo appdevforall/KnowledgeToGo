@@ -76,19 +76,14 @@
 
         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="16dp" />
 
-        <TextView
+        <Button
             android:id="@+id/k2go_step1_next"
+            style="@style/Widget.K2Go.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:padding="16dp"
             android:gravity="center"
-            android:text="@string/k2go_next_choose_content"
-            android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textColor="@color/k2go_on_teal"
-            android:background="@drawable/k2go_primary_bg"
-            android:clickable="true"
-            android:focusable="true" />
+            android:text="@string/k2go_next_choose_content" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp" android:gravity="center_vertical">
             <TextView android:id="@+id/k2go_step1_back" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/k2go_back_link" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
             <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" />
