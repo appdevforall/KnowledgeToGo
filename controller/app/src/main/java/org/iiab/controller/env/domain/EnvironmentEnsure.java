@@ -33,6 +33,14 @@ public final class EnvironmentEnsure {
     private EnvironmentEnsure() {
     }
 
+    /**
+     * ADFA-5343a (D1): the default service-downtime grace — how long "proot alive but services not
+     * answering" is read as "still coming up / pdsm will respawn it" before {@link Action#KILL_AND_RELAUNCH}.
+     * The one canonical value both actuators use (ServerController's foreground boot and the app-scoped
+     * reconciler tick), so the threshold has a single source.
+     */
+    public static final long DEFAULT_SERVICE_DOWN_GRACE_MS = 20_000L;
+
     public enum Action {
         /** Nothing of ours is running — start it. */
         LAUNCH,

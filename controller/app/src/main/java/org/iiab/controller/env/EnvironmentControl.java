@@ -6,9 +6,12 @@
  * Description : ADFA-4957. Context-based quiescing of the Debian environment SERVICES (pdsm stop),
  *               extracted from ServerController so a foreground service (DeepOpService) can stop the
  *               environment off ANY Activity — the same deterministic pdsm command the UI path uses.
- *               stop() runs `pdsm stop`; callbacks fire on the PRootEngine worker thread. Booting is
- *               deliberately NOT here: the hosting Activity boots via ServerController.startEnvironment()
- *               (which shares createFakeSysData below, so the fake /proc data has a single copy).
+ *               stop() runs `pdsm stop`; callbacks fire on the PRootEngine worker thread.
+ *               ADFA-5343 (Phase 4): start() is now here too — the OFF-UI boot the app-scoped reconciler
+ *               owner uses to bring the box up with no foreground Activity (the process-scoped owner the
+ *               ADR §1.1 root cause needs). Both share createFakeSysData below, one copy of the fake /proc
+ *               data. ServerController.doLaunchEnvironment keeps its own Activity-UI boot until the
+ *               app-scoped actuator is device-verified (then it delegates here / is deleted).
  * ============================================================================
  */
 package org.iiab.controller.env;
@@ -29,6 +32,9 @@ public final class EnvironmentControl {
     private static final String PATH_ENV =
             "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc ";
     private static final String CMD_STOP = PATH_ENV + "'/usr/local/bin/pdsm stop'";
+    // ADFA-5343 (Phase 4): the persistent boot — the same command ServerController.doLaunchEnvironment
+    // uses (pdsm start, then `tail -f /dev/null` so the proot outlives the command and stays up).
+    private static final String CMD_START = PATH_ENV + "'/usr/local/bin/pdsm start && tail -f /dev/null'";
 
     private EnvironmentControl() {}
 
@@ -52,6 +58,32 @@ public final class EnvironmentControl {
                     @Override public void onProcessExit(int exitCode) { if (onDone != null) onDone.run(); }
                     @Override public void onError(String error) { if (onDone != null) onDone.run(); }
                 });
+    }
+
+    /**
+     * ADFA-5343 (Phase 4): the OFF-UI boot — bring the environment up in a fresh, app-scoped
+     * {@link PRootEngine} with no Activity, so the app-scoped reconciler owner can boot the box when no
+     * screen is foregrounded. Mirrors {@code ServerController.doLaunchEnvironment}'s launch
+     * (createFakeSysData + {@code pdsm start && tail -f /dev/null}) minus the Activity-UI callbacks
+     * (onStartupBegan / per-service progress / fusion pulse) — those belong to a foreground screen, and
+     * the UI observes the published phase instead.
+     *
+     * <p>The caller (the reconciler) HOLDS the returned engine — it is the process-scoped owner of the
+     * launch, which is the ADR §1.1 root-cause fix (the proot outlives any Activity). Runs the command on
+     * the PRootEngine worker thread; call after an idempotency decision (EnvironmentEnsure) so a live
+     * proot is never stacked.
+     */
+    public static PRootEngine start(Context ctx, final LineSink log) {
+        File rootfsDir = rootfs(ctx);
+        createFakeSysData(rootfsDir);
+        PRootEngine engine = new PRootEngine();
+        engine.executeInContainer(ctx.getApplicationContext(), rootfsDir.getAbsolutePath(), CMD_START,
+                new PRootEngine.OutputListener() {
+                    @Override public void onOutputLine(String line) { if (log != null) log.onLine("[Server] " + line); }
+                    @Override public void onProcessExit(int exitCode) { if (log != null) log.onLine("[Server] engine exit " + exitCode); }
+                    @Override public void onError(String error) { if (log != null) log.onLine("[Server] error " + error); }
+                });
+        return engine;
     }
 
     /**

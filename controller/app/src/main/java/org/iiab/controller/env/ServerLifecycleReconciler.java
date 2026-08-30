@@ -15,15 +15,23 @@
 package org.iiab.controller.env;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import org.iiab.controller.PRootEngine;
 import org.iiab.controller.Preferences;
+import org.iiab.controller.ServerState;
+import org.iiab.controller.ServerStateRepository;
+import org.iiab.controller.SystemStateEvaluator;
+import org.iiab.controller.env.domain.EnvironmentEnsure;
 import org.iiab.controller.env.domain.ServerLiveness;
 import org.iiab.controller.env.domain.ServerReconcile;
 import org.iiab.controller.system.data.SystemFactsReader;
 import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.system.domain.SystemFacts;
+import org.iiab.controller.util.AppExecutors;
 
 /**
  * One process-scoped owner of "the server should be up," observing only (Phase 1).
@@ -69,6 +77,21 @@ public final class ServerLifecycleReconciler {
     private volatile boolean lastDesiredUp;
     private volatile Actuator actuator;
 
+    // ADFA-5343 (Phase 4a): the app-scoped background tick — the reconciler's OWN driver, so it acts
+    // without a foreground Activity (removing the Phase-2/3 "box returns needs a foreground Activity"
+    // limit). It STANDS DOWN while an Activity is foregrounded (actuator != null) — the Activity poll +
+    // bridge drive then — and only takes over when actuator == null (backgrounded), where it captures
+    // liveness itself and actuates OFF-UI via EnvironmentControl. Runs while the process is alive;
+    // WatchdogService (START_STICKY, up while the box is up) keeps the process alive in the background so
+    // a flap is re-driven. The foreground boot path (ServerController.doLaunchEnvironment) is untouched
+    // in 4a — the two are mutually exclusive on actuator==null, so there is no double-boot.
+    private static final long TICK_MS = 3000L;
+    private final Handler tickHandler = new Handler(Looper.getMainLooper());
+    private volatile boolean tickStarted;
+    private volatile Context appContext;
+    private volatile ServerLiveness lastTickLiveness;   // threaded across ticks for the service-downtime clock
+    private PRootEngine appScopedEngine;                 // the off-UI boot handle this owner holds (Phase 4a)
+
     private ServerLifecycleReconciler() {
     }
 
@@ -86,6 +109,99 @@ public final class ServerLifecycleReconciler {
         if (this.actuator == a) {
             this.actuator = null;
         }
+    }
+
+    /**
+     * ADFA-5343 (Phase 4a): start the app-scoped background tick. Idempotent; call once from
+     * {@link org.iiab.controller.IIABApplication}. The tick fires every {@link #TICK_MS} while the process
+     * is alive; each fire hops to an IO thread (the liveness probe can block ~2.5s) and stands down unless
+     * the app is backgrounded (no foreground actuator).
+     */
+    public void startBackgroundTick(Context appCtx) {
+        if (appCtx == null || tickStarted) {
+            return;
+        }
+        this.appContext = appCtx.getApplicationContext();
+        tickStarted = true;
+        tickHandler.post(tickRunnable);
+    }
+
+    private final Runnable tickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            AppExecutors.get().io().execute(ServerLifecycleReconciler.this::backgroundTick);
+            tickHandler.postDelayed(this, TICK_MS);
+        }
+    };
+
+    /**
+     * One background tick (IO thread). No-op while an Activity is foregrounded — the Activity poll feeds
+     * {@link #observe} and the bridge actuates, exactly as in Phases 2–3. Only when there is NO foreground
+     * actuator does the reconciler capture liveness itself, publish it, and actuate OFF-UI.
+     */
+    private void backgroundTick() {
+        Context ctx = appContext;
+        if (ctx == null || actuator != null) {
+            return;   // foreground owns it; the tick stands down
+        }
+        long now = SystemClock.elapsedRealtime();
+        ServerLiveness live = ServerLiveness.next(
+                lastTickLiveness,
+                EnvironmentProcess.isRunning(ctx),
+                org.iiab.controller.redesign.RestReadiness.apiReady(),
+                now, ServerLiveness.DEFAULT_FRESH_MS);
+        lastTickLiveness = live;
+        ServerLiveness.Phase actual = live.phase(now);
+
+        // Publish for any UI that foregrounds mid-flap — the same fact the Activity poll publishes.
+        boolean alive = actual == ServerLiveness.Phase.UP;
+        ServerStateRepository.get().post(ServerState.of(alive, SystemStateEvaluator.evaluate(ctx, alive)));
+
+        synchronized (this) {
+            if (actuator != null) {
+                return;   // re-check under the lock: an Activity may have resumed during the probe
+            }
+            SystemFacts facts = SystemFactsReader.read(ctx);
+            boolean userWantsOn = new Preferences(ctx).getWatchdogEnable();
+            EnvironmentLock.Holder holder = EnvironmentLock.currentHolder(ctx);
+            boolean desiredUp = ServerReconcile.desired(
+                    facts.isInstalled(), facts.isHealthy(), userWantsOn, holder.executionClass);
+            ServerReconcile.Intent intent = ServerReconcile.intent(desiredUp, actual);
+            boolean ensureUp = ACTUATES && ServerReconcile.shouldEnsureUp(intent, holder.selfRestartsServer);
+
+            Log.i(TAG, "ADFA-5343 tick(bg): desired=" + (desiredUp ? "UP" : "DOWN")
+                    + " actual=" + actual + " intent=" + intent
+                    + (ensureUp ? " -> off-UI ensureServerUp" : "")
+                    + "  [holder=" + holder + " userWantsOn=" + userWantsOn + "]");
+
+            if (ensureUp) {
+                offUiEnsureUp(ctx, live, now);
+            }
+        }
+    }
+
+    /**
+     * The OFF-UI actuation (Phase 4a): the same {@link EnvironmentEnsure} decision the foreground boot
+     * uses, launching the app-scoped {@link EnvironmentControl#start} engine this owner holds — no
+     * Activity. EnvironmentEnsure keeps it idempotent (LAUNCH only when nothing runs; relaunch only a
+     * stuck past-grace proot), so it never stacks a second proot. Resets the tick's downtime clock after a
+     * launch so the fresh proot gets its full grace. Caller holds {@code this} monitor.
+     */
+    private void offUiEnsureUp(Context ctx, ServerLiveness live, long now) {
+        long downMs = live.servicesDownMs(now, ServerLiveness.DEFAULT_FRESH_MS);
+        EnvironmentEnsure.Action action = EnvironmentEnsure.decide(
+                live.processPresent(), live.servicesAnswering(), downMs,
+                EnvironmentEnsure.DEFAULT_SERVICE_DOWN_GRACE_MS);
+        if (action == EnvironmentEnsure.Action.KILL_AND_RELAUNCH) {
+            EnvironmentProcess.killOrphan(ctx);
+        } else if (action != EnvironmentEnsure.Action.LAUNCH) {
+            return;   // NOOP_HEALTHY / WAIT_BOOT_GRACE — leave it
+        }
+        if (appScopedEngine != null) {
+            appScopedEngine.killProcess();
+        }
+        appScopedEngine = EnvironmentControl.start(ctx, line -> Log.i(TAG, line));
+        lastTickLiveness = null;   // restart the downtime clock so the fresh proot gets its full grace
     }
 
     /**
