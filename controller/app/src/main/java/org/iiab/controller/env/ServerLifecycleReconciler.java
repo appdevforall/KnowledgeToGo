@@ -15,16 +15,20 @@
 package org.iiab.controller.env;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.PRootEngine;
 import org.iiab.controller.Preferences;
 import org.iiab.controller.ServerState;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.SystemStateEvaluator;
+import org.iiab.controller.WatchdogService;
 import org.iiab.controller.env.domain.EnvironmentEnsure;
 import org.iiab.controller.env.domain.ServerLiveness;
 import org.iiab.controller.env.domain.ServerReconcile;
@@ -167,6 +171,11 @@ public final class ServerLifecycleReconciler {
             boolean desiredUp = ServerReconcile.desired(
                     facts.isInstalled(), facts.isHealthy(), userWantsOn, holder.executionClass);
             ServerReconcile.Intent intent = ServerReconcile.intent(desiredUp, actual);
+
+            // ADFA-5343 (Phase 4b): the one WatchdogService promoter, driven by desired — in the
+            // background too, so the process stays alive to keep the box up / re-drive a flap under Doze.
+            promoteOrTeardownWatchdog(ctx, desiredUp);
+
             boolean ensureUp = ACTUATES && ServerReconcile.shouldEnsureUp(intent, holder.selfRestartsServer);
 
             Log.i(TAG, "ADFA-5343 tick(bg): desired=" + (desiredUp ? "UP" : "DOWN")
@@ -187,6 +196,25 @@ public final class ServerLifecycleReconciler {
      * stuck past-grace proot), so it never stacks a second proot. Resets the tick's downtime clock after a
      * launch so the fresh proot gets its full grace. Caller holds {@code this} monitor.
      */
+    /**
+     * ADFA-5343 (Phase 4b): the reconciler is the ONE promoter of {@link WatchdogService} — up while the
+     * server should be up (the foreground service + wakelock keep the process alive so the tick survives
+     * Doze and re-drives a flap), down otherwise (deep ops run their own foreground services; a user-off /
+     * uninstalled box needs no keeper). Edge-detected via the service's own {@link WatchdogService#isRunning}
+     * state — no reconciler-side flag — so it is safe to call on every reconcile and self-corrects a
+     * START_STICKY-revived service. At targetSdk 28 the app may start a foreground service from the
+     * background (the API-31 restriction does not apply); revisit if the targetSdk is raised.
+     */
+    private void promoteOrTeardownWatchdog(Context ctx, boolean desiredUp) {
+        Context app = ctx.getApplicationContext();
+        if (desiredUp && !WatchdogService.isRunning()) {
+            ContextCompat.startForegroundService(app,
+                    new Intent(app, WatchdogService.class).setAction(WatchdogService.ACTION_START));
+        } else if (!desiredUp && WatchdogService.isRunning()) {
+            app.startService(new Intent(app, WatchdogService.class).setAction(WatchdogService.ACTION_STOP));
+        }
+    }
+
     private void offUiEnsureUp(Context ctx, ServerLiveness live, long now) {
         long downMs = live.servicesDownMs(now, ServerLiveness.DEFAULT_FRESH_MS);
         EnvironmentEnsure.Action action = EnvironmentEnsure.decide(
@@ -229,6 +257,9 @@ public final class ServerLifecycleReconciler {
 
         this.lastLiveness = liveness;
         this.lastDesiredUp = desiredUp;
+
+        // ADFA-5343 (Phase 4b): the reconciler is the one WatchdogService promoter, driven by desired.
+        promoteOrTeardownWatchdog(ctx, desiredUp);
 
         // ADFA-5343 (Phase 2): actuate only the "bring it up" direction. START (down) and WAIT (still
         // coming up, or a stuck flap) both route to ensureServerUp(); its EnvironmentEnsure decides

@@ -260,3 +260,19 @@ The app-scoped owner gets its own tick, so it acts with no foreground Activity (
   the Activity poll intact; 4d deletes the poll + the autostart cluster and makes the tick the single
   liveness publisher + `doLaunchEnvironment` delegate/delete, at which point the transitional dual
   liveness-capture and dual boot mechanism collapse to one.
+
+---
+
+## 14. Phase 4 battery follow-ups (tracked — need device measurement, not guessed)
+
+Phase 4b lands WatchdogService promotion at the **current 3 s tick + held wakelock** (== today's cost,
+no regression). Two battery items are deferred as measured follow-ups, not designed blind in 4b:
+
+- **Unplugged idle back-off.** While `desired=UP` the box stays up with a PARTIAL_WAKE_LOCK + 3 s tick,
+  which drains when unplugged and idle. Candidate: when unplugged **and** idle (no clients / no recent
+  activity) slow the tick and/or drop the wakelock between Doze maintenance windows (ADR-5343 §6 "slow
+  idle tick"). Requires device battery measurement and must not slow the flap recovery Phase 4 just
+  fixed. Explicitly NOT power-tied (box up only while charging) — that is an availability-semantics
+  product decision, not a battery tweak.
+- **Doze survival characterization.** The 4b gate proves recovery under real unplugged-stationary Doze on
+  OnePlus + HMD; capture the measured battery cost there so the back-off above is tuned against real data.

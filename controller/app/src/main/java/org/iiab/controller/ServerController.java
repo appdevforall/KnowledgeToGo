@@ -394,8 +394,7 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
                 activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_error, error)));
             }
         });
-        prefs.setWatchdogEnable(true);
-        host.enableSystemProtection();
+        prefs.setWatchdogEnable(true);   // sets desired=UP; the reconciler promotes WatchdogService (Phase 4b)
         host.addToLog(activity.getString(R.string.watchdog_started));
         host.startFusionPulse();
         ensuring = false;   // ADFA-5103: launch issued — release the ensure-up guard
@@ -513,8 +512,7 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
                         });
 
                         if (prefs.getWatchdogEnable()) {
-                            prefs.setWatchdogEnable(false);
-                            host.disableSystemProtection();
+                            prefs.setWatchdogEnable(false);   // sets desired=DOWN; the reconciler tears down WatchdogService (Phase 4b)
                             host.addToLog(activity.getString(R.string.watchdog_stopped));
                             host.startExitPulse();
                         }

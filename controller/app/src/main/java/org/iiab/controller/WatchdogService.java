@@ -36,6 +36,12 @@ public class WatchdogService extends Service {
     public static final String ACTION_STATE_STARTED = "org.iiab.controller.WATCHDOG_STARTED";
     public static final String ACTION_STATE_STOPPED = "org.iiab.controller.WATCHDOG_STOPPED";
 
+    // ADFA-5343 (Phase 4b): process-scoped "is the watchdog protecting right now", so the reconciler —
+    // the one promoter — can edge-detect (start only when not running, stop only when running) without a
+    // reconciler-side flag. Resets to false if the process is recreated (START_STICKY re-delivers a start).
+    private static volatile boolean RUNNING = false;
+    public static boolean isRunning() { return RUNNING; }
+
     // Hardware Locks
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
@@ -61,9 +67,15 @@ public class WatchdogService extends Service {
     }
 
     private void startWatchdog() {
-        // 1. Start Foreground to prevent OOM (Out of Memory) kills
+        // 1. Start Foreground to prevent OOM (Out of Memory) kills. Called on EVERY start (idempotent) so a
+        // re-delivered / repeat ACTION_START still satisfies the startForeground() contract.
         Notification notification = createNotification();
         startForeground(NOTIFICATION_ID, notification);
+
+        // ADFA-5343 (Phase 4b): the reconciler may re-send ACTION_START; guard so a repeat does NOT
+        // re-acquire the hardware locks (that would leak the held ones). Acquire once per running session.
+        if (RUNNING) return;
+        RUNNING = true;
 
         // 2. Acquire CPU WakeLock to prevent sleep during heavy operations (e.g., Tar extraction, Rsync)
         acquireHardwareLocks();
@@ -106,6 +118,7 @@ public class WatchdogService extends Service {
 
     @Override
     public void onDestroy() {
+        RUNNING = false;   // ADFA-5343 (Phase 4b): protection is ending — clear the promoter's state signal
         // 1. Notify the UI that protection is gone
         Intent stopIntent = new Intent(ACTION_STATE_STOPPED);
         stopIntent.setPackage(getPackageName());
