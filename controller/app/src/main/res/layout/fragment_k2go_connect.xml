@@ -146,8 +146,7 @@
 
             <!-- ===== shared bottom: Done + "available while open" footer ===== -->
             <Button android:id="@+id/k2go_conn_finish" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_done"
-                android:textAppearance="?attr/textAppearanceTitleLarge" android:visibility="gone" />
+                android:layout_marginTop="16dp" android:gravity="center" android:text="@string/k2go_done" android:visibility="gone" />
             <!-- ADFA-5236: "Available while the app is open." removed from the Connect footer. -->
             <TextView android:id="@+id/k2go_conn_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_connect_available"
