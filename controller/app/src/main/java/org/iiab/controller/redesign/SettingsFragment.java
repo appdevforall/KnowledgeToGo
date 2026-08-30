@@ -133,14 +133,11 @@ public class SettingsFragment extends Fragment {
         np.bottomMargin = SettingsUi.dp(ctx, 8);
         footer.addView(note, np);
 
-        TextView off = new TextView(ctx);
+        // ADFA-5346: destructive button via the shared M3 style (overlay points at Widget.K2Go.Button.
+        // Destructive — no color/recipe duplicated in code). Shape/size/clay outline all come from the style.
+        com.google.android.material.button.MaterialButton off = new com.google.android.material.button.MaterialButton(
+                new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Destructive), null);
         off.setText(getString(R.string.k2go_settings_turn_off));
-        off.setGravity(Gravity.CENTER);
-        off.setPadding(SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16));
-        off.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
-        off.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_clay));
-        off.setBackgroundResource(R.drawable.k2go_turnoff_bg);
-        off.setClickable(true);
         off.setOnClickListener(v -> confirmTurnOff());
         footer.addView(off, new LinearLayout.LayoutParams(-1, -2));
     }

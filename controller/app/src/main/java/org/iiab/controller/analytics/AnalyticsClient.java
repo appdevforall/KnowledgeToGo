@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.iiab.controller.BuildConfig;
 import org.iiab.controller.analytics.domain.AnalyticsBuckets;
 import org.iiab.controller.delivery.data.AnalyticsConsent;
 import org.iiab.controller.delivery.data.InstallId;
@@ -48,6 +49,9 @@ public final class AnalyticsClient {
      * anywhere (e.g. Application start, or right after the consent toggle changes).
      */
     public void applyConsent() {
+        if (!BuildConfig.ANALYTICS_ENABLED) {
+            return;   // built without google-services.json → Firebase not configured; nothing to sync
+        }
         FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(AnalyticsConsent.isEnabled(app));
     }
 
@@ -179,8 +183,13 @@ public final class AnalyticsClient {
 
     // ------------------------------------------------------------------- internals
 
-    /** True only when the operator opted in; also keeps the SDK flag in sync. */
+    /** True only when the operator opted in AND Firebase is configured in this build; also keeps the SDK
+     *  flag in sync. When built without google-services.json, this short-circuits so no code path ever
+     *  touches the uninitialized Firebase SDK (every public logging method gates through here). */
     private boolean gate() {
+        if (!BuildConfig.ANALYTICS_ENABLED) {
+            return false;   // no google-services.json → analytics compiled out
+        }
         boolean consent = AnalyticsConsent.isEnabled(app);
         FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(consent);
         return consent;
