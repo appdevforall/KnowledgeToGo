@@ -48,6 +48,21 @@ so every button reads and measures the same regardless of screen. **Do NOT** set
 "Next" sit next to a shorter Step-2 "Continue". Tune the height/text once in the style if the whole app
 needs to change. Complements ADFA-5019 (size consistency) — now enforced structurally.
 
+### Code-built or role-switching buttons — use a ThemeOverlay, not a Java recipe
+For a button created in code, or one that morphs between roles at runtime, do NOT reproduce the role look
+in Java (`setBackgroundTintList` / `setStrokeColor` / `setTextColor` per role) — that duplicates the styles
+and drifts. Point the button at a style via a ThemeOverlay instead:
+
+```java
+MaterialButton b = new MaterialButton(
+        new ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Destructive), null);
+```
+
+`ThemeOverlay.K2Go.Button.Filled | Outlined | Destructive` only set `materialButtonStyle` to the matching
+style, so the whole look (shape, size, colors) comes from the one style — nothing is spelled in Java. For a
+morphing button, rebuild it with the overlay for the current role rather than swapping a drawable — see
+`CloneFragment.setStopRole(...)` and `SettingsFragment`'s "Turn off".
+
 ### Retired / to retire
 - `k2go_getmore_bg`, `k2go_primary_bg`, `k2go_turnoff_bg` — button shape drawables, replaced by the styles.
   Delete once no layout references them.
@@ -63,22 +78,22 @@ needs to change. Complements ADFA-5019 (size consistency) — now enforced struc
 - Size normalized: per-button `padding` / `textAppearance` / `height` were stripped from the converted
   buttons so they all take the style's size (52dp / 16sp). This is what fixes the Step-1-vs-Step-2 size
   mismatch on the K2Go screens.
+- **"Turn off K2Go"** (`SettingsFragment`) — the code-built destructive button now uses the
+  `ThemeOverlay.K2Go.Button.Destructive` overlay (no drawable, no Java color recipe).
+- **`CloneFragment`** — the 8 static clone buttons converted to `<Button>` with the styles; the morphing
+  footer action (`stop`) is now a `MaterialButton` rebuilt per role via `setStopRole(...)` + the overlays,
+  so the recover/share-anyway/stop/start looks live only in the styles.
 
 ### Known follow-up (drawables not retired yet)
 The three shape drawables (`k2go_primary_bg`, `k2go_getmore_bg`, `k2go_turnoff_bg`) can't be deleted yet —
-these still use them and need a device-verified pass:
-- **`CloneFragment`** — its `stop` button (and the clone screen) swaps the background drawable + text color
-  at runtime by state (`setBackgroundResource(...)`), which is exactly what you must NOT do on a
-  MaterialButton. Converting it means reworking that stateful styling via `setBackgroundTintList` /
-  `setStrokeColor` / `setStrokeWidth` / `setTextColor` (the M3 shape is unaffected).
+these still reference them and need a device-verified pass:
 - **Programmatic uses in other Java** — `BooksLandingFragment`, `LibraryHomeFragment`,
-  `ProvisioningChecklist`, `ConnectFragment`, `SettingsSubFragment`, `WikiVersionPicker`, `SettingsFragment`
-  set these drawables in code.
+  `ProvisioningChecklist`, `ConnectFragment`, `SettingsSubFragment`, `WikiVersionPicker` set these
+  drawables in code (and `CloneFragment`'s tab/`advance` selected-state fill toggles `k2go_primary_bg` on/
+  off — a selection indicator, not a button; convert or give it its own selector drawable).
 - **Container backgrounds** — the `lang_box` selector rows (`fragment_k2go_kolibri_browse`,
   `fragment_k2go_zim_category`, `fragment_k2go_zim_landing`) use `k2go_getmore_bg` as a `LinearLayout`
   background. Those are NOT buttons; give them their own outline drawable so the button drawable can retire.
-- **"Turn off K2Go"** (`SettingsFragment`) — destructive button built in code with
-  `setBackgroundResource(k2go_turnoff_bg)`; convert to `Widget.K2Go.Button.Destructive` (Java).
 
 Retire the three drawables once all of the above are migrated. (`k2go_ok_bg` is a notice/banner, unrelated.)
 

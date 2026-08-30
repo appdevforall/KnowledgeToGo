@@ -117,7 +117,11 @@ public class CloneFragment extends Fragment {
     // Hotspot/Wi-Fi switch is a natural retry path.
     private boolean locationAsked = false;
 
-    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer;
+    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, footer;
+    // ADFA-5346: the footer action button morphs across roles (recover/share-anyway/stop/start). It is a
+    // MaterialButton rebuilt per role via a ThemeOverlay (setStopRole) so the role look stays only in the
+    // XML styles — no color recipe duplicated here.
+    private com.google.android.material.button.MaterialButton stop;
     // ADFA-4785: intent fork (Send / Receive) replaces the persistent top toggle.
     private boolean atFork = true;
     private LinearLayout forkBox, tabsRow;
@@ -676,10 +680,8 @@ public class CloneFragment extends Fragment {
         shareCard.setVisibility(View.GONE);
         advance.setVisibility(View.GONE);
         actionFooter.setVisibility(View.VISIBLE);
-        stop.setText(getString(R.string.k2go_home_recover));
-        stop.setBackgroundResource(R.drawable.k2go_primary_bg);
-        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
-        stop.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
+        setStopRole(R.style.ThemeOverlay_K2Go_Button_Filled, R.string.k2go_home_recover,
+                v -> SetupLibraryActivity.recover(requireContext()));
         footer.setVisibility(View.GONE);
     }
 
@@ -846,10 +848,8 @@ public class CloneFragment extends Fragment {
             subCaption.setText(getString(R.string.k2go_clone_no_library_note));
             footer.setText(""); shareCard.setVisibility(View.GONE);
             actionFooter.setVisibility(View.VISIBLE);
-            stop.setText(getString(R.string.k2go_clone_share_anyway));
-            stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
-            stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-            stop.setOnClickListener(x -> { shareAnyway = true; render(); });
+            setStopRole(R.style.ThemeOverlay_K2Go_Button_Outlined, R.string.k2go_clone_share_anyway,
+                    x -> { shareAnyway = true; render(); });
             return;
         }
         if (daemonStarting) {
@@ -924,20 +924,30 @@ public class CloneFragment extends Fragment {
         }
     }
 
+    /** ADFA-5346: (re)build the footer action button with one of the shared button styles (via a
+     *  ThemeOverlay) plus its text + click. actionFooter holds only this button, so we swap it in place.
+     *  The role look (filled/outlined/destructive) lives only in the XML styles — nothing is spelled here. */
+    private void setStopRole(int overlayTheme, int textRes, View.OnClickListener onClick) {
+        com.google.android.material.button.MaterialButton b = new com.google.android.material.button.MaterialButton(
+                new android.view.ContextThemeWrapper(requireContext(), overlayTheme), null);
+        b.setText(getString(textRes));
+        b.setOnClickListener(onClick);
+        b.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        actionFooter.removeAllViews();
+        actionFooter.addView(b);
+        stop = b;
+    }
+
     private void showStopButton() {
         actionFooter.setVisibility(View.VISIBLE);
-        stop.setText(getString(R.string.k2go_clone_stop_sharing));
-        stop.setBackgroundResource(R.drawable.k2go_turnoff_bg);
-        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
-        stop.setOnClickListener(x -> confirmStop());
+        setStopRole(R.style.ThemeOverlay_K2Go_Button_Destructive, R.string.k2go_clone_stop_sharing, x -> confirmStop());
     }
 
     private void showStartButton() {
         actionFooter.setVisibility(View.VISIBLE);
-        stop.setText(getString(R.string.k2go_clone_start_sharing));
-        stop.setBackgroundResource(R.drawable.k2go_primary_bg);
-        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
-        stop.setOnClickListener(x -> { userStopped = false; render(); });
+        setStopRole(R.style.ThemeOverlay_K2Go_Button_Filled, R.string.k2go_clone_start_sharing,
+                x -> { userStopped = false; render(); });
     }
 
     // ------------------------------------------------------------------ Receive
