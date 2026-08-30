@@ -63,6 +63,31 @@ style, so the whole look (shape, size, colors) comes from the one style — noth
 morphing button, rebuild it with the overlay for the current role rather than swapping a drawable — see
 `CloneFragment.setStopRole(...)` and `SettingsFragment`'s "Turn off".
 
+### Not every "button" is a full-width CTA — the taxonomy (why some are left alone)
+The shared styles above are for **actions the user commits to**: the full-width (or near-full-width)
+primary/secondary/destructive buttons — Continue, Next, Get more, Turn off, Save, "Installed? copy the
+library". Those all take the one pill shape + 52dp size, on purpose.
+
+Several tappable, drawable-styled elements are **deliberately NOT** those, and applying the 52dp CTA style
+would make them wrong. They are different Material 3 components and belong to a separate, structured pass:
+
+- **Segmented tabs / pills** — Hotspot | Wi-Fi and Send | Receive (`paintTab` in Clone/Connect, and the
+  chip rows in Books / LibraryHome). These are a *selected-state* control, not a button; the correct M3
+  component is a **segmented button / tab**, sized to the row, with a selected fill. A 52dp pill each would
+  break the segmented look.
+- **Compact / inline actions** — e.g. the `retry` chip inside a `ProvisioningChecklist` row. It sits beside
+  text at row height; the 52dp CTA size would tower over the row. This wants a **compact/text button** or a
+  small chip, not the CTA style.
+- **Selectable rows / list items** — the language selector box (`lang_box`) and version rows
+  (`WikiVersionPicker`). These are **list items with a selection background**, not buttons; they take a
+  container/outline drawable, not a button style.
+- **Toggles** — on/off state uses `MaterialSwitch`, not a button.
+
+Rule of thumb: if it's a *commit-to-this* action the user reads and presses, it's a button → shared style.
+If it *selects among options*, *toggles*, or is a *compact inline affordance in a row*, it is a different
+component and stays out of the CTA styles until its own M3 treatment is chosen. Documented here so a later
+analysis can pick the right component per case rather than forcing everything into one button.
+
 ### Retired / to retire
 - `k2go_getmore_bg`, `k2go_primary_bg`, `k2go_turnoff_bg` — button shape drawables, replaced by the styles.
   Delete once no layout references them.
