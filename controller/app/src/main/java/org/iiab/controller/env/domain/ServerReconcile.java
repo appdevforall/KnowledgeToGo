@@ -103,4 +103,14 @@ public final class ServerReconcile {
     public static boolean ensuresUp(Intent intent) {
         return intent == Intent.START || intent == Intent.WAIT;
     }
+
+    /**
+     * Whether the reconciler should drive the server up on this tick: the intent says "up"
+     * ({@link #ensuresUp}) AND the current holder does not restart the server itself. A self-restarting
+     * holder (DASHBOARD's live blue-green rebuild, ADR-5343a) owns the restart, so actuating would fight
+     * it mid-swap — defer until it releases (the release is bounded; see {@code Holder.selfRestartsServer}).
+     */
+    public static boolean shouldEnsureUp(Intent intent, boolean holderSelfRestartsServer) {
+        return ensuresUp(intent) && !holderSelfRestartsServer;
+    }
 }

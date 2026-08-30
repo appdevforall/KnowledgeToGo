@@ -561,11 +561,13 @@ public class CloneFragment extends Fragment {
         Context ctx = getContext();
         if (cloneGuardHeld && ctx != null) org.iiab.controller.InstallGuard.end(ctx);
         cloneGuardHeld = false;
-        ServerController sc = server();
-        if (sc != null) sc.startEnvironment();
+        // ADFA-5343 (Phase 3): don't boot the server here. Set desired=UP (the persisted intent) and drop
+        // the lock; the reconciler observes holder==NONE and brings the box back via its one actuator —
+        // the way back is no longer this fragment's job.
+        if (ctx != null) new org.iiab.controller.Preferences(ctx).setWatchdogEnable(true);
         if (ctx != null) EnvironmentLock.release(ctx);
         cloneLockHeld = false;
-        Log.i("IIAB-Clone", "clone env released (server booting, lock dropped)");
+        Log.i("IIAB-Clone", "clone env released (desired=UP, lock dropped; reconciler boots)");
     }
 
     private void render() {

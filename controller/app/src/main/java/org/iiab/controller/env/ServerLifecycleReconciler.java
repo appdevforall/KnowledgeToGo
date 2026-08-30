@@ -120,12 +120,21 @@ public final class ServerLifecycleReconciler {
         // past-grace flap is re-driven wherever the app is foregrounded (the 5336 fix). STOP stays with
         // the toggle / deep-ops until Phase 4; and desired=DOWN yields neither START nor WAIT, so the
         // reconciler can never fight a legitimate stop.
-        boolean ensureUp = ACTUATES && ServerReconcile.ensuresUp(wouldDo);
+        // ADFA-5343a (Phase 3B): but DEFER entirely while a self-restarting holder (DASHBOARD's live
+        // rebuild) holds — it owns the restart, so any relaunch mid-swap would fight it. The defer is
+        // bounded (Holder.selfRestartsServer): the lock releases on every terminal + a stall backstop.
+        boolean wouldEnsure = ServerReconcile.ensuresUp(wouldDo);
+        boolean ensureUp = ACTUATES
+                && ServerReconcile.shouldEnsureUp(wouldDo, holder.selfRestartsServer);
         Actuator a = ensureUp ? this.actuator : null;
 
+        String actNote = !ACTUATES ? ""
+                : (wouldEnsure && holder.selfRestartsServer)
+                        ? " -> (deferred: " + holder + " self-restarts the server)"
+                        : ensureUp ? (a != null ? " -> ensureServerUp()" : " -> (no foreground actuator)")
+                        : "";
         Log.i(TAG, "ADFA-5343 reconcile: desired=" + (desiredUp ? "UP" : "DOWN")
-                + " actual=" + actual + " wouldDo=" + wouldDo
-                + (ensureUp ? (a != null ? " -> ensureServerUp()" : " -> (no foreground actuator)") : "")
+                + " actual=" + actual + " wouldDo=" + wouldDo + actNote
                 + "  [installed=" + facts.isInstalled() + " healthy=" + facts.isHealthy()
                 + " userWantsOn=" + userWantsOn + " holder=" + holder + "/" + holderClass + "]");
 

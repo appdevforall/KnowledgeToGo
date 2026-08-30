@@ -61,18 +61,26 @@ public final class EnvironmentLock {
      *  self-update). NONE means no holder is forcing the box down. The server-lifecycle desired-state
      *  predicate reads this: desired stays UP unless a STOPPED-class holder is in force. */
     public enum Holder {
-        CLONE(Operation.ExecutionClass.STOPPED),
-        BACKUP(Operation.ExecutionClass.STOPPED),
-        RESTORE(Operation.ExecutionClass.STOPPED),
-        INSTALL(Operation.ExecutionClass.STOPPED),
-        DOWNLOAD(Operation.ExecutionClass.LIVE),
-        DASHBOARD(Operation.ExecutionClass.LIVE),
-        NONE(Operation.ExecutionClass.LIVE);
+        CLONE(Operation.ExecutionClass.STOPPED, false),
+        BACKUP(Operation.ExecutionClass.STOPPED, false),
+        RESTORE(Operation.ExecutionClass.STOPPED, false),
+        INSTALL(Operation.ExecutionClass.STOPPED, false),
+        DOWNLOAD(Operation.ExecutionClass.LIVE, false),
+        DASHBOARD(Operation.ExecutionClass.LIVE, true),
+        NONE(Operation.ExecutionClass.LIVE, false);
 
         public final Operation.ExecutionClass executionClass;
 
-        Holder(Operation.ExecutionClass executionClass) {
+        /** ADFA-5343a (Phase 3B): this holder restarts the server ITSELF — DASHBOARD is the live dash-node
+         *  blue-green rebuild ({@code pdsm}/REST self-restart). While it holds, the reconciler must NOT
+         *  actuate: the restart is owned, so a mid-restart relaunch would fight it. The defer is bounded —
+         *  DASHBOARD's lock is released on every terminal (including a stall backstop in
+         *  DashboardRebuildService) and is process-scoped, so there is no durable stale-lock to strand it. */
+        public final boolean selfRestartsServer;
+
+        Holder(Operation.ExecutionClass executionClass, boolean selfRestartsServer) {
             this.executionClass = executionClass;
+            this.selfRestartsServer = selfRestartsServer;
         }
     }
 
