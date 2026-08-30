@@ -204,3 +204,33 @@ reconciler resumes. The durable crash / session-token case stays Phase 5 and doe
   `rebuildServerUp`, `rebuildServerFailed`, and its `serverUpPoll` loop in `SetupProgressActivity`.
   Recorded as **Phase-4 scorecard reductions** (route through desired like the Phase-2 module hand-off,
   or delete with the path).
+
+---
+
+## 12. `REBUILD_STALL_MS` corrected by device measurement; a rebuild-robustness bug it surfaced
+
+Device measurement of the LIVE rebuild (recompile 1.2.7 → 1.2.9 in-proot) — OnePlus 2:42, Samsung
+4:40, Oppo 7:20, HMD TA-1039 ~12 min — corrects §11's backstop and surfaces a separate bug.
+
+**The backstop must key on CPU/process activity, not wall-clock.** The rebuild is a CPU-bound
+`yarn install` native compile: total duration is device-dependent (2:42–12 min, a 4–5× spread) and the
+rebuild **log goes silent ~10 min** during `[4/4] Building fresh packages`. So a fixed total-duration
+cap kills the slow device (or strands a fast hang) and a log-movement backstop false-fires. The one
+clean "still working" signal is **CPU/process state** — a build process stays continuously in state R
+(RSS 30→350 MB) the whole build. §11's `REBUILD_STALL_MS = 5 min` was set on the wrong assumption that
+rebuilds are short; it is **below** the real build time on slower devices and would false-fire
+mid-build. *Interim:* raise it to a conservative wall-clock cap **safely above the worst real build**
+(well above ~12 min) so it never false-fires and only catches a truly-hung build. *Target (dashboard /
+rebuild follow-up):* replace it with a **no-CPU-for-N** movement backstop — the same shape as the P4
+module-stall detector, device-independent.
+
+**Separate rebuild-robustness bug (the real HMD "failure").** The HMD 13-min "failure" was **not** a
+hang or OOM — 3 GB is enough (MemAvailable floor ~1.08 GB, zero OOM). The build succeeds; the
+post-build **smoke test's fixed `sleep 3` is too short** (node needs ~5 s to `listen()`, ~5–8 s under
+load), so `curl` hits a not-yet-listening staged port → false FAIL → the rebuild ends `error` and the
+live dashboard is (correctly) left on 1.2.7. **Consequence: slow / `PROOT_NO_SECCOMP` devices cannot
+update the dashboard today.** Fix (`rebuild-dashboard.sh`, dashboard/rebuild area — not the
+reconciler): replace the fixed `sleep 3` with an **adaptive poll-until-ready loop (~30 s ceiling,
+logging real elapsed)** — adaptive across devices, self-instrumenting, failing only when genuinely
+broken. Its own rebuild-robustness item; best batched with the php-fpm dashboard follow-up (§10
+residual) + the CPU-based backstop above.
