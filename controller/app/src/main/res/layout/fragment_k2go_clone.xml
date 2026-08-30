@@ -457,7 +457,7 @@
         android:orientation="vertical" android:background="@color/k2go_paper"
         android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="8dp" android:paddingBottom="12dp"
         android:visibility="gone">
-        <Button android:id="@+id/k2go_clone_stop" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
+        <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_stop" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:text="@string/k2go_clone_stop_sharing" />
     </LinearLayout>
 </LinearLayout>
