@@ -65,14 +65,19 @@ public final class DashboardRebuildService extends Service {
 
     private static final long POLL_MS = 2500L;
     /**
-     * ADFA-5343 (Phase 3B): a generous wall-clock backstop so a WEDGED rebuild cannot defer the
-     * reconciler forever. The reconciler defers actuation while this holds the lock (DASHBOARD
-     * self-restarts the server, ADR-5343a); completion is normally the server's own signal with no time
-     * cap, and this only catches a rebuild that never reaches a terminal state. Deliberately far above any
-     * real blue-green rebuild: firing it on a slow-but-live rebuild would release the lock and let the
-     * reconciler interfere mid-swap, so this is a "truly stuck" backstop, not a deadline. TUNE ON DEVICE.
+     * ADFA-5343 (Phase 3B): a wall-clock backstop so a WEDGED rebuild cannot defer the reconciler forever
+     * (it defers while this holds the lock — DASHBOARD self-restarts the server, ADR-5343a). Completion is
+     * normally the server's own signal with no time cap; this only catches a rebuild that never reaches a
+     * terminal state.
+     *
+     * ADR-5343a §12: device measurement (recompile 1.2.7→1.2.9 in-proot) showed real builds up to ~12 min
+     * on the slowest device (HMD TA-1039), so the original 5 min sat BELOW real Oppo/HMD builds and
+     * false-fired mid-build. INTERIM: a conservative cap set safely above the worst real build (30 min) —
+     * it never trips a slow-but-live rebuild (which would release the lock and let the reconciler interfere
+     * mid-swap), only a truly-hung one. TARGET (dashboard/rebuild follow-up, §12): replace with a
+     * no-CPU-for-N movement backstop, the P4 module-stall-detector shape, device-independent.
      */
-    private static final long REBUILD_STALL_MS = 5 * 60_000L;
+    private static final long REBUILD_STALL_MS = 30 * 60_000L;
 
     /** True while a background rebuild is in flight, so a card opening mid-update shows the indicator
      *  without waiting for a broadcast. Process-scoped; resets to false if the process is recreated. */
