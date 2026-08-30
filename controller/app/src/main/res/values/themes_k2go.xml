@@ -34,10 +34,23 @@
          restyle every button at once. -->
     <style name="ShapeAppearance.K2Go.Button" parent="ShapeAppearance.Material3.Corner.Full" />
 
-    <!-- Filled primary (teal container). The default for a bare <Button>. -->
+    <!-- ADFA-5346: one button text size app-wide, so every button reads the same regardless of screen. -->
+    <style name="TextAppearance.K2Go.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Filled primary (teal container). The default for a bare <Button>. The size items
+         (minHeight + zero insets + one text appearance) live here so buttons never disagree on size;
+         layouts should NOT set their own padding/height/textAppearance on a button. -->
     <style name="Widget.K2Go.Button" parent="Widget.Material3.Button">
         <item name="shapeAppearance">@style/ShapeAppearance.K2Go.Button</item>
-        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.K2Go.Button</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="backgroundTint">@color/k2go_teal</item>
         <item name="android:textColor">@color/k2go_on_teal</item>
     </style>
@@ -45,7 +58,10 @@
     <!-- Outlined secondary (teal outline). -->
     <style name="Widget.K2Go.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
         <item name="shapeAppearance">@style/ShapeAppearance.K2Go.Button</item>
-        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.K2Go.Button</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="android:textColor">@color/k2go_teal</item>
         <item name="strokeColor">@color/k2go_teal</item>
         <item name="strokeWidth">2dp</item>
@@ -53,14 +69,20 @@
 
     <!-- Text-only (low emphasis). -->
     <style name="Widget.K2Go.Button.Text" parent="Widget.Material3.Button.TextButton">
-        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.K2Go.Button</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="android:textColor">@color/k2go_teal</item>
     </style>
 
     <!-- Destructive outlined (clay/error outline + text) — e.g. "Turn off". -->
     <style name="Widget.K2Go.Button.Destructive" parent="Widget.Material3.Button.OutlinedButton">
         <item name="shapeAppearance">@style/ShapeAppearance.K2Go.Button</item>
-        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.K2Go.Button</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="android:textColor">@color/k2go_clay</item>
         <item name="strokeColor">@color/k2go_clay</item>
         <item name="strokeWidth">2dp</item>

@@ -37,10 +37,16 @@ color roles, the Atkinson Hyperlegible font, the type scale, and — as of ADFA-
 - Text-only: `style="@style/Widget.K2Go.Button.Text"`.
 - Destructive: `style="@style/Widget.K2Go.Button.Destructive"`.
 - **Do NOT** set `android:background`, `android:backgroundTint`, or a custom shape drawable on a button —
-  it fights MaterialButton's shape/tint. Let the style own the look. Keep only layout attrs
-  (width/height/margins), `android:text`, `android:id`, `android:visibility`.
-- Height stays explicit where the app wants a chunkier control (52dp is common; button *size* consistency
-  is ADFA-5019, done).
+  it fights MaterialButton's shape/tint. Let the style own the look. Keep only `layout_width`,
+  `layout_margin*`, `android:text`, `android:id`, `android:gravity`, `android:visibility`.
+
+### Size — also in the style (ADFA-5346)
+The style owns size too: `minHeight 52dp`, zero insets, and one `TextAppearance.K2Go.Button` (16sp bold),
+so every button reads and measures the same regardless of screen. **Do NOT** set `android:padding`,
+`android:layout_height` (use `wrap_content`), `android:textSize`, `android:textStyle`, or
+`android:textAppearance` on a button — those per-button overrides are exactly what made a tall Step-1
+"Next" sit next to a shorter Step-2 "Continue". Tune the height/text once in the style if the whole app
+needs to change. Complements ADFA-5019 (size consistency) — now enforced structurally.
 
 ### Retired / to retire
 - `k2go_getmore_bg`, `k2go_primary_bg`, `k2go_turnoff_bg` — button shape drawables, replaced by the styles.
@@ -53,8 +59,10 @@ color roles, the Atkinson Hyperlegible font, the type scale, and — as of ADFA-
   (MaterialButton) with the styles, in `activity_k2go_wizard` (setup_download, setup_copy, wiz_primary),
   `fragment_k2go_connect` (conn_finish), `fragment_k2go_setup_step1` (step1_next), `fragment_k2go_backup_job`
   (bj_finish), `fragment_k2go_library` (get_more). Their Java fields are typed `TextView`, and MaterialButton
-  is-a TextView, so no Java change was needed (they only call setVisibility). Prominent CTAs keep their
-  `textAppearance` (e.g. TitleLarge) so the conversion changes shape, not prominence.
+  is-a TextView, so no Java change was needed (they only call setVisibility).
+- Size normalized: per-button `padding` / `textAppearance` / `height` were stripped from the converted
+  buttons so they all take the style's size (52dp / 16sp). This is what fixes the Step-1-vs-Step-2 size
+  mismatch on the K2Go screens.
 
 ### Known follow-up (drawables not retired yet)
 The three shape drawables (`k2go_primary_bg`, `k2go_getmore_bg`, `k2go_turnoff_bg`) can't be deleted yet —
@@ -69,8 +77,18 @@ these still use them and need a device-verified pass:
 - **Container backgrounds** — the `lang_box` selector rows (`fragment_k2go_kolibri_browse`,
   `fragment_k2go_zim_category`, `fragment_k2go_zim_landing`) use `k2go_getmore_bg` as a `LinearLayout`
   background. Those are NOT buttons; give them their own outline drawable so the button drawable can retire.
+- **"Turn off K2Go"** (`SettingsFragment`) — destructive button built in code with
+  `setBackgroundResource(k2go_turnoff_bg)`; convert to `Widget.K2Go.Button.Destructive` (Java).
 
 Retire the three drawables once all of the above are migrated. (`k2go_ok_bg` is a notice/banner, unrelated.)
+
+### Legacy screens on a non-Material 3 theme (can't adopt the styles yet)
+Some older screens are hosted by activities without `Theme.K2Go` — e.g. `SetupActivity` (hosting
+`SetupSectionFragment`) inherits `Theme.IIABController` (parent `Theme.AppCompat`, **not** Material 3).
+Its `btn_setup_continue` uses the legacy `@drawable/rounded_button` (12dp, 60dp, 18sp), which is why the
+Step-2 "Continue" doesn't match the Step-1 "Next" (a K2Go/M3 screen). The M3 button styles can't be
+applied there without first moving the activity to `Theme.K2Go`. This is a separate migration (verify the
+whole screen renders under M3), not a shared-style tweak.
 
 ## Color tokens
 Semantic color tokens live in `res/values/colors_k2go.xml` (+ `values-night`). Reference by role
