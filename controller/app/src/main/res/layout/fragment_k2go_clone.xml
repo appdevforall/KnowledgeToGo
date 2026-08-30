@@ -197,9 +197,8 @@
         </LinearLayout>
 
         <!-- Advance: the gate "Installed? Copy the library ›" (Page 1) / "‹ Back to step 2" (Page 2). -->
-        <TextView android:id="@+id/k2go_clone_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:clickable="true" android:focusable="true" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_advance" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:gravity="center" android:visibility="gone" />
 
         <LinearLayout android:id="@+id/k2go_clone_receive_box" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="16dp" android:visibility="gone">

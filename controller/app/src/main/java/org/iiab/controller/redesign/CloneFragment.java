@@ -117,7 +117,10 @@ public class CloneFragment extends Fragment {
     // Hotspot/Wi-Fi switch is a natural retry path.
     private boolean locationAsked = false;
 
-    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, footer;
+    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, footer;
+    // ADFA-5346: the "Installed? copy the library" advance CTA is a MaterialButton (shape/size from the
+    // shared style); styleAdvance only toggles fill/emphasis (filled teal vs teal-text), not the shape.
+    private com.google.android.material.button.MaterialButton advance;
     // ADFA-5346: the footer action button morphs across roles (recover/share-anyway/stop/start). It is a
     // MaterialButton rebuilt per role via a ThemeOverlay (setStopRole) so the role look stays only in the
     // XML styles — no color recipe duplicated here.
@@ -1590,7 +1593,9 @@ public class CloneFragment extends Fragment {
     }
 
     private void styleAdvance(boolean filled) {
-        advance.setBackgroundResource(filled ? R.drawable.k2go_primary_bg : 0);
+        // ADFA-5346: shape/size come from the style; only toggle the fill + label emphasis by state.
+        advance.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(
+                requireContext(), filled ? R.color.k2go_teal : android.R.color.transparent)));
         advance.setTextColor(ContextCompat.getColor(requireContext(), filled ? R.color.k2go_on_teal : R.color.k2go_teal));
     }
 

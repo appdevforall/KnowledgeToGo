@@ -53,7 +53,10 @@ public class ConnectFragment extends Fragment {
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabHotspot, tabWifi, advance, finish, connFooter;
+    private TextView tabHotspot, tabWifi, finish, connFooter;
+    // ADFA-5346: advance CTA is a MaterialButton (shape/size from the shared style); styleAdvance only
+    // toggles fill/emphasis.
+    private com.google.android.material.button.MaterialButton advance;
     private LinearLayout steps, two, single, hint;
     private QrSection secJoin, secOpen, secSingle;
 
@@ -344,7 +347,9 @@ public class ConnectFragment extends Fragment {
     }
 
     private void styleAdvance(boolean filled) {
-        advance.setBackgroundResource(filled ? R.drawable.k2go_primary_bg : 0);
+        // ADFA-5346: shape/size from the style; only toggle the fill + label emphasis by state.
+        advance.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(
+                requireContext(), filled ? R.color.k2go_teal : android.R.color.transparent)));
         advance.setTextColor(ContextCompat.getColor(requireContext(),
                 filled ? R.color.k2go_on_teal : R.color.k2go_teal));
     }
