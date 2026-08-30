@@ -97,7 +97,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean gateHeldForRecovery = false;
     /** ADFA-5119: the service has been told a person is here; it only needs telling once per hold. */
     private boolean userPresenceSent = false;
-    private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
     // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
     // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
@@ -364,21 +363,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             }
         });
 
-        // ADFA-4957: a deep-env op (backup/restore) runs with the server stopped and, on finishing,
-        // releases the lock but does NOT boot the server (it isn't the owner — see DeepOpService). If
-        // we're on Home when that terminal arrives, boot it here, once per op. While the op is still
-        // running the lock is held, so handleServerLaunchClick refuses (no mid-op collision); a FAILED
-        // restore keeps InstallGuard set, so the recovery path repairs it instead of us booting.
-        org.iiab.controller.deepop.DeepOpProgressRepository.get().state().observe(this, st -> {
-            if (st == null || closing || serverController == null) return;
-            if (st.isTerminal() && st.seq > lastDeepOpSeq) {
-                lastDeepOpSeq = st.seq;
-                if (!ServerStateRepository.get().current().alive && targetServerState == null
-                        && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {   // ADFA-4957: same predicate as the toggle guard
-                    serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                }
-            }
-        });
+        // ADFA-5343 (Phase 3): a deep-env op (backup/restore) releases the lock on finishing and sets
+        // desired=UP (DeepOpService / CloneFragment); the reconciler observes holder==NONE and boots the
+        // box via its one actuator, so Home no longer boots it here. The once-per-op latch (lastDeepOpSeq)
+        // and this observer-driven handleServerLaunchClick are gone — the way back has a single owner now.
+        // The old guards it carried (not-alive, no owner held, no transition in flight) are subsumed by
+        // desired: while the op holds the lock the holder is STOPPED-class so desired is DOWN (no mid-op
+        // boot), and the reconciler's actuation is idempotent (no double-launch).
 
         Handler main = new Handler(Looper.getMainLooper());
         if (installing) {

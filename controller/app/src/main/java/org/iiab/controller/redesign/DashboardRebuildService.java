@@ -64,6 +64,20 @@ public final class DashboardRebuildService extends Service {
     public static final String STATE_CANCELLED = "cancelled";
 
     private static final long POLL_MS = 2500L;
+    /**
+     * ADFA-5343 (Phase 3B): a wall-clock backstop so a WEDGED rebuild cannot defer the reconciler forever
+     * (it defers while this holds the lock — DASHBOARD self-restarts the server, ADR-5343a). Completion is
+     * normally the server's own signal with no time cap; this only catches a rebuild that never reaches a
+     * terminal state.
+     *
+     * ADR-5343a §12: device measurement (recompile 1.2.7→1.2.9 in-proot) showed real builds up to ~12 min
+     * on the slowest device (HMD TA-1039), so the original 5 min sat BELOW real Oppo/HMD builds and
+     * false-fired mid-build. INTERIM: a conservative cap set safely above the worst real build (30 min) —
+     * it never trips a slow-but-live rebuild (which would release the lock and let the reconciler interfere
+     * mid-swap), only a truly-hung one. TARGET (dashboard/rebuild follow-up, §12): replace with a
+     * no-CPU-for-N movement backstop, the P4 module-stall-detector shape, device-independent.
+     */
+    private static final long REBUILD_STALL_MS = 30 * 60_000L;
 
     /** True while a background rebuild is in flight, so a card opening mid-update shows the indicator
      *  without waiting for a broadcast. Process-scoped; resets to false if the process is recreated. */
@@ -73,6 +87,7 @@ public final class DashboardRebuildService extends Service {
     private final Handler poller = new Handler(Looper.getMainLooper());
     private boolean started = false;    // one rebuild per service instance; ignore re-delivered starts
     private boolean cancelling = false; // a cancel request is in flight; ignore repeats
+    private long startedAtMs = 0L;      // ADFA-5343 (Phase 3B): monotonic start, for the stall backstop
 
     /** Kick a NEW background live update (POST + poll). */
     public static void start(Context ctx) {
@@ -103,6 +118,7 @@ public final class DashboardRebuildService extends Service {
         if (started) return START_NOT_STICKY;
         started = true;
         RUNNING = true;
+        startedAtMs = android.os.SystemClock.elapsedRealtime();   // ADFA-5343 (Phase 3B): arm the stall backstop
         broadcastState(STATE_RUNNING);
         if (ACTION_ATTACH.equals(action)) {
             // Re-own: the box is already building, so just poll to completion (a first poll that finds
@@ -171,7 +187,18 @@ public final class DashboardRebuildService extends Service {
         });
     }
 
-    private void schedule() { poller.postDelayed(this::pollStatus, POLL_MS); }
+    private void schedule() {
+        // ADFA-5343 (Phase 3B): the stall backstop. A rebuild that never reaches terminal within
+        // REBUILD_STALL_MS is failed here so RUNNING clears, the lock drops, and the reconciler resumes
+        // (blue-green rolls back on failure, so failing a wedged rebuild is safe). A live rebuild reaches
+        // done/error long before this; only a genuinely stuck one hits it.
+        if (startedAtMs > 0L
+                && android.os.SystemClock.elapsedRealtime() - startedAtMs > REBUILD_STALL_MS) {
+            finish(STATE_ERROR, R.string.k2go_dash_live_error);
+            return;
+        }
+        poller.postDelayed(this::pollStatus, POLL_MS);
+    }
 
     /** Terminal: replace the ongoing notification with a final dismissible one, broadcast the result so a
      *  visible card hides the indicator and refreshes in place, then stop. */

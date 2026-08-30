@@ -203,6 +203,11 @@ public final class DeepOpService extends Service {
         if (done) return;
         done = true;
         if (owner == EnvironmentLock.Owner.RESTORE && ok) InstallGuard.end(this);
+        // ADFA-5343 (Phase 3): set desired=UP and drop the lock; the reconciler brings the box back on
+        // holder==NONE via its one actuator (the host Activity used to do it). A failed restore leaves
+        // InstallGuard set, so desired stays DOWN (healthy=false) and the box is not booted onto a
+        // half-applied rootfs — the recovery path owns that, exactly as before.
+        new org.iiab.controller.Preferences(this).setWatchdogEnable(true);
         EnvironmentLock.release(this);
         if (ok) DeepOpProgressRepository.get().postSuccess(owner, okMsg);
         else DeepOpProgressRepository.get().postFailed(owner, failMsg);

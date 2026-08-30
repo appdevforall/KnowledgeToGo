@@ -150,3 +150,87 @@ The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofe
 - *Separate, upstream `iiab/iiab` (via `tools/upstream-patches`):* a php-fpm guard so it cannot busy-loop-log on `epoll_wait` ENOSYS and fill the disk — defense-in-depth, and far less likely once services stop orphaning. Its own ticket.
 - *Non-issue:* the "kernel 6.17" — proot's spoofed version; no action, recorded so no one chases it again.
 
+**Device-verified status (dash-node 1.2.10, `a026a310`).** *All three confirmed.* (1) Clean-kill
+auto-heal — kiwix-serve killed → watcher probes `down` → `pdsm restart kiwix` → `/kiwix/` back to 200
+in ~17 s, zero manual action. (2) Loopback-only restart — LAN POST to the restart endpoint is refused
+while `/kiwix/` still serves the LAN, so a captive-portal client sees the tile but cannot trigger a
+restart. (3) **Orphan-reclaim** — a controlled env-relaunch orphaned kiwix off proot (`:3000` wedged,
+`/kiwix/`=000); the watcher fired and `pdsm restart kiwix` **reclaimed the orphaned instance** → 200 in
+~40 s, no manual action. So `pdsm restart` recovers a wedged/orphaned service, not just a cleanly
+killed one.
+
+**Live residual (elevated by test 3) — php-fpm orphan disk-fill.** The same relaunch orphans
+**php-fpm**, which is **not** in the heal watcher's `WATCHED` set: orphaned, it busy-loop-logs
+`epoll_wait` ENOSYS (~1.3 GB/min) and fills the disk. Test 3 stayed safe only because php-fpm was
+**manually stopped first**; in production nothing pre-stops it, so a real env-relaunch is still a
+disk-fill risk. **Primary fix: extend the heal watcher to php-fpm** — add it to `WATCHED` with a
+php-backed probe, device-verified; the same in-proot pattern both auto-heals php-fpm and removes the
+disk-eater at the source (a fresh php-fpm under the new proot does not busy-loop). The upstream
+php-fpm log guard becomes defense-in-depth, not the primary fix. Then generalise `WATCHED` to the
+other daemonised services (kolibri, mariadb, calibre-web), one at a time, device-verified. Not a
+blocker for Phase 3, but the disk-fill severity makes it the next dashboard follow-up.
+
+
+---
+
+## 11. Phase 3B: the DASHBOARD self-restart defer, and the Phase-4 collapse cluster (recorded)
+
+**Decision (approved 2026-08-29).** `DASHBOARD` is a LIVE holder (desired stays UP), but the live
+blue-green rebuild (`DashboardRebuildService`) restarts dash-node itself; the reconciler must not fight
+that. Rather than bet on D1's 20 s service-downtime grace covering the swap (a slow/large rebuild could
+exceed it and trigger a wrongful `KILL_AND_RELAUNCH` mid-rebuild), the reconciler **defers actuation
+entirely while a self-restarting holder holds** — one predicate on the existing `Holder` enum
+(`selfRestartsServer`, DASHBOARD = true), not a new flag or source. On release it resumes and reconciles
+to `desired`/`actual`.
+
+**The defer is bounded.** DASHBOARD's lock is `DashboardRebuildService.RUNNING`, cleared on every
+terminal (`finish` done/error, `finishCancelled`, `onDestroy`) and process-scoped (resets on process
+recreation), so there is no durable stale-lock — a *failed* rebuild resumes reconciliation. The service
+had **no time cap** (completion is the server's signal), which would leave a *wedged* rebuild deferring
+forever; Phase 3B adds a generous wall-clock **stall backstop** (`REBUILD_STALL_MS`, well above any real
+rebuild so a slow-but-live one is never failed) that fails a stuck rebuild → releases the lock → the
+reconciler resumes. The durable crash / session-token case stays Phase 5 and does not apply to DASHBOARD.
+
+**Phase-4 collapse cluster (recorded now; do not pull forward).** Phase 3 routes the STOPPED deep ops
+(clone / backup / restore) through desired. The remaining second boot-owners collapse together in
+**Phase 4** (replace the toggle; delete the scaffolding), not piecemeal in Phase 3:
+
+- **The LibraryActivity boot cluster** — the D3 launch autostart (`LibraryActivity.java:422`), the
+  **install post-success boot** (`LibraryActivity.java:347`), and the recovering-path boot
+  (`LibraryActivity.java:403`) — all gated on `!alive`/conditions rather than `desired`. Same cluster,
+  collapsed as one in Phase 4.
+- **The STOPPED proot rebuild scaffolding** (dash-node < 1.2.0 bridge, superseded by the LIVE rebuild;
+  only < 1.2.0 boxes reach it — current ≥ 1.2.0 take the LIVE path): `rebuildStartKicked`,
+  `rebuildServerUp`, `rebuildServerFailed`, and its `serverUpPoll` loop in `SetupProgressActivity`.
+  Recorded as **Phase-4 scorecard reductions** (route through desired like the Phase-2 module hand-off,
+  or delete with the path).
+
+---
+
+## 12. `REBUILD_STALL_MS` corrected by device measurement; a rebuild-robustness bug it surfaced
+
+Device measurement of the LIVE rebuild (recompile 1.2.7 → 1.2.9 in-proot) — OnePlus 2:42, Samsung
+4:40, Oppo 7:20, HMD TA-1039 ~12 min — corrects §11's backstop and surfaces a separate bug.
+
+**The backstop must key on CPU/process activity, not wall-clock.** The rebuild is a CPU-bound
+`yarn install` native compile: total duration is device-dependent (2:42–12 min, a 4–5× spread) and the
+rebuild **log goes silent ~10 min** during `[4/4] Building fresh packages`. So a fixed total-duration
+cap kills the slow device (or strands a fast hang) and a log-movement backstop false-fires. The one
+clean "still working" signal is **CPU/process state** — a build process stays continuously in state R
+(RSS 30→350 MB) the whole build. §11's `REBUILD_STALL_MS = 5 min` was set on the wrong assumption that
+rebuilds are short; it is **below** the real build time on slower devices and would false-fire
+mid-build. *Interim:* raise it to a conservative wall-clock cap **safely above the worst real build**
+(well above ~12 min) so it never false-fires and only catches a truly-hung build. *Target (dashboard /
+rebuild follow-up):* replace it with a **no-CPU-for-N** movement backstop — the same shape as the P4
+module-stall detector, device-independent.
+
+**Separate rebuild-robustness bug (the real HMD "failure").** The HMD 13-min "failure" was **not** a
+hang or OOM — 3 GB is enough (MemAvailable floor ~1.08 GB, zero OOM). The build succeeds; the
+post-build **smoke test's fixed `sleep 3` is too short** (node needs ~5 s to `listen()`, ~5–8 s under
+load), so `curl` hits a not-yet-listening staged port → false FAIL → the rebuild ends `error` and the
+live dashboard is (correctly) left on 1.2.7. **Consequence: slow / `PROOT_NO_SECCOMP` devices cannot
+update the dashboard today.** Fix (`rebuild-dashboard.sh`, dashboard/rebuild area — not the
+reconciler): replace the fixed `sleep 3` with an **adaptive poll-until-ready loop (~30 s ceiling,
+logging real elapsed)** — adaptive across devices, self-instrumenting, failing only when genuinely
+broken. Its own rebuild-robustness item; best batched with the php-fpm dashboard follow-up (§10
+residual) + the CPU-based backstop above.
