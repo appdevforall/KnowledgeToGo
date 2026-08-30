@@ -348,10 +348,7 @@ public class ConnectFragment extends Fragment {
 
     private void styleAdvance(boolean filled) {
         // ADFA-5346: shape/size from the style; only toggle the fill + label emphasis by state.
-        advance.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(
-                requireContext(), filled ? R.color.k2go_teal : android.R.color.transparent)));
-        advance.setTextColor(ContextCompat.getColor(requireContext(),
-                filled ? R.color.k2go_on_teal : R.color.k2go_teal));
+        K2GoButtons.setFilledEmphasis(advance, filled);
     }
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }

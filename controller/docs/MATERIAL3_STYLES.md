@@ -59,9 +59,18 @@ MaterialButton b = new MaterialButton(
 ```
 
 `ThemeOverlay.K2Go.Button.Filled | Outlined | Destructive` only set `materialButtonStyle` to the matching
-style, so the whole look (shape, size, colors) comes from the one style — nothing is spelled in Java. For a
-morphing button, rebuild it with the overlay for the current role rather than swapping a drawable — see
-`CloneFragment.setStopRole(...)` and `SettingsFragment`'s "Turn off".
+style, so the whole look (shape, size, colors) comes from the one style — nothing is spelled in Java. See
+`SettingsFragment`'s "Turn off" and the DNS/auth `accept`/`save` for the code-built case.
+
+**Two ways to morph, by how the click is wired (both keep the look in the styles):**
+- *Rebuild per role* — when a button changes its whole role (filled ↔ outlined ↔ destructive) AND its
+  click per state, rebuild it with the overlay for the current role. `CloneFragment.setStopRole(...)`
+  swaps the single footer child and re-applies text + click each time (it re-sets the id so it stays
+  stable across rebuilds).
+- *Toggle emphasis in place* — when a button keeps its shape/size and only shifts emphasis (filled ↔
+  teal-text) AND its click is set once / it sits among siblings, keep the same button and change only the
+  fill + label via `K2GoButtons.setFilledEmphasis(button, filled)` (one shared helper, so the two-line
+  recipe isn't copied across fragments). The Clone/Connect "advance" CTAs use this.
 
 ### Not every "button" is a full-width CTA — the taxonomy (why some are left alone)
 The shared styles above are for **actions the user commits to**: the full-width (or near-full-width)
