@@ -212,6 +212,20 @@ public final class ServerLifecycleReconciler {
     }
 
     /**
+     * ADFA-5343 (Phase 4d): act NOW instead of on the next tick — for the user's last-defense Retry, after
+     * {@link #setUserWantsOn}(true). If a foreground actuator is registered, boot through it immediately
+     * (idempotent via EnvironmentEnsure); otherwise nudge the background tick to run at once.
+     */
+    public void requestReconcileNow() {
+        Actuator a = actuator;
+        if (a != null) {
+            a.ensureServerUp();
+        } else {
+            tickHandler.post(tickRunnable);
+        }
+    }
+
+    /**
      * ADFA-5343 (Phase 4c): the reconciler's STOP — a graceful {@code pdsm stop} then kill the proot so
      * the box reaches phase DOWN (a user turn-off, honored by the owner instead of a bespoke inline stop).
      * Serialised by {@link #reconcilerStopping} so it fires once, not every tick through the ~40s stop.

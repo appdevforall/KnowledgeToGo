@@ -31,7 +31,6 @@ import org.iiab.controller.system.data.PendingContent;
 public class LibraryActivity extends AppCompatActivity implements ServerController.Host {
 
     private static final String TAG = "K2Go-Library";
-    private static final long AUTOSTART_DELAY_MS = 3500L;
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
@@ -342,9 +341,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     // the FIRST run (no relaunch). The install just cleared the guard, so this is
                     // allowed. The gate stays until the server responds (alive observer), with a
                     // safety timeout so the user is never trapped if it doesn't come up.
-                    if (!ServerStateRepository.get().current().alive && targetServerState == null) {
-                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                    }
+                    // ADFA-5343 (Phase 4d-1): install SUCCESS sets desired=UP (route install through
+                    // desired — the piece Phase 3 deferred here); the reconciler boots the box. Idempotent,
+                    // so no bespoke start and no need to gate on !alive.
+                    org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
                     // ADFA-4853: if the wizard banked content, go straight to Finishing setup
                     // (over the library) — no brief stop on the home. That screen shows
                     // "Starting services…" and drains the wishlists when the engine is up.
@@ -403,17 +403,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // (CloneFragment.releaseCloneEnv / the DeepOp terminal observer), never the boot gate.
             onServerReady();
         } else {
-            // If the stack isn't up after one poll cycle, start it.
-            if (systemInstalled) {
-                main.postDelayed(() -> {
-                    // ADFA-4986: never autostart the server if an install went live after onCreate.
-                    if (!isFinishing() && !installing
-                            && !ServerStateRepository.get().current().alive
-                            && targetServerState == null) {
-                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                    }
-                }, AUTOSTART_DELAY_MS);
-            }
+            // ADFA-5343 (Phase 4d-1): no bespoke autostart here. On a normal launch the reconciler brings
+            // the box up from desired=UP (userWantsOn, persisted the last time the server ran) — its tick
+            // and the foreground observe boot it without this postDelayed start. The gate-safety below still
+            // lifts the boot gate so the user is never trapped waiting.
             // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
             // dismissal here; the gate is lifted only when the install reaches a terminal state (the
@@ -1048,9 +1041,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
     public void startServer() {
         if (!canStartServer()) return;
-        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header (retired in 4d)
-        // ADFA-5343 (Phase 4c): turn-on is an intent — set desired=UP; the reconciler boots.
-        org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
+        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header (retired in 4d-2)
+        // ADFA-5343 (Phase 4c/4d-1): the last-defense Retry — set desired=UP and kick an immediate
+        // reconcile so it acts now, not on the next tick. A set-desired + nudge, never a raw start/stop.
+        org.iiab.controller.env.ServerLifecycleReconciler r =
+                org.iiab.controller.env.ServerLifecycleReconciler.get();
+        r.setUserWantsOn(this, true);
+        r.requestReconcileNow();
     }
 
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
