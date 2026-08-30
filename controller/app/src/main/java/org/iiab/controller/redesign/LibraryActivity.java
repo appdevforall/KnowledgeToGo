@@ -1048,8 +1048,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
     public void startServer() {
         if (!canStartServer()) return;
-        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header
-        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header (retired in 4d)
+        // ADFA-5343 (Phase 4c): turn-on is an intent — set desired=UP; the reconciler boots.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
     }
 
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
@@ -1073,10 +1074,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             bootGate.setMinAndMaxFrame("C_EXIT_LOOP");
             bootGate.playAnimation();
         }
-        if (ServerStateRepository.get().current().alive && targetServerState == null) {
-            serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-        } else if (!ServerStateRepository.get().current().alive) {
-            onClosedReady();
+        // ADFA-5343 (Phase 4c): the user's off is an intent — set desired=DOWN and let the reconciler stop
+        // the box (graceful pdsm stop + proot teardown). The close scene stays observer-driven
+        // (closing && !alive -> onClosedReady), fed by the reconciler's stop making alive=false.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, false);
+        if (!ServerStateRepository.get().current().alive) {
+            onClosedReady();   // already down — nothing to stop
         }
         // The real close is driven by the server-alive observer (closing && !alive -> onClosedReady).
         // A graceful stop can take ~40s (kolibri), so keep only a long last-resort safety; the old 15s

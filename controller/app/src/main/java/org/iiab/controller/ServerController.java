@@ -442,8 +442,6 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
         };
         timeoutHandler.postDelayed(timeoutRunnable, activity.getResources().getInteger(R.integer.server_cool_off_duration_ms));
 
-        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
-
         if (!ServerStateRepository.get().current().alive) {
             // ADFA-4837: a graceful stop can already have flipped the server to !alive while its
             // proot is still tearing down. Never start on top of that — it would stack a second
@@ -471,66 +469,11 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
             // nothing was happening while the start was happening. The honest report of a start
             // that did not take is the timeout above, which is still here and still runs.
 
-        } else {
-            if (stopping) return;   // ADFA-4834: a stop is already in flight; ignore repeat taps
-            stopping = true;
-            host.addToLog(activity.getString(R.string.log_server_stopping_gracefully));
-
-            PRootEngine stopEngine = new PRootEngine();
-
-            stopEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'", new PRootEngine.OutputListener() {
-                @Override
-                public void onOutputLine(String line) {
-                    activity.runOnUiThread(() -> host.addToLog("[PDSM Stop] " + line));
-                    // ADFA-4834: surface which service is stopping to the shutdown screen.
-                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
-                    if (m.find()) {
-                        final String svc = m.group(1);
-                        activity.runOnUiThread(() -> host.onShutdownProgress(svc));
-                    }
-                }
-
-                @Override
-                public void onProcessExit(int exitCode) {
-                    activity.runOnUiThread(() -> {
-                        stopping = false;   // ADFA-4834: stop finished; allow a future stop
-                        if (serverEngine != null) {
-                            serverEngine.killProcess();
-                            serverEngine = null;
-                        }
-
-                        AppExecutors.get().io().execute(() -> {
-                            // ADFA-4811: never global-kill proot while an install is running — it
-                            // would kill the in-flight installer's proot over the shared rootfs.
-                            if (InstallGuard.inProgress(activity)) {
-                                return;
-                            }
-                            try {
-                                Runtime.getRuntime().exec(new String[]{"sh", "-c", "killall -9 proot 2>/dev/null"});
-                            } catch (Exception ignored) {
-                            }
-                        });
-
-                        if (prefs.getWatchdogEnable()) {
-                            prefs.setWatchdogEnable(false);   // sets desired=DOWN; the reconciler tears down WatchdogService (Phase 4b)
-                            host.addToLog(activity.getString(R.string.watchdog_stopped));
-                            host.startExitPulse();
-                        }
-
-                        // ADFA-4834: the graceful stop has exited and proot is being killed — this is
-                        // the real "everything is down" moment. Tell the host so a pending "Turn off"
-                        // can finish closing (and terminate the process) instead of hanging on the
-                        // /home poll heuristic.
-                        host.onShutdownComplete();
-                    });
-                }
-
-                @Override
-                public void onError(String error) {
-                    stopping = false;   // ADFA-4834: allow a retry if the stop failed to launch
-                    activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_stop_error, error)));
-                }
-            });
         }
+        // ADFA-5343 (Phase 4c): the toggle no longer stops the box. A user turn-off is now an intent
+        // (LibraryActivity.turnOffK2Go -> setUserWantsOn(false)) that the reconciler honors with a graceful
+        // pdsm stop + proot teardown. This branch's callers (LibraryActivity install-success / recovering /
+        // autostart) are all boot-gated on !alive, so the old stop branch was dead once the button
+        // converted. handleServerLaunchClick is boot-only now and 4d deletes it with the autostart cluster.
     }
 }

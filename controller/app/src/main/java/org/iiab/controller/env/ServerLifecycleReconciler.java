@@ -95,6 +95,9 @@ public final class ServerLifecycleReconciler {
     private volatile Context appContext;
     private volatile ServerLiveness lastTickLiveness;   // threaded across ticks for the service-downtime clock
     private PRootEngine appScopedEngine;                 // the off-UI boot handle this owner holds (Phase 4a)
+    // ADFA-5343 (Phase 4c): serialises the reconciler's async STOP so it fires once per turn-off, not
+    // every tick during the ~40s graceful pdsm stop. Subsumes ServerController.stopping (deleted in 4d).
+    private volatile boolean reconcilerStopping;
 
     private ServerLifecycleReconciler() {
     }
@@ -177,14 +180,17 @@ public final class ServerLifecycleReconciler {
             promoteOrTeardownWatchdog(ctx, desiredUp);
 
             boolean ensureUp = ACTUATES && ServerReconcile.shouldEnsureUp(intent, holder.selfRestartsServer);
+            boolean doStop = ACTUATES && ServerReconcile.shouldStop(intent, holder == EnvironmentLock.Holder.NONE);
 
             Log.i(TAG, "ADFA-5343 tick(bg): desired=" + (desiredUp ? "UP" : "DOWN")
                     + " actual=" + actual + " intent=" + intent
-                    + (ensureUp ? " -> off-UI ensureServerUp" : "")
+                    + (ensureUp ? " -> off-UI ensureServerUp" : doStop ? " -> off-UI STOP" : "")
                     + "  [holder=" + holder + " userWantsOn=" + userWantsOn + "]");
 
             if (ensureUp) {
                 offUiEnsureUp(ctx, live, now);
+            } else if (doStop) {
+                actuateStop(ctx);
             }
         }
     }
@@ -196,6 +202,40 @@ public final class ServerLifecycleReconciler {
      * stuck past-grace proot), so it never stacks a second proot. Resets the tick's downtime clock after a
      * launch so the fresh proot gets its full grace. Caller holds {@code this} monitor.
      */
+    /**
+     * ADFA-5343 (Phase 4c): the user button's set-desired API. Turn-on/off write the one persisted intent
+     * ({@code WatchdogEnable}); the reconciler does the rest (boot on desired=UP, stop on desired=DOWN).
+     * Replaces the toggle's start-XOR-stop-on-a-cache.
+     */
+    public void setUserWantsOn(Context ctx, boolean on) {
+        new Preferences(ctx).setWatchdogEnable(on);
+    }
+
+    /**
+     * ADFA-5343 (Phase 4c): the reconciler's STOP — a graceful {@code pdsm stop} then kill the proot so
+     * the box reaches phase DOWN (a user turn-off, honored by the owner instead of a bespoke inline stop).
+     * Serialised by {@link #reconcilerStopping} so it fires once, not every tick through the ~40s stop.
+     * Only reached when {@link ServerReconcile#shouldStop} is true (desired down, box up, holder NONE) —
+     * a deep op holds a STOPPED-class lock and quiesces itself, so this never double-stops it.
+     */
+    private void actuateStop(Context ctx) {
+        if (reconcilerStopping) {
+            return;
+        }
+        reconcilerStopping = true;
+        Log.i(TAG, "ADFA-5343 reconcile: STOP (desired=DOWN, no holder) — graceful pdsm stop + teardown");
+        EnvironmentControl.stop(ctx, line -> Log.i(TAG, line), () -> {
+            PRootEngine e = appScopedEngine;
+            appScopedEngine = null;
+            if (e != null) {
+                e.killProcess();
+            }
+            EnvironmentProcess.killOrphan(ctx);   // ensure the proot is gone (whoever launched it) -> phase DOWN
+            lastTickLiveness = null;              // fresh liveness clock after the teardown
+            reconcilerStopping = false;
+        });
+    }
+
     /**
      * ADFA-5343 (Phase 4b): the reconciler is the ONE promoter of {@link WatchdogService} — up while the
      * server should be up (the foreground service + wakelock keep the process alive so the tick survives
@@ -273,13 +313,15 @@ public final class ServerLifecycleReconciler {
         boolean wouldEnsure = ServerReconcile.ensuresUp(wouldDo);
         boolean ensureUp = ACTUATES
                 && ServerReconcile.shouldEnsureUp(wouldDo, holder.selfRestartsServer);
+        boolean doStop = ACTUATES
+                && ServerReconcile.shouldStop(wouldDo, holder == EnvironmentLock.Holder.NONE);
         Actuator a = ensureUp ? this.actuator : null;
 
         String actNote = !ACTUATES ? ""
                 : (wouldEnsure && holder.selfRestartsServer)
                         ? " -> (deferred: " + holder + " self-restarts the server)"
                         : ensureUp ? (a != null ? " -> ensureServerUp()" : " -> (no foreground actuator)")
-                        : "";
+                        : doStop ? " -> STOP" : "";
         Log.i(TAG, "ADFA-5343 reconcile: desired=" + (desiredUp ? "UP" : "DOWN")
                 + " actual=" + actual + " wouldDo=" + wouldDo + actNote
                 + "  [installed=" + facts.isInstalled() + " healthy=" + facts.isHealthy()
@@ -287,6 +329,8 @@ public final class ServerLifecycleReconciler {
 
         if (a != null) {
             a.ensureServerUp();
+        } else if (doStop) {
+            actuateStop(ctx);
         }
     }
 
