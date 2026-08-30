@@ -38,32 +38,45 @@ public final class EnvironmentEnsure {
         LAUNCH,
         /** Alive and its services answer — a redundant start is a no-op. */
         NOOP_HEALTHY,
-        /** Alive, services not answering yet, but still inside its boot grace — leave it to finish. */
+        /** Alive, services not answering yet, but still inside the grace — leave it (pdsm respawns). */
         WAIT_BOOT_GRACE,
-        /** Alive, services not answering, past its boot grace — a stuck orphan; end it and relaunch. */
+        /** Alive, services down past the grace — a genuinely stuck environment; end it and relaunch. */
         KILL_AND_RELAUNCH
     }
 
     /**
-     * @param envAlive      whether an environment proot of ours is running (from {@code /proc}).
-     * @param envAgeMs      the running proot's age in ms, or a negative value when it is unknown
-     *                      (no proot, or its start time could not be read).
-     * @param servicesAlive whether the box's services answer (the cached HTTP-ping fact).
-     * @param bootGraceMs   how long "alive but not answering" is read as "still starting" rather
-     *                      than "stuck".
+     * ADFA-5343 (delta ADR-5343a, D1): the escalation clock is <b>service downtime</b>, not proot age.
+     * Keying on age fired {@code KILL_AND_RELAUNCH} on the first tick after a mature proot's dash-node
+     * blipped — before pdsm's ~3 s respawn — turning a self-healing flap into an unrecoverable loop
+     * (ADFA-5336, device-confirmed). Timed from the service drop instead, a flap stays inside the grace
+     * and self-heals via {@code WAIT_BOOT_GRACE} → {@code NOOP_HEALTHY}; only a service that stays down
+     * past the grace (pdsm could not bring it back) is a stuck environment worth relaunching.
+     *
+     * <p>The single case that got the first ADFA-5103 attempt reverted — a proot killed 3.5 s into its
+     * own boot — is still protected: during a boot the services have been down since the proot started,
+     * so {@code servicesDownMs} is that same small elapsed time and stays under the grace. An unknown
+     * downtime ({@code < 0}: a stale/never-observed snapshot) is never killed, the same fail-safe.
+     *
+     * @param envAlive           whether an environment proot of ours is running (from {@code /proc}).
+     * @param servicesAlive      whether the box's services answer ({@code /k2go-api}, fresh).
+     * @param servicesDownMs     how long the services have been continuously observed down while the
+     *                           proot stayed present ({@link ServerLiveness#servicesDownMs}), or a
+     *                           negative value when that is not a trustworthy fact.
+     * @param serviceDownGraceMs how long "alive but not answering" is read as "still coming up / pdsm
+     *                           will respawn it" rather than "stuck".
      */
-    public static Action decide(boolean envAlive, long envAgeMs, boolean servicesAlive,
-                                long bootGraceMs) {
+    public static Action decide(boolean envAlive, boolean servicesAlive, long servicesDownMs,
+                                long serviceDownGraceMs) {
         if (!envAlive) {
             return Action.LAUNCH;
         }
         if (servicesAlive) {
             return Action.NOOP_HEALTHY;
         }
-        // Alive, services down. Kill only a proot we can be sure is past its boot — never on an
-        // unknown age, because the mistake that got the first attempt reverted was killing one
-        // mid-boot, and "cannot confirm it is old" must fall on the side of not killing.
-        if (envAgeMs < 0 || envAgeMs < bootGraceMs) {
+        // Alive, services down. Kill only when we can be sure they have stayed down past the grace —
+        // never on an unknown downtime, because "cannot confirm it is stuck" must fall on the side of
+        // waiting (pdsm may still be respawning the service).
+        if (servicesDownMs < 0 || servicesDownMs < serviceDownGraceMs) {
             return Action.WAIT_BOOT_GRACE;
         }
         return Action.KILL_AND_RELAUNCH;

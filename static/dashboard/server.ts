@@ -10,6 +10,7 @@ import './sockets/maps.exec';
 import './sockets/books.exec';
 import './sockets/kolibri.exec';
 import { apiRouter } from './routes';
+import { startServiceHeal } from './sockets/service-heal';
 
 const app = express();
 const server = http.createServer(app);
@@ -37,6 +38,8 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log(`===========================================`);
     // ADFA-4838: resume any content jobs that were mid-flight before a restart.
     try { jobs.reconcileOnBoot(); } catch (e) { console.error('[jobs] reconcile failed', e); }
+    // ADFA-5343 (ADR-5343a §10): the box heals its own content-service tree in-proot.
+    try { startServiceHeal(); } catch (e) { console.error('[service-heal] start failed', e); }
 });
 
 // ==========================================
