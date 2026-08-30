@@ -190,10 +190,14 @@ public class SettingsSubFragment extends Fragment {
             }
         });
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
-        SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_usage_stats), AnalyticsConsent.isEnabled(ctx), checked -> {
-            AnalyticsConsent.setEnabled(ctx, checked);
-            org.iiab.controller.analytics.AnalyticsClient.with(ctx).applyConsent();
-        });
+        // ADFA-5337: hide the usage-statistics toggle when analytics is compiled out (no
+        // google-services.json), since there's nothing to share and the switch would do nothing.
+        if (org.iiab.controller.BuildConfig.ANALYTICS_ENABLED) {
+            SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_usage_stats), AnalyticsConsent.isEnabled(ctx), checked -> {
+                AnalyticsConsent.setEnabled(ctx, checked);
+                org.iiab.controller.analytics.AnalyticsClient.with(ctx).applyConsent();
+            });
+        }
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_privacy), null);
     }

@@ -27,20 +27,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-public class ServerController {
+public class ServerController implements org.iiab.controller.env.ServerLifecycleReconciler.Actuator {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
     /**
-     * ADFA-5103: how long "environment alive, services not answering" is read as "still starting"
-     * rather than "stuck", before ensure-up is allowed to kill it. Must comfortably exceed the
-     * observed 3.5 s mid-boot window that got the earlier kill reverted; kept well under a normal
-     * boot-to-services time so a genuinely stuck orphan still recovers on a Retry.
+     * ADFA-5103 / ADFA-5343a (D1): how long the services may be <b>continuously observed down</b> (proot
+     * present) before ensure-up escalates from "still coming up / pdsm will respawn it" to "stuck →
+     * relaunch". Timed from the service drop, not the proot's age (ADR-5343a): a mature proot whose
+     * dash-node blips stays well under this and self-heals via pdsm, while a boot — services down since
+     * the proot started — is still protected for this long (comfortably over the 3.5 s mid-boot window
+     * that got the earlier kill reverted, and over a normal boot-to-services time).
      */
-    private static final long BOOT_GRACE_MS = 20_000L;
+    private static final long SERVICE_DOWN_GRACE_MS = 20_000L;
 
     /** Activity-side callbacks the server lifecycle needs. */
     public interface Host {
@@ -85,6 +85,19 @@ public class ServerController {
     // and both LAUNCH — the synchronous main-thread serialisation that used to prevent that is gone.
     // This flag restores it: a concurrent call is a no-op until the launch (or the no-op) resolves.
     private volatile boolean ensuring = false;
+    // ADFA-5343a (D1): the last liveness snapshot from the poll, threaded so servicesDownSinceMs
+    // measures CONTINUOUS observed downtime (reset on an observation gap). Read by the ensure-up
+    // decision to key the kill on service downtime, not proot age.
+    //
+    // ADFA-5343 (Phase 2): TWO writers, not one — the poll advances it, and doLaunchEnvironment resets
+    // it to null when a fresh proot starts (so the new proot gets its full grace, not the old one's
+    // inherited downtime). They are serialised by livenessLock: the poll reads prev and writes the next
+    // snapshot atomically under the lock (AFTER probing, so the ~2.5s network probe never holds it), and
+    // the boot reset takes the same lock — so a reset can never be clobbered by a poll that had read prev
+    // before it. Still volatile, for the lock-free read on the ensure-up decision path.
+    private volatile org.iiab.controller.env.domain.ServerLiveness lastLiveness;
+    /** Guards the read-prev-then-write of {@link #lastLiveness} against the boot-time reset (Phase 2). */
+    private final Object livenessLock = new Object();
     private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
@@ -116,10 +129,23 @@ public class ServerController {
         updateConnectivityStatus(); // instant refresh when returning to the app
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
         serverCheckHandler.post(serverCheckRunnable);
+        // ADFA-5343 (Phase 2): register as the foreground actuator the reconciler drives. Whichever
+        // Activity is resumed owns this slot; the reconciler boots through it (the one existing boot).
+        org.iiab.controller.env.ServerLifecycleReconciler.get().setActuator(this);
     }
 
     public void onPause() {
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
+        // ADFA-5343 (Phase 2): release the actuator slot — but clearActuator only clears if we still
+        // hold it, so a resume/pause overlap does not wipe the next Activity's registration.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().clearActuator(this);
+    }
+
+    /** ADFA-5343 (Phase 2): the reconciler's boot entry point. Delegates to the one existing, idempotent
+     *  boot path so no second actuator is introduced. */
+    @Override
+    public void ensureServerUp() {
+        startEnvironment();
     }
 
     public String getCurrentTargetUrl() { return currentTargetUrl; }
@@ -141,27 +167,36 @@ public class ServerController {
         // The repository is updated by the poll (checkServerStatus) right after this.
     }
 
-    private boolean pingUrl(String urlStr) {
-        try {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setUseCaches(false);
-            conn.setConnectTimeout(1500);
-            conn.setReadTimeout(1500);
-            conn.setRequestMethod("GET");
-            return (conn.getResponseCode() >= 200 && conn.getResponseCode() < 400);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     // --- status poll ------------------------------------------------------------
 
     private void checkServerStatus() {
         if (host.isNegotiating()) return;
 
         AppExecutors.get().io().execute(() -> {
-            boolean localAlive = pingUrl(BoxEndpoints.BASE + "/home");
+            // ADFA-5343 (Phase 0): one honest liveness snapshot instead of a single /home ping.
+            // nginx answers /home before its dash-node upstream is ready, so a restarting engine read
+            // as "up" (the flap). servicesAnswering probes /k2go-api (the usable signal); processPresent
+            // (/proc) is recorded for the richer phase the reconciler will consume in a later phase.
+            // alive stays a 1-bit fact (phase == UP) so ServerStateRepository and every reader are
+            // unchanged here — the only shift is that "up" now means the services answer, not nginx.
+            long now = android.os.SystemClock.elapsedRealtime();
+            // Probe OUTSIDE the lock — RestReadiness.apiReady() can block ~2.5s and must never hold
+            // livenessLock (that would stall a concurrent boot reset).
+            boolean processPresent = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
+            boolean servicesAnswering = org.iiab.controller.redesign.RestReadiness.apiReady();
+            // ADFA-5343a (D1) / ADFA-5343 (Phase 2): read prev and write the next snapshot atomically
+            // under livenessLock, so a boot-time reset (doLaunchEnvironment) is never clobbered by this
+            // poll writing a prev it had read before the reset. next() still measures CONTINUOUS downtime
+            // and resets it on an observation gap (a stale prev — e.g. the app was backgrounded).
+            org.iiab.controller.env.domain.ServerLiveness liveness;
+            synchronized (livenessLock) {
+                liveness = org.iiab.controller.env.domain.ServerLiveness.next(
+                        lastLiveness, processPresent, servicesAnswering, now,
+                        org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
+                lastLiveness = liveness;
+            }
+            boolean localAlive =
+                    liveness.phase(now) == org.iiab.controller.env.domain.ServerLiveness.Phase.UP;
 
             updateServerAlive(localAlive);
 
@@ -169,6 +204,11 @@ public class ServerController {
             // so every tab reflects the server live instead of only after visiting the Dashboard.
             final SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
             ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
+
+            // ADFA-5343 (Phase 1): feed the same snapshot to the log-only reconciler — no second liveness
+            // source, no actuation. It logs desired-vs-actual each poll. Removing this line + the class is
+            // the full rollback.
+            org.iiab.controller.env.ServerLifecycleReconciler.get().observe(activity, liveness);
 
             // STATE MACHINE: Has the target state been reached?
             Boolean target = host.getTargetServerState();
@@ -272,33 +312,41 @@ public class ServerController {
         // pure and unit-tested on the JVM. `ensuring` is cleared by doLaunchEnvironment() on the
         // launch paths and here on the no-op paths, so it is released exactly once.
         AppExecutors.get().io().execute(() -> {
+            long now = android.os.SystemClock.elapsedRealtime();
             boolean envAlive = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
-            long ageMs = envAlive ? org.iiab.controller.env.EnvironmentProcess.environmentAgeMs(activity) : -1L;
-            // ADFA-5280: decide on FRESH liveness, not the cached ServerStateRepository.alive.
-            // Right after a module batch's `pdsm stop`, the cache still reads TRUE until the 3s poll
-            // catches up, so decide() returned NOOP_HEALTHY and the box was never relaunched (Home
+            // ADFA-5280: decide on FRESH liveness, not the cached ServerStateRepository.alive. Right
+            // after a module batch's `pdsm stop`, the cache still reads TRUE until the 3s poll catches
+            // up, so a stale read returned NOOP_HEALTHY and the box was never relaunched (Home
             // "Couldn't start" until a manual Retry). A live probe reads a just-stopped server as down
-            // at once (connection refused); a genuinely-healthy env still answers true -> NOOP_HEALTHY,
-            // so this never double-boots. Safe here: this block already runs off the main thread.
+            // at once; a genuinely-healthy env still answers true -> NOOP_HEALTHY, so this never
+            // double-boots. Safe here: this block already runs off the main thread.
             boolean servicesAlive = org.iiab.controller.redesign.RestReadiness.apiReady();
+            // ADFA-5343a (D1): escalate on SERVICE downtime, not proot age. The continuous-downtime clock
+            // lives in the one liveness source (threaded by the poll); a stale/absent snapshot reports
+            // -1, which decide() treats as "wait, do not kill". A mature proot whose dash-node just
+            // blipped is a small downtime -> WAIT (pdsm respawns, ~3s); only a service down past the
+            // grace is a stuck environment worth relaunching.
+            org.iiab.controller.env.domain.ServerLiveness ll = lastLiveness;
+            long servicesDownMs = (ll == null) ? -1L
+                    : ll.servicesDownMs(now, org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
             org.iiab.controller.env.domain.EnvironmentEnsure.Action action =
                     org.iiab.controller.env.domain.EnvironmentEnsure.decide(
-                            envAlive, ageMs, servicesAlive, BOOT_GRACE_MS);
+                            envAlive, servicesAlive, servicesDownMs, SERVICE_DOWN_GRACE_MS);
             switch (action) {
                 case LAUNCH:
                     activity.runOnUiThread(this::doLaunchEnvironment);
                     break;
                 case KILL_AND_RELAUNCH:
-                    android.util.Log.i(TAG, "ADFA-5103: environment alive but services down past boot"
-                            + " grace (age " + ageMs + "ms) — killing the orphan and relaunching");
+                    android.util.Log.i(TAG, "ADFA-5343a: services down " + servicesDownMs + "ms (past the"
+                            + " grace) on a live proot — reclaiming the orphaned environment and relaunching");
                     org.iiab.controller.env.EnvironmentProcess.killOrphan(activity);
                     activity.runOnUiThread(this::doLaunchEnvironment);
                     break;
                 case NOOP_HEALTHY:
                 case WAIT_BOOT_GRACE:
                 default:
-                    android.util.Log.i(TAG, "ADFA-5103: ensure-up is a no-op (" + action + ", age "
-                            + ageMs + "ms) — not stacking a second proot");
+                    android.util.Log.i(TAG, "ADFA-5103: ensure-up is a no-op (" + action
+                            + ", servicesDown " + servicesDownMs + "ms) — not stacking a second proot");
                     ensuring = false;
                     break;
             }
@@ -316,6 +364,13 @@ public class ServerController {
         File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
         host.addToLog(activity.getString(R.string.log_server_booting_native));
         host.onStartupBegan();   // ADFA-4837: fill the pre-pdsm silent window
+        // ADFA-5343a (D1): a fresh environment is starting — restart the service-downtime clock so the
+        // new proot gets its full boot grace. Without this a KILL_AND_RELAUNCH keeps the accumulated
+        // downtime and re-kills the booting proot every tick, before its services can come up.
+        // ADFA-5343 (Phase 2): under livenessLock so the poll cannot clobber this reset with a snapshot
+        // whose prev it read before the reset (the two-writer race). Runs on the UI thread; the critical
+        // section is a single field write, so it never blocks on the poll's probe.
+        synchronized (livenessLock) { lastLiveness = null; }
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
         serverEngine = new PRootEngine();

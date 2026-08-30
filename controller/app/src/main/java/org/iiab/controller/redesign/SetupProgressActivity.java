@@ -122,10 +122,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // just to issue that start; the server proot is process-scoped so it survives into LibraryActivity.
     private org.iiab.controller.ServerController serverController;
     private Boolean targetServerState = null;         // ServerController.Host state
-    private boolean moduleRestartKicked = false;      // handleServerLaunchClick issued once
-    private boolean moduleServerUp = false;           // REST core answered after the restart
-    private boolean moduleServerFailed = false;       // restart timed out — surface as failure, not silent success
-    private long moduleRestartAt = 0L;                // elapsedRealtime when the restart was kicked
+    // ADFA-5343 (Phase 2): the post-batch server restart is owned by the reconciler now, not this screen.
+    // The three boot latches (moduleRestartKicked/moduleServerUp/moduleServerFailed) are gone: "up" is
+    // read from the one observed server phase (serverObservedUp()), and "didn't come back in time" is a
+    // timeout on that phase anchored below — there is no FAILED phase, so a stuck flap is STARTING the
+    // reconciler keeps re-driving, and Finish still lands on a Home the reconciler drives live (5336).
+    private long moduleServerWaitAt = 0L;             // elapsedRealtime when the post-batch wait began (0 = not yet)
     private org.iiab.controller.util.EllipsisAnimator statusEllipsis;   // ADFA-4842: animated "…" on the amber wait line
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -236,7 +238,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     protected void onPause() {
         super.onPause();
         main.removeCallbacks(readyPoll);
-        main.removeCallbacks(serverUpPoll);   // ADFA-4842
         if (statusEllipsis != null) statusEllipsis.stop();   // ADFA-4842
         cancelRedirect();
         if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
@@ -291,14 +292,22 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     /** ADFA-4919/4842: is a proot stage still blocking the index? True while a runrole is queued/running
      *  AND, for a module batch, through the post-DONE server restart — the user must not background or
      *  Back out (there is no "Run in background" for proot) until the server is confirmed back up
-     *  (moduleServerUp) or the wait times out. */
+     *  (serverObservedUp) or the wait times out. */
     private boolean prootActive() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean mapsTerminal = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         boolean mapsActive = mapsInSession() && !mapsTerminal;
         // A module session stays active from its runroles through the server restart that follows.
-        boolean moduleActive = (moduleInSession() || moduleStartFailed) && !moduleServerUp;
+        boolean moduleActive = (moduleInSession() || moduleStartFailed) && !serverObservedUp();
         return mapsActive || moduleActive;
+    }
+
+    /** ADFA-5343 (Phase 2): the server is observed up — the 3s poll saw /k2go-api answer. Replaces the
+     *  moduleServerUp boot latch: the fact is read from the one published observation
+     *  ({@link org.iiab.controller.ServerStateRepository}), not tracked per screen. */
+    private boolean serverObservedUp() {
+        return org.iiab.controller.ServerStateRepository.get().hasObservation()
+                && org.iiab.controller.ServerStateRepository.get().current().alive;
     }
 
     /** ADFA-4919: is the proot (maps) stage part of THIS install session? Latched from the DURABLE
@@ -401,12 +410,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             // ADFA-4842: a MODULE (solo-proot) install stops the server and runs its OWN proot — there is
             // no REST engine to wait for, and we must NEVER try to "start services" (a second proot) mid-
             // runrole. Skip the REST readiness gate entirely: the runrole queue drives progress, and the
-            // server is (re)started only AFTER the queue is DONE (ensureServerUpForModules, via render()).
-            // REST and REST+proot (mixed) keep their serialized apiReady path below, untouched.
+            // server is (re)started only AFTER the queue is DONE — now by the reconciler (desired=UP),
+            // observed here via render(). REST and REST+proot (mixed) keep their serialized apiReady path
+            // below, untouched.
             if (moduleInSession()) {
                 orchestrateStep();   // drains on first entry; harmless no-op once the queue is running
                 render();
-                if (!moduleServerUp) main.postDelayed(readyPoll, READY_POLL_MS);
+                if (!serverObservedUp()) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
             // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so
@@ -648,15 +658,27 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
-        // ADFA-4842: a terminal MODULE batch stopped the server for its runroles, so the server must be
-        // brought back before we can finish. Kick that here for ANY terminal module session —
-        // independent of the noRest/REST branch below — so ensureServerUpForModules() (and its 45s
-        // safety timeout) always runs and moduleServerUp / prootActive() can never hang. Idempotent.
+        // ADFA-4842/5343: a terminal MODULE batch stopped the server for its runroles, so the server must
+        // come back before we can finish. Record the intent here for ANY terminal module session —
+        // independent of the noRest/REST branch below — so onModuleBatchTerminal() (which sets desired=UP
+        // and anchors the wait timeout) always runs and serverObservedUp() / prootActive() can never hang.
+        // Idempotent (guarded by the wait anchor).
         boolean queueTerminalNotRunning = prootTerminal && !ModuleQueueRepository.get().isRunning();
-        if (moduleShown && queueTerminalNotRunning) ensureServerUpForModules();
+        if (moduleShown && queueTerminalNotRunning) onModuleBatchTerminal();
+
+        // ADFA-5343 (Phase 2): the module server state read from the observed phase, not a boot latch.
+        //  up       = the poll observed /k2go-api answering;
+        //  slow     = still not up past the wait timeout — a stuck flap the reconciler keeps re-driving,
+        //             surfaced so the user isn't left staring (Finish lands on a Home it drives live);
+        //  settling = terminal, not up yet, still within the timeout ((re)starting).
+        boolean batchServerUp = moduleShown && queueTerminalNotRunning && serverObservedUp();
+        boolean batchAwaitingServer = moduleShown && queueTerminalNotRunning && !serverObservedUp();
+        boolean batchServerSlow = batchAwaitingServer && moduleServerWaitAt != 0L
+                && SystemClock.elapsedRealtime() - moduleServerWaitAt > SERVER_UP_TIMEOUT_MS;
+        boolean batchServerSettling = batchAwaitingServer && !batchServerSlow;
 
         boolean allComplete;
-        boolean moduleServerSettled = moduleServerUp || moduleServerFailed;   // ADFA-4842: up, or gave up (failure)
+        boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
@@ -702,12 +724,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         boolean moduleFailed = moduleFlow && prootFailed > 0;
         // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
         // ended with a failed module (kept on the same amber install line, never a green success).
-        boolean amberWaiting = !moduleServerFailed && (moduleFailed || (moduleFlow ? !moduleServerUp : !servicesReady));
-        tint(dot, (amberWaiting || moduleServerFailed) ? R.color.k2go_amber : R.color.k2go_leaf);
+        boolean amberWaiting = !batchServerSlow && (moduleFailed || (moduleFlow ? !batchServerUp : !servicesReady));
+        tint(dot, (amberWaiting || batchServerSlow) ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes;
-        if (moduleServerFailed) statusRes = R.string.k2go_setup_slow;                            // couldn't bring services online
-        else if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
-        else if (moduleFlow && !moduleServerUp) statusRes = R.string.install_busy_modules;       // runroles in flight
+        if (batchServerSlow) statusRes = R.string.k2go_setup_slow;                               // couldn't bring services online in time
+        else if (batchServerSettling) statusRes = R.string.k2go_setup_starting;                  // reconciler is (re)starting the server
+        else if (moduleFlow && !batchServerUp) statusRes = R.string.install_busy_modules;        // runroles in flight
         else if (moduleFailed) statusRes = R.string.install_busy_modules;                        // ADFA-4898: keep the amber install header; failure + Retry are per-module below
         else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
@@ -752,8 +774,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
-        boolean success = allComplete && failedTotal == 0 && !moduleServerFailed;
-        boolean failure = allComplete && (failedTotal > 0 || moduleServerFailed);
+        boolean success = allComplete && failedTotal == 0 && !batchServerSlow;
+        boolean failure = allComplete && (failedTotal > 0 || batchServerSlow);
         if (success && !redirectCancelled) {
             show(redirect, true); show(cancel, true);
             show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
@@ -1202,46 +1224,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         main.removeCallbacks(goHomeRunnable);
         redirectScheduled = false;
     }
-    /** ADFA-4842: after a module batch (the server was pdsm-stopped for the runroles), start the server
-     *  once and poll the REST core until it answers. render() gates completion/redirect on
-     *  moduleServerUp, so we only leave for the Library once the system is actually live. */
-    private void ensureServerUpForModules() {
-        if (moduleServerUp || moduleServerFailed || moduleRestartKicked) return;
-        moduleRestartKicked = true;
-        moduleRestartAt = SystemClock.elapsedRealtime();
-        // ADFA-4842: MECHANISM (proot ≠ REST — do NOT "simplify" this to the toggle; read
-        // ServerController.startEnvironment() first). Each module runrole runs in its own proot with
-        // --kill-on-exit: clean start → its tasks → clean stop, so the environment is DOWN when the batch
-        // finishes (that is the correct per-module cycle, especially with several modules in series). After
-        // the LAST module the INDEX is the actuator: it brings the environment back UNCONDITIONALLY.
-        // We must NOT call handleServerLaunchClick here (it is a TOGGLE): the cached alive can still read
-        // TRUE the instant after the runrole proot exits, and the toggle would then STOP instead of start
-        // (that was the "Stopping IIAB environment gracefully → dead Home" bug from the device log).
-        // startEnvironment() always starts. The server proot is process-scoped, so it survives into
-        // LibraryActivity, which only MONITORS it — Home never starts the server.
-        serverController.startEnvironment();
-        main.postDelayed(serverUpPoll, READY_POLL_MS);
-    }
-
-    private final Runnable serverUpPoll = new Runnable() {
-        @Override public void run() {
-            if (isFinishing() || moduleServerUp || moduleServerFailed) return;
-            AppExecutors.get().io().execute(() -> {
-                final boolean up = RestReadiness.apiReady();
-                main.post(() -> {
-                    if (isFinishing() || moduleServerUp || moduleServerFailed) return;
-                    if (up) { moduleServerUp = true; render(); }   // REST core answered → complete → redirect
-                    else if (SystemClock.elapsedRealtime() - moduleRestartAt > SERVER_UP_TIMEOUT_MS) {
-                        // ADFA-4842: the environment didn't come online in time. Do NOT declare success and
-                        // drop the user on a dead Home (the old behavior); surface it as a FAILURE so the
-                        // index shows the Finish/error state (like an Ansible failure). Home is a monitor —
-                        // it won't recover this, so the honest thing is to tell the user here.
-                        moduleServerFailed = true; render();
-                    } else main.postDelayed(serverUpPoll, READY_POLL_MS);
-                });
-            });
+    /** ADFA-5343 (Phase 2): a module batch stopped the server for its runroles; when the batch is
+     *  terminal the server should come back. We no longer boot + poll here. We record the intent
+     *  (userWantsOn) once — the lock is already released and the durable guard cleared before the queue
+     *  publishes DONE, so desired flips UP — and the reconciler drives it up and keeps it up (re-driving
+     *  a flap), so a redirect to Home lands on a live system rather than a dead one (5336). The wait
+     *  timestamp anchors the "taking longer" UI. When actuation is disabled (rollback), we boot once here
+     *  as before (and Home is a monitor again, so 5336 is not fixed in that mode). */
+    private void onModuleBatchTerminal() {
+        if (moduleServerWaitAt != 0L) return;   // once — also the timeout anchor
+        moduleServerWaitAt = SystemClock.elapsedRealtime();
+        new org.iiab.controller.Preferences(this).setWatchdogEnable(true);   // persisted intent → desired = UP
+        if (!org.iiab.controller.env.ServerLifecycleReconciler.ACTUATES) {
+            serverController.startEnvironment();   // rollback path: reconciler is log-only, boot here
         }
-    };
+    }
 
     private void goHome(boolean clearSessions) {
         cancelRedirect();
@@ -1251,9 +1248,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
         // install screens above it. Both the wizard and Get More launch from LibraryActivity, so
         // CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index). Only
-        // success/Finish reach here; "Run in background" (REST) still finish()es in place. ADFA-4842: a
-        // module batch already restarted the server and waited for it here (ensureServerUpForModules), so
-        // the reused Library is live on arrival — no cold-boot recreate needed.
+        // success/Finish reach here; "Run in background" (REST) still finish()es in place. ADFA-5343: a
+        // module batch set desired=UP; the reconciler brings the server up and keeps re-driving it wherever
+        // the app is, so the reused Library is (or becomes) live on arrival — even Finish under a slow/flap
+        // start lands on a Home the reconciler drives up, not a dead one (5336).
         startActivity(new android.content.Intent(this, LibraryActivity.class)
                 .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));   // ADFA-4842: land on Home, not the launching tab (Settings)

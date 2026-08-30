@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
-    // ADFA-4466 Phase 1: Firebase Analytics.
-    id 'com.google.gms.google-services'
+    // ADFA-4466 Phase 1: Firebase Analytics. The google-services plugin fails the build when
+    // google-services.json is absent, so it is applied CONDITIONALLY at the bottom of this file
+    // (present -> Firebase on; absent -> AnalyticsClient compiles out and the build still works).
 }
 
 // 1. AUTO-VERSIONING MAP (Must be defined outside the 'android' block)
@@ -24,6 +25,12 @@ def gitShortSha = {
 }
 ext.gitSha = gitShortSha()
 
+// Firebase is OPTIONAL for local/contributor builds. google-services.json holds the real project keys
+// and is gitignored, so a fresh clone doesn't have it. When it's absent we skip the google-services
+// plugin (which would otherwise fail the build) and flag AnalyticsClient off via BuildConfig so it never
+// touches the uninitialized Firebase SDK. Set the file to enable analytics for a release build.
+def hasGoogleServices = file("google-services.json").exists()
+
 android {
     // 2. Identity
     namespace 'org.iiab.controller'
@@ -45,6 +52,8 @@ android {
                 : (project.ext.gitSha ? "-${project.ext.gitSha}" : "")
         versionName "v0.7.0-beta${ciSuffix}"
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
+        // True only when google-services.json is present, so AnalyticsClient can compile out cleanly.
+        buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
 
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
@@ -752,4 +761,15 @@ task refreshKolibriCatalog {
             logger.warn(">> [kolibri catalog] skipped (${e.message}); kept existing JSONL.")
         }
     }
+}
+
+// ADFA-4466 / build resilience: apply the Firebase google-services plugin only when its config file is
+// present. Without it the plugin fails the build; skipping it lets contributors build a working APK with
+// analytics compiled out (BuildConfig.ANALYTICS_ENABLED = false). Applied at the bottom, as the plugin
+// expects, so it processes the already-configured android block.
+if (hasGoogleServices) {
+    apply plugin: 'com.google.gms.google-services'
+    logger.lifecycle("K2Go: google-services.json found — Firebase Analytics enabled.")
+} else {
+    logger.lifecycle("K2Go: google-services.json not found — building WITHOUT Firebase (analytics disabled).")
 }

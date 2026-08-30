@@ -66,6 +66,29 @@ incrementally:
 
 ---
 
+## Design coherence — don't add state to compensate for a missing owner
+
+The server-lifecycle tangle (ADR-5343: ~17 tickets in ~8 weeks, each adding a state to
+compensate for one missing owner) is the failure mode these rules prevent. Before adding code:
+
+- **Before adding a state, flag, or guard, prove it is not a duplicate truth.** Does this fact
+  already have an owner/source in the code? If you are re-deriving a value that lives in another
+  layer, or adding a flag to paper over a race, STOP — that is a design signal, not a coding one.
+  Raise it (a PR comment or an ADR); do not patch it locally.
+- **One source per fact.** If two places answer the same question ("is the server up?", "is an
+  install running?"), the fix is to unify the source, not add a third.
+- **N tickets orbiting one file/concern is a redesign signal, not another patch.** If a file
+  accumulates many `ADFA-XXXX` references on the same concern (check `git log`/`git blame`), raise
+  an ADR before adding patch N+1.
+- **Prefer removing over adding.** A change that introduces a distinct state must justify in the PR
+  why it is not a duplicate truth or a race compensator.
+- **The code-review second pass is a standing pre-merge gate, not reactive.** On every PR, beyond
+  the form pass, run the two depth questions: does this add a second place that knows the same
+  thing? does the structural fix have a lifecycle (who sets it, who clears it, what if the process
+  dies)? When a *fact* is missing (not a case), the fix is usually a design change — surface it.
+
+---
+
 ## Working in parallel (coordinating features on one repo)
 
 We often have more than one feature in flight at once on this single repo. To keep

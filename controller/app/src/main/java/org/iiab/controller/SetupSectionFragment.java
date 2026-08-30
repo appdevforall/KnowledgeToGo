@@ -206,6 +206,11 @@ public class SetupSectionFragment extends Fragment {
      * the consent and proceeds. Shown at most once (guarded by a flag).
      */
     private void maybeShowAnalyticsEnrollment() {
+        // ADFA-5337: no analytics compiled in (no google-services.json) → nothing to consent to; skip.
+        if (!BuildConfig.ANALYTICS_ENABLED) {
+            completeSetup();
+            return;
+        }
         SharedPreferences delivery = requireContext().getSharedPreferences(
                 DELIVERY_PREFS, Context.MODE_PRIVATE);
         if (delivery.getBoolean(KEY_ENROLLMENT_SHOWN, false)) {

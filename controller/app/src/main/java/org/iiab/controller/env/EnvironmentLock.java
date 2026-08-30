@@ -38,6 +38,8 @@ package org.iiab.controller.env;
 
 import android.content.Context;
 
+import org.iiab.controller.system.domain.Operation;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -51,8 +53,28 @@ public final class EnvironmentLock {
 
     /** ADFA-5146: what is actually holding the environment, for a refusal message that names the
      *  real cause instead of always saying "an install". ADFA-5333: DASHBOARD = a live dash-node update
-     *  is in flight; it restarts the server, so nothing that touches the server may start on top of it. */
-    public enum Holder { CLONE, BACKUP, RESTORE, INSTALL, DOWNLOAD, DASHBOARD, NONE }
+     *  is in flight; it restarts the server, so nothing that touches the server may start on top of it.
+     *
+     *  <p>ADFA-5343: each holder carries its {@link Operation.ExecutionClass} — reusing ADR-5061's one
+     *  LIVE/STOPPED type, not a parallel one. STOPPED holders run the box down (pdsm stop + a transient
+     *  proot: clone/backup/restore/install); LIVE holders run against the live server (download, dashboard
+     *  self-update). NONE means no holder is forcing the box down. The server-lifecycle desired-state
+     *  predicate reads this: desired stays UP unless a STOPPED-class holder is in force. */
+    public enum Holder {
+        CLONE(Operation.ExecutionClass.STOPPED),
+        BACKUP(Operation.ExecutionClass.STOPPED),
+        RESTORE(Operation.ExecutionClass.STOPPED),
+        INSTALL(Operation.ExecutionClass.STOPPED),
+        DOWNLOAD(Operation.ExecutionClass.LIVE),
+        DASHBOARD(Operation.ExecutionClass.LIVE),
+        NONE(Operation.ExecutionClass.LIVE);
+
+        public final Operation.ExecutionClass executionClass;
+
+        Holder(Operation.ExecutionClass executionClass) {
+            this.executionClass = executionClass;
+        }
+    }
 
     // Owner marker: line 1 = Owner.name(), line 2 = epoch millis, line 3 = session token.
     private static final String MARKER = ".env_lock";

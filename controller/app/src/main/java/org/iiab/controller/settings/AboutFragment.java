@@ -33,13 +33,22 @@ public class AboutFragment extends Fragment {
         TextView versionView = view.findViewById(R.id.about_version);
         versionView.setText(getString(R.string.about_version, appVersionName()));
 
-        SwitchCompat analytics = view.findViewById(R.id.switch_analytics_consent);
-        analytics.setChecked(AnalyticsConsent.isEnabled(requireContext()));
-        analytics.setOnCheckedChangeListener(
-                (btn, checked) -> {
-                    AnalyticsConsent.setEnabled(requireContext(), checked);
-                    org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
-                });
+        // ADFA-5337: no analytics compiled in (no google-services.json) → hide the whole opt-in block,
+        // since there's nothing to share and the switch would do nothing.
+        if (!org.iiab.controller.BuildConfig.ANALYTICS_ENABLED) {
+            View row = view.findViewById(R.id.analytics_consent_row);
+            View desc = view.findViewById(R.id.analytics_consent_desc);
+            if (row != null) row.setVisibility(View.GONE);
+            if (desc != null) desc.setVisibility(View.GONE);
+        } else {
+            SwitchCompat analytics = view.findViewById(R.id.switch_analytics_consent);
+            analytics.setChecked(AnalyticsConsent.isEnabled(requireContext()));
+            analytics.setOnCheckedChangeListener(
+                    (btn, checked) -> {
+                        AnalyticsConsent.setEnabled(requireContext(), checked);
+                        org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
+                    });
+        }
     }
 
     private String appVersionName() {

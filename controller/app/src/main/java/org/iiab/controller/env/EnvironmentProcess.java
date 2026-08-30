@@ -47,6 +47,11 @@ public final class EnvironmentProcess {
 
     private static final String TAG = "K2Go-Env";
 
+    /** ADFA-5343a (D2): the box's nginx HTTP port ({@code config/BoxEndpoints.java:21}). Its listener is
+     *  the reparented orphan that keeps the port after a proot kill; reclaiming it is what lets a fresh
+     *  proot's {@code pdsm start} rebind. */
+    private static final int ENV_HTTP_PORT = 8085;
+
     private EnvironmentProcess() {
     }
 
@@ -99,74 +104,6 @@ public final class EnvironmentProcess {
     }
 
     /**
-     * The running environment proot's age in ms, or {@code -1} when there is none or its start time
-     * cannot be read.
-     *
-     * <p>ADFA-5103: the boot grace is measured from the proot's own age, not from when this process
-     * launched it, so a young proot is protected whether we started it or a force-closed predecessor
-     * did — the observed 3.5 s double-boot after Android restored the Activity stack. Read from
-     * {@code /proc/<pid>/stat} field 22 (starttime, in clock ticks since system boot) and compared
-     * against {@link android.os.SystemClock#elapsedRealtime()}, which counts from the same boot.
-     */
-    public static long environmentAgeMs(Context ctx) {
-        if (ctx == null) {
-            return -1L;
-        }
-        int pid = findPid(ctx);
-        if (pid <= 0) {
-            return -1L;
-        }
-        long startTicks = readStartTicks(pid);
-        if (startTicks < 0) {
-            return -1L;
-        }
-        long clkTck;
-        try {
-            clkTck = android.system.Os.sysconf(android.system.OsConstants._SC_CLK_TCK);
-        } catch (Throwable t) {
-            clkTck = 100L;   // the near-universal default; a wrong value only shifts the grace slightly
-        }
-        if (clkTck <= 0) {
-            clkTck = 100L;
-        }
-        long startedAtSinceBootMs = (startTicks * 1000L) / clkTck;
-        long ageMs = android.os.SystemClock.elapsedRealtime() - startedAtSinceBootMs;
-        return ageMs < 0 ? -1L : ageMs;
-    }
-
-    /**
-     * {@code /proc/<pid>/stat} field 22 (starttime), or {@code -1} if unreadable. The comm field (2)
-     * is wrapped in parentheses and may itself contain spaces and parentheses, so the fields after
-     * it are parsed from the last {@code ')'} — starttime is the 19th token after that.
-     */
-    private static long readStartTicks(int pid) {
-        File stat = new File("/proc/" + pid + "/stat");
-        try (FileInputStream in = new FileInputStream(stat)) {
-            byte[] buf = new byte[4096];
-            int total = 0, r;
-            while (total < buf.length && (r = in.read(buf, total, buf.length - total)) != -1) {
-                total += r;
-            }
-            if (total == 0) {
-                return -1L;
-            }
-            String content = new String(buf, 0, total);
-            int lastParen = content.lastIndexOf(')');
-            if (lastParen < 0 || lastParen + 2 >= content.length()) {
-                return -1L;
-            }
-            String[] after = content.substring(lastParen + 2).trim().split("\\s+");
-            // after[0] is field 3 (state); starttime is field 22 -> index 22 - 3 = 19.
-            if (after.length <= 19) {
-                return -1L;
-            }
-            return Long.parseLong(after[19]);
-        } catch (Exception e) {
-            return -1L;   // vanished, not ours to read, or an unexpected shape
-        }
-    }
-
-    /**
      * Stop an environment proot this process has no handle on.
      *
      * <p>Only for the case that has no other answer: the environment is up, the services are not,
@@ -184,18 +121,67 @@ public final class EnvironmentProcess {
         if (ctx == null) {
             return false;
         }
+        boolean signalled = false;
         int pid = findPid(ctx);
-        if (pid <= 0) {
+        if (pid > 0) {
+            try {
+                android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
+                Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
+                signalled = true;
+            } catch (Exception e) {
+                Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
+            }
+        }
+        // ADFA-5343a (D2): killing the proot is not enough. Its services daemonise — nginx setsid()s and
+        // reparents to init — so they survive the proot and keep :8085, and every relaunched proot's
+        // `pdsm start` then cannot rebind (the ADFA-5336 unrecoverable loop). Reclaim the HTTP front too.
+        boolean reaped = reapEnvironmentHttpFront();
+        return signalled || reaped;
+    }
+
+    /**
+     * ADFA-5343a (D2): reclaim the environment's orphaned nginx — the box's HTTP front on {@code :8085}
+     * ({@code config/BoxEndpoints.java:21}) — which daemonises ({@code setsid}, reparents to init) and
+     * survives the proot, keeping the port so a relaunched proot's {@code pdsm start} cannot rebind (the
+     * ADFA-5336 loop).
+     *
+     * <p><b>Found by cmdline, not by the port.</b> An app cannot read {@code /proc/net/tcp} on modern
+     * Android (blocked since API 29), so the socket→pid path is unavailable here; nginx is instead
+     * matched on {@code /proc/<pid>/cmdline} ({@code "nginx: master process nginx"} / worker). That is
+     * still scoped to us: nginx runs in the app's own uid <em>and</em> SELinux domain (device-verified,
+     * ADR-5343a §2), so it is killable, and the box's only nginx is ours. Killing each matching pid reaps
+     * master and workers together; idempotent — a no-op when none is running.
+     *
+     * @return true when at least one nginx process was signalled.
+     */
+    public static boolean reapEnvironmentHttpFront() {
+        File[] entries = new File("/proc").listFiles();
+        if (entries == null) {
             return false;
         }
-        try {
-            android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
-            Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
-            return true;
-        } catch (Exception e) {
-            Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
-            return false;
+        boolean reaped = false;
+        for (File dir : entries) {
+            int pid;
+            try {
+                pid = Integer.parseInt(dir.getName());
+            } catch (NumberFormatException notAPid) {
+                continue;
+            }
+            String cmd = readCmdline(new File(dir, "cmdline"));
+            if (cmd != null && cmd.contains("nginx")) {
+                try {
+                    android.os.Process.killProcess(pid);   // same uid + SELinux domain as us
+                    reaped = true;
+                } catch (Exception ignored) {
+                    // vanished mid-scan, or not ours to signal
+                }
+            }
         }
+        if (reaped) {
+            Log.i(TAG, "ADFA-5343a: reclaimed the orphaned nginx holding the HTTP front (:"
+                    + ENV_HTTP_PORT + ")");
+        }
+        return reaped;
     }
 
     /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
