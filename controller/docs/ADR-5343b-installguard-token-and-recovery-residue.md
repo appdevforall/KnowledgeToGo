@@ -3,9 +3,9 @@
 **Status:** Approved for implementation (2026-08-31) — Fork 1 = **1A** (with the caller audit below gating the
 code), Fork 2 = **out of scope** (no wedged-detection), Fork 3 = **shared process-launch identity**, Fork 4 =
 **recorded in the device matrix**. Two sub-phases (5a token+collapse, 5b route-recovery+delete-residue), each
-landed as a diff + commit message; Luis commits and runs device verification.
+landed as a diff + commit message; the maintainer commits and runs device verification.
 **Date:** 2026-08-31.
-**Deciders:** Luis (sign-off required before any code).
+**Deciders:** the maintainer (sign-off required before any code).
 **Ticket:** ADFA-5343 (Task under Epic ADFA-1028). Revises **ADR-5343** (`controller/docs/ADR-5343-server-lifecycle-reconciler.md`,
 §7 Phase 5 + §5 the ADFA-5330 row); resolves the open bug **ADFA-5330** (ungraceful kill → stale marker → false
 "Recover" / `DAMAGED_REINSTALL`). Sibling to **ADR-5343a** (flap recovery). Everything else in ADR-5343 stands.
@@ -243,7 +243,7 @@ Every row goes down or holds; the one addition stops work rather than adding sta
 
 ---
 
-## 6. Device verification (device-only — the real gate; Luis runs on `a026a310`)
+## 6. Device verification (device-only — the real gate; run on the test device)
 
 Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launch the explicit main activity.
 
@@ -260,7 +260,7 @@ Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launc
 
 ---
 
-## 7. Sub-phasing (each = diff + proposed commit message; Luis commits + device-verifies)
+## 7. Sub-phasing (each = diff + proposed commit message; the maintainer commits + device-verifies)
 
 - **5a — token + collapse.** `env/ProcessSession` (shared identity); `InstallGuard` token + tri-state
   (`isLive`/`isInterrupted`, no self-heal-delete); `InterruptedInstallDetector.evaluate` 5→2; migrate the coordination
@@ -272,5 +272,5 @@ Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launc
   `targetServerState` plumbing (NOT `doLaunchEnvironment`/`ensuring` — ADR-5343a §11). **First gate:** compile +
   lint + the existing recovery unit tests.
 
-**No production code until Luis approves this note and the §3.3 window resolution.** Stop at each gate (note →
+**No production code until the maintainer approves this note and the §3.3 window resolution.** Stop at each gate (note →
 5a diff → device-verify → 5b diff → device-verify).

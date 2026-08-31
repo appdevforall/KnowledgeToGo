@@ -3,7 +3,7 @@
 **Status:** Proposed - design phase, **no production code until approved** (per the active
 server-lifecycle redesign brief).
 **Date:** 2026-08-28
-**Deciders:** Luis (sign-off required before any code).
+**Deciders:** the maintainer (sign-off required before any code).
 **Ticket:** ADFA-5343 (a Task under Epic ADFA-1028 — no new epic). Subsumes the orbiting cluster
 ADFA-4842, ADFA-4837, ADFA-5280, ADFA-5103, ADFA-4957, ADFA-4919, and resolves the two open bugs
 ADFA-5330 / ADFA-5336. Sibling to **ADR-5061** (the operation model): 5061 decides *which class* an operation
@@ -477,7 +477,7 @@ can no longer act on a stale cache. Most of the change is **deletion**.
 ## 7. Migration plan (phased, independently shippable, reversible)
 
 Each phase compiles + unit-tests + lints as the **first gate** (in scope here); the **runtime**
-behavior is **device-only** on `a026a310` (USB) and is called out per phase. No phase deletes an
+behavior is **device-only** on the test device (USB) and is called out per phase. No phase deletes an
 actuator until its replacement is proven on device.
 
 | Phase | Change | Compile/test/lint gate (in scope) | Device-only verification | Rollback |
@@ -489,7 +489,7 @@ actuator until its replacement is proven on device.
 | **4. Replace the user toggle; delete the scaffolding** | Button  `setUserWantsOn`; delete `handleServerLaunchClick` toggle semantics, `targetServerState` �3, `isNegotiating`, `stopping`/`ensuring`, index latches, fixed `BOOT_GRACE_MS`, the 4 copy-pasted `apiReady` re-boot loops, the orphaned `HttpServerReachability` poller. | Compile; lint; unit-test | **Device:** cold/warm boot, turn-on, turn-off, recovery - full regression | Revert the deletion commit (kept isolated) |
 | **5. Recovery decoupled from the wall clock (5330)** | `evaluateRecovery` observes reconcile outcome, not a one-shot cached read; give `InstallGuard` a session token (self-heal, mirroring `EnvironmentLock`). | JVM test the session-token discriminator + the new `DAMAGED` rule | **Device:** ungraceful kill mid-install and post-install; confirm no false reinstall on a fine rootfs; confirm genuine damage still caught | Revert; `InstallGuard` returns to bare marker |
 
-### 7.1 Device test matrix (runtime - device-only, on `a026a310`)
+### 7.1 Device test matrix (runtime - device-only, on the test device)
 
 | Scenario | Expected after redesign | Bug it guards |
 |----------|-------------------------|---------------|
@@ -553,7 +553,7 @@ the expensive choice.
 
 ## 10. Action items (post-approval - no code until approved)
 
-1. [ ] Luis reviews and approves. Ticket: **ADFA-5343** (Task under Epic ADFA-1028). ADR filed flat at
+1. [ ] The maintainer reviews and approves. Ticket: **ADFA-5343** (Task under Epic ADFA-1028). ADR filed flat at
    `controller/docs/ADR-5343-server-lifecycle-reconciler.md`, matching the repo convention.
 2. [ ] Phase 0 - `ServerLiveness` (pure + JVM test); route the poll through it.
 3. [ ] Phase 1 - log-only reconciler in `IIABApplication`; device-observe all five flows.
