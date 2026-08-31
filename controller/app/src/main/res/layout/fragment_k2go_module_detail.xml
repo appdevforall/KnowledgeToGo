@@ -6,7 +6,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="16dp"><!-- ADFA-5346: keep the pinned action off the bottom edge / nav bar (matches the other pinned CTAs) -->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -129,6 +130,5 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="6dp"
-        android:layout_marginBottom="16dp"
         android:text="@string/k2go_mod_install_now" />
 </LinearLayout>
