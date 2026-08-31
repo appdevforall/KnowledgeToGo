@@ -1,0 +1,169 @@
+name: Bake & publish K2Go RootFS
+
+# ADFA-5334. Builds the rootfs images with tools/rootfs-builder/build-iiab-rootfs.sh
+# (native proot on arm64 runners) and publishes them to Cloudflare R2 (k2go-rootfs).
+# Supersedes the old QEMU/Docker bake-rootfs.yml.disabled.
+#
+# Split by architecture into two parallel jobs (one arm64 node each), each building
+# ALL tiers (basic, standard, full, matomo). ~1.5h per node. The APK is NOT touched
+# here (still points at switnet); re-pointing it to R2 is a separate, later change.
+#
+# A one-shot `seed-base` job runs first: it puts the STATIC proot-distro base (the two
+# Debian tarballs K2Go builds on) into R2 exactly once, then only verifies its presence
+# on every later run. Retention: the prune keeps the newest 7 batches per (tier,arch).
+
+on:
+  workflow_dispatch:   # manual only for now
+  # Re-enable when we want it scheduled:
+  # schedule:
+  #   - cron: '0 4 * * 0'   # Sundays 04:00 UTC
+
+env:
+  BUCKET_NAME: k2go-rootfs
+  R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  # Public base that goes into the .meta4 <url>. Path-based route
+  # k2go-download.appdevforall.org/rootfs/* -> k2go-rootfs.
+  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://k2go-download.appdevforall.org/rootfs' }}
+  # Key prefix inside the bucket. Empty when the route strips /rootfs/ (keys at root);
+  # set to 'rootfs/' if the route keeps the prefix.
+  R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
+
+jobs:
+  # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
+  # (github.com/termux/proot-distro), today mirrored at switnet. It is STATIC, so seed it
+  # into R2 ONCE; every later run only HEADs it (no re-download). Bumping PD_VERSION seeds a
+  # fresh proot-distro-v<ver>/ dir once. Only the two bases K2Go consumes are mirrored
+  # (Android arm64-v8a -> aarch64, armeabi-v7a -> arm); the rest of the release is not.
+  seed-base:
+    name: Seed proot-distro base (once) + verify
+    runs-on: ubuntu-latest        # pure download+upload; no arm needed, frees the arm runners
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure AWS CLI is available
+        run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
+
+      - name: Seed-or-verify the static proot-distro base on R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          # Single source of truth: read the version the builder actually downloads,
+          # so a PD_VERSION bump in build-iiab-rootfs.sh seeds the new base automatically.
+          BUILDER="tools/rootfs-builder/build-iiab-rootfs.sh"
+          PD_VERSION="$(grep -oP '^PD_VERSION="?\K[0-9.]+' "$BUILDER" | head -1)"
+          [ -n "$PD_VERSION" ] || { echo "FATAL: could not read PD_VERSION from $BUILDER" >&2; exit 1; }
+          echo "proot-distro base version (from builder): v${PD_VERSION}"
+          GH_BASE="https://github.com/termux/proot-distro/releases/download/v${PD_VERSION}"
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          PFX="${R2_KEY_PREFIX:-}"                  # '' or 'rootfs/', same as the bake job
+          DIR="proot-distro-v${PD_VERSION}"
+          # Only the bases K2Go builds on. Names match build-iiab-rootfs.sh BASE_TARBALL.
+          TARBALLS=( "debian-trixie-aarch64-pd-v${PD_VERSION}.tar.xz" \
+                     "debian-trixie-arm-pd-v${PD_VERSION}.tar.xz" )
+
+          for tb in "${TARBALLS[@]}"; do
+            key="${PFX}${DIR}/${tb}"
+            # Present on R2 -> verify-only: a HEAD, never a re-download (the base is static).
+            if aws s3api head-object --bucket "$BUCKET_NAME" --key "$key" \
+                 --endpoint-url "$ENDPOINT" >/dev/null 2>&1; then
+              echo ">> present (verify-only, no download): $key"
+              continue
+            fi
+            # Missing -> seed once from the pinned release, with a sha256 record beside it.
+            echo ">> missing -> seed once from the pinned release: $tb"
+            curl -fL --retry 3 --retry-delay 5 -o "$tb" "${GH_BASE}/${tb}"
+            sha256sum "$tb" > "${tb}.sha256"
+            aws s3 cp "$tb"          "s3://${BUCKET_NAME}/${key}"        --endpoint-url "$ENDPOINT"
+            aws s3 cp "${tb}.sha256" "s3://${BUCKET_NAME}/${key}.sha256" --endpoint-url "$ENDPOINT"
+            rm -f "$tb" "${tb}.sha256"
+          done
+          echo "Base seed/verify complete for proot-distro-v${PD_VERSION}."
+
+  bake:
+    needs: seed-base            # the static base must be present on R2 before we publish artifacts
+    name: RootFS ${{ matrix.arch }}
+    # Native arm64 runner (the builder uses native proot, not QEMU). Adjust the label
+    # if the org uses a different arm64 runner (e.g. a self-hosted one).
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 330   # under the 6h hard cap; all-tier per node is ~1.5h
+    strategy:
+      fail-fast: false     # one arch must not cancel the other
+      max-parallel: 2      # one node per arch, both at once
+      matrix:
+        arch: [arm64-v8a, armeabi-v7a]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure AWS CLI is available
+        run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
+
+      - name: Build all tiers for ${{ matrix.arch }}
+        run: |
+          sudo ./tools/rootfs-builder/build-iiab-rootfs.sh \
+            --all-tier --arch "${{ matrix.arch }}" \
+            --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
+          # the builder runs as root; hand dist/ back to the runner so the upload step can read it
+          sudo chown -R "$(id -u):$(id -g)" dist
+
+      - name: Publish to R2 + prune (keep newest 7 per tier/arch)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          ARCH="${{ matrix.arch }}"
+          KEEP=7          # keep newest 7 batches per (tier,arch); heavy uploads, ~100GB at 7
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          PFX="${R2_KEY_PREFIX:-}"          # '' or 'rootfs/'
+          cd dist
+
+          # 1) Big artifacts FIRST (data before any pointer that resolves to them).
+          shopt -s nullglob
+          for f in iiab-oa_*.tar.gz; do
+            echo ">> upload artifact $f"
+            aws s3 cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}" --endpoint-url "$ENDPOINT"
+          done
+
+          # 2) Everything ELSE in dist/ EXCEPT the stable pointers. Publish the WHOLE dist/,
+          #    nothing is dropped: per-artifact sidecars (.meta4/.sha256/.installed/.torrent),
+          #    the build-<tier>-<arch>.log installer logs (consumed to compute catalogs), and
+          #    PUBLISH_QUEUE.tsv. Tarballs are already up (step 1); the stable latest_* pointers
+          #    are held for step 3 so a client never reads a pointer to a half-uploaded file.
+          aws s3 cp . "s3://${BUCKET_NAME}/${PFX}" --recursive \
+            --exclude "*.tar.gz" \
+            --exclude "latest_*.meta4" --exclude "latest_*.installed" \
+            --endpoint-url "$ENDPOINT"
+
+          # 3) Flip the stable pointers LAST (they overwrite; only after the data is fully up,
+          #    so a client reading the new latest_*.meta4 never points at a half-uploaded tarball).
+          for f in latest_*.meta4 latest_*.installed; do
+            echo ">> pointer $f"
+            aws s3 cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}" --endpoint-url "$ENDPOINT"
+          done
+
+          # 4) Prune: keep only the newest $KEEP batches per (tier,arch); delete older + sidecars.
+          #    Only the heavy dated tarballs accumulate (they carry <date>_<sha>); logs and the
+          #    TSV overwrite in place, so they never pile up. The prefix filter matches iiab-oa_*
+          #    only, so proot-distro-v*/ is never touched.
+          for meta in latest_*_"${ARCH}".meta4; do
+            base="${meta%.meta4}"; te="${base#latest_}"; tier="${te%_${ARCH}}"
+            mapfile -t keys < <(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" \
+              --prefix "${PFX}iiab-oa_" --endpoint-url "$ENDPOINT" \
+              --query "sort_by(Contents,&LastModified)[?contains(Key,'_${tier}_') && ends_with(Key,'_${ARCH}.tar.gz')].Key" \
+              --output text | tr '\t' '\n' | sed '/^$/d')
+            n=${#keys[@]}
+            if (( n > KEEP )); then
+              for key in "${keys[@]:0:n-KEEP}"; do
+                echo ">> prune $key (+ sidecars)"
+                for ext in '' .meta4 .sha256 .installed .torrent; do
+                  aws s3 rm "s3://${BUCKET_NAME}/${key}${ext}" --endpoint-url "$ENDPOINT" || true
+                done
+              done
+            fi
+          done

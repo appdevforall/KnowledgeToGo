@@ -73,7 +73,7 @@
 #   #  the mkmetalink binary and pass --mkmetalink-bin.)
 #
 # This script BUILDS ONLY — it never publishes/uploads. All outputs stay in OUTDIR
-# (dist/) and are recorded in dist/PUBLISH_QUEUE.tsv as READY/HOLD, for a later
+# (dist/) and are recorded in dist/PUBLISH_QUEUE_<label>.tsv as READY/HOLD, for a later
 # CD / GitHub Actions workflow to push to Cloudflare / a mirror / a GitHub release.
 #
 # Run as root on the host (proot and the bind mounts want it).
@@ -200,8 +200,17 @@ case "$ARCH" in
   *) die "Invalid arch: $ARCH (use arm64-v8a|armeabi-v7a)" ;;
 esac
 
+# ADFA-5334: label for the publish-queue filename, so parallel arch builds (e.g. the two
+# CI matrix jobs writing to one shared R2 bucket) don't clobber a single PUBLISH_QUEUE.tsv.
+# The label mirrors the selector: --all-arch -> "all", otherwise the single --arch value
+# (arm64-v8a | armeabi-v7a). Computed once in the top-level parent and EXPORTED so the
+# --all-* child builds inherit it — a child is dispatched with a single --arch and no
+# --all-arch, so it must NOT recompute (the ':=' keeps an inherited value).
+: "${QUEUE_LABEL:=$([[ "$ALL_ARCH" -eq 1 ]] && echo all || echo "$ARCH")}"
+export QUEUE_LABEL
+
 # -------- Scratch build (--scratch-build): pristine start, delete ALL prior ----
-# Wipes OUTDIR (artifacts + .meta4/.torrent + PUBLISH_QUEUE.tsv) AND WORKDIR (Debian
+# Wipes OUTDIR (artifacts + .meta4/.torrent + PUBLISH_QUEUE_*.tsv) AND WORKDIR (Debian
 # base, Go toolchain, native binaries, extracted rootfs). Destructive on purpose, so
 # it is double-gated: without --confirm-scratch-yes you must type 'yes' at a prompt
 # whose DEFAULT is NO (a stray Enter aborts; no TTY also aborts -> CI must pass the
@@ -209,7 +218,7 @@ esac
 if [[ "$SCRATCH_BUILD" -eq 1 ]]; then
   if [[ "$CONFIRM_SCRATCH" -ne 1 ]]; then
     printf "${YEL}${BOLD}SCRATCH BUILD — this DELETES all previous state:${RST}\n" >&2
-    printf "  - %s  (built artifacts, .meta4/.torrent, PUBLISH_QUEUE.tsv)\n" "$OUTDIR" >&2
+    printf "  - %s  (built artifacts, .meta4/.torrent, PUBLISH_QUEUE_*.tsv)\n" "$OUTDIR" >&2
     printf "  - %s  (Debian base, Go toolchain, native binaries, extracted rootfs)\n" "$WORKDIR" >&2
     printf "  Everything above is re-downloaded/rebuilt from zero (can be several GB).\n" >&2
     printf "${YEL}Continue? Type 'yes' to proceed [default: NO]: ${RST}" >&2
@@ -887,7 +896,7 @@ echo
 # workflow reads this queue and pushes READY artifacts to the chosen destination(s)
 # (Cloudflare / mirror / GitHub release). HOLD = validation not clean -> hold back.
 PUB_STATUS="$([[ "$PASS" -eq 1 ]] && echo READY || echo HOLD)"
-QUEUE="${OUTDIR}/PUBLISH_QUEUE.tsv"
+QUEUE="${OUTDIR}/PUBLISH_QUEUE_${QUEUE_LABEL}.tsv"
 [[ -f "$QUEUE" ]] || printf 'built_utc\tstatus\ttier\tarch\tiiab_sha\tartifact\tsize_bytes\tuncompressed_bytes\tbuild_seconds\tsha256\tmeta4\n' > "$QUEUE"
 printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
   "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$PUB_STATUS" "$TIER_NAME" "$ARCH" "$IIAB_SHA" \
