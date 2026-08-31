@@ -105,7 +105,7 @@ jobs:
 
       - name: Build all tiers for ${{ matrix.arch }}
         run: |
-          sudo ./tools/rootfs-builder/build-iiab-rootfs.sh \
+          sudo bash ./tools/rootfs-builder/build-iiab-rootfs.sh \
             --all-tier --arch "${{ matrix.arch }}" \
             --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
           # the builder runs as root; hand dist/ back to the runner so the upload step can read it
