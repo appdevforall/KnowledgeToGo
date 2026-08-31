@@ -207,7 +207,10 @@ lifecycle owner, so any path that bypasses `LibraryActivity.onCreate` bypasses t
 
 - **Fix (landed — small seam, one recovery owner).** `SetupProgressActivity.onCreate`: if
   `InstallGuard.isInterrupted(this)` (a dead-process marker = a killed install, never a live run — the marker is
-  cleared on a clean finish), it does **not** resume the index — it routes to the single recovery owner via
+  cleared on a clean finish) **and nothing live owns the screen** (`!rebuildInSession() && !EnvironmentLock.isBusyNow()`,
+  so a stale marker coinciding with a dashboard rebuild or a live content download — both of which also live on this
+  screen and neither plants InstallGuard — cannot hijack it), it does **not** resume the index — it routes to the
+  single recovery owner via
   `startActivity(LibraryActivity, FLAG_ACTIVITY_CLEAR_TOP)` **without** `SINGLE_TOP`, so the standard-launchMode
   `LibraryActivity` is re-created and its `onCreate` re-computes `recovering` and schedules `evaluateRecovery`
   (reusing it via `onNewIntent` would not — Home is a monitor there). `LibraryActivity` then boots a healthy base

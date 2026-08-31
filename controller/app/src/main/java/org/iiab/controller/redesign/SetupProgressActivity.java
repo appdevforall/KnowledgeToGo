@@ -177,7 +177,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // recovery owner instead: it boots a healthy base and clears the marker, or declares DAMAGED
         // and cuts the retry. A live install in THIS process reads isLive (the marker is cleared on a
         // clean finish), so a normal run never takes this branch.
-        if (org.iiab.controller.InstallGuard.isInterrupted(this)) {
+        //
+        // Guarded so it only fires for a genuinely stranded install with nothing live: this screen is
+        // also the home of the dashboard rebuild (which does NOT plant InstallGuard) and of live content
+        // downloads (LIVE), so a stale marker coinciding with one of those must not hijack it into
+        // recovery. After a real kill the queue/downloads are idle (device-observed: holder=NONE), so the
+        // guard never blocks the case it exists for.
+        if (org.iiab.controller.InstallGuard.isInterrupted(this)
+                && !rebuildInSession()
+                && !org.iiab.controller.env.EnvironmentLock.isBusyNow()) {
             routeToRecovery();
             return;
         }
