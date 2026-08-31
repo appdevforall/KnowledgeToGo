@@ -16,7 +16,6 @@
  */
 package org.iiab.controller;
 
-import org.iiab.controller.config.BoxEndpoints;
 
 import android.content.Context;
 import android.os.Handler;
@@ -28,7 +27,7 @@ import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
 
-public class ServerController implements org.iiab.controller.env.ServerLifecycleReconciler.Actuator {
+public class ServerController {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
@@ -46,20 +45,11 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     public interface Host {
         void addToLog(String message);
         void startFusionPulse();
-        void startExitPulse();
         void stopBtnProgress();
         void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn);
         void refreshServerUi();
         Boolean getTargetServerState();
         void setTargetServerState(Boolean target);
-        boolean isNegotiating();
-        void enableSystemProtection();
-        void disableSystemProtection();
-        /** ADFA-4834: the pdsm service currently stopping, for the shutdown screen. */
-        default void onShutdownProgress(String service) {}
-        /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
-         *  This is the real "everything is down" signal the close should hang off of. */
-        default void onShutdownComplete() {}
         /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
          *  screen can show an animated "starting" message during the long silent warm-up, instead of
          *  a blank line until the first pdsm service reports ~15s later. */
@@ -74,12 +64,8 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     private final Preferences prefs;
 
     public PRootEngine serverEngine;
-    private long serverUpSinceMs = 0L;
     private boolean isWifiActive = false;
     private boolean isHotspotActive = false;
-    private String currentTargetUrl = null;
-    // ADFA-4834: hard guard so a repeat "Turn off" tap never spawns a second concurrent pdsm stop.
-    private volatile boolean stopping = false;
     // ADFA-5103: an ensure-up decision or launch is in flight. Because the decision now runs off the
     // main thread, two concurrent startEnvironment() calls could each read /proc, both see nothing,
     // and both LAUNCH — the synchronous main-thread serialisation that used to prevent that is gone.
@@ -103,10 +89,11 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
     private Runnable timeoutRunnable;
     private final Handler serverCheckHandler = new Handler(android.os.Looper.getMainLooper());
+    // ADFA-5343 (Phase 4d-2): connectivity-only poll now — server liveness moved to the reconciler tick,
+    // the single driver + publisher. This runnable just keeps the Wi-Fi/hotspot LEDs fresh.
     private final Runnable serverCheckRunnable = new Runnable() {
         @Override
         public void run() {
-            checkServerStatus();
             updateConnectivityStatus();
             serverCheckHandler.postDelayed(this, CHECK_INTERVAL_MS);
         }
@@ -129,100 +116,18 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
         updateConnectivityStatus(); // instant refresh when returning to the app
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
         serverCheckHandler.post(serverCheckRunnable);
-        // ADFA-5343 (Phase 2): register as the foreground actuator the reconciler drives. Whichever
-        // Activity is resumed owns this slot; the reconciler boots through it (the one existing boot).
-        org.iiab.controller.env.ServerLifecycleReconciler.get().setActuator(this);
     }
 
     public void onPause() {
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
-        // ADFA-5343 (Phase 2): release the actuator slot — but clearActuator only clears if we still
-        // hold it, so a resume/pause overlap does not wipe the next Activity's registration.
-        org.iiab.controller.env.ServerLifecycleReconciler.get().clearActuator(this);
     }
 
-    /** ADFA-5343 (Phase 2): the reconciler's boot entry point. Delegates to the one existing, idempotent
-     *  boot path so no second actuator is introduced. */
-    @Override
-    public void ensureServerUp() {
-        startEnvironment();
-    }
-
-    public String getCurrentTargetUrl() { return currentTargetUrl; }
     public boolean isWifiActive() { return isWifiActive; }
     public boolean isHotspotActive() { return isHotspotActive; }
 
-    // --- server-alive transition analytics -------------------------------------
-
-    private void updateServerAlive(boolean nowAlive) {
-        boolean wasAlive = ServerStateRepository.get().current().alive;
-        if (nowAlive && !wasAlive) {
-            serverUpSinceMs = System.currentTimeMillis();
-            org.iiab.controller.analytics.AnalyticsClient.with(activity).logServerStarted();
-        } else if (!nowAlive && wasAlive) {
-            long uptime = serverUpSinceMs > 0L ? System.currentTimeMillis() - serverUpSinceMs : -1L;
-            serverUpSinceMs = 0L;
-            org.iiab.controller.analytics.AnalyticsClient.with(activity).logServerStopped(uptime);
-        }
-        // The repository is updated by the poll (checkServerStatus) right after this.
-    }
-
-    // --- status poll ------------------------------------------------------------
-
-    private void checkServerStatus() {
-        if (host.isNegotiating()) return;
-
-        AppExecutors.get().io().execute(() -> {
-            // ADFA-5343 (Phase 0): one honest liveness snapshot instead of a single /home ping.
-            // nginx answers /home before its dash-node upstream is ready, so a restarting engine read
-            // as "up" (the flap). servicesAnswering probes /k2go-api (the usable signal); processPresent
-            // (/proc) is recorded for the richer phase the reconciler will consume in a later phase.
-            // alive stays a 1-bit fact (phase == UP) so ServerStateRepository and every reader are
-            // unchanged here — the only shift is that "up" now means the services answer, not nginx.
-            long now = android.os.SystemClock.elapsedRealtime();
-            // Probe OUTSIDE the lock — RestReadiness.apiReady() can block ~2.5s and must never hold
-            // livenessLock (that would stall a concurrent boot reset).
-            boolean processPresent = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
-            boolean servicesAnswering = org.iiab.controller.redesign.RestReadiness.apiReady();
-            // ADFA-5343a (D1) / ADFA-5343 (Phase 2): read prev and write the next snapshot atomically
-            // under livenessLock, so a boot-time reset (doLaunchEnvironment) is never clobbered by this
-            // poll writing a prev it had read before the reset. next() still measures CONTINUOUS downtime
-            // and resets it on an observation gap (a stale prev — e.g. the app was backgrounded).
-            org.iiab.controller.env.domain.ServerLiveness liveness;
-            synchronized (livenessLock) {
-                liveness = org.iiab.controller.env.domain.ServerLiveness.next(
-                        lastLiveness, processPresent, servicesAnswering, now,
-                        org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
-                lastLiveness = liveness;
-            }
-            boolean localAlive =
-                    liveness.phase(now) == org.iiab.controller.env.domain.ServerLiveness.Phase.UP;
-
-            updateServerAlive(localAlive);
-
-            // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
-            // so every tab reflects the server live instead of only after visiting the Dashboard.
-            final SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
-            ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
-
-            // ADFA-5343 (Phase 1): feed the same snapshot to the log-only reconciler — no second liveness
-            // source, no actuation. It logs desired-vs-actual each poll. Removing this line + the class is
-            // the full rollback.
-            org.iiab.controller.env.ServerLifecycleReconciler.get().observe(activity, liveness);
-
-            // STATE MACHINE: Has the target state been reached?
-            Boolean target = host.getTargetServerState();
-            if (target != null && ServerStateRepository.get().current().alive == target) {
-                host.setTargetServerState(null); // Transition complete!
-                timeoutHandler.removeCallbacks(timeoutRunnable); // Cancel safety net
-                activity.runOnUiThread(host::stopBtnProgress);
-            }
-
-            currentTargetUrl = localAlive ? BoxEndpoints.BASE + "/home" : null;
-
-            activity.runOnUiThread(host::refreshServerUi);
-        });
-    }
+    // ADFA-5343 (Phase 4d-2): the server-liveness poll (checkServerStatus), the log-only reconciler seam,
+    // the targetServerState transition, and the server-uptime analytics all moved to the reconciler's tick
+    // — the single liveness capture + publisher + actuator. The bridge (Actuator/setActuator) is gone too.
 
     private void updateConnectivityStatus() {
         boolean isWifiOn = false;
@@ -275,9 +180,6 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
 
     // --- server start / stop (the control button) -------------------------------
 
-    /** ADFA-4837: true while a graceful stop is in flight; a start must not stack over it. */
-    public boolean isStopping() { return stopping; }
-
     /**
      * ADFA-4842: UNCONDITIONAL, deterministic boot of the Debian/proot environment (pdsm start).
      *
@@ -299,7 +201,6 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
      * none of this applies there. This method is only for the post-module boot driven by the index.
      */
     public void startEnvironment() {
-        if (stopping) return;   // a graceful stop is still tearing its proot down — don't stack a second
         if (ensuring) return;   // ADFA-5103: a decision/launch is already in flight; never double-launch
         ensuring = true;
         // ADFA-5103: "ensure it is up", decided OFF the main thread — this has six callers, all on it,
@@ -394,8 +295,7 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
                 activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_error, error)));
             }
         });
-        prefs.setWatchdogEnable(true);
-        host.enableSystemProtection();
+        prefs.setWatchdogEnable(true);   // sets desired=UP; the reconciler promotes WatchdogService (Phase 4b)
         host.addToLog(activity.getString(R.string.watchdog_started));
         host.startFusionPulse();
         ensuring = false;   // ADFA-5103: launch issued — release the ensure-up guard
@@ -443,20 +343,9 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
         };
         timeoutHandler.postDelayed(timeoutRunnable, activity.getResources().getInteger(R.integer.server_cool_off_duration_ms));
 
-        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
-
         if (!ServerStateRepository.get().current().alive) {
-            // ADFA-4837: a graceful stop can already have flipped the server to !alive while its
-            // proot is still tearing down. Never start on top of that — it would stack a second
-            // proot over the same rootfs (the collision class we keep fighting).
-            if (stopping) {
-                host.setTargetServerState(null);
-                activity.runOnUiThread(host::stopBtnProgress);
-                return;
-            }
-            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment() (also used by the
-            // install index after the last module). Here it runs only in the !alive branch, so the UI button
-            // keeps its start/stop TOGGLE semantics.
+            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment(). Reached now only
+            // by the recovery caller (LibraryActivity:394, Phase 5).
             startEnvironment();
 
             // ADFA-5061: a 20 s timer used to fire a snackbar here — "Termux not opening? Enable
@@ -472,67 +361,11 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
             // nothing was happening while the start was happening. The honest report of a start
             // that did not take is the timeout above, which is still here and still runs.
 
-        } else {
-            if (stopping) return;   // ADFA-4834: a stop is already in flight; ignore repeat taps
-            stopping = true;
-            host.addToLog(activity.getString(R.string.log_server_stopping_gracefully));
-
-            PRootEngine stopEngine = new PRootEngine();
-
-            stopEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'", new PRootEngine.OutputListener() {
-                @Override
-                public void onOutputLine(String line) {
-                    activity.runOnUiThread(() -> host.addToLog("[PDSM Stop] " + line));
-                    // ADFA-4834: surface which service is stopping to the shutdown screen.
-                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
-                    if (m.find()) {
-                        final String svc = m.group(1);
-                        activity.runOnUiThread(() -> host.onShutdownProgress(svc));
-                    }
-                }
-
-                @Override
-                public void onProcessExit(int exitCode) {
-                    activity.runOnUiThread(() -> {
-                        stopping = false;   // ADFA-4834: stop finished; allow a future stop
-                        if (serverEngine != null) {
-                            serverEngine.killProcess();
-                            serverEngine = null;
-                        }
-
-                        AppExecutors.get().io().execute(() -> {
-                            // ADFA-4811: never global-kill proot while an install is running — it
-                            // would kill the in-flight installer's proot over the shared rootfs.
-                            if (InstallGuard.inProgress(activity)) {
-                                return;
-                            }
-                            try {
-                                Runtime.getRuntime().exec(new String[]{"sh", "-c", "killall -9 proot 2>/dev/null"});
-                            } catch (Exception ignored) {
-                            }
-                        });
-
-                        if (prefs.getWatchdogEnable()) {
-                            prefs.setWatchdogEnable(false);
-                            host.disableSystemProtection();
-                            host.addToLog(activity.getString(R.string.watchdog_stopped));
-                            host.startExitPulse();
-                        }
-
-                        // ADFA-4834: the graceful stop has exited and proot is being killed — this is
-                        // the real "everything is down" moment. Tell the host so a pending "Turn off"
-                        // can finish closing (and terminate the process) instead of hanging on the
-                        // /home poll heuristic.
-                        host.onShutdownComplete();
-                    });
-                }
-
-                @Override
-                public void onError(String error) {
-                    stopping = false;   // ADFA-4834: allow a retry if the stop failed to launch
-                    activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_stop_error, error)));
-                }
-            });
         }
+        // ADFA-5343 (Phase 4c): the toggle no longer stops the box. A user turn-off is now an intent
+        // (LibraryActivity.turnOffK2Go -> setUserWantsOn(false)) that the reconciler honors with a graceful
+        // pdsm stop + proot teardown. This branch's callers (LibraryActivity install-success / recovering /
+        // autostart) are all boot-gated on !alive, so the old stop branch was dead once the button
+        // converted. handleServerLaunchClick is boot-only now and 4d deletes it with the autostart cluster.
     }
 }

@@ -145,4 +145,27 @@ public class ServerReconcileTest {
         assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.HOLD, false));
         assertFalse(ServerReconcile.shouldEnsureUp(ServerReconcile.Intent.HOLD, true));
     }
+
+    // --- shouldStop (reconciler STOP, gated by holder==NONE, ADFA-5343 Phase 4c) -------------------
+
+    @Test
+    public void stopsOnlyWhenStopIntentAndNoHolder() {
+        // A plain user turn-off: desired down, box up, no holder -> the reconciler stops.
+        assertTrue(ServerReconcile.shouldStop(ServerReconcile.Intent.STOP, true));
+    }
+
+    @Test
+    public void doesNotStopWhileAHolderIsInForce() {
+        // A deep op holds a STOPPED-class lock and quiesced the box itself: the reconciler must NOT
+        // double-stop, even though desired is DOWN (STOP intent).
+        assertFalse(ServerReconcile.shouldStop(ServerReconcile.Intent.STOP, false));
+    }
+
+    @Test
+    public void neverStopsOnNonStopIntents() {
+        assertFalse(ServerReconcile.shouldStop(ServerReconcile.Intent.NOOP, true));
+        assertFalse(ServerReconcile.shouldStop(ServerReconcile.Intent.START, true));
+        assertFalse(ServerReconcile.shouldStop(ServerReconcile.Intent.WAIT, true));
+        assertFalse(ServerReconcile.shouldStop(ServerReconcile.Intent.HOLD, true));
+    }
 }

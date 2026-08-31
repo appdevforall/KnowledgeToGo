@@ -24,7 +24,6 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     // job (a static rootfs) and boot it after (startEnvironment). The server proot is process-scoped, so
     // it survives back to LibraryActivity, which only monitors it.
     private org.iiab.controller.ServerController serverController;
-    private Boolean targetServerState = null;   // ServerController.Host state
 
     /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
      *  system is already installed so adding content never overwrites it. */
@@ -660,26 +659,12 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     // own status). The two protection methods drive the WatchdogService so the job isn't killed.
     @Override public void addToLog(String message) { Log.d("K2Go-SetupLibrary", message); }
     @Override public void startFusionPulse() { }
-    @Override public void startExitPulse() { }
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    @Override public Boolean getTargetServerState() { return targetServerState; }
-    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
-    @Override public boolean isNegotiating() { return false; }
-
-    @Override public void enableSystemProtection() {
-        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
-        else startService(i);
-    }
-
-    @Override public void disableSystemProtection() {
-        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
-        startService(i);
-    }
+    // ADFA-5343 (Phase 4d-3): this host never toggled the server; the transition state was always null.
+    @Override public Boolean getTargetServerState() { return null; }
+    @Override public void setTargetServerState(Boolean target) { }
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */

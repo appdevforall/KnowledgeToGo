@@ -234,3 +234,45 @@ reconciler): replace the fixed `sleep 3` with an **adaptive poll-until-ready loo
 logging real elapsed)** — adaptive across devices, self-instrumenting, failing only when genuinely
 broken. Its own rebuild-robustness item; best batched with the php-fpm dashboard follow-up (§10
 residual) + the CPU-based backstop above.
+
+---
+
+## 13. Phase 4 tick / service cycle (short note — implements ADR-5343 §2 item 5, no new ADR)
+
+The app-scoped owner gets its own tick, so it acts with no foreground Activity (removes the Phase-2/3
+"box returns needs a foreground Activity" limit). Cycle:
+
+- **Tick (4a, landed):** `ServerLifecycleReconciler` runs a `Handler` tick every 3 s while the process is
+  alive. It **stands down** while an Activity is foregrounded (`actuator != null` — the Activity poll +
+  bridge drive, as in Phases 2–3) and only takes over when backgrounded (`actuator == null`): it captures
+  one `ServerLiveness`, publishes `ServerStateRepository`, and actuates **off-UI** via
+  `EnvironmentControl.start` (a fresh app-scoped `PRootEngine` the owner holds — the §1.1 root-cause fix).
+  Mutually exclusive with the foreground path, so no double-boot; `EnvironmentEnsure` keeps it idempotent.
+- **Service promotion (4b, next):** the reconciler will start/stop `WatchdogService` (START_STICKY) from a
+  **single place** on the `desired` UP↔DOWN transition — up keeps the process alive in the background so
+  the tick survives to keep the box up; down tears it down (nothing to keep up). START_STICKY resumes the
+  tick after an OEM kill; `desired` is recomputed from persisted facts, so it self-heals. The persistent
+  foreground notification is the existing watchdog notification (UX unchanged).
+- **Battery:** the tick probes only when foregrounded (== today's poll cost) or when the box is up
+  (WatchdogService alive); when `desired=DOWN` + backgrounded there is no service, the process can die,
+  and no tick runs. No new always-on cost.
+- **Transition (unwinds in 4d):** 4a keeps the foreground boot (`ServerController.doLaunchEnvironment`) and
+  the Activity poll intact; 4d deletes the poll + the autostart cluster and makes the tick the single
+  liveness publisher + `doLaunchEnvironment` delegate/delete, at which point the transitional dual
+  liveness-capture and dual boot mechanism collapse to one.
+
+---
+
+## 14. Phase 4 battery follow-ups (tracked — need device measurement, not guessed)
+
+Phase 4b lands WatchdogService promotion at the **current 3 s tick + held wakelock** (== today's cost,
+no regression). Two battery items are deferred as measured follow-ups, not designed blind in 4b:
+
+- **Unplugged idle back-off.** While `desired=UP` the box stays up with a PARTIAL_WAKE_LOCK + 3 s tick,
+  which drains when unplugged and idle. Candidate: when unplugged **and** idle (no clients / no recent
+  activity) slow the tick and/or drop the wakelock between Doze maintenance windows (ADR-5343 §6 "slow
+  idle tick"). Requires device battery measurement and must not slow the flap recovery Phase 4 just
+  fixed. Explicitly NOT power-tied (box up only while charging) — that is an availability-semantics
+  product decision, not a battery tweak.
+- **Doze survival characterization.** The 4b gate proves recovery under real unplugged-stationary Doze on
+  OnePlus + HMD; capture the measured battery cost there so the back-off above is tuned against real data.

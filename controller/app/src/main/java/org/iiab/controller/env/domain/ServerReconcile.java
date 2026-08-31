@@ -113,4 +113,16 @@ public final class ServerReconcile {
     public static boolean shouldEnsureUp(Intent intent, boolean holderSelfRestartsServer) {
         return ensuresUp(intent) && !holderSelfRestartsServer;
     }
+
+    /**
+     * Whether the reconciler should STOP the server now: the intent is {@link Intent#STOP} (desired down,
+     * box still up) AND <b>no holder</b> is in force. The {@code holderIsNone} gate is what keeps the
+     * reconciler from double-stopping a deep op: clone/backup/restore/install already quiesced the box
+     * synchronously and hold a STOPPED-class lock, so the reconciler must NOT also stop — it stops only a
+     * plain user turn-off (holder NONE, userWantsOn false). LIVE holders (DOWNLOAD/DASHBOARD) keep
+     * desired UP, so they never produce a STOP intent in the first place.
+     */
+    public static boolean shouldStop(Intent intent, boolean holderIsNone) {
+        return intent == Intent.STOP && holderIsNone;
+    }
 }

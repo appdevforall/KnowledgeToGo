@@ -29,9 +29,11 @@ public class IIABApplication extends Application {
         super.onCreate();
         // ADFA-4640: wire up persistence for the server log (survives app restarts).
         org.iiab.controller.LogRepository.get().init(this);
-        // ADFA-5343 (Phase 1): establish the app-scoped server-lifecycle reconciler. Log-only for now,
-        // fed by the status poll; it gains its own tick + WatchdogService promotion in a later phase.
-        org.iiab.controller.env.ServerLifecycleReconciler.get();
+        // ADFA-5343 (Phase 1): establish the app-scoped server-lifecycle reconciler.
+        // ADFA-5343 (Phase 4a): start its own background tick so it can bring the box up / re-drive a flap
+        // with NO foreground Activity. The tick stands down while an Activity is foregrounded (the Activity
+        // poll + bridge drive then); it only actuates OFF-UI when backgrounded.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().startBackgroundTick(this);
         // We inject Conscrypt as the app's primary security provider
         try {
             Security.insertProviderAt(Conscrypt.newProvider(), 1);

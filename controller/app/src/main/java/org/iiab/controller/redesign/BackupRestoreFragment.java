@@ -151,10 +151,9 @@ public class BackupRestoreFragment extends Fragment {
     private void startReturnToHome() {
         returnCancelled = false;
         returnStartMs = android.os.SystemClock.elapsedRealtime();
-        if (getActivity() instanceof SetupLibraryActivity) {
-            org.iiab.controller.ServerController sc = ((SetupLibraryActivity) getActivity()).server();
-            if (sc != null) sc.startEnvironment();
-        }
+        // ADFA-5343 (Phase 4d-1): no bespoke boot here. DeepOpService.finishJob already set desired=UP and
+        // released the lock (Phase 3A), so the reconciler brings the box back; this only waits for it to
+        // answer before going Home (below).
         readyPoll = new Runnable() {
             @Override public void run() {
                 if (returnCancelled || !isAdded()) return;

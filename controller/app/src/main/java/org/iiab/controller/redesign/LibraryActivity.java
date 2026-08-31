@@ -17,7 +17,6 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.iiab.controller.R;
 import org.iiab.controller.ServerController;
 import org.iiab.controller.ServerStateRepository;
-import org.iiab.controller.WatchdogService;
 import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.InstallState;
 import org.iiab.controller.system.data.PendingContent;
@@ -31,7 +30,6 @@ import org.iiab.controller.system.data.PendingContent;
 public class LibraryActivity extends AppCompatActivity implements ServerController.Host {
 
     private static final String TAG = "K2Go-Library";
-    private static final long AUTOSTART_DELAY_MS = 3500L;
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
@@ -67,7 +65,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean navSyncing = false;
 
     private ServerController serverController;
-    private boolean isNegotiating = false;
     private Boolean targetServerState = null;
 
     private LottieAnimationView bootGate;
@@ -342,9 +339,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     // the FIRST run (no relaunch). The install just cleared the guard, so this is
                     // allowed. The gate stays until the server responds (alive observer), with a
                     // safety timeout so the user is never trapped if it doesn't come up.
-                    if (!ServerStateRepository.get().current().alive && targetServerState == null) {
-                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                    }
+                    // ADFA-5343 (Phase 4d-1): install SUCCESS sets desired=UP (route install through
+                    // desired — the piece Phase 3 deferred here); the reconciler boots the box. Idempotent,
+                    // so no bespoke start and no need to gate on !alive.
+                    org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
                     // ADFA-4853: if the wizard banked content, go straight to Finishing setup
                     // (over the library) — no brief stop on the home. That screen shows
                     // "Starting services…" and drains the wishlists when the engine is up.
@@ -403,16 +401,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // (CloneFragment.releaseCloneEnv / the DeepOp terminal observer), never the boot gate.
             onServerReady();
         } else {
-            // If the stack isn't up after one poll cycle, start it.
-            if (systemInstalled) {
-                main.postDelayed(() -> {
-                    // ADFA-4986: never autostart the server if an install went live after onCreate.
-                    if (!isFinishing() && !installing
-                            && !ServerStateRepository.get().current().alive
-                            && targetServerState == null) {
-                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                    }
-                }, AUTOSTART_DELAY_MS);
+            // ADFA-5343 (Phase 4d-1, corrected): opening the app is a POWER-ON gesture. On a FRESH launch
+            // (savedInstanceState == null) of an installed system, set desired=UP so the reconciler boots
+            // the box — "open = boot". This is set-desired, not the old raw autostart: it is idempotent,
+            // and gated to a fresh launch so a config-change recreate (rotation) does not re-power-on.
+            // The desired-gate ("stay off") then applies ONLY to a background PROCESS-RESTART after a
+            // turn-off — no Activity, so no power-on gesture, so userWantsOn stays false and the box stays
+            // down (the real D3 case). Settings turn-off = setUserWantsOn(false) = stop + no background.
+            if (systemInstalled && savedInstanceState == null) {
+                org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
             }
             // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
@@ -991,9 +988,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         return org.iiab.controller.util.Motion.reduced(this);
     }
 
-    /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
+    /** ADFA-4837 / ADFA-5343 (Phase 4d-2): true while a server start is actually in progress (header shows
+     *  "Starting…"). Now reads the reconciler's published state instead of the retired poll's
+     *  targetServerState: the reconciler wants it up (desired) and it is not up yet. */
     public boolean isServerStarting() {
-        return Boolean.TRUE.equals(targetServerState);
+        return org.iiab.controller.env.ServerLifecycleReconciler.get().lastDesiredUp()
+                && !ServerStateRepository.get().current().alive;
     }
 
     /** ADFA-4956: expose the ServerController so Clone can quiesce/boot the environment via the
@@ -1006,7 +1006,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         return !closing
                 && targetServerState == null
                 && !ServerStateRepository.get().current().alive
-                && (serverController == null || !serverController.isStopping())
                 && !InstallProgressRepository.get().isRunning()
                 && !org.iiab.controller.InstallGuard.inProgress(this)
                 // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
@@ -1048,8 +1047,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
     public void startServer() {
         if (!canStartServer()) return;
-        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header
-        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+        // ADFA-5343 (Phase 4c/4d): the last-defense Retry — set desired=UP and kick an immediate reconcile
+        // so it acts now, not on the next tick. A set-desired + nudge, never a raw start/stop. The
+        // "Starting" header now derives from the reconciler (isServerStarting), so no targetServerState.
+        org.iiab.controller.env.ServerLifecycleReconciler r =
+                org.iiab.controller.env.ServerLifecycleReconciler.get();
+        r.setUserWantsOn(this, true);
+        r.requestReconcileNow();
     }
 
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
@@ -1073,10 +1077,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             bootGate.setMinAndMaxFrame("C_EXIT_LOOP");
             bootGate.playAnimation();
         }
-        if (ServerStateRepository.get().current().alive && targetServerState == null) {
-            serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-        } else if (!ServerStateRepository.get().current().alive) {
-            onClosedReady();
+        // ADFA-5343 (Phase 4c): the user's off is an intent — set desired=DOWN and let the reconciler stop
+        // the box (graceful pdsm stop + proot teardown). The close scene stays observer-driven
+        // (closing && !alive -> onClosedReady), fed by the reconciler's stop making alive=false.
+        org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, false);
+        if (!ServerStateRepository.get().current().alive) {
+            onClosedReady();   // already down — nothing to stop
         }
         // The real close is driven by the server-alive observer (closing && !alive -> onClosedReady).
         // A graceful stop can take ~40s (kolibri), so keep only a long last-resort safety; the old 15s
@@ -1114,25 +1120,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
     @Override public void addToLog(String message) { Log.d(TAG, message); }
     @Override public void startFusionPulse() { }
-    @Override public void startExitPulse() { }
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
     @Override public Boolean getTargetServerState() { return targetServerState; }
     @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
-    @Override public boolean isNegotiating() { return isNegotiating; }
-
-    // ADFA-4834: minimal shutdown feedback — show the service currently stopping while closing.
-    @Override public void onShutdownProgress(String service) {
-        if (!closing || installDetail == null) return;
-        installDetail.setText(service);
-    }
-
-    // ADFA-4834: teardown really finished (pdsm stop exited, proot killed, watchdog off). This is
-    // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
-    @Override public void onShutdownComplete() {
-        if (closing) onClosedReady();
-    }
 
     // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
     // before the first pdsm line isn't a blank, frozen-looking screen.
@@ -1172,21 +1164,4 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (readingEllipsis != null) readingEllipsis.start(base);
     }
 
-    @Override
-    public void enableSystemProtection() {
-        Intent i = new Intent(this, WatchdogService.class);
-        i.setAction(WatchdogService.ACTION_START);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(i);
-        } else {
-            startService(i);
-        }
-    }
-
-    @Override
-    public void disableSystemProtection() {
-        Intent i = new Intent(this, WatchdogService.class);
-        i.setAction(WatchdogService.ACTION_STOP);
-        startService(i);
-    }
 }
