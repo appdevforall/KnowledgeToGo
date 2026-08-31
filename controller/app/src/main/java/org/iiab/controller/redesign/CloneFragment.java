@@ -379,7 +379,7 @@ public class CloneFragment extends Fragment {
             atFork = false; side = Side.RECEIVE;
             cloneLockHeld = true;
             Context rebindCtx = getContext();
-            cloneGuardHeld = rebindCtx != null && org.iiab.controller.InstallGuard.inProgress(rebindCtx);
+            cloneGuardHeld = rebindCtx != null && org.iiab.controller.InstallGuard.isLive(rebindCtx);   // ADFA-5343 (Phase 5a): our own live marker, this process
         } else if (!org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
             // ADFA-5151: no system → skip the Send/Receive fork and land on receive step 1. Send is
             // blocked anyway (ADFA-5150), so Receive is the only real move; going straight to it is the
@@ -1384,7 +1384,7 @@ public class CloneFragment extends Fragment {
         Context termCtx = getContext();
         if (termCtx != null) {
             cloneLockHeld = true;   // EnvironmentLock.release() is idempotent and self-heals a stale file
-            cloneGuardHeld = org.iiab.controller.InstallGuard.inProgress(termCtx);
+            cloneGuardHeld = org.iiab.controller.InstallGuard.isLive(termCtx);   // ADFA-5343 (Phase 5a): our own live marker, this process
         }
         releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();

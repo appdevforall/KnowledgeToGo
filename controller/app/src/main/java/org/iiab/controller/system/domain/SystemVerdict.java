@@ -29,7 +29,8 @@ public final class SystemVerdict {
 
     /**
      * @param rootfsPresent      a rootfs exists on disk (SystemStateEvaluator.rootfsPresent)
-     * @param markerPresent      InstallGuard's install-in-progress marker is set
+     * @param interrupted        an install was interrupted — InstallGuard.isInterrupted() (a marker left
+     *                           by a dead process launch); a LIVE install reads via the running flags below
      * @param installerRunning   a rootfs install pipeline is alive in this process
      * @param moduleQueueRunning a proot module queue is alive in this process
      * @param deepOpHoldsLock    a backup/restore/clone holds the environment lock
@@ -39,7 +40,7 @@ public final class SystemVerdict {
      * @param serverStateKnown   the server has been observed at least once (else "unknown", not "down")
      */
     public static State evaluate(boolean rootfsPresent,
-                                 boolean markerPresent,
+                                 boolean interrupted,
                                  boolean installerRunning,
                                  boolean moduleQueueRunning,
                                  boolean deepOpHoldsLock,
@@ -61,7 +62,7 @@ public final class SystemVerdict {
         // Before the first server observation the answer is "unknown", not "down", so hold READY until
         // the poll reports rather than flashing a false DAMAGED.
         if (serverStateKnown
-                && InterruptedInstallDetector.evaluate(markerPresent, false, false, false, serverUp)
+                && InterruptedInstallDetector.evaluate(interrupted, serverUp)
                         == InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL) {
             return State.DAMAGED;
         }

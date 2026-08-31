@@ -1205,7 +1205,7 @@ public final class InstallService extends Service {
         stopModuleStallWatch();   // ADFA-4898 P4
         persistClearQueue();
         // ADFA-4842: clear the durable install guard BEFORE publishing DONE so the LibraryActivity
-        // observer that restarts the server (canStartServer() requires !InstallGuard.inProgress) is not
+        // observer that restarts the server (canStartServer() requires !InstallGuard.isLive) is not
         // raced by teardown()'s later clear. teardown() clears it again (idempotent).
         org.iiab.controller.InstallGuard.end(this);
         java.util.List<String> failed = new java.util.ArrayList<>(failedModules);

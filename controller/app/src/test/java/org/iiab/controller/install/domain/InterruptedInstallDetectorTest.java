@@ -6,57 +6,28 @@ import org.junit.Test;
 
 import org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict;
 
+/**
+ * ADFA-5343 (Phase 5a): the verdict now takes two signals. The first is {@code interrupted} —
+ * "a marker left by a dead process launch" ({@code InstallGuard.isInterrupted}) — not a bare
+ * "marker present". A live install reads {@code isLive}, so it is never passed here as interrupted;
+ * that is why the three former running/holder preconditions are gone (the token subsumed them).
+ */
 public class InterruptedInstallDetectorTest {
 
-    @Test public void noMarker_isOk() {
+    @Test public void notInterrupted_isOk() {
+        // Absent, or a live install in this process — work in progress is not damage.
         assertEquals(Verdict.OK, InterruptedInstallDetector.evaluate(false, false));
         assertEquals(Verdict.OK, InterruptedInstallDetector.evaluate(false, true));
     }
 
-    @Test public void markerButServerReachable_isOk() {
-        // System boots (server responded within the timeout) -> marker is stale, not damage.
+    @Test public void interruptedButServerReachable_isOk() {
+        // The base boots (server responded within the timeout) -> the marker was stale over a fine
+        // system (a killed module install), not damage. This is the ADFA-5330 false-Recover fix.
         assertEquals(Verdict.OK, InterruptedInstallDetector.evaluate(true, true));
     }
 
-    @Test public void markerAndServerNotReachable_isDamaged() {
-        // Killed mid-install: never finished and the server won't come up -> reinstall.
+    @Test public void interruptedAndServerNotReachable_isDamaged() {
+        // Killed mid-install and the base won't come up -> genuinely damaged, reinstall.
         assertEquals(Verdict.DAMAGED_REINSTALL, InterruptedInstallDetector.evaluate(true, false));
-    }
-
-    // ---- ADFA-5061: the preconditions that make the marker mean "killed" ----
-
-    @Test public void aRunningInstallHoldsTheMarker_isOk() {
-        // Work in progress is not damage. Without this the two-argument form would
-        // call an install that is running right now a damaged system.
-        assertEquals(Verdict.OK,
-                InterruptedInstallDetector.evaluate(true, true, false, false, false));
-    }
-
-    @Test public void aRunningModuleQueueHoldsTheMarker_isOk() {
-        assertEquals(Verdict.OK,
-                InterruptedInstallDetector.evaluate(true, false, true, false, false));
-    }
-
-    @Test public void aLiveBackupOrRestoreHoldsTheMarker_isOk() {
-        // ADFA-4971: a deep env op legitimately holds InstallGuard. Reading the
-        // marker bare produced a false "reinstall" dialog in the middle of a backup.
-        assertEquals(Verdict.OK,
-                InterruptedInstallDetector.evaluate(true, false, false, true, false));
-    }
-
-    @Test public void markerWithNoOwnerAndNoServer_isStillDamaged() {
-        assertEquals(Verdict.DAMAGED_REINSTALL,
-                InterruptedInstallDetector.evaluate(true, false, false, false, false));
-    }
-
-    @Test public void theTwoArgumentFormMeansNoOwnerWasChecked() {
-        // The boot check establishes the owners itself before calling, so the short
-        // form must keep behaving exactly as it did.
-        for (boolean marker : new boolean[]{true, false}) {
-            for (boolean server : new boolean[]{true, false}) {
-                assertEquals(InterruptedInstallDetector.evaluate(marker, server),
-                        InterruptedInstallDetector.evaluate(marker, false, false, false, server));
-            }
-        }
     }
 }

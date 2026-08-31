@@ -46,20 +46,32 @@ public final class ServerReconcile {
     }
 
     /**
-     * Should the server be up? Up <b>iff</b> the system is present and whole, the user wants it on, and
-     * no STOPPED-class holder is forcing it down. LIVE-class holders (a live download, a dashboard
+     * Should the server be up? Up <b>iff</b> the system is present, the user wants it on, and no
+     * STOPPED-class holder is forcing it down. LIVE-class holders (a live download, a dashboard
      * self-update) run <em>against</em> the live server, so they leave desired UP; only STOPPED holders
      * (clone/backup/restore/install, which pdsm-stop the box) pull it down.
      *
-     * @param installed   a rootfs is present and no install is running over it.
-     * @param healthy     the last install was not left half-finished.
+     * <p><b>Invariant — desired does NOT read {@code healthy} (ADFA-5343 Phase 5a, ADFA-5330).</b> Under
+     * the install-marker session token, the only way to be "installed but not healthy" is an
+     * <em>interrupted</em> install (a marker left by a dead process) — and such a base must be
+     * <em>tried</em>, not blocked: booting it (a safe {@code pdsm start}) is how the recovery flow tells a
+     * fine base (killed module install) from a genuinely damaged one, rather than a stale marker
+     * guaranteeing "never boots" → a false DAMAGED (the ADFA-5330 deadlock). The two cases that must keep
+     * desired DOWN are already covered without healthy: a <em>live</em> install is a STOPPED-class holder
+     * (INSTALL), and a base that is genuinely damaged is cut by the recovery verdict flipping
+     * {@code userWantsOn} to false. {@code healthy} stays honest for its real consumers — the display
+     * verdict and {@code OperationDispatcher.BLOCKED_DAMAGED}. <b>If a health signal that is NOT
+     * marker-derived is ever added (e.g. a structural rootfs check), this invariant must be revisited —
+     * desired would then have a reason to gate on health again.</b>
+     *
+     * @param installed   a rootfs is present and no LIVE install is running over it.
      * @param userWantsOn the persisted user intent (today {@code Preferences.WatchdogEnable}).
      * @param holderClass the execution class of the current environment holder
      *                    ({@code EnvironmentLock.currentHolder().executionClass}); {@code NONE} is LIVE.
      */
-    public static boolean desired(boolean installed, boolean healthy, boolean userWantsOn,
+    public static boolean desired(boolean installed, boolean userWantsOn,
                                   Operation.ExecutionClass holderClass) {
-        return installed && healthy && userWantsOn
+        return installed && userWantsOn
                 && holderClass != Operation.ExecutionClass.STOPPED;
     }
 

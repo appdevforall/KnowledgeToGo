@@ -24,37 +24,40 @@ public class ServerReconcileTest {
     // --- desired -----------------------------------------------------------------
 
     @Test
-    public void desiredUpWhenUsableWantedAndNoStoppedHolder() {
-        assertTrue(ServerReconcile.desired(true, true, true, LIVE));
+    public void desiredUpWhenInstalledWantedAndNoStoppedHolder() {
+        assertTrue(ServerReconcile.desired(true, true, LIVE));
     }
 
     @Test
     public void aStoppedHolderForcesDesiredDown() {
         // clone / backup / restore / install pdsm-stop the box: desired must be DOWN even if wanted on.
-        assertFalse(ServerReconcile.desired(true, true, true, STOPPED));
+        assertFalse(ServerReconcile.desired(true, true, STOPPED));
     }
 
     @Test
     public void aLiveHolderLeavesDesiredUp() {
-        // The Task-1 fix: a live download / dashboard self-update runs against the live server, so it
-        // must NOT force the server down (the old currentHolder == NONE predicate got this wrong).
-        assertTrue(ServerReconcile.desired(true, true, true, LIVE));
+        // A live download / dashboard self-update runs against the live server, so it must NOT force the
+        // server down (the old currentHolder == NONE predicate got this wrong).
+        assertTrue(ServerReconcile.desired(true, true, LIVE));
     }
 
     @Test
     public void notInstalledIsNeverDesiredUp() {
-        assertFalse(ServerReconcile.desired(false, true, true, LIVE));
+        assertFalse(ServerReconcile.desired(false, true, LIVE));
     }
 
     @Test
-    public void unhealthyIsNeverDesiredUp() {
-        // Installed but half-finished: the recovery dialog's world, nothing should run against it.
-        assertFalse(ServerReconcile.desired(true, false, true, LIVE));
+    public void anInterruptedInstallIsStillDesiredUpSoTheBaseIsTried() {
+        // ADFA-5343 (Phase 5a, ADFA-5330): desired no longer reads healthy. The only "installed but not
+        // healthy" is an interrupted install (isInstalled() is already true for it under 1A), and it must
+        // be TRIED — booting is how recovery tells a fine base from a damaged one. A genuinely damaged
+        // base is cut afterwards by the recovery verdict flipping userWantsOn to false, not by this gate.
+        assertTrue(ServerReconcile.desired(true, true, LIVE));
     }
 
     @Test
     public void userOffIsNeverDesiredUp() {
-        assertFalse(ServerReconcile.desired(true, true, false, LIVE));
+        assertFalse(ServerReconcile.desired(true, false, LIVE));
     }
 
     // --- intent ------------------------------------------------------------------
