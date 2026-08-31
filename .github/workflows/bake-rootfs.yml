@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Ensure AWS CLI is available
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Ensure AWS CLI is available
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
