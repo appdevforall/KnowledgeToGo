@@ -44,9 +44,14 @@ public final class SystemStateEvaluator {
      *  false "no system / Recover" over a system that is present and mid-install. The shared verdict
      *  tells INSTALLING / NO_SYSTEM / DAMAGED / CLONE_* / READY apart so every screen agrees. */
     public static boolean isSystemInstalled(Context ctx) {
-        // ADFA-4811: a running (or interrupted) install is not "installed" — the rootfs is
-        // half-baked, so callers must not treat it as ready or auto-start the server over it.
-        if (InstallGuard.inProgress(ctx)) {
+        // ADFA-4811: a LIVE install (this process) is not "installed" — the rootfs is half-baked, so
+        // callers must not treat it as ready or auto-start the server over it.
+        // ADFA-5343 (Phase 5a, Fork 1 / 1A): an INTERRUPTED install (a marker left by a dead process) no
+        // longer forces false. It falls through to rootfsPresent so the reconciler may try to boot the
+        // base and the "tried-and-failed" recovery verdict decides damage — instead of the stale marker
+        // guaranteeing "not installed" → never boots → a false DAMAGED on a fine rootfs (ADFA-5330). A
+        // killed initial install with no rootfs on disk still reads false here (the rootfsPresent net).
+        if (InstallGuard.isLive(ctx)) {
             return false;
         }
         return rootfsPresent(ctx);

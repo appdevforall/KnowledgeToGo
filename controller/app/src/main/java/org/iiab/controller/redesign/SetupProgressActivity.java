@@ -1386,8 +1386,5 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    // ADFA-5343 (Phase 4d-3): this host never toggled the server; the transition state was always null.
-    @Override public Boolean getTargetServerState() { return null; }
-    @Override public void setTargetServerState(Boolean target) { }
 
 }

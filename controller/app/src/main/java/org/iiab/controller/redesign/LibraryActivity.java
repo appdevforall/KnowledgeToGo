@@ -65,7 +65,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean navSyncing = false;
 
     private ServerController serverController;
-    private Boolean targetServerState = null;
 
     private LottieAnimationView bootGate;
     private View installProgress;
@@ -229,7 +228,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 // cold and the marker still puts them in recovery, correctly: they are no longer
                 // mid-attempt.
                 && !broughtHereToSetUp
-                && org.iiab.controller.InstallGuard.inProgress(this)
+                // ADFA-5343 (Phase 5a): recovery is for an INTERRUPTED install (a marker left by a dead
+                // process), not a live one. The session token says so directly; the running/owner guards
+                // below are now belt-and-suspenders (a live install in this process reads isLive, not
+                // isInterrupted) and are kept for the ownerHeld self-heal note.
+                && org.iiab.controller.InstallGuard.isInterrupted(this)
                 && !InstallProgressRepository.get().current().isRunning()
                 && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 // ADFA-4971: a LIVE deep-env op (backup/restore, clone-receive) legitimately holds
@@ -239,7 +242,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 // true kill, so a genuinely interrupted restore still enters recovery.
                 && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this);
         android.util.Log.i("K2Go-Recover", "onCreate recovering=" + recovering
-                + " marker=" + org.iiab.controller.InstallGuard.inProgress(this)
+                + " interrupted=" + org.iiab.controller.InstallGuard.isInterrupted(this)
                 + " systemInstalled=" + systemInstalled
                 + " instRunning=" + InstallProgressRepository.get().current().isRunning()
                 + " modRunning=" + org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning());
@@ -318,7 +321,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 // English for logs. Naming the cause on screen needs localized lines per PERMANENT
                 // kind, and that belongs with the reworking of this dialog, not here.
                 if (st.phase == InstallState.Phase.FAILED
-                        && org.iiab.controller.InstallGuard.inProgress(this)
+                        && org.iiab.controller.InstallGuard.isLive(this)   // ADFA-5343 (Phase 5a): this process's own install just failed
                         && !gateHeldForRecovery) {   // already shown by the recovery verdict
                     // Latched before the dialog, and checked by onServerReady(): the safety timeout
                     // scheduled at onCreate refuses only while `installing` is true, and the line
@@ -389,7 +392,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // installed, nothing to boot, do not sit there.
             boolean nothingToBoot = !org.iiab.controller.SystemStateEvaluator.rootfsPresent(this);
             if (!nothingToBoot) {
-                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                // ADFA-5343 (Phase 5b): route the recovery boot through desired — the same set-desired
+                // power-on gesture Phase 4 uses everywhere. Under the Phase-5a token an interrupted install
+                // no longer forces isInstalled=false / Holder.INSTALL, so desired can drive the base up; the
+                // reconciler tries (retrying, progress-aware), and the alive-observer above clears the marker
+                // and lifts the gate on success. Replaces the deleted handleServerLaunchClick toggle boot.
+                org.iiab.controller.env.ServerLifecycleReconciler r =
+                        org.iiab.controller.env.ServerLifecycleReconciler.get();
+                r.setUserWantsOn(this, true);
+                r.requestReconcileNow();   // act now, not on the next tick
             }
             main.postDelayed(this::evaluateRecovery,
                     nothingToBoot ? NO_SYSTEM_GATE_MS : GATE_SAFETY_MS);
@@ -903,20 +914,26 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void evaluateRecovery() {
         if (isFinishing() || gateDismissed || !recovering) return;   // observer/terminal may have cleared it
         recovering = false;
-        boolean marker = org.iiab.controller.InstallGuard.inProgress(this);
+        boolean interrupted = org.iiab.controller.InstallGuard.isInterrupted(this);
         boolean reachable = ServerStateRepository.get().current().alive;
         org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict v =
-                org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(marker, reachable);
-        android.util.Log.i("K2Go-Recover", "verdict=" + v + " marker=" + marker + " reachable=" + reachable);
+                org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(interrupted, reachable);
+        android.util.Log.i("K2Go-Recover", "verdict=" + v + " interrupted=" + interrupted + " reachable=" + reachable);
         if (v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL) {
             // ADFA-5119 (review): the guard was one-directional. The observer's branch latched
             // `recovering` before showing the dialog, but this path set neither latch — so a FAILED
             // post arriving afterwards stacked a second non-cancelable dialog, and with
             // gateHeldForRecovery unset a server coming up could open the gate behind it.
             gateHeldForRecovery = true;
+            // ADFA-5343 (Phase 5a): the base is genuinely damaged (interrupted install, never came up).
+            // Cut desired=DOWN so the reconciler stops re-trying pdsm start on a rootfs that won't boot —
+            // an intent, not a new state. It persists (WatchdogEnable), so a background relaunch does not
+            // re-open the retry loop; the recover/reinstall route below owns the fix. On a successful
+            // Recover the box comes back on via desired again (open = boot), so the cut is not "off too far".
+            org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, false);
             showDamagedDialog();
         } else {
-            if (marker) org.iiab.controller.InstallGuard.end(this);   // stale marker — system is usable
+            if (interrupted) org.iiab.controller.InstallGuard.end(this);   // stale marker — system is usable
             onServerReady();
         }
     }
@@ -1004,16 +1021,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */
     public boolean canStartServer() {
         return !closing
-                && targetServerState == null
                 && !ServerStateRepository.get().current().alive
                 && !InstallProgressRepository.get().isRunning()
-                && !org.iiab.controller.InstallGuard.inProgress(this)
-                // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
-                // which is the guard that actually decides. This method was a PARTIAL copy of it —
-                // missing the module queue and the environment lock — so it said yes where the real
-                // guard says no, and the header offered a Retry that flickered and did nothing. The
-                // start was never in danger; the button was a lie about it. Two places answering "can
-                // I start the server?" and answering differently is the defect, not the clone.
+                && !org.iiab.controller.InstallGuard.isLive(this)   // ADFA-5343 (Phase 5a): don't start over a LIVE install; an interrupted one is recovery's to resolve
+                // ADFA-5143: the module-queue and environment-lock checks below matter because this
+                // method was a PARTIAL guard — missing them, it said yes where a start is actually unsafe,
+                // and the header offered a Retry that flickered and did nothing. The start was never in
+                // danger; the button was a lie about it. (ADFA-5343 Phase 5b: the old
+                // handleServerLaunchClick this once mirrored is gone; Retry now sets desired via the
+                // reconciler, but the gate on "is anything in flight?" still belongs here.)
                 //
                 // ownerHeld covers a clone on either side without knowing anything about clones:
                 // Owner.CLONE is in the enum and both sides acquire it (CloneFragment:354 and :936).
@@ -1123,8 +1139,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    @Override public Boolean getTargetServerState() { return targetServerState; }
-    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
 
     // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
     // before the first pdsm line isn't a blank, frozen-looking screen.

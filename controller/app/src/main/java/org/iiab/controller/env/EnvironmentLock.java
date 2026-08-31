@@ -44,7 +44,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.UUID;
 
 public final class EnvironmentLock {
 
@@ -86,9 +85,10 @@ public final class EnvironmentLock {
 
     // Owner marker: line 1 = Owner.name(), line 2 = epoch millis, line 3 = session token.
     private static final String MARKER = ".env_lock";
-    // Unique per process launch: re-generated when the class is (re)loaded in a fresh process, so a
-    // marker written by a process that was later killed no longer matches → treated as stale.
-    private static final String SESSION = UUID.randomUUID().toString();
+    // ADFA-5343 (Phase 5a): the per-process-launch identity now lives in one place, ProcessSession,
+    // shared with InstallGuard so there is a single answer to "which launch am I". A marker written by
+    // a process that was later killed no longer matches → treated as stale.
+    private static final String SESSION = org.iiab.controller.env.ProcessSession.ID;
 
     private EnvironmentLock() {}
 
@@ -210,7 +210,10 @@ public final class EnvironmentLock {
                 case MODULE:  return Holder.INSTALL;
             }
         }
-        if (org.iiab.controller.InstallGuard.inProgress(ctx)) return Holder.INSTALL;
+        // ADFA-5343 (Phase 5a): only a LIVE install (a marker planted by THIS launch) is a holder that
+        // forces the box down. An interrupted install left by a dead launch is not a live holder — it is
+        // recovery's concern, and desired must be free to try booting the base to resolve it.
+        if (org.iiab.controller.InstallGuard.isLive(ctx)) return Holder.INSTALL;
         // ADFA-5333: a live dashboard update restarts dash-node, so it must block every server-touching op
         // (deep-env ops read this via isHeld; live downloads get an explicit check at their start points).
         if (org.iiab.controller.redesign.DashboardRebuildService.isRunning()) return Holder.DASHBOARD;

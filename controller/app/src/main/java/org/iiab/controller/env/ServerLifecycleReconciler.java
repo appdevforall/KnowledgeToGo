@@ -147,8 +147,10 @@ public final class ServerLifecycleReconciler {
             SystemFacts facts = SystemFactsReader.read(ctx);
             boolean userWantsOn = new Preferences(ctx).getWatchdogEnable();
             EnvironmentLock.Holder holder = EnvironmentLock.currentHolder(ctx);
+            // ADFA-5343 (Phase 5a): desired no longer reads facts.isHealthy() — an interrupted-but-maybe-fine
+            // base must be tried, not blocked by its own unknown health (see ServerReconcile.desired).
             boolean desiredUp = ServerReconcile.desired(
-                    facts.isInstalled(), facts.isHealthy(), userWantsOn, holder.executionClass);
+                    facts.isInstalled(), userWantsOn, holder.executionClass);
             this.lastDesiredUp = desiredUp;   // the header's "Starting" reads this (isServerStarting)
             ServerReconcile.Intent intent = ServerReconcile.intent(desiredUp, actual);
 

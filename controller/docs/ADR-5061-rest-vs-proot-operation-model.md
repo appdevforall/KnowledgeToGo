@@ -419,11 +419,11 @@ most expensive by the third platform. A is B done safely over time.
           guard only fired when the creator repeated the project. Widened, with the test.
 
           **A finished run could not close itself — three links in one chain.** Found on device
-          once the hosting landed and Luis started using the two doors for real: a completed ZIM
+          once the hosting landed and the maintainer started using the two doors for real: a completed ZIM
           run and a completed Courses run, on two different phones, both sitting on the index with
           a green Done row under the header "Starting services." for minutes, then redirecting.
 
-          The wording was the tell, and Luis called it: REST content does not start services. It
+          The wording was the tell, and the maintainer called it: REST content does not start services. It
           indexes. Nothing was being started, so the header was describing a state the run was not
           in — and the same flag it was describing is what held the redirect.
 
@@ -448,7 +448,7 @@ most expensive by the third platform. A is B done safely over time.
             the user home from under a screen they were reading.
 
           Which of the three fired on the two phones is not settled — the header says the first,
-          and the redirect arriving the instant Luis took a screenshot points at a lifecycle event
+          and the redirect arriving the instant the maintainer took a screenshot points at a lifecycle event
           restarting the loop, which is the second. The fix removes the dependency either way.
 
           **Courses had no transfer rate, and the reason is upstream.** ZIM's caption shows one;
@@ -460,7 +460,7 @@ most expensive by the third platform. A is B done safely over time.
 
           It is worth having rather than deferring to a server change, because a percentage alone
           cannot separate "slow" from "stopped" — which is the question a user opens this screen
-          to answer, and the one Luis could not answer on a link that had been fast hours earlier.
+          to answer, and the one the maintainer could not answer on a link that had been fast hours earlier.
           So the rate is derived on the device from what the session already holds: bytes
           transferred over time elapsed (`TransferRate`, pure and tested).
 
@@ -491,7 +491,7 @@ most expensive by the third platform. A is B done safely over time.
           Fixed first; then `KolibriConfirmFragment` simply stopped rolling its order back, which
           made the change mostly a deletion, and `canDrainNow` went back to being internal.
 
-          **The row order had to change with it.** Spotted by Luis on the first queued run: the
+          **The row order had to change with it.** Spotted by the maintainer on the first queued run: the
           rows were ordered by content type, which expressed nothing while everything started at
           once, but a queue makes a list read as a sequence — and the banked ZIM drew above the
           running Courses. Now started rows come first and waiting ones last, with the type order
@@ -499,7 +499,7 @@ most expensive by the third platform. A is B done safely over time.
           bottom as well would reshuffle the list every time something completed, and this screen
           is glanced at hours apart, so a row that moves between glances has to be re-read.
 
-          **One row per type, not per order — and it has to say so.** Luis queued four things
+          **One row per type, not per order — and it has to say so.** The maintainer queued four things
           (courses, ZIM, courses, ZIM) and saw two rows. The log showed the queue itself working
           perfectly: each order banked, deferred while another held the line, and started in turn.
           What was wrong was the drawing. A row is built from the session when there is one, and
@@ -516,7 +516,7 @@ most expensive by the third platform. A is B done safely over time.
           in two sections. That is the confusion of a row-per-order with extra structure on top,
           and the sections would reflow on every transition, which is what this screen must not do.
 
-          What landed instead, Luis' own simplification: the type stays the stable anchor and the
+          What landed instead, the maintainer's own simplification: the type stays the stable anchor and the
           **states become counts inside its subtitle** — "1 Done · 1 Queued", "0 of 1 · 21 MiB/s ·
           1 Queued". Nothing moves, and the mix reads at a glance. Composed from the existing
           labels plus numbers, because the project has no `<plurals>` and `MissingTranslation` is
@@ -671,7 +671,7 @@ most expensive by the third platform. A is B done safely over time.
           and the revert on failure is a best-effort second proot call. Combining it with the
           queue's in-memory state is how `InstallController` already handles that ambiguity.
 
-          **The original write-up follows, for the reasoning.** Found by Luis after the
+          **The original write-up follows, for the reasoning.** Found by the maintainer after the
           queue landed — asking for a second Courses order while the first is downloading is
           refused with "not installed". Traced, and the mechanism is worth writing down because
           the refusal is the wrong *kind* of refusal, not just the wrong words.
@@ -725,7 +725,7 @@ most expensive by the third platform. A is B done safely over time.
           index an idle state, then this link points at it. Until then it is the one remaining
           fragment that hosts itself, and it keeps its footer.
 
-          **The landing decision, settled: always the index.** Decided with Luis after using both
+          **The landing decision, settled: always the index.** Decided with the maintainer after using both
           doors on device. The hint (`EXTRA_HINT_STREAM`) and the notification deep-link
           (`EXTRA_OPEN_STREAM`) are both gone, so `openDetail` is reachable only by tapping a row.
           Three reasons, in the order that decided it:
@@ -735,7 +735,7 @@ most expensive by the third platform. A is B done safely over time.
             is the same defect the hosting work removed, in miniature.
           - **The index is the only surface that can end a run.** Finish, the countdown to the
             Library, Run in background. A detail is a dead end by construction.
-          - **The real usage is set-and-forget.** Luis' framing, and it reframes the question:
+          - **The real usage is set-and-forget.** The maintainer's framing, and it reframes the question:
             these downloads take hours, so the dominant case is starting one and leaving, not
             watching. Someone who was never going to look does not care about the extra tap; what
             they need is the screen that finishes the job while they are away and answers "is this
@@ -779,7 +779,7 @@ most expensive by the third platform. A is B done safely over time.
           happening.
 
           So it is shared along the axis that already exists: **the execution class decides**,
-          not the content type. The shape agreed with Luis (ADFA-5074):
+          not the content type. The shape agreed with the maintainer (ADFA-5074):
           - the domain answers *which visual* an operation gets — an enum (`DOWNLOAD` for
             LIVE, `BUILD` for STOPPED), pure and unit-testable, with room for a per-module
             override when one earns it;
@@ -884,7 +884,7 @@ most expensive by the third platform. A is B done safely over time.
 
        **Schedule, and the reversal.** The review put Schedule back into the unknown state on the
        grounds that it only writes a preference and is undone by Cancel. On the device that read
-       wrong, and Luis named why: with the box stopped we withhold Install because we do not know
+       wrong, and the maintainer named why: with the box stopped we withhold Install because we do not know
        whether the platform is there — and Schedule *is* Install, deferred. Offering the deferred
        form of an action we just refused to offer is the same claim made quietly. So unknown and
        stopped now carry About and Hide and nothing else: two states where we have no verdict, and
@@ -914,7 +914,7 @@ most expensive by the third platform. A is B done safely over time.
        a normal thing to ask for. What differs is the **consequence**, and a consequence is a
        sentence. So the STOPPED row carries a note and the colours stay the same.
 
-       Luis' concern shaped the rest: different flows breed duplication and derivations that
+       the maintainer's concern shaped the rest: different flows breed duplication and derivations that
        drift. The code already had that shape — a switch with one branch per state, nine
        hand-picked colours, and the Maps exception written inline twice — so a fourth variant
        for LIVE-vs-STOPPED would have made it worse. The rows are now chosen per state from one

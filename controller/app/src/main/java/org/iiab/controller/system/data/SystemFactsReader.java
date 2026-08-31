@@ -76,11 +76,14 @@ public final class SystemFactsReader {
         ServerStateRepository server = ServerStateRepository.get();
         boolean serverUp = server.current().alive;
         boolean installed = SystemStateEvaluator.isSystemInstalled(ctx);
+        // ADFA-5343 (Phase 5a): healthy stays HONEST — "installed but half-finished" is a real state
+        // the display verdict and OperationDispatcher.BLOCKED_DAMAGED depend on, so an interrupted install
+        // whose base is not up reads unhealthy here. The session token replaces the three former
+        // "is the planter still running" args: a live install reads isLive (not interrupted) and is never
+        // called damaged. Note desired() no longer gates on healthy (see ServerReconcile.desired) — an
+        // interrupted-but-maybe-fine base must be tried, not blocked by its own unknown health.
         boolean healthy = InterruptedInstallDetector.evaluate(
-                InstallGuard.inProgress(ctx),
-                InstallProgressRepository.get().isRunning(),
-                ModuleQueueRepository.get().isRunning(),
-                EnvironmentLock.ownerHeld(ctx),
+                InstallGuard.isInterrupted(ctx),
                 serverUp) == InterruptedInstallDetector.Verdict.OK;
 
         return server.hasObservation()
@@ -102,7 +105,7 @@ public final class SystemFactsReader {
         ServerStateRepository server = ServerStateRepository.get();
         return org.iiab.controller.system.domain.SystemVerdict.evaluate(
                 SystemStateEvaluator.rootfsPresent(ctx),
-                InstallGuard.inProgress(ctx),
+                InstallGuard.isInterrupted(ctx),   // ADFA-5343 (Phase 5a): the DAMAGED oracle wants "interrupted", not "present"
                 InstallProgressRepository.get().isRunning(),
                 ModuleQueueRepository.get().isRunning(),
                 EnvironmentLock.ownerHeld(ctx),
@@ -148,6 +151,12 @@ public final class SystemFactsReader {
         }
         return SystemPresence.hereOrOnTheWay(
                 SystemStateEvaluator.rootfsPresent(ctx),
+                // ADFA-5343 (Phase 5a): present-at-all, NOT isLive. "Is anything here or on the way?"
+                // counts an INTERRUPTED install too — a killed install (its rootfs not yet far enough to
+                // pass rootfsPresent) is recovery's to own, not the wizard's. Reading isLive here sent a
+                // killed initial install to the first-run wizard, whose "Setup your library" step loops
+                // back to Get started (there is no usable system to continue onto). LibraryActivity's
+                // recovering path is the right destination; it declares DAMAGED and routes to recover.
                 InstallGuard.inProgress(ctx),
                 EnvironmentLock.ownerHeld(ctx));
     }

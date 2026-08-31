@@ -662,9 +662,6 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    // ADFA-5343 (Phase 4d-3): this host never toggled the server; the transition state was always null.
-    @Override public Boolean getTargetServerState() { return null; }
-    @Override public void setTargetServerState(Boolean target) { }
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */

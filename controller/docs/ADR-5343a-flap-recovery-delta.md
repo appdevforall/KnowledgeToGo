@@ -2,11 +2,11 @@
 
 **Status:** Approved (2026-08-29) - D1 + D2 approved for implementation (including the two deviations, §9); D3 deferred to Phase 4 (recorded, not pulled forward).
 **Date:** 2026-08-29
-**Deciders:** Luis (sign-off required).
+**Deciders:** the maintainer (sign-off required).
 **Ticket:** ADFA-5343 (Task under Epic ADFA-1028). Revises **ADR-5343** (`controller/docs/ADR-5343-server-lifecycle-reconciler.md`); resolves the open bug **ADFA-5336** whose Phase-2-v1 implementation regressed.
 **Scope of this delta:** it revises exactly three things in ADR-5343 - the �2.6 grace (concretizes it), the �5 collapse row for 5336, and the �7 Phase-2 migration row. Everything else in ADR-5343 stands.
 
-> Method note. Produced read-only against Phase-2 commit `1f5cb0f6`, with the mechanism re-confirmed on device `a026a310` (OnePlus7T). Every structural claim cites `File.java:line`. The reduction gate (ADR-5343 �8 / `CLAUDE.local.md`) still binds: this delta must not add a state, flag, source of truth, or "who may act" special-case.
+> Method note. Produced read-only against Phase-2 commit `1f5cb0f6`, with the mechanism re-confirmed on the test device. Every structural claim cites `File.java:line`. The reduction gate (ADR-5343 �8 / `CLAUDE.local.md`) still binds: this delta must not add a state, flag, source of truth, or "who may act" special-case.
 
 ---
 
@@ -25,7 +25,7 @@ So Phase-2 actuation is **worse than log-only** for a mid-life flap. The reconci
 
 ## 2. Mechanism - device-confirmed (this delta hinges on it; it is not different from the finding)
 
-Re-confirmed on `a026a310` by freezing the reconciler (background the app  `ServerController.onPause` stops the poll, `ServerController.java:122-127`) and issuing `kill -9 <proot>` - exactly what `killOrphan` does (`android.os.Process.killProcess`, `env/EnvironmentProcess.java:192`):
+Re-confirmed on the test device by freezing the reconciler (background the app  `ServerController.onPause` stops the poll, `ServerController.java:122-127`) and issuing `kill -9 <proot>` - exactly what `killOrphan` does (`android.os.Process.killProcess`, `env/EnvironmentProcess.java:192`):
 
 ```
 # healthy: nginx master is already reparented to init
@@ -90,7 +90,7 @@ No new source of truth, no new "who may act" special-case, no compensating flag.
 
 Phase 2 is **re-opened** to include D1 + D2 before actuation is considered done (the ADR-5343 �7 rollback lever - `ACTUATES=false` - stays the escape hatch and is already device-proven to be safe/self-healing). No later phase is pulled forward. First gate unchanged: `:app:testDebugUnitTest` + `:app:lintDebug` green, with the pure decision (`EnvironmentEnsure` + the new `ServerLiveness.servicesDownSinceMs` reducer) JVM-tested off device.
 
-## 7. Post-approval re-verification (device-only, `a026a310`)
+## 7. Post-approval re-verification (device-only, on the test device)
 
 - **Flow 2 (flap):** kill dash-node on a mature proot  box **auto-recovers to `actual=UP` with no manual toggle**; log shows WAIT during the service-down grace, and if it escalates, the relaunch **rebinds `:8085`** (netstat shows the new proot's nginx, not an orphan). Must pass.
 - **Flow 3 (timeout):** a real module-batch hand-off with `/k2go-api` kept down >45 s  `SetupProgressActivity` "taking longer" + Finish appears, reconciler keeps re-driving, Finish lands on a Home it keeps driven - no dead Home.
@@ -150,7 +150,7 @@ The `epoll_wait` failures reported "kernel 6.17.0" — that is **proot's *spoofe
 - *Separate, upstream `iiab/iiab` (via `tools/upstream-patches`):* a php-fpm guard so it cannot busy-loop-log on `epoll_wait` ENOSYS and fill the disk — defense-in-depth, and far less likely once services stop orphaning. Its own ticket.
 - *Non-issue:* the "kernel 6.17" — proot's spoofed version; no action, recorded so no one chases it again.
 
-**Device-verified status (dash-node 1.2.10, `a026a310`).** *All three confirmed.* (1) Clean-kill
+**Device-verified status (dash-node 1.2.10, on the test device).** *All three confirmed.* (1) Clean-kill
 auto-heal — kiwix-serve killed → watcher probes `down` → `pdsm restart kiwix` → `/kiwix/` back to 200
 in ~17 s, zero manual action. (2) Loopback-only restart — LAN POST to the restart endpoint is refused
 while `/kiwix/` still serves the LAN, so a captive-portal client sees the tile but cannot trigger a
@@ -209,8 +209,8 @@ reconciler resumes. The durable crash / session-token case stays Phase 5 and doe
 
 ## 12. `REBUILD_STALL_MS` corrected by device measurement; a rebuild-robustness bug it surfaced
 
-Device measurement of the LIVE rebuild (recompile 1.2.7 → 1.2.9 in-proot) — OnePlus 2:42, Samsung
-4:40, Oppo 7:20, HMD TA-1039 ~12 min — corrects §11's backstop and surfaces a separate bug.
+Device measurement of the LIVE rebuild (recompile 1.2.7 → 1.2.9 in-proot) across the test devices —
+from 2:42 (fastest) to ~12 min (slowest) — corrects §11's backstop and surfaces a separate bug.
 
 **The backstop must key on CPU/process activity, not wall-clock.** The rebuild is a CPU-bound
 `yarn install` native compile: total duration is device-dependent (2:42–12 min, a 4–5× spread) and the
@@ -224,8 +224,8 @@ mid-build. *Interim:* raise it to a conservative wall-clock cap **safely above t
 rebuild follow-up):* replace it with a **no-CPU-for-N** movement backstop — the same shape as the P4
 module-stall detector, device-independent.
 
-**Separate rebuild-robustness bug (the real HMD "failure").** The HMD 13-min "failure" was **not** a
-hang or OOM — 3 GB is enough (MemAvailable floor ~1.08 GB, zero OOM). The build succeeds; the
+**Separate rebuild-robustness bug (the real slow-device "failure").** The slowest device's 13-min
+"failure" was **not** a hang or OOM — 3 GB is enough (MemAvailable floor ~1.08 GB, zero OOM). The build succeeds; the
 post-build **smoke test's fixed `sleep 3` is too short** (node needs ~5 s to `listen()`, ~5–8 s under
 load), so `curl` hits a not-yet-listening staged port → false FAIL → the rebuild ends `error` and the
 live dashboard is (correctly) left on 1.2.7. **Consequence: slow / `PROOT_NO_SECCOMP` devices cannot
@@ -275,4 +275,4 @@ no regression). Two battery items are deferred as measured follow-ups, not desig
   fixed. Explicitly NOT power-tied (box up only while charging) — that is an availability-semantics
   product decision, not a battery tweak.
 - **Doze survival characterization.** The 4b gate proves recovery under real unplugged-stationary Doze on
-  OnePlus + HMD; capture the measured battery cost there so the back-off above is tuned against real data.
+  the test devices; capture the measured battery cost there so the back-off above is tuned against real data.

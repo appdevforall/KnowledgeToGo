@@ -3,9 +3,9 @@
 **Status:** Approved for implementation (2026-08-31) — Fork 1 = **1A** (with the caller audit below gating the
 code), Fork 2 = **out of scope** (no wedged-detection), Fork 3 = **shared process-launch identity**, Fork 4 =
 **recorded in the device matrix**. Two sub-phases (5a token+collapse, 5b route-recovery+delete-residue), each
-landed as a diff + commit message; Luis commits and runs device verification.
+landed as a diff + commit message; the maintainer commits and runs device verification.
 **Date:** 2026-08-31.
-**Deciders:** Luis (sign-off required before any code).
+**Deciders:** the maintainer (sign-off required before any code).
 **Ticket:** ADFA-5343 (Task under Epic ADFA-1028). Revises **ADR-5343** (`controller/docs/ADR-5343-server-lifecycle-reconciler.md`,
 §7 Phase 5 + §5 the ADFA-5330 row); resolves the open bug **ADFA-5330** (ungraceful kill → stale marker → false
 "Recover" / `DAMAGED_REINSTALL`). Sibling to **ADR-5343a** (flap recovery). Everything else in ADR-5343 stands.
@@ -112,14 +112,25 @@ critical finding that 1A alone is insufficient.**
 ### 3.1 What `isInstalled` reads besides the marker — the initial-install safety net
 
 `isSystemInstalled = !inProgress && rootfsPresent` (`SystemStateEvaluator.java:47-53`). Under 1A this becomes
-`!isLive && rootfsPresent`. **The only behavior delta is: ORPHANED marker + rootfs present → now `true` (was
-`false`).** The `rootfsPresent` conjunct is the safety net for the initial-install case:
+`!isLive && rootfsPresent`. **The only behavior delta is: ORPHANED marker + rootfs "present" → now `true` (was
+`false`).** Note `rootfsPresent` is not "any file on disk" — it requires `bin/bash` or `flag_install_ready`
+(`SystemStateEvaluator.java:72-75`), so an install killed early in extraction (e.g. ~10%, before `bin/bash`) reads
+`rootfsPresent=false`.
 
-| Kill point | rootfs on disk? | `isSystemInstalled` (1A) | Result |
-|------------|-----------------|--------------------------|--------|
-| initial install, **before** rootfs dir exists | no | **false** (unchanged) | → wizard; no boot attempt. Correct. |
-| initial install, **after** rootfs dir (half-baked) | yes | **true** (delta) | reconciler tries → `pdsm start` fails → verdict DAMAGED. Correct. |
-| module install over a healthy base | yes | **true** (delta) | reconciler tries → base boots → OK, marker cleared. **This is the fix.** |
+**Routing is decided by `hereOrOnTheWay`, NOT `isSystemInstalled` — and it must keep an interrupted install OUT of
+the wizard.** `hereOrOnTheWay = rootfsPresent || inProgress || ownerHeld` (`SystemPresence`) chooses
+LibraryActivity (false→first-run wizard). An interrupted install is recovery's, not the wizard's, so its **marker
+must count here** — `hereOrOnTheWay` reads `inProgress` (present-at-all), **not** `isLive`. (A 5a first cut read
+`isLive`; a killed install at ~10% then had `rootfsPresent=false` and `isLive=false` → `hereOrOnTheWay=false` → the
+first-run wizard, whose "Setup your library" step loops back to Get started because there is no usable system to
+continue onto. Corrected to `inProgress`.)
+
+| Kill point | rootfsPresent? | `isSystemInstalled` | `hereOrOnTheWay` | Destination |
+|------------|----------------|---------------------|------------------|-------------|
+| initial install, early (before `bin/bash`, ~10%) | no | false | **true** (marker) | LibraryActivity → recovering → `rootfsPresent=false` ⇒ no boot ⇒ verdict **DAMAGED** → recover. Correct. |
+| initial install, later (rootfs half-baked, `bin/bash` present) | yes | **true** (delta) | true | recovering → reconciler tries → `pdsm start` fails → **DAMAGED**. Correct. |
+| module install over a healthy base | yes | **true** (delta) | true | recovering → reconciler tries → base boots → **OK**, marker cleared. **This is the fix.** |
+| truly fresh device (no marker, no rootfs) | no | false | **false** | first-run wizard. Correct. |
 
 A boot attempt on a half-baked rootfs is a `pdsm start` (a read of the tree), not an install write — harmless if it
 fails. Flagged for device proof in §6 (Fork 4).
@@ -128,7 +139,7 @@ fails. Flagged for device proof in §6 (Fork 4).
 
 | # | Site | Uses `isSystemInstalled` for | ORPHANED delta (false→true) | Verdict |
 |---|------|------------------------------|-----------------------------|---------|
-| 1 | `SystemFactsReader.java:78` | `installed` → `desired` + display verdict | **the intended fix** — but see §3.3 (needs the `healthy` companion or it deadlocks) | **consequential** |
+| 1 | `SystemFactsReader.java:78` | `installed` → `desired` + display verdict | **the intended fix** — but see §3.3 (needs `desired` decoupled from `healthy`, decision B1, or it deadlocks) | **consequential** |
 | 2 | `ModuleHubFragment.java:177` | which installed modules to list | reads modules off a possibly-incomplete rootfs, behind the recovery gate | low-risk display |
 | 3 | `LibraryHomeFragment.java:470` | home header `systemInstalled` (also reads the shared `verdict` at `:474`) | header could read "installed" during recovery; gate is over Home | low-risk display |
 | 4 | `LibraryActivity.java:216` | `systemInstalled` for the **else** power-on branch (`:411`) + gate timeout (`:425`) | **not reached during ORPHANED**: `recovering=true` routes to the `:377` branch, not the else | no impact |
@@ -154,25 +165,38 @@ migration) — **noted, not pulled into Phase 5.**
   `installed` to `healthy`, and the false Recover survives.**
 
 This is exactly the "tried-and-failed" semantics the approval named: **DAMAGED must be declared only *after* trying,
-never *before*.** So the window resolution is:
+never *before*.**
 
-> **The `healthy` fed to `desired` must treat an ORPHANED marker optimistically (as not-yet-damaged), so the
-> reconciler is permitted to boot and *the try can happen*.** The `DAMAGED` verdict is a **separate, terminal
-> readout** produced by the outcome — `evaluateRecovery` after the reconciler has had its retried chance, and the
-> display `SystemVerdict`, which already holds `READY` until the first real server observation
-> (`serverStateKnown`, `SystemVerdict.java:63`) so no false DAMAGED flashes mid-window.
+**The mechanism is NOT "make `read().healthy` optimistic" — that breaks a real consumer (found during 5a).**
+`SystemFacts.healthy` is read by `OperationDispatcher.java:125` (`if (facts.isInstalled() && !facts.isHealthy())
+return BLOCKED_DAMAGED;`); an optimistic `healthy` would let the dispatcher run an operation over a half-baked
+rootfs. So **`SystemFacts.healthy` stays HONEST** (an interrupted, not-yet-up base reads unhealthy — correct for the
+dispatcher and the display verdict), and the window is resolved by **removing `healthy` from the `desired`
+predicate** (decision B1):
 
-Concretely, `SystemFactsReader.read` computes the `healthy` it feeds to `desired` from the **LIVE** state only (an
-in-flight install in this process is not "damaged"), and treats ORPHANED as **healthy-optimistic** — the
-"installed-but-damaged, don't run against it" state is the *outcome* (never boots), not the marker. The
-display/recovery verdict keeps using the full `evaluate(interrupted, reachable)` rule, which is now *fair* because
-the reconciler is genuinely retrying during the window.
+> **`ServerReconcile.desired` drops the `healthy` term** — `desired = installed && userWantsOn && holder !=
+> STOPPED`. Under the token the only "installed but not healthy" is an *interrupted* install, and that base must be
+> **tried** (a safe `pdsm start`), not blocked by its own unknown health. The two cases that must keep desired DOWN
+> are already covered without `healthy`: a **live** install is a STOPPED-class holder (`INSTALL`), and a genuinely
+> damaged base is cut by the recovery verdict flipping `userWantsOn` to false. The `DAMAGED` verdict is a
+> **separate, terminal readout** — `evaluateRecovery` after the retried chance, and the display `SystemVerdict`,
+> which holds `READY` until the first real server observation (`serverStateKnown`, `SystemVerdict.java:63`) so no
+> false DAMAGED flashes mid-window.
 
-**Residual to watch (device, §6):** with `healthy` optimistic, a genuinely damaged initial install leaves
-`desired=UP`, so the reconciler retries `pdsm start` every tick forever while `evaluateRecovery` shows DAMAGED. To
-stop the loop cleanly, **5b's `evaluateRecovery`, on declaring DAMAGED, sets `setUserWantsOn(false)`** (reusing the
-existing intent — not a new state) so `desired→DOWN` and the retry ends; the recover/reinstall route then owns the
-fix. This is the one net-new line of behavior beyond deletions, and it is subtraction-shaped (it *stops* work).
+**Invariant (documented in `ServerReconcile.desired`):** desired does not read `healthy` *because the only unhealthy
+is interrupted* (covered by the LIVE holder + the try-then-DAMAGED flow). **If a health signal that is NOT
+marker-derived is ever added (e.g. a structural rootfs check), this invariant must be revisited** — desired would
+then have a reason to gate on health again. `healthy` keeps one honest meaning for its consumers; `desired` reads
+only what it must.
+
+**Residual to watch (device, §6):** with `desired` decoupled from `healthy`, a genuinely damaged base with
+`userWantsOn=true` leaves `desired=UP`, so the reconciler retries `pdsm start` every tick until the cut. The cut —
+**`evaluateRecovery`, on declaring DAMAGED, sets `setUserWantsOn(false)`** (reusing the existing intent, not a new
+state) — flips `desired→DOWN` and ends the loop; it **persists** (`WatchdogEnable`), so a background relaunch does
+not re-open it, and the window is bounded by the first foreground recovery (reboot → `LibraryActivity` →
+`evaluateRecovery` within `GATE_SAFETY_MS`). On a successful Recover the box comes back on via `desired` (open =
+boot), so the cut is momentary. This is the one net-new line of behavior beyond deletions, and it is
+subtraction-shaped (it *stops* work).
 
 ---
 
@@ -209,7 +233,8 @@ recovery residue.
 |--------|-------:|------:|----------|
 | Sources for "is an install live" | **4** (durable marker + 3 in-memory repos that must agree) | **1** (token on the marker) | `InterruptedInstallDetector.java:62-66`; the three repo reads |
 | Signals into `InterruptedInstallDetector.evaluate` | **5** | **2** | `InterruptedInstallDetector.java:62` |
-| Process-launch identity sources | **1** private to EnvironmentLock, 0 for the marker | **1 shared** (both read it) | `EnvironmentLock.java:91` |
+| Terms in `ServerReconcile.desired` | **4** (`installed, healthy, userWantsOn, holder`) | **3** (`healthy` dropped, B1) | `ServerReconcile.java:60` |
+| Process-launch identity sources | **1** private to EnvironmentLock, 0 for the marker | **1 shared** (both read it) | `ProcessSession.java` |
 | Un-routed boot-owners (boot the box outside `desired`) | **1** (`LibraryActivity:392` via ServerController's engine) | **0** | §4 |
 | Deleted members | — | `handleServerLaunchClick` + 2 timeout fields; `get/setTargetServerState` ×4 sites; `targetServerState` field + its `canStartServer` term | §4 |
 | Net-new behavior lines | — | **1** (DAMAGED → `userWantsOn=false`, subtraction-shaped) | §3.3 |
@@ -218,7 +243,7 @@ Every row goes down or holds; the one addition stops work rather than adding sta
 
 ---
 
-## 6. Device verification (device-only — the real gate; Luis runs on `a026a310`)
+## 6. Device verification (device-only — the real gate; run on the test device)
 
 Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launch the explicit main activity.
 
@@ -226,7 +251,8 @@ Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launc
 |----------|----------|--------|
 | Kill mid-**module** install (healthy base) → reboot | base boots via `desired`; marker cleared; **no false Recover** | ADFA-5330 core |
 | Kill mid-**initial** install, rootfs dir half-baked → reboot | reconciler tries; `pdsm start` fails; **DAMAGED still caught**; retry loop stops after DAMAGED (`userWantsOn=false`) | §3.1, §3.3 (Fork 4: half-baked boot is a safe read) |
-| Kill mid-**initial** install, no rootfs dir yet → reboot | `isSystemInstalled=false` → wizard, no boot attempt | §3.1 |
+| Kill mid-**initial** install early (~10%, before `bin/bash`) → reboot | **NOT** the first-run wizard — LibraryActivity recovering → **DAMAGED** → recover (no Setup-your-library loop) | §3.1 (`hereOrOnTheWay` = `inProgress`) |
+| Truly fresh device (no marker, no rootfs) → open | first-run wizard | §3.1 |
 | Normal install → success | boots once via `desired`; no regression | Phase 4 |
 | Recovery path regression (rootfs present, base fine but slow) | boots on retry; no premature DAMAGED; gate lifts | §3.3 window |
 | ORPHANED window UI (mid-recovery, server not up yet) | screens show READY/starting, **no DAMAGED flash** | `SystemVerdict.java:63` `serverStateKnown` guard |
@@ -234,17 +260,17 @@ Kills use `run-as org.iiab.controller` (plain `adb shell kill` is denied); launc
 
 ---
 
-## 7. Sub-phasing (each = diff + proposed commit message; Luis commits + device-verifies)
+## 7. Sub-phasing (each = diff + proposed commit message; the maintainer commits + device-verifies)
 
 - **5a — token + collapse.** `env/ProcessSession` (shared identity); `InstallGuard` token + tri-state
   (`isLive`/`isInterrupted`, no self-heal-delete); `InterruptedInstallDetector.evaluate` 5→2; migrate the coordination
-  readers to LIVE-only (`SystemStateEvaluator`, `EnvironmentLock.currentHolder`) and the verdict/`healthy` path per
-  §3.3. Pure/JVM-testable off device (`SESSION` mismatch discriminator, the 2-arg verdict, the optimistic-window
-  `healthy`). **First gate:** `:app:testDebugUnitTest` + `:app:lintDebug` green.
+  readers to LIVE-only (`SystemStateEvaluator`, `EnvironmentLock.currentHolder`); keep `healthy` honest but drop it
+  from `ServerReconcile.desired` (B1, §3.3). Pure/JVM-testable off device (`SESSION` mismatch discriminator, the
+  2-arg verdict, the 3-arg `desired`). **First gate:** `:app:testDebugUnitTest` + `:app:lintDebug` green.
 - **5b — route recovery + delete residue.** Rework the `recovering` branch to set-desired; `evaluateRecovery`
   reads the retried outcome and sets `userWantsOn=false` on DAMAGED; delete `handleServerLaunchClick` +
   `targetServerState` plumbing (NOT `doLaunchEnvironment`/`ensuring` — ADR-5343a §11). **First gate:** compile +
   lint + the existing recovery unit tests.
 
-**No production code until Luis approves this note and the §3.3 window resolution.** Stop at each gate (note →
+**No production code until the maintainer approves this note and the §3.3 window resolution.** Stop at each gate (note →
 5a diff → device-verify → 5b diff → device-verify).
