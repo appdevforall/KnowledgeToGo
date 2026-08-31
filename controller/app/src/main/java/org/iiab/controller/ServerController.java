@@ -16,7 +16,6 @@
  */
 package org.iiab.controller;
 
-import org.iiab.controller.config.BoxEndpoints;
 
 import android.content.Context;
 import android.os.Handler;
@@ -28,7 +27,7 @@ import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
 
-public class ServerController implements org.iiab.controller.env.ServerLifecycleReconciler.Actuator {
+public class ServerController {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
@@ -74,10 +73,8 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     private final Preferences prefs;
 
     public PRootEngine serverEngine;
-    private long serverUpSinceMs = 0L;
     private boolean isWifiActive = false;
     private boolean isHotspotActive = false;
-    private String currentTargetUrl = null;
     // ADFA-4834: hard guard so a repeat "Turn off" tap never spawns a second concurrent pdsm stop.
     private volatile boolean stopping = false;
     // ADFA-5103: an ensure-up decision or launch is in flight. Because the decision now runs off the
@@ -103,10 +100,11 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
     private Runnable timeoutRunnable;
     private final Handler serverCheckHandler = new Handler(android.os.Looper.getMainLooper());
+    // ADFA-5343 (Phase 4d-2): connectivity-only poll now — server liveness moved to the reconciler tick,
+    // the single driver + publisher. This runnable just keeps the Wi-Fi/hotspot LEDs fresh.
     private final Runnable serverCheckRunnable = new Runnable() {
         @Override
         public void run() {
-            checkServerStatus();
             updateConnectivityStatus();
             serverCheckHandler.postDelayed(this, CHECK_INTERVAL_MS);
         }
@@ -129,100 +127,18 @@ public class ServerController implements org.iiab.controller.env.ServerLifecycle
         updateConnectivityStatus(); // instant refresh when returning to the app
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
         serverCheckHandler.post(serverCheckRunnable);
-        // ADFA-5343 (Phase 2): register as the foreground actuator the reconciler drives. Whichever
-        // Activity is resumed owns this slot; the reconciler boots through it (the one existing boot).
-        org.iiab.controller.env.ServerLifecycleReconciler.get().setActuator(this);
     }
 
     public void onPause() {
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
-        // ADFA-5343 (Phase 2): release the actuator slot — but clearActuator only clears if we still
-        // hold it, so a resume/pause overlap does not wipe the next Activity's registration.
-        org.iiab.controller.env.ServerLifecycleReconciler.get().clearActuator(this);
     }
 
-    /** ADFA-5343 (Phase 2): the reconciler's boot entry point. Delegates to the one existing, idempotent
-     *  boot path so no second actuator is introduced. */
-    @Override
-    public void ensureServerUp() {
-        startEnvironment();
-    }
-
-    public String getCurrentTargetUrl() { return currentTargetUrl; }
     public boolean isWifiActive() { return isWifiActive; }
     public boolean isHotspotActive() { return isHotspotActive; }
 
-    // --- server-alive transition analytics -------------------------------------
-
-    private void updateServerAlive(boolean nowAlive) {
-        boolean wasAlive = ServerStateRepository.get().current().alive;
-        if (nowAlive && !wasAlive) {
-            serverUpSinceMs = System.currentTimeMillis();
-            org.iiab.controller.analytics.AnalyticsClient.with(activity).logServerStarted();
-        } else if (!nowAlive && wasAlive) {
-            long uptime = serverUpSinceMs > 0L ? System.currentTimeMillis() - serverUpSinceMs : -1L;
-            serverUpSinceMs = 0L;
-            org.iiab.controller.analytics.AnalyticsClient.with(activity).logServerStopped(uptime);
-        }
-        // The repository is updated by the poll (checkServerStatus) right after this.
-    }
-
-    // --- status poll ------------------------------------------------------------
-
-    private void checkServerStatus() {
-        if (host.isNegotiating()) return;
-
-        AppExecutors.get().io().execute(() -> {
-            // ADFA-5343 (Phase 0): one honest liveness snapshot instead of a single /home ping.
-            // nginx answers /home before its dash-node upstream is ready, so a restarting engine read
-            // as "up" (the flap). servicesAnswering probes /k2go-api (the usable signal); processPresent
-            // (/proc) is recorded for the richer phase the reconciler will consume in a later phase.
-            // alive stays a 1-bit fact (phase == UP) so ServerStateRepository and every reader are
-            // unchanged here — the only shift is that "up" now means the services answer, not nginx.
-            long now = android.os.SystemClock.elapsedRealtime();
-            // Probe OUTSIDE the lock — RestReadiness.apiReady() can block ~2.5s and must never hold
-            // livenessLock (that would stall a concurrent boot reset).
-            boolean processPresent = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
-            boolean servicesAnswering = org.iiab.controller.redesign.RestReadiness.apiReady();
-            // ADFA-5343a (D1) / ADFA-5343 (Phase 2): read prev and write the next snapshot atomically
-            // under livenessLock, so a boot-time reset (doLaunchEnvironment) is never clobbered by this
-            // poll writing a prev it had read before the reset. next() still measures CONTINUOUS downtime
-            // and resets it on an observation gap (a stale prev — e.g. the app was backgrounded).
-            org.iiab.controller.env.domain.ServerLiveness liveness;
-            synchronized (livenessLock) {
-                liveness = org.iiab.controller.env.domain.ServerLiveness.next(
-                        lastLiveness, processPresent, servicesAnswering, now,
-                        org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
-                lastLiveness = liveness;
-            }
-            boolean localAlive =
-                    liveness.phase(now) == org.iiab.controller.env.domain.ServerLiveness.Phase.UP;
-
-            updateServerAlive(localAlive);
-
-            // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
-            // so every tab reflects the server live instead of only after visiting the Dashboard.
-            final SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
-            ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
-
-            // ADFA-5343 (Phase 1): feed the same snapshot to the log-only reconciler — no second liveness
-            // source, no actuation. It logs desired-vs-actual each poll. Removing this line + the class is
-            // the full rollback.
-            org.iiab.controller.env.ServerLifecycleReconciler.get().observe(activity, liveness);
-
-            // STATE MACHINE: Has the target state been reached?
-            Boolean target = host.getTargetServerState();
-            if (target != null && ServerStateRepository.get().current().alive == target) {
-                host.setTargetServerState(null); // Transition complete!
-                timeoutHandler.removeCallbacks(timeoutRunnable); // Cancel safety net
-                activity.runOnUiThread(host::stopBtnProgress);
-            }
-
-            currentTargetUrl = localAlive ? BoxEndpoints.BASE + "/home" : null;
-
-            activity.runOnUiThread(host::refreshServerUi);
-        });
-    }
+    // ADFA-5343 (Phase 4d-2): the server-liveness poll (checkServerStatus), the log-only reconciler seam,
+    // the targetServerState transition, and the server-uptime analytics all moved to the reconciler's tick
+    // — the single liveness capture + publisher + actuator. The bridge (Actuator/setActuator) is gone too.
 
     private void updateConnectivityStatus() {
         boolean isWifiOn = false;

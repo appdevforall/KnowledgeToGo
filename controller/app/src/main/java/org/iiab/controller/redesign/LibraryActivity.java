@@ -990,9 +990,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         return org.iiab.controller.util.Motion.reduced(this);
     }
 
-    /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
+    /** ADFA-4837 / ADFA-5343 (Phase 4d-2): true while a server start is actually in progress (header shows
+     *  "Starting…"). Now reads the reconciler's published state instead of the retired poll's
+     *  targetServerState: the reconciler wants it up (desired) and it is not up yet. */
     public boolean isServerStarting() {
-        return Boolean.TRUE.equals(targetServerState);
+        return org.iiab.controller.env.ServerLifecycleReconciler.get().lastDesiredUp()
+                && !ServerStateRepository.get().current().alive;
     }
 
     /** ADFA-4956: expose the ServerController so Clone can quiesce/boot the environment via the
@@ -1047,9 +1050,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
     public void startServer() {
         if (!canStartServer()) return;
-        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header (retired in 4d-2)
-        // ADFA-5343 (Phase 4c/4d-1): the last-defense Retry — set desired=UP and kick an immediate
-        // reconcile so it acts now, not on the next tick. A set-desired + nudge, never a raw start/stop.
+        // ADFA-5343 (Phase 4c/4d): the last-defense Retry — set desired=UP and kick an immediate reconcile
+        // so it acts now, not on the next tick. A set-desired + nudge, never a raw start/stop. The
+        // "Starting" header now derives from the reconciler (isServerStarting), so no targetServerState.
         org.iiab.controller.env.ServerLifecycleReconciler r =
                 org.iiab.controller.env.ServerLifecycleReconciler.get();
         r.setUserWantsOn(this, true);
