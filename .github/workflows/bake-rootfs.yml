@@ -1,4 +1,4 @@
-name: Bake & publish IIAB-oA RootFS
+name: Bake & publish K2Go RootFS
 
 # ADFA-5334. Builds the rootfs images with tools/rootfs-builder/build-iiab-rootfs.sh
 # (native proot on arm64 runners) and publishes them to Cloudflare R2 (k2go-rootfs).
@@ -9,7 +9,7 @@ name: Bake & publish IIAB-oA RootFS
 # here (still points at switnet); re-pointing it to R2 is a separate, later change.
 #
 # A one-shot `seed-base` job runs first: it puts the STATIC proot-distro base (the two
-# Debian tarballs IIAB builds on) into R2 exactly once, then only verifies its presence
+# Debian tarballs K2Go builds on) into R2 exactly once, then only verifies its presence
 # on every later run. Retention: the prune keeps the newest 7 batches per (tier,arch).
 
 on:
@@ -32,7 +32,7 @@ jobs:
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
   # (github.com/termux/proot-distro), today mirrored at switnet. It is STATIC, so seed it
   # into R2 ONCE; every later run only HEADs it (no re-download). Bumping PD_VERSION seeds a
-  # fresh proot-distro-v<ver>/ dir once. Only the two bases IIAB consumes are mirrored
+  # fresh proot-distro-v<ver>/ dir once. Only the two bases K2Go consumes are mirrored
   # (Android arm64-v8a -> aarch64, armeabi-v7a -> arm); the rest of the release is not.
   seed-base:
     name: Seed proot-distro base (once) + verify
@@ -61,7 +61,7 @@ jobs:
           ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           PFX="${R2_KEY_PREFIX:-}"                  # '' or 'rootfs/', same as the bake job
           DIR="proot-distro-v${PD_VERSION}"
-          # Only the bases IIAB builds on. Names match build-iiab-rootfs.sh BASE_TARBALL.
+          # Only the bases K2Go builds on. Names match build-iiab-rootfs.sh BASE_TARBALL.
           TARBALLS=( "debian-trixie-aarch64-pd-v${PD_VERSION}.tar.xz" \
                      "debian-trixie-arm-pd-v${PD_VERSION}.tar.xz" )
 
