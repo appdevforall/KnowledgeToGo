@@ -666,19 +666,6 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     @Override public Boolean getTargetServerState() { return null; }
     @Override public void setTargetServerState(Boolean target) { }
 
-    @Override public void enableSystemProtection() {
-        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
-        else startService(i);
-    }
-
-    @Override public void disableSystemProtection() {
-        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
-        startService(i);
-    }
-
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
     public void mapsWizardConfirm(String[] levels, long totalMb) {

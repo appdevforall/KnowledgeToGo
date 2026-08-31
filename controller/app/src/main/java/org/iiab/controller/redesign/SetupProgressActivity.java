@@ -1390,16 +1390,4 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     @Override public Boolean getTargetServerState() { return null; }
     @Override public void setTargetServerState(Boolean target) { }
 
-    @Override public void enableSystemProtection() {
-        android.content.Intent i = new android.content.Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) startForegroundService(i);
-        else startService(i);
-    }
-
-    @Override public void disableSystemProtection() {
-        android.content.Intent i = new android.content.Intent(this, org.iiab.controller.WatchdogService.class);
-        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
-        startService(i);
-    }
 }

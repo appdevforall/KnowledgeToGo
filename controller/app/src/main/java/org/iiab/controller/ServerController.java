@@ -50,8 +50,6 @@ public class ServerController {
         void refreshServerUi();
         Boolean getTargetServerState();
         void setTargetServerState(Boolean target);
-        void enableSystemProtection();
-        void disableSystemProtection();
         /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
          *  screen can show an animated "starting" message during the long silent warm-up, instead of
          *  a blank line until the first pdsm service reports ~15s later. */

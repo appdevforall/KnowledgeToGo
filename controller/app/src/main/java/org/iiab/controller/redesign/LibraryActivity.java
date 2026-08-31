@@ -17,7 +17,6 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.iiab.controller.R;
 import org.iiab.controller.ServerController;
 import org.iiab.controller.ServerStateRepository;
-import org.iiab.controller.WatchdogService;
 import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.InstallState;
 import org.iiab.controller.system.data.PendingContent;
@@ -1165,21 +1164,4 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (readingEllipsis != null) readingEllipsis.start(base);
     }
 
-    @Override
-    public void enableSystemProtection() {
-        Intent i = new Intent(this, WatchdogService.class);
-        i.setAction(WatchdogService.ACTION_START);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(i);
-        } else {
-            startService(i);
-        }
-    }
-
-    @Override
-    public void disableSystemProtection() {
-        Intent i = new Intent(this, WatchdogService.class);
-        i.setAction(WatchdogService.ACTION_STOP);
-        startService(i);
-    }
 }
