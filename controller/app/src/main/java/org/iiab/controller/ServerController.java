@@ -19,7 +19,6 @@ package org.iiab.controller;
 
 import android.content.Context;
 import android.os.Handler;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,8 +47,6 @@ public class ServerController {
         void stopBtnProgress();
         void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn);
         void refreshServerUi();
-        Boolean getTargetServerState();
-        void setTargetServerState(Boolean target);
         /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
          *  screen can show an animated "starting" message during the long silent warm-up, instead of
          *  a blank line until the first pdsm service reports ~15s later. */
@@ -86,8 +83,6 @@ public class ServerController {
     private final Object livenessLock = new Object();
     private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
-    private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
-    private Runnable timeoutRunnable;
     private final Handler serverCheckHandler = new Handler(android.os.Looper.getMainLooper());
     // ADFA-5343 (Phase 4d-2): connectivity-only poll now — server liveness moved to the reconciler tick,
     // the single driver + publisher. This runnable just keeps the Wi-Fi/hotspot LEDs fresh.
@@ -183,7 +178,10 @@ public class ServerController {
     /**
      * ADFA-4842: UNCONDITIONAL, deterministic boot of the Debian/proot environment (pdsm start).
      *
-     * <p><b>Why this exists — DO NOT replace calls to it with the toggle {@link #handleServerLaunchClick}.</b>
+     * <p><b>Why this exists — it must stay UNCONDITIONAL, never a start-XOR-stop toggle on the cached
+     * {@code alive}.</b> (ADFA-5343 Phase 5b removed the old {@code handleServerLaunchClick} toggle; the
+     * user button is now set-desired via the reconciler. This boot survives only on the STOPPED-proot
+     * dashboard-rebuild hand-off in {@code SetupProgressActivity}, ADR-5343a §11.)
      * A proot MODULE install runs each runrole in its own proot with {@code --kill-on-exit}: the role does a
      * clean start → its tasks → clean stop, and when the runrole's proot exits it also kills any service it
      * (re)started. So right after a runrole finishes, the environment is DOWN — that is the intended, clean
@@ -191,11 +189,10 @@ public class ServerController {
      * the LAST module do we bring the environment back up, and that job belongs to the install index.
      *
      * <p>The catch: the app's cached {@link ServerStateRepository} {@code alive} can still read TRUE for a
-     * moment (the 3s poll hasn't seen the runrole proot exit yet). {@code handleServerLaunchClick} is a
-     * TOGGLE — starts if {@code !alive}, STOPS if {@code alive} — so on that stale TRUE it would STOP instead
-     * of start. That is exactly the bug we chased: the index logged "Stopping IIAB environment gracefully"
-     * right after DONE and landed on a dead Home. The index KNOWS the environment must come up now, so it
-     * starts UNCONDITIONALLY here — never via the toggle.
+     * moment (the 3s poll hasn't seen the runrole proot exit yet). A start-XOR-stop toggle keyed on that
+     * cache would STOP on the stale TRUE instead of starting. That is exactly the bug we chased: the index
+     * logged "Stopping IIAB environment gracefully" right after DONE and landed on a dead Home. The index
+     * KNOWS the environment must come up now, so it starts UNCONDITIONALLY here — never a cache-keyed toggle.
      *
      * <p>REST content installs are a different world: they run on the LIVE server (it never goes down), so
      * none of this applies there. This method is only for the post-module boot driven by the index.
@@ -321,51 +318,10 @@ public class ServerController {
                 });
     }
 
-    public void handleServerLaunchClick(View v) {
-        // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
-        if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
-                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || InstallGuard.inProgress(activity)   // ADFA-4811: durable guard survives a mid-install kill
-                || org.iiab.controller.env.EnvironmentLock.ownerHeld(activity)) {   // ADFA-4957: never toggle the server while a deep-env op (backup/restore/clone) OWNS the lock. Uses ownerHeld (not isHeld) so a live content download — which runs on the server and holds no owner marker — doesn't block turn-off.
-            host.setTargetServerState(null);
-            activity.runOnUiThread(host::stopBtnProgress);
-            host.refreshServerUi();
-            return;
-        }
-        // Set a hard timeout as a safety net
-        timeoutRunnable = () -> {
-            if (host.getTargetServerState() != null) {
-                host.setTargetServerState(null); // Abort transition
-                activity.runOnUiThread(host::stopBtnProgress);
-                host.refreshServerUi();
-                host.addToLog(activity.getString(R.string.server_timeout_warning));
-            }
-        };
-        timeoutHandler.postDelayed(timeoutRunnable, activity.getResources().getInteger(R.integer.server_cool_off_duration_ms));
-
-        if (!ServerStateRepository.get().current().alive) {
-            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment(). Reached now only
-            // by the recovery caller (LibraryActivity:394, Phase 5).
-            startEnvironment();
-
-            // ADFA-5061: a 20 s timer used to fire a snackbar here — "Termux not opening? Enable
-            // Master Watchdog to force it to gain focus." Removed, because every part of it is now
-            // false. The environment is not Termux and has not been for some time; nothing has to
-            // gain focus, since the server runs in a proot this process owns rather than in another
-            // app; and the Master Watchdog keeps services alive while the screen is off, which has
-            // no bearing on whether a start succeeds. It was advice from an era when starting the
-            // server meant handing off to a second app that Oppo and Xiaomi would refuse to
-            // foreground.
-            //
-            // It also fired on elapsed time alone, so on any slow device it told a user that
-            // nothing was happening while the start was happening. The honest report of a start
-            // that did not take is the timeout above, which is still here and still runs.
-
-        }
-        // ADFA-5343 (Phase 4c): the toggle no longer stops the box. A user turn-off is now an intent
-        // (LibraryActivity.turnOffK2Go -> setUserWantsOn(false)) that the reconciler honors with a graceful
-        // pdsm stop + proot teardown. This branch's callers (LibraryActivity install-success / recovering /
-        // autostart) are all boot-gated on !alive, so the old stop branch was dead once the button
-        // converted. handleServerLaunchClick is boot-only now and 4d deletes it with the autostart cluster.
-    }
+    // ADFA-5343 (Phase 5b): handleServerLaunchClick — the cache-keyed start-XOR-stop toggle — is deleted.
+    // Its last caller was the recovery boot (LibraryActivity's recovering branch), now routed through
+    // desired (setUserWantsOn(true) + requestReconcileNow), so every server start/stop is the reconciler's.
+    // The toggle's transition scaffolding went with it: the timeout Handler/Runnable and the Host's
+    // getTargetServerState/setTargetServerState. The unconditional startEnvironment() above stays — it is
+    // still the STOPPED-proot dashboard-rebuild hand-off boot in SetupProgressActivity (ADR-5343a §11).
 }

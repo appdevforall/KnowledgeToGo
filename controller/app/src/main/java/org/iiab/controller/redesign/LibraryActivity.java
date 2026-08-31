@@ -65,7 +65,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean navSyncing = false;
 
     private ServerController serverController;
-    private Boolean targetServerState = null;
 
     private LottieAnimationView bootGate;
     private View installProgress;
@@ -393,7 +392,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // installed, nothing to boot, do not sit there.
             boolean nothingToBoot = !org.iiab.controller.SystemStateEvaluator.rootfsPresent(this);
             if (!nothingToBoot) {
-                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                // ADFA-5343 (Phase 5b): route the recovery boot through desired — the same set-desired
+                // power-on gesture Phase 4 uses everywhere. Under the Phase-5a token an interrupted install
+                // no longer forces isInstalled=false / Holder.INSTALL, so desired can drive the base up; the
+                // reconciler tries (retrying, progress-aware), and the alive-observer above clears the marker
+                // and lifts the gate on success. Replaces the deleted handleServerLaunchClick toggle boot.
+                org.iiab.controller.env.ServerLifecycleReconciler r =
+                        org.iiab.controller.env.ServerLifecycleReconciler.get();
+                r.setUserWantsOn(this, true);
+                r.requestReconcileNow();   // act now, not on the next tick
             }
             main.postDelayed(this::evaluateRecovery,
                     nothingToBoot ? NO_SYSTEM_GATE_MS : GATE_SAFETY_MS);
@@ -1014,16 +1021,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */
     public boolean canStartServer() {
         return !closing
-                && targetServerState == null
                 && !ServerStateRepository.get().current().alive
                 && !InstallProgressRepository.get().isRunning()
                 && !org.iiab.controller.InstallGuard.isLive(this)   // ADFA-5343 (Phase 5a): don't start over a LIVE install; an interrupted one is recovery's to resolve
-                // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
-                // which is the guard that actually decides. This method was a PARTIAL copy of it —
-                // missing the module queue and the environment lock — so it said yes where the real
-                // guard says no, and the header offered a Retry that flickered and did nothing. The
-                // start was never in danger; the button was a lie about it. Two places answering "can
-                // I start the server?" and answering differently is the defect, not the clone.
+                // ADFA-5143: the module-queue and environment-lock checks below matter because this
+                // method was a PARTIAL guard — missing them, it said yes where a start is actually unsafe,
+                // and the header offered a Retry that flickered and did nothing. The start was never in
+                // danger; the button was a lie about it. (ADFA-5343 Phase 5b: the old
+                // handleServerLaunchClick this once mirrored is gone; Retry now sets desired via the
+                // reconciler, but the gate on "is anything in flight?" still belongs here.)
                 //
                 // ownerHeld covers a clone on either side without knowing anything about clones:
                 // Owner.CLONE is in the enum and both sides acquire it (CloneFragment:354 and :936).
@@ -1133,8 +1139,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    @Override public Boolean getTargetServerState() { return targetServerState; }
-    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
 
     // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
     // before the first pdsm line isn't a blank, frozen-looking screen.

@@ -93,9 +93,8 @@ public final class InstallGuard {
     /**
      * The marker exists at all — a LIVE or an INTERRUPTED install, regardless of which launch planted it.
      * The right query where an interrupted install must count the same as a live one: "is anything here or
-     * on the way?" ({@code SystemFactsReader.hereOrOnTheWay} — a killed install is recovery's, not the
-     * wizard's) and the server toggle's install guard ({@code ServerController.handleServerLaunchClick},
-     * which Phase 5b deletes). For the "is a live install running now?" vs "was one interrupted?"
+     * on the way?" ({@code SystemFactsReader.hereOrOnTheWay} — a killed install is recovery's to resolve,
+     * not the first-run wizard's). For the "is a live install running now?" vs "was one interrupted?"
      * distinction, use {@link #isLive} / {@link #isInterrupted} instead.
      */
     public static boolean inProgress(Context ctx) {
