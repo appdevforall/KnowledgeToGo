@@ -403,10 +403,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // (CloneFragment.releaseCloneEnv / the DeepOp terminal observer), never the boot gate.
             onServerReady();
         } else {
-            // ADFA-5343 (Phase 4d-1): no bespoke autostart here. On a normal launch the reconciler brings
-            // the box up from desired=UP (userWantsOn, persisted the last time the server ran) — its tick
-            // and the foreground observe boot it without this postDelayed start. The gate-safety below still
-            // lifts the boot gate so the user is never trapped waiting.
+            // ADFA-5343 (Phase 4d-1, corrected): opening the app is a POWER-ON gesture. On a FRESH launch
+            // (savedInstanceState == null) of an installed system, set desired=UP so the reconciler boots
+            // the box — "open = boot". This is set-desired, not the old raw autostart: it is idempotent,
+            // and gated to a fresh launch so a config-change recreate (rotation) does not re-power-on.
+            // The desired-gate ("stay off") then applies ONLY to a background PROCESS-RESTART after a
+            // turn-off — no Activity, so no power-on gesture, so userWantsOn stays false and the box stays
+            // down (the real D3 case). Settings turn-off = setUserWantsOn(false) = stop + no background.
+            if (systemInstalled && savedInstanceState == null) {
+                org.iiab.controller.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
+            }
             // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
             // dismissal here; the gate is lifted only when the install reaches a terminal state (the
