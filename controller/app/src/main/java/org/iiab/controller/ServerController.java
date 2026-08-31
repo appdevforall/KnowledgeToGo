@@ -45,20 +45,13 @@ public class ServerController {
     public interface Host {
         void addToLog(String message);
         void startFusionPulse();
-        void startExitPulse();
         void stopBtnProgress();
         void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn);
         void refreshServerUi();
         Boolean getTargetServerState();
         void setTargetServerState(Boolean target);
-        boolean isNegotiating();
         void enableSystemProtection();
         void disableSystemProtection();
-        /** ADFA-4834: the pdsm service currently stopping, for the shutdown screen. */
-        default void onShutdownProgress(String service) {}
-        /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
-         *  This is the real "everything is down" signal the close should hang off of. */
-        default void onShutdownComplete() {}
         /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
          *  screen can show an animated "starting" message during the long silent warm-up, instead of
          *  a blank line until the first pdsm service reports ~15s later. */
@@ -75,8 +68,6 @@ public class ServerController {
     public PRootEngine serverEngine;
     private boolean isWifiActive = false;
     private boolean isHotspotActive = false;
-    // ADFA-4834: hard guard so a repeat "Turn off" tap never spawns a second concurrent pdsm stop.
-    private volatile boolean stopping = false;
     // ADFA-5103: an ensure-up decision or launch is in flight. Because the decision now runs off the
     // main thread, two concurrent startEnvironment() calls could each read /proc, both see nothing,
     // and both LAUNCH — the synchronous main-thread serialisation that used to prevent that is gone.
@@ -191,9 +182,6 @@ public class ServerController {
 
     // --- server start / stop (the control button) -------------------------------
 
-    /** ADFA-4837: true while a graceful stop is in flight; a start must not stack over it. */
-    public boolean isStopping() { return stopping; }
-
     /**
      * ADFA-4842: UNCONDITIONAL, deterministic boot of the Debian/proot environment (pdsm start).
      *
@@ -215,7 +203,6 @@ public class ServerController {
      * none of this applies there. This method is only for the post-module boot driven by the index.
      */
     public void startEnvironment() {
-        if (stopping) return;   // a graceful stop is still tearing its proot down — don't stack a second
         if (ensuring) return;   // ADFA-5103: a decision/launch is already in flight; never double-launch
         ensuring = true;
         // ADFA-5103: "ensure it is up", decided OFF the main thread — this has six callers, all on it,
@@ -359,17 +346,8 @@ public class ServerController {
         timeoutHandler.postDelayed(timeoutRunnable, activity.getResources().getInteger(R.integer.server_cool_off_duration_ms));
 
         if (!ServerStateRepository.get().current().alive) {
-            // ADFA-4837: a graceful stop can already have flipped the server to !alive while its
-            // proot is still tearing down. Never start on top of that — it would stack a second
-            // proot over the same rootfs (the collision class we keep fighting).
-            if (stopping) {
-                host.setTargetServerState(null);
-                activity.runOnUiThread(host::stopBtnProgress);
-                return;
-            }
-            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment() (also used by the
-            // install index after the last module). Here it runs only in the !alive branch, so the UI button
-            // keeps its start/stop TOGGLE semantics.
+            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment(). Reached now only
+            // by the recovery caller (LibraryActivity:394, Phase 5).
             startEnvironment();
 
             // ADFA-5061: a 20 s timer used to fire a snackbar here — "Termux not opening? Enable

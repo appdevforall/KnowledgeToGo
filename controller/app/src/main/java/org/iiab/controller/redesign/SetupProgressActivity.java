@@ -121,7 +121,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // core answers, then completes/redirects to an already-live Library. Owns a ServerController (Host)
     // just to issue that start; the server proot is process-scoped so it survives into LibraryActivity.
     private org.iiab.controller.ServerController serverController;
-    private Boolean targetServerState = null;         // ServerController.Host state
     // ADFA-5343 (Phase 2): the post-batch server restart is owned by the reconciler now, not this screen.
     // The three boot latches (moduleRestartKicked/moduleServerUp/moduleServerFailed) are gone: "up" is
     // read from the one observed server phase (serverObservedUp()), and "didn't come back in time" is a
@@ -1384,13 +1383,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // a module batch. UI-affordance callbacks are no-ops here (the index has its own status line). ----
     @Override public void addToLog(String message) { android.util.Log.d("K2Go-SetupProgress", message); }
     @Override public void startFusionPulse() { }
-    @Override public void startExitPulse() { }
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
-    @Override public Boolean getTargetServerState() { return targetServerState; }
-    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
-    @Override public boolean isNegotiating() { return false; }
+    // ADFA-5343 (Phase 4d-3): this host never toggled the server; the transition state was always null.
+    @Override public Boolean getTargetServerState() { return null; }
+    @Override public void setTargetServerState(Boolean target) { }
 
     @Override public void enableSystemProtection() {
         android.content.Intent i = new android.content.Intent(this, org.iiab.controller.WatchdogService.class);

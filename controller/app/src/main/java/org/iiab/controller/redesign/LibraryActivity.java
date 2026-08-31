@@ -66,7 +66,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean navSyncing = false;
 
     private ServerController serverController;
-    private boolean isNegotiating = false;
     private Boolean targetServerState = null;
 
     private LottieAnimationView bootGate;
@@ -1008,7 +1007,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         return !closing
                 && targetServerState == null
                 && !ServerStateRepository.get().current().alive
-                && (serverController == null || !serverController.isStopping())
                 && !InstallProgressRepository.get().isRunning()
                 && !org.iiab.controller.InstallGuard.inProgress(this)
                 // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
@@ -1123,25 +1121,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
     @Override public void addToLog(String message) { Log.d(TAG, message); }
     @Override public void startFusionPulse() { }
-    @Override public void startExitPulse() { }
     @Override public void stopBtnProgress() { }
     @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
     @Override public void refreshServerUi() { }
     @Override public Boolean getTargetServerState() { return targetServerState; }
     @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
-    @Override public boolean isNegotiating() { return isNegotiating; }
-
-    // ADFA-4834: minimal shutdown feedback — show the service currently stopping while closing.
-    @Override public void onShutdownProgress(String service) {
-        if (!closing || installDetail == null) return;
-        installDetail.setText(service);
-    }
-
-    // ADFA-4834: teardown really finished (pdsm stop exited, proot killed, watchdog off). This is
-    // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
-    @Override public void onShutdownComplete() {
-        if (closing) onClosedReady();
-    }
 
     // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
     // before the first pdsm line isn't a blank, frozen-looking screen.
