@@ -409,7 +409,9 @@ install_demo_contents() {
 
     if wget -c "${DEMO_REPO_URL}/${cw_tar}" -O "/tmp/${cw_tar}"; then
       log "Extracting $cw_tar into $cw_dir..."
-      tar -xzf "/tmp/${cw_tar}" -C "$cw_dir"
+      # proot-safe: tar -x as root restores directory modes via fchmodat2, untranslated by this
+      # proot (same root cause as the ADFA-5334 site-updater) -> it aborts on the dir entries.
+      tar --no-same-permissions --no-same-owner -xzf "/tmp/${cw_tar}" -C "$cw_dir"
       rm -f "/tmp/${cw_tar}"
     else
       warn "Failed to download Calibre-Web demo library ($cw_tar)"
@@ -466,7 +468,9 @@ install_iiaboa_dashboard() {
 
   log "Downloading and installing Yarn directly..."
   mkdir -p /opt/yarn
-  curl -fsSL --compressed https://yarnpkg.com/latest.tar.gz | tar -xz -C /opt/yarn --strip-components=1
+  # proot-safe: tar -x as root restores directory modes via fchmodat2 (untranslated by this proot,
+  # fails on dirs); --no-same-permissions keeps files' exec bits (umask only) so bin/yarn stays runnable.
+  curl -fsSL --compressed https://yarnpkg.com/latest.tar.gz | tar --no-same-permissions --no-same-owner -xz -C /opt/yarn --strip-components=1
   ln -sf /opt/yarn/bin/yarn /usr/local/bin/yarn
   ln -sf /opt/yarn/bin/yarnpkg /usr/local/bin/yarnpkg
 
@@ -474,9 +478,12 @@ install_iiaboa_dashboard() {
 
   # Copy dashboard files
   mkdir -p "$dash_dest"
-  # Proot-safe copy: rsync's lchmod -> fchmodat2 (glibc>=2.39, kernel>=6.6) isn't
-  # translated by proot (rc=23 under proot on 6.6+ kernels); cp -a is reliable.
-  cp -a "${dash_src}/." "$dash_dest/"
+  # Proot-safe copy: rsync's lchmod AND cp -a's mode restore both use fchmodat2 (glibc>=2.39,
+  # kernel>=6.6), which this proot does NOT translate -> it fails on directory entries (rc=23,
+  # same root cause as the ADFA-5334 site-updater). --no-preserve=mode drops only that failing
+  # chmod pass; ownership/timestamps/symlinks are still preserved. FIXME(fchmodat2): see the note
+  # in .github/workflows/bake-rootfs.yml -- translate fchmodat2 in libproot and drop these.
+  cp -a --no-preserve=mode "${dash_src}/." "$dash_dest/"
 
   # Install node dependencies and compile TS->JS (ADFA-4839: dash-node runs dist/server.js).
   log "Installing Node dependencies for the dashboard..."
@@ -695,7 +702,9 @@ fi
 # files (removing a build is just dropping it from VERSIONS in fetch-pdfjs.sh).
 rm -rf /library/www/html/pdfjs/*
 if [ -f "${K2GO_OPT_DIR}/static/pdfjs/dist/manifest.json" ]; then
-  cp -a "${K2GO_OPT_DIR}/static/pdfjs/dist/." /library/www/html/pdfjs/
+  # proot-safe: cp -a's mode restore uses fchmodat2 (untranslated by this proot, fails on dirs);
+  # --no-preserve=mode drops only that chmod pass (ADFA-5334, same as the site-updater).
+  cp -a --no-preserve=mode "${K2GO_OPT_DIR}/static/pdfjs/dist/." /library/www/html/pdfjs/
   ok "pdf.js builds deployed: $(sed -n 's/.*\"id\":\"\([^\"]*\)\".*/\1/p' /library/www/html/pdfjs/manifest.json | tr '\n' ' ')"
 else
   warn "pdf.js dist not found; viewer will 404 until deployed."

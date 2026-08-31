@@ -103,6 +103,14 @@ jobs:
       - name: Ensure AWS CLI is available
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
 
+      # NOTE (ADFA-5334 -- fchmodat2 tech debt, address soon): the builder installs the rootfs
+      # under proot, and this proot does NOT translate the fchmodat2 syscall (glibc>=2.39 /
+      # kernel>=6.6). Any recursive perms-preserving copy (tar -x, cp -a, rsync -a) then fails
+      # restoring directory modes -> the install aborts and every tier lands on HOLD. Worked
+      # around per call site (site-updater: tar --no-same-permissions; iiab-android: cp -a
+      # --no-preserve=mode). Proper fix: translate fchmodat2 in libproot (PRootEngine) and drop
+      # these workarounds; until then any NEW perms-preserving copy in the install MUST use the
+      # proot-safe form.
       - name: Build all tiers for ${{ matrix.arch }}
         run: |
           sudo bash ./tools/rootfs-builder/build-iiab-rootfs.sh \
