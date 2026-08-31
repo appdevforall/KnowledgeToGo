@@ -21,7 +21,11 @@ mkdir -p "$DEST_DIR"
 # Mirror: clear the destination, then copy via tar (proot-safe). Excludes this script and any *.sh.
 printf "Mirroring %s -> %s ...\n" "$SITE_SRC" "$DEST_DIR"
 find "$DEST_DIR" -mindepth 1 -delete 2>/dev/null || true
-( cd "$SITE_SRC" && tar --exclude='*.sh' -cf - . ) | ( cd "$DEST_DIR" && tar -xf - )
+# tar -x as root also restores dir/file modes+owner via fchmodat2/fchownat, which this proot
+# does NOT translate (same root cause as the rsync->tar switch, ADFA-5059) -> extraction aborted
+# on ./js, ./css, ./img, ./lang. Skip that restore pass; the static assets take umask defaults
+# (dirs 0755, files 0644) here, which is exactly what nginx serves.
+( cd "$SITE_SRC" && tar --exclude='*.sh' -cf - . ) | ( cd "$DEST_DIR" && tar --no-same-permissions --no-same-owner -xf - )
 
 # Cache-bust: stamp ONLY the served index.html (it carries the asset ?v= refs and the runtime token
 # window.__CACHEBUST__). app.js is intentionally NOT stamped — it reads the token at runtime and
