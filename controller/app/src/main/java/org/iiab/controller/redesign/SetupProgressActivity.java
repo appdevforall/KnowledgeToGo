@@ -169,6 +169,27 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         serverController = new org.iiab.controller.ServerController(this, this);
         serverController.start();
 
+        // ADFA-5343 (§3.3 follow-up): an install marker left by a DEAD process launch
+        // (InstallGuard.isInterrupted) is a killed install, not a resumable session. If the OS
+        // restores this index on top after such a kill, resuming here strands it polling for a server
+        // that may never come up — and the reconciler keeps retrying pdsm start uncut, because the
+        // DAMAGED loop-cut lives only in LibraryActivity.evaluateRecovery. Hand it to that single
+        // recovery owner instead: it boots a healthy base and clears the marker, or declares DAMAGED
+        // and cuts the retry. A live install in THIS process reads isLive (the marker is cleared on a
+        // clean finish), so a normal run never takes this branch.
+        //
+        // Guarded so it only fires for a genuinely stranded install with nothing live: this screen is
+        // also the home of the dashboard rebuild (which does NOT plant InstallGuard) and of live content
+        // downloads (LIVE), so a stale marker coinciding with one of those must not hijack it into
+        // recovery. After a real kill the queue/downloads are idle (device-observed: holder=NONE), so the
+        // guard never blocks the case it exists for.
+        if (org.iiab.controller.InstallGuard.isInterrupted(this)
+                && !rebuildInSession()
+                && !org.iiab.controller.env.EnvironmentLock.isBusyNow()) {
+            routeToRecovery();
+            return;
+        }
+
         // ADFA-4919: observe the maps (proot) queue so its RUNNING -> DONE transition always
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
@@ -1237,6 +1258,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (!org.iiab.controller.env.ServerLifecycleReconciler.ACTUATES) {
             serverController.startEnvironment();   // rollback path: reconciler is log-only, boot here
         }
+    }
+
+    /**
+     * ADFA-5343 (§3.3 follow-up): hand an interrupted (dead-process) install to LibraryActivity's single
+     * recovery path. {@code CLEAR_TOP} <b>without</b> {@code SINGLE_TOP} so the standard-launchMode
+     * LibraryActivity is finished and re-created — its {@code onCreate} re-computes {@code recovering}
+     * and schedules {@code evaluateRecovery} (which boots a healthy base and clears the marker, or
+     * declares DAMAGED and sets {@code userWantsOn=false} to cut the reconciler's retry). Reusing the
+     * instance via {@code onNewIntent} would not, since Home is a monitor there.
+     */
+    private void routeToRecovery() {
+        startActivity(new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));
+        finish();
     }
 
     private void goHome(boolean clearSessions) {

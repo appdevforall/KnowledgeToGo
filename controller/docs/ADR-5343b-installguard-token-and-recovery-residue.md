@@ -198,6 +198,31 @@ not re-open it, and the window is bounded by the first foreground recovery (rebo
 boot), so the cut is momentary. This is the one net-new line of behavior beyond deletions, and it is
 subtraction-shaped (it *stops* work).
 
+**Device-verified (2026-08-31) and closed by a follow-up.** On device the cut works on the `LibraryActivity`
+path (S2), but the residual has a second, real face: after a killed **module** install, the OS can restore the
+`SetupProgressActivity` task on top; that index resumes and polls for a server that never comes on a broken base,
+and `evaluateRecovery` (the only owner of the cut) never runs — so the reconciler retries `pdsm start` **uncut**
+until the user manually reaches Home. Root: the *give-up* decision is owned by a **UI Activity**, not by the
+lifecycle owner, so any path that bypasses `LibraryActivity.onCreate` bypasses the cut.
+
+- **Fix (landed — small seam, one recovery owner).** `SetupProgressActivity.onCreate`: if
+  `InstallGuard.isInterrupted(this)` (a dead-process marker = a killed install, never a live run — the marker is
+  cleared on a clean finish) **and nothing live owns the screen** (`!rebuildInSession() && !EnvironmentLock.isBusyNow()`,
+  so a stale marker coinciding with a dashboard rebuild or a live content download — both of which also live on this
+  screen and neither plants InstallGuard — cannot hijack it), it does **not** resume the index — it routes to the
+  single recovery owner via
+  `startActivity(LibraryActivity, FLAG_ACTIVITY_CLEAR_TOP)` **without** `SINGLE_TOP`, so the standard-launchMode
+  `LibraryActivity` is re-created and its `onCreate` re-computes `recovering` and schedules `evaluateRecovery`
+  (reusing it via `onNewIntent` would not — Home is a monitor there). `LibraryActivity` then boots a healthy base
+  and clears the marker, or declares DAMAGED and cuts. No new state, no duplicated verdict — the cut stays owned in
+  one place; this only funnels the stray path into it. (The `batchServerSlow` 45 s timeout is *not* the hook: after
+  a fresh-process restore the reset queue is not "terminal", so its wait anchor never arms.)
+- **End-state (recorded, not pulled in) — move the give-up to the owner.** The clean fix is for the *reconciler*
+  itself to stop driving `desired=UP` after the box repeatedly fails to boot on an **installed** system (a bounded
+  retry / present-but-unbootable signal), publishing a DAMAGED phase any screen observes — which lets us delete
+  both the `userWantsOn=false` cut-hack and the Activity-coupling entirely. That is a larger redesign of the core
+  owner (a retry budget + a new phase) with its own note, deliberately out of scope for this follow-up.
+
 ---
 
 ## 4. Decision (piece 2) — route recovery through `desired`, delete the residue
