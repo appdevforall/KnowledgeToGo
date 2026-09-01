@@ -33,12 +33,12 @@ def hasGoogleServices = file("google-services.json").exists()
 
 android {
     // 2. Identity
-    namespace 'org.iiab.controller'
+    namespace 'org.appdevforall.k2go'
     compileSdk 34
     ndkVersion "26.3.11579264"
 
     defaultConfig {
-        applicationId "org.iiab.controller"
+        applicationId "org.appdevforall.k2go"
         minSdk 24
         // VITAL FOR PROOT AND W^X! Do not go up unless strictly necessary
         targetSdk 28
@@ -769,7 +769,7 @@ task refreshKolibriCatalog {
 // the fix is to refuse the destructive entry point rather than to write a rule someone has to remember.
 // Install and run explicitly instead (this installs, runs, and leaves both APKs in place):
 //     ./gradlew :app:installDebug :app:installDebugAndroidTest
-//     adb shell am instrument -w -e class <TestClass> org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner
+//     adb shell am instrument -w -e class <TestClass> org.appdevforall.k2go.test/androidx.test.runner.AndroidJUnitRunner
 // A device with nothing to lose can still opt in with -PallowUninstall=true.
 tasks.configureEach { t ->
     if (t.name.startsWith('connected') && t.name.endsWith('AndroidTest')) {
@@ -781,7 +781,7 @@ tasks.configureEach { t ->
                         + "  Run instead:\n"
                         + "    ./gradlew :app:installDebug :app:installDebugAndroidTest\n"
                         + "    adb shell am instrument -w -e class <TestClass> \\\n"
-                        + "      org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner\n"
+                        + "      org.appdevforall.k2go.test/androidx.test.runner.AndroidJUnitRunner\n"
                         + "  Or, if this device has nothing to lose: -PallowUninstall=true")
             }
         }

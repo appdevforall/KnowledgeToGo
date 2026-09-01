@@ -6,10 +6,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <receiver
-            android:name="org.iiab.controller.delivery.debug.DebugDeliveryReceiver"
+            android:name="org.appdevforall.k2go.delivery.debug.DebugDeliveryReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="org.iiab.controller.DEBUG_DELIVERY" />
+                <action android:name="org.appdevforall.k2go.DEBUG_DELIVERY" />
             </intent-filter>
         </receiver>
     </application>

@@ -60,7 +60,7 @@
 
             <!-- ADFA-5011: FlowLayout so the meta chips wrap to a 2nd line on narrow screens instead of
                  clipping the last pill off the right edge (same fix as ADFA-4999). -->
-            <org.iiab.controller.redesign.FlowLayout
+            <org.appdevforall.k2go.redesign.FlowLayout
                 android:id="@+id/k2go_moddet_chips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

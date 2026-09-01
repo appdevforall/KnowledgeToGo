@@ -60,7 +60,7 @@ the boundary is written down:
 - user-facing strings that name IIAB — they describe what is actually running;
 - the "powered by IIAB" attribution;
 - the rootfs, which *is* Internet-in-a-Box;
-- the copyright headers in the source (see below).
+- the copyright headers in the source.
 
 The repository ships under GPL v2 and its notices stay as they are. Removing credit would make the
 product's own documentation and UI less accurate, which is reason enough on its own.
@@ -189,7 +189,7 @@ else.** Run on a device with the new build unless noted.
 
 ### 10.3 Explicitly out of scope for this matrix
 
-Analytics continuity (history splits by design, §7.2) and the copyright-header question (§6).
+Analytics continuity — the history splits at the changeover by design (§7.2).
 
 ## 11. Sub-phasing
 
