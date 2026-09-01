@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.iiab.controller.proot.domain.SeccompMode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +54,12 @@ public class ProotEnvironmentTest {
     }
 
     private Map<String, String> build() {
-        return ProotEnvironment.build(nativeDir, "/data/app/files/usr", "/data/app/files/proot_tmp");
+        return build(SeccompMode.FILTER);
+    }
+
+    private Map<String, String> build(SeccompMode mode) {
+        return ProotEnvironment.build(
+                nativeDir, "/data/app/files/usr", "/data/app/files/proot_tmp", mode);
     }
 
     @Test
@@ -111,5 +117,27 @@ public class ProotEnvironmentTest {
         writeLoader("libproot-loader.so");
         writeLoader("libproot-loader32.so");
         assertEquals(11, build().size());
+    }
+
+    @Test
+    public void healthyKernelGetsNoSeccompVariableAtAll() throws IOException {
+        // FILTER must stay byte-identical to what shipped: absent, not set to "0". proot treats
+        // ANY value as "disable", so an empty or zero value would silently slow every device down.
+        writeLoader("libproot-loader.so");
+        assertFalse(build(SeccompMode.FILTER).containsKey(ProotEnvironment.NO_SECCOMP));
+    }
+
+    @Test
+    public void affectedKernelGetsTheOnlyVariableThatChanges() throws IOException {
+        writeLoader("libproot-loader.so");
+        Map<String, String> disabled = build(SeccompMode.DISABLED);
+
+        assertEquals("1", disabled.get(ProotEnvironment.NO_SECCOMP));
+
+        // Exactly one variable more than the fast path -- nothing else shifts with the mode.
+        Map<String, String> expected = expectedBase();
+        expected.put("PROOT_LOADER", new File(nativeDir, "libproot-loader.so").getAbsolutePath());
+        expected.put(ProotEnvironment.NO_SECCOMP, "1");
+        assertEquals(expected, disabled);
     }
 }

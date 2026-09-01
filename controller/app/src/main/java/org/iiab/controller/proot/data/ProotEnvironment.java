@@ -9,6 +9,8 @@
  */
 package org.iiab.controller.proot.data;
 
+import org.iiab.controller.proot.domain.SeccompMode;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,6 +33,9 @@ public final class ProotEnvironment {
     public static final String GUEST_PATH =
             "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
 
+    /** proot reads this before its own {@code execvp}; any value disables seccomp filtering. */
+    public static final String NO_SECCOMP = "PROOT_NO_SECCOMP";
+
     private static final String LOADER = "libproot-loader.so";
     private static final String LOADER_32 = "libproot-loader32.so";
 
@@ -50,12 +55,18 @@ public final class ProotEnvironment {
      * @param nativeLibDir the app's native library directory (where the proot loaders live).
      * @param prefixPath   canonical path of the fake Termux prefix proot resolves its loader through.
      * @param prootTmpPath canonical path of the host directory proot uses for its own temporaries.
+     * @param mode         how proot must run here (ADFA-5362); only DISABLED adds a variable.
      */
     public static Map<String, String> build(File nativeLibDir, String prefixPath,
-                                            String prootTmpPath) {
+                                            String prootTmpPath, SeccompMode mode) {
         Map<String, String> env = new LinkedHashMap<>();
 
         env.put("PREFIX", prefixPath);
+
+        // ADFA-5362: absent on a healthy kernel, so the fast path is byte-identical to what shipped.
+        if (mode == SeccompMode.DISABLED) {
+            env.put(NO_SECCOMP, "1");
+        }
 
         File loader = new File(nativeLibDir, LOADER);
         if (loader.exists()) {

@@ -25,10 +25,21 @@ import java.util.List;
 import org.iiab.controller.network.data.FileResolvConfWriter;
 import org.iiab.controller.network.data.PrefsDnsConfigRepository;
 import org.iiab.controller.network.domain.ApplyDnsUseCase;
+import org.iiab.controller.proot.data.PrefsSeccompModeRepository;
 import org.iiab.controller.proot.data.ProotEnvironment;
+import org.iiab.controller.proot.domain.SeccompFailure;
+import org.iiab.controller.proot.domain.SeccompMode;
 
 public class PRootEngine {
     private static final String TAG = "IIAB-PRootEngine";
+
+    /**
+     * ADFA-5362: how much of a launch's output to keep for {@link SeccompFailure}. An install
+     * streams megabytes, so this is a tail, not a buffer of everything — and a tail is the right
+     * end anyway, because the abort we look for is what ends the process.
+     */
+    private static final int TAIL_LIMIT = 8192;
+
     private volatile Process currentProcess;
     private volatile java.io.OutputStream processOutputStream;
 
@@ -41,6 +52,18 @@ public class PRootEngine {
     }
 
     public void executeInContainer(Context context, String rootfsDir, String command, OutputListener listener) {
+        // ADFA-5362: how proot must run here is remembered per device, defaulting to the fast path.
+        executeInContainer(context, rootfsDir, command, listener,
+                new PrefsSeccompModeRepository(context).load(), true);
+    }
+
+    /**
+     * @param mode     how to launch proot (ADFA-5362).
+     * @param mayRetry whether a seccomp abort may be learned from and relaunched. False on the
+     *                 relaunch itself, so a device that fails for some other reason cannot loop.
+     */
+    private void executeInContainer(Context context, String rootfsDir, String command,
+                                    OutputListener listener, SeccompMode mode, boolean mayRetry) {
         new Thread(() -> {
             try {
                 File nativeDir = new File(context.getApplicationInfo().nativeLibraryDir);
@@ -182,7 +205,7 @@ public class PRootEngine {
                 // app and the terminal cannot drift apart on the same phone.
                 pb.environment().clear(); // Clean toxic Android vars
                 pb.environment().putAll(ProotEnvironment.build(
-                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath));
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath, mode));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
@@ -193,14 +216,30 @@ public class PRootEngine {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
                 String line;
                 Handler mainHandler = new Handler(Looper.getMainLooper());
+                StringBuilder tail = new StringBuilder();
 
                 while ((line = reader.readLine()) != null) {
                     final String outLine = line;
                     Log.i("IIAB-Ansible", "[Debian] " + outLine); // Funneled straight to Logcat!
+                    appendTail(tail, outLine);
                     mainHandler.post(() -> listener.onOutputLine(outLine));
                 }
 
                 int exitCode = proc.waitFor();
+
+                // ADFA-5362: proot has told us this kernel cannot run it with seccomp. The abort
+                // lands before the guest does any work, so nothing has happened yet and relaunching
+                // cannot duplicate it. Learn it once, then run for real; the caller still gets
+                // exactly one onProcessExit, so the recovery is invisible to it.
+                if (mayRetry && mode == SeccompMode.FILTER
+                        && SeccompFailure.isSeccompAbort(exitCode, tail.toString())) {
+                    Log.w(TAG, "ADFA-5362: proot cannot use seccomp on this kernel — remembering"
+                            + " PROOT_NO_SECCOMP for this build and relaunching once");
+                    new PrefsSeccompModeRepository(context).remember(SeccompMode.DISABLED);
+                    executeInContainer(context, rootfsDir, command, listener,
+                            SeccompMode.DISABLED, false);
+                    return;
+                }
 
                 mainHandler.post(() -> listener.onProcessExit(exitCode));
 
@@ -211,8 +250,20 @@ public class PRootEngine {
         }).start();
     }
 
+    /** Keep only the last {@link #TAIL_LIMIT} characters of the output. */
+    private static void appendTail(StringBuilder tail, String line) {
+        tail.append(line).append('\n');
+        if (tail.length() > TAIL_LIMIT) {
+            tail.delete(0, tail.length() - TAIL_LIMIT);
+        }
+    }
+
     /**
      * Start an interactive bash session that stays live.
+     *
+     * <p>ADFA-5362: this <em>consumes</em> the remembered mode but does not learn one. A terminal is
+     * opened long after the environment has launched at least once, so the verdict is already known
+     * by the time anyone gets here; and a live session has no exit to read a verdict from.
      */
     public void startInteractiveShell(Context context, String rootfsDir, OutputListener listener) {
         new Thread(() -> {
@@ -296,7 +347,8 @@ public class PRootEngine {
                 // ADFA-5362: same single builder as executeInContainer.
                 pb.environment().clear();
                 pb.environment().putAll(ProotEnvironment.build(
-                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath));
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath,
+                        new PrefsSeccompModeRepository(context).load()));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
