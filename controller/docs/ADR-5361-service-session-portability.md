@@ -125,6 +125,18 @@ content browsing, for one identity problem.
   things that read it: PDF routing picks a pdf.js build from the Chrome major version in the UA, and
   the services' templates sniff it for their mobile layout. It would also be two places that must
   agree, which is the class of defect this ADR exists to remove.
+- **The app reads that string; it does not set one.** The natural next thought — pin our own suffix
+  so the value is ours and cannot drift — was raised and rejected while writing this ADR, twice and
+  independently, which is why it is recorded rather than left to be re-derived. There is nothing to
+  pin: `getUserAgentString()` and the header the WebView sends are the same `WebSettings`, read and
+  sent in the same process moments apart, so they cannot disagree. Setting one would add a string to
+  maintain and an "append, never replace" rule to remember, in exchange for protection against a
+  drift the platform does not permit — and it would not close the failure it appears to address. If
+  a session is ever rejected again for some other reason (an upstream change, a different component
+  of the fingerprint), the viewer is silently a guest whatever the User-Agent says. The answer to
+  that would be **verifying the identity after the page loads**, not hardening the input to a
+  mechanism whose failure is invisible. That has a real cost and needs its own decision, the day
+  there is evidence it is needed.
 - Kolibri receives the same treatment. Django does not bind sessions to the agent, so it is expected
   to be a no-op there; it is applied anyway because one rule per endpoint is the point, and a
   per-service exception is what later gets forgotten. Verified not to regress (§7).
