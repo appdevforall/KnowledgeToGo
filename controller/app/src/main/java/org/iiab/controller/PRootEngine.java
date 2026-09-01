@@ -52,19 +52,10 @@ public class PRootEngine {
     }
 
     public void executeInContainer(Context context, String rootfsDir, String command, OutputListener listener) {
-        // ADFA-5362: how proot must run here is remembered per device, defaulting to the fast path.
-        executeInContainer(context, rootfsDir, command, listener,
-                new PrefsSeccompModeRepository(context).load(), true);
-    }
-
-    /**
-     * @param mode     how to launch proot (ADFA-5362).
-     * @param mayRetry whether a seccomp abort may be learned from and relaunched. False on the
-     *                 relaunch itself, so a device that fails for some other reason cannot loop.
-     */
-    private void executeInContainer(Context context, String rootfsDir, String command,
-                                    OutputListener listener, SeccompMode mode, boolean mayRetry) {
         new Thread(() -> {
+            // ADFA-5362: how proot must run here is remembered per device, defaulting to the fast path.
+            PrefsSeccompModeRepository capability = new PrefsSeccompModeRepository(context);
+            SeccompMode mode = capability.load();
             try {
                 File nativeDir = new File(context.getApplicationInfo().nativeLibraryDir);
                 File prootBinary = new File(nativeDir, "libproot.so");
@@ -227,18 +218,17 @@ public class PRootEngine {
 
                 int exitCode = proc.waitFor();
 
-                // ADFA-5362: proot has told us this kernel cannot run it with seccomp. The abort
-                // lands before the guest does any work, so nothing has happened yet and relaunching
-                // cannot duplicate it. Learn it once, then run for real; the caller still gets
-                // exactly one onProcessExit, so the recovery is invisible to it.
-                if (mayRetry && mode == SeccompMode.FILTER
+                // ADFA-5362: proot has told us this kernel cannot run it with seccomp. Record it and
+                // report the failure as it happened — deliberately nothing relaunches here. The
+                // lifecycle owner already relaunches on its own tick whenever the environment is not
+                // alive (ServerLifecycleReconciler), and it will read the new mode when it does.
+                // Relaunching from inside the engine would be a second actuation path that does not
+                // consult `desired`, so a stop landing in that window would be overruled.
+                if (mode == SeccompMode.FILTER
                         && SeccompFailure.isSeccompAbort(exitCode, tail.toString())) {
                     Log.w(TAG, "ADFA-5362: proot cannot use seccomp on this kernel — remembering"
-                            + " PROOT_NO_SECCOMP for this build and relaunching once");
-                    new PrefsSeccompModeRepository(context).remember(SeccompMode.DISABLED);
-                    executeInContainer(context, rootfsDir, command, listener,
-                            SeccompMode.DISABLED, false);
-                    return;
+                            + " PROOT_NO_SECCOMP for this build; the next launch will use it");
+                    capability.remember(SeccompMode.DISABLED);
                 }
 
                 mainHandler.post(() -> listener.onProcessExit(exitCode));

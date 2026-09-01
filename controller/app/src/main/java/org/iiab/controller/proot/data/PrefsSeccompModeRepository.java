@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 
+import org.iiab.controller.proot.domain.CapabilityKey;
 import org.iiab.controller.proot.domain.SeccompMode;
 
 /**
@@ -39,7 +40,7 @@ public final class PrefsSeccompModeRepository {
 
     /** How proot must be launched here; {@link SeccompMode#FILTER} until proved otherwise. */
     public SeccompMode load() {
-        if (!capabilityKey().equals(prefs.getString(K_KEY, null))) {
+        if (!CapabilityKey.holds(prefs.getString(K_KEY, null), capabilityKey())) {
             return SeccompMode.FILTER;   // never learned, or learned about a different OS/app
         }
         return prefs.getBoolean(K_DISABLED, false) ? SeccompMode.DISABLED : SeccompMode.FILTER;
@@ -56,10 +57,11 @@ public final class PrefsSeccompModeRepository {
                 .commit();
     }
 
-    /** OS build + kernel + app version — everything that could change the answer. */
+    /** This device's key, read off the platform; {@link CapabilityKey} owns what it means. */
     private static String capabilityKey() {
-        return Build.FINGERPRINT
-                + "|" + System.getProperty("os.version")
-                + "|" + org.iiab.controller.BuildConfig.VERSION_CODE;
+        return CapabilityKey.of(
+                Build.FINGERPRINT,
+                System.getProperty("os.version"),
+                org.iiab.controller.BuildConfig.VERSION_CODE);
     }
 }
