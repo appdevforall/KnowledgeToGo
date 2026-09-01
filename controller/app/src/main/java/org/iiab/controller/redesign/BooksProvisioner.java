@@ -37,24 +37,9 @@ public final class BooksProvisioner {
     /** Hand the wishlist to BooksDownloadService (requires the server to be up) and clear it.
      *  No-op if empty or a session is already running. */
     public static void drain(Context ctx) {
-        // ADFA-4900: proot (runrole) and REST downloads must not run at the same time — Ansible forks
-        // background processes and concurrent REST work is a recipe for corruption. Defer REST while a
-        // module-queue (proot) job is pending or running; a later drain pass picks it up once idle.
-        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || MapsProvisioner.hasPending(ctx)
-                || DashboardRebuildService.isRunning()) {   // ADFA-5333: a live dashboard update restarts dash-node
-            Log.d(TAG, "books drain deferred: proot (runrole) or dashboard-update work is in flight");
-            return;
-        }
-        // ADFA-4954 (ADR-4954 D8): the live REST streams also serialize against each other.
-        // Each measures free space independently and at a different moment, so all of them can
-        // pass their own check and jointly fill the disk. A Kolibri channel runs to tens of GB.
-        // ADFA-5074: asked in one place, and about unfinished work rather than a registered
-        // session — see ZimProvisioner for why.
-        if (org.iiab.controller.system.data.PendingContent.anyUnfinished(ctx)) {
-            Log.d(TAG, "books drain deferred: a content stream still has work to do");
-            return;
-        }
+        // The deferral rule (proot in flight, another stream unfinished) is one source, shared with
+        // ZIM and Kolibri — see ContentAdmission for why each check is there.
+        if (!org.iiab.controller.system.data.ContentAdmission.canStart(ctx, org.iiab.controller.system.domain.ContentType.BOOKS)) return;
         JSONArray order = BooksWishlist.all(ctx);
         Log.i(TAG, "books drain: " + order.length() + " in wishlist");
         List<String> ids = new ArrayList<>(), titles = new ArrayList<>(), urls = new ArrayList<>();
