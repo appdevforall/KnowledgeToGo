@@ -25,9 +25,21 @@ import java.util.List;
 import org.iiab.controller.network.data.FileResolvConfWriter;
 import org.iiab.controller.network.data.PrefsDnsConfigRepository;
 import org.iiab.controller.network.domain.ApplyDnsUseCase;
+import org.iiab.controller.proot.data.PrefsSeccompModeRepository;
+import org.iiab.controller.proot.data.ProotEnvironment;
+import org.iiab.controller.proot.domain.SeccompFailure;
+import org.iiab.controller.proot.domain.SeccompMode;
 
 public class PRootEngine {
     private static final String TAG = "IIAB-PRootEngine";
+
+    /**
+     * ADFA-5362: how much of a launch's output to keep for {@link SeccompFailure}. An install
+     * streams megabytes, so this is a tail, not a buffer of everything — and a tail is the right
+     * end anyway, because the abort we look for is what ends the process.
+     */
+    private static final int TAIL_LIMIT = 8192;
+
     private volatile Process currentProcess;
     private volatile java.io.OutputStream processOutputStream;
 
@@ -41,6 +53,9 @@ public class PRootEngine {
 
     public void executeInContainer(Context context, String rootfsDir, String command, OutputListener listener) {
         new Thread(() -> {
+            // ADFA-5362: how proot must run here is remembered per device, defaulting to the fast path.
+            PrefsSeccompModeRepository capability = new PrefsSeccompModeRepository(context);
+            SeccompMode mode = capability.load();
             try {
                 File nativeDir = new File(context.getApplicationInfo().nativeLibraryDir);
                 File prootBinary = new File(nativeDir, "libproot.so");
@@ -177,26 +192,11 @@ public class PRootEngine {
                 // =========================================================
                 // INJECT ENVIRONMENT VARIABLES
                 // =========================================================
+                // ADFA-5362: the environment is built in one place for every proot launch, so the
+                // app and the terminal cannot drift apart on the same phone.
                 pb.environment().clear(); // Clean toxic Android vars
-
-                // Tell PRoot where to find our Fake Termux Prefix
-                pb.environment().put("PREFIX", prefixDir.getCanonicalPath());
-
-                // Fallback environment variables for modern PRoot versions
-                if (loaderBinary.exists())
-                    pb.environment().put("PROOT_LOADER", loaderBinary.getAbsolutePath());
-                File loader32 = new File(nativeDir, "libproot-loader32.so");
-                if (loader32.exists())
-                    pb.environment().put("PROOT_LOADER_32", loader32.getAbsolutePath());
-
-                pb.environment().put("PROOT_TMP_DIR", prootTmpPath);
-                pb.environment().put("TMPDIR", "/tmp");
-                pb.environment().put("HOME", "/root");
-                pb.environment().put("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
-                pb.environment().put("TERM", "xterm-256color");
-                pb.environment().put("LANG", "C.UTF-8");
-                pb.environment().put("USER", "root");
-                pb.environment().put("LOGNAME", "root");
+                pb.environment().putAll(ProotEnvironment.build(
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath, mode));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
@@ -207,14 +207,29 @@ public class PRootEngine {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
                 String line;
                 Handler mainHandler = new Handler(Looper.getMainLooper());
+                StringBuilder tail = new StringBuilder();
 
                 while ((line = reader.readLine()) != null) {
                     final String outLine = line;
                     Log.i("IIAB-Ansible", "[Debian] " + outLine); // Funneled straight to Logcat!
+                    appendTail(tail, outLine);
                     mainHandler.post(() -> listener.onOutputLine(outLine));
                 }
 
                 int exitCode = proc.waitFor();
+
+                // ADFA-5362: proot has told us this kernel cannot run it with seccomp. Record it and
+                // report the failure as it happened — deliberately nothing relaunches here. The
+                // lifecycle owner already relaunches on its own tick whenever the environment is not
+                // alive (ServerLifecycleReconciler), and it will read the new mode when it does.
+                // Relaunching from inside the engine would be a second actuation path that does not
+                // consult `desired`, so a stop landing in that window would be overruled.
+                if (mode == SeccompMode.FILTER
+                        && SeccompFailure.isSeccompAbort(exitCode, tail.toString())) {
+                    Log.w(TAG, "ADFA-5362: proot cannot use seccomp on this kernel — remembering"
+                            + " PROOT_NO_SECCOMP for this build; the next launch will use it");
+                    capability.remember(SeccompMode.DISABLED);
+                }
 
                 mainHandler.post(() -> listener.onProcessExit(exitCode));
 
@@ -225,8 +240,20 @@ public class PRootEngine {
         }).start();
     }
 
+    /** Keep only the last {@link #TAIL_LIMIT} characters of the output. */
+    private static void appendTail(StringBuilder tail, String line) {
+        tail.append(line).append('\n');
+        if (tail.length() > TAIL_LIMIT) {
+            tail.delete(0, tail.length() - TAIL_LIMIT);
+        }
+    }
+
     /**
      * Start an interactive bash session that stays live.
+     *
+     * <p>ADFA-5362: this <em>consumes</em> the remembered mode but does not learn one. A terminal is
+     * opened long after the environment has launched at least once, so the verdict is already known
+     * by the time anyone gets here; and a live session has no exit to read a verdict from.
      */
     public void startInteractiveShell(Context context, String rootfsDir, OutputListener listener) {
         new Thread(() -> {
@@ -307,22 +334,11 @@ public class PRootEngine {
                 ProcessBuilder pb = new ProcessBuilder(args);
                 pb.redirectErrorStream(true);
 
+                // ADFA-5362: same single builder as executeInContainer.
                 pb.environment().clear();
-                pb.environment().put("PREFIX", prefixDir.getCanonicalPath());
-                if (loaderBinary.exists())
-                    pb.environment().put("PROOT_LOADER", loaderBinary.getAbsolutePath());
-                File loader32 = new File(nativeDir, "libproot-loader32.so");
-                if (loader32.exists())
-                    pb.environment().put("PROOT_LOADER_32", loader32.getAbsolutePath());
-
-                pb.environment().put("PROOT_TMP_DIR", prootTmpPath);
-                pb.environment().put("TMPDIR", "/tmp");
-                pb.environment().put("HOME", "/root");
-                pb.environment().put("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
-                pb.environment().put("TERM", "xterm-256color");
-                pb.environment().put("LANG", "C.UTF-8");
-                pb.environment().put("USER", "root");
-                pb.environment().put("LOGNAME", "root");
+                pb.environment().putAll(ProotEnvironment.build(
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath,
+                        new PrefsSeccompModeRepository(context).load()));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.

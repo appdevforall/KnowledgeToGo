@@ -678,7 +678,16 @@ public class TerminalController {
                 cliStr.append("BACKUPS_DIR=\"").append(backupsDir.getAbsolutePath()).append("\"\n");
                 cliStr.append("export PROOT_TMP_DIR=\"").append(tmpDir.getAbsolutePath()).append("\"\n");
                 cliStr.append("export PROOT_LOADER=\"").append(prootLoader.getAbsolutePath()).append("\"\n");
-                cliStr.append("export PROOT_LOADER_32=\"").append(prootLoader32.getAbsolutePath()).append("\"\n\n");
+                cliStr.append("export PROOT_LOADER_32=\"").append(prootLoader32.getAbsolutePath()).append("\"\n");
+                // ADFA-5362: the CLI only consumes the verdict the app has already learned, so the
+                // terminal and the app launch proot the same way on the same phone.
+                if (new org.iiab.controller.proot.data.PrefsSeccompModeRepository(activity).load()
+                        == org.iiab.controller.proot.domain.SeccompMode.DISABLED) {
+                    cliStr.append("export ")
+                            .append(org.iiab.controller.proot.data.ProotEnvironment.NO_SECCOMP)
+                            .append("=1\n");
+                }
+                cliStr.append("\n");
 
                 // Initialize Mount Flags
                 cliStr.append("MOUNT_SDCARD=false\n");
