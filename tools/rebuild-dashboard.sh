@@ -167,7 +167,9 @@ if verify_live; then
         SITE_UPDATER="$CLONE_DIR/static/site/site-updater.sh"
         if [ -f "$SITE_UPDATER" ]; then
             log "updating the served website (site-updater)"
-            sh "$SITE_UPDATER" >>"$LOG" 2>&1 || log "warn: website update failed (core update succeeded)"
+            # site-updater.sh is a bash script (uses ${BASH_SOURCE[0]}, arrays); run it with bash, not
+            # this sh — dash trips on the bash-isms and mis-resolves its own source dir (ADFA-5339).
+            bash "$SITE_UPDATER" >>"$LOG" 2>&1 || log "warn: website update failed (core update succeeded)"
         else
             log "warn: K2GO_SITE=1 but site-updater not found at $SITE_UPDATER (core update succeeded)"
         fi
