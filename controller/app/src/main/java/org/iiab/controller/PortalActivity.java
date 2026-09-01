@@ -27,11 +27,13 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import org.iiab.controller.portal.domain.AutoLoginPolicy;
 import org.iiab.controller.portal.domain.NavigationPolicy;
 import org.iiab.controller.portal.domain.PdfPolicy;
 import org.iiab.controller.portal.domain.PdfViewerUrl;
 import org.iiab.controller.portal.domain.PdfViewerBuild;
 import org.iiab.controller.portal.domain.PdfViewerRouter;
+import org.iiab.controller.portal.domain.SessionCookies;
 import org.iiab.controller.portal.domain.WebViewVersion;
 import org.iiab.controller.portal.data.PdfViewerCatalog;
 import org.iiab.controller.util.AppExecutors;
@@ -372,8 +374,11 @@ public class PortalActivity extends AppCompatActivity {
         // ADFA-5043: Books (Calibre-Web) / Courses (Kolibri) auto-login as box admin — fetch a session
         // cookie, inject it into the WebView CookieManager, THEN load, so the card opens already
         // authenticated. Degrades gracefully: if the service isn't installed/ready, just load without it.
-        String authService = getIntent().getStringExtra("AUTH_SERVICE");
-        if (authService != null && !authService.isEmpty()) {
+        // ADFA-5361: the service is DERIVED from the URL, not passed in by the caller. As an Intent
+        // extra it was a fact each launcher had to remember, and two of the three did not — those
+        // opened Calibre-Web unauthenticated and left a guest session in the shared cookie jar.
+        String authService = AutoLoginPolicy.serviceFor(finalTargetUrl);
+        if (authService != null) {
             autoLoginThenLoad(authService, finalTargetUrl);
         } else {
             // Native architecture: content is served locally; load it directly.
@@ -385,15 +390,29 @@ public class PortalActivity extends AppCompatActivity {
      *  failure (service absent/not ready) load without a cookie — the card still opens. */
     private void autoLoginThenLoad(String service, String targetUrl) {
         showAuthOverlay();
-        org.iiab.controller.redesign.AuthClient.session(service, new org.iiab.controller.redesign.AuthClient.SessionCb() {
+        // ADFA-5361: the box must mint the session FOR THIS WebView. Calibre-Web binds a session to a
+        // fingerprint of the User-Agent, so one minted under the box's own agent is rejected on the
+        // first request here and the card opens as the anonymous Guest. Read verbatim from the very
+        // WebView that will present it — its only job is to match.
+        String consumerUa = webView.getSettings().getUserAgentString();
+        org.iiab.controller.redesign.AuthClient.session(service, consumerUa, new org.iiab.controller.redesign.AuthClient.SessionCb() {
             @Override public void onOk(String cookie) {
                 if (isFinishing() || isDestroyed()) return;   // ADFA-5043: left mid-sign-in; don't touch dead views
                 android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
                 cm.setAcceptCookie(true);
+                // ADFA-5361: clear before set, so the jar holds the session we just minted and nothing
+                // else. Setting alone appends: a same-name cookie at a deeper path (the box fronts the
+                // service under a prefix) is never overwritten and outranks ours in the Cookie header,
+                // which is how one guest page load became a permanent guest session. Clear and set are
+                // one operation — a failed sign-in leaves the jar untouched (see onErr), so a still-valid
+                // remember-me from an earlier open is not thrown away over a transient failure.
+                String prefix = AutoLoginPolicy.prefixFor(targetUrl);
+                for (String directive : SessionCookies.clearDirectives(cookie, prefix)) {
+                    cm.setCookie(BoxEndpoints.BASE + "/", directive);
+                }
                 // Host-wide on the box origin so every request under the service prefix carries it.
-                for (String pair : cookie.split(";")) {
-                    String p = pair.trim();
-                    if (!p.isEmpty()) cm.setCookie(BoxEndpoints.BASE + "/", p + "; path=/");
+                for (String directive : SessionCookies.setDirectives(cookie)) {
+                    cm.setCookie(BoxEndpoints.BASE + "/", directive);
                 }
                 cm.flush();
                 hideAuthOverlay();
