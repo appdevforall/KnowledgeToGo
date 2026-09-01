@@ -108,7 +108,10 @@ public final class AuthClient {
      * word — wrong credentials do not improve on a second ask). Same rule the box uses for its own
      * retries: {@code isTransient: status >= 500} in sockets/net-retry.ts.
      */
-    private static String fetchCookie(String url, String consumerUserAgent, String service) throws Exception {
+    // Package-private, not private: this is the branch the UI cannot reach on a healthy box (a card
+    // whose service is down never opens the portal at all), so the only way to cover it is to call it
+    // with a scripted server — see AuthClientRetryTest.
+    static String fetchCookie(String url, String consumerUserAgent, String service) throws Exception {
         try {
             return cookieOf(httpGet(url, consumerUserAgent));
         } catch (java.net.SocketTimeoutException e) {
