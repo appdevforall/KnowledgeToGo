@@ -30,15 +30,10 @@ public class ServerController {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
-    /**
-     * ADFA-5103 / ADFA-5343a (D1): how long the services may be <b>continuously observed down</b> (proot
-     * present) before ensure-up escalates from "still coming up / pdsm will respawn it" to "stuck →
-     * relaunch". Timed from the service drop, not the proot's age (ADR-5343a): a mature proot whose
-     * dash-node blips stays well under this and self-heals via pdsm, while a boot — services down since
-     * the proot started — is still protected for this long (comfortably over the 3.5 s mid-boot window
-     * that got the earlier kill reverted, and over a normal boot-to-services time).
-     */
-    private static final long SERVICE_DOWN_GRACE_MS = 20_000L;
+    // ADFA-5365: the service-downtime grace used to be declared here as well as in EnvironmentEnsure,
+    // whose javadoc claimed to be "the one canonical value both actuators use" while this copy sat
+    // beside it. Two constants for one threshold is how the two actuators come to disagree, so the
+    // copy is gone and decide() now supplies its own defaults to every caller.
 
     /** Activity-side callbacks the server lifecycle needs. */
     public interface Host {
@@ -227,9 +222,15 @@ public class ServerController {
             org.iiab.controller.env.domain.ServerLiveness ll = lastLiveness;
             long servicesDownMs = (ll == null) ? -1L
                     : ll.servicesDownMs(now, org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
+            // ADFA-5365: a boot is judged on movement, not elapsed time. The progress signal is the
+            // engine that is streaming the boot; with no engine there is nothing to read and decide()
+            // falls back to the downtime rule.
+            PRootEngine eng = serverEngine;
+            long silentMs = (eng == null) ? -1L : eng.silentMs(now);
             org.iiab.controller.env.domain.EnvironmentEnsure.Action action =
                     org.iiab.controller.env.domain.EnvironmentEnsure.decide(
-                            envAlive, servicesAlive, servicesDownMs, SERVICE_DOWN_GRACE_MS);
+                            envAlive, servicesAlive, ll != null && ll.booting(),
+                            servicesDownMs, silentMs);
             switch (action) {
                 case LAUNCH:
                     activity.runOnUiThread(this::doLaunchEnvironment);

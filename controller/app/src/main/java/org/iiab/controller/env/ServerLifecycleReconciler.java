@@ -244,9 +244,13 @@ public final class ServerLifecycleReconciler {
 
     private void offUiEnsureUp(Context ctx, ServerLiveness live, long now) {
         long downMs = live.servicesDownMs(now, ServerLiveness.DEFAULT_FRESH_MS);
+        // ADFA-5365: a boot is judged on movement, not elapsed time. The engine streaming this boot is
+        // the progress signal; with no engine (an orphan we did not launch) there is nothing to read
+        // and decide() falls back to the downtime rule that already recovers orphans.
+        PRootEngine eng = appScopedEngine;
+        long silentMs = (eng == null) ? -1L : eng.silentMs(now);
         EnvironmentEnsure.Action action = EnvironmentEnsure.decide(
-                live.processPresent(), live.servicesAnswering(), downMs,
-                EnvironmentEnsure.DEFAULT_SERVICE_DOWN_GRACE_MS);
+                live.processPresent(), live.servicesAnswering(), live.booting(), downMs, silentMs);
         if (action == EnvironmentEnsure.Action.KILL_AND_RELAUNCH) {
             EnvironmentProcess.killOrphan(ctx);
         } else if (action != EnvironmentEnsure.Action.LAUNCH) {
