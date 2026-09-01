@@ -56,11 +56,27 @@ translation, then lets the host kernel (≥ 6.6 has 452) perform the chmod. Conc
 existing proot build patch (`tools/proot-builder/build_static.sh:118` — the `# --- PROOT PATCH ---`
 block that already sed-patches `packages/proot/build.sh`):
 
-- add `fchmodat2` to `src/syscall/sysnums.list`, and
-- route 452 through the same path-translation case as `fchmodat` in the syscall enter handler.
+- add `fchmodat2` to `src/syscall/sysnums.list` (defines `PR_fchmodat2`),
+- add `[ 452 ] = PR_fchmodat2` to every per-arch table (`src/syscall/sysnums-*.h`) so the raw syscall
+  number maps to the enum,
+- route `PR_fchmodat2` through the same path-translation case as `PR_fchmodat` in the enter handler
+  (`enter.c`), and
+- **add `{ PR_fchmodat2, 0 }` to `proot_sysnums[]` in `src/syscall/seccomp.c`.**
 
-`termux/proot` master does **not** carry 452 (verified: `sysnums.list` lists only `SYSNUM(fchmodat)`),
-so this is a **patch, not a version bump** — bumping `PROOT_VER` (`build_static.sh:99`) would not help.
+That last step is the one that actually makes it work, and the one first missed. proot does not
+ptrace-trap every syscall on a modern host: it installs a seccomp BPF filter that returns
+`SECCOMP_RET_TRACE` only for the syscalls enumerated in the curated `proot_sysnums[]` list (plus
+extensions). A syscall absent from that list is never intercepted, so the sysnum table and the
+`enter.c` case are inert for it. The list already carried `faccessat2` and `fchmodat` but not
+`fchmodat2`; without the `proot_sysnums[]` entry, 452 passed straight through to the host and the
+directory-mode restore still failed. This was reproduced exactly: a first build carrying only the
+table + `enter.c` edits (release `binaries-2026-09-01_03-22`) validated with the identical HOLD on a
+seccomp-accelerated `ubuntu-24.04-arm` host; adding the `proot_sysnums[]` entry
+(release `binaries-2026-09-01_11-20`) produced a CLEAN validation.
+
+`termux/proot` (pinned v5.1.107.92) does **not** carry 452 (verified: `sysnums.list` lists only
+`SYSNUM(fchmodat)`), so this is a **patch, not a version bump** — bumping `PROOT_VER`
+(`build_static.sh:99`) would not help.
 
 This one change makes `tar` / `cp` / `rsync` work **unmodified**, on the device and on any build host,
 old or new. It **collapses the pre/post-`fchmodat2` distinction** rather than encoding it in the
