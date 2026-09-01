@@ -123,4 +123,16 @@
         <item name="fontFamily">@font/atkinson_hyperlegible</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <!-- ADFA-5339: a windowless, transparent K2Go theme for the dashboard-cancel confirm activity.
+         It hosts only a MaterialAlertDialog (a notification action can't show one directly), so the
+         activity itself must be invisible — no window chrome, transparent background, no enter anim. -->
+    <style name="Theme.K2Go.Transparent" parent="Theme.K2Go">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

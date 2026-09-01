@@ -119,6 +119,13 @@
             android:theme="@style/Theme.K2Go" />
         <activity android:name=".feedback.crash.presentation.CrashReportActivity" />
         <activity android:name=".QrActivity" />
+        <!-- ADFA-5339: transparent confirm gate for the notification's "Cancel update" action. Not
+             exported — only the app's own notification PendingIntent starts it. -->
+        <activity
+            android:name=".redesign.DashboardCancelConfirmActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.K2Go.Transparent" />
 
         <receiver
             android:name=".AdbPairingReceiver"

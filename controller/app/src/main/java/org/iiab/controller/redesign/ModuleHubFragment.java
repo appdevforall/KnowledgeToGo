@@ -554,6 +554,18 @@ public class ModuleHubFragment extends Fragment {
 
         host.addView(row);
         fetchDashVersion(sub);
+        // ADFA-5339: make the row update-aware through the shared status helper — the pill reads
+        // "Update" when a newer build exists, "Rebuild" otherwise (offline stays "Rebuild"; the
+        // confirm gate refuses it), and a LIVE update also shows the version arrow in the subtitle
+        // (Fork B). fetchDashVersion above set the base installed-version subtitle for every other state.
+        DashboardCardStatus.fetch(requireContext(), s -> {
+            if (!isAdded()) return;
+            rebuild.setText(s.primaryIsUpdate() ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild);
+            if (s.showsVersionArrow()) {
+                sub.setText(getString(R.string.k2go_dash_card_sub_update_fmt,
+                        s.installedVersion(), s.targetVersion()));
+            }
+        });
     }
 
     /** Show the installed dash-node version on the card. Read from the rootfs package.json on disk
