@@ -222,11 +222,10 @@ public class ServerController {
             org.iiab.controller.env.domain.ServerLiveness ll = lastLiveness;
             long servicesDownMs = (ll == null) ? -1L
                     : ll.servicesDownMs(now, org.iiab.controller.env.domain.ServerLiveness.DEFAULT_FRESH_MS);
-            // ADFA-5365: a boot is judged on movement, not elapsed time. The progress signal is the
-            // engine that is streaming the boot; with no engine there is nothing to read and decide()
-            // falls back to the downtime rule.
-            PRootEngine eng = serverEngine;
-            long silentMs = (eng == null) ? -1L : eng.silentMs(now);
+            // ADFA-5365: a boot is judged on movement, not elapsed time. The progress fact belongs to
+            // the environment, not to whichever actuator launched it, so both read the same answer;
+            // with no signal (nothing launched in this process) decide() falls back to the downtime rule.
+            long silentMs = org.iiab.controller.env.EnvironmentProgress.silentMs(now);
             org.iiab.controller.env.domain.EnvironmentEnsure.Action action =
                     org.iiab.controller.env.domain.EnvironmentEnsure.decide(
                             envAlive, servicesAlive, ll != null && ll.booting(),
@@ -273,10 +272,13 @@ public class ServerController {
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
         serverEngine = new PRootEngine();
+        org.iiab.controller.env.EnvironmentProgress.launched();   // ADFA-5365: first sign of life
         String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
         serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
             @Override
             public void onOutputLine(String line) {
+                // ADFA-5365: whoever launched it, the environment's progress lands in one place.
+                org.iiab.controller.env.EnvironmentProgress.alive();
                 activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
                 java.util.regex.Matcher m = PDSM_SVC.matcher(line);
                 if (m.find()) {

@@ -43,14 +43,6 @@ public class PRootEngine {
     private volatile Process currentProcess;
     private volatile java.io.OutputStream processOutputStream;
 
-    /**
-     * ADFA-5365: when this launch last showed a sign of life, on the monotonic clock. Stamped at
-     * launch and on every guest line, so "has the boot stalled" is answerable without timing the
-     * boot as a whole — total boot time grows with the content installed, the gap between two lines
-     * does not. Per instance, not shared: the actuators hold one engine per launch.
-     */
-    private volatile long lastOutputAtMs;
-
     public interface OutputListener {
         void onOutputLine(String line);
 
@@ -210,9 +202,6 @@ public class PRootEngine {
                 // concurrent proot call can't make us return on the wrong process.
                 Process proc = pb.start();
                 currentProcess = proc;
-                // ADFA-5365: the launch itself is the first sign of life, so a boot that never says
-                // anything is still measured from a real start rather than reading as silent forever.
-                lastOutputAtMs = android.os.SystemClock.elapsedRealtime();
 
                 // --- STREAM LIVE LOGS ---
                 BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
@@ -224,7 +213,6 @@ public class PRootEngine {
                     final String outLine = line;
                     Log.i("IIAB-Ansible", "[Debian] " + outLine); // Funneled straight to Logcat!
                     appendTail(tail, outLine);
-                    lastOutputAtMs = android.os.SystemClock.elapsedRealtime();
                     mainHandler.post(() -> listener.onOutputLine(outLine));
                 }
 
@@ -250,19 +238,6 @@ public class PRootEngine {
                 new Handler(Looper.getMainLooper()).post(() -> listener.onError(e.getMessage()));
             }
         }).start();
-    }
-
-    /**
-     * ADFA-5365: how long this launch has shown no sign of life, or {@code -1} when there is no
-     * signal to read — nothing was ever launched through this engine, so the caller has no progress
-     * fact and must fall back to its downtime rule. That is the orphan case: a proot this process
-     * did not start has no output stream we can watch.
-     *
-     * @param nowMs the same monotonic clock the stamps come from ({@code SystemClock.elapsedRealtime}).
-     */
-    public long silentMs(long nowMs) {
-        final long last = lastOutputAtMs;
-        return last <= 0L ? -1L : Math.max(0L, nowMs - last);
     }
 
     /** Keep only the last {@link #TAIL_LIMIT} characters of the output. */

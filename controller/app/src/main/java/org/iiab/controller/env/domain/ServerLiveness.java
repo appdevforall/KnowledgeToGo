@@ -133,6 +133,9 @@ public final class ServerLiveness {
         //   - otherwise carry the answer forward, but only across a fresh streak: after an
         //     observation gap we cannot claim it never served, so it falls back to "not booting"
         //     and the caller keeps today's flap rule.
+        // That fallback is deliberately sticky for the life of this proot: once a gap has cost us the
+        // answer, no later tick can honestly recover it, so it stays false until the proot is replaced.
+        // The same gap also resets the downtime clock, so the flap rule starts its grace from scratch.
         boolean stillBooting = processPresent && !servicesAnswering
                 && (prev == null
                     || !prev.processPresent
