@@ -1319,4 +1319,14 @@
     <string name="k2go_mod_cancel_body">İndiyədək edilənlər geri qaytarılır və modul quraşdırılmayacaq. Onu sonra yenidən başlada bilərsiniz.</string>
     <string name="k2go_mod_cancel_confirm">Quraşdırmanı dayandır</string>
     <string name="k2go_mod_cancel_dismiss">Quraşdırmaya davam et</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Yenilə</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST nüvəsi · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Bağlantı yoxdur</string>
+    <string name="k2go_dash_cancel_confirm_title">Yeniləmə dayandırılsın?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Panel cari versiyada qalır.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Yeniləməni dayandır</string>
+    <string name="k2go_dash_cancel_confirm_keep">Yeniləməyə davam et</string>
+    <string name="k2go_dash_update_site">Veb saytı yenilə</string>
+    <string name="k2go_dash_update_confirm_title">REST nüvəsi yenilənsin?</string>
 </resources>

@@ -1306,4 +1306,14 @@
     <string name="k2go_mod_cancel_body">Yang sudah dilakukan sejauh ini dibatalkan dan modul tidak akan dipasang. Anda dapat memulainya lagi nanti.</string>
     <string name="k2go_mod_cancel_confirm">Hentikan pemasangan</string>
     <string name="k2go_mod_cancel_dismiss">Lanjutkan pemasangan</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Perbarui</string>
+    <string name="k2go_dash_card_sub_update_fmt">Inti REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Tidak ada koneksi</string>
+    <string name="k2go_dash_cancel_confirm_title">Hentikan pembaruan?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Dasbor tetap pada versi saat ini.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Hentikan pembaruan</string>
+    <string name="k2go_dash_cancel_confirm_keep">Lanjutkan pembaruan</string>
+    <string name="k2go_dash_update_site">Perbarui situs web</string>
+    <string name="k2go_dash_update_confirm_title">Perbarui inti REST?</string>
 </resources>

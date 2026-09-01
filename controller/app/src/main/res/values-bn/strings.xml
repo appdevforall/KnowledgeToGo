@@ -1312,4 +1312,14 @@
     <string name="k2go_mod_cancel_body">এ পর্যন্ত যা হয়েছে তা পূর্বাবস্থায় ফিরিয়ে আনা হয় এবং মডিউলটি ইনস্টল হবে না। আপনি পরে আবার এটি শুরু করতে পারেন।</string>
     <string name="k2go_mod_cancel_confirm">ইনস্টল বন্ধ করুন</string>
     <string name="k2go_mod_cancel_dismiss">ইনস্টল চালিয়ে যান</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">আপডেট</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST কোর · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">সংযোগ নেই</string>
+    <string name="k2go_dash_cancel_confirm_title">আপডেট বন্ধ করবেন?</string>
+    <string name="k2go_dash_cancel_confirm_msg">ড্যাশবোর্ড তার বর্তমান সংস্করণে থাকবে।</string>
+    <string name="k2go_dash_cancel_confirm_stop">আপডেট বন্ধ করুন</string>
+    <string name="k2go_dash_cancel_confirm_keep">আপডেট চালিয়ে যান</string>
+    <string name="k2go_dash_update_site">ওয়েবসাইট আপডেট করুন</string>
+    <string name="k2go_dash_update_confirm_title">REST কোর আপডেট করবেন?</string>
 </resources>

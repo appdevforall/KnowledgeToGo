@@ -250,6 +250,11 @@ const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
 const REBUILD_PHASE_FILE = '/var/run/dash-rebuild.phase';
 const REBUILD_PID_FILE = '/var/run/dash-rebuild.pid';
 const REBUILD_LOCK_DIR = '/var/run/dash-rebuild.lock';
+// ADFA-5339: the rebuild script's own log; the card's expandable Details tails it. Read-only.
+const REBUILD_LOG_FILE = '/var/log/dash-rebuild.log';
+// How many trailing lines the Details tail returns. A whole rebuild is tens of lines, so this holds
+// the entire log with headroom; the client replaces the panel each poll rather than tracking a cursor.
+const REBUILD_LOG_TAIL = 200;
 // ADFA-5051: the remote branch that update-check compares against AND the rebuild pulls. Defaults to
 // mainline; set K2GO_DASH_BRANCH in the dash-node env to point a test box at a feature branch (e.g.
 // to exercise the live self-update before merging to main) without touching code. Keep it unset in
@@ -273,26 +278,50 @@ apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response)
     res.json({ state });
 });
 
+// ADFA-5339: read-only tail of the rebuild log, for the card's expandable Details. Returns the last
+// REBUILD_LOG_TAIL lines (a whole rebuild fits); the client replaces the panel each poll. No file yet
+// (no rebuild ever ran) is not an error — it is an empty log. Localhost-only, like all of /k2go-api.
+apiRouter.get('/system/dashboard/rebuild/log', (_req: Request, res: Response): void => {
+    res.set('Cache-Control', 'no-store');
+    let lines: string[] = [];
+    try {
+        const raw = fs.readFileSync(REBUILD_LOG_FILE, 'utf8');
+        // Split, drop a trailing empty line, keep the last N. Reading the whole file is fine at this
+        // size; if the log ever grows unbounded this is the place to switch to a byte-bounded tail.
+        const all = raw.split('\n');
+        if (all.length && all[all.length - 1] === '') all.pop();
+        lines = all.slice(-REBUILD_LOG_TAIL);
+    } catch { /* no log yet: leave lines empty */ }
+    res.json({ lines });
+});
+
 // Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
 // the app then polls /system/version + RestReadiness until the API is back on the new version.
-apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void => {
+// ADFA-5339: an optional { site: true } also refreshes the served landing page in the same run. The
+// site is a SEPARATE artifact with no version of its own — it is deployed by site-updater.sh from the
+// same clone the rebuild's git fetch+reset refreshes, in finalize AFTER the core swap verifies live,
+// so it matches the new source. It never touches the reported version; a site failure is logged and
+// does NOT fail the (already-verified) core update. See ADFA-5339 §semantics.
+apiRouter.post('/system/dashboard/rebuild', (req: Request, res: Response): void => {
     let running = false;
     try { running = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* none */ }
     if (running) { res.status(409).json({ error: 'a rebuild is already running' }); return; }
     if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
+    const updateSite = (req.body as { site?: unknown })?.site === true;
     try {
         // setsid => own session, so `pdsm restart dash-node` inside the script can't kill this run.
         // Pass the tracked branch so the REST rebuild and update-check always agree on the source.
         const child = spawn('setsid', ['sh', REBUILD_SCRIPT], {
             detached: true, stdio: 'ignore',
-            env: { ...process.env, K2GO_BRANCH: DASH_BRANCH },
+            // ADFA-5339: K2GO_SITE gates the finalize-time site deploy; absent/0 keeps the old behaviour.
+            env: { ...process.env, K2GO_BRANCH: DASH_BRANCH, K2GO_SITE: updateSite ? '1' : '0' },
         });
         child.unref();
         // ADFA-5051: mark "running" synchronously here, before we answer. The detached script also sets
         // it, but not until it starts — so a client that polls immediately could otherwise read the
         // PREVIOUS run's "done"/"error" and report a false instant success. Writing it now closes that race.
         try { fs.writeFileSync(REBUILD_STATUS_FILE, 'running'); } catch { /* best effort */ }
-        res.status(202).json({ ok: true, state: 'running' });
+        res.status(202).json({ ok: true, state: 'running', site: updateSite });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'could not start rebuild' });
     }

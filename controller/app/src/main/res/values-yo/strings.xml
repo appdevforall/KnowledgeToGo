@@ -1319,4 +1319,14 @@
     <string name="k2go_mod_cancel_body">Ohun tí a ti ṣe títí di báyìí ni a ó yí padà, a kì yóò sì fi módùlù náà sórí ẹ̀rọ. O lè bẹ̀rẹ̀ rẹ̀ lẹ́ẹ̀kansí lẹ́yìn náà.</string>
     <string name="k2go_mod_cancel_confirm">Dá dúró</string>
     <string name="k2go_mod_cancel_dismiss">Máa bá a lọ</string>
+    <!-- ADFA-5339 (yo: best-effort, flag for native review) -->
+    <string name="k2go_dash_update">Ìmúdójúìwọ̀n</string>
+    <string name="k2go_dash_card_sub_update_fmt">Kókó REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Kò sí ìsopọ̀</string>
+    <string name="k2go_dash_cancel_confirm_title">Dá ìmúdójúìwọ̀n dúró?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Dáṣíbọ́ọ̀dù yóò dúró lórí ẹ̀yà rẹ̀ lọ́wọ́lọ́wọ́.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Dá ìmúdójúìwọ̀n dúró</string>
+    <string name="k2go_dash_cancel_confirm_keep">Tẹ̀síwájú ìmúdójúìwọ̀n</string>
+    <string name="k2go_dash_update_site">Ṣe ìmúdójúìwọ̀n wẹ́ẹ̀bù</string>
+    <string name="k2go_dash_update_confirm_title">Ṣe ìmúdójúìwọ̀n kókó REST?</string>
 </resources>

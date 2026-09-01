@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Зроблене досі скасовується, і модуль не буде встановлено. Ви зможете запустити його знову пізніше.</string>
     <string name="k2go_mod_cancel_confirm">Зупинити</string>
     <string name="k2go_mod_cancel_dismiss">Продовжити встановлення</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Оновити</string>
+    <string name="k2go_dash_card_sub_update_fmt">Ядро REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Немає з’єднання</string>
+    <string name="k2go_dash_cancel_confirm_title">Зупинити оновлення?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Панель залишиться на поточній версії.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Зупинити оновлення</string>
+    <string name="k2go_dash_cancel_confirm_keep">Продовжити оновлення</string>
+    <string name="k2go_dash_update_site">Оновити вебсайт</string>
+    <string name="k2go_dash_update_confirm_title">Оновити ядро REST?</string>
 </resources>

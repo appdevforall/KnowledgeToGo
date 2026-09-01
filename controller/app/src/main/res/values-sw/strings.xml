@@ -1319,4 +1319,14 @@
     <string name="k2go_mod_cancel_body">Yaliyofanyika hadi sasa yanabatilishwa na moduli haitasakinishwa. Unaweza kuanza tena baadaye.</string>
     <string name="k2go_mod_cancel_confirm">Simamisha usakinishaji</string>
     <string name="k2go_mod_cancel_dismiss">Endelea kusakinisha</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Sasisha</string>
+    <string name="k2go_dash_card_sub_update_fmt">Kiini cha REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Hakuna muunganisho</string>
+    <string name="k2go_dash_cancel_confirm_title">Kusitisha sasisho?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Dashibodi itabaki kwenye toleo lake la sasa.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Sitisha sasisho</string>
+    <string name="k2go_dash_cancel_confirm_keep">Endelea kusasisha</string>
+    <string name="k2go_dash_update_site">Sasisha tovuti</string>
+    <string name="k2go_dash_update_confirm_title">Kusasisha kiini cha REST?</string>
 </resources>

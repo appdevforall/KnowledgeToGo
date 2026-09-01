@@ -1386,4 +1386,14 @@
     <string name="k2go_mod_cancel_body">Ce qui a été fait jusqu\'ici est annulé et le module ne sera pas installé. Vous pourrez le relancer plus tard.</string>
     <string name="k2go_mod_cancel_confirm">Arrêter</string>
     <string name="k2go_mod_cancel_dismiss">Continuer</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Mettre à jour</string>
+    <string name="k2go_dash_card_sub_update_fmt">Cœur REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Pas de connexion</string>
+    <string name="k2go_dash_cancel_confirm_title">Arrêter la mise à jour ?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Le tableau de bord reste sur sa version actuelle.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Arrêter la mise à jour</string>
+    <string name="k2go_dash_cancel_confirm_keep">Continuer la mise à jour</string>
+    <string name="k2go_dash_update_site">Mettre à jour le site web</string>
+    <string name="k2go_dash_update_confirm_title">Mettre à jour le cœur REST ?</string>
 </resources>

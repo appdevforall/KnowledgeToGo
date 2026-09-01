@@ -38,26 +38,9 @@ public final class ZimProvisioner {
     /** Resolve the wishlist against the offline catalog and hand it to ZimDownloadService.
      *  No-op if empty or a session is already running. Requires the server to be up. */
     public static void drain(Context ctx) {
-        // ADFA-4900: proot (runrole) and REST downloads must not run concurrently (Ansible forks
-        // background processes; concurrent REST work risks corruption). Defer ZIM while a module-queue
-        // (proot) job is pending or running; a later drain pass runs it once proot is idle.
-        if (org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get().isRunning()
-                || MapsProvisioner.hasPending(ctx)
-                || DashboardRebuildService.isRunning()) {   // ADFA-5333: a live dashboard update restarts dash-node
-            Log.d(TAG, "zim drain deferred: proot (runrole) or dashboard-update work is in flight");
-            return;
-        }
-        // ADFA-4954 (ADR-4954 D8): the live REST streams also serialize against each other.
-        // Each measures free space independently and at a different moment, so all of them can
-        // pass their own check and jointly fill the disk. A Kolibri channel runs to tens of GB.
-        // ADFA-5074: asked in one place, and about unfinished work rather than a registered
-        // session — a finished stream has already been absorbed by the disk, and blocking on
-        // it refused downloads with nothing running. Also means a fourth content type is one
-        // line in ContentType instead of an edit here.
-        if (org.appdevforall.k2go.system.data.PendingContent.anyUnfinished(ctx)) {
-            Log.d(TAG, "zim drain deferred: a content stream still has work to do");
-            return;
-        }
+        // The deferral rule (proot in flight, another stream unfinished) is one source, shared with
+        // Books and Kolibri — see ContentAdmission for why each check is there.
+        if (!org.appdevforall.k2go.system.data.ContentAdmission.canStart(ctx, org.appdevforall.k2go.system.domain.ContentType.ZIM)) return;
         if (ZimWishlist.size(ctx) == 0) return;
         final Context app = ctx.getApplicationContext();
         Log.i(TAG, "zim drain: " + ZimWishlist.size(app) + " in wishlist; loading catalog");

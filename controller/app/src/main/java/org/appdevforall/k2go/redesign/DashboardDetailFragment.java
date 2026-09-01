@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.dashboard.domain.DashboardCardState;
 import org.appdevforall.k2go.util.AppExecutors;
 
 public class DashboardDetailFragment extends Fragment {
@@ -49,6 +50,15 @@ public class DashboardDetailFragment extends Fragment {
     private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label + Cancel)
     private View updatingCancel;   // ADFA-5333: the Cancel affordance beside the bar
     private boolean updating;      // ADFA-5333: a background rebuild is in flight; don't re-emphasize Rebuild
+    private boolean updateAvailable;   // ADFA-5339: last-known — the confirm dialog matches the button
+    // ADFA-5339: expandable Details — the live rebuild log, minimized by default. The toggle is hidden
+    // until there are lines (an older box without /rebuild/log, or a rebuild that hasn't logged yet).
+    private TextView detailsToggle;
+    private android.widget.ScrollView logScroll;
+    private TextView logText;
+    private boolean logExpanded;
+    private static final long LOG_POLL_MS = 1500L;
+    private final Runnable logPoll = this::pollLog;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -103,7 +113,7 @@ public class DashboardDetailFragment extends Fragment {
         // "Rebuild"; hide the secondary "Install now".
         rebuild = root.findViewById(R.id.k2go_moddet_schedule);
         rebuild.setText(R.string.k2go_dash_rebuild);
-        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root, updateAvailable));
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
         updatingRow = buildUpdatingRow(rebuild);   // ADFA-5333: in-progress bar (hidden until updating)
@@ -158,33 +168,57 @@ public class DashboardDetailFragment extends Fragment {
      *  emphasis. Shows the cached last-known state right away (if any) so the pill isn't stuck on
      *  "Checking…", then refreshes from the live check; on failure it keeps the cached state. */
     private void fetchUpdateStatus() {
-        final Context ctx = requireContext().getApplicationContext();
-        if (UpdateStatusCache.has(ctx)) applyUpdateStatus(UpdateStatusCache.updateAvailable(ctx));
-        DashboardClient.updateCheck(new DashboardClient.UpdateCb() {
-            @Override public void onResult(String installed, String available, boolean updateAvailable) {
-                if (!isAdded()) return;
-                UpdateStatusCache.save(ctx, updateAvailable);
-                applyUpdateStatus(updateAvailable);
-            }
-            @Override public void onErr(String message) {
-                if (!isAdded()) return;
-                if (UpdateStatusCache.has(ctx)) applyUpdateStatus(UpdateStatusCache.updateAvailable(ctx));
-                else if (statusChip != null) statusChip.setVisibility(View.GONE);   // nothing to show yet
-            }
-        });
+        // ADFA-5339: the cache/live/offline orchestration lives once in DashboardCardStatus, shared
+        // with the hub row; this fragment only paints what it delivers.
+        DashboardCardStatus.fetch(requireContext(), s -> { if (isAdded()) applyCardState(s); });
     }
 
-    /** Reflect the update status: recolor the pill in place and, when already on the latest, de-emphasize
-     *  Rebuild + show the "not needed" hint (never blocks — the user can still rebuild). */
-    private void applyUpdateStatus(boolean updateAvailable) {
+    /** ADFA-5339: paint the card from the shared {@link DashboardCardState} rule — the pill, the primary
+     *  button (Update vs Rebuild), the version subtitle and the "on latest" hint. The rule lives in the
+     *  domain so this and the hub row can't drift; this method only renders it. Never blocks — the user
+     *  can still Rebuild manually. */
+    private void applyCardState(DashboardCardState s) {
         if (statusChip != null) {
-            if (updateAvailable) styleChip(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber);
-            else styleChip(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf);
+            switch (s.kind()) {
+                case OFFLINE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_no_connection), R.color.k2go_muted); break;
+                case CHECKING:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted); break;
+                case UP_TO_DATE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf); break;
+                case UPDATE_AVAILABLE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber); break;
+            }
             statusChip.setVisibility(View.VISIBLE);
         }
-        if (updating) return;   // ADFA-5333: a rebuild is in flight — keep Rebuild disabled and the bar shown
-        if (rebuild != null) rebuild.setAlpha(updateAvailable ? 1f : 0.6f);
-        if (rebuildHint != null) rebuildHint.setVisibility(updateAvailable ? View.GONE : View.VISIBLE);
+        // Fork B (ADFA-5339): the version target rides in the subtitle, not the button. Only a LIVE
+        // update-available carries both versions; every other state restores the descriptive subtitle.
+        View root = getView();
+        TextView sub = root != null ? (TextView) root.findViewById(R.id.k2go_moddet_sub) : null;
+        if (sub != null) {
+            if (s.showsVersionArrow()) {
+                sub.setText(getString(R.string.k2go_dash_card_sub_update_fmt,
+                        s.installedVersion(), s.targetVersion()));
+            } else {
+                sub.setText(R.string.k2go_dash_detail_sub);
+            }
+        }
+        updateAvailable = s.primaryIsUpdate();   // ADFA-5339: so the confirm dialog matches the button
+        if (updating) return;   // ADFA-5333: a rebuild is in flight — leave the button/bar as they are
+        if (rebuild != null) {
+            if (s.primaryIsUpdate()) {
+                rebuild.setText(R.string.k2go_dash_update);
+                rebuild.setAlpha(1f);
+            } else {
+                rebuild.setText(R.string.k2go_dash_rebuild);
+                // De-emphasize only when we KNOW we're on the latest; offline/checking stay full.
+                rebuild.setAlpha(s.kind() == DashboardCardState.Kind.UP_TO_DATE ? 0.6f : 1f);
+            }
+        }
+        if (rebuildHint != null) {
+            rebuildHint.setVisibility(
+                    s.kind() == DashboardCardState.Kind.UP_TO_DATE ? View.VISIBLE : View.GONE);
+        }
     }
 
     /** Insert a small muted note directly above the Rebuild button (hidden until we know we're on the
@@ -273,6 +307,33 @@ public class DashboardDetailFragment extends Fragment {
         updatingCancel = cancel;
 
         row.addView(line);
+
+        // ADFA-5339: Details — a "Show details" toggle (hidden until there are log lines) that reveals
+        // the live rebuild log in place. Mirrors the module-install Details pattern; the button above
+        // stays fixed. Text chevron (▾/▴) to avoid a new drawable.
+        detailsToggle = new TextView(requireContext());
+        detailsToggle.setText(getString(R.string.k2go_maps_log_show) + "  ▾");
+        detailsToggle.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        detailsToggle.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        detailsToggle.setPadding(0, Math.round(8 * d), 0, Math.round(4 * d));
+        detailsToggle.setClickable(true);
+        detailsToggle.setVisibility(View.GONE);
+        detailsToggle.setOnClickListener(v -> toggleLog());
+        row.addView(detailsToggle);
+
+        logScroll = new android.widget.ScrollView(requireContext());
+        LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, Math.round(160 * d));
+        logScroll.setLayoutParams(slp);
+        logScroll.setVisibility(View.GONE);
+        logText = new TextView(requireContext());
+        logText.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        logText.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        logText.setTypeface(android.graphics.Typeface.MONOSPACE);
+        logText.setTextIsSelectable(true);
+        logScroll.addView(logText);
+        row.addView(logScroll);
+
         row.setVisibility(View.GONE);
         parent.addView(row, parent.indexOfChild(rebuildBtn));
         return row;
@@ -281,6 +342,17 @@ public class DashboardDetailFragment extends Fragment {
     /** Ask the service to cancel; the bar stays until STATE_CANCELLED lands (or the update finishes if it
      *  was too late). Disable the affordance to avoid double taps. */
     private void onCancelUpdate() {
+        // ADFA-5339: stopping a live update is worth a confirm — the swap may be seconds away, and a
+        // stray tap shouldn't abandon it. Only on a positive answer do we signal the server.
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.k2go_dash_cancel_confirm_title)
+                .setMessage(R.string.k2go_dash_cancel_confirm_msg)
+                .setNegativeButton(R.string.k2go_dash_cancel_confirm_keep, null)
+                .setPositiveButton(R.string.k2go_dash_cancel_confirm_stop, (d, w) -> signalCancel())
+                .show();
+    }
+
+    private void signalCancel() {
         if (updatingCancel != null) updatingCancel.setEnabled(false);
         Context ctx = requireContext();
         ContextCompat.startForegroundService(ctx,
@@ -295,6 +367,54 @@ public class DashboardDetailFragment extends Fragment {
         if (updatingCancel != null) updatingCancel.setEnabled(on);   // re-enable when a new update shows
         if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
         if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
+        // ADFA-5339: the Details log only exists while a rebuild runs. Poll it on, tear it down on off.
+        main.removeCallbacks(logPoll);
+        if (on) {
+            main.post(logPoll);
+        } else if (detailsToggle != null) {
+            detailsToggle.setVisibility(View.GONE);
+            if (logScroll != null) logScroll.setVisibility(View.GONE);
+        }
+    }
+
+    /** ADFA-5339: reveal/hide the live log in place; the Rebuild button and everything else stay put. */
+    private void toggleLog() {
+        logExpanded = !logExpanded;
+        if (logScroll != null) logScroll.setVisibility(logExpanded ? View.VISIBLE : View.GONE);
+        if (detailsToggle != null) {
+            detailsToggle.setText(getString(
+                    logExpanded ? R.string.k2go_maps_log_hide : R.string.k2go_maps_log_show)
+                    + (logExpanded ? "  ▴" : "  ▾"));
+        }
+    }
+
+    /** ADFA-5339: poll the rebuild log tail while updating. Fork B — the toggle appears only once there
+     *  are lines, so an older box without the endpoint (empty) shows no Details affordance. Reschedules
+     *  itself while {@code updating}; setUpdating(false) and onDestroyView remove the callback. */
+    private void pollLog() {
+        if (!isAdded() || !updating) return;
+        DashboardClient.rebuildLog(new DashboardClient.RebuildLogCb() {
+            @Override public void onLines(java.util.List<String> lines) {
+                if (!isAdded() || !updating) return;
+                if (!lines.isEmpty()) {
+                    if (detailsToggle != null) detailsToggle.setVisibility(View.VISIBLE);
+                    if (logText != null) logText.setText(android.text.TextUtils.join("\n", lines));
+                    if (logExpanded && logScroll != null) {
+                        logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
+                    }
+                }
+                main.postDelayed(logPoll, LOG_POLL_MS);
+            }
+            @Override public void onErr(String message) {
+                // No endpoint / transient: keep the toggle as-is (hidden if never populated) and retry.
+                if (isAdded() && updating) main.postDelayed(logPoll, LOG_POLL_MS);
+            }
+        });
+    }
+
+    @Override public void onDestroyView() {
+        main.removeCallbacks(logPoll);   // ADFA-5339: never poll past the view's life
+        super.onDestroyView();
     }
 
     /** Read the installed version from the rootfs package.json on disk (authoritative, always present;

@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Das bisher Erledigte wird zurückgesetzt und das Modul wird nicht installiert. Du kannst es später erneut starten.</string>
     <string name="k2go_mod_cancel_confirm">Abbrechen</string>
     <string name="k2go_mod_cancel_dismiss">Weiter installieren</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Aktualisieren</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST-Kern · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Keine Verbindung</string>
+    <string name="k2go_dash_cancel_confirm_title">Update stoppen?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Das Dashboard bleibt bei seiner aktuellen Version.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Update stoppen</string>
+    <string name="k2go_dash_cancel_confirm_keep">Weiter aktualisieren</string>
+    <string name="k2go_dash_update_site">Website aktualisieren</string>
+    <string name="k2go_dash_update_confirm_title">REST-Kern aktualisieren?</string>
 </resources>

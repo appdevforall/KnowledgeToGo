@@ -159,6 +159,21 @@ if verify_live; then
     # nginx reads /etc/nginx/conf.d, not /library/dashboard, so mirror the vhost then reload nginx.
     [ -f "$LIVE/dash-node-nginx.conf" ] && { cp -f "$LIVE/dash-node-nginx.conf" "$NGINX_CONF_DIR/dash-node-nginx.conf"; chmod 0600 "$NGINX_CONF_DIR/dash-node-nginx.conf"; }
     /usr/local/bin/pdsm restart nginx >>"$LOG" 2>&1 || log "warn: pdsm restart nginx returned non-zero"
+    # ADFA-5339: optionally refresh the served landing page, from the SAME clone the git fetch+reset
+    # above just refreshed, so it matches the new source. Runs only here — after the core swap has
+    # verified live — and is best-effort: the site is a separate, versionless artifact, so a failure is
+    # a warning, never a rollback of the core update that already succeeded. K2GO_SITE=1 opts in.
+    if [ "${K2GO_SITE:-0}" = "1" ]; then
+        SITE_UPDATER="$CLONE_DIR/static/site/site-updater.sh"
+        if [ -f "$SITE_UPDATER" ]; then
+            log "updating the served website (site-updater)"
+            # site-updater.sh is a bash script (uses ${BASH_SOURCE[0]}, arrays); run it with bash, not
+            # this sh — dash trips on the bash-isms and mis-resolves its own source dir (ADFA-5339).
+            bash "$SITE_UPDATER" >>"$LOG" 2>&1 || log "warn: website update failed (core update succeeded)"
+        else
+            log "warn: K2GO_SITE=1 but site-updater not found at $SITE_UPDATER (core update succeeded)"
+        fi
+    fi
     log "rebuild complete"
     rm -rf "$BACKUP"
     set_status "done"

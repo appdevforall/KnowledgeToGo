@@ -1306,4 +1306,14 @@
     <string name="k2go_mod_cancel_body">Dosud provedené se vrátí zpět a modul se nenainstaluje. Můžete jej spustit znovu později.</string>
     <string name="k2go_mod_cancel_confirm">Zastavit</string>
     <string name="k2go_mod_cancel_dismiss">Pokračovat v instalaci</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Aktualizovat</string>
+    <string name="k2go_dash_card_sub_update_fmt">Jádro REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Bez připojení</string>
+    <string name="k2go_dash_cancel_confirm_title">Zastavit aktualizaci?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Panel zůstane na aktuální verzi.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Zastavit aktualizaci</string>
+    <string name="k2go_dash_cancel_confirm_keep">Pokračovat v aktualizaci</string>
+    <string name="k2go_dash_update_site">Aktualizovat web</string>
+    <string name="k2go_dash_update_confirm_title">Aktualizovat jádro REST?</string>
 </resources>

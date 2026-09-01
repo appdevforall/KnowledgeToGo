@@ -1479,4 +1479,14 @@
     <string name="k2go_mod_cancel_body">What\'s been done so far is rolled back and the module won\'t be installed. You can start it again afterward.</string>
     <string name="k2go_mod_cancel_confirm">Stop install</string>
     <string name="k2go_mod_cancel_dismiss">Keep installing</string>
+    <!-- ADFA-5339: Dashboard-update card UI (migrated from strings_5339.xml; now translatable). -->
+    <string name="k2go_dash_update">Update</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST core · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">No connection</string>
+    <string name="k2go_dash_cancel_confirm_title">Stop the update?</string>
+    <string name="k2go_dash_cancel_confirm_msg">The dashboard stays on its current version.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Stop update</string>
+    <string name="k2go_dash_cancel_confirm_keep">Keep updating</string>
+    <string name="k2go_dash_update_site">Update the Website</string>
+    <string name="k2go_dash_update_confirm_title">Update the REST core?</string>
 </resources>

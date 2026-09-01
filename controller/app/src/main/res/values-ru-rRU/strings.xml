@@ -1375,4 +1375,14 @@
     <string name="k2go_mod_cancel_body">Сделанное до сих пор отменяется, и модуль не будет установлен. Вы сможете запустить его снова позже.</string>
     <string name="k2go_mod_cancel_confirm">Остановить</string>
     <string name="k2go_mod_cancel_dismiss">Продолжить установку</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Обновить</string>
+    <string name="k2go_dash_card_sub_update_fmt">Ядро REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Нет соединения</string>
+    <string name="k2go_dash_cancel_confirm_title">Остановить обновление?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Панель останется на текущей версии.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Остановить обновление</string>
+    <string name="k2go_dash_cancel_confirm_keep">Продолжить обновление</string>
+    <string name="k2go_dash_update_site">Обновить веб-сайт</string>
+    <string name="k2go_dash_update_confirm_title">Обновить ядро REST?</string>
 </resources>

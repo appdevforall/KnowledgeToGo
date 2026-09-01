@@ -1319,4 +1319,14 @@
     <string name="k2go_mod_cancel_body">இதுவரை செய்தது மீட்டமைக்கப்படும், தொகுதி நிறுவப்படாது. பிறகு மீண்டும் தொடங்கலாம்.</string>
     <string name="k2go_mod_cancel_confirm">நிறுவலை நிறுத்து</string>
     <string name="k2go_mod_cancel_dismiss">நிறுவலைத் தொடர்</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">புதுப்பி</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST கரு · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">இணைப்பு இல்லை</string>
+    <string name="k2go_dash_cancel_confirm_title">புதுப்பிப்பை நிறுத்தவா?</string>
+    <string name="k2go_dash_cancel_confirm_msg">டாஷ்போர்டு தற்போதைய பதிப்பிலேயே இருக்கும்.</string>
+    <string name="k2go_dash_cancel_confirm_stop">புதுப்பிப்பை நிறுத்து</string>
+    <string name="k2go_dash_cancel_confirm_keep">புதுப்பிப்பைத் தொடர்</string>
+    <string name="k2go_dash_update_site">வலைத்தளத்தைப் புதுப்பி</string>
+    <string name="k2go_dash_update_confirm_title">REST கருவைப் புதுப்பிக்கவா?</string>
 </resources>
