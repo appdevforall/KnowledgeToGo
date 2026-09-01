@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">کارهای انجام‌شده تا کنون بازگردانده می‌شود و ماژول نصب نخواهد شد. می‌توانید بعداً دوباره آن را شروع کنید.</string>
     <string name="k2go_mod_cancel_confirm">توقف نصب</string>
     <string name="k2go_mod_cancel_dismiss">ادامه نصب</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">به‌روزرسانی</string>
+    <string name="k2go_dash_card_sub_update_fmt">هستهٔ REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">بدون اتصال</string>
+    <string name="k2go_dash_cancel_confirm_title">توقف به‌روزرسانی؟</string>
+    <string name="k2go_dash_cancel_confirm_msg">داشبورد روی نسخهٔ فعلی می‌ماند.</string>
+    <string name="k2go_dash_cancel_confirm_stop">توقف به‌روزرسانی</string>
+    <string name="k2go_dash_cancel_confirm_keep">ادامهٔ به‌روزرسانی</string>
+    <string name="k2go_dash_update_site">به‌روزرسانی وب‌سایت</string>
+    <string name="k2go_dash_update_confirm_title">هستهٔ REST به‌روزرسانی شود؟</string>
 </resources>

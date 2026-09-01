@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Quanto fatto finora viene annullato e il modulo non verrà installato. Puoi riavviarlo in seguito.</string>
     <string name="k2go_mod_cancel_confirm">Interrompi</string>
     <string name="k2go_mod_cancel_dismiss">Continua a installare</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Aggiorna</string>
+    <string name="k2go_dash_card_sub_update_fmt">Nucleo REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Nessuna connessione</string>
+    <string name="k2go_dash_cancel_confirm_title">Interrompere l\'aggiornamento?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Il pannello resta alla versione attuale.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Interrompi aggiornamento</string>
+    <string name="k2go_dash_cancel_confirm_keep">Continua ad aggiornare</string>
+    <string name="k2go_dash_update_site">Aggiorna il sito web</string>
+    <string name="k2go_dash_update_confirm_title">Aggiornare il nucleo REST?</string>
 </resources>

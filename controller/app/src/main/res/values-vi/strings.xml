@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Những gì đã làm đến giờ sẽ được hoàn tác và mô-đun sẽ không được cài đặt. Bạn có thể bắt đầu lại sau.</string>
     <string name="k2go_mod_cancel_confirm">Dừng cài đặt</string>
     <string name="k2go_mod_cancel_dismiss">Tiếp tục cài đặt</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Cập nhật</string>
+    <string name="k2go_dash_card_sub_update_fmt">Lõi REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Không có kết nối</string>
+    <string name="k2go_dash_cancel_confirm_title">Dừng cập nhật?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Bảng điều khiển giữ nguyên phiên bản hiện tại.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Dừng cập nhật</string>
+    <string name="k2go_dash_cancel_confirm_keep">Tiếp tục cập nhật</string>
+    <string name="k2go_dash_update_site">Cập nhật trang web</string>
+    <string name="k2go_dash_update_confirm_title">Cập nhật lõi REST?</string>
 </resources>

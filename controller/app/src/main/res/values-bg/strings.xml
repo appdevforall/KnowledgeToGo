@@ -1306,4 +1306,14 @@
     <string name="k2go_mod_cancel_body">Направеното дотук се връща назад и модулът няма да бъде инсталиран. Можете да го стартирате отново по-късно.</string>
     <string name="k2go_mod_cancel_confirm">Спри</string>
     <string name="k2go_mod_cancel_dismiss">Продължи инсталацията</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Обновяване</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST ядро · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Няма връзка</string>
+    <string name="k2go_dash_cancel_confirm_title">Спиране на обновяването?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Таблото остава на текущата версия.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Спри обновяването</string>
+    <string name="k2go_dash_cancel_confirm_keep">Продължи обновяването</string>
+    <string name="k2go_dash_update_site">Обновяване на уебсайта</string>
+    <string name="k2go_dash_update_confirm_title">Обновяване на REST ядрото?</string>
 </resources>

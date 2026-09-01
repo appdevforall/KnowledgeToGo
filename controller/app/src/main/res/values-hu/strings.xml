@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Az eddigiek visszavonásra kerülnek, és a modul nem lesz telepítve. Később újraindíthatod.</string>
     <string name="k2go_mod_cancel_confirm">Leállítás</string>
     <string name="k2go_mod_cancel_dismiss">Telepítés folytatása</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Frissítés</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST mag · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Nincs kapcsolat</string>
+    <string name="k2go_dash_cancel_confirm_title">Leállítja a frissítést?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Az irányítópult a jelenlegi verzión marad.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Frissítés leállítása</string>
+    <string name="k2go_dash_cancel_confirm_keep">Frissítés folytatása</string>
+    <string name="k2go_dash_update_site">Weboldal frissítése</string>
+    <string name="k2go_dash_update_confirm_title">Frissíti a REST magot?</string>
 </resources>
