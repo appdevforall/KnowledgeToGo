@@ -137,6 +137,23 @@ int __android_log_write(int prio, const char* tag, const char* text) { return 0;
 STUB
     fi
 
+    # --- ADFA-5334 (ADR-5334): translate fchmodat2 (452) like fchmodat, mirroring faccessat2. ---
+    # glibc>=2.39 restores directory modes via fchmodat2; proot passes it through untranslated, so
+    # recursive perms-preserving copies (tar -x / cp -a) fail under proot on kernel>=6.6 build hosts.
+    local sysdir="$TERMUX_PKG_SRCDIR/src/syscall"
+    grep -q 'SYSNUM(fchmodat2)' "$sysdir/sysnums.list" || \
+        sed -i '/^SYSNUM(fchmodat)$/a SYSNUM(fchmodat2)' "$sysdir/sysnums.list"
+    grep -q 'case PR_fchmodat2:' "$sysdir/enter.c" || \
+        sed -i 's/^\([[:space:]]*\)case PR_fchmodat:$/\1case PR_fchmodat:\n\1case PR_fchmodat2:/' "$sysdir/enter.c"
+    for h in "$sysdir"/sysnums-*.h; do
+        grep -q 'PR_fchmodat2' "$h" && continue
+        grep -q 'PR_faccessat2' "$h" && sed -i 's/^\([[:space:]]*\)\[ 439 \] = PR_faccessat2,/&\n\1[ 452 ] = PR_fchmodat2,/' "$h"
+    done
+    # proot's seccomp filter only TRACEs a curated list (proot_sysnums[]); without this,
+    # 452 is never trapped on kernel>=6.6 seccomp-accelerated hosts and passes through untranslated.
+    grep -q '{ PR_fchmodat2,' "$sysdir/seccomp.c" || \
+        sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_fchmodat2, 0 },/' "$sysdir/seccomp.c"
+
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
 }
@@ -441,7 +458,10 @@ for mapping in "${ARCHS[@]}"; do
     else
         echo ">> Healing sysroot and Building Rsync..."
         FORCE_FLAG=$([ "$REBUILD_RSYNC" -eq 1 ] && echo "-f" || echo "")
-        ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" libiconv libpopt
+        # ADFA-5334: the TAR block deletes libiconv.so to force static tar; libiconv is then cached, so
+        # this "healing" rebuild is skipped WITHOUT -f and libpopt fails to link -liconv. Force it so
+        # libiconv.so is actually restored before libpopt/rsync link (completes the sysroot-healing intent).
+        ./scripts/run-docker.sh ./build-package.sh -f -a "$TERMUX_ARCH" libiconv libpopt
         ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" rsync
 
         EXTRACT_DIR="$BUILD_DIR/extract_${TERMUX_ARCH}_rsync"
