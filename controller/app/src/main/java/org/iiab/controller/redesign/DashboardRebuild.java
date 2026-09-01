@@ -60,11 +60,15 @@ public final class DashboardRebuild {
         // ADFA-5339: a versionless "Update the Website" checkbox (default on) rides on the confirm. It
         // refreshes the served landing page in the same run — a SEPARATE, unversioned artifact, so it
         // carries no version label. Built in code to leave the shared dialog usage untouched.
-        final android.widget.CheckBox siteBox = new android.widget.CheckBox(ctx);
+        final com.google.android.material.checkbox.MaterialCheckBox siteBox =
+                new com.google.android.material.checkbox.MaterialCheckBox(ctx);
         siteBox.setText(R.string.k2go_dash_update_site);
         siteBox.setChecked(true);
-        int pad = Math.round(24 * ctx.getResources().getDisplayMetrics().density);
-        siteBox.setPadding(pad, pad / 2, pad, 0);
+        float density = ctx.getResources().getDisplayMetrics().density;
+        // Align the row with the dialog's title/message inset; a small drawable-to-text gap, not a wide one.
+        int side = Math.round(24 * density);
+        siteBox.setPadding(side, Math.round(8 * density), side, 0);
+        siteBox.setCompoundDrawablePadding(Math.round(8 * density));
         new MaterialAlertDialogBuilder(ctx)
                 .setTitle(R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
