@@ -421,6 +421,11 @@ public class PortalActivity extends AppCompatActivity {
             @Override public void onErr() {
                 if (isFinishing() || isDestroyed()) return;   // ADFA-5043: left mid-sign-in; don't touch dead views
                 hideAuthOverlay();
+                // ADFA-5361: say so. The page still opens — read-only, as the anonymous guest — but
+                // silently landing there is what made "I can't manage my own books" look like a
+                // permissions mystery instead of a sign-in that did not happen. Reuses the string the
+                // Authentication screen already shows for this same fact (no new l10n).
+                Toast.makeText(PortalActivity.this, R.string.k2go_auth_load_failed, Toast.LENGTH_LONG).show();
                 webView.loadUrl(targetUrl);
             }
         });

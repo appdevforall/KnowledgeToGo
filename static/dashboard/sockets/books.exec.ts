@@ -5,9 +5,8 @@
 // download_books_batch handler (auth/CSRF + fetch + upload), made durable and reporting
 // structured per-book progress. A job item is { id, title, url }.
 import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
-import { getCredential } from './credentials';
 import { withRetry } from './net-retry';
-import { presentTitles } from './books.query';
+import { presentTitles, getCalibreSession } from './books.query';
 import fs from 'fs';
 import path from 'path';
 
@@ -27,55 +26,15 @@ const BOOK_RETRY_MAX_MS = 15_000;
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
 const TMP_DIR = '/tmp/books_downloader/';
 const SYSTEM_USER_AGENT = 'K2Go Dashboard/1.0 (https://github.com/appdevforall/KnowledgeToGo)';
-// ADFA-4949: the credential override the original comment anticipated. Values now
-// come from the shared store (env -> persisted override -> the same Admin/changeme
-// factory default), so a device whose Calibre-Web password changed keeps working
-// without a rebuild. Behaviour on an untouched device is identical.
+// ADFA-4949: the credentials come from the shared store (env -> persisted override -> the
+// same Admin/changeme factory default), so a device whose Calibre-Web password changed keeps
+// working without a rebuild. Read inside getCalibreSession (books.query.ts).
+// ADFA-5361: this file used to carry its OWN copy of that login. Two implementations of "an
+// authenticated Calibre-Web session" drifted exactly as expected — the remember_me of ADFA-5043
+// reached one and not the other — so the copy is gone and there is one source. This runner
+// consumes the session itself, so it passes no consumer User-Agent and keeps Node's own agent.
 
 interface BookItem { id?: string; title?: string; url?: string; }
-
-/** Authenticate against Calibre-Web and return a usable cookie + fresh CSRF token. */
-async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
-    const loginPageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`);
-    const initialCookies = loginPageRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
-    const loginHtml = await loginPageRes.text();
-
-    const csrfMatch = loginHtml.match(/name="csrf_token" value="(.*?)"/);
-    if (!csrfMatch) throw new Error('Could not find CSRF token on login page');
-    const csrfToken = csrfMatch[1];
-
-    const loginData = new URLSearchParams();
-    loginData.append('csrf_token', csrfToken);
-    const cred = getCredential('calibre');
-    loginData.append('username', cred.username);
-    loginData.append('password', cred.password);
-
-    const authRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, {
-        method: 'POST',
-        headers: {
-            Cookie: initialCookies,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Referer: `${CALIBRE_WEB_LOCAL_URL}/login`,
-        },
-        body: loginData,
-        redirect: 'manual',
-    });
-
-    if (authRes.status !== 302 && authRes.status !== 303) {
-        throw new Error('Invalid Calibre-Web credentials');
-    }
-
-    const authCookieString = authRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
-
-    const homePageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/`, { headers: { Cookie: authCookieString } });
-    const homeHtml = await homePageRes.text();
-    const finalCsrfMatch =
-        homeHtml.match(/name="csrf_token"\s+value="([^"]+)"/i) ||
-        homeHtml.match(/value="([^"]+)"\s+name="csrf_token"/i);
-    const finalCsrfToken = finalCsrfMatch ? finalCsrfMatch[1] : csrfToken;
-
-    return { cookie: authCookieString, csrfToken: finalCsrfToken };
-}
 
 const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR, { recursive: true });

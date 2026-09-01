@@ -17,6 +17,7 @@ package org.iiab.controller.redesign;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
@@ -31,7 +32,33 @@ import java.nio.charset.StandardCharsets;
 public final class AuthClient {
     private AuthClient() {}
 
+    private static final String TAG = "K2Go-Auth";
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
+
+    /**
+     * Pause before the single retry. The failures worth retrying are the FAST ones — a refused
+     * connection or a 5xx from a service that is restarting or saturated — and those are exactly the
+     * ones an immediate retry asks again too soon to get a different answer, which would make the
+     * retry decorative. Short enough to be invisible next to the 12 s read budget it guards.
+     */
+    private static final long RETRY_DELAY_MS = 800L;
+
+    /** Thrown so a caller can tell a fast, retryable failure from the server's final word. */
+    private static final class HttpStatusException extends Exception {
+        final int status;
+        HttpStatusException(int status, String body) {
+            // Bounded: an unexpected HTML error page must not turn one log line into a screenful.
+            super("HTTP " + status + (body == null || body.isEmpty() ? ""
+                    : ": " + (body.length() > 200 ? body.substring(0, 200) + "…" : body)));
+            this.status = status;
+        }
+    }
+
+    /** {@code getMessage()} is null for several IO exceptions; the class name is better than "null". */
+    private static String describe(Exception e) {
+        String m = e.getMessage();
+        return (m == null || m.isEmpty()) ? e.getClass().getSimpleName() : m;
+    }
 
     public interface SessionCb {
         /** {@code cookie} is a ready-to-use Cookie header ("name=value; name2=value2"). */
@@ -52,16 +79,59 @@ public final class AuthClient {
      */
     public static void session(String service, String consumerUserAgent, SessionCb cb) {
         AppExecutors.get().io().execute(() -> {
+            String url = BoxEndpoints.API + "/auth/" + service + "/session";
             try {
-                String url = BoxEndpoints.API + "/auth/" + service + "/session";
-                JSONObject o = new JSONObject(httpGet(url, consumerUserAgent));
-                final String cookie = o.optString("cookie", "");
-                if (cookie.isEmpty()) MAIN.post(cb::onErr);
-                else MAIN.post(() -> cb.onOk(cookie));
+                final String cookie = fetchCookie(url, consumerUserAgent, service);
+                if (cookie.isEmpty()) {
+                    // A 200 with no cookie is the box telling us the handshake produced nothing.
+                    Log.w(TAG, service + ": the box returned no session cookie");
+                    MAIN.post(cb::onErr);
+                } else {
+                    MAIN.post(() -> cb.onOk(cookie));
+                }
             } catch (Exception e) {
+                // ADFA-5361: never silent. Without this line the card just opens as the anonymous
+                // Guest and nothing anywhere says why — which is most of what made this bug expensive.
+                Log.w(TAG, service + ": sign-in failed, the card will open unauthenticated: " + describe(e));
                 MAIN.post(cb::onErr);
             }
         });
+    }
+
+    /**
+     * One attempt, plus a single retry for the failures that are worth retrying.
+     *
+     * <p>ADFA-5361: retried are the FAST ones — a refused connection or a 5xx, which is what a
+     * content service that is busy or has just been restarted answers in milliseconds while a books
+     * job runs. NOT retried: a timeout (it already spent the full read budget; asking again buys the
+     * same answer for twice the wait, with the sign-in overlay on screen) and a 4xx (the box's final
+     * word — wrong credentials do not improve on a second ask). Same rule the box uses for its own
+     * retries: {@code isTransient: status >= 500} in sockets/net-retry.ts.
+     */
+    private static String fetchCookie(String url, String consumerUserAgent, String service) throws Exception {
+        try {
+            return cookieOf(httpGet(url, consumerUserAgent));
+        } catch (java.net.SocketTimeoutException e) {
+            throw e;                                             // already waited the full budget
+        } catch (HttpStatusException e) {
+            if (e.status < 500) throw e;                          // 401/403/404: final
+            Log.w(TAG, service + ": " + describe(e) + " — retrying once");
+        } catch (java.io.IOException e) {
+            Log.w(TAG, service + ": " + describe(e) + " — retrying once");
+        }
+        // Runs on the IO executor, never the main thread. Restore the interrupt flag and give up
+        // rather than swallowing it: an interrupted worker must not go on to open a new connection.
+        try {
+            Thread.sleep(RETRY_DELAY_MS);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw ie;
+        }
+        return cookieOf(httpGet(url, consumerUserAgent));
+    }
+
+    private static String cookieOf(String json) throws Exception {
+        return new JSONObject(json).optString("cookie", "");
     }
 
     private static String httpGet(String urlStr, String consumerUserAgent) throws Exception {
@@ -77,7 +147,7 @@ public final class AuthClient {
             }
             int code = c.getResponseCode();
             String text = readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());
-            if (code < 200 || code >= 400) throw new Exception("HTTP " + code);
+            if (code < 200 || code >= 400) throw new HttpStatusException(code, text);
             return text;
         } finally {
             c.disconnect();
