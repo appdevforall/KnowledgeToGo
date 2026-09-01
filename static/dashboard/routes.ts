@@ -729,14 +729,25 @@ apiRouter.delete('/credentials/:service', (req: Request, res: Response): void =>
 apiRouter.get('/auth/:service/session', async (req: Request, res: Response): Promise<void> => {
     res.set('Cache-Control', 'no-store');
     const service = String(req.params.service);
+    // ADFA-5361: mint the session FOR THE AGENT THAT ASKS. Calibre-Web (Flask-Login) binds a session
+    // to a fingerprint of the User-Agent, so a session minted under this process's agent is rejected
+    // on the consumer's first request — the identity is dropped, the remember_token deleted, and the
+    // caller silently becomes the anonymous Guest. The caller's own User-Agent is that fact: the app
+    // sends its WebView's. Missing (a hand-made call) degrades to this process's agent, as before —
+    // logged, because "the session mints but never authenticates" is otherwise invisible.
+    const consumerUa = req.get('user-agent');
+    if (!consumerUa) {
+        console.warn(`[auth] ${service}: request carries no User-Agent; the session is minted for `
+            + 'this process and will not authenticate another agent');
+    }
     try {
         if (service === 'kolibri') {
-            const s = await kolibriLogin();
+            const s = await kolibriLogin(undefined, consumerUa);
             res.json({ service: 'kolibri', cookie: s.cookie });
             return;
         }
         if (service === 'calibre' || service === 'books') {
-            const s = await getCalibreSession();
+            const s = await getCalibreSession(consumerUa);
             res.json({ service: 'calibre', cookie: s.cookie });
             return;
         }

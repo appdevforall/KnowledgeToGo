@@ -327,9 +327,9 @@ public class LibraryHomeFragment extends Fragment {
         if (c.state == GREEN || contentInFlight(c)) {
             Intent i = new Intent(requireContext(), PortalActivity.class);
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
-            // ADFA-5043: Books (Calibre-Web) and Courses (Kolibri) auto-login as box admin in the WebView.
-            String authService = authServiceFor(c.endpoint);
-            if (authService != null) i.putExtra("AUTH_SERVICE", authService);
+            // ADFA-5361: Books (Calibre-Web) and Courses (Kolibri) still auto-login as box admin, but
+            // the portal derives that from the URL (AutoLoginPolicy) — this call site no longer has to
+            // know, so the entry points that never knew are covered too.
             startActivity(i);
         } else if (ModuleCards.byEndpoint(c.endpoint) != null) {   // ADFA-4958: module -> action sheet
             openSheet(c);
@@ -350,14 +350,6 @@ public class LibraryHomeFragment extends Fragment {
             });
             Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /** ADFA-5043: card endpoint → auto-login service name (server credential store), or null if the
-     *  card has no admin login. */
-    private static String authServiceFor(String endpoint) {
-        if ("kolibri".equals(endpoint)) return "kolibri";
-        if ("books".equals(endpoint)) return "calibre";
-        return null;
     }
 
     /**
