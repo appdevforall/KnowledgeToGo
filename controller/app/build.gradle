@@ -763,6 +763,31 @@ task refreshKolibriCatalog {
     }
 }
 
+// ADFA-5361: `connectedAndroidTest` UNINSTALLS both APKs when it finishes. On a device that holds an
+// installed rootfs, uninstalling the app deletes its data directory — that is, the whole box. Observed:
+// one run wiped an installed system on a test device. The instrumentation tests are worth keeping, so
+// the fix is to refuse the destructive entry point rather than to write a rule someone has to remember.
+// Install and run explicitly instead (this installs, runs, and leaves both APKs in place):
+//     ./gradlew :app:installDebug :app:installDebugAndroidTest
+//     adb shell am instrument -w -e class <TestClass> org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner
+// A device with nothing to lose can still opt in with -PallowUninstall=true.
+tasks.configureEach { t ->
+    if (t.name.startsWith('connected') && t.name.endsWith('AndroidTest')) {
+        t.doFirst {
+            if (!project.hasProperty('allowUninstall')) {
+                throw new GradleException(
+                        "Refusing to run ${t.name}: it uninstalls the app when it finishes, which on a "
+                        + "device holding an installed rootfs destroys the box (ADFA-5361).\n"
+                        + "  Run instead:\n"
+                        + "    ./gradlew :app:installDebug :app:installDebugAndroidTest\n"
+                        + "    adb shell am instrument -w -e class <TestClass> \\\n"
+                        + "      org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner\n"
+                        + "  Or, if this device has nothing to lose: -PallowUninstall=true")
+            }
+        }
+    }
+}
+
 // ADFA-4466 / build resilience: apply the Firebase google-services plugin only when its config file is
 // present. Without it the plugin fails the build; skipping it lets contributors build a working APK with
 // analytics compiled out (BuildConfig.ANALYTICS_ENABLED = false). Applied at the bottom, as the plugin

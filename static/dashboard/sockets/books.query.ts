@@ -132,9 +132,20 @@ export function listLibrary(): any[] {
 /** Log into Calibre-Web with the given credentials and return the authenticated session.
  *  A successful login answers with a 302/303 redirect; anything else means the credentials were
  *  rejected (thrown as 'Invalid Calibre-Web credentials'). A connection error (service down) throws
- *  the underlying fetch error, so callers can tell "wrong password" from "not running". */
-async function loginCalibre(username: string, password: string): Promise<{ cookie: string; csrfToken: string }> {
-    const loginPageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`);
+ *  the underlying fetch error, so callers can tell "wrong password" from "not running".
+ *
+ *  ADFA-5361: {@code userAgent} is the agent that will USE the session. Flask-Login binds a session
+ *  to a fingerprint of the User-Agent (+ address), so a session minted here under Node's own agent
+ *  is rejected the moment another agent presents it: the identity is dropped, the remember_token is
+ *  deleted, and the caller silently becomes the anonymous Guest. Callers that consume the session
+ *  themselves (the downloads runner, removeBook) pass nothing and keep Node's agent; the auto-login
+ *  route passes the WebView's, so the session is minted for its real consumer. All three requests
+ *  carry it — the anonymous GET already establishes the fingerprint. */
+async function loginCalibre(
+    username: string, password: string, userAgent?: string,
+): Promise<{ cookie: string; csrfToken: string }> {
+    const agent: Record<string, string> = userAgent ? { 'User-Agent': userAgent } : {};
+    const loginPageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, { headers: { ...agent } });
     const initialCookies = loginPageRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
     const loginHtml = await loginPageRes.text();
     const csrfMatch = loginHtml.match(/name="csrf_token" value="(.*?)"/);
@@ -153,6 +164,7 @@ async function loginCalibre(username: string, password: string): Promise<{ cooki
     const authRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, {
         method: 'POST',
         headers: {
+            ...agent,
             Cookie: initialCookies,
             'Content-Type': 'application/x-www-form-urlencoded',
             Referer: `${CALIBRE_WEB_LOCAL_URL}/login`,
@@ -163,16 +175,20 @@ async function loginCalibre(username: string, password: string): Promise<{ cooki
     if (authRes.status !== 302 && authRes.status !== 303) throw new Error('Invalid Calibre-Web credentials');
 
     const authCookieString = authRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
-    const homeHtml = await (await fetch(`${CALIBRE_WEB_LOCAL_URL}/`, { headers: { Cookie: authCookieString } })).text();
+    const homeHtml = await (await fetch(`${CALIBRE_WEB_LOCAL_URL}/`, {
+        headers: { ...agent, Cookie: authCookieString },
+    })).text();
     const finalCsrfMatch =
         homeHtml.match(/name="csrf_token"\s+value="([^"]+)"/i) ||
         homeHtml.match(/value="([^"]+)"\s+name="csrf_token"/i);
     return { cookie: authCookieString, csrfToken: finalCsrfMatch ? finalCsrfMatch[1] : csrfToken };
 }
 
-export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
+/** ADFA-5361: pass {@code userAgent} when the session is for someone else (the app's WebView).
+ *  Omit it when this process is the consumer — see {@link loginCalibre}. */
+export async function getCalibreSession(userAgent?: string): Promise<{ cookie: string; csrfToken: string }> {
     const cred = getCredential('calibre');
-    return loginCalibre(cred.username, cred.password);
+    return loginCalibre(cred.username, cred.password, userAgent);
 }
 
 /** ADFA-5044: check credentials against the live Calibre-Web before persisting them. Resolves on a

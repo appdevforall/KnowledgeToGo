@@ -15,7 +15,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError } from './kolibri.session';
+import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError, login } from './kolibri.session';
 import {
     mapPhase, mapPercent, normalizeUuid, buildTaskPayload, overallPercent, sampleSpeed,
     toRemoteChannel, failureMessage,
@@ -360,4 +360,49 @@ test('failureMessage keeps a detail line that does not match the usual shape', (
 
 test('failureMessage does not echo the class name back as if it were detail', () => {
     assert.equal(failureMessage('HTTPError', 'Traceback:\nHTTPError'), 'HTTPError');
+});
+
+// ─── ADFA-5361: the session is minted for the agent that will use it ─────────
+//
+// The only network-shaped test here, and it stubs fetch: what it pins is not Kolibri's
+// behaviour but OUR contract — the consumer's User-Agent reaches EVERY request of the
+// handshake, because the fingerprint a service binds a session to is established on the
+// first (anonymous) one, not only on the login POST. Getting this wrong is invisible:
+// the session mints, the cookie looks fine, and the consumer is silently anonymous.
+
+/** Runs `body` with a stubbed fetch, returning the User-Agent seen on each request. */
+async function captureUserAgents(body: () => Promise<unknown>): Promise<(string | null)[]> {
+    const seen: (string | null)[] = [];
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: RequestInfo | URL, init: RequestInit = {}) => {
+        seen.push(new Headers(init.headers).get('user-agent'));
+        const headers = new Headers();
+        if (String(url).includes('/current/')) {
+            headers.append('set-cookie', 'kolibri_csrftoken=csrf1; Path=/');
+            return new Response('{}', { status: 200, headers });
+        }
+        headers.append('set-cookie', 'kolibri=sess1; Path=/');
+        return new Response(JSON.stringify({ username: 'Admin', can_manage_content: true }),
+            { status: 200, headers });
+    }) as typeof fetch;
+    try {
+        await body();
+    } finally {
+        globalThis.fetch = realFetch;
+    }
+    return seen;
+}
+
+test('login carries the consumer User-Agent on every request of the handshake', async () => {
+    const seen = await captureUserAgents(
+        () => login({ username: 'Admin', password: 'x' }, 'ConsumerUA/1.0'));
+    assert.equal(seen.length, 2);                       // CSRF seed + login POST
+    assert.deepEqual(seen, ['ConsumerUA/1.0', 'ConsumerUA/1.0']);
+});
+
+test('login without a consumer keeps this process own agent', async () => {
+    // The callers that consume the session themselves must NOT be given someone else's
+    // identity: omitting the argument has to leave the header untouched, not empty it.
+    const seen = await captureUserAgents(() => login({ username: 'Admin', password: 'x' }));
+    assert.deepEqual(seen, [null, null]);
 });

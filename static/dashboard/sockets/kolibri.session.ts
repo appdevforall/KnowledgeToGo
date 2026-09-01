@@ -105,18 +105,28 @@ async function fetchWithTimeout(
  *
  * @param override explicit credentials (used by the validation endpoint before
  *                 persisting them); if omitted, they are taken from the store.
+ * @param userAgent ADFA-5361: the agent that will USE the session, when it is not this
+ *                 process (the app's WebView). Django does not bind a session to the
+ *                 User-Agent the way Flask-Login does — Calibre-Web is where this was
+ *                 measured — but the endpoint's contract is one rule for every service
+ *                 ("mint a session for the agent that asks"), and a per-service exception
+ *                 is what later gets forgotten. Omitted by the callers that consume the
+ *                 session themselves, which keep this process's own agent.
  */
 export async function login(
     override?: { username: string; password: string },
+    userAgent?: string,
 ): Promise<KolibriSession> {
     const cred = override ?? getCredential('kolibri');
+    const agent: Record<string, string> = userAgent ? { 'User-Agent': userAgent } : {};
 
     // 1. Seed the CSRF cookie. The session viewset carries @ensure_csrf_cookie,
     //    so a GET is enough.
     let cookie = '';
     let csrfToken: string | null = null;
     try {
-        const seed = await fetchWithTimeout(`${KOLIBRI_BASE}/api/auth/session/current/`);
+        const seed = await fetchWithTimeout(`${KOLIBRI_BASE}/api/auth/session/current/`,
+            { headers: { ...agent } });
         const setCookies = seed.headers.getSetCookie();
         cookie = mergeCookies('', setCookies);
         csrfToken = cookieValue(setCookies, CSRF_COOKIE);
@@ -135,6 +145,7 @@ export async function login(
         res = await fetchWithTimeout(`${KOLIBRI_BASE}/api/auth/session/`, {
             method: 'POST',
             headers: {
+                ...agent,
                 'Content-Type': 'application/json',
                 Cookie: cookie,
                 [CSRF_HEADER]: csrfToken,
