@@ -43,8 +43,7 @@ public final class KolibriProvisioner {
     }
 
     /**
-     * ADFA-4954: whether a drain would proceed <em>right now</em>, without writing
-     * anything.
+     * ADFA-4954: whether a drain would proceed <em>right now</em>, without writing anything.
      *
      * <p>Now only {@link #drain} asks. It used to be public API for the live door, which
      * checked before writing so it could refuse with "Another download is running" rather
@@ -54,27 +53,12 @@ public final class KolibriProvisioner {
      * and visible ("Queued" on its row). The door banks and lets this defer; a queue is a
      * better answer than a refusal, and the honest one now that something drains it.
      *
-     * <p>The rule stays here rather than being restated at the call site — that is
-     * how the four {@code *Wizard} booleans went wrong.
+     * <p>The rule itself moved to {@link org.iiab.controller.system.data.ContentAdmission}: Books
+     * and ZIM carried the same one, word for word. It stays out of the call site for the reason
+     * this javadoc always gave — that is how the four {@code *Wizard} booleans went wrong.
      */
     static boolean canDrainNow(Context ctx) {
-        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || MapsProvisioner.hasPending(ctx)
-                || org.iiab.controller.redesign.DashboardRebuildService.isRunning()) {   // ADFA-5333
-            Log.d(TAG, "kolibri drain blocked: proot (runrole) or dashboard-update work is in flight");
-            return false;
-        }
-        // ADFA-5074: unfinished work only. This read a merely registered session, so a
-        // download that had already completed and was waiting to be dismissed refused the
-        // next one with "something else is downloading" while nothing was — and the only
-        // way out was force-stopping the app, because these are process statics.
-        // Serialising exists because each stream measures free space at its own moment;
-        // one that has finished has already been absorbed by the disk.
-        if (org.iiab.controller.system.data.PendingContent.anyUnfinished(ctx)) {
-            Log.d(TAG, "kolibri drain blocked: a content stream still has work to do");
-            return false;
-        }
-        return true;
+        return org.iiab.controller.system.data.ContentAdmission.canStart(ctx, "kolibri");
     }
 
     /**
