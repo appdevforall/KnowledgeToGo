@@ -149,6 +149,10 @@ STUB
         grep -q 'PR_fchmodat2' "$h" && continue
         grep -q 'PR_faccessat2' "$h" && sed -i 's/^\([[:space:]]*\)\[ 439 \] = PR_faccessat2,/&\n\1[ 452 ] = PR_fchmodat2,/' "$h"
     done
+    # proot's seccomp filter only TRACEs a curated list (proot_sysnums[]); without this,
+    # 452 is never trapped on kernel>=6.6 seccomp-accelerated hosts and passes through untranslated.
+    grep -q '{ PR_fchmodat2,' "$sysdir/seccomp.c" || \
+        sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_fchmodat2, 0 },/' "$sysdir/seccomp.c"
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
