@@ -15,7 +15,15 @@ DEST_DIR="/library/www/html/home"
 
 printf "\n${CYAN}Deploying the landing site...${NC}\n"
 
-[ -d "$SITE_SRC" ] || { printf "${RED}Source not found: $SITE_SRC${NC}\n"; exit 1; }
+# ADFA-5339: validate the source is the REAL site BEFORE touching the destination. The mirror below
+# is destructive (it wipes DEST first), so a mis-resolved SITE_SRC would delete the served site and
+# copy the wrong tree with no rollback. `[ -d ]` is not enough — a wrong-but-existing dir (e.g. /root
+# when SITE_SRC resolved empty) passes it; require the landing page's own index.html so only the
+# actual site can proceed. Caught on device when this script was invoked with sh instead of bash.
+[ -f "$SITE_SRC/index.html" ] || {
+    printf "${RED}Refusing to deploy: %s is not the site (no index.html). Nothing was changed.${NC}\n" "$SITE_SRC"
+    exit 1
+}
 mkdir -p "$DEST_DIR"
 
 # Mirror: clear the destination, then copy via tar (proot-safe). Excludes this script and any *.sh.
