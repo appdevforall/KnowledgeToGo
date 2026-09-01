@@ -57,18 +57,27 @@ public final class DashboardRebuild {
             Snackbars.make(anchor, R.string.k2go_dash_needs_internet).show();
             return;
         }
+        // ADFA-5339: a versionless "Update the Website" checkbox (default on) rides on the confirm. It
+        // refreshes the served landing page in the same run — a SEPARATE, unversioned artifact, so it
+        // carries no version label. Built in code to leave the shared dialog usage untouched.
+        final android.widget.CheckBox siteBox = new android.widget.CheckBox(ctx);
+        siteBox.setText(R.string.k2go_dash_update_site);
+        siteBox.setChecked(true);
+        int pad = Math.round(24 * ctx.getResources().getDisplayMetrics().density);
+        siteBox.setPadding(pad, pad / 2, pad, 0);
         new MaterialAlertDialogBuilder(ctx)
                 .setTitle(R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
+                .setView(siteBox)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor))
+                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor, siteBox.isChecked()))
                 .show();
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older
      *  installs take the proot rebuild once as a bridge to 1.2.0. The version read hits disk, so it
      *  runs off the main thread; the routing itself is posted back to the UI. */
-    private static void start(@NonNull Fragment host, @NonNull View anchor) {
+    private static void start(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
         final Context app = host.requireContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
         AppExecutors.get().io().execute(() -> {
@@ -84,7 +93,9 @@ public final class DashboardRebuild {
             final Operation op = Operation.of("dashboard", Operation.Kind.APP_INSTALL, cls);
             main.post(() -> {
                 if (!host.isAdded()) return;
-                if (op.isLive()) startRest(host, anchor);
+                // ADFA-5339: the site refresh only applies to the LIVE REST path; the proot bridge rebuild
+                // (< 1.2.0) has no site step, so the checkbox is simply not carried there.
+                if (op.isLive()) startRest(host, anchor, updateSite);
                 else startProot(host);
             });
         });
@@ -106,8 +117,8 @@ public final class DashboardRebuild {
      *  notification) and let the user go — the service POSTs the rebuild and polls the box until it
      *  reports done/error, with no time cap. A visible dashboard card refreshes on the service's
      *  completion broadcast; nothing pins this screen. */
-    private static void startRest(@NonNull Fragment host, @NonNull View anchor) {
-        DashboardRebuildService.start(host.requireContext().getApplicationContext());
+    private static void startRest(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
+        DashboardRebuildService.start(host.requireContext().getApplicationContext(), updateSite);
         if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 

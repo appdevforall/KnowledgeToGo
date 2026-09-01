@@ -24,4 +24,7 @@
     <string name="k2go_dash_cancel_confirm_msg" translatable="false">The dashboard stays on its current version.</string>
     <string name="k2go_dash_cancel_confirm_stop" translatable="false">Stop update</string>
     <string name="k2go_dash_cancel_confirm_keep" translatable="false">Keep updating</string>
+    <!-- Versionless site refresh, in the rebuild confirm dialog (default on). Reuses k2go_maps_log_show/
+         hide for the Details chevron, so no new "show/hide details" string is needed. -->
+    <string name="k2go_dash_update_site" translatable="false">Update the Website</string>
 </resources>

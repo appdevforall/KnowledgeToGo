@@ -50,6 +50,14 @@ public class DashboardDetailFragment extends Fragment {
     private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label + Cancel)
     private View updatingCancel;   // ADFA-5333: the Cancel affordance beside the bar
     private boolean updating;      // ADFA-5333: a background rebuild is in flight; don't re-emphasize Rebuild
+    // ADFA-5339: expandable Details — the live rebuild log, minimized by default. The toggle is hidden
+    // until there are lines (an older box without /rebuild/log, or a rebuild that hasn't logged yet).
+    private TextView detailsToggle;
+    private android.widget.ScrollView logScroll;
+    private TextView logText;
+    private boolean logExpanded;
+    private static final long LOG_POLL_MS = 1500L;
+    private final Runnable logPoll = this::pollLog;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -297,6 +305,33 @@ public class DashboardDetailFragment extends Fragment {
         updatingCancel = cancel;
 
         row.addView(line);
+
+        // ADFA-5339: Details — a "Show details" toggle (hidden until there are log lines) that reveals
+        // the live rebuild log in place. Mirrors the module-install Details pattern; the button above
+        // stays fixed. Text chevron (▾/▴) to avoid a new drawable.
+        detailsToggle = new TextView(requireContext());
+        detailsToggle.setText(getString(R.string.k2go_maps_log_show) + "  ▾");
+        detailsToggle.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        detailsToggle.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        detailsToggle.setPadding(0, Math.round(8 * d), 0, Math.round(4 * d));
+        detailsToggle.setClickable(true);
+        detailsToggle.setVisibility(View.GONE);
+        detailsToggle.setOnClickListener(v -> toggleLog());
+        row.addView(detailsToggle);
+
+        logScroll = new android.widget.ScrollView(requireContext());
+        LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, Math.round(160 * d));
+        logScroll.setLayoutParams(slp);
+        logScroll.setVisibility(View.GONE);
+        logText = new TextView(requireContext());
+        logText.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        logText.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        logText.setTypeface(android.graphics.Typeface.MONOSPACE);
+        logText.setTextIsSelectable(true);
+        logScroll.addView(logText);
+        row.addView(logScroll);
+
         row.setVisibility(View.GONE);
         parent.addView(row, parent.indexOfChild(rebuildBtn));
         return row;
@@ -330,6 +365,54 @@ public class DashboardDetailFragment extends Fragment {
         if (updatingCancel != null) updatingCancel.setEnabled(on);   // re-enable when a new update shows
         if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
         if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
+        // ADFA-5339: the Details log only exists while a rebuild runs. Poll it on, tear it down on off.
+        main.removeCallbacks(logPoll);
+        if (on) {
+            main.post(logPoll);
+        } else if (detailsToggle != null) {
+            detailsToggle.setVisibility(View.GONE);
+            if (logScroll != null) logScroll.setVisibility(View.GONE);
+        }
+    }
+
+    /** ADFA-5339: reveal/hide the live log in place; the Rebuild button and everything else stay put. */
+    private void toggleLog() {
+        logExpanded = !logExpanded;
+        if (logScroll != null) logScroll.setVisibility(logExpanded ? View.VISIBLE : View.GONE);
+        if (detailsToggle != null) {
+            detailsToggle.setText(getString(
+                    logExpanded ? R.string.k2go_maps_log_hide : R.string.k2go_maps_log_show)
+                    + (logExpanded ? "  ▴" : "  ▾"));
+        }
+    }
+
+    /** ADFA-5339: poll the rebuild log tail while updating. Fork B — the toggle appears only once there
+     *  are lines, so an older box without the endpoint (empty) shows no Details affordance. Reschedules
+     *  itself while {@code updating}; setUpdating(false) and onDestroyView remove the callback. */
+    private void pollLog() {
+        if (!isAdded() || !updating) return;
+        DashboardClient.rebuildLog(new DashboardClient.RebuildLogCb() {
+            @Override public void onLines(java.util.List<String> lines) {
+                if (!isAdded() || !updating) return;
+                if (!lines.isEmpty()) {
+                    if (detailsToggle != null) detailsToggle.setVisibility(View.VISIBLE);
+                    if (logText != null) logText.setText(android.text.TextUtils.join("\n", lines));
+                    if (logExpanded && logScroll != null) {
+                        logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
+                    }
+                }
+                main.postDelayed(logPoll, LOG_POLL_MS);
+            }
+            @Override public void onErr(String message) {
+                // No endpoint / transient: keep the toggle as-is (hidden if never populated) and retry.
+                if (isAdded() && updating) main.postDelayed(logPoll, LOG_POLL_MS);
+            }
+        });
+    }
+
+    @Override public void onDestroyView() {
+        main.removeCallbacks(logPoll);   // ADFA-5339: never poll past the view's life
+        super.onDestroyView();
     }
 
     /** Read the installed version from the rootfs package.json on disk (authoritative, always present;
