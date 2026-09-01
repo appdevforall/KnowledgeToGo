@@ -40,12 +40,21 @@ public final class AuthClient {
         void onErr();
     }
 
-    /** Ask the box for a signed-in session cookie for a service ("books"/"calibre" or "kolibri"). */
-    public static void session(String service, SessionCb cb) {
+    /**
+     * Ask the box for a signed-in session cookie for a service ("books"/"calibre" or "kolibri").
+     *
+     * <p>ADFA-5361: {@code consumerUserAgent} is the User-Agent of the WebView that will USE the
+     * session, sent as this request's own User-Agent. Calibre-Web (Flask-Login) binds a session to
+     * a fingerprint of the agent, so a session minted under the box's own agent is rejected on the
+     * WebView's first request — the identity is dropped, the remember_token deleted, and the card
+     * opens as the anonymous Guest. It must be the WebView's string verbatim: its only job is to
+     * match what the WebView will send.
+     */
+    public static void session(String service, String consumerUserAgent, SessionCb cb) {
         AppExecutors.get().io().execute(() -> {
             try {
                 String url = BoxEndpoints.API + "/auth/" + service + "/session";
-                JSONObject o = new JSONObject(httpGet(url));
+                JSONObject o = new JSONObject(httpGet(url, consumerUserAgent));
                 final String cookie = o.optString("cookie", "");
                 if (cookie.isEmpty()) MAIN.post(cb::onErr);
                 else MAIN.post(() -> cb.onOk(cookie));
@@ -55,7 +64,7 @@ public final class AuthClient {
         });
     }
 
-    private static String httpGet(String urlStr) throws Exception {
+    private static String httpGet(String urlStr, String consumerUserAgent) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
@@ -63,6 +72,9 @@ public final class AuthClient {
             // The server does a login handshake with the local service; a missing service fails fast.
             c.setReadTimeout(12000);
             c.setRequestProperty("Accept", "application/json");
+            if (consumerUserAgent != null && !consumerUserAgent.isEmpty()) {
+                c.setRequestProperty("User-Agent", consumerUserAgent);
+            }
             int code = c.getResponseCode();
             String text = readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());
             if (code < 200 || code >= 400) throw new Exception("HTTP " + code);
