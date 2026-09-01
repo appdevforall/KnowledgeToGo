@@ -16,7 +16,6 @@ import android.content.Context;
 import android.util.Log;
 
 import org.iiab.controller.kolibri.data.KolibriWishlist;
-import org.iiab.controller.redesign.MapsProvisioner;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,7 +57,7 @@ public final class KolibriProvisioner {
      * this javadoc always gave — that is how the four {@code *Wizard} booleans went wrong.
      */
     static boolean canDrainNow(Context ctx) {
-        return org.iiab.controller.system.data.ContentAdmission.canStart(ctx, "kolibri");
+        return org.iiab.controller.system.data.ContentAdmission.canStart(ctx, org.iiab.controller.system.domain.ContentType.COURSES);
     }
 
     /**

@@ -17,6 +17,7 @@ import android.util.Log;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.redesign.DashboardRebuildService;
 import org.iiab.controller.redesign.MapsProvisioner;
+import org.iiab.controller.system.domain.ContentType;
 
 /**
  * Admission for the live REST content streams (Books, ZIM, Kolibri channels).
@@ -55,18 +56,21 @@ public final class ContentAdmission {
     /**
      * True when a REST content stream may start now.
      *
-     * @param stream the caller's own name ("books", "zim", "kolibri"), used only so the deferral
-     *               reads in logcat the way it did when each provisioner logged for itself
+     * @param stream the asking stream. A {@link ContentType} rather than its name: the type already
+     *               owns that identity ({@code key()} is what the logs, the progress rows and the
+     *               operations all use), and it carries the execution class that says which types
+     *               this gate is even about — {@code MAPS} is {@code STOPPED}, so it is not a caller
+     *               here but one of the things this rule defers to.
      */
-    public static boolean canStart(Context ctx, String stream) {
+    public static boolean canStart(Context ctx, ContentType stream) {
         if (ModuleQueueRepository.get().isRunning()
                 || MapsProvisioner.hasPending(ctx)
                 || DashboardRebuildService.isRunning()) {
-            Log.d(TAG, stream + " drain deferred: proot (runrole) or dashboard-update work is in flight");
+            Log.d(TAG, stream.key() + " drain deferred: proot (runrole) or dashboard-update work is in flight");
             return false;
         }
         if (PendingContent.anyUnfinished(ctx)) {
-            Log.d(TAG, stream + " drain deferred: a content stream still has work to do");
+            Log.d(TAG, stream.key() + " drain deferred: a content stream still has work to do");
             return false;
         }
         return true;

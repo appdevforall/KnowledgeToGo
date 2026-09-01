@@ -40,7 +40,7 @@ public final class ZimProvisioner {
     public static void drain(Context ctx) {
         // The deferral rule (proot in flight, another stream unfinished) is one source, shared with
         // Books and Kolibri — see ContentAdmission for why each check is there.
-        if (!org.iiab.controller.system.data.ContentAdmission.canStart(ctx, "zim")) return;
+        if (!org.iiab.controller.system.data.ContentAdmission.canStart(ctx, org.iiab.controller.system.domain.ContentType.ZIM)) return;
         if (ZimWishlist.size(ctx) == 0) return;
         final Context app = ctx.getApplicationContext();
         Log.i(TAG, "zim drain: " + ZimWishlist.size(app) + " in wishlist; loading catalog");

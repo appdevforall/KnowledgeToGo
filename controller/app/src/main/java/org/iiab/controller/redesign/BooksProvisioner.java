@@ -39,7 +39,7 @@ public final class BooksProvisioner {
     public static void drain(Context ctx) {
         // The deferral rule (proot in flight, another stream unfinished) is one source, shared with
         // ZIM and Kolibri — see ContentAdmission for why each check is there.
-        if (!org.iiab.controller.system.data.ContentAdmission.canStart(ctx, "books")) return;
+        if (!org.iiab.controller.system.data.ContentAdmission.canStart(ctx, org.iiab.controller.system.domain.ContentType.BOOKS)) return;
         JSONArray order = BooksWishlist.all(ctx);
         Log.i(TAG, "books drain: " + order.length() + " in wishlist");
         List<String> ids = new ArrayList<>(), titles = new ArrayList<>(), urls = new ArrayList<>();
