@@ -25,6 +25,7 @@ import java.util.List;
 import org.iiab.controller.network.data.FileResolvConfWriter;
 import org.iiab.controller.network.data.PrefsDnsConfigRepository;
 import org.iiab.controller.network.domain.ApplyDnsUseCase;
+import org.iiab.controller.proot.data.ProotEnvironment;
 
 public class PRootEngine {
     private static final String TAG = "IIAB-PRootEngine";
@@ -177,26 +178,11 @@ public class PRootEngine {
                 // =========================================================
                 // INJECT ENVIRONMENT VARIABLES
                 // =========================================================
+                // ADFA-5362: the environment is built in one place for every proot launch, so the
+                // app and the terminal cannot drift apart on the same phone.
                 pb.environment().clear(); // Clean toxic Android vars
-
-                // Tell PRoot where to find our Fake Termux Prefix
-                pb.environment().put("PREFIX", prefixDir.getCanonicalPath());
-
-                // Fallback environment variables for modern PRoot versions
-                if (loaderBinary.exists())
-                    pb.environment().put("PROOT_LOADER", loaderBinary.getAbsolutePath());
-                File loader32 = new File(nativeDir, "libproot-loader32.so");
-                if (loader32.exists())
-                    pb.environment().put("PROOT_LOADER_32", loader32.getAbsolutePath());
-
-                pb.environment().put("PROOT_TMP_DIR", prootTmpPath);
-                pb.environment().put("TMPDIR", "/tmp");
-                pb.environment().put("HOME", "/root");
-                pb.environment().put("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
-                pb.environment().put("TERM", "xterm-256color");
-                pb.environment().put("LANG", "C.UTF-8");
-                pb.environment().put("USER", "root");
-                pb.environment().put("LOGNAME", "root");
+                pb.environment().putAll(ProotEnvironment.build(
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
@@ -307,22 +293,10 @@ public class PRootEngine {
                 ProcessBuilder pb = new ProcessBuilder(args);
                 pb.redirectErrorStream(true);
 
+                // ADFA-5362: same single builder as executeInContainer.
                 pb.environment().clear();
-                pb.environment().put("PREFIX", prefixDir.getCanonicalPath());
-                if (loaderBinary.exists())
-                    pb.environment().put("PROOT_LOADER", loaderBinary.getAbsolutePath());
-                File loader32 = new File(nativeDir, "libproot-loader32.so");
-                if (loader32.exists())
-                    pb.environment().put("PROOT_LOADER_32", loader32.getAbsolutePath());
-
-                pb.environment().put("PROOT_TMP_DIR", prootTmpPath);
-                pb.environment().put("TMPDIR", "/tmp");
-                pb.environment().put("HOME", "/root");
-                pb.environment().put("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
-                pb.environment().put("TERM", "xterm-256color");
-                pb.environment().put("LANG", "C.UTF-8");
-                pb.environment().put("USER", "root");
-                pb.environment().put("LOGNAME", "root");
+                pb.environment().putAll(ProotEnvironment.build(
+                        nativeDir, prefixDir.getCanonicalPath(), prootTmpPath));
 
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
