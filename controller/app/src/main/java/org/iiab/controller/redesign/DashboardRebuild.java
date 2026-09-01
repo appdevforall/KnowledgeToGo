@@ -47,7 +47,7 @@ public final class DashboardRebuild {
      *  snackbars show. A visible dashboard card refreshes itself on
      *  {@link DashboardRebuildService#ACTION_STATE} (ADFA-5333), so there is no completion callback to
      *  pass here — the background update outlives this fragment. */
-    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor) {
+    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor, boolean updateAvailable) {
         Context ctx = host.requireContext();
         if (org.iiab.controller.env.EnvironmentLock.isHeld(ctx)) {
             Snackbars.make(anchor, org.iiab.controller.util.BusyMessage.resFor(ctx)).show();
@@ -64,18 +64,34 @@ public final class DashboardRebuild {
                 new com.google.android.material.checkbox.MaterialCheckBox(ctx);
         siteBox.setText(R.string.k2go_dash_update_site);
         siteBox.setChecked(true);
-        float density = ctx.getResources().getDisplayMetrics().density;
-        // Align the row with the dialog's title/message inset; a small drawable-to-text gap, not a wide one.
-        int side = Math.round(24 * density);
-        siteBox.setPadding(side, Math.round(8 * density), side, 0);
-        siteBox.setCompoundDrawablePadding(Math.round(8 * density));
+        siteBox.setCompoundDrawablePadding(Math.round(8 * ctx.getResources().getDisplayMetrics().density));
+        // Align the checkbox's left edge with the dialog's title/message, which are inset by
+        // dialogPreferredPadding — the custom view otherwise sits flush left. A container carries that
+        // inset so the checkbox's own left padding stays 0 and the box lines up with the text above.
+        int pad = dialogPadding(ctx);
+        android.widget.FrameLayout holder = new android.widget.FrameLayout(ctx);
+        holder.setPadding(pad, Math.round(8 * ctx.getResources().getDisplayMetrics().density), pad, 0);
+        holder.addView(siteBox);
+        // ADFA-5339: the confirm matches the primary action — "Update" when a newer build exists,
+        // "Rebuild" for a manual re-apply — so the dialog can't say "Rebuild" over an "Update" button.
         new MaterialAlertDialogBuilder(ctx)
-                .setTitle(R.string.k2go_dash_rebuild_confirm_title)
+                .setTitle(updateAvailable ? R.string.k2go_dash_update_confirm_title
+                                          : R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
-                .setView(siteBox)
+                .setView(holder)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor, siteBox.isChecked()))
+                .setPositiveButton(updateAvailable ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild,
+                        (d, w) -> start(host, anchor, siteBox.isChecked()))
                 .show();
+    }
+
+    /** The dialog's horizontal content inset (title/message use it); the custom view must match it. */
+    private static int dialogPadding(Context ctx) {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        if (ctx.getTheme().resolveAttribute(androidx.appcompat.R.attr.dialogPreferredPadding, tv, true)) {
+            return android.util.TypedValue.complexToDimensionPixelSize(tv.data, ctx.getResources().getDisplayMetrics());
+        }
+        return Math.round(24 * ctx.getResources().getDisplayMetrics().density);   // Material default
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older

@@ -50,6 +50,7 @@ public class DashboardDetailFragment extends Fragment {
     private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label + Cancel)
     private View updatingCancel;   // ADFA-5333: the Cancel affordance beside the bar
     private boolean updating;      // ADFA-5333: a background rebuild is in flight; don't re-emphasize Rebuild
+    private boolean updateAvailable;   // ADFA-5339: last-known — the confirm dialog matches the button
     // ADFA-5339: expandable Details — the live rebuild log, minimized by default. The toggle is hidden
     // until there are lines (an older box without /rebuild/log, or a rebuild that hasn't logged yet).
     private TextView detailsToggle;
@@ -112,7 +113,7 @@ public class DashboardDetailFragment extends Fragment {
         // "Rebuild"; hide the secondary "Install now".
         rebuild = root.findViewById(R.id.k2go_moddet_schedule);
         rebuild.setText(R.string.k2go_dash_rebuild);
-        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root, updateAvailable));
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
         updatingRow = buildUpdatingRow(rebuild);   // ADFA-5333: in-progress bar (hidden until updating)
@@ -202,6 +203,7 @@ public class DashboardDetailFragment extends Fragment {
                 sub.setText(R.string.k2go_dash_detail_sub);
             }
         }
+        updateAvailable = s.primaryIsUpdate();   // ADFA-5339: so the confirm dialog matches the button
         if (updating) return;   // ADFA-5333: a rebuild is in flight — leave the button/bar as they are
         if (rebuild != null) {
             if (s.primaryIsUpdate()) {
