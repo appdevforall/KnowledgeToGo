@@ -14,6 +14,11 @@ name: Bake & publish K2Go RootFS
 
 on:
   workflow_dispatch:   # manual only for now
+    inputs:
+      binaries_tag:
+        description: "Native-binaries release tag to pin (blank = binary_version.txt on main). e.g. binaries-2026-09-01_03-22 to use a specific proot build."
+        required: false
+        default: ""
   # Re-enable when we want it scheduled:
   # schedule:
   #   - cron: '0 4 * * 0'   # Sundays 04:00 UTC
@@ -105,8 +110,11 @@ jobs:
 
       - name: Build all tiers for ${{ matrix.arch }}
         run: |
+          TAG_ARG=""
+          [ -n "${{ inputs.binaries_tag }}" ] && TAG_ARG="--binaries-tag ${{ inputs.binaries_tag }}"
           sudo ./tools/rootfs-builder/build-iiab-rootfs.sh \
             --all-tier --arch "${{ matrix.arch }}" \
+            $TAG_ARG \
             --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
           # the builder runs as root; hand dist/ back to the runner so the upload step can read it
           sudo chown -R "$(id -u):$(id -g)" dist
