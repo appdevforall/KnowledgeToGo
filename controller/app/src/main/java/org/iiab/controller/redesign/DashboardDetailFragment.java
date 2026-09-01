@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.iiab.controller.R;
+import org.iiab.controller.dashboard.domain.DashboardCardState;
 import org.iiab.controller.util.AppExecutors;
 
 public class DashboardDetailFragment extends Fragment {
@@ -158,33 +159,56 @@ public class DashboardDetailFragment extends Fragment {
      *  emphasis. Shows the cached last-known state right away (if any) so the pill isn't stuck on
      *  "Checking…", then refreshes from the live check; on failure it keeps the cached state. */
     private void fetchUpdateStatus() {
-        final Context ctx = requireContext().getApplicationContext();
-        if (UpdateStatusCache.has(ctx)) applyUpdateStatus(UpdateStatusCache.updateAvailable(ctx));
-        DashboardClient.updateCheck(new DashboardClient.UpdateCb() {
-            @Override public void onResult(String installed, String available, boolean updateAvailable) {
-                if (!isAdded()) return;
-                UpdateStatusCache.save(ctx, updateAvailable);
-                applyUpdateStatus(updateAvailable);
-            }
-            @Override public void onErr(String message) {
-                if (!isAdded()) return;
-                if (UpdateStatusCache.has(ctx)) applyUpdateStatus(UpdateStatusCache.updateAvailable(ctx));
-                else if (statusChip != null) statusChip.setVisibility(View.GONE);   // nothing to show yet
-            }
-        });
+        // ADFA-5339: the cache/live/offline orchestration lives once in DashboardCardStatus, shared
+        // with the hub row; this fragment only paints what it delivers.
+        DashboardCardStatus.fetch(requireContext(), s -> { if (isAdded()) applyCardState(s); });
     }
 
-    /** Reflect the update status: recolor the pill in place and, when already on the latest, de-emphasize
-     *  Rebuild + show the "not needed" hint (never blocks — the user can still rebuild). */
-    private void applyUpdateStatus(boolean updateAvailable) {
+    /** ADFA-5339: paint the card from the shared {@link DashboardCardState} rule — the pill, the primary
+     *  button (Update vs Rebuild), the version subtitle and the "on latest" hint. The rule lives in the
+     *  domain so this and the hub row can't drift; this method only renders it. Never blocks — the user
+     *  can still Rebuild manually. */
+    private void applyCardState(DashboardCardState s) {
         if (statusChip != null) {
-            if (updateAvailable) styleChip(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber);
-            else styleChip(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf);
+            switch (s.kind()) {
+                case OFFLINE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_no_connection), R.color.k2go_muted); break;
+                case CHECKING:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted); break;
+                case UP_TO_DATE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf); break;
+                case UPDATE_AVAILABLE:
+                    styleChip(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber); break;
+            }
             statusChip.setVisibility(View.VISIBLE);
         }
-        if (updating) return;   // ADFA-5333: a rebuild is in flight — keep Rebuild disabled and the bar shown
-        if (rebuild != null) rebuild.setAlpha(updateAvailable ? 1f : 0.6f);
-        if (rebuildHint != null) rebuildHint.setVisibility(updateAvailable ? View.GONE : View.VISIBLE);
+        // Fork B (ADFA-5339): the version target rides in the subtitle, not the button. Only a LIVE
+        // update-available carries both versions; every other state restores the descriptive subtitle.
+        View root = getView();
+        TextView sub = root != null ? (TextView) root.findViewById(R.id.k2go_moddet_sub) : null;
+        if (sub != null) {
+            if (s.showsVersionArrow()) {
+                sub.setText(getString(R.string.k2go_dash_card_sub_update_fmt,
+                        s.installedVersion(), s.targetVersion()));
+            } else {
+                sub.setText(R.string.k2go_dash_detail_sub);
+            }
+        }
+        if (updating) return;   // ADFA-5333: a rebuild is in flight — leave the button/bar as they are
+        if (rebuild != null) {
+            if (s.primaryIsUpdate()) {
+                rebuild.setText(R.string.k2go_dash_update);
+                rebuild.setAlpha(1f);
+            } else {
+                rebuild.setText(R.string.k2go_dash_rebuild);
+                // De-emphasize only when we KNOW we're on the latest; offline/checking stay full.
+                rebuild.setAlpha(s.kind() == DashboardCardState.Kind.UP_TO_DATE ? 0.6f : 1f);
+            }
+        }
+        if (rebuildHint != null) {
+            rebuildHint.setVisibility(
+                    s.kind() == DashboardCardState.Kind.UP_TO_DATE ? View.VISIBLE : View.GONE);
+        }
     }
 
     /** Insert a small muted note directly above the Rebuild button (hidden until we know we're on the
@@ -281,6 +305,17 @@ public class DashboardDetailFragment extends Fragment {
     /** Ask the service to cancel; the bar stays until STATE_CANCELLED lands (or the update finishes if it
      *  was too late). Disable the affordance to avoid double taps. */
     private void onCancelUpdate() {
+        // ADFA-5339: stopping a live update is worth a confirm — the swap may be seconds away, and a
+        // stray tap shouldn't abandon it. Only on a positive answer do we signal the server.
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.k2go_dash_cancel_confirm_title)
+                .setMessage(R.string.k2go_dash_cancel_confirm_msg)
+                .setNegativeButton(R.string.k2go_dash_cancel_confirm_keep, null)
+                .setPositiveButton(R.string.k2go_dash_cancel_confirm_stop, (d, w) -> signalCancel())
+                .show();
+    }
+
+    private void signalCancel() {
         if (updatingCancel != null) updatingCancel.setEnabled(false);
         Context ctx = requireContext();
         ContextCompat.startForegroundService(ctx,

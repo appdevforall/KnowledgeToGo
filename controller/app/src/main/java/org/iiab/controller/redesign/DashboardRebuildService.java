@@ -242,8 +242,12 @@ public final class DashboardRebuildService extends Service {
     /** Ongoing "updating…" notification. Not dismissible and does NOT auto-cancel on tap — while the
      *  update runs it stays put as the way back to the in-app indicator. Carries a Cancel action. */
     private Notification buildOngoing() {
-        PendingIntent cancel = PendingIntent.getService(this, 1,
-                new Intent(this, DashboardRebuildService.class).setAction(ACTION_CANCEL),
+        // ADFA-5339: the Cancel action asks first. It can't show a dialog from the notification, so it
+        // routes through a transparent confirm activity that signals ACTION_CANCEL only on a yes —
+        // instead of firing the cancel straight at the service as it used to.
+        PendingIntent cancel = PendingIntent.getActivity(this, 1,
+                new Intent(this, DashboardCancelConfirmActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_dash_live_title))
