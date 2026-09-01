@@ -134,11 +134,19 @@ This was the finding that could have made the rename infeasible. It does not.
 
 There is no in-place upgrade across identifiers. The fleet reinstalls.
 
-**Rejected: an export/import bridge.** Backups live in `getFilesDir()/rootfs/backups`, which is
-private, and the import path `CLAUDE.md`'s design map describes
-(`DeployFragment.importBackupSafely`) **no longer exists in the tree** — that section is stale. The
-bridge would have to be built from scratch and would move 2.9 GB through shared storage requiring
-double the free space, for fewer than ten devices.
+**An export/import bridge is possible, and still not worth building.** The natural idea is to have
+the old app write a backup and the new one import it. That is feasible: "Make a copy" opens the
+system document picker, so a backup can land in shared storage where a differently-identified app
+could read it. What rules it out is the arithmetic, not the plumbing — the round trip moves the
+whole library out and back, needs room for both copies at once on devices that do not have it, and
+has to be driven by hand at each device regardless. For fewer than ten devices, reinstalling is less
+work and has fewer ways to fail. (The import path `CLAUDE.md`'s design map describes,
+`DeployFragment.importBackupSafely`, also no longer exists in the tree — that section is stale.)
+
+**Cloning is the cheap path, and it changes the shape of the changeover.** Where two devices are
+together, the existing device-to-device clone moves a full library over a local hotspot: measured at
+**4.6 GB in about six minutes**. So the fleet does not need one full download per device — install
+the new identifier once, download once, then clone onto the rest.
 
 ## 9. Consequences, stated plainly
 
@@ -147,8 +155,10 @@ double the free space, for fewer than ten devices.
   human at each device.
 - **Both apps can coexist.** Installing the new one without removing the old leaves the old holding
   2.9 GB. The runbook is *uninstall first*, and it must say why.
-- **Device-to-device clone sharing across the boundary installs a second app** on the receiver.
-  Worth a note until the fleet is uniform.
+- **Cloning between two devices on the new identifier works normally** — verified end to end, with
+  the receiver booting to a healthy environment. Cloning *across* the boundary should install a
+  second app on the receiver, for the same reason the updater would; that half is reasoned, not
+  observed. The runbook therefore moves a device to the new identifier before cloning to it.
 - After the changeover everything returns to normal: OTA, cloning and backups all work within the
   new identifier.
 
@@ -190,6 +200,34 @@ else.** Run on a device with the new build unless noted.
 ### 10.3 Explicitly out of scope for this matrix
 
 Analytics continuity — the history splits at the changeover by design (§7.2).
+
+### 10.4 Result
+
+Run across three Android generations — API 28 (kernel 3.18), API 35 (4.14) and API 36 (6.12) — so
+the rename is not resting on one device's behaviour.
+
+Everything in §10.1 passed except the Firebase console entry, which is not an engineering step.
+**Every check in §10.2 passed except one**, and that one is a matter of what was available to test
+against rather than of behaviour: check 10 was confirmed structurally — the registered authority
+resolves as `org.appdevforall.k2go.provider`, matching what the code builds from `getPackageName()`
+— but the install intent never ran, because the update server had no newer build to offer.
+
+The heavier paths were exercised in full: a clean install (download, extract, boot to serving), a
+clone of the whole library to a second device, a dashboard rebuild (v1.2.11 → v1.2.12), and a
+backup (2.2 GB, verified as an intact gzip). The server returned to serving on its own after each,
+with no spurious kills.
+
+**The intent-action literals are inert, and this is now observed rather than argued.** Backup,
+dashboard rebuild and the server stop/start cycle are all driven by the old-named actions this
+change deliberately left alone (`…DEEPOP_BACKUP`, `…DASHBOARD_UPDATE_START`, `…WATCHDOG_*`), and all
+three worked under the new identifier. Renaming them stays a safe, optional follow-up.
+
+**ADFA-5343's holder mechanism came through unchanged** — `holder=INSTALL` during the install,
+`holder=DASHBOARD` during the rebuild, `holder=BACKUP` during the backup, each standing down and
+releasing cleanly.
+
+Worth keeping for the changeover: a clean install downloads and extracts ~2.2 GB, while a clone of
+the finished library moves 4.6 GB in about six minutes. Download once, clone the rest.
 
 ## 11. Sub-phasing
 
