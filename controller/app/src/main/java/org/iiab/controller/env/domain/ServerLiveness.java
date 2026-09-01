@@ -64,13 +64,15 @@ public final class ServerLiveness {
     private final boolean servicesAnswering;
     private final long observedAtMs;
     private final long servicesDownSinceMs;
+    private final boolean booting;
 
     private ServerLiveness(boolean processPresent, boolean servicesAnswering, long observedAtMs,
-                           long servicesDownSinceMs) {
+                           long servicesDownSinceMs, boolean booting) {
         this.processPresent = processPresent;
         this.servicesAnswering = servicesAnswering;
         this.observedAtMs = observedAtMs;
         this.servicesDownSinceMs = servicesDownSinceMs;
+        this.booting = booting;
     }
 
     /**
@@ -87,7 +89,8 @@ public final class ServerLiveness {
     public static ServerLiveness of(boolean processPresent, boolean servicesAnswering,
                                     long observedAtMs) {
         long downSince = (!servicesAnswering && processPresent && observedAtMs > 0) ? observedAtMs : 0L;
-        return new ServerLiveness(processPresent, servicesAnswering, observedAtMs, downSince);
+        return new ServerLiveness(processPresent, servicesAnswering, observedAtMs, downSince,
+                processPresent && !servicesAnswering);
     }
 
     /**
@@ -121,12 +124,37 @@ public final class ServerLiveness {
                     && Freshness.fresh(prev.observedAtMs, nowMs, freshnessMs);   // no observation gap
             downSince = continuousStreak ? prev.servicesDownSinceMs : nowMs;
         }
-        return new ServerLiveness(processPresent, servicesAnswering, nowMs, downSince);
+
+        // ADFA-5365: is this proot still coming up, or one that served and stopped? Carried the same
+        // way as the downtime clock and answered from the same observations, because it is the same
+        // kind of fact: what this stream has seen since this proot appeared.
+        //   - no previous snapshot -> a proot we just launched (the actuators null this on launch)
+        //   - previous says the proot was gone -> this is a new one, so it has not served yet
+        //   - otherwise carry the answer forward, but only across a fresh streak: after an
+        //     observation gap we cannot claim it never served, so it falls back to "not booting"
+        //     and the caller keeps today's flap rule.
+        // That fallback is deliberately sticky for the life of this proot: once a gap has cost us the
+        // answer, no later tick can honestly recover it, so it stays false until the proot is replaced.
+        // The same gap also resets the downtime clock, so the flap rule starts its grace from scratch.
+        boolean stillBooting = processPresent && !servicesAnswering
+                && (prev == null
+                    || !prev.processPresent
+                    || (Freshness.fresh(prev.observedAtMs, nowMs, freshnessMs) && prev.booting));
+
+        return new ServerLiveness(processPresent, servicesAnswering, nowMs, downSince, stillBooting);
     }
 
     public boolean processPresent() { return processPresent; }
     public boolean servicesAnswering() { return servicesAnswering; }
     public long observedAtMs() { return observedAtMs; }
+
+    /**
+     * ADFA-5365: true while this proot has never answered since it appeared — it is coming up, not
+     * flapping. The distinction the escalation needs: a boot and a flap both read as "alive, not
+     * answering", but a boot legitimately takes as long as the device needs (37 s measured on a slow
+     * device, and longer as content grows) while a flap should be back in about 3 s.
+     */
+    public boolean booting() { return booting; }
 
     /**
      * How long the services have been continuously observed down (proot present), or {@code -1} when

@@ -41,6 +41,19 @@ public final class EnvironmentEnsure {
      */
     public static final long DEFAULT_SERVICE_DOWN_GRACE_MS = 20_000L;
 
+    /**
+     * ADFA-5365: how long a <b>boot</b> may show no sign of life before it counts as stalled.
+     *
+     * <p>Deliberately a cap on <em>silence</em>, not on how long a boot takes. Device measurement:
+     * a slow device reaches its services in 37 s, and the longest gap between two guest output lines
+     * during that boot is 13 s. The two numbers age differently — total boot time grows with the
+     * content installed, so any cap on it is outgrown by the next device or the next library, which
+     * is how {@link #DEFAULT_SERVICE_DOWN_GRACE_MS} came to kill healthy boots at 20 s. The longest
+     * single quiet step does not grow with content, so a cap on it keeps holding. 60 s is 4.6x the
+     * worst gap measured, leaving room for a considerably slower device.
+     */
+    public static final long DEFAULT_BOOT_SILENCE_GRACE_MS = 60_000L;
+
     public enum Action {
         /** Nothing of ours is running — start it. */
         LAUNCH,
@@ -73,17 +86,41 @@ public final class EnvironmentEnsure {
      * @param serviceDownGraceMs how long "alive but not answering" is read as "still coming up / pdsm
      *                           will respawn it" rather than "stuck".
      */
-    public static Action decide(boolean envAlive, boolean servicesAlive, long servicesDownMs,
-                                long serviceDownGraceMs) {
+    public static Action decide(boolean envAlive, boolean servicesAlive, boolean booting,
+                                long servicesDownMs, long silentMs) {
+        return decide(envAlive, servicesAlive, booting, servicesDownMs, DEFAULT_SERVICE_DOWN_GRACE_MS,
+                silentMs, DEFAULT_BOOT_SILENCE_GRACE_MS);
+    }
+
+    /**
+     * ADFA-5365: the same escalation, with the thresholds injected so they can be varied in tests.
+     *
+     * @param booting            this proot has never answered since it appeared ({@link
+     *                           ServerLiveness#booting()}) — it is coming up, not flapping.
+     * @param silentMs           how long the launch has shown no sign of life, or negative when
+     *                           there is no such signal (an orphan this process did not launch).
+     * @param bootSilenceGraceMs how long a boot may be silent before it counts as stalled.
+     */
+    public static Action decide(boolean envAlive, boolean servicesAlive, boolean booting,
+                                long servicesDownMs, long serviceDownGraceMs,
+                                long silentMs, long bootSilenceGraceMs) {
         if (!envAlive) {
             return Action.LAUNCH;
         }
         if (servicesAlive) {
             return Action.NOOP_HEALTHY;
         }
-        // Alive, services down. Kill only when we can be sure they have stayed down past the grace —
-        // never on an unknown downtime, because "cannot confirm it is stuck" must fall on the side of
-        // waiting (pdsm may still be respawning the service).
+        // Alive, services down — but that is two different situations wearing the same face, and one
+        // threshold cannot answer both. A boot has been down since the proot started, so its downtime
+        // IS its boot time; judging it against the flap grace is what killed healthy 37 s boots at 20 s.
+        // Judge a boot on whether it is still moving instead: the guest keeps talking while it comes up.
+        if (booting && silentMs >= 0) {
+            return silentMs < bootSilenceGraceMs ? Action.WAIT_BOOT_GRACE : Action.KILL_AND_RELAUNCH;
+        }
+        // It answered once and stopped (a flap), or there is no progress signal to read (an orphan we
+        // did not launch). Both are the case this grace was written for, unchanged. Kill only when we
+        // can be sure the services stayed down past it — never on an unknown downtime, because
+        // "cannot confirm it is stuck" must fall on the side of waiting (pdsm may still be respawning).
         if (servicesDownMs < 0 || servicesDownMs < serviceDownGraceMs) {
             return Action.WAIT_BOOT_GRACE;
         }

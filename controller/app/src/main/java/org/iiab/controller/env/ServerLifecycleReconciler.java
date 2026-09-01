@@ -244,9 +244,13 @@ public final class ServerLifecycleReconciler {
 
     private void offUiEnsureUp(Context ctx, ServerLiveness live, long now) {
         long downMs = live.servicesDownMs(now, ServerLiveness.DEFAULT_FRESH_MS);
+        // ADFA-5365: a boot is judged on movement, not elapsed time. The progress fact belongs to the
+        // environment, so a boot started by the foreground actuator and then backgrounded is still
+        // seen as moving here; with no signal (an orphan we did not launch, or a fresh process)
+        // decide() falls back to the downtime rule that already recovers orphans.
+        long silentMs = EnvironmentProgress.silentMs(now);
         EnvironmentEnsure.Action action = EnvironmentEnsure.decide(
-                live.processPresent(), live.servicesAnswering(), downMs,
-                EnvironmentEnsure.DEFAULT_SERVICE_DOWN_GRACE_MS);
+                live.processPresent(), live.servicesAnswering(), live.booting(), downMs, silentMs);
         if (action == EnvironmentEnsure.Action.KILL_AND_RELAUNCH) {
             EnvironmentProcess.killOrphan(ctx);
         } else if (action != EnvironmentEnsure.Action.LAUNCH) {

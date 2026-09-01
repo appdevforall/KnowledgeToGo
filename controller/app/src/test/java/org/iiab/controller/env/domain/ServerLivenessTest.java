@@ -1,6 +1,8 @@
 package org.iiab.controller.env.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -132,5 +134,59 @@ public class ServerLivenessTest {
         ServerLiveness down = ServerLiveness.next(null, true, false, 1_000L, FRESH);
         ServerLiveness gone = ServerLiveness.next(down, false, false, 4_000L, FRESH);
         assertEquals(-1L, gone.servicesDownMs(4_000L, FRESH));
+    }
+
+    // ------------------------------------------------------- ADFA-5365: booting vs flapping
+
+    @Test
+    public void aFreshlyLaunchedProotThatHasNotAnsweredIsBooting() {
+        // The actuators null the previous snapshot when they launch, so no history means "we just
+        // started this one". Down since it appeared, never seen answering -> a boot.
+        assertTrue(ServerLiveness.next(null, true, false, 1_000L, FRESH).booting());
+    }
+
+    @Test
+    public void aBootStaysABootAcrossTheWholeStartup() {
+        ServerLiveness l = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        for (long t = 4_000L; t <= 37_000L; t += 3_000L) {
+            l = ServerLiveness.next(l, true, false, t, FRESH);
+            assertTrue("stopped counting as a boot at " + t + "ms", l.booting());
+        }
+    }
+
+    @Test
+    public void onceItAnswersItIsNeverBootingAgain() {
+        // The whole point: after this, a service drop is a flap and must be judged on downtime, not
+        // on silence -- a served environment produces no output at all.
+        ServerLiveness booting = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        ServerLiveness served = ServerLiveness.next(booting, true, true, 4_000L, FRESH);
+        assertFalse(served.booting());
+
+        ServerLiveness dropped = ServerLiveness.next(served, true, false, 7_000L, FRESH);
+        assertFalse("a mature environment that dropped is a flap, not a boot", dropped.booting());
+    }
+
+    @Test
+    public void aReplacementProotStartsBootingAgain() {
+        // The old one died and a fresh one was launched: it has not served, whatever the old one did.
+        ServerLiveness served = ServerLiveness.next(null, true, true, 1_000L, FRESH);
+        ServerLiveness gone = ServerLiveness.next(served, false, false, 4_000L, FRESH);
+        assertTrue(ServerLiveness.next(gone, true, false, 7_000L, FRESH).booting());
+    }
+
+    @Test
+    public void anObservationGapDropsBackToTheDowntimeRule() {
+        // After a gap we cannot claim this proot never served, so it must not get the boot treatment.
+        // Not booting means the caller keeps today's flap rule, which is the safe fallback.
+        ServerLiveness booting = ServerLiveness.next(null, true, false, 1_000L, FRESH);
+        ServerLiveness afterGap =
+                ServerLiveness.next(booting, true, false, 1_000L + FRESH + 1, FRESH);
+        assertFalse(afterGap.booting());
+    }
+
+    @Test
+    public void anAbsentProotIsNeverBooting() {
+        assertFalse(ServerLiveness.next(null, false, false, 1_000L, FRESH).booting());
+        assertFalse(ServerLiveness.of(false, false, NOW).booting());
     }
 }

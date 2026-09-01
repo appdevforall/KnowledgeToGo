@@ -52,6 +52,10 @@ public final class EnvironmentControl {
      * that no service is left writing). Runs on the PRootEngine worker thread.
      */
     public static void stop(Context ctx, final LineSink log, final Runnable onDone) {
+        // ADFA-5365: stopping ends the environment, so its progress stamp ends with it — here rather
+        // than at the call sites, so every stop clears it. There are three (the reconciler's teardown
+        // and DeepOp's backup and restore) and an invariant only one of them upholds is one that rots.
+        EnvironmentProgress.cleared();
         new PRootEngine().executeInContainer(ctx.getApplicationContext(), rootfs(ctx).getAbsolutePath(), CMD_STOP,
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) { if (log != null) log.onLine("[PDSM Stop] " + line); }
@@ -77,9 +81,13 @@ public final class EnvironmentControl {
         File rootfsDir = rootfs(ctx);
         createFakeSysData(rootfsDir);
         PRootEngine engine = new PRootEngine();
+        EnvironmentProgress.launched();   // ADFA-5365: the launch is the environment's first sign of life
         engine.executeInContainer(ctx.getApplicationContext(), rootfsDir.getAbsolutePath(), CMD_START,
                 new PRootEngine.OutputListener() {
-                    @Override public void onOutputLine(String line) { if (log != null) log.onLine("[Server] " + line); }
+                    @Override public void onOutputLine(String line) {
+                        EnvironmentProgress.alive();   // ADFA-5365: this boot is still moving
+                        if (log != null) log.onLine("[Server] " + line);
+                    }
                     @Override public void onProcessExit(int exitCode) { if (log != null) log.onLine("[Server] engine exit " + exitCode); }
                     @Override public void onError(String error) { if (log != null) log.onLine("[Server] error " + error); }
                 });
