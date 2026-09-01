@@ -1300,4 +1300,14 @@
     <string name="k2go_mod_cancel_body">目前所做的更改将被撤销，模块不会被安装。您稍后可以重新开始。</string>
     <string name="k2go_mod_cancel_confirm">停止安装</string>
     <string name="k2go_mod_cancel_dismiss">继续安装</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">更新</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST 核心 · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">无连接</string>
+    <string name="k2go_dash_cancel_confirm_title">停止更新？</string>
+    <string name="k2go_dash_cancel_confirm_msg">仪表板将保持当前版本。</string>
+    <string name="k2go_dash_cancel_confirm_stop">停止更新</string>
+    <string name="k2go_dash_cancel_confirm_keep">继续更新</string>
+    <string name="k2go_dash_update_site">更新网站</string>
+    <string name="k2go_dash_update_confirm_title">更新 REST 核心？</string>
 </resources>

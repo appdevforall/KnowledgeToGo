@@ -1376,4 +1376,14 @@
     <string name="k2go_mod_cancel_body">अब तक जो हुआ है वह पूर्ववत हो जाता है और मॉड्यूल इंस्टॉल नहीं होगा. आप इसे बाद में फिर से शुरू कर सकते हैं.</string>
     <string name="k2go_mod_cancel_confirm">इंस्टॉल रोकें</string>
     <string name="k2go_mod_cancel_dismiss">इंस्टॉल जारी रखें</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">अपडेट करें</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST कोर · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">कोई कनेक्शन नहीं</string>
+    <string name="k2go_dash_cancel_confirm_title">अपडेट रोकें?</string>
+    <string name="k2go_dash_cancel_confirm_msg">डैशबोर्ड अपने मौजूदा संस्करण पर रहेगा।</string>
+    <string name="k2go_dash_cancel_confirm_stop">अपडेट रोकें</string>
+    <string name="k2go_dash_cancel_confirm_keep">अपडेट जारी रखें</string>
+    <string name="k2go_dash_update_site">वेबसाइट अपडेट करें</string>
+    <string name="k2go_dash_update_confirm_title">REST कोर अपडेट करें?</string>
 </resources>

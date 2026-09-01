@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">يُتراجع عمّا تم حتى الآن ولن يُثبَّت المكوّن. يمكنك بدؤه من جديد لاحقًا.</string>
     <string name="k2go_mod_cancel_confirm">إيقاف التثبيت</string>
     <string name="k2go_mod_cancel_dismiss">متابعة التثبيت</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">تحديث</string>
+    <string name="k2go_dash_card_sub_update_fmt">نواة REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">لا يوجد اتصال</string>
+    <string name="k2go_dash_cancel_confirm_title">إيقاف التحديث؟</string>
+    <string name="k2go_dash_cancel_confirm_msg">تبقى اللوحة على إصدارها الحالي.</string>
+    <string name="k2go_dash_cancel_confirm_stop">إيقاف التحديث</string>
+    <string name="k2go_dash_cancel_confirm_keep">متابعة التحديث</string>
+    <string name="k2go_dash_update_site">تحديث الموقع</string>
+    <string name="k2go_dash_update_confirm_title">تحديث نواة REST؟</string>
 </resources>

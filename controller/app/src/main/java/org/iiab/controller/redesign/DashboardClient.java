@@ -20,13 +20,17 @@ import android.os.Looper;
 
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class DashboardClient {
     private DashboardClient() {}
@@ -35,6 +39,7 @@ public final class DashboardClient {
     private static final String URL_REBUILD = BoxEndpoints.API + "/system/dashboard/rebuild";
     private static final String URL_REBUILD_STATUS = BoxEndpoints.API + "/system/dashboard/rebuild/status";
     private static final String URL_REBUILD_CANCEL = BoxEndpoints.API + "/system/dashboard/rebuild/cancel";
+    private static final String URL_REBUILD_LOG = BoxEndpoints.API + "/system/dashboard/rebuild/log";   // ADFA-5339
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
     public interface UpdateCb {
@@ -63,17 +68,41 @@ public final class DashboardClient {
         void onErr(String message);
     }
 
+    /** ADFA-5339: the rebuild log tail (last ~200 lines), for the card's expandable Details. */
+    public interface RebuildLogCb {
+        void onLines(List<String> lines);
+        void onErr(String message);
+    }
+
     /** ADFA-5051: trigger the in-server blue-green rebuild (POST). Fire-and-forget: the box returns 202
-     *  at once (or 409 if one is already running); the caller then polls {@link #rebuildStatus}. */
-    public static void rebuildStart(RebuildStartCb cb) {
+     *  at once (or 409 if one is already running); the caller then polls {@link #rebuildStatus}.
+     *  ADFA-5339: {@code updateSite} sends {site:true} so the finalize step also refreshes the served
+     *  landing page. A box older than 1.2.12 (or the proot rebuild path) ignores the body — harmless. */
+    public static void rebuildStart(boolean updateSite, RebuildStartCb cb) {
         AppExecutors.get().io().execute(() -> {
             int[] status = {0};
             try {
-                httpPost(URL_REBUILD, status);
+                httpPostJson(URL_REBUILD, "{\"site\":" + updateSite + "}", status);
                 MAIN.post(() -> cb.onStarted(false));
             } catch (Exception e) {
                 if (status[0] == 409) { MAIN.post(() -> cb.onStarted(true)); return; }
                 MAIN.post(() -> cb.onErr("could not start rebuild"));
+            }
+        });
+    }
+
+    /** ADFA-5339: fetch the rebuild log tail. A box without the endpoint (older dash-node) or no rebuild
+     *  yet yields an empty list rather than an error the UI would have to special-case — the Details
+     *  panel simply shows nothing / no chevron. */
+    public static void rebuildLog(RebuildLogCb cb) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                JSONArray arr = new JSONObject(httpGet(URL_REBUILD_LOG)).optJSONArray("lines");
+                final List<String> lines = new ArrayList<>();
+                if (arr != null) for (int i = 0; i < arr.length(); i++) lines.add(arr.optString(i, ""));
+                MAIN.post(() -> cb.onLines(lines));
+            } catch (Exception e) {
+                MAIN.post(() -> cb.onErr(e.getMessage()));
             }
         });
     }
@@ -159,16 +188,19 @@ public final class DashboardClient {
         }
     }
 
-    /** POST with no body; {@code statusOut[0]} receives the HTTP status so callers can map 409. The
-     *  trigger returns immediately (202), so a short read timeout is fine. */
-    private static void httpPost(String urlStr, int[] statusOut) throws Exception {
+    /** POST a JSON body; {@code statusOut[0]} receives the HTTP status so callers can map 409. Like the
+     *  bodyless trigger, the box answers 202 immediately, so a short read timeout is fine. */
+    private static void httpPostJson(String urlStr, String body, int[] statusOut) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
             c.setConnectTimeout(5000);
             c.setReadTimeout(10000);
-            c.setRequestMethod("POST");   // bodyless trigger; no doOutput/body needed
+            c.setRequestMethod("POST");
             c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setDoOutput(true);
+            try (OutputStream os = c.getOutputStream()) { os.write(body.getBytes(StandardCharsets.UTF_8)); }
             int code = c.getResponseCode();
             statusOut[0] = code;
             readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());

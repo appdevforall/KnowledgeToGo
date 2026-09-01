@@ -1309,4 +1309,14 @@
     <string name="k2go_mod_cancel_body">Det som er gjort så langt tilbakestilles, og modulen blir ikke installert. Du kan starte den på nytt senere.</string>
     <string name="k2go_mod_cancel_confirm">Stopp installasjon</string>
     <string name="k2go_mod_cancel_dismiss">Fortsett installasjonen</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Oppdater</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST-kjerne · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Ingen tilkobling</string>
+    <string name="k2go_dash_cancel_confirm_title">Stoppe oppdateringen?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Dashbordet blir på gjeldende versjon.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Stopp oppdatering</string>
+    <string name="k2go_dash_cancel_confirm_keep">Fortsett oppdatering</string>
+    <string name="k2go_dash_update_site">Oppdater nettstedet</string>
+    <string name="k2go_dash_update_confirm_title">Oppdatere REST-kjernen?</string>
 </resources>

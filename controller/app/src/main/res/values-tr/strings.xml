@@ -1299,4 +1299,14 @@
     <string name="k2go_mod_cancel_body">Şimdiye kadar yapılanlar geri alınır ve modül kurulmaz. Daha sonra yeniden başlatabilirsiniz.</string>
     <string name="k2go_mod_cancel_confirm">Kurulumu durdur</string>
     <string name="k2go_mod_cancel_dismiss">Kuruluma devam et</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Güncelle</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST çekirdeği · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Bağlantı yok</string>
+    <string name="k2go_dash_cancel_confirm_title">Güncelleme durdurulsun mu?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Panel mevcut sürümünde kalır.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Güncellemeyi durdur</string>
+    <string name="k2go_dash_cancel_confirm_keep">Güncellemeye devam et</string>
+    <string name="k2go_dash_update_site">Web sitesini güncelle</string>
+    <string name="k2go_dash_update_confirm_title">REST çekirdeği güncellensin mi?</string>
 </resources>

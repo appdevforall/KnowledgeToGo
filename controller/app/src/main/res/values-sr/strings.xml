@@ -1312,4 +1312,14 @@
     <string name="k2go_mod_cancel_body">Оно што је до сада урађено се поништава и модул неће бити инсталиран. Можете га поново покренути касније.</string>
     <string name="k2go_mod_cancel_confirm">Заустави</string>
     <string name="k2go_mod_cancel_dismiss">Настави инсталацију</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Ажурирај</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST језгро · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Нема везе</string>
+    <string name="k2go_dash_cancel_confirm_title">Зауставити ажурирање?</string>
+    <string name="k2go_dash_cancel_confirm_msg">Табла остаје на тренутној верзији.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Заустави ажурирање</string>
+    <string name="k2go_dash_cancel_confirm_keep">Настави ажурирање</string>
+    <string name="k2go_dash_update_site">Ажурирај веб-сајт</string>
+    <string name="k2go_dash_update_confirm_title">Ажурирати REST језгро?</string>
 </resources>

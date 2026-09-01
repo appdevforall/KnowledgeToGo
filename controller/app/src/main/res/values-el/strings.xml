@@ -1306,4 +1306,14 @@
     <string name="k2go_mod_cancel_body">Ό,τι έγινε μέχρι τώρα αναιρείται και η μονάδα δεν θα εγκατασταθεί. Μπορείτε να την ξεκινήσετε ξανά αργότερα.</string>
     <string name="k2go_mod_cancel_confirm">Διακοπή</string>
     <string name="k2go_mod_cancel_dismiss">Συνέχιση εγκατάστασης</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">Ενημέρωση</string>
+    <string name="k2go_dash_card_sub_update_fmt">Πυρήνας REST · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">Καμία σύνδεση</string>
+    <string name="k2go_dash_cancel_confirm_title">Διακοπή της ενημέρωσης;</string>
+    <string name="k2go_dash_cancel_confirm_msg">Ο πίνακας παραμένει στην τρέχουσα έκδοση.</string>
+    <string name="k2go_dash_cancel_confirm_stop">Διακοπή ενημέρωσης</string>
+    <string name="k2go_dash_cancel_confirm_keep">Συνέχιση ενημέρωσης</string>
+    <string name="k2go_dash_update_site">Ενημέρωση του ιστότοπου</string>
+    <string name="k2go_dash_update_confirm_title">Ενημέρωση του πυρήνα REST;</string>
 </resources>

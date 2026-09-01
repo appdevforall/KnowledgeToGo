@@ -58,6 +58,8 @@ public final class DashboardRebuildService extends Service {
     /** App-internal broadcast on every state change so a visible card can reflect it live. */
     public static final String ACTION_STATE = "org.iiab.controller.DASHBOARD_UPDATE_STATE";
     public static final String EXTRA_STATE = "state";
+    /** ADFA-5339: carry the "also refresh the served website" choice from the confirm dialog to the POST. */
+    public static final String EXTRA_SITE = "update_site";
     public static final String STATE_RUNNING = "running";
     public static final String STATE_DONE = "done";
     public static final String STATE_ERROR = "error";
@@ -89,10 +91,12 @@ public final class DashboardRebuildService extends Service {
     private boolean cancelling = false; // a cancel request is in flight; ignore repeats
     private long startedAtMs = 0L;      // ADFA-5343 (Phase 3B): monotonic start, for the stall backstop
 
-    /** Kick a NEW background live update (POST + poll). */
-    public static void start(Context ctx) {
+    /** Kick a NEW background live update (POST + poll). ADFA-5339: {@code updateSite} also refreshes the
+     *  served landing page in the same run (default on, from the confirm dialog's checkbox). */
+    public static void start(Context ctx, boolean updateSite) {
         ContextCompat.startForegroundService(ctx,
-                new Intent(ctx, DashboardRebuildService.class).setAction(ACTION_START));
+                new Intent(ctx, DashboardRebuildService.class).setAction(ACTION_START)
+                        .putExtra(EXTRA_SITE, updateSite));
     }
 
     /** Re-own a rebuild that is ALREADY running on the box (e.g. our process was killed mid-update): poll
@@ -125,7 +129,8 @@ public final class DashboardRebuildService extends Service {
             // done/error finishes at once — no new rebuild is ever launched).
             pollStatus();
         } else {
-            DashboardClient.rebuildStart(new DashboardClient.RebuildStartCb() {
+            final boolean updateSite = intent == null || intent.getBooleanExtra(EXTRA_SITE, true);
+            DashboardClient.rebuildStart(updateSite, new DashboardClient.RebuildStartCb() {
                 @Override public void onStarted(boolean alreadyRunning) { pollStatus(); }
                 @Override public void onErr(String message) { finish(STATE_ERROR, R.string.k2go_dash_live_start_failed); }
             });

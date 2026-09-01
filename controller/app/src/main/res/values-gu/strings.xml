@@ -1312,4 +1312,14 @@
     <string name="k2go_mod_cancel_body">અત્યાર સુધી થયેલું પાછું વળે છે અને મોડ્યુલ ઇન્સ્ટોલ થશે નહીં. તમે તેને પછીથી ફરી શરૂ કરી શકો છો.</string>
     <string name="k2go_mod_cancel_confirm">ઇન્સ્ટોલ બંધ કરો</string>
     <string name="k2go_mod_cancel_dismiss">ઇન્સ્ટોલ ચાલુ રાખો</string>
+    <!-- ADFA-5339 -->
+    <string name="k2go_dash_update">અપડેટ કરો</string>
+    <string name="k2go_dash_card_sub_update_fmt">REST કોર · v%1$s → v%2$s</string>
+    <string name="k2go_dash_no_connection">કોઈ કનેક્શન નથી</string>
+    <string name="k2go_dash_cancel_confirm_title">અપડેટ રોકવું છે?</string>
+    <string name="k2go_dash_cancel_confirm_msg">ડેશબોર્ડ તેની વર્તમાન આવૃત્તિ પર રહેશે.</string>
+    <string name="k2go_dash_cancel_confirm_stop">અપડેટ રોકો</string>
+    <string name="k2go_dash_cancel_confirm_keep">અપડેટ ચાલુ રાખો</string>
+    <string name="k2go_dash_update_site">વેબસાઇટ અપડેટ કરો</string>
+    <string name="k2go_dash_update_confirm_title">REST કોર અપડેટ કરવું છે?</string>
 </resources>

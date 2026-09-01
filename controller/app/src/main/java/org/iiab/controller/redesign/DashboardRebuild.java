@@ -47,7 +47,7 @@ public final class DashboardRebuild {
      *  snackbars show. A visible dashboard card refreshes itself on
      *  {@link DashboardRebuildService#ACTION_STATE} (ADFA-5333), so there is no completion callback to
      *  pass here — the background update outlives this fragment. */
-    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor) {
+    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor, boolean updateAvailable) {
         Context ctx = host.requireContext();
         if (org.iiab.controller.env.EnvironmentLock.isHeld(ctx)) {
             Snackbars.make(anchor, org.iiab.controller.util.BusyMessage.resFor(ctx)).show();
@@ -57,18 +57,47 @@ public final class DashboardRebuild {
             Snackbars.make(anchor, R.string.k2go_dash_needs_internet).show();
             return;
         }
+        // ADFA-5339: a versionless "Update the Website" checkbox (default on) rides on the confirm. It
+        // refreshes the served landing page in the same run — a SEPARATE, unversioned artifact, so it
+        // carries no version label. Built in code to leave the shared dialog usage untouched.
+        final com.google.android.material.checkbox.MaterialCheckBox siteBox =
+                new com.google.android.material.checkbox.MaterialCheckBox(ctx);
+        siteBox.setText(R.string.k2go_dash_update_site);
+        siteBox.setChecked(true);
+        siteBox.setCompoundDrawablePadding(Math.round(8 * ctx.getResources().getDisplayMetrics().density));
+        // Align the checkbox's left edge with the dialog's title/message, which are inset by
+        // dialogPreferredPadding — the custom view otherwise sits flush left. A container carries that
+        // inset so the checkbox's own left padding stays 0 and the box lines up with the text above.
+        int pad = dialogPadding(ctx);
+        android.widget.FrameLayout holder = new android.widget.FrameLayout(ctx);
+        holder.setPadding(pad, Math.round(8 * ctx.getResources().getDisplayMetrics().density), pad, 0);
+        holder.addView(siteBox);
+        // ADFA-5339: the confirm matches the primary action — "Update" when a newer build exists,
+        // "Rebuild" for a manual re-apply — so the dialog can't say "Rebuild" over an "Update" button.
         new MaterialAlertDialogBuilder(ctx)
-                .setTitle(R.string.k2go_dash_rebuild_confirm_title)
+                .setTitle(updateAvailable ? R.string.k2go_dash_update_confirm_title
+                                          : R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
+                .setView(holder)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor))
+                .setPositiveButton(updateAvailable ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild,
+                        (d, w) -> start(host, anchor, siteBox.isChecked()))
                 .show();
+    }
+
+    /** The dialog's horizontal content inset (title/message use it); the custom view must match it. */
+    private static int dialogPadding(Context ctx) {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        if (ctx.getTheme().resolveAttribute(androidx.appcompat.R.attr.dialogPreferredPadding, tv, true)) {
+            return android.util.TypedValue.complexToDimensionPixelSize(tv.data, ctx.getResources().getDisplayMetrics());
+        }
+        return Math.round(24 * ctx.getResources().getDisplayMetrics().density);   // Material default
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older
      *  installs take the proot rebuild once as a bridge to 1.2.0. The version read hits disk, so it
      *  runs off the main thread; the routing itself is posted back to the UI. */
-    private static void start(@NonNull Fragment host, @NonNull View anchor) {
+    private static void start(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
         final Context app = host.requireContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
         AppExecutors.get().io().execute(() -> {
@@ -84,7 +113,9 @@ public final class DashboardRebuild {
             final Operation op = Operation.of("dashboard", Operation.Kind.APP_INSTALL, cls);
             main.post(() -> {
                 if (!host.isAdded()) return;
-                if (op.isLive()) startRest(host, anchor);
+                // ADFA-5339: the site refresh only applies to the LIVE REST path; the proot bridge rebuild
+                // (< 1.2.0) has no site step, so the checkbox is simply not carried there.
+                if (op.isLive()) startRest(host, anchor, updateSite);
                 else startProot(host);
             });
         });
@@ -106,8 +137,8 @@ public final class DashboardRebuild {
      *  notification) and let the user go — the service POSTs the rebuild and polls the box until it
      *  reports done/error, with no time cap. A visible dashboard card refreshes on the service's
      *  completion broadcast; nothing pins this screen. */
-    private static void startRest(@NonNull Fragment host, @NonNull View anchor) {
-        DashboardRebuildService.start(host.requireContext().getApplicationContext());
+    private static void startRest(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
+        DashboardRebuildService.start(host.requireContext().getApplicationContext(), updateSite);
         if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 
