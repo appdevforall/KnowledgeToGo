@@ -78,7 +78,8 @@ compensate for one missing owner) is the failure mode these rules prevent. Befor
 - **One source per fact.** If two places answer the same question ("is the server up?", "is an
   install running?"), the fix is to unify the source, not add a third.
 - **N tickets orbiting one file/concern is a redesign signal, not another patch.** If a file
-  accumulates many `ADFA-XXXX` references on the same concern (check `git log`/`git blame`), raise
+  accumulates many ticket references on the same concern — `K2GO-XXXX`, or `ADFA-XXXX` in history
+  predating the Sep 2026 project move (check `git log`/`git blame`) — raise
   an ADR before adding patch N+1.
 - **Prefer removing over adding.** A change that introduces a distinct state must justify in the PR
   why it is not a duplicate truth or a race compensator.
@@ -128,20 +129,30 @@ two layered migrations from colliding, follow these rules:
 
 ## Branch, commit & PR naming (Jira-linked)
 
-Every branch, commit, and PR in AppDevForAll development is tied to its Jira issue
-(`ADFA-XXXX`) so the work shows up automatically in that issue's **Development** panel.
+Every branch, commit, and PR in Knowledge to Go development is tied to its Jira issue
+(`K2GO-XXXX`) so the work shows up automatically in that issue's **Development** panel.
 Put the key in all three:
 
-- **Branch:** `<type>/ADFA-XXXX-<short-kebab-description>` — `<type>` is the change kind
+- **Branch:** `<type>/K2GO-XXXX-<short-kebab-description>` — `<type>` is the change kind
   (`feat`, `fix`, `chore`, `docs`, `style`, `refactor`).
-  e.g. `chore/ADFA-4428-footer-powered-by-iiab`
+  e.g. `chore/K2GO-150-footer-powered-by-iiab`
 - **Commit:** start the subject with the key, then the conventional-commit form —
-  `ADFA-XXXX <type>(<scope>): <description>`.
-  e.g. `ADFA-4428 chore(branding): footer adds "powered by IIAB"`
-- **PR title:** same as the commit subject (`ADFA-XXXX <type>(<scope>): <description>`).
+  `K2GO-XXXX <type>(<scope>): <description>`.
+  e.g. `K2GO-150 chore(branding): footer adds "powered by IIAB"`
+- **PR title:** same as the commit subject (`K2GO-XXXX <type>(<scope>): <description>`).
 
 The key in the branch/commit/PR is what links the work back to the issue — keep it exact
-(uppercase project key, hyphen, number). One issue can own several branches/PRs.
+(uppercase project key, hyphen, number). **Uppercase is required**: Jira does not recognise
+`k2go-123`. For GitHub — unlike Bitbucket — a PR is linked by its **title or source branch
+name**; a key in the commit message alone will not attach the PR. One issue can own several
+branches/PRs.
+
+**Project key history:** this project's issues moved from `ADFA` to `K2GO` on 1 Sep 2026.
+Old `ADFA-XXXX` keys in existing branches, commits and PR bodies still resolve — Jira keeps
+a permanent redirect — so historical references were deliberately left alone and must not be
+rewritten. Use `K2GO-XXXX` for all new work. Note that the `ADFA` project still exists and
+owns the work that did not move; its key must never be renamed or reused, or every redirect
+breaks.
 
 **Exception (keep Jira low-noise):** trivial, APK-neutral changes — typos, minor wording,
 routine lint-baseline refresh — may ship as `docs:`/`chore:` commits **without** a per-edit
