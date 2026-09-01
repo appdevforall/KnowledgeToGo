@@ -203,14 +203,22 @@ Analytics continuity — the history splits at the changeover by design (§7.2).
 
 ### 10.4 Result
 
-Run across three Android generations — API 28 (kernel 3.18), API 35 (4.14) and API 36 (6.12) — so
+Run across two Android generations — API 28 (kernel 3.18) and API 36 (kernel 6.12) — so
 the rename is not resting on one device's behaviour.
 
-Everything in §10.1 passed except the Firebase console entry, which is not an engineering step.
-**Every check in §10.2 passed except one**, and that one is a matter of what was available to test
-against rather than of behaviour: check 10 was confirmed structurally — the registered authority
-resolves as `org.appdevforall.k2go.provider`, matching what the code builds from `getPackageName()`
-— but the install intent never ran, because the update server had no newer build to offer.
+Everything in §10.1 passed except the Firebase console entry, which is not an engineering step, and
+**every check in §10.2 passed**.
+
+Check 10 deserves a note, because closing it honestly took a second look. The updater's install path
+could not be reached — the update server had no newer build to offer — which left the FileProvider
+authority confirmed only by inspection. Rather than rebuild the app against a local update server,
+which would have verified a binary other than the one being merged, the same mechanism was reached
+through the door the app already has: the clone screen's "can't scan the QR code" fallback runs
+`getUriForFile(ctx, getPackageName() + ".provider", apk)` on the installed APK — the identical call,
+authority and file class as the updater. The Android share sheet opened with the APK attached, so
+the authority resolves under the new identifier; a mismatch would have thrown before the sheet ever
+appeared. `provider_paths.xml` names no package anywhere, so the rename cannot move a file outside a
+configured root either.
 
 The heavier paths were exercised in full: a clean install (download, extract, boot to serving), a
 clone of the whole library to a second device, a dashboard rebuild (v1.2.11 → v1.2.12), and a
