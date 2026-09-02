@@ -26,9 +26,13 @@ on:
 env:
   BUCKET_NAME: k2go-rootfs
   R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-  # Public base that goes into the .meta4 <url>. Path-based route
-  # k2go-download.appdevforall.org/rootfs/* -> k2go-rootfs.
-  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://k2go-download.appdevforall.org/rootfs' }}
+  # Public base that goes into the .meta4 <url> — where the APK actually downloads the
+  # rootfs FROM, so it has to name the bucket that holds it. The two buckets are separate
+  # and so are their names: k2go-download.appdevforall.org serves the APK repo only.
+  # K2GO-90: this defaulted to k2go-download.appdevforall.org/rootfs, a path-based route that
+  # was never created. The metalinks published with it resolved to 404 — and since
+  # --reset-mirrors leaves a single source, there was nothing to fall back to.
+  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev' }}
   # Key prefix inside the bucket. Empty when the route strips /rootfs/ (keys at root);
   # set to 'rootfs/' if the route keeps the prefix.
   R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
@@ -133,7 +137,7 @@ jobs:
 
           # 1) Big artifacts FIRST (data before any pointer that resolves to them).
           shopt -s nullglob
-          for f in iiab-oa_*.tar.gz; do
+          for f in k2go_*.tar.gz; do
             echo ">> upload artifact $f"
             aws s3 cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}" --endpoint-url "$ENDPOINT"
           done
@@ -157,12 +161,12 @@ jobs:
 
           # 4) Prune: keep only the newest $KEEP batches per (tier,arch); delete older + sidecars.
           #    Only the heavy dated tarballs accumulate (they carry <date>_<sha>); logs and the
-          #    TSV overwrite in place, so they never pile up. The prefix filter matches iiab-oa_*
+          #    TSV overwrite in place, so they never pile up. The prefix filter matches k2go_*
           #    only, so proot-distro-v*/ is never touched.
           for meta in latest_*_"${ARCH}".meta4; do
             base="${meta%.meta4}"; te="${base#latest_}"; tier="${te%_${ARCH}}"
             mapfile -t keys < <(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" \
-              --prefix "${PFX}iiab-oa_" --endpoint-url "$ENDPOINT" \
+              --prefix "${PFX}k2go_" --endpoint-url "$ENDPOINT" \
               --query "sort_by(Contents,&LastModified)[?contains(Key,'_${tier}_') && ends_with(Key,'_${ARCH}.tar.gz')].Key" \
               --output text | tr '\t' '\n' | sed '/^$/d')
             n=${#keys[@]}
@@ -174,4 +178,26 @@ jobs:
                 done
               done
             fi
+
+            # K2GO-377 (TRANSITIONAL — remove before merging). The retention above keeps the
+            # newest $KEEP k2go_ batches; the pre-rename iiab-oa_ artifacts have no pointer left
+            # once this tier republished, so they go in full rather than ageing out $KEEP deep at
+            # ~1.7 GB each. It sits INSIDE this loop on purpose: it only ever touches the tier and
+            # arch this job just republished, so a tier that failed to build keeps the artifact its
+            # metalink still names.
+            #
+            # Removal is gated on evidence, not on this run finishing. Delete the block only when
+            #   aws s3api list-objects-v2 --bucket "$BUCKET_NAME" --prefix "iiab-oa_" \
+            #     --endpoint-url "$ENDPOINT" --query "length(Contents)" --output text
+            # reports None/0 — otherwise the leftovers outlive the only code that would clear them.
+            mapfile -t legacy < <(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" \
+              --prefix "${PFX}iiab-oa_" --endpoint-url "$ENDPOINT" \
+              --query "Contents[?contains(Key,'_${tier}_') && ends_with(Key,'_${ARCH}.tar.gz')].Key" \
+              --output text | tr '\t' '\n' | sed '/^$/d')
+            for key in "${legacy[@]}"; do
+              echo ">> sweep legacy $key (+ sidecars)"
+              for ext in '' .meta4 .sha256 .installed .torrent; do
+                aws s3 rm "s3://${BUCKET_NAME}/${key}${ext}" --endpoint-url "$ENDPOINT" || true
+              done
+            done
           done
