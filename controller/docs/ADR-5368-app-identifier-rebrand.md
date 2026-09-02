@@ -153,8 +153,20 @@ the new identifier once, download once, then clone onto the rest.
 - **The changeover release cannot ship through the in-app updater.** Across identifiers Android
   treats the download as a new app, not an update. That release is installed out of band, with a
   human at each device.
-- **Both apps can coexist.** Installing the new one without removing the old leaves the old holding
-  2.9 GB. The runbook is *uninstall first*, and it must say why.
+- **Both apps can be installed at once, and the second one does not work.** Android allows it, but
+  "is my server up?" is answered by probing a fixed loopback port — `http://localhost:8085`
+  (`config/BoxEndpoints.java`) — which carries no identity, so whichever app asks reads whatever
+  answers. The process half of that same question *is* identity-scoped: it matches our own rootfs
+  path (`env/domain/EnvironmentProcessMatcher.java`, `isOurEnvironment`). `ServerLiveness` lets the
+  answering services win over the absent process, so an app whose own box is down still reads UP
+  while the other app's box is running. Observed on device: with both installed, the old identifier
+  counted the new one's server as its own and its install deadlocked. The old app also strands its
+  2.9 GB. The runbook is therefore *uninstall first* as a functional requirement, not as hygiene,
+  and it must say why.
+
+  The port probe predates this decision and is not caused by it; what the rename changes is that two
+  boxes can now exist on one device, which is the condition that exposes it. Making liveness
+  identity-aware is a separate question, and the runbook does not depend on it.
 - **Cloning between two devices on the new identifier works normally** — verified end to end, with
   the receiver booting to a healthy environment. Cloning *across* the boundary should install a
   second app on the receiver, for the same reason the updater would; that half is reasoned, not
