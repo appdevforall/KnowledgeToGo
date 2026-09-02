@@ -185,4 +185,23 @@ public class LiveLogPanel extends LinearLayout {
     public void toggle() { setExpanded(!expanded); }
 
     public void setOnExpandListener(@Nullable OnExpandListener l) { onExpandListener = l; }
+
+    /** Programmatic equivalent of the {@code hideUntilContent} XML attr (for consumers built in code):
+     *  when true the toggle stays hidden until there is content; when false it is always shown. */
+    public void setHideUntilContent(boolean value) {
+        hideUntilContent = value;
+        if (value && logText.getText().length() == 0) {
+            header.setVisibility(GONE);
+        } else if (!value) {
+            header.setVisibility(VISIBLE);
+        }
+    }
+
+    /** Collapse, clear the text, and (when {@code hideUntilContent}) hide the toggle again — so a panel
+     *  reused across runs starts clean instead of showing the previous run's log. */
+    public void reset() {
+        setExpanded(false);
+        logText.setText("");
+        if (hideUntilContent) header.setVisibility(GONE);
+    }
 }
