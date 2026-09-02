@@ -18,8 +18,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,13 +46,11 @@ public class ModuleInstallFragment extends Fragment {
     }
 
     private String key;
-    private TextView status, logText, logLabel;
+    private TextView status;
     private View progressRow;                                                                 // ADFA-5228
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
     private TextView progressPct, progressEta;
-    private ScrollView logScroll;
-    private ImageView logChevron;
-    private boolean logExpanded = false;
+    private org.appdevforall.k2go.widget.LiveLogPanel logPanel;   // K2GO-374: shared details panel
     private boolean terminalDone = false;   // this module reached done/failed → stop live status
     private final ArrayDeque<String> logLines = new ArrayDeque<>();
     private LogRepository.Listener logListener;
@@ -74,13 +70,10 @@ public class ModuleInstallFragment extends Fragment {
         progress = root.findViewById(R.id.k2go_modinst_progress);
         progressPct = root.findViewById(R.id.k2go_modinst_progress_pct);
         progressEta = root.findViewById(R.id.k2go_modinst_progress_eta);
-        logLabel = root.findViewById(R.id.k2go_modinst_log_label);
         // ADFA-5074: the key is passed so a module that earns its own art can be matched.
         org.appdevforall.k2go.util.ProgressVisuals.applyForModule(root, key);
-        logChevron = root.findViewById(R.id.k2go_modinst_log_chevron);
-        logScroll = root.findViewById(R.id.k2go_modinst_log_scroll);
-        logText = root.findViewById(R.id.k2go_modinst_log_text);
-        root.findViewById(R.id.k2go_modinst_log_toggle).setOnClickListener(v -> toggleLog());
+        logPanel = root.findViewById(R.id.k2go_modinst_log_panel);
+        logPanel.setOnExpandListener(this::seedLog);   // K2GO-374: seed from the snapshot on expand
 
         updateStatus();
         ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> updateStatus());
@@ -99,11 +92,11 @@ public class ModuleInstallFragment extends Fragment {
             @Override public void onAppend(String line) {
                 if (!isAdded() || line == null) return;
                 if (!terminalDone && installing()) status.setText(line);
-                if (logExpanded) { pushLine(line); renderLog(); }
+                if (logPanel.isExpanded()) { pushLine(line); renderLog(); }
             }
             @Override public void onCleared() {
                 logLines.clear();
-                if (logExpanded) renderLog();
+                if (logPanel.isExpanded()) renderLog();
             }
         };
         LogRepository.get().addListener(logListener);
@@ -173,18 +166,13 @@ public class ModuleInstallFragment extends Fragment {
         return -1;
     }
 
-    private void toggleLog() {
-        logExpanded = !logExpanded;
-        logLabel.setText(getString(logExpanded ? R.string.k2go_maps_log_hide : R.string.k2go_maps_log_show));
-        logChevron.setRotation(logExpanded ? 90f : 0f);
-        logScroll.setVisibility(logExpanded ? View.VISIBLE : View.GONE);
-        if (logExpanded) {
-            logLines.clear();
-            List<String> snap = LogRepository.get().snapshot();
-            int start = Math.max(0, snap.size() - MAX_LOG_LINES);
-            for (int i = start; i < snap.size(); i++) logLines.addLast(snap.get(i));
-            renderLog();
-        }
+    /** K2GO-374: seed the panel's deque from the current log snapshot when it is expanded. */
+    private void seedLog() {
+        logLines.clear();
+        List<String> snap = LogRepository.get().snapshot();
+        int start = Math.max(0, snap.size() - MAX_LOG_LINES);
+        for (int i = start; i < snap.size(); i++) logLines.addLast(snap.get(i));
+        renderLog();
     }
 
     private void pushLine(String line) {
@@ -195,8 +183,7 @@ public class ModuleInstallFragment extends Fragment {
     private void renderLog() {
         StringBuilder sb = new StringBuilder();
         for (String l : logLines) sb.append(l).append('\n');
-        logText.setText(sb.toString());
-        logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
+        logPanel.setContent(sb.toString());
     }
 
     @Override
