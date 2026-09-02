@@ -2,6 +2,10 @@
 
 **Status:** proposed
 
+> **Tracked as K2GO-90** after the project key move (1 Sep 2026). The `ADFA-5368` key in this file's
+> name, in the branch and in the commits that came before still resolves — Jira keeps a permanent
+> redirect — and is deliberately left as it is. New work on this decision uses `K2GO-90`.
+
 ## 1. The decision in one line
 
 Move both the `applicationId` and the Java `namespace` from `org.iiab.controller` to

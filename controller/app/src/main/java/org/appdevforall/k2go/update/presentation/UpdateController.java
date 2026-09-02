@@ -55,8 +55,10 @@ public class UpdateController {
     // still gated by same-certificate signature verification (ApkVerifier), so the binary can live
     // on any server without a manifest hash. Installs on the old host (<= vCode 52) are migrated
     // once via a bridge manifest+APK seeded at the old switnet location.
-    private static final String UPDATE_JSON = "https://k2go-download.appdevforall.org/update.json";
-    private static final String APK_BASE_URL = "https://k2go-download.appdevforall.org/";
+    private static final String UPDATE_JSON =
+            org.appdevforall.k2go.config.DownloadEndpoints.APK_REPO + "/update.json";
+    private static final String APK_BASE_URL =
+            org.appdevforall.k2go.config.DownloadEndpoints.APK_REPO + "/";
 
     private final AppCompatActivity activity;
 

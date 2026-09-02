@@ -497,7 +497,8 @@ task refreshRootfsSizes {
     description = 'Capture rootfs image sizes (.meta4) into assets/rootfs_sizes.csv for the offline fallback'
     def csv = file('src/main/assets/rootfs_sizes.csv')
     doLast {
-        def base = 'https://iiab.switnet.org/android/rootfs/'
+        // ADFA-5368: k2go-rootfs bucket, which serves from its root (switnet kept an /android/rootfs path).
+        def base = 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/'
         def tiers = ['basic', 'standard', 'full']
         def abis = ['arm64-v8a', 'armeabi-v7a']
         def sizePat = ~/<size>(\d+)<\/size>/
@@ -575,7 +576,7 @@ task refreshModuleSizes {
     description = 'Capture per-module install sizes from the full build log into assets/module_sizes.csv'
     def csv = file('src/main/assets/module_sizes.csv')
     doLast {
-        def url = 'https://iiab.switnet.org/android/rootfs/build-full-arm64-v8a.log'
+        def url = 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/build-full-arm64-v8a.log'
         def wanted = ['kolibri', 'kiwix', 'calibreweb', 'code'] as Set
         def pat = ~/(\w+)_disk_usage\s*=\s*(\d+)/
         def fetched = [:]

@@ -516,7 +516,8 @@ public final class InstallService extends Service {
         work = org.appdevforall.k2go.install.domain.AbandonedInstall.Work.ROOTFS_BUILD;
         String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "armeabi-v7a" : "arm64-v8a";
         String tierString = tier.name().toLowerCase(Locale.US);
-        String directUrl = "https://iiab.switnet.org/android/rootfs/latest_" + tierString + "_" + archSuffix + ".meta4";
+        String directUrl = org.appdevforall.k2go.config.DownloadEndpoints.ROOTFS_STORE
+                + "/latest_" + tierString + "_" + archSuffix + ".meta4";
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
         aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
@@ -774,7 +775,7 @@ public final class InstallService extends Service {
 
             String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "arm" : "aarch64";
             final String tarball = "debian-trixie-" + archSuffix + "-pd-v4.29.0.tar.xz";
-            String url = "https://iiab.switnet.org/android/rootfs/proot-distro-v4.29.0/" + tarball;
+            String url = org.appdevforall.k2go.config.DownloadEndpoints.prootDistroBase() + tarball;
 
             if (aria2Manager == null) aria2Manager = new Aria2Manager();
             aria2Manager.startDownload(this, url, new Aria2Manager.DownloadListener() {

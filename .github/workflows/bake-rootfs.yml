@@ -6,7 +6,7 @@ name: Bake & publish K2Go RootFS
 #
 # Split by architecture into two parallel jobs (one arm64 node each), each building
 # ALL tiers (basic, standard, full, matomo). ~1.5h per node. The APK is NOT touched
-# here (still points at switnet); re-pointing it to R2 is a separate, later change.
+# here; ADFA-5368 re-pointed the app at this bucket (config/DownloadEndpoints).
 #
 # A one-shot `seed-base` job runs first: it puts the STATIC proot-distro base (the two
 # Debian tarballs K2Go builds on) into R2 exactly once, then only verifies its presence
@@ -26,16 +26,20 @@ on:
 env:
   BUCKET_NAME: k2go-rootfs
   R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-  # Public base that goes into the .meta4 <url>. Path-based route
-  # k2go-download.appdevforall.org/rootfs/* -> k2go-rootfs.
-  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://k2go-download.appdevforall.org/rootfs' }}
-  # Key prefix inside the bucket. Empty when the route strips /rootfs/ (keys at root);
-  # set to 'rootfs/' if the route keeps the prefix.
+  # Public base that goes into the .meta4 <url> — where the APK actually downloads the
+  # rootfs FROM, so it has to name the bucket that holds it. The two buckets are separate
+  # and so are their names: k2go-download.appdevforall.org serves the APK repo only.
+  # ADFA-5368: this defaulted to k2go-download.appdevforall.org/rootfs, a path-based route
+  # that was never created. The metalinks published with it resolved to 404 — and since
+  # --reset-mirrors leaves a single source, there was nothing to fall back to.
+  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev' }}
+  # Key prefix inside the bucket. Empty: the keys sit at the bucket root (only the static
+  # proot-distro base lives in a folder). Set it only if the layout gains a prefix.
   R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
 
 jobs:
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
-  # (github.com/termux/proot-distro), today mirrored at switnet. It is STATIC, so seed it
+  # (github.com/termux/proot-distro), fetched from the upstream release. It is STATIC, so seed it
   # into R2 ONCE; every later run only HEADs it (no re-download). Bumping PD_VERSION seeds a
   # fresh proot-distro-v<ver>/ dir once. Only the two bases K2Go consumes are mirrored
   # (Android arm64-v8a -> aarch64, armeabi-v7a -> arm); the rest of the release is not.

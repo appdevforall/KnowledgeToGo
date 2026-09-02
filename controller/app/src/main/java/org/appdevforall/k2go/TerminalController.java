@@ -841,7 +841,8 @@ public class TerminalController {
                 cliStr.append("    ARCH=$(uname -m)\n");
                 cliStr.append("    if [ \"$ARCH\" = \"aarch64\" ]; then TERMUX_ARCH=\"aarch64\"; else TERMUX_ARCH=\"arm\"; fi\n");
                 cliStr.append("    TARBALL=\"debian-trixie-${TERMUX_ARCH}-pd-v4.29.0.tar.xz\"\n");
-                cliStr.append("    URL=\"https://iiab.switnet.org/android/rootfs/proot-distro-v4.29.0/${TARBALL}\"\n");
+                cliStr.append("    URL=\"" + org.appdevforall.k2go.config.DownloadEndpoints.prootDistroBase()
+                        + "${TARBALL}\"\n");
                 cliStr.append("    CA_CERT=\"").append(caCertFile.getAbsolutePath()).append("\"\n\n");
                 cliStr.append("    echo -e '\\n\\033[36m[1/4] Wiping current environment...\\033[0m'\n");
                 cliStr.append("    rm -rf \"$ROOTFS_DIR\" 2>/dev/null || true\n");

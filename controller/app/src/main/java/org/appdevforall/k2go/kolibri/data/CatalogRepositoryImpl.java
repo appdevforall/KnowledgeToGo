@@ -32,7 +32,7 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
     // asset when a newer version has been pulled.
     private static final String CATALOG = "kolibri";
     private static final String MANIFEST_URL =
-            "https://k2go-download.appdevforall.org/catalogs/kolibri.manifest.json";
+            org.appdevforall.k2go.config.DownloadEndpoints.APK_REPO + "/catalogs/kolibri.manifest.json";
     // Single source of truth for the basename: the same name BundledCatalogSource reads the overlay
     // from, so the worker writes it exactly where the source looks (they must never drift).
     private static final String BASENAME = BundledCatalogSource.ASSET;
@@ -41,7 +41,7 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
     // overlaying its own APK asset. A separate name so the two refreshes never collide.
     private static final String TREE_CATALOG = "kolibri-tree";
     private static final String TREE_MANIFEST_URL =
-            "https://k2go-download.appdevforall.org/catalogs/kolibri-tree.manifest.json";
+            org.appdevforall.k2go.config.DownloadEndpoints.APK_REPO + "/catalogs/kolibri-tree.manifest.json";
     private static final String TREE_BASENAME = BundledTreeSource.ASSET;
 
     private final BundledCatalogSource bundled;

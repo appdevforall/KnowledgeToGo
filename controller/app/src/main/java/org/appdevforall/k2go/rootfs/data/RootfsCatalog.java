@@ -27,7 +27,8 @@ public class RootfsCatalog {
 
     private static final String TAG = "RootfsCatalog";
     private static final String CSV_ASSET = "rootfs_sizes.csv";
-    private static final String BASE_URL = "https://iiab.switnet.org/android/rootfs/";
+    private static final String BASE_URL =
+            org.appdevforall.k2go.config.DownloadEndpoints.ROOTFS_STORE + "/";
 
     // Emergency-net COMPRESSED (download) fallbacks — used only if the CSV is missing/unreadable.
     // Captured from latest_*.meta4, build 2026.224 (sha 8d15d79, 2026-08-12).
