@@ -786,6 +786,7 @@
     <string name="k2go_connect_hotspot_unsupported">핫스팟에는 Android 8 이상이 필요합니다</string>
     <string name="k2go_connect_try_wifi">대신 Wi-Fi 옵션을 사용해 보세요.</string>
     <string name="k2go_connect_starting_hotspot">핫스팟을 시작하는 중…</string>
+    <string name="k2go_connect_resolving_address">핫스팟 주소 찾는 중…</string>
     <string name="k2go_connect_hotspot_failed">핫스팟을 시작할 수 없습니다</string>
     <string name="k2go_connect_enable_location">위치 권한을 켠 다음 다시 시도하세요.</string>
     <string name="k2go_connect_no_wifi">Wi-Fi 네트워크에 연결되어 있지 않음</string>

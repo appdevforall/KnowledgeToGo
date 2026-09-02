@@ -787,6 +787,7 @@
     <string name="k2go_connect_hotspot_unsupported">Wi-Fi-sone krever Android 8 eller nyere</string>
     <string name="k2go_connect_try_wifi">Prøv Wi-Fi-alternativet i stedet.</string>
     <string name="k2go_connect_starting_hotspot">Starter Wi-Fi-sone…</string>
+    <string name="k2go_connect_resolving_address">Finner hotspot-adresse…</string>
     <string name="k2go_connect_hotspot_failed">Kunne ikke starte Wi-Fi-sonen</string>
     <string name="k2go_connect_enable_location">Slå på stedstillatelsen, og prøv igjen.</string>
     <string name="k2go_connect_no_wifi">Ikke på et Wi-Fi-nettverk</string>
