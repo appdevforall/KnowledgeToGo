@@ -19,6 +19,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -107,14 +108,38 @@ public class LiveLogPanel extends LinearLayout {
         addView(header, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         if (hideUntilContent) header.setVisibility(GONE);
 
-        // Scrollable monospace terminal, collapsed by default.
-        scroll = new ScrollView(c);
+        // Scrollable monospace terminal, collapsed by default. Override dispatchTouchEvent so a touch-
+        // down inside the terminal tells the outer page ScrollView not to intercept — this runs BEFORE
+        // the child TextView, so it works even though the selectable text consumes the DOWN (that was
+        // why a plain OnTouchListener never fired and the page scrolled instead). A touch OUTSIDE the
+        // terminal reaches the page directly, so the page still scrolls there.
+        scroll = new ScrollView(c) {
+            @Override
+            public boolean dispatchTouchEvent(MotionEvent ev) {
+                if (ev.getActionMasked() == MotionEvent.ACTION_DOWN && getParent() != null) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                return super.dispatchTouchEvent(ev);
+            }
+        };
         LayoutParams scrollLp = new LayoutParams(LayoutParams.MATCH_PARENT, Math.round(logMaxHeightDp * d));
         scrollLp.topMargin = Math.round(8 * d);
         scroll.setLayoutParams(scrollLp);
         int p = Math.round(10 * d);
         scroll.setPadding(p, p, p, p);
         scroll.setBackgroundColor(ContextCompat.getColor(c, R.color.k2go_terminal_bg));
+        // K2GO-374: keep the scrollbar visible as a position indicator — with the auto-scroll now
+        // pinning only when at the bottom, a persistent bar shows the reader where they are in the log.
+        // Tint the thumb with the terminal text colour so it reads on the dark background.
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setScrollbarFadingEnabled(false);
+        scroll.setScrollBarSize(Math.round(3 * d));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            android.graphics.drawable.GradientDrawable thumb = new android.graphics.drawable.GradientDrawable();
+            thumb.setColor(ContextCompat.getColor(c, R.color.k2go_terminal_text));
+            thumb.setCornerRadius(Math.round(2 * d));
+            scroll.setVerticalScrollbarThumbDrawable(thumb);
+        }
         scroll.setVisibility(GONE);
 
         logText = new TextView(c);
