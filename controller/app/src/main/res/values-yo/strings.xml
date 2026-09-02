@@ -651,12 +651,14 @@
     <string name="k2go_br_backup_failed">Ìfìdí-ọ̀rọ̀ kùnà. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_br_done_title">Ó ti parí</string>
     <string name="k2go_br_failed_title">Nkan kan ṣàṣìṣe</string>
+    <string name="k2go_br_status_copying">Ń da fáìlì náà kọ</string>
     <string name="k2go_br_status_checking">Ń ṣàyẹ̀wò fáìlì</string>
     <string name="k2go_br_status_restoring">Ń mú padà</string>
     <string name="k2go_br_restore_warn">Èyí fi àfẹ̀yìntì tí a yàn rọ́pò ẹ̀rọ ìsinsìnyí rẹ. A kò lè yí i padà, sáà sì ń dúró nígbà tí ó bá ń ṣiṣẹ́.</string>
     <string name="k2go_br_restore_confirm">Rọ́pò ẹ̀rọ</string>
     <string name="k2go_br_restore_done">A ti mú ẹ̀rọ padà</string>
     <string name="k2go_br_restore_failed">Ìmúpadà kùnà</string>
+    <string name="k2go_br_restore_unreadable">A kò lè ka fáìlì tí a yàn, nítorí náà kò sí ohun tí ó yípadà.</string>
     <string name="deepop_channel_name">Àfẹ̀yìntì &amp; ìmúpadà</string>
     <string name="deepop_channel_desc">Ń jẹ́ kí àfẹ̀yìntì tàbí ìmúpadà máa ṣiṣẹ́ láìséwu lẹ́yìn ẹ̀rọ</string>
     <string name="deepop_notif_title">Àfẹ̀yìntì &amp; ìmúpadà</string>

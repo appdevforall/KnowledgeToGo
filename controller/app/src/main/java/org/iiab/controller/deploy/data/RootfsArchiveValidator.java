@@ -16,15 +16,12 @@ import android.util.Log;
 import org.iiab.controller.deploy.domain.ElfClass;
 import org.iiab.controller.deploy.domain.RootfsArchive;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -53,20 +50,47 @@ public final class RootfsArchiveValidator {
         // Static utility; not instantiable.
     }
 
-    /** Validate from a file path (lists the archive itself; use for the import gate). */
-    public static Result validate(Context context, String archivePath) {
-        try {
-            String tarBinary = resolveTar(context);
-            boolean isGzip = archivePath.toLowerCase(Locale.US).endsWith(".gz");
-            List<String> entries = listEntries(tarBinary, archivePath, isGzip);
-            if (entries.isEmpty()) {
-                return Result.UNREADABLE;
-            }
-            return validateWithEntries(context, archivePath, isGzip, tarBinary, entries, true);
-        } catch (Exception e) {
-            Log.e(TAG, "Validation error", e);
-            return Result.UNREADABLE;
+    /**
+     * K2GO-372: the manifest's rejection, if any — a thin adapter over the pure rule in
+     * {@link org.iiab.controller.deploy.domain.RootfsIdentity}, which is where the decision lives
+     * and where it is tested. This half supplies the two things the rule cannot know on its own:
+     * the running app's ABI, and how a domain verdict maps onto {@link Result}.
+     *
+     * <p>Worth calling before the listing pass: the manifest is packed first, so this reads a few
+     * KB, while the listing reads the whole archive.
+     *
+     * @return the rejecting {@link Result}, or {@code null} when the manifest does not reject.
+     */
+    public static Result identityRejection(RootfsManifest.Identity id) {
+        org.iiab.controller.deploy.domain.RootfsIdentity.Verdict v =
+                org.iiab.controller.deploy.domain.RootfsIdentity.check(
+                        id != null && id.present,
+                        id == null ? null : id.kind,
+                        id == null ? null : id.arch,
+                        RootfsManifest.appAbiId());
+        switch (v) {
+            case NOT_A_ROOTFS: return Result.NOT_A_ROOTFS;
+            case WRONG_ARCH:   return Result.WRONG_ARCH;
+            default:           return null;
         }
+    }
+
+    /**
+     * K2GO-372: the reason to show for a rejecting {@link Result}, or {@code null} when it does not
+     * reject. Both extractor gates and the restore's pre-copy check spell the same verdicts, and they
+     * used to each carry their own if-chain of strings.
+     *
+     * <p>Note it rejects {@link Result#CORRUPT} too, which the extractor's two inline chains did not:
+     * failing closed on a failed integrity check is the right direction, and it is inert on today's
+     * callers (the extractor validates with {@code checkIntegrity=false}, where CORRUPT cannot arise).
+     * {@link Result#UNREADABLE} is deliberately NOT a rejection here — see the callers; that gap
+     * predates this method.
+     */
+    public static String rejectionMessage(Context ctx, Result r) {
+        if (r == Result.NOT_A_ROOTFS) return ctx.getString(org.iiab.controller.R.string.install_error_not_rootfs);
+        if (r == Result.WRONG_ARCH) return ctx.getString(org.iiab.controller.R.string.install_error_wrong_arch);
+        if (r == Result.CORRUPT) return ctx.getString(org.iiab.controller.R.string.install_error_corrupt);
+        return null;
     }
 
     /**
@@ -93,14 +117,11 @@ public final class RootfsArchiveValidator {
             // (installed-rootfs/iiab/.iiab-rootfs.json, packed first). See
             // docs/ROOTFS_MANIFEST.md. When present it decides kind + arch.
             RootfsManifest.Identity id = RootfsManifest.read(archivePath);
+            Result rejection = identityRejection(id);
+            if (rejection != null) {
+                return rejection;
+            }
             if (id.present) {
-                if (!"iiab-rootfs".equals(id.kind)) {
-                    return Result.NOT_A_ROOTFS;
-                }
-                if (id.arch != null && !id.arch.isEmpty()
-                        && !id.arch.equals(RootfsManifest.appAbiId())) {
-                    return Result.WRONG_ARCH;
-                }
                 // Identity is authoritative for kind+arch. Now decide integrity.
                 if ("device-backup".equals(id.origin)) {
                     // App-made backup: no checksum by design (we don't turn the
@@ -146,38 +167,6 @@ public final class RootfsArchiveValidator {
             Log.e(TAG, "Validation (with entries) error", e);
             return Result.UNREADABLE;
         }
-    }
-
-    private static String resolveTar(Context context) {
-        File staticTar = new File(context.getApplicationInfo().nativeLibraryDir, "libtar.so");
-        return staticTar.exists() ? staticTar.getAbsolutePath() : "/system/bin/tar";
-    }
-
-    private static List<String> listEntries(String tarBinary, String archivePath, boolean isGzip) throws Exception {
-        List<String> names = new ArrayList<>();
-        List<String> cmd = new ArrayList<>();
-        cmd.add(tarBinary);
-        if (isGzip) {
-            cmd.add("-t");
-            cmd.add("-f");
-            cmd.add("-");
-        } else {
-            cmd.add("-tf");
-            cmd.add(archivePath);
-        }
-        Process p = new ProcessBuilder(cmd).start();
-        Thread feeder = isGzip ? startGzipFeeder(archivePath, p.getOutputStream()) : null;
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                names.add(line);
-            }
-        }
-        p.waitFor();
-        if (feeder != null) {
-            feeder.join();
-        }
-        return names;
     }
 
     private static byte[] readMemberHeader(String tarBinary, String archivePath, boolean isGzip,

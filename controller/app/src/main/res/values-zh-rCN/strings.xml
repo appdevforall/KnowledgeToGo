@@ -632,12 +632,14 @@
     <string name="k2go_br_backup_failed">备份失败。请重试。</string>
     <string name="k2go_br_done_title">完成</string>
     <string name="k2go_br_failed_title">出错了</string>
+    <string name="k2go_br_status_copying">正在复制文件</string>
     <string name="k2go_br_status_checking">正在检查文件</string>
     <string name="k2go_br_status_restoring">正在恢复</string>
     <string name="k2go_br_restore_warn">这会用所选备份替换您当前的系统。此操作无法撤销，运行期间服务器会停止。</string>
     <string name="k2go_br_restore_confirm">替换系统</string>
     <string name="k2go_br_restore_done">系统已恢复</string>
     <string name="k2go_br_restore_failed">恢复失败</string>
+    <string name="k2go_br_restore_unreadable">无法读取所选文件，因此未做任何更改。</string>
     <string name="deepop_channel_name">备份与恢复</string>
     <string name="deepop_channel_desc">使备份或恢复在后台安全运行</string>
     <string name="deepop_notif_title">备份与恢复</string>

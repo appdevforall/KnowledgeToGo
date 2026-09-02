@@ -638,12 +638,14 @@
     <string name="k2go_br_backup_failed">Резервното копие е неуспешно. Опитайте отново.</string>
     <string name="k2go_br_done_title">Готово</string>
     <string name="k2go_br_failed_title">Нещо се обърка</string>
+    <string name="k2go_br_status_copying">Копиране на файла</string>
     <string name="k2go_br_status_checking">Проверка на файла</string>
     <string name="k2go_br_status_restoring">Възстановяване</string>
     <string name="k2go_br_restore_warn">Това заменя текущата ви система с избраното резервно копие. Действието е необратимо, а сървърът спира, докато се изпълнява.</string>
     <string name="k2go_br_restore_confirm">Замени системата</string>
     <string name="k2go_br_restore_done">Системата е възстановена</string>
     <string name="k2go_br_restore_failed">Неуспешно възстановяване</string>
+    <string name="k2go_br_restore_unreadable">Избраният файл не можа да бъде прочетен, затова нищо не беше променено.</string>
     <string name="deepop_channel_name">Резервно копие и възстановяване</string>
     <string name="deepop_channel_desc">Поддържа безопасното изпълнение на резервно копие или възстановяване във фонов режим</string>
     <string name="deepop_notif_title">Резервно копие и възстановяване</string>

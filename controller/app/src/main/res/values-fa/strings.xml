@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">پشتیبان‌گیری ناموفق بود. لطفاً دوباره تلاش کنید.</string>
     <string name="k2go_br_done_title">انجام شد</string>
     <string name="k2go_br_failed_title">مشکلی پیش آمد</string>
+    <string name="k2go_br_status_copying">در حال کپی کردن فایل</string>
     <string name="k2go_br_status_checking">در حال بررسی فایل</string>
     <string name="k2go_br_status_restoring">در حال بازیابی</string>
     <string name="k2go_br_restore_warn">این کار سیستم فعلی شما را با پشتیبان انتخاب‌شده جایگزین می‌کند. قابل بازگردانی نیست و در حین اجرا سرور متوقف می‌شود.</string>
     <string name="k2go_br_restore_confirm">جایگزینی سیستم</string>
     <string name="k2go_br_restore_done">سیستم بازیابی شد</string>
     <string name="k2go_br_restore_failed">بازیابی ناموفق بود</string>
+    <string name="k2go_br_restore_unreadable">فایل انتخاب‌شده خوانده نشد، بنابراین چیزی تغییر نکرد.</string>
     <string name="deepop_channel_name">پشتیبان‌گیری و بازیابی</string>
     <string name="deepop_channel_desc">پشتیبان‌گیری یا بازیابی را با ایمنی در پس‌زمینه اجرا نگه می‌دارد</string>
     <string name="deepop_notif_title">پشتیبان‌گیری و بازیابی</string>

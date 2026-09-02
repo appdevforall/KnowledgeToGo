@@ -709,12 +709,14 @@
     <string name="k2go_br_backup_failed">La sauvegarde a échoué. Veuillez réessayer.</string>
     <string name="k2go_br_done_title">Terminé</string>
     <string name="k2go_br_failed_title">Une erreur s\'est produite</string>
+    <string name="k2go_br_status_copying">Copie du fichier</string>
     <string name="k2go_br_status_checking">Vérification du fichier</string>
     <string name="k2go_br_status_restoring">Restauration en cours</string>
     <string name="k2go_br_restore_warn">Cela remplace votre système actuel par la sauvegarde choisie. C\'est irréversible, et le serveur s\'arrête pendant l\'opération.</string>
     <string name="k2go_br_restore_confirm">Remplacer le système</string>
     <string name="k2go_br_restore_done">Système restauré</string>
     <string name="k2go_br_restore_failed">Échec de la restauration</string>
+    <string name="k2go_br_restore_unreadable">Le fichier sélectionné n\'a pas pu être lu, donc rien n\'a été modifié.</string>
     <string name="deepop_channel_name">Sauvegarde &amp; restauration</string>
     <string name="deepop_channel_desc">Maintient une sauvegarde ou une restauration en cours en toute sécurité en arrière-plan</string>
     <string name="deepop_notif_title">Sauvegarde &amp; restauration</string>

@@ -26,6 +26,23 @@ public final class SpaceEstimate {
     public static final int UNCOMPRESSED_NUMERATOR = 22;
     public static final int UNCOMPRESSED_DENOMINATOR = 10;
 
+    /**
+     * K2GO-372: what a restore needs free <em>at once</em>, in bytes — the staged copy of the picked
+     * archive plus the tree it expands into, because both are on disk together: the copy is not deleted
+     * until the extraction has finished.
+     *
+     * <p>The guard used to be asked only about the expansion, and only once the copy was already
+     * written, so the copy itself was never covered: a device with room for neither filled up mid-copy
+     * and reported it as an unreadable file. Ask this before copying; the post-copy check still asks
+     * {@link #fromCompressed} on the real staged file, where the copy is already spent.
+     */
+    public static long peakForRestore(long compressedBytes) {
+        long c = Math.max(0L, compressedBytes);
+        long expanded = fromCompressed(c);
+        long peak = c + expanded;
+        return peak < expanded ? Long.MAX_VALUE : peak;   // saturate on overflow
+    }
+
     /** Conservative uncompressed-size estimate from a compressed size, in bytes. */
     public static long fromCompressed(long compressedBytes) {
         long c = Math.max(0L, compressedBytes);

@@ -710,12 +710,14 @@
     <string name="k2go_br_backup_failed">A cópia de segurança falhou. Tenta novamente.</string>
     <string name="k2go_br_done_title">Concluído</string>
     <string name="k2go_br_failed_title">Algo correu mal</string>
+    <string name="k2go_br_status_copying">A copiar o ficheiro</string>
     <string name="k2go_br_status_checking">A verificar o ficheiro</string>
     <string name="k2go_br_status_restoring">A restaurar</string>
     <string name="k2go_br_restore_warn">Isto substitui o seu sistema atual pela cópia escolhida. Não pode ser anulado e o servidor para enquanto decorre.</string>
     <string name="k2go_br_restore_confirm">Substituir sistema</string>
     <string name="k2go_br_restore_done">Sistema restaurado</string>
     <string name="k2go_br_restore_failed">O restauro falhou</string>
+    <string name="k2go_br_restore_unreadable">Não foi possível ler o ficheiro selecionado, por isso nada foi alterado.</string>
     <string name="deepop_channel_name">Cópia de segurança &amp; restauro</string>
     <string name="deepop_channel_desc">Mantém uma cópia de segurança ou restauro a decorrer com segurança em segundo plano</string>
     <string name="deepop_notif_title">Cópia de segurança &amp; restauro</string>

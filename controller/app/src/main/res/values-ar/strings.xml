@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">فشل النسخ الاحتياطي. يرجى المحاولة مرة أخرى.</string>
     <string name="k2go_br_done_title">تم</string>
     <string name="k2go_br_failed_title">حدث خطأ ما</string>
+    <string name="k2go_br_status_copying">جارٍ نسخ الملف</string>
     <string name="k2go_br_status_checking">جارٍ التحقّق من الملف</string>
     <string name="k2go_br_status_restoring">جارٍ الاستعادة</string>
     <string name="k2go_br_restore_warn">يستبدل هذا نظامك الحالي بالنسخة الاحتياطية المختارة. لا يمكن التراجع عن ذلك، ويتوقّف الخادم أثناء التنفيذ.</string>
     <string name="k2go_br_restore_confirm">استبدال النظام</string>
     <string name="k2go_br_restore_done">تمت استعادة النظام</string>
     <string name="k2go_br_restore_failed">فشلت الاستعادة</string>
+    <string name="k2go_br_restore_unreadable">تعذّرت قراءة الملف المحدد، لذا لم يتغيّر أي شيء.</string>
     <string name="deepop_channel_name">النسخ الاحتياطي والاستعادة</string>
     <string name="deepop_channel_desc">يُبقي عملية نسخ احتياطي أو استعادة قيد التشغيل بأمان في الخلفية</string>
     <string name="deepop_notif_title">النسخ الاحتياطي والاستعادة</string>

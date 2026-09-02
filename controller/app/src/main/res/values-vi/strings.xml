@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">Sao lưu thất bại. Vui lòng thử lại.</string>
     <string name="k2go_br_done_title">Xong</string>
     <string name="k2go_br_failed_title">Đã xảy ra sự cố</string>
+    <string name="k2go_br_status_copying">Đang sao chép tệp</string>
     <string name="k2go_br_status_checking">Đang kiểm tra tệp</string>
     <string name="k2go_br_status_restoring">Đang khôi phục</string>
     <string name="k2go_br_restore_warn">Thao tác này thay thế hệ thống hiện tại của bạn bằng bản sao lưu đã chọn. Không thể hoàn tác, và máy chủ dừng trong khi thực hiện.</string>
     <string name="k2go_br_restore_confirm">Thay thế hệ thống</string>
     <string name="k2go_br_restore_done">Đã khôi phục hệ thống</string>
     <string name="k2go_br_restore_failed">Khôi phục thất bại</string>
+    <string name="k2go_br_restore_unreadable">Không thể đọc tệp đã chọn, nên không có gì bị thay đổi.</string>
     <string name="deepop_channel_name">Sao lưu &amp; khôi phục</string>
     <string name="deepop_channel_desc">Giữ quá trình sao lưu hoặc khôi phục chạy an toàn ở chế độ nền</string>
     <string name="deepop_notif_title">Sao lưu &amp; khôi phục</string>

@@ -651,12 +651,14 @@
     <string name="k2go_br_backup_failed">காப்புப்பிரதி தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.</string>
     <string name="k2go_br_done_title">முடிந்தது</string>
     <string name="k2go_br_failed_title">ஏதோ தவறு நடந்தது</string>
+    <string name="k2go_br_status_copying">கோப்பு நகலெடுக்கப்படுகிறது</string>
     <string name="k2go_br_status_checking">கோப்பு சரிபார்க்கப்படுகிறது</string>
     <string name="k2go_br_status_restoring">மீட்டமைக்கப்படுகிறது</string>
     <string name="k2go_br_restore_warn">இது உங்கள் தற்போதைய அமைப்பைத் தேர்ந்தெடுத்த காப்புப்பிரதியால் மாற்றுகிறது. இதை மாற்ற முடியாது, இயங்கும்போது சர்வர் நிற்கும்.</string>
     <string name="k2go_br_restore_confirm">அமைப்பை மாற்று</string>
     <string name="k2go_br_restore_done">அமைப்பு மீட்டமைக்கப்பட்டது</string>
     <string name="k2go_br_restore_failed">மீட்பு தோல்வியடைந்தது</string>
+    <string name="k2go_br_restore_unreadable">தேர்ந்தெடுத்த கோப்பைப் படிக்க முடியவில்லை, எனவே எதுவும் மாற்றப்படவில்லை.</string>
     <string name="deepop_channel_name">காப்புப்பிரதி &amp; மீட்பு</string>
     <string name="deepop_channel_desc">காப்புப்பிரதி அல்லது மீட்பை பின்னணியில் பாதுகாப்பாக இயக்கி வைக்கிறது</string>
     <string name="deepop_notif_title">காப்புப்பிரதி &amp; மீட்பு</string>

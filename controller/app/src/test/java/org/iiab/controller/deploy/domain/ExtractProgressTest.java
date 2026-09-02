@@ -119,4 +119,37 @@ public class ExtractProgressTest {
         assertTrue("handoff stays monotone",
                 ExtractProgress.unifiedPercent(0, true) >= ExtractProgress.unifiedPercent(99, false));
     }
+
+    // ---- K2GO-372: a restore is one run of three passes (copy, verify, extract) ----
+
+    @Test public void threePassesShareOneBarInOrder() {
+        assertEquals(0,  ExtractProgress.unifiedPercent(0, 0, 3));    // copy starts the run
+        assertEquals(16, ExtractProgress.unifiedPercent(50, 0, 3));   // copy half
+        assertEquals(33, ExtractProgress.unifiedPercent(0, 1, 3));    // verify picks up where copy ended
+        assertEquals(66, ExtractProgress.unifiedPercent(0, 2, 3));    // extract picks up after verify
+        assertEquals(83, ExtractProgress.unifiedPercent(50, 2, 3));   // extract half
+        assertEquals(99, ExtractProgress.unifiedPercent(100, 2, 3));  // capped until completion
+    }
+
+    @Test public void noPassCanFillTheBarAndSendItBack() {
+        // The reason the mapping exists: the end of one pass must never exceed the start of the next.
+        for (int pass = 0; pass < 2; pass++) {
+            assertTrue("pass " + pass + " must hand over without regressing",
+                    ExtractProgress.unifiedPercent(100, pass, 3)
+                            <= ExtractProgress.unifiedPercent(0, pass + 1, 3));
+        }
+    }
+
+    @Test public void twoPassOverloadIsTheSameRuleWithTwoPasses() {
+        for (int p = 0; p <= 100; p += 5) {
+            assertEquals(ExtractProgress.unifiedPercent(p, 0, 2), ExtractProgress.unifiedPercent(p, false));
+            assertEquals(ExtractProgress.unifiedPercent(p, 1, 2), ExtractProgress.unifiedPercent(p, true));
+        }
+    }
+
+    @Test public void outOfRangePassesAreClampedNotWrapped() {
+        assertEquals(ExtractProgress.unifiedPercent(0, 2, 3), ExtractProgress.unifiedPercent(0, 9, 3));
+        assertEquals(ExtractProgress.unifiedPercent(0, 0, 3), ExtractProgress.unifiedPercent(0, -1, 3));
+        assertEquals(50, ExtractProgress.unifiedPercent(50, 0, 0));   // a run of no passes is one pass
+    }
 }

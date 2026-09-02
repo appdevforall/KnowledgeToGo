@@ -651,12 +651,14 @@
     <string name="k2go_br_backup_failed">Ehtiyat nüsxə alınmadı. Zəhmət olmasa yenidən cəhd et.</string>
     <string name="k2go_br_done_title">Hazır</string>
     <string name="k2go_br_failed_title">Nə isə səhv getdi</string>
+    <string name="k2go_br_status_copying">Fayl kopyalanır</string>
     <string name="k2go_br_status_checking">Fayl yoxlanılır</string>
     <string name="k2go_br_status_restoring">Bərpa olunur</string>
     <string name="k2go_br_restore_warn">Bu, cari sisteminizi seçilmiş ehtiyat nüsxə ilə əvəz edir. Geri qaytarıla bilməz və icra olunarkən server dayanır.</string>
     <string name="k2go_br_restore_confirm">Sistemi əvəz et</string>
     <string name="k2go_br_restore_done">Sistem bərpa olundu</string>
     <string name="k2go_br_restore_failed">Bərpa alınmadı</string>
+    <string name="k2go_br_restore_unreadable">Seçilmiş fayl oxuna bilmədi, ona görə heç nə dəyişdirilmədi.</string>
     <string name="deepop_channel_name">Ehtiyat nüsxə &amp; bərpa</string>
     <string name="deepop_channel_desc">Ehtiyat nüsxə və ya bərpanı arxa planda təhlükəsiz işlədir</string>
     <string name="deepop_notif_title">Ehtiyat nüsxə &amp; bərpa</string>

@@ -644,12 +644,14 @@
     <string name="k2go_br_backup_failed">ব্যাকআপ ব্যর্থ হয়েছে। আবার চেষ্টা করুন।</string>
     <string name="k2go_br_done_title">সম্পন্ন</string>
     <string name="k2go_br_failed_title">কিছু একটা ভুল হয়েছে</string>
+    <string name="k2go_br_status_copying">ফাইল কপি করা হচ্ছে</string>
     <string name="k2go_br_status_checking">ফাইল পরীক্ষা করা হচ্ছে</string>
     <string name="k2go_br_status_restoring">পুনরুদ্ধার হচ্ছে</string>
     <string name="k2go_br_restore_warn">এটি আপনার বর্তমান সিস্টেমকে নির্বাচিত ব্যাকআপ দিয়ে প্রতিস্থাপন করে। এটি বাতিল করা যায় না, এবং চলার সময় সার্ভার বন্ধ থাকে।</string>
     <string name="k2go_br_restore_confirm">সিস্টেম প্রতিস্থাপন করুন</string>
     <string name="k2go_br_restore_done">সিস্টেম পুনরুদ্ধার হয়েছে</string>
     <string name="k2go_br_restore_failed">পুনরুদ্ধার ব্যর্থ হয়েছে</string>
+    <string name="k2go_br_restore_unreadable">নির্বাচিত ফাইলটি পড়া যায়নি, তাই কিছুই পরিবর্তন করা হয়নি।</string>
     <string name="deepop_channel_name">ব্যাকআপ ও পুনরুদ্ধার</string>
     <string name="deepop_channel_desc">ব্যাকআপ বা পুনরুদ্ধার ব্যাকগ্রাউন্ডে নিরাপদে চালু রাখে</string>
     <string name="deepop_notif_title">ব্যাকআপ ও পুনরুদ্ধার</string>
