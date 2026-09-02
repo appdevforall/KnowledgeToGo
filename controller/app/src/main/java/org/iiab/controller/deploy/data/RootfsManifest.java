@@ -68,8 +68,21 @@ public final class RootfsManifest {
     /** Read the identity manifest from {@code archivePath}, or {@link Identity#absent()}. */
     public static Identity read(String archivePath) {
         boolean isGzip = archivePath.toLowerCase(Locale.US).endsWith(".gz");
-        try (InputStream raw = new FileInputStream(archivePath);
-             InputStream in = isGzip ? new GZIPInputStream(raw) : new BufferedInputStream(raw)) {
+        try (InputStream raw = new FileInputStream(archivePath)) {
+            return read(raw, isGzip);
+        } catch (Exception e) {
+            Log.w(TAG, "Could not read identity manifest: " + e.getMessage());
+            return Identity.absent();
+        }
+    }
+
+    /**
+     * K2GO-372: the same read from an already-open stream, so a file can be judged before it is copied
+     * anywhere. Only the first few KB are consumed — the manifest is the first member — but the stream
+     * is closed here either way, since a caller that has its verdict has no use for the rest.
+     */
+    public static Identity read(InputStream raw, boolean isGzip) {
+        try (InputStream in = isGzip ? new GZIPInputStream(raw) : new BufferedInputStream(raw)) {
 
             byte[] header = new byte[512];
             for (int i = 0; i < MAX_HEADERS; i++) {

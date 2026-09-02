@@ -123,11 +123,10 @@ public class TarExtractor {
                     org.iiab.controller.deploy.data.RootfsArchiveValidator.Result early =
                             org.iiab.controller.deploy.data.RootfsArchiveValidator.identityRejection(
                                     org.iiab.controller.deploy.data.RootfsManifest.read(archivePath));
-                    if (early == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.NOT_A_ROOTFS) {
-                        throw new Exception(context.getString(R.string.install_error_not_rootfs));
-                    }
-                    if (early == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
-                        throw new Exception(context.getString(R.string.install_error_wrong_arch));
+                    String why = org.iiab.controller.deploy.data.RootfsArchiveValidator
+                            .rejectionMessage(context, early);
+                    if (why != null) {
+                        throw new Exception(why);
                     }
                 }
 
@@ -150,11 +149,10 @@ public class TarExtractor {
                     org.iiab.controller.deploy.data.RootfsArchiveValidator.Result vr =
                             org.iiab.controller.deploy.data.RootfsArchiveValidator
                                     .validateWithEntries(context, archivePath, isGzip, tarBinary, entries);
-                    if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.NOT_A_ROOTFS) {
-                        throw new Exception(context.getString(R.string.install_error_not_rootfs));
-                    }
-                    if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
-                        throw new Exception(context.getString(R.string.install_error_wrong_arch));
+                    String why = org.iiab.controller.deploy.data.RootfsArchiveValidator
+                            .rejectionMessage(context, vr);
+                    if (why != null) {
+                        throw new Exception(why);
                     }
                 }
 

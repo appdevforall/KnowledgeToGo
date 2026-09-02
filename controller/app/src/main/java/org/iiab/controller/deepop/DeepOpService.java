@@ -51,6 +51,8 @@ import org.iiab.controller.InstallGuard;
 import org.iiab.controller.R;
 import org.iiab.controller.TarExtractor;
 import org.iiab.controller.backup.domain.BackupEngine;
+import org.iiab.controller.deploy.data.RootfsArchiveValidator;
+import org.iiab.controller.deploy.data.RootfsManifest;
 import org.iiab.controller.env.EnvironmentControl;
 import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.redesign.LibraryActivity;
@@ -170,18 +172,52 @@ public final class DeepOpService extends Service {
      */
     private void stageThenRestore(final String uriStr) {
         final File temp = new File(getCacheDir(), "restore.tar.gz");
+        final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
-            final String failure = stageArchive(Uri.parse(uriStr), temp);
+            String failure = identityRejection(src);
+            if (failure == null) {
+                failure = stageArchive(src, temp);
+            }
+            final String outcome = failure;
             main.post(() -> {
                 if (done) return;
-                if (failure != null) {
-                    endRestore(temp.getAbsolutePath(), false, failure);
+                if (outcome != null) {
+                    endRestore(temp.getAbsolutePath(), false, outcome);
                     return;
                 }
                 setStep(getString(R.string.k2go_br_status_stopping), -1);
                 EnvironmentControl.stop(this, this::log, () -> runRestore(temp.getAbsolutePath()));
             });
         });
+    }
+
+    /**
+     * K2GO-372: judge the picked file before paying to copy it.
+     *
+     * <p>The identity manifest is the archive's first member, so this reads a few KB of the SAF stream
+     * and refuses a wrong-ABI or non-rootfs file in about a second, instead of after a multi-gigabyte
+     * copy the user then watches be thrown away. An archive with no manifest is not judged here — the
+     * extractor's structural check still has the last word, on the copy.
+     *
+     * @return the reason to show, or {@code null} when nothing here rejects it.
+     */
+    private String identityRejection(Uri src) {
+        RootfsManifest.Identity id;
+        try (InputStream raw = getContentResolver().openInputStream(src)) {
+            if (raw == null) return getString(R.string.k2go_br_restore_unreadable);
+            // A SAF uri carries no filename to read an extension from, so ask the bytes: gzip's two
+            // magic bytes. Honest for any source, and it drops the naming assumption the old
+            // path-based caller could afford.
+            java.io.BufferedInputStream buf = new java.io.BufferedInputStream(raw);
+            buf.mark(2);
+            final boolean isGzip = buf.read() == 0x1f && buf.read() == 0x8b;
+            buf.reset();
+            id = RootfsManifest.read(buf, isGzip);
+        } catch (Exception e) {
+            Log.w(TAG, "Could not read the picked file's manifest", e);
+            return null;   // unreadable here is not a verdict; the copy below will say so properly
+        }
+        return RootfsArchiveValidator.rejectionMessage(this, RootfsArchiveValidator.identityRejection(id));
     }
 
     /**
