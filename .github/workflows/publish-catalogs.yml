@@ -45,7 +45,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
           R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          BUCKET_NAME: "iiaboa-apk-repo"
+          BUCKET_NAME: "k2go-apk-repo"
           BASE_URL: "https://k2go-download.appdevforall.org/catalogs"
         run: |
           set -euo pipefail

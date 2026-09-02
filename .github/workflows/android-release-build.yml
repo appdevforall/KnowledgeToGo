@@ -1,4 +1,4 @@
-name: Build and Release IIAB APKs
+name: Build and Release K2Go APKs
 
 on:
   push:
@@ -85,7 +85,7 @@ jobs:
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: iiab-apks-release
+          name: k2go-apks-release
           path: controller/**/build/outputs/apk/release/*.apk
           retention-days: 7
 
@@ -111,7 +111,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
           R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          BUCKET_NAME: "iiaboa-apk-repo"
+          BUCKET_NAME: "k2go-apk-repo"
         run: |
           # Loop through all generated APKs (universal, arm64, armeabi) and upload them
           for apk in $(find . -path "*/build/outputs/apk/release/*.apk"); do
@@ -137,7 +137,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
           R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          BUCKET_NAME: "iiaboa-apk-repo"
+          BUCKET_NAME: "k2go-apk-repo"
         run: |
           set -euo pipefail
           TAG="${GITHUB_REF#refs/tags/}"
