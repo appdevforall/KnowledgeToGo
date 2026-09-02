@@ -55,7 +55,7 @@ public class DashboardDetailFragment extends Fragment {
     private boolean updateAvailable;   // ADFA-5339: last-known — the confirm dialog matches the button
     // ADFA-5339 / K2GO-374: expandable Details — the live rebuild log via the shared LiveLogPanel. The
     // toggle stays hidden until there are lines (an older box without /rebuild/log shows no Details).
-    private org.iiab.controller.widget.LiveLogPanel logPanel;
+    private org.appdevforall.k2go.widget.LiveLogPanel logPanel;
     private static final long LOG_POLL_MS = 1500L;
     private final Runnable logPoll = this::pollLog;
     // K2GO-95 (Phase 2): the in-progress bar is determinate, driven by RebuildProgress from the polled
@@ -318,7 +318,7 @@ public class DashboardDetailFragment extends Fragment {
 
         // K2GO-374: Details — the shared LiveLogPanel (was a hand-rolled toggle + ScrollView). Fork B:
         // the toggle stays hidden until there are log lines (an older box without /rebuild/log = empty).
-        logPanel = new org.iiab.controller.widget.LiveLogPanel(requireContext());
+        logPanel = new org.appdevforall.k2go.widget.LiveLogPanel(requireContext());
         logPanel.setHideUntilContent(true);
         row.addView(logPanel);
 
