@@ -31,6 +31,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.iiab.controller.sync.transport.NetworkInterfaces;
+
 /**
  * App-scoped singleton that starts/stops a LocalOnlyHotspot and publishes its state.
  * Not an Android component; the reservation lives as long as the process does.
@@ -47,18 +49,24 @@ public final class LocalHotspotManager {
         public final String ssid;       // non-null only when phase == ON
         public final String passphrase; // non-null only when phase == ON
         public final int failureReason; // valid only when phase == FAILED
+        // K2GO-375: the AP interface's reachable IPv4, owned here (the reservation's owner) so both
+        // Connect and Clone read one source instead of each re-deriving it. Non-null only once the AP
+        // interface has been assigned its address: ON is first emitted with this null (the reservation
+        // reports started before the interface has an IP), then re-emitted with the resolved value.
+        public final String hotspotIp;
 
-        State(Phase phase, String ssid, String passphrase, int failureReason) {
+        State(Phase phase, String ssid, String passphrase, int failureReason, String hotspotIp) {
             this.phase = phase;
             this.ssid = ssid;
             this.passphrase = passphrase;
             this.failureReason = failureReason;
+            this.hotspotIp = hotspotIp;
         }
 
-        static State off() { return new State(Phase.OFF, null, null, 0); }
-        static State starting() { return new State(Phase.STARTING, null, null, 0); }
-        static State on(String ssid, String pass) { return new State(Phase.ON, ssid, pass, 0); }
-        static State failed(int reason) { return new State(Phase.FAILED, null, null, reason); }
+        static State off() { return new State(Phase.OFF, null, null, 0, null); }
+        static State starting() { return new State(Phase.STARTING, null, null, 0, null); }
+        static State on(String ssid, String pass, String ip) { return new State(Phase.ON, ssid, pass, 0, ip); }
+        static State failed(int reason) { return new State(Phase.FAILED, null, null, reason, null); }
     }
 
     private static final LocalHotspotManager INSTANCE = new LocalHotspotManager();
@@ -66,6 +74,15 @@ public final class LocalHotspotManager {
     public static LocalHotspotManager get() { return INSTANCE; }
 
     private final MutableLiveData<State> state = new MutableLiveData<>(State.off());
+
+    // K2GO-375: the AP interface gets its IPv4 a beat after onStarted fires, and that assignment is not
+    // a default-network change (the AP is never the default network), so no ConnectivityManager callback
+    // announces it. Poll for it on the main looper and re-emit State once it lands. Bounded so it can
+    // never spin forever; generation invalidates a poll the moment a newer start()/stop() supersedes it.
+    private final Handler pollHandler = new Handler(Looper.getMainLooper());
+    private static final long AP_IP_POLL_MS = 1000L;
+    private static final int AP_IP_MAX_POLLS = 120;   // ~2 min safety cap (mirrors CloneFragment's budget)
+    private int generation = 0;
 
     // Object type kept generic so this file compiles on API < 26; cast at use sites.
     private Object reservation; // WifiManager.LocalOnlyHotspotReservation
@@ -110,6 +127,7 @@ public final class LocalHotspotManager {
         if (cur != null && (cur.phase == Phase.ON || cur.phase == Phase.STARTING)) {
             return; // already running / starting
         }
+        generation++;   // K2GO-375: a fresh attempt invalidates any poll left over from a prior reservation
         WifiManager wifi = (WifiManager) context.getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
         if (wifi == null) {
@@ -141,13 +159,16 @@ public final class LocalHotspotManager {
                     ssid = unquote(ssid);
                     pass = unquote(pass);
                     Log.d(TAG, "LocalOnlyHotspot started, ssid=" + ssid);
-                    state.postValue(State.on(ssid, pass));
+                    // ON is emitted with no IP yet; the poll re-emits once the AP interface has one.
+                    state.postValue(State.on(ssid, pass, null));
+                    beginHotspotIpPoll(ssid, pass);
                 }
 
                 @Override
                 public void onStopped() {
                     Log.d(TAG, "LocalOnlyHotspot stopped");
                     reservation = null;
+                    generation++;   // K2GO-375: stop any in-flight AP-IP poll
                     state.postValue(State.off());
                 }
 
@@ -155,6 +176,7 @@ public final class LocalHotspotManager {
                 public void onFailed(int reason) {
                     Log.w(TAG, "LocalOnlyHotspot failed, reason=" + reason);
                     reservation = null;
+                    generation++;   // K2GO-375: stop any in-flight AP-IP poll
                     state.postValue(State.failed(reason));
                 }
             }, handler);
@@ -180,8 +202,35 @@ public final class LocalHotspotManager {
             Log.w(TAG, "Error closing reservation: " + t.getMessage());
         } finally {
             reservation = null;
+            generation++;   // K2GO-375: stop any in-flight AP-IP poll
             state.postValue(State.off());
         }
+    }
+
+    /**
+     * K2GO-375: resolve the AP interface's IPv4 and re-emit State with it. Runs on the main looper,
+     * re-scheduling itself once a second until the address appears or the safety cap is hit. Bails the
+     * instant its generation is superseded (a newer start/stop) or the phase is no longer ON, so it never
+     * outlives the reservation it was started for.
+     */
+    private void beginHotspotIpPoll(final String ssid, final String pass) {
+        final int gen = generation;
+        pollHandler.post(new Runnable() {
+            private int tries = 0;
+            @Override public void run() {
+                if (gen != generation) return;                      // superseded by a newer start/stop
+                State cur = state.getValue();
+                if (cur == null || cur.phase != Phase.ON) return;   // no longer ON
+                if (cur.hotspotIp != null) return;                  // already resolved
+                String ip = NetworkInterfaces.discover().hotspotIp;
+                if (ip != null) {
+                    state.setValue(State.on(ssid, pass, ip));       // resolved: re-emit with the real IP
+                    return;
+                }
+                if (++tries >= AP_IP_MAX_POLLS) return;             // safety cap; never spin forever
+                pollHandler.postDelayed(this, AP_IP_POLL_MS);
+            }
+        });
     }
 
     private static String unquote(String s) {
