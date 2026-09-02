@@ -174,9 +174,13 @@ public final class DeepOpService extends Service {
         final File temp = new File(getCacheDir(), "restore.tar.gz");
         final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
+            final long compressed = sourceSize(src);
             String failure = rejectBeforeCopy(src);
             if (failure == null) {
-                failure = stageArchive(src, temp);
+                failure = rejectForSpace(compressed);
+            }
+            if (failure == null) {
+                failure = stageArchive(src, temp, compressed);
             }
             final String outcome = failure;
             main.post(() -> {
@@ -226,20 +230,49 @@ public final class DeepOpService extends Service {
         return RootfsArchiveValidator.rejectionMessage(this, RootfsArchiveValidator.identityRejection(id));
     }
 
+    /** The picked file's length, or {@code -1} when the provider will not report one. */
+    private long sourceSize(Uri src) {
+        try (android.os.ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(src, "r")) {
+            return pfd == null ? -1L : pfd.getStatSize();
+        } catch (Exception ignored) {
+            return -1L;   // the copy below is what has to work; the size only sharpens it
+        }
+    }
+
+    /**
+     * K2GO-372: refuse before copying when the copy and the tree it expands into plainly cannot both
+     * fit. The guard was only ever asked about the expansion, and only once the copy was already on
+     * disk, so a device with room for neither filled up mid-copy and reported it as an unreadable file.
+     *
+     * <p>{@link #runRestore} keeps the authoritative check on the real staged file — this one cannot run
+     * when the provider will not report a length, and free space can change in between.
+     *
+     * @return the reason to show, or {@code null} when there is room (or nothing to judge with).
+     */
+    private String rejectForSpace(long compressedBytes) {
+        if (compressedBytes <= 0L) {
+            return null;
+        }
+        org.iiab.controller.storage.FreeSpacePreflight.Result pf =
+                org.iiab.controller.storage.FreeSpacePreflight.check(this,
+                        org.iiab.controller.storage.SpaceEstimate.peakForRestore(compressedBytes));
+        return pf.ok ? null : noStorageMessage(pf);
+    }
+
+    /** One shape for "it does not fit", used before the copy and again before the extraction. */
+    private String noStorageMessage(org.iiab.controller.storage.FreeSpacePreflight.Result pf) {
+        return getString(R.string.install_error_no_storage) + " ("
+                + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")";
+    }
+
     /**
      * Copy {@code src} to {@code temp}, reporting percent as it goes.
      *
-     * @return {@code null} on success, otherwise the message to show the user. A source whose length the
-     *         provider will not report is copied with an indeterminate percent rather than a made-up one.
+     * @param size the source's length, or {@code -1}: an unknown length is copied with an indeterminate
+     *             percent rather than a made-up one.
+     * @return {@code null} on success, otherwise the message to show the user.
      */
-    private String stageArchive(Uri src, File temp) {
-        long total = -1L;
-        try (android.os.ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(src, "r")) {
-            if (pfd != null) total = pfd.getStatSize();
-        } catch (Exception ignored) {
-            // Size is a nicety; the copy below is what has to work.
-        }
-        final long size = total;
+    private String stageArchive(Uri src, File temp, long size) {
         try (InputStream in = getContentResolver().openInputStream(src);
              OutputStream out = new java.io.FileOutputStream(temp)) {
             if (in == null) throw new IOException("The picked file could not be opened");
@@ -273,15 +306,15 @@ public final class DeepOpService extends Service {
         // ADFA-5105: the restore overwrites the rootfs with the backup's contents. Refuse before
         // anything is touched when the uncompressed backup plainly won't fit (fail-safe on UNKNOWN
         // free space too). The "needed" is estimated from the backup archive already on disk.
+        // K2GO-372: the second of two gates. rejectForSpace() asked the same question before the copy,
+        // where the copy still counted toward what has to fit; here the copy is already spent, so the
+        // free space it reads is that much lower and the expansion alone is what is left to cover —
+        // the same inequality, asked again in case the length was unknown or the disk moved under us.
         long needed = org.iiab.controller.storage.SpaceEstimate.fromCompressed(new File(path).length());
         org.iiab.controller.storage.FreeSpacePreflight.Result pf =
                 org.iiab.controller.storage.FreeSpacePreflight.check(this, needed);
         if (!pf.ok) {
-            File tmp = new File(path);
-            if (tmp.exists()) tmp.delete();
-            finishJob(false, getString(R.string.k2go_br_restore_done),
-                    getString(R.string.install_error_no_storage) + " ("
-                            + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")");
+            endRestore(path, false, noStorageMessage(pf));
             return;
         }
         // ADFA-5070: stop the downloads before the tar starts overwriting the rootfs
