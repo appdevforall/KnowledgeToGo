@@ -32,8 +32,8 @@ public class ExtractProgressTest {
     public void shortHexLikeWordsAreNotMistakenForDigests() {
         assertEquals("deadbeef.conf", ExtractProgress.fileLabel("etc/deadbeef.conf"));
         assertEquals("facade.png", ExtractProgress.fileLabel("share/facade.png"));
-        assertEquals("iiab-oa_2026.224_standard.tar.gz",
-                ExtractProgress.fileLabel("downloads/iiab-oa_2026.224_standard.tar.gz"));
+        assertEquals("k2go_2026.224_standard.tar.gz",
+                ExtractProgress.fileLabel("downloads/k2go_2026.224_standard.tar.gz"));
     }
 
     /** Fails open: a name we cannot classify is shown, never hidden on a guess. */

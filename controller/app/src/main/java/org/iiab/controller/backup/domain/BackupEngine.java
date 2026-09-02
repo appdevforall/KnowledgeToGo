@@ -29,14 +29,20 @@ public final class BackupEngine {
 
     private BackupEngine() {}
 
-    /** Suggested external filename: {@code iiab-oa_YYYY.DDD_<epochSecs>_<arch>.tar.gz}. */
+    /**
+     * Suggested external filename: {@code k2go_YYYY.DDD_<epochSecs>_<arch>.tar.gz}.
+     *
+     * <p>K2GO-377: the prefix follows the built rootfs artifacts onto the product's own name. It is
+     * only ever a suggestion for the SAF picker — nothing reads it back, and a restore identifies an
+     * archive by the manifest inside it, so backups written under the old name keep working.
+     */
     public static String suggestedFileName(Context ctx) {
         java.util.Calendar c = java.util.Calendar.getInstance();
         int year = c.get(java.util.Calendar.YEAR);
         int day = c.get(java.util.Calendar.DAY_OF_YEAR);
         String abi = org.iiab.controller.deploy.data.RootfsManifest.appAbiId();
         String arch = abi != null && abi.contains("64") ? "aarch64" : "armhf";
-        return String.format(java.util.Locale.US, "iiab-oa_%04d.%03d_%d_%s.tar.gz",
+        return String.format(java.util.Locale.US, "k2go_%04d.%03d_%d_%s.tar.gz",
                 year, day, System.currentTimeMillis() / 1000L, arch);
     }
 
