@@ -107,8 +107,14 @@ purge_staging; mkdir -p "$STAGE" || fail "mkdir staging"
 # Warm the install from the live node_modules to speed `yarn install`. Use tar (not cp -a) and EXCLUDE
 # proot's ".l2s." loop artifacts so the copy never trips on them (cp -a would ELOOP) and staging stays
 # cleanly removable; yarn reconciles anything missing.
+# Also EXCLUDE better-sqlite3/build: a prior rebuild leaves proot ".l2s." hardlink artifacts AND dangling
+# symlinks (e.g. build/.../deps/sqlite3.a) there, which node-gyp's own `clean` step cannot unlink under
+# proot (EPERM) — that failed EVERY rebuild after the first (the first, post-bake, had a clean build dir).
+# Excluding the "*.l2s.*" targets alone kept those symlinks, so it was not enough. Dropping the whole
+# native build dir lets node-gyp compile better-sqlite3 fresh — which `[4/4] Building fresh packages` does
+# regardless — so the warm copy is a cache of the pure-JS deps only. Other packages' build/ dirs are kept.
 if [ -d "$LIVE/node_modules" ]; then
-    ( cd "$LIVE" && tar --exclude='*.l2s.*' -cf - node_modules ) | ( cd "$STAGE" && tar -xf - ) || true
+    ( cd "$LIVE" && tar --exclude='*.l2s.*' --exclude='better-sqlite3/build' -cf - node_modules ) | ( cd "$STAGE" && tar -xf - ) || true
 fi
 # ADFA-4893: stream yarn install/build to BOTH the console and the log — no more staring at a stopped
 # screen. POSIX sh has no `pipefail`, so capture the real exit code to a file inside the group before
