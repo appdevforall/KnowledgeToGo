@@ -21,15 +21,15 @@ public class MetalinkFileTest {
     private static final String META4 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\" version=\"4.0\">\n"
-            + "  <file name=\"iiab-oa_2026.192_standard_17dd521_arm64-v8a.tar.gz\">\n"
+            + "  <file name=\"k2go_2026.192_standard_17dd521_arm64-v8a.tar.gz\">\n"
             + "    <size>1453144579</size>\n"
             + "    <hash type=\"sha-256\">" + FILE_HASH + "</hash>\n"
             + "    <pieces type=\"sha-256\" length=\"1048576\">\n"
             + "      <hash type=\"sha-256\">" + FIRST_PIECE_HASH + "</hash>\n"
             + "      <hash type=\"sha-256\">67c19c9e0509ff1aaeb104fce7498f53f02052acb18a241409b6d58c9c114142</hash>\n"
             + "    </pieces>\n"
-            + "    <url>https://iiab.switnet.org/android/rootfs/iiab-oa_2026.192_standard_17dd521_arm64-v8a.tar.gz</url>\n"
-            + "    <url>https://mirror2.example.org/iiab-oa_2026.192_standard_17dd521_arm64-v8a.tar.gz</url>\n"
+            + "    <url>https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/k2go_2026.192_standard_17dd521_arm64-v8a.tar.gz</url>\n"
+            + "    <url>https://mirror2.example.org/k2go_2026.192_standard_17dd521_arm64-v8a.tar.gz</url>\n"
             + "  </file>\n"
             + "</metalink>\n";
 
@@ -40,7 +40,7 @@ public class MetalinkFileTest {
     }
 
     @Test public void parsesFileName() throws Exception {
-        assertEquals("iiab-oa_2026.192_standard_17dd521_arm64-v8a.tar.gz", parse().fileName());
+        assertEquals("k2go_2026.192_standard_17dd521_arm64-v8a.tar.gz", parse().fileName());
     }
 
     @Test public void parsesSize() throws Exception {
