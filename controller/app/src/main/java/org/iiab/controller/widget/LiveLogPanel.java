@@ -78,14 +78,14 @@ public class LiveLogPanel extends LinearLayout {
         // Header: label + rotating chevron, the whole row toggles.
         header = new LinearLayout(c);
         header.setOrientation(HORIZONTAL);
-        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setGravity(Gravity.CENTER);
         header.setClickable(true);
         header.setFocusable(true);
         TypedValue bg = new TypedValue();
         c.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, bg, true);
         header.setBackgroundResource(bg.resourceId);
-        int vpad = Math.round(4 * d);
-        header.setPadding(0, vpad, 0, vpad);
+        int hpad = Math.round(10 * d);
+        header.setPadding(hpad, hpad, hpad, hpad);
         header.setOnClickListener(v -> toggle());
 
         label = new TextView(c);
@@ -104,7 +104,7 @@ public class LiveLogPanel extends LinearLayout {
         chevron.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         header.addView(chevron);
 
-        addView(header, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(header, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         if (hideUntilContent) header.setVisibility(GONE);
 
         // Scrollable monospace terminal, collapsed by default.
