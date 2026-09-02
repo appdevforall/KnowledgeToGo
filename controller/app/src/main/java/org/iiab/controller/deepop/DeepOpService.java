@@ -170,13 +170,33 @@ public final class DeepOpService extends Service {
         // thrown away what the user asked for over an operation that never happened.
         org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(this,
                 org.iiab.controller.system.domain.SystemReplacement.Cause.RESTORE);
-        setStep(getString(R.string.k2go_br_status_restoring), -1);
+        setStep(getString(R.string.k2go_br_status_checking), 0);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
                 new TarExtractor.ExtractionListener() {
                     @Override public void onComplete(String destDir) { main.post(() -> endRestore(path, true)); }
                     @Override public void onError(String error) { main.post(() -> endRestore(path, false)); }
                     @Override public void onProgress(String line) { }
+
+                    /**
+                     * K2GO-372: a restore streams the whole archive twice — the safety listing pass
+                     * and the extraction pass — and reported that as an indeterminate spinner, so a
+                     * five-minute verify was indistinguishable from a hang. The byte-based bar
+                     * already existed for the rootfs install (ADFA-5118); this consumes the same
+                     * callback and maps both passes onto one 0-100 bar with ExtractProgress, so the
+                     * two halves cannot each look like a whole run.
+                     */
+                    @Override
+                    public void onExtractPhase(TarExtractor.Phase phase, int passPercent,
+                                               long etaSeconds, String line) {
+                        final boolean extracting = phase == TarExtractor.Phase.EXTRACT;
+                        final int unified = org.iiab.controller.deploy.domain.ExtractProgress
+                                .unifiedPercent(passPercent, extracting);
+                        final String label = getString(extracting
+                                ? R.string.k2go_br_status_restoring
+                                : R.string.k2go_br_status_checking);
+                        main.post(() -> setStep(label, unified));
+                    }
                 });
     }
 

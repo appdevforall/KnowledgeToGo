@@ -113,6 +113,24 @@ public class TarExtractor {
                 // bail out (without extracting anything) if any member is absolute
                 // or climbs out of destDir via "..". An imported/restored backup is
                 // untrusted, so this runs for every extraction.
+                // K2GO-372: identity before the listing pass. The listing below is irreducible —
+                // the traversal guard has to see every member name — but it costs a full pass over
+                // the archive, and a wrong-ABI or non-rootfs file used to be rejected only after
+                // paying for it. The manifest that answers identity is packed first, so reading it
+                // here refuses the same files in about a second, and leaves the long pass for
+                // archives that are actually going to be extracted.
+                if (validateRootfs) {
+                    org.iiab.controller.deploy.data.RootfsArchiveValidator.Result early =
+                            org.iiab.controller.deploy.data.RootfsArchiveValidator.identityRejection(
+                                    org.iiab.controller.deploy.data.RootfsManifest.read(archivePath));
+                    if (early == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.NOT_A_ROOTFS) {
+                        throw new Exception(context.getString(R.string.install_error_not_rootfs));
+                    }
+                    if (early == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
+                        throw new Exception(context.getString(R.string.install_error_wrong_arch));
+                    }
+                }
+
                 List<String> entries = listEntries(tarBinary, archivePath, isGzip, listener);
                 for (String entry : entries) {
                     if (ArchiveEntry.escapesRoot(entry)) {
