@@ -37,6 +37,8 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.iiab.controller.R;
 import org.iiab.controller.dashboard.domain.DashboardCardState;
+import org.iiab.controller.dashboard.domain.RebuildPhase;
+import org.iiab.controller.dashboard.domain.RebuildProgress;
 import org.iiab.controller.util.AppExecutors;
 
 public class DashboardDetailFragment extends Fragment {
@@ -59,6 +61,14 @@ public class DashboardDetailFragment extends Fragment {
     private boolean logExpanded;
     private static final long LOG_POLL_MS = 1500L;
     private final Runnable logPoll = this::pollLog;
+    // K2GO-95 (Phase 2): the in-progress bar is determinate, driven by RebuildProgress from the polled
+    // log. We keep the current phase and when it began (a monotonic clock — the silent native-build
+    // stretch carries no log timestamp) so the bar interpolates within a phase and the next real marker
+    // snaps it forward. Indeterminate only until the first marker (NONE); the snap to 100 is the
+    // service's completion broadcast, not this poll.
+    private LinearProgressIndicator progressBar;
+    private RebuildPhase progressPhase = RebuildPhase.NONE;
+    private long progressPhaseStartMs;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -279,8 +289,9 @@ public class DashboardDetailFragment extends Fragment {
         line.setLayoutParams(llp);
 
         LinearProgressIndicator bar = new LinearProgressIndicator(requireContext());
-        bar.setIndeterminate(true);
+        bar.setIndeterminate(true);   // until the first log marker; then RebuildProgress drives it (K2GO-95)
         bar.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        progressBar = bar;
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);   // weight 1 → takes the remaining width
         bar.setLayoutParams(blp);
@@ -370,6 +381,9 @@ public class DashboardDetailFragment extends Fragment {
         // ADFA-5339: the Details log only exists while a rebuild runs. Poll it on, tear it down on off.
         main.removeCallbacks(logPoll);
         if (on) {
+            // K2GO-95: a fresh run starts indeterminate until the first marker; pollLog then drives it.
+            progressPhase = RebuildPhase.NONE;
+            if (progressBar != null) progressBar.setIndeterminate(true);
             main.post(logPoll);
         } else if (detailsToggle != null) {
             detailsToggle.setVisibility(View.GONE);
@@ -396,9 +410,11 @@ public class DashboardDetailFragment extends Fragment {
         DashboardClient.rebuildLog(new DashboardClient.RebuildLogCb() {
             @Override public void onLines(java.util.List<String> lines) {
                 if (!isAdded() || !updating) return;
+                String log = android.text.TextUtils.join("\n", lines);
+                updateProgressBar(log);
                 if (!lines.isEmpty()) {
                     if (detailsToggle != null) detailsToggle.setVisibility(View.VISIBLE);
-                    if (logText != null) logText.setText(android.text.TextUtils.join("\n", lines));
+                    if (logText != null) logText.setText(log);
                     if (logExpanded && logScroll != null) {
                         logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
                     }
@@ -410,6 +426,27 @@ public class DashboardDetailFragment extends Fragment {
                 if (isAdded() && updating) main.postDelayed(logPoll, LOG_POLL_MS);
             }
         });
+    }
+
+    /** K2GO-95 (Phase 2): drive the determinate bar from the polled log. The phase comes from the log's
+     *  markers ({@link RebuildProgress#phaseOf}); time within a phase comes from the monotonic clock kept
+     *  here, so the silent native-build stretch (no log timestamp) still advances. Indeterminate until the
+     *  first marker; the final snap to 100 is the service's completion broadcast, not this poll. */
+    private void updateProgressBar(String log) {
+        if (progressBar == null) return;
+        RebuildPhase phase = RebuildProgress.phaseOf(log);
+        if (phase != progressPhase) {
+            progressPhase = phase;
+            progressPhaseStartMs = android.os.SystemClock.elapsedRealtime();
+        }
+        if (phase == RebuildPhase.NONE) {
+            if (!progressBar.isIndeterminate()) progressBar.setIndeterminate(true);
+            return;
+        }
+        long elapsed = android.os.SystemClock.elapsedRealtime() - progressPhaseStartMs;
+        int pct = RebuildProgress.percentFor(phase, elapsed);
+        if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
+        progressBar.setProgressCompat(pct, true);   // animated determinate step
     }
 
     @Override public void onDestroyView() {
