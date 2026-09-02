@@ -784,6 +784,7 @@
     <string name="k2go_connect_hotspot_unsupported">热点需要 Android 8 或更高版本</string>
     <string name="k2go_connect_try_wifi">请改用 Wi-Fi 选项。</string>
     <string name="k2go_connect_starting_hotspot">正在启动热点…</string>
+    <string name="k2go_connect_resolving_address">正在查找热点地址…</string>
     <string name="k2go_connect_hotspot_failed">无法启动热点</string>
     <string name="k2go_connect_enable_location">开启位置权限，然后重试。</string>
     <string name="k2go_connect_no_wifi">未连接到 Wi-Fi 网络</string>

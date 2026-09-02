@@ -862,6 +862,7 @@
     <string name="k2go_connect_hotspot_unsupported">Le point d\'accès nécessite Android 8 ou plus récent</string>
     <string name="k2go_connect_try_wifi">Essayez plutôt l\'option Wi-Fi.</string>
     <string name="k2go_connect_starting_hotspot">Démarrage du point d\'accès…</string>
+    <string name="k2go_connect_resolving_address">Recherche de l’adresse du point d’accès…</string>
     <string name="k2go_connect_hotspot_failed">Impossible de démarrer le point d\'accès</string>
     <string name="k2go_connect_enable_location">Activez l\'autorisation de localisation, puis réessayez.</string>
     <string name="k2go_connect_no_wifi">Pas connecté à un réseau Wi-Fi</string>

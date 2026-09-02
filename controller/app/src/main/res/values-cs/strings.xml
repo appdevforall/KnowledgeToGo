@@ -790,6 +790,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot vyžaduje Android 8 nebo novější</string>
     <string name="k2go_connect_try_wifi">Zkuste místo toho možnost Wi-Fi.</string>
     <string name="k2go_connect_starting_hotspot">Spouštění hotspotu…</string>
+    <string name="k2go_connect_resolving_address">Hledání adresy hotspotu…</string>
     <string name="k2go_connect_hotspot_failed">Nepodařilo se spustit hotspot</string>
     <string name="k2go_connect_enable_location">Povol oprávnění k poloze a zkus to znovu.</string>
     <string name="k2go_connect_no_wifi">Nepřipojeno k síti Wi-Fi</string>

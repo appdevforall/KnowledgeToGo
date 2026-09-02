@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">هات‌اسپات به Android 8 یا جدیدتر نیاز دارد</string>
     <string name="k2go_connect_try_wifi">به‌جای آن گزینه Wi-Fi را امتحان کنید.</string>
     <string name="k2go_connect_starting_hotspot">در حال شروع هات‌اسپات…</string>
+    <string name="k2go_connect_resolving_address">در حال یافتن آدرس هات‌اسپات…</string>
     <string name="k2go_connect_hotspot_failed">هات‌اسپات شروع نشد</string>
     <string name="k2go_connect_enable_location">اجازهٔ موقعیت مکانی را روشن کنید، سپس دوباره تلاش کنید.</string>
     <string name="k2go_connect_no_wifi">به شبکه Wi-Fi متصل نیستید</string>

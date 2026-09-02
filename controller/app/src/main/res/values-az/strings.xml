@@ -803,6 +803,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot üçün Android 8 və ya daha yeni lazımdır</string>
     <string name="k2go_connect_try_wifi">Əvəzində Wi-Fi seçimini sınayın.</string>
     <string name="k2go_connect_starting_hotspot">Hotspot başladılır…</string>
+    <string name="k2go_connect_resolving_address">Hotspot ünvanı tapılır…</string>
     <string name="k2go_connect_hotspot_failed">Hotspot başladıla bilmədi</string>
     <string name="k2go_connect_enable_location">Məkan icazəsini aktiv edin və yenidən cəhd edin.</string>
     <string name="k2go_connect_no_wifi">Wi-Fi şəbəkəsində deyil</string>

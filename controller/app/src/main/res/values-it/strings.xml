@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">L\'hotspot richiede Android 8 o versione successiva</string>
     <string name="k2go_connect_try_wifi">Prova invece l\'opzione Wi-Fi.</string>
     <string name="k2go_connect_starting_hotspot">Avvio dell\'hotspot…</string>
+    <string name="k2go_connect_resolving_address">Ricerca dell’indirizzo dell’hotspot…</string>
     <string name="k2go_connect_hotspot_failed">Impossibile avviare l\'hotspot</string>
     <string name="k2go_connect_enable_location">Attiva l\'autorizzazione alla posizione, poi riprova.</string>
     <string name="k2go_connect_no_wifi">Non connesso a una rete Wi-Fi</string>

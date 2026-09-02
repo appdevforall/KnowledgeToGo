@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspotul necesită Android 8 sau mai nou</string>
     <string name="k2go_connect_try_wifi">Încearcă în schimb opțiunea Wi-Fi.</string>
     <string name="k2go_connect_starting_hotspot">Se pornește hotspotul…</string>
+    <string name="k2go_connect_resolving_address">Se caută adresa hotspotului…</string>
     <string name="k2go_connect_hotspot_failed">Nu s-a putut porni hotspotul</string>
     <string name="k2go_connect_enable_location">Activează permisiunea de Locație, apoi încearcă din nou.</string>
     <string name="k2go_connect_no_wifi">Nu ești pe o rețea Wi-Fi</string>

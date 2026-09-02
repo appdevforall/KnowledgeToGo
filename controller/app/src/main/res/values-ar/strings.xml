@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">تتطلّب نقطة الاتصال Android 8 أو أحدث</string>
     <string name="k2go_connect_try_wifi">جرّب خيار Wi-Fi بدلًا من ذلك.</string>
     <string name="k2go_connect_starting_hotspot">جارٍ بدء نقطة الاتصال…</string>
+    <string name="k2go_connect_resolving_address">جارٍ العثور على عنوان نقطة الاتصال…</string>
     <string name="k2go_connect_hotspot_failed">تعذّر بدء نقطة الاتصال</string>
     <string name="k2go_connect_enable_location">فعّل إذن الموقع، ثم أعد المحاولة.</string>
     <string name="k2go_connect_no_wifi">لست على شبكة Wi-Fi</string>

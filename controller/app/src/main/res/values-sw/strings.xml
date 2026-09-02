@@ -803,6 +803,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot inahitaji Android 8 au mpya zaidi</string>
     <string name="k2go_connect_try_wifi">Jaribu chaguo la Wi-Fi badala yake.</string>
     <string name="k2go_connect_starting_hotspot">Inaanzisha hotspot…</string>
+    <string name="k2go_connect_resolving_address">Inatafuta anwani ya hotspot…</string>
     <string name="k2go_connect_hotspot_failed">Haikuweza kuanzisha hotspot</string>
     <string name="k2go_connect_enable_location">Washa ruhusa ya Mahali, kisha ujaribu tena.</string>
     <string name="k2go_connect_no_wifi">Hujaunganishwa kwenye mtandao wa Wi-Fi</string>

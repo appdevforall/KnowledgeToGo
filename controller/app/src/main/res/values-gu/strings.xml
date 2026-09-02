@@ -796,6 +796,7 @@
     <string name="k2go_connect_hotspot_unsupported">હૉટસ્પૉટ માટે Android 8 કે નવું જોઈએ</string>
     <string name="k2go_connect_try_wifi">તેના બદલે Wi-Fi વિકલ્પ અજમાવો.</string>
     <string name="k2go_connect_starting_hotspot">હૉટસ્પૉટ શરૂ થઈ રહ્યું છે…</string>
+    <string name="k2go_connect_resolving_address">હોટસ્પોટ સરનામું શોધી રહ્યું છે…</string>
     <string name="k2go_connect_hotspot_failed">હૉટસ્પૉટ શરૂ ન થઈ શક્યું</string>
     <string name="k2go_connect_enable_location">સ્થાન પરવાનગી ચાલુ કરો, પછી ફરી પ્રયાસ કરો.</string>
     <string name="k2go_connect_no_wifi">Wi-Fi નેટવર્ક પર નથી</string>

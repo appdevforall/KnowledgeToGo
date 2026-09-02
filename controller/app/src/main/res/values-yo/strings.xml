@@ -803,6 +803,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot nílò Android 8 tàbí tuntun jù</string>
     <string name="k2go_connect_try_wifi">Gbìyànjú àṣàyàn Wi-Fi dípò rẹ̀.</string>
     <string name="k2go_connect_starting_hotspot">Ń bẹ̀rẹ̀ hotspot…</string>
+    <string name="k2go_connect_resolving_address">Ń wá àdírẹ́sì hotspot…</string>
     <string name="k2go_connect_hotspot_failed">Kò lè bẹ̀rẹ̀ hotspot</string>
     <string name="k2go_connect_enable_location">Tan àṣẹ Ìpò-ilẹ̀, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_connect_no_wifi">Kò sí lórí nẹ́tíwọ́ọ̀kì Wi-Fi</string>

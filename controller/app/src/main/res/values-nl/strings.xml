@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot vereist Android 8 of nieuwer</string>
     <string name="k2go_connect_try_wifi">Probeer in plaats daarvan de Wi-Fi-optie.</string>
     <string name="k2go_connect_starting_hotspot">Hotspot starten…</string>
+    <string name="k2go_connect_resolving_address">Hotspotadres zoeken…</string>
     <string name="k2go_connect_hotspot_failed">Hotspot starten mislukt</string>
     <string name="k2go_connect_enable_location">Schakel de locatietoestemming in en probeer het opnieuw.</string>
     <string name="k2go_connect_no_wifi">Niet op een Wi-Fi-netwerk</string>

@@ -790,6 +790,7 @@
     <string name="k2go_connect_hotspot_unsupported">Точката за достъп изисква Android 8 или по-нов</string>
     <string name="k2go_connect_try_wifi">Опитайте с опцията Wi-Fi вместо това.</string>
     <string name="k2go_connect_starting_hotspot">Стартиране на точката за достъп…</string>
+    <string name="k2go_connect_resolving_address">Търсене на адрес на точката за достъп…</string>
     <string name="k2go_connect_hotspot_failed">Неуспешно стартиране на точката за достъп</string>
     <string name="k2go_connect_enable_location">Включете разрешението за местоположение и опитайте отново.</string>
     <string name="k2go_connect_no_wifi">Не сте в Wi-Fi мрежа</string>

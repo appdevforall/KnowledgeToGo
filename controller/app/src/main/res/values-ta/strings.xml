@@ -803,6 +803,7 @@
     <string name="k2go_connect_hotspot_unsupported">ஹாட்ஸ்பாட்டுக்கு Android 8 அல்லது புதியது தேவை</string>
     <string name="k2go_connect_try_wifi">அதற்குப் பதிலாக Wi-Fi விருப்பத்தை முயற்சிக்கவும்.</string>
     <string name="k2go_connect_starting_hotspot">ஹாட்ஸ்பாட் தொடங்கப்படுகிறது…</string>
+    <string name="k2go_connect_resolving_address">ஹாட்ஸ்பாட் முகவரியைத் தேடுகிறது…</string>
     <string name="k2go_connect_hotspot_failed">ஹாட்ஸ்பாட்டைத் தொடங்க முடியவில்லை</string>
     <string name="k2go_connect_enable_location">இட அனுமதியை இயக்கி, மீண்டும் முயற்சிக்கவும்.</string>
     <string name="k2go_connect_no_wifi">Wi-Fi நெட்வொர்க்கில் இல்லை</string>

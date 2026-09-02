@@ -942,9 +942,8 @@
     <string name="k2go_connect_hotspot_unsupported">Hotspot needs Android 8 or newer</string>
     <string name="k2go_connect_try_wifi">Try the Wi-Fi option instead.</string>
     <string name="k2go_connect_starting_hotspot">Starting hotspot…</string>
-    <!-- K2GO-375: shown under the Open-library QR while the hotspot AP interface has no IP yet.
-         translatable=false for now; localized in the l10n pass, matching the rest of this file. -->
-    <string name="k2go_connect_resolving_address" translatable="false">Finding hotspot address…</string>
+    <!-- K2GO-375: shown under the Open-library QR while the hotspot AP interface has no IP yet. -->
+    <string name="k2go_connect_resolving_address">Finding hotspot address…</string>
     <string name="k2go_connect_hotspot_failed">Couldn\'t start the hotspot</string>
     <string name="k2go_connect_enable_location">Enable the Location permission, then try again.</string>
     <string name="k2go_connect_no_wifi">Not on a Wi-Fi network</string>

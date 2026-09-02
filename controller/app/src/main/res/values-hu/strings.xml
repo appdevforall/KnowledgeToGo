@@ -783,6 +783,7 @@
     <string name="k2go_connect_hotspot_unsupported">A hotspothoz Android 8 vagy újabb kell</string>
     <string name="k2go_connect_try_wifi">Próbáld inkább a Wi-Fi lehetőséget.</string>
     <string name="k2go_connect_starting_hotspot">Hotspot indítása…</string>
+    <string name="k2go_connect_resolving_address">Hotspotcím keresése…</string>
     <string name="k2go_connect_hotspot_failed">Nem sikerült elindítani a hotspotot</string>
     <string name="k2go_connect_enable_location">Engedélyezd a Helyhozzáférést, majd próbáld újra.</string>
     <string name="k2go_connect_no_wifi">Nincs Wi-Fi hálózaton</string>
