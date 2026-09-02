@@ -61,12 +61,15 @@ jobs:
             echo "build=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
 
-          # Require a Jira ticket in the branch name (ADFA-####) or the community/ prefix.
+          # Require a Jira ticket in the branch name (ADFA-#### or K2GO-####) or the
+          # community/ prefix. Both keys are accepted while the Knowledge to Go tickets
+          # move from the ADFA project to K2GO; ADFA stays valid for the work that
+          # remains there.
           # Skip (with a warning) rather than fail, to avoid red X noise on ad-hoc branches.
-          if echo "$BRANCH" | grep -qiE 'adfa-[0-9]+' || echo "$BRANCH" | grep -q '^community/'; then
+          if echo "$BRANCH" | grep -qiE '(adfa|k2go)-[0-9]+' || echo "$BRANCH" | grep -q '^community/'; then
             echo "build=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::Branch '$BRANCH' has no Jira ticket (ADFA-####) and is not a community/ branch; skipping the Firebase build. Rename the branch or run the workflow manually to build it."
+            echo "::warning::Branch '$BRANCH' has no Jira ticket (ADFA-#### or K2GO-####) and is not a community/ branch; skipping the Firebase build. Rename the branch or run the workflow manually to build it."
             echo "build=false" >> "$GITHUB_OUTPUT"
           fi
 

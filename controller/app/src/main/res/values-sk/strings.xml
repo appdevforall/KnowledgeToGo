@@ -638,12 +638,14 @@
     <string name="k2go_br_backup_failed">Zálohovanie zlyhalo. Skús to znova.</string>
     <string name="k2go_br_done_title">Hotovo</string>
     <string name="k2go_br_failed_title">Niečo sa pokazilo</string>
+    <string name="k2go_br_status_copying">Kopírovanie súboru</string>
     <string name="k2go_br_status_checking">Kontroluje sa súbor</string>
     <string name="k2go_br_status_restoring">Obnovuje sa</string>
     <string name="k2go_br_restore_warn">Toto nahradí váš aktuálny systém vybranou zálohou. Nedá sa to vrátiť späť a počas behu sa server zastaví.</string>
     <string name="k2go_br_restore_confirm">Nahradiť systém</string>
     <string name="k2go_br_restore_done">Systém obnovený</string>
     <string name="k2go_br_restore_failed">Obnova zlyhala</string>
+    <string name="k2go_br_restore_unreadable">Vybraný súbor sa nepodarilo prečítať, takže sa nič nezmenilo.</string>
     <string name="deepop_channel_name">Zálohovanie &amp; obnova</string>
     <string name="deepop_channel_desc">Udržiava zálohovanie alebo obnovu bezpečne bežiace na pozadí</string>
     <string name="deepop_notif_title">Zálohovanie &amp; obnova</string>

@@ -113,6 +113,28 @@ public class TarExtractor {
                 // bail out (without extracting anything) if any member is absolute
                 // or climbs out of destDir via "..". An imported/restored backup is
                 // untrusted, so this runs for every extraction.
+                // K2GO-372: identity before the listing pass. The listing below is irreducible —
+                // the traversal guard has to see every member name — but it costs a full pass over
+                // the archive, and a wrong-ABI or non-rootfs file used to be rejected only after
+                // paying for it. The manifest that answers identity is packed first, so reading it
+                // here refuses the same files in about a second, and leaves the long pass for
+                // archives that are actually going to be extracted.
+                // K2GO-372: DeepOpService runs this same check on the picked stream before it copies,
+                // purely to avoid paying for a copy it will throw away. This one is not a duplicate of
+                // it: this is the fail-closed gate every caller shares (import, install, restore), it
+                // judges the artifact actually about to be extracted, and both delegate to the one rule
+                // in RootfsIdentity. Deleting either does not make the other cover it.
+                if (validateRootfs) {
+                    org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result early =
+                            org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.identityRejection(
+                                    org.appdevforall.k2go.deploy.data.RootfsManifest.read(archivePath));
+                    String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
+                            .rejectionMessage(context, early);
+                    if (why != null) {
+                        throw new Exception(why);
+                    }
+                }
+
                 List<String> entries = listEntries(tarBinary, archivePath, isGzip, listener);
                 for (String entry : entries) {
                     if (ArchiveEntry.escapesRoot(entry)) {
@@ -132,11 +154,10 @@ public class TarExtractor {
                     org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr =
                             org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
                                     .validateWithEntries(context, archivePath, isGzip, tarBinary, entries);
-                    if (vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.NOT_A_ROOTFS) {
-                        throw new Exception(context.getString(R.string.install_error_not_rootfs));
-                    }
-                    if (vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
-                        throw new Exception(context.getString(R.string.install_error_wrong_arch));
+                    String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
+                            .rejectionMessage(context, vr);
+                    if (why != null) {
+                        throw new Exception(why);
                     }
                 }
 

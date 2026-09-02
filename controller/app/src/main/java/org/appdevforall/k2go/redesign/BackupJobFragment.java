@@ -42,12 +42,7 @@ import org.appdevforall.k2go.deepop.DeepOpService;
 import org.appdevforall.k2go.deepop.DeepOpState;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
-import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.Snackbars;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class BackupJobFragment extends Fragment {
 
@@ -67,6 +62,11 @@ public class BackupJobFragment extends Fragment {
     private String mode;
     private LottieAnimationView anim;
     private TextView title, sub, status, finish;
+    private View waitCard;   // "this can take a while" — only true while it is still running
+    /** K2GO-372: determinate progress, hidden until the op reports a percent it can stand behind. */
+    private View progressRow;
+    private com.google.android.material.progressindicator.LinearProgressIndicator progress;
+    private TextView progressPct;
     private org.appdevforall.k2go.util.EllipsisAnimator statusDots;
     private boolean running = false;
     private long lastSeq = -1L;
@@ -99,8 +99,14 @@ public class BackupJobFragment extends Fragment {
         title = v.findViewById(R.id.k2go_bj_title);
         sub = v.findViewById(R.id.k2go_bj_sub);
         status = v.findViewById(R.id.k2go_bj_status);
+        progressRow = v.findViewById(R.id.k2go_bj_progress_row);
+        progress = v.findViewById(R.id.k2go_bj_progress);
+        progressPct = v.findViewById(R.id.k2go_bj_progress_pct);
         finish = v.findViewById(R.id.k2go_bj_finish);
-        statusDots = new org.appdevforall.k2go.util.EllipsisAnimator(status);
+        waitCard = v.findViewById(R.id.k2go_bj_wait_card);
+        // ADFA-4947 fixed-width mode: this status line is centred, so variable-width dots slide the
+        // whole label left and right as they grow. Same choice LibraryActivity's boot lines make.
+        statusDots = new org.appdevforall.k2go.util.EllipsisAnimator(status, true);
 
         title.setText(getString(isRestore() ? R.string.k2go_br_restore_title : R.string.k2go_br_backup_title));
         sub.setText(getString(isRestore() ? R.string.k2go_br_restore_sub : R.string.k2go_br_backup_sub));
@@ -166,51 +172,51 @@ public class BackupJobFragment extends Fragment {
         DeepOpService.startBackup(requireContext(), uri);
     }
 
-    // ---- RESTORE: copy + validate + destructive confirm HERE (pre-extract), then the service ----
+    // ---- RESTORE: destructive confirm FIRST, then the service does every slow read ----
+
+    /**
+     * K2GO-372: ask before reading, not after.
+     *
+     * <p>This used to copy the picked file into the cache and fully validate it — two complete reads of
+     * a multi-gigabyte archive, three silent minutes — and only then show the destructive confirm. That
+     * forced the user to stay and watch a motionless screen for the one question the archive's content
+     * does not answer: do you want to replace your system? The confirm needs the file's name, not its
+     * bytes, so it is asked here and everything slow happens afterwards, in {@link DeepOpService}, with
+     * progress and a notification to come back to.
+     *
+     * <p>Confirming is still not the point of no return: the extractor checks identity, then the whole
+     * listing, and fails closed before it writes anything ({@code TarExtractor}). A rejected archive
+     * leaves the current system untouched, which is what made the pre-flight pass safe to delete rather
+     * than merely move — it was a second place answering a question the extractor already answers.
+     */
     private void prepareRestore(Uri uri) {
         if (!isAdded()) return;
-        beginRunning();
-        setStatusAnimated(getString(R.string.k2go_br_status_checking));
-        AppExecutors.get().io().execute(() -> {
-            File temp = new File(requireContext().getCacheDir(), "restore.tar.gz");
-            boolean copied = false;
-            try (InputStream in = requireContext().getContentResolver().openInputStream(uri);
-                 OutputStream out = new java.io.FileOutputStream(temp)) {
-                if (in != null) {
-                    byte[] b = new byte[1 << 16]; int n;
-                    while ((n = in.read(b)) > 0) out.write(b, 0, n);
-                    out.flush(); copied = true;
-                }
-            } catch (Exception ignored) { }
-            org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr = !copied
-                    ? org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.UNREADABLE
-                    : org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.validate(requireContext(), temp.getAbsolutePath());
-            main.post(() -> onValidated(temp, vr));
-        });
-    }
-
-    private void onValidated(File temp, org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr) {
-        if (!isAdded()) return;
-        boolean ok = vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.OK
-                || vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.OK_NO_MANIFEST
-                || vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.OK_NO_CHECKSUM;
-        if (!ok) {
-            if (temp.exists()) temp.delete();
-            int msg = vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH ? R.string.install_error_wrong_arch
-                    : vr == org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result.CORRUPT ? R.string.install_error_corrupt
-                    : R.string.install_error_not_rootfs;
-            showTerminal(false, getString(msg));
-            return;
-        }
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_br_restore_title))
                 .setMessage(getString(R.string.k2go_br_restore_warn))
                 .setPositive(R.string.k2go_br_restore_confirm, BrandDialog.Role.DESTRUCTIVE, () -> {
-                    setStatusAnimated(getString(R.string.k2go_br_status_stopping));
-                    DeepOpService.startRestore(requireContext(), temp.getAbsolutePath());
+                    beginRunning();
+                    setStatusAnimated(getString(R.string.k2go_br_status_copying));
+                    DeepOpService.startRestore(requireContext(), uri);
                 })
-                .setNegative(R.string.cancel, () -> { if (temp.exists()) temp.delete(); popToIntro(false); })
+                .setNegative(R.string.cancel, () -> popToIntro(false))
                 .show();
+    }
+
+    /**
+     * K2GO-372: show the bar only for a percent the op actually measured.
+     *
+     * <p>A negative percent means the step cannot say how far along it is, and a bar frozen at zero
+     * reads as a stall — worse than no bar. Those steps keep the animation above instead.
+     */
+    private void showProgress(int percent) {
+        if (progressRow == null) return;
+        final boolean measurable = percent >= 0;
+        progressRow.setVisibility(measurable ? View.VISIBLE : View.GONE);
+        if (measurable) {
+            progress.setProgressCompat(percent, true);
+            progressPct.setText(percent + "%");   // matches the module-install and maps screens
+        }
     }
 
     // ---- observe the app-scoped op state (DeepOpService is the writer) ----
@@ -219,8 +225,10 @@ public class BackupJobFragment extends Fragment {
         if (st.isRunning()) {
             if (!running) beginRunning();
             setStatusAnimated(st.step);
+            showProgress(st.percent);
         } else if (st.isTerminal() && st.seq > lastSeq) {
             lastSeq = st.seq;
+            showProgress(-1);   // K2GO-372: a finished op has no bar to keep filling
             showTerminal(st.phase == DeepOpState.Phase.SUCCESS, st.message);
         }
     }
@@ -230,6 +238,7 @@ public class BackupJobFragment extends Fragment {
         leaveWarned = false;   // ADFA-4971: each op's first Back re-warns before backgrounding
         if (backGate != null) backGate.setEnabled(true);
         finish.setVisibility(View.GONE);
+        if (waitCard != null) waitCard.setVisibility(View.VISIBLE);
         if (anim != null) anim.playAnimation();
     }
 
@@ -241,6 +250,9 @@ public class BackupJobFragment extends Fragment {
         title.setText(getString(ok ? R.string.k2go_br_done_title : R.string.k2go_br_failed_title));
         status.setText(message);
         status.setTextColor(ContextCompat.getColor(requireContext(), ok ? R.color.k2go_leaf : R.color.k2go_amber_text));
+        // The card asks the user to keep the app open because the op is still running; once it has
+        // finished it is telling them to wait for something that already happened.
+        if (waitCard != null) waitCard.setVisibility(View.GONE);
         finish.setVisibility(View.VISIBLE);
     }
 

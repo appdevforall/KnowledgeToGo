@@ -105,6 +105,39 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_ink" />
 
+        <!-- K2GO-372: determinate progress for backup/restore. A restore streams the archive twice
+             (safety listing, then extraction) and both passes reported nothing, so a multi-minute
+             wait was indistinguishable from a hang. Gone until the op reports a real percent, so a
+             phase that cannot measure itself keeps the animation above rather than a bar stuck at 0.
+             Matches the module-install and maps Preparing screens. -->
+        <LinearLayout
+            android:id="@+id/k2go_bj_progress_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/k2go_bj_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:indeterminate="false"
+                android:max="100" />
+
+            <TextView
+                android:id="@+id/k2go_bj_progress_pct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:minWidth="44dp"
+                android:gravity="end"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
         <!-- "this takes time" info card, matching the module install / maps Preparing screens. -->
         <LinearLayout
             android:id="@+id/k2go_bj_wait_card"

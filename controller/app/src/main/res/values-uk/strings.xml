@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">Не вдалося створити резервну копію. Повторіть спробу.</string>
     <string name="k2go_br_done_title">Готово</string>
     <string name="k2go_br_failed_title">Щось пішло не так</string>
+    <string name="k2go_br_status_copying">Копіювання файлу</string>
     <string name="k2go_br_status_checking">Перевірка файлу</string>
     <string name="k2go_br_status_restoring">Відновлення</string>
     <string name="k2go_br_restore_warn">Це замінює поточну систему обраною резервною копією. Це не можна скасувати, і сервер зупиняється на час виконання.</string>
     <string name="k2go_br_restore_confirm">Замінити систему</string>
     <string name="k2go_br_restore_done">Систему відновлено</string>
     <string name="k2go_br_restore_failed">Помилка відновлення</string>
+    <string name="k2go_br_restore_unreadable">Не вдалося прочитати вибраний файл, тому нічого не змінено.</string>
     <string name="deepop_channel_name">Резервне копіювання та відновлення</string>
     <string name="deepop_channel_desc">Безпечно виконує резервне копіювання чи відновлення у фоні</string>
     <string name="deepop_notif_title">Резервне копіювання та відновлення</string>

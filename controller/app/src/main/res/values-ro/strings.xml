@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">Copia de rezervă a eșuat. Încearcă din nou.</string>
     <string name="k2go_br_done_title">Gata</string>
     <string name="k2go_br_failed_title">Ceva nu a mers bine</string>
+    <string name="k2go_br_status_copying">Se copiază fișierul</string>
     <string name="k2go_br_status_checking">Se verifică fișierul</string>
     <string name="k2go_br_status_restoring">Se restaurează</string>
     <string name="k2go_br_restore_warn">Aceasta înlocuiește sistemul curent cu copia aleasă. Nu poate fi anulată, iar serverul se oprește cât timp rulează.</string>
     <string name="k2go_br_restore_confirm">Înlocuiește sistemul</string>
     <string name="k2go_br_restore_done">Sistem restaurat</string>
     <string name="k2go_br_restore_failed">Restaurarea a eșuat</string>
+    <string name="k2go_br_restore_unreadable">Fișierul selectat nu a putut fi citit, așa că nu s-a schimbat nimic.</string>
     <string name="deepop_channel_name">Copie de rezervă &amp; restaurare</string>
     <string name="deepop_channel_desc">Menține o copie de rezervă sau o restaurare rulând în siguranță în fundal</string>
     <string name="deepop_notif_title">Copie de rezervă &amp; restaurare</string>
