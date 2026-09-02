@@ -79,6 +79,12 @@ public final class RootfsArchiveValidator {
      * K2GO-372: the reason to show for a rejecting {@link Result}, or {@code null} when it does not
      * reject. Both extractor gates and the restore's pre-copy check spell the same verdicts, and they
      * used to each carry their own if-chain of strings.
+     *
+     * <p>Note it rejects {@link Result#CORRUPT} too, which the extractor's two inline chains did not:
+     * failing closed on a failed integrity check is the right direction, and it is inert on today's
+     * callers (the extractor validates with {@code checkIntegrity=false}, where CORRUPT cannot arise).
+     * {@link Result#UNREADABLE} is deliberately NOT a rejection here — see the callers; that gap
+     * predates this method.
      */
     public static String rejectionMessage(Context ctx, Result r) {
         if (r == Result.NOT_A_ROOTFS) return ctx.getString(org.iiab.controller.R.string.install_error_not_rootfs);

@@ -174,13 +174,19 @@ public final class DeepOpService extends Service {
         final File temp = new File(getCacheDir(), "restore.tar.gz");
         final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
-            String failure = identityRejection(src);
+            String failure = rejectBeforeCopy(src);
             if (failure == null) {
                 failure = stageArchive(src, temp);
             }
             final String outcome = failure;
             main.post(() -> {
-                if (done) return;
+                if (done) {
+                    // Unreachable while a restore is uncancellable, but a staged archive is gigabytes:
+                    // whoever reaches a terminal first must not leave it in the cache.
+                    //noinspection ResultOfMethodCallIgnored
+                    temp.delete();
+                    return;
+                }
                 if (outcome != null) {
                     endRestore(temp.getAbsolutePath(), false, outcome);
                     return;
@@ -201,7 +207,7 @@ public final class DeepOpService extends Service {
      *
      * @return the reason to show, or {@code null} when nothing here rejects it.
      */
-    private String identityRejection(Uri src) {
+    private String rejectBeforeCopy(Uri src) {
         RootfsManifest.Identity id;
         try (InputStream raw = getContentResolver().openInputStream(src)) {
             if (raw == null) return getString(R.string.k2go_br_restore_unreadable);
@@ -240,7 +246,7 @@ public final class DeepOpService extends Service {
             byte[] buf = new byte[1 << 16];
             long copied = 0L, lastEmit = 0L;
             int n;
-            while ((n = in.read(buf)) > 0) {
+            while ((n = in.read(buf)) != -1) {   // a 0-length read is not end of stream
                 out.write(buf, 0, n);
                 copied += n;
                 long now = android.os.SystemClock.elapsedRealtime();

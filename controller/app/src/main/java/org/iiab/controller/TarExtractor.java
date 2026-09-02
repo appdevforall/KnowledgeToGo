@@ -119,6 +119,11 @@ public class TarExtractor {
                 // paying for it. The manifest that answers identity is packed first, so reading it
                 // here refuses the same files in about a second, and leaves the long pass for
                 // archives that are actually going to be extracted.
+                // K2GO-372: DeepOpService runs this same check on the picked stream before it copies,
+                // purely to avoid paying for a copy it will throw away. This one is not a duplicate of
+                // it: this is the fail-closed gate every caller shares (import, install, restore), it
+                // judges the artifact actually about to be extracted, and both delegate to the one rule
+                // in RootfsIdentity. Deleting either does not make the other cover it.
                 if (validateRootfs) {
                     org.iiab.controller.deploy.data.RootfsArchiveValidator.Result early =
                             org.iiab.controller.deploy.data.RootfsArchiveValidator.identityRejection(
