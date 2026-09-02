@@ -178,26 +178,4 @@ jobs:
                 done
               done
             fi
-
-            # K2GO-377 (TRANSITIONAL — remove before merging). The retention above keeps the
-            # newest $KEEP k2go_ batches; the pre-rename iiab-oa_ artifacts have no pointer left
-            # once this tier republished, so they go in full rather than ageing out $KEEP deep at
-            # ~1.7 GB each. It sits INSIDE this loop on purpose: it only ever touches the tier and
-            # arch this job just republished, so a tier that failed to build keeps the artifact its
-            # metalink still names.
-            #
-            # Removal is gated on evidence, not on this run finishing. Delete the block only when
-            #   aws s3api list-objects-v2 --bucket "$BUCKET_NAME" --prefix "iiab-oa_" \
-            #     --endpoint-url "$ENDPOINT" --query "length(Contents)" --output text
-            # reports None/0 — otherwise the leftovers outlive the only code that would clear them.
-            mapfile -t legacy < <(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" \
-              --prefix "${PFX}iiab-oa_" --endpoint-url "$ENDPOINT" \
-              --query "Contents[?contains(Key,'_${tier}_') && ends_with(Key,'_${ARCH}.tar.gz')].Key" \
-              --output text | tr '\t' '\n' | sed '/^$/d')
-            for key in "${legacy[@]}"; do
-              echo ">> sweep legacy $key (+ sidecars)"
-              for ext in '' .meta4 .sha256 .installed .torrent; do
-                aws s3 rm "s3://${BUCKET_NAME}/${key}${ext}" --endpoint-url "$ENDPOINT" || true
-              done
-            done
           done
