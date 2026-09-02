@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.sync.transport.QrCodec;
+import org.appdevforall.k2go.util.EllipsisAnimator;
 import org.appdevforall.k2go.util.M3Text;
 
 /**
@@ -42,6 +43,11 @@ public final class QrSection {
     public final TextView ph, caption, subCaption, fallbackToggle;
     public final LinearLayout fallback, fallbackValues;
 
+    // K2GO-375: animated "…" for the placeholder while a value the QR needs is still resolving (e.g. the
+    // hotspot AP IP). Lazily bound to `ph`; owned here so every stacked-QR flow gets the same treatment.
+    // The owning fragment must stopPending() in onDestroyView so the Handler cannot tick a destroyed view.
+    private EllipsisAnimator phDots;
+
     public QrSection(View r, int frameId, int qrId, int phId, int capId, int subId,
                      int toggleId, int fallbackId, int valuesId) {
         frame = r.findViewById(frameId);
@@ -56,6 +62,7 @@ public final class QrSection {
 
     /** Draw {@code data} into the QR, or clear it and show {@code placeholder} in the slot. */
     public void setQr(Context ctx, String data, String placeholder) {
+        stopPending();   // K2GO-375: a real QR or a static placeholder ends any "resolving…" animation
         if (data == null) {
             qr.setImageBitmap(null);
             ph.setText(placeholder == null ? "" : placeholder);
@@ -67,6 +74,24 @@ public final class QrSection {
         int px = ctx.getResources().getDimensionPixelSize(R.dimen.k2go_qr_size);
         qr.setImageBitmap(QrCodec.encode(data, px));
         ph.setVisibility(View.GONE);
+    }
+
+    /**
+     * K2GO-375: hold the slot with an animated "{@code label}…" instead of drawing a QR, for the window
+     * where the QR's data is not resolvable yet (the hotspot AP interface has no IPv4 yet). Preferred over
+     * a static placeholder or a QR pointing at a guessed address: it reads as "working", and the caller
+     * redraws (setQr) the moment the value lands. Idempotent while the same label is pending.
+     */
+    public void setQrPending(Context ctx, String label) {
+        qr.setImageBitmap(null);
+        ph.setVisibility(View.VISIBLE);
+        if (phDots == null) phDots = new EllipsisAnimator(ph, true);   // fixed-width: centered, no jiggle
+        phDots.start(label);
+    }
+
+    /** Stop the pending animation, if any. Call from the owner's onDestroyView. Safe to call repeatedly. */
+    public void stopPending() {
+        if (phDots != null) phDots.stop();
     }
 
     /**

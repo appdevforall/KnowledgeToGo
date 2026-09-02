@@ -785,6 +785,7 @@
     <string name="k2go_connect_hotspot_unsupported">Etkin nokta için Android 8 veya üzeri gerekir</string>
     <string name="k2go_connect_try_wifi">Bunun yerine Wi-Fi seçeneğini deneyin.</string>
     <string name="k2go_connect_starting_hotspot">Etkin nokta başlatılıyor…</string>
+    <string name="k2go_connect_resolving_address">Erişim noktası adresi bulunuyor…</string>
     <string name="k2go_connect_hotspot_failed">Etkin nokta başlatılamadı</string>
     <string name="k2go_connect_enable_location">Konum iznini açın, sonra tekrar deneyin.</string>
     <string name="k2go_connect_no_wifi">Bir Wi-Fi ağında değilsiniz</string>

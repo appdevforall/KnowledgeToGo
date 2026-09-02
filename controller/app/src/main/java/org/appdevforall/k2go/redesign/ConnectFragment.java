@@ -144,6 +144,15 @@ public class ConnectFragment extends Fragment {
         render();
     }
 
+    @Override
+    public void onDestroyView() {
+        // K2GO-375: stop any "resolving…" ellipsis so its Handler cannot tick a destroyed TextView.
+        if (secJoin != null) secJoin.stopPending();
+        if (secOpen != null) secOpen.stopPending();
+        if (secSingle != null) secSingle.stopPending();
+        super.onDestroyView();
+    }
+
     private void render() {
         if (!isAdded() || secSingle == null) return;
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
@@ -220,8 +229,9 @@ public class ConnectFragment extends Fragment {
         if (on) {
             String ssid = (st != null && st.ssid != null) ? st.ssid : "";
             String pass = (st != null && st.passphrase != null) ? st.passphrase : "";
-            String ip = NetworkInterfaces.discover().hotspotIp;
-            if (ip == null) ip = "192.168.49.1";
+            // K2GO-375: one source for the hotspot IP — the reservation's owner. Null until the AP
+            // interface has its address; the owner re-emits State when it lands, which reruns render().
+            String ip = (st != null) ? st.hotspotIp : null;
 
             secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
             secJoin.caption.setText(R.string.k2go_just_scan);
@@ -229,17 +239,24 @@ public class ConnectFragment extends Fragment {
             secJoin.setFallback(requireContext(), new String[]{
                     getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
 
-            secOpen.setQr(requireContext(), browseUrl(ip), null);
             secOpen.caption.setText(R.string.k2go_connect_readonly);
             secOpen.subCaption.setText("");
-            secOpen.setFallback(requireContext(), new String[]{browseUrl(ip)});
+            if (ip == null) {
+                // K2GO-375: no dead QR at a guessed 192.168.49.1 — many OEMs don't use the …49.x subnet.
+                // Hold the slot with an animated "resolving…" until the real AP IP arrives and render reruns.
+                secOpen.setQrPending(requireContext(), getString(R.string.k2go_connect_resolving_address));
+                secOpen.setFallback(requireContext(), null);
+            } else {
+                secOpen.setQr(requireContext(), browseUrl(ip), null);
+                secOpen.setFallback(requireContext(), new String[]{browseUrl(ip)});
+            }
 
             finish.setVisibility(View.VISIBLE);
         } else {
-            // Starting: hold both slots with a placeholder caption, no scannable code yet.
+            // Starting: hold both slots with an animated placeholder, no scannable code yet.
             String starting = getString(R.string.k2go_connect_starting_hotspot);
             for (QrSection sec : new QrSection[]{secJoin, secOpen}) {
-                sec.setQr(requireContext(), null, starting);
+                sec.setQrPending(requireContext(), starting);
                 sec.caption.setText("");
                 sec.subCaption.setText("");
                 sec.setFallback(requireContext(), null);

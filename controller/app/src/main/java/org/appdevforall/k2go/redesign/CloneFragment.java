@@ -430,9 +430,7 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        apRetries = 0;   // ADFA-5158: fresh AP-IP poll budget on a mode switch
         locationAsked = false;   // ADFA-5146: a mode switch is a fresh attempt — allow one more perm prompt
-        netHandler.removeCallbacks(netRetry);
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
         // ADFA-5154: Hotspot ① has a QR, Wi-Fi ① doesn't, so the two tabs differ in height — switching
@@ -769,10 +767,10 @@ public class CloneFragment extends Fragment {
         startApkServer();
         String appIp = peerReachableIp();
         if (appIp == null || apkServer == null) {
-            secGetApp.setQr(requireContext(), null, getString(R.string.k2go_clone_starting_service));
-            scheduleNetRetry();   // ADFA-5158: the AP IP lands with latency — poll and redraw when it does
+            // K2GO-375: hold with an animated placeholder; the hotspot owner reruns render() when the AP IP
+            // lands (Wi-Fi is driven by NetworkStateLiveData), so no local poll is needed.
+            secGetApp.setQrPending(requireContext(), getString(R.string.k2go_clone_starting_service));
         } else {
-            apRetries = 0;   // resolved — reset the poll budget
             String url = "http://" + appIp + ":" + shareConfig.apkPort + "/" + apkFileName;
             secGetApp.setQr(requireContext(), url, null);
         }
@@ -791,56 +789,34 @@ public class CloneFragment extends Fragment {
         String ip = peerReachableIp();
         if (ip == null) {
             // ADFA-5158: no IP to advertise. Wi-Fi -> genuinely no network. Hotspot -> the AP IP just
-            // hasn't been assigned yet; wait and poll instead of guessing a fixed address that isn't
-            // universal across OEMs.
-            if (mode == Mode.HOTSPOT) { simpleState(getString(R.string.k2go_clone_starting_service), ""); scheduleNetRetry(); }
+            // hasn't been assigned yet; wait instead of guessing a fixed address that isn't universal
+            // across OEMs. K2GO-375: the hotspot owner reruns render() when the AP IP lands, so no local
+            // poll is needed here anymore.
+            if (mode == Mode.HOTSPOT) simpleState(getString(R.string.k2go_clone_starting_service), "");
             else simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
             return;
         }
-        apRetries = 0;   // ADFA-5158: resolved — reset the poll budget
         ensureDaemon(ip);
         renderStartState(ip, mode == Mode.HOTSPOT);
     }
 
     /**
-     * ADFA-5158: the IP the other phone reaches this one at, per mode — one source for both the get-app
-     * URL and the Copy daemon (they had diverged: Copy hardcoded 192.168.49.1, get-app had no fallback).
-     * Returns null when the hotspot AP IP is not assigned yet; callers poll via {@link #scheduleNetRetry()}.
+     * The IP the other phone reaches this one at, per mode — one source for both the get-app URL and the
+     * Copy daemon (ADFA-5158; they had diverged: Copy hardcoded 192.168.49.1, get-app had no fallback).
+     * Returns null when the address is not assigned yet.
+     *
+     * <p>K2GO-375: in hotspot mode this reads the reservation's owner (LocalHotspotManager), which re-emits
+     * State — and so reruns render() — the moment the AP interface gets its address. That replaced the
+     * former local AP-IP poll (netHandler/scheduleNetRetry): one owner drives the redraw instead of each
+     * Send page spinning its own timer. Wi-Fi is unchanged — it is the default network, so NetworkStateLiveData
+     * already reruns render() when its IP appears.
      */
     private String peerReachableIp() {
-        NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
-        return (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
-    }
-
-    // ADFA-5158: while a Send page needs the AP IP and it isn't up yet, re-draw shortly so the QR appears
-    // the moment the interface gets its address — instead of waiting for an incidental render. Re-renders
-    // only the affected section, not the whole screen.
-    private final android.os.Handler netHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-    private static final long AP_IP_POLL_MS = 1000L;
-    private static final int AP_IP_MAX_RETRIES = 120;   // safety cap (~2 min) so the poll can't spin forever
-    private int apRetries = 0;
-    private final Runnable netRetry = new Runnable() {
-        @Override public void run() {
-            if (!isAdded() || atFork || side != Side.SEND) return;   // left Send -> stop; no self-reschedule
-            if (page == Page.PREPARE) renderGetAppSection(); else renderCopy();   // reschedule only if still pending
+        if (mode == Mode.HOTSPOT) {
+            LocalHotspotManager.State st = hs.state().getValue();
+            return (st != null) ? st.hotspotIp : null;
         }
-    };
-    /**
-     * Only worth polling when the AP IP can still plausibly arrive: hotspot mode, not FAILED/unsupported.
-     * Wi-Fi doesn't need it (the IP is present once joined; the network observer re-renders on join), and a
-     * failed hotspot won't ever provide one — so we don't spin (which also stopped ensureHotspot being
-     * re-requested every second on failure).
-     */
-    private boolean apIpMayArrive() {
-        if (mode != Mode.HOTSPOT || !LocalHotspotManager.isSupported()) return false;
-        LocalHotspotManager.State st = hs.state().getValue();
-        return st == null || st.phase != LocalHotspotManager.Phase.FAILED;
-    }
-    private void scheduleNetRetry() {
-        if (!apIpMayArrive() || apRetries >= AP_IP_MAX_RETRIES) return;
-        apRetries++;
-        netHandler.removeCallbacks(netRetry);
-        netHandler.postDelayed(netRetry, AP_IP_POLL_MS);
+        return NetworkInterfaces.discover().wifiIp;
     }
 
     /** Copy state: nothing-to-share -> starting -> stopped (Start sharing) -> running (QR + Stop). */
@@ -1466,7 +1442,10 @@ public class CloneFragment extends Fragment {
         exitHandler.removeCallbacks(exitTick);
         exitHandler.removeCallbacks(exitPollRunnable);
         if (exitDots != null) exitDots.stop();
-        netHandler.removeCallbacks(netRetry);   // ADFA-5158: stop the AP-IP poll
+        // K2GO-375: stop any "resolving…" ellipsis so its Handler cannot tick a destroyed TextView (the
+        // former netHandler AP-IP poll is gone — the hotspot owner now drives the redraw).
+        if (secJoin != null) secJoin.stopPending();
+        if (secGetApp != null) secGetApp.stopPending();
         // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
         // keeps the (app-scoped) CloneShareService alive so leaving the tab doesn't cut the transfer.
         // ADFA-4956: same gate for the deep-env lock — only boot the server back + drop the lock when

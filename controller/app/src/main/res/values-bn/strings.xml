@@ -798,6 +798,7 @@
     <string name="k2go_connect_hotspot_unsupported">হটস্পটের জন্য Android 8 বা নতুন সংস্করণ দরকার</string>
     <string name="k2go_connect_try_wifi">পরিবর্তে Wi-Fi বিকল্প ব্যবহার করে দেখুন।</string>
     <string name="k2go_connect_starting_hotspot">হটস্পট শুরু হচ্ছে…</string>
+    <string name="k2go_connect_resolving_address">হটস্পট ঠিকানা খোঁজা হচ্ছে…</string>
     <string name="k2go_connect_hotspot_failed">হটস্পট শুরু করা যায়নি</string>
     <string name="k2go_connect_enable_location">অবস্থান অনুমতি চালু করুন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_connect_no_wifi">কোনো Wi-Fi নেটওয়ার্কে নেই</string>
