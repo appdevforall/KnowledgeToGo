@@ -632,12 +632,14 @@
     <string name="k2go_br_backup_failed">バックアップに失敗しました。もう一度お試しください。</string>
     <string name="k2go_br_done_title">完了</string>
     <string name="k2go_br_failed_title">問題が発生しました</string>
+    <string name="k2go_br_status_copying">ファイルをコピー中</string>
     <string name="k2go_br_status_checking">ファイルを確認中</string>
     <string name="k2go_br_status_restoring">復元中</string>
     <string name="k2go_br_restore_warn">これにより現在のシステムが選択したバックアップに置き換えられます。元に戻すことはできず、実行中はサーバーが停止します。</string>
     <string name="k2go_br_restore_confirm">システムを置き換え</string>
     <string name="k2go_br_restore_done">システムを復元しました</string>
     <string name="k2go_br_restore_failed">復元に失敗しました</string>
+    <string name="k2go_br_restore_unreadable">選択したファイルを読み取れなかったため、何も変更されていません。</string>
     <string name="deepop_channel_name">バックアップと復元</string>
     <string name="deepop_channel_desc">バックアップや復元をバックグラウンドで安全に実行し続けます</string>
     <string name="deepop_notif_title">バックアップと復元</string>

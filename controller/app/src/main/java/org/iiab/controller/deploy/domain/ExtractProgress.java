@@ -49,16 +49,33 @@ public final class ExtractProgress {
     }
 
     /**
-     * ADFA-5118: map a single pass's percent onto the unified two-pass bar. Verify owns
-     * [0,50), extract owns [50,100). {@code passPercent} is that pass's own 0..100; it is
-     * clamped, halved, and offset by 50 for the second pass. The result is capped at 99 so
-     * only true completion (set by the caller) reaches 100. This keeps the bar monotone
-     * across the handoff: verify ends near 49, extract starts at 50.
+     * ADFA-5118: map a single pass's percent onto the unified two-pass bar — the shape the rootfs
+     * install runs. Verify owns [0,50), extract owns [50,100). The result is capped at 99 so only
+     * true completion (set by the caller) reaches 100, which keeps the bar monotone across the
+     * handoff: verify ends near 49, extract starts at 50.
      */
     public static int unifiedPercent(int passPercent, boolean secondPass) {
+        return unifiedPercent(passPercent, secondPass ? 1 : 0, 2);
+    }
+
+    /**
+     * K2GO-372: the same rule for a run of any number of passes, because a restore has three — it
+     * stages the picked file before it verifies and extracts it. Each pass owns an equal slice of the
+     * bar, so no pass can fill the bar and send it back to zero, which is the whole point of a unified
+     * percent. Slices are equal, not time-weighted: the passes' durations depend on the device and the
+     * archive, and a bar that lies about which slice is long is worse than one that moves unevenly.
+     *
+     * @param passPercent this pass's own 0-100 progress.
+     * @param passIndex   which pass is running, from 0.
+     * @param passCount   how many passes the whole run has.
+     */
+    public static int unifiedPercent(int passPercent, int passIndex, int passCount) {
+        if (passCount < 1) passCount = 1;
+        if (passIndex < 0) passIndex = 0;
+        if (passIndex > passCount - 1) passIndex = passCount - 1;
         if (passPercent < 0) passPercent = 0;
         if (passPercent > 100) passPercent = 100;
-        int v = (secondPass ? 50 : 0) + passPercent / 2;
+        int v = (passIndex * 100 + passPercent) / passCount;
         return v > 99 ? 99 : v;
     }
 

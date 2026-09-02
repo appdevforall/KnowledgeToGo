@@ -707,12 +707,14 @@
     <string name="k2go_br_backup_failed">La copia de seguridad falló. Inténtalo de nuevo.</string>
     <string name="k2go_br_done_title">Listo</string>
     <string name="k2go_br_failed_title">Algo salió mal</string>
+    <string name="k2go_br_status_copying">Copiando el archivo</string>
     <string name="k2go_br_status_checking">Comprobando el archivo</string>
     <string name="k2go_br_status_restoring">Restaurando</string>
     <string name="k2go_br_restore_warn">Esto reemplaza tu sistema actual con la copia elegida. No se puede deshacer, y el servidor se detiene mientras se ejecuta.</string>
     <string name="k2go_br_restore_confirm">Reemplazar sistema</string>
     <string name="k2go_br_restore_done">Sistema restaurado</string>
     <string name="k2go_br_restore_failed">La restauración falló</string>
+    <string name="k2go_br_restore_unreadable">No se pudo leer el archivo seleccionado, así que no se cambió nada.</string>
     <string name="deepop_channel_name">Copia de seguridad y restauración</string>
     <string name="deepop_channel_desc">Mantiene una copia o restauración ejecutándose de forma segura en segundo plano</string>
     <string name="deepop_notif_title">Copia de seguridad y restauración</string>

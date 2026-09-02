@@ -638,12 +638,14 @@
     <string name="k2go_br_backup_failed">Zálohování selhalo. Zkus to znovu.</string>
     <string name="k2go_br_done_title">Hotovo</string>
     <string name="k2go_br_failed_title">Něco se pokazilo</string>
+    <string name="k2go_br_status_copying">Kopírování souboru</string>
     <string name="k2go_br_status_checking">Kontrola souboru</string>
     <string name="k2go_br_status_restoring">Obnovování</string>
     <string name="k2go_br_restore_warn">Tímto nahradíte aktuální systém vybranou zálohou. Nelze to vrátit zpět a během operace se server zastaví.</string>
     <string name="k2go_br_restore_confirm">Nahradit systém</string>
     <string name="k2go_br_restore_done">Systém obnoven</string>
     <string name="k2go_br_restore_failed">Obnova selhala</string>
+    <string name="k2go_br_restore_unreadable">Vybraný soubor se nepodařilo přečíst, takže se nic nezměnilo.</string>
     <string name="deepop_channel_name">Záloha &amp; obnova</string>
     <string name="deepop_channel_desc">Udržuje zálohu nebo obnovu bezpečně spuštěnou na pozadí</string>
     <string name="deepop_notif_title">Záloha &amp; obnova</string>

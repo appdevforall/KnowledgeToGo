@@ -16,15 +16,12 @@ import android.util.Log;
 import org.iiab.controller.deploy.domain.ElfClass;
 import org.iiab.controller.deploy.domain.RootfsArchive;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -53,26 +50,6 @@ public final class RootfsArchiveValidator {
         // Static utility; not instantiable.
     }
 
-    /** Validate from a file path (lists the archive itself; use for the import gate). */
-    public static Result validate(Context context, String archivePath) {
-        try {
-            String tarBinary = resolveTar(context);
-            boolean isGzip = archivePath.toLowerCase(Locale.US).endsWith(".gz");
-            List<String> entries = listEntries(tarBinary, archivePath, isGzip);
-            if (entries.isEmpty()) {
-                return Result.UNREADABLE;
-            }
-            return validateWithEntries(context, archivePath, isGzip, tarBinary, entries, true);
-        } catch (Exception e) {
-            Log.e(TAG, "Validation error", e);
-            return Result.UNREADABLE;
-        }
-    }
-
-    /**
-     * Validate when the caller already has the entry listing (e.g. {@code TarExtractor}
-     * lists once for the D11 traversal guard — reuse it here, no second listing).
-     */
     /**
      * K2GO-372: the manifest's rejection, if any — a thin adapter over the pure rule in
      * {@link org.iiab.controller.deploy.domain.RootfsIdentity}, which is where the decision lives
@@ -98,6 +75,10 @@ public final class RootfsArchiveValidator {
         }
     }
 
+    /**
+     * Validate when the caller already has the entry listing (e.g. {@code TarExtractor}
+     * lists once for the D11 traversal guard — reuse it here, no second listing).
+     */
     public static Result validateWithEntries(Context context, String archivePath,
                                              boolean isGzip, String tarBinary, List<String> entries) {
         // Restore re-uses the listing for the D11 guard; integrity was already
@@ -168,38 +149,6 @@ public final class RootfsArchiveValidator {
             Log.e(TAG, "Validation (with entries) error", e);
             return Result.UNREADABLE;
         }
-    }
-
-    private static String resolveTar(Context context) {
-        File staticTar = new File(context.getApplicationInfo().nativeLibraryDir, "libtar.so");
-        return staticTar.exists() ? staticTar.getAbsolutePath() : "/system/bin/tar";
-    }
-
-    private static List<String> listEntries(String tarBinary, String archivePath, boolean isGzip) throws Exception {
-        List<String> names = new ArrayList<>();
-        List<String> cmd = new ArrayList<>();
-        cmd.add(tarBinary);
-        if (isGzip) {
-            cmd.add("-t");
-            cmd.add("-f");
-            cmd.add("-");
-        } else {
-            cmd.add("-tf");
-            cmd.add(archivePath);
-        }
-        Process p = new ProcessBuilder(cmd).start();
-        Thread feeder = isGzip ? startGzipFeeder(archivePath, p.getOutputStream()) : null;
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line;
-            while ((line = r.readLine()) != null) {
-                names.add(line);
-            }
-        }
-        p.waitFor();
-        if (feeder != null) {
-            feeder.join();
-        }
-        return names;
     }
 
     private static byte[] readMemberHeader(String tarBinary, String archivePath, boolean isGzip,

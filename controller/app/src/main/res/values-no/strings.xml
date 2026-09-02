@@ -632,12 +632,14 @@
     <string name="k2go_br_backup_failed">Sikkerhetskopieringen mislyktes. Prøv igjen.</string>
     <string name="k2go_br_done_title">Ferdig</string>
     <string name="k2go_br_failed_title">Noe gikk galt</string>
+    <string name="k2go_br_status_copying">Kopierer filen</string>
     <string name="k2go_br_status_checking">Sjekker filen</string>
     <string name="k2go_br_status_restoring">Gjenoppretter</string>
     <string name="k2go_br_restore_warn">Dette erstatter det gjeldende systemet med den valgte sikkerhetskopien. Det kan ikke angres, og serveren stopper mens det kjører.</string>
     <string name="k2go_br_restore_confirm">Erstatt system</string>
     <string name="k2go_br_restore_done">System gjenopprettet</string>
     <string name="k2go_br_restore_failed">Gjenoppretting mislyktes</string>
+    <string name="k2go_br_restore_unreadable">Den valgte filen kunne ikke leses, så ingenting ble endret.</string>
     <string name="deepop_channel_name">Sikkerhetskopiering &amp; gjenoppretting</string>
     <string name="deepop_channel_desc">Holder en sikkerhetskopiering eller gjenoppretting trygt i gang i bakgrunnen</string>
     <string name="deepop_notif_title">Sikkerhetskopiering &amp; gjenoppretting</string>

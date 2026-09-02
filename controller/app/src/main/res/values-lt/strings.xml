@@ -639,12 +639,14 @@
     <string name="k2go_br_backup_failed">Atsarginė kopija nepavyko. Bandykite dar kartą.</string>
     <string name="k2go_br_done_title">Atlikta</string>
     <string name="k2go_br_failed_title">Kažkas nepavyko</string>
+    <string name="k2go_br_status_copying">Kopijuojamas failas</string>
     <string name="k2go_br_status_checking">Tikrinamas failas</string>
     <string name="k2go_br_status_restoring">Atkuriama</string>
     <string name="k2go_br_restore_warn">Tai pakeičia dabartinę sistemą pasirinkta atsargine kopija. To atšaukti negalima, o serveris sustoja, kol tai vyksta.</string>
     <string name="k2go_br_restore_confirm">Pakeisti sistemą</string>
     <string name="k2go_br_restore_done">Sistema atkurta</string>
     <string name="k2go_br_restore_failed">Nepavyko atkurti</string>
+    <string name="k2go_br_restore_unreadable">Nepavyko perskaityti pasirinkto failo, todėl niekas nebuvo pakeista.</string>
     <string name="deepop_channel_name">Atsarginė kopija ir atkūrimas</string>
     <string name="deepop_channel_desc">Saugiai vykdo atsarginės kopijos kūrimą ar atkūrimą fone</string>
     <string name="deepop_notif_title">Atsarginė kopija ir atkūrimas</string>

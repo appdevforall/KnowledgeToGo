@@ -631,12 +631,14 @@
     <string name="k2go_br_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
     <string name="k2go_br_done_title">Klaar</string>
     <string name="k2go_br_failed_title">Er ging iets mis</string>
+    <string name="k2go_br_status_copying">Bestand kopiëren</string>
     <string name="k2go_br_status_checking">Bestand controleren</string>
     <string name="k2go_br_status_restoring">Herstellen</string>
     <string name="k2go_br_restore_warn">Hiermee wordt je huidige systeem vervangen door de gekozen back-up. Dit kan niet ongedaan worden gemaakt en de server stopt terwijl het loopt.</string>
     <string name="k2go_br_restore_confirm">Systeem vervangen</string>
     <string name="k2go_br_restore_done">Systeem hersteld</string>
     <string name="k2go_br_restore_failed">Herstel mislukt</string>
+    <string name="k2go_br_restore_unreadable">Het geselecteerde bestand kon niet worden gelezen, dus er is niets gewijzigd.</string>
     <string name="deepop_channel_name">Back-up &amp; herstel</string>
     <string name="deepop_channel_desc">Houdt een back-up of herstel veilig actief op de achtergrond</string>
     <string name="deepop_notif_title">Back-up &amp; herstel</string>

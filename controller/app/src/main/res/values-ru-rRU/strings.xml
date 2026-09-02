@@ -707,12 +707,14 @@
     <string name="k2go_br_backup_failed">Резервное копирование не удалось. Повторите попытку.</string>
     <string name="k2go_br_done_title">Готово</string>
     <string name="k2go_br_failed_title">Что-то пошло не так</string>
+    <string name="k2go_br_status_copying">Копирование файла</string>
     <string name="k2go_br_status_checking">Проверка файла</string>
     <string name="k2go_br_status_restoring">Восстановление</string>
     <string name="k2go_br_restore_warn">Это заменяет текущую систему выбранной резервной копией. Отменить нельзя, и на время операции сервер останавливается.</string>
     <string name="k2go_br_restore_confirm">Заменить систему</string>
     <string name="k2go_br_restore_done">Система восстановлена</string>
     <string name="k2go_br_restore_failed">Не удалось восстановить</string>
+    <string name="k2go_br_restore_unreadable">Не удалось прочитать выбранный файл, поэтому ничего не изменилось.</string>
     <string name="deepop_channel_name">Резервное копирование и восстановление</string>
     <string name="deepop_channel_desc">Позволяет безопасно выполнять резервное копирование или восстановление в фоне</string>
     <string name="deepop_notif_title">Резервное копирование и восстановление</string>

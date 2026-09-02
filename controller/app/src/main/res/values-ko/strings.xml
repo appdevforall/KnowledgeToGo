@@ -632,12 +632,14 @@
     <string name="k2go_br_backup_failed">백업에 실패했습니다. 다시 시도하세요.</string>
     <string name="k2go_br_done_title">완료</string>
     <string name="k2go_br_failed_title">문제가 발생했습니다</string>
+    <string name="k2go_br_status_copying">파일 복사 중</string>
     <string name="k2go_br_status_checking">파일 확인 중</string>
     <string name="k2go_br_status_restoring">복원 중</string>
     <string name="k2go_br_restore_warn">이렇게 하면 현재 시스템이 선택한 백업으로 대체됩니다. 실행 취소할 수 없으며 실행 중에는 서버가 중지됩니다.</string>
     <string name="k2go_br_restore_confirm">시스템 대체</string>
     <string name="k2go_br_restore_done">시스템 복원됨</string>
     <string name="k2go_br_restore_failed">복원 실패</string>
+    <string name="k2go_br_restore_unreadable">선택한 파일을 읽을 수 없어 아무것도 변경되지 않았습니다.</string>
     <string name="deepop_channel_name">백업 및 복원</string>
     <string name="deepop_channel_desc">백업 또는 복원을 백그라운드에서 안전하게 계속 실행합니다</string>
     <string name="deepop_notif_title">백업 및 복원</string>
