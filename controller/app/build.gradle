@@ -55,7 +55,10 @@ android {
         // True only when google-services.json is present, so AnalyticsClient can compile out cleanly.
         buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
 
-        setProperty("archivesBaseName", "$applicationId-$versionName")
+        // The APK carries the product's name, not its technical identifier: these files are
+        // downloaded by people from a public bucket. The identifier still lives inside the APK.
+        // The per-output rename below abbreviates the ABI; this covers everything else Gradle names.
+        setProperty("archivesBaseName", "K2Go-$versionName")
 
         // 4. Supported architectures (NDK) - Dropping x86/x86_64
         ndk {
@@ -184,6 +187,15 @@ android {
             // Multiply original version by 10 and add the architecture ID
             // Ex: Version 50 -> Universal: 500, ARM32: 501, ARM64: 502
             output.versionCodeOverride = (variant.versionCode * 10) + baseAbiVersionCode
+
+            // Shorten the split's ABI in the filename: arm64-v8a -> v8a, armeabi-v7a -> v7a.
+            // Gradle names outputs after the split, so archivesBaseName alone cannot do this.
+            // Renaming here, beside the version-code override, keeps one block owning the outputs.
+            //   K2Go-v1.0.0-v8a-release.apk                  a tagged release (no suffix)
+            //   K2Go-v0.8.0-beta-4fb99eb4-v8a-release.apk    a Firebase or local build
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+            def shortAbi = abi == null ? "universal" : abi.replace("arm64-", "").replace("armeabi-", "")
+            output.outputFileName = "K2Go-${variant.versionName}-${shortAbi}-${variant.buildType.name}.apk"
         }
     }
 }
