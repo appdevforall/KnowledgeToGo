@@ -173,16 +173,19 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | 14 FG notification | ✅ | `dumpsys notification`: `pkg=org.appdevforall.k2go` channel `watchdog_channel` "K2Go Watchdog Service", title "K2Go Watchdog Active", FOREGROUND_SERVICE |
 | 13 Intent actions | ✅ (effective) | the 42 legacy `org.iiab.controller.*` actions drive live flows under the new package: backup ran on `…DEEPOP_*`, boot/services on the reconciler + `INSTALL_*`, and the `watchdog_channel` FG runs on `…WATCHDOG_*` — all worked |
 | 18 Custom-View screens | ✅ | Maps landing renders fully (satellite map + FqrController Material3 overlays); its custom-View FQNs resolve under the new namespace (no ClassNotFoundException) |
+| 15 Device-to-device clone | ✅ | OnePlus received a full library from a peer (`scanned payload host=192.168.1.160 rootfs=true arch=64`): CONNECTING→CALCULATING→CONFIRM→TRANSFERRING; `CloneShareService` FG on `clone_channel`; the CLONE holder quiesced the server (`desired=DOWN … holder=CLONE`), rsync ran, received system booted healthy (`home=301`, `kiwix=200`) and the reconciler released the holder back to `UP [holder=NONE]`, 0 kills. Post-clone Home shows a not-installed card GRAY (F1 again absent). Benign non-rebrand SELinux denial noted: `librsync.so avc: denied { ioctl }` (TCGETS on a pipe, permissive=0) — non-fatal, rsync completes. |
 | 11 OTA new→new | ⛔ | needs an update server offering a newer build (ADR left this reasoned-not-observed) |
-| 15 Device-to-device clone | ⛔ | needs a second device |
 | 16 restore, 17 dashboard rebuild | ⏳ optional | deeper round-trips; 16 overwrites the current system |
 
 ### 3.5 Pristine verdict (this build, debug, device)
 
-Every ADR-5368 §10 check that can be run on a single device **passed**: identity side complete
-(1–6), and functionally 7, 8, 9, 10, 12(covered), 13, 14, 18, 19, 20 — plus content serving
-(kiwix/kolibri/books/maps) and a full backup E2E. **No rebrand-caused breakage was found.** The only
-unconfirmed checks need external setup and were already reasoned-not-observed by the ADR: **11 (OTA
-new→new)** needs an update server with a newer signed build, **15 (device-to-device clone)** needs a
-second device. **16 (restore)** and **17 (dashboard rebuild)** remain as optional deeper round-trips.
-On the evidence gathered, the rebranded APK behaves as pristine for single-device operation.
+**Every ADR-5368 §10 check has now been confirmed on device except one.** Identity side complete
+(1–6); functionally 7, 8, 9, 10, 12(covered), 13, 14, 18, 19, 20; content serving
+(kiwix/kolibri/books/maps); a full backup E2E; and **15 device-to-device clone** end to end with a
+real second phone (pairing → CLONE-holder quiesce → rsync → healthy boot → holder released, 0 kills).
+**No rebrand-caused breakage was found.** The **only** unconfirmed check is **11 (OTA new→new)**, which
+needs an update server offering a newer signed build — the ADR itself left it reasoned-not-observed, and
+its runtime pieces (FileProvider authority via getPackageName, signer pinning) are already exercised by
+checks 10 and the share path. **16 (restore)** and **17 (dashboard rebuild)** remain optional deeper
+round-trips. On the evidence gathered, the rebranded APK is **pristine**: the rename changed identity
+and nothing else.
