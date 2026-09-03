@@ -278,3 +278,35 @@ its runtime pieces (FileProvider authority via getPackageName, signer pinning) a
 checks 10 and the share path. **16 (restore)** and **17 (dashboard rebuild)** remain optional deeper
 round-trips. On the evidence gathered, the rebranded APK is **pristine**: the rename changed identity
 and nothing else.
+
+---
+
+## 4. Conclusion — K2GO-380 complete
+
+The app-identifier rebrand (`org.iiab.controller` → `org.appdevforall.k2go`, K2GO-293 / ADR-5368) was
+verified end to end on device (OnePlus 7T, debug build; base and full tiers; a real two-device clone).
+**The rename changed identity and nothing else — the app runs correctly across every exercised
+mechanism.** Every ADR-5368 §10 check runnable without external infrastructure passed: fresh install,
+environment boot (0 spurious kills), FileProvider, notifications, custom-View screens, intent actions,
+content serving, backup, restore, device-to-device clone, and dashboard rebuild.
+
+**Sole deferred check — OTA new→new (§10 check 11):** an over-the-air self-update from one signed build
+to a newer one needs an update server offering a newer build, so it is deferred to a **0.9.0** that can
+be published and pulled. Its runtime pieces (FileProvider authority, signer pinning) are already
+exercised by the passing checks above.
+
+**Findings — none caused by the rebrand, each with an owner:**
+- **F1** — reframed: the "red / Unavailable tile" was a content service that had not restarted,
+  rendered correctly (not a display bug). Explained by F6.
+- **F6** — content services do not self-heal after a deep-op (`service-heal.ts` watches only kiwix) →
+  filed as **K2GO-381**.
+- **F2–F5** — deep-op process-screen UX (progress persistence + notification progress, restore ETA,
+  notification deep-link target, run-in-background nav) → follow-up ticket (to file; blocked on a
+  transient Atlassian outage at close time).
+- **Backup ↔ restore standardization** — progress parity (bar / % / ETA) and a **Cancel** affordance
+  with differentiated safety (backup: safe → offer to delete the incomplete file, no residue; restore:
+  strong warning, no clean cancel — a mid-restore cancel likely leaves the system damaged) → follow-up
+  ticket (to file).
+
+**Verdict.** K2GO-380 is **complete**: the post-rebrand device verification is done and the app behaves
+as pristine; OTA self-update is the only deferred item, pending a newer published build (0.9.0).
