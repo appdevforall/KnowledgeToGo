@@ -275,9 +275,9 @@ real second phone (pairing → CLONE-holder quiesce → rsync → healthy boot �
 **No rebrand-caused breakage was found.** The **only** unconfirmed check is **11 (OTA new→new)**, which
 needs an update server offering a newer signed build — the ADR itself left it reasoned-not-observed, and
 its runtime pieces (FileProvider authority via getPackageName, signer pinning) are already exercised by
-checks 10 and the share path. **16 (restore)** and **17 (dashboard rebuild)** remain optional deeper
-round-trips. On the evidence gathered, the rebranded APK is **pristine**: the rename changed identity
-and nothing else.
+checks 10 and the share path. **16 (restore)** and **17 (dashboard rebuild)** were subsequently run on
+device and also passed (see §3.4 and §4). On the evidence gathered, the rebranded APK is **pristine**:
+the rename changed identity and nothing else.
 
 ---
 
