@@ -78,11 +78,23 @@ correctly read **GRAY / Not installed — NOT red**. **F1 did not reproduce this
 
 Why it likely didn't show here: the RED path needs the post-restart probe to land *indeterminate*
 (nginx back up but the platform's upstream still 502 during warm-up). On this small base-tier system
-the server restart was fast, so the probe got a clean `ABSENT (404)` → GRAY before any red frame. The
-red window is a **narrow transient**, plausibly wider when the restart is slower (e.g. a full-tier
-system, or a slower device — matching where it was first seen). The code defect stands (the alive
-branch discards the known-ABSENT on an indeterminate probe); the *visible* repro is timing-dependent.
-Open question for the reporter: which tier / how long after Finish was the red seen?
+the server restart was fast, so the probe got a clean `ABSENT (404)` → GRAY before any red frame.
+
+**Full-tier retry (to test whether backup *duration* is the determinant):** reinstalled to a full
+system (all five platforms end up "Ready", so no not-installed targets remain), backed up (2.43 GB
+tar — heavier/longer than base), Finish → Home, with a 40 s screen recording over the transition.
+Result: all cards read **Ready (green)** immediately after Finish — **no red flash in the still**, and
+the recording compressed to ~0.6 MB (near-static, consistent with no flashing). Sent to the reporter
+to scrub for any sub-second flash.
+
+**Working conclusion:** F1 as reported (red after backup) **did not visibly reproduce on device**
+across base and full tiers on this build (`f03cd618`, debug). By the time Home renders after Finish,
+services already answer, so cards resolve straight to green/gray — suggesting the deep-op restarts and
+waits for a healthy server *before* returning, so Home never observes the intermediate 502 window via
+this path. The code defect is still real by inspection (the alive branch discards a known `ABSENT` on
+an indeterminate probe), so the fix stands regardless; but the visible symptom needs the reporter's
+exact conditions (build, tier, timing, how long the red persisted) to reproduce, or it may already be
+gone on this build.
 
 ---
 
