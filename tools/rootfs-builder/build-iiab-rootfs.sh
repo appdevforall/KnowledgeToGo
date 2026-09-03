@@ -22,8 +22,8 @@
 # branch (git ls-remote, then the REST API). --iiab-commit overrides everything.
 #
 # Output:
-#   - iiab-oa_<date>_<tier>_<iiab-sha>_<arch>.tar.gz   (top-level = installed-rootfs/iiab/)
-#   - iiab-oa_<...>.tar.gz.meta4 / .torrent            (per-artifact, mkmetalink)
+#   - k2go_<date>_<tier>_<iiab-sha>_<arch>.tar.gz      (top-level = installed-rootfs/iiab/)
+#   - k2go_<...>.tar.gz.meta4 / .torrent               (per-artifact, mkmetalink)
 #   - latest_<tier>_<arch>.meta4   (STABLE pointer the APK requests; a copy of the
 #     per-artifact .meta4. Inside it, <url> mirrors point at the full-named tarball,
 #     so this stable name always resolves to the newest build.)
@@ -747,7 +747,9 @@ fi
 [[ -n "$IIAB_SHA" ]] || die "Could not determine the iiab/iiab commit id. Pass --iiab-commit <sha>."
 log "iiab/iiab id: ${IIAB_SHA}  [source: ${IIAB_SRC}]"
 
-ARTIFACT="iiab-oa_${STAMP}_${TIER_NAME}_${IIAB_SHA}_${ARCH}.tar.gz"
+# K2GO-377: the artifacts carry the product name. The stable pointers do not change —
+# latest_<tier>_<arch>.meta4/.installed never carried a product prefix.
+ARTIFACT="k2go_${STAMP}_${TIER_NAME}_${IIAB_SHA}_${ARCH}.tar.gz"
 META4="latest_${TIER_NAME}_${ARCH}.meta4"
 INSTALLED="latest_${TIER_NAME}_${ARCH}.installed"   # ADFA-5110: stable uncompressed-size sidecar
 

@@ -59,7 +59,7 @@ bundled asset becomes a committed snapshot, or a fetch of the latest published c
 release time).
 
 The artifacts are served from the same public base as the OTA —
-`k2go-download.appdevforall.org` (the Cloudflare domain in front of the `iiaboa-apk-repo`
+`k2go-download.appdevforall.org` (the Cloudflare domain in front of the `k2go-apk-repo`
 bucket, where `UpdateController` already reads `update.json`) — under a `catalogs/` prefix:
 
 - `https://k2go-download.appdevforall.org/catalogs/kolibri_catalog.jsonl`
