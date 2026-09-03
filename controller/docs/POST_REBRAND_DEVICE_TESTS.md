@@ -98,6 +98,40 @@ gone on this build.
 
 ---
 
+### F2 — Dashboard-rebuild progress resets to 0 on return from the notification; the notification shows no progress
+
+**Severity:** low–medium (UX only; the rebuild itself completes correctly). **Rebrand-caused:** no.
+**Area:** K2GO-95 (determinate rebuild progress).
+
+**Symptom (reported on device).** During a dashboard rebuild, minimizing the app → the foreground
+notification shows **no percentage and no ETA**; re-entering via the notification while the bar was
+~1/3 → the bar **resets to 0** and re-advances from there. The bar does reach 100% when the rebuild
+actually finishes (the underlying op is fine).
+
+**Mechanism.** The determinate bar is computed *client-side* in
+`DashboardDetailFragment` (K2GO-95 Phase 2) from `progressPhase` + `progressPhaseStartMs`
+(`SystemClock.elapsedRealtime()` measuring time *within* a phase), driven by polling the rebuild log
+([:66-68](../app/src/main/java/org/appdevforall/k2go/redesign/DashboardDetailFragment.java#L66),
+[:394-405](../app/src/main/java/org/appdevforall/k2go/redesign/DashboardDetailFragment.java#L394)).
+Both fields are **fragment-local**, and `progressPhaseStartMs` anchors to when *this fragment instance*
+first saw the phase — not when the rebuild actually entered it. On minimize→restore the fragment is
+recreated, the fields reset (`progressPhase=NONE`, bar → indeterminate,
+[:362-363](../app/src/main/java/org/appdevforall/k2go/redesign/DashboardDetailFragment.java#L362)), and
+the time-in-phase clock restarts at 0 → the bar restarts. Meanwhile `DashboardRebuildService`
+broadcasts only coarse `STATE_RUNNING/DONE`, and its notification has **no `setProgress()`** → no
+percentage in the shade.
+
+**Design read (CLAUDE.md coherence).** "How far along is the rebuild" has **no persistent owner** — it
+is re-derived per fragment instance from a wall-clock that resets. The phase and its *real* start
+(derivable from the log's own timestamps) should live in a repository or the service, surviving the
+fragment lifecycle **and** feeding the notification (`setProgress`), so the bar resumes where the
+rebuild actually is and the notification can show it. Missing-fact → design fix, not a fragment patch.
+
+**Not rebrand-related.** Candidate for its **own ticket** (the "Pandora's box → separate ticket" rule),
+related to **K2GO-95**.
+
+---
+
 ## 3. Global device test matrix
 
 Grouped identity-sensitive first (what an `applicationId` change can actually break), then the
@@ -175,7 +209,8 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | 18 Custom-View screens | ✅ | Maps landing renders fully (satellite map + FqrController Material3 overlays); its custom-View FQNs resolve under the new namespace (no ClassNotFoundException) |
 | 15 Device-to-device clone | ✅ | OnePlus received a full library from a peer (`scanned payload host=192.168.1.160 rootfs=true arch=64`): CONNECTING→CALCULATING→CONFIRM→TRANSFERRING; `CloneShareService` FG on `clone_channel`; the CLONE holder quiesced the server (`desired=DOWN … holder=CLONE`), rsync ran, received system booted healthy (`home=301`, `kiwix=200`) and the reconciler released the holder back to `UP [holder=NONE]`, 0 kills. Post-clone Home shows a not-installed card GRAY (F1 again absent). Benign non-rebrand SELinux denial noted: `librsync.so avc: denied { ioctl }` (TCGETS on a pipe, permissive=0) — non-fatal, rsync completes. |
 | 11 OTA new→new | ⛔ | needs an update server offering a newer build (ADR left this reasoned-not-observed) |
-| 16 restore, 17 dashboard rebuild | ⏳ optional | deeper round-trips; 16 overwrites the current system |
+| 17 Dashboard rebuild | ✅ | monitored a live rebuild: reconciler held `holder=DASHBOARD` ~2.5 min (self-restarting holder suppressed actuation, server never dropped — `desired=UP actual=UP intent=NOOP`), then released to `holder=NONE`, 0 kills. Surfaced a UX bug (F2, not rebrand-related). |
+| 16 restore | ⏳ optional | deeper round-trip; overwrites the current system |
 
 ### 3.5 Pristine verdict (this build, debug, device)
 
