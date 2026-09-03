@@ -132,6 +132,60 @@ related to **K2GO-95**.
 
 ---
 
+### F3–F5 — Deep-op process-screen & notification UX (one cluster; not rebrand-related)
+
+Reported while running the restore; the same pattern spans the deep-op screens (install, backup,
+restore, dashboard rebuild, clone). Grouped because they are one cohesive concern, not three unrelated
+bugs.
+
+- **F3 — Restore has a reliable determinate bar but no ETA.** The rootfs install shows a time estimate;
+  the restore should too. Derivable from `TarExtractor` bytes-extracted vs the archive size (both are
+  already logged: `Extract start: … archiveCompressed=…`). Area: K2GO-95 / progress.
+- **F4 — The foreground notification deep-links to Settings, not the process/progress screen.** Tapping
+  the restore's notification lands on Settings instead of the running-restore window. Every deep-op's
+  notification `contentIntent` should open *its own* progress screen — **audit all of them** (install,
+  backup, restore, dashboard rebuild, clone); `DashboardRebuildService` already deep-links to its card
+  (Module management → Dashboard), so the target exists for some and not others.
+- **F5 — "Run in background" behaves like Back, not "go to Home/Library".** On the process screens the
+  run-in-background control pops the back stack — reliable, but it can land somewhere unintended; it
+  should route deliberately to Home/Library.
+
+**Design read (CLAUDE.md coherence).** These + F2 are one cohesive area: the deep-op process screens and
+their notifications lack a consistent contract — a shared progress+ETA model, a notification that opens
+its *own* screen, and a defined run-in-background destination. That is a **single "deep-op process-screen
+UX" ticket** (with F2), related to **K2GO-95**, not one ticket per symptom (per the "work at the cohesive
+-area level" rule).
+
+---
+
+### F6 — Content services don't self-heal after a deep-op; only Kiwix is watched → **K2GO-381**
+
+**Severity:** medium (a restored/cloned box can have a content service down until manual Retry).
+**Rebrand-caused:** no. **Confirmed on device (restore round-trip) and in code.**
+
+**Symptom.** After a *restore*, Kolibri did not restart on its own: `:8009` unreachable, `/kolibri/`
+returned **502**, and "Take courses" showed a red **"Unavailable"** tile. Kiwix/Books/Maps were fine.
+
+**Root cause (confirmed).** By design the app/reconciler owns box up/down and does **not** manage
+individual box services (ADR-5343a §10 layering). Per-service healing is the dashboard's job —
+`static/dashboard/sockets/service-heal.ts` probes content services on loopback and issues
+`pdsm restart <svc>` on a down one. But its `WATCHED` list contains **only `kiwix`**
+([service-heal.ts:28-30](../../static/dashboard/sockets/service-heal.ts#L28)); the comment says the
+others "are added here as they are device-verified" and `restartService` already accepts the full set.
+So Kolibri/php-fpm/calibre-web are never auto-restarted; Kiwix would have self-healed.
+
+**Not a bug of the rebrand nor new** — it is the incremental rollout planned in ADFA-5343. Fix = extend
+`WATCHED`. **Filed as K2GO-381** (relates K2GO-380).
+
+**This reframes F1.** The originally-reported "apps show red/Unavailable after a backup" was almost
+certainly *this* — a content service not restarting after a deep-op, correctly rendered red
+("down/wedged"), **not** a display bug (not-installed→red). The app card and `service-heal.classifyProbe`
+([:50-55](../../static/dashboard/sockets/service-heal.ts#L50)) use the same split: `404 → absent
+(gray, not installed)`, `5xx/502/timeout → down (red, Unavailable)`. So F1's display is working as
+designed; F6 (service not restarting) is the real defect, now owned by K2GO-381.
+
+---
+
 ## 3. Global device test matrix
 
 Grouped identity-sensitive first (what an `applicationId` change can actually break), then the
@@ -210,7 +264,7 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | 15 Device-to-device clone | ✅ | OnePlus received a full library from a peer (`scanned payload host=192.168.1.160 rootfs=true arch=64`): CONNECTING→CALCULATING→CONFIRM→TRANSFERRING; `CloneShareService` FG on `clone_channel`; the CLONE holder quiesced the server (`desired=DOWN … holder=CLONE`), rsync ran, received system booted healthy (`home=301`, `kiwix=200`) and the reconciler released the holder back to `UP [holder=NONE]`, 0 kills. Post-clone Home shows a not-installed card GRAY (F1 again absent). Benign non-rebrand SELinux denial noted: `librsync.so avc: denied { ioctl }` (TCGETS on a pipe, permissive=0) — non-fatal, rsync completes. |
 | 11 OTA new→new | ⛔ | needs an update server offering a newer build (ADR left this reasoned-not-observed) |
 | 17 Dashboard rebuild | ✅ | monitored a live rebuild: reconciler held `holder=DASHBOARD` ~2.5 min (self-restarting holder suppressed actuation, server never dropped — `desired=UP actual=UP intent=NOOP`), then released to `holder=NONE`, 0 kills. Surfaced a UX bug (F2, not rebrand-related). |
-| 16 restore | ⏳ optional | deeper round-trip; overwrites the current system |
+| 16 Restore | ✅ | monitored a live restore: DEEPOP_RESTORE FG on `deepop_channel`; RESTORE holder quiesced all services (calibre-web/dash-node/kiwix/kolibri/nginx/php-fpm), `TarExtractor` extracted a 2.43 GB archive to `…/org.appdevforall.k2go/files/rootfs` via the new package's `libtar.so`, system booted healthy (`home=301`, `kiwix=200`), holder released to NONE, 0 kills. Surfaced UX findings F3–F5 (not rebrand-related). |
 
 ### 3.5 Pristine verdict (this build, debug, device)
 
