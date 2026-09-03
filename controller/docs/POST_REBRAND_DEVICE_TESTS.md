@@ -72,9 +72,17 @@ non-absent one. Not a new flag — reuse the evidence the offline branch already
 backup *every* content card takes the indeterminate branch at once; on the pre-rebrand app with
 content present those cards were green and the path never showed.
 
-**Repro (device):** install rootfs → create a backup → Finish → observe Home cards. **TODO:
-capture on the OnePlus and confirm whether `serverAliveSinceMs` is reset across the deep-op (if
-not, RED is immediate, with no amber grace).**
+**Device repro attempt (OnePlus 7T, base tier, debug build):** clean install → base-tier system →
+backup (1.65 GB) → Finish → Home. Result: the two not-installed cards ("Read a book", "Take courses")
+correctly read **GRAY / Not installed — NOT red**. **F1 did not reproduce this run.**
+
+Why it likely didn't show here: the RED path needs the post-restart probe to land *indeterminate*
+(nginx back up but the platform's upstream still 502 during warm-up). On this small base-tier system
+the server restart was fast, so the probe got a clean `ABSENT (404)` → GRAY before any red frame. The
+red window is a **narrow transient**, plausibly wider when the restart is slower (e.g. a full-tier
+system, or a slower device — matching where it was first seen). The code defect stands (the alive
+branch discards the known-ABSENT on an indeterminate probe); the *visible* repro is timing-dependent.
+Open question for the reporter: which tier / how long after Finish was the red seen?
 
 ---
 
@@ -136,4 +144,8 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | F-m Connect/hotspot QR | ✅ PASS | Clone→Send: join-hotspot QR renders, `LocalOnlyHotspot` starts (SSID AndroidShare_7317) under the new package; get-app QR (ApkServer) renders. K2GO-375 fix intact on the renamed app. |
 | — | | Build is **release** (`run-as` denied), so on-device fs introspection is limited; use REST probes. |
 | I5, I7, OTA install | ➖ ADR-covered | Exercised in ADR-5368 §10.2 (checks 12–13, 11); re-confirm opportunistically. |
-| F-g backup / F1 repro | ⏳ next | Needs a **basic-tier** install (fewer platforms present) → uninstall + reinstall (debug build, Firebase off). |
+| F-a fresh install E2E | ✅ PASS | Clean debug install → base-tier system installed & served (~2 min); Home shows a correct mix (books/courses Not installed, code/wikipedia/maps Ready) |
+| F-g backup E2E | ✅ PASS | Settings→Backups→Back up → SAF picker default name `k2go_2026.246_…` (rebranded, single file) → 1.65 GB tar written by DeepOpService → "Backup saved" → Finish returns to Home. Backup writer + deep-op work under the new package. |
+| F1 repro (backup→Home) | ⚠ NOT reproduced (this run) | not-installed cards read GRAY correctly after Finish on base tier; red window is a narrow transient (see §2 F1). Retest on full tier / slower restart. |
+| Backup naming false-alarm | ✅ retracted | earlier "k2go_ vs iiab-oa_ inconsistency" was a mis-tap selecting an old backup file; the real default is `k2go_…`. |
+| I7 terminal, F-h restore, F-i clone | ⏳ later | debug build now enables `run-as` for deeper checks |
