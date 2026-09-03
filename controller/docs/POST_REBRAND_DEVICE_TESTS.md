@@ -8,7 +8,7 @@ while testing. It complements — does not replace — the verification matrix i
 `ADR-5368-app-identifier-rebrand.md` §10; that matrix proves *the rename itself*, this
 one is the *global* app sweep and the running findings log.
 
-Test device for this pass: **OnePlus 7T (HD1901), arm64-v8a, API level TBD.**
+Test device for this pass: **OnePlus 7T (HD1901), arm64-v8a.**
 
 ---
 
@@ -42,59 +42,32 @@ Test device for this pass: **OnePlus 7T (HD1901), arm64-v8a, API level TBD.**
 
 ## 2. Findings log
 
-### F1 — Uninstalled content cards show RED ("unavailable"), not GRAY ("not installed"), after a backup
+### F1 — "Unavailable (red)" reported instead of "Not installed (gray)" — investigated, reframed as F6
 
-**Severity:** medium (misleading status; no data loss). **Rebrand-caused:** no. **Rebrand-exposed:** yes.
+**Severity:** n/a (reframed — see F6). **Rebrand-caused:** no.
 
-**Symptom.** Create a backup, press **Finish** → returns to Library/Home. Content platforms that
-are *not installed* render with the **red** dot ("unavailable"/stuck) instead of the **gray**
-"Not installed" dot.
+**As reported.** After a backup, content platforms appeared as a red "Unavailable" tile instead of a
+gray "Not installed" tile.
 
-**Mechanism.** `LibraryHomeFragment.refreshStatuses()`
-([:568-585](../app/src/main/java/org/appdevforall/k2go/redesign/LibraryHomeFragment.java#L568)),
-server-alive branch: each card **freshly probes** its endpoint —
-`PRESENT → green`, `ABSENT (404 = not installed) → gray`, otherwise **indeterminate** →
-`RED` once `serverAliveSinceMs` grace (60 s) has passed, else amber. A backup **stops and
-restarts** the box; on return, nginx/dash-node routing is still warming, so a probe to a
-not-installed platform does **not** get a clean `ABSENT (404)` — it lands in the *indeterminate*
-bucket and paints **red**. The offline branch
-([:563-566](../app/src/main/java/org/appdevforall/k2go/redesign/LibraryHomeFragment.java#L563))
-does the right thing (`PlatformEvidence.last(...) == ABSENT ? GRAY : AMBER`), but the alive
-branch **discards the already-known "not installed" fact** on a transient indeterminate probe.
+**What the card does.** `LibraryHomeFragment.refreshStatuses()`
+([:568-585](../app/src/main/java/org/appdevforall/k2go/redesign/LibraryHomeFragment.java#L568)) paints
+each card from a fresh probe: `PRESENT → green`, `ABSENT (404 = not installed) → gray`, otherwise
+*indeterminate* → red (after a 60 s grace) / amber. The initial hypothesis was that, in the warm-up
+after a deep-op restarts the box, a *not-installed* platform's probe might momentarily miss a clean
+404 and land *indeterminate* → red.
 
-**Design read (CLAUDE.md coherence).** A fact with an owner ("this platform is not installed",
-recorded in `PlatformEvidence`) is re-derived — wrongly — from a transient probe. The fix is to
-*fall back to last-known evidence* before deciding RED: an endpoint last seen `ABSENT` should stay
-gray through a warm-up indeterminate probe; RED should require either no prior verdict or a prior
-non-absent one. Not a new flag — reuse the evidence the offline branch already trusts.
-
-**Why the rebrand exposed it.** The renamed app is a clean install (nothing installed), so after a
-backup *every* content card takes the indeterminate branch at once; on the pre-rebrand app with
-content present those cards were green and the path never showed.
-
-**Device repro attempt (OnePlus 7T, base tier, debug build):** clean install → base-tier system →
-backup (1.65 GB) → Finish → Home. Result: the two not-installed cards ("Read a book", "Take courses")
-correctly read **GRAY / Not installed — NOT red**. **F1 did not reproduce this run.**
-
-Why it likely didn't show here: the RED path needs the post-restart probe to land *indeterminate*
-(nginx back up but the platform's upstream still 502 during warm-up). On this small base-tier system
-the server restart was fast, so the probe got a clean `ABSENT (404)` → GRAY before any red frame.
-
-**Full-tier retry (to test whether backup *duration* is the determinant):** reinstalled to a full
-system (all five platforms end up "Ready", so no not-installed targets remain), backed up (2.43 GB
-tar — heavier/longer than base), Finish → Home, with a 40 s screen recording over the transition.
-Result: all cards read **Ready (green)** immediately after Finish — **no red flash in the still**, and
-the recording compressed to ~0.6 MB (near-static, consistent with no flashing). Sent to the reporter
-to scrub for any sub-second flash.
-
-**Working conclusion:** F1 as reported (red after backup) **did not visibly reproduce on device**
-across base and full tiers on this build (`f03cd618`, debug). By the time Home renders after Finish,
-services already answer, so cards resolve straight to green/gray — suggesting the deep-op restarts and
-waits for a healthy server *before* returning, so Home never observes the intermediate 502 window via
-this path. The code defect is still real by inspection (the alive branch discards a known `ABSENT` on
-an indeterminate probe), so the fix stands regardless; but the visible symptom needs the reporter's
-exact conditions (build, tier, timing, how long the red persisted) to reproduce, or it may already be
-gone on this build.
+**Resolution — the display is correct; the red was a down service (F6).** The hypothesis did **not
+hold up.** (1) It did not reproduce on device: across base and full tiers, not-installed cards read
+**gray** correctly after Finish (the deep-op restarts and waits for a healthy server before returning,
+so Home never renders mid-warm-up via this path). (2) The classification is sound and shared: the app
+card and the box's `service-heal.classifyProbe`
+([service-heal.ts:50-55](../../static/dashboard/sockets/service-heal.ts#L50)) use the same split —
+**`404 → absent → gray (not installed)`**, **`5xx/502/timeout → down → red (Unavailable)`**. A genuinely
+not-installed platform has no nginx route → 404 → gray, so it does not reach the red path. The red tile
+the report saw was an *installed* service that had **not restarted** (Kolibri, 502) — rendered
+**correctly**. That is **F6** (owned by **K2GO-381**). The offline branch's last-known-evidence fallback
+([:563-566](../app/src/main/java/org/appdevforall/k2go/redesign/LibraryHomeFragment.java#L563)) is
+already the right pattern; there is no display defect to fix here.
 
 ---
 
@@ -207,7 +180,7 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | I9 | proot seccomp verdict | First launch on affected device | one ADFA-5362 learn line, then `PROOT_NO_SECCOMP=1` | verdict keyed on `versionCode` → re-learns (expected, not a regression) |
 | I10 | OTA signer pin | new→new update | updates in place | `ApkVerifier`/`CertDigests` — rebuilt APK must carry the pinned cert |
 | I11 | Debug delivery (debug builds) | `am broadcast -a org.appdevforall.k2go.DEBUG_DELIVERY -n org.appdevforall.k2go/…DebugDeliveryReceiver` | receiver enqueues | the ONE new-namespace action; must match new id |
-| I12 | Firebase/analytics | build + first run | google-services matches package | **release gate open** — needs `org.appdevforall.k2go` Firebase client (§1) |
+| I12 | Firebase/analytics | build + first run | google-services matches package | keyed on `package_name`; resolved for the shipped build, local dev copy stale (§1, §3.3) |
 
 ### 3.2 Functional sweep (rebrand must not have moved anything)
 
@@ -219,7 +192,7 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | F-d | Content: Books | open Read a book | library loads | |
 | F-e | Content: Maps | open Navigate maps | tiles render | |
 | F-f | Get-More install | install one not-present module | downloads, card → green | ⬇ |
-| F-g | Backup create | Settings → backup → Finish | archive written; **watch F1: not-installed cards must read gray, not red** | ⬇ |
+| F-g | Backup create | Settings → backup → Finish | archive written; not-installed cards read gray (a red tile = a down service, F6) | ⬇ |
 | F-h | Restore | restore the backup | round-trips, boots healthy | ⬇ |
 | F-i | Clone send/receive | between two new-id devices | pairing + transfer complete | ⇄ ⬇ |
 | F-j | Dashboard rebuild | trigger a rebuild | completes, log tails | |
@@ -246,7 +219,7 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | I5, I7, OTA install | ➖ ADR-covered | Exercised in ADR-5368 §10.2 (checks 12–13, 11); re-confirm opportunistically. |
 | F-a fresh install E2E | ✅ PASS | Clean debug install → base-tier system installed & served (~2 min); Home shows a correct mix (books/courses Not installed, code/wikipedia/maps Ready) |
 | F-g backup E2E | ✅ PASS | Settings→Backups→Back up → SAF picker default name `k2go_2026.246_…` (rebranded, single file) → 1.65 GB tar written by DeepOpService → "Backup saved" → Finish returns to Home. Backup writer + deep-op work under the new package. |
-| F1 repro (backup→Home) | ⚠ NOT reproduced (this run) | not-installed cards read GRAY correctly after Finish on base tier; red window is a narrow transient (see §2 F1). Retest on full tier / slower restart. |
+| F1 repro (backup→Home) | ✅ reframed | not-installed cards read GRAY correctly (base + full tiers); the reported red was a down service (F6), not a display bug — see §2 F1 / F6. |
 | Backup naming false-alarm | ✅ retracted | earlier "k2go_ vs iiab-oa_ inconsistency" was a mis-tap selecting an old backup file; the real default is `k2go_…`. |
 | I7 terminal, F-h restore, F-i clone | ⏳ later | debug build now enables `run-as` for deeper checks |
 
@@ -286,9 +259,10 @@ the rename changed identity and nothing else.
 The app-identifier rebrand (`org.iiab.controller` → `org.appdevforall.k2go`, K2GO-293 / ADR-5368) was
 verified end to end on device (OnePlus 7T, debug build; base and full tiers; a real two-device clone).
 **The rename changed identity and nothing else — the app runs correctly across every exercised
-mechanism.** Every ADR-5368 §10 check runnable without external infrastructure passed: fresh install,
+mechanism.** Every ADR-5368 §10 check exercised on a single device passed — fresh install,
 environment boot (0 spurious kills), FileProvider, notifications, custom-View screens, intent actions,
-content serving, backup, restore, device-to-device clone, and dashboard rebuild.
+content serving, backup, restore, device-to-device clone, and dashboard rebuild — with the terminal
+`iiab` CLI (check 12) covered by inspection (its path derives from `getFilesDir()` under the new package).
 
 **Sole deferred check — OTA new→new (§10 check 11):** an over-the-air self-update from one signed build
 to a newer one needs an update server offering a newer build, so it is deferred to a **0.9.0** that can
