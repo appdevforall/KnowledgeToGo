@@ -31,8 +31,17 @@ public final class RootfsIdentity {
         WRONG_ARCH
     }
 
-    /** The kind every rootfs manifest declares; anything else is a different sort of archive. */
-    private static final String KIND_ROOTFS = "iiab-rootfs";
+    /**
+     * The kinds a rootfs manifest may declare; anything else is a different sort of archive.
+     *
+     * <p>K2GO-90: two are accepted so the manifest can be renamed later without a broken window.
+     * The reader has to ship before the writer changes — an app that only knew the new name would
+     * reject every archive built before the switch, including the backups users are told to make
+     * before migrating. The builder still writes {@code iiab-rootfs}; this only removes the reason
+     * it cannot stop.
+     */
+    private static final java.util.List<String> KIND_ROOTFS =
+            java.util.Arrays.asList("iiab-rootfs", "k2go-rootfs");
 
     private RootfsIdentity() {
     }
@@ -56,7 +65,7 @@ public final class RootfsIdentity {
         if (!present) {
             return Verdict.OK;
         }
-        if (!KIND_ROOTFS.equals(kind)) {
+        if (!KIND_ROOTFS.contains(kind)) {
             return Verdict.NOT_A_ROOTFS;
         }
         if (arch != null && !arch.isEmpty() && appAbi != null && !arch.equals(appAbi)) {

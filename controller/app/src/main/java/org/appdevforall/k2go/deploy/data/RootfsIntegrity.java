@@ -39,7 +39,13 @@ import java.util.zip.GZIPInputStream;
 public final class RootfsIntegrity {
 
     private static final String TAG = "IIAB-RootfsIntegrity";
-    private static final String INTEGRITY_MEMBER = "installed-rootfs/iiab/.iiab-rootfs.integrity.json";
+    // K2GO-90: matched under either name, like the identity manifest. This one is excluded from the
+    // tree hash it declares, so failing to recognise it would fold it into its own digest and every
+    // archive would read as CORRUPT.
+    private static final String[] INTEGRITY_MEMBERS = {
+            "installed-rootfs/iiab/.iiab-rootfs.integrity.json",
+            "installed-rootfs/iiab/.k2go-rootfs.integrity.json"
+    };
     private static final int MAX_DECL_BYTES = 64 * 1024;
 
     public enum Status {
@@ -84,7 +90,10 @@ public final class RootfsIntegrity {
                      : new BufferedInputStream(rawFile)) {
 
             final RootfsTreeHash.Accumulator acc = new RootfsTreeHash.Accumulator();
-            final String integrityNorm = RootfsTreeHash.norm(INTEGRITY_MEMBER);
+            final java.util.Set<String> integrityNorms = new java.util.HashSet<>();
+            for (String m : INTEGRITY_MEMBERS) {
+                integrityNorms.add(RootfsTreeHash.norm(m));
+            }
             boolean integritySeen = false;
             String declaredAlgo = null;
             String declaredHash = null;
@@ -139,7 +148,7 @@ public final class RootfsIntegrity {
                               : cString(header, 157, 100);
                 longName = longLink = paxPath = paxLink = null; // consumed
 
-                if (integrityNorm.equals(RootfsTreeHash.norm(name))) {
+                if (integrityNorms.contains(RootfsTreeHash.norm(name))) {
                     // The integrity member itself: read its declaration, do NOT hash it.
                     byte[] decl = readBlock(in, Math.min(size, MAX_DECL_BYTES), padded);
                     integritySeen = true;
