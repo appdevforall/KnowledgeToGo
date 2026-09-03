@@ -132,5 +132,8 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | I12 Firebase | ✅ PASS (build) | `FirebaseInitProvider` runs under new pkg → valid new-package `google-services.json` was used; only local dev copy stale |
 | F-b/c/d/e content | ✅ PASS | kiwix=200, kolibri=302, books=200, maps=200 — all present; cards accurate (no false-green) |
 | F-k OTA host | ✅ PASS | `https://k2go-download.appdevforall.org/update.json` → 200 from device (CF R2 reachable, network-security-config allows) |
+| I2 runtime | ✅ PASS | Clone→Send→"Share the app another way" → Android share sheet opened ("Sharing 1 file · base.apk"); `getUriForFile(getPackageName()+".provider", …)` resolves at runtime under `org.appdevforall.k2go.provider`. The rename's sharpest test (ADR check 10), independently confirmed. |
+| F-m Connect/hotspot QR | ✅ PASS | Clone→Send: join-hotspot QR renders, `LocalOnlyHotspot` starts (SSID AndroidShare_7317) under the new package; get-app QR (ApkServer) renders. K2GO-375 fix intact on the renamed app. |
 | — | | Build is **release** (`run-as` denied), so on-device fs introspection is limited; use REST probes. |
-| I2 runtime, I5, I7, F-g backup/F1, F-m Connect QR, OTA install | ⏳ pending | UI-driven / heavy; next batch |
+| I5, I7, OTA install | ➖ ADR-covered | Exercised in ADR-5368 §10.2 (checks 12–13, 11); re-confirm opportunistically. |
+| F-g backup / F1 repro | ⏳ next | Needs a **basic-tier** install (fewer platforms present) → uninstall + reinstall (debug build, Firebase off). |
