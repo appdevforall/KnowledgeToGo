@@ -76,4 +76,30 @@ public class RootfsIdentityTest {
         assertEquals(RootfsIdentity.Verdict.NOT_A_ROOTFS,
                 RootfsIdentity.check(true, "not-a-rootfs", ARM32, ARM64));
     }
+
+    // ---- K2GO-90: the manifest may be renamed later; the reader ships tolerant first ----
+
+    @Test public void acceptsTheRenamedKind() {
+        assertEquals(RootfsIdentity.Verdict.OK,
+                RootfsIdentity.check(true, "k2go-rootfs", "arm64-v8a", "arm64-v8a"));
+    }
+
+    @Test public void stillAcceptsTheOriginalKind() {
+        // The backups users are told to make before migrating carry this one.
+        assertEquals(RootfsIdentity.Verdict.OK,
+                RootfsIdentity.check(true, "iiab-rootfs", "arm64-v8a", "arm64-v8a"));
+    }
+
+    @Test public void theRenamedKindIsStillArchChecked() {
+        // Accepting a second name must not become a way around the ABI rule.
+        assertEquals(RootfsIdentity.Verdict.WRONG_ARCH,
+                RootfsIdentity.check(true, "k2go-rootfs", "armeabi-v7a", "arm64-v8a"));
+    }
+
+    @Test public void anyOtherKindIsStillRejected() {
+        assertEquals(RootfsIdentity.Verdict.NOT_A_ROOTFS,
+                RootfsIdentity.check(true, "k2go-backup", "arm64-v8a", "arm64-v8a"));
+        assertEquals(RootfsIdentity.Verdict.NOT_A_ROOTFS,
+                RootfsIdentity.check(true, "rootfs", "arm64-v8a", "arm64-v8a"));
+    }
 }

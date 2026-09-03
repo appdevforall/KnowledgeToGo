@@ -32,7 +32,11 @@ import java.util.zip.GZIPInputStream;
 public final class RootfsManifest {
 
     private static final String TAG = "IIAB-RootfsManifest";
-    private static final String MEMBER_SUFFIX = "iiab/.iiab-rootfs.json";
+    // K2GO-90: both names are matched for the same reason RootfsIdentity accepts both kinds —
+    // the reader ships first, so a later rename cannot orphan archives already in the field.
+    private static final String[] MEMBER_SUFFIXES = {
+            "iiab/.iiab-rootfs.json", "iiab/.k2go-rootfs.json"
+    };
     private static final int MAX_HEADERS = 8;            // identity is first; scan a few in case of pax/dir entries
     private static final int MAX_JSON_BYTES = 64 * 1024;
 
@@ -97,7 +101,7 @@ public final class RootfsManifest {
                 if (size < 0) {
                     break;
                 }
-                if (normalizeEndsWith(name, MEMBER_SUFFIX)) {
+                if (matchesManifestMember(name)) {
                     int toRead = (int) Math.min(size, MAX_JSON_BYTES);
                     byte[] json = new byte[toRead];
                     if (!readFully(in, json, toRead)) {
@@ -130,6 +134,16 @@ public final class RootfsManifest {
             // caller's kind check fails closed.
             return new Identity(true, null, null, null);
         }
+    }
+
+    /** True when {@code rawName} is the identity manifest under either of its accepted names. */
+    private static boolean matchesManifestMember(String rawName) {
+        for (String suffix : MEMBER_SUFFIXES) {
+            if (normalizeEndsWith(rawName, suffix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean normalizeEndsWith(String rawName, String suffix) {
