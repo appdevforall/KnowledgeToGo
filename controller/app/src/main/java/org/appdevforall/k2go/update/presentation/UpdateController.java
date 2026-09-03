@@ -187,10 +187,16 @@ public class UpdateController {
                 .show();
     }
 
+    /** Fallback name for the staged APK, used only when the download URL does not end in .apk.
+     *  It is the same default on both sides of the SharedPreferences round-trip, so it lives in one
+     *  place: the two spellings drifting apart would stage a file the verifier then looks for by
+     *  another name. */
+    private static final String STAGED_APK_FALLBACK = "k2go_update.apk";
+
     private void startDownload(String downloadUrl) {
         String apkName = android.net.Uri.parse(downloadUrl).getLastPathSegment();
         if (apkName == null || !apkName.endsWith(".apk")) {
-            apkName = "iiab_update.apk";
+            apkName = STAGED_APK_FALLBACK;
         }
 
         activity.getSharedPreferences(activity.getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
@@ -293,7 +299,7 @@ public class UpdateController {
     /** Verify the staged APK exists and is signed by this app's certificate. Returns the file, or null. */
     private File verifyDownloadedApk() {
         String apkName = activity.getSharedPreferences(activity.getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
-                .getString("ota_apk_name", "iiab_update.apk");
+                .getString("ota_apk_name", STAGED_APK_FALLBACK);
 
         File apkFile = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), apkName);
 
