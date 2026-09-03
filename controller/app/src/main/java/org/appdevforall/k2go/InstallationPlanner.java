@@ -1,0 +1,375 @@
+package org.appdevforall.k2go;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import org.appdevforall.k2go.rootfs.data.RootfsCatalog;
+import org.appdevforall.k2go.rootfs.data.RootfsRemoteDataSource;
+import org.appdevforall.k2go.rootfs.data.RootfsRepositoryImpl;
+import org.appdevforall.k2go.rootfs.domain.GetRootfsSizeUseCase;
+import org.appdevforall.k2go.rootfs.domain.Rootfs;
+import org.appdevforall.k2go.rootfs.domain.RootfsRepository;
+import org.appdevforall.k2go.rootfs.domain.RootfsTier;
+import org.appdevforall.k2go.util.ByteFormatter;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class InstallationPlanner {
+    private static final String TAG = "InstallationPlanner";
+    private static final String KIWIX_URL = "https://download.kiwix.org/zim/wikipedia/";
+    private static final String CACHE_FILE_NAME = "kiwix_catalog.json";
+
+    // OS rootfs sizes are no longer hardcoded here. They are resolved live (with a
+    // hardcoded fallback) through the layered "rootfs" slice — see resolveOsSizeGb()
+    // and org.appdevforall.k2go.rootfs.* . Fallback byte values live in RootfsCatalog.
+
+    private static final double MAPS_BASIC_GB = 0.2;
+    private static final double MAPS_STANDARD_GB = 11.0;
+    private static final double MAPS_FULL_GB = 16.0;
+
+    private static final double KIWIX_LIMIT_BASIC = 22.0;
+    private static final double KIWIX_LIMIT_STANDARD = 35.0;
+    private static final double KIWIX_LIMIT_FULL = 53.0;
+
+    public enum Tier {BASIC, STANDARD, FULL}
+
+    public static class StorageProjection {
+        public double osSize;
+        public double mapsSize;
+        public double kiwixSize;
+        public double totalSize;
+        public String resolvedLang;
+        public String resolvedFilename; // NEW: The exact filename to download!
+
+        public StorageProjection(double osSize, double mapsSize, double kiwixSize, String resolvedLang, String resolvedFilename) {
+            this.osSize = osSize;
+            this.mapsSize = mapsSize;
+            this.kiwixSize = kiwixSize;
+            this.totalSize = osSize + mapsSize + kiwixSize;
+            this.resolvedLang = resolvedLang;
+            this.resolvedFilename = resolvedFilename;
+        }
+    }
+
+    public interface PlanResultListener {
+        void onCalculated(StorageProjection projection);
+
+        void onError(String error);
+    }
+
+    public interface CacheListener {
+        void onReady(JSONObject catalog);
+
+        void onError(String error);
+    }
+
+    public static void wipeCache(Context context) {
+        File cacheFile = new File(context.getCacheDir(), CACHE_FILE_NAME);
+        if (cacheFile.exists()) cacheFile.delete();
+    }
+
+    /** Canonical Wikipedia variants, ordered coverage-desc then detail-desc. */
+    public static final String[] CANONICAL_VARIANTS = {
+            "all_maxi", "all_nopic", "all_mini",
+            "top1m_maxi", "top1m_nopic", "top1m_mini",
+            "top_maxi", "top_nopic", "top_mini"
+    };
+
+    /** Variants actually present for a language, in canonical order (for the UI to render). */
+    public static java.util.List<String> availableVariants(JSONObject langData) {
+        java.util.List<String> out = new java.util.ArrayList<>();
+        if (langData == null) return out;
+        for (String key : CANONICAL_VARIANTS) if (langData.has(key)) out.add(key);
+        return out;
+    }
+
+    private static String coverageOf(String variant) {
+        if (variant.startsWith("all_")) return "all";
+        if (variant.startsWith("top1m_")) return "top1m";
+        return "top";
+    }
+    private static String detailOf(String variant) {
+        if (variant.endsWith("_maxi")) return "maxi";
+        if (variant.endsWith("_mini")) return "mini";
+        return "nopic";
+    }
+
+    /**
+     * Resolve an explicit variant against what the language actually offers, degrading only
+     * DOWNWARD within the coverage family (top1m -> top) and across detail, never escalating.
+     * Returns a present key or null.
+     */
+    private static String resolveInFamily(JSONObject langData, String requested) {
+        if (langData == null) return null;
+        if (langData.has(requested)) return requested;
+        String cov = coverageOf(requested);
+        String det = detailOf(requested);
+        String[] covLadder = cov.equals("all") ? new String[]{"all"}
+                : cov.equals("top1m") ? new String[]{"top1m", "top"}
+                : new String[]{"top"};
+        String[] detLadder = det.equals("maxi") ? new String[]{"maxi", "nopic", "mini"}
+                : det.equals("nopic") ? new String[]{"nopic", "mini", "maxi"}
+                : new String[]{"mini", "nopic", "maxi"};
+        for (String cc : covLadder)
+            for (String dd : detLadder)
+                if (langData.has(cc + "_" + dd)) return cc + "_" + dd;
+        return null;
+    }
+
+    public static void getOrFetchCatalog(Context context, CacheListener listener) {
+        new Thread(() -> {
+            File cacheFile = new File(context.getCacheDir(), CACHE_FILE_NAME);
+
+            if (cacheFile.exists()) {
+                try {
+                    FileInputStream fis = new FileInputStream(cacheFile);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) sb.append(line);
+                    reader.close();
+                    JSONObject db = new JSONObject(sb.toString());
+                    new Handler(Looper.getMainLooper()).post(() -> listener.onReady(db));
+                    return;
+                } catch (Exception e) {
+                    Log.e(TAG, "Cache read error", e);
+                }
+            }
+
+            try {
+                URL url = new URL(KIWIX_URL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder html = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) html.append(line);
+                reader.close();
+
+                Pattern pattern = Pattern.compile("wikipedia_([a-z\\-]+)_([a-z0-9_\\-]+)_(\\d{4}-\\d{2})\\.zim(?:</a>)?\\s+\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}\\s+([\\d\\.]+)([KMG])");
+                Matcher matcher = pattern.matcher(html.toString());
+
+                JSONObject database = new JSONObject();
+
+                while (matcher.find()) {
+                    String lang = matcher.group(1);
+                    String variant = matcher.group(2);
+                    String date = matcher.group(3);
+                    String sizeStr = matcher.group(4);
+                    String unit = matcher.group(5);
+
+                    if (variant != null && variant.matches("all_maxi|all_nopic|all_mini|top_maxi|top_nopic|top_mini|top1m_maxi|top1m_nopic|top1m_mini")) {
+                        double sizeVal = Double.parseDouble(sizeStr);
+                        double sizeGb = 0;
+                        if ("G".equals(unit)) sizeGb = sizeVal;
+                        else if ("M".equals(unit)) sizeGb = sizeVal / 1024.0;
+                        else if ("K".equals(unit)) sizeGb = sizeVal / (1024.0 * 1024.0);
+
+                        if (!database.has(lang)) database.put(lang, new JSONObject());
+
+                        // Store size, exact filename AND date. The listing can hold more than
+                        // one date for the same variant; keep ONLY the newest by declared
+                        // intent ("YYYY-MM" compares lexicographically = chronologically),
+                        // not by whichever row happens to come last in the HTML.
+                        JSONObject langObj = database.getJSONObject(lang);
+                        JSONObject existing = langObj.optJSONObject(variant);
+                        if (existing == null || date.compareTo(existing.optString("date", "")) > 0) {
+                            JSONObject variantData = new JSONObject();
+                            variantData.put("size", sizeGb);
+                            variantData.put("date", date);
+                            variantData.put("file", "wikipedia_" + lang + "_" + variant + "_" + date + ".zim");
+                            langObj.put(variant, variantData);
+                        }
+                    }
+                }
+
+                FileOutputStream fos = new FileOutputStream(cacheFile);
+                fos.write(database.toString().getBytes());
+                fos.close();
+
+                new Handler(Looper.getMainLooper()).post(() -> listener.onReady(database));
+
+            } catch (Exception e) {
+                new Handler(Looper.getMainLooper()).post(() -> listener.onError(e.getMessage()));
+            }
+        }).start();
+    }
+
+    /**
+     * Projection-UI entry point. The OS rootfs size is resolved by the
+     * presentation layer (RootfsViewModel) and passed in here, so this path no
+     * longer touches the rootfs slice directly. Use this from screens that
+     * observe RootfsViewModel.
+     */
+    public static void calculateProjectedSize(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, double osSizeGb, PlanResultListener listener) {
+        new Thread(() -> computeProjection(context, tier, pullCompanionData, langCode, overrideVariant, osSizeGb, listener)).start();
+    }
+
+    /**
+     * Legacy entry point that resolves the OS size internally through the layered
+     * slice. Retained for non-UI callers (e.g. the install flow, which only needs
+     * the resolved companion-data filename). New UI code should use the overload
+     * that accepts a pre-resolved {@code osSizeGb} from RootfsViewModel.
+     */
+    public static void calculateProjectedSize(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, PlanResultListener listener) {
+        new Thread(() -> computeProjection(context, tier, pullCompanionData, langCode, overrideVariant, resolveOsSizeGb(context, tier), listener)).start();
+    }
+
+    /**
+     * Shared projection math (maps + Kiwix companion data) for a given OS size.
+     * Must run off the main thread — it performs a cached network read for the
+     * Kiwix catalog.
+     */
+    private static void computeProjection(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, double os, PlanResultListener listener) {
+        {
+            double maps = 0.0;
+
+            if (!pullCompanionData) {
+                StorageProjection res = new StorageProjection(os, 0, 0, "N/A", null);
+                new Handler(Looper.getMainLooper()).post(() -> listener.onCalculated(res));
+                return;
+            }
+
+            switch (tier) {
+                case BASIC:
+                    maps = MAPS_BASIC_GB;
+                    break;
+                case STANDARD:
+                    maps = MAPS_STANDARD_GB;
+                    break;
+                case FULL:
+                    maps = MAPS_FULL_GB;
+                    break;
+            }
+
+            double kiwixLimit = 0.0;
+            switch (tier) {
+                case BASIC:
+                    kiwixLimit = KIWIX_LIMIT_BASIC;
+                    break;
+                case STANDARD:
+                    kiwixLimit = KIWIX_LIMIT_STANDARD;
+                    break;
+                case FULL:
+                    kiwixLimit = KIWIX_LIMIT_FULL;
+                    break;
+            }
+
+            final double finalOs = os;
+            final double finalMaps = maps;
+            final double finalLimit = kiwixLimit;
+
+            getOrFetchCatalog(context, new CacheListener() {
+                @Override
+                public void onReady(JSONObject catalog) {
+                    double kiwixSize = 0.0;
+                    String resolvedLang = org.appdevforall.k2go.applang.data.ContentLanguage.normalize(langCode);
+                    String resolvedFile = null;
+
+                    JSONObject langData = catalog.optJSONObject(resolvedLang);
+
+                    if (langData == null) {
+                        langData = catalog.optJSONObject("en");
+                        resolvedLang = "en";
+                    }
+
+                    if (langData != null) {
+                        if (overrideVariant != null && overrideVariant.isEmpty()) {
+                            // Explicit "no Wikipedia" (skip): leave kiwixSize 0 / resolvedFile
+                            // null. Skipping must mean ZERO — never a tier-coupled auto-pick.
+                        } else if (overrideVariant != null) {
+                            // Explicit pick from the UI. Honor it exactly, or degrade WITHIN
+                            // the same coverage family (e.g. top1m_maxi -> top_maxi), NEVER
+                            // escalating — a "Popular" pick must not silently become the full
+                            // "Everything" ZIM. If nothing in-family exists, install no
+                            // Wikipedia rather than substituting a different corpus.
+                            String resolved = resolveInFamily(langData, overrideVariant);
+                            if (resolved != null) {
+                                JSONObject vData = langData.optJSONObject(resolved);
+                                if (vData != null) {
+                                    kiwixSize = vData.optDouble("size", 0.0);
+                                    resolvedFile = vData.optString("file", null);
+                                }
+                            }
+                        } else {
+                            // Legacy callers with no explicit pick: priority auto-select.
+                            String[] priorities = {"all_maxi", "top1m_maxi", "all_nopic", "top1m_nopic", "top_maxi", "all_mini", "top_nopic"};
+                            for (String p : priorities) {
+                                if (langData.has(p)) {
+                                    JSONObject vData = langData.optJSONObject(p);
+                                    if (vData != null) {
+                                        double size = vData.optDouble("size", 0.0);
+                                        if (size <= finalLimit) {
+                                            kiwixSize = size;
+                                            resolvedFile = vData.optString("file", null);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    StorageProjection res = new StorageProjection(finalOs, finalMaps, kiwixSize, resolvedLang, resolvedFile);
+                    listener.onCalculated(res);
+                }
+
+                @Override
+                public void onError(String error) {
+                    listener.onError(error);
+                }
+            });
+        }
+    }
+
+    /**
+     * Resolves the OS rootfs size for a tier, in GiB, using the layered rootfs
+     * slice: live size from the Deploy server when reachable, hardcoded fallback
+     * otherwise. The ABI is detected from the device.
+     *
+     * <p>Performs a (cached) network call; must run off the main thread — it does,
+     * because every caller is inside {@link #calculateProjectedSize}'s worker thread.
+     */
+    /** No-network last-known OS size (RootfsCatalog fallback) — instant, for placeholders. */
+    public static double fallbackOsSizeGb(Tier tier) {
+        RootfsCatalog catalog = new RootfsCatalog();
+        return ByteFormatter.toGiB(catalog.fallbackBytes(toDomainTier(tier), catalog.detectAbi()));
+    }
+
+    private static double resolveOsSizeGb(Context context, Tier tier) {
+        RootfsCatalog catalog = new RootfsCatalog(context);
+        RootfsRepository repository =
+                new RootfsRepositoryImpl(new RootfsRemoteDataSource(), catalog);
+        GetRootfsSizeUseCase useCase = new GetRootfsSizeUseCase(repository);
+        Rootfs rootfs = useCase.execute(toDomainTier(tier), catalog.detectAbi());
+        return ByteFormatter.toGiB(rootfs.sizeBytes());
+    }
+
+    /** Maps the legacy {@link Tier} to the domain {@link RootfsTier}. */
+    private static RootfsTier toDomainTier(Tier tier) {
+        switch (tier) {
+            case STANDARD:
+                return RootfsTier.STANDARD;
+            case FULL:
+                return RootfsTier.FULL;
+            case BASIC:
+            default:
+                return RootfsTier.BASIC;
+        }
+    }
+}

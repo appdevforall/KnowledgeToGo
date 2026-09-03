@@ -1,0 +1,313 @@
+/*
+ * ============================================================================
+ * Name        : KolibriCatalogViewModel.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : Drives the Courses picker: runs the catalog use case off the main
+ *               thread and exposes a UI state stream (ADFA-4954).
+ * ============================================================================
+ */
+package org.appdevforall.k2go.kolibri.presentation;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import org.appdevforall.k2go.kolibri.domain.CatalogQuery;
+import org.appdevforall.k2go.kolibri.domain.Channel;
+import org.appdevforall.k2go.kolibri.domain.ChannelSelection;
+import org.appdevforall.k2go.kolibri.domain.GetChannelCatalogUseCase;
+import org.appdevforall.k2go.kolibri.domain.PickedSubtrees;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * The browse screen's state holder.
+ *
+ * <p>Follows {@code RootfsViewModel}: the screen observes {@link #state()} and
+ * never reads the asset or formats a size itself. Reading the bundled catalog
+ * parses ~142 JSON lines, which is fast but not instant, so it happens on the
+ * executor rather than blocking the first frame.
+ *
+ * <p>The language list is computed once from the whole catalog and then carried
+ * through every subsequent filter. Recomputing it from the filtered result would
+ * make the filter delete its own options: pick Spanish and Spanish becomes the
+ * only choice left.
+ */
+public class KolibriCatalogViewModel extends ViewModel {
+
+    private final GetChannelCatalogUseCase getCatalog;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final MutableLiveData<KolibriCatalogUiState> state =
+            new MutableLiveData<>(KolibriCatalogUiState.loading());
+
+    /**
+     * How the list is ordered. A view preference, not a business rule, so it lives
+     * here rather than in the use case — and re-sorting never re-reads the asset.
+     */
+    public enum Sort {
+        SIZE_DESC, SIZE_ASC, NAME_ASC, NAME_DESC;
+
+        boolean isSize() {
+            return this == SIZE_DESC || this == SIZE_ASC;
+        }
+
+        boolean isName() {
+            return this == NAME_ASC || this == NAME_DESC;
+        }
+
+        Sort flipped() {
+            switch (this) {
+                case SIZE_DESC: return SIZE_ASC;
+                case SIZE_ASC:  return SIZE_DESC;
+                case NAME_ASC:  return NAME_DESC;
+                default:        return NAME_ASC;
+            }
+        }
+    }
+
+    private List<String> allLanguages = Collections.emptyList();
+    private java.util.Map<String, String> allLanguageNames = Collections.emptyMap();
+    private CatalogQuery query = CatalogQuery.all();
+    // Largest first is the default, not A–Z: on this screen the question is what fits,
+    // so the rows that decide the budget belong at the top.
+    private Sort sort = Sort.SIZE_DESC;
+
+    /** The last filtered result, unsorted, so a sort tap costs nothing but a sort. */
+    private List<Channel> lastResult = Collections.emptyList();
+    private String lastGeneratedOn = "";
+
+    public KolibriCatalogViewModel(GetChannelCatalogUseCase getCatalog) {
+        this.getCatalog = getCatalog;
+    }
+
+    public LiveData<KolibriCatalogUiState> state() {
+        return state;
+    }
+
+    /** The filter currently applied. Never null. */
+    public CatalogQuery query() {
+        return query;
+    }
+
+    /** Loads the catalog unfiltered. Safe to call again; it simply reloads. */
+    public void load() {
+        apply(CatalogQuery.all());
+    }
+
+    /** Re-runs the catalog with a new filter. */
+    public void apply(CatalogQuery next) {
+        query = next == null ? CatalogQuery.all() : next;
+        state.postValue(KolibriCatalogUiState.loading());
+        executor.execute(() -> {
+            try {
+                if (allLanguages.isEmpty()) {
+                    allLanguages = getCatalog.availableLanguages();
+                    allLanguageNames = getCatalog.languageNames();
+                }
+                GetChannelCatalogUseCase.Result r = getCatalog.execute(query);
+                lastResult = r.channels();
+                lastGeneratedOn = r.generatedOn();
+                state.postValue(KolibriCatalogUiState.ready(
+                        sorted(), allLanguages, allLanguageNames, lastGeneratedOn));
+            } catch (Exception e) {
+                state.postValue(KolibriCatalogUiState.error(e.getMessage()));
+            }
+        });
+    }
+
+    public Sort sort() {
+        return sort;
+    }
+
+    /**
+     * Reorders what is already on screen. Called from a click listener, so the
+     * result is published with {@code setValue} on the main thread; ~142 rows makes
+     * the sort itself immeasurable, and it avoids a pointless re-read of the asset.
+     */
+    public void setSort(Sort next) {
+        if (next == null || next == sort) {
+            return;
+        }
+        sort = next;
+        KolibriCatalogUiState current = state.getValue();
+        if (current != null && !current.isLoading() && !current.hasError()) {
+            state.setValue(KolibriCatalogUiState.ready(
+                    sorted(), allLanguages, allLanguageNames, lastGeneratedOn));
+        }
+    }
+
+    /**
+     * The current result in the current order. Channels whose size Studio does not
+     * publish sort last in both size directions: they have no position on that axis,
+     * and putting them first would read as "smallest".
+     */
+    private List<Channel> sorted() {
+        List<Channel> out = new java.util.ArrayList<>(lastResult);
+        Collections.sort(out, (a, b) -> {
+            if (sort.isName()) {
+                int c = a.name().compareToIgnoreCase(b.name());
+                return sort == Sort.NAME_ASC ? c : -c;
+            }
+            if (a.hasKnownSize() != b.hasKnownSize()) {
+                return a.hasKnownSize() ? -1 : 1;
+            }
+            int c = Long.compare(a.publishedSize(), b.publishedSize());
+            return sort == Sort.SIZE_ASC ? c : -c;
+        });
+        return out;
+    }
+
+    /** Keeps the language filter, replaces the keyword. */
+    public void search(String keyword) {
+        apply(CatalogQuery.of(keyword, query.langCodes()));
+    }
+
+    /** Keeps the keyword, replaces the language filter. */
+    public void filterLanguage(String langCode) {
+        apply(CatalogQuery.of(query.keyword(),
+                langCode == null || langCode.isEmpty()
+                        ? Collections.<String>emptyList()
+                        : Collections.singletonList(langCode)));
+    }
+
+    // ---- the selection ----------------------------------------------------
+    //
+    // Held here rather than as fields on SetupLibraryActivity, which is where the
+    // ZIM cart lives. Scoping this ViewModel to the activity gives the same
+    // survival across fragment navigation without adding state to a 550-line
+    // class that every content feature already has to touch, and CLAUDE.md asks
+    // for encapsulated state over more shared mutable fields.
+
+    private final java.util.LinkedHashMap<String, Channel> picked =
+            new java.util.LinkedHashMap<>();
+
+    /**
+     * Per-channel narrowing: which subtrees of a chosen channel to import.
+     *
+     * <p>A channel with no entry here, or an empty one, means the whole channel —
+     * the same reading {@link PickedSubtrees#toSelection} applies, so the
+     * {@code node_ids: []} that Kolibri treats as zero nodes can never be built.
+     */
+    private final java.util.LinkedHashMap<String, PickedSubtrees> subtrees =
+            new java.util.LinkedHashMap<>();
+
+    /** Adds or removes a channel. Returns true when it is now selected. */
+    public boolean toggle(Channel c) {
+        if (c == null) {
+            return false;
+        }
+        if (picked.remove(c.id()) != null) {
+            // Un-ticking the channel drops its topic picks too. Keeping them would
+            // leave a narrowing attached to something no longer being downloaded,
+            // ready to reappear on the next tap without the user asking for it.
+            subtrees.remove(c.id());
+            return false;
+        }
+        picked.put(c.id(), c);
+        return true;
+    }
+
+    /** Selects a channel whole, whether or not it already was. Idempotent. */
+    public void select(Channel c) {
+        if (c != null) {
+            picked.put(c.id(), c);
+        }
+    }
+
+    /** What was picked inside a channel. Never null; empty means the whole channel. */
+    public PickedSubtrees subtreesFor(String channelId) {
+        PickedSubtrees p = channelId == null ? null : subtrees.get(channelId);
+        return p == null ? PickedSubtrees.empty() : p;
+    }
+
+    /**
+     * Records a narrowing for a channel, and selects the channel if it was not
+     * already — choosing topics inside something is a clear enough statement that
+     * you want it, and leaving the row unticked would silently discard the work.
+     */
+    public void setSubtrees(Channel channel, PickedSubtrees p) {
+        if (channel == null) {
+            return;
+        }
+        if (p == null || p.isEmpty()) {
+            subtrees.remove(channel.id());
+        } else {
+            subtrees.put(channel.id(), p);
+            picked.put(channel.id(), channel);
+        }
+    }
+
+    /** True when the channel is queued with only part of its tree. */
+    public boolean isNarrowed(String channelId) {
+        return !subtreesFor(channelId).isEmpty();
+    }
+
+    public boolean isPicked(String channelId) {
+        return channelId != null && picked.containsKey(channelId);
+    }
+
+    /** The chosen channels, in the order they were picked. Unmodifiable. */
+    public List<Channel> selection() {
+        return Collections.unmodifiableList(new java.util.ArrayList<>(picked.values()));
+    }
+
+    public int selectionCount() {
+        return picked.size();
+    }
+
+    /**
+     * Sum of what will actually be downloaded: a narrowed channel contributes its
+     * picked subtrees, not the whole published size, or the screen would quote a
+     * figure many times what the user asked for.
+     */
+    public long selectionBytes() {
+        long total = 0L;
+        for (Channel c : picked.values()) {
+            PickedSubtrees p = subtreesFor(c.id());
+            total += p.isEmpty() ? c.publishedSize() : p.totalBytes();
+        }
+        return total;
+    }
+
+    /** True when any chosen channel has no published size, so the total is a floor. */
+    public boolean selectionHasUnknownSize() {
+        for (Channel c : picked.values()) {
+            PickedSubtrees p = subtreesFor(c.id());
+            if (p.isEmpty() ? !c.hasKnownSize() : p.hasUnknownSize()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** The request for one chosen channel: the whole thing, or the picked subtrees. */
+    public ChannelSelection selectionFor(Channel c) {
+        return subtreesFor(c.id()).toSelection(c.id());
+    }
+
+    /** Bytes attributable to one chosen channel, under the current narrowing. */
+    public long bytesFor(Channel c) {
+        PickedSubtrees p = subtreesFor(c.id());
+        return p.isEmpty() ? c.publishedSize() : p.totalBytes();
+    }
+
+    /** True when the figure for this channel is a floor rather than a number. */
+    public boolean sizeUnknownFor(Channel c) {
+        PickedSubtrees p = subtreesFor(c.id());
+        return p.isEmpty() ? !c.hasKnownSize() : p.hasUnknownSize();
+    }
+
+    public void clearSelection() {
+        picked.clear();
+        subtrees.clear();
+    }
+
+    @Override
+    protected void onCleared() {
+        executor.shutdownNow();
+    }
+}

@@ -33,12 +33,12 @@ def hasGoogleServices = file("google-services.json").exists()
 
 android {
     // 2. Identity
-    namespace 'org.iiab.controller'
+    namespace 'org.appdevforall.k2go'
     compileSdk 34
     ndkVersion "26.3.11579264"
 
     defaultConfig {
-        applicationId "org.iiab.controller"
+        applicationId "org.appdevforall.k2go"
         minSdk 24
         // VITAL FOR PROOT AND W^X! Do not go up unless strictly necessary
         targetSdk 28
@@ -55,7 +55,10 @@ android {
         // True only when google-services.json is present, so AnalyticsClient can compile out cleanly.
         buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
 
-        setProperty("archivesBaseName", "$applicationId-$versionName")
+        // The APK carries the product's name, not its technical identifier: these files are
+        // downloaded by people from a public bucket. The identifier still lives inside the APK.
+        // The per-output rename below abbreviates the ABI; this covers everything else Gradle names.
+        setProperty("archivesBaseName", "K2Go-$versionName")
 
         // 4. Supported architectures (NDK) - Dropping x86/x86_64
         ndk {
@@ -184,6 +187,15 @@ android {
             // Multiply original version by 10 and add the architecture ID
             // Ex: Version 50 -> Universal: 500, ARM32: 501, ARM64: 502
             output.versionCodeOverride = (variant.versionCode * 10) + baseAbiVersionCode
+
+            // Shorten the split's ABI in the filename: arm64-v8a -> v8a, armeabi-v7a -> v7a.
+            // Gradle names outputs after the split, so archivesBaseName alone cannot do this.
+            // Renaming here, beside the version-code override, keeps one block owning the outputs.
+            //   K2Go-v1.0.0-v8a-release.apk                  a tagged release (no suffix)
+            //   K2Go-v0.8.0-beta-4fb99eb4-v8a-release.apk    a Firebase or local build
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+            def shortAbi = abi == null ? "universal" : abi.replace("arm64-", "").replace("armeabi-", "")
+            output.outputFileName = "K2Go-${variant.versionName}-${shortAbi}-${variant.buildType.name}.apk"
         }
     }
 }
@@ -497,7 +509,8 @@ task refreshRootfsSizes {
     description = 'Capture rootfs image sizes (.meta4) into assets/rootfs_sizes.csv for the offline fallback'
     def csv = file('src/main/assets/rootfs_sizes.csv')
     doLast {
-        def base = 'https://iiab.switnet.org/android/rootfs/'
+        // ADFA-5368: k2go-rootfs bucket, which serves from its root (switnet kept an /android/rootfs path).
+        def base = 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/'
         def tiers = ['basic', 'standard', 'full']
         def abis = ['arm64-v8a', 'armeabi-v7a']
         def sizePat = ~/<size>(\d+)<\/size>/
@@ -575,7 +588,7 @@ task refreshModuleSizes {
     description = 'Capture per-module install sizes from the full build log into assets/module_sizes.csv'
     def csv = file('src/main/assets/module_sizes.csv')
     doLast {
-        def url = 'https://iiab.switnet.org/android/rootfs/build-full-arm64-v8a.log'
+        def url = 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/build-full-arm64-v8a.log'
         def wanted = ['kolibri', 'kiwix', 'calibreweb', 'code'] as Set
         def pat = ~/(\w+)_disk_usage\s*=\s*(\d+)/
         def fetched = [:]
@@ -769,7 +782,7 @@ task refreshKolibriCatalog {
 // the fix is to refuse the destructive entry point rather than to write a rule someone has to remember.
 // Install and run explicitly instead (this installs, runs, and leaves both APKs in place):
 //     ./gradlew :app:installDebug :app:installDebugAndroidTest
-//     adb shell am instrument -w -e class <TestClass> org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner
+//     adb shell am instrument -w -e class <TestClass> org.appdevforall.k2go.test/androidx.test.runner.AndroidJUnitRunner
 // A device with nothing to lose can still opt in with -PallowUninstall=true.
 tasks.configureEach { t ->
     if (t.name.startsWith('connected') && t.name.endsWith('AndroidTest')) {
@@ -781,7 +794,7 @@ tasks.configureEach { t ->
                         + "  Run instead:\n"
                         + "    ./gradlew :app:installDebug :app:installDebugAndroidTest\n"
                         + "    adb shell am instrument -w -e class <TestClass> \\\n"
-                        + "      org.iiab.controller.test/androidx.test.runner.AndroidJUnitRunner\n"
+                        + "      org.appdevforall.k2go.test/androidx.test.runner.AndroidJUnitRunner\n"
                         + "  Or, if this device has nothing to lose: -PallowUninstall=true")
             }
         }

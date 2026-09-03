@@ -190,7 +190,7 @@
                     android:textColor="@color/k2go_muted" />
 
                 <!-- ADFA-4999: pills wrap to the next line on narrow screens instead of clipping. -->
-                <org.iiab.controller.redesign.FlowLayout
+                <org.appdevforall.k2go.redesign.FlowLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp">
@@ -230,7 +230,7 @@
                         android:text="@string/k2go_maps_fqr_pill_online"
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:textColor="@color/k2go_teal" />
-                </org.iiab.controller.redesign.FlowLayout>
+                </org.appdevforall.k2go.redesign.FlowLayout>
             </LinearLayout>
 
             <!-- Compact FQR row (shown when dismissed) -->
@@ -347,7 +347,7 @@
                     android:textColor="@color/k2go_amber" />
 
                 <!-- ADFA-4999: pills wrap to the next line on narrow screens instead of clipping. -->
-                <org.iiab.controller.redesign.FlowLayout
+                <org.appdevforall.k2go.redesign.FlowLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp">
@@ -375,7 +375,7 @@
                         android:text="@string/k2go_maps_rebuild_pill_offline"
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:textColor="@color/k2go_amber" />
-                </org.iiab.controller.redesign.FlowLayout>
+                </org.appdevforall.k2go.redesign.FlowLayout>
             </LinearLayout>
 
             <TextView

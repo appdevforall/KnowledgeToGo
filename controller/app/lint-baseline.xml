@@ -7,7 +7,7 @@
         errorLine1="    public void onBackPressed() {"
         errorLine2="                ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="287"
             column="17"/>
     </issue>
@@ -18,7 +18,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="52"
             column="16"/>
     </issue>
@@ -29,7 +29,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="62"
             column="16"/>
     </issue>
@@ -40,7 +40,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="72"
             column="16"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="82"
             column="16"/>
     </issue>
@@ -62,7 +62,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="92"
             column="16"/>
     </issue>
@@ -73,7 +73,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="102"
             column="16"/>
     </issue>
@@ -84,7 +84,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="112"
             column="16"/>
     </issue>
@@ -95,7 +95,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="126"
             column="16"/>
     </issue>
@@ -106,7 +106,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="136"
             column="16"/>
     </issue>
@@ -117,7 +117,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="146"
             column="16"/>
     </issue>
@@ -128,7 +128,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="156"
             column="16"/>
     </issue>
@@ -139,7 +139,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="166"
             column="16"/>
     </issue>
@@ -150,7 +150,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="176"
             column="16"/>
     </issue>
@@ -161,7 +161,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="186"
             column="16"/>
     </issue>
@@ -172,7 +172,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="196"
             column="16"/>
     </issue>
@@ -183,7 +183,7 @@
         errorLine1="        editor.commit();"
         errorLine2="               ~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/Preferences.java"
+            file="src/main/java/org/appdevforall/k2go/Preferences.java"
             line="206"
             column="16"/>
     </issue>
@@ -194,7 +194,7 @@
         errorLine1="            return pkg.label.toLowerCase().contains(filter.toLowerCase());"
         errorLine2="                             ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/AppListActivity.java"
+            file="src/main/java/org/appdevforall/k2go/AppListActivity.java"
             line="104"
             column="30"/>
     </issue>
@@ -205,7 +205,7 @@
         errorLine1="            return pkg.label.toLowerCase().contains(filter.toLowerCase());"
         errorLine2="                                                           ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/AppListActivity.java"
+            file="src/main/java/org/appdevforall/k2go/AppListActivity.java"
             line="104"
             column="60"/>
     </issue>
@@ -216,7 +216,7 @@
         errorLine1="                String f = lastFilter.toLowerCase();"
         errorLine2="                                      ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/AppListActivity.java"
+            file="src/main/java/org/appdevforall/k2go/AppListActivity.java"
             line="113"
             column="39"/>
     </issue>
@@ -227,7 +227,7 @@
         errorLine1="                    if (p.label != null &amp;&amp; p.label.toLowerCase().contains(f))"
         errorLine2="                                                   ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/AppListActivity.java"
+            file="src/main/java/org/appdevforall/k2go/AppListActivity.java"
             line="115"
             column="52"/>
     </issue>
@@ -238,7 +238,7 @@
         errorLine1="                String manufacturer = Build.MANUFACTURER.toLowerCase();"
         errorLine2="                                                         ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/BatteryUtils.java"
+            file="src/main/java/org/appdevforall/k2go/BatteryUtils.java"
             line="30"
             column="58"/>
     </issue>
@@ -249,7 +249,7 @@
         errorLine1="        if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {"
         errorLine2="                  ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DashboardFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DashboardFragment.java"
             line="619"
             column="19"/>
     </issue>
@@ -260,7 +260,7 @@
         errorLine1="        if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {"
         errorLine2="                                                        ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DashboardFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DashboardFragment.java"
             line="619"
             column="57"/>
     </issue>
@@ -271,7 +271,7 @@
         errorLine1="                        lblWiki.setText(getString(R.string.install_legend_wiki_lang, projection.resolvedLang.toUpperCase()));"
         errorLine2="                                                                                                             ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="766"
             column="110"/>
     </issue>
@@ -282,7 +282,7 @@
         errorLine1="                    displayNames.add(name.substring(0, 1).toUpperCase() + name.substring(1) + &quot; / &quot; + loc.getDisplayLanguage(java.util.Locale.US));"
         errorLine2="                                                          ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="864"
             column="59"/>
     </issue>
@@ -293,7 +293,7 @@
         errorLine1="            java.util.regex.Matcher m = p.matcher(cpuLine.toLowerCase());"
         errorLine2="                                                          ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="2725"
             column="59"/>
     </issue>
@@ -304,7 +304,7 @@
         errorLine1="                    String lowerLine = line.toLowerCase();"
         errorLine2="                                            ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/IIABAdbManager.java"
+            file="src/main/java/org/appdevforall/k2go/IIABAdbManager.java"
             line="117"
             column="45"/>
     </issue>
@@ -315,7 +315,7 @@
         errorLine1="            this.displayName = displayName.substring(0, 1).toUpperCase() + displayName.substring(1);"
         errorLine2="                                                           ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="67"
             column="60"/>
     </issue>
@@ -326,7 +326,7 @@
         errorLine1="        String lower = androidArch.toLowerCase();"
         errorLine2="                                   ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SystemStatsUtil.java"
+            file="src/main/java/org/appdevforall/k2go/SystemStatsUtil.java"
             line="49"
             column="36"/>
     </issue>
@@ -337,7 +337,7 @@
         errorLine1="                boolean isGzip = archivePath.toLowerCase().endsWith(&quot;.gz&quot;);"
         errorLine2="                                             ~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/TarExtractor.java"
+            file="src/main/java/org/appdevforall/k2go/TarExtractor.java"
             line="52"
             column="46"/>
     </issue>
@@ -348,7 +348,7 @@
         errorLine1="        intent.putExtra(&quot;com.termux.RUN_COMMAND_PATH&quot;, &quot;/data/data/com.termux/files/usr/bin/true&quot;);"
         errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/IIABWatchdog.java"
+            file="src/main/java/org/appdevforall/k2go/IIABWatchdog.java"
             line="75"
             column="56"/>
     </issue>
@@ -359,7 +359,7 @@
         errorLine1="                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);"
         errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/BatteryUtils.java"
+            file="src/main/java/org/appdevforall/k2go/BatteryUtils.java"
             line="48"
             column="57"/>
     </issue>
@@ -370,7 +370,7 @@
         errorLine1="                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);"
         errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="249"
             column="57"/>
     </issue>
@@ -381,7 +381,7 @@
         errorLine1="            requireContext().registerReceiver(adbUiUpdateReceiver, filter);"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="2234"
             column="13"/>
     </issue>
@@ -392,7 +392,7 @@
         errorLine1="            registerReceiver(downloadReceiver, filter);"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="744"
             column="13"/>
     </issue>
@@ -535,7 +535,7 @@
         errorLine1="        Intent intent = new Intent(ACTION_LOG_MESSAGE);"
         errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/IIABWatchdog.java"
+            file="src/main/java/org/appdevforall/k2go/IIABWatchdog.java"
             line="226"
             column="25"/>
     </issue>
@@ -546,7 +546,7 @@
         errorLine1="        webView.getSettings().setJavaScriptEnabled(true);"
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/PortalActivity.java"
+            file="src/main/java/org/appdevforall/k2go/PortalActivity.java"
             line="199"
             column="9"/>
     </issue>
@@ -571,7 +571,7 @@
         errorLine1="            wakeLock.acquire();"
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/WatchdogService.java"
+            file="src/main/java/org/appdevforall/k2go/WatchdogService.java"
             line="85"
             column="13"/>
     </issue>
@@ -582,7 +582,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/BatteryUtils.java"
+            file="src/main/java/org/appdevforall/k2go/BatteryUtils.java"
             line="27"
             column="13"/>
     </issue>
@@ -593,7 +593,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/IIABWatchdog.java"
+            file="src/main/java/org/appdevforall/k2go/IIABWatchdog.java"
             line="86"
             column="13"/>
     </issue>
@@ -604,7 +604,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="750"
             column="13"/>
     </issue>
@@ -615,7 +615,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="1183"
             column="13"/>
     </issue>
@@ -626,7 +626,7 @@
         errorLine1="                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="248"
             column="21"/>
     </issue>
@@ -637,7 +637,7 @@
         errorLine1="                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="264"
             column="21"/>
     </issue>
@@ -648,7 +648,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="357"
             column="13"/>
     </issue>
@@ -659,7 +659,7 @@
         errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SetupActivity.java"
+            file="src/main/java/org/appdevforall/k2go/SetupActivity.java"
             line="365"
             column="13"/>
     </issue>
@@ -714,7 +714,7 @@
         errorLine1="            View rowView = inflater.inflate(R.layout.appitem, parent, false);"
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/AppListActivity.java"
+            file="src/main/java/org/appdevforall/k2go/AppListActivity.java"
             line="126"
             column="28"/>
     </issue>
@@ -4333,7 +4333,7 @@
         errorLine1="        versionFooter.setOnTouchListener(new View.OnTouchListener() {"
         errorLine2="        ^">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="416"
             column="9"/>
     </issue>
@@ -4344,7 +4344,7 @@
         errorLine1="            public boolean onTouch(View v, MotionEvent event) {"
         errorLine2="                           ~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="465"
             column="28"/>
     </issue>
@@ -4355,7 +4355,7 @@
         errorLine1="        connectionLog.setOnTouchListener((v, event) -> {"
         errorLine2="        ^">
         <location
-            file="src/main/java/org/iiab/controller/UsageFragment.java"
+            file="src/main/java/org/appdevforall/k2go/UsageFragment.java"
             line="154"
             column="9"/>
     </issue>
@@ -4366,7 +4366,7 @@
         errorLine1="        connectionLog.setOnTouchListener((v, event) -> {"
         errorLine2="                                         ^">
         <location
-            file="src/main/java/org/iiab/controller/UsageFragment.java"
+            file="src/main/java/org/appdevforall/k2go/UsageFragment.java"
             line="154"
             column="42"/>
     </issue>
@@ -4553,7 +4553,7 @@
         errorLine1="            btnAdbAction.setText(&quot;Securing connection...&quot;);"
         errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="426"
             column="34"/>
     </issue>
@@ -4564,7 +4564,7 @@
         errorLine1="                        txtLegendFree.setText(&quot;OVERLOAD&quot;);"
         errorLine2="                                              ~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="779"
             column="47"/>
     </issue>
@@ -4575,7 +4575,7 @@
         errorLine1="                if (isAdded() &amp;&amp; txtLegendFree != null) txtLegendFree.setText(&quot;Error&quot;);"
         errorLine2="                                                                              ~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="822"
             column="79"/>
     </issue>
@@ -4586,7 +4586,7 @@
         errorLine1="                                                btnAdvancedReset.setText(getString(R.string.install_status_debian_download, percentage, speed) + &quot; (Tap to Cancel)&quot;);"
         errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="1183"
             column="74"/>
     </issue>
@@ -4597,7 +4597,7 @@
         errorLine1="                                                btnAdvancedReset.setText(getString(R.string.install_status_debian_download, percentage, speed) + &quot; (Tap to Cancel)&quot;);"
         errorLine2="                                                                                                                                                 ~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/DeployFragment.java"
+            file="src/main/java/org/appdevforall/k2go/DeployFragment.java"
             line="1183"
             column="146"/>
     </issue>
@@ -4608,7 +4608,7 @@
         errorLine1="                text.setText(&quot;[&quot; + (position + 1) + &quot;]&quot;);"
         errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="349"
             column="30"/>
     </issue>
@@ -4619,7 +4619,7 @@
         errorLine1="                text.setText(&quot;[&quot; + (position + 1) + &quot;]&quot;);"
         errorLine2="                                    ~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/MainActivity.java"
+            file="src/main/java/org/appdevforall/k2go/MainActivity.java"
             line="349"
             column="37"/>
     </issue>
@@ -4630,7 +4630,7 @@
         errorLine1="                txtTransferEta.setText(&quot;ETA: &quot; + eta);"
         errorLine2="                                       ~~~~~~~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SyncFragment.java"
+            file="src/main/java/org/appdevforall/k2go/SyncFragment.java"
             line="614"
             column="40"/>
     </issue>
@@ -4641,7 +4641,7 @@
         errorLine1="                txtTransferEta.setText(&quot;ETA: &quot; + eta);"
         errorLine2="                                       ~~~~~~~">
         <location
-            file="src/main/java/org/iiab/controller/SyncFragment.java"
+            file="src/main/java/org/appdevforall/k2go/SyncFragment.java"
             line="614"
             column="40"/>
     </issue>

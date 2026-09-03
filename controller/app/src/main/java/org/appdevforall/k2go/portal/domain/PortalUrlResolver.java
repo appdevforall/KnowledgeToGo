@@ -1,0 +1,28 @@
+/*
+ * ============================================================================
+ * Name        : PortalUrlResolver.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : Resolves the portal target URL, falling back to the local home page.
+ * ============================================================================
+ */
+package org.appdevforall.k2go.portal.domain;
+
+import org.appdevforall.k2go.config.BoxEndpoints;
+
+/** Resolves the URL the portal should open, with a safe local fallback. */
+public final class PortalUrlResolver {
+
+    /** Local IIAB home, used when no target URL is supplied. */
+    public static final String DEFAULT_URL = BoxEndpoints.BASE + "/home";
+
+    private PortalUrlResolver() {}
+
+    /** Returns {@code rawUrl} when usable, otherwise {@link #DEFAULT_URL}. */
+    public static String resolve(String rawUrl) {
+        if (rawUrl == null || rawUrl.trim().isEmpty()) {
+            return DEFAULT_URL;
+        }
+        return rawUrl;
+    }
+}

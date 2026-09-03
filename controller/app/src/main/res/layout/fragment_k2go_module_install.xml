@@ -130,7 +130,7 @@
         </LinearLayout>
 
         <!-- K2GO-374: the shared live-log details panel (was a hand-rolled toggle + ScrollView). -->
-        <org.iiab.controller.widget.LiveLogPanel
+        <org.appdevforall.k2go.widget.LiveLogPanel
             android:id="@+id/k2go_modinst_log_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -103,18 +103,21 @@ fmt_dur() { local s="$1"; printf '%dh %02dm %02ds' "$((s/3600))" "$(((s%3600)/60
 
 # ----------------------------- Config -----------------------------------------
 PD_VERSION="4.29.0"                                  # proot-distro version of the base (same as the APK)
-BASE_HOST="https://iiab.switnet.org/android/rootfs"  # where the Debian base + artifacts live currently
+BASE_HOST="https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev"  # k2go-rootfs bucket (serves from its root)
 
 # Download sources written into the .meta4, in PRIORITY order. PUBLISH_URL is the
 # primary (priority 10); each MIRRORS[] entry then gets 11, 12, 13, ... (lower =
-# preferred). Scales to any number of mirrors and is future-proof: today community
-# hosts (switnet); tomorrow drop in Cloudflare/enterprise URLs here — or add them at
-# runtime with repeated --mirror-url (and --reset-mirrors to start the list empty).
-PUBLISH_URL="https://iiab.switnet.org/android/rootfs"          # PRIMARY (priority 10)
+# preferred). Scales to any number of mirrors: add them here, or at runtime with
+# repeated --mirror-url (and --reset-mirrors to start the list empty).
+#
+# ADFA-5368: this is the URL the APK actually downloads the rootfs FROM. It is not the
+# same question as where the APK asks for the .meta4 — that one is owned app-side by
+# config/DownloadEndpoints. A metalink published with the wrong PUBLISH_URL downloads
+# fine and then 404s on the tarball, with no mirror to fall back to.
+PUBLISH_URL="https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev"   # PRIMARY (priority 10)
 MIRRORS=(
-  "https://mirror.switnet.org/iiab/android/rootfs"             # mirror 1 -> priority 11
-  # "https://cdn.example.org/iiab/android/rootfs"              # mirror 2 -> priority 12
-  # ...add more; priority auto-increments in array order
+  # No mirrors: the community hosts were retired with the move to Cloudflare. Add one
+  # here (or --mirror-url) and it gets priority 11, 12, ... in array order.
 )
 
 # mkmetalink is a Go tool requiring Go >= GO_MIN. We bootstrap an official Go

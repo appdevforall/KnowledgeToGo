@@ -118,24 +118,15 @@ jobs:
 
       # --- VERSION AUDIT ---
 
-      - name: Compute version suffix (ticket + short SHA)
+      - name: Compute version suffix (short SHA)
         run: |
+          # The short SHA already pins the exact commit, and the release notes below carry the
+          # branch. A ticket key in the version name (ADFA-4810) only restated what the SHA says,
+          # and went stale the moment the project key changed.
           SHORT_SHA=$(git rev-parse --short HEAD)
-          BRANCH="${GITHUB_REF#refs/heads/}"
-          # Keep the version name short and identifiable: the Jira ticket if the branch has one,
-          # else "main", else a trimmed branch slug. The short SHA always pins the exact commit,
-          # so the branch prefix (feat/fix/...) and the descriptive tail are dropped.
-          TICKET=$(echo "$BRANCH" | grep -oiE 'adfa-[0-9]+' | head -1 | tr '[:lower:]' '[:upper:]')
-          if [ -n "$TICKET" ]; then
-            LABEL="$TICKET"
-          elif [ "$BRANCH" = "main" ]; then
-            LABEL="main"
-          else
-            LABEL=$(echo "$BRANCH" | tr '/ ' '--' | tr -cd 'A-Za-z0-9._-' | cut -c1-16)
-          fi
           echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
-          echo "BRANCH_FULL=$BRANCH" >> "$GITHUB_ENV"
-          echo "VERSION_SUFFIX=-${LABEL}-${SHORT_SHA}" >> "$GITHUB_ENV"
+          echo "BRANCH_FULL=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
+          echo "VERSION_SUFFIX=-${SHORT_SHA}" >> "$GITHUB_ENV"
 
       - name: Log Pinned Binary Version
         run: |

@@ -1,0 +1,176 @@
+/*
+ * ============================================================================
+ * Name        : SyncStateViewModel.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : Activity-scoped holder for the Share feature's TransportEngine,
+ *               so an in-flight rsync transfer is NOT tied to a single
+ *               SyncFragment instance and survives a configuration-change
+ *               recreation (theme toggle / rotation). The transport holds a
+ *               Process/socket (no Context/View), so it is leak-safe to keep
+ *               here. ADFA-4492 (3b-2).
+ * ============================================================================
+ */
+package org.appdevforall.k2go.sync.presentation;
+
+import android.content.Context;
+import android.util.Log;
+
+import androidx.lifecycle.ViewModel;
+
+import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.RsyncManager;
+import org.appdevforall.k2go.SyncHandshakeHelper;
+import org.appdevforall.k2go.sync.domain.ShareConfig;
+import org.appdevforall.k2go.sync.transport.TransportEngine;
+import org.appdevforall.k2go.sync.transport.WifiNetworkBinder;
+import org.appdevforall.k2go.util.AppExecutors;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
+public class SyncStateViewModel extends ViewModel {
+
+    private static final String TAG = "IIAB-SyncStateVM";
+
+    // ADFA-4960: process-scoped (was per-ViewModel) so an in-flight clone survives the Activity being
+    // finished (e.g. the user swipes the app away). The transport's native rsync child is kept alive by
+    // CloneShareService; making it per-ViewModel meant onCleared() below killed it on every swipe.
+    private static volatile TransportEngine transport;
+
+    // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
+    // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
+    // startProbe() and reacts to the phases published on SyncProgressRepository; the chosen
+    // credentials/destination are kept here so the re-bound fragment can start the transfer.
+    private SyncHandshakeHelper.SyncCredentials pendingCreds;
+    private File pendingDestDir;
+    private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
+    private Context appContext; // application context, for releasing the network binding
+
+    /** The single transport instance for this Activity; created lazily, reused across recreations. */
+    public TransportEngine getTransport() {
+        // ADFA-4960 (review): the field is now process-global and reachable from the main thread and a
+        // probe's IO thread, so guard the lazy init (double-checked, field is volatile) to never build
+        // two RsyncManager instances that would leak a stray rsync child a later stop() can't reach.
+        TransportEngine t = transport;
+        if (t == null) {
+            synchronized (SyncStateViewModel.class) {
+                t = transport;
+                if (t == null) { t = new RsyncManager(); transport = t; }
+            }
+        }
+        return t;
+    }
+
+    public SyncHandshakeHelper.SyncCredentials getPendingCreds() { return pendingCreds; }
+
+    public File getPendingDestDir() { return pendingDestDir; }
+
+    /** ADFA-5160: the dry-run's bytes-to-transfer (0 = not yet calculated), used as the transfer
+     *  progress denominator so the bar climbs a fixed total instead of rsync's growing estimate. */
+    public long getPendingBytes() { return pendingBytes; }
+
+    /**
+     * Reachability probe + rsync dry-run, off the fragment. Publishes CONNECTING -> CALCULATING ->
+     * CONFIRM (ready, with size) or ABORTED (unreachable / not enough space / dry-run error). The
+     * dry-run process lives in this Activity-scoped transport, so it survives a recreation.
+     */
+    public void startProbe(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds) {
+        this.pendingCreds = creds;
+        this.pendingDestDir = null;
+        this.pendingBytes = 0L;
+        this.appContext = appCtx.getApplicationContext();
+        final SyncProgressRepository repo = SyncProgressRepository.get();
+        repo.postConnecting();
+
+        // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
+        // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
+        // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
+        WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
+
+        AppExecutors.get().io().execute(() -> {
+            boolean reachable = false;
+            try {
+                Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(creds.ip, creds.port), 2000);
+                socket.close();
+                reachable = true;
+            } catch (Exception e) {
+                Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed", e);
+            }
+
+            if (!reachable) {
+                repo.postAborted(appCtx.getString(R.string.sync_dialog_conn_failed_title),
+                        appCtx.getString(R.string.sync_dialog_conn_failed_msg, creds.ip));
+                return;
+            }
+
+            File destDir = new File(appCtx.getFilesDir(), "rootfs/installed-rootfs/iiab");
+            if (!destDir.exists()) destDir.mkdirs();
+            pendingDestDir = destDir;
+            repo.postCalculating();
+
+            getTransport().calculateTransferPlan(appCtx, shareConfig, creds.ip, creds.port,
+                    creds.user, creds.pass, destDir.getAbsolutePath(),
+                    new TransportEngine.DryRunListener() {
+                        @Override
+                        public void onCalculated(long bytesToTransfer) {
+                            pendingBytes = bytesToTransfer; // ADFA-5160: denominator for the transfer bar
+                            double gigabytes = bytesToTransfer / (1024.0 * 1024.0 * 1024.0);
+                            // ADFA-5105: one margin (StorageGuard) on the real write target (StorageProbe),
+                            // not a second -5 GB copy. Clone-receive overwrites the library, so refuse on
+                            // UNKNOWN free space too (anything but FITS).
+                            Long freeBytes = org.appdevforall.k2go.storage.StorageProbe.freeBytes(appCtx);
+                            if (org.appdevforall.k2go.storage.StorageGuard.evaluate(freeBytes, bytesToTransfer)
+                                    != org.appdevforall.k2go.storage.StorageGuard.Verdict.FITS) {
+                                double freeSpaceGb = (freeBytes == null ? 0.0 : freeBytes)
+                                        / (1024.0 * 1024.0 * 1024.0);
+                                repo.postAborted(appCtx.getString(R.string.sync_error_storage_title),
+                                        appCtx.getString(R.string.sync_error_storage_msg, gigabytes, freeSpaceGb));
+                                return;
+                            }
+                            String[] listing = destDir.list();
+                            String title = (listing != null && listing.length > 0)
+                                    ? appCtx.getString(R.string.sync_title_update)
+                                    : appCtx.getString(R.string.sync_title_install);
+                            repo.postConfirm(title, appCtx.getString(R.string.sync_msg_confirm_transfer, gigabytes));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            repo.postAborted(appCtx.getString(R.string.sync_error_calc_title),
+                                    appCtx.getString(R.string.sync_error_calc_msg, error));
+                        }
+                    });
+        });
+    }
+
+    /** Release the network binding put in place for a receive (ADFA-4496); safe to call repeatedly. */
+    public void releaseNetwork() {
+        if (appContext != null) WifiNetworkBinder.unbind(appContext);
+    }
+
+    /** User declined the transfer (or cancelled mid-probe): stop any dry-run and reset. */
+    public void cancelProbe() {
+        if (transport != null) transport.stop();
+        releaseNetwork();
+        SyncProgressRepository.get().postIdle();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        // ADFA-4960: do NOT tear down an in-flight clone when the Activity finishes (e.g. the user
+        // swipes the app away). The transport + its native rsync child are process-scoped and kept
+        // alive by CloneShareService; stopping them here is exactly what cut a transfer on swipe. Only
+        // clean up when nothing is running (send session idle AND no receive in flight).
+        if (org.appdevforall.k2go.redesign.CloneSendSession.isActive()
+                || SyncProgressRepository.get().isActive()) return;
+        releaseNetwork();
+        if (transport != null) {
+            transport.stop();
+            transport = null;
+        }
+    }
+}

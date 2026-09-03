@@ -5,7 +5,7 @@
     <!-- ADFA-5192: the ProgressButton styleable was removed with the legacy tabbed UI's
          ProgressButton view (its only consumer). -->
 
-    <!-- K2GO-374: the reusable live-log "details" panel (org.iiab.controller.widget.LiveLogPanel). -->
+    <!-- K2GO-374: the reusable live-log "details" panel (org.appdevforall.k2go.widget.LiveLogPanel). -->
     <declare-styleable name="LiveLogPanel">
         <!-- Height of the scrollable log area, in dp (default 180). -->
         <attr name="logMaxHeightDp" format="integer" />
