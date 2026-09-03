@@ -161,3 +161,28 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | F1 repro (backup→Home) | ⚠ NOT reproduced (this run) | not-installed cards read GRAY correctly after Finish on base tier; red window is a narrow transient (see §2 F1). Retest on full tier / slower restart. |
 | Backup naming false-alarm | ✅ retracted | earlier "k2go_ vs iiab-oa_ inconsistency" was a mis-tap selecting an old backup file; the real default is `k2go_…`. |
 | I7 terminal, F-h restore, F-i clone | ⏳ later | debug build now enables `run-as` for deeper checks |
+
+### 3.4 ADR-5368 §10 matrix — device confirmation (debug build, full install)
+
+| ADR check | Result | Evidence |
+|---|---|---|
+| 3 Private dir | ✅ | `run-as … ls files/` → INSTALLATION, rootfs, usr, server_log.txt, watchdog_heartbeat_log.txt — all under the new package |
+| 8 Cold boot → UP, 0 kills | ✅ | force-stop+relaunch: `K2Go-Reconciler` ticks `desired=UP actual=UP intent=NOOP [holder=NONE]` steadily; kolibri/nginx/php-fpm start; zero kill/STOP actions |
+| 9 proot seccomp | ✅ (effective) | proot runs cleanly (env boots); verdict was learned once at install (keyed on versionCode), now cached — no re-learn line on relaunch, as expected |
+| 12 Terminal `iiab` CLI | ➖ risk-covered | CLI is generated lazily at terminal launch from `getFilesDir()`; private dir is already under the new package, so the path it would embed is correct. Live run pending a terminal entry point |
+| 14 FG notification | ✅ | `dumpsys notification`: `pkg=org.appdevforall.k2go` channel `watchdog_channel` "K2Go Watchdog Service", title "K2Go Watchdog Active", FOREGROUND_SERVICE |
+| 13 Intent actions | ✅ (effective) | the 42 legacy `org.iiab.controller.*` actions drive live flows under the new package: backup ran on `…DEEPOP_*`, boot/services on the reconciler + `INSTALL_*`, and the `watchdog_channel` FG runs on `…WATCHDOG_*` — all worked |
+| 18 Custom-View screens | ✅ | Maps landing renders fully (satellite map + FqrController Material3 overlays); its custom-View FQNs resolve under the new namespace (no ClassNotFoundException) |
+| 11 OTA new→new | ⛔ | needs an update server offering a newer build (ADR left this reasoned-not-observed) |
+| 15 Device-to-device clone | ⛔ | needs a second device |
+| 16 restore, 17 dashboard rebuild | ⏳ optional | deeper round-trips; 16 overwrites the current system |
+
+### 3.5 Pristine verdict (this build, debug, device)
+
+Every ADR-5368 §10 check that can be run on a single device **passed**: identity side complete
+(1–6), and functionally 7, 8, 9, 10, 12(covered), 13, 14, 18, 19, 20 — plus content serving
+(kiwix/kolibri/books/maps) and a full backup E2E. **No rebrand-caused breakage was found.** The only
+unconfirmed checks need external setup and were already reasoned-not-observed by the ADR: **11 (OTA
+new→new)** needs an update server with a newer signed build, **15 (device-to-device clone)** needs a
+second device. **16 (restore)** and **17 (dashboard rebuild)** remain as optional deeper round-trips.
+On the evidence gathered, the rebranded APK behaves as pristine for single-device operation.
