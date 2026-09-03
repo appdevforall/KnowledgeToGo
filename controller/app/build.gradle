@@ -45,12 +45,12 @@ android {
 
         // 3. Version Control (OTA)
         // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
-        versionCode 60
+        versionCode 61
         // Dynamic version suffix: CI passes -PversionSuffix explicitly; local builds fall back to
         // the git short SHA (ADFA-4787) so any installed APK is traceable to its commit.
         def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix')
                 : (project.ext.gitSha ? "-${project.ext.gitSha}" : "")
-        versionName "v0.7.0-beta${ciSuffix}"
+        versionName "v0.8.0-beta${ciSuffix}"
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         // True only when google-services.json is present, so AnalyticsClient can compile out cleanly.
         buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"

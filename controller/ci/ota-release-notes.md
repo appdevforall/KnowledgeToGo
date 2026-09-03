@@ -11,6 +11,12 @@ tag). This file is only the short summary end users read when they update.
 Rule: the version header must match the release tag / `versionName` so the CI picks
 the right entry.
 
+## v0.8.0-beta
+K2Go now installs as a new app, so Android cannot update your current one into it. Start over
+without losing anything: back up your library first (Settings > Backups & recovery), remove the old
+app, install this release by hand, then restore your backup. Keeping both installed stops the new
+app from starting.
+
 ## v0.7.0-beta
 Welcome to Knowledge to Go. v0.7.0-beta brings a resilient install (pause/resume),
 honest system state, and a refreshed Connect & Clone. Enjoy life offline.
