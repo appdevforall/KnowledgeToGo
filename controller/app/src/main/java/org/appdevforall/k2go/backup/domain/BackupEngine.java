@@ -58,7 +58,7 @@ public final class BackupEngine {
         String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
         String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
-        String manifestArg = stageIdentityManifest(ctx);   // "-C '<stage>' 'installed-rootfs/iiab/.iiab-rootfs.json' " or null
+        String manifestArg = stageIdentityManifest(ctx);   // "-C '<stage>' 'installed-rootfs/iiab/.k2go-rootfs.json' " or null
 
         // Single-quote the interpolated paths (robust if a path ever holds spaces/metacharacters).
         String cmd = "'" + tarBin + "' -cf - "
@@ -100,10 +100,20 @@ public final class BackupEngine {
     }
 
     /**
-     * Stage {@code .iiab-rootfs.json} (origin=device-backup, no checksum — the phone is not a builder) in
+     * Stage {@code .k2go-rootfs.json} (origin=device-backup, no checksum — the phone is not a builder) in
      * a temp tree and return the extra {@code -C '<stage>' '<relpath>' } so it is packed FIRST, letting
      * RootfsArchiveValidator read identity from the first tar header without decompressing everything.
      * Returns null if staging failed (backup still proceeds, just without the manifest).
+     */
+    /**
+     * Stage the identity manifest that becomes the archive's first tar entry.
+     *
+     * <p>K2GO-90: writes the {@code k2go-} name. Done now, while the installed base is developers
+     * and a handful of users, because every backup written under the old name would otherwise join a
+     * pile that has to age out before the tolerance for it can ever be dropped. Writing it now closes
+     * that set today. The app reads both, so backups made before this still restore; the only thing
+     * that cannot read one of these is a build older than v0.8.0, which is a downgrade across the
+     * identity change and unsupported anyway.
      */
     private static String stageIdentityManifest(Context ctx) {
         File stageRoot = new File(ctx.getCacheDir(), "mfstage");
@@ -116,13 +126,13 @@ public final class BackupEngine {
             java.util.Calendar c = java.util.Calendar.getInstance();
             String built = String.format(java.util.Locale.US, "%04d.%03d",
                     c.get(java.util.Calendar.YEAR), c.get(java.util.Calendar.DAY_OF_YEAR));
-            String json = "{\"schema\":1,\"kind\":\"iiab-rootfs\",\"arch\":\"" + appAbi
+            String json = "{\"schema\":1,\"kind\":\"k2go-rootfs\",\"arch\":\"" + appAbi
                     + "\",\"deb_arch\":\"" + debArch + "\",\"built\":\"" + built
                     + "\",\"builder\":\"knowledgetogo-app\",\"origin\":\"device-backup\"}";
-            try (java.io.FileOutputStream o = new java.io.FileOutputStream(new File(iiabStage, ".iiab-rootfs.json"))) {
+            try (java.io.FileOutputStream o = new java.io.FileOutputStream(new File(iiabStage, ".k2go-rootfs.json"))) {
                 o.write(json.getBytes("UTF-8"));
             }
-            return "-C '" + stageRoot.getAbsolutePath() + "' 'installed-rootfs/iiab/.iiab-rootfs.json' ";
+            return "-C '" + stageRoot.getAbsolutePath() + "' 'installed-rootfs/iiab/.k2go-rootfs.json' ";
         } catch (Exception e) {
             Log.w(TAG, "Could not stage identity manifest: " + e.getMessage());
             return null;

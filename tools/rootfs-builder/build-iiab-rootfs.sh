@@ -779,20 +779,23 @@ rm -f "$ROOTFS/usr/local/sbin/hostnamectl" \
       "$ROOTFS/usr/local/sbin/reboot" 2>/dev/null || true
 # Embed the self-validation manifest (INTEGRITY only). Frozen spec + recipe:
 #   docs/ROOTFS_MANIFEST.md  (algo: iiab-tree-sha256-v1)
-# Two members inside the tree: identity (.iiab-rootfs.json, packed FIRST, hashed)
-# and integrity (.iiab-rootfs.integrity.json, packed LAST, excluded from its own
+# K2GO-90: the manifest carries the product's name. The app reads both spellings, so images built
+# before this still validate; nothing outside the app reads these files.
+# Two members inside the tree: identity (.k2go-rootfs.json, packed FIRST, hashed)
+# and integrity (.k2go-rootfs.integrity.json, packed LAST, excluded from its own
 # hash). Lets a manually-imported rootfs (no sidecar .meta4) detect corruption.
 TREEHASH_PY="$(dirname "$SELF")/iiab_tree_hash.py"
 [[ -f "$TREEHASH_PY" ]] || die "missing $(basename "$TREEHASH_PY") next to the build script (treehash recipe)."
-ID_MEMBER="installed-rootfs/iiab/.iiab-rootfs.json"
-INTEG_MEMBER="installed-rootfs/iiab/.iiab-rootfs.integrity.json"
+ID_MEMBER="installed-rootfs/iiab/.k2go-rootfs.json"
+INTEG_MEMBER="installed-rootfs/iiab/.k2go-rootfs.integrity.json"
 
 log "Embedding rootfs manifest (identity + integrity, iiab-tree-sha256-v1) ..."
-rm -f "$ROOTFS/.iiab-rootfs.json" "$ROOTFS/.iiab-rootfs.integrity.json" 2>/dev/null || true
+rm -f "$ROOTFS/.iiab-rootfs.json" "$ROOTFS/.iiab-rootfs.integrity.json" \
+      "$ROOTFS/.k2go-rootfs.json" "$ROOTFS/.k2go-rootfs.integrity.json" 2>/dev/null || true
 
 # (a) identity member -- packed first, IS hashed (single-line JSON, no trailing newline issues)
-cat > "$ROOTFS/.iiab-rootfs.json" <<JSON
-{"schema":1,"kind":"iiab-rootfs","arch":"${ARCH}","deb_arch":"${DEB_ARCH}","tier":"${TIER_NAME}","iiab_commit":"${IIAB_SHA}","built":"${STAMP}","base":"debian-trixie","proot_distro":"${PD_VERSION}","builder":"build-iiab-rootfs.sh"}
+cat > "$ROOTFS/.k2go-rootfs.json" <<JSON
+{"schema":1,"kind":"k2go-rootfs","arch":"${ARCH}","deb_arch":"${DEB_ARCH}","tier":"${TIER_NAME}","iiab_commit":"${IIAB_SHA}","built":"${STAMP}","base":"debian-trixie","proot_distro":"${PD_VERSION}","builder":"build-iiab-rootfs.sh"}
 JSON
 
 # (b) deterministic member list: identity FIRST, then everything else (LC_ALL=C
@@ -813,7 +816,7 @@ TREEHASH="$( ( cd "$WORKDIR" && tar -c --no-recursion -T "$MEMBER_LIST" ) \
 [[ -n "$TREEHASH" ]] || { rm -f "$MEMBER_LIST"; die "empty treehash"; }
 
 # (d) integrity member -- packed last, NOT hashed
-cat > "$ROOTFS/.iiab-rootfs.integrity.json" <<JSON
+cat > "$ROOTFS/.k2go-rootfs.integrity.json" <<JSON
 {"schema":1,"algo":"iiab-tree-sha256-v1","treehash":"${TREEHASH}"}
 JSON
 
