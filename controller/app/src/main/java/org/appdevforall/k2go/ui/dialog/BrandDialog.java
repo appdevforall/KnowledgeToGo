@@ -3,7 +3,6 @@ package org.appdevforall.k2go.ui.dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -259,8 +258,8 @@ public final class BrandDialog {
                 if (checkboxRequired && checkboxRequiredMessage != null) {
                     err = new TextView(context);
                     err.setText(checkboxRequiredMessage);
-                    err.setTextColor(ContextCompat.getColor(context, R.color.k2go_clay));
-                    err.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
+                    err.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+                    err.setTextColor(ContextCompat.getColor(context, R.color.k2go_clay));   // after the appearance, which overrides color
                     err.setPadding(0, Math.round(4 * context.getResources().getDisplayMetrics().density), 0, 0);
                     err.setVisibility(View.GONE);
                     column.addView(err);
@@ -315,13 +314,16 @@ public final class BrandDialog {
                     }
                     return;   // gate: keep the dialog open, fire nothing, until the box is ticked
                 }
-                if (dismissOnPositive) {
-                    dialog.dismiss();
-                }
+                // Run the action BEFORE dismissing (the conventional MaterialAlertDialog order), so a
+                // caller that reacts to the dialog closing — e.g. the notification activity finishing via
+                // its onDismiss listener — cannot race ahead of the action it triggered.
                 if (positiveConfirm != null) {
                     positiveConfirm.onConfirm(checkbox != null && checkbox.isChecked());
                 } else if (positiveClick != null) {
                     positiveClick.onClick();
+                }
+                if (dismissOnPositive) {
+                    dialog.dismiss();
                 }
             });
         }
