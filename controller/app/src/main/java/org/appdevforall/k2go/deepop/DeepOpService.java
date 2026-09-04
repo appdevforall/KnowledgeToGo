@@ -278,6 +278,7 @@ public final class DeepOpService extends Service {
             if (in == null) throw new IOException("The picked file could not be opened");
             byte[] buf = new byte[1 << 16];
             long copied = 0L, lastEmit = 0L;
+            final long startMs = android.os.SystemClock.elapsedRealtime();
             int n;
             while ((n = in.read(buf)) != -1) {   // a 0-length read is not end of stream
                 out.write(buf, 0, n);
@@ -288,7 +289,13 @@ public final class DeepOpService extends Service {
                     final int pct = org.appdevforall.k2go.deploy.domain.ExtractProgress
                             .unifiedPercent(org.appdevforall.k2go.deploy.domain.ExtractProgress
                                     .percent(copied, size), COPY_PASS, RESTORE_PASSES);
-                    main.post(() -> setStep(getString(R.string.k2go_br_status_copying), pct));
+                    // K2GO-384: the copy is the restore's first pass; give it the same live per-pass ETA
+                    // the extract/verify passes already report (TarExtractor computes theirs the same way).
+                    final long rate = org.appdevforall.k2go.system.domain.TransferRate
+                            .perSecond(copied, now - startMs);
+                    final long eta = org.appdevforall.k2go.deploy.domain.ExtractProgress
+                            .etaSeconds(copied, size, rate);
+                    main.post(() -> setStep(getString(R.string.k2go_br_status_copying), pct, eta));
                 }
             }
             out.flush();
@@ -359,7 +366,8 @@ public final class DeepOpService extends Service {
                         final String label = getString(extracting
                                 ? R.string.k2go_br_status_restoring
                                 : R.string.k2go_br_status_checking);
-                        main.post(() -> setStep(label, unified));
+                        // K2GO-384: pass through the per-pass ETA TarExtractor already computed (was dropped).
+                        main.post(() -> setStep(label, unified, etaSeconds));
                     }
                 });
     }
@@ -423,14 +431,19 @@ public final class DeepOpService extends Service {
     }
 
     // ---- progress ----
-    private void setStep(String step, int percent) {
+    private void setStep(String step, int percent) { setStep(step, percent, -1L); }
+
+    /** K2GO-384: overload carrying the current pass's ETA (seconds; {@code -1} = unknown/hidden). */
+    private void setStep(String step, int percent, long etaSeconds) {
         stepText = step;
         updateNotification(step);
-        post(step, percent);
+        post(step, percent, etaSeconds);
     }
 
-    private void post(String step, int percent) {
-        DeepOpProgressRepository.get().postRunning(owner, step, percent);
+    private void post(String step, int percent) { post(step, percent, -1L); }
+
+    private void post(String step, int percent, long etaSeconds) {
+        DeepOpProgressRepository.get().postRunning(owner, step, percent, etaSeconds);
     }
 
     private void log(String line) { Log.d(TAG, line); }

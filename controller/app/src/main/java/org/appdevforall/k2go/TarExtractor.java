@@ -185,12 +185,10 @@ public class TarExtractor {
                 // ADFA-4544: retain the last output lines (stderr is merged) for diagnostics.
                 final java.util.concurrent.ConcurrentLinkedDeque<String> tarTail = new java.util.concurrent.ConcurrentLinkedDeque<>();
                 final Handler uiHandler = new Handler(Looper.getMainLooper());
-                // ADFA-5118: EXTRACT-pass byte progress. The current member comes from the reader
-                // thread (below); the compressed byte count comes from the feeder (further below),
-                // measured against the archive size on disk — the same currency as the VERIFY pass.
-                final String[] lastExtractFile = {""};
+                // K2GO-384: EXTRACT-pass progress + ETA are driven by MEMBERS WRITTEN, tracked in the
+                // reader thread below (tar -v emits one line per member as it lands on disk). extractStartMs
+                // is the pass clock that thread uses for the rate/ETA.
                 final long extractStartMs = SystemClock.elapsedRealtime();
-                final long compressedTotalBytes = new File(archivePath).length();
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     long[] lastLog = {0L};
@@ -202,7 +200,6 @@ public class TarExtractor {
                             // it does not flood logcat and get dropped "over proc quota" (ADFA-4544).
                             tarTail.addLast(line);
                             while (tarTail.size() > 20) tarTail.pollFirst();
-                            lastExtractFile[0] = line;   // ADFA-5118: current member for the byte-based emit
                             long now = System.currentTimeMillis();
                             if (now - lastLog[0] >= 250) {
                                 lastLog[0] = now;
@@ -218,6 +215,14 @@ public class TarExtractor {
                                     listener.onProgress(l);
                                     listener.onProgress(pct, d, totalMembers, l);
                                 });
+                                // K2GO-384: the unified EXTRACT bar + ETA track MEMBERS WRITTEN (one tar -v
+                                // line per member as it lands on disk), not compressed bytes read from the
+                                // .gz. The byte count saturated at ~99% the instant the archive was fully
+                                // piped into tar, freezing the bar and reading "under a min" for minutes
+                                // while tar was still writing the (much larger) rootfs. Members track the
+                                // real work, so the bar keeps moving and the ETA reads honest minutes.
+                                emitPhase(listener, uiHandler, Phase.EXTRACT,
+                                        d, totalMembers, SystemClock.elapsedRealtime() - extractStartMs, l);
                             }
                         }
                     } catch (Exception ignored) {
@@ -234,11 +239,12 @@ public class TarExtractor {
                     // try-with-resources): once tar dies its stdin flush/close re-throws EPIPE,
                     // which would escape to the outer catch and hide tar's real cause (ADFA-4544).
                     OutputStream tarInput = tarProcess.getOutputStream();
-                    long lastByteEmit = 0L;
-                    // ADFA-5118: count compressed bytes pulled from disk for the EXTRACT-pass bar; cis
-                    // lives in the try-with-resources so it closes even if GZIPInputStream throws.
-                    try (CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
-                         GZIPInputStream gis = new GZIPInputStream(cis)) {
+                    // K2GO-384: this feeder only decompresses the .gz into tar's stdin now; the EXTRACT-pass
+                    // bar/ETA are emitted from the reader thread (members written), which is what actually
+                    // tracks tar writing the rootfs to disk. (VERIFY still counts bytes read — there,
+                    // reading the archive IS the work, so that measure is honest.)
+                    try (FileInputStream fis = new FileInputStream(archivePath);
+                         GZIPInputStream gis = new GZIPInputStream(fis)) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
@@ -246,12 +252,6 @@ public class TarExtractor {
                             try {
                                 tarInput.write(buffer, 0, bytesRead);
                                 totalWritten += bytesRead;
-                                long now = SystemClock.elapsedRealtime();
-                                if (compressedTotalBytes > 0L && now - lastByteEmit >= 200) {
-                                    lastByteEmit = now;
-                                    emitPhase(listener, uiHandler, Phase.EXTRACT,
-                                            cis.count, compressedTotalBytes, now - extractStartMs, lastExtractFile[0]);
-                                }
                             } catch (java.io.IOException pipe) {
                                 // ADFA-4544: tar (the pipe reader) closed its stdin early -> it
                                 // failed or was killed. Don't report a generic decompression error;

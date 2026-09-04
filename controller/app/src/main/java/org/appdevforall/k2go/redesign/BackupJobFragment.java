@@ -67,6 +67,8 @@ public class BackupJobFragment extends Fragment {
     private View progressRow;
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
     private TextView progressPct;
+    /** K2GO-384: per-pass ETA caption next to the percent; blank when the pass can't estimate yet. */
+    private TextView progressEta;
     private org.appdevforall.k2go.util.EllipsisAnimator statusDots;
     private boolean running = false;
     private long lastSeq = -1L;
@@ -102,6 +104,7 @@ public class BackupJobFragment extends Fragment {
         progressRow = v.findViewById(R.id.k2go_bj_progress_row);
         progress = v.findViewById(R.id.k2go_bj_progress);
         progressPct = v.findViewById(R.id.k2go_bj_progress_pct);
+        progressEta = v.findViewById(R.id.k2go_bj_progress_eta);
         finish = v.findViewById(R.id.k2go_bj_finish);
         waitCard = v.findViewById(R.id.k2go_bj_wait_card);
         // ADFA-4947 fixed-width mode: this status line is centred, so variable-width dots slide the
@@ -209,13 +212,21 @@ public class BackupJobFragment extends Fragment {
      * <p>A negative percent means the step cannot say how far along it is, and a bar frozen at zero
      * reads as a stall — worse than no bar. Those steps keep the animation above instead.
      */
-    private void showProgress(int percent) {
+    private void showProgress(int percent, long etaSeconds) {
         if (progressRow == null) return;
         final boolean measurable = percent >= 0;
         progressRow.setVisibility(measurable ? View.VISIBLE : View.GONE);
         if (measurable) {
             progress.setProgressCompat(percent, true);
             progressPct.setText(percent + "%");   // matches the module-install and maps screens
+        }
+        // K2GO-384: the per-pass ETA ("~2 min"), reusing the install screens' EtaText so the wording
+        // lives in one place. Blank (unknown, or not measurable yet) leaves the slot empty rather than
+        // showing a stale estimate — the bar and % already carry the progress.
+        if (progressEta != null) {
+            progressEta.setText(measurable
+                    ? org.appdevforall.k2go.install.presentation.EtaText.of(requireContext(), etaSeconds)
+                    : "");
         }
     }
 
@@ -225,10 +236,10 @@ public class BackupJobFragment extends Fragment {
         if (st.isRunning()) {
             if (!running) beginRunning();
             setStatusAnimated(st.step);
-            showProgress(st.percent);
+            showProgress(st.percent, st.etaSeconds);
         } else if (st.isTerminal() && st.seq > lastSeq) {
             lastSeq = st.seq;
-            showProgress(-1);   // K2GO-372: a finished op has no bar to keep filling
+            showProgress(-1, -1L);   // K2GO-372: a finished op has no bar to keep filling
             showTerminal(st.phase == DeepOpState.Phase.SUCCESS, st.message);
         }
     }
