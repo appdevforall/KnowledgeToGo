@@ -40,11 +40,6 @@ public class WatchdogService extends Service {
     public static final String ACTION_STATE_STARTED = "org.iiab.controller.WATCHDOG_STARTED";
     public static final String ACTION_STATE_STOPPED = "org.iiab.controller.WATCHDOG_STOPPED";
 
-    // K2GO-386 device-verify hook (DEBUG builds only): force the disk guard to act now, with an
-    // injected floor extra "floor_bytes" (default MAX_VALUE => any real free space reads CRITICAL), so
-    // the reap/truncate/notify path can be verified on device without first filling ~58 GB.
-    public static final String ACTION_DISK_GUARD_TEST = "org.appdevforall.k2go.DISK_GUARD_TEST";
-
     // ADFA-5343 (Phase 4b): process-scoped "is the watchdog protecting right now", so the reconciler —
     // the one promoter — can edge-detect (start only when not running, stop only when running) without a
     // reconciler-side flag. Resets to false if the process is recreated (START_STICKY re-delivers a start).
@@ -74,16 +69,6 @@ public class WatchdogService extends Service {
                 startWatchdog();
             } else if (ACTION_STOP.equals(action)) {
                 stopSelf(); // Triggers onDestroy() cleanly
-            } else if (BuildConfig.DEBUG && ACTION_DISK_GUARD_TEST.equals(action)) {
-                // K2GO-386: force a guard check with an injected floor (device-verify; DEBUG only).
-                final long floor = intent.getLongExtra("floor_bytes", Long.MAX_VALUE);
-                new Thread(() -> {
-                    try {
-                        org.appdevforall.k2go.diskguard.DiskGuard.checkWithFloor(getApplicationContext(), floor);
-                    } catch (Throwable t) {
-                        Log.w(TAG, "K2GO-386: disk-guard test hook failed", t);
-                    }
-                }, "disk-guard-test").start();
             }
         }
         // START_STICKY tells Android to restart this service if it ever gets killed under extreme memory pressure
