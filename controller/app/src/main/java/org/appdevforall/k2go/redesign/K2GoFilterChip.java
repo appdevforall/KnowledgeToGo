@@ -55,6 +55,9 @@ public final class K2GoFilterChip {
         chip.setCheckable(true);
         chip.setChecked(selected);
         chip.setCheckedIconVisible(true);            // the "check" cue the design calls for
+        // A bare new Chip(ctx) picks up the theme's default (Assist) chipStyle, which has NO checkedIcon,
+        // so set a plain check explicitly -- otherwise setCheckedIconVisible shows nothing.
+        chip.setCheckedIcon(ContextCompat.getDrawable(ctx, R.drawable.ic_check_16));
         chip.setChipCornerRadius(8 * d);             // 8dp corner = chip/toggle (not a stadium pill)
         chip.setChipMinHeight(32 * d);               // the 32dp step on the 4dp role ladder
         chip.setEnsureMinTouchTargetSize(true);      // keep a >=48dp touch target on the 32dp chip
