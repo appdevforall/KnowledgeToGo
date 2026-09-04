@@ -26,6 +26,10 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class WatchdogService extends Service {
     private static final String TAG = "IIAB-Watchdog";
     private static final String CHANNEL_ID = "watchdog_channel";
@@ -36,6 +40,11 @@ public class WatchdogService extends Service {
     public static final String ACTION_STATE_STARTED = "org.iiab.controller.WATCHDOG_STARTED";
     public static final String ACTION_STATE_STOPPED = "org.iiab.controller.WATCHDOG_STOPPED";
 
+    // K2GO-386 device-verify hook (DEBUG builds only): force the disk guard to act now, with an
+    // injected floor extra "floor_bytes" (default MAX_VALUE => any real free space reads CRITICAL), so
+    // the reap/truncate/notify path can be verified on device without first filling ~58 GB.
+    public static final String ACTION_DISK_GUARD_TEST = "org.appdevforall.k2go.DISK_GUARD_TEST";
+
     // ADFA-5343 (Phase 4b): process-scoped "is the watchdog protecting right now", so the reconciler —
     // the one promoter — can edge-detect (start only when not running, stop only when running) without a
     // reconciler-side flag. Resets to false if the process is recreated (START_STICKY re-delivers a start).
@@ -45,6 +54,11 @@ public class WatchdogService extends Service {
     // Hardware Locks
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
+
+    // K2GO-386 (barrier 2): a single background poller checks free space while the box is up and tears
+    // it down before ENOSPC. Started once per protected session, stopped on destroy.
+    private ScheduledExecutorService diskGuardPoller;
+    private static final long DISK_GUARD_INTERVAL_S = 25;
 
     @Override
     public void onCreate() {
@@ -60,6 +74,16 @@ public class WatchdogService extends Service {
                 startWatchdog();
             } else if (ACTION_STOP.equals(action)) {
                 stopSelf(); // Triggers onDestroy() cleanly
+            } else if (BuildConfig.DEBUG && ACTION_DISK_GUARD_TEST.equals(action)) {
+                // K2GO-386: force a guard check with an injected floor (device-verify; DEBUG only).
+                final long floor = intent.getLongExtra("floor_bytes", Long.MAX_VALUE);
+                new Thread(() -> {
+                    try {
+                        org.appdevforall.k2go.diskguard.DiskGuard.checkWithFloor(getApplicationContext(), floor);
+                    } catch (Throwable t) {
+                        Log.w(TAG, "K2GO-386: disk-guard test hook failed", t);
+                    }
+                }, "disk-guard-test").start();
             }
         }
         // START_STICKY tells Android to restart this service if it ever gets killed under extreme memory pressure
@@ -79,6 +103,9 @@ public class WatchdogService extends Service {
 
         // 2. Acquire CPU WakeLock to prevent sleep during heavy operations (e.g., Tar extraction, Rsync)
         acquireHardwareLocks();
+
+        // K2GO-386 (barrier 2): guard free space for the life of this protected session.
+        startDiskGuard();
 
         // 3. Notify the UI (MainActivity) that the engine is protected and running
         IIABWatchdog.logSessionStart(this);
@@ -116,6 +143,28 @@ public class WatchdogService extends Service {
         }
     }
 
+    // K2GO-386 (barrier 2): the free-space guard. One background poller ticks every
+    // DISK_GUARD_INTERVAL_S; on a CRITICAL reading DiskGuard tears the box down and reclaims the runaway
+    // log — the in-box healer cannot, it dies with the box. Started once per session (idempotent).
+    private void startDiskGuard() {
+        if (diskGuardPoller != null) return;
+        diskGuardPoller = Executors.newSingleThreadScheduledExecutor();
+        diskGuardPoller.scheduleWithFixedDelay(() -> {
+            try {
+                org.appdevforall.k2go.diskguard.DiskGuard.check(getApplicationContext());
+            } catch (Throwable t) {
+                Log.w(TAG, "K2GO-386: disk-guard tick failed", t);
+            }
+        }, DISK_GUARD_INTERVAL_S, DISK_GUARD_INTERVAL_S, TimeUnit.SECONDS);
+    }
+
+    private void stopDiskGuard() {
+        if (diskGuardPoller != null) {
+            diskGuardPoller.shutdownNow();
+            diskGuardPoller = null;
+        }
+    }
+
     @Override
     public void onDestroy() {
         RUNNING = false;   // ADFA-5343 (Phase 4b): protection is ending — clear the promoter's state signal
@@ -123,6 +172,9 @@ public class WatchdogService extends Service {
         Intent stopIntent = new Intent(ACTION_STATE_STOPPED);
         stopIntent.setPackage(getPackageName());
         sendBroadcast(stopIntent);
+
+        // K2GO-386 (barrier 2): stop the free-space guard — this protected session (box up) is ending.
+        stopDiskGuard();
 
         // 2. Release Hardware Locks so the phone can sleep again
         releaseHardwareLocks();
