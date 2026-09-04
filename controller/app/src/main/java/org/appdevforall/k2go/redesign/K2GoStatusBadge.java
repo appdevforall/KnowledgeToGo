@@ -50,6 +50,13 @@ public final class K2GoStatusBadge {
         label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
         badge.addView(label);
 
+        // Self-space for a horizontal chip/flow row (8dp end gap, like K2GoChip); a caller that needs a
+        // different margin passes its own LayoutParams to addView, which overrides this.
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.rightMargin = Math.round(8 * d);
+        badge.setLayoutParams(lp);
+
         style(badge, text, colorRes);
         return badge;
     }
