@@ -15,6 +15,12 @@
  *               unreachable, an in-proot kill does not reach the orphan, and a
  *               full teardown (force-stop) is what worked. So the action is a
  *               full box reap (EnvironmentProcess), NOT a targeted restart.
+ *
+ *               Why desired=DOWN too (device-proven 2026-09-04, HD1901): a reap
+ *               alone is undone — the ADFA-5343 reconciler relaunches the box in
+ *               ~3s. So the guard first sets the ONE persisted intent (desired
+ *               DOWN, via ServerLifecycleReconciler) so it stays down, THEN reaps
+ *               for immediacy. The user re-enables the server after freeing space.
  * ============================================================================
  */
 package org.appdevforall.k2go.diskguard;
@@ -32,6 +38,7 @@ import androidx.core.app.NotificationManagerCompat;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
 import org.appdevforall.k2go.env.EnvironmentProcess;
+import org.appdevforall.k2go.env.ServerLifecycleReconciler;
 import org.appdevforall.k2go.storage.StorageProbe;
 
 import java.io.File;
@@ -69,10 +76,22 @@ public final class DiskGuard {
 
         Log.w(TAG, "K2GO-386: free space CRITICAL (" + free + " B, floor " + floorBytes
                 + ") — tearing the box down to protect the device");
+
+        // Set desired=DOWN FIRST, through the ONE lifecycle owner (ADFA-5343). This is the persisted
+        // user-intent lever the server toggle already owns — reusing it (not a new "guard forced down"
+        // flag) keeps a single source for "should the box be up", and its lifecycle is the existing
+        // toggle: the user turns the server back on after freeing space. Without this the reconciler
+        // relaunches the box within ~3s and the runaway resumes — device-proven 2026-09-04 (HD1901):
+        // an in-app kill alone is undone by the reconciler; only setting desired=DOWN keeps it down.
+        ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
+
+        // Then reap NOW for immediacy: the reconciler's own graceful pdsm stop takes ~40s, too slow while
+        // the disk is critically filling. desired=DOWN (above) is what keeps it from coming back.
         boolean reaped = EnvironmentProcess.reapBox(ctx);
         long reclaimed = reclaimRunawayLog(ctx);
         notifyUser(ctx);
-        Log.w(TAG, "K2GO-386: box reaped=" + reaped + ", runaway log reclaimed=" + reclaimed + " B");
+        Log.w(TAG, "K2GO-386: desired=DOWN set, box reaped=" + reaped
+                + ", runaway log reclaimed=" + reclaimed + " B");
         return true;
     }
 
