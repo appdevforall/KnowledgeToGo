@@ -647,6 +647,10 @@
     <string name="k2go_br_cancel_extract_ack">我明白现在取消可能会使我的系统损坏或无法使用。</string>
     <string name="k2go_br_restore_damaged">恢复已取消。您的系统将在下次启动时进入恢复模式。</string>
     <string name="k2go_br_cancel_extract_need_ack">勾选此框以确认您已了解。</string>
+    <string name="k2go_br_cancel_backup_title">取消备份?</string>
+    <string name="k2go_br_cancel_backup_body">此备份尚未完成。取消将删除未完成的文件 — 您可以随时开始新的备份。</string>
+    <string name="k2go_br_cancel_backup_confirm">取消备份</string>
+    <string name="k2go_br_cancel_backup_keep">继续备份</string>
     <string name="k2go_br_restore_unreadable">无法读取所选文件，因此未做任何更改。</string>
     <string name="deepop_channel_name">备份与恢复</string>
     <string name="deepop_channel_desc">使备份或恢复在后台安全运行</string>

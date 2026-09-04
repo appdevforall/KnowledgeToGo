@@ -724,6 +724,10 @@
     <string name="k2go_br_cancel_extract_ack">Je comprends que l\'annulation maintenant peut laisser mon système endommagé ou inutilisable.</string>
     <string name="k2go_br_restore_damaged">Restauration annulée. Votre système démarrera en mode récupération au prochain lancement.</string>
     <string name="k2go_br_cancel_extract_need_ack">Cochez la case pour confirmer que vous avez compris.</string>
+    <string name="k2go_br_cancel_backup_title">Annuler la sauvegarde ?</string>
+    <string name="k2go_br_cancel_backup_body">Cette sauvegarde n\'est pas terminée. L\'annulation supprime le fichier incomplet — vous pouvez démarrer une nouvelle sauvegarde à tout moment.</string>
+    <string name="k2go_br_cancel_backup_confirm">Annuler la sauvegarde</string>
+    <string name="k2go_br_cancel_backup_keep">Continuer la sauvegarde</string>
     <string name="k2go_br_restore_unreadable">Le fichier sélectionné n\'a pas pu être lu, donc rien n\'a été modifié.</string>
     <string name="deepop_channel_name">Sauvegarde &amp; restauration</string>
     <string name="deepop_channel_desc">Maintient une sauvegarde ou une restauration en cours en toute sécurité en arrière-plan</string>

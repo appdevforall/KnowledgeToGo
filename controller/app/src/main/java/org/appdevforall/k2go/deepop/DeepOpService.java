@@ -106,6 +106,9 @@ public final class DeepOpService extends Service {
      *  pass outcome (complete / error / cancelled / held). Guards the re-callable attemptVerifyAndExtract so a
      *  "Keep restoring" cannot start a second pass over the same temp while one is running. */
     private volatile boolean passRunning = false;
+    /** K2GO-384: cancel for the (read-only, single-pass) BACKUP. streamBackup's read loop reads it and kills
+     *  tar. Always safe (nothing on the device is touched); the terminal removes the incomplete SAF file. */
+    private final java.util.concurrent.atomic.AtomicBoolean backupCancelled = new java.util.concurrent.atomic.AtomicBoolean(false);
     /** K2GO-384: true while the user is deciding on a paused COPY (Cancel pressed). The copy loop blocks on
      *  it; ACTION_RESUME clears it (continue), ACTION_CANCEL_CONFIRM sets cancelBeforeExtract and clears it
      *  (abort). Only the copy is pausable -- verify/extract are external tar processes. */
@@ -201,23 +204,42 @@ public final class DeepOpService extends Service {
     // ---- BACKUP (read-only) ----
     private void runBackup(final String uriStr) {
         if (done) return;
+        currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: backup is cancellable throughout (read-only)
         setStep(getString(R.string.k2go_br_status_backing), -1);
         AppExecutors.get().io().execute(() -> {
             boolean ok;
             try (OutputStream os = getContentResolver().openOutputStream(Uri.parse(uriStr))) {
                 // K2GO-384: byte-accurate progress + ETA; streamBackup reports from its tar-stdout read loop.
-                // post() is thread-safe and carries cancelKind=NONE (backup's Cancel stays on the notification,
-                // so no on-screen Cancel appears).
+                // post() is thread-safe. backupCancelled lets the on-screen (or notification) Cancel stop tar.
                 ok = os != null && BackupEngine.streamBackup(this, os,
-                        (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds));
+                        (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds),
+                        backupCancelled);
             } catch (Exception e) {
                 Log.e(TAG, "backup failed", e);
                 ok = false;
             }
             final boolean success = ok;
-            main.post(() -> finishJob(success,
-                    getString(R.string.k2go_br_backup_done), getString(R.string.k2go_br_backup_failed)));
+            main.post(() -> {
+                if (done) return;
+                if (!success) {
+                    // K2GO-384: an unfinished backup left an incomplete/damaged .tar.gz at the SAF destination.
+                    // Removing it is the default (no prompt) -- a partial gzip'd tar is useless and unresumable.
+                    deleteBackupDoc(uriStr);
+                    if (backupCancelled.get()) { finishCancelled(); return; }   // user cancel -> bifurcation
+                }
+                finishJob(success, getString(R.string.k2go_br_backup_done), getString(R.string.k2go_br_backup_failed));
+            });
         });
+    }
+
+    /** K2GO-384: remove the incomplete/damaged backup file a cancelled or failed run left at the SAF
+     *  destination. Best-effort -- a document picked via CREATE_DOCUMENT supports delete; if not, leave it. */
+    private void deleteBackupDoc(String uriStr) {
+        try {
+            android.provider.DocumentsContract.deleteDocument(getContentResolver(), Uri.parse(uriStr));
+        } catch (Exception e) {
+            Log.w(TAG, "could not delete incomplete backup doc: " + e.getMessage());
+        }
     }
 
     // ---- RESTORE (destructive) ----
@@ -550,13 +572,14 @@ public final class DeepOpService extends Service {
     }
 
     /**
-     * Notification "Cancel" — offered only for BACKUP (read-only, safe to abandon). Restore has no
-     * Cancel action (destructive, hard gate). The in-flight backup stream sees {@code done} and no-ops
-     * on completion. Runs the same cleanup as a failure so the lock is released and the op ends.
+     * Cancel (from the on-screen button's confirm, or the notification action — BACKUP only). Restore has no
+     * Cancel action here (it takes the CANCELLABLE hold / DESTRUCTIVE force-cancel paths below).
      */
     private void cancel() {
         if (owner == EnvironmentLock.Owner.BACKUP) {
-            finishJob(false, "", getString(R.string.k2go_br_backup_failed));
+            // K2GO-384: stop the backup for real -- the read loop sees this, kills tar, and the terminal
+            // removes the incomplete file (was: mark done + FAILED, which left tar running and the file behind).
+            backupCancelled.set(true);
             return;
         }
         // K2GO-384: a Cancel on any pre-destructive pass (CANCELLABLE) HOLDS the run and waits for the

@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Şimdi iptal etmenin sistemimi hasarlı veya kullanılamaz bırakabileceğini anlıyorum.</string>
     <string name="k2go_br_restore_damaged">Geri yükleme iptal edildi. Sisteminiz bir sonraki başlatmada kurtarma modunda başlayacak.</string>
     <string name="k2go_br_cancel_extract_need_ack">Anladığınızı onaylamak için kutuyu işaretleyin.</string>
+    <string name="k2go_br_cancel_backup_title">Yedekleme iptal edilsin mi?</string>
+    <string name="k2go_br_cancel_backup_body">Bu yedekleme tamamlanmadı. İptal etmek tamamlanmamış dosyayı kaldırır — istediğiniz zaman yeni bir yedekleme başlatabilirsiniz.</string>
+    <string name="k2go_br_cancel_backup_confirm">Yedeklemeyi iptal et</string>
+    <string name="k2go_br_cancel_backup_keep">Yedeklemeye devam et</string>
     <string name="k2go_br_restore_unreadable">Seçilen dosya okunamadı, bu yüzden hiçbir şey değiştirilmedi.</string>
     <string name="deepop_channel_name">Yedekle &amp; geri yükle</string>
     <string name="deepop_channel_desc">Bir yedekleme veya geri yüklemeyi arka planda güvenle çalışır durumda tutar</string>

@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">أفهم أن الإلغاء الآن قد يترك نظامي تالفًا أو غير قابل للاستخدام.</string>
     <string name="k2go_br_restore_damaged">تم إلغاء الاستعادة. سيبدأ نظامك في وضع الاسترداد عند التشغيل التالي.</string>
     <string name="k2go_br_cancel_extract_need_ack">حدد المربع لتأكيد فهمك.</string>
+    <string name="k2go_br_cancel_backup_title">إلغاء النسخة الاحتياطية؟</string>
+    <string name="k2go_br_cancel_backup_body">لم تكتمل هذه النسخة الاحتياطية. يؤدي الإلغاء إلى إزالة الملف غير المكتمل — يمكنك بدء نسخة احتياطية جديدة في أي وقت.</string>
+    <string name="k2go_br_cancel_backup_confirm">إلغاء النسخة الاحتياطية</string>
+    <string name="k2go_br_cancel_backup_keep">متابعة النسخ الاحتياطي</string>
     <string name="k2go_br_restore_unreadable">تعذّرت قراءة الملف المحدد، لذا لم يتغيّر أي شيء.</string>
     <string name="deepop_channel_name">النسخ الاحتياطي والاستعادة</string>
     <string name="deepop_channel_desc">يُبقي عملية نسخ احتياطي أو استعادة قيد التشغيل بأمان في الخلفية</string>

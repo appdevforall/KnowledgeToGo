@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Ich verstehe, dass ein Abbruch jetzt mein System beschädigen oder unbrauchbar machen kann.</string>
     <string name="k2go_br_restore_damaged">Wiederherstellung abgebrochen. Ihr System startet beim nächsten Start im Wiederherstellungsmodus.</string>
     <string name="k2go_br_cancel_extract_need_ack">Aktivieren Sie das Kontrollkästchen, um zu bestätigen, dass Sie es verstanden haben.</string>
+    <string name="k2go_br_cancel_backup_title">Sicherung abbrechen?</string>
+    <string name="k2go_br_cancel_backup_body">Diese Sicherung ist nicht abgeschlossen. Beim Abbrechen wird die unvollständige Datei entfernt — Sie können jederzeit eine neue Sicherung starten.</string>
+    <string name="k2go_br_cancel_backup_confirm">Sicherung abbrechen</string>
+    <string name="k2go_br_cancel_backup_keep">Sicherung fortsetzen</string>
     <string name="k2go_br_restore_unreadable">Die ausgewählte Datei konnte nicht gelesen werden, daher wurde nichts geändert.</string>
     <string name="deepop_channel_name">Sichern &amp; wiederherstellen</string>
     <string name="deepop_channel_desc">Hält ein Backup oder eine Wiederherstellung sicher im Hintergrund am Laufen</string>

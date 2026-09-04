@@ -723,6 +723,10 @@
     <string name="k2go_br_cancel_extract_ack">मैं समझता हूँ कि अभी रद्द करने से मेरा सिस्टम क्षतिग्रस्त या अनुपयोगी हो सकता है।</string>
     <string name="k2go_br_restore_damaged">पुनर्स्थापना रद्द कर दी गई। आपका सिस्टम अगली बार शुरू होने पर रिकवरी मोड में शुरू होगा।</string>
     <string name="k2go_br_cancel_extract_need_ack">पुष्टि करने के लिए बॉक्स को चेक करें कि आप समझते हैं।</string>
+    <string name="k2go_br_cancel_backup_title">बैकअप रद्द करें?</string>
+    <string name="k2go_br_cancel_backup_body">यह बैकअप पूरा नहीं हुआ है। रद्द करने से अधूरी फ़ाइल हट जाती है — आप कभी भी नया बैकअप शुरू कर सकते हैं।</string>
+    <string name="k2go_br_cancel_backup_confirm">बैकअप रद्द करें</string>
+    <string name="k2go_br_cancel_backup_keep">बैकअप जारी रखें</string>
     <string name="k2go_br_restore_unreadable">चुनी गई फ़ाइल पढ़ी नहीं जा सकी, इसलिए कुछ भी नहीं बदला गया।</string>
     <string name="deepop_channel_name">बैकअप और पुनर्स्थापना</string>
     <string name="deepop_channel_desc">बैकअप या पुनर्स्थापना को बैकग्राउंड में सुरक्षित रूप से चलाए रखता है</string>

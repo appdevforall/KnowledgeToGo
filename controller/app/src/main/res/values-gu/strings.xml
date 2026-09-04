@@ -659,6 +659,10 @@
     <string name="k2go_br_cancel_extract_ack">હું સમજું છું કે હમણાં રદ કરવાથી મારી સિસ્ટમ ક્ષતિગ્રસ્ત અથવા બિનઉપયોગી થઈ શકે છે.</string>
     <string name="k2go_br_restore_damaged">પુનઃસ્થાપન રદ થયું. તમારી સિસ્ટમ આગલા લોન્ચ પર રિકવરી મોડમાં શરૂ થશે.</string>
     <string name="k2go_br_cancel_extract_need_ack">તમે સમજ્યા છો તેની પુષ્ટિ કરવા બોક્સ પર ટિક કરો.</string>
+    <string name="k2go_br_cancel_backup_title">બેકઅપ રદ કરવો છે?</string>
+    <string name="k2go_br_cancel_backup_body">આ બેકઅપ પૂર્ણ થયો નથી. રદ કરવાથી અધૂરી ફાઇલ દૂર થાય છે — તમે કોઈપણ સમયે નવો બેકઅપ શરૂ કરી શકો છો.</string>
+    <string name="k2go_br_cancel_backup_confirm">બેકઅપ રદ કરો</string>
+    <string name="k2go_br_cancel_backup_keep">બેકઅપ ચાલુ રાખો</string>
     <string name="k2go_br_restore_unreadable">પસંદ કરેલી ફાઇલ વાંચી શકાઈ નહીં, તેથી કંઈ બદલાયું નથી.</string>
     <string name="deepop_channel_name">બૅકઅપ &amp; રિસ્ટોર</string>
     <string name="deepop_channel_desc">બૅકઅપ કે રિસ્ટોરને બૅકગ્રાઉન્ડમાં સુરક્ષિત રીતે ચાલુ રાખે છે</string>

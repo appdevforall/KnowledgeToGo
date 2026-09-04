@@ -653,6 +653,10 @@
     <string name="k2go_br_cancel_extract_ack">Saya memahami bahwa membatalkan sekarang dapat membuat sistem saya rusak atau tidak dapat digunakan.</string>
     <string name="k2go_br_restore_damaged">Pemulihan dibatalkan. Sistem Anda akan memulai dalam mode pemulihan pada peluncuran berikutnya.</string>
     <string name="k2go_br_cancel_extract_need_ack">Centang kotak untuk mengonfirmasi bahwa Anda memahami.</string>
+    <string name="k2go_br_cancel_backup_title">Batalkan cadangan?</string>
+    <string name="k2go_br_cancel_backup_body">Cadangan ini belum selesai. Membatalkan akan menghapus file yang belum selesai — Anda dapat memulai cadangan baru kapan saja.</string>
+    <string name="k2go_br_cancel_backup_confirm">Batalkan cadangan</string>
+    <string name="k2go_br_cancel_backup_keep">Lanjutkan mencadangkan</string>
     <string name="k2go_br_restore_unreadable">Berkas yang dipilih tidak dapat dibaca, jadi tidak ada yang diubah.</string>
     <string name="deepop_channel_name">Cadangkan &amp; pulihkan</string>
     <string name="deepop_channel_desc">Menjaga pencadangan atau pemulihan berjalan aman di latar belakang</string>

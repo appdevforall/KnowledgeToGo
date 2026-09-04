@@ -653,6 +653,10 @@
     <string name="k2go_br_cancel_extract_ack">Καταλαβαίνω ότι η ακύρωση τώρα μπορεί να αφήσει το σύστημά μου κατεστραμμένο ή άχρηστο.</string>
     <string name="k2go_br_restore_damaged">Η επαναφορά ακυρώθηκε. Το σύστημά σας θα ξεκινήσει σε λειτουργία ανάκτησης κατά την επόμενη εκκίνηση.</string>
     <string name="k2go_br_cancel_extract_need_ack">Επιλέξτε το πλαίσιο για να επιβεβαιώσετε ότι καταλαβαίνετε.</string>
+    <string name="k2go_br_cancel_backup_title">Ακύρωση αντιγράφου ασφαλείας?</string>
+    <string name="k2go_br_cancel_backup_body">Αυτό το αντίγραφο ασφαλείας δεν έχει ολοκληρωθεί. Η ακύρωση αφαιρεί το ημιτελές αρχείο — μπορείτε να ξεκινήσετε νέο αντίγραφο ασφαλείας οποιαδήποτε στιγμή.</string>
+    <string name="k2go_br_cancel_backup_confirm">Ακύρωση αντιγράφου ασφαλείας</string>
+    <string name="k2go_br_cancel_backup_keep">Συνέχιση δημιουργίας αντιγράφου</string>
     <string name="k2go_br_restore_unreadable">Δεν ήταν δυνατή η ανάγνωση του επιλεγμένου αρχείου, επομένως δεν άλλαξε τίποτα.</string>
     <string name="deepop_channel_name">Αντίγραφο ασφαλείας &amp; επαναφορά</string>
     <string name="deepop_channel_desc">Διατηρεί ένα αντίγραφο ασφαλείας ή μια επαναφορά σε ασφαλή εκτέλεση στο παρασκήνιο</string>

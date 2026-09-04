@@ -792,6 +792,11 @@
     <string name="k2go_br_cancel_extract_ack">I understand that cancelling now may leave my system damaged or unusable.</string>
     <string name="k2go_br_restore_damaged">Restore cancelled. Your system will start in recovery on the next launch.</string>
     <string name="k2go_br_cancel_extract_need_ack">Check the box to confirm you understand.</string>
+    <!-- K2GO-384: cancel a backup (read-only, always safe). The confirm only guards an accidental tap; the incomplete file is removed automatically. -->
+    <string name="k2go_br_cancel_backup_title">Cancel backup?</string>
+    <string name="k2go_br_cancel_backup_body">This backup isn\'t finished. Cancelling removes the incomplete file — you can start a new backup anytime.</string>
+    <string name="k2go_br_cancel_backup_confirm">Cancel backup</string>
+    <string name="k2go_br_cancel_backup_keep">Keep backing up</string>
     <string name="k2go_br_restore_unreadable">The selected file could not be read, so nothing was changed.</string>
     <string name="deepop_channel_name">Backup &amp; restore</string>
     <string name="deepop_channel_desc">Keeps a backup or restore running safely in the background</string>

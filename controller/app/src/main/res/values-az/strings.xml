@@ -666,6 +666,10 @@
     <string name="k2go_br_cancel_extract_ack">İndi ləğv etməyin sistemimi zədələnmiş və ya yararsız qoya biləcəyini başa düşürəm.</string>
     <string name="k2go_br_restore_damaged">Bərpa ləğv edildi. Sisteminiz növbəti işə salınmada bərpa rejimində başlayacaq.</string>
     <string name="k2go_br_cancel_extract_need_ack">Başa düşdüyünüzü təsdiqləmək üçün qutunu işarələyin.</string>
+    <string name="k2go_br_cancel_backup_title">Ehtiyat nüsxə ləğv edilsin?</string>
+    <string name="k2go_br_cancel_backup_body">Bu ehtiyat nüsxə tamamlanmayıb. Ləğv etmək yarımçıq faylı silir — istənilən vaxt yeni ehtiyat nüsxə başlada bilərsiniz.</string>
+    <string name="k2go_br_cancel_backup_confirm">Ehtiyat nüsxəni ləğv et</string>
+    <string name="k2go_br_cancel_backup_keep">Ehtiyatlamağa davam et</string>
     <string name="k2go_br_restore_unreadable">Seçilmiş fayl oxuna bilmədi, ona görə heç nə dəyişdirilmədi.</string>
     <string name="deepop_channel_name">Ehtiyat nüsxə &amp; bərpa</string>
     <string name="deepop_channel_desc">Ehtiyat nüsxə və ya bərpanı arxa planda təhlükəsiz işlədir</string>

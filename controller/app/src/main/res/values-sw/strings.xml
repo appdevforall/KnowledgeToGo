@@ -666,6 +666,10 @@
     <string name="k2go_br_cancel_extract_ack">Ninaelewa kuwa kughairi sasa kunaweza kuacha mfumo wangu ukiwa umeharibika au usiofaa kutumika.</string>
     <string name="k2go_br_restore_damaged">Urejeshaji umeghairiwa. Mfumo wako utaanza katika hali ya urejeshaji wakati wa kuzindua ujao.</string>
     <string name="k2go_br_cancel_extract_need_ack">Weka alama kwenye kisanduku ili kuthibitisha kuwa unaelewa.</string>
+    <string name="k2go_br_cancel_backup_title">Ghairi nakala rudufu?</string>
+    <string name="k2go_br_cancel_backup_body">Nakala rudufu hii haijakamilika. Kughairi kunaondoa faili ambalo halijakamilika — unaweza kuanza nakala rudufu mpya wakati wowote.</string>
+    <string name="k2go_br_cancel_backup_confirm">Ghairi nakala rudufu</string>
+    <string name="k2go_br_cancel_backup_keep">Endelea kunakili</string>
     <string name="k2go_br_restore_unreadable">Faili uliyochagua haikuweza kusomwa, kwa hivyo hakuna kilichobadilishwa.</string>
     <string name="deepop_channel_name">Hifadhi &amp; rejesha</string>
     <string name="deepop_channel_desc">Huweka nakala rudufu au urejeshaji ukiendelea kwa usalama chinichini</string>

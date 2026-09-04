@@ -647,6 +647,10 @@
     <string name="k2go_br_cancel_extract_ack">Rozumiem, że anulowanie teraz może pozostawić mój system uszkodzony lub bezużyteczny.</string>
     <string name="k2go_br_restore_damaged">Przywracanie anulowane. Twój system uruchomi się w trybie odzyskiwania przy następnym uruchomieniu.</string>
     <string name="k2go_br_cancel_extract_need_ack">Zaznacz pole, aby potwierdzić, że rozumiesz.</string>
+    <string name="k2go_br_cancel_backup_title">Anulować kopię zapasową?</string>
+    <string name="k2go_br_cancel_backup_body">Ta kopia zapasowa nie została ukończona. Anulowanie usuwa niekompletny plik — nową kopię zapasową możesz rozpocząć w dowolnej chwili.</string>
+    <string name="k2go_br_cancel_backup_confirm">Anuluj kopię zapasową</string>
+    <string name="k2go_br_cancel_backup_keep">Kontynuuj tworzenie kopii</string>
     <string name="k2go_br_restore_unreadable">Nie udało się odczytać wybranego pliku, więc nic nie zostało zmienione.</string>
     <string name="deepop_channel_name">Kopia zapasowa &amp; przywracanie</string>
     <string name="deepop_channel_desc">Utrzymuje bezpieczne działanie kopii lub przywracania w tle</string>

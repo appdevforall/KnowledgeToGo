@@ -659,6 +659,10 @@
     <string name="k2go_br_cancel_extract_ack">Разумем да отказивање сада може оставити мој систем оштећеним или неупотребљивим.</string>
     <string name="k2go_br_restore_damaged">Враћање је отказано. Ваш систем ће се при следећем покретању покренути у режиму опоравка.</string>
     <string name="k2go_br_cancel_extract_need_ack">Означите поље да бисте потврдили да разумете.</string>
+    <string name="k2go_br_cancel_backup_title">Отказати резервну копију?</string>
+    <string name="k2go_br_cancel_backup_body">Ова резервна копија није завршена. Отказивање уклања недовршену датотеку — нову резервну копију можете покренути било када.</string>
+    <string name="k2go_br_cancel_backup_confirm">Откажи резервну копију</string>
+    <string name="k2go_br_cancel_backup_keep">Настави прављење копије</string>
     <string name="k2go_br_restore_unreadable">Изабрана датотека није могла да се прочита, па ништа није промењено.</string>
     <string name="deepop_channel_name">Резервна копија и враћање</string>
     <string name="deepop_channel_desc">Одржава прављење резервне копије или враћање безбедно у позадини</string>
