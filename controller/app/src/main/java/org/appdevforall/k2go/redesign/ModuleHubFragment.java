@@ -33,6 +33,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
+
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.util.AppExecutors;
@@ -97,24 +99,6 @@ public class ModuleHubFragment extends Fragment {
     private boolean lastQueueRunning = false;   // ADFA-5312: react only to running-transitions of the module queue
     private LinearLayout host;
     private Button proceed;
-
-    /** ADFA-4958 §5.2: outlined state pill (transparent fill, state-colored 1.4dp stroke, full radius). */
-    private TextView statePill(String text, int colorRes) {
-        int color = ContextCompat.getColor(requireContext(), colorRes);
-        TextView pill = new TextView(requireContext());
-        pill.setText(text);
-        pill.setTextColor(color);
-        pill.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
-        pill.setPadding(px(10), px(3), px(10), px(3));
-        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-        bg.setColor(android.graphics.Color.TRANSPARENT);
-        bg.setCornerRadius(px(20));
-        int strokeW = Math.max(1, Math.round(1.4f * getResources().getDisplayMetrics().density));
-        bg.setStroke(strokeW, color);
-        pill.setBackground(bg);
-        return pill;
-    }
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -393,8 +377,11 @@ public class ModuleHubFragment extends Fragment {
             col.addView(sub);
             row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-            TextView restore = statePill(getString(R.string.k2go_mod_restore), R.color.k2go_teal);   // ADFA-4958 §5.7: outlined teal pill
-            restore.setPadding(px(14), px(6), px(14), px(6));
+            // K2GO-385 (PR3): an action is a real M3 button (filled primary stadium), not an outlined
+            // pill — its shape signals "tappable" (the pill-roles design decision, board §"THE FOUR ROLES").
+            MaterialButton restore = new MaterialButton(
+                    new android.view.ContextThemeWrapper(requireContext(), R.style.ThemeOverlay_K2Go_Button_Filled), null);
+            restore.setText(R.string.k2go_mod_restore);
             restore.setOnClickListener(v -> { HiddenModules.remove(requireContext(), key); buildCards(); });
             row.addView(restore);
             host.addView(row);
@@ -486,7 +473,9 @@ public class ModuleHubFragment extends Fragment {
         // already there cannot meaningfully be waiting to be installed, and if a stale wishlist
         // entry survived an install, saying "Scheduled" over it would be the older lie again.
         boolean scheduled = !isInstalled && !unknown && ModuleWishlist.contains(requireContext(), c.key());
-        TextView pill = statePill(
+        // K2GO-385 (PR3): a lifecycle state is a read-only STATUS -- dot + text, semantic colour, no
+        // ripple (the shared K2GoStatusBadge) -- not an outlined pill that reads like a button.
+        LinearLayout pill = K2GoStatusBadge.create(requireContext(),
                 isInstalled ? getString(R.string.k2go_mod_phase_done)
                         : failed ? getString(R.string.k2go_mod_phase_failed)
                                 : unknown ? getString(R.string.k2go_state_no_answer)
@@ -544,8 +533,11 @@ public class ModuleHubFragment extends Fragment {
             }
         });
 
-        TextView rebuild = statePill(getString(R.string.k2go_dash_rebuild), R.color.k2go_teal);
-        rebuild.setPadding(px(14), px(6), px(14), px(6));
+        // K2GO-385 (PR3): the Rebuild/Update action is a real M3 button (filled primary stadium), not
+        // an outlined pill. Its label still toggles Rebuild<->Update via DashboardCardStatus below.
+        MaterialButton rebuild = new MaterialButton(
+                new android.view.ContextThemeWrapper(requireContext(), R.style.ThemeOverlay_K2Go_Button_Filled), null);
+        rebuild.setText(R.string.k2go_dash_rebuild);
         // ADFA-5339: the confirm dialog matches the pill — pass the last-known "update available".
         final boolean[] up = {false};
         rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host, up[0]));
