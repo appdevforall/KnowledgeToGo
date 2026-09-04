@@ -1,13 +1,13 @@
 package org.appdevforall.k2go.ui.dialog;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 
 import org.appdevforall.k2go.R;
 
@@ -33,6 +36,9 @@ public final class BrandDialog {
     public enum Role { PRIMARY, DESTRUCTIVE }
 
     public interface OnClick { void onClick(); }
+
+    /** Positive callback for a dialog carrying a checkbox — {@code checked} is its final state. */
+    public interface OnConfirm { void onConfirm(boolean checked); }
 
     public static final class Handle {
         private final AlertDialog dialog;
@@ -73,6 +79,11 @@ public final class BrandDialog {
     private OnClick neutralClick;
     private boolean cancelable = true;
     private boolean dismissOnPositive = true;
+    private OnConfirm positiveConfirm;
+    private CharSequence checkboxLabel;
+    private boolean checkboxChecked;
+    private boolean checkboxRequired;
+    private CharSequence checkboxRequiredMessage;
 
     public BrandDialog(@NonNull Context context) {
         this.context = context;
@@ -101,6 +112,55 @@ public final class BrandDialog {
     public BrandDialog setContentView(@Nullable View view) {
         this.contentView = view;
         return this;
+    }
+
+    /**
+     * Add an optional checkbox under the message. Its final state is delivered to the positive
+     * {@link OnConfirm}. It sits in the same inset column as the title/message, so call sites no
+     * longer hand-build a padded holder to line it up.
+     */
+    public BrandDialog setCheckbox(@NonNull CharSequence label, boolean checked) {
+        this.checkboxLabel = label;
+        this.checkboxChecked = checked;
+        return this;
+    }
+
+    public BrandDialog setCheckbox(@StringRes int label, boolean checked) {
+        return setCheckbox(context.getString(label), checked);
+    }
+
+    /**
+     * Make the checkbox a gate: the positive action is blocked until it is ticked, with
+     * {@code messageWhenUnchecked} shown inline under the checkbox.
+     */
+    public BrandDialog requireCheckbox(@NonNull CharSequence messageWhenUnchecked) {
+        this.checkboxRequired = true;
+        this.checkboxRequiredMessage = messageWhenUnchecked;
+        return this;
+    }
+
+    public BrandDialog requireCheckbox(@StringRes int messageWhenUnchecked) {
+        return requireCheckbox(context.getString(messageWhenUnchecked));
+    }
+
+    /** Positive button that receives the checkbox's final state. */
+    public BrandDialog setPositive(@NonNull CharSequence text, @NonNull Role role, @Nullable OnConfirm confirm) {
+        this.positiveText = text;
+        this.positiveRole = role;
+        this.positiveConfirm = confirm;
+        return this;
+    }
+
+    public BrandDialog setPositive(@StringRes int text, @NonNull Role role, @Nullable OnConfirm confirm) {
+        return setPositive(context.getString(text), role, confirm);
+    }
+
+    public BrandDialog setDestructive(@NonNull CharSequence text, @Nullable OnConfirm confirm) {
+        return setPositive(text, Role.DESTRUCTIVE, confirm);
+    }
+
+    public BrandDialog setDestructive(@StringRes int text, @Nullable OnConfirm confirm) {
+        return setPositive(context.getString(text), Role.DESTRUCTIVE, confirm);
     }
 
     public BrandDialog setPositive(@NonNull CharSequence text, @NonNull Role role, @Nullable OnClick click) {
@@ -177,10 +237,48 @@ public final class BrandDialog {
             messageView.setText(message);
             messageView.setVisibility(View.VISIBLE);
         }
-        if (contentView != null) {
+        final MaterialCheckBox checkbox;
+        final TextView checkboxError;
+        if (contentView != null || checkboxLabel != null) {
+            LinearLayout column = new LinearLayout(context);
+            column.setOrientation(LinearLayout.VERTICAL);
+            if (contentView != null) {
+                column.addView(contentView);
+            }
+            MaterialCheckBox cb = null;
+            TextView err = null;
+            if (checkboxLabel != null) {
+                cb = new MaterialCheckBox(context);
+                cb.setText(checkboxLabel);
+                cb.setChecked(checkboxChecked);
+                // brand_dialog_content already sits at the card's content inset, so clearing the box's
+                // own start padding lines it up with the title/message above — no per-call holder.
+                cb.setPaddingRelative(0, cb.getPaddingTop(), cb.getPaddingEnd(), cb.getPaddingBottom());
+                column.addView(cb);
+                if (checkboxRequired && checkboxRequiredMessage != null) {
+                    err = new TextView(context);
+                    err.setText(checkboxRequiredMessage);
+                    err.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+                    err.setTextColor(ContextCompat.getColor(context, R.color.k2go_clay));   // after the appearance, which overrides color
+                    err.setPadding(0, Math.round(4 * context.getResources().getDisplayMetrics().density), 0, 0);
+                    err.setVisibility(View.GONE);
+                    column.addView(err);
+                    final TextView errRef = err;
+                    cb.setOnCheckedChangeListener((b, isChecked) -> {
+                        if (isChecked) {
+                            errRef.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }
             contentHost.removeAllViews();
-            contentHost.addView(contentView);
+            contentHost.addView(column);
             contentHost.setVisibility(View.VISIBLE);
+            checkbox = cb;
+            checkboxError = err;
+        } else {
+            checkbox = null;
+            checkboxError = null;
         }
 
         final AlertDialog dialog = new AlertDialog.Builder(context)
@@ -191,19 +289,41 @@ public final class BrandDialog {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
+        // A destructive positive uses the app's destructive button STYLE (outlined clay, from the design
+        // tokens) rather than a red tint — rebuilt via the shared ThemeOverlay, the same role-switch the
+        // rest of the app's buttons use (ADFA-5346). A primary keeps the filled style from the layout.
+        if (positiveRole == Role.DESTRUCTIVE) {
+            android.view.ViewGroup parent = (android.view.ViewGroup) positive.getParent();
+            int index = parent.indexOfChild(positive);
+            android.view.ViewGroup.LayoutParams lp = positive.getLayoutParams();
+            MaterialButton destructive = new MaterialButton(
+                    new android.view.ContextThemeWrapper(context, R.style.ThemeOverlay_K2Go_Button_Destructive), null);
+            destructive.setId(R.id.brand_dialog_positive);
+            destructive.setLayoutParams(lp);
+            parent.removeViewAt(index);
+            parent.addView(destructive, index);
+            positive = destructive;
+        }
         if (positiveText != null) {
-            int tintColor = (positiveRole == Role.DESTRUCTIVE)
-                    ? ContextCompat.getColor(context, R.color.btn_danger)
-                    : ContextCompat.getColor(context, R.color.dialog_accent);
             positive.setText(positiveText);
-            positive.setBackgroundTintList(ColorStateList.valueOf(tintColor));
             positive.setVisibility(View.VISIBLE);
             positive.setOnClickListener(v -> {
+                if (checkbox != null && checkboxRequired && !checkbox.isChecked()) {
+                    if (checkboxError != null) {
+                        checkboxError.setVisibility(View.VISIBLE);
+                    }
+                    return;   // gate: keep the dialog open, fire nothing, until the box is ticked
+                }
+                // Run the action BEFORE dismissing (the conventional MaterialAlertDialog order), so a
+                // caller that reacts to the dialog closing — e.g. the notification activity finishing via
+                // its onDismiss listener — cannot race ahead of the action it triggered.
+                if (positiveConfirm != null) {
+                    positiveConfirm.onConfirm(checkbox != null && checkbox.isChecked());
+                } else if (positiveClick != null) {
+                    positiveClick.onClick();
+                }
                 if (dismissOnPositive) {
                     dialog.dismiss();
-                }
-                if (positiveClick != null) {
-                    positiveClick.onClick();
                 }
             });
         }

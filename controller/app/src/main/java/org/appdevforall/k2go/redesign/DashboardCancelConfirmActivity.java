@@ -20,9 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 
 public final class DashboardCancelConfirmActivity extends AppCompatActivity {
 
@@ -31,16 +29,11 @@ public final class DashboardCancelConfirmActivity extends AppCompatActivity {
         // If the update already ended between tapping the notification and getting here, there is
         // nothing to cancel — just close without a dialog.
         if (!DashboardRebuildService.isRunning()) { finish(); return; }
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.k2go_dash_cancel_confirm_title)
-                .setMessage(R.string.k2go_dash_cancel_confirm_msg)
-                .setNegativeButton(R.string.k2go_dash_cancel_confirm_keep, (d, w) -> finish())
-                .setPositiveButton(R.string.k2go_dash_cancel_confirm_stop, (d, w) -> {
-                    ContextCompat.startForegroundService(this, new Intent(this, DashboardRebuildService.class)
-                            .setAction(DashboardRebuildService.ACTION_CANCEL));
-                    finish();
-                })
-                .setOnCancelListener(d -> finish())   // tap-outside / back = keep updating
-                .show();
+        BrandDialog.Handle h = DashboardCancelDialog.show(this, () ->
+                ContextCompat.startForegroundService(getApplicationContext(),
+                        new Intent(getApplicationContext(), DashboardRebuildService.class)
+                                .setAction(DashboardRebuildService.ACTION_CANCEL)));
+        // Any dismissal — Stop, Keep updating, Back or a scrim tap — closes this windowless activity.
+        h.getDialog().setOnDismissListener(d -> finish());
     }
 }

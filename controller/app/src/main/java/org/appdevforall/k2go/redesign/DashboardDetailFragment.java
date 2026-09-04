@@ -332,12 +332,7 @@ public class DashboardDetailFragment extends Fragment {
     private void onCancelUpdate() {
         // ADFA-5339: stopping a live update is worth a confirm — the swap may be seconds away, and a
         // stray tap shouldn't abandon it. Only on a positive answer do we signal the server.
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.k2go_dash_cancel_confirm_title)
-                .setMessage(R.string.k2go_dash_cancel_confirm_msg)
-                .setNegativeButton(R.string.k2go_dash_cancel_confirm_keep, null)
-                .setPositiveButton(R.string.k2go_dash_cancel_confirm_stop, (d, w) -> signalCancel())
-                .show();
+        DashboardCancelDialog.show(requireContext(), this::signalCancel);
     }
 
     private void signalCancel() {

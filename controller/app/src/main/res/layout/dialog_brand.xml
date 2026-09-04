@@ -41,35 +41,31 @@
             android:layout_marginTop="12dp"
             android:visibility="gone" />
 
-        <Button
+        <!-- ADFA-5346 / K2GO-385: dialog buttons use the one app-wide button system (filled primary,
+             text secondaries) so they share the stadium shape, ripple and type with every other button.
+             The DESTRUCTIVE red is applied in code (BrandDialog) as a tint on the filled button. -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/brand_dialog_positive"
+            style="@style/Widget.K2Go.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/bg_dialog_button"
-            android:backgroundTint="@color/dialog_accent"
-            android:textColor="@color/text_on_accent"
-            android:textAllCaps="false"
             android:visibility="gone" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/brand_dialog_neutral"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/Widget.K2Go.Button.Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/dash_text_secondary"
-            android:textAllCaps="false"
             android:visibility="gone" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/brand_dialog_negative"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/Widget.K2Go.Button.Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/dash_text_secondary"
-            android:textAllCaps="false"
             android:visibility="gone" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
