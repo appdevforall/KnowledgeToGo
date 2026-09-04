@@ -291,11 +291,13 @@ public final class BrandDialog {
         }
 
         if (positiveText != null) {
-            int tintColor = (positiveRole == Role.DESTRUCTIVE)
-                    ? ContextCompat.getColor(context, R.color.btn_danger)
-                    : ContextCompat.getColor(context, R.color.dialog_accent);
             positive.setText(positiveText);
-            positive.setBackgroundTintList(ColorStateList.valueOf(tintColor));
+            // Filled teal by default from the Widget.K2Go.Button style; a destructive action re-tints
+            // the same filled button red.
+            if (positiveRole == Role.DESTRUCTIVE) {
+                positive.setBackgroundTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(context, R.color.btn_danger)));
+            }
             positive.setVisibility(View.VISIBLE);
             positive.setOnClickListener(v -> {
                 if (checkbox != null && checkboxRequired && !checkbox.isChecked()) {

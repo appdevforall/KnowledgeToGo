@@ -29,7 +29,7 @@ public final class DashboardCancelDialog {
         return new BrandDialog(ctx)
                 .setTitle(R.string.k2go_dash_cancel_confirm_title)
                 .setMessage(R.string.k2go_dash_cancel_confirm_msg)
-                .setPositive(R.string.k2go_dash_cancel_confirm_stop, () -> onStop.run())
+                .setDestructive(R.string.k2go_dash_cancel_confirm_stop, () -> onStop.run())
                 .setNegative(R.string.k2go_dash_cancel_confirm_keep, null)
                 .show();
     }
