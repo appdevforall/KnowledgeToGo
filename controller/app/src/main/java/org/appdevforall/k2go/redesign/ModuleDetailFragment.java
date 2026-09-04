@@ -70,9 +70,11 @@ public class ModuleDetailFragment extends Fragment {
         String sizeText = (sizeRes != 0) ? getString(sizeRes)
                 : (bytes >= 0) ? "\u2248 " + org.appdevforall.k2go.util.ByteFormatter.toHuman(bytes)
                 : "\u2248 NA";
-        chips.addView(K2GoChip.create(requireContext(), sizeText, R.color.k2go_teal));
+        // K2GO-385 (PR3): size / version are neutral metadata tags (colour is noise); "Runs offline" is a
+        // leaf trait (a capability that carries valence). The lifecycle status below is a dot+text badge.
+        chips.addView(K2GoChip.create(requireContext(), sizeText, R.color.k2go_muted));
         String ver = ModuleCards.version(c.key());
-        if (ver != null) chips.addView(K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_teal));
+        if (ver != null) chips.addView(K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_muted));
         chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
         if (ModuleCards.isDemo(c.key())) chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
 
@@ -123,7 +125,7 @@ public class ModuleDetailFragment extends Fragment {
                 if (!isAdded()) return;
                 if (verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.NO_SYSTEM
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.DAMAGED) {
-                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
+                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
                     installNowBtn.setText(R.string.k2go_home_recover);
                     installNowBtn.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
                     installNowBtn.setVisibility(View.VISIBLE);
@@ -134,11 +136,11 @@ public class ModuleDetailFragment extends Fragment {
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.CLONE_SHARING) {
                     // ADFA-5312: a system op is in progress — the system is present but mid-setup and the
                     // server is down. Don't offer Install or Recover into it; just say it's busy.
-                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
+                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
                     return;
                 }
                 if (isInstalled) {
-                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
+                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
                     return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
                 }
                 // ADFA-4898: this module's runrole failed in the last finished batch — the SAME per-module
@@ -151,7 +153,7 @@ public class ModuleDetailFragment extends Fragment {
                 // Retry then bounces to the hub, which observes the queue live; this detail is a one-shot
                 // snapshot (no observer) and would otherwise sit on a stale "Couldn't install".
                 if (org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
-                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
+                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
                     schedule.setText(R.string.k2go_home_retry);
                     // Shared, busy-gated retry (same action the live progress card fires). On a real start,
                     // land on the install index — the same destination as a normal install (openModuleIndex)
@@ -170,7 +172,7 @@ public class ModuleDetailFragment extends Fragment {
                     return;
                 }
                 if (unknown) {
-                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_state_no_answer),
+                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_answer),
                             R.color.k2go_amber_text));
                     return;   // no grounds to offer work either way
                 }

@@ -45,7 +45,7 @@ public class DashboardDetailFragment extends Fragment {
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private ViewGroup chips;   // FlowLayout in XML — typed as ViewGroup so it wraps chips to 2 lines
-    private TextView statusChip;   // ADFA-5026: live "Up to date / Update available" pill (restyled in place)
+    private LinearLayout statusChip;   // K2GO-385 (PR3): live status badge (dot+text), restyled in place
     private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
@@ -106,10 +106,12 @@ public class DashboardDetailFragment extends Fragment {
         // ADFA-5026: the status chip starts at index 0 so that when the version chip prepends at 0 it
         // lands right after the version. "Runs offline" is replaced by the update-status pill.
         chips = root.findViewById(R.id.k2go_moddet_chips);
-        statusChip = K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted);
+        // K2GO-385 (PR3): the live lifecycle state is a status badge (dot+text, semantic); REST API /
+        // System core are neutral metadata tags (colour there is noise -- the metadata colour rule).
+        statusChip = K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted);
         chips.addView(statusChip);
-        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_rest), R.color.k2go_teal));
-        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_core), R.color.k2go_teal));
+        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_rest), R.color.k2go_muted));
+        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_core), R.color.k2go_muted));
         fetchVersionChip();
 
         ((TextView) root.findViewById(R.id.k2go_moddet_includes_body)).setText(R.string.k2go_dash_includes);
@@ -188,13 +190,13 @@ public class DashboardDetailFragment extends Fragment {
         if (statusChip != null) {
             switch (s.kind()) {
                 case OFFLINE:
-                    K2GoChip.style(statusChip, getString(R.string.k2go_dash_no_connection), R.color.k2go_muted); break;
+                    K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_no_connection), R.color.k2go_muted); break;
                 case CHECKING:
-                    K2GoChip.style(statusChip, getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted); break;
+                    K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted); break;
                 case UP_TO_DATE:
-                    K2GoChip.style(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf); break;
+                    K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf); break;
                 case UPDATE_AVAILABLE:
-                    K2GoChip.style(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber); break;
+                    K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber_text); break;   // K2GO-385: amber_text (AA) + consistent with the other amber statuses
             }
             statusChip.setVisibility(View.VISIBLE);
         }
@@ -418,10 +420,10 @@ public class DashboardDetailFragment extends Fragment {
             main.post(() -> {
                 if (!isAdded() || chips == null || ver == null) return;
                 if (versionChip == null) {
-                    versionChip = K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_teal);
+                    versionChip = K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_muted);
                     chips.addView(versionChip, 0);
                 } else {
-                    K2GoChip.style(versionChip, "v" + ver, R.color.k2go_teal);
+                    K2GoChip.style(versionChip, "v" + ver, R.color.k2go_muted);
                 }
             });
         });
