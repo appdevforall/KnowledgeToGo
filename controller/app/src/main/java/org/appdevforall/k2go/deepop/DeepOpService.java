@@ -205,7 +205,11 @@ public final class DeepOpService extends Service {
         AppExecutors.get().io().execute(() -> {
             boolean ok;
             try (OutputStream os = getContentResolver().openOutputStream(Uri.parse(uriStr))) {
-                ok = os != null && BackupEngine.streamBackup(this, os);
+                // K2GO-384: byte-accurate progress + ETA; streamBackup reports from its tar-stdout read loop.
+                // post() is thread-safe and carries cancelKind=NONE (backup's Cancel stays on the notification,
+                // so no on-screen Cancel appears).
+                ok = os != null && BackupEngine.streamBackup(this, os,
+                        (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds));
             } catch (Exception e) {
                 Log.e(TAG, "backup failed", e);
                 ok = false;
