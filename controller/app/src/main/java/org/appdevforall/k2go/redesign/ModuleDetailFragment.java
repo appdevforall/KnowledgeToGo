@@ -20,12 +20,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.util.Snackbars;
@@ -72,11 +70,11 @@ public class ModuleDetailFragment extends Fragment {
         String sizeText = (sizeRes != 0) ? getString(sizeRes)
                 : (bytes >= 0) ? "\u2248 " + org.appdevforall.k2go.util.ByteFormatter.toHuman(bytes)
                 : "\u2248 NA";
-        chips.addView(chip(sizeText, R.color.k2go_teal));
+        chips.addView(K2GoChip.create(requireContext(), sizeText, R.color.k2go_teal));
         String ver = ModuleCards.version(c.key());
-        if (ver != null) chips.addView(chip("v" + ver, R.color.k2go_teal));
-        chips.addView(chip(getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
-        if (ModuleCards.isDemo(c.key())) chips.addView(chip(getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
+        if (ver != null) chips.addView(K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_teal));
+        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
+        if (ModuleCards.isDemo(c.key())) chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
 
         int inc = ModuleCards.includesRes(c.key());
         if (inc != 0) {
@@ -125,7 +123,7 @@ public class ModuleDetailFragment extends Fragment {
                 if (!isAdded()) return;
                 if (verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.NO_SYSTEM
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.DAMAGED) {
-                    chipRow.addView(chip(getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
+                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
                     installNowBtn.setText(R.string.k2go_home_recover);
                     installNowBtn.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
                     installNowBtn.setVisibility(View.VISIBLE);
@@ -136,11 +134,11 @@ public class ModuleDetailFragment extends Fragment {
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.CLONE_SHARING) {
                     // ADFA-5312: a system op is in progress — the system is present but mid-setup and the
                     // server is down. Don't offer Install or Recover into it; just say it's busy.
-                    chipRow.addView(chip(getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
+                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
                     return;
                 }
                 if (isInstalled) {
-                    chipRow.addView(chip(getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
+                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
                     return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
                 }
                 // ADFA-4898: this module's runrole failed in the last finished batch — the SAME per-module
@@ -153,7 +151,7 @@ public class ModuleDetailFragment extends Fragment {
                 // Retry then bounces to the hub, which observes the queue live; this detail is a one-shot
                 // snapshot (no observer) and would otherwise sit on a stale "Couldn't install".
                 if (org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
-                    chipRow.addView(chip(getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
+                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
                     schedule.setText(R.string.k2go_home_retry);
                     // Shared, busy-gated retry (same action the live progress card fires). On a real start,
                     // land on the install index — the same destination as a normal install (openModuleIndex)
@@ -172,7 +170,7 @@ public class ModuleDetailFragment extends Fragment {
                     return;
                 }
                 if (unknown) {
-                    chipRow.addView(chip(getString(R.string.k2go_state_no_answer),
+                    chipRow.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_state_no_answer),
                             R.color.k2go_amber_text));
                     return;   // no grounds to offer work either way
                 }
@@ -208,26 +206,4 @@ public class ModuleDetailFragment extends Fragment {
         return root;
     }
 
-    /** A small outlined pill for the meta-chip row (size / version / Runs offline). */
-    private TextView chip(String text, int colorRes) {
-        float d = getResources().getDisplayMetrics().density;
-        TextView t = new TextView(requireContext());
-        t.setText(text);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
-        int color = ContextCompat.getColor(requireContext(), colorRes);   // ADFA-4958 §5.4: outlined pill (teal-on-teal fill was invisible)
-        t.setTextColor(color);
-        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-        bg.setColor(android.graphics.Color.TRANSPARENT);
-        bg.setCornerRadius(11 * d);
-        bg.setStroke(Math.max(1, Math.round(1.4f * d)), color);
-        t.setBackground(bg);
-        int hp = Math.round(10 * d), vp = Math.round(5 * d);
-        t.setPadding(hp, vp, hp, vp);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.rightMargin = Math.round(8 * d);
-        t.setLayoutParams(lp);
-        return t;
-    }
 }
