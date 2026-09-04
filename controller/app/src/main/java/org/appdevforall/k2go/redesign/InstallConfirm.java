@@ -2,9 +2,8 @@ package org.appdevforall.k2go.redesign;
 
 import android.app.Activity;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.system.domain.Operation;
 
 /**
@@ -32,11 +31,11 @@ public final class InstallConfirm {
             onProceed.run();
             return;
         }
-        new MaterialAlertDialogBuilder(activity)
+        new BrandDialog(activity)
                 .setTitle(R.string.k2go_install_confirm_title)
                 .setMessage(R.string.k2go_install_confirm_body)
-                .setNegativeButton(R.string.k2go_install_confirm_cancel, null)
-                .setPositiveButton(R.string.k2go_install_confirm_go, (d, w) -> onProceed.run())
+                .setNegative(R.string.k2go_install_confirm_cancel, null)
+                .setPositive(R.string.k2go_install_confirm_go, () -> onProceed.run())
                 .show();
     }
 }

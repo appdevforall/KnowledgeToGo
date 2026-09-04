@@ -15,7 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
@@ -201,12 +201,12 @@ public class WizardActivity extends AppCompatActivity {
         // ADFA-5337: no analytics compiled in (no google-services.json) → nothing to consent to; skip.
         if (!org.appdevforall.k2go.BuildConfig.ANALYTICS_ENABLED) { onDone.run(); return; }
         if (AnalyticsConsent.wasAsked(this)) { onDone.run(); return; }
-        new MaterialAlertDialogBuilder(this)
+        new BrandDialog(this)
                 .setTitle(R.string.analytics_enroll_title)
                 .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
                 .setCancelable(false)
-                .setPositiveButton(R.string.analytics_enroll_accept, (d, w) -> setAnalytics(true, onDone))
-                .setNegativeButton(R.string.analytics_enroll_decline, (d, w) -> setAnalytics(false, onDone))
+                .setPositive(R.string.analytics_enroll_accept, () -> setAnalytics(true, onDone))
+                .setNegative(R.string.analytics_enroll_decline, () -> setAnalytics(false, onDone))
                 .show();
     }
 
