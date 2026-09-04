@@ -25,8 +25,17 @@ const INTERVAL_MS = Number(process.env.K2GO_HEAL_INTERVAL_MS) || 30_000;
 const COOLDOWN_MS = Number(process.env.K2GO_HEAL_COOLDOWN_MS) || 60_000;
 const PROBE_TIMEOUT_MS = Number(process.env.K2GO_HEAL_PROBE_TIMEOUT_MS) || 4_000;
 
+// php-fpm is probed through its own fastcgi health endpoint (dash-node-nginx.conf ->
+// /library/dashboard/health.php), not a static path — a static HEAD would 200 even with the
+// pool down. This is the disk-fill fix (§10 "Live residual"): an orphaned php-fpm busy-loops
+// logging epoll_wait ENOSYS (~1.3 GB/min); a `pdsm restart php-fpm` reclaims it and a fresh
+// pool under the new proot does not busy-loop. NOTE: unlike /kiwix/ (absent -> 404 -> left
+// alone), a php-fpm-less box would answer this location with 502, not 404, so this assumes
+// php-fpm is a core service on the box; if that ever stops holding, gate the heal on a
+// pdsm-known-service check before restart.
 const WATCHED: Watch[] = [
     { svc: 'kiwix', probeUrl: `${PUBLIC_ORIGIN}/kiwix/` },
+    { svc: 'php-fpm', probeUrl: `${PUBLIC_ORIGIN}/k2go-php-health` },
 ];
 
 /** Enough time has passed since the last restart attempt to try again. A per-service
