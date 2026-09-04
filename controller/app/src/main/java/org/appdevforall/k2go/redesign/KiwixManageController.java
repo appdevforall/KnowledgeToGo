@@ -40,7 +40,7 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.appdevforall.k2go.R;
@@ -297,11 +297,11 @@ public final class KiwixManageController {
     }
 
     private void confirmDelete(String name) {
-        new MaterialAlertDialogBuilder(themed)
+        new BrandDialog(themed)
                 .setTitle(activity.getString(R.string.k2go_zim_delete_confirm_title, prettyName(name)))
                 .setMessage(R.string.k2go_zim_delete_confirm_msg)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_zim_delete, (d, w) -> {
+                .setNegative(android.R.string.cancel, null)
+                .setDestructive(R.string.k2go_zim_delete, () -> {
                     Toast.makeText(activity, R.string.k2go_zim_deleting, Toast.LENGTH_SHORT).show();
                     KiwixClient.delete(name, new KiwixClient.OkCb() {
                         @Override public void onOk(boolean deferred) {
@@ -323,9 +323,9 @@ public final class KiwixManageController {
                         }
                         @Override public void onErr(String message) {
                             if (activity.isFinishing()) return;
-                            new MaterialAlertDialogBuilder(themed)
+                            new BrandDialog(themed)
                                     .setMessage(R.string.k2go_zim_delete_failed)
-                                    .setPositiveButton(android.R.string.ok, null).show();
+                                    .setPositive(android.R.string.ok, null).show();
                         }
                     });
                 })

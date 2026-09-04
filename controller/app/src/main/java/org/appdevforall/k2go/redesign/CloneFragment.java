@@ -28,7 +28,7 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -420,11 +420,11 @@ public class CloneFragment extends Fragment {
         boolean sharing = (side == Side.SEND && page == Page.COPY && daemonStarted);
         if (target == mode || !sharing) { setMode(target); return; }
         String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
-        new MaterialAlertDialogBuilder(requireContext())
+        new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_clone_switch_title, label))
-                .setMessage(getString(R.string.k2go_clone_switch_msg))
-                .setNegativeButton(getString(R.string.k2go_cancel), null)
-                .setPositiveButton(getString(R.string.k2go_clone_switch_confirm), (d, w) -> setMode(target))
+                .setMessage(R.string.k2go_clone_switch_msg)
+                .setNegative(R.string.k2go_cancel, null)
+                .setPositive(R.string.k2go_clone_switch_confirm, () -> setMode(target))
                 .show();
     }
 
@@ -965,11 +965,11 @@ public class CloneFragment extends Fragment {
     // nothing to copy — warn before probing rather than pulling an empty library.
     private void probeOrWarnEmpty(SyncHandshakeHelper.SyncCredentials creds) {
         if (!creds.hasRootfs) {
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.k2go_clone_nolib_title))
-                    .setMessage(getString(R.string.k2go_clone_nolib_msg))
-                    .setNegativeButton(getString(R.string.k2go_cancel), null)
-                    .setPositiveButton(getString(R.string.k2go_clone_try_anyway), (d, w) -> syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds))
+            new BrandDialog(requireContext())
+                    .setTitle(R.string.k2go_clone_nolib_title)
+                    .setMessage(R.string.k2go_clone_nolib_msg)
+                    .setNegative(R.string.k2go_cancel, null)
+                    .setPositive(R.string.k2go_clone_try_anyway, () -> syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds))
                     .show();
             return;
         }
@@ -1376,10 +1376,10 @@ public class CloneFragment extends Fragment {
             exitStartAt = android.os.SystemClock.elapsedRealtime();
             SyncProgressRepository.get().postIdle();   // the copy is done; drop the busy/progress state
             startExitPoll();
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.k2go_clone_copy_complete))
+            new BrandDialog(requireContext())
+                    .setTitle(R.string.k2go_clone_copy_complete)
                     .setCancelable(false)
-                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                    .setPositive(android.R.string.ok, () -> {
                         exitAck = true;
                         rStage = RStage.START;   // land on step 2, where the status zone lives
                         maybeStartCountdown();   // if services already answered, begin the 3-2-1 now
@@ -1399,11 +1399,11 @@ public class CloneFragment extends Fragment {
         // Retry re-scans (rsync resumes from the half-written tree — the maravilla Luis relies on);
         // Recover goes to the hub (restore / install over internet / clone again). The Back guard has
         // already turned off (FAILED is not active), so leaving the app is free too.
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.k2go_clone_copy_stopped))
+        new BrandDialog(requireContext())
+                .setTitle(R.string.k2go_clone_copy_stopped)
                 .setMessage(body)
-                .setPositiveButton(getString(R.string.k2go_home_retry), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
-                .setNegativeButton(getString(R.string.k2go_home_recover), (d, w) -> {
+                .setPositive(R.string.k2go_home_retry, () -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setNegative(R.string.k2go_home_recover, () -> {
                     SyncProgressRepository.get().postIdle();
                     SetupLibraryActivity.recover(requireContext());
                 })
@@ -1456,11 +1456,11 @@ public class CloneFragment extends Fragment {
     }
 
     private void confirmStop() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.k2go_clone_stopshare_title))
-                .setMessage(getString(R.string.k2go_clone_stopshare_msg))
-                .setNegativeButton(getString(R.string.k2go_cancel), null)
-                .setPositiveButton(getString(R.string.k2go_clone_stop_confirm), (d, w) -> {
+        new BrandDialog(requireContext())
+                .setTitle(R.string.k2go_clone_stopshare_title)
+                .setMessage(R.string.k2go_clone_stopshare_msg)
+                .setNegative(R.string.k2go_cancel, null)
+                .setDestructive(R.string.k2go_clone_stop_confirm, () -> {
                     if (transport != null) transport.stop();
                     daemonStarted = false;
                     userStopped = true;   // do not auto-restart on the next render
