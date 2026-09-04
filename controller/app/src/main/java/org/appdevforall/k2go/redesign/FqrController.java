@@ -443,13 +443,15 @@ public final class FqrController {
         // ADFA-4896: Stop/Retry beside Cancel. The label follows the reported state; the tap fires the
         // matching verb and the poll (onPaused/onProgress) is the source of truth.
         overlayStopped = false;
-        overlayStop = new MaterialButton(themed, null,
-                com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        // K2GO-385 (PR3): the download controls use the app button system (K2Go outlined stadium) via the
+        // shared overlay, not a bare Material3 outlined button. FQR's overlay is a themed (day/night)
+        // surface, so the K2Go outlined style's theme teal is right here -- not the fixed boot tokens.
+        ContextThemeWrapper btnCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Outlined);
+        overlayStop = new MaterialButton(btnCtx, null);
         overlayStop.setText(R.string.k2go_clone_stop_confirm);
         overlayStop.setOnClickListener(v -> toggleStop());
         row.addView(overlayStop);
-        MaterialButton cancel = new MaterialButton(themed, null,
-                com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        MaterialButton cancel = new MaterialButton(btnCtx, null);
         cancel.setText(R.string.k2go_cancel);
         cancel.setOnClickListener(v -> { client.cancel(); hideOverlay(); });
         row.addView(cancel);
