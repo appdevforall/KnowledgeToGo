@@ -40,9 +40,10 @@ public final class DeepOpProgressRepository {
     public boolean isRunning() { return current().isRunning(); }
 
     // All posts are thread-safe (callable from the DeepOpService worker thread).
-    public void postRunning(EnvironmentLock.Owner owner, String step, int percent, long etaSeconds) { post(DeepOpState.running(owner, step, percent, etaSeconds)); }
+    public void postRunning(EnvironmentLock.Owner owner, String step, int percent, long etaSeconds, DeepOpState.CancelKind cancelKind) { post(DeepOpState.running(owner, step, percent, etaSeconds, cancelKind)); }
     public void postSuccess(EnvironmentLock.Owner owner, String message) { post(DeepOpState.success(owner, message)); }
     public void postFailed(EnvironmentLock.Owner owner, String message) { post(DeepOpState.failed(owner, message)); }
+    public void postCancelled(EnvironmentLock.Owner owner) { post(DeepOpState.cancelled(owner)); }
     public void postIdle() { post(DeepOpState.idle()); }
 
     private synchronized void post(DeepOpState s) {

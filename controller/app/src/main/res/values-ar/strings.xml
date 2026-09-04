@@ -638,6 +638,14 @@
     <string name="k2go_br_restore_confirm">استبدال النظام</string>
     <string name="k2go_br_restore_done">تمت استعادة النظام</string>
     <string name="k2go_br_restore_failed">فشلت الاستعادة</string>
+    <string name="k2go_br_cancel_title">إلغاء الاستعادة?</string>
+    <string name="k2go_br_cancel_body">نظامك الحالي دون تغيير. يمكنك بدء الاستعادة مرة أخرى في أي وقت.</string>
+    <string name="k2go_br_cancel_confirm">إلغاء الاستعادة</string>
+    <string name="k2go_br_cancel_keep">متابعة الاستعادة</string>
+    <string name="k2go_br_cancel_extract_body">تتم كتابة نظامك الآن. سيؤدي الإلغاء إلى جعله غير قابل للاستخدام حتى تتم إعادة تثبيته تلقائيًا.</string>
+    <string name="k2go_br_cancel_extract_ack">أفهم أن الإلغاء الآن قد يترك نظامي تالفًا أو غير قابل للاستخدام.</string>
+    <string name="k2go_br_restore_damaged">تم إلغاء الاستعادة. سيبدأ نظامك في وضع الاسترداد عند التشغيل التالي.</string>
+    <string name="k2go_br_cancel_extract_need_ack">حدد المربع لتأكيد فهمك.</string>
     <string name="k2go_br_restore_unreadable">تعذّرت قراءة الملف المحدد، لذا لم يتغيّر أي شيء.</string>
     <string name="deepop_channel_name">النسخ الاحتياطي والاستعادة</string>
     <string name="deepop_channel_desc">يُبقي عملية نسخ احتياطي أو استعادة قيد التشغيل بأمان في الخلفية</string>

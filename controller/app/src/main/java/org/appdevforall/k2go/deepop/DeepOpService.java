@@ -72,6 +72,10 @@ public final class DeepOpService extends Service {
     public static final String ACTION_BACKUP = "org.iiab.controller.DEEPOP_BACKUP";
     public static final String ACTION_RESTORE = "org.iiab.controller.DEEPOP_RESTORE";
     public static final String ACTION_CANCEL = "org.iiab.controller.DEEPOP_CANCEL";
+    // K2GO-384: the pausable-copy handshake -- Cancel pauses the copy, then the confirm dialog resolves it.
+    public static final String ACTION_RESUME = "org.iiab.controller.DEEPOP_RESUME";
+    public static final String ACTION_CANCEL_CONFIRM = "org.iiab.controller.DEEPOP_CANCEL_CONFIRM";
+    public static final String ACTION_FORCE_CANCEL = "org.iiab.controller.DEEPOP_FORCE_CANCEL";   // K2GO-384: acknowledged cancel DURING extract
     public static final String EXTRA_URI = "uri";     // backup: SAF dest; restore: SAF source
 
     /** K2GO-372: a restore is one run of three passes — stage the file, verify it, extract it — so they
@@ -89,6 +93,29 @@ public final class DeepOpService extends Service {
     private volatile boolean done = false;       // terminal reached (cancel OR natural) — clean up once
     private EnvironmentLock.Owner owner;
     private String stepText = "";
+    /** K2GO-384 (ADR-5343c): a CONFIRMED abort in the SAFE zone (copy / verify / the verify->extract
+     *  boundary). The copy loop and TarExtractor's verify + boundary read it and abort with the rootfs
+     *  untouched. It is NEVER read by the extract feeder -- a safe-zone abort must not be able to tear the
+     *  rootfs (that is {@link #forceExtractCancel}'s job). Set only while currentCancelKind == CANCELLABLE. */
+    private final java.util.concurrent.atomic.AtomicBoolean cancelBeforeExtract = new java.util.concurrent.atomic.AtomicBoolean(false);
+    /** K2GO-384 (ADR-5343c): an ACKNOWLEDGED destructive kill, read ONLY by the extract feeder (past the
+     *  point of no return). Set only while currentCancelKind == DESTRUCTIVE. Kept separate from
+     *  cancelBeforeExtract so the two cancel intents can never alias across the verify->extract boundary. */
+    private final java.util.concurrent.atomic.AtomicBoolean forceExtractCancel = new java.util.concurrent.atomic.AtomicBoolean(false);
+    /** K2GO-384: the owner of "one verify+extract pass at a time". Set when a pass starts, cleared at every
+     *  pass outcome (complete / error / cancelled / held). Guards the re-callable attemptVerifyAndExtract so a
+     *  "Keep restoring" cannot start a second pass over the same temp while one is running. */
+    private volatile boolean passRunning = false;
+    /** K2GO-384: true while the user is deciding on a paused COPY (Cancel pressed). The copy loop blocks on
+     *  it; ACTION_RESUME clears it (continue), ACTION_CANCEL_CONFIRM sets cancelBeforeExtract and clears it
+     *  (abort). Only the copy is pausable -- verify/extract are external tar processes. */
+    private final java.util.concurrent.atomic.AtomicBoolean pauseRequested = new java.util.concurrent.atomic.AtomicBoolean(false);
+    /** K2GO-384: what cancelling the current restore pass means -- set from the real phase, published in
+     *  DeepOpState so the UI shows the right dialog without guessing from the step text. */
+    private volatile DeepOpState.CancelKind currentCancelKind = DeepOpState.CancelKind.NONE;
+    /** K2GO-384: non-null while a verify pass is HELD for an undecided Cancel -- carries the copied temp so
+     *  ACTION_RESUME can re-run verify+extract on it (no re-copy) and ACTION_CANCEL_CONFIRM can delete it. */
+    private volatile String heldTempPath = null;
 
     /** Start a backup: stream a gzip'd tar of the rootfs to the SAF destination. */
     public static void startBackup(Context ctx, Uri dest) {
@@ -118,6 +145,35 @@ public final class DeepOpService extends Service {
         if (intent == null) { stopSelf(); return START_NOT_STICKY; }
         final String action = intent.getAction();
         if (ACTION_CANCEL.equals(action)) { if (started) cancel(); else stopSelf(); return START_NOT_STICKY; }
+        // K2GO-384: resolve a paused COPY -- resume (keep restoring) or confirm the cancel (abort).
+        if (ACTION_RESUME.equals(action)) {
+            // K2GO-384: keep restoring. A paused COPY just resumes; a HELD verify re-runs on the same temp
+            // (verify + extract, no re-copy).
+            pauseRequested.set(false);
+            final String held = heldTempPath;
+            if (held != null) { heldTempPath = null; attemptVerifyAndExtract(held); }
+            return START_NOT_STICKY;
+        }
+        if (ACTION_CANCEL_CONFIRM.equals(action)) {
+            // K2GO-384 (ADR-5343c): the reversible abort applies ONLY in the safe zone. Guarding on the
+            // service's own currentCancelKind (not the UI's lagging copy) means a confirm that races past the
+            // verify->extract boundary is ignored here -- the extract simply finishes -- rather than reaching
+            // the feeder. The system is never torn by a "system unchanged" confirm.
+            if (started && currentCancelKind == DeepOpState.CancelKind.CANCELLABLE) {
+                cancelBeforeExtract.set(true);   // a paused COPY bails on this; stageThenRestore then cleans up
+                pauseRequested.set(false);
+                final String held = heldTempPath;
+                if (held != null) { heldTempPath = null; main.post(() -> endRestore(held, false, "")); }
+            }
+            return START_NOT_STICKY;
+        }
+        // K2GO-384 (ADR-5343c): acknowledged cancel DURING extract -- kill tar mid-write via its OWN token.
+        // Guarded on DESTRUCTIVE so it acts only past the point of no return; InstallGuard stays planted so
+        // recovery reinstalls.
+        if (ACTION_FORCE_CANCEL.equals(action)) {
+            if (started && currentCancelKind == DeepOpState.CancelKind.DESTRUCTIVE) forceExtractCancel.set(true);
+            return START_NOT_STICKY;
+        }
         if (started) return START_NOT_STICKY;   // one op per service instance
         started = true;
 
@@ -195,6 +251,7 @@ public final class DeepOpService extends Service {
                     endRestore(temp.getAbsolutePath(), false, outcome);
                     return;
                 }
+                currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: stopping -- cancellable
                 setStep(getString(R.string.k2go_br_status_stopping), -1);
                 EnvironmentControl.stop(this, this::log, () -> runRestore(temp.getAbsolutePath()));
             });
@@ -279,8 +336,18 @@ public final class DeepOpService extends Service {
             byte[] buf = new byte[1 << 16];
             long copied = 0L, lastEmit = 0L;
             final long startMs = android.os.SystemClock.elapsedRealtime();
+            currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: copy -- cancellable (pauses here)
             int n;
             while ((n = in.read(buf)) != -1) {   // a 0-length read is not end of stream
+                // K2GO-384: Cancel during the copy PAUSES here (our native loop). Block while paused; a
+                // confirmed cancel sets cancelBeforeExtract and we bail (endRestore deletes the temp, the
+                // rootfs untouched); resume just continues. The empty return is never shown -- a cancel
+                // returns the screen to the bifurcation.
+                if (cancelBeforeExtract.get()) return "";
+                while (pauseRequested.get() && !cancelBeforeExtract.get()) {
+                    try { Thread.sleep(120L); } catch (InterruptedException e) { return ""; }
+                }
+                if (cancelBeforeExtract.get()) return "";
                 out.write(buf, 0, n);
                 copied += n;
                 long now = android.os.SystemClock.elapsedRealtime();
@@ -330,13 +397,63 @@ public final class DeepOpService extends Service {
         // thrown away what the user asked for over an operation that never happened.
         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementStarting(this,
                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.RESTORE);
+        attemptVerifyAndExtract(path);
+    }
+
+    /**
+     * K2GO-384: run (or RE-run) the verify + extract on the already-staged {@code path}. Re-callable so a
+     * "Keep restoring" after a Cancel raised during verify re-runs just this pass -- verify (`tar -t`) then
+     * extract -- on the copied temp, WITHOUT re-copying. The copy above is never repeated.
+     */
+    private void attemptVerifyAndExtract(final String path) {
+        if (done || passRunning) return;   // K2GO-384: one verify+extract pass at a time (service is the owner)
+        passRunning = true;
+        currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: verify -- cancellable (kill + hold)
         setStep(getString(R.string.k2go_br_status_checking), 0);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
+                cancelBeforeExtract, pauseRequested, forceExtractCancel,
                 new TarExtractor.ExtractionListener() {
-                    @Override public void onComplete(String destDir) { main.post(() -> endRestore(path, true, null)); }
-                    @Override public void onError(String error) { main.post(() -> endRestore(path, false, error)); }
+                    @Override public void onComplete(String destDir) { passRunning = false; main.post(() -> endRestore(path, true, null)); }
+                    @Override public void onError(String error) {
+                        passRunning = false;
+                        // K2GO-384 (ADR-5343c): "known damage" is owned by "the extract began and did not
+                        // complete", not by the cancel button. isLive == true means onExtractStarting planted
+                        // the marker, i.e. the rootfs was being written and is now torn (a force-cancel OR a
+                        // real mid-write failure). Mark it DAMAGED so isLive drops (the k2go_busy_install gate
+                        // lifts, unblocking a fresh restore) and desired stays DOWN (isSystemInstalled=false, no
+                        // flap on the torn base); isInterrupted stays true so recovery owns it next launch/return.
+                        final boolean torn = InstallGuard.isLive(DeepOpService.this);
+                        if (torn) InstallGuard.markDamaged(DeepOpService.this);
+                        // forced only picks the MESSAGE: our own acknowledged kill -> the damaged line; a real
+                        // failure keeps its diagnostic (the system is still marked damaged above).
+                        final boolean forced = forceExtractCancel.get();
+                        main.post(() -> endRestore(path, false,
+                                forced ? getString(R.string.k2go_br_restore_damaged) : error));
+                    }
                     @Override public void onProgress(String line) { }
+                    // K2GO-384: the point of no return -- fired once at the verify->extract boundary, BEFORE
+                    // the first write, on the extractor thread. Plant the destructive marker here (decoupled
+                    // from the progress emits) so an ungraceful kill during the write is recovered next launch.
+                    @Override public void onExtractStarting() {
+                        currentCancelKind = DeepOpState.CancelKind.DESTRUCTIVE;   // K2GO-384: past the point of no return
+                        InstallGuard.begin(DeepOpService.this);
+                    }
+                    // K2GO-384: cancelled before any write (Option B) -- the rootfs is untouched and no marker
+                    // was planted. Delete the staged temp and end (the screen returns to the bifurcation, so
+                    // no terminal message is shown -- an empty reason keeps endRestore's cleanup path).
+                    @Override public void onCancelled() {
+                        passRunning = false;
+                        main.post(() -> endRestore(path, false, ""));
+                    }
+                    // K2GO-384: Cancel pressed during verify, still undecided -- `tar -t` was killed but the
+                    // copied temp is intact. HOLD: keep the temp and wait. ACTION_RESUME re-runs this pass on
+                    // the same temp (no re-copy); ACTION_CANCEL_CONFIRM aborts (deletes the temp, bifurcation).
+                    // passRunning drops here too: the extractor thread has exited, so a Keep may start a fresh pass.
+                    @Override public void onHeldForDecision() {
+                        passRunning = false;
+                        main.post(() -> heldTempPath = path);
+                    }
 
                     /**
                      * K2GO-372: a restore reads the whole archive three times — the copy above, the
@@ -350,16 +467,10 @@ public final class DeepOpService extends Service {
                     public void onExtractPhase(TarExtractor.Phase phase, int passPercent,
                                                long etaSeconds, String line) {
                         final boolean extracting = phase == TarExtractor.Phase.EXTRACT;
-                        // K2GO-372: the destructive window opens here, at the first byte written over the
-                        // rootfs. The marker used to be planted when the service started, which also
-                        // covered the copy and the whole verify pass — phases where a kill damages
-                        // nothing, so an ungraceful exit in them declared a false DAMAGED, and an archive
-                        // the extractor rejects would have left the system marked damaged untouched.
-                        // isLive() reads the marker itself, so knowing it is already planted needs no
-                        // second flag here.
-                        if (extracting && !InstallGuard.isLive(DeepOpService.this)) {
-                            InstallGuard.begin(DeepOpService.this);
-                        }
+                        // K2GO-384: the destructive marker (InstallGuard.begin) is now planted in
+                        // onExtractStarting() -- once, at the verify->extract boundary, before the first
+                        // write and decoupled from these progress emits -- so it no longer rides on the
+                        // first extract progress callback.
                         final int unified = org.appdevforall.k2go.deploy.domain.ExtractProgress
                                 .unifiedPercent(passPercent, extracting ? EXTRACT_PASS : VERIFY_PASS,
                                         RESTORE_PASSES);
@@ -382,6 +493,14 @@ public final class DeepOpService extends Service {
         }
         File temp = new File(tempPath);
         if (temp.exists()) temp.delete();
+        // K2GO-384 (ADR-5343c): an empty reason means a user cancel in the SAFE zone (copy/verify) -- terminal
+        // but not a failure. Route it to a CANCELLED terminal (the screen returns to the bifurcation, decided
+        // by phase so it survives a config change), not a "Restore failed" screen. A real failure or the
+        // acknowledged-damaged message (both non-empty) goes to FAILED.
+        if (!ok && (failMessage == null || failMessage.trim().isEmpty())) {
+            finishCancelled();
+            return;
+        }
         // K2GO-372: the extractor already produces the exact reason (wrong architecture, not a rootfs);
         // it used to be discarded here and replaced by a generic "Restore failed".
         finishJob(ok, getString(R.string.k2go_br_restore_done),
@@ -412,6 +531,21 @@ public final class DeepOpService extends Service {
     }
 
     /**
+     * K2GO-384 (ADR-5343c): terminal for a user cancel in the safe zone (copy/verify). Same teardown as
+     * finishJob's failed path -- re-enable desired and drop the lock -- but posts a CANCELLED phase (not
+     * FAILED) and never touches InstallGuard: a pre-destructive cancel planted no marker, so there is nothing
+     * to end and nothing damaged.
+     */
+    private void finishCancelled() {
+        if (done) return;
+        done = true;
+        new org.appdevforall.k2go.Preferences(this).setWatchdogEnable(true);
+        EnvironmentLock.release(this);
+        DeepOpProgressRepository.get().postCancelled(owner);
+        teardown();
+    }
+
+    /**
      * Notification "Cancel" — offered only for BACKUP (read-only, safe to abandon). Restore has no
      * Cancel action (destructive, hard gate). The in-flight backup stream sees {@code done} and no-ops
      * on completion. Runs the same cleanup as a failure so the lock is released and the op ends.
@@ -419,8 +553,16 @@ public final class DeepOpService extends Service {
     private void cancel() {
         if (owner == EnvironmentLock.Owner.BACKUP) {
             finishJob(false, "", getString(R.string.k2go_br_backup_failed));
+            return;
         }
-        // A stray CANCEL for restore (which has no cancel action) is ignored — the extract must finish.
+        // K2GO-384: a Cancel on any pre-destructive pass (CANCELLABLE) HOLDS the run and waits for the
+        // confirm dialog. pauseRequested pauses the copy loop AND blocks the verify->extract boundary, so
+        // whether we are mid-copy or mid-verify nothing advances into the destructive extract while the user
+        // decides. ACTION_RESUME continues; ACTION_CANCEL_CONFIRM aborts. DESTRUCTIVE (extract) is not
+        // handled here -- it takes the acknowledged force-cancel path.
+        if (currentCancelKind == DeepOpState.CancelKind.CANCELLABLE) {
+            pauseRequested.set(true);
+        }
     }
 
     private void teardown() {
@@ -443,7 +585,7 @@ public final class DeepOpService extends Service {
     private void post(String step, int percent) { post(step, percent, -1L); }
 
     private void post(String step, int percent, long etaSeconds) {
-        DeepOpProgressRepository.get().postRunning(owner, step, percent, etaSeconds);
+        DeepOpProgressRepository.get().postRunning(owner, step, percent, etaSeconds, currentCancelKind);
     }
 
     private void log(String line) { Log.d(TAG, line); }

@@ -54,6 +54,14 @@ public final class SystemStateEvaluator {
         if (InstallGuard.isLive(ctx)) {
             return false;
         }
+        // K2GO-384 (ADR-5343c): KNOWN damage — a destructive write (a force-cancelled restore extract) left a
+        // half-applied rootfs and said so with a sentinel token. Unlike an INTERRUPTED marker (a dead launch,
+        // maybe-fine → falls through to rootfsPresent so the reconciler may TRY to boot it, ADFA-5330), this
+        // base is not installed: there is nothing to learn from booting a rootfs we tore ourselves. Forcing
+        // false keeps desired=DOWN (no flap on the torn base); recovery still owns it via isInterrupted.
+        if (InstallGuard.isDamaged(ctx)) {
+            return false;
+        }
         return rootfsPresent(ctx);
     }
 

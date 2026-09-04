@@ -221,6 +221,19 @@
                 android:textIsSelectable="true" />
         </ScrollView>
 
+        <!-- K2GO-384: Cancel, shown only while a RESTORE is running and still before the destructive
+             extract (the fragment gates it on InstallGuard.isLive). Low-emphasis text button; shares the
+             slot with Finish (mutually exclusive by state). GONE until shown. -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/k2go_bj_cancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            android:text="@string/k2go_cancel"
+            android:gravity="center" />
+
         <!-- Terminal action: the module index owns this navigation; here the screen does. GONE until done.
              A styled TextView-as-button (like Clone's) so the custom background isn't overridden by
              MaterialButton's backgroundTint. -->

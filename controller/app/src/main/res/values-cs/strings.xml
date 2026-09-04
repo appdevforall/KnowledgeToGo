@@ -645,6 +645,14 @@
     <string name="k2go_br_restore_confirm">Nahradit systém</string>
     <string name="k2go_br_restore_done">Systém obnoven</string>
     <string name="k2go_br_restore_failed">Obnova selhala</string>
+    <string name="k2go_br_cancel_title">Zrušit obnovení?</string>
+    <string name="k2go_br_cancel_body">Váš aktuální systém zůstává nezměněn. Obnovení můžete kdykoli spustit znovu.</string>
+    <string name="k2go_br_cancel_confirm">Zrušit obnovení</string>
+    <string name="k2go_br_cancel_keep">Pokračovat v obnovení</string>
+    <string name="k2go_br_cancel_extract_body">Váš systém se právě zapisuje. Zrušení jej ponechá nepoužitelný, dokud se sám znovu nenainstaluje.</string>
+    <string name="k2go_br_cancel_extract_ack">Rozumím, že zrušení nyní může můj systém poškodit nebo učinit nepoužitelným.</string>
+    <string name="k2go_br_restore_damaged">Obnovení zrušeno. Váš systém se při příštím spuštění spustí v režimu obnovy.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Zaškrtnutím políčka potvrďte, že rozumíte.</string>
     <string name="k2go_br_restore_unreadable">Vybraný soubor se nepodařilo přečíst, takže se nic nezměnilo.</string>
     <string name="deepop_channel_name">Záloha &amp; obnova</string>
     <string name="deepop_channel_desc">Udržuje zálohu nebo obnovu bezpečně spuštěnou na pozadí</string>

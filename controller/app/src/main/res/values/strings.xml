@@ -782,6 +782,16 @@
     <string name="k2go_br_restore_confirm">Replace system</string>
     <string name="k2go_br_restore_done">System restored</string>
     <string name="k2go_br_restore_failed">Restore failed</string>
+    <!-- K2GO-384: confirm before cancelling a restore (safe: nothing is written before the extract). -->
+    <string name="k2go_br_cancel_title">Cancel restore?</string>
+    <string name="k2go_br_cancel_body">Your current system is unchanged. You can start the restore again anytime.</string>
+    <string name="k2go_br_cancel_confirm">Cancel restore</string>
+    <string name="k2go_br_cancel_keep">Keep restoring</string>
+    <!-- K2GO-384: cancelling DURING the extract is destructive (the rootfs is being overwritten), so it needs an acknowledgement. -->
+    <string name="k2go_br_cancel_extract_body">Your system is being written now. Cancelling will leave it unusable until it reinstalls itself.</string>
+    <string name="k2go_br_cancel_extract_ack">I understand that cancelling now may leave my system damaged or unusable.</string>
+    <string name="k2go_br_restore_damaged">Restore cancelled. Your system will start in recovery on the next launch.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Check the box to confirm you understand.</string>
     <string name="k2go_br_restore_unreadable">The selected file could not be read, so nothing was changed.</string>
     <string name="deepop_channel_name">Backup &amp; restore</string>
     <string name="deepop_channel_desc">Keeps a backup or restore running safely in the background</string>

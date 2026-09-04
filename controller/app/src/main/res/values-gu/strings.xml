@@ -651,6 +651,14 @@
     <string name="k2go_br_restore_confirm">સિસ્ટમ બદલો</string>
     <string name="k2go_br_restore_done">સિસ્ટમ રિસ્ટોર થઈ</string>
     <string name="k2go_br_restore_failed">રિસ્ટોર નિષ્ફળ</string>
+    <string name="k2go_br_cancel_title">પુનઃસ્થાપન રદ કરવું છે?</string>
+    <string name="k2go_br_cancel_body">તમારી વર્તમાન સિસ્ટમ યથાવત છે. તમે કોઈપણ સમયે ફરીથી પુનઃસ્થાપન શરૂ કરી શકો છો.</string>
+    <string name="k2go_br_cancel_confirm">પુનઃસ્થાપન રદ કરો</string>
+    <string name="k2go_br_cancel_keep">પુનઃસ્થાપન ચાલુ રાખો</string>
+    <string name="k2go_br_cancel_extract_body">તમારી સિસ્ટમ હમણાં લખાઈ રહી છે. રદ કરવાથી તે પોતાને ફરીથી ઇન્સ્ટોલ ન કરે ત્યાં સુધી બિનઉપયોગી રહેશે.</string>
+    <string name="k2go_br_cancel_extract_ack">હું સમજું છું કે હમણાં રદ કરવાથી મારી સિસ્ટમ ક્ષતિગ્રસ્ત અથવા બિનઉપયોગી થઈ શકે છે.</string>
+    <string name="k2go_br_restore_damaged">પુનઃસ્થાપન રદ થયું. તમારી સિસ્ટમ આગલા લોન્ચ પર રિકવરી મોડમાં શરૂ થશે.</string>
+    <string name="k2go_br_cancel_extract_need_ack">તમે સમજ્યા છો તેની પુષ્ટિ કરવા બોક્સ પર ટિક કરો.</string>
     <string name="k2go_br_restore_unreadable">પસંદ કરેલી ફાઇલ વાંચી શકાઈ નહીં, તેથી કંઈ બદલાયું નથી.</string>
     <string name="deepop_channel_name">બૅકઅપ &amp; રિસ્ટોર</string>
     <string name="deepop_channel_desc">બૅકઅપ કે રિસ્ટોરને બૅકગ્રાઉન્ડમાં સુરક્ષિત રીતે ચાલુ રાખે છે</string>

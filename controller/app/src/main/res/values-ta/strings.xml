@@ -658,6 +658,14 @@
     <string name="k2go_br_restore_confirm">அமைப்பை மாற்று</string>
     <string name="k2go_br_restore_done">அமைப்பு மீட்டமைக்கப்பட்டது</string>
     <string name="k2go_br_restore_failed">மீட்பு தோல்வியடைந்தது</string>
+    <string name="k2go_br_cancel_title">மீட்பை ரத்து செய்யவா?</string>
+    <string name="k2go_br_cancel_body">உங்கள் தற்போதைய கணினி மாறாமல் உள்ளது. நீங்கள் எந்த நேரத்திலும் மீட்பை மீண்டும் தொடங்கலாம்.</string>
+    <string name="k2go_br_cancel_confirm">மீட்பை ரத்து செய்</string>
+    <string name="k2go_br_cancel_keep">மீட்பைத் தொடரவும்</string>
+    <string name="k2go_br_cancel_extract_body">உங்கள் கணினி இப்போது எழுதப்படுகிறது. ரத்து செய்தால், அது தானாகவே மீண்டும் நிறுவப்படும் வரை பயன்படுத்த முடியாததாக இருக்கும்.</string>
+    <string name="k2go_br_cancel_extract_ack">இப்போது ரத்து செய்தால் எனது கணினி சேதமடையலாம் அல்லது பயன்படுத்த முடியாததாக மாறலாம் என்பதை நான் புரிந்துகொள்கிறேன்.</string>
+    <string name="k2go_br_restore_damaged">மீட்பு ரத்து செய்யப்பட்டது. அடுத்த முறை தொடங்கும்போது உங்கள் கணினி மீட்பு பயன்முறையில் தொடங்கும்.</string>
+    <string name="k2go_br_cancel_extract_need_ack">நீங்கள் புரிந்துகொண்டதை உறுதிப்படுத்த பெட்டியில் தேர்வு செய்யவும்.</string>
     <string name="k2go_br_restore_unreadable">தேர்ந்தெடுத்த கோப்பைப் படிக்க முடியவில்லை, எனவே எதுவும் மாற்றப்படவில்லை.</string>
     <string name="deepop_channel_name">காப்புப்பிரதி &amp; மீட்பு</string>
     <string name="deepop_channel_desc">காப்புப்பிரதி அல்லது மீட்பை பின்னணியில் பாதுகாப்பாக இயக்கி வைக்கிறது</string>

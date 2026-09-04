@@ -639,6 +639,14 @@
     <string name="k2go_br_restore_confirm">Zastąp system</string>
     <string name="k2go_br_restore_done">System przywrócony</string>
     <string name="k2go_br_restore_failed">Przywracanie nie powiodło się</string>
+    <string name="k2go_br_cancel_title">Anulować przywracanie?</string>
+    <string name="k2go_br_cancel_body">Twój obecny system pozostaje bez zmian. Możesz ponownie rozpocząć przywracanie w dowolnym momencie.</string>
+    <string name="k2go_br_cancel_confirm">Anuluj przywracanie</string>
+    <string name="k2go_br_cancel_keep">Kontynuuj przywracanie</string>
+    <string name="k2go_br_cancel_extract_body">Twój system jest teraz zapisywany. Anulowanie sprawi, że będzie bezużyteczny, dopóki nie zainstaluje się ponownie.</string>
+    <string name="k2go_br_cancel_extract_ack">Rozumiem, że anulowanie teraz może pozostawić mój system uszkodzony lub bezużyteczny.</string>
+    <string name="k2go_br_restore_damaged">Przywracanie anulowane. Twój system uruchomi się w trybie odzyskiwania przy następnym uruchomieniu.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Zaznacz pole, aby potwierdzić, że rozumiesz.</string>
     <string name="k2go_br_restore_unreadable">Nie udało się odczytać wybranego pliku, więc nic nie zostało zmienione.</string>
     <string name="deepop_channel_name">Kopia zapasowa &amp; przywracanie</string>
     <string name="deepop_channel_desc">Utrzymuje bezpieczne działanie kopii lub przywracania w tle</string>

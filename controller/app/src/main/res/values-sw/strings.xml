@@ -658,6 +658,14 @@
     <string name="k2go_br_restore_confirm">Badilisha mfumo</string>
     <string name="k2go_br_restore_done">Mfumo umerejeshwa</string>
     <string name="k2go_br_restore_failed">Urejeshaji umeshindwa</string>
+    <string name="k2go_br_cancel_title">Ghairi urejeshaji?</string>
+    <string name="k2go_br_cancel_body">Mfumo wako wa sasa haujabadilika. Unaweza kuanza urejeshaji tena wakati wowote.</string>
+    <string name="k2go_br_cancel_confirm">Ghairi urejeshaji</string>
+    <string name="k2go_br_cancel_keep">Endelea kurejesha</string>
+    <string name="k2go_br_cancel_extract_body">Mfumo wako unaandikwa sasa. Kughairi kutauacha usiofaa kutumika hadi ujisakinishe upya wenyewe.</string>
+    <string name="k2go_br_cancel_extract_ack">Ninaelewa kuwa kughairi sasa kunaweza kuacha mfumo wangu ukiwa umeharibika au usiofaa kutumika.</string>
+    <string name="k2go_br_restore_damaged">Urejeshaji umeghairiwa. Mfumo wako utaanza katika hali ya urejeshaji wakati wa kuzindua ujao.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Weka alama kwenye kisanduku ili kuthibitisha kuwa unaelewa.</string>
     <string name="k2go_br_restore_unreadable">Faili uliyochagua haikuweza kusomwa, kwa hivyo hakuna kilichobadilishwa.</string>
     <string name="deepop_channel_name">Hifadhi &amp; rejesha</string>
     <string name="deepop_channel_desc">Huweka nakala rudufu au urejeshaji ukiendelea kwa usalama chinichini</string>

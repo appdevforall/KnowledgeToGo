@@ -64,6 +64,12 @@ public final class ServerReconcile {
      * marker-derived is ever added (e.g. a structural rootfs check), this invariant must be revisited —
      * desired would then have a reason to gate on health again.</b>
      *
+     * <p><b>K2GO-384 (ADR-5343c) added exactly such a signal — KNOWN damage from a force-cancelled restore
+     * ({@code InstallGuard.isDamaged}) — and kept this invariant intact.</b> Rather than teach {@code desired}
+     * to read health, a known-damaged base is folded into {@code installed=false} (in {@code
+     * SystemStateEvaluator.isSystemInstalled}, the same lever a LIVE install already uses), so {@code desired}
+     * stays DOWN through its existing {@code installed} argument. Desired still does not read {@code healthy}.
+     *
      * @param installed   a rootfs is present and no LIVE install is running over it.
      * @param userWantsOn the persisted user intent (today {@code Preferences.WatchdogEnable}).
      * @param holderClass the execution class of the current environment holder

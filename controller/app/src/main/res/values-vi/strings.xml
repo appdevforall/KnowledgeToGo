@@ -638,6 +638,14 @@
     <string name="k2go_br_restore_confirm">Thay thế hệ thống</string>
     <string name="k2go_br_restore_done">Đã khôi phục hệ thống</string>
     <string name="k2go_br_restore_failed">Khôi phục thất bại</string>
+    <string name="k2go_br_cancel_title">Hủy khôi phục?</string>
+    <string name="k2go_br_cancel_body">Hệ thống hiện tại của bạn không thay đổi. Bạn có thể bắt đầu khôi phục lại bất cứ lúc nào.</string>
+    <string name="k2go_br_cancel_confirm">Hủy khôi phục</string>
+    <string name="k2go_br_cancel_keep">Tiếp tục khôi phục</string>
+    <string name="k2go_br_cancel_extract_body">Hệ thống của bạn đang được ghi. Việc hủy sẽ khiến hệ thống không sử dụng được cho đến khi nó tự cài đặt lại.</string>
+    <string name="k2go_br_cancel_extract_ack">Tôi hiểu rằng việc hủy bây giờ có thể khiến hệ thống của tôi bị hỏng hoặc không sử dụng được.</string>
+    <string name="k2go_br_restore_damaged">Đã hủy khôi phục. Hệ thống của bạn sẽ khởi động ở chế độ khôi phục trong lần khởi chạy tiếp theo.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Chọn ô để xác nhận rằng bạn hiểu.</string>
     <string name="k2go_br_restore_unreadable">Không thể đọc tệp đã chọn, nên không có gì bị thay đổi.</string>
     <string name="deepop_channel_name">Sao lưu &amp; khôi phục</string>
     <string name="deepop_channel_desc">Giữ quá trình sao lưu hoặc khôi phục chạy an toàn ở chế độ nền</string>

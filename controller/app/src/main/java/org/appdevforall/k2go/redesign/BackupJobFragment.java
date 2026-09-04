@@ -69,6 +69,10 @@ public class BackupJobFragment extends Fragment {
     private TextView progressPct;
     /** K2GO-384: per-pass ETA caption next to the percent; blank when the pass can't estimate yet. */
     private TextView progressEta;
+    /** K2GO-384: on-screen Cancel, shown only while a RESTORE is running and still before the extract. */
+    private View cancel;
+    /** K2GO-384: the current pass's cancel semantics (single source = DeepOpState.cancelKind). */
+    private DeepOpState.CancelKind lastCancelKind = DeepOpState.CancelKind.NONE;
     private org.appdevforall.k2go.util.EllipsisAnimator statusDots;
     private boolean running = false;
     private long lastSeq = -1L;
@@ -105,6 +109,7 @@ public class BackupJobFragment extends Fragment {
         progress = v.findViewById(R.id.k2go_bj_progress);
         progressPct = v.findViewById(R.id.k2go_bj_progress_pct);
         progressEta = v.findViewById(R.id.k2go_bj_progress_eta);
+        cancel = v.findViewById(R.id.k2go_bj_cancel);
         finish = v.findViewById(R.id.k2go_bj_finish);
         waitCard = v.findViewById(R.id.k2go_bj_wait_card);
         // ADFA-4947 fixed-width mode: this status line is centred, so variable-width dots slide the
@@ -114,6 +119,7 @@ public class BackupJobFragment extends Fragment {
         title.setText(getString(isRestore() ? R.string.k2go_br_restore_title : R.string.k2go_br_backup_title));
         sub.setText(getString(isRestore() ? R.string.k2go_br_restore_sub : R.string.k2go_br_backup_sub));
         finish.setOnClickListener(x -> popToIntro(true));
+        cancel.setOnClickListener(x -> onCancelTapped());
 
         // Hard gate: while the op runs, back is consumed with a styled snackbar (module-index behavior).
         backGate = new androidx.activity.OnBackPressedCallback(false) {
@@ -150,7 +156,10 @@ public class BackupJobFragment extends Fragment {
             beginRunning();                                   // deep-link / recreation into a live op
             setStatusAnimated(cur.step);
         } else if (s != null && cur.owner == myOwner() && cur.isTerminal()) {
-            showTerminal(cur.phase == DeepOpState.Phase.SUCCESS, cur.message);   // recreated at the result
+            // K2GO-384: a CANCELLED terminal returns to the bifurcation even when the fragment is recreated
+            // exactly at it (config change) -- the decision lives on the phase, not a fragment flag.
+            if (cur.phase == DeepOpState.Phase.CANCELLED) v.post(() -> popToIntro(false));
+            else showTerminal(cur.phase == DeepOpState.Phase.SUCCESS, cur.message);   // recreated at the result
         } else if (s == null) {
             v.post(this::launchPicker);                       // fresh entry: the intro card is the Start
         }
@@ -237,9 +246,16 @@ public class BackupJobFragment extends Fragment {
             if (!running) beginRunning();
             setStatusAnimated(st.step);
             showProgress(st.percent, st.etaSeconds);
+            lastCancelKind = st.cancelKind;   // K2GO-384: track the current pass's cancel semantics
+            updateCancelVisibility();
         } else if (st.isTerminal() && st.seq > lastSeq) {
             lastSeq = st.seq;
             showProgress(-1, -1L);   // K2GO-372: a finished op has no bar to keep filling
+            // K2GO-384: a user cancel in the safe zone is its own terminal (CANCELLED) -- return to the
+            // bifurcation, not a "something went wrong" screen. The service owns that distinction now (the
+            // phase), so it holds across a config change. FAILED (a real error, or the acknowledged
+            // destructive cancel's "damaged" message) and SUCCESS both show a terminal.
+            if (st.phase == DeepOpState.Phase.CANCELLED) { popToIntro(false); return; }
             showTerminal(st.phase == DeepOpState.Phase.SUCCESS, st.message);
         }
     }
@@ -251,10 +267,12 @@ public class BackupJobFragment extends Fragment {
         finish.setVisibility(View.GONE);
         if (waitCard != null) waitCard.setVisibility(View.VISIBLE);
         if (anim != null) anim.playAnimation();
+        updateCancelVisibility();
     }
 
     private void showTerminal(boolean ok, String message) {
         running = false;
+        if (cancel != null) cancel.setVisibility(View.GONE);   // K2GO-384: no cancel once the op has ended
         if (backGate != null) backGate.setEnabled(false);   // done → back / Finish returns to the bifurcation
         if (statusDots != null) statusDots.stop();
         if (anim != null) anim.pauseAnimation();
@@ -270,6 +288,104 @@ public class BackupJobFragment extends Fragment {
     private void setStatusAnimated(String text) {
         status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         if (statusDots != null) statusDots.start(text);
+    }
+
+    /**
+     * K2GO-384: on a cancellable pass (copy / stopping / verify) Cancel HOLDS the run -- the service pauses
+     * the copy loop or blocks the verify->extract boundary, so nothing advances into the destructive extract
+     * while the user decides -- and shows a light M3 dialog: Keep restoring (continue) / Cancel restore
+     * (abort, system unchanged). During the DESTRUCTIVE extract, Cancel instead shows the acknowledged
+     * force-cancel dialog (red + checkbox), which leaves the system damaged for recovery.
+     */
+    private void onCancelTapped() {
+        if (!isAdded()) return;
+        if (lastCancelKind == DeepOpState.CancelKind.DESTRUCTIVE) { showDestructiveCancelDialog(); return; }
+        if (lastCancelKind != DeepOpState.CancelKind.CANCELLABLE) return;
+        sendToService(DeepOpService.ACTION_CANCEL);   // hold the run while the user decides (no race)
+        // K2GO-384: non-cancelable -- the run is HELD (copy paused / verify blocked at the boundary) the moment
+        // this shows, so the user MUST resolve it. A scrim/Back dismiss would leave pauseRequested set and hang
+        // the restore forever; forcing a Keep/Cancel choice closes that lifecycle gap.
+        new BrandDialog(requireContext())
+                .setCancelable(false)
+                .setTitle(getString(R.string.k2go_br_cancel_title))
+                .setMessage(getString(R.string.k2go_br_cancel_body))
+                .setPositive(R.string.k2go_br_cancel_confirm, () -> {
+                    if (cancel != null) cancel.setEnabled(false);
+                    sendToService(DeepOpService.ACTION_CANCEL_CONFIRM);   // abort -> CANCELLED terminal -> bifurcation
+                })
+                .setNegative(R.string.k2go_br_cancel_keep, () -> sendToService(DeepOpService.ACTION_RESUME))
+                .show();
+    }
+
+    private void sendToService(String action) {
+        if (!isAdded()) return;
+        requireContext().startService(
+                new android.content.Intent(requireContext(), DeepOpService.class).setAction(action));
+    }
+
+    /**
+     * K2GO-384: cancelling DURING the extract is destructive -- the rootfs is being overwritten. A strong
+     * M3 dialog: RED confirm (colorError) gated by an acknowledgement checkbox. Confirming force-cancels the
+     * extract (kills tar mid-write); the system is left torn and reinstalls itself on next boot (InstallGuard).
+     * Unlike the trivial cancel, this keeps a terminal so the user is told the system will be reinstalled.
+     */
+    private void showDestructiveCancelDialog() {
+        if (!isAdded()) return;
+        final float density = getResources().getDisplayMetrics().density;
+        // ADFA-5339 pattern: a MaterialCheckBox as a dialog's custom view sits flush-left; a holder padded by
+        // dialogPreferredPadding (the title/message inset) with the checkbox's own left padding at 0 lines it
+        // up with the text above.
+        final com.google.android.material.checkbox.MaterialCheckBox box =
+                new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
+        box.setText(R.string.k2go_br_cancel_extract_ack);
+        box.setCompoundDrawablePadding(Math.round(8 * density));
+        final int pad = dialogContentPadding();
+        final android.widget.FrameLayout holder = new android.widget.FrameLayout(requireContext());
+        holder.setPadding(pad, Math.round(8 * density), pad, 0);
+        holder.addView(box);
+        final androidx.appcompat.app.AlertDialog d =
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.k2go_br_cancel_title)
+                        .setMessage(R.string.k2go_br_cancel_extract_body)
+                        .setView(holder)
+                        .setPositiveButton(R.string.k2go_br_cancel_confirm, null)   // click set below to gate dismiss
+                        .setNegativeButton(R.string.k2go_br_cancel_keep, null)
+                        .show();
+        final android.widget.Button confirm = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        confirm.setTextColor(ContextCompat.getColor(requireContext(), R.color.btn_danger));   // same red as BrandDialog DESTRUCTIVE
+        // K2GO-384: keep the button ENABLED and validate on click -- an inert disabled button gives no
+        // feedback; a snackbar tells the user why nothing happened until they acknowledge.
+        confirm.setOnClickListener(v -> {
+            if (!box.isChecked()) {
+                Snackbars.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.k2go_br_cancel_extract_need_ack).show();
+                return;
+            }
+            // K2GO-384: the destructive kill ends as FAILED with the "damaged" message (non-empty), so the
+            // terminal shows -- the user sees "the next launch will start recovery" (no CANCELLED short-circuit).
+            if (cancel != null) cancel.setEnabled(false);
+            sendToService(DeepOpService.ACTION_FORCE_CANCEL);
+            d.dismiss();
+        });
+    }
+
+    /** The dialog's horizontal content inset (title/message use it); a custom view must match it to line up
+     *  (ADFA-5339). */
+    private int dialogContentPadding() {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        if (requireContext().getTheme().resolveAttribute(androidx.appcompat.R.attr.dialogPreferredPadding, tv, true)) {
+            return android.util.TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return Math.round(24 * getResources().getDisplayMetrics().density);   // Material default
+    }
+
+    /** K2GO-384: Cancel is shown while the current pass is cancellable (PAUSABLE copy or ABORTABLE
+     *  verify/stopping). It hides at the destructive extract and when there is nothing to cancel. */
+    private void updateCancelVisibility() {
+        if (cancel == null || !isAdded()) return;
+        boolean show = running && (lastCancelKind == DeepOpState.CancelKind.CANCELLABLE
+                || lastCancelKind == DeepOpState.CancelKind.DESTRUCTIVE);
+        cancel.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     /** Return to the bifurcation (BackupRestoreFragment). When {@code fromFinish}, arm the intro's
