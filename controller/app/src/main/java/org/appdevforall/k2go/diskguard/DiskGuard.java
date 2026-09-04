@@ -41,8 +41,9 @@ public final class DiskGuard {
 
     private static final String TAG = "K2Go-DiskGuard";
 
-    /** Only truncate a log that is clearly a runaway, not a normal small log. */
-    private static final long RUNAWAY_LOG_MIN_BYTES = 256L * 1024 * 1024;
+    /** Only truncate a log that is clearly a runaway, not a normal log. A runaway at a critical-low-space
+     *  moment is many GB, so 1 GiB stays well clear of any legitimate log. */
+    private static final long RUNAWAY_LOG_MIN_BYTES = 1024L * 1024 * 1024;
 
     private static final String CHANNEL_ID = "disk_guard_channel";
     private static final int NOTIF_ID = 7386;
@@ -76,31 +77,41 @@ public final class DiskGuard {
     }
 
     /**
-     * Truncate the biggest log file under the box's {@code /var/log} to reclaim the space the runaway
-     * consumed (a real file that persists after its writer dies). Best-effort; bounded to a clearly-large
-     * file so a normal log is never touched. Returns the bytes reclaimed, or 0.
+     * Truncate the biggest {@code *.log} file anywhere under the box's {@code /var/log} to reclaim the
+     * space the runaway consumed (a real file that persists after its writer dies). Recurses subdirectories
+     * (e.g. {@code /var/log/nginx/}) and only considers {@code .log} files over {@link #RUNAWAY_LOG_MIN_BYTES},
+     * so a normal or non-log file is never touched. Best-effort. Returns the bytes reclaimed, or 0.
      */
     private static long reclaimRunawayLog(Context ctx) {
         File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
-        File[] files = varLog.listFiles();
-        if (files == null) return 0L;
-        File biggest = null;
-        long max = 0L;
-        for (File f : files) {
-            if (f.isFile() && f.length() > max) {
-                max = f.length();
-                biggest = f;
-            }
-        }
-        if (biggest == null || max < RUNAWAY_LOG_MIN_BYTES) return 0L;
+        File biggest = biggestLogUnder(varLog, null);
+        if (biggest == null || biggest.length() < RUNAWAY_LOG_MIN_BYTES) return 0L;
+        long size = biggest.length();
         try (FileOutputStream truncate = new FileOutputStream(biggest)) {
             // opening for write with no append truncates to zero
-            Log.w(TAG, "K2GO-386: truncated runaway log " + biggest.getName() + " (" + max + " B)");
-            return max;
+            Log.w(TAG, "K2GO-386: truncated runaway log " + biggest.getName() + " (" + size + " B)");
+            return size;
         } catch (Exception e) {
             Log.w(TAG, "K2GO-386: could not truncate " + biggest.getName(), e);
             return 0L;
         }
+    }
+
+    /** The biggest {@code *.log} regular file in the tree rooted at {@code dir}, or {@code best} if none is
+     *  bigger. Name-filtered to {@code .log} so a non-log large file is never a candidate. Bounded to the
+     *  small {@code /var/log} tree; best-effort (unreadable dirs are skipped). */
+    private static File biggestLogUnder(File dir, File best) {
+        File[] entries = dir.listFiles();
+        if (entries == null) return best;
+        for (File f : entries) {
+            if (f.isDirectory()) {
+                best = biggestLogUnder(f, best);
+            } else if (f.isFile() && f.getName().endsWith(".log")
+                    && (best == null || f.length() > best.length())) {
+                best = f;
+            }
+        }
+        return best;
     }
 
     /** Warn the user that the box was stopped to protect the device. Best-effort — a no-op if the
