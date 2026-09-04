@@ -99,7 +99,7 @@ public class ModuleDetailFragment extends Fragment {
         // than start visible, because showing them and then taking them away is how a user ends
         // up tapping one in the gap.
         final Button installNowBtn = root.findViewById(R.id.k2go_moddet_install_now);
-        final ViewGroup chipRow = chips;
+        final ViewGroup statusRow = root.findViewById(R.id.k2go_moddet_status);
         installNowBtn.setVisibility(View.GONE);
 
         Button schedule = root.findViewById(R.id.k2go_moddet_schedule);
@@ -125,7 +125,7 @@ public class ModuleDetailFragment extends Fragment {
                 if (!isAdded()) return;
                 if (verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.NO_SYSTEM
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.DAMAGED) {
-                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
+                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
                     installNowBtn.setText(R.string.k2go_home_recover);
                     installNowBtn.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
                     installNowBtn.setVisibility(View.VISIBLE);
@@ -136,11 +136,11 @@ public class ModuleDetailFragment extends Fragment {
                         || verdict == org.appdevforall.k2go.system.domain.SystemVerdict.State.CLONE_SHARING) {
                     // ADFA-5312: a system op is in progress — the system is present but mid-setup and the
                     // server is down. Don't offer Install or Recover into it; just say it's busy.
-                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
+                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
                     return;
                 }
                 if (isInstalled) {
-                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
+                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
                     return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
                 }
                 // ADFA-4898: this module's runrole failed in the last finished batch — the SAME per-module
@@ -153,7 +153,7 @@ public class ModuleDetailFragment extends Fragment {
                 // Retry then bounces to the hub, which observes the queue live; this detail is a one-shot
                 // snapshot (no observer) and would otherwise sit on a stale "Couldn't install".
                 if (org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
-                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
+                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
                     schedule.setText(R.string.k2go_home_retry);
                     // Shared, busy-gated retry (same action the live progress card fires). On a real start,
                     // land on the install index — the same destination as a normal install (openModuleIndex)
@@ -172,7 +172,7 @@ public class ModuleDetailFragment extends Fragment {
                     return;
                 }
                 if (unknown) {
-                    chipRow.addView(K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_answer),
+                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_state_no_answer),
                             R.color.k2go_amber_text));
                     return;   // no grounds to offer work either way
                 }
@@ -206,6 +206,13 @@ public class ModuleDetailFragment extends Fragment {
         });
 
         return root;
+    }
+
+    /** K2GO-385 (PR3): a lifecycle status badge goes on its own row (k2go_moddet_status), which stays
+     *  GONE until one is added -- so a dot+text status never shares the boxed-metadata chip row. */
+    private static void addStatus(ViewGroup row, View badge) {
+        row.setVisibility(View.VISIBLE);
+        row.addView(badge);
     }
 
 }

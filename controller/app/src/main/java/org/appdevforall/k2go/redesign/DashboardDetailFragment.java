@@ -103,13 +103,14 @@ public class DashboardDetailFragment extends Fragment {
         ((TextView) root.findViewById(R.id.k2go_moddet_desc)).setText(R.string.k2go_dash_detail_desc);
 
         // Meta chips, in order: version (prepended live) | update status (live) | REST API | System core.
-        // ADFA-5026: the status chip starts at index 0 so that when the version chip prepends at 0 it
-        // lands right after the version. "Runs offline" is replaced by the update-status pill.
         chips = root.findViewById(R.id.k2go_moddet_chips);
-        // K2GO-385 (PR3): the live lifecycle state is a status badge (dot+text, semantic); REST API /
-        // System core are neutral metadata tags (colour there is noise -- the metadata colour rule).
+        // K2GO-385 (PR3): the live lifecycle state is a status badge (dot+text, semantic) on its OWN line
+        // below the metadata; version / REST API / System core are neutral metadata tags in the chip row
+        // (colour there is noise -- the metadata colour rule). The version chip prepends to the chip row.
+        ViewGroup statusRow = root.findViewById(R.id.k2go_moddet_status);
+        statusRow.setVisibility(View.VISIBLE);
         statusChip = K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted);
-        chips.addView(statusChip);
+        statusRow.addView(statusChip);
         chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_rest)));
         chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_core)));
         fetchVersionChip();

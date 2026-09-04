@@ -66,6 +66,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp" />
 
+            <!-- K2GO-385 (PR3): the lifecycle status sits on its OWN line below the metadata tags, so a
+                 dot+text status badge never shares a row (and a centre axis) with the boxed metadata tags.
+                 GONE until a status is added (some module states show none). -->
+            <org.appdevforall.k2go.redesign.FlowLayout
+                android:id="@+id/k2go_moddet_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/k2go_moddet_desc"
                 android:layout_width="match_parent"
