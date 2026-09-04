@@ -1,7 +1,6 @@
 package org.appdevforall.k2go.ui.dialog;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.TypedValue;
@@ -18,6 +17,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import org.appdevforall.k2go.R;
@@ -259,7 +259,7 @@ public final class BrandDialog {
                 if (checkboxRequired && checkboxRequiredMessage != null) {
                     err = new TextView(context);
                     err.setText(checkboxRequiredMessage);
-                    err.setTextColor(ContextCompat.getColor(context, R.color.btn_danger));
+                    err.setTextColor(ContextCompat.getColor(context, R.color.k2go_clay));
                     err.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
                     err.setPadding(0, Math.round(4 * context.getResources().getDisplayMetrics().density), 0, 0);
                     err.setVisibility(View.GONE);
@@ -290,14 +290,23 @@ public final class BrandDialog {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
+        // A destructive positive uses the app's destructive button STYLE (outlined clay, from the design
+        // tokens) rather than a red tint — rebuilt via the shared ThemeOverlay, the same role-switch the
+        // rest of the app's buttons use (ADFA-5346). A primary keeps the filled style from the layout.
+        if (positiveRole == Role.DESTRUCTIVE) {
+            android.view.ViewGroup parent = (android.view.ViewGroup) positive.getParent();
+            int index = parent.indexOfChild(positive);
+            android.view.ViewGroup.LayoutParams lp = positive.getLayoutParams();
+            MaterialButton destructive = new MaterialButton(
+                    new android.view.ContextThemeWrapper(context, R.style.ThemeOverlay_K2Go_Button_Destructive), null);
+            destructive.setId(R.id.brand_dialog_positive);
+            destructive.setLayoutParams(lp);
+            parent.removeViewAt(index);
+            parent.addView(destructive, index);
+            positive = destructive;
+        }
         if (positiveText != null) {
             positive.setText(positiveText);
-            // Filled teal by default from the Widget.K2Go.Button style; a destructive action re-tints
-            // the same filled button red.
-            if (positiveRole == Role.DESTRUCTIVE) {
-                positive.setBackgroundTintList(ColorStateList.valueOf(
-                        ContextCompat.getColor(context, R.color.btn_danger)));
-            }
             positive.setVisibility(View.VISIBLE);
             positive.setOnClickListener(v -> {
                 if (checkbox != null && checkboxRequired && !checkbox.isChecked()) {
