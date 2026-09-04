@@ -351,52 +351,22 @@ public class BackupJobFragment extends Fragment {
      */
     private void showDestructiveCancelDialog() {
         if (!isAdded()) return;
-        final float density = getResources().getDisplayMetrics().density;
-        // ADFA-5339 pattern: a MaterialCheckBox as a dialog's custom view sits flush-left; a holder padded by
-        // dialogPreferredPadding (the title/message inset) with the checkbox's own left padding at 0 lines it
-        // up with the text above.
-        final com.google.android.material.checkbox.MaterialCheckBox box =
-                new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
-        box.setText(R.string.k2go_br_cancel_extract_ack);
-        box.setCompoundDrawablePadding(Math.round(8 * density));
-        final int pad = dialogContentPadding();
-        final android.widget.FrameLayout holder = new android.widget.FrameLayout(requireContext());
-        holder.setPadding(pad, Math.round(8 * density), pad, 0);
-        holder.addView(box);
-        final androidx.appcompat.app.AlertDialog d =
-                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(R.string.k2go_br_cancel_title)
-                        .setMessage(R.string.k2go_br_cancel_extract_body)
-                        .setView(holder)
-                        .setPositiveButton(R.string.k2go_br_cancel_confirm, null)   // click set below to gate dismiss
-                        .setNegativeButton(R.string.k2go_br_cancel_keep, null)
-                        .show();
-        final android.widget.Button confirm = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
-        confirm.setTextColor(ContextCompat.getColor(requireContext(), R.color.btn_danger));   // same red as BrandDialog DESTRUCTIVE
-        // K2GO-384: keep the button ENABLED and validate on click -- an inert disabled button gives no
-        // feedback; a snackbar tells the user why nothing happened until they acknowledge.
-        confirm.setOnClickListener(v -> {
-            if (!box.isChecked()) {
-                Snackbars.make(requireActivity().findViewById(android.R.id.content),
-                        R.string.k2go_br_cancel_extract_need_ack).show();
-                return;
-            }
-            // K2GO-384: the destructive kill ends as FAILED with the "damaged" message (non-empty), so the
-            // terminal shows -- the user sees "the next launch will start recovery" (no CANCELLED short-circuit).
-            if (cancel != null) cancel.setEnabled(false);
-            sendToService(DeepOpService.ACTION_FORCE_CANCEL);
-            d.dismiss();
-        });
-    }
-
-    /** The dialog's horizontal content inset (title/message use it); a custom view must match it to line up
-     *  (ADFA-5339). */
-    private int dialogContentPadding() {
-        android.util.TypedValue tv = new android.util.TypedValue();
-        if (requireContext().getTheme().resolveAttribute(androidx.appcompat.R.attr.dialogPreferredPadding, tv, true)) {
-            return android.util.TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return Math.round(24 * getResources().getDisplayMetrics().density);   // Material default
+        // K2GO-384: a checkbox-gated destructive confirm. The acknowledgement is required (the shared dialog
+        // blocks the RED confirm and shows the inline "please tick" note until it is checked); the red comes
+        // from BrandDialog's DESTRUCTIVE role.
+        new BrandDialog(requireContext())
+                .setTitle(R.string.k2go_br_cancel_title)
+                .setMessage(R.string.k2go_br_cancel_extract_body)
+                .setCheckbox(R.string.k2go_br_cancel_extract_ack, false)
+                .requireCheckbox(R.string.k2go_br_cancel_extract_need_ack)
+                .setDestructive(R.string.k2go_br_cancel_confirm, checked -> {
+                    // K2GO-384: the destructive kill ends as FAILED with the "damaged" message (non-empty), so
+                    // the terminal shows -- the user sees "the next launch will start recovery".
+                    if (cancel != null) cancel.setEnabled(false);
+                    sendToService(DeepOpService.ACTION_FORCE_CANCEL);
+                })
+                .setNegative(R.string.k2go_br_cancel_keep, null)
+                .show();
     }
 
     /** K2GO-384: Cancel is shown while the current pass is cancellable (PAUSABLE copy or ABORTABLE

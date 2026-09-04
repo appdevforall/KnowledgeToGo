@@ -32,11 +32,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.install.presentation.InstallService;
 import org.appdevforall.k2go.system.domain.Operation;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.Snackbars;
 
@@ -59,39 +58,18 @@ public final class DashboardRebuild {
         }
         // ADFA-5339: a versionless "Update the Website" checkbox (default on) rides on the confirm. It
         // refreshes the served landing page in the same run — a SEPARATE, unversioned artifact, so it
-        // carries no version label. Built in code to leave the shared dialog usage untouched.
-        final com.google.android.material.checkbox.MaterialCheckBox siteBox =
-                new com.google.android.material.checkbox.MaterialCheckBox(ctx);
-        siteBox.setText(R.string.k2go_dash_update_site);
-        siteBox.setChecked(true);
-        siteBox.setCompoundDrawablePadding(Math.round(8 * ctx.getResources().getDisplayMetrics().density));
-        // Align the checkbox's left edge with the dialog's title/message, which are inset by
-        // dialogPreferredPadding — the custom view otherwise sits flush left. A container carries that
-        // inset so the checkbox's own left padding stays 0 and the box lines up with the text above.
-        int pad = dialogPadding(ctx);
-        android.widget.FrameLayout holder = new android.widget.FrameLayout(ctx);
-        holder.setPadding(pad, Math.round(8 * ctx.getResources().getDisplayMetrics().density), pad, 0);
-        holder.addView(siteBox);
+        // carries no version label.
         // ADFA-5339: the confirm matches the primary action — "Update" when a newer build exists,
         // "Rebuild" for a manual re-apply — so the dialog can't say "Rebuild" over an "Update" button.
-        new MaterialAlertDialogBuilder(ctx)
+        new BrandDialog(ctx)
                 .setTitle(updateAvailable ? R.string.k2go_dash_update_confirm_title
                                           : R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
-                .setView(holder)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(updateAvailable ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild,
-                        (d, w) -> start(host, anchor, siteBox.isChecked()))
+                .setCheckbox(R.string.k2go_dash_update_site, true)
+                .setPositive(updateAvailable ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild,
+                        BrandDialog.Role.PRIMARY, checked -> start(host, anchor, checked))
+                .setNegative(android.R.string.cancel, null)
                 .show();
-    }
-
-    /** The dialog's horizontal content inset (title/message use it); the custom view must match it. */
-    private static int dialogPadding(Context ctx) {
-        android.util.TypedValue tv = new android.util.TypedValue();
-        if (ctx.getTheme().resolveAttribute(androidx.appcompat.R.attr.dialogPreferredPadding, tv, true)) {
-            return android.util.TypedValue.complexToDimensionPixelSize(tv.data, ctx.getResources().getDisplayMetrics());
-        }
-        return Math.round(24 * ctx.getResources().getDisplayMetrics().density);   // Material default
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older
