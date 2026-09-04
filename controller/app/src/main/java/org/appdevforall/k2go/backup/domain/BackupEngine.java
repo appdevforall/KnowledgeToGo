@@ -17,17 +17,26 @@ package org.appdevforall.k2go.backup.domain;
 import android.content.Context;
 import android.util.Log;
 
+import org.appdevforall.k2go.deploy.domain.ExtractProgress;
+import org.appdevforall.k2go.system.domain.TransferRate;
 import org.appdevforall.k2go.util.ProcessRunner;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 
 public final class BackupEngine {
 
     private static final String TAG = "IIAB-BackupEngine";
 
     private BackupEngine() {}
+
+    /** K2GO-384: backup progress callback — percent 0..100 and ETA seconds (-1 when not measurable yet),
+     *  from uncompressed bytes archived vs a pre-counted total. Emitted from the tar-stdout read loop. */
+    public interface ProgressListener { void onProgress(int percent, long etaSeconds); }
 
     /**
      * Suggested external filename: {@code k2go_YYYY.DDD_<epochSecs>_<arch>.tar.gz}.
@@ -49,46 +58,99 @@ public final class BackupEngine {
     /**
      * Stream a gzip'd tar of {@code <filesDir>/rootfs/installed-rootfs} into {@code dest}. Returns true on
      * a clean tar exit. Does NOT close {@code dest} (the caller owns the SAF stream). Blocking.
+     *
+     * <p>K2GO-384: tar writes the <b>uncompressed</b> archive to stdout and the gzip is done here in Java
+     * (over {@code dest}), so the bytes tar produces are observable and metered against the tree's total size
+     * ({@code du -sb}). Byte progress tracks the gzip+write time far better than a member count, which
+     * front-loads on the many small files and then stalls on the few large ones. When {@code listener} is
+     * null or the pre-count fails, it streams without progress (indeterminate). This Java loop is also the
+     * seam a later backup-cancel interrupts.
      */
-    public static boolean streamBackup(Context ctx, OutputStream dest) {
+    public static boolean streamBackup(Context ctx, OutputStream dest, ProgressListener listener) {
         File iiabRootDir = new File(ctx.getFilesDir(), "rootfs");
         File nativeDir = new File(ctx.getApplicationInfo().nativeLibraryDir);
         File staticTar = new File(nativeDir, "libtar.so");
-        File staticGzip = new File(nativeDir, "libgzip.so");
         String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
-        String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
         String manifestArg = stageIdentityManifest(ctx);   // "-C '<stage>' 'installed-rootfs/iiab/.k2go-rootfs.json' " or null
 
-        // Single-quote the interpolated paths (robust if a path ever holds spaces/metacharacters).
-        String cmd = "'" + tarBin + "' -cf - "
+        // K2GO-384: total uncompressed bytes = the byte-accurate denominator. -1 => indeterminate fallback.
+        final long totalBytes = (listener != null) ? countBytes(iiabRootDir) : -1L;
+
+        // Single-quote the interpolated paths (robust if a path ever holds spaces/metacharacters). No "| gzip"
+        // — Java compresses the stream below, which is what makes the uncompressed size observable.
+        // --ignore-failed-read: iiab/sdcard (and other proot bind-mount stubs) are runtime mount points, not
+        // rootfs content, and are unreadable with the box stopped ("Cannot open: Permission denied"). Skipping
+        // them keeps tar's exit honest (0) instead of failing the whole backup on a file that must not be in
+        // it. The old "tar | gzip" pipe hit the same read error but gzip's exit=0 silently masked tar's exit=2.
+        String cmd = "'" + tarBin + "' -cf - --ignore-failed-read "
                 + (manifestArg != null ? manifestArg : "")
-                + "-C '" + iiabRootDir.getAbsolutePath() + "' installed-rootfs | '" + gzipBin + "'";
+                + "-C '" + iiabRootDir.getAbsolutePath() + "' installed-rootfs";
 
         Process p = null;
         Thread errDrain = null;
         try {
             p = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c", cmd});
-            // Drain stderr concurrently so a chatty tar cannot deadlock on a full pipe buffer.
+            // Drain stderr concurrently so a chatty tar cannot deadlock on a full pipe buffer. Keep a bounded
+            // tail of it so a non-zero tar exit can report WHY (mirrors the restore surfacing tar's real cause,
+            // ADFA-4544) instead of a bare "Backup failed".
             final Process fp = p;
+            final StringBuilder errTail = new StringBuilder();
             errDrain = new Thread(() -> {
-                try (InputStream es = fp.getErrorStream()) {
-                    byte[] b = new byte[8192];
-                    while (es.read(b) > 0) { /* discard */ }
+                try (BufferedReader er = new BufferedReader(new InputStreamReader(fp.getErrorStream()))) {
+                    String l;
+                    while ((l = er.readLine()) != null) {
+                        synchronized (errTail) {
+                            errTail.append(l).append('\n');
+                            if (errTail.length() > 4096) errTail.delete(0, errTail.length() - 4096);
+                        }
+                    }
                 } catch (Exception ignored) { }
             }, "backup-stderr");
             errDrain.start();
 
-            try (InputStream in = p.getInputStream()) {
+            // K2GO-384: gzip in Java over a close-guarded view of dest, metering the UNCOMPRESSED bytes tar
+            // emits. The guard lets close() finish the gzip stream and free its Deflater WITHOUT closing dest,
+            // which the caller owns and closes. System.nanoTime (not android SystemClock) keeps this domain
+            // class off android.* and is monotonic for durations.
+            final OutputStream guarded = new java.io.FilterOutputStream(dest) {
+                @Override public void write(byte[] b, int off, int len) throws java.io.IOException {
+                    out.write(b, off, len);   // FilterOutputStream's default writes byte-by-byte; delegate whole
+                }
+                @Override public void close() { /* caller owns dest */ }
+            };
+            try (GZIPOutputStream gz = new GZIPOutputStream(guarded);
+                 InputStream in = p.getInputStream()) {
                 byte[] buf = new byte[1 << 16];   // 64 KB
+                long processed = 0L, lastEmitMs = 0L;
+                final long startNs = System.nanoTime();
                 int n;
                 while ((n = in.read(buf)) > 0) {
-                    dest.write(buf, 0, n);
+                    gz.write(buf, 0, n);
+                    processed += n;
+                    if (listener != null && totalBytes > 0L) {
+                        long nowMs = (System.nanoTime() - startNs) / 1_000_000L;
+                        if (nowMs - lastEmitMs >= 200L) {
+                            lastEmitMs = nowMs;
+                            long rate = TransferRate.perSecond(processed, nowMs);
+                            listener.onProgress(ExtractProgress.percent(processed, totalBytes),
+                                    ExtractProgress.etaSeconds(processed, totalBytes, rate));
+                        }
+                    }
                 }
-                dest.flush();
-            }
+            }   // gz.close() writes the gzip trailer + ends the Deflater; the guard leaves dest open
+            dest.flush();
             int exit = p.waitFor();
-            if (exit != 0) Log.w(TAG, "backup tar|gzip exited " + exit);
+            if (errDrain != null) { try { errDrain.join(1500); } catch (InterruptedException ignored) { } }
+            String tail; synchronized (errTail) { tail = errTail.toString().trim(); }
+            if (exit != 0) {
+                Log.w(TAG, "backup tar exited " + exit + (tail.isEmpty() ? "" : "; stderr tail:\n" + tail));
+            } else if (!tail.isEmpty()) {
+                // K2GO-384: succeeded, but --ignore-failed-read let tar skip unreadable entries. Expected ones
+                // are proot mount stubs (iiab/sdcard, ...); RECORD them so a genuinely dropped file is never
+                // silent (the honesty this slice restored -- the old tar|gzip pipe masked all of this).
+                Log.w(TAG, "backup ok; tar skipped unreadable entries:\n" + tail);
+            }
             return exit == 0;
         } catch (Exception e) {
             Log.e(TAG, "streamBackup failed", e);
@@ -96,6 +158,31 @@ public final class BackupEngine {
             return false;
         } finally {
             if (errDrain != null) { try { errDrain.join(1500); } catch (InterruptedException ignored) { } }
+        }
+    }
+
+    /**
+     * K2GO-384: total uncompressed size (apparent bytes) of the tree tar will archive — the denominator for a
+     * byte-accurate bar/ETA. {@code du -sb} is one fast metadata pass; it under-counts the uncompressed archive
+     * only by tar's per-member header overhead (~a couple percent on a rootfs), which the {@code [0,99]} clamp
+     * absorbs. Returns {@code -1} on any failure so the caller falls back to an indeterminate stream.
+     */
+    private static long countBytes(File iiabRootDir) {
+        File tree = new File(iiabRootDir, "installed-rootfs");
+        if (!tree.exists()) return -1L;
+        try {
+            Process p = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c",
+                    "du -sb '" + tree.getAbsolutePath() + "' 2>/dev/null | cut -f1"});
+            String out;
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                out = r.readLine();
+            }
+            p.waitFor();
+            long n = (out != null) ? Long.parseLong(out.trim()) : -1L;
+            return n > 0L ? n : -1L;
+        } catch (Exception e) {
+            Log.w(TAG, "byte pre-count failed: " + e.getMessage());
+            return -1L;
         }
     }
 
