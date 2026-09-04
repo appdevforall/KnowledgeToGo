@@ -143,15 +143,16 @@ public class SettingsFragment extends Fragment {
     }
 
     private void confirmTurnOff() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.k2go_settings_turnoff_title))
-                .setMessage(getString(R.string.k2go_settings_turnoff_msg))
-                .setNegativeButton(getString(R.string.k2go_cancel), null)
-                .setPositiveButton(getString(R.string.k2go_settings_turnoff_confirm), (d, w) -> {
+        // K2GO-385: turn-off confirm -> the shared BrandDialog (destructive, matching the clay "Turn off" button).
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(requireContext())
+                .setTitle(R.string.k2go_settings_turnoff_title)
+                .setMessage(R.string.k2go_settings_turnoff_msg)
+                .setDestructive(R.string.k2go_settings_turnoff_confirm, () -> {
                     if (getActivity() instanceof LibraryActivity) {
                         ((LibraryActivity) getActivity()).turnOffK2Go();
                     }
                 })
+                .setNegative(R.string.k2go_cancel, null)
                 .show();
     }
 

@@ -207,15 +207,16 @@ public class BackupRestoreFragment extends Fragment {
 
     /** ADFA-5023: strong confirm before a from-scratch reinstall (wipes everything), then the wizard. */
     private void confirmReinstall() {
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        // K2GO-385: destructive from-scratch reinstall confirm -> the shared BrandDialog (clay destructive).
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(requireContext())
                 .setTitle(R.string.k2go_reinstall_confirm_title)
                 .setMessage(R.string.k2go_reinstall_confirm_msg)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_reinstall_confirm_yes, (d, w) -> {
+                .setDestructive(R.string.k2go_reinstall_confirm_yes, () -> {
                     if (getActivity() instanceof SetupLibraryActivity) {
                         ((SetupLibraryActivity) getActivity()).openReinstallWizard();
                     }
                 })
+                .setNegative(android.R.string.cancel, null)
                 .show();
     }
 
