@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Înțeleg că anularea acum îmi poate lăsa sistemul deteriorat sau inutilizabil.</string>
     <string name="k2go_br_restore_damaged">Restaurare anulată. Sistemul dvs. va porni în modul de recuperare la următoarea lansare.</string>
     <string name="k2go_br_cancel_extract_need_ack">Bifați caseta pentru a confirma că înțelegeți.</string>
+    <string name="k2go_br_cancel_backup_title">Anulați copia de rezervă?</string>
+    <string name="k2go_br_cancel_backup_body">Această copie de rezervă nu este finalizată. Anularea elimină fișierul incomplet — puteți începe o nouă copie de rezervă oricând.</string>
+    <string name="k2go_br_cancel_backup_confirm">Anulați copia de rezervă</string>
+    <string name="k2go_br_cancel_backup_keep">Continuați copierea de rezervă</string>
     <string name="k2go_br_restore_unreadable">Fișierul selectat nu a putut fi citit, așa că nu s-a schimbat nimic.</string>
     <string name="deepop_channel_name">Copie de rezervă &amp; restaurare</string>
     <string name="deepop_channel_desc">Menține o copie de rezervă sau o restaurare rulând în siguranță în fundal</string>

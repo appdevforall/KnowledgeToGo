@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Megértem, hogy a mostani megszakítás sérültté vagy használhatatlanná teheti a rendszeremet.</string>
     <string name="k2go_br_restore_damaged">Visszaállítás megszakítva. A rendszered a következő indításkor helyreállítási módban indul.</string>
     <string name="k2go_br_cancel_extract_need_ack">Jelöld be a négyzetet a megerősítéshez.</string>
+    <string name="k2go_br_cancel_backup_title">Megszakítja a biztonsági mentést?</string>
+    <string name="k2go_br_cancel_backup_body">Ez a biztonsági mentés nem fejeződött be. A megszakítás eltávolítja a befejezetlen fájlt — bármikor indíthat új biztonsági mentést.</string>
+    <string name="k2go_br_cancel_backup_confirm">Biztonsági mentés megszakítása</string>
+    <string name="k2go_br_cancel_backup_keep">Mentés folytatása</string>
     <string name="k2go_br_restore_unreadable">A kiválasztott fájlt nem sikerült beolvasni, ezért semmi sem változott.</string>
     <string name="deepop_channel_name">Biztonsági mentés &amp; visszaállítás</string>
     <string name="deepop_channel_desc">Biztonságosan futtatja a mentést vagy visszaállítást a háttérben</string>

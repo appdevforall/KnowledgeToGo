@@ -654,6 +654,10 @@
     <string name="k2go_br_cancel_extract_ack">Suprantu, kad atšaukus dabar mano sistema gali likti sugadinta arba netinkama naudoti.</string>
     <string name="k2go_br_restore_damaged">Atkūrimas atšauktas. Kito paleidimo metu jūsų sistema pasileis atkūrimo režimu.</string>
     <string name="k2go_br_cancel_extract_need_ack">Pažymėkite langelį, kad patvirtintumėte, jog suprantate.</string>
+    <string name="k2go_br_cancel_backup_title">Atšaukti atsarginę kopiją?</string>
+    <string name="k2go_br_cancel_backup_body">Ši atsarginė kopija nebaigta. Atšaukus pašalinamas nebaigtas failas — naują atsarginę kopiją galite pradėti bet kada.</string>
+    <string name="k2go_br_cancel_backup_confirm">Atšaukti atsarginę kopiją</string>
+    <string name="k2go_br_cancel_backup_keep">Tęsti kūrimą</string>
     <string name="k2go_br_restore_unreadable">Nepavyko perskaityti pasirinkto failo, todėl niekas nebuvo pakeista.</string>
     <string name="deepop_channel_name">Atsarginė kopija ir atkūrimas</string>
     <string name="deepop_channel_desc">Saugiai vykdo atsarginės kopijos kūrimą ar atkūrimą fone</string>

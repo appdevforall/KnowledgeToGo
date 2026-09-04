@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Ik begrijp dat annuleren nu mijn systeem beschadigd of onbruikbaar kan achterlaten.</string>
     <string name="k2go_br_restore_damaged">Herstel geannuleerd. Uw systeem start bij de volgende keer opstarten in de herstelmodus.</string>
     <string name="k2go_br_cancel_extract_need_ack">Vink het vakje aan om te bevestigen dat u het begrijpt.</string>
+    <string name="k2go_br_cancel_backup_title">Back-up annuleren?</string>
+    <string name="k2go_br_cancel_backup_body">Deze back-up is niet voltooid. Bij annuleren wordt het onvolledige bestand verwijderd — u kunt op elk moment een nieuwe back-up starten.</string>
+    <string name="k2go_br_cancel_backup_confirm">Back-up annuleren</string>
+    <string name="k2go_br_cancel_backup_keep">Doorgaan met back-up</string>
     <string name="k2go_br_restore_unreadable">Het geselecteerde bestand kon niet worden gelezen, dus er is niets gewijzigd.</string>
     <string name="deepop_channel_name">Back-up &amp; herstel</string>
     <string name="deepop_channel_desc">Houdt een back-up of herstel veilig actief op de achtergrond</string>

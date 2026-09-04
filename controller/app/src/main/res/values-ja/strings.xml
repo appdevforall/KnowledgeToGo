@@ -647,6 +647,10 @@
     <string name="k2go_br_cancel_extract_ack">今キャンセルすると、システムが破損したり使用できなくなったりする可能性があることを理解しています。</string>
     <string name="k2go_br_restore_damaged">復元をキャンセルしました。次回の起動時にシステムはリカバリーモードで起動します。</string>
     <string name="k2go_br_cancel_extract_need_ack">理解したことを確認するにはチェックボックスをオンにしてください。</string>
+    <string name="k2go_br_cancel_backup_title">バックアップをキャンセルしますか?</string>
+    <string name="k2go_br_cancel_backup_body">このバックアップは完了していません。キャンセルすると未完成のファイルが削除されます — いつでも新しいバックアップを開始できます。</string>
+    <string name="k2go_br_cancel_backup_confirm">バックアップをキャンセル</string>
+    <string name="k2go_br_cancel_backup_keep">バックアップを続ける</string>
     <string name="k2go_br_restore_unreadable">選択したファイルを読み取れなかったため、何も変更されていません。</string>
     <string name="deepop_channel_name">バックアップと復元</string>
     <string name="deepop_channel_desc">バックアップや復元をバックグラウンドで安全に実行し続けます</string>

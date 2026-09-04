@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
 public final class BackupEngine {
@@ -63,10 +64,13 @@ public final class BackupEngine {
      * (over {@code dest}), so the bytes tar produces are observable and metered against the tree's total size
      * ({@code du -sb}). Byte progress tracks the gzip+write time far better than a member count, which
      * front-loads on the many small files and then stalls on the few large ones. When {@code listener} is
-     * null or the pre-count fails, it streams without progress (indeterminate). This Java loop is also the
-     * seam a later backup-cancel interrupts.
+     * null or the pre-count fails, it streams without progress (indeterminate).
+     *
+     * <p>K2GO-384: {@code cancelled} (may be null) aborts the stream — the read loop kills tar and stops. The
+     * caller distinguishes a cancel from a failure by that same flag and removes the incomplete SAF file.
      */
-    public static boolean streamBackup(Context ctx, OutputStream dest, ProgressListener listener) {
+    public static boolean streamBackup(Context ctx, OutputStream dest, ProgressListener listener,
+                                       AtomicBoolean cancelled) {
         File iiabRootDir = new File(ctx.getFilesDir(), "rootfs");
         File nativeDir = new File(ctx.getApplicationInfo().nativeLibraryDir);
         File staticTar = new File(nativeDir, "libtar.so");
@@ -126,6 +130,8 @@ public final class BackupEngine {
                 final long startNs = System.nanoTime();
                 int n;
                 while ((n = in.read(buf)) > 0) {
+                    // K2GO-384: cancel stops tar mid-stream (backup is read-only, so this is always safe).
+                    if (cancelled != null && cancelled.get()) { p.destroy(); break; }
                     gz.write(buf, 0, n);
                     processed += n;
                     if (listener != null && totalBytes > 0L) {
@@ -143,9 +149,10 @@ public final class BackupEngine {
             int exit = p.waitFor();
             if (errDrain != null) { try { errDrain.join(1500); } catch (InterruptedException ignored) { } }
             String tail; synchronized (errTail) { tail = errTail.toString().trim(); }
-            if (exit != 0) {
+            final boolean userCancelled = cancelled != null && cancelled.get();
+            if (exit != 0 && !userCancelled) {   // a cancel kills tar (non-zero) on purpose -- not a failure to log
                 Log.w(TAG, "backup tar exited " + exit + (tail.isEmpty() ? "" : "; stderr tail:\n" + tail));
-            } else if (!tail.isEmpty()) {
+            } else if (exit == 0 && !tail.isEmpty()) {
                 // K2GO-384: succeeded, but --ignore-failed-read let tar skip unreadable entries. Expected ones
                 // are proot mount stubs (iiab/sdcard, ...); RECORD them so a genuinely dropped file is never
                 // silent (the honesty this slice restored -- the old tar|gzip pipe masked all of this).

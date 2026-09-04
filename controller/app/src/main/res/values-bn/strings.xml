@@ -659,6 +659,10 @@
     <string name="k2go_br_cancel_extract_ack">আমি বুঝি যে এখন বাতিল করলে আমার সিস্টেম ক্ষতিগ্রস্ত বা ব্যবহারের অযোগ্য হয়ে যেতে পারে।</string>
     <string name="k2go_br_restore_damaged">পুনরুদ্ধার বাতিল করা হয়েছে। পরবর্তী চালুতে আপনার সিস্টেম রিকভারি মোডে শুরু হবে।</string>
     <string name="k2go_br_cancel_extract_need_ack">আপনি বুঝেছেন তা নিশ্চিত করতে বাক্সটি চেক করুন।</string>
+    <string name="k2go_br_cancel_backup_title">ব্যাকআপ বাতিল করবেন?</string>
+    <string name="k2go_br_cancel_backup_body">এই ব্যাকআপ শেষ হয়নি। বাতিল করলে অসম্পূর্ণ ফাইলটি সরানো হবে — আপনি যেকোনো সময় নতুন ব্যাকআপ শুরু করতে পারেন।</string>
+    <string name="k2go_br_cancel_backup_confirm">ব্যাকআপ বাতিল করুন</string>
+    <string name="k2go_br_cancel_backup_keep">ব্যাকআপ চালিয়ে যান</string>
     <string name="k2go_br_restore_unreadable">নির্বাচিত ফাইলটি পড়া যায়নি, তাই কিছুই পরিবর্তন করা হয়নি।</string>
     <string name="deepop_channel_name">ব্যাকআপ ও পুনরুদ্ধার</string>
     <string name="deepop_channel_desc">ব্যাকআপ বা পুনরুদ্ধার ব্যাকগ্রাউন্ডে নিরাপদে চালু রাখে</string>

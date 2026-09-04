@@ -725,6 +725,10 @@
     <string name="k2go_br_cancel_extract_ack">Compreendo que cancelar agora pode deixar o meu sistema danificado ou inutilizável.</string>
     <string name="k2go_br_restore_damaged">Restauro cancelado. O seu sistema iniciará em modo de recuperação no próximo arranque.</string>
     <string name="k2go_br_cancel_extract_need_ack">Marque a caixa para confirmar que compreende.</string>
+    <string name="k2go_br_cancel_backup_title">Cancelar o backup?</string>
+    <string name="k2go_br_cancel_backup_body">Este backup não está concluído. Cancelar remove o arquivo incompleto — você pode iniciar um novo backup a qualquer momento.</string>
+    <string name="k2go_br_cancel_backup_confirm">Cancelar o backup</string>
+    <string name="k2go_br_cancel_backup_keep">Continuar o backup</string>
     <string name="k2go_br_restore_unreadable">Não foi possível ler o ficheiro selecionado, por isso nada foi alterado.</string>
     <string name="deepop_channel_name">Cópia de segurança &amp; restauro</string>
     <string name="deepop_channel_desc">Mantém uma cópia de segurança ou restauro a decorrer com segurança em segundo plano</string>

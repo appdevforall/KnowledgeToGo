@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Capisco che annullare ora potrebbe lasciare il mio sistema danneggiato o inutilizzabile.</string>
     <string name="k2go_br_restore_damaged">Ripristino annullato. Il tuo sistema si avvierà in modalità di ripristino al prossimo avvio.</string>
     <string name="k2go_br_cancel_extract_need_ack">Seleziona la casella per confermare di aver capito.</string>
+    <string name="k2go_br_cancel_backup_title">Annullare il backup?</string>
+    <string name="k2go_br_cancel_backup_body">Questo backup non è completato. L\'annullamento rimuove il file incompleto — puoi avviare un nuovo backup in qualsiasi momento.</string>
+    <string name="k2go_br_cancel_backup_confirm">Annulla il backup</string>
+    <string name="k2go_br_cancel_backup_keep">Continua il backup</string>
     <string name="k2go_br_restore_unreadable">Non è stato possibile leggere il file selezionato, quindi non è stato modificato nulla.</string>
     <string name="deepop_channel_name">Backup &amp; ripristino</string>
     <string name="deepop_channel_desc">Mantiene un backup o ripristino in esecuzione in modo sicuro in background</string>

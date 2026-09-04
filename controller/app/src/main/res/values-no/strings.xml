@@ -647,6 +647,10 @@
     <string name="k2go_br_cancel_extract_ack">Jeg forstår at å avbryte nå kan gjøre systemet mitt skadet eller ubrukelig.</string>
     <string name="k2go_br_restore_damaged">Gjenoppretting avbrutt. Systemet ditt starter i gjenopprettingsmodus ved neste oppstart.</string>
     <string name="k2go_br_cancel_extract_need_ack">Kryss av i boksen for å bekrefte at du forstår.</string>
+    <string name="k2go_br_cancel_backup_title">Avbryte sikkerhetskopien?</string>
+    <string name="k2go_br_cancel_backup_body">Denne sikkerhetskopien er ikke fullført. Avbrudd fjerner den ufullstendige filen — du kan starte en ny sikkerhetskopi når som helst.</string>
+    <string name="k2go_br_cancel_backup_confirm">Avbryt sikkerhetskopien</string>
+    <string name="k2go_br_cancel_backup_keep">Fortsett sikkerhetskopieringen</string>
     <string name="k2go_br_restore_unreadable">Den valgte filen kunne ikke leses, så ingenting ble endret.</string>
     <string name="deepop_channel_name">Sikkerhetskopiering &amp; gjenoppretting</string>
     <string name="deepop_channel_desc">Holder en sikkerhetskopiering eller gjenoppretting trygt i gang i bakgrunnen</string>

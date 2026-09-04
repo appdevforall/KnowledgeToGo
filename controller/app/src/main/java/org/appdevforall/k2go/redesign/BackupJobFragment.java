@@ -299,6 +299,9 @@ public class BackupJobFragment extends Fragment {
      */
     private void onCancelTapped() {
         if (!isAdded()) return;
+        // K2GO-384: backup is read-only + single-pass, so its cancel is trivially safe -- a light guard dialog
+        // (against an accidental tap), then stop tar + remove the incomplete file. No hold/pause, no phases.
+        if (!isRestore()) { showBackupCancelDialog(); return; }
         if (lastCancelKind == DeepOpState.CancelKind.DESTRUCTIVE) { showDestructiveCancelDialog(); return; }
         if (lastCancelKind != DeepOpState.CancelKind.CANCELLABLE) return;
         sendToService(DeepOpService.ACTION_CANCEL);   // hold the run while the user decides (no race)
@@ -321,6 +324,23 @@ public class BackupJobFragment extends Fragment {
         if (!isAdded()) return;
         requireContext().startService(
                 new android.content.Intent(requireContext(), DeepOpService.class).setAction(action));
+    }
+
+    /**
+     * K2GO-384: backup is read-only, so cancelling is always safe -- this dialog only guards an accidental tap.
+     * Confirming stops the backup and removes the incomplete file (the default; a partial archive is useless).
+     * Cancelable: nothing is paused, so a scrim/Back dismiss simply keeps the backup running.
+     */
+    private void showBackupCancelDialog() {
+        new BrandDialog(requireContext())
+                .setTitle(getString(R.string.k2go_br_cancel_backup_title))
+                .setMessage(getString(R.string.k2go_br_cancel_backup_body))
+                .setPositive(R.string.k2go_br_cancel_backup_confirm, () -> {
+                    if (cancel != null) cancel.setEnabled(false);
+                    sendToService(DeepOpService.ACTION_CANCEL);   // stop tar -> incomplete file removed -> CANCELLED
+                })
+                .setNegative(R.string.k2go_br_cancel_backup_keep, null)   // dismiss = keep backing up
+                .show();
     }
 
     /**

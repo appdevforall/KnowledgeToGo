@@ -722,6 +722,10 @@
     <string name="k2go_br_cancel_extract_ack">Я понимаю, что отмена сейчас может привести к повреждению или непригодности моей системы.</string>
     <string name="k2go_br_restore_damaged">Восстановление отменено. При следующем запуске ваша система запустится в режиме восстановления.</string>
     <string name="k2go_br_cancel_extract_need_ack">Установите флажок, чтобы подтвердить, что вы понимаете.</string>
+    <string name="k2go_br_cancel_backup_title">Отменить резервное копирование?</string>
+    <string name="k2go_br_cancel_backup_body">Это резервное копирование не завершено. Отмена удалит незавершённый файл — вы можете начать новое резервное копирование в любое время.</string>
+    <string name="k2go_br_cancel_backup_confirm">Отменить резервное копирование</string>
+    <string name="k2go_br_cancel_backup_keep">Продолжить копирование</string>
     <string name="k2go_br_restore_unreadable">Не удалось прочитать выбранный файл, поэтому ничего не изменилось.</string>
     <string name="deepop_channel_name">Резервное копирование и восстановление</string>
     <string name="deepop_channel_desc">Позволяет безопасно выполнять резервное копирование или восстановление в фоне</string>

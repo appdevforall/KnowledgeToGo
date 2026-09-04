@@ -653,6 +653,10 @@
     <string name="k2go_br_cancel_extract_ack">Rozumím, že zrušení nyní může můj systém poškodit nebo učinit nepoužitelným.</string>
     <string name="k2go_br_restore_damaged">Obnovení zrušeno. Váš systém se při příštím spuštění spustí v režimu obnovy.</string>
     <string name="k2go_br_cancel_extract_need_ack">Zaškrtnutím políčka potvrďte, že rozumíte.</string>
+    <string name="k2go_br_cancel_backup_title">Zrušit zálohu?</string>
+    <string name="k2go_br_cancel_backup_body">Tato záloha není dokončena. Zrušením se odstraní neúplný soubor — novou zálohu můžete kdykoli spustit.</string>
+    <string name="k2go_br_cancel_backup_confirm">Zrušit zálohu</string>
+    <string name="k2go_br_cancel_backup_keep">Pokračovat v zálohování</string>
     <string name="k2go_br_restore_unreadable">Vybraný soubor se nepodařilo přečíst, takže se nic nezměnilo.</string>
     <string name="deepop_channel_name">Záloha &amp; obnova</string>
     <string name="deepop_channel_desc">Udržuje zálohu nebo obnovu bezpečně spuštěnou na pozadí</string>

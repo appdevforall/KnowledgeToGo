@@ -653,6 +653,10 @@
     <string name="k2go_br_cancel_extract_ack">Разбирам, че отказът сега може да остави системата ми повредена или неизползваема.</string>
     <string name="k2go_br_restore_damaged">Възстановяването е отказано. Системата ви ще стартира в режим на възстановяване при следващото стартиране.</string>
     <string name="k2go_br_cancel_extract_need_ack">Отметнете полето, за да потвърдите, че разбирате.</string>
+    <string name="k2go_br_cancel_backup_title">Отказ от резервното копие?</string>
+    <string name="k2go_br_cancel_backup_body">Това резервно копие не е завършено. Отказът премахва незавършения файл — можете да започнете ново резервно копие по всяко време.</string>
+    <string name="k2go_br_cancel_backup_confirm">Отказ от резервното копие</string>
+    <string name="k2go_br_cancel_backup_keep">Продължи архивирането</string>
     <string name="k2go_br_restore_unreadable">Избраният файл не можа да бъде прочетен, затова нищо не беше променено.</string>
     <string name="deepop_channel_name">Резервно копие и възстановяване</string>
     <string name="deepop_channel_desc">Поддържа безопасното изпълнение на резервно копие или възстановяване във фонов режим</string>

@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">می‌فهمم که لغو کردن اکنون ممکن است سیستم من را آسیب‌دیده یا غیرقابل استفاده کند.</string>
     <string name="k2go_br_restore_damaged">بازیابی لغو شد. سیستم شما در راه‌اندازی بعدی در حالت بازیابی شروع می‌شود.</string>
     <string name="k2go_br_cancel_extract_need_ack">برای تأیید اینکه متوجه شدید، کادر را علامت بزنید.</string>
+    <string name="k2go_br_cancel_backup_title">لغو پشتیبان‌گیری؟</string>
+    <string name="k2go_br_cancel_backup_body">این پشتیبان‌گیری کامل نشده است. لغو کردن فایل ناقص را حذف می‌کند — می‌توانید هر زمان پشتیبان‌گیری جدیدی را شروع کنید.</string>
+    <string name="k2go_br_cancel_backup_confirm">لغو پشتیبان‌گیری</string>
+    <string name="k2go_br_cancel_backup_keep">ادامه پشتیبان‌گیری</string>
     <string name="k2go_br_restore_unreadable">فایل انتخاب‌شده خوانده نشد، بنابراین چیزی تغییر نکرد.</string>
     <string name="deepop_channel_name">پشتیبان‌گیری و بازیابی</string>
     <string name="deepop_channel_desc">پشتیبان‌گیری یا بازیابی را با ایمنی در پس‌زمینه اجرا نگه می‌دارد</string>

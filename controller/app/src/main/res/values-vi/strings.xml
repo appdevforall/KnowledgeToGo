@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Tôi hiểu rằng việc hủy bây giờ có thể khiến hệ thống của tôi bị hỏng hoặc không sử dụng được.</string>
     <string name="k2go_br_restore_damaged">Đã hủy khôi phục. Hệ thống của bạn sẽ khởi động ở chế độ khôi phục trong lần khởi chạy tiếp theo.</string>
     <string name="k2go_br_cancel_extract_need_ack">Chọn ô để xác nhận rằng bạn hiểu.</string>
+    <string name="k2go_br_cancel_backup_title">Hủy sao lưu?</string>
+    <string name="k2go_br_cancel_backup_body">Bản sao lưu này chưa hoàn tất. Việc hủy sẽ xóa tệp chưa hoàn chỉnh — bạn có thể bắt đầu bản sao lưu mới bất cứ lúc nào.</string>
+    <string name="k2go_br_cancel_backup_confirm">Hủy sao lưu</string>
+    <string name="k2go_br_cancel_backup_keep">Tiếp tục sao lưu</string>
     <string name="k2go_br_restore_unreadable">Không thể đọc tệp đã chọn, nên không có gì bị thay đổi.</string>
     <string name="deepop_channel_name">Sao lưu &amp; khôi phục</string>
     <string name="deepop_channel_desc">Giữ quá trình sao lưu hoặc khôi phục chạy an toàn ở chế độ nền</string>

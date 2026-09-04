@@ -646,6 +646,10 @@
     <string name="k2go_br_cancel_extract_ack">Я розумію, що скасування зараз може залишити мою систему пошкодженою або непридатною до використання.</string>
     <string name="k2go_br_restore_damaged">Відновлення скасовано. Під час наступного запуску ваша система запуститься в режимі відновлення.</string>
     <string name="k2go_br_cancel_extract_need_ack">Позначте прапорець, щоб підтвердити, що ви розумієте.</string>
+    <string name="k2go_br_cancel_backup_title">Скасувати резервне копіювання?</string>
+    <string name="k2go_br_cancel_backup_body">Це резервне копіювання не завершено. Скасування видалить незавершений файл — ви можете розпочати нове резервне копіювання будь-коли.</string>
+    <string name="k2go_br_cancel_backup_confirm">Скасувати резервне копіювання</string>
+    <string name="k2go_br_cancel_backup_keep">Продовжити копіювання</string>
     <string name="k2go_br_restore_unreadable">Не вдалося прочитати вибраний файл, тому нічого не змінено.</string>
     <string name="deepop_channel_name">Резервне копіювання та відновлення</string>
     <string name="deepop_channel_desc">Безпечно виконує резервне копіювання чи відновлення у фоні</string>
