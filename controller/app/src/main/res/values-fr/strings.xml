@@ -716,6 +716,14 @@
     <string name="k2go_br_restore_confirm">Remplacer le système</string>
     <string name="k2go_br_restore_done">Système restauré</string>
     <string name="k2go_br_restore_failed">Échec de la restauration</string>
+    <string name="k2go_br_cancel_title">Annuler la restauration?</string>
+    <string name="k2go_br_cancel_body">Votre système actuel est inchangé. Vous pouvez relancer la restauration à tout moment.</string>
+    <string name="k2go_br_cancel_confirm">Annuler la restauration</string>
+    <string name="k2go_br_cancel_keep">Continuer la restauration</string>
+    <string name="k2go_br_cancel_extract_body">Votre système est en cours d\'écriture. L\'annulation le rendra inutilisable jusqu\'à ce qu\'il se réinstalle.</string>
+    <string name="k2go_br_cancel_extract_ack">Je comprends que l\'annulation maintenant peut laisser mon système endommagé ou inutilisable.</string>
+    <string name="k2go_br_restore_damaged">Restauration annulée. Votre système démarrera en mode récupération au prochain lancement.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Cochez la case pour confirmer que vous avez compris.</string>
     <string name="k2go_br_restore_unreadable">Le fichier sélectionné n\'a pas pu être lu, donc rien n\'a été modifié.</string>
     <string name="deepop_channel_name">Sauvegarde &amp; restauration</string>
     <string name="deepop_channel_desc">Maintient une sauvegarde ou une restauration en cours en toute sécurité en arrière-plan</string>

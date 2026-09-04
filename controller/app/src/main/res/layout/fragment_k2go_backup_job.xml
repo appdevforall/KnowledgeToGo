@@ -115,27 +115,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/k2go_bj_progress"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:indeterminate="false"
+                app:trackCornerRadius="4dp"
                 android:max="100" />
 
-            <TextView
-                android:id="@+id/k2go_bj_progress_pct"
-                android:layout_width="wrap_content"
+            <!-- K2GO-384: the % and the per-pass ETA sit on their own line BELOW the full-width bar
+                 (mirrors the module-install / maps Preparing rows) so the ETA never shortens the bar.
+                 ETA reuses the install screens' EtaText; blank when the pass can't estimate yet. -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:minWidth="44dp"
-                android:gravity="end"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="@color/k2go_muted" />
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/k2go_bj_progress_pct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/k2go_muted" />
+
+                <TextView
+                    android:id="@+id/k2go_bj_progress_eta"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- "this takes time" info card, matching the module install / maps Preparing screens. -->
@@ -205,6 +220,19 @@
                 android:textColor="@color/k2go_terminal_text"
                 android:textIsSelectable="true" />
         </ScrollView>
+
+        <!-- K2GO-384: Cancel, shown only while a RESTORE is running and still before the destructive
+             extract (the fragment gates it on InstallGuard.isLive). Low-emphasis text button; shares the
+             slot with Finish (mutually exclusive by state). GONE until shown. -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/k2go_bj_cancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            android:text="@string/k2go_cancel"
+            android:gravity="center" />
 
         <!-- Terminal action: the module index owns this navigation; here the screen does. GONE until done.
              A styled TextView-as-button (like Clone's) so the custom background isn't overridden by

@@ -714,6 +714,14 @@
     <string name="k2go_br_restore_confirm">Reemplazar sistema</string>
     <string name="k2go_br_restore_done">Sistema restaurado</string>
     <string name="k2go_br_restore_failed">La restauración falló</string>
+    <string name="k2go_br_cancel_title">¿Cancelar la restauración?</string>
+    <string name="k2go_br_cancel_body">Tu sistema actual no ha cambiado. Puedes iniciar la restauración de nuevo en cualquier momento.</string>
+    <string name="k2go_br_cancel_confirm">Cancelar restauración</string>
+    <string name="k2go_br_cancel_keep">Continuar restaurando</string>
+    <string name="k2go_br_cancel_extract_body">Tu sistema se está escribiendo ahora. Cancelar lo dejará inutilizable hasta que se reinstale por sí solo.</string>
+    <string name="k2go_br_cancel_extract_ack">Entiendo que cancelar ahora puede dejar mi sistema dañado o inutilizable.</string>
+    <string name="k2go_br_restore_damaged">Restauración cancelada. Tu sistema se iniciará en modo de recuperación en el próximo arranque.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Marca la casilla para confirmar que lo entiendes.</string>
     <string name="k2go_br_restore_unreadable">No se pudo leer el archivo seleccionado, así que no se cambió nada.</string>
     <string name="deepop_channel_name">Copia de seguridad y restauración</string>
     <string name="deepop_channel_desc">Mantiene una copia o restauración ejecutándose de forma segura en segundo plano</string>

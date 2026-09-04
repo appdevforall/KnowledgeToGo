@@ -61,7 +61,34 @@ public class TarExtractor {
          * callers on the non-gzip path (e.g. .xz restores) keep the member-count behavior.
          */
         default void onExtractPhase(Phase phase, int passPercent, long etaSeconds, String line) { }
+
+        /**
+         * K2GO-384: the extract phase is about to write its first byte over the destination -- the
+         * point of no return. Fires once, after verify and every fail-closed check pass and after the
+         * cancel check, BEFORE any write. The restore plants its destructive recovery marker here,
+         * decoupled from the progress callbacks. Default no-op.
+         */
+        default void onExtractStarting() { }
+
+        /**
+         * K2GO-384: extraction was cancelled in the pre-destructive zone (copy/verify or the
+         * verify->extract boundary) -- nothing was written to the destination. Restore-only; other
+         * callers pass no cancel token and never see this. Default no-op.
+         */
+        default void onCancelled() { }
+
+        /**
+         * K2GO-384: the user pressed Cancel DURING verify and is still deciding. The `tar -t` was killed
+         * for responsiveness, but nothing was written and the copied archive is intact, so the caller HOLDS
+         * (keeps the temp) and offers Keep (re-run this same pass) or Cancel (abort). Restore-only; other
+         * callers pass no hold token and never see this. Default no-op.
+         */
+        default void onHeldForDecision() { }
     }
+
+    /** K2GO-384: thrown when verify is stopped for a still-undecided Cancel -- distinct from a confirmed
+     *  cancel so the caller can HOLD (keep the temp) and re-run this pass, rather than abort. */
+    private static final class HeldForDecisionException extends RuntimeException { }
 
     /** ADFA-5118: counts bytes pulled from the underlying (compressed) stream, so the feeders can
      *  measure progress against the archive size on disk without a sidecar. */
@@ -89,6 +116,29 @@ public class TarExtractor {
      *        archive to look like a rootfs of THIS app's architecture before extracting.
      */
     public void startExtraction(Context context, String archivePath, String destDir, boolean validateRootfs, ExtractionListener listener) {
+        startExtraction(context, archivePath, destDir, validateRootfs, null, null, null, listener);
+    }
+
+    /**
+     * K2GO-384: as above, plus three tokens with strictly separated zones (ADR-5343c de-aliasing):
+     * <ul>
+     *   <li>{@code cancelledBeforeExtract} — a confirmed abort in the SAFE zone. Read ONLY during copy/verify
+     *       and at the verify->extract boundary; aborts before any byte is written ({@link
+     *       ExtractionListener#onCancelled}). It is NOT read once the extract is writing.</li>
+     *   <li>{@code pauseAtBoundary} — HOLD at the verify->extract boundary (verify done, nothing written)
+     *       until it clears (resume -> extract) or a cancel is confirmed.</li>
+     *   <li>{@code forceCancelDuringExtract} — an ACKNOWLEDGED destructive kill. Read ONLY by the extract
+     *       feeder (past the point of no return); kills tar mid-write, leaving the rootfs torn. Kept separate
+     *       from {@code cancelledBeforeExtract} so a safe-zone abort can never reach the feeder and damage the
+     *       system.</li>
+     * </ul>
+     * {@code null} tokens = never cancellable (the import/install paths).
+     */
+    public void startExtraction(Context context, String archivePath, String destDir, boolean validateRootfs,
+                                java.util.concurrent.atomic.AtomicBoolean cancelledBeforeExtract,
+                                java.util.concurrent.atomic.AtomicBoolean pauseAtBoundary,
+                                java.util.concurrent.atomic.AtomicBoolean forceCancelDuringExtract,
+                                ExtractionListener listener) {
         if (isExtracting) return;
 
         new Thread(() -> {
@@ -135,7 +185,7 @@ public class TarExtractor {
                     }
                 }
 
-                List<String> entries = listEntries(tarBinary, archivePath, isGzip, listener);
+                List<String> entries = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
                 for (String entry : entries) {
                     if (ArchiveEntry.escapesRoot(entry)) {
                         throw new Exception("Unsafe archive entry (path traversal): " + entry);
@@ -161,6 +211,16 @@ public class TarExtractor {
                     }
                 }
 
+                // K2GO-384: the point of no return. Verify and every fail-closed check have passed and
+                // nothing has been written yet. A cancel confirmed during verify (or in the tiny window at
+                // this boundary) aborts here with the destination untouched. Otherwise announce the
+                // destructive phase (the caller plants its recovery marker) and proceed -- from the first
+                // write on, cancel is ignored.
+                if (cancelledBeforeExtract != null && cancelledBeforeExtract.get()) {
+                    throw new java.util.concurrent.CancellationException("cancelled before extract");
+                }
+                listener.onExtractStarting();
+
                 // 2. BUILD THE COMMAND
                 List<String> command = new ArrayList<>();
                 command.add(tarBinary);
@@ -185,12 +245,10 @@ public class TarExtractor {
                 // ADFA-4544: retain the last output lines (stderr is merged) for diagnostics.
                 final java.util.concurrent.ConcurrentLinkedDeque<String> tarTail = new java.util.concurrent.ConcurrentLinkedDeque<>();
                 final Handler uiHandler = new Handler(Looper.getMainLooper());
-                // ADFA-5118: EXTRACT-pass byte progress. The current member comes from the reader
-                // thread (below); the compressed byte count comes from the feeder (further below),
-                // measured against the archive size on disk — the same currency as the VERIFY pass.
-                final String[] lastExtractFile = {""};
+                // K2GO-384: EXTRACT-pass progress + ETA are driven by MEMBERS WRITTEN, tracked in the
+                // reader thread below (tar -v emits one line per member as it lands on disk). extractStartMs
+                // is the pass clock that thread uses for the rate/ETA.
                 final long extractStartMs = SystemClock.elapsedRealtime();
-                final long compressedTotalBytes = new File(archivePath).length();
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     long[] lastLog = {0L};
@@ -202,7 +260,6 @@ public class TarExtractor {
                             // it does not flood logcat and get dropped "over proc quota" (ADFA-4544).
                             tarTail.addLast(line);
                             while (tarTail.size() > 20) tarTail.pollFirst();
-                            lastExtractFile[0] = line;   // ADFA-5118: current member for the byte-based emit
                             long now = System.currentTimeMillis();
                             if (now - lastLog[0] >= 250) {
                                 lastLog[0] = now;
@@ -218,6 +275,14 @@ public class TarExtractor {
                                     listener.onProgress(l);
                                     listener.onProgress(pct, d, totalMembers, l);
                                 });
+                                // K2GO-384: the unified EXTRACT bar + ETA track MEMBERS WRITTEN (one tar -v
+                                // line per member as it lands on disk), not compressed bytes read from the
+                                // .gz. The byte count saturated at ~99% the instant the archive was fully
+                                // piped into tar, freezing the bar and reading "under a min" for minutes
+                                // while tar was still writing the (much larger) rootfs. Members track the
+                                // real work, so the bar keeps moving and the ETA reads honest minutes.
+                                emitPhase(listener, uiHandler, Phase.EXTRACT,
+                                        d, totalMembers, SystemClock.elapsedRealtime() - extractStartMs, l);
                             }
                         }
                     } catch (Exception ignored) {
@@ -234,24 +299,29 @@ public class TarExtractor {
                     // try-with-resources): once tar dies its stdin flush/close re-throws EPIPE,
                     // which would escape to the outer catch and hide tar's real cause (ADFA-4544).
                     OutputStream tarInput = tarProcess.getOutputStream();
-                    long lastByteEmit = 0L;
-                    // ADFA-5118: count compressed bytes pulled from disk for the EXTRACT-pass bar; cis
-                    // lives in the try-with-resources so it closes even if GZIPInputStream throws.
-                    try (CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
-                         GZIPInputStream gis = new GZIPInputStream(cis)) {
+                    // K2GO-384: this feeder only decompresses the .gz into tar's stdin now; the EXTRACT-pass
+                    // bar/ETA are emitted from the reader thread (members written), which is what actually
+                    // tracks tar writing the rootfs to disk. (VERIFY still counts bytes read — there,
+                    // reading the archive IS the work, so that measure is honest.)
+                    try (FileInputStream fis = new FileInputStream(archivePath);
+                         GZIPInputStream gis = new GZIPInputStream(fis)) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
                         while ((bytesRead = gis.read(buffer)) != -1) {
+                            // K2GO-384 (ADR-5343c): force-cancel DURING extract (acknowledged destructive).
+                            // Reads its OWN token, never cancelledBeforeExtract -- a safe-zone abort must not be
+                            // able to reach here and tear the rootfs. Kill tar mid-write; InstallGuard was
+                            // planted at extract start, so recovery reinstalls. The non-zero tar exit surfaces
+                            // via onError, which the caller maps to the "damaged" message.
+                            if (forceCancelDuringExtract != null && forceCancelDuringExtract.get()) {
+                                tarProcess.destroy();
+                                pipeBroke = true;
+                                break;
+                            }
                             try {
                                 tarInput.write(buffer, 0, bytesRead);
                                 totalWritten += bytesRead;
-                                long now = SystemClock.elapsedRealtime();
-                                if (compressedTotalBytes > 0L && now - lastByteEmit >= 200) {
-                                    lastByteEmit = now;
-                                    emitPhase(listener, uiHandler, Phase.EXTRACT,
-                                            cis.count, compressedTotalBytes, now - extractStartMs, lastExtractFile[0]);
-                                }
                             } catch (java.io.IOException pipe) {
                                 // ADFA-4544: tar (the pipe reader) closed its stdin early -> it
                                 // failed or was killed. Don't report a generic decompression error;
@@ -303,6 +373,18 @@ public class TarExtractor {
                     }
                 });
 
+            } catch (HeldForDecisionException held) {
+                // K2GO-384: verify stopped for an undecided Cancel -- nothing written, the copied temp is
+                // intact. The caller holds and offers re-run / abort.
+                isExtracting = false;
+                Log.d(TAG, "Verify held for a pending cancel decision");
+                new Handler(Looper.getMainLooper()).post(listener::onHeldForDecision);
+            } catch (java.util.concurrent.CancellationException ce) {
+                // K2GO-384: cancelled in the pre-destructive zone -- nothing was written, so this is not
+                // a failure. The destination rootfs is untouched and no InstallGuard marker was planted.
+                isExtracting = false;
+                Log.d(TAG, "Extraction cancelled before any write");
+                new Handler(Looper.getMainLooper()).post(listener::onCancelled);
             } catch (Exception e) {
                 isExtracting = false;
                 Log.e(TAG, "Fatal Extraction Error", e);
@@ -337,6 +419,8 @@ public class TarExtractor {
      * member name, so the current file is surfaced too — symmetric with the extract pass.
      */
     private List<String> listEntries(String tarBinary, String archivePath, boolean isGzip,
+                                     java.util.concurrent.atomic.AtomicBoolean cancelledBeforeExtract,
+                                     java.util.concurrent.atomic.AtomicBoolean pauseAtBoundary,
                                      ExtractionListener listener) throws Exception {
         List<String> names = new ArrayList<>();
         List<String> listCmd = new ArrayList<>();
@@ -386,6 +470,18 @@ public class TarExtractor {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(listProcess.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                // K2GO-384: Cancel during verify. A confirmed cancel aborts (kill the lister -> onCancelled).
+                // A still-undecided Cancel (pauseAtBoundary) kills the lister too -- for responsiveness --
+                // but unwinds to onHeldForDecision so the caller keeps the copied temp and can re-run this
+                // pass. Both act before any write.
+                if (cancelledBeforeExtract != null && cancelledBeforeExtract.get()) {
+                    listProcess.destroy();
+                    throw new java.util.concurrent.CancellationException("cancelled during verify");
+                }
+                if (pauseAtBoundary != null && pauseAtBoundary.get()) {
+                    listProcess.destroy();
+                    throw new HeldForDecisionException();
+                }
                 names.add(line);
                 lastFile[0] = line;   // ADFA-5118: the member tar -t is listing right now
             }

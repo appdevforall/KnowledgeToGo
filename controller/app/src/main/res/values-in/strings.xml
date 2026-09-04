@@ -645,6 +645,14 @@
     <string name="k2go_br_restore_confirm">Ganti sistem</string>
     <string name="k2go_br_restore_done">Sistem dipulihkan</string>
     <string name="k2go_br_restore_failed">Pemulihan gagal</string>
+    <string name="k2go_br_cancel_title">Batalkan pemulihan?</string>
+    <string name="k2go_br_cancel_body">Sistem Anda saat ini tidak berubah. Anda dapat memulai pemulihan lagi kapan saja.</string>
+    <string name="k2go_br_cancel_confirm">Batalkan pemulihan</string>
+    <string name="k2go_br_cancel_keep">Lanjutkan pemulihan</string>
+    <string name="k2go_br_cancel_extract_body">Sistem Anda sedang ditulis sekarang. Membatalkan akan membuatnya tidak dapat digunakan hingga menginstal ulang dirinya sendiri.</string>
+    <string name="k2go_br_cancel_extract_ack">Saya memahami bahwa membatalkan sekarang dapat membuat sistem saya rusak atau tidak dapat digunakan.</string>
+    <string name="k2go_br_restore_damaged">Pemulihan dibatalkan. Sistem Anda akan memulai dalam mode pemulihan pada peluncuran berikutnya.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Centang kotak untuk mengonfirmasi bahwa Anda memahami.</string>
     <string name="k2go_br_restore_unreadable">Berkas yang dipilih tidak dapat dibaca, jadi tidak ada yang diubah.</string>
     <string name="deepop_channel_name">Cadangkan &amp; pulihkan</string>
     <string name="deepop_channel_desc">Menjaga pencadangan atau pemulihan berjalan aman di latar belakang</string>

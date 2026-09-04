@@ -651,6 +651,14 @@
     <string name="k2go_br_restore_confirm">Замени систем</string>
     <string name="k2go_br_restore_done">Систем враћен</string>
     <string name="k2go_br_restore_failed">Враћање није успело</string>
+    <string name="k2go_br_cancel_title">Отказати враћање?</string>
+    <string name="k2go_br_cancel_body">Ваш тренутни систем је непромењен. Враћање можете поново да покренете у било ком тренутку.</string>
+    <string name="k2go_br_cancel_confirm">Откажи враћање</string>
+    <string name="k2go_br_cancel_keep">Настави враћање</string>
+    <string name="k2go_br_cancel_extract_body">Ваш систем се сада уписује. Отказивање ће га учинити неупотребљивим док се сам поново не инсталира.</string>
+    <string name="k2go_br_cancel_extract_ack">Разумем да отказивање сада може оставити мој систем оштећеним или неупотребљивим.</string>
+    <string name="k2go_br_restore_damaged">Враћање је отказано. Ваш систем ће се при следећем покретању покренути у режиму опоравка.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Означите поље да бисте потврдили да разумете.</string>
     <string name="k2go_br_restore_unreadable">Изабрана датотека није могла да се прочита, па ништа није промењено.</string>
     <string name="deepop_channel_name">Резервна копија и враћање</string>
     <string name="deepop_channel_desc">Одржава прављење резервне копије или враћање безбедно у позадини</string>

@@ -639,6 +639,14 @@
     <string name="k2go_br_restore_confirm">システムを置き換え</string>
     <string name="k2go_br_restore_done">システムを復元しました</string>
     <string name="k2go_br_restore_failed">復元に失敗しました</string>
+    <string name="k2go_br_cancel_title">復元をキャンセルしますか?</string>
+    <string name="k2go_br_cancel_body">現在のシステムは変更されていません。いつでも復元を再開できます。</string>
+    <string name="k2go_br_cancel_confirm">復元をキャンセル</string>
+    <string name="k2go_br_cancel_keep">復元を続ける</string>
+    <string name="k2go_br_cancel_extract_body">システムは現在書き込み中です。キャンセルすると、システムが自動的に再インストールされるまで使用できなくなります。</string>
+    <string name="k2go_br_cancel_extract_ack">今キャンセルすると、システムが破損したり使用できなくなったりする可能性があることを理解しています。</string>
+    <string name="k2go_br_restore_damaged">復元をキャンセルしました。次回の起動時にシステムはリカバリーモードで起動します。</string>
+    <string name="k2go_br_cancel_extract_need_ack">理解したことを確認するにはチェックボックスをオンにしてください。</string>
     <string name="k2go_br_restore_unreadable">選択したファイルを読み取れなかったため、何も変更されていません。</string>
     <string name="deepop_channel_name">バックアップと復元</string>
     <string name="deepop_channel_desc">バックアップや復元をバックグラウンドで安全に実行し続けます</string>

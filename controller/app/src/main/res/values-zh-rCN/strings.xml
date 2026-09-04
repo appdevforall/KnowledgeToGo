@@ -639,6 +639,14 @@
     <string name="k2go_br_restore_confirm">替换系统</string>
     <string name="k2go_br_restore_done">系统已恢复</string>
     <string name="k2go_br_restore_failed">恢复失败</string>
+    <string name="k2go_br_cancel_title">取消恢复?</string>
+    <string name="k2go_br_cancel_body">您当前的系统保持不变。您可以随时重新开始恢复。</string>
+    <string name="k2go_br_cancel_confirm">取消恢复</string>
+    <string name="k2go_br_cancel_keep">继续恢复</string>
+    <string name="k2go_br_cancel_extract_body">您的系统正在写入。取消将使其无法使用，直到它自行重新安装。</string>
+    <string name="k2go_br_cancel_extract_ack">我明白现在取消可能会使我的系统损坏或无法使用。</string>
+    <string name="k2go_br_restore_damaged">恢复已取消。您的系统将在下次启动时进入恢复模式。</string>
+    <string name="k2go_br_cancel_extract_need_ack">勾选此框以确认您已了解。</string>
     <string name="k2go_br_restore_unreadable">无法读取所选文件，因此未做任何更改。</string>
     <string name="deepop_channel_name">备份与恢复</string>
     <string name="deepop_channel_desc">使备份或恢复在后台安全运行</string>

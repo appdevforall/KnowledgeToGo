@@ -638,6 +638,14 @@
     <string name="k2go_br_restore_confirm">Înlocuiește sistemul</string>
     <string name="k2go_br_restore_done">Sistem restaurat</string>
     <string name="k2go_br_restore_failed">Restaurarea a eșuat</string>
+    <string name="k2go_br_cancel_title">Anulați restaurarea?</string>
+    <string name="k2go_br_cancel_body">Sistemul dvs. actual rămâne neschimbat. Puteți reîncepe restaurarea oricând.</string>
+    <string name="k2go_br_cancel_confirm">Anulează restaurarea</string>
+    <string name="k2go_br_cancel_keep">Continuă restaurarea</string>
+    <string name="k2go_br_cancel_extract_body">Sistemul dvs. este scris acum. Anularea îl va lăsa inutilizabil până când se reinstalează singur.</string>
+    <string name="k2go_br_cancel_extract_ack">Înțeleg că anularea acum îmi poate lăsa sistemul deteriorat sau inutilizabil.</string>
+    <string name="k2go_br_restore_damaged">Restaurare anulată. Sistemul dvs. va porni în modul de recuperare la următoarea lansare.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Bifați caseta pentru a confirma că înțelegeți.</string>
     <string name="k2go_br_restore_unreadable">Fișierul selectat nu a putut fi citit, așa că nu s-a schimbat nimic.</string>
     <string name="deepop_channel_name">Copie de rezervă &amp; restaurare</string>
     <string name="deepop_channel_desc">Menține o copie de rezervă sau o restaurare rulând în siguranță în fundal</string>

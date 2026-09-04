@@ -638,6 +638,14 @@
     <string name="k2go_br_restore_confirm">Замінити систему</string>
     <string name="k2go_br_restore_done">Систему відновлено</string>
     <string name="k2go_br_restore_failed">Помилка відновлення</string>
+    <string name="k2go_br_cancel_title">Скасувати відновлення?</string>
+    <string name="k2go_br_cancel_body">Ваша поточна система не змінена. Ви можете розпочати відновлення знову будь-коли.</string>
+    <string name="k2go_br_cancel_confirm">Скасувати відновлення</string>
+    <string name="k2go_br_cancel_keep">Продовжити відновлення</string>
+    <string name="k2go_br_cancel_extract_body">Ваша система зараз записується. Скасування зробить її непридатною до використання, доки вона не перевстановиться сама.</string>
+    <string name="k2go_br_cancel_extract_ack">Я розумію, що скасування зараз може залишити мою систему пошкодженою або непридатною до використання.</string>
+    <string name="k2go_br_restore_damaged">Відновлення скасовано. Під час наступного запуску ваша система запуститься в режимі відновлення.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Позначте прапорець, щоб підтвердити, що ви розумієте.</string>
     <string name="k2go_br_restore_unreadable">Не вдалося прочитати вибраний файл, тому нічого не змінено.</string>
     <string name="deepop_channel_name">Резервне копіювання та відновлення</string>
     <string name="deepop_channel_desc">Безпечно виконує резервне копіювання чи відновлення у фоні</string>

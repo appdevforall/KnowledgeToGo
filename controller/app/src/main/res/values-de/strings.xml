@@ -638,6 +638,14 @@
     <string name="k2go_br_restore_confirm">System ersetzen</string>
     <string name="k2go_br_restore_done">System wiederhergestellt</string>
     <string name="k2go_br_restore_failed">Wiederherstellung fehlgeschlagen</string>
+    <string name="k2go_br_cancel_title">Wiederherstellung abbrechen?</string>
+    <string name="k2go_br_cancel_body">Ihr aktuelles System bleibt unverändert. Sie können die Wiederherstellung jederzeit erneut starten.</string>
+    <string name="k2go_br_cancel_confirm">Wiederherstellung abbrechen</string>
+    <string name="k2go_br_cancel_keep">Wiederherstellung fortsetzen</string>
+    <string name="k2go_br_cancel_extract_body">Ihr System wird gerade geschrieben. Ein Abbruch macht es unbrauchbar, bis es sich selbst neu installiert.</string>
+    <string name="k2go_br_cancel_extract_ack">Ich verstehe, dass ein Abbruch jetzt mein System beschädigen oder unbrauchbar machen kann.</string>
+    <string name="k2go_br_restore_damaged">Wiederherstellung abgebrochen. Ihr System startet beim nächsten Start im Wiederherstellungsmodus.</string>
+    <string name="k2go_br_cancel_extract_need_ack">Aktivieren Sie das Kontrollkästchen, um zu bestätigen, dass Sie es verstanden haben.</string>
     <string name="k2go_br_restore_unreadable">Die ausgewählte Datei konnte nicht gelesen werden, daher wurde nichts geändert.</string>
     <string name="deepop_channel_name">Sichern &amp; wiederherstellen</string>
     <string name="deepop_channel_desc">Hält ein Backup oder eine Wiederherstellung sicher im Hintergrund am Laufen</string>
