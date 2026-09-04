@@ -23,9 +23,25 @@ import android.widget.TextView;
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 
+import org.appdevforall.k2go.R;
+
 public final class K2GoChip {
 
     private K2GoChip() {}
+
+    /** The neutral tag colour. Metadata is neutral by default (the metadata colour rule); pass an
+     *  explicit colour to the 3-arg overloads only for a valence trait (e.g. leaf "Runs offline"). */
+    @ColorRes private static final int NEUTRAL = R.color.k2go_muted;
+
+    /** A neutral metadata tag (version, size, "REST API", "System core") -- the common case. */
+    public static TextView create(Context context, CharSequence text) {
+        return create(context, text, NEUTRAL);
+    }
+
+    /** Re-apply a neutral metadata tag's text/colour in place. */
+    public static void style(TextView chip, CharSequence text) {
+        style(chip, text, NEUTRAL);
+    }
 
     /**
      * Build a chip laid out for a horizontal meta-chip row: WRAP content, an 8dp end margin, and

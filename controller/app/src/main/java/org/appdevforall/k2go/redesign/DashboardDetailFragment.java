@@ -110,8 +110,8 @@ public class DashboardDetailFragment extends Fragment {
         // System core are neutral metadata tags (colour there is noise -- the metadata colour rule).
         statusChip = K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_dash_chip_checking), R.color.k2go_muted);
         chips.addView(statusChip);
-        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_rest), R.color.k2go_muted));
-        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_core), R.color.k2go_muted));
+        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_rest)));
+        chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_dash_chip_core)));
         fetchVersionChip();
 
         ((TextView) root.findViewById(R.id.k2go_moddet_includes_body)).setText(R.string.k2go_dash_includes);
@@ -420,10 +420,10 @@ public class DashboardDetailFragment extends Fragment {
             main.post(() -> {
                 if (!isAdded() || chips == null || ver == null) return;
                 if (versionChip == null) {
-                    versionChip = K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_muted);
+                    versionChip = K2GoChip.create(requireContext(), "v" + ver);
                     chips.addView(versionChip, 0);
                 } else {
-                    K2GoChip.style(versionChip, "v" + ver, R.color.k2go_muted);
+                    K2GoChip.style(versionChip, "v" + ver);
                 }
             });
         });

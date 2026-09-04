@@ -72,9 +72,9 @@ public class ModuleDetailFragment extends Fragment {
                 : "\u2248 NA";
         // K2GO-385 (PR3): size / version are neutral metadata tags (colour is noise); "Runs offline" is a
         // leaf trait (a capability that carries valence). The lifecycle status below is a dot+text badge.
-        chips.addView(K2GoChip.create(requireContext(), sizeText, R.color.k2go_muted));
+        chips.addView(K2GoChip.create(requireContext(), sizeText));
         String ver = ModuleCards.version(c.key());
-        if (ver != null) chips.addView(K2GoChip.create(requireContext(), "v" + ver, R.color.k2go_muted));
+        if (ver != null) chips.addView(K2GoChip.create(requireContext(), "v" + ver));
         chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
         if (ModuleCards.isDemo(c.key())) chips.addView(K2GoChip.create(requireContext(), getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
 
