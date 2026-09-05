@@ -33,17 +33,17 @@
         <LinearLayout android:id="@+id/k2go_clone_tabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
             <TextView android:id="@+id/k2go_clone_send" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_send" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_send" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
             <TextView android:id="@+id/k2go_clone_receive" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_receive" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_receive" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
         <LinearLayout android:id="@+id/k2go_clone_net" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="10dp" android:background="@drawable/k2go_card_bg" android:padding="4dp" android:visibility="gone">
             <TextView android:id="@+id/k2go_clone_hotspot" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_hotspot" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_hotspot" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
             <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_wifi" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_wifi" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
     </LinearLayout>
 
