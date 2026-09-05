@@ -99,7 +99,7 @@ public final class ZimLanguageDialog {
     private static TextView row(Context ctx, String label, boolean sel, Runnable onClick) {
         TextView t = new TextView(ctx);
         t.setText(label);
-        t.setTextSize(17);
+        t.setTextAppearance(R.style.TextAppearance_K2Go_Body);
         t.setPadding(dp(ctx, 8), dp(ctx, 14), dp(ctx, 8), dp(ctx, 14));
         t.setTextColor(ContextCompat.getColor(ctx, sel ? R.color.k2go_teal : R.color.k2go_ink));
         t.setClickable(true);

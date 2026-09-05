@@ -339,7 +339,7 @@ public class ConnectFragment extends Fragment {
         TextView lbl = new TextView(ctx);
         lbl.setText(label);
         lbl.setGravity(Gravity.CENTER);
-        lbl.setTextSize(12);
+        lbl.setTextAppearance(R.style.TextAppearance_K2Go_Caption);
         lbl.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         col.addView(lbl);
         return col;
