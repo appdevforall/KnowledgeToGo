@@ -34,8 +34,11 @@ const FIREHOSE_BYTES = 1024 * 1024 * 1024; // 1 GiB
 const LOG_DIRS = ['/var/log', '/var/log/nginx'];
 
 // Consecutive-truncation count per path, so a RECURRING firehose (an orphan the box cannot stop, that
-// just refills) is flagged for the app-side reap (ADR-386 §6). In-memory; only firehosing paths carry
-// forward each pass (see updateStreaks), so a deleted/renamed log leaves no stale entry.
+// just refills) is flagged for the app-side reap (ADR-386 §6). In-memory ON PURPOSE: it resets when
+// dash-node (or the box) restarts, so a resolved-by-restart firehose comes back clean with no stale
+// state (ADR-386 §6, "confirm before acting"). The console.warn below is DIAGNOSTIC/historical — the
+// L3 escalation signal must be LIVE state read from a /system endpoint, never a parsed dash-node.log line.
+// Only paths firehosing this pass carry forward (see updateStreaks), so a deleted/renamed log never lingers.
 let firehoseStreak = new Map<string, number>();
 
 /** Pure: the updated streak counts given the paths firehosing THIS pass and the previous counts — each

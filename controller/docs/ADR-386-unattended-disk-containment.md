@@ -135,6 +135,22 @@ app can stop an off-proot orphan.
 - **Parametric.** Thresholds and cadence are parameters we tune (floor, growth-rate, intervals), not
   hard-coded cliffs; the primary directive right now is **disk free space / abnormal growth**.
 - **Single surface.** Watching disk pressure / abnormal log growth catches *any* vector, not just php.
+- **Confirm before acting — the signal is a HINT, never a command (file the clock's edges).** Because the
+  channel is **pull, not push** (dash-node cannot call the app; verified — Express loopback, socket.io
+  retired), and every layer here is clock-driven, any reported state can be a tick — or a whole app
+  restart — **stale** by the time the app reads and acts on it. So:
+  - **The escalation signal is LIVE state, not a logged line.** The app reads dash-node's *current*
+    in-memory firehose state from a `/system/...` endpoint — it must **never parse a `[FIREHOSE]` line out
+    of `dash-node.log`**, because a log persists: an old line, or a log copied in by a restore, would fire a
+    false alarm. dash-node's `firehoseStreak` is **in-memory on purpose** — it resets when dash-node (or the
+    box) restarts, so the exact "user feels heat → closes the app → reopens it, and the firehose is now
+    gone" case comes back **clean**, with no stale state to act on.
+  - **The app re-probes before any destructive action.** On reading the hint it runs a **fresh check** —
+    is the firehose happening *right now* (disk pressure now, a log growing fast now)? — and reaps only on
+    confirmation. It never acts on the report alone. (ADR-5343's rule — do not act on stale/unowned state —
+    at runtime; the same "verify, don't suppose" we apply to code, applied to live state.)
+  - **The signal carries a timestamp; a stale one is ignored.** Freshness is part of the contract, not an
+    assumption.
 
 **Open (design next):** the exact leading-indicator (growth-rate vs absolute), the targeted-vs-full
 decision, and how relaunch coordinates with the reconciler. The existing `feat/K2GO-386-disk-guard`
