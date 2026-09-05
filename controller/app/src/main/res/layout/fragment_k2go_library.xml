@@ -72,7 +72,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/k2go_home_status_action"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.K2Go.Button.Outlined"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

@@ -33,17 +33,17 @@
         <LinearLayout android:id="@+id/k2go_clone_tabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
             <TextView android:id="@+id/k2go_clone_send" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_send" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_send" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
             <TextView android:id="@+id/k2go_clone_receive" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_receive" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_receive" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
         <LinearLayout android:id="@+id/k2go_clone_net" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="10dp" android:background="@drawable/k2go_card_bg" android:padding="4dp" android:visibility="gone">
             <TextView android:id="@+id/k2go_clone_hotspot" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_hotspot" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_hotspot" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
             <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_wifi" android:clickable="true" android:focusable="true" />
+                android:gravity="center" android:text="@string/k2go_wifi" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
     </LinearLayout>
 
@@ -185,10 +185,14 @@
                     android:fontFamily="monospace" android:textIsSelectable="true" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                     android:layout_marginTop="8dp" android:gravity="end">
-                    <TextView android:id="@+id/k2go_clone_copy" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:padding="8dp" android:text="@string/k2go_clone_copy_btn" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
-                    <TextView android:id="@+id/k2go_clone_share" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp" android:padding="8dp" android:text="@string/k2go_clone_share_action" android:drawableEnd="@drawable/ic_chevron_right" app:drawableTint="@color/k2go_muted" android:drawablePadding="6dp" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                    <!-- K2GO-385 (pill roles Q8): Copy / Share are inline text actions, so they use the
+                         text-button tier (ripple + 48dp target + leading icon), not raw TextViews. -->
+                    <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_copy"
+                        style="@style/Widget.K2Go.Button.Text" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/k2go_clone_copy_btn" app:icon="@drawable/ic_content_copy" app:iconGravity="textStart" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_share"
+                        style="@style/Widget.K2Go.Button.Text" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp" android:text="@string/k2go_clone_share_action" app:icon="@drawable/ic_share" app:iconGravity="textStart" />
                 </LinearLayout>
             </LinearLayout>
 

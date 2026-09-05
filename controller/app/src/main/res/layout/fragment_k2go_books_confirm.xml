@@ -82,9 +82,6 @@
             android:id="@+id/k2go_bconf_add"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:layout_marginTop="16dp"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/k2go_teal" />
+            android:layout_marginTop="16dp" />
     </LinearLayout>
 </ScrollView>

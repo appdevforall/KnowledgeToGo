@@ -201,22 +201,17 @@
             android:visibility="gone">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/k2go_dl_toggle"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.K2Go.Button.Outlined.OnBootPaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="132dp"
-                android:textColor="@color/k2go_boot_ink"
-                app:strokeColor="@color/k2go_boot_ink"
-                app:rippleColor="@color/k2go_boot_muted" />
+                android:minWidth="132dp" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/k2go_dl_cancel"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.K2Go.Button.Text.OnBootPaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/k2go_dl_cancel"
-                android:textColor="@color/k2go_boot_muted"
-                app:rippleColor="@color/k2go_boot_muted" />
+                android:text="@string/k2go_dl_cancel" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

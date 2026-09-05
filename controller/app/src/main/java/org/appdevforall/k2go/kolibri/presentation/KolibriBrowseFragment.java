@@ -37,6 +37,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
 import org.appdevforall.k2go.kolibri.domain.Channel;
+import org.appdevforall.k2go.redesign.K2GoFilterChip;
 import org.appdevforall.k2go.redesign.SetupLibraryActivity;
 import org.appdevforall.k2go.redesign.ZimLanguageDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
@@ -80,8 +81,8 @@ public final class KolibriBrowseFragment extends Fragment {
     private TextView storageLabel;
     private ProgressBar storageBar;
     private LinearLayout chips;
-    private TextView sortSize;
-    private TextView sortName;
+    private com.google.android.material.chip.Chip sortSize;
+    private com.google.android.material.chip.Chip sortName;
     private LinearLayout list;
     private Button review;
 
@@ -281,11 +282,10 @@ public final class KolibriBrowseFragment extends Fragment {
         pill(sortName, s.isName());
     }
 
-    /** The one pill style in the app: teal filled when on, hairline outline when off. */
-    private void pill(TextView t, boolean on) {
-        t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        t.setTextColor(ContextCompat.getColor(requireContext(),
-                on ? android.R.color.white : R.color.k2go_ink));
+    // K2GO-385 (PR3): the shared filter chip (8dp, 32dp, check when active) -- the sort toggles now match
+    // the ZIM sort chips and the category/Books filters; the label still carries the sort direction.
+    private void pill(com.google.android.material.chip.Chip t, boolean on) {
+        K2GoFilterChip.style(t, on);
     }
 
     /**
@@ -456,25 +456,19 @@ public final class KolibriBrowseFragment extends Fragment {
     }
 
     private View chip(String label, final String group) {
-        TextView t = new TextView(requireContext());
-        t.setText(label);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setGravity(Gravity.CENTER);
-        t.setMinHeight(px(48));   // tap target, even though the pill looks smaller
-        t.setPadding(px(14), px(8), px(14), px(8));
-        pill(t, group.equals(groupFilter));
-
+        // K2GO-385 (PR3): category chips use the shared filter chip too.
+        com.google.android.material.chip.Chip c = K2GoFilterChip.create(requireContext(), label,
+                group.equals(groupFilter), x -> {
+                    if (!group.equals(groupFilter)) {
+                        groupFilter = group;
+                        render(vm.state().getValue());
+                    }
+                });
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.rightMargin = px(8);
-        t.setLayoutParams(lp);
-        t.setOnClickListener(x -> {
-            if (!group.equals(groupFilter)) {
-                groupFilter = group;
-                render(vm.state().getValue());
-            }
-        });
-        return t;
+        c.setLayoutParams(lp);
+        return c;
     }
 
     private void updateStorage() {

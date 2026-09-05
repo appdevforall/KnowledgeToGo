@@ -581,8 +581,8 @@ public class CloneFragment extends Fragment {
         updateBackGuard();   // ADFA-5151: keep the Back confinement in step with side + transfer state
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
         if (stepTitle != null) { stepTitle.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
-        paintTab(tabSend, side == Side.SEND);
-        paintTab(tabReceive, side == Side.RECEIVE);
+        SegmentedTabs.paint(tabSend, side == Side.SEND);
+        SegmentedTabs.paint(tabReceive, side == Side.RECEIVE);
 
         if (atFork) {
             cloneHdr.setVisibility(View.VISIBLE);
@@ -638,8 +638,8 @@ public class CloneFragment extends Fragment {
         // ADFA-5154: Send is two pages. Common chrome, then the page.
         actionFooter.setVisibility(View.GONE);   // ADFA-5154: default hidden; only Copy's states re-show it
         netRow.setVisibility(View.VISIBLE);
-        paintTab(tabHotspot, mode == Mode.HOTSPOT);
-        paintTab(tabWifi, mode == Mode.WIFI);
+        SegmentedTabs.paint(tabHotspot, mode == Mode.HOTSPOT);
+        SegmentedTabs.paint(tabWifi, mode == Mode.WIFI);
         steps.setVisibility(View.VISIBLE);
         buildSteps();
         advance.setVisibility(View.VISIBLE);
@@ -1567,11 +1567,6 @@ public class CloneFragment extends Fragment {
         lp.bottomMargin = dp(18);
         a.setLayoutParams(lp);
         return a;
-    }
-
-    private void paintTab(TextView t, boolean on) {
-        t.setBackgroundResource(on ? R.drawable.k2go_primary_bg : 0);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_muted));
     }
 
     private void styleAdvance(boolean filled) {
