@@ -1,0 +1,47 @@
+Upstream-PR:     WIP — to be presented to IIAB upstream
+Upstream-Status: open
+Applies-to:      roles/nginx/tasks/install.yml, roles/matomo/tasks/install.yml
+Summary:         Move php-fpm ownership from nginx to the roles that use it — nginx no longer manages php-fpm (both proot and non-proot), Matomo enables its own. Stops idle php-fpm running by default (K2GO-386). Carried for our build; WIP for upstream (pairs with every php role self-managing).
+
+diff --git a/roles/matomo/tasks/install.yml b/roles/matomo/tasks/install.yml
+index 65bf441..eceddd1 100644
+--- a/roles/matomo/tasks/install.yml
++++ b/roles/matomo/tasks/install.yml
+@@ -47,6 +47,10 @@
+   include_tasks: roles/www_options/tasks/php-settings.yml
+   when: php_settings_done is undefined
+ 
++- name: Enable 'php-fpm' via pdsm (proot) so Matomo owns its php-fpm (do not rely on the nginx role)
++  command: pdsm enable php-fpm
++  when: is_proot
++
+ - name: Start 'php-fpm' via pdsm (proot)
+   command: pdsm start php-fpm
+   register: pdsm_start
+diff --git a/roles/nginx/tasks/install.yml b/roles/nginx/tasks/install.yml
+index 2d24a48..4b9ad3a 100644
+--- a/roles/nginx/tasks/install.yml
++++ b/roles/nginx/tasks/install.yml
+@@ -64,22 +64,6 @@
+     msg: roles/nginx/tasks/homepage.yml will run LATER (invoked by roles/www_options/tasks/main.yml) SO THAT NGINX CAN REDIRECT http://box TO http://box{{ iiab_home_url }} (based on var iiab_home_url)
+ # - include_tasks: roles/nginx/tasks/homepage.yml
+ 
+-- name: Restart php{{ php_version }}-fpm systemd service
+-  systemd:
+-    name: "php{{ php_version }}-fpm"
+-    state: restarted
+-  when: not is_proot
+-
+-- name: Enable & Restart recently installed 'php-fpm' via pdsm (proot)
+-  when: is_proot
+-  block:
+-    - name: Enable 'php-fpm' via pdsm (proot)
+-      command: pdsm enable php-fpm
+-
+-    - name: Restart 'php-fpm' via pdsm (proot)
+-      command: pdsm restart php-fpm
+-
+-
+ # RECORD NGINX AS INSTALLED
+ 
+ - name: Record (final) disk space used
