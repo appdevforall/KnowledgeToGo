@@ -46,6 +46,9 @@
             android:textColor="@color/k2go_ink"
             android:textColorHint="@color/k2go_muted" />
 
+        <!-- K2GO-385 (pill roles Q3B): the language selector is a dropdown / menu button, not a filter
+             chip. It shows the current value with a trailing caret and opens the single-choice picker;
+             no check or selected-fill (that is the chip language). The caret is what says "menu". -->
         <TextView
             android:id="@+id/k2go_books_lang"
             android:layout_width="wrap_content"
@@ -56,6 +59,10 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:background="@drawable/k2go_pill_bg"
+            android:drawableEnd="@drawable/ic_expand_more"
+            android:drawableTint="@color/k2go_teal"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_ink" />
 
