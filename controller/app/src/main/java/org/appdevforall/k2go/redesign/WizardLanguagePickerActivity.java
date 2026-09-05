@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.util.M3Text;
 import org.appdevforall.k2go.applang.domain.AppLanguage;
 import org.appdevforall.k2go.applang.domain.SupportedAppLanguages;
 
@@ -91,8 +92,7 @@ public class WizardLanguagePickerActivity extends AppCompatActivity {
     private TextView header(String text) {
         TextView h = new TextView(this);
         h.setText(text);
-        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_muted));
-        h.setTextSize(12);
+        M3Text.apply(h, R.style.TextAppearance_K2Go_Caption, ContextCompat.getColor(this, R.color.k2go_muted));
         h.setLetterSpacing(0.08f);
         h.setPadding(dp(18), dp(12), dp(18), dp(6));
         return h;
@@ -111,8 +111,7 @@ public class WizardLanguagePickerActivity extends AppCompatActivity {
 
         TextView t = new TextView(this);
         t.setText(l.toString());
-        t.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
-        t.setTextSize(18);
+        M3Text.apply(t, R.style.TextAppearance_K2Go_Title, ContextCompat.getColor(this, R.color.k2go_ink));
         if (sel) t.setTypeface(t.getTypeface(), Typeface.BOLD);
         r.addView(t, new LinearLayout.LayoutParams(0, -2, 1f));
 

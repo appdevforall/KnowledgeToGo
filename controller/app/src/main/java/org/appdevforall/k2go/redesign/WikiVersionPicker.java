@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import org.appdevforall.k2go.InstallationPlanner;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.util.M3Text;
 import org.json.JSONObject;
 
 /**
@@ -130,8 +131,7 @@ public class WikiVersionPicker {
         TextView t = new TextView(ctx);
         String arrow = sortKey.equals(key) ? (sortDir > 0 ? "  ▲" : "  ▼") : "";
         t.setText(text + arrow);
-        t.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-        t.setTextSize(12);
+        M3Text.apply(t, R.style.TextAppearance_K2Go_Caption, ContextCompat.getColor(ctx, R.color.k2go_muted));
         t.setClickable(true);
         t.setFocusable(true);
         t.setOnClickListener(v -> {
@@ -157,12 +157,10 @@ public class WikiVersionPicker {
             hd.setLayoutParams(hlp);
             TextView title = new TextView(ctx);
             title.setText(WikiVariants.coverageName(ctx, cov));
-            title.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
-            title.setTextSize(14);
+            M3Text.apply(title, R.style.TextAppearance_K2Go_Label, ContextCompat.getColor(ctx, R.color.k2go_ink));
             TextView desc = new TextView(ctx);
             desc.setText(WikiVariants.coverageDesc(ctx, cov));
-            desc.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-            desc.setTextSize(12);
+            M3Text.apply(desc, R.style.TextAppearance_K2Go_Caption, ContextCompat.getColor(ctx, R.color.k2go_muted));
             hd.addView(title);
             hd.addView(desc);
             container.addView(hd);
@@ -198,14 +196,12 @@ public class WikiVersionPicker {
         nlp.leftMargin = dp(8);
         name.setLayoutParams(nlp);
         name.setText(labelText);
-        name.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
-        name.setTextSize(14);
+        M3Text.apply(name, R.style.TextAppearance_K2Go_Label, ContextCompat.getColor(ctx, R.color.k2go_ink));
         row.addView(name);
 
         TextView size = new TextView(ctx);
         size.setText(WikiVariants.gb(WikiVariants.sizeGb(langData, key)));
-        size.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-        size.setTextSize(13);
+        M3Text.apply(size, R.style.TextAppearance_K2Go_Caption, ContextCompat.getColor(ctx, R.color.k2go_muted));
         row.addView(size);
 
         row.setOnClickListener(v -> {
@@ -219,8 +215,7 @@ public class WikiVersionPicker {
     private TextView muted(String text) {
         TextView t = new TextView(ctx);
         t.setText(text);
-        t.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-        t.setTextSize(13);
+        M3Text.apply(t, R.style.TextAppearance_K2Go_Caption, ContextCompat.getColor(ctx, R.color.k2go_muted));
         t.setPadding(dp(2), dp(6), dp(2), dp(6));
         return t;
     }
