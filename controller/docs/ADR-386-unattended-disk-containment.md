@@ -182,16 +182,24 @@ analytics backbone (`AnalyticsConsent`, opt-in, default OFF -- which would silen
 two channels, on purpose:
 
 - **Automatic (unattended) -> GlitchTip via Sentry.** `DiskGuard.report(...)` captures a Sentry message
-  (tags: `event=disk_guard`, `action`, `reaped`; extras: `floor_bytes`, `reclaimed_bytes`, `trip`), gated
-  by `CrashReportConsent` (default ON, its own policy, no PII -- see `IIABApplication`, ADFA-4533). It is a
-  no-op when crash reporting is off or Sentry has no DSN. The user is informed, not tasked; recovery
-  already happened. DONE (this ticket).
+  (tags: `event=disk_guard`, `action`, `source`, `reaped`; extras: `floor_bytes`, `reclaimed_bytes`,
+  `trip_or_streak`, `firehose_paths`), gated by `CrashReportConsent` (default ON, its own policy, no PII --
+  see `IIABApplication`, ADFA-4533). It is a no-op when crash reporting is off or Sentry has no DSN. The
+  user is informed, not tasked; recovery already happened. DONE (this ticket).
 - **Active (user-sent) -> feedback email.** The app tells the user it contained an unusual behavior and
   offers to send a report the user actively sends, through the existing feedback flow (`FeedbackFab` /
   `EmailFeedbackSender`, mailto), pre-filled with what happened -- the same pattern the install-failed
   report uses (ADFA-5119). Because the guard runs in the background, the bridge is the notification: it
   gains a tap action that opens an Activity which launches the pre-filled feedback email. This does NOT
   wait for GlitchTip to surface the issue; the operator can send it on the spot.
+
+**Bounded by design -- never ship raw logs.** The report is a POINTER plus a short summary, not the log.
+It carries only small metadata: `source` (`low_disk` / `firehose_signal` / `debug`, so `trip_or_streak`
+reads correctly), `action`, `reaped`, `reclaimed_bytes`, `trip_or_streak`, `free_bytes_now`, and the
+firehosing `firehose_paths` (which log is the culprit -- short path strings, capped in count and length by
+`FirehoseSignalSource`, never log content). The firehose log itself is repeated error spam and is left on
+the device; a developer pulls it separately if truly needed. The only attachment is the feedback flow's
+single screenshot (~100 KB). So a runaway log can never bloat the report and break the email/Sentry pipe.
 
 The active channel is the CLOSING piece of the K2GO-386 effort and lands in its own ticket (see section 12).
 
@@ -261,9 +269,10 @@ Scope:
 - **Reuse the feedback flow, pre-filled.** Call `FeedbackFab.sendFeedback(activity, "disk-guard",
   FeedbackType.BUG, prefilled)` -- the same typed, pre-filled pattern the install-failed report uses
   (ADFA-5119). The user sends it via email; the app fills in what happened, since the user did not cause it.
-- **What the report carries.** The diagnostic already gathered for §7 (action, reaped, reclaimed bytes,
-  trip/streak, free bytes, the runaway log path) plus the standard feedback envelope (app version, build,
-  Android release, device, ABI, binaries tag), so a single email is enough to triage.
+- **What the report carries.** The bounded diagnostic from §7 (`source`, action, reaped, reclaimed bytes,
+  trip/streak, free bytes, the firehosing paths -- capped, never log content) plus the standard feedback
+  envelope (app version, build, Android release, device, ABI, binaries tag), so a single small email is
+  enough to triage. Never the raw log (§7, "bounded by design").
 - **Cadence.** Do not nag: offer the active report on a meaningful containment (an escalation, or a
   recurring firehose), not on every routine reap. The automatic channel still records every event.
 

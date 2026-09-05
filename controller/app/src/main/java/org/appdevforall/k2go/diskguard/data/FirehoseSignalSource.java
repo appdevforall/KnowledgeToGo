@@ -15,6 +15,7 @@ import android.util.Log;
 
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.diskguard.domain.FirehoseSignal;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Reads {@code GET /k2go-api/system/disk-guard/firehose} -> a {@link FirehoseSignal}, or {@code null}
@@ -37,6 +40,9 @@ public final class FirehoseSignalSource {
     private static final String URL_PATH = BoxEndpoints.API + "/system/disk-guard/firehose";
     private static final int TIMEOUT_MS = 4000;
     private static final int MAX_BYTES = 8 * 1024; // a handful of fields; refuse the absurd
+    // Bound the paths so a pathological signal cannot bloat the report (paths are short by nature).
+    private static final int MAX_PATHS = 10;
+    private static final int MAX_PATH_LEN = 200;
 
     private FirehoseSignalSource() {}
 
@@ -50,11 +56,24 @@ public final class FirehoseSignalSource {
                     o.optBoolean("recurring", false),
                     o.optInt("maxStreak", 0),
                     o.optLong("lastTruncatedAtMs", 0L),
-                    o.optLong("now", 0L));
+                    o.optLong("now", 0L),
+                    parsePaths(o.optJSONArray("paths")));
         } catch (Exception e) {
             Log.i(TAG, "K2GO-386: firehose signal read failed: " + e.getMessage());
             return null;
         }
+    }
+
+    /** Parse the firehosing paths, bounded in count and length. Never carries log content. */
+    private static List<String> parsePaths(JSONArray arr) {
+        List<String> out = new ArrayList<>();
+        if (arr == null) return out;
+        for (int i = 0; i < arr.length() && out.size() < MAX_PATHS; i++) {
+            String p = arr.optString(i, "");
+            if (p.isEmpty()) continue;
+            out.add(p.length() > MAX_PATH_LEN ? p.substring(0, MAX_PATH_LEN) : p);
+        }
+        return out;
     }
 
     private static String httpGet(String urlStr) throws Exception {

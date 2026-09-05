@@ -59,6 +59,7 @@ import io.sentry.SentryLevel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class DiskGuard {
@@ -128,7 +129,7 @@ public final class DiskGuard {
         if (ctx == null) return false;
         FirehoseSignal sig = FirehoseSignalSource.read();
         if (sig == null || !sig.isFresh(FIREHOSE_FRESH_WINDOW_MS)) return false; // no live alert
-        return actOnFirehose(ctx, sig.maxStreak);
+        return actOnFirehose(ctx, "firehose_signal", sig.maxStreak, sig.paths);
     }
 
     /**
@@ -138,7 +139,7 @@ public final class DiskGuard {
      */
     public static boolean checkFirehoseForced(Context ctx) {
         if (ctx == null) return false;
-        return actOnFirehose(ctx, -1);
+        return actOnFirehose(ctx, "debug", -1, Collections.emptyList());
     }
 
     private static boolean run(Context ctx, long floorBytes, boolean forced) {
@@ -170,16 +171,16 @@ public final class DiskGuard {
             // Last resort: the fill keeps returning after restarts. Stop and stay down through the one
             // persisted lever, and tell the user. The user re-enables the server after freeing space.
             ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
-            report(ctx, "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount);
+            report(ctx, "low_disk", "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount, null);
             notifyUser(ctx, NOTIF_ID, ctx.getString(R.string.disk_guard_notif_title),
                     ctx.getString(R.string.disk_guard_notif_body),
-                    buildReportMessage(ctx, "escalated_stopped", reaped, reclaimed, v.tripCount));
+                    buildReportMessage(ctx, "low_disk", "escalated_stopped", reaped, reclaimed, v.tripCount, null));
             Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + v.tripCount + "): stopped and staying down");
         } else {
             // Default: keep the system alive. Leave desired=UP and ask the reconciler to relaunch a fresh
             // box now. Report only the first trip of a spell so a thrash does not spam telemetry.
             ServerLifecycleReconciler.get().requestReconcileNow();
-            if (v.firstOfSpell) report(ctx, "contained", floorBytes, reaped, reclaimed, v.tripCount);
+            if (v.firstOfSpell) report(ctx, "low_disk", "contained", floorBytes, reaped, reclaimed, v.tripCount, null);
             Log.w(TAG, "K2GO-386: contained disk pressure (trip " + v.tripCount + "): reaped=" + reaped
                     + ", reclaimed=" + reclaimed + " B, box restarting");
         }
@@ -229,7 +230,7 @@ public final class DiskGuard {
      * off-proot orphan (unlike an in-box kill), so a fresh box does not refill. The low-disk path stays
      * the sole escalation authority, so a firehose reap never counts toward stop-and-stay-down.
      */
-    private static boolean actOnFirehose(Context ctx, int streak) {
+    private static boolean actOnFirehose(Context ctx, String source, int streak, List<String> paths) {
         if (!confirmFirehoseGrowing(ctx)) return false;
         if (deepOpActive(ctx)) {
             Log.w(TAG, "K2GO-386: firehose confirmed but a deep op holds the box; not reaping this tick");
@@ -238,10 +239,10 @@ public final class DiskGuard {
         boolean reaped = EnvironmentProcess.reapBox(ctx);
         long reclaimed = reclaimRunawayLog(ctx);
         ServerLifecycleReconciler.get().requestReconcileNow();
-        report(ctx, "contained_firehose", 0L, reaped, reclaimed, streak);
+        report(ctx, source, "contained_firehose", 0L, reaped, reclaimed, streak, paths);
         notifyUser(ctx, NOTIF_ID_FIREHOSE, ctx.getString(R.string.disk_guard_firehose_title),
                 ctx.getString(R.string.disk_guard_firehose_body),
-                buildReportMessage(ctx, "contained_firehose", reaped, reclaimed, streak));
+                buildReportMessage(ctx, source, "contained_firehose", reaped, reclaimed, streak, paths));
         Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
                 + ", reclaimed=" + reclaimed + " B, box restarting");
         return true;
@@ -312,23 +313,32 @@ public final class DiskGuard {
      * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
      * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
      */
-    private static void report(Context ctx, String action, long floorBytes, boolean reaped,
-                              long reclaimed, int trip) {
+    private static void report(Context ctx, String source, String action, long floorBytes, boolean reaped,
+                              long reclaimed, int count, List<String> paths) {
         try {
             if (!CrashReportConsent.isEnabled(ctx)) return;
             Sentry.withScope(scope -> {
                 scope.setLevel(SentryLevel.WARNING);
                 scope.setTag("event", "disk_guard");
                 scope.setTag("action", action);
+                scope.setTag("source", source);
                 scope.setTag("reaped", String.valueOf(reaped));
                 scope.setExtra("floor_bytes", String.valueOf(floorBytes));
                 scope.setExtra("reclaimed_bytes", String.valueOf(reclaimed));
-                scope.setExtra("trip", String.valueOf(trip));
+                scope.setExtra("trip_or_streak", String.valueOf(count));
+                scope.setExtra("firehose_paths", formatPaths(paths));
                 Sentry.captureMessage("K2GO-386 disk-guard " + action);
             });
         } catch (Throwable t) {
             Log.w(TAG, "K2GO-386: could not report disk-guard event", t);
         }
+    }
+
+    /** Join the firehosing paths for a report. Just short path strings -- never log content. Already
+     *  bounded in count and length by FirehoseSignalSource; empty for the low-disk path. */
+    private static String formatPaths(List<String> paths) {
+        if (paths == null || paths.isEmpty()) return "";
+        return String.join(", ", paths);
     }
 
     /**
@@ -397,13 +407,18 @@ public final class DiskGuard {
      * The feedback flow adds the standard envelope (app version, build, device, ABI, ...), so this only
      * carries what the guard knows. English on purpose (it lands in a dev inbox / triage).
      */
-    private static String buildReportMessage(Context ctx, String action, boolean reaped, long reclaimed, int count) {
+    private static String buildReportMessage(Context ctx, String source, String action, boolean reaped,
+                                             long reclaimed, int count, List<String> paths) {
         Long free = StorageProbe.freeBytes(ctx);
-        return "K2Go disk guard acted.\n"
-                + "action: " + action + "\n"
-                + "reaped: " + reaped + "\n"
-                + "reclaimed_bytes: " + reclaimed + "\n"
-                + "trip_or_streak: " + count + "\n"
-                + "free_bytes_now: " + (free == null ? "unknown" : String.valueOf(free)) + "\n";
+        String pathsStr = formatPaths(paths);
+        StringBuilder sb = new StringBuilder("K2Go disk guard acted.\n")
+                .append("source: ").append(source).append('\n')       // low_disk | firehose_signal | debug
+                .append("action: ").append(action).append('\n')
+                .append("reaped: ").append(reaped).append('\n')
+                .append("reclaimed_bytes: ").append(reclaimed).append('\n')
+                .append("trip_or_streak: ").append(count).append('\n')
+                .append("free_bytes_now: ").append(free == null ? "unknown" : String.valueOf(free)).append('\n');
+        if (!pathsStr.isEmpty()) sb.append("firehose_paths: ").append(pathsStr).append('\n');
+        return sb.toString();
     }
 }
