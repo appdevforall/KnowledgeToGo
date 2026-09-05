@@ -41,8 +41,10 @@ import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.delivery.DeliveryManager;
+import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
+import org.appdevforall.k2go.diskguard.domain.FirehoseSignal;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.env.EnvironmentProcess;
 import org.appdevforall.k2go.env.ServerLifecycleReconciler;
@@ -71,6 +73,15 @@ public final class DiskGuard {
     private static final int ESCALATE_AFTER_TRIPS = 3;
     private static final long TRIP_WINDOW_MS = 30L * 60L * 1000L;
 
+    // The firehose trigger (ADR-386 §6): a recurring-firehose signal older than this (in the server's
+    // own clock) is stale and ignored -- the firehose likely resolved. A live one is re-confirmed by
+    // growth anyway. About 2.5 guard ticks (the guard runs every 10 min).
+    private static final long FIREHOSE_FRESH_WINDOW_MS = 25L * 60L * 1000L;
+    // Growth re-probe: read the .log total, wait, read again. A firehose adds tens of MB in seconds; a
+    // normal log adds almost nothing. Act only on a delta that is clearly a firehose.
+    private static final long GROWTH_PROBE_MS = 3000L;
+    private static final long GROWTH_MIN_BYTES = 32L * 1024 * 1024; // 32 MiB within GROWTH_PROBE_MS
+
     private static final String CHANNEL_ID = "disk_guard_channel";
     private static final int NOTIF_ID = 7386;
 
@@ -96,6 +107,30 @@ public final class DiskGuard {
      */
     public static boolean checkWithFloor(Context ctx, long floorBytes) {
         return run(ctx, floorBytes, true);
+    }
+
+    /**
+     * The SECOND reap trigger (ADR-386 §6). The low-disk path above catches a disk that already went
+     * low. This path catches a firehose the in-box guard keeps truncating -- so the disk may never go
+     * low -- but that the box cannot stop because the writer is an off-proot orphan. It reads the live
+     * dash-node signal, and if the signal is a fresh recurring firehose it CONFIRMS by re-probing live
+     * log growth before it reaps. Safe to call every poller tick; a no-op unless a firehose is live now.
+     */
+    public static boolean checkFirehoseSignal(Context ctx) {
+        if (ctx == null) return false;
+        FirehoseSignal sig = FirehoseSignalSource.read();
+        if (sig == null || !sig.isFresh(FIREHOSE_FRESH_WINDOW_MS)) return false; // no live alert
+        return actOnFirehose(ctx, sig.maxStreak);
+    }
+
+    /**
+     * The debug device-verify hook for the firehose path. It skips the signal fetch and freshness gate,
+     * but STILL runs the real growth re-probe -- so it only reaps when a log is actually growing now.
+     * Stage a fast-growing .log, then fire it, to verify confirm-before-act plus the reap on device.
+     */
+    public static boolean checkFirehoseForced(Context ctx) {
+        if (ctx == null) return false;
+        return actOnFirehose(ctx, -1);
     }
 
     private static boolean run(Context ctx, long floorBytes, boolean forced) {
@@ -175,6 +210,66 @@ public final class DiskGuard {
     /** True when a stop-class operation (clone/backup/restore/install) currently holds the box. */
     private static boolean deepOpActive(Context ctx) {
         return EnvironmentLock.currentHolder(ctx).executionClass == Operation.ExecutionClass.STOPPED;
+    }
+
+    /**
+     * Act on a firehose that a fresh signal (or the debug hook) flagged. Confirm-before-acting: the
+     * signal is only an ALERT; reap solely if a log is actually growing fast RIGHT NOW. Then reap and
+     * restart (restart-to-keep-alive), the same as the low-disk path. The app-side reap DOES reach the
+     * off-proot orphan (unlike an in-box kill), so a fresh box does not refill. The low-disk path stays
+     * the sole escalation authority, so a firehose reap never counts toward stop-and-stay-down.
+     */
+    private static boolean actOnFirehose(Context ctx, int streak) {
+        if (!confirmFirehoseGrowing(ctx)) return false;
+        if (deepOpActive(ctx)) {
+            Log.w(TAG, "K2GO-386: firehose confirmed but a deep op holds the box; not reaping this tick");
+            return false;
+        }
+        boolean reaped = EnvironmentProcess.reapBox(ctx);
+        long reclaimed = reclaimRunawayLog(ctx);
+        ServerLifecycleReconciler.get().requestReconcileNow();
+        report(ctx, "contained_firehose", 0L, reaped, reclaimed, streak);
+        Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
+                + ", reclaimed=" + reclaimed + " B, box restarting");
+        return true;
+    }
+
+    /**
+     * True when the box's {@code *.log} files are growing fast enough to be a firehose: read the total
+     * {@code .log} bytes under {@code /var/log}, wait {@link #GROWTH_PROBE_MS}, read again, and require a
+     * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to which log
+     * the orphan writes and to the guard truncating one between reads. A normal log never grows this fast.
+     */
+    private static boolean confirmFirehoseGrowing(Context ctx) {
+        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        long before = sumLogBytes(varLog);
+        try {
+            Thread.sleep(GROWTH_PROBE_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        long delta = sumLogBytes(varLog) - before;
+        boolean growing = delta >= GROWTH_MIN_BYTES;
+        if (!growing) {
+            Log.i(TAG, "K2GO-386: firehose signal but logs are not growing now (delta " + delta + " B); not acting");
+        }
+        return growing;
+    }
+
+    /** Total bytes of every {@code *.log} regular file in the tree rooted at {@code dir}. Best-effort. */
+    private static long sumLogBytes(File dir) {
+        File[] entries = dir.listFiles();
+        if (entries == null) return 0L;
+        long sum = 0L;
+        for (File f : entries) {
+            if (f.isDirectory()) {
+                sum += sumLogBytes(f);
+            } else if (f.isFile() && f.getName().endsWith(".log")) {
+                sum += f.length();
+            }
+        }
+        return sum;
     }
 
     /** Report the event to developers through the delivery backbone (unattended; not user-facing). */

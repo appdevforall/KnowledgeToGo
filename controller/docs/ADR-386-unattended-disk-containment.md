@@ -123,9 +123,9 @@ app can stop an off-proot orphan.
   and it emits the recurring-firehose signal.
 - **App-side (Android) — STOP.** The only actor that can reap an off-proot orphan. It is driven by the
   in-box recurring-firehose signal (a log that keeps refilling after truncation = an orphan) or by disk
-  pressure, and it reaps + reports. This is the half that is still to be built.
+  pressure, and it reaps + reports. **Built** -- see "Mechanism (as built)" below.
 
-**Decisions (direction; detailed mechanism is the next design step, possibly `ADR-386a`):**
+**Decisions (direction):**
 
 - **Targeted, not blind.** Act on the offending vector (a specific runaway log/service), keeping the rest
   of the system up. NOT the rejected "disk full → stop everything → stay down → user fixes it."
@@ -152,9 +152,27 @@ app can stop an off-proot orphan.
   - **The signal carries a timestamp; a stale one is ignored.** Freshness is part of the contract, not an
     assumption.
 
-**Open (design next):** the exact leading-indicator (growth-rate vs absolute), the targeted-vs-full
-decision, and how relaunch coordinates with the reconciler. The existing `feat/K2GO-386-disk-guard`
-slice (device-verified) is the scaffold to reorient from "stop + stay-down" to this.
+**Mechanism (as built).** Two triggers, one poller. `WatchdogService` ticks the guard every 25 s and
+calls two entry points in order:
+
+1. **Low-disk trigger** -- `DiskGuard.check`. Free space (StatFs) vs a floor; on CRITICAL it confirms
+   with a second read, then reaps + reclaims + relaunches. This path OWNS escalation: after
+   `ESCALATE_AFTER_TRIPS` consecutive trips (the restart is not fixing it) it stops and stays down as a
+   last resort (`DiskGuardEscalation`, a pure unit-tested rule). Device-verified (L3b).
+2. **Firehose trigger** -- `DiskGuard.checkFirehoseSignal`. It reads dash-node's LIVE signal
+   (`GET /k2go-api/system/disk-guard/firehose`, which returns the in-memory streak, never a log line).
+   `FirehoseSignal.isFresh` gates on `recurring` AND a recent `lastTruncatedAtMs` -- judged in the
+   server's own clock (the endpoint returns `now` too), so there is no app-vs-server skew. The signal is
+   only an ALERT: before reaping, the app **re-probes live growth** -- it sums the `.log` bytes under
+   `/var/log`, waits a few seconds, sums again, and acts only on a firehose-sized delta. This catches an
+   off-proot orphan BEFORE the disk goes low (the in-box guard keeps truncating, so the disk may never go
+   low). It reaps + reclaims + relaunches (restart-to-keep-alive); the app-side reap DOES reach the
+   off-proot orphan, so a fresh box does not refill. It does NOT touch the low-disk escalation counter --
+   the low-disk path stays the single escalation authority.
+
+Both paths skip the reap while a deep op (clone/backup/restore/install) holds the box
+(`EnvironmentLock.currentHolder`), report to developers through the delivery backbone, and relaunch
+through the ADR-5343 reconciler (`requestReconcileNow`, desired stays UP).
 
 ## 7. Reporting to developers (unattended, cadence-based)
 
@@ -205,7 +223,8 @@ guessed — **without bothering the user**:
 | L1 | rootfs built with the merged patch | php-fpm installed, **not enabled**, not running on a default build |
 | L2 | `logrotate -d` after install; a log grown past `size`, then a trigger | parses clean; truncated in place; writer keeps writing; no orphaned deleted-but-open file |
 | L2 | short (<10 min) session | no boot rotation (by design); bounded next long session |
-| L3 | fast fill + Vector B (synthetic) | contained/recovered without denying service; system back up; a report enqueued |
+| L3 low-disk | force CRITICAL (debug huge floor) with a staged runaway log | reaps, reclaims, box relaunches (desired=UP), report enqueued; system stays up. Device-verified (HD1901) |
+| L3 firehose | a fresh recurring signal + a `.log` growing fast now (debug `--ez firehose true`) | re-probes growth, reaps the orphan, box relaunches; a non-growing signal is ignored (confirm before acting) |
 
 ## 11. Consequences
 
