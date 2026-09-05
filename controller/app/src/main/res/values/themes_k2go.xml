@@ -89,6 +89,13 @@
         <item name="android:textColor">@color/k2go_teal</item>
     </style>
 
+    <!-- Text-only destructive (clay text, no outline): the low-emphasis "give up" beside a filled
+         primary, e.g. a download Cancel that discards the transfer. The ripple derives from the text
+         colour, so no separate rippleColor is needed. -->
+    <style name="Widget.K2Go.Button.Text.Destructive" parent="Widget.K2Go.Button.Text">
+        <item name="android:textColor">@color/k2go_clay</item>
+    </style>
+
     <!-- Destructive outlined (clay/error outline + text) — e.g. "Turn off". -->
     <style name="Widget.K2Go.Button.Destructive" parent="Widget.Material3.Button.OutlinedButton">
         <item name="shapeAppearance">@style/ShapeAppearance.K2Go.Button</item>
@@ -127,6 +134,9 @@
     </style>
     <style name="ThemeOverlay.K2Go.Button.Destructive" parent="">
         <item name="materialButtonStyle">@style/Widget.K2Go.Button.Destructive</item>
+    </style>
+    <style name="ThemeOverlay.K2Go.Button.Text.Destructive" parent="">
+        <item name="materialButtonStyle">@style/Widget.K2Go.Button.Text.Destructive</item>
     </style>
 
     <style name="TextAppearance.K2Go.Display" parent="TextAppearance.Material3.HeadlineMedium">

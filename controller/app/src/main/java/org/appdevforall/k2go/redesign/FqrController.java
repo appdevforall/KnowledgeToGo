@@ -443,15 +443,18 @@ public final class FqrController {
         // ADFA-4896: Stop/Retry beside Cancel. The label follows the reported state; the tap fires the
         // matching verb and the poll (onPaused/onProgress) is the source of truth.
         overlayStopped = false;
-        // K2GO-385 (PR3): the download controls use the app button system (K2Go outlined stadium) via the
-        // shared overlay, not a bare Material3 outlined button. FQR's overlay is a themed (day/night)
-        // surface, so the K2Go outlined style's theme teal is right here -- not the fixed boot tokens.
-        ContextThemeWrapper btnCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Outlined);
-        overlayStop = new MaterialButton(btnCtx, null);
+        // K2GO-385: download-controls role ladder (design k2go-download-card-style-sizes-v1) -- the
+        // keep-the-download primary (Stop/Retry) is the FILLED teal button; Cancel, which discards the
+        // transfer, is a TEXT button in clay. Never two equal outline pills. FQR's overlay is a themed
+        // (day/night) surface, so the app button styles' theme teal/clay are right here -- not the fixed
+        // boot tokens. The role look lives only in the styles; no colour is set in Java.
+        ContextThemeWrapper filledCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Filled);
+        overlayStop = new MaterialButton(filledCtx, null);
         overlayStop.setText(R.string.k2go_clone_stop_confirm);
         overlayStop.setOnClickListener(v -> toggleStop());
         row.addView(overlayStop);
-        MaterialButton cancel = new MaterialButton(btnCtx, null);
+        ContextThemeWrapper textDangerCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Text_Destructive);
+        MaterialButton cancel = new MaterialButton(textDangerCtx, null);
         cancel.setText(R.string.k2go_cancel);
         cancel.setOnClickListener(v -> { client.cancel(); hideOverlay(); });
         row.addView(cancel);
