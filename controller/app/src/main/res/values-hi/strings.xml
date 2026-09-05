@@ -820,7 +820,7 @@
     <string name="k2go_clone_replace_other">आपकी लाइब्रेरी (सिस्टम + सामग्री) दूसरे फ़ोन की लाइब्रेरी से बदल दी जाती है। इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="k2go_clone_for_copying">ये फ़ोन K2Go लाइब्रेरी ट्रांसफ़र करने के लिए संगत नहीं हैं।</string>
     <string name="k2go_clone_scan_different">‹ कोई दूसरा कोड स्कैन करें</string>
-    <string name="k2go_clone_copy_btn">⧉  कॉपी करें</string>
+    <string name="k2go_clone_copy_btn">कॉपी करें</string>
     <string name="k2go_clone_already_connected">पहले से कनेक्ट हैं? जारी रखें</string>
     <string name="k2go_clone_copying">लाइब्रेरी कॉपी हो रही है…</string>
     <string name="k2go_clone_join_wifi_note">दूसरे फ़ोन को इस Wi-Fi से कनेक्ट करें।</string>

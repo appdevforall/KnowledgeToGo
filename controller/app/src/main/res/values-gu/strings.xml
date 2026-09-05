@@ -756,7 +756,7 @@
     <string name="k2go_clone_replace_other">તમારી લાઇબ્રેરી (સિસ્ટમ + સામગ્રી) બીજા ફોનની લાઇબ્રેરીથી બદલાય છે. પૂર્વવત્ કરી શકાતું નથી.</string>
     <string name="k2go_clone_for_copying">આ ફોન K2Go લાઇબ્રેરી ટ્રાન્સફર કરવા સુસંગત નથી.</string>
     <string name="k2go_clone_scan_different">‹ અલગ કોડ સ્કૅન કરો</string>
-    <string name="k2go_clone_copy_btn">⧉  કૉપિ કરો</string>
+    <string name="k2go_clone_copy_btn">કૉપિ કરો</string>
     <string name="k2go_clone_already_connected">પહેલેથી કનેક્ટ છો? ચાલુ રાખો</string>
     <string name="k2go_clone_copying">લાઇબ્રેરી કૉપિ થઈ રહી છે…</string>
     <string name="k2go_clone_join_wifi_note">બીજા ફોનને આ Wi-Fi સાથે કનેક્ટ કરો.</string>

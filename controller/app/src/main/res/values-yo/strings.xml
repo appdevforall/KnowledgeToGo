@@ -763,7 +763,7 @@
     <string name="k2go_clone_replace_other">Ilé-ìkàwé rẹ (ètò + àkóónú) ni a fi ti fóònù kejì rọ́pò. Kò ṣe é yí padà.</string>
     <string name="k2go_clone_for_copying">Àwọn fóònù wọ̀nyí kò bára mu láti gbé ilé-ìkàwé K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Ya kóòdù mìíràn</string>
-    <string name="k2go_clone_copy_btn">⧉  Ṣẹ̀dà</string>
+    <string name="k2go_clone_copy_btn">Ṣẹ̀dà</string>
     <string name="k2go_clone_already_connected">O ti so pọ̀ tẹ́lẹ̀? Tẹ̀síwájú</string>
     <string name="k2go_clone_copying">Ń ṣe ẹ̀dà ilé-ìkàwé…</string>
     <string name="k2go_clone_join_wifi_note">So fóònù kejì pọ̀ mọ́ Wi-Fi yìí.</string>

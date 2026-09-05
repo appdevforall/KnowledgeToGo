@@ -110,8 +110,5 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         android:text="@string/k2go_wizard_continue"
-        android:textColor="@android:color/white"
-        android:textAllCaps="false"
-        android:backgroundTint="@color/k2go_teal"
         android:visibility="gone" />
 </LinearLayout>

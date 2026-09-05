@@ -71,7 +71,8 @@ public class ZimCategoryFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
 
     private LinearLayout list;
-    private TextView freeLabel, sortSize, sortName, sortGroup, count, langCurrent, langSub;
+    private TextView freeLabel, count, langCurrent, langSub;
+    private com.google.android.material.chip.Chip sortSize, sortName, sortGroup;
     private ProgressBar bar;
     private Button add;
 
@@ -275,10 +276,11 @@ public class ZimCategoryFragment extends Fragment {
         list.addView(h);
     }
 
-    private void chip(TextView t, boolean on) {
-        t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        // ADFA-4910: white on the selected (teal) chip (same fix as Books / MapsChoose).
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? android.R.color.white : R.color.k2go_ink));
+    // K2GO-385 (PR3): the sort chips use the one shared filter chip (8dp, 32dp, check when active) so
+    // they stop looking different from the category/Books filter chips; the label still carries the
+    // sort direction (e.g. "By size ▲").
+    private void chip(com.google.android.material.chip.Chip t, boolean on) {
+        K2GoFilterChip.style(t, on);
     }
 
     // ADFA-5033: flat list row (spec §10) — a simple line with a hairline between rows, NOT a card.

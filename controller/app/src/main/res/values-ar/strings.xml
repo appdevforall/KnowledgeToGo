@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">يتم استبدال مكتبتك (النظام + المحتوى) بمكتبة الهاتف الآخر. لا يمكن التراجع.</string>
     <string name="k2go_clone_for_copying">هذان الهاتفان غير متوافقين لنقل مكتبة K2Go.</string>
     <string name="k2go_clone_scan_different">‹ امسح رمزًا مختلفًا</string>
-    <string name="k2go_clone_copy_btn">⧉  نسخ</string>
+    <string name="k2go_clone_copy_btn">نسخ</string>
     <string name="k2go_clone_already_connected">متصل بالفعل؟ متابعة</string>
     <string name="k2go_clone_copying">جارٍ نسخ المكتبة…</string>
     <string name="k2go_clone_join_wifi_note">صِل الهاتف الآخر بشبكة Wi-Fi هذه.</string>

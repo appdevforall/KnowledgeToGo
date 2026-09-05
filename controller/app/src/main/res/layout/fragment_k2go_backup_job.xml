@@ -226,7 +226,7 @@
              slot with Finish (mutually exclusive by state). GONE until shown. -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/k2go_bj_cancel"
-            style="@style/Widget.Material3.Button.TextButton"
+            style="@style/Widget.K2Go.Button.Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

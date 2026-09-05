@@ -744,7 +744,7 @@
     <string name="k2go_clone_replace_other">ライブラリ（システム＋コンテンツ）がもう一方のスマホのものに置き換わります。元に戻せません。</string>
     <string name="k2go_clone_for_copying">これらのスマホは K2Go ライブラリの転送に対応していません。</string>
     <string name="k2go_clone_scan_different">‹ 別のコードをスキャン</string>
-    <string name="k2go_clone_copy_btn">⧉  コピー</string>
+    <string name="k2go_clone_copy_btn">コピー</string>
     <string name="k2go_clone_already_connected">すでに接続済みですか？ 続行</string>
     <string name="k2go_clone_copying">ライブラリをコピー中…</string>
     <string name="k2go_clone_join_wifi_note">もう一方のスマホをこの Wi-Fi に接続してください。</string>

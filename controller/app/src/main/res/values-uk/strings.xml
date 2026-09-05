@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">Вашу бібліотеку (система + вміст) буде замінено бібліотекою іншого телефона. Скасувати не можна.</string>
     <string name="k2go_clone_for_copying">Ці телефони несумісні для передавання бібліотеки K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Сканувати інший код</string>
-    <string name="k2go_clone_copy_btn">⧉  Копіювати</string>
+    <string name="k2go_clone_copy_btn">Копіювати</string>
     <string name="k2go_clone_already_connected">Уже підключено? Продовжити</string>
     <string name="k2go_clone_copying">Копіювання бібліотеки…</string>
     <string name="k2go_clone_join_wifi_note">Підключіть інший телефон до цієї Wi-Fi.</string>

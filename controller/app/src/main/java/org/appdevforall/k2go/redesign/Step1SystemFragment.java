@@ -25,10 +25,10 @@ public class Step1SystemFragment extends Fragment {
 
     private static final class Edition {
         final InstallationPlanner.Tier tier; final String name;
-        final String desc; final boolean recommended;
+        final String desc;
         ImageView radio; TextView sizeView;
-        Edition(InstallationPlanner.Tier t, String n, String d, boolean r) {
-            tier = t; name = n; desc = d; recommended = r;
+        Edition(InstallationPlanner.Tier t, String n, String d) {
+            tier = t; name = n; desc = d;
         }
     }
 
@@ -56,14 +56,14 @@ public class Step1SystemFragment extends Fragment {
         tint(barFree, R.color.k2go_hairline);
 
         editions.clear();
+        // ADFA-5295: no "Recommended" edition -- Standard's size edge no longer buys a real UX
+        // advantage, so we don't steer users. K2GO-385: the dead badge scaffolding was removed.
         editions.add(new Edition(InstallationPlanner.Tier.BASIC, getString(R.string.k2go_edition_basic),
-                getString(R.string.k2go_edition_basic_desc), false));
-        // ADFA-5295: no "Recommended" badge on Standard anymore — its size edge no longer buys a
-        // real design/UX advantage, so we don't steer users to it.
+                getString(R.string.k2go_edition_basic_desc)));
         editions.add(new Edition(InstallationPlanner.Tier.STANDARD, getString(R.string.k2go_edition_standard),
-                getString(R.string.k2go_edition_standard_desc), false));
+                getString(R.string.k2go_edition_standard_desc)));
         editions.add(new Edition(InstallationPlanner.Tier.FULL, getString(R.string.k2go_edition_full),
-                getString(R.string.k2go_edition_full_desc), false));
+                getString(R.string.k2go_edition_full_desc)));
 
         LinearLayout host = root.findViewById(R.id.k2go_editions);
         for (Edition e : editions) {
@@ -72,8 +72,6 @@ public class Step1SystemFragment extends Fragment {
             ((TextView) row.findViewById(R.id.k2go_edition_desc)).setText(e.desc);
             e.sizeView = row.findViewById(R.id.k2go_edition_size);
             e.sizeView.setText(sizeText(InstallationPlanner.fallbackOsSizeGb(e.tier))); // instant last-known
-            row.findViewById(R.id.k2go_edition_reco)
-                    .setVisibility(e.recommended ? View.VISIBLE : View.GONE);
             e.radio = row.findViewById(R.id.k2go_edition_radio);
             row.setOnClickListener(v -> select(e.tier));
             host.addView(row);

@@ -750,7 +750,7 @@
     <string name="k2go_clone_replace_other">Η βιβλιοθήκη σας (σύστημα + περιεχόμενο) αντικαθίσταται με αυτή του άλλου τηλεφώνου. Μη αναστρέψιμο.</string>
     <string name="k2go_clone_for_copying">Αυτά τα τηλέφωνα δεν είναι συμβατά για μεταφορά της βιβλιοθήκης K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Σαρώστε διαφορετικό κωδικό</string>
-    <string name="k2go_clone_copy_btn">⧉  Αντιγραφή</string>
+    <string name="k2go_clone_copy_btn">Αντιγραφή</string>
     <string name="k2go_clone_already_connected">Ήδη συνδεδεμένοι; Συνέχεια</string>
     <string name="k2go_clone_copying">Αντιγραφή της βιβλιοθήκης…</string>
     <string name="k2go_clone_join_wifi_note">Συνδέστε το άλλο τηλέφωνο σε αυτό το Wi-Fi.</string>

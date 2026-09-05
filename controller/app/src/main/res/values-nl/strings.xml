@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">Je bibliotheek (systeem + inhoud) wordt vervangen door die van de andere telefoon. Kan niet ongedaan worden gemaakt.</string>
     <string name="k2go_clone_for_copying">Deze telefoons zijn niet compatibel om de K2Go-bibliotheek over te dragen.</string>
     <string name="k2go_clone_scan_different">‹ Een andere code scannen</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopiëren</string>
+    <string name="k2go_clone_copy_btn">Kopiëren</string>
     <string name="k2go_clone_already_connected">Al verbonden? Doorgaan</string>
     <string name="k2go_clone_copying">De bibliotheek kopiëren…</string>
     <string name="k2go_clone_join_wifi_note">Verbind de andere telefoon met deze wifi.</string>

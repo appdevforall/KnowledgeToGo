@@ -744,7 +744,7 @@
     <string name="k2go_clone_replace_other">你的图书馆（系统 + 内容）会被另一部手机的替换。无法撤销。</string>
     <string name="k2go_clone_for_copying">这两部手机不兼容，无法传输 K2Go 图书馆。</string>
     <string name="k2go_clone_scan_different">‹ 扫描其他代码</string>
-    <string name="k2go_clone_copy_btn">⧉  复制</string>
+    <string name="k2go_clone_copy_btn">复制</string>
     <string name="k2go_clone_already_connected">已经连接？继续</string>
     <string name="k2go_clone_copying">正在复制图书馆…</string>
     <string name="k2go_clone_join_wifi_note">将另一部手机连接到此 Wi-Fi。</string>

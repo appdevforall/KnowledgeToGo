@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.chip.Chip;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
@@ -46,6 +49,7 @@ public class ZimLandingFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
     private LinearLayout cats;
     private LinearLayout chipRow;
+    private HorizontalScrollView chipScroll;
     private TextView status, langLabel, langSub, storageLabel;
     private ProgressBar storageBar;
     private Button review;
@@ -74,6 +78,7 @@ public class ZimLandingFragment extends Fragment {
 
         cats = root.findViewById(R.id.k2go_zim_cats);
         chipRow = root.findViewById(R.id.k2go_zim_chips);
+        chipScroll = root.findViewById(R.id.k2go_zim_chips_scroll);
         status = root.findViewById(R.id.k2go_zim_status);
         langLabel = root.findViewById(R.id.k2go_zim_lang);
         langSub = root.findViewById(R.id.k2go_zim_lang_sub);
@@ -249,40 +254,24 @@ public class ZimLandingFragment extends Fragment {
         chipRow.removeAllViews();
         chipRow.addView(chip(getString(R.string.k2go_zim_grp_all), null));
         for (KiwixGroups.Group g : KiwixGroups.ALL) chipRow.addView(chip(getString(g.chipLabel), g.key));
+        K2GoFilterChip.revealSelected(chipScroll, chipRow);
     }
 
     private View chip(String label, String groupKey) {
         boolean selected = (groupKey == null) ? (selectedGroup == null) : groupKey.equals(selectedGroup);
-        int teal = ContextCompat.getColor(requireContext(), R.color.k2go_teal);
-        TextView t = new TextView(requireContext());
-        t.setText(label);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
-        t.setGravity(Gravity.CENTER);
-        t.setMinHeight(px(48));   // ADFA-5033: ≥48dp tap target (spec §9)
-        t.setPadding(px(14), px(6), px(14), px(6));
-        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-        bg.setCornerRadius(px(24));   // full pill at 48dp
-        if (selected) {
-            bg.setColor(teal);
-            t.setTextColor(android.graphics.Color.WHITE);
-        } else {
-            bg.setColor(android.graphics.Color.TRANSPARENT);
-            bg.setStroke(Math.max(1, Math.round(1.4f * getResources().getDisplayMetrics().density)), teal);
-            t.setTextColor(teal);
-        }
-        t.setBackground(bg);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.rightMargin = px(8);
-        t.setLayoutParams(lp);
-        t.setOnClickListener(v -> {
+        // K2GO-385 (PR3): one shared filter chip (8dp corner, 32dp, check when selected) -- replaces the
+        // per-screen 48dp teal pill that had drifted from the other filter surfaces.
+        Chip c = K2GoFilterChip.create(requireContext(), label, selected, v -> {
             selectedGroup = groupKey;
             expanded = false;
             buildChips();
             buildRows();
         });
-        return t;
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.rightMargin = px(8);
+        c.setLayoutParams(lp);
+        return c;
     }
 
     /** Teal caps section header (MOST CONTENT / group headers). */

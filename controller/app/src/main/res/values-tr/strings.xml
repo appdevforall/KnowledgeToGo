@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">Kitaplığınız (sistem + içerik) diğer telefonunkiyle değiştirilir. Geri alınamaz.</string>
     <string name="k2go_clone_for_copying">Bu telefonlar K2Go kitaplığını aktarmak için uyumlu değil.</string>
     <string name="k2go_clone_scan_different">‹ Farklı bir kod tara</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopyala</string>
+    <string name="k2go_clone_copy_btn">Kopyala</string>
     <string name="k2go_clone_already_connected">Zaten bağlı mısınız? Devam</string>
     <string name="k2go_clone_copying">Kitaplık kopyalanıyor…</string>
     <string name="k2go_clone_join_wifi_note">Diğer telefonu bu Wi-Fi\'ye bağlayın.</string>
