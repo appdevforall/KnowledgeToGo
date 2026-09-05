@@ -8,14 +8,17 @@
  *
  *               One tick reads free space (StorageProbe) and asks the pure rule
  *               (DiskGuardPolicy). On CRITICAL it CONFIRMS with a fresh re-read
- *               (it never acts on one reading), then reaps the box and reclaims
- *               the runaway log. The default action KEEPS THE SYSTEM ALIVE: it
- *               does not force the server down. A fresh service under a fresh
- *               proot does not busy-loop, so the ADFA-5343 reconciler relaunches
- *               a clean box. Only when the fill KEEPS RETURNING after several
- *               restarts in a window does the guard stop and stay down as a last
- *               resort, and tell the user. Every trip is reported to developers
- *               through the delivery backbone.
+ *               (it never acts on one reading). It does NOT reap while a deep op
+ *               (clone/backup/restore/install) holds the box, because a reap
+ *               mid-operation would corrupt it. Otherwise it reaps the box and
+ *               reclaims the runaway log.
+ *
+ *               The default action KEEPS THE SYSTEM ALIVE: it does not force the
+ *               server down. A fresh service under a fresh proot does not
+ *               busy-loop, so the ADFA-5343 reconciler relaunches a clean box.
+ *               Only when the disk stays critical for several trips in a row
+ *               (DiskGuardEscalation) does the guard stop and stay down as a last
+ *               resort and tell the user. Trips are reported to developers.
  *
  *               Why Android-side: the fill happens when the box proot dies and a
  *               service is orphaned off proot. An in-box kill does not reach the
@@ -38,10 +41,13 @@ import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.delivery.DeliveryManager;
+import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
+import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.env.EnvironmentProcess;
 import org.appdevforall.k2go.env.ServerLifecycleReconciler;
 import org.appdevforall.k2go.storage.StorageProbe;
+import org.appdevforall.k2go.system.domain.Operation;
 
 import org.json.JSONObject;
 
@@ -60,8 +66,8 @@ public final class DiskGuard {
     // a momentary spike does not (ADR-386, "confirm before acting").
     private static final long CONFIRM_DELAY_MS = 1000L;
 
-    // Restart-to-keep-alive is the default. If the fill returns this many times inside TRIP_WINDOW_MS,
-    // the restart is not fixing it, so the guard escalates to stop-and-stay-down as a last resort.
+    // Restart-to-keep-alive is the default. If the disk stays critical this many trips in a row, the
+    // restart is not fixing it, so the guard escalates to stop-and-stay-down as a last resort.
     private static final int ESCALATE_AFTER_TRIPS = 3;
     private static final long TRIP_WINDOW_MS = 30L * 60L * 1000L;
 
@@ -69,7 +75,7 @@ public final class DiskGuard {
     private static final int NOTIF_ID = 7386;
 
     // Recent-trip state, in memory on purpose: it resets when the app process restarts, so a stale count
-    // never carries across a restart. Guarded by the class monitor.
+    // never carries across a restart. Read and written only under advanceTripState (class monitor).
     private static long lastTripElapsedMs = -1L;
     private static int tripCount = 0;
 
@@ -80,36 +86,57 @@ public final class DiskGuard {
      * repeatedly from a poller. A null or UNKNOWN read is a no-op.
      */
     public static boolean check(Context ctx) {
-        return checkWithFloor(ctx, DiskGuardPolicy.CRITICAL_FLOOR_BYTES);
+        return run(ctx, DiskGuardPolicy.CRITICAL_FLOOR_BYTES, false);
     }
 
     /**
-     * As {@link #check} but with an explicit floor. The debug device-verify hook passes a huge floor so
-     * any real free-space read is CRITICAL. This forces the action without filling the disk for real.
+     * The debug device-verify hook. It passes a huge floor so any real free-space read is CRITICAL, and
+     * runs in FORCED mode: it exercises the reap/reclaim/restart path once but does NOT advance the real
+     * escalation count, so triggering it repeatedly cannot stop the box.
      */
     public static boolean checkWithFloor(Context ctx, long floorBytes) {
-        if (ctx == null) return false;
-        if (!confirmCritical(ctx, floorBytes)) return false;
+        return run(ctx, floorBytes, true);
+    }
 
-        int trip = recordTrip();
+    private static boolean run(Context ctx, long floorBytes, boolean forced) {
+        if (ctx == null) return false;
+        boolean critical = confirmCritical(ctx, floorBytes);
+
+        DiskGuardEscalation.Verdict v;
+        if (forced) {
+            // Forced (debug): CONTAIN if critical, and never touch the shared trip state or escalate.
+            v = new DiskGuardEscalation.Verdict(
+                    critical ? DiskGuardEscalation.Action.CONTAIN : DiskGuardEscalation.Action.NONE,
+                    0, 0L, true);
+        } else {
+            v = advanceTripState(critical);
+        }
+        if (v.action == DiskGuardEscalation.Action.NONE) return false;
+
+        // Never reap while a deep op owns the box (clone/backup/restore/install). A reap mid-operation
+        // would corrupt it. EnvironmentLock is the one owner of "is a stop-class op running".
+        if (deepOpActive(ctx)) {
+            Log.w(TAG, "K2GO-386: disk critical but a deep op holds the box; not reaping this tick");
+            return false;
+        }
+
         boolean reaped = EnvironmentProcess.reapBox(ctx);
         long reclaimed = reclaimRunawayLog(ctx);
 
-        if (trip < ESCALATE_AFTER_TRIPS) {
-            // Default: keep the system alive. Do NOT force desired=DOWN. The reconciler (ADFA-5343) owns
-            // "should the box be up"; it is left UP, so it relaunches a fresh box. Ask it to act now
-            // instead of on its next tick.
-            ServerLifecycleReconciler.get().requestReconcileNow();
-            report(ctx, "contained", floorBytes, reaped, reclaimed, trip);
-            Log.w(TAG, "K2GO-386: contained disk pressure (trip " + trip + "): reaped=" + reaped
-                    + ", reclaimed=" + reclaimed + " B, box restarting");
-        } else {
+        if (v.action == DiskGuardEscalation.Action.ESCALATE) {
             // Last resort: the fill keeps returning after restarts. Stop and stay down through the one
             // persisted lever, and tell the user. The user re-enables the server after freeing space.
             ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
             notifyUser(ctx);
-            report(ctx, "escalated_stopped", floorBytes, reaped, reclaimed, trip);
-            Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + trip + "): stopped and staying down");
+            report(ctx, "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount);
+            Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + v.tripCount + "): stopped and staying down");
+        } else {
+            // Default: keep the system alive. Leave desired=UP and ask the reconciler to relaunch a fresh
+            // box now. Report only the first trip of a spell so a thrash does not spam telemetry.
+            ServerLifecycleReconciler.get().requestReconcileNow();
+            if (v.firstOfSpell) report(ctx, "contained", floorBytes, reaped, reclaimed, v.tripCount);
+            Log.w(TAG, "K2GO-386: contained disk pressure (trip " + v.tripCount + "): reaped=" + reaped
+                    + ", reclaimed=" + reclaimed + " B, box restarting");
         }
         return true;
     }
@@ -135,14 +162,19 @@ public final class DiskGuard {
         return stillCritical;
     }
 
-    /** Count trips inside a sliding window. Returns the trip number in the current window (1-based). */
-    private static synchronized int recordTrip() {
-        long now = SystemClock.elapsedRealtime();
-        if (lastTripElapsedMs < 0L || now - lastTripElapsedMs > TRIP_WINDOW_MS) {
-            tripCount = 0;
-        }
-        lastTripElapsedMs = now;
-        return ++tripCount;
+    /** Advance the shared trip state with the pure rule and return the verdict. */
+    private static synchronized DiskGuardEscalation.Verdict advanceTripState(boolean critical) {
+        DiskGuardEscalation.Verdict v = DiskGuardEscalation.next(
+                critical, SystemClock.elapsedRealtime(), lastTripElapsedMs, tripCount,
+                TRIP_WINDOW_MS, ESCALATE_AFTER_TRIPS);
+        tripCount = v.tripCount;
+        lastTripElapsedMs = v.lastElapsedMs;
+        return v;
+    }
+
+    /** True when a stop-class operation (clone/backup/restore/install) currently holds the box. */
+    private static boolean deepOpActive(Context ctx) {
+        return EnvironmentLock.currentHolder(ctx).executionClass == Operation.ExecutionClass.STOPPED;
     }
 
     /** Report the event to developers through the delivery backbone (unattended; not user-facing). */
