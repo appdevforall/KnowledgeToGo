@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -107,11 +106,17 @@ public class SettingsFragment extends Fragment {
                 AppCompatDelegate.MODE_NIGHT_NO,
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
                 AppCompatDelegate.MODE_NIGHT_YES};
-        new AlertDialog.Builder(requireContext())
+        int cur = prefs().getInt("k2go_theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        int checked = cur == AppCompatDelegate.MODE_NIGHT_NO ? 0 : (cur == AppCompatDelegate.MODE_NIGHT_YES ? 2 : 1);
+        // K2GO-385 (pill roles Q3): a single-choice list picker -- a themed M3 dialog with a leading
+        // filled radio on the current theme, not a bare setItems list. Tap applies and closes, as before.
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(
+                new android.view.ContextThemeWrapper(requireContext(), R.style.Theme_K2Go))
                 .setTitle(getString(R.string.k2go_settings_theme))
-                .setItems(labels, (d, w) -> {
+                .setSingleChoiceItems(labels, checked, (d, w) -> {
                     prefs().edit().putInt("k2go_theme", modes[w]).apply();
                     AppCompatDelegate.setDefaultNightMode(modes[w]);
+                    d.dismiss();
                 })
                 .show();
     }
