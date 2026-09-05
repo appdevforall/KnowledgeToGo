@@ -10,6 +10,19 @@
         <item name="android:windowBackground">@color/k2go_paper</item>
         <item name="colorSurface">@color/k2go_paper</item>
         <item name="colorSurfaceContainer">@color/k2go_surface</item>
+        <!-- K2GO-385: define the full surface-container ladder so M3 dialogs and menus take a K2Go
+             surface, not the Material3 baseline lilac. A themed MaterialAlertDialog (e.g. the theme
+             picker) reads colorSurfaceContainerHigh for its card. The tokens carry their own -night
+             twins, so DayNight is handled. -->
+        <item name="colorSurfaceContainerLowest">@color/k2go_paper</item>
+        <item name="colorSurfaceContainerLow">@color/k2go_paper</item>
+        <item name="colorSurfaceContainerHigh">@color/k2go_surface</item>
+        <item name="colorSurfaceContainerHighest">@color/k2go_surface</item>
+        <!-- K2GO-385: interactive controls (the single-choice radio in the theme picker, checkboxes,
+             switches) take K2Go teal, not the Material3 / dynamic default (which read purple). The
+             android-namespace attr is the one the platform radio in setSingleChoiceItems uses. -->
+        <item name="colorControlActivated">@color/k2go_teal</item>
+        <item name="android:colorControlActivated">@color/k2go_teal</item>
         <item name="colorOnBackground">@color/k2go_ink</item>
         <item name="colorOnSurface">@color/k2go_ink</item>
         <item name="colorOnSurfaceVariant">@color/k2go_muted</item>
