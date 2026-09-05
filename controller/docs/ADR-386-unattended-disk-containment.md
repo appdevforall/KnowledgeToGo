@@ -80,7 +80,12 @@ RPi-oriented inherited snippets (learn from them, write ours):
   `su root root`) — our threat is a file that grows, not a calendar.
 - **Trigger = dash-node** (the box's always-up process), **every 10 min, no run at boot** — boot is the
   heaviest/most fragile moment (Python services starting; phantom-process-killer risk). Accepted tradeoff:
-  a <10-min session never rotates; the size cap + L3 bound it.
+  a <10-min session never rotates; the size cap + the guard below bound it.
+- **A firehose guard runs FIRST, in the same tick** (deterministic order, one clock — no second timer to
+  drift): before logrotate, dash-node truncates any log past a firehose threshold (~1 GiB) **in place**,
+  so logrotate never has to copy a multi-GB runaway (a copy doubles disk and pegs CPU on a weak phone, and
+  still would not stop the writer). This is the in-box half of L3 (§6); a recurring firehose is flagged for
+  the app-side reap.
 
 **The config set (verified on-device against the pdsm wrappers + live `/var/log`):**
 
@@ -108,6 +113,17 @@ re-asserts this config. Phase 2 folds it into a rootfs ansible role with a pdsm-
 The outside-the-rootfs net for what L2 cannot catch: the **fast firehose** (fills faster than a 10-min
 rotation) and **Vector B** (no file to rotate; must stop the holding process). Device-proven: only the
 app can stop an off-proot orphan.
+
+**L3 splits into two halves at the proot boundary — this matters:**
+- **In-box (dash-node) — DETECT + RECLAIM.** dash-node can *see* a firehose log and *truncate* it in
+  place (reclaim, no copy) — but it **cannot stop an off-proot orphan** (an in-box kill does not reach it,
+  device-proven; the same limitation that parked the K2GO-381 in-box healer). This half is already coupled
+  to L2's tick as the firehose guard (§5): it protects L2 and bounds the disk (each tick truncates the
+  runaway back, so even an unstoppable orphan cannot reach ENOSPC as long as headroom > rate×interval),
+  and it emits the recurring-firehose signal.
+- **App-side (Android) — STOP.** The only actor that can reap an off-proot orphan. It is driven by the
+  in-box recurring-firehose signal (a log that keeps refilling after truncation = an orphan) or by disk
+  pressure, and it reaps + reports. This is the half that is still to be built.
 
 **Decisions (direction; detailed mechanism is the next design step, possibly `ADR-386a`):**
 
