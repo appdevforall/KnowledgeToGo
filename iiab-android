@@ -19,6 +19,17 @@ log()  { printf "${BLU}[iiab]${RST} %s\n" "$*"; }
 warn() { printf "${YEL}[iiab] WARNING:${RST} %s\n" "$*" >&2; }
 die()  { printf "${RED}[!] ERROR${RST}: %s\n" "$*" >&2; exit 1; }
 
+usage() {
+  cat <<'USAGE'
+iiab-android — K2Go rootfs installer. Runs the IIAB install under proot and installs the K2Go
+dashboard, services, content, and log rotation. Run as ROOT inside the proot box; normally invoked
+by tools/rootfs-builder/build-iiab-rootfs.sh, not by hand.
+
+Usage: iiab-android [-h|--help]
+USAGE
+}
+case "${1:-}" in -h|--help) usage; exit 0 ;; esac
+
 #-----------------------------
 # Safety checks
 #-----------------------------

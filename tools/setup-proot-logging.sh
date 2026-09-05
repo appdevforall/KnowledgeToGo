@@ -20,6 +20,20 @@
 #      state (never leave a broken config that would break ALL rotation) and fail loudly.
 set -eu
 
+usage() {
+  cat <<'USAGE'
+setup-proot-logging.sh — install K2Go-owned log rotation for the proot box (K2GO-386 / ADR-386).
+
+Usage: sh setup-proot-logging.sh [-h|--help]
+
+Takes no arguments. Run inside the proot box, at DEPLOY time (rootfs build + rebuild/dev-push).
+It overrides the inherited nginx/php-fpm logrotate snippets, installs /etc/logrotate.d/k2go
+(copytruncate + size-based), validates with `logrotate -d`, and rolls back on failure. Idempotent.
+dash-node triggers the rotation itself on a 10-min timer; this script only installs the config.
+USAGE
+}
+case "${1:-}" in -h|--help) usage; exit 0 ;; esac
+
 LR_D="/etc/logrotate.d"
 OVERRIDDEN="/etc/logrotate.d.k2go-overridden"   # OUTSIDE LR_D, so logrotate never reads it
 K2GO_CONF="$LR_D/k2go"

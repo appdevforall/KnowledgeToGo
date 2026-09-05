@@ -26,6 +26,21 @@ set -u
 # is how the app's detached REST call passes it). CLONE_DIR is the optional $2 — the install location is
 # almost always the same, so it defaults; pass it only if it moved.
 #   sh tools/rebuild-dashboard.sh <branch> [clone_dir]
+usage() {
+  cat <<'USAGE'
+rebuild-dashboard.sh — rebuild ONLY the dash-node REST API from the on-device clone, no rootfs
+rebuild. Blue-green + verify-before-commit (ADFA-5011).
+
+Usage: sh rebuild-dashboard.sh [BRANCH] [CLONE_DIR]
+  BRANCH     git branch to fetch + reset --hard from origin (default: $K2GO_BRANCH, else main)
+  CLONE_DIR  clone location to build from       (default: /opt/iiab-android)
+
+Run inside the proot box. Fetches origin/<BRANCH>, builds in a staging dir, smoke-tests it,
+atomically swaps the dist in, restarts dash-node, and verifies live (rolls back on failure).
+USAGE
+}
+case "${1:-}" in -h|--help) usage; exit 0 ;; esac
+
 BRANCH="${1:-${K2GO_BRANCH:-main}}"
 CLONE_DIR="${2:-/opt/iiab-android}"
 SRC="$CLONE_DIR/static/dashboard"
