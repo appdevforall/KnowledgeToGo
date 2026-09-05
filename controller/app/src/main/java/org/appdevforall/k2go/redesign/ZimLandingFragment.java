@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -48,6 +49,7 @@ public class ZimLandingFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
     private LinearLayout cats;
     private LinearLayout chipRow;
+    private HorizontalScrollView chipScroll;
     private TextView status, langLabel, langSub, storageLabel;
     private ProgressBar storageBar;
     private Button review;
@@ -76,6 +78,7 @@ public class ZimLandingFragment extends Fragment {
 
         cats = root.findViewById(R.id.k2go_zim_cats);
         chipRow = root.findViewById(R.id.k2go_zim_chips);
+        chipScroll = root.findViewById(R.id.k2go_zim_chips_scroll);
         status = root.findViewById(R.id.k2go_zim_status);
         langLabel = root.findViewById(R.id.k2go_zim_lang);
         langSub = root.findViewById(R.id.k2go_zim_lang_sub);
@@ -251,6 +254,7 @@ public class ZimLandingFragment extends Fragment {
         chipRow.removeAllViews();
         chipRow.addView(chip(getString(R.string.k2go_zim_grp_all), null));
         for (KiwixGroups.Group g : KiwixGroups.ALL) chipRow.addView(chip(getString(g.chipLabel), g.key));
+        K2GoFilterChip.revealSelected(chipScroll, chipRow);
     }
 
     private View chip(String label, String groupKey) {

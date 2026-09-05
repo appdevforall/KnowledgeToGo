@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 
 import androidx.core.content.ContextCompat;
 
@@ -71,5 +73,29 @@ public final class K2GoFilterChip {
         chip.setChipStrokeWidth(Math.max(1, Math.round(1.4f * d)));
         chip.setTextColor(new ColorStateList(states, new int[]{ onTeal, teal }));
         chip.setCheckedIconTint(ColorStateList.valueOf(onTeal));
+    }
+
+    /**
+     * Wire a horizontally-scrollable filter-chip row so it never reads as "the last chip": a soft fade
+     * at the scrolled edges (right while there is more to the right, left once scrolled), and on
+     * (re)build a scroll that reveals the selected chip with its neighbours peeking instead of pinned
+     * flush to an edge. Call after (re)populating the row. K2GO-385 (design k2go-chip-scroll-affordance-v1).
+     */
+    public static void revealSelected(HorizontalScrollView scroll, ViewGroup row) {
+        float d = scroll.getResources().getDisplayMetrics().density;
+        scroll.setHorizontalFadingEdgeEnabled(true);
+        // 34dp (a touch longer than the default) so the edge fade stays legible for low vision, not so
+        // faint it can be missed when a chip happens to end right at the row edge.
+        scroll.setFadingEdgeLength(Math.round(34 * d));
+        scroll.post(() -> {
+            for (int i = 0; i < row.getChildCount(); i++) {
+                View c = row.getChildAt(i);
+                if (c instanceof Chip && ((Chip) c).isChecked()) {
+                    int peek = c.getWidth();   // keep one chip of context so the active chip is not pinned
+                    scroll.smoothScrollTo(Math.max(0, c.getLeft() - peek), 0);
+                    return;
+                }
+            }
+        });
     }
 }
