@@ -79,4 +79,28 @@ public final class ZimWishlist {
     public static void clear(Context ctx) {
         prefs(ctx).edit().remove(KEY).apply();
     }
+
+    /**
+     * K2GO-390: record one failed download attempt for a key, counted AGAINST a catalog version
+     * ({@code catalogTag} = the overlay's mtime, 0 for the asset). If the catalog changed since the last
+     * failure, the count RESETS to 1 -- a refreshed catalog gives the current file a fresh budget; only
+     * failures against an unchanging catalog climb toward the cap (= genuinely gone, or no fresh source).
+     * The count rides in the entry; a confirmed DONE removes the entry via {@link #remove}. Returns the
+     * new count, or 0 if the key is absent.
+     */
+    public static int bumpAttempts(Context ctx, String key, long catalogTag) {
+        if (key == null) return 0;
+        JSONArray cur = all(ctx);
+        int count = 0;
+        for (int i = 0; i < cur.length(); i++) {
+            JSONObject o = cur.optJSONObject(i);
+            if (o != null && key.equals(o.optString("key"))) {
+                count = (o.optLong("catTag", Long.MIN_VALUE) == catalogTag) ? o.optInt("attempts", 0) + 1 : 1;
+                try { o.put("attempts", count).put("catTag", catalogTag); } catch (Exception ignored) {}
+                break;
+            }
+        }
+        prefs(ctx).edit().putString(KEY, cur.toString()).apply();
+        return count;
+    }
 }

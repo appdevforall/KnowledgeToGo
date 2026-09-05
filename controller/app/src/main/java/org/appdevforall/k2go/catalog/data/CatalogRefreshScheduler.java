@@ -31,10 +31,15 @@ public final class CatalogRefreshScheduler {
     }
 
     private static Data input(String name, String manifestUrl, String basename) {
+        return input(name, manifestUrl, basename, false);
+    }
+
+    private static Data input(String name, String manifestUrl, String basename, boolean force) {
         return new Data.Builder()
                 .putString(CatalogRefreshWorker.KEY_NAME, name)
                 .putString(CatalogRefreshWorker.KEY_MANIFEST_URL, manifestUrl)
                 .putString(CatalogRefreshWorker.KEY_BASENAME, basename)
+                .putBoolean(CatalogRefreshWorker.KEY_FORCE, force)
                 .build();
     }
 
@@ -84,6 +89,24 @@ public final class CatalogRefreshScheduler {
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())
                 .enqueueUniqueWork("catalog-refresh-now-" + name,
+                        ExistingWorkPolicy.KEEP, req);
+    }
+
+    /**
+     * K2GO-390: force an on-demand check that bypasses the worker's TTL gate (for a 404 self-heal --
+     * the catalog may have rolled to a newer dated file within the TTL window). The ETag conditional
+     * GET still makes it cheap. Its own unique name (KEEP) coalesces a burst of failures into one run.
+     */
+    public static void forceRefresh(Context ctx, String name, String manifestUrl, String basename) {
+        // K2GO-390: EXPEDITED so it dispatches promptly -- a 404 self-heal must land before the caller's
+        // bounded retries give up (falls back to a normal request if the expedited quota is spent).
+        OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
+                .setConstraints(constraints(NetworkType.CONNECTED))
+                .setExpedited(androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setInputData(input(name, manifestUrl, basename, true))
+                .build();
+        WorkManager.getInstance(ctx.getApplicationContext())
+                .enqueueUniqueWork("catalog-refresh-force-" + name,
                         ExistingWorkPolicy.KEEP, req);
     }
 }

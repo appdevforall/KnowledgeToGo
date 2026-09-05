@@ -19,7 +19,8 @@
 # Gradle runs this only on release builds (assembleRelease/bundleRelease); run it
 # manually any time with `./gradlew refreshKiwixCatalog`.
 # ============================================================================
-import argparse, csv, gzip, os, re, sys, urllib.request
+import argparse, csv, gzip, hashlib, json, os, re, sys, urllib.request
+from datetime import datetime, timezone
 
 CATS = ["devdocs","freecodecamp","gutenberg","ifixit","libretexts","maps","mooc",
         "other","phet","psiram","stack_exchange","ted","videos","vikidia","wikibooks",
@@ -156,6 +157,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from-file")
     ap.add_argument("--out")
+    # K2GO-390 (ADR-390): also emit a manifest so the app can refresh the catalog (ETag/hash-gated),
+    # mirroring Kolibri's catalogs/kolibri.manifest.json. Ops runs the generator with --manifest and
+    # --csv-url, then uploads the CSV + manifest to APK_REPO/catalogs/. Omit for a plain asset refresh.
+    ap.add_argument("--manifest", help="path to write kiwix.manifest.json (enables manifest emission)")
+    ap.add_argument("--csv-url",
+                    default="https://k2go-download.appdevforall.org/catalogs/kiwix_catalog.csv",
+                    help="hosted URL of the CSV, recorded in the manifest")
     args = ap.parse_args()
 
     here = os.path.dirname(os.path.abspath(__file__))
@@ -178,6 +186,20 @@ def main():
         w.writerow(["category","creator","lang","flavour","bytes","date","file"])
         w.writerows(dedup)
     sys.stderr.write(f"wrote {out_path}: {len(dedup)} items (from {len(rows)} files)\n")
+
+    if args.manifest:
+        with open(out_path, "rb") as f:
+            digest = hashlib.sha256(f.read()).hexdigest()
+        generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        manifest = {
+            "hash": "sha256:" + digest,   # the app verifies the downloaded CSV against this
+            "url": args.csv_url,          # where the app pulls the refreshed CSV
+            "version": generated,         # human/log label
+            "generated": generated,
+        }
+        with open(args.manifest, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=2)
+        sys.stderr.write(f"wrote {args.manifest}: {manifest['hash']}\n")
     return 0
 
 if __name__ == "__main__":

@@ -163,6 +163,31 @@ public final class ZimDownloadService extends Service implements ContentDownload
         if (key != null && !key.isEmpty()) ZimWishlist.remove(getApplicationContext(), key);
     }
 
+    // K2GO-390: bound the self-heal. On a failure we force a catalog refresh; the drain then re-resolves
+    // the date-free key ("project|lang|flavour") to the current dated file and retries. After this many
+    // failed drains for one key, it is genuinely gone (or there is no fresh source) -- drop it so it
+    // stops re-draining. ~5 * the ~2s drain cadence gives the refresh time to land. See ADR-390.
+    private static final int MAX_HEAL_ATTEMPTS = 5;
+
+    /** ADR-390: item gave up (likely a stale catalog -> 404). Force a freshness check and bound retries,
+     *  so a rolled-over ZIM heals to its current file and a genuinely-gone one stops looping. */
+    @Override public void onItemError(String key) {
+        if (key == null || key.isEmpty()) return;
+        Context app = getApplicationContext();
+        KiwixCatalog.forceRefresh(app);   // network-constrained; offline is a silent no-op
+        // Count failures against the current catalog version (overlay mtime, 0 = asset). A refresh that
+        // changes the catalog resets the budget (see ZimWishlist.bumpAttempts); only an unchanging
+        // catalog climbs to the cap = genuinely gone / no fresh source.
+        java.io.File overlay = org.appdevforall.k2go.catalog.data.CatalogOverlay.file(app, "kiwix_catalog.csv");
+        long catalogTag = overlay.exists() ? overlay.lastModified() : 0L;
+        int attempts = ZimWishlist.bumpAttempts(app, key, catalogTag);
+        if (attempts >= MAX_HEAL_ATTEMPTS) {
+            android.util.Log.w("K2Go-Provision",
+                    "kiwix item still failing after " + attempts + " attempts; dropping " + key);
+            ZimWishlist.remove(app, key);
+        }
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(

@@ -36,6 +36,9 @@ public final class CatalogRefreshWorker extends Worker {
     public static final String KEY_NAME = "name";
     public static final String KEY_MANIFEST_URL = "manifest_url";
     public static final String KEY_BASENAME = "basename";
+    // K2GO-390: bypass the TTL gate for an on-demand check (e.g. a 404 self-heal needs to look now,
+    // even if the weekly check ran recently). The ETag conditional GET still keeps it cheap.
+    public static final String KEY_FORCE = "force";
 
     public CatalogRefreshWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -54,7 +57,8 @@ public final class CatalogRefreshWorker extends Worker {
 
         CatalogRefreshStore store = new CatalogRefreshStore(ctx);
         long now = System.currentTimeMillis();
-        if (!CatalogFreshness.dueForCheck(store.lastCheckMs(name), now, CatalogFreshness.DEFAULT_TTL_MS)) {
+        boolean force = getInputData().getBoolean(KEY_FORCE, false);
+        if (!force && !CatalogFreshness.dueForCheck(store.lastCheckMs(name), now, CatalogFreshness.DEFAULT_TTL_MS)) {
             return Result.success();   // still fresh; do not hit the network
         }
 
