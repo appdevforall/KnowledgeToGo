@@ -37,6 +37,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import org.appdevforall.k2go.PortalActivity;
+import com.google.android.material.chip.Chip;
+
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.json.JSONArray;
@@ -200,22 +202,10 @@ public class BooksLandingFragment extends Fragment {
                 () -> { lang = ""; updateLangPill(); loadBooks(); });
     }
 
-    private TextView chip(String text, boolean on, Runnable onClick) {
-        TextView t = new TextView(requireContext());
-        t.setText(text);
-        t.setPadding(px(14), px(8), px(14), px(8));
-        t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        // ADFA-5248: apply the text appearance FIRST, then the color. TextAppearance_Material3_*
-        // carries its own colorOnSurface, so setting the color before it silently overwrote the chip
-        // color (the real bug the ticket reported: onSurface flips with the theme, giving dark-on-
-        // dark-teal in light mode and light-on-aqua in dark mode — never legible on the teal fill).
-        // With the order fixed, k2go_on_teal sticks: it flips against the fill (light text on the
-        // dark-teal light-mode fill, dark text on the light-aqua dark-mode fill).
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
-        t.setClickable(true);
-        t.setOnClickListener(v -> onClick.run());
-        return t;
+    // K2GO-385 (PR3): the shared filter chip (8dp corner, 32dp, check when selected). Replaces the
+    // per-screen k2go_chip_bg/k2go_pill_bg drawable pair that had drifted from the other filter surfaces.
+    private Chip chip(String text, boolean on, Runnable onClick) {
+        return K2GoFilterChip.create(requireContext(), text, on, v -> onClick.run());
     }
 
     private void loadLibrary() {

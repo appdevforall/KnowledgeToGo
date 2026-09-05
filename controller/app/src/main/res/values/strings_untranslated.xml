@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  strings_untranslated.xml — WIP UI strings pending localization (K2GO l10n policy).
+
+  This is the tracking list for strings that are user-facing but NOT yet translated to the 33
+  locales. They carry translatable="false" HERE (so lint's MissingTranslation is satisfied and the
+  debt is visible in one place) instead of being buried inline in strings.xml. When a string is
+  translated, migrate it to strings.xml (or its feature file) with all 33 locale values and drop the
+  entry here.
+-->
+<resources>
+
+    <!-- K2GO-386: the app-side free-space guard's alert when it stops the box to avoid ENOSPC. -->
+    <string name="disk_guard_notif_title" translatable="false">Storage critically low</string>
+    <string name="disk_guard_notif_body" translatable="false">The server was stopped to protect your device from running out of space.</string>
+
+</resources>

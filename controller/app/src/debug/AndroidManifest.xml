@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  DEBUG-ONLY overlay: registers a receiver so the delivery backbone can be exercised
-  from adb (see DebugDeliveryReceiver). Merged into debug builds only; never in release.
+  DEBUG-ONLY overlay: registers receivers so parts of the app can be exercised from adb
+  (delivery backbone, disk-guard device-verify). Merged into debug builds only; never in release.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
@@ -10,6 +10,14 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="org.appdevforall.k2go.DEBUG_DELIVERY" />
+            </intent-filter>
+        </receiver>
+        <!-- K2GO-386: adb-reachable trigger for the disk-guard device-verify (DebugDiskGuardReceiver). -->
+        <receiver
+            android:name="org.appdevforall.k2go.diskguard.debug.DebugDiskGuardReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.appdevforall.k2go.DEBUG_DISK_GUARD" />
             </intent-filter>
         </receiver>
     </application>

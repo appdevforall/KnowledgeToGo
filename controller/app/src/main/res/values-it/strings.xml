@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">La tua libreria (sistema + contenuti) viene sostituita con quella dell\'altro telefono. Non annullabile.</string>
     <string name="k2go_clone_for_copying">Questi telefoni non sono compatibili per trasferire la libreria K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Scansiona un codice diverso</string>
-    <string name="k2go_clone_copy_btn">⧉  Copia</string>
+    <string name="k2go_clone_copy_btn">Copia</string>
     <string name="k2go_clone_already_connected">Già connesso? Continua</string>
     <string name="k2go_clone_copying">Copia della libreria…</string>
     <string name="k2go_clone_join_wifi_note">Connetti l\'altro telefono a questo Wi-Fi.</string>

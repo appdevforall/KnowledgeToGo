@@ -751,7 +751,7 @@
     <string name="k2go_clone_replace_other">Jūsų biblioteka (sistema + turinys) pakeičiama kito telefono biblioteka. Atšaukti negalima.</string>
     <string name="k2go_clone_for_copying">Šie telefonai nesuderinami perkelti „K2Go“ biblioteką.</string>
     <string name="k2go_clone_scan_different">‹ Nuskaityti kitą kodą</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopijuoti</string>
+    <string name="k2go_clone_copy_btn">Kopijuoti</string>
     <string name="k2go_clone_already_connected">Jau prisijungta? Tęsti</string>
     <string name="k2go_clone_copying">Kopijuojama biblioteka…</string>
     <string name="k2go_clone_join_wifi_note">Prijunkite kitą telefoną prie šio „Wi-Fi“.</string>

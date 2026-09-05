@@ -750,7 +750,7 @@
     <string name="k2go_clone_replace_other">Pustakamu (sistem + konten) diganti dengan milik ponsel lain. Tidak bisa dibatalkan.</string>
     <string name="k2go_clone_for_copying">Ponsel-ponsel ini tidak kompatibel untuk mentransfer pustaka K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Pindai kode lain</string>
-    <string name="k2go_clone_copy_btn">⧉  Salin</string>
+    <string name="k2go_clone_copy_btn">Salin</string>
     <string name="k2go_clone_already_connected">Sudah tersambung? Lanjutkan</string>
     <string name="k2go_clone_copying">Menyalin pustaka…</string>
     <string name="k2go_clone_join_wifi_note">Sambungkan ponsel lain ke Wi-Fi ini.</string>

@@ -1,0 +1,374 @@
+/*
+ * ============================================================================
+ * Name        : DiskGuard.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-386 (Layer 3, app-side backstop). The outside-the-rootfs
+ *               net for a disk-fill the in-box layers cannot stop.
+ *
+ *               One tick reads free space (StorageProbe) and asks the pure rule
+ *               (DiskGuardPolicy). On CRITICAL it CONFIRMS with a fresh re-read
+ *               (it never acts on one reading). It does NOT reap while a deep op
+ *               (clone/backup/restore/install) holds the box, because a reap
+ *               mid-operation would corrupt it. Otherwise it reaps the box and
+ *               reclaims the runaway log.
+ *
+ *               The default action KEEPS THE SYSTEM ALIVE: it does not force the
+ *               server down. A fresh service under a fresh proot does not
+ *               busy-loop, so the ADFA-5343 reconciler relaunches a clean box.
+ *               Only when the disk stays critical for several trips in a row
+ *               (DiskGuardEscalation) does the guard stop and stay down as a last
+ *               resort and tell the user. Trips are reported to developers.
+ *
+ *               Why Android-side: the fill happens when the box proot dies and a
+ *               service is orphaned off proot. An in-box kill does not reach the
+ *               orphan (device-proven 2026-09-04, HD1901); only an app-side reap
+ *               works. See controller/docs/ADR-386.
+ * ============================================================================
+ */
+package org.appdevforall.k2go.diskguard;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+import android.os.SystemClock;
+import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.delivery.data.CrashReportConsent;
+import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
+import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
+import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
+import org.appdevforall.k2go.diskguard.domain.FirehoseSignal;
+import org.appdevforall.k2go.env.EnvironmentLock;
+import org.appdevforall.k2go.env.EnvironmentProcess;
+import org.appdevforall.k2go.env.ServerLifecycleReconciler;
+import org.appdevforall.k2go.storage.StorageProbe;
+import org.appdevforall.k2go.system.domain.Operation;
+
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class DiskGuard {
+
+    private static final String TAG = "K2Go-DiskGuard";
+
+    // Only truncate a log that is clearly a runaway, not a normal log. A runaway at a critical-low-space
+    // moment is many GB, so 1 GiB stays well clear of any legitimate log.
+    private static final long RUNAWAY_LOG_MIN_BYTES = 1024L * 1024 * 1024;
+
+    // Confirm-before-act: after a CRITICAL reading, wait this long and read again. A real fill persists;
+    // a momentary spike does not (ADR-386, "confirm before acting").
+    private static final long CONFIRM_DELAY_MS = 1000L;
+
+    // Restart-to-keep-alive is the default. If the disk stays critical this many trips in a row, the
+    // restart is not fixing it, so the guard escalates to stop-and-stay-down as a last resort.
+    private static final int ESCALATE_AFTER_TRIPS = 3;
+    private static final long TRIP_WINDOW_MS = 30L * 60L * 1000L;
+
+    // The firehose trigger (ADR-386 §6): a recurring-firehose signal older than this (in the server's
+    // own clock) is stale and ignored -- the firehose likely resolved. A live one is re-confirmed by
+    // growth anyway. About 2.5 guard ticks (the guard runs every 10 min).
+    private static final long FIREHOSE_FRESH_WINDOW_MS = 25L * 60L * 1000L;
+    // Growth re-probe: read the .log total, wait, read again. Act only on a delta that is clearly a
+    // firehose. The observed firehose runs ~600 MB/min to 1.3 GB/min (php-fpm busy-loop), so even the
+    // low end adds ~30 MB in 3 s. 16 MiB (~327 MB/min) stays below that low end with margin, and far
+    // above any normal log (KB-MB/min), so a real firehose is caught and a normal log never trips it.
+    private static final long GROWTH_PROBE_MS = 3000L;
+    private static final long GROWTH_MIN_BYTES = 16L * 1024 * 1024; // 16 MiB within GROWTH_PROBE_MS
+
+    private static final String CHANNEL_ID = "disk_guard_channel";
+    private static final int NOTIF_ID = 7386;
+
+    // Recent-trip state, in memory on purpose: it resets when the app process restarts, so a stale count
+    // never carries across a restart. Read and written only under advanceTripState (class monitor).
+    private static long lastTripElapsedMs = -1L;
+    private static int tripCount = 0;
+
+    private DiskGuard() {}
+
+    /**
+     * One guard tick with the default critical floor. Returns true when it acted. Safe to call
+     * repeatedly from a poller. A null or UNKNOWN read is a no-op.
+     */
+    public static boolean check(Context ctx) {
+        return run(ctx, DiskGuardPolicy.CRITICAL_FLOOR_BYTES, false);
+    }
+
+    /**
+     * The debug device-verify hook. It passes a huge floor so any real free-space read is CRITICAL, and
+     * runs in FORCED mode: it exercises the reap/reclaim/restart path once but does NOT advance the real
+     * escalation count, so triggering it repeatedly cannot stop the box.
+     */
+    public static boolean checkWithFloor(Context ctx, long floorBytes) {
+        return run(ctx, floorBytes, true);
+    }
+
+    /**
+     * The SECOND reap trigger (ADR-386 §6). The low-disk path above catches a disk that already went
+     * low. This path catches a firehose the in-box guard keeps truncating -- so the disk may never go
+     * low -- but that the box cannot stop because the writer is an off-proot orphan. It reads the live
+     * dash-node signal, and if the signal is a fresh recurring firehose it CONFIRMS by re-probing live
+     * log growth before it reaps. Safe to call every poller tick; a no-op unless a firehose is live now.
+     */
+    public static boolean checkFirehoseSignal(Context ctx) {
+        if (ctx == null) return false;
+        FirehoseSignal sig = FirehoseSignalSource.read();
+        if (sig == null || !sig.isFresh(FIREHOSE_FRESH_WINDOW_MS)) return false; // no live alert
+        return actOnFirehose(ctx, sig.maxStreak);
+    }
+
+    /**
+     * The debug device-verify hook for the firehose path. It skips the signal fetch and freshness gate,
+     * but STILL runs the real growth re-probe -- so it only reaps when a log is actually growing now.
+     * Stage a fast-growing .log, then fire it, to verify confirm-before-act plus the reap on device.
+     */
+    public static boolean checkFirehoseForced(Context ctx) {
+        if (ctx == null) return false;
+        return actOnFirehose(ctx, -1);
+    }
+
+    private static boolean run(Context ctx, long floorBytes, boolean forced) {
+        if (ctx == null) return false;
+        boolean critical = confirmCritical(ctx, floorBytes);
+
+        DiskGuardEscalation.Verdict v;
+        if (forced) {
+            // Forced (debug): CONTAIN if critical, and never touch the shared trip state or escalate.
+            v = new DiskGuardEscalation.Verdict(
+                    critical ? DiskGuardEscalation.Action.CONTAIN : DiskGuardEscalation.Action.NONE,
+                    0, 0L, true);
+        } else {
+            v = advanceTripState(critical);
+        }
+        if (v.action == DiskGuardEscalation.Action.NONE) return false;
+
+        // Never reap while a deep op owns the box (clone/backup/restore/install). A reap mid-operation
+        // would corrupt it. EnvironmentLock is the one owner of "is a stop-class op running".
+        if (deepOpActive(ctx)) {
+            Log.w(TAG, "K2GO-386: disk critical but a deep op holds the box; not reaping this tick");
+            return false;
+        }
+
+        boolean reaped = EnvironmentProcess.reapBox(ctx);
+        long reclaimed = reclaimRunawayLog(ctx);
+
+        if (v.action == DiskGuardEscalation.Action.ESCALATE) {
+            // Last resort: the fill keeps returning after restarts. Stop and stay down through the one
+            // persisted lever, and tell the user. The user re-enables the server after freeing space.
+            ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
+            notifyUser(ctx);
+            report(ctx, "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount);
+            Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + v.tripCount + "): stopped and staying down");
+        } else {
+            // Default: keep the system alive. Leave desired=UP and ask the reconciler to relaunch a fresh
+            // box now. Report only the first trip of a spell so a thrash does not spam telemetry.
+            ServerLifecycleReconciler.get().requestReconcileNow();
+            if (v.firstOfSpell) report(ctx, "contained", floorBytes, reaped, reclaimed, v.tripCount);
+            Log.w(TAG, "K2GO-386: contained disk pressure (trip " + v.tripCount + "): reaped=" + reaped
+                    + ", reclaimed=" + reclaimed + " B, box restarting");
+        }
+        return true;
+    }
+
+    /**
+     * True only if free space is CRITICAL on two reads separated by {@link #CONFIRM_DELAY_MS}. Both reads
+     * are live (StatFs), so this debounces a momentary spike; it never acts on a single reading.
+     */
+    private static boolean confirmCritical(Context ctx, long floorBytes) {
+        Long free = StorageProbe.freeBytes(ctx);
+        if (DiskGuardPolicy.evaluate(free, floorBytes) != DiskGuardPolicy.Level.CRITICAL) return false;
+        try {
+            Thread.sleep(CONFIRM_DELAY_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        Long free2 = StorageProbe.freeBytes(ctx);
+        boolean stillCritical = DiskGuardPolicy.evaluate(free2, floorBytes) == DiskGuardPolicy.Level.CRITICAL;
+        if (!stillCritical) {
+            Log.i(TAG, "K2GO-386: free space recovered on re-read (" + free2 + " B); not acting");
+        }
+        return stillCritical;
+    }
+
+    /** Advance the shared trip state with the pure rule and return the verdict. */
+    private static synchronized DiskGuardEscalation.Verdict advanceTripState(boolean critical) {
+        DiskGuardEscalation.Verdict v = DiskGuardEscalation.next(
+                critical, SystemClock.elapsedRealtime(), lastTripElapsedMs, tripCount,
+                TRIP_WINDOW_MS, ESCALATE_AFTER_TRIPS);
+        tripCount = v.tripCount;
+        lastTripElapsedMs = v.lastElapsedMs;
+        return v;
+    }
+
+    /** True when a stop-class operation (clone/backup/restore/install) currently holds the box. */
+    private static boolean deepOpActive(Context ctx) {
+        return EnvironmentLock.currentHolder(ctx).executionClass == Operation.ExecutionClass.STOPPED;
+    }
+
+    /**
+     * Act on a firehose that a fresh signal (or the debug hook) flagged. Confirm-before-acting: the
+     * signal is only an ALERT; reap solely if a log is actually growing fast RIGHT NOW. Then reap and
+     * restart (restart-to-keep-alive), the same as the low-disk path. The app-side reap DOES reach the
+     * off-proot orphan (unlike an in-box kill), so a fresh box does not refill. The low-disk path stays
+     * the sole escalation authority, so a firehose reap never counts toward stop-and-stay-down.
+     */
+    private static boolean actOnFirehose(Context ctx, int streak) {
+        if (!confirmFirehoseGrowing(ctx)) return false;
+        if (deepOpActive(ctx)) {
+            Log.w(TAG, "K2GO-386: firehose confirmed but a deep op holds the box; not reaping this tick");
+            return false;
+        }
+        boolean reaped = EnvironmentProcess.reapBox(ctx);
+        long reclaimed = reclaimRunawayLog(ctx);
+        ServerLifecycleReconciler.get().requestReconcileNow();
+        report(ctx, "contained_firehose", 0L, reaped, reclaimed, streak);
+        Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
+                + ", reclaimed=" + reclaimed + " B, box restarting");
+        return true;
+    }
+
+    /**
+     * True when the box's {@code *.log} files are growing fast enough to be a firehose: read the total
+     * {@code .log} bytes under {@code /var/log}, wait {@link #GROWTH_PROBE_MS}, read again, and require a
+     * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to WHICH log
+     * the orphan writes. It is not fooled by a normal log, which never grows this fast. A rare race -- the
+     * in-box guard truncating the firehose during the probe -- reads as no growth this tick, not a false
+     * reap; the next tick catches it (the guard runs every 10 min, so the overlap is unlikely).
+     */
+    private static boolean confirmFirehoseGrowing(Context ctx) {
+        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        long before = totalLogBytes(varLog);
+        try {
+            Thread.sleep(GROWTH_PROBE_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        long delta = totalLogBytes(varLog) - before;
+        boolean growing = delta >= GROWTH_MIN_BYTES;
+        if (!growing) {
+            Log.i(TAG, "K2GO-386: firehose signal but logs are not growing now (delta " + delta + " B); not acting");
+        }
+        return growing;
+    }
+
+    /** Every {@code *.log} regular file in the tree rooted at {@code dir}, added to {@code out}. The one
+     *  recursive walker; {@link #totalLogBytes} and {@link #biggestLog} reduce over it. Best-effort
+     *  (unreadable dirs are skipped). Bounded to the small {@code /var/log} tree. */
+    private static void collectLogs(File dir, List<File> out) {
+        File[] entries = dir.listFiles();
+        if (entries == null) return;
+        for (File f : entries) {
+            if (f.isDirectory()) {
+                collectLogs(f, out);
+            } else if (f.isFile() && f.getName().endsWith(".log")) {
+                out.add(f);
+            }
+        }
+    }
+
+    /** Total bytes of every {@code *.log} under {@code dir}. */
+    private static long totalLogBytes(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        long sum = 0L;
+        for (File f : logs) sum += f.length();
+        return sum;
+    }
+
+    /** The biggest {@code *.log} under {@code dir}, or {@code null} if there is none. */
+    private static File biggestLog(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        File best = null;
+        for (File f : logs) if (best == null || f.length() > best.length()) best = f;
+        return best;
+    }
+
+    /**
+     * Report the event to developers, unattended. This is an OPERATIONAL diagnostic, not behavioural
+     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default on) -- NOT the
+     * analytics backbone (opt-in, default off, which would silently drop it). A no-op when crash
+     * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
+     * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
+     */
+    private static void report(Context ctx, String action, long floorBytes, boolean reaped,
+                              long reclaimed, int trip) {
+        try {
+            if (!CrashReportConsent.isEnabled(ctx)) return;
+            Sentry.withScope(scope -> {
+                scope.setLevel(SentryLevel.WARNING);
+                scope.setTag("event", "disk_guard");
+                scope.setTag("action", action);
+                scope.setTag("reaped", String.valueOf(reaped));
+                scope.setExtra("floor_bytes", String.valueOf(floorBytes));
+                scope.setExtra("reclaimed_bytes", String.valueOf(reclaimed));
+                scope.setExtra("trip", String.valueOf(trip));
+                Sentry.captureMessage("K2GO-386 disk-guard " + action);
+            });
+        } catch (Throwable t) {
+            Log.w(TAG, "K2GO-386: could not report disk-guard event", t);
+        }
+    }
+
+    /**
+     * Truncate the biggest {@code *.log} file anywhere under the box's {@code /var/log} to reclaim the
+     * space the runaway consumed (a real file that persists after its writer dies). Recurses
+     * subdirectories (for example {@code /var/log/nginx/}) and only considers {@code .log} files over
+     * {@link #RUNAWAY_LOG_MIN_BYTES}, so a normal or non-log file is never touched. Best-effort. Returns
+     * the bytes reclaimed, or 0.
+     */
+    private static long reclaimRunawayLog(Context ctx) {
+        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        File biggest = biggestLog(varLog);
+        if (biggest == null || biggest.length() < RUNAWAY_LOG_MIN_BYTES) return 0L;
+        long size = biggest.length();
+        try (FileOutputStream truncate = new FileOutputStream(biggest)) {
+            // opening for write with no append truncates to zero
+            Log.w(TAG, "K2GO-386: truncated runaway log " + biggest.getName() + " (" + size + " B)");
+            return size;
+        } catch (Exception e) {
+            Log.w(TAG, "K2GO-386: could not truncate " + biggest.getName(), e);
+            return 0L;
+        }
+    }
+
+    /**
+     * Warn the user that the box was stopped to protect the device. Best-effort: a no-op if the
+     * POST_NOTIFICATIONS permission is not granted (API 33+). The teardown still happened.
+     */
+    private static void notifyUser(Context ctx) {
+        try {
+            NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                nm.createNotificationChannel(new NotificationChannel(
+                        CHANNEL_ID, ctx.getString(R.string.disk_guard_notif_title),
+                        NotificationManager.IMPORTANCE_HIGH));
+            }
+            Notification n = new NotificationCompat.Builder(ctx, CHANNEL_ID)
+                    .setContentTitle(ctx.getString(R.string.disk_guard_notif_title))
+                    .setContentText(ctx.getString(R.string.disk_guard_notif_body))
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(ctx.getString(R.string.disk_guard_notif_body)))
+                    .setSmallIcon(android.R.drawable.stat_sys_warning)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .build();
+            NotificationManagerCompat.from(ctx).notify(NOTIF_ID, n);
+        } catch (Exception e) {
+            Log.w(TAG, "K2GO-386: could not post the disk-guard notification", e);
+        }
+    }
+}

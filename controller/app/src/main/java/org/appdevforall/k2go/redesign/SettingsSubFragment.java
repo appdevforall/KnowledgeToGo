@@ -402,7 +402,7 @@ public class SettingsSubFragment extends Fragment {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_note));
     }
 
-    /** A navigable row per service with a state chip (Default / Custom / Not installed). A service
+    /** A navigable row per service with a state badge (Default / Custom / Not installed). A service
      *  that isn't reachable is dimmed but stays tappable so the sign-in can be pre-set. */
     private void authServiceRow(Context ctx, LinearLayout list, String service, String name, String platform) {
         LinearLayout row = new LinearLayout(ctx);
@@ -426,13 +426,12 @@ public class SettingsSubFragment extends Fragment {
                 com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
         row.addView(col);
 
-        final TextView chip = new TextView(ctx);
-        chip.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelSmall);
-        chip.setPadding(SettingsUi.dp(ctx, 10), SettingsUi.dp(ctx, 4), SettingsUi.dp(ctx, 10), SettingsUi.dp(ctx, 4));
-        chip.setVisibility(View.GONE);
-        LinearLayout.LayoutParams chlp = new LinearLayout.LayoutParams(-2, -2);
-        chlp.rightMargin = SettingsUi.dp(ctx, 8);
-        row.addView(chip, chlp);
+        // K2GO-385 (pill roles Q4): the service state (Default / Custom / Not installed) is a STATUS,
+        // so it reads as a dot+text badge, not a filled pill. Colours unchanged -- Default/Not installed
+        // neutral, Custom teal. Built once, GONE until the async probe resolves.
+        final LinearLayout badge = K2GoStatusBadge.create(ctx, "", R.color.k2go_muted);
+        badge.setVisibility(View.GONE);
+        row.addView(badge);
 
         TextView chev = new TextView(ctx);
         chev.setText("›");
@@ -445,26 +444,24 @@ public class SettingsSubFragment extends Fragment {
             if (!isAdded()) return;
             row.setAlpha(reachable ? 1f : 0.5f);
             if (!reachable) {
-                setChip(chip, getString(R.string.k2go_auth_chip_notinstalled), R.drawable.k2go_pill_bg, R.color.k2go_muted);
+                setBadge(badge, getString(R.string.k2go_auth_chip_notinstalled), R.color.k2go_muted);
                 return;
             }
             CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
                 @Override public void onOk(String user, String pass, boolean isDefault) {
                     if (!isAdded()) return;
-                    if (isDefault) setChip(chip, getString(R.string.k2go_auth_chip_default), R.drawable.k2go_pill_bg, R.color.k2go_muted);
-                    else setChip(chip, getString(R.string.k2go_auth_chip_custom), R.drawable.k2go_pill_teal, R.color.k2go_teal);
+                    if (isDefault) setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
+                    else setBadge(badge, getString(R.string.k2go_auth_chip_custom), R.color.k2go_teal);
                 }
-                @Override public void onErr() { /* leave the chip hidden on a load error */ }
+                @Override public void onErr() { /* leave the badge hidden on a load error */ }
             });
         });
     }
 
-    /** Style + reveal a state chip (Default / Custom / Not installed). */
-    private void setChip(TextView chip, String text, int bgRes, int colorRes) {
-        chip.setText(text);
-        chip.setBackgroundResource(bgRes);
-        chip.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
-        chip.setVisibility(View.VISIBLE);
+    /** Style + reveal the service state badge (Default / Custom / Not installed). */
+    private void setBadge(LinearLayout badge, String text, int colorRes) {
+        K2GoStatusBadge.style(badge, text, colorRes);
+        badge.setVisibility(View.VISIBLE);
     }
 
     private void buildServiceAuth(Context ctx, LinearLayout list, String service) {

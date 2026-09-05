@@ -155,8 +155,8 @@ public class ConnectFragment extends Fragment {
 
     private void render() {
         if (!isAdded() || secSingle == null) return;
-        paintTab(tabHotspot, mode == Mode.HOTSPOT);
-        paintTab(tabWifi, mode == Mode.WIFI);
+        SegmentedTabs.paint(tabHotspot, mode == Mode.HOTSPOT);
+        SegmentedTabs.paint(tabWifi, mode == Mode.WIFI);
         finish.setVisibility(View.GONE);
         connFooter.setVisibility(View.VISIBLE);   // default; the no-system state hides it
         advance.setVisibility(View.GONE);
@@ -356,11 +356,6 @@ public class ConnectFragment extends Fragment {
         lp.bottomMargin = dp(18);
         a.setLayoutParams(lp);
         return a;
-    }
-
-    private void paintTab(TextView t, boolean on) {
-        t.setBackgroundResource(on ? R.drawable.k2go_primary_bg : 0);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_muted));
     }
 
     private void styleAdvance(boolean filled) {

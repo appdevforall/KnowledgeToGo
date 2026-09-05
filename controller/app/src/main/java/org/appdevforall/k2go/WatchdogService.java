@@ -26,6 +26,10 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class WatchdogService extends Service {
     private static final String TAG = "IIAB-Watchdog";
     private static final String CHANNEL_ID = "watchdog_channel";
@@ -45,6 +49,17 @@ public class WatchdogService extends Service {
     // Hardware Locks
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
+
+    // K2GO-386 (Layer 3): a single background poller checks free space while the box is up. On a critical
+    // reading DiskGuard reaps and reclaims, then by default keeps the system alive. Started once per
+    // protected session, stopped on destroy.
+    private ScheduledExecutorService diskGuardPoller;
+    private static final long DISK_GUARD_INTERVAL_S = 25;
+    // The low-disk check runs every tick (a local StatFs read). The firehose signal is an HTTP GET to
+    // dash-node, and dash-node only advances it on its 10-min guard tick, so read it every Nth tick
+    // (~150 s) instead of every 25 s. Touched only by the single poller thread.
+    private static final int FIREHOSE_POLL_EVERY_N_TICKS = 6;
+    private int diskGuardTick = 0;
 
     @Override
     public void onCreate() {
@@ -79,6 +94,9 @@ public class WatchdogService extends Service {
 
         // 2. Acquire CPU WakeLock to prevent sleep during heavy operations (e.g., Tar extraction, Rsync)
         acquireHardwareLocks();
+
+        // K2GO-386 (barrier 2): guard free space for the life of this protected session.
+        startDiskGuard();
 
         // 3. Notify the UI (MainActivity) that the engine is protected and running
         IIABWatchdog.logSessionStart(this);
@@ -116,6 +134,34 @@ public class WatchdogService extends Service {
         }
     }
 
+    // K2GO-386 (Layer 3): the free-space guard. One background poller ticks every DISK_GUARD_INTERVAL_S.
+    // Two triggers. (1) check() EVERY tick (a local read): on a CRITICAL free-space reading, confirm,
+    // reap, reclaim, and by default let the box restart. (2) checkFirehoseSignal() every Nth tick (an
+    // HTTP read): on a fresh recurring firehose that is still growing, reap the off-proot orphan the box
+    // cannot stop -- even before the disk goes low (ADR-386 §6). The in-box layers cannot stop an
+    // off-proot orphan. Started once per session.
+    private void startDiskGuard() {
+        if (diskGuardPoller != null) return;
+        diskGuardPoller = Executors.newSingleThreadScheduledExecutor();
+        diskGuardPoller.scheduleWithFixedDelay(() -> {
+            try {
+                org.appdevforall.k2go.diskguard.DiskGuard.check(getApplicationContext());
+                if (diskGuardTick++ % FIREHOSE_POLL_EVERY_N_TICKS == 0) {
+                    org.appdevforall.k2go.diskguard.DiskGuard.checkFirehoseSignal(getApplicationContext());
+                }
+            } catch (Throwable t) {
+                Log.w(TAG, "K2GO-386: disk-guard tick failed", t);
+            }
+        }, DISK_GUARD_INTERVAL_S, DISK_GUARD_INTERVAL_S, TimeUnit.SECONDS);
+    }
+
+    private void stopDiskGuard() {
+        if (diskGuardPoller != null) {
+            diskGuardPoller.shutdownNow();
+            diskGuardPoller = null;
+        }
+    }
+
     @Override
     public void onDestroy() {
         RUNNING = false;   // ADFA-5343 (Phase 4b): protection is ending — clear the promoter's state signal
@@ -123,6 +169,9 @@ public class WatchdogService extends Service {
         Intent stopIntent = new Intent(ACTION_STATE_STOPPED);
         stopIntent.setPackage(getPackageName());
         sendBroadcast(stopIntent);
+
+        // K2GO-386 (barrier 2): stop the free-space guard — this protected session (box up) is ending.
+        stopDiskGuard();
 
         // 2. Release Hardware Locks so the phone can sleep again
         releaseHardwareLocks();

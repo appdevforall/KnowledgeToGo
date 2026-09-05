@@ -756,7 +756,7 @@
     <string name="k2go_clone_replace_other">Ваша библиотека (систем + садржај) замењује се библиотеком другог телефона. Не може да се опозове.</string>
     <string name="k2go_clone_for_copying">Ови телефони нису компатибилни за пренос K2Go библиотеке.</string>
     <string name="k2go_clone_scan_different">‹ Скенирај други код</string>
-    <string name="k2go_clone_copy_btn">⧉  Копирај</string>
+    <string name="k2go_clone_copy_btn">Копирај</string>
     <string name="k2go_clone_already_connected">Већ повезани? Наставите</string>
     <string name="k2go_clone_copying">Копирање библиотеке…</string>
     <string name="k2go_clone_join_wifi_note">Повежите други телефон на овај Wi-Fi.</string>

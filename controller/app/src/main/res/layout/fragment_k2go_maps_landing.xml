@@ -415,9 +415,6 @@
             android:id="@+id/k2go_maps_continue"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="@string/k2go_wizard_continue"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/k2go_teal" />
+            android:text="@string/k2go_wizard_continue" />
     </LinearLayout>
 </LinearLayout>

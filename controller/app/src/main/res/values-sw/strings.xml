@@ -763,7 +763,7 @@
     <string name="k2go_clone_replace_other">Maktaba yako (mfumo + maudhui) inabadilishwa na ya simu nyingine. Haiwezi kutenduliwa.</string>
     <string name="k2go_clone_for_copying">Simu hizi hazioani kuhamisha maktaba ya K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Skani msimbo mwingine</string>
-    <string name="k2go_clone_copy_btn">⧉  Nakili</string>
+    <string name="k2go_clone_copy_btn">Nakili</string>
     <string name="k2go_clone_already_connected">Tayari umeunganishwa? Endelea</string>
     <string name="k2go_clone_copying">Inanakili maktaba…</string>
     <string name="k2go_clone_join_wifi_note">Unganisha simu nyingine kwenye Wi-Fi hii.</string>

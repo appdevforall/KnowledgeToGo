@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">Thư viện của bạn (hệ thống + nội dung) bị thay bằng thư viện của điện thoại kia. Không thể hoàn tác.</string>
     <string name="k2go_clone_for_copying">Hai điện thoại này không tương thích để chuyển thư viện K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Quét một mã khác</string>
-    <string name="k2go_clone_copy_btn">⧉  Sao chép</string>
+    <string name="k2go_clone_copy_btn">Sao chép</string>
     <string name="k2go_clone_already_connected">Đã kết nối? Tiếp tục</string>
     <string name="k2go_clone_copying">Đang sao chép thư viện…</string>
     <string name="k2go_clone_join_wifi_note">Kết nối điện thoại kia với Wi-Fi này.</string>

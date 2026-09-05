@@ -750,7 +750,7 @@
     <string name="k2go_clone_replace_other">Вашата библиотека (система + съдържание) се заменя с тази на другия телефон. Не може да се отмени.</string>
     <string name="k2go_clone_for_copying">Тези телефони не са съвместими за прехвърляне на библиотеката на K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Сканирайте друг код</string>
-    <string name="k2go_clone_copy_btn">⧉  Копирай</string>
+    <string name="k2go_clone_copy_btn">Копирай</string>
     <string name="k2go_clone_already_connected">Вече сте свързани? Продължи</string>
     <string name="k2go_clone_copying">Копиране на библиотеката…</string>
     <string name="k2go_clone_join_wifi_note">Свържете другия телефон с тази Wi-Fi.</string>

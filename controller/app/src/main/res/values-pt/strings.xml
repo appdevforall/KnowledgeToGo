@@ -822,7 +822,7 @@
     <string name="k2go_clone_replace_other">A tua biblioteca (sistema + conteúdo) é substituída pela do outro telemóvel. Não pode ser anulado.</string>
     <string name="k2go_clone_for_copying">Estes telemóveis não são compatíveis para transferir a biblioteca K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Digitalizar um código diferente</string>
-    <string name="k2go_clone_copy_btn">⧉  Copiar</string>
+    <string name="k2go_clone_copy_btn">Copiar</string>
     <string name="k2go_clone_already_connected">Já está ligado? Continuar</string>
     <string name="k2go_clone_copying">A copiar a biblioteca…</string>
     <string name="k2go_clone_join_wifi_note">Liga o outro telemóvel a esta Wi-Fi.</string>

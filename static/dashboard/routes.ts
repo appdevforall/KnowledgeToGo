@@ -21,6 +21,7 @@ import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
 import { isRestartableService, restartService } from './sockets/services';
+import { getFirehoseState } from './sockets/log-rotate';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
@@ -269,6 +270,27 @@ apiRouter.get('/system/version', (_req: Request, res: Response): void => {
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'version read failed' });
     }
+});
+
+// K2GO-386 / ADR-386 §6: the LIVE firehose signal, the app's SECOND reap trigger (the first is the
+// app's own low-disk read). The in-box guard truncates a runaway .log every tick so the disk may never
+// go low; but a recurring firehose means an off-proot orphan the box CANNOT stop -- only an app-side
+// reap can. maxStreak is the longest run of consecutive ticks a single .log kept refilling past the cap;
+// recurring means it has done so at least twice. lastTruncatedAtMs (wall-clock, 0 if never) lets the app
+// judge freshness. The state is LIVE in-memory (resets on restart), never a parsed log line -- so a
+// restart-resolved firehose reports clean. This is an ALERT only: the app re-probes live growth before
+// it reaps (confirm before acting). Localhost-only, like all of /k2go-api.
+const FIREHOSE_RECUR_THRESHOLD = 2;
+apiRouter.get('/system/disk-guard/firehose', (_req: Request, res: Response): void => {
+    res.set('Cache-Control', 'no-store');
+    const s = getFirehoseState();
+    res.json({
+        recurring: s.maxStreak >= FIREHOSE_RECUR_THRESHOLD,
+        maxStreak: s.maxStreak,
+        paths: s.paths,
+        lastTruncatedAtMs: s.lastTruncatedAtMs,
+        now: Date.now(),
+    });
 });
 
 // Current rebuild state: idle | running | done | error (read from the status file the script writes).
