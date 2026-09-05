@@ -115,6 +115,18 @@ public final class KiwixCatalog {
         CatalogRefreshScheduler.forceRefresh(context.getApplicationContext(), CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
     }
 
+    /**
+     * K2GO-390: the current catalog version tag -- the overlay's mtime, or 0 for the baked asset. The
+     * self-heal counts failures against this ({@link ZimWishlist#bumpAttempts}): a refresh that replaces
+     * the overlay moves the tag and renews the retry budget; an unchanging catalog keeps it stable so the
+     * budget can reach its cap and drop a genuinely-gone item. Kept here so "which catalog version" has a
+     * single owner (the overlay basename lives only in this class). See ADR-390.
+     */
+    public static long catalogVersionTag(Context context) {
+        File overlay = CatalogOverlay.file(context.getApplicationContext(), CSV_ASSET);
+        return overlay.exists() ? overlay.lastModified() : 0L;
+    }
+
     /** Drop the cache so the next load re-reads. K2GO-390: called after a refresh pulls a new overlay. */
     public static void invalidate() {
         inMemory = null;

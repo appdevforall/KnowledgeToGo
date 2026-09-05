@@ -175,12 +175,10 @@ public final class ZimDownloadService extends Service implements ContentDownload
         if (key == null || key.isEmpty()) return;
         Context app = getApplicationContext();
         KiwixCatalog.forceRefresh(app);   // network-constrained; offline is a silent no-op
-        // Count failures against the current catalog version (overlay mtime, 0 = asset). A refresh that
-        // changes the catalog resets the budget (see ZimWishlist.bumpAttempts); only an unchanging
+        // Count failures against the current catalog version (KiwixCatalog owns what that is). A refresh
+        // that changes the catalog resets the budget (see ZimWishlist.bumpAttempts); only an unchanging
         // catalog climbs to the cap = genuinely gone / no fresh source.
-        java.io.File overlay = org.appdevforall.k2go.catalog.data.CatalogOverlay.file(app, "kiwix_catalog.csv");
-        long catalogTag = overlay.exists() ? overlay.lastModified() : 0L;
-        int attempts = ZimWishlist.bumpAttempts(app, key, catalogTag);
+        int attempts = ZimWishlist.bumpAttempts(app, key, KiwixCatalog.catalogVersionTag(app));
         if (attempts >= MAX_HEAL_ATTEMPTS) {
             android.util.Log.w("K2Go-Provision",
                     "kiwix item still failing after " + attempts + " attempts; dropping " + key);
