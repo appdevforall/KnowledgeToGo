@@ -165,6 +165,8 @@ if verify_live; then
     # nginx reads /etc/nginx/conf.d, not /library/dashboard, so mirror the vhost then reload nginx.
     [ -f "$LIVE/dash-node-nginx.conf" ] && { cp -f "$LIVE/dash-node-nginx.conf" "$NGINX_CONF_DIR/dash-node-nginx.conf"; chmod 0600 "$NGINX_CONF_DIR/dash-node-nginx.conf"; }
     /usr/local/bin/pdsm restart nginx >>"$LOG" 2>&1 || log "warn: pdsm restart nginx returned non-zero"
+    # K2GO-386 (ADR-386): re-assert K2Go-owned log rotation on every update (proot has no cron).
+    sh "$CLONE_DIR/tools/setup-proot-logging.sh" >>"$LOG" 2>&1 || log "warn: log-rotation setup failed (non-fatal)"
     # ADFA-5339: optionally refresh the served landing page, from the SAME clone the git fetch+reset
     # above just refreshed, so it matches the new source. Runs only here — after the core swap has
     # verified live — and is best-effort: the site is a separate, versionless artifact, so a failure is

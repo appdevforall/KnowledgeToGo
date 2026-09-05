@@ -95,10 +95,13 @@ RPi-oriented inherited snippets (learn from them, write ours):
 
 **Install:** an idempotent `tools/setup-proot-logging.sh` (ansible-role-shaped) moves the inherited
 nginx/php-fpm snippets out of `/etc/logrotate.d` (we override them; a duplicate path fails logrotate),
-writes `/etc/logrotate.d/k2go`, and validates with `logrotate -d`. dash-node runs it **once at
-startup** — this is light (a couple of `mv`s, one file write, a parse-only validate; **no rotation, no
-Python, nothing that risks the phantom-process killer**), which is distinct from the rotation itself
-(§4, on the timer, never at boot). Phase 2 bakes it into the rootfs as a role with a pdsm-owned trigger.
+writes `/etc/logrotate.d/k2go`, and validates with `logrotate -d`. It runs **at deploy time, not at
+dash-node startup** — reconfiguring on every boot would be needless churn (and updating the config is
+exactly a deploy concern). The three deploy paths call it: the **rootfs build** (`iiab-android`'s
+`install_iiaboa_dashboard`), so a clean R2 rootfs ships preconfigured; and the two update paths
+(`rebuild-dashboard.sh`, `dev-push-dashboard.sh`). Since the version bump that carries a dash-node
+change is delivered through the dashboard-update mechanism, an update that reaches a device also
+re-asserts this config. Phase 2 folds it into a rootfs ansible role with a pdsm-owned trigger.
 
 ## 6. Layer 3 — App-side backstop (reap + restart, not deny)
 
@@ -134,8 +137,9 @@ guessed — **without bothering the user**:
 
 ## 8. Lifecycle (who sets it, who clears it, what if a process dies)
 
-- **L2 config:** installed by dash-node at startup (idempotent — writes only when changed; the snippet
-  move is a no-op once done), re-asserted every dash-node start; no persistent marker to strand.
+- **L2 config:** installed at deploy time (rootfs build + rebuild/dev-push), idempotent — writes only
+  when changed, the snippet move is a no-op once done; re-asserted on every update, not every boot. No
+  persistent marker to strand.
 - **L2 trigger:** dash-node's 10-min timer; owns nothing but the timer. If dash-node dies, logs only grow
   while services are up and the reconciler owns bring-up; if dash-node *wedges*, rotation stalls — the one
   Phase-1 liveness dependency, bounded by L3, removed in Phase 2 (pdsm-owned trigger).

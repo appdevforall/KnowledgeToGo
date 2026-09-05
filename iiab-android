@@ -512,6 +512,11 @@ install_iiaboa_dashboard() {
   /usr/local/bin/pdsm enable dash-node
   /usr/local/bin/pdsm restart dash-node
 
+  # K2GO-386 (ADR-386): install K2Go-owned log rotation for the box (proot has no cron, so a service
+  # log can otherwise fill the device). Run at deploy, not at dash-node boot. Non-fatal.
+  log "Configuring log rotation (setup-proot-logging)..."
+  sh "${K2GO_OPT_DIR}/tools/setup-proot-logging.sh" || warn "log-rotation setup failed (non-fatal)"
+
   # Setup nginx
   log "Configuring Nginx for the dashboard..."
   cp "${dash_src}/dash-node-nginx.conf" "/etc/nginx/conf.d/dash-node-nginx.conf"

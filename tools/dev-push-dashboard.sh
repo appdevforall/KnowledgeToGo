@@ -43,6 +43,9 @@ echo "[dev-push] deploying nginx vhost to $NGINX_CONF_DIR..."
 cp -f "$DEST/dash-node-nginx.conf" "$NGINX_CONF_DIR/dash-node-nginx.conf"
 chmod 0600 "$NGINX_CONF_DIR/dash-node-nginx.conf"
 
+echo "[dev-push] configuring log rotation (setup-proot-logging)..."
+sh "$CLONE_DIR/tools/setup-proot-logging.sh" || echo "[dev-push] warn: log-rotation setup failed (non-fatal)"
+
 echo "[dev-push] restarting dash-node + nginx..."
 /usr/local/bin/pdsm restart dash-node
 /usr/local/bin/pdsm restart nginx
