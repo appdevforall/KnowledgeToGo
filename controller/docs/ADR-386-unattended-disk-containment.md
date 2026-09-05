@@ -175,6 +175,14 @@ guessed — **without bothering the user**:
 - **L2 trigger:** dash-node's 10-min timer; owns nothing but the timer. If dash-node dies, logs only grow
   while services are up and the reconciler owns bring-up; if dash-node *wedges*, rotation stalls — the one
   Phase-1 liveness dependency, bounded by L3, removed in Phase 2 (pdsm-owned trigger).
+  - **Edge (observed on-device 2026-09-05): the timer resets on every dash-node restart.** The interval
+    fires only after dash-node runs *uninterrupted* for the full interval, so anything that restarts it more
+    often than 10 min — a rebuild, a crash/respawn loop, or a desired=DOWN vs pdsm-supervisor flap (which is
+    what a lingering `WatchdogEnable=false` from a prior Barrier-2 stop caused in testing) — **blinds the
+    guard**. This is exactly the "a clock-driven mechanism leaves gaps" hazard (§6). Normal operation runs
+    dash-node for hours, so it fires; but it is why (a) the disk-pressure app-side backstop must remain the
+    ultimate net if the in-box guard is starved, and (b) the Phase-2 pdsm-owned trigger (a supervisor loop
+    independent of dash-node's process lifetime) is the durable fix.
 - **L3:** a poller for the life of a box-up session (started once, stopped on teardown); recovery routes
   through the ADR-5343 desired-state owner, so no second source of "should the box be up."
 - **State:** logrotate's own status file + `rotate N`/`compress` bound disk; nothing we add persists
