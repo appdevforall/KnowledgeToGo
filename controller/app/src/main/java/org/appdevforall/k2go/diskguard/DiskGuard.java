@@ -40,7 +40,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.delivery.DeliveryManager;
+import org.appdevforall.k2go.delivery.data.CrashReportConsent;
 import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
@@ -51,7 +51,8 @@ import org.appdevforall.k2go.env.ServerLifecycleReconciler;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.system.domain.Operation;
 
-import org.json.JSONObject;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -296,22 +297,29 @@ public final class DiskGuard {
         return best;
     }
 
-    /** Report the event to developers through the delivery backbone (unattended; not user-facing). */
+    /**
+     * Report the event to developers, unattended. This is an OPERATIONAL diagnostic, not behavioural
+     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default on) -- NOT the
+     * analytics backbone (opt-in, default off, which would silently drop it). A no-op when crash
+     * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
+     * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
+     */
     private static void report(Context ctx, String action, long floorBytes, boolean reaped,
                               long reclaimed, int trip) {
         try {
-            String json = new JSONObject()
-                    .put("event", "disk_guard")
-                    .put("action", action)
-                    .put("floor_bytes", floorBytes)
-                    .put("reaped", reaped)
-                    .put("reclaimed_bytes", reclaimed)
-                    .put("trip", trip)
-                    .put("ts", System.currentTimeMillis())
-                    .toString();
-            DeliveryManager.with(ctx).enqueueAnalytics(json);
-        } catch (Exception e) {
-            Log.w(TAG, "K2GO-386: could not enqueue disk-guard report", e);
+            if (!CrashReportConsent.isEnabled(ctx)) return;
+            Sentry.withScope(scope -> {
+                scope.setLevel(SentryLevel.WARNING);
+                scope.setTag("event", "disk_guard");
+                scope.setTag("action", action);
+                scope.setTag("reaped", String.valueOf(reaped));
+                scope.setExtra("floor_bytes", String.valueOf(floorBytes));
+                scope.setExtra("reclaimed_bytes", String.valueOf(reclaimed));
+                scope.setExtra("trip", String.valueOf(trip));
+                Sentry.captureMessage("K2GO-386 disk-guard " + action);
+            });
+        } catch (Throwable t) {
+            Log.w(TAG, "K2GO-386: could not report disk-guard event", t);
         }
     }
 
