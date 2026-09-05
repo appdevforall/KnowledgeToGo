@@ -55,6 +55,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class DiskGuard {
 
@@ -77,10 +79,12 @@ public final class DiskGuard {
     // own clock) is stale and ignored -- the firehose likely resolved. A live one is re-confirmed by
     // growth anyway. About 2.5 guard ticks (the guard runs every 10 min).
     private static final long FIREHOSE_FRESH_WINDOW_MS = 25L * 60L * 1000L;
-    // Growth re-probe: read the .log total, wait, read again. A firehose adds tens of MB in seconds; a
-    // normal log adds almost nothing. Act only on a delta that is clearly a firehose.
+    // Growth re-probe: read the .log total, wait, read again. Act only on a delta that is clearly a
+    // firehose. The observed firehose runs ~600 MB/min to 1.3 GB/min (php-fpm busy-loop), so even the
+    // low end adds ~30 MB in 3 s. 16 MiB (~327 MB/min) stays below that low end with margin, and far
+    // above any normal log (KB-MB/min), so a real firehose is caught and a normal log never trips it.
     private static final long GROWTH_PROBE_MS = 3000L;
-    private static final long GROWTH_MIN_BYTES = 32L * 1024 * 1024; // 32 MiB within GROWTH_PROBE_MS
+    private static final long GROWTH_MIN_BYTES = 16L * 1024 * 1024; // 16 MiB within GROWTH_PROBE_MS
 
     private static final String CHANNEL_ID = "disk_guard_channel";
     private static final int NOTIF_ID = 7386;
@@ -237,19 +241,21 @@ public final class DiskGuard {
     /**
      * True when the box's {@code *.log} files are growing fast enough to be a firehose: read the total
      * {@code .log} bytes under {@code /var/log}, wait {@link #GROWTH_PROBE_MS}, read again, and require a
-     * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to which log
-     * the orphan writes and to the guard truncating one between reads. A normal log never grows this fast.
+     * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to WHICH log
+     * the orphan writes. It is not fooled by a normal log, which never grows this fast. A rare race -- the
+     * in-box guard truncating the firehose during the probe -- reads as no growth this tick, not a false
+     * reap; the next tick catches it (the guard runs every 10 min, so the overlap is unlikely).
      */
     private static boolean confirmFirehoseGrowing(Context ctx) {
         File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
-        long before = sumLogBytes(varLog);
+        long before = totalLogBytes(varLog);
         try {
             Thread.sleep(GROWTH_PROBE_MS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
         }
-        long delta = sumLogBytes(varLog) - before;
+        long delta = totalLogBytes(varLog) - before;
         boolean growing = delta >= GROWTH_MIN_BYTES;
         if (!growing) {
             Log.i(TAG, "K2GO-386: firehose signal but logs are not growing now (delta " + delta + " B); not acting");
@@ -257,19 +263,37 @@ public final class DiskGuard {
         return growing;
     }
 
-    /** Total bytes of every {@code *.log} regular file in the tree rooted at {@code dir}. Best-effort. */
-    private static long sumLogBytes(File dir) {
+    /** Every {@code *.log} regular file in the tree rooted at {@code dir}, added to {@code out}. The one
+     *  recursive walker; {@link #totalLogBytes} and {@link #biggestLog} reduce over it. Best-effort
+     *  (unreadable dirs are skipped). Bounded to the small {@code /var/log} tree. */
+    private static void collectLogs(File dir, List<File> out) {
         File[] entries = dir.listFiles();
-        if (entries == null) return 0L;
-        long sum = 0L;
+        if (entries == null) return;
         for (File f : entries) {
             if (f.isDirectory()) {
-                sum += sumLogBytes(f);
+                collectLogs(f, out);
             } else if (f.isFile() && f.getName().endsWith(".log")) {
-                sum += f.length();
+                out.add(f);
             }
         }
+    }
+
+    /** Total bytes of every {@code *.log} under {@code dir}. */
+    private static long totalLogBytes(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        long sum = 0L;
+        for (File f : logs) sum += f.length();
         return sum;
+    }
+
+    /** The biggest {@code *.log} under {@code dir}, or {@code null} if there is none. */
+    private static File biggestLog(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        File best = null;
+        for (File f : logs) if (best == null || f.length() > best.length()) best = f;
+        return best;
     }
 
     /** Report the event to developers through the delivery backbone (unattended; not user-facing). */
@@ -300,7 +324,7 @@ public final class DiskGuard {
      */
     private static long reclaimRunawayLog(Context ctx) {
         File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
-        File biggest = biggestLogUnder(varLog, null);
+        File biggest = biggestLog(varLog);
         if (biggest == null || biggest.length() < RUNAWAY_LOG_MIN_BYTES) return 0L;
         long size = biggest.length();
         try (FileOutputStream truncate = new FileOutputStream(biggest)) {
@@ -311,25 +335,6 @@ public final class DiskGuard {
             Log.w(TAG, "K2GO-386: could not truncate " + biggest.getName(), e);
             return 0L;
         }
-    }
-
-    /**
-     * The biggest {@code *.log} regular file in the tree rooted at {@code dir}, or {@code best} if none is
-     * bigger. Name-filtered to {@code .log} so a non-log large file is never a candidate. Bounded to the
-     * small {@code /var/log} tree. Best-effort (unreadable dirs are skipped).
-     */
-    private static File biggestLogUnder(File dir, File best) {
-        File[] entries = dir.listFiles();
-        if (entries == null) return best;
-        for (File f : entries) {
-            if (f.isDirectory()) {
-                best = biggestLogUnder(f, best);
-            } else if (f.isFile() && f.getName().endsWith(".log")
-                    && (best == null || f.length() > best.length())) {
-                best = f;
-            }
-        }
-        return best;
     }
 
     /**
