@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">فضای ذخیره‌سازی به‌طور بحرانی کم است</string>
+    <string name="disk_guard_notif_body">برای جلوگیری از پر شدن فضای دستگاه، سرور متوقف شد. برای ارسال گزارش ضربه بزنید.</string>
+    <string name="disk_guard_firehose_title">K2Go فعالیت غیرعادی را مهار کرد</string>
+    <string name="disk_guard_firehose_body">K2Go فرایندی را که فضای زیادی مصرف می‌کرد مدیریت کرد و سیستم شما را فعال نگه داشت. برای ارسال گزارش ضربه بزنید.</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Dung lượng lưu trữ cực kỳ thấp</string>
+    <string name="disk_guard_notif_body">Máy chủ đã dừng để tránh thiết bị của bạn hết dung lượng. Nhấn để gửi báo cáo.</string>
+    <string name="disk_guard_firehose_title">K2Go đã kiểm soát hoạt động bất thường</string>
+    <string name="disk_guard_firehose_body">K2Go đã xử lý một tiến trình sử dụng quá nhiều bộ nhớ và giữ cho hệ thống hoạt động. Nhấn để gửi báo cáo.</string>
+</resources>

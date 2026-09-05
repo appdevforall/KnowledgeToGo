@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">저장 공간이 매우 부족함</string>
+    <string name="disk_guard_notif_body">기기의 저장 공간이 부족해지지 않도록 서버를 중지했습니다. 탭하여 보고서를 보내세요.</string>
+    <string name="disk_guard_firehose_title">K2Go가 비정상적인 활동을 억제했습니다</string>
+    <string name="disk_guard_firehose_body">K2Go가 저장 공간을 과도하게 사용하던 프로세스를 처리하고 시스템을 계속 실행했습니다. 탭하여 보고서를 보내세요.</string>
+</resources>
