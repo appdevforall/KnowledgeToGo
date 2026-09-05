@@ -123,9 +123,9 @@ app can stop an off-proot orphan.
   and it emits the recurring-firehose signal.
 - **App-side (Android) — STOP.** The only actor that can reap an off-proot orphan. It is driven by the
   in-box recurring-firehose signal (a log that keeps refilling after truncation = an orphan) or by disk
-  pressure, and it reaps + reports. This is the half that is still to be built.
+  pressure, and it reaps + reports. **Built** -- see "Mechanism (as built)" below.
 
-**Decisions (direction; detailed mechanism is the next design step, possibly `ADR-386a`):**
+**Decisions (direction):**
 
 - **Targeted, not blind.** Act on the offending vector (a specific runaway log/service), keeping the rest
   of the system up. NOT the rejected "disk full → stop everything → stay down → user fixes it."
@@ -152,20 +152,48 @@ app can stop an off-proot orphan.
   - **The signal carries a timestamp; a stale one is ignored.** Freshness is part of the contract, not an
     assumption.
 
-**Open (design next):** the exact leading-indicator (growth-rate vs absolute), the targeted-vs-full
-decision, and how relaunch coordinates with the reconciler. The existing `feat/K2GO-386-disk-guard`
-slice (device-verified) is the scaffold to reorient from "stop + stay-down" to this.
+**Mechanism (as built).** Two triggers, one poller. `WatchdogService` ticks the guard every 25 s and
+calls two entry points in order:
 
-## 7. Reporting to developers (unattended, cadence-based)
+1. **Low-disk trigger** -- `DiskGuard.check`. Free space (StatFs) vs a floor; on CRITICAL it confirms
+   with a second read, then reaps + reclaims + relaunches. This path OWNS escalation: after
+   `ESCALATE_AFTER_TRIPS` consecutive trips (the restart is not fixing it) it stops and stays down as a
+   last resort (`DiskGuardEscalation`, a pure unit-tested rule). Device-verified (L3b).
+2. **Firehose trigger** -- `DiskGuard.checkFirehoseSignal`. It reads dash-node's LIVE signal
+   (`GET /k2go-api/system/disk-guard/firehose`, which returns the in-memory streak, never a log line).
+   `FirehoseSignal.isFresh` gates on `recurring` AND a recent `lastTruncatedAtMs` -- judged in the
+   server's own clock (the endpoint returns `now` too), so there is no app-vs-server skew. The signal is
+   only an ALERT: before reaping, the app **re-probes live growth** -- it sums the `.log` bytes under
+   `/var/log`, waits a few seconds, sums again, and acts only on a firehose-sized delta. This catches an
+   off-proot orphan BEFORE the disk goes low (the in-box guard keeps truncating, so the disk may never go
+   low). It reaps + reclaims + relaunches (restart-to-keep-alive); the app-side reap DOES reach the
+   off-proot orphan, so a fresh box does not refill. It does NOT touch the low-disk escalation counter --
+   the low-disk path stays the single escalation authority.
 
-When any layer contains or recovers a situation, it should tell us — so field robustness is measured, not
-guessed — **without bothering the user**:
+Both paths skip the reap while a deep op (clone/backup/restore/install) holds the box
+(`EnvironmentLock.currentHolder`), report to developers through the delivery backbone, and relaunch
+through the ADR-5343 reconciler (`requestReconcileNow`, desired stays UP).
 
-- **Optional and cadence/rate-based:** a rare anomaly → a low-cadence digest (daily/weekly/monthly); a
-  recurring one (e.g. hourly) → escalate ("we're noticing X; send a report?"). A frequency/rate rule sets
-  the cadence.
-- **Reuse the delivery backbone** (`DeliveryManager` / the debug-delivery path) rather than a new channel.
-- The user is *informed*, not *tasked*: a report goes to developers; recovery already happened.
+## 7. Reporting (two channels, not analytics)
+
+When a layer contains or recovers a situation it tells us -- so field robustness is measured, not guessed.
+A disk-guard event is an OPERATIONAL diagnostic, not behavioural analytics, so it does NOT use the
+analytics backbone (`AnalyticsConsent`, opt-in, default OFF -- which would silently drop it). There are
+two channels, on purpose:
+
+- **Automatic (unattended) -> GlitchTip via Sentry.** `DiskGuard.report(...)` captures a Sentry message
+  (tags: `event=disk_guard`, `action`, `reaped`; extras: `floor_bytes`, `reclaimed_bytes`, `trip`), gated
+  by `CrashReportConsent` (default ON, its own policy, no PII -- see `IIABApplication`, ADFA-4533). It is a
+  no-op when crash reporting is off or Sentry has no DSN. The user is informed, not tasked; recovery
+  already happened. DONE (this ticket).
+- **Active (user-sent) -> feedback email.** The app tells the user it contained an unusual behavior and
+  offers to send a report the user actively sends, through the existing feedback flow (`FeedbackFab` /
+  `EmailFeedbackSender`, mailto), pre-filled with what happened -- the same pattern the install-failed
+  report uses (ADFA-5119). Because the guard runs in the background, the bridge is the notification: it
+  gains a tap action that opens an Activity which launches the pre-filled feedback email. This does NOT
+  wait for GlitchTip to surface the issue; the operator can send it on the spot.
+
+The active channel is the CLOSING piece of the K2GO-386 effort and lands in its own ticket (see section 12).
 
 ## 8. Lifecycle (who sets it, who clears it, what if a process dies)
 
@@ -205,7 +233,8 @@ guessed — **without bothering the user**:
 | L1 | rootfs built with the merged patch | php-fpm installed, **not enabled**, not running on a default build |
 | L2 | `logrotate -d` after install; a log grown past `size`, then a trigger | parses clean; truncated in place; writer keeps writing; no orphaned deleted-but-open file |
 | L2 | short (<10 min) session | no boot rotation (by design); bounded next long session |
-| L3 | fast fill + Vector B (synthetic) | contained/recovered without denying service; system back up; a report enqueued |
+| L3 low-disk | force CRITICAL (debug huge floor) with a staged runaway log | reaps, reclaims, box relaunches (desired=UP), report enqueued; system stays up. Device-verified (HD1901) |
+| L3 firehose | a fresh recurring signal + a `.log` growing fast now | re-probes growth, reaps the orphan, box relaunches; a non-growing signal is ignored (confirm before acting). Full real chain device-verified (HD1901): the guard truncated a >1 GiB log on two ticks -> endpoint `recurring:true` -> the app polled, confirmed growth, and reaped (`trip:2`, the real streak). The forced hook (`--ez firehose true`) covers the same path without the wait. |
 
 ## 11. Consequences
 
@@ -213,5 +242,29 @@ guessed — **without bothering the user**:
 - We carry a small owned config set instead of inherited RPi drift; new services get one block, one place.
 - One liveness dependency remains in Phase 1 (dash-node as L2 trigger); named, bounded by L3, removed in
   Phase 2.
-- Field occurrences are reported to developers, so we tune the parameters from real data rather than
-  guesses.
+- Field occurrences are reported to developers (GlitchTip, §7), so we tune the parameters from real data
+  rather than guesses.
+
+## 12. Closing piece -- active user report (its own ticket)
+
+The automatic report (§7) is unattended: it waits for GlitchTip to surface the issue. The closing piece of
+this effort adds the ACTIVE channel -- the operator can send a report on the spot -- and is the broche de
+cierre for K2GO-386. It ships in its own ticket (APK-affecting), and this section is its authority.
+
+Scope:
+
+- **Notify with intent.** When the guard contains a situation (a firehose reap, or the last-resort stop),
+  post a user notification that says what was contained -- calm, non-technical -- and offers "send a
+  report". Today `notifyUser` only fires on the last-resort stop and carries no action.
+- **Bridge background -> Activity.** The guard runs in `WatchdogService` (no Activity), but the feedback
+  email needs one. The notification's tap action opens an Activity (deep-link) that launches the report.
+- **Reuse the feedback flow, pre-filled.** Call `FeedbackFab.sendFeedback(activity, "disk-guard",
+  FeedbackType.BUG, prefilled)` -- the same typed, pre-filled pattern the install-failed report uses
+  (ADFA-5119). The user sends it via email; the app fills in what happened, since the user did not cause it.
+- **What the report carries.** The diagnostic already gathered for §7 (action, reaped, reclaimed bytes,
+  trip/streak, free bytes, the runaway log path) plus the standard feedback envelope (app version, build,
+  Android release, device, ABI, binaries tag), so a single email is enough to triage.
+- **Cadence.** Do not nag: offer the active report on a meaningful containment (an escalation, or a
+  recurring firehose), not on every routine reap. The automatic channel still records every event.
+
+Not in scope here: the GlitchTip DSN and server-side routing (a Worker/ops concern, not the APK).

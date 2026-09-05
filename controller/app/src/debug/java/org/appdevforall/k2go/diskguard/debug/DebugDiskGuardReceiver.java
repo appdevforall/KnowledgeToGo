@@ -13,8 +13,10 @@ import org.appdevforall.k2go.diskguard.DiskGuard;
  * first filling ~58 GB. Lives in src/debug, so it never ships in release.
  *
  * <p>Exported (it is the whole point — an adb-reachable surface, unlike the app's non-exported
- * services), mirroring {@link org.appdevforall.k2go.delivery.debug.DebugDeliveryReceiver}. A huge
- * floor makes any real free-space reading CRITICAL, tripping the guard for real. Example:
+ * services), mirroring {@link org.appdevforall.k2go.delivery.debug.DebugDeliveryReceiver}.
+ *
+ * <p>Two modes. The low-disk path: a huge floor makes any real free-space reading CRITICAL, tripping
+ * the guard for real:
  *
  * <pre>
  * adb shell am broadcast \
@@ -23,10 +25,20 @@ import org.appdevforall.k2go.diskguard.DiskGuard;
  *   --el floor_bytes 999999999999
  * </pre>
  *
- * Watch it act in logcat: {@code adb logcat -s K2Go-DiskGuard}. The debug hook runs the FORCED path,
- * which always CONTAINs: it reaps and reclaims, then leaves the server desired=UP and asks the
- * reconciler to relaunch a fresh box. It never advances the real escalation count, so repeated
- * triggers cannot stop the box.
+ * The firehose path (K2GO-386 L3a): pass {@code --ez firehose true} to exercise the second trigger. It
+ * skips the dash-node signal fetch but STILL runs the real growth re-probe, so it reaps only if a
+ * {@code .log} is actually growing now -- stage a fast-growing log first:
+ *
+ * <pre>
+ * adb shell am broadcast \
+ *   -a org.appdevforall.k2go.DEBUG_DISK_GUARD \
+ *   -n org.appdevforall.k2go/org.appdevforall.k2go.diskguard.debug.DebugDiskGuardReceiver \
+ *   --ez firehose true
+ * </pre>
+ *
+ * Watch it act in logcat: {@code adb logcat -s K2Go-DiskGuard}. Both modes always CONTAIN: reap and
+ * reclaim, then leave the server desired=UP and ask the reconciler to relaunch a fresh box. Neither
+ * advances the real escalation count, so repeated triggers cannot stop the box.
  */
 public final class DebugDiskGuardReceiver extends BroadcastReceiver {
 
@@ -35,11 +47,17 @@ public final class DebugDiskGuardReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final Context app = context.getApplicationContext();
+        final boolean firehose = intent.getBooleanExtra("firehose", false);
         final long floor = intent.getLongExtra("floor_bytes", Long.MAX_VALUE);
-        Log.w(TAG, "K2GO-386: debug disk-guard test hook fired (floor_bytes=" + floor + ")");
+        Log.w(TAG, "K2GO-386: debug disk-guard test hook fired (firehose=" + firehose
+                + ", floor_bytes=" + floor + ")");
         new Thread(() -> {
             try {
-                DiskGuard.checkWithFloor(app, floor);
+                if (firehose) {
+                    DiskGuard.checkFirehoseForced(app);
+                } else {
+                    DiskGuard.checkWithFloor(app, floor);
+                }
             } catch (Throwable t) {
                 Log.w(TAG, "K2GO-386: debug disk-guard test hook failed", t);
             }

@@ -55,6 +55,11 @@ public class WatchdogService extends Service {
     // protected session, stopped on destroy.
     private ScheduledExecutorService diskGuardPoller;
     private static final long DISK_GUARD_INTERVAL_S = 25;
+    // The low-disk check runs every tick (a local StatFs read). The firehose signal is an HTTP GET to
+    // dash-node, and dash-node only advances it on its 10-min guard tick, so read it every Nth tick
+    // (~150 s) instead of every 25 s. Touched only by the single poller thread.
+    private static final int FIREHOSE_POLL_EVERY_N_TICKS = 6;
+    private int diskGuardTick = 0;
 
     @Override
     public void onCreate() {
@@ -130,14 +135,20 @@ public class WatchdogService extends Service {
     }
 
     // K2GO-386 (Layer 3): the free-space guard. One background poller ticks every DISK_GUARD_INTERVAL_S.
-    // On a CRITICAL reading DiskGuard confirms, reaps the box, reclaims the runaway log, and by default
-    // lets it restart; the in-box layers cannot stop an off-proot orphan. Started once per session.
+    // Two triggers. (1) check() EVERY tick (a local read): on a CRITICAL free-space reading, confirm,
+    // reap, reclaim, and by default let the box restart. (2) checkFirehoseSignal() every Nth tick (an
+    // HTTP read): on a fresh recurring firehose that is still growing, reap the off-proot orphan the box
+    // cannot stop -- even before the disk goes low (ADR-386 §6). The in-box layers cannot stop an
+    // off-proot orphan. Started once per session.
     private void startDiskGuard() {
         if (diskGuardPoller != null) return;
         diskGuardPoller = Executors.newSingleThreadScheduledExecutor();
         diskGuardPoller.scheduleWithFixedDelay(() -> {
             try {
                 org.appdevforall.k2go.diskguard.DiskGuard.check(getApplicationContext());
+                if (diskGuardTick++ % FIREHOSE_POLL_EVERY_N_TICKS == 0) {
+                    org.appdevforall.k2go.diskguard.DiskGuard.checkFirehoseSignal(getApplicationContext());
+                }
             } catch (Throwable t) {
                 Log.w(TAG, "K2GO-386: disk-guard tick failed", t);
             }

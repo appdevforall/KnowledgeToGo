@@ -40,19 +40,24 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.delivery.DeliveryManager;
+import org.appdevforall.k2go.delivery.data.CrashReportConsent;
+import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
+import org.appdevforall.k2go.diskguard.domain.FirehoseSignal;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.env.EnvironmentProcess;
 import org.appdevforall.k2go.env.ServerLifecycleReconciler;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.system.domain.Operation;
 
-import org.json.JSONObject;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class DiskGuard {
 
@@ -70,6 +75,17 @@ public final class DiskGuard {
     // restart is not fixing it, so the guard escalates to stop-and-stay-down as a last resort.
     private static final int ESCALATE_AFTER_TRIPS = 3;
     private static final long TRIP_WINDOW_MS = 30L * 60L * 1000L;
+
+    // The firehose trigger (ADR-386 §6): a recurring-firehose signal older than this (in the server's
+    // own clock) is stale and ignored -- the firehose likely resolved. A live one is re-confirmed by
+    // growth anyway. About 2.5 guard ticks (the guard runs every 10 min).
+    private static final long FIREHOSE_FRESH_WINDOW_MS = 25L * 60L * 1000L;
+    // Growth re-probe: read the .log total, wait, read again. Act only on a delta that is clearly a
+    // firehose. The observed firehose runs ~600 MB/min to 1.3 GB/min (php-fpm busy-loop), so even the
+    // low end adds ~30 MB in 3 s. 16 MiB (~327 MB/min) stays below that low end with margin, and far
+    // above any normal log (KB-MB/min), so a real firehose is caught and a normal log never trips it.
+    private static final long GROWTH_PROBE_MS = 3000L;
+    private static final long GROWTH_MIN_BYTES = 16L * 1024 * 1024; // 16 MiB within GROWTH_PROBE_MS
 
     private static final String CHANNEL_ID = "disk_guard_channel";
     private static final int NOTIF_ID = 7386;
@@ -96,6 +112,30 @@ public final class DiskGuard {
      */
     public static boolean checkWithFloor(Context ctx, long floorBytes) {
         return run(ctx, floorBytes, true);
+    }
+
+    /**
+     * The SECOND reap trigger (ADR-386 §6). The low-disk path above catches a disk that already went
+     * low. This path catches a firehose the in-box guard keeps truncating -- so the disk may never go
+     * low -- but that the box cannot stop because the writer is an off-proot orphan. It reads the live
+     * dash-node signal, and if the signal is a fresh recurring firehose it CONFIRMS by re-probing live
+     * log growth before it reaps. Safe to call every poller tick; a no-op unless a firehose is live now.
+     */
+    public static boolean checkFirehoseSignal(Context ctx) {
+        if (ctx == null) return false;
+        FirehoseSignal sig = FirehoseSignalSource.read();
+        if (sig == null || !sig.isFresh(FIREHOSE_FRESH_WINDOW_MS)) return false; // no live alert
+        return actOnFirehose(ctx, sig.maxStreak);
+    }
+
+    /**
+     * The debug device-verify hook for the firehose path. It skips the signal fetch and freshness gate,
+     * but STILL runs the real growth re-probe -- so it only reaps when a log is actually growing now.
+     * Stage a fast-growing .log, then fire it, to verify confirm-before-act plus the reap on device.
+     */
+    public static boolean checkFirehoseForced(Context ctx) {
+        if (ctx == null) return false;
+        return actOnFirehose(ctx, -1);
     }
 
     private static boolean run(Context ctx, long floorBytes, boolean forced) {
@@ -177,22 +217,109 @@ public final class DiskGuard {
         return EnvironmentLock.currentHolder(ctx).executionClass == Operation.ExecutionClass.STOPPED;
     }
 
-    /** Report the event to developers through the delivery backbone (unattended; not user-facing). */
+    /**
+     * Act on a firehose that a fresh signal (or the debug hook) flagged. Confirm-before-acting: the
+     * signal is only an ALERT; reap solely if a log is actually growing fast RIGHT NOW. Then reap and
+     * restart (restart-to-keep-alive), the same as the low-disk path. The app-side reap DOES reach the
+     * off-proot orphan (unlike an in-box kill), so a fresh box does not refill. The low-disk path stays
+     * the sole escalation authority, so a firehose reap never counts toward stop-and-stay-down.
+     */
+    private static boolean actOnFirehose(Context ctx, int streak) {
+        if (!confirmFirehoseGrowing(ctx)) return false;
+        if (deepOpActive(ctx)) {
+            Log.w(TAG, "K2GO-386: firehose confirmed but a deep op holds the box; not reaping this tick");
+            return false;
+        }
+        boolean reaped = EnvironmentProcess.reapBox(ctx);
+        long reclaimed = reclaimRunawayLog(ctx);
+        ServerLifecycleReconciler.get().requestReconcileNow();
+        report(ctx, "contained_firehose", 0L, reaped, reclaimed, streak);
+        Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
+                + ", reclaimed=" + reclaimed + " B, box restarting");
+        return true;
+    }
+
+    /**
+     * True when the box's {@code *.log} files are growing fast enough to be a firehose: read the total
+     * {@code .log} bytes under {@code /var/log}, wait {@link #GROWTH_PROBE_MS}, read again, and require a
+     * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to WHICH log
+     * the orphan writes. It is not fooled by a normal log, which never grows this fast. A rare race -- the
+     * in-box guard truncating the firehose during the probe -- reads as no growth this tick, not a false
+     * reap; the next tick catches it (the guard runs every 10 min, so the overlap is unlikely).
+     */
+    private static boolean confirmFirehoseGrowing(Context ctx) {
+        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        long before = totalLogBytes(varLog);
+        try {
+            Thread.sleep(GROWTH_PROBE_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        long delta = totalLogBytes(varLog) - before;
+        boolean growing = delta >= GROWTH_MIN_BYTES;
+        if (!growing) {
+            Log.i(TAG, "K2GO-386: firehose signal but logs are not growing now (delta " + delta + " B); not acting");
+        }
+        return growing;
+    }
+
+    /** Every {@code *.log} regular file in the tree rooted at {@code dir}, added to {@code out}. The one
+     *  recursive walker; {@link #totalLogBytes} and {@link #biggestLog} reduce over it. Best-effort
+     *  (unreadable dirs are skipped). Bounded to the small {@code /var/log} tree. */
+    private static void collectLogs(File dir, List<File> out) {
+        File[] entries = dir.listFiles();
+        if (entries == null) return;
+        for (File f : entries) {
+            if (f.isDirectory()) {
+                collectLogs(f, out);
+            } else if (f.isFile() && f.getName().endsWith(".log")) {
+                out.add(f);
+            }
+        }
+    }
+
+    /** Total bytes of every {@code *.log} under {@code dir}. */
+    private static long totalLogBytes(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        long sum = 0L;
+        for (File f : logs) sum += f.length();
+        return sum;
+    }
+
+    /** The biggest {@code *.log} under {@code dir}, or {@code null} if there is none. */
+    private static File biggestLog(File dir) {
+        List<File> logs = new ArrayList<>();
+        collectLogs(dir, logs);
+        File best = null;
+        for (File f : logs) if (best == null || f.length() > best.length()) best = f;
+        return best;
+    }
+
+    /**
+     * Report the event to developers, unattended. This is an OPERATIONAL diagnostic, not behavioural
+     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default on) -- NOT the
+     * analytics backbone (opt-in, default off, which would silently drop it). A no-op when crash
+     * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
+     * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
+     */
     private static void report(Context ctx, String action, long floorBytes, boolean reaped,
                               long reclaimed, int trip) {
         try {
-            String json = new JSONObject()
-                    .put("event", "disk_guard")
-                    .put("action", action)
-                    .put("floor_bytes", floorBytes)
-                    .put("reaped", reaped)
-                    .put("reclaimed_bytes", reclaimed)
-                    .put("trip", trip)
-                    .put("ts", System.currentTimeMillis())
-                    .toString();
-            DeliveryManager.with(ctx).enqueueAnalytics(json);
-        } catch (Exception e) {
-            Log.w(TAG, "K2GO-386: could not enqueue disk-guard report", e);
+            if (!CrashReportConsent.isEnabled(ctx)) return;
+            Sentry.withScope(scope -> {
+                scope.setLevel(SentryLevel.WARNING);
+                scope.setTag("event", "disk_guard");
+                scope.setTag("action", action);
+                scope.setTag("reaped", String.valueOf(reaped));
+                scope.setExtra("floor_bytes", String.valueOf(floorBytes));
+                scope.setExtra("reclaimed_bytes", String.valueOf(reclaimed));
+                scope.setExtra("trip", String.valueOf(trip));
+                Sentry.captureMessage("K2GO-386 disk-guard " + action);
+            });
+        } catch (Throwable t) {
+            Log.w(TAG, "K2GO-386: could not report disk-guard event", t);
         }
     }
 
@@ -205,7 +332,7 @@ public final class DiskGuard {
      */
     private static long reclaimRunawayLog(Context ctx) {
         File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
-        File biggest = biggestLogUnder(varLog, null);
+        File biggest = biggestLog(varLog);
         if (biggest == null || biggest.length() < RUNAWAY_LOG_MIN_BYTES) return 0L;
         long size = biggest.length();
         try (FileOutputStream truncate = new FileOutputStream(biggest)) {
@@ -216,25 +343,6 @@ public final class DiskGuard {
             Log.w(TAG, "K2GO-386: could not truncate " + biggest.getName(), e);
             return 0L;
         }
-    }
-
-    /**
-     * The biggest {@code *.log} regular file in the tree rooted at {@code dir}, or {@code best} if none is
-     * bigger. Name-filtered to {@code .log} so a non-log large file is never a candidate. Bounded to the
-     * small {@code /var/log} tree. Best-effort (unreadable dirs are skipped).
-     */
-    private static File biggestLogUnder(File dir, File best) {
-        File[] entries = dir.listFiles();
-        if (entries == null) return best;
-        for (File f : entries) {
-            if (f.isDirectory()) {
-                best = biggestLogUnder(f, best);
-            } else if (f.isFile() && f.getName().endsWith(".log")
-                    && (best == null || f.length() > best.length())) {
-                best = f;
-            }
-        }
-        return best;
     }
 
     /**

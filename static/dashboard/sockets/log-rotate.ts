@@ -41,6 +41,11 @@ const LOG_DIRS = ['/var/log', '/var/log/nginx'];
 // Only paths firehosing this pass carry forward (see updateStreaks), so a deleted/renamed log never lingers.
 let firehoseStreak = new Map<string, number>();
 
+// Wall-clock of the last tick that truncated at least one firehose, or 0 if none this run. The
+// /system/disk-guard/firehose endpoint (routes.ts) returns it so the app can tell how FRESH the signal
+// is (a clock-driven guard leaves gaps; the app re-probes live state before acting -- ADR-386 §6).
+let lastTruncatedAtMs = 0;
+
 /** Pure: the updated streak counts given the paths firehosing THIS pass and the previous counts — each
  *  firehosing path +1, everything else dropped (so nothing leaks when a log disappears). No I/O;
  *  unit-tested (log-rotate.test.ts). */
@@ -48,6 +53,21 @@ export function updateStreaks(firehosing: Set<string>, prev: Map<string, number>
     const next = new Map<string, number>();
     for (const p of firehosing) next.set(p, (prev.get(p) || 0) + 1);
     return next;
+}
+
+/** Pure: the longest consecutive-tick streak across all paths, and the paths currently firehosing. No
+ *  I/O; unit-tested (log-rotate.test.ts). */
+export function summarizeStreaks(streak: Map<string, number>): { maxStreak: number; paths: string[] } {
+    let maxStreak = 0;
+    for (const n of streak.values()) if (n > maxStreak) maxStreak = n;
+    return { maxStreak, paths: [...streak.keys()] };
+}
+
+/** The LIVE firehose state, for the /system/disk-guard/firehose endpoint. Reads the in-memory streak
+ *  map directly -- never a parsed log line -- so a restart (which clears the map) reports clean. The
+ *  app uses this as an ALERT only; it re-probes live state before it reaps (ADR-386 §6). */
+export function getFirehoseState(): { maxStreak: number; paths: string[]; lastTruncatedAtMs: number } {
+    return { ...summarizeStreaks(firehoseStreak), lastTruncatedAtMs };
 }
 
 let timer: NodeJS.Timeout | null = null;
@@ -72,6 +92,7 @@ function guardFirehoseLogs(): void {
     }
     // Update the streaks in one pass: only paths that firehosed now carry forward (no stale entries).
     firehoseStreak = updateStreaks(new Set(firehosing.map((f) => f.p)), firehoseStreak);
+    if (firehosing.length > 0) lastTruncatedAtMs = Date.now();
     for (const { p, size } of firehosing) {
         const n = firehoseStreak.get(p) || 1;
         console.warn(
