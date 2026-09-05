@@ -184,6 +184,77 @@ public final class EnvironmentProcess {
         return reaped;
     }
 
+    /**
+     * K2GO-386 (barrier 2): a FULL box teardown — kill the proot and reap the box's daemonised services.
+     * This is the disk-guard's recovery action when free space is critical. Device-proven (2026-09-04): a
+     * targeted restart or an in-proot kill does NOT stop a runaway orphaned off proot; only a full teardown
+     * (what {@code am force-stop} does) does. Each service runs in the app's own uid + SELinux domain, so
+     * {@code killProcess} reaches it — the same technique as {@link #reapEnvironmentHttpFront}. Best-effort
+     * and idempotent.
+     *
+     * @return true when at least one process was signalled.
+     */
+    public static boolean reapBox(Context ctx) {
+        boolean any = false;
+        if (ctx != null) {
+            int proot = findPid(ctx);
+            if (proot > 0) {
+                try {
+                    android.os.Process.killProcess(proot);
+                    Log.i(TAG, "K2GO-386: killed the box proot, pid " + proot);
+                    any = true;
+                } catch (Exception e) {
+                    Log.w(TAG, "K2GO-386: could not kill the box proot pid " + proot, e);
+                }
+            }
+        }
+        // The box's services daemonise (setsid, reparent to init) and survive the proot; reap them by name.
+        return reapByNames(BOX_SERVICE_TOKENS) || any;
+    }
+
+    /** Cmdline tokens of the box's daemonised services (dash-node = "node"). Scoped to us: these run only
+     *  in the app's uid, so a match is always a box process. */
+    private static final String[] BOX_SERVICE_TOKENS =
+            {"php-fpm", "nginx", "mariadb", "mysqld", "kolibri", "kiwix", "calibre", "node"};
+
+    /** Kill every non-self process whose cmdline contains any of {@code tokens} (same uid + SELinux domain
+     *  as us, so killable). Best-effort; entries vanishing mid-scan are ignored. */
+    private static boolean reapByNames(String[] tokens) {
+        File[] entries = new File("/proc").listFiles();
+        if (entries == null) {
+            return false;
+        }
+        int myPid = android.os.Process.myPid();
+        boolean reaped = false;
+        for (File dir : entries) {
+            int pid;
+            try {
+                pid = Integer.parseInt(dir.getName());
+            } catch (NumberFormatException notAPid) {
+                continue;
+            }
+            if (pid == myPid) {
+                continue;
+            }
+            String cmd = readCmdline(new File(dir, "cmdline"));
+            if (cmd == null) {
+                continue;
+            }
+            for (String token : tokens) {
+                if (cmd.contains(token)) {
+                    try {
+                        android.os.Process.killProcess(pid);
+                        reaped = true;
+                    } catch (Exception ignored) {
+                        // vanished mid-scan, or not ours to signal
+                    }
+                    break;
+                }
+            }
+        }
+        return reaped;
+    }
+
     /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
     private static String readCmdline(File cmdline) {
         try (FileInputStream in = new FileInputStream(cmdline)) {
