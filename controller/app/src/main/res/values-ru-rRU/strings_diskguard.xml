@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Критически мало памяти</string>
+    <string name="disk_guard_notif_body">Сервер остановлен, чтобы на устройстве не закончилось место. Нажмите, чтобы отправить отчёт.</string>
+    <string name="disk_guard_firehose_title">K2Go сдержал необычную активность</string>
+    <string name="disk_guard_firehose_body">K2Go обработал процесс, использовавший слишком много памяти, и сохранил работу системы. Нажмите, чтобы отправить отчёт.</string>
+</resources>

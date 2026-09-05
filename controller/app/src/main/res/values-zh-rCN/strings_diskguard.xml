@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">存储空间严重不足</string>
+    <string name="disk_guard_notif_body">已停止服务器，以防设备空间耗尽。点按以发送报告。</string>
+    <string name="disk_guard_firehose_title">K2Go 已控制异常活动</string>
+    <string name="disk_guard_firehose_body">K2Go 处理了一个占用过多存储的进程，并保持系统运行。点按以发送报告。</string>
+</resources>

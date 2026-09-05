@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Spațiu de stocare critic de redus</string>
+    <string name="disk_guard_notif_body">Serverul a fost oprit pentru a preveni epuizarea spațiului pe dispozitiv. Atinge pentru a trimite un raport.</string>
+    <string name="disk_guard_firehose_title">K2Go a limitat o activitate neobișnuită</string>
+    <string name="disk_guard_firehose_body">K2Go a gestionat un proces care folosea prea mult spațiu și a menținut sistemul în funcțiune. Atinge pentru a trimite un raport.</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Speicher kritisch niedrig</string>
+    <string name="disk_guard_notif_body">Der Server wurde gestoppt, damit auf Ihrem Gerät der Speicher nicht ausgeht. Tippen, um einen Bericht zu senden.</string>
+    <string name="disk_guard_firehose_title">K2Go hat ungewöhnliche Aktivität eingedämmt</string>
+    <string name="disk_guard_firehose_body">K2Go hat einen Prozess bewältigt, der zu viel Speicher belegte, und Ihr System am Laufen gehalten. Tippen, um einen Bericht zu senden.</string>
+</resources>

@@ -10,10 +10,7 @@
 -->
 <resources>
 
-    <!-- K2GO-386 / K2GO-391: the app-side disk guard's alerts, each inviting a user-sent report. -->
-    <string name="disk_guard_notif_title" translatable="false">Storage critically low</string>
-    <string name="disk_guard_notif_body" translatable="false">The server was stopped to protect your device from running out of space. Tap to send a report.</string>
-    <string name="disk_guard_firehose_title" translatable="false">K2Go contained unusual activity</string>
-    <string name="disk_guard_firehose_body" translatable="false">K2Go handled a process that was using too much storage and kept your system running. Tap to send a report.</string>
+    <!-- No pending strings. The K2GO-386/391 disk-guard alerts were translated and moved to
+         values*/strings_diskguard.xml. Park a new WIP string here only while it awaits translation. -->
 
 </resources>

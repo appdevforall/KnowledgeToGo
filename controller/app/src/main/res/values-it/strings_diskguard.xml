@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Spazio di archiviazione quasi esaurito</string>
+    <string name="disk_guard_notif_body">Il server è stato arrestato per evitare che il dispositivo esaurisca lo spazio. Tocca per inviare un rapporto.</string>
+    <string name="disk_guard_firehose_title">K2Go ha contenuto un\'attività insolita</string>
+    <string name="disk_guard_firehose_body">K2Go ha gestito un processo che usava troppo spazio e ha mantenuto il sistema attivo. Tocca per inviare un rapporto.</string>
+</resources>

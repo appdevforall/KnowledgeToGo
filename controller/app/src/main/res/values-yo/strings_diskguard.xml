@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Ibi ìsàvè ti dínkù gan-an</string>
+    <string name="disk_guard_notif_body">A dá olùpín dúró láti dènà kí ẹ̀rọ rẹ má bàa tán ààyè. Tẹ̀ láti fi ìròyìn ránṣẹ́.</string>
+    <string name="disk_guard_firehose_title">K2Go ṣàkóso iṣẹ́ àìṣàmúlò</string>
+    <string name="disk_guard_firehose_body">K2Go ṣàkóso ìlànà kan tí ó ń lo ibi ìsàvè púpọ̀ jù ó sì jẹ́ kí ètò rẹ máa ṣiṣẹ́. Tẹ̀ láti fi ìròyìn ránṣẹ́.</string>
+</resources>

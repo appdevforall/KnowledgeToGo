@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Κρίσιμα χαμηλός αποθηκευτικός χώρος</string>
+    <string name="disk_guard_notif_body">Ο διακομιστής σταμάτησε για να μην εξαντληθεί ο χώρος στη συσκευή σας. Πατήστε για αποστολή αναφοράς.</string>
+    <string name="disk_guard_firehose_title">Το K2Go περιόρισε ασυνήθιστη δραστηριότητα</string>
+    <string name="disk_guard_firehose_body">Το K2Go χειρίστηκε μια διεργασία που χρησιμοποιούσε υπερβολικό χώρο και κράτησε το σύστημά σας σε λειτουργία. Πατήστε για αποστολή αναφοράς.</string>
+</resources>
