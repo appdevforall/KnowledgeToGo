@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --require ts-node/register --test sockets/maps.socket.test.ts sockets/rolling-log.test.ts sockets/kolibri.session.test.ts sockets/credentials.test.ts sockets/net-retry.test.ts sockets/services.test.ts",
+    "test": "node --require ts-node/register --test sockets/maps.socket.test.ts sockets/rolling-log.test.ts sockets/kolibri.session.test.ts sockets/credentials.test.ts sockets/net-retry.test.ts sockets/services.test.ts sockets/log-rotate.test.ts",
     "test:db": "node --require ts-node/register --test sockets/jobs.test.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",

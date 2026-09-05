@@ -34,14 +34,25 @@ const FIREHOSE_BYTES = 1024 * 1024 * 1024; // 1 GiB
 const LOG_DIRS = ['/var/log', '/var/log/nginx'];
 
 // Consecutive-truncation count per path, so a RECURRING firehose (an orphan the box cannot stop, that
-// just refills) is flagged for the app-side reap (ADR-386 §6). In-memory; cleared when the log is sane.
-const firehoseStreak = new Map<string, number>();
+// just refills) is flagged for the app-side reap (ADR-386 §6). In-memory; only firehosing paths carry
+// forward each pass (see updateStreaks), so a deleted/renamed log leaves no stale entry.
+let firehoseStreak = new Map<string, number>();
+
+/** Pure: the updated streak counts given the paths firehosing THIS pass and the previous counts — each
+ *  firehosing path +1, everything else dropped (so nothing leaks when a log disappears). No I/O;
+ *  unit-tested (log-rotate.test.ts). */
+export function updateStreaks(firehosing: Set<string>, prev: Map<string, number>): Map<string, number> {
+    const next = new Map<string, number>();
+    for (const p of firehosing) next.set(p, (prev.get(p) || 0) + 1);
+    return next;
+}
 
 let timer: NodeJS.Timeout | null = null;
 
 /** Pre-logrotate guard: truncate any firehose-sized .log IN PLACE so logrotate never has to copy it.
  *  Reclaims instantly (no copy, no compress). Best-effort per file. */
 function guardFirehoseLogs(): void {
+    const firehosing: Array<{ p: string; size: number }> = [];
     for (const dir of LOG_DIRS) {
         let entries: string[];
         try { entries = fs.readdirSync(dir); } catch { continue; }
@@ -50,16 +61,20 @@ function guardFirehoseLogs(): void {
             const p = path.join(dir, name);
             try {
                 const size = fs.statSync(p).size;
-                if (size <= FIREHOSE_BYTES) { firehoseStreak.delete(p); continue; }
+                if (size <= FIREHOSE_BYTES) continue;
                 fs.truncateSync(p, 0); // reclaim in place — no copy, no compress
-                const n = (firehoseStreak.get(p) || 0) + 1;
-                firehoseStreak.set(p, n);
-                console.warn(
-                    `[log-rotate] FIREHOSE: truncated ${p} (${size} B) in place, occurrence #${n}` +
-                    (n >= 2 ? ' — recurring; likely an off-proot orphan, needs app-side reap (ADR-386 L3)' : ''),
-                );
+                firehosing.push({ p, size });
             } catch { /* best-effort per file */ }
         }
+    }
+    // Update the streaks in one pass: only paths that firehosed now carry forward (no stale entries).
+    firehoseStreak = updateStreaks(new Set(firehosing.map((f) => f.p)), firehoseStreak);
+    for (const { p, size } of firehosing) {
+        const n = firehoseStreak.get(p) || 1;
+        console.warn(
+            `[log-rotate] FIREHOSE: truncated ${p} (${size} B) in place, occurrence #${n}` +
+            (n >= 2 ? ' — recurring; likely an off-proot orphan, needs app-side reap (ADR-386 L3)' : ''),
+        );
     }
 }
 
