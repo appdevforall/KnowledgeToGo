@@ -10,8 +10,10 @@
 -->
 <resources>
 
-    <!-- K2GO-386: the app-side free-space guard's alert when it stops the box to avoid ENOSPC. -->
+    <!-- K2GO-386 / K2GO-391: the app-side disk guard's alerts, each inviting a user-sent report. -->
     <string name="disk_guard_notif_title" translatable="false">Storage critically low</string>
-    <string name="disk_guard_notif_body" translatable="false">The server was stopped to protect your device from running out of space.</string>
+    <string name="disk_guard_notif_body" translatable="false">The server was stopped to protect your device from running out of space. Tap to send a report.</string>
+    <string name="disk_guard_firehose_title" translatable="false">K2Go contained unusual activity</string>
+    <string name="disk_guard_firehose_body" translatable="false">K2Go handled a process that was using too much storage and kept your system running. Tap to send a report.</string>
 
 </resources>

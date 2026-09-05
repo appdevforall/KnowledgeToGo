@@ -11,6 +11,9 @@
  */
 package org.appdevforall.k2go.diskguard.domain;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A recurring firehose means the in-box guard truncated a runaway log on several consecutive ticks:
  * an off-proot orphan the box cannot stop. This signal is the app's ALERT to look; it is NOT a command
@@ -18,6 +21,9 @@ package org.appdevforall.k2go.diskguard.domain;
  *
  * <p>{@code nowMs} and {@code lastTruncatedAtMs} are both the dash-node wall-clock, so freshness is
  * judged in the server's own time frame -- no app-vs-server clock skew.
+ *
+ * <p>{@code paths} are the firehosing log paths the server reported (which log is the culprit), for the
+ * report. They are just short path strings -- never log content -- and the data source caps them.
  */
 public final class FirehoseSignal {
 
@@ -25,12 +31,15 @@ public final class FirehoseSignal {
     public final int maxStreak;
     public final long lastTruncatedAtMs; // server wall-clock of the last truncation, or 0 if never
     public final long nowMs;             // server wall-clock when it answered
+    public final List<String> paths;     // firehosing log paths (bounded by the data source)
 
-    public FirehoseSignal(boolean recurring, int maxStreak, long lastTruncatedAtMs, long nowMs) {
+    public FirehoseSignal(boolean recurring, int maxStreak, long lastTruncatedAtMs, long nowMs,
+                          List<String> paths) {
         this.recurring = recurring;
         this.maxStreak = maxStreak;
         this.lastTruncatedAtMs = lastTruncatedAtMs;
         this.nowMs = nowMs;
+        this.paths = paths == null ? Collections.emptyList() : paths;
     }
 
     /**
