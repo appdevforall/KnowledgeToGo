@@ -35,6 +35,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private static final long NO_SYSTEM_GATE_MS = 900L;
     /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
     public static final String EXTRA_INSTALLING = "installing";
+    // K2GO-391: the disk guard's notification opens this activity with a pre-filled report to send.
+    public static final String EXTRA_DISK_GUARD_REPORT = "disk_guard_report";
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
     /**
@@ -877,6 +879,27 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
+        maybeStartDiskGuardReport();   // K2GO-391
+    }
+
+    /**
+     * K2GO-391 / ADR-386 section 12: the disk guard runs in a background service and cannot launch the
+     * feedback email itself, so its notification opens this activity carrying a pre-filled report. Hand it
+     * to the existing feedback flow here (onResume covers both a fresh start and a tap onto the running
+     * app). Consume the extra so a later resume -- rotation, returning from another screen -- never
+     * re-fires it. Posted so the screenshot capture runs after the view is laid out.
+     */
+    private void maybeStartDiskGuardReport() {
+        Intent i = getIntent();
+        if (i == null) return;
+        String msg = i.getStringExtra(EXTRA_DISK_GUARD_REPORT);
+        if (msg == null || msg.isEmpty()) return;
+        i.removeExtra(EXTRA_DISK_GUARD_REPORT);
+        setIntent(i);
+        getWindow().getDecorView().post(() ->
+                org.appdevforall.k2go.feedback.presentation.FeedbackFab.sendFeedback(
+                        this, "disk-guard",
+                        org.appdevforall.k2go.feedback.domain.FeedbackType.BUG, msg));
     }
 
     @Override

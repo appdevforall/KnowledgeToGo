@@ -31,7 +31,9 @@ package org.appdevforall.k2go.diskguard;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
@@ -88,7 +90,8 @@ public final class DiskGuard {
     private static final long GROWTH_MIN_BYTES = 16L * 1024 * 1024; // 16 MiB within GROWTH_PROBE_MS
 
     private static final String CHANNEL_ID = "disk_guard_channel";
-    private static final int NOTIF_ID = 7386;
+    private static final int NOTIF_ID = 7386;            // escalation (stopped and staying down)
+    private static final int NOTIF_ID_FIREHOSE = 7387;   // firehose contain (reaped, kept alive)
 
     // Recent-trip state, in memory on purpose: it resets when the app process restarts, so a stale count
     // never carries across a restart. Read and written only under advanceTripState (class monitor).
@@ -167,8 +170,10 @@ public final class DiskGuard {
             // Last resort: the fill keeps returning after restarts. Stop and stay down through the one
             // persisted lever, and tell the user. The user re-enables the server after freeing space.
             ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
-            notifyUser(ctx);
             report(ctx, "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount);
+            notifyUser(ctx, NOTIF_ID, ctx.getString(R.string.disk_guard_notif_title),
+                    ctx.getString(R.string.disk_guard_notif_body),
+                    buildReportMessage(ctx, "escalated_stopped", reaped, reclaimed, v.tripCount));
             Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + v.tripCount + "): stopped and staying down");
         } else {
             // Default: keep the system alive. Leave desired=UP and ask the reconciler to relaunch a fresh
@@ -234,6 +239,9 @@ public final class DiskGuard {
         long reclaimed = reclaimRunawayLog(ctx);
         ServerLifecycleReconciler.get().requestReconcileNow();
         report(ctx, "contained_firehose", 0L, reaped, reclaimed, streak);
+        notifyUser(ctx, NOTIF_ID_FIREHOSE, ctx.getString(R.string.disk_guard_firehose_title),
+                ctx.getString(R.string.disk_guard_firehose_body),
+                buildReportMessage(ctx, "contained_firehose", reaped, reclaimed, streak));
         Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
                 + ", reclaimed=" + reclaimed + " B, box restarting");
         return true;
@@ -346,10 +354,13 @@ public final class DiskGuard {
     }
 
     /**
-     * Warn the user that the box was stopped to protect the device. Best-effort: a no-op if the
-     * POST_NOTIFICATIONS permission is not granted (API 33+). The teardown still happened.
+     * Tell the user the guard acted -- it stopped the box (escalation) or it reaped and kept the system
+     * alive (firehose) -- and offer a report the user sends. The tap opens the app with the pre-filled
+     * diagnostic (K2GO-391). Best-effort: a no-op if POST_NOTIFICATIONS is not granted (API 33+); the
+     * containment already happened. Each event kind passes its own notifId so one does not replace the
+     * other.
      */
-    private static void notifyUser(Context ctx) {
+    private static void notifyUser(Context ctx, int notifId, String title, String body, String reportMessage) {
         try {
             NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -357,18 +368,42 @@ public final class DiskGuard {
                         CHANNEL_ID, ctx.getString(R.string.disk_guard_notif_title),
                         NotificationManager.IMPORTANCE_HIGH));
             }
+            // K2GO-391 / ADR-386 section 12: the guard runs in a background service, so it cannot launch
+            // the feedback email itself. The tap opens the app with the pre-filled diagnostic; the app
+            // (which has an Activity) hands it to the existing feedback flow.
+            Intent open = new Intent(ctx, org.appdevforall.k2go.redesign.LibraryActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .putExtra(org.appdevforall.k2go.redesign.LibraryActivity.EXTRA_DISK_GUARD_REPORT, reportMessage);
+            PendingIntent pi = PendingIntent.getActivity(ctx, notifId, open,
+                    PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
             Notification n = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-                    .setContentTitle(ctx.getString(R.string.disk_guard_notif_title))
-                    .setContentText(ctx.getString(R.string.disk_guard_notif_body))
-                    .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(ctx.getString(R.string.disk_guard_notif_body)))
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                     .setSmallIcon(android.R.drawable.stat_sys_warning)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setContentIntent(pi)
                     .setAutoCancel(true)
                     .build();
-            NotificationManagerCompat.from(ctx).notify(NOTIF_ID, n);
+            NotificationManagerCompat.from(ctx).notify(notifId, n);
         } catch (Exception e) {
             Log.w(TAG, "K2GO-386: could not post the disk-guard notification", e);
         }
+    }
+
+    /**
+     * The pre-filled body handed to the feedback email (K2GO-391): the disk-guard facts, plain and short.
+     * The feedback flow adds the standard envelope (app version, build, device, ABI, ...), so this only
+     * carries what the guard knows. English on purpose (it lands in a dev inbox / triage).
+     */
+    private static String buildReportMessage(Context ctx, String action, boolean reaped, long reclaimed, int count) {
+        Long free = StorageProbe.freeBytes(ctx);
+        return "K2Go disk guard acted.\n"
+                + "action: " + action + "\n"
+                + "reaped: " + reaped + "\n"
+                + "reclaimed_bytes: " + reclaimed + "\n"
+                + "trip_or_streak: " + count + "\n"
+                + "free_bytes_now: " + (free == null ? "unknown" : String.valueOf(free)) + "\n";
     }
 }
