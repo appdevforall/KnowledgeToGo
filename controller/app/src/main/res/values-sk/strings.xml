@@ -750,7 +750,7 @@
     <string name="k2go_clone_replace_other">Tvoja knižnica (systém + obsah) sa nahradí knižnicou druhého telefónu. Nedá sa vrátiť späť.</string>
     <string name="k2go_clone_for_copying">Tieto telefóny nie sú kompatibilné na prenos knižnice K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Naskenovať iný kód</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopírovať</string>
+    <string name="k2go_clone_copy_btn">Kopírovať</string>
     <string name="k2go_clone_already_connected">Už pripojené? Pokračovať</string>
     <string name="k2go_clone_copying">Kopíruje sa knižnica…</string>
     <string name="k2go_clone_join_wifi_note">Pripoj druhý telefón k tejto Wi-Fi.</string>

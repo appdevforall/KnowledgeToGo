@@ -744,7 +744,7 @@
     <string name="k2go_clone_replace_other">Biblioteket ditt (system + innhold) erstattes med den andre telefonens. Kan ikke angres.</string>
     <string name="k2go_clone_for_copying">Disse telefonene er ikke kompatible for å overføre K2Go-biblioteket.</string>
     <string name="k2go_clone_scan_different">‹ Skann en annen kode</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopier</string>
+    <string name="k2go_clone_copy_btn">Kopier</string>
     <string name="k2go_clone_already_connected">Allerede tilkoblet? Fortsett</string>
     <string name="k2go_clone_copying">Kopierer biblioteket…</string>
     <string name="k2go_clone_join_wifi_note">Koble den andre telefonen til denne Wi-Fi-en.</string>

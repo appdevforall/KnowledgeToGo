@@ -744,7 +744,7 @@
     <string name="k2go_clone_replace_other">Twoja biblioteka (system + treści) zostanie zastąpiona biblioteką drugiego telefonu. Nie można cofnąć.</string>
     <string name="k2go_clone_for_copying">Te telefony nie są zgodne, aby przenieść bibliotekę K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Zeskanuj inny kod</string>
-    <string name="k2go_clone_copy_btn">⧉  Kopiuj</string>
+    <string name="k2go_clone_copy_btn">Kopiuj</string>
     <string name="k2go_clone_already_connected">Już połączono? Kontynuuj</string>
     <string name="k2go_clone_copying">Kopiowanie biblioteki…</string>
     <string name="k2go_clone_join_wifi_note">Połącz drugi telefon z tą siecią Wi-Fi.</string>

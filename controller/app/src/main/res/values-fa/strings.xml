@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">کتابخانهٔ شما (سیستم + محتوا) با کتابخانهٔ تلفن دیگر جایگزین می‌شود. قابل بازگشت نیست.</string>
     <string name="k2go_clone_for_copying">این تلفن‌ها برای انتقال کتابخانهٔ K2Go سازگار نیستند.</string>
     <string name="k2go_clone_scan_different">‹ کد دیگری را اسکن کنید</string>
-    <string name="k2go_clone_copy_btn">⧉  کپی</string>
+    <string name="k2go_clone_copy_btn">کپی</string>
     <string name="k2go_clone_already_connected">از قبل متصل هستید؟ ادامه</string>
     <string name="k2go_clone_copying">در حال کپی کتابخانه…</string>
     <string name="k2go_clone_join_wifi_note">تلفن دیگر را به این Wi-Fi متصل کنید.</string>

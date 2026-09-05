@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">Biblioteca ta (sistem + conținut) este înlocuită cu cea a celuilalt telefon. Nu se poate anula.</string>
     <string name="k2go_clone_for_copying">Aceste telefoane nu sunt compatibile pentru a transfera biblioteca K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Scanează un alt cod</string>
-    <string name="k2go_clone_copy_btn">⧉  Copiază</string>
+    <string name="k2go_clone_copy_btn">Copiază</string>
     <string name="k2go_clone_already_connected">Deja conectat? Continuă</string>
     <string name="k2go_clone_copying">Se copiază biblioteca…</string>
     <string name="k2go_clone_join_wifi_note">Conectează celălalt telefon la acest Wi-Fi.</string>

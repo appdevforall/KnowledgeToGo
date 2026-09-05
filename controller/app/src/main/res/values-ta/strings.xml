@@ -763,7 +763,7 @@
     <string name="k2go_clone_replace_other">உங்கள் நூலகம் (சிஸ்டம் + உள்ளடக்கம்) மற்ற தொலைபேசியின் நூலகத்தால் மாற்றப்படும். செயல்தவிர்க்க முடியாது.</string>
     <string name="k2go_clone_for_copying">இந்தத் தொலைபேசிகள் K2Go நூலகத்தை மாற்றுவதற்கு இணக்கமாக இல்லை.</string>
     <string name="k2go_clone_scan_different">‹ வேறு குறியீட்டை ஸ்கேன் செய்</string>
-    <string name="k2go_clone_copy_btn">⧉  நகல்</string>
+    <string name="k2go_clone_copy_btn">நகல்</string>
     <string name="k2go_clone_already_connected">ஏற்கனவே இணைக்கப்பட்டதா? தொடர்</string>
     <string name="k2go_clone_copying">நூலகம் நகலெடுக்கப்படுகிறது…</string>
     <string name="k2go_clone_join_wifi_note">மற்ற தொலைபேசியை இந்த Wi-Fi உடன் இணைக்கவும்.</string>

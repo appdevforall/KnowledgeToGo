@@ -763,7 +763,7 @@
     <string name="k2go_clone_replace_other">Kitabxananız (sistem + məzmun) digər telefonunku ilə əvəz olunur. Geri qaytarıla bilməz.</string>
     <string name="k2go_clone_for_copying">Bu telefonlar K2Go kitabxanasını köçürmək üçün uyğun deyil.</string>
     <string name="k2go_clone_scan_different">‹ Fərqli kod skan et</string>
-    <string name="k2go_clone_copy_btn">⧉  Köçür</string>
+    <string name="k2go_clone_copy_btn">Köçür</string>
     <string name="k2go_clone_already_connected">Artıq qoşulub? Davam et</string>
     <string name="k2go_clone_copying">Kitabxana köçürülür…</string>
     <string name="k2go_clone_join_wifi_note">Digər telefonu bu Wi-Fi-yə qoşun.</string>

@@ -756,7 +756,7 @@
     <string name="k2go_clone_replace_other">আপনার লাইব্রেরি (সিস্টেম + কনটেন্ট) অন্য ফোনের লাইব্রেরি দিয়ে প্রতিস্থাপিত হয়। এটি পূর্বাবস্থায় ফেরানো যায় না।</string>
     <string name="k2go_clone_for_copying">এই ফোনগুলো K2Go লাইব্রেরি স্থানান্তরের জন্য সামঞ্জস্যপূর্ণ নয়।</string>
     <string name="k2go_clone_scan_different">‹ ভিন্ন কোড স্ক্যান করুন</string>
-    <string name="k2go_clone_copy_btn">⧉  কপি</string>
+    <string name="k2go_clone_copy_btn">কপি</string>
     <string name="k2go_clone_already_connected">ইতিমধ্যে সংযুক্ত? চালিয়ে যান</string>
     <string name="k2go_clone_copying">লাইব্রেরি কপি হচ্ছে…</string>
     <string name="k2go_clone_join_wifi_note">অন্য ফোনটিকে এই Wi-Fi-তে সংযুক্ত করুন।</string>

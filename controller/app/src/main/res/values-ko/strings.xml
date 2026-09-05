@@ -744,7 +744,7 @@
     <string name="k2go_clone_replace_other">라이브러리(시스템 + 콘텐츠)가 다른 휴대폰의 것으로 대체됩니다. 되돌릴 수 없습니다.</string>
     <string name="k2go_clone_for_copying">이 휴대폰들은 K2Go 라이브러리를 전송하기에 호환되지 않습니다.</string>
     <string name="k2go_clone_scan_different">‹ 다른 코드 스캔</string>
-    <string name="k2go_clone_copy_btn">⧉  복사</string>
+    <string name="k2go_clone_copy_btn">복사</string>
     <string name="k2go_clone_already_connected">이미 연결되었나요? 계속</string>
     <string name="k2go_clone_copying">라이브러리를 복사하는 중…</string>
     <string name="k2go_clone_join_wifi_note">다른 휴대폰을 이 Wi-Fi에 연결하세요.</string>

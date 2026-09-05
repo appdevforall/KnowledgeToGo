@@ -743,7 +743,7 @@
     <string name="k2go_clone_replace_other">A könyvtárad (rendszer + tartalom) lecserélődik a másik telefonéra. Nem vonható vissza.</string>
     <string name="k2go_clone_for_copying">Ezek a telefonok nem kompatibilisek a K2Go könyvtár átviteléhez.</string>
     <string name="k2go_clone_scan_different">‹ Olvass be egy másik kódot</string>
-    <string name="k2go_clone_copy_btn">⧉  Másolás</string>
+    <string name="k2go_clone_copy_btn">Másolás</string>
     <string name="k2go_clone_already_connected">Már csatlakoztál? Folytatás</string>
     <string name="k2go_clone_copying">A könyvtár másolása…</string>
     <string name="k2go_clone_join_wifi_note">Csatlakoztasd a másik telefont ehhez a Wi-Fi-hez.</string>

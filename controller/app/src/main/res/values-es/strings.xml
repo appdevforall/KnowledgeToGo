@@ -819,7 +819,7 @@
     <string name="k2go_clone_replace_other">Tu biblioteca (sistema + contenido) se reemplaza con la del otro teléfono. No se puede deshacer.</string>
     <string name="k2go_clone_for_copying">Estos teléfonos no son compatibles para transferir la biblioteca de K2Go.</string>
     <string name="k2go_clone_scan_different">‹ Escanear un código distinto</string>
-    <string name="k2go_clone_copy_btn">⧉  Copiar</string>
+    <string name="k2go_clone_copy_btn">Copiar</string>
     <string name="k2go_clone_already_connected">¿Ya conectado? Continuar</string>
     <string name="k2go_clone_copying">Copiando la biblioteca…</string>
     <string name="k2go_clone_join_wifi_note">Conecta el otro teléfono a esta Wi-Fi.</string>
