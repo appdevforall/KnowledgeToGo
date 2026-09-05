@@ -233,9 +233,6 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="12dp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/k2go_teal"
             android:enabled="false" />
     </LinearLayout>
 </LinearLayout>
