@@ -1389,13 +1389,14 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      * flag and marks the module failed; the base system is untouched and the server restarts.
      */
     private void confirmCancelModule() {
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        // K2GO-385: cancel-running-install confirm -> the shared BrandDialog (destructive).
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(this)
                 .setTitle(R.string.k2go_mod_cancel_title)
                 .setMessage(R.string.k2go_mod_cancel_body)
-                .setNegativeButton(R.string.k2go_mod_cancel_dismiss, null)
-                .setPositiveButton(R.string.k2go_mod_cancel_confirm, (d, w) ->
+                .setDestructive(R.string.k2go_mod_cancel_confirm, () ->
                         startService(new android.content.Intent(this, org.appdevforall.k2go.install.presentation.InstallService.class)
                                 .setAction(org.appdevforall.k2go.install.presentation.InstallService.ACTION_CANCEL)))
+                .setNegative(R.string.k2go_mod_cancel_dismiss, null)
                 .show();
     }
 

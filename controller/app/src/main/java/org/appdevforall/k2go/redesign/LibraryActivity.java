@@ -726,13 +726,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      * second copy of it here would be a second place formatting the same fact.
      */
     private void confirmCancelDownload() {
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        // K2GO-385: cancel-the-download confirm -> the shared BrandDialog (destructive: it stops + starts over).
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(this)
                 .setTitle(R.string.k2go_dl_cancel_title)
                 .setMessage(R.string.k2go_dl_cancel_body)
-                .setNegativeButton(R.string.k2go_dl_cancel_keep, null)
-                .setPositiveButton(R.string.k2go_dl_cancel_confirm, (d, w) ->
+                .setDestructive(R.string.k2go_dl_cancel_confirm, () ->
                         sendToInstallService(
                                 org.appdevforall.k2go.install.presentation.InstallService.ACTION_CANCEL))
+                .setNegative(R.string.k2go_dl_cancel_keep, null)
                 .show();
     }
 
