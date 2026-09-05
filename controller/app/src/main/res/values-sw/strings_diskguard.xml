@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Hifadhi imepungua kwa kiwango cha hatari</string>
+    <string name="disk_guard_notif_body">Seva ilisimamishwa ili kuzuia kifaa chako kuishiwa nafasi. Gusa kutuma ripoti.</string>
+    <string name="disk_guard_firehose_title">K2Go ilidhibiti shughuli isiyo ya kawaida</string>
+    <string name="disk_guard_firehose_body">K2Go ilishughulikia mchakato uliokuwa ukitumia hifadhi nyingi mno na kuweka mfumo wako ukiendelea kufanya kazi. Gusa kutuma ripoti.</string>
+</resources>

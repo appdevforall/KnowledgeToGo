@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Almacenamiento críticamente bajo</string>
+    <string name="disk_guard_notif_body">El servidor se detuvo para evitar que tu dispositivo se quede sin espacio. Toca para enviar un reporte.</string>
+    <string name="disk_guard_firehose_title">K2Go contuvo actividad inusual</string>
+    <string name="disk_guard_firehose_body">K2Go manejó un proceso que usaba demasiado almacenamiento y mantuvo tu sistema funcionando. Toca para enviar un reporte.</string>
+</resources>

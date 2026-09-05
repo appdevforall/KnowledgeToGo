@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Storage critically low</string>
+    <string name="disk_guard_notif_body">The server was stopped to protect your device from running out of space. Tap to send a report.</string>
+    <string name="disk_guard_firehose_title">K2Go contained unusual activity</string>
+    <string name="disk_guard_firehose_body">K2Go handled a process that was using too much storage and kept your system running. Tap to send a report.</string>
+</resources>

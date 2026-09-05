@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Критично мало сховища</string>
+    <string name="disk_guard_notif_body">Сервер зупинено, щоб на пристрої не закінчилося місце. Натисніть, щоб надіслати звіт.</string>
+    <string name="disk_guard_firehose_title">K2Go стримав незвичну активність</string>
+    <string name="disk_guard_firehose_body">K2Go опрацював процес, що використовував забагато сховища, і зберіг роботу системи. Натисніть, щоб надіслати звіт.</string>
+</resources>

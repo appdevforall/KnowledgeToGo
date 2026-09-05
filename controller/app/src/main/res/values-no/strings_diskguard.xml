@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Kritisk lite lagringsplass</string>
+    <string name="disk_guard_notif_body">Serveren ble stoppet for å hindre at enheten går tom for plass. Trykk for å sende en rapport.</string>
+    <string name="disk_guard_firehose_title">K2Go begrenset uvanlig aktivitet</string>
+    <string name="disk_guard_firehose_body">K2Go håndterte en prosess som brukte for mye lagringsplass, og holdt systemet i gang. Trykk for å sende en rapport.</string>
+</resources>

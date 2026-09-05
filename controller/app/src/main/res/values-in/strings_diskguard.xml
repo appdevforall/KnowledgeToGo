@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="disk_guard_notif_title">Penyimpanan sangat rendah</string>
+    <string name="disk_guard_notif_body">Server dihentikan agar perangkat Anda tidak kehabisan ruang. Ketuk untuk mengirim laporan.</string>
+    <string name="disk_guard_firehose_title">K2Go menahan aktivitas tidak biasa</string>
+    <string name="disk_guard_firehose_body">K2Go menangani proses yang menggunakan terlalu banyak penyimpanan dan menjaga sistem Anda tetap berjalan. Ketuk untuk mengirim laporan.</string>
+</resources>
