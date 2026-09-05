@@ -10,29 +10,45 @@
 #
 # This script only INSTALLS the config; it does NOT rotate. The rotation itself is triggered on a
 # timer by dash-node (static/dashboard/sockets/log-rotate.ts), the box's always-up process. Run this
-# inside the proot box (where /etc/logrotate.d exists); it is safe to run on every dash-node start.
+# inside the proot box (where /etc/logrotate.d exists), at DEPLOY time (rootfs build + rebuild/dev-push).
 #
 # What it does (all idempotent):
-#   1. Move the inherited nginx + php-fpm snippets OUT of /etc/logrotate.d — we override them, and two
+#   1. Move the inherited nginx + php*-fpm snippets OUT of /etc/logrotate.d — we override them, and two
 #      snippets listing the same path make logrotate fail with "duplicate log entry".
 #   2. Write /etc/logrotate.d/k2go (copytruncate + size-based; proot-correct — no reopen signal).
-#   3. Validate the whole config with `logrotate -d` (parse only); fail loudly if broken.
+#   3. Validate the whole config with `logrotate -d` (parse only); on failure ROLL BACK to the prior
+#      state (never leave a broken config that would break ALL rotation) and fail loudly.
 set -eu
 
 LR_D="/etc/logrotate.d"
 OVERRIDDEN="/etc/logrotate.d.k2go-overridden"   # OUTSIDE LR_D, so logrotate never reads it
 K2GO_CONF="$LR_D/k2go"
+# Resolve logrotate by absolute path (a deploy shell may have a reduced PATH without /usr/sbin).
+LOGROTATE="$(command -v logrotate 2>/dev/null || echo /usr/sbin/logrotate)"
 
 [ -d "$LR_D" ] || { echo "[k2go-logging] $LR_D not found (not inside the box?) — nothing to do" >&2; exit 0; }
-command -v logrotate >/dev/null 2>&1 || { echo "[k2go-logging] logrotate not installed — skipping" >&2; exit 0; }
+[ -x "$LOGROTATE" ] || { echo "[k2go-logging] logrotate not installed ($LOGROTATE) — skipping" >&2; exit 0; }
 
-# 1) Override the inherited snippets for services we now own (moved aside, reversible).
+# --- snapshot for rollback (restore EXACTLY the pre-run state on validation failure) --------------
+PREV_K2GO_BAK=""
+if [ -f "$K2GO_CONF" ]; then PREV_K2GO_BAK="$(mktemp)"; cp -f "$K2GO_CONF" "$PREV_K2GO_BAK"; fi
+MOVED=""   # basenames this run moved aside, so rollback restores only those
+
+rollback() {
+  if [ -n "$PREV_K2GO_BAK" ]; then cp -f "$PREV_K2GO_BAK" "$K2GO_CONF"; else rm -f "$K2GO_CONF"; fi
+  for base in $MOVED; do mv -f "$OVERRIDDEN/$base" "$LR_D/$base" 2>/dev/null || true; done
+}
+
+# 1) Override the inherited snippets for services we now own. nginx is a fixed name; php*-fpm is a
+#    glob so a php-version bump (php8.5-fpm) is covered too — it MUST match the config's php*-fpm.log
+#    glob below, or the un-moved snippet would collide with our block.
 mkdir -p "$OVERRIDDEN"
-for snip in nginx php8.4-fpm; do
-  if [ -f "$LR_D/$snip" ]; then
-    mv -f "$LR_D/$snip" "$OVERRIDDEN/$snip"
-    echo "[k2go-logging] overrode inherited snippet: $snip (moved to $OVERRIDDEN)"
-  fi
+for snip in "$LR_D/nginx" "$LR_D"/php*-fpm; do
+  [ -f "$snip" ] || continue
+  base="$(basename "$snip")"
+  mv -f "$snip" "$OVERRIDDEN/$base"
+  MOVED="$MOVED $base"
+  echo "[k2go-logging] overrode inherited snippet: $base (moved to $OVERRIDDEN)"
 done
 
 # 2) Write our config, only if it changed (idempotent).
@@ -74,11 +90,15 @@ else
   echo "[k2go-logging] installed $K2GO_CONF"
 fi
 
-# 3) Validate (parse only; does NOT rotate). Fail loudly so a broken config never ships silently.
-if logrotate -d /etc/logrotate.conf >/dev/null 2>&1; then
+# 3) Validate the WHOLE effective config (parse only; does NOT rotate). On failure, roll back to the
+#    pre-run state so a broken config never breaks all rotation, then fail loudly.
+if "$LOGROTATE" -d /etc/logrotate.conf >/dev/null 2>&1; then
   echo "[k2go-logging] logrotate config validates OK"
+  rm -f "$PREV_K2GO_BAK"
 else
-  echo "[k2go-logging] ERROR: logrotate config failed validation:" >&2
-  logrotate -d /etc/logrotate.conf 2>&1 | tail -20 >&2
+  echo "[k2go-logging] ERROR: logrotate config failed validation — rolling back:" >&2
+  "$LOGROTATE" -d /etc/logrotate.conf 2>&1 | tail -20 >&2
+  rollback
+  rm -f "$PREV_K2GO_BAK"
   exit 1
 fi

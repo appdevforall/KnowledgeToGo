@@ -14,10 +14,14 @@ const INTERVAL_MS = 10 * 60 * 1000;
 
 let timer: NodeJS.Timeout | null = null;
 
+// logrotate lives in /usr/sbin, which dash-node's runtime PATH (set by its pdsm wrapper) may not
+// include — call it by absolute path so a reduced PATH can't turn every tick into an ENOENT.
+const LOGROTATE_BIN = '/usr/sbin/logrotate';
+
 // Run one logrotate pass over the whole config (the K2Go blocks use copytruncate + size, so this is
 // cheap unless a file actually exceeds its cap). Best-effort.
 function runLogrotateOnce(): void {
-    execFile('logrotate', ['/etc/logrotate.conf'], { timeout: 60_000 }, (err, _stdout, stderr) => {
+    execFile(LOGROTATE_BIN, ['/etc/logrotate.conf'], { timeout: 60_000 }, (err, _stdout, stderr) => {
         if (err) {
             console.error('[log-rotate] logrotate run failed:', err.message, (stderr || '').trim());
         }

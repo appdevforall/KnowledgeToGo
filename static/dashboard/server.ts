@@ -11,7 +11,7 @@ import './sockets/books.exec';
 import './sockets/kolibri.exec';
 import { apiRouter } from './routes';
 import { startServiceHeal } from './sockets/service-heal';
-import { startLogRotation } from './sockets/log-rotate';
+import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
 
 const app = express();
 const server = http.createServer(app);
@@ -52,6 +52,9 @@ server.listen(PORT, '127.0.0.1', () => {
 // ==========================================
 const gracefulShutdown = (signal: string) => {
     console.log(`\n[System] Received ${signal}. Starting graceful shutdown...`);
+
+    // K2GO-386: clear the log-rotation timer (who starts it: startLogRotation; who clears it: here).
+    try { stopLogRotation(); } catch (e) { console.error('[log-rotate] stop failed', e); }
 
     server.close(() => {
         console.log('[System] HTTP server closed. No longer accepting connections.');
