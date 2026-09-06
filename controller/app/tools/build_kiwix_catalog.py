@@ -40,6 +40,11 @@ LEGACY = {"iw":"he","in":"id","ji":"yi"}
 WIKI_FAMILY = {"wikipedia","wiktionary","wikibooks","wikiquote","wikisource",
                "wikiversity","wikivoyage","wikinews","vikidia"}
 
+# K2GO-390: kiwix re-releases within a month add a letter (2026-07a, 2026-07f). The letter is part
+# of the DATE, not the flavour -- keep it here (one source) so both date detections agree, or the
+# suffix leaks into the flavour and the self-heal key (creator+flavour) drifts across a roll-over.
+DATE_RE = re.compile(r"\d{4}-\d{2}[a-z]?")
+
 try:
     import pycountry
     ISO1 = {l.alpha_2.lower() for l in pycountry.languages if hasattr(l, "alpha_2")}
@@ -89,14 +94,14 @@ def parse_name(fn, category=""):
     stem = fn[:-4] if fn.lower().endswith(".zim") else fn
     toks = stem.split("_")
     date = ""
-    if re.fullmatch(r"\d{4}-\d{2}", toks[-1]):
+    if DATE_RE.fullmatch(toks[-1]):
         date = toks[-1]; toks = toks[:-1]
     creator = toks[0] if toks else stem
     mids = toks[1:]
     lang, idx = "", -1
 
     if category in WIKI_FAMILY and mids and norm(mids[0]) not in BLACKLIST \
-            and not re.fullmatch(r"\d{4}-\d{2}", mids[0]):
+            and not DATE_RE.fullmatch(mids[0]):
         lang, idx = norm(mids[0]), 0                 # trust the strict wiki grammar
     else:
         if mids:
