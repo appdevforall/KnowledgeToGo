@@ -11,6 +11,11 @@ tag). This file is only the short summary end users read when they update.
 Rule: the version header must match the release tag / `versionName` so the CI picks
 the right entry.
 
+## v0.9.0-beta
+Reliability and polish. Downloads no longer get stuck retrying; backup and restore show real progress
+with a working Cancel; long operations keep running in the background and their notification takes you
+straight back to the right screen; and the app looks and behaves more consistently throughout.
+
 ## v0.8.0-beta
 K2Go now installs as a new app, so Android cannot update your current one into it. Start over
 without losing anything: back up your library first (Settings > Backups & recovery), remove the old
