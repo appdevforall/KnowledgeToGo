@@ -1,6 +1,6 @@
 # ADR-390: Kiwix self-healing catalog (offline-first, freshness on demand)
 
-Status: Proposed
+Status: Accepted (implemented and device-verified 2026-09-05)
 Ticket: K2GO-390
 
 ## 1. Problem
@@ -18,11 +18,14 @@ post-install provisioning drain re-attempts it about every 2 s, forever. Symptom
 
 - Kiwix is FLAT: `category/file.zim`, two levels. (Kolibri is N-level -- 2 to 6, per category -- which
   is why Kolibri needs a heavy topic-tree bundle and recursive browsing. Kiwix needs none of that.)
-- The ZIM filename is `<creator>_<lang>_<flavour>_<YYYY-MM>.zim`. Only the `YYYY-MM` date rolls over;
-  the identity (`creator`/`lang`/`flavour`) is stable. Confirmed live: `wikipedia_ab_all_maxi_2026-04`
-  and `..._2026-07` coexist on the server.
-- The wishlist key is ALREADY date-free: `project|lang|flavour`. So the same selection re-resolves to
-  the current dated file once the catalog is refreshed. This is what makes per-element self-heal cheap.
+- The ZIM filename is `<creator>_<lang>_<flavour>_<YYYY-MM>.zim`. Only the date rolls over; the identity
+  (`creator`/`lang`/`flavour`) is stable. Confirmed live: `wikipedia_ab_all_maxi_2026-04` and `..._2026-07`
+  coexist on the server. A within-month re-release appends a letter (e.g. `2026-07a`, `2026-07f`); the
+  date is therefore `YYYY-MM[a-z]?`, and the generator must keep that letter on the DATE, not the flavour,
+  so the identity stays stable across a re-release (see `build_kiwix_catalog.py` `DATE_RE`).
+- The wishlist key is ALREADY date-free: `project|lang|<creator+flavour>` (the third segment is the
+  catalog entry key -- `creator` joined to `flavour`, no date). So the same selection re-resolves to the
+  current dated file once the catalog is refreshed. This is what makes per-element self-heal cheap.
 - The size delta between months is small (well under 10 %: e.g. 111G -> 115G, 2.0G -> 2.1G). It is not a
   re-consent concern -- it is the same content, the next month's build.
 - The generator already exists: `controller/app/tools/build_kiwix_catalog.py` (baked at
@@ -74,18 +77,25 @@ A self-healing flat catalog for Kiwix that reuses the LIGHT freshness core and a
   `ZimWishlist` (removal happens only on DONE, `redesign/ZimDownloadService.java` `onItemDone`), so
   `redesign/ZimProvisioner.java` `drain` re-hands the same stale key forever.
 - New flow: a download failure triggers refresh-and-re-resolve. A stale item heals and retries against
-  the current file; a genuinely-gone item is removed (leaves the wishlist) so the drain stops. No
-  infinite re-drain.
+  the current file. Failures are counted against the catalog version (`ZimWishlist.bumpAttempts`,
+  keyed by the overlay mtime): a changed catalog renews the budget; after `MAX_HEAL_ATTEMPTS` (5)
+  failures against an UNCHANGED catalog the item is genuinely gone and is removed (leaves the wishlist)
+  so the drain stops. No infinite re-drain.
 
-## 7. Hosting dependency (ops, required for the heal)
+## 7. Hosting (ops, required for the heal) -- LIVE
 
-The heal needs a fresh source. Publish a Kiwix catalog manifest plus the refreshed CSV at
-`APK_REPO + /catalogs/kiwix.manifest.json` (+ the CSV), regenerated periodically by
-`build_kiwix_catalog.py` -- moved from `assembleRelease`-only to a published job. This mirrors
-`kolibri.manifest.json`. `APK_REPO = https://k2go-download.appdevforall.org`.
+The heal needs a fresh source: a Kiwix catalog manifest plus the refreshed CSV at
+`APK_REPO + /catalogs/kiwix.manifest.json` (+ the CSV), mirroring `kolibri.manifest.json`.
+`APK_REPO = https://k2go-download.appdevforall.org`.
 
-Until it is published, the app degrades to asset-only (offline-first still works), but a 404 cannot heal
-(no fresh source to adopt) -- so publishing is required for the self-heal to function.
+This is published and working. Device-verified 2026-09-05: the app pulled a fresh overlay
+(`kiwix.manifest.json` generated 2026-09-02, ETag/hash recorded in the refresh store) and a 404
+self-healed end to end. If the source is ever absent the app degrades to asset-only (offline-first still
+works) and a 404 cannot heal, so the published source must be kept fresh.
+
+Ops action per release cycle: regenerate and re-publish with the CURRENT generator
+(`build_kiwix_catalog.py --manifest --csv-url ...`). The generator is the fix site -- re-running it
+collapses re-release-letter entries (the `DATE_RE` fix) so they can heal; this is not a manual data edit.
 
 ## 8. Lifecycle (who writes it, who clears it, what if it is missing)
 
@@ -97,10 +107,16 @@ Until it is published, the app degrades to asset-only (offline-first still works
 
 ## 9. Verification
 
-- Unit: the pure freshness rules are already covered (`CatalogFreshness`). Add the Kiwix wiring and the
-  stale-key re-resolve.
-- Device: reproduce the 404 loop; confirm it now refreshes, re-resolves to the current dated file,
-  downloads, and does NOT loop; confirm offline = the asset catalog works with no network and no error.
+- Unit: the pure freshness rules are already covered (`CatalogFreshness`). Unit coverage of the Kiwix
+  wiring and the stale-key re-resolve is a follow-up (not added in this change).
+- Device (2026-09-05, OnePlus arm64, API 35), reproduced with a real stale entry
+  (`bulbagarden_en_all_nopic_2026-07`, 404 on the mirror):
+  - Pre-fix build: the 404 re-drains forever (35+ attempts, never removed).
+  - Heal: 404 -> forced refresh pulls the overlay -> the date-free key re-resolves to the live
+    `..._2026-05` -> downloads. Wishlist entry removed on DONE.
+  - Bounded (no newer version to adopt): 404 -> exactly `MAX_HEAL_ATTEMPTS` (5) attempts -> the item is
+    dropped -> the loop stops.
+  - Offline: the asset catalog works with no network and no error.
 
 ## 10. Consequences
 

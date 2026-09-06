@@ -12,6 +12,8 @@
 # Usage:
 #   python3 build_kiwix_catalog.py                 # fetch live -> CSV
 #   python3 build_kiwix_catalog.py --from-file F   # parse a saved dump (===CATEGORY markers), .txt or .gz
+#   python3 build_kiwix_catalog.py --manifest kiwix.manifest.json --csv-url <hosted CSV URL>
+#                                                  # also emit the freshness manifest (K2GO-390 ops path)
 #
 # Optional: `pip install pycountry` for the full ISO language set; otherwise an
 # embedded set is used (covers the current catalog).

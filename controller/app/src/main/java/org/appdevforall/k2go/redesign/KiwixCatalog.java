@@ -13,8 +13,9 @@
  *               background refresh (re-downloading an updated CSV) can be layered on later.
  *
  *               Shape built in memory:
- *                 { project: { lang: { "<creator><flavour>": {creator,flavour,size,date,file} } } }
- *               Files with no language token are bucketed under "mul" (language-agnostic).
+ *                 { project: { lang: { "<creator><KEY_SEP><flavour>": {creator,flavour,size,date,file} } } }
+ *               The entry key joins creator and flavour with KEY_SEP (see below). Files with no language
+ *               token are bucketed under "mul" (language-agnostic).
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
