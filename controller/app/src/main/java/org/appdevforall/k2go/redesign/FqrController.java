@@ -677,11 +677,14 @@ public final class FqrController {
     }
 
     private void confirmDelete(String name) {
-        new MaterialAlertDialogBuilder(themed)
+        // K2GO-385: a destructive region delete uses the shared BrandDialog (clay outlined destructive +
+        // text Cancel), like the other from-scratch/erase confirms, instead of a flat MaterialAlertDialog
+        // with two equal text buttons. themed (not the host activity) carries Theme_K2Go, which the dialog
+        // frame needs -- PortalActivity's own theme is not K2Go.
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(themed)
                 .setTitle(str(R.string.k2go_fqr_delete_confirm_title, name))
                 .setMessage(R.string.k2go_fqr_delete_confirm_msg)
-                .setNegativeButton(R.string.k2go_cancel, null)
-                .setPositiveButton(R.string.k2go_fqr_delete, (d, w) -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
+                .setDestructive(R.string.k2go_fqr_delete, () -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
                     @Override public void onOk() {
                         toast(str(R.string.k2go_fqr_deleted, name));
                         highlight = null;
@@ -693,6 +696,7 @@ public final class FqrController {
                                 .setPositiveButton(android.R.string.ok, null).show();
                     }
                 }))
+                .setNegative(R.string.k2go_cancel, null)
                 .show();
     }
 
