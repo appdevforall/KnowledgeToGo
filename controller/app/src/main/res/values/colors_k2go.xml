@@ -23,6 +23,9 @@
     <color name="k2go_boot_track">#D9D4C8</color>
     <color name="k2go_surface">#EFEBE2</color>
     <color name="k2go_teal">#0E5C63</color>
+    <!-- K2GO-385 (01): tonal teal container for a selected option card (radio + fill). A soft tint, not
+         the solid teal pill, so the selection does not read as a filled action button. -->
+    <color name="k2go_teal_tonal">#DCE9E5</color>
     <color name="k2go_leaf">#2E9E5B</color>
     <color name="k2go_amber">#F2A23C</color>
     <color name="k2go_amber_text">#B0740F</color>

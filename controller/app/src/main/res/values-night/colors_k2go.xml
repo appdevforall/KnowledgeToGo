@@ -4,6 +4,8 @@
     <color name="k2go_paper">#0F1A19</color>
     <color name="k2go_surface">#17302E</color>
     <color name="k2go_teal">#4FB3BA</color>
+    <!-- K2GO-385 (01): dark tonal teal container twin (selected option card). -->
+    <color name="k2go_teal_tonal">#1E3A33</color>
     <color name="k2go_leaf">#2E9E5B</color>
     <color name="k2go_amber">#F2A23C</color>
     <color name="k2go_amber_text">#F2A23C</color>

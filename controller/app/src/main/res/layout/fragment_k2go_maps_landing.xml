@@ -202,10 +202,10 @@
                         android:paddingRight="12dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:background="@drawable/k2go_pill_teal"
+                        android:background="@drawable/k2go_pill_bg"
                         android:text="@string/k2go_maps_fqr_pill_after"
                         android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/k2go_teal" />
+                        android:textColor="@color/k2go_muted" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -214,10 +214,10 @@
                         android:paddingRight="12dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:background="@drawable/k2go_pill_teal"
+                        android:background="@drawable/k2go_pill_bg"
                         android:text="@string/k2go_maps_fqr_pill_light"
                         android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/k2go_teal" />
+                        android:textColor="@color/k2go_muted" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -226,10 +226,10 @@
                         android:paddingRight="12dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:background="@drawable/k2go_pill_teal"
+                        android:background="@drawable/k2go_pill_amber"
                         android:text="@string/k2go_maps_fqr_pill_online"
                         android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/k2go_teal" />
+                        android:textColor="@color/k2go_amber" />
                 </org.appdevforall.k2go.redesign.FlowLayout>
             </LinearLayout>
 
@@ -359,10 +359,10 @@
                         android:paddingRight="12dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:background="@drawable/k2go_pill_amber"
+                        android:background="@drawable/k2go_pill_bg"
                         android:text="@string/k2go_maps_rebuild_pill_heavy"
                         android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/k2go_amber" />
+                        android:textColor="@color/k2go_muted" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -371,10 +371,10 @@
                         android:paddingRight="12dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:background="@drawable/k2go_pill_amber"
+                        android:background="@drawable/k2go_pill_leaf"
                         android:text="@string/k2go_maps_rebuild_pill_offline"
                         android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="@color/k2go_amber" />
+                        android:textColor="@color/k2go_leaf" />
                 </org.appdevforall.k2go.redesign.FlowLayout>
             </LinearLayout>
 
