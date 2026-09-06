@@ -96,6 +96,12 @@
         <item name="android:textColor">@color/k2go_clay</item>
     </style>
 
+    <!-- Text-only muted (tertiary): a quiet action that must not compete with the primary or the
+         secondary, e.g. "Report the problem" on an error dialog. -->
+    <style name="Widget.K2Go.Button.Text.Muted" parent="Widget.K2Go.Button.Text">
+        <item name="android:textColor">@color/k2go_muted</item>
+    </style>
+
     <!-- Destructive outlined (clay/error outline + text) — e.g. "Turn off". -->
     <style name="Widget.K2Go.Button.Destructive" parent="Widget.Material3.Button.OutlinedButton">
         <item name="shapeAppearance">@style/ShapeAppearance.K2Go.Button</item>

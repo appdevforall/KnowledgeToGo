@@ -950,33 +950,32 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      *  Both paths work without a healthy rootfs. Blocking, non-cancelable; "Close" still exits. */
     private void showDamagedDialog() {
         if (isFinishing()) return;
-        androidx.appcompat.app.AlertDialog d = new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setCancelable(false)
+        // K2GO-385: the interrupted/damaged error uses the shared BrandDialog, like the other confirms
+        // (design k2go-install-interrupted-dialog). A clay error icon carries the state (the title stays
+        // ink); Recover is the filled primary; Close the text secondary; "Report the problem" a quiet
+        // muted tertiary. Non-cancelable: the user must pick recover or close.
+        //
+        // ADFA-5119: report it from here, where the user is standing when it matters. The app knows what
+        // happened and they do not, so the description is filled from the install log. The screenshot the
+        // report captures is this dialog, which is the right picture (routing is ADFA-5130's: email keeps
+        // the attachment, Slack gets the text). setDismissOnNeutral(false) keeps the dialog up so the two
+        // real choices -- recover, or close -- are still there after reporting.
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(this)
+                .setIcon(R.drawable.ic_error_outline_24, R.color.k2go_clay)
                 .setTitle(R.string.k2go_damaged_title)
                 .setMessage(R.string.k2go_damaged_body)
-                .setPositiveButton(R.string.k2go_damaged_recover, (dlg, w) -> {
+                .setPositive(R.string.k2go_damaged_recover, () -> {
                     SetupLibraryActivity.recover(this);   // ADFA-5150: the shared route
                     finish();   // the dialog closes so the user can't fall back onto the held gate
                 })
-                // ADFA-5119: report it from here, where the user is standing when it matters. The app
-                // knows what happened and they do not, so the description is filled from the install
-                // log rather than left as a blank box in front of someone who just watched a download
-                // give up. The screenshot the report captures is this dialog, which is the right
-                // picture. Routing is ADFA-5130's, so email keeps the attachment and Slack gets the
-                // text.
-                .setNeutralButton(R.string.k2go_damaged_report, null)
-                .setNegativeButton(R.string.k2go_damaged_close, (dlg, w) -> finishAffinity())
-                .create();
-        // Attached after show() so the neutral button does NOT dismiss: reporting is not a decision
-        // about the system, and the two that are — recover, or close — must still be there
-        // afterwards. A dialog that vanished on "Report" would leave the user behind a closed gate
-        // with nothing to press.
-        d.setOnShowListener(dlg -> d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL)
-                .setOnClickListener(v -> org.appdevforall.k2go.feedback.presentation.FeedbackFab
+                .setNegative(R.string.k2go_damaged_close, () -> finishAffinity())
+                .setNeutral(R.string.k2go_damaged_report, () -> org.appdevforall.k2go.feedback.presentation.FeedbackFab
                         .sendFeedback(this, "install-failed",
                                 org.appdevforall.k2go.feedback.domain.FeedbackType.BUG,
-                                installFailureReport())));
-        d.show();
+                                installFailureReport()))
+                .setDismissOnNeutral(false)
+                .setCancelable(false)
+                .show();
     }
 
     /**
