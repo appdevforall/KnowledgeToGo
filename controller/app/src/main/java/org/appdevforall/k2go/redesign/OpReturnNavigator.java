@@ -60,23 +60,19 @@ public final class OpReturnNavigator {
                 .putExtra(SetupLibraryActivity.EXTRA_DASHBOARD_DETAIL, true);
     }
 
-    /** Rootfs / module install: LibraryActivity shows the rootfs progress (boot gate) and, when a
-     *  proot module queue is live, routes on to the install index (see {@link #forActiveOp}). */
+    /** Rootfs / module install: a bare LibraryActivity. It detects a live rootfs install itself
+     *  (InstallProgressRepository.isRunning -> the boot-gate progress) and, when a proot module queue
+     *  is live instead, its relaunch re-route ({@link #forActiveOp}) forwards to the install index.
+     *  Do NOT set EXTRA_INSTALLING here: it forces LibraryActivity.installing=true, which suppresses
+     *  that module re-route and would strand a module install's notification on the gate. */
     public static Intent install(Context ctx) {
-        return new Intent(ctx, LibraryActivity.class)
-                .putExtra(LibraryActivity.EXTRA_INSTALLING, true);
+        return new Intent(ctx, LibraryActivity.class);
     }
 
     /** Clone / share: the Connect/clone tab. */
     public static Intent cloneShare(Context ctx) {
         return new Intent(ctx, LibraryActivity.class)
                 .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone);
-    }
-
-    /** Home / Library -- where "Run in background" lands deliberately (not a back-stack pop). */
-    public static Intent home(Context ctx) {
-        return new Intent(ctx, LibraryActivity.class)
-                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library);
     }
 
     /**
