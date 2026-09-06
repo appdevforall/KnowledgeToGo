@@ -13,7 +13,7 @@
  *               background refresh (re-downloading an updated CSV) can be layered on later.
  *
  *               Shape built in memory:
- *                 { project: { lang: { "<creator><flavour>": {creator,flavour,size,date,file} } } }
+ *                 { project: { lang: { "<creator><flavour>": {creator,flavour,size,date,file} } } }
  *               Files with no language token are bucketed under "mul" (language-agnostic).
  * ============================================================================
  */
@@ -44,6 +44,14 @@ public final class KiwixCatalog {
 
     private static final String TAG = "KiwixCatalog";
     private static final String CSV_ASSET = "kiwix_catalog.csv";
+
+    // ADFA-4849/K2GO-390: entry-key delimiter joining creator and flavour into the map key. A
+    // U+0001 control char is used because it can never appear in a creator or flavour token, so
+    // "<creator><flavour>" keys cannot collide across rows. The cart, wishlist and resolver all copy
+    // this key verbatim, so the delimiter stays internal. It is spelled out here (it used to be an
+    // invisible char inside "") so it is visible and greppable -- do not change it without migrating
+    // any persisted wishlist keys, which embed it.
+    private static final String KEY_SEP = "\u0001";
 
     // K2GO-390 (ADR-390): the catalog is refreshed like Kolibri's -- a hosted manifest + overlay,
     // ETag/hash-gated -- reusing the catalog-agnostic core. Flat, so no tree machinery. The overlay
@@ -176,7 +184,7 @@ public final class KiwixCatalog {
                 v.put("size", bytes);
                 v.put("date", date);
                 v.put("file", file);
-                langObj.put(creator + "" + flavour, v);
+                langObj.put(creator + KEY_SEP + flavour, v);
             }
         } catch (Exception e) {
             Log.w(TAG, "kiwix_catalog.csv not read: " + e.getMessage());
