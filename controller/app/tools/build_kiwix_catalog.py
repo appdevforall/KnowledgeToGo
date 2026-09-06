@@ -12,6 +12,8 @@
 # Usage:
 #   python3 build_kiwix_catalog.py                 # fetch live -> CSV
 #   python3 build_kiwix_catalog.py --from-file F   # parse a saved dump (===CATEGORY markers), .txt or .gz
+#   python3 build_kiwix_catalog.py --manifest kiwix.manifest.json --csv-url <hosted CSV URL>
+#                                                  # also emit the freshness manifest (K2GO-390 ops path)
 #
 # Optional: `pip install pycountry` for the full ISO language set; otherwise an
 # embedded set is used (covers the current catalog).
@@ -19,7 +21,8 @@
 # Gradle runs this only on release builds (assembleRelease/bundleRelease); run it
 # manually any time with `./gradlew refreshKiwixCatalog`.
 # ============================================================================
-import argparse, csv, gzip, os, re, sys, urllib.request
+import argparse, csv, gzip, hashlib, json, os, re, sys, urllib.request
+from datetime import datetime, timezone
 
 CATS = ["devdocs","freecodecamp","gutenberg","ifixit","libretexts","maps","mooc",
         "other","phet","psiram","stack_exchange","ted","videos","vikidia","wikibooks",
@@ -38,6 +41,11 @@ LEGACY = {"iw":"he","in":"id","ji":"yi"}
 # (nah, roa, eml, roa-tara, be-tarask, ...). For these we trust position 1 instead of ISO.
 WIKI_FAMILY = {"wikipedia","wiktionary","wikibooks","wikiquote","wikisource",
                "wikiversity","wikivoyage","wikinews","vikidia"}
+
+# K2GO-390: kiwix re-releases within a month add a letter (2026-07a, 2026-07f). The letter is part
+# of the DATE, not the flavour -- keep it here (one source) so both date detections agree, or the
+# suffix leaks into the flavour and the self-heal key (creator+flavour) drifts across a roll-over.
+DATE_RE = re.compile(r"\d{4}-\d{2}[a-z]?")
 
 try:
     import pycountry
@@ -88,14 +96,14 @@ def parse_name(fn, category=""):
     stem = fn[:-4] if fn.lower().endswith(".zim") else fn
     toks = stem.split("_")
     date = ""
-    if re.fullmatch(r"\d{4}-\d{2}", toks[-1]):
+    if DATE_RE.fullmatch(toks[-1]):
         date = toks[-1]; toks = toks[:-1]
     creator = toks[0] if toks else stem
     mids = toks[1:]
     lang, idx = "", -1
 
     if category in WIKI_FAMILY and mids and norm(mids[0]) not in BLACKLIST \
-            and not re.fullmatch(r"\d{4}-\d{2}", mids[0]):
+            and not DATE_RE.fullmatch(mids[0]):
         lang, idx = norm(mids[0]), 0                 # trust the strict wiki grammar
     else:
         if mids:
@@ -156,6 +164,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from-file")
     ap.add_argument("--out")
+    # K2GO-390 (ADR-390): also emit a manifest so the app can refresh the catalog (ETag/hash-gated),
+    # mirroring Kolibri's catalogs/kolibri.manifest.json. Ops runs the generator with --manifest and
+    # --csv-url, then uploads the CSV + manifest to APK_REPO/catalogs/. Omit for a plain asset refresh.
+    ap.add_argument("--manifest", help="path to write kiwix.manifest.json (enables manifest emission)")
+    ap.add_argument("--csv-url",
+                    default="https://k2go-download.appdevforall.org/catalogs/kiwix_catalog.csv",
+                    help="hosted URL of the CSV, recorded in the manifest")
     args = ap.parse_args()
 
     here = os.path.dirname(os.path.abspath(__file__))
@@ -178,6 +193,20 @@ def main():
         w.writerow(["category","creator","lang","flavour","bytes","date","file"])
         w.writerows(dedup)
     sys.stderr.write(f"wrote {out_path}: {len(dedup)} items (from {len(rows)} files)\n")
+
+    if args.manifest:
+        with open(out_path, "rb") as f:
+            digest = hashlib.sha256(f.read()).hexdigest()
+        generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        manifest = {
+            "hash": "sha256:" + digest,   # the app verifies the downloaded CSV against this
+            "url": args.csv_url,          # where the app pulls the refreshed CSV
+            "version": generated,         # human/log label
+            "generated": generated,
+        }
+        with open(args.manifest, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=2)
+        sys.stderr.write(f"wrote {args.manifest}: {manifest['hash']}\n")
     return 0
 
 if __name__ == "__main__":

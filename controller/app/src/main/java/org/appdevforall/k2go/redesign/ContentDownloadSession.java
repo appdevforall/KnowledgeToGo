@@ -39,6 +39,9 @@ public final class ContentDownloadSession {
         void notify(String label);     // update the foreground notification for the current item
         void stop();                   // stopForeground(true) + stopSelf()
         void onItemDone(String key);   // item confirmed DONE -> drop its wishlist entry (ADFA-4897)
+        // K2GO-390: item gave up (FAILED). The host may self-heal (refresh the catalog and re-resolve)
+        // and must bound retries so a stale/gone entry is not re-drained forever. Default no-op.
+        default void onItemError(String key) {}
     }
 
     private final String type;                          // "kiwix" / "books" -> /api/<type>
@@ -235,7 +238,12 @@ public final class ContentDownloadSession {
             @Override public void onError(String message) {
                 // ADFA-4893: server owns reconnection (visible); on give-up, FAILED for a manual Retry.
                 android.util.Log.w("K2Go-Provision", "[" + type + "] job [" + i + "] error: " + message);
-                status[i] = FAILED; reconnectAttempt = 0; publish(); pump();
+                status[i] = FAILED; reconnectAttempt = 0; publish();
+                // K2GO-390: let the host self-heal (refresh the catalog, re-resolve) and bound retries,
+                // so a stale/gone item does not re-drain forever.
+                String k = key(i);
+                if (host != null && !k.isEmpty()) host.onItemError(k);
+                pump();
             }
         });
     }
