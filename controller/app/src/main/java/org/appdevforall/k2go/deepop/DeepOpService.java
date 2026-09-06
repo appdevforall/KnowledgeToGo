@@ -55,7 +55,7 @@ import org.appdevforall.k2go.deploy.data.RootfsArchiveValidator;
 import org.appdevforall.k2go.deploy.data.RootfsManifest;
 import org.appdevforall.k2go.env.EnvironmentControl;
 import org.appdevforall.k2go.env.EnvironmentLock;
-import org.appdevforall.k2go.redesign.LibraryActivity;
+import org.appdevforall.k2go.redesign.OpReturnNavigator;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.io.File;
@@ -648,8 +648,10 @@ public final class DeepOpService extends Service {
     }
 
     private Notification buildNotification(String text) {
-        Intent open = new Intent(this, LibraryActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
+        // K2GO-382: tapping returns to the live backup/restore screen. It was a bare LibraryActivity
+        // that fell back to the last tab (Settings); opening LibraryActivity mid-op also fights the
+        // boot gate. The route now has one owner (OpReturnNavigator).
+        PendingIntent contentIntent = OpReturnNavigator.notify(this, OpReturnNavigator.backupRestore(this, owner));
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.deepop_notif_title))
                 .setContentText(text)

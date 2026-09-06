@@ -150,7 +150,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         detailRoot = findViewById(R.id.k2go_sp_detail);
 
         finishBtn.setOnClickListener(v -> goHome(true));
-        runBgBtn.setOnClickListener(v -> finish());   // leave; the Library keeps provisioning going
+        // K2GO-382: land deliberately on Home (goHome), not a bare finish() that pops to whatever
+        // launched this (the wizard/hub). goHome(false) keeps the download sessions alive, so the
+        // Library keeps provisioning in the background.
+        runBgBtn.setOnClickListener(v -> goHome(false));
         cancel.setOnClickListener(v -> { redirectCancelled = true; cancelRedirect(); render(); });
 
         detailBackBtn = findViewById(R.id.k2go_sp_back);
@@ -161,7 +164,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // configure and any non-module detail.
         detailBackBtn.setOnClickListener(v -> backToIndex());
         detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
-        detailRunBgBtn.setOnClickListener(v -> finish());
+        detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
 
         // ADFA-4842: own a ServerController so the index can restart the server after a module batch
         // (it was pdsm-stopped for the runroles) and keep ServerStateRepository fresh so the start
@@ -1282,8 +1285,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
         // install screens above it. Both the wizard and Get More launch from LibraryActivity, so
-        // CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index). Only
-        // success/Finish reach here; "Run in background" (REST) still finish()es in place. ADFA-5343: a
+        // CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index).
+        // K2GO-382: "Run in background" now reaches here too via goHome(false) — same Home landing, but
+        // clearSessions=false leaves the download sessions running. ADFA-5343: a
         // module batch set desired=UP; the reconciler brings the server up and keeps re-driving it wherever
         // the app is, so the reused Library is (or becomes) live on arrival — even Finish under a slow/flap
         // start lands on a Home the reconciler drives up, not a dead one (5336).
@@ -1378,7 +1382,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             detailBackBtn.setText(R.string.k2go_setup_back);
             detailBackBtn.setOnClickListener(v -> backToIndex());
             detailRunBgBtn.setText(R.string.k2go_zim_run_bg);
-            detailRunBgBtn.setOnClickListener(v -> finish());
+            detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
             detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
         }
     }
