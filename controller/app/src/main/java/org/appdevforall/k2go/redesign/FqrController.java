@@ -82,6 +82,9 @@ public final class FqrController {
     // theme: build every view/dialog through this wrapper so ?attr colors + the app font resolve.
     private final Context themed;
     private final int cSurface, cSurfaceContainer, cSurfaceHighest, cOnSurface, cOnSurfaceVariant, cPrimary, cError;
+    // K2GO-385 (C1): state colours for the download bar -- amber = stopped (halted, not live), leaf = done.
+    // Fixed tokens (same in day/night), so a halted or finished job reads the same on either theme.
+    private final int cAmber, cLeaf;
 
     private volatile boolean active = false;   // written on UI thread, read on the WebView binder thread
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
@@ -133,6 +136,8 @@ public final class FqrController {
         // Material3-specific surface roles above; read them from the appcompat namespace.
         this.cPrimary         = attr(androidx.appcompat.R.attr.colorPrimary, 0xFF4CAF7D);
         this.cError           = attr(androidx.appcompat.R.attr.colorError, 0xFFE05353);
+        this.cAmber           = androidx.core.content.ContextCompat.getColor(themed, R.color.k2go_amber);
+        this.cLeaf            = androidx.core.content.ContextCompat.getColor(themed, R.color.k2go_leaf);
     }
 
     private int attr(int attrId, int fallback) {
@@ -365,9 +370,10 @@ public final class FqrController {
         showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
             @Override public void onProgress(int percent, long speed) {
-                if (overlayStopped) {   // retried/running again: back to Stop
+                if (overlayStopped) {   // retried/running again: back to Stop, live teal bar
                     overlayStopped = false;
                     if (overlayStop != null) overlayStop.setText(R.string.k2go_clone_stop_confirm);
+                    setBarState(cPrimary, true);
                 }
                 if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Stop/Retry tap
                 updateOverlay(percent, speed);
@@ -382,8 +388,10 @@ public final class FqrController {
                 // #2: freeze the bar (determinate, no animation) so it doesn't keep animating under "Stopped".
                 if (overlayBar != null && overlayBar.isIndeterminate()) setBarMode(false);
                 if (overlayBar != null && percent >= 0) overlayBar.setProgressCompat(percent, false);
+                setBarState(cAmber, false);   // amber + dimmed: a halted job must not look live
             }
             @Override public void onDone() {
+                setBarState(cLeaf, true);     // done: a full leaf bar reads as success
                 updateOverlay(100, 0);
                 if (overlayTitle != null) overlayTitle.setText(R.string.k2go_fqr_region_added); // may be gone if hidden
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
@@ -509,6 +517,14 @@ public final class FqrController {
         overlayBar.setVisibility(View.GONE);
         overlayBar.setIndeterminate(indeterminate);
         overlayBar.setVisibility(vis == View.GONE ? View.VISIBLE : vis);
+    }
+
+    /** K2GO-385 (C1): colour the download bar by state and dim it when the job is not live, so a stopped
+     *  job never looks like a running one (teal = downloading, amber = stopped, leaf = done). */
+    private void setBarState(int color, boolean live) {
+        if (overlayBar == null) return;
+        overlayBar.setIndicatorColor(color);
+        overlayBar.setAlpha(live ? 1f : 0.55f);
     }
 
     /** bytes/sec -> "2.4 MB/s". Empty for non-positive (speed not reported yet). */
