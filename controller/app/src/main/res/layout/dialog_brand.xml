@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
     android:layout_marginEnd="24dp"
-    app:cardBackgroundColor="@color/dash_module_bg"
+    app:cardBackgroundColor="@color/k2go_paper"
     app:cardCornerRadius="16dp"
     app:cardElevation="8dp">
 
