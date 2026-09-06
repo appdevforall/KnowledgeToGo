@@ -20,8 +20,9 @@
  *               building them through a ContextThemeWrapper(Theme.K2Go) — a Material3.DayNight theme
  *               carrying the app palette — without touching PortalActivity's global theme. Colors come
  *               from theme attributes (colorSurface/onSurface/primary/error/…) so they follow light/dark;
- *               dialogs use MaterialAlertDialogBuilder, buttons MaterialButton, and the progress bars
- *               the Material progress indicators. All user-facing text lives in string resources.
+ *               confirm/error dialogs use the shared BrandDialog (K2GO-385), buttons MaterialButton, and
+ *               the progress bars the Material progress indicators. All user-facing text lives in string
+ *               resources.
  *
  *               ADFA-5062: in the operation model (ADR-5061) this FQR region fetch is
  *               Operation.content("maps") — a CONTENT / LIVE operation. Unlike the banked ContentType
@@ -55,11 +56,11 @@ import androidx.core.graphics.ColorUtils;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.M3Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -235,11 +236,7 @@ public final class FqrController {
             @Override public void onError(String message) {
                 if (estimateCanceled) return;
                 dismissDialog();
-                new MaterialAlertDialogBuilder(themed)
-                        .setTitle(R.string.k2go_fqr_estimate_error_title)
-                        .setMessage(message)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show();
+                errorDialog(R.string.k2go_fqr_estimate_error_title, message);
             }
         });
     }
@@ -270,7 +267,9 @@ public final class FqrController {
     // ---- Consent -----------------------------------------------------------------------------
     private void showCalculating() {
         dismissDialog();
-        LinearLayout row = dialogContent(dp(24));   // ADFA-5027: M3 dialog inset (4dp grid)
+        // hpad 0: BrandDialog's content host already sits at the card's horizontal inset (double-inset
+        // otherwise). Vertical 8dp keeps the 4dp grid (ADFA-5027).
+        LinearLayout row = dialogContent(0, dp(8));
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         CircularProgressIndicator spin = new CircularProgressIndicator(themed);
@@ -285,17 +284,18 @@ public final class FqrController {
         row.addView(t);
         // ADFA-5043: canceling while estimating must drop the pending estimate AND clear the map's
         // selection — otherwise the crosshair lingers and a late estimate could still pop the consent.
-        dialog = new MaterialAlertDialogBuilder(themed)
-                .setView(row)
+        dialog = new BrandDialog(themed)
+                .setContentView(row)
                 .setCancelable(true)
-                .setOnCancelListener(d -> { estimateCanceled = true; resetMapSelection(); })
-                .show();
+                .setOnCancel(() -> { estimateCanceled = true; resetMapSelection(); })
+                .show()
+                .getDialog();
     }
 
     private void showConsent(String name, String box, long transfer, long archive, long free, long freeAfter) {
-        // ADFA-5027: M3 dialog spacing — content aligned to the title (24dp) with 4dp-grid vertical
-        // breathing room, so it isn't cramped against the edges/title/buttons.
-        LinearLayout body = dialogContent(dp(24), dp(8));
+        // ADFA-5027: 4dp-grid vertical breathing room. hpad 0: BrandDialog's content host already
+        // carries the card's horizontal inset (aligned to the title), so no inset is added here.
+        LinearLayout body = dialogContent(0, dp(8));
 
         TextView sub = new TextView(themed);
         sub.setText(str(R.string.k2go_fqr_consent_sub, name, human(transfer), human(archive)));
@@ -337,17 +337,18 @@ public final class FqrController {
             body.addView(warn);
         }
 
-        dialog = new MaterialAlertDialogBuilder(themed)
+        // ADFA-5043: bailing out here (Not now / tap-outside) must also clear the map's FQR selection
+        // + tool — the same reset the name dialog's Cancel does — or the crosshair and the drawn area
+        // linger with a stale "download this region" button on top.
+        dialog = new BrandDialog(themed)
                 .setTitle(R.string.k2go_fqr_consent_title)
-                .setView(body)
-                // ADFA-5043: bailing out here (Not now / tap-outside) must also clear the map's FQR
-                // selection + tool — the same reset the name dialog's Cancel does — or the crosshair and
-                // the drawn area linger with a stale "download this region" button on top.
-                .setNegativeButton(R.string.k2go_fqr_not_now, (d, w) -> { d.dismiss(); resetMapSelection(); })
-                .setPositiveButton(R.string.k2go_fqr_download, (d, w) -> startDownload(name))
-                .setOnCancelListener(d -> resetMapSelection())
+                .setContentView(body)
+                .setPositive(R.string.k2go_fqr_download, () -> startDownload(name))
+                .setNegative(R.string.k2go_fqr_not_now, () -> resetMapSelection())
+                .setOnCancel(() -> resetMapSelection())
                 .setCancelable(true)
-                .show();
+                .show()
+                .getDialog();
 
         // Kick off the actual download only after consent; the box already re-validates.
         // (startDownload is invoked from the positive button above.)
@@ -390,9 +391,7 @@ public final class FqrController {
             @Override public void onError(String message) {
                 hideOverlay();
                 if (!"canceled".equals(message)) {
-                    new MaterialAlertDialogBuilder(themed)
-                            .setTitle(R.string.k2go_fqr_download_failed).setMessage(message)
-                            .setPositiveButton(android.R.string.ok, null).show();
+                    errorDialog(R.string.k2go_fqr_download_failed, message);
                 }
             }
         });
@@ -681,7 +680,7 @@ public final class FqrController {
         // text Cancel), like the other from-scratch/erase confirms, instead of a flat MaterialAlertDialog
         // with two equal text buttons. themed (not the host activity) carries Theme_K2Go, which the dialog
         // frame needs -- PortalActivity's own theme is not K2Go.
-        new org.appdevforall.k2go.ui.dialog.BrandDialog(themed)
+        new BrandDialog(themed)
                 .setTitle(str(R.string.k2go_fqr_delete_confirm_title, name))
                 .setMessage(R.string.k2go_fqr_delete_confirm_msg)
                 .setDestructive(R.string.k2go_fqr_delete, () -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
@@ -692,8 +691,7 @@ public final class FqrController {
                         refreshRegions();     // and the list drops it
                     }
                     @Override public void onError(String m) {
-                        new MaterialAlertDialogBuilder(themed).setTitle(R.string.k2go_fqr_delete_failed).setMessage(m)
-                                .setPositiveButton(android.R.string.ok, null).show();
+                        errorDialog(R.string.k2go_fqr_delete_failed, m);
                     }
                 }))
                 .setNegative(R.string.k2go_cancel, null)
@@ -719,7 +717,17 @@ public final class FqrController {
     }
 
     // ---- helpers -----------------------------------------------------------------------------
-    /** Padded, transparent container for MaterialAlertDialog setView (the dialog paints the surface). */
+    /** K2GO-385: a single-button (OK) error dialog on the shared BrandDialog, so the three FQR error
+     *  cases (estimate / download / delete) share one recipe. */
+    private void errorDialog(int titleRes, CharSequence message) {
+        new BrandDialog(themed)
+                .setTitle(titleRes)
+                .setMessage(message)
+                .setPositive(android.R.string.ok, (BrandDialog.OnClick) null)
+                .show();
+    }
+
+    /** Padded, transparent container for the dialog body (BrandDialog paints the surface). */
     private LinearLayout dialogContent(int pad) { return dialogContent(pad, pad); }
 
     /** Vertical content holder with horizontal/vertical insets (4dp grid). */

@@ -78,6 +78,7 @@ public final class BrandDialog {
     private CharSequence neutralText;
     private OnClick neutralClick;
     private boolean cancelable = true;
+    private OnClick cancelClick;
     private boolean dismissOnPositive = true;
     private OnConfirm positiveConfirm;
     private CharSequence checkboxLabel;
@@ -215,6 +216,13 @@ public final class BrandDialog {
         return this;
     }
 
+    /** Called when the dialog is canceled (back button or tap-outside), not when a button dismisses it.
+     *  Lets a caller react to a bail-out without reaching into the underlying dialog. */
+    public BrandDialog setOnCancel(@Nullable OnClick cancelClick) {
+        this.cancelClick = cancelClick;
+        return this;
+    }
+
     public BrandDialog setDismissOnPositive(boolean dismissOnPositive) {
         this.dismissOnPositive = dismissOnPositive;
         return this;
@@ -285,6 +293,9 @@ public final class BrandDialog {
                 .setView(root)
                 .setCancelable(cancelable)
                 .create();
+        if (cancelClick != null) {
+            dialog.setOnCancelListener(d -> cancelClick.onClick());
+        }
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
