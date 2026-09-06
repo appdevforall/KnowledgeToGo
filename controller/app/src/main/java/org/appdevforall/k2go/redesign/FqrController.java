@@ -343,7 +343,7 @@ public final class FqrController {
         }
 
         // ADFA-5043: bailing out here (Not now / tap-outside) must also clear the map's FQR selection
-        // + tool — the same reset the name dialog's Cancel does — or the crosshair and the drawn area
+        // + tool -- the same reset the name dialog's Cancel does -- or the crosshair and the drawn area
         // linger with a stale "download this region" button on top.
         dialog = new BrandDialog(themed)
                 .setTitle(R.string.k2go_fqr_consent_title)
