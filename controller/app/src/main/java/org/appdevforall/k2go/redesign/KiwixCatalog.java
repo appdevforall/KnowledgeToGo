@@ -13,8 +13,9 @@
  *               background refresh (re-downloading an updated CSV) can be layered on later.
  *
  *               Shape built in memory:
- *                 { project: { lang: { "<creator><flavour>": {creator,flavour,size,date,file} } } }
- *               Files with no language token are bucketed under "mul" (language-agnostic).
+ *                 { project: { lang: { "<creator><KEY_SEP><flavour>": {creator,flavour,size,date,file} } } }
+ *               The entry key joins creator and flavour with KEY_SEP (see below). Files with no language
+ *               token are bucketed under "mul" (language-agnostic).
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
@@ -26,7 +27,14 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import org.appdevforall.k2go.catalog.data.CatalogOverlay;
+import org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler;
+import org.appdevforall.k2go.config.DownloadEndpoints;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -38,6 +46,22 @@ public final class KiwixCatalog {
     private static final String TAG = "KiwixCatalog";
     private static final String CSV_ASSET = "kiwix_catalog.csv";
 
+    // ADFA-4849/K2GO-390: entry-key delimiter joining creator and flavour into the map key. A
+    // U+0001 control char is used because it can never appear in a creator or flavour token, so
+    // "<creator><flavour>" keys cannot collide across rows. The cart, wishlist and resolver all copy
+    // this key verbatim, so the delimiter stays internal. It is spelled out here (it used to be an
+    // invisible char inside "") so it is visible and greppable -- do not change it without migrating
+    // any persisted wishlist keys, which embed it.
+    private static final String KEY_SEP = "\u0001";
+
+    // K2GO-390 (ADR-390): the catalog is refreshed like Kolibri's -- a hosted manifest + overlay,
+    // ETag/hash-gated -- reusing the catalog-agnostic core. Flat, so no tree machinery. The overlay
+    // (when a newer CSV has been pulled) is preferred over the APK asset; the asset is the offline
+    // baseline. CATALOG name namespaces its refresh state; BASENAME is shared with the overlay so the
+    // worker writes exactly where loadCsv reads.
+    private static final String CATALOG_NAME = "kiwix";
+    private static final String MANIFEST_URL = DownloadEndpoints.APK_REPO + "/catalogs/kiwix.manifest.json";
+
     /** Language-agnostic bucket (files whose name carries no language token, e.g. many videos). */
     public static final String MUL = "mul";
 
@@ -47,27 +71,93 @@ public final class KiwixCatalog {
     }
 
     private static volatile JSONObject inMemory;
+    // Which source the cache came from: -1 = not loaded, 0 = APK asset, >0 = the overlay's lastModified.
+    private static volatile long cachedOverlayMtime = -1L;
 
-    /** Loads the baked CSV (once per process) off the main thread; posts back on the main thread. */
+    /**
+     * Loads the catalog (overlay if pulled, else the baked asset) off the main thread; posts back on the
+     * main thread. K2GO-390: also nudges the freshness refresh (weekly + an opportunistic TTL-gated
+     * check now, since the picker is opening). Both refreshes are network-constrained WorkManager jobs,
+     * so offline is a silent no-op -- the asset/overlay stays the offline baseline. See ADR-390.
+     */
     public static void getOrFetch(Context context, Listener listener) {
-        JSONObject mem = inMemory;
+        final Context app = context.getApplicationContext();
+        nudgeRefresh(app);
+
+        JSONObject mem;
+        synchronized (KiwixCatalog.class) {
+            reloadIfOverlayChanged(app);   // drop the cache if a newer overlay landed
+            mem = inMemory;
+        }
         if (mem != null) { post(() -> listener.onReady(mem)); return; }
 
         new Thread(() -> {
-            JSONObject db = loadCsv(context);
-            if (db != null && db.length() > 0) {
-                inMemory = db;
-                post(() -> listener.onReady(db));
-            } else {
-                post(() -> listener.onError("Catalog unavailable"));
+            JSONObject db;
+            synchronized (KiwixCatalog.class) {   // one loader wins; the rest reuse the cache
+                if (inMemory == null) inMemory = loadCsv(app);
+                db = inMemory;
             }
+            if (db != null && db.length() > 0) post(() -> listener.onReady(db));
+            else post(() -> listener.onError("Catalog unavailable"));
         }).start();
+    }
+
+    // Nudge the freshness refresh once per process (K2GO-390): weekly (KEEP) + an opportunistic,
+    // TTL-gated check. Network-constrained, so offline is a no-op. A 404 forces its own check
+    // (forceRefresh), so this need not run on every catalog open (the drain opens it every ~2 s).
+    private static volatile boolean refreshNudged = false;
+
+    private static void nudgeRefresh(Context app) {
+        if (refreshNudged) return;
+        refreshNudged = true;
+        CatalogRefreshScheduler.scheduleWeekly(app, CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
+        CatalogRefreshScheduler.refreshNow(app, CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
+    }
+
+    /**
+     * K2GO-390: force a freshness check that bypasses the TTL gate. Called when a download 404s -- the
+     * catalog may have rolled to a newer dated file within the TTL window. Network-constrained, so
+     * offline is a silent no-op. Once the overlay lands, the next {@link #getOrFetch} adopts it and the
+     * drain re-resolves the (date-free) key to the current file. See ADR-390.
+     */
+    public static void forceRefresh(Context context) {
+        CatalogRefreshScheduler.forceRefresh(context.getApplicationContext(), CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
+    }
+
+    /**
+     * K2GO-390: the current catalog version tag -- the overlay's mtime, or 0 for the baked asset. The
+     * self-heal counts failures against this ({@link ZimWishlist#bumpAttempts}): a refresh that replaces
+     * the overlay moves the tag and renews the retry budget; an unchanging catalog keeps it stable so the
+     * budget can reach its cap and drop a genuinely-gone item. Kept here so "which catalog version" has a
+     * single owner (the overlay basename lives only in this class). See ADR-390.
+     */
+    public static long catalogVersionTag(Context context) {
+        File overlay = CatalogOverlay.file(context.getApplicationContext(), CSV_ASSET);
+        return overlay.exists() ? overlay.lastModified() : 0L;
+    }
+
+    /** Drop the cache so the next load re-reads. K2GO-390: called after a refresh pulls a new overlay. */
+    public static void invalidate() {
+        inMemory = null;
+        cachedOverlayMtime = -1L;
+    }
+
+    /** If the overlay's mtime differs from what the cache was loaded from, drop the cache (ADR-390). */
+    private static void reloadIfOverlayChanged(Context ctx) {
+        if (inMemory == null) return;
+        File overlay = CatalogOverlay.file(ctx, CSV_ASSET);
+        long mtime = overlay.exists() ? overlay.lastModified() : 0L;
+        if (mtime != cachedOverlayMtime) invalidate();
     }
 
     private static JSONObject loadCsv(Context context) {
         JSONObject db = new JSONObject();
-        try (BufferedReader r = new BufferedReader(
-                new InputStreamReader(context.getAssets().open(CSV_ASSET)))) {
+        // K2GO-390: prefer the pulled overlay over the APK asset; the asset is the offline baseline.
+        File overlay = CatalogOverlay.file(context, CSV_ASSET);
+        boolean useOverlay = overlay.exists();
+        long mtime = useOverlay ? overlay.lastModified() : 0L;
+        try (InputStream in = useOverlay ? new FileInputStream(overlay) : context.getAssets().open(CSV_ASSET);
+                BufferedReader r = new BufferedReader(new InputStreamReader(in))) {
             String line;
             boolean header = true;
             while ((line = r.readLine()) != null) {
@@ -95,12 +185,13 @@ public final class KiwixCatalog {
                 v.put("size", bytes);
                 v.put("date", date);
                 v.put("file", file);
-                langObj.put(creator + "" + flavour, v);
+                langObj.put(creator + KEY_SEP + flavour, v);
             }
         } catch (Exception e) {
             Log.w(TAG, "kiwix_catalog.csv not read: " + e.getMessage());
             return null;
         }
+        cachedOverlayMtime = mtime;   // remember which source (asset=0 / overlay mtime) fed the cache
         return db;
     }
 
