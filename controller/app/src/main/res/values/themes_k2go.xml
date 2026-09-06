@@ -121,6 +121,19 @@
         <item name="android:textColor">@color/k2go_boot_muted</item>
         <item name="rippleColor">@color/k2go_boot_muted</item>
     </style>
+    <!-- K2GO-385: filled primary on the boot paper (download-controls role ladder). App stadium shape/type
+         but a FIXED teal (k2go_boot_accent). The theme teal is night-twinned to a light teal that would
+         wash out on this fixed light paper (ADFA-4814). The label takes the fixed paper colour, so it
+         reads as light text on the dark-teal fill in both themes. -->
+    <style name="Widget.K2Go.Button.OnBootPaper" parent="Widget.K2Go.Button">
+        <item name="backgroundTint">@color/k2go_boot_accent</item>
+        <item name="android:textColor">@color/k2go_boot_bg</item>
+    </style>
+    <!-- Text-only destructive on the boot paper: the Cancel that discards the download. Clay is the same
+         value in light and dark, so it stays readable on the fixed paper. -->
+    <style name="Widget.K2Go.Button.Text.OnBootPaper.Destructive" parent="Widget.K2Go.Button.Text.OnBootPaper">
+        <item name="android:textColor">@color/k2go_clay</item>
+    </style>
 
     <!-- ADFA-5346: overlays that only POINT a code-built or role-switching MaterialButton at one of the
          styles above (via ContextThemeWrapper + new MaterialButton(ctx, null)). The role look stays ONLY

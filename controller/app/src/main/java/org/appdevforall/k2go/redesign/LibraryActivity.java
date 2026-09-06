@@ -78,14 +78,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // ADFA-5119: the two controls that end the wait. One button, three labels; one confirmation.
     private View dlActions;
     private com.google.android.material.button.MaterialButton dlToggle, dlCancel;
-    /**
-     * The outlined button's own tint, remembered so the filled state can be undone.
-     *
-     * <p>Setting it to null does not mean "back to the default" — it means no tint at all, and a
-     * MaterialButton with no tint paints its shape opaque instead of transparent. That is how Pause
-     * came out as a black pill with dark text on it.
-     */
-    private android.content.res.ColorStateList dlToggleTint;
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
@@ -177,7 +169,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         dlActions = findViewById(R.id.k2go_dl_actions);
         dlToggle = findViewById(R.id.k2go_dl_toggle);
         dlCancel = findViewById(R.id.k2go_dl_cancel);
-        dlToggleTint = dlToggle.getBackgroundTintList();   // the outlined style's own value
         dlToggle.setOnClickListener(v -> onDownloadToggle());
         dlCancel.setOnClickListener(v -> confirmCancelDownload());
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
@@ -606,25 +597,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // thing that distinguishes "you stopped this" from "something stopped this".
         dlToggle.setText(st.isSoftFailed() ? R.string.k2go_dl_retry
                 : st.isPaused() ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
-        // ADFA-5119: Material 3 says "this is the action now" with emphasis, not with movement —
-        // filled outranks tonal outranks outlined outranks text. During a download, Pause is a
-        // secondary offer beside a transfer doing fine, so it stays outlined. Once the download has
-        // stopped on its own, Retry IS the primary action and takes the filled treatment.
+        // K2GO-385: the toggle is the FILLED primary in every state (Pause / Resume / Retry), matching
+        // the FQR download card and the download-card design ladder (k2go-library-download-sizes-v1:
+        // "primary = filled, secondary = text in clay"). The colour lives entirely in the filled boot
+        // style (Widget.K2Go.Button.OnBootPaper, fixed k2go_boot_accent teal so it does not flip pale at
+        // night on this fixed paper), so no per-state tint is set in code -- only the label changes.
         //
-        // Deliberately not an attention animation. A pulsing button says "hurry", and the moment the
-        // user reaches for it the hurry is gone — the first touch cancels the window and the state
-        // then waits as long as they like. It would be pressuring someone we have just given
-        // unlimited time, which is the same reason nothing draws a countdown.
-        boolean primary = st.isSoftFailed();
-        // Brand teal, not ink: a filled primary action is the same gesture the wizard's "Internet
-        // download" makes, and it should look like the same app. k2go_boot_accent rather than
-        // k2go_teal because that one flips to a pale turquoise at night and this paper does not.
-        dlToggle.setBackgroundTintList(primary
-                ? android.content.res.ColorStateList.valueOf(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.k2go_boot_accent))
-                : dlToggleTint);
-        dlToggle.setTextColor(androidx.core.content.ContextCompat.getColor(this,
-                primary ? R.color.k2go_boot_bg : R.color.k2go_boot_ink));
+        // This intentionally REMOVES the ADFA-5119 emphasis rule (Pause / Resume stayed outlined and
+        // only Retry took the filled treatment). K2GO-385 homogenizes the two download surfaces (library
+        // and FQR) onto one ladder, so the primary action is filled in every state. Homogenization of the
+        // content wins over the earlier per-state emphasis; that ADFA-5119 behavior is deliberately gone.
         // Both controls, always. A first pass hid Pause during the IPv4/IPv6 probe on the assumption
         // that the probe carries no rate — the device showed otherwise: it reports "Test IPv6" in
         // the rate slot, so the guard never fired. Dropped rather than repaired, because what it was
