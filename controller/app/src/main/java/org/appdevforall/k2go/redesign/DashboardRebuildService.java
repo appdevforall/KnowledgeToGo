@@ -236,12 +236,9 @@ public final class DashboardRebuildService extends Service {
     /** Deep-link to Module management -> Dashboard (the card that shows the in-progress indicator), so the
      *  notification is a way back into the update rather than a dead end. */
     private PendingIntent openDashboardDetail() {
-        Intent openI = new Intent(this, SetupLibraryActivity.class)
-                .putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
-                .putExtra(SetupLibraryActivity.EXTRA_DASHBOARD_DETAIL, true)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(this, 0, openI,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        // K2GO-382: the route now has one owner (OpReturnNavigator). This service was the reference
+        // pattern; it now shares the mapping with every other deep-op instead of spelling its own.
+        return OpReturnNavigator.notify(this, OpReturnNavigator.dashboardRebuild(this));
     }
 
     /** Ongoing "updating…" notification. Not dismissible and does NOT auto-cancel on tap — while the

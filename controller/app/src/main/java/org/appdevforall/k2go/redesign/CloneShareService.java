@@ -112,10 +112,9 @@ public final class CloneShareService extends Service {
     }
 
     private Notification buildNotification() {
-        Intent open = new Intent(this, LibraryActivity.class)
-                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
+        // K2GO-382: route via the single owner (OpReturnNavigator), which also supplies the NEW_TASK
+        // flag this notification was missing.
+        PendingIntent contentIntent = OpReturnNavigator.notify(this, OpReturnNavigator.cloneShare(this));
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_clone_notif_title))
                 .setContentText(getString(R.string.k2go_clone_notif_text))
