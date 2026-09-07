@@ -200,24 +200,35 @@ public class MapsChooseFragment extends Fragment {
             pillViews[gi] = new LinearLayout[g.opts.length];
             for (int oi = 0; oi < g.opts.length; oi++) {
                 final int gg = gi, oo = oi;
+                // K2GO-385 (01): selectable option card -- a leading radio + a label/size column.
+                // Single-select is marked by the radio + a tonal fill (applyGroupSelection), NOT a check
+                // and NOT a solid teal pill (design k2go-component-roles-decisions Q1/Q2).
                 LinearLayout pill = new LinearLayout(requireContext());
-                pill.setOrientation(LinearLayout.VERTICAL);
-                pill.setGravity(Gravity.CENTER);
-                pill.setPadding(px(14), px(8), px(14), px(8));
+                pill.setOrientation(LinearLayout.HORIZONTAL);
+                pill.setGravity(Gravity.CENTER_VERTICAL);
+                pill.setPadding(px(12), px(8), px(14), px(8));
                 pill.setClickable(true);
                 pill.setFocusable(true);
 
+                ImageView radio = new ImageView(requireContext());
+                LinearLayout.LayoutParams radLp = new LinearLayout.LayoutParams(px(18), px(18));
+                radLp.rightMargin = px(8);
+                pill.addView(radio, radLp);
+
+                LinearLayout col = new LinearLayout(requireContext());
+                col.setOrientation(LinearLayout.VERTICAL);
+
                 TextView plabel = new TextView(requireContext());
                 plabel.setText(getString(g.opts[oi].label));
-                plabel.setGravity(Gravity.CENTER);
                 plabel.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-                pill.addView(plabel);
+                col.addView(plabel);
 
                 TextView psize = new TextView(requireContext());
                 psize.setText(g.opts[oi].mb > 0 ? fmt(g.opts[oi].mb) : "—");
-                psize.setGravity(Gravity.CENTER);
                 psize.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-                pill.addView(psize);
+                col.addView(psize);
+
+                pill.addView(col);
 
                 pill.setOnClickListener(v -> selectOpt(gg, oo));
                 pill.setMinimumWidth(px(64));
@@ -240,11 +251,19 @@ public class MapsChooseFragment extends Fragment {
         for (int oi = 0; oi < pillViews[gi].length; oi++) {
             LinearLayout pill = pillViews[gi][oi];
             boolean sel = oi == selOi;
-            pill.setBackgroundResource(sel ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-            int labelColor = sel ? android.R.color.white : R.color.k2go_ink;
-            int sizeColor = sel ? android.R.color.white : R.color.k2go_muted;
-            ((TextView) pill.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), labelColor));
-            ((TextView) pill.getChildAt(1)).setTextColor(ContextCompat.getColor(requireContext(), sizeColor));
+            // Selected = tonal fill + a filled radio; unselected = outline + an empty radio. No check
+            // (single-select). Text stays readable on the tonal fill -- teal, not white on solid teal.
+            pill.setBackgroundResource(sel ? R.drawable.k2go_pill_tonal : R.drawable.k2go_pill_bg);
+            ImageView radio = (ImageView) pill.getChildAt(0);
+            radio.setImageResource(sel ? R.drawable.ic_radio_on : R.drawable.ic_radio_off);
+            // The radio drawables carry fixed teal/gray, unreadable on the night surface; tint with the
+            // day/night tokens so the ring reads in both themes.
+            radio.setColorFilter(ContextCompat.getColor(requireContext(), sel ? R.color.k2go_teal : R.color.k2go_muted));
+            LinearLayout col = (LinearLayout) pill.getChildAt(1);
+            int labelColor = sel ? R.color.k2go_teal : R.color.k2go_ink;
+            int sizeColor = sel ? R.color.k2go_teal : R.color.k2go_muted;
+            ((TextView) col.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), labelColor));
+            ((TextView) col.getChildAt(1)).setTextColor(ContextCompat.getColor(requireContext(), sizeColor));
         }
         groupSizeViews[gi].setText(selectedMb[gi] > 0 ? fmt(selectedMb[gi]) : "—");
     }

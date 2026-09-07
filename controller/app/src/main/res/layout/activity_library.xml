@@ -89,12 +89,16 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_boot_ink" />
 
+        <!-- K2GO-385: a visible 6dp track (design k2go-library-download-sizes-v1), not the framework
+             default hairline. min = max so the horizontal bar renders at a fixed 6dp. -->
         <ProgressBar
             android:id="@+id/k2go_install_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:minHeight="6dp"
+            android:maxHeight="6dp"
             android:max="100"
             android:progressTint="@color/k2go_boot_accent"
             android:progressBackgroundTint="@color/k2go_boot_track" />
@@ -201,13 +205,13 @@
             android:visibility="gone">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/k2go_dl_toggle"
-                style="@style/Widget.K2Go.Button.Outlined.OnBootPaper"
+                style="@style/Widget.K2Go.Button.OnBootPaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="132dp" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/k2go_dl_cancel"
-                style="@style/Widget.K2Go.Button.Text.OnBootPaper"
+                style="@style/Widget.K2Go.Button.Text.OnBootPaper.Destructive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

@@ -33,7 +33,6 @@ import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.kolibri.data.KolibriRestClient;
 import org.appdevforall.k2go.kolibri.domain.ChannelSelection;
 import org.appdevforall.k2go.kolibri.domain.SeedPlan;
-import org.appdevforall.k2go.redesign.SetupProgressActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -364,14 +363,11 @@ public final class KolibriSeedService extends Service {
     }
 
     private Notification buildNotification(String label) {
-        // ADFA-5074: the index, not this stream's detail — it is the only surface that can end
-        // the run, and a notification is how someone comes back to ask whether it is going well.
-        Intent open = new Intent(this, SetupProgressActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        // ADFA-5074 / K2GO-382: the index, not this stream's detail — it is the only surface that can
+        // end the run, and a notification is how someone comes back to ask whether it is going well.
+        // The route now has one owner (OpReturnNavigator).
+        PendingIntent contentIntent = org.appdevforall.k2go.redesign.OpReturnNavigator.notify(this,
+                org.appdevforall.k2go.redesign.OpReturnNavigator.contentDownload(this));
 
         Intent cancel = new Intent(this, KolibriSeedService.class).setAction(ACTION_CANCEL);
         PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,

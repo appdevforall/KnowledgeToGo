@@ -171,10 +171,8 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     }
 
     private Notification buildNotification(String title) {
-        Intent openI = new Intent(this, SetupProgressActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent open = PendingIntent.getActivity(this, 0, openI,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        // K2GO-382: route via the single owner (OpReturnNavigator).
+        PendingIntent open = OpReturnNavigator.notify(this, OpReturnNavigator.contentDownload(this));
         PendingIntent cancel = PendingIntent.getService(this, 1,
                 new Intent(this, BooksDownloadService.class).setAction(ACTION_CANCEL),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

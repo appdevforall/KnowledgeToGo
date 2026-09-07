@@ -1833,11 +1833,13 @@ public final class InstallService extends Service {
     }
 
     private Notification buildNotification(String text) {
-        // ADFA-4919: return to the modern progress surface — LibraryActivity shows rootfs progress
-        // (boot gate) and routes to the proot install index when a module is running — unlike legacy
-        // MainActivity, which shows neither. Reusable for any proot module install (delivery, etc.).
-        Intent open = new Intent(this, org.appdevforall.k2go.redesign.LibraryActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
+        // ADFA-4919 / K2GO-382: return to the modern progress surface — LibraryActivity shows rootfs
+        // progress (boot gate) and routes to the proot install index when a module is running — unlike
+        // legacy MainActivity, which shows neither. The route now has one owner (OpReturnNavigator);
+        // EXTRA_INSTALLING makes a fresh/refreshed LibraryActivity land on install progress instead of
+        // the last tab.
+        PendingIntent contentIntent = org.appdevforall.k2go.redesign.OpReturnNavigator.notify(this,
+                org.appdevforall.k2go.redesign.OpReturnNavigator.install(this));
 
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.install_notif_title))

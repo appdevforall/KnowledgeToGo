@@ -7,9 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -78,7 +81,11 @@ public final class BrandDialog {
     private CharSequence neutralText;
     private OnClick neutralClick;
     private boolean cancelable = true;
+    private OnClick cancelClick;
     private boolean dismissOnPositive = true;
+    private boolean dismissOnNeutral = true;
+    private int iconRes;        // 0 = no leading title icon
+    private int iconTintRes;    // 0 = no tint
     private OnConfirm positiveConfirm;
     private CharSequence checkboxLabel;
     private boolean checkboxChecked;
@@ -215,8 +222,30 @@ public final class BrandDialog {
         return this;
     }
 
+    /** Called when the dialog is canceled (back button or tap-outside), not when a button dismisses it.
+     *  Lets a caller react to a bail-out without reaching into the underlying dialog. */
+    public BrandDialog setOnCancel(@Nullable OnClick cancelClick) {
+        this.cancelClick = cancelClick;
+        return this;
+    }
+
     public BrandDialog setDismissOnPositive(boolean dismissOnPositive) {
         this.dismissOnPositive = dismissOnPositive;
+        return this;
+    }
+
+    /** Keep the dialog open when the neutral (tertiary) button is tapped -- e.g. "Report the problem",
+     *  which sends feedback but must leave the two real choices (recover / close) on screen. */
+    public BrandDialog setDismissOnNeutral(boolean dismissOnNeutral) {
+        this.dismissOnNeutral = dismissOnNeutral;
+        return this;
+    }
+
+    /** Optional leading state icon beside the title (e.g. a clay error icon). tintRes 0 leaves the
+     *  drawable's own colour. */
+    public BrandDialog setIcon(@DrawableRes int iconRes, @ColorRes int tintRes) {
+        this.iconRes = iconRes;
+        this.iconTintRes = tintRes;
         return this;
     }
 
@@ -229,6 +258,14 @@ public final class BrandDialog {
         Button neutral = root.findViewById(R.id.brand_dialog_neutral);
         Button negative = root.findViewById(R.id.brand_dialog_negative);
 
+        ImageView iconView = root.findViewById(R.id.brand_dialog_icon);
+        if (iconRes != 0) {
+            iconView.setImageResource(iconRes);
+            if (iconTintRes != 0) {
+                iconView.setColorFilter(ContextCompat.getColor(context, iconTintRes));
+            }
+            iconView.setVisibility(View.VISIBLE);
+        }
         if (title != null) {
             titleView.setText(title);
             titleView.setVisibility(View.VISIBLE);
@@ -285,6 +322,9 @@ public final class BrandDialog {
                 .setView(root)
                 .setCancelable(cancelable)
                 .create();
+        if (cancelClick != null) {
+            dialog.setOnCancelListener(d -> cancelClick.onClick());
+        }
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
@@ -331,9 +371,11 @@ public final class BrandDialog {
             neutral.setText(neutralText);
             neutral.setVisibility(View.VISIBLE);
             neutral.setOnClickListener(v -> {
-                dialog.dismiss();
                 if (neutralClick != null) {
                     neutralClick.onClick();
+                }
+                if (dismissOnNeutral) {
+                    dialog.dismiss();
                 }
             });
         }

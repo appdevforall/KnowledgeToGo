@@ -196,10 +196,8 @@ public final class ZimDownloadService extends Service implements ContentDownload
     }
 
     private Notification buildNotification(String currentLabel) {
-        Intent open = new Intent(this, SetupProgressActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        // K2GO-382: route via the single owner (OpReturnNavigator).
+        PendingIntent contentIntent = OpReturnNavigator.notify(this, OpReturnNavigator.contentDownload(this));
         Intent cancel = new Intent(this, ZimDownloadService.class).setAction(ACTION_CANCEL);
         PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
