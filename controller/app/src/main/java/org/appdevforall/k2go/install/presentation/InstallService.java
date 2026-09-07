@@ -1139,9 +1139,10 @@ public final class InstallService extends Service {
      * unset so that callback runs (the cancel path suppresses it). {@code gen} drops a kill queued for
      * a module that has since ended.
      *
-     * <p>Known limit: killProcess SIGKILLs proot, which orphans its in-container child (a real hung
-     * aria2c, here the test sleep) rather than reaping it -- shared with doCancel. Recovery still works;
-     * reaping the subtree is a follow-up.
+     * <p>Known limit (shared with doCancel): killProcess SIGKILLs proot, orphaning its in-container
+     * child. Low impact by the role's own flags -- aria2c self-exits (max-tries=5, timeout=60) and the
+     * meta4 fetch just idles a socket; neither firehoses disk, so recovery works regardless. Reap the
+     * orphan (reuse EnvironmentProcess's /proc sweep) only if a retry-conflict is ever observed.
      */
     private void hardStallKill(final String moduleKey, final int gen) {
         if (gen != moduleStallGen || finished || cancelled || moduleStallKilled) return;
