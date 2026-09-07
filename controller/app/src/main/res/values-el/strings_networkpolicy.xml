@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Χρησιμοποιείτε δεδομένα κινητής</string>
+    <string name="k2go_netpolicy_metered_msg">Αυτή η λήψη χρησιμοποιεί δεδομένα κινητής. Μπορεί να έχει κόστος ή να εξαντλήσει το μηνιαίο σας πακέτο. Θέλετε να συνεχίσετε;</string>
+    <string name="k2go_netpolicy_continue">Συνέχεια με δεδομένα</string>
+    <string name="k2go_netpolicy_not_now">Όχι τώρα</string>
+    <string name="k2go_netpolicy_offline">Χωρίς δίκτυο. Συνδεθείτε σε Wi-Fi για λήψη.</string>
+    <string name="k2go_netpolicy_switched_title">Μεταβήκατε σε δεδομένα κινητής</string>
+    <string name="k2go_netpolicy_switched_msg">Οι νέες λήψεις χρησιμοποιούν τώρα δεδομένα κινητής. Αυτό μπορεί να έχει κόστος ή να εξαντλήσει το μηνιαίο σας πακέτο.</string>
+    <string name="k2go_netpolicy_channel">Ειδοποιήσεις κόστους δεδομένων</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">તમે મોબાઇલ ડેટા વાપરી રહ્યા છો</string>
+    <string name="k2go_netpolicy_metered_msg">આ ડાઉનલોડ મોબાઇલ ડેટા વાપરે છે. તેનાથી ખર્ચ થઈ શકે અથવા તમારો માસિક ડેટા ખતમ થઈ શકે. શું તમે ચાલુ રાખવા માંગો છો?</string>
+    <string name="k2go_netpolicy_continue">ડેટા પર ચાલુ રાખો</string>
+    <string name="k2go_netpolicy_not_now">હમણાં નહીં</string>
+    <string name="k2go_netpolicy_offline">કોઈ નેટવર્ક નથી. ડાઉનલોડ કરવા માટે Wi-Fi સાથે કનેક્ટ કરો.</string>
+    <string name="k2go_netpolicy_switched_title">તમે મોબાઇલ ડેટા પર સ્વિચ કર્યું</string>
+    <string name="k2go_netpolicy_switched_msg">નવા ડાઉનલોડ હવે મોબાઇલ ડેટા વાપરે છે. તેનાથી ખર્ચ થઈ શકે અથવા તમારો માસિક ડેટા ખતમ થઈ શકે.</string>
+    <string name="k2go_netpolicy_channel">ડેટા ખર્ચ ચેતવણીઓ</string>
+</resources>

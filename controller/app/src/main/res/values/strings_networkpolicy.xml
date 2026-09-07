@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings (ADR-395). -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">You are on mobile data</string>
+    <string name="k2go_netpolicy_metered_msg">This download uses mobile data. It can add cost or use up your monthly data. Do you want to continue?</string>
+    <string name="k2go_netpolicy_continue">Continue on data</string>
+    <string name="k2go_netpolicy_not_now">Not now</string>
+    <string name="k2go_netpolicy_offline">No network. Connect to Wi-Fi to download.</string>
+    <string name="k2go_netpolicy_switched_title">You switched to mobile data</string>
+    <string name="k2go_netpolicy_switched_msg">New downloads now use mobile data. This can add cost or use up your monthly data.</string>
+    <string name="k2go_netpolicy_channel">Data cost alerts</string>
+</resources>

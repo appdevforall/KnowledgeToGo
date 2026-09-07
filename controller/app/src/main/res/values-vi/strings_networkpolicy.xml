@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Bạn đang dùng dữ liệu di động</string>
+    <string name="k2go_netpolicy_metered_msg">Bản tải xuống này dùng dữ liệu di động. Có thể phát sinh chi phí hoặc dùng hết gói hàng tháng của bạn. Bạn có muốn tiếp tục không?</string>
+    <string name="k2go_netpolicy_continue">Tiếp tục bằng dữ liệu</string>
+    <string name="k2go_netpolicy_not_now">Để sau</string>
+    <string name="k2go_netpolicy_offline">Không có mạng. Kết nối Wi-Fi để tải xuống.</string>
+    <string name="k2go_netpolicy_switched_title">Bạn đã chuyển sang dữ liệu di động</string>
+    <string name="k2go_netpolicy_switched_msg">Các bản tải xuống mới hiện dùng dữ liệu di động. Điều này có thể phát sinh chi phí hoặc dùng hết gói hàng tháng của bạn.</string>
+    <string name="k2go_netpolicy_channel">Cảnh báo chi phí dữ liệu</string>
+</resources>

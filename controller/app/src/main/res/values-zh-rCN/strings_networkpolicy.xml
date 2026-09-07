@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">您正在使用移动数据</string>
+    <string name="k2go_netpolicy_metered_msg">此下载会使用移动数据。可能产生费用或用尽您的每月流量。是否继续？</string>
+    <string name="k2go_netpolicy_continue">使用数据继续</string>
+    <string name="k2go_netpolicy_not_now">暂不</string>
+    <string name="k2go_netpolicy_offline">无网络。请连接 Wi-Fi 以下载。</string>
+    <string name="k2go_netpolicy_switched_title">您已切换到移动数据</string>
+    <string name="k2go_netpolicy_switched_msg">新的下载现在会使用移动数据。这可能产生费用或用尽您的每月流量。</string>
+    <string name="k2go_netpolicy_channel">数据费用提醒</string>
+</resources>

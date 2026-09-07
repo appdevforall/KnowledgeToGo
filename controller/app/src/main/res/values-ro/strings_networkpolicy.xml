@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Folosești date mobile</string>
+    <string name="k2go_netpolicy_metered_msg">Această descărcare folosește date mobile. Poate genera costuri sau îți poate epuiza planul lunar. Vrei să continui?</string>
+    <string name="k2go_netpolicy_continue">Continuă pe date mobile</string>
+    <string name="k2go_netpolicy_not_now">Nu acum</string>
+    <string name="k2go_netpolicy_offline">Fără rețea. Conectează-te la Wi-Fi pentru a descărca.</string>
+    <string name="k2go_netpolicy_switched_title">Ai trecut la date mobile</string>
+    <string name="k2go_netpolicy_switched_msg">Descărcările noi folosesc acum date mobile. Acest lucru poate genera costuri sau îți poate epuiza planul lunar.</string>
+    <string name="k2go_netpolicy_channel">Alerte privind costul datelor</string>
+</resources>

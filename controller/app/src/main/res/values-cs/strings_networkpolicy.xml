@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Používáte mobilní data</string>
+    <string name="k2go_netpolicy_metered_msg">Toto stahování používá mobilní data. Může být zpoplatněno nebo vyčerpat váš měsíční limit. Chcete pokračovat?</string>
+    <string name="k2go_netpolicy_continue">Pokračovat na mobilních datech</string>
+    <string name="k2go_netpolicy_not_now">Teď ne</string>
+    <string name="k2go_netpolicy_offline">Žádná síť. Připojte se k Wi-Fi pro stažení.</string>
+    <string name="k2go_netpolicy_switched_title">Přepnuli jste na mobilní data</string>
+    <string name="k2go_netpolicy_switched_msg">Nová stahování nyní používají mobilní data. Může být zpoplatněno nebo vyčerpat váš měsíční limit.</string>
+    <string name="k2go_netpolicy_channel">Upozornění na náklady za data</string>
+</resources>

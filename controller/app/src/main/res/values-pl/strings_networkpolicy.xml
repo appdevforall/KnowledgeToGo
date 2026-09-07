@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Używasz danych komórkowych</string>
+    <string name="k2go_netpolicy_metered_msg">To pobieranie używa danych komórkowych. Może wiązać się z kosztami lub wyczerpać miesięczny pakiet. Czy chcesz kontynuować?</string>
+    <string name="k2go_netpolicy_continue">Kontynuuj na danych</string>
+    <string name="k2go_netpolicy_not_now">Nie teraz</string>
+    <string name="k2go_netpolicy_offline">Brak sieci. Połącz się z Wi-Fi, aby pobrać.</string>
+    <string name="k2go_netpolicy_switched_title">Przełączono na dane komórkowe</string>
+    <string name="k2go_netpolicy_switched_msg">Nowe pobierania używają teraz danych komórkowych. Może to wiązać się z kosztami lub wyczerpać miesięczny pakiet.</string>
+    <string name="k2go_netpolicy_channel">Alerty o kosztach danych</string>
+</resources>

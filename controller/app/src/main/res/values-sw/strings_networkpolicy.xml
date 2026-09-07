@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Unatumia data ya simu</string>
+    <string name="k2go_netpolicy_metered_msg">Upakuaji huu unatumia data ya simu. Inaweza kugharimu au kumaliza kifurushi chako cha mwezi. Ungependa kuendelea?</string>
+    <string name="k2go_netpolicy_continue">Endelea kwa data</string>
+    <string name="k2go_netpolicy_not_now">Si sasa</string>
+    <string name="k2go_netpolicy_offline">Hakuna mtandao. Unganisha kwa Wi-Fi ili kupakua.</string>
+    <string name="k2go_netpolicy_switched_title">Umebadili hadi data ya simu</string>
+    <string name="k2go_netpolicy_switched_msg">Vipakuliwa vipya sasa vinatumia data ya simu. Hii inaweza kugharimu au kumaliza kifurushi chako cha mwezi.</string>
+    <string name="k2go_netpolicy_channel">Arifa za gharama ya data</string>
+</resources>

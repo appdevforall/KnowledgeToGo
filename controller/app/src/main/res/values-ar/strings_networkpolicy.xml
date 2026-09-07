@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">أنت تستخدم بيانات الجوال</string>
+    <string name="k2go_netpolicy_metered_msg">يستخدم هذا التنزيل بيانات الجوال. قد يترتب عليه تكلفة أو يستنفد باقتك الشهرية. هل تريد المتابعة؟</string>
+    <string name="k2go_netpolicy_continue">المتابعة عبر البيانات</string>
+    <string name="k2go_netpolicy_not_now">ليس الآن</string>
+    <string name="k2go_netpolicy_offline">لا توجد شبكة. اتصل بشبكة Wi-Fi للتنزيل.</string>
+    <string name="k2go_netpolicy_switched_title">لقد انتقلت إلى بيانات الجوال</string>
+    <string name="k2go_netpolicy_switched_msg">تستخدم التنزيلات الجديدة الآن بيانات الجوال. قد يترتب على ذلك تكلفة أو يستنفد باقتك الشهرية.</string>
+    <string name="k2go_netpolicy_channel">تنبيهات تكلفة البيانات</string>
+</resources>

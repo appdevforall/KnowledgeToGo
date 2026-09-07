@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Je gebruikt mobiele data</string>
+    <string name="k2go_netpolicy_metered_msg">Deze download gebruikt mobiele data. Dit kan kosten opleveren of je maandbundel opmaken. Wil je doorgaan?</string>
+    <string name="k2go_netpolicy_continue">Doorgaan met mobiele data</string>
+    <string name="k2go_netpolicy_not_now">Niet nu</string>
+    <string name="k2go_netpolicy_offline">Geen netwerk. Maak verbinding met wifi om te downloaden.</string>
+    <string name="k2go_netpolicy_switched_title">Je bent overgeschakeld naar mobiele data</string>
+    <string name="k2go_netpolicy_switched_msg">Nieuwe downloads gebruiken nu mobiele data. Dit kan kosten opleveren of je maandbundel opmaken.</string>
+    <string name="k2go_netpolicy_channel">Waarschuwingen datakosten</string>
+</resources>

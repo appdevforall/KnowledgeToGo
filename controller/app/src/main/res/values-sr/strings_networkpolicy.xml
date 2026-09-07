@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Користите мобилне податке</string>
+    <string name="k2go_netpolicy_metered_msg">Ово преузимање користи мобилне податке. Може да има трошак или да потроши ваш месечни план. Желите ли да наставите?</string>
+    <string name="k2go_netpolicy_continue">Настави на мобилним подацима</string>
+    <string name="k2go_netpolicy_not_now">Не сада</string>
+    <string name="k2go_netpolicy_offline">Нема мреже. Повежите се на Wi-Fi да бисте преузели.</string>
+    <string name="k2go_netpolicy_switched_title">Прешли сте на мобилне податке</string>
+    <string name="k2go_netpolicy_switched_msg">Нова преузимања сада користе мобилне податке. Ово може да има трошак или да потроши ваш месечни план.</string>
+    <string name="k2go_netpolicy_channel">Обавештења о трошку података</string>
+</resources>

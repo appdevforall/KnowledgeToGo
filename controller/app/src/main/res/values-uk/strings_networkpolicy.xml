@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Ви використовуєте мобільні дані</string>
+    <string name="k2go_netpolicy_metered_msg">Це завантаження використовує мобільні дані. Це може призвести до витрат або вичерпати місячний пакет. Продовжити?</string>
+    <string name="k2go_netpolicy_continue">Продовжити на мобільних даних</string>
+    <string name="k2go_netpolicy_not_now">Не зараз</string>
+    <string name="k2go_netpolicy_offline">Немає мережі. Підключіться до Wi-Fi, щоб завантажити.</string>
+    <string name="k2go_netpolicy_switched_title">Ви перейшли на мобільні дані</string>
+    <string name="k2go_netpolicy_switched_msg">Нові завантаження тепер використовують мобільні дані. Це може призвести до витрат або вичерпати місячний пакет.</string>
+    <string name="k2go_netpolicy_channel">Сповіщення про витрати даних</string>
+</resources>

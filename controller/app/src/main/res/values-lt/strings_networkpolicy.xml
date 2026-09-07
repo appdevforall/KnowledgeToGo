@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Naudojate mobiliuosius duomenis</string>
+    <string name="k2go_netpolicy_metered_msg">Šis atsisiuntimas naudoja mobiliuosius duomenis. Tai gali kainuoti arba išnaudoti mėnesio planą. Ar norite tęsti?</string>
+    <string name="k2go_netpolicy_continue">Tęsti su mobiliaisiais duomenimis</string>
+    <string name="k2go_netpolicy_not_now">Ne dabar</string>
+    <string name="k2go_netpolicy_offline">Nėra tinklo. Prisijunkite prie Wi-Fi, kad atsisiųstumėte.</string>
+    <string name="k2go_netpolicy_switched_title">Perjungėte į mobiliuosius duomenis</string>
+    <string name="k2go_netpolicy_switched_msg">Nauji atsisiuntimai dabar naudoja mobiliuosius duomenis. Tai gali kainuoti arba išnaudoti mėnesio planą.</string>
+    <string name="k2go_netpolicy_channel">Duomenų sąnaudų įspėjimai</string>
+</resources>
