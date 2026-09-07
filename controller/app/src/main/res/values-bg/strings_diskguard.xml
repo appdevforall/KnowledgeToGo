@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Критично малко хранилище</string>
-    <string name="disk_guard_notif_body">Сървърът беше спрян, за да не свърши мястото на устройството ви. Докоснете, за да изпратите отчет.</string>
-    <string name="disk_guard_firehose_title">K2Go ограничи необичайна активност</string>
-    <string name="disk_guard_firehose_body">K2Go се справи с процес, който използваше твърде много хранилище, и запази системата ви работеща. Докоснете, за да изпратите отчет.</string>
-</resources>

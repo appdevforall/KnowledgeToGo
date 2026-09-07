@@ -1400,4 +1400,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Продолжить обновление</string>
     <string name="k2go_dash_update_site">Обновить веб-сайт</string>
     <string name="k2go_dash_update_confirm_title">Обновить ядро REST?</string>
+
+    <string name="disk_guard_notif_title">Критически мало памяти</string>
+    <string name="disk_guard_notif_body">Сервер остановлен, чтобы на устройстве не закончилось место. Нажмите, чтобы отправить отчёт.</string>
+    <string name="disk_guard_firehose_title">K2Go сдержал необычную активность</string>
+    <string name="disk_guard_firehose_body">K2Go обработал процесс, использовавший слишком много памяти, и сохранил работу системы. Нажмите, чтобы отправить отчёт.</string>
+    <string name="k2go_maps_dl_title">Загрузка данных карты</string>
 </resources>

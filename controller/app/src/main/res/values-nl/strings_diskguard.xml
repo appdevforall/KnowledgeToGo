@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Opslag kritiek laag</string>
-    <string name="disk_guard_notif_body">De server is gestopt om te voorkomen dat uw apparaat geen ruimte meer heeft. Tik om een rapport te sturen.</string>
-    <string name="disk_guard_firehose_title">K2Go heeft ongebruikelijke activiteit ingeperkt</string>
-    <string name="disk_guard_firehose_body">K2Go heeft een proces afgehandeld dat te veel opslag gebruikte en uw systeem draaiende gehouden. Tik om een rapport te sturen.</string>
-</resources>

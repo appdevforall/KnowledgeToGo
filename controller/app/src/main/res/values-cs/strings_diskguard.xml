@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Kriticky málo úložiště</string>
-    <string name="disk_guard_notif_body">Server byl zastaven, aby zařízení nedošlo místo. Klepnutím odešlete hlášení.</string>
-    <string name="disk_guard_firehose_title">K2Go zvládl neobvyklou aktivitu</string>
-    <string name="disk_guard_firehose_body">K2Go zpracoval proces, který využíval příliš mnoho úložiště, a udržel systém v chodu. Klepnutím odešlete hlášení.</string>
-</resources>

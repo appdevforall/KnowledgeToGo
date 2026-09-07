@@ -1337,4 +1337,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Настави ажурирање</string>
     <string name="k2go_dash_update_site">Ажурирај веб-сајт</string>
     <string name="k2go_dash_update_confirm_title">Ажурирати REST језгро?</string>
+
+    <string name="disk_guard_notif_title">Простор за складиштење критично мали</string>
+    <string name="disk_guard_notif_body">Сервер је заустављен да уређају не понестане простора. Додирните да пошаљете извештај.</string>
+    <string name="disk_guard_firehose_title">K2Go је обуздао необичну активност</string>
+    <string name="disk_guard_firehose_body">K2Go је обрадио процес који је користио превише простора и одржао систем у раду. Додирните да пошаљете извештај.</string>
+    <string name="k2go_maps_dl_title">Преузимање података мапе</string>
 </resources>

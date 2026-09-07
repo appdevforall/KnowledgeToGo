@@ -1337,4 +1337,10 @@
     <string name="k2go_dash_cancel_confirm_keep">અપડેટ ચાલુ રાખો</string>
     <string name="k2go_dash_update_site">વેબસાઇટ અપડેટ કરો</string>
     <string name="k2go_dash_update_confirm_title">REST કોર અપડેટ કરવું છે?</string>
+
+    <string name="disk_guard_notif_title">સ્ટોરેજ ગંભીર રીતે ઓછું</string>
+    <string name="disk_guard_notif_body">તમારા ઉપકરણમાં જગ્યા ખૂટે નહીં તે માટે સર્વર બંધ કરવામાં આવ્યું. રિપોર્ટ મોકલવા ટૅપ કરો.</string>
+    <string name="disk_guard_firehose_title">K2Go એ અસામાન્ય પ્રવૃત્તિ કાબૂમાં લીધી</string>
+    <string name="disk_guard_firehose_body">K2Go એ વધુ પડતું સ્ટોરેજ વાપરતી પ્રક્રિયા સંભાળી અને તમારી સિસ્ટમ ચાલુ રાખી. રિપોર્ટ મોકલવા ટૅપ કરો.</string>
+    <string name="k2go_maps_dl_title">નકશા ડેટા ડાઉનલોડ થઈ રહ્યો છે</string>
 </resources>

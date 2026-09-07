@@ -116,7 +116,13 @@ two layered migrations from colliding, follow these rules:
 - **Per-feature resource files** to avoid `strings.xml` collisions: a feature may
   add its own `res/values/strings_<feature>.xml` (Android merges all `<resources>`
   files) instead of everyone editing the one shared `strings.xml`. Append, never
-  reorder existing keys.
+  reorder existing keys. **This is a temporary device for parallel work, not the
+  end state.** A `strings_<feature>.xml` is folded back into `strings.xml` (with all
+  33 locale values) once the feature lands and the collision risk is gone; the
+  final tree should carry no loose `strings_<feature>.xml`. The one exception is
+  `strings_untranslated.xml`, the deliberate WIP tracker for strings awaiting
+  translation (see the l10n conventions). This holds until the policy changes to
+  keep per-feature string files permanently.
 - **Wire dependencies by hand, per feature.** Each feature has its own
   `…ViewModelFactory` / small factory. There is no shared DI graph for everyone to
   edit (introducing Hilt/Dagger is a separate ADR), so composition roots don't

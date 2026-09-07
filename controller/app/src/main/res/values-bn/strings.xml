@@ -1337,4 +1337,10 @@
     <string name="k2go_dash_cancel_confirm_keep">আপডেট চালিয়ে যান</string>
     <string name="k2go_dash_update_site">ওয়েবসাইট আপডেট করুন</string>
     <string name="k2go_dash_update_confirm_title">REST কোর আপডেট করবেন?</string>
+
+    <string name="disk_guard_notif_title">স্টোরেজ সংকটজনকভাবে কম</string>
+    <string name="disk_guard_notif_body">আপনার ডিভাইসের জায়গা ফুরিয়ে যাওয়া রোধ করতে সার্ভার বন্ধ করা হয়েছে। রিপোর্ট পাঠাতে ট্যাপ করুন।</string>
+    <string name="disk_guard_firehose_title">K2Go অস্বাভাবিক কার্যকলাপ নিয়ন্ত্রণ করেছে</string>
+    <string name="disk_guard_firehose_body">K2Go অত্যধিক স্টোরেজ ব্যবহার করা একটি প্রক্রিয়া সামলেছে এবং আপনার সিস্টেম চালু রেখেছে। রিপোর্ট পাঠাতে ট্যাপ করুন।</string>
+    <string name="k2go_maps_dl_title">মানচিত্রের ডেটা ডাউনলোড হচ্ছে</string>
 </resources>
