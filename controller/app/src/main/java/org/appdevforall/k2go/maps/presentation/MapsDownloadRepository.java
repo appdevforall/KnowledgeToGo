@@ -45,13 +45,16 @@ public final class MapsDownloadRepository {
         return v != null ? v : MapsDownloadProgress.none();
     }
 
-    /** Post a new snapshot (main thread only, as MapsDownloadRpc delivers on the main thread). */
+    /**
+     * Post a new snapshot. {@code postValue} on purpose: the RPC monitor delivers on the main thread
+     * but InstallService clears from its background install thread, so the write must be thread-safe.
+     */
     public void post(MapsDownloadProgress p) {
-        state.setValue(p != null ? p : MapsDownloadProgress.none());
+        state.postValue(p != null ? p : MapsDownloadProgress.none());
     }
 
     /** Clear back to "nothing downloading" -- on teardown, or when the RPC goes idle. */
     public void clear() {
-        state.setValue(MapsDownloadProgress.none());
+        state.postValue(MapsDownloadProgress.none());
     }
 }
