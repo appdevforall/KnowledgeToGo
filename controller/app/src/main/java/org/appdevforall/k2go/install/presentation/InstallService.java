@@ -230,6 +230,9 @@ public final class InstallService extends Service {
     // K2GO-394: the per-run aria2 RPC secret and the live download monitor for the maps download.
     private String mapsRpcSecret;
     private volatile org.appdevforall.k2go.maps.data.MapsDownloadRpc mapsRpc;
+    // K2GO-394: true while the maps download is paused by the USER (not by a network drop), so the
+    // reconnection must not auto-resume it -- the same rule the rootfs path keeps for a held download.
+    private volatile boolean mapsUserPaused;
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -262,13 +265,18 @@ public final class InstallService extends Service {
         // K2GO-394: maps download reconnection. Android drives it (not aria2's blind retry): on a
         // network change, pause the in-proot aria2c when there is no validated internet and resume it
         // (aria2 --continue picks up the partial) when there is. Best-effort; a no-op between files.
-        if (mapsRpc != null) {
+        org.appdevforall.k2go.maps.data.MapsDownloadRpc netRpc = mapsRpc;   // one read (it can be nulled off-thread)
+        if (netRpc != null) {
             if (hasValidatedInternet()) {
-                log("[maps] validated network -- resuming the download");
-                mapsRpc.resume();
+                // Only auto-resume a NETWORK pause; a user's manual pause is left alone (a radio event
+                // is not their decision to continue).
+                if (!mapsUserPaused) {
+                    log("[maps] validated network -- resuming the download");
+                    netRpc.resume();
+                }
             } else {
                 log("[maps] network lost -- pausing the download");
-                mapsRpc.pause();
+                netRpc.pause();
             }
         }
         if (!InstallProgressRepository.get().current().isSoftFailed()) return;
@@ -1260,6 +1268,7 @@ public final class InstallService extends Service {
      */
     private void startMapsRpc() {
         stopMapsRpc();
+        mapsUserPaused = false;   // fresh run: nothing is user-paused yet
         mapsRpc = new org.appdevforall.k2go.maps.data.MapsDownloadRpc(
                 org.appdevforall.k2go.install.domain.MapsRunroleCommand.RPC_PORT, mapsRpcSecret,
                 new org.appdevforall.k2go.maps.data.MapsDownloadRpc.Listener() {
@@ -1462,9 +1471,11 @@ public final class InstallService extends Service {
         if (finished || cancelled) return;
         // K2GO-394: a maps (proot) download pauses through its in-proot aria2c over RPC, not the rootfs
         // aria2 the checks below govern. The poll reflects the paused state on the download bar.
-        if (mapsRpc != null) {
+        org.appdevforall.k2go.maps.data.MapsDownloadRpc pauseRpc = mapsRpc;
+        if (pauseRpc != null) {
             log("[maps] pause requested");
-            mapsRpc.pause();
+            mapsUserPaused = true;   // a user pause -> reconnection must not auto-resume it
+            pauseRpc.pause();
             return;
         }
         if (!InstallProgressRepository.get().current().isRunning()) return;
@@ -1656,9 +1667,11 @@ public final class InstallService extends Service {
     private void doResume() {
         if (finished || cancelled) return;
         // K2GO-394: resume a maps download through its RPC (aria2 --continue picks up the partial).
-        if (mapsRpc != null) {
+        org.appdevforall.k2go.maps.data.MapsDownloadRpc resumeRpc = mapsRpc;
+        if (resumeRpc != null) {
             log("[maps] resume requested");
-            mapsRpc.resume();
+            mapsUserPaused = false;
+            resumeRpc.resume();
             return;
         }
         if (!InstallProgressRepository.get().current().isHeld()) return;

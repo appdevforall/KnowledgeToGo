@@ -96,6 +96,7 @@ public final class MapsDownloadRpc {
         running = false;
         if (poll != null) {
             poll.removeCallbacksAndMessages(null);
+            poll = null;   // so callAsync's null guard means "stopped", not "posting to a dead looper"
         }
         if (thread != null) {
             thread.quitSafely();
@@ -133,27 +134,26 @@ public final class MapsDownloadRpc {
         }
         int active = optInt(stat, "numActive");
         int waiting = optInt(stat, "numWaiting");
+        int stopped = optInt(stat, "numStopped");
         if (active > 0) {
             sawActive = true;
             postProgress(readOne("aria2.tellActive", true));
         } else if (waiting > 0) {
             // A paused (or queued) download: show it, never shut it down.
             postProgress(readOne("aria2.tellWaiting", false));
-        } else if (sawActive) {
-            // Was downloading, now nothing active or waiting -> the file finished. Shut aria2c down so
-            // the blocking shell task returns. Only on a genuine complete (guarded below).
-            if (isLastStoppedComplete()) {
-                Log.i(TAG, "download complete; shutting aria2c down so the runrole task advances");
-                call("aria2.shutdown", null);
-                postProgress(MapsDownloadProgress.of("complete", 0, 0, 0));
-                sawActive = false;
-            } else {
-                // Errored or an unclear stop -- do not shut down (would move a partial). Leave it for
-                // the stall watch / recovery. Report idle so the bar does not sit on a stale percent.
-                postIdle();
-            }
+        } else if (sawActive && stopped > 0 && !anyStoppedError()) {
+            // Was downloading, nothing active/waiting, and something stopped without error -> the file
+            // finished. Shut aria2c down so the blocking shell task returns. Gate on getGlobalStat's
+            // numStopped, not on tellStopped being non-empty, so a momentarily empty tellStopped does
+            // not miss the shutdown and leave the task hanging until the stall watch.
+            Log.i(TAG, "download complete; shutting aria2c down so the runrole task advances");
+            call("aria2.shutdown", null);
+            postProgress(MapsDownloadProgress.of("complete", 0, 0, 0));
+            sawActive = false;
         } else {
-            postIdle();   // aria2c up but nothing has started yet (resolving the metalink)
+            // Nothing to show: still resolving the metalink, or a stop that errored (leave that to the
+            // stall watch / recovery -- shutting down would move a partial file as if complete).
+            postIdle();
         }
         rearm();
     }
@@ -184,20 +184,21 @@ public final class MapsDownloadRpc {
                 optLong(d, "downloadSpeed"));
     }
 
-    /** Whether the most recent stopped download completed cleanly (vs. errored) -- the shutdown guard. */
-    private boolean isLastStoppedComplete() {
+    /** Whether any recent stopped download errored -- the shutdown guard (never shut down on an error,
+     *  that would move a partial file). An empty/unreadable list is "no error": the numStopped gate in
+     *  {@link #tick} already established that something stopped. */
+    private boolean anyStoppedError() {
         JSONArray arr = rpcArray("aria2.tellStopped", new Object[]{0, 5, keysParam()});
-        if (arr == null || arr.length() == 0) {
+        if (arr == null) {
             return false;
         }
-        // Any error among the recent stops means the file did not finish -- do not shut down.
         for (int i = 0; i < arr.length(); i++) {
             JSONObject d = arr.optJSONObject(i);
             if (d != null && "error".equals(d.optString("status"))) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private JSONArray keysParam() {
