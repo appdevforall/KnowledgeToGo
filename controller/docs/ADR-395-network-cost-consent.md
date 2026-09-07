@@ -248,3 +248,36 @@ Run before shipping the full contract:
   not as a global rule.
 - **Block at the socket / bind the process to Wi-Fi.** Rejected: cannot cover the
   in-proot server's egress, and would fight `WifiNetworkBinder` (LAN sync).
+
+## 10. Open design questions (from the code-review second pass)
+
+The reference wiring gates the immediate commit point. The two-pass review found
+that this alone is not fully defensive, because the wishlist is a durable queue
+drained by an UNGATED background pass. These must be resolved before the feature
+is complete:
+
+1. **The commit point both banks and drains.** `SetupLibraryActivity.startZimDownload()`
+   calls `ZimWishlist.add(cart)` (the durable queue) and then `ZimProvisioner.drain()`.
+   Wrapping the whole method means a BLOCKED (offline) or declined start also skips
+   the banking, so the selection is lost instead of queued. Offline is not a cost
+   decision -- it should still bank for a later drain. Fix direction: bank
+   unconditionally; gate only the drain.
+
+2. **Banked items drain ungated.** `ZimProvisioner.drain` runs every ~2 s from
+   Home/SetupProgress and starts the real download with no gate (by design, to
+   avoid re-prompting). So any banked item downloads on whatever network is
+   active. The wizard-bank path (`zimWizardConfirm`, `banks == true`) banks
+   without ever passing the gate, so those ZIMs can download on metered data with
+   no consent. Gating the UI commit point does not cover them.
+
+3. **Consequence:** to be truly defensive the provisioner drain must be
+   consent-aware -- HOLD a banked item on metered-without-consent instead of
+   downloading, and surface the consent prompt when an Activity is next
+   foreground (the drain itself has no UI). The proactive alert only informs; it
+   does not hold the transfer. This is the real depth of the feature and should
+   be designed before wiring the remaining seams, not after.
+
+Decision needed (consult, do not default): keep the commit-point gate as a first
+layer and add drain-level consent enforcement, or move enforcement entirely into
+the provisioner/session start. The reference ZIM seam is left as-is pending this
+decision so the trade-off is visible, not silently patched.
