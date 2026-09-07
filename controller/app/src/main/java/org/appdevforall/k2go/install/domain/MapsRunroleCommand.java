@@ -14,6 +14,8 @@
  *               RUNTIME from the completion marker in iiab_state.yml -- --reinstall over a completed or
  *               base-seeded install, plain runrole to recover a half-done one (a bare --reinstall errors
  *               when the marker was already deleted by a prior failed --reinstall run).
+ *               K2GO-394: an optional overload also writes the download RPC handshake
+ *               (maps_download_rpc_secret/port) so the is_proot download task is app-controllable.
  * ============================================================================
  */
 package org.appdevforall.k2go.install.domain;
@@ -36,18 +38,39 @@ public final class MapsRunroleCommand {
     // K2GO-393: the completion marker (maps_installed: True) lives here, written only at the END of the
     // maps role's install.yml. runrole gates on this file (and the vars files), not on iiab.ini.
     private static final String IIAB_STATE = "/etc/iiab/iiab_state.yml";
+    /** K2GO-394: the loopback port the is_proot download task opens aria2's JSON-RPC on. */
+    public static final int RPC_PORT = 6810;
+    // K2GO-394: a per-run RPC secret must be a hex token -- the app generates it, and this is the D2
+    // shell-injection guard: anything else is dropped (the download runs without RPC control).
+    private static final java.util.regex.Pattern RPC_SECRET_OK =
+            java.util.regex.Pattern.compile("[a-fA-F0-9]{8,64}");
 
     /** Build the sed-delete + echo (append-if-missing) + runrole command for the given selection. */
     public static String build(String vector, String sat, String terrain, boolean searchOn) {
+        return build(vector, sat, terrain, searchOn, null, 0);
+    }
+
+    /**
+     * K2GO-394: as {@link #build(String, String, String, boolean)}, plus the RPC handshake the
+     * resilient-download path uses -- {@code maps_download_rpc_secret} / {@code maps_download_rpc_port}
+     * written into {@code local_vars} so the is_proot download task opens a loopback JSON-RPC the app
+     * drives. The secret is dropped unless it is a safe hex token (D2); with no secret the download
+     * still runs, just without app control (the role's default port, no auth).
+     */
+    public static String build(String vector, String sat, String terrain, boolean searchOn,
+                               String rpcSecret, int rpcPort) {
         String vq = VECTOR_OK.contains(vector) ? vector : "11";
         String s = SAT_OK.contains(sat) ? sat : "none";
         String t = TERRAIN_OK.contains(terrain) ? terrain : "0-none";
         String engine = searchOn ? "static" : "";
+        boolean rpc = rpcSecret != null && RPC_SECRET_OK.matcher(rpcSecret).matches()
+                && rpcPort > 1024 && rpcPort < 65536;
         // ADFA-5075: purge both the current key (vector_zoom) and the pre-rename one (vector_quality)
         // so a box that already wrote the old line doesn't trip the role's transition guard.
+        // K2GO-394: also purge the download_rpc_* keys so a re-run does not stack stale secrets/ports.
         return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_zoom|vector_quality|" +
                 "satellite_zoom|terrain_zoom|search_engine|search_static_db|search_nominatim_db|" +
-                "ne6_zoom|preset_full_quality_regions)[[:space:]]*:/d' " + LV +
+                "ne6_zoom|preset_full_quality_regions|download_rpc_secret|download_rpc_port)[[:space:]]*:/d' " + LV +
                 " && echo 'maps_install: True' >> " + LV +
                 " && echo 'maps_enabled: True' >> " + LV +
                 " && echo 'maps_region_downloader: True' >> " + LV +
@@ -59,6 +82,10 @@ public final class MapsRunroleCommand {
                 " && echo 'maps_search_nominatim_db: basic' >> " + LV +
                 " && echo 'maps_ne6_zoom: 6' >> " + LV +
                 " && echo 'maps_preset_full_quality_regions: []' >> " + LV +
+                (rpc
+                        ? " && echo 'maps_download_rpc_secret: " + rpcSecret + "' >> " + LV
+                        + " && echo 'maps_download_rpc_port: " + rpcPort + "' >> " + LV
+                        : "") +
                 " && cd /opt/iiab/iiab" +
                 // K2GO-393: pick the mode at runtime by the marker, mirroring runrole's own
                 // `grep -q "^maps_" $IIAB_STATE_FILE` gate. Marker present (a first selection, or a
