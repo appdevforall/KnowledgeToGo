@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-394: maps resilient-download UI strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_maps_dl_title">Изтегляне на данни за картата</string>
+</resources>

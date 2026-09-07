@@ -10,7 +10,7 @@
 -->
 <resources>
 
-    <!-- No pending strings. The K2GO-386/391 disk-guard alerts were translated and moved to
-         values*/strings_diskguard.xml. Park a new WIP string here only while it awaits translation. -->
+    <!-- No pending strings. The K2GO-394 maps-download UI string was translated and moved to
+         values*/strings_maps_download.xml. Park a new WIP string here only while it awaits translation. -->
 
 </resources>

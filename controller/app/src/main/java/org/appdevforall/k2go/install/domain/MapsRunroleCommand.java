@@ -14,6 +14,10 @@
  *               RUNTIME from the completion marker in iiab_state.yml -- --reinstall over a completed or
  *               base-seeded install, plain runrole to recover a half-done one (a bare --reinstall errors
  *               when the marker was already deleted by a prior failed --reinstall run).
+ *               K2GO-394: base-map pmtiles are downloaded by dash-node (the durable job engine)
+ *               BEFORE this runs, so the role's is_proot download task only asserts the files are
+ *               present and skips via creates:. This command carries no download handshake -- it is
+ *               the plain post-processing runrole.
  * ============================================================================
  */
 package org.appdevforall.k2go.install.domain;

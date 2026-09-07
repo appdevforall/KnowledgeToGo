@@ -11,6 +11,7 @@
  */
 package org.appdevforall.k2go.install.domain;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -37,6 +38,15 @@ public class MapsRunroleCommandTest {
         assertTrue(cmd.contains("grep -q '^maps_' /etc/iiab/iiab_state.yml"));
         assertTrue(cmd.contains("./runrole --reinstall maps"));   // marker present
         assertTrue(cmd.contains("./runrole maps"));               // marker absent (recovery)
+    }
+
+    /** K2GO-394: the command carries no download handshake -- dash-node downloads the base maps
+     *  before this runs, so the role only post-processes. */
+    @Test
+    public void carriesNoDownloadHandshake() {
+        String cmd = MapsRunroleCommand.build("11", "9", "7", true);
+        assertFalse(cmd.contains("maps_download_rpc"));
+        assertFalse(cmd.contains("download_rpc_secret"));
     }
 
     @Test

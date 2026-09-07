@@ -61,6 +61,11 @@ public class MapsPreparingFragment extends Fragment {
     private View progressRow;                                                                 // ADFA-5228
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
     private TextView progressPct, progressEta;
+    // K2GO-394: subordinate download card (the in-proot aria2c's live progress + Pause/Resume).
+    private View downloadCard;
+    private com.google.android.material.progressindicator.LinearProgressIndicator dlBar;
+    private TextView dlBytes, dlRate;
+    private android.widget.Button dlPause;
     private boolean fromIndex = false;  // ADFA-4901: hosted by the Finishing-setup index (observe only)
     private boolean launched = false;   // ADFA-4900: guard against re-launching maps on view recreation
 
@@ -84,6 +89,23 @@ public class MapsPreparingFragment extends Fragment {
         progress = root.findViewById(R.id.k2go_prep_progress);
         progressPct = root.findViewById(R.id.k2go_prep_progress_pct);
         progressEta = root.findViewById(R.id.k2go_prep_progress_eta);
+        // K2GO-394: the subordinate download card + its Pause/Resume, fed by MapsDownloadRepository.
+        downloadCard = root.findViewById(R.id.k2go_prep_download);
+        dlBar = root.findViewById(R.id.k2go_prep_dl_bar);
+        dlBytes = root.findViewById(R.id.k2go_prep_dl_bytes);
+        dlRate = root.findViewById(R.id.k2go_prep_dl_rate);
+        dlPause = root.findViewById(R.id.k2go_prep_dl_pause);
+        dlPause.setOnClickListener(v -> {
+            // Toggle by the current phase: pause an active download, resume a paused one. The service
+            // routes ACTION_PAUSE/RESUME to the in-proot aria2c over RPC (InstallService.doPause/doResume).
+            boolean paused = org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().current().isPaused();
+            android.content.Intent i = new android.content.Intent(requireContext(),
+                    org.appdevforall.k2go.install.presentation.InstallService.class);
+            i.setAction(paused
+                    ? org.appdevforall.k2go.install.presentation.InstallService.ACTION_RESUME
+                    : org.appdevforall.k2go.install.presentation.InstallService.ACTION_PAUSE);
+            requireContext().startService(i);
+        });
 
         // ADFA-4919: the fromIndex=false branch below is the DEPRECATED standalone Get More route
         // (its own "Run in background", no index, no gate). Get More now routes through the install
@@ -138,6 +160,11 @@ public class MapsPreparingFragment extends Fragment {
             }
         });
 
+        // K2GO-394: the subordinate download bar. Present only while a live in-proot download exists
+        // (the RPC feed); hidden otherwise, so a stock rootfs with no RPC shows the phase spine alone.
+        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().state()
+                .observe(getViewLifecycleOwner(), this::renderDownload);
+
         // ADFA-4901: collapsible live log. The status line mirrors the latest line; expanding shows
         // the full terminal (LogRepository snapshot + live appends), auto-scrolled.
         org.appdevforall.k2go.util.ProgressVisuals.apply(root, org.appdevforall.k2go.system.domain.ContentType.MAPS);   // ADFA-5074
@@ -158,6 +185,41 @@ public class MapsPreparingFragment extends Fragment {
         LogRepository.get().addListener(logListener);
 
         return root;
+    }
+
+    /** K2GO-394: render (or hide) the subordinate download card from the dash-node progress feed. */
+    private void renderDownload(org.appdevforall.k2go.maps.domain.MapsDownloadProgress p) {
+        if (downloadCard == null) {
+            return;
+        }
+        if (p == null || !p.isRunning()) {
+            downloadCard.setVisibility(View.GONE);
+            return;
+        }
+        downloadCard.setVisibility(View.VISIBLE);
+        // A network drop: dash-node is re-establishing (aria2 --continue). Show the attempt counter
+        // and an indeterminate bar; the partial is kept, so the percent will pick back up on resume.
+        if (p.isReconnecting()) {
+            dlBar.setIndeterminate(true);
+            dlBytes.setText("");
+            dlRate.setText(getString(R.string.k2go_dl_attempt, p.reconnectAttempt, p.reconnectTotal));
+            dlPause.setText(getString(R.string.k2go_dl_pause));
+            return;
+        }
+        int pct = p.percent;
+        dlBar.setIndeterminate(pct < 0);
+        if (pct >= 0) {
+            dlBar.setProgressCompat(pct, true);
+        }
+        dlBytes.setText(pct >= 0 ? (pct + "%") : "");
+        if (p.isPaused()) {
+            dlRate.setText(getString(R.string.k2go_dl_paused));
+            dlPause.setText(getString(R.string.k2go_dl_resume));
+        } else {
+            // The poll gives the rate as a display token ("3.4 MB"); append the per-second suffix.
+            dlRate.setText(p.speed.isEmpty() ? "" : p.speed + "/s");
+            dlPause.setText(getString(R.string.k2go_dl_pause));
+        }
     }
 
     /** K2GO-374: seed the panel's deque from the current log snapshot when it is expanded. */
