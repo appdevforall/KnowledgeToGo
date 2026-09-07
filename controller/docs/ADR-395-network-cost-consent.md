@@ -117,17 +117,44 @@ networkpolicy/
 
 ## 4. Seams (where the gate is consulted)
 
-Each download family has a single static start entry point. The gate wraps the
-**user commit point**, never the background drain (`ZimProvisioner.drain` runs
-every ~2 s and would re-prompt).
+Each content family has a `*ConfirmFragment` with a Start/Add button whose click
+is the user commit point. The gate wraps THAT click, never the background
+`*Provisioner.drain` (it runs every ~2 s to re-hand an already-authorized
+wishlist and would re-prompt). Every confirm fragment has the same shape as the
+reference (`ZimConfirmFragment`), so each remaining seam is a one-line wrap.
 
-| Family | Start entry point | Commit-point seam |
+| Family | Commit-point seam (exact) | Wrap |
 |---|---|---|
-| ZIM | `ZimDownloadService.start` | `ZimConfirmFragment` "Start" click (REFERENCE, landed) |
-| Books | `BooksDownloadService.start` | Books confirm click (follow-up) |
-| Kolibri | `KolibriSeedService.start` | Kolibri seed confirm (follow-up) |
-| Rootfs/modules | `InstallService` via `SetupProgressActivity`/`ModuleProvisioner`/`MapsProvisioner` | install confirm (follow-up) |
-| Portal APK/PDF + OTA | `DownloadManager` enqueue in `PortalActivity`, `UpdateController` | gate + `setAllowedOverMetered(false)` (follow-up) |
+| ZIM | `ZimConfirmFragment.java:105-110` -> `a.startZimDownload()` | LANDED (reference) |
+| Books | `BooksConfirmFragment.java:82` -> `a.startBooksDownload()` | `guardHeavyStart(a, a::startBooksDownload)` |
+| Kolibri | `KolibriConfirmFragment.java:227` -> `startLive(chosen)` | `guardHeavyStart(requireActivity(), () -> startLive(chosen))` |
+| Maps | `MapsConfirmFragment.java:90` -- the live `else` branch (~:99), NOT the `wizard` branch | wrap the live-download body |
+| Rootfs/modules install | `InstallService` started at `SetupProgressActivity.java:1401`; commit point is the wizard "Install" confirmation | wrap that confirm before starting InstallService |
+
+DownloadManager seams differ -- no `Service.start`; the app enqueues and the
+system transfers. Consult the gate first, then honor the decision (proceed on
+consent, or set `setAllowedOverMetered(false)` as the fallback):
+
+| Path | Enqueue site |
+|---|---|
+| OTA APK | `UpdateController.java:210-223` |
+| Portal APK | `PortalActivity.java:464-477` |
+| Portal PDF / other box file | `PortalActivity.java:502-513` |
+
+### 4.1 Recipe (content seam)
+
+Replace `X.startYDownload()` at the commit click with
+`NetworkPolicyGate.guardHeavyStart(activity, activity::startYDownload)`, where
+`activity` is the hosting Activity (the consent dialog needs an Activity context).
+A seam with no Activity (a pure background start) cannot show the dialog -- but
+those are post-authorization drains, correctly left ungated.
+
+### 4.2 Recipe (DownloadManager seam)
+
+Before `dm.enqueue(request)`: classify with `AndroidNetworkClassifier`. If metered
+and not consented, either ask via the gate or set
+`request.setAllowedOverMetered(false)` so the system holds it for Wi-Fi. If
+unmetered or already consented, enqueue as today.
 
 ## 5. Reference implementation status (this change)
 
@@ -202,6 +229,11 @@ Run before shipping the full contract:
   reduces (does not add) `hasInternet` duplication; empirically grounded rule.
 - Cost: new UI strings need 33-locale translation before merge; five seams to
   wire; device verification per the protocol.
+- Deployment detail: the proactive alert posts a notification, so on Android 13+
+  it needs the POST_NOTIFICATIONS runtime permission. The observer swallows the
+  SecurityException when it is not granted, so the start gate (the primary cost
+  protection) still works with no notification permission. If the app does not
+  already request POST_NOTIFICATIONS elsewhere, the alert is silent until it does.
 - Out of scope: fine control of in-flight transfers; a persisted "always allow";
   P2P (rsync clone -- LAN, no cost).
 
