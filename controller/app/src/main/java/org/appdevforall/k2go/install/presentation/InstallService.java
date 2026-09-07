@@ -1133,10 +1133,15 @@ public final class InstallService extends Service {
     }
 
     /**
-     * K2GO-393 (A4): kill a runrole hung for {@link #MODULE_HARD_STALL_MS}. The kill makes it exit
-     * non-zero, so {@code installNextModule}'s {@code onProcessExit} takes its normal failure branch
-     * (revert + Retry) -- no new plumbing. {@code cancelled} is left unset so that callback runs (the
-     * cancel path suppresses it). {@code gen} drops a kill queued for a module that has since ended.
+     * K2GO-393 (A4): kill a runrole hung for {@link #MODULE_HARD_STALL_MS}. The kill ends the run, so
+     * installNextModule's failure path (onError when the kill closes the output stream, else
+     * onProcessExit) reverts the module and offers Retry -- no new plumbing. {@code cancelled} is left
+     * unset so that callback runs (the cancel path suppresses it). {@code gen} drops a kill queued for
+     * a module that has since ended.
+     *
+     * <p>Known limit: killProcess SIGKILLs proot, which orphans its in-container child (a real hung
+     * aria2c, here the test sleep) rather than reaping it -- shared with doCancel. Recovery still works;
+     * reaping the subtree is a follow-up.
      */
     private void hardStallKill(final String moduleKey, final int gen) {
         if (gen != moduleStallGen || finished || cancelled || moduleStallKilled) return;
