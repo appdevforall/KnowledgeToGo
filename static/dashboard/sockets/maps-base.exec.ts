@@ -20,9 +20,14 @@ import path from 'path';
 
 // = maps_serve_path = dest_base_path in roles/maps; the runrole moves each pmtiles here.
 const MAPS_DIR = '/library/www/maps';
-// The app passes one catalog_file_url per selected layer. Only plain https URLs (no shell is
-// used -- spawn takes an argv -- so this guards SSRF/log-shape, not shell injection).
-const SAFE_URL = /^https:\/\/[^\s'"`$<>|;()]+$/;
+// The mirror host, kept out of the app -- same split as kiwix (kiwix.exec.ts BASE_URL): the app
+// sends a bare file id, the box composes the URL. K2GO-394.
+const MAPS_BASE_URL = 'https://iiab.switnet.org/maps/2/';
+// The app sends one pmtiles file name per selected layer (the catalog id, e.g.
+// "terrarium.2025-12-10.z00-z07.pmtiles"). Validate it as a plain file name -- no path, no
+// traversal -- before composing the URL. No shell is used (spawn takes an argv), so this guards the
+// URL shape / SSRF, not shell injection. Only .pmtiles: archives (search) are not delegated here.
+const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]*\.pmtiles$/;
 
 // ADFA-4832 CANONICAL aria2 flag set -- an EXACT copy of kiwix.exec.ts (only -d differs). The kiwix
 // runner recovers from a Wi-Fi drop (aria2 --max-tries=5 absorbs in-flight blips; a FULL interface
@@ -100,22 +105,23 @@ function cleanupPartials(files: string[]): void {
 }
 
 const mapsBaseRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
-    const urls = ctx.ids.map(String).filter((u) => u.length > 0);
-    if (urls.length === 0) throw new Error('no base-map URLs requested');
-    for (const u of urls) if (!SAFE_URL.test(u)) throw new Error(`unsafe base-map URL: ${u}`);
-    // aria2 saves each URL under its basename in MAPS_DIR (no --out); the same basename the maps role
-    // expects at dest_path. Used to prune the right partial on cancel.
-    const files = urls.map((u) => path.basename(u));
+    // The app sends bare pmtiles file ids (the catalog file names); the box composes the URL.
+    const files = ctx.ids.map(String).filter((u) => u.length > 0);
+    if (files.length === 0) throw new Error('no base-map files requested');
+    for (const f of files) if (!SAFE_ID.test(f)) throw new Error(`unsafe base-map file id: ${f}`);
+    // Compose each id against the mirror base (same split as kiwix). aria2 saves each under its own
+    // name in MAPS_DIR (no --out), which is exactly the runrole's dest_path, so the role's `creates:`
+    // then skips the download. `files` are the on-disk names, used to prune the right partial on cancel.
+    const urls = files.map((f) => MAPS_BASE_URL + f);
     fs.mkdirSync(MAPS_DIR, { recursive: true });
 
     ctx.throwIfCanceled();
     ctx.update({ phase: 'downloading', speed: 0, detail: files.join(', ') });
 
     // Pass the DIRECT pmtiles URL (not <url>.meta4), the same way the kiwix runner passes the .zim
-    // URL directly. aria2 downloads it into MAPS_DIR under its own basename -- exactly the runrole's
-    // dest_path, so the role's `creates:` then skips the download. (An explicit .meta4 metalink is
-    // what the in-proot runrole used, and metalink downloads are what wedged aria2 on a network drop
-    // -- K2GO-394; --follow-metalink=mem still honors a metalink the mirror serves on its own.)
+    // URL directly. (An explicit .meta4 metalink is what the in-proot runrole used, and metalink
+    // downloads are what wedged aria2 on a network drop -- K2GO-394; --follow-metalink=mem still
+    // honors a metalink the mirror serves on its own.)
     try {
         await withRetry(() => new Promise<void>((resolve, reject) => {
             const dl = ctx.spawn('/usr/bin/aria2c', [...ARIA2_ARGS, ...urls]);
