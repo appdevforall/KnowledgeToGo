@@ -973,12 +973,11 @@ public final class InstallService extends Service {
             ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 0);
         }
 
-        // K2GO-394 (B): overlay the RPC-enabled maps download task before the runrole reads it, so
-        // the in-proot aria2c is resumable + loopback-controllable. Best-effort; the stock task
-        // still downloads if it fails. Mint a per-run RPC secret and start the monitor: it polls the
-        // loopback aria2c for the download bar, drives pause/resume, and shuts aria2c down on complete.
+        // K2GO-394 (B): mint a per-run RPC secret and start the download monitor for maps. It polls
+        // the loopback aria2c the is_proot download task opens (the upstream_patches role patch), drives
+        // pause/resume, and shuts aria2c down on complete. When the rootfs has no RPC patch yet, the
+        // monitor simply reports idle and the screen shows phase-only progress.
         if ("maps".equals(nextModule)) {
-            overlayMapsDownloadTask();
             mapsRpcSecret = newRpcSecret();
             startMapsRpc();
         }
@@ -1281,39 +1280,6 @@ public final class InstallService extends Service {
             mapsRpc = null;
         }
         org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
-    }
-
-    /**
-     * K2GO-394 (B): overlay the in-rootfs maps download task with our is_proot RPC variant, so the
-     * in-proot aria2c is resumable ({@code --continue}) and controllable over loopback JSON-RPC
-     * ({@code --enable-rpc --rpc-listen-all=false}). The app copies {@code assets/maps/} over the
-     * role file before the runrole reads it; the file is byte-identical to upstream except the
-     * single "Download" task is split by {@code is_proot} (see the asset header).
-     *
-     * <p>Temporary until the upstream PR lands. Idempotent (rewritten each run). Best-effort: on any
-     * failure the stock task stays in place, which still downloads -- just without RPC control.
-     */
-    private void overlayMapsDownloadTask() {
-        if (debianRootfs == null) {
-            return;
-        }
-        File dest = new File(debianRootfs, "opt/iiab/iiab/roles/maps/tasks/download_large_file.yml");
-        File dir = dest.getParentFile();
-        if (dir == null || !dir.isDirectory()) {
-            log("[maps] role tasks dir missing; skipping RPC download overlay");
-            return;
-        }
-        try (java.io.InputStream in = getAssets().open("maps/download_large_file.yml");
-             java.io.OutputStream out = new java.io.FileOutputStream(dest)) {
-            byte[] buf = new byte[8192];
-            int r;
-            while ((r = in.read(buf)) != -1) {
-                out.write(buf, 0, r);
-            }
-            log("[maps] overlaid the RPC-enabled download task (K2GO-394)");
-        } catch (Exception e) {
-            log("[maps] RPC download overlay failed (continuing with stock task): " + e.getMessage());
-        }
     }
 
     /**

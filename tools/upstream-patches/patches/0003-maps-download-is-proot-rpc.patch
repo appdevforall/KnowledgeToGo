@@ -1,0 +1,81 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/maps/tasks/download_large_file.yml
+Summary:         On proot, make the maps download resumable and host-controllable. Split the single "Download" task into two by is_proot (a separate task, not a conditional flag, so the non-proot block is untouched). The is_proot variant drops --allow-overwrite, adds --continue (resume the partial), and opens a loopback JSON-RPC (--enable-rpc --rpc-listen-all=false, secret/port from vars defaulting to empty) so an Android/proot host can pause/resume across network changes and show real progress. Carried for our build; WIP for upstream (K2GO-394).
+
+diff --git a/roles/maps/tasks/download_large_file.yml b/roles/maps/tasks/download_large_file.yml
+index f8aa705..b24df30 100644
+--- a/roles/maps/tasks/download_large_file.yml
++++ b/roles/maps/tasks/download_large_file.yml
+@@ -97,6 +97,7 @@
+       # task should exit before any console output.
+       when: download_file_details.stdout_lines|length != 0
+ 
++    # Non-proot: the original blocking aria2c, unchanged.
+     - name: "Download {{ file_name }} {{ download_file_details.stdout_lines.0 | default('(done)')}}"
+       # cd to the temp directory so that the aria2c file, data file, and (perhaps
+       # eventually) torrent file all end up there.
+@@ -140,6 +141,63 @@
+       args:
+         executable: /bin/bash
+         creates: "{{ dest_path }}"
++      when: not is_proot
++
++    # proot: the same aria2c, but resumable and host-controllable. On proot there is no systemd
++    # and the network is a mobile radio, so a blocking fire-and-forget aria2c cannot survive the
++    # network changes typical of the platform and gives the host no way to pause / resume / monitor;
++    # --allow-overwrite with no --continue means restart-from-zero on any drop. This variant drops
++    # --allow-overwrite, adds --continue (resume the partial), and opens a loopback JSON-RPC
++    # (--enable-rpc --rpc-listen-all=false) so an Android/proot host can drive reconnection and show
++    # real progress. The RPC secret/port come from vars and default to empty (loopback, no auth), so
++    # a host that sets neither still gets a working resumable download. A separate task (not a
++    # conditional flag on one) so the non-proot block above can evolve without touching this one.
++    - name: "Download {{ file_name }} {{ download_file_details.stdout_lines.0 | default('(done)')}}"
++      shell: |
++        set -euo pipefail
++
++        cd {{ working_dir }}
++
++        date > "{{ log_file }}"
++        echo "Downloading {{ file_name }}..." >> "{{ log_file }}"
++        echo >> "{{ log_file }}"
++        aria2c \
++            --async-dns=false \
++            --connect-timeout="{{ download_timeout }}" \
++            --log-level=warn \
++            --console-log-level=warn \
++            --summary-interval=60 \
++            --download-result=hide \
++            --follow-metalink=mem \
++            --max-connection-per-server=4 \
++            --file-allocation=falloc \
++            --show-console-readout=false \
++            --enable-http-pipelining=true \
++            --seed-time=0 \
++            --continue=true \
++            --enable-rpc=true \
++            --rpc-listen-all=false \
++            --rpc-listen-port="{{ maps_download_rpc_port | default(6810) }}" \
++            {{ ('--rpc-secret=' + maps_download_rpc_secret) if (maps_download_rpc_secret | default('')) | length > 0 else '' }} \
++            "{{ item }}.meta4" \
++            >> "{{ log_file }}"
++
++        chmod 644 "{{ file_name }}"
++        if "{{ 'true' if expand_archive | default(false) else 'false' }}"; then
++            rm -rf "{{ extracted_dir_name }}"
++            mkdir "{{ extracted_dir_name }}"
++            chmod 755 "{{ extracted_dir_name }}"
++            tar xzf "{{ file_name }}" -C "{{ extracted_dir_name }}" --strip-components 1
++            rm "{{ file_name }}"
++            mv "{{ extracted_dir_name }}" "{{ dest_path }}"
++        else
++            mv "{{ file_name }}" "{{ dest_path }}"
++        fi
++        rm "{{ log_file }}"
++      args:
++        executable: /bin/bash
++        creates: "{{ dest_path }}"
++      when: is_proot
+ 
+   rescue:
+     # We output summaries to a log file for the user's benefit,
