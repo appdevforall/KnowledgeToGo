@@ -3,7 +3,7 @@
  * Name        : MapsDownloadProgressTest.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-394. Unit tests for the maps download progress rule.
+ * Description : K2GO-394. Unit tests for the maps download progress snapshot.
  * ============================================================================
  */
 package org.appdevforall.k2go.maps.domain;
@@ -17,49 +17,54 @@ import org.junit.Test;
 public class MapsDownloadProgressTest {
 
     @Test
-    public void activeYieldsPercentAndEta() {
-        // 1.0 GiB of 5.99 GiB at ~2.9 MB/s -- the device sample.
-        MapsDownloadProgress p = MapsDownloadProgress.of("active", 1_015_808L, 6_427_331_113L, 3_027_977L);
+    public void activeCarriesPercentAndSpeed() {
+        MapsDownloadProgress p = MapsDownloadProgress.active(37, "3.4 MB");
         assertTrue(p.isActive());
         assertTrue(p.isRunning());
-        assertEquals(0, p.percent());               // <1%
-        assertEquals((6_427_331_113L - 1_015_808L) / 3_027_977L, p.etaSeconds());
+        assertEquals(37, p.percent);
+        assertEquals("3.4 MB", p.speed);
+        assertEquals(MapsDownloadProgress.Phase.ACTIVE, p.phase);
     }
 
     @Test
-    public void pausedHasNoEtaButKeepsBytes() {
-        MapsDownloadProgress p = MapsDownloadProgress.of("paused", 902_299_648L, 6_427_331_113L, 0L);
+    public void pausedIsRunningWithNoSpeed() {
+        MapsDownloadProgress p = MapsDownloadProgress.paused(14);
         assertTrue(p.isPaused());
         assertTrue(p.isRunning());
-        assertEquals(14, p.percent());
-        assertEquals(-1L, p.etaSeconds());          // no rate while paused
+        assertEquals(14, p.percent);
+        assertEquals("", p.speed);
     }
 
     @Test
-    public void completeIsTheShutdownCue() {
-        MapsDownloadProgress p = MapsDownloadProgress.of("complete", 6_427_331_113L, 6_427_331_113L, 0L);
+    public void reconnectingCarriesTheCounter() {
+        MapsDownloadProgress p = MapsDownloadProgress.reconnecting(3, 5);
+        assertTrue(p.isReconnecting());
+        assertTrue(p.isRunning());
+        assertEquals(3, p.reconnectAttempt);
+        assertEquals(5, p.reconnectTotal);
+        assertEquals(-1, p.percent);                // percent is not known during a reconnect
+    }
+
+    @Test
+    public void completeIsNotRunning() {
+        MapsDownloadProgress p = MapsDownloadProgress.complete();
         assertTrue(p.isComplete());
         assertFalse(p.isRunning());
-        assertEquals(100, p.percent());
-    }
-
-    /** aria2 is still resolving the metalink: total is 0, so percent is "unknown", not a divide-by-zero. */
-    @Test
-    public void unknownTotalIsMinusOnePercent() {
-        MapsDownloadProgress p = MapsDownloadProgress.of("active", 0L, 0L, 0L);
-        assertEquals(-1, p.percent());
-        assertEquals(-1L, p.etaSeconds());
+        assertEquals(100, p.percent);
     }
 
     @Test
-    public void noneAndUnknownStatusAreNotRunning() {
-        assertFalse(MapsDownloadProgress.none().isRunning());
-        assertEquals(MapsDownloadProgress.Phase.NONE, MapsDownloadProgress.of("waiting", 1, 2, 0).phase);
+    public void noneIsNotRunning() {
+        MapsDownloadProgress p = MapsDownloadProgress.none();
+        assertFalse(p.isRunning());
+        assertEquals(MapsDownloadProgress.Phase.NONE, p.phase);
+        assertEquals(-1, p.percent);
     }
 
-    /** Percent never exceeds 100 even if aria2 reports completed slightly over total (rounding). */
+    /** Percent is clamped to 0..100, and a negative percent means "unknown" (-1). */
     @Test
-    public void percentClampsAtHundred() {
-        assertEquals(100, MapsDownloadProgress.of("active", 101L, 100L, 5L).percent());
+    public void percentIsClamped() {
+        assertEquals(100, MapsDownloadProgress.active(150, "1 MB").percent);
+        assertEquals(-1, MapsDownloadProgress.active(-5, "1 MB").percent);
     }
 }

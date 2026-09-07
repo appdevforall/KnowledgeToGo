@@ -227,12 +227,9 @@ public final class InstallService extends Service {
     private static String sRetryMapsVector, sRetryMapsSat, sRetryMapsTerrain;
     private static boolean sRetryMapsSearch;
     private boolean mapsSearchOn;
-    // K2GO-394: the per-run aria2 RPC secret and the live download monitor for the maps download.
-    private String mapsRpcSecret;
-    private volatile org.appdevforall.k2go.maps.data.MapsDownloadRpc mapsRpc;
-    // K2GO-394: true while the maps download is paused by the USER (not by a network drop), so the
-    // reconnection must not auto-resume it -- the same rule the rootfs path keeps for a held download.
-    private volatile boolean mapsUserPaused;
+    // K2GO-394: the base-map download client for the maps module (dash-node "basemaps" job). Held so
+    // the UI's Pause/Resume/Cancel reach the in-flight download; null when nothing is downloading.
+    private volatile org.appdevforall.k2go.content.RestContentClient mapsClient;
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -262,23 +259,11 @@ public final class InstallService extends Service {
      */
     private void onValidatedNetworkReturned() {
         if (finished || cancelled) return;
-        // K2GO-394: maps download reconnection. Android drives it (not aria2's blind retry): on a
-        // network change, pause the in-proot aria2c when there is no validated internet and resume it
-        // (aria2 --continue picks up the partial) when there is. Best-effort; a no-op between files.
-        org.appdevforall.k2go.maps.data.MapsDownloadRpc netRpc = mapsRpc;   // one read (it can be nulled off-thread)
-        if (netRpc != null) {
-            if (hasValidatedInternet()) {
-                // Only auto-resume a NETWORK pause; a user's manual pause is left alone (a radio event
-                // is not their decision to continue).
-                if (!mapsUserPaused) {
-                    log("[maps] validated network -- resuming the download");
-                    netRpc.resume();
-                }
-            } else {
-                log("[maps] network lost -- pausing the download");
-                netRpc.pause();
-            }
-        }
+        // K2GO-394: the maps base-map download is NOT driven from here -- dash-node owns its transport
+        // resilience (its "basemaps" job re-runs aria2 with --continue and reports "Reconnecting n/5"),
+        // the same self-healing path as ZIMs. The app just polls it. The manual Pause/Resume button
+        // still drives it (a user decision, not a radio event); the rootfs-download resume below is
+        // unrelated to maps.
         if (!InstallProgressRepository.get().current().isSoftFailed()) return;
         if (!hasValidatedInternet()) return;
         Log.i(TAG, "ADFA-4895: a validated network returned while the download was held — resuming");
@@ -981,15 +966,6 @@ public final class InstallService extends Service {
             ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 0);
         }
 
-        // K2GO-394 (B): mint a per-run RPC secret and start the download monitor for maps. It polls
-        // the loopback aria2c the is_proot download task opens (the upstream_patches role patch), drives
-        // pause/resume, and shuts aria2c down on complete. When the rootfs has no RPC patch yet, the
-        // monitor simply reports idle and the screen shows phase-only progress.
-        if ("maps".equals(nextModule)) {
-            mapsRpcSecret = newRpcSecret();
-            startMapsRpc();
-        }
-
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
         final String installCmd = ("maps".equals(nextModule) && hasMapsConfig)
@@ -999,6 +975,9 @@ public final class InstallService extends Service {
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
 
+        // K2GO-394: the runrole (post-processing) as a deferred step. For maps it runs only AFTER the
+        // base maps are downloaded through dash-node (the gate below); other modules run it at once.
+        final Runnable startRunrole = () -> {
         // ADFA-4435: Ansible can print its failure to stdout yet still exit 0, so the verdict
         // considers the output as well as the exit code (pure, unit-tested domain object).
         final AnsibleRunOutcome outcome = new AnsibleRunOutcome();
@@ -1027,7 +1006,6 @@ public final class InstallService extends Service {
             @Override
             public void onProcessExit(int exitCode) {
                 if (cancelled) return;
-                stopMapsRpc();   // K2GO-394: the runrole ended -> no more download to monitor
                 // Phantom-process killer (Android 12+) can SIGKILL container children -> exit 137.
                 if (exitCode == 137) log("[Install] " + nextModule + " killed by the system (exit 137)");
                 if (outcome.failed(exitCode)) {
@@ -1054,7 +1032,6 @@ public final class InstallService extends Service {
             @Override
             public void onError(String error) {
                 if (cancelled) return;
-                stopMapsRpc();   // K2GO-394
                 // The container could not run at all: report this module and stop the batch
                 // (matches the former loop, which aborted on a proot error).
                 failedModules.add(nextModule);
@@ -1064,6 +1041,15 @@ public final class InstallService extends Service {
                 revertModuleInLocalVars(nextModule, InstallService.this::finishModuleQueue);
             }
         });
+        };
+        // K2GO-394: for maps, download the base maps through dash-node first (server up, resilient),
+        // then run the role -- which post-processes and skips the downloads via creates:. Other modules
+        // run the role directly.
+        if ("maps".equals(nextModule) && hasMapsConfig) {
+            downloadMapsBasemapsThenRun(nextModule, startRunrole);
+        } else {
+            startRunrole.run();
+        }
     }
 
     /**
@@ -1242,53 +1228,93 @@ public final class InstallService extends Service {
      * unexpected falls back to a safe default. Uses sed-delete + echo (append-if-missing).
      */
     // ADFA-4900: the maps runrole command is a pure, unit-tested builder (MapsRunroleCommand).
-    // K2GO-394: also carries the per-run RPC handshake so the is_proot download task is app-controllable.
+    // K2GO-394: post-processing only -- dash-node downloaded the base maps first, so no handshake.
     private String mapsInstallCmd() {
         return org.appdevforall.k2go.install.domain.MapsRunroleCommand.build(
-                mapsVector, mapsSat, mapsTerrain, mapsSearchOn,
-                mapsRpcSecret, org.appdevforall.k2go.install.domain.MapsRunroleCommand.RPC_PORT);
-    }
-
-    /** K2GO-394: a fresh 128-bit hex token for this maps run's aria2 RPC (matches the D2 guard). */
-    private static String newRpcSecret() {
-        byte[] b = new byte[16];
-        new java.security.SecureRandom().nextBytes(b);
-        StringBuilder sb = new StringBuilder(32);
-        for (byte x : b) {
-            sb.append(Character.forDigit((x >> 4) & 0xF, 16)).append(Character.forDigit(x & 0xF, 16));
-        }
-        return sb.toString();
+                mapsVector, mapsSat, mapsTerrain, mapsSearchOn);
     }
 
     /**
-     * K2GO-394: start the download monitor for this maps run. It publishes the subordinate download
-     * bar to {@link org.appdevforall.k2go.maps.presentation.MapsDownloadRepository} and calls
-     * aria2.shutdown on complete so the blocking runrole task returns. A no-op-safe idle when the
-     * RPC is absent (a stock rootfs) -- the screen then shows phase-only progress.
+     * K2GO-394: download the selected base maps through dash-node BEFORE the maps runrole, then run
+     * {@code onReady} (the runrole). The download goes through the durable job engine with the server
+     * up -- the same resilient path as ZIMs (RestContentClient, type "basemaps") -- so a network drop
+     * recovers ("Reconnecting n/5") instead of wedging an in-proot aria2c. When it finishes, the files
+     * are at {@code /library/www/maps}, so the role's download tasks skip via {@code creates:} and it
+     * only post-processes. The app resolves each selected layer to its mirror file name (the download
+     * id) from the catalog; the box composes the URL (same split as kiwix).
      */
-    private void startMapsRpc() {
-        stopMapsRpc();
-        mapsUserPaused = false;   // fresh run: nothing is user-paused yet
-        mapsRpc = new org.appdevforall.k2go.maps.data.MapsDownloadRpc(
-                org.appdevforall.k2go.install.domain.MapsRunroleCommand.RPC_PORT, mapsRpcSecret,
-                new org.appdevforall.k2go.maps.data.MapsDownloadRpc.Listener() {
-                    @Override public void onProgress(org.appdevforall.k2go.maps.domain.MapsDownloadProgress p) {
-                        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(p);
-                    }
-                    @Override public void onDownloadIdle() {
-                        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
-                    }
-                });
-        mapsRpc.start();
-    }
-
-    /** K2GO-394: stop the monitor and clear the download bar. Null-safe (only maps ever starts one). */
-    private void stopMapsRpc() {
-        if (mapsRpc != null) {
-            mapsRpc.stop();
-            mapsRpc = null;
+    private void downloadMapsBasemapsThenRun(String module, Runnable onReady) {
+        org.appdevforall.k2go.redesign.MapsCatalog cat = new org.appdevforall.k2go.redesign.MapsCatalog(this);
+        java.util.List<String> ids = new java.util.ArrayList<>();
+        for (org.appdevforall.k2go.maps.domain.MapsBasemapSelection.Layer layer
+                : org.appdevforall.k2go.maps.domain.MapsBasemapSelection.layersToDelegate(mapsVector, mapsSat, mapsTerrain)) {
+            String file = cat.fileFor(layer.group, layer.level);
+            if (file != null) {
+                ids.add(file);
+            } else {
+                // The catalog cannot resolve a SELECTED layer (drift between the bundled catalog and the
+                // role's file map). It is not delegated -> the runrole downloads it in-proot. Log it so a
+                // partial miss is visible, not silent.
+                log("[maps] WARNING: no catalog file for " + layer.group + " " + layer.level
+                        + "; it will download in-proot");
+            }
         }
-        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+        // A null body (nothing to delegate, or the impossible JSON build failure) means run the role
+        // directly and let its creates: fetch whatever is still missing.
+        org.json.JSONObject body = null;
+        if (!ids.isEmpty()) {
+            try {
+                body = new org.json.JSONObject().put("ids", new org.json.JSONArray(ids));
+            } catch (org.json.JSONException e) {
+                body = null;
+            }
+        }
+        if (body == null) {
+            log("[maps] no base-map files to pre-download; running the role");
+            onReady.run();
+            return;
+        }
+        log("[maps] downloading " + ids.size() + " base-map file(s) via dash-node: "
+                + android.text.TextUtils.join(", ", ids));
+        final org.appdevforall.k2go.content.RestContentClient client =
+                new org.appdevforall.k2go.content.RestContentClient("basemaps");
+        mapsClient = client;
+        client.start(body, new org.appdevforall.k2go.content.RestContentClient.Listener() {
+            @Override public void onProgress(int percent, String speed) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.active(percent, speed));
+            }
+            @Override public void onReconnecting(int attempt, int total) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.reconnecting(attempt, total));
+            }
+            @Override public void onPaused(int percent) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.paused(percent));
+            }
+            @Override public void onIndexing() { /* base maps have no index phase */ }
+            @Override public void onLog(String line) { log("[maps-dl] " + line); }
+            @Override public void onDone() {
+                mapsClient = null;
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+                if (cancelled) return;
+                log("[maps] base-map download complete; running the role");
+                // Keep the runrole off the poll's main-thread callback (it reads assets / prefs).
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(onReady);
+            }
+            @Override public void onError(String message) {
+                mapsClient = null;
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+                if (cancelled) return;
+                failedModules.add(module);
+                log("[Install] FAILED: " + module + " base-map download (" + message + ")");
+                // Mirror the runrole onError: a download failure is a connectivity problem that would
+                // fail the remaining modules too, so stop the batch rather than cascade through them.
+                moduleQueue.clear();
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(
+                        () -> revertModuleInLocalVars(module, InstallService.this::finishModuleQueue));
+            }
+        });
     }
 
     /**
@@ -1469,13 +1495,12 @@ public final class InstallService extends Service {
      */
     private void doPause() {
         if (finished || cancelled) return;
-        // K2GO-394: a maps (proot) download pauses through its in-proot aria2c over RPC, not the rootfs
-        // aria2 the checks below govern. The poll reflects the paused state on the download bar.
-        org.appdevforall.k2go.maps.data.MapsDownloadRpc pauseRpc = mapsRpc;
-        if (pauseRpc != null) {
+        // K2GO-394: a maps base-map download pauses through dash-node (the "basemaps" job), not the
+        // rootfs aria2 the checks below govern. The poll reflects the paused state on the download bar.
+        org.appdevforall.k2go.content.RestContentClient pauseClient = mapsClient;
+        if (pauseClient != null) {
             log("[maps] pause requested");
-            mapsUserPaused = true;   // a user pause -> reconnection must not auto-resume it
-            pauseRpc.pause();
+            pauseClient.pause();
             return;
         }
         if (!InstallProgressRepository.get().current().isRunning()) return;
@@ -1666,12 +1691,11 @@ public final class InstallService extends Service {
      */
     private void doResume() {
         if (finished || cancelled) return;
-        // K2GO-394: resume a maps download through its RPC (aria2 --continue picks up the partial).
-        org.appdevforall.k2go.maps.data.MapsDownloadRpc resumeRpc = mapsRpc;
-        if (resumeRpc != null) {
+        // K2GO-394: resume a maps download through dash-node (aria2 --continue picks up the partial).
+        org.appdevforall.k2go.content.RestContentClient resumeClient = mapsClient;
+        if (resumeClient != null) {
             log("[maps] resume requested");
-            mapsUserPaused = false;
-            resumeRpc.resume();
+            resumeClient.resume();
             return;
         }
         if (!InstallProgressRepository.get().current().isHeld()) return;
@@ -1864,7 +1888,10 @@ public final class InstallService extends Service {
         // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.
         cancelHeldWindow();
         cancelPendingRetry();
-        stopMapsRpc();   // K2GO-394: drop the download monitor if it is still up
+        // K2GO-394: cancel an in-flight base-map download and clear its bar.
+        org.appdevforall.k2go.content.RestContentClient mc = mapsClient;
+        if (mc != null) { mc.cancel(); mapsClient = null; }
+        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
         if (clearMarker) {
             org.appdevforall.k2go.InstallGuard.end(this);
         } else {

@@ -3,76 +3,64 @@
  * Name        : MapsDownloadProgress.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-394. One in-proot maps download's progress, derived from
- *               aria2's RPC fields. Pure JVM, no Android, no JSON framework.
+ * Description : K2GO-394. One base-map download's progress, as the subordinate
+ *               download bar needs it, built from the dash-node REST poll
+ *               (RestContentClient). Pure JVM, no Android, no JSON framework.
  * ============================================================================
  */
 package org.appdevforall.k2go.maps.domain;
 
 /**
- * A snapshot of the one aria2 download the maps runrole is on, as the subordinate download bar
- * needs it: a phase, the bytes, and the two derived numbers (percent, ETA).
- *
- * <p>Pure by design: the RPC client ({@code MapsDownloadRpc}) parses aria2's JSON and hands the
- * primitives here; the rule for "what percent / what ETA / which phase" lives in one testable place,
- * not scattered in the client or the UI. aria2's own {@code status} string is the source of the
- * phase -- {@code active} / {@code paused} / {@code complete} -- so the app never invents one.
+ * A snapshot of the base-map download for the subordinate bar. The base maps are downloaded through
+ * dash-node's durable job engine (the same path as ZIMs), so this is built from the REST poll fields
+ * ({@code RestContentClient.Listener}) -- a phase, a percent, a speed token, and the reconnect counter
+ * -- not from aria2's raw RPC. The rule for "which phase" lives in one testable place, not in the UI.
  */
 public final class MapsDownloadProgress {
 
-    /** aria2's download lifecycle, only the states the UI distinguishes. */
-    public enum Phase { NONE, ACTIVE, PAUSED, COMPLETE }
+    /** The states the download bar distinguishes. RECONNECTING is a network drop the server rides out. */
+    public enum Phase { NONE, ACTIVE, PAUSED, RECONNECTING, COMPLETE }
 
     public final Phase phase;
-    public final long completedBytes;
-    public final long totalBytes;
-    public final long speedBytesPerSec;
+    /** 0..100, or -1 when not known yet (queued / no percent reported). */
+    public final int percent;
+    /** Display token for the rate WITHOUT the per-second suffix (e.g. "3.4 MB"); the UI appends "/s". */
+    public final String speed;
+    /** Reconnect counter for "Reconnecting n of N"; both 0 when not reconnecting. */
+    public final int reconnectAttempt;
+    public final int reconnectTotal;
 
-    private MapsDownloadProgress(Phase phase, long completed, long total, long speed) {
+    private MapsDownloadProgress(Phase phase, int percent, String speed, int attempt, int total) {
         this.phase = phase;
-        this.completedBytes = Math.max(0, completed);
-        this.totalBytes = Math.max(0, total);
-        this.speedBytesPerSec = Math.max(0, speed);
+        this.percent = percent < 0 ? -1 : Math.min(100, percent);
+        this.speed = speed != null ? speed : "";
+        this.reconnectAttempt = Math.max(0, attempt);
+        this.reconnectTotal = Math.max(0, total);
     }
 
-    /** Nothing is downloading right now -- between files, or the RPC has no active/paused job. */
+    /** Nothing is downloading right now -- before the job starts, or after it finishes/clears. */
     public static MapsDownloadProgress none() {
-        return new MapsDownloadProgress(Phase.NONE, 0, 0, 0);
+        return new MapsDownloadProgress(Phase.NONE, -1, "", 0, 0);
     }
 
-    /**
-     * Build from aria2's fields ({@code aria2.tellActive} / {@code tellStatus}): the {@code status}
-     * string plus {@code completedLength} / {@code totalLength} / {@code downloadSpeed} in bytes.
-     * An unknown or empty status is {@link Phase#NONE}.
-     */
-    public static MapsDownloadProgress of(String status, long completed, long total, long speed) {
-        Phase p;
-        if ("active".equals(status)) {
-            p = Phase.ACTIVE;
-        } else if ("paused".equals(status)) {
-            p = Phase.PAUSED;
-        } else if ("complete".equals(status)) {
-            p = Phase.COMPLETE;
-        } else {
-            p = Phase.NONE;
-        }
-        return new MapsDownloadProgress(p, completed, total, speed);
+    /** A live download at {@code percent} moving at {@code speed} (a display token, no "/s"). */
+    public static MapsDownloadProgress active(int percent, String speed) {
+        return new MapsDownloadProgress(Phase.ACTIVE, percent, speed, 0, 0);
     }
 
-    /** 0..100, or -1 when the total is not known yet (aria2 is still resolving the metalink). */
-    public int percent() {
-        if (totalBytes <= 0) {
-            return -1;
-        }
-        return (int) Math.min(100L, completedBytes * 100L / totalBytes);
+    /** The user paused the download; the partial is kept and resume continues from it. */
+    public static MapsDownloadProgress paused(int percent) {
+        return new MapsDownloadProgress(Phase.PAUSED, percent, "", 0, 0);
     }
 
-    /** Seconds left at the current rate, or -1 when there is nothing to go on (paused, or no rate). */
-    public long etaSeconds() {
-        if (speedBytesPerSec <= 0 || totalBytes <= completedBytes) {
-            return -1L;
-        }
-        return (totalBytes - completedBytes) / speedBytesPerSec;
+    /** The server lost the network and is reconnecting (attempt n of total), keeping the partial. */
+    public static MapsDownloadProgress reconnecting(int attempt, int total) {
+        return new MapsDownloadProgress(Phase.RECONNECTING, -1, "", attempt, total);
+    }
+
+    /** The download finished. */
+    public static MapsDownloadProgress complete() {
+        return new MapsDownloadProgress(Phase.COMPLETE, 100, "", 0, 0);
     }
 
     public boolean isActive() {
@@ -83,13 +71,16 @@ public final class MapsDownloadProgress {
         return phase == Phase.PAUSED;
     }
 
-    /** The download finished -- the app's cue to {@code aria2.shutdown} so the runrole task returns. */
+    public boolean isReconnecting() {
+        return phase == Phase.RECONNECTING;
+    }
+
     public boolean isComplete() {
         return phase == Phase.COMPLETE;
     }
 
-    /** Whether there is a live download to show a bar for (active or paused). */
+    /** Whether there is a live download to show a bar for (active, paused, or reconnecting). */
     public boolean isRunning() {
-        return phase == Phase.ACTIVE || phase == Phase.PAUSED;
+        return phase == Phase.ACTIVE || phase == Phase.PAUSED || phase == Phase.RECONNECTING;
     }
 }

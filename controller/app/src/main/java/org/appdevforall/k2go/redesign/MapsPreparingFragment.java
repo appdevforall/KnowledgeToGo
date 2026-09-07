@@ -187,7 +187,7 @@ public class MapsPreparingFragment extends Fragment {
         return root;
     }
 
-    /** K2GO-394: render (or hide) the subordinate download card from the RPC progress feed. */
+    /** K2GO-394: render (or hide) the subordinate download card from the dash-node progress feed. */
     private void renderDownload(org.appdevforall.k2go.maps.domain.MapsDownloadProgress p) {
         if (downloadCard == null) {
             return;
@@ -197,21 +197,27 @@ public class MapsPreparingFragment extends Fragment {
             return;
         }
         downloadCard.setVisibility(View.VISIBLE);
-        int pct = p.percent();
+        // A network drop: dash-node is re-establishing (aria2 --continue). Show the attempt counter
+        // and an indeterminate bar; the partial is kept, so the percent will pick back up on resume.
+        if (p.isReconnecting()) {
+            dlBar.setIndeterminate(true);
+            dlBytes.setText("");
+            dlRate.setText(getString(R.string.k2go_dl_attempt, p.reconnectAttempt, p.reconnectTotal));
+            dlPause.setText(getString(R.string.k2go_dl_pause));
+            return;
+        }
+        int pct = p.percent;
         dlBar.setIndeterminate(pct < 0);
         if (pct >= 0) {
             dlBar.setProgressCompat(pct, true);
         }
-        String bytes = org.appdevforall.k2go.util.ByteFormatter.toHuman(p.completedBytes)
-                + " / " + org.appdevforall.k2go.util.ByteFormatter.toHuman(p.totalBytes);
-        dlBytes.setText(pct >= 0 ? (pct + "% · " + bytes) : bytes);
+        dlBytes.setText(pct >= 0 ? (pct + "%") : "");
         if (p.isPaused()) {
             dlRate.setText(getString(R.string.k2go_dl_paused));
             dlPause.setText(getString(R.string.k2go_dl_resume));
         } else {
-            String rate = org.appdevforall.k2go.util.ByteFormatter.toHuman(p.speedBytesPerSec) + "/s";
-            String eta = org.appdevforall.k2go.install.presentation.EtaText.of(requireContext(), p.etaSeconds());
-            dlRate.setText(eta == null || eta.isEmpty() ? rate : (eta + " · " + rate));
+            // The poll gives the rate as a display token ("3.4 MB"); append the per-second suffix.
+            dlRate.setText(p.speed.isEmpty() ? "" : p.speed + "/s");
             dlPause.setText(getString(R.string.k2go_dl_pause));
         }
     }

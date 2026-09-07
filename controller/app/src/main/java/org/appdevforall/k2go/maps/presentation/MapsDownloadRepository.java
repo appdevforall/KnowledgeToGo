@@ -16,11 +16,12 @@ import org.appdevforall.k2go.maps.domain.MapsDownloadProgress;
 
 /**
  * The subordinate download bar's single source (K2GO-394). {@code InstallService} writes it from the
- * {@code MapsDownloadRpc} listener; the progress screen observes it beside {@code ModuleQueueRepository}
- * (the phase spine). One writer, so there is no second place inventing a download percent.
+ * dash-node poll ({@code RestContentClient.Listener} for the "basemaps" job); the progress screen
+ * observes it beside {@code ModuleQueueRepository} (the phase spine). One writer, so there is no
+ * second place inventing a download percent.
  *
  * <p>Starts and resets to {@link MapsDownloadProgress#none()} -- the honest "nothing to show", which
- * is also what a stock rootfs (no RPC) leaves it at, so the UI simply shows the phase-only Variant 3.
+ * is also what a non-maps module leaves it at, so the UI simply shows the phase-only Variant 3.
  */
 public final class MapsDownloadRepository {
 
@@ -46,14 +47,14 @@ public final class MapsDownloadRepository {
     }
 
     /**
-     * Post a new snapshot. {@code postValue} on purpose: the RPC monitor delivers on the main thread
+     * Post a new snapshot. {@code postValue} on purpose: the poll listener delivers on the main thread
      * but InstallService clears from its background install thread, so the write must be thread-safe.
      */
     public void post(MapsDownloadProgress p) {
         state.postValue(p != null ? p : MapsDownloadProgress.none());
     }
 
-    /** Clear back to "nothing downloading" -- on teardown, or when the RPC goes idle. */
+    /** Clear back to "nothing downloading" -- on teardown, or when the download finishes. */
     public void clear() {
         state.postValue(MapsDownloadProgress.none());
     }

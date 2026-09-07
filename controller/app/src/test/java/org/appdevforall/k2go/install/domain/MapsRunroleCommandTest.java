@@ -40,31 +40,13 @@ public class MapsRunroleCommandTest {
         assertTrue(cmd.contains("./runrole maps"));               // marker absent (recovery)
     }
 
-    /** K2GO-394: a safe hex secret + a valid port write the RPC handshake, and the sed purges the
-     *  old download_rpc_* lines so a re-run does not stack stale ones. */
+    /** K2GO-394: the command carries no download handshake -- dash-node downloads the base maps
+     *  before this runs, so the role only post-processes. */
     @Test
-    public void writesRpcHandshakeWhenSecretIsSafe() {
-        String cmd = MapsRunroleCommand.build("11", "9", "7", true, "deadbeefcafe", 6810);
-        assertTrue(cmd.contains("maps_download_rpc_secret: deadbeefcafe"));
-        assertTrue(cmd.contains("maps_download_rpc_port: 6810"));
-        assertTrue(cmd.contains("download_rpc_secret|download_rpc_port"));   // purged by the sed
-    }
-
-    /** K2GO-394 (D2): an unsafe secret or a bad port drops the handshake entirely -- the download still
-     *  runs, just without RPC control. Never interpolate an unvalidated token into the shell command. */
-    @Test
-    public void dropsRpcHandshakeForUnsafeSecretOrPort() {
-        String injified = MapsRunroleCommand.build("11", "9", "7", true, "x; rm -rf /", 6810);
-        assertFalse(injified.contains("maps_download_rpc_secret"));
-        assertFalse(injified.contains("rm -rf"));
-        String badPort = MapsRunroleCommand.build("11", "9", "7", true, "deadbeefcafe", 22);
-        assertFalse(badPort.contains("maps_download_rpc_secret"));
-    }
-
-    /** The 4-arg build stays RPC-free (the recovery/A1 path and these tests rely on it). */
-    @Test
-    public void fourArgBuildHasNoRpcHandshake() {
-        assertFalse(MapsRunroleCommand.build("11", "9", "7", true).contains("maps_download_rpc"));
+    public void carriesNoDownloadHandshake() {
+        String cmd = MapsRunroleCommand.build("11", "9", "7", true);
+        assertFalse(cmd.contains("maps_download_rpc"));
+        assertFalse(cmd.contains("download_rpc_secret"));
     }
 
     @Test
