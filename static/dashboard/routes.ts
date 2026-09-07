@@ -38,7 +38,7 @@ const ZIMS_DIR = '/library/zims/content/';
 const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
-const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri'];
+const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps'];
 function isType(t: string): t is JobType {
     return (VALID_TYPES as string[]).includes(t);
 }
