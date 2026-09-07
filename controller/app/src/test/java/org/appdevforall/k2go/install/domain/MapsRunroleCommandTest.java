@@ -5,7 +5,8 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4900. Unit tests for the maps runrole command builder — the per-layer
  *               selection -> local_vars mapping, the "off" encoding, the search engine, the
- *               allowlist fallback, and that it forces --reinstall.
+ *               allowlist fallback, and (K2GO-393) that it selects the runrole mode at runtime from
+ *               the completion marker.
  * ============================================================================
  */
 package org.appdevforall.k2go.install.domain;
@@ -17,14 +18,25 @@ import org.junit.Test;
 public class MapsRunroleCommandTest {
 
     @Test
-    public void writesSelectedLayersAndForcesReinstall() {
+    public void writesSelectedLayers() {
         String cmd = MapsRunroleCommand.build("14", "13", "10", true);
         assertTrue(cmd.contains("maps_vector_zoom: 14"));
         assertTrue(cmd.contains("maps_satellite_zoom: 13"));
         assertTrue(cmd.contains("maps_terrain_zoom: 10"));
         assertTrue(cmd.contains("maps_search_engine: \"static\""));
         assertTrue(cmd.contains("maps_region_downloader: True"));
-        assertTrue(cmd.contains("./runrole --reinstall maps"));
+    }
+
+    /** K2GO-393: the mode is chosen at runtime by the completion marker, not hardcoded to --reinstall.
+     *  Marker present -> --reinstall (deletes it, re-runs); marker absent -> plain runrole (recovers a
+     *  half-done install; a bare --reinstall would error there). Mirrors runrole's own state gate. */
+    @Test
+    public void selectsRunroleModeAtRuntimeFromTheMarker() {
+        String cmd = MapsRunroleCommand.build("11", "9", "7", true);
+        // the runtime gate on iiab_state.yml, and BOTH branches present
+        assertTrue(cmd.contains("grep -q '^maps_' /etc/iiab/iiab_state.yml"));
+        assertTrue(cmd.contains("./runrole --reinstall maps"));   // marker present
+        assertTrue(cmd.contains("./runrole maps"));               // marker absent (recovery)
     }
 
     @Test

@@ -123,6 +123,42 @@ public class InstalledModulesTest {
                 InstalledModules.evidenceFor(parse("kiwix_install: True\n"), "kolibri")));
     }
 
+    // ---- K2GO-393: the completion marker (intent vs result) ----------------
+
+    /**
+     * The whole reason the completion marker exists: the intent flag and the result marker can
+     * disagree. A maps install that set {@code maps_install: True} then died mid-download leaves
+     * the intent true and the {@code maps_installed} result absent -- and only the result is right.
+     */
+    @Test
+    public void intentWithoutCompletionIsNotCompleted() {
+        assertFalse(InstalledModules.isCompleted(parse("maps_install: True\n"), "maps"));
+    }
+
+    @Test
+    public void theCompletionMarkerMeansCompleted() {
+        assertTrue(InstalledModules.isCompleted(parse("maps_installed: True\n"), "maps"));
+        assertFalse(InstalledModules.isCompleted(parse("maps_installed: False\n"), "maps"));
+    }
+
+    /** The parser must keep {@code _installed} as its own key, not fold it into {@code _install}. */
+    @Test
+    public void completionMarkerSurvivesTheParser() {
+        assertTrue(parse("maps_installed: True\n").has("maps_installed"));
+    }
+
+    /** An unreadable iiab_state cannot claim completion: null reads as "not finished", never true. */
+    @Test
+    public void anUnreadableStateFileIsNotCompleted() {
+        assertFalse(InstalledModules.isCompleted(null, "maps"));
+    }
+
+    /** A readable state file that names other roles but not this one is not completion for it. */
+    @Test
+    public void readableStateWithoutTheMarkerIsNotCompleted() {
+        assertFalse(InstalledModules.isCompleted(parse("wifi_installed: True\n"), "maps"));
+    }
+
     // ---- what the parser actually survives ---------------------------------
 
     /**

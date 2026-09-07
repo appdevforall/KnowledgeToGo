@@ -10,8 +10,10 @@
  *               off; search maps to maps_search_engine + maps_search_static_db. Every var the role's
  *               iiab.ini step references is written so the play never hits an undefined var. Values
  *               are validated against a fixed allowlist (D2 shell-injection guard); anything
- *               unexpected falls back to a safe default. --reinstall forces install.yml to re-fetch
- *               the chosen tiles (a plain runrole skips it because maps ships in the base image).
+ *               unexpected falls back to a safe default. K2GO-393: the runrole mode is chosen at
+ *               RUNTIME from the completion marker in iiab_state.yml -- --reinstall over a completed or
+ *               base-seeded install, plain runrole to recover a half-done one (a bare --reinstall errors
+ *               when the marker was already deleted by a prior failed --reinstall run).
  * ============================================================================
  */
 package org.appdevforall.k2go.install.domain;
@@ -31,6 +33,9 @@ public final class MapsRunroleCommand {
     private static final Set<String> SAT_OK = new HashSet<>(Arrays.asList("none", "7", "9", "11", "13"));
     private static final Set<String> TERRAIN_OK = new HashSet<>(Arrays.asList("0-none", "7", "8", "9", "10"));
     private static final String LV = "/etc/iiab/local_vars.yml";
+    // K2GO-393: the completion marker (maps_installed: True) lives here, written only at the END of the
+    // maps role's install.yml. runrole gates on this file (and the vars files), not on iiab.ini.
+    private static final String IIAB_STATE = "/etc/iiab/iiab_state.yml";
 
     /** Build the sed-delete + echo (append-if-missing) + runrole command for the given selection. */
     public static String build(String vector, String sat, String terrain, boolean searchOn) {
@@ -54,6 +59,14 @@ public final class MapsRunroleCommand {
                 " && echo 'maps_search_nominatim_db: basic' >> " + LV +
                 " && echo 'maps_ne6_zoom: 6' >> " + LV +
                 " && echo 'maps_preset_full_quality_regions: []' >> " + LV +
-                " && cd /opt/iiab/iiab && ./runrole --reinstall maps";
+                " && cd /opt/iiab/iiab" +
+                // K2GO-393: pick the mode at runtime by the marker, mirroring runrole's own
+                // `grep -q "^maps_" $IIAB_STATE_FILE` gate. Marker present (a first selection, or a
+                // re-selection over a completed install -- the base image pre-seeds maps_installed) ->
+                // --reinstall (deletes the marker, re-runs install.yml). Marker absent (a prior run
+                // failed after --reinstall already deleted it) -> plain runrole, which re-enters
+                // install.yml and lets `creates:` re-fetch only the missing file. A bare --reinstall
+                // here would ERROR ("no maps_ line") -- the retry bug this fixes.
+                " && if grep -q '^maps_' " + IIAB_STATE + " 2>/dev/null; then ./runrole --reinstall maps; else ./runrole maps; fi";
     }
 }

@@ -135,13 +135,18 @@ public final class InstallService extends Service {
     private volatile boolean finished = false;
     private volatile boolean started = false;
 
-    // ADFA-4898 P4: movement-based stall detection for the running module (surface only, never kills).
+    // ADFA-4898 P4 / K2GO-393 (A4): movement-based stall detection. MODULE_STALL_MS surfaces a soft
+    // "stalled" hint; MODULE_HARD_STALL_MS kills a hung runrole so it fails through to Retry.
     /** Generous, minute-scale: well above a quiet git-clone/apt phase, so a slow-but-alive install is
      *  never flagged. Above Freshness.STALE_MS (30s), which is tuned for ~1s-cadence REST polls. */
     private static final long MODULE_STALL_MS = 120_000L;
+    /** K2GO-393 (A4): kill backstop, well above the soft hint so only a true forever-hang trips it. */
+    private static final long MODULE_HARD_STALL_MS = 360_000L;
     private static final long MODULE_STALL_POLL_MS = 15_000L;
     private volatile long lastModuleMovementMs = 0L;   // stamped on a runrole output line OR write-dir growth
     private volatile long lastModuleDirSize = -1L;
+    private volatile boolean moduleStallKilled = false; // K2GO-393 (A4): one-shot hard-stall kill per module
+    private volatile int moduleStallGen = 0;           // K2GO-393 (A4): supersedes a kill queued for a prior run
     private Runnable moduleStallCheck;                 // main-thread poller; null when not watching
 
     /**
@@ -1076,18 +1081,20 @@ public final class InstallService extends Service {
         });
     }
 
-    // ---- ADFA-4898 P4: movement-based stall watch (surface only, never kills) -------------------
+    // ---- ADFA-4898 P4 / K2GO-393 A4: movement-based stall watch (surface, then kill a forever-hang) --
 
     /**
      * Watch the running module for movement — a runrole output line (stamped in onOutputLine) OR growth
-     * of its on-disk write directory. When neither moves for {@link #MODULE_STALL_MS}, publish a
-     * "stalled" hint the live card shows; the install is never touched. Re-armed per module; the
-     * dir-growth backstop covers quiet network phases (e.g. calibre-web's git clone) that emit no log.
+     * of its on-disk write directory. No movement for {@link #MODULE_STALL_MS} surfaces a "stalled" hint;
+     * for the much longer {@link #MODULE_HARD_STALL_MS} the install has hung, so {@link #hardStallKill}
+     * ends it. Re-armed per module; the dir-growth backstop covers quiet phases that emit no log.
      */
     private void startModuleStallWatch(final String moduleKey) {
         stopModuleStallWatch();
         lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
         lastModuleDirSize = -1L;
+        moduleStallKilled = false;
+        final int gen = ++moduleStallGen;
         ModuleQueueRepository.get().postStalled(false);
         // ADFA-4898 P4: make write-dir drift visible instead of silent. If a module has no mapped dir
         // (a new module added without updating moduleWriteDirRel), the watch still works off the log
@@ -1105,9 +1112,14 @@ public final class InstallService extends Service {
                         lastModuleDirSize = size;
                         lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
                     }
+                    long now = android.os.SystemClock.elapsedRealtime();
                     boolean fresh = org.appdevforall.k2go.env.Freshness.fresh(
-                            lastModuleMovementMs, android.os.SystemClock.elapsedRealtime(), MODULE_STALL_MS);
+                            lastModuleMovementMs, now, MODULE_STALL_MS);
                     ModuleQueueRepository.get().postStalled(!fresh);
+                    // K2GO-393 (A4): a much longer dead window is a real hang; kill on the main thread.
+                    boolean hardStalled = !org.appdevforall.k2go.env.Freshness.fresh(
+                            lastModuleMovementMs, now, MODULE_HARD_STALL_MS);
+                    if (hardStalled) heldHandler.post(() -> hardStallKill(moduleKey, gen));
                 });
                 heldHandler.postDelayed(this, MODULE_STALL_POLL_MS);
             }
@@ -1118,6 +1130,27 @@ public final class InstallService extends Service {
     private void stopModuleStallWatch() {
         if (moduleStallCheck != null) { heldHandler.removeCallbacks(moduleStallCheck); moduleStallCheck = null; }
         ModuleQueueRepository.get().postStalled(false);
+    }
+
+    /**
+     * K2GO-393 (A4): kill a runrole hung for {@link #MODULE_HARD_STALL_MS}. The kill ends the run, so
+     * installNextModule's failure path (onError when the kill closes the output stream, else
+     * onProcessExit) reverts the module and offers Retry -- no new plumbing. {@code cancelled} is left
+     * unset so that callback runs (the cancel path suppresses it). {@code gen} drops a kill queued for
+     * a module that has since ended.
+     *
+     * <p>Known limit (shared with doCancel): killProcess SIGKILLs proot, orphaning its in-container
+     * child. Low impact by the role's own flags -- aria2c self-exits (max-tries=5, timeout=60) and the
+     * meta4 fetch just idles a socket; neither firehoses disk, so recovery works regardless. Reap the
+     * orphan (reuse EnvironmentProcess's /proc sweep) only if a retry-conflict is ever observed.
+     */
+    private void hardStallKill(final String moduleKey, final int gen) {
+        if (gen != moduleStallGen || finished || cancelled || moduleStallKilled) return;
+        moduleStallKilled = true;
+        log("[Stall] '" + moduleKey + "' made no progress for " + (MODULE_HARD_STALL_MS / 1000)
+                + "s; killing the runrole so it fails through to Retry");
+        stopModuleStallWatch();
+        if (prootEngine != null) prootEngine.killProcess();
     }
 
     /** Total bytes under the module's write directory on the host rootfs, or -1 if unknown/absent. */
@@ -1131,15 +1164,18 @@ public final class InstallService extends Service {
 
     /**
      * Where each module does its heavy on-disk writes (relative to the rootfs), for the stall watch's
-     * growth backstop. Heuristic and best-effort — keep it in sync with the ansible roles. If a key is
-     * unmapped or the path drifts, the watch silently falls back to the log heartbeat (never a false
-     * verdict); {@link #startModuleStallWatch} logs the unmapped case so that drift is visible, not silent.
+     * growth backstop. Keep in sync with the ansible roles.
+     *
+     * <p>K2GO-393 (A4): load-bearing now, not just a hint. Ansible does not stream a shell task's
+     * stdout, so during a long download the log goes quiet and this dir's growth is the only movement
+     * signal -- a wrong path would kill a healthy download. Safe for maps: aria2c writes a 60s-summary
+     * log into {@code library/downloads/maps}, so the dir keeps growing while the download is alive.
      */
     private static String moduleWriteDirRel(String key) {
         if (key == null) return null;
         switch (key) {
             case "calibreweb": return "usr/local/calibre-web-py3";   // git clone + venv
-            case "maps":       return "library/downloads/maps";
+            case "maps":       return "library/downloads/maps";      // aria2c logs a 60s summary here throughout the download
             case "matomo":     return "library/www/matomo";
             case "kolibri":    return "var/cache/apt/archives";       // chatty on stdout too; disk is the fallback
             default:           return null;
