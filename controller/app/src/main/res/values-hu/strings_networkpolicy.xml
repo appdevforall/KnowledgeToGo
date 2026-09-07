@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Mobiladatot használ</string>
+    <string name="k2go_netpolicy_metered_msg">Ez a letöltés mobiladatot használ. Ez költséggel járhat, vagy elfogyaszthatja a havi keretét. Folytatja?</string>
+    <string name="k2go_netpolicy_continue">Folytatás mobiladaton</string>
+    <string name="k2go_netpolicy_not_now">Most nem</string>
+    <string name="k2go_netpolicy_offline">Nincs hálózat. Csatlakozzon Wi-Fi-hez a letöltéshez.</string>
+    <string name="k2go_netpolicy_switched_title">Átváltott mobiladatra</string>
+    <string name="k2go_netpolicy_switched_msg">Az új letöltések most mobiladatot használnak. Ez költséggel járhat, vagy elfogyaszthatja a havi keretét.</string>
+    <string name="k2go_netpolicy_channel">Adatköltség-figyelmeztetések</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Mobil internetdən istifadə edirsiniz</string>
+    <string name="k2go_netpolicy_metered_msg">Bu yükləmə mobil internetdən istifadə edir. Bu, xərc yarada və ya aylıq paketinizi bitirə bilər. Davam etmək istəyirsiniz?</string>
+    <string name="k2go_netpolicy_continue">Mobil internetlə davam et</string>
+    <string name="k2go_netpolicy_not_now">İndi yox</string>
+    <string name="k2go_netpolicy_offline">Şəbəkə yoxdur. Yükləmək üçün Wi-Fi-a qoşulun.</string>
+    <string name="k2go_netpolicy_switched_title">Mobil internetə keçdiniz</string>
+    <string name="k2go_netpolicy_switched_msg">Yeni yükləmələr indi mobil internetdən istifadə edir. Bu, xərc yarada və ya aylıq paketinizi bitirə bilər.</string>
+    <string name="k2go_netpolicy_channel">Data xərci bildirişləri</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">شما در حال استفاده از داده تلفن همراه هستید</string>
+    <string name="k2go_netpolicy_metered_msg">این دانلود از داده تلفن همراه استفاده می‌کند. ممکن است هزینه داشته باشد یا بسته ماهانه شما را تمام کند. آیا می‌خواهید ادامه دهید؟</string>
+    <string name="k2go_netpolicy_continue">ادامه با داده تلفن همراه</string>
+    <string name="k2go_netpolicy_not_now">الان نه</string>
+    <string name="k2go_netpolicy_offline">شبکه‌ای وجود ندارد. برای دانلود به Wi-Fi متصل شوید.</string>
+    <string name="k2go_netpolicy_switched_title">به داده تلفن همراه تغییر دادید</string>
+    <string name="k2go_netpolicy_switched_msg">دانلودهای جدید اکنون از داده تلفن همراه استفاده می‌کنند. این ممکن است هزینه داشته باشد یا بسته ماهانه شما را تمام کند.</string>
+    <string name="k2go_netpolicy_channel">هشدارهای هزینه داده</string>
+</resources>

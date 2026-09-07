@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">நீங்கள் மொபைல் டேட்டாவைப் பயன்படுத்துகிறீர்கள்</string>
+    <string name="k2go_netpolicy_metered_msg">இந்தப் பதிவிறக்கம் மொபைல் டேட்டாவைப் பயன்படுத்துகிறது. இதனால் கட்டணம் ஏற்படலாம் அல்லது உங்கள் மாதத் திட்டம் தீர்ந்துபோகலாம். தொடர விரும்புகிறீர்களா?</string>
+    <string name="k2go_netpolicy_continue">டேட்டாவில் தொடரவும்</string>
+    <string name="k2go_netpolicy_not_now">இப்போது வேண்டாம்</string>
+    <string name="k2go_netpolicy_offline">நெட்வொர்க் இல்லை. பதிவிறக்க Wi-Fi உடன் இணைக்கவும்.</string>
+    <string name="k2go_netpolicy_switched_title">நீங்கள் மொபைல் டேட்டாவிற்கு மாறினீர்கள்</string>
+    <string name="k2go_netpolicy_switched_msg">புதிய பதிவிறக்கங்கள் இப்போது மொபைல் டேட்டாவைப் பயன்படுத்துகின்றன. இதனால் கட்டணம் ஏற்படலாம் அல்லது உங்கள் மாதத் திட்டம் தீர்ந்துபோகலாம்.</string>
+    <string name="k2go_netpolicy_channel">டேட்டா செலவு எச்சரிக்கைகள்</string>
+</resources>

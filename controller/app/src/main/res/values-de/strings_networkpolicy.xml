@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Sie nutzen mobile Daten</string>
+    <string name="k2go_netpolicy_metered_msg">Dieser Download nutzt mobile Daten. Das kann Kosten verursachen oder Ihr monatliches Datenvolumen aufbrauchen. Möchten Sie fortfahren?</string>
+    <string name="k2go_netpolicy_continue">Mit mobilen Daten fortfahren</string>
+    <string name="k2go_netpolicy_not_now">Nicht jetzt</string>
+    <string name="k2go_netpolicy_offline">Kein Netzwerk. Verbinden Sie sich mit WLAN, um herunterzuladen.</string>
+    <string name="k2go_netpolicy_switched_title">Sie haben zu mobilen Daten gewechselt</string>
+    <string name="k2go_netpolicy_switched_msg">Neue Downloads nutzen jetzt mobile Daten. Das kann Kosten verursachen oder Ihr monatliches Datenvolumen aufbrauchen.</string>
+    <string name="k2go_netpolicy_channel">Warnungen zu Datenkosten</string>
+</resources>

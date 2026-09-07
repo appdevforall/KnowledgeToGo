@@ -10,15 +10,7 @@
 -->
 <resources>
 
-    <!-- K2GO-395 network-cost consent gate (ADR-395). WIP: translate to the 33 locales and move
-         to a feature file (e.g. strings_networkpolicy.xml) before merge. -->
-    <string name="k2go_netpolicy_metered_title" translatable="false">You are on mobile data</string>
-    <string name="k2go_netpolicy_metered_msg" translatable="false">This download uses mobile data. It can add cost or use up your monthly data. Do you want to continue?</string>
-    <string name="k2go_netpolicy_continue" translatable="false">Continue on data</string>
-    <string name="k2go_netpolicy_not_now" translatable="false">Not now</string>
-    <string name="k2go_netpolicy_offline" translatable="false">No network. Connect to Wi-Fi to download.</string>
-    <string name="k2go_netpolicy_switched_title" translatable="false">You switched to mobile data</string>
-    <string name="k2go_netpolicy_switched_msg" translatable="false">New downloads now use mobile data. This can add cost or use up your monthly data.</string>
-    <string name="k2go_netpolicy_channel" translatable="false">Data cost alerts</string>
-
+    <!-- No pending strings. The K2GO-395 network-cost strings were translated (machine-generated,
+         pending human review) and moved to values*/strings_networkpolicy.xml. Park a new WIP string
+         here only while it awaits translation. -->
 </resources>

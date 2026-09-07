@@ -167,11 +167,11 @@ Landed as a compiling, tested starting point for the implementer:
 - Presentation: `NetworkPolicyGate` (+ `BrandDialog` consent), `MeteredNetworkObserver`.
 - Wiring: observer started in `IIABApplication`; gate wired at the ZIM commit
   point (`ZimConfirmFragment`).
-- Strings parked in `strings_untranslated.xml` (WIP; translate to 33 locales and
-  move to a feature file before merge -- l10n policy).
+- Strings translated to all 33 locales (machine-generated, pending human review)
+  in `values*/strings_networkpolicy.xml`; `strings_untranslated.xml` is clear.
 
-Remaining to finish the contract: the other four seams, the two-way fold of the
-existing `hasInternet` readers into the classifier, and the l10n migration.
+Remaining to finish the contract: the other four seams and the two-way fold of the
+existing `hasInternet` readers into the classifier. (l10n is done pending review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
 
@@ -227,8 +227,9 @@ Run before shipping the full contract:
 
 - Positive: one owner for cost policy; reuses the existing change callback;
   reduces (does not add) `hasInternet` duplication; empirically grounded rule.
-- Cost: new UI strings need 33-locale translation before merge; five seams to
-  wire; device verification per the protocol.
+- Cost: four seams still to wire; device verification per the protocol. (The UI
+  strings are already translated to 33 locales, machine-generated, pending human
+  review.)
 - Deployment detail: the proactive alert posts a notification, so on Android 13+
   it needs the POST_NOTIFICATIONS runtime permission. The observer swallows the
   SecurityException when it is not granted, so the start gate (the primary cost

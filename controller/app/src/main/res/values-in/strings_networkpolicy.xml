@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Anda menggunakan data seluler</string>
+    <string name="k2go_netpolicy_metered_msg">Unduhan ini menggunakan data seluler. Ini dapat menimbulkan biaya atau menghabiskan kuota bulanan Anda. Apakah Anda ingin melanjutkan?</string>
+    <string name="k2go_netpolicy_continue">Lanjutkan dengan data</string>
+    <string name="k2go_netpolicy_not_now">Nanti saja</string>
+    <string name="k2go_netpolicy_offline">Tidak ada jaringan. Sambungkan ke Wi-Fi untuk mengunduh.</string>
+    <string name="k2go_netpolicy_switched_title">Anda beralih ke data seluler</string>
+    <string name="k2go_netpolicy_switched_msg">Unduhan baru kini menggunakan data seluler. Ini dapat menimbulkan biaya atau menghabiskan kuota bulanan Anda.</string>
+    <string name="k2go_netpolicy_channel">Peringatan biaya data</string>
+</resources>

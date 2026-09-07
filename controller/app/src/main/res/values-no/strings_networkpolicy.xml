@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-395: network cost consent strings. Translations machine-generated, pending human review. -->
+<resources>
+    <string name="k2go_netpolicy_metered_title">Du bruker mobildata</string>
+    <string name="k2go_netpolicy_metered_msg">Denne nedlastingen bruker mobildata. Det kan koste penger eller bruke opp den månedlige datapakken. Vil du fortsette?</string>
+    <string name="k2go_netpolicy_continue">Fortsett med mobildata</string>
+    <string name="k2go_netpolicy_not_now">Ikke nå</string>
+    <string name="k2go_netpolicy_offline">Ingen nettverk. Koble til Wi-Fi for å laste ned.</string>
+    <string name="k2go_netpolicy_switched_title">Du byttet til mobildata</string>
+    <string name="k2go_netpolicy_switched_msg">Nye nedlastinger bruker nå mobildata. Det kan koste penger eller bruke opp den månedlige datapakken.</string>
+    <string name="k2go_netpolicy_channel">Varsler om datakostnad</string>
+</resources>
