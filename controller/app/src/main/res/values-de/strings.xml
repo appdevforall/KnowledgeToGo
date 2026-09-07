@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Weiter aktualisieren</string>
     <string name="k2go_dash_update_site">Website aktualisieren</string>
     <string name="k2go_dash_update_confirm_title">REST-Kern aktualisieren?</string>
+
+    <string name="disk_guard_notif_title">Speicher kritisch niedrig</string>
+    <string name="disk_guard_notif_body">Der Server wurde gestoppt, damit auf Ihrem Gerät der Speicher nicht ausgeht. Tippen, um einen Bericht zu senden.</string>
+    <string name="disk_guard_firehose_title">K2Go hat ungewöhnliche Aktivität eingedämmt</string>
+    <string name="disk_guard_firehose_body">K2Go hat einen Prozess bewältigt, der zu viel Speicher belegte, und Ihr System am Laufen gehalten. Tippen, um einen Bericht zu senden.</string>
+    <string name="k2go_maps_dl_title">Kartendaten werden heruntergeladen</string>
 </resources>

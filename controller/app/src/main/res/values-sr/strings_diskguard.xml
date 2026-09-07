@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Простор за складиштење критично мали</string>
-    <string name="disk_guard_notif_body">Сервер је заустављен да уређају не понестане простора. Додирните да пошаљете извештај.</string>
-    <string name="disk_guard_firehose_title">K2Go је обуздао необичну активност</string>
-    <string name="disk_guard_firehose_body">K2Go је обрадио процес који је користио превише простора и одржао систем у раду. Додирните да пошаљете извештај.</string>
-</resources>

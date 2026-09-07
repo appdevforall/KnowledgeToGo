@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Continuă actualizarea</string>
     <string name="k2go_dash_update_site">Actualizează site-ul</string>
     <string name="k2go_dash_update_confirm_title">Actualizezi nucleul REST?</string>
+
+    <string name="disk_guard_notif_title">Spațiu de stocare critic de redus</string>
+    <string name="disk_guard_notif_body">Serverul a fost oprit pentru a preveni epuizarea spațiului pe dispozitiv. Atinge pentru a trimite un raport.</string>
+    <string name="disk_guard_firehose_title">K2Go a limitat o activitate neobișnuită</string>
+    <string name="disk_guard_firehose_body">K2Go a gestionat un proces care folosea prea mult spațiu și a menținut sistemul în funcțiune. Atinge pentru a trimite un raport.</string>
+    <string name="k2go_maps_dl_title">Se descarcă datele hărții</string>
 </resources>

@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Güncellemeye devam et</string>
     <string name="k2go_dash_update_site">Web sitesini güncelle</string>
     <string name="k2go_dash_update_confirm_title">REST çekirdeği güncellensin mi?</string>
+
+    <string name="disk_guard_notif_title">Depolama alanı kritik düzeyde düşük</string>
+    <string name="disk_guard_notif_body">Cihazınızın alanı tükenmesin diye sunucu durduruldu. Rapor göndermek için dokunun.</string>
+    <string name="disk_guard_firehose_title">K2Go olağan dışı bir etkinliği kontrol altına aldı</string>
+    <string name="disk_guard_firehose_body">K2Go çok fazla depolama kullanan bir işlemi yönetti ve sisteminizi çalışır durumda tuttu. Rapor göndermek için dokunun.</string>
+    <string name="k2go_maps_dl_title">Harita verileri indiriliyor</string>
 </resources>

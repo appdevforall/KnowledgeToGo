@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">स्टोरेज गंभीर रूप से कम</string>
-    <string name="disk_guard_notif_body">आपके डिवाइस में जगह खत्म होने से रोकने के लिए सर्वर रोक दिया गया। रिपोर्ट भेजने के लिए टैप करें।</string>
-    <string name="disk_guard_firehose_title">K2Go ने असामान्य गतिविधि को रोका</string>
-    <string name="disk_guard_firehose_body">K2Go ने बहुत अधिक स्टोरेज उपयोग कर रही प्रक्रिया को संभाला और आपका सिस्टम चालू रखा। रिपोर्ट भेजने के लिए टैप करें।</string>
-</resources>

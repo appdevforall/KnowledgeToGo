@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Tiếp tục cập nhật</string>
     <string name="k2go_dash_update_site">Cập nhật trang web</string>
     <string name="k2go_dash_update_confirm_title">Cập nhật lõi REST?</string>
+
+    <string name="disk_guard_notif_title">Dung lượng lưu trữ cực kỳ thấp</string>
+    <string name="disk_guard_notif_body">Máy chủ đã dừng để tránh thiết bị của bạn hết dung lượng. Nhấn để gửi báo cáo.</string>
+    <string name="disk_guard_firehose_title">K2Go đã kiểm soát hoạt động bất thường</string>
+    <string name="disk_guard_firehose_body">K2Go đã xử lý một tiến trình sử dụng quá nhiều bộ nhớ và giữ cho hệ thống hoạt động. Nhấn để gửi báo cáo.</string>
+    <string name="k2go_maps_dl_title">Đang tải dữ liệu bản đồ</string>
 </resources>

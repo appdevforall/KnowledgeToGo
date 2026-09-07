@@ -1325,4 +1325,10 @@
     <string name="k2go_dash_cancel_confirm_keep">继续更新</string>
     <string name="k2go_dash_update_site">更新网站</string>
     <string name="k2go_dash_update_confirm_title">更新 REST 核心？</string>
+
+    <string name="disk_guard_notif_title">存储空间严重不足</string>
+    <string name="disk_guard_notif_body">已停止服务器，以防设备空间耗尽。点按以发送报告。</string>
+    <string name="disk_guard_firehose_title">K2Go 已控制异常活动</string>
+    <string name="disk_guard_firehose_body">K2Go 处理了一个占用过多存储的进程，并保持系统运行。点按以发送报告。</string>
+    <string name="k2go_maps_dl_title">正在下载地图数据</string>
 </resources>

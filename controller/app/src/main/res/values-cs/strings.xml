@@ -1331,4 +1331,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Pokračovat v aktualizaci</string>
     <string name="k2go_dash_update_site">Aktualizovat web</string>
     <string name="k2go_dash_update_confirm_title">Aktualizovat jádro REST?</string>
+
+    <string name="disk_guard_notif_title">Kriticky málo úložiště</string>
+    <string name="disk_guard_notif_body">Server byl zastaven, aby zařízení nedošlo místo. Klepnutím odešlete hlášení.</string>
+    <string name="disk_guard_firehose_title">K2Go zvládl neobvyklou aktivitu</string>
+    <string name="disk_guard_firehose_body">K2Go zpracoval proces, který využíval příliš mnoho úložiště, a udržel systém v chodu. Klepnutím odešlete hlášení.</string>
+    <string name="k2go_maps_dl_title">Stahování mapových dat</string>
 </resources>

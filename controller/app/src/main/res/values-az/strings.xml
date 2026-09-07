@@ -1344,4 +1344,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Yeniləməyə davam et</string>
     <string name="k2go_dash_update_site">Veb saytı yenilə</string>
     <string name="k2go_dash_update_confirm_title">REST nüvəsi yenilənsin?</string>
+
+    <string name="disk_guard_notif_title">Yaddaş kritik dərəcədə azdır</string>
+    <string name="disk_guard_notif_body">Cihazınızda yer tükənməsin deyə server dayandırıldı. Hesabat göndərmək üçün toxunun.</string>
+    <string name="disk_guard_firehose_title">K2Go qeyri-adi fəaliyyəti cilovladı</string>
+    <string name="disk_guard_firehose_body">K2Go çox yaddaş istifadə edən prosesi idarə etdi və sisteminizi işlək saxladı. Hesabat göndərmək üçün toxunun.</string>
+    <string name="k2go_maps_dl_title">Xəritə məlumatları yüklənir</string>
 </resources>

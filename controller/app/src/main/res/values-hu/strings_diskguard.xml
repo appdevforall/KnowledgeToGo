@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Kritikusan kevés tárhely</string>
-    <string name="disk_guard_notif_body">A kiszolgáló leállt, hogy az eszköz ne fogyjon ki a helyből. Koppintson a jelentés küldéséhez.</string>
-    <string name="disk_guard_firehose_title">A K2Go visszafogott egy szokatlan tevékenységet</string>
-    <string name="disk_guard_firehose_body">A K2Go kezelt egy túl sok tárhelyet használó folyamatot, és működésben tartotta a rendszert. Koppintson a jelentés küldéséhez.</string>
-</resources>

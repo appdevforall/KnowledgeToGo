@@ -1411,4 +1411,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Continuer la mise à jour</string>
     <string name="k2go_dash_update_site">Mettre à jour le site web</string>
     <string name="k2go_dash_update_confirm_title">Mettre à jour le cœur REST ?</string>
+
+    <string name="disk_guard_notif_title">Espace de stockage critique</string>
+    <string name="disk_guard_notif_body">Le serveur a été arrêté pour éviter que votre appareil manque d\'espace. Appuyez pour envoyer un rapport.</string>
+    <string name="disk_guard_firehose_title">K2Go a contenu une activité inhabituelle</string>
+    <string name="disk_guard_firehose_body">K2Go a géré un processus qui utilisait trop de stockage et a gardé votre système en marche. Appuyez pour envoyer un rapport.</string>
+    <string name="k2go_maps_dl_title">Téléchargement des données cartographiques</string>
 </resources>

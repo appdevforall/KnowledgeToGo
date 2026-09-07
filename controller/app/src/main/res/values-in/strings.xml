@@ -1331,4 +1331,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Lanjutkan pembaruan</string>
     <string name="k2go_dash_update_site">Perbarui situs web</string>
     <string name="k2go_dash_update_confirm_title">Perbarui inti REST?</string>
+
+    <string name="disk_guard_notif_title">Penyimpanan sangat rendah</string>
+    <string name="disk_guard_notif_body">Server dihentikan agar perangkat Anda tidak kehabisan ruang. Ketuk untuk mengirim laporan.</string>
+    <string name="disk_guard_firehose_title">K2Go menahan aktivitas tidak biasa</string>
+    <string name="disk_guard_firehose_body">K2Go menangani proses yang menggunakan terlalu banyak penyimpanan dan menjaga sistem Anda tetap berjalan. Ketuk untuk mengirim laporan.</string>
+    <string name="k2go_maps_dl_title">Mengunduh data peta</string>
 </resources>
