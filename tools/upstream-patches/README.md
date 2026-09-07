@@ -77,3 +77,22 @@ When an upstream PR merges and ships in the pinned `iiab/iiab` commit, its patch
 no-op (reverse-dry-run skip). At the next maintenance pass, read each patch's
 `Upstream-Status`, delete the ones marked merged, and bump the pinned commit. Keep the set
 small.
+
+## Notable non-patches
+
+Sometimes the right carry is **no patch at all** -- recorded here so a deliberate absence is
+not mistaken for an oversight.
+
+- **Maps base-map download (K2GO-394) -- no patch, on purpose.** Upstream's maps role
+  downloads the base-map pmtiles in-proot through `roles/maps/tasks/download_large_file.yml`.
+  On the K2Go device path, dash-node (the in-server durable job engine) pre-downloads them --
+  app-driven, resilient, resumable -- into the maps serve dir BEFORE the runrole, so the role's
+  native `creates: dest_path` skips those downloads and it only post-processes. The role reads
+  exactly as upstream ships it. We deliberately do NOT patch it: an earlier `is_proot`
+  gate + assert broke the CI rootfs bake, where `is_proot` is `True` for the Android tiers too
+  (`vars/local_vars_android_*.yml`) but no dash-node runs -- so the bake must download the base
+  maps itself, which the stock role does. `is_proot` cannot tell "device with dash-node" from
+  "CI bake without it"; `creates:` needs no such flag and is correct in both. Rationale:
+  `controller/docs/ADR-K2GO-394-maps-download-via-dashnode.md`. (The search tarball is the one
+  map file NOT delegated -- dash-node does not extract archives -- so it still downloads and
+  extracts in-proot as upstream does.)
