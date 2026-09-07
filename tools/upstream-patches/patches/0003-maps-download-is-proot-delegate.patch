@@ -1,0 +1,36 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/maps/tasks/download_large_file.yml
+Summary:         On proot, delegate the base-map pmtiles download to dash-node (the dashboard's durable job engine) instead of running a blocking aria2c in-proot. The in-proot aria2 could not recover from a full mobile-radio drop -- it wedged with no exit (K2GO-394). dash-node downloads the pmtiles with its own resumable, reconnecting aria2 (--continue plus an outer reconnect loop -- the proven kiwix mechanism) into the maps serve dir BEFORE this role runs. So the original download task is gated `when: not is_proot` (unchanged off proot), and a new `when: is_proot` step asserts the file is already at dest_path (a missing file means the host skipped the dash-node step); the role then only post-processes. Carried for our build; WIP for upstream (K2GO-394).
+
+diff --git a/roles/maps/tasks/download_large_file.yml b/roles/maps/tasks/download_large_file.yml
+index f8aa705..78a55cc 100644
+--- a/roles/maps/tasks/download_large_file.yml
++++ b/roles/maps/tasks/download_large_file.yml
+@@ -140,6 +140,26 @@
+       args:
+         executable: /bin/bash
+         creates: "{{ dest_path }}"
++      when: not is_proot
++
++    # proot / Android (K2GO-394): dash-node -- the dashboard's durable job engine -- downloads the
++    # base-map pmtiles with its own resumable, reconnecting aria2 (--continue plus an outer reconnect
++    # loop) BEFORE this role runs. On proot this role only post-processes, so it must NOT download
++    # in-proot, where a blocking aria2 cannot recover from a mobile-radio drop (it wedges with no
++    # exit). The file is expected at dest_path already; fail early and clearly if the host skipped the
++    # dash-node step, rather than leaving a broken symlink for maps-update.py to trip on.
++    - name: "Base map {{ file_name }} must be present on proot (downloaded by dash-node)"
++      stat:
++        path: "{{ dest_path }}"
++      register: proot_basemap
++      when: is_proot
++
++    - name: "Fail if dash-node did not place {{ file_name }} on proot"
++      assert:
++        that: proot_basemap.stat.exists
++        fail_msg: "On proot, {{ dest_path }} must be downloaded by dash-node before the maps role runs (K2GO-394)."
++        quiet: yes
++      when: is_proot
+ 
+   rescue:
+     # We output summaries to a log file for the user's benefit,
