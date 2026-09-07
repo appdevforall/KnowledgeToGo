@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { RollingLog, LogSlice } from './rolling-log';
 
-export type JobType = 'kiwix' | 'maps' | 'books' | 'kolibri';
+export type JobType = 'kiwix' | 'maps' | 'books' | 'kolibri' | 'basemaps';
 export type JobPhase =
     | 'queued' | 'downloading' | 'indexing' | 'processing'
     // ADFA-4894 (control surface): 'paused' is a stopped-but-resumable state — like 'canceled' it
