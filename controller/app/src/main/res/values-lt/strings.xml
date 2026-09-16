@@ -1341,4 +1341,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Tęsti atnaujinimą</string>
     <string name="k2go_dash_update_site">Atnaujinti svetainę</string>
     <string name="k2go_dash_update_confirm_title">Atnaujinti REST branduolį?</string>
+
+    <string name="disk_guard_notif_title">Kritiškai mažai saugyklos</string>
+    <string name="disk_guard_notif_body">Serveris sustabdytas, kad įrenginyje nepritrūktų vietos. Palieskite, kad išsiųstumėte ataskaitą.</string>
+    <string name="disk_guard_firehose_title">K2Go suvaldė neįprastą veiklą</string>
+    <string name="disk_guard_firehose_body">K2Go sutvarkė procesą, naudojusį per daug saugyklos, ir išlaikė jūsų sistemą veikiančią. Palieskite, kad išsiųstumėte ataskaitą.</string>
+    <string name="k2go_maps_dl_title">Atsisiunčiami žemėlapio duomenys</string>
 </resources>

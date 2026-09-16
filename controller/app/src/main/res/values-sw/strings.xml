@@ -1344,4 +1344,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Endelea kusasisha</string>
     <string name="k2go_dash_update_site">Sasisha tovuti</string>
     <string name="k2go_dash_update_confirm_title">Kusasisha kiini cha REST?</string>
+
+    <string name="disk_guard_notif_title">Hifadhi imepungua kwa kiwango cha hatari</string>
+    <string name="disk_guard_notif_body">Seva ilisimamishwa ili kuzuia kifaa chako kuishiwa nafasi. Gusa kutuma ripoti.</string>
+    <string name="disk_guard_firehose_title">K2Go ilidhibiti shughuli isiyo ya kawaida</string>
+    <string name="disk_guard_firehose_body">K2Go ilishughulikia mchakato uliokuwa ukitumia hifadhi nyingi mno na kuweka mfumo wako ukiendelea kufanya kazi. Gusa kutuma ripoti.</string>
+    <string name="k2go_maps_dl_title">Inapakua data ya ramani</string>
 </resources>

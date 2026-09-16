@@ -1325,4 +1325,10 @@
     <string name="k2go_dash_cancel_confirm_keep">更新を続行</string>
     <string name="k2go_dash_update_site">ウェブサイトを更新</string>
     <string name="k2go_dash_update_confirm_title">REST コアを更新しますか？</string>
+
+    <string name="disk_guard_notif_title">ストレージの空きが非常に少ない</string>
+    <string name="disk_guard_notif_body">デバイスの空き容量がなくなるのを防ぐため、サーバーを停止しました。タップしてレポートを送信します。</string>
+    <string name="disk_guard_firehose_title">K2Go が異常な動作を抑制しました</string>
+    <string name="disk_guard_firehose_body">K2Go はストレージを過剰に使用していたプロセスを処理し、システムを稼働させ続けました。タップしてレポートを送信します。</string>
+    <string name="k2go_maps_dl_title">地図データをダウンロード中</string>
 </resources>

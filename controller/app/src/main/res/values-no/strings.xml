@@ -1334,4 +1334,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Fortsett oppdatering</string>
     <string name="k2go_dash_update_site">Oppdater nettstedet</string>
     <string name="k2go_dash_update_confirm_title">Oppdatere REST-kjernen?</string>
+
+    <string name="disk_guard_notif_title">Kritisk lite lagringsplass</string>
+    <string name="disk_guard_notif_body">Serveren ble stoppet for å hindre at enheten går tom for plass. Trykk for å sende en rapport.</string>
+    <string name="disk_guard_firehose_title">K2Go begrenset uvanlig aktivitet</string>
+    <string name="disk_guard_firehose_body">K2Go håndterte en prosess som brukte for mye lagringsplass, og holdt systemet i gang. Trykk for å sende en rapport.</string>
+    <string name="k2go_maps_dl_title">Laster ned kartdata</string>
 </resources>

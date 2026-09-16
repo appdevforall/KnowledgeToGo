@@ -135,13 +135,18 @@ public final class InstallService extends Service {
     private volatile boolean finished = false;
     private volatile boolean started = false;
 
-    // ADFA-4898 P4: movement-based stall detection for the running module (surface only, never kills).
+    // ADFA-4898 P4 / K2GO-393 (A4): movement-based stall detection. MODULE_STALL_MS surfaces a soft
+    // "stalled" hint; MODULE_HARD_STALL_MS kills a hung runrole so it fails through to Retry.
     /** Generous, minute-scale: well above a quiet git-clone/apt phase, so a slow-but-alive install is
      *  never flagged. Above Freshness.STALE_MS (30s), which is tuned for ~1s-cadence REST polls. */
     private static final long MODULE_STALL_MS = 120_000L;
+    /** K2GO-393 (A4): kill backstop, well above the soft hint so only a true forever-hang trips it. */
+    private static final long MODULE_HARD_STALL_MS = 360_000L;
     private static final long MODULE_STALL_POLL_MS = 15_000L;
     private volatile long lastModuleMovementMs = 0L;   // stamped on a runrole output line OR write-dir growth
     private volatile long lastModuleDirSize = -1L;
+    private volatile boolean moduleStallKilled = false; // K2GO-393 (A4): one-shot hard-stall kill per module
+    private volatile int moduleStallGen = 0;           // K2GO-393 (A4): supersedes a kill queued for a prior run
     private Runnable moduleStallCheck;                 // main-thread poller; null when not watching
 
     /**
@@ -222,6 +227,9 @@ public final class InstallService extends Service {
     private static String sRetryMapsVector, sRetryMapsSat, sRetryMapsTerrain;
     private static boolean sRetryMapsSearch;
     private boolean mapsSearchOn;
+    // K2GO-394: the base-map download client for the maps module (dash-node "basemaps" job). Held so
+    // the UI's Pause/Resume/Cancel reach the in-flight download; null when nothing is downloading.
+    private volatile org.appdevforall.k2go.content.RestContentClient mapsClient;
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -251,6 +259,11 @@ public final class InstallService extends Service {
      */
     private void onValidatedNetworkReturned() {
         if (finished || cancelled) return;
+        // K2GO-394: the maps base-map download is NOT driven from here -- dash-node owns its transport
+        // resilience (its "basemaps" job re-runs aria2 with --continue and reports "Reconnecting n/5"),
+        // the same self-healing path as ZIMs. The app just polls it. The manual Pause/Resume button
+        // still drives it (a user decision, not a radio event); the rootfs-download resume below is
+        // unrelated to maps.
         if (!InstallProgressRepository.get().current().isSoftFailed()) return;
         if (!hasValidatedInternet()) return;
         Log.i(TAG, "ADFA-4895: a validated network returned while the download was held — resuming");
@@ -962,6 +975,9 @@ public final class InstallService extends Service {
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
 
+        // K2GO-394: the runrole (post-processing) as a deferred step. For maps it runs only AFTER the
+        // base maps are downloaded through dash-node (the gate below); other modules run it at once.
+        final Runnable startRunrole = () -> {
         // ADFA-4435: Ansible can print its failure to stdout yet still exit 0, so the verdict
         // considers the output as well as the exit code (pure, unit-tested domain object).
         final AnsibleRunOutcome outcome = new AnsibleRunOutcome();
@@ -1025,6 +1041,15 @@ public final class InstallService extends Service {
                 revertModuleInLocalVars(nextModule, InstallService.this::finishModuleQueue);
             }
         });
+        };
+        // K2GO-394: for maps, download the base maps through dash-node first (server up, resilient),
+        // then run the role -- which post-processes and skips the downloads via creates:. Other modules
+        // run the role directly.
+        if ("maps".equals(nextModule) && hasMapsConfig) {
+            downloadMapsBasemapsThenRun(nextModule, startRunrole);
+        } else {
+            startRunrole.run();
+        }
     }
 
     /**
@@ -1076,18 +1101,20 @@ public final class InstallService extends Service {
         });
     }
 
-    // ---- ADFA-4898 P4: movement-based stall watch (surface only, never kills) -------------------
+    // ---- ADFA-4898 P4 / K2GO-393 A4: movement-based stall watch (surface, then kill a forever-hang) --
 
     /**
      * Watch the running module for movement — a runrole output line (stamped in onOutputLine) OR growth
-     * of its on-disk write directory. When neither moves for {@link #MODULE_STALL_MS}, publish a
-     * "stalled" hint the live card shows; the install is never touched. Re-armed per module; the
-     * dir-growth backstop covers quiet network phases (e.g. calibre-web's git clone) that emit no log.
+     * of its on-disk write directory. No movement for {@link #MODULE_STALL_MS} surfaces a "stalled" hint;
+     * for the much longer {@link #MODULE_HARD_STALL_MS} the install has hung, so {@link #hardStallKill}
+     * ends it. Re-armed per module; the dir-growth backstop covers quiet phases that emit no log.
      */
     private void startModuleStallWatch(final String moduleKey) {
         stopModuleStallWatch();
         lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
         lastModuleDirSize = -1L;
+        moduleStallKilled = false;
+        final int gen = ++moduleStallGen;
         ModuleQueueRepository.get().postStalled(false);
         // ADFA-4898 P4: make write-dir drift visible instead of silent. If a module has no mapped dir
         // (a new module added without updating moduleWriteDirRel), the watch still works off the log
@@ -1105,9 +1132,14 @@ public final class InstallService extends Service {
                         lastModuleDirSize = size;
                         lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
                     }
+                    long now = android.os.SystemClock.elapsedRealtime();
                     boolean fresh = org.appdevforall.k2go.env.Freshness.fresh(
-                            lastModuleMovementMs, android.os.SystemClock.elapsedRealtime(), MODULE_STALL_MS);
+                            lastModuleMovementMs, now, MODULE_STALL_MS);
                     ModuleQueueRepository.get().postStalled(!fresh);
+                    // K2GO-393 (A4): a much longer dead window is a real hang; kill on the main thread.
+                    boolean hardStalled = !org.appdevforall.k2go.env.Freshness.fresh(
+                            lastModuleMovementMs, now, MODULE_HARD_STALL_MS);
+                    if (hardStalled) heldHandler.post(() -> hardStallKill(moduleKey, gen));
                 });
                 heldHandler.postDelayed(this, MODULE_STALL_POLL_MS);
             }
@@ -1118,6 +1150,27 @@ public final class InstallService extends Service {
     private void stopModuleStallWatch() {
         if (moduleStallCheck != null) { heldHandler.removeCallbacks(moduleStallCheck); moduleStallCheck = null; }
         ModuleQueueRepository.get().postStalled(false);
+    }
+
+    /**
+     * K2GO-393 (A4): kill a runrole hung for {@link #MODULE_HARD_STALL_MS}. The kill ends the run, so
+     * installNextModule's failure path (onError when the kill closes the output stream, else
+     * onProcessExit) reverts the module and offers Retry -- no new plumbing. {@code cancelled} is left
+     * unset so that callback runs (the cancel path suppresses it). {@code gen} drops a kill queued for
+     * a module that has since ended.
+     *
+     * <p>Known limit (shared with doCancel): killProcess SIGKILLs proot, orphaning its in-container
+     * child. Low impact by the role's own flags -- aria2c self-exits (max-tries=5, timeout=60) and the
+     * meta4 fetch just idles a socket; neither firehoses disk, so recovery works regardless. Reap the
+     * orphan (reuse EnvironmentProcess's /proc sweep) only if a retry-conflict is ever observed.
+     */
+    private void hardStallKill(final String moduleKey, final int gen) {
+        if (gen != moduleStallGen || finished || cancelled || moduleStallKilled) return;
+        moduleStallKilled = true;
+        log("[Stall] '" + moduleKey + "' made no progress for " + (MODULE_HARD_STALL_MS / 1000)
+                + "s; killing the runrole so it fails through to Retry");
+        stopModuleStallWatch();
+        if (prootEngine != null) prootEngine.killProcess();
     }
 
     /** Total bytes under the module's write directory on the host rootfs, or -1 if unknown/absent. */
@@ -1131,15 +1184,18 @@ public final class InstallService extends Service {
 
     /**
      * Where each module does its heavy on-disk writes (relative to the rootfs), for the stall watch's
-     * growth backstop. Heuristic and best-effort — keep it in sync with the ansible roles. If a key is
-     * unmapped or the path drifts, the watch silently falls back to the log heartbeat (never a false
-     * verdict); {@link #startModuleStallWatch} logs the unmapped case so that drift is visible, not silent.
+     * growth backstop. Keep in sync with the ansible roles.
+     *
+     * <p>K2GO-393 (A4): load-bearing now, not just a hint. Ansible does not stream a shell task's
+     * stdout, so during a long download the log goes quiet and this dir's growth is the only movement
+     * signal -- a wrong path would kill a healthy download. Safe for maps: aria2c writes a 60s-summary
+     * log into {@code library/downloads/maps}, so the dir keeps growing while the download is alive.
      */
     private static String moduleWriteDirRel(String key) {
         if (key == null) return null;
         switch (key) {
             case "calibreweb": return "usr/local/calibre-web-py3";   // git clone + venv
-            case "maps":       return "library/downloads/maps";
+            case "maps":       return "library/downloads/maps";      // aria2c logs a 60s summary here throughout the download
             case "matomo":     return "library/www/matomo";
             case "kolibri":    return "var/cache/apt/archives";       // chatty on stdout too; disk is the fallback
             default:           return null;
@@ -1172,9 +1228,93 @@ public final class InstallService extends Service {
      * unexpected falls back to a safe default. Uses sed-delete + echo (append-if-missing).
      */
     // ADFA-4900: the maps runrole command is a pure, unit-tested builder (MapsRunroleCommand).
+    // K2GO-394: post-processing only -- dash-node downloaded the base maps first, so no handshake.
     private String mapsInstallCmd() {
         return org.appdevforall.k2go.install.domain.MapsRunroleCommand.build(
                 mapsVector, mapsSat, mapsTerrain, mapsSearchOn);
+    }
+
+    /**
+     * K2GO-394: download the selected base maps through dash-node BEFORE the maps runrole, then run
+     * {@code onReady} (the runrole). The download goes through the durable job engine with the server
+     * up -- the same resilient path as ZIMs (RestContentClient, type "basemaps") -- so a network drop
+     * recovers ("Reconnecting n/5") instead of wedging an in-proot aria2c. When it finishes, the files
+     * are at {@code /library/www/maps}, so the role's download tasks skip via {@code creates:} and it
+     * only post-processes. The app resolves each selected layer to its mirror file name (the download
+     * id) from the catalog; the box composes the URL (same split as kiwix).
+     */
+    private void downloadMapsBasemapsThenRun(String module, Runnable onReady) {
+        org.appdevforall.k2go.redesign.MapsCatalog cat = new org.appdevforall.k2go.redesign.MapsCatalog(this);
+        java.util.List<String> ids = new java.util.ArrayList<>();
+        for (org.appdevforall.k2go.maps.domain.MapsBasemapSelection.Layer layer
+                : org.appdevforall.k2go.maps.domain.MapsBasemapSelection.layersToDelegate(mapsVector, mapsSat, mapsTerrain)) {
+            String file = cat.fileFor(layer.group, layer.level);
+            if (file != null) {
+                ids.add(file);
+            } else {
+                // The catalog cannot resolve a SELECTED layer (drift between the bundled catalog and the
+                // role's file map). It is not delegated -> the runrole downloads it in-proot. Log it so a
+                // partial miss is visible, not silent.
+                log("[maps] WARNING: no catalog file for " + layer.group + " " + layer.level
+                        + "; it will download in-proot");
+            }
+        }
+        // A null body (nothing to delegate, or the impossible JSON build failure) means run the role
+        // directly and let its creates: fetch whatever is still missing.
+        org.json.JSONObject body = null;
+        if (!ids.isEmpty()) {
+            try {
+                body = new org.json.JSONObject().put("ids", new org.json.JSONArray(ids));
+            } catch (org.json.JSONException e) {
+                body = null;
+            }
+        }
+        if (body == null) {
+            log("[maps] no base-map files to pre-download; running the role");
+            onReady.run();
+            return;
+        }
+        log("[maps] downloading " + ids.size() + " base-map file(s) via dash-node: "
+                + android.text.TextUtils.join(", ", ids));
+        final org.appdevforall.k2go.content.RestContentClient client =
+                new org.appdevforall.k2go.content.RestContentClient("basemaps");
+        mapsClient = client;
+        client.start(body, new org.appdevforall.k2go.content.RestContentClient.Listener() {
+            @Override public void onProgress(int percent, String speed) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.active(percent, speed));
+            }
+            @Override public void onReconnecting(int attempt, int total) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.reconnecting(attempt, total));
+            }
+            @Override public void onPaused(int percent) {
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
+                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.paused(percent));
+            }
+            @Override public void onIndexing() { /* base maps have no index phase */ }
+            @Override public void onLog(String line) { log("[maps-dl] " + line); }
+            @Override public void onDone() {
+                mapsClient = null;
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+                if (cancelled) return;
+                log("[maps] base-map download complete; running the role");
+                // Keep the runrole off the poll's main-thread callback (it reads assets / prefs).
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(onReady);
+            }
+            @Override public void onError(String message) {
+                mapsClient = null;
+                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+                if (cancelled) return;
+                failedModules.add(module);
+                log("[Install] FAILED: " + module + " base-map download (" + message + ")");
+                // Mirror the runrole onError: a download failure is a connectivity problem that would
+                // fail the remaining modules too, so stop the batch rather than cascade through them.
+                moduleQueue.clear();
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(
+                        () -> revertModuleInLocalVars(module, InstallService.this::finishModuleQueue));
+            }
+        });
     }
 
     /**
@@ -1355,6 +1495,14 @@ public final class InstallService extends Service {
      */
     private void doPause() {
         if (finished || cancelled) return;
+        // K2GO-394: a maps base-map download pauses through dash-node (the "basemaps" job), not the
+        // rootfs aria2 the checks below govern. The poll reflects the paused state on the download bar.
+        org.appdevforall.k2go.content.RestContentClient pauseClient = mapsClient;
+        if (pauseClient != null) {
+            log("[maps] pause requested");
+            pauseClient.pause();
+            return;
+        }
         if (!InstallProgressRepository.get().current().isRunning()) return;
         if (InstallProgressRepository.get().current().phase != InstallState.Phase.DOWNLOADING) {
             Log.i(TAG, "pause ignored: only a download can be paused");
@@ -1543,6 +1691,13 @@ public final class InstallService extends Service {
      */
     private void doResume() {
         if (finished || cancelled) return;
+        // K2GO-394: resume a maps download through dash-node (aria2 --continue picks up the partial).
+        org.appdevforall.k2go.content.RestContentClient resumeClient = mapsClient;
+        if (resumeClient != null) {
+            log("[maps] resume requested");
+            resumeClient.resume();
+            return;
+        }
         if (!InstallProgressRepository.get().current().isHeld()) return;
         // ADFA-5119 (review): leave the held state FIRST, and it is not cosmetic. Nothing posted a new
         // state until aria2's first progress line, which is after the metalink fetch and the two
@@ -1733,6 +1888,10 @@ public final class InstallService extends Service {
         // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.
         cancelHeldWindow();
         cancelPendingRetry();
+        // K2GO-394: cancel an in-flight base-map download and clear its bar.
+        org.appdevforall.k2go.content.RestContentClient mc = mapsClient;
+        if (mc != null) { mc.cancel(); mapsClient = null; }
+        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
         if (clearMarker) {
             org.appdevforall.k2go.InstallGuard.end(this);
         } else {

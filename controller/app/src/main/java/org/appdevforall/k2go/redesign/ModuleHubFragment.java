@@ -204,6 +204,12 @@ public class ModuleHubFragment extends Fragment {
         for (final ModuleCards.Card c : ModuleCards.all()) {
             if (c.requires64Bit() && !is64Bit()) continue;   // hidden on this device
             if (installed.contains(c.key())) continue;       // disk already says yes
+            // K2GO-393: a completion-gated module (maps, a proot install) is answered by its
+            // iiab_state marker, which the disk floor above already read. It always writes that
+            // marker when it finishes, so a probe can only re-add a half-done build whose partial
+            // content happens to answer -- masking the recovery the absent marker asks for. Keep the
+            // marker the single source: no probe rescue for these.
+            if (org.appdevforall.k2go.system.data.InstalledModulesReader.isCompletionGated(c.key())) continue;
             probesPending++;
             final String key = c.key();
             final String endpoint = c.endpoint();

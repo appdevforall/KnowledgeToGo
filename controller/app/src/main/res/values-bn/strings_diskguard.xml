@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">স্টোরেজ সংকটজনকভাবে কম</string>
-    <string name="disk_guard_notif_body">আপনার ডিভাইসের জায়গা ফুরিয়ে যাওয়া রোধ করতে সার্ভার বন্ধ করা হয়েছে। রিপোর্ট পাঠাতে ট্যাপ করুন।</string>
-    <string name="disk_guard_firehose_title">K2Go অস্বাভাবিক কার্যকলাপ নিয়ন্ত্রণ করেছে</string>
-    <string name="disk_guard_firehose_body">K2Go অত্যধিক স্টোরেজ ব্যবহার করা একটি প্রক্রিয়া সামলেছে এবং আপনার সিস্টেম চালু রেখেছে। রিপোর্ট পাঠাতে ট্যাপ করুন।</string>
-</resources>

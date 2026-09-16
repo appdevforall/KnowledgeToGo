@@ -9,7 +9,7 @@
  *               Each group shows an icon, a bold name + muted hint, and the CURRENT
  *               selection's size on the right; each pill shows its own size — all live.
  *               A free-space guard (StatFs) disables the CTA when it won't fit. Sizes are
- *               PLACEHOLDERS until the refreshMapsSizes build task lands maps_sizes.csv.
+ *               PLACEHOLDERS until the refreshMapsCatalog build task lands maps_catalog.csv.
  *               No language picker, no search box (Maps has neither). Download hands off to
  *               Confirm (next slice).
  * ============================================================================
@@ -47,7 +47,7 @@ public class MapsChooseFragment extends Fragment {
 
     // Layers/levels are constrained to the Android maps support matrix; the `level` keys map to the
     // mirror files (roles/maps/defaults). The mb values are last-known fallbacks (whole-world sizes);
-    // resolveSizes() overwrites them with the packaged maps_sizes.csv at runtime.
+    // resolveSizes() overwrites them with the packaged maps_catalog.csv at runtime.
     private final Grp[] GROUPS = {
             new Grp(R.drawable.ic_maps_base, R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, "base", new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_low, "nat-z8", 85), new Opt(R.string.k2go_maps_lvl_standard, "11", 8602),
@@ -83,7 +83,7 @@ public class MapsChooseFragment extends Fragment {
         return requireContext().getApplicationContext().getSharedPreferences(SEL_PREFS, android.content.Context.MODE_PRIVATE);
     }
 
-    /** Overwrite each option's size with the packaged last-known value (maps_sizes.csv);
+    /** Overwrite each option's size with the packaged last-known value (maps_catalog.csv);
      *  the built-in mb stays as the fallback when a row is missing. */
     private void resolveSizes() {
         MapsCatalog cat = new MapsCatalog(requireContext());

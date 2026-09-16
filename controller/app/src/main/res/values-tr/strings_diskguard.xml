@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Depolama alanı kritik düzeyde düşük</string>
-    <string name="disk_guard_notif_body">Cihazınızın alanı tükenmesin diye sunucu durduruldu. Rapor göndermek için dokunun.</string>
-    <string name="disk_guard_firehose_title">K2Go olağan dışı bir etkinliği kontrol altına aldı</string>
-    <string name="disk_guard_firehose_body">K2Go çok fazla depolama kullanan bir işlemi yönetti ve sisteminizi çalışır durumda tuttu. Rapor göndermek için dokunun.</string>
-</resources>

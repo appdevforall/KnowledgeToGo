@@ -1331,4 +1331,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Συνέχιση ενημέρωσης</string>
     <string name="k2go_dash_update_site">Ενημέρωση του ιστότοπου</string>
     <string name="k2go_dash_update_confirm_title">Ενημέρωση του πυρήνα REST;</string>
+
+    <string name="disk_guard_notif_title">Κρίσιμα χαμηλός αποθηκευτικός χώρος</string>
+    <string name="disk_guard_notif_body">Ο διακομιστής σταμάτησε για να μην εξαντληθεί ο χώρος στη συσκευή σας. Πατήστε για αποστολή αναφοράς.</string>
+    <string name="disk_guard_firehose_title">Το K2Go περιόρισε ασυνήθιστη δραστηριότητα</string>
+    <string name="disk_guard_firehose_body">Το K2Go χειρίστηκε μια διεργασία που χρησιμοποιούσε υπερβολικό χώρο και κράτησε το σύστημά σας σε λειτουργία. Πατήστε για αποστολή αναφοράς.</string>
+    <string name="k2go_maps_dl_title">Λήψη δεδομένων χάρτη</string>
 </resources>

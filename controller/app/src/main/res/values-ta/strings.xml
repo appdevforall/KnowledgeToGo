@@ -1344,4 +1344,10 @@
     <string name="k2go_dash_cancel_confirm_keep">புதுப்பிப்பைத் தொடர்</string>
     <string name="k2go_dash_update_site">வலைத்தளத்தைப் புதுப்பி</string>
     <string name="k2go_dash_update_confirm_title">REST கருவைப் புதுப்பிக்கவா?</string>
+
+    <string name="disk_guard_notif_title">சேமிப்பு மிகக் குறைவாக உள்ளது</string>
+    <string name="disk_guard_notif_body">உங்கள் சாதனத்தில் இடம் தீர்ந்துபோகாமல் இருக்க சேவையகம் நிறுத்தப்பட்டது. அறிக்கை அனுப்ப தட்டவும்.</string>
+    <string name="disk_guard_firehose_title">K2Go அசாதாரண செயல்பாட்டைக் கட்டுப்படுத்தியது</string>
+    <string name="disk_guard_firehose_body">அதிக சேமிப்பைப் பயன்படுத்திய ஒரு செயல்முறையை K2Go கையாண்டு உங்கள் கணினியை இயங்க வைத்தது. அறிக்கை அனுப்ப தட்டவும்.</string>
+    <string name="k2go_maps_dl_title">வரைபடத் தரவைப் பதிவிறக்குகிறது</string>
 </resources>

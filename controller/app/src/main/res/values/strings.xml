@@ -1508,4 +1508,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Keep updating</string>
     <string name="k2go_dash_update_site">Update the Website</string>
     <string name="k2go_dash_update_confirm_title">Update the REST core?</string>
+
+    <string name="disk_guard_notif_title">Storage critically low</string>
+    <string name="disk_guard_notif_body">The server was stopped to protect your device from running out of space. Tap to send a report.</string>
+    <string name="disk_guard_firehose_title">K2Go contained unusual activity</string>
+    <string name="disk_guard_firehose_body">K2Go handled a process that was using too much storage and kept your system running. Tap to send a report.</string>
+    <string name="k2go_maps_dl_title">Downloading map data</string>
 </resources>

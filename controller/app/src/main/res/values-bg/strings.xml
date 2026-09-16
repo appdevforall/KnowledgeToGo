@@ -1331,4 +1331,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Продължи обновяването</string>
     <string name="k2go_dash_update_site">Обновяване на уебсайта</string>
     <string name="k2go_dash_update_confirm_title">Обновяване на REST ядрото?</string>
+
+    <string name="disk_guard_notif_title">Критично малко хранилище</string>
+    <string name="disk_guard_notif_body">Сървърът беше спрян, за да не свърши мястото на устройството ви. Докоснете, за да изпратите отчет.</string>
+    <string name="disk_guard_firehose_title">K2Go ограничи необичайна активност</string>
+    <string name="disk_guard_firehose_body">K2Go се справи с процес, който използваше твърде много хранилище, и запази системата ви работеща. Докоснете, за да изпратите отчет.</string>
+    <string name="k2go_maps_dl_title">Изтегляне на данни за картата</string>
 </resources>

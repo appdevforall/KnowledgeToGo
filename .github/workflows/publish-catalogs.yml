@@ -38,6 +38,7 @@ jobs:
           python3 tools/build_kolibri_catalog.py || echo "::warning::kolibri generator failed; its upload will be skipped"
           python3 tools/build_kolibri_catalog.py --tree topics && gzip -9 -n -f src/main/assets/kolibri_tree.jsonl || echo "::warning::kolibri tree generator failed; its upload will be skipped"
           python3 tools/build_kiwix_catalog.py   || echo "::warning::kiwix generator failed; its upload will be skipped"
+          python3 tools/build_maps_catalog.py    || echo "::warning::maps generator failed; its upload will be skipped"
 
       - name: Build manifests and upload to Cloudflare R2
         env:
@@ -86,3 +87,4 @@ jobs:
           publish kolibri      src/main/assets/kolibri_catalog.jsonl "application/x-ndjson" jsonl
           publish kolibri-tree src/main/assets/kolibri_tree.jsonl.gz "application/gzip"     none
           publish kiwix        src/main/assets/kiwix_catalog.csv     "text/csv"             none
+          publish maps         src/main/assets/maps_catalog.csv      "text/csv"             none

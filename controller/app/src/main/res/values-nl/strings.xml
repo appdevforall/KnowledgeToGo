@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Doorgaan met bijwerken</string>
     <string name="k2go_dash_update_site">Website bijwerken</string>
     <string name="k2go_dash_update_confirm_title">REST-kern bijwerken?</string>
+
+    <string name="disk_guard_notif_title">Opslag kritiek laag</string>
+    <string name="disk_guard_notif_body">De server is gestopt om te voorkomen dat uw apparaat geen ruimte meer heeft. Tik om een rapport te sturen.</string>
+    <string name="disk_guard_firehose_title">K2Go heeft ongebruikelijke activiteit ingeperkt</string>
+    <string name="disk_guard_firehose_body">K2Go heeft een proces afgehandeld dat te veel opslag gebruikte en uw systeem draaiende gehouden. Tik om een rapport te sturen.</string>
+    <string name="k2go_maps_dl_title">Kaartgegevens downloaden</string>
 </resources>

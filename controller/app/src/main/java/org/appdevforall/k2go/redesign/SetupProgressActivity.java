@@ -1358,8 +1358,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      */
     private void configureDetailBar() {
         if (!showingDetail || detailKey == null || detailBackBtn == null) return;
-        final boolean isModule = detailKey.startsWith("mod:");
-        final String moduleKey = isModule ? detailKey.substring(4) : null;
+        // K2GO-394: the maps detail opens under the legacy key "maps" (not "mod:maps"), but maps IS a
+        // module, so treat it as one here -> it gets the same Cancel-while-running (the mockup's op-level
+        // Cancel install) and Retry-on-failure the other modules already have, with no duplicated logic.
+        final boolean isModule = detailKey.startsWith("mod:") || "maps".equals(detailKey);
+        final String moduleKey = !isModule ? null
+                : (detailKey.startsWith("mod:") ? detailKey.substring(4) : detailKey);
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean moduleFailed = isModule && mq.didFail(moduleKey);
         boolean moduleRunning = isModule && mq.isInstalling(moduleKey);

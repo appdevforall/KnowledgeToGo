@@ -1403,4 +1403,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Continuar a atualizar</string>
     <string name="k2go_dash_update_site">Atualizar o site</string>
     <string name="k2go_dash_update_confirm_title">Atualizar o núcleo REST?</string>
+
+    <string name="disk_guard_notif_title">Armazenamento criticamente baixo</string>
+    <string name="disk_guard_notif_body">O servidor foi interrompido para evitar que seu dispositivo fique sem espaço. Toque para enviar um relatório.</string>
+    <string name="disk_guard_firehose_title">O K2Go conteve atividade incomum</string>
+    <string name="disk_guard_firehose_body">O K2Go tratou um processo que usava armazenamento demais e manteve seu sistema funcionando. Toque para enviar um relatório.</string>
+    <string name="k2go_maps_dl_title">A transferir dados do mapa</string>
 </resources>

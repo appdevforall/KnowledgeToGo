@@ -43,8 +43,28 @@ public final class InstalledModules {
 
     /** The suffix the installer appends to a module's yaml base key. */
     private static final String INSTALL_SUFFIX = "_install";
+    /** K2GO-393: the suffix the runrole appends when it records COMPLETION in iiab_state.yml. */
+    private static final String INSTALLED_SUFFIX = "_installed";
 
     private InstalledModules() {
+    }
+
+    /**
+     * K2GO-393: whether the completion markers claim this module FINISHED installing.
+     *
+     * <p>{@code <key>_installed} in {@code iiab_state.yml} is written only at the END of a role's
+     * install, after every download. Unlike {@link #isInstalled} -- the {@code <key>_install}
+     * intention written BEFORE the run and reverted on failure -- it is never left true by a process
+     * death mid-install. Prefer this where the question is "did it finish", not "was it asked for":
+     * it closes the process-death window the class comment above calls out, without a live probe.
+     *
+     * @param stateFlags  parsed {@code iiab_state.yml}; null is treated as "nothing known"
+     */
+    public static boolean isCompleted(JSONObject stateFlags, String yamlBaseKey) {
+        if (stateFlags == null || yamlBaseKey == null || yamlBaseKey.isEmpty()) {
+            return false;
+        }
+        return stateFlags.optBoolean(yamlBaseKey + INSTALLED_SUFFIX, false);
     }
 
     /**

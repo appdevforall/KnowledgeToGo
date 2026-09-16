@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">متابعة التحديث</string>
     <string name="k2go_dash_update_site">تحديث الموقع</string>
     <string name="k2go_dash_update_confirm_title">تحديث نواة REST؟</string>
+
+    <string name="disk_guard_notif_title">مساحة التخزين منخفضة بشكل حرج</string>
+    <string name="disk_guard_notif_body">تم إيقاف الخادم لمنع نفاد المساحة على جهازك. انقر لإرسال تقرير.</string>
+    <string name="disk_guard_firehose_title">احتوى K2Go نشاطًا غير معتاد</string>
+    <string name="disk_guard_firehose_body">تعامل K2Go مع عملية كانت تستخدم مساحة تخزين كبيرة وأبقى نظامك يعمل. انقر لإرسال تقرير.</string>
+    <string name="k2go_maps_dl_title">جارٍ تنزيل بيانات الخريطة</string>
 </resources>

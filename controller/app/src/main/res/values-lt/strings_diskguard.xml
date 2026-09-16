@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">Kritiškai mažai saugyklos</string>
-    <string name="disk_guard_notif_body">Serveris sustabdytas, kad įrenginyje nepritrūktų vietos. Palieskite, kad išsiųstumėte ataskaitą.</string>
-    <string name="disk_guard_firehose_title">K2Go suvaldė neįprastą veiklą</string>
-    <string name="disk_guard_firehose_body">K2Go sutvarkė procesą, naudojusį per daug saugyklos, ir išlaikė jūsų sistemą veikiančią. Palieskite, kad išsiųstumėte ataskaitą.</string>
-</resources>

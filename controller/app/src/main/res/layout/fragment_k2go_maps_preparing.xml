@@ -79,6 +79,72 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- K2GO-394: subordinate download card. Present only while the in-proot aria2c reports a live
+             download (the RPC feed); on a stock rootfs with no RPC it stays hidden and the screen is
+             the phase-spine-only Variant 3. A thinner bar (lower emphasis than the phase spine above),
+             the real bytes + rate + ETA, and a download-scope Pause/Resume. -->
+        <LinearLayout
+            android:id="@+id/k2go_prep_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:background="@drawable/k2go_info_bg"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_maps_dl_title"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/k2go_info_ink" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/k2go_prep_dl_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:max="100"
+                app:trackThickness="5dp"
+                android:indeterminate="false" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/k2go_prep_dl_bytes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_info_ink" />
+
+                <TextView
+                    android:id="@+id/k2go_prep_dl_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_info_ink" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/k2go_prep_dl_pause"
+                style="@style/Widget.K2Go.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="44dp"
+                android:text="@string/k2go_dl_pause" />
+        </LinearLayout>
+
         <!-- The process's own text, not an invented percentage. -->
         <!-- ADFA-4910: fixed 2-line height (minLines=maxLines=2) so the note below never jumps
              as this line flips between 1 and 2 lines. Slightly smaller text (BodyMedium) too.

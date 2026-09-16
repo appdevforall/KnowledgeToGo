@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -46,6 +47,15 @@ public final class InstalledModulesReader {
 
     private static final String TAG = "K2Go-Modules";
     private static final String LOCAL_VARS = "etc/iiab/local_vars.yml";
+    // K2GO-393: the completion markers (maps_installed: True), written at the END of a role's play.
+    private static final String IIAB_STATE = "etc/iiab/iiab_state.yml";
+    // K2GO-393: maps is the one proot install. Its "finished" truth is the iiab_state completion
+    // marker (written at the end of the play), not the local_vars intent (which a process death
+    // mid-install leaves falsely true, with no download done). Every other module -- the live/REST
+    // ones -- keeps the local_vars flag. Scoped to maps on purpose: the other roles' completion
+    // semantics are not yet verified on device, so gating them all on iiab_state is a separate,
+    // evidence-backed change, not a blind widening.
+    private static final String MAPS_KEY = "maps";
 
     /** Refuse to read anything absurd for this file; a real one is a few KB. */
     private static final long MAX_BYTES = 512L * 1024L;
@@ -60,22 +70,35 @@ public final class InstalledModulesReader {
      * laid down right now, or a rootfs we cannot read. None of those mean "nothing is installed".
      */
     public static JSONObject readFlags(Context ctx) {
+        return readRootfsYaml(ctx, LOCAL_VARS);
+    }
+
+    /**
+     * K2GO-393: read and parse one flat-flag YAML file from the rootfs, or {@code null} when it
+     * cannot be read.
+     *
+     * <p>The single mechanism behind both files this class reads -- {@code local_vars.yml} (the
+     * intent flags) and {@code iiab_state.yml} (the completion markers). Keeping it in one place is
+     * the point: the size cap, the API-24-safe stream and the "unreadable is null, not empty" rule
+     * cannot drift between the two the way two hand-copied readers would.
+     */
+    private static JSONObject readRootfsYaml(Context ctx, String relPath) {
         if (ctx == null) {
             return null;
         }
-        File file = new File(SystemStateEvaluator.rootfsDir(ctx), LOCAL_VARS);
+        File file = new File(SystemStateEvaluator.rootfsDir(ctx), relPath);
         try {
             if (!file.isFile() || !file.canRead()) {
                 return null;
             }
             if (file.length() > MAX_BYTES) {
-                Log.w(TAG, "local_vars.yml is " + file.length() + " bytes; refusing to parse");
+                Log.w(TAG, relPath + " is " + file.length() + " bytes; refusing to parse");
                 return null;
             }
             return LocalVarsYamlParser.parseToJson(readUtf8(file));
         } catch (Exception e) {
             // Vanished mid-read, permissions, a wipe in flight. All of them are "not established".
-            Log.w(TAG, "could not read local_vars.yml", e);
+            Log.w(TAG, "could not read " + relPath, e);
             return null;
         }
     }
@@ -114,7 +137,36 @@ public final class InstalledModulesReader {
         if (flags == null) {
             return null;
         }
-        return InstalledModules.from(flags, ModuleRegistry.validYamlKeys());
+        // Most modules answer from the local_vars intent; a completion-gated one (maps) answers
+        // from its iiab_state marker instead, so a half-done build does not read installed.
+        Set<String> installed = new HashSet<>();
+        for (String key : ModuleRegistry.validYamlKeys()) {
+            if (isCompletionGated(key)
+                    ? completed(ctx, key)
+                    : InstalledModules.isInstalled(flags, key)) {
+                installed.add(key);
+            }
+        }
+        return installed;
+    }
+
+    /**
+     * K2GO-393: keys whose "installed" is answered by the {@code iiab_state} completion marker, not
+     * by the {@code local_vars} intent or a live probe. The proot installs -- today only
+     * {@link #MAPS_KEY}.
+     *
+     * <p>Public so the one place a probe could re-mask a half-done build --
+     * {@code ModuleHubFragment.confirmByProbe} -- reads the same predicate and skips these, keeping
+     * the completion marker the single source across the hub and the detail. See {@link #MAPS_KEY}
+     * for why maps and not the REST modules.
+     */
+    public static boolean isCompletionGated(String key) {
+        return MAPS_KEY.equals(key);
+    }
+
+    /** K2GO-393: whether the completion marker in {@code iiab_state.yml} says this module finished. */
+    private static boolean completed(Context ctx, String key) {
+        return InstalledModules.isCompleted(readRootfsYaml(ctx, IIAB_STATE), key);
     }
 
     /**

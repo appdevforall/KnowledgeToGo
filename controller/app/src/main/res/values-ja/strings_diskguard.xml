@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-391: disk-guard alert strings. Translations machine-generated, pending human review. -->
-<resources>
-    <string name="disk_guard_notif_title">ストレージの空きが非常に少ない</string>
-    <string name="disk_guard_notif_body">デバイスの空き容量がなくなるのを防ぐため、サーバーを停止しました。タップしてレポートを送信します。</string>
-    <string name="disk_guard_firehose_title">K2Go が異常な動作を抑制しました</string>
-    <string name="disk_guard_firehose_body">K2Go はストレージを過剰に使用していたプロセスを処理し、システムを稼働させ続けました。タップしてレポートを送信します。</string>
-</resources>

@@ -1324,4 +1324,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Продовжити оновлення</string>
     <string name="k2go_dash_update_site">Оновити вебсайт</string>
     <string name="k2go_dash_update_confirm_title">Оновити ядро REST?</string>
+
+    <string name="disk_guard_notif_title">Критично мало сховища</string>
+    <string name="disk_guard_notif_body">Сервер зупинено, щоб на пристрої не закінчилося місце. Натисніть, щоб надіслати звіт.</string>
+    <string name="disk_guard_firehose_title">K2Go стримав незвичну активність</string>
+    <string name="disk_guard_firehose_body">K2Go опрацював процес, що використовував забагато сховища, і зберіг роботу системи. Натисніть, щоб надіслати звіт.</string>
+    <string name="k2go_maps_dl_title">Завантаження даних карти</string>
 </resources>

@@ -1325,4 +1325,10 @@
     <string name="k2go_dash_cancel_confirm_keep">업데이트 계속</string>
     <string name="k2go_dash_update_site">웹사이트 업데이트</string>
     <string name="k2go_dash_update_confirm_title">REST 코어를 업데이트할까요?</string>
+
+    <string name="disk_guard_notif_title">저장 공간이 매우 부족함</string>
+    <string name="disk_guard_notif_body">기기의 저장 공간이 부족해지지 않도록 서버를 중지했습니다. 탭하여 보고서를 보내세요.</string>
+    <string name="disk_guard_firehose_title">K2Go가 비정상적인 활동을 억제했습니다</string>
+    <string name="disk_guard_firehose_body">K2Go가 저장 공간을 과도하게 사용하던 프로세스를 처리하고 시스템을 계속 실행했습니다. 탭하여 보고서를 보내세요.</string>
+    <string name="k2go_maps_dl_title">지도 데이터 다운로드 중</string>
 </resources>

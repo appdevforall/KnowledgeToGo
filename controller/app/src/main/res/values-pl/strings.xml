@@ -1334,4 +1334,10 @@
     <string name="k2go_dash_cancel_confirm_keep">Kontynuuj aktualizację</string>
     <string name="k2go_dash_update_site">Zaktualizuj witrynę</string>
     <string name="k2go_dash_update_confirm_title">Zaktualizować rdzeń REST?</string>
+
+    <string name="disk_guard_notif_title">Krytycznie mało pamięci</string>
+    <string name="disk_guard_notif_body">Serwer został zatrzymany, aby zapobiec wyczerpaniu miejsca na urządzeniu. Dotknij, aby wysłać raport.</string>
+    <string name="disk_guard_firehose_title">K2Go opanował nietypową aktywność</string>
+    <string name="disk_guard_firehose_body">K2Go obsłużył proces zużywający zbyt dużo pamięci i utrzymał system w działaniu. Dotknij, aby wysłać raport.</string>
+    <string name="k2go_maps_dl_title">Pobieranie danych mapy</string>
 </resources>
