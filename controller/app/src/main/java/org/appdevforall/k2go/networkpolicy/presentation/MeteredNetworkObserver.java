@@ -42,9 +42,12 @@ public final class MeteredNetworkObserver {
     private MeteredNetworkObserver() {}
 
     private static NetworkClass last = null;
+    private static boolean started = false;
 
     /** Idempotent; call once from Application.onCreate on the main thread. */
     public static void start(@NonNull Application app) {
+        if (started) return;   // guard: a second call must not add a second observeForever
+        started = true;
         ensureChannel(app);
         last = AndroidNetworkClassifier.classify(app);
         // observeForever keeps NetworkStateLiveData active for the process lifetime,

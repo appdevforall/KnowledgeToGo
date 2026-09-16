@@ -163,15 +163,22 @@ Landed as a compiling, tested starting point for the implementer:
 - Domain, pure JVM, unit-tested: `NetworkClass`, `NetworkPolicy`,
   `NetworkTransition`, `NetworkPolicyDecision`, `MeteredConsentStore`
   (`NetworkPolicyTest`, `NetworkClassTest`, `NetworkTransitionTest` -- green).
-- Data: `AndroidNetworkClassifier`, `SessionMeteredConsentStore`.
-- Presentation: `NetworkPolicyGate` (+ `BrandDialog` consent), `MeteredNetworkObserver`.
-- Wiring: observer started in `IIABApplication`; gate wired at the ZIM commit
-  point (`ZimConfirmFragment`).
+- Data: `AndroidNetworkClassifier`, `SessionMeteredConsentStore`,
+  `NetworkCostAdmission` (the one classify + consent + policy decision source).
+- Presentation: `NetworkPolicyGate` (the UI prompt, + `BrandDialog`),
+  `MeteredNetworkObserver`.
+- Enforcement (headless): `ContentAdmission.canStart` defers when
+  `NetworkCostAdmission.allowsHeavyStartNow` is false, so the ZIM, Books and
+  Kolibri drains all HOLD a banked order on metered-without-consent (sec.10).
+- Wiring: observer started in `IIABApplication`; the ZIM commit point
+  (`SetupLibraryActivity.startZimDownload`) banks first, then gates the drain, so
+  a declined/offline order is queued, not lost.
 - Strings translated to all 33 locales (machine-generated, pending human review)
   in `values*/strings_networkpolicy.xml`; `strings_untranslated.xml` is clear.
 
-Remaining to finish the contract: the other four seams and the two-way fold of the
-existing `hasInternet` readers into the classifier. (l10n is done pending review.)
+Remaining to finish the contract: the Books/Kolibri commit-point prompts (their
+drains are already held), the Maps seam (re-locate post K2GO-394), the
+DownloadManager seam, and the two-`hasInternet` fold. (l10n done pending review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
 
@@ -277,7 +284,26 @@ is complete:
    does not hold the transfer. This is the real depth of the feature and should
    be designed before wiring the remaining seams, not after.
 
-Decision needed (consult, do not default): keep the commit-point gate as a first
-layer and add drain-level consent enforcement, or move enforcement entirely into
-the provisioner/session start. The reference ZIM seam is left as-is pending this
-decision so the trade-off is visible, not silently patched.
+### Resolution (implemented)
+
+Enforcement moved to the single choke every content drain already consults:
+`ContentAdmission.canStart` (system/data) -- "the one answer to may a REST content
+stream start now". It now also defers when `NetworkCostAdmission.allowsHeavyStartNow`
+is false (metered without consent), so ZIM, Books and Kolibri drains all HOLD a
+banked order rather than spend mobile data -- the commit point, the wizard-bank
+path and every background re-drain, covered in one place, with no per-provisioner
+edit and no new persistent state (a held order is simply left banked, the existing
+"deferred is not a failure" contract).
+
+`NetworkCostAdmission` (networkpolicy/data) is the single source of the classify +
+consent + policy decision, used both by that headless admission and by the UI gate.
+
+The prompt stays at the UI commit point (`NetworkPolicyGate`), but banking now
+happens BEFORE the gate (`SetupLibraryActivity.startZimDownload` banks, then gates
+the drain), so a declined or offline order is queued, not lost. This removes the
+commit-point special case rather than adding one.
+
+Still open as follow-ups: the Books/Kolibri commit-point prompts (their drains are
+already held by the ContentAdmission change; only the interactive ask is missing),
+the Maps seam (K2GO-394 reworked Maps; re-locate it), DownloadManager (OTA/portal),
+and the two-`hasInternet` fold.

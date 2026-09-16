@@ -6,43 +6,35 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier;
+import org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission;
 import org.appdevforall.k2go.networkpolicy.data.SessionMeteredConsentStore;
-import org.appdevforall.k2go.networkpolicy.domain.MeteredConsentStore;
-import org.appdevforall.k2go.networkpolicy.domain.NetworkClass;
-import org.appdevforall.k2go.networkpolicy.domain.NetworkPolicy;
-import org.appdevforall.k2go.networkpolicy.domain.NetworkPolicyDecision;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.Snackbars;
 
 /**
- * The single consult point before any heavy download starts (ADR-395). A caller
- * wraps its existing start call:
+ * The user-facing PROMPT for a costed start (ADR-395). A commit point (a Download
+ * button) wraps its start so the user is asked before spending metered data:
  *
  * <pre>NetworkPolicyGate.guardHeavyStart(activity, () -&gt; a.startZimDownload());</pre>
  *
  * <p>Stateless, like {@code OpReturnNavigator}: it owns no "is metered" flag. It
- * reads the live class off {@link AndroidNetworkClassifier} and the session
- * consent off {@link SessionMeteredConsentStore}, applies the pure
- * {@link NetworkPolicy}, and either proceeds, asks, or blocks.
+ * reads the decision from {@link NetworkCostAdmission} (the one classify + consent
+ * + policy source) and either proceeds, asks, or reports offline.
  *
- * <p>It gates the START only. It does NOT control a transfer already in flight --
- * the content bytes are pulled by the in-proot server over the device default
- * network, which Android gives the app no handle to throttle (ADR-395). Callers
- * put this at the user's commit point (the Download button), never on the
- * background drain that re-hands an already-authorized wishlist.
+ * <p>This gate is only the PROMPT. The actual hold is enforced headless in
+ * {@code ContentAdmission} (via {@link NetworkCostAdmission}), which every content
+ * drain already consults -- so a banked order never starts on metered data without
+ * consent even if it was never routed through a commit point (the wizard-bank path,
+ * a background re-drain). Banking must therefore happen BEFORE this gate: an order
+ * declined or offline here stays queued and drains once the network is free or
+ * consent is given, rather than being lost (ADR-395 sec.10).
  */
 public final class NetworkPolicyGate {
 
     private NetworkPolicyGate() {}
 
-    private static final NetworkPolicy POLICY = new NetworkPolicy();
-
     public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed) {
-        MeteredConsentStore consent = SessionMeteredConsentStore.get();
-        NetworkClass net = AndroidNetworkClassifier.classify(activity);
-        NetworkPolicyDecision decision = POLICY.decideHeavyStart(net, consent.isGranted());
-        switch (decision) {
+        switch (NetworkCostAdmission.decideNow(activity)) {
             case ALLOW:
                 onProceed.run();
                 return;
@@ -51,7 +43,7 @@ public final class NetworkPolicyGate {
                         .setTitle(R.string.k2go_netpolicy_metered_title)
                         .setMessage(R.string.k2go_netpolicy_metered_msg)
                         .setPositive(R.string.k2go_netpolicy_continue, () -> {
-                            consent.grant();
+                            SessionMeteredConsentStore.get().grant();
                             onProceed.run();
                         })
                         .setNegative(R.string.k2go_netpolicy_not_now, null)

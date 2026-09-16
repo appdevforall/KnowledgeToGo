@@ -15,6 +15,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.appdevforall.k2go.install.presentation.ModuleQueueRepository;
+import org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission;
 import org.appdevforall.k2go.redesign.DashboardRebuildService;
 import org.appdevforall.k2go.redesign.MapsProvisioner;
 import org.appdevforall.k2go.system.domain.ContentType;
@@ -71,6 +72,15 @@ public final class ContentAdmission {
         }
         if (PendingContent.anyUnfinished(ctx)) {
             Log.d(TAG, stream.key() + " drain deferred: a content stream still has work to do");
+            return false;
+        }
+        // ADR-395: cost gate. A heavy content download must not start on a metered network without
+        // the user's consent. This is the single headless hold that covers every drain path -- the
+        // commit point, the wizard-bank path, and every background re-drain -- so a banked order
+        // waits for Wi-Fi or consent rather than silently spending mobile data. Prompting happens at
+        // the UI commit point (NetworkPolicyGate); here we only defer.
+        if (!NetworkCostAdmission.allowsHeavyStartNow(ctx)) {
+            Log.d(TAG, stream.key() + " drain deferred: metered network without consent");
             return false;
         }
         return true;

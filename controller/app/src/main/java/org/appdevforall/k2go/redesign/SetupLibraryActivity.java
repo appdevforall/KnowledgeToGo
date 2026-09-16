@@ -304,8 +304,15 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public void startZimDownload() {
         ZimWishlist.add(this, selection().zimCart());
         selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
-        ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // K2GO-395 (ADR-395 sec.10): the order is banked above, unconditionally, so it is never lost.
+        // The gate wraps only the drain + navigation: it prompts on a metered network and, on consent
+        // (or Wi-Fi), drains and opens progress; declined or offline the order stays queued and a later
+        // pass drains it. The drain is also held headless by ContentAdmission, so a banked order never
+        // starts on metered data without consent even via the wizard-bank path or a background re-drain.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
+            startActivity(new Intent(this, SetupProgressActivity.class));
+        });
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked

@@ -106,14 +106,10 @@ public class ZimConfirmFragment extends Fragment {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
             if (banks) a.zimWizardConfirm();   // no box yet: bank it
-            // ADFA-5074 / ADFA-5333: blocked while a dashboard update runs.
-            // K2GO-395 (ADR-395): gate a metered start behind explicit consent (cost awareness).
-            // The gate sits at the user commit point, not on ZimProvisioner.drain (that re-hands an
-            // already-authorized wishlist every ~2 s and would re-prompt).
-            else if (!DashboardRebuild.blockedByUpdate(v)) {
-                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate
-                        .guardHeavyStart(a, a::startZimDownload);
-            }
+            // ADFA-5074 / ADFA-5333: blocked while a dashboard update runs. The K2GO-395 metered-cost
+            // gate lives inside startZimDownload (bank first, then gate the drain), so the order is
+            // never lost on decline/offline; see ADR-395 sec.10.
+            else if (!DashboardRebuild.blockedByUpdate(v)) a.startZimDownload();
         });
 
         return root;
