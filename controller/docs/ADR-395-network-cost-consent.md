@@ -170,15 +170,16 @@ Landed as a compiling, tested starting point for the implementer:
 - Enforcement (headless): `ContentAdmission.canStart` defers when
   `NetworkCostAdmission.allowsHeavyStartNow` is false, so the ZIM, Books and
   Kolibri drains all HOLD a banked order on metered-without-consent (sec.10).
-- Wiring: observer started in `IIABApplication`; the ZIM commit point
-  (`SetupLibraryActivity.startZimDownload`) banks first, then gates the drain, so
-  a declined/offline order is queued, not lost.
+- Wiring: observer started in `IIABApplication`; the ZIM and Books commit points
+  (`SetupLibraryActivity.startZimDownload` / `startBooksDownload`) bank first, then
+  gate the drain, so a declined/offline order is queued, not lost.
 - Strings translated to all 33 locales (machine-generated, pending human review)
   in `values*/strings_networkpolicy.xml`; `strings_untranslated.xml` is clear.
 
-Remaining to finish the contract: the Books/Kolibri commit-point prompts (their
-drains are already held), the Maps seam (re-locate post K2GO-394), the
-DownloadManager seam, and the two-`hasInternet` fold. (l10n done pending review.)
+Remaining to finish the contract: the Kolibri commit-point prompt (its drain is
+already held; the ask needs care because the flow is async), the Maps seam
+(re-locate post K2GO-394), the DownloadManager seam, and the two-`hasInternet`
+fold. (l10n done pending review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
 
@@ -303,7 +304,7 @@ happens BEFORE the gate (`SetupLibraryActivity.startZimDownload` banks, then gat
 the drain), so a declined or offline order is queued, not lost. This removes the
 commit-point special case rather than adding one.
 
-Still open as follow-ups: the Books/Kolibri commit-point prompts (their drains are
-already held by the ContentAdmission change; only the interactive ask is missing),
-the Maps seam (K2GO-394 reworked Maps; re-locate it), DownloadManager (OTA/portal),
-and the two-`hasInternet` fold.
+The ZIM and Books commit points now bank-then-prompt. Still open as follow-ups:
+the Kolibri commit-point prompt (its drain is already held; the ask needs care
+because the flow banks on a background thread), the Maps seam (K2GO-394 reworked
+Maps; re-locate it), DownloadManager (OTA/portal), and the two-`hasInternet` fold.

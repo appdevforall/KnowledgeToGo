@@ -524,20 +524,25 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
                     v != null && v.length > 2 ? v[2] : "");
         }
         selection().booksCart().clear();
-        // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
-        // calling its service directly, and that had a real consequence beyond symmetry: the
-        // service registers its session asynchronously in onStartCommand, so for a moment nothing
-        // was pending and nothing was in session. The index reads exactly that pair to decide the
-        // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
-        // just-started download complete and count down to the Library. Writing the wishlist first
-        // makes hasPending true synchronously, before the index is even launched, so that window
-        // does not exist. It also makes Books queue behind a busy line instead of overwriting.
-        BooksProvisioner.drain(this);
-        // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
-        // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
-        // detail "when books is the only stream" made the landing depend on state the user cannot
-        // see, and the index is what ends the run.
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // K2GO-395 (ADR-395 sec.10): the order is banked above; gate only the drain + navigation, so
+        // a declined or offline order stays queued (ContentAdmission also holds it on metered-without-
+        // consent). Same shape as startZimDownload.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
+            // calling its service directly, and that had a real consequence beyond symmetry: the
+            // service registers its session asynchronously in onStartCommand, so for a moment nothing
+            // was pending and nothing was in session. The index reads exactly that pair to decide the
+            // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
+            // just-started download complete and count down to the Library. Writing the wishlist first
+            // makes hasPending true synchronously, before the index is even launched, so that window
+            // does not exist. It also makes Books queue behind a busy line instead of overwriting.
+            BooksProvisioner.drain(this);
+            // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
+            // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
+            // detail "when books is the only stream" made the landing depend on state the user cannot
+            // see, and the index is what ends the run.
+            startActivity(new Intent(this, SetupProgressActivity.class));
+        });
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
