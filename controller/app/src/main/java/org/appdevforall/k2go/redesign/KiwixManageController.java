@@ -115,12 +115,7 @@ public final class KiwixManageController {
     /** True when the URL's path is under the box's kiwix reader. Pure string parsing (no
      *  android.net.Uri) so it is unit-testable and dependency-free. */
     static boolean isKiwixPage(String url) {
-        if (url == null) return false;
-        String u = url;
-        int hash = u.indexOf('#'); if (hash >= 0) u = u.substring(0, hash);
-        int q = u.indexOf('?'); if (q >= 0) u = u.substring(0, q);
-        int scheme = u.indexOf("://");
-        if (scheme >= 0) { int slash = u.indexOf('/', scheme + 3); u = slash >= 0 ? u.substring(slash) : "/"; }
+        String u = org.appdevforall.k2go.util.WebPath.pathOf(url);   // K2GO-395: one URL->path source
         return u.equals("/kiwix") || u.startsWith("/kiwix/");
     }
 
