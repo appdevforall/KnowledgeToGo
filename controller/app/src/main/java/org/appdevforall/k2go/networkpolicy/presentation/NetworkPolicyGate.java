@@ -21,19 +21,29 @@ import org.appdevforall.k2go.util.Snackbars;
  * reads the decision from {@link NetworkCostAdmission} (the one classify + consent
  * + policy source) and either proceeds, asks, or reports offline.
  *
- * <p>This gate is only the PROMPT. The actual hold is enforced headless in
- * {@code ContentAdmission} (via {@link NetworkCostAdmission}), which every content
- * drain already consults -- so a banked order never starts on metered data without
- * consent even if it was never routed through a commit point (the wizard-bank path,
- * a background re-drain). Banking must therefore happen BEFORE this gate: an order
- * declined or offline here stays queued and drains once the network is free or
- * consent is given, rather than being lost (ADR-395 sec.10).
+ * <p>For the banked content streams (ZIM/Books/Kolibri) the actual HOLD is enforced
+ * headless in {@code ContentAdmission}; declining here just leaves the order queued,
+ * so the two-arg form takes no decline action. A direct, non-banked start (FQR maps,
+ * which is a user-driven Operation, not a banked ContentType, and so is NOT covered
+ * by ContentAdmission) uses the three-arg form to undo its own UI on decline -- e.g.
+ * clear the drawn map region -- since there is no queue to fall back on.
  */
 public final class NetworkPolicyGate {
 
     private NetworkPolicyGate() {}
 
+    /** Two-arg form: decline/offline is a no-op (the order stays banked and drains later). */
     public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed) {
+        guardHeavyStart(activity, onProceed, () -> {});
+    }
+
+    /**
+     * Three-arg form: {@code onDeclined} runs when the user declines the metered
+     * prompt (or dismisses it) or when there is no network -- for callers with no
+     * queue, so they can undo the UI they were about to commit.
+     */
+    public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed,
+                                       @NonNull Runnable onDeclined) {
         switch (NetworkCostAdmission.decideNow(activity)) {
             case ALLOW:
                 onProceed.run();
@@ -46,7 +56,8 @@ public final class NetworkPolicyGate {
                             SessionMeteredConsentStore.get().grant();
                             onProceed.run();
                         })
-                        .setNegative(R.string.k2go_netpolicy_not_now, null)
+                        .setNegative(R.string.k2go_netpolicy_not_now, onDeclined::run)
+                        .setOnCancel(onDeclined::run)
                         .show();
                 return;
             case BLOCKED_NO_NETWORK:
@@ -55,6 +66,7 @@ public final class NetworkPolicyGate {
                 if (root != null) {
                     Snackbars.make(root, R.string.k2go_netpolicy_offline).show();
                 }
+                onDeclined.run();
         }
     }
 }

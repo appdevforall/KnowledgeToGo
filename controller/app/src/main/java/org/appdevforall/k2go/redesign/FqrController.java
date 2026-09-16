@@ -60,6 +60,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.M3Text;
 import org.json.JSONArray;
@@ -348,7 +349,12 @@ public final class FqrController {
         dialog = new BrandDialog(themed)
                 .setTitle(R.string.k2go_fqr_consent_title)
                 .setContentView(body)
-                .setPositive(R.string.k2go_fqr_download, () -> startDownload(name))
+                // K2GO-395 (ADR-395): after the storage consent, gate the actual REST start on metered
+                // cost. FQR is a user-driven Operation, not a banked ContentType, so ContentAdmission
+                // does not cover it -- the gate goes here. Declined/offline resets the map selection
+                // (there is no queue to fall back on), matching the negative/cancel below.
+                .setPositive(R.string.k2go_fqr_download, () -> NetworkPolicyGate.guardHeavyStart(
+                        activity, () -> startDownload(name), this::resetMapSelection))
                 .setNegative(R.string.k2go_fqr_not_now, () -> resetMapSelection())
                 .setOnCancel(() -> resetMapSelection())
                 .setCancelable(true)
