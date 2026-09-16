@@ -383,7 +383,16 @@ public final class KolibriConfirmFragment extends Fragment {
             refuse(R.string.k2go_kolibri_nothing_to_add);
             return;
         }
+        // K2GO-395 (ADR-395): prompt on a metered network before committing. Both outcomes proceed to
+        // commit -- the order is banked either way, so a declined order is not lost; the actual HOLD is
+        // enforced in ContentAdmission (the drain waits for consent or Wi-Fi and the order shows as
+        // Queued on the index, exactly as Kolibri already defers a busy-line order). The prompt's only
+        // job is to grant consent (on Continue) so the drain may start now.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
+                requireActivity(), () -> commitLive(toDownload), () -> commitLive(toDownload));
+    }
 
+    private void commitLive(List<Channel> toDownload) {
         // The order is read off the view model here, on the main thread, and written
         // on the IO pool: SharedPreferences plus a foreground service start is small
         // but it is still disk at the moment of a tap.
