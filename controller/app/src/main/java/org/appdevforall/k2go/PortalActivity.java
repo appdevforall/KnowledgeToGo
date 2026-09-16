@@ -72,6 +72,7 @@ public class PortalActivity extends AppCompatActivity {
     private GestureWebView webView;
     private org.appdevforall.k2go.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
     private org.appdevforall.k2go.redesign.KiwixManageController kiwixMgr;   // ADFA-5004: ZIM delete (only on /kiwix/)
+    private org.appdevforall.k2go.redesign.KolibriGuardController kolibriGuard;   // K2GO-395: metered gate for native Kolibri import (only on /kolibri/)
     private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
     private boolean fullscreenOn = false;             // ADFA-4887: Home button toggles fullscreen
     private Handler hideHandler;                      // ADFA-4887: nav-bar auto-hide (cleared in onDestroy)
@@ -224,6 +225,7 @@ public class PortalActivity extends AppCompatActivity {
                 // Internal server link stays in the WebView (and travels through the proxy).
                 if (NavigationPolicy.isInternalHost(host)) {
                     if (fqr != null) fqr.prepareForUrl(url);   // ADFA-4879: add the FQR bridge only on /maps/
+                    if (kolibriGuard != null) kolibriGuard.prepareForUrl(url);   // K2GO-395: Kolibri gate only on /kolibri/
                     return false;
                 }
 
@@ -259,6 +261,7 @@ public class PortalActivity extends AppCompatActivity {
                 if (fqr != null) fqr.onPageFinished(url);
                 // ADFA-5004: arm/disarm in-app ZIM manager depending on whether this is /kiwix/.
                 if (kiwixMgr != null) kiwixMgr.onPageFinished(url);
+                if (kolibriGuard != null) kolibriGuard.onPageFinished(url);   // K2GO-395: arm the Kolibri import gate
             }
 
             @Override
@@ -370,6 +373,10 @@ public class PortalActivity extends AppCompatActivity {
         // ADFA-5004: ZIM manager lives in this same shared WebView but activates only on /kiwix/
         // (gated in KiwixManageController#onPageFinished).
         kiwixMgr = new org.appdevforall.k2go.redesign.KiwixManageController(this, webView);
+
+        // K2GO-395 (ADR-395): metered-cost gate for the NATIVE Kolibri import, active only on /kolibri/.
+        kolibriGuard = new org.appdevforall.k2go.redesign.KolibriGuardController(this, webView);
+        kolibriGuard.prepareForUrl(finalTargetUrl);
 
         // ADFA-5043: Books (Calibre-Web) / Courses (Kolibri) auto-login as box admin — fetch a session
         // cookie, inject it into the WebView CookieManager, THEN load, so the card opens already
@@ -533,6 +540,7 @@ public class PortalActivity extends AppCompatActivity {
         // The durable server job (if any) keeps running and shows up on the next /maps/ reload.
         if (fqr != null) fqr.detach();
         if (kiwixMgr != null) kiwixMgr.detach();   // ADFA-5004
+        if (kolibriGuard != null) kolibriGuard.detach();   // K2GO-395
         if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
         super.onDestroy();
     }

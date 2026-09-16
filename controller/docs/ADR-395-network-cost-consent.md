@@ -156,6 +156,28 @@ and not consented, either ask via the gate or set
 `request.setAllowedOverMetered(false)` so the system holds it for Wi-Fi. If
 unmetered or already consented, enqueue as today.
 
+### 4.3 Native Kolibri import (WebView interception)
+
+A distinct egress the app does NOT own: Kolibri's OWN web app (served by the box at
+`/kolibri/`, shown in the PortalActivity WebView) has its own content-import
+manager. Tapping Import there starts a server-side download from Kolibri Studio
+over the metered link, bypassing Get More / ContentAdmission entirely. Device recon
+(reproduced on the OnePlus over a metered hotspot: a 265 MB import began downloading
+with no prompt) identified the trigger: `POST /api/tasks/tasks/` (cancel is
+`POST /api/tasks/tasks/<id>/cancel/`; the queue polls
+`GET /api/tasks/tasks/?queue=content`).
+
+`KolibriGuardController` gates it, mirroring `FqrController`/`KiwixManageController`:
+armed on the `/kolibri/` page, it injects JS that wraps XHR (axios) and fetch,
+parks a remote-import task POST, calls the native bridge (`K2GoKolibri.gateImport`)
+which runs `NetworkPolicyGate.guardHeavyStart`, and proceeds or aborts on the
+result. Caveats (from the code-review second pass): it depends on Kolibri's internal
+task API, so it fails OPEN (never bricks import) and logs a console warning on any
+task POST it cannot classify (the regression signal); the remote-vs-local decision
+is a body heuristic (`remote`/`channelupdate`, not `disk`) pending a task-type-field
+match. This is the one seam that reaches into a third-party app's egress, so it is
+inherently best-effort.
+
 ## 5. Reference implementation status (this change)
 
 Landed as a compiling, tested starting point for the implementer:
@@ -176,10 +198,11 @@ Landed as a compiling, tested starting point for the implementer:
 - Strings translated to all 33 locales (machine-generated, pending human review)
   in `values*/strings_networkpolicy.xml`; `strings_untranslated.xml` is clear.
 
-Remaining to finish the contract: the Kolibri commit-point prompt (its drain is
-already held; the ask needs care because the flow is async), the Maps seam
-(re-locate post K2GO-394), the DownloadManager seam, and the two-`hasInternet`
-fold. (l10n done pending review.)
+Done since: the Books and Kolibri commit-point prompts, the FQR maps-region seam
+(sec.4.1) and the native-Kolibri import gate (sec.4.3), all device-verified on a
+metered hotspot. Remaining to finish the contract: the base Maps runrole install,
+the rootfs-image install (aria2), the DownloadManager seam (OTA / portal), and the
+two-`hasInternet` fold. (l10n done pending review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
 

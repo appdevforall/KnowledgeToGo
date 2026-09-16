@@ -393,6 +393,10 @@ public final class KolibriConfirmFragment extends Fragment {
     }
 
     private void commitLive(List<Channel> toDownload) {
+        // K2GO-395: commitLive is deferred behind the metered gate dialog, so it can run after the
+        // fragment detaches (rotation / navigation). Bail if we are no longer attached, mirroring
+        // finishStart, before touching requireContext()/requireActivity() below.
+        if (!isAdded() || getActivity() == null) return;
         // The order is read off the view model here, on the main thread, and written
         // on the IO pool: SharedPreferences plus a foreground service start is small
         // but it is still disk at the moment of a tap.
