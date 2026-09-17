@@ -219,10 +219,16 @@ public class UpdateController {
         android.app.DownloadManager manager =
                 (android.app.DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
         if (manager != null) {
-            downloadCompletionHandled = false;
-            updateDownloadId = manager.enqueue(request);
-            getUpdateViewModel().track(updateDownloadId);
-            showUpdateProgressDialog();
+            // K2GO-404 (ADR-395): the OTA APK is an internet download, so ask before spending metered
+            // data. An Activity is present here, so we prompt (like the other seams) rather than fall
+            // back to setAllowedOverMetered(false); on consent (or Wi-Fi) it enqueues, on decline it
+            // does not start and the user keeps the existing build.
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(activity, () -> {
+                downloadCompletionHandled = false;
+                updateDownloadId = manager.enqueue(request);
+                getUpdateViewModel().track(updateDownloadId);
+                showUpdateProgressDialog();
+            });
         }
     }
 
