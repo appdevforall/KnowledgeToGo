@@ -11,7 +11,7 @@
 -->
 <resources>
 
-    <!-- No pending strings. Recent feature strings (K2GO-395 network cost consent, K2GO-394 maps
-         download) are translated and live in values*/strings.xml. Park a new WIP string here only
-         while it awaits translation, then migrate it to strings.xml before the PR merges. -->
+    <!-- K2GO-406: value hint shown on the Settings > Help row. WIP: migrate to strings.xml with
+         all locale values before this PR merges. -->
+    <string name="k2go_help_manual" translatable="false">Manual</string>
 </resources>
