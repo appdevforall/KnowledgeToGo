@@ -711,6 +711,7 @@
     <string name="k2go_settings_check_updates">Check for updates</string>
     <string name="k2go_settings_permissions">Permissions</string>
     <string name="k2go_settings_usage_stats">Share usage statistics</string>
+    <string name="k2go_settings_crash_reports">Send crash reports</string>
     <string name="k2go_settings_licenses">Open-source licenses</string>
     <string name="k2go_settings_privacy">Privacy</string>
     <string name="k2go_settings_power_users">For power users.</string>

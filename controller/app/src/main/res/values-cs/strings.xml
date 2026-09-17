@@ -589,6 +589,7 @@
     <string name="k2go_settings_check_updates">Zkontrolovat aktualizace</string>
     <string name="k2go_settings_permissions">Oprávnění</string>
     <string name="k2go_settings_usage_stats">Sdílet statistiky používání</string>
+    <string name="k2go_settings_crash_reports">Odesílat hlášení o pádech</string>
     <string name="k2go_settings_licenses">Licence open-source</string>
     <string name="k2go_settings_privacy">Soukromí</string>
     <string name="k2go_settings_power_users">Pro pokročilé uživatele.</string>

@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Güncellemeleri denetle</string>
     <string name="k2go_settings_permissions">İzinler</string>
     <string name="k2go_settings_usage_stats">Kullanım istatistiklerini paylaş</string>
+    <string name="k2go_settings_crash_reports">Çökme raporları gönder</string>
     <string name="k2go_settings_licenses">Açık kaynak lisansları</string>
     <string name="k2go_settings_privacy">Gizlilik</string>
     <string name="k2go_settings_power_users">İleri düzey kullanıcılar için.</string>

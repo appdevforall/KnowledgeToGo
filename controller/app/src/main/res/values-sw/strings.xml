@@ -602,6 +602,7 @@
     <string name="k2go_settings_check_updates">Angalia masasisho</string>
     <string name="k2go_settings_permissions">Ruhusa</string>
     <string name="k2go_settings_usage_stats">Shiriki takwimu za matumizi</string>
+    <string name="k2go_settings_crash_reports">Tuma ripoti za hitilafu</string>
     <string name="k2go_settings_licenses">Leseni za chanzo huria</string>
     <string name="k2go_settings_privacy">Faragha</string>
     <string name="k2go_settings_power_users">Kwa watumiaji wa hali ya juu.</string>

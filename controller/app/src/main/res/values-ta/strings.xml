@@ -602,6 +602,7 @@
     <string name="k2go_settings_check_updates">புதுப்பிப்புகளைச் சரிபார்</string>
     <string name="k2go_settings_permissions">அனுமதிகள்</string>
     <string name="k2go_settings_usage_stats">பயன்பாட்டு புள்ளிவிவரங்களைப் பகிர்</string>
+    <string name="k2go_settings_crash_reports">செயலிழப்பு அறிக்கைகளை அனுப்பு</string>
     <string name="k2go_settings_licenses">திறந்த-மூல உரிமங்கள்</string>
     <string name="k2go_settings_privacy">தனியுரிமை</string>
     <string name="k2go_settings_power_users">மேம்பட்ட பயனர்களுக்கு.</string>

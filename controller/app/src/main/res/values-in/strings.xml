@@ -589,6 +589,7 @@
     <string name="k2go_settings_check_updates">Periksa pembaruan</string>
     <string name="k2go_settings_permissions">Izin</string>
     <string name="k2go_settings_usage_stats">Bagikan statistik penggunaan</string>
+    <string name="k2go_settings_crash_reports">Kirim laporan kerusakan</string>
     <string name="k2go_settings_licenses">Lisensi sumber terbuka</string>
     <string name="k2go_settings_privacy">Privasi</string>
     <string name="k2go_settings_power_users">Untuk pengguna mahir.</string>

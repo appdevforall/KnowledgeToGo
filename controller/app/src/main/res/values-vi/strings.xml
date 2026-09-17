@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Kiểm tra cập nhật</string>
     <string name="k2go_settings_permissions">Quyền</string>
     <string name="k2go_settings_usage_stats">Chia sẻ số liệu sử dụng</string>
+    <string name="k2go_settings_crash_reports">Gửi báo cáo sự cố</string>
     <string name="k2go_settings_licenses">Giấy phép nguồn mở</string>
     <string name="k2go_settings_privacy">Quyền riêng tư</string>
     <string name="k2go_settings_power_users">Dành cho người dùng nâng cao.</string>

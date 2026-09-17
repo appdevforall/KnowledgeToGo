@@ -595,6 +595,7 @@
     <string name="k2go_settings_check_updates">અપડેટ્સ તપાસો</string>
     <string name="k2go_settings_permissions">પરવાનગીઓ</string>
     <string name="k2go_settings_usage_stats">વપરાશ આંકડા શેર કરો</string>
+    <string name="k2go_settings_crash_reports">ક્રેશ રિપોર્ટ મોકલો</string>
     <string name="k2go_settings_licenses">ઓપન-સોર્સ લાઇસન્સ</string>
     <string name="k2go_settings_privacy">ગોપનીયતા</string>
     <string name="k2go_settings_power_users">પાવર યુઝર્સ માટે.</string>

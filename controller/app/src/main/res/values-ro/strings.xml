@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Caută actualizări</string>
     <string name="k2go_settings_permissions">Permisiuni</string>
     <string name="k2go_settings_usage_stats">Partajează statisticile de utilizare</string>
+    <string name="k2go_settings_crash_reports">Trimite rapoarte de eroare</string>
     <string name="k2go_settings_licenses">Licențe open-source</string>
     <string name="k2go_settings_privacy">Confidențialitate</string>
     <string name="k2go_settings_power_users">Pentru utilizatori avansați.</string>

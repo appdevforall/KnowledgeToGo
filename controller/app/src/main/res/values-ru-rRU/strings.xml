@@ -658,6 +658,7 @@
     <string name="k2go_settings_check_updates">Проверить обновления</string>
     <string name="k2go_settings_permissions">Разрешения</string>
     <string name="k2go_settings_usage_stats">Делиться статистикой использования</string>
+    <string name="k2go_settings_crash_reports">Отправлять отчёты о сбоях</string>
     <string name="k2go_settings_licenses">Лицензии с открытым исходным кодом</string>
     <string name="k2go_settings_privacy">Конфиденциальность</string>
     <string name="k2go_settings_power_users">Для опытных пользователей.</string>

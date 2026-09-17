@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Frissítések keresése</string>
     <string name="k2go_settings_permissions">Engedélyek</string>
     <string name="k2go_settings_usage_stats">Használati statisztikák megosztása</string>
+    <string name="k2go_settings_crash_reports">Összeomlási jelentések küldése</string>
     <string name="k2go_settings_licenses">Nyílt forráskódú licencek</string>
     <string name="k2go_settings_privacy">Adatvédelem</string>
     <string name="k2go_settings_power_users">Haladó felhasználóknak.</string>

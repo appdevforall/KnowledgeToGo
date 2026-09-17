@@ -583,6 +583,7 @@
     <string name="k2go_settings_check_updates">检查更新</string>
     <string name="k2go_settings_permissions">权限</string>
     <string name="k2go_settings_usage_stats">共享使用统计</string>
+    <string name="k2go_settings_crash_reports">发送崩溃报告</string>
     <string name="k2go_settings_licenses">开源许可证</string>
     <string name="k2go_settings_privacy">隐私</string>
     <string name="k2go_settings_power_users">适合高级用户。</string>

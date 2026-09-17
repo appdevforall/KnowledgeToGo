@@ -583,6 +583,7 @@
     <string name="k2go_settings_check_updates">アップデートを確認</string>
     <string name="k2go_settings_permissions">権限</string>
     <string name="k2go_settings_usage_stats">使用統計を共有</string>
+    <string name="k2go_settings_crash_reports">クラッシュレポートを送信</string>
     <string name="k2go_settings_licenses">オープンソースライセンス</string>
     <string name="k2go_settings_privacy">プライバシー</string>
     <string name="k2go_settings_power_users">上級ユーザー向け。</string>

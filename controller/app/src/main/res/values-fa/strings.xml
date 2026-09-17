@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">بررسی به‌روزرسانی‌ها</string>
     <string name="k2go_settings_permissions">دسترسی‌ها</string>
     <string name="k2go_settings_usage_stats">اشتراک‌گذاری آمار استفاده</string>
+    <string name="k2go_settings_crash_reports">ارسال گزارش‌های خرابی</string>
     <string name="k2go_settings_licenses">مجوزهای متن‌باز</string>
     <string name="k2go_settings_privacy">حریم خصوصی</string>
     <string name="k2go_settings_power_users">برای کاربران حرفه‌ای.</string>

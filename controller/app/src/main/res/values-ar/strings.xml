@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">التحقّق من التحديثات</string>
     <string name="k2go_settings_permissions">الأذونات</string>
     <string name="k2go_settings_usage_stats">مشاركة إحصاءات الاستخدام</string>
+    <string name="k2go_settings_crash_reports">إرسال تقارير الأعطال</string>
     <string name="k2go_settings_licenses">تراخيص المصدر المفتوح</string>
     <string name="k2go_settings_privacy">الخصوصية</string>
     <string name="k2go_settings_power_users">للمستخدمين المتقدّمين.</string>

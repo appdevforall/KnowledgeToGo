@@ -198,6 +198,13 @@ public class SettingsSubFragment extends Fragment {
                 org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).applyConsent();
             });
         }
+        // K2GO-401: crash reports (Sentry -> GlitchTip) are FOSS and unconditional, so the toggle
+        // always shows. Pref-only: DiskGuard honors it per capture (immediate); the startup-gated
+        // Sentry init applies on the next launch. (Immediate runtime apply was dropped: a mid-session
+        // Sentry re-init disturbs the uncaught-handler order IIABApplication establishes at startup.)
+        SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_crash_reports),
+                org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(ctx),
+                checked -> org.appdevforall.k2go.delivery.data.CrashReportConsent.setEnabled(ctx, checked));
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_privacy), null);
     }
