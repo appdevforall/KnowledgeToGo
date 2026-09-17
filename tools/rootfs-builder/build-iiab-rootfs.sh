@@ -604,6 +604,16 @@ mkdir -p "$ROOTFS"   # already wiped up front (START CLEAN); just (re)create it
 tar --exclude='*/dev/*' --strip-components=1 -xJf "$BASE_LOCAL" -C "$ROOTFS"
 [[ -e "$ROOTFS/bin/bash" || -L "$ROOTFS/bin/bash" ]] || die "Base has no /bin/bash; check the tarball."
 
+# K2GO-399: keep the shipped rootfs DFSG-free (F-Droid). The proot-distro base enables
+# the "contrib" component in /etc/apt/sources.list (Termux's base recipe), but nothing in
+# the IIAB install pulls from it. Strip the non-main components here, before the install
+# runs, so the rootfs and its apt config stay main-only. Post-extraction, so this also
+# covers a --base-local base: one place enforces main-only.
+if [[ -f "$ROOTFS/etc/apt/sources.list" ]]; then
+  sed -i -E 's/[[:space:]]+(contrib|non-free-firmware|non-free)\b//g' "$ROOTFS/etc/apt/sources.list"
+  log "apt components set to main-only (K2GO-399)."
+fi
+
 # DNS inside the rootfs (the app rewrites resolv.conf; we replicate so apt resolves)
 printf 'nameserver 1.1.1.1\nnameserver 8.8.8.8\n' > "$ROOTFS/etc/resolv.conf"
 printf '127.0.0.1 localhost\n' > "$ROOTFS/etc/hosts"
