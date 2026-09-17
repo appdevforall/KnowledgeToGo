@@ -128,8 +128,14 @@ reference (`ZimConfirmFragment`), so each remaining seam is a one-line wrap.
 | ZIM | `ZimConfirmFragment.java:105-110` -> `a.startZimDownload()` | LANDED (reference) |
 | Books | `BooksConfirmFragment.java:82` -> `a.startBooksDownload()` | `guardHeavyStart(a, a::startBooksDownload)` |
 | Kolibri | `KolibriConfirmFragment.java:227` -> `startLive(chosen)` | `guardHeavyStart(requireActivity(), () -> startLive(chosen))` |
-| Maps | `MapsConfirmFragment.java:90` -- the live `else` branch (~:99), NOT the `wizard` branch | wrap the live-download body |
-| Rootfs/modules install | `InstallService` started at `SetupProgressActivity.java:1401`; commit point is the wizard "Install" confirmation | wrap that confirm before starting InstallService |
+| Maps (Get More, post-install) | `SetupLibraryActivity.openMapsIndex` (the `MapsConfirmFragment` live `else` branch, `MapsConfirmFragment.java:103`) | LANDED -- `guardHeavyStart` inside the `InstallConfirm.gate` body. Base layers pre-download over REST before the runrole: K2GO-394 moved the maps bytes onto dash-node (`InstallService.downloadMapsBasemapsThenRun` -> `RestContentClient("basemaps")`), so it IS a costed heavy start. NOT gated at `MapsProvisioner.drain`: that drain is a serialized proot stage where a refusal is TERMINAL (`SetupProgressActivity` retires it as `mapsStartFailed`, by design, to avoid an unexplained spinner), so a cost-hold does not fit there without an orchestrator "waiting for network" state -- that headless integration rides with the install/rootfs PR. |
+| Dashboard update/install (LIVE) | `DashboardRebuild.start` -> `startRest` (`DashboardRebuild.java:96`) | LANDED -- `guardHeavyStart` on the LIVE branch only. dash-node >= 1.2.0 git-fetches + blue-green rebuilds over REST across the default network. The proot bridge (< 1.2.0, `startProot`) stops the box and is out of scope. Only `startRest` POSTs a new rebuild (`DashboardRebuildService` `ACTION_START`); `ACTION_ATTACH` re-owns a running one without POSTing, so one UI gate covers it. |
+| Wizard/system-install maps + rootfs/modules install | `mapsWizardConfirm`; `InstallService` from the wizard | DEFERRED to the install/rootfs PR ("el install va aparte con el rootfs"). Rootfs is aria2 (not REST); the wizard maps download rides with it. |
+
+Dashboard and Get-More-Maps are user-driven Operations, not banked `ContentType`s,
+so they gate at the UI commit (like FQR), NOT through `ContentAdmission` --
+`ContentAdmission` already defers TO a dashboard update and to maps, so routing
+them back through it would be circular.
 
 DownloadManager seams differ -- no `Service.start`; the app enqueues and the
 system transfers. Consult the gate first, then honor the decision (proceed on
@@ -195,14 +201,23 @@ Landed as a compiling, tested starting point for the implementer:
 - Wiring: observer started in `IIABApplication`; the ZIM and Books commit points
   (`SetupLibraryActivity.startZimDownload` / `startBooksDownload`) bank first, then
   gate the drain, so a declined/offline order is queued, not lost.
-- Strings translated to all 33 locales (machine-generated, pending human review)
-  in `values*/strings_networkpolicy.xml`; `strings_untranslated.xml` is clear.
+- Strings translated to all 33 locales (machine-generated, pending human review),
+  folded into `values*/strings.xml` (one string file; no per-feature file);
+  `strings_untranslated.xml` is clear.
 
 Done since: the Books and Kolibri commit-point prompts, the FQR maps-region seam
-(sec.4.1) and the native-Kolibri import gate (sec.4.3), all device-verified on a
-metered hotspot. Remaining to finish the contract: the base Maps runrole install,
-the rootfs-image install (aria2), the DownloadManager seam (OTA / portal), and the
-two-`hasInternet` fold. (l10n done pending review.)
+(sec.4.1), the native-Kolibri import gate (sec.4.3), the dashboard LIVE update/install
+gate and the Get-More base-Maps gate (sec.4), all device-verified on a metered hotspot
+except the last two (pending a device pass). Every REST-heavy egress the user can
+trigger on a live box now routes through the gate: ZIM, Books, Kolibri (Get More +
+native), FQR regions, dashboard live update, and Get-More base maps.
+
+Remaining, DEFERRED to the install/rootfs PR ("el install va aparte con el rootfs"):
+the wizard/system-install maps path (`mapsWizardConfirm`) and its headless hold with
+an orchestrator "waiting for network" state; the rootfs-image install (aria2, not
+REST). Separate follow-ups: the DownloadManager seam (OTA / portal,
+`setAllowedOverMetered`) and the two-`hasInternet` fold into `AndroidNetworkClassifier`.
+(l10n done pending human review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
 
@@ -327,7 +342,16 @@ happens BEFORE the gate (`SetupLibraryActivity.startZimDownload` banks, then gat
 the drain), so a declined or offline order is queued, not lost. This removes the
 commit-point special case rather than adding one.
 
-The ZIM and Books commit points now bank-then-prompt. Still open as follow-ups:
-the Kolibri commit-point prompt (its drain is already held; the ask needs care
-because the flow banks on a background thread), the Maps seam (K2GO-394 reworked
-Maps; re-locate it), DownloadManager (OTA/portal), and the two-`hasInternet` fold.
+The ZIM, Books and Kolibri commit points now bank-then-prompt. The Get-More base-Maps
+download (K2GO-394 moved its bytes onto REST) is gated at its UI commit
+(`openMapsIndex`), NOT at `MapsProvisioner.drain`: unlike the content drains, the maps
+drain is a serialized proot stage whose refusal is TERMINAL (`mapsStartFailed`), so a
+cost-hold there would read as a hard failure, not a deferral -- the headless maps hold
+needs an orchestrator "waiting for network" state and rides with the install/rootfs PR.
+The dashboard LIVE update/install is gated at its UI commit (`startRest`). Both are
+user-driven Operations, so they gate at the UI (like FQR), not through `ContentAdmission`
+(which defers TO them -- routing back would be circular).
+
+Still open as follow-ups (see sec.5): the wizard/system-install maps path and its
+headless hold (install/rootfs PR), the rootfs-image install (aria2), the DownloadManager
+seam (OTA/portal), and the two-`hasInternet` fold.
