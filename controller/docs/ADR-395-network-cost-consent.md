@@ -130,7 +130,7 @@ reference (`ZimConfirmFragment`), so each remaining seam is a one-line wrap.
 | Kolibri | `KolibriConfirmFragment.java:227` -> `startLive(chosen)` | `guardHeavyStart(requireActivity(), () -> startLive(chosen))` |
 | Maps (Get More, post-install) | `SetupLibraryActivity.openMapsIndex` (the `MapsConfirmFragment` live `else` branch, `MapsConfirmFragment.java:103`) | LANDED -- `guardHeavyStart` inside the `InstallConfirm.gate` body. Base layers pre-download over REST before the runrole: K2GO-394 moved the maps bytes onto dash-node (`InstallService.downloadMapsBasemapsThenRun` -> `RestContentClient("basemaps")`), so it IS a costed heavy start. NOT gated at `MapsProvisioner.drain`: that drain is a serialized proot stage where a refusal is TERMINAL (`SetupProgressActivity` retires it as `mapsStartFailed`, by design, to avoid an unexplained spinner), so a cost-hold does not fit there without an orchestrator "waiting for network" state -- that headless integration rides with the install/rootfs PR. |
 | Dashboard update/install (LIVE) | `DashboardRebuild.start` -> `startRest` (`DashboardRebuild.java:96`) | LANDED -- `guardHeavyStart` on the LIVE branch only. dash-node >= 1.2.0 git-fetches + blue-green rebuilds over REST across the default network. The proot bridge (< 1.2.0, `startProot`) stops the box and is out of scope. Only `startRest` POSTs a new rebuild (`DashboardRebuildService` `ACTION_START`); `ACTION_ATTACH` re-owns a running one without POSTing, so one UI gate covers it. |
-| Wizard/system-install maps + rootfs/modules install | `mapsWizardConfirm`; `InstallService` from the wizard | DEFERRED to the install/rootfs PR ("el install va aparte con el rootfs"). Rootfs is aria2 (not REST); the wizard maps download rides with it. |
+| Wizard/system-install maps (`mapsWizardConfirm`) | wizard banks; base-maps REST download runs during the install | COVERED by the `startWizardInstall` gate -- the wizard only banks; the maps download runs inside the install, which that gate already covers (session-wide consent). See sec.5. |
 
 Dashboard and Get-More-Maps are user-driven Operations, not banked `ContentType`s,
 so they gate at the UI commit (like FQR), NOT through `ContentAdmission` --
@@ -228,10 +228,17 @@ K2GO-404 (first PR) extends the gate to the non-REST egress:
   their callers routed. One behavior delta: a null ConnectivityManager now reads as no
   internet (was "unknown -> true"), an edge effectively never hit; failing closed is safe.
 
-Remaining (K2GO-404 second PR): the wizard/system-install maps path (`mapsWizardConfirm`)
-and its headless hold -- it needs an orchestrator "waiting for network" state because
-`SetupProgressActivity` treats a `MapsProvisioner.drain` refusal as terminal
-(`mapsStartFailed`), so a plain cost-hold there reads as a hard failure, not a deferral.
+Wizard/system-install maps path (`mapsWizardConfirm`) -- RESOLVED as already covered, no separate
+change (originally scoped as a second PR). The wizard only BANKS the maps selection; the base-maps
+REST download runs later, during the same install, which starts ONLY via `startWizardInstall` --
+gated in the first PR. That gate grants session-wide consent, so a metered install the user accepted
+covers its maps sub-download too, and a decline never starts the install. The one residual -- start
+on Wi-Fi, then switch to metered mid-install -- is in-flight best-effort by the sec.2.1 contract, and
+the proactive alert already warns. A headless hold in the maps drain was considered and rejected: the
+maps stage is a serialized proot step whose `MapsProvisioner.drain` refusal is terminal
+(`mapsStartFailed`) and which pins the user on the progress screen (`prootActive`), so a "waiting for
+network" state there is complex and worse UX for a case the design already covers ("prefer removing
+over adding"). Nothing REST-heavy the user can trigger on a live box is now ungated.
 (l10n done pending human review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
@@ -361,12 +368,14 @@ The ZIM, Books and Kolibri commit points now bank-then-prompt. The Get-More base
 download (K2GO-394 moved its bytes onto REST) is gated at its UI commit
 (`openMapsIndex`), NOT at `MapsProvisioner.drain`: unlike the content drains, the maps
 drain is a serialized proot stage whose refusal is TERMINAL (`mapsStartFailed`), so a
-cost-hold there would read as a hard failure, not a deferral -- the headless maps hold
-needs an orchestrator "waiting for network" state and rides with the install/rootfs PR.
-The dashboard LIVE update/install is gated at its UI commit (`startRest`). Both are
+cost-hold there would read as a hard failure, not a deferral. The wizard/system-install maps
+path is covered instead by the install gate (`startWizardInstall`, sec.5), so no maps-drain
+hold is added at all. The dashboard LIVE update/install is gated at its UI commit (`startRest`). Both are
 user-driven Operations, so they gate at the UI (like FQR), not through `ContentAdmission`
 (which defers TO them -- routing back would be circular).
 
-Still open as follow-ups (see sec.5): the wizard/system-install maps path and its
-headless hold (install/rootfs PR), the rootfs-image install (aria2), the DownloadManager
-seam (OTA/portal), and the two-`hasInternet` fold.
+Done in K2GO-404 (first PR): the rootfs-image aria2 install and the OTA DownloadManager, both
+gated at their UI commits; the two-`hasInternet` fold. Portal downloads are exempt (local box
+files). The wizard/system-install maps path is resolved as covered by the install gate (sec.5).
+The metered cost-consent feature is complete: every REST-heavy egress the user can trigger on a
+live box is gated.
