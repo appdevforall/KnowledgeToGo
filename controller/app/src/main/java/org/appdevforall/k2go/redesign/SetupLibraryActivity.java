@@ -579,12 +579,23 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public void openMapsIndex(String[] levels, long totalMb) {
         // ADFA-5228: maps is a proot (STOPPED) install — confirm before entering the index that runs it.
         InstallConfirm.gate(this, org.appdevforall.k2go.system.domain.Operation.appInstall("maps"), () -> {
-            String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
-            String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-            String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
-            boolean search = levels != null && levels.length > 3 && levels[3] != null;
-            MapsWishlist.save(this, base, sat, ter, search, totalMb);
-            startActivity(new Intent(this, SetupProgressActivity.class));
+            // K2GO-395 (ADR-395): maps pre-downloads its base layers over REST (dash-node,
+            // InstallService.downloadMapsBasemapsThenRun) before the runrole, so this is a costed heavy
+            // start -- prompt before spending metered data. Gated at the UI commit (like FQR), not at
+            // MapsProvisioner.drain: the maps drain is a serialized proot stage where a refusal is
+            // TERMINAL (SetupProgressActivity marks mapsStartFailed and retires the stage, by design, to
+            // avoid an unexplained spinner), so a "cost-hold = retry later" does not fit there without an
+            // orchestrator "waiting for network" state. The wizard/system-install maps path
+            // (mapsWizardConfirm) + that headless integration ride with the install/rootfs PR. Decline or
+            // offline just does not enter the index; nothing is banked.
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+                String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
+                String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+                String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
+                boolean search = levels != null && levels.length > 3 && levels[3] != null;
+                MapsWishlist.save(this, base, sat, ter, search, totalMb);
+                startActivity(new Intent(this, SetupProgressActivity.class));
+            });
         });
     }
 
