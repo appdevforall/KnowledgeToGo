@@ -149,6 +149,4 @@ public final class DashboardRebuild {
         }
         return false;
     }
-
-    // K2GO-404: hasInternet moved to AndroidNetworkClassifier.hasInternet (one reader).
 }

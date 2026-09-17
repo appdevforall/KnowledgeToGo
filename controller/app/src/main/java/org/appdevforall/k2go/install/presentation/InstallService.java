@@ -268,8 +268,6 @@ public final class InstallService extends Service {
         doResume();
     }
 
-    // K2GO-404: hasValidatedInternet moved to AndroidNetworkClassifier.hasValidatedInternet (one reader).
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent != null ? intent.getAction() : null;

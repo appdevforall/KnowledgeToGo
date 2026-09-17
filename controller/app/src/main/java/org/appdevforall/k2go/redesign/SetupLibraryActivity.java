@@ -343,13 +343,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // The trade-off, stated: if the service never starts at all, the marker is left set with no
         // install behind it, and the next launch enters recovery. That is a state with a dialog and a
         // way out (ADFA-5119) rather than a silent dead end, which is the right side to fail on.
-        // K2GO-404 (ADR-395): the install downloads the rootfs image and the proot-distro base over
-        // aria2 (internet), so ask before spending metered data. The gate wraps the WHOLE commit --
-        // the InstallGuard marker, the service start and the navigation -- so a decline plants no
-        // marker and does not navigate to the boot gate (a marker with no install behind it would send
-        // the next launch into recovery). On decline/offline, reset the debounce so the user can retry
-        // after moving to Wi-Fi. In-flight resume on a returning network is handled headless by
-        // InstallService.onValidatedNetworkReturned, not re-prompted.
+        // K2GO-404: gate the rootfs (aria2) download on metered cost. Wrap the whole commit so a
+        // decline plants no InstallGuard marker (a marker with no install behind it forces recovery).
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
             org.appdevforall.k2go.InstallGuard.begin(this);
             Intent i = new Intent(this, InstallService.class);
