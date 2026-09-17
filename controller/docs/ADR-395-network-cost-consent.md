@@ -227,6 +227,18 @@ K2GO-404 (first PR) extends the gate to the non-REST egress:
   `DashboardRebuild.hasInternet` and `InstallService.hasValidatedInternet` are removed and
   their callers routed. One behavior delta: a null ConnectivityManager now reads as no
   internet (was "unknown -> true"), an edge effectively never hit; failing closed is safe.
+- Proot module install (runrole, in-proot Ansible fetch): prompt at the commit
+  `SetupLibraryActivity.openModuleIndex` (like rootfs/maps, gate at the START; the in-proot
+  fetch is not device-side and cannot be measured). A decline leaves the modules banked --
+  the module wishlist's "deferred is not a failure" contract. PARTIAL by design: unlike the
+  REST content streams, the module drain has no headless `ContentAdmission`-style cost hold,
+  and `SetupProgressActivity.orchestrateStep` drains a banked module from any entry that
+  opens that screen (e.g. a Kolibri metered decline still navigates there). Closing that
+  needs a non-terminal "waiting for network" state in the orchestrator (a `MapsProvisioner`/
+  `ModuleProvisioner` drain refusal is terminal today, `moduleStartFailed`), tracked in
+  K2GO-408. The residual is narrow (a checkbox-banked module reached via a non-module,
+  un-consented path on metered) and, within a session, a metered consent already granted for
+  any install covers it (`SessionMeteredConsentStore` is process-wide).
 
 Wizard/system-install maps path (`mapsWizardConfirm`) -- RESOLVED as already covered, no separate
 change (originally scoped as a second PR). The wizard only BANKS the maps selection; the base-maps
