@@ -93,8 +93,19 @@ public final class DashboardRebuild {
                 if (!host.isAdded()) return;
                 // ADFA-5339: the site refresh only applies to the LIVE REST path; the proot bridge rebuild
                 // (< 1.2.0) has no site step, so the checkbox is simply not carried there.
-                if (op.isLive()) startRest(host, anchor, updateSite);
-                else startProot(host);
+                if (op.isLive()) {
+                    // K2GO-395 (ADR-395): the LIVE path is a REST-heavy transfer -- the box git-fetches
+                    // and blue-green rebuilds over the device's default network. Prompt before spending
+                    // metered data. Like FQR (a user-driven Operation, not a banked ContentType), it is
+                    // gated at the UI commit, not through ContentAdmission -- which already defers TO a
+                    // dashboard update, so routing it there would be circular. The only POST path is
+                    // startRest -> DashboardRebuildService ACTION_START (ATTACH re-owns without POSTing),
+                    // so this one gate covers it. No queue to fall back on: a decline just does not start.
+                    org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
+                            host.requireActivity(), () -> startRest(host, anchor, updateSite));
+                } else {
+                    startProot(host);
+                }
             });
         });
     }
