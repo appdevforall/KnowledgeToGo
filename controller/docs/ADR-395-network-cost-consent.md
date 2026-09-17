@@ -212,11 +212,26 @@ except the last two (pending a device pass). Every REST-heavy egress the user ca
 trigger on a live box now routes through the gate: ZIM, Books, Kolibri (Get More +
 native), FQR regions, dashboard live update, and Get-More base maps.
 
-Remaining, DEFERRED to the install/rootfs PR ("el install va aparte con el rootfs"):
-the wizard/system-install maps path (`mapsWizardConfirm`) and its headless hold with
-an orchestrator "waiting for network" state; the rootfs-image install (aria2, not
-REST). Separate follow-ups: the DownloadManager seam (OTA / portal,
-`setAllowedOverMetered`) and the two-`hasInternet` fold into `AndroidNetworkClassifier`.
+K2GO-404 (first PR) extends the gate to the non-REST egress:
+- Rootfs install (aria2, rootfs image + proot-distro base): gated at the UI commit
+  `SetupLibraryActivity.startWizardInstall`, wrapping the whole commit (marker + service
+  + navigation) so a decline plants no InstallGuard marker. Auto-retry / resume stay
+  headless via `InstallService.onValidatedNetworkReturned`, not re-prompted.
+- OTA APK (`UpdateController.startDownload`): prompt at the enqueue (an Activity is
+  present, so a prompt beats a silent `setAllowedOverMetered(false)`).
+- Portal APK / PDF (`PortalActivity`): NOT gated -- the WebView `DownloadListener` only
+  serves LOCAL box files (internal host; external downloads are ignored), so they are
+  never metered internet egress. Gating them would false-alarm or block a local download.
+- `hasInternet` fold: `AndroidNetworkClassifier.hasInternet` and `hasValidatedInternet`
+  (the latter preserves `NET_CAPABILITY_VALIDATED`) are now the single reader;
+  `DashboardRebuild.hasInternet` and `InstallService.hasValidatedInternet` are removed and
+  their callers routed. One behavior delta: a null ConnectivityManager now reads as no
+  internet (was "unknown -> true"), an edge effectively never hit; failing closed is safe.
+
+Remaining (K2GO-404 second PR): the wizard/system-install maps path (`mapsWizardConfirm`)
+and its headless hold -- it needs an orchestrator "waiting for network" state because
+`SetupProgressActivity` treats a `MapsProvisioner.drain` refusal as terminal
+(`mapsStartFailed`), so a plain cost-hold there reads as a hard failure, not a deferral.
 (l10n done pending human review.)
 
 ## 6. Device evidence appendix (dark surfaces flattened)
