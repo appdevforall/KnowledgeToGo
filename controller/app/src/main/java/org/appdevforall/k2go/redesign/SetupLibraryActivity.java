@@ -645,7 +645,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         String[] banked = ModuleWishlist.keys(this);
         org.appdevforall.k2go.system.domain.Operation op =
                 org.appdevforall.k2go.system.domain.Operation.appInstall(banked.length > 0 ? banked[0] : "");
-        InstallConfirm.gate(this, op, () -> startActivity(new Intent(this, SetupProgressActivity.class)));
+        // K2GO-404: the runrole fetches over the network inside the proot, so gate on metered cost at
+        // the START (like the rootfs/maps installs); a decline leaves the modules banked.
+        InstallConfirm.gate(this, op, () ->
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this,
+                        () -> startActivity(new Intent(this, SetupProgressActivity.class))));
     }
 
     /** ADFA-4952: open the dedicated backup/restore job screen (mode = MODE_BACKUP / MODE_RESTORE). */
