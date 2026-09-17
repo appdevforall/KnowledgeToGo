@@ -127,8 +127,14 @@ public final class DashboardRebuild {
      *  reports done/error, with no time cap. A visible dashboard card refreshes on the service's
      *  completion broadcast; nothing pins this screen. */
     private static void startRest(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
+        // K2GO-395: this now runs deferred behind the metered consent dialog, so the host fragment may
+        // have detached (config change / navigation) before the user taps Continue. Bail before
+        // requireContext() would throw -- consistent with the isAdded() guard already used for the
+        // snackbar below and with KolibriConfirmFragment.commitLive. The update is not banked, so a
+        // dropped start on this rare window is re-triggerable from the card, not a lost queue item.
+        if (!host.isAdded()) return;
         DashboardRebuildService.start(host.requireContext().getApplicationContext(), updateSite);
-        if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
+        Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 
     /** ADFA-5333: reverse gate for LIVE content downloads (ZIM/Books/Kolibri). Those run on the server
