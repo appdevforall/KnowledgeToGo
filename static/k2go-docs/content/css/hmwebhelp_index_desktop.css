@@ -1,0 +1,241 @@
+﻿/* Reset Styles for Consistency */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+/* Pretty scrollbars for Webkit browsers */
+ /* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #a1a1a1;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #858585;
+}
+
+body {
+	background-color:#ffffff;
+	overflow: hidden;
+	font-size: 100%;
+	font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	color: #444444;
+	margin: 0;
+	padding: 0;
+	line-height: 1.1rem;
+	}
+   
+div#hmpageheader {
+	position: absolute;
+	top: 0; left: 0; right: 0;
+	background-color: transparent;
+	}
+div#hmpagebody {
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	background-color: #ffffff;
+	color: #444444;
+	}
+div#unclicker {
+	display: none;
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	background-image: url("../images/spacer.gif");
+	z-index: 1000;
+}
+
+/* General */
+.tablet {
+	display: none !important;
+}
+.phone {
+	display: none !important;
+	}
+.noscript { 
+	display: none !important;
+	}
+.scripted {
+	
+	}
+.desktop {
+
+	}
+.desk_tablet {
+
+}
+
+/*** KW Index Pane ***/ 
+
+div#idxheadwrapper {
+	position: absolute;
+	top:0; left: 0; right: 0;
+	border-bottom: thin solid #c0c0c0;
+	background-color: #f5f5f5;
+	padding: 0.1rem;
+	margin: 0 0 0 0;
+}
+div#hmindextree {
+	position: absolute;
+	background-color: #ffffff;
+	top: 100px; left: 0.2rem; right: 0; bottom: 0;
+	margin: 0.2rem 0 0 0;
+	overflow-y: scroll;
+	/* Pretty scrollbar for Firefox */
+	scrollbar-color: #a1a1a1 #f5f5f5;
+	scrollbar-width: thin;
+}
+ul#idxheader {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+ul#idxheader li {
+	display: inline-block;
+}
+ul#idxheader li a {
+	display: inline-block;
+	font-size: 0.8rem;
+	font-weight: bold;
+	width: 1.5rem;
+	text-align: center;
+	cursor: pointer;
+	line-height: 0.9;
+}
+/* Search Form */
+form#idxsearch {
+	position: relative;
+	display: block;
+	left: 0;
+	margin-top: 0.3rem;
+	}
+table#searchtable {
+	width: 100%;
+	}
+td#btn {
+	width: 60px;
+	}
+td#arg {
+	padding: 0 0.2rem 0 0.1rem;
+	}
+
+input#searcharg {
+	width: calc(100% - 12px);
+	}
+label#idxmodelabel {
+	color: #444444;
+	}
+.idxhilite {
+	border-bottom: thin dashed #444444;
+}
+
+
+p.idxkeyword {
+	font-size: 1rem;
+	margin-left: 1rem;
+	}
+p.idxkeyword.lv2 {
+	margin-left: 2.5rem;
+	}
+p.idxmultiref {
+	padding-left: 1.286rem;
+	padding-bottom: 0.35rem;
+	background-image: url("../images/kw-page.gif");
+	background-repeat: no-repeat;
+	background-position: left -0.143rem;
+	}
+div#multiwrapper {
+	border: thin solid transparent;
+	box-shadow: 1px 1px 4px #676767;
+	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
+	background-color: #f5f5f5;
+	position: absolute;
+	display: block;
+	right: 16px;
+	visibility: hidden;
+	overflow: auto;
+	z-index: 1001;
+	}
+div#popmessage {
+	border: thin solid transparent;
+	box-shadow: 1px 1px 4px #676767;
+	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
+	background-color: #f5f5f5;
+	position: absolute;
+	display: block;
+	visibility: hidden;
+	z-index: 1001;
+	}
+p.popmessage {
+	font-size: 0.8rem;
+	color: #444444;
+	padding: 0.35rem;
+	}
+p.popmessage span {
+	font-weight: bold;
+	}
+a.kw {
+	color: #444444;
+	 text-decoration: none;
+	}
+a.kw:visited {
+	color: #444444;
+	}
+a.kw:hover {
+	text-decoration: underline;
+	}
+a.kw.off:hover {
+	text-decoration: none;
+}
+div#multiwrapper a.kw, div#idxheadwrapper a.kw {
+	color: #444444;
+	}
+
+/* Letter Groups */
+div.idxgroup-body {
+	display: none;
+	padding: 0;
+}
+ul.idxgroup-header {
+	list-style-type: none;
+	margin: 0.714rem 0.286rem 0.357rem 0;
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+	border: thin solid #444444;
+	background-color: #bfbfbf;
+	color: #444444;
+	padding: 0.143rem 0.143rem 0.143rem 0.357rem;
+	cursor: pointer;
+}
+ul.idxgroup-header li {
+	font-weight: bold;
+	color: #444444;
+}
+ul.idxgroup-header li a {
+	text-decoration: none;
+	color: #444444;
+}

@@ -1,0 +1,5 @@
+# Source Help&Manual export dropped by the docs team. It is an input to
+# tools/docs/build-help-docs.sh; we commit the unpacked, cleaned content/ instead of the
+# binary zip. Keep the source out of git so it can never be committed by accident.
+K2Go-webhelp*.zip
+K2Go-help*.zip
