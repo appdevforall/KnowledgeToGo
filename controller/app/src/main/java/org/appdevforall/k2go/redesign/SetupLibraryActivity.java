@@ -343,24 +343,33 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // The trade-off, stated: if the service never starts at all, the marker is left set with no
         // install behind it, and the next launch enters recovery. That is a state with a dialog and a
         // way out (ADFA-5119) rather than a silent dead end, which is the right side to fail on.
-        org.appdevforall.k2go.InstallGuard.begin(this);
-        Intent i = new Intent(this, InstallService.class);
-        i.setAction(InstallService.ACTION_START);
-        i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
-        i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
-        // ADFA-5023: reinstall wipes the existing rootfs first. Stopping a LIVE server before the wipe is
-        // done by the SERVICE (InstallService.runPipeline) — NOT here — so this navigation stays instant:
-        // one tap goes straight to the boot gate instead of the wizard sitting there during stopEnvironment.
-        i.putExtra(InstallService.EXTRA_REINSTALL, reinstallMode);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
-        else startService(i);
-        // ADFA-5023: plain startActivity so a FRESH LibraryActivity is created and reads EXTRA_INSTALLING
-        // in onCreate → the boot gate. (An earlier CLEAR_TOP reused the existing Library sitting on the
-        // Settings tab, which doesn't re-read the extra via onNewIntent, and dumped the user back on
-        // Settings.) Backing out mid-install is prevented by LibraryActivity.onBackPressed, not by
-        // clearing the stack.
-        startActivity(new Intent(this, LibraryActivity.class).putExtra(LibraryActivity.EXTRA_INSTALLING, true));
-        finish();
+        // K2GO-404 (ADR-395): the install downloads the rootfs image and the proot-distro base over
+        // aria2 (internet), so ask before spending metered data. The gate wraps the WHOLE commit --
+        // the InstallGuard marker, the service start and the navigation -- so a decline plants no
+        // marker and does not navigate to the boot gate (a marker with no install behind it would send
+        // the next launch into recovery). On decline/offline, reset the debounce so the user can retry
+        // after moving to Wi-Fi. In-flight resume on a returning network is handled headless by
+        // InstallService.onValidatedNetworkReturned, not re-prompted.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            org.appdevforall.k2go.InstallGuard.begin(this);
+            Intent i = new Intent(this, InstallService.class);
+            i.setAction(InstallService.ACTION_START);
+            i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
+            i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
+            // ADFA-5023: reinstall wipes the existing rootfs first. Stopping a LIVE server before the wipe is
+            // done by the SERVICE (InstallService.runPipeline) — NOT here — so this navigation stays instant:
+            // one tap goes straight to the boot gate instead of the wizard sitting there during stopEnvironment.
+            i.putExtra(InstallService.EXTRA_REINSTALL, reinstallMode);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+            else startService(i);
+            // ADFA-5023: plain startActivity so a FRESH LibraryActivity is created and reads EXTRA_INSTALLING
+            // in onCreate → the boot gate. (An earlier CLEAR_TOP reused the existing Library sitting on the
+            // Settings tab, which doesn't re-read the extra via onNewIntent, and dumped the user back on
+            // Settings.) Backing out mid-install is prevented by LibraryActivity.onBackPressed, not by
+            // clearing the stack.
+            startActivity(new Intent(this, LibraryActivity.class).putExtra(LibraryActivity.EXTRA_INSTALLING, true));
+            finish();
+        }, () -> installStarting = false);
     }
 
     /** ADFA-4853: the wizard content step — the Get More hub in pre-install mode (tier-gated). */
