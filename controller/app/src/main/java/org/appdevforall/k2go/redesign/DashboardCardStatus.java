@@ -33,7 +33,7 @@ public final class DashboardCardStatus {
      */
     public static void fetch(Context context, Listener l) {
         final Context ctx = context.getApplicationContext();
-        final boolean online = DashboardRebuild.hasInternet(ctx);
+        final boolean online = org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier.hasInternet(ctx);
 
         // Cached-first (ADFA-5026) so the UI isn't blank while the live check runs; the cache holds
         // only the boolean, so no versions -> no arrow from a cached state.
@@ -55,7 +55,7 @@ public final class DashboardCardStatus {
                 // Online but the check failed (box stopped): fall back to the cached state, or Checking
                 // when nothing is cached. Re-read connectivity in case the network just dropped.
                 l.onState(DashboardCardState.resolve(
-                        DashboardRebuild.hasInternet(ctx), false, false, null, null,
+                        org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier.hasInternet(ctx), false, false, null, null,
                         UpdateStatusCache.has(ctx), UpdateStatusCache.updateAvailable(ctx)));
             }
         });

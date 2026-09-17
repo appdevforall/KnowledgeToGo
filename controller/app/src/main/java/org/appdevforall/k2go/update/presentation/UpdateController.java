@@ -219,10 +219,13 @@ public class UpdateController {
         android.app.DownloadManager manager =
                 (android.app.DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
         if (manager != null) {
-            downloadCompletionHandled = false;
-            updateDownloadId = manager.enqueue(request);
-            getUpdateViewModel().track(updateDownloadId);
-            showUpdateProgressDialog();
+            // K2GO-404: gate the OTA (internet) download on metered cost; on decline it does not enqueue.
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(activity, () -> {
+                downloadCompletionHandled = false;
+                updateDownloadId = manager.enqueue(request);
+                getUpdateViewModel().track(updateDownloadId);
+                showUpdateProgressDialog();
+            });
         }
     }
 
