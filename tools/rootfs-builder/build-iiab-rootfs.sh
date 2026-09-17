@@ -611,7 +611,7 @@ tar --exclude='*/dev/*' --strip-components=1 -xJf "$BASE_LOCAL" -C "$ROOTFS"
 # covers a --base-local base: one place enforces main-only.
 if [[ -f "$ROOTFS/etc/apt/sources.list" ]]; then
   sed -i -E 's/[[:space:]]+(contrib|non-free-firmware|non-free)\b//g' "$ROOTFS/etc/apt/sources.list"
-  log "apt components set to main-only (F-Droid, K2GO-399)."
+  log "apt components set to main-only (K2GO-399)."
 fi
 
 # DNS inside the rootfs (the app rewrites resolv.conf; we replicate so apt resolves)
