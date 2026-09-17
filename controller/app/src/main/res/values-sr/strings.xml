@@ -1343,4 +1343,13 @@
     <string name="disk_guard_firehose_title">K2Go је обуздао необичну активност</string>
     <string name="disk_guard_firehose_body">K2Go је обрадио процес који је користио превише простора и одржао систем у раду. Додирните да пошаљете извештај.</string>
     <string name="k2go_maps_dl_title">Преузимање података мапе</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Изгледа да користите мобилне податке</string>
+    <string name="k2go_netpolicy_metered_msg">Ово преузимање користи мобилне податке. Може да има трошак или да потроши ваш план за податке. Желите ли да наставите?</string>
+    <string name="k2go_netpolicy_continue">Настави на мобилним подацима</string>
+    <string name="k2go_netpolicy_not_now">Не сада</string>
+    <string name="k2go_netpolicy_offline">Нема мреже. Повежите се на Wi-Fi да бисте преузели.</string>
+    <string name="k2go_netpolicy_switched_title">Изгледа да сте прешли на мобилне податке</string>
+    <string name="k2go_netpolicy_switched_msg">Нова преузимања сада користе мобилне податке. Ово може да има трошак или да потроши ваш план за податке.</string>
+    <string name="k2go_netpolicy_channel">Обавештења о трошку података</string>
 </resources>

@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">احتوى K2Go نشاطًا غير معتاد</string>
     <string name="disk_guard_firehose_body">تعامل K2Go مع عملية كانت تستخدم مساحة تخزين كبيرة وأبقى نظامك يعمل. انقر لإرسال تقرير.</string>
     <string name="k2go_maps_dl_title">جارٍ تنزيل بيانات الخريطة</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">يبدو أنك تستخدم بيانات الجوال</string>
+    <string name="k2go_netpolicy_metered_msg">يستخدم هذا التنزيل بيانات الجوال. قد يترتب عليه تكلفة أو يستنفد باقة بياناتك. هل تريد المتابعة؟</string>
+    <string name="k2go_netpolicy_continue">المتابعة عبر البيانات</string>
+    <string name="k2go_netpolicy_not_now">ليس الآن</string>
+    <string name="k2go_netpolicy_offline">لا توجد شبكة. اتصل بشبكة Wi-Fi للتنزيل.</string>
+    <string name="k2go_netpolicy_switched_title">يبدو أنك انتقلت إلى بيانات الجوال</string>
+    <string name="k2go_netpolicy_switched_msg">تستخدم التنزيلات الجديدة الآن بيانات الجوال. قد يترتب على ذلك تكلفة أو يستنفد باقة بياناتك.</string>
+    <string name="k2go_netpolicy_channel">تنبيهات تكلفة البيانات</string>
 </resources>

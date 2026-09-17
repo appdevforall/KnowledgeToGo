@@ -1340,4 +1340,13 @@
     <string name="disk_guard_firehose_title">K2Go begrenset uvanlig aktivitet</string>
     <string name="disk_guard_firehose_body">K2Go håndterte en prosess som brukte for mye lagringsplass, og holdt systemet i gang. Trykk for å sende en rapport.</string>
     <string name="k2go_maps_dl_title">Laster ned kartdata</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Det ser ut til at du bruker mobildata</string>
+    <string name="k2go_netpolicy_metered_msg">Denne nedlastingen bruker mobildata. Det kan koste penger eller bruke opp datapakken din. Vil du fortsette?</string>
+    <string name="k2go_netpolicy_continue">Fortsett med mobildata</string>
+    <string name="k2go_netpolicy_not_now">Ikke nå</string>
+    <string name="k2go_netpolicy_offline">Ingen nettverk. Koble til Wi-Fi for å laste ned.</string>
+    <string name="k2go_netpolicy_switched_title">Det ser ut til at du byttet til mobildata</string>
+    <string name="k2go_netpolicy_switched_msg">Nye nedlastinger bruker nå mobildata. Det kan koste penger eller bruke opp datapakken din.</string>
+    <string name="k2go_netpolicy_channel">Varsler om datakostnad</string>
 </resources>

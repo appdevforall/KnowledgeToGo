@@ -1337,4 +1337,13 @@
     <string name="disk_guard_firehose_title">K2Go ограничи необичайна активност</string>
     <string name="disk_guard_firehose_body">K2Go се справи с процес, който използваше твърде много хранилище, и запази системата ви работеща. Докоснете, за да изпратите отчет.</string>
     <string name="k2go_maps_dl_title">Изтегляне на данни за картата</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Изглежда използвате мобилни данни</string>
+    <string name="k2go_netpolicy_metered_msg">Това изтегляне използва мобилни данни. Може да има такса или да изчерпи плана ви за данни. Искате ли да продължите?</string>
+    <string name="k2go_netpolicy_continue">Продължи с мобилни данни</string>
+    <string name="k2go_netpolicy_not_now">Не сега</string>
+    <string name="k2go_netpolicy_offline">Няма мрежа. Свържете се с Wi-Fi, за да изтеглите.</string>
+    <string name="k2go_netpolicy_switched_title">Изглежда превключихте към мобилни данни</string>
+    <string name="k2go_netpolicy_switched_msg">Новите изтегляния вече използват мобилни данни. Това може да има такса или да изчерпи плана ви за данни.</string>
+    <string name="k2go_netpolicy_channel">Известия за разход на данни</string>
 </resources>

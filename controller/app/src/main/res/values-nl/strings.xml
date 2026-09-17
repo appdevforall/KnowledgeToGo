@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go heeft ongebruikelijke activiteit ingeperkt</string>
     <string name="disk_guard_firehose_body">K2Go heeft een proces afgehandeld dat te veel opslag gebruikte en uw systeem draaiende gehouden. Tik om een rapport te sturen.</string>
     <string name="k2go_maps_dl_title">Kaartgegevens downloaden</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Je lijkt mobiele data te gebruiken</string>
+    <string name="k2go_netpolicy_metered_msg">Deze download gebruikt mobiele data. Dit kan kosten opleveren of je databundel opmaken. Wil je doorgaan?</string>
+    <string name="k2go_netpolicy_continue">Doorgaan met mobiele data</string>
+    <string name="k2go_netpolicy_not_now">Niet nu</string>
+    <string name="k2go_netpolicy_offline">Geen netwerk. Maak verbinding met wifi om te downloaden.</string>
+    <string name="k2go_netpolicy_switched_title">Je lijkt overgeschakeld te zijn naar mobiele data</string>
+    <string name="k2go_netpolicy_switched_msg">Nieuwe downloads gebruiken nu mobiele data. Dit kan kosten opleveren of je databundel opmaken.</string>
+    <string name="k2go_netpolicy_channel">Waarschuwingen datakosten</string>
 </resources>

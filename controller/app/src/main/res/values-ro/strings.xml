@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go a limitat o activitate neobișnuită</string>
     <string name="disk_guard_firehose_body">K2Go a gestionat un proces care folosea prea mult spațiu și a menținut sistemul în funcțiune. Atinge pentru a trimite un raport.</string>
     <string name="k2go_maps_dl_title">Se descarcă datele hărții</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Se pare că folosești date mobile</string>
+    <string name="k2go_netpolicy_metered_msg">Această descărcare folosește date mobile. Poate genera costuri sau îți poate epuiza planul de date. Vrei să continui?</string>
+    <string name="k2go_netpolicy_continue">Continuă pe date mobile</string>
+    <string name="k2go_netpolicy_not_now">Nu acum</string>
+    <string name="k2go_netpolicy_offline">Fără rețea. Conectează-te la Wi-Fi pentru a descărca.</string>
+    <string name="k2go_netpolicy_switched_title">Se pare că ai trecut la date mobile</string>
+    <string name="k2go_netpolicy_switched_msg">Descărcările noi folosesc acum date mobile. Acest lucru poate genera costuri sau îți poate epuiza planul de date.</string>
+    <string name="k2go_netpolicy_channel">Alerte privind costul datelor</string>
 </resources>

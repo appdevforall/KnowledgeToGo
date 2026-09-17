@@ -106,7 +106,10 @@ public class ZimConfirmFragment extends Fragment {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
             if (banks) a.zimWizardConfirm();   // no box yet: bank it
-            else if (!DashboardRebuild.blockedByUpdate(v)) a.startZimDownload();   // ADFA-5074 / ADFA-5333
+            // ADFA-5074 / ADFA-5333: blocked while a dashboard update runs. The K2GO-395 metered-cost
+            // gate lives inside startZimDownload (bank first, then gate the drain), so the order is
+            // never lost on decline/offline; see ADR-395 sec.10.
+            else if (!DashboardRebuild.blockedByUpdate(v)) a.startZimDownload();
         });
 
         return root;

@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go olağan dışı bir etkinliği kontrol altına aldı</string>
     <string name="disk_guard_firehose_body">K2Go çok fazla depolama kullanan bir işlemi yönetti ve sisteminizi çalışır durumda tuttu. Rapor göndermek için dokunun.</string>
     <string name="k2go_maps_dl_title">Harita verileri indiriliyor</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Mobil veri kullanıyor gibisiniz</string>
+    <string name="k2go_netpolicy_metered_msg">Bu indirme mobil veri kullanıyor. Ücretlendirilebilir veya veri paketinizi tüketebilir. Devam etmek istiyor musunuz?</string>
+    <string name="k2go_netpolicy_continue">Mobil veriyle devam et</string>
+    <string name="k2go_netpolicy_not_now">Şimdi değil</string>
+    <string name="k2go_netpolicy_offline">Ağ yok. İndirmek için Wi-Fi\'ye bağlanın.</string>
+    <string name="k2go_netpolicy_switched_title">Mobil veriye geçmiş gibisiniz</string>
+    <string name="k2go_netpolicy_switched_msg">Yeni indirmeler artık mobil veri kullanıyor. Bu, ücretlendirilebilir veya veri paketinizi tüketebilir.</string>
+    <string name="k2go_netpolicy_channel">Veri maliyeti uyarıları</string>
 </resources>

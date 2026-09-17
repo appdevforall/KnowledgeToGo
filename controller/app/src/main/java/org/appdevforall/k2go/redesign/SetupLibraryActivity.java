@@ -304,8 +304,15 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public void startZimDownload() {
         ZimWishlist.add(this, selection().zimCart());
         selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
-        ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // K2GO-395 (ADR-395 sec.10): the order is banked above, unconditionally, so it is never lost.
+        // The gate wraps only the drain + navigation: it prompts on a metered network and, on consent
+        // (or Wi-Fi), drains and opens progress; declined or offline the order stays queued and a later
+        // pass drains it. The drain is also held headless by ContentAdmission, so a banked order never
+        // starts on metered data without consent even via the wizard-bank path or a background re-drain.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
+            startActivity(new Intent(this, SetupProgressActivity.class));
+        });
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
@@ -517,20 +524,25 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
                     v != null && v.length > 2 ? v[2] : "");
         }
         selection().booksCart().clear();
-        // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
-        // calling its service directly, and that had a real consequence beyond symmetry: the
-        // service registers its session asynchronously in onStartCommand, so for a moment nothing
-        // was pending and nothing was in session. The index reads exactly that pair to decide the
-        // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
-        // just-started download complete and count down to the Library. Writing the wishlist first
-        // makes hasPending true synchronously, before the index is even launched, so that window
-        // does not exist. It also makes Books queue behind a busy line instead of overwriting.
-        BooksProvisioner.drain(this);
-        // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
-        // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
-        // detail "when books is the only stream" made the landing depend on state the user cannot
-        // see, and the index is what ends the run.
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // K2GO-395 (ADR-395 sec.10): the order is banked above; gate only the drain + navigation, so
+        // a declined or offline order stays queued (ContentAdmission also holds it on metered-without-
+        // consent). Same shape as startZimDownload.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
+            // calling its service directly, and that had a real consequence beyond symmetry: the
+            // service registers its session asynchronously in onStartCommand, so for a moment nothing
+            // was pending and nothing was in session. The index reads exactly that pair to decide the
+            // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
+            // just-started download complete and count down to the Library. Writing the wishlist first
+            // makes hasPending true synchronously, before the index is even launched, so that window
+            // does not exist. It also makes Books queue behind a busy line instead of overwriting.
+            BooksProvisioner.drain(this);
+            // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
+            // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
+            // detail "when books is the only stream" made the landing depend on state the user cannot
+            // see, and the index is what ends the run.
+            startActivity(new Intent(this, SetupProgressActivity.class));
+        });
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
@@ -567,12 +579,23 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public void openMapsIndex(String[] levels, long totalMb) {
         // ADFA-5228: maps is a proot (STOPPED) install — confirm before entering the index that runs it.
         InstallConfirm.gate(this, org.appdevforall.k2go.system.domain.Operation.appInstall("maps"), () -> {
-            String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
-            String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-            String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
-            boolean search = levels != null && levels.length > 3 && levels[3] != null;
-            MapsWishlist.save(this, base, sat, ter, search, totalMb);
-            startActivity(new Intent(this, SetupProgressActivity.class));
+            // K2GO-395 (ADR-395): maps pre-downloads its base layers over REST (dash-node,
+            // InstallService.downloadMapsBasemapsThenRun) before the runrole, so this is a costed heavy
+            // start -- prompt before spending metered data. Gated at the UI commit (like FQR), not at
+            // MapsProvisioner.drain: the maps drain is a serialized proot stage where a refusal is
+            // TERMINAL (SetupProgressActivity marks mapsStartFailed and retires the stage, by design, to
+            // avoid an unexplained spinner), so a "cost-hold = retry later" does not fit there without an
+            // orchestrator "waiting for network" state. The wizard/system-install maps path
+            // (mapsWizardConfirm) + that headless integration ride with the install/rootfs PR. Decline or
+            // offline just does not enter the index; nothing is banked.
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+                String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
+                String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+                String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
+                boolean search = levels != null && levels.length > 3 && levels[3] != null;
+                MapsWishlist.save(this, base, sat, ter, search, totalMb);
+                startActivity(new Intent(this, SetupProgressActivity.class));
+            });
         });
     }
 

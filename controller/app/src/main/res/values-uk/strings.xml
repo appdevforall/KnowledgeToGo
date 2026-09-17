@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go стримав незвичну активність</string>
     <string name="disk_guard_firehose_body">K2Go опрацював процес, що використовував забагато сховища, і зберіг роботу системи. Натисніть, щоб надіслати звіт.</string>
     <string name="k2go_maps_dl_title">Завантаження даних карти</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Схоже, ви використовуєте мобільні дані</string>
+    <string name="k2go_netpolicy_metered_msg">Це завантаження використовує мобільні дані. Це може призвести до витрат або вичерпати пакет даних. Продовжити?</string>
+    <string name="k2go_netpolicy_continue">Продовжити на мобільних даних</string>
+    <string name="k2go_netpolicy_not_now">Не зараз</string>
+    <string name="k2go_netpolicy_offline">Немає мережі. Підключіться до Wi-Fi, щоб завантажити.</string>
+    <string name="k2go_netpolicy_switched_title">Схоже, ви перейшли на мобільні дані</string>
+    <string name="k2go_netpolicy_switched_msg">Нові завантаження тепер використовують мобільні дані. Це може призвести до витрат або вичерпати пакет даних.</string>
+    <string name="k2go_netpolicy_channel">Сповіщення про витрати даних</string>
 </resources>

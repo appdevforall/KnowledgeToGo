@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">A K2Go visszafogott egy szokatlan tevékenységet</string>
     <string name="disk_guard_firehose_body">A K2Go kezelt egy túl sok tárhelyet használó folyamatot, és működésben tartotta a rendszert. Koppintson a jelentés küldéséhez.</string>
     <string name="k2go_maps_dl_title">Térképadatok letöltése</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Úgy tűnik, mobiladatot használ</string>
+    <string name="k2go_netpolicy_metered_msg">Ez a letöltés mobiladatot használ. Ez költséggel járhat, vagy elfogyaszthatja az adatkeretét. Folytatja?</string>
+    <string name="k2go_netpolicy_continue">Folytatás mobiladaton</string>
+    <string name="k2go_netpolicy_not_now">Most nem</string>
+    <string name="k2go_netpolicy_offline">Nincs hálózat. Csatlakozzon Wi-Fi-hez a letöltéshez.</string>
+    <string name="k2go_netpolicy_switched_title">Úgy tűnik, átváltott mobiladatra</string>
+    <string name="k2go_netpolicy_switched_msg">Az új letöltések most mobiladatot használnak. Ez költséggel járhat, vagy elfogyaszthatja az adatkeretét.</string>
+    <string name="k2go_netpolicy_channel">Adatköltség-figyelmeztetések</string>
 </resources>

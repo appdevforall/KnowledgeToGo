@@ -1337,4 +1337,13 @@
     <string name="disk_guard_firehose_title">K2Go zvládol neobvyklú aktivitu</string>
     <string name="disk_guard_firehose_body">K2Go spracoval proces, ktorý využíval priveľa úložiska, a udržal systém v chode. Klepnutím odošlite hlásenie.</string>
     <string name="k2go_maps_dl_title">Sťahovanie údajov mapy</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Zdá sa, že používate mobilné dáta</string>
+    <string name="k2go_netpolicy_metered_msg">Toto sťahovanie používa mobilné dáta. Môže byť spoplatnené alebo vyčerpať váš dátový limit. Chcete pokračovať?</string>
+    <string name="k2go_netpolicy_continue">Pokračovať na mobilných dátach</string>
+    <string name="k2go_netpolicy_not_now">Teraz nie</string>
+    <string name="k2go_netpolicy_offline">Žiadna sieť. Pripojte sa k Wi-Fi na stiahnutie.</string>
+    <string name="k2go_netpolicy_switched_title">Zdá sa, že ste sa prepli na mobilné dáta</string>
+    <string name="k2go_netpolicy_switched_msg">Nové sťahovania teraz používajú mobilné dáta. Môže byť spoplatnené alebo vyčerpať váš dátový limit.</string>
+    <string name="k2go_netpolicy_channel">Upozornenia na náklady za dáta</string>
 </resources>

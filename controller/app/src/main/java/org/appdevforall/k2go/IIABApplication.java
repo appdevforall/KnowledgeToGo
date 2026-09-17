@@ -34,6 +34,10 @@ public class IIABApplication extends Application {
         // with NO foreground Activity. The tick stands down while an Activity is foregrounded (the Activity
         // poll + bridge drive then); it only actuates OFF-UI when backgrounded.
         org.appdevforall.k2go.env.ServerLifecycleReconciler.get().startBackgroundTick(this);
+        // K2GO-395 (ADR-395): one process-scoped watcher of the default-network cost class.
+        // Proactive alert on crossing into metered + clears the session metered-consent on leaving
+        // metered. Reuses the existing NetworkStateLiveData callback (one source of the change fact).
+        org.appdevforall.k2go.networkpolicy.presentation.MeteredNetworkObserver.start(this);
         // We inject Conscrypt as the app's primary security provider
         try {
             Security.insertProviderAt(Conscrypt.newProvider(), 1);

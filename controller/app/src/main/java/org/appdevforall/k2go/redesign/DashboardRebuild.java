@@ -93,8 +93,19 @@ public final class DashboardRebuild {
                 if (!host.isAdded()) return;
                 // ADFA-5339: the site refresh only applies to the LIVE REST path; the proot bridge rebuild
                 // (< 1.2.0) has no site step, so the checkbox is simply not carried there.
-                if (op.isLive()) startRest(host, anchor, updateSite);
-                else startProot(host);
+                if (op.isLive()) {
+                    // K2GO-395 (ADR-395): the LIVE path is a REST-heavy transfer -- the box git-fetches
+                    // and blue-green rebuilds over the device's default network. Prompt before spending
+                    // metered data. Like FQR (a user-driven Operation, not a banked ContentType), it is
+                    // gated at the UI commit, not through ContentAdmission -- which already defers TO a
+                    // dashboard update, so routing it there would be circular. The only POST path is
+                    // startRest -> DashboardRebuildService ACTION_START (ATTACH re-owns without POSTing),
+                    // so this one gate covers it. No queue to fall back on: a decline just does not start.
+                    org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
+                            host.requireActivity(), () -> startRest(host, anchor, updateSite));
+                } else {
+                    startProot(host);
+                }
             });
         });
     }
@@ -116,8 +127,14 @@ public final class DashboardRebuild {
      *  reports done/error, with no time cap. A visible dashboard card refreshes on the service's
      *  completion broadcast; nothing pins this screen. */
     private static void startRest(@NonNull Fragment host, @NonNull View anchor, boolean updateSite) {
+        // K2GO-395: this now runs deferred behind the metered consent dialog, so the host fragment may
+        // have detached (config change / navigation) before the user taps Continue. Bail before
+        // requireContext() would throw -- consistent with the isAdded() guard already used for the
+        // snackbar below and with KolibriConfirmFragment.commitLive. The update is not banked, so a
+        // dropped start on this rare window is re-triggerable from the card, not a lost queue item.
+        if (!host.isAdded()) return;
         DashboardRebuildService.start(host.requireContext().getApplicationContext(), updateSite);
-        if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
+        Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 
     /** ADFA-5333: reverse gate for LIVE content downloads (ZIM/Books/Kolibri). Those run on the server

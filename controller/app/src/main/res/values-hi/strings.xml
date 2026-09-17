@@ -1407,4 +1407,13 @@
     <string name="disk_guard_firehose_title">K2Go ने असामान्य गतिविधि को रोका</string>
     <string name="disk_guard_firehose_body">K2Go ने बहुत अधिक स्टोरेज उपयोग कर रही प्रक्रिया को संभाला और आपका सिस्टम चालू रखा। रिपोर्ट भेजने के लिए टैप करें।</string>
     <string name="k2go_maps_dl_title">मानचित्र डेटा डाउनलोड हो रहा है</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">ऐसा लगता है कि आप मोबाइल डेटा का उपयोग कर रहे हैं</string>
+    <string name="k2go_netpolicy_metered_msg">यह डाउनलोड मोबाइल डेटा का उपयोग करता है. इससे शुल्क लग सकता है या आपका डेटा प्लान खत्म हो सकता है. क्या आप जारी रखना चाहते हैं?</string>
+    <string name="k2go_netpolicy_continue">डेटा पर जारी रखें</string>
+    <string name="k2go_netpolicy_not_now">अभी नहीं</string>
+    <string name="k2go_netpolicy_offline">कोई नेटवर्क नहीं. डाउनलोड करने के लिए Wi-Fi से कनेक्ट करें.</string>
+    <string name="k2go_netpolicy_switched_title">ऐसा लगता है कि आप मोबाइल डेटा पर स्विच हो गए</string>
+    <string name="k2go_netpolicy_switched_msg">नए डाउनलोड अब मोबाइल डेटा का उपयोग करते हैं. इससे शुल्क लग सकता है या आपका डेटा प्लान खत्म हो सकता है.</string>
+    <string name="k2go_netpolicy_channel">डेटा लागत अलर्ट</string>
 </resources>

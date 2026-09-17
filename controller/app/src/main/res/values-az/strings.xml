@@ -1350,4 +1350,13 @@
     <string name="disk_guard_firehose_title">K2Go qeyri-adi fəaliyyəti cilovladı</string>
     <string name="disk_guard_firehose_body">K2Go çox yaddaş istifadə edən prosesi idarə etdi və sisteminizi işlək saxladı. Hesabat göndərmək üçün toxunun.</string>
     <string name="k2go_maps_dl_title">Xəritə məlumatları yüklənir</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Görünür, mobil internetdən istifadə edirsiniz</string>
+    <string name="k2go_netpolicy_metered_msg">Bu yükləmə mobil internetdən istifadə edir. Bu, xərc yarada və ya data paketinizi bitirə bilər. Davam etmək istəyirsiniz?</string>
+    <string name="k2go_netpolicy_continue">Mobil internetlə davam et</string>
+    <string name="k2go_netpolicy_not_now">İndi yox</string>
+    <string name="k2go_netpolicy_offline">Şəbəkə yoxdur. Yükləmək üçün Wi-Fi-a qoşulun.</string>
+    <string name="k2go_netpolicy_switched_title">Deyəsən, mobil internetə keçdiniz</string>
+    <string name="k2go_netpolicy_switched_msg">Yeni yükləmələr indi mobil internetdən istifadə edir. Bu, xərc yarada və ya data paketinizi bitirə bilər.</string>
+    <string name="k2go_netpolicy_channel">Data xərci bildirişləri</string>
 </resources>

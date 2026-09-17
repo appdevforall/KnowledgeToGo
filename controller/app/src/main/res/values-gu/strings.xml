@@ -1343,4 +1343,13 @@
     <string name="disk_guard_firehose_title">K2Go એ અસામાન્ય પ્રવૃત્તિ કાબૂમાં લીધી</string>
     <string name="disk_guard_firehose_body">K2Go એ વધુ પડતું સ્ટોરેજ વાપરતી પ્રક્રિયા સંભાળી અને તમારી સિસ્ટમ ચાલુ રાખી. રિપોર્ટ મોકલવા ટૅપ કરો.</string>
     <string name="k2go_maps_dl_title">નકશા ડેટા ડાઉનલોડ થઈ રહ્યો છે</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">એવું લાગે છે કે તમે મોબાઇલ ડેટા વાપરી રહ્યા છો</string>
+    <string name="k2go_netpolicy_metered_msg">આ ડાઉનલોડ મોબાઇલ ડેટા વાપરે છે. તેનાથી ખર્ચ થઈ શકે અથવા તમારો ડેટા પ્લાન ખતમ થઈ શકે. શું તમે ચાલુ રાખવા માંગો છો?</string>
+    <string name="k2go_netpolicy_continue">ડેટા પર ચાલુ રાખો</string>
+    <string name="k2go_netpolicy_not_now">હમણાં નહીં</string>
+    <string name="k2go_netpolicy_offline">કોઈ નેટવર્ક નથી. ડાઉનલોડ કરવા માટે Wi-Fi સાથે કનેક્ટ કરો.</string>
+    <string name="k2go_netpolicy_switched_title">એવું લાગે છે કે તમે મોબાઇલ ડેટા પર સ્વિચ કર્યું</string>
+    <string name="k2go_netpolicy_switched_msg">નવા ડાઉનલોડ હવે મોબાઇલ ડેટા વાપરે છે. તેનાથી ખર્ચ થઈ શકે અથવા તમારો ડેટા પ્લાન ખતમ થઈ શકે.</string>
+    <string name="k2go_netpolicy_channel">ડેટા ખર્ચ ચેતવણીઓ</string>
 </resources>
