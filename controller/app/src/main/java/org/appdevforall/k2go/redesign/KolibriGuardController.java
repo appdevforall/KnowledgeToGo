@@ -130,7 +130,7 @@ public final class KolibriGuardController {
           + "XMLHttpRequest.prototype.open=function(m,u){this.__k2m=m;this.__k2u=u;return XO.apply(this,arguments);};"
           + "XMLHttpRequest.prototype.send=function(b){var self=this,a=arguments;"
           + "if(classify(self.__k2m,self.__k2u,b,function(){XS.apply(self,a);},"
-          + "function(){try{self.abort();}catch(e){}try{self.dispatchEvent(new Event('error'));}catch(e){}}))return;"
+          + "function(){try{self.abort();}catch(e){}}))return;"
           + "return XS.apply(self,arguments);};}catch(e){}"
           + "try{var OF=window.fetch;if(OF){window.fetch=function(i,n){"
           + "var m=(n&&n.method)||(i&&i.method)||'GET';var u=(typeof i==='string')?i:((i&&i.url)||'');var b=n&&n.body;"
