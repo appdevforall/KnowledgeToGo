@@ -1337,4 +1337,13 @@
     <string name="disk_guard_firehose_title">Το K2Go περιόρισε ασυνήθιστη δραστηριότητα</string>
     <string name="disk_guard_firehose_body">Το K2Go χειρίστηκε μια διεργασία που χρησιμοποιούσε υπερβολικό χώρο και κράτησε το σύστημά σας σε λειτουργία. Πατήστε για αποστολή αναφοράς.</string>
     <string name="k2go_maps_dl_title">Λήψη δεδομένων χάρτη</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Φαίνεται ότι χρησιμοποιείτε δεδομένα κινητής</string>
+    <string name="k2go_netpolicy_metered_msg">Αυτή η λήψη χρησιμοποιεί δεδομένα κινητής. Μπορεί να έχει κόστος ή να εξαντλήσει το πρόγραμμα δεδομένων σας. Θέλετε να συνεχίσετε;</string>
+    <string name="k2go_netpolicy_continue">Συνέχεια με δεδομένα</string>
+    <string name="k2go_netpolicy_not_now">Όχι τώρα</string>
+    <string name="k2go_netpolicy_offline">Χωρίς δίκτυο. Συνδεθείτε σε Wi-Fi για λήψη.</string>
+    <string name="k2go_netpolicy_switched_title">Φαίνεται ότι μεταβήκατε σε δεδομένα κινητής</string>
+    <string name="k2go_netpolicy_switched_msg">Οι νέες λήψεις χρησιμοποιούν τώρα δεδομένα κινητής. Αυτό μπορεί να έχει κόστος ή να εξαντλήσει το πρόγραμμα δεδομένων σας.</string>
+    <string name="k2go_netpolicy_channel">Ειδοποιήσεις κόστους δεδομένων</string>
 </resources>

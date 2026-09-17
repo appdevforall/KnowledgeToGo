@@ -1347,4 +1347,13 @@
     <string name="disk_guard_firehose_title">K2Go suvaldė neįprastą veiklą</string>
     <string name="disk_guard_firehose_body">K2Go sutvarkė procesą, naudojusį per daug saugyklos, ir išlaikė jūsų sistemą veikiančią. Palieskite, kad išsiųstumėte ataskaitą.</string>
     <string name="k2go_maps_dl_title">Atsisiunčiami žemėlapio duomenys</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Panašu, kad naudojate mobiliuosius duomenis</string>
+    <string name="k2go_netpolicy_metered_msg">Šis atsisiuntimas naudoja mobiliuosius duomenis. Tai gali kainuoti arba išnaudoti duomenų planą. Ar norite tęsti?</string>
+    <string name="k2go_netpolicy_continue">Tęsti su mobiliaisiais duomenimis</string>
+    <string name="k2go_netpolicy_not_now">Ne dabar</string>
+    <string name="k2go_netpolicy_offline">Nėra tinklo. Prisijunkite prie Wi-Fi, kad atsisiųstumėte.</string>
+    <string name="k2go_netpolicy_switched_title">Panašu, kad perjungėte į mobiliuosius duomenis</string>
+    <string name="k2go_netpolicy_switched_msg">Nauji atsisiuntimai dabar naudoja mobiliuosius duomenis. Tai gali kainuoti arba išnaudoti duomenų planą.</string>
+    <string name="k2go_netpolicy_channel">Duomenų sąnaudų įspėjimai</string>
 </resources>

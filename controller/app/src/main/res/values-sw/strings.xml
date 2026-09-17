@@ -1350,4 +1350,13 @@
     <string name="disk_guard_firehose_title">K2Go ilidhibiti shughuli isiyo ya kawaida</string>
     <string name="disk_guard_firehose_body">K2Go ilishughulikia mchakato uliokuwa ukitumia hifadhi nyingi mno na kuweka mfumo wako ukiendelea kufanya kazi. Gusa kutuma ripoti.</string>
     <string name="k2go_maps_dl_title">Inapakua data ya ramani</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Inaonekana unatumia data ya simu</string>
+    <string name="k2go_netpolicy_metered_msg">Upakuaji huu unatumia data ya simu. Inaweza kugharimu au kumaliza kifurushi chako cha data. Ungependa kuendelea?</string>
+    <string name="k2go_netpolicy_continue">Endelea kwa data</string>
+    <string name="k2go_netpolicy_not_now">Si sasa</string>
+    <string name="k2go_netpolicy_offline">Hakuna mtandao. Unganisha kwa Wi-Fi ili kupakua.</string>
+    <string name="k2go_netpolicy_switched_title">Inaonekana umebadili hadi data ya simu</string>
+    <string name="k2go_netpolicy_switched_msg">Vipakuliwa vipya sasa vinatumia data ya simu. Hii inaweza kugharimu au kumaliza kifurushi chako cha data.</string>
+    <string name="k2go_netpolicy_channel">Arifa za gharama ya data</string>
 </resources>

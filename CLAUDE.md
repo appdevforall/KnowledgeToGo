@@ -113,16 +113,19 @@ two layered migrations from colliding, follow these rules:
 - **Shared contracts land first.** If two features need a common domain type or
   port, define and merge that small interface on its own first, then both features
   build against it. Don't duplicate it on two branches.
-- **Per-feature resource files** to avoid `strings.xml` collisions: a feature may
-  add its own `res/values/strings_<feature>.xml` (Android merges all `<resources>`
-  files) instead of everyone editing the one shared `strings.xml`. Append, never
-  reorder existing keys. **This is a temporary device for parallel work, not the
-  end state.** A `strings_<feature>.xml` is folded back into `strings.xml` (with all
-  33 locale values) once the feature lands and the collision risk is gone; the
-  final tree should carry no loose `strings_<feature>.xml`. The one exception is
-  `strings_untranslated.xml`, the deliberate WIP tracker for strings awaiting
-  translation (see the l10n conventions). This holds until the policy changes to
-  keep per-feature string files permanently.
+- **One place for strings; no per-feature string files.** All UI strings end in
+  `strings.xml` (with all locale values). Do NOT create `res/values/strings_<feature>.xml`
+  files. A scattered per-feature file is more dangerous than a single tracker: to
+  find a string you must first know which feature owns it, and the last feature
+  added is exactly the one you do not know to look in -- so strings get lost. The
+  ONLY external string file is `strings_untranslated.xml`: the single, always-known
+  WIP tracker for strings that are user-facing but not yet translated (see the l10n
+  conventions). Park a WIP string there while you work, then migrate it into
+  `strings.xml` (all locale values) before the PR merges. A PR closes fully
+  integrated, so `strings_untranslated.xml` should be near-empty when the next PR
+  opens -- never a growing pile. Edits to `strings.xml` stay additive and append-only
+  (never reorder existing keys) to keep parallel-branch collisions trivial to
+  resolve; discoverability wins over collision-avoidance.
 - **Wire dependencies by hand, per feature.** Each feature has its own
   `…ViewModelFactory` / small factory. There is no shared DI graph for everyone to
   edit (introducing Hilt/Dagger is a separate ADR), so composition roots don't

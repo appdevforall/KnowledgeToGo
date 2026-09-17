@@ -1350,4 +1350,13 @@
     <string name="disk_guard_firehose_title">K2Go ṣàkóso iṣẹ́ àìṣàmúlò</string>
     <string name="disk_guard_firehose_body">K2Go ṣàkóso ìlànà kan tí ó ń lo ibi ìsàvè púpọ̀ jù ó sì jẹ́ kí ètò rẹ máa ṣiṣẹ́. Tẹ̀ láti fi ìròyìn ránṣẹ́.</string>
     <string name="k2go_maps_dl_title">Ń gba data maapu wọlé</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">O dabi pe o n lo data alagbeka</string>
+    <string name="k2go_netpolicy_metered_msg">Igbasilẹ yii n lo data alagbeka. O le san owo tabi lo package data rẹ tan. Ṣe o fẹ tẹsiwaju?</string>
+    <string name="k2go_netpolicy_continue">Tẹsiwaju pẹlu data</string>
+    <string name="k2go_netpolicy_not_now">Kii ṣe bayii</string>
+    <string name="k2go_netpolicy_offline">Ko si nẹtiwọọki. Sopọ si Wi-Fi lati gbaa wọle.</string>
+    <string name="k2go_netpolicy_switched_title">O dabi pe o ti yipada si data alagbeka</string>
+    <string name="k2go_netpolicy_switched_msg">Awọn igbasilẹ tuntun n lo data alagbeka bayii. Eyi le san owo tabi lo package data rẹ tan.</string>
+    <string name="k2go_netpolicy_channel">Awọn ikilọ iye owo data</string>
 </resources>

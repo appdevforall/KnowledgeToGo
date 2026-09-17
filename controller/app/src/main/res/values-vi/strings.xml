@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go đã kiểm soát hoạt động bất thường</string>
     <string name="disk_guard_firehose_body">K2Go đã xử lý một tiến trình sử dụng quá nhiều bộ nhớ và giữ cho hệ thống hoạt động. Nhấn để gửi báo cáo.</string>
     <string name="k2go_maps_dl_title">Đang tải dữ liệu bản đồ</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Có vẻ như bạn đang dùng dữ liệu di động</string>
+    <string name="k2go_netpolicy_metered_msg">Bản tải xuống này dùng dữ liệu di động. Có thể phát sinh chi phí hoặc dùng hết gói dữ liệu của bạn. Bạn có muốn tiếp tục không?</string>
+    <string name="k2go_netpolicy_continue">Tiếp tục bằng dữ liệu</string>
+    <string name="k2go_netpolicy_not_now">Để sau</string>
+    <string name="k2go_netpolicy_offline">Không có mạng. Kết nối Wi-Fi để tải xuống.</string>
+    <string name="k2go_netpolicy_switched_title">Có vẻ như bạn đã chuyển sang dữ liệu di động</string>
+    <string name="k2go_netpolicy_switched_msg">Các bản tải xuống mới hiện dùng dữ liệu di động. Điều này có thể phát sinh chi phí hoặc dùng hết gói dữ liệu của bạn.</string>
+    <string name="k2go_netpolicy_channel">Cảnh báo chi phí dữ liệu</string>
 </resources>

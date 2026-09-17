@@ -1331,4 +1331,13 @@
     <string name="disk_guard_firehose_title">K2Go가 비정상적인 활동을 억제했습니다</string>
     <string name="disk_guard_firehose_body">K2Go가 저장 공간을 과도하게 사용하던 프로세스를 처리하고 시스템을 계속 실행했습니다. 탭하여 보고서를 보내세요.</string>
     <string name="k2go_maps_dl_title">지도 데이터 다운로드 중</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">모바일 데이터를 사용 중인 것 같습니다</string>
+    <string name="k2go_netpolicy_metered_msg">이 다운로드는 모바일 데이터를 사용합니다. 요금이 발생하거나 데이터 요금제를 모두 사용할 수 있습니다. 계속하시겠습니까?</string>
+    <string name="k2go_netpolicy_continue">데이터로 계속</string>
+    <string name="k2go_netpolicy_not_now">나중에</string>
+    <string name="k2go_netpolicy_offline">네트워크가 없습니다. 다운로드하려면 Wi-Fi에 연결하세요.</string>
+    <string name="k2go_netpolicy_switched_title">모바일 데이터로 전환된 것 같습니다</string>
+    <string name="k2go_netpolicy_switched_msg">새 다운로드가 이제 모바일 데이터를 사용합니다. 요금이 발생하거나 데이터 요금제를 모두 사용할 수 있습니다.</string>
+    <string name="k2go_netpolicy_channel">데이터 요금 알림</string>
 </resources>

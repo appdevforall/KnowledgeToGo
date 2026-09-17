@@ -1514,4 +1514,13 @@
     <string name="disk_guard_firehose_title">K2Go contained unusual activity</string>
     <string name="disk_guard_firehose_body">K2Go handled a process that was using too much storage and kept your system running. Tap to send a report.</string>
     <string name="k2go_maps_dl_title">Downloading map data</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">You seem to be on mobile data</string>
+    <string name="k2go_netpolicy_metered_msg">This download uses mobile data. It can add cost or use up your data plan. Do you want to continue?</string>
+    <string name="k2go_netpolicy_continue">Continue on data</string>
+    <string name="k2go_netpolicy_not_now">Not now</string>
+    <string name="k2go_netpolicy_offline">No network. Connect to Wi-Fi to download.</string>
+    <string name="k2go_netpolicy_switched_title">You seem to have switched to mobile data</string>
+    <string name="k2go_netpolicy_switched_msg">New downloads now use mobile data. This can add cost or use up your data plan.</string>
+    <string name="k2go_netpolicy_channel">Data cost alerts</string>
 </resources>

@@ -5,12 +5,13 @@
   This is the tracking list for strings that are user-facing but NOT yet translated to the 33
   locales. They carry translatable="false" HERE (so lint's MissingTranslation is satisfied and the
   debt is visible in one place) instead of being buried inline in strings.xml. When a string is
-  translated, migrate it to strings.xml (or its feature file) with all 33 locale values and drop the
-  entry here.
+  translated, migrate it to strings.xml with all locale values and drop the entry here. This is the
+  ONLY external string file. There are no per-feature string files; everything else lives in
+  strings.xml.
 -->
 <resources>
 
-    <!-- No pending strings. Recent feature strings were translated and moved to their feature files:
-         values*/strings_networkpolicy.xml (K2GO-395) and values*/strings_maps_download.xml (K2GO-394).
-         Park a new WIP string here only while it awaits translation. -->
+    <!-- No pending strings. Recent feature strings (K2GO-395 network cost consent, K2GO-394 maps
+         download) are translated and live in values*/strings.xml. Park a new WIP string here only
+         while it awaits translation, then migrate it to strings.xml before the PR merges. -->
 </resources>

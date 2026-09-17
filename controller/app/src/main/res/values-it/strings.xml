@@ -1330,4 +1330,13 @@
     <string name="disk_guard_firehose_title">K2Go ha contenuto un\'attività insolita</string>
     <string name="disk_guard_firehose_body">K2Go ha gestito un processo che usava troppo spazio e ha mantenuto il sistema attivo. Tocca per inviare un rapporto.</string>
     <string name="k2go_maps_dl_title">Download dei dati della mappa</string>
+    <!-- K2GO-395: network cost consent strings (ADR-395), folded from strings_networkpolicy.xml. -->
+    <string name="k2go_netpolicy_metered_title">Sembra che tu stia usando i dati mobili</string>
+    <string name="k2go_netpolicy_metered_msg">Questo download usa i dati mobili. Può comportare costi o esaurire il tuo piano dati. Vuoi continuare?</string>
+    <string name="k2go_netpolicy_continue">Continua con i dati</string>
+    <string name="k2go_netpolicy_not_now">Non ora</string>
+    <string name="k2go_netpolicy_offline">Nessuna rete. Connettiti al Wi-Fi per scaricare.</string>
+    <string name="k2go_netpolicy_switched_title">Sembra che tu sia passato ai dati mobili</string>
+    <string name="k2go_netpolicy_switched_msg">I nuovi download ora usano i dati mobili. Questo può comportare costi o esaurire il tuo piano dati.</string>
+    <string name="k2go_netpolicy_channel">Avvisi sui costi dei dati</string>
 </resources>
