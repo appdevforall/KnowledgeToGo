@@ -58,8 +58,13 @@ public final class FeedbackFab {
                             if (parent == null) {
                                 return true;
                             }
+                            // K2GO-406: reserve the top strip so a dragged FAB can never rest over
+                            // the wizard's top-right help icon (design: two overlay affordances must
+                            // not overlap). Harmless elsewhere -- the FAB floats over content, not the
+                            // top bar.
+                            float topPx = 72f * ctx.getResources().getDisplayMetrics().density;
                             float nx = clamp(e.getRawX() + dX, 0, parent.getWidth() - v.getWidth());
-                            float ny = clamp(e.getRawY() + dY, 0, parent.getHeight() - v.getHeight());
+                            float ny = clamp(e.getRawY() + dY, topPx, parent.getHeight() - v.getHeight());
                             v.setX(nx);
                             v.setY(ny);
                         }
@@ -101,8 +106,10 @@ public final class FeedbackFab {
         }
         float availX = parent.getWidth() - fab.getWidth();
         float availY = parent.getHeight() - fab.getHeight();
+        // K2GO-406: keep a restored position clear of the top help-icon strip too.
+        float topPx = Math.min(72f * fab.getContext().getResources().getDisplayMetrics().density, availY);
         fab.setX(clamp(xr * availX, 0, availX));
-        fab.setY(clamp(yr * availY, 0, availY));
+        fab.setY(clamp(yr * availY, topPx, availY));
     }
 
     private static void savePosition(FloatingActionButton fab) {

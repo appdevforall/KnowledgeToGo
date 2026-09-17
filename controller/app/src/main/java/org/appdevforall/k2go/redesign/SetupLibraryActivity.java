@@ -123,6 +123,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore");
+        WizardHelpButton.installOn(this);   // K2GO-406: fixed top-right help icon -> the manual
         // ADFA-5023: read reinstall mode from the intent every onCreate (survives a config-change
         // recreation) so the wizard's final install wipes first.
         reinstallMode = getIntent().getBooleanExtra(EXTRA_REINSTALL_SETUP, false);

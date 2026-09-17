@@ -4,4 +4,7 @@
          tabbed UI). FeedbackFab.installOn adds the FAB programmatically to the redesign screens and
          needs this id to exist (idempotency check + setId), so it is declared standalone here. -->
     <item name="fab_feedback" type="id" />
+    <!-- K2GO-406: WizardHelpButton adds the top-right help icon programmatically to the wizard
+         screens (idempotency check + setId), so the id is declared standalone here. -->
+    <item name="k2go_help_button" type="id" />
 </resources>
