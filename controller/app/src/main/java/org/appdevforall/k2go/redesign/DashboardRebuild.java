@@ -52,7 +52,7 @@ public final class DashboardRebuild {
             Snackbars.make(anchor, org.appdevforall.k2go.util.BusyMessage.resFor(ctx)).show();
             return;
         }
-        if (!hasInternet(ctx)) {
+        if (!org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier.hasInternet(ctx)) {
             Snackbars.make(anchor, R.string.k2go_dash_needs_internet).show();
             return;
         }
@@ -150,15 +150,5 @@ public final class DashboardRebuild {
         return false;
     }
 
-    /** True when the device reports an internet-capable active network. Unknown -> true (let the
-     *  preflight decide), matching the previous inline check in ModuleHubFragment. */
-    public static boolean hasInternet(@NonNull Context ctx) {
-        android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
-                ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return true;
-        android.net.Network n = cm.getActiveNetwork();
-        if (n == null) return false;
-        android.net.NetworkCapabilities caps = cm.getNetworkCapabilities(n);
-        return caps != null && caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET);
-    }
+    // K2GO-404: hasInternet moved to AndroidNetworkClassifier.hasInternet (one reader).
 }

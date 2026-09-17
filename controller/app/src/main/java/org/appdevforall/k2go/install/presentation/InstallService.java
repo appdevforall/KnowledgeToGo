@@ -29,9 +29,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -265,23 +262,13 @@ public final class InstallService extends Service {
         // still drives it (a user decision, not a radio event); the rootfs-download resume below is
         // unrelated to maps.
         if (!InstallProgressRepository.get().current().isSoftFailed()) return;
-        if (!hasValidatedInternet()) return;
+        if (!org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier.hasValidatedInternet(this)) return;
         Log.i(TAG, "ADFA-4895: a validated network returned while the download was held — resuming");
         log("[Download] validated network returned — resuming the held download");
         doResume();
     }
 
-    /** ADFA-4895: true only when the active default network both offers internet and has been validated. */
-    private boolean hasValidatedInternet() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return false;
-        Network active = cm.getActiveNetwork();
-        if (active == null) return false;
-        NetworkCapabilities caps = cm.getNetworkCapabilities(active);
-        return caps != null
-                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-    }
+    // K2GO-404: hasValidatedInternet moved to AndroidNetworkClassifier.hasValidatedInternet (one reader).
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
