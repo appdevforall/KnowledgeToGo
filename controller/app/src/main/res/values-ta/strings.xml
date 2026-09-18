@@ -1359,4 +1359,5 @@
     <string name="k2go_netpolicy_switched_title">நீங்கள் மொபைல் டேட்டாவிற்கு மாறியது போல் தெரிகிறது</string>
     <string name="k2go_netpolicy_switched_msg">புதிய பதிவிறக்கங்கள் இப்போது மொபைல் டேட்டாவைப் பயன்படுத்துகின்றன. இதனால் கட்டணம் ஏற்படலாம் அல்லது உங்கள் தரவுத் திட்டம் தீர்ந்துபோகலாம்.</string>
     <string name="k2go_netpolicy_channel">டேட்டா செலவு எச்சரிக்கைகள்</string>
+    <string name="k2go_help_manual">கையேடு</string>
 </resources>

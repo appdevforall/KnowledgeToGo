@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Có vẻ như bạn đã chuyển sang dữ liệu di động</string>
     <string name="k2go_netpolicy_switched_msg">Các bản tải xuống mới hiện dùng dữ liệu di động. Điều này có thể phát sinh chi phí hoặc dùng hết gói dữ liệu của bạn.</string>
     <string name="k2go_netpolicy_channel">Cảnh báo chi phí dữ liệu</string>
+    <string name="k2go_help_manual">Hướng dẫn</string>
 </resources>

@@ -33,6 +33,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.portal.data.PdfViewerCatalog;
+import org.appdevforall.k2go.portal.domain.NavigationPolicy;
 import org.appdevforall.k2go.portal.domain.PdfPolicy;
 import org.appdevforall.k2go.portal.domain.PdfViewerBuild;
 import org.appdevforall.k2go.portal.domain.PdfViewerRouter;
@@ -100,8 +101,11 @@ public class HelpViewerActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                // In-manual navigation (the appassets origin) stays in the WebView.
-                if (APPASSETS_HOST.equals(request.getUrl().getHost())) {
+                // In-manual navigation (appassets) and any on-box host (e.g. the pdf.js viewer at
+                // localhost) stay in the WebView. NavigationPolicy is the single owner of "is this
+                // an on-box host"; reuse it instead of re-deriving the rule here.
+                String host = request.getUrl().getHost();
+                if (APPASSETS_HOST.equals(host) || NavigationPolicy.isInternalHost(host)) {
                     return false;
                 }
                 // External link: hand to the system browser.
@@ -118,10 +122,20 @@ public class HelpViewerActivity extends AppCompatActivity {
                                         android.webkit.WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (request.isForMainFrame()) {
-                    String html = "<html><body style='font-family:sans-serif;text-align:center;"
-                            + "padding:48px 24px;'><h2>" + getString(R.string.k2go_portal_error_title)
-                            + "</h2><p>" + getString(R.string.k2go_portal_error_body)
-                            + "</p></body></html>";
+                    // Theme the fallback page from the M3 tokens so it reads in dark mode too (a
+                    // white default page on the dark theme was the reported miss).
+                    int surface = com.google.android.material.color.MaterialColors.getColor(
+                            view, com.google.android.material.R.attr.colorSurface, android.graphics.Color.WHITE);
+                    int onSurface = com.google.android.material.color.MaterialColors.getColor(
+                            view, com.google.android.material.R.attr.colorOnSurface, android.graphics.Color.BLACK);
+                    String bg = String.format("#%06X", 0xFFFFFF & surface);
+                    String fg = String.format("#%06X", 0xFFFFFF & onSurface);
+                    String html = "<html><head>"
+                            + "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+                            + "<style>body{font-family:sans-serif;text-align:center;padding:48px 24px;"
+                            + "background:" + bg + ";color:" + fg + ";}</style></head><body><h2>"
+                            + getString(R.string.k2go_portal_error_title) + "</h2><p>"
+                            + getString(R.string.k2go_portal_error_body) + "</p></body></html>";
                     view.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
                 }
             }
@@ -168,6 +182,20 @@ public class HelpViewerActivity extends AppCompatActivity {
             Log.e(TAG, "Download failed to start: " + uri, e);
             Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Tear the WebView down deterministically (release its renderer) instead of leaving it to GC.
+        if (webView != null) {
+            android.view.ViewGroup parent = (android.view.ViewGroup) webView.getParent();
+            if (parent != null) {
+                parent.removeView(webView);
+            }
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
     }
 
     @Override

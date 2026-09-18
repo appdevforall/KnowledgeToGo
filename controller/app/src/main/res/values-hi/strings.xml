@@ -1416,4 +1416,5 @@
     <string name="k2go_netpolicy_switched_title">ऐसा लगता है कि आप मोबाइल डेटा पर स्विच हो गए</string>
     <string name="k2go_netpolicy_switched_msg">नए डाउनलोड अब मोबाइल डेटा का उपयोग करते हैं. इससे शुल्क लग सकता है या आपका डेटा प्लान खत्म हो सकता है.</string>
     <string name="k2go_netpolicy_channel">डेटा लागत अलर्ट</string>
+    <string name="k2go_help_manual">मैनुअल</string>
 </resources>

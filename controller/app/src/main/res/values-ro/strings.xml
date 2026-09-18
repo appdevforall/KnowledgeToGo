@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Se pare că ai trecut la date mobile</string>
     <string name="k2go_netpolicy_switched_msg">Descărcările noi folosesc acum date mobile. Acest lucru poate genera costuri sau îți poate epuiza planul de date.</string>
     <string name="k2go_netpolicy_channel">Alerte privind costul datelor</string>
+    <string name="k2go_help_manual">Manual</string>
 </resources>

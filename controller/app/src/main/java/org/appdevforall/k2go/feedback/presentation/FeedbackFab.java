@@ -26,14 +26,29 @@ public final class FeedbackFab {
 
     @SuppressLint("ClickableViewAccessibility")
     public static void attach(FloatingActionButton fab, Runnable onTap) {
+        attach(fab, onTap, 0f, 0f);
+    }
+
+    /**
+     * K2GO-406: {@code topExclusionDp}/{@code bottomExclusionDp} reserve a top and a bottom strip
+     * the dragged (and restored) FAB cannot enter, so it never rests over a screen's top-right help
+     * icon or its primary bottom CTA. Scoped per install site: screens without those affordances
+     * pass 0 and keep the full drag range.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public static void attach(FloatingActionButton fab, Runnable onTap,
+                              float topExclusionDp, float bottomExclusionDp) {
         if (fab == null) {
             return;
         }
         final Context ctx = fab.getContext();
         final int slop = ViewConfiguration.get(ctx).getScaledTouchSlop();
+        final float density = ctx.getResources().getDisplayMetrics().density;
+        final float topPx = topExclusionDp * density;
+        final float botPx = bottomExclusionDp * density;
 
-        fab.post(() -> applySaved(fab));
-        fab.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> applySaved(fab));
+        fab.post(() -> applySaved(fab, topPx, botPx));
+        fab.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> applySaved(fab, topPx, botPx));
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             float downX, downY, dX, dY;
@@ -58,13 +73,9 @@ public final class FeedbackFab {
                             if (parent == null) {
                                 return true;
                             }
-                            // K2GO-406: reserve the top strip so a dragged FAB can never rest over
-                            // the wizard's top-right help icon (design: two overlay affordances must
-                            // not overlap). Harmless elsewhere -- the FAB floats over content, not the
-                            // top bar.
-                            float topPx = 72f * ctx.getResources().getDisplayMetrics().density;
                             float nx = clamp(e.getRawX() + dX, 0, parent.getWidth() - v.getWidth());
-                            float ny = clamp(e.getRawY() + dY, topPx, parent.getHeight() - v.getHeight());
+                            float ny = clamp(e.getRawY() + dY, topPx,
+                                    parent.getHeight() - v.getHeight() - botPx);
                             v.setX(nx);
                             v.setY(ny);
                         }
@@ -93,7 +104,7 @@ public final class FeedbackFab {
         return Math.max(lo, Math.min(v, hi));
     }
 
-    private static void applySaved(FloatingActionButton fab) {
+    private static void applySaved(FloatingActionButton fab, float topPx, float botPx) {
         ViewGroup parent = (ViewGroup) fab.getParent();
         if (parent == null || parent.getWidth() == 0 || parent.getHeight() == 0) {
             return;
@@ -106,10 +117,11 @@ public final class FeedbackFab {
         }
         float availX = parent.getWidth() - fab.getWidth();
         float availY = parent.getHeight() - fab.getHeight();
-        // K2GO-406: keep a restored position clear of the top help-icon strip too.
-        float topPx = Math.min(72f * fab.getContext().getResources().getDisplayMetrics().density, availY);
+        // K2GO-406: keep a restored position inside the same top/bottom exclusions the drag uses.
+        float top = Math.min(topPx, availY);
+        float bottom = Math.max(top, availY - botPx);
         fab.setX(clamp(xr * availX, 0, availX));
-        fab.setY(clamp(yr * availY, topPx, availY));
+        fab.setY(clamp(yr * availY, top, bottom));
     }
 
     private static void savePosition(FloatingActionButton fab) {
@@ -131,12 +143,20 @@ public final class FeedbackFab {
     /** ADFA-4932: add the draggable feedback FAB to any activity's content root (no per-layout
      *  edit) and wire tap -> screenshot -> email. Reusable across the redesign screens. Idempotent. */
     public static void installOn(android.app.Activity activity, String screenTag) {
-        installOn(activity, screenTag, 16);   // default: flush to the bottom (no bottom nav)
+        installOn(activity, screenTag, 16, 0, 0);   // default: flush to the bottom (no bottom nav)
     }
 
     /** ADFA-4932: {@code bottomMarginDp} lets screens with a bottom nav (LibraryActivity) lift the
      *  FAB clear of it; nav-less screens pass the default 16dp. */
     public static void installOn(android.app.Activity activity, String screenTag, int bottomMarginDp) {
+        installOn(activity, screenTag, bottomMarginDp, 0, 0);
+    }
+
+    /** K2GO-406: {@code topExclusionDp}/{@code bottomExclusionDp} keep the draggable FAB clear of a
+     *  screen's top-right help icon and its primary bottom CTA (the wizard needs both). 0 keeps the
+     *  full drag range. */
+    public static void installOn(android.app.Activity activity, String screenTag, int bottomMarginDp,
+                                 int topExclusionDp, int bottomExclusionDp) {
         android.view.ViewGroup root = activity.findViewById(android.R.id.content);
         if (root == null || root.findViewById(org.appdevforall.k2go.R.id.fab_feedback) != null) {
             return;
@@ -163,7 +183,7 @@ public final class FeedbackFab {
                 android.view.Gravity.BOTTOM | android.view.Gravity.END);
         lp.setMargins(m, m, m, Math.round(bottomMarginDp * d));
         root.addView(fab, lp);
-        attach(fab, () -> sendFeedback(activity, screenTag));
+        attach(fab, () -> sendFeedback(activity, screenTag), topExclusionDp, bottomExclusionDp);
     }
 
     /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it off.

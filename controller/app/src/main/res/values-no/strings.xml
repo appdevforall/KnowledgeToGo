@@ -1349,4 +1349,5 @@
     <string name="k2go_netpolicy_switched_title">Det ser ut til at du byttet til mobildata</string>
     <string name="k2go_netpolicy_switched_msg">Nye nedlastinger bruker nå mobildata. Det kan koste penger eller bruke opp datapakken din.</string>
     <string name="k2go_netpolicy_channel">Varsler om datakostnad</string>
+    <string name="k2go_help_manual">Håndbok</string>
 </resources>

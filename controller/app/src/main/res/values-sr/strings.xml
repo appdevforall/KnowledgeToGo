@@ -1352,4 +1352,5 @@
     <string name="k2go_netpolicy_switched_title">Изгледа да сте прешли на мобилне податке</string>
     <string name="k2go_netpolicy_switched_msg">Нова преузимања сада користе мобилне податке. Ово може да има трошак или да потроши ваш план за податке.</string>
     <string name="k2go_netpolicy_channel">Обавештења о трошку података</string>
+    <string name="k2go_help_manual">Приручник</string>
 </resources>

@@ -507,6 +507,14 @@ def helpManualContent = rootProject.file("../static/k2go-docs/content")
 tasks.register("copyHelpAssets", Sync) {
     group = "help"
     description = "Mirror the in-app manual (static/k2go-docs/content) into assets/help."
+    // K2GO-406: Sync clears the target, so a missing/empty source would silently ship an empty
+    // manual. Fail loudly instead -- the source is committed; if it is gone, the checkout is wrong.
+    doFirst {
+        if (!helpManualContent.isDirectory() || helpManualContent.listFiles().length == 0) {
+            throw new GradleException("K2GO-406: in-app manual source is missing or empty at "
+                    + helpManualContent + " -- run tools/docs/build-help-docs.sh before building.")
+        }
+    }
     from helpManualContent
     into file("src/main/assets/help")
 }

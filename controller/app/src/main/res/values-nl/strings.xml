@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Je lijkt overgeschakeld te zijn naar mobiele data</string>
     <string name="k2go_netpolicy_switched_msg">Nieuwe downloads gebruiken nu mobiele data. Dit kan kosten opleveren of je databundel opmaken.</string>
     <string name="k2go_netpolicy_channel">Waarschuwingen datakosten</string>
+    <string name="k2go_help_manual">Handleiding</string>
 </resources>

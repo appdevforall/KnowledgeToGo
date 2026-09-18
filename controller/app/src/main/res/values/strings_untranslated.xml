@@ -10,8 +10,4 @@
   strings.xml.
 -->
 <resources>
-
-    <!-- K2GO-406: value hint shown on the Settings > Help row. WIP: migrate to strings.xml with
-         all locale values before this PR merges. -->
-    <string name="k2go_help_manual" translatable="false">Manual</string>
 </resources>
