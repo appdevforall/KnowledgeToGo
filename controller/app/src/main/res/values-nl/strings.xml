@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Controleren op updates</string>
     <string name="k2go_settings_permissions">Machtigingen</string>
     <string name="k2go_settings_usage_stats">Gebruiksstatistieken delen</string>
+    <string name="k2go_settings_crash_reports">Crashrapporten verzenden</string>
     <string name="k2go_settings_licenses">Opensource-licenties</string>
     <string name="k2go_settings_privacy">Privacy</string>
     <string name="k2go_settings_power_users">Voor gevorderde gebruikers.</string>

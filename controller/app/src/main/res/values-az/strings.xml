@@ -602,6 +602,7 @@
     <string name="k2go_settings_check_updates">Yeniləmələri yoxla</string>
     <string name="k2go_settings_permissions">İcazələr</string>
     <string name="k2go_settings_usage_stats">İstifadə statistikasını paylaş</string>
+    <string name="k2go_settings_crash_reports">Qəza hesabatlarını göndər</string>
     <string name="k2go_settings_licenses">Açıq mənbə lisenziyaları</string>
     <string name="k2go_settings_privacy">Məxfilik</string>
     <string name="k2go_settings_power_users">Təcrübəli istifadəçilər üçün.</string>

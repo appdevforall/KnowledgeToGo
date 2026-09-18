@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Перевірити оновлення</string>
     <string name="k2go_settings_permissions">Дозволи</string>
     <string name="k2go_settings_usage_stats">Надсилати статистику використання</string>
+    <string name="k2go_settings_crash_reports">Надсилати звіти про збої</string>
     <string name="k2go_settings_licenses">Ліцензії з відкритим кодом</string>
     <string name="k2go_settings_privacy">Конфіденційність</string>
     <string name="k2go_settings_power_users">Для досвідчених користувачів.</string>

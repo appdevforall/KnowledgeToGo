@@ -595,6 +595,7 @@
     <string name="k2go_settings_check_updates">Провери ажурирања</string>
     <string name="k2go_settings_permissions">Дозволе</string>
     <string name="k2go_settings_usage_stats">Дели статистику коришћења</string>
+    <string name="k2go_settings_crash_reports">Пошаљи извештаје о падовима</string>
     <string name="k2go_settings_licenses">Лиценце отвореног кода</string>
     <string name="k2go_settings_privacy">Приватност</string>
     <string name="k2go_settings_power_users">За напредне кориснике.</string>

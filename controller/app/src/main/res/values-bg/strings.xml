@@ -589,6 +589,7 @@
     <string name="k2go_settings_check_updates">Проверка за актуализации</string>
     <string name="k2go_settings_permissions">Разрешения</string>
     <string name="k2go_settings_usage_stats">Споделяне на статистика за използване</string>
+    <string name="k2go_settings_crash_reports">Изпращане на отчети за сривове</string>
     <string name="k2go_settings_licenses">Лицензи с отворен код</string>
     <string name="k2go_settings_privacy">Поверителност</string>
     <string name="k2go_settings_power_users">За напреднали потребители.</string>

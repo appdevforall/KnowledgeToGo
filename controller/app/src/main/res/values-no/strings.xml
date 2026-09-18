@@ -582,6 +582,7 @@
     <string name="k2go_settings_check_updates">Se etter oppdateringer</string>
     <string name="k2go_settings_permissions">Tillatelser</string>
     <string name="k2go_settings_usage_stats">Del bruksstatistikk</string>
+    <string name="k2go_settings_crash_reports">Send krasjrapporter</string>
     <string name="k2go_settings_licenses">Åpen kildekode-lisenser</string>
     <string name="k2go_settings_privacy">Personvern</string>
     <string name="k2go_settings_power_users">For avanserte brukere.</string>

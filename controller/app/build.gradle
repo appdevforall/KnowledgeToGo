@@ -54,6 +54,9 @@ android {
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         // True only when google-services.json is present, so AnalyticsClient can compile out cleanly.
         buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
+        // Default state of the crash-report opt-in (K2GO-401). True for conventional builds. The
+        // F-Droid recipe overrides this to false so that build ships crash reporting OFF by default.
+        buildConfigField "boolean", "CRASH_REPORTS_DEFAULT_ON", "true"
 
         // The APK carries the product's name, not its technical identifier: these files are
         // downloaded by people from a public bucket. The identifier still lives inside the APK.

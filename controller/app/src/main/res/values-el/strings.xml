@@ -589,6 +589,7 @@
     <string name="k2go_settings_check_updates">Έλεγχος για ενημερώσεις</string>
     <string name="k2go_settings_permissions">Άδειες</string>
     <string name="k2go_settings_usage_stats">Κοινή χρήση στατιστικών χρήσης</string>
+    <string name="k2go_settings_crash_reports">Αποστολή αναφορών σφαλμάτων</string>
     <string name="k2go_settings_licenses">Άδειες ανοιχτού κώδικα</string>
     <string name="k2go_settings_privacy">Απόρρητο</string>
     <string name="k2go_settings_power_users">Για προχωρημένους χρήστες.</string>

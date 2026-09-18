@@ -659,6 +659,7 @@
     <string name="k2go_settings_check_updates">Rechercher des mises à jour</string>
     <string name="k2go_settings_permissions">Autorisations</string>
     <string name="k2go_settings_usage_stats">Partager les statistiques d\'utilisation</string>
+    <string name="k2go_settings_crash_reports">Envoyer les rapports de plantage</string>
     <string name="k2go_settings_licenses">Licences open source</string>
     <string name="k2go_settings_privacy">Confidentialité</string>
     <string name="k2go_settings_power_users">Pour les utilisateurs avancés.</string>

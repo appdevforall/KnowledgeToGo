@@ -589,6 +589,7 @@
     <string name="k2go_settings_check_updates">Tikrinti, ar yra naujinių</string>
     <string name="k2go_settings_permissions">Leidimai</string>
     <string name="k2go_settings_usage_stats">Bendrinti naudojimo statistiką</string>
+    <string name="k2go_settings_crash_reports">Siųsti strigčių ataskaitas</string>
     <string name="k2go_settings_licenses">Atvirojo kodo licencijos</string>
     <string name="k2go_settings_privacy">Privatumas</string>
     <string name="k2go_settings_power_users">Patyrusiems naudotojams.</string>
