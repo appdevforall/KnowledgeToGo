@@ -31,6 +31,9 @@ import androidx.webkit.WebViewAssetLoader;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.applang.data.AppLocaleController;
+import org.appdevforall.k2go.help.domain.HelpEntry;
+import org.appdevforall.k2go.help.domain.HelpTopic;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.portal.data.PdfViewerCatalog;
 import org.appdevforall.k2go.portal.domain.NavigationPolicy;
@@ -61,8 +64,10 @@ public class HelpViewerActivity extends AppCompatActivity {
 
     private static final String TAG = "K2Go-Help";
     private static final String APPASSETS_HOST = "appassets.androidplatform.net";
-    private static final String HELP_ENTRY =
-            "https://" + APPASSETS_HOST + "/assets/help/index.html";
+    private static final String APPASSETS_BASE = "https://" + APPASSETS_HOST + "/assets/help/";
+
+    /** Intent extra: the {@link HelpTopic} name to open. Absent -> HOME (the manual landing). */
+    public static final String EXTRA_TOPIC = "k2go_help_topic";
 
     private WebView webView;
     // pdf.js builds advertised by the box's /pdfjs/manifest.json (loaded off the main thread);
@@ -158,7 +163,12 @@ public class HelpViewerActivity extends AppCompatActivity {
             downloadFile(Uri.parse(url), contentDisposition, mimetype);
         });
 
-        webView.loadUrl(HELP_ENTRY);
+        // K2GO-410: two axes pick the entry page -- the topic (content) from the caller's extra and
+        // the app language (resolved centrally). HelpEntry maps them to a bundled page; the language
+        // axis is a no-op until localized manuals ship. Settings passes no topic -> HOME.
+        HelpTopic topic = HelpTopic.fromName(getIntent().getStringExtra(EXTRA_TOPIC), HelpTopic.HOME);
+        String entryUrl = APPASSETS_BASE + HelpEntry.assetPath(topic, AppLocaleController.currentTag());
+        webView.loadUrl(entryUrl);
     }
 
     private void downloadFile(Uri uri, String contentDisposition, String mimetype) {
