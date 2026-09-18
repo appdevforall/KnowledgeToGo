@@ -1426,4 +1426,5 @@
     <string name="k2go_netpolicy_switched_title">Vous semblez être passé aux données mobiles</string>
     <string name="k2go_netpolicy_switched_msg">Les nouveaux téléchargements utilisent désormais les données mobiles. Cela peut coûter cher ou épuiser votre forfait de données.</string>
     <string name="k2go_netpolicy_channel">Alertes de coût des données</string>
+    <string name="k2go_help_manual">Manuel</string>
 </resources>

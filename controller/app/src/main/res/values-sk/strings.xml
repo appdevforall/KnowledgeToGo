@@ -1346,4 +1346,5 @@
     <string name="k2go_netpolicy_switched_title">Zdá sa, že ste sa prepli na mobilné dáta</string>
     <string name="k2go_netpolicy_switched_msg">Nové sťahovania teraz používajú mobilné dáta. Môže byť spoplatnené alebo vyčerpať váš dátový limit.</string>
     <string name="k2go_netpolicy_channel">Upozornenia na náklady za dáta</string>
+    <string name="k2go_help_manual">Príručka</string>
 </resources>

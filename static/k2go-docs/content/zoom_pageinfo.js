@@ -1,0 +1,16 @@
+pageinfo = [[1789655798,0,0,0,null],
+	[1789157510,0,0,0,null],
+	[1789157726,0,0,0,null],
+	[1789157620,0,0,0,null],
+	[1789153578,0,0,0,null],
+	[1789158082,0,0,0,null],
+	[1789655776,0,0,0,null],
+	[1789655760,0,0,0,null]];
+pagedata = [ ["./about.html","About Knowledge to Go","Knowledge to Go (K2Go&#8482;) is built on the foundation of Internet-in-a-Box (IIAB), a popular solution for sharing offline educational resources in ar...","./images/zoomimage.jpg"],
+["./app-install.html","Install the app","These instructions assume that you have internet access to download the app and its library content. If you do not have internet access, you can i...","./images/zoomimage.jpg"],
+["./clone.html","Clone K2Go to another device","Cloning copies a K2Go library from one device (the sending device) to another (the receiving device). When the process finishes, the receiving dev...","./images/zoomimage.jpg"],
+["./content-add.html","Add content","The Set up your library page displays a panel for each app you installed. ","./images/zoomimage.jpg"],
+["./content-share.html","Share content with others","K2Go offers two ways to share content with other devices. Both are accessible through buttons at the bottom of the main Knowledge to Go page:","./images/zoomimage.jpg"],
+["./faq.html","FAQ","What content is available? K2Go uses different apps to deliver different kinds of content.  Content type App name What’s available Wikipedia ...","./images/zoomimage.jpg"],
+["./index.html","Welcome and contents","Welcome to Knowledge to Go (K2Go&#8482;)! K2Go installs a library of offline educational resources on any Android phone. That phone can then share the c...","./images/zoomimage.jpg"],
+["./settings.html","Settings","To access configuration settings and options, tap the Settings tab at the bottom. The Settings page is displayed. Tap any of the following items t...","./images/zoomimage.jpg"]];

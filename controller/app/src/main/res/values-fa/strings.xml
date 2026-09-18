@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">به نظر می‌رسد به داده تلفن همراه تغییر داده‌اید</string>
     <string name="k2go_netpolicy_switched_msg">دانلودهای جدید اکنون از داده تلفن همراه استفاده می‌کنند. این ممکن است هزینه داشته باشد یا بسته داده شما را تمام کند.</string>
     <string name="k2go_netpolicy_channel">هشدارهای هزینه داده</string>
+    <string name="k2go_help_manual">راهنما</string>
 </resources>

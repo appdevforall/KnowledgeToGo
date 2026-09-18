@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Схоже, ви перейшли на мобільні дані</string>
     <string name="k2go_netpolicy_switched_msg">Нові завантаження тепер використовують мобільні дані. Це може призвести до витрат або вичерпати пакет даних.</string>
     <string name="k2go_netpolicy_channel">Сповіщення про витрати даних</string>
+    <string name="k2go_help_manual">Посібник</string>
 </resources>

@@ -1523,4 +1523,5 @@
     <string name="k2go_netpolicy_switched_title">You seem to have switched to mobile data</string>
     <string name="k2go_netpolicy_switched_msg">New downloads now use mobile data. This can add cost or use up your data plan.</string>
     <string name="k2go_netpolicy_channel">Data cost alerts</string>
+    <string name="k2go_help_manual">Manual</string>
 </resources>

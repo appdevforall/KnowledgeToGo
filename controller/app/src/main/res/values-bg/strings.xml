@@ -1346,4 +1346,5 @@
     <string name="k2go_netpolicy_switched_title">Изглежда превключихте към мобилни данни</string>
     <string name="k2go_netpolicy_switched_msg">Новите изтегляния вече използват мобилни данни. Това може да има такса или да изчерпи плана ви за данни.</string>
     <string name="k2go_netpolicy_channel">Известия за разход на данни</string>
+    <string name="k2go_help_manual">Ръководство</string>
 </resources>

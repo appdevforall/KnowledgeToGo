@@ -1349,4 +1349,5 @@
     <string name="k2go_netpolicy_switched_title">Wygląda na to, że przełączono na dane komórkowe</string>
     <string name="k2go_netpolicy_switched_msg">Nowe pobierania używają teraz danych komórkowych. Może to wiązać się z kosztami lub wyczerpać pakiet danych.</string>
     <string name="k2go_netpolicy_channel">Alerty o kosztach danych</string>
+    <string name="k2go_help_manual">Podręcznik</string>
 </resources>

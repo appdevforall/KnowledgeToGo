@@ -1359,4 +1359,5 @@
     <string name="k2go_netpolicy_switched_title">Inaonekana umebadili hadi data ya simu</string>
     <string name="k2go_netpolicy_switched_msg">Vipakuliwa vipya sasa vinatumia data ya simu. Hii inaweza kugharimu au kumaliza kifurushi chako cha data.</string>
     <string name="k2go_netpolicy_channel">Arifa za gharama ya data</string>
+    <string name="k2go_help_manual">Mwongozo</string>
 </resources>

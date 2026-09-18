@@ -1,0 +1,198 @@
+﻿/* Reset Styles for Consistency */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+html {
+	-webkit-text-size-adjust: 100%;
+}
+body {
+	background-color: transparent;
+	overflow: hidden;
+	font-size: 100%;
+	font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	color: #444444;
+ }
+	   
+div#hmpageheader {
+	position: absolute;
+	top: 0; left: 0; right: 0;
+	background-color: #f5f5f5;
+	}
+div#hmpagebody {
+	position: absolute;
+	top: 0.4rem; left: 0.2rem; right: 0.2rem; bottom: 0.2rem;
+	background-color: #ffffff;
+	overflow-y: auto;
+	border-style: solid;
+	border-color: #838383;
+	border-width: 1px;
+	color: #444444;
+	margin: 0;
+	}
+div#unclicker {
+	display: none;
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	background-image: url("../images/spacer.gif");
+	z-index: 1000;
+	}
+
+/* General */
+.desktop {
+	display: none !important;
+	}
+.tablet {
+	display: none !important;
+}
+.desk_tablet {
+	display: none !important;
+	}
+.noscript { 
+	display: none !important;
+	}
+.scripted {
+	
+	}
+.phone {
+	
+	}
+
+/*** KW Index Pane ***/ 
+
+div#idxheadwrapper {
+	position: absolute;
+	top:0; left: 0; right: 0;
+	border-bottom: 1px solid #c0c0c0;
+	background-color: #f5f5f5;
+	padding: 0.1rem;
+	margin: 0 0 0 0;
+}
+div#hmindextree {
+	position: absolute;
+	background-color: #ffffff;
+	top: 100px; left: 0.2rem; right: 0; bottom: 0;
+	-webkit-overflow-scrolling: touch;
+	overflow-y: scroll;
+}
+ul#idxheader {
+	display: none;
+}
+/* Search Form */
+form#idxsearch {
+	position: relative;
+	display: block;
+	left: 0;
+	}
+table#searchtable {
+	width: 100%;
+	}
+td#btn {
+	width: 60px;
+	}
+td#arg {
+	padding: 0 0.2rem 0 0.1rem;
+	}
+
+input#searchbtn {
+	font-size: 0.95rem;
+}
+input#searcharg {
+	width: 90%;
+	font-size: 0.95rem;
+}
+label#idxmodelabel {
+	color: #444444;
+}
+.idxhilite {
+	border-bottom: 1px dashed #444444;
+}
+
+p.idxkeyword {
+	font-size: 1rem;
+	margin-left: 1rem;
+	padding-bottom: 0.25rem;
+	}
+p.idxkeyword.lv2 {
+	margin-left: 2.5rem;
+	}
+p.idxmultiref {
+	padding-left: 1.286rem;
+	padding-bottom: 0.35rem;
+	background-image: url("../images/kw-page.gif");
+	background-repeat: no-repeat;
+	background-position: left -0.143rem;
+	}
+div#multiwrapper {
+	border: 1px solid transparent;
+	box-shadow: 1px 1px 4px #676767;
+	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
+	background-color: #f5f5f5;
+	position: absolute;
+	display: block;
+	right: 0.5rem;
+	visibility: hidden;
+	z-index: 1001;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch
+	}
+div#popmessage {
+	border: 1px solid transparent;
+	box-shadow: 1px 1px 4px #676767;
+	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
+	background-color: #f5f5f5;
+	position: absolute;
+	display: block;
+	visibility: hidden;
+	z-index: 1001;
+	}
+p.popmessage {
+	font-size: 0.8rem;
+	color: #444444;
+	padding: 0.35rem;
+	}
+p.popmessage span {
+	font-weight: bold;
+	}
+a.kw {
+	color: #444444;
+	 text-decoration: none;
+	}
+a.kw:visited {
+	color: #444444;
+	}
+div#multiwrapper a.kw, div#idxheadwrapper a.kw {
+	color: #444444;
+	}
+
+/* Letter Groups */
+div.idxgroup-body {
+	display: none;
+	padding: 0;
+}
+ul.idxgroup-header {
+	list-style-type: none;
+	margin: 0.714rem 0.286rem 0.357rem 0;
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+	border: 1px solid #444444;
+	background-color: #bfbfbf;
+	color: #444444;
+	padding: 0.143rem 0.143rem 0.143rem 0.357rem;
+	cursor: pointer;
+}
+ul.idxgroup-header li {
+	font-weight: bold;
+	color: #444444;
+}
+ul.idxgroup-header li a {
+	text-decoration: none;
+	color: #444444;
+}

@@ -81,7 +81,11 @@ public class WizardActivity extends AppCompatActivity {
         reinstallMode = getIntent() != null && getIntent().getBooleanExtra(EXTRA_REINSTALL, false);
         setContentView(R.layout.activity_k2go_wizard);
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
-        org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "wizard");
+        // K2GO-406: lift the FAB and fence its drag so it clears the top-right help icon and the
+        // bottom CTA (the wizard is the only screen with both). 140dp clears the tallest bottom
+        // cluster: the primary button plus the "Back" link shown on the steps after welcome.
+        org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "wizard", 140, 72, 140);
+        WizardHelpButton.installOn(this);   // K2GO-406: fixed top-right help icon -> the manual
         // ADFA-4797: survive the locale-change recreate — keep the step and re-read the
         // applied language, so we don't flash back to the welcome step.
         langTag = AppLocaleController.currentTag();

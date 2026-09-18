@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
 
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_language), null, null, v -> openSub("language"));
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_theme), null, themeLabel(), v -> chooseTheme());
-        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_help), null);
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_help), null, getString(R.string.k2go_help_manual), v -> openHelp());
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_send_feedback), null, null, v -> openFeedback());
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_about), null, versionName(), v -> openSub("about"));
         // ADFA-4968: promote the System block (was inside Advanced) to the top level, below About.
@@ -70,6 +70,11 @@ public class SettingsFragment extends Fragment {
         if (getActivity() instanceof LibraryActivity) {
             ((LibraryActivity) getActivity()).openSettingsSub(SettingsSubFragment.newInstance(screen));
         }
+    }
+
+    /** K2GO-406: open the in-app manual -- a themed WebView over the bundled Help&Manual site. */
+    private void openHelp() {
+        startActivity(new android.content.Intent(requireContext(), HelpViewerActivity.class));
     }
 
     /** ADFA-5169: the right-aligned value for the Pending downloads row — a count, or "None".

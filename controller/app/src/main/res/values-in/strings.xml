@@ -1346,4 +1346,5 @@
     <string name="k2go_netpolicy_switched_title">Anda tampaknya beralih ke data seluler</string>
     <string name="k2go_netpolicy_switched_msg">Unduhan baru kini menggunakan data seluler. Ini dapat menimbulkan biaya atau menghabiskan paket data Anda.</string>
     <string name="k2go_netpolicy_channel">Peringatan biaya data</string>
+    <string name="k2go_help_manual">Manual</string>
 </resources>

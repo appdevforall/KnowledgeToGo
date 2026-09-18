@@ -1,0 +1,893 @@
+﻿<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<!-- HMSKIN FILETYPE: INDEX -->
+<title>Code on the Go</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" id="pageviewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes, minimal-ui" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="cache-control" content="no-cache" /> 
+<!-- Insert Google web fonts references here. 
+
+You can use either dynamic Google Fonts hosted by Google, or download
+and host the fonts yourself by adding them to the skin. 
+
+DYNAMIC GOOGLE FONTS ARE NOT GDPR COMPLIANT
+===========================================
+Note that dynamic Google Fonts hosted by Google are not compliant
+with the EU's GDPR legislation because the system sends the user's
+IP address to Google. If your site is in the EU or targets users
+in the EU you should use locally hosted fonts. 
+
+Content of this file for local fonts (you must add the CSS code to
+the file yourself, see the help):
+
+<link type="text/css" href="./css/GoogleFonts.css" rel="stylesheet" />
+
+Example of content of this file for dynamic Google Fonts:
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i" rel="stylesheet">
+
+See the section on Google Web Fonts in the PP help for more details.
+Delete this comment to save space after adding your references. 
+
+-->
+<style type="text/css">
+div#noscript {display: none;}
+</style> 
+<noscript>
+<style type="text/css">
+	div#noscript {
+		display: block;
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		border: 1rem solid grey;
+		background-color: #eaeaea;
+		}
+	h2#noscriptwarning {
+		text-align: center;
+		position: relative;
+		top: 35%;
+		color: #333333;
+	}
+</style> 
+</noscript>
+<script type="text/javascript">
+/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2025 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
+*/
+	var pageName = "indexPage";
+	var hmDevice = {
+		// Unique project ID
+		compilehash: (function () {
+		var outVal = 0, t="Code on the GoUser-defined Project ID";
+		for (var x = 0; x < t.length; x++) {
+			outVal = outVal + (t.charCodeAt(x)*(x+2));
+		}
+		return (outVal*697).toString(32) + "_";
+		})(),
+		// Cookies
+		hmSetCookie: function(cname, cvalue, exdays) {
+			var expires = "";
+			if (exdays) {
+				var d = new Date();
+				d.setTime(d.getTime() + (exdays*24*60*60*1000));
+				expires = "expires="+d.toGMTString();
+			}
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";";
+		},
+		hmGetCookie: function(cname) {
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0; i<ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0)==' ') c = c.substring(1);
+				if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+			}
+			return "";
+		},
+		hmDeleteCookie: function(cname) {
+			var name = cname + "=";
+			document.cookie = name + "; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+		},
+		mainPageInitialized: false,
+		navBarWidth: 0,
+		saveNavbarWidth: function(){
+			var $nbar = $("p#tocnavbar");
+			if ($nbar.is(":visible")) {
+				this.navBarWidth = $nbar.width();
+				var nBarWidth = this.navBarWidth + 5;
+				xMessage.sendObject("parent", {action: "callfunction", fn: "hmWebHelp.resizePanes", fa: nBarWidth});
+				} else {
+					this.navBarWidth = null;
+					}
+			}
+	
+	};
+	// Session Variables
+	// Test that storage is both available and accessible (looking at you, Safari!)
+	var storageOK = (function(){
+		var gotStorage = typeof(Storage) === "object" && typeof(localStorage) === "object" && typeof(sessionStorage) === "object";
+		if (gotStorage) {
+			try {
+				localStorage.setItem('testStorage',1);
+				localStorage.removeItem('testStorage');
+				gotStorage = true;
+			}
+			catch(e) {
+			gotStorage = false;
+			}
+		}
+		return gotStorage;
+		})();
+		
+	var sessionVariable = {
+		localS: storageOK,
+		
+		setPV: function(sVar,sVal) {
+			if (this.localS) {
+				localStorage.setItem(hmDevice.compilehash + sVar,sVal);
+			} else
+				hmDevice.hmSetCookie(hmDevice.compilehash + sVar,sVal,365);	
+		},
+		setSV: function(sVar,sVal) {
+			if (this.localS)
+				sessionStorage.setItem(hmDevice.compilehash + sVar,sVal);
+			else
+				hmDevice.hmSetCookie(hmDevice.compilehash + sVar,sVal,false);
+		},
+		getPV: function(sVar) {
+			if (this.localS) {
+				if (typeof(localStorage.getItem(hmDevice.compilehash + sVar)) !== "undefined")
+					return localStorage.getItem(hmDevice.compilehash + sVar);
+				else return null;
+			} else 
+				return hmDevice.hmGetCookie(hmDevice.compilehash + sVar);
+		},
+		getSV: function(sVar) {
+			if (this.localS) {
+				if (typeof(sessionStorage.getItem(hmDevice.compilehash + sVar)) !== "undefined")
+					return sessionStorage.getItem(hmDevice.compilehash + sVar);
+				else return null;
+			} else 
+				return hmDevice.hmGetCookie(sVar);
+		},
+		deletePV: function(sVar) {
+			if (this.localS)
+				localStorage.removeItem(hmDevice.compilehash + sVar);
+			else
+				hmDevice.hmDeleteCookie(hmDevice.compilehash + sVar);
+		},
+		deleteSV: function(sVar) {
+			if (this.localS)
+				sessionStorage.removeItem(hmDevice.compilehash + sVar);
+			else
+				hmDevice.hmDeleteCookie(hmDevice.compilehash + sVar);
+		}
+	};
+
+	/* UI Location */
+	hmDevice.page = "hmkwindex";
+	hmDevice.baseFontSize = 100;
+	hmDevice.fontChangeMax = 20;
+	
+	/* Source Checks */
+	hmDevice.agent = navigator.userAgent.toLowerCase();
+	hmDevice.embedded = true;
+	hmDevice.platform = navigator.platform.toLowerCase();
+	hmDevice.ipad = /ipad/.test(hmDevice.platform);
+	hmDevice.iphone = /iphone/.test(hmDevice.platform);
+	hmDevice.winphone7 =  (/windows phone os [7]\.\d\d??; .*?trident\/[5]\.\d\d??; iemobile\/9/.test(hmDevice.agent));
+	hmDevice.winphone = (/windows phone [89]\.\d\d??; .*?trident\/[67]\.\d\d??;.*?touch; /.test(hmDevice.agent));
+	hmDevice.w8desktop = (/windows nt 6\.[2345]/m.test(hmDevice.agent));
+	hmDevice.w8metro = (function(){var supported = true; 
+				try {new ActiveXObject("htmlfile");} catch(e) {supported = false;} 
+				return (!supported && hmDevice.w8desktop)})();
+	hmDevice.touch = /touch/.test(hmDevice.agent);
+	// Treat all Windows 8 devices as desktops unless in metro mode with touch
+	hmDevice.tb = (/tablet/.test(hmDevice.agent) && (!/trident/.test(hmDevice.agent) || (hmDevice.w8metro && hmDevice.touch)));
+	hmDevice.goodandroid = (/android.+?applewebkit\/(?:(?:537\.(?:3[6-9]|[4-9][0-9]))|(?:53[8-9]\.[0-9][0-9])|(?:54[0-9]\.[0-9][0-9]))|android.+?gecko\/[345][0-9]\.\d{1,2} firefox/.test(hmDevice.agent));
+	hmDevice.deadandroid = (/android.+?applewebkit\/(?:53[0-6]\.\d{1,2})|firefox\/[0-2]\d\.\d{1,2}/.test(hmDevice.agent));
+	hmDevice.android = (/android/.test(hmDevice.agent) && !hmDevice.deadandroid);
+	hmDevice.mb = /mobi|mobile/.test(hmDevice.agent);
+	
+	/* Main Checks */
+	hmDevice.phone = (hmDevice.mb && !hmDevice.ipad && !hmDevice.tb);
+	hmDevice.tablet = (hmDevice.ipad || hmDevice.tb || (!hmDevice.phone && hmDevice.android));
+	hmDevice.aspectRatio = (screen.height / screen.width > 1 ? screen.height / screen.width : screen.width / screen.height).toFixed(2);
+	hmDevice.narrowTablet = (hmDevice.tablet && hmDevice.aspectRatio > 1.4);
+	hmDevice.desktop = ((!hmDevice.tablet && !hmDevice.phone));
+	hmDevice.device = hmDevice.phone ? "phone" : hmDevice.tablet ? "tablet" : hmDevice.desktop ? "desktop" : "default";
+	hmDevice.fontSize = hmDevice.phone ? hmDevice.baseFontSize * 1.0 : hmDevice.tablet ? hmDevice.baseFontSize * 1.0 : hmDevice.desktop ? hmDevice.baseFontSize : hmDevice.baseFontSize;
+	hmDevice.maxFontSize = hmDevice.fontSize + hmDevice.fontChangeMax;
+	hmDevice.minFontSize = hmDevice.fontSize - hmDevice.fontChangeMax;
+	
+	/* Main Stylesheet */
+	hmDevice.cssfile = document.createElement('link');
+	hmDevice.cssfile.rel = 'stylesheet';
+	hmDevice.cssfile.type = 'text/css';
+	hmDevice.cssfile.href = hmDevice.phone ? "./css/hmwebhelp_index_phone.css" : hmDevice.tablet ? "./css/hmwebhelp_index_tablet.css" : hmDevice.desktop ? "./css/hmwebhelp_index_desktop.css" : "./css/hmwebhelp_index_default.css";
+	document.getElementsByTagName('head')[0].appendChild(hmDevice.cssfile);
+	var hmSetFocus = function(){
+		if (!hmBrowser.server) return;
+		setTimeout(function(){
+		$("input#searcharg").focus();
+		},300);
+		};
+</script> 
+<script id="jqscript" type="text/javascript"></script> 
+</head>
+<body>
+<div id="noscript"><h2 id="noscriptwarning">Please enable JavaScript to view this site.</h2></div>
+<div id="page_wrapper">
+<div id="unclicker"></div>
+<!-- HMSKIN BODY START -->
+<div id="hmpageheader" class="noscript">
+<p class="navbar noscript" id="tocnoindexnavbar"><a href="hmcontent.html" target="_self">Contents</a>&nbsp;|&nbsp;Index&nbsp;|&nbsp;<a href="hmftsearch.html" target="_self">Search</a></p>
+</div>
+<div id="hmpagebody">
+<div id="popmessage"></div>
+<div id="idxheadwrapper">
+	<ul id="idxheader"></ul> 
+	<form id="idxsearch">
+	<table id="searchtable">
+	<tr>
+	<td id="btn"><input type="submit" value="Search:" id="searchbtn" form="idxsearch" /></td>
+	<td id="arg"><input type="text" name="searcharg" id="searcharg" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></td>
+	</tr>
+	<tr>
+	<td colspan="2"><input type="checkbox" name="searchtype" id="idxmode" value="From start of term" checked><label for="idxmode" id="idxmodelabel">&nbsp;From start of term</label></td>
+	</tr> 
+	</table>
+	</form>
+</div>
+<div id="hmindextree">
+	<div id="idxgroups"></div> 
+</div>
+</div>
+<!-- HMSKIN BODY END -->
+</div>
+<script type="text/javascript">
+/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2025 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
+*/
+// Reset font size with preset cookie value if available
+(function(){
+	var tempFontSize = sessionVariable.getPV("hmFontSize"),
+		baseElement = document.getElementsByTagName("html")[0];
+	if (tempFontSize !== null) {
+	baseElement.style.fontSize=tempFontSize + "%";
+	} else {
+	baseElement.style.fontSize = hmDevice.baseFontSize + "%";
+	}
+	})();
+	if (parent.location == self.location) document.location = "index.html";
+	
+// Handler for post-loading functions from files
+function extFuncs(func, args) {		
+			if (typeof funcs != "object") funcs = {};
+			if (typeof funcs[func] == "function") {
+				funcs[func](args);
+			} else {
+				 var newScript= "./js/" + func + ".js";
+				$.getScript(newScript, function (data, textStatus) {
+				if (textStatus === "success" && typeof funcs[func] == "function") {
+					try {
+					funcs[func](args);
+					} catch(err) {
+					console.log(err);
+					}
+				} else {
+					alert("External function script " + func + ".js could not be  loaded");
+					}
+				});
+			}
+	} // extFuncs()
+
+//** Browser capabilities object  **//
+var hmBrowser = {}; 
+	hmBrowser.addEventListener = !!window.addEventListener; //Unused
+	hmBrowser.orientation = "onorientationchange" in window;
+	// Touch browser *with* hardware support
+	hmBrowser.touch = ('ontouchstart' in window && !window.opera) || (window.DocumentTouch && document instanceof DocumentTouch) || (window.pointerEvent && navigator.maxTouchPoints > 0) || (window.MSPointerEvent && navigator.msMaxTouchPoints > 0);		
+	hmBrowser.transitions = (function(temp) {
+	  var props = ['transitionProperty', 'WebkitTransition', 'MozTransition', 'OTransition', 'msTransition'];
+	  for ( var i in props ) if (temp.style[ props[i] ] !== undefined) return true;
+	  return false;
+	})(document.createElement('rabbit'));
+	hmBrowser.Flandscape = function() {if (hmBrowser.orientation) {return (Math.abs(window.orientation)==90);} else {return (window.innerHeight < window.innerWidth);}};
+	hmBrowser.MobileFirefox = (/Android.+?Gecko.+?Firefox/i.test(navigator.userAgent));
+	hmBrowser.touchstart = (function(){ return hmDevice.desktop ? 'mousedown.startevents' : (('ontouchstart' in window && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone) || (window.DocumentTouch && document instanceof DocumentTouch && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone)) ? 'touchstart.startevents' : (window.pointerEvent || window.navigator.pointerEnabled) ? 'pointerdown.startevents' : (window.MSPointerEvent || window.navigator.msPointerEnabled) ? 'MSPointerDown.startevents' : 'mousedown.startevents'})();
+	hmBrowser.touchmove = (function(){return (('ontouchmove' in window && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone) || (window.DocumentTouch && document instanceof DocumentTouch && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone)) ? 'touchmove.moveevents' : (window.pointerEvent || window.navigator.pointerEnabled) ? 'pointermove.moveevents' : (window.MSPointerEvent || window.navigator.msPointerEnabled) ? 'MSPointerMove.moveevents' : 'mousemove.moveevents'})();
+	hmBrowser.touchend = (function(){return hmDevice.desktop ? 'mouseup.endevents' : (('ontouchend' in window && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone) || (window.DocumentTouch && document instanceof DocumentTouch && !hmDevice.w8desktop && !window.opera && !hmDevice.winphone)) ? 'touchend.endevents' : (window.pointerEvent || window.navigator.pointerEnabled) ? 'pointerup.endevents' : (window.MSPointerEvent || window.navigator.msPointerEnabled) ? 'MSPointerUp.endevents' : 'mouseup.endevents'})();
+	hmBrowser.orientationevent = typeof window.orientation == "undefined" ? "resize" : "orientationchange";
+	hmBrowser.server = /^https??:\/\//im.test(document.location);
+
+/*** HM KW INDEX CONSTRUCTOR FUNCTIONS ***/ 	
+// Index Constructor
+function idxConstructor(obj) {
+	
+	// Internal variables
+	var self = this,
+		sections = obj.sections,
+		keywords = obj.keywords,
+		indexTree = document.getElementById("hmindextree"),
+		header = document.getElementById("idxheader"),
+		headerwrapper = document.getElementById("idxheadwrapper"),
+		hasItems = [],
+		kwBlocks = {},
+		groupsList = [];
+
+	// Container for the popup when there are multiple targets for an entry
+	$("body").prepend('<div id="multiwrapper" data=""></div>');
+		
+	// Public variables
+	self.currentSection = null;
+	self.fullExpand = false && hmDevice.desktop;
+	self.currentGroupID = "";
+	self.multiWrapper = document.getElementById("multiwrapper");
+	self.idxkeywords = keywords;
+	self.lastSearch = ""; // Last search term used
+	self.foundTerms = []; // Search terms found
+	self.currentSearch = 0; // Index of current search term
+	self.currentSearchMode = "^"; // Searching from beginning or anyhwere
+	
+	// Use char codes instead of characters for block IDs (problems with special characters)
+	self.makeBlockID = function(ch) {
+		return ch.charCodeAt(0).toString();
+	};
+	function getBlockID(id) {
+		var refChar = parseInt(id.substr(3),10);
+		return String.fromCharCode(refChar).toUpperCase();
+	}
+	function safeChars(string) {
+		var entityMap = {
+			"&": "&amp;",
+			"#": '&#35;',
+			"<": "&lt;",
+			">": "&gt;",
+			'"': '&quot;',
+			"'": '&#39;',
+			"/": '&#x2F;'
+			
+		};
+		return String(string).replace(/[#&<>"'\/]/g, function(s){return entityMap[s];});
+	}
+		 
+	// Build click links and expanding letter groups
+	function buildHeaders() {
+
+	// Clickable letters header variables (at top of page)
+		var tempLi, tempAn, tempSpacer;
+		
+	// Individual expanding sections headers variables
+		var groups = document.getElementById("idxgroups"),
+			groupUl, groupLi, groupBody;
+	
+	
+		for (var x = 0; x < hasItems.length; x++) {
+			var BlockID = self.makeBlockID(hasItems[x]);
+		// Clickable letters header in desktop mode only
+		if (hmDevice.desktop) {
+			tempLi = document.createElement("li");
+			tempAn = document.createElement("a");
+			tempAn.id = "hr_" + BlockID;
+			$(tempAn).on("click", function(event){
+				hmIndex.toggleSection(event,{target: $(this).attr("id").substr(3), nobuild: true});
+				});
+			groupsList.push($(tempAn).attr("id").substr(3));
+			tempAn.innerHTML = safeChars(hasItems[x]);
+			tempAn.className = "kw";
+			tempLi.appendChild(tempAn);
+			header.appendChild(tempLi);
+			}
+
+		// Expanding groups headers
+			groupUl = document.createElement("ul");
+			groupLi = document.createElement("li");
+			groupBody = document.createElement("div");
+			groupUl.id = "hd_" + BlockID;
+			groupUl.className = "idxgroup-header";
+			if (!self.fullExpand){
+				$(groupUl).on("click", function(event){
+					hmIndex.toggleSection(event,{target: $(this).attr("id").substr(3)});
+					});}
+			groupBody.className = "idxgroup-body";
+			groupBody.id = BlockID;
+			if (!self.fullExpand)
+				groupLi.innerHTML = '<a href="javascript:void(0)">-&nbsp;' + safeChars(hasItems[x]) +  '&nbsp;-</a>';
+			else
+				groupLi.innerHTML = '-&nbsp;' + safeChars(hasItems[x]) +  '&nbsp;-';
+			groupUl.appendChild(groupLi);
+			groups.appendChild(groupUl);
+			groups.appendChild(groupBody);
+		
+		}
+	}
+	
+	function buildHeadingGroups(keyword) {
+		var lt = keyword.kw.substr(0,1),
+			ltID = lt.toUpperCase(),
+			foundItem = false;
+			ltID = "bd_" + self.makeBlockID(ltID);
+		for (var x = 0; x < hasItems.length; x++) {
+			if (lt.toLowerCase() === hasItems[x].toLowerCase()) {
+				foundItem = true;
+				break;
+				}
+		}
+		if (!foundItem) {
+			hasItems.push(lt.toUpperCase());
+			kwBlocks[ltID] = [];
+			}
+		kwBlocks[ltID].push(keyword);
+	}
+	
+
+	function buildHeaderItems(i) {
+		for (var x = 0; x < i.length; x++) {
+				buildHeadingGroups(i[x]);
+		}			
+	}
+	
+	function buildSectionItems(section) {
+		var thisSection = kwBlocks["bd_" + section],
+			thisBody = document.getElementById(section.replace("hd_","bd_")),
+			subWrapper;
+		function buildSubkw(caption,href,thiskw) {
+			var subP = document.createElement("p"),
+				subA = document.createElement("a"),
+				subS = document.createElement("span");
+				
+			subP.className = "idxmultiref";
+			subS.appendChild(document.createTextNode(caption));
+			subA.href = href;
+			subA.className = "kw on";
+			$(subA).on("click", function(event){
+				event.preventDefault();
+				var target = targetCheck($(this).attr("href"));
+					if (target !== "") {
+					var targetA = target.indexOf("\#") > -1 ? target.substr(0,target.indexOf("\#")) : target,
+						targetB = target.indexOf("\#") > -1 ? target.substr(target.indexOf("\#")) : "";
+					var searchTrack = "";
+					xMessage.sendObject("parent",{action: "loadtopic",href: (targetA + searchTrack), ac: targetB, bs: false});
+				
+					}
+			});
+			subA.appendChild(subS);
+			subP.appendChild(subA);
+			return subP;
+		}
+		
+		function displayPopBox(event, $popbox, autoFade) {
+			var mouseX = event.pageX, 
+				mouseY = event.pageY,
+				posX = mouseX, posY = mouseY,
+				popWarning = false,
+				$unclicker = $("div#unclicker");
+				
+				// if ($popbox.is(":hidden")) {
+				
+				$popbox.css("visibility","hidden").show();
+				
+				var pHeight = $popbox.height()
+				var spaceAbove = event.clientY-15;
+				var spaceBelow = $(window).height() - event.clientY;
+				var fitsAbove = spaceAbove > pHeight;
+				var fitsBelow = spaceBelow > pHeight;
+				
+				if (!fitsAbove && !fitsBelow) {
+					if (spaceAbove > spaceBelow) {
+							$popbox.css("max-height", (spaceAbove-20) + "px");
+							fitsAbove = true;
+						} else {
+							$popbox.css("max-height", (spaceBelow-12) + "px");
+							fitsBelow = true;
+						}
+				}
+				
+				if (fitsAbove && (spaceAbove > spaceBelow || !fitsBelow)) {
+					posY = posY - ($popbox.outerHeight() + 15);
+					}
+				else if (fitsBelow) {
+					posY = posY + 12;
+					}
+				
+				posX = (posX - ($popbox.outerWidth()/2 + 10));
+				posX = posX < 15 ? 15 : posX;
+
+				posX +="px"; posY+="px";
+				$popbox.css({"top": posY, "left": posX});
+				
+				if (autoFade)
+					popWarning = setTimeout(function(){
+						$popbox.fadeOut("fast", function(){
+						$(this).css("visibility","hidden").show();
+						});
+						$unclicker.off("click").off(hmBrowser.touchstart).hide();
+					},3000);
+				
+				$unclicker.on("click", function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					}).on(hmBrowser.touchstart, function(event){
+					event.stopPropagation();
+					$(this).off("click").off(hmBrowser.touchstart).hide();
+					$popbox.fadeOut("fast", function(){
+						$(this).css("visibility","hidden").show();
+						});
+					if (popWarning)
+						clearTimeout(popWarning);
+				});
+				$("div#unclicker").show();
+				$popbox.hide().css("visibility","visible").fadeIn("fast");
+			// }
+		}
+
+		function showMultiKw(event,kw,captions,hrefs) {
+			var mouseX = event.pageX, mouseY = event.pageY,
+				posX = mouseX, posY = mouseY,
+				$multiWrapper = $(self.multiWrapper),
+				data = self.multiWrapper.getAttribute("data");
+			if (data !== kw) {
+				self.multiWrapper.setAttribute("data",kw);
+				self.multiWrapper.innerHTML = "";
+				for (var sub = 0; sub < captions.length; sub++) {
+						self.multiWrapper.appendChild(buildSubkw(captions[sub],hrefs[sub],kw));
+					} 
+			}
+			displayPopBox(event, $multiWrapper, false);
+		}
+		
+		function targetCheck(t) {
+			var anchorX = hmBrowser.server ? "\?anchor=" : "\!anchor=";
+				if (t.substr(0,11) == "javascript:")
+						return "";
+					// t = t.replace( /^#/, "" ) || "";
+				if (t.indexOf("#") > -1) t = t.replace("#",anchorX);
+						return t;
+				}
+
+		function buildItem(item,type,level){
+			var mainP = document.createElement("p"),
+				mainA = document.createElement("a"),
+				mainS = document.createElement("span");
+				mainS.appendChild(document.createTextNode(item.kw));
+				mainP.className = level === 1 ? "idxkeyword" : "idxkeyword lv2";
+				mainA.href = "javascript:void(0);";
+				mainA.className = "kw";
+				mainA.appendChild(mainS);
+				mainP.appendChild(mainA);
+			switch(type) {
+			
+			case "empty":
+				if (item.subkw.length > 0) {
+					// mainA.setAttribute("onclick","alert('Select sub-keywords of this entry to see references to \""+ item.kw +"\"')");
+					$(mainA).on("click", function(event){
+						
+						var popY = event.clientY;
+						
+						$("div#popmessage").html('<p class="popmessage">Select sub-keywords of this entry to see references to \"<span>'+$(this).children("span").first().text()+'</span>\"</p>');
+						
+						displayPopBox(event, $("div#popmessage"),true);
+						
+					});
+					mainA.className = mainA.className + " off";
+					}
+				thisBody.appendChild(mainP);						
+			break;
+			case "single":
+				mainA.href = item.hrefs[0];
+				$(mainA).on("click", function(event){
+					event.preventDefault();
+					var target = targetCheck($(this).attr("href"));
+					if (target!== "") {
+					var targetA = target.indexOf("\#") > -1 ? target.substr(0,target.indexOf("\#")) : target,
+						targetB = target.indexOf("\#") > -1 ? target.substr(target.indexOf("\#")) : "";
+					var searchTrack = "";
+					var currentKW = $(this).find("span").text().replace(/\s/g,"\+");
+					}
+					xMessage.sendObject("parent",{action: "loadtopic", href: (targetA + searchTrack), ac: targetB, bs: false});
+				});
+				mainA.className = mainA.className + " on";
+				// mainA.setAttribute("title",item.captions[0]);
+				thisBody.appendChild(mainP);
+			break;
+			case "multi":
+				mainA.className = mainA.className + " multi";
+				var thisCaptions = item.captions, thisHrefs = item.hrefs;
+				$(mainA).on("click", function(event,thisCaptions,thisHrefs){
+						event.preventDefault(); event.stopPropagation();
+						showMultiKw(event,item.kw,item.captions,item.hrefs);
+					});
+				thisBody.appendChild(mainP);
+			break;
+			}
+		// Add subkeywords if they exist
+		if (item.subkw.length > 0 && level === 1) {
+			processKeywords(item.subkw,2);
+			}	
+		}
+		
+	function processKeywords(section, level) {
+		for (var x = 0; x < section.length; x++) {
+			if (section[x].captions.length === 0) {
+				// Header Item without target
+				buildItem(section[x],"empty",level);
+			} else if (section[x].captions.length === 1) {
+				// Keyword with one target
+				buildItem(section[x],"single",level);
+			} else if (section[x].captions.length > 1)  {
+				// Keyword with multiple targets
+				buildItem(section[x],"multi",level);
+			}
+		 }
+		}
+
+		processKeywords(thisSection, 1);
+	}
+
+	function doFullExpand() {
+		for (var x = groupsList.length-1; x > -1; x--) {
+			self.toggleSection(null,{target: groupsList[x],group: x});
+			}
+		$( '<style>ul.idxgroup-header {cursor: default;}</style>' ).appendTo( "head" );
+	}
+	
+	// Close and dispose current branch (also unbinds events)
+	self.closeCurrentSection = function(target) {
+		if (self.currentSection)
+		self.currentSection.slideUp(0, function(){
+				self.currentSection.empty();
+				if (target)
+					self.currentGroupID = target;
+				});
+	};
+	
+	self.toggleSection = function(event,sectionArgs) {
+
+		var $target = $("div#" + sectionArgs.target),
+			$kwtarget, $arghits,
+			doScroll = typeof(sectionArgs.group) === "undefined" ? 0 : 1 ;
+		
+		var scrollToTerm = function() {
+			$kwtarget = $("span").filter(function(){return $(this).text() === sectionArgs.kwterm;});
+					if ($kwtarget.length > 0) {
+						$("div#hmindextree").scrollTo($kwtarget,300,{offset:-10,axis:'y'});
+						}
+					else {
+						$("div#hmindextree").scrollTo($("#" + "hd_" + sectionArgs.target),300,{offset:-10,axis:'y'});
+						}
+		};
+
+		var highlightTerms = function() {
+		// Highlight all instances of search arg if not yet highlighted
+			if ($("span.idxhilite").length < 1 || self.fullExpand) {
+				$arghits = $("span:contains('"+sectionArgs.kwarg+"')");
+				// Filter out for from start only if checked
+				if (sectionArgs.kwmode === "^") {
+					var argexp = new RegExp('^'+sectionArgs.kwarg,'i');
+					$arghits = $arghits.filter(function(){
+						return (argexp.test($(this).text()));
+					});
+				}
+				$arghits.addClass("idxhilite");
+			} 
+		};
+		
+		if ($target.is(":hidden")) {
+			if (self.currentSection !== null && self.currentSection.is(":visible") && self.currentSection !== $target) {
+				if (!self.fullExpand) {
+			self.closeCurrentSection(sectionArgs.target);
+			}
+			
+			}
+			// Build and display the new branch
+			buildSectionItems(sectionArgs.target);
+			if (self.fullExpand) {
+				$target.css("display","block");
+				self.currentSection = $target;
+				self.currentGroupID = sectionArgs.target;
+				}
+			else
+			$target.slideDown("fast", function(){
+				self.currentSection = $target;
+				self.currentGroupID = sectionArgs.target;
+				if (typeof sectionArgs.kwterm == "undefined") {
+					// Scroll to section top
+					$("div#hmindextree").scrollTo($("#" + "hd_" + sectionArgs.target),300,{axis: 'y', offset:-10});
+				} else {
+					
+					highlightTerms();
+					// Scroll to kwterm
+					scrollToTerm();		
+					}
+			});
+			
+			} else {
+				// Simple toggle function
+				if (event !== null && !self.fullExpand) {
+				$target.slideUp("fast", function(){
+				self.currentSection.empty();
+				self.currentGroupID = "";
+				});
+				}
+
+				if (typeof sectionArgs.kwterm !== "undefined" || (self.fullExpand && doScroll === 0)) {
+				//if (typeof sectionArgs.kwterm !== "undefined")
+					highlightTerms();
+				scrollToTerm();
+				}
+			}
+	};
+	
+	self.nsheader = function() {
+		var hdoffset = hmDevice.desktop ? 3 : hmDevice.tablet ? 5 : 5;
+		$(indexTree).css("top",($(headerwrapper).height() + hdoffset) + "px");
+	};
+	
+	buildHeaderItems(keywords);
+	buildHeaders();
+	if (self.fullExpand) doFullExpand();
+	self.nsheader();
+	$(window).on("resize",self.nsheader);
+} // Index Constructor
+
+function hmLoadIndex(obj) {
+	  hmIndex = new idxConstructor(obj);
+    }
+
+function hmDoKwSearch(searchArg) {
+	if (typeof searchArg !== "undefined")
+		$("input#searcharg").val(searchArg);
+	var searcharg = $("input#searcharg").val(),
+		searchgroup, thiskeyRX,
+		foundKey = false,
+		searchMode = $('input[id="idxmode"]:checked').length === 1 ? "^" : "",
+		searchModeChanged = false;
+		
+		if (searchMode != hmIndex.currentSearchMode)
+			searchModeChanged = true;
+		hmIndex.currentSearchMode = searchMode;
+	
+	if (searcharg === "") {
+		if (!hmIndex.fullExpand){
+			hmIndex.closeCurrentSection();
+			} else {
+				$("span.idxhilite").removeClass("idxhilite");
+			}
+		return;
+		}
+	if (searcharg !== hmIndex.lastSearch || searchModeChanged) {
+		
+		if (!hmIndex.fullExpand){
+			hmIndex.closeCurrentSection();
+		} else {
+			$("span.idxhilite").removeClass("idxhilite");
+		}
+		hmIndex.lastSearch = searcharg;
+		hmIndex.foundTerms = [];
+		hmIndex.currentSearch = 0;
+
+		thiskeyRX = new RegExp(searchMode+searcharg,"im");
+		for (var i=0; i < hmIndex.idxkeywords.length; i++) {
+				// if (foundKey) break;
+				if (thiskeyRX.test(hmIndex.idxkeywords[i].kw)) {
+					foundKey = true;
+					searchgroup = hmIndex.makeBlockID(hmIndex.idxkeywords[i].kw.substr(0,1).toUpperCase()).toString();
+					hmIndex.foundTerms.push([searchgroup,hmIndex.idxkeywords[i].kw]);
+				}
+		if (hmIndex.idxkeywords[i].subkw.length > 0){		
+		for (var s=0; s < hmIndex.idxkeywords[i].subkw.length; s++) {
+				//if (foundKey) break;
+				if (thiskeyRX.test(hmIndex.idxkeywords[i].subkw[s].kw)) {
+					foundKey = true;
+					searchgroup = hmIndex.makeBlockID(hmIndex.idxkeywords[i].kw.substr(0,1).toUpperCase()).toString();
+					hmIndex.foundTerms.push([searchgroup,hmIndex.idxkeywords[i].subkw[s].kw]);
+					//hmIndex.toggleSection(null,searchgroup,hmIndex.idxkeywords[i].subkw[s].kw);
+					//break;
+				}
+				
+			}
+			} // Find keys inner loop
+
+		} // Find keys outer loop
+		
+		} // Find keys routine
+		if (hmIndex.foundTerms.length === 0)
+			alert("Not found!");
+		else {
+			var $nextHit= $("span:contains('" + hmIndex.foundTerms[hmIndex.currentSearch][1] +"')");
+			
+			while (($nextHit.length > 0) && ($nextHit.length > 0) && ($nextHit.position().top < $("div#hmindextree").height() - 40) && (hmIndex.currentGroupID === hmIndex.foundTerms[hmIndex.currentSearch][0])) {
+				hmIndex.currentSearch++;
+				if (hmIndex.currentSearch > hmIndex.foundTerms.length-1) {
+				hmIndex.currentSearch--;
+				break;
+				}
+				$nextHit= $("span:contains('" + hmIndex.foundTerms[hmIndex.currentSearch][1] +"')");
+			}
+			
+			hmIndex.toggleSection(null,{target: hmIndex.foundTerms[hmIndex.currentSearch][0], kwterm: hmIndex.foundTerms[hmIndex.currentSearch][1],kwarg: searcharg, kwmode: searchMode});
+			hmIndex.currentSearch++;
+			
+			if (hmIndex.currentSearch > hmIndex.foundTerms.length-1) {
+				hmIndex.currentSearch = 0;
+				}
+			}
+}
+
+/*** HM KEYWORD INDEX FUNCTIONS ***/
+// var currentdiv = null;
+// var canhidelinks = true;
+/*** SKIN FUNCTIONS ***/
+var initScripts = function() {
+	var scripts = ["./js/hmkwindex.js", "./js/helpman_settings.js", "./js/hmcontextids.js",  "./js/jquery.scrollTomin.js", "./js/xmessage.js"];
+	var currentScript = 0;
+
+	// Staged loading of JS scripts after page has loaded, with functions to perform after all are loaded
+	var loadScripts = function() {
+	// Load all necessary scripts asynchronously
+		$.ajaxPrefilter( "json script", function( options ) {options.crossDomain = true;});
+		var loaded = 0;
+		for (var scr = 0; scr < scripts.length; scr++) {
+			$.getScript( scripts[scr], function( data, textStatus, jqxhr ) {
+			loaded++;
+			if (loaded == scripts.length) {
+				// Functions to perform after all scripts have loaded
+
+				// Initialize the xMessage framework for frame communication
+				xMessage = new xMsg("KWINDEX: ");	
+				
+				// Make jQuery :contains case-insensitive
+				$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+				return function( elem ) {
+						return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+					};
+				});
+				
+				// Active search
+				
+				$("input#searcharg").on("click", function(event){
+
+					});
+				
+				$("input#searchbtn").on("click", function(event){
+					event.preventDefault();
+					hmDoKwSearch();
+					});
+				
+				loaded=0;
+
+				}
+			});
+		} 
+	}; // loadScripts()
+	
+	// Load jQuery first so that everything else can continue
+	var jScript = document.getElementById("jqscript");
+	jScript.src = "./js/jquery.js";
+
+	// Load the other scripts once jQuery responds positively
+	var loadCheck = setInterval(function() {
+		if (window.jQuery) {
+			clearInterval(loadCheck);
+			loadScripts();
+			}
+		},100);
+};
+
+if (window.addEventListener)
+window.addEventListener("load", initScripts, false);
+else if (window.attachEvent)
+window.attachEvent("onload", initScripts);
+else window.onload = initScripts;	
+// Development timer for checking page load times etc.
+// var indexTimer = new Date().getTime();
+// console.log("End of Index page ready: " + (indexTimer - parent.window.startPageTimer) + "ms");
+</script>  
+</body>
+</html>

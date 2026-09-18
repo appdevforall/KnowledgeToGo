@@ -1346,4 +1346,5 @@
     <string name="k2go_netpolicy_switched_title">Φαίνεται ότι μεταβήκατε σε δεδομένα κινητής</string>
     <string name="k2go_netpolicy_switched_msg">Οι νέες λήψεις χρησιμοποιούν τώρα δεδομένα κινητής. Αυτό μπορεί να έχει κόστος ή να εξαντλήσει το πρόγραμμα δεδομένων σας.</string>
     <string name="k2go_netpolicy_channel">Ειδοποιήσεις κόστους δεδομένων</string>
+    <string name="k2go_help_manual">Εγχειρίδιο</string>
 </resources>

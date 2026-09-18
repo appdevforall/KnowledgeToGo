@@ -1340,4 +1340,5 @@
     <string name="k2go_netpolicy_switched_title">モバイルデータに切り替わったようです</string>
     <string name="k2go_netpolicy_switched_msg">新しいダウンロードはモバイルデータを使用します。料金が発生したり、データプランを使い切ったりする可能性があります。</string>
     <string name="k2go_netpolicy_channel">データ料金の通知</string>
+    <string name="k2go_help_manual">マニュアル</string>
 </resources>

@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">يبدو أنك انتقلت إلى بيانات الجوال</string>
     <string name="k2go_netpolicy_switched_msg">تستخدم التنزيلات الجديدة الآن بيانات الجوال. قد يترتب على ذلك تكلفة أو يستنفد باقة بياناتك.</string>
     <string name="k2go_netpolicy_channel">تنبيهات تكلفة البيانات</string>
+    <string name="k2go_help_manual">الدليل</string>
 </resources>

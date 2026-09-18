@@ -1340,4 +1340,5 @@
     <string name="k2go_netpolicy_switched_title">您似乎已切换到移动数据</string>
     <string name="k2go_netpolicy_switched_msg">新的下载现在会使用移动数据。这可能产生费用或用尽您的套餐流量。</string>
     <string name="k2go_netpolicy_channel">数据费用提醒</string>
+    <string name="k2go_help_manual">手册</string>
 </resources>

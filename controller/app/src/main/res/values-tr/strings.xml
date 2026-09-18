@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Mobil veriye geçmiş gibisiniz</string>
     <string name="k2go_netpolicy_switched_msg">Yeni indirmeler artık mobil veri kullanıyor. Bu, ücretlendirilebilir veya veri paketinizi tüketebilir.</string>
     <string name="k2go_netpolicy_channel">Veri maliyeti uyarıları</string>
+    <string name="k2go_help_manual">Kılavuz</string>
 </resources>

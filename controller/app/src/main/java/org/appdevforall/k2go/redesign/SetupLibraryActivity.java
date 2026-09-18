@@ -122,7 +122,27 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         serverController = new org.appdevforall.k2go.ServerController(this, this);   // ADFA-4952
         serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
-        org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore");
+        // K2GO-406: only the first-run / reinstall setup wizard ("Setup your library") shows the help
+        // icon and fences the FAB off it. Every other entry into this activity (Get More, module
+        // management, maps/zim setup, backup/restore) is a post-install screen and matches Library/Home
+        // (no top-right "?"). wizardSetup reads the same launch extras as the fragment routing below, so
+        // it is true exactly for the branches that land on Step1SystemFragment (the wizard steps).
+        android.content.Intent launchIntent = getIntent();
+        boolean wizardSetup = launchIntent.getStringExtra(EXTRA_BR_JOB_MODE) == null
+                && !launchIntent.getBooleanExtra(EXTRA_BACKUP_RESTORE, false)
+                && !launchIntent.getBooleanExtra(EXTRA_MODULE_MGMT, false)
+                && launchIntent.getStringExtra(EXTRA_MODULE_DETAIL) == null
+                && !launchIntent.getBooleanExtra(EXTRA_DASHBOARD_DETAIL, false)
+                && !launchIntent.getBooleanExtra(EXTRA_MAPS_SETUP, false)
+                && !launchIntent.getBooleanExtra(EXTRA_ZIM_SETUP, false)
+                && !launchIntent.getBooleanExtra(EXTRA_CONTENT_ONLY, false);
+        if (wizardSetup) {
+            // Fence the FAB off the top-right help icon (72dp), the same as the wizard activity.
+            org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore", 16, 72, 0);
+            WizardHelpButton.installOn(this);
+        } else {
+            org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore");
+        }
         // ADFA-5023: read reinstall mode from the intent every onCreate (survives a config-change
         // recreation) so the wizard's final install wipes first.
         reinstallMode = getIntent().getBooleanExtra(EXTRA_REINSTALL_SETUP, false);

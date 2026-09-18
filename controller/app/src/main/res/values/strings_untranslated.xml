@@ -10,8 +10,4 @@
   strings.xml.
 -->
 <resources>
-
-    <!-- No pending strings. Recent feature strings (K2GO-395 network cost consent, K2GO-394 maps
-         download) are translated and live in values*/strings.xml. Park a new WIP string here only
-         while it awaits translation, then migrate it to strings.xml before the PR merges. -->
 </resources>

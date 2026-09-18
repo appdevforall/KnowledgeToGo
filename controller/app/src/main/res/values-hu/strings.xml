@@ -1339,4 +1339,5 @@
     <string name="k2go_netpolicy_switched_title">Úgy tűnik, átváltott mobiladatra</string>
     <string name="k2go_netpolicy_switched_msg">Az új letöltések most mobiladatot használnak. Ez költséggel járhat, vagy elfogyaszthatja az adatkeretét.</string>
     <string name="k2go_netpolicy_channel">Adatköltség-figyelmeztetések</string>
+    <string name="k2go_help_manual">Kézikönyv</string>
 </resources>

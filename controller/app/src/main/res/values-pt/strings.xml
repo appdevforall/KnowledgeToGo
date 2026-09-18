@@ -1418,4 +1418,5 @@
     <string name="k2go_netpolicy_switched_title">Parece que você mudou para dados móveis</string>
     <string name="k2go_netpolicy_switched_msg">Os novos downloads agora usam dados móveis. Isso pode gerar custos ou esgotar seu plano de dados.</string>
     <string name="k2go_netpolicy_channel">Alertas de custo de dados</string>
+    <string name="k2go_help_manual">Manual</string>
 </resources>
