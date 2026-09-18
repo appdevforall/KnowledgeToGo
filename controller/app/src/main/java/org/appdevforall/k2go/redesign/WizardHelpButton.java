@@ -61,7 +61,10 @@ public final class WizardHelpButton {
         lp.setMargins(m, Math.round(16 * d), m, m);   // top margin clears the status bar
         root.addView(b, lp);
 
+        // K2GO-410: the wizard help opens the install topic; Settings (no extra) opens HOME.
         b.setOnClickListener(v ->
-                activity.startActivity(new Intent(activity, HelpViewerActivity.class)));
+                activity.startActivity(new Intent(activity, HelpViewerActivity.class)
+                        .putExtra(HelpViewerActivity.EXTRA_TOPIC,
+                                org.appdevforall.k2go.help.domain.HelpTopic.INSTALL.name())));
     }
 }
