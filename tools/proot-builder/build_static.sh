@@ -314,7 +314,11 @@ termux_step_pre_configure() {
     mv $TERMUX_PREFIX/lib/libiconv.so* $TERMUX_PREFIX/lib/hidden_so/ 2>/dev/null || true
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
-    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --disable-lz4 --disable-zstd --disable-xxhash --disable-openssl --disable-year2038"
+    # K2GO-414: rsync's configure enables IDN by default and needs libidn2 (idn2_lookup_ul),
+    # which this static build does not provide -> configure aborts. IDN (internationalized
+    # hostnames) is not needed for K2Go's local-IP clone/sync, so disable it (rsync's own
+    # configure error recommends --disable-idn).
+    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --disable-lz4 --disable-zstd --disable-xxhash --disable-openssl --disable-idn --disable-year2038"
 
     export ac_cv_func_lchmod=no
     export ac_cv_func_lutimes=no
