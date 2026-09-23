@@ -71,13 +71,13 @@ jobs:
 
     # Phase 0 safety net: unit tests are a BLOCKING gate.
     - name: Run Unit Tests
-      run: ./gradlew testDebugUnitTest --stacktrace
+      run: ./gradlew testStandardDebugUnitTest --stacktrace
 
     # Lint is a BLOCKING gate for :app. The existing backlog is grandfathered via the
     # committed app/lint-baseline.xml; any NEW lint error fails CI. Scoped to :app so
     # the vendored termux-core/upstream backlog does not block.
     - name: Run Android Lint (:app, blocking)
-      run: ./gradlew :app:lintDebug
+      run: ./gradlew :app:lintStandardDebug
 
     - name: Compile Test (Assemble Debug)
       run: ./gradlew assembleDebug --stacktrace

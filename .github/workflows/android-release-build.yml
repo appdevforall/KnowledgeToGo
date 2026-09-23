@@ -75,7 +75,7 @@ jobs:
           # Release tags ship a clean version (v0.7.0-beta), no commit hash. build.gradle only
           # falls back to the git SHA suffix when versionSuffix is absent; pass it empty here.
           # In-APK traceability is unaffected: BuildConfig.GIT_SHA still records the commit.
-          ./gradlew assembleRelease \
+          ./gradlew assembleStandardRelease \
             -PversionSuffix="" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: k2go-apks-release
-          path: controller/**/build/outputs/apk/release/*.apk
+          path: controller/**/build/outputs/apk/standard/release/*.apk
           retention-days: 7
 
       # --- GITHUB RELEASES ---
@@ -97,7 +97,7 @@ jobs:
         with:
           # Automatically marks as Pre-release if the tag ends in "-beta" or "-rc"
           prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
-          files: controller/**/build/outputs/apk/release/*.apk
+          files: controller/**/build/outputs/apk/standard/release/*.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
