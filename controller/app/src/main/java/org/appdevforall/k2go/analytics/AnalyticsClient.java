@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import org.appdevforall.k2go.BuildConfig;
 import org.appdevforall.k2go.analytics.domain.AnalyticsBuckets;
 import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
@@ -20,9 +18,9 @@ import org.appdevforall.k2go.feedback.data.FeedbackDiagnostics;
  * shared store-and-forward backbone and the Cloudflare Worker are out of scope for now.
  *
  * <p><b>Consent-gated:</b> every method is a no-op unless the operator has opted in
- * ({@link AnalyticsConsent}, default OFF). Collection is also toggled at the SDK level via
- * {@link FirebaseAnalytics#setAnalyticsCollectionEnabled(boolean)} so nothing is gathered
- * while consent is OFF. Advertising ID / SSAID collection is disabled in the manifest.
+ * ({@link AnalyticsConsent}, default OFF). Collection is also toggled at the SDK level through
+ * {@link FirebaseAnalyticsBridge} so nothing is gathered while consent is OFF. Advertising ID /
+ * SSAID collection is disabled in the standard-flavor manifest.
  *
  * <p><b>Data set is strictly operational:</b> an anonymous install id, build info and
  * coarse timing/config. No content, no per-user behaviour, no location, no PII. Device
@@ -50,9 +48,9 @@ public final class AnalyticsClient {
      */
     public void applyConsent() {
         if (!BuildConfig.ANALYTICS_ENABLED) {
-            return;   // built without google-services.json → Firebase not configured; nothing to sync
+            return;   // fdroid flavor, or standard without google-services.json: nothing to sync
         }
-        FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(AnalyticsConsent.isEnabled(app));
+        FirebaseAnalyticsBridge.setCollectionEnabled(app, AnalyticsConsent.isEnabled(app));
     }
 
     // -------------------------------------------------------------- app lifecycle
@@ -188,10 +186,10 @@ public final class AnalyticsClient {
      *  touches the uninitialized Firebase SDK (every public logging method gates through here). */
     private boolean gate() {
         if (!BuildConfig.ANALYTICS_ENABLED) {
-            return false;   // no google-services.json → analytics compiled out
+            return false;   // fdroid flavor, or standard without google-services.json: analytics off
         }
         boolean consent = AnalyticsConsent.isEnabled(app);
-        FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(consent);
+        FirebaseAnalyticsBridge.setCollectionEnabled(app, consent);
         return consent;
     }
 
@@ -201,14 +199,13 @@ public final class AnalyticsClient {
      * an anonymous deployment without repeating them as params.
      */
     private Bundle base() {
-        FirebaseAnalytics fa = FirebaseAnalytics.getInstance(app);
-        fa.setUserProperty("install_id", InstallId.get(app));
-        fa.setUserProperty("binaries_tag", safe(FeedbackDiagnostics.binariesTag(app)));
+        FirebaseAnalyticsBridge.setUserProperty(app, "install_id", InstallId.get(app));
+        FirebaseAnalyticsBridge.setUserProperty(app, "binaries_tag", safe(FeedbackDiagnostics.binariesTag(app)));
         return new Bundle();
     }
 
     private void log(String name, Bundle params) {
-        FirebaseAnalytics.getInstance(app).logEvent(name, params);
+        FirebaseAnalyticsBridge.logEvent(app, name, params);
     }
 
     private static String safe(String v) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- ADFA-4466 Phase 1 / K2GO-402: privacy hardening for Firebase Analytics. Disable
+             Advertising ID / SSAID collection and ad personalization (K2Go may serve minors;
+             operational analytics only). These keys live in the standard flavor: the fdroid build
+             links no Firebase, so they would be dead weight (and a stray Google reference) there. -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
+    </application>
+</manifest>
