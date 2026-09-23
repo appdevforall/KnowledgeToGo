@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">Đã cập nhật</string>
     <string name="k2go_dash_chip_update">Có bản cập nhật</string>
     <string name="k2go_dash_uptodate_hint">Bạn đang dùng bản mới nhất — không cần dựng lại.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Xây dựng lại hoàn tất — đang đưa bạn đến thư viện…</string>
     <string name="k2go_dash_rebuild_building">Đang xây dựng, kiểm thử và thay thế tại chỗ…</string>
     <string name="k2go_dash_rebuild_failed">Xây dựng lại thất bại</string>

@@ -1167,7 +1167,7 @@
     <string name="k2go_dash_chip_uptodate">হালনাগাদ</string>
     <string name="k2go_dash_chip_update">আপডেট উপলব্ধ</string>
     <string name="k2go_dash_uptodate_hint">আপনি সর্বশেষ সংস্করণে আছেন — পুনরায় তৈরি করার প্রয়োজন নেই।</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">পুনর্নির্মাণ সম্পন্ন — আপনার লাইব্রেরিতে নিয়ে যাওয়া হচ্ছে…</string>
     <string name="k2go_dash_rebuild_building">জায়গাতেই তৈরি, পরীক্ষা ও প্রতিস্থাপন হচ্ছে…</string>
     <string name="k2go_dash_rebuild_failed">পুনর্নির্মাণ ব্যর্থ</string>

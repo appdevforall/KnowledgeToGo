@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">محدَّث</string>
     <string name="k2go_dash_chip_update">يتوفر تحديث</string>
     <string name="k2go_dash_uptodate_hint">أنت على أحدث إصدار — لا حاجة لإعادة البناء.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">اكتملت إعادة البناء — يتم نقلك إلى مكتبتك…</string>
     <string name="k2go_dash_rebuild_building">يتم البناء والاختبار والاستبدال في المكان…</string>
     <string name="k2go_dash_rebuild_failed">فشلت إعادة البناء</string>

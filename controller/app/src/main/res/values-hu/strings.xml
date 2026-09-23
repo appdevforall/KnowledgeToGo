@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">Naprakész</string>
     <string name="k2go_dash_chip_update">Frissítés érhető el</string>
     <string name="k2go_dash_uptodate_hint">A legújabb verziót használja — nincs szükség újraépítésre.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Újraépítés kész — átirányítunk a könyvtáradba…</string>
     <string name="k2go_dash_rebuild_building">Fordítás, tesztelés és helyben csere…</string>
     <string name="k2go_dash_rebuild_failed">Az újraépítés sikertelen</string>

@@ -1164,7 +1164,7 @@
     <string name="k2go_dash_chip_uptodate">Aktualne</string>
     <string name="k2go_dash_chip_update">Dostępna aktualizacja</string>
     <string name="k2go_dash_uptodate_hint">Masz najnowszą wersję — przebudowa nie jest potrzebna.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Przebudowa zakończona — przenosimy Cię do biblioteki…</string>
     <string name="k2go_dash_rebuild_building">Budowanie, testowanie i podmiana w miejscu…</string>
     <string name="k2go_dash_rebuild_failed">Przebudowa nie powiodła się</string>

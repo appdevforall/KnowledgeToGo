@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">Aggiornato</string>
     <string name="k2go_dash_chip_update">Aggiornamento disponibile</string>
     <string name="k2go_dash_uptodate_hint">Hai la versione più recente — non serve ricostruire.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Ricostruzione completata — ti portiamo alla tua libreria…</string>
     <string name="k2go_dash_rebuild_building">Compilazione, test e sostituzione sul posto…</string>
     <string name="k2go_dash_rebuild_failed">Ricostruzione non riuscita</string>

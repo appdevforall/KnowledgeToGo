@@ -1161,7 +1161,7 @@
     <string name="k2go_dash_chip_uptodate">Aktuálne</string>
     <string name="k2go_dash_chip_update">Dostupná aktualizácia</string>
     <string name="k2go_dash_uptodate_hint">Máte najnovšiu verziu — opätovné zostavenie nie je potrebné.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Prestavba dokončená — presmerúvame vás do knižnice…</string>
     <string name="k2go_dash_rebuild_building">Zostavovanie, testovanie a výmena na mieste…</string>
     <string name="k2go_dash_rebuild_failed">Prestavba zlyhala</string>

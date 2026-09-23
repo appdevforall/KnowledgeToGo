@@ -1167,7 +1167,7 @@
     <string name="k2go_dash_chip_uptodate">અદ્યતન</string>
     <string name="k2go_dash_chip_update">અપડેટ ઉપલબ્ધ</string>
     <string name="k2go_dash_uptodate_hint">તમે નવીનતમ સંસ્કરણ પર છો — પુનઃનિર્માણની જરૂર નથી.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">ફરીથી બનાવવું પૂર્ણ — તમને તમારી લાઇબ્રેરીમાં લઈ જવાઈ રહ્યા છે…</string>
     <string name="k2go_dash_rebuild_building">સ્થળ પર બનાવાઈ, ચકાસાઈ અને બદલાઈ રહ્યું છે…</string>
     <string name="k2go_dash_rebuild_failed">ફરીથી બનાવવું નિષ્ફળ</string>
