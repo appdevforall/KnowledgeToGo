@@ -643,7 +643,7 @@ task refreshModuleSizes {
     def csv = file('src/main/assets/module_sizes.csv')
     doLast {
         def url = 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/build-full-arm64-v8a.log'
-        def wanted = ['kolibri', 'kiwix', 'cafdroidweb', 'code'] as Set
+        def wanted = ['kolibri', 'kiwix', 'calibreweb', 'code'] as Set
         def pat = ~/(\w+)_disk_usage\s*=\s*(\d+)/
         def fetched = [:]
         try {
