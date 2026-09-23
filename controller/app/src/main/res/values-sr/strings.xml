@@ -1167,7 +1167,7 @@
     <string name="k2go_dash_chip_uptodate">Ажурно</string>
     <string name="k2go_dash_chip_update">Доступна је исправка</string>
     <string name="k2go_dash_uptodate_hint">Имате најновију верзију — поновна изградња није потребна.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Поновна изградња завршена — водимо вас у вашу библиотеку…</string>
     <string name="k2go_dash_rebuild_building">Изградња, тестирање и замена на лицу места…</string>
     <string name="k2go_dash_rebuild_failed">Поновна изградња није успела</string>

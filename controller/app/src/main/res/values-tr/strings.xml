@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">Güncel</string>
     <string name="k2go_dash_chip_update">Güncelleme mevcut</string>
     <string name="k2go_dash_uptodate_hint">En son sürümü kullanıyorsunuz — yeniden derlemeye gerek yok.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Yeniden oluşturma tamamlandı — kitaplığınıza yönlendiriliyorsunuz…</string>
     <string name="k2go_dash_rebuild_building">Yerinde oluşturuluyor, test ediliyor ve değiştiriliyor…</string>
     <string name="k2go_dash_rebuild_failed">Yeniden oluşturma başarısız</string>

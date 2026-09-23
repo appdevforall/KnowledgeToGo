@@ -1231,7 +1231,7 @@
     <string name="k2go_dash_chip_uptodate">अद्यतित</string>
     <string name="k2go_dash_chip_update">अपडेट उपलब्ध</string>
     <string name="k2go_dash_uptodate_hint">आप नवीनतम बिल्ड पर हैं — पुनर्निर्माण की आवश्यकता नहीं है।</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">फिर से बनाना पूरा हुआ — आपकी लाइब्रेरी पर ले जाया जा रहा है…</string>
     <string name="k2go_dash_rebuild_building">यथास्थान बनाया, परखा और बदला जा रहा है…</string>
     <string name="k2go_dash_rebuild_failed">फिर से बनाना विफल</string>

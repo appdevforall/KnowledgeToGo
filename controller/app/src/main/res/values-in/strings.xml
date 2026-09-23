@@ -1161,7 +1161,7 @@
     <string name="k2go_dash_chip_uptodate">Terbaru</string>
     <string name="k2go_dash_chip_update">Pembaruan tersedia</string>
     <string name="k2go_dash_uptodate_hint">Anda menggunakan versi terbaru — tidak perlu membangun ulang.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Bangun ulang selesai — mengarahkan Anda ke pustaka…</string>
     <string name="k2go_dash_rebuild_building">Membangun, menguji, dan mengganti di tempat…</string>
     <string name="k2go_dash_rebuild_failed">Bangun ulang gagal</string>

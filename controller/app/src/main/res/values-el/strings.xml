@@ -1161,7 +1161,7 @@
     <string name="k2go_dash_chip_uptodate">Ενημερωμένο</string>
     <string name="k2go_dash_chip_update">Διαθέσιμη ενημέρωση</string>
     <string name="k2go_dash_uptodate_hint">Έχετε την πιο πρόσφατη έκδοση — δεν χρειάζεται αναδόμηση.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Η ανασυγκρότηση ολοκληρώθηκε — μετάβαση στη βιβλιοθήκη σας…</string>
     <string name="k2go_dash_rebuild_building">Κατασκευή, δοκιμή και επιτόπια αντικατάσταση…</string>
     <string name="k2go_dash_rebuild_failed">Η ανασυγκρότηση απέτυχε</string>

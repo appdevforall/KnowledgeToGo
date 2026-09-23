@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">Актуально</string>
     <string name="k2go_dash_chip_update">Доступне оновлення</string>
     <string name="k2go_dash_uptodate_hint">У вас найновіша версія — повторне збирання не потрібне.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Перезбирання завершено — переходимо до вашої бібліотеки…</string>
     <string name="k2go_dash_rebuild_building">Збирання, тестування та заміна на місці…</string>
     <string name="k2go_dash_rebuild_failed">Не вдалося перезібрати</string>

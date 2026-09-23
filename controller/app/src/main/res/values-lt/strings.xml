@@ -1171,7 +1171,7 @@
     <string name="k2go_dash_chip_uptodate">Naujausia</string>
     <string name="k2go_dash_chip_update">Yra atnaujinimas</string>
     <string name="k2go_dash_uptodate_hint">Naudojate naujausią versiją — perkurti nereikia.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Atkūrimas baigtas — nukreipiame į jūsų biblioteką…</string>
     <string name="k2go_dash_rebuild_building">Kuriama, testuojama ir keičiama vietoje…</string>
     <string name="k2go_dash_rebuild_failed">Atkurti nepavyko</string>

@@ -1154,7 +1154,7 @@
     <string name="k2go_dash_chip_uptodate">به‌روز</string>
     <string name="k2go_dash_chip_update">به‌روزرسانی موجود است</string>
     <string name="k2go_dash_uptodate_hint">شما آخرین نسخه را دارید — نیازی به بازسازی نیست.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">بازسازی کامل شد — در حال انتقال به کتابخانهٔ شما…</string>
     <string name="k2go_dash_rebuild_building">در حال ساخت، آزمایش و جایگزینی در محل…</string>
     <string name="k2go_dash_rebuild_failed">بازسازی ناموفق بود</string>

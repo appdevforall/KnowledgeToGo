@@ -1155,7 +1155,7 @@
     <string name="k2go_dash_chip_uptodate">最新です</string>
     <string name="k2go_dash_chip_update">更新があります</string>
     <string name="k2go_dash_uptodate_hint">最新のビルドです — 再構築は不要です。</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">再構築が完了しました — ライブラリに移動します…</string>
     <string name="k2go_dash_rebuild_building">その場でビルド・テスト・入れ替え中…</string>
     <string name="k2go_dash_rebuild_failed">再構築に失敗しました</string>

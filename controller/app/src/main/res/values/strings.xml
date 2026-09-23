@@ -1394,7 +1394,7 @@
     <string name="k2go_dash_chip_update">Update available</string>
     <string name="k2go_dash_uptodate_hint">You\'re on the latest build — a rebuild isn\'t needed.</string>
     <!-- dash-node ships as first-party code under the project license. -->
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <!-- ADFA-5011: rebuild progress row/status on the setup screen. -->
     <string name="k2go_dash_redirect">Rebuild complete — sending you to your library…</string>
     <string name="k2go_dash_rebuild_building">Building, testing and swapping in place…</string>

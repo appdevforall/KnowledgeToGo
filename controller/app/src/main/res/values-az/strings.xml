@@ -1174,7 +1174,7 @@
     <string name="k2go_dash_chip_uptodate">Ən son versiyadır</string>
     <string name="k2go_dash_chip_update">Yeniləmə mövcuddur</string>
     <string name="k2go_dash_uptodate_hint">Ən son versiyadasınız — yenidən qurmağa ehtiyac yoxdur.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Yenidən qurma tamamlandı — sizi kitabxananıza yönləndiririk…</string>
     <string name="k2go_dash_rebuild_building">Yerində qurulur, sınaqdan keçirilir və dəyişdirilir…</string>
     <string name="k2go_dash_rebuild_failed">Yenidən qurma alınmadı</string>

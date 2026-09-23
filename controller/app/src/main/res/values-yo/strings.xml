@@ -1174,7 +1174,7 @@
     <string name="k2go_dash_chip_uptodate">Ó ti wà lọ́wọ́lọ́wọ́</string>
     <string name="k2go_dash_chip_update">Ìmúdójúìwọ̀n wà</string>
     <string name="k2go_dash_uptodate_hint">O wà lórí ẹ̀dà tuntun jùlọ — kò sí ìdí láti tún kọ́ ọ.</string>
-    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_license">GPL-3.0-or-later</string>
     <string name="k2go_dash_redirect">Àtúnkọ́ parí — a ń mú ọ lọ sí ilé-ìkàwé rẹ…</string>
     <string name="k2go_dash_rebuild_building">Ń kọ́, ń dánwò, ń pààrọ̀ níbẹ̀…</string>
     <string name="k2go_dash_rebuild_failed">Àtúnkọ́ kùnà</string>
