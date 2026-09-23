@@ -182,13 +182,16 @@ public class SettingsSubFragment extends Fragment {
     private void buildAbout(Context ctx, LinearLayout list) {
         SettingsUi.infoRow(ctx, list, getString(R.string.k2go_settings_app_version), versionName(ctx));
         // ADFA-4984: manual OTA entry ("update on the air"). LibraryActivity owns the UpdateController.
-        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
-            if (getActivity() instanceof LibraryActivity) {
-                org.appdevforall.k2go.update.presentation.UpdateController uc =
-                        ((LibraryActivity) getActivity()).updateController();
-                if (uc != null) uc.checkForUpdatesManual();
-            }
-        });
+        // K2GO-403: hidden in the fdroid build, which ships no in-app updater (updates come from F-Droid).
+        if (org.appdevforall.k2go.BuildConfig.OTA_ENABLED) {
+            SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
+                if (getActivity() instanceof LibraryActivity) {
+                    org.appdevforall.k2go.update.presentation.UpdateController uc =
+                            ((LibraryActivity) getActivity()).updateController();
+                    if (uc != null) uc.checkForUpdatesManual();
+                }
+            });
+        }
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
         // ADFA-5337: hide the usage-statistics toggle when analytics is compiled out (no
         // google-services.json), since there's nothing to share and the switch would do nothing.

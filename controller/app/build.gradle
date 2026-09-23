@@ -58,6 +58,9 @@ android {
         // Default state of the crash-report opt-in (K2GO-401). True for conventional builds. The
         // F-Droid recipe overrides this to false so that build ships crash reporting OFF by default.
         buildConfigField "boolean", "CRASH_REPORTS_DEFAULT_ON", "true"
+        // K2GO-403: the in-app OTA self-updater. On for conventional builds; the fdroid flavor forces it
+        // off (F-Droid forbids an app that downloads and installs its own APK; the store updates it).
+        buildConfigField "boolean", "OTA_ENABLED", "true"
 
         // The APK carries the product's name, not its technical identifier: these files are
         // downloaded by people from a public bucket. The identifier still lives inside the APK.
@@ -135,6 +138,8 @@ android {
             dimension "distribution"
             buildConfigField "boolean", "ANALYTICS_ENABLED", "false"
             buildConfigField "boolean", "CRASH_REPORTS_DEFAULT_ON", "false"
+            // K2GO-403: no in-app OTA self-updater in the fdroid build (F-Droid forbids self-install).
+            buildConfigField "boolean", "OTA_ENABLED", "false"
         }
     }
 
