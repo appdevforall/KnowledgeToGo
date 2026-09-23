@@ -137,6 +137,39 @@ int __android_log_write(int prio, const char* tag, const char* text) { return 0;
 STUB
     fi
 
+    # K2GO-411: translate aarch32 futex_time64 (#422) -> classic futex so 32-bit Go
+    # binaries run on pre-5.1 kernels (e.g. Android 4.14, where futex_time64 is
+    # ENOSYS). PRoot ships utimensat_time64 (v5.3.0); this follows the same path.
+    # Safe: PRoot has no futex arg handling and FUTEX_WAKE carries no timespec;
+    # on a 64-bit host PR_futex resolves to the native 64-bit-timespec futex.
+    SYSD="$TERMUX_PKG_SRCDIR/src/syscall"
+    # 1) abstract sysnum
+    grep -q 'SYSNUM(futex_time64)' "$SYSD/sysnums.list" \
+        || sed -i '/^SYSNUM(futex)$/a SYSNUM(futex_time64)' "$SYSD/sysnums.list"
+    # 2) enter.c: rewrite PR_futex_time64 -> PR_futex at sysenter
+    grep -q 'PR_futex_time64' "$SYSD/enter.c" \
+        || { awk '/^\tcase PR_getcwd:/ && !p { print "\tcase PR_futex_time64:"; print "\t\tset_sysnum(tracee, PR_futex);"; print "\t\tstatus = 0;"; print "\t\tbreak;"; print ""; p=1 } { print }' "$SYSD/enter.c" > "$SYSD/enter.c.tmp" && mv "$SYSD/enter.c.tmp" "$SYSD/enter.c"; }
+    # 3) ABI table: map the raw aarch32 number 422 -> PR_futex_time64 (i386 uses 422
+    #    too). WITHOUT THIS the sysnum never resolves to PR_futex_time64 and the enter.c
+    #    case never fires (verified on device: patch present but still ENOSYS). Anchor on
+    #    the classic futex(240) entry, which only 32-bit tables have -> arm64/x86_64 skip.
+    #    Mirrors the fchmodat2 [452] mapping below.
+    for h in "$SYSD"/sysnums-*.h; do
+        grep -q 'PR_futex_time64' "$h" && continue
+        grep -q '\[ 240 \] = PR_futex,' "$h" \
+            && sed -i 's/^\([[:space:]]*\)\[ 240 \] = PR_futex,/&\n\1[ 422 ] = PR_futex_time64,/' "$h"
+    done
+    # 4) seccomp: trap futex_time64 at sysenter so the rewrite runs in the DEFAULT
+    #    seccomp-accelerated mode (proot only TRACEs a curated list; futex is not in it,
+    #    so without this futex_time64 passes through untranslated unless PROOT_NO_SECCOMP).
+    grep -q '{ PR_futex_time64,' "$SYSD/seccomp.c" \
+        || sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_futex_time64, 0 },/' "$SYSD/seccomp.c"
+    # guards
+    grep -q 'SYSNUM(futex_time64)' "$SYSD/sysnums.list" || { echo "!! [IIAB] sysnums.list anchor 'SYSNUM(futex)' not found"; exit 1; }
+    grep -q 'case PR_futex_time64:' "$SYSD/enter.c"     || { echo "!! [IIAB] enter.c anchor 'case PR_getcwd:' not found"; exit 1; }
+    grep -q '\[ 422 \] = PR_futex_time64,' "$SYSD/sysnums-arm.h" || { echo "!! [IIAB] sysnums-arm.h anchor '[ 240 ] = PR_futex,' not found"; exit 1; }
+    grep -q '{ PR_futex_time64,' "$SYSD/seccomp.c"      || { echo "!! [IIAB] seccomp.c anchor '{ PR_fchmodat, 0 }' not found"; exit 1; }
+
     # --- ADFA-5334 (ADR-5334): translate fchmodat2 (452) like fchmodat, mirroring faccessat2. ---
     # glibc>=2.39 restores directory modes via fchmodat2; proot passes it through untranslated, so
     # recursive perms-preserving copies (tar -x / cp -a) fail under proot on kernel>=6.6 build hosts.
