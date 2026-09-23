@@ -152,7 +152,7 @@ jobs:
           # ADFA-4533: GlitchTip DSN for release builds distributed to testers
           SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
         run: |
-          ./gradlew assembleRelease \
+          ./gradlew assembleStandardRelease \
             -PversionSuffix="${{ env.VERSION_SUFFIX }}" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
@@ -163,7 +163,7 @@ jobs:
         id: find_apk
         run: |
           # Distribute the Universal APK so both 32-bit and 64-bit testers can install it.
-          apk_path=$(find . -path "*/build/outputs/apk/release/*universal*.apk" | head -n 1)
+          apk_path=$(find . -path "*/build/outputs/apk/standard/release/*universal*.apk" | head -n 1)
           if [ -z "$apk_path" ]; then
             echo "Error: Universal APK not found."
             exit 1
