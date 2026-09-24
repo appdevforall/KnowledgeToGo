@@ -21,7 +21,6 @@ import android.webkit.URLUtil;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,6 +42,7 @@ import org.appdevforall.k2go.portal.domain.PdfViewerRouter;
 import org.appdevforall.k2go.portal.domain.PdfViewerUrl;
 import org.appdevforall.k2go.portal.domain.WebViewVersion;
 import org.appdevforall.k2go.util.AppExecutors;
+import org.appdevforall.k2go.util.ResilientWebViewClient;
 
 import java.util.Collections;
 import java.util.List;
@@ -98,7 +98,24 @@ public class HelpViewerActivity extends AppCompatActivity {
         // dual-build routing as PortalActivity). Offline-safe: returns empty when no box is up.
         AppExecutors.get().io().execute(() -> pdfViewerBuilds = PdfViewerCatalog.fetch());
 
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new ResilientWebViewClient() {
+            @Override
+            protected void onRendererGone(boolean crashed) {
+                // K2GO-419: reload the same topic (from the intent + bundled assets) on a renderer
+                // death, but do not loop: if a second death lands within the recovery window, close
+                // the viewer instead of reloading a topic that keeps killing the renderer. The window
+                // marker rides the intent, which recreate() preserves. Same window as PortalActivity.
+                final String extraLastRecovery = "k2go_help_last_recovery";
+                long now = android.os.SystemClock.elapsedRealtime();
+                long last = getIntent() != null ? getIntent().getLongExtra(extraLastRecovery, 0L) : 0L;
+                if (last != 0L && now - last < ResilientWebViewClient.RECOVERY_WINDOW_MS) {
+                    finish();
+                    return;
+                }
+                if (getIntent() != null) getIntent().putExtra(extraLastRecovery, now);
+                recreate();
+            }
+
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return assetLoader.shouldInterceptRequest(request.getUrl());

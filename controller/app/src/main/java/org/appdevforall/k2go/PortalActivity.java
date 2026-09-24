@@ -13,7 +13,6 @@ import org.appdevforall.k2go.config.BoxEndpoints;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,6 +36,7 @@ import org.appdevforall.k2go.portal.domain.SessionCookies;
 import org.appdevforall.k2go.portal.domain.WebViewVersion;
 import org.appdevforall.k2go.portal.data.PdfViewerCatalog;
 import org.appdevforall.k2go.util.AppExecutors;
+import org.appdevforall.k2go.util.ResilientWebViewClient;
 import java.util.Collections;
 import java.util.List;
 import org.appdevforall.k2go.portal.presentation.GestureWebView;
@@ -216,7 +216,24 @@ public class PortalActivity extends AppCompatActivity {
             resetTimer.run();
         });
 
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new ResilientWebViewClient() {
+            @Override
+            protected void onRendererGone(boolean crashed) {
+                // K2GO-419: the content WebView (Kiwix/Kolibri/maps/Forgejo) is the highest-exposure
+                // surface. Rebuild the screen and reload the same page. The anti-loop guard lives in
+                // the ViewModel (it outlives recreate()), so a page whose renderer keeps dying does
+                // not spin an endless recreate: after a repeat, inform the user and leave to Home.
+                webView = null;   // the base destroyed it; drop the dangling reference so a pending
+                                  // main-thread callback (onResume cache-clear) bails on its null check.
+                if (vm.allowRendererAutoRecovery()) {
+                    recreate();
+                } else {
+                    Toast.makeText(PortalActivity.this, R.string.k2go_portal_error_body,
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, android.webkit.WebResourceRequest request) {
                 String url = request.getUrl().toString();
