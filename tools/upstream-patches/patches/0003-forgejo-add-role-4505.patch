@@ -1,0 +1,1102 @@
+Upstream-PR:     https://github.com/iiab/iiab/pull/4505
+Upstream-Status: open (carried until it ships in the pinned iiab commit)
+Applies-to:      roles/forgejo/* (new role); roles/0-init/tasks/{validate_*,disallow_*} (forgejo asserts); roles/6-generic-apps/tasks/main.yml (role include); roles/proot_services (pdsm forgejo service + mariadb responsiveness wrapper); roles/matomo/defaults + vars/default_vars.yml (mariadb_log_dir move); vars/local_vars_android_{small,medium,large}.yml + vars/local_vars_large.yml (forgejo section, install/enabled False)
+Summary:         Add the Forgejo role (offline self-hosted Git forge) for K2GO-212. Serves at http://box/forgejo (nginx to 127.0.0.1:3300); sqlite by default; HTTP only under proot. Needs the K2GO-411 proot futex_time64 fix to run 32-bit on pre-5.1 kernels.
+
+Mirrors upstream iiab/iiab#4505. This is the CONSOLIDATED net diff of the PR, not
+its 13-commit mbox: the applier uses "patch -p1" with a reverse-dry-run
+idempotency check, so a single net diff reverse-applies cleanly and is skipped
+once #4505 ships in the pinned iiab commit. Text only, so it takes the "patch -p1"
+path (no binary hunks). The role ships "forgejo_install/enabled: False" in every
+vars file; K2Go's bake flips them True per tier in "iiab-android". Remove this
+patch once #4505 merges into the pinned iiab commit.
+
+diff --git a/roles/0-init/tasks/disallow_install_false_with_enabled_true.yml b/roles/0-init/tasks/disallow_install_false_with_enabled_true.yml
+index e638f72c71..94b99ab055 100644
+--- a/roles/0-init/tasks/disallow_install_false_with_enabled_true.yml
++++ b/roles/0-init/tasks/disallow_install_false_with_enabled_true.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "DISALLOWED: 'azuracast_install: False' WITH 'azuracast_enabled: True' -- IIAB DOES NOT SUPPORT UNINSTALLS -- please verify those 2 variable values e.g. in /etc/iiab/local_vars.yml, and other places variables are defined?"
+     quiet: yes
+ 
++- name: "DISALLOW 'forgejo_install: False' WITH 'forgejo_enabled: True'"
++  assert:
++    that: forgejo_install or not forgejo_enabled
++    fail_msg: "DISALLOWED: 'forgejo_install: False' WITH 'forgejo_enabled: True' -- IIAB DOES NOT SUPPORT UNINSTALLS -- please verify those 2 variable values e.g. in /etc/iiab/local_vars.yml, and other places variables are defined?"
++    quiet: yes
++
+ - name: "DISALLOW 'gitea_install: False' WITH 'gitea_enabled: True'"
+   assert:
+     that: gitea_install or not gitea_enabled
+diff --git a/roles/0-init/tasks/disallow_install_false_with_installed_defined.yml b/roles/0-init/tasks/disallow_install_false_with_installed_defined.yml
+index 6a1d19375d..173d58cfab 100644
+--- a/roles/0-init/tasks/disallow_install_false_with_installed_defined.yml
++++ b/roles/0-init/tasks/disallow_install_false_with_installed_defined.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "DISALLOWED: 'azuracast_install: False' (e.g. in /etc/iiab/local_vars.yml) WHEN 'azuracast_installed' is defined (e.g. in /etc/iiab/iiab_state.yml) -- IIAB DOES NOT SUPPORT UNINSTALLS -- please verify those 2 files especially, and other places variables are defined?"
+     quiet: yes
+ 
++- name: "DISALLOW 'forgejo_install: False' WHEN forgejo_installed is defined"
++  assert:
++    that: forgejo_install or forgejo_installed is undefined
++    fail_msg: "DISALLOWED: 'forgejo_install: False' (e.g. in /etc/iiab/local_vars.yml) WHEN 'forgejo_installed' is defined (e.g. in /etc/iiab/iiab_state.yml) -- IIAB DOES NOT SUPPORT UNINSTALLS -- please verify those 2 files especially, and other places variables are defined?"
++    quiet: yes
++
+ - name: "DISALLOW 'gitea_install: False' WHEN gitea_installed is defined"
+   assert:
+     that: gitea_install or gitea_installed is undefined
+diff --git a/roles/0-init/tasks/validate_enabled_vars_boolean.yml b/roles/0-init/tasks/validate_enabled_vars_boolean.yml
+index 8b3e21cc7a..4e34355143 100644
+--- a/roles/0-init/tasks/validate_enabled_vars_boolean.yml
++++ b/roles/0-init/tasks/validate_enabled_vars_boolean.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "VARIABLE MUST BE BOOLEAN: 'azuracast_enabled' now has type '{{ azuracast_enabled | type_debug }}' and value '{{ azuracast_enabled }}' -- PLEASE SET A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+     quiet: yes
+ 
++- name: Assert that var forgejo_enabled is type boolean (NOT type string, which can invert logic!)
++  assert:
++    that: forgejo_enabled | type_debug == 'bool'
++    fail_msg: "VARIABLE MUST BE BOOLEAN: 'forgejo_enabled' now has type '{{ forgejo_enabled | type_debug }}' and value '{{ forgejo_enabled }}' -- PLEASE SET A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
+ - name: Assert that var gitea_enabled is type boolean (NOT type string, which can invert logic!)
+   assert:
+     that: gitea_enabled | type_debug == 'bool'
+diff --git a/roles/0-init/tasks/validate_enabled_vars_defined.yml b/roles/0-init/tasks/validate_enabled_vars_defined.yml
+index 0af5f95a70..829374d395 100644
+--- a/roles/0-init/tasks/validate_enabled_vars_defined.yml
++++ b/roles/0-init/tasks/validate_enabled_vars_defined.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "VARIABLE MUST BE DEFINED: 'azuracast_enabled' NEEDS A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+     quiet: yes
+ 
++- name: Assert that var forgejo_enabled is defined
++  assert:
++    that: forgejo_enabled is defined
++    fail_msg: "VARIABLE MUST BE DEFINED: 'forgejo_enabled' NEEDS A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
+ - name: Assert that var gitea_enabled is defined
+   assert:
+     that: gitea_enabled is defined
+diff --git a/roles/0-init/tasks/validate_install_vars_boolean.yml b/roles/0-init/tasks/validate_install_vars_boolean.yml
+index 35cde63642..a7d20baf7f 100644
+--- a/roles/0-init/tasks/validate_install_vars_boolean.yml
++++ b/roles/0-init/tasks/validate_install_vars_boolean.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "VARIABLE MUST BE BOOLEAN: 'azuracast_install' now has type '{{ lookup('vars', 'azuracast_install') | type_debug }}' and value '{{ lookup('vars', 'azuracast_install') }}' -- PLEASE SET A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+     quiet: yes
+ 
++- name: Assert that var forgejo_install is type boolean (NOT type string, which can invert logic!)
++  assert:
++    that: forgejo_install | type_debug == 'bool'
++    fail_msg: "VARIABLE MUST BE BOOLEAN: 'forgejo_install' now has type '{{ lookup('vars', 'forgejo_install') | type_debug }}' and value '{{ lookup('vars', 'forgejo_install') }}' -- PLEASE SET A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
+ - name: Assert that var gitea_install is type boolean (NOT type string, which can invert logic!)
+   assert:
+     that: gitea_install | type_debug == 'bool'
+diff --git a/roles/0-init/tasks/validate_install_vars_defined.yml b/roles/0-init/tasks/validate_install_vars_defined.yml
+index 31f772ecdc..c9932bff94 100644
+--- a/roles/0-init/tasks/validate_install_vars_defined.yml
++++ b/roles/0-init/tasks/validate_install_vars_defined.yml
+@@ -76,6 +76,12 @@
+     fail_msg: "VARIABLE MUST BE DEFINED: 'azuracast_install' NEEDS A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+     quiet: yes
+ 
++- name: Assert that var forgejo_install is defined
++  assert:
++    that: forgejo_install is defined
++    fail_msg: "VARIABLE MUST BE DEFINED: 'forgejo_install' NEEDS A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
+ - name: Assert that var gitea_install is defined
+   assert:
+     that: gitea_install is defined
+diff --git a/roles/6-generic-apps/tasks/main.yml b/roles/6-generic-apps/tasks/main.yml
+index 67054777ae..c450f3286e 100644
+--- a/roles/6-generic-apps/tasks/main.yml
++++ b/roles/6-generic-apps/tasks/main.yml
+@@ -26,6 +26,12 @@
+     name: gitea
+   when: gitea_install and not is_proot
+ 
++# Forgejo supports proot (via pdsm), so it is NOT guarded by 'not is_proot'
++- name: FORGEJO
++  include_role:
++    name: forgejo
++  when: forgejo_install
++
+ - name: JUPYTERHUB
+   include_role:
+     name: jupyterhub
+diff --git a/roles/forgejo/defaults/main.yml b/roles/forgejo/defaults/main.yml
+new file mode 100644
+index 0000000000..89c5018c38
+--- /dev/null
++++ b/roles/forgejo/defaults/main.yml
+@@ -0,0 +1,113 @@
++# forgejo_install: True
++# forgejo_enabled: True
++
++# Sibling of the 'gitea' role. Forgejo is a community fork of Gitea, so its
++# app.ini and CLI are compatible.
++
++# --- Version and download ---------------------------------------------------
++
++# Forgejo has no "latest patch of a branch" URL like dl.gitea.com, so install
++# pins the full LTS version below for a deterministic, offline-reproducible build.
++# TO UPDATE: bump forgejo_version here (or in local_vars), then re-run the role with
++# 'runrole --reinstall forgejo'. On a reinstall the role backs up (forgejo dump)
++# before swapping the binary, then restarts so the DB schema migrations run - it does
++# NOT wipe /library/forgejo/data (repos, DB), so user work is preserved.
++forgejo_lts_major: 15             # current LTS line (v15.x); change when the LTS major moves
++forgejo_version: "15.0.9"         # pinned patch; bump + 'runrole --reinstall forgejo' to update
++
++# forgejo's [git.timeout] MIGRATE (seconds). The forgejo default is 600s, which is
++# too low for large repos with ~1GB it takes around ~15min; raise it so seeding big
++# repos does not time out. Baked into app.ini.j2.
++forgejo_migrate_timeout: 7200
++
++# uname -m -> Forgejo asset suffix. Forgejo ships amd64, arm64 and arm-6 only.
++# 32-bit ARM (arm-6) IS supported; there is NO 32-bit x86 (i386) build, so i386
++# is left out on purpose and resolves to 'unknown' -> the install fails clearly.
++iset_suffixes:
++  x86_64: amd64
++  aarch64: arm64
++  armv7l: arm-6
++  armv6l: arm-6
++  armv8l: arm-6      # 32-bit userland on a 64-bit ARM kernel (e.g. 32-bit app on
++                     # an arm64 phone) reports armv8l via the PER_LINUX32 personality
++
++forgejo_iset_suffix: "{{ iset_suffixes[ansible_facts.machine] | default('unknown') }}"
++
++forgejo_download_base: "https://codeberg.org/forgejo/forgejo/releases/download/v{{ forgejo_version }}"
++forgejo_download_url: "{{ forgejo_download_base }}/forgejo-{{ forgejo_version }}-linux-{{ forgejo_iset_suffix }}"
++forgejo_asc_url: "{{ forgejo_download_url }}.asc"
++forgejo_sha256_url: "{{ forgejo_download_url }}.sha256"
++
++# Forgejo release signing key (keys.openpgp.org). Upstream rotates it regularly
++# and recommends re-fetching each time; GPG verify is best-effort (non-fatal),
++# same approach as the gitea role.
++forgejo_gpg_key: EB114F5E6C0DC2BCDD183550A4B61A2DC5923710
++
++# --- Filesystem layout ------------------------------------------------------
++
++forgejo_root_directory: "{{ content_base }}/forgejo"    # /library/forgejo
++forgejo_subdirectories:
++  - bin
++  - custom
++  - data
++  - data/repositories    # forgejo creates this lazily on the 1st repo; pre-create it so
++                         # 'forgejo dump' (the pre-upgrade backup) works on a repo-less install
++  - log
++  - backups
++
++forgejo_install_path: "{{ forgejo_root_directory }}/bin/forgejo-{{ forgejo_version }}"
++forgejo_asc_path: "{{ forgejo_root_directory }}/bin/forgejo-{{ forgejo_version }}.asc"
++forgejo_link_path: "{{ forgejo_root_directory }}/forgejo"    # stable symlink -> versioned binary
++
++# Data locations (git repos and LFS live on disk, NOT in the database)
++forgejo_repo_root: "{{ forgejo_root_directory }}/data/repositories"
++forgejo_lfs_root: "{{ forgejo_root_directory }}/data/lfs"
++forgejo_db_path: "{{ forgejo_root_directory }}/data/forgejo.db"    # sqlite only
++forgejo_log_root: "{{ forgejo_root_directory }}/log"
++forgejo_backups_root: "{{ forgejo_root_directory }}/backups"       # forgejo dump target (in-place upgrade backup)
++
++# --- Config (/etc/forgejo) --------------------------------------------------
++
++forgejo_config_dir: /etc/forgejo
++forgejo_config_path: "{{ forgejo_config_dir }}/app.ini"
++
++# Secrets are generated once into these files and referenced by *_URI in app.ini
++# (better than gitea's hard-coded keys). See tasks/install.yml (guarded by creates).
++forgejo_secret_key_path: "{{ forgejo_config_dir }}/secret_key"
++forgejo_internal_token_path: "{{ forgejo_config_dir }}/internal_token"
++forgejo_jwt_secret_path: "{{ forgejo_config_dir }}/jwt_secret"
++forgejo_lfs_jwt_secret_path: "{{ forgejo_config_dir }}/lfs_jwt_secret"
++
++forgejo_display_name: Forgejo
++forgejo_run_mode: prod            # gitea uses 'dev'
++forgejo_install_lock: true        # skip the web install screen; first user becomes admin
++
++# --- Database ---------------------------------------------------------------
++
++# 'sqlite' (default, zero extra services, required under proot) or 'mariadb'.
++# The DB only stores metadata, so repo size does not drive this choice; write
++# concurrency does. This only sets up a FRESH DB for the chosen engine.
++# Switching engines on an EXISTING install is refused by the role (no auto-migration).
++# To move data yourself: `forgejo dump`, load it into the new DB (`forgejo restore` /
++# your DB tools), then set forgejo_db_engine to match and re-run to keep updating.
++forgejo_db_engine: sqlite
++forgejo_db_name: forgejo
++forgejo_db_user: forgejo
++forgejo_db_password: changeme     # only when forgejo_db_engine == mariadb; override in local_vars.yml
++
++# --- Runtime user and network ----------------------------------------------
++
++forgejo_user: forgejo
++forgejo_home: "/home/{{ forgejo_user }}"
++forgejo_run_directory: "{{ forgejo_root_directory }}"
++
++forgejo_url: /forgejo
++forgejo_port: 3300                # avoids the kiwix 3000 clash under proot
++
++# Git LFS on by default (helps with large IDE binaries; objects live on disk)
++forgejo_lfs: true
++
++# Built-in SSH server: on for systemd (x86_64/arm64)
++forgejo_enable_ssh: "{{ not is_proot }}"
++forgejo_ssh_port: 2222
++
+diff --git a/roles/forgejo/tasks/enable-or-disable.yml b/roles/forgejo/tasks/enable-or-disable.yml
+new file mode 100644
+index 0000000000..c1891a0353
+--- /dev/null
++++ b/roles/forgejo/tasks/enable-or-disable.yml
+@@ -0,0 +1,74 @@
++# --- systemd platforms (x86_64/arm64) ---
++
++- name: Enable & Restart 'forgejo' systemd service, if forgejo_enabled (not proot)
++  systemd:
++    name: forgejo
++    daemon_reload: yes
++    enabled: yes
++    state: restarted
++  when:
++    - forgejo_enabled
++    - not is_proot
++
++- name: Disable & Stop 'forgejo' systemd service, if not forgejo_enabled (not proot)
++  systemd:
++    name: forgejo
++    enabled: no
++    state: stopped
++  when:
++    - not forgejo_enabled
++    - not is_proot
++
++
++# --- proot platform (pdsm) ---
++
++- name: Enable & Start 'forgejo' via pdsm (proot), if forgejo_enabled
++  when:
++    - forgejo_enabled
++    - is_proot
++  block:
++    - name: Enable 'forgejo' via pdsm (proot)
++      command: pdsm enable forgejo
++      register: pdsm_enable
++      changed_when: "'already enabled' not in pdsm_enable.stdout"
++
++    - name: Restart 'forgejo' via pdsm (proot)
++      command: pdsm restart forgejo
++
++- name: Disable & Stop 'forgejo' via pdsm (proot), if not forgejo_enabled
++  when:
++    - not forgejo_enabled
++    - is_proot
++  block:
++    - name: Stop 'forgejo' via pdsm (proot)
++      command: pdsm stop forgejo
++      register: pdsm_stop
++      changed_when: "'already stopped' not in pdsm_stop.stdout"
++
++    - name: Disable 'forgejo' via pdsm (proot)
++      command: pdsm disable forgejo
++
++
++# --- NGINX reverse proxy (both platforms) ---
++
++- name: Enable http://box{{ forgejo_url }} via NGINX, by installing {{ nginx_conf_dir }}/forgejo-nginx.conf from template
++  template:
++    src: forgejo-nginx.conf.j2
++    dest: "{{ nginx_conf_dir }}/forgejo-nginx.conf"    # /etc/nginx/conf.d
++  when: forgejo_enabled
++
++- name: Disable http://box{{ forgejo_url }} via NGINX, by removing {{ nginx_conf_dir }}/forgejo-nginx.conf
++  file:
++    path: "{{ nginx_conf_dir }}/forgejo-nginx.conf"    # /etc/nginx/conf.d
++    state: absent
++  when: not forgejo_enabled
++
++- name: Reload 'nginx' systemd service (not proot)
++  systemd:
++    name: nginx
++    state: restarted
++  when: not is_proot
++
++- name: Restart 'nginx' via pdsm (proot)
++  command: pdsm restart nginx
++  when: is_proot
+diff --git a/roles/forgejo/tasks/install.yml b/roles/forgejo/tasks/install.yml
+new file mode 100644
+index 0000000000..d04418b0cb
+--- /dev/null
++++ b/roles/forgejo/tasks/install.yml
+@@ -0,0 +1,269 @@
++- name: Record (initial) disk space used
++  shell: df -B1 --output=used / | tail -1
++  register: df1
++
++
++# 1. Prepare to install Forgejo: stop any running instance, create user and dirs
++
++- name: Stop existing Forgejo systemd service (if reinstalling, not proot)
++  systemd:
++    name: forgejo
++    state: stopped
++  when: not is_proot
++  ignore_errors: yes
++
++- name: Stop existing Forgejo via pdsm (if reinstalling, proot)
++  command: pdsm stop forgejo
++  when: is_proot
++  ignore_errors: yes
++
++- name: Ensure group 'forgejo' exists
++  group:
++    name: "{{ forgejo_user }}"
++    state: present
++
++- name: Create user 'forgejo'
++  user:
++    name: "{{ forgejo_user }}"
++    comment: Forgejo daemon account
++    group: "{{ forgejo_user }}"
++    home: "{{ forgejo_home }}"    # /home/forgejo
++
++- name: Create {{ forgejo_root_directory }} directory structure
++  file:
++    path: "{{ forgejo_root_directory }}/{{ item }}"    # /library/forgejo
++    state: directory
++    owner: "{{ forgejo_user }}"
++    group: "{{ forgejo_user }}"
++  with_items: "{{ forgejo_subdirectories }}"
++
++- name: Make directories data, log, backups writable (0750)
++  file:
++    path: "{{ forgejo_root_directory }}/{{ item }}"
++    mode: '0750'
++  with_items:
++    - data
++    - log
++    - backups
++
++
++# 1b. In-place upgrade safety. install.yml only runs when 'forgejo_installed' is
++# undefined, i.e. on a fresh install OR on 'runrole --reinstall forgejo' (which
++# clears that flag). This is how a reinstall doubles as the UPDATE path. When an
++# install already exists (app.ini present), back up the DB + repos with 'forgejo
++# dump' BEFORE swapping the binary, so a bad schema migration on the next restart
++# can be recovered. /library/forgejo/data (repos, DB) is never wiped, so user work
++# is preserved. Skipped on a fresh install (nothing to back up).
++
++- name: Check whether Forgejo is already installed (app.ini present)
++  stat:
++    path: "{{ forgejo_config_path }}"
++  register: forgejo_existing_config
++
++# The role sets up a FRESH DB for the chosen engine but never migrates data between
++# engines. Refuse a sqlite<->mariadb switch on an existing install, else we'd silently
++# start on an empty DB and orphan the old data. Manual migration path: see defaults/main.yml.
++- name: Detect the existing install's DB engine (engine-change guard)
++  when: forgejo_existing_config.stat.exists
++  command: "grep -oE '^DB_TYPE[[:space:]]*=[[:space:]]*[A-Za-z0-9]+' {{ forgejo_config_path }}"
++  register: forgejo_existing_db_type
++  changed_when: false
++  failed_when: false
++
++- name: Refuse an unsupported DB engine change on an existing install
++  vars:
++    _cur: "{{ forgejo_existing_db_type.stdout | default('') }}"
++  fail:
++    msg: >-
++      Existing Forgejo install uses '{{ _cur }}' but forgejo_db_engine='{{ forgejo_db_engine }}'.
++      The role does not migrate data between engines. Migrate manually (see
++      roles/forgejo/defaults/main.yml), then set forgejo_db_engine to match and re-run.
++  when:
++    - forgejo_existing_config.stat.exists
++    - (forgejo_db_engine == 'mariadb' and 'sqlite' in _cur) or
++      (forgejo_db_engine == 'sqlite'  and 'mysql'  in _cur)
++
++- name: Back up Forgejo before an in-place upgrade
++  when: forgejo_existing_config.stat.exists
++  block:
++    # ansible_date_time is NOT populated under the proot fact subset
++    # (all,!hardware,!network), so derive the timestamp from 'date' instead.
++    - name: Compute a backup timestamp (proot-safe, no fact dependency)
++      command: date -u +%Y%m%dT%H%M%SZ
++      register: forgejo_backup_ts
++      changed_when: false
++
++    - name: "Back up Forgejo (forgejo dump) to {{ forgejo_backups_root }} before swapping the binary"
++      command: >
++        {{ forgejo_link_path }} dump
++        --config {{ forgejo_config_path }}
++        --file {{ forgejo_backups_root }}/forgejo-dump-{{ forgejo_backup_ts.stdout }}.zip
++      args:
++        chdir: "{{ forgejo_backups_root }}"
++      become: yes
++      become_user: "{{ forgejo_user }}"
++
++
++# 2. Download, verify, and link the Forgejo binary
++
++- name: Fail if we detect an unsupported CPU architecture
++  fail:
++    msg: "No Forgejo binary for CPU architecture \"{{ ansible_facts.machine }}\" (Forgejo ships amd64, arm64, arm-6 only; 32-bit x86 is unsupported)"
++  when: forgejo_iset_suffix == "unknown"
++
++- name: Download Forgejo binary {{ forgejo_download_url }} to {{ forgejo_install_path }} (0775, ~100 MB, SLOW)
++  get_url:
++    url: "{{ forgejo_download_url }}"
++    dest: "{{ forgejo_install_path }}"    # /library/forgejo/bin/forgejo-<ver>
++    mode: "0775"
++    timeout: "{{ download_timeout }}"
++
++- name: Download Forgejo GPG signature {{ forgejo_asc_url }} to {{ forgejo_asc_path }}
++  get_curl:
++    url: "{{ forgejo_asc_url }}"
++    dest: "{{ forgejo_asc_path }}"
++    timeout: "{{ download_timeout }}"
++
++- name: Verify Forgejo binary with GPG signature (best-effort, non-fatal like the gitea role)
++  shell: |
++    gpg --keyserver keys.openpgp.org --recv {{ forgejo_gpg_key }}
++    gpg --verify {{ forgejo_asc_path }} {{ forgejo_install_path }}
++  ignore_errors: yes
++
++- name: Symlink {{ forgejo_link_path }} -> {{ forgejo_install_path }}
++  file:
++    src: "{{ forgejo_install_path }}"
++    path: "{{ forgejo_link_path }}"    # /library/forgejo/forgejo
++    owner: "{{ forgejo_user }}"
++    group: "{{ forgejo_user }}"
++    state: link
++    force: yes
++
++# An update (runrole --reinstall forgejo) downloads a new bin/forgejo-<ver> and repoints
++# the symlink above; the superseded binary (~110 MB each) would otherwise pile up in bin/.
++# Keep only the active version and its .asc, so disk growth per update stays bounded.
++- name: Find installed Forgejo binaries in {{ forgejo_install_path | dirname }}
++  find:
++    paths: "{{ forgejo_install_path | dirname }}"    # /library/forgejo/bin
++    patterns: "forgejo-*"
++  register: forgejo_bin_files
++
++- name: Remove superseded Forgejo binaries (keep only {{ forgejo_version }})
++  file:
++    path: "{{ item.path }}"
++    state: absent
++  loop: "{{ forgejo_bin_files.files }}"
++  loop_control:
++    label: "{{ item.path | basename }}"
++  when:
++    - forgejo_version | string | length > 0        # never prune when the version is unset
++    - (item.path | basename) != ('forgejo-' ~ forgejo_version)
++    - (item.path | basename) != ('forgejo-' ~ forgejo_version ~ '.asc')
++
++
++# 3. Configure Forgejo (/etc/forgejo)
++
++- name: mkdir {{ forgejo_config_dir }} (0770 root:forgejo)
++  file:
++    state: directory
++    path: "{{ forgejo_config_dir }}"
++    owner: root
++    group: "{{ forgejo_user }}"
++    mode: "0770"
++
++- name: Generate Forgejo secrets once (guarded by 'creates'), referenced by *_URI in app.ini
++  shell: "umask 027; {{ forgejo_link_path }} generate secret {{ item.kind }} > {{ item.path }}"
++  args:
++    creates: "{{ item.path }}"
++  with_items:
++    - { kind: SECRET_KEY, path: "{{ forgejo_secret_key_path }}" }
++    - { kind: INTERNAL_TOKEN, path: "{{ forgejo_internal_token_path }}" }
++    - { kind: JWT_SECRET, path: "{{ forgejo_jwt_secret_path }}" }
++    - { kind: LFS_JWT_SECRET, path: "{{ forgejo_lfs_jwt_secret_path }}" }
++
++- name: Secure the generated secret files (0640 root:forgejo)
++  file:
++    path: "{{ item }}"
++    owner: root
++    group: "{{ forgejo_user }}"
++    mode: "0640"
++  with_items:
++    - "{{ forgejo_secret_key_path }}"
++    - "{{ forgejo_internal_token_path }}"
++    - "{{ forgejo_jwt_secret_path }}"
++    - "{{ forgejo_lfs_jwt_secret_path }}"
++
++
++# 3b. MariaDB backend (wired option; default engine is sqlite). Engine migration
++#     from an existing sqlite DB is a later PR - this only sets up a fresh DB.
++
++- name: Set up MariaDB backend for Forgejo
++  when: forgejo_db_engine == 'mariadb'
++  block:
++    - name: "Set 'mysql_install: True' and 'mysql_enabled: True'"
++      set_fact:
++        mysql_install: True
++        mysql_enabled: True
++
++    - name: MYSQL - run 'mysql' role
++      include_role:
++        name: mysql
++
++    - name: FAIL (STOP THE INSTALL) IF 'mysql_installed is undefined'
++      fail:
++        msg: "Forgejo needs MariaDB but the 'mysql' role did not install it."
++      when: mysql_installed is undefined
++
++    - name: "Create MySQL database for Forgejo: {{ forgejo_db_name }}"
++      ansible.mariadb.mariadb_db:
++        name: "{{ forgejo_db_name }}"
++
++    - name: Create MySQL username ({{ forgejo_db_user }}) with password, for above database
++      ansible.mariadb.mariadb_user:
++        name: "{{ forgejo_db_user }}"
++        password: "{{ forgejo_db_password }}"
++        priv: "{{ forgejo_db_name }}.*:ALL,GRANT"
++
++- name: Install {{ forgejo_config_path }} from template (0664 root:forgejo)
++  template:
++    src: app.ini.j2
++    dest: "{{ forgejo_config_path }}"
++    owner: root
++    group: "{{ forgejo_user }}"
++    mode: "0664"
++
++
++# 4. Service unit (systemd platforms only)
++# Under proot the pdsm wrapper is provided by the 'proot_services' role
++# (roles/proot_services/files/pdsm/usr_local_pdsm/services-available/forgejo,
++# listed in its 'pdsm_installed_services'); this role only enables/starts it.
++
++- name: "Install systemd unit /etc/systemd/system/forgejo.service (not proot)"
++  template:
++    src: forgejo.service.j2
++    dest: /etc/systemd/system/forgejo.service
++  when: not is_proot
++
++
++# 5. RECORD Forgejo AS INSTALLED
++
++- name: Record (final) disk space used
++  shell: df -B1 --output=used / | tail -1
++  register: df2
++
++- name: Add 'forgejo_disk_usage = {{ df2.stdout | int - df1.stdout | int }}' to {{ iiab_ini_file }}
++  ini_file:
++    path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
++    section: forgejo
++    option: forgejo_disk_usage
++    value: "{{ df2.stdout | int - df1.stdout | int }}"
++
++- name: "Set 'forgejo_installed: True'"
++  set_fact:
++    forgejo_installed: True
++
++- name: "Add 'forgejo_installed: True' to {{ iiab_state_file }}"
++  lineinfile:
++    path: "{{ iiab_state_file }}"    # /etc/iiab/iiab_state.yml
++    regexp: '^forgejo_installed'
++    line: 'forgejo_installed: True'
+diff --git a/roles/forgejo/tasks/main.yml b/roles/forgejo/tasks/main.yml
+new file mode 100644
+index 0000000000..6939487bf1
+--- /dev/null
++++ b/roles/forgejo/tasks/main.yml
+@@ -0,0 +1,48 @@
++- name: Assert that "forgejo_install is sameas true" (boolean not string etc)
++  assert:
++    that: forgejo_install is sameas true
++    fail_msg: "PLEASE SET 'forgejo_install: True' e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
++- name: Assert that "forgejo_enabled | type_debug == 'bool'" (boolean not string etc)
++  assert:
++    that: forgejo_enabled | type_debug == 'bool'
++    fail_msg: "PLEASE GIVE VARIABLE 'forgejo_enabled' A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
++
++- block:
++
++    - name: Install Forgejo if 'forgejo_installed' not defined, e.g. in {{ iiab_state_file }}    # /etc/iiab/iiab_state.yml
++      include_tasks: install.yml
++      when: forgejo_installed is undefined
++
++    - name: Enable/Disable Forgejo (systemd or pdsm) and NGINX
++      include_tasks: enable-or-disable.yml
++
++    - name: Add 'forgejo' variable values to {{ iiab_ini_file }}
++      ini_file:
++        path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
++        section: forgejo
++        option: "{{ item.option }}"
++        value: "{{ item.value | string }}"
++      with_items:
++        - option: name
++          value: Forgejo
++        - option: description
++          value: 'Forgejo, self-hosted Git service.'
++        - option: forgejo_install
++          value: "{{ forgejo_install }}"
++        - option: forgejo_enabled
++          value: "{{ forgejo_enabled }}"
++        - option: forgejo_url
++          value: "{{ forgejo_url }}"
++        - option: forgejo_port
++          value: "{{ forgejo_port }}"
++
++  rescue:
++
++    - name: 'SEE ERROR ABOVE (skip_role_on_error: {{ skip_role_on_error }})'
++      fail:
++        msg: ""
++      when: not skip_role_on_error
+diff --git a/roles/forgejo/templates/app.ini.j2 b/roles/forgejo/templates/app.ini.j2
+new file mode 100644
+index 0000000000..d936adb9aa
+--- /dev/null
++++ b/roles/forgejo/templates/app.ini.j2
+@@ -0,0 +1,83 @@
++; Managed by IIAB Ansible (roles/forgejo). Do not edit by hand.
++; Config reference: https://forgejo.org/docs/latest/admin/config-cheat-sheet/
++; This is a lean config on purpose (unlike gitea's full cheat-sheet template);
++; only the settings IIAB actually needs are set here.
++
++APP_NAME = {{ forgejo_display_name }}
++RUN_USER = {{ forgejo_user }}
++RUN_MODE = {{ forgejo_run_mode }}
++WORK_PATH = {{ forgejo_run_directory }}
++
++[repository]
++ROOT = {{ forgejo_repo_root }}
++
++[git.timeout]
++; forgejo default MIGRATE is 600s, too low for large repos.
++; See forgejo_migrate_timeout in defaults/main.yml.
++MIGRATE = {{ forgejo_migrate_timeout }}
++
++[server]
++PROTOCOL = http
++DOMAIN = {{ iiab_hostname }}.{{ iiab_domain }}
++; Served behind nginx on the {{ forgejo_url }} sub-path (see forgejo-nginx.conf).
++ROOT_URL = http://%(DOMAIN)s{{ forgejo_url }}/
++HTTP_ADDR = 127.0.0.1
++HTTP_PORT = {{ forgejo_port }}
++OFFLINE_MODE = true
++LFS_START_SERVER = {{ forgejo_lfs | lower }}
++{% if forgejo_lfs %}
++; Secret is generated once and referenced by file (see tasks/install.yml).
++; NOTE: confirm LFS_JWT_SECRET_URI is honored by the pinned Forgejo version.
++LFS_JWT_SECRET_URI = file:{{ forgejo_lfs_jwt_secret_path }}
++{% endif %}
++{% if forgejo_enable_ssh %}
++; Built-in SSH server on a high port (systemd platforms; not the host sshd).
++DISABLE_SSH = false
++START_SSH_SERVER = true
++SSH_DOMAIN = %(DOMAIN)s
++SSH_PORT = {{ forgejo_ssh_port }}
++SSH_LISTEN_PORT = {{ forgejo_ssh_port }}
++{% else %}
++; proot v1: HTTP-only, no SSH.
++DISABLE_SSH = true
++START_SSH_SERVER = false
++{% endif %}
++
++[lfs]
++{% if forgejo_lfs %}
++PATH = {{ forgejo_lfs_root }}
++{% endif %}
++
++[database]
++{% if forgejo_db_engine == 'mariadb' %}
++DB_TYPE = mysql
++HOST = 127.0.0.1:3306
++NAME = {{ forgejo_db_name }}
++USER = {{ forgejo_db_user }}
++PASSWD = {{ forgejo_db_password }}
++{% else %}
++DB_TYPE = sqlite3
++PATH = {{ forgejo_db_path }}
++{% endif %}
++
++[security]
++; First registered user becomes admin (same as the gitea role).
++INSTALL_LOCK = {{ forgejo_install_lock | lower }}
++SECRET_KEY_URI = file:{{ forgejo_secret_key_path }}
++INTERNAL_TOKEN_URI = file:{{ forgejo_internal_token_path }}
++
++[oauth2]
++JWT_SECRET_URI = file:{{ forgejo_jwt_secret_path }}
++
++[service]
++DISABLE_REGISTRATION = false
++REQUIRE_SIGNIN_VIEW = false
++REGISTER_EMAIL_CONFIRM = false
++
++[mailer]
++ENABLED = false
++
++[log]
++ROOT_PATH = {{ forgejo_log_root }}
++MODE = console
++LEVEL = Info
+diff --git a/roles/forgejo/templates/forgejo-nginx.conf.j2 b/roles/forgejo/templates/forgejo-nginx.conf.j2
+new file mode 100644
+index 0000000000..b9bbd031a2
+--- /dev/null
++++ b/roles/forgejo/templates/forgejo-nginx.conf.j2
+@@ -0,0 +1,24 @@
++# Reverse proxy for Forgejo at http://box{{ forgejo_url }}
++# Installed by roles/forgejo (tasks/enable-or-disable.yml) into nginx conf.d.
++
++location = {{ forgejo_url }} {
++    return 302 {{ forgejo_url }}/;
++}
++
++location {{ forgejo_url }}/ {
++    proxy_pass http://127.0.0.1:{{ forgejo_port }}/;
++    proxy_set_header Host $host;
++    proxy_set_header X-Real-IP $remote_addr;
++    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
++    proxy_set_header X-Forwarded-Proto $scheme;
++
++    # Large-repo tuning: allow big clone/push (e.g. CodeOnTheGo ~1.2 GB).
++    # nginx default client_max_body_size is 1m, which would fail large pushes.
++    client_max_body_size 0;
++    proxy_request_buffering off;
++    # Keep the proxy timeout >= Forgejo's [git.timeout] MIGRATE, else nginx drops a
++    # long migrate/clone mid-flight and Forgejo rolls the partial repo back. The +300s
++    # margin keeps Forgejo's own timeout authoritative (clean abort, not an nginx 504).
++    proxy_read_timeout {{ forgejo_migrate_timeout + 300 }}s;
++    proxy_send_timeout {{ forgejo_migrate_timeout + 300 }}s;
++}
+diff --git a/roles/forgejo/templates/forgejo.service.j2 b/roles/forgejo/templates/forgejo.service.j2
+new file mode 100644
+index 0000000000..290a0076af
+--- /dev/null
++++ b/roles/forgejo/templates/forgejo.service.j2
+@@ -0,0 +1,22 @@
++[Unit]
++Description=Forgejo (Internet-in-a-Box Git service)
++After=network.target
++{% if forgejo_db_engine == 'mariadb' %}
++After=mariadb.service
++Wants=mariadb.service
++{% endif %}
++
++[Service]
++Type=simple
++User={{ forgejo_user }}
++Group={{ forgejo_user }}
++WorkingDirectory={{ forgejo_run_directory }}
++; ExecStart uses the stable symlink, so an update (runrole --reinstall forgejo) just
++; repoints it to the new binary and restarts, without rewriting this unit.
++ExecStart={{ forgejo_link_path }} web --config {{ forgejo_config_path }}
++Restart=always
++RestartSec=2s
++Environment=USER={{ forgejo_user }} HOME={{ forgejo_home }} FORGEJO_WORK_DIR={{ forgejo_run_directory }}
++
++[Install]
++WantedBy=multi-user.target
+diff --git a/roles/matomo/defaults/main.yml b/roles/matomo/defaults/main.yml
+index c0f9093adf..2349f90055 100644
+--- a/roles/matomo/defaults/main.yml
++++ b/roles/matomo/defaults/main.yml
+@@ -35,4 +35,3 @@ proot_nginx_timeout: 180
+ tcp_host: "127.0.0.1"
+ tcp_port: 3306
+ mariadb_run_dir: "/run/mysqld"
+-mariadb_log_dir: "/var/log/mysql"
+diff --git a/roles/proot_services/defaults/main.yml b/roles/proot_services/defaults/main.yml
+index c809d71175..97eeb74c58 100644
+--- a/roles/proot_services/defaults/main.yml
++++ b/roles/proot_services/defaults/main.yml
+@@ -8,6 +8,7 @@ pdsm_installed_services:
+   - kolibri
+   - kiwix
+   - calibre-web
++  - forgejo
+ 
+ # OTOH, not all services should be enabled by default due device constrains,
+ # users can enable any of the installed services in their own setup.
+diff --git a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/forgejo b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/forgejo
+new file mode 100644
+index 0000000000..70318319de
+--- /dev/null
++++ b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/forgejo
+@@ -0,0 +1,97 @@
++#!/bin/sh
++# /usr/local/pdsm/services-available/forgejo
++# Simple PDSM service wrapper for Forgejo (IIAB, proot).
++# Installed by roles/proot_services (listed in pdsm_installed_services);
++# the forgejo role only enables/starts it (tasks/enable-or-disable.yml).
++
++PDSM_COMMON="/usr/local/pdsm/lib/pdsm-common.sh"
++[ -r "$PDSM_COMMON" ] && . "$PDSM_COMMON"
++
++SERVICE_NAME="forgejo"
++
++FORGEJO_USER="forgejo"
++FORGEJO_HOME="/home/forgejo"
++FORGEJO_BIN="/library/forgejo/forgejo"          # stable symlink -> versioned binary
++FORGEJO_CONFIG="/etc/forgejo/app.ini"
++FORGEJO_WORK_DIR="/library/forgejo"
++FORGEJO_LOG="/library/forgejo/log/forgejo.log"
++
++# Forgejo refuses to run as root. Under proot the login shell is root, so we drop
++# to the unprivileged 'forgejo' user (created by the forgejo role) to start it.
++# The process is tracked by its command line (pgrep); no pidfile needed.
++
++running() {
++  pgrep -f "$FORGEJO_BIN web" >/dev/null 2>&1
++}
++
++start() {
++  if running; then
++    echo "[pdsm:$SERVICE_NAME] already running"
++    return 0
++  fi
++
++  # nginx is the reverse proxy in front of Forgejo
++  require_service "nginx" 2>/dev/null || true
++
++  echo "[pdsm:$SERVICE_NAME] starting..."
++
++  # Drop from root to the 'forgejo' user (Forgejo won't run as root).
++  setsid su -s /bin/sh "$FORGEJO_USER" -c \
++    "HOME=$FORGEJO_HOME FORGEJO_WORK_DIR=$FORGEJO_WORK_DIR exec $FORGEJO_BIN web --config $FORGEJO_CONFIG" \
++    >>"$FORGEJO_LOG" 2>&1 &
++
++  for i in $(seq 1 "${PDSM_START_TIMEOUT:-15}"); do
++    if running; then
++      echo "[pdsm:$SERVICE_NAME] started"
++      return 0
++    fi
++    sleep 1
++  done
++
++  echo "[pdsm:$SERVICE_NAME] failed to start (check $FORGEJO_LOG)" >&2
++  return 1
++}
++
++stop() {
++  if ! running; then
++    echo "[pdsm:$SERVICE_NAME] already stopped"
++    return 0
++  fi
++
++  echo "[pdsm:$SERVICE_NAME] stopping..."
++  pkill -f "$FORGEJO_BIN web" >/dev/null 2>&1 || true
++
++  for i in $(seq 1 "${PDSM_START_TIMEOUT:-15}"); do
++    if ! running; then
++      echo "[pdsm:$SERVICE_NAME] stopped"
++      return 0
++    fi
++    sleep 1
++  done
++
++  echo "[pdsm:$SERVICE_NAME] did not fully stop" >&2
++  return 1
++}
++
++status() {
++  if running; then
++    echo "[pdsm:$SERVICE_NAME] running"
++    return 0
++  fi
++  echo "[pdsm:$SERVICE_NAME] not running"
++  return 3
++}
++
++case "$1" in
++  start|stop|status)
++    "$1"
++    ;;
++  restart)
++    stop
++    start
++    ;;
++  *)
++    echo "Usage: $0 {start|stop|restart|status}" >&2
++    exit 1
++    ;;
++esac
+diff --git a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/mariadb b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/mariadb
+index 3aa5181917..ab52d07a2c 100644
+--- a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/mariadb
++++ b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/mariadb
+@@ -23,12 +23,26 @@ running() {
+   kill -0 "$pid" 2>/dev/null
+ }
+ 
++responds() {
++  # This proves the server actually accepts a client connection.
++  mysql --protocol=socket --socket="$MARIADB_SOCKET" -N -e 'SELECT 1' >/dev/null 2>&1
++}
++
+ start() {
+-  if running; then
++  # Treat the service as up only if it is alive AND actually answers.
++  if running && responds; then
+     echo "[pdsm:$SERVICE_NAME] already running"
+     return 0
+   fi
+ 
++  # Alive but not answering: a stale orphan. Stop it (and clear the stale pidfile) so we
++  # never launch a second mariadbd on the same datadir.
++  if running; then
++    echo "[pdsm:$SERVICE_NAME] stale instance (alive but not responding) - cleaning up"
++    stop
++  fi
++  rm -f "$MARIADB_PIDFILE"
++
+   echo "[pdsm:$SERVICE_NAME] starting..."
+ 
+   # Ensure run dir exists with proper owner
+@@ -47,9 +61,10 @@ start() {
+     --log-error="$MARIADB_LOG" \
+     >>"$MARIADB_LOG" 2>&1 &
+ 
+-  # Small wait loop so 'start' only returns when it's actually alive
++  # Wait loop returns only when MariaDB actually ANSWERS (not merely PID-alive), so
++  # callers that run DB ops right after 'start' don't race a still-initialising server.
+   for i in $(seq 1 "$PDSM_START_TIMEOUT"); do
+-    if running; then
++    if responds; then
+       echo "[pdsm:$SERVICE_NAME] started"
+       return 0
+     fi
+@@ -91,7 +106,9 @@ stop() {
+ }
+ 
+ status() {
+-  if running; then
++  # Report running only if it is alive AND actually answers, so a broken orphan is not
++  # misreported as healthy (and so pdsm's require_service restarts a stale dependency).
++  if running && responds; then
+     echo "[pdsm:$SERVICE_NAME] running"
+     return 0
+   fi
+diff --git a/vars/default_vars.yml b/vars/default_vars.yml
+index b36bc18b61..12b4843cd0 100644
+--- a/vars/default_vars.yml
++++ b/vars/default_vars.yml
+@@ -272,6 +272,7 @@ pi_swap_file_size: 1536
+ mysql_install: False
+ mysql_enabled: False
+ mysql_service: mariadb
++mariadb_log_dir: /var/log/mysql    # moved from roles/matomo, used by roles/mysql
+ 
+ # 2020-09-24: NGINX is MANDATORY but still evolving - please see:
+ # https://github.com/iiab/iiab/blob/master/roles/nginx/README.md
+@@ -413,6 +414,12 @@ gitea_enabled: False
+ gitea_url: /gitea
+ gitea_port: 61734
+ 
++# Forgejo (community fork of Gitea)
++forgejo_install: False
++forgejo_enabled: False
++forgejo_url: /forgejo
++forgejo_port: 3300
++
+ # JupyterHub programming environment with student Notebooks
+ jupyterhub_install: False
+ jupyterhub_enabled: False
+diff --git a/vars/local_vars_android_large.yml b/vars/local_vars_android_large.yml
+index a374192077..98905fc03d 100644
+--- a/vars/local_vars_android_large.yml
++++ b/vars/local_vars_android_large.yml
+@@ -14,6 +14,7 @@ is_proot: True
+ # 4 Kolibri        localhost:8085/kolibri
+ # 5 Matomo         localhost:8085/matomo
+ # 6 Code on the Go localhost:8085/code
++# 7 Forgejo        localhost:8085/forgejo
+ ##############################
+ 
+ ##############################
+@@ -81,6 +82,12 @@ code_install: True
+ code_enabled: True
+ ##############################
+ 
++##############################
++# Forgejo (community fork of Gitea)
++forgejo_install: False
++forgejo_enabled: False
++##############################
++
+ ##############################
+ # Disable sshd as it is not directly used on proot-distro
+ sshd_install: False
+diff --git a/vars/local_vars_android_medium.yml b/vars/local_vars_android_medium.yml
+index 55336dad69..174379fa2d 100644
+--- a/vars/local_vars_android_medium.yml
++++ b/vars/local_vars_android_medium.yml
+@@ -14,6 +14,7 @@ is_proot: True
+ # 4 Kolibri        localhost:8085/kolibri
+ # 5 Matomo         localhost:8085/matomo
+ # 6 Code on the Go localhost:8085/code
++# 7 Forgejo        localhost:8085/forgejo
+ ##############################
+ 
+ ##############################
+@@ -81,6 +82,12 @@ code_install: False
+ code_enabled: False
+ ##############################
+ 
++##############################
++# Forgejo (community fork of Gitea)
++forgejo_install: False
++forgejo_enabled: False
++##############################
++
+ ##############################
+ # Disable sshd as it is not directly used on proot-distro
+ sshd_install: False
+diff --git a/vars/local_vars_android_small.yml b/vars/local_vars_android_small.yml
+index 38c0dafa82..f215ab300c 100644
+--- a/vars/local_vars_android_small.yml
++++ b/vars/local_vars_android_small.yml
+@@ -14,6 +14,7 @@ is_proot: True
+ # 4 Kolibri        localhost:8085/kolibri
+ # 5 Matomo         localhost:8085/matomo
+ # 6 Code on the Go localhost:8085/code
++# 7 Forgejo        localhost:8085/forgejo
+ ##############################
+ 
+ ##############################
+@@ -81,6 +82,12 @@ code_install: False
+ code_enabled: False
+ ##############################
+ 
++##############################
++# Forgejo (community fork of Gitea)
++forgejo_install: False
++forgejo_enabled: False
++##############################
++
+ ##############################
+ # Disable sshd as it is not directly used on proot-distro
+ sshd_install: False
+diff --git a/vars/local_vars_large.yml b/vars/local_vars_large.yml
+index 8a5a5ed95c..e2d5c87971 100644
+--- a/vars/local_vars_large.yml
++++ b/vars/local_vars_large.yml
+@@ -232,6 +232,10 @@ nodocs: False
+ gitea_install: True
+ gitea_enabled: True
+ 
++# Forgejo (community fork of Gitea)
++forgejo_install: False
++forgejo_enabled: False
++
+ # JupyterHub programming environment with student Notebooks
+ jupyterhub_install: True
+ jupyterhub_enabled: True
