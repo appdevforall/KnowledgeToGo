@@ -49,7 +49,7 @@ FORGEJO_SEED_METHOD="${FORGEJO_SEED_METHOD:-shallow}"
 # for the repo URLs: the installer gate selects one by tier, it does not restate the URLs.
 FORGEJO_REPOS_FULL="${FORGEJO_ORG}|CodeOnTheGo|https://github.com/appdevforall/CodeOnTheGo|stage
 ${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|
-${FORGEJO_ORG}|plugin-examples|https://github.com/appdevforall/plugin-examples|"
+${FORGEJO_ORG}|addons|https://github.com/appdevforall/addons|"
 FORGEJO_REPOS_STANDARD="${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|"
 FORGEJO_REPOS="${FORGEJO_REPOS:-$FORGEJO_REPOS_FULL}"
 
