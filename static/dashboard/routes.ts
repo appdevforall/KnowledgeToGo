@@ -17,6 +17,7 @@ import {
     verifyCredentials, ChannelNotInstalledError,
 } from './sockets/kolibri.query';
 import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogin } from './sockets/kolibri.session';
+import { login as forgejoLogin, ForgejoAuthError } from './sockets/forgejo.session';
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
@@ -802,12 +803,22 @@ apiRouter.get('/auth/:service/session', async (req: Request, res: Response): Pro
             res.json({ service: 'calibre', cookie: s.cookie });
             return;
         }
+        if (service === 'forgejo') {
+            const s = await forgejoLogin(undefined, consumerUa);
+            res.json({ service: 'forgejo', cookie: s.cookie });
+            return;
+        }
         res.status(404).json({ error: 'unknown service' });
     } catch (e: any) {
         // Keep the detail server-side; the app only needs the status + a generic reason.
         console.error('[auth] ' + (e?.message || e));
         if (e instanceof KolibriAuthError) {
             const status = e.reason === 'credentials' ? 401 : e.reason === 'permission' ? 403 : 503;
+            res.status(status).json({ error: 'sign-in failed' });
+            return;
+        }
+        if (e instanceof ForgejoAuthError) {
+            const status = e.reason === 'credentials' ? 401 : 503;
             res.status(status).json({ error: 'sign-in failed' });
             return;
         }

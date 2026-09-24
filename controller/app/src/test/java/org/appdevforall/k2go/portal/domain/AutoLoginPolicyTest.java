@@ -21,6 +21,12 @@ public class AutoLoginPolicyTest {
         assertEquals("kolibri", AutoLoginPolicy.serviceFor("http://127.0.0.1:8085/kolibri/learn#/home"));
     }
 
+    @Test public void forgejoPagesOpenAsForgejoAdmin() {   // K2GO-212
+        assertEquals("forgejo", AutoLoginPolicy.serviceFor("http://localhost:8085/forgejo/"));
+        assertEquals("forgejo", AutoLoginPolicy.serviceFor("http://127.0.0.1:8085/forgejo/AppDevForAll/KnowledgeToGo"));
+        assertEquals("/forgejo", AutoLoginPolicy.prefixFor("http://localhost:8085/forgejo/"));
+    }
+
     @Test public void otherBoxPagesNeedNoSession() {
         assertNull(AutoLoginPolicy.serviceFor("http://localhost:8085/home"));
         assertNull(AutoLoginPolicy.serviceFor("http://localhost:8085/kiwix/"));
