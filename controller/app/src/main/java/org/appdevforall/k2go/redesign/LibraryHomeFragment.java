@@ -413,8 +413,12 @@ public class LibraryHomeFragment extends Fragment {
     @Override public void onResume() { super.onResume(); main.post(poll); }
     @Override public void onPause() { super.onPause(); main.removeCallbacks(poll); }
 
+    // K2GO-416: gate on the APP process bitness (Process.is64Bit()), not the device ABI list, so a
+    // 64-bit-only module is unsupported whenever the app runtime is 32-bit (its proot cannot run it).
+    // Home uses its own Card type (field requires64), so it reads the platform API directly rather than
+    // ModuleCards.Card.runsOnThisRuntime() (which needs a ModuleCards.Card): same single runtime signal.
     private boolean unsupported(Card c) {
-        return c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0;
+        return c.requires64 && !android.os.Process.is64Bit();
     }
 
     // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
