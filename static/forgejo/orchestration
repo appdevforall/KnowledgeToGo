@@ -45,12 +45,17 @@ FORGEJO_WAIT_TRIES="${FORGEJO_WAIT_TRIES:-60}"                # 502 window toler
 # drops history; the migrate API cannot go shallow.
 FORGEJO_SEED_METHOD="${FORGEJO_SEED_METHOD:-shallow}"
 
-# Canonical repo lists (owner|name|clone_addr|branch; branch optional -> default). Single source
-# for the repo URLs: the installer gate selects one by tier, it does not restate the URLs.
-FORGEJO_REPOS_FULL="${FORGEJO_ORG}|CodeOnTheGo|https://github.com/appdevforall/CodeOnTheGo|stage
-${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|
-${FORGEJO_ORG}|addons|https://github.com/appdevforall/addons|"
-FORGEJO_REPOS_STANDARD="${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|"
+# Canonical repo definitions (owner|name|clone_addr|branch; branch optional -> default). One source
+# per repo; the tier lists compose from these, and the installer gate picks a tier by name.
+_FJ_REPO_K2GO="${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|"
+_FJ_REPO_COGO="${FORGEJO_ORG}|CodeOnTheGo|https://github.com/appdevforall/CodeOnTheGo|stage"
+_FJ_REPO_ADDONS="${FORGEJO_ORG}|addons|https://github.com/appdevforall/addons|"
+# Medium (standard): k2go + cogo. Large (full): + addons. Basic has forgejo off, so it seeds nothing.
+FORGEJO_REPOS_STANDARD="$_FJ_REPO_K2GO
+$_FJ_REPO_COGO"
+FORGEJO_REPOS_FULL="$_FJ_REPO_K2GO
+$_FJ_REPO_COGO
+$_FJ_REPO_ADDONS"
 FORGEJO_REPOS="${FORGEJO_REPOS:-$FORGEJO_REPOS_FULL}"
 
 # ===== small helpers (reuse installer's log/ok/warn if present) ============
