@@ -44,6 +44,20 @@ async function fetchWithTimeout(
 }
 
 /**
+ * Drops "clear" directives (empty value, e.g. `session=; Max-Age=0`) from a Set-Cookie list.
+ * Forgejo rotates the session by clearing it at one path and setting it at another in the SAME
+ * response; mergeCookies keys by name only, so without this a last-wins merge could keep the empty
+ * clear and inject a logged-out cookie. Keeping only non-empty values makes the merge order-independent.
+ */
+function dropClears(setCookies: string[]): string[] {
+    return setCookies.filter((raw) => {
+        const first = raw.split(';')[0];
+        const eq = first.indexOf('=');
+        return eq >= 0 && first.slice(eq + 1).trim() !== '';
+    });
+}
+
+/**
  * Authenticates against Forgejo and returns a reusable web session.
  *
  * @param override explicit credentials (used before persisting them); if omitted,
@@ -62,7 +76,7 @@ export async function login(
     let cookie = '';
     try {
         const seed = await fetchWithTimeout(`${FORGEJO_BASE}/user/login`, { headers: { ...agent } });
-        cookie = mergeCookies('', seed.headers.getSetCookie());
+        cookie = mergeCookies('', dropClears(seed.headers.getSetCookie()));
     } catch (e) {
         throw new ForgejoAuthError('unreachable',
             `Forgejo did not respond at ${FORGEJO_BASE}: ${e instanceof Error ? e.message : String(e)}`);
@@ -96,6 +110,6 @@ export async function login(
         throw new ForgejoAuthError('protocol', `Forgejo login returned HTTP ${res.status}`);
     }
 
-    cookie = mergeCookies(cookie, res.headers.getSetCookie());
+    cookie = mergeCookies(cookie, dropClears(res.headers.getSetCookie()));
     return { cookie, username: cred.username };
 }
