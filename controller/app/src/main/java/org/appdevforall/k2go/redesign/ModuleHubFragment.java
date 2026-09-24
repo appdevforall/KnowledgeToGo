@@ -16,7 +16,6 @@
 package org.appdevforall.k2go.redesign;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -101,10 +100,6 @@ public class ModuleHubFragment extends Fragment {
     private Button proceed;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
-
-    private static boolean is64Bit() {
-        return Build.SUPPORTED_64_BIT_ABIS != null && Build.SUPPORTED_64_BIT_ABIS.length > 0;
-    }
 
     @Nullable
     @Override
@@ -202,7 +197,8 @@ public class ModuleHubFragment extends Fragment {
     private void confirmByProbe(final int gen) {
         final Set<String> answered = new HashSet<>();
         for (final ModuleCards.Card c : ModuleCards.all()) {
-            if (c.requires64Bit() && !is64Bit()) continue;   // hidden on this device
+            // K2GO-416: delegate the runtime-ABI rule to its owner (Card), do not re-derive it here.
+            if (!c.runsOnThisRuntime()) continue;   // 64-bit-only module cannot run in this app runtime
             if (installed.contains(c.key())) continue;       // disk already says yes
             // K2GO-393: a completion-gated module (maps, a proot install) is answered by its
             // iiab_state marker, which the disk floor above already read. It always writes that
@@ -298,7 +294,7 @@ public class ModuleHubFragment extends Fragment {
         // anything; it is the only place the answer exists.
         List<ModuleCards.Card> items = new ArrayList<>();
         for (ModuleCards.Card c : ModuleCards.all()) {
-            if (c.requires64Bit() && !is64Bit()) continue;   // never going to run here
+            if (!c.runsOnThisRuntime()) continue;   // never going to run in this app runtime
             items.add(c);
         }
         boolean anyInstallable = false;

@@ -187,6 +187,10 @@ public class LibraryHomeFragment extends Fragment {
         cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
         for (java.util.Iterator<Card> it = cards.iterator(); it.hasNext(); ) {
             Card card = it.next();
+            // K2GO-415/416: hide a module the app runtime cannot run (a 64-bit-only module like Kiwix
+            // on a 32-bit app), like Module management and Get more do, instead of showing a permanent
+            // "Not supported" card on Home.
+            if (unsupported(card)) { it.remove(); continue; }
             ModuleCards.Card m = ModuleCards.byEndpoint(card.endpoint);
             if (m != null && HiddenModules.contains(requireContext(), m.key())) it.remove();
         }
@@ -414,8 +418,12 @@ public class LibraryHomeFragment extends Fragment {
     @Override public void onResume() { super.onResume(); main.post(poll); }
     @Override public void onPause() { super.onPause(); main.removeCallbacks(poll); }
 
+    // K2GO-416: gate on the APP process bitness (Process.is64Bit()), not the device ABI list, so a
+    // 64-bit-only module is unsupported whenever the app runtime is 32-bit (its proot cannot run it).
+    // Home uses its own Card type (field requires64), so it reads the platform API directly rather than
+    // ModuleCards.Card.runsOnThisRuntime() (which needs a ModuleCards.Card): same single runtime signal.
     private boolean unsupported(Card c) {
-        return c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0;
+        return c.requires64 && !android.os.Process.is64Bit();
     }
 
     // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
@@ -488,7 +496,6 @@ public class LibraryHomeFragment extends Fragment {
                 // answers — and every sheet offered to install a platform that was there. The
                 // fact is asked for where it is needed (applyState, openSheet) instead.
                 applyState(c, GRAY);
-                if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
             }
             updateHeaderFromCards();
             return;
@@ -540,15 +547,6 @@ public class LibraryHomeFragment extends Fragment {
         }
 
         for (final Card c : cards) {
-            if (unsupported(c)) {
-                // ADFA-5061: grey, but not "absent". A 64-bit module on a 32-bit device is not
-                // missing — it is never going to be there, which is why the sheet must not offer
-                // to install it. Nothing is recorded, so "nothing established" withholds the
-                // offer where ABSENT would have made it.
-                applyState(c, GRAY);
-                if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
-                continue;
-            }
             // ADFA-4828: system is installed. Before the first probe resolves (or while the server
             // is still coming up) show "Connecting", never "Not installed" — the latter only appears
             // once a probe actually reports the content is absent (404 -> GRAY).
@@ -638,7 +636,7 @@ public class LibraryHomeFragment extends Fragment {
         }
         boolean anyChecking = false, anyReady = false;
         for (Card c : cards) {
-            if (unsupported(c) || c.state == GRAY) continue;   // GRAY = content absent → doesn't gate
+            if (c.state == GRAY) continue;   // GRAY = content absent, does not gate
             if (c.state == AMBER) anyChecking = true;
             else if (c.state == GREEN) anyReady = true;
         }

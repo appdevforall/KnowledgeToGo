@@ -135,6 +135,9 @@ public class GetMoreHubFragment extends Fragment {
         if (tier == InstallationPlanner.Tier.FULL || tier == InstallationPlanner.Tier.STANDARD) {
             available.add("courses");
         }
+        // K2GO-415: drop content whose backing module cannot run in this app runtime (a 32-bit app
+        // cannot run a 64-bit module like Kiwix), so the user cannot pick content with nowhere to land.
+        for (Item it : ITEMS) if (!archSupports(it.endpoint)) available.remove(it.key);
     }
 
     @Override
@@ -262,10 +265,20 @@ public class GetMoreHubFragment extends Fragment {
         });
     }
 
+    /** K2GO-415: a 64-bit-only module (e.g. Kiwix) has nowhere to land when the app runtime is 32-bit
+     *  (its proot cannot run 64-bit binaries), so its content is not offered there. Keyed on the app
+     *  process bitness via Card.runsOnThisRuntime(); generalizes to any future requires64Bit module. */
+    private static boolean archSupports(String endpoint) {
+        ModuleCards.Card c = ModuleCards.byEndpoint(endpoint);
+        return c == null || c.runsOnThisRuntime();
+    }
+
     /** The items to show: those whose module answered, in the declared order. */
     private List<Item> visibleItems() {
         List<Item> out = new ArrayList<>();
-        for (Item it : ITEMS) if (available.contains(it.key)) out.add(it);
+        // K2GO-415: also gate on the app runtime as defense in depth (live path), so a 64-bit-only
+        // module never shows in a 32-bit runtime even if its endpoint somehow answered.
+        for (Item it : ITEMS) if (available.contains(it.key) && archSupports(it.endpoint)) out.add(it);
         return out;
     }
 
