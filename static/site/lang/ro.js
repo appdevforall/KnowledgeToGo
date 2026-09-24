@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Găzduiește cod",
     "title": "Alege conținutul",
     "powered_by": "propulsat de Internet-in-a-Box",
     "books": "Citește o carte",

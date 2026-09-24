@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">تستخدم التنزيلات الجديدة الآن بيانات الجوال. قد يترتب على ذلك تكلفة أو يستنفد باقة بياناتك.</string>
     <string name="k2go_netpolicy_channel">تنبيهات تكلفة البيانات</string>
     <string name="k2go_help_manual">الدليل</string>
+    <string name="k2go_card_forgejo">استضف الشيفرة</string>
+    <string name="k2go_mod_forgejo_title">استضافة الشيفرة</string>
+    <string name="k2go_mod_forgejo_desc">خادم Git خاص على جهازك. خزّن مستودعات الشيفرة وتتبّع المشكلات وراجع التغييرات دون اتصال. لا حاجة إلى الإنترنت.</string>
+    <string name="k2go_mod_forgejo_includes">خادم Git فقط. تنشئ مستودعاتك الخاصة بعد التثبيت.</string>
 </resources>

@@ -1348,4 +1348,8 @@
     <string name="k2go_netpolicy_switched_msg">Οι νέες λήψεις χρησιμοποιούν τώρα δεδομένα κινητής. Αυτό μπορεί να έχει κόστος ή να εξαντλήσει το πρόγραμμα δεδομένων σας.</string>
     <string name="k2go_netpolicy_channel">Ειδοποιήσεις κόστους δεδομένων</string>
     <string name="k2go_help_manual">Εγχειρίδιο</string>
+    <string name="k2go_card_forgejo">Φιλοξενία κώδικα</string>
+    <string name="k2go_mod_forgejo_title">Φιλοξενία κώδικα</string>
+    <string name="k2go_mod_forgejo_desc">Ιδιωτικός διακομιστής Git στη συσκευή σας. Αποθηκεύστε αποθετήρια κώδικα, παρακολουθήστε ζητήματα και ελέγξτε αλλαγές εκτός σύνδεσης. Δεν χρειάζεται σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_mod_forgejo_includes">Μόνο ο διακομιστής Git. Δημιουργείτε τα δικά σας αποθετήρια μετά την εγκατάσταση.</string>
 </resources>

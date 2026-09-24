@@ -181,6 +181,7 @@ public class LibraryHomeFragment extends Fragment {
         cards.clear();
         cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
         cards.add(new Card("code",    getString(R.string.k2go_card_code),    false, R.drawable.ic_card_code));
+        cards.add(new Card("forgejo", getString(R.string.k2go_card_forgejo), false, R.drawable.ic_card_forgejo));
         cards.add(new Card("kiwix",   getString(R.string.k2go_card_wikipedia), true,  R.drawable.ic_card_wikipedia));
         cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
         cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));

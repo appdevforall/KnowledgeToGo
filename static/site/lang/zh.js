@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "托管代码",
     "title": "选择内容",
     "powered_by": "由 Internet-in-a-Box 提供支持",
     "books": "读一本书",

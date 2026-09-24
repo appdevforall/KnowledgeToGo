@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "استضف الشيفرة",
     "title": "اختر المحتوى",
     "powered_by": "مدعوم بواسطة Internet-in-a-Box",
     "books": "اقرأ كتابًا",

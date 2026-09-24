@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Хостинг коду",
     "title": "Виберіть вміст",
     "powered_by": "на базі Internet-in-a-Box",
     "books": "Читати книгу",

@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">Нові завантаження тепер використовують мобільні дані. Це може призвести до витрат або вичерпати пакет даних.</string>
     <string name="k2go_netpolicy_channel">Сповіщення про витрати даних</string>
     <string name="k2go_help_manual">Посібник</string>
+    <string name="k2go_card_forgejo">Хостинг коду</string>
+    <string name="k2go_mod_forgejo_title">Хостинг коду</string>
+    <string name="k2go_mod_forgejo_desc">Приватний сервер Git на вашому пристрої. Зберігайте репозиторії коду, відстежуйте задачі та переглядайте зміни офлайн. Інтернет не потрібен.</string>
+    <string name="k2go_mod_forgejo_includes">Лише сервер Git. Власні репозиторії ви створюєте після встановлення.</string>
 </resources>

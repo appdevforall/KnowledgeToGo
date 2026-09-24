@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "코드 호스팅",
     "title": "콘텐츠 선택",
     "powered_by": "Internet-in-a-Box 제공",
     "books": "책 읽기",

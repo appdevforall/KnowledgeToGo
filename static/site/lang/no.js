@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Vert for kode",
     "title": "Velg innhold",
     "powered_by": "drevet av Internet-in-a-Box",
     "books": "Les en bok",

@@ -72,6 +72,9 @@ public final class ModuleCards {
             new Card("code",       R.string.k2go_mod_code_title,       R.string.k2go_mod_code_title,
                     R.string.k2go_mod_code_sub,       R.string.k2go_mod_code_desc,
                     R.drawable.k2go_module_placeholder, false),
+            new Card("forgejo",    R.string.k2go_mod_forgejo_title,    R.string.k2go_mod_forgejo_title,
+                    R.string.k2go_mod_forgejo_sub,    R.string.k2go_mod_forgejo_desc,
+                    R.drawable.k2go_module_placeholder, false),
             new Card("matomo",     R.string.k2go_mod_matomo_title,     R.string.k2go_mod_matomo_title,
                     R.string.k2go_mod_matomo_sub,     R.string.k2go_mod_matomo_desc,
                     R.drawable.k2go_module_placeholder, false),
@@ -117,6 +120,7 @@ public final class ModuleCards {
             case "calibreweb": return "GPL-3.0";
             case "kiwix":      return "GPL-3.0";
             case "code":       return "MIT";
+            case "forgejo":    return "GPL-3.0-or-later";
             case "matomo":     return "GPL-3.0";
             case "maps":       return "Mixed data licenses";   // ADFA-4958: OSM ODbL + Natural Earth (PD) + satellite CC BY-NC-SA 4.0 + GeoNames CC BY 4.0
             default: return null;
@@ -146,6 +150,7 @@ public final class ModuleCards {
             case "calibreweb": return R.string.k2go_mod_calibreweb_includes;
             case "kiwix":      return R.string.k2go_mod_kiwix_includes;
             case "code":       return R.string.k2go_mod_code_includes;
+            case "forgejo":    return R.string.k2go_mod_forgejo_includes;
             case "matomo":     return R.string.k2go_mod_matomo_includes;
             case "maps":       return R.string.k2go_mod_maps_includes;
             default: return 0;

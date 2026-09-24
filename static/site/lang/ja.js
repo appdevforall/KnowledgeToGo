@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "コードをホスト",
     "title": "コンテンツを選択",
     "powered_by": "Internet-in-a-Box を利用",
     "books": "本を読む",

@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">I nuovi download ora usano i dati mobili. Questo può comportare costi o esaurire il tuo piano dati.</string>
     <string name="k2go_netpolicy_channel">Avvisi sui costi dei dati</string>
     <string name="k2go_help_manual">Manuale</string>
+    <string name="k2go_card_forgejo">Ospita il codice</string>
+    <string name="k2go_mod_forgejo_title">Hosting del codice</string>
+    <string name="k2go_mod_forgejo_desc">Un server Git privato sul tuo dispositivo. Archivia repository di codice, tieni traccia dei problemi e rivedi le modifiche offline. Nessuna connessione necessaria.</string>
+    <string name="k2go_mod_forgejo_includes">Solo il server Git. Crei i tuoi repository dopo l\'installazione.</string>
 </resources>

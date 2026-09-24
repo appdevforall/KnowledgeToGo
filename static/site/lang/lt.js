@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Talpinti kodą",
     "title": "Pasirinkite turinį",
     "powered_by": "veikia su Internet-in-a-Box",
     "books": "Skaityti knygą",

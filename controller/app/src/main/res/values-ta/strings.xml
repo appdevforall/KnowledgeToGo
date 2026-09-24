@@ -1361,4 +1361,8 @@
     <string name="k2go_netpolicy_switched_msg">புதிய பதிவிறக்கங்கள் இப்போது மொபைல் டேட்டாவைப் பயன்படுத்துகின்றன. இதனால் கட்டணம் ஏற்படலாம் அல்லது உங்கள் தரவுத் திட்டம் தீர்ந்துபோகலாம்.</string>
     <string name="k2go_netpolicy_channel">டேட்டா செலவு எச்சரிக்கைகள்</string>
     <string name="k2go_help_manual">கையேடு</string>
+    <string name="k2go_card_forgejo">குறியீட்டை ஹோஸ்ட் செய்</string>
+    <string name="k2go_mod_forgejo_title">குறியீடு ஹோஸ்டிங்</string>
+    <string name="k2go_mod_forgejo_desc">உங்கள் சாதனத்தில் தனிப்பட்ட Git சேவையகம். குறியீட்டுக் களஞ்சியங்களைச் சேமியுங்கள், சிக்கல்களைக் கண்காணியுங்கள், மாற்றங்களை ஆஃப்லைனில் மதிப்பாய்வு செய்யுங்கள். இணையம் தேவையில்லை.</string>
+    <string name="k2go_mod_forgejo_includes">Git சேவையகம் மட்டுமே. நிறுவிய பிறகு உங்கள் சொந்தக் களஞ்சியங்களை உருவாக்குகிறீர்கள்.</string>
 </resources>

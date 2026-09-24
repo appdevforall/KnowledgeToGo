@@ -1342,4 +1342,8 @@
     <string name="k2go_netpolicy_switched_msg">新しいダウンロードはモバイルデータを使用します。料金が発生したり、データプランを使い切ったりする可能性があります。</string>
     <string name="k2go_netpolicy_channel">データ料金の通知</string>
     <string name="k2go_help_manual">マニュアル</string>
+    <string name="k2go_card_forgejo">コードをホスト</string>
+    <string name="k2go_mod_forgejo_title">コードのホスティング</string>
+    <string name="k2go_mod_forgejo_desc">デバイス上のプライベート Git サーバー。コードリポジトリを保存し、課題を追跡し、変更をオフラインで確認できます。インターネットは不要です。</string>
+    <string name="k2go_mod_forgejo_includes">Git サーバーのみ。インストール後にご自身のリポジトリを作成します。</string>
 </resources>

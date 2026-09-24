@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "कोड होस्ट करें",
     "title": "सामग्री चुनें",
     "powered_by": "Internet-in-a-Box द्वारा संचालित",
     "books": "किताब पढ़ें",

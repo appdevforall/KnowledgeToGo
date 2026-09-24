@@ -58,6 +58,7 @@
     <string name="dash_kolibri">Kolibri</string>
     <string name="dash_maps">IIAB Maps</string>
     <string name="dash_matomo">Matomo</string>
+    <string name="dash_forgejo" translatable="false">Forgejo</string>
     <string name="dash_system">System</string>
     <string name="dash_code">Code</string>
 
@@ -754,6 +755,9 @@
     <string name="k2go_mod_matomo_title">Analytics</string>
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Private, self-hosted usage analytics for your library that helps you understand how content is being used.</string>
+    <string name="k2go_mod_forgejo_title">Code hosting</string>
+    <string name="k2go_mod_forgejo_sub" translatable="false">Forgejo</string>
+    <string name="k2go_mod_forgejo_desc">A private Git server on your box. Store code repositories, track issues, and review changes offline. No internet is needed.</string>
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
     <!-- ADFA-4952: Backup &amp; restore -->
     <string name="k2go_br_row_sub">You can save your system to a file, restore your system from a backup file, or reinstall K2Go from scratch</string>
@@ -944,6 +948,7 @@
     <string name="k2go_card_wikipedia">Explore Wikipedia</string>
     <string name="k2go_card_courses">Take courses</string>
     <string name="k2go_card_maps">Navigate maps</string>
+    <string name="k2go_card_forgejo">Host code</string>
     <string name="k2go_home_ready">Ready to explore</string>
     <string name="k2go_card_ready">Ready</string>
     <string name="k2go_card_connecting">Connecting</string>
@@ -1345,6 +1350,7 @@
     <string name="k2go_mod_calibreweb_includes">Reader only. Add books in Get more.</string>
     <string name="k2go_mod_kiwix_includes">Reader only. Add Wikipedia and ZIM content in Get more.</string>
     <string name="k2go_mod_code_includes">This downloads the Code on the Go (CoGo) installer to your phone. CoGo runs outside K2Go. In your phone\'s Downloads folder, tap the file to install CoGo.</string>
+    <string name="k2go_mod_forgejo_includes">The Git server only. You create your own repositories after you install it.</string>
     <string name="k2go_mod_matomo_includes">Analytics for this server — nothing to add.</string>
     <string name="k2go_mod_maps_includes">Base map — pick the layers and region when you install.</string>
     <!-- ADFA-4958 hide / restore / management -->

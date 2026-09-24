@@ -27,6 +27,7 @@ public final class AutoLoginPolicy {
     /** Box credential-store service names. */
     public static final String CALIBRE = "calibre";
     public static final String KOLIBRI = "kolibri";
+    public static final String FORGEJO = "forgejo";
 
     private AutoLoginPolicy() {}
 
@@ -40,6 +41,7 @@ public final class AutoLoginPolicy {
         if (segment == null) return null;
         if (segment.equals("books")) return CALIBRE;
         if (segment.equals("kolibri")) return KOLIBRI;
+        if (segment.equals("forgejo")) return FORGEJO;
         return null;
     }
 

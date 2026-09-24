@@ -16,7 +16,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export type ServiceName = 'kolibri' | 'calibre';
+export type ServiceName = 'kolibri' | 'calibre' | 'forgejo';
 
 export interface Credential {
     username: string;
@@ -37,14 +37,17 @@ const STORE_PATH = process.env.K2GO_CREDENTIALS_FILE
 const DEFAULTS: Record<ServiceName, Credential> = {
     kolibri: { username: 'Admin', password: 'changeme' },
     calibre: { username: 'Admin', password: 'changeme' },
+    // K2GO-212: the seed creates this admin ('admin' is reserved by forgejo).
+    forgejo: { username: 'k2goadmin', password: 'changeme' },
 };
 
 const ENV_PREFIX: Record<ServiceName, string> = {
     kolibri: 'K2GO_KOLIBRI',
     calibre: 'K2GO_CALIBRE',
+    forgejo: 'K2GO_FORGEJO',
 };
 
-const SERVICES: ServiceName[] = ['kolibri', 'calibre'];
+const SERVICES: ServiceName[] = ['kolibri', 'calibre', 'forgejo'];
 
 export function isServiceName(s: string): s is ServiceName {
     return (SERVICES as string[]).includes(s);

@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Gbàlejò kóòdù",
     "title": "Yan Àkóónú",
     "powered_by": "ó ń ṣiṣẹ́ pẹ̀lú Internet-in-a-Box",
     "books": "Ka ìwé",

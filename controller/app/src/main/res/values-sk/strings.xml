@@ -1348,4 +1348,8 @@
     <string name="k2go_netpolicy_switched_msg">Nové sťahovania teraz používajú mobilné dáta. Môže byť spoplatnené alebo vyčerpať váš dátový limit.</string>
     <string name="k2go_netpolicy_channel">Upozornenia na náklady za dáta</string>
     <string name="k2go_help_manual">Príručka</string>
+    <string name="k2go_card_forgejo">Hostovať kód</string>
+    <string name="k2go_mod_forgejo_title">Hosting kódu</string>
+    <string name="k2go_mod_forgejo_desc">Súkromný server Git na vašom zariadení. Ukladajte úložiská kódu, sledujte problémy a kontrolujte zmeny offline. Internet nie je potrebný.</string>
+    <string name="k2go_mod_forgejo_includes">Len server Git. Vlastné úložiská si vytvoríte po inštalácii.</string>
 </resources>

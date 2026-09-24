@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Kód tárolása",
     "title": "Válasszon tartalmat",
     "powered_by": "az Internet-in-a-Box hajtja",
     "books": "Olvass egy könyvet",

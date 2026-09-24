@@ -51,6 +51,7 @@ INSTALL_FALLBACK="https://raw.githubusercontent.com/iiab/iiab-factory/refs/heads
 
 ENABLE_INDEX_PAGE="${ENABLE_INDEX_PAGE:-1}"
 ENABLE_DEMO_CONTENTS="${ENABLE_DEMO_CONTENTS:-0}"
+ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-0}"   # K2GO-212: seed Forgejo repos (bake only; needs internet)
 DEMO_REPO_URL="https://iiab.switnet.org/android/static_demo/"
 PG_CATALOG_URL="https://iiab.switnet.org/android/pg/catalog.db.gz"
 
@@ -630,6 +631,19 @@ else
   sed -i -E '/^[[:space:]]*code_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
   echo "code_install: True"  >> "$LOCAL_VARS_DEST"
   echo "code_enabled: True"  >> "$LOCAL_VARS_DEST"
+
+  # K2GO-212: the forgejo role ships install/enabled False in every vars template (carried via
+  # tools/upstream-patches until iiab#4505 merges), so enable it for Standard/Full here (not Basic).
+  case "$LOCAL_VARS_URL" in
+    *_small*)
+      log "Basic tier: Forgejo left off."
+      ;;
+    *)
+      sed -i -E '/^[[:space:]]*forgejo_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
+      echo "forgejo_install: True"  >> "$LOCAL_VARS_DEST"
+      echo "forgejo_enabled: True"  >> "$LOCAL_VARS_DEST"
+      ;;
+  esac
 fi
 
 #-----------------------------
@@ -672,6 +686,30 @@ if [ "$ENABLE_INDEX_PAGE" -eq 1 ]; then
   fi
 else
   log "Skipping index site installation (ENABLE_INDEX_PAGE=0)."
+fi
+
+#-----------------------------
+# K2GO-212: seed Forgejo repos (bake only, needs internet -> gated on ENABLE_FORGEJO_SEED). Repo set
+# is tier-scoped (Standard: KnowledgeToGo; Full: + CodeOnTheGo@stage + plugin-examples); Basic has
+# forgejo off so is_role_enabled skips it. See static/forgejo/orchestration.
+#-----------------------------
+if [ "${ENABLE_FORGEJO_SEED:-0}" -eq 1 ] && is_role_enabled forgejo; then
+  if [ -f "${K2GO_OPT_DIR}/static/forgejo/orchestration" ]; then
+    . "${K2GO_OPT_DIR}/static/forgejo/orchestration"
+    # Pick the tier's repo list by name; the URLs live only in the orchestration.
+    case "$LOCAL_VARS_URL" in
+      *_large*) FORGEJO_REPOS="$FORGEJO_REPOS_FULL" ;;
+      *)        FORGEJO_REPOS="$FORGEJO_REPOS_STANDARD" ;;
+    esac
+    export FORGEJO_REPOS
+    log "Seeding Forgejo repos (tier vars: ${LOCAL_VARS_URL##*/})..."
+    # Best-effort: a seed failure must not abort the whole bake (mirrors install_welcome_zim).
+    seed_forgejo || warn "Forgejo seed failed (non-fatal)."
+  else
+    warn "static/forgejo/orchestration not found; skipping Forgejo seed."
+  fi
+else
+  log "Skipping Forgejo seed (ENABLE_FORGEJO_SEED=${ENABLE_FORGEJO_SEED:-0})."
 fi
 
 #-----------------------------

@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">Neue Downloads nutzen jetzt mobile Daten. Das kann Kosten verursachen oder Ihr Datenvolumen aufbrauchen.</string>
     <string name="k2go_netpolicy_channel">Warnungen zu Datenkosten</string>
     <string name="k2go_help_manual">Handbuch</string>
+    <string name="k2go_card_forgejo">Code hosten</string>
+    <string name="k2go_mod_forgejo_title">Code-Hosting</string>
+    <string name="k2go_mod_forgejo_desc">Ein privater Git-Server auf Ihrer Box. Speichern Sie Code-Repositorys, verfolgen Sie Probleme und prüfen Sie Änderungen offline. Kein Internet nötig.</string>
+    <string name="k2go_mod_forgejo_includes">Nur der Git-Server. Eigene Repositorys erstellen Sie nach der Installation.</string>
 </resources>

@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "میزبانی کد",
     "title": "محتوا را انتخاب کنید",
     "powered_by": "قدرت‌گرفته از Internet-in-a-Box",
     "books": "یک کتاب بخوانید",
