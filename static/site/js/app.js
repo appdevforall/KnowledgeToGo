@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const services = {
         'books': '/books/',
         'code': '/code/',
+        'forgejo': '/forgejo/',
         'kiwix': '/kiwix/',
         'kolibri': '/kolibri/',
         'maps': '/maps/',

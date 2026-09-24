@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Хостуј код",
     "title": "Изаберите садржај",
     "powered_by": "покреће Internet-in-a-Box",
     "books": "Прочитајте књигу",

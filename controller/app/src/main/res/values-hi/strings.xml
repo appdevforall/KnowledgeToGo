@@ -1418,4 +1418,8 @@
     <string name="k2go_netpolicy_switched_msg">नए डाउनलोड अब मोबाइल डेटा का उपयोग करते हैं. इससे शुल्क लग सकता है या आपका डेटा प्लान खत्म हो सकता है.</string>
     <string name="k2go_netpolicy_channel">डेटा लागत अलर्ट</string>
     <string name="k2go_help_manual">मैनुअल</string>
+    <string name="k2go_card_forgejo">कोड होस्ट करें</string>
+    <string name="k2go_mod_forgejo_title">कोड होस्टिंग</string>
+    <string name="k2go_mod_forgejo_desc">आपके डिवाइस पर एक निजी Git सर्वर। कोड रिपॉज़िटरी सहेजें, समस्याएँ ट्रैक करें और बदलावों की समीक्षा ऑफ़लाइन करें। इंटरनेट की ज़रूरत नहीं।</string>
+    <string name="k2go_mod_forgejo_includes">केवल Git सर्वर। इंस्टॉल करने के बाद आप अपनी रिपॉज़िटरी बनाते हैं।</string>
 </resources>

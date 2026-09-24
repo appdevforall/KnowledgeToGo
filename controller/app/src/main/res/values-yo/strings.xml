@@ -1361,4 +1361,8 @@
     <string name="k2go_netpolicy_switched_msg">Awọn igbasilẹ tuntun n lo data alagbeka bayii. Eyi le san owo tabi lo package data rẹ tan.</string>
     <string name="k2go_netpolicy_channel">Awọn ikilọ iye owo data</string>
     <string name="k2go_help_manual">Ìwé Ìtọ́sọ́nà</string>
+    <string name="k2go_card_forgejo">Gbàlejò kóòdù</string>
+    <string name="k2go_mod_forgejo_title">Ìgbàlejò kóòdù</string>
+    <string name="k2go_mod_forgejo_desc">Olùpín Git aládàáni lórí ẹ̀rọ rẹ. Fi àwọn ibi ìpamọ́ kóòdù pamọ́, tọpinpin àwọn ìṣòro, kí o sì ṣàyẹ̀wò àwọn ìyípadà láìsí Íńtánẹ́ẹ̀tì. A kò nílò Íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_mod_forgejo_includes">Olùpín Git nìkan. O máa ń ṣẹ̀dá àwọn ibi ìpamọ́ tìrẹ lẹ́yìn ìfìsórí-ẹ̀rọ.</string>
 </resources>

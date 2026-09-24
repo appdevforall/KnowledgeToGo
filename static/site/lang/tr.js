@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Kodu barındır",
     "title": "İçerik Seç",
     "powered_by": "Internet-in-a-Box tarafından desteklenmektedir",
     "books": "Kitap oku",

@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">Nieuwe downloads gebruiken nu mobiele data. Dit kan kosten opleveren of je databundel opmaken.</string>
     <string name="k2go_netpolicy_channel">Waarschuwingen datakosten</string>
     <string name="k2go_help_manual">Handleiding</string>
+    <string name="k2go_card_forgejo">Code hosten</string>
+    <string name="k2go_mod_forgejo_title">Codehosting</string>
+    <string name="k2go_mod_forgejo_desc">Een privé-Git-server op je box. Sla codeopslagplaatsen op, volg problemen en bekijk wijzigingen offline. Geen internet nodig.</string>
+    <string name="k2go_mod_forgejo_includes">Alleen de Git-server. Je maakt je eigen opslagplaatsen na de installatie.</string>
 </resources>

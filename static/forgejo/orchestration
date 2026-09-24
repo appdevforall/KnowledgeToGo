@@ -1,0 +1,159 @@
+# ============================================================================
+# Name        : static/forgejo/orchestration
+# Author      : AppDevForAll
+# Copyright   : Copyright (c) 2026 AppDevForAll
+# Description : K2GO-212. Forgejo repo seeding for the K2Go bake. Sourced by the
+#               installer ONLY when ENABLE_FORGEJO_SEED=1. Holds the config
+#               (env-overridable) and the orchestration function seed_forgejo.
+#               Guard-based and idempotent: Forgejo is the single source of truth
+#               (it already knows which repos exist and whether they are empty),
+#               so re-running needs no local state file.
+#
+# The seeding method is "shallow": a shallow single-branch bare clone adopted
+# into Forgejo. The migrate API does a FULL clone and cannot go shallow, so the
+# bake clones the shallow dir and adopts it. This carries the full current tree
+# (compiles to a working APK) and drops the dead git history: CoGo 1.2 GB -> ~150 MB.
+# Study: Confluence "Code on the Go (CoGo) - repo size, subset strategy &
+# offline-compile validation".
+# ============================================================================
+
+# ===== CONFIG (env overrides win) ==========================================
+FORGEJO_BIN="${FORGEJO_BIN:-/library/forgejo/forgejo}"          # absolute: 'forgejo' is NOT on the forgejo user's PATH under su
+FORGEJO_CONFIG="${FORGEJO_CONFIG:-/etc/forgejo/app.ini}"
+FORGEJO_RUN_USER="${FORGEJO_RUN_USER:-forgejo}"
+FORGEJO_REPO_ROOT="${FORGEJO_REPO_ROOT:-/library/forgejo/data/repositories}"
+
+# Talk to forgejo DIRECTLY (bypass nginx). A synchronous migrate through nginx
+# can hit proxy_read_timeout and make forgejo ROLL BACK the repo. forgejo serves
+# its ROOT at :3300, so the API is :3300/api/v1 (nginx strips the /forgejo prefix).
+FORGEJO_API="${FORGEJO_API:-http://127.0.0.1:3300/api/v1}"
+# Health gate goes THROUGH nginx on purpose: a healthy K2Go needs nginx up too,
+# not just forgejo. :8085 is the box nginx; /forgejo/ proxies to :3300.
+FORGEJO_HEALTH="${FORGEJO_HEALTH:-http://127.0.0.1:8085/forgejo/}"
+
+FORGEJO_ADMIN_USER="${FORGEJO_ADMIN_USER:-k2goadmin}"          # 'admin' is RESERVED by forgejo
+FORGEJO_ADMIN_PASS="${FORGEJO_ADMIN_PASS:-changeme}"          # override in the env for real deployments
+FORGEJO_ADMIN_EMAIL="${FORGEJO_ADMIN_EMAIL:-k2go@box.lan}"
+
+# Repos live under an org (full-name mirrors of the originals); contributors fork. Admin owns the org.
+FORGEJO_ORG="${FORGEJO_ORG:-AppDevForAll}"
+
+FORGEJO_PROOT="${FORGEJO_PROOT:-1}"                            # 1 on K2Go (proot): enables the l2s double-rm
+FORGEJO_WAIT_TRIES="${FORGEJO_WAIT_TRIES:-60}"                # 502 window tolerance (x 5s ~= 5 min)
+# "shallow" (git clone --bare --depth 1 + adopt; recommended) or "migrate"
+# (forgejo migrate API, full mirror). Shallow keeps the full current tree and
+# drops history; the migrate API cannot go shallow.
+FORGEJO_SEED_METHOD="${FORGEJO_SEED_METHOD:-shallow}"
+
+# Canonical repo lists (owner|name|clone_addr|branch; branch optional -> default). Single source
+# for the repo URLs: the installer gate selects one by tier, it does not restate the URLs.
+FORGEJO_REPOS_FULL="${FORGEJO_ORG}|CodeOnTheGo|https://github.com/appdevforall/CodeOnTheGo|stage
+${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|
+${FORGEJO_ORG}|plugin-examples|https://github.com/appdevforall/plugin-examples|"
+FORGEJO_REPOS_STANDARD="${FORGEJO_ORG}|KnowledgeToGo|https://github.com/appdevforall/KnowledgeToGo|"
+FORGEJO_REPOS="${FORGEJO_REPOS:-$FORGEJO_REPOS_FULL}"
+
+# ===== small helpers (reuse installer's log/ok/warn if present) ============
+command -v log  >/dev/null 2>&1 || log(){ printf '  %s\n' "$*"; }
+command -v ok   >/dev/null 2>&1 || ok(){  printf '  OK: %s\n' "$*"; }
+command -v warn >/dev/null 2>&1 || warn(){ printf '  WARN: %s\n' "$*" >&2; }
+
+_fj_su()   { su -s /bin/sh "$FORGEJO_RUN_USER" -c "$1"; }          # run as the forgejo user
+_fj_api()  { curl -fsS -u "$FORGEJO_ADMIN_USER:$FORGEJO_ADMIN_PASS" "$@"; }
+
+# Wait for forgejo to answer 200 THROUGH nginx (tolerate the post-restart 502 window).
+_fj_wait_200() {
+  local i=0
+  while [ "$i" -lt "$FORGEJO_WAIT_TRIES" ]; do
+    [ "$(curl -s -o /dev/null -w '%{http_code}' "$FORGEJO_HEALTH")" = "200" ] && { ok "forgejo is serving 200"; return 0; }
+    i=$((i+1)); sleep 5
+  done
+  warn "forgejo did not reach 200 after $((FORGEJO_WAIT_TRIES*5))s"; return 1
+}
+
+# Admin (guard: create only if missing; run as forgejo user, absolute binary path).
+_fj_ensure_admin() {
+  if _fj_su "$FORGEJO_BIN admin user list --config $FORGEJO_CONFIG" 2>/dev/null | awk '{print $2}' | grep -qx "$FORGEJO_ADMIN_USER"; then
+    log "admin '$FORGEJO_ADMIN_USER' already exists"; return 0
+  fi
+  _fj_su "$FORGEJO_BIN admin user create --admin --username '$FORGEJO_ADMIN_USER' \
+      --password '$FORGEJO_ADMIN_PASS' --email '$FORGEJO_ADMIN_EMAIL' \
+      --must-change-password=false --config $FORGEJO_CONFIG" \
+    && ok "admin '$FORGEJO_ADMIN_USER' created" || { warn "admin create failed"; return 1; }
+}
+
+# Org (guard: create only if missing). Owned by the admin user; repos live under it.
+_fj_ensure_org() {
+  if _fj_api "$FORGEJO_API/orgs/$FORGEJO_ORG" >/dev/null 2>&1; then
+    log "org '$FORGEJO_ORG' already exists"; return 0
+  fi
+  if _fj_api -X POST "$FORGEJO_API/orgs" -H 'Content-Type: application/json' \
+       -d "{\"username\":\"$FORGEJO_ORG\",\"visibility\":\"public\"}" >/dev/null 2>&1; then
+    ok "org '$FORGEJO_ORG' created"
+  else
+    warn "org '$FORGEJO_ORG' create failed"; return 1
+  fi
+}
+
+# Guard: repo exists AND is non-empty (a dangling/empty repo dir still 409s on re-seed).
+_fj_repo_ready() {
+  _fj_api "$FORGEJO_API/repos/$1/$2" 2>/dev/null | grep -q '"empty":false'
+}
+
+# Purge a broken/empty repo before retry. On proot, a single rm leaves dangling
+# link2symlink (l2s) entries -> the dir survives -> next seed 409s. So rm TWICE (+ once more).
+_fj_purge_repo() {
+  local owner="$1" name="$2" dir="$FORGEJO_REPO_ROOT/$1/$2.git"
+  _fj_api -X DELETE "$FORGEJO_API/repos/$owner/$name" >/dev/null 2>&1 || true
+  if [ "$FORGEJO_PROOT" = "1" ]; then
+    rm -rf "$dir" 2>/dev/null; rm -rf "$dir" 2>/dev/null; rm -rf "$dir" 2>/dev/null
+  else
+    rm -rf "$dir" 2>/dev/null
+  fi
+}
+
+# Method A: full mirror via the migrate API (direct :3300, bypassing nginx).
+# K2GO-212: keep the failure output for debugging instead of discarding it.
+_fj_migrate() {
+  local owner="$1" name="$2" addr="$3" out
+  out="$(_fj_api -X POST "$FORGEJO_API/repos/migrate" -H 'Content-Type: application/json' \
+    -d "{\"clone_addr\":\"$addr\",\"repo_owner\":\"$owner\",\"repo_name\":\"$name\",\"service\":\"git\",\"mirror\":false}" 2>&1)" \
+    || { warn "migrate $owner/$name failed: $out"; return 1; }
+}
+
+# Method B: shallow snapshot -> adopt (recommended; full current tree, compilable, no history).
+# K2GO-212: keep the failure output for debugging.
+_fj_shallow_adopt() {
+  local owner="$1" name="$2" addr="$3" branch="$4" dir="$FORGEJO_REPO_ROOT/$1/$2.git" out
+  local br=""; [ -n "$branch" ] && br="--branch $branch"
+  mkdir -p "$FORGEJO_REPO_ROOT/$owner"
+  # shellcheck disable=SC2086
+  out="$(git clone --bare --depth 1 --single-branch $br "$addr" "$dir" 2>&1)" \
+    || { warn "clone $owner/$name failed: $out"; return 1; }
+  chown -R "$FORGEJO_RUN_USER:$FORGEJO_RUN_USER" "$FORGEJO_REPO_ROOT/$owner"
+  out="$(_fj_api -X POST "$FORGEJO_API/admin/unadopted/$owner/$name" 2>&1)" \
+    || { warn "adopt $owner/$name failed: $out"; return 1; }   # HTTP 204 on success
+}
+
+# Seed one repo (guard -> purge-if-broken -> seed -> verify).
+_fj_seed_one() {
+  local owner="$1" name="$2" addr="$3" branch="$4"
+  if _fj_repo_ready "$owner" "$name"; then log "skip $owner/$name (already seeded)"; return 0; fi
+  log "seeding $owner/$name  [$FORGEJO_SEED_METHOD]"
+  _fj_purge_repo "$owner" "$name"
+  if [ "$FORGEJO_SEED_METHOD" = "migrate" ]; then _fj_migrate "$owner" "$name" "$addr"
+  else _fj_shallow_adopt "$owner" "$name" "$addr" "$branch"; fi
+  if _fj_repo_ready "$owner" "$name"; then ok "seeded $owner/$name"; else warn "FAILED $owner/$name"; return 1; fi
+}
+
+# ===== entry point (what the installer gate calls) =========================
+seed_forgejo() {
+  _fj_wait_200 || return 1
+  _fj_ensure_admin || return 1
+  _fj_ensure_org || return 1
+  printf '%s\n' "$FORGEJO_REPOS" | while IFS='|' read -r owner name addr branch; do
+    [ -n "$owner" ] && [ -n "$addr" ] || continue
+    _fj_seed_one "$owner" "$name" "$addr" "$branch" || true   # one repo must not abort the rest
+  done
+  ok "forgejo seeding done"
+}

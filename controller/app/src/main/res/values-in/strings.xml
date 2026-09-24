@@ -1348,4 +1348,8 @@
     <string name="k2go_netpolicy_switched_msg">Unduhan baru kini menggunakan data seluler. Ini dapat menimbulkan biaya atau menghabiskan paket data Anda.</string>
     <string name="k2go_netpolicy_channel">Peringatan biaya data</string>
     <string name="k2go_help_manual">Manual</string>
+    <string name="k2go_card_forgejo">Hosting kode</string>
+    <string name="k2go_mod_forgejo_title">Hosting kode</string>
+    <string name="k2go_mod_forgejo_desc">Server Git pribadi di perangkat Anda. Simpan repositori kode, lacak masalah, dan tinjau perubahan secara offline. Tidak perlu internet.</string>
+    <string name="k2go_mod_forgejo_includes">Hanya server Git. Anda membuat repositori sendiri setelah memasangnya.</string>
 </resources>

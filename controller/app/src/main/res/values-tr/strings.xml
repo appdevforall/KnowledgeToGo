@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">Yeni indirmeler artık mobil veri kullanıyor. Bu, ücretlendirilebilir veya veri paketinizi tüketebilir.</string>
     <string name="k2go_netpolicy_channel">Veri maliyeti uyarıları</string>
     <string name="k2go_help_manual">Kılavuz</string>
+    <string name="k2go_card_forgejo">Kodu barındır</string>
+    <string name="k2go_mod_forgejo_title">Kod barındırma</string>
+    <string name="k2go_mod_forgejo_desc">Cihazınızda özel bir Git sunucusu. Kod depolarını saklayın, sorunları izleyin ve değişiklikleri çevrimdışı inceleyin. İnternet gerekmez.</string>
+    <string name="k2go_mod_forgejo_includes">Yalnızca Git sunucusu. Kendi depolarınızı kurduktan sonra oluşturursunuz.</string>
 </resources>
