@@ -60,6 +60,7 @@ command -v warn >/dev/null 2>&1 || warn(){ printf '  WARN: %s\n' "$*" >&2; }
 
 _fj_su()   { su -s /bin/sh "$FORGEJO_RUN_USER" -c "$1"; }          # run as the forgejo user
 _fj_api()  { curl -fsS -u "$FORGEJO_ADMIN_USER:$FORGEJO_ADMIN_PASS" "$@"; }
+_fj_lc()   { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }     # Forgejo stores repos at lowercased on-disk paths
 
 # Wait for forgejo to answer 200 THROUGH nginx (tolerate the post-restart 502 window).
 _fj_wait_200() {
@@ -103,7 +104,7 @@ _fj_repo_ready() {
 # Purge a broken/empty repo before retry. On proot, a single rm leaves dangling
 # link2symlink (l2s) entries -> the dir survives -> next seed 409s. So rm TWICE (+ once more).
 _fj_purge_repo() {
-  local owner="$1" name="$2" dir="$FORGEJO_REPO_ROOT/$1/$2.git"
+  local owner="$1" name="$2" dir="$FORGEJO_REPO_ROOT/$(_fj_lc "$1")/$(_fj_lc "$2").git"
   _fj_api -X DELETE "$FORGEJO_API/repos/$owner/$name" >/dev/null 2>&1 || true
   if [ "$FORGEJO_PROOT" = "1" ]; then
     rm -rf "$dir" 2>/dev/null; rm -rf "$dir" 2>/dev/null; rm -rf "$dir" 2>/dev/null
@@ -124,13 +125,18 @@ _fj_migrate() {
 # Method B: shallow snapshot -> adopt (recommended; full current tree, compilable, no history).
 # K2GO-212: keep the failure output for debugging.
 _fj_shallow_adopt() {
-  local owner="$1" name="$2" addr="$3" branch="$4" dir="$FORGEJO_REPO_ROOT/$1/$2.git" out
+  local owner="$1" name="$2" addr="$3" branch="$4" out
+  # Forgejo derives the on-disk path as <root>/<owner_lc>/<repo_lc>.git (RepoPath lowercases owner and
+  # repo), so the bare clone must land at the lowercased path or the adopt call gets 404 (dir not found).
+  # The adopt API keeps the original case, so the repo keeps its display name (e.g. CodeOnTheGo).
+  local ldir="$FORGEJO_REPO_ROOT/$(_fj_lc "$owner")"
+  local dir="$ldir/$(_fj_lc "$name").git"
   local br=""; [ -n "$branch" ] && br="--branch $branch"
-  mkdir -p "$FORGEJO_REPO_ROOT/$owner"
+  mkdir -p "$ldir"
   # shellcheck disable=SC2086
   out="$(git clone --bare --depth 1 --single-branch $br "$addr" "$dir" 2>&1)" \
     || { warn "clone $owner/$name failed: $out"; return 1; }
-  chown -R "$FORGEJO_RUN_USER:$FORGEJO_RUN_USER" "$FORGEJO_REPO_ROOT/$owner"
+  chown -R "$FORGEJO_RUN_USER:$FORGEJO_RUN_USER" "$ldir"
   out="$(_fj_api -X POST "$FORGEJO_API/admin/unadopted/$owner/$name" 2>&1)" \
     || { warn "adopt $owner/$name failed: $out"; return 1; }   # HTTP 204 on success
 }
