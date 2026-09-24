@@ -691,6 +691,7 @@ run_in_proot() {
       TMPDIR=/tmp TERM=xterm-256color LANG=C.UTF-8 \
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
       AUTO_INSTALL_SIZE="${TIER_NUM}" \
+      ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-1}" \
       DEBIAN_FRONTEND=noninteractive \
       debian_chroot=iiab \
     /bin/bash -lc "$1"
