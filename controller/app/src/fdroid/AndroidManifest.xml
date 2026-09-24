@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- K2GO-403: the fdroid build ships no in-app OTA self-updater. F-Droid forbids an app that
+         downloads and installs its own APK, so remove the self-install permission from this variant.
+         The update path is also gated off in code via BuildConfig.OTA_ENABLED (updater not created,
+         "Check for updates" row hidden). The store is the update channel for this build. -->
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
+</manifest>

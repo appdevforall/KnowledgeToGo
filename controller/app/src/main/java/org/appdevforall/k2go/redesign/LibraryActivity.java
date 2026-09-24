@@ -123,7 +123,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         // ADFA-4984: OTA self-updater, active on the library screen. The manual entry lives in
         // Settings -> About; onResume runs one silent check and wires the download receiver.
-        updateController = new org.appdevforall.k2go.update.presentation.UpdateController(this);
+        // K2GO-403: the fdroid build ships no in-app OTA (F-Droid forbids self-install). Leaving the
+        // controller null keeps every OTA path off, since all call sites already null-guard it.
+        if (org.appdevforall.k2go.BuildConfig.OTA_ENABLED) {
+            updateController = new org.appdevforall.k2go.update.presentation.UpdateController(this);
+        }
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
