@@ -1,17 +1,16 @@
 // sockets/forgejo.session.ts — authenticated web session against Forgejo (K2GO-212)
 //
-// Forgejo (a Gitea fork) uses a classic form login with a CSRF token, not a JSON
-// API like Kolibri:
-//   1. GET /user/login seeds the '_csrf' cookie and renders a hidden
-//      <input name="_csrf" value="..."> whose value must match that cookie.
-//   2. POST /user/login (form-encoded: _csrf, user_name, password) authenticates.
-//      Success is a 302 redirect (with a new session cookie); a wrong password
-//      re-renders the form with HTTP 200.
-// The box talks to Forgejo DIRECTLY on :3300; nginx strips the /forgejo prefix
-// (trailing-slash proxy_pass), so the paths carry no prefix here. The session
-// cookie name is Forgejo's own (default 'i_like_gitea'); we do not hardcode it —
-// we return the whole Set-Cookie jar and verify success by the redirect. The app
-// re-homes the cookies to path=/ when it injects them (SessionCookies).
+// Forgejo's login is a form POST. Unlike older Gitea, Forgejo 15's login form has
+// NO _csrf field and the login route is CSRF-exempt (verified on device: a POST of
+// just user_name + password returns 303 and the session cookie). So we do not seed
+// or send a CSRF token:
+//   POST /user/login (form-encoded: user_name, password)
+//     success -> 303/302 redirect to the dashboard, with a 'session' cookie;
+//     wrong password -> the form re-renders with HTTP 200.
+// The box talks to Forgejo DIRECTLY on :3300 (nginx strips the /forgejo prefix via
+// its trailing-slash proxy_pass), so the paths carry no prefix here. We return the
+// whole Set-Cookie jar (the session cookie name is Forgejo's own) and verify by the
+// redirect; the app re-homes the cookies to path=/ when it injects them (SessionCookies).
 import { getCredential } from './credentials';
 import { mergeCookies } from './kolibri.session';
 
@@ -44,13 +43,6 @@ async function fetchWithTimeout(
     return fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
 }
 
-/** The hidden _csrf token in the login form; it must match the _csrf cookie. */
-export function csrfFromHtml(html: string): string | null {
-    const m = html.match(/name="_csrf"[^>]*\svalue="([^"]+)"/i)
-        || html.match(/\svalue="([^"]+)"[^>]*\sname="_csrf"/i);
-    return m ? m[1] : null;
-}
-
 /**
  * Authenticates against Forgejo and returns a reusable web session.
  *
@@ -66,30 +58,21 @@ export async function login(
     const cred = override ?? getCredential('forgejo');
     const agent: Record<string, string> = userAgent ? { 'User-Agent': userAgent } : {};
 
-    // 1. Seed the _csrf cookie and read the matching form token.
+    // Seed any cookies the login page sets (harmless; login itself is CSRF-exempt).
     let cookie = '';
-    let csrf: string | null = null;
     try {
         const seed = await fetchWithTimeout(`${FORGEJO_BASE}/user/login`, { headers: { ...agent } });
         cookie = mergeCookies('', seed.headers.getSetCookie());
-        csrf = csrfFromHtml(await seed.text());
     } catch (e) {
         throw new ForgejoAuthError('unreachable',
             `Forgejo did not respond at ${FORGEJO_BASE}: ${e instanceof Error ? e.message : String(e)}`);
     }
-    if (!csrf) {
-        throw new ForgejoAuthError('protocol', 'Forgejo login page carried no _csrf token');
-    }
 
-    // 2. POST the login form. Do NOT follow the redirect: a 302/303 is success,
-    //    a 200 means the form re-rendered (wrong credentials).
+    // POST the login form. Do NOT follow the redirect: a 302/303 is success, a 200
+    // means the form re-rendered (wrong credentials).
     let res: Response;
     try {
-        const body = new URLSearchParams({
-            _csrf: csrf,
-            user_name: cred.username,
-            password: cred.password,
-        });
+        const body = new URLSearchParams({ user_name: cred.username, password: cred.password });
         res = await fetchWithTimeout(`${FORGEJO_BASE}/user/login`, {
             method: 'POST',
             redirect: 'manual',
