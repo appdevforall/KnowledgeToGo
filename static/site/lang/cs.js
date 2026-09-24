@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Hostovat kód",
     "title": "Vyberte obsah",
     "powered_by": "poháněno technologií Internet-in-a-Box",
     "books": "Přečíst knihu",

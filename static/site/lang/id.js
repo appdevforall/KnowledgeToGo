@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Hosting kode",
     "title": "Pilih Konten",
     "powered_by": "didukung oleh Internet-in-a-Box",
     "books": "Baca buku",

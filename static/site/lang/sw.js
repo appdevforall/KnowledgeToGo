@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Pangisha msimbo",
     "title": "Chagua Maudhui",
     "powered_by": "inaendeshwa na Internet-in-a-Box",
     "books": "Soma kitabu",

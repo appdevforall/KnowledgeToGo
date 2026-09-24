@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Lưu trữ mã",
     "title": "Chọn nội dung",
     "powered_by": "được cung cấp bởi Internet-in-a-Box",
     "books": "Đọc sách",

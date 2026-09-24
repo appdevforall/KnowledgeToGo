@@ -3,6 +3,7 @@ window.i18n = {
     "powered_by": "powered by Internet-in-a-Box",
     "books": "Read a book",
     "code": "Code on the Go",
+    "forgejo": "Host code",
     "kiwix": "Explore Wikipedia",
     "kolibri": "Take courses",
     "maps": "Navigate maps",

@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Héberger le code",
     "title": "Choisir le contenu",
     "powered_by": "propulsé par Internet-in-a-Box",
     "books": "Lire un livre",

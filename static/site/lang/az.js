@@ -1,4 +1,5 @@
 window.i18n = {
+    "forgejo": "Kodu saxla",
     "title": "Məzmun seçin",
     "powered_by": "Internet-in-a-Box tərəfindən dəstəklənir",
     "books": "Kitab oxu",
