@@ -46,6 +46,15 @@ public final class ModuleCards {
         public String key() { return module.yamlBaseKey; }
         public String endpoint() { return module.endpoint; }
         public boolean requires64Bit() { return module.requires64Bit; }
+
+        /** K2GO-415: true when this module can run in the current app runtime. A 64-bit-only module
+         *  (e.g. Kiwix) runs inside the app's proot, so what matters is the APP process bitness
+         *  (Process.is64Bit()), NOT the device ABI list: a 32-bit app cannot run a 64-bit module even
+         *  on 64-bit hardware. Same signal RootfsManifest uses to pick the rootfs arch. One home for
+         *  this check so callers do not re-derive it. */
+        public boolean runsOnThisRuntime() {
+            return !requires64Bit() || android.os.Process.is64Bit();
+        }
     }
 
     // The modules we present as cards, in display order. maps is added when its selector flow lands
