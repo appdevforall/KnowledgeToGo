@@ -1361,4 +1361,8 @@
     <string name="k2go_netpolicy_switched_msg">Yeni yükləmələr indi mobil internetdən istifadə edir. Bu, xərc yarada və ya data paketinizi bitirə bilər.</string>
     <string name="k2go_netpolicy_channel">Data xərci bildirişləri</string>
     <string name="k2go_help_manual">Təlimat</string>
+    <string name="k2go_card_forgejo">Kodu saxla</string>
+    <string name="k2go_mod_forgejo_title">Kod hostinqi</string>
+    <string name="k2go_mod_forgejo_desc">Cihazınızda özəl Git serveri. Kod anbarlarını saxlayın, problemləri izləyin və dəyişiklikləri oflayn nəzərdən keçirin. İnternet lazım deyil.</string>
+    <string name="k2go_mod_forgejo_includes">Yalnız Git serveri. Quraşdırmadan sonra öz anbarlarınızı yaradırsınız.</string>
 </resources>

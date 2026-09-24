@@ -1358,4 +1358,8 @@
     <string name="k2go_netpolicy_switched_msg">Nauji atsisiuntimai dabar naudoja mobiliuosius duomenis. Tai gali kainuoti arba išnaudoti duomenų planą.</string>
     <string name="k2go_netpolicy_channel">Duomenų sąnaudų įspėjimai</string>
     <string name="k2go_help_manual">Vadovas</string>
+    <string name="k2go_card_forgejo">Talpinti kodą</string>
+    <string name="k2go_mod_forgejo_title">Kodo talpinimas</string>
+    <string name="k2go_mod_forgejo_desc">Privatus Git serveris jūsų įrenginyje. Saugokite kodo saugyklas, sekite problemas ir peržiūrėkite pakeitimus neprisijungę. Interneto nereikia.</string>
+    <string name="k2go_mod_forgejo_includes">Tik Git serveris. Savo saugyklas sukuriate įdiegę.</string>
 </resources>

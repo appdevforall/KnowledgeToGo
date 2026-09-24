@@ -1351,4 +1351,8 @@
     <string name="k2go_netpolicy_switched_msg">Nye nedlastinger bruker nå mobildata. Det kan koste penger eller bruke opp datapakken din.</string>
     <string name="k2go_netpolicy_channel">Varsler om datakostnad</string>
     <string name="k2go_help_manual">Håndbok</string>
+    <string name="k2go_card_forgejo">Vert for kode</string>
+    <string name="k2go_mod_forgejo_title">Kodehosting</string>
+    <string name="k2go_mod_forgejo_desc">En privat Git-server på boksen din. Lagre kodelagre, følg saker og se gjennom endringer offline. Ingen internett nødvendig.</string>
+    <string name="k2go_mod_forgejo_includes">Bare Git-serveren. Du oppretter dine egne lagre etter installasjonen.</string>
 </resources>

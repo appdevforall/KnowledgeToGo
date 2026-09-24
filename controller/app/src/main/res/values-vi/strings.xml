@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">Các bản tải xuống mới hiện dùng dữ liệu di động. Điều này có thể phát sinh chi phí hoặc dùng hết gói dữ liệu của bạn.</string>
     <string name="k2go_netpolicy_channel">Cảnh báo chi phí dữ liệu</string>
     <string name="k2go_help_manual">Hướng dẫn</string>
+    <string name="k2go_card_forgejo">Lưu trữ mã</string>
+    <string name="k2go_mod_forgejo_title">Lưu trữ mã</string>
+    <string name="k2go_mod_forgejo_desc">Máy chủ Git riêng trên thiết bị của bạn. Lưu kho mã, theo dõi vấn đề và xem lại thay đổi ngoại tuyến. Không cần internet.</string>
+    <string name="k2go_mod_forgejo_includes">Chỉ máy chủ Git. Bạn tạo kho của riêng mình sau khi cài đặt.</string>
 </resources>

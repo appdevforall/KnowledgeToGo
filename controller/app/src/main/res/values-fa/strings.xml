@@ -1341,4 +1341,8 @@
     <string name="k2go_netpolicy_switched_msg">دانلودهای جدید اکنون از داده تلفن همراه استفاده می‌کنند. این ممکن است هزینه داشته باشد یا بسته داده شما را تمام کند.</string>
     <string name="k2go_netpolicy_channel">هشدارهای هزینه داده</string>
     <string name="k2go_help_manual">راهنما</string>
+    <string name="k2go_card_forgejo">میزبانی کد</string>
+    <string name="k2go_mod_forgejo_title">میزبانی کد</string>
+    <string name="k2go_mod_forgejo_desc">یک سرور Git خصوصی روی دستگاه شما. مخازن کد را ذخیره کنید، مسائل را دنبال کنید و تغییرات را آفلاین بررسی کنید. به اینترنت نیازی نیست.</string>
+    <string name="k2go_mod_forgejo_includes">فقط سرور Git. پس از نصب، مخازن خود را می‌سازید.</string>
 </resources>

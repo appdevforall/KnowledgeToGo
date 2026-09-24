@@ -1342,4 +1342,8 @@
     <string name="k2go_netpolicy_switched_msg">新的下载现在会使用移动数据。这可能产生费用或用尽您的套餐流量。</string>
     <string name="k2go_netpolicy_channel">数据费用提醒</string>
     <string name="k2go_help_manual">手册</string>
+    <string name="k2go_card_forgejo">托管代码</string>
+    <string name="k2go_mod_forgejo_title">代码托管</string>
+    <string name="k2go_mod_forgejo_desc">设备上的私有 Git 服务器。离线存储代码仓库、跟踪问题并审查更改。无需联网。</string>
+    <string name="k2go_mod_forgejo_includes">仅提供 Git 服务器。安装后由你创建自己的仓库。</string>
 </resources>

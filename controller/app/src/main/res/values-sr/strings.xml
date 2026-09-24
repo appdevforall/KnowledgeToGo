@@ -1354,4 +1354,8 @@
     <string name="k2go_netpolicy_switched_msg">Нова преузимања сада користе мобилне податке. Ово може да има трошак или да потроши ваш план за податке.</string>
     <string name="k2go_netpolicy_channel">Обавештења о трошку података</string>
     <string name="k2go_help_manual">Приручник</string>
+    <string name="k2go_card_forgejo">Хостуј код</string>
+    <string name="k2go_mod_forgejo_title">Хостинг кода</string>
+    <string name="k2go_mod_forgejo_desc">Приватни Git сервер на вашем уређају. Чувајте спремишта кода, пратите проблеме и прегледајте измене офлајн. Интернет није потребан.</string>
+    <string name="k2go_mod_forgejo_includes">Само Git сервер. Сопствена спремишта правите након инсталације.</string>
 </resources>
