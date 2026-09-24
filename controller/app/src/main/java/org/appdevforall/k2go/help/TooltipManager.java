@@ -31,13 +31,13 @@ import android.view.ViewGroup;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
+import org.appdevforall.k2go.util.ResilientWebViewClient;
 
 import org.appdevforall.k2go.R;
 
@@ -222,6 +222,12 @@ public final class TooltipManager {
 
             View root = LayoutInflater.from(context).inflate(R.layout.tooltip_window, null);
             WebView web = root.findViewById(R.id.help_webview);
+            web.setWebViewClient(new ResilientWebViewClient() {
+                @Override
+                protected void onRendererGone(boolean crashed) {
+                    dismissActive();   // K2GO-419: the tooltip's renderer died; drop the popup, keep the app
+                }
+            });
             TextView seeMore = root.findViewById(R.id.help_see_more);
             LinearLayout linksBox = root.findViewById(R.id.help_links);
 
@@ -321,7 +327,18 @@ public final class TooltipManager {
     public static void openHelpPage(final Context context, String url, String label) {
         try {
             final WebView web = new WebView(context);
-            web.setWebViewClient(new WebViewClient() {
+            final BrandDialog.Handle handle = new BrandDialog(context)
+                    .setTitle(label)
+                    .setContentView(web)
+                    .setPositive(android.R.string.ok, null)
+                    .show();
+            web.setWebViewClient(new ResilientWebViewClient() {
+                @Override
+                protected void onRendererGone(boolean crashed) {
+                    // K2GO-419: the help page's renderer died; drop the dialog, keep the app.
+                    try { handle.dismiss(); } catch (Exception ignored) {}
+                }
+
                 @Override
                 public void onReceivedError(WebView view, WebResourceRequest request,
                                             WebResourceError error) {
@@ -331,11 +348,6 @@ public final class TooltipManager {
                                     + "</body></html>", "text/html", "utf-8");
                 }
             });
-            new BrandDialog(context)
-                    .setTitle(label)
-                    .setContentView(web)
-                    .setPositive(android.R.string.ok, null)
-                    .show();
             web.loadUrl(url);
         } catch (Exception e) {
             Log.e(TAG, "openHelpPage failed: " + e.getMessage());
