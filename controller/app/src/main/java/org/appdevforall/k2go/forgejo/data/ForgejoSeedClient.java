@@ -66,10 +66,24 @@ public final class ForgejoSeedClient {
      */
     @NonNull
     public Result drive(boolean includeRepos, @Nullable Listener l) {
+        return drive(includeRepos, false, l);
+    }
+
+    /**
+     * As {@link #drive(boolean, Listener)}, but {@code force} ignores a leftover "done" status and
+     * (re)starts a fresh seed. The status file is a single, shared marker, so a prior op's "done"
+     * would otherwise short-circuit an INTENTIONAL re-seed (K2GO-422 post-install repos) in a few ms
+     * without running anything. The box POST rewrites the status to "running" synchronously, so the
+     * poll then follows the fresh run. Non-forced keeps the re-attach optimization (an app that died
+     * mid-seed reads the finished box status instead of re-running the whole seed).
+     */
+    @NonNull
+    public Result drive(boolean includeRepos, boolean force, @Nullable Listener l) {
         String state = readState(l);
-        if ("done".equals(state)) return Result.DONE;
+        if (!force && "done".equals(state)) return Result.DONE;
         if (!"running".equals(state)) {
-            // idle / error / missing -> (re)start it. A 409 "already running" is fine: fall through to poll.
+            // idle / error / missing (or forced past a stale done) -> (re)start it. A 409 "already
+            // running" is fine: fall through to poll.
             if (!postStart(includeRepos)) return Result.ERROR;
         }
         final long deadline = System.currentTimeMillis() + MAX_WAIT_MS;

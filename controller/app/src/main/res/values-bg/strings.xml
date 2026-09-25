@@ -1366,4 +1366,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Добавени хранилища: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Можете да оставите това да работи</string>
     <string name="k2go_forgejo_seed_leave_body">Настройката продължава на заден план. Върнете се по всяко време, за да проверите напредъка.</string>
+    <string name="k2go_forgejo_install_repos">Инсталиране на примерни хранилища</string>
+    <string name="k2go_forgejo_repos_blocked">Този хост за код вече има администратор, който K2Go не може да управлява.</string>
 </resources>

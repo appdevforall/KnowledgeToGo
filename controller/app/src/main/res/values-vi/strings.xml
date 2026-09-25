@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Đã thêm %1$d kho lưu trữ</string>
     <string name="k2go_forgejo_seed_leave_title">Bạn có thể để quá trình này tiếp tục chạy</string>
     <string name="k2go_forgejo_seed_leave_body">Quá trình thiết lập tiếp tục ở chế độ nền. Quay lại bất cứ lúc nào để kiểm tra tiến trình.</string>
+    <string name="k2go_forgejo_install_repos">Cài đặt kho ví dụ</string>
+    <string name="k2go_forgejo_repos_blocked">Máy chủ mã nguồn này đã có một quản trị viên mà K2Go không thể quản lý.</string>
 </resources>

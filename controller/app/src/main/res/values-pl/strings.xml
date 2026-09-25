@@ -1369,4 +1369,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Dodano repozytoria: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Możesz zostawić to uruchomione</string>
     <string name="k2go_forgejo_seed_leave_body">Konfiguracja jest kontynuowana w tle. Wróć w dowolnym momencie, aby sprawdzić postęp.</string>
+    <string name="k2go_forgejo_install_repos">Zainstaluj przykładowe repozytoria</string>
+    <string name="k2go_forgejo_repos_blocked">Ten host kodu ma już administratora, którym K2Go nie może zarządzać.</string>
 </resources>

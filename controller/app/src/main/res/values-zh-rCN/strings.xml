@@ -1360,4 +1360,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">已添加 %1$d 个仓库</string>
     <string name="k2go_forgejo_seed_leave_title">您可以让它继续运行</string>
     <string name="k2go_forgejo_seed_leave_body">设置将在后台继续。您可以随时返回查看进度。</string>
+    <string name="k2go_forgejo_install_repos">安装示例仓库</string>
+    <string name="k2go_forgejo_repos_blocked">此代码托管已有一个 K2Go 无法管理的管理员。</string>
 </resources>

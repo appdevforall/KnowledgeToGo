@@ -153,7 +153,39 @@ public class ModuleDetailFragment extends Fragment {
                 }
                 if (isInstalled) {
                     addStatus(statusRow, K2GoStatusBadge.create(requireContext(), getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
-                    return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
+                    // K2GO-422: an installed Forgejo can still be missing its example repos (installed
+                    // with the opt-in off, or a seed that never completed). Offer "Install repos" when
+                    // the box status says the forge is manageable and has no repos yet. Read the status
+                    // off the main thread; a null read (box not ready) or repos already present offers
+                    // nothing, and an admin we cannot authenticate shows a blocked note.
+                    if (isForgejo) {
+                        org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
+                            final org.appdevforall.k2go.forgejo.data.ForgejoStatusClient.Status st =
+                                    new org.appdevforall.k2go.forgejo.data.ForgejoStatusClient().fetch();
+                            root.post(() -> {
+                                if (!isAdded() || st == null) return;
+                                if (st.canInstallRepos()) {
+                                    installNowBtn.setText(R.string.k2go_forgejo_install_repos);
+                                    installNowBtn.setOnClickListener(v -> {
+                                        // Get More style: bank the seed, start the foreground service, and
+                                        // hand off to the tasks index (SetupProgressActivity), which tracks
+                                        // the running seed to completion (EXTRA_FORGEJO_SEED).
+                                        org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), true);
+                                        // force: this is an intentional re-seed; do not let a prior seed's
+                                        // leftover "done" status short-circuit it (K2GO-422).
+                                        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(requireContext(), true);
+                                        startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class)
+                                                .putExtra(SetupProgressActivity.EXTRA_FORGEJO_SEED, true));
+                                    });
+                                    installNowBtn.setVisibility(View.VISIBLE);
+                                } else if (st.blocked()) {
+                                    addStatus(statusRow, K2GoStatusBadge.create(requireContext(),
+                                            getString(R.string.k2go_forgejo_repos_blocked), R.color.k2go_amber_text));
+                                }
+                            });
+                        });
+                    }
+                    return;   // a module cannot be uninstalled or reinstalled here (repos action aside)
                 }
                 // ADFA-4898: this module's runrole failed in the last finished batch — the SAME per-module
                 // didFail(key) that colours the hub's "Couldn't install" pill, so only the module that

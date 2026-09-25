@@ -1366,4 +1366,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d repositori ditambahkan</string>
     <string name="k2go_forgejo_seed_leave_title">Anda dapat membiarkannya berjalan</string>
     <string name="k2go_forgejo_seed_leave_body">Penyiapan berlanjut di latar belakang. Kembalilah kapan saja untuk memeriksa progres.</string>
+    <string name="k2go_forgejo_install_repos">Instal repositori contoh</string>
+    <string name="k2go_forgejo_repos_blocked">Host kode ini sudah memiliki admin yang tidak dapat dikelola K2Go.</string>
 </resources>

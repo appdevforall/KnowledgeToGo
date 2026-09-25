@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d مخزن افزوده شد</string>
     <string name="k2go_forgejo_seed_leave_title">می‌توانید این را در حال اجرا رها کنید</string>
     <string name="k2go_forgejo_seed_leave_body">راه‌اندازی در پس‌زمینه ادامه می‌یابد. هر زمان خواستید برای بررسی پیشرفت بازگردید.</string>
+    <string name="k2go_forgejo_install_repos">نصب مخازن نمونه</string>
+    <string name="k2go_forgejo_repos_blocked">این میزبان کد از قبل مدیری دارد که K2Go نمی‌تواند آن را مدیریت کند.</string>
 </resources>

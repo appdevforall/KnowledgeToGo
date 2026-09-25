@@ -1366,4 +1366,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Προστέθηκαν αποθετήρια: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Μπορείτε να το αφήσετε να εκτελείται</string>
     <string name="k2go_forgejo_seed_leave_body">Η ρύθμιση συνεχίζεται στο παρασκήνιο. Επιστρέψτε οποτεδήποτε για να ελέγξετε την πρόοδο.</string>
+    <string name="k2go_forgejo_install_repos">Εγκατάσταση δειγμάτων αποθετηρίων</string>
+    <string name="k2go_forgejo_repos_blocked">Αυτός ο διακομιστής κώδικα έχει ήδη διαχειριστή που το K2Go δεν μπορεί να διαχειριστεί.</string>
 </resources>

@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d depo eklendi</string>
     <string name="k2go_forgejo_seed_leave_title">Bunu çalışır durumda bırakabilirsiniz</string>
     <string name="k2go_forgejo_seed_leave_body">Kurulum arka planda devam eder. İlerlemeyi kontrol etmek için istediğiniz zaman geri dönün.</string>
+    <string name="k2go_forgejo_install_repos">Örnek depoları yükle</string>
+    <string name="k2go_forgejo_repos_blocked">Bu kod sunucusunda K2Go\'nun yönetemeyeceği bir yönetici zaten var.</string>
 </resources>

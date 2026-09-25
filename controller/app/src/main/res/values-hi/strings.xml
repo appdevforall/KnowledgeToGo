@@ -1436,4 +1436,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d रिपॉज़िटरी जोड़ी गईं</string>
     <string name="k2go_forgejo_seed_leave_title">आप इसे चलता हुआ छोड़ सकते हैं</string>
     <string name="k2go_forgejo_seed_leave_body">सेटअप पृष्ठभूमि में जारी रहता है। प्रगति जांचने के लिए किसी भी समय वापस आएं।</string>
+    <string name="k2go_forgejo_install_repos">उदाहरण रिपॉज़िटरी इंस्टॉल करें</string>
+    <string name="k2go_forgejo_repos_blocked">इस कोड होस्ट में पहले से एक एडमिन है जिसे K2Go प्रबंधित नहीं कर सकता।</string>
 </resources>

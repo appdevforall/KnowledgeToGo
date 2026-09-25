@@ -67,6 +67,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     /** ADFA-5011: this screen is driving a dash-node REST-core rebuild (not an install/content drain).
      *  Latched so the screen stays on the animation and blocks leaving until the rebuild is SUCCESS/FAILED. */
     public static final String EXTRA_REBUILD = "rebuild";
+    /** K2GO-422: this run is a post-install Forgejo repo seed (the "Install repos" button), so the
+     *  index tracks and waits on the seed even though there is no module install this run. */
+    public static final String EXTRA_FORGEJO_SEED = "forgejoSeed";
 
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
@@ -116,6 +119,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean moduleStartFailed = false;
     private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
     private boolean forgejoSeedSeen = false; // K2GO-423: latched once a Forgejo seed belongs to this session
+    private boolean postInstallSeed = false; // K2GO-422: this run was launched to seed repos post-install
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
     // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
     // DONE, the index restarts the server and WAITS here — showing "Starting services…" — until the REST
@@ -136,6 +140,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     protected void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
         setContentView(R.layout.activity_k2go_setup_progress);
+        // K2GO-422: launched by the "Install repos" button, so this run tracks the post-install seed.
+        postInstallSeed = getIntent() != null && getIntent().getBooleanExtra(EXTRA_FORGEJO_SEED, false);
 
         dot = findViewById(R.id.k2go_sp_dot);
         statusText = findViewById(R.id.k2go_sp_status);
@@ -709,7 +715,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // once it is imminent (module server up) or already has a session, so it does not sit as
         // "Queued" through the whole runrole while the module row already tells that story.
         if (forgejoSeedInSession()
-                && (serverObservedUp() || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession())) {
+                && (serverObservedUp() || postInstallSeed
+                    || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession())) {
             sections.addView(forgejoSeedRow());
         }
 
@@ -760,8 +767,14 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         //  - not when the forgejo runrole FAILED -- the seed never starts then (it would clear the
         //    marker), so waiting on it would hang; that run is already a failure (Finish + Retry);
         //  - not when the server is slow/failed -- also already a failure.
-        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow && moduleShown
-                && !mq.didFail("forgejo");
+        // K2GO-422: also wait in a post-install seed run (the "Install repos" button, no module this
+        // run). The stranded case (a banked seed leaking into an unrelated Get More flow) has neither
+        // moduleShown nor the launch extra, so it still does not block -- no hang reintroduced.
+        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow
+                && (moduleShown || postInstallSeed)
+                // The forgejo runrole failing releases the gate ONLY in a module-install flow; a
+                // post-install seed run (postInstallSeed) must not read a stale/unrelated queue verdict.
+                && !(moduleShown && mq.didFail("forgejo"));
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly

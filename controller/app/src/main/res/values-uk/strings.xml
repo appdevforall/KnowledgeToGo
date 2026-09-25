@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Додано репозиторіїв: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Ви можете залишити це виконуватися</string>
     <string name="k2go_forgejo_seed_leave_body">Налаштування триває у фоновому режимі. Повертайтеся будь-коли, щоб перевірити перебіг.</string>
+    <string name="k2go_forgejo_install_repos">Встановити приклади репозиторіїв</string>
+    <string name="k2go_forgejo_repos_blocked">Цей хост коду вже має адміністратора, яким K2Go не може керувати.</string>
 </resources>

@@ -1379,4 +1379,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d களஞ்சியங்கள் சேர்க்கப்பட்டன</string>
     <string name="k2go_forgejo_seed_leave_title">இதை இயங்கவிட்டு விடலாம்</string>
     <string name="k2go_forgejo_seed_leave_body">அமைப்பு பின்னணியில் தொடர்கிறது. முன்னேற்றத்தைச் சரிபார்க்க எப்போது வேண்டுமானாலும் திரும்பி வாருங்கள்.</string>
+    <string name="k2go_forgejo_install_repos">எடுத்துக்காட்டு களஞ்சியங்களை நிறுவு</string>
+    <string name="k2go_forgejo_repos_blocked">இந்தக் குறியீட்டு ஹோஸ்ட்டில் K2Go நிர்வகிக்க முடியாத ஒரு நிர்வாகி ஏற்கனவே உள்ளார்.</string>
 </resources>
