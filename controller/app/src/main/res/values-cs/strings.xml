@@ -1354,4 +1354,16 @@
     <string name="k2go_mod_forgejo_includes">Pouze Git server. Vlastní úložiště si vytvoříte po instalaci.</string>
     <string name="k2go_forgejo_include_repos">Zahrnout ukázková úložiště kódu</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Přihlášení, které K2Go používá pro váš hostitel kódu.</string>
+    <string name="k2go_forgejo_seed_title">Nastavování hostitele kódu</string>
+    <string name="k2go_forgejo_seed_channel_name">Nastavení hostitele kódu</string>
+    <string name="k2go_forgejo_seed_notif_title">Nastavování hostitele kódu</string>
+    <string name="k2go_forgejo_seed_state_active">Nastavování</string>
+    <string name="k2go_forgejo_seed_state_done">Hotovo</string>
+    <string name="k2go_forgejo_seed_state_failed">Nastavení nedokončeno</string>
+    <string name="k2go_forgejo_seeding_title">Nastavování hostitele kódu</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go přidává účet správce, organizaci a ukázkové repozitáře kódu.</string>
+    <string name="k2go_forgejo_seed_phase_start">Spouštění nastavení</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Přidáno repozitářů: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Můžete to nechat běžet</string>
+    <string name="k2go_forgejo_seed_leave_body">Nastavení pokračuje na pozadí. Kdykoli se vraťte a zkontrolujte průběh.</string>
 </resources>

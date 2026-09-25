@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">خادم Git فقط. تنشئ مستودعاتك الخاصة بعد التثبيت.</string>
     <string name="k2go_forgejo_include_repos">تضمين مستودعات التعليمات البرمجية النموذجية</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · بيانات تسجيل الدخول التي يستخدمها K2Go لمضيف الشفرة.</string>
+    <string name="k2go_forgejo_seed_title">جارٍ إعداد مضيف الشيفرة</string>
+    <string name="k2go_forgejo_seed_channel_name">إعداد مضيف الشيفرة</string>
+    <string name="k2go_forgejo_seed_notif_title">جارٍ إعداد مضيف الشيفرة الخاص بك</string>
+    <string name="k2go_forgejo_seed_state_active">جارٍ الإعداد</string>
+    <string name="k2go_forgejo_seed_state_done">جاهز</string>
+    <string name="k2go_forgejo_seed_state_failed">الإعداد غير مكتمل</string>
+    <string name="k2go_forgejo_seeding_title">جارٍ إعداد مضيف الشيفرة الخاص بك</string>
+    <string name="k2go_forgejo_seeding_sub">يقوم K2Go بإضافة حساب المسؤول والمنظمة ومستودعات الشيفرة النموذجية.</string>
+    <string name="k2go_forgejo_seed_phase_start">جارٍ بدء الإعداد</string>
+    <string name="k2go_forgejo_seed_repos_fmt">تمت إضافة %1$d مستودعات</string>
+    <string name="k2go_forgejo_seed_leave_title">يمكنك ترك هذا قيد التشغيل</string>
+    <string name="k2go_forgejo_seed_leave_body">يستمر الإعداد في الخلفية. عُد في أي وقت للتحقق من التقدم.</string>
 </resources>

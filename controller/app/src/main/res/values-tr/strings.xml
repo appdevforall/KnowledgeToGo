@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Yalnızca Git sunucusu. Kendi depolarınızı kurduktan sonra oluşturursunuz.</string>
     <string name="k2go_forgejo_include_repos">Örnek kod depolarını dahil et</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · K2Go\'nun kod ana makineniz için kullandığı oturum açma.</string>
+    <string name="k2go_forgejo_seed_title">Kod sunucusu kuruluyor</string>
+    <string name="k2go_forgejo_seed_channel_name">Kod sunucusu kurulumu</string>
+    <string name="k2go_forgejo_seed_notif_title">Kod sunucunuz kuruluyor</string>
+    <string name="k2go_forgejo_seed_state_active">Kuruluyor</string>
+    <string name="k2go_forgejo_seed_state_done">Hazır</string>
+    <string name="k2go_forgejo_seed_state_failed">Kurulum tamamlanmadı</string>
+    <string name="k2go_forgejo_seeding_title">Kod sunucunuz kuruluyor</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go yönetici hesabını, kuruluşu ve örnek kod depolarını ekliyor.</string>
+    <string name="k2go_forgejo_seed_phase_start">Kurulum başlatılıyor</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d depo eklendi</string>
+    <string name="k2go_forgejo_seed_leave_title">Bunu çalışır durumda bırakabilirsiniz</string>
+    <string name="k2go_forgejo_seed_leave_body">Kurulum arka planda devam eder. İlerlemeyi kontrol etmek için istediğiniz zaman geri dönün.</string>
 </resources>

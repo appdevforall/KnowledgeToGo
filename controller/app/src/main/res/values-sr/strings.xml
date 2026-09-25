@@ -1360,4 +1360,16 @@
     <string name="k2go_mod_forgejo_includes">Само Git сервер. Сопствена спремишта правите након инсталације.</string>
     <string name="k2go_forgejo_include_repos">Укључи примере складишта кода</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Пријава коју K2Go користи за ваш хост кода.</string>
+    <string name="k2go_forgejo_seed_title">Подешавање хоста кода</string>
+    <string name="k2go_forgejo_seed_channel_name">Подешавање хоста кода</string>
+    <string name="k2go_forgejo_seed_notif_title">Подешавање вашег хоста кода</string>
+    <string name="k2go_forgejo_seed_state_active">Подешавање</string>
+    <string name="k2go_forgejo_seed_state_done">Спремно</string>
+    <string name="k2go_forgejo_seed_state_failed">Подешавање није завршено</string>
+    <string name="k2go_forgejo_seeding_title">Подешавање вашег хоста кода</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go додаје административни налог, организацију и примере репозиторијума кода.</string>
+    <string name="k2go_forgejo_seed_phase_start">Покретање подешавања</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Додато репозиторијума: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Можете оставити ово да ради</string>
+    <string name="k2go_forgejo_seed_leave_body">Подешавање се наставља у позадини. Вратите се било када да проверите напредак.</string>
 </resources>

@@ -1367,4 +1367,16 @@
     <string name="k2go_mod_forgejo_includes">Olùpín Git nìkan. O máa ń ṣẹ̀dá àwọn ibi ìpamọ́ tìrẹ lẹ́yìn ìfìsórí-ẹ̀rọ.</string>
     <string name="k2go_forgejo_include_repos">Fi àwọn ibi ipòrò kóòdù àpẹẹrẹ kun</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Wíwọlé tí K2Go ń lò fún ibi ìtọ́jú kóòdù rẹ.</string>
+    <string name="k2go_forgejo_seed_title">Ń ṣètò olùgbàlejò koodu</string>
+    <string name="k2go_forgejo_seed_channel_name">Ìṣètò olùgbàlejò koodu</string>
+    <string name="k2go_forgejo_seed_notif_title">Ń ṣètò olùgbàlejò koodu rẹ</string>
+    <string name="k2go_forgejo_seed_state_active">Ń ṣètò</string>
+    <string name="k2go_forgejo_seed_state_done">Ó ṣetán</string>
+    <string name="k2go_forgejo_seed_state_failed">Ìṣètò kò pé</string>
+    <string name="k2go_forgejo_seeding_title">Ń ṣètò olùgbàlejò koodu rẹ</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go ń fi àkàǹtì alábòójútó, àjọ, àti àwọn ibi ìtọ́jú koodu àpẹẹrẹ kún un.</string>
+    <string name="k2go_forgejo_seed_phase_start">Ń bẹ̀rẹ̀ ìṣètò</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d ibi ìtọ́jú ni a fi kún un</string>
+    <string name="k2go_forgejo_seed_leave_title">O lè fi sílẹ̀ kí ó máa ṣiṣẹ́</string>
+    <string name="k2go_forgejo_seed_leave_body">Ìṣètò ń tẹ̀síwájú ní ẹ̀yìn. Padà nígbàkigbà láti ṣàyẹ̀wò ìlọsíwájú.</string>
 </resources>

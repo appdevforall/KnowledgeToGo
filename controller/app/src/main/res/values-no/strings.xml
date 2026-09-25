@@ -1357,4 +1357,16 @@
     <string name="k2go_mod_forgejo_includes">Bare Git-serveren. Du oppretter dine egne lagre etter installasjonen.</string>
     <string name="k2go_forgejo_include_repos">Inkluder eksempelkodelager</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Innloggingen K2Go bruker for kodeverten din.</string>
+    <string name="k2go_forgejo_seed_title">Konfigurerer kodevert</string>
+    <string name="k2go_forgejo_seed_channel_name">Konfigurering av kodevert</string>
+    <string name="k2go_forgejo_seed_notif_title">Konfigurerer kodeverten din</string>
+    <string name="k2go_forgejo_seed_state_active">Konfigurerer</string>
+    <string name="k2go_forgejo_seed_state_done">Klar</string>
+    <string name="k2go_forgejo_seed_state_failed">Konfigureringen er ikke fullført</string>
+    <string name="k2go_forgejo_seeding_title">Konfigurerer kodeverten din</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go legger til administratorkontoen, organisasjonen og eksempelkoderepositoriene.</string>
+    <string name="k2go_forgejo_seed_phase_start">Starter konfigureringen</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d repositorier lagt til</string>
+    <string name="k2go_forgejo_seed_leave_title">Du kan la dette kjøre videre</string>
+    <string name="k2go_forgejo_seed_leave_body">Konfigureringen fortsetter i bakgrunnen. Kom tilbake når som helst for å sjekke fremdriften.</string>
 </resources>

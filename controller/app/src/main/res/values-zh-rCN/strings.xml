@@ -1348,4 +1348,16 @@
     <string name="k2go_mod_forgejo_includes">仅提供 Git 服务器。安装后由你创建自己的仓库。</string>
     <string name="k2go_forgejo_include_repos">包含示例代码仓库</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · K2Go 用于你的代码托管的登录信息。</string>
+    <string name="k2go_forgejo_seed_title">正在设置代码托管</string>
+    <string name="k2go_forgejo_seed_channel_name">代码托管设置</string>
+    <string name="k2go_forgejo_seed_notif_title">正在设置您的代码托管</string>
+    <string name="k2go_forgejo_seed_state_active">正在设置</string>
+    <string name="k2go_forgejo_seed_state_done">就绪</string>
+    <string name="k2go_forgejo_seed_state_failed">设置未完成</string>
+    <string name="k2go_forgejo_seeding_title">正在设置您的代码托管</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go 正在添加管理员账户、组织和示例代码仓库。</string>
+    <string name="k2go_forgejo_seed_phase_start">正在开始设置</string>
+    <string name="k2go_forgejo_seed_repos_fmt">已添加 %1$d 个仓库</string>
+    <string name="k2go_forgejo_seed_leave_title">您可以让它继续运行</string>
+    <string name="k2go_forgejo_seed_leave_body">设置将在后台继续。您可以随时返回查看进度。</string>
 </resources>

@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Лише сервер Git. Власні репозиторії ви створюєте після встановлення.</string>
     <string name="k2go_forgejo_include_repos">Включити приклади сховищ коду</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Вхід, який K2Go використовує для вашого хостингу коду.</string>
+    <string name="k2go_forgejo_seed_title">Налаштування хоста коду</string>
+    <string name="k2go_forgejo_seed_channel_name">Налаштування хоста коду</string>
+    <string name="k2go_forgejo_seed_notif_title">Налаштування вашого хоста коду</string>
+    <string name="k2go_forgejo_seed_state_active">Налаштування</string>
+    <string name="k2go_forgejo_seed_state_done">Готово</string>
+    <string name="k2go_forgejo_seed_state_failed">Налаштування не завершено</string>
+    <string name="k2go_forgejo_seeding_title">Налаштування вашого хоста коду</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go додає обліковий запис адміністратора, організацію та приклади репозиторіїв коду.</string>
+    <string name="k2go_forgejo_seed_phase_start">Запуск налаштування</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Додано репозиторіїв: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Ви можете залишити це виконуватися</string>
+    <string name="k2go_forgejo_seed_leave_body">Налаштування триває у фоновому режимі. Повертайтеся будь-коли, щоб перевірити перебіг.</string>
 </resources>

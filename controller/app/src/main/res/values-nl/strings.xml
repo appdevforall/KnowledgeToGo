@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Alleen de Git-server. Je maakt je eigen opslagplaatsen na de installatie.</string>
     <string name="k2go_forgejo_include_repos">Voorbeeldcoderepository\'s opnemen</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · De aanmelding die K2Go gebruikt voor je code-host.</string>
+    <string name="k2go_forgejo_seed_title">Code-host instellen</string>
+    <string name="k2go_forgejo_seed_channel_name">Code-host instellen</string>
+    <string name="k2go_forgejo_seed_notif_title">Je code-host instellen</string>
+    <string name="k2go_forgejo_seed_state_active">Instellen</string>
+    <string name="k2go_forgejo_seed_state_done">Klaar</string>
+    <string name="k2go_forgejo_seed_state_failed">Instellen onvolledig</string>
+    <string name="k2go_forgejo_seeding_title">Je code-host instellen</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go voegt het beheerdersaccount, de organisatie en de voorbeeld-coderepository\'s toe.</string>
+    <string name="k2go_forgejo_seed_phase_start">Instellen starten</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d repository\'s toegevoegd</string>
+    <string name="k2go_forgejo_seed_leave_title">Je kunt dit laten doorlopen</string>
+    <string name="k2go_forgejo_seed_leave_body">Het instellen gaat op de achtergrond verder. Kom op elk moment terug om de voortgang te bekijken.</string>
 </resources>

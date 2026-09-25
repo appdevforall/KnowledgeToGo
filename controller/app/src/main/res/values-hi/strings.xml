@@ -1424,4 +1424,16 @@
     <string name="k2go_mod_forgejo_includes">केवल Git सर्वर। इंस्टॉल करने के बाद आप अपनी रिपॉज़िटरी बनाते हैं।</string>
     <string name="k2go_forgejo_include_repos">उदाहरण कोड रिपॉजिटरी शामिल करें</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · आपके कोड होस्ट के लिए K2Go जो साइन-इन उपयोग करता है।</string>
+    <string name="k2go_forgejo_seed_title">कोड होस्ट सेट किया जा रहा है</string>
+    <string name="k2go_forgejo_seed_channel_name">कोड होस्ट सेटअप</string>
+    <string name="k2go_forgejo_seed_notif_title">आपका कोड होस्ट सेट किया जा रहा है</string>
+    <string name="k2go_forgejo_seed_state_active">सेट किया जा रहा है</string>
+    <string name="k2go_forgejo_seed_state_done">तैयार</string>
+    <string name="k2go_forgejo_seed_state_failed">सेटअप अधूरा है</string>
+    <string name="k2go_forgejo_seeding_title">आपका कोड होस्ट सेट किया जा रहा है</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go एडमिन खाता, संगठन और उदाहरण कोड रिपॉज़िटरी जोड़ रहा है।</string>
+    <string name="k2go_forgejo_seed_phase_start">सेटअप शुरू हो रहा है</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d रिपॉज़िटरी जोड़ी गईं</string>
+    <string name="k2go_forgejo_seed_leave_title">आप इसे चलता हुआ छोड़ सकते हैं</string>
+    <string name="k2go_forgejo_seed_leave_body">सेटअप पृष्ठभूमि में जारी रहता है। प्रगति जांचने के लिए किसी भी समय वापस आएं।</string>
 </resources>

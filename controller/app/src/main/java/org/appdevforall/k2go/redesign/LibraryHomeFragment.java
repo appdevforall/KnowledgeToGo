@@ -517,7 +517,7 @@ public class LibraryHomeFragment extends Fragment {
                 && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext())
                     || MapsProvisioner.hasPending(requireContext())                       // ADFA-4900
                     || KolibriProvisioner.hasPending(requireContext())                    // ADFA-5074
-                    || ForgejoSeedProvisioner.hasPending(requireContext()))) {            // K2GO-417
+                    || org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(requireContext()))) {  // K2GO-423
             provisionProbing = true;
             AppExecutors.get().io().execute(() -> {
                 final boolean ready = RestReadiness.apiReady();
@@ -542,10 +542,18 @@ public class LibraryHomeFragment extends Fragment {
                     // — the concurrency ADFA-4900 exists to prevent. Books and ZIM were only ever
                     // safe because they came first.
                     if (KolibriProvisioner.hasPending(requireContext())) KolibriProvisioner.drain(requireContext());
-                    // K2GO-417: seed the box Forgejo (admin + org + opted-in repos) through dash-node once
-                    // the box is up. Its own guards defer while a proot/maps op is in flight, so ordering
-                    // relative to the maps drain below is not load-bearing.
-                    if (ForgejoSeedProvisioner.hasPending(requireContext())) ForgejoSeedProvisioner.drain(requireContext());
+                    // K2GO-423: the Forgejo seed is normally a VISIBLE chained step in the install index
+                    // (SetupProgressActivity + ForgejoSeedService). This is only the self-healing resume
+                    // for a seed left banked by an interrupted background run: start the SAME foreground
+                    // service (idempotent, self-guards on the banked marker), NOT the old silent drain.
+                    // Honor the metered gate here (ADR-395): this resume has no install-time consent, so
+                    // defer on a metered network without consent (the normal chained seed relies on the
+                    // consent captured at the install commit). Deferred stays banked and retries later.
+                    if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(requireContext())
+                            && org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.decideNow(requireContext())
+                                == org.appdevforall.k2go.networkpolicy.domain.NetworkPolicyDecision.ALLOW) {
+                        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(requireContext());
+                    }
                     if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900
                 });
             });

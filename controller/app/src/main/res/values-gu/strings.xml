@@ -1360,4 +1360,16 @@
     <string name="k2go_mod_forgejo_includes">ફક્ત Git સર્વર. ઇન્સ્ટૉલ કર્યા પછી તમે તમારી પોતાની રિપોઝિટરી બનાવો છો.</string>
     <string name="k2go_forgejo_include_repos">ઉદાહરણ કોડ રિપોઝિટરીઓ શામેલ કરો</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · તમારા કોડ હોસ્ટ માટે K2Go વાપરે તે સાઇન-ઇન.</string>
+    <string name="k2go_forgejo_seed_title">કોડ હોસ્ટ સેટ કરી રહ્યાં છીએ</string>
+    <string name="k2go_forgejo_seed_channel_name">કોડ હોસ્ટ સેટઅપ</string>
+    <string name="k2go_forgejo_seed_notif_title">તમારો કોડ હોસ્ટ સેટ કરી રહ્યાં છીએ</string>
+    <string name="k2go_forgejo_seed_state_active">સેટ કરી રહ્યાં છીએ</string>
+    <string name="k2go_forgejo_seed_state_done">તૈયાર</string>
+    <string name="k2go_forgejo_seed_state_failed">સેટઅપ અધૂરું છે</string>
+    <string name="k2go_forgejo_seeding_title">તમારો કોડ હોસ્ટ સેટ કરી રહ્યાં છીએ</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go એડમિન એકાઉન્ટ, સંસ્થા અને ઉદાહરણ કોડ રિપોઝિટરી ઉમેરી રહ્યું છે.</string>
+    <string name="k2go_forgejo_seed_phase_start">સેટઅપ શરૂ થઈ રહ્યું છે</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d રિપોઝિટરી ઉમેરાઈ</string>
+    <string name="k2go_forgejo_seed_leave_title">તમે આને ચાલુ રહેવા દઈ શકો છો</string>
+    <string name="k2go_forgejo_seed_leave_body">સેટઅપ પૃષ્ઠભૂમિમાં ચાલુ રહે છે. પ્રગતિ તપાસવા માટે કોઈપણ સમયે પાછા આવો.</string>
 </resources>
