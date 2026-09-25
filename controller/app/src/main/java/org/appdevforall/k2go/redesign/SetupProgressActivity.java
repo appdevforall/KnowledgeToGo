@@ -604,11 +604,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
         if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
         if (KolibriProvisioner.hasPending(this)) KolibriProvisioner.drain(this);
-        // K2GO-423: the Forgejo seed is a chained REST-stage sibling. Unlike the content drains it
-        // starts only once the module server is observed up (a live dash-node under proot), so a POST
-        // reaches a working box; and only when no session is open yet (the service owns its bounded
-        // retry). This replaces the old silent Home drain (ForgejoSeedProvisioner).
+        // K2GO-423: the Forgejo seed is a chained REST-stage sibling. It starts only when:
+        //  - the forgejo runrole SUCCEEDED (queue DONE and forgejo not in the failed set). A failed or
+        //    stalled attempt reaches this Stage 2 terminal too, and starting the seed there would find
+        //    forgejo absent and clear the banked marker -- so a later retry would never re-seed
+        //    (observed on device: a 360s binary-download stall cleared the seed);
+        //  - the module server is observed up (a live dash-node under proot), so the POST reaches a
+        //    working box; and no session is open yet (the service owns its bounded retry).
+        // This replaces the old silent Home drain (ForgejoSeedProvisioner).
         if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                && mq.phase == ModuleQueueState.Phase.DONE && !mq.didFail("forgejo")
                 && serverObservedUp()
                 && !org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession()) {
             org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(this);
@@ -747,12 +752,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         boolean allComplete;
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
-        // K2GO-423: the seed blocks completion only while it can make progress, and only in a module
-        // (forgejo install) flow -- that is the only flow whose batch-terminal -> reconciler sequence
-        // brings the server up so the seed can start. A stranded seed appearing in a non-module Get
-        // More flow must NOT block completion (it never gets a server-up signal here); the Home resume
-        // drives it later. A slow/failed server also releases the gate (that run is already a failure).
-        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow && moduleShown;
+        // K2GO-423: the seed blocks completion only while it can actually make progress:
+        //  - only in a module (forgejo install) flow -- that is the only flow whose batch-terminal ->
+        //    reconciler sequence brings the server up so the seed can start (a stranded seed in a
+        //    non-module Get More flow never gets a server-up signal here; the Home resume drives it);
+        //  - not when the forgejo runrole FAILED -- the seed never starts then (it would clear the
+        //    marker), so waiting on it would hang; that run is already a failure (Finish + Retry);
+        //  - not when the server is slow/failed -- also already a failure.
+        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow && moduleShown
+                && !mq.didFail("forgejo");
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
