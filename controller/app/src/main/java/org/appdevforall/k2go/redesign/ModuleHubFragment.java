@@ -16,6 +16,7 @@
 package org.appdevforall.k2go.redesign;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -100,6 +103,37 @@ public class ModuleHubFragment extends Fragment {
     private Button proceed;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
+
+    // K2GO-426: one fixed-width leading slot for every row (checkbox XOR icon) so a selectable row
+    // and an installed row share the exact same indentation.
+    private static final int LEAD_SLOT_DP = 40;
+
+    private LinearLayout.LayoutParams leadSlotLp() {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                px(LEAD_SLOT_DP), LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.rightMargin = px(4);
+        return lp;
+    }
+
+    // Wrap a leading element (checkbox or icon) so leadSlotLp() gives every row the same fixed-width
+    // slot with the child centered. One place builds the slot, so both paths cannot drift.
+    private FrameLayout leadSlot(View child, int childW, int childH) {
+        FrameLayout slot = new FrameLayout(requireContext());
+        FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(childW, childH);
+        clp.gravity = Gravity.CENTER;
+        slot.addView(child, clp);
+        return slot;
+    }
+
+    // The module icon as a small centered bullet, tinted from the theme primary (parity with the box
+    // index, whose cards tint their glyph with the primary colour).
+    private FrameLayout leadIconSlot(int iconRes) {
+        ImageView iv = new ImageView(requireContext());
+        iv.setImageResource(iconRes);
+        iv.setImageTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.k2go_teal)));
+        return leadSlot(iv, px(24), px(24));
+    }
 
     @Nullable
     @Override
@@ -364,6 +398,11 @@ public class ModuleHubFragment extends Fragment {
             rlp.bottomMargin = px(12);
             row.setLayoutParams(rlp);
 
+            // K2GO-426: hidden rows are listed too; the same leading icon slot aligns their titles with
+            // the rest of the screen. The weight-1 col absorbs the slot, so the Restore button is not
+            // crowded.
+            row.addView(leadIconSlot(c.imageRes), leadSlotLp());
+
             LinearLayout col = new LinearLayout(requireContext());
             col.setOrientation(LinearLayout.VERTICAL);
             TextView name = new TextView(requireContext());
@@ -422,11 +461,10 @@ public class ModuleHubFragment extends Fragment {
             }
         });
 
-        // ADFA-5104: no tick on an installed module. There is nothing to schedule — installing it
-        // again is not an action the app offers, and a checkbox that does nothing is worse than
-        // no checkbox. The row still opens its detail, which is where "what is this" lives.
-        // ADFA-5104: and no tick when the flags could not be read either. Ticking would bank an
-        // order we have no grounds to take.
+        // ADFA-5104: no tick on an installed module (nothing to schedule; a checkbox that does
+        // nothing is worse than none), nor when the flags could not be read. K2GO-426: the leading
+        // slot is a fixed-width bullet either way: the checkbox when the module is selectable, else
+        // the module icon, so installed and not-installed rows share one indentation.
         if (!isInstalled && !unknown && !failed && !c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector). ADFA-4898: a failed module shows Retry, not the checkbox.
             com.google.android.material.checkbox.MaterialCheckBox cb =
                     new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
@@ -436,10 +474,10 @@ public class ModuleHubFragment extends Fragment {
                 else ModuleWishlist.remove(requireContext(), c.key());
                 refreshProceed();
             });
-            LinearLayout.LayoutParams cblp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            cblp.rightMargin = px(4);
-            row.addView(cb, cblp);
+            row.addView(leadSlot(cb, FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT), leadSlotLp());
+        } else {
+            row.addView(leadIconSlot(c.imageRes), leadSlotLp());
         }
 
         LinearLayout col = new LinearLayout(requireContext());
@@ -510,6 +548,10 @@ public class ModuleHubFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.bottomMargin = px(12);
         row.setLayoutParams(lp);
+
+        // K2GO-426: dash-node is the one core entry in this list; give it the same leading icon slot
+        // as the module rows so its title aligns with theirs.
+        row.addView(leadIconSlot(R.drawable.ic_card_dashnode), leadSlotLp());
 
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
