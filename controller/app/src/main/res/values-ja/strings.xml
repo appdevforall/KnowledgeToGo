@@ -1348,4 +1348,16 @@
     <string name="k2go_mod_forgejo_includes">Git サーバーのみ。インストール後にご自身のリポジトリを作成します。</string>
     <string name="k2go_forgejo_include_repos">サンプルコードリポジトリを含める</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · K2Go がコードホストに使用するサインイン。</string>
+    <string name="k2go_forgejo_seed_title">コードホストを設定しています</string>
+    <string name="k2go_forgejo_seed_channel_name">コードホストの設定</string>
+    <string name="k2go_forgejo_seed_notif_title">コードホストを設定しています</string>
+    <string name="k2go_forgejo_seed_state_active">設定しています</string>
+    <string name="k2go_forgejo_seed_state_done">準備完了</string>
+    <string name="k2go_forgejo_seed_state_failed">設定が未完了です</string>
+    <string name="k2go_forgejo_seeding_title">コードホストを設定しています</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go が管理者アカウント、組織、サンプルコードリポジトリを追加しています。</string>
+    <string name="k2go_forgejo_seed_phase_start">設定を開始しています</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d 個のリポジトリを追加しました</string>
+    <string name="k2go_forgejo_seed_leave_title">このまま実行し続けても構いません</string>
+    <string name="k2go_forgejo_seed_leave_body">設定はバックグラウンドで続行されます。いつでも戻って進行状況を確認できます。</string>
 </resources>

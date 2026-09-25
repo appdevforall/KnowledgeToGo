@@ -1360,4 +1360,16 @@
     <string name="k2go_mod_forgejo_includes">শুধু Git সার্ভার। ইনস্টল করার পরে আপনি নিজের রিপোজিটরি তৈরি করেন।</string>
     <string name="k2go_forgejo_include_repos">উদাহরণ কোড রিপোজিটরি অন্তর্ভুক্ত করুন</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · আপনার কোড হোস্টের জন্য K2Go যে সাইন-ইন ব্যবহার করে।</string>
+    <string name="k2go_forgejo_seed_title">কোড হোস্ট সেট আপ করা হচ্ছে</string>
+    <string name="k2go_forgejo_seed_channel_name">কোড হোস্ট সেটআপ</string>
+    <string name="k2go_forgejo_seed_notif_title">আপনার কোড হোস্ট সেট আপ করা হচ্ছে</string>
+    <string name="k2go_forgejo_seed_state_active">সেট আপ করা হচ্ছে</string>
+    <string name="k2go_forgejo_seed_state_done">প্রস্তুত</string>
+    <string name="k2go_forgejo_seed_state_failed">সেটআপ অসম্পূর্ণ</string>
+    <string name="k2go_forgejo_seeding_title">আপনার কোড হোস্ট সেট আপ করা হচ্ছে</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go অ্যাডমিন অ্যাকাউন্ট, সংস্থা এবং উদাহরণ কোড রিপোজিটরি যোগ করছে।</string>
+    <string name="k2go_forgejo_seed_phase_start">সেটআপ শুরু হচ্ছে</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d রিপোজিটরি যোগ করা হয়েছে</string>
+    <string name="k2go_forgejo_seed_leave_title">আপনি এটি চলতে রেখে দিতে পারেন</string>
+    <string name="k2go_forgejo_seed_leave_body">সেটআপ পটভূমিতে চলতে থাকে। অগ্রগতি দেখতে যেকোনো সময় ফিরে আসুন।</string>
 </resources>

@@ -1357,4 +1357,16 @@
     <string name="k2go_mod_forgejo_includes">Tylko serwer Git. Własne repozytoria tworzysz po instalacji.</string>
     <string name="k2go_forgejo_include_repos">Dołącz przykładowe repozytoria kodu</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Logowanie, którego K2Go używa do hostingu kodu.</string>
+    <string name="k2go_forgejo_seed_title">Konfigurowanie hosta kodu</string>
+    <string name="k2go_forgejo_seed_channel_name">Konfiguracja hosta kodu</string>
+    <string name="k2go_forgejo_seed_notif_title">Konfigurowanie hosta kodu</string>
+    <string name="k2go_forgejo_seed_state_active">Konfigurowanie</string>
+    <string name="k2go_forgejo_seed_state_done">Gotowe</string>
+    <string name="k2go_forgejo_seed_state_failed">Konfiguracja niekompletna</string>
+    <string name="k2go_forgejo_seeding_title">Konfigurowanie hosta kodu</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go dodaje konto administratora, organizację i przykładowe repozytoria kodu.</string>
+    <string name="k2go_forgejo_seed_phase_start">Rozpoczynanie konfiguracji</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Dodano repozytoria: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Możesz zostawić to uruchomione</string>
+    <string name="k2go_forgejo_seed_leave_body">Konfiguracja jest kontynuowana w tle. Wróć w dowolnym momencie, aby sprawdzić postęp.</string>
 </resources>

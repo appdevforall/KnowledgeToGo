@@ -1434,4 +1434,16 @@
     <string name="k2go_mod_forgejo_includes">Le serveur Git seul. Vous créez vos propres dépôts après l\'installation.</string>
     <string name="k2go_forgejo_include_repos">Inclure les dépôts de code d\'exemple</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · La connexion que K2Go utilise pour votre hébergement de code.</string>
+    <string name="k2go_forgejo_seed_title">Configuration de l\'hôte de code</string>
+    <string name="k2go_forgejo_seed_channel_name">Configuration de l\'hôte de code</string>
+    <string name="k2go_forgejo_seed_notif_title">Configuration de votre hôte de code</string>
+    <string name="k2go_forgejo_seed_state_active">Configuration</string>
+    <string name="k2go_forgejo_seed_state_done">Prêt</string>
+    <string name="k2go_forgejo_seed_state_failed">Configuration incomplète</string>
+    <string name="k2go_forgejo_seeding_title">Configuration de votre hôte de code</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go ajoute le compte administrateur, l\'organisation et les dépôts de code d\'exemple.</string>
+    <string name="k2go_forgejo_seed_phase_start">Démarrage de la configuration</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d dépôts ajoutés</string>
+    <string name="k2go_forgejo_seed_leave_title">Vous pouvez laisser cela s\'exécuter</string>
+    <string name="k2go_forgejo_seed_leave_body">La configuration continue en arrière-plan. Revenez quand vous voulez pour voir la progression.</string>
 </resources>

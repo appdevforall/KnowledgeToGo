@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Csak a Git-kiszolgáló. A saját tárait a telepítés után hozza létre.</string>
     <string name="k2go_forgejo_include_repos">Példakód-tárolók beleértése</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · A bejelentkezés, amelyet a K2Go a kódtárhelyhez használ.</string>
+    <string name="k2go_forgejo_seed_title">Kódtárhely beállítása</string>
+    <string name="k2go_forgejo_seed_channel_name">Kódtárhely beállítása</string>
+    <string name="k2go_forgejo_seed_notif_title">A kódtárhely beállítása</string>
+    <string name="k2go_forgejo_seed_state_active">Beállítás</string>
+    <string name="k2go_forgejo_seed_state_done">Kész</string>
+    <string name="k2go_forgejo_seed_state_failed">A beállítás nem fejeződött be</string>
+    <string name="k2go_forgejo_seeding_title">A kódtárhely beállítása</string>
+    <string name="k2go_forgejo_seeding_sub">A K2Go hozzáadja a rendszergazdai fiókot, a szervezetet és a példakód-tárolókat.</string>
+    <string name="k2go_forgejo_seed_phase_start">A beállítás indítása</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d tároló hozzáadva</string>
+    <string name="k2go_forgejo_seed_leave_title">Hagyhatod, hogy tovább fusson</string>
+    <string name="k2go_forgejo_seed_leave_body">A beállítás a háttérben folytatódik. Térj vissza bármikor a folyamat ellenőrzéséhez.</string>
 </resources>

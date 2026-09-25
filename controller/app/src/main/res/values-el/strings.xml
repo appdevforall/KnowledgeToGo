@@ -1354,4 +1354,16 @@
     <string name="k2go_mod_forgejo_includes">Μόνο ο διακομιστής Git. Δημιουργείτε τα δικά σας αποθετήρια μετά την εγκατάσταση.</string>
     <string name="k2go_forgejo_include_repos">Συμπερίληψη αποθετηρίων кώδικα παραδειγμάτων</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Η σύνδεση που χρησιμοποιεί το K2Go για τον κώδικά σας.</string>
+    <string name="k2go_forgejo_seed_title">Ρύθμιση διακομιστή κώδικα</string>
+    <string name="k2go_forgejo_seed_channel_name">Ρύθμιση διακομιστή κώδικα</string>
+    <string name="k2go_forgejo_seed_notif_title">Ρύθμιση του διακομιστή κώδικά σας</string>
+    <string name="k2go_forgejo_seed_state_active">Ρύθμιση</string>
+    <string name="k2go_forgejo_seed_state_done">Έτοιμο</string>
+    <string name="k2go_forgejo_seed_state_failed">Η ρύθμιση δεν ολοκληρώθηκε</string>
+    <string name="k2go_forgejo_seeding_title">Ρύθμιση του διακομιστή κώδικά σας</string>
+    <string name="k2go_forgejo_seeding_sub">Το K2Go προσθέτει τον λογαριασμό διαχειριστή, τον οργανισμό και τα δείγματα αποθετηρίων κώδικα.</string>
+    <string name="k2go_forgejo_seed_phase_start">Έναρξη ρύθμισης</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Προστέθηκαν αποθετήρια: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Μπορείτε να το αφήσετε να εκτελείται</string>
+    <string name="k2go_forgejo_seed_leave_body">Η ρύθμιση συνεχίζεται στο παρασκήνιο. Επιστρέψτε οποτεδήποτε για να ελέγξετε την πρόοδο.</string>
 </resources>

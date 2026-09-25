@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Doar serverul Git. Îți creezi propriile depozite după instalare.</string>
     <string name="k2go_forgejo_include_repos">Include depozite de cod exemplu</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Autentificarea pe care K2Go o foloseşte pentru găzduirea codului.</string>
+    <string name="k2go_forgejo_seed_title">Se configurează gazda de cod</string>
+    <string name="k2go_forgejo_seed_channel_name">Configurarea gazdei de cod</string>
+    <string name="k2go_forgejo_seed_notif_title">Se configurează gazda ta de cod</string>
+    <string name="k2go_forgejo_seed_state_active">Se configurează</string>
+    <string name="k2go_forgejo_seed_state_done">Gata</string>
+    <string name="k2go_forgejo_seed_state_failed">Configurare incompletă</string>
+    <string name="k2go_forgejo_seeding_title">Se configurează gazda ta de cod</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go adaugă contul de administrator, organizația și depozitele de cod exemplu.</string>
+    <string name="k2go_forgejo_seed_phase_start">Se pornește configurarea</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d depozite adăugate</string>
+    <string name="k2go_forgejo_seed_leave_title">Poți lăsa acest proces să ruleze</string>
+    <string name="k2go_forgejo_seed_leave_body">Configurarea continuă în fundal. Revino oricând pentru a verifica progresul.</string>
 </resources>

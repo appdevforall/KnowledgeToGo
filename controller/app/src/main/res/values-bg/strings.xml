@@ -1354,4 +1354,16 @@
     <string name="k2go_mod_forgejo_includes">Само Git сървърът. Създавате собствените си хранилища след инсталиране.</string>
     <string name="k2go_forgejo_include_repos">Включване на примерни хранилища с код</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Данните за вход, които K2Go използва за вашия код хост.</string>
+    <string name="k2go_forgejo_seed_title">Настройване на хоста за код</string>
+    <string name="k2go_forgejo_seed_channel_name">Настройка на хоста за код</string>
+    <string name="k2go_forgejo_seed_notif_title">Настройване на вашия хост за код</string>
+    <string name="k2go_forgejo_seed_state_active">Настройване</string>
+    <string name="k2go_forgejo_seed_state_done">Готово</string>
+    <string name="k2go_forgejo_seed_state_failed">Настройката е незавършена</string>
+    <string name="k2go_forgejo_seeding_title">Настройване на вашия хост за код</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go добавя администраторския акаунт, организацията и примерните хранилища с код.</string>
+    <string name="k2go_forgejo_seed_phase_start">Стартиране на настройката</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Добавени хранилища: %1$d</string>
+    <string name="k2go_forgejo_seed_leave_title">Можете да оставите това да работи</string>
+    <string name="k2go_forgejo_seed_leave_body">Настройката продължава на заден план. Върнете се по всяко време, за да проверите напредъка.</string>
 </resources>

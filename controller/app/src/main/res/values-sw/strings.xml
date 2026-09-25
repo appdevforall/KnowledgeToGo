@@ -1367,4 +1367,16 @@
     <string name="k2go_mod_forgejo_includes">Seva ya Git pekee. Unaunda hazina zako mwenyewe baada ya kuisakinisha.</string>
     <string name="k2go_forgejo_include_repos">Jumuisha hazina za msimbo za mfano</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Uingiaji ambao K2Go hutumia kwa mpangishi wako wa msimbo.</string>
+    <string name="k2go_forgejo_seed_title">Inasanidi seva ya msimbo</string>
+    <string name="k2go_forgejo_seed_channel_name">Usanidi wa seva ya msimbo</string>
+    <string name="k2go_forgejo_seed_notif_title">Inasanidi seva yako ya msimbo</string>
+    <string name="k2go_forgejo_seed_state_active">Inasanidi</string>
+    <string name="k2go_forgejo_seed_state_done">Tayari</string>
+    <string name="k2go_forgejo_seed_state_failed">Usanidi haujakamilika</string>
+    <string name="k2go_forgejo_seeding_title">Inasanidi seva yako ya msimbo</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go inaongeza akaunti ya msimamizi, shirika, na hazina za msimbo za mfano.</string>
+    <string name="k2go_forgejo_seed_phase_start">Inaanzisha usanidi</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Hazina %1$d zimeongezwa</string>
+    <string name="k2go_forgejo_seed_leave_title">Unaweza kuiacha ikiendelea</string>
+    <string name="k2go_forgejo_seed_leave_body">Usanidi unaendelea chinichini. Rudi wakati wowote kuangalia maendeleo.</string>
 </resources>

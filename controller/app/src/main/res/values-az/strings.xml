@@ -1367,4 +1367,16 @@
     <string name="k2go_mod_forgejo_includes">Yalnız Git serveri. Quraşdırmadan sonra öz anbarlarınızı yaradırsınız.</string>
     <string name="k2go_forgejo_include_repos">Nümunə kod anbarlarını daxil et</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · K2Go-nun kod hostunuz üçün istifadə etdiyi giriş.</string>
+    <string name="k2go_forgejo_seed_title">Kod hostu qurulur</string>
+    <string name="k2go_forgejo_seed_channel_name">Kod hostunun qurulması</string>
+    <string name="k2go_forgejo_seed_notif_title">Kod hostunuz qurulur</string>
+    <string name="k2go_forgejo_seed_state_active">Qurulur</string>
+    <string name="k2go_forgejo_seed_state_done">Hazırdır</string>
+    <string name="k2go_forgejo_seed_state_failed">Quraşdırma tamamlanmadı</string>
+    <string name="k2go_forgejo_seeding_title">Kod hostunuz qurulur</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go admin hesabını, təşkilatı və nümunə kod anbarlarını əlavə edir.</string>
+    <string name="k2go_forgejo_seed_phase_start">Quraşdırma başladılır</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d anbar əlavə edildi</string>
+    <string name="k2go_forgejo_seed_leave_title">Bunu işləməyə buraxa bilərsiniz</string>
+    <string name="k2go_forgejo_seed_leave_body">Quraşdırma arxa planda davam edir. Gedişatı yoxlamaq üçün istənilən vaxt geri qayıdın.</string>
 </resources>

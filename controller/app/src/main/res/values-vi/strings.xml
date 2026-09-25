@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">Chỉ máy chủ Git. Bạn tạo kho của riêng mình sau khi cài đặt.</string>
     <string name="k2go_forgejo_include_repos">Bao gồm kho lưu trữ mã ví dụ</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Thông tin đăng nhập K2Go dùng cho máy chủ mã của bạn.</string>
+    <string name="k2go_forgejo_seed_title">Đang thiết lập máy chủ mã nguồn</string>
+    <string name="k2go_forgejo_seed_channel_name">Thiết lập máy chủ mã nguồn</string>
+    <string name="k2go_forgejo_seed_notif_title">Đang thiết lập máy chủ mã nguồn của bạn</string>
+    <string name="k2go_forgejo_seed_state_active">Đang thiết lập</string>
+    <string name="k2go_forgejo_seed_state_done">Sẵn sàng</string>
+    <string name="k2go_forgejo_seed_state_failed">Thiết lập chưa hoàn tất</string>
+    <string name="k2go_forgejo_seeding_title">Đang thiết lập máy chủ mã nguồn của bạn</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go đang thêm tài khoản quản trị, tổ chức và các kho mã nguồn mẫu.</string>
+    <string name="k2go_forgejo_seed_phase_start">Đang bắt đầu thiết lập</string>
+    <string name="k2go_forgejo_seed_repos_fmt">Đã thêm %1$d kho lưu trữ</string>
+    <string name="k2go_forgejo_seed_leave_title">Bạn có thể để quá trình này tiếp tục chạy</string>
+    <string name="k2go_forgejo_seed_leave_body">Quá trình thiết lập tiếp tục ở chế độ nền. Quay lại bất cứ lúc nào để kiểm tra tiến trình.</string>
 </resources>

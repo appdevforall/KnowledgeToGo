@@ -1533,4 +1533,16 @@
     <string name="k2go_help_manual">Manual</string>
     <string name="k2go_forgejo_include_repos">Include example code repositories</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · The sign-in K2Go uses for your code host.</string>
+    <string name="k2go_forgejo_seed_title">Setting up code host</string>
+    <string name="k2go_forgejo_seed_channel_name">Code host setup</string>
+    <string name="k2go_forgejo_seed_notif_title">Setting up your code host</string>
+    <string name="k2go_forgejo_seed_state_active">Setting up</string>
+    <string name="k2go_forgejo_seed_state_done">Ready</string>
+    <string name="k2go_forgejo_seed_state_failed">Setup incomplete</string>
+    <string name="k2go_forgejo_seeding_title">Setting up your code host</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go is adding the admin account, the organization, and the example code repositories.</string>
+    <string name="k2go_forgejo_seed_phase_start">Starting the setup</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d repositories added</string>
+    <string name="k2go_forgejo_seed_leave_title">You can leave this running</string>
+    <string name="k2go_forgejo_seed_leave_body">The setup continues in the background. Come back any time to check progress.</string>
 </resources>

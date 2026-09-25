@@ -1354,4 +1354,16 @@
     <string name="k2go_mod_forgejo_includes">Hanya server Git. Anda membuat repositori sendiri setelah memasangnya.</string>
     <string name="k2go_forgejo_include_repos">Sertakan repositori kode contoh</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · Info masuk yang digunakan K2Go untuk host kode Anda.</string>
+    <string name="k2go_forgejo_seed_title">Menyiapkan host kode</string>
+    <string name="k2go_forgejo_seed_channel_name">Penyiapan host kode</string>
+    <string name="k2go_forgejo_seed_notif_title">Menyiapkan host kode Anda</string>
+    <string name="k2go_forgejo_seed_state_active">Menyiapkan</string>
+    <string name="k2go_forgejo_seed_state_done">Siap</string>
+    <string name="k2go_forgejo_seed_state_failed">Penyiapan belum selesai</string>
+    <string name="k2go_forgejo_seeding_title">Menyiapkan host kode Anda</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go sedang menambahkan akun admin, organisasi, dan repositori kode contoh.</string>
+    <string name="k2go_forgejo_seed_phase_start">Memulai penyiapan</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d repositori ditambahkan</string>
+    <string name="k2go_forgejo_seed_leave_title">Anda dapat membiarkannya berjalan</string>
+    <string name="k2go_forgejo_seed_leave_body">Penyiapan berlanjut di latar belakang. Kembalilah kapan saja untuk memeriksa progres.</string>
 </resources>

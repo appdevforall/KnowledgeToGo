@@ -1347,4 +1347,16 @@
     <string name="k2go_mod_forgejo_includes">فقط سرور Git. پس از نصب، مخازن خود را می‌سازید.</string>
     <string name="k2go_forgejo_include_repos">شامل مخازن کد نمونه</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · ورودی که K2Go برای میزبان کد شما استفاده می‌کند.</string>
+    <string name="k2go_forgejo_seed_title">در حال راه‌اندازی میزبان کد</string>
+    <string name="k2go_forgejo_seed_channel_name">راه‌اندازی میزبان کد</string>
+    <string name="k2go_forgejo_seed_notif_title">در حال راه‌اندازی میزبان کد شما</string>
+    <string name="k2go_forgejo_seed_state_active">در حال راه‌اندازی</string>
+    <string name="k2go_forgejo_seed_state_done">آماده</string>
+    <string name="k2go_forgejo_seed_state_failed">راه‌اندازی ناقص است</string>
+    <string name="k2go_forgejo_seeding_title">در حال راه‌اندازی میزبان کد شما</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go در حال افزودن حساب مدیر، سازمان و مخازن کد نمونه است.</string>
+    <string name="k2go_forgejo_seed_phase_start">در حال شروع راه‌اندازی</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d مخزن افزوده شد</string>
+    <string name="k2go_forgejo_seed_leave_title">می‌توانید این را در حال اجرا رها کنید</string>
+    <string name="k2go_forgejo_seed_leave_body">راه‌اندازی در پس‌زمینه ادامه می‌یابد. هر زمان خواستید برای بررسی پیشرفت بازگردید.</string>
 </resources>

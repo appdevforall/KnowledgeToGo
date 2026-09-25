@@ -1367,4 +1367,16 @@
     <string name="k2go_mod_forgejo_includes">Git சேவையகம் மட்டுமே. நிறுவிய பிறகு உங்கள் சொந்தக் களஞ்சியங்களை உருவாக்குகிறீர்கள்.</string>
     <string name="k2go_forgejo_include_repos">எடுத்துக்காட்டு குறியீட்டு களஞ்சியங்களைச் சேர்க்கவும்</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · உங்கள் கோட் ஹோஸ்ட்டுக்கு K2Go பயன்படுத்தும் உள்நுழைவு.</string>
+    <string name="k2go_forgejo_seed_title">குறியீட்டு ஹோஸ்ட் அமைக்கப்படுகிறது</string>
+    <string name="k2go_forgejo_seed_channel_name">குறியீட்டு ஹோஸ்ட் அமைப்பு</string>
+    <string name="k2go_forgejo_seed_notif_title">உங்கள் குறியீட்டு ஹோஸ்ட் அமைக்கப்படுகிறது</string>
+    <string name="k2go_forgejo_seed_state_active">அமைக்கப்படுகிறது</string>
+    <string name="k2go_forgejo_seed_state_done">தயார்</string>
+    <string name="k2go_forgejo_seed_state_failed">அமைப்பு முழுமையடையவில்லை</string>
+    <string name="k2go_forgejo_seeding_title">உங்கள் குறியீட்டு ஹோஸ்ட் அமைக்கப்படுகிறது</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go நிர்வாகக் கணக்கு, நிறுவனம் மற்றும் எடுத்துக்காட்டு குறியீட்டுக் களஞ்சியங்களைச் சேர்க்கிறது.</string>
+    <string name="k2go_forgejo_seed_phase_start">அமைப்பு தொடங்குகிறது</string>
+    <string name="k2go_forgejo_seed_repos_fmt">%1$d களஞ்சியங்கள் சேர்க்கப்பட்டன</string>
+    <string name="k2go_forgejo_seed_leave_title">இதை இயங்கவிட்டு விடலாம்</string>
+    <string name="k2go_forgejo_seed_leave_body">அமைப்பு பின்னணியில் தொடர்கிறது. முன்னேற்றத்தைச் சரிபார்க்க எப்போது வேண்டுமானாலும் திரும்பி வாருங்கள்.</string>
 </resources>

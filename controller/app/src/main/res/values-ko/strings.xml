@@ -1348,4 +1348,16 @@
     <string name="k2go_mod_forgejo_includes">Git 서버만 제공됩니다. 설치 후 직접 저장소를 만듭니다.</string>
     <string name="k2go_forgejo_include_repos">예제 코드 저장소 포함</string>
     <string name="k2go_auth_sub_hostcode">Forgejo · K2Go가 코드 호스트에 사용하는 로그인.</string>
+    <string name="k2go_forgejo_seed_title">코드 호스트 설정 중</string>
+    <string name="k2go_forgejo_seed_channel_name">코드 호스트 설정</string>
+    <string name="k2go_forgejo_seed_notif_title">코드 호스트를 설정하는 중</string>
+    <string name="k2go_forgejo_seed_state_active">설정 중</string>
+    <string name="k2go_forgejo_seed_state_done">준비됨</string>
+    <string name="k2go_forgejo_seed_state_failed">설정이 완료되지 않음</string>
+    <string name="k2go_forgejo_seeding_title">코드 호스트를 설정하는 중</string>
+    <string name="k2go_forgejo_seeding_sub">K2Go에서 관리자 계정, 조직 및 예제 코드 저장소를 추가하고 있습니다.</string>
+    <string name="k2go_forgejo_seed_phase_start">설정을 시작하는 중</string>
+    <string name="k2go_forgejo_seed_repos_fmt">저장소 %1$d개 추가됨</string>
+    <string name="k2go_forgejo_seed_leave_title">이 작업을 계속 실행되도록 둘 수 있습니다</string>
+    <string name="k2go_forgejo_seed_leave_body">설정은 백그라운드에서 계속됩니다. 언제든지 돌아와 진행 상황을 확인하세요.</string>
 </resources>
