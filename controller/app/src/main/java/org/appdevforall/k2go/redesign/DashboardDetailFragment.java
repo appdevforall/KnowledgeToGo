@@ -97,7 +97,9 @@ public class DashboardDetailFragment extends Fragment {
         back.setText("‹ " + getString(R.string.k2go_mod_back));
         back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-        ((ImageView) root.findViewById(R.id.k2go_moddet_image)).setImageResource(R.drawable.k2go_module_placeholder);
+        // K2GO-426: use the same glyph the list row bullet uses (ic_card_dashnode), on the shared hero
+        // panel, so the Dashboard is consistent between the list and the detail.
+        ((ImageView) root.findViewById(R.id.k2go_moddet_image)).setImageResource(R.drawable.ic_card_dashnode);
         ((TextView) root.findViewById(R.id.k2go_moddet_title)).setText(R.string.k2go_dash_detail_title);
         ((TextView) root.findViewById(R.id.k2go_moddet_sub)).setText(R.string.k2go_dash_detail_sub);
         ((TextView) root.findViewById(R.id.k2go_moddet_desc)).setText(R.string.k2go_dash_detail_desc);
