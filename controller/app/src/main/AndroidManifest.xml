@@ -184,6 +184,14 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
+        <!-- K2GO-423: runs the Forgejo seed (admin + org + opted-in repos) as a visible chained step
+             after the role installs. Same shape as the seed/download services above: not exported, and
+             specialUse because the work runs on the co-located box, not as a stock data transfer. -->
+        <service
+            android:name=".forgejo.presentation.ForgejoSeedService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <activity
             android:name=".redesign.SetupProgressActivity"
             android:exported="false"

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-423: Forgejo seed detail. The visible chained step after the role installs: a working
+     animation, the phase line (the box seed's latest log line), a running "repositories added"
+     count, and the collapsible terminal log. No per-byte bar (the seed reports a coarse state, not
+     bytes) and no own button: the Finishing-setup index host provides Back / Run in background. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_forgejo_seeding_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/k2go_forgejo_seeding_sub"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_muted" />
+
+        <!-- Shared block; the asset is set in code (the download art). -->
+        <include layout="@layout/view_k2go_working_anim" />
+
+        <!-- Running "repositories added" count. Gone when the repos were declined at install. -->
+        <TextView
+            android:id="@+id/k2go_forgejo_seed_repos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_ink"
+            android:visibility="gone" />
+
+        <!-- The box seed's own latest line, not an invented percentage. Fixed 2 lines so the note
+             below never jumps as the line flips length. -->
+        <TextView
+            android:id="@+id/k2go_forgejo_seed_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:minLines="2"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="@string/k2go_forgejo_seed_phase_start"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <!-- Informational note (not a button), matching the ZIM/Maps "leave it running" card. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:background="@drawable/k2go_info_bg">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_forgejo_seed_leave_title"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/k2go_info_ink" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/k2go_forgejo_seed_leave_body"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_info_ink" />
+        </LinearLayout>
+
+        <!-- Collapsible live terminal, fed from ForgejoSeedRepository's log tail (K2GO-374 panel). -->
+        <org.appdevforall.k2go.widget.LiveLogPanel
+            android:id="@+id/k2go_forgejo_seed_log_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp" />
+    </LinearLayout>
+</ScrollView>

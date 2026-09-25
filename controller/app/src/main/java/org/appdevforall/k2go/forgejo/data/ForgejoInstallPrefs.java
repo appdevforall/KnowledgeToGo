@@ -6,9 +6,9 @@
  * Description : K2GO-417 (part 2). The banked intent to seed the on-device Forgejo
  *               after its runrole installs. The Forgejo role (iiab upstream) ships
  *               empty: K2Go adds the admin, the org and the example repos through the
- *               dash-node seed (ForgejoSeedProvisioner). This store holds "a seed is
- *               owed" plus the user's opt-in for the example repos, so the seed
- *               survives process death and drains when the box is up.
+ *               dash-node seed (ForgejoSeedService, K2GO-423). This store holds "a seed
+ *               is owed" plus the user's opt-in for the example repos, so the seed
+ *               survives process death and runs when the box is up.
  * ============================================================================
  */
 package org.appdevforall.k2go.forgejo.data;

@@ -115,6 +115,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private long moduleLaunchedAt = 0L;
     private boolean moduleStartFailed = false;
     private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
+    private boolean forgejoSeedSeen = false; // K2GO-423: latched once a Forgejo seed belongs to this session
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
     // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
     // DONE, the index restarts the server and WAITS here — showing "Starting services…" — until the REST
@@ -365,6 +366,27 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         return moduleSeen;
     }
 
+    /** K2GO-423: a Forgejo seed belongs to THIS session — a seed is banked, or its service opened a
+     *  session. Latched (like the proot stages) so a reopened index still renders the seed row and
+     *  reaches completion. */
+    private boolean forgejoSeedInSession() {
+        if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession()) {
+            forgejoSeedSeen = true;
+        }
+        return forgejoSeedSeen;
+    }
+
+    /** K2GO-423: the seed still needs to run or is running, so completion must wait for it. Cleared
+     *  once the seed is terminal (done or gave up): the banked marker is cleared and the repository
+     *  is DONE/FAILED, so this returns false and the run can finish. */
+    private boolean forgejoSeedActive() {
+        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository repo =
+                org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get();
+        if (repo.isComplete()) return false;   // DONE or FAILED
+        return org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this) || repo.isRunning();
+    }
+
     /** ADFA-5011: is a dash-node rebuild the operation driving THIS screen? Latched from the launch
      *  extra (primary signal) or a LIVE REBUILD op in InstallProgressRepository (covers a reopen while
      *  the rebuild runs; a stale terminal REBUILD is excluded by the isRunning() check). Once latched it
@@ -439,7 +461,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             if (moduleInSession()) {
                 orchestrateStep();   // drains on first entry; harmless no-op once the queue is running
                 render();
-                if (!serverObservedUp()) main.postDelayed(readyPoll, READY_POLL_MS);
+                // K2GO-423: keep polling past server-up while a Forgejo seed is pending/running -- it
+                // starts only once the server is observed up (a live dash-node), and must be driven to
+                // completion here, not left for a silent Home drain.
+                if (!serverObservedUp() || forgejoSeedActive()) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
             // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so
@@ -500,7 +525,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 && !ModuleProvisioner.hasPending(this)
                 && !ZimProvisioner.hasPending(this)
                 && !BooksProvisioner.hasPending(this)
-                && !KolibriProvisioner.hasPending(this);
+                && !KolibriProvisioner.hasPending(this)
+                && !forgejoSeedActive();   // K2GO-423: a banked/running Forgejo seed is work to finish
     }
 
     /**
@@ -576,12 +602,22 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
         if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
         if (KolibriProvisioner.hasPending(this)) KolibriProvisioner.drain(this);
+        // K2GO-423: the Forgejo seed is a chained REST-stage sibling. Unlike the content drains it
+        // starts only once the module server is observed up (a live dash-node under proot), so a POST
+        // reaches a working box; and only when no session is open yet (the service owns its bounded
+        // retry). This replaces the old silent Home drain (ForgejoSeedProvisioner).
+        if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                && serverObservedUp()
+                && !org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession()) {
+            org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(this);
+        }
         KolibriSeedRepository kolibri = KolibriSeedRepository.get();
         boolean restBusy = (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete())
                 || (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete())
                 || (kolibri.hasSession() && !kolibri.isComplete())
                 || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this)
-                || KolibriProvisioner.hasPending(this);
+                || KolibriProvisioner.hasPending(this)
+                || forgejoSeedActive();   // K2GO-423: keep the pipeline busy until the seed is terminal
         if (restBusy) return true;
 
         // Every stage has been started and is complete.
@@ -661,6 +697,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                         kolibriState.speedBytesPerSec(), -1));   // ADFA-4893: Kolibri keeps its indicator
         for (View v : started) sections.addView(v);
         for (View v : waiting) sections.addView(v);
+        // K2GO-423: the Forgejo seed row, after the content rows (the seed runs after the role). Shown
+        // once it is imminent (module server up) or already has a session, so it does not sit as
+        // "Queued" through the whole runrole while the module row already tells that story.
+        if (forgejoSeedInSession()
+                && (serverObservedUp() || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession())) {
+            sections.addView(forgejoSeedRow());
+        }
 
         // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
@@ -702,17 +745,22 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         boolean allComplete;
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
+        // K2GO-423: the seed blocks completion only while it can make progress. It runs only once the
+        // server is up, so a slow/failed server (batchServerSlow) must NOT wait on it forever -- that
+        // run is already a failure below, and the seed is best-effort (retried by a later install).
+        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow;
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
             // what we're avoiding; a real failure is surfaced as Finish/error below, not a silent success).
-            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled);
+            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled) && !seedPendingRun;
         } else {
             allComplete = drained
                     && (!zimSession || ZimDownloadService.isComplete())
                     && (!booksSession || BooksDownloadService.isComplete())
                     && (!kolibriState.hasSession() || kolibriState.isComplete())   // ADFA-4954
-                    && (!moduleShown || moduleServerSettled);   // ADFA-4842: also wait for the module server restart
+                    && (!moduleShown || moduleServerSettled)   // ADFA-4842: also wait for the module server restart
+                    && !seedPendingRun;   // K2GO-423: wait for the chained seed
         }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
@@ -730,7 +778,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         int failedTotal = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
                 + kolibriState.failedCount()   // ADFA-4954
-                + prootFailed;
+                + prootFailed
+                // K2GO-423: a seed that gave up is surfaced (Finish + note), never a silent redirect.
+                + (forgejoSeedInSession()
+                        && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed() ? 1 : 0);
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874). ADFA-4842: while
@@ -820,7 +871,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             // the screen offered an escape it was going to withdraw. Waiting for servicesReady costs
             // nothing: until the engine answers there is no live work to leave running anyway, and
             // the header already says "Starting services…".
-            show(runBgBtn, servicesReady && !prootActive);
+            // K2GO-423: the seed is a live, backgroundable step (server already up, so prootActive is
+            // false); offer Run in background during it even when the module flow never set servicesReady.
+            show(runBgBtn, (servicesReady || forgejoSeedActive()) && !prootActive);
             show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
         }
     }
@@ -1033,6 +1086,68 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
         if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session
+        return row;
+    }
+
+    /** K2GO-423: summary row for the Forgejo seed (one unit, not per-item): a phase subtitle plus a
+     *  running "repositories added" count, tappable to the seed detail once it has a session. Bespoke
+     *  rather than streamRow because the seed has a coarse state, not a per-item status array. */
+    private View forgejoSeedRow() {
+        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository repo =
+                org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get();
+        boolean sess = repo.hasSession();
+        boolean complete = repo.isComplete();
+        boolean failed = repo.isFailed();
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout slot = new LinearLayout(this);
+        slot.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams slotLp = new LinearLayout.LayoutParams(px(24), px(24));
+        slotLp.rightMargin = px(10);
+        slot.addView(indicator(sess, complete, failed ? 1 : 0));
+        row.addView(slot, slotLp);
+
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView h = new TextView(this);
+        h.setText(R.string.k2go_forgejo_seed_title);
+        h.setTypeface(h.getTypeface(), android.graphics.Typeface.BOLD);
+        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
+        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(h);
+        TextView sub = new TextView(this);
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        String state;
+        if (failed) state = getString(R.string.k2go_forgejo_seed_state_failed);
+        else if (complete) state = getString(R.string.k2go_forgejo_seed_state_done);
+        else if (!sess) state = getString(R.string.k2go_setup_state_queued);
+        else {
+            state = getString(R.string.k2go_forgejo_seed_state_active);
+            if (repo.includeRepos() && repo.reposSeeded() > 0) {
+                state += "  ·  " + getString(R.string.k2go_forgejo_seed_repos_fmt, repo.reposSeeded());
+            }
+        }
+        sub.setText(state);
+        sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        ImageView chev = new ImageView(this);
+        chev.setImageResource(R.drawable.ic_chevron_right);
+        chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
+        row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
+
+        if (sess) row.setOnClickListener(v -> openDetail("forgejo"));
         return row;
     }
 
@@ -1280,7 +1395,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     private void goHome(boolean clearSessions) {
         cancelRedirect();
-        if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); KolibriSeedService.finishSession(); }
+        if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); KolibriSeedService.finishSession(); org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
         // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
@@ -1320,6 +1435,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); }  // ADFA-4842
         else if ("zim".equals(key)) { f = new ZimPreparingFragment(); }   // ADFA-5074: observe-only
         else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); }   // ADFA-4954: observe-only
+        else if ("forgejo".equals(key)) { f = new org.appdevforall.k2go.forgejo.presentation.ForgejoSeedingFragment(); }   // K2GO-423: observe-only
         else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); }   // ADFA-4901: observe-only
         else { f = BooksDownloadsFragment.newInstance(true); }
         configureDetailBar();
@@ -1342,6 +1458,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean isLiveDetail(String key) {
         if (key == null) return false;
         if (key.startsWith("mod:")) return Operation.appInstall(key.substring(4)).isLive();
+        if ("forgejo".equals(key)) return true;   // K2GO-423: the seed is a live, backgroundable step
         ContentType ct = ContentType.byKey(key);
         return ct != null && ct.isLive();
     }

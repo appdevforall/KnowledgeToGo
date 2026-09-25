@@ -9,4 +9,18 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources></resources>
+<resources>
+    <!-- K2GO-423: Forgejo seed visible chained step. Migrate to strings.xml (all locales) before merge. -->
+    <string name="k2go_forgejo_seed_title" translatable="false">Setting up code host</string>
+    <string name="k2go_forgejo_seed_channel_name" translatable="false">Code host setup</string>
+    <string name="k2go_forgejo_seed_notif_title" translatable="false">Setting up your code host</string>
+    <string name="k2go_forgejo_seed_state_active" translatable="false">Setting up</string>
+    <string name="k2go_forgejo_seed_state_done" translatable="false">Ready</string>
+    <string name="k2go_forgejo_seed_state_failed" translatable="false">Setup incomplete</string>
+    <string name="k2go_forgejo_seeding_title" translatable="false">Setting up your code host</string>
+    <string name="k2go_forgejo_seeding_sub" translatable="false">K2Go is adding the admin account, the organization, and the example code repositories.</string>
+    <string name="k2go_forgejo_seed_phase_start" translatable="false">Starting the setup</string>
+    <string name="k2go_forgejo_seed_repos_fmt" translatable="false">%1$d repositories added</string>
+    <string name="k2go_forgejo_seed_leave_title" translatable="false">You can leave this running</string>
+    <string name="k2go_forgejo_seed_leave_body" translatable="false">The setup continues in the background. Come back any time to check progress.</string>
+</resources>
