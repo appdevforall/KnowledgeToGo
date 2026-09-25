@@ -62,25 +62,25 @@ public final class ModuleCards {
     private static final Card[] CATALOG = {
             new Card("kolibri",    R.string.k2go_mod_kolibri_title,    R.string.k2go_mod_kolibri_title,
                     R.string.k2go_mod_kolibri_sub,    R.string.k2go_mod_kolibri_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_courses, false),
             new Card("calibreweb", R.string.k2go_mod_calibreweb_title, R.string.k2go_mod_calibreweb_title,
                     R.string.k2go_mod_calibreweb_sub, R.string.k2go_mod_calibreweb_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_book, false),
             new Card("kiwix",      R.string.k2go_mod_kiwix_title,      R.string.k2go_mod_kiwix_detail_title,
                     R.string.k2go_mod_kiwix_sub,      R.string.k2go_mod_kiwix_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_wikipedia, false),
             new Card("code",       R.string.k2go_mod_code_title,       R.string.k2go_mod_code_title,
                     R.string.k2go_mod_code_sub,       R.string.k2go_mod_code_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_code, false),
             new Card("forgejo",    R.string.k2go_mod_forgejo_title,    R.string.k2go_mod_forgejo_title,
                     R.string.k2go_mod_forgejo_sub,    R.string.k2go_mod_forgejo_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_forgejo, false),
             new Card("matomo",     R.string.k2go_mod_matomo_title,     R.string.k2go_mod_matomo_title,
                     R.string.k2go_mod_matomo_sub,     R.string.k2go_mod_matomo_desc,
-                    R.drawable.k2go_module_placeholder, false),
+                    R.drawable.ic_card_matomo, false),
             new Card("maps",       R.string.k2go_mod_maps_title,       R.string.k2go_mod_maps_title,
                     R.string.k2go_mod_maps_sub,       R.string.k2go_mod_maps_desc,
-                    R.drawable.k2go_module_placeholder, true),   // ADFA-4958: proot module WITH a content selector
+                    R.drawable.ic_card_maps, true),   // ADFA-4958: proot module WITH a content selector
     };
 
     /** All presentable module cards (roster-backed), in display order. */
