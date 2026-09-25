@@ -66,6 +66,12 @@ command -v warn >/dev/null 2>&1 || warn(){ printf '  WARN: %s\n' "$*" >&2; }
 _fj_su()   { su -s /bin/sh "$FORGEJO_RUN_USER" -c "$1"; }          # run as the forgejo user
 _fj_api()  { curl -fsS -u "$FORGEJO_ADMIN_USER:$FORGEJO_ADMIN_PASS" "$@"; }
 _fj_lc()   { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }     # Forgejo stores repos at lowercased on-disk paths
+# Example repos are reference material: they must be public (browsable + forkable without a login).
+# Adopt/create default to private, so set it explicitly. Idempotent (a re-seed also fixes an old private one).
+_fj_ensure_public() {
+  _fj_api -X PATCH "$FORGEJO_API/repos/$1/$2" -H 'Content-Type: application/json' -d '{"private":false}' >/dev/null 2>&1 \
+    && log "public $1/$2" || warn "could not set $1/$2 public"
+}
 
 # Wait for forgejo to answer 200 THROUGH nginx (tolerate the post-restart 502 window).
 _fj_wait_200() {
@@ -149,12 +155,12 @@ _fj_shallow_adopt() {
 # Seed one repo (guard -> purge-if-broken -> seed -> verify).
 _fj_seed_one() {
   local owner="$1" name="$2" addr="$3" branch="$4"
-  if _fj_repo_ready "$owner" "$name"; then log "skip $owner/$name (already seeded)"; return 0; fi
+  if _fj_repo_ready "$owner" "$name"; then log "skip $owner/$name (already seeded)"; _fj_ensure_public "$owner" "$name"; return 0; fi
   log "seeding $owner/$name  [$FORGEJO_SEED_METHOD]"
   _fj_purge_repo "$owner" "$name"
   if [ "$FORGEJO_SEED_METHOD" = "migrate" ]; then _fj_migrate "$owner" "$name" "$addr"
   else _fj_shallow_adopt "$owner" "$name" "$addr" "$branch"; fi
-  if _fj_repo_ready "$owner" "$name"; then ok "seeded $owner/$name"; else warn "FAILED $owner/$name"; return 1; fi
+  if _fj_repo_ready "$owner" "$name"; then _fj_ensure_public "$owner" "$name"; ok "seeded $owner/$name"; else warn "FAILED $owner/$name"; return 1; fi
 }
 
 # ===== entry point (what the installer gate calls) =========================
