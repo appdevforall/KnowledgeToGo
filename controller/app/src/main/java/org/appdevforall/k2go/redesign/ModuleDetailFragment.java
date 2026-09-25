@@ -112,7 +112,10 @@ public class ModuleDetailFragment extends Fragment {
         final com.google.android.material.checkbox.MaterialCheckBox forgejoRepos =
                 root.findViewById(R.id.k2go_moddet_forgejo_repos);
         final boolean isForgejo = "forgejo".equals(c.key());
-        if (isForgejo) forgejoRepos.setVisibility(View.VISIBLE);   // default-checked in the layout
+        // K2GO-417: the repos opt-in is an INSTALL-TIME choice, so it is shown ONLY in the installable
+        // branch below (default-checked in the layout). Once the module is installed it stays GONE:
+        // toggling it would do nothing (roles are not reinstalled from here, and unchecking cannot remove
+        // already-seeded repos). A post-install "install/update repos" action is tracked in K2GO-422.
 
         final android.content.Context appCtx = requireContext().getApplicationContext();
         org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
@@ -187,6 +190,7 @@ public class ModuleDetailFragment extends Fragment {
                 }
                 installNowBtn.setVisibility(View.VISIBLE);
                 if (!c.hasSelector) schedule.setVisibility(View.VISIBLE);
+                if (isForgejo) forgejoRepos.setVisibility(View.VISIBLE);   // K2GO-417: repos opt-in only when installable
             });
         });
 
