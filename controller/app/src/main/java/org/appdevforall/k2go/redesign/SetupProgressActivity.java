@@ -1487,6 +1487,19 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      */
     private void configureDetailBar() {
         if (!showingDetail || detailKey == null || detailBackBtn == null) return;
+        // K2GO-423: the Forgejo seed detail offers Retry on failure, mirroring the module Retry. The
+        // seed's give-up cleared the banked marker (A), so retryForgejoSeed() re-banks with the same
+        // repo opt-in and restarts the service; the bar flips back to Back/Run-in-background on the
+        // next tick once the seed is running again. (A durable/one-tap re-seed after leaving is K2GO-422.)
+        if ("forgejo".equals(detailKey)
+                && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed()) {
+            detailBackBtn.setText(R.string.k2go_home_retry);
+            detailBackBtn.setOnClickListener(v -> retryForgejoSeed());
+            detailRunBgBtn.setText(R.string.k2go_setup_back);
+            detailRunBgBtn.setOnClickListener(v -> backToIndex());
+            detailRunBgBtn.setVisibility(View.VISIBLE);
+            return;
+        }
         // K2GO-394: the maps detail opens under the legacy key "maps" (not "mod:maps"), but maps IS a
         // module, so treat it as one here -> it gets the same Cancel-while-running (the mockup's op-level
         // Cancel install) and Retry-on-failure the other modules already have, with no duplicated logic.
@@ -1518,6 +1531,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
             detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
         }
+    }
+
+    /** K2GO-423: re-run a Forgejo seed that gave up (the Retry on the failed seed detail). The give-up
+     *  cleared the banked marker, so re-bank it with the opt-in the session used, restart the service,
+     *  and re-kick the pipeline poll so the index row and the completion gate track the retry. */
+    private void retryForgejoSeed() {
+        boolean includeRepos = org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().includeRepos();
+        org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(this, includeRepos);
+        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(this);
+        main.post(readyPoll);
     }
 
     /**
