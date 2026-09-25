@@ -18,6 +18,7 @@ import {
 } from './sockets/kolibri.query';
 import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogin } from './sockets/kolibri.session';
 import { login as forgejoLogin, ForgejoAuthError } from './sockets/forgejo.session';
+import { forgejoStatus } from './sockets/forgejo.status';
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
@@ -361,6 +362,18 @@ apiRouter.get('/forgejo/seed/status', (_req: Request, res: Response): void => {
         lines = all.slice(-FORGEJO_SEED_LOG_TAIL);
     } catch { /* no log yet */ }
     res.json({ state, lines });
+});
+
+// K2GO-422: read-only Forgejo status for the post-install repos action. All in-process HTTP to the
+// forge (no fork), so it answers even if dash-node is off-proot. { reachable, adminExists,
+// adminAuthenticable, repos, manageable }.
+apiRouter.get('/forgejo/status', async (_req: Request, res: Response): Promise<void> => {
+    res.set('Cache-Control', 'no-store');
+    try {
+        res.json(await forgejoStatus());
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not read forgejo status' });
+    }
 });
 
 // Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
