@@ -32,14 +32,18 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="@color/k2go_teal" />
 
+            <!-- K2GO-426: hero = neutral panel background + centered glyph. The glyph (src) is set in
+                 code per module and tinted from the theme; padding shrinks it and gives an even margin,
+                 so every module reads the same on both themes (was: raw full-width glyph, black on dark). -->
             <ImageView
                 android:id="@+id/k2go_moddet_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="180dp"
                 android:layout_marginTop="8dp"
-                android:adjustViewBounds="true"
+                android:background="@drawable/k2go_hero_panel"
+                android:padding="32dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/k2go_module_placeholder"
+                android:tint="@color/k2go_teal"
                 android:importantForAccessibility="no" />
 
             <TextView

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-426: neutral rounded panel behind the module detail hero glyph. Theme-aware fill so the
+     centered glyph reads on both themes (was: raw full-width glyph, black on dark). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/k2go_hairline" />
+    <corners android:radius="18dp" />
+</shape>

@@ -1,3 +1,6 @@
+<!-- K2GO-426: Dashboard glyph (Material dashboard, four rectangles forming a square). One drawable for
+     both the Module management list row bullet and the detail hero, so the Dashboard stays consistent.
+     Tinted from the theme at runtime; the fill here is a placeholder color. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="40dp" android:height="40dp" android:viewportWidth="24" android:viewportHeight="24">
     <path android:fillColor="#000000" android:pathData="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
 </vector>
