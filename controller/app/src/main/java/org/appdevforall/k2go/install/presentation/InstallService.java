@@ -1183,6 +1183,7 @@ public final class InstallService extends Service {
             case "maps":       return "library/downloads/maps";      // aria2c logs a 60s summary here throughout the download
             case "matomo":     return "library/www/matomo";
             case "kolibri":    return "var/cache/apt/archives";       // chatty on stdout too; disk is the fallback
+            case "forgejo":    return "library/forgejo";             // K2GO-417: ~100 MB binary download from codeberg is silent to ansible; the growing binary here is the only progress signal (else the 360s hard-stall false-kills it)
             default:           return null;
         }
     }
