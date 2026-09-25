@@ -546,7 +546,12 @@ public class LibraryHomeFragment extends Fragment {
                     // (SetupProgressActivity + ForgejoSeedService). This is only the self-healing resume
                     // for a seed left banked by an interrupted background run: start the SAME foreground
                     // service (idempotent, self-guards on the banked marker), NOT the old silent drain.
-                    if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(requireContext())) {
+                    // Honor the metered gate here (ADR-395): this resume has no install-time consent, so
+                    // defer on a metered network without consent (the normal chained seed relies on the
+                    // consent captured at the install commit). Deferred stays banked and retries later.
+                    if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(requireContext())
+                            && org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.decideNow(requireContext())
+                                == org.appdevforall.k2go.networkpolicy.domain.NetworkPolicyDecision.ALLOW) {
                         org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(requireContext());
                     }
                     if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900

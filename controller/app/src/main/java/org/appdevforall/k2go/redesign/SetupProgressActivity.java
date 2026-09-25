@@ -366,12 +366,14 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         return moduleSeen;
     }
 
-    /** K2GO-423: a Forgejo seed belongs to THIS session — a seed is banked, or its service opened a
-     *  session. Latched (like the proot stages) so a reopened index still renders the seed row and
-     *  reaches completion. */
+    /** K2GO-423: a Forgejo seed belongs to THIS session — a seed is banked, or its service is running.
+     *  Latched (like the proot stages) so a reopened index still renders the seed row and reaches
+     *  completion. Latches on isRunning (not hasSession): a DONE/FAILED repository from a prior
+     *  run-in-background seed lingers in the process-scoped singleton, and latching on it would draw a
+     *  stale seed row in a later, unrelated install. */
     private boolean forgejoSeedInSession() {
         if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
-                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession()) {
+                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning()) {
             forgejoSeedSeen = true;
         }
         return forgejoSeedSeen;
@@ -745,10 +747,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         boolean allComplete;
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
-        // K2GO-423: the seed blocks completion only while it can make progress. It runs only once the
-        // server is up, so a slow/failed server (batchServerSlow) must NOT wait on it forever -- that
-        // run is already a failure below, and the seed is best-effort (retried by a later install).
-        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow;
+        // K2GO-423: the seed blocks completion only while it can make progress, and only in a module
+        // (forgejo install) flow -- that is the only flow whose batch-terminal -> reconciler sequence
+        // brings the server up so the seed can start. A stranded seed appearing in a non-module Get
+        // More flow must NOT block completion (it never gets a server-up signal here); the Home resume
+        // drives it later. A slow/failed server also releases the gate (that run is already a failure).
+        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow && moduleShown;
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly

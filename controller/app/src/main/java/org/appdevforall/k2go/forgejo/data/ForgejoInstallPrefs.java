@@ -24,9 +24,9 @@ import android.content.SharedPreferences;
  * <p>Lifecycle (single owner of each transition, so the marker cannot leak):
  * <ul>
  *   <li>SET by the UI when a Forgejo install is committed ({@link #bankSeed}).</li>
- *   <li>CLEARED by the provisioner on a seeded box, on a box with no Forgejo (the install did
- *       not land, so there is nothing to seed), or after {@link #MAX_ATTEMPTS} failed drains
- *       (best-effort gives up rather than re-draining forever).</li>
+ *   <li>CLEARED by the seed service (K2GO-423) on a seeded box, on a box with no Forgejo (the
+ *       install did not land, so there is nothing to seed), or after {@link #MAX_ATTEMPTS} failed
+ *       attempts (best-effort gives up rather than running forever).</li>
  * </ul>
  */
 public final class ForgejoInstallPrefs {
@@ -36,9 +36,8 @@ public final class ForgejoInstallPrefs {
     private static final String FILE = "k2go_forgejo_prefs";
     private static final String KEY_PENDING = "seed_pending";
     private static final String KEY_INCLUDE_REPOS = "seed_include_repos";
-    private static final String KEY_ATTEMPTS = "seed_attempts";
 
-    /** Bounded retry so a permanently failing seed does not re-drain on every box start. */
+    /** Bounded retry so a permanently failing seed does not run forever (used by ForgejoSeedService). */
     public static final int MAX_ATTEMPTS = 3;
 
     private static SharedPreferences prefs(Context ctx) {
@@ -50,7 +49,6 @@ public final class ForgejoInstallPrefs {
         prefs(ctx).edit()
                 .putBoolean(KEY_PENDING, true)
                 .putBoolean(KEY_INCLUDE_REPOS, includeRepos)
-                .putInt(KEY_ATTEMPTS, 0)
                 .apply();
     }
 
@@ -64,19 +62,11 @@ public final class ForgejoInstallPrefs {
         return prefs(ctx).getBoolean(KEY_INCLUDE_REPOS, true);
     }
 
-    /** Clear the banked seed (drained, nothing to seed, or gave up). */
+    /** Clear the banked seed (seeded, nothing to seed, or gave up). */
     public static void clearSeed(Context ctx) {
         prefs(ctx).edit()
                 .remove(KEY_PENDING)
                 .remove(KEY_INCLUDE_REPOS)
-                .remove(KEY_ATTEMPTS)
                 .apply();
-    }
-
-    /** Record one failed drain; returns the new count so the caller can stop at {@link #MAX_ATTEMPTS}. */
-    public static int recordFailedAttempt(Context ctx) {
-        int next = prefs(ctx).getInt(KEY_ATTEMPTS, 0) + 1;
-        prefs(ctx).edit().putInt(KEY_ATTEMPTS, next).apply();
-        return next;
     }
 }

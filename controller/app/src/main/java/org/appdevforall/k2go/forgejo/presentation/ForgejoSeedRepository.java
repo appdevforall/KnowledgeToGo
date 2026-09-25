@@ -55,9 +55,11 @@ public final class ForgejoSeedRepository {
     public synchronized void appendLog(@NonNull String line) {
         if (line.isEmpty()) return;
         lastLine = line;
-        // The orchestration logs "seeded <owner>/<name>" once per repo it finishes; count those so
-        // the UI can show progress without the box having to emit a total (which it does not).
-        if (line.startsWith("seeded ")) reposSeeded++;
+        // The orchestration logs one success line per repo it finishes: "  OK: seeded <owner>/<name>"
+        // (the log helper prefixes "  OK: ", static/forgejo/orchestration). Match "seeded " anywhere so
+        // the prefix does not defeat the count; "seeding" (the start line) has no "seeded " substring.
+        // This lets the UI show progress without the box having to emit a total (which it does not).
+        if (line.contains("seeded ")) reposSeeded++;
         log.add(line);
         while (log.size() > MAX_LOG) log.remove(0);
     }

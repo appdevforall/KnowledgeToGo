@@ -81,19 +81,22 @@ public final class ForgejoSeedService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // Satisfy the startForegroundService contract (startForeground within ~5s) BEFORE any early
+        // return: a fresh start that bailed out without it would crash (FGS did not start in time).
+        startForeground(NOTIFICATION_ID, buildNotification());
         ForgejoSeedRepository repo = ForgejoSeedRepository.get();
-        // A drive is already running: keep it, do not start a second POST/poll loop.
+        // A drive is already running: keep the foreground it owns, do not start a second POST/poll loop.
         if (repo.isRunning()) {
             return START_NOT_STICKY;
         }
         // Nothing banked: nothing to do (a stale start after the seed already cleared).
         if (!ForgejoInstallPrefs.isSeedPending(this)) {
+            stopForeground(true);
             stopSelf();
             return START_NOT_STICKY;
         }
         boolean includeRepos = ForgejoInstallPrefs.includeRepos(this);
         repo.startSession(includeRepos);
-        startForeground(NOTIFICATION_ID, buildNotification());
         drive(includeRepos);
         return START_NOT_STICKY;
     }
