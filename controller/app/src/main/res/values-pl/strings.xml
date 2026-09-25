@@ -1355,4 +1355,6 @@
     <string name="k2go_mod_forgejo_title">Hosting kodu</string>
     <string name="k2go_mod_forgejo_desc">Prywatny serwer Git na Twoim urządzeniu. Przechowuj repozytoria kodu, śledź zgłoszenia i przeglądaj zmiany offline. Internet nie jest potrzebny.</string>
     <string name="k2go_mod_forgejo_includes">Tylko serwer Git. Własne repozytoria tworzysz po instalacji.</string>
+    <string name="k2go_forgejo_include_repos">Dołącz przykładowe repozytoria kodu</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Logowanie, którego K2Go używa do hostingu kodu.</string>
 </resources>

@@ -9,5 +9,4 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources>
-</resources>
+<resources></resources>

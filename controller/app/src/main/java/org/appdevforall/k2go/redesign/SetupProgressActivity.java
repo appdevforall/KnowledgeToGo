@@ -500,7 +500,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 && !ModuleProvisioner.hasPending(this)
                 && !ZimProvisioner.hasPending(this)
                 && !BooksProvisioner.hasPending(this)
-                && !KolibriProvisioner.hasPending(this);
+                && !KolibriProvisioner.hasPending(this)
+                && !ForgejoSeedProvisioner.hasPending(this);   // K2GO-417
     }
 
     /**
@@ -576,12 +577,18 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
         if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
         if (KolibriProvisioner.hasPending(this)) KolibriProvisioner.drain(this);
+        // K2GO-417: seed the forge (admin + org + opted-in repos) through dash-node here, as part of the
+        // REST stage (box up), so it runs on the install screen (keep-awake) instead of only when the
+        // home is later shown. Its own guards defer while the box is not ready; hasPending below keeps
+        // "Finishing setup" up until the seed completes, like the other live streams.
+        if (ForgejoSeedProvisioner.hasPending(this)) ForgejoSeedProvisioner.drain(this);
         KolibriSeedRepository kolibri = KolibriSeedRepository.get();
         boolean restBusy = (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete())
                 || (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete())
                 || (kolibri.hasSession() && !kolibri.isComplete())
                 || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this)
-                || KolibriProvisioner.hasPending(this);
+                || KolibriProvisioner.hasPending(this)
+                || ForgejoSeedProvisioner.hasPending(this);   // K2GO-417
         if (restBusy) return true;
 
         // Every stage has been started and is complete.

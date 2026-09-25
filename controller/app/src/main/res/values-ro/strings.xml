@@ -1345,4 +1345,6 @@
     <string name="k2go_mod_forgejo_title">Găzduire de cod</string>
     <string name="k2go_mod_forgejo_desc">Un server Git privat pe dispozitivul tău. Stochează depozite de cod, urmărește problemele și revizuiește modificările offline. Nu este nevoie de internet.</string>
     <string name="k2go_mod_forgejo_includes">Doar serverul Git. Îți creezi propriile depozite după instalare.</string>
+    <string name="k2go_forgejo_include_repos">Include depozite de cod exemplu</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Autentificarea pe care K2Go o foloseşte pentru găzduirea codului.</string>
 </resources>

@@ -121,6 +121,19 @@
         </LinearLayout>
     </ScrollView>
 
+<!-- K2GO-417: Forgejo-only opt-in for the example repos (default on). GONE for every other
+         module; shown by ModuleDetailFragment when the card is Forgejo. -->
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/k2go_moddet_forgejo_repos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:checked="true"
+        android:visibility="gone"
+        android:text="@string/k2go_forgejo_include_repos" />
+
     <Button
         android:id="@+id/k2go_moddet_schedule"
         android:layout_width="match_parent"

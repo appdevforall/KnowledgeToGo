@@ -1355,4 +1355,6 @@
     <string name="k2go_mod_forgejo_title">Kodehosting</string>
     <string name="k2go_mod_forgejo_desc">En privat Git-server på boksen din. Lagre kodelagre, følg saker og se gjennom endringer offline. Ingen internett nødvendig.</string>
     <string name="k2go_mod_forgejo_includes">Bare Git-serveren. Du oppretter dine egne lagre etter installasjonen.</string>
+    <string name="k2go_forgejo_include_repos">Inkluder eksempelkodelager</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Innloggingen K2Go bruker for kodeverten din.</string>
 </resources>

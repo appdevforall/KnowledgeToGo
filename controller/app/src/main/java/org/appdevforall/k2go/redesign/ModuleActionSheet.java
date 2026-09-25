@@ -254,12 +254,17 @@ public final class ModuleActionSheet {
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
                             Emphasis.CAUTION, Operation.appInstall(key), false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
+                                // K2GO-417: bank the Forgejo repo seed (default-on) at the sheet install path too,
+                                // so a home-sheet install seeds the same as the detail screen (whose checkbox can
+                                // still override this before the install runs).
+                                if ("forgejo".equals(key)) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(ctx, true);
                                 dlg.dismiss();
                                 openHub(act);
                             }));
                     content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
                             Emphasis.PLAIN, null, false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
+                                if ("forgejo".equals(key)) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(ctx, true);
                                 dlg.dismiss();
                                 if (onChanged != null) onChanged.run();
                             }));

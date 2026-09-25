@@ -1432,4 +1432,6 @@
     <string name="k2go_mod_forgejo_title">Hébergement de code</string>
     <string name="k2go_mod_forgejo_desc">Un serveur Git privé sur votre boîtier. Stockez des dépôts de code, suivez les problèmes et examinez les changements hors ligne. Aucune connexion requise.</string>
     <string name="k2go_mod_forgejo_includes">Le serveur Git seul. Vous créez vos propres dépôts après l\'installation.</string>
+    <string name="k2go_forgejo_include_repos">Inclure les dépôts de code d\'exemple</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · La connexion que K2Go utilise pour votre hébergement de code.</string>
 </resources>

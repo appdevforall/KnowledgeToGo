@@ -1531,4 +1531,6 @@
     <string name="k2go_netpolicy_switched_msg">New downloads now use mobile data. This can add cost or use up your data plan.</string>
     <string name="k2go_netpolicy_channel">Data cost alerts</string>
     <string name="k2go_help_manual">Manual</string>
+    <string name="k2go_forgejo_include_repos">Include example code repositories</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · The sign-in K2Go uses for your code host.</string>
 </resources>

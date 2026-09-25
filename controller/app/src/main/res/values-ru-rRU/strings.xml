@@ -1421,4 +1421,6 @@
     <string name="k2go_mod_forgejo_title">Хостинг кода</string>
     <string name="k2go_mod_forgejo_desc">Частный сервер Git на вашем устройстве. Храните репозитории кода, отслеживайте задачи и просматривайте изменения офлайн. Интернет не нужен.</string>
     <string name="k2go_mod_forgejo_includes">Только сервер Git. Свои репозитории вы создаёте после установки.</string>
+    <string name="k2go_forgejo_include_repos">Включить примеры репозиториев кода</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Вход, который K2Go использует для вашего хостинга кода.</string>
 </resources>

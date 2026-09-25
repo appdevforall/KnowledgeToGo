@@ -1346,4 +1346,6 @@
     <string name="k2go_mod_forgejo_title">代码托管</string>
     <string name="k2go_mod_forgejo_desc">设备上的私有 Git 服务器。离线存储代码仓库、跟踪问题并审查更改。无需联网。</string>
     <string name="k2go_mod_forgejo_includes">仅提供 Git 服务器。安装后由你创建自己的仓库。</string>
+    <string name="k2go_forgejo_include_repos">包含示例代码仓库</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · K2Go 用于你的代码托管的登录信息。</string>
 </resources>

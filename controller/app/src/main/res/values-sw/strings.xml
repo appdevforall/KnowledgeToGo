@@ -1365,4 +1365,6 @@
     <string name="k2go_mod_forgejo_title">Upangishaji wa msimbo</string>
     <string name="k2go_mod_forgejo_desc">Seva ya Git ya faragha kwenye kifaa chako. Hifadhi hazina za msimbo, fuatilia masuala, na kagua mabadiliko nje ya mtandao. Hakuna intaneti inayohitajika.</string>
     <string name="k2go_mod_forgejo_includes">Seva ya Git pekee. Unaunda hazina zako mwenyewe baada ya kuisakinisha.</string>
+    <string name="k2go_forgejo_include_repos">Jumuisha hazina za msimbo za mfano</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Uingiaji ambao K2Go hutumia kwa mpangishi wako wa msimbo.</string>
 </resources>

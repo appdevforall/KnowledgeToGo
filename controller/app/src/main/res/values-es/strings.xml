@@ -1421,4 +1421,6 @@
     <string name="k2go_mod_forgejo_title">Alojamiento de código</string>
     <string name="k2go_mod_forgejo_desc">Un servidor Git privado en tu caja. Guarda repositorios de código, sigue incidencias y revisa cambios sin conexión. No se necesita internet.</string>
     <string name="k2go_mod_forgejo_includes">Solo el servidor Git. Tú creas tus propios repositorios después de instalarlo.</string>
+    <string name="k2go_forgejo_include_repos">Incluir repositorios de código de ejemplo</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · El inicio de sesión que K2Go usa para tu alojamiento de código.</string>
 </resources>

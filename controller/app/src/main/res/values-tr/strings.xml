@@ -1345,4 +1345,6 @@
     <string name="k2go_mod_forgejo_title">Kod barındırma</string>
     <string name="k2go_mod_forgejo_desc">Cihazınızda özel bir Git sunucusu. Kod depolarını saklayın, sorunları izleyin ve değişiklikleri çevrimdışı inceleyin. İnternet gerekmez.</string>
     <string name="k2go_mod_forgejo_includes">Yalnızca Git sunucusu. Kendi depolarınızı kurduktan sonra oluşturursunuz.</string>
+    <string name="k2go_forgejo_include_repos">Örnek kod depolarını dahil et</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · K2Go\'nun kod ana makineniz için kullandığı oturum açma.</string>
 </resources>
