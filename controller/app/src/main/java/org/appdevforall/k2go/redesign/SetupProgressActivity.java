@@ -379,14 +379,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         return forgejoSeedSeen;
     }
 
-    /** K2GO-423: the seed still needs to run or is running, so completion must wait for it. Cleared
-     *  once the seed is terminal (done or gave up): the banked marker is cleared and the repository
-     *  is DONE/FAILED, so this returns false and the run can finish. */
+    /** K2GO-423: the seed still needs to run (banked) or is running, so completion must wait for it.
+     *  NOT gated on repo.isComplete(): the service always CLEARS the banked marker BEFORE it sets the
+     *  repository terminal, so a real DONE/give-up already reads isSeedPending == false here. A
+     *  short-circuit on isComplete would be wrong right after a Retry, which re-banks the marker while
+     *  the repository is still FAILED until the service reopens the session: that window must read as
+     *  active so the pipeline keeps tracking the retried seed instead of stopping the poll. */
     private boolean forgejoSeedActive() {
-        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository repo =
-                org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get();
-        if (repo.isComplete()) return false;   // DONE or FAILED
-        return org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this) || repo.isRunning();
+        return org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning();
     }
 
     /** ADFA-5011: is a dash-node rebuild the operation driving THIS screen? Latched from the launch
