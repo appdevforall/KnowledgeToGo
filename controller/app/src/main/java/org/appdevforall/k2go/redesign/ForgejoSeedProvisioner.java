@@ -73,7 +73,8 @@ public final class ForgejoSeedProvisioner {
 
         if (!INFLIGHT.compareAndSet(false, true)) return;   // a drive is already running
         final Context app = ctx.getApplicationContext();
-        AppExecutors.get().io().execute(() -> {
+        try {
+            AppExecutors.get().io().execute(() -> {
             try {
                 // The box REST API must answer before we POST (nginx up but dash-node still warming =
                 // 502). Not ready -> leave it banked and let a later pass retry; no attempt is spent.
@@ -109,6 +110,12 @@ public final class ForgejoSeedProvisioner {
             } finally {
                 INFLIGHT.set(false);
             }
-        });
+            });
+        } catch (RuntimeException e) {
+            // The executor rejected the task, so the Runnable's finally will never run: reset the
+            // single-flight flag here or the seed would never drain again this process (best-effort).
+            INFLIGHT.set(false);
+            Log.w(TAG, "forgejo seed: could not dispatch the drive: " + e.getMessage());
+        }
     }
 }

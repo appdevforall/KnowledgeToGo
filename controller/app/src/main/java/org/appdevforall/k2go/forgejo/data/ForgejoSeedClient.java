@@ -55,6 +55,9 @@ public final class ForgejoSeedClient {
     // block the drive forever (the box job keeps running detached; a later drive re-attaches).
     private static final long MAX_WAIT_MS = 20 * 60 * 1000L;
 
+    /** The last status-tail line handed to the listener, so a poll that did not advance stays quiet. */
+    private String lastEmitted;
+
     /**
      * Start the seed if it is not already running, then poll to a terminal state.
      *
@@ -113,7 +116,8 @@ public final class ForgejoSeedClient {
             if (l != null) {
                 JSONArray lines = j.optJSONArray("lines");
                 if (lines != null && lines.length() > 0) {
-                    l.onLine(lines.optString(lines.length() - 1, ""));
+                    String last = lines.optString(lines.length() - 1, "");
+                    if (!last.isEmpty() && !last.equals(lastEmitted)) { lastEmitted = last; l.onLine(last); }
                 }
             }
             return j.optString("state", "");
