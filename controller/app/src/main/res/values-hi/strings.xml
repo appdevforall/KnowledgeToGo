@@ -1423,4 +1423,5 @@
     <string name="k2go_mod_forgejo_desc">आपके डिवाइस पर एक निजी Git सर्वर। कोड रिपॉज़िटरी सहेजें, समस्याएँ ट्रैक करें और बदलावों की समीक्षा ऑफ़लाइन करें। इंटरनेट की ज़रूरत नहीं।</string>
     <string name="k2go_mod_forgejo_includes">केवल Git सर्वर। इंस्टॉल करने के बाद आप अपनी रिपॉज़िटरी बनाते हैं।</string>
     <string name="k2go_forgejo_include_repos">उदाहरण कोड रिपॉजिटरी शामिल करें</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · आपके कोड होस्ट के लिए K2Go जो साइन-इन उपयोग करता है।</string>
 </resources>

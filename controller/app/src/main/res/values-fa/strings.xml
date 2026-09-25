@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_desc">یک سرور Git خصوصی روی دستگاه شما. مخازن کد را ذخیره کنید، مسائل را دنبال کنید و تغییرات را آفلاین بررسی کنید. به اینترنت نیازی نیست.</string>
     <string name="k2go_mod_forgejo_includes">فقط سرور Git. پس از نصب، مخازن خود را می‌سازید.</string>
     <string name="k2go_forgejo_include_repos">شامل مخازن کد نمونه</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · ورودی که K2Go برای میزبان کد شما استفاده می‌کند.</string>
 </resources>

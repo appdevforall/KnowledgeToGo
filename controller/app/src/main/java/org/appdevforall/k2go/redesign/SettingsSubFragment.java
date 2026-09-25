@@ -89,6 +89,7 @@ public class SettingsSubFragment extends Fragment {
             case "authentication": title.setText(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
             case "auth:calibre": title.setText(getString(R.string.k2go_auth_svc_books)); buildServiceAuth(ctx, list, "calibre"); break;
             case "auth:kolibri": title.setText(getString(R.string.k2go_auth_svc_courses)); buildServiceAuth(ctx, list, "kolibri"); break;
+            case "auth:forgejo": title.setText(getString(R.string.k2go_card_forgejo)); buildServiceAuth(ctx, list, "forgejo"); break;   // K2GO-417
             default:         title.setText(getString(R.string.k2go_tab_settings));
         }
         return root;
@@ -409,6 +410,7 @@ public class SettingsSubFragment extends Fragment {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_hint));
         authServiceRow(ctx, list, "calibre", getString(R.string.k2go_auth_svc_books), "Calibre-Web");
         authServiceRow(ctx, list, "kolibri", getString(R.string.k2go_auth_svc_courses), "Kolibri");
+        authServiceRow(ctx, list, "forgejo", getString(R.string.k2go_card_forgejo), "Forgejo");   // K2GO-417
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_note));
     }
 
@@ -475,7 +477,9 @@ public class SettingsSubFragment extends Fragment {
     }
 
     private void buildServiceAuth(Context ctx, LinearLayout list, String service) {
-        final int subRes = "calibre".equals(service) ? R.string.k2go_auth_sub_books : R.string.k2go_auth_sub_courses;
+        final int subRes = "calibre".equals(service) ? R.string.k2go_auth_sub_books
+                : "forgejo".equals(service) ? R.string.k2go_auth_sub_hostcode   // K2GO-417
+                : R.string.k2go_auth_sub_courses;
         SettingsUi.caption(ctx, list, getString(subRes));
 
         // Subtle "not running yet" line (no banner) — only shown when the service isn't reachable.

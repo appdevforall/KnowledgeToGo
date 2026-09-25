@@ -1366,4 +1366,5 @@
     <string name="k2go_mod_forgejo_desc">Cihazınızda özəl Git serveri. Kod anbarlarını saxlayın, problemləri izləyin və dəyişiklikləri oflayn nəzərdən keçirin. İnternet lazım deyil.</string>
     <string name="k2go_mod_forgejo_includes">Yalnız Git serveri. Quraşdırmadan sonra öz anbarlarınızı yaradırsınız.</string>
     <string name="k2go_forgejo_include_repos">Nümunə kod anbarlarını daxil et</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · K2Go-nun kod hostunuz üçün istifadə etdiyi giriş.</string>
 </resources>

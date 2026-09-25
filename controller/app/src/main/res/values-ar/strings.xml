@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_desc">خادم Git خاص على جهازك. خزّن مستودعات الشيفرة وتتبّع المشكلات وراجع التغييرات دون اتصال. لا حاجة إلى الإنترنت.</string>
     <string name="k2go_mod_forgejo_includes">خادم Git فقط. تنشئ مستودعاتك الخاصة بعد التثبيت.</string>
     <string name="k2go_forgejo_include_repos">تضمين مستودعات التعليمات البرمجية النموذجية</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · بيانات تسجيل الدخول التي يستخدمها K2Go لمضيف الشفرة.</string>
 </resources>

@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_desc">Een privé-Git-server op je box. Sla codeopslagplaatsen op, volg problemen en bekijk wijzigingen offline. Geen internet nodig.</string>
     <string name="k2go_mod_forgejo_includes">Alleen de Git-server. Je maakt je eigen opslagplaatsen na de installatie.</string>
     <string name="k2go_forgejo_include_repos">Voorbeeldcoderepository\'s opnemen</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · De aanmelding die K2Go gebruikt voor je code-host.</string>
 </resources>

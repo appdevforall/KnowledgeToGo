@@ -1366,4 +1366,5 @@
     <string name="k2go_mod_forgejo_desc">Olùpín Git aládàáni lórí ẹ̀rọ rẹ. Fi àwọn ibi ìpamọ́ kóòdù pamọ́, tọpinpin àwọn ìṣòro, kí o sì ṣàyẹ̀wò àwọn ìyípadà láìsí Íńtánẹ́ẹ̀tì. A kò nílò Íńtánẹ́ẹ̀tì.</string>
     <string name="k2go_mod_forgejo_includes">Olùpín Git nìkan. O máa ń ṣẹ̀dá àwọn ibi ìpamọ́ tìrẹ lẹ́yìn ìfìsórí-ẹ̀rọ.</string>
     <string name="k2go_forgejo_include_repos">Fi àwọn ibi ipòrò kóòdù àpẹẹrẹ kun</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Wíwọlé tí K2Go ń lò fún ibi ìtọ́jú kóòdù rẹ.</string>
 </resources>

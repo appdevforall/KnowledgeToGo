@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_desc">Privát Git-kiszolgáló a készülékén. Tároljon kódtárakat, kövesse a hibákat, és nézze át a módosításokat offline. Nincs szükség internetre.</string>
     <string name="k2go_mod_forgejo_includes">Csak a Git-kiszolgáló. A saját tárait a telepítés után hozza létre.</string>
     <string name="k2go_forgejo_include_repos">Példakód-tárolók beleértése</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · A bejelentkezés, amelyet a K2Go a kódtárhelyhez használ.</string>
 </resources>

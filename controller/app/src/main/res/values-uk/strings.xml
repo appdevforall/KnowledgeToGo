@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_desc">Приватний сервер Git на вашому пристрої. Зберігайте репозиторії коду, відстежуйте задачі та переглядайте зміни офлайн. Інтернет не потрібен.</string>
     <string name="k2go_mod_forgejo_includes">Лише сервер Git. Власні репозиторії ви створюєте після встановлення.</string>
     <string name="k2go_forgejo_include_repos">Включити приклади сховищ коду</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · Вхід, який K2Go використовує для вашого хостингу коду.</string>
 </resources>

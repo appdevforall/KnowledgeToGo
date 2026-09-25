@@ -1347,4 +1347,5 @@
     <string name="k2go_mod_forgejo_desc">デバイス上のプライベート Git サーバー。コードリポジトリを保存し、課題を追跡し、変更をオフラインで確認できます。インターネットは不要です。</string>
     <string name="k2go_mod_forgejo_includes">Git サーバーのみ。インストール後にご自身のリポジトリを作成します。</string>
     <string name="k2go_forgejo_include_repos">サンプルコードリポジトリを含める</string>
+    <string name="k2go_auth_sub_hostcode">Forgejo · K2Go がコードホストに使用するサインイン。</string>
 </resources>
