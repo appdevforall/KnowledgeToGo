@@ -31,9 +31,17 @@ FORGEJO_API="${FORGEJO_API:-http://127.0.0.1:3300/api/v1}"
 # not just forgejo. :8085 is the box nginx; /forgejo/ proxies to :3300.
 FORGEJO_HEALTH="${FORGEJO_HEALTH:-http://127.0.0.1:8085/forgejo/}"
 
+# K2GO-417: the admin credential's single source is dash-node credentials.ts (the value the WebView
+# auto-login reads via GET /k2go-api/credentials/forgejo). Capture whether the caller set the admin
+# user/pass explicitly in the env BEFORE the literal fallbacks apply, so _fj_resolve_admin_creds knows
+# not to override an explicit value. The literals below are ONLY the last-resort fallback used when
+# dash-node is unreachable (e.g. an offline bake); they must stay equal to credentials.ts DEFAULTS.forgejo.
+_FJ_ADMIN_USER_ENV="${FORGEJO_ADMIN_USER:-}"
+_FJ_ADMIN_PASS_ENV="${FORGEJO_ADMIN_PASS:-}"
 FORGEJO_ADMIN_USER="${FORGEJO_ADMIN_USER:-k2goadmin}"          # 'admin' is RESERVED by forgejo
-FORGEJO_ADMIN_PASS="${FORGEJO_ADMIN_PASS:-changeme}"          # override in the env for real deployments
+FORGEJO_ADMIN_PASS="${FORGEJO_ADMIN_PASS:-changeme}"          # fallback only; the source of truth is credentials.ts
 FORGEJO_ADMIN_EMAIL="${FORGEJO_ADMIN_EMAIL:-k2go@box.lan}"
+FORGEJO_CRED_URL="${FORGEJO_CRED_URL:-http://127.0.0.1:8085/k2go-api/credentials/forgejo}"
 
 # Repos live under an org (full-name mirrors of the originals); contributors fork. Admin owns the org.
 FORGEJO_ORG="${FORGEJO_ORG:-AppDevForAll}"
@@ -81,6 +89,22 @@ _fj_wait_200() {
     i=$((i+1)); sleep 5
   done
   warn "forgejo did not reach 200 after $((FORGEJO_WAIT_TRIES*5))s"; return 1
+}
+
+# K2GO-417: resolve the admin credential from the single source (dash-node credentials.ts) unless the
+# caller set it in the env. Keeps the seed and the WebView auto-login from drifting: both read the same
+# value. Best-effort: if dash-node is unreachable the built-in fallback (equal to credentials.ts
+# DEFAULTS.forgejo) stands, so the bake still seeds offline. The endpoint reveals the password only when
+# it is the box default (a custom override is hidden), which is exactly the "known default" case here.
+_fj_resolve_admin_creds() {
+  local j u p
+  j="$(curl -fsS --max-time 5 "$FORGEJO_CRED_URL" 2>/dev/null)" || {
+    log "admin cred: dash-node unreachable; using the built-in default"; return 0; }
+  u="$(printf '%s' "$j" | sed -n 's/.*"username":"\([^"]*\)".*/\1/p')"
+  p="$(printf '%s' "$j" | sed -n 's/.*"password":"\([^"]*\)".*/\1/p')"
+  [ -z "$_FJ_ADMIN_USER_ENV" ] && [ -n "$u" ] && FORGEJO_ADMIN_USER="$u"
+  [ -z "$_FJ_ADMIN_PASS_ENV" ] && [ -n "$p" ] && FORGEJO_ADMIN_PASS="$p"
+  log "admin cred: resolved from dash-node credentials.ts (single source)"
 }
 
 # Admin (guard: create only if missing; run as forgejo user, absolute binary path).
@@ -166,6 +190,7 @@ _fj_seed_one() {
 # ===== entry point (what the installer gate calls) =========================
 seed_forgejo() {
   _fj_wait_200 || return 1
+  _fj_resolve_admin_creds        # K2GO-417: derive the admin credential from credentials.ts (single source)
   _fj_ensure_admin || return 1
   _fj_ensure_org || return 1
   printf '%s\n' "$FORGEJO_REPOS" | while IFS='|' read -r owner name addr branch; do
