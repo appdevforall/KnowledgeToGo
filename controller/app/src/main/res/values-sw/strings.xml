@@ -1379,4 +1379,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Hazina %1$d zimeongezwa</string>
     <string name="k2go_forgejo_seed_leave_title">Unaweza kuiacha ikiendelea</string>
     <string name="k2go_forgejo_seed_leave_body">Usanidi unaendelea chinichini. Rudi wakati wowote kuangalia maendeleo.</string>
+    <string name="k2go_forgejo_install_repos">Sakinisha hazina za mfano</string>
+    <string name="k2go_forgejo_repos_blocked">Seva hii ya msimbo tayari ina msimamizi ambaye K2Go haiwezi kumsimamia.</string>
 </resources>

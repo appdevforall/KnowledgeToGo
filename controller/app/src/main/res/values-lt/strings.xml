@@ -1376,4 +1376,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Pridėta saugyklų: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Galite palikti tai veikti</string>
     <string name="k2go_forgejo_seed_leave_body">Konfigūravimas tęsiasi fone. Grįžkite bet kada, kad patikrintumėte eigą.</string>
+    <string name="k2go_forgejo_install_repos">Įdiegti pavyzdines saugyklas</string>
+    <string name="k2go_forgejo_repos_blocked">Šis kodo prieglobstis jau turi administratorių, kurio „K2Go“ negali valdyti.</string>
 </resources>

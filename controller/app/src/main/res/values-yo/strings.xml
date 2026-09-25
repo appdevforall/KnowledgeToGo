@@ -1379,4 +1379,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d ibi ìtọ́jú ni a fi kún un</string>
     <string name="k2go_forgejo_seed_leave_title">O lè fi sílẹ̀ kí ó máa ṣiṣẹ́</string>
     <string name="k2go_forgejo_seed_leave_body">Ìṣètò ń tẹ̀síwájú ní ẹ̀yìn. Padà nígbàkigbà láti ṣàyẹ̀wò ìlọsíwájú.</string>
+    <string name="k2go_forgejo_install_repos">Fi àwọn ibi ìtọ́jú àpẹẹrẹ sórí ẹrọ</string>
+    <string name="k2go_forgejo_repos_blocked">Olùgbàlejò koodu yìí ti ní alábòójútó tí K2Go kò lè ṣàkóso.</string>
 </resources>

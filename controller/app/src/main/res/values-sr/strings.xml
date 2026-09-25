@@ -1372,4 +1372,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Додато репозиторијума: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Можете оставити ово да ради</string>
     <string name="k2go_forgejo_seed_leave_body">Подешавање се наставља у позадини. Вратите се било када да проверите напредак.</string>
+    <string name="k2go_forgejo_install_repos">Инсталирај примере репозиторијума</string>
+    <string name="k2go_forgejo_repos_blocked">Овај хост кода већ има администратора којим K2Go не може да управља.</string>
 </resources>

@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d depozite adăugate</string>
     <string name="k2go_forgejo_seed_leave_title">Poți lăsa acest proces să ruleze</string>
     <string name="k2go_forgejo_seed_leave_body">Configurarea continuă în fundal. Revino oricând pentru a verifica progresul.</string>
+    <string name="k2go_forgejo_install_repos">Instalează depozitele exemplu</string>
+    <string name="k2go_forgejo_repos_blocked">Această gazdă de cod are deja un administrator pe care K2Go nu îl poate gestiona.</string>
 </resources>

@@ -1366,4 +1366,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">Přidáno repozitářů: %1$d</string>
     <string name="k2go_forgejo_seed_leave_title">Můžete to nechat běžet</string>
     <string name="k2go_forgejo_seed_leave_body">Nastavení pokračuje na pozadí. Kdykoli se vraťte a zkontrolujte průběh.</string>
+    <string name="k2go_forgejo_install_repos">Nainstalovat ukázkové repozitáře</string>
+    <string name="k2go_forgejo_repos_blocked">Tento hostitel kódu už má správce, kterého K2Go nemůže spravovat.</string>
 </resources>

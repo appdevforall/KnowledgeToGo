@@ -1360,4 +1360,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d 個のリポジトリを追加しました</string>
     <string name="k2go_forgejo_seed_leave_title">このまま実行し続けても構いません</string>
     <string name="k2go_forgejo_seed_leave_body">設定はバックグラウンドで続行されます。いつでも戻って進行状況を確認できます。</string>
+    <string name="k2go_forgejo_install_repos">サンプルリポジトリをインストール</string>
+    <string name="k2go_forgejo_repos_blocked">このコードホストには、K2Go が管理できない管理者がすでに存在します。</string>
 </resources>

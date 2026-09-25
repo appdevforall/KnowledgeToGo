@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">تمت إضافة %1$d مستودعات</string>
     <string name="k2go_forgejo_seed_leave_title">يمكنك ترك هذا قيد التشغيل</string>
     <string name="k2go_forgejo_seed_leave_body">يستمر الإعداد في الخلفية. عُد في أي وقت للتحقق من التقدم.</string>
+    <string name="k2go_forgejo_install_repos">تثبيت مستودعات نموذجية</string>
+    <string name="k2go_forgejo_repos_blocked">يحتوي مضيف الشيفرة هذا بالفعل على مسؤول لا يستطيع K2Go إدارته.</string>
 </resources>

@@ -1372,4 +1372,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d রিপোজিটরি যোগ করা হয়েছে</string>
     <string name="k2go_forgejo_seed_leave_title">আপনি এটি চলতে রেখে দিতে পারেন</string>
     <string name="k2go_forgejo_seed_leave_body">সেটআপ পটভূমিতে চলতে থাকে। অগ্রগতি দেখতে যেকোনো সময় ফিরে আসুন।</string>
+    <string name="k2go_forgejo_install_repos">উদাহরণ রিপোজিটরি ইনস্টল করুন</string>
+    <string name="k2go_forgejo_repos_blocked">এই কোড হোস্টে ইতিমধ্যে একজন অ্যাডমিন আছে যা K2Go পরিচালনা করতে পারে না।</string>
 </resources>

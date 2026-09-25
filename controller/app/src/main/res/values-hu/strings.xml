@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d tároló hozzáadva</string>
     <string name="k2go_forgejo_seed_leave_title">Hagyhatod, hogy tovább fusson</string>
     <string name="k2go_forgejo_seed_leave_body">A beállítás a háttérben folytatódik. Térj vissza bármikor a folyamat ellenőrzéséhez.</string>
+    <string name="k2go_forgejo_install_repos">Példatárolók telepítése</string>
+    <string name="k2go_forgejo_repos_blocked">Ennek a kódtárhelynek már van egy rendszergazdája, akit a K2Go nem tud kezelni.</string>
 </resources>

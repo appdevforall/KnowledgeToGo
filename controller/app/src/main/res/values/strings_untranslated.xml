@@ -9,8 +9,4 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources>
-    <!-- K2GO-422: post-install repos action. Migrate to strings.xml (all locales) before merge. -->
-    <string name="k2go_forgejo_install_repos" translatable="false">Install example repositories</string>
-    <string name="k2go_forgejo_repos_blocked" translatable="false">This code host already has an admin that K2Go cannot manage.</string>
-</resources>
+<resources></resources>

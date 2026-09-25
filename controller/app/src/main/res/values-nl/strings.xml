@@ -1359,4 +1359,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d repository\'s toegevoegd</string>
     <string name="k2go_forgejo_seed_leave_title">Je kunt dit laten doorlopen</string>
     <string name="k2go_forgejo_seed_leave_body">Het instellen gaat op de achtergrond verder. Kom op elk moment terug om de voortgang te bekijken.</string>
+    <string name="k2go_forgejo_install_repos">Voorbeeldrepository\'s installeren</string>
+    <string name="k2go_forgejo_repos_blocked">Deze code-host heeft al een beheerder die K2Go niet kan beheren.</string>
 </resources>

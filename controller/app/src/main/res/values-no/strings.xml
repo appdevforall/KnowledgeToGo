@@ -1369,4 +1369,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">%1$d repositorier lagt til</string>
     <string name="k2go_forgejo_seed_leave_title">Du kan la dette kjøre videre</string>
     <string name="k2go_forgejo_seed_leave_body">Konfigureringen fortsetter i bakgrunnen. Kom tilbake når som helst for å sjekke fremdriften.</string>
+    <string name="k2go_forgejo_install_repos">Installer eksempelrepositorier</string>
+    <string name="k2go_forgejo_repos_blocked">Denne kodeverten har allerede en administrator som K2Go ikke kan administrere.</string>
 </resources>

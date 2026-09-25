@@ -1360,4 +1360,6 @@
     <string name="k2go_forgejo_seed_repos_fmt">저장소 %1$d개 추가됨</string>
     <string name="k2go_forgejo_seed_leave_title">이 작업을 계속 실행되도록 둘 수 있습니다</string>
     <string name="k2go_forgejo_seed_leave_body">설정은 백그라운드에서 계속됩니다. 언제든지 돌아와 진행 상황을 확인하세요.</string>
+    <string name="k2go_forgejo_install_repos">예제 저장소 설치</string>
+    <string name="k2go_forgejo_repos_blocked">이 코드 호스트에는 K2Go가 관리할 수 없는 관리자가 이미 있습니다.</string>
 </resources>
