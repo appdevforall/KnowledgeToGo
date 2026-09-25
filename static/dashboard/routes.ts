@@ -318,6 +318,51 @@ apiRouter.get('/system/dashboard/rebuild/log', (_req: Request, res: Response): v
     res.json({ lines });
 });
 
+// --- Forgejo seed (K2GO-417) ------------------------------------------------
+// Forgejo installs as a conventional role (runrole). This injects the content
+// LIVE (box up, no stop), mirroring the rebuild: a detached script
+// (tools/forgejo-seed.sh) runs the orchestration and writes a status + log the
+// app polls. includeRepos defaults true (a manual install is treated as full =
+// all example repos); false seeds only the admin and org. Localhost-only.
+const FORGEJO_SEED_SCRIPT = '/opt/iiab-android/tools/forgejo-seed.sh';
+const FORGEJO_SEED_STATUS = '/var/run/forgejo-seed.status';
+const FORGEJO_SEED_LOG = '/var/log/forgejo-seed.log';
+const FORGEJO_SEED_LOG_TAIL = 200;
+
+apiRouter.post('/forgejo/seed', (req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(FORGEJO_SEED_STATUS, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (running) { res.status(409).json({ error: 'a forgejo seed is already running' }); return; }
+    if (!fs.existsSync(FORGEJO_SEED_SCRIPT)) { res.status(500).json({ error: 'forgejo seed script not found' }); return; }
+    const includeRepos = (req.body as { includeRepos?: unknown })?.includeRepos !== false; // default true
+    try {
+        // setsid => own session, so a pdsm restart of dash-node cannot kill the seed mid-run.
+        const child = spawn('setsid', ['bash', FORGEJO_SEED_SCRIPT], {
+            detached: true, stdio: 'ignore',
+            env: { ...process.env, FORGEJO_SEED_REPOS: includeRepos ? '1' : '0' },
+        });
+        child.unref();
+        // Mark running synchronously before answering, so an immediate poll cannot read a stale state.
+        try { fs.writeFileSync(FORGEJO_SEED_STATUS, 'running'); } catch { /* best effort */ }
+        res.status(202).json({ ok: true, state: 'running', includeRepos });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not start forgejo seed' });
+    }
+});
+
+apiRouter.get('/forgejo/seed/status', (_req: Request, res: Response): void => {
+    res.set('Cache-Control', 'no-store');
+    let state = 'idle';
+    try { state = fs.readFileSync(FORGEJO_SEED_STATUS, 'utf8').trim() || 'idle'; } catch { /* no file yet */ }
+    let lines: string[] = [];
+    try {
+        const all = fs.readFileSync(FORGEJO_SEED_LOG, 'utf8').split('\n');
+        if (all.length && all[all.length - 1] === '') all.pop();
+        lines = all.slice(-FORGEJO_SEED_LOG_TAIL);
+    } catch { /* no log yet */ }
+    res.json({ state, lines });
+});
+
 // Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
 // the app then polls /system/version + RestReadiness until the API is back on the new version.
 // ADFA-5339: an optional { site: true } also refreshes the served landing page in the same run. The
