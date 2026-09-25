@@ -55,13 +55,19 @@ public final class ForgejoSeedService extends Service {
     private static final int NOTIFICATION_ID = 8;
 
     public static final String ACTION_START = "org.iiab.controller.FORGEJO_SEED_START";
+    /** K2GO-422: force a fresh seed past a leftover "done" status (an intentional post-install re-seed). */
+    private static final String EXTRA_FORCE = "force";
 
     private final Handler main = new Handler(Looper.getMainLooper());
 
     /** Start (or re-attach to) the seed. Idempotent: a running session is left alone. */
-    public static void start(Context ctx) {
+    public static void start(Context ctx) { start(ctx, false); }
+
+    /** As {@link #start(Context)}, but {@code force} re-runs even if the box status is a stale "done"
+     *  (K2GO-422: the post-install "Install repos" is an intentional re-seed). */
+    public static void start(Context ctx, boolean force) {
         ContextCompat.startForegroundService(ctx,
-                new Intent(ctx, ForgejoSeedService.class).setAction(ACTION_START));
+                new Intent(ctx, ForgejoSeedService.class).setAction(ACTION_START).putExtra(EXTRA_FORCE, force));
     }
 
     /** Clear the finished session so a later install starts clean. */
@@ -96,8 +102,9 @@ public final class ForgejoSeedService extends Service {
             return START_NOT_STICKY;
         }
         boolean includeRepos = ForgejoInstallPrefs.includeRepos(this);
+        boolean force = intent != null && intent.getBooleanExtra(EXTRA_FORCE, false);
         repo.startSession(includeRepos);
-        drive(includeRepos);
+        drive(includeRepos, force);
         return START_NOT_STICKY;
     }
 
@@ -105,7 +112,7 @@ public final class ForgejoSeedService extends Service {
     private static final int MAX_ATTEMPTS = ForgejoInstallPrefs.MAX_ATTEMPTS;
     private static final long RETRY_DELAY_MS = 4000L;
 
-    private void drive(final boolean includeRepos) {
+    private void drive(final boolean includeRepos, final boolean force) {
         final Context app = getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             ForgejoSeedRepository repo = ForgejoSeedRepository.get();
@@ -127,7 +134,7 @@ public final class ForgejoSeedService extends Service {
             for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
                 Log.i(TAG, "forgejo seed: driving (includeRepos=" + includeRepos + ", attempt "
                         + attempt + "/" + MAX_ATTEMPTS + ")");
-                r = new ForgejoSeedClient().drive(includeRepos, repo::appendLog);
+                r = new ForgejoSeedClient().drive(includeRepos, force, repo::appendLog);
                 if (r == ForgejoSeedClient.Result.DONE) break;
                 if (attempt < MAX_ATTEMPTS) {
                     repo.appendLog("seed attempt " + attempt + " failed; retrying");

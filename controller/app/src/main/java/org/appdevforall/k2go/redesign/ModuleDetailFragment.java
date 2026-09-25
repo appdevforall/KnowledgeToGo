@@ -171,7 +171,9 @@ public class ModuleDetailFragment extends Fragment {
                                         // hand off to the tasks index (SetupProgressActivity), which tracks
                                         // the running seed to completion (EXTRA_FORGEJO_SEED).
                                         org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), true);
-                                        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(requireContext());
+                                        // force: this is an intentional re-seed; do not let a prior seed's
+                                        // leftover "done" status short-circuit it (K2GO-422).
+                                        org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(requireContext(), true);
                                         startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class)
                                                 .putExtra(SetupProgressActivity.EXTRA_FORGEJO_SEED, true));
                                     });
