@@ -770,8 +770,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // K2GO-422: also wait in a post-install seed run (the "Install repos" button, no module this
         // run). The stranded case (a banked seed leaking into an unrelated Get More flow) has neither
         // moduleShown nor the launch extra, so it still does not block -- no hang reintroduced.
-        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow && !mq.didFail("forgejo")
-                && (moduleShown || postInstallSeed);
+        boolean seedPendingRun = forgejoSeedActive() && !batchServerSlow
+                && (moduleShown || postInstallSeed)
+                // The forgejo runrole failing releases the gate ONLY in a module-install flow; a
+                // post-install seed run (postInstallSeed) must not read a stale/unrelated queue verdict.
+                && !(moduleShown && mq.didFail("forgejo"));
         if (noRest && prootShown) {
             // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
             // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
