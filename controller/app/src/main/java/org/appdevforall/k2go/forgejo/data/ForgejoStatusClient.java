@@ -65,7 +65,10 @@ public final class ForgejoStatusClient {
             HttpURLConnection c = (HttpURLConnection) new URL(STATUS_URL).openConnection();
             c.setUseCaches(false);
             c.setConnectTimeout(4000);
-            c.setReadTimeout(10000);   // the box may do up to three short HTTP calls to the forge
+            // The box may do a couple of short HTTP calls to the forge before answering; keep the read
+            // timeout comfortably above their combined worst case so a warming forge does not make the
+            // status read time out (which would silently hide the button).
+            c.setReadTimeout(30000);
             c.setRequestMethod("GET");
             c.setRequestProperty("Accept", "application/json");
             int code = c.getResponseCode();

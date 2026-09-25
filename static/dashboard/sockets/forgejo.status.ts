@@ -11,7 +11,7 @@ import { FORGEJO_BASE } from './forgejo.session';
 const API = `${FORGEJO_BASE}/api/v1`;
 // The org the seed creates (static/forgejo/orchestration FORGEJO_ORG). Overridable to match the box.
 const ORG = process.env.K2GO_FORGEJO_ORG || 'AppDevForAll';
-const TIMEOUT_MS = 8000;
+const TIMEOUT_MS = 5000;
 
 export interface ForgejoStatus {
     /** Forgejo answered at all. */
@@ -48,24 +48,24 @@ export async function forgejoStatus(): Promise<ForgejoStatus> {
     let adminAuthenticable = false;
     let repos: string[] = [];
 
-    // 1. Does the admin user exist? Public user endpoint, no auth: 200 = exists, 404 = absent.
-    try {
-        const r = await getJson(`${API}/users/${encodeURIComponent(cred.username)}`);
+    // The admin-exists probe (public GET /users/{admin}) and the authenticate probe (GET /user with
+    // the known credential) are independent, so run them together. allSettled never rejects.
+    const [usersRes, userRes] = await Promise.allSettled([
+        getJson(`${API}/users/${encodeURIComponent(cred.username)}`),
+        getJson(`${API}/user`, { Authorization: auth }),
+    ]);
+    if (usersRes.status === 'fulfilled') { reachable = true; adminExists = usersRes.value.status === 200; }
+    if (userRes.status === 'fulfilled') {
         reachable = true;
-        adminExists = r.status === 200;
-    } catch {
+        adminAuthenticable = userRes.value.status === 200;
+        // A 200 here also proves the admin exists, even if the public probe was blocked (REQUIRE_SIGNIN_VIEW).
+        if (adminAuthenticable) adminExists = true;
+    }
+    if (!reachable) {
         return { reachable: false, adminExists: false, adminAuthenticable: false, repos: [], manageable: false };
     }
 
-    // 2. Can we authenticate as the admin? An authed call to /user: 200 = yes, 401 = no.
-    try {
-        const r = await getJson(`${API}/user`, { Authorization: auth });
-        adminAuthenticable = r.status === 200;
-        // A definite 200 also proves the admin exists, even if step 1 was blocked by REQUIRE_SIGNIN_VIEW.
-        if (adminAuthenticable) adminExists = true;
-    } catch { /* leave false */ }
-
-    // 3. Repos under the org (only when we can read them as the admin).
+    // Repos under the org (only when we can read them as the admin; depends on the auth result).
     if (adminAuthenticable) {
         try {
             const r = await getJson(`${API}/orgs/${encodeURIComponent(ORG)}/repos?limit=50`, { Authorization: auth });
