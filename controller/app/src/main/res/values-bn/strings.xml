@@ -1358,4 +1358,5 @@
     <string name="k2go_mod_forgejo_title">কোড হোস্টিং</string>
     <string name="k2go_mod_forgejo_desc">আপনার ডিভাইসে একটি ব্যক্তিগত Git সার্ভার। কোড রিপোজিটরি সংরক্ষণ করুন, সমস্যা ট্র্যাক করুন এবং অফলাইনে পরিবর্তন পর্যালোচনা করুন। ইন্টারনেট লাগবে না।</string>
     <string name="k2go_mod_forgejo_includes">শুধু Git সার্ভার। ইনস্টল করার পরে আপনি নিজের রিপোজিটরি তৈরি করেন।</string>
+    <string name="k2go_forgejo_include_repos">উদাহরণ কোড রিপোজিটরি অন্তর্ভুক্ত করুন</string>
 </resources>

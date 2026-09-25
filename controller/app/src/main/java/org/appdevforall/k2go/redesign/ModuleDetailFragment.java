@@ -105,6 +105,15 @@ public class ModuleDetailFragment extends Fragment {
         Button schedule = root.findViewById(R.id.k2go_moddet_schedule);
         schedule.setVisibility(View.GONE);
 
+        // K2GO-417: Forgejo carries an opt-in for the example repos (default on). The box always seeds
+        // the admin + org (so auto-login works); this only controls the example repos. Shown for Forgejo
+        // only; every other module keeps it GONE. The value is captured when the install is committed
+        // (schedule/install now) and banked for the post-install dash-node seed.
+        final com.google.android.material.checkbox.MaterialCheckBox forgejoRepos =
+                root.findViewById(R.id.k2go_moddet_forgejo_repos);
+        final boolean isForgejo = "forgejo".equals(c.key());
+        if (isForgejo) forgejoRepos.setVisibility(View.VISIBLE);   // default-checked in the layout
+
         final android.content.Context appCtx = requireContext().getApplicationContext();
         org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
             final java.util.Set<String> onDisk =
@@ -184,8 +193,13 @@ public class ModuleDetailFragment extends Fragment {
         boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());
         schedule.setText(getString(scheduled ? R.string.k2go_mod_unschedule : R.string.k2go_mod_schedule));
         schedule.setOnClickListener(v -> {
-            if (ModuleWishlist.contains(requireContext(), c.key())) ModuleWishlist.remove(requireContext(), c.key());
-            else ModuleWishlist.add(requireContext(), c.key());
+            if (ModuleWishlist.contains(requireContext(), c.key())) {
+                ModuleWishlist.remove(requireContext(), c.key());
+                if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.clearSeed(requireContext());
+            } else {
+                ModuleWishlist.add(requireContext(), c.key());
+                if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), forgejoRepos.isChecked());
+            }
             requireActivity().getOnBackPressedDispatcher().onBackPressed();   // back to the hub (shows ✓)
         });
 
@@ -200,6 +214,8 @@ public class ModuleDetailFragment extends Fragment {
                     ((SetupLibraryActivity) getActivity()).openMapsChoose();   // ADFA-4958: maps needs its content selector first
                 } else {
                     ModuleWishlist.add(requireContext(), c.key());
+                    // K2GO-417: bank the seed with the opt-in captured on this screen before we leave it.
+                    if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), forgejoRepos.isChecked());
                     ((SetupLibraryActivity) getActivity()).openModuleIndex();
                 }
             }

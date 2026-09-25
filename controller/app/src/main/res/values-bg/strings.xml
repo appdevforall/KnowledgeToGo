@@ -1352,4 +1352,5 @@
     <string name="k2go_mod_forgejo_title">Хостинг на код</string>
     <string name="k2go_mod_forgejo_desc">Частен Git сървър на вашето устройство. Съхранявайте хранилища с код, следете проблеми и преглеждайте промени офлайн. Не е нужен интернет.</string>
     <string name="k2go_mod_forgejo_includes">Само Git сървърът. Създавате собствените си хранилища след инсталиране.</string>
+    <string name="k2go_forgejo_include_repos">Включване на примерни хранилища с код</string>
 </resources>

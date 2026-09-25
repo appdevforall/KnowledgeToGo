@@ -1346,4 +1346,5 @@
     <string name="k2go_mod_forgejo_title">코드 호스팅</string>
     <string name="k2go_mod_forgejo_desc">기기의 개인 Git 서버. 코드 저장소를 저장하고 이슈를 추적하며 변경 사항을 오프라인으로 검토하세요. 인터넷이 필요 없습니다.</string>
     <string name="k2go_mod_forgejo_includes">Git 서버만 제공됩니다. 설치 후 직접 저장소를 만듭니다.</string>
+    <string name="k2go_forgejo_include_repos">예제 코드 저장소 포함</string>
 </resources>

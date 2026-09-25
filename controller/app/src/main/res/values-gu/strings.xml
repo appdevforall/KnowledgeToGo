@@ -1358,4 +1358,5 @@
     <string name="k2go_mod_forgejo_title">કોડ હોસ્ટિંગ</string>
     <string name="k2go_mod_forgejo_desc">તમારા ઉપકરણ પર ખાનગી Git સર્વર. કોડ રિપોઝિટરી સાચવો, સમસ્યાઓ ટ્રૅક કરો અને ફેરફારો ઑફલાઇન સમીક્ષા કરો. ઇન્ટરનેટની જરૂર નથી.</string>
     <string name="k2go_mod_forgejo_includes">ફક્ત Git સર્વર. ઇન્સ્ટૉલ કર્યા પછી તમે તમારી પોતાની રિપોઝિટરી બનાવો છો.</string>
+    <string name="k2go_forgejo_include_repos">ઉદાહરણ કોડ રિપોઝિટરીઓ શામેલ કરો</string>
 </resources>

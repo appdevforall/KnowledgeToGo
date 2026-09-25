@@ -1362,4 +1362,5 @@
     <string name="k2go_mod_forgejo_title">Kodo talpinimas</string>
     <string name="k2go_mod_forgejo_desc">Privatus Git serveris jūsų įrenginyje. Saugokite kodo saugyklas, sekite problemas ir peržiūrėkite pakeitimus neprisijungę. Interneto nereikia.</string>
     <string name="k2go_mod_forgejo_includes">Tik Git serveris. Savo saugyklas sukuriate įdiegę.</string>
+    <string name="k2go_forgejo_include_repos">Ĭtraukti kodo pavyzdžių saugyklas</string>
 </resources>

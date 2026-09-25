@@ -1345,4 +1345,5 @@
     <string name="k2go_mod_forgejo_title">Hosting del codice</string>
     <string name="k2go_mod_forgejo_desc">Un server Git privato sul tuo dispositivo. Archivia repository di codice, tieni traccia dei problemi e rivedi le modifiche offline. Nessuna connessione necessaria.</string>
     <string name="k2go_mod_forgejo_includes">Solo il server Git. Crei i tuoi repository dopo l\'installazione.</string>
+    <string name="k2go_forgejo_include_repos">Includi repository di codice di esempio</string>
 </resources>

@@ -1345,4 +1345,5 @@
     <string name="k2go_mod_forgejo_title">Code-Hosting</string>
     <string name="k2go_mod_forgejo_desc">Ein privater Git-Server auf Ihrer Box. Speichern Sie Code-Repositorys, verfolgen Sie Probleme und prüfen Sie Änderungen offline. Kein Internet nötig.</string>
     <string name="k2go_mod_forgejo_includes">Nur der Git-Server. Eigene Repositorys erstellen Sie nach der Installation.</string>
+    <string name="k2go_forgejo_include_repos">Beispiel-Code-Repositorys einschließen</string>
 </resources>

@@ -1352,4 +1352,5 @@
     <string name="k2go_mod_forgejo_title">Hostování kódu</string>
     <string name="k2go_mod_forgejo_desc">Soukromý Git server na vašem zařízení. Ukládejte úložiště kódu, sledujte problémy a kontrolujte změny offline. Internet není potřeba.</string>
     <string name="k2go_mod_forgejo_includes">Pouze Git server. Vlastní úložiště si vytvoříte po instalaci.</string>
+    <string name="k2go_forgejo_include_repos">Zahrnout ukázková úložiště kódu</string>
 </resources>

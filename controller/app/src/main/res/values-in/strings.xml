@@ -1352,4 +1352,5 @@
     <string name="k2go_mod_forgejo_title">Hosting kode</string>
     <string name="k2go_mod_forgejo_desc">Server Git pribadi di perangkat Anda. Simpan repositori kode, lacak masalah, dan tinjau perubahan secara offline. Tidak perlu internet.</string>
     <string name="k2go_mod_forgejo_includes">Hanya server Git. Anda membuat repositori sendiri setelah memasangnya.</string>
+    <string name="k2go_forgejo_include_repos">Sertakan repositori kode contoh</string>
 </resources>

@@ -1424,4 +1424,5 @@
     <string name="k2go_mod_forgejo_title">Hospedagem de código</string>
     <string name="k2go_mod_forgejo_desc">Um servidor Git privado na sua caixa. Guarde repositórios de código, acompanhe problemas e reveja alterações offline. Não é preciso internet.</string>
     <string name="k2go_mod_forgejo_includes">Apenas o servidor Git. Você cria os seus próprios repositórios após instalar.</string>
+    <string name="k2go_forgejo_include_repos">Incluir repositórios de código de exemplo</string>
 </resources>
