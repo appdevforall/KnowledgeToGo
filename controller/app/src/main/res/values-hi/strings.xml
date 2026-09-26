@@ -1438,4 +1438,13 @@
     <string name="k2go_forgejo_seed_leave_body">सेटअप पृष्ठभूमि में जारी रहता है। प्रगति जांचने के लिए किसी भी समय वापस आएं।</string>
     <string name="k2go_forgejo_install_repos">उदाहरण रिपॉज़िटरी इंस्टॉल करें</string>
     <string name="k2go_forgejo_repos_blocked">इस कोड होस्ट में पहले से एक एडमिन है जिसे K2Go प्रबंधित नहीं कर सकता।</string>
+    <string name="k2go_forgejo_update_repos">रिपॉज़िटरी अपडेट करें</string>
+    <string name="k2go_forgejo_updating">रिपॉज़िटरी अपडेट हो रही हैं...</string>
+    <string name="k2go_forgejo_update_done">रिपॉज़िटरी अपडेट हो गईं</string>
+    <string name="k2go_forgejo_update_none">सभी रिपॉज़िटरी पहले से अप-टू-डेट हैं</string>
+    <string name="k2go_forgejo_update_some_failed">कुछ रिपॉज़िटरी अपडेट नहीं हो सकीं. रिपॉज़िटरी विवरण देखें.</string>
+    <string name="k2go_forgejo_update_all_failed">रिपॉज़िटरी अपडेट नहीं हो सकीं. रिपॉज़िटरी विवरण देखें.</string>
+    <string name="k2go_forgejo_update_failed">रिपॉज़िटरी अपडेट नहीं हो सकीं</string>
+    <string name="k2go_forgejo_update_cancelling">रद्द किया जा रहा है...</string>
+    <string name="k2go_forgejo_update_cancelled">अपडेट रद्द किया गया</string>
 </resources>
