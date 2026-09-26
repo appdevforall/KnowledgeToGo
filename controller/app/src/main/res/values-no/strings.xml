@@ -1380,4 +1380,10 @@
     <string name="k2go_forgejo_update_failed">Kunne ikke oppdatere repositoriene</string>
     <string name="k2go_forgejo_update_cancelling">Avbryter...</string>
     <string name="k2go_forgejo_update_cancelled">Oppdatering avbrutt</string>
+    <string name="k2go_dep_required_title">Oppdater dashboard forst</string>
+    <string name="k2go_dep_required_msg_fmt">Denne modulen trenger dashboard i versjon %1$s eller nyere for den kan installeres.</string>
+    <string name="k2go_dep_update_dashboard">Oppdater dashboard</string>
+    <string name="k2go_dep_suggest_title">En dashboard-oppdatering er tilgjengelig</string>
+    <string name="k2go_dep_suggest_msg">Det anbefales a oppdatere dashboard forst slik at nye modulfunksjoner fungerer riktig.</string>
+    <string name="k2go_dep_install_anyway">Installer likevel</string>
 </resources>

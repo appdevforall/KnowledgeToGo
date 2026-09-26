@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Kan de repository\'s niet bijwerken</string>
     <string name="k2go_forgejo_update_cancelling">Annuleren...</string>
     <string name="k2go_forgejo_update_cancelled">Bijwerken geannuleerd</string>
+    <string name="k2go_dep_required_title">Werk eerst het dashboard bij</string>
+    <string name="k2go_dep_required_msg_fmt">Deze module heeft het dashboard in versie %1$s of nieuwer nodig voordat het geinstalleerd kan worden.</string>
+    <string name="k2go_dep_update_dashboard">Dashboard bijwerken</string>
+    <string name="k2go_dep_suggest_title">Er is een dashboard-update beschikbaar</string>
+    <string name="k2go_dep_suggest_msg">Het wordt aanbevolen eerst het dashboard bij te werken zodat nieuwe modulefuncties goed werken.</string>
+    <string name="k2go_dep_install_anyway">Toch installeren</string>
 </resources>

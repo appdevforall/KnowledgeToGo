@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Repositorys konnten nicht aktualisiert werden</string>
     <string name="k2go_forgejo_update_cancelling">Wird abgebrochen...</string>
     <string name="k2go_forgejo_update_cancelled">Aktualisierung abgebrochen</string>
+    <string name="k2go_dep_required_title">Zuerst das Dashboard aktualisieren</string>
+    <string name="k2go_dep_required_msg_fmt">Dieses Modul benoetigt das Dashboard in Version %1$s oder neuer, bevor es installiert werden kann.</string>
+    <string name="k2go_dep_update_dashboard">Dashboard aktualisieren</string>
+    <string name="k2go_dep_suggest_title">Ein Dashboard-Update ist verfuegbar</string>
+    <string name="k2go_dep_suggest_msg">Es wird empfohlen, zuerst das Dashboard zu aktualisieren, damit neue Modulfunktionen richtig laufen.</string>
+    <string name="k2go_dep_install_anyway">Trotzdem installieren</string>
 </resources>

@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Depozitele nu au putut fi actualizate</string>
     <string name="k2go_forgejo_update_cancelling">Se anuleaza...</string>
     <string name="k2go_forgejo_update_cancelled">Actualizare anulata</string>
+    <string name="k2go_dep_required_title">Actualizeaza mai intai dashboardul</string>
+    <string name="k2go_dep_required_msg_fmt">Acest modul are nevoie de dashboard in versiunea %1$s sau mai noua inainte de a putea fi instalat.</string>
+    <string name="k2go_dep_update_dashboard">Actualizeaza dashboardul</string>
+    <string name="k2go_dep_suggest_title">Este disponibila o actualizare a dashboardului</string>
+    <string name="k2go_dep_suggest_msg">Se recomanda actualizarea dashboardului mai intai, pentru ca noile functii ale modulului sa functioneze corect.</string>
+    <string name="k2go_dep_install_anyway">Instaleaza oricum</string>
 </resources>

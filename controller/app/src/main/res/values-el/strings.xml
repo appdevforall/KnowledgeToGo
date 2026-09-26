@@ -1377,4 +1377,10 @@
     <string name="k2go_forgejo_update_failed">Δεν ήταν δυνατή η ενημέρωση των αποθετηρίων</string>
     <string name="k2go_forgejo_update_cancelling">Ακύρωση...</string>
     <string name="k2go_forgejo_update_cancelled">Η ενημέρωση ακυρώθηκε</string>
+    <string name="k2go_dep_required_title">Ενημερώστε πρώτα το dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Αυτή η μονάδα χρειάζεται το dashboard στην έκδοση %1$s ή νεότερη πριν εγκατασταθεί.</string>
+    <string name="k2go_dep_update_dashboard">Ενημέρωση dashboard</string>
+    <string name="k2go_dep_suggest_title">Διαθέσιμη ενημέρωση dashboard</string>
+    <string name="k2go_dep_suggest_msg">Συνιστάται να ενημερώσετε πρώτα το dashboard ώστε οι νέες λειτουργίες της μονάδας να λειτουργούν σωστά.</string>
+    <string name="k2go_dep_install_anyway">Εγκατάσταση ούτως ή άλλως</string>
 </resources>

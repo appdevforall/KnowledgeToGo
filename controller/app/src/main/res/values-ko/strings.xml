@@ -1371,4 +1371,10 @@
     <string name="k2go_forgejo_update_failed">저장소를 업데이트할 수 없습니다</string>
     <string name="k2go_forgejo_update_cancelling">취소 중...</string>
     <string name="k2go_forgejo_update_cancelled">업데이트 취소됨</string>
+    <string name="k2go_dep_required_title">먼저 dashboard를 업데이트하세요</string>
+    <string name="k2go_dep_required_msg_fmt">이 모듈을 설치하려면 dashboard %1$s 이상 버전이 필요합니다.</string>
+    <string name="k2go_dep_update_dashboard">dashboard 업데이트</string>
+    <string name="k2go_dep_suggest_title">dashboard 업데이트가 있습니다</string>
+    <string name="k2go_dep_suggest_msg">모듈의 새 기능이 제대로 작동하도록 먼저 dashboard를 업데이트하는 것이 좋습니다.</string>
+    <string name="k2go_dep_install_anyway">무시하고 설치</string>
 </resources>

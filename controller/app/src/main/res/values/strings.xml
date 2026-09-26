@@ -1556,4 +1556,10 @@
     <string name="k2go_forgejo_update_failed">Could not update the repositories</string>
     <string name="k2go_forgejo_update_cancelling">Cancelling...</string>
     <string name="k2go_forgejo_update_cancelled">Update cancelled</string>
+    <string name="k2go_dep_required_title">Update the dashboard first</string>
+    <string name="k2go_dep_required_msg_fmt">This module needs the dashboard updated to %1$s or newer before it can be installed.</string>
+    <string name="k2go_dep_update_dashboard">Update dashboard</string>
+    <string name="k2go_dep_suggest_title">A dashboard update is available</string>
+    <string name="k2go_dep_suggest_msg">Updating the dashboard first is recommended so new module features work correctly.</string>
+    <string name="k2go_dep_install_anyway">Install anyway</string>
 </resources>

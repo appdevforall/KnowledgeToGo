@@ -1390,4 +1390,10 @@
     <string name="k2go_forgejo_update_failed">Ko seese lati se imudojuiwon awon ibi itoju</string>
     <string name="k2go_forgejo_update_cancelling">Nfagile...</string>
     <string name="k2go_forgejo_update_cancelled">A ti fagile imudojuiwon</string>
+    <string name="k2go_dep_required_title">Kokoo se imudojuiwon dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Modulu yii nilo dashboard eda %1$s tabi tuntun ki o to le fi sori ero.</string>
+    <string name="k2go_dep_update_dashboard">Se imudojuiwon dashboard</string>
+    <string name="k2go_dep_suggest_title">Imudojuiwon dashboard wa</string>
+    <string name="k2go_dep_suggest_msg">A gba o nimoran lati kokoo se imudojuiwon dashboard ki awon eya tuntun ti modulu le sise daradara.</string>
+    <string name="k2go_dep_install_anyway">Fi sori ero lonakona</string>
 </resources>

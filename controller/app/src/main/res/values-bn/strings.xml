@@ -1383,4 +1383,10 @@
     <string name="k2go_forgejo_update_failed">রিপোজিটরি আপডেট করা যায়নি</string>
     <string name="k2go_forgejo_update_cancelling">বাতিল করা হচ্ছে...</string>
     <string name="k2go_forgejo_update_cancelled">আপডেট বাতিল করা হয়েছে</string>
+    <string name="k2go_dep_required_title">প্রথমে dashboard আপডেট করুন</string>
+    <string name="k2go_dep_required_msg_fmt">ইনস্টল করার আগে এই মডিউলের dashboard %1$s বা নতুন সংস্করণ প্রয়োজন।</string>
+    <string name="k2go_dep_update_dashboard">dashboard আপডেট করুন</string>
+    <string name="k2go_dep_suggest_title">dashboard আপডেট উপলব্ধ</string>
+    <string name="k2go_dep_suggest_msg">মডিউলের নতুন বৈশিষ্ট্য ঠিকমতো কাজ করার জন্য প্রথমে dashboard আপডেট করার পরামর্শ দেওয়া হয়।</string>
+    <string name="k2go_dep_install_anyway">তবুও ইনস্টল করুন</string>
 </resources>

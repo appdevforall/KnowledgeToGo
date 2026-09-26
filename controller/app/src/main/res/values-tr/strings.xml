@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Depolar guncellenemedi</string>
     <string name="k2go_forgejo_update_cancelling">Iptal ediliyor...</string>
     <string name="k2go_forgejo_update_cancelled">Guncelleme iptal edildi</string>
+    <string name="k2go_dep_required_title">Once dashboard\'u guncelleyin</string>
+    <string name="k2go_dep_required_msg_fmt">Bu modul, kurulabilmesi icin dashboard\'un %1$s veya daha yeni surumune ihtiyac duyar.</string>
+    <string name="k2go_dep_update_dashboard">Dashboard\'u guncelle</string>
+    <string name="k2go_dep_suggest_title">Bir dashboard guncellemesi mevcut</string>
+    <string name="k2go_dep_suggest_msg">Yeni modul ozelliklerinin duzgun calismasi icin once dashboard\'u guncellemeniz onerilir.</string>
+    <string name="k2go_dep_install_anyway">Yine de yukle</string>
 </resources>

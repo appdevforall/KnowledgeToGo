@@ -1446,4 +1446,10 @@
     <string name="k2go_forgejo_update_failed">Не удалось обновить репозитории</string>
     <string name="k2go_forgejo_update_cancelling">Отмена...</string>
     <string name="k2go_forgejo_update_cancelled">Обновление отменено</string>
+    <string name="k2go_dep_required_title">Сначала обновите dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Этому модулю нужен dashboard версии %1$s или новее перед установкой.</string>
+    <string name="k2go_dep_update_dashboard">Обновить dashboard</string>
+    <string name="k2go_dep_suggest_title">Доступно обновление dashboard</string>
+    <string name="k2go_dep_suggest_msg">Рекомендуется сначала обновить dashboard, чтобы новые функции модуля работали правильно.</string>
+    <string name="k2go_dep_install_anyway">Всё равно установить</string>
 </resources>

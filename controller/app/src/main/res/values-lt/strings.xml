@@ -1387,4 +1387,10 @@
     <string name="k2go_forgejo_update_failed">Nepavyko atnaujinti saugyklu</string>
     <string name="k2go_forgejo_update_cancelling">Atsaukiama...</string>
     <string name="k2go_forgejo_update_cancelled">Atnaujinimas atsauktas</string>
+    <string name="k2go_dep_required_title">Pirma atnaujinkite dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Siam moduliui reikia dashboard %1$s ar naujesnes versijos, kad ji butu galima idiegti.</string>
+    <string name="k2go_dep_update_dashboard">Atnaujinti dashboard</string>
+    <string name="k2go_dep_suggest_title">Yra dashboard atnaujinimas</string>
+    <string name="k2go_dep_suggest_msg">Rekomenduojama pirma atnaujinti dashboard, kad naujos modulio funkcijos veiktu tinkamai.</string>
+    <string name="k2go_dep_install_anyway">Vis tiek idiegti</string>
 </resources>

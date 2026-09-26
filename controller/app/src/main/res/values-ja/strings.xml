@@ -1371,4 +1371,10 @@
     <string name="k2go_forgejo_update_failed">リポジトリを更新できませんでした</string>
     <string name="k2go_forgejo_update_cancelling">キャンセルしています...</string>
     <string name="k2go_forgejo_update_cancelled">更新をキャンセルしました</string>
+    <string name="k2go_dep_required_title">先に dashboard を更新してください</string>
+    <string name="k2go_dep_required_msg_fmt">このモジュールをインストールするには dashboard のバージョン %1$s 以降が必要です。</string>
+    <string name="k2go_dep_update_dashboard">dashboard を更新</string>
+    <string name="k2go_dep_suggest_title">dashboard の更新があります</string>
+    <string name="k2go_dep_suggest_msg">モジュールの新機能が正しく動作するよう、先に dashboard を更新することをおすすめします。</string>
+    <string name="k2go_dep_install_anyway">それでもインストール</string>
 </resources>

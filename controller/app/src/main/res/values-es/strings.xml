@@ -1446,4 +1446,10 @@
     <string name="k2go_forgejo_update_failed">No se pudieron actualizar los repositorios</string>
     <string name="k2go_forgejo_update_cancelling">Cancelando...</string>
     <string name="k2go_forgejo_update_cancelled">Actualizacion cancelada</string>
+    <string name="k2go_dep_required_title">Actualiza primero el dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Este modulo necesita el dashboard actualizado a la version %1$s o mas reciente antes de poder instalarse.</string>
+    <string name="k2go_dep_update_dashboard">Actualizar dashboard</string>
+    <string name="k2go_dep_suggest_title">Hay una actualizacion del dashboard disponible</string>
+    <string name="k2go_dep_suggest_msg">Se recomienda actualizar primero el dashboard para que las nuevas funciones del modulo funcionen bien.</string>
+    <string name="k2go_dep_install_anyway">Instalar de todos modos</string>
 </resources>

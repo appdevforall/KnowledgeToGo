@@ -1383,4 +1383,10 @@
     <string name="k2go_forgejo_update_failed">Није могуће ажурирати репозиторијуме</string>
     <string name="k2go_forgejo_update_cancelling">Отказивање...</string>
     <string name="k2go_forgejo_update_cancelled">Ажурирање отказано</string>
+    <string name="k2go_dep_required_title">Прво ажурирајте dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Овом модулу је потребан dashboard верзије %1$s или новије пре инсталације.</string>
+    <string name="k2go_dep_update_dashboard">Ажурирај dashboard</string>
+    <string name="k2go_dep_suggest_title">Доступно је ажурирање dashboard-а</string>
+    <string name="k2go_dep_suggest_msg">Препоручује се да прво ажурирате dashboard како би нове функције модула радиле исправно.</string>
+    <string name="k2go_dep_install_anyway">Ипак инсталирај</string>
 </resources>

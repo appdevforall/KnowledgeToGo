@@ -1383,4 +1383,10 @@
     <string name="k2go_forgejo_update_failed">રિપોઝિટરી અપડેટ થઈ શકી નથી</string>
     <string name="k2go_forgejo_update_cancelling">રદ કરી રહ્યાં છીએ...</string>
     <string name="k2go_forgejo_update_cancelled">અપડેટ રદ કરાયું</string>
+    <string name="k2go_dep_required_title">પહેલાં dashboard અપડેટ કરો</string>
+    <string name="k2go_dep_required_msg_fmt">ઇન્સ્ટૉલ થાય તે પહેલાં આ મૉડ્યૂલને dashboard ના %1$s અથવા નવા સંસ્કરણની જરૂર છે.</string>
+    <string name="k2go_dep_update_dashboard">dashboard અપડેટ કરો</string>
+    <string name="k2go_dep_suggest_title">dashboard અપડેટ ઉપલબ્ધ છે</string>
+    <string name="k2go_dep_suggest_msg">મૉડ્યૂલની નવી સુવિધાઓ યોગ્ય રીતે કામ કરે તે માટે પહેલાં dashboard અપડેટ કરવાની ભલામણ છે.</string>
+    <string name="k2go_dep_install_anyway">તોપણ ઇન્સ્ટૉલ કરો</string>
 </resources>
