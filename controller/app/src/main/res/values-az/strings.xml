@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Yadda saxlanıldı</string>
     <string name="settings_saved">Tənzimləmələr yadda saxlanıldı</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All tərəfindən təmin edilir</string>
     <string name="setup_manage_all_permissions">Bütün icazələri idarə et</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">%1$s endirilir…</string>
     <string name="portal_download_failed">Endirmə başladıla bilmədi.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">İnsanların SIM olmadan qoşula bilməsi üçün yerli Wi-Fi şəbəkəsi yaradır.</string>
     <string name="lohs_toggle">Hotspot LocalOnly-ni aktivləşdir</string>
     <string name="lohs_show_qr">Wi-Fi QR göstər</string>

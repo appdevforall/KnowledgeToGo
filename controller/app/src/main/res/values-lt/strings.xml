@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Išsaugota</string>
     <string name="settings_saved">Nustatymai išsaugoti</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">sukurta App Dev for All</string>
     <string name="setup_manage_all_permissions">Tvarkyti visus leidimus</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">Atsisiunčiama %1$s…</string>
     <string name="portal_download_failed">Nepavyko pradėti atsisiuntimo.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Sukuria vietinį Wi-Fi tinklą, kad žmonės galėtų prisijungti be SIM.</string>
     <string name="lohs_toggle">Įjungti Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Rodyti Wi-Fi QR</string>

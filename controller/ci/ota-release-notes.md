@@ -11,6 +11,11 @@ tag). This file is only the short summary end users read when they update.
 Rule: the version header must match the release tag / `versionName` so the CI picks
 the right entry.
 
+## v1.0.0
+Knowledge to Go reaches 1.0 and leaves beta. This is the first stable release: the
+reliability, setup, backup and restore, and phone-to-phone sharing from the beta
+series, brought together and hardened. Thank you for testing along the way.
+
 ## v0.9.0-beta
 Reliability and polish. Downloads no longer get stuck retrying; backup and restore show real progress
 with a working Cancel; long operations keep running in the background and their notification takes you

@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">A ti Fi Pamọ́</string>
     <string name="settings_saved">A ti Fi Àwọn Ìṣàgbékalẹ̀ Pamọ́</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">tí App Dev for All ń mú ṣiṣẹ́</string>
     <string name="setup_manage_all_permissions">Ṣàkóso Gbogbo Àwọn Ìgbàláàyè</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">Ń gba %1$s sílẹ̀…</string>
     <string name="portal_download_failed">A kò lè bẹ̀rẹ̀ ìgbàsílẹ̀.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Ó dá nẹ́tíwọ̀ọ̀kì Wi-Fi àdúgbò sílẹ̀ kí àwọn ènìyàn lè sopọ̀ láìsí SIM.</string>
     <string name="lohs_toggle">Tan Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Fi QR Wi-Fi hàn</string>

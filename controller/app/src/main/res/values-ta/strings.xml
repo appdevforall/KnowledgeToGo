@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">சேமிக்கப்பட்டது</string>
     <string name="settings_saved">அமைப்புகள் சேமிக்கப்பட்டன</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">அனைத்து அனுமதிகளையும் நிர்வகி</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">%1$s ஐப் பதிவிறக்குகிறது…</string>
     <string name="portal_download_failed">பதிவிறக்கத்தைத் தொடங்க முடியவில்லை.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">SIM இல்லாமல் மக்கள் இணைக்க ஒரு உள்ளூர் Wi-Fi நெட்வொர்க்கை உருவாக்குகிறது.</string>
     <string name="lohs_toggle">Hotspot LocalOnly ஐ இயக்கு</string>
     <string name="lohs_show_qr">Wi-Fi QR ஐக் காட்டு</string>

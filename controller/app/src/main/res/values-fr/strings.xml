@@ -149,7 +149,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Enregistré</string>
     <string name="settings_saved">Paramètres enregistrés</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
 
@@ -544,7 +543,7 @@
     <string name="portal_download_started">Téléchargement de %1$s…</string>
     <string name="portal_download_failed">Impossible de démarrer le téléchargement.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Crée un réseau Wi-Fi local pour se connecter sans carte SIM.</string>
     <string name="lohs_toggle">Activer Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Afficher le QR Wi-Fi</string>

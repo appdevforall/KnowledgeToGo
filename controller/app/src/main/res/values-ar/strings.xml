@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">تم الحفظ</string>
     <string name="settings_saved">تم حفظ الإعدادات</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">بدعم من App Dev for All</string>
     <string name="setup_manage_all_permissions">إدارة جميع الأذونات</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">اللغة</string>
     <string name="portal_download_started">جارٍ تنزيل %1$s…</string>
     <string name="portal_download_failed">تعذّر بدء التنزيل.</string>
-    <string name="lohs_label">نقطة اتصال محلية فقط (تجريبي)</string>
+    <string name="lohs_label">نقطة اتصال محلية فقط</string>
     <string name="lohs_hint">تنشئ شبكة واي فاي محلية حتى يتمكن الأشخاص من الاتصال دون شريحة SIM.</string>
     <string name="lohs_toggle">تفعيل نقطة الاتصال المحلية فقط</string>
     <string name="lohs_show_qr">عرض رمز QR للواي فاي</string>

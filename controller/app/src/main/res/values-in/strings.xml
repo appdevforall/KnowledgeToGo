@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Tersimpan</string>
     <string name="settings_saved">Pengaturan Disimpan</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">didukung oleh App Dev for All</string>
     <string name="setup_manage_all_permissions">Kelola Semua Izin</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">Mengunduh %1$s…</string>
     <string name="portal_download_failed">Tidak dapat memulai unduhan.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Membuat jaringan Wi-Fi lokal agar orang dapat terhubung tanpa SIM.</string>
     <string name="lohs_toggle">Aktifkan Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Tampilkan QR Wi-Fi</string>

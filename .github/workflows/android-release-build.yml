@@ -72,10 +72,12 @@ jobs:
           # ADFA-4533: GlitchTip DSN for release builds
           SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
         run: |
-          # Release tags ship a clean version (v0.7.0-beta), no commit hash. build.gradle only
+          # Release tags ship a clean version (v1.0.0), no commit hash. build.gradle only
           # falls back to the git SHA suffix when versionSuffix is absent; pass it empty here.
           # In-APK traceability is unaffected: BuildConfig.GIT_SHA still records the commit.
-          ./gradlew assembleStandardRelease \
+          # K2GO-431: build both flavors. standard -> GitHub + R2 + OTA update.json (as before);
+          # fdroid -> R2 only (F-Droid distributes it; it carries no in-app OTA).
+          ./gradlew assembleStandardRelease assembleFdroidRelease \
             -PversionSuffix="" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
@@ -86,7 +88,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: k2go-apks-release
-          path: controller/**/build/outputs/apk/standard/release/*.apk
+          path: controller/**/build/outputs/apk/*/release/*.apk
           retention-days: 7
 
       # --- GITHUB RELEASES ---
@@ -113,8 +115,10 @@ jobs:
           R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           BUCKET_NAME: "k2go-apk-repo"
         run: |
-          # Loop through all generated APKs (universal, arm64, armeabi) and upload them
-          for apk in $(find . -path "*/build/outputs/apk/release/*.apk"); do
+          # K2GO-431: upload BOTH flavors (standard + fdroid) to R2. The flavor dir sits between
+          # apk/ and release/ (apk/standard/release, apk/fdroid/release); the old apk/release path
+          # never matched a flavored build.
+          for apk in $(find . -path "*/build/outputs/apk/*/release/*.apk"); do
             filename=$(basename "$apk")
             echo "Uploading $filename to Cloudflare R2 ($BUCKET_NAME)..."
             
@@ -159,7 +163,8 @@ jobs:
           echo "Changelog:"; printf '%s\n' "$CHANGELOG"
 
           # Built APK basenames per ABI (the binaries just uploaded to R2).
-          find_apk() { find controller -path "*/build/outputs/apk/release/*$1*.apk" -printf '%f\n' | head -1; }
+          # OTA update.json covers the standard flavor only (fdroid ships with OTA disabled).
+          find_apk() { find controller -path "*/build/outputs/apk/standard/release/*$1*.apk" -printf '%f\n' | head -1; }
           # The APK filenames abbreviate the split's ABI (arm64-v8a -> v8a); see build.gradle.
           APK_ARM64=$(find_apk "-v8a-")
           APK_ARM32=$(find_apk "-v7a-")

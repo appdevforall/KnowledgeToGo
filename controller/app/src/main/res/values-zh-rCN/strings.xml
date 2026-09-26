@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">已保存</string>
     <string name="settings_saved">设置已保存</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">由 App Dev for All 提供支持</string>
     <string name="setup_manage_all_permissions">管理所有权限</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">语言</string>
     <string name="portal_download_started">正在下载 %1$s…</string>
     <string name="portal_download_failed">无法开始下载。</string>
-    <string name="lohs_label">仅本地热点（测试版）</string>
+    <string name="lohs_label">仅本地热点</string>
     <string name="lohs_hint">创建本地 Wi-Fi 网络，让人们无需 SIM 卡即可连接。</string>
     <string name="lohs_toggle">启用仅本地热点</string>
     <string name="lohs_show_qr">显示 Wi-Fi 二维码</string>
