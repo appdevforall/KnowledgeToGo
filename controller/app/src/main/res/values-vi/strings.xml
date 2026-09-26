@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Khong the cap nhat kho</string>
     <string name="k2go_forgejo_update_cancelling">Dang huy...</string>
     <string name="k2go_forgejo_update_cancelled">Da huy cap nhat</string>
+    <string name="k2go_dep_required_title">Cap nhat dashboard truoc</string>
+    <string name="k2go_dep_required_msg_fmt">Mo-dun nay can dashboard phien ban %1$s tro len truoc khi co the cai dat.</string>
+    <string name="k2go_dep_update_dashboard">Cap nhat dashboard</string>
+    <string name="k2go_dep_suggest_title">Da co ban cap nhat dashboard</string>
+    <string name="k2go_dep_suggest_msg">Nen cap nhat dashboard truoc de cac tinh nang moi cua mo-dun hoat dong dung.</string>
+    <string name="k2go_dep_install_anyway">Van cai dat</string>
 </resources>

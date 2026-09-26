@@ -1390,4 +1390,10 @@
     <string name="k2go_forgejo_update_failed">Imeshindwa kusasisha hazina</string>
     <string name="k2go_forgejo_update_cancelling">Inaghairi...</string>
     <string name="k2go_forgejo_update_cancelled">Usasishaji umeghairiwa</string>
+    <string name="k2go_dep_required_title">Sasisha dashboard kwanza</string>
+    <string name="k2go_dep_required_msg_fmt">Moduli hii inahitaji dashboard toleo la %1$s au jipya zaidi kabla ya kusakinishwa.</string>
+    <string name="k2go_dep_update_dashboard">Sasisha dashboard</string>
+    <string name="k2go_dep_suggest_title">Sasisho la dashboard linapatikana</string>
+    <string name="k2go_dep_suggest_msg">Inashauriwa kusasisha dashboard kwanza ili vipengele vipya vya moduli vifanye kazi vizuri.</string>
+    <string name="k2go_dep_install_anyway">Sakinisha hata hivyo</string>
 </resources>

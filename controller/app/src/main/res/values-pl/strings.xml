@@ -1380,4 +1380,10 @@
     <string name="k2go_forgejo_update_failed">Nie udalo sie zaktualizowac repozytoriow</string>
     <string name="k2go_forgejo_update_cancelling">Anulowanie...</string>
     <string name="k2go_forgejo_update_cancelled">Aktualizacja anulowana</string>
+    <string name="k2go_dep_required_title">Najpierw zaktualizuj dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Ten modul wymaga dashboardu w wersji %1$s lub nowszej, zanim bedzie mozna go zainstalowac.</string>
+    <string name="k2go_dep_update_dashboard">Zaktualizuj dashboard</string>
+    <string name="k2go_dep_suggest_title">Dostepna jest aktualizacja dashboardu</string>
+    <string name="k2go_dep_suggest_msg">Zalecane jest najpierw zaktualizowanie dashboardu, aby nowe funkcje modulu dzialaly poprawnie.</string>
+    <string name="k2go_dep_install_anyway">Zainstaluj mimo to</string>
 </resources>

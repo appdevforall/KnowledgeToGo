@@ -1377,4 +1377,10 @@
     <string name="k2go_forgejo_update_failed">Хранилищата не можаха да бъдат обновени</string>
     <string name="k2go_forgejo_update_cancelling">Отказване...</string>
     <string name="k2go_forgejo_update_cancelled">Обновяването е отказано</string>
+    <string name="k2go_dep_required_title">Първо обновете dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Този модул се нуждае от dashboard версия %1$s или по-нова, преди да може да се инсталира.</string>
+    <string name="k2go_dep_update_dashboard">Обнови dashboard</string>
+    <string name="k2go_dep_suggest_title">Налична е актуализация на dashboard</string>
+    <string name="k2go_dep_suggest_msg">Препоръчва се първо да обновите dashboard, за да работят правилно новите функции на модула.</string>
+    <string name="k2go_dep_install_anyway">Инсталирай въпреки това</string>
 </resources>

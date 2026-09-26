@@ -1390,4 +1390,10 @@
     <string name="k2go_forgejo_update_failed">களஞ்சியங்களைப் புதுப்பிக்க முடியவில்லை</string>
     <string name="k2go_forgejo_update_cancelling">ரத்து செய்யப்படுகிறது...</string>
     <string name="k2go_forgejo_update_cancelled">புதுப்பிப்பு ரத்து செய்யப்பட்டது</string>
+    <string name="k2go_dep_required_title">முதலில் dashboard ஐப் புதுப்பிக்கவும்</string>
+    <string name="k2go_dep_required_msg_fmt">நிறுவப்படுவதற்கு முன் இந்த தொகுதிக்கு dashboard பதிப்பு %1$s அல்லது புதியது தேவை.</string>
+    <string name="k2go_dep_update_dashboard">dashboard ஐப் புதுப்பி</string>
+    <string name="k2go_dep_suggest_title">dashboard புதுப்பிப்பு உள்ளது</string>
+    <string name="k2go_dep_suggest_msg">தொகுதியின் புதிய அம்சங்கள் சரியாக இயங்க முதலில் dashboard ஐப் புதுப்பிக்க பரிந்துரைக்கப்படுகிறது.</string>
+    <string name="k2go_dep_install_anyway">இருப்பினும் நிறுவு</string>
 </resources>

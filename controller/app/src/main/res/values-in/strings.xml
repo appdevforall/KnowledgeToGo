@@ -1377,4 +1377,10 @@
     <string name="k2go_forgejo_update_failed">Tidak dapat memperbarui repositori</string>
     <string name="k2go_forgejo_update_cancelling">Membatalkan...</string>
     <string name="k2go_forgejo_update_cancelled">Pembaruan dibatalkan</string>
+    <string name="k2go_dep_required_title">Perbarui dashboard dulu</string>
+    <string name="k2go_dep_required_msg_fmt">Modul ini memerlukan dashboard versi %1$s atau lebih baru sebelum dapat dipasang.</string>
+    <string name="k2go_dep_update_dashboard">Perbarui dashboard</string>
+    <string name="k2go_dep_suggest_title">Pembaruan dashboard tersedia</string>
+    <string name="k2go_dep_suggest_msg">Disarankan memperbarui dashboard dulu agar fitur baru modul berfungsi dengan benar.</string>
+    <string name="k2go_dep_install_anyway">Tetap pasang</string>
 </resources>

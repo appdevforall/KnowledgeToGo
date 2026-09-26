@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">تعذّر تحديث المستودعات</string>
     <string name="k2go_forgejo_update_cancelling">جارٍ الإلغاء...</string>
     <string name="k2go_forgejo_update_cancelled">تم إلغاء التحديث</string>
+    <string name="k2go_dep_required_title">حدّث dashboard أولاً</string>
+    <string name="k2go_dep_required_msg_fmt">تحتاج هذه الوحدة إلى dashboard بالإصدار %1$s أو أحدث قبل تثبيتها.</string>
+    <string name="k2go_dep_update_dashboard">تحديث dashboard</string>
+    <string name="k2go_dep_suggest_title">يتوفر تحديث لـ dashboard</string>
+    <string name="k2go_dep_suggest_msg">يُوصى بتحديث dashboard أولاً حتى تعمل ميزات الوحدة الجديدة بشكل صحيح.</string>
+    <string name="k2go_dep_install_anyway">التثبيت على أي حال</string>
 </resources>

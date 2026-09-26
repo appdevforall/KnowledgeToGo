@@ -1371,4 +1371,10 @@
     <string name="k2go_forgejo_update_failed">无法更新仓库</string>
     <string name="k2go_forgejo_update_cancelling">正在取消...</string>
     <string name="k2go_forgejo_update_cancelled">更新已取消</string>
+    <string name="k2go_dep_required_title">请先更新 dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">此模块需要 dashboard 更新到 %1$s 或更高版本才能安装。</string>
+    <string name="k2go_dep_update_dashboard">更新 dashboard</string>
+    <string name="k2go_dep_suggest_title">有可用的 dashboard 更新</string>
+    <string name="k2go_dep_suggest_msg">建议先更新 dashboard，以便模块的新功能正常运行。</string>
+    <string name="k2go_dep_install_anyway">仍然安装</string>
 </resources>

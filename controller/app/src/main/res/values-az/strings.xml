@@ -1390,4 +1390,10 @@
     <string name="k2go_forgejo_update_failed">Anbarlar yenilene bilmedi</string>
     <string name="k2go_forgejo_update_cancelling">Legv edilir...</string>
     <string name="k2go_forgejo_update_cancelled">Yenileme legv edildi</string>
+    <string name="k2go_dep_required_title">Evvelce dashboard-u yenileyin</string>
+    <string name="k2go_dep_required_msg_fmt">Bu modul qurasdirila bilmesi ucun %1$s ve ya daha yeni dashboard versiyasina ehtiyac duyur.</string>
+    <string name="k2go_dep_update_dashboard">Dashboard-u yenile</string>
+    <string name="k2go_dep_suggest_title">Dashboard yenilemesi movcuddur</string>
+    <string name="k2go_dep_suggest_msg">Yeni modul funksiyalarinin duzgun islemesi ucun evvelce dashboard-u yenilemek tovsiye olunur.</string>
+    <string name="k2go_dep_install_anyway">Yene de qurasdir</string>
 </resources>

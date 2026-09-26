@@ -1377,4 +1377,10 @@
     <string name="k2go_forgejo_update_failed">Repozitare sa nepodarilo aktualizovat</string>
     <string name="k2go_forgejo_update_cancelling">Rusi sa...</string>
     <string name="k2go_forgejo_update_cancelled">Aktualizacia zrusena</string>
+    <string name="k2go_dep_required_title">Najprv aktualizujte dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Tento modul potrebuje dashboard vo verzii %1$s alebo novsej, nez ho bude mozne nainstalovat.</string>
+    <string name="k2go_dep_update_dashboard">Aktualizovat dashboard</string>
+    <string name="k2go_dep_suggest_title">Je dostupna aktualizacia dashboardu</string>
+    <string name="k2go_dep_suggest_msg">Odporucame najprv aktualizovat dashboard, aby nove funkcie modulu fungovali spravne.</string>
+    <string name="k2go_dep_install_anyway">Aj tak nainstalovat</string>
 </resources>

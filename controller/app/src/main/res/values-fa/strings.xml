@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">به‌روزرسانی مخازن ممکن نشد</string>
     <string name="k2go_forgejo_update_cancelling">در حال لغو...</string>
     <string name="k2go_forgejo_update_cancelled">به‌روزرسانی لغو شد</string>
+    <string name="k2go_dep_required_title">ابتدا dashboard را به‌روزرسانی کنید</string>
+    <string name="k2go_dep_required_msg_fmt">این ماژول پیش از نصب به dashboard نسخه %1$s یا جدیدتر نیاز دارد.</string>
+    <string name="k2go_dep_update_dashboard">به‌روزرسانی dashboard</string>
+    <string name="k2go_dep_suggest_title">به‌روزرسانی dashboard در دسترس است</string>
+    <string name="k2go_dep_suggest_msg">توصیه می‌شود ابتدا dashboard را به‌روزرسانی کنید تا قابلیت‌های جدید ماژول درست کار کنند.</string>
+    <string name="k2go_dep_install_anyway">به هر حال نصب شود</string>
 </resources>

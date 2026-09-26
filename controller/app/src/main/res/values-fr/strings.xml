@@ -1457,4 +1457,10 @@
     <string name="k2go_forgejo_update_failed">Impossible de mettre a jour les depots</string>
     <string name="k2go_forgejo_update_cancelling">Annulation...</string>
     <string name="k2go_forgejo_update_cancelled">Mise a jour annulee</string>
+    <string name="k2go_dep_required_title">Mettez d\'abord a jour le dashboard</string>
+    <string name="k2go_dep_required_msg_fmt">Ce module a besoin du dashboard en version %1$s ou plus recente avant de pouvoir etre installe.</string>
+    <string name="k2go_dep_update_dashboard">Mettre a jour le dashboard</string>
+    <string name="k2go_dep_suggest_title">Une mise a jour du dashboard est disponible</string>
+    <string name="k2go_dep_suggest_msg">Il est recommande de mettre a jour le dashboard d\'abord pour que les nouvelles fonctions du module marchent bien.</string>
+    <string name="k2go_dep_install_anyway">Installer quand meme</string>
 </resources>

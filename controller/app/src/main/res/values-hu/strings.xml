@@ -1370,4 +1370,10 @@
     <string name="k2go_forgejo_update_failed">Nem sikerult frissiteni az adattarakat</string>
     <string name="k2go_forgejo_update_cancelling">Megszakitas...</string>
     <string name="k2go_forgejo_update_cancelled">Frissites megszakitva</string>
+    <string name="k2go_dep_required_title">Eloszor frissitse a dashboardot</string>
+    <string name="k2go_dep_required_msg_fmt">Ehhez a modulhoz a dashboard %1$s vagy ujabb verzioja szukseges a telepites elott.</string>
+    <string name="k2go_dep_update_dashboard">Dashboard frissitese</string>
+    <string name="k2go_dep_suggest_title">Elerheto a dashboard frissitese</string>
+    <string name="k2go_dep_suggest_msg">Ajanlott eloszor frissiteni a dashboardot, hogy az uj modulfunkciok megfeleloen mukodjenek.</string>
+    <string name="k2go_dep_install_anyway">Telepites mindenkepp</string>
 </resources>
