@@ -54,6 +54,12 @@ public final class ModuleRetry {
             Snackbars.make(anchor, BusyMessage.resFor(ctx)).show();
             return false;
         }
+        // K2GO-430: a retry starts the install directly (not via openModuleIndex), so gate the dash-node
+        // dependency here too. If the box dash-node is below the module's minimum, the gate shows the
+        // "update the dashboard first" dialog and the retry does not fire.
+        if (!org.appdevforall.k2go.dependency.presentation.DashNodeGate.allowInstall(ctx, moduleKey)) {
+            return false;
+        }
         InstallService.retryModules(ctx, Collections.singletonList(moduleKey));
         return true;
     }
