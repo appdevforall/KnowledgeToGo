@@ -99,9 +99,10 @@ two layered migrations from colliding, follow these rules:
   `org.iiab.controller.<feature>/{domain,data,presentation}`. Code inside a feature
   package is private to that feature, so two features in different packages almost
   never produce merge conflicts. Keep new code there, not in shared classes.
-- **Know the conflict hotspots** — the files many features must touch: the legacy
-  god classes (`MainActivity`, `DeployFragment`), `InstallationPlanner`, anything
-  in `util/`, `build.gradle`, `AndroidManifest.xml`, and `res/values/strings.xml`.
+- **Know the conflict hotspots:** the files many features must touch: the god
+  classes (`install/presentation/InstallService`, `redesign/CloneFragment`,
+  `redesign/SetupProgressActivity`, `redesign/LibraryActivity`), `InstallationPlanner`,
+  anything in `util/`, `build.gradle`, `AndroidManifest.xml`, and `res/values/strings.xml`.
   Edits to these must be **additive and minimal**: add a new overload/method/string
   rather than changing an existing signature; don't reformat or reorder surrounding
   code; keep the diff as small as the change allows.
@@ -288,10 +289,23 @@ Enforces the ABI-separation policy + rootfs sanity at the two untrusted gates.
   `tools/rootfs-builder/iiab_tree_hash.py`), the in-app backup-writer emitting both members, and
   the arbitrary-file attack-vector analysis.
 
-**Legacy (NOT yet layered)** — most of `org.iiab.controller` is still flat:
-god classes `MainActivity` and `DeployFragment` (~2.7k LOC), shared mutable
-state on public/static fields, hand-rolled `HttpURLConnection` calls duplicated
-across classes, inline size formatting.
+**Legacy (NOT yet layered)**: the redesign retired the original god classes
+`MainActivity` and `DeployFragment` (they no longer exist; DONE-slice seams above
+that still name them are pre-redesign records). The current god-tier classes,
+largest first, are:
+- `install/presentation/InstallService` (~2.1k LOC): the install orchestrator and
+  the worst offender, mixing proot/process control, networking, persistence, JSON
+  and threading in one service.
+- `redesign/SetupProgressActivity` (~1.6k LOC): the "finishing setup" screen; it
+  fuses the progress UI with provisioning orchestration (server-up detection,
+  install drain, Kolibri seeding, OperationDispatcher) and threading, and
+  `implements ServerController.Host`.
+- `redesign/CloneFragment` (~1.6k LOC): a single-screen UI god-fragment.
+- Second tier: `redesign/LibraryActivity` (~1.2k), `TerminalController` (~1.0k),
+  `redesign/FqrController` (~0.9k), `redesign/LibraryHomeFragment` (~0.85k),
+  `redesign/SetupLibraryActivity` (~0.76k).
+Shared debt across these: public/static cross-class state, hand-rolled
+`HttpURLConnection` in several classes, and inline size formatting.
 
 See `ROOTFS_SIZE_PILOT_ANALYSIS.md` (repo root) for the detailed change map and
 live-size data behind the reference slice.
@@ -331,13 +345,20 @@ migrate. Reference migration: the Dashboard (`fragment_dashboard` + `DashboardFr
 Evident debt noticed while building the pilot. Chip away at these **only when
 you are already in the file** (boy-scout), and record progress in the design map:
 
-- **God classes:** `DeployFragment` (~2.7k LOC) and `MainActivity` mix UI, IO,
-  process control and networking. Extract cohesive slices into feature packages.
+- **God classes:** `install/presentation/InstallService` (~2.1k LOC, the worst:
+  proot + networking + persistence + JSON + threading), `redesign/SetupProgressActivity`
+  (~1.6k, UI + provisioning + server lifecycle), and `redesign/CloneFragment`
+  (~1.6k, UI) mix UI, IO, process control and networking. The old
+  `MainActivity` / `DeployFragment` were retired by the redesign. Extract cohesive
+  slices into feature packages.
 - **Shared mutable state:** public/`static` fields used as cross-class state
   (e.g. download flags). Prefer encapsulated state in a `ViewModel`.
-- **Duplicated networking:** `HttpURLConnection` is reimplemented in
-  `InstallationPlanner`, `DeployFragment`, `MainActivity`. Consolidate behind
-  data sources / a small HTTP helper as features migrate.
+- **Duplicated networking:** `HttpURLConnection` is still hand-rolled across ~27
+  classes: `InstallationPlanner`, `Aria2Manager`, several `redesign/*` fragments
+  (e.g. `LibraryHomeFragment`, `GetMoreHubFragment`, `ModuleHubFragment`), and the
+  per-area `*/data/*Client` classes (Dashboard / Books / Kiwix / Maps / Kolibri /
+  Catalog / Forgejo). Consolidate behind data sources / a small HTTP helper as
+  features migrate.
 - **Inline formatting:** byte/size strings are formatted ad hoc in several
   places. Route them through `util/ByteFormatter`.
 - **Thin tests:** only pure static logic is covered. Every migrated slice must
