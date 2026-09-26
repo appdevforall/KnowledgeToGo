@@ -1,0 +1,61 @@
+version = 1
+
+# K2GO-429: machine-readable license declaration (REUSE), follow-up to K2GO-413.
+# First-party code is GPL-3.0-or-later (root LICENSE, relicensed in K2GO-413).
+# Declared by path glob so no per-file header change is needed. node_modules is
+# gitignored and the termux submodule is a gitlink, so reuse does not scan either.
+# Matching is last-wins: the broad glob first, then the specific overrides.
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 AppDevForAll"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Files that started in IIAB Android and are still IIAB-derived. Keep IIAB Project
+# as co-copyright and add AppDevForAll.
+[[annotations]]
+path = [
+    "controller/app/src/main/java/org/appdevforall/k2go/PortalActivity.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/ModuleRegistry.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/IIABApplication.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/WatchdogService.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/TarExtractor.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/update/domain/UpdateCheck.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/util/ProcessRunner.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/update/data/ApkVerifier.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/update/domain/CertDigests.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/domain/RootfsArchive.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/data/RootfsArchiveValidator.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/data/RootfsManifest.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/domain/ArchiveEntry.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/domain/ElfClass.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/deploy/domain/ModuleName.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/adb/domain/AdbShellCommand.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/Aria2Manager.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/BatteryUtils.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/BiometricHelper.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/IIABAdbManager.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/IIABWatchdog.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/LogManager.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/Preferences.java",
+    "controller/app/src/main/java/org/appdevforall/k2go/PRootEngine.java",
+]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 AppDevForAll", "2026 IIAB Project"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Third-party: the Gradle wrapper (Apache-2.0), not first-party. Do not stamp GPL.
+[[annotations]]
+path = ["controller/gradlew", "controller/gradlew.bat"]
+precedence = "override"
+SPDX-FileCopyrightText = "Gradle, Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+# Third-party: a Material icon from the Android Open Source Project (Apache-2.0,
+# per its own header). Do not stamp GPL.
+[[annotations]]
+path = "controller/app/src/main/res/drawable/outline_dashboard_2_gear_24.xml"
+precedence = "override"
+SPDX-FileCopyrightText = "The Android Open Source Project"
+SPDX-License-Identifier = "Apache-2.0"
