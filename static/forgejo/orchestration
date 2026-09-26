@@ -159,6 +159,9 @@ _fj_migrate() {
 
 # Method B: shallow snapshot -> adopt (recommended; full current tree, compilable, no history).
 # K2GO-212: keep the failure output for debugging.
+# K2GO-422: clone at depth 20 (not 1). ~0 extra size on these repos, but it keeps a short recent
+# history so the web UI shows the last changes and so a later refresh has a merge base to compare
+# against (git ancestry is the single source; no extra on-disk marker is written).
 _fj_shallow_adopt() {
   local owner="$1" name="$2" addr="$3" branch="$4" out
   # Forgejo derives the on-disk path as <root>/<owner_lc>/<repo_lc>.git (RepoPath lowercases owner and
@@ -169,7 +172,7 @@ _fj_shallow_adopt() {
   local br=""; [ -n "$branch" ] && br="--branch $branch"
   mkdir -p "$ldir"
   # shellcheck disable=SC2086
-  out="$(git clone --bare --depth 1 --single-branch $br "$addr" "$dir" 2>&1)" \
+  out="$(git clone --bare --depth 20 --single-branch $br "$addr" "$dir" 2>&1)" \
     || { warn "clone $owner/$name failed: $out"; return 1; }
   chown -R "$FORGEJO_RUN_USER:$FORGEJO_RUN_USER" "$ldir"
   out="$(_fj_api -X POST "$FORGEJO_API/admin/unadopted/$owner/$name" 2>&1)" \
@@ -198,4 +201,117 @@ seed_forgejo() {
     _fj_seed_one "$owner" "$name" "$addr" "$branch" || true   # one repo must not abort the rest
   done
   ok "forgejo seeding done"
+}
+
+# ===== K2GO-422: live repo refresh (non-destructive) =======================
+# Refresh the seeded example repos from their upstreams WITHOUT a box stop and
+# WITHOUT ever losing a local commit. Per repo:
+#   up to date : the served branch equals upstream -> nothing to do.
+#   pristine   : the served branch is an ancestor of upstream -> fast-forward.
+#   diverged   : the owner committed on the served branch. Try a real 3-way merge
+#                with git merge-tree (no worktree is needed on a bare repo):
+#                clean    -> commit the merge and advance (keeps their commits);
+#                conflict -> leave the branch AS IS and report "blocked" (the
+#                owner reconciles in the forge web UI, not here).
+# pristine vs diverged is DERIVED from git ancestry, so no extra on-disk marker is
+# kept (git history is the single source). The served branch only ever moves
+# FORWARD (every push is a fast-forward), so a refresh can never drop a commit.
+# Ref moves go THROUGH forgejo (an authenticated push) so its hooks fire and the
+# forge metadata stays in sync, unlike a raw update-ref.
+
+# Advance a branch to <commit> by pushing THROUGH forgejo (fires its hooks). The
+# push is always a fast-forward (<commit> has the old tip as an ancestor), so it
+# can never be destructive; forgejo rejects a non-ff, which we treat as a skip.
+_fj_push_branch() {
+  local owner="$1" name="$2" commit="$3" br="$4"
+  local dir="$FORGEJO_REPO_ROOT/$(_fj_lc "$owner")/$(_fj_lc "$name").git"
+  local auth; auth="$(printf '%s:%s' "$FORGEJO_ADMIN_USER" "$FORGEJO_ADMIN_PASS" | base64 | tr -d '\n')"
+  git -C "$dir" -c "http.extraHeader=Authorization: Basic $auth" \
+    push "http://127.0.0.1:3300/$owner/$name.git" "$commit:refs/heads/$br" >/dev/null 2>&1
+}
+
+# Write the repo description as a human status board. It is a PROJECTION: rebuilt
+# every run from git state + the two stored timestamps, never read back as
+# authority. State is derived from the served branch vs the last-fetched upstream
+# side ref; the two timestamps live in the repo git config (their only home).
+# NOTE: the "--[ ... ]--" section markers are a DELIBERATE exception to the no-"--"
+# rule, allowed only because this string never enters an XML resource. ASCII-only;
+# do NOT copy this template into strings.xml (-- is illegal in an XML comment).
+_fj_write_desc() {
+  local owner="$1" name="$2" dir br cur up state lu la d
+  dir="$FORGEJO_REPO_ROOT/$(_fj_lc "$owner")/$(_fj_lc "$name").git"
+  br="$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null)"
+  cur="$(git -C "$dir" rev-parse "refs/heads/$br" 2>/dev/null)"
+  up="$(git -C "$dir" rev-parse "refs/k2go/upstream/$br" 2>/dev/null)"
+  if [ -z "$up" ] || [ "$cur" = "$up" ]; then state="updatable"
+  elif git -C "$dir" merge-base --is-ancestor "$cur" "$up" 2>/dev/null; then state="updatable"
+  elif git -C "$dir" merge-base --is-ancestor "$up" "$cur" 2>/dev/null; then state="diverged, updatable"
+  else state="diverged, blocked"; fi
+  lu="$(git -C "$dir" config --get k2go.lastupdate 2>/dev/null)";  [ -n "$lu" ] || lu="n/a"
+  la="$(git -C "$dir" config --get k2go.lastattempt 2>/dev/null)"; [ -n "$la" ] || la="n/a"
+  d="$name example repo. To keep it evergreen, please fork it and apply your changes to your own fork; avoid committing to this branch so we can keep it in sync later on. --[ Last Update: $lu ]-- --[ Last Attempt: $la ]-- --[ Status: $state ]--"
+  _fj_api -X PATCH "$FORGEJO_API/repos/$owner/$name" -H 'Content-Type: application/json' \
+    -d "{\"description\":\"$d\"}" >/dev/null 2>&1 || warn "desc update failed $owner/$name"
+}
+
+# Refresh one repo (guard -> fetch to a side ref -> classify -> ff/merge/skip -> desc).
+_fj_refresh_one() {
+  local owner="$1" name="$2" addr="$3" branch="$4"
+  local dir="$FORGEJO_REPO_ROOT/$(_fj_lc "$owner")/$(_fj_lc "$name").git"
+  local now; now="$(date -u '+%Y-%m-%d %H:%M UTC')"
+  if ! _fj_repo_ready "$owner" "$name"; then log "refresh skip $owner/$name (not seeded)"; return 0; fi
+  [ -d "$dir" ] || { warn "refresh skip $owner/$name (no on-disk dir)"; return 0; }
+  local br="$branch"
+  [ -n "$br" ] || br="$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null)"
+  [ -n "$br" ] || { warn "refresh skip $owner/$name (no branch)"; return 0; }
+  git -C "$dir" config k2go.lastattempt "$now"   # attempt recorded regardless of outcome
+  local uref="refs/k2go/upstream/$br"
+  if ! git -C "$dir" fetch --depth 20 "$addr" "+$br:$uref" >/dev/null 2>&1; then
+    warn "refresh fetch failed $owner/$name (offline?)"; _fj_write_desc "$owner" "$name"; return 0
+  fi
+  local cur up; cur="$(git -C "$dir" rev-parse "refs/heads/$br")"; up="$(git -C "$dir" rev-parse "$uref")"
+  # If neither tip is an ancestor of the other, the link may just be cut by the shallow boundary (a repo
+  # that fell more than ~20 commits behind upstream). Deepen once and re-read upstream BEFORE deciding it
+  # is diverged, so a far-behind PRISTINE repo fast-forwards instead of being falsely reported "blocked".
+  if [ -n "$cur" ] && [ -n "$up" ] && [ "$cur" != "$up" ] \
+     && ! git -C "$dir" merge-base --is-ancestor "$cur" "$up" 2>/dev/null \
+     && ! git -C "$dir" merge-base --is-ancestor "$up" "$cur" 2>/dev/null; then
+    git -C "$dir" fetch --deepen 200 "$addr" "+$br:$uref" >/dev/null 2>&1 || true
+    up="$(git -C "$dir" rev-parse "$uref")"
+  fi
+  if [ "$cur" = "$up" ]; then
+    git -C "$dir" config k2go.lastupdate "$now"; log "refresh up-to-date $owner/$name"
+  elif git -C "$dir" merge-base --is-ancestor "$cur" "$up"; then
+    if _fj_push_branch "$owner" "$name" "$up" "$br"; then
+      git -C "$dir" config k2go.lastupdate "$now"; ok "refresh fast-forward $owner/$name"
+    else warn "refresh ff push failed $owner/$name"; fi
+  elif git -C "$dir" merge-base --is-ancestor "$up" "$cur"; then
+    # the served branch already contains all of upstream (local commits sit on top)
+    # -> nothing to pull. A no-op, so a diverged-but-merged repo does not pile a
+    # redundant merge commit on every refresh.
+    git -C "$dir" config k2go.lastupdate "$now"; log "refresh already ahead $owner/$name"
+  else
+    local tree merged
+    if tree="$(git -C "$dir" merge-tree --write-tree "$cur" "$up" 2>/dev/null)"; then
+      merged="$(GIT_AUTHOR_NAME=K2Go GIT_AUTHOR_EMAIL=k2go@box.lan GIT_COMMITTER_NAME=K2Go GIT_COMMITTER_EMAIL=k2go@box.lan \
+        git -C "$dir" commit-tree "$tree" -p "$cur" -p "$up" -m "Merge upstream into $br (K2Go refresh)" 2>/dev/null)"
+      if [ -n "$merged" ] && _fj_push_branch "$owner" "$name" "$merged" "$br"; then
+        git -C "$dir" config k2go.lastupdate "$now"; ok "refresh merged upstream into $owner/$name"
+      else warn "refresh merge push failed $owner/$name"; fi
+    else
+      warn "refresh conflict $owner/$name (left as is; reconcile in the web UI)"
+    fi
+  fi
+  _fj_write_desc "$owner" "$name"
+}
+
+# ===== entry point: refresh (what the dash-node refresh endpoint calls) =====
+refresh_forgejo() {
+  _fj_wait_200 || return 1
+  _fj_resolve_admin_creds        # same single-source admin credential the seed uses
+  printf '%s\n' "$FORGEJO_REPOS" | while IFS='|' read -r owner name addr branch; do
+    [ -n "$owner" ] && [ -n "$addr" ] || continue
+    _fj_refresh_one "$owner" "$name" "$addr" "$branch" || true   # one repo must not abort the rest
+  done
+  ok "forgejo refresh done"
 }

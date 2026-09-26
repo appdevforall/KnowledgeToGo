@@ -376,6 +376,77 @@ apiRouter.get('/forgejo/status', async (_req: Request, res: Response): Promise<v
     }
 });
 
+// --- Forgejo refresh (K2GO-422) ---------------------------------------------
+// Non-destructive live refresh of the seeded example repos: fast-forward when
+// pristine, a clean 3-way merge when the owner committed on the served branch,
+// and a skip (left as is) on conflict. The served branch only moves forward, so
+// a refresh can never drop a commit. Same detached-script + status/log pattern
+// as the seed; no params (it refreshes whatever is already seeded). Localhost-only.
+const FORGEJO_REFRESH_SCRIPT = '/opt/iiab-android/tools/forgejo-refresh.sh';
+const FORGEJO_REFRESH_STATUS = '/var/run/forgejo-refresh.status';
+const FORGEJO_REFRESH_LOG = '/var/log/forgejo-refresh.log';
+const FORGEJO_REFRESH_PID = '/var/run/forgejo-refresh.pid';
+
+apiRouter.post('/forgejo/refresh', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(FORGEJO_REFRESH_STATUS, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (running) { res.status(409).json({ error: 'a forgejo refresh is already running' }); return; }
+    if (!fs.existsSync(FORGEJO_REFRESH_SCRIPT)) { res.status(500).json({ error: 'forgejo refresh script not found' }); return; }
+    try {
+        // setsid => own session, so a pdsm restart of dash-node cannot kill the refresh mid-run.
+        const child = spawn('setsid', ['bash', FORGEJO_REFRESH_SCRIPT], {
+            detached: true, stdio: 'ignore', env: { ...process.env },
+        });
+        child.unref();
+        // Mark running synchronously before answering, so an immediate poll cannot read a stale state.
+        try { fs.writeFileSync(FORGEJO_REFRESH_STATUS, 'running'); } catch { /* best effort */ }
+        res.status(202).json({ ok: true, state: 'running' });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not start forgejo refresh' });
+    }
+});
+
+apiRouter.get('/forgejo/refresh/status', (_req: Request, res: Response): void => {
+    res.set('Cache-Control', 'no-store');
+    let state = 'idle';
+    try { state = fs.readFileSync(FORGEJO_REFRESH_STATUS, 'utf8').trim() || 'idle'; } catch { /* no file yet */ }
+    let lines: string[] = [];
+    try {
+        const all = fs.readFileSync(FORGEJO_REFRESH_LOG, 'utf8').split('\n');
+        if (all.length && all[all.length - 1] === '') all.pop();
+        lines = all.slice(-FORGEJO_SEED_LOG_TAIL);
+    } catch { /* no log yet */ }
+    // K2GO-422: per-repo outcome counts, so the app can distinguish "updated" / "already up to date" /
+    // "some could not be updated" / "could not update any". Derived from the box's own refresh log (the
+    // only place that knows each repo's outcome). changed = advanced; problems = conflict or a fetch/push
+    // failure (the user reconciles those in the repo web UI); total = repos actually attempted.
+    const changed = lines.filter(l =>
+        l.includes('refresh fast-forward') || l.includes('refresh merged upstream')).length;
+    const problems = lines.filter(l =>
+        l.includes('refresh conflict') || l.includes('refresh fetch failed')
+        || l.includes('refresh ff push failed') || l.includes('refresh merge push failed')).length;
+    const okNoChange = lines.filter(l =>
+        l.includes('refresh up-to-date') || l.includes('refresh already ahead')).length;
+    res.json({ state, lines, changed, problems, total: changed + okNoChange + problems });
+});
+
+// Cancel a running refresh. The wrapper runs under setsid (its own process group), so a SIGKILL to the
+// group (kill -pid) stops the shell and the git child it is on. Safe: the refresh only ever fast-forwards
+// or writes to a side ref, so a mid-run kill leaves the served branches untouched. No-op if not running.
+apiRouter.post('/forgejo/refresh/cancel', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(FORGEJO_REFRESH_STATUS, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (!running) { res.json({ ok: true, state: 'idle' }); return; }
+    let pid = 0;
+    try { pid = parseInt(fs.readFileSync(FORGEJO_REFRESH_PID, 'utf8').trim(), 10); } catch { /* no pid */ }
+    if (pid > 0) {
+        try { process.kill(-pid, 'SIGKILL'); } catch { /* already gone */ }
+    }
+    // Mark terminal ourselves: the killed wrapper cannot write its own status.
+    try { fs.writeFileSync(FORGEJO_REFRESH_STATUS, 'cancelled'); } catch { /* best effort */ }
+    res.json({ ok: true, state: 'cancelled' });
+});
+
 // Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
 // the app then polls /system/version + RestReadiness until the API is back on the new version.
 // ADFA-5339: an optional { site: true } also refreshes the served landing page in the same run. The
