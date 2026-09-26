@@ -202,6 +202,27 @@ public final class ModuleActionSheet {
                 content.addView(row(ctx, R.drawable.ic_arrow_right, act.getString(R.string.k2go_sheet_open),
                         Emphasis.ACCENT, null, false, v -> { dlg.dismiss(); openContent(act, endpoint); }));
                 content.addView(about);
+                // K2GO-422: an installed forgejo with the example repos present -> offer "Update repos"
+                // here (the module action menu). Gated by the SAME status the detail uses (hasRepos), read
+                // off the main thread; the row is inserted after About when the box answers, if the sheet
+                // is still up. Tapping runs the shared refresh IN the sheet (it does NOT dismiss).
+                if ("forgejo".equals(key)) {
+                    final LinearLayout host = content;
+                    org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
+                        final org.appdevforall.k2go.forgejo.data.ForgejoStatusClient.Status st =
+                                new org.appdevforall.k2go.forgejo.data.ForgejoStatusClient().fetch();
+                        // Gate on canUpdateRepos (manageable AND repos present): a null read (cannot tell),
+                        // no repos, or an admin we cannot authenticate (blocked) shows no Update row.
+                        if (st == null || !st.canUpdateRepos()) return;
+                        act.runOnUiThread(() -> {
+                            if (!dlg.isShowing()) return;
+                            View urow = row(ctx, R.drawable.ic_refresh,
+                                    act.getString(R.string.k2go_forgejo_update_repos), Emphasis.ACCENT, null, false,
+                                    v -> org.appdevforall.k2go.forgejo.presentation.ForgejoRepoRefresh.start(act, v));
+                            host.addView(urow, host.indexOfChild(about) + 1);
+                        });
+                    });
+                }
                 break;
             case SCHEDULED: {
                 content.addView(about);
