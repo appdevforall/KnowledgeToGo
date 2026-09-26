@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Salvato</string>
     <string name="settings_saved">Impostazioni salvate</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">con la tecnologia di App Dev for All</string>
     <string name="setup_manage_all_permissions">Gestisci tutte le autorizzazioni</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Lingua</string>
     <string name="portal_download_started">Download di %1$s…</string>
     <string name="portal_download_failed">Impossibile avviare il download.</string>
-    <string name="lohs_label">Hotspot solo locale (BETA)</string>
+    <string name="lohs_label">Hotspot solo locale</string>
     <string name="lohs_hint">Crea una rete Wi-Fi locale così le persone possono connettersi senza una SIM.</string>
     <string name="lohs_toggle">Attiva Hotspot solo locale</string>
     <string name="lohs_show_qr">Mostra QR Wi-Fi</string>

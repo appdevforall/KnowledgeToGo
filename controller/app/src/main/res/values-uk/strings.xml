@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Збережено</string>
     <string name="settings_saved">Налаштування збережено</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">працює на App Dev for All</string>
     <string name="setup_manage_all_permissions">Керувати всіма дозволами</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Мова</string>
     <string name="portal_download_started">Завантаження %1$s…</string>
     <string name="portal_download_failed">Не вдалося почати завантаження.</string>
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Створює локальну мережу Wi-Fi, щоб люди могли підключатися без SIM.</string>
     <string name="lohs_toggle">Увімкнути Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Показати QR Wi-Fi</string>

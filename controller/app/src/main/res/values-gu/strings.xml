@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">સાચવ્યું</string>
     <string name="settings_saved">સેટિંગ્સ સાચવ્યાં</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All દ્વારા સંચાલિત</string>
     <string name="setup_manage_all_permissions">બધી પરવાનગીઓ મેનેજ કરો</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">ભાષા</string>
     <string name="portal_download_started">%1$s ડાઉનલોડ થઈ રહ્યું છે…</string>
     <string name="portal_download_failed">ડાઉનલોડ શરૂ કરી શકાયું નહીં.</string>
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">એક સ્થાનિક Wi-Fi નેટવર્ક બનાવે છે જેથી લોકો SIM વિના કનેક્ટ થઈ શકે.</string>
     <string name="lohs_toggle">Hotspot LocalOnly ચાલુ કરો</string>
     <string name="lohs_show_qr">Wi-Fi QR બતાવો</string>

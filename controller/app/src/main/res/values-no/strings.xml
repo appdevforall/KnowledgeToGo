@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Lagret</string>
     <string name="settings_saved">Innstillinger lagret</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">drevet av App Dev for All</string>
     <string name="setup_manage_all_permissions">Administrer alle tillatelser</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Språk</string>
     <string name="portal_download_started">Laster ned %1$s…</string>
     <string name="portal_download_failed">Kunne ikke starte nedlastingen.</string>
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Oppretter et lokalt Wi-Fi-nettverk slik at folk kan koble til uten SIM.</string>
     <string name="lohs_toggle">Aktiver Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Vis Wi-Fi-QR</string>

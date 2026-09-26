@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Salvat</string>
     <string name="settings_saved">Setări salvate</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">Gestionează toate permisiunile</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Limbă</string>
     <string name="portal_download_started">Se descarcă %1$s…</string>
     <string name="portal_download_failed">Nu s-a putut începe descărcarea.</string>
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Creează o rețea Wi-Fi locală pentru ca oamenii să se poată conecta fără SIM.</string>
     <string name="lohs_toggle">Activează Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Afișează QR Wi-Fi</string>

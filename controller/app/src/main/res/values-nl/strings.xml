@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Opgeslagen</string>
     <string name="settings_saved">Instellingen opgeslagen</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">mogelijk gemaakt door App Dev for All</string>
     <string name="setup_manage_all_permissions">Alle machtigingen beheren</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Taal</string>
     <string name="portal_download_started">%1$s downloaden…</string>
     <string name="portal_download_failed">Kan de download niet starten.</string>
-    <string name="lohs_label">Alleen-lokale hotspot (BÈTA)</string>
+    <string name="lohs_label">Alleen-lokale hotspot</string>
     <string name="lohs_hint">Maakt een lokaal Wi-Fi-netwerk zodat mensen zonder simkaart verbinding kunnen maken.</string>
     <string name="lohs_toggle">Alleen-lokale hotspot inschakelen</string>
     <string name="lohs_show_qr">Wi-Fi-QR weergeven</string>

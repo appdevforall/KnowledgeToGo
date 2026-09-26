@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">保存しました</string>
     <string name="settings_saved">設定を保存しました</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">すべての権限を管理</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">言語</string>
     <string name="portal_download_started">%1$s をダウンロード中…</string>
     <string name="portal_download_failed">ダウンロードを開始できませんでした。</string>
-    <string name="lohs_label">ローカル専用ホットスポット（ベータ）</string>
+    <string name="lohs_label">ローカル専用ホットスポット</string>
     <string name="lohs_hint">ローカルの Wi-Fi ネットワークを作成し、SIM なしでも人々が接続できるようにします。</string>
     <string name="lohs_toggle">ローカル専用ホットスポットを有効にする</string>
     <string name="lohs_show_qr">Wi-Fi QR を表示</string>

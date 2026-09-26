@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Mentve</string>
     <string name="settings_saved">Beállítások mentve</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">az App Dev for All szolgáltatásában</string>
     <string name="setup_manage_all_permissions">Összes engedély kezelése</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">Nyelv</string>
     <string name="portal_download_started">%1$s letöltése…</string>
     <string name="portal_download_failed">Nem sikerült elindítani a letöltést.</string>
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Helyi Wi-Fi hálózatot hoz létre, hogy az emberek SIM nélkül is csatlakozhassanak.</string>
     <string name="lohs_toggle">Hotspot LocalOnly engedélyezése</string>
     <string name="lohs_show_qr">Wi-Fi QR megjelenítése</string>

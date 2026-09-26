@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Uloženo</string>
     <string name="settings_saved">Nastavení uloženo</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">poháněno App Dev for All</string>
     <string name="setup_manage_all_permissions">Spravovat všechna oprávnění</string>
@@ -475,7 +474,7 @@
     <string name="portal_download_started">Stahování %1$s…</string>
     <string name="portal_download_failed">Nepodařilo se zahájit stahování.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_label">Hotspot LocalOnly</string>
     <string name="lohs_hint">Vytvoří místní síť Wi-Fi, aby se lidé mohli připojit bez SIM.</string>
     <string name="lohs_toggle">Zapnout Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Zobrazit QR Wi-Fi</string>

@@ -131,7 +131,6 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">저장됨</string>
     <string name="settings_saved">설정이 저장되었습니다</string>
-    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">모든 권한 관리</string>
@@ -469,7 +468,7 @@
     <string name="setup_language_section">언어</string>
     <string name="portal_download_started">%1$s 다운로드 중…</string>
     <string name="portal_download_failed">다운로드를 시작할 수 없습니다.</string>
-    <string name="lohs_label">로컬 전용 핫스팟(베타)</string>
+    <string name="lohs_label">로컬 전용 핫스팟</string>
     <string name="lohs_hint">로컬 Wi-Fi 네트워크를 만들어 SIM 없이도 사람들이 연결할 수 있도록 합니다.</string>
     <string name="lohs_toggle">로컬 전용 핫스팟 활성화</string>
     <string name="lohs_show_qr">Wi-Fi QR 표시</string>
