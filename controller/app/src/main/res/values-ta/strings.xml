@@ -1381,4 +1381,13 @@
     <string name="k2go_forgejo_seed_leave_body">அமைப்பு பின்னணியில் தொடர்கிறது. முன்னேற்றத்தைச் சரிபார்க்க எப்போது வேண்டுமானாலும் திரும்பி வாருங்கள்.</string>
     <string name="k2go_forgejo_install_repos">எடுத்துக்காட்டு களஞ்சியங்களை நிறுவு</string>
     <string name="k2go_forgejo_repos_blocked">இந்தக் குறியீட்டு ஹோஸ்ட்டில் K2Go நிர்வகிக்க முடியாத ஒரு நிர்வாகி ஏற்கனவே உள்ளார்.</string>
+    <string name="k2go_forgejo_update_repos">களஞ்சியங்களைப் புதுப்பி</string>
+    <string name="k2go_forgejo_updating">களஞ்சியங்கள் புதுப்பிக்கப்படுகின்றன...</string>
+    <string name="k2go_forgejo_update_done">களஞ்சியங்கள் புதுப்பிக்கப்பட்டன</string>
+    <string name="k2go_forgejo_update_none">அனைத்து களஞ்சியங்களும் ஏற்கனவே புதுப்பித்த நிலையில் உள்ளன</string>
+    <string name="k2go_forgejo_update_some_failed">சில களஞ்சியங்களைப் புதுப்பிக்க முடியவில்லை. களஞ்சிய விளக்கத்தைப் பார்க்கவும்.</string>
+    <string name="k2go_forgejo_update_all_failed">களஞ்சியங்களைப் புதுப்பிக்க முடியவில்லை. களஞ்சிய விளக்கத்தைப் பார்க்கவும்.</string>
+    <string name="k2go_forgejo_update_failed">களஞ்சியங்களைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="k2go_forgejo_update_cancelling">ரத்து செய்யப்படுகிறது...</string>
+    <string name="k2go_forgejo_update_cancelled">புதுப்பிப்பு ரத்து செய்யப்பட்டது</string>
 </resources>

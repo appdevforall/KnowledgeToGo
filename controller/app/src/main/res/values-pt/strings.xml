@@ -1440,4 +1440,13 @@
     <string name="k2go_forgejo_seed_leave_body">A configuração continua em segundo plano. Volte quando quiser para ver o progresso.</string>
     <string name="k2go_forgejo_install_repos">Instalar repositórios de exemplo</string>
     <string name="k2go_forgejo_repos_blocked">Este host de código já tem um administrador que o K2Go não pode gerenciar.</string>
+    <string name="k2go_forgejo_update_repos">Atualizar repos</string>
+    <string name="k2go_forgejo_updating">Atualizando repositorios...</string>
+    <string name="k2go_forgejo_update_done">Repositorios atualizados</string>
+    <string name="k2go_forgejo_update_none">Todos os repositorios ja estao atualizados</string>
+    <string name="k2go_forgejo_update_some_failed">Nao foi possivel atualizar alguns repositorios. Veja a descricao do repo.</string>
+    <string name="k2go_forgejo_update_all_failed">Nao foi possivel atualizar os repositorios. Veja a descricao do repo.</string>
+    <string name="k2go_forgejo_update_failed">Nao foi possivel atualizar os repositorios</string>
+    <string name="k2go_forgejo_update_cancelling">Cancelando...</string>
+    <string name="k2go_forgejo_update_cancelled">Atualizacao cancelada</string>
 </resources>

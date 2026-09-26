@@ -1374,4 +1374,13 @@
     <string name="k2go_forgejo_seed_leave_body">Подешавање се наставља у позадини. Вратите се било када да проверите напредак.</string>
     <string name="k2go_forgejo_install_repos">Инсталирај примере репозиторијума</string>
     <string name="k2go_forgejo_repos_blocked">Овај хост кода већ има администратора којим K2Go не може да управља.</string>
+    <string name="k2go_forgejo_update_repos">Ажурирај репозиторијуме</string>
+    <string name="k2go_forgejo_updating">Ажурирање репозиторијума...</string>
+    <string name="k2go_forgejo_update_done">Репозиторијуми ажурирани</string>
+    <string name="k2go_forgejo_update_none">Сви репозиторијуми су већ ажурни</string>
+    <string name="k2go_forgejo_update_some_failed">Неке репозиторијуме није било могуће ажурирати. Погледајте опис репозиторијума.</string>
+    <string name="k2go_forgejo_update_all_failed">Није могуће ажурирати репозиторијуме. Погледајте опис репозиторијума.</string>
+    <string name="k2go_forgejo_update_failed">Није могуће ажурирати репозиторијуме</string>
+    <string name="k2go_forgejo_update_cancelling">Отказивање...</string>
+    <string name="k2go_forgejo_update_cancelled">Ажурирање отказано</string>
 </resources>

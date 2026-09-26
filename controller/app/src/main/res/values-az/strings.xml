@@ -1381,4 +1381,13 @@
     <string name="k2go_forgejo_seed_leave_body">Quraşdırma arxa planda davam edir. Gedişatı yoxlamaq üçün istənilən vaxt geri qayıdın.</string>
     <string name="k2go_forgejo_install_repos">Nümunə anbarlarını quraşdır</string>
     <string name="k2go_forgejo_repos_blocked">Bu kod hostunda artıq K2Go-nun idarə edə bilmədiyi bir admin var.</string>
+    <string name="k2go_forgejo_update_repos">Anbarlari yenile</string>
+    <string name="k2go_forgejo_updating">Anbarlar yenilenir...</string>
+    <string name="k2go_forgejo_update_done">Anbarlar yenilendi</string>
+    <string name="k2go_forgejo_update_none">Butun anbarlar artiq gunceldir</string>
+    <string name="k2go_forgejo_update_some_failed">Bezi anbarlar yenilene bilmedi. Anbar tesvirine baxin.</string>
+    <string name="k2go_forgejo_update_all_failed">Anbarlar yenilene bilmedi. Anbar tesvirine baxin.</string>
+    <string name="k2go_forgejo_update_failed">Anbarlar yenilene bilmedi</string>
+    <string name="k2go_forgejo_update_cancelling">Legv edilir...</string>
+    <string name="k2go_forgejo_update_cancelled">Yenileme legv edildi</string>
 </resources>

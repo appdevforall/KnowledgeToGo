@@ -1374,4 +1374,13 @@
     <string name="k2go_forgejo_seed_leave_body">সেটআপ পটভূমিতে চলতে থাকে। অগ্রগতি দেখতে যেকোনো সময় ফিরে আসুন।</string>
     <string name="k2go_forgejo_install_repos">উদাহরণ রিপোজিটরি ইনস্টল করুন</string>
     <string name="k2go_forgejo_repos_blocked">এই কোড হোস্টে ইতিমধ্যে একজন অ্যাডমিন আছে যা K2Go পরিচালনা করতে পারে না।</string>
+    <string name="k2go_forgejo_update_repos">রিপোজিটরি আপডেট করুন</string>
+    <string name="k2go_forgejo_updating">রিপোজিটরি আপডেট হচ্ছে...</string>
+    <string name="k2go_forgejo_update_done">রিপোজিটরি আপডেট হয়েছে</string>
+    <string name="k2go_forgejo_update_none">সব রিপোজিটরি ইতিমধ্যে হালনাগাদ আছে</string>
+    <string name="k2go_forgejo_update_some_failed">কিছু রিপোজিটরি আপডেট করা যায়নি। রিপো বিবরণ দেখুন।</string>
+    <string name="k2go_forgejo_update_all_failed">রিপোজিটরি আপডেট করা যায়নি। রিপো বিবরণ দেখুন।</string>
+    <string name="k2go_forgejo_update_failed">রিপোজিটরি আপডেট করা যায়নি</string>
+    <string name="k2go_forgejo_update_cancelling">বাতিল করা হচ্ছে...</string>
+    <string name="k2go_forgejo_update_cancelled">আপডেট বাতিল করা হয়েছে</string>
 </resources>

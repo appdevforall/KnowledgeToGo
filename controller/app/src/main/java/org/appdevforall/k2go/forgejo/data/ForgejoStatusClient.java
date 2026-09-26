@@ -52,6 +52,11 @@ public final class ForgejoStatusClient {
         /** The example repos are present -> nothing to install (refresh/update is K2GO-422 section A). */
         public boolean hasRepos() { return repoCount > 0; }
 
+        /** K2Go can administer the forge AND example repos exist -> offer "Update repos". Gated on
+         *  manageable so a forge we cannot authenticate (changed admin password) never offers a refresh
+         *  that would 401; a blocked forge shows the blocked note instead. */
+        public boolean canUpdateRepos() { return manageable && repoCount > 0; }
+
         /** An admin exists that K2Go cannot authenticate -> do not offer any repo action. */
         public boolean blocked() { return !manageable; }
     }

@@ -1362,4 +1362,13 @@
     <string name="k2go_forgejo_seed_leave_body">設定はバックグラウンドで続行されます。いつでも戻って進行状況を確認できます。</string>
     <string name="k2go_forgejo_install_repos">サンプルリポジトリをインストール</string>
     <string name="k2go_forgejo_repos_blocked">このコードホストには、K2Go が管理できない管理者がすでに存在します。</string>
+    <string name="k2go_forgejo_update_repos">リポジトリを更新</string>
+    <string name="k2go_forgejo_updating">リポジトリを更新しています...</string>
+    <string name="k2go_forgejo_update_done">リポジトリを更新しました</string>
+    <string name="k2go_forgejo_update_none">すべてのリポジトリは既に最新です</string>
+    <string name="k2go_forgejo_update_some_failed">一部のリポジトリを更新できませんでした。リポジトリの説明を確認してください。</string>
+    <string name="k2go_forgejo_update_all_failed">リポジトリを更新できませんでした。リポジトリの説明を確認してください。</string>
+    <string name="k2go_forgejo_update_failed">リポジトリを更新できませんでした</string>
+    <string name="k2go_forgejo_update_cancelling">キャンセルしています...</string>
+    <string name="k2go_forgejo_update_cancelled">更新をキャンセルしました</string>
 </resources>

@@ -1381,4 +1381,13 @@
     <string name="k2go_forgejo_seed_leave_body">Ìṣètò ń tẹ̀síwájú ní ẹ̀yìn. Padà nígbàkigbà láti ṣàyẹ̀wò ìlọsíwájú.</string>
     <string name="k2go_forgejo_install_repos">Fi àwọn ibi ìtọ́jú àpẹẹrẹ sórí ẹrọ</string>
     <string name="k2go_forgejo_repos_blocked">Olùgbàlejò koodu yìí ti ní alábòójútó tí K2Go kò lè ṣàkóso.</string>
+    <string name="k2go_forgejo_update_repos">Se imudojuiwon awon ibi itoju</string>
+    <string name="k2go_forgejo_updating">Nse imudojuiwon awon ibi itoju...</string>
+    <string name="k2go_forgejo_update_done">A ti se imudojuiwon awon ibi itoju</string>
+    <string name="k2go_forgejo_update_none">Gbogbo awon ibi itoju ti wa ni tuntun</string>
+    <string name="k2go_forgejo_update_some_failed">Awon ibi itoju kan ko seese lati se imudojuiwon. Wo apejuwe ibi itoju.</string>
+    <string name="k2go_forgejo_update_all_failed">Ko seese lati se imudojuiwon awon ibi itoju. Wo apejuwe ibi itoju.</string>
+    <string name="k2go_forgejo_update_failed">Ko seese lati se imudojuiwon awon ibi itoju</string>
+    <string name="k2go_forgejo_update_cancelling">Nfagile...</string>
+    <string name="k2go_forgejo_update_cancelled">A ti fagile imudojuiwon</string>
 </resources>

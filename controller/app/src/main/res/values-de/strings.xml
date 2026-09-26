@@ -1361,4 +1361,13 @@
     <string name="k2go_forgejo_seed_leave_body">Die Einrichtung wird im Hintergrund fortgesetzt. Kommen Sie jederzeit zurück, um den Fortschritt zu prüfen.</string>
     <string name="k2go_forgejo_install_repos">Beispiel-Repositorys installieren</string>
     <string name="k2go_forgejo_repos_blocked">Dieser Code-Host hat bereits einen Administrator, den K2Go nicht verwalten kann.</string>
+    <string name="k2go_forgejo_update_repos">Repos aktualisieren</string>
+    <string name="k2go_forgejo_updating">Repositorys werden aktualisiert...</string>
+    <string name="k2go_forgejo_update_done">Repositorys aktualisiert</string>
+    <string name="k2go_forgejo_update_none">Alle Repositorys sind bereits aktuell</string>
+    <string name="k2go_forgejo_update_some_failed">Einige Repositorys konnten nicht aktualisiert werden. Siehe Repo-Beschreibung.</string>
+    <string name="k2go_forgejo_update_all_failed">Repositorys konnten nicht aktualisiert werden. Siehe Repo-Beschreibung.</string>
+    <string name="k2go_forgejo_update_failed">Repositorys konnten nicht aktualisiert werden</string>
+    <string name="k2go_forgejo_update_cancelling">Wird abgebrochen...</string>
+    <string name="k2go_forgejo_update_cancelled">Aktualisierung abgebrochen</string>
 </resources>

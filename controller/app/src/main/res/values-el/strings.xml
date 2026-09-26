@@ -1368,4 +1368,13 @@
     <string name="k2go_forgejo_seed_leave_body">Η ρύθμιση συνεχίζεται στο παρασκήνιο. Επιστρέψτε οποτεδήποτε για να ελέγξετε την πρόοδο.</string>
     <string name="k2go_forgejo_install_repos">Εγκατάσταση δειγμάτων αποθετηρίων</string>
     <string name="k2go_forgejo_repos_blocked">Αυτός ο διακομιστής κώδικα έχει ήδη διαχειριστή που το K2Go δεν μπορεί να διαχειριστεί.</string>
+    <string name="k2go_forgejo_update_repos">Ενημέρωση αποθετηρίων</string>
+    <string name="k2go_forgejo_updating">Ενημέρωση αποθετηρίων...</string>
+    <string name="k2go_forgejo_update_done">Τα αποθετήρια ενημερώθηκαν</string>
+    <string name="k2go_forgejo_update_none">Όλα τα αποθετήρια είναι ήδη ενημερωμένα</string>
+    <string name="k2go_forgejo_update_some_failed">Ορισμένα αποθετήρια δεν ήταν δυνατό να ενημερωθούν. Δείτε την περιγραφή του αποθετηρίου.</string>
+    <string name="k2go_forgejo_update_all_failed">Δεν ήταν δυνατή η ενημέρωση των αποθετηρίων. Δείτε την περιγραφή του αποθετηρίου.</string>
+    <string name="k2go_forgejo_update_failed">Δεν ήταν δυνατή η ενημέρωση των αποθετηρίων</string>
+    <string name="k2go_forgejo_update_cancelling">Ακύρωση...</string>
+    <string name="k2go_forgejo_update_cancelled">Η ενημέρωση ακυρώθηκε</string>
 </resources>

@@ -1362,4 +1362,13 @@
     <string name="k2go_forgejo_seed_leave_body">설정은 백그라운드에서 계속됩니다. 언제든지 돌아와 진행 상황을 확인하세요.</string>
     <string name="k2go_forgejo_install_repos">예제 저장소 설치</string>
     <string name="k2go_forgejo_repos_blocked">이 코드 호스트에는 K2Go가 관리할 수 없는 관리자가 이미 있습니다.</string>
+    <string name="k2go_forgejo_update_repos">저장소 업데이트</string>
+    <string name="k2go_forgejo_updating">저장소 업데이트 중...</string>
+    <string name="k2go_forgejo_update_done">저장소가 업데이트됨</string>
+    <string name="k2go_forgejo_update_none">모든 저장소가 이미 최신 상태입니다</string>
+    <string name="k2go_forgejo_update_some_failed">일부 저장소를 업데이트할 수 없습니다. 저장소 설명을 확인하세요.</string>
+    <string name="k2go_forgejo_update_all_failed">저장소를 업데이트할 수 없습니다. 저장소 설명을 확인하세요.</string>
+    <string name="k2go_forgejo_update_failed">저장소를 업데이트할 수 없습니다</string>
+    <string name="k2go_forgejo_update_cancelling">취소 중...</string>
+    <string name="k2go_forgejo_update_cancelled">업데이트 취소됨</string>
 </resources>

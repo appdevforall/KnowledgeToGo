@@ -181,6 +181,18 @@ public class ModuleDetailFragment extends Fragment {
                                 } else if (st.blocked()) {
                                     addStatus(statusRow, K2GoStatusBadge.create(requireContext(),
                                             getString(R.string.k2go_forgejo_repos_blocked), R.color.k2go_amber_text));
+                                } else if (st.canUpdateRepos()) {
+                                    // K2GO-422: manageable + repos present -> offer a non-destructive refresh. Minimal
+                                    // inline progress (a label + an indeterminate bar) reusing the dashboard
+                                    // update idiom; no service/index because the box refresh is fast and
+                                    // detached (leaving mid-refresh is safe: the box finishes on its own).
+                                    installNowBtn.setText(R.string.k2go_forgejo_update_repos);
+                                    // Shared flow (gates + inline progress + result), also used by the
+                                    // module action sheet, so the refresh lives in one place.
+                                    installNowBtn.setOnClickListener(v ->
+                                            org.appdevforall.k2go.forgejo.presentation.ForgejoRepoRefresh.start(
+                                                    requireActivity(), installNowBtn));
+                                    installNowBtn.setVisibility(View.VISIBLE);
                                 }
                             });
                         });
