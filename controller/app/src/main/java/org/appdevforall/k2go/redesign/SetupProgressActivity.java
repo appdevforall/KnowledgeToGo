@@ -46,6 +46,7 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
 import org.appdevforall.k2go.setup.domain.RunScope;
 import org.appdevforall.k2go.setup.domain.RunSnapshot;
 import org.appdevforall.k2go.setup.domain.RunVerdict;
+import org.appdevforall.k2go.setup.domain.SetupUiState;
 import org.appdevforall.k2go.setup.domain.StreamState;
 import org.appdevforall.k2go.system.data.PendingContent;
 import org.appdevforall.k2go.system.domain.OperationDispatcher;
@@ -817,18 +818,20 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         boolean moduleFailed = moduleFlow && prootFailed > 0;
         // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
         // ended with a failed module (kept on the same amber install line, never a green success).
-        boolean amberWaiting = !batchServerSlow && (moduleFailed || (moduleFlow ? !batchServerUp : !servicesReady));
-        tint(dot, (amberWaiting || batchServerSlow) ? R.color.k2go_amber : R.color.k2go_leaf);
-        int statusRes;
-        if (batchServerSlow) statusRes = R.string.k2go_setup_slow;                               // couldn't bring services online in time
-        else if (batchServerSettling) statusRes = R.string.k2go_setup_starting;                  // reconciler is (re)starting the server
-        else if (moduleFlow && !batchServerUp) statusRes = R.string.install_busy_modules;        // runroles in flight
-        else if (moduleFailed) statusRes = R.string.install_busy_modules;                        // ADFA-4898: keep the amber install header; failure + Retry are per-module below
-        else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
-        else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
-        else statusRes = R.string.k2go_setup_adding;
+        // K2GO-434: the status tone/message + the bottom-controls mode are a pure view-state rule
+        // (setup/domain/SetupUiState). This pass gathers inputs; the Activity maps the result to
+        // resources (here) and to show()/scheduleRedirect()/cancelRedirect() (in the controls block).
+        SetupUiState ui = new SetupUiState.Inputs()
+                .batchServerSlow(batchServerSlow).batchServerSettling(batchServerSettling)
+                .batchServerUp(batchServerUp).moduleFlow(moduleFlow).moduleFailed(moduleFailed)
+                .servicesReady(servicesReady).slowByPolls(readyPolls >= SLOW_AFTER_POLLS)
+                .success(verdict.success()).failure(verdict.failure()).redirectCancelled(redirectCancelled)
+                .runInBackgroundEnabled((servicesReady || forgejoSeedActive()) && !prootActive)
+                .build();
+        tint(dot, ui.tone == SetupUiState.StatusTone.WAITING ? R.color.k2go_amber : R.color.k2go_leaf);
+        int statusRes = statusStringRes(ui.message);
         // Animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
-        if (amberWaiting) statusEllipsis.start(getString(statusRes));
+        if (ui.animate) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
         // ADFA-5074: a detail card is covering the index. Everything above still had to be
@@ -867,33 +870,31 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
-        boolean success = verdict.success();
-        boolean failure = verdict.failure();
-        if (success && !redirectCancelled) {
-            show(redirect, true); show(cancel, true);
-            show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
-            scheduleRedirect();
-        } else if (success) {   // cancelled by the user
-            cancelRedirect();
-            show(finishBtn, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false); show(finishNote, false);
-        } else if (failure) {
-            cancelRedirect();
-            show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false);
-        } else {   // starting or running
-            cancelRedirect();
-            // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate.
-            // ADFA-5074: and not before the run's shape is known either. prootActive() reads a latch
-            // that only engages once the proot work registers — launched, batched, or reported by the
-            // queue — so on entry it is false even for a run that is about to install a module, and
-            // the screen offered an escape it was going to withdraw. Waiting for servicesReady costs
-            // nothing: until the engine answers there is no live work to leave running anyway, and
-            // the header already says "Starting services…".
-            // K2GO-423: the seed is a live, backgroundable step (server already up, so prootActive is
-            // false); offer Run in background during it even when the module flow never set servicesReady.
-            show(runBgBtn, (servicesReady || forgejoSeedActive()) && !prootActive);
-            show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
+        // K2GO-434: apply the bottom-controls mode from SetupUiState. The Run-in-background visibility
+        // rule (only once the run's shape is known and no proot module gates the index: ADFA-4919/5074,
+        // plus the K2GO-423 live seed) is carried by runInBackgroundVisible, computed with the state above.
+        switch (ui.controls) {
+            case REDIRECT:
+                show(redirect, true); show(cancel, true);
+                show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
+                scheduleRedirect();
+                break;
+            case FINISH_SUCCESS:   // success, but the user cancelled the countdown
+                cancelRedirect();
+                show(finishBtn, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false); show(finishNote, false);
+                break;
+            case FINISH_FAILURE:
+                cancelRedirect();
+                show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false);
+                break;
+            case RUNNING:
+            default:
+                cancelRedirect();
+                show(runBgBtn, ui.runInBackgroundVisible);
+                show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
+                break;
         }
     }
 
@@ -901,6 +902,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  InstallProgressRepository. While running the screen is the gate (no Run in background, Back is
      *  softened then backgrounds the app); on SUCCESS it redirects to a live Library; on FAILED it
      *  shows Finish + the note (never a silent success on a half-rebuilt server). */
+    /** K2GO-434: map the semantic status message (SetupUiState) to its string resource. */
+    private int statusStringRes(SetupUiState.StatusMessage m) {
+        switch (m) {
+            case SLOW: return R.string.k2go_setup_slow;
+            case STARTING: return R.string.k2go_setup_starting;
+            case INSTALLING: return R.string.install_busy_modules;
+            case ADDING:
+            default: return R.string.k2go_setup_adding;
+        }
+    }
+
     private void renderRebuild() {
         InstallState st = InstallProgressRepository.get().current();
         if (st.isRunning()) rebuildRunningSeen = true;
