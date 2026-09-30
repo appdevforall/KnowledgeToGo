@@ -45,6 +45,7 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedState;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
 import org.appdevforall.k2go.setup.domain.RunScope;
 import org.appdevforall.k2go.setup.domain.RunSnapshot;
+import org.appdevforall.k2go.setup.domain.RebuildUiState;
 import org.appdevforall.k2go.setup.domain.RunVerdict;
 import org.appdevforall.k2go.setup.domain.SetupUiState;
 import org.appdevforall.k2go.setup.domain.StreamState;
@@ -920,53 +921,65 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // SUCCESS/FAILED from a previous rebuild would flash on entry and trigger a premature redirect.
         boolean rebuiltOk = rebuildRunningSeen && st.phase == InstallState.Phase.SUCCESS;
         boolean rebuildFailed = rebuildRunningSeen && st.phase == InstallState.Phase.FAILED;
-
-        // Note: the post-success wait for the REST core (apiReady poll) is driven by readyPoll, which is
-        // lifecycle-managed (posted in onResume, cleared in onPause). This method only reflects state.
-        boolean serverWait = rebuiltOk && !rebuildServerUp && !rebuildServerFailed;  // rebuilt, services coming up
-        boolean done = rebuiltOk && rebuildServerUp;                                 // rebuilt + REST core answered
-        boolean error = rebuildFailed || (rebuiltOk && rebuildServerFailed);         // rebuild failed, or services never came up
-        boolean working = !done && !error;                                          // building OR waiting for services
+        // K2GO-434: the rebuild state -> view decision is a pure rule (setup/domain/RebuildUiState).
+        // The apiReady wait that feeds rebuildServerUp/Failed is driven by readyPoll (lifecycle-managed);
+        // this method only reflects state and maps the phase to the row, status line and controls.
+        RebuildUiState rb = RebuildUiState.from(
+                rebuiltOk, rebuildFailed, rebuildServerUp, rebuildServerFailed, redirectCancelled);
 
         String sub;
-        if (error) sub = rebuildFailed
-                ? ((st.message != null && !st.message.isEmpty()) ? st.message : getString(R.string.k2go_dash_rebuild_failed))
-                : getString(R.string.k2go_dash_services_failed);
-        else if (done) sub = getString(R.string.k2go_setup_state_done);
-        else if (serverWait) sub = getString(R.string.k2go_setup_starting);
-        else sub = getString(R.string.k2go_dash_rebuild_building);
+        switch (rb.phase) {
+            case ERROR:
+                sub = rb.errorIsRebuildFailure
+                        ? ((st.message != null && !st.message.isEmpty()) ? st.message : getString(R.string.k2go_dash_rebuild_failed))
+                        : getString(R.string.k2go_dash_services_failed);
+                break;
+            case DONE: sub = getString(R.string.k2go_setup_state_done); break;
+            case SERVER_WAIT: sub = getString(R.string.k2go_setup_starting); break;
+            case BUILDING:
+            default: sub = getString(R.string.k2go_dash_rebuild_building); break;
+        }
 
         sections.removeAllViews();
-        sections.addView(rebuildRow(rebuiltOk && !error, error, sub));   // check once the build succeeded; alert on error
+        boolean check = rb.phase == RebuildUiState.Phase.DONE || rb.phase == RebuildUiState.Phase.SERVER_WAIT;
+        sections.addView(rebuildRow(check, rb.phase == RebuildUiState.Phase.ERROR, sub));
 
         if (contextText != null) contextText.setText(R.string.k2go_setup_context_proot);
 
-        tint(dot, done ? R.color.k2go_leaf : R.color.k2go_amber);
+        tint(dot, rb.phase == RebuildUiState.Phase.DONE ? R.color.k2go_leaf : R.color.k2go_amber);
+        boolean working = rb.phase == RebuildUiState.Phase.BUILDING || rb.phase == RebuildUiState.Phase.SERVER_WAIT;
         if (working) {
-            statusEllipsis.start(getString(serverWait ? R.string.k2go_setup_starting : R.string.k2go_dash_rebuilding));
+            statusEllipsis.start(getString(rb.phase == RebuildUiState.Phase.SERVER_WAIT
+                    ? R.string.k2go_setup_starting : R.string.k2go_dash_rebuilding));
         } else {
             statusEllipsis.stop();
-            statusText.setText(done ? R.string.k2go_setup_state_done
-                    : (rebuildFailed ? R.string.k2go_dash_rebuild_failed : R.string.k2go_dash_services_failed));
+            statusText.setText(rb.phase == RebuildUiState.Phase.DONE ? R.string.k2go_setup_state_done
+                    : (rb.errorIsRebuildFailure ? R.string.k2go_dash_rebuild_failed : R.string.k2go_dash_services_failed));
         }
 
-        if (done && !redirectCancelled) {
-            redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
-            show(redirect, true); show(cancel, true);
-            show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
-            scheduleRedirect();
-        } else if (done) {   // cancelled by the user — stay, reveal Finish
-            cancelRedirect();
-            show(finishBtn, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false); show(finishNote, false);
-        } else if (error) {
-            cancelRedirect();
-            show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false);
-        } else {   // building or waiting for services — the screen is the gate; no leaving.
-            cancelRedirect();
-            show(runBgBtn, false); show(finishBtn, false); show(finishNote, false);
-            show(redirect, false); show(cancel, false);
+        switch (rb.controls) {
+            case REDIRECT:
+                redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
+                show(redirect, true); show(cancel, true);
+                show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
+                scheduleRedirect();
+                break;
+            case FINISH_SUCCESS:   // cancelled by the user: stay, reveal Finish
+                cancelRedirect();
+                show(finishBtn, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false); show(finishNote, false);
+                break;
+            case FINISH_FAILURE:
+                cancelRedirect();
+                show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false);
+                break;
+            case GATED:
+            default:   // building or waiting for services: the screen is the gate, no leaving
+                cancelRedirect();
+                show(runBgBtn, false); show(finishBtn, false); show(finishNote, false);
+                show(redirect, false); show(cancel, false);
+                break;
         }
     }
 
