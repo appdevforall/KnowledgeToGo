@@ -43,6 +43,7 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedRepository;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedService;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedState;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
+import org.appdevforall.k2go.setup.domain.RunScope;
 import org.appdevforall.k2go.setup.domain.RunSnapshot;
 import org.appdevforall.k2go.setup.domain.RunVerdict;
 import org.appdevforall.k2go.setup.domain.StreamState;
@@ -102,7 +103,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean showingDetail = false;
     private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
     private boolean probing = false;
-    private boolean rebuildSeen = false;    // ADFA-5011: latched once this screen is a rebuild session
+    // K2GO-434: the per-run stage latches ("what belongs to this run") live in a small domain state
+    // machine (setup/domain/RunScope); see controller/docs/ADR-434-setupprogress-decomposition.md.
+    private final RunScope runScope = new RunScope();
     private boolean rebuildRunningSeen = false;   // ADFA-5011: latched once we've seen THIS rebuild running,
     //  so a STALE terminal state from a previous rebuild can't trigger a premature done/redirect on entry
     // ADFA-5011: after the rebuild build+swap succeeds, WAIT for the REST core to actually answer before
@@ -115,13 +118,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
     private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
-    private boolean mapsSeen = false;        // ADFA-4919: latched once the proot (maps) stage is seen
     // ADFA-4842: module management (non-maps proot modules) — same shape as the maps stage tracking.
     private boolean moduleLaunched = false;
     private long moduleLaunchedAt = 0L;
     private boolean moduleStartFailed = false;
-    private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
-    private boolean forgejoSeedSeen = false; // K2GO-423: latched once a Forgejo seed belongs to this session
     private boolean postInstallSeed = false; // K2GO-422: this run was launched to seed repos post-install
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
     // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
@@ -353,12 +353,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // render as the "Maps" stage, so latch only on the maps provisioner/launch or a running
         // queue whose current module is maps.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        if (mapsLaunched || mapsStartFailed
+        return runScope.latchMaps(mapsLaunched || mapsStartFailed
                 || MapsProvisioner.hasPending(this)
-                || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule))) {
-            mapsSeen = true;
-        }
-        return mapsSeen;
+                || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule)));
     }
 
     /** ADFA-4842: is a non-maps proot module batch part of THIS session? Latched from the durable
@@ -366,13 +363,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  still renders the module rows and reaches completion. */
     private boolean moduleInSession() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        if (moduleLaunched || moduleStartFailed
+        return runScope.latchModule(moduleLaunched || moduleStartFailed
                 || ModuleProvisioner.hasPending(this)
                 || ModuleBatch.has(this)
-                || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule))) {
-            moduleSeen = true;
-        }
-        return moduleSeen;
+                || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule)));
     }
 
     /** K2GO-423: a Forgejo seed belongs to THIS session — a seed is banked, or its service is running.
@@ -381,11 +375,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  run-in-background seed lingers in the process-scoped singleton, and latching on it would draw a
      *  stale seed row in a later, unrelated install. */
     private boolean forgejoSeedInSession() {
-        if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
-                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning()) {
-            forgejoSeedSeen = true;
-        }
-        return forgejoSeedSeen;
+        return runScope.latchForgejoSeed(
+                org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning());
     }
 
     /** K2GO-423: the seed still needs to run (banked) or is running, so completion must wait for it.
@@ -404,11 +396,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  the rebuild runs; a stale terminal REBUILD is excluded by the isRunning() check). Once latched it
      *  stays for the screen's life so the terminal result (done/failed) is shown, not skipped. */
     private boolean rebuildInSession() {
-        if (rebuildSeen) return true;
-        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_REBUILD, false)) { rebuildSeen = true; return true; }
-        if (InstallProgressRepository.get().currentOp() == InstallState.Op.REBUILD
-                && InstallProgressRepository.get().isRunning()) { rebuildSeen = true; return true; }
-        return false;
+        if (runScope.rebuild()) return true;
+        boolean signal = (getIntent() != null && getIntent().getBooleanExtra(EXTRA_REBUILD, false))
+                || (InstallProgressRepository.get().currentOp() == InstallState.Op.REBUILD
+                        && InstallProgressRepository.get().isRunning());
+        return runScope.latchRebuild(signal);
     }
 
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
