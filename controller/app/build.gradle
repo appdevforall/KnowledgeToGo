@@ -246,6 +246,17 @@ dependencies {
         implementation('com.squareup.okio:okio:1.17.6') {
             because 'Snyk CVE fix; transitive (was 1.17.5).'
         }
+        implementation('org.jetbrains.kotlin:kotlin-stdlib:2.1.0') {
+            because 'Snyk CVE-2020-29582 (removes deprecated kotlin.io temp-file helpers); transitive via AndroidX (was 1.9.24). No Kotlin source in this module.'
+        }
+        // Keep the stdlib family in lockstep. jdk7/jdk8 are empty stubs since Kotlin
+        // 1.8, so this only prevents version drift; it changes no code.
+        implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0') {
+            because 'Align with kotlin-stdlib above.'
+        }
+        implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0') {
+            because 'Align with kotlin-stdlib above.'
+        }
     }
 
     // ADFA-4533: GlitchTip (Sentry-compatible) crash reporting SDK.
