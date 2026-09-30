@@ -758,7 +758,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 && SystemClock.elapsedRealtime() - moduleServerWaitAt > SERVER_UP_TIMEOUT_MS;
         boolean batchServerSettling = batchAwaitingServer && !batchServerSlow;
 
-        boolean allComplete;
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
         // K2GO-423: the seed blocks completion only while it can actually make progress:
         //  - only in a module (forgejo install) flow -- that is the only flow whose batch-terminal ->
@@ -775,19 +774,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 // The forgejo runrole failing releases the gate ONLY in a module-install flow; a
                 // post-install seed run (postInstallSeed) must not read a stale/unrelated queue verdict.
                 && !(moduleShown && mq.didFail("forgejo"));
-        if (noRest && prootShown) {
-            // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
-            // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
-            // what we're avoiding; a real failure is surfaced as Finish/error below, not a silent success).
-            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled) && !seedPendingRun;
-        } else {
-            allComplete = drained
-                    && (!zimSession || ZimDownloadService.isComplete())
-                    && (!booksSession || BooksDownloadService.isComplete())
-                    && (!kolibriState.hasSession() || kolibriState.isComplete())   // ADFA-4954
-                    && (!moduleShown || moduleServerSettled)   // ADFA-4842: also wait for the module server restart
-                    && !seedPendingRun;   // K2GO-423: wait for the chained seed
-        }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
         // ADFA-4954: ModuleQueueRepository is process-scoped, so a DONE phase left by an
@@ -801,13 +787,28 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 : (mq.phase == ModuleQueueState.Phase.DONE)
                         ? (mq.failedModules == null ? 0 : mq.failedModules.size())
                         : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
-        int failedTotal = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
-                + failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
-                + kolibriState.failedCount()   // ADFA-4954
-                + prootFailed
-                // K2GO-423: a seed that gave up is surfaced (Finish + note), never a silent redirect.
-                + (forgejoSeedInSession()
-                        && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed() ? 1 : 0);
+        // K2GO-434: the completion + success/failure rule is now a pure domain use case
+        // (setup/domain/RunVerdict). This pass only GATHERS the inputs from the live
+        // repositories/services; the rule is unit-tested off device. See
+        // controller/docs/ADR-434-setupprogress-decomposition.md (slice 1).
+        int zimFailed = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED);
+        int booksFailed = failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED);
+        boolean forgejoSeedFailed = forgejoSeedInSession()
+                && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed();
+        org.appdevforall.k2go.setup.domain.RunVerdict verdict =
+                org.appdevforall.k2go.setup.domain.RunVerdict.of(new org.appdevforall.k2go.setup.domain.RunSnapshot.Builder()
+                        .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(drained)
+                        .queueTerminalNotRunning(queueTerminalNotRunning).moduleServerSettled(moduleServerSettled)
+                        .batchServerSlow(batchServerSlow).seedPendingRun(seedPendingRun)
+                        .zim(new org.appdevforall.k2go.setup.domain.StreamState(
+                                zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
+                        .books(new org.appdevforall.k2go.setup.domain.StreamState(
+                                booksSession, booksSession && BooksDownloadService.isComplete(), booksFailed))
+                        .kolibri(new org.appdevforall.k2go.setup.domain.StreamState(
+                                kolibriState.hasSession(), kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount()))
+                        .prootFailed(prootFailed).forgejoSeedFailed(forgejoSeedFailed)
+                        .build());
+        boolean allComplete = verdict.allComplete();
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874). ADFA-4842: while
@@ -874,8 +875,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
-        boolean success = allComplete && failedTotal == 0 && !batchServerSlow;
-        boolean failure = allComplete && (failedTotal > 0 || batchServerSlow);
+        boolean success = verdict.success();
+        boolean failure = verdict.failure();
         if (success && !redirectCancelled) {
             show(redirect, true); show(cancel, true);
             show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
