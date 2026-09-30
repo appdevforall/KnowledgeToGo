@@ -43,6 +43,11 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedRepository;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedService;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedState;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
+import org.appdevforall.k2go.setup.domain.RunScope;
+import org.appdevforall.k2go.setup.domain.RunSnapshot;
+import org.appdevforall.k2go.setup.domain.RunVerdict;
+import org.appdevforall.k2go.setup.domain.SetupUiState;
+import org.appdevforall.k2go.setup.domain.StreamState;
 import org.appdevforall.k2go.system.data.PendingContent;
 import org.appdevforall.k2go.system.domain.OperationDispatcher;
 import org.appdevforall.k2go.system.domain.ContentType;
@@ -99,7 +104,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean showingDetail = false;
     private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
     private boolean probing = false;
-    private boolean rebuildSeen = false;    // ADFA-5011: latched once this screen is a rebuild session
+    // K2GO-434: the per-run stage latches ("what belongs to this run") live in a small domain state
+    // machine (setup/domain/RunScope); see controller/docs/ADR-434-setupprogress-decomposition.md.
+    private final RunScope runScope = new RunScope();
     private boolean rebuildRunningSeen = false;   // ADFA-5011: latched once we've seen THIS rebuild running,
     //  so a STALE terminal state from a previous rebuild can't trigger a premature done/redirect on entry
     // ADFA-5011: after the rebuild build+swap succeeds, WAIT for the REST core to actually answer before
@@ -112,13 +119,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
     private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
-    private boolean mapsSeen = false;        // ADFA-4919: latched once the proot (maps) stage is seen
     // ADFA-4842: module management (non-maps proot modules) — same shape as the maps stage tracking.
     private boolean moduleLaunched = false;
     private long moduleLaunchedAt = 0L;
     private boolean moduleStartFailed = false;
-    private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
-    private boolean forgejoSeedSeen = false; // K2GO-423: latched once a Forgejo seed belongs to this session
     private boolean postInstallSeed = false; // K2GO-422: this run was launched to seed repos post-install
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
     // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
@@ -350,12 +354,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // render as the "Maps" stage, so latch only on the maps provisioner/launch or a running
         // queue whose current module is maps.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        if (mapsLaunched || mapsStartFailed
+        return runScope.latchMaps(mapsLaunched || mapsStartFailed
                 || MapsProvisioner.hasPending(this)
-                || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule))) {
-            mapsSeen = true;
-        }
-        return mapsSeen;
+                || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule)));
     }
 
     /** ADFA-4842: is a non-maps proot module batch part of THIS session? Latched from the durable
@@ -363,13 +364,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  still renders the module rows and reaches completion. */
     private boolean moduleInSession() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        if (moduleLaunched || moduleStartFailed
+        return runScope.latchModule(moduleLaunched || moduleStartFailed
                 || ModuleProvisioner.hasPending(this)
                 || ModuleBatch.has(this)
-                || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule))) {
-            moduleSeen = true;
-        }
-        return moduleSeen;
+                || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule)));
     }
 
     /** K2GO-423: a Forgejo seed belongs to THIS session — a seed is banked, or its service is running.
@@ -378,11 +376,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  run-in-background seed lingers in the process-scoped singleton, and latching on it would draw a
      *  stale seed row in a later, unrelated install. */
     private boolean forgejoSeedInSession() {
-        if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
-                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning()) {
-            forgejoSeedSeen = true;
-        }
-        return forgejoSeedSeen;
+        return runScope.latchForgejoSeed(
+                org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
+                || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning());
     }
 
     /** K2GO-423: the seed still needs to run (banked) or is running, so completion must wait for it.
@@ -401,11 +397,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  the rebuild runs; a stale terminal REBUILD is excluded by the isRunning() check). Once latched it
      *  stays for the screen's life so the terminal result (done/failed) is shown, not skipped. */
     private boolean rebuildInSession() {
-        if (rebuildSeen) return true;
-        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_REBUILD, false)) { rebuildSeen = true; return true; }
-        if (InstallProgressRepository.get().currentOp() == InstallState.Op.REBUILD
-                && InstallProgressRepository.get().isRunning()) { rebuildSeen = true; return true; }
-        return false;
+        if (runScope.rebuild()) return true;
+        boolean signal = (getIntent() != null && getIntent().getBooleanExtra(EXTRA_REBUILD, false))
+                || (InstallProgressRepository.get().currentOp() == InstallState.Op.REBUILD
+                        && InstallProgressRepository.get().isRunning());
+        return runScope.latchRebuild(signal);
     }
 
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
@@ -758,7 +754,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 && SystemClock.elapsedRealtime() - moduleServerWaitAt > SERVER_UP_TIMEOUT_MS;
         boolean batchServerSettling = batchAwaitingServer && !batchServerSlow;
 
-        boolean allComplete;
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
         // K2GO-423: the seed blocks completion only while it can actually make progress:
         //  - only in a module (forgejo install) flow -- that is the only flow whose batch-terminal ->
@@ -775,19 +770,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 // The forgejo runrole failing releases the gate ONLY in a module-install flow; a
                 // post-install seed run (postInstallSeed) must not read a stale/unrelated queue verdict.
                 && !(moduleShown && mq.didFail("forgejo"));
-        if (noRest && prootShown) {
-            // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
-            // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
-            // what we're avoiding; a real failure is surfaced as Finish/error below, not a silent success).
-            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled) && !seedPendingRun;
-        } else {
-            allComplete = drained
-                    && (!zimSession || ZimDownloadService.isComplete())
-                    && (!booksSession || BooksDownloadService.isComplete())
-                    && (!kolibriState.hasSession() || kolibriState.isComplete())   // ADFA-4954
-                    && (!moduleShown || moduleServerSettled)   // ADFA-4842: also wait for the module server restart
-                    && !seedPendingRun;   // K2GO-423: wait for the chained seed
-        }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
         // ADFA-4954: ModuleQueueRepository is process-scoped, so a DONE phase left by an
@@ -801,13 +783,25 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 : (mq.phase == ModuleQueueState.Phase.DONE)
                         ? (mq.failedModules == null ? 0 : mq.failedModules.size())
                         : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
-        int failedTotal = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
-                + failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
-                + kolibriState.failedCount()   // ADFA-4954
-                + prootFailed
-                // K2GO-423: a seed that gave up is surfaced (Finish + note), never a silent redirect.
-                + (forgejoSeedInSession()
-                        && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed() ? 1 : 0);
+        // K2GO-434: the completion + success/failure rule is now a pure domain use case
+        // (setup/domain/RunVerdict). This pass only GATHERS the inputs from the live
+        // repositories/services; the rule is unit-tested off device. See
+        // controller/docs/ADR-434-setupprogress-decomposition.md (slice 1).
+        int zimFailed = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED);
+        int booksFailed = failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED);
+        boolean forgejoSeedFailed = forgejoSeedInSession()
+                && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed();
+        RunVerdict verdict = RunVerdict.of(new RunSnapshot.Builder()
+                .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(drained)
+                .queueTerminalNotRunning(queueTerminalNotRunning).moduleServerSettled(moduleServerSettled)
+                .batchServerSlow(batchServerSlow).seedPendingRun(seedPendingRun)
+                .zim(new StreamState(zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
+                .books(new StreamState(booksSession, booksSession && BooksDownloadService.isComplete(), booksFailed))
+                .kolibri(new StreamState(kolibriState.hasSession(),
+                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount()))
+                .prootFailed(prootFailed).forgejoSeedFailed(forgejoSeedFailed)
+                .build());
+        boolean allComplete = verdict.allComplete();
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874). ADFA-4842: while
@@ -824,18 +818,20 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         boolean moduleFailed = moduleFlow && prootFailed > 0;
         // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
         // ended with a failed module (kept on the same amber install line, never a green success).
-        boolean amberWaiting = !batchServerSlow && (moduleFailed || (moduleFlow ? !batchServerUp : !servicesReady));
-        tint(dot, (amberWaiting || batchServerSlow) ? R.color.k2go_amber : R.color.k2go_leaf);
-        int statusRes;
-        if (batchServerSlow) statusRes = R.string.k2go_setup_slow;                               // couldn't bring services online in time
-        else if (batchServerSettling) statusRes = R.string.k2go_setup_starting;                  // reconciler is (re)starting the server
-        else if (moduleFlow && !batchServerUp) statusRes = R.string.install_busy_modules;        // runroles in flight
-        else if (moduleFailed) statusRes = R.string.install_busy_modules;                        // ADFA-4898: keep the amber install header; failure + Retry are per-module below
-        else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
-        else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
-        else statusRes = R.string.k2go_setup_adding;
+        // K2GO-434: the status tone/message + the bottom-controls mode are a pure view-state rule
+        // (setup/domain/SetupUiState). This pass gathers inputs; the Activity maps the result to
+        // resources (here) and to show()/scheduleRedirect()/cancelRedirect() (in the controls block).
+        SetupUiState ui = new SetupUiState.Inputs()
+                .batchServerSlow(batchServerSlow).batchServerSettling(batchServerSettling)
+                .batchServerUp(batchServerUp).moduleFlow(moduleFlow).moduleFailed(moduleFailed)
+                .servicesReady(servicesReady).slowByPolls(readyPolls >= SLOW_AFTER_POLLS)
+                .success(verdict.success()).failure(verdict.failure()).redirectCancelled(redirectCancelled)
+                .runInBackgroundEnabled((servicesReady || forgejoSeedActive()) && !prootActive)
+                .build();
+        tint(dot, ui.tone == SetupUiState.StatusTone.WAITING ? R.color.k2go_amber : R.color.k2go_leaf);
+        int statusRes = statusStringRes(ui.message);
         // Animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
-        if (amberWaiting) statusEllipsis.start(getString(statusRes));
+        if (ui.animate) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
         // ADFA-5074: a detail card is covering the index. Everything above still had to be
@@ -874,33 +870,31 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
-        boolean success = allComplete && failedTotal == 0 && !batchServerSlow;
-        boolean failure = allComplete && (failedTotal > 0 || batchServerSlow);
-        if (success && !redirectCancelled) {
-            show(redirect, true); show(cancel, true);
-            show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
-            scheduleRedirect();
-        } else if (success) {   // cancelled by the user
-            cancelRedirect();
-            show(finishBtn, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false); show(finishNote, false);
-        } else if (failure) {
-            cancelRedirect();
-            show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false);
-        } else {   // starting or running
-            cancelRedirect();
-            // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate.
-            // ADFA-5074: and not before the run's shape is known either. prootActive() reads a latch
-            // that only engages once the proot work registers — launched, batched, or reported by the
-            // queue — so on entry it is false even for a run that is about to install a module, and
-            // the screen offered an escape it was going to withdraw. Waiting for servicesReady costs
-            // nothing: until the engine answers there is no live work to leave running anyway, and
-            // the header already says "Starting services…".
-            // K2GO-423: the seed is a live, backgroundable step (server already up, so prootActive is
-            // false); offer Run in background during it even when the module flow never set servicesReady.
-            show(runBgBtn, (servicesReady || forgejoSeedActive()) && !prootActive);
-            show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
+        // K2GO-434: apply the bottom-controls mode from SetupUiState. The Run-in-background visibility
+        // rule (only once the run's shape is known and no proot module gates the index: ADFA-4919/5074,
+        // plus the K2GO-423 live seed) is carried by runInBackgroundVisible, computed with the state above.
+        switch (ui.controls) {
+            case REDIRECT:
+                show(redirect, true); show(cancel, true);
+                show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
+                scheduleRedirect();
+                break;
+            case FINISH_SUCCESS:   // success, but the user cancelled the countdown
+                cancelRedirect();
+                show(finishBtn, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false); show(finishNote, false);
+                break;
+            case FINISH_FAILURE:
+                cancelRedirect();
+                show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false);
+                break;
+            case RUNNING:
+            default:
+                cancelRedirect();
+                show(runBgBtn, ui.runInBackgroundVisible);
+                show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
+                break;
         }
     }
 
@@ -908,6 +902,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  InstallProgressRepository. While running the screen is the gate (no Run in background, Back is
      *  softened then backgrounds the app); on SUCCESS it redirects to a live Library; on FAILED it
      *  shows Finish + the note (never a silent success on a half-rebuilt server). */
+    /** K2GO-434: map the semantic status message (SetupUiState) to its string resource. */
+    private int statusStringRes(SetupUiState.StatusMessage m) {
+        switch (m) {
+            case SLOW: return R.string.k2go_setup_slow;
+            case STARTING: return R.string.k2go_setup_starting;
+            case INSTALLING: return R.string.install_busy_modules;
+            case ADDING:
+            default: return R.string.k2go_setup_adding;
+        }
+    }
+
     private void renderRebuild() {
         InstallState st = InstallProgressRepository.get().current();
         if (st.isRunning()) rebuildRunningSeen = true;
