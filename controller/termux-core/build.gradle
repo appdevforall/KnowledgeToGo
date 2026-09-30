@@ -119,7 +119,7 @@ dependencies {
 
     // --- TERMUX PATCHES ---
     implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.14.0'   // Snyk CVE fix (was 2.11.0)
 
     // Markdown
     implementation 'io.noties.markwon:core:4.6.2'
