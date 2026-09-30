@@ -120,6 +120,22 @@ public class RunVerdictTest {
     }
 
     @Test
+    public void noRestWithoutProotUsesRestRule() {
+        // noRest is true but no proot stage is present: the branch selector must fall to the REST rule.
+        RunVerdict v = RunVerdict.of(restDone().noRest(true).prootShown(false).build());
+        assertTrue(v.success());
+    }
+
+    @Test
+    public void slowServerRestartInRestRunIsFailure() {
+        RunVerdict v = RunVerdict.of(restDone()
+                .moduleShown(true).moduleServerSettled(true).batchServerSlow(true).build());
+        assertTrue(v.allComplete());
+        assertFalse(v.success());
+        assertTrue(v.failure());
+    }
+
+    @Test
     public void streamSettledForCompletion() {
         assertTrue(new StreamState(false, false, 0).settledForCompletion());   // no session
         assertFalse(new StreamState(true, false, 0).settledForCompletion());   // running

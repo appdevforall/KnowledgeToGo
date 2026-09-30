@@ -43,6 +43,9 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedRepository;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedService;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedState;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
+import org.appdevforall.k2go.setup.domain.RunSnapshot;
+import org.appdevforall.k2go.setup.domain.RunVerdict;
+import org.appdevforall.k2go.setup.domain.StreamState;
 import org.appdevforall.k2go.system.data.PendingContent;
 import org.appdevforall.k2go.system.domain.OperationDispatcher;
 import org.appdevforall.k2go.system.domain.ContentType;
@@ -795,19 +798,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         int booksFailed = failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED);
         boolean forgejoSeedFailed = forgejoSeedInSession()
                 && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed();
-        org.appdevforall.k2go.setup.domain.RunVerdict verdict =
-                org.appdevforall.k2go.setup.domain.RunVerdict.of(new org.appdevforall.k2go.setup.domain.RunSnapshot.Builder()
-                        .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(drained)
-                        .queueTerminalNotRunning(queueTerminalNotRunning).moduleServerSettled(moduleServerSettled)
-                        .batchServerSlow(batchServerSlow).seedPendingRun(seedPendingRun)
-                        .zim(new org.appdevforall.k2go.setup.domain.StreamState(
-                                zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
-                        .books(new org.appdevforall.k2go.setup.domain.StreamState(
-                                booksSession, booksSession && BooksDownloadService.isComplete(), booksFailed))
-                        .kolibri(new org.appdevforall.k2go.setup.domain.StreamState(
-                                kolibriState.hasSession(), kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount()))
-                        .prootFailed(prootFailed).forgejoSeedFailed(forgejoSeedFailed)
-                        .build());
+        RunVerdict verdict = RunVerdict.of(new RunSnapshot.Builder()
+                .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(drained)
+                .queueTerminalNotRunning(queueTerminalNotRunning).moduleServerSettled(moduleServerSettled)
+                .batchServerSlow(batchServerSlow).seedPendingRun(seedPendingRun)
+                .zim(new StreamState(zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
+                .books(new StreamState(booksSession, booksSession && BooksDownloadService.isComplete(), booksFailed))
+                .kolibri(new StreamState(kolibriState.hasSession(),
+                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount()))
+                .prootFailed(prootFailed).forgejoSeedFailed(forgejoSeedFailed)
+                .build());
         boolean allComplete = verdict.allComplete();
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
