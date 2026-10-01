@@ -78,8 +78,12 @@ maintenance, with its own testing, tracked separately, not as a security patch.
   them.
 - On an AGP or UTP upgrade, re-run the scan and re-check the `.snyk` entries. Remove
   the ones the new toolchain fixed. Renew or update the rest.
-- Keep `.snyk` at the directory where `snyk test` runs (here: `controller/`). Move it
-  if the scan root changes.
+- Run the scan so the policy actually applies. With `--all-projects`, Snyk resolves
+  `.snyk` from each manifest's own directory, not from the scan root. Run from
+  `controller/` with `--policy-path` so the single root policy applies to every
+  project: `snyk test --all-projects --policy-path=.snyk` (and the same for
+  `snyk monitor`). Without `--policy-path` the ignores silently do not apply.
+- Keep `.snyk` at `controller/` (the scan root). Move it if the scan root changes.
 
 ## Pocket rule
 
