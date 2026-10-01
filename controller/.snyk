@@ -5,442 +5,197 @@ version: v1.25.0
 ignore:
   SNYK-JAVA-IONETTY-17254120:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-19005879:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-COMGOOGLEPROTOBUF-8055227:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-11799531:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-12485149:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-12485150:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-12485151:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-15789756:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-15789758:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438322:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438737:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438923:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438929:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438930:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438934:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17254117:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17334567:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18170202:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18170204:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18170213:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18230935:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18233079:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18956131:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-19233599:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-20074868:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-5953332:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-8707739:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-14423947:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16425695:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438926:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-16438935:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17254661:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17260879:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17311220:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17337010:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-17337012:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18170206:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18231070:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18233081:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18233107:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-18233111:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-19233598:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-19652372:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-19778369:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-20154836:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-5725787:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-6483812:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-8367012:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
   SNYK-JAVA-IONETTY-8707740:
     - '*':
-        reason: >-
-          Not shipped. Reached only through the Android Unified Test Platform
-          (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1. UTP runs on the
-          build host during instrumented tests; it is never packaged in the APK and never runs
-          on a device. Verified no path through a shipped module. See controller/docs/SECURITY-
-          TRIAGE.md. Re-review at the next AGP/UTP upgrade.
+        reason: 'Not shipped. Reached only through the Android Unified Test Platform (com.android.tools.utp:*), bundled by Android Gradle Plugin 8.4.1; host-only test tooling, never in the APK. Verified no path through a shipped module. See controller/docs/SECURITY-TRIAGE.md. Re-review at the next AGP/UTP upgrade.'
         expires: 2027-09-30T00:00:00.000Z
