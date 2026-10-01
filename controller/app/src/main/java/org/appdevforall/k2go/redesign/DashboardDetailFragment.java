@@ -16,7 +16,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -143,11 +142,8 @@ public class DashboardDetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         IntentFilter f = new IntentFilter(DashboardRebuildService.ACTION_STATE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireContext().registerReceiver(rebuildState, f, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            requireContext().registerReceiver(rebuildState, f);
-        }
+        ContextCompat.registerReceiver(requireContext(), rebuildState, f,
+                ContextCompat.RECEIVER_NOT_EXPORTED);
         resolveInitialUpdatingState();
     }
 
