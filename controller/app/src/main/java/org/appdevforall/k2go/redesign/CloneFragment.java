@@ -1,11 +1,9 @@
 package org.appdevforall.k2go.redesign;
 
-import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -42,6 +40,7 @@ import org.appdevforall.k2go.ServerController;
 import org.appdevforall.k2go.SyncHandshakeHelper;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.sync.domain.ApkShareName;
+import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.presentation.SyncProgressRepository;
@@ -109,7 +108,7 @@ public class CloneFragment extends Fragment {
     private ApkServer apkServer;
     private String apkFileName;
 
-    private ActivityResultLauncher<String> locationPerm;
+    private ActivityResultLauncher<String[]> hotspotPerm;
     // ADFA-5146: request the location permission at most once per attempt. ensureHotspot() runs on every
     // render, and the permission callback re-renders; on OEMs that return a denied permission result
     // synchronously that becomes unbounded recursion (render -> ensureHotspot -> launch -> sync-deny ->
@@ -170,9 +169,14 @@ public class CloneFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
-        locationPerm = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                granted -> { if (granted) hs.start(requireContext().getApplicationContext()); render(); });
+        hotspotPerm = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    if (HotspotPermissions.granted(requireContext())) {
+                        hs.start(requireContext().getApplicationContext());
+                    }
+                    render();
+                });
         barcodeLauncher = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
     }
 
@@ -445,14 +449,13 @@ public class CloneFragment extends Fragment {
         // (the "Caller already has an active LocalOnlyHotspot request" log spam).
         LocalHotspotManager.State st = hs.state().getValue();
         if (st != null && st.phase == LocalHotspotManager.Phase.STARTING) return;
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (HotspotPermissions.granted(requireContext())) {
             hs.start(requireContext().getApplicationContext());
         } else if (!locationAsked) {
             // ADFA-5146: launch the request exactly once. Do NOT re-launch on later renders (incl. the one
-            // the permission callback triggers) — a synchronous deny would otherwise recurse into overflow.
+            // the permission callback triggers): a synchronous deny would otherwise recurse into overflow.
             locationAsked = true;
-            locationPerm.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            hotspotPerm.launch(HotspotPermissions.required());
         }
     }
 

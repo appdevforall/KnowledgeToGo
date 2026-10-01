@@ -1,8 +1,6 @@
 package org.appdevforall.k2go.redesign;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -19,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
@@ -51,7 +50,7 @@ public class ConnectFragment extends Fragment {
     // the QR would point at a dead port. Read on onResume (a system is not gained while this is open).
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
-    private ActivityResultLauncher<String> locationPerm;
+    private ActivityResultLauncher<String[]> hotspotPerm;
 
     private TextView tabHotspot, tabWifi, finish, connFooter;
     // ADFA-5346: advance CTA is a MaterialButton (shape/size from the shared style); styleAdvance only
@@ -63,10 +62,12 @@ public class ConnectFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
-        locationPerm = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                granted -> {
-                    if (granted) hs.start(requireContext().getApplicationContext());
+        hotspotPerm = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    if (HotspotPermissions.granted(requireContext())) {
+                        hs.start(requireContext().getApplicationContext());
+                    }
                     render();
                 });
     }
@@ -126,11 +127,10 @@ public class ConnectFragment extends Fragment {
 
     private void ensureHotspot() {
         if (!LocalHotspotManager.isSupported() || hs.isOn()) return;
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (HotspotPermissions.granted(requireContext())) {
             hs.start(requireContext().getApplicationContext());
         } else {
-            locationPerm.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            hotspotPerm.launch(HotspotPermissions.required());
         }
     }
 

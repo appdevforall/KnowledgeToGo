@@ -819,7 +819,7 @@
     <string name="k2go_connect_starting_hotspot">Inaanzisha hotspot…</string>
     <string name="k2go_connect_resolving_address">Inatafuta anwani ya hotspot…</string>
     <string name="k2go_connect_hotspot_failed">Haikuweza kuanzisha hotspot</string>
-    <string name="k2go_connect_enable_location">Washa ruhusa ya Mahali, kisha ujaribu tena.</string>
+    <string name="k2go_connect_enable_location">Hakikisha Wi-Fi imewashwa, kisha ujaribu tena.</string>
     <string name="k2go_connect_no_wifi">Hujaunganishwa kwenye mtandao wa Wi-Fi</string>
     <string name="k2go_connect_join_wifi">Unganisha kwenye Wi-Fi ile ile au kwenye mtandao-hewa wa maktaba.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>
