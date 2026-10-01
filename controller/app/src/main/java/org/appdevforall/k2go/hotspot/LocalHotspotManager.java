@@ -8,8 +8,9 @@
  *               the carrier tethering-entitlement check, so it works with no SIM and
  *               no data plan. The reservation is process-bound: it stays up while this
  *               app process is alive and is torn down on close() or process death.
- *               API 26+ only; callers must gate on Build.VERSION and hold
- *               CHANGE_WIFI_STATE + ACCESS_FINE_LOCATION (with Location services on).
+ *               API 26+ only; callers must gate on Build.VERSION and hold CHANGE_WIFI_STATE
+ *               plus the hotspot permission from HotspotPermissions (NEARBY_WIFI_DEVICES on
+ *               API 33+, or ACCESS_FINE_LOCATION with Location services on 32 and below).
  *
  *               V1 scope (ADFA-4520): manual opt-in from Advanced settings, plus a
  *               contextual recommendation surfaced only when BOTH conditions hold
@@ -110,13 +111,15 @@ public final class LocalHotspotManager {
     }
 
     /**
-     * Starts a LocalOnlyHotspot. Caller must have already granted CHANGE_WIFI_STATE +
-     * ACCESS_FINE_LOCATION and enabled Location services; otherwise onFailed fires.
+     * Starts a LocalOnlyHotspot. Caller must have already granted CHANGE_WIFI_STATE and the
+     * hotspot permission (see HotspotPermissions); on API 32 and below that also needs Location
+     * services on. Otherwise onFailed fires.
      */
     // NewApi is suppressed because every API-26 reference below is protected by the
     // explicit Build.VERSION.SDK_INT guard (lint cannot see through isSupported(), and
     // @RequiresApi does not cover the anonymous callback class). MissingPermission is
-    // suppressed because CHANGE_WIFI_STATE + ACCESS_FINE_LOCATION are requested at runtime.
+    // suppressed because CHANGE_WIFI_STATE and the hotspot permission (HotspotPermissions) are
+    // requested at runtime.
     @SuppressLint({"MissingPermission", "NewApi"})
     public void start(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

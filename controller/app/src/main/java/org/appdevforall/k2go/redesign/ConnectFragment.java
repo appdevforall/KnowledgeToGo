@@ -216,7 +216,10 @@ public class ConnectFragment extends Fragment {
             singleStatus(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi));
             return;
         }
-        if (phase == LocalHotspotManager.Phase.FAILED) {
+        // FAILED, or the hotspot permission is not granted (denied): show the hint instead of a
+        // perpetual "starting" placeholder (K2GO-439).
+        if (phase == LocalHotspotManager.Phase.FAILED
+                || (phase != LocalHotspotManager.Phase.ON && !HotspotPermissions.granted(requireContext()))) {
             singleStatus(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location));
             return;
         }

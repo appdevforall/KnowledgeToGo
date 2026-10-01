@@ -730,7 +730,10 @@ public class CloneFragment extends Fragment {
                 secJoin.setFallback(requireContext(), null);
                 secJoin.caption.setText(getString(R.string.k2go_connect_hotspot_unsupported));
                 secJoin.subCaption.setText(getString(R.string.k2go_connect_try_wifi));
-            } else if (phase == LocalHotspotManager.Phase.FAILED) {
+            } else if (phase == LocalHotspotManager.Phase.FAILED
+                    || (phase != LocalHotspotManager.Phase.ON && !HotspotPermissions.granted(requireContext()))) {
+                // FAILED, or the hotspot permission is not granted (denied): show the hint instead of a
+                // perpetual "starting" placeholder (K2GO-439).
                 secJoin.frame.setVisibility(View.GONE);
                 secJoin.setFallback(requireContext(), null);
                 secJoin.caption.setText(getString(R.string.k2go_connect_hotspot_failed));

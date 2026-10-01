@@ -812,7 +812,7 @@
     <string name="k2go_connect_starting_hotspot">Покретање хотспота…</string>
     <string name="k2go_connect_resolving_address">Тражење адресе хотспота…</string>
     <string name="k2go_connect_hotspot_failed">Покретање хотспота није успело</string>
-    <string name="k2go_connect_enable_location">Уверите се да је Wi-Fi укључен, па покушајте поново.</string>
+    <string name="k2go_connect_enable_location">Укључите Wi-Fi и дајте дозволу, па покушајте поново.</string>
     <string name="k2go_connect_no_wifi">Нисте на Wi-Fi мрежи</string>
     <string name="k2go_connect_join_wifi">Повежите се на исти Wi-Fi или на хотспот библиотеке.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

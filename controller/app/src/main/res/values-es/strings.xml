@@ -875,7 +875,7 @@
     <string name="k2go_connect_starting_hotspot">Iniciando punto de acceso…</string>
     <string name="k2go_connect_resolving_address">Buscando la dirección del hotspot…</string>
     <string name="k2go_connect_hotspot_failed">No se pudo iniciar el punto de acceso</string>
-    <string name="k2go_connect_enable_location">Asegúrate de que el Wi-Fi esté activado e inténtalo de nuevo.</string>
+    <string name="k2go_connect_enable_location">Activa el Wi-Fi y concede el permiso, luego inténtalo de nuevo.</string>
     <string name="k2go_connect_no_wifi">No estás en una red Wi-Fi</string>
     <string name="k2go_connect_join_wifi">Únete a la misma Wi-Fi o conéctate al hotspot de la biblioteca.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

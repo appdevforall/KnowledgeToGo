@@ -819,7 +819,7 @@
     <string name="k2go_connect_starting_hotspot">Hotspot başladılır…</string>
     <string name="k2go_connect_resolving_address">Hotspot ünvanı tapılır…</string>
     <string name="k2go_connect_hotspot_failed">Hotspot başladıla bilmədi</string>
-    <string name="k2go_connect_enable_location">Wi-Fi-nin aktiv olduğundan əmin olun, sonra yenidən cəhd edin.</string>
+    <string name="k2go_connect_enable_location">Wi-Fi-ni yandırın və icazəni verin, sonra yenidən cəhd edin.</string>
     <string name="k2go_connect_no_wifi">Wi-Fi şəbəkəsində deyil</string>
     <string name="k2go_connect_join_wifi">Eyni Wi-Fi-yə və ya kitabxananın hotspotuna qoşulun.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

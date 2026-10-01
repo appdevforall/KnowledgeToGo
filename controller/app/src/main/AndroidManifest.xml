@@ -6,10 +6,11 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!-- ADFA-4520: LocalOnlyHotspot requires location at runtime on targetSdk 32 and below -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- K2GO-438: Android 12+ lets the user grant COARSE only, so declare it with FINE (CoarseFineLocation). -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- ADFA-4520 / K2GO-439: location gated LocalOnlyHotspot only on API 32 and below; API 33+ uses
+         NEARBY_WIFI_DEVICES below, so scope FINE/COARSE (the hotspot is their only consumer) to API 32. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="32" />
+    <!-- K2GO-438: Android 12 and below let the user grant COARSE only, so declare it with FINE (CoarseFineLocation). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="32" />
     <!-- K2GO-439: targetSdk 33+ needs NEARBY_WIFI_DEVICES for startLocalOnlyHotspot (FINE only sufficed on 32 and below).
          neverForLocation: the hotspot does not derive location from Wi-Fi scans. -->
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"

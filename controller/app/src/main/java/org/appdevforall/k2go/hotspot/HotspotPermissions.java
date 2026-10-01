@@ -30,7 +30,11 @@ public final class HotspotPermissions {
         return requiredFor(Build.VERSION.SDK_INT);
     }
 
-    /** The rule as a pure function of the API level. Package-private for unit testing. */
+    /**
+     * The rule as a pure function of the API level. Package-private for unit testing.
+     * Keyed off the device API: startLocalOnlyHotspot bases its requirement on the app
+     * targetSdk, and keying off the device API matches only because the app targets >= 33.
+     */
     static String[] requiredFor(int sdkInt) {
         if (sdkInt >= Build.VERSION_CODES.TIRAMISU) {
             return new String[]{ Manifest.permission.NEARBY_WIFI_DEVICES };
