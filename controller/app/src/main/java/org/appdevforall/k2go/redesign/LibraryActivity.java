@@ -132,10 +132,10 @@ public class LibraryActivity extends AppCompatActivity
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
-        // K2GO-439: targetSdk 35 forces edge-to-edge; keep the fragment content below the status bar
-        // and the bottom nav above the navigation bar instead of drawing under the system bars.
-        org.appdevforall.k2go.ui.EdgeToEdge.padTop(findViewById(R.id.k2go_nav_host));
-        org.appdevforall.k2go.ui.EdgeToEdge.padBottom(bottomNav);
+        // K2GO-439: targetSdk 35 forces edge-to-edge. Pad the content container (rail + content + bottom
+        // nav) by the system bars so nothing draws under them in either orientation; the boot-gate overlay
+        // is a sibling and stays full-screen. No IME inset here, so the bottom nav does not ride the keyboard.
+        org.appdevforall.k2go.ui.EdgeToEdge.padAll(findViewById(R.id.k2go_content_root));
         NavigationBarView.OnItemSelectedListener navListener = item -> {
             if (!navSyncing) {
                 currentTab = item.getItemId();

@@ -9,6 +9,7 @@
          medium/expanded (>= 600dp wide); the reverse in compact. Toggled at runtime by width in
          LibraryActivity, so rotation never recreates the activity (the boot gate is preserved). -->
     <LinearLayout
+        android:id="@+id/k2go_content_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
