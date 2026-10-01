@@ -52,7 +52,6 @@ import org.appdevforall.k2go.setup.domain.StreamState;
 import org.appdevforall.k2go.system.data.PendingContent;
 import org.appdevforall.k2go.system.domain.OperationDispatcher;
 import org.appdevforall.k2go.system.domain.ContentType;
-import org.appdevforall.k2go.system.domain.Operation;
 import org.appdevforall.k2go.util.Snackbars;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -84,15 +83,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     private View dot;
     private TextView statusText, redirect, cancel, finishNote, contextText;
     private LinearLayout sections;
-    private Button finishBtn, runBgBtn, detailRunBgBtn, detailBackBtn;
-    private View detailRoot, indexScroll;
-    /** ADFA-4898: the key currently shown in the detail host ("mod:<k>", "zim", …), or null on the index. */
-    private String detailKey;
+    private Button finishBtn, runBgBtn;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private boolean redirectCancelled = false;
     private boolean redirectScheduled = false;
-    private boolean showingDetail = false;
     private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
     // K2GO-434: the per-run stage latches ("what belongs to this run") live in a small domain state
     // machine (setup/domain/RunScope); see controller/docs/ADR-434-setupprogress-decomposition.md.
@@ -100,6 +95,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     // K2GO-434 (slice 3b): the provisioning pipeline loop + its latch state live in the controller;
     // render() and the *InSession/prootActive predicates read the latches back through its getters.
     private SetupProgressController pipeline;
+    // K2GO-434 (slice 6): opening a row's detail over the index, the detail action bar, and the return
+    // to the index live in the detail host; render()/onResume/onPause/onBackPressed read its state.
+    private SetupDetailHost detailHost;
     private boolean postInstallSeed = false; // K2GO-422: this run was launched to seed repos post-install
     // ADFA-4842: the index owns a ServerController (Host) to issue the post-batch server (re)start; the
     // server proot is process-scoped so it survives into LibraryActivity.
@@ -125,8 +123,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         finishNote = findViewById(R.id.k2go_sp_finish_note);
         contextText = findViewById(R.id.k2go_sp_context);
         runBgBtn = findViewById(R.id.k2go_sp_runbg);
-        indexScroll = findViewById(R.id.k2go_sp_index);
-        detailRoot = findViewById(R.id.k2go_sp_detail);
+        View indexScroll = findViewById(R.id.k2go_sp_index);
+        View detailRoot = findViewById(R.id.k2go_sp_detail);
 
         finishBtn.setOnClickListener(v -> goHome(true));
         // K2GO-382: land deliberately on Home (goHome), not a bare finish() that pops to whatever
@@ -135,15 +133,18 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         runBgBtn.setOnClickListener(v -> goHome(false));
         cancel.setOnClickListener(v -> { redirectCancelled = true; cancelRedirect(); render(); });
 
-        detailBackBtn = findViewById(R.id.k2go_sp_back);
-        detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
-        // ADFA-4898: the two detail buttons are (re)configured per shown detail by configureDetailBar()
-        // — normally [Back (primary) / Run in background (secondary, LIVE only)], and for a failed module
-        // [Retry (primary) / Back (secondary)]. The defaults here cover the window before the first
-        // configure and any non-module detail.
-        detailBackBtn.setOnClickListener(v -> backToIndex());
-        detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
-        detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
+        Button detailBackBtn = findViewById(R.id.k2go_sp_back);
+        Button detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
+        // K2GO-434 (slice 6): the detail host owns opening a row's detail over the index, the detail
+        // action bar (its button defaults included), and the return to the index. The actions a bar can
+        // fire that need Activity state (leave, retry the seed, cancel a module) come back through Host.
+        detailHost = new SetupDetailHost(new SetupDetailHost.Host() {
+            @Override public androidx.fragment.app.FragmentManager fragmentManager() { return getSupportFragmentManager(); }
+            @Override public void render() { SetupProgressActivity.this.render(); }
+            @Override public void goHome(boolean keepSessionsAlive) { SetupProgressActivity.this.goHome(keepSessionsAlive); }
+            @Override public void retryForgejoSeed() { SetupProgressActivity.this.retryForgejoSeed(); }
+            @Override public void confirmCancelModule() { SetupProgressActivity.this.confirmCancelModule(); }
+        }, indexScroll, detailRoot, detailBackBtn, detailRunBgBtn);
 
         // ADFA-4842: own a ServerController so the index can restart the server after a module batch
         // (it was pdsm-stopped for the runroles) and keep ServerStateRepository fresh so the start
@@ -239,7 +240,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // run could not complete while the user watched it. Removing the callback first keeps
         // this to one chain, since the runnable re-arms itself.
         pipeline.resume();
-        if (!showingDetail) {
+        if (!detailHost.isShowingDetail()) {
             // The listeners are the one thing that IS about who is on screen: while a detail is
             // open the fragment owns the single listener slot (see backToIndex).
             ZimDownloadService.setListener(this::render);
@@ -255,7 +256,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (statusEllipsis != null) statusEllipsis.stop();   // ADFA-4842
         cancelRedirect();
         if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
-        if (!showingDetail) {
+        if (!detailHost.isShowingDetail()) {
             ZimDownloadService.setListener(null);
             BooksDownloadService.setListener(null);
         }
@@ -263,7 +264,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     @Override
     public void onBackPressed() {
-        if (showingDetail) { backToIndex(); return; }
+        if (detailHost.isShowingDetail()) { detailHost.backToIndex(); return; }
         // ADFA-5011: a rebuild owns the rootfs and can't be abandoned mid-run — same gate as proot. Block
         // while building AND through the post-success wait for services to come up (so we never drop the
         // user onto a Library showing a half-rebuilt / not-yet-started server). First Back reassures; a
@@ -392,7 +393,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // ADFA-5011: a rebuild has its own, simpler surface (one row + status), driven by
         // InstallProgressRepository — never the install/content completion logic below.
         // A rebuild never opens a detail, so it keeps the plain guard.
-        if (rebuildInSession()) { if (!showingDetail) renderRebuild(); return; }
+        if (rebuildInSession()) { if (!detailHost.isShowingDetail()) renderRebuild(); return; }
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
@@ -584,37 +585,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (ui.animate) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
-        // ADFA-5074: a detail card is covering the index. Everything above still had to be
-        // computed — whether the run finished is a fact about the run, not about which screen is
-        // in front — but the controls below are not on screen, so a run that completed here would
-        // have nowhere to say so and would simply sit there. Step back to the index and let the
-        // normal pass run: the user gets the summary, the countdown and its Cancel, rather than
-        // being sent home from under a screen they were reading.
-        //
-        // Two conditions on that step-back, both from the review, both cases this got wrong:
-        //
-        // Armed once per opening. The check is on a level, not an edge, so it used to fire on
-        // every pass while the run stayed complete — a user who cancelled the countdown and
-        // tapped a finished row was thrown straight back out, and worst of all on a failed run,
-        // where the detail is the only place the per-item retry lives. `bounceOnComplete` is set
-        // when a detail is opened over work still in flight and cleared when it fires, so a
-        // detail opened deliberately over a finished run is never taken away.
-        //
-        // Only while resumed. render() has callers that outlive onPause: the two poll callbacks
-        // re-post from their own IO continuations, and onPause keeps the Zim/Books listeners
-        // whenever a detail is open — which for a courses, maps or module detail means the index
-        // still owns them. A publish() arriving then would run commitNow() on a stopped
-        // FragmentManager. Deferring costs nothing: onResume posts the poll, which renders.
-        lastAllComplete = allComplete;
-        if (showingDetail) {
-            // ADFA-4898: keep the detail bar in step with the queue — a module that fails shows Retry,
-            // and a Retry that puts it back to RUNNING restores Back/Run-in-background on the next tick.
-            configureDetailBar();
-            if (allComplete && bounceOnComplete
-                    && getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
-                bounceOnComplete = false;
-                backToIndex();
-            }
+        // ADFA-5074: a detail card is covering the index. Everything above still had to be computed
+        // (whether the run finished is a fact about the run, not about which screen is in front), but
+        // the controls below are not on screen. The detail host records the latest verdict, keeps the
+        // detail bar in step with the queue, and steps back to the index when a run that was still in
+        // flight when the detail opened completes while the user watches it. The step-back is armed once
+        // per opening and only fires while resumed (a poll callback can outlive onPause, and commitNow
+        // on a stopped FragmentManager would throw); SetupDetailHost holds both conditions.
+        detailHost.onVerdict(allComplete);
+        if (detailHost.isShowingDetail()) {
+            boolean resumed = getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED);
+            detailHost.refreshWhileShowing(allComplete, resumed);
             return;
         }
 
@@ -878,7 +859,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
-        if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session
+        if (sess) row.setOnClickListener(v -> detailHost.openDetail(key));   // detail only once there's a live session
         return row;
     }
 
@@ -940,7 +921,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
-        if (sess) row.setOnClickListener(v -> openDetail("forgejo"));
+        if (sess) row.setOnClickListener(v -> detailHost.openDetail("forgejo"));
         return row;
     }
 
@@ -1040,7 +1021,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
         chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
-        if (started) row.setOnClickListener(v -> openDetail("maps"));
+        if (started) row.setOnClickListener(v -> detailHost.openDetail("maps"));
         return row;
     }
 
@@ -1107,7 +1088,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
         chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
-        if (started) row.setOnClickListener(v -> openDetail("mod:" + key));
+        if (started) row.setOnClickListener(v -> detailHost.openDetail("mod:" + key));
         return row;
     }
 
@@ -1204,115 +1185,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         finish();
     }
 
-    /**
-     * ADFA-5074: whether a completed run should take this detail away again.
-     *
-     * <p>Armed when a detail is opened over work still in flight, cleared when it fires. A
-     * detail opened over a run that had already finished is a deliberate look at the result —
-     * usually at a failed row, whose retry lives only there — and must not be closed underneath
-     * the user.
-     */
-    private boolean bounceOnComplete = false;
-
-    /** The last completion verdict, so opening a detail can tell "still working" from "finished". */
-    private boolean lastAllComplete = false;
-
-    // ---- detail: host the real per-module card ----
-    private void openDetail(String key) {
-        showingDetail = true;
-        detailKey = key;
-        bounceOnComplete = !lastAllComplete;
-        androidx.fragment.app.Fragment f;
-        // Per-key detail view — presentation routing only; the execution class is NOT decided here.
-        if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); }  // ADFA-4842
-        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); }   // ADFA-5074: observe-only
-        else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); }   // ADFA-4954: observe-only
-        else if ("forgejo".equals(key)) { f = new org.appdevforall.k2go.forgejo.presentation.ForgejoSeedingFragment(); }   // K2GO-423: observe-only
-        else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); }   // ADFA-4901: observe-only
-        else { f = BooksDownloadsFragment.newInstance(true); }
-        configureDetailBar();
-        // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
-        // between set showingDetail back to false and found nothing to remove, and the queued
-        // transaction then added the fragment into a hidden host — where ZimPreparingFragment
-        // takes the service listener with nobody left to reclaim it, freezing the index's row.
-        // The mirror image of the bug backToIndex's commitNow already exists for. Only reachable
-        // from a row tap now that the intent routing is gone, so the activity is resumed and the
-        // synchronous commit is safe.
-        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commitNow();
-        indexScroll.setVisibility(View.GONE);
-        detailRoot.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * ADFA-5062: only a LIVE op (zim/kolibri/books) can keep running in the background; a stopped-class
-     * detail (maps or a module install) cannot. Read from the model, not re-derived from the key prefix.
-     */
-    private boolean isLiveDetail(String key) {
-        if (key == null) return false;
-        if (key.startsWith("mod:")) return Operation.appInstall(key.substring(4)).isLive();
-        if ("forgejo".equals(key)) return true;   // K2GO-423: the seed is a live, backgroundable step
-        ContentType ct = ContentType.byKey(key);
-        return ct != null && ct.isLive();
-    }
-
-    /**
-     * ADFA-4898: (re)configure the two-button detail bar for the currently shown detail. Reuses the one
-     * existing template — a filled primary (k2go_sp_back) over an outlined secondary (k2go_sp_detail_finish):
-     *   - a failed module → Retry (primary) + Back (secondary), so the recovery action sits where the LIVE
-     *     details put Run-in-background, instead of a bespoke button in the card;
-     *   - anything else → Back (primary) + Run in background (secondary, LIVE only).
-     * Recomputed on every render while a detail is open, so a Retry that puts the module back to RUNNING
-     * flips the bar back to Back/Run-in-background on the next tick (no stale Retry). Retry stays on the
-     * card: this detail is the live progress view and follows the re-run with its log.
-     */
-    private void configureDetailBar() {
-        if (!showingDetail || detailKey == null || detailBackBtn == null) return;
-        // K2GO-423: the Forgejo seed detail offers Retry on failure, mirroring the module Retry. The
-        // seed's give-up cleared the banked marker (A), so retryForgejoSeed() re-banks with the same
-        // repo opt-in and restarts the service; the bar flips back to Back/Run-in-background on the
-        // next tick once the seed is running again. (A durable/one-tap re-seed after leaving is K2GO-422.)
-        if ("forgejo".equals(detailKey)
-                && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed()) {
-            detailBackBtn.setText(R.string.k2go_home_retry);
-            detailBackBtn.setOnClickListener(v -> retryForgejoSeed());
-            detailRunBgBtn.setText(R.string.k2go_setup_back);
-            detailRunBgBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-            return;
-        }
-        // K2GO-394: the maps detail opens under the legacy key "maps" (not "mod:maps"), but maps IS a
-        // module, so treat it as one here -> it gets the same Cancel-while-running (the mockup's op-level
-        // Cancel install) and Retry-on-failure the other modules already have, with no duplicated logic.
-        final boolean isModule = detailKey.startsWith("mod:") || "maps".equals(detailKey);
-        final String moduleKey = !isModule ? null
-                : (detailKey.startsWith("mod:") ? detailKey.substring(4) : detailKey);
-        ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean moduleFailed = isModule && mq.didFail(moduleKey);
-        boolean moduleRunning = isModule && mq.isInstalling(moduleKey);
-        if (moduleFailed) {
-            detailBackBtn.setText(R.string.k2go_home_retry);
-            detailBackBtn.setOnClickListener(v -> ModuleRetry.fire(v, moduleKey));
-            detailRunBgBtn.setText(R.string.k2go_setup_back);
-            detailRunBgBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-        } else if (moduleRunning) {
-            // ADFA-4898 P5: while this module's runrole runs, offer a confirmed Cancel in the same
-            // secondary slot (Back stays primary). Cancel kills the runrole and surfaces the module as
-            // failed, so the Retry above appears on the next tick — the "immediate retry" of the ticket.
-            detailBackBtn.setText(R.string.k2go_setup_back);
-            detailBackBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setText(R.string.k2go_setup_cancel);
-            detailRunBgBtn.setOnClickListener(v -> confirmCancelModule());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-        } else {
-            detailBackBtn.setText(R.string.k2go_setup_back);
-            detailBackBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setText(R.string.k2go_zim_run_bg);
-            detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
-            detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
-        }
-    }
-
     /** K2GO-423: re-run a Forgejo seed that gave up (the Retry on the failed seed detail). The give-up
      *  cleared the banked marker, so re-bank it with the opt-in the session used, restart the service,
      *  and re-kick the pipeline poll so the index row and the completion gate track the retry. */
@@ -1338,22 +1210,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                                 .setAction(org.appdevforall.k2go.install.presentation.InstallService.ACTION_CANCEL)))
                 .setNegative(R.string.k2go_mod_cancel_dismiss, null)
                 .show();
-    }
-
-    private void backToIndex() {
-        showingDetail = false;
-        detailKey = null;
-        // commitNow (synchronous) so the fragment's onDestroyView — which nulls the service
-        // listener — runs BEFORE we reclaim it. With async commit() the teardown fired later and
-        // clobbered the index's listener, so a job finishing while back on the index never updated
-        // the UI (spinner stuck) until the card was reopened.
-        androidx.fragment.app.Fragment cur = getSupportFragmentManager().findFragmentById(R.id.k2go_sp_fraghost);
-        if (cur != null) getSupportFragmentManager().beginTransaction().remove(cur).commitNow();
-        detailRoot.setVisibility(View.GONE);
-        indexScroll.setVisibility(View.VISIBLE);
-        ZimDownloadService.setListener(this::render);
-        BooksDownloadService.setListener(this::render);
-        render();
     }
 
     // ---- ServerController.Host (ADFA-4842): minimal — the index only needs to START the server after
