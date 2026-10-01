@@ -28,7 +28,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -49,6 +48,7 @@ import org.appdevforall.k2go.TarExtractor;
 import org.appdevforall.k2go.util.ProcessRunner;
 import org.appdevforall.k2go.deploy.domain.ModuleName;
 import org.appdevforall.k2go.download.domain.DownloadRetryPolicy;
+import org.appdevforall.k2go.install.data.InstallStateStore;
 import org.appdevforall.k2go.install.domain.AnsibleRunOutcome;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
@@ -406,8 +406,7 @@ public final class InstallService extends Service {
     /** Record the tier being installed so a later content-only "Get more" can size correctly. */
     private void persistInstalledTier() {
         try {
-            getSharedPreferences(getString(R.string.pref_file_internal), android.content.Context.MODE_PRIVATE)
-                    .edit().putString("installed_tier", tier.name()).apply();
+            InstallStateStore.writeInstalledTier(this, tier.name());
         } catch (Exception ignore) { /* best-effort */ }
     }
 
@@ -1355,14 +1354,11 @@ public final class InstallService extends Service {
     }
 
     private void persistQueue() {
-        getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE).edit()
-                .putString("pending_modules", android.text.TextUtils.join(",", new java.util.ArrayList<>(moduleQueue)))
-                .putBoolean("is_batch_installing", true).apply();
+        InstallStateStore.saveQueue(this, moduleQueue);
     }
 
     private void persistClearQueue() {
-        getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE).edit()
-                .putString("pending_modules", "").putBoolean("is_batch_installing", false).apply();
+        InstallStateStore.clearQueue(this);
     }
 
     // ---------------------------------------------------------------- dashboard rebuild (ADFA-5011)
@@ -1813,10 +1809,7 @@ public final class InstallService extends Service {
             // false among five. ADFA-5137 removed the flag altogether, so there is nothing to unset:
             // the marker cleared by teardown() and the absent rootfs now say the same thing between
             // them, and they cannot disagree with each other the way the flag could disagree with both.
-            getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
-                    .edit()
-                    .remove("installed_tier")
-                    .commit();
+            InstallStateStore.clearInstalledTier(this);
         } catch (Exception e) {
             // Never leave the UI waiting because a cleanup step failed: the state below is what
             // releases the boot gate, so it is posted either way and the failure is logged.
@@ -1899,8 +1892,7 @@ public final class InstallService extends Service {
     }
 
     private void invalidateModuleStateTrust() {
-        getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE)
-                .edit().putBoolean("is_module_state_trusted", false).apply();
+        InstallStateStore.markModuleStateUntrusted(this);
     }
 
     private InstallationPlanner.Tier parseTier(String name) {

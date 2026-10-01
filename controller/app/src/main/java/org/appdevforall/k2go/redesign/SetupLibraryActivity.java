@@ -250,8 +250,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public java.util.LinkedHashMap<String, Long> getZimCart() { return selection().zimCart(); }
 
     private InstallationPlanner.Tier readInstalledTier() {
-        String t = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
-                .getString("installed_tier", InstallationPlanner.Tier.STANDARD.name());
+        String t = org.appdevforall.k2go.install.data.InstallStateStore.readInstalledTier(
+                this, InstallationPlanner.Tier.STANDARD.name());
         try {
             return InstallationPlanner.Tier.valueOf(t);
         } catch (Exception e) {
