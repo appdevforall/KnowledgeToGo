@@ -141,7 +141,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         detailHost = new SetupDetailHost(new SetupDetailHost.Host() {
             @Override public androidx.fragment.app.FragmentManager fragmentManager() { return getSupportFragmentManager(); }
             @Override public void render() { SetupProgressActivity.this.render(); }
-            @Override public void goHome(boolean keepSessionsAlive) { SetupProgressActivity.this.goHome(keepSessionsAlive); }
+            @Override public void goHome(boolean clearSessions) { SetupProgressActivity.this.goHome(clearSessions); }
             @Override public void retryForgejoSeed() { SetupProgressActivity.this.retryForgejoSeed(); }
             @Override public void confirmCancelModule() { SetupProgressActivity.this.confirmCancelModule(); }
         }, indexScroll, detailRoot, detailBackBtn, detailRunBgBtn);

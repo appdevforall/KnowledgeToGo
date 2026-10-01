@@ -39,8 +39,8 @@ public final class SetupDetailHost {
     public interface Host {
         FragmentManager fragmentManager();
         void render();
-        /** K2GO-382: land on Home; keepSessionsAlive=false leaves the downloads running in the background. */
-        void goHome(boolean keepSessionsAlive);
+        /** K2GO-382: land on Home; clearSessions=false leaves the downloads running in the background. */
+        void goHome(boolean clearSessions);
         /** K2GO-423: re-run a Forgejo seed that gave up (the Retry on the failed seed detail). */
         void retryForgejoSeed();
         /** ADFA-4898 P5: confirm, then cancel a running module install. */
@@ -155,7 +155,7 @@ public final class SetupDetailHost {
      * card: this detail is the live progress view and follows the re-run with its log.
      */
     private void configureDetailBar() {
-        if (!showingDetail || detailKey == null || detailBackBtn == null) return;
+        if (!showingDetail || detailKey == null) return;
         // K2GO-423: the Forgejo seed detail offers Retry on failure, mirroring the module Retry. The
         // seed's give-up cleared the banked marker (A), so retryForgejoSeed() re-banks with the same
         // repo opt-in and restarts the service; the bar flips back to Back/Run-in-background on the
