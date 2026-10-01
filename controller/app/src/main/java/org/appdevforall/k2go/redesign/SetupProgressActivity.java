@@ -45,13 +45,13 @@ import org.appdevforall.k2go.kolibri.presentation.KolibriSeedState;
 import org.appdevforall.k2go.kolibri.presentation.KolibriSeedingFragment;
 import org.appdevforall.k2go.setup.domain.RunScope;
 import org.appdevforall.k2go.setup.domain.RunSnapshot;
+import org.appdevforall.k2go.setup.domain.RebuildUiState;
 import org.appdevforall.k2go.setup.domain.RunVerdict;
 import org.appdevforall.k2go.setup.domain.SetupUiState;
 import org.appdevforall.k2go.setup.domain.StreamState;
 import org.appdevforall.k2go.system.data.PendingContent;
 import org.appdevforall.k2go.system.domain.OperationDispatcher;
 import org.appdevforall.k2go.system.domain.ContentType;
-import org.appdevforall.k2go.system.domain.Operation;
 import org.appdevforall.k2go.util.Snackbars;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -76,66 +76,32 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  index tracks and waits on the seed even though there is no module install this run. */
     public static final String EXTRA_FORGEJO_SEED = "forgejoSeed";
 
-    private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
-    // ADFA-4900: if the maps module queue never reports RUNNING/DONE this long after hand-off, treat
-    // it as a start failure so the pipeline can't hang forever waiting on a stage that never began.
-    private static final long MAPS_START_TIMEOUT_MS = 30000L;
-    // ADFA-4842: cap the post-module server-restart wait so the index can never trap the user forever
-    // if the server won't come back up; on timeout we proceed to the Library (which owns recovery).
-    private static final long SERVER_UP_TIMEOUT_MS = 45000L;
-    // ADFA-4874: after this many failed readiness polls (~30s at 2s each) the status line switches
-    // to a soft "taking longer than expected" message, so a stuck engine doesn't look frozen.
-    private static final int SLOW_AFTER_POLLS = 15;
+    // K2GO-434: READY_POLL_MS / MAPS_START_TIMEOUT_MS / SERVER_UP_TIMEOUT_MS / SLOW_AFTER_POLLS moved to
+    // SetupProgressController with the loop; render() reads them as SetupProgressController.<name>.
 
     private View dot;
     private TextView statusText, redirect, cancel, finishNote, contextText;
     private LinearLayout sections;
-    private Button finishBtn, runBgBtn, detailRunBgBtn, detailBackBtn;
-    private View detailRoot, indexScroll;
-    /** ADFA-4898: the key currently shown in the detail host ("mod:<k>", "zim", …), or null on the index. */
-    private String detailKey;
+    private Button finishBtn, runBgBtn;
 
     private final Handler main = new Handler(Looper.getMainLooper());
-    private boolean servicesReady = false;
-    private boolean drained = false;
     private boolean redirectCancelled = false;
     private boolean redirectScheduled = false;
-    private boolean showingDetail = false;
     private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
-    private boolean probing = false;
     // K2GO-434: the per-run stage latches ("what belongs to this run") live in a small domain state
     // machine (setup/domain/RunScope); see controller/docs/ADR-434-setupprogress-decomposition.md.
     private final RunScope runScope = new RunScope();
-    private boolean rebuildRunningSeen = false;   // ADFA-5011: latched once we've seen THIS rebuild running,
-    //  so a STALE terminal state from a previous rebuild can't trigger a premature done/redirect on entry
-    // ADFA-5011: after the rebuild build+swap succeeds, WAIT for the REST core to actually answer before
-    // redirecting — else we land on a dead Home while pdsm-started services are still coming up. We only
-    // POLL apiReady() here (read-only); the service already did pdsm start, so we never toggle/stop.
-    private boolean rebuildStartKicked = false;     // ADFA-5011: index booted the environment once (actuator)
-    private boolean rebuildServerUp = false;        // REST core answered after the rebuild
-    private boolean rebuildServerFailed = false;    // services didn't answer within the timeout
-    private long rebuildServerAt = 0L;              // elapsedRealtime when the post-success wait began
-    private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
-    private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
-    private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
-    // ADFA-4842: module management (non-maps proot modules) — same shape as the maps stage tracking.
-    private boolean moduleLaunched = false;
-    private long moduleLaunchedAt = 0L;
-    private boolean moduleStartFailed = false;
+    // K2GO-434 (slice 3b): the provisioning pipeline loop + its latch state live in the controller;
+    // render() and the *InSession/prootActive predicates read the latches back through its getters.
+    private SetupProgressController pipeline;
+    // K2GO-434 (slice 6): opening a row's detail over the index, the detail action bar, and the return
+    // to the index live in the detail host; render()/onResume/onPause/onBackPressed read its state.
+    private SetupDetailHost detailHost;
     private boolean postInstallSeed = false; // K2GO-422: this run was launched to seed repos post-install
-    private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
-    // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
-    // DONE, the index restarts the server and WAITS here — showing "Starting services…" — until the REST
-    // core answers, then completes/redirects to an already-live Library. Owns a ServerController (Host)
-    // just to issue that start; the server proot is process-scoped so it survives into LibraryActivity.
+    // ADFA-4842: the index owns a ServerController (Host) to issue the post-batch server (re)start; the
+    // server proot is process-scoped so it survives into LibraryActivity.
     private org.appdevforall.k2go.ServerController serverController;
-    // ADFA-5343 (Phase 2): the post-batch server restart is owned by the reconciler now, not this screen.
-    // The three boot latches (moduleRestartKicked/moduleServerUp/moduleServerFailed) are gone: "up" is
-    // read from the one observed server phase (serverObservedUp()), and "didn't come back in time" is a
-    // timeout on that phase anchored below — there is no FAILED phase, so a stuck flap is STARTING the
-    // reconciler keeps re-driving, and Finish still lands on a Home the reconciler drives live (5336).
-    private long moduleServerWaitAt = 0L;             // elapsedRealtime when the post-batch wait began (0 = not yet)
     private org.appdevforall.k2go.util.EllipsisAnimator statusEllipsis;   // ADFA-4842: animated "…" on the amber wait line
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -157,8 +123,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         finishNote = findViewById(R.id.k2go_sp_finish_note);
         contextText = findViewById(R.id.k2go_sp_context);
         runBgBtn = findViewById(R.id.k2go_sp_runbg);
-        indexScroll = findViewById(R.id.k2go_sp_index);
-        detailRoot = findViewById(R.id.k2go_sp_detail);
+        View indexScroll = findViewById(R.id.k2go_sp_index);
+        View detailRoot = findViewById(R.id.k2go_sp_detail);
 
         finishBtn.setOnClickListener(v -> goHome(true));
         // K2GO-382: land deliberately on Home (goHome), not a bare finish() that pops to whatever
@@ -167,21 +133,37 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         runBgBtn.setOnClickListener(v -> goHome(false));
         cancel.setOnClickListener(v -> { redirectCancelled = true; cancelRedirect(); render(); });
 
-        detailBackBtn = findViewById(R.id.k2go_sp_back);
-        detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
-        // ADFA-4898: the two detail buttons are (re)configured per shown detail by configureDetailBar()
-        // — normally [Back (primary) / Run in background (secondary, LIVE only)], and for a failed module
-        // [Retry (primary) / Back (secondary)]. The defaults here cover the window before the first
-        // configure and any non-module detail.
-        detailBackBtn.setOnClickListener(v -> backToIndex());
-        detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
-        detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
+        Button detailBackBtn = findViewById(R.id.k2go_sp_back);
+        Button detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
+        // K2GO-434 (slice 6): the detail host owns opening a row's detail over the index, the detail
+        // action bar (its button defaults included), and the return to the index. The actions a bar can
+        // fire that need Activity state (leave, retry the seed, cancel a module) come back through Host.
+        detailHost = new SetupDetailHost(new SetupDetailHost.Host() {
+            @Override public androidx.fragment.app.FragmentManager fragmentManager() { return getSupportFragmentManager(); }
+            @Override public void render() { SetupProgressActivity.this.render(); }
+            @Override public void goHome(boolean clearSessions) { SetupProgressActivity.this.goHome(clearSessions); }
+            @Override public void retryForgejoSeed() { SetupProgressActivity.this.retryForgejoSeed(); }
+            @Override public void confirmCancelModule() { SetupProgressActivity.this.confirmCancelModule(); }
+        }, indexScroll, detailRoot, detailBackBtn, detailRunBgBtn);
 
         // ADFA-4842: own a ServerController so the index can restart the server after a module batch
         // (it was pdsm-stopped for the runroles) and keep ServerStateRepository fresh so the start
         // toggle can't misfire. The server proot is process-scoped, so it survives into LibraryActivity.
         serverController = new org.appdevforall.k2go.ServerController(this, this);
         serverController.start();
+
+        // K2GO-434 (slice 3b): the provisioning pipeline loop, driven through a narrow Host into this
+        // Activity (render + the run-scope predicates + the environment boot + a Context for the drains).
+        pipeline = new SetupProgressController(new SetupProgressController.Host() {
+            @Override public android.content.Context context() { return SetupProgressActivity.this; }
+            @Override public boolean isFinishing() { return SetupProgressActivity.this.isFinishing(); }
+            @Override public void render() { SetupProgressActivity.this.render(); }
+            @Override public boolean rebuildInSession() { return SetupProgressActivity.this.rebuildInSession(); }
+            @Override public boolean moduleInSession() { return SetupProgressActivity.this.moduleInSession(); }
+            @Override public boolean serverObservedUp() { return SetupProgressActivity.this.serverObservedUp(); }
+            @Override public boolean forgejoSeedActive() { return SetupProgressActivity.this.forgejoSeedActive(); }
+            @Override public void startEnvironmentBoot() { serverController.startEnvironment(); }
+        });
 
         // ADFA-5343 (§3.3 follow-up): an install marker left by a DEAD process launch
         // (InstallGuard.isInterrupted) is a killed install, not a resumable session. If the OS
@@ -257,9 +239,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // showingDetail already true and never posted the poll at all. Nothing advanced, and the
         // run could not complete while the user watched it. Removing the callback first keeps
         // this to one chain, since the runnable re-arms itself.
-        main.removeCallbacks(readyPoll);
-        main.post(readyPoll);
-        if (!showingDetail) {
+        pipeline.resume();
+        if (!detailHost.isShowingDetail()) {
             // The listeners are the one thing that IS about who is on screen: while a detail is
             // open the fragment owns the single listener slot (see backToIndex).
             ZimDownloadService.setListener(this::render);
@@ -271,11 +252,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     @Override
     protected void onPause() {
         super.onPause();
-        main.removeCallbacks(readyPoll);
+        pipeline.pause();
         if (statusEllipsis != null) statusEllipsis.stop();   // ADFA-4842
         cancelRedirect();
         if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
-        if (!showingDetail) {
+        if (!detailHost.isShowingDetail()) {
             ZimDownloadService.setListener(null);
             BooksDownloadService.setListener(null);
         }
@@ -283,16 +264,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     @Override
     public void onBackPressed() {
-        if (showingDetail) { backToIndex(); return; }
+        if (detailHost.isShowingDetail()) { detailHost.backToIndex(); return; }
         // ADFA-5011: a rebuild owns the rootfs and can't be abandoned mid-run — same gate as proot. Block
         // while building AND through the post-success wait for services to come up (so we never drop the
         // user onto a Library showing a half-rebuilt / not-yet-started server). First Back reassures; a
         // second backgrounds the app (the rebuild keeps going and reopening resumes here).
         if (rebuildInSession()) {
             InstallState rst = InstallProgressRepository.get().current();
-            boolean rebuiltOk = rebuildRunningSeen && rst.phase == InstallState.Phase.SUCCESS;
+            boolean rebuiltOk = pipeline.rebuildRunningSeen() && rst.phase == InstallState.Phase.SUCCESS;
             boolean stillWorking = InstallProgressRepository.get().isRunning()
-                    || (rebuiltOk && !rebuildServerUp && !rebuildServerFailed);
+                    || (rebuiltOk && !pipeline.rebuildServerUp() && !pipeline.rebuildServerFailed());
             if (stillWorking) {
                 if (!leaveWarned) {
                     leaveWarned = true;
@@ -329,10 +310,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  (serverObservedUp) or the wait times out. */
     private boolean prootActive() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean mapsTerminal = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean mapsTerminal = pipeline.mapsStartFailed() || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         boolean mapsActive = mapsInSession() && !mapsTerminal;
         // A module session stays active from its runroles through the server restart that follows.
-        boolean moduleActive = (moduleInSession() || moduleStartFailed) && !serverObservedUp();
+        boolean moduleActive = (moduleInSession() || pipeline.moduleStartFailed()) && !serverObservedUp();
         return mapsActive || moduleActive;
     }
 
@@ -354,7 +335,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // render as the "Maps" stage, so latch only on the maps provisioner/launch or a running
         // queue whose current module is maps.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        return runScope.latchMaps(mapsLaunched || mapsStartFailed
+        return runScope.latchMaps(pipeline.mapsLaunched() || pipeline.mapsStartFailed()
                 || MapsProvisioner.hasPending(this)
                 || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule)));
     }
@@ -364,7 +345,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  still renders the module rows and reaches completion. */
     private boolean moduleInSession() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        return runScope.latchModule(moduleLaunched || moduleStartFailed
+        return runScope.latchModule(pipeline.moduleLaunched() || pipeline.moduleStartFailed()
                 || ModuleProvisioner.hasPending(this)
                 || ModuleBatch.has(this)
                 || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule)));
@@ -404,236 +385,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         return runScope.latchRebuild(signal);
     }
 
-    // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
-    // Once the REST engine is up, run the install tasks as an ORDERED, serialized pipeline:
-    // maps (proot / runrole) exclusively first, then ZIM, then Books, auto-continuing between
-    // stages HERE (never dropping to Home/Library mid-sequence). Keep polling until every stage
-    // has been started and finished; render() then auto-advances (or shows Finish on failure).
-    private final Runnable readyPoll = new Runnable() {
-        @Override public void run() {
-            if (probing) return;
-            if (isFinishing()) return;
-            // ADFA-5011: a dashboard rebuild owns the rootfs (the service does pdsm stop → build → swap and
-            // leaves the box STOPPED). Skip the normal install readiness/orchestrate path entirely — it has
-            // nothing to drain and would see the server still up in the first seconds, declare "nothing to
-            // do" and redirect (the original bug). Instead: re-render from the rebuild state; and once the
-            // rebuild is terminal, the INDEX boots the environment persistently and waits for it (below).
-            if (rebuildInSession()) {
-                InstallState cur = InstallProgressRepository.get().current();
-                boolean rebuiltOk = rebuildRunningSeen && cur.phase == InstallState.Phase.SUCCESS;
-                boolean rebuiltFail = rebuildRunningSeen && cur.phase == InstallState.Phase.FAILED;
-                // Rebuild done → the INDEX is the actuator that boots the environment PERSISTENTLY
-                // (startEnvironment = 'pdsm start && tail -f /dev/null'), exactly like the module flow.
-                // The rebuild service left the box stopped (its transient proots would kill any service
-                // they started via --kill-on-exit), so nothing else brings it up. Kick it exactly once.
-                if ((rebuiltOk || rebuiltFail) && !rebuildStartKicked) {
-                    rebuildStartKicked = true;
-                    rebuildServerAt = SystemClock.elapsedRealtime();
-                    serverController.startEnvironment();
-                }
-                render();   // sets rebuildRunningSeen once the running state is observed
-                // On success, probe the REST core (read-only) until it answers or the wait times out —
-                // so we redirect only once services are truly up, never onto a dead Home. Reschedule from
-                // INSIDE the probe callback (not below): apiReady() can block up to ~5s while the server
-                // boots — longer than READY_POLL_MS — and the top `if (probing) return` would otherwise
-                // strand the loop if we also scheduled here.
-                if (rebuiltOk && !rebuildServerUp && !rebuildServerFailed) {
-                    probing = true;
-                    AppExecutors.get().io().execute(() -> {
-                        final boolean up = RestReadiness.apiReady();
-                        main.post(() -> {
-                            probing = false;
-                            if (isFinishing()) return;
-                            if (up) rebuildServerUp = true;
-                            else if (SystemClock.elapsedRealtime() - rebuildServerAt > SERVER_UP_TIMEOUT_MS) rebuildServerFailed = true;
-                            render();
-                            if (!rebuildServerUp && !rebuildServerFailed) main.postDelayed(readyPoll, READY_POLL_MS);
-                        });
-                    });
-                    return;
-                }
-                // Building, or terminal-and-settled. Keep polling only while still building.
-                boolean settled = rebuiltFail || (rebuiltOk && (rebuildServerUp || rebuildServerFailed));
-                if (!settled) main.postDelayed(readyPoll, READY_POLL_MS);
-                return;
-            }
-            // ADFA-4842: a MODULE (solo-proot) install stops the server and runs its OWN proot — there is
-            // no REST engine to wait for, and we must NEVER try to "start services" (a second proot) mid-
-            // runrole. Skip the REST readiness gate entirely: the runrole queue drives progress, and the
-            // server is (re)started only AFTER the queue is DONE — now by the reconciler (desired=UP),
-            // observed here via render(). REST and REST+proot (mixed) keep their serialized apiReady path
-            // below, untouched.
-            if (moduleInSession()) {
-                orchestrateStep();   // drains on first entry; harmless no-op once the queue is running
-                render();
-                // K2GO-423: keep polling past server-up while a Forgejo seed is pending/running -- it
-                // starts only once the server is observed up (a live dash-node), and must be driven to
-                // completion here, not left for a silent Home drain.
-                if (!serverObservedUp() || forgejoSeedActive()) main.postDelayed(readyPoll, READY_POLL_MS);
-                return;
-            }
-            // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so
-            // we never POST a job before the engine answers — it is a gate on STARTING work. When
-            // every stream is already in flight there is no job to post, and the probe stops being
-            // free: it is an HTTP request to a server that is busy serving the very download it is
-            // being asked about. Observed on device with the network throttled — a finished ZIM and
-            // a finished Courses run both sat under "Starting services." with a green Done row,
-            // because apiReady() kept timing out at 2.5s, servicesReady stayed false, orchestrateStep
-            // never ran, `drained` was never set, and the completion the screen was waiting for could
-            // not be reached. Both redirected the moment the link freed up, minutes late.
-            //
-            // So: if no provisioner has anything pending, the pipeline has nothing to launch and can
-            // advance on what it can already see. This is also the truthful answer — the box is
-            // demonstrably up, it is downloading — and it stops the header claiming otherwise.
-            if (!servicesReady && nothingToStart()) servicesReady = true;
-
-            // Once the engine is confirmed up, advance the pipeline on the main thread without
-            // re-checking apiReady() over HTTP every tick (the build can run for hours). ADFA-4900/#6.
-            if (servicesReady) {
-                boolean moreWork = orchestrateStep();
-                render();
-                if (moreWork) main.postDelayed(readyPoll, READY_POLL_MS);
-                return;
-            }
-            probing = true;
-            AppExecutors.get().io().execute(() -> {
-                final boolean ready = RestReadiness.apiReady();
-                main.post(() -> {
-                    probing = false;
-                    if (isFinishing()) return;
-                    if (!ready) {
-                        readyPolls++;   // ADFA-4874: feeds the slow-start message in render()
-                        render();
-                        main.postDelayed(readyPoll, READY_POLL_MS);
-                        return;
-                    }
-                    servicesReady = true;
-                    boolean moreWork = orchestrateStep();
-                    render();
-                    if (moreWork) main.postDelayed(readyPoll, READY_POLL_MS);
-                });
-            });
-        }
-    };
-
-    /**
-     * ADFA-5074: no stage has anything left to launch.
-     *
-     * <p>Exactly the set of "hasPending" questions {@link #orchestrateStep()} asks before it
-     * starts anything, and asked in one place so the two cannot drift: if this is true, that
-     * method can only observe. Deliberately not "is the run finished" — work already in flight
-     * is not pending, which is the whole point. A Get More download reaches this screen with its
-     * wishlist already drained by the door, so there is nothing to gate.
-     */
-    private boolean nothingToStart() {
-        return !MapsProvisioner.hasPending(this)
-                && !ModuleProvisioner.hasPending(this)
-                && !ZimProvisioner.hasPending(this)
-                && !BooksProvisioner.hasPending(this)
-                && !KolibriProvisioner.hasPending(this)
-                && !forgejoSeedActive();   // K2GO-423: a banked/running Forgejo seed is work to finish
-    }
-
-    /**
-     * ADFA-5061: whether a drain actually handed work over.
-     *
-     * <p>Three outcomes, and the pipeline needs them apart. {@code null} means the drain was not
-     * attempted — nothing banked, or a queue already running — and nothing has changed, so the
-     * caller must not mark a stage either way. {@code RUN_STOPPED} means it went. Anything else
-     * is the model refusing, and a refusal does not become a yes by asking again on the next
-     * tick: the facts it read are the facts, and only a repair or an install changes them.
-     */
-    private static boolean launched(OperationDispatcher.Dispatch verdict) {
-        return verdict != null && OperationDispatcher.mayRunStopped(verdict);
-    }
-
-    /**
-     * ADFA-4900: one step of the serialized install pipeline. Starts the next stage only when the
-     * previous one has finished; proot (maps) runs exclusively before any REST download, so Ansible's
-     * background forks never overlap a live REST job. Returns true while work remains (keep polling),
-     * false once every stage has been started and is complete.
-     */
-    private boolean orchestrateStep() {
-        ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean queueRunning = ModuleQueueRepository.get().isRunning();
-
-        // Stage 1 — proot (maps and/or module management), exclusive of all REST work (proot tasks
-        // run serially via the queue). Maps (Get More) and modules (module management) are separate
-        // entry points, so at most one has a pending batch in a given session.
-        // ADFA-5061: `!mapsStartFailed` retires the stage. Until the drains could refuse, a
-        // pending wishlist always became an empty one on the next pass, so "still pending" was a
-        // safe reason to keep waiting. It is not any more: a refusal leaves the order banked on
-        // purpose, and without this guard the stage would be re-offered every READY_POLL_MS
-        // forever — a spinner with no explanation, on precisely the damaged system that needs one.
-        if (!mapsStartFailed && MapsProvisioner.hasPending(this)) {
-            if (!queueRunning) {
-                if (launched(MapsProvisioner.drain(this))) {
-                    mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime();
-                } else {
-                    // Same terminal state as a queue that never started: render() already treats
-                    // it as a failed proot stage, which is the visible answer decision 4 asks for.
-                    mapsStartFailed = true;
-                }
-            }
-            return true;
-        }
-        if (!moduleStartFailed && ModuleProvisioner.hasPending(this)) {   // ADFA-4842: module management batch
-            if (!queueRunning) {
-                if (launched(ModuleProvisioner.drain(this))) {
-                    moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime();
-                } else {
-                    moduleStartFailed = true;
-                }
-            }
-            return true;
-        }
-        if (queueRunning) return true;                                      // a runrole in flight
-        if (mapsLaunched && !mapsStartFailed && mq.phase != ModuleQueueState.Phase.DONE) {
-            // Launched but the queue hasn't reported RUNNING/DONE yet. Wait, but fail closed if it
-            // never starts (ADFA-4900/#1) so the pipeline can't hang on a stage that never began.
-            if (SystemClock.elapsedRealtime() - mapsLaunchedAt > MAPS_START_TIMEOUT_MS) mapsStartFailed = true;
-            else return true;
-        }
-        if (moduleLaunched && !moduleStartFailed && mq.phase != ModuleQueueState.Phase.DONE) {
-            if (SystemClock.elapsedRealtime() - moduleLaunchedAt > MAPS_START_TIMEOUT_MS) moduleStartFailed = true;
-            else return true;
-        }
-
-        // Stage 2 — REST. ADFA-4954 (ADR-4954 D8): the three live streams now serialize against
-        // each other as well. Each measures free space independently and at a different moment,
-        // so all three could pass their own check and jointly fill the disk. Each provisioner
-        // defers while another holds a session; calling them in a fixed order means the first
-        // one starts and the rest retry on a later pass. Keep polling until all are complete.
-        if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
-        if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
-        if (KolibriProvisioner.hasPending(this)) KolibriProvisioner.drain(this);
-        // K2GO-423: the Forgejo seed is a chained REST-stage sibling. It starts only when:
-        //  - the forgejo runrole SUCCEEDED (queue DONE and forgejo not in the failed set). A failed or
-        //    stalled attempt reaches this Stage 2 terminal too, and starting the seed there would find
-        //    forgejo absent and clear the banked marker -- so a later retry would never re-seed
-        //    (observed on device: a 360s binary-download stall cleared the seed);
-        //  - the module server is observed up (a live dash-node under proot), so the POST reaches a
-        //    working box; and no session is open yet (the service owns its bounded retry).
-        // This replaces the old silent Home drain (ForgejoSeedProvisioner).
-        if (org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
-                && mq.phase == ModuleQueueState.Phase.DONE && !mq.didFail("forgejo")
-                && serverObservedUp()
-                && !org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession()) {
-            org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(this);
-        }
-        KolibriSeedRepository kolibri = KolibriSeedRepository.get();
-        boolean restBusy = (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete())
-                || (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete())
-                || (kolibri.hasSession() && !kolibri.isComplete())
-                || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this)
-                || KolibriProvisioner.hasPending(this)
-                || forgejoSeedActive();   // K2GO-423: keep the pipeline busy until the seed is terminal
-        if (restBusy) return true;
-
-        // Every stage has been started and is complete.
-        drained = true;
-        return false;
-    }
 
     // ---- render ----
     private void render() {
@@ -642,7 +393,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // ADFA-5011: a rebuild has its own, simpler surface (one row + status), driven by
         // InstallProgressRepository — never the install/content completion logic below.
         // A rebuild never opens a detail, so it keeps the plain guard.
-        if (rebuildInSession()) { if (!showingDetail) renderRebuild(); return; }
+        if (rebuildInSession()) { if (!detailHost.isShowingDetail()) renderRebuild(); return; }
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
@@ -730,7 +481,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // ADFA-4842: proot = maps OR a module batch. A proot-only run finishes when the queue is
         // terminal, without waiting on any REST drain.
         boolean prootShown = mapsShown || moduleShown;
-        boolean prootTerminal = mapsStartFailed || moduleStartFailed
+        boolean prootTerminal = pipeline.mapsStartFailed() || pipeline.moduleStartFailed()
                 || (prootShown && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
@@ -750,8 +501,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         //  settling = terminal, not up yet, still within the timeout ((re)starting).
         boolean batchServerUp = moduleShown && queueTerminalNotRunning && serverObservedUp();
         boolean batchAwaitingServer = moduleShown && queueTerminalNotRunning && !serverObservedUp();
-        boolean batchServerSlow = batchAwaitingServer && moduleServerWaitAt != 0L
-                && SystemClock.elapsedRealtime() - moduleServerWaitAt > SERVER_UP_TIMEOUT_MS;
+        boolean batchServerSlow = batchAwaitingServer && pipeline.moduleServerWaitAt() != 0L
+                && SystemClock.elapsedRealtime() - pipeline.moduleServerWaitAt() > SetupProgressController.SERVER_UP_TIMEOUT_MS;
         boolean batchServerSettling = batchAwaitingServer && !batchServerSlow;
 
         boolean moduleServerSettled = batchServerUp || batchServerSlow;   // ADFA-5343: up, or gave up waiting here
@@ -778,11 +529,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // clean, finished download instead of redirecting to the library. Only read the
         // queue's verdict when it belongs to THIS run — the same three signals prootTerminal
         // already uses, so the two stay in agreement.
-        boolean queueVerdictIsOurs = prootShown || mapsStartFailed || moduleStartFailed;
+        boolean queueVerdictIsOurs = prootShown || pipeline.mapsStartFailed() || pipeline.moduleStartFailed();
         int prootFailed = !queueVerdictIsOurs ? 0
                 : (mq.phase == ModuleQueueState.Phase.DONE)
                         ? (mq.failedModules == null ? 0 : mq.failedModules.size())
-                        : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
+                        : ((pipeline.mapsStartFailed() ? 1 : 0) + (pipeline.moduleStartFailed() ? 1 : 0));
         // K2GO-434: the completion + success/failure rule is now a pure domain use case
         // (setup/domain/RunVerdict). This pass only GATHERS the inputs from the live
         // repositories/services; the rule is unit-tested off device. See
@@ -792,7 +543,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         boolean forgejoSeedFailed = forgejoSeedInSession()
                 && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed();
         RunVerdict verdict = RunVerdict.of(new RunSnapshot.Builder()
-                .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(drained)
+                .noRest(noRest).prootShown(prootShown).moduleShown(moduleShown).drained(pipeline.drained())
                 .queueTerminalNotRunning(queueTerminalNotRunning).moduleServerSettled(moduleServerSettled)
                 .batchServerSlow(batchServerSlow).seedPendingRun(seedPendingRun)
                 .zim(new StreamState(zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
@@ -824,9 +575,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         SetupUiState ui = new SetupUiState.Inputs()
                 .batchServerSlow(batchServerSlow).batchServerSettling(batchServerSettling)
                 .batchServerUp(batchServerUp).moduleFlow(moduleFlow).moduleFailed(moduleFailed)
-                .servicesReady(servicesReady).slowByPolls(readyPolls >= SLOW_AFTER_POLLS)
+                .servicesReady(pipeline.servicesReady()).slowByPolls(pipeline.readyPolls() >= SetupProgressController.SLOW_AFTER_POLLS)
                 .success(verdict.success()).failure(verdict.failure()).redirectCancelled(redirectCancelled)
-                .runInBackgroundEnabled((servicesReady || forgejoSeedActive()) && !prootActive)
+                .runInBackgroundEnabled((pipeline.servicesReady() || forgejoSeedActive()) && !prootActive)
                 .build();
         tint(dot, ui.tone == SetupUiState.StatusTone.WAITING ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes = statusStringRes(ui.message);
@@ -834,37 +585,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         if (ui.animate) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
-        // ADFA-5074: a detail card is covering the index. Everything above still had to be
-        // computed — whether the run finished is a fact about the run, not about which screen is
-        // in front — but the controls below are not on screen, so a run that completed here would
-        // have nowhere to say so and would simply sit there. Step back to the index and let the
-        // normal pass run: the user gets the summary, the countdown and its Cancel, rather than
-        // being sent home from under a screen they were reading.
-        //
-        // Two conditions on that step-back, both from the review, both cases this got wrong:
-        //
-        // Armed once per opening. The check is on a level, not an edge, so it used to fire on
-        // every pass while the run stayed complete — a user who cancelled the countdown and
-        // tapped a finished row was thrown straight back out, and worst of all on a failed run,
-        // where the detail is the only place the per-item retry lives. `bounceOnComplete` is set
-        // when a detail is opened over work still in flight and cleared when it fires, so a
-        // detail opened deliberately over a finished run is never taken away.
-        //
-        // Only while resumed. render() has callers that outlive onPause: the two poll callbacks
-        // re-post from their own IO continuations, and onPause keeps the Zim/Books listeners
-        // whenever a detail is open — which for a courses, maps or module detail means the index
-        // still owns them. A publish() arriving then would run commitNow() on a stopped
-        // FragmentManager. Deferring costs nothing: onResume posts the poll, which renders.
-        lastAllComplete = allComplete;
-        if (showingDetail) {
-            // ADFA-4898: keep the detail bar in step with the queue — a module that fails shows Retry,
-            // and a Retry that puts it back to RUNNING restores Back/Run-in-background on the next tick.
-            configureDetailBar();
-            if (allComplete && bounceOnComplete
-                    && getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
-                bounceOnComplete = false;
-                backToIndex();
-            }
+        // ADFA-5074: a detail card is covering the index. Everything above still had to be computed
+        // (whether the run finished is a fact about the run, not about which screen is in front), but
+        // the controls below are not on screen. The detail host records the latest verdict, keeps the
+        // detail bar in step with the queue, and steps back to the index when a run that was still in
+        // flight when the detail opened completes while the user watches it. The step-back is armed once
+        // per opening and only fires while resumed (a poll callback can outlive onPause, and commitNow
+        // on a stopped FragmentManager would throw); SetupDetailHost holds both conditions.
+        detailHost.onVerdict(allComplete);
+        if (detailHost.isShowingDetail()) {
+            boolean resumed = getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED);
+            detailHost.refreshWhileShowing(allComplete, resumed);
             return;
         }
 
@@ -915,58 +646,70 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     private void renderRebuild() {
         InstallState st = InstallProgressRepository.get().current();
-        if (st.isRunning()) rebuildRunningSeen = true;
+        if (st.isRunning()) pipeline.markRebuildRunningSeen();
         // Only honor a terminal state once THIS rebuild has been seen running — otherwise a stale
         // SUCCESS/FAILED from a previous rebuild would flash on entry and trigger a premature redirect.
-        boolean rebuiltOk = rebuildRunningSeen && st.phase == InstallState.Phase.SUCCESS;
-        boolean rebuildFailed = rebuildRunningSeen && st.phase == InstallState.Phase.FAILED;
-
-        // Note: the post-success wait for the REST core (apiReady poll) is driven by readyPoll, which is
-        // lifecycle-managed (posted in onResume, cleared in onPause). This method only reflects state.
-        boolean serverWait = rebuiltOk && !rebuildServerUp && !rebuildServerFailed;  // rebuilt, services coming up
-        boolean done = rebuiltOk && rebuildServerUp;                                 // rebuilt + REST core answered
-        boolean error = rebuildFailed || (rebuiltOk && rebuildServerFailed);         // rebuild failed, or services never came up
-        boolean working = !done && !error;                                          // building OR waiting for services
+        boolean rebuiltOk = pipeline.rebuildRunningSeen() && st.phase == InstallState.Phase.SUCCESS;
+        boolean rebuildFailed = pipeline.rebuildRunningSeen() && st.phase == InstallState.Phase.FAILED;
+        // K2GO-434: the rebuild state -> view decision is a pure rule (setup/domain/RebuildUiState).
+        // The apiReady wait that feeds rebuildServerUp/Failed is driven by readyPoll (lifecycle-managed);
+        // this method only reflects state and maps the phase to the row, status line and controls.
+        RebuildUiState rb = RebuildUiState.from(
+                rebuiltOk, rebuildFailed, pipeline.rebuildServerUp(), pipeline.rebuildServerFailed(), redirectCancelled);
 
         String sub;
-        if (error) sub = rebuildFailed
-                ? ((st.message != null && !st.message.isEmpty()) ? st.message : getString(R.string.k2go_dash_rebuild_failed))
-                : getString(R.string.k2go_dash_services_failed);
-        else if (done) sub = getString(R.string.k2go_setup_state_done);
-        else if (serverWait) sub = getString(R.string.k2go_setup_starting);
-        else sub = getString(R.string.k2go_dash_rebuild_building);
+        switch (rb.phase) {
+            case ERROR:
+                sub = rb.errorIsRebuildFailure
+                        ? ((st.message != null && !st.message.isEmpty()) ? st.message : getString(R.string.k2go_dash_rebuild_failed))
+                        : getString(R.string.k2go_dash_services_failed);
+                break;
+            case DONE: sub = getString(R.string.k2go_setup_state_done); break;
+            case SERVER_WAIT: sub = getString(R.string.k2go_setup_starting); break;
+            case BUILDING:
+            default: sub = getString(R.string.k2go_dash_rebuild_building); break;
+        }
 
         sections.removeAllViews();
-        sections.addView(rebuildRow(rebuiltOk && !error, error, sub));   // check once the build succeeded; alert on error
+        boolean check = rb.phase == RebuildUiState.Phase.DONE || rb.phase == RebuildUiState.Phase.SERVER_WAIT;
+        sections.addView(rebuildRow(check, rb.phase == RebuildUiState.Phase.ERROR, sub));
 
         if (contextText != null) contextText.setText(R.string.k2go_setup_context_proot);
 
-        tint(dot, done ? R.color.k2go_leaf : R.color.k2go_amber);
+        tint(dot, rb.phase == RebuildUiState.Phase.DONE ? R.color.k2go_leaf : R.color.k2go_amber);
+        boolean working = rb.phase == RebuildUiState.Phase.BUILDING || rb.phase == RebuildUiState.Phase.SERVER_WAIT;
         if (working) {
-            statusEllipsis.start(getString(serverWait ? R.string.k2go_setup_starting : R.string.k2go_dash_rebuilding));
+            statusEllipsis.start(getString(rb.phase == RebuildUiState.Phase.SERVER_WAIT
+                    ? R.string.k2go_setup_starting : R.string.k2go_dash_rebuilding));
         } else {
             statusEllipsis.stop();
-            statusText.setText(done ? R.string.k2go_setup_state_done
-                    : (rebuildFailed ? R.string.k2go_dash_rebuild_failed : R.string.k2go_dash_services_failed));
+            statusText.setText(rb.phase == RebuildUiState.Phase.DONE ? R.string.k2go_setup_state_done
+                    : (rb.errorIsRebuildFailure ? R.string.k2go_dash_rebuild_failed : R.string.k2go_dash_services_failed));
         }
 
-        if (done && !redirectCancelled) {
-            redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
-            show(redirect, true); show(cancel, true);
-            show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
-            scheduleRedirect();
-        } else if (done) {   // cancelled by the user — stay, reveal Finish
-            cancelRedirect();
-            show(finishBtn, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false); show(finishNote, false);
-        } else if (error) {
-            cancelRedirect();
-            show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
-            show(redirect, false); show(cancel, false);
-        } else {   // building or waiting for services — the screen is the gate; no leaving.
-            cancelRedirect();
-            show(runBgBtn, false); show(finishBtn, false); show(finishNote, false);
-            show(redirect, false); show(cancel, false);
+        switch (rb.controls) {
+            case REDIRECT:
+                redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
+                show(redirect, true); show(cancel, true);
+                show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
+                scheduleRedirect();
+                break;
+            case FINISH_SUCCESS:   // cancelled by the user: stay, reveal Finish
+                cancelRedirect();
+                show(finishBtn, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false); show(finishNote, false);
+                break;
+            case FINISH_FAILURE:
+                cancelRedirect();
+                show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false);
+                break;
+            case GATED:
+            default:   // building or waiting for services: the screen is the gate, no leaving
+                cancelRedirect();
+                show(runBgBtn, false); show(finishBtn, false); show(finishNote, false);
+                show(redirect, false); show(cancel, false);
+                break;
         }
     }
 
@@ -1116,7 +859,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
-        if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session
+        if (sess) row.setOnClickListener(v -> detailHost.openDetail(key));   // detail only once there's a live session
         return row;
     }
 
@@ -1178,7 +921,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
-        if (sess) row.setOnClickListener(v -> openDetail("forgejo"));
+        if (sess) row.setOnClickListener(v -> detailHost.openDetail("forgejo"));
         return row;
     }
 
@@ -1224,10 +967,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean done = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean done = pipeline.mapsStartFailed() || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         boolean running = !done && (ModuleQueueRepository.get().isRunning()
                 || (mapsInSession() && mq.phase != ModuleQueueState.Phase.DONE));
-        boolean failed = mapsStartFailed || (done && mq.failedModules.contains("maps"));
+        boolean failed = pipeline.mapsStartFailed() || (done && mq.failedModules.contains("maps"));
         boolean started = running || done;
 
         LinearLayout row = new LinearLayout(this);
@@ -1278,7 +1021,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
         chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
-        if (started) row.setOnClickListener(v -> openDetail("maps"));
+        if (started) row.setOnClickListener(v -> detailHost.openDetail("maps"));
         return row;
     }
 
@@ -1291,7 +1034,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         ModuleCards.Card c = ModuleCards.byKey(key);
         String name = c != null ? getString(c.titleRes) : key;
 
-        boolean failed = (mq.failedModules != null && mq.failedModules.contains(key)) || moduleStartFailed;
+        boolean failed = (mq.failedModules != null && mq.failedModules.contains(key)) || pipeline.moduleStartFailed();
         boolean queueDone = mq.phase == ModuleQueueState.Phase.DONE;
         boolean running = !queueDone && !failed && key.equals(mq.currentModule)
                 && mq.phase == ModuleQueueState.Phase.RUNNING;
@@ -1345,7 +1088,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
         chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
-        if (started) row.setOnClickListener(v -> openDetail("mod:" + key));
+        if (started) row.setOnClickListener(v -> detailHost.openDetail("mod:" + key));
         return row;
     }
 
@@ -1401,8 +1144,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  timestamp anchors the "taking longer" UI. When actuation is disabled (rollback), we boot once here
      *  as before (and Home is a monitor again, so 5336 is not fixed in that mode). */
     private void onModuleBatchTerminal() {
-        if (moduleServerWaitAt != 0L) return;   // once — also the timeout anchor
-        moduleServerWaitAt = SystemClock.elapsedRealtime();
+        if (!pipeline.beginModuleServerWait()) return;   // once: also the "taking longer" timeout anchor
         new org.appdevforall.k2go.Preferences(this).setWatchdogEnable(true);   // persisted intent → desired = UP
         if (!org.appdevforall.k2go.env.ServerLifecycleReconciler.ACTUATES) {
             serverController.startEnvironment();   // rollback path: reconciler is log-only, boot here
@@ -1443,115 +1185,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         finish();
     }
 
-    /**
-     * ADFA-5074: whether a completed run should take this detail away again.
-     *
-     * <p>Armed when a detail is opened over work still in flight, cleared when it fires. A
-     * detail opened over a run that had already finished is a deliberate look at the result —
-     * usually at a failed row, whose retry lives only there — and must not be closed underneath
-     * the user.
-     */
-    private boolean bounceOnComplete = false;
-
-    /** The last completion verdict, so opening a detail can tell "still working" from "finished". */
-    private boolean lastAllComplete = false;
-
-    // ---- detail: host the real per-module card ----
-    private void openDetail(String key) {
-        showingDetail = true;
-        detailKey = key;
-        bounceOnComplete = !lastAllComplete;
-        androidx.fragment.app.Fragment f;
-        // Per-key detail view — presentation routing only; the execution class is NOT decided here.
-        if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); }  // ADFA-4842
-        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); }   // ADFA-5074: observe-only
-        else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); }   // ADFA-4954: observe-only
-        else if ("forgejo".equals(key)) { f = new org.appdevforall.k2go.forgejo.presentation.ForgejoSeedingFragment(); }   // K2GO-423: observe-only
-        else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); }   // ADFA-4901: observe-only
-        else { f = BooksDownloadsFragment.newInstance(true); }
-        configureDetailBar();
-        // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
-        // between set showingDetail back to false and found nothing to remove, and the queued
-        // transaction then added the fragment into a hidden host — where ZimPreparingFragment
-        // takes the service listener with nobody left to reclaim it, freezing the index's row.
-        // The mirror image of the bug backToIndex's commitNow already exists for. Only reachable
-        // from a row tap now that the intent routing is gone, so the activity is resumed and the
-        // synchronous commit is safe.
-        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commitNow();
-        indexScroll.setVisibility(View.GONE);
-        detailRoot.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * ADFA-5062: only a LIVE op (zim/kolibri/books) can keep running in the background; a stopped-class
-     * detail (maps or a module install) cannot. Read from the model, not re-derived from the key prefix.
-     */
-    private boolean isLiveDetail(String key) {
-        if (key == null) return false;
-        if (key.startsWith("mod:")) return Operation.appInstall(key.substring(4)).isLive();
-        if ("forgejo".equals(key)) return true;   // K2GO-423: the seed is a live, backgroundable step
-        ContentType ct = ContentType.byKey(key);
-        return ct != null && ct.isLive();
-    }
-
-    /**
-     * ADFA-4898: (re)configure the two-button detail bar for the currently shown detail. Reuses the one
-     * existing template — a filled primary (k2go_sp_back) over an outlined secondary (k2go_sp_detail_finish):
-     *   - a failed module → Retry (primary) + Back (secondary), so the recovery action sits where the LIVE
-     *     details put Run-in-background, instead of a bespoke button in the card;
-     *   - anything else → Back (primary) + Run in background (secondary, LIVE only).
-     * Recomputed on every render while a detail is open, so a Retry that puts the module back to RUNNING
-     * flips the bar back to Back/Run-in-background on the next tick (no stale Retry). Retry stays on the
-     * card: this detail is the live progress view and follows the re-run with its log.
-     */
-    private void configureDetailBar() {
-        if (!showingDetail || detailKey == null || detailBackBtn == null) return;
-        // K2GO-423: the Forgejo seed detail offers Retry on failure, mirroring the module Retry. The
-        // seed's give-up cleared the banked marker (A), so retryForgejoSeed() re-banks with the same
-        // repo opt-in and restarts the service; the bar flips back to Back/Run-in-background on the
-        // next tick once the seed is running again. (A durable/one-tap re-seed after leaving is K2GO-422.)
-        if ("forgejo".equals(detailKey)
-                && org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isFailed()) {
-            detailBackBtn.setText(R.string.k2go_home_retry);
-            detailBackBtn.setOnClickListener(v -> retryForgejoSeed());
-            detailRunBgBtn.setText(R.string.k2go_setup_back);
-            detailRunBgBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-            return;
-        }
-        // K2GO-394: the maps detail opens under the legacy key "maps" (not "mod:maps"), but maps IS a
-        // module, so treat it as one here -> it gets the same Cancel-while-running (the mockup's op-level
-        // Cancel install) and Retry-on-failure the other modules already have, with no duplicated logic.
-        final boolean isModule = detailKey.startsWith("mod:") || "maps".equals(detailKey);
-        final String moduleKey = !isModule ? null
-                : (detailKey.startsWith("mod:") ? detailKey.substring(4) : detailKey);
-        ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean moduleFailed = isModule && mq.didFail(moduleKey);
-        boolean moduleRunning = isModule && mq.isInstalling(moduleKey);
-        if (moduleFailed) {
-            detailBackBtn.setText(R.string.k2go_home_retry);
-            detailBackBtn.setOnClickListener(v -> ModuleRetry.fire(v, moduleKey));
-            detailRunBgBtn.setText(R.string.k2go_setup_back);
-            detailRunBgBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-        } else if (moduleRunning) {
-            // ADFA-4898 P5: while this module's runrole runs, offer a confirmed Cancel in the same
-            // secondary slot (Back stays primary). Cancel kills the runrole and surfaces the module as
-            // failed, so the Retry above appears on the next tick — the "immediate retry" of the ticket.
-            detailBackBtn.setText(R.string.k2go_setup_back);
-            detailBackBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setText(R.string.k2go_setup_cancel);
-            detailRunBgBtn.setOnClickListener(v -> confirmCancelModule());
-            detailRunBgBtn.setVisibility(View.VISIBLE);
-        } else {
-            detailBackBtn.setText(R.string.k2go_setup_back);
-            detailBackBtn.setOnClickListener(v -> backToIndex());
-            detailRunBgBtn.setText(R.string.k2go_zim_run_bg);
-            detailRunBgBtn.setOnClickListener(v -> goHome(false));   // K2GO-382: land on Home, keep provisioning
-            detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
-        }
-    }
-
     /** K2GO-423: re-run a Forgejo seed that gave up (the Retry on the failed seed detail). The give-up
      *  cleared the banked marker, so re-bank it with the opt-in the session used, restart the service,
      *  and re-kick the pipeline poll so the index row and the completion gate track the retry. */
@@ -1559,7 +1192,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         boolean includeRepos = org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().includeRepos();
         org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(this, includeRepos);
         org.appdevforall.k2go.forgejo.presentation.ForgejoSeedService.start(this);
-        main.post(readyPoll);
+        pipeline.kick();
     }
 
     /**
@@ -1577,22 +1210,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                                 .setAction(org.appdevforall.k2go.install.presentation.InstallService.ACTION_CANCEL)))
                 .setNegative(R.string.k2go_mod_cancel_dismiss, null)
                 .show();
-    }
-
-    private void backToIndex() {
-        showingDetail = false;
-        detailKey = null;
-        // commitNow (synchronous) so the fragment's onDestroyView — which nulls the service
-        // listener — runs BEFORE we reclaim it. With async commit() the teardown fired later and
-        // clobbered the index's listener, so a job finishing while back on the index never updated
-        // the UI (spinner stuck) until the card was reopened.
-        androidx.fragment.app.Fragment cur = getSupportFragmentManager().findFragmentById(R.id.k2go_sp_fraghost);
-        if (cur != null) getSupportFragmentManager().beginTransaction().remove(cur).commitNow();
-        detailRoot.setVisibility(View.GONE);
-        indexScroll.setVisibility(View.VISIBLE);
-        ZimDownloadService.setListener(this::render);
-        BooksDownloadService.setListener(this::render);
-        render();
     }
 
     // ---- ServerController.Host (ADFA-4842): minimal — the index only needs to START the server after
