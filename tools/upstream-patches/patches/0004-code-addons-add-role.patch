@@ -1,7 +1,7 @@
 Upstream-PR:     not submitted (K2Go-specific: mirrors the Code on the Go add-ons gallery at addons.appdevforall.org)
 Upstream-Status: carried (K2Go-specific role; no upstream iiab/iiab PR planned)
 Applies-to:      roles/code_addons/* (new role); vars/default_vars.yml (code_addons_install/enabled); roles/6-generic-apps/tasks/main.yml (role include)
-Summary:         Add the 'code_addons' role: an offline mirror of the Code on the Go add-ons gallery (plugins, templates, snippets, code-actions), served by nginx at http://box/code-addons. Static files only, no daemon. The role runs files/mirror_addons.py, which follows references from index.html and v1/catalog.json, downloads and sha256-verifies every add-on file, strips the Cloudflare injections, and rewrites the catalog base to the local path. Update a deployed box via dash-node. K2GO-99. See controller/docs/ADR-addons-offline-gallery.md.
+Summary:         Add the 'code_addons' role: an offline mirror of the Code on the Go add-ons gallery (plugins, templates, snippets, code-actions), served by nginx at http://box/code-addons. Static files only, no daemon. The role runs files/mirror_addons.py, which follows references from index.html and v1/catalog.json, downloads and sha256-verifies every add-on file, strips the Cloudflare injections, and rewrites the catalog base to the local path. The nginx conf serves .cgp/.tar.gz as application/octet-stream so the client downloads them (not render). Update a deployed box via dash-node. K2GO-99. See controller/docs/ADR-addons-offline-gallery.md.
 
 diff --git a/roles/6-generic-apps/tasks/main.yml b/roles/6-generic-apps/tasks/main.yml
 index 6705477..b940fca 100644
@@ -505,10 +505,10 @@ index 0000000..302ca36
 +      when: not skip_role_on_error
 diff --git a/roles/code_addons/templates/code-addons-nginx.conf.j2 b/roles/code_addons/templates/code-addons-nginx.conf.j2
 new file mode 100644
-index 0000000..7face60
+index 0000000..ce4569d
 --- /dev/null
 +++ b/roles/code_addons/templates/code-addons-nginx.conf.j2
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,28 @@
 +# Static serve for the offline Code on the Go add-ons gallery at http://box{{ code_addons_url }}
 +# Installed by roles/code_addons (tasks/enable-or-disable.yml) into nginx conf.d.
 +# The gallery uses relative asset paths, so it serves unchanged under this sub-path.
@@ -520,6 +520,22 @@ index 0000000..7face60
 +location ^~ {{ code_addons_url }}/ {
 +    alias {{ code_addons_serve_path }}/;    # /library/www/code-addons/
 +    index index.html;
++
++    # K2GO-99: the .cgp (and source .tar.gz) are downloads, not pages. Serve them as a
++    # binary type so the client saves them instead of rendering the archive as text.
++    # nginx's default_type is text/html, which made the WebView render a .cgp as garbage.
++    types {
++        text/html                 html htm;
++        text/css                  css;
++        application/javascript    js;
++        application/json          json;
++        image/png                 png;
++        image/svg+xml             svg;
++        image/x-icon              ico;
++        application/octet-stream  cgp;
++        application/gzip          gz;
++    }
++    default_type application/octet-stream;
 +}
 diff --git a/vars/default_vars.yml b/vars/default_vars.yml
 index e27500f..15c65be 100644
