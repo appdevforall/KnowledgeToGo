@@ -14,6 +14,13 @@ if (repoPath == null) throw new GradleException('set -Dmavenoffline.repo=<abs pa
 def repoUri = new File(repoPath).toURI()
 def allowProjectRepos = true
 
+// The add-ons declare the AGP + Kotlin classpath in a settings-level buildscript{} block
+// that hardcodes google()/mavenCentral(). Redirect it (before the settings script runs)
+// so the plugin classpath resolves from the offline repo too.
+gradle.beforeSettings { settings ->
+    settings.buildscript.repositories { clear(); maven { url = repoUri } }
+}
+
 settingsEvaluated { settings ->
     try {
         def mode = settings.dependencyResolutionManagement.repositoriesMode.getOrNull()

@@ -133,8 +133,11 @@ fetch_extras() {
 # aapt2 (Linux + Windows) and R8 follow each project's AGP version. Resolve the exact
 # aapt2 version from Google Maven metadata for each AGP in use, then fetch the host jars.
 derive_aapt2_r8() {
+    # AGP in use: 8.4.1 (K2Go), 8.8.2 (CoGo), 9.3.1 (add-ons). For AGP 9.x the R8/D8
+    # tool ships inside com.android.tools.build:builder, so a resolve already captures it;
+    # only aapt2 (per build-host OS) must be added here.
     local agp
-    for agp in 8.4.1 8.8.2 8.11.0; do
+    for agp in 8.4.1 8.8.2 9.3.1; do
         local meta="$WORK/aapt2-metadata.xml"
         fetch "$GOOGLE_MAVEN/com/android/tools/build/aapt2/maven-metadata.xml" "$meta" || continue
         local ver
@@ -147,6 +150,32 @@ derive_aapt2_r8() {
     # R8 is architecture-neutral. If the resolve already captured it, nothing to do; the
     # smoke test confirms whether a specific r8 version is missing. TODO: pin r8 per AGP
     # once the smoke test names the exact version a build requests.
+}
+
+# Gradle Module Metadata (.module) can declare a file whose served `url` differs from the
+# cache `name` (KMP androidx -android AARs: cache name lifecycle-runtime-release.aar, url
+# lifecycle-runtime-android-<v>.aar). A Maven2 consumer reading the .module fetches by url,
+# so a reshape that keeps only the `name` 404s offline. Materialize a copy under each url.
+materialize_module_urls() {
+    log "materialize GMM urls"
+    python3 - "$OUT" <<'PY'
+import json, os, sys, shutil
+root = sys.argv[1]; made = 0
+for dp, _, files in os.walk(root):
+    for fn in files:
+        if not fn.endswith('.module'): continue
+        try:
+            with open(os.path.join(dp, fn), encoding='utf-8') as f: mod = json.load(f)
+        except Exception: continue
+        for var in mod.get('variants', []):
+            for fe in var.get('files', []):
+                name, url = fe.get('name'), fe.get('url')
+                if not name or not url or name == url: continue
+                src, dst = os.path.join(dp, name), os.path.join(dp, url)
+                if os.path.exists(src) and not os.path.exists(dst):
+                    shutil.copyfile(src, dst); made += 1
+print(f"materialized {made} url-named copies")
+PY
 }
 
 # sha1 + md5 beside every artifact (Gradle validates .sha1 on download).
@@ -189,6 +218,7 @@ main() {
         process_project "$name" "$source" "$ref" "$gradle_root" "$mode"
     done < "$PROJECTS_TSV"
     fetch_extras
+    materialize_module_urls
     write_checksums
     report
     [ "$DO_SMOKE" = 1 ] && smoke_test

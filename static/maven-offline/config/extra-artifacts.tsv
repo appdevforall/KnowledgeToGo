@@ -6,9 +6,11 @@ com.aayushatharva.brotli4j          native-linux-x86_64     1.18.0    -         
 com.aayushatharva.brotli4j          native-linux-aarch64    1.18.0    -               jar   linux
 com.aayushatharva.brotli4j          native-windows-x86_64   1.18.0    -               jar   windows
 #
-# aapt2 and R8/D8 are NOT listed here because their versions follow each project's
-# AGP version, so the script derives them per project (see derive_aapt2_r8 in
-# build-maven-offline.sh):
+# aapt2 version follows each project's AGP version, so the script derives it per project
+# (see derive_aapt2_r8 in build-maven-offline.sh):
 #   com.android.tools.build:aapt2:<agp-aapt2-version>:<linux|windows>   (per build-host OS; ARM on-device uses Code on the Go's own aapt2)
-#   com.android.tools:r8:<r8-version-for-that-AGP>                      (architecture-neutral)
-# AGP versions in use: 8.4.1 (Knowledge to Go), 8.8.2 + 7.3.0 tooling (Code on the Go), 8.11.0 (add-ons).
+# R8/D8: no separate artifact for the add-ons' AGP 9.3.1 : it ships inside
+#   com.android.tools.build:builder:9.3.1, which a normal resolve captures. Older AGP
+#   (8.4 K2Go, 8.8 CoGo) may reference com.android.tools:r8 separately; pin it via an
+#   offline assemble oracle if/when the full offline BUILD of those ships (separate ticket).
+# AGP versions in use: 8.4.1 (Knowledge to Go), 8.8.2 (Code on the Go), 9.3.1 (add-ons).
