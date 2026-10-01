@@ -27,7 +27,8 @@ import org.appdevforall.k2go.system.data.PendingContent;
  * (Lottie) that flips to OPEN once the server is reachable.
  * Phase 2 = runtime gate. Content cards, wizard and Step-2 land in later phases.
  */
-public class LibraryActivity extends AppCompatActivity implements ServerController.Host {
+public class LibraryActivity extends AppCompatActivity
+        implements ServerController.Host, org.appdevforall.k2go.ui.EdgeToEdge.SelfManaged {
 
     private static final String TAG = "K2Go-Library";
     private static final long GATE_SAFETY_MS = 25000L;
@@ -131,6 +132,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
+        // K2GO-439: targetSdk 35 forces edge-to-edge; keep the fragment content below the status bar
+        // and the bottom nav above the navigation bar instead of drawing under the system bars.
+        org.appdevforall.k2go.ui.EdgeToEdge.padTop(findViewById(R.id.k2go_nav_host));
+        org.appdevforall.k2go.ui.EdgeToEdge.padBottom(bottomNav);
         NavigationBarView.OnItemSelectedListener navListener = item -> {
             if (!navSyncing) {
                 currentTab = item.getItemId();
