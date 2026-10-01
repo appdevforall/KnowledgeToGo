@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- ADFA-4520: LocalOnlyHotspot requires location at runtime on this targetSdk -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- K2GO-438: Android 12+ lets the user grant COARSE only, so declare it with FINE (CoarseFineLocation). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
