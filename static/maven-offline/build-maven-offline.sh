@@ -36,8 +36,8 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --smoke) DO_SMOKE=1 ;;
         --no-resolve) NO_RESOLVE=1 ;;
-        --out) OUT="${2:-}"; shift ;;
-        --only) ONLY="${2:-}"; shift ;;
+        --out) OUT="${2:?--out requires a value}"; shift ;;
+        --only) ONLY="${2:?--only requires a value}"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) echo "unknown arg: $1" >&2; exit 2 ;;
     esac
@@ -78,6 +78,12 @@ source_dir() {
 resolve_build() {
     local gradle_root="$1" home="$2" gw
     gw="$(gradlew_for "$gradle_root")"
+    # Make a missing wrapper a loud skip, not a swallowed failure: some add-ons in the
+    # addons repo ship no per-build gradlew, which would otherwise drop their deps silently.
+    if [ ! -f "$gw" ]; then
+        log "WARN: no gradlew at $gradle_root; skipping (this build has no own wrapper)"
+        return 0
+    fi
     log "resolve: $gradle_root (home ${home##*/})"
     ( cd "$gradle_root" && "$gw" --gradle-user-home "$home" \
         --init-script "$INIT" --no-daemon --console=plain -q \
@@ -130,24 +136,24 @@ fetch_extras() {
         case "$group" in \#*) continue ;; esac
         place_artifact "$MAVEN_CENTRAL" "$group" "$artifact" "$version" "$classifier" "$ext"
     done < "$EXTRAS_TSV"
-    derive_aapt2_r8
+    fetch_aapt2
 }
 
-# aapt2 (Linux + Windows) and R8 follow each project's AGP version. Resolve the exact
-# aapt2 version from Google Maven metadata for each AGP in use, then fetch the host jars.
-derive_aapt2_r8() {
-    # Fully data-driven: the AGP versions are whatever the resolve actually pulled, i.e. the
-    # com.android.tools.build:gradle version dirs now in the repo. No hardcoded list, so a
-    # project moving (e.g. K2Go 8.4 -> 8.8) needs no edit here: the aapt2 set follows.
-    # For AGP 9.x the R8/D8 tool ships inside com.android.tools.build:builder (a resolve
-    # captures it); older AGP may reference com.android.tools:r8 separately, added via the
-    # offline assemble oracle when the full offline BUILD of those ships (separate ticket).
+# aapt2 (Linux + Windows) follows each project's AGP version. R8/D8 is NOT fetched here:
+# for AGP 9.x it ships inside com.android.tools.build:builder, which a resolve captures.
+fetch_aapt2() {
+    # Data-driven: the AGP versions are the com.android.tools.build:gradle dirs the resolve
+    # produced, so a project moving (e.g. K2Go 8.4 -> 8.8) needs no edit here. aapt2 is
+    # fetched for every AGP present (a few MB each): over-fetching is safe, under-fetching
+    # would break an offline build.
     local gdir="$OUT/com/android/tools/build/gradle"
-    [ -d "$gdir" ] || { log "no AGP in repo yet; skipping aapt2"; return; }
+    [ -d "$gdir" ] || { log "no AGP in repo yet; skipping aapt2"; return 0; }
     local meta="$WORK/aapt2-metadata.xml"
-    fetch "$GOOGLE_MAVEN/com/android/tools/build/aapt2/maven-metadata.xml" "$meta" || return
-    local agp ver
-    for agp in $(ls "$gdir" 2>/dev/null); do
+    fetch "$GOOGLE_MAVEN/com/android/tools/build/aapt2/maven-metadata.xml" "$meta" \
+        || { log "aapt2: metadata unavailable; skipping aapt2"; return 0; }
+    local d agp ver
+    for d in "$gdir"/*/; do
+        agp="$(basename "$d")"
         ver="$(grep -oE "<version>${agp//./\\.}-[0-9]+</version>" "$meta" | sed -E 's:</?version>::g' | tail -1)"
         [ -z "$ver" ] && { log "aapt2: no published version for AGP $agp"; continue; }
         log "aapt2 for AGP $agp -> $ver (linux, windows)"
