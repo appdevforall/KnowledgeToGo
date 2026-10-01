@@ -1,0 +1,13 @@
+# The code bases whose build dependencies go into the offline repository.
+# Tab-separated (TSV). Lines starting with # are ignored. Columns:
+#   name         short id, used for the isolated Gradle home dir name.
+#   source       "self" = the repo that contains this tool; otherwise a git URL to clone.
+#   ref          branch or tag to resolve.
+#   gradle_root  path to the Gradle root (where settings.gradle lives), relative to the repo root.
+#   mode         "root" = one Gradle build at gradle_root; "multi" = each immediate subdir
+#                of gradle_root is its own Gradle build (the add-ons under addons/plugins).
+# Local runs: to resolve from a local clone instead of the git URL, add a tab-separated line
+# to config/sources.local.tsv (gitignored):  <name><TAB><absolute local repo path>
+knowledge-to-go	self	main	controller	root
+code-on-the-go	https://github.com/appdevforall/codeonthego	stage	.	root
+add-ons	https://github.com/appdevforall/addons	main	plugins	multi
