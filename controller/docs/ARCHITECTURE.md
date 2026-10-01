@@ -40,7 +40,7 @@ This shape is *why* every new feature deepens the debt: there is no seam to add 
 
 Some "smells" are load-bearing and must not be naively removed:
 
-- **`targetSdk 28`** is intentional — it exempts the app from Android 10–14 runtime enforcement so proot's W^X memory model works. Raising it (required for Play Store) is a *project*, not a cleanup (see `TECH_DEBT_PLAN.md` §Phase 4).
+- **`targetSdk 28`** was believed load-bearing for proot (W^X). That is wrong: proot is NOT blocked at targetSdk 29+. AOSP neverallows only `execute_no_trans` (direct execve) on `app_data_file`; K2Go runs binaries through the proot loader (`mmap`/`execute`), which AOSP allows on every certified device. Verified on-device at targetSdk 35 (Samsung A16 stock Android 16, OnePlus 7T LineageOS 15). It is being raised to 35 for Play (K2GO-438) plus the API-33/34/35 fixes (K2GO-439).
 - **`usesCleartextTraffic="true"`** is currently required for the local rsync/APK/HTTP servers. The goal is to *scope* it via a network-security-config, not to flip it off.
 - **`MANAGE_EXTERNAL_STORAGE`** and **`PURPOSE`-broad keystore keys** exist for real reasons but are over-broad; tighten, don't delete.
 - The build's **SHA256 audit of native binaries at build time** is a genuine strength — preserve it.
