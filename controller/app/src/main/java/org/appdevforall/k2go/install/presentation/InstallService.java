@@ -48,6 +48,7 @@ import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.TarExtractor;
 import org.appdevforall.k2go.util.ProcessRunner;
 import org.appdevforall.k2go.deploy.domain.ModuleName;
+import org.appdevforall.k2go.download.domain.DownloadRetryPolicy;
 import org.appdevforall.k2go.install.domain.AnsibleRunOutcome;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
@@ -155,24 +156,10 @@ public final class InstallService extends Service {
      * {@code ROOTFS_BUILD} at the one point in the pipeline where it becomes certain that no usable
      * system is left — see {@link #startRootfsDownload()}.
      */
-    /** ADFA-5119: automatic attempts made in the open before the decision goes to the user. */
-    private static final int RETRY_ATTEMPTS = 3;
     /** ADFA-5119: how long a held download waits for a person before failing through to recovery. */
     private static final long HELD_WINDOW_MS = 60_000L;
-
-    /**
-     * ADFA-5119: how long to wait before each automatic attempt — 3s, then 6s, then 9s.
-     *
-     * <p>A first pass fired them back to back, arguing the wait had already been spent inside aria2's
-     * own timeout. That is true when aria2 takes time to fail, and false in the case this exists for:
-     * with no network, name resolution fails at once, an attempt costs nothing, and all three flashed
-     * past faster than the label could be read. A count nobody can read is not information.
-     *
-     * <p>Escalating rather than fixed, because the two things a delay buys grow together: a longer
-     * gap is a better chance the network came back, and by the third attempt the user has earned a
-     * clearer look at what is happening before the decision passes to them.
-     */
-    private static final long[] RETRY_DELAYS_MS = {3_000L, 6_000L, 9_000L};
+    // ADFA-5119 / K2GO-436: the attempt budget and the backoff schedule (3s/6s/9s) live in
+    // download.domain.DownloadRetryPolicy (MAX_ATTEMPTS + decide()).
 
     private volatile int softAttempts = 0;
     /**
@@ -566,7 +553,7 @@ public final class InstallService extends Service {
                 // died would have kept escalating with real progress behind it, which is the exact
                 // case a flapping connection produces. A megabyte is the bar: enough that a flicker
                 // does not count, small enough that anything a bad link genuinely delivers does.
-                if (completedBytes > 0 && completedBytes >= attemptFloorBytes + (1L << 20)) {
+                if (DownloadRetryPolicy.progressForgivesAttempts(completedBytes, attemptFloorBytes)) {
                     attemptFloorBytes = completedBytes;
                     softAttempts = 0;
                 }
@@ -628,7 +615,7 @@ public final class InstallService extends Service {
                                 org.appdevforall.k2go.download.domain.Aria2Exit.Kind kind) {
                 if (cancelled || finished) return;
                 lastStopKind = kind;
-                if (!continuableAfter(kind)) {
+                if (!DownloadRetryPolicy.isRetryable(kind)) {
                     onError(error);
                     return;
                 }
@@ -1524,24 +1511,6 @@ public final class InstallService extends Service {
     }
 
     /**
-     * ADFA-5119: whether a stop of this kind leaves anything worth continuing from.
-     *
-     * <p>The reading comes from {@code Aria2Exit}; the policy is here, because that class describes
-     * and deliberately does not decide — the rootfs path and the content paths are entitled to
-     * different answers from the same reading.
-     *
-     * <p>PERMANENT is excluded because a retry is a lie there: the disk is still full, the mirror
-     * still does not have the file. Those go the other way — the abandonment cleanup and back to the
-     * choice — which for the commonest of them, a full disk, is not a punishment but the remedy: a
-     * smaller tier.
-     */
-    private static boolean continuableAfter(org.appdevforall.k2go.download.domain.Aria2Exit.Kind kind) {
-        return kind == org.appdevforall.k2go.download.domain.Aria2Exit.Kind.TRANSIENT
-                || kind == org.appdevforall.k2go.download.domain.Aria2Exit.Kind.STALLED
-                || kind == org.appdevforall.k2go.download.domain.Aria2Exit.Kind.UNKNOWN;
-    }
-
-    /**
      * ADFA-5119: hold the operation open on a stop we did not choose.
      *
      * <p>Deliberately does NOT set {@code finished} and does NOT call {@link #teardown()}: the
@@ -1555,8 +1524,9 @@ public final class InstallService extends Service {
         // ADFA-5119: try again ourselves first, in the open. aria2's own budget was cut to one try
         // (see Aria2Manager) precisely so this loop could exist where the user can see it: the old
         // five silent retries were the same waiting, spent behind a frozen number.
-        if (softAttempts < RETRY_ATTEMPTS) {
-            softAttempts++;
+        DownloadRetryPolicy.Decision retry = DownloadRetryPolicy.decide(softAttempts);
+        if (retry.action == DownloadRetryPolicy.Action.RETRY) {
+            softAttempts = retry.attempt;
             String line = attemptNote();
             Log.w(TAG, "download stopped (" + kind + ") at " + percent + "%: " + detail
                     + " — automatic " + line);
@@ -1566,10 +1536,10 @@ public final class InstallService extends Service {
             // for the failure it was offered on, and capable of carrying unrelated output into a bug
             // report. These are the lines that describe what actually happened.
             log("[Download] stopped (" + kind + ") at " + percent + "%: " + detail
-                    + " — retrying, attempt " + softAttempts + " of " + RETRY_ATTEMPTS);
+                    + " — retrying, attempt " + softAttempts + " of " + DownloadRetryPolicy.MAX_ATTEMPTS);
             InstallProgressRepository.get().postRetrying(percent, line);
             updateNotification(line);
-            long delay = RETRY_DELAYS_MS[Math.min(softAttempts - 1, RETRY_DELAYS_MS.length - 1)];
+            long delay = retry.delayMs;
             cancelPendingRetry();
             pendingRetry = () -> {
                 pendingRetry = null;
@@ -1582,9 +1552,9 @@ public final class InstallService extends Service {
 
         // Out of attempts. The decision is the user's now, and it stays theirs.
         String line = getString(softFailLine(kind));
-        Log.w(TAG, "download held after " + RETRY_ATTEMPTS + " attempts, last stop " + kind
+        Log.w(TAG, "download held after " + DownloadRetryPolicy.MAX_ATTEMPTS + " attempts, last stop " + kind
                 + " at " + percent + "%: " + detail);
-        log("[Download] held after " + RETRY_ATTEMPTS + " attempts at " + percent
+        log("[Download] held after " + DownloadRetryPolicy.MAX_ATTEMPTS + " attempts at " + percent
                 + "%, last stop " + kind + ": " + detail);
         InstallProgressRepository.get().postSoftFailed(percent, line);
         releaseHardwareLocks();
@@ -1620,7 +1590,7 @@ public final class InstallService extends Service {
      */
     private String attemptNote() {
         if (softAttempts <= 0) return "";
-        return getString(R.string.k2go_dl_attempt, softAttempts, RETRY_ATTEMPTS);
+        return getString(R.string.k2go_dl_attempt, softAttempts, DownloadRetryPolicy.MAX_ATTEMPTS);
     }
 
     private void beginHeldWindow() {
