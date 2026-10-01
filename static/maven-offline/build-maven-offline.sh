@@ -133,23 +133,24 @@ fetch_extras() {
 # aapt2 (Linux + Windows) and R8 follow each project's AGP version. Resolve the exact
 # aapt2 version from Google Maven metadata for each AGP in use, then fetch the host jars.
 derive_aapt2_r8() {
-    # AGP in use: 8.4.1 (K2Go), 8.8.2 (CoGo), 9.3.1 (add-ons). For AGP 9.x the R8/D8
-    # tool ships inside com.android.tools.build:builder, so a resolve already captures it;
-    # only aapt2 (per build-host OS) must be added here.
-    local agp
-    for agp in 8.4.1 8.8.2 9.3.1; do
-        local meta="$WORK/aapt2-metadata.xml"
-        fetch "$GOOGLE_MAVEN/com/android/tools/build/aapt2/maven-metadata.xml" "$meta" || continue
-        local ver
+    # Fully data-driven: the AGP versions are whatever the resolve actually pulled, i.e. the
+    # com.android.tools.build:gradle version dirs now in the repo. No hardcoded list, so a
+    # project moving (e.g. K2Go 8.4 -> 8.8) needs no edit here: the aapt2 set follows.
+    # For AGP 9.x the R8/D8 tool ships inside com.android.tools.build:builder (a resolve
+    # captures it); older AGP may reference com.android.tools:r8 separately, added via the
+    # offline assemble oracle when the full offline BUILD of those ships (separate ticket).
+    local gdir="$OUT/com/android/tools/build/gradle"
+    [ -d "$gdir" ] || { log "no AGP in repo yet; skipping aapt2"; return; }
+    local meta="$WORK/aapt2-metadata.xml"
+    fetch "$GOOGLE_MAVEN/com/android/tools/build/aapt2/maven-metadata.xml" "$meta" || return
+    local agp ver
+    for agp in $(ls "$gdir" 2>/dev/null); do
         ver="$(grep -oE "<version>${agp//./\\.}-[0-9]+</version>" "$meta" | sed -E 's:</?version>::g' | tail -1)"
-        [ -z "$ver" ] && { log "aapt2: no version for AGP $agp"; continue; }
+        [ -z "$ver" ] && { log "aapt2: no published version for AGP $agp"; continue; }
         log "aapt2 for AGP $agp -> $ver (linux, windows)"
         place_artifact "$GOOGLE_MAVEN" com.android.tools.build aapt2 "$ver" linux jar
         place_artifact "$GOOGLE_MAVEN" com.android.tools.build aapt2 "$ver" windows jar
     done
-    # R8 is architecture-neutral. If the resolve already captured it, nothing to do; the
-    # smoke test confirms whether a specific r8 version is missing. TODO: pin r8 per AGP
-    # once the smoke test names the exact version a build requests.
 }
 
 # Gradle Module Metadata (.module) can declare a file whose served `url` differs from the
