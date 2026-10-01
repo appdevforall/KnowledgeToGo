@@ -22,9 +22,6 @@
 package org.appdevforall.k2go.install.presentation;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +33,6 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 
 import org.appdevforall.k2go.Aria2Manager;
@@ -60,10 +56,7 @@ import java.util.Locale;
 public final class InstallService extends Service {
 
     private static final String TAG = "IIAB-InstallService";
-    private static final String CHANNEL_ID = "install_channel";
-    private static final int NOTIFICATION_ID = 3;
-    /** ADFA-4898: id for the dismissible "Couldn't install" notification (one place, so post and cancel can't drift). */
-    private static final int NOTIFICATION_ID_MODULE_FAIL = NOTIFICATION_ID + 4;
+    // K2GO-436: the channel, the notification ids and the notification builders live in InstallNotifications.
 
     public static final String ACTION_START = "org.iiab.controller.INSTALL_START";
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
@@ -221,7 +214,7 @@ public final class InstallService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
+        InstallNotifications.createChannel(this);
         // ADFA-4895: listen for a returning validated network for as long as this service lives — i.e.
         // for the duration of the operation it owns. The observer is inert unless a rootfs download is
         // SOFTFAILED, so it costs nothing on module / reset / rebuild runs.
@@ -303,7 +296,7 @@ public final class InstallService extends Service {
             iiabRootDir = new File(getFilesDir(), "rootfs");
             debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
             if (prootEngine == null) prootEngine = new PRootEngine();
-            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.k2go_dash_rebuilding)));
+            startForeground(InstallNotifications.ONGOING_ID, buildNotification(getString(R.string.k2go_dash_rebuilding)));
             acquireHardwareLocks();
             // ADFA-5011: tag posts as REBUILD so SetupProgressActivity treats this as a blocking rebuild
             // session (stays on the animation, no premature "nothing to do → redirect").
@@ -353,13 +346,12 @@ public final class InstallService extends Service {
                 sRetryMapsTerrain = mapsTerrain; sRetryMapsSearch = mapsSearchOn;
             }
 
-            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_modules)));
+            startForeground(InstallNotifications.ONGOING_ID, buildNotification(getString(R.string.install_busy_modules)));
             // ADFA-4898: a new batch supersedes any earlier "Couldn't install" notification. Clearing it
             // at batch start covers both the retry case (no stale + live notification side by side) and
             // the success case (the old failure notification is gone before this batch's foreground one is
             // removed by teardown). The failure notification only ever auto-cancelled on tap before.
-            NotificationManager nmClear = getSystemService(NotificationManager.class);
-            if (nmClear != null) nmClear.cancel(NOTIFICATION_ID_MODULE_FAIL);
+            InstallNotifications.cancelModuleFailure(this);
             acquireHardwareLocks();
             persistQueue();
             // Mark "running" immediately (currentModule null until the first dequeue) so the UI
@@ -377,7 +369,7 @@ public final class InstallService extends Service {
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
         resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
 
-        startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_provisioning)));
+        startForeground(InstallNotifications.ONGOING_ID, buildNotification(getString(R.string.install_busy_provisioning)));
         acquireHardwareLocks();
         invalidateModuleStateTrust();
 
@@ -1325,32 +1317,8 @@ public final class InstallService extends Service {
         ModuleQueueRepository.get().postDone(failed);
         // ADFA-4898: a module batch that finished with failures leaves a dismissible notification, so a
         // user who backgrounded the install learns it did not succeed and can reopen to Retry.
-        if (!failed.isEmpty()) postModuleFailureNotification(failed);
+        if (!failed.isEmpty()) InstallNotifications.postModuleFailure(this, failed);
         teardown();
-    }
-
-    /**
-     * ADFA-4898: dismissible "install failed" notification for a module batch that ended with failures.
-     * Distinct id from the foreground one (removed by teardown's stopForeground); tapping opens Module
-     * management, where the failed module shows a Retry.
-     */
-    private void postModuleFailureNotification(java.util.List<String> failed) {
-        NotificationManager m = getSystemService(NotificationManager.class);
-        if (m == null) return;
-        Intent open = new Intent(this, org.appdevforall.k2go.redesign.SetupLibraryActivity.class)
-                .putExtra(org.appdevforall.k2go.redesign.SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        android.app.PendingIntent pi = android.app.PendingIntent.getActivity(this, 0, open,
-                android.app.PendingIntent.FLAG_IMMUTABLE | android.app.PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification n = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.k2go_mod_phase_failed))
-                .setContentText(android.text.TextUtils.join(", ", failed))
-                .setSmallIcon(android.R.drawable.stat_notify_error)
-                .setContentIntent(pi)
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .build();
-        m.notify(NOTIFICATION_ID_MODULE_FAIL, n);
     }
 
     private void persistQueue() {
@@ -1717,7 +1685,7 @@ public final class InstallService extends Service {
                 persistClearQueue();
                 org.appdevforall.k2go.InstallGuard.end(this);
                 ModuleQueueRepository.get().postDone(failedSnapshot);
-                if (!failedSnapshot.isEmpty()) postModuleFailureNotification(failedSnapshot);
+                if (!failedSnapshot.isEmpty()) InstallNotifications.postModuleFailure(this, failedSnapshot);
                 teardown();
             };
             if (cur != null) revertModuleInLocalVars(cur, finishCancel);   // best-effort rollback, then finish
@@ -1929,92 +1897,12 @@ public final class InstallService extends Service {
         }
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, getString(R.string.install_channel_name), NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription(getString(R.string.install_channel_desc));
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) manager.createNotificationChannel(channel);
-        }
-    }
-
     private Notification buildNotification(String text) {
-        // ADFA-4919 / K2GO-382: return to the modern progress surface — LibraryActivity shows rootfs
-        // progress (boot gate) and routes to the proot install index when a module is running — unlike
-        // legacy MainActivity, which shows neither. The route now has one owner (OpReturnNavigator);
-        // EXTRA_INSTALLING makes a fresh/refreshed LibraryActivity land on install progress instead of
-        // the last tab.
-        PendingIntent contentIntent = org.appdevforall.k2go.redesign.OpReturnNavigator.notify(this,
-                org.appdevforall.k2go.redesign.OpReturnNavigator.install(this));
-
-        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.install_notif_title))
-                .setContentText(text)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentIntent(contentIntent)
-                .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true);
-
-        // ADFA-5119: the rootfs download gets Pause/Resume here and NO Cancel.
-        //
-        // Cancel was the only action this notification ever had, and on this path it was the wrong
-        // one twice over: it is destructive — it discards the transfer, the tier and the wishlists —
-        // and it fired straight from the shade with no confirmation, while the same decision on
-        // screen asks first. A control that expensive should not be one stray tap in a crowded
-        // shade, so it stays where it can be confirmed. The notification keeps the cheap, reversible
-        // half; the notification body already carries the percentage and the rate, and loses the
-        // rate on a pause because there is no longer one to report.
-        //
-        // Nothing is offered during verify, extract or provisioning: a pause there would leave a
-        // half-written rootfs, and Cancel is exactly what we just took away. The notification's job
-        // in those phases is to report, and its tap still opens the screen where the choice lives.
-        //
-        // Every other user of this notification — the module queue, the scratch reset, the dashboard
-        // rebuild — keeps Cancel unchanged. They have no pause to offer and Cancel is their only
-        // control.
-        // Keyed on the pipeline, not on `work`. `work` only narrows to ROOTFS_BUILD once the pipeline
-        // has decided, and this notification is posted before that — so keying on it would show
-        // Cancel for the first second of every install, which is one stray tap in the shade doing
-        // the exact destructive thing this change removes.
-        InstallState st = InstallProgressRepository.get().current();
+        // installPipeline is the Service mode fact the builder cannot know (true only for the rootfs
+        // install, not a module queue / reset / dashboard rebuild); the state decides the action.
         boolean installPipeline = !moduleMode && !resetMode && !rebuildMode;
-        if (installPipeline && st.isHeld()) {
-            b.addAction(0, getString(st.isSoftFailed() ? R.string.k2go_dl_retry
-                                                       : R.string.k2go_dl_resume),
-                    serviceAction(ACTION_RESUME, 2));
-        } else if (installPipeline && st.phase == InstallState.Phase.DOWNLOADING) {
-            b.addAction(0, getString(R.string.k2go_dl_pause), serviceAction(ACTION_PAUSE, 3));
-        } else if (!installPipeline) {
-            // ADFA-5119: a module queue, a scratch reset and a dashboard rebuild get a way to LOOK,
-            // never a way to stop. Cancel was the only action they had, and on these three it is a
-            // button that breaks the thing it is attached to: doCancel clears the queue and tears the
-            // service down, but the runrole already inside proot keeps writing — and teardown clears
-            // the install marker, so the app stops standing back while Ansible is still configuring a
-            // module. The result is a half-configured module and a server the app now feels free to
-            // start over it. There is no partial file to discard and nothing to resume from; unlike a
-            // download, this cannot be undone by deleting a file.
-            //
-            // The notification's job here is to report and to offer a way back to the screen. The
-            // body tap already does that; the action makes it visible instead of leaving a
-            // notification that looks inert.
-            b.addAction(0, getString(R.string.k2go_notif_view), contentIntent);
-        }
-        return b.build();
-    }
-
-    /**
-     * A notification action that delivers one of our own intents.
-     *
-     * <p>Distinct request codes per action, deliberately: {@code PendingIntent} identity ignores the
-     * action string, so reusing one code would let FLAG_UPDATE_CURRENT hand the same pending intent a
-     * different action — a Pause button that cancels.
-     */
-    private PendingIntent serviceAction(String action, int requestCode) {
-        Intent i = new Intent(this, InstallService.class).setAction(action);
-        return PendingIntent.getService(this, requestCode, i,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        return InstallNotifications.buildOngoing(this, text, installPipeline,
+                InstallProgressRepository.get().current());
     }
 
     private void updateNotification(String text) {
@@ -2026,7 +1914,7 @@ public final class InstallService extends Service {
         // notification -> ongoing / non-dismissible, matching the terminal's protected notification.
         new Handler(Looper.getMainLooper()).post(() -> {
             if (finished) return;
-            startForeground(NOTIFICATION_ID, buildNotification(text));
+            startForeground(InstallNotifications.ONGOING_ID, buildNotification(text));
         });
     }
 }
