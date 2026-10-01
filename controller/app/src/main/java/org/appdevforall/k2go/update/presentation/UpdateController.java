@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -79,11 +80,8 @@ public class UpdateController {
 
     public void registerDownloadReceiver() {
         IntentFilter filter = new IntentFilter(android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity.registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            activity.registerReceiver(downloadReceiver, filter);
-        }
+        ContextCompat.registerReceiver(activity, downloadReceiver, filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     public void unregisterDownloadReceiver() {
