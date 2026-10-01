@@ -1,0 +1,34 @@
+// Point every repository (plugins and dependencies) at the offline Maven2 tree only.
+// Used with resolve-all.init.gradle and --offline to prove a build resolves with the
+// network off. Pass the repo path with -Dmavenoffline.repo=<absolute path to out/repo>.
+//
+// Two repository styles must both work:
+//  - settings repositories (pluginManagement + dependencyResolutionManagement). Code on
+//    the Go uses dependencyResolutionManagement with FAIL_ON_PROJECT_REPOS, so adding a
+//    PROJECT repository there is an error. We override the settings repositories instead.
+//  - project repositories (older style, e.g. Knowledge to Go). We override those too, but
+//    only when the build does not forbid project repositories.
+
+def repoPath = System.getProperty('mavenoffline.repo')
+if (repoPath == null) throw new GradleException('set -Dmavenoffline.repo=<abs path to out/repo>')
+def repoUri = new File(repoPath).toURI()
+def allowProjectRepos = true
+
+settingsEvaluated { settings ->
+    try {
+        def mode = settings.dependencyResolutionManagement.repositoriesMode.getOrNull()
+        if (mode != null && mode.name() == 'FAIL_ON_PROJECT_REPOS') allowProjectRepos = false
+    } catch (ignored) { /* no dependencyResolutionManagement */ }
+    settings.pluginManagement.repositories { clear(); maven { url = repoUri } }
+    try {
+        settings.dependencyResolutionManagement.repositories { clear(); maven { url = repoUri } }
+    } catch (ignored) { /* project may not use dependencyResolutionManagement */ }
+}
+
+allprojects {
+    // buildscript repositories are not governed by FAIL_ON_PROJECT_REPOS; always override.
+    buildscript { repositories { clear(); maven { url = repoUri } } }
+    if (allowProjectRepos) {
+        repositories { clear(); maven { url = repoUri } }
+    }
+}

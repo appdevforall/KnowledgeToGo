@@ -1,0 +1,14 @@
+# Task-time artifacts a plain dependency resolve does NOT pull, but an offline build
+# still needs. One per line, tab-separated. Lines starting with # are ignored.
+#
+# group                             artifact                version   classifier      ext   hosts
+com.aayushatharva.brotli4j          native-linux-x86_64     1.18.0    -               jar   linux
+com.aayushatharva.brotli4j          native-linux-aarch64    1.18.0    -               jar   linux
+com.aayushatharva.brotli4j          native-windows-x86_64   1.18.0    -               jar   windows
+#
+# aapt2 and R8/D8 are NOT listed here because their versions follow each project's
+# AGP version, so the script derives them per project (see derive_aapt2_r8 in
+# build-maven-offline.sh):
+#   com.android.tools.build:aapt2:<agp-aapt2-version>:<linux|windows>   (per build-host OS; ARM on-device uses Code on the Go's own aapt2)
+#   com.android.tools:r8:<r8-version-for-that-AGP>                      (architecture-neutral)
+# AGP versions in use: 8.4.1 (Knowledge to Go), 8.8.2 + 7.3.0 tooling (Code on the Go), 8.11.0 (add-ons).

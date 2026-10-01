@@ -1,0 +1,45 @@
+// Force a download of every dependency a build needs into this Gradle user home's
+// module cache. A reshaped copy of that cache becomes the offline Maven2 repository.
+//
+// Applied with --init-script by build-maven-offline.sh. It registers one task,
+// resolveAllDeps, on the ROOT project of every build in the composite (a plain build
+// has one; Code on the Go has included builds). gradle.rootProject is the reliable
+// init-script hook for this: projectsEvaluated alone does not register the task on a
+// composite build's main root.
+//
+// The task leniently resolves every resolvable configuration of every project, plus
+// each project's buildscript (plugin) classpath, so one unresolved optional artifact
+// does not abort the sweep. Lenient resolution still downloads every artifact that CAN
+// be resolved; it only swallows the ones that cannot (platform stubs, absent variants).
+
+gradle.rootProject { root ->
+    if (root.tasks.findByName('resolveAllDeps') != null) return
+    root.tasks.register('resolveAllDeps') {
+        doLast {
+            root.allprojects.each { p ->
+                p.configurations.each { c ->
+                    if (c.canBeResolved) {
+                        try {
+                            c.incoming.artifactView { it.lenient(true) }.files.files.size()
+                        } catch (Throwable t) {
+                            logger.info("skip ${p.path}:${c.name}: ${t.message}")
+                        }
+                    }
+                }
+                try {
+                    p.buildscript.configurations.each { bc ->
+                        if (bc.canBeResolved) {
+                            try {
+                                bc.incoming.artifactView { it.lenient(true) }.files.files.size()
+                            } catch (Throwable t) {
+                                logger.info("skip buildscript ${p.path}:${bc.name}: ${t.message}")
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    logger.info("no buildscript for ${p.path}: ${t.message}")
+                }
+            }
+        }
+    }
+}

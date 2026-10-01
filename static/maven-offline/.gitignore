@@ -1,0 +1,10 @@
+# Generated output: the Maven2 repository tree (about 1.1 to 1.2 GiB). Never commit.
+/out/
+# Per-run isolated Gradle user homes used during resolution.
+/.gradle-homes/
+# Shallow clones of Code on the Go / add-ons made by the producer.
+/.work/
+# Local source overrides (absolute paths on a developer machine).
+/config/sources.local.tsv
+# Logs.
+*.log
