@@ -1382,4 +1382,14 @@
     <string name="k2go_dep_suggest_title">Pembaruan dashboard tersedia</string>
     <string name="k2go_dep_suggest_msg">Disarankan memperbarui dashboard dulu agar fitur baru modul berfungsi dengan benar.</string>
     <string name="k2go_dep_install_anyway">Tetap pasang</string>
+    <string name="k2go_mod_code_addons_sub">Plugin, templat, dan cuplikan untuk editor</string>
+    <string name="k2go_mod_code_addons_desc">Galeri offline add-on untuk Code on the Go: plugin, templat, cuplikan, dan tindakan kode. Jelajahi, filter, dan unduh tanpa koneksi internet.</string>
+    <string name="k2go_card_code_addons">Add-on</string>
+    <string name="k2go_code_addons_update">Perbarui add-on</string>
+    <string name="k2go_code_addons_updating">Memperbarui add-on...</string>
+    <string name="k2go_code_addons_update_cancelling">Membatalkan...</string>
+    <string name="k2go_code_addons_update_cancelled">Pembaruan add-on dibatalkan</string>
+    <string name="k2go_code_addons_update_done">Add-on diperbarui</string>
+    <string name="k2go_code_addons_update_failed">Tidak dapat memperbarui add-on</string>
+    <string name="k2go_code_addons_update_some_failed">Beberapa add-on tidak dapat diperbarui</string>
 </resources>

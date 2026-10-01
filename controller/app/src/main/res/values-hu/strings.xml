@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">Elerheto a dashboard frissitese</string>
     <string name="k2go_dep_suggest_msg">Ajanlott eloszor frissiteni a dashboardot, hogy az uj modulfunkciok megfeleloen mukodjenek.</string>
     <string name="k2go_dep_install_anyway">Telepites mindenkepp</string>
+    <string name="k2go_mod_code_addons_sub">Beépülők, sablonok és kódrészletek a szerkesztőhöz</string>
+    <string name="k2go_mod_code_addons_desc">Kiegészítők offline galériája a Code on the Go-hoz: beépülők, sablonok, kódrészletek és kódműveletek. Böngéssze, szűrje és töltse le őket internetkapcsolat nélkül.</string>
+    <string name="k2go_card_code_addons">Kiegészítők</string>
+    <string name="k2go_code_addons_update">Kiegészítők frissítése</string>
+    <string name="k2go_code_addons_updating">Kiegészítők frissítése...</string>
+    <string name="k2go_code_addons_update_cancelling">Megszakítás...</string>
+    <string name="k2go_code_addons_update_cancelled">Kiegészítők frissítése megszakítva</string>
+    <string name="k2go_code_addons_update_done">Kiegészítők frissítve</string>
+    <string name="k2go_code_addons_update_failed">A kiegészítőket nem sikerült frissíteni</string>
+    <string name="k2go_code_addons_update_some_failed">Néhány kiegészítőt nem sikerült frissíteni</string>
 </resources>

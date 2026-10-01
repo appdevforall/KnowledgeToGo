@@ -1382,4 +1382,14 @@
     <string name="k2go_dep_suggest_title">Je dostupna aktualizace dashboardu</string>
     <string name="k2go_dep_suggest_msg">Doporucujeme nejprve aktualizovat dashboard, aby nove funkce modulu fungovaly spravne.</string>
     <string name="k2go_dep_install_anyway">Presto nainstalovat</string>
+    <string name="k2go_mod_code_addons_sub">Pluginy, šablony a úryvky pro editor</string>
+    <string name="k2go_mod_code_addons_desc">Offline galerie doplňků pro Code on the Go: pluginy, šablony, úryvky a akce kódu. Procházejte, filtrujte a stahujte je bez připojení k internetu.</string>
+    <string name="k2go_card_code_addons">Doplňky</string>
+    <string name="k2go_code_addons_update">Aktualizovat doplňky</string>
+    <string name="k2go_code_addons_updating">Aktualizace doplňků...</string>
+    <string name="k2go_code_addons_update_cancelling">Rušení...</string>
+    <string name="k2go_code_addons_update_cancelled">Aktualizace doplňků zrušena</string>
+    <string name="k2go_code_addons_update_done">Doplňky aktualizovány</string>
+    <string name="k2go_code_addons_update_failed">Doplňky se nepodařilo aktualizovat</string>
+    <string name="k2go_code_addons_update_some_failed">Některé doplňky se nepodařilo aktualizovat</string>
 </resources>

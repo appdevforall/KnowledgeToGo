@@ -1376,4 +1376,14 @@
     <string name="k2go_dep_suggest_title">dashboard 업데이트가 있습니다</string>
     <string name="k2go_dep_suggest_msg">모듈의 새 기능이 제대로 작동하도록 먼저 dashboard를 업데이트하는 것이 좋습니다.</string>
     <string name="k2go_dep_install_anyway">무시하고 설치</string>
+    <string name="k2go_mod_code_addons_sub">편집기용 플러그인, 템플릿, 스니펫</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go용 애드온의 오프라인 갤러리: 플러그인, 템플릿, 스니펫, 코드 작업. 인터넷 연결 없이 찾아보고 필터링하고 다운로드하세요.</string>
+    <string name="k2go_card_code_addons">애드온</string>
+    <string name="k2go_code_addons_update">애드온 업데이트</string>
+    <string name="k2go_code_addons_updating">애드온 업데이트 중...</string>
+    <string name="k2go_code_addons_update_cancelling">취소 중...</string>
+    <string name="k2go_code_addons_update_cancelled">애드온 업데이트가 취소됨</string>
+    <string name="k2go_code_addons_update_done">애드온이 업데이트됨</string>
+    <string name="k2go_code_addons_update_failed">애드온을 업데이트할 수 없음</string>
+    <string name="k2go_code_addons_update_some_failed">일부 애드온을 업데이트하지 못함</string>
 </resources>

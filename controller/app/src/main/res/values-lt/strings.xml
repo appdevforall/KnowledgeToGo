@@ -1392,4 +1392,14 @@
     <string name="k2go_dep_suggest_title">Yra dashboard atnaujinimas</string>
     <string name="k2go_dep_suggest_msg">Rekomenduojama pirma atnaujinti dashboard, kad naujos modulio funkcijos veiktu tinkamai.</string>
     <string name="k2go_dep_install_anyway">Vis tiek idiegti</string>
+    <string name="k2go_mod_code_addons_sub">Papildiniai, šablonai ir fragmentai redaktoriui</string>
+    <string name="k2go_mod_code_addons_desc">Neprisijungus veikianti Code on the Go priedų galerija: papildiniai, šablonai, fragmentai ir kodo veiksmai. Naršykite, filtruokite ir atsisiųskite juos be interneto ryšio.</string>
+    <string name="k2go_card_code_addons">Priedai</string>
+    <string name="k2go_code_addons_update">Atnaujinti priedus</string>
+    <string name="k2go_code_addons_updating">Atnaujinami priedai...</string>
+    <string name="k2go_code_addons_update_cancelling">Atšaukiama...</string>
+    <string name="k2go_code_addons_update_cancelled">Priedų atnaujinimas atšauktas</string>
+    <string name="k2go_code_addons_update_done">Priedai atnaujinti</string>
+    <string name="k2go_code_addons_update_failed">Nepavyko atnaujinti priedų</string>
+    <string name="k2go_code_addons_update_some_failed">Kai kurių priedų nepavyko atnaujinti</string>
 </resources>

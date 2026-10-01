@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">يتوفر تحديث لـ dashboard</string>
     <string name="k2go_dep_suggest_msg">يُوصى بتحديث dashboard أولاً حتى تعمل ميزات الوحدة الجديدة بشكل صحيح.</string>
     <string name="k2go_dep_install_anyway">التثبيت على أي حال</string>
+    <string name="k2go_mod_code_addons_sub">إضافات وقوالب ومقتطفات للمحرر</string>
+    <string name="k2go_mod_code_addons_desc">معرض غير متصل بالإنترنت للإضافات الخاصة بـ Code on the Go: الإضافات والقوالب والمقتطفات وإجراءات التعليمات البرمجية. تصفّحها وصفّها ونزّلها دون اتصال بالإنترنت.</string>
+    <string name="k2go_card_code_addons">الإضافات</string>
+    <string name="k2go_code_addons_update">تحديث الإضافات</string>
+    <string name="k2go_code_addons_updating">جارٍ تحديث الإضافات...</string>
+    <string name="k2go_code_addons_update_cancelling">جارٍ الإلغاء...</string>
+    <string name="k2go_code_addons_update_cancelled">تم إلغاء تحديث الإضافات</string>
+    <string name="k2go_code_addons_update_done">تم تحديث الإضافات</string>
+    <string name="k2go_code_addons_update_failed">تعذّر تحديث الإضافات</string>
+    <string name="k2go_code_addons_update_some_failed">تعذّر تحديث بعض الإضافات</string>
 </resources>

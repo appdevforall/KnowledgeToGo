@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">Ein Dashboard-Update ist verfuegbar</string>
     <string name="k2go_dep_suggest_msg">Es wird empfohlen, zuerst das Dashboard zu aktualisieren, damit neue Modulfunktionen richtig laufen.</string>
     <string name="k2go_dep_install_anyway">Trotzdem installieren</string>
+    <string name="k2go_mod_code_addons_sub">Plugins, Vorlagen und Snippets für den Editor</string>
+    <string name="k2go_mod_code_addons_desc">Eine Offline-Galerie mit Add-ons für Code on the Go: Plugins, Vorlagen, Snippets und Code-Aktionen. Durchsuchen, filtern und ohne Internetverbindung herunterladen.</string>
+    <string name="k2go_card_code_addons">Add-ons</string>
+    <string name="k2go_code_addons_update">Add-ons aktualisieren</string>
+    <string name="k2go_code_addons_updating">Add-ons werden aktualisiert...</string>
+    <string name="k2go_code_addons_update_cancelling">Wird abgebrochen...</string>
+    <string name="k2go_code_addons_update_cancelled">Add-on-Aktualisierung abgebrochen</string>
+    <string name="k2go_code_addons_update_done">Add-ons aktualisiert</string>
+    <string name="k2go_code_addons_update_failed">Add-ons konnten nicht aktualisiert werden</string>
+    <string name="k2go_code_addons_update_some_failed">Einige Add-ons konnten nicht aktualisiert werden</string>
 </resources>

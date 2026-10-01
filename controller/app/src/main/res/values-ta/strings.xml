@@ -1395,4 +1395,14 @@
     <string name="k2go_dep_suggest_title">dashboard புதுப்பிப்பு உள்ளது</string>
     <string name="k2go_dep_suggest_msg">தொகுதியின் புதிய அம்சங்கள் சரியாக இயங்க முதலில் dashboard ஐப் புதுப்பிக்க பரிந்துரைக்கப்படுகிறது.</string>
     <string name="k2go_dep_install_anyway">இருப்பினும் நிறுவு</string>
+    <string name="k2go_mod_code_addons_sub">எடிட்டருக்கான செருகுநிரல்கள், டெம்ப்ளேட்டுகள் மற்றும் துணுக்குகள்</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go-க்கான ஆஃப்லைன் ஆட்-ஆன்கள் தொகுப்பு: செருகுநிரல்கள், டெம்ப்ளேட்டுகள், துணுக்குகள் மற்றும் குறியீட்டுச் செயல்கள். இணைய இணைப்பு இல்லாமல் உலாவவும், வடிகட்டவும், பதிவிறக்கவும்.</string>
+    <string name="k2go_card_code_addons">ஆட்-ஆன்கள்</string>
+    <string name="k2go_code_addons_update">ஆட்-ஆன்களைப் புதுப்பிக்கவும்</string>
+    <string name="k2go_code_addons_updating">ஆட்-ஆன்கள் புதுப்பிக்கப்படுகின்றன...</string>
+    <string name="k2go_code_addons_update_cancelling">ரத்து செய்யப்படுகிறது...</string>
+    <string name="k2go_code_addons_update_cancelled">ஆட்-ஆன் புதுப்பிப்பு ரத்து செய்யப்பட்டது</string>
+    <string name="k2go_code_addons_update_done">ஆட்-ஆன்கள் புதுப்பிக்கப்பட்டன</string>
+    <string name="k2go_code_addons_update_failed">ஆட்-ஆன்களைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="k2go_code_addons_update_some_failed">சில ஆட்-ஆன்களைப் புதுப்பிக்க முடியவில்லை</string>
 </resources>
