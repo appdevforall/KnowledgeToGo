@@ -1376,4 +1376,14 @@
     <string name="k2go_dep_suggest_title">dashboard の更新があります</string>
     <string name="k2go_dep_suggest_msg">モジュールの新機能が正しく動作するよう、先に dashboard を更新することをおすすめします。</string>
     <string name="k2go_dep_install_anyway">それでもインストール</string>
+    <string name="k2go_mod_code_addons_sub">エディター用のプラグイン、テンプレート、スニペット</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go 用のアドオンのオフラインギャラリー：プラグイン、テンプレート、スニペット、コードアクション。インターネット接続なしで閲覧、絞り込み、ダウンロードできます。</string>
+    <string name="k2go_card_code_addons">アドオン</string>
+    <string name="k2go_code_addons_update">アドオンを更新</string>
+    <string name="k2go_code_addons_updating">アドオンを更新しています...</string>
+    <string name="k2go_code_addons_update_cancelling">キャンセルしています...</string>
+    <string name="k2go_code_addons_update_cancelled">アドオンの更新をキャンセルしました</string>
+    <string name="k2go_code_addons_update_done">アドオンを更新しました</string>
+    <string name="k2go_code_addons_update_failed">アドオンを更新できませんでした</string>
+    <string name="k2go_code_addons_update_some_failed">一部のアドオンを更新できませんでした</string>
 </resources>

@@ -223,6 +223,14 @@ public final class ModuleActionSheet {
                         });
                     });
                 }
+                // K2GO-99: an installed add-ons gallery offers a live refresh here (the module action
+                // menu). No status gate (installed means there is a gallery); the shared flow gates
+                // internet, then runs the refresh IN the sheet (it does NOT dismiss).
+                if ("code_addons".equals(key)) {
+                    content.addView(row(ctx, R.drawable.ic_refresh,
+                            act.getString(R.string.k2go_code_addons_update), Emphasis.ACCENT, null, false,
+                            v -> org.appdevforall.k2go.addons.presentation.AddonsRefresh.start(act, v)));
+                }
                 break;
             case SCHEDULED: {
                 content.addView(about);

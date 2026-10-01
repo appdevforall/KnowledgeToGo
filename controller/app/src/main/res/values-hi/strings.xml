@@ -1452,4 +1452,14 @@
     <string name="k2go_dep_suggest_title">dashboard अपडेट उपलब्ध है</string>
     <string name="k2go_dep_suggest_msg">अनुशंसित है कि पहले dashboard अपडेट करें ताकि मॉड्यूल की नई सुविधाएँ सही से काम करें।</string>
     <string name="k2go_dep_install_anyway">फिर भी इंस्टॉल करें</string>
+    <string name="k2go_mod_code_addons_sub">संपादक के लिए प्लगइन, टेम्पलेट और स्निपेट</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go के लिए ऐड-ऑन की ऑफ़लाइन गैलरी: प्लगइन, टेम्पलेट, स्निपेट और कोड क्रियाएँ। बिना इंटरनेट कनेक्शन के ब्राउज़ करें, फ़िल्टर करें और डाउनलोड करें।</string>
+    <string name="k2go_card_code_addons">ऐड-ऑन</string>
+    <string name="k2go_code_addons_update">ऐड-ऑन अपडेट करें</string>
+    <string name="k2go_code_addons_updating">ऐड-ऑन अपडेट हो रहे हैं...</string>
+    <string name="k2go_code_addons_update_cancelling">रद्द किया जा रहा है...</string>
+    <string name="k2go_code_addons_update_cancelled">ऐड-ऑन अपडेट रद्द किया गया</string>
+    <string name="k2go_code_addons_update_done">ऐड-ऑन अपडेट किए गए</string>
+    <string name="k2go_code_addons_update_failed">ऐड-ऑन अपडेट नहीं हो सके</string>
+    <string name="k2go_code_addons_update_some_failed">कुछ ऐड-ऑन अपडेट नहीं हो सके</string>
 </resources>

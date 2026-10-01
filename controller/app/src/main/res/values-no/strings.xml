@@ -1385,4 +1385,14 @@
     <string name="k2go_dep_suggest_title">En dashboard-oppdatering er tilgjengelig</string>
     <string name="k2go_dep_suggest_msg">Det anbefales a oppdatere dashboard forst slik at nye modulfunksjoner fungerer riktig.</string>
     <string name="k2go_dep_install_anyway">Installer likevel</string>
+    <string name="k2go_mod_code_addons_sub">Programtillegg, maler og utdrag for redigereren</string>
+    <string name="k2go_mod_code_addons_desc">Et frakoblet galleri med tillegg for Code on the Go: programtillegg, maler, utdrag og kodehandlinger. Bla gjennom, filtrer og last dem ned uten internettforbindelse.</string>
+    <string name="k2go_card_code_addons">Tillegg</string>
+    <string name="k2go_code_addons_update">Oppdater tillegg</string>
+    <string name="k2go_code_addons_updating">Oppdaterer tillegg...</string>
+    <string name="k2go_code_addons_update_cancelling">Avbryter...</string>
+    <string name="k2go_code_addons_update_cancelled">Oppdatering av tillegg avbrutt</string>
+    <string name="k2go_code_addons_update_done">Tillegg oppdatert</string>
+    <string name="k2go_code_addons_update_failed">Kunne ikke oppdatere tilleggene</string>
+    <string name="k2go_code_addons_update_some_failed">Noen tillegg kunne ikke oppdateres</string>
 </resources>

@@ -1451,4 +1451,14 @@
     <string name="k2go_dep_suggest_title">Доступно обновление dashboard</string>
     <string name="k2go_dep_suggest_msg">Рекомендуется сначала обновить dashboard, чтобы новые функции модуля работали правильно.</string>
     <string name="k2go_dep_install_anyway">Всё равно установить</string>
+    <string name="k2go_mod_code_addons_sub">Плагины, шаблоны и фрагменты для редактора</string>
+    <string name="k2go_mod_code_addons_desc">Офлайн-галерея дополнений для Code on the Go: плагины, шаблоны, фрагменты и действия с кодом. Просматривайте, фильтруйте и загружайте их без подключения к интернету.</string>
+    <string name="k2go_card_code_addons">Дополнения</string>
+    <string name="k2go_code_addons_update">Обновить дополнения</string>
+    <string name="k2go_code_addons_updating">Обновление дополнений...</string>
+    <string name="k2go_code_addons_update_cancelling">Отмена...</string>
+    <string name="k2go_code_addons_update_cancelled">Обновление дополнений отменено</string>
+    <string name="k2go_code_addons_update_done">Дополнения обновлены</string>
+    <string name="k2go_code_addons_update_failed">Не удалось обновить дополнения</string>
+    <string name="k2go_code_addons_update_some_failed">Некоторые дополнения не удалось обновить</string>
 </resources>

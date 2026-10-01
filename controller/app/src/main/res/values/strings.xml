@@ -1560,4 +1560,17 @@
     <string name="k2go_dep_suggest_title">A dashboard update is available</string>
     <string name="k2go_dep_suggest_msg">Updating the dashboard first is recommended so new module features work correctly.</string>
     <string name="k2go_dep_install_anyway">Install anyway</string>
+    <string name="dash_code_addons" translatable="false">Code on the Go Add-ons</string>
+    <string name="k2go_mod_code_addons_title" translatable="false">Code on the Go Add-ons</string>
+    <string name="k2go_mod_code_addons_size" translatable="false">~600 MB</string>
+    <string name="k2go_mod_code_addons_sub">Plugins, templates, and snippets for the editor</string>
+    <string name="k2go_mod_code_addons_desc">An offline gallery of add-ons for Code on the Go: plugins, templates, snippets, and code actions. Browse, filter, and download them with no internet connection.</string>
+    <string name="k2go_card_code_addons">Add-ons</string>
+    <string name="k2go_code_addons_update">Update add-ons</string>
+    <string name="k2go_code_addons_updating">Updating add-ons...</string>
+    <string name="k2go_code_addons_update_cancelling">Cancelling...</string>
+    <string name="k2go_code_addons_update_cancelled">Add-ons update cancelled</string>
+    <string name="k2go_code_addons_update_done">Add-ons updated</string>
+    <string name="k2go_code_addons_update_failed">Could not update the add-ons</string>
+    <string name="k2go_code_addons_update_some_failed">Some add-ons could not be updated</string>
 </resources>

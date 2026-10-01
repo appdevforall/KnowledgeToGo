@@ -1395,4 +1395,14 @@
     <string name="k2go_dep_suggest_title">Imudojuiwon dashboard wa</string>
     <string name="k2go_dep_suggest_msg">A gba o nimoran lati kokoo se imudojuiwon dashboard ki awon eya tuntun ti modulu le sise daradara.</string>
     <string name="k2go_dep_install_anyway">Fi sori ero lonakona</string>
+    <string name="k2go_mod_code_addons_sub">Àwọn afikún, àwòṣe, àti àwọn àjákù fún olóòtú</string>
+    <string name="k2go_mod_code_addons_desc">Àkójọ àìlẹ́rọ-àyélujára ti àwọn afikún fún Code on the Go: àwọn afikún, àwòṣe, àjákù, àti àwọn ìṣe kóòdù. Ṣàwárí, sẹ́, kí o sì gbà wọ́n sílẹ̀ láìsí ìsopọ̀ Íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_card_code_addons">Àwọn afikún</string>
+    <string name="k2go_code_addons_update">Ṣe ìmúdójúìwọn àwọn afikún</string>
+    <string name="k2go_code_addons_updating">Ń ṣe ìmúdójúìwọn àwọn afikún...</string>
+    <string name="k2go_code_addons_update_cancelling">Ń fagilé...</string>
+    <string name="k2go_code_addons_update_cancelled">A fagilé ìmúdójúìwọn àwọn afikún</string>
+    <string name="k2go_code_addons_update_done">A ṣe ìmúdójúìwọn àwọn afikún</string>
+    <string name="k2go_code_addons_update_failed">A kò lè ṣe ìmúdójúìwọn àwọn afikún</string>
+    <string name="k2go_code_addons_update_some_failed">Àwọn afikún kan kò lè ṣe ìmúdójúìwọn</string>
 </resources>

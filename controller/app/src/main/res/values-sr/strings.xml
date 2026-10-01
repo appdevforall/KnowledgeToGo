@@ -1388,4 +1388,14 @@
     <string name="k2go_dep_suggest_title">Доступно је ажурирање dashboard-а</string>
     <string name="k2go_dep_suggest_msg">Препоручује се да прво ажурирате dashboard како би нове функције модула радиле исправно.</string>
     <string name="k2go_dep_install_anyway">Ипак инсталирај</string>
+    <string name="k2go_mod_code_addons_sub">Додаци, шаблони и исечци за уређивач</string>
+    <string name="k2go_mod_code_addons_desc">Офлајн галерија додатака за Code on the Go: додаци, шаблони, исечци и радње над кодом. Прегледајте, филтрирајте и преузимајте без интернет везе.</string>
+    <string name="k2go_card_code_addons">Додаци</string>
+    <string name="k2go_code_addons_update">Ажурирај додатке</string>
+    <string name="k2go_code_addons_updating">Ажурирање додатака...</string>
+    <string name="k2go_code_addons_update_cancelling">Отказивање...</string>
+    <string name="k2go_code_addons_update_cancelled">Ажурирање додатака је отказано</string>
+    <string name="k2go_code_addons_update_done">Додаци су ажурирани</string>
+    <string name="k2go_code_addons_update_failed">Није могуће ажурирати додатке</string>
+    <string name="k2go_code_addons_update_some_failed">Неки додаци нису могли бити ажурирани</string>
 </resources>

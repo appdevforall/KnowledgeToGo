@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">Da co ban cap nhat dashboard</string>
     <string name="k2go_dep_suggest_msg">Nen cap nhat dashboard truoc de cac tinh nang moi cua mo-dun hoat dong dung.</string>
     <string name="k2go_dep_install_anyway">Van cai dat</string>
+    <string name="k2go_mod_code_addons_sub">Plugin, mẫu và đoạn mã cho trình chỉnh sửa</string>
+    <string name="k2go_mod_code_addons_desc">Thư viện ngoại tuyến các tiện ích bổ sung cho Code on the Go: plugin, mẫu, đoạn mã và thao tác mã. Duyệt, lọc và tải xuống mà không cần kết nối internet.</string>
+    <string name="k2go_card_code_addons">Tiện ích bổ sung</string>
+    <string name="k2go_code_addons_update">Cập nhật tiện ích bổ sung</string>
+    <string name="k2go_code_addons_updating">Đang cập nhật tiện ích bổ sung...</string>
+    <string name="k2go_code_addons_update_cancelling">Đang hủy...</string>
+    <string name="k2go_code_addons_update_cancelled">Đã hủy cập nhật tiện ích bổ sung</string>
+    <string name="k2go_code_addons_update_done">Đã cập nhật tiện ích bổ sung</string>
+    <string name="k2go_code_addons_update_failed">Không thể cập nhật tiện ích bổ sung</string>
+    <string name="k2go_code_addons_update_some_failed">Một số tiện ích bổ sung không thể cập nhật</string>
 </resources>

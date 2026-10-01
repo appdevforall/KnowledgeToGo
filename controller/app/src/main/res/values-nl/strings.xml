@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">Er is een dashboard-update beschikbaar</string>
     <string name="k2go_dep_suggest_msg">Het wordt aanbevolen eerst het dashboard bij te werken zodat nieuwe modulefuncties goed werken.</string>
     <string name="k2go_dep_install_anyway">Toch installeren</string>
+    <string name="k2go_mod_code_addons_sub">Plug-ins, sjablonen en snippets voor de editor</string>
+    <string name="k2go_mod_code_addons_desc">Een offline galerij met add-ons voor Code on the Go: plug-ins, sjablonen, snippets en code-acties. Blader, filter en download ze zonder internetverbinding.</string>
+    <string name="k2go_card_code_addons">Add-ons</string>
+    <string name="k2go_code_addons_update">Add-ons bijwerken</string>
+    <string name="k2go_code_addons_updating">Add-ons bijwerken...</string>
+    <string name="k2go_code_addons_update_cancelling">Annuleren...</string>
+    <string name="k2go_code_addons_update_cancelled">Bijwerken van add-ons geannuleerd</string>
+    <string name="k2go_code_addons_update_done">Add-ons bijgewerkt</string>
+    <string name="k2go_code_addons_update_failed">Kan de add-ons niet bijwerken</string>
+    <string name="k2go_code_addons_update_some_failed">Sommige add-ons konden niet worden bijgewerkt</string>
 </resources>
