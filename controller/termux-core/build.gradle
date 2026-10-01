@@ -114,12 +114,28 @@ if (System.getProperty("os.arch") == "aarch64"
 }
 
 dependencies {
+    // Security (Snyk): raise the transitive Kotlin stdlib. This module has no Kotlin
+    // source; the stdlib arrives through AndroidX. Version-only, no behavior change.
+    constraints {
+        implementation('org.jetbrains.kotlin:kotlin-stdlib:2.1.0') {
+            because 'Snyk CVE-2020-29582 (removes deprecated kotlin.io temp-file helpers); transitive via AndroidX (was 1.8.22).'
+        }
+        // Keep the stdlib family in lockstep. jdk7/jdk8 are empty stubs since Kotlin
+        // 1.8, so this only prevents version drift; it changes no code.
+        implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0') {
+            because 'Align with kotlin-stdlib above.'
+        }
+        implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0') {
+            because 'Align with kotlin-stdlib above.'
+        }
+    }
+
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.13.0'
 
     // --- TERMUX PATCHES ---
     implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.14.0'   // Snyk CVE fix (was 2.11.0)
 
     // Markdown
     implementation 'io.noties.markwon:core:4.6.2'
