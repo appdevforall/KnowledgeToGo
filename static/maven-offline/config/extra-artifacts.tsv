@@ -1,16 +1,12 @@
 # Task-time artifacts a plain dependency resolve does NOT pull, but an offline build
-# still needs. One per line, tab-separated. Lines starting with # are ignored.
-#
-# group                             artifact                version   classifier      ext   hosts
-com.aayushatharva.brotli4j          native-linux-x86_64     1.18.0    -               jar   linux
-com.aayushatharva.brotli4j          native-linux-aarch64    1.18.0    -               jar   linux
-com.aayushatharva.brotli4j          native-windows-x86_64   1.18.0    -               jar   windows
-#
-# aapt2 version follows each project's AGP version, so the script derives it per project
-# (see derive_aapt2_r8 in build-maven-offline.sh):
-#   com.android.tools.build:aapt2:<agp-aapt2-version>:<linux|windows>   (per build-host OS; ARM on-device uses Code on the Go's own aapt2)
-# R8/D8: no separate artifact for the add-ons' AGP 9.3.1 : it ships inside
-#   com.android.tools.build:builder:9.3.1, which a normal resolve captures. Older AGP
-#   (8.4 K2Go, 8.8 CoGo) may reference com.android.tools:r8 separately; pin it via an
-#   offline assemble oracle if/when the full offline BUILD of those ships (separate ticket).
-# AGP versions in use: 8.4.1 (Knowledge to Go), 8.8.2 (Code on the Go), 9.3.1 (add-ons).
+# still needs. Tab-separated (TSV). Lines starting with # are ignored.
+# Columns: group<TAB>artifact<TAB>version<TAB>classifier<TAB>ext<TAB>hosts   (classifier "-" = none)
+com.aayushatharva.brotli4j	native-linux-x86_64	1.18.0	-	jar	linux
+com.aayushatharva.brotli4j	native-linux-aarch64	1.18.0	-	jar	linux
+com.aayushatharva.brotli4j	native-windows-x86_64	1.18.0	-	jar	windows
+# aapt2 is NOT listed: its version follows each project's AGP version, so the script
+# derives it from the com.android.tools.build:gradle versions actually in the repo (see
+# derive_aapt2_r8). R8/D8 for AGP 9.x ships inside com.android.tools.build:builder, which a
+# resolve captures; older AGP (8.4 K2Go, 8.8 CoGo) may reference com.android.tools:r8
+# separately, added via an offline assemble oracle when their full offline BUILD ships.
+# AGP in use: 8.4.1 (Knowledge to Go), 8.8.2 (Code on the Go), 9.3.1 (add-ons).

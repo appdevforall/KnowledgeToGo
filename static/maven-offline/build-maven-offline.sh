@@ -27,6 +27,7 @@ MAVEN_CENTRAL="https://repo1.maven.org/maven2"
 GOOGLE_MAVEN="https://dl.google.com/dl/android/maven2"
 
 DO_SMOKE=0
+NO_RESOLVE=0
 ONLY=""
 
 usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; }
@@ -34,6 +35,8 @@ usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; }
 while [ $# -gt 0 ]; do
     case "$1" in
         --smoke) DO_SMOKE=1 ;;
+        --no-resolve) NO_RESOLVE=1 ;;
+        --out) OUT="${2:-}"; shift ;;
         --only) ONLY="${2:-}"; shift ;;
         -h|--help) usage; exit 0 ;;
         *) echo "unknown arg: $1" >&2; exit 2 ;;
@@ -172,8 +175,11 @@ for dp, _, files in os.walk(root):
             for fe in var.get('files', []):
                 name, url = fe.get('name'), fe.get('url')
                 if not name or not url or name == url: continue
-                src, dst = os.path.join(dp, name), os.path.join(dp, url)
+                # url may be relative with ../ (GMM relocations point to a sibling version dir)
+                src = os.path.join(dp, name)
+                dst = os.path.normpath(os.path.join(dp, url))
                 if os.path.exists(src) and not os.path.exists(dst):
+                    os.makedirs(os.path.dirname(dst), exist_ok=True)
                     shutil.copyfile(src, dst); made += 1
 print(f"materialized {made} url-named copies")
 PY
@@ -211,13 +217,28 @@ process_project() {
     fi
 }
 
+# Rebuild the repo from already-resolved homes, skipping Gradle. Lets you re-run the
+# reshape / extras / checksums after a tool change without re-downloading, and reuse a
+# resolve done elsewhere (drop its Gradle home under .gradle-homes/).
+reshape_all_homes() {
+    local home
+    for home in "$HOMES"/*/; do
+        [ -d "$home/caches/modules-2/files-2.1" ] || continue
+        reshape_home "${home%/}"
+    done
+}
+
 main() {
     mkdir -p "$OUT" "$HOMES"
-    while IFS=$'\t' read -r name source ref gradle_root mode; do
-        [ -z "${name:-}" ] && continue
-        case "$name" in \#*) continue ;; esac
-        process_project "$name" "$source" "$ref" "$gradle_root" "$mode"
-    done < "$PROJECTS_TSV"
+    if [ "$NO_RESOLVE" = 1 ]; then
+        reshape_all_homes
+    else
+        while IFS=$'\t' read -r name source ref gradle_root mode; do
+            [ -z "${name:-}" ] && continue
+            case "$name" in \#*) continue ;; esac
+            process_project "$name" "$source" "$ref" "$gradle_root" "$mode"
+        done < "$PROJECTS_TSV"
+    fi
     fetch_extras
     materialize_module_urls
     write_checksums
