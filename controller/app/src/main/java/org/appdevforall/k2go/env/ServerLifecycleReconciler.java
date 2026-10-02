@@ -229,14 +229,25 @@ public final class ServerLifecycleReconciler {
      * Doze and re-drives a flap), down otherwise (deep ops run their own foreground services; a user-off /
      * uninstalled box needs no keeper). Edge-detected via the service's own {@link WatchdogService#isRunning}
      * state — no reconciler-side flag — so it is safe to call on every reconcile and self-corrects a
-     * START_STICKY-revived service. At targetSdk 28 the app may start a foreground service from the
-     * background (the API-31 restriction does not apply); revisit if the targetSdk is raised.
+     * START_STICKY-revived service. At targetSdk 31+ a foreground service cannot start from the background
+     * unless the app is exempt (the battery-optimization allowlist the wizard requests). When it is not,
+     * the OS throws ForegroundServiceStartNotAllowedException, so the body skips the promotion this tick:
+     * the 3s tick is the retry, and the next foreground or exempt tick promotes it. The box is protected
+     * whenever the app is visible or exempt.
+     * https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start
      */
     private void promoteOrTeardownWatchdog(Context ctx, boolean desiredUp) {
         Context app = ctx.getApplicationContext();
         if (desiredUp && !WatchdogService.isRunning()) {
-            ContextCompat.startForegroundService(app,
-                    new Intent(app, WatchdogService.class).setAction(WatchdogService.ACTION_START));
+            try {
+                ContextCompat.startForegroundService(app,
+                        new Intent(app, WatchdogService.class).setAction(WatchdogService.ACTION_START));
+            } catch (IllegalStateException e) {
+                // K2GO-439: ForegroundServiceStartNotAllowedException (an IllegalStateException subclass)
+                // when a background start is not allowed at targetSdk 31+. No new state: isRunning stays
+                // false, so the next foreground/exempt tick re-promotes. Never crash the reconcile tick.
+                Log.w(TAG, "watchdog promotion deferred: background FGS start not allowed (" + e + ")");
+            }
         } else if (!desiredUp && WatchdogService.isRunning()) {
             app.startService(new Intent(app, WatchdogService.class).setAction(WatchdogService.ACTION_STOP));
         }
