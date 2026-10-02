@@ -799,7 +799,7 @@
     <string name="k2go_connect_starting_hotspot">Etkin nokta başlatılıyor…</string>
     <string name="k2go_connect_resolving_address">Erişim noktası adresi bulunuyor…</string>
     <string name="k2go_connect_hotspot_failed">Etkin nokta başlatılamadı</string>
-    <string name="k2go_connect_enable_location">Konum iznini açın, sonra tekrar deneyin.</string>
+    <string name="k2go_connect_enable_location">Wi-Fi\'yi açın ve izni verin, ardından tekrar deneyin.</string>
     <string name="k2go_connect_no_wifi">Bir Wi-Fi ağında değilsiniz</string>
     <string name="k2go_connect_join_wifi">Aynı Wi-Fi\'ye ya da kitaplığın hotspot\'una bağlanın.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

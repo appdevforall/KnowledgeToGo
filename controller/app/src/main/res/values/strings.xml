@@ -966,7 +966,7 @@
     <!-- K2GO-375: shown under the Open-library QR while the hotspot AP interface has no IP yet. -->
     <string name="k2go_connect_resolving_address">Finding hotspot address…</string>
     <string name="k2go_connect_hotspot_failed">Couldn\'t start the hotspot</string>
-    <string name="k2go_connect_enable_location">Enable the Location permission, then try again.</string>
+    <string name="k2go_connect_enable_location">Turn on Wi-Fi and grant the permission, then try again.</string>
     <string name="k2go_connect_no_wifi">Not on a Wi-Fi network</string>
     <string name="k2go_connect_join_wifi">Join the same Wi-Fi or connect to the library\'s hotspot.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

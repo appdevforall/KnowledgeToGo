@@ -876,7 +876,7 @@
     <string name="k2go_connect_starting_hotspot">हॉटस्पॉट शुरू हो रहा है…</string>
     <string name="k2go_connect_resolving_address">हॉटस्पॉट पता ढूँढ रहे हैं…</string>
     <string name="k2go_connect_hotspot_failed">हॉटस्पॉट शुरू नहीं हो सका</string>
-    <string name="k2go_connect_enable_location">स्थान अनुमति चालू करें, फिर पुनः प्रयास करें।</string>
+    <string name="k2go_connect_enable_location">Wi-Fi चालू करें और अनुमति दें, फिर पुनः प्रयास करें।</string>
     <string name="k2go_connect_no_wifi">किसी Wi-Fi नेटवर्क पर नहीं</string>
     <string name="k2go_connect_join_wifi">उसी Wi-Fi से या लाइब्रेरी के हॉटस्पॉट से जुड़ें।</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

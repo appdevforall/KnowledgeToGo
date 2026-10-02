@@ -806,7 +806,7 @@
     <string name="k2go_connect_starting_hotspot">Memulai hotspot…</string>
     <string name="k2go_connect_resolving_address">Menemukan alamat hotspot…</string>
     <string name="k2go_connect_hotspot_failed">Tidak bisa memulai hotspot</string>
-    <string name="k2go_connect_enable_location">Aktifkan izin Lokasi, lalu coba lagi.</string>
+    <string name="k2go_connect_enable_location">Aktifkan Wi-Fi dan berikan izinnya, lalu coba lagi.</string>
     <string name="k2go_connect_no_wifi">Tidak terhubung ke jaringan Wi-Fi</string>
     <string name="k2go_connect_join_wifi">Sambungkan ke Wi-Fi yang sama atau ke hotspot pustaka.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>

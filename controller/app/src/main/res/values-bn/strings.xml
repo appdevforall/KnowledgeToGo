@@ -812,7 +812,7 @@
     <string name="k2go_connect_starting_hotspot">হটস্পট শুরু হচ্ছে…</string>
     <string name="k2go_connect_resolving_address">হটস্পট ঠিকানা খোঁজা হচ্ছে…</string>
     <string name="k2go_connect_hotspot_failed">হটস্পট শুরু করা যায়নি</string>
-    <string name="k2go_connect_enable_location">অবস্থান অনুমতি চালু করুন, তারপর আবার চেষ্টা করুন।</string>
+    <string name="k2go_connect_enable_location">Wi-Fi চালু করুন এবং অনুমতি দিন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_connect_no_wifi">কোনো Wi-Fi নেটওয়ার্কে নেই</string>
     <string name="k2go_connect_join_wifi">একই Wi-Fi-তে বা লাইব্রেরির হটস্পটে যুক্ত হন।</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>
