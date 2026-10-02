@@ -1382,4 +1382,14 @@
     <string name="k2go_dep_suggest_title">Διαθέσιμη ενημέρωση dashboard</string>
     <string name="k2go_dep_suggest_msg">Συνιστάται να ενημερώσετε πρώτα το dashboard ώστε οι νέες λειτουργίες της μονάδας να λειτουργούν σωστά.</string>
     <string name="k2go_dep_install_anyway">Εγκατάσταση ούτως ή άλλως</string>
+    <string name="k2go_mod_code_addons_sub">Πρόσθετα, πρότυπα και αποσπάσματα για τον επεξεργαστή</string>
+    <string name="k2go_mod_code_addons_desc">Μια συλλογή προσθέτων εκτός σύνδεσης για το Code on the Go: πρόσθετα, πρότυπα, αποσπάσματα και ενέργειες κώδικα. Περιηγηθείτε, φιλτράρετε και κατεβάστε τα χωρίς σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_card_code_addons">Πρόσθετα</string>
+    <string name="k2go_code_addons_update">Ενημέρωση προσθέτων</string>
+    <string name="k2go_code_addons_updating">Ενημέρωση προσθέτων...</string>
+    <string name="k2go_code_addons_update_cancelling">Ακύρωση...</string>
+    <string name="k2go_code_addons_update_cancelled">Η ενημέρωση προσθέτων ακυρώθηκε</string>
+    <string name="k2go_code_addons_update_done">Τα πρόσθετα ενημερώθηκαν</string>
+    <string name="k2go_code_addons_update_failed">Δεν ήταν δυνατή η ενημέρωση των προσθέτων</string>
+    <string name="k2go_code_addons_update_some_failed">Ορισμένα πρόσθετα δεν ήταν δυνατό να ενημερωθούν</string>
 </resources>

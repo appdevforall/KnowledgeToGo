@@ -1385,4 +1385,14 @@
     <string name="k2go_dep_suggest_title">Dostepna jest aktualizacja dashboardu</string>
     <string name="k2go_dep_suggest_msg">Zalecane jest najpierw zaktualizowanie dashboardu, aby nowe funkcje modulu dzialaly poprawnie.</string>
     <string name="k2go_dep_install_anyway">Zainstaluj mimo to</string>
+    <string name="k2go_mod_code_addons_sub">Wtyczki, szablony i fragmenty dla edytora</string>
+    <string name="k2go_mod_code_addons_desc">Galeria offline dodatków do Code on the Go: wtyczki, szablony, fragmenty i akcje kodu. Przeglądaj, filtruj i pobieraj je bez połączenia z internetem.</string>
+    <string name="k2go_card_code_addons">Dodatki</string>
+    <string name="k2go_code_addons_update">Zaktualizuj dodatki</string>
+    <string name="k2go_code_addons_updating">Aktualizowanie dodatków...</string>
+    <string name="k2go_code_addons_update_cancelling">Anulowanie...</string>
+    <string name="k2go_code_addons_update_cancelled">Anulowano aktualizację dodatków</string>
+    <string name="k2go_code_addons_update_done">Zaktualizowano dodatki</string>
+    <string name="k2go_code_addons_update_failed">Nie można zaktualizować dodatków</string>
+    <string name="k2go_code_addons_update_some_failed">Niektórych dodatków nie udało się zaktualizować</string>
 </resources>

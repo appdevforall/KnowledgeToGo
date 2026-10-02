@@ -1382,4 +1382,14 @@
     <string name="k2go_dep_suggest_title">Налична е актуализация на dashboard</string>
     <string name="k2go_dep_suggest_msg">Препоръчва се първо да обновите dashboard, за да работят правилно новите функции на модула.</string>
     <string name="k2go_dep_install_anyway">Инсталирай въпреки това</string>
+    <string name="k2go_mod_code_addons_sub">Добавки, шаблони и фрагменти за редактора</string>
+    <string name="k2go_mod_code_addons_desc">Офлайн галерия с добавки за Code on the Go: добавки, шаблони, фрагменти и действия с код. Разглеждайте, филтрирайте и изтегляйте без интернет връзка.</string>
+    <string name="k2go_card_code_addons">Добавки</string>
+    <string name="k2go_code_addons_update">Актуализиране на добавките</string>
+    <string name="k2go_code_addons_updating">Актуализиране на добавките...</string>
+    <string name="k2go_code_addons_update_cancelling">Отказване...</string>
+    <string name="k2go_code_addons_update_cancelled">Актуализирането на добавките е отменено</string>
+    <string name="k2go_code_addons_update_done">Добавките са актуализирани</string>
+    <string name="k2go_code_addons_update_failed">Добавките не могат да бъдат актуализирани</string>
+    <string name="k2go_code_addons_update_some_failed">Някои добавки не можаха да бъдат актуализирани</string>
 </resources>

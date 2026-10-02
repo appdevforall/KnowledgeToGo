@@ -27,7 +27,8 @@ import org.appdevforall.k2go.system.data.PendingContent;
  * (Lottie) that flips to OPEN once the server is reachable.
  * Phase 2 = runtime gate. Content cards, wizard and Step-2 land in later phases.
  */
-public class LibraryActivity extends AppCompatActivity implements ServerController.Host {
+public class LibraryActivity extends AppCompatActivity
+        implements ServerController.Host, org.appdevforall.k2go.ui.EdgeToEdge.SelfManaged {
 
     private static final String TAG = "K2Go-Library";
     private static final long GATE_SAFETY_MS = 25000L;
@@ -131,6 +132,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
+        // K2GO-439: targetSdk 35 forces edge-to-edge. Pad only the TOP of the fragment content for the
+        // status bar; the Material BottomNavigationView and NavigationRailView inset THEMSELVES for the
+        // navigation bar by default, so padding the container's bottom too would double the inset (a gap
+        // under the nav). The boot-gate overlay is a sibling and stays full-screen.
+        org.appdevforall.k2go.ui.EdgeToEdge.padTop(findViewById(R.id.k2go_nav_host));
+        // K2GO-439: the install overlay is a sibling of the content container (not inside it), so inset
+        // its bottom too, else its controls draw under the navigation bar during install.
+        org.appdevforall.k2go.ui.EdgeToEdge.padBottom(findViewById(R.id.k2go_install_progress));
         NavigationBarView.OnItemSelectedListener navListener = item -> {
             if (!navSyncing) {
                 currentTab = item.getItemId();

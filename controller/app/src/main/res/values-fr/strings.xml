@@ -1462,4 +1462,14 @@
     <string name="k2go_dep_suggest_title">Une mise a jour du dashboard est disponible</string>
     <string name="k2go_dep_suggest_msg">Il est recommande de mettre a jour le dashboard d\'abord pour que les nouvelles fonctions du module marchent bien.</string>
     <string name="k2go_dep_install_anyway">Installer quand meme</string>
+    <string name="k2go_mod_code_addons_sub">Plugins, modèles et extraits pour l\'éditeur</string>
+    <string name="k2go_mod_code_addons_desc">Une galerie hors ligne de modules complémentaires pour Code on the Go : plugins, modèles, extraits et actions de code. Parcourez-les, filtrez-les et téléchargez-les sans connexion internet.</string>
+    <string name="k2go_card_code_addons">Modules</string>
+    <string name="k2go_code_addons_update">Mettre à jour les modules</string>
+    <string name="k2go_code_addons_updating">Mise à jour des modules...</string>
+    <string name="k2go_code_addons_update_cancelling">Annulation...</string>
+    <string name="k2go_code_addons_update_cancelled">Mise à jour des modules annulée</string>
+    <string name="k2go_code_addons_update_done">Modules mis à jour</string>
+    <string name="k2go_code_addons_update_failed">Impossible de mettre à jour les modules</string>
+    <string name="k2go_code_addons_update_some_failed">Certains modules n\'ont pas pu être mis à jour</string>
 </resources>

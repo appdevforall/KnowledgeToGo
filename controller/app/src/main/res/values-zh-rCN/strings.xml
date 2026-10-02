@@ -1376,4 +1376,14 @@
     <string name="k2go_dep_suggest_title">有可用的 dashboard 更新</string>
     <string name="k2go_dep_suggest_msg">建议先更新 dashboard，以便模块的新功能正常运行。</string>
     <string name="k2go_dep_install_anyway">仍然安装</string>
+    <string name="k2go_mod_code_addons_sub">编辑器的插件、模板和代码片段</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go 的离线附加组件库：插件、模板、代码片段和代码操作。无需联网即可浏览、筛选和下载。</string>
+    <string name="k2go_card_code_addons">附加组件</string>
+    <string name="k2go_code_addons_update">更新附加组件</string>
+    <string name="k2go_code_addons_updating">正在更新附加组件...</string>
+    <string name="k2go_code_addons_update_cancelling">正在取消...</string>
+    <string name="k2go_code_addons_update_cancelled">已取消附加组件更新</string>
+    <string name="k2go_code_addons_update_done">附加组件已更新</string>
+    <string name="k2go_code_addons_update_failed">无法更新附加组件</string>
+    <string name="k2go_code_addons_update_some_failed">部分附加组件无法更新</string>
 </resources>

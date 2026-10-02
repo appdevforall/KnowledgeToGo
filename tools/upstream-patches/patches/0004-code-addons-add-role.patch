@@ -1,0 +1,554 @@
+Upstream-PR:     not submitted (K2Go-specific: mirrors the Code on the Go add-ons gallery at addons.appdevforall.org)
+Upstream-Status: carried (K2Go-specific role; no upstream iiab/iiab PR planned)
+Applies-to:      roles/code_addons/* (new role); vars/default_vars.yml (code_addons_install/enabled); roles/6-generic-apps/tasks/main.yml (role include)
+Summary:         Add the 'code_addons' role: an offline mirror of the Code on the Go add-ons gallery (plugins, templates, snippets, code-actions), served by nginx at http://box/code-addons. Static files only, no daemon. The role runs files/mirror_addons.py, which follows references from index.html and v1/catalog.json, downloads and sha256-verifies every add-on file, strips the Cloudflare injections, and rewrites the catalog base to the local path. The nginx conf serves .cgp/.tar.gz as application/octet-stream so the client downloads them (not render). Update a deployed box via dash-node. K2GO-99. See controller/docs/ADR-addons-offline-gallery.md.
+
+diff --git a/roles/6-generic-apps/tasks/main.yml b/roles/6-generic-apps/tasks/main.yml
+index 6705477..b940fca 100644
+--- a/roles/6-generic-apps/tasks/main.yml
++++ b/roles/6-generic-apps/tasks/main.yml
+@@ -62,6 +62,11 @@
+     name: wordpress
+   when: wordpress_install and not is_proot
+ 
++- name: CODE_ADDONS
++  include_role:
++    name: code_addons
++  when: code_addons_install is defined and code_addons_install
++
+ - name: Recording STAGE 6 HAS COMPLETED ====================
+   lineinfile:
+     path: "{{ iiab_env_file }}"
+diff --git a/roles/code_addons/defaults/main.yml b/roles/code_addons/defaults/main.yml
+new file mode 100644
+index 0000000..b8568bf
+--- /dev/null
++++ b/roles/code_addons/defaults/main.yml
+@@ -0,0 +1,22 @@
++# code_addons_install: True
++# code_addons_enabled: True
++
++# Offline mirror of the Code on the Go add-ons gallery (plugins, templates,
++# snippets, code-actions). Sibling of the 'code' role: a static site served by
++# NGINX, no daemon, no database. The gallery is browsed at http://box/code-addons
++# and each add-on downloads from http://box/code-addons/dl/<slug>.cgp.
++# Design: controller/docs/ADR-addons-offline-gallery.md (K2GO-99).
++
++# The published gallery to mirror from (the public R2 site). The role follows
++# references from index.html and v1/catalog.json, so it needs no file list: a new
++# add-on or a new shell asset is picked up on the next (re)install.
++# TO UPDATE a deployed box without a re-bake, dash-node re-runs the same mirror
++# in-server; a re-bake or 'runrole --reinstall code_addons' re-mirrors here.
++code_addons_source_base: "https://addons.appdevforall.org"
++
++# Local serve path. The catalog base is rewritten to this, so the gallery works
++# at http://<box-address>/code-addons/ with no host baked into the files.
++code_addons_url: /code-addons
++
++# Served document root (static files, like roles/code).
++code_addons_serve_path: "{{ content_base }}/www/code-addons"   # /library/www/code-addons
+diff --git a/roles/code_addons/files/mirror_addons.py b/roles/code_addons/files/mirror_addons.py
+new file mode 100644
+index 0000000..e1ab8ae
+--- /dev/null
++++ b/roles/code_addons/files/mirror_addons.py
+@@ -0,0 +1,319 @@
++#!/usr/bin/env python3
++"""Mirror the Code on the Go add-ons gallery for offline serving.
++
++Download the published static site (shell, catalog, and per-add-on files) from a
++source base (default: the public R2 site) into a local directory, then rewrite the
++catalog base to the local serve path. The download set is discovered by following
++references from two stable anchors, so it never carries a hardcoded file list:
++
++  - index.html names its own shell assets in its link, script, and img tags.
++  - v1/catalog.json lists every per-add-on file, each with a sha256.
++
++Add-on binaries are verified against the sha256 the catalog carries. The only
++transform is the catalog base rewrite; the shell and the per-add-on pages use
++relative asset paths, so they serve unchanged under the serve path.
++
++This is the shared mechanism for the add-ons offline gallery (K2GO-99). The
++Ansible role calls it at bake time; dash-node re-runs the same steps in-server
++for the online update. See controller/docs/ADR-addons-offline-gallery.md.
++"""
++
++import argparse
++import hashlib
++import json
++import re
++import sys
++import urllib.request
++import urllib.error
++from html.parser import HTMLParser
++from pathlib import Path
++from urllib.parse import urljoin, urlsplit
++
++USER_AGENT = "k2go-addons-mirror/1"
++TIMEOUT = 60
++RETRIES = 3
++
++# Fixed anchors, relative to the source base. Everything else is discovered.
++INDEX = "index.html"
++CATALOG = "v1/catalog.json"
++CATALOG_SCHEMA = "v1/catalog.schema.json"
++
++# Tags whose href/src names a static asset of the site (not a nav link).
++ASSET_TAGS = {"link": "href", "script": "src", "img": "src"}
++
++
++class AssetRefs(HTMLParser):
++    """Collect href/src values from asset tags (link, script, img)."""
++
++    def __init__(self):
++        super().__init__()
++        self.refs = []
++
++    def handle_starttag(self, tag, attrs):
++        attr = ASSET_TAGS.get(tag)
++        if not attr:
++            return
++        for name, value in attrs:
++            if name == attr and value:
++                self.refs.append(value)
++
++
++def is_local_ref(ref):
++    """True for a same-site relative asset path.
++
++    A real site asset is relative with no scheme and no leading slash
++    (for example "assets/app.<hash>.js" or "../assets/styles.<hash>.css").
++    Absolute URLs (fonts, analytics) and root-absolute paths (the Cloudflare
++    "/cdn-cgi/..." injections) are not part of the authored site and are left out.
++    """
++    if not ref:
++        return False
++    if urlsplit(ref).scheme:
++        return False
++    if ref.startswith("/"):
++        return False
++    return True
++
++
++# Cloudflare rewrites the served HTML in ways that are not part of the authored
++# site and must not ship on the box:
++#   - the analytics beacon script (the box does not track anyone),
++#   - the email-decode helper script (a dead "/cdn-cgi/..." reference offline),
++#   - an inline JS-challenge / bot-detection script that loads
++#     "/cdn-cgi/challenge-platform/...",
++#   - the footer mailto, replaced by an obfuscated "/cdn-cgi/l/email-protection"
++#     link, and any visible email replaced by a data-cfemail hex blob.
++# Remove every Cloudflare script block (inline or external) and restore the real
++# emails (Cloudflare encodes an address with a one-byte XOR, so it decodes with
++# no network call). The Google Fonts link is left in: it fails gracefully offline
++# and works when the box is online.
++SCRIPT_BLOCK = re.compile(r'<script\b.*?</script>', re.I | re.S)
++CF_EMAIL_EL = re.compile(
++    r'<(a|span)\b[^>]*\bdata-cfemail="([0-9a-fA-F]+)"[^>]*>.*?</\1>', re.I | re.S)
++CF_EMAIL_HREF = re.compile(r'/cdn-cgi/l/email-protection(?:#([0-9a-fA-F]+))?')
++
++
++def _cf_decode(hex_blob):
++    """Decode a Cloudflare-obfuscated email, or None if it does not decode."""
++    if not hex_blob:
++        return None
++    try:
++        key = int(hex_blob[:2], 16)
++        text = "".join(chr(int(hex_blob[i:i + 2], 16) ^ key)
++                       for i in range(2, len(hex_blob), 2))
++    except ValueError:
++        return None
++    return text if "@" in text else None
++
++
++def clean_html(data):
++    text = data.decode("utf-8", "replace")
++
++    # Drop every Cloudflare script block; keep the site's own scripts.
++    def drop_script(m):
++        block = m.group(0)
++        return "" if ("cdn-cgi" in block or "cloudflareinsights" in block) else block
++
++    text = SCRIPT_BLOCK.sub(drop_script, text)
++
++    # Restore an obfuscated element (visible email), then any leftover href.
++    def element(m):
++        email = _cf_decode(m.group(2))
++        if not email:
++            return m.group(0)
++        if m.group(1).lower() == "a":
++            return f'<a href="mailto:{email}">{email}</a>'
++        return email
++
++    def href(m):
++        email = _cf_decode(m.group(1))
++        return "mailto:" + email if email else m.group(0)
++
++    text = CF_EMAIL_EL.sub(element, text)
++    text = CF_EMAIL_HREF.sub(href, text)
++    return text.encode("utf-8")
++
++
++def fetch(url):
++    last = None
++    for attempt in range(RETRIES):
++        try:
++            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
++            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
++                return r.read()
++        except (urllib.error.URLError, urllib.error.HTTPError, OSError) as e:
++            last = e
++    raise RuntimeError(f"fetch failed after {RETRIES} tries: {url}: {last}")
++
++
++def head(url):
++    """Return (status, content_length) without downloading the body."""
++    req = urllib.request.Request(url, method="HEAD",
++                                 headers={"User-Agent": USER_AGENT})
++    try:
++        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
++            length = r.headers.get("Content-Length")
++            return r.status, int(length) if length is not None else None
++    except urllib.error.HTTPError as e:
++        return e.code, None
++
++
++def asset_refs(html_bytes, page_url):
++    """Absolute URLs of the local assets referenced by one HTML page."""
++    parser = AssetRefs()
++    parser.feed(html_bytes.decode("utf-8", "replace"))
++    out = []
++    for ref in parser.refs:
++        if is_local_ref(ref):
++            out.append(urljoin(page_url, ref))
++    return out
++
++
++def rel_to_base(url, source_base):
++    """Path of url under source_base, or None if it is not under it."""
++    if not url.startswith(source_base + "/"):
++        return None
++    return url[len(source_base) + 1:]
++
++
++def build_plan(source_base, catalog):
++    """The complete set of site-relative paths to mirror.
++
++    Driven only by the two anchors: the catalog (all per-add-on files) and the
++    HTML pages (their own asset tags). No path is hardcoded except the anchors.
++    """
++    paths = {INDEX, CATALOG, CATALOG_SCHEMA}
++    sha = {}            # site-relative path -> expected sha256 (binaries only)
++    size = {}           # site-relative path -> expected size (binaries only)
++
++    # 1) Content from the catalog.
++    pages = []
++    for addon in catalog["addons"]:
++        for url in (addon["download"]["url"], addon["iconUrl"],
++                    addon["iconDarkUrl"], addon["pageUrl"],
++                    addon["sourceTarball"]["url"]):
++            rel = rel_to_base(url, source_base)
++            if rel:
++                paths.add(rel)
++        dl = rel_to_base(addon["download"]["url"], source_base)
++        if dl:
++            sha[dl] = addon["download"]["sha256"]
++            size[dl] = addon["download"]["size"]
++        pg = rel_to_base(addon["pageUrl"], source_base)
++        if pg:
++            pages.append(addon["pageUrl"])
++
++    # 2) Shell assets, discovered by crawling the HTML pages' own tags.
++    for page_url in [f"{source_base}/{INDEX}"] + pages:
++        try:
++            html = fetch(page_url)
++        except RuntimeError:
++            continue
++        for ref in asset_refs(html, page_url):
++            rel = rel_to_base(ref, source_base)
++            if rel:
++                paths.add(rel)
++
++    return paths, sha, size
++
++
++def sha256_of(data):
++    h = hashlib.sha256()
++    h.update(data)
++    return h.hexdigest()
++
++
++def mirror(source_base, serve_base, out, limit_large=0, verbose=True):
++    source_base = source_base.rstrip("/")
++    serve_base = serve_base.rstrip("/")
++    out = Path(out)
++    out.mkdir(parents=True, exist_ok=True)
++
++    catalog = json.loads(fetch(f"{source_base}/{CATALOG}"))
++    paths, sha, size = build_plan(source_base, catalog)
++    if verbose:
++        print(f"plan: {len(paths)} files, {len(sha)} verified binaries, "
++              f"{len(catalog['addons'])} add-ons")
++
++    downloaded = headed = failed = 0
++    for rel in sorted(paths):
++        url = f"{source_base}/{rel}"
++        dest = out / rel
++        dest.parent.mkdir(parents=True, exist_ok=True)
++        expected = size.get(rel)
++
++        # In test runs, HEAD the big binaries instead of pulling the body.
++        if limit_large and expected and expected > limit_large:
++            st, length = head(url)
++            ok = st == 200 and (length == expected or length is None)
++            headed += 1
++            if verbose:
++                mark = "ok" if ok else f"MISMATCH(status={st},len={length})"
++                print(f"  HEAD {rel} ({expected} B): {mark}")
++            if not ok:
++                failed += 1
++            continue
++
++        try:
++            data = fetch(url)
++        except RuntimeError as e:
++            failed += 1
++            print(f"  FAIL {rel}: {e}", file=sys.stderr)
++            continue
++
++        if rel in sha:
++            got = sha256_of(data)
++            if got != sha[rel]:
++                failed += 1
++                print(f"  SHA MISMATCH {rel}: got {got[:12]} "
++                      f"want {sha[rel][:12]}", file=sys.stderr)
++                continue
++            if size.get(rel) is not None and len(data) != size[rel]:
++                failed += 1
++                print(f"  SIZE MISMATCH {rel}: got {len(data)} "
++                      f"want {size[rel]}", file=sys.stderr)
++                continue
++
++        if rel.endswith(".html"):
++            data = clean_html(data)
++        dest.write_bytes(data)
++        downloaded += 1
++        if verbose and (downloaded % 10 == 0 or rel in sha):
++            tag = " (verified)" if rel in sha else ""
++            print(f"  GET  {rel} ({len(data)} B){tag}")
++
++    # The one transform: point the catalog at the local serve base.
++    catalog_file = out / CATALOG
++    if catalog_file.exists():
++        text = catalog_file.read_text(encoding="utf-8")
++        rewritten = text.replace(source_base, serve_base)
++        catalog_file.write_text(rewritten, encoding="utf-8")
++        n = text.count(source_base)
++        if verbose:
++            print(f"rewrote catalog base: {source_base} -> {serve_base} "
++                  f"({n} occurrences)")
++
++    print(f"done: {downloaded} downloaded, {headed} head-checked, "
++          f"{failed} failed")
++    return failed == 0
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser(description="Mirror the add-ons gallery offline.")
++    ap.add_argument("--source-base", default="https://addons.appdevforall.org",
++                    help="site to mirror from")
++    ap.add_argument("--serve-base", default="/code-addons",
++                    help="local serve path the catalog is rewritten to")
++    ap.add_argument("--out", required=True, help="output mirror directory")
++    ap.add_argument("--limit-large", type=int, default=0,
++                    help="test only: HEAD files larger than this many bytes "
++                         "instead of downloading them (0 = download all)")
++    ap.add_argument("--quiet", action="store_true")
++    args = ap.parse_args(argv)
++    ok = mirror(args.source_base, args.serve_base, args.out,
++                limit_large=args.limit_large, verbose=not args.quiet)
++    return 0 if ok else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/roles/code_addons/tasks/enable-or-disable.yml b/roles/code_addons/tasks/enable-or-disable.yml
+new file mode 100644
+index 0000000..e8eef9f
+--- /dev/null
++++ b/roles/code_addons/tasks/enable-or-disable.yml
+@@ -0,0 +1,22 @@
++- name: Enable http://box{{ code_addons_url }} via NGINX, by installing {{ nginx_conf_dir }}/code-addons-nginx.conf
++  template:
++    src: code-addons-nginx.conf.j2
++    dest: "{{ nginx_conf_dir }}/code-addons-nginx.conf"    # /etc/nginx/conf.d
++    mode: "0644"
++  when: code_addons_enabled
++
++- name: Disable http://box{{ code_addons_url }} via NGINX, by removing {{ nginx_conf_dir }}/code-addons-nginx.conf
++  file:
++    path: "{{ nginx_conf_dir }}/code-addons-nginx.conf"    # /etc/nginx/conf.d
++    state: absent
++  when: not code_addons_enabled
++
++- name: Reload 'nginx' systemd service (not proot)
++  systemd:
++    name: nginx
++    state: reloaded
++  when: not is_proot
++
++- name: Restart 'nginx' via pdsm (proot)
++  command: pdsm restart nginx
++  when: is_proot
+diff --git a/roles/code_addons/tasks/install.yml b/roles/code_addons/tasks/install.yml
+new file mode 100644
+index 0000000..3415a61
+--- /dev/null
++++ b/roles/code_addons/tasks/install.yml
+@@ -0,0 +1,45 @@
++- name: Record (initial) disk space used
++  shell: df -B1 --output=used / | tail -1
++  register: df1
++
++
++# Mirror the published gallery into the serve directory. mirror_addons.py follows
++# references from index.html and v1/catalog.json, downloads every add-on file,
++# verifies each .cgp against the catalog sha256, strips the Cloudflare injections
++# from the HTML, and rewrites the catalog base to code_addons_url. It needs
++# network and pulls the full set of .cgp files, so it is SLOW. A non-zero exit
++# (a failed download or a checksum mismatch) fails the role.
++
++- name: Create the serve directory {{ code_addons_serve_path }}
++  file:
++    path: "{{ code_addons_serve_path }}"    # /library/www/code-addons
++    state: directory
++
++- name: Mirror the add-ons gallery from {{ code_addons_source_base }} (downloads .cgp, SLOW)
++  command: >
++    python3 {{ role_path }}/files/mirror_addons.py
++    --source-base {{ code_addons_source_base }}
++    --serve-base {{ code_addons_url }}
++    --out {{ code_addons_serve_path }}
++
++
++- name: Record (final) disk space used
++  shell: df -B1 --output=used / | tail -1
++  register: df2
++
++- name: Add 'code_addons_disk_usage = {{ df2.stdout | int - df1.stdout | int }}' to {{ iiab_ini_file }}
++  ini_file:
++    path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
++    section: code_addons
++    option: code_addons_disk_usage
++    value: "{{ df2.stdout | int - df1.stdout | int }}"
++
++- name: "Set 'code_addons_installed: True'"
++  set_fact:
++    code_addons_installed: True
++
++- name: "Add 'code_addons_installed: True' to {{ iiab_state_file }}"
++  lineinfile:
++    path: "{{ iiab_state_file }}"    # /etc/iiab/iiab_state.yml
++    regexp: '^code_addons_installed'
++    line: 'code_addons_installed: True'
+diff --git a/roles/code_addons/tasks/main.yml b/roles/code_addons/tasks/main.yml
+new file mode 100644
+index 0000000..302ca36
+--- /dev/null
++++ b/roles/code_addons/tasks/main.yml
+@@ -0,0 +1,46 @@
++- name: Assert that "code_addons_install is sameas true" (boolean not string etc)
++  assert:
++    that: code_addons_install is sameas true
++    fail_msg: "PLEASE SET 'code_addons_install: True' e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
++- name: Assert that "code_addons_enabled | type_debug == 'bool'" (boolean not string etc)
++  assert:
++    that: code_addons_enabled | type_debug == 'bool'
++    fail_msg: "PLEASE GIVE VARIABLE 'code_addons_enabled' A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
++    quiet: yes
++
++
++- block:
++
++    - name: Install the add-ons gallery if 'code_addons_installed' not defined, e.g. in {{ iiab_state_file }}
++      include_tasks: install.yml
++      when: code_addons_installed is undefined
++
++    - name: Enable/Disable/Reload NGINX for the add-ons gallery
++      include_tasks: enable-or-disable.yml
++
++    - name: Add 'code_addons' variable values to {{ iiab_ini_file }}
++      ini_file:
++        path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
++        section: code_addons
++        option: "{{ item.option }}"
++        value: "{{ item.value | string }}"
++      with_items:
++        - option: name
++          value: Code on the Go Add-ons
++        - option: description
++          value: 'Offline gallery of Code on the Go add-ons.'
++        - option: code_addons_install
++          value: "{{ code_addons_install }}"
++        - option: code_addons_enabled
++          value: "{{ code_addons_enabled }}"
++        - option: code_addons_url
++          value: "{{ code_addons_url }}"
++
++  rescue:
++
++    - name: 'SEE ERROR ABOVE (skip_role_on_error: {{ skip_role_on_error }})'
++      fail:
++        msg: ""
++      when: not skip_role_on_error
+diff --git a/roles/code_addons/templates/code-addons-nginx.conf.j2 b/roles/code_addons/templates/code-addons-nginx.conf.j2
+new file mode 100644
+index 0000000..ce4569d
+--- /dev/null
++++ b/roles/code_addons/templates/code-addons-nginx.conf.j2
+@@ -0,0 +1,28 @@
++# Static serve for the offline Code on the Go add-ons gallery at http://box{{ code_addons_url }}
++# Installed by roles/code_addons (tasks/enable-or-disable.yml) into nginx conf.d.
++# The gallery uses relative asset paths, so it serves unchanged under this sub-path.
++
++location = {{ code_addons_url }} {
++    return 302 {{ code_addons_url }}/;
++}
++
++location ^~ {{ code_addons_url }}/ {
++    alias {{ code_addons_serve_path }}/;    # /library/www/code-addons/
++    index index.html;
++
++    # K2GO-99: the .cgp (and source .tar.gz) are downloads, not pages. Serve them as a
++    # binary type so the client saves them instead of rendering the archive as text.
++    # nginx's default_type is text/html, which made the WebView render a .cgp as garbage.
++    types {
++        text/html                 html htm;
++        text/css                  css;
++        application/javascript    js;
++        application/json          json;
++        image/png                 png;
++        image/svg+xml             svg;
++        image/x-icon              ico;
++        application/octet-stream  cgp;
++        application/gzip          gz;
++    }
++    default_type application/octet-stream;
++}
+diff --git a/vars/default_vars.yml b/vars/default_vars.yml
+index e27500f..15c65be 100644
+--- a/vars/default_vars.yml
++++ b/vars/default_vars.yml
+@@ -697,6 +697,10 @@ calibre_web_path: calibre  #NEEDS WORK: https://github.com/iiab/iiab/issues/529
+ code_install: False
+ code_enabled: False
+ 
++# Code on the Go add-ons: offline gallery mirrored into /library/www/code-addons (K2GO-99)
++code_addons_install: False
++code_addons_enabled: False
++
+ # A full-featured PBX (for rural telephony, etc) based on Asterisk and FreePBX.
+ # INSTRUCTIONS: https://github.com/iiab/iiab/tree/master/roles/pbx#readme
+ # If using PBX intensively, investigate nginx_high_php_limits further above.

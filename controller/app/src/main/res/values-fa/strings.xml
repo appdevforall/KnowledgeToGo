@@ -1375,4 +1375,14 @@
     <string name="k2go_dep_suggest_title">به‌روزرسانی dashboard در دسترس است</string>
     <string name="k2go_dep_suggest_msg">توصیه می‌شود ابتدا dashboard را به‌روزرسانی کنید تا قابلیت‌های جدید ماژول درست کار کنند.</string>
     <string name="k2go_dep_install_anyway">به هر حال نصب شود</string>
+    <string name="k2go_mod_code_addons_sub">افزونه‌ها، قالب‌ها و قطعه‌کدها برای ویرایشگر</string>
+    <string name="k2go_mod_code_addons_desc">یک گالری آفلاین از افزونه‌ها برای Code on the Go: افزونه‌ها، قالب‌ها، قطعه‌کدها و کنش‌های کد. بدون اتصال به اینترنت آن‌ها را مرور، فیلتر و دانلود کنید.</string>
+    <string name="k2go_card_code_addons">افزونه‌ها</string>
+    <string name="k2go_code_addons_update">به‌روزرسانی افزونه‌ها</string>
+    <string name="k2go_code_addons_updating">در حال به‌روزرسانی افزونه‌ها...</string>
+    <string name="k2go_code_addons_update_cancelling">در حال لغو...</string>
+    <string name="k2go_code_addons_update_cancelled">به‌روزرسانی افزونه‌ها لغو شد</string>
+    <string name="k2go_code_addons_update_done">افزونه‌ها به‌روزرسانی شدند</string>
+    <string name="k2go_code_addons_update_failed">به‌روزرسانی افزونه‌ها ممکن نشد</string>
+    <string name="k2go_code_addons_update_some_failed">برخی افزونه‌ها به‌روزرسانی نشدند</string>
 </resources>

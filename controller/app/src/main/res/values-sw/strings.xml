@@ -1395,4 +1395,14 @@
     <string name="k2go_dep_suggest_title">Sasisho la dashboard linapatikana</string>
     <string name="k2go_dep_suggest_msg">Inashauriwa kusasisha dashboard kwanza ili vipengele vipya vya moduli vifanye kazi vizuri.</string>
     <string name="k2go_dep_install_anyway">Sakinisha hata hivyo</string>
+    <string name="k2go_mod_code_addons_sub">Programu-jalizi, violezo na vijisehemu kwa kihariri</string>
+    <string name="k2go_mod_code_addons_desc">Ghala la nje ya mtandao la viongezi vya Code on the Go: programu-jalizi, violezo, vijisehemu na vitendo vya msimbo. Vinjari, chuja na upakue bila muunganisho wa intaneti.</string>
+    <string name="k2go_card_code_addons">Viongezi</string>
+    <string name="k2go_code_addons_update">Sasisha viongezi</string>
+    <string name="k2go_code_addons_updating">Inasasisha viongezi...</string>
+    <string name="k2go_code_addons_update_cancelling">Inaghairi...</string>
+    <string name="k2go_code_addons_update_cancelled">Usasishaji wa viongezi umeghairiwa</string>
+    <string name="k2go_code_addons_update_done">Viongezi vimesasishwa</string>
+    <string name="k2go_code_addons_update_failed">Imeshindwa kusasisha viongezi</string>
+    <string name="k2go_code_addons_update_some_failed">Baadhi ya viongezi havikuweza kusasishwa</string>
 </resources>

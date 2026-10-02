@@ -72,6 +72,9 @@ public final class ModuleCards {
             new Card("code",       R.string.k2go_mod_code_title,       R.string.k2go_mod_code_title,
                     R.string.k2go_mod_code_sub,       R.string.k2go_mod_code_desc,
                     R.drawable.ic_card_code, false),
+            new Card("code_addons", R.string.k2go_mod_code_addons_title, R.string.k2go_mod_code_addons_title,
+                    R.string.k2go_mod_code_addons_sub, R.string.k2go_mod_code_addons_desc,
+                    R.drawable.ic_card_code, false),   // K2GO-99: offline add-ons gallery (reuses the code icon)
             new Card("forgejo",    R.string.k2go_mod_forgejo_title,    R.string.k2go_mod_forgejo_title,
                     R.string.k2go_mod_forgejo_sub,    R.string.k2go_mod_forgejo_desc,
                     R.drawable.ic_card_forgejo, false),
@@ -133,6 +136,7 @@ public final class ModuleCards {
     public static int sizeLabelRes(String key) {
         if ("maps".equals(key)) return R.string.k2go_mod_maps_size;
         if ("matomo".equals(key)) return R.string.k2go_mod_matomo_size;   // ADFA-4958: curated (~114 MB, incl. MariaDB + tarball)
+        if ("code_addons".equals(key)) return R.string.k2go_mod_code_addons_size;   // K2GO-99: curated (~600 MB of .cgp; grows with the add-on set)
         return 0;
     }
 

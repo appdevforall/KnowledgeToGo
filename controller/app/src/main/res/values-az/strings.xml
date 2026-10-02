@@ -1395,4 +1395,14 @@
     <string name="k2go_dep_suggest_title">Dashboard yenilemesi movcuddur</string>
     <string name="k2go_dep_suggest_msg">Yeni modul funksiyalarinin duzgun islemesi ucun evvelce dashboard-u yenilemek tovsiye olunur.</string>
     <string name="k2go_dep_install_anyway">Yene de qurasdir</string>
+    <string name="k2go_mod_code_addons_sub">Redaktor üçün plaginlər, şablonlar və kod parçaları</string>
+    <string name="k2go_mod_code_addons_desc">Code on the Go üçün oflayn əlavələr qalereyası: plaginlər, şablonlar, kod parçaları və kod əməliyyatları. İnternet bağlantısı olmadan nəzər salın, süzün və endirin.</string>
+    <string name="k2go_card_code_addons">Əlavələr</string>
+    <string name="k2go_code_addons_update">Əlavələri yenilə</string>
+    <string name="k2go_code_addons_updating">Əlavələr yenilənir...</string>
+    <string name="k2go_code_addons_update_cancelling">Ləğv edilir...</string>
+    <string name="k2go_code_addons_update_cancelled">Əlavələrin yenilənməsi ləğv edildi</string>
+    <string name="k2go_code_addons_update_done">Əlavələr yeniləndi</string>
+    <string name="k2go_code_addons_update_failed">Əlavələri yeniləmək mümkün olmadı</string>
+    <string name="k2go_code_addons_update_some_failed">Bəzi əlavələri yeniləmək mümkün olmadı</string>
 </resources>

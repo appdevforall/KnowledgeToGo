@@ -644,6 +644,20 @@ else
       echo "forgejo_enabled: True"  >> "$LOCAL_VARS_DEST"
       ;;
   esac
+
+  # K2GO-99: the code_addons role (offline Code on the Go add-ons gallery) ships install/enabled
+  # False in every vars template (carried via tools/upstream-patches), so enable it for Standard/Full
+  # here, not Basic: the mirror pulls a large set of .cgp files (hundreds of MB).
+  case "$LOCAL_VARS_URL" in
+    *_small*)
+      log "Basic tier: Code on the Go add-ons left off."
+      ;;
+    *)
+      sed -i -E '/^[[:space:]]*code_addons_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
+      echo "code_addons_install: True"  >> "$LOCAL_VARS_DEST"
+      echo "code_addons_enabled: True"  >> "$LOCAL_VARS_DEST"
+      ;;
+  esac
 fi
 
 #-----------------------------
