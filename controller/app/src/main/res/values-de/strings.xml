@@ -1383,6 +1383,7 @@
     <string name="k2go_code_addons_update_cancelling">Wird abgebrochen...</string>
     <string name="k2go_code_addons_update_cancelled">Add-on-Aktualisierung abgebrochen</string>
     <string name="k2go_code_addons_update_done">Add-ons aktualisiert</string>
+    <string name="k2go_code_addons_update_none">Add-ons sind bereits aktuell</string>
     <string name="k2go_code_addons_update_failed">Add-ons konnten nicht aktualisiert werden</string>
     <string name="k2go_code_addons_update_some_failed">Einige Add-ons konnten nicht aktualisiert werden</string>
 </resources>

@@ -1384,6 +1384,7 @@
     <string name="k2go_code_addons_update_cancelling">취소 중...</string>
     <string name="k2go_code_addons_update_cancelled">애드온 업데이트가 취소됨</string>
     <string name="k2go_code_addons_update_done">애드온이 업데이트됨</string>
+    <string name="k2go_code_addons_update_none">애드온이 이미 최신 상태입니다</string>
     <string name="k2go_code_addons_update_failed">애드온을 업데이트할 수 없음</string>
     <string name="k2go_code_addons_update_some_failed">일부 애드온을 업데이트하지 못함</string>
 </resources>

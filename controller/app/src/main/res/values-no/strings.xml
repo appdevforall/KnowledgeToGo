@@ -1393,6 +1393,7 @@
     <string name="k2go_code_addons_update_cancelling">Avbryter...</string>
     <string name="k2go_code_addons_update_cancelled">Oppdatering av tillegg avbrutt</string>
     <string name="k2go_code_addons_update_done">Tillegg oppdatert</string>
+    <string name="k2go_code_addons_update_none">Tilleggene er allerede oppdatert</string>
     <string name="k2go_code_addons_update_failed">Kunne ikke oppdatere tilleggene</string>
     <string name="k2go_code_addons_update_some_failed">Noen tillegg kunne ikke oppdateres</string>
 </resources>

@@ -204,6 +204,10 @@ seed_forgejo() {
 }
 
 # ===== K2GO-422: live repo refresh (non-destructive) =======================
+# Convention (K2GO-441): every K2Go updater reports when nothing changed ("up to date"), not only
+# when it changed something. This refresh logs "refresh up-to-date" per repo (the app shows "All
+# repositories are already up to date"); the add-ons refresh reports it for the whole gallery.
+# See controller/docs/ADR-addons-offline-gallery.md.
 # Refresh the seeded example repos from their upstreams WITHOUT a box stop and
 # WITHOUT ever losing a local commit. Per repo:
 #   up to date : the served branch equals upstream -> nothing to do.

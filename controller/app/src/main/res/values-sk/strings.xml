@@ -1390,6 +1390,7 @@
     <string name="k2go_code_addons_update_cancelling">Ruší sa...</string>
     <string name="k2go_code_addons_update_cancelled">Aktualizácia doplnkov zrušená</string>
     <string name="k2go_code_addons_update_done">Doplnky aktualizované</string>
+    <string name="k2go_code_addons_update_none">Doplnky sú už aktuálne</string>
     <string name="k2go_code_addons_update_failed">Doplnky sa nepodarilo aktualizovať</string>
     <string name="k2go_code_addons_update_some_failed">Niektoré doplnky sa nepodarilo aktualizovať</string>
 </resources>

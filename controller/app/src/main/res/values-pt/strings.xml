@@ -1462,6 +1462,7 @@
     <string name="k2go_code_addons_update_cancelling">Cancelando...</string>
     <string name="k2go_code_addons_update_cancelled">Atualização de complementos cancelada</string>
     <string name="k2go_code_addons_update_done">Complementos atualizados</string>
+    <string name="k2go_code_addons_update_none">Complementos já atualizados</string>
     <string name="k2go_code_addons_update_failed">Não foi possível atualizar os complementos</string>
     <string name="k2go_code_addons_update_some_failed">Alguns complementos não puderam ser atualizados</string>
 </resources>

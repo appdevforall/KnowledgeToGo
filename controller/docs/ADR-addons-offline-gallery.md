@@ -88,6 +88,32 @@ per-architecture branch. The only platform branch is the nginx reload (`systemd 
 `pdsm restart nginx`), inherited from `roles/code`. The role runs identically on proot, systemd,
 ARM64, and AMD64.
 
+### 6. Incremental refresh and the up-to-date convention (K2GO-441)
+
+The deployed-box update does not re-download the gallery every time. `mirror_addons.py` takes
+`--reuse-from` the live served tree and transfers only what changed:
+
+- Short-circuit: it fetches `v1/catalog.json` and, when the base-rewritten published catalog equals
+  the served one, reports `result: up-to-date` and downloads nothing. The wrapper keeps the live
+  gallery (no swap).
+- Reuse: `catalog.json` is the single source of truth, so what changed is read from it, with no local
+  re-hash and no extra requests. The `.cgp` and the source tarball carry a catalog sha256, so an
+  unchanged one (its published sha equals the served catalog's sha) is copied from the served tree.
+  The source tarball is `git ls-files` of the add-on, so it CONTAINS the icon and the page source: an
+  add-on's icon is reused when its tarball sha is unchanged, and its page when the tarball sha AND
+  index.html are both unchanged (the page also carries the shell's hashed-asset chrome). Shell assets
+  have content-hashed names, so a name already in the served tree is identical and is reused.
+
+Cross-cutting convention: every K2Go update mechanism reports when there is nothing to do ("already
+up to date"), not only when it changed something. Forgejo's refresh does this per repo
+(`refresh up-to-date`, surfaced as "All repositories are already up to date"); the add-ons refresh
+does it for the whole gallery. A new updater follows the same pattern.
+
+The mirror script still ships in the rootfs (the role tree), so a change to the mirror algorithm
+reaches a deployed box through a new bake or a reinstall, not through the "Update add-ons" action
+(which only re-runs the script already on the box). Letting dash-node update the update scripts in
+place is a separate, deliberate change (K2GO-440).
+
 ### Filesystem and serving
 
 - Mirror into `{{ content_base }}/www/code-addons` (`/library/www/code-addons`), preserving the

@@ -13,7 +13,7 @@
  *
  *               Contract:
  *                 POST /k2go-api/addons/refresh         -> 202 { state:"running" }
- *                 GET  /k2go-api/addons/refresh/status   -> { state, lines, downloaded, failed }
+ *                 GET  /k2go-api/addons/refresh/status   -> { state, lines, downloaded, reused, failed, upToDate }
  *                 POST /k2go-api/addons/refresh/cancel    -> { state:"cancelled" }
  * ============================================================================
  */
@@ -58,12 +58,17 @@ public final class AddonsRefreshClient {
 
     /** The last status-tail line handed to the listener, so a poll that did not advance stays quiet. */
     private String lastEmitted;
-    private int lastDownloaded = -1, lastFailed = -1;
+    private int lastDownloaded = -1, lastReused = -1, lastFailed = -1;
+    private boolean lastUpToDate = false;
 
     /** Files downloaded in the last refresh; -1 if the box did not report it. */
     public int lastDownloaded() { return lastDownloaded; }
+    /** Files reused unchanged in the last refresh; -1 if the box did not report it (K2GO-441). */
+    public int lastReused() { return lastReused; }
     /** Files the last refresh could not fetch or verify; -1 if the box did not report it. */
     public int lastFailed() { return lastFailed; }
+    /** K2GO-441: true when the published set was unchanged, so the refresh downloaded nothing. */
+    public boolean lastUpToDate() { return lastUpToDate; }
 
     /**
      * Start the refresh if it is not already running, then poll to a terminal state. Each refresh is
@@ -127,7 +132,9 @@ public final class AddonsRefreshClient {
             if (!ok) return null;
             JSONObject j = new JSONObject(text.isEmpty() ? "{}" : text);
             if (j.has("downloaded")) lastDownloaded = j.optInt("downloaded", lastDownloaded);
+            if (j.has("reused")) lastReused = j.optInt("reused", lastReused);
             if (j.has("failed")) lastFailed = j.optInt("failed", lastFailed);
+            if (j.has("upToDate")) lastUpToDate = j.optBoolean("upToDate", lastUpToDate);
             if (l != null) {
                 JSONArray lines = j.optJSONArray("lines");
                 if (lines != null && lines.length() > 0) {
