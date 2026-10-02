@@ -127,6 +127,12 @@ public class WizardActivity extends AppCompatActivity {
         findViewById(R.id.perm_storage).setOnClickListener(v -> requestStorage());
         findViewById(R.id.perm_battery).setOnClickListener(v -> requestBattery());
 
+        // K2GO-442: hide the storage row when the build does not declare the broad-storage permission
+        // (the Play flavor), so the user is never shown a toggle they can never satisfy.
+        if (!org.appdevforall.k2go.permissions.StoragePermission.isRequired(this)) {
+            findViewById(R.id.perm_storage).setVisibility(android.view.View.GONE);
+        }
+
         // set-up-library choices
         findViewById(R.id.setup_download).setOnClickListener(v -> {
             // ADFA-4982: do NOT mark setup complete here — only a real install does (startWizardInstall).
@@ -297,9 +303,15 @@ public class WizardActivity extends AppCompatActivity {
         t.setTextColor(ContextCompat.getColor(this, granted ? R.color.k2go_leaf : R.color.k2go_teal));
     }
     private boolean allPermsGranted() {
-        boolean ok = hasStorage() && hasBattery();
+        boolean ok = storageSatisfied() && hasBattery();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ok = ok && hasNotif();
         return ok;
+    }
+    // K2GO-442: the Play build removes All-files-access, so the grant is unreachable there. Treat storage
+    // as satisfied when the build does not declare the permission, so onboarding is never a dead-end (the
+    // row is hidden too). standard/fdroid still declare it, so it stays a hard requirement for them.
+    private boolean storageSatisfied() {
+        return !org.appdevforall.k2go.permissions.StoragePermission.isRequired(this) || hasStorage();
     }
     private boolean hasNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)

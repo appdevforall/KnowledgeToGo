@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- K2GO-398: the Google Play build drops the OTA self-updater permission. Google Play forbids an
+         app updating itself outside Play and delivers updates itself, so the in-app updater is compiled
+         out here (BuildConfig.OTA_ENABLED=false) and REQUEST_INSTALL_PACKAGES, which only the updater
+         uses, is removed from the merged manifest so Play review never sees it. -->
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
+
+    <!-- K2GO-442: the Play build drops All-files-access (MANAGE_EXTERNAL_STORAGE), which Google Play
+         scrutinizes heavily. The running box works without it (the rootfs is internal); onboarding no
+         longer hard-requires it (StoragePermission.isRequired is false when it is not declared, so the
+         wizard hides the row and does not gate on it). Storage-dependent extras (the /sdcard bind,
+         backup/restore to shared storage) degrade gracefully when it is absent. -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:node="remove" />
+
+    <application>
+        <!-- K2GO-398 / K2GO-402: same Firebase privacy hardening as the standard flavor (this flavor also
+             ships Firebase). Disable Advertising ID / SSAID collection and ad personalization (K2Go may
+             serve minors; operational analytics only). These keys stay in the Google-ful flavors, not in
+             main, so the fdroid build carries no stray Google reference. -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
+    </application>
+</manifest>
