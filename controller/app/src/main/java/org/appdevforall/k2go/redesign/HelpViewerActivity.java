@@ -60,7 +60,8 @@ import java.util.List;
  * add one and for the rootfs-served docs. In-manual links stay in the WebView; external links open
  * in the system browser.
  */
-public class HelpViewerActivity extends AppCompatActivity {
+public class HelpViewerActivity extends AppCompatActivity
+        implements org.appdevforall.k2go.ui.EdgeToEdge.SelfManaged {
 
     private static final String TAG = "K2Go-Help";
     private static final String APPASSETS_HOST = "appassets.androidplatform.net";

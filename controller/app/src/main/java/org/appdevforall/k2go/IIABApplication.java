@@ -71,6 +71,9 @@ public class IIABApplication extends Application {
         AnalyticsClient.with(this).applyConsent();
         AnalyticsClient.with(this).logFirstRunIfNeeded();
         registerActivityLifecycleCallbacks(new ForegroundTracker());
+        // K2GO-439: one owner pads every activity's content by the system-bar insets (targetSdk 35
+        // edge-to-edge); screens that manage their own insets opt out via EdgeToEdge.SelfManaged.
+        registerActivityLifecycleCallbacks(new org.appdevforall.k2go.ui.EdgeToEdgeCallbacks());
     }
 
     /**

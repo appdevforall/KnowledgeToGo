@@ -73,12 +73,13 @@
              the IME. singleTop lets the keep-alive notification's SINGLE_TOP intent reuse the running
              instance. Not exported: launched only in-app (redesign Settings, the terminal's own
              notification PendingIntent). -->
+        <!-- K2GO-439: no adjustResize; the global edge-to-edge handler pads the IME inset (padAllAndIme),
+             so a single mechanism keeps the terminal input above the keyboard. -->
         <activity
             android:name=".TerminalActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:windowSoftInputMode="adjustResize" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
         <activity
             android:name=".PortalActivity"
