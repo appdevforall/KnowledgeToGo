@@ -44,14 +44,21 @@ public final class StoragePermission {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    // K2GO-442: isRequired() is a process constant (the manifest declaration and this device's SDK level
+    // do not change at runtime), so memoize it: the wizard calls it on several onboarding paths and each
+    // uncached call is a PackageManager IPC. This caches an immutable fact, not coordination state.
+    private static volatile Boolean requiredMemo;
+
     /**
      * K2GO-442: true when this build DECLARES the broad-storage permission for the current OS version,
      * so the grant is actually reachable. The Play flavor removes MANAGE_EXTERNAL_STORAGE, so on R+ this
      * returns false there and callers must treat storage as optional: never gate onboarding on a
      * permission the user can never grant. standard/fdroid still declare it, so it stays required for them.
-     * Self-correcting (reads the manifest), so no flavor flag is needed.
+     * Self-correcting (reads the manifest), so no flavor flag is needed. Memoized (see requiredMemo).
      */
     public static boolean isRequired(Context ctx) {
+        Boolean cached = requiredMemo;
+        if (cached != null) return cached;
         String perm = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                 ? Manifest.permission.MANAGE_EXTERNAL_STORAGE
                 : Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -59,15 +66,17 @@ public final class StoragePermission {
             String[] declared = ctx.getPackageManager()
                     .getPackageInfo(ctx.getPackageName(), PackageManager.GET_PERMISSIONS)
                     .requestedPermissions;
+            boolean required = false;
             if (declared != null) {
                 for (String p : declared) {
-                    if (perm.equals(p)) return true;
+                    if (perm.equals(p)) { required = true; break; }
                 }
             }
+            requiredMemo = required;   // cache only a definitive answer
+            return required;
         } catch (PackageManager.NameNotFoundException e) {
-            return true;   // our own package always resolves; fail safe to the existing hard gate
+            return true;   // our own package always resolves; fail safe, do not cache a transient miss
         }
-        return false;
     }
 
     /**
