@@ -1,0 +1,28 @@
+# Static serve for the offline Code on the Go build assets at http://box{{ code_assets_url }}
+# Installed by roles/code_assets (tasks/enable-or-disable.yml) into nginx conf.d.
+# The browse page (index.html) uses inline CSS and an inline icon, so it needs no
+# shell assets. Each build asset is a download, not a page.
+
+location = {{ code_assets_url }} {
+    return 302 {{ code_assets_url }}/;
+}
+
+location ^~ {{ code_assets_url }}/ {
+    alias {{ code_assets_serve_path }}/;    # /library/www/code-assets/
+    index index.html;
+
+    # K2GO-437: the assets (.br, and .zip/.jar/.cgt/.db if a debug set is added
+    # later) are downloads. Serve them as a binary type so the client saves them
+    # instead of rendering the archive as text. The ".md5" sidecars are plain
+    # text. nginx's default_type is text/html, which would render a .br as garbage.
+    types {
+        text/html                 html htm;
+        text/css                  css;
+        application/javascript    js;
+        image/svg+xml             svg;
+        image/png                 png;
+        text/plain                md5;
+        application/octet-stream  br zip jar cgt db;
+    }
+    default_type application/octet-stream;
+}

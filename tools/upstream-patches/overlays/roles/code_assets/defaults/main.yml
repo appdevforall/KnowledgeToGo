@@ -1,0 +1,24 @@
+# code_assets_install: True
+# code_assets_enabled: True
+
+# Offline mirror of the Code on the Go build assets (the build environment:
+# Gradle, the Gradle API, the Android SDK, the terminal bootstrap, the offline
+# Maven repository, the documentation database, and the project templates).
+# Sibling of the 'code_addons' role: a static set of files served by NGINX, no
+# daemon, no database. The set is browsed at http://box/code-assets and each file
+# downloads from http://box/code-assets/<path>.
+# Design: controller/docs/ADR-code-assets-offline-build-env.md (K2GO-437).
+
+# The published assets to mirror from. mirror_code_assets.py reads the committed
+# manifest (files/code_assets_manifest.json) for the file set, so this is only the
+# base URL. The assets live on appdevforall.org/dev-assets today and move to
+# Cloudflare R2 soon; when that happens, change only this default.
+# TO UPDATE a deployed box without a re-bake, dash-node re-runs the same mirror
+# in-server; a re-bake or 'runrole --reinstall code_assets' re-mirrors here.
+code_assets_source_base: "https://appdevforall.org/dev-assets"
+
+# Local serve path. Used for the copy-link URLs the browse page builds.
+code_assets_url: /code-assets
+
+# Served document root (static files, like roles/code_addons).
+code_assets_serve_path: "{{ content_base }}/www/code-assets"   # /library/www/code-assets

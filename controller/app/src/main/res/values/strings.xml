@@ -1563,6 +1563,9 @@
     <string name="dash_code_addons" translatable="false">Code on the Go Add-ons</string>
     <string name="k2go_mod_code_addons_title" translatable="false">Code on the Go Add-ons</string>
     <string name="k2go_mod_code_addons_size" translatable="false">~600 MB</string>
+    <string name="dash_code_assets" translatable="false">Code on the Go build assets</string>
+    <string name="k2go_mod_code_assets_title" translatable="false">Code on the Go build assets</string>
+    <string name="k2go_mod_code_assets_size" translatable="false">~0.8 GB</string>
     <string name="k2go_mod_code_addons_sub">Plugins, templates, and snippets for the editor</string>
     <string name="k2go_mod_code_addons_desc">An offline gallery of add-ons for Code on the Go: plugins, templates, snippets, and code actions. Browse, filter, and download them with no internet connection.</string>
     <string name="k2go_card_code_addons">Add-ons</string>

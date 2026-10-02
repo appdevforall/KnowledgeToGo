@@ -658,6 +658,22 @@ else
       echo "code_addons_enabled: True"  >> "$LOCAL_VARS_DEST"
       ;;
   esac
+
+  # K2GO-437: the code_assets role (offline Code on the Go build environment) ships as an overlay
+  # (tools/upstream-patches/overlays), so the role tree is present on every tier but it has NO
+  # 6-generic-apps include: the main install does not run it. It is run on demand via runrole (the
+  # post-install step below does the bake-time mirror). Enable it for Full only, not Basic/Standard:
+  # the mirror pulls the release build set (~0.8 GB).
+  case "$LOCAL_VARS_URL" in
+    *_large*)
+      sed -i -E '/^[[:space:]]*code_assets_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
+      echo "code_assets_install: True"  >> "$LOCAL_VARS_DEST"
+      echo "code_assets_enabled: True"  >> "$LOCAL_VARS_DEST"
+      ;;
+    *)
+      log "Not Full tier: Code on the Go build assets left off."
+      ;;
+  esac
 fi
 
 #-----------------------------
@@ -685,6 +701,21 @@ fi
 
 bash "$tmp_install" "$@"
 rm -f "$tmp_install"
+
+#-----------------------------
+# K2GO-437: mirror and serve the Code on the Go build assets (Full only). The code_assets role ships
+# as an overlay with no 6-generic-apps include, so the main install does not run it; run it here via
+# runrole (the same path the app uses for on-demand installs). Needs internet, which the bake has.
+# Non-fatal: a failure leaves the box without the build assets but does not fail the bake.
+#-----------------------------
+case "$LOCAL_VARS_URL" in
+  *_large*)
+    if is_role_enabled code_assets; then
+      log "Mirroring Code on the Go build assets (runrole code_assets)..."
+      ( cd /opt/iiab/iiab && ./runrole code_assets ) || warn "code_assets runrole failed; box will lack the build assets"
+    fi
+    ;;
+esac
 
 #-----------------------------
 # Optional changes (controlled via env vars)

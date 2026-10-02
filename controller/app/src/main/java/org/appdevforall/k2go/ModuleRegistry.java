@@ -39,7 +39,8 @@ public class ModuleRegistry {
             new IiabModule("maps", R.string.dash_maps, false, "maps"),         // YAML uses maps_install
             new IiabModule("matomo", R.string.dash_matomo, false, "matomo"),   // YAML uses matomo_install
             new IiabModule("forgejo", R.string.dash_forgejo, false, "forgejo"), // YAML uses forgejo_install
-            new IiabModule("code-addons", R.string.dash_code_addons, false, "code_addons") // K2GO-99: offline Code on the Go add-ons gallery; YAML uses code_addons_install, served at /code-addons
+            new IiabModule("code-addons", R.string.dash_code_addons, false, "code_addons"), // K2GO-99: offline Code on the Go add-ons gallery; YAML uses code_addons_install, served at /code-addons
+            new IiabModule("code-assets", R.string.dash_code_assets, false, "code_assets") // K2GO-437: offline Code on the Go build assets; YAML uses code_assets_install, served at /code-assets
             // ADFA-4842: "dashboard" is intentionally NOT in the roster. It is no longer an
             // application/module — it became the REST API core of K2Go; without it maps FQR and all
             // REST content downloads fail. It is part of the core system, not a user-installable module.

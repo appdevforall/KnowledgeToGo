@@ -27,6 +27,7 @@ public final class DashNodeRequirement {
     public static int[] minFor(@Nullable String moduleKey) {
         if ("forgejo".equals(moduleKey)) return new int[]{1, 3, 7};
         if ("code_addons".equals(moduleKey)) return new int[]{1, 3, 8};   // K2GO-99: needs /addons/refresh
+        if ("code_assets".equals(moduleKey)) return new int[]{1, 3, 10};  // K2GO-437: needs /code-assets/refresh
         return null;
     }
 

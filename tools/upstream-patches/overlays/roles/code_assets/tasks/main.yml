@@ -1,0 +1,46 @@
+- name: Assert that "code_assets_install is sameas true" (boolean not string etc)
+  assert:
+    that: code_assets_install is sameas true
+    fail_msg: "PLEASE SET 'code_assets_install: True' e.g. IN: /etc/iiab/local_vars.yml"
+    quiet: yes
+
+- name: Assert that "code_assets_enabled | type_debug == 'bool'" (boolean not string etc)
+  assert:
+    that: code_assets_enabled | type_debug == 'bool'
+    fail_msg: "PLEASE GIVE VARIABLE 'code_assets_enabled' A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+    quiet: yes
+
+
+- block:
+
+    - name: Install the build assets if 'code_assets_installed' not defined, e.g. in {{ iiab_state_file }}
+      include_tasks: install.yml
+      when: code_assets_installed is undefined
+
+    - name: Enable/Disable/Reload NGINX for the build assets
+      include_tasks: enable-or-disable.yml
+
+    - name: Add 'code_assets' variable values to {{ iiab_ini_file }}
+      ini_file:
+        path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
+        section: code_assets
+        option: "{{ item.option }}"
+        value: "{{ item.value | string }}"
+      with_items:
+        - option: name
+          value: Code on the Go build assets
+        - option: description
+          value: 'Offline Code on the Go build environment (Gradle, SDK, bootstrap, Maven repository).'
+        - option: code_assets_install
+          value: "{{ code_assets_install }}"
+        - option: code_assets_enabled
+          value: "{{ code_assets_enabled }}"
+        - option: code_assets_url
+          value: "{{ code_assets_url }}"
+
+  rescue:
+
+    - name: 'SEE ERROR ABOVE (skip_role_on_error: {{ skip_role_on_error }})'
+      fail:
+        msg: ""
+      when: not skip_role_on_error

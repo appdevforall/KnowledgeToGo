@@ -1,0 +1,22 @@
+- name: Enable http://box{{ code_assets_url }} via NGINX, by installing {{ nginx_conf_dir }}/code-assets-nginx.conf
+  template:
+    src: code-assets-nginx.conf.j2
+    dest: "{{ nginx_conf_dir }}/code-assets-nginx.conf"    # /etc/nginx/conf.d
+    mode: "0644"
+  when: code_assets_enabled
+
+- name: Disable http://box{{ code_assets_url }} via NGINX, by removing {{ nginx_conf_dir }}/code-assets-nginx.conf
+  file:
+    path: "{{ nginx_conf_dir }}/code-assets-nginx.conf"    # /etc/nginx/conf.d
+    state: absent
+  when: not code_assets_enabled
+
+- name: Reload 'nginx' systemd service (not proot)
+  systemd:
+    name: nginx
+    state: reloaded
+  when: not is_proot
+
+- name: Restart 'nginx' via pdsm (proot)
+  command: pdsm restart nginx
+  when: is_proot
