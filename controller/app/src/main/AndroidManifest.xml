@@ -146,35 +146,62 @@
             android:name=".AdbPairingReceiver"
             android:exported="false" />
 
+        <!-- K2GO-439: every specialUse foreground service below declares PROPERTY_SPECIAL_USE_FGS_SUBTYPE.
+             Google Play reviews this value at submission to justify the specialUse type. The work runs on
+             the co-located offline-content box (proot), which no standard foreground type describes. -->
         <service
             android:name=".WatchdogService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the co-located offline-content server process alive while the box runs." />
+        </service>
 
         <service
             android:name=".install.presentation.InstallService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Installs and provisions the offline-content system in the co-located proot container." />
+        </service>
 
         <service
             android:name=".deepop.DeepOpService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Runs offline-content system maintenance (backup, restore, repair) on the co-located box." />
+        </service>
 
         <service
             android:name=".redesign.CloneShareService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Shares the offline-content system to a nearby device over a local-only connection." />
+        </service>
 
         <service
             android:name=".redesign.ZimDownloadService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Downloads offline library content through the co-located server REST engine." />
+        </service>
 
         <service
             android:name=".redesign.BooksDownloadService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Downloads offline library books through the co-located server REST engine." />
+        </service>
 
         <!-- ADFA-5333: runs the LIVE dash-node update in the background (notification only) instead of
              behind a blocking modal. Same shape as the download services above: not exported, and
@@ -182,7 +209,11 @@
         <service
             android:name=".redesign.DashboardRebuildService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Rebuilds the co-located server dashboard node in the background." />
+        </service>
 
         <!-- ADFA-4954: seeds Kolibri channels through the in-server REST job engine. Same shape as
              the ZIM and Books services above: not exported, and specialUse because the work runs
@@ -190,7 +221,11 @@
         <service
             android:name=".kolibri.presentation.KolibriSeedService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Seeds Kolibri channels in the co-located proot through the server REST job engine." />
+        </service>
 
         <!-- K2GO-423: runs the Forgejo seed (admin + org + opted-in repos) as a visible chained step
              after the role installs. Same shape as the seed/download services above: not exported, and
@@ -198,7 +233,11 @@
         <service
             android:name=".forgejo.presentation.ForgejoSeedService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Seeds Forgejo content on the co-located box after the role install." />
+        </service>
 
         <activity
             android:name=".redesign.SetupProgressActivity"
@@ -210,7 +249,11 @@
         <service
             android:name=".TerminalSessionService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the interactive Debian terminal session on the co-located box alive." />
+        </service>
 
         <!-- Lets AppCompat store + reapply the per-app UI language (ADFA-4304). -->
         <service
