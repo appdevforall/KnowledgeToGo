@@ -134,6 +134,15 @@ android {
             isDefault = true
             buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
         }
+        // Google Play build (K2GO-398). Same as standard (Firebase OK, crash reporting default on) but
+        // with the in-app OTA self-updater OFF: Google Play forbids an app updating itself outside Play,
+        // and Play delivers updates. REQUEST_INSTALL_PACKAGES (used only by the OTA updater) is removed in
+        // src/play/AndroidManifest.xml. applicationId is unchanged: this is the same app via the Play channel.
+        play {
+            dimension "distribution"
+            buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
+            buildConfigField "boolean", "OTA_ENABLED", "false"
+        }
         // F-Droid / fully-free build. No Firebase dependency is declared for it (see dependencies), so
         // the AAR cannot link. Analytics is off; crash reporting defaults OFF (opt-in), which fulfils the
         // F-Droid default that K2GO-401 deferred to this recipe.
@@ -144,6 +153,14 @@ android {
             // K2GO-403: no in-app OTA self-updater in the fdroid build (F-Droid forbids self-install).
             buildConfigField "boolean", "OTA_ENABLED", "false"
         }
+    }
+
+    // K2GO-398: "standard" and "play" both ship Firebase Analytics, so they share the one Firebase
+    // bridge (the only class that references the non-free AAR) from src/withFirebase instead of
+    // duplicating it. "fdroid" keeps its own no-op twin in src/fdroid and links no Firebase.
+    sourceSets {
+        standard.java.srcDirs += 'src/withFirebase/java'
+        play.java.srcDirs += 'src/withFirebase/java'
     }
 
     packagingOptions {
@@ -233,7 +250,8 @@ android {
             def shortAbi = abi == null ? "universal" : abi.replace("arm64-", "").replace("armeabi-", "")
             // K2GO-402: two flavors can share versionName+abi+buildType. Disambiguate the fdroid APK
             // with a "-fdroid" marker; keep the standard build's filename unchanged (CI expects it).
-            def flavorMark = variant.flavorName == "fdroid" ? "-fdroid" : ""
+            def flavorMark = variant.flavorName == "fdroid" ? "-fdroid"
+                    : variant.flavorName == "play" ? "-play" : ""
             output.outputFileName = "K2Go-${variant.versionName}${flavorMark}-${shortAbi}-${variant.buildType.name}.apk"
         }
     }
@@ -303,6 +321,10 @@ dependencies {
     // standardImplementation ONLY: the fdroid flavor must not link this non-free AAR (F-Droid).
     standardImplementation platform('com.google.firebase:firebase-bom:33.7.0')
     standardImplementation 'com.google.firebase:firebase-analytics'
+    // K2GO-398: the Play flavor carries the same Firebase as standard (Play allows it; the Data Safety
+    // form must still declare it). firebase-bom aligns versions; firebase-analytics exposes the Java API.
+    playImplementation platform('com.google.firebase:firebase-bom:33.7.0')
+    playImplementation 'com.google.firebase:firebase-analytics'
 
     // Local Module: Our C++ engine (Termux)
     implementation project(':termux-core')
