@@ -1460,6 +1460,7 @@
     <string name="k2go_code_addons_update_cancelling">रद्द किया जा रहा है...</string>
     <string name="k2go_code_addons_update_cancelled">ऐड-ऑन अपडेट रद्द किया गया</string>
     <string name="k2go_code_addons_update_done">ऐड-ऑन अपडेट किए गए</string>
+    <string name="k2go_code_addons_update_none">ऐड-ऑन्स पहले से ही अप टू डेट हैं</string>
     <string name="k2go_code_addons_update_failed">ऐड-ऑन अपडेट नहीं हो सके</string>
     <string name="k2go_code_addons_update_some_failed">कुछ ऐड-ऑन अपडेट नहीं हो सके</string>
 </resources>

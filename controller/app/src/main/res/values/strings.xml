@@ -1571,6 +1571,7 @@
     <string name="k2go_code_addons_update_cancelling">Cancelling...</string>
     <string name="k2go_code_addons_update_cancelled">Add-ons update cancelled</string>
     <string name="k2go_code_addons_update_done">Add-ons updated</string>
+    <string name="k2go_code_addons_update_none">Add-ons already up to date</string>
     <string name="k2go_code_addons_update_failed">Could not update the add-ons</string>
     <string name="k2go_code_addons_update_some_failed">Some add-ons could not be updated</string>
 </resources>

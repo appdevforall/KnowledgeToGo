@@ -1396,6 +1396,7 @@
     <string name="k2go_code_addons_update_cancelling">বাতিল করা হচ্ছে...</string>
     <string name="k2go_code_addons_update_cancelled">অ্যাড-অন আপডেট বাতিল করা হয়েছে</string>
     <string name="k2go_code_addons_update_done">অ্যাড-অন আপডেট করা হয়েছে</string>
+    <string name="k2go_code_addons_update_none">অ্যাড-অনগুলি ইতিমধ্যে হালনাগাদ</string>
     <string name="k2go_code_addons_update_failed">অ্যাড-অন আপডেট করা যায়নি</string>
     <string name="k2go_code_addons_update_some_failed">কিছু অ্যাড-অন আপডেট করা যায়নি</string>
 </resources>

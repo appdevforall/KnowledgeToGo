@@ -47,11 +47,32 @@ trap 'rm -f "$PID" 2>/dev/null' EXIT
   # Mirror into the staging dir. mirror_addons.py follows references from index.html and
   # v1/catalog.json, verifies each .cgp by sha256, strips the Cloudflare injections, and
   # rewrites the catalog base. A non-zero exit means a download or checksum failed.
-  if ! python3 "$MIRROR" --out "$STAGE"; then
+  # K2GO-441: --reuse-from the live tree so only new or changed files download (catalog-driven:
+  # reuse by the catalog sha256, and shell assets by their content-hashed name). The mirror prints
+  # "result: up-to-date" and builds no staging when the published catalog is byte-identical.
+  # Feature-detect the flag: this wrapper lives in /opt/iiab-android and is updated by the
+  # dash-node self-rebuild (git reset --hard origin/main), but the mirror lives in the ansible
+  # rootfs tree and only a full re-bake updates it. So a box can run a NEW wrapper against an
+  # OLD, bake-time mirror that does not know --reuse-from. Pass the flag only when the mirror
+  # supports it; otherwise degrade to a full mirror instead of erroring. (K2GO-440 unifies this.)
+  REUSE=()
+  if [ -d "$SERVE" ] && python3 "$MIRROR" --help 2>/dev/null | grep -q -- '--reuse-from'; then
+    REUSE=(--reuse-from "$SERVE")
+  fi
+  if ! python3 "$MIRROR" --out "$STAGE" "${REUSE[@]}"; then
     echo "code-addons-refresh: mirror failed; live gallery left untouched"
     rm -rf "$STAGE" 2>/dev/null || true
     echo error > "$STATUS" 2>/dev/null || true
     exit 1
+  fi
+
+  # K2GO-441: nothing changed. The mirror downloaded nothing and built no staging, so
+  # there is nothing to swap: keep the live gallery and report done.
+  if grep -q '^result: up-to-date' "$LOG"; then
+    rm -rf "$STAGE" 2>/dev/null || true
+    echo "code-addons-refresh: already up to date; kept the served gallery"
+    echo done > "$STATUS" 2>/dev/null || true
+    exit 0
   fi
 
   # Swap the fresh mirror in. All three paths live under /library/www, so each mv is a

@@ -1383,6 +1383,7 @@
     <string name="k2go_code_addons_update_cancelling">Đang hủy...</string>
     <string name="k2go_code_addons_update_cancelled">Đã hủy cập nhật tiện ích bổ sung</string>
     <string name="k2go_code_addons_update_done">Đã cập nhật tiện ích bổ sung</string>
+    <string name="k2go_code_addons_update_none">Tiện ích đã được cập nhật</string>
     <string name="k2go_code_addons_update_failed">Không thể cập nhật tiện ích bổ sung</string>
     <string name="k2go_code_addons_update_some_failed">Một số tiện ích bổ sung không thể cập nhật</string>
 </resources>

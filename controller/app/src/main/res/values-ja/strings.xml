@@ -1384,6 +1384,7 @@
     <string name="k2go_code_addons_update_cancelling">キャンセルしています...</string>
     <string name="k2go_code_addons_update_cancelled">アドオンの更新をキャンセルしました</string>
     <string name="k2go_code_addons_update_done">アドオンを更新しました</string>
+    <string name="k2go_code_addons_update_none">アドオンは既に最新です</string>
     <string name="k2go_code_addons_update_failed">アドオンを更新できませんでした</string>
     <string name="k2go_code_addons_update_some_failed">一部のアドオンを更新できませんでした</string>
 </resources>

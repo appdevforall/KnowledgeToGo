@@ -1403,6 +1403,7 @@
     <string name="k2go_code_addons_update_cancelling">Ləğv edilir...</string>
     <string name="k2go_code_addons_update_cancelled">Əlavələrin yenilənməsi ləğv edildi</string>
     <string name="k2go_code_addons_update_done">Əlavələr yeniləndi</string>
+    <string name="k2go_code_addons_update_none">Əlavələr artıq günceldir</string>
     <string name="k2go_code_addons_update_failed">Əlavələri yeniləmək mümkün olmadı</string>
     <string name="k2go_code_addons_update_some_failed">Bəzi əlavələri yeniləmək mümkün olmadı</string>
 </resources>

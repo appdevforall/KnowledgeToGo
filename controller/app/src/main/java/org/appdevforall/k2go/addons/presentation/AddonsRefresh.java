@@ -128,20 +128,24 @@ public final class AddonsRefresh {
                 main.post(() -> { if (liveLine.isAttachedToWindow()) liveLine.setText(shown); });
             });
             final int failed = client.lastFailed();
+            final boolean upToDate = client.lastUpToDate();
             main.post(() -> {
                 if (!trigger.isAttachedToWindow()) return;
                 parent.removeView(progress);
                 trigger.setEnabled(true);
-                Snackbars.make(trigger, ctx.getString(messageFor(r, failed))).show();
+                Snackbars.make(trigger, ctx.getString(messageFor(r, failed, upToDate))).show();
             });
         });
     }
 
     /** Map the refresh outcome to a user message covering every state. */
-    private static int messageFor(AddonsRefreshClient.Result r, int failed) {
+    private static int messageFor(AddonsRefreshClient.Result r, int failed, boolean upToDate) {
         if (r == AddonsRefreshClient.Result.CANCELLED) return R.string.k2go_code_addons_update_cancelled;
         if (r != AddonsRefreshClient.Result.DONE) return R.string.k2go_code_addons_update_failed;   // box unreachable
         if (failed > 0) return R.string.k2go_code_addons_update_some_failed;   // some files could not be fetched
+        // K2GO-441: the box is the single source for "nothing changed" (result: up-to-date). A box that
+        // does not report it (pre-1.3.9) ran the old full mirror, so "updated" is the correct default.
+        if (upToDate) return R.string.k2go_code_addons_update_none;
         return R.string.k2go_code_addons_update_done;
     }
 }

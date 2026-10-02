@@ -489,15 +489,20 @@ apiRouter.get('/addons/refresh/status', (_req: Request, res: Response): void => 
         if (all.length && all[all.length - 1] === '') all.pop();
         lines = all.slice(-ADDONS_REFRESH_LOG_TAIL);
     } catch { /* no log yet */ }
-    // K2GO-99: mirror_addons.py ends with "done: N downloaded, M head-checked, K failed".
-    // Surface downloaded/failed so the app reports the outcome without parsing the whole log.
+    // K2GO-99 / K2GO-441: mirror_addons.py ends with "done: N downloaded, R reused, K failed"
+    // (an optional ", M head-checked" appears only in test runs), and prints "result: up-to-date"
+    // when the published set was unchanged, so nothing was pulled. Surface the counts plus
+    // up-to-date so the app reports the outcome without parsing the whole log.
     let downloaded = 0;
+    let reused = 0;
     let failed = 0;
+    let upToDate = false;
     for (const l of lines) {
-        const m = l.match(/^done: (\d+) downloaded, \d+ head-checked, (\d+) failed/);
-        if (m) { downloaded = parseInt(m[1], 10); failed = parseInt(m[2], 10); }
+        const m = l.match(/^done: (\d+) downloaded, (\d+) reused(?:, \d+ head-checked)?, (\d+) failed/);
+        if (m) { downloaded = parseInt(m[1], 10); reused = parseInt(m[2], 10); failed = parseInt(m[3], 10); }
+        if (l.startsWith('result: up-to-date')) { upToDate = true; }
     }
-    res.json({ state, lines, downloaded, failed });
+    res.json({ state, lines, downloaded, reused, failed, upToDate });
 });
 
 // Cancel a running refresh. The wrapper runs under setsid (its own process group), so a SIGKILL to
