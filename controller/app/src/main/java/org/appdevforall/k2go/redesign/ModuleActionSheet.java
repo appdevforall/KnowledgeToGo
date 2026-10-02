@@ -231,6 +231,12 @@ public final class ModuleActionSheet {
                             act.getString(R.string.k2go_code_addons_update), Emphasis.ACCENT, null, false,
                             v -> org.appdevforall.k2go.addons.presentation.AddonsRefresh.start(act, v)));
                 }
+                // K2GO-437: an installed build-assets tree offers the same live refresh here.
+                if ("code_assets".equals(key)) {
+                    content.addView(row(ctx, R.drawable.ic_refresh,
+                            act.getString(R.string.k2go_code_assets_update), Emphasis.ACCENT, null, false,
+                            v -> org.appdevforall.k2go.codeassets.presentation.CodeAssetsRefresh.start(act, v)));
+                }
                 break;
             case SCHEDULED: {
                 content.addView(about);

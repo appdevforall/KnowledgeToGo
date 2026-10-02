@@ -113,6 +113,7 @@ public class ModuleDetailFragment extends Fragment {
                 root.findViewById(R.id.k2go_moddet_forgejo_repos);
         final boolean isForgejo = "forgejo".equals(c.key());
         final boolean isCodeAddons = "code_addons".equals(c.key());
+        final boolean isCodeAssets = "code_assets".equals(c.key());
         // K2GO-417: the repos opt-in is an INSTALL-TIME choice, so it is shown ONLY in the installable
         // branch below (default-checked in the layout). Once the module is installed it stays GONE:
         // toggling it would do nothing (roles are not reinstalled from here, and unchecking cannot remove
@@ -205,6 +206,14 @@ public class ModuleDetailFragment extends Fragment {
                         installNowBtn.setText(R.string.k2go_code_addons_update);
                         installNowBtn.setOnClickListener(v ->
                                 org.appdevforall.k2go.addons.presentation.AddonsRefresh.start(requireActivity(), installNowBtn));
+                        installNowBtn.setVisibility(View.VISIBLE);
+                    }
+                    if (isCodeAssets) {
+                        // K2GO-437: an installed build-assets tree offers the same live refresh (re-mirror
+                        // the release build set). Shared flow, like the add-ons update.
+                        installNowBtn.setText(R.string.k2go_code_assets_update);
+                        installNowBtn.setOnClickListener(v ->
+                                org.appdevforall.k2go.codeassets.presentation.CodeAssetsRefresh.start(requireActivity(), installNowBtn));
                         installNowBtn.setVisibility(View.VISIBLE);
                     }
                     return;   // a module cannot be uninstalled or reinstalled here (repos action aside)

@@ -1386,4 +1386,15 @@
     <string name="k2go_code_addons_update_none">A bővítmények már naprakészek</string>
     <string name="k2go_code_addons_update_failed">A kiegészítőket nem sikerült frissíteni</string>
     <string name="k2go_code_addons_update_some_failed">Néhány kiegészítőt nem sikerült frissíteni</string>
+    <string name="k2go_mod_code_assets_sub">Build-környezet az eszközön történő fordításhoz</string>
+    <string name="k2go_mod_code_assets_desc">A Code on the Go offline build-környezete: Gradle, az Android SDK, a terminál indítócsomagja, a Maven tároló, a dokumentációs adatbázis és a projektsablonok. A helyi hálózaton keresztül érhető el, így egy eszköz internet nélkül is beállíthatja a Code on the Go-t.</string>
+    <string name="k2go_card_code_assets">Build-erőforrások</string>
+    <string name="k2go_code_assets_update">Build-erőforrások frissítése</string>
+    <string name="k2go_code_assets_updating">Build-erőforrások frissítése...</string>
+    <string name="k2go_code_assets_update_cancelling">Megszakítás...</string>
+    <string name="k2go_code_assets_update_cancelled">Build-erőforrások frissítése megszakítva</string>
+    <string name="k2go_code_assets_update_done">Build-erőforrások frissítve</string>
+    <string name="k2go_code_assets_update_none">A build-erőforrások már naprakészek</string>
+    <string name="k2go_code_assets_update_failed">A build-erőforrásokat nem sikerült frissíteni</string>
+    <string name="k2go_code_assets_update_some_failed">Néhány build-erőforrást nem sikerült frissíteni</string>
 </resources>

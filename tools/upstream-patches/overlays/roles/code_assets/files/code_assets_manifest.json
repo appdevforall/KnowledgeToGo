@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "note": "Manifest of the Code on the Go build assets to mirror and serve offline (K2GO-437). Single source of truth: mirror_code_assets.py reads it to know what to download, and renders the browse page from the title and description of each entry. 'path' is the file location under both the source base and the local serve base; each file also has a sibling '<path>.md5' used for integrity and change detection. The source base is a role variable (code_assets_source_base), so when the assets move from appdevforall.org/dev-assets to Cloudflare R2 only that default changes, not this file. This serves the RELEASE set (what the shipped Code on the Go consumes); the debug set exists in dev-assets for developer builds and is intentionally not mirrored. Keep this list in step with Code on the Go's app/build.gradle.kts releaseAssets.",
+  "assets": [
+    { "path": "release/gradle-9.6.1-bin.zip.br",   "title": "Gradle 9.6.1",            "category": "Gradle",            "abi": null, "description": "The Gradle build system. Code on the Go runs it on the device to build a project." },
+    { "path": "release/gradle-api-9.6.1.jar.br",    "title": "Gradle API 9.6.1",        "category": "Gradle",            "abi": null, "description": "The Gradle API classes. A project uses them to build Gradle plugins." },
+    { "path": "release/v8/android-sdk.zip.br",      "title": "Android SDK, 64-bit",     "category": "Android SDK",       "abi": "v8", "description": "The Android SDK (platform tools, platform, and build tools) for 64-bit (arm64-v8a) devices." },
+    { "path": "release/v7/android-sdk.zip.br",      "title": "Android SDK, 32-bit",     "category": "Android SDK",       "abi": "v7", "description": "The Android SDK (platform tools, platform, and build tools) for 32-bit (armeabi-v7a) devices." },
+    { "path": "release/v8/bootstrap.zip.br",        "title": "Terminal bootstrap, 64-bit", "category": "Terminal bootstrap", "abi": "v8", "description": "The terminal bootstrap (shell, compilers, and base packages) for 64-bit (arm64-v8a) devices." },
+    { "path": "release/v7/bootstrap.zip.br",        "title": "Terminal bootstrap, 32-bit", "category": "Terminal bootstrap", "abi": "v7", "description": "The terminal bootstrap (shell, compilers, and base packages) for 32-bit (armeabi-v7a) devices." },
+    { "path": "release/localMvnRepository.zip.br",  "title": "Offline Maven repository", "category": "Maven repository", "abi": null, "description": "A prebuilt Maven repository with every build dependency, so a build resolves with no internet." },
+    { "path": "release/documentation.db.br",        "title": "Documentation database",  "category": "Documentation",     "abi": null, "description": "The offline API and language documentation database used by the editor." },
+    { "path": "release/core.cgt.br",                "title": "Project templates",       "category": "Templates",         "abi": null, "description": "The Code on the Go project templates." }
+  ]
+}

@@ -1386,4 +1386,15 @@
     <string name="k2go_code_addons_update_none">Tiện ích đã được cập nhật</string>
     <string name="k2go_code_addons_update_failed">Không thể cập nhật tiện ích bổ sung</string>
     <string name="k2go_code_addons_update_some_failed">Một số tiện ích bổ sung không thể cập nhật</string>
+    <string name="k2go_mod_code_assets_sub">Môi trường build để biên dịch trên thiết bị</string>
+    <string name="k2go_mod_code_assets_desc">Môi trường build ngoại tuyến cho Code on the Go: Gradle, Android SDK, bootstrap terminal, kho lưu trữ Maven, cơ sở dữ liệu tài liệu và các mẫu dự án. Được cung cấp trên mạng cục bộ để một thiết bị có thể thiết lập Code on the Go mà không cần internet.</string>
+    <string name="k2go_card_code_assets">Tài nguyên build</string>
+    <string name="k2go_code_assets_update">Cập nhật tài nguyên build</string>
+    <string name="k2go_code_assets_updating">Đang cập nhật tài nguyên build...</string>
+    <string name="k2go_code_assets_update_cancelling">Đang hủy...</string>
+    <string name="k2go_code_assets_update_cancelled">Đã hủy cập nhật tài nguyên build</string>
+    <string name="k2go_code_assets_update_done">Đã cập nhật tài nguyên build</string>
+    <string name="k2go_code_assets_update_none">Tài nguyên build đã được cập nhật</string>
+    <string name="k2go_code_assets_update_failed">Không thể cập nhật tài nguyên build</string>
+    <string name="k2go_code_assets_update_some_failed">Một số tài nguyên build không thể cập nhật</string>
 </resources>

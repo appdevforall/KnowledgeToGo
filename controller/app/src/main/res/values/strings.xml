@@ -1563,6 +1563,9 @@
     <string name="dash_code_addons" translatable="false">Code on the Go Add-ons</string>
     <string name="k2go_mod_code_addons_title" translatable="false">Code on the Go Add-ons</string>
     <string name="k2go_mod_code_addons_size" translatable="false">~600 MB</string>
+    <string name="dash_code_assets" translatable="false">Code on the Go build assets</string>
+    <string name="k2go_mod_code_assets_title" translatable="false">Code on the Go build assets</string>
+    <string name="k2go_mod_code_assets_size" translatable="false">~0.8 GB</string>
     <string name="k2go_mod_code_addons_sub">Plugins, templates, and snippets for the editor</string>
     <string name="k2go_mod_code_addons_desc">An offline gallery of add-ons for Code on the Go: plugins, templates, snippets, and code actions. Browse, filter, and download them with no internet connection.</string>
     <string name="k2go_card_code_addons">Add-ons</string>
@@ -1574,4 +1577,15 @@
     <string name="k2go_code_addons_update_none">Add-ons already up to date</string>
     <string name="k2go_code_addons_update_failed">Could not update the add-ons</string>
     <string name="k2go_code_addons_update_some_failed">Some add-ons could not be updated</string>
+    <string name="k2go_mod_code_assets_sub">Build environment for on-device compiling</string>
+    <string name="k2go_mod_code_assets_desc">The offline build environment for Code on the Go: Gradle, the Android SDK, the terminal bootstrap, the Maven repository, the documentation database, and the project templates. Served on the local network so a device can set up Code on the Go with no internet.</string>
+    <string name="k2go_card_code_assets">Build assets</string>
+    <string name="k2go_code_assets_update">Update build assets</string>
+    <string name="k2go_code_assets_updating">Updating build assets...</string>
+    <string name="k2go_code_assets_update_cancelling">Cancelling...</string>
+    <string name="k2go_code_assets_update_cancelled">Build-assets update cancelled</string>
+    <string name="k2go_code_assets_update_done">Build assets updated</string>
+    <string name="k2go_code_assets_update_none">Build assets already up to date</string>
+    <string name="k2go_code_assets_update_failed">Could not update the build assets</string>
+    <string name="k2go_code_assets_update_some_failed">Some build assets could not be updated</string>
 </resources>

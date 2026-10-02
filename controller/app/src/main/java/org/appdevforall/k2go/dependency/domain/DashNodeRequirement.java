@@ -27,6 +27,10 @@ public final class DashNodeRequirement {
     public static int[] minFor(@Nullable String moduleKey) {
         if ("forgejo".equals(moduleKey)) return new int[]{1, 3, 7};
         if ("code_addons".equals(moduleKey)) return new int[]{1, 3, 8};   // K2GO-99: needs /addons/refresh
+        // K2GO-437: code_assets install (runrole) and browsing (WebView) do NOT use the dash-node
+        // refresh endpoints; only the "Update build assets" action does, and it degrades gracefully
+        // (a 404 -> "could not update") on an older dash-node. So installing/viewing is NOT gated on
+        // the dash-node version.
         return null;
     }
 

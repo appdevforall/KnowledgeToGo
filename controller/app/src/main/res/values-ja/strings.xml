@@ -1387,4 +1387,15 @@
     <string name="k2go_code_addons_update_none">アドオンは既に最新です</string>
     <string name="k2go_code_addons_update_failed">アドオンを更新できませんでした</string>
     <string name="k2go_code_addons_update_some_failed">一部のアドオンを更新できませんでした</string>
+    <string name="k2go_mod_code_assets_sub">デバイス上でのコンパイルのためのビルド環境</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go 用のオフラインビルド環境：Gradle、Android SDK、ターミナルのブートストラップ、Maven リポジトリ、ドキュメントデータベース、プロジェクトテンプレート。デバイスがインターネットなしで Code on the Go をセットアップできるよう、ローカルネットワークで提供されます。</string>
+    <string name="k2go_card_code_assets">ビルドアセット</string>
+    <string name="k2go_code_assets_update">ビルドアセットを更新</string>
+    <string name="k2go_code_assets_updating">ビルドアセットを更新しています...</string>
+    <string name="k2go_code_assets_update_cancelling">キャンセルしています...</string>
+    <string name="k2go_code_assets_update_cancelled">ビルドアセットの更新をキャンセルしました</string>
+    <string name="k2go_code_assets_update_done">ビルドアセットを更新しました</string>
+    <string name="k2go_code_assets_update_none">ビルドアセットは既に最新です</string>
+    <string name="k2go_code_assets_update_failed">ビルドアセットを更新できませんでした</string>
+    <string name="k2go_code_assets_update_some_failed">一部のビルドアセットを更新できませんでした</string>
 </resources>

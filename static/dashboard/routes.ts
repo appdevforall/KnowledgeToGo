@@ -523,6 +523,80 @@ apiRouter.post('/addons/refresh/cancel', (_req: Request, res: Response): void =>
     res.json({ ok: true, state: 'cancelled' });
 });
 
+// --- Code on the Go build assets refresh (K2GO-437) -------------------------
+// Re-mirror the Code on the Go build assets into /library/www/code-assets LIVE (box up, no
+// runrole). Same detached-script plus status/log pattern as the add-ons refresh. The wrapper
+// mirrors into a staging dir and swaps it in only on success, so a failed or cancelled refresh
+// never replaces the live tree with a half-mirror. The wrapper reuses the role's
+// mirror_code_assets.py, so install (bake) and refresh (live) share one mechanism. Localhost-only.
+const CODE_ASSETS_REFRESH_SCRIPT = '/opt/iiab-android/tools/code-assets-refresh.sh';
+const CODE_ASSETS_REFRESH_STATUS = '/var/run/code-assets-refresh.status';
+const CODE_ASSETS_REFRESH_LOG = '/var/log/code-assets-refresh.log';
+const CODE_ASSETS_REFRESH_PID = '/var/run/code-assets-refresh.pid';
+const CODE_ASSETS_REFRESH_LOG_TAIL = 200;
+
+apiRouter.post('/code-assets/refresh', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(CODE_ASSETS_REFRESH_STATUS, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (running) { res.status(409).json({ error: 'a build-assets refresh is already running' }); return; }
+    if (!fs.existsSync(CODE_ASSETS_REFRESH_SCRIPT)) { res.status(500).json({ error: 'build-assets refresh script not found' }); return; }
+    try {
+        // setsid => own session, so a pdsm restart of dash-node cannot kill the refresh mid-run.
+        const child = spawn('setsid', ['bash', CODE_ASSETS_REFRESH_SCRIPT], {
+            detached: true, stdio: 'ignore', env: { ...process.env },
+        });
+        child.unref();
+        // Mark running synchronously before answering, so an immediate poll cannot read a stale state.
+        try { fs.writeFileSync(CODE_ASSETS_REFRESH_STATUS, 'running'); } catch { /* best effort */ }
+        res.status(202).json({ ok: true, state: 'running' });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not start build-assets refresh' });
+    }
+});
+
+apiRouter.get('/code-assets/refresh/status', (_req: Request, res: Response): void => {
+    res.set('Cache-Control', 'no-store');
+    let state = 'idle';
+    try { state = fs.readFileSync(CODE_ASSETS_REFRESH_STATUS, 'utf8').trim() || 'idle'; } catch { /* no file yet */ }
+    let lines: string[] = [];
+    try {
+        const all = fs.readFileSync(CODE_ASSETS_REFRESH_LOG, 'utf8').split('\n');
+        if (all.length && all[all.length - 1] === '') all.pop();
+        lines = all.slice(-CODE_ASSETS_REFRESH_LOG_TAIL);
+    } catch { /* no log yet */ }
+    // K2GO-437: mirror_code_assets.py ends with "done: N downloaded, R reused, K failed", and prints
+    // "result: up-to-date" when nothing changed. Surface the counts plus up-to-date so the app reports
+    // the outcome without parsing the whole log.
+    let downloaded = 0;
+    let reused = 0;
+    let failed = 0;
+    let upToDate = false;
+    for (const l of lines) {
+        const m = l.match(/^done: (\d+) downloaded, (\d+) reused, (\d+) failed/);
+        if (m) { downloaded = parseInt(m[1], 10); reused = parseInt(m[2], 10); failed = parseInt(m[3], 10); }
+        if (l.startsWith('result: up-to-date')) { upToDate = true; }
+    }
+    res.json({ state, lines, downloaded, reused, failed, upToDate });
+});
+
+// Cancel a running refresh. The wrapper runs under setsid (its own process group), so a SIGKILL to
+// the group (kill -pid) stops the shell and the mirror child. Safe: the live tree is only replaced
+// after a clean run, so a mid-run kill leaves the served tree untouched (the partial staging dir is
+// cleared on the next refresh). No-op if not running.
+apiRouter.post('/code-assets/refresh/cancel', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(CODE_ASSETS_REFRESH_STATUS, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (!running) { res.json({ ok: true, state: 'idle' }); return; }
+    let pid = 0;
+    try { pid = parseInt(fs.readFileSync(CODE_ASSETS_REFRESH_PID, 'utf8').trim(), 10); } catch { /* no pid */ }
+    if (pid > 0) {
+        try { process.kill(-pid, 'SIGKILL'); } catch { /* already gone */ }
+    }
+    // Mark terminal ourselves: the killed wrapper cannot write its own status.
+    try { fs.writeFileSync(CODE_ASSETS_REFRESH_STATUS, 'cancelled'); } catch { /* best effort */ }
+    res.json({ ok: true, state: 'cancelled' });
+});
+
 // Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
 // the app then polls /system/version + RestReadiness until the API is back on the new version.
 // ADFA-5339: an optional { site: true } also refreshes the served landing page in the same run. The

@@ -1406,4 +1406,15 @@
     <string name="k2go_code_addons_update_none">Àwọn àfikún ti wà ní ìmúdójúìwọ̀n tẹ́lẹ̀</string>
     <string name="k2go_code_addons_update_failed">A kò lè ṣe ìmúdójúìwọn àwọn afikún</string>
     <string name="k2go_code_addons_update_some_failed">Àwọn afikún kan kò lè ṣe ìmúdójúìwọn</string>
+    <string name="k2go_mod_code_assets_sub">Àyíká ìkọ́ fún ìṣàkópọ̀ lórí ẹrọ</string>
+    <string name="k2go_mod_code_assets_desc">Àyíká ìkọ́ àìlẹ́rọ-àyélujára fún Code on the Go: Gradle, Android SDK, ìbẹ̀rẹ̀ ẹ̀rọ ìbánisọ̀rọ̀, ibi ìpamọ́ Maven, ibi ìpamọ́ àkọsílẹ̀ ìwé, àti àwọn àwòṣe iṣẹ́ àmúṣẹ. A pèsè rẹ̀ lórí nẹ́tíwọ́kì àdúgbò kí ẹrọ kan lè ṣètò Code on the Go láìsí Íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_card_code_assets">Àwọn ohun èlò ìkọ́</string>
+    <string name="k2go_code_assets_update">Ṣe ìmúdójúìwọn àwọn ohun èlò ìkọ́</string>
+    <string name="k2go_code_assets_updating">Ń ṣe ìmúdójúìwọn àwọn ohun èlò ìkọ́...</string>
+    <string name="k2go_code_assets_update_cancelling">Ń fagilé...</string>
+    <string name="k2go_code_assets_update_cancelled">A fagilé ìmúdójúìwọn àwọn ohun èlò ìkọ́</string>
+    <string name="k2go_code_assets_update_done">A ṣe ìmúdójúìwọn àwọn ohun èlò ìkọ́</string>
+    <string name="k2go_code_assets_update_none">Àwọn ohun èlò ìkọ́ ti wà ní ìmúdójúìwọ̀n tẹ́lẹ̀</string>
+    <string name="k2go_code_assets_update_failed">A kò lè ṣe ìmúdójúìwọn àwọn ohun èlò ìkọ́</string>
+    <string name="k2go_code_assets_update_some_failed">Àwọn ohun èlò ìkọ́ kan kò lè ṣe ìmúdójúìwọn</string>
 </resources>

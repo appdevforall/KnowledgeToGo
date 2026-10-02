@@ -1386,4 +1386,15 @@
     <string name="k2go_code_addons_update_none">افزونه‌ها از قبل به‌روز هستند</string>
     <string name="k2go_code_addons_update_failed">به‌روزرسانی افزونه‌ها ممکن نشد</string>
     <string name="k2go_code_addons_update_some_failed">برخی افزونه‌ها به‌روزرسانی نشدند</string>
+    <string name="k2go_mod_code_assets_sub">محیط ساخت برای کامپایل روی دستگاه</string>
+    <string name="k2go_mod_code_assets_desc">محیط ساخت آفلاین برای Code on the Go: Gradle، Android SDK، راه‌انداز ترمینال، مخزن Maven، پایگاه داده مستندات و قالب‌های پروژه. در شبکه محلی ارائه می‌شود تا یک دستگاه بتواند Code on the Go را بدون اینترنت راه‌اندازی کند.</string>
+    <string name="k2go_card_code_assets">منابع ساخت</string>
+    <string name="k2go_code_assets_update">به‌روزرسانی منابع ساخت</string>
+    <string name="k2go_code_assets_updating">در حال به‌روزرسانی منابع ساخت...</string>
+    <string name="k2go_code_assets_update_cancelling">در حال لغو...</string>
+    <string name="k2go_code_assets_update_cancelled">به‌روزرسانی منابع ساخت لغو شد</string>
+    <string name="k2go_code_assets_update_done">منابع ساخت به‌روزرسانی شدند</string>
+    <string name="k2go_code_assets_update_none">منابع ساخت از قبل به‌روز هستند</string>
+    <string name="k2go_code_assets_update_failed">به‌روزرسانی منابع ساخت ممکن نشد</string>
+    <string name="k2go_code_assets_update_some_failed">برخی منابع ساخت به‌روزرسانی نشدند</string>
 </resources>
