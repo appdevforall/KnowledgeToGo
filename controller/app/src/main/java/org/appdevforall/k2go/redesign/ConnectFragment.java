@@ -141,6 +141,12 @@ public class ConnectFragment extends Fragment {
         super.onResume();
         // ADFA-5150/5312: redraw on the way to the front — a system may have been recovered, or an
         // install may have finished, while the user was away. render() re-reads the shared verdict.
+        // K2GO-439: if the hotspot permission was granted while away (e.g. in Settings), start it now so
+        // the user is not stuck on "Starting...". Only when already granted: do NOT re-launch the request
+        // here, which would re-prompt on every resume (ensureHotspot has no one-shot guard in Connect).
+        if (mode == Mode.HOTSPOT && HotspotPermissions.granted(requireContext())) {
+            ensureHotspot();
+        }
         render();
     }
 
