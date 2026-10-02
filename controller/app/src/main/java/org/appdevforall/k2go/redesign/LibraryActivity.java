@@ -132,10 +132,11 @@ public class LibraryActivity extends AppCompatActivity
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
-        // K2GO-439: targetSdk 35 forces edge-to-edge. Pad the content container (rail + content + bottom
-        // nav) by the system bars so nothing draws under them in either orientation; the boot-gate overlay
-        // is a sibling and stays full-screen. No IME inset here, so the bottom nav does not ride the keyboard.
-        org.appdevforall.k2go.ui.EdgeToEdge.padAll(findViewById(R.id.k2go_content_root));
+        // K2GO-439: targetSdk 35 forces edge-to-edge. Pad only the TOP of the fragment content for the
+        // status bar; the Material BottomNavigationView and NavigationRailView inset THEMSELVES for the
+        // navigation bar by default, so padding the container's bottom too would double the inset (a gap
+        // under the nav). The boot-gate overlay is a sibling and stays full-screen.
+        org.appdevforall.k2go.ui.EdgeToEdge.padTop(findViewById(R.id.k2go_nav_host));
         // K2GO-439: the install overlay is a sibling of the content container (not inside it), so inset
         // its bottom too, else its controls draw under the navigation bar during install.
         org.appdevforall.k2go.ui.EdgeToEdge.padBottom(findViewById(R.id.k2go_install_progress));
