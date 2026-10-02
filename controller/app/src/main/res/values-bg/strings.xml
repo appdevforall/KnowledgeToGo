@@ -1393,4 +1393,15 @@
     <string name="k2go_code_addons_update_none">Добавките вече са актуални</string>
     <string name="k2go_code_addons_update_failed">Добавките не могат да бъдат актуализирани</string>
     <string name="k2go_code_addons_update_some_failed">Някои добавки не можаха да бъдат актуализирани</string>
+    <string name="k2go_mod_code_assets_sub">Среда за компилиране на устройството</string>
+    <string name="k2go_mod_code_assets_desc">Офлайн средата за компилиране за Code on the Go: Gradle, Android SDK, стартовия пакет на терминала, хранилището Maven, базата данни с документация и шаблоните за проекти. Предоставя се по локалната мрежа, за да може устройство да настрои Code on the Go без интернет.</string>
+    <string name="k2go_card_code_assets">Ресурси за компилиране</string>
+    <string name="k2go_code_assets_update">Актуализиране на ресурсите за компилиране</string>
+    <string name="k2go_code_assets_updating">Актуализиране на ресурсите за компилиране...</string>
+    <string name="k2go_code_assets_update_cancelling">Отказване...</string>
+    <string name="k2go_code_assets_update_cancelled">Актуализирането на ресурсите за компилиране е отменено</string>
+    <string name="k2go_code_assets_update_done">Ресурсите за компилиране са актуализирани</string>
+    <string name="k2go_code_assets_update_none">Ресурсите за компилиране вече са актуални</string>
+    <string name="k2go_code_assets_update_failed">Ресурсите за компилиране не могат да бъдат актуализирани</string>
+    <string name="k2go_code_assets_update_some_failed">Някои ресурси за компилиране не можаха да бъдат актуализирани</string>
 </resources>

@@ -1403,4 +1403,15 @@
     <string name="k2go_code_addons_update_none">Priedai jau atnaujinti</string>
     <string name="k2go_code_addons_update_failed">Nepavyko atnaujinti priedų</string>
     <string name="k2go_code_addons_update_some_failed">Kai kurių priedų nepavyko atnaujinti</string>
+    <string name="k2go_mod_code_assets_sub">Kūrimo aplinka kompiliavimui įrenginyje</string>
+    <string name="k2go_mod_code_assets_desc">Neprisijungus veikianti Code on the Go kūrimo aplinka: Gradle, Android SDK, terminalo paleidiklis, Maven saugykla, dokumentacijos duomenų bazė ir projektų šablonai. Teikiama vietiniame tinkle, kad įrenginys galėtų nustatyti Code on the Go be interneto.</string>
+    <string name="k2go_card_code_assets">Kūrimo ištekliai</string>
+    <string name="k2go_code_assets_update">Atnaujinti kūrimo išteklius</string>
+    <string name="k2go_code_assets_updating">Atnaujinami kūrimo ištekliai...</string>
+    <string name="k2go_code_assets_update_cancelling">Atšaukiama...</string>
+    <string name="k2go_code_assets_update_cancelled">Kūrimo išteklių atnaujinimas atšauktas</string>
+    <string name="k2go_code_assets_update_done">Kūrimo ištekliai atnaujinti</string>
+    <string name="k2go_code_assets_update_none">Kūrimo ištekliai jau atnaujinti</string>
+    <string name="k2go_code_assets_update_failed">Nepavyko atnaujinti kūrimo išteklių</string>
+    <string name="k2go_code_assets_update_some_failed">Kai kurių kūrimo išteklių nepavyko atnaujinti</string>
 </resources>

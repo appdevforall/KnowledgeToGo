@@ -1393,4 +1393,15 @@
     <string name="k2go_code_addons_update_none">Τα πρόσθετα είναι ήδη ενημερωμένα</string>
     <string name="k2go_code_addons_update_failed">Δεν ήταν δυνατή η ενημέρωση των προσθέτων</string>
     <string name="k2go_code_addons_update_some_failed">Ορισμένα πρόσθετα δεν ήταν δυνατό να ενημερωθούν</string>
+    <string name="k2go_mod_code_assets_sub">Περιβάλλον δόμησης για μεταγλώττιση στη συσκευή</string>
+    <string name="k2go_mod_code_assets_desc">Το περιβάλλον δόμησης εκτός σύνδεσης για το Code on the Go: Gradle, το Android SDK, η αρχικοποίηση τερματικού, το αποθετήριο Maven, η βάση δεδομένων τεκμηρίωσης και τα πρότυπα έργων. Παρέχεται στο τοπικό δίκτυο ώστε μια συσκευή να μπορεί να ρυθμίσει το Code on the Go χωρίς διαδίκτυο.</string>
+    <string name="k2go_card_code_assets">Πόροι δόμησης</string>
+    <string name="k2go_code_assets_update">Ενημέρωση πόρων δόμησης</string>
+    <string name="k2go_code_assets_updating">Ενημέρωση πόρων δόμησης...</string>
+    <string name="k2go_code_assets_update_cancelling">Ακύρωση...</string>
+    <string name="k2go_code_assets_update_cancelled">Η ενημέρωση πόρων δόμησης ακυρώθηκε</string>
+    <string name="k2go_code_assets_update_done">Οι πόροι δόμησης ενημερώθηκαν</string>
+    <string name="k2go_code_assets_update_none">Οι πόροι δόμησης είναι ήδη ενημερωμένοι</string>
+    <string name="k2go_code_assets_update_failed">Δεν ήταν δυνατή η ενημέρωση των πόρων δόμησης</string>
+    <string name="k2go_code_assets_update_some_failed">Ορισμένοι πόροι δόμησης δεν ήταν δυνατό να ενημερωθούν</string>
 </resources>

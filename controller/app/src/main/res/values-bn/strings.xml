@@ -1399,4 +1399,15 @@
     <string name="k2go_code_addons_update_none">অ্যাড-অনগুলি ইতিমধ্যে হালনাগাদ</string>
     <string name="k2go_code_addons_update_failed">অ্যাড-অন আপডেট করা যায়নি</string>
     <string name="k2go_code_addons_update_some_failed">কিছু অ্যাড-অন আপডেট করা যায়নি</string>
+    <string name="k2go_mod_code_assets_sub">ডিভাইসে কম্পাইল করার জন্য বিল্ড পরিবেশ</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go-এর জন্য অফলাইন বিল্ড পরিবেশ: Gradle, Android SDK, টার্মিনাল বুটস্ট্র্যাপ, Maven সংগ্রহস্থল, ডকুমেন্টেশন ডাটাবেস এবং প্রকল্প টেমপ্লেট। স্থানীয় নেটওয়ার্কে সরবরাহ করা হয় যাতে একটি ডিভাইস ইন্টারনেট ছাড়াই Code on the Go সেটআপ করতে পারে।</string>
+    <string name="k2go_card_code_assets">বিল্ড অ্যাসেট</string>
+    <string name="k2go_code_assets_update">বিল্ড অ্যাসেট আপডেট করুন</string>
+    <string name="k2go_code_assets_updating">বিল্ড অ্যাসেট আপডেট হচ্ছে...</string>
+    <string name="k2go_code_assets_update_cancelling">বাতিল করা হচ্ছে...</string>
+    <string name="k2go_code_assets_update_cancelled">বিল্ড অ্যাসেট আপডেট বাতিল করা হয়েছে</string>
+    <string name="k2go_code_assets_update_done">বিল্ড অ্যাসেট আপডেট করা হয়েছে</string>
+    <string name="k2go_code_assets_update_none">বিল্ড অ্যাসেট ইতিমধ্যে হালনাগাদ</string>
+    <string name="k2go_code_assets_update_failed">বিল্ড অ্যাসেট আপডেট করা যায়নি</string>
+    <string name="k2go_code_assets_update_some_failed">কিছু বিল্ড অ্যাসেট আপডেট করা যায়নি</string>
 </resources>

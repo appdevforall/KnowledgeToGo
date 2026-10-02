@@ -1406,4 +1406,15 @@
     <string name="k2go_code_addons_update_none">ஆட்-ஆன்கள் ஏற்கனவே புதுப்பித்த நிலையில் உள்ளன</string>
     <string name="k2go_code_addons_update_failed">ஆட்-ஆன்களைப் புதுப்பிக்க முடியவில்லை</string>
     <string name="k2go_code_addons_update_some_failed">சில ஆட்-ஆன்களைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="k2go_mod_code_assets_sub">சாதனத்தில் தொகுக்க பில்ட் சூழல்</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go-க்கான ஆஃப்லைன் பில்ட் சூழல்: Gradle, Android SDK, டெர்மினல் பூட்ஸ்ட்ராப், Maven களஞ்சியம், ஆவணப்படுத்தல் தரவுத்தளம் மற்றும் திட்டத் தோற்றங்கள். ஒரு சாதனம் இணையம் இல்லாமல் Code on the Go-ஐ அமைக்க முடியும் வகையில் உள்ளூர் நெட்வொர்க்கில் வழங்கப்படுகிறது.</string>
+    <string name="k2go_card_code_assets">பில்ட் வளங்கள்</string>
+    <string name="k2go_code_assets_update">பில்ட் வளங்களைப் புதுப்பிக்கவும்</string>
+    <string name="k2go_code_assets_updating">பில்ட் வளங்கள் புதுப்பிக்கப்படுகின்றன...</string>
+    <string name="k2go_code_assets_update_cancelling">ரத்து செய்யப்படுகிறது...</string>
+    <string name="k2go_code_assets_update_cancelled">பில்ட் வளங்கள் புதுப்பிப்பு ரத்து செய்யப்பட்டது</string>
+    <string name="k2go_code_assets_update_done">பில்ட் வளங்கள் புதுப்பிக்கப்பட்டன</string>
+    <string name="k2go_code_assets_update_none">பில்ட் வளங்கள் ஏற்கனவே புதுப்பித்த நிலையில் உள்ளன</string>
+    <string name="k2go_code_assets_update_failed">பில்ட் வளங்களைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="k2go_code_assets_update_some_failed">சில பில்ட் வளங்களைப் புதுப்பிக்க முடியவில்லை</string>
 </resources>

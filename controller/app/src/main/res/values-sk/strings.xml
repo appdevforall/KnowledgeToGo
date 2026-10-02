@@ -1393,4 +1393,15 @@
     <string name="k2go_code_addons_update_none">Doplnky sú už aktuálne</string>
     <string name="k2go_code_addons_update_failed">Doplnky sa nepodarilo aktualizovať</string>
     <string name="k2go_code_addons_update_some_failed">Niektoré doplnky sa nepodarilo aktualizovať</string>
+    <string name="k2go_mod_code_assets_sub">Prostredie zostavenia na kompiláciu v zariadení</string>
+    <string name="k2go_mod_code_assets_desc">Offline prostredie zostavenia pre Code on the Go: Gradle, Android SDK, zavádzač terminálu, úložisko Maven, databáza dokumentácie a šablóny projektov. Poskytované v miestnej sieti, aby zariadenie mohlo nastaviť Code on the Go bez internetu.</string>
+    <string name="k2go_card_code_assets">Zdroje zostavenia</string>
+    <string name="k2go_code_assets_update">Aktualizovať zdroje zostavenia</string>
+    <string name="k2go_code_assets_updating">Aktualizácia zdrojov zostavenia...</string>
+    <string name="k2go_code_assets_update_cancelling">Ruší sa...</string>
+    <string name="k2go_code_assets_update_cancelled">Aktualizácia zdrojov zostavenia zrušená</string>
+    <string name="k2go_code_assets_update_done">Zdroje zostavenia aktualizované</string>
+    <string name="k2go_code_assets_update_none">Zdroje zostavenia sú už aktuálne</string>
+    <string name="k2go_code_assets_update_failed">Zdroje zostavenia sa nepodarilo aktualizovať</string>
+    <string name="k2go_code_assets_update_some_failed">Niektoré zdroje zostavenia sa nepodarilo aktualizovať</string>
 </resources>

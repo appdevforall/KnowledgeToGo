@@ -1399,4 +1399,15 @@
     <string name="k2go_code_addons_update_none">ઍડ-ઓન્સ પહેલેથી જ અદ્યતન છે</string>
     <string name="k2go_code_addons_update_failed">એડ-ઓન અપડેટ કરી શકાયા નહીં</string>
     <string name="k2go_code_addons_update_some_failed">કેટલાક એડ-ઓન અપડેટ કરી શકાયા નહીં</string>
+    <string name="k2go_mod_code_assets_sub">ઉપકરણ પર કમ્પાઈલ કરવા માટેનું બિલ્ડ પર્યાવરણ</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go માટેનું ઑફલાઇન બિલ્ડ પર્યાવરણ: Gradle, Android SDK, ટર્મિનલ બૂટસ્ટ્રેપ, Maven રિપોઝિટરી, દસ્તાવેજીકરણ ડેટાબેઝ અને પ્રોજેક્ટ ટેમ્પ્લેટ. સ્થાનિક નેટવર્ક પર પીરસવામાં આવે છે જેથી ઉપકરણ ઇન્ટરનેટ વિના Code on the Go સેટઅપ કરી શકે.</string>
+    <string name="k2go_card_code_assets">બિલ્ડ સંસાધનો</string>
+    <string name="k2go_code_assets_update">બિલ્ડ સંસાધનો અપડેટ કરો</string>
+    <string name="k2go_code_assets_updating">બિલ્ડ સંસાધનો અપડેટ થઈ રહ્યા છે...</string>
+    <string name="k2go_code_assets_update_cancelling">રદ કરી રહ્યું છે...</string>
+    <string name="k2go_code_assets_update_cancelled">બિલ્ડ સંસાધનો અપડેટ રદ કરાયું</string>
+    <string name="k2go_code_assets_update_done">બિલ્ડ સંસાધનો અપડેટ થયા</string>
+    <string name="k2go_code_assets_update_none">બિલ્ડ સંસાધનો પહેલેથી જ અદ્યતન છે</string>
+    <string name="k2go_code_assets_update_failed">બિલ્ડ સંસાધનો અપડેટ કરી શકાયા નહીં</string>
+    <string name="k2go_code_assets_update_some_failed">કેટલાક બિલ્ડ સંસાધનો અપડેટ કરી શકાયા નહીં</string>
 </resources>

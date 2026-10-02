@@ -1462,4 +1462,15 @@
     <string name="k2go_code_addons_update_none">Complementos ya actualizados</string>
     <string name="k2go_code_addons_update_failed">No se pudieron actualizar los complementos</string>
     <string name="k2go_code_addons_update_some_failed">Algunos complementos no se pudieron actualizar</string>
+    <string name="k2go_mod_code_assets_sub">Entorno de compilación para compilar en el dispositivo</string>
+    <string name="k2go_mod_code_assets_desc">El entorno de compilación sin conexión para Code on the Go: Gradle, el Android SDK, el arranque de la terminal, el repositorio Maven, la base de datos de documentación y las plantillas de proyecto. Se sirve en la red local para que un dispositivo pueda configurar Code on the Go sin internet.</string>
+    <string name="k2go_card_code_assets">Recursos de compilación</string>
+    <string name="k2go_code_assets_update">Actualizar recursos de compilación</string>
+    <string name="k2go_code_assets_updating">Actualizando recursos de compilación...</string>
+    <string name="k2go_code_assets_update_cancelling">Cancelando...</string>
+    <string name="k2go_code_assets_update_cancelled">Actualización de recursos de compilación cancelada</string>
+    <string name="k2go_code_assets_update_done">Recursos de compilación actualizados</string>
+    <string name="k2go_code_assets_update_none">Recursos de compilación ya actualizados</string>
+    <string name="k2go_code_assets_update_failed">No se pudieron actualizar los recursos de compilación</string>
+    <string name="k2go_code_assets_update_some_failed">Algunos recursos de compilación no se pudieron actualizar</string>
 </resources>

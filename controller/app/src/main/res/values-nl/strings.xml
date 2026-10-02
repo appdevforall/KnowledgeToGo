@@ -1386,4 +1386,15 @@
     <string name="k2go_code_addons_update_none">Add-ons zijn al up-to-date</string>
     <string name="k2go_code_addons_update_failed">Kan de add-ons niet bijwerken</string>
     <string name="k2go_code_addons_update_some_failed">Sommige add-ons konden niet worden bijgewerkt</string>
+    <string name="k2go_mod_code_assets_sub">Buildomgeving voor compileren op het apparaat</string>
+    <string name="k2go_mod_code_assets_desc">De offline buildomgeving voor Code on the Go: Gradle, de Android SDK, de terminal-bootstrap, de Maven-repository, de documentatiedatabase en de projectsjablonen. Aangeboden op het lokale netwerk zodat een apparaat Code on the Go zonder internet kan instellen.</string>
+    <string name="k2go_card_code_assets">Buildbronnen</string>
+    <string name="k2go_code_assets_update">Buildbronnen bijwerken</string>
+    <string name="k2go_code_assets_updating">Buildbronnen bijwerken...</string>
+    <string name="k2go_code_assets_update_cancelling">Annuleren...</string>
+    <string name="k2go_code_assets_update_cancelled">Bijwerken van buildbronnen geannuleerd</string>
+    <string name="k2go_code_assets_update_done">Buildbronnen bijgewerkt</string>
+    <string name="k2go_code_assets_update_none">Buildbronnen zijn al up-to-date</string>
+    <string name="k2go_code_assets_update_failed">Kan de buildbronnen niet bijwerken</string>
+    <string name="k2go_code_assets_update_some_failed">Sommige buildbronnen konden niet worden bijgewerkt</string>
 </resources>

@@ -1406,4 +1406,15 @@
     <string name="k2go_code_addons_update_none">Viongezi tayari vimesasishwa</string>
     <string name="k2go_code_addons_update_failed">Imeshindwa kusasisha viongezi</string>
     <string name="k2go_code_addons_update_some_failed">Baadhi ya viongezi havikuweza kusasishwa</string>
+    <string name="k2go_mod_code_assets_sub">Mazingira ya ujenzi kwa ujenzi kwenye kifaa</string>
+    <string name="k2go_mod_code_assets_desc">Mazingira ya ujenzi ya nje ya mtandao kwa Code on the Go: Gradle, Android SDK, uanzishaji wa terminali, hazina ya Maven, hifadhidata ya nyaraka, na violezo vya mradi. Hutolewa kwenye mtandao wa ndani ili kifaa kiweze kusanidi Code on the Go bila intaneti.</string>
+    <string name="k2go_card_code_assets">Rasilimali za ujenzi</string>
+    <string name="k2go_code_assets_update">Sasisha rasilimali za ujenzi</string>
+    <string name="k2go_code_assets_updating">Inasasisha rasilimali za ujenzi...</string>
+    <string name="k2go_code_assets_update_cancelling">Inaghairi...</string>
+    <string name="k2go_code_assets_update_cancelled">Usasishaji wa rasilimali za ujenzi umeghairiwa</string>
+    <string name="k2go_code_assets_update_done">Rasilimali za ujenzi zimesasishwa</string>
+    <string name="k2go_code_assets_update_none">Rasilimali za ujenzi tayari zimesasishwa</string>
+    <string name="k2go_code_assets_update_failed">Imeshindwa kusasisha rasilimali za ujenzi</string>
+    <string name="k2go_code_assets_update_some_failed">Baadhi ya rasilimali za ujenzi hazikuweza kusasishwa</string>
 </resources>

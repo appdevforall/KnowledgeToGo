@@ -1387,4 +1387,15 @@
     <string name="k2go_code_addons_update_none">附加组件已是最新</string>
     <string name="k2go_code_addons_update_failed">无法更新附加组件</string>
     <string name="k2go_code_addons_update_some_failed">部分附加组件无法更新</string>
+    <string name="k2go_mod_code_assets_sub">用于在设备上编译的构建环境</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go 的离线构建环境：Gradle、Android SDK、终端引导程序、Maven 仓库、文档数据库和项目模板。通过本地网络提供，让设备无需联网即可设置 Code on the Go。</string>
+    <string name="k2go_card_code_assets">构建资源</string>
+    <string name="k2go_code_assets_update">更新构建资源</string>
+    <string name="k2go_code_assets_updating">正在更新构建资源...</string>
+    <string name="k2go_code_assets_update_cancelling">正在取消...</string>
+    <string name="k2go_code_assets_update_cancelled">已取消构建资源更新</string>
+    <string name="k2go_code_assets_update_done">构建资源已更新</string>
+    <string name="k2go_code_assets_update_none">构建资源已是最新</string>
+    <string name="k2go_code_assets_update_failed">无法更新构建资源</string>
+    <string name="k2go_code_assets_update_some_failed">部分构建资源无法更新</string>
 </resources>

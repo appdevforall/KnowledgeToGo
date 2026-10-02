@@ -1473,4 +1473,15 @@
     <string name="k2go_code_addons_update_none">Modules déjà à jour</string>
     <string name="k2go_code_addons_update_failed">Impossible de mettre à jour les modules</string>
     <string name="k2go_code_addons_update_some_failed">Certains modules n\'ont pas pu être mis à jour</string>
+    <string name="k2go_mod_code_assets_sub">Environnement de compilation pour la compilation sur l\'appareil</string>
+    <string name="k2go_mod_code_assets_desc">L\'environnement de compilation hors ligne pour Code on the Go : Gradle, le Android SDK, l\'amorçage du terminal, le dépôt Maven, la base de données de documentation et les modèles de projet. Fourni sur le réseau local pour qu\'un appareil puisse configurer Code on the Go sans internet.</string>
+    <string name="k2go_card_code_assets">Ressources de compilation</string>
+    <string name="k2go_code_assets_update">Mettre à jour les ressources de compilation</string>
+    <string name="k2go_code_assets_updating">Mise à jour des ressources de compilation...</string>
+    <string name="k2go_code_assets_update_cancelling">Annulation...</string>
+    <string name="k2go_code_assets_update_cancelled">Mise à jour des ressources de compilation annulée</string>
+    <string name="k2go_code_assets_update_done">Ressources de compilation mises à jour</string>
+    <string name="k2go_code_assets_update_none">Ressources de compilation déjà à jour</string>
+    <string name="k2go_code_assets_update_failed">Impossible de mettre à jour les ressources de compilation</string>
+    <string name="k2go_code_assets_update_some_failed">Certaines ressources de compilation n\'ont pas pu être mises à jour</string>
 </resources>

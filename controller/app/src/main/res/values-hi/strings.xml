@@ -1463,4 +1463,15 @@
     <string name="k2go_code_addons_update_none">ऐड-ऑन्स पहले से ही अप टू डेट हैं</string>
     <string name="k2go_code_addons_update_failed">ऐड-ऑन अपडेट नहीं हो सके</string>
     <string name="k2go_code_addons_update_some_failed">कुछ ऐड-ऑन अपडेट नहीं हो सके</string>
+    <string name="k2go_mod_code_assets_sub">डिवाइस पर कंपाइल करने के लिए बिल्ड परिवेश</string>
+    <string name="k2go_mod_code_assets_desc">Code on the Go के लिए ऑफ़लाइन बिल्ड परिवेश: Gradle, Android SDK, टर्मिनल बूटस्ट्रैप, Maven रिपॉज़िटरी, दस्तावेज़ीकरण डेटाबेस और प्रोजेक्ट टेम्पलेट। स्थानीय नेटवर्क पर उपलब्ध कराया जाता है ताकि कोई डिवाइस बिना इंटरनेट के Code on the Go सेटअप कर सके।</string>
+    <string name="k2go_card_code_assets">बिल्ड संसाधन</string>
+    <string name="k2go_code_assets_update">बिल्ड संसाधन अपडेट करें</string>
+    <string name="k2go_code_assets_updating">बिल्ड संसाधन अपडेट हो रहे हैं...</string>
+    <string name="k2go_code_assets_update_cancelling">रद्द किया जा रहा है...</string>
+    <string name="k2go_code_assets_update_cancelled">बिल्ड संसाधन अपडेट रद्द किया गया</string>
+    <string name="k2go_code_assets_update_done">बिल्ड संसाधन अपडेट किए गए</string>
+    <string name="k2go_code_assets_update_none">बिल्ड संसाधन पहले से ही अप टू डेट हैं</string>
+    <string name="k2go_code_assets_update_failed">बिल्ड संसाधन अपडेट नहीं हो सके</string>
+    <string name="k2go_code_assets_update_some_failed">कुछ बिल्ड संसाधन अपडेट नहीं हो सके</string>
 </resources>

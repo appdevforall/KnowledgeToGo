@@ -1462,4 +1462,15 @@
     <string name="k2go_code_addons_update_none">Дополнения уже обновлены</string>
     <string name="k2go_code_addons_update_failed">Не удалось обновить дополнения</string>
     <string name="k2go_code_addons_update_some_failed">Некоторые дополнения не удалось обновить</string>
+    <string name="k2go_mod_code_assets_sub">Среда сборки для компиляции на устройстве</string>
+    <string name="k2go_mod_code_assets_desc">Автономная среда сборки для Code on the Go: Gradle, Android SDK, начальная загрузка терминала, репозиторий Maven, база данных документации и шаблоны проектов. Предоставляется в локальной сети, чтобы устройство могло настроить Code on the Go без интернета.</string>
+    <string name="k2go_card_code_assets">Ресурсы сборки</string>
+    <string name="k2go_code_assets_update">Обновить ресурсы сборки</string>
+    <string name="k2go_code_assets_updating">Обновление ресурсов сборки...</string>
+    <string name="k2go_code_assets_update_cancelling">Отмена...</string>
+    <string name="k2go_code_assets_update_cancelled">Обновление ресурсов сборки отменено</string>
+    <string name="k2go_code_assets_update_done">Ресурсы сборки обновлены</string>
+    <string name="k2go_code_assets_update_none">Ресурсы сборки уже обновлены</string>
+    <string name="k2go_code_assets_update_failed">Не удалось обновить ресурсы сборки</string>
+    <string name="k2go_code_assets_update_some_failed">Некоторые ресурсы сборки не удалось обновить</string>
 </resources>

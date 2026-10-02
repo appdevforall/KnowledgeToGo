@@ -1386,4 +1386,15 @@
     <string name="k2go_code_addons_update_none">الإضافات محدَّثة بالفعل</string>
     <string name="k2go_code_addons_update_failed">تعذّر تحديث الإضافات</string>
     <string name="k2go_code_addons_update_some_failed">تعذّر تحديث بعض الإضافات</string>
+    <string name="k2go_mod_code_assets_sub">بيئة بناء للتجميع على الجهاز</string>
+    <string name="k2go_mod_code_assets_desc">بيئة البناء غير المتصلة بالإنترنت لـ Code on the Go: Gradle وAndroid SDK وتهيئة الطرفية ومستودع Maven وقاعدة بيانات التوثيق وقوالب المشاريع. تُقدَّم عبر الشبكة المحلية حتى يتمكن الجهاز من إعداد Code on the Go دون اتصال بالإنترنت.</string>
+    <string name="k2go_card_code_assets">أصول البناء</string>
+    <string name="k2go_code_assets_update">تحديث أصول البناء</string>
+    <string name="k2go_code_assets_updating">جارٍ تحديث أصول البناء...</string>
+    <string name="k2go_code_assets_update_cancelling">جارٍ الإلغاء...</string>
+    <string name="k2go_code_assets_update_cancelled">تم إلغاء تحديث أصول البناء</string>
+    <string name="k2go_code_assets_update_done">تم تحديث أصول البناء</string>
+    <string name="k2go_code_assets_update_none">أصول البناء محدَّثة بالفعل</string>
+    <string name="k2go_code_assets_update_failed">تعذّر تحديث أصول البناء</string>
+    <string name="k2go_code_assets_update_some_failed">تعذّر تحديث بعض أصول البناء</string>
 </resources>
