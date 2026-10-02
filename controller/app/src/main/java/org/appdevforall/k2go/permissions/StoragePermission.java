@@ -45,6 +45,32 @@ public final class StoragePermission {
     }
 
     /**
+     * K2GO-442: true when this build DECLARES the broad-storage permission for the current OS version,
+     * so the grant is actually reachable. The Play flavor removes MANAGE_EXTERNAL_STORAGE, so on R+ this
+     * returns false there and callers must treat storage as optional: never gate onboarding on a
+     * permission the user can never grant. standard/fdroid still declare it, so it stays required for them.
+     * Self-correcting (reads the manifest), so no flavor flag is needed.
+     */
+    public static boolean isRequired(Context ctx) {
+        String perm = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                ? Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                : Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        try {
+            String[] declared = ctx.getPackageManager()
+                    .getPackageInfo(ctx.getPackageName(), PackageManager.GET_PERMISSIONS)
+                    .requestedPermissions;
+            if (declared != null) {
+                for (String p : declared) {
+                    if (perm.equals(p)) return true;
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return true;   // our own package always resolves; fail safe to the existing hard gate
+        }
+        return false;
+    }
+
+    /**
      * Trigger the correct grant flow for this OS version. No-op if the permission is already held.
      * Use this from a surface that already offers its own "open app settings" escape hatch (e.g. the
      * settings shell's "Manage all" button); the wizard, which has none, should use
