@@ -1,5 +1,12 @@
 # maven-offline (K2GO-437)
 
+> Status: KEPT DEV TOOL, NOT SHIPPED. The offline build path does not use this.
+> Code on the Go already downloads its own offline build environment (Android SDK,
+> terminal bootstrap, Gradle, and a prebuilt localMvnRepository.zip) from
+> appdevforall.org/dev-assets and builds on device with the network disabled, so a
+> separate Maven repository is redundant. This tool is kept under tools/ because it
+> works and is validated: useful if that model changes, or for a desktop offline build.
+
 A download machine. It builds one offline Maven repository that holds every
 dependency the builds need: Knowledge to Go, Code on the Go, and the add-ons.
 A device or a laptop on the K2Go local network then builds those projects with
