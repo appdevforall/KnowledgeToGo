@@ -1117,6 +1117,15 @@ apiRouter.post('/:type/download', (req: Request, res: Response): void => {
         ? body.items
         : Array.isArray(body?.ids) ? body.ids : [];
     if (items.length === 0) { res.status(400).json({ error: 'items (or ids) required' }); return; }
+    // K2GO-443: code-assets stages into one shared tree (/library/www/code-assets.new), unlike kiwix's
+    // independent files, so only one build-assets job may run at a time. The app re-attaches via
+    // start-or-attach; this is the hard guard behind it (two concurrent jobs would corrupt the staging).
+    if (type === 'code-assets'
+        && jobs.list('code-assets').some((j) =>
+            ['queued', 'downloading', 'indexing', 'processing', 'paused'].includes(j.phase))) {
+        res.status(409).json({ error: 'a build-assets job is already running' });
+        return;
+    }
     res.status(202).json(toApi(jobs.create(type, items)));
 });
 
