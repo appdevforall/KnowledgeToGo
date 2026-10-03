@@ -388,7 +388,8 @@ public final class DeepOpService extends Service {
                             .perSecond(copied, now - startMs);
                     final long eta = org.appdevforall.k2go.deploy.domain.ExtractProgress
                             .etaSeconds(copied, size, rate);
-                    main.post(() -> setStep(getString(R.string.k2go_br_status_copying), pct, eta));
+                    main.post(() -> setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
+                            .stepped(COPY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_copying)), pct, eta));
                 }
             }
             out.flush();
@@ -435,7 +436,8 @@ public final class DeepOpService extends Service {
         if (done || passRunning) return;   // K2GO-384: one verify+extract pass at a time (service is the owner)
         passRunning = true;
         currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: verify -- cancellable (kill + hold)
-        setStep(getString(R.string.k2go_br_status_checking), 0);
+        setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
+                .stepped(VERIFY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_checking)), 0);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
                 cancelBeforeExtract, pauseRequested, forceExtractCancel,
@@ -500,9 +502,11 @@ public final class DeepOpService extends Service {
                         final int unified = org.appdevforall.k2go.deploy.domain.ExtractProgress
                                 .unifiedPercent(passPercent, extracting ? EXTRACT_PASS : VERIFY_PASS,
                                         RESTORE_PASSES);
-                        final String label = getString(extracting
-                                ? R.string.k2go_br_status_restoring
-                                : R.string.k2go_br_status_checking);
+                        final String label = org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
+                                extracting ? EXTRACT_PASS : VERIFY_PASS, RESTORE_PASSES,
+                                getString(extracting
+                                        ? R.string.k2go_br_status_restoring
+                                        : R.string.k2go_br_status_checking));
                         // K2GO-384: pass through the per-pass ETA TarExtractor already computed (was dropped).
                         main.post(() -> setStep(label, unified, etaSeconds));
                     }
