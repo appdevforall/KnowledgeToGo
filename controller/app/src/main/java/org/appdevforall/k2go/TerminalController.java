@@ -590,6 +590,8 @@ public class TerminalController {
 
             String hostShell = "/system/bin/sh";
             File workingDirectory = activity.getFilesDir(); // Start in the app's secure root
+            // K2GO-446: single source for the generated iiab script path (writer and .mkshrc wrapper).
+            File iiabScript = new File(new File(workingDirectory, "usr/bin"), "iiab");
 
             try {
                 File hostBinDir = new File(activity.getFilesDir(), "usr/bin");
@@ -653,7 +655,6 @@ public class TerminalController {
                 File tmpDir = new File(activity.getFilesDir(), "proot_tmp");
                 if (!tmpDir.exists()) tmpDir.mkdirs();
 
-                File iiabCliScript = new File(hostBinDir, "iiab");
                 StringBuilder cliStr = new StringBuilder();
 
                 // ADFA-4630: resolve the app's effective DNS (user's custom config when enabled,
@@ -890,10 +891,10 @@ public class TerminalController {
                 cliStr.append("    do_login\n");
                 cliStr.append("fi\n");
 
-                java.io.FileOutputStream fosCli = new java.io.FileOutputStream(iiabCliScript);
+                java.io.FileOutputStream fosCli = new java.io.FileOutputStream(iiabScript);
                 fosCli.write(cliStr.toString().getBytes());
                 fosCli.close();
-                iiabCliScript.setExecutable(true);
+                iiabScript.setExecutable(true);
 
             } catch (Exception e) {
                 Log.e(TAG, "Failed to create host scripts", e);
@@ -977,6 +978,9 @@ public class TerminalController {
                 // persistent history would require replacing /system/bin/sh with a fuller
                 // shell (e.g. a bundled bash / busybox ash) — see ADFA-4709.
                 mkshrc.append("export HISTSIZE=5000\n");
+                // K2GO-446: targetSdk 35 W^X blocks execve of app-data-dir files, so run the
+                // generated iiab script through the interpreter instead of exec'ing it directly.
+                mkshrc.append("iiab() { /system/bin/sh \"").append(iiabScript.getAbsolutePath()).append("\" \"$@\"; }\n");
                 fosMkshrc.write(mkshrc.toString().getBytes());
                 fosMkshrc.close();
             } catch (Exception e) {
