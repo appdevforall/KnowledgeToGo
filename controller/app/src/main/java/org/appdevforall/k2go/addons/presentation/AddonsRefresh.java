@@ -3,17 +3,16 @@
  * Name        : AddonsRefresh.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-99. The single "Update add-ons" flow, shared by the module detail button and the
- *               module action sheet row so neither duplicates it. Modeled on ForgejoRepoRefresh: it
- *               gates like the dashboard update (needs internet, then metered consent), shows minimal
- *               inline progress (a description, a live one-line output tail, an indeterminate bar and a
- *               Cancel) injected right after the trigger view, runs the box refresh on an IO thread, and
- *               reports the outcome in a snackbar.
+ * Description : K2GO-99 / K2GO-443. The single "Update add-ons" flow, shared by the module detail button
+ *               and the module action sheet row. It gates like the dashboard update (needs internet, then
+ *               metered consent), then drives the durable job engine through AddonsDownloadService: a
+ *               determinate progress bar (percent + speed) with Pause / Resume and Cancel, injected right
+ *               after the trigger view. The download runs in a foreground service and on the box, so it
+ *               survives this view going away: re-opening the sheet re-attaches to the running session.
  *
- *               Lifecycle: there is NO persistent app-side state. The box refresh job is detached
- *               (setsid), so a host that goes away mid-run just drops the UI updates (guarded by
- *               View.isAttachedToWindow()); the box finishes on its own and the gallery is swapped in
- *               only on success. The only state is the box's own status/pid files, which the box manages.
+ *               Lifecycle: no persistent app-side state here. Pause/resume/cancel state lives in the
+ *               session + the box job; this view only observes it and re-renders. A terminal state
+ *               (done / failed / cancelled) removes the inline UI and reports it in a snackbar.
  * ============================================================================
  */
 package org.appdevforall.k2go.addons.presentation;
@@ -35,8 +34,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.addons.data.AddonsRefreshClient;
-import org.appdevforall.k2go.util.AppExecutors;
+import org.appdevforall.k2go.util.ByteFormatter;
 import org.appdevforall.k2go.util.Snackbars;
 
 public final class AddonsRefresh {
@@ -44,7 +42,7 @@ public final class AddonsRefresh {
     private AddonsRefresh() {}
 
     /**
-     * Gate (internet, then metered consent) then run the refresh with progress injected right after
+     * Gate (internet, then metered consent) then run the update with progress injected right after
      * {@code trigger}. The trigger stays in place (only disabled) as a visible anchor for the snackbar.
      */
     public static void start(@NonNull Activity act, @NonNull View trigger) {
@@ -59,36 +57,36 @@ public final class AddonsRefresh {
     private static void run(@NonNull View trigger) {
         final ViewGroup parent = (ViewGroup) trigger.getParent();
         if (parent == null || !trigger.isAttachedToWindow()) return;   // host went away during the gate
-        final Context ctx = trigger.getContext();
+        final Context ctx = trigger.getContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
-        final float d = ctx.getResources().getDisplayMetrics().density;
+        final float d = trigger.getResources().getDisplayMetrics().density;
         final int side = Math.round(20 * d);
 
-        final LinearLayout progress = new LinearLayout(ctx);
+        final LinearLayout progress = new LinearLayout(trigger.getContext());
         progress.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams plp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         plp.leftMargin = side; plp.rightMargin = side; plp.topMargin = Math.round(8 * d);
         progress.setLayoutParams(plp);
 
-        final TextView label = new TextView(ctx);
+        final TextView label = new TextView(trigger.getContext());
         label.setText(R.string.k2go_code_addons_updating);
         label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        label.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+        label.setTextColor(ContextCompat.getColor(trigger.getContext(), R.color.k2go_muted));
         progress.addView(label);
 
-        final TextView liveLine = new TextView(ctx);
-        liveLine.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        liveLine.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-        liveLine.setMaxLines(1);
-        liveLine.setEllipsize(TextUtils.TruncateAt.END);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+        final TextView statusLine = new TextView(trigger.getContext());
+        statusLine.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        statusLine.setTextColor(ContextCompat.getColor(trigger.getContext(), R.color.k2go_muted));
+        statusLine.setMaxLines(1);
+        statusLine.setEllipsize(TextUtils.TruncateAt.END);
+        LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        llp.topMargin = Math.round(2 * d);
-        liveLine.setLayoutParams(llp);
-        progress.addView(liveLine);
+        slp.topMargin = Math.round(2 * d);
+        statusLine.setLayoutParams(slp);
+        progress.addView(statusLine);
 
-        final LinearLayout barLine = new LinearLayout(ctx);
+        final LinearLayout barLine = new LinearLayout(trigger.getContext());
         barLine.setOrientation(LinearLayout.HORIZONTAL);
         barLine.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams barLineLp = new LinearLayout.LayoutParams(
@@ -96,56 +94,103 @@ public final class AddonsRefresh {
         barLineLp.topMargin = Math.round(4 * d);
         barLine.setLayoutParams(barLineLp);
 
-        final LinearProgressIndicator bar = new LinearProgressIndicator(ctx);
+        final LinearProgressIndicator bar = new LinearProgressIndicator(trigger.getContext());
         bar.setIndeterminate(true);
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         bar.setLayoutParams(blp);
         barLine.addView(bar);
 
-        final TextView cancel = new TextView(ctx);
-        cancel.setText(R.string.k2go_dash_cancel);
-        cancel.setAllCaps(true);
-        cancel.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
-        cancel.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_teal));
-        int hp = Math.round(12 * d), vp = Math.round(6 * d);
-        cancel.setPadding(hp, vp, hp, vp);
-        barLine.addView(cancel);
+        final int hp = Math.round(12 * d), vp = Math.round(6 * d);
+        final TextView pauseBtn = new TextView(trigger.getContext());
+        pauseBtn.setText(R.string.k2go_dl_pause);
+        pauseBtn.setAllCaps(true);
+        pauseBtn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        pauseBtn.setTextColor(ContextCompat.getColor(trigger.getContext(), R.color.k2go_teal));
+        pauseBtn.setPadding(hp, vp, hp, vp);
+        barLine.addView(pauseBtn);
+
+        final TextView cancelBtn = new TextView(trigger.getContext());
+        cancelBtn.setText(R.string.k2go_dash_cancel);
+        cancelBtn.setAllCaps(true);
+        cancelBtn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        cancelBtn.setTextColor(ContextCompat.getColor(trigger.getContext(), R.color.k2go_teal));
+        cancelBtn.setPadding(hp, vp, hp, vp);
+        barLine.addView(cancelBtn);
         progress.addView(barLine);
 
         parent.addView(progress, parent.indexOfChild(trigger) + 1);
-        trigger.setEnabled(false);   // stays in place as an anchor; re-enabled when the refresh settles
+        trigger.setEnabled(false);   // stays in place as an anchor; re-enabled when the update settles
 
-        cancel.setOnClickListener(cv -> {
-            cancel.setEnabled(false);
-            label.setText(R.string.k2go_code_addons_update_cancelling);
-            AppExecutors.get().io().execute(() -> new AddonsRefreshClient().cancel());
+        pauseBtn.setOnClickListener(v -> {
+            if (AddonsDownloadService.isPaused()) AddonsDownloadService.resume(ctx);
+            else AddonsDownloadService.pause(ctx);
+        });
+        cancelBtn.setOnClickListener(v -> {
+            cancelBtn.setEnabled(false);
+            AddonsDownloadService.cancel(ctx);
         });
 
-        AppExecutors.get().io().execute(() -> {
-            final AddonsRefreshClient client = new AddonsRefreshClient();
-            final AddonsRefreshClient.Result r = client.refresh(rawLine -> {
-                final String shown = rawLine.trim();
-                main.post(() -> { if (liveLine.isAttachedToWindow()) liveLine.setText(shown); });
-            });
-            final int failed = client.lastFailed();
-            final boolean upToDate = client.lastUpToDate();
-            main.post(() -> {
-                if (!trigger.isAttachedToWindow()) return;
-                parent.removeView(progress);
-                trigger.setEnabled(true);
-                Snackbars.make(trigger, ctx.getString(messageFor(r, failed, upToDate))).show();
-            });
-        });
+        // Clear the session listener the moment this view leaves the window (sheet dismissed), so the
+        // static session never keeps a destroyed Activity alive while a download runs on. Deterministic:
+        // it does not wait for the next session event (a paused download emits none).
+        final View.OnAttachStateChangeListener detach = new View.OnAttachStateChangeListener() {
+            @Override public void onViewAttachedToWindow(@NonNull View v) {}
+            @Override public void onViewDetachedFromWindow(@NonNull View v) {
+                AddonsDownloadService.setListener(null);
+            }
+        };
+
+        final Runnable[] render = new Runnable[1];
+        render[0] = () -> {
+            if (!trigger.isAttachedToWindow()) { AddonsDownloadService.setListener(null); return; }
+            final boolean running = AddonsDownloadService.isRunning();
+            // hasFailed() BEFORE isComplete(): isComplete() is true for an all-FAILED session too
+            // (FAILED is "not in progress"), so a failed run must be caught first.
+            if (!running && AddonsDownloadService.hasFailed()) {
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_addons_update_failed);
+                return;
+            }
+            if (AddonsDownloadService.isComplete()) {
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_addons_update_done);
+                return;
+            }
+            if (!AddonsDownloadService.hasSession()) {   // cancelled (purged)
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_addons_update_cancelled);
+                return;
+            }
+            final boolean paused = AddonsDownloadService.isPaused();
+            final int pct = AddonsDownloadService.percent();
+            bar.setIndeterminate(pct < 0);
+            if (pct >= 0) bar.setProgressCompat(pct, true);
+            pauseBtn.setText(paused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+            if (AddonsDownloadService.reconnectAttempt() > 0) {
+                statusLine.setText(R.string.k2go_retrying);
+            } else if (paused) {
+                statusLine.setText(R.string.k2go_dl_paused);
+            } else {
+                final long spd = AddonsDownloadService.speed();
+                statusLine.setText(spd > 0
+                        ? ByteFormatter.toHuman(spd) + "/s"
+                        : trigger.getContext().getString(R.string.k2go_code_addons_updating));
+            }
+        };
+
+        trigger.addOnAttachStateChangeListener(detach);
+        // publish() already posts to the main thread, so the listener runs on main: wire it directly.
+        AddonsDownloadService.setListener(render[0]::run);
+        AddonsDownloadService.start(ctx);
+        main.post(render[0]);   // initial paint
     }
 
-    /** Map the refresh outcome to a user message covering every state. */
-    private static int messageFor(AddonsRefreshClient.Result r, int failed, boolean upToDate) {
-        if (r == AddonsRefreshClient.Result.CANCELLED) return R.string.k2go_code_addons_update_cancelled;
-        if (r != AddonsRefreshClient.Result.DONE) return R.string.k2go_code_addons_update_failed;   // box unreachable
-        if (failed > 0) return R.string.k2go_code_addons_update_some_failed;   // some files could not be fetched
-        // K2GO-441: the box is the single source for "nothing changed" (result: up-to-date). A box that
-        // does not report it (pre-1.3.9) ran the old full mirror, so "updated" is the correct default.
-        if (upToDate) return R.string.k2go_code_addons_update_none;
-        return R.string.k2go_code_addons_update_done;
+    private static void terminal(@NonNull View trigger, @NonNull ViewGroup parent, @NonNull View progress,
+                                 @NonNull View.OnAttachStateChangeListener detach, int msgRes) {
+        AddonsDownloadService.setListener(null);
+        trigger.removeOnAttachStateChangeListener(detach);
+        if (progress.getParent() == parent) parent.removeView(progress);
+        trigger.setEnabled(true);
+        if (trigger.isAttachedToWindow()) {
+            Snackbars.make(trigger, trigger.getContext().getString(msgRes)).show();
+        }
+        AddonsDownloadService.finishSession();
     }
 }
