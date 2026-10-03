@@ -303,16 +303,16 @@ def _stage(source_base, serve_base, out, reuse_from, heavy_sink, limit_large, lo
     catalog_bytes = fetch(f"{source_base}/{CATALOG}")
     rewritten_catalog = catalog_bytes.decode("utf-8").replace(source_base, serve_base)
 
-    # K2GO-441: same-build short-circuit. The catalog carries `generated` (a build timestamp), so a
-    # byte-identical catalog means the exact same published build: nothing to download, nothing to swap.
+    # K2GO-441: same published build when the served catalog is byte-identical (the catalog carries a
+    # `generated` build timestamp). Computed here, but the short-circuit below ALSO requires every planned
+    # file to be present, so a file lost out-of-band (interrupted swap, disk) still re-downloads.
+    catalog_same = False
     if reuse_from is not None:
         try:
-            if (reuse_from / CATALOG).read_text(encoding="utf-8") == rewritten_catalog:
-                return {"up_to_date": True, "downloaded": 0, "reused": 0, "failed": 0, "headed": 0}
+            catalog_same = (reuse_from / CATALOG).read_text(encoding="utf-8") == rewritten_catalog
         except OSError:
-            pass   # no served catalog yet: fall through to a full mirror.
+            catalog_same = False   # no served catalog yet: fall through to a full mirror.
 
-    out.mkdir(parents=True, exist_ok=True)
     catalog = json.loads(catalog_bytes)
     served = served_catalog_shas(reuse_from)
 
@@ -329,6 +329,16 @@ def _stage(source_base, serve_base, out, reuse_from, heavy_sink, limit_large, lo
 
     paths, sha, size, reuse_ok = build_plan(
         source_base, catalog, served, index_unchanged, index_bytes)
+
+    # K2GO-443: presence-aware same-build short-circuit. Up to date ONLY when the published build is
+    # unchanged AND every planned file is still present in the served tree, so a missing/corrupt file
+    # re-downloads instead of being reported up-to-date (build-assets' short-circuit is likewise
+    # presence-aware). Reads are cheap here; the expensive staging copy is what this still skips.
+    if (reuse_from is not None and catalog_same and index_unchanged
+            and all((reuse_from / rel).is_file() for rel in paths)):
+        return {"up_to_date": True, "downloaded": 0, "reused": 0, "failed": 0, "headed": 0}
+
+    out.mkdir(parents=True, exist_ok=True)
     log(f"plan: {len(paths)} files, {len(sha)} verified binaries, "
         f"{len(catalog['addons'])} add-ons")
 
