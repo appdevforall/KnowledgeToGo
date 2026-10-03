@@ -992,6 +992,9 @@ public class TerminalController {
                     "TERM=xterm-256color",
                     "HOME=" + workingDirectory.getAbsolutePath(),
                     "ENV=" + mkshrcFile.getAbsolutePath(),
+                    // K2GO-446: writable TMPDIR so mksh can spool the iiab script's here-docs
+                    // (unset by default, mksh then falls back to a non-writable path).
+                    "TMPDIR=" + activity.getCacheDir().getAbsolutePath(),
                     // Include the system bins and our W^X fake prefix bins
                     "PATH=/sbin:/system/sbin:/system/bin:/system/xbin:" + workingDirectory.getAbsolutePath() + "/usr/bin"
             };
