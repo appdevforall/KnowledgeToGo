@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_none">Resursele de compilare sunt deja actualizate</string>
     <string name="k2go_code_assets_update_failed">Resursele de compilare nu au putut fi actualizate</string>
     <string name="k2go_code_assets_update_some_failed">Unele resurse de compilare nu au putut fi actualizate</string>
+    <string name="k2go_code_dev_count">%1$d instrumente</string>
 </resources>

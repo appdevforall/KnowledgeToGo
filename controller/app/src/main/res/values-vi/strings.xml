@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_none">Tài nguyên build đã được cập nhật</string>
     <string name="k2go_code_assets_update_failed">Không thể cập nhật tài nguyên build</string>
     <string name="k2go_code_assets_update_some_failed">Một số tài nguyên build không thể cập nhật</string>
+    <string name="k2go_code_dev_count">%1$d công cụ</string>
 </resources>

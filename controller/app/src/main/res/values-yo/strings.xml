@@ -1417,4 +1417,5 @@
     <string name="k2go_code_assets_update_none">Àwọn ohun èlò ìkọ́ ti wà ní ìmúdójúìwọ̀n tẹ́lẹ̀</string>
     <string name="k2go_code_assets_update_failed">A kò lè ṣe ìmúdójúìwọn àwọn ohun èlò ìkọ́</string>
     <string name="k2go_code_assets_update_some_failed">Àwọn ohun èlò ìkọ́ kan kò lè ṣe ìmúdójúìwọn</string>
+    <string name="k2go_code_dev_count">%1$d irinṣẹ́</string>
 </resources>

@@ -943,6 +943,9 @@
     <!-- ADFA-4795: redesign dynamic text (cards, editions, connect states, badges, toggles, formats) sweep 3 -->
     <string name="k2go_card_books">Read a book</string>
     <string name="k2go_card_code" translatable="false">Code on the Go</string>
+    <string name="k2go_card_code_dev" translatable="false">Code on the Go Dev</string>
+    <string name="k2go_code_dev_sheet_title" translatable="false">Code on the Go Development</string>
+    <string name="k2go_code_dev_count">%1$d tools</string>
     <string name="k2go_card_wikipedia">Explore Wikipedia</string>
     <string name="k2go_card_courses">Take courses</string>
     <string name="k2go_card_maps">Navigate maps</string>

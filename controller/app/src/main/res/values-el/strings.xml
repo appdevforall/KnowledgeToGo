@@ -1404,4 +1404,5 @@
     <string name="k2go_code_assets_update_none">Οι πόροι δόμησης είναι ήδη ενημερωμένοι</string>
     <string name="k2go_code_assets_update_failed">Δεν ήταν δυνατή η ενημέρωση των πόρων δόμησης</string>
     <string name="k2go_code_assets_update_some_failed">Ορισμένοι πόροι δόμησης δεν ήταν δυνατό να ενημερωθούν</string>
+    <string name="k2go_code_dev_count">%1$d εργαλεία</string>
 </resources>

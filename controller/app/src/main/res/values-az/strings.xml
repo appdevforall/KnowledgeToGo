@@ -1417,4 +1417,5 @@
     <string name="k2go_code_assets_update_none">Qurma resursları artıq günceldir</string>
     <string name="k2go_code_assets_update_failed">Qurma resurslarını yeniləmək mümkün olmadı</string>
     <string name="k2go_code_assets_update_some_failed">Bəzi qurma resurslarını yeniləmək mümkün olmadı</string>
+    <string name="k2go_code_dev_count">%1$d alət</string>
 </resources>

@@ -1404,4 +1404,5 @@
     <string name="k2go_code_assets_update_none">Prostředky pro sestavení jsou již aktuální</string>
     <string name="k2go_code_assets_update_failed">Prostředky pro sestavení se nepodařilo aktualizovat</string>
     <string name="k2go_code_assets_update_some_failed">Některé prostředky pro sestavení se nepodařilo aktualizovat</string>
+    <string name="k2go_code_dev_count">%1$d nástrojů</string>
 </resources>
