@@ -123,6 +123,9 @@ public final class ForgejoRepoRefresh {
 
         final RestContentClient client = new RestContentClient("forgejo");
         final boolean[] settled = { false };   // one terminal cleanup (done / error / cancel)
+        // Per-repo outcome tally the runner carries in the final detail (K2GO_SUMMARY changed problems
+        // total); -1 = unknown (an older box). Kept so "done" can still say "some blocked" / "up to date".
+        final int[] summary = { -1, -1, -1 };
 
         cancel.setOnClickListener(cv -> {
             cancel.setEnabled(false);
@@ -141,12 +144,24 @@ public final class ForgejoRepoRefresh {
                 if (liveLine.isAttachedToWindow()) bar.setIndeterminate(true);
             }
             @Override public void onLog(String line) {
-                // The job's detail is the current repo ("owner/name"); drop the org prefix for a clean read.
-                final String shown = line.trim().replace("AppDevForAll/", "");
+                final String t = line.trim();
+                if (t.startsWith("K2GO_SUMMARY")) {   // app<->runner token: the final outcome tally, not a repo
+                    String[] p = t.split("\\s+");
+                    if (p.length >= 4) {
+                        try {
+                            summary[0] = Integer.parseInt(p[1]);
+                            summary[1] = Integer.parseInt(p[2]);
+                            summary[2] = Integer.parseInt(p[3]);
+                        } catch (NumberFormatException ignore) { /* leave unknown */ }
+                    }
+                    return;
+                }
+                // Otherwise the job detail is the current repo ("owner/name"); drop the org prefix.
+                final String shown = t.replace("AppDevForAll/", "");
                 if (liveLine.isAttachedToWindow()) liveLine.setText(shown);
             }
             @Override public void onDone() {
-                terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_done);
+                terminal(settled, trigger, parent, progress, messageFor(summary[0], summary[1], summary[2]));
             }
             @Override public void onError(String message) {
                 terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_failed);
@@ -157,6 +172,22 @@ public final class ForgejoRepoRefresh {
     private static JSONObject sentinelBody() {
         try { return new JSONObject().put("ids", new JSONArray().put(SENTINEL)); }
         catch (Exception e) { return new JSONObject(); }
+    }
+
+    /**
+     * Map the per-repo outcome tally to a user message. The job finished (this is onDone), so the only
+     * question is what happened per repo. -1 counts = unknown (an older box without the summary) -> the
+     * generic "updated". changed = repos that advanced; problems = conflict or a fetch/push failure.
+     */
+    private static int messageFor(int changed, int problems, int total) {
+        if (problems > 0) {
+            // some repos could not be updated (reconcile in the web UI); all vs some depends on the rest
+            return (total - problems > 0) ? R.string.k2go_forgejo_update_some_failed
+                                          : R.string.k2go_forgejo_update_all_failed;
+        }
+        if (changed > 0) return R.string.k2go_forgejo_update_done;    // at least one repo advanced
+        if (changed == 0 && total >= 0) return R.string.k2go_forgejo_update_none;   // nothing to update
+        return R.string.k2go_forgejo_update_done;                     // unknown counts (older box)
     }
 
     /** Remove the inline UI, re-enable the trigger, and report the outcome once (guarded). */

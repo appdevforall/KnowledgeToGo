@@ -22,6 +22,11 @@ const forgejoRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 
     ctx.update({ phase: 'processing', percent: -1, speed: 0, detail: 'repositories' });
 
+    // Per-repo outcome tally (same classification the legacy /forgejo/refresh/status route uses), carried
+    // to the app in the final detail so it can keep the "some blocked / already up to date" messages:
+    // refresh_forgejo returns 0 even when a repo conflicts, so the job phase alone cannot say that.
+    let changed = 0, problems = 0, okNoChange = 0;
+
     await new Promise<void>((resolve, reject) => {
         // Source the orchestration and run the full-set refresh; _fj_refresh_one skips any repo not seeded.
         const script = `. "${ORCH_CLONE}"; export FORGEJO_REPOS="$FORGEJO_REPOS_FULL"; refresh_forgejo`;
@@ -41,6 +46,10 @@ const forgejoRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                     const pct = total > 0 ? Math.max(0, Math.min(100, Math.round(done * 100 / total))) : -1;
                     ctx.update({ phase: 'processing', percent: pct, speed: 0, detail: m[3] });
                 } else if (line) {
+                    if (line.includes('refresh fast-forward') || line.includes('refresh merged upstream')) changed++;
+                    else if (line.includes('refresh conflict') || line.includes('refresh fetch failed')
+                        || line.includes('refresh ff push failed') || line.includes('refresh merge push failed')) problems++;
+                    else if (line.includes('refresh up-to-date') || line.includes('refresh already ahead')) okNoChange++;
                     ctx.log(line);
                 }
             }
@@ -56,7 +65,10 @@ const forgejoRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     });
 
     ctx.throwIfCanceled();
-    ctx.update({ phase: 'done', percent: 100, speed: 0 });
+    // Final detail carries the outcome tally so the app can pick the right message (K2GO_SUMMARY is an
+    // app<->runner token, parsed in ForgejoRepoRefresh; it is never shown as a repo name).
+    const total = changed + problems + okNoChange;
+    ctx.update({ phase: 'done', percent: 100, speed: 0, detail: `K2GO_SUMMARY ${changed} ${problems} ${total}` });
 };
 
 jobs.registerRunner('forgejo', forgejoRunner);
