@@ -40,7 +40,7 @@ const ZIMS_DIR = '/library/zims/content/';
 const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
-const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets'];
+const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets', 'code-addons'];
 function isType(t: string): t is JobType {
     return (VALID_TYPES as string[]).includes(t);
 }
@@ -1117,13 +1117,14 @@ apiRouter.post('/:type/download', (req: Request, res: Response): void => {
         ? body.items
         : Array.isArray(body?.ids) ? body.ids : [];
     if (items.length === 0) { res.status(400).json({ error: 'items (or ids) required' }); return; }
-    // K2GO-443: code-assets stages into one shared tree (/library/www/code-assets.new), unlike kiwix's
-    // independent files, so only one build-assets job may run at a time. The app re-attaches via
+    // K2GO-443: these content types stage into ONE shared tree (/library/www/<type>.new), unlike kiwix's
+    // independent files, so only one job per such type may run at a time. The app re-attaches via
     // start-or-attach; this is the hard guard behind it (two concurrent jobs would corrupt the staging).
-    if (type === 'code-assets'
-        && jobs.list('code-assets').some((j) =>
+    const SINGLE_TREE_TYPES = ['code-assets', 'code-addons'];
+    if (SINGLE_TREE_TYPES.includes(type)
+        && jobs.list(type).some((j) =>
             ['queued', 'downloading', 'indexing', 'processing', 'paused'].includes(j.phase))) {
-        res.status(409).json({ error: 'a build-assets job is already running' });
+        res.status(409).json({ error: `a ${type} job is already running` });
         return;
     }
     res.status(202).json(toApi(jobs.create(type, items)));

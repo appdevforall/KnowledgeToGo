@@ -204,6 +204,15 @@
         </service>
 
         <service
+            android:name=".addons.presentation.AddonsDownloadService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Downloads the Code on the Go add-ons gallery through the co-located server REST engine." />
+        </service>
+
+        <service
             android:name=".redesign.BooksDownloadService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
