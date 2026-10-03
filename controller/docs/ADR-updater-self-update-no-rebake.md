@@ -54,6 +54,35 @@ baked copy", resolved by a fixed preference (clone first, baked fallback). We do
 NOT build version arbitration between repositories ("the newer of A vs B wins").
 That complexity is explicitly rejected.
 
+## Delivery (how a mirror fix reaches a deployed box)
+
+The content-refresh actions ("Update repos / add-ons / assets") re-download content
+only: they do NOT update the updater code. The updater code (wrappers and mirrors)
+reaches a box through the dash-node self-update (`POST /system/dashboard/rebuild`,
+`git reset --hard origin/<branch>` on the whole clone).
+
+The rebuild is reached from the app UI on the Dashboard detail screen
+(`redesign/DashboardDetailFragment`, also surfaced in `ModuleHubFragment`): an
+"Update" button when a newer version is on `origin/main`, or a de-emphasized but
+always-present "Rebuild" button otherwise ("Never blocks: the user can still
+Rebuild manually"). Both run `POST /system/dashboard/rebuild`.
+
+Two delivery paths follow from that:
+
+- Automatic prompt: the "update available" chip appears only when `package.json`
+  differs from `origin/main` (CLAUDE.local.md: "No bump -> existing boxes never
+  pick up the change through self-update"). The bump is the fleet-wide delivery
+  trigger (as in ADFA-386, "the version bump is the delivery mechanism").
+- Manual: the "Rebuild" button is always available, so an admin can trigger the
+  `git reset --hard origin/main` at any time; it pulls the whole clone (new
+  wrappers and mirrors) regardless of any version bump.
+
+So a mirror or wrapper fix does NOT strictly require a dash-node version bump to
+reach a box: a manual Rebuild deploys it. A bump is only needed to auto-prompt the
+fleet. Either way the `git reset` carries the whole clone, no rebake. A fresh bake
+gets the code from source regardless. This ADR does NOT add an updater-only
+delivery trigger independent of the rebuild; that would be extra scope.
+
 ## Scope (minimal)
 
 - `tools/code-addons-refresh.sh` and `tools/code-assets-refresh.sh`: resolve
