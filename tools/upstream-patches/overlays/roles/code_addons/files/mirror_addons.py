@@ -285,8 +285,16 @@ def build_plan(source_base, catalog, served, index_unchanged, index_bytes):
     return paths, sha, size, reuse_ok
 
 
-def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
-           verbose=True):
+def _stage(source_base, serve_base, out, reuse_from, heavy_sink, limit_large, log):
+    """Stage the gallery into `out` and return a result dict (the single staging core).
+
+    Fetches the small files (index, catalog, schema, icons, pages, shell), Cloudflare-cleans the
+    HTML, copies what the catalog proves is reusable, and rewrites the catalog base. When `heavy_sink`
+    is not None, a verified binary that would be downloaded (.cgp / source tarball) is NOT fetched:
+    its (url, rel, sha256, size) is appended to `heavy_sink` so a caller can hand it to aria2 (K2GO-443).
+    All human output goes through `log(msg, err=False)` so a caller can route it off stdout. Returns
+    {up_to_date, downloaded, reused, failed, headed}; on the same-build short-circuit only up_to_date
+    is meaningful."""
     source_base = source_base.rstrip("/")
     serve_base = serve_base.rstrip("/")
     out = Path(out)
@@ -295,16 +303,12 @@ def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
     catalog_bytes = fetch(f"{source_base}/{CATALOG}")
     rewritten_catalog = catalog_bytes.decode("utf-8").replace(source_base, serve_base)
 
-    # K2GO-441: same-build short-circuit. The catalog carries `generated` (a build
-    # timestamp), so a byte-identical catalog means the exact same published build:
-    # nothing changed, so there is nothing to download and nothing to swap. The
-    # wrapper reads "result: up-to-date" and keeps the live gallery.
+    # K2GO-441: same-build short-circuit. The catalog carries `generated` (a build timestamp), so a
+    # byte-identical catalog means the exact same published build: nothing to download, nothing to swap.
     if reuse_from is not None:
         try:
             if (reuse_from / CATALOG).read_text(encoding="utf-8") == rewritten_catalog:
-                print("result: up-to-date")
-                print("done: 0 downloaded, 0 reused, 0 failed")
-                return True
+                return {"up_to_date": True, "downloaded": 0, "reused": 0, "failed": 0, "headed": 0}
         except OSError:
             pass   # no served catalog yet: fall through to a full mirror.
 
@@ -325,9 +329,8 @@ def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
 
     paths, sha, size, reuse_ok = build_plan(
         source_base, catalog, served, index_unchanged, index_bytes)
-    if verbose:
-        print(f"plan: {len(paths)} files, {len(sha)} verified binaries, "
-              f"{len(catalog['addons'])} add-ons")
+    log(f"plan: {len(paths)} files, {len(sha)} verified binaries, "
+        f"{len(catalog['addons'])} add-ons")
 
     downloaded = reused = headed = failed = 0
 
@@ -356,14 +359,19 @@ def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
             reused += 1
             continue
 
+        # K2GO-443: defer a verified binary (.cgp / tarball) to aria2 instead of fetching its body
+        # here, so the heavy download gets resume / pause / retry. aria2 verifies it by checksum=sha-256.
+        if heavy_sink is not None and rel in sha:
+            heavy_sink.append((url, rel, sha[rel], size.get(rel)))
+            continue
+
         # Test only: HEAD a big binary instead of pulling its body.
         if limit_large and size.get(rel) and size[rel] > limit_large:
             st, length = head(url)
             ok = st == 200 and (length == size[rel] or length is None)
             headed += 1
-            if verbose:
-                mark = "ok" if ok else f"MISMATCH(status={st},len={length})"
-                print(f"  HEAD {rel} ({size[rel]} B): {mark}")
+            mark = "ok" if ok else f"MISMATCH(status={st},len={length})"
+            log(f"  HEAD {rel} ({size[rel]} B): {mark}")
             if not ok:
                 failed += 1
             continue
@@ -372,40 +380,120 @@ def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
             data = fetch(url)
         except RuntimeError as e:
             failed += 1
-            print(f"  FAIL {rel}: {e}", file=sys.stderr)
+            log(f"  FAIL {rel}: {e}", err=True)
             continue
         if rel in sha:
             got = sha256_of(data)
             if got != sha[rel]:
                 failed += 1
-                print(f"  SHA MISMATCH {rel}: got {got[:12]} "
-                      f"want {sha[rel][:12]}", file=sys.stderr)
+                log(f"  SHA MISMATCH {rel}: got {got[:12]} "
+                    f"want {sha[rel][:12]}", err=True)
                 continue
             if len(data) != size[rel]:
                 failed += 1
-                print(f"  SIZE MISMATCH {rel}: got {len(data)} "
-                      f"want {size[rel]}", file=sys.stderr)
+                log(f"  SIZE MISMATCH {rel}: got {len(data)} "
+                    f"want {size[rel]}", err=True)
                 continue
         if rel.endswith(".html"):
             data = clean_html(data)
         dest.write_bytes(data)
         downloaded += 1
-        if verbose and (downloaded % 10 == 0 or rel in sha):
+        if downloaded % 10 == 0 or rel in sha:
             tag = " (verified)" if rel in sha else ""
-            print(f"  GET  {rel} ({len(data)} B){tag}")
+            log(f"  GET  {rel} ({len(data)} B){tag}")
 
     # The one transform: point the catalog at the local serve base.
     catalog_file = out / CATALOG
     if catalog_file.exists():
         n = catalog_file.read_text(encoding="utf-8").count(source_base)
         catalog_file.write_text(rewritten_catalog, encoding="utf-8")
-        if verbose:
-            print(f"rewrote catalog base: {source_base} -> {serve_base} "
-                  f"({n} occurrences)")
+        log(f"rewrote catalog base: {source_base} -> {serve_base} "
+            f"({n} occurrences)")
 
-    tail = f", {headed} head-checked" if headed else ""
-    print(f"done: {downloaded} downloaded, {reused} reused{tail}, {failed} failed")
-    return failed == 0
+    return {"up_to_date": False, "downloaded": downloaded, "reused": reused,
+            "failed": failed, "headed": headed}
+
+
+def mirror(source_base, serve_base, out, reuse_from=None, limit_large=0,
+           verbose=True):
+    """Full in-process mirror (bake and the legacy refresh wrapper). Prints the same stdout as before:
+    progress when verbose, then 'result: up-to-date' or the 'done: ...' summary the wrapper parses."""
+    def log(msg, err=False):
+        if err:
+            print(msg, file=sys.stderr)
+        elif verbose:
+            print(msg)
+
+    res = _stage(source_base, serve_base, out, reuse_from, None, limit_large, log)
+    if res["up_to_date"]:
+        print("result: up-to-date")
+        print("done: 0 downloaded, 0 reused, 0 failed")
+        return True
+    tail = f", {res['headed']} head-checked" if res["headed"] else ""
+    print(f"done: {res['downloaded']} downloaded, {res['reused']} reused{tail}, "
+          f"{res['failed']} failed")
+    return res["failed"] == 0
+
+
+def aria2_input(source_base, serve_base, out, reuse_from=None):
+    """K2GO-443: stage everything except the heavy verified binaries into `out`, and print an aria2
+    input-file (the .cgp / tarball downloads) to STDOUT for the durable job runner. Line 1 is a status
+    marker: '#status=uptodate' (same build: keep the live tree, do not swap) or '#status=stage' (out is
+    staged; the lines after are the aria2 input). The input body may be EMPTY when only small files
+    changed: the runner must still finalize and swap. Heavy entries use an absolute per-entry dir= plus
+    a basename out= (aria2 drops a subdir in out=), and checksum=sha-256 so aria2 verifies each file.
+    All human logs go to stderr so stdout carries only the marker and the input."""
+    def log(msg, err=False):
+        print(msg, file=sys.stderr)
+
+    heavy = []
+    res = _stage(source_base, serve_base, out, reuse_from, heavy, 0, log)
+    if res["up_to_date"]:
+        print("#status=uptodate")
+        return True
+    lines = ["#status=stage"]
+    out = Path(out)
+    for url, rel, want_sha, _want_size in heavy:
+        p = Path(rel)
+        lines.append(url)
+        lines.append(f"  dir={out}/{p.parent}")
+        lines.append(f"  out={p.name}")
+        lines.append(f"  checksum=sha-256={want_sha}")
+    sys.stdout.write("\n".join(lines) + "\n")
+    return res["failed"] == 0
+
+
+def finalize(serve_base, out, verbose=True):
+    """K2GO-443: verify the heavy binaries aria2 downloaded are present in `out` with the catalog's
+    size. The small files and the catalog base-rewrite were already staged by --print-aria2-input, and
+    aria2 verified each heavy file by its sha-256, so this only confirms presence/size and reports. The
+    staged catalog is rewritten to serve_base, so its urls are serve-relative."""
+    serve_base = serve_base.rstrip("/")
+    out = Path(out)
+    try:
+        catalog = json.loads((out / CATALOG).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        print(f"finalize: cannot read staged catalog: {e}", file=sys.stderr)
+        return False
+    checked = missing = 0
+    for addon in catalog.get("addons", []):
+        for key in ("download", "sourceTarball"):
+            entry = addon.get(key) or {}
+            rel = rel_to_base(entry.get("url"), serve_base) if entry.get("url") else None
+            if not rel:
+                continue
+            checked += 1
+            f = out / rel
+            if not f.is_file():
+                missing += 1
+                print(f"  MISSING {rel}", file=sys.stderr)
+                continue
+            want_size = entry.get("size")
+            if want_size is not None and f.stat().st_size != want_size:
+                missing += 1
+                print(f"  SIZE {rel}: {f.stat().st_size} != {want_size}", file=sys.stderr)
+    print(f"done: {checked - missing} present, {missing} missing")
+    return missing == 0
 
 
 def main(argv=None):
@@ -421,8 +509,23 @@ def main(argv=None):
     ap.add_argument("--limit-large", type=int, default=0,
                     help="test only: HEAD files larger than this many bytes "
                          "instead of downloading them (0 = download all)")
+    # K2GO-443: the durable job engine downloads the heavy binaries with aria2 (resume / pause / retry),
+    # so the mirror splits into a plan step and a verify step. --print-aria2-input stages the small files
+    # and prints the aria2 input for the .cgp / tarballs; --finalize-only verifies them after aria2 runs.
+    ap.add_argument("--print-aria2-input", action="store_true",
+                    help="stage the small files and print an aria2 input-file for the heavy binaries "
+                         "(for the job runner); stdout is a status marker plus the input")
+    ap.add_argument("--finalize-only", action="store_true",
+                    help="verify the aria2-downloaded binaries are present in --out (used after the "
+                         "job-engine download); no download")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args(argv)
+
+    if args.print_aria2_input:
+        return 0 if aria2_input(args.source_base, args.serve_base, args.out,
+                                reuse_from=args.reuse_from) else 1
+    if args.finalize_only:
+        return 0 if finalize(args.serve_base, args.out, verbose=not args.quiet) else 1
     ok = mirror(args.source_base, args.serve_base, args.out,
                 reuse_from=args.reuse_from, limit_large=args.limit_large,
                 verbose=not args.quiet)
