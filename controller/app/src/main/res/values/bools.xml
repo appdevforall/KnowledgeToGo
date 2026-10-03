@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- K2GO-439 follow-up: light theme. true = the system bars are light, so the OS draws dark
+         icons, readable on the light background. Dark twin in values-night/bools.xml. -->
+    <bool name="k2go_light_system_bars">true</bool>
+</resources>
