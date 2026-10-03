@@ -21,7 +21,13 @@ PID=/var/run/code-addons-refresh.pid
 # base and the catalog serve-base come from mirror_addons.py's own defaults, so
 # they are not restated here.
 SERVE=/library/www/code-addons
-MIRROR=/opt/iiab/iiab/roles/code_addons/files/mirror_addons.py
+# K2GO-440: prefer the mirror from the self-updating clone, so a mirror fix ships via the dash-node
+# self-update (git reset on /opt/iiab-android) with NO rebake; fall back to the copy the overlay
+# places in the ansible roles dir at bake. Same idea as forgejo-refresh.sh sourcing from the clone.
+# The code_addons role is ours only (a Knowledge to Go overlay, not an IIAB upstream role).
+MIRROR_CLONE=/opt/iiab-android/tools/upstream-patches/overlays/roles/code_addons/files/mirror_addons.py
+MIRROR_BAKED=/opt/iiab/iiab/roles/code_addons/files/mirror_addons.py
+MIRROR=$([ -f "$MIRROR_CLONE" ] && echo "$MIRROR_CLONE" || echo "$MIRROR_BAKED")
 
 : > "$LOG" 2>/dev/null || true
 echo running > "$STATUS" 2>/dev/null || true

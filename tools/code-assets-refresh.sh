@@ -21,7 +21,13 @@ PID=/var/run/code-assets-refresh.pid
 # base and the serve-base come from mirror_code_assets.py's own defaults, so they
 # are not restated here.
 SERVE=/library/www/code-assets
-MIRROR=/opt/iiab/iiab/roles/code_assets/files/mirror_code_assets.py
+# K2GO-440: prefer the mirror from the self-updating clone, so a mirror fix ships via the dash-node
+# self-update (git reset on /opt/iiab-android) with NO rebake; fall back to the copy the overlay
+# places in the ansible roles dir at bake. Same idea as forgejo-refresh.sh sourcing from the clone.
+# The code_assets role is ours only (a Knowledge to Go overlay, not an IIAB upstream role).
+MIRROR_CLONE=/opt/iiab-android/tools/upstream-patches/overlays/roles/code_assets/files/mirror_code_assets.py
+MIRROR_BAKED=/opt/iiab/iiab/roles/code_assets/files/mirror_code_assets.py
+MIRROR=$([ -f "$MIRROR_CLONE" ] && echo "$MIRROR_CLONE" || echo "$MIRROR_BAKED")
 
 : > "$LOG" 2>/dev/null || true
 echo running > "$STATUS" 2>/dev/null || true
