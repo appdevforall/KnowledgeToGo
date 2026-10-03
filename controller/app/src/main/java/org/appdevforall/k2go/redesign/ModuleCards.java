@@ -74,10 +74,10 @@ public final class ModuleCards {
                     R.drawable.ic_card_code, false),
             new Card("code_addons", R.string.k2go_mod_code_addons_title, R.string.k2go_mod_code_addons_title,
                     R.string.k2go_mod_code_addons_sub, R.string.k2go_mod_code_addons_desc,
-                    R.drawable.ic_card_code, false),   // K2GO-99: offline add-ons gallery (reuses the code icon)
+                    R.drawable.ic_card_addons, false),   // K2GO-443: extension glyph (Module management + the action sheet; matches the Home members sheet)
             new Card("code_assets", R.string.k2go_mod_code_assets_title, R.string.k2go_mod_code_assets_title,
                     R.string.k2go_mod_code_assets_sub, R.string.k2go_mod_code_assets_desc,
-                    R.drawable.ic_card_code, false),   // K2GO-437: offline build assets (reuses the code icon)
+                    R.drawable.ic_card_assets, false),   // K2GO-443: box glyph (Module management + the action sheet; matches the Home members sheet)
             new Card("forgejo",    R.string.k2go_mod_forgejo_title,    R.string.k2go_mod_forgejo_title,
                     R.string.k2go_mod_forgejo_sub,    R.string.k2go_mod_forgejo_desc,
                     R.drawable.ic_card_forgejo, false),
