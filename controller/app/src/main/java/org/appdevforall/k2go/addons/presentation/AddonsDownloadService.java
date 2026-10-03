@@ -27,7 +27,7 @@ import org.json.JSONObject;
 public final class AddonsDownloadService extends ContentDownloadServiceBase {
 
     private static final String CHANNEL_ID = "code_addons_download_channel";
-    private static final int NOTIFICATION_ID = 8;
+    private static final int NOTIFICATION_ID = 11;   // distinct: 8 is ForgejoSeedService / CloneShareService (may run concurrently)
 
     public static final String ACTION_START = "org.appdevforall.k2go.CODE_ADDONS_DOWNLOAD_START";
     public static final String ACTION_PAUSE = "org.appdevforall.k2go.CODE_ADDONS_DOWNLOAD_PAUSE";
