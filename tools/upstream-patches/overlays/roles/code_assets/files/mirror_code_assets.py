@@ -87,6 +87,15 @@ def md5_of(data):
     return h.hexdigest()
 
 
+def md5_file(path):
+    """Streaming md5 of a file, so a large asset is not read whole into memory (K2GO-443)."""
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def parse_md5(text):
     """The hash from an md5 file. The file is '<hash>' or '<hash>  <name>'."""
     for token in text.split():
@@ -350,6 +359,59 @@ def mirror(source_base, serve_base, out, manifest_path=MANIFEST_DEFAULT,
     return failed == 0
 
 
+def aria2_input(source_base, manifest_path=MANIFEST_DEFAULT):
+    """Emit an aria2 input-file (K2GO-443): each asset's URL plus an `out=<path>` so aria2 keeps the
+    serve-relative subdir. The job-engine runner downloads this with aria2 (resilient), then calls
+    --finalize-only. The file set AND the source base live here, so the runner never re-lists them."""
+    source_base = source_base.rstrip("/")
+    assets = load_manifest(manifest_path)
+    lines = []
+    for a in assets:
+        p = a["path"]
+        lines.append(f"{source_base}/{p}")
+        lines.append(f"  out={p}")
+    sys.stdout.write("\n".join(lines) + "\n")
+    return True
+
+
+def finalize(source_base, serve_base, out, manifest_path=MANIFEST_DEFAULT, verbose=True):
+    """Verify already-downloaded assets against the published .md5 and write the browse page, with NO
+    download (K2GO-443: the aria2 job-engine runner already fetched the files into `out`). Writes each
+    .md5 sidecar; fails if any file is missing or mismatches."""
+    source_base = source_base.rstrip("/")
+    serve_base = "/" + serve_base.strip("/")
+    out = Path(out)
+    assets = load_manifest(manifest_path)
+    verified = failed = 0
+    for a in assets:
+        p = a["path"]
+        dest = out / p
+        if not dest.is_file():
+            failed += 1
+            print(f"  MISSING {p}: not downloaded", file=sys.stderr)
+            continue
+        want = published_md5(source_base, p)
+        if want is None:
+            failed += 1
+            print(f"  NO MD5 {p}: source published no checksum", file=sys.stderr)
+            continue
+        got = md5_file(dest)
+        if got != want:
+            failed += 1
+            print(f"  MD5 MISMATCH {p}: got {got[:12]} want {want[:12]}", file=sys.stderr)
+            continue
+        dest.with_name(dest.name + ".md5").write_text(f"{want}  {Path(p).name}\n", encoding="utf-8")
+        verified += 1
+        if verbose:
+            print(f"  OK   {p} (verified)")
+    sizes = _staged_sizes_from(out, assets)
+    (out / INDEX).write_bytes(build_index(assets, sizes, serve_base))
+    if verbose:
+        print(f"wrote {INDEX} ({len(assets)} assets)")
+    print(f"done: {verified} verified, {failed} failed")
+    return failed == 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Mirror the Code on the Go build assets.")
     ap.add_argument("--source-base", default="https://appdevforall.org/dev-assets",
@@ -358,15 +420,32 @@ def main(argv=None):
                     help="local serve path, used for the copy-link URLs on the page")
     ap.add_argument("--manifest", default=str(MANIFEST_DEFAULT),
                     help="asset manifest (paths, titles, descriptions)")
-    ap.add_argument("--out", required=True, help="output mirror directory")
+    ap.add_argument("--out", default=None, help="output mirror directory")
     ap.add_argument("--reuse-from", default=None,
                     help="the currently served tree; reuse unchanged files from it "
                          "instead of re-downloading (compared by the published .md5)")
     ap.add_argument("--plan-only", action="store_true",
                     help="test only: fetch the .md5 set and report the plan, "
                          "download no large file and write no page")
+    # K2GO-443: the durable job engine downloads the assets with aria2 (resilient: percent, pause,
+    # resume, retry), then calls --finalize-only to verify and build the page. --print-aria2-input
+    # hands the runner the url+out list from this one source (manifest + base).
+    ap.add_argument("--print-aria2-input", action="store_true",
+                    help="print an aria2 input-file (url + out=path per asset) for the job runner")
+    ap.add_argument("--finalize-only", action="store_true",
+                    help="verify already-downloaded files (by the published .md5) and write the page, "
+                         "without downloading (used after the aria2 job-engine download)")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args(argv)
+
+    if args.print_aria2_input:
+        return 0 if aria2_input(args.source_base, manifest_path=args.manifest) else 1
+    if not args.out:
+        ap.error("--out is required")
+    if args.finalize_only:
+        ok = finalize(args.source_base, args.serve_base, args.out,
+                      manifest_path=args.manifest, verbose=not args.quiet)
+        return 0 if ok else 1
     ok = mirror(args.source_base, args.serve_base, args.out,
                 manifest_path=args.manifest, reuse_from=args.reuse_from,
                 plan_only=args.plan_only, verbose=not args.quiet)

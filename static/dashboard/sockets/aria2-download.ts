@@ -9,7 +9,7 @@
 //
 // Canonical aria2 flags are ALSO mirrored in controller/app/.../Aria2Manager.java (the Android
 // downloader). If you change a flag here, change that too (nothing enforces it).
-import { RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
+import { RunnerContext, CanceledError, PausedError, classifyStop, JobPhase } from './jobs';
 import { withRetry } from './net-retry';
 
 /** The canonical aria2 flag set (minus -d, which the caller supplies per dest). */
@@ -71,11 +71,14 @@ export function parseRate(token: string): number {
  */
 export async function downloadWithAria2(
     ctx: RunnerContext,
-    opts: { destDir: string; urls: string[]; phase?: string },
+    opts: { destDir: string; urls?: string[]; inputFile?: string; phase?: JobPhase },
 ): Promise<void> {
     const phase = opts.phase ?? 'downloading';
+    // -i inputFile carries a per-URL `out=` so a serve-relative subdir is preserved (code_assets);
+    // urls is the flat form (kiwix/maps, one dir). The out= paths are relative to -d destDir.
+    const transferArgs = opts.inputFile ? ['-i', opts.inputFile] : (opts.urls ?? []);
     await withRetry(() => new Promise<void>((resolve, reject) => {
-        const dl = ctx.spawn('/usr/bin/aria2c', [...aria2Args(opts.destDir), ...opts.urls]);
+        const dl = ctx.spawn('/usr/bin/aria2c', [...aria2Args(opts.destDir), ...transferArgs]);
         const onData = (buf: Buffer) => {
             const text = buf.toString();
             // A single chunk can carry several summary lines; take the LAST %/rate.

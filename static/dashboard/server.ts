@@ -10,6 +10,7 @@ import './sockets/maps.exec';
 import './sockets/maps-base.exec';
 import './sockets/books.exec';
 import './sockets/kolibri.exec';
+import './sockets/code_assets.exec';   // K2GO-443: build-assets runner (aria2 job engine)
 import { apiRouter } from './routes';
 import { startServiceHeal } from './sockets/service-heal';
 import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
