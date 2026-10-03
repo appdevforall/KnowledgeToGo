@@ -196,9 +196,11 @@ public class LibraryHomeFragment extends Fragment {
 
         // K2GO-445: the group's members (the IDE, its add-ons, its build assets), same filtering as the
         // grid. If all are filtered out, drop the empty group tile too.
+        // K2GO-443: each member carries its own glyph (they shared the code "</>" before): Code on the Go
+        // = code, Add-ons = extension (puzzle), Build assets = box. Drives the row AND the action-sheet header.
         codeDevMembers.add(new Card("code",        getString(R.string.k2go_card_code),        false, R.drawable.ic_card_code));
-        codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, R.drawable.ic_card_code));
-        codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, R.drawable.ic_card_code));
+        codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, R.drawable.ic_card_addons));
+        codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, R.drawable.ic_card_assets));
         filterHidden(codeDevMembers);
         filterHidden(cards);
         if (codeDevMembers.isEmpty()) {
@@ -500,6 +502,21 @@ public class LibraryHomeFragment extends Fragment {
             TextView status = new TextView(ctx);
             status.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
             rowv.addView(status);
+            // K2GO-443: per-member overflow menu, between the status and the open arrow (status -> menu ->
+            // arrow). It opens the member's action sheet (Open / About / Update <x> / Hide) -- the only way
+            // to reach "Update" for a grouped member, since a row tap routes a ready member straight to its
+            // content. Material more_vert vector (not a text glyph) in a 48dp touch target, tinted like the
+            // other sheet icons.
+            ImageView menu = new ImageView(ctx);
+            menu.setImageResource(R.drawable.ic_more_vert);
+            menu.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            menu.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            menu.setContentDescription(getString(R.string.k2go_sheet_more));
+            menu.setClickable(true); menu.setFocusable(true);
+            menu.setOnClickListener(v -> { dlg.dismiss(); openSheet(m); });
+            LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(dpx(48), dpx(48));
+            mlp.leftMargin = dpx(4);
+            rowv.addView(menu, mlp);
             TextView chev = new TextView(ctx);
             chev.setText("›"); chev.setTextSize(18);
             chev.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
