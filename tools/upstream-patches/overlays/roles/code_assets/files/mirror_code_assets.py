@@ -387,8 +387,12 @@ def aria2_input(source_base, out, manifest_path=MANIFEST_DEFAULT, reuse_from=Non
         if reuse_ok[p]:
             shutil.copyfile(reuse_from / p, dest)   # unchanged: stage from the served tree, no download
         else:
+            # aria2 does not reliably place a file from an out= that contains a subdir (on device it
+            # wrote to the -d root, which would also collide the v7/v8 same-named files). Use an absolute
+            # per-entry dir= plus a basename out=, so each file lands in its serve-relative subdir.
             lines.append(f"{source_base}/{p}")
-            lines.append(f"  out={p}")
+            lines.append(f"  dir={out}/{Path(p).parent}")
+            lines.append(f"  out={Path(p).name}")
             if want is not None:
                 lines.append(f"  checksum=md5={want}")
     sys.stdout.write("\n".join(lines) + "\n")
