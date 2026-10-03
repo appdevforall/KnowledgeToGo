@@ -452,7 +452,8 @@ public class LibraryHomeFragment extends Fragment {
         content.addView(handle, hlp);
 
         TextView title = new TextView(ctx);
-        title.setText(R.string.k2go_card_code_dev);
+        // K2GO-445: spell out "Development" in the sheet header (room here), while the tile keeps "Dev".
+        title.setText(R.string.k2go_code_dev_sheet_title);
         title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
         title.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
         content.addView(title);
