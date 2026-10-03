@@ -313,8 +313,14 @@ _fj_refresh_one() {
 refresh_forgejo() {
   _fj_wait_200 || return 1
   _fj_resolve_admin_creds        # same single-source admin credential the seed uses
+  # K2GO-443: emit a parseable per-repo progress marker so the job-engine runner can show percent
+  # (repo N of M) and the current repo. git has no byte-level progress, so repo-count IS the progress.
+  local total; total="$(printf '%s\n' "$FORGEJO_REPOS" | grep -c '|')"
+  local i=0
   printf '%s\n' "$FORGEJO_REPOS" | while IFS='|' read -r owner name addr branch; do
     [ -n "$owner" ] && [ -n "$addr" ] || continue
+    i=$((i + 1))
+    printf 'K2GO_PROGRESS %s/%s %s/%s\n' "$i" "$total" "$owner" "$name"
     _fj_refresh_one "$owner" "$name" "$addr" "$branch" || true   # one repo must not abort the rest
   done
   ok "forgejo refresh done"

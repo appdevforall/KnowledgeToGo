@@ -40,7 +40,7 @@ const ZIMS_DIR = '/library/zims/content/';
 const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
-const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets', 'code-addons'];
+const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets', 'code-addons', 'forgejo'];
 function isType(t: string): t is JobType {
     return (VALID_TYPES as string[]).includes(t);
 }
@@ -1117,11 +1117,11 @@ apiRouter.post('/:type/download', (req: Request, res: Response): void => {
         ? body.items
         : Array.isArray(body?.ids) ? body.ids : [];
     if (items.length === 0) { res.status(400).json({ error: 'items (or ids) required' }); return; }
-    // K2GO-443: these content types stage into ONE shared tree (/library/www/<type>.new), unlike kiwix's
-    // independent files, so only one job per such type may run at a time. The app re-attaches via
-    // start-or-attach; this is the hard guard behind it (two concurrent jobs would corrupt the staging).
-    const SINGLE_TREE_TYPES = ['code-assets', 'code-addons'];
-    if (SINGLE_TREE_TYPES.includes(type)
+    // K2GO-443: these types must run one job at a time: code-assets / code-addons stage into ONE shared
+    // tree (/library/www/<type>.new), and forgejo fetches+pushes the same repo set (two concurrent runs
+    // would race the staging / the repos). The app re-attaches via start-or-attach; this is the hard guard.
+    const SINGLE_RUN_TYPES = ['code-assets', 'code-addons', 'forgejo'];
+    if (SINGLE_RUN_TYPES.includes(type)
         && jobs.list(type).some((j) =>
             ['queued', 'downloading', 'indexing', 'processing', 'paused'].includes(j.phase))) {
         res.status(409).json({ error: `a ${type} job is already running` });
