@@ -3,25 +3,26 @@
  * Name        : ForgejoRepoRefresh.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-422. The single "Update repos" flow, shared by the module detail button and the
- *               module action sheet row so neither duplicates it. It gates like the dashboard update
- *               (needs internet, then metered consent), shows minimal inline progress (a description, a
- *               live one-line output tail, an indeterminate bar and a Cancel) injected right after the
- *               trigger view, runs the box refresh on an IO thread, and reports the outcome in a snackbar.
+ * Description : K2GO-422 / K2GO-443. The single "Update repos" flow, shared by the module detail button
+ *               and the module action sheet row. It gates like the dashboard update (needs internet, then
+ *               metered consent), then drives the durable job engine (type "forgejo") through the shared
+ *               RestContentClient: a determinate bar (repo N of M) with the current repo name and a Cancel,
+ *               injected right after the trigger view.
  *
- *               Lifecycle: there is NO persistent app-side state. The box refresh job is detached
- *               (setsid), so a host that goes away mid-run (the sheet dismissed, the fragment detached)
- *               just drops the UI updates (guarded by View.isAttachedToWindow()); the box finishes on its
- *               own and the next /forgejo/status read reflects reality. The only state is the box's own
- *               status/pid files, which the box manages. So there is nothing here to leak or to clear.
+ *               Forgejo is a git operation (fetch + fast-forward/merge + authenticated push per seeded
+ *               example repo), not a file download, so there is no speed and NO pause/resume: the progress
+ *               is repo-count, and a retry re-runs the idempotent refresh (the engine owns that).
+ *
+ *               Lifecycle: no persistent app-side state here. The box job is durable and runs on, so a host
+ *               that goes away just drops the UI updates (guarded by View.isAttachedToWindow()); the client
+ *               polls to a terminal state and tears itself down. A terminal state (done / failed /
+ *               cancelled) removes the inline UI and reports it in a snackbar.
  * ============================================================================
  */
 package org.appdevforall.k2go.forgejo.presentation;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -35,13 +36,18 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.forgejo.data.ForgejoSeedClient;
-import org.appdevforall.k2go.util.AppExecutors;
+import org.appdevforall.k2go.content.RestContentClient;
 import org.appdevforall.k2go.util.Snackbars;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public final class ForgejoRepoRefresh {
 
     private ForgejoRepoRefresh() {}
+
+    // The box runner reads the repo set itself and ignores the job items, so a single sentinel satisfies
+    // POST /forgejo/download (which requires a non-empty items/ids) and keys the start-or-attach / guard.
+    private static final String SENTINEL = "repos";
 
     /**
      * Gate (internet, then metered consent) then run the refresh with progress injected right after
@@ -60,7 +66,6 @@ public final class ForgejoRepoRefresh {
         final ViewGroup parent = (ViewGroup) trigger.getParent();
         if (parent == null || !trigger.isAttachedToWindow()) return;   // host went away during the gate
         final Context ctx = trigger.getContext();
-        final Handler main = new Handler(Looper.getMainLooper());
         final float d = ctx.getResources().getDisplayMetrics().density;
         final int side = Math.round(20 * d);
 
@@ -71,14 +76,13 @@ public final class ForgejoRepoRefresh {
         plp.leftMargin = side; plp.rightMargin = side; plp.topMargin = Math.round(8 * d);
         progress.setLayoutParams(plp);
 
-        // Description of what is happening (static), then a live line that tails the box output one line at
-        // a time (the per-repo outcomes advance like the proot rows: it advances, not a log box).
         final TextView label = new TextView(ctx);
         label.setText(R.string.k2go_forgejo_updating);
         label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         label.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         progress.addView(label);
 
+        // The current repo being refreshed (from the job's detail), advancing one at a time.
         final TextView liveLine = new TextView(ctx);
         liveLine.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         liveLine.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
@@ -90,7 +94,6 @@ public final class ForgejoRepoRefresh {
         liveLine.setLayoutParams(llp);
         progress.addView(liveLine);
 
-        // The bar and Cancel share one line: the bar takes the width, Cancel sits beside it.
         final LinearLayout barLine = new LinearLayout(ctx);
         barLine.setOrientation(LinearLayout.HORIZONTAL);
         barLine.setGravity(Gravity.CENTER_VERTICAL);
@@ -100,7 +103,7 @@ public final class ForgejoRepoRefresh {
         barLine.setLayoutParams(barLineLp);
 
         final LinearProgressIndicator bar = new LinearProgressIndicator(ctx);
-        bar.setIndeterminate(true);
+        bar.setIndeterminate(true);   // becomes determinate once the first per-repo percent arrives
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         bar.setLayoutParams(blp);
         barLine.addView(bar);
@@ -118,43 +121,53 @@ public final class ForgejoRepoRefresh {
         parent.addView(progress, parent.indexOfChild(trigger) + 1);
         trigger.setEnabled(false);   // stays in place as an anchor; re-enabled when the refresh settles
 
+        final RestContentClient client = new RestContentClient("forgejo");
+        final boolean[] settled = { false };   // one terminal cleanup (done / error / cancel)
+
         cancel.setOnClickListener(cv -> {
             cancel.setEnabled(false);
             label.setText(R.string.k2go_forgejo_update_cancelling);
-            AppExecutors.get().io().execute(() -> new ForgejoSeedClient().cancelRefresh());
+            client.cancel();   // cancel() tears down without a listener callback, so settle here
+            terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_cancelled);
         });
 
-        AppExecutors.get().io().execute(() -> {
-            final ForgejoSeedClient client = new ForgejoSeedClient();
-            final ForgejoSeedClient.Result r = client.refresh(rawLine -> {
-                // Tail one line at a time, trimmed and without the org prefix, so it reads cleanly.
-                final String shown = rawLine.trim().replace("AppDevForAll/", "");
-                main.post(() -> { if (liveLine.isAttachedToWindow()) liveLine.setText(shown); });
-            });
-            // The box reports per-repo outcome counts on the refresh status (advanced / could-not / total).
-            final int changed = client.lastChanged();
-            final int problems = client.lastProblems();
-            final int total = client.lastTotal();
-            main.post(() -> {
-                if (!trigger.isAttachedToWindow()) return;
-                parent.removeView(progress);
-                trigger.setEnabled(true);
-                Snackbars.make(trigger, ctx.getString(messageFor(r, changed, problems, total))).show();
-            });
+        client.start(sentinelBody(), new RestContentClient.Listener() {
+            @Override public void onProgress(int percent, String speed) {
+                if (!liveLine.isAttachedToWindow()) return;
+                bar.setIndeterminate(percent < 0);
+                if (percent >= 0) bar.setProgressCompat(percent, true);
+            }
+            @Override public void onIndexing() {
+                if (liveLine.isAttachedToWindow()) bar.setIndeterminate(true);
+            }
+            @Override public void onLog(String line) {
+                // The job's detail is the current repo ("owner/name"); drop the org prefix for a clean read.
+                final String shown = line.trim().replace("AppDevForAll/", "");
+                if (liveLine.isAttachedToWindow()) liveLine.setText(shown);
+            }
+            @Override public void onDone() {
+                terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_done);
+            }
+            @Override public void onError(String message) {
+                terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_failed);
+            }
         });
     }
 
-    /** Map the refresh outcome to a user message covering every state. */
-    private static int messageFor(ForgejoSeedClient.Result r, int changed, int problems, int total) {
-        if (r == ForgejoSeedClient.Result.CANCELLED) return R.string.k2go_forgejo_update_cancelled;
-        if (r != ForgejoSeedClient.Result.DONE) return R.string.k2go_forgejo_update_failed;   // box unreachable
-        if (problems > 0) {
-            // some repos could not be updated (conflict or a fetch/push failure); reconcile in the web UI
-            return (total - problems > 0) ? R.string.k2go_forgejo_update_some_failed
-                                          : R.string.k2go_forgejo_update_all_failed;
+    private static JSONObject sentinelBody() {
+        try { return new JSONObject().put("ids", new JSONArray().put(SENTINEL)); }
+        catch (Exception e) { return new JSONObject(); }
+    }
+
+    /** Remove the inline UI, re-enable the trigger, and report the outcome once (guarded). */
+    private static void terminal(boolean[] settled, @NonNull View trigger, @NonNull ViewGroup parent,
+                                 @NonNull View progress, int msgRes) {
+        if (settled[0]) return;
+        settled[0] = true;
+        if (progress.getParent() == parent) parent.removeView(progress);
+        trigger.setEnabled(true);
+        if (trigger.isAttachedToWindow()) {
+            Snackbars.make(trigger, trigger.getContext().getString(msgRes)).show();
         }
-        if (changed > 0) return R.string.k2go_forgejo_update_done;    // at least one repo advanced
-        if (changed == 0) return R.string.k2go_forgejo_update_none;   // nothing to update
-        return R.string.k2go_forgejo_update_done;                     // unknown counts (older box)
     }
 }
