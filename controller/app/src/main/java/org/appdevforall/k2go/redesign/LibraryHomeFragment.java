@@ -507,7 +507,12 @@ public class LibraryHomeFragment extends Fragment {
             rowv.addView(chev, cvlp);
 
             m.dot = dot; m.status = status;
-            applyState(m, m.state);   // initial label from last-known state
+            // Seed from last-known evidence so a ready member routes correctly on open, before the
+            // async probe returns (otherwise a fast tap on a ready member hits the default GRAY state).
+            PlatformPresence.Evidence seen = PlatformEvidence.last(m.endpoint);
+            if (seen == PlatformPresence.Evidence.PRESENT) m.state = GREEN;
+            else if (seen == PlatformPresence.Evidence.ABSENT) m.state = GRAY;
+            applyState(m, m.state);
 
             // Fresh probe so the label and the tap routing are current.
             AppExecutors.get().io().execute(() -> {
@@ -522,6 +527,10 @@ public class LibraryHomeFragment extends Fragment {
             });
             content.addView(rowv);
         }
+
+        // Drop the row-view refs when the sheet closes, so the persistent member Cards do not keep
+        // detached views (built from the Activity context) alive until the next populate.
+        dlg.setOnDismissListener(d -> { for (Card mm : codeDevMembers) { mm.dot = null; mm.status = null; } });
 
         androidx.core.widget.NestedScrollView scroller = new androidx.core.widget.NestedScrollView(ctx);
         scroller.addView(content, new android.widget.FrameLayout.LayoutParams(-1, -2));
