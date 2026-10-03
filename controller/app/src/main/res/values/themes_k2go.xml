@@ -42,11 +42,11 @@
              one place and primary/secondary never disagree. -->
         <item name="materialButtonStyle">@style/Widget.K2Go.Button</item>
         <!-- K2GO-439 follow-up: targetSdk 35 forces edge-to-edge and drops the auto status-bar scrim,
-             so the app must set the system-bar icon contrast itself (Material3 does not default it).
-             true means a light bar with dark icons. The value is day/night qualified in
-             values[-night]/bools.xml, the same pattern as the color tokens. -->
+             so the app must set the status-bar icon contrast itself (Material3 does not default it).
+             true means a light bar with dark icons. Day/night qualified in values[-night]/bools.xml,
+             the same pattern as the color tokens. windowLightNavigationBar is not set: the nav bar
+             renders correctly already, and that attr is API 27 (above the minSdk 24). -->
         <item name="android:windowLightStatusBar">@bool/k2go_light_system_bars</item>
-        <item name="android:windowLightNavigationBar">@bool/k2go_light_system_bars</item>
     </style>
 
     <!-- ADFA-5346: shared button shape — official Material 3 fully-rounded (stadium/pill). Change here to
