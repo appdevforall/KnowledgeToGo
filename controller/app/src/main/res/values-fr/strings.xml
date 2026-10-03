@@ -1484,4 +1484,5 @@
     <string name="k2go_code_assets_update_none">Ressources de compilation déjà à jour</string>
     <string name="k2go_code_assets_update_failed">Impossible de mettre à jour les ressources de compilation</string>
     <string name="k2go_code_assets_update_some_failed">Certaines ressources de compilation n\'ont pas pu être mises à jour</string>
+    <string name="k2go_code_dev_count">%1$d outils</string>
 </resources>

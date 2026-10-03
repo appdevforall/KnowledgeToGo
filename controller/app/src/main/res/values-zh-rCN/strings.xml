@@ -1398,4 +1398,5 @@
     <string name="k2go_code_assets_update_none">构建资源已是最新</string>
     <string name="k2go_code_assets_update_failed">无法更新构建资源</string>
     <string name="k2go_code_assets_update_some_failed">部分构建资源无法更新</string>
+    <string name="k2go_code_dev_count">%1$d个工具</string>
 </resources>

@@ -1417,4 +1417,5 @@
     <string name="k2go_code_assets_update_none">பில்ட் வளங்கள் ஏற்கனவே புதுப்பித்த நிலையில் உள்ளன</string>
     <string name="k2go_code_assets_update_failed">பில்ட் வளங்களைப் புதுப்பிக்க முடியவில்லை</string>
     <string name="k2go_code_assets_update_some_failed">சில பில்ட் வளங்களைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="k2go_code_dev_count">%1$d கருவிகள்</string>
 </resources>

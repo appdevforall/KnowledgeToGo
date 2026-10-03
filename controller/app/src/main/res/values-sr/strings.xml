@@ -1410,4 +1410,5 @@
     <string name="k2go_code_assets_update_none">Ресурси за изградњу су већ ажурирани</string>
     <string name="k2go_code_assets_update_failed">Није могуће ажурирати ресурсе за изградњу</string>
     <string name="k2go_code_assets_update_some_failed">Неки ресурси за изградњу нису могли бити ажурирани</string>
+    <string name="k2go_code_dev_count">%1$d алата</string>
 </resources>

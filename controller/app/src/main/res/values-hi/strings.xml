@@ -1474,4 +1474,5 @@
     <string name="k2go_code_assets_update_none">बिल्ड संसाधन पहले से ही अप टू डेट हैं</string>
     <string name="k2go_code_assets_update_failed">बिल्ड संसाधन अपडेट नहीं हो सके</string>
     <string name="k2go_code_assets_update_some_failed">कुछ बिल्ड संसाधन अपडेट नहीं हो सके</string>
+    <string name="k2go_code_dev_count">%1$d टूल</string>
 </resources>
