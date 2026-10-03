@@ -1,0 +1,22 @@
+# code_addons_install: True
+# code_addons_enabled: True
+
+# Offline mirror of the Code on the Go add-ons gallery (plugins, templates,
+# snippets, code-actions). Sibling of the 'code' role: a static site served by
+# NGINX, no daemon, no database. The gallery is browsed at http://box/code-addons
+# and each add-on downloads from http://box/code-addons/dl/<slug>.cgp.
+# Design: controller/docs/ADR-addons-offline-gallery.md (K2GO-99).
+
+# The published gallery to mirror from (the public R2 site). The role follows
+# references from index.html and v1/catalog.json, so it needs no file list: a new
+# add-on or a new shell asset is picked up on the next (re)install.
+# TO UPDATE a deployed box without a re-bake, dash-node re-runs the same mirror
+# in-server; a re-bake or 'runrole --reinstall code_addons' re-mirrors here.
+code_addons_source_base: "https://addons.appdevforall.org"
+
+# Local serve path. The catalog base is rewritten to this, so the gallery works
+# at http://<box-address>/code-addons/ with no host baked into the files.
+code_addons_url: /code-addons
+
+# Served document root (static files, like roles/code).
+code_addons_serve_path: "{{ content_base }}/www/code-addons"   # /library/www/code-addons

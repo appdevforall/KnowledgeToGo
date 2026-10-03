@@ -77,19 +77,13 @@ jobs:
           # In-APK traceability is unaffected: BuildConfig.GIT_SHA still records the commit.
           # K2GO-431: build both flavors. standard -> GitHub + R2 + OTA update.json (as before);
           # fdroid -> R2 only (F-Droid distributes it; it carries no in-app OTA).
-          ./gradlew assembleStandardRelease assembleFdroidRelease \
+          # K2GO-433: also build the Play AAB (play flavor); archived to R2 below.
+          ./gradlew assembleStandardRelease assembleFdroidRelease bundlePlayRelease \
             -PversionSuffix="" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-
-      - name: Upload APK Artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: k2go-apks-release
-          path: controller/**/build/outputs/apk/*/release/*.apk
-          retention-days: 7
 
       # --- GITHUB RELEASES ---
 
@@ -126,6 +120,15 @@ jobs:
             aws s3 cp "$apk" "s3://$BUCKET_NAME/$filename" \
               --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
               --content-type "application/vnd.android.package-archive"
+          done
+
+          # K2GO-433: archive the Play AAB to R2 (backup copy, one object per release by versioned filename).
+          for aab in $(find . -path "*/build/outputs/bundle/playRelease/*.aab"); do
+            filename=$(basename "$aab")
+            echo "Uploading $filename to Cloudflare R2 ($BUCKET_NAME)..."
+            aws s3 cp "$aab" "s3://$BUCKET_NAME/$filename" \
+              --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+              --content-type "application/octet-stream"
           done
 
       # --- OTA MANIFEST (update.json) ---
