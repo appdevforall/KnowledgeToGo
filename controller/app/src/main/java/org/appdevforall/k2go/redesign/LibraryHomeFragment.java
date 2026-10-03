@@ -505,12 +505,12 @@ public class LibraryHomeFragment extends Fragment {
             // K2GO-443: per-member overflow menu, between the status and the open arrow (status -> menu ->
             // arrow). It opens the member's action sheet (Open / About / Update <x> / Hide) -- the only way
             // to reach "Update" for a grouped member, since a row tap routes a ready member straight to its
-            // content. 48dp touch target and the same glyph as the grid-card overflow.
-            TextView menu = new TextView(ctx);
-            menu.setText("⋮");
-            menu.setGravity(Gravity.CENTER);
-            menu.setTextSize(20);
-            menu.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            // content. Material more_vert vector (not a text glyph) in a 48dp touch target, tinted like the
+            // other sheet icons.
+            ImageView menu = new ImageView(ctx);
+            menu.setImageResource(R.drawable.ic_more_vert);
+            menu.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            menu.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             menu.setContentDescription(getString(R.string.k2go_sheet_more));
             menu.setClickable(true); menu.setFocusable(true);
             menu.setOnClickListener(v -> { dlg.dismiss(); openSheet(m); });
