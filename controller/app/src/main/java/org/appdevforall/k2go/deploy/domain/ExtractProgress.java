@@ -79,6 +79,27 @@ public final class ExtractProgress {
         return v > 99 ? 99 : v;
     }
 
+    /**
+     * K2GO-448: a stage prefix for a multi-pass progress label, so the single unified bar reads as
+     * what it is: "[1/3] Copying the file", "[2/3] Checking the file", "[3/3] Restoring". The unified
+     * bar is monotone, but each pass reports its own ETA, so without the position the resetting time
+     * reads as the whole run slowing down. passIndex is 0-based (like unifiedPercent); the shown
+     * position is passIndex + 1, clamped the same way so a bad index never prints out of range. A
+     * single-pass run has nothing to disambiguate, so callers that do not want a prefix (a one-stage
+     * backup) simply do not call this. The "[N/M]" form carries no words, so it needs no translation.
+     *
+     * @param passIndex this pass, 0-based.
+     * @param passCount total passes in the run.
+     * @param label     the stage's own (already localized) label.
+     * @return "[N/M] " + label.
+     */
+    public static String stepped(int passIndex, int passCount, String label) {
+        if (passCount < 1) passCount = 1;
+        if (passIndex < 0) passIndex = 0;
+        if (passIndex > passCount - 1) passIndex = passCount - 1;
+        return "[" + (passIndex + 1) + "/" + passCount + "] " + (label == null ? "" : label);
+    }
+
     /** First line of a possibly multi-line label, trimmed. Null-safe. */
     public static String firstLine(String s) {
         if (s == null) return "";

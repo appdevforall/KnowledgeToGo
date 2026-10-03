@@ -34,6 +34,9 @@ public class LibraryActivity extends AppCompatActivity
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
+    // K2GO-448: the rootfs install shows two measured bars (download, then verify+extract); one source
+    // for the count so both stage labels below agree. PROVISIONING is an unnumbered spinner, not a bar.
+    private static final int ROOTFS_INSTALL_STAGES = 2;
     /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
     public static final String EXTRA_INSTALLING = "installing";
     // K2GO-391: the disk guard's notification opens this activity with a pre-filled report to send.
@@ -491,8 +494,11 @@ public class LibraryActivity extends AppCompatActivity
             // from the IPv4/IPv6 probe, so without it the same three probes scroll past a second and
             // a third time with nothing to say which time this is — and the count is precisely what
             // tells the user whether waiting is still worth it.
-            installStatus.setText(st.message.isEmpty()
-                    ? getString(R.string.k2go_downloading_library) : st.message);
+            // K2GO-448: the rootfs install is two measured bars (download, then verify+extract);
+            // mark this one as stage 1 of 2 so the per-stage time does not read as a slowdown.
+            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(0, ROOTFS_INSTALL_STAGES,
+                    st.message.isEmpty()
+                            ? getString(R.string.k2go_downloading_library) : st.message));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             // ADFA-4895: one table per line, sized to the line, rather than one table stretched
@@ -528,8 +534,10 @@ public class LibraryActivity extends AppCompatActivity
             // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.
             // Only the verb on the status line changes at the handoff.
             boolean verifying = st.phase == InstallState.Phase.VERIFYING;
-            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.firstLine(
-                    getString(verifying ? R.string.k2go_verifying_files : R.string.install_status_extracting)));
+            // K2GO-448: stage 2 of 2 (verify and extract share one unified bar; only the verb changes).
+            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(1, ROOTFS_INSTALL_STAGES,
+                    org.appdevforall.k2go.deploy.domain.ExtractProgress.firstLine(
+                            getString(verifying ? R.string.k2go_verifying_files : R.string.install_status_extracting))));
             if (st.percent < 0) {
                 // Indeterminate fallback: before the first byte lands, or an archive whose size we
                 // couldn't read (no byte-based %). Animated hint on the DETAIL line (where the % goes).

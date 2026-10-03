@@ -208,7 +208,11 @@ public class BackupJobFragment extends Fragment {
                 .setMessage(getString(R.string.k2go_br_restore_warn))
                 .setPositive(R.string.k2go_br_restore_confirm, BrandDialog.Role.DESTRUCTIVE, () -> {
                     beginRunning();
-                    setStatusAnimated(getString(R.string.k2go_br_status_copying));
+                    // K2GO-448: same "[1/3]" prefix the service posts, from the same source, so the
+                    // optimistic status matches instead of flashing an unprefixed "Copying the file".
+                    setStatusAnimated(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
+                            DeepOpService.COPY_PASS, DeepOpService.RESTORE_PASSES,
+                            getString(R.string.k2go_br_status_copying)));
                     DeepOpService.startRestore(requireContext(), uri);
                 })
                 .setNegative(R.string.cancel, () -> popToIntro(false))

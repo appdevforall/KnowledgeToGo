@@ -152,4 +152,27 @@ public class ExtractProgressTest {
         assertEquals(ExtractProgress.unifiedPercent(0, 0, 3), ExtractProgress.unifiedPercent(0, -1, 3));
         assertEquals(50, ExtractProgress.unifiedPercent(50, 0, 0));   // a run of no passes is one pass
     }
+
+    // ---- K2GO-448: the stage prefix for the unified multi-pass bar ----
+
+    @Test public void steppedPrefixesTheRestoreStagesInOrder() {
+        assertEquals("[1/3] Copying the file",  ExtractProgress.stepped(0, 3, "Copying the file"));
+        assertEquals("[2/3] Checking the file", ExtractProgress.stepped(1, 3, "Checking the file"));
+        assertEquals("[3/3] Restoring",         ExtractProgress.stepped(2, 3, "Restoring"));
+    }
+
+    @Test public void steppedPrefixesTheTwoRootfsStages() {
+        assertEquals("[1/2] Downloading", ExtractProgress.stepped(0, 2, "Downloading"));
+        assertEquals("[2/2] Extracting",  ExtractProgress.stepped(1, 2, "Extracting"));
+    }
+
+    @Test public void steppedClampsOutOfRangeLikeUnifiedPercent() {
+        assertEquals("[3/3] x", ExtractProgress.stepped(9, 3, "x"));    // past the end -> last pass
+        assertEquals("[1/3] x", ExtractProgress.stepped(-1, 3, "x"));   // before the start -> first pass
+        assertEquals("[1/1] x", ExtractProgress.stepped(0, 0, "x"));    // a run of no passes is one pass
+    }
+
+    @Test public void steppedNullLabelIsEmptyNotNullText() {
+        assertEquals("[1/3] ", ExtractProgress.stepped(0, 3, null));
+    }
 }
