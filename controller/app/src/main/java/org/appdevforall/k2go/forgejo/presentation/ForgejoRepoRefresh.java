@@ -134,11 +134,21 @@ public final class ForgejoRepoRefresh {
             terminal(settled, trigger, parent, progress, R.string.k2go_forgejo_update_cancelled);
         });
 
+        // The status line shows the percent and the current repo together (git progress is repo-count, so
+        // the percent is coarse: 0/33/66 for 3 repos). Percent arrives via onProgress, the repo via onLog;
+        // both feed render() so the line stays "<pct>%  <repo>".
+        final int[] pct = { -1 };
+        final String[] repo = { "" };
+        final Runnable render = () -> {
+            if (!liveLine.isAttachedToWindow()) return;
+            liveLine.setText(pct[0] >= 0 ? pct[0] + "%  " + repo[0] : repo[0]);
+        };
+
         client.start(sentinelBody(), new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
                 if (!liveLine.isAttachedToWindow()) return;
                 bar.setIndeterminate(percent < 0);
-                if (percent >= 0) bar.setProgressCompat(percent, true);
+                if (percent >= 0) { bar.setProgressCompat(percent, true); pct[0] = percent; render.run(); }
             }
             @Override public void onIndexing() {
                 if (liveLine.isAttachedToWindow()) bar.setIndeterminate(true);
@@ -157,8 +167,8 @@ public final class ForgejoRepoRefresh {
                     return;
                 }
                 // Otherwise the job detail is the current repo ("owner/name"); drop the org prefix.
-                final String shown = t.replace("AppDevForAll/", "");
-                if (liveLine.isAttachedToWindow()) liveLine.setText(shown);
+                repo[0] = t.replace("AppDevForAll/", "");
+                render.run();
             }
             @Override public void onDone() {
                 terminal(settled, trigger, parent, progress, messageFor(summary[0], summary[1], summary[2]));
