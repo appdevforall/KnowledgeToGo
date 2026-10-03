@@ -131,22 +131,32 @@ public final class CodeAssetsRefresh {
             CodeAssetsDownloadService.cancel(ctx);
         });
 
+        // Clear the session listener the moment this view leaves the window (sheet dismissed), so the
+        // static session never keeps a destroyed Activity alive while a download runs on. Deterministic:
+        // it does not wait for the next session event (a paused download emits none).
+        final View.OnAttachStateChangeListener detach = new View.OnAttachStateChangeListener() {
+            @Override public void onViewAttachedToWindow(@NonNull View v) {}
+            @Override public void onViewDetachedFromWindow(@NonNull View v) {
+                CodeAssetsDownloadService.setListener(null);
+            }
+        };
+
         final Runnable[] render = new Runnable[1];
         render[0] = () -> {
-            if (!trigger.isAttachedToWindow()) {   // sheet dismissed: stop observing, let the service run on
-                CodeAssetsDownloadService.setListener(null);
+            if (!trigger.isAttachedToWindow()) { CodeAssetsDownloadService.setListener(null); return; }
+            final boolean running = CodeAssetsDownloadService.isRunning();
+            // hasFailed() BEFORE isComplete(): isComplete() is true for an all-FAILED session too
+            // (FAILED is "not in progress"), so a failed run must be caught first.
+            if (!running && CodeAssetsDownloadService.hasFailed()) {
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_assets_update_failed);
                 return;
             }
             if (CodeAssetsDownloadService.isComplete()) {
-                finish(trigger, parent, progress, R.string.k2go_code_assets_update_done);
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_assets_update_done);
                 return;
             }
-            if (CodeAssetsDownloadService.hasFailed() && !CodeAssetsDownloadService.isRunning()) {
-                finish(trigger, parent, progress, R.string.k2go_code_assets_update_failed);
-                return;
-            }
-            if (!CodeAssetsDownloadService.hasSession()) {   // cancelled (purged); done is caught above
-                finish(trigger, parent, progress, R.string.k2go_code_assets_update_cancelled);
+            if (!CodeAssetsDownloadService.hasSession()) {   // cancelled (purged)
+                terminal(trigger, parent, progress, detach, R.string.k2go_code_assets_update_cancelled);
                 return;
             }
             final boolean paused = CodeAssetsDownloadService.isPaused();
@@ -166,13 +176,17 @@ public final class CodeAssetsRefresh {
             }
         };
 
-        CodeAssetsDownloadService.setListener(() -> main.post(render[0]));
+        trigger.addOnAttachStateChangeListener(detach);
+        // publish() already posts to the main thread, so the listener runs on main: wire it directly.
+        CodeAssetsDownloadService.setListener(render[0]::run);
         CodeAssetsDownloadService.start(ctx);
         main.post(render[0]);   // initial paint
     }
 
-    private static void finish(View trigger, ViewGroup parent, View progress, int msgRes) {
+    private static void terminal(@NonNull View trigger, @NonNull ViewGroup parent, @NonNull View progress,
+                                 @NonNull View.OnAttachStateChangeListener detach, int msgRes) {
         CodeAssetsDownloadService.setListener(null);
+        trigger.removeOnAttachStateChangeListener(detach);
         if (progress.getParent() == parent) parent.removeView(progress);
         trigger.setEnabled(true);
         if (trigger.isAttachedToWindow()) {
