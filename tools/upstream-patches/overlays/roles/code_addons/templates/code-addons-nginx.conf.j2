@@ -1,0 +1,28 @@
+# Static serve for the offline Code on the Go add-ons gallery at http://box{{ code_addons_url }}
+# Installed by roles/code_addons (tasks/enable-or-disable.yml) into nginx conf.d.
+# The gallery uses relative asset paths, so it serves unchanged under this sub-path.
+
+location = {{ code_addons_url }} {
+    return 302 {{ code_addons_url }}/;
+}
+
+location ^~ {{ code_addons_url }}/ {
+    alias {{ code_addons_serve_path }}/;    # /library/www/code-addons/
+    index index.html;
+
+    # K2GO-99: the .cgp (and source .tar.gz) are downloads, not pages. Serve them as a
+    # binary type so the client saves them instead of rendering the archive as text.
+    # nginx's default_type is text/html, which made the WebView render a .cgp as garbage.
+    types {
+        text/html                 html htm;
+        text/css                  css;
+        application/javascript    js;
+        application/json          json;
+        image/png                 png;
+        image/svg+xml             svg;
+        image/x-icon              ico;
+        application/octet-stream  cgp;
+        application/gzip          gz;
+    }
+    default_type application/octet-stream;
+}

@@ -1,0 +1,45 @@
+- name: Record (initial) disk space used
+  shell: df -B1 --output=used / | tail -1
+  register: df1
+
+
+# Mirror the published gallery into the serve directory. mirror_addons.py follows
+# references from index.html and v1/catalog.json, downloads every add-on file,
+# verifies each .cgp against the catalog sha256, strips the Cloudflare injections
+# from the HTML, and rewrites the catalog base to code_addons_url. It needs
+# network and pulls the full set of .cgp files, so it is SLOW. A non-zero exit
+# (a failed download or a checksum mismatch) fails the role.
+
+- name: Create the serve directory {{ code_addons_serve_path }}
+  file:
+    path: "{{ code_addons_serve_path }}"    # /library/www/code-addons
+    state: directory
+
+- name: Mirror the add-ons gallery from {{ code_addons_source_base }} (downloads .cgp, SLOW)
+  command: >
+    python3 {{ role_path }}/files/mirror_addons.py
+    --source-base {{ code_addons_source_base }}
+    --serve-base {{ code_addons_url }}
+    --out {{ code_addons_serve_path }}
+
+
+- name: Record (final) disk space used
+  shell: df -B1 --output=used / | tail -1
+  register: df2
+
+- name: Add 'code_addons_disk_usage = {{ df2.stdout | int - df1.stdout | int }}' to {{ iiab_ini_file }}
+  ini_file:
+    path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
+    section: code_addons
+    option: code_addons_disk_usage
+    value: "{{ df2.stdout | int - df1.stdout | int }}"
+
+- name: "Set 'code_addons_installed: True'"
+  set_fact:
+    code_addons_installed: True
+
+- name: "Add 'code_addons_installed: True' to {{ iiab_state_file }}"
+  lineinfile:
+    path: "{{ iiab_state_file }}"    # /etc/iiab/iiab_state.yml
+    regexp: '^code_addons_installed'
+    line: 'code_addons_installed: True'

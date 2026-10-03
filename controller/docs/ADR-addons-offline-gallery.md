@@ -124,11 +124,14 @@ place is a separate, deliberate change (K2GO-440).
 
 ### How the role is added (upstream-patches)
 
-The role ships as a new `tools/upstream-patches` patch, the same mechanism as
-`0003-forgejo-add-role-4505.patch`: it adds `roles/<addons>/*` plus the variable wiring
-(`default_vars.yml`, `local_vars_android_{small,medium,large}.yml`, `local_vars_large.yml`), the
-`0-init` validations, and the `6-generic-apps` include. It ships `install`/`enabled` False by
-default; the K2Go bake flips them per tier.
+The role is carried as a whole-file overlay under
+`tools/upstream-patches/overlays/roles/code_addons/`, like `code_assets` (K2GO-437), not a
+unified-diff patch (K2GO-444): the files are all new, so an overlay is deterministic and never drifts
+against a moving upstream. Because an overlay cannot add the `6-generic-apps` include, the role has no
+auto-include: the main install does not run it. It is run on demand via `runrole code_addons`. The
+role tree is present on every tier (the overlay is not tier-gated), so on-demand install works
+anywhere; `iiab-android` enables and mirrors it at bake for Standard and Full, not Basic (the mirror
+pulls a large set of `.cgp` files).
 
 ### Load-bearing guards (what must not regress)
 

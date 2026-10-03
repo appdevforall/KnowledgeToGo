@@ -645,9 +645,11 @@ else
       ;;
   esac
 
-  # K2GO-99: the code_addons role (offline Code on the Go add-ons gallery) ships install/enabled
-  # False in every vars template (carried via tools/upstream-patches), so enable it for Standard/Full
-  # here, not Basic: the mirror pulls a large set of .cgp files (hundreds of MB).
+  # K2GO-99 / K2GO-444: the code_addons role (offline Code on the Go add-ons gallery) ships as an
+  # overlay (tools/upstream-patches/overlays), so the role tree is present on every tier but it has NO
+  # 6-generic-apps include: the main install does not run it. It is run on demand via runrole (the
+  # post-install step below does the bake-time mirror). Enable it for Standard/Full here, not Basic:
+  # the mirror pulls a large set of .cgp files (hundreds of MB).
   case "$LOCAL_VARS_URL" in
     *_small*)
       log "Basic tier: Code on the Go add-ons left off."
@@ -701,6 +703,24 @@ fi
 
 bash "$tmp_install" "$@"
 rm -f "$tmp_install"
+
+#-----------------------------
+# K2GO-444: mirror and serve the Code on the Go add-ons gallery (Standard and Full). The code_addons
+# role ships as an overlay with no 6-generic-apps include, so the main install does not run it; run it
+# here via runrole (the same path the app uses for on-demand installs). Needs internet, which the bake
+# has. Non-fatal: a failure leaves the box without the add-ons gallery but does not fail the bake.
+#-----------------------------
+case "$LOCAL_VARS_URL" in
+  *_small*)
+    log "Basic tier: Code on the Go add-ons gallery left off."
+    ;;
+  *)
+    if is_role_enabled code_addons; then
+      log "Mirroring Code on the Go add-ons gallery (runrole code_addons)..."
+      ( cd /opt/iiab/iiab && ./runrole code_addons ) || warn "code_addons runrole failed; box will lack the add-ons gallery"
+    fi
+    ;;
+esac
 
 #-----------------------------
 # K2GO-437: mirror and serve the Code on the Go build assets (Full only). The code_assets role ships
