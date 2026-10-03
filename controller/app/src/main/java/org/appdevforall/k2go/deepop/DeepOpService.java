@@ -80,8 +80,10 @@ public final class DeepOpService extends Service {
 
     /** K2GO-372: a restore is one run of three passes — stage the file, verify it, extract it — so they
      *  share one bar instead of each filling it and sending it back to zero. */
-    private static final int RESTORE_PASSES = 3;
-    private static final int COPY_PASS = 0;
+    // K2GO-448: public so the restore UI (BackupJobFragment) labels its optimistic first-stage status
+    // from the same source, instead of hardcoding the count. The owner of the pass model is this service.
+    public static final int RESTORE_PASSES = 3;
+    public static final int COPY_PASS = 0;
     private static final int VERIFY_PASS = 1;
     private static final int EXTRACT_PASS = 2;
 
@@ -186,7 +188,12 @@ public final class DeepOpService extends Service {
         // Taking the lock here also sends the box down (RESTORE is a STOPPED-class holder, so desired
         // goes DOWN on the next reconciler tick) — which is what the confirm the user just answered
         // promised, and it means the explicit stop below has little left to wait for.
-        stepText = getString(restoring ? R.string.k2go_br_status_copying : R.string.k2go_br_status_stopping);
+        // K2GO-448: the restore's first stage ("[1/3] Copying the file") must carry the prefix from the
+        // start, so the notification and the initial indeterminate state match the progress emits below.
+        stepText = restoring
+                ? org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
+                        COPY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_copying))
+                : getString(R.string.k2go_br_status_stopping);
         startForeground(NOTIFICATION_ID, buildNotification(stepText));
         acquireHardwareLocks();
 

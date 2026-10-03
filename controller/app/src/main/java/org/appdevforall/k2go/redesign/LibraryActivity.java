@@ -34,6 +34,9 @@ public class LibraryActivity extends AppCompatActivity
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
+    // K2GO-448: the rootfs install shows two measured bars (download, then verify+extract); one source
+    // for the count so both stage labels below agree. PROVISIONING is an unnumbered spinner, not a bar.
+    private static final int ROOTFS_INSTALL_STAGES = 2;
     /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
     public static final String EXTRA_INSTALLING = "installing";
     // K2GO-391: the disk guard's notification opens this activity with a pre-filled report to send.
@@ -493,7 +496,7 @@ public class LibraryActivity extends AppCompatActivity
             // tells the user whether waiting is still worth it.
             // K2GO-448: the rootfs install is two measured bars (download, then verify+extract);
             // mark this one as stage 1 of 2 so the per-stage time does not read as a slowdown.
-            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(0, 2,
+            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(0, ROOTFS_INSTALL_STAGES,
                     st.message.isEmpty()
                             ? getString(R.string.k2go_downloading_library) : st.message));
             installBar.setIndeterminate(false);
@@ -532,7 +535,7 @@ public class LibraryActivity extends AppCompatActivity
             // Only the verb on the status line changes at the handoff.
             boolean verifying = st.phase == InstallState.Phase.VERIFYING;
             // K2GO-448: stage 2 of 2 (verify and extract share one unified bar; only the verb changes).
-            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(1, 2,
+            installStatus.setText(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(1, ROOTFS_INSTALL_STAGES,
                     org.appdevforall.k2go.deploy.domain.ExtractProgress.firstLine(
                             getString(verifying ? R.string.k2go_verifying_files : R.string.install_status_extracting))));
             if (st.percent < 0) {
