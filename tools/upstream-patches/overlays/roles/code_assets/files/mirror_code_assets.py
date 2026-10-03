@@ -350,6 +350,75 @@ def mirror(source_base, serve_base, out, manifest_path=MANIFEST_DEFAULT,
     return failed == 0
 
 
+def aria2_input(source_base, out, manifest_path=MANIFEST_DEFAULT, reuse_from=None):
+    """Emit an aria2 input-file for the files that must be DOWNLOADED (K2GO-443): per asset a URL,
+    an `out=<path>` (keeps the serve-relative subdir), and `checksum=md5=<published>` so aria2 verifies
+    integrity during the transfer. Files whose published .md5 still matches the served one are UNCHANGED:
+    they are staged straight into `out` from the served tree (no download), exactly like the mirror's
+    --reuse-from. Each asset's .md5 sidecar (the published md5) is written into `out`, so finalize()
+    only builds the page. Prints NOTHING when every file is unchanged: the runner treats empty input as
+    'up to date' and keeps the live tree. Reuse is compared by the published vs served .md5, no re-hash."""
+    source_base = source_base.rstrip("/")
+    out = Path(out)
+    reuse_from = Path(reuse_from) if reuse_from else None
+    assets = load_manifest(manifest_path)
+    published = {a["path"]: published_md5(source_base, a["path"]) for a in assets}
+    reuse_ok = {}
+    for a in assets:
+        p = a["path"]
+        reuse_ok[p] = (
+            reuse_from is not None
+            and published[p] is not None
+            and served_md5(reuse_from, p) == published[p]
+            and (reuse_from / p).is_file()
+        )
+    if all(reuse_ok[a["path"]] for a in assets):
+        return True   # every file unchanged: print nothing, stage nothing (up to date)
+
+    lines = []
+    for a in assets:
+        p = a["path"]
+        dest = out / p
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        want = published[p]
+        if want is not None:
+            # Sidecar from the published md5; aria2 verifies the downloaded file matches it (checksum= below).
+            dest.with_name(dest.name + ".md5").write_text(f"{want}  {Path(p).name}\n", encoding="utf-8")
+        if reuse_ok[p]:
+            shutil.copyfile(reuse_from / p, dest)   # unchanged: stage from the served tree, no download
+        else:
+            # aria2 does not reliably place a file from an out= that contains a subdir (on device it
+            # wrote to the -d root, which would also collide the v7/v8 same-named files). Use an absolute
+            # per-entry dir= plus a basename out=, so each file lands in its serve-relative subdir.
+            lines.append(f"{source_base}/{p}")
+            lines.append(f"  dir={out}/{Path(p).parent}")
+            lines.append(f"  out={Path(p).name}")
+            if want is not None:
+                lines.append(f"  checksum=md5={want}")
+    sys.stdout.write("\n".join(lines) + "\n")
+    return True
+
+
+def finalize(serve_base, out, manifest_path=MANIFEST_DEFAULT, verbose=True):
+    """Build the browse page after the aria2 download (K2GO-443). aria2 verified each downloaded file
+    against its checksum, and the .md5 sidecars were written by --print-aria2-input, so this only
+    confirms each file is present and renders the page: no re-download, no re-hash."""
+    serve_base = "/" + serve_base.strip("/")
+    out = Path(out)
+    assets = load_manifest(manifest_path)
+    failed = 0
+    for a in assets:
+        if not (out / a["path"]).is_file():
+            failed += 1
+            print(f"  MISSING {a['path']}: not present after download", file=sys.stderr)
+    sizes = _staged_sizes_from(out, assets)
+    (out / INDEX).write_bytes(build_index(assets, sizes, serve_base))
+    if verbose:
+        print(f"wrote {INDEX} ({len(assets)} assets)")
+    print(f"done: {len(assets) - failed} present, {failed} missing")
+    return failed == 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Mirror the Code on the Go build assets.")
     ap.add_argument("--source-base", default="https://appdevforall.org/dev-assets",
@@ -358,15 +427,34 @@ def main(argv=None):
                     help="local serve path, used for the copy-link URLs on the page")
     ap.add_argument("--manifest", default=str(MANIFEST_DEFAULT),
                     help="asset manifest (paths, titles, descriptions)")
-    ap.add_argument("--out", required=True, help="output mirror directory")
+    ap.add_argument("--out", default=None, help="output mirror directory")
     ap.add_argument("--reuse-from", default=None,
                     help="the currently served tree; reuse unchanged files from it "
                          "instead of re-downloading (compared by the published .md5)")
     ap.add_argument("--plan-only", action="store_true",
                     help="test only: fetch the .md5 set and report the plan, "
                          "download no large file and write no page")
+    # K2GO-443: the durable job engine downloads the assets with aria2 (resilient: percent, pause,
+    # resume, retry), then calls --finalize-only to verify and build the page. --print-aria2-input
+    # hands the runner the url+out list from this one source (manifest + base).
+    ap.add_argument("--print-aria2-input", action="store_true",
+                    help="print an aria2 input-file (url + out=path per asset) for the job runner")
+    ap.add_argument("--finalize-only", action="store_true",
+                    help="verify already-downloaded files (by the published .md5) and write the page, "
+                         "without downloading (used after the aria2 job-engine download)")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args(argv)
+
+    if args.print_aria2_input:
+        if not args.out:
+            ap.error("--out is required for --print-aria2-input")
+        return 0 if aria2_input(args.source_base, args.out,
+                                manifest_path=args.manifest, reuse_from=args.reuse_from) else 1
+    if not args.out:
+        ap.error("--out is required")
+    if args.finalize_only:
+        ok = finalize(args.serve_base, args.out, manifest_path=args.manifest, verbose=not args.quiet)
+        return 0 if ok else 1
     ok = mirror(args.source_base, args.serve_base, args.out,
                 manifest_path=args.manifest, reuse_from=args.reuse_from,
                 plan_only=args.plan_only, verbose=not args.quiet)

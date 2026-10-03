@@ -112,8 +112,6 @@ public class ModuleDetailFragment extends Fragment {
         final com.google.android.material.checkbox.MaterialCheckBox forgejoRepos =
                 root.findViewById(R.id.k2go_moddet_forgejo_repos);
         final boolean isForgejo = "forgejo".equals(c.key());
-        final boolean isCodeAddons = "code_addons".equals(c.key());
-        final boolean isCodeAssets = "code_assets".equals(c.key());
         // K2GO-417: the repos opt-in is an INSTALL-TIME choice, so it is shown ONLY in the installable
         // branch below (default-checked in the layout). Once the module is installed it stays GONE:
         // toggling it would do nothing (roles are not reinstalled from here, and unchecking cannot remove
@@ -199,21 +197,13 @@ public class ModuleDetailFragment extends Fragment {
                             });
                         });
                     }
-                    if (isCodeAddons) {
-                        // K2GO-99: an installed add-ons gallery offers a live refresh (re-mirror the
-                        // published gallery). Minimal inline progress via the shared flow; no status gate
-                        // (unlike Forgejo there is no sub-state: installed means there is a gallery).
-                        installNowBtn.setText(R.string.k2go_code_addons_update);
-                        installNowBtn.setOnClickListener(v ->
-                                org.appdevforall.k2go.addons.presentation.AddonsRefresh.start(requireActivity(), installNowBtn));
-                        installNowBtn.setVisibility(View.VISIBLE);
-                    }
-                    if (isCodeAssets) {
-                        // K2GO-437: an installed build-assets tree offers the same live refresh (re-mirror
-                        // the release build set). Shared flow, like the add-ons update.
-                        installNowBtn.setText(R.string.k2go_code_assets_update);
-                        installNowBtn.setOnClickListener(v ->
-                                org.appdevforall.k2go.codeassets.presentation.CodeAssetsRefresh.start(requireActivity(), installNowBtn));
+                    // K2GO-449: an installed content module's update action comes from the ModuleActions
+                    // registry (code_addons, code_assets, ...), so this fragment no longer carries one if
+                    // per module. Forgejo's repos action stays special above (status-gated).
+                    ModuleActions.InstalledAction ia = ModuleActions.installed(c.key());
+                    if (ia != null) {
+                        installNowBtn.setText(ia.labelRes);
+                        installNowBtn.setOnClickListener(v -> ia.handler.run(requireActivity(), installNowBtn));
                         installNowBtn.setVisibility(View.VISIBLE);
                     }
                     return;   // a module cannot be uninstalled or reinstalled here (repos action aside)
