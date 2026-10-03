@@ -9,4 +9,8 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources></resources>
+<resources>
+    <!-- K2GO-445: Code on the Go Dev group tile. Member count on the tile and the members-sheet
+         subtitle. WIP: migrate to strings.xml with all 33 locale values before the PR merges. -->
+    <string name="k2go_code_dev_count" translatable="false">%1$d tools</string>
+</resources>
