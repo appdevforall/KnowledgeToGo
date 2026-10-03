@@ -196,11 +196,12 @@ public class LibraryHomeFragment extends Fragment {
 
         // K2GO-445: the group's members (the IDE, its add-ons, its build assets), same filtering as the
         // grid. If all are filtered out, drop the empty group tile too.
-        // K2GO-443: each member carries its own glyph (they shared the code "</>" before): Code on the Go
-        // = code, Add-ons = extension (puzzle), Build assets = box. Drives the row AND the action-sheet header.
-        codeDevMembers.add(new Card("code",        getString(R.string.k2go_card_code),        false, R.drawable.ic_card_code));
-        codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, R.drawable.ic_card_addons));
-        codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, R.drawable.ic_card_assets));
+        // K2GO-443: each member's glyph comes from ModuleCards (the ONE source also used by Module
+        // management, the module detail and the action-sheet header), so an icon change there flows to
+        // every surface and never drifts. Code on the Go = code, Add-ons = extension, Build assets = box.
+        codeDevMembers.add(new Card("code",        getString(R.string.k2go_card_code),        false, moduleIcon("code")));
+        codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, moduleIcon("code-addons")));
+        codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, moduleIcon("code-assets")));
         filterHidden(codeDevMembers);
         filterHidden(cards);
         if (codeDevMembers.isEmpty()) {
@@ -431,6 +432,14 @@ public class LibraryHomeFragment extends Fragment {
         }
         ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
                 () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
+    }
+
+    /** K2GO-443: a module's canonical glyph from ModuleCards: the single source every surface reads, so a
+     *  per-module icon change is made once and shows in Module management, the detail, the action sheet AND
+     *  the Home members row. The code glyph is a defensive fallback if the endpoint has no backing card. */
+    private static int moduleIcon(String endpoint) {
+        ModuleCards.Card c = ModuleCards.byEndpoint(endpoint);
+        return c != null ? c.imageRes : R.drawable.ic_card_code;
     }
 
     /**
