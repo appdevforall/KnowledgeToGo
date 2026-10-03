@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,11 @@ public class LibraryHomeFragment extends Fragment {
     private int headerState = H_STARTING;
 
     private final List<Card> cards = new ArrayList<>();
+    // K2GO-445: the three Code on the Go modules collapse into one "Code on the Go Dev" group tile.
+    // The members are not grid cards; the tile opens a members sheet that routes each one through the
+    // same onCardClick/openSheet a normal card uses, so nothing here duplicates that flow.
+    private static final String CODE_DEV = "code-dev";
+    private final List<Card> codeDevMembers = new ArrayList<>();
     private final Handler main = new Handler(Looper.getMainLooper());
     private TextView homeStatus;
     private View homeStatusDot;
@@ -179,19 +185,33 @@ public class LibraryHomeFragment extends Fragment {
     // in Module management). Rebuilt on a Hide from the action sheet.
     private void populateCards() {
         cards.clear();
+        codeDevMembers.clear();
         cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
-        cards.add(new Card("code",    getString(R.string.k2go_card_code),    false, R.drawable.ic_card_code));
-        cards.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, R.drawable.ic_card_code));
-        cards.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, R.drawable.ic_card_code));
+        // K2GO-445: one group tile stands in for the three Code on the Go modules, in their place.
+        cards.add(new Card(CODE_DEV,  getString(R.string.k2go_card_code_dev), false, R.drawable.ic_card_code));
         cards.add(new Card("forgejo", getString(R.string.k2go_card_forgejo), false, R.drawable.ic_card_forgejo));
         cards.add(new Card("kiwix",   getString(R.string.k2go_card_wikipedia), true,  R.drawable.ic_card_wikipedia));
         cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
         cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
-        for (java.util.Iterator<Card> it = cards.iterator(); it.hasNext(); ) {
+
+        // K2GO-445: the group's members (the IDE, its add-ons, its build assets), same filtering as the
+        // grid. If all are filtered out, drop the empty group tile too.
+        codeDevMembers.add(new Card("code",        getString(R.string.k2go_card_code),        false, R.drawable.ic_card_code));
+        codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, R.drawable.ic_card_code));
+        codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, R.drawable.ic_card_code));
+        filterHidden(codeDevMembers);
+        filterHidden(cards);
+        if (codeDevMembers.isEmpty()) {
+            for (java.util.Iterator<Card> it = cards.iterator(); it.hasNext(); )
+                if (CODE_DEV.equals(it.next().endpoint)) { it.remove(); break; }
+        }
+    }
+
+    // K2GO-445/415/416: drop a module the app runtime cannot run (a 64-bit-only module on a 32-bit app)
+    // or one the user hid from Home. The group tile (no backing module) is never dropped here.
+    private void filterHidden(List<Card> list) {
+        for (java.util.Iterator<Card> it = list.iterator(); it.hasNext(); ) {
             Card card = it.next();
-            // K2GO-415/416: hide a module the app runtime cannot run (a 64-bit-only module like Kiwix
-            // on a 32-bit app), like Module management and Get more do, instead of showing a permanent
-            // "Not supported" card on Home.
             if (unsupported(card)) { it.remove(); continue; }
             ModuleCards.Card m = ModuleCards.byEndpoint(card.endpoint);
             if (m != null && HiddenModules.contains(requireContext(), m.key())) it.remove();
@@ -327,6 +347,7 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     private void onCardClick(Card c) {
+        if (CODE_DEV.equals(c.endpoint)) { openCodeDevSheet(); return; }   // K2GO-445: group tile -> members sheet
         // ADFA-5061: a card whose content is downloading opens the platform, whatever the
         // last probe said. Without this the label and the tap disagree — the card reads
         // "Adding content" and a tap that lost the probe race opens the install sheet for a
@@ -408,6 +429,118 @@ public class LibraryHomeFragment extends Fragment {
         }
         ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
                 () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
+    }
+
+    /**
+     * K2GO-445: the members sheet for the "Code on the Go Dev" group. Lists the member modules (name +
+     * status); a row routes through the SAME onCardClick a grid card uses (open if ready, else the
+     * per-module action sheet with Install/Schedule/About/Hide), so nothing here duplicates that flow.
+     */
+    private void openCodeDevSheet() {
+        final Context ctx = requireContext();
+        final com.google.android.material.bottomsheet.BottomSheetDialog dlg =
+                new com.google.android.material.bottomsheet.BottomSheetDialog(ctx);
+        LinearLayout content = new LinearLayout(ctx);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_surface));
+        content.setPadding(dpx(16), dpx(10), dpx(16), dpx(20));
+
+        View handle = new View(ctx);
+        handle.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_hairline));
+        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(dpx(42), dpx(5));
+        hlp.gravity = Gravity.CENTER_HORIZONTAL; hlp.bottomMargin = dpx(12);
+        content.addView(handle, hlp);
+
+        TextView title = new TextView(ctx);
+        // K2GO-445: spell out "Development" in the sheet header (room here), while the tile keeps "Dev".
+        title.setText(R.string.k2go_code_dev_sheet_title);
+        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
+        title.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
+        content.addView(title);
+        TextView count = new TextView(ctx);
+        count.setText(getString(R.string.k2go_code_dev_count, codeDevMembers.size()));
+        count.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        count.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(-1, -2);
+        clp.bottomMargin = dpx(8);
+        content.addView(count, clp);
+
+        for (final Card m : codeDevMembers) {
+            LinearLayout rowv = new LinearLayout(ctx);
+            rowv.setOrientation(LinearLayout.HORIZONTAL);
+            rowv.setGravity(Gravity.CENTER_VERTICAL);
+            rowv.setBackgroundResource(R.drawable.k2go_card_bg);
+            rowv.setMinimumHeight(dpx(56));
+            rowv.setPadding(dpx(16), dpx(12), dpx(16), dpx(12));
+            rowv.setClickable(true); rowv.setFocusable(true);
+            rowv.setOnClickListener(v -> { dlg.dismiss(); onCardClick(m); });
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(-1, -2);
+            rlp.topMargin = dpx(8);
+            rowv.setLayoutParams(rlp);
+
+            ImageView ic = new ImageView(ctx);
+            ic.setImageResource(m.iconRes);
+            ic.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_teal));
+            LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(dpx(24), dpx(24));
+            ilp.rightMargin = dpx(14);
+            rowv.addView(ic, ilp);
+
+            TextView name = new TextView(ctx);
+            name.setText(m.title);
+            name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
+            name.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
+            rowv.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
+
+            // Status dot + label: reuse applyState by pointing the member's views at this row.
+            View dot = new View(ctx);
+            dot.setBackgroundResource(R.drawable.k2go_dot);
+            LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(dpx(9), dpx(9));
+            dlp.rightMargin = dpx(6);
+            rowv.addView(dot, dlp);
+            TextView status = new TextView(ctx);
+            status.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            rowv.addView(status);
+            TextView chev = new TextView(ctx);
+            chev.setText("›"); chev.setTextSize(18);
+            chev.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            LinearLayout.LayoutParams cvlp = new LinearLayout.LayoutParams(-2, -2);
+            cvlp.leftMargin = dpx(8);
+            rowv.addView(chev, cvlp);
+
+            m.dot = dot; m.status = status;
+            // Seed from last-known evidence so a ready member routes correctly on open, before the
+            // async probe returns (otherwise a fast tap on a ready member hits the default GRAY state).
+            PlatformPresence.Evidence seen = PlatformEvidence.last(m.endpoint);
+            if (seen == PlatformPresence.Evidence.PRESENT) m.state = GREEN;
+            else if (seen == PlatformPresence.Evidence.ABSENT) m.state = GRAY;
+            applyState(m, m.state);
+
+            // Fresh probe so the label and the tap routing are current.
+            AppExecutors.get().io().execute(() -> {
+                final PlatformPresence.Evidence ev = probe(m.endpoint);
+                PlatformEvidence.record(m.endpoint, ev);
+                main.post(() -> {
+                    if (!isAdded()) return;
+                    if (ev == PlatformPresence.Evidence.PRESENT) applyState(m, GREEN);
+                    else if (ev == PlatformPresence.Evidence.ABSENT) applyState(m, GRAY);
+                    else applyState(m, AMBER);
+                });
+            });
+            content.addView(rowv);
+        }
+
+        // Drop the row-view refs when the sheet closes, so the persistent member Cards do not keep
+        // detached views (built from the Activity context) alive until the next populate.
+        dlg.setOnDismissListener(d -> { for (Card mm : codeDevMembers) { mm.dot = null; mm.status = null; } });
+
+        androidx.core.widget.NestedScrollView scroller = new androidx.core.widget.NestedScrollView(ctx);
+        scroller.addView(content, new android.widget.FrameLayout.LayoutParams(-1, -2));
+        dlg.setContentView(scroller);
+        dlg.show();
+    }
+
+    private int dpx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     private boolean isScheduled(Card c) {
@@ -732,6 +865,13 @@ public class LibraryHomeFragment extends Fragment {
     private void applyState(Card c, int st) {
         c.state = st;
         if (c.dot == null || c.status == null) return;
+        // K2GO-445: the group tile shows a member count, not a run-state (no dot).
+        if (CODE_DEV.equals(c.endpoint)) {
+            c.dot.setVisibility(View.GONE);
+            c.status.setText(getString(R.string.k2go_code_dev_count, codeDevMembers.size()));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            return;
+        }
         int dotColor, textColor;
         String label;
         switch (st) {

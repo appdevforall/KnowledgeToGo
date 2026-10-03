@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_none">منابع ساخت از قبل به‌روز هستند</string>
     <string name="k2go_code_assets_update_failed">به‌روزرسانی منابع ساخت ممکن نشد</string>
     <string name="k2go_code_assets_update_some_failed">برخی منابع ساخت به‌روزرسانی نشدند</string>
+    <string name="k2go_code_dev_count">%1$d ابزار</string>
 </resources>

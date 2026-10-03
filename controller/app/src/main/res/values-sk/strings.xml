@@ -1404,4 +1404,5 @@
     <string name="k2go_code_assets_update_none">Zdroje zostavenia sú už aktuálne</string>
     <string name="k2go_code_assets_update_failed">Zdroje zostavenia sa nepodarilo aktualizovať</string>
     <string name="k2go_code_assets_update_some_failed">Niektoré zdroje zostavenia sa nepodarilo aktualizovať</string>
+    <string name="k2go_code_dev_count">%1$d nástrojov</string>
 </resources>

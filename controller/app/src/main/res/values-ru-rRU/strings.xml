@@ -1473,4 +1473,5 @@
     <string name="k2go_code_assets_update_none">Ресурсы сборки уже обновлены</string>
     <string name="k2go_code_assets_update_failed">Не удалось обновить ресурсы сборки</string>
     <string name="k2go_code_assets_update_some_failed">Некоторые ресурсы сборки не удалось обновить</string>
+    <string name="k2go_code_dev_count">%1$d инструментов</string>
 </resources>

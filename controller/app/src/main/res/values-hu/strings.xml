@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_none">A build-erőforrások már naprakészek</string>
     <string name="k2go_code_assets_update_failed">A build-erőforrásokat nem sikerült frissíteni</string>
     <string name="k2go_code_assets_update_some_failed">Néhány build-erőforrást nem sikerült frissíteni</string>
+    <string name="k2go_code_dev_count">%1$d eszköz</string>
 </resources>

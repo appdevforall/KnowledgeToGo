@@ -1404,4 +1404,5 @@
     <string name="k2go_code_assets_update_none">Ресурсите за компилиране вече са актуални</string>
     <string name="k2go_code_assets_update_failed">Ресурсите за компилиране не могат да бъдат актуализирани</string>
     <string name="k2go_code_assets_update_some_failed">Някои ресурси за компилиране не можаха да бъдат актуализирани</string>
+    <string name="k2go_code_dev_count">%1$d инструмента</string>
 </resources>

@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_none">Buildbronnen zijn al up-to-date</string>
     <string name="k2go_code_assets_update_failed">Kan de buildbronnen niet bijwerken</string>
     <string name="k2go_code_assets_update_some_failed">Sommige buildbronnen konden niet worden bijgewerkt</string>
+    <string name="k2go_code_dev_count">%1$d tools</string>
 </resources>
