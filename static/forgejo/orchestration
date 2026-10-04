@@ -91,6 +91,21 @@ _fj_wait_200() {
   warn "forgejo did not reach 200 after $((FORGEJO_WAIT_TRIES*5))s"; return 1
 }
 
+# K2GO-450: make sure forgejo is actually running before we wait for it. On the module-install path
+# the forgejo role enables and restarts forgejo INSIDE a transient proot that is then killed, so the
+# live proot's pdsm never started it: _fj_wait_200 would then wait the whole window and fail with an
+# empty log ("a relaunch fixes it" = a new proot finally starts the enabled service). Start it here,
+# idempotently, via pdsm: the sanctioned in-proot service control (ADR-5343 section 10), in the living
+# proot where the seed runs. No-op when forgejo already serves (the Full / boot path) or when pdsm is
+# absent (non-proot / tests), so it never makes things worse than the current wait-then-fail.
+_fj_ensure_running() {
+  [ "$(curl -s -m 3 -o /dev/null -w '%{http_code}' "$FORGEJO_HEALTH" 2>/dev/null)" = "200" ] && return 0
+  command -v pdsm >/dev/null 2>&1 || return 0
+  log "forgejo not serving yet; starting it via pdsm"
+  pdsm enable forgejo >/dev/null 2>&1 || true
+  pdsm start  forgejo >/dev/null 2>&1 || pdsm restart forgejo >/dev/null 2>&1 || true
+}
+
 # K2GO-417: resolve the admin credential from the single source (dash-node credentials.ts) unless the
 # caller set it in the env. Keeps the seed and the WebView auto-login from drifting: both read the same
 # value. Best-effort: if dash-node is unreachable the built-in fallback (equal to credentials.ts
@@ -192,6 +207,7 @@ _fj_seed_one() {
 
 # ===== entry point (what the installer gate calls) =========================
 seed_forgejo() {
+  _fj_ensure_running             # K2GO-450: start forgejo if a module-install left it enabled-but-down
   _fj_wait_200 || return 1
   _fj_resolve_admin_creds        # K2GO-417: derive the admin credential from credentials.ts (single source)
   _fj_ensure_admin || return 1
