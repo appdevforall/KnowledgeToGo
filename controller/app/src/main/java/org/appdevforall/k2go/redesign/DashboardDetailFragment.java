@@ -61,9 +61,11 @@ public class DashboardDetailFragment extends Fragment {
     // its ACTION_PROGRESS broadcast, so the bar resumes where the rebuild actually is after minimize /
     // restore instead of restarting from 0.
     private LinearProgressIndicator progressBar;
-    // K2GO-383: the "NN%  ~N min left" status line under the label, same position + style as the content
-    // updaters (forgejo / build assets / add-ons): a descriptive label, then this live status line.
-    private TextView updatingStatus;
+    // K2GO-383: the status line under the label is two fixed columns: the percent anchored left, the ETA
+    // anchored right (space-between). Each has its own anchor, so a width change in one never shifts the
+    // other. Style matches the content updaters' status line (BodySmall, muted, single line).
+    private TextView updatingPercent;
+    private TextView updatingEta;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -282,18 +284,36 @@ public class DashboardDetailFragment extends Fragment {
         label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         row.addView(label);
 
-        // K2GO-383: the live "NN%  ~N min left" line under the label, matching the content updaters'
-        // status line (BodySmall, muted, single line) so progress reads the same across the app.
-        updatingStatus = new TextView(requireContext());
-        updatingStatus.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        updatingStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        updatingStatus.setMaxLines(1);
-        updatingStatus.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        // K2GO-383: the status line is two fixed columns: percent left, ETA right (space-between). Each
+        // column keeps its anchor, so a width change in one never nudges the other (no jitter). Same
+        // BodySmall / muted / single-line style as the content updaters' status line.
+        LinearLayout statusRow = new LinearLayout(requireContext());
+        statusRow.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams statusLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         statusLp.topMargin = Math.round(2 * d);
-        updatingStatus.setLayoutParams(statusLp);
-        row.addView(updatingStatus);
+        statusRow.setLayoutParams(statusLp);
+
+        updatingPercent = new TextView(requireContext());
+        updatingPercent.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        updatingPercent.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        updatingPercent.setMaxLines(1);
+        statusRow.addView(updatingPercent, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        updatingEta = new TextView(requireContext());
+        updatingEta.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        updatingEta.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        updatingEta.setMaxLines(1);
+        updatingEta.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        updatingEta.setGravity(android.view.Gravity.END);
+        // weight 1 so the ETA column takes the slack and hugs the right edge, opposite the percent.
+        LinearLayout.LayoutParams etaLp = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        etaLp.leftMargin = Math.round(8 * d);
+        statusRow.addView(updatingEta, etaLp);
+
+        row.addView(statusRow);
 
         // The bar and Cancel sit on one line: bar takes the width, Cancel is right beside it.
         LinearLayout line = new LinearLayout(requireContext());
@@ -375,7 +395,8 @@ public class DashboardDetailFragment extends Fragment {
             // K2GO-383: start indeterminate with the plain label; the service's ACTION_PROGRESS then
             // drives the bar + the "NN%  ~N min left" caption. pollLog only feeds the Details panel now.
             if (progressBar != null) progressBar.setIndeterminate(true);
-            if (updatingStatus != null) updatingStatus.setText("");   // filled by the first progress tick
+            if (updatingPercent != null) updatingPercent.setText("");   // filled by the first progress tick
+            if (updatingEta != null) updatingEta.setText("");
             if (logPanel != null) logPanel.reset();   // K2GO-374: start clean; toggle hidden until lines
             main.post(logPoll);
         }
@@ -403,20 +424,20 @@ public class DashboardDetailFragment extends Fragment {
 
     /** K2GO-383: apply a progress tick from DashboardRebuildService (the persistent owner, so the value
      *  survives this card's recreation). A negative percent means "no phase marker yet" -> indeterminate;
-     *  otherwise set the determinate bar and the "NN%  ~N min left" caption (eta via the shared,
-     *  already-localized EtaText). */
+     *  otherwise set the determinate bar and the two status columns: "NN%" left, the ETA right (eta via
+     *  the shared, already-localized EtaText). */
     private void onProgress(int percent, long etaSeconds) {
         if (!updating || progressBar == null) return;
         if (percent < 0) {
             if (!progressBar.isIndeterminate()) progressBar.setIndeterminate(true);
-            if (updatingStatus != null) updatingStatus.setText("");   // no marker yet; the label stands alone
+            if (updatingPercent != null) updatingPercent.setText("");   // no marker yet; the label stands alone
+            if (updatingEta != null) updatingEta.setText("");
             return;
         }
         if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
         progressBar.setProgressCompat(percent, true);   // animated determinate step
-        if (updatingStatus != null) {
-            updatingStatus.setText(EtaText.percentAndEta(requireContext(), percent, etaSeconds));
-        }
+        if (updatingPercent != null) updatingPercent.setText(percent + "%");
+        if (updatingEta != null) updatingEta.setText(EtaText.of(requireContext(), etaSeconds));
     }
 
     @Override public void onDestroyView() {
