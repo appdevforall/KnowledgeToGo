@@ -48,4 +48,28 @@ public class AnsibleRunOutcomeTest {
         o.observe(null);
         assertFalse(o.failed(0));
     }
+
+    @Test public void ignoredError_withCleanRecap_isNotFailed() {
+        // K2GO-450: the forgejo role has an ignore_errors task that prints [ERROR]/fatal, but the
+        // PLAY RECAP is clean (failed=0, unreachable=0, ignored=1). An ignored error is not a
+        // failure: with a recap present it is authoritative, so the run must NOT be marked failed.
+        AnsibleRunOutcome o = new AnsibleRunOutcome();
+        o.observe("fatal: [127.0.0.1]: FAILED! => {\"msg\": \"something\"} ...ignoring");
+        o.observe("[ERROR]: an ignored task error");
+        o.observe("127.0.0.1 : ok=338 changed=20 unreachable=0 failed=0 skipped=27 rescued=0 ignored=1");
+        assertFalse(o.failed(0));
+    }
+
+    @Test public void realFailureRecap_isFailed() {
+        // A genuinely failed task increments failed= in the recap -> failure (even on a quirky exit 0).
+        AnsibleRunOutcome o = new AnsibleRunOutcome();
+        o.observe("127.0.0.1 : ok=10 changed=3 unreachable=0 failed=2 skipped=1 rescued=0 ignored=0");
+        assertTrue(o.failed(0));
+    }
+
+    @Test public void unreachableHost_isFailed() {
+        AnsibleRunOutcome o = new AnsibleRunOutcome();
+        o.observe("127.0.0.1 : ok=1 changed=0 unreachable=1 failed=0 skipped=0 rescued=0 ignored=0");
+        assertTrue(o.failed(0));
+    }
 }
