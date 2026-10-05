@@ -44,6 +44,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.dashboard.domain.RebuildPhase;
+import org.appdevforall.k2go.dashboard.domain.RebuildProgress;
+import org.appdevforall.k2go.install.presentation.EtaText;
 
 public final class DashboardRebuildService extends Service {
 
@@ -64,6 +67,15 @@ public final class DashboardRebuildService extends Service {
     public static final String STATE_DONE = "done";
     public static final String STATE_ERROR = "error";
     public static final String STATE_CANCELLED = "cancelled";
+    /** K2GO-383: per-tick progress for a visible card. Its own action, so the state receiver is
+     *  untouched. {@link #EXTRA_PERCENT} is 0-100 (or -1 while indeterminate); {@link #EXTRA_ETA_SECONDS}
+     *  is seconds to 100 (or -1 when unknown). */
+    public static final String ACTION_PROGRESS = "org.iiab.controller.DASHBOARD_UPDATE_PROGRESS";
+    public static final String EXTRA_PERCENT = "percent";
+    public static final String EXTRA_ETA_SECONDS = "eta_seconds";
+    /** K2GO-383: the rebuild log tail, carried on the same tick so a visible card feeds its Details panel
+     *  from this one poll instead of running a second /rebuild/log loop of its own. */
+    public static final String EXTRA_LOG = "log";
 
     private static final long POLL_MS = 2500L;
     /**
@@ -90,6 +102,15 @@ public final class DashboardRebuildService extends Service {
     private boolean started = false;    // one rebuild per service instance; ignore re-delivered starts
     private boolean cancelling = false; // a cancel request is in flight; ignore repeats
     private long startedAtMs = 0L;      // ADFA-5343 (Phase 3B): monotonic start, for the stall backstop
+
+    // K2GO-383: the persistent owner of rebuild progress. This service outlives the card's recreation
+    // (minimize / reopen from the notification), so the current phase and when it began live HERE on a
+    // continuous clock: not in the fragment, where they reset to 0 on every recreation. percent + eta
+    // are derived each poll and pushed to both the notification and a visible card.
+    private RebuildPhase progressPhase = RebuildPhase.NONE;
+    private long phaseStartMs = 0L;
+    private int lastPercent = -1;
+    private long lastEtaSeconds = -1L;
 
     /** Kick a NEW background live update (POST + poll). ADFA-5339: {@code updateSite} also refreshes the
      *  served landing page in the same run (default on, from the confirm dialog's checkbox). */
@@ -186,10 +207,45 @@ public final class DashboardRebuildService extends Service {
             @Override public void onState(String state) {
                 if (STATE_DONE.equals(state)) { finish(STATE_DONE, R.string.k2go_dash_live_done); return; }
                 if (STATE_ERROR.equals(state)) { finish(STATE_ERROR, R.string.k2go_dash_live_error); return; }
-                schedule();
+                pollProgressThenSchedule();   // running: refresh percent/eta from the log, then re-poll
             }
             @Override public void onErr(String message) { schedule(); }   // restarting mid-swap; keep waiting
         });
+    }
+
+    /** K2GO-383: fetch the rebuild log, derive percent + eta, push them to the notification and a visible
+     *  card, then schedule the next poll. A missing or transient log keeps the current notification and
+     *  keeps polling (the status poll above owns the terminal verdict). */
+    private void pollProgressThenSchedule() {
+        DashboardClient.rebuildLog(new DashboardClient.RebuildLogCb() {
+            @Override public void onLines(java.util.List<String> lines) {
+                publishProgress(android.text.TextUtils.join("\n", lines));
+                schedule();
+            }
+            @Override public void onErr(String message) { schedule(); }
+        });
+    }
+
+    /** Derive the phase from the log and the percent/eta from the continuous phase clock kept here (so it
+     *  survives the card's recreation), update the ongoing notification, and broadcast for a visible card. */
+    private void publishProgress(String log) {
+        RebuildPhase phase = RebuildProgress.phaseOf(log);
+        if (phase != progressPhase) {
+            progressPhase = phase;
+            phaseStartMs = android.os.SystemClock.elapsedRealtime();
+        }
+        if (phase == RebuildPhase.NONE) {
+            lastPercent = -1; lastEtaSeconds = -1L;   // no marker yet -> indeterminate
+        } else {
+            long elapsed = android.os.SystemClock.elapsedRealtime() - phaseStartMs;
+            lastPercent = RebuildProgress.percentFor(phase, elapsed);
+            lastEtaSeconds = RebuildProgress.etaSecondsFor(phase, elapsed);
+        }
+        NotificationManager m = getSystemService(NotificationManager.class);
+        if (m != null) m.notify(NOTIFICATION_ID, buildOngoing());
+        sendBroadcast(new Intent(ACTION_PROGRESS).setPackage(getPackageName())
+                .putExtra(EXTRA_PERCENT, lastPercent).putExtra(EXTRA_ETA_SECONDS, lastEtaSeconds)
+                .putExtra(EXTRA_LOG, log));   // same poll feeds the card's Details panel
     }
 
     private void schedule() {
@@ -251,17 +307,27 @@ public final class DashboardRebuildService extends Service {
                 new Intent(this, DashboardCancelConfirmActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_dash_live_title))
-                .setContentText(getString(R.string.k2go_dash_live_running))
+                .setContentText(progressText())
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setContentIntent(openDashboardDetail())
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.k2go_dash_cancel), cancel)
-                .build();
+                .addAction(0, getString(R.string.k2go_dash_cancel), cancel);
+        // K2GO-383: determinate once the first phase marker is seen; indeterminate until then.
+        if (lastPercent >= 0) b.setProgress(100, lastPercent, false);
+        else b.setProgress(0, 0, true);
+        return b.build();
+    }
+
+    /** K2GO-383: the ongoing notification text. "NN%  ~N min left" once a phase is known (eta reuses the
+     *  install bar's EtaText, already localized), else the plain running label. */
+    private String progressText() {
+        if (lastPercent < 0) return getString(R.string.k2go_dash_live_running);
+        return EtaText.percentAndEta(this, lastPercent, lastEtaSeconds);
     }
 
     /** Final result notification (done/error) — dismissible, auto-cancels on tap. */

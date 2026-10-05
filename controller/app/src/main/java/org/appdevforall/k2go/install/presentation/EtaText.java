@@ -23,4 +23,13 @@ public final class EtaText {
             default:           return "";   // UNKNOWN -> blank slot
         }
     }
+
+    /** K2GO-383: the one-line progress caption, "NN%" or "NN%  ~N min left" (the eta is appended only when
+     *  known). {@code percent} must be >= 0; the caller owns the indeterminate (percent &lt; 0) case. Used
+     *  by the rebuild notification, which needs the percent and eta in a single string; the in-app card
+     *  renders them as two columns instead, built from {@link #of} plus its own "NN%". */
+    public static String percentAndEta(Context ctx, int percent, long etaSeconds) {
+        String eta = of(ctx, etaSeconds);
+        return eta.isEmpty() ? percent + "%" : percent + "%  " + eta;
+    }
 }
