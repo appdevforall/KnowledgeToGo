@@ -295,10 +295,42 @@ apiRouter.get('/system/disk-guard/firehose', (_req: Request, res: Response): voi
     });
 });
 
+// K2GO-451: one answer to "is the recorded rebuild process still alive?", shared by the status read and
+// the cancel handler so the dead-pid check lives in one place. 'none' = no pid recorded yet (a just
+// started run; never stale), 'dead' = the recorded pid is gone (the script was killed, e.g. a box restart
+// mid-build), 'alive' = /proc/<pid> exists (ours, or a recycled unrelated pid: cmdline tells which).
+// /proc/<pid>/cmdline is NUL-separated; a substring match on the script name is enough.
+function rebuildPidLiveness(): { pid: number; state: 'none' | 'dead' | 'alive'; cmdline: string } {
+    let pid = 0;
+    try { pid = parseInt(fs.readFileSync(REBUILD_PID_FILE, 'utf8').trim(), 10); } catch { /* no pid yet */ }
+    if (!Number.isFinite(pid) || pid <= 1) return { pid: 0, state: 'none', cmdline: '' };
+    let cmdline = '';
+    try { cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, 'utf8'); } catch { /* process gone / no proc */ }
+    if (cmdline === '' && !fs.existsSync(`/proc/${pid}`)) return { pid, state: 'dead', cmdline: '' };
+    return { pid, state: 'alive', cmdline };
+}
+
+// K2GO-451: reset the rebuild run's state files to a terminal value. 'idle' after a user cancel; 'error'
+// when a crashed run (dead pid) is healed, so the app sees a normal failure instead of endless 'running'.
+function clearRebuildState(status: 'idle' | 'error'): void {
+    try { fs.writeFileSync(REBUILD_STATUS_FILE, status); } catch { /* best effort */ }
+    try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* maybe already gone */ }
+    try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* maybe already gone */ }
+    try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* maybe already gone */ }
+}
+
 // Current rebuild state: idle | running | done | error (read from the status file the script writes).
 apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response): void => {
     let state = 'idle';
     try { state = (fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'); } catch { /* no file yet */ }
+    // K2GO-451: a rebuild whose script was killed mid-run (box restart / power loss) cannot write a
+    // terminal status, so this file stays 'running' with a dead pid and nothing clears it. Heal it to
+    // 'error' on read, so the app sees a normal failure instead of polling a phantom forever (and a new
+    // rebuild is no longer refused with 409). A 'running' with no pid yet is a just-started run: leave it.
+    if (state === 'running' && rebuildPidLiveness().state === 'dead') {
+        clearRebuildState('error');
+        state = 'error';
+    }
     res.json({ state });
 });
 
@@ -641,39 +673,29 @@ apiRouter.post('/system/dashboard/rebuild/cancel', (_req: Request, res: Response
     let phase = 'building';
     try { phase = fs.readFileSync(REBUILD_PHASE_FILE, 'utf8').trim() || 'building'; } catch { /* default building */ }
     if (phase === 'promoting') { res.status(409).json({ error: 'promoting', promoting: true, cancelled: false }); return; }
-    let pid = 0;
-    try { pid = parseInt(fs.readFileSync(REBUILD_PID_FILE, 'utf8').trim(), 10); } catch { /* no pid yet */ }
-    if (!Number.isFinite(pid) || pid <= 1) {
+    // K2GO-451: the dead-pid check now lives in rebuildPidLiveness() (shared with the status read).
+    const live = rebuildPidLiveness();
+    if (live.state === 'none') {
         // The run has just started (status is 'running') but hasn't recorded its session pid yet, so we
         // can't signal it. Do NOT claim success or touch the status — the app can retry in a moment.
         res.status(409).json({ error: 'cancel not ready', cancelled: false }); return;
     }
-    // Verify the pid is actually OUR rebuild script before signaling — never SIGTERM a recycled/unrelated
-    // pid. /proc/<pid>/cmdline is NUL-separated; a substring match on the script name is enough.
-    let cmdline = '';
-    try { cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, 'utf8'); } catch { /* process gone / no proc */ }
-    const healStale = (): void => {
-        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'idle'); } catch { /* best effort */ }
-        try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* maybe already gone */ }
-        try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* maybe already gone */ }
-        try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* maybe already gone */ }
-    };
-    if (cmdline === '' && !fs.existsSync(`/proc/${pid}`)) {
+    if (live.state === 'dead') {
         // The run already exited but left stale state (status 'running' with a dead pid) — heal it and
         // report success; there is nothing left to stop.
-        healStale();
+        clearRebuildState('idle');
         res.status(200).json({ ok: true, cancelled: true }); return;
     }
-    if (!cmdline.includes('rebuild-dashboard.sh')) {
+    if (!live.cmdline.includes('rebuild-dashboard.sh')) {
         // The pid is alive but was recycled by an unrelated process — refuse to signal it.
         res.status(409).json({ error: 'stale pid', cancelled: false }); return;
     }
     try {
         // Signal the whole detached session group; the script's on_cancel/EXIT trap sets status idle and
-        // purges staging + lock/phase/pid. We also write idle + best-effort rmdir here as belt-and-suspenders.
-        try { process.kill(-pid, 'SIGTERM'); } catch { /* group already gone */ }
-        try { process.kill(pid, 'SIGTERM'); } catch { /* leader already gone */ }
-        healStale();
+        // purges staging + lock/phase/pid. We also clear here as belt-and-suspenders.
+        try { process.kill(-live.pid, 'SIGTERM'); } catch { /* group already gone */ }
+        try { process.kill(live.pid, 'SIGTERM'); } catch { /* leader already gone */ }
+        clearRebuildState('idle');
         res.status(200).json({ ok: true, cancelled: true });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'cancel failed', cancelled: false });
