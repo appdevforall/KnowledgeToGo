@@ -72,4 +72,13 @@ public class AnsibleRunOutcomeTest {
         o.observe("127.0.0.1 : ok=1 changed=0 unreachable=1 failed=0 skipped=0 rescued=0 ignored=0");
         assertTrue(o.failed(0));
     }
+
+    @Test public void crashSignatureAfterCleanRecap_isStillFailed() {
+        // K2GO-450: IIAB emits several intermediate PLAY RECAPs, so a hard crash can follow an early
+        // clean recap. A clean recap only overrides the softer [ERROR], never a crash signature.
+        AnsibleRunOutcome o = new AnsibleRunOutcome();
+        o.observe("127.0.0.1 : ok=5 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0");
+        o.observe("ERROR! Unable to use multiprocessing, see stderr (lack of access to /dev/shm)");
+        assertTrue(o.failed(0));
+    }
 }
