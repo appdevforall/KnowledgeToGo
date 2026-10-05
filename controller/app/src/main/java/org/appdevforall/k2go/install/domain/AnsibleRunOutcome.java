@@ -15,9 +15,11 @@ package org.appdevforall.k2go.install.domain;
 
 public final class AnsibleRunOutcome {
 
-    // Pre-recap failure hints: used ONLY when no PLAY RECAP was seen (Ansible crashed before it
-    // could summarize). When a recap IS present these are ignored, because Ansible prints [ERROR]
-    // and fatal lines for ignored errors too, which are not failures.
+    // Hard crash signatures: Ansible can die printing these yet still exit 0, and a later clean
+    // PLAY RECAP (IIAB emits several intermediate recaps) must NOT hide them, so a crash always fails.
+    private boolean sawCrash = false;
+    // [ERROR] is softer: Ansible prints it for IGNORED errors too (counted in ignored=, not failed=),
+    // so a clean recap overrides it. Used as the verdict only when no recap was seen.
     private boolean sawError = false;
     private boolean sawRecap = false;        // a PLAY RECAP host-summary line appeared
     private boolean recapFailure = false;    // a recap host line reported failed>0 or unreachable>0
@@ -25,9 +27,11 @@ public final class AnsibleRunOutcome {
     /** Feed each output line as it streams from the container. */
     public void observe(String line) {
         if (line == null) return;
-        if (line.contains("[ERROR]")
-                || line.contains("Unable to use multiprocessing")
+        if (line.contains("Unable to use multiprocessing")
                 || line.contains("HEARTBEAT SESSION STOPPED")) {
+            sawCrash = true;
+        }
+        if (line.contains("[ERROR]")) {
             sawError = true;
         }
         // A PLAY RECAP host summary carries BOTH "unreachable=" and "failed=" (every real recap line
@@ -40,10 +44,11 @@ public final class AnsibleRunOutcome {
         }
     }
 
-    /** True if the run failed. A non-zero exit always fails; otherwise trust the PLAY RECAP when
-     *  present, and fall back to the [ERROR]/crash signatures only when no recap was emitted. */
+    /** True if the run failed. A non-zero exit or a hard crash signature always fails; otherwise
+     *  trust the PLAY RECAP when present, and fall back to the [ERROR] signal only with no recap. */
     public boolean failed(int exitCode) {
         if (exitCode != 0) return true;
+        if (sawCrash) return true;
         if (sawRecap) return recapFailure;
         return sawError;
     }
