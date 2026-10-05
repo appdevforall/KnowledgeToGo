@@ -103,4 +103,29 @@ public class RebuildProgressTest {
         assertTrue("finalize must stay < 100 (status=done snaps to 100), got " + max, max < 100);
         assertTrue("finalize should climb high, got " + max, max >= 90);
     }
+
+    // K2GO-383: ETA (seconds to 100), from the static per-phase medians.
+    @Test public void etaIsUnknownForNoPhase() {
+        assertEquals(-1L, RebuildProgress.etaSecondsFor(RebuildPhase.NONE, 0));
+        assertEquals(-1L, RebuildProgress.etaSecondsFor(null, 0));
+    }
+
+    @Test public void etaAtGitStartCoversTheWholeRun() {
+        // git 2 + staging 146 + smoke 3 + promote 2 + restart 8 + verify 2 + finalize 19 = 182s.
+        assertEquals(182L, RebuildProgress.etaSecondsFor(RebuildPhase.GIT, 0));
+    }
+
+    @Test public void etaShrinksWithinAPhaseAndFloorsAtZero() {
+        long atStart = RebuildProgress.etaSecondsFor(RebuildPhase.FINALIZE, 0);
+        long midway = RebuildProgress.etaSecondsFor(RebuildPhase.FINALIZE, 10_000);
+        assertEquals(19L, atStart);
+        assertTrue("ETA should drop as the phase runs: " + midway + " < " + atStart, midway < atStart);
+        assertEquals(0L, RebuildProgress.etaSecondsFor(RebuildPhase.FINALIZE, 19_000));
+        assertEquals(0L, RebuildProgress.etaSecondsFor(RebuildPhase.FINALIZE, 100_000));
+    }
+
+    @Test public void etaDropsAsPhasesAdvance() {
+        assertTrue(RebuildProgress.etaSecondsFor(RebuildPhase.STAGING, 0)
+                > RebuildProgress.etaSecondsFor(RebuildPhase.FINALIZE, 0));
+    }
 }

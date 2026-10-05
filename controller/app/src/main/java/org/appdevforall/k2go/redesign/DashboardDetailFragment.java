@@ -36,8 +36,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.dashboard.domain.DashboardCardState;
-import org.appdevforall.k2go.dashboard.domain.RebuildPhase;
-import org.appdevforall.k2go.dashboard.domain.RebuildProgress;
+import org.appdevforall.k2go.install.presentation.EtaText;
 import org.appdevforall.k2go.util.AppExecutors;
 
 public class DashboardDetailFragment extends Fragment {
@@ -57,14 +56,12 @@ public class DashboardDetailFragment extends Fragment {
     private org.appdevforall.k2go.widget.LiveLogPanel logPanel;
     private static final long LOG_POLL_MS = 1500L;
     private final Runnable logPoll = this::pollLog;
-    // K2GO-95 (Phase 2): the in-progress bar is determinate, driven by RebuildProgress from the polled
-    // log. We keep the current phase and when it began (a monotonic clock — the silent native-build
-    // stretch carries no log timestamp) so the bar interpolates within a phase and the next real marker
-    // snaps it forward. Indeterminate only until the first marker (NONE); the snap to 100 is the
-    // service's completion broadcast, not this poll.
+    // K2GO-95 / K2GO-383: the determinate in-progress bar + its "NN%  ~N min left" caption. The values
+    // come from DashboardRebuildService (the persistent owner, which outlives this card's recreation) via
+    // its ACTION_PROGRESS broadcast, so the bar resumes where the rebuild actually is after minimize /
+    // restore instead of restarting from 0.
     private LinearProgressIndicator progressBar;
-    private RebuildPhase progressPhase = RebuildPhase.NONE;
-    private long progressPhaseStartMs;
+    private TextView updatingLabel;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -73,6 +70,11 @@ public class DashboardDetailFragment extends Fragment {
     private final BroadcastReceiver rebuildState = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) {
             if (!isAdded()) return;
+            if (DashboardRebuildService.ACTION_PROGRESS.equals(i.getAction())) {
+                onProgress(i.getIntExtra(DashboardRebuildService.EXTRA_PERCENT, -1),
+                        i.getLongExtra(DashboardRebuildService.EXTRA_ETA_SECONDS, -1L));
+                return;
+            }
             String state = i.getStringExtra(DashboardRebuildService.EXTRA_STATE);
             if (DashboardRebuildService.STATE_RUNNING.equals(state)) {
                 setUpdating(true);
@@ -142,6 +144,7 @@ public class DashboardDetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         IntentFilter f = new IntentFilter(DashboardRebuildService.ACTION_STATE);
+        f.addAction(DashboardRebuildService.ACTION_PROGRESS);   // K2GO-383: per-tick percent + eta
         ContextCompat.registerReceiver(requireContext(), rebuildState, f,
                 ContextCompat.RECEIVER_NOT_EXPORTED);
         resolveInitialUpdatingState();
@@ -276,6 +279,7 @@ public class DashboardDetailFragment extends Fragment {
         label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         row.addView(label);
+        updatingLabel = label;   // K2GO-383: updated to "NN%  ~N min left" by onProgress
 
         // The bar and Cancel sit on one line: bar takes the width, Cancel is right beside it.
         LinearLayout line = new LinearLayout(requireContext());
@@ -354,9 +358,10 @@ public class DashboardDetailFragment extends Fragment {
         // ADFA-5339: the Details log only exists while a rebuild runs. Poll it on, tear it down on off.
         main.removeCallbacks(logPoll);
         if (on) {
-            // K2GO-95: a fresh run starts indeterminate until the first marker; pollLog then drives it.
-            progressPhase = RebuildPhase.NONE;
+            // K2GO-383: start indeterminate with the plain label; the service's ACTION_PROGRESS then
+            // drives the bar + the "NN%  ~N min left" caption. pollLog only feeds the Details panel now.
             if (progressBar != null) progressBar.setIndeterminate(true);
+            if (updatingLabel != null) updatingLabel.setText(R.string.k2go_dash_live_running);
             if (logPanel != null) logPanel.reset();   // K2GO-374: start clean; toggle hidden until lines
             main.post(logPoll);
         }
@@ -372,7 +377,6 @@ public class DashboardDetailFragment extends Fragment {
             @Override public void onLines(java.util.List<String> lines) {
                 if (!isAdded() || !updating) return;
                 String log = android.text.TextUtils.join("\n", lines);
-                updateProgressBar(log);
                 if (logPanel != null) logPanel.setContent(log);   // K2GO-374: reveal + auto-scroll handled here
                 main.postDelayed(logPoll, LOG_POLL_MS);
             }
@@ -383,25 +387,23 @@ public class DashboardDetailFragment extends Fragment {
         });
     }
 
-    /** K2GO-95 (Phase 2): drive the determinate bar from the polled log. The phase comes from the log's
-     *  markers ({@link RebuildProgress#phaseOf}); time within a phase comes from the monotonic clock kept
-     *  here, so the silent native-build stretch (no log timestamp) still advances. Indeterminate until the
-     *  first marker; the final snap to 100 is the service's completion broadcast, not this poll. */
-    private void updateProgressBar(String log) {
-        if (progressBar == null) return;
-        RebuildPhase phase = RebuildProgress.phaseOf(log);
-        if (phase != progressPhase) {
-            progressPhase = phase;
-            progressPhaseStartMs = android.os.SystemClock.elapsedRealtime();
-        }
-        if (phase == RebuildPhase.NONE) {
+    /** K2GO-383: apply a progress tick from DashboardRebuildService (the persistent owner, so the value
+     *  survives this card's recreation). A negative percent means "no phase marker yet" -> indeterminate;
+     *  otherwise set the determinate bar and the "NN%  ~N min left" caption (eta via the shared,
+     *  already-localized EtaText). */
+    private void onProgress(int percent, long etaSeconds) {
+        if (!updating || progressBar == null) return;
+        if (percent < 0) {
             if (!progressBar.isIndeterminate()) progressBar.setIndeterminate(true);
+            if (updatingLabel != null) updatingLabel.setText(R.string.k2go_dash_live_running);
             return;
         }
-        long elapsed = android.os.SystemClock.elapsedRealtime() - progressPhaseStartMs;
-        int pct = RebuildProgress.percentFor(phase, elapsed);
         if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
-        progressBar.setProgressCompat(pct, true);   // animated determinate step
+        progressBar.setProgressCompat(percent, true);   // animated determinate step
+        if (updatingLabel != null) {
+            String eta = EtaText.of(requireContext(), etaSeconds);
+            updatingLabel.setText(eta.isEmpty() ? percent + "%" : percent + "%  " + eta);
+        }
     }
 
     @Override public void onDestroyView() {

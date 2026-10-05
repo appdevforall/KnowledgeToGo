@@ -87,4 +87,22 @@ public final class RebuildProgress {
         int filled = Math.min(width - 1, (int) Math.floor(width * fraction));
         return phase.startPercent + filled;
     }
+
+    /**
+     * K2GO-383: a rough ETA to reach 100, in seconds, from the static model: the time left in the
+     * current phase (its median minus how long we have been in it, floored at 0) plus the full median
+     * of every later phase. It is an estimate, like the bar itself, not a live fact. {@link
+     * RebuildPhase#NONE} (no marker yet) returns -1 so the caller can hide the ETA until it is known.
+     */
+    public static long etaSecondsFor(RebuildPhase phase, long elapsedInPhaseMs) {
+        if (phase == null || phase == RebuildPhase.NONE) {
+            return -1L;
+        }
+        long remainingMs = Math.max(0L, phase.medianMs - Math.max(0L, elapsedInPhaseMs));
+        RebuildPhase[] phases = RebuildPhase.values();
+        for (int i = phase.ordinal() + 1; i < phases.length; i++) {
+            remainingMs += phases[i].medianMs;
+        }
+        return (remainingMs + 999L) / 1000L;   // ceil to whole seconds
+    }
 }
