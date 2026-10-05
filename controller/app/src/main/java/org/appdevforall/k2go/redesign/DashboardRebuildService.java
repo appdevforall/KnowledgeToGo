@@ -73,6 +73,9 @@ public final class DashboardRebuildService extends Service {
     public static final String ACTION_PROGRESS = "org.iiab.controller.DASHBOARD_UPDATE_PROGRESS";
     public static final String EXTRA_PERCENT = "percent";
     public static final String EXTRA_ETA_SECONDS = "eta_seconds";
+    /** K2GO-383: the rebuild log tail, carried on the same tick so a visible card feeds its Details panel
+     *  from this one poll instead of running a second /rebuild/log loop of its own. */
+    public static final String EXTRA_LOG = "log";
 
     private static final long POLL_MS = 2500L;
     /**
@@ -241,7 +244,8 @@ public final class DashboardRebuildService extends Service {
         NotificationManager m = getSystemService(NotificationManager.class);
         if (m != null) m.notify(NOTIFICATION_ID, buildOngoing());
         sendBroadcast(new Intent(ACTION_PROGRESS).setPackage(getPackageName())
-                .putExtra(EXTRA_PERCENT, lastPercent).putExtra(EXTRA_ETA_SECONDS, lastEtaSeconds));
+                .putExtra(EXTRA_PERCENT, lastPercent).putExtra(EXTRA_ETA_SECONDS, lastEtaSeconds)
+                .putExtra(EXTRA_LOG, log));   // same poll feeds the card's Details panel
     }
 
     private void schedule() {

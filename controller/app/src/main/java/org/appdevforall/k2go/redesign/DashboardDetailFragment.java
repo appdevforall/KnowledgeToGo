@@ -54,16 +54,14 @@ public class DashboardDetailFragment extends Fragment {
     // ADFA-5339 / K2GO-374: expandable Details — the live rebuild log via the shared LiveLogPanel. The
     // toggle stays hidden until there are lines (an older box without /rebuild/log shows no Details).
     private org.appdevforall.k2go.widget.LiveLogPanel logPanel;
-    private static final long LOG_POLL_MS = 1500L;
-    private final Runnable logPoll = this::pollLog;
     // K2GO-95 / K2GO-383: the determinate in-progress bar + its "NN%  ~N min left" caption. The values
     // come from DashboardRebuildService (the persistent owner, which outlives this card's recreation) via
     // its ACTION_PROGRESS broadcast, so the bar resumes where the rebuild actually is after minimize /
     // restore instead of restarting from 0.
     private LinearProgressIndicator progressBar;
-    // K2GO-383: the status line under the label is two fixed columns: the percent anchored left, the ETA
-    // anchored right (space-between). Each has its own anchor, so a width change in one never shifts the
-    // other. Style matches the content updaters' status line (BodySmall, muted, single line).
+    // K2GO-383: the status line under the label is two equal-weight columns, the percent and the ETA each
+    // centered in its own half. Separate columns, so a width change in one never reaches the other. Style
+    // matches the content updaters' status line (BodySmall, muted, single line).
     private TextView updatingPercent;
     private TextView updatingEta;
 
@@ -77,6 +75,10 @@ public class DashboardDetailFragment extends Fragment {
             if (DashboardRebuildService.ACTION_PROGRESS.equals(i.getAction())) {
                 onProgress(i.getIntExtra(DashboardRebuildService.EXTRA_PERCENT, -1),
                         i.getLongExtra(DashboardRebuildService.EXTRA_ETA_SECONDS, -1L));
+                // K2GO-383: the same tick carries the log tail; feed the Details panel from it instead of
+                // a second /rebuild/log poll. reveal + auto-scroll are handled inside setContent.
+                String log = i.getStringExtra(DashboardRebuildService.EXTRA_LOG);
+                if (updating && logPanel != null && log != null) logPanel.setContent(log);
                 return;
             }
             String state = i.getStringExtra(DashboardRebuildService.EXTRA_STATE);
@@ -388,37 +390,15 @@ public class DashboardDetailFragment extends Fragment {
         if (updatingCancel != null) updatingCancel.setEnabled(on);   // re-enable when a new update shows
         if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
         if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
-        // ADFA-5339: the Details log only exists while a rebuild runs. Poll it on, tear it down on off.
-        main.removeCallbacks(logPoll);
         if (on) {
             // K2GO-383: start indeterminate with the plain label; the service's ACTION_PROGRESS then
-            // drives the bar + the "NN%  ~N min left" caption. pollLog only feeds the Details panel now.
+            // drives the bar, the "NN%  ~N min left" caption, and (same tick) the Details panel.
             if (progressBar != null) progressBar.setIndeterminate(true);
             if (updatingPercent != null) updatingPercent.setText("");   // filled by the first progress tick
             if (updatingEta != null) updatingEta.setText("");
             if (logPanel != null) logPanel.reset();   // K2GO-374: start clean; toggle hidden until lines
-            main.post(logPoll);
         }
         // On "off" the whole updatingRow is hidden above, which takes the panel with it.
-    }
-
-    /** ADFA-5339: poll the rebuild log tail while updating. Fork B — the toggle appears only once there
-     *  are lines, so an older box without the endpoint (empty) shows no Details affordance. Reschedules
-     *  itself while {@code updating}; setUpdating(false) and onDestroyView remove the callback. */
-    private void pollLog() {
-        if (!isAdded() || !updating) return;
-        DashboardClient.rebuildLog(new DashboardClient.RebuildLogCb() {
-            @Override public void onLines(java.util.List<String> lines) {
-                if (!isAdded() || !updating) return;
-                String log = android.text.TextUtils.join("\n", lines);
-                if (logPanel != null) logPanel.setContent(log);   // K2GO-374: reveal + auto-scroll handled here
-                main.postDelayed(logPoll, LOG_POLL_MS);
-            }
-            @Override public void onErr(String message) {
-                // No endpoint / transient: keep the panel as-is (toggle hidden if never populated) and retry.
-                if (isAdded() && updating) main.postDelayed(logPoll, LOG_POLL_MS);
-            }
-        });
     }
 
     /** K2GO-383: apply a progress tick from DashboardRebuildService (the persistent owner, so the value
@@ -440,7 +420,7 @@ public class DashboardDetailFragment extends Fragment {
     }
 
     @Override public void onDestroyView() {
-        main.removeCallbacks(logPoll);   // ADFA-5339: never poll past the view's life
+        main.removeCallbacksAndMessages(null);   // ADFA-5339: drop any pending posts past the view's life
         super.onDestroyView();
     }
 
