@@ -323,8 +323,7 @@ public final class DashboardRebuildService extends Service {
      *  install bar's EtaText, already localized), else the plain running label. */
     private String progressText() {
         if (lastPercent < 0) return getString(R.string.k2go_dash_live_running);
-        String eta = EtaText.of(this, lastEtaSeconds);
-        return eta.isEmpty() ? (lastPercent + "%") : (lastPercent + "%  " + eta);
+        return EtaText.percentAndEta(this, lastPercent, lastEtaSeconds);
     }
 
     /** Final result notification (done/error) — dismissible, auto-cancels on tap. */

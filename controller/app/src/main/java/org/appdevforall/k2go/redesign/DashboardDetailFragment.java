@@ -401,8 +401,7 @@ public class DashboardDetailFragment extends Fragment {
         if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
         progressBar.setProgressCompat(percent, true);   // animated determinate step
         if (updatingLabel != null) {
-            String eta = EtaText.of(requireContext(), etaSeconds);
-            updatingLabel.setText(eta.isEmpty() ? percent + "%" : percent + "%  " + eta);
+            updatingLabel.setText(EtaText.percentAndEta(requireContext(), percent, etaSeconds));
         }
     }
 

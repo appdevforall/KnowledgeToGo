@@ -23,4 +23,12 @@ public final class EtaText {
             default:           return "";   // UNKNOWN -> blank slot
         }
     }
+
+    /** K2GO-383: the shared progress caption, "NN%" or "NN%  ~N min left" (the eta is appended only when
+     *  known). {@code percent} must be >= 0; the caller owns the indeterminate (percent &lt; 0) case. One
+     *  place so the rebuild notification and the card caption never drift. */
+    public static String percentAndEta(Context ctx, int percent, long etaSeconds) {
+        String eta = of(ctx, etaSeconds);
+        return eta.isEmpty() ? percent + "%" : percent + "%  " + eta;
+    }
 }
