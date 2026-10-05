@@ -13,9 +13,8 @@ the right entry.
 
 ## v1.1.0
 A maintenance update. Code on the Go gains its add-ons gallery and offline build
-assets, and Host code (Forgejo) now installs reliably. Content updates (books,
-Wikipedia/ZIM, add-ons) are more resilient and resumable, and dashboard rebuilds
-show their progress and recover on their own. Recommended.
+assets; Host code (Forgejo) now installs reliably; content updates and rebuilds
+are more reliable. Recommended.
 
 ## v1.0.0
 Knowledge to Go reaches 1.0 and leaves beta. This is the first stable release: the
