@@ -284,9 +284,10 @@ public class DashboardDetailFragment extends Fragment {
         label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         row.addView(label);
 
-        // K2GO-383: the status line is two fixed columns: percent left, ETA right (space-between). Each
-        // column keeps its anchor, so a width change in one never nudges the other (no jitter). Same
-        // BodySmall / muted / single-line style as the content updaters' status line.
+        // K2GO-383: the status line is two equal columns (weight 1 each), the percent and the ETA each
+        // centered in its own half. Separate columns, so a width change in one never reaches the other;
+        // centering only reflows the value slightly around its own column center. Same BodySmall / muted /
+        // single-line style as the content updaters' status line.
         LinearLayout statusRow = new LinearLayout(requireContext());
         statusRow.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams statusLp = new LinearLayout.LayoutParams(
@@ -298,20 +299,18 @@ public class DashboardDetailFragment extends Fragment {
         updatingPercent.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         updatingPercent.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         updatingPercent.setMaxLines(1);
+        updatingPercent.setGravity(android.view.Gravity.CENTER);
         statusRow.addView(updatingPercent, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         updatingEta = new TextView(requireContext());
         updatingEta.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         updatingEta.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         updatingEta.setMaxLines(1);
         updatingEta.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        updatingEta.setGravity(android.view.Gravity.END);
-        // weight 1 so the ETA column takes the slack and hugs the right edge, opposite the percent.
-        LinearLayout.LayoutParams etaLp = new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        etaLp.leftMargin = Math.round(8 * d);
-        statusRow.addView(updatingEta, etaLp);
+        updatingEta.setGravity(android.view.Gravity.CENTER);
+        statusRow.addView(updatingEta, new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         row.addView(statusRow);
 
