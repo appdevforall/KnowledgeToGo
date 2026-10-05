@@ -61,7 +61,9 @@ public class DashboardDetailFragment extends Fragment {
     // its ACTION_PROGRESS broadcast, so the bar resumes where the rebuild actually is after minimize /
     // restore instead of restarting from 0.
     private LinearProgressIndicator progressBar;
-    private TextView updatingLabel;
+    // K2GO-383: the "NN%  ~N min left" status line under the label, same position + style as the content
+    // updaters (forgejo / build assets / add-ons): a descriptive label, then this live status line.
+    private TextView updatingStatus;
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
      *  state change. While this card is on screen we show/hide an in-progress bar and, on done, refresh
@@ -279,7 +281,19 @@ public class DashboardDetailFragment extends Fragment {
         label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         row.addView(label);
-        updatingLabel = label;   // K2GO-383: updated to "NN%  ~N min left" by onProgress
+
+        // K2GO-383: the live "NN%  ~N min left" line under the label, matching the content updaters'
+        // status line (BodySmall, muted, single line) so progress reads the same across the app.
+        updatingStatus = new TextView(requireContext());
+        updatingStatus.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        updatingStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        updatingStatus.setMaxLines(1);
+        updatingStatus.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        LinearLayout.LayoutParams statusLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        statusLp.topMargin = Math.round(2 * d);
+        updatingStatus.setLayoutParams(statusLp);
+        row.addView(updatingStatus);
 
         // The bar and Cancel sit on one line: bar takes the width, Cancel is right beside it.
         LinearLayout line = new LinearLayout(requireContext());
@@ -361,7 +375,7 @@ public class DashboardDetailFragment extends Fragment {
             // K2GO-383: start indeterminate with the plain label; the service's ACTION_PROGRESS then
             // drives the bar + the "NN%  ~N min left" caption. pollLog only feeds the Details panel now.
             if (progressBar != null) progressBar.setIndeterminate(true);
-            if (updatingLabel != null) updatingLabel.setText(R.string.k2go_dash_live_running);
+            if (updatingStatus != null) updatingStatus.setText("");   // filled by the first progress tick
             if (logPanel != null) logPanel.reset();   // K2GO-374: start clean; toggle hidden until lines
             main.post(logPoll);
         }
@@ -395,13 +409,13 @@ public class DashboardDetailFragment extends Fragment {
         if (!updating || progressBar == null) return;
         if (percent < 0) {
             if (!progressBar.isIndeterminate()) progressBar.setIndeterminate(true);
-            if (updatingLabel != null) updatingLabel.setText(R.string.k2go_dash_live_running);
+            if (updatingStatus != null) updatingStatus.setText("");   // no marker yet; the label stands alone
             return;
         }
         if (progressBar.isIndeterminate()) progressBar.setIndeterminate(false);
         progressBar.setProgressCompat(percent, true);   // animated determinate step
-        if (updatingLabel != null) {
-            updatingLabel.setText(EtaText.percentAndEta(requireContext(), percent, etaSeconds));
+        if (updatingStatus != null) {
+            updatingStatus.setText(EtaText.percentAndEta(requireContext(), percent, etaSeconds));
         }
     }
 
