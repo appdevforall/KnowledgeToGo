@@ -11,6 +11,12 @@ tag). This file is only the short summary end users read when they update.
 Rule: the version header must match the release tag / `versionName` so the CI picks
 the right entry.
 
+## v1.1.0
+A maintenance update. Code on the Go gains its add-ons gallery and offline build
+assets, and Host code (Forgejo) now installs reliably. Content updates (books,
+Wikipedia/ZIM, add-ons) are more resilient and resumable, and dashboard rebuilds
+show their progress and recover on their own. Recommended.
+
 ## v1.0.0
 Knowledge to Go reaches 1.0 and leaves beta. This is the first stable release: the
 reliability, setup, backup and restore, and phone-to-phone sharing from the beta
