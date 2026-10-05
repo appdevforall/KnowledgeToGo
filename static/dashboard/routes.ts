@@ -24,6 +24,7 @@ import {
 } from './sockets/credentials';
 import { isRestartableService, restartService } from './sockets/services';
 import { getFirehoseState } from './sockets/log-rotate';
+import { resolveRebuildState } from './sockets/rebuild-status';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
@@ -319,19 +320,34 @@ function clearRebuildState(status: 'idle' | 'error'): void {
     try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* maybe already gone */ }
 }
 
-// Current rebuild state: idle | running | done | error (read from the status file the script writes).
-apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response): void => {
-    let state = 'idle';
-    try { state = (fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'); } catch { /* no file yet */ }
-    // K2GO-451: a rebuild whose script was killed mid-run (box restart / power loss) cannot write a
-    // terminal status, so this file stays 'running' with a dead pid and nothing clears it. Heal it to
-    // 'error' on read, so the app sees a normal failure instead of polling a phantom forever (and a new
-    // rebuild is no longer refused with 409). A 'running' with no pid yet is a just-started run: leave it.
-    if (state === 'running' && rebuildPidLiveness().state === 'dead') {
-        clearRebuildState('error');
-        state = 'error';
+// K2GO-451: a live rebuild records its pid within ~1s of taking the lock, so a 'running' with no pid
+// recorded past this grace means the script died before (or without) writing one (or never started).
+const REBUILD_PID_GRACE_MS = 15_000;
+
+// K2GO-451: read the status file and self-heal a 'running' that no live rebuild backs (the script was
+// killed mid-run by a box restart / power loss, so it never wrote a terminal status). Shared by the
+// status endpoint and the new-rebuild guard, so a crashed run neither reports a phantom 'running' nor
+// blocks a fresh rebuild with 409. The decision is the pure resolveRebuildState; this only does the IO.
+function readRebuildStatus(): string {
+    let fileState = 'idle';
+    try { fileState = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'; } catch { return 'idle'; }
+    if (fileState !== 'running') return fileState;
+    const live = rebuildPidLiveness();
+    let ageMs = 0;
+    if (live.state === 'none') {
+        // Age the 'running' from the status file's mtime (written at run start); only needed to tell a
+        // just-started run (no pid yet) from one whose script died before recording a pid.
+        try { ageMs = Date.now() - fs.statSync(REBUILD_STATUS_FILE).mtimeMs; } catch { ageMs = 0; }
     }
-    res.json({ state });
+    const r = resolveRebuildState(fileState, live.state, ageMs, REBUILD_PID_GRACE_MS);
+    if (r.heal) clearRebuildState('error');
+    return r.state;
+}
+
+// Current rebuild state: idle | running | done | error (read from the status file the script writes;
+// a stale 'running' left by a crashed run is healed to 'error' here).
+apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response): void => {
+    res.json({ state: readRebuildStatus() });
 });
 
 // ADFA-5339: read-only tail of the rebuild log, for the card's expandable Details. Returns the last
@@ -637,9 +653,9 @@ apiRouter.post('/code-assets/refresh/cancel', (_req: Request, res: Response): vo
 // so it matches the new source. It never touches the reported version; a site failure is logged and
 // does NOT fail the (already-verified) core update. See ADFA-5339 §semantics.
 apiRouter.post('/system/dashboard/rebuild', (req: Request, res: Response): void => {
-    let running = false;
-    try { running = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* none */ }
-    if (running) { res.status(409).json({ error: 'a rebuild is already running' }); return; }
+    // K2GO-451: readRebuildStatus heals a crashed run's stale 'running' first, so a dead rebuild does not
+    // block a fresh one with a 409 the user cannot clear.
+    if (readRebuildStatus() === 'running') { res.status(409).json({ error: 'a rebuild is already running' }); return; }
     if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
     const updateSite = (req.body as { site?: unknown })?.site === true;
     try {
