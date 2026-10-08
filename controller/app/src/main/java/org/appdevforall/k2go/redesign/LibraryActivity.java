@@ -218,6 +218,9 @@ public class LibraryActivity extends AppCompatActivity
             bootGate.setRepeatCount(LottieDrawable.INFINITE);
             bootGate.playAnimation();
         }
+        // The boot gate owns the screen now; keep the system-bar icons dark so they stay visible on
+        // its fixed light paper in dark theme. onServerReady restores the theme default.
+        setGateSystemBars(true);
 
         // If the user skipped install there is no rootfs/server to wait for; the gate would
         // otherwise burn the full safety timeout. Detect it and dismiss quickly.
@@ -753,6 +756,20 @@ public class LibraryActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * The boot gate is a fixed light "paper" Lottie shown in both themes, so under edge-to-edge its
+     * white surface sits behind the transparent system bars. While the gate owns the screen, force
+     * dark bar icons regardless of theme (else dark theme's light icons vanish on the white paper);
+     * when it lifts, restore the theme default (values[-night]/bools.xml drives the normal UI).
+     */
+    private void setGateSystemBars(boolean gateShown) {
+        androidx.core.view.WindowInsetsControllerCompat c = androidx.core.view.WindowCompat
+                .getInsetsController(getWindow(), getWindow().getDecorView());
+        boolean lightBars = gateShown || getResources().getBoolean(R.bool.k2go_light_system_bars);
+        c.setAppearanceLightStatusBars(lightBars);
+        c.setAppearanceLightNavigationBars(lightBars);
+    }
+
     private void onServerReady() {
         if (gateDismissed || bootGate == null) {
             return;
@@ -766,6 +783,7 @@ public class LibraryActivity extends AppCompatActivity
             return;
         }
         gateDismissed = true;
+        setGateSystemBars(false);   // gate is lifting; return the bar icons to the theme default
         hideInstallProgress();
         maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
@@ -1106,6 +1124,7 @@ public class LibraryActivity extends AppCompatActivity
         }
         if (bootGate != null && !reduceMotion()) {
             bootGate.setVisibility(View.VISIBLE);
+            setGateSystemBars(true);   // closing scene re-shows the white paper; keep bar icons visible
             bootGate.removeAllAnimatorListeners();
             bootGate.setRepeatCount(LottieDrawable.INFINITE);
             bootGate.setMinAndMaxFrame("C_EXIT_LOOP");
