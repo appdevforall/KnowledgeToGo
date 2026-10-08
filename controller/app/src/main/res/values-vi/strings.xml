@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Xác thực để tắt môi trường bảo mật</string>
     <string name="auth_required_title">Yêu cầu xác thực</string>
     <string name="auth_success_disconnect">Xác thực thành công. Đang ngắt kết nối…</string>
-    <string name="security_required_msg">Bạn phải thiết lập mã PIN, hình mở khóa hoặc vân tay trên thiết bị trước khi bật môi trường bảo mật.</string>
-    <string name="security_required_title">Yêu cầu bảo mật</string>
     <string name="battery_opt_denied">Để ứng dụng hoạt động hoàn toàn, vui lòng tắt tối ưu hóa pin.</string>
     <string name="battery_opt_msg">Để Watchdog hoạt động đáng tin cậy, vui lòng tắt tối ưu hóa pin cho ứng dụng này.</string>
     <string name="battery_opt_oppo_extra">\n\nĐã phát hiện OPPO/Realme: Vui lòng đảm bảo cũng bật \'Cho phép hoạt động nền\' trong cài đặt của ứng dụng này.</string>

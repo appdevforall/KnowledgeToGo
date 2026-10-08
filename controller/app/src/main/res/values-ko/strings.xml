@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">보안 환경을 비활성화하려면 인증하세요</string>
     <string name="auth_required_title">인증 필요</string>
     <string name="auth_success_disconnect">인증 성공. 연결을 끊는 중…</string>
-    <string name="security_required_msg">보안 환경을 활성화하기 전에 기기에 PIN, 패턴 또는 지문을 설정해야 합니다.</string>
-    <string name="security_required_title">보안 필요</string>
     <string name="battery_opt_denied">앱이 완전히 작동하려면 배터리 최적화를 비활성화하세요.</string>
     <string name="battery_opt_msg">워치독이 안정적으로 작동하려면 이 앱의 배터리 최적화를 비활성화하세요.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme 감지됨: 이 앱의 설정에서 \'백그라운드 활동 허용\'도 활성화하세요.</string>

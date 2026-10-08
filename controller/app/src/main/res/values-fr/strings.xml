@@ -135,8 +135,6 @@
     <string name="auth_required_subtitle">Authentifiez-vous pour désactiver l\'environnement sécurisé</string>
     <string name="auth_required_title">Authentification requise</string>
     <string name="auth_success_disconnect">Authentification réussie. Déconnexion...</string>
-    <string name="security_required_msg">Vous devez configurer un code PIN, un schéma ou une empreinte digitale sur votre appareil avant d\'activer l\'environnement sécurisé.</string>
-    <string name="security_required_title">Sécurité requise</string>
 
     <string name="battery_opt_denied">Pour que l\'application fonctionne à 100 %, veuillez désactiver l\'optimisation de la batterie.</string>
     <string name="battery_opt_msg">Pour que le Watchdog fonctionne de manière fiable, veuillez désactiver les optimisations de batterie pour cette application.</string>

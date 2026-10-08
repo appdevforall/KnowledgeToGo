@@ -150,8 +150,6 @@
     <string name="auth_required_subtitle">Authenticate to disable the secure environment</string>
     <string name="auth_required_title">Authentication required</string>
     <string name="auth_success_disconnect">Authentication Success. Disconnecting...</string>
-    <string name="security_required_msg">You must set up a PIN, Pattern, or Fingerprint on your device before enabling the secure environment.</string>
-    <string name="security_required_title">Security Required</string>
 
 
     <string name="battery_opt_denied">For the app to work 100%, please disable battery optimization.</string>

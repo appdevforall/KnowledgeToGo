@@ -288,7 +288,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.airbnb.android:lottie:6.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'androidx.webkit:webkit:1.12.0'
 
     // Presentation layer (Clean Architecture pilot): ViewModel + LiveData.

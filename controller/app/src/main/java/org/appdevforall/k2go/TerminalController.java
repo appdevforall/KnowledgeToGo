@@ -698,32 +698,6 @@ public class TerminalController {
                 cliStr.append("do_login() {\n");
                 cliStr.append("    echo -e '\\033[32mPreparing Debian Environment...\\033[0m'\n");
 
-//                // --- SECURITY CHECK FOR SDCARD ---
-//                cliStr.append("    if [ \"$MOUNT_SDCARD\" = true ]; then\n");
-//                cliStr.append("        echo -e '\\033[33m[Security] Requesting biometric unlock for SD Card access...\\033[0m'\n");
-//                cliStr.append("        # Clean previous flags\n");
-//                cliStr.append("        rm -f \"$PROOT_TMP_DIR/.auth_success\" \"$PROOT_TMP_DIR/.auth_failed\"\n");
-//                cliStr.append("        # Trigger UI Authentication\n");
-//                cliStr.append("        am broadcast --user 0 -a org.iiab.ACTION_UNLOCK_SDCARD -p org.appdevforall.k2go >/dev/null 2>&1\n");
-//                cliStr.append("        \n");
-//                cliStr.append("        # Wait for Java to write the result flag (Timeout after 30s)\n");
-//                cliStr.append("        WAIT_TIME=0\n");
-//                cliStr.append("        while [ ! -f \"$PROOT_TMP_DIR/.auth_success\" ] && [ ! -f \"$PROOT_TMP_DIR/.auth_failed\" ]; do\n");
-//                cliStr.append("            sleep 1\n");
-//                cliStr.append("            WAIT_TIME=$((WAIT_TIME + 1))\n");
-//                cliStr.append("            if [ $WAIT_TIME -ge 30 ]; then\n");
-//                cliStr.append("                echo -e '\\033[31m[Error] Authentication timed out.\\033[0m'\n");
-//                cliStr.append("                exit 1\n");
-//                cliStr.append("            fi\n");
-//                cliStr.append("        done\n");
-//                cliStr.append("        \n");
-//                cliStr.append("        if [ -f \"$PROOT_TMP_DIR/.auth_failed\" ]; then\n");
-//                cliStr.append("            echo -e '\\033[31m[Error] Authentication failed or cancelled. Access denied.\\033[0m'\n");
-//                cliStr.append("            exit 1\n");
-//                cliStr.append("        fi\n");
-//                cliStr.append("        echo -e '\\033[32m[Success] SD Card access granted.\\033[0m'\n");
-//                cliStr.append("    fi\n\n");
-
                 // 1. Calculate native Android btime & uptime directly in Bash
                 cliStr.append("    up_sec=$(awk '{print $1}' /proc/uptime 2>/dev/null || echo 1000)\n");
                 cliStr.append("    now_sec=$(date +%s 2>/dev/null || echo 1716000000)\n");
@@ -822,7 +796,7 @@ public class TerminalController {
                 cliStr.append("      echo '  --restore-rootfs   Trigger a system restore'\n");
                 cliStr.append("      echo 'Options for login:'\n");
                 cliStr.append("      echo '  --mount-backups    Mount the app backups directory at /backups'\n");
-                cliStr.append("      echo '  --mount-sdcard     Mount the Android SD Card at /sdcard (Requires Biometrics)'\n");
+                cliStr.append("      echo '  --mount-sdcard     Mount the Android SD Card at /sdcard'\n");
                 cliStr.append("      exit 0\n");
                 cliStr.append("      ;;\n");
                 cliStr.append("    *)\n");

@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Hitelesítsen a biztonságos környezet kikapcsolásához</string>
     <string name="auth_required_title">Hitelesítés szükséges</string>
     <string name="auth_success_disconnect">Sikeres hitelesítés. Leválasztás…</string>
-    <string name="security_required_msg">A biztonságos környezet engedélyezése előtt PIN-kódot, mintát vagy ujjlenyomatot kell beállítania az eszközén.</string>
-    <string name="security_required_title">Biztonság szükséges</string>
     <string name="battery_opt_denied">Ahhoz, hogy az alkalmazás tökéletesen működjön, kapcsolja ki az akkumulátor-optimalizálást.</string>
     <string name="battery_opt_msg">A Watchdog megbízható működéséhez kapcsolja ki az akkumulátor-optimalizálást ehhez az alkalmazáshoz.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme észlelve: Győződjön meg róla, hogy az alkalmazás beállításaiban engedélyezi a \'Háttértevékenység engedélyezése\' lehetőséget is.</string>

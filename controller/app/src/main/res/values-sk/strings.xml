@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Overte sa na vypnutie zabezpečeného prostredia</string>
     <string name="auth_required_title">Vyžaduje sa overenie</string>
     <string name="auth_success_disconnect">Overenie úspešné. Odpája sa…</string>
-    <string name="security_required_msg">Pred zapnutím zabezpečeného prostredia musíte na svojom zariadení nastaviť PIN, vzor alebo odtlačok prsta.</string>
-    <string name="security_required_title">Vyžaduje sa zabezpečenie</string>
     <string name="battery_opt_denied">Aby aplikácia fungovala správne, vypnite prosím optimalizáciu batérie.</string>
     <string name="battery_opt_msg">Aby Watchdog fungoval spoľahlivo, vypnite prosím optimalizácie batérie pre túto aplikáciu.</string>
     <string name="battery_opt_oppo_extra">\n\nZistené OPPO/Realme: Zabezpečte prosím, aby ste v nastaveniach tejto aplikácie zapli aj \'Povoliť aktivitu na pozadí\'.</string>

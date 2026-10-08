@@ -135,8 +135,6 @@
     <string name="auth_required_subtitle">Пройдите аутентификацию, чтобы отключить безопасное окружение</string>
     <string name="auth_required_title">Требуется аутентификация</string>
     <string name="auth_success_disconnect">Аутентификация успешна. Отключение...</string>
-    <string name="security_required_msg">Перед активацией безопасного окружения необходимо настроить PIN-код, графический ключ или отпечаток пальца на вашем устройстве.</string>
-    <string name="security_required_title">Требуется безопасность</string>
 
     <string name="battery_opt_denied">Для 100% работы приложения, пожалуйста, отключите оптимизацию батареи.</string>
     <string name="battery_opt_msg">Для надежной работы Watchdog, пожалуйста, отключите оптимизацию батареи для этого приложения.</string>
