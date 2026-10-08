@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">برای غیرفعال کردن محیط امن احراز هویت کنید</string>
     <string name="auth_required_title">احراز هویت لازم است</string>
     <string name="auth_success_disconnect">احراز هویت موفق بود. در حال قطع اتصال…</string>
-    <string name="security_required_msg">قبل از فعال کردن محیط امن، باید یک PIN، الگو یا اثر انگشت روی دستگاه خود تنظیم کنید.</string>
-    <string name="security_required_title">امنیت لازم است</string>
     <string name="battery_opt_denied">برای اینکه برنامه ۱۰۰٪ کار کند، لطفاً بهینه‌سازی باتری را غیرفعال کنید.</string>
     <string name="battery_opt_msg">برای اینکه Watchdog به‌طور قابل‌اعتماد کار کند، لطفاً بهینه‌سازی باتری را برای این برنامه غیرفعال کنید.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme شناسایی شد: لطفاً مطمئن شوید که \'اجازه فعالیت در پس‌زمینه\' را نیز در تنظیمات این برنامه فعال می‌کنید.</string>

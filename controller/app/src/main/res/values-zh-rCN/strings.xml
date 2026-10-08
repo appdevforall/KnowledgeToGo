@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">请进行身份验证以禁用安全环境</string>
     <string name="auth_required_title">需要身份验证</string>
     <string name="auth_success_disconnect">身份验证成功。正在断开连接…</string>
-    <string name="security_required_msg">在启用安全环境之前，你必须在设备上设置 PIN、图案或指纹。</string>
-    <string name="security_required_title">需要安全设置</string>
     <string name="battery_opt_denied">为使应用完全正常运行，请禁用电池优化。</string>
     <string name="battery_opt_msg">为使看门狗可靠运行，请为此应用禁用电池优化。</string>
     <string name="battery_opt_oppo_extra">\n\n检测到 OPPO/Realme：请同时在此应用的设置中启用“允许后台活动”。</string>

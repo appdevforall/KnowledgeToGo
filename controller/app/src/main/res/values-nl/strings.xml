@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Verifieer om de beveiligde omgeving uit te schakelen</string>
     <string name="auth_required_title">Verificatie vereist</string>
     <string name="auth_success_disconnect">Verificatie geslaagd. Verbinding verbreken…</string>
-    <string name="security_required_msg">Je moet een pincode, patroon of vingerafdruk op je apparaat instellen voordat je de beveiligde omgeving inschakelt.</string>
-    <string name="security_required_title">Beveiliging vereist</string>
     <string name="battery_opt_denied">Schakel batterijoptimalisatie uit zodat de app volledig werkt.</string>
     <string name="battery_opt_msg">Schakel de batterijoptimalisaties voor deze app uit zodat de Watchdog betrouwbaar werkt.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme gedetecteerd: zorg dat je ook \'Achtergrondactiviteit toestaan\' inschakelt in de instellingen van deze app.</string>

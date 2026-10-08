@@ -130,8 +130,6 @@
     <string name="auth_required_subtitle">Autentíquese para desactivar el entorno seguro</string>
     <string name="auth_required_title">Autenticación requerida</string>
     <string name="auth_success_disconnect">Autenticación exitosa. Desconectando...</string>
-    <string name="security_required_msg">Debe configurar un PIN, Patrón o Huella digital en su dispositivo antes de activar el entorno seguro.</string>
-    <string name="security_required_title">Seguridad Requerida</string>
 
     <string name="battery_opt_denied">Para que la app funcione al 100%, desactive la optimización de batería.</string>
     <string name="battery_opt_msg">Para que el Watchdog funcione de manera confiable, desactive las optimizaciones de batería para esta aplicación.</string>

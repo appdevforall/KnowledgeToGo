@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Güvenli ortamı devre dışı bırakmak için kimlik doğrulaması yapın</string>
     <string name="auth_required_title">Kimlik doğrulama gerekli</string>
     <string name="auth_success_disconnect">Kimlik doğrulama başarılı. Bağlantı kesiliyor…</string>
-    <string name="security_required_msg">Güvenli ortamı etkinleştirmeden önce cihazınızda bir PIN, desen veya parmak izi ayarlamalısınız.</string>
-    <string name="security_required_title">Güvenlik gerekli</string>
     <string name="battery_opt_denied">Uygulamanın tam olarak çalışması için lütfen pil optimizasyonunu devre dışı bırakın.</string>
     <string name="battery_opt_msg">Watchdog\'un güvenilir çalışması için lütfen bu uygulamanın pil optimizasyonlarını devre dışı bırakın.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme algılandı: Lütfen bu uygulamanın ayarlarında \'Arka plan etkinliğine izin ver\' seçeneğini de etkinleştirin.</string>

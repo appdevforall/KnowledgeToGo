@@ -135,8 +135,6 @@
     <string name="auth_required_subtitle">सुरक्षित वातावरण को अक्षम करने के लिए प्रमाणित करें</string>
     <string name="auth_required_title">प्रमाणीकरण आवश्यक है</string>
     <string name="auth_success_disconnect">प्रमाणीकरण सफल। डिस्कनेक्ट हो रहा है...</string>
-    <string name="security_required_msg">सुरक्षित वातावरण को सक्षम करने से पहले आपको अपने डिवाइस पर PIN, पैटर्न या फ़िंगरप्रिंट सेट करना होगा।</string>
-    <string name="security_required_title">सुरक्षा आवश्यक</string>
 
     <string name="battery_opt_denied">ऐप को 100% काम करने के लिए, कृपया बैटरी अनुकूलन को अक्षम करें।</string>
     <string name="battery_opt_msg">वॉचडॉग के विश्वसनीय रूप से काम करने के लिए, कृपया इस ऐप के लिए बैटरी अनुकूलन को अक्षम करें।</string>

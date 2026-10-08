@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">صادق لتعطيل البيئة الآمنة</string>
     <string name="auth_required_title">المصادقة مطلوبة</string>
     <string name="auth_success_disconnect">نجحت المصادقة. جارٍ قطع الاتصال…</string>
-    <string name="security_required_msg">يجب إعداد رمز PIN أو نمط أو بصمة على جهازك قبل تفعيل البيئة الآمنة.</string>
-    <string name="security_required_title">الأمان مطلوب</string>
     <string name="battery_opt_denied">لكي يعمل التطبيق على أكمل وجه، يرجى تعطيل تحسين البطارية.</string>
     <string name="battery_opt_msg">لكي يعمل المراقب بشكل موثوق، يرجى تعطيل تحسينات البطارية لهذا التطبيق.</string>
     <string name="battery_opt_oppo_extra">\n\nتم اكتشاف OPPO/Realme: يرجى التأكد أيضًا من تفعيل \'السماح بالنشاط في الخلفية\' في إعدادات هذا التطبيق.</string>

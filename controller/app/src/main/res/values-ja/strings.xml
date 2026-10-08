@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">セキュア環境を無効にするには認証してください</string>
     <string name="auth_required_title">認証が必要です</string>
     <string name="auth_success_disconnect">認証に成功しました。切断しています…</string>
-    <string name="security_required_msg">セキュア環境を有効にする前に、デバイスに PIN・パターン・指紋のいずれかを設定する必要があります。</string>
-    <string name="security_required_title">セキュリティが必要です</string>
     <string name="battery_opt_denied">アプリを完全に動作させるには、バッテリー最適化を無効にしてください。</string>
     <string name="battery_opt_msg">ウォッチドッグを確実に動作させるため、このアプリのバッテリー最適化を無効にしてください。</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme を検出しました：このアプリの設定で「バックグラウンド動作を許可」も有効にしてください。</string>

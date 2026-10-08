@@ -119,8 +119,6 @@
     <string name="auth_required_subtitle">Autenticati per disattivare l\'ambiente sicuro</string>
     <string name="auth_required_title">Autenticazione richiesta</string>
     <string name="auth_success_disconnect">Autenticazione riuscita. Disconnessione in corso…</string>
-    <string name="security_required_msg">Devi impostare un PIN, una sequenza o un\'impronta digitale sul dispositivo prima di attivare l\'ambiente sicuro.</string>
-    <string name="security_required_title">Sicurezza richiesta</string>
     <string name="battery_opt_denied">Perché l\'app funzioni al meglio, disattiva l\'ottimizzazione della batteria.</string>
     <string name="battery_opt_msg">Perché il Watchdog funzioni in modo affidabile, disattiva le ottimizzazioni della batteria per questa app.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme rilevato: assicurati di abilitare anche \'Consenti attività in background\' nelle impostazioni di questa app.</string>
