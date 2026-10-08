@@ -34,17 +34,17 @@ def hasGoogleServices = file("google-services.json").exists()
 android {
     // 2. Identity
     namespace 'org.appdevforall.k2go'
-    compileSdk 35
+    compileSdk 36
     ndkVersion "26.3.11579264"
 
     defaultConfig {
         applicationId "org.appdevforall.k2go"
         minSdk 24
-        // targetSdk 35 for Play. proot is NOT blocked above 28: AOSP neverallows only
+        // targetSdk 36 for Play (Android 16). proot is NOT blocked above 28: AOSP neverallows only
         // execute_no_trans (direct execve) on app_data_file; K2Go runs guest binaries
         // through the proot loader (mmap/execute), which AOSP allows on certified devices.
-        // Verified on-device at 35. See K2GO-438 and controller/docs/ARCHITECTURE.md.
-        targetSdk 35
+        // Verified on-device through 35 (K2GO-439); 36 under K2GO-454. See controller/docs/ARCHITECTURE.md.
+        targetSdk 36
 
         // 3. Version Control (OTA)
         // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
