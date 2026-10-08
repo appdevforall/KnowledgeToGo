@@ -85,6 +85,20 @@ jobs:
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
+      # --- ON-DEMAND AAB ARTIFACT ---
+      # K2GO-433: a manual run (workflow_dispatch) has no tag, so the R2 upload below is skipped.
+      # This step exposes the Play AAB as a run artifact instead. A build from any branch can then
+      # go to Play Console without a release tag or a versionName bump. Retention is short: this copy
+      # is a throwaway upload, not a kept release.
+      - name: Upload Play AAB artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: k2go-play-aab
+          path: controller/**/build/outputs/bundle/playRelease/*.aab
+          if-no-files-found: error
+          retention-days: 1
+
       # --- GITHUB RELEASES ---
 
       - name: Create GitHub Release
