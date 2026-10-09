@@ -35,8 +35,9 @@ public final class InstallNotifications {
     /** The ongoing foreground notification id (InstallService posts it via startForeground). */
     public static final int ONGOING_ID = 3;
 
-    /** The dismissible module-failure notification id, distinct from the foreground one. */
-    private static final int MODULE_FAIL_ID = ONGOING_ID + 4;
+    /** The dismissible module-failure notification id. K2GO-458: explicit unique value; the old
+     *  ONGOING_ID + 4 resolved to 7, which collided with the download/seed foreground services. */
+    private static final int MODULE_FAIL_ID = 13;
 
     private InstallNotifications() {
     }
