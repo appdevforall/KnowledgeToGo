@@ -3,36 +3,27 @@
  * Name        : ZimDownloadService.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4849 / ADFA-4893. Foreground shell for the ZIM stream: it owns the notification
- *               and the ZIM-specific bits (file/label/byte arrays, the {ids:[..]} body, byte-weighted
- *               percent) and delegates the queue + client + progress/pause/reconnect state to the
- *               shared ContentDownloadSession. The static getters below keep the same API the UI has
- *               always observed. The heavy work runs on the server; the device only POSTs + polls.
+ * Description : ADFA-4849 / ADFA-4893 / K2GO-449. Foreground shell for the ZIM stream. The generic
+ *               service behavior (onStartCommand dispatch, notification, channel, Host) now lives in
+ *               ContentDownloadServiceBase; this subclass provides only the ZIM bits: the session
+ *               singleton, the action strings, the notification title, the START item (file/label/byte
+ *               arrays, the {ids:[..]} body, byte-weighted percent), the wishlist cleanup on cancel/done,
+ *               and the catalog self-heal on item error. The heavy work runs on the server; the device
+ *               only POSTs + polls.
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public final class ZimDownloadService extends Service implements ContentDownloadSession.Host {
+public final class ZimDownloadService extends ContentDownloadServiceBase {
 
     private static final String CHANNEL_ID = "zim_download_channel";
     private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.ZIM_DOWNLOAD;
@@ -58,7 +49,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
     public interface Listener { void onUpdate(); }
 
     private static final ContentDownloadSession SESSION = new ContentDownloadSession("kiwix");
-    // The whole per-item snapshot (files-as-bodies/labels/sizes) now lives in SESSION, so status and the
+    // The whole per-item snapshot (files-as-bodies/labels/sizes) lives in SESSION, so status and the
     // metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
     // ---- static API the UI observes (delegates to the shared session) -------------------------
@@ -95,7 +86,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
         ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RESUME));
     }
 
-    /** ADFA-4893: re-queue ALL failed items and resume — the status-screen Retry (Pause morphs into it). */
+    /** ADFA-4893: re-queue ALL failed items and resume : the status-screen Retry (Pause morphs into it). */
     public static void retryFailed(Context ctx) {
         if (SESSION.requeueFailed() && !SESSION.isRunning()) {
             ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RETRY));
@@ -104,58 +95,41 @@ public final class ZimDownloadService extends Service implements ContentDownload
 
     public static void finishSession() { SESSION.purge(); }
 
-    private final Handler main = new Handler(Looper.getMainLooper());
-
-    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); SESSION.attach(this); }
-    @Nullable @Override public IBinder onBind(Intent intent) { return null; }
+    // ---- per-module hooks for ContentDownloadServiceBase --------------------------------------
+    @Override protected ContentDownloadSession session() { return SESSION; }
+    @Override protected int notificationId() { return NOTIFICATION_ID; }
+    @Override protected String channelId() { return CHANNEL_ID; }
+    @Override protected String channelName() { return getString(R.string.k2go_zim_dl_channel_name); }
+    @Override protected String notifTitle() { return getString(R.string.k2go_zim_dl_notif_title); }
+    @Override protected String notifText() { return ""; }   // zim threads the current item label via notify(label)
+    @Override protected String actionPause() { return ACTION_PAUSE; }
+    @Override protected String actionResume() { return ACTION_RESUME; }
+    @Override protected String actionCancel() { return ACTION_CANCEL; }
+    @Override protected String actionRetry() { return ACTION_RETRY; }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        SESSION.attach(this);
-        String action = intent != null ? intent.getAction() : null;
-
-        if (ACTION_CANCEL.equals(action)) {
-            // ADFA-4897: Cancel abandons the order -> drop the remaining wishlist so a later drain does
-            // not re-download it (DONE items were already removed one by one via onItemDone).
-            ZimWishlist.clear(getApplicationContext());
-            SESSION.cancelAndPurge();
-            return START_NOT_STICKY;
+    protected void beginFromIntent(Intent intent) {
+        String[] files = intent.getStringArrayExtra(EXTRA_FILES);
+        if (files == null || files.length == 0) { stopSelf(); return; }
+        String[] labels = intent.getStringArrayExtra(EXTRA_LABELS);
+        long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
+        String[] keys = intent.getStringArrayExtra(EXTRA_KEYS);
+        if (labels == null) labels = files;
+        JSONObject[] bodies = new JSONObject[files.length];
+        for (int i = 0; i < files.length; i++) {
+            try { bodies[i] = new JSONObject().put("ids", new JSONArray().put(files[i])); }
+            catch (Exception e) { bodies[i] = new JSONObject(); }
         }
-        if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
-        if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
-
-        if (SESSION.isRunning()) return START_NOT_STICKY;
-
-        if (ACTION_RETRY.equals(action)) {
-            if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
-            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
-            SESSION.resumeQueue();
-        } else { // ACTION_START: fresh session from the extras
-            String[] files = intent.getStringArrayExtra(EXTRA_FILES);
-            if (files == null || files.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            String[] labels = intent.getStringArrayExtra(EXTRA_LABELS);
-            long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
-            String[] keys = intent.getStringArrayExtra(EXTRA_KEYS);
-            if (labels == null) labels = files;
-            JSONObject[] bodies = new JSONObject[files.length];
-            for (int i = 0; i < files.length; i++) {
-                try { bodies[i] = new JSONObject().put("ids", new JSONArray().put(files[i])); }
-                catch (Exception e) { bodies[i] = new JSONObject(); }
-            }
-            startForeground(NOTIFICATION_ID, buildNotification(labels.length > 0 ? labels[0] : ""));
-            SESSION.begin(keys, labels, bytes, bodies);   // session owns the snapshot from here on
-        }
-        return START_NOT_STICKY;
+        SESSION.begin(keys, labels, bytes, bodies);   // session owns the snapshot from here on
     }
 
-    // ---- ContentDownloadSession.Host (ZIM specifics) ------------------------------------------
-    @Override public void notify(String label) {
-        if (!SESSION.isRunning()) return;
-        NotificationManager m = getSystemService(NotificationManager.class);
-        if (m != null) m.notify(NOTIFICATION_ID, buildNotification(label));
+    /** ADFA-4897: Cancel abandons the order -> drop the remaining wishlist so a later drain does not re-download. */
+    @Override protected void onCancel() {
+        ZimWishlist.clear(getApplicationContext());
     }
 
-    @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
+    /** Tap the notification -> the shared content-download progress screen (K2GO-382). */
+    @Override protected Intent returnIntent() { return OpReturnNavigator.contentDownload(this); }
 
     /** ADFA-4897: item confirmed downloaded -> drop it from the durable wishlist, so a process death
      *  after this point never re-downloads it. */
@@ -165,8 +139,8 @@ public final class ZimDownloadService extends Service implements ContentDownload
 
     // K2GO-390: bound the self-heal. On a failure we force a catalog refresh; the drain then re-resolves
     // the date-free key ("project|lang|flavour") to the current dated file and retries. After this many
-    // failed drains for one key, it is genuinely gone (or there is no fresh source) -- drop it so it
-    // stops re-draining. ~5 * the ~2s drain cadence gives the refresh time to land. See ADR-390.
+    // failed drains for one key, it is genuinely gone (or there is no fresh source): drop it so it stops
+    // re-draining. ~5 * the ~2s drain cadence gives the refresh time to land. See ADR-390.
     private static final int MAX_HEAL_ATTEMPTS = 5;
 
     /** ADR-390: item gave up (likely a stale catalog -> 404). Force a freshness check and bound retries,
@@ -184,32 +158,5 @@ public final class ZimDownloadService extends Service implements ContentDownload
                     "kiwix item still failing after " + attempts + " attempts; dropping " + key);
             ZimWishlist.remove(app, key);
         }
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, getString(R.string.k2go_zim_dl_channel_name), NotificationManager.IMPORTANCE_LOW);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) manager.createNotificationChannel(channel);
-        }
-    }
-
-    private Notification buildNotification(String currentLabel) {
-        // K2GO-382: route via the single owner (OpReturnNavigator).
-        PendingIntent contentIntent = OpReturnNavigator.notify(this, OpReturnNavigator.contentDownload(this));
-        Intent cancel = new Intent(this, ZimDownloadService.class).setAction(ACTION_CANCEL);
-        PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.k2go_zim_dl_notif_title))
-                .setContentText(currentLabel)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentIntent(contentIntent)
-                .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.k2go_zim_notif_cancel), cancelIntent)
-                .build();
     }
 }
