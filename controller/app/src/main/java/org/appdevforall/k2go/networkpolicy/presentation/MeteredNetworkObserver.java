@@ -37,7 +37,7 @@ import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 public final class MeteredNetworkObserver {
 
     private static final String CHANNEL_ID = "network_cost";
-    private static final int NOTIF_ID = 0x4E50; // stable id: re-alert replaces, never stacks
+    private static final int NOTIF_ID = org.appdevforall.k2go.notifications.NotificationIds.NETWORK_COST; // stable id: re-alert replaces, never stacks
 
     private MeteredNetworkObserver() {}
 

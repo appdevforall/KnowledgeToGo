@@ -67,7 +67,7 @@ public final class DeepOpService extends Service {
 
     private static final String TAG = "IIAB-DeepOpService";
     private static final String CHANNEL_ID = "deepop_channel";
-    private static final int NOTIFICATION_ID = 12;   // K2GO-458: unique id (7 = CodeAssetsDownloadService); these can run concurrently
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.DEEPOP;
 
     public static final String ACTION_BACKUP = "org.iiab.controller.DEEPOP_BACKUP";
     public static final String ACTION_RESTORE = "org.iiab.controller.DEEPOP_RESTORE";

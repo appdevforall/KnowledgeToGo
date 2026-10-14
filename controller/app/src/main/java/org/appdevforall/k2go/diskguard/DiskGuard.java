@@ -91,8 +91,8 @@ public final class DiskGuard {
     private static final long GROWTH_MIN_BYTES = 16L * 1024 * 1024; // 16 MiB within GROWTH_PROBE_MS
 
     private static final String CHANNEL_ID = "disk_guard_channel";
-    private static final int NOTIF_ID = 7386;            // escalation (stopped and staying down)
-    private static final int NOTIF_ID_FIREHOSE = 7387;   // firehose contain (reaped, kept alive)
+    private static final int NOTIF_ID = org.appdevforall.k2go.notifications.NotificationIds.DISK_GUARD_ESCALATION;   // stopped and staying down
+    private static final int NOTIF_ID_FIREHOSE = org.appdevforall.k2go.notifications.NotificationIds.DISK_GUARD_FIREHOSE;   // firehose contain (reaped, kept alive)
 
     // Recent-trip state, in memory on purpose: it resets when the app process restarts, so a stale count
     // never carries across a restart. Read and written only under advanceTripState (class monitor).

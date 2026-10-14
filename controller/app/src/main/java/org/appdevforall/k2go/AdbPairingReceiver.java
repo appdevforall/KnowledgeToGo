@@ -18,8 +18,8 @@ import org.appdevforall.k2go.util.AppExecutors;
 public class AdbPairingReceiver extends BroadcastReceiver {
 
     public static final String KEY_PIN_REPLY = "key_pin_reply";
-    public static final int NOTIFICATION_ID = 9401;
-    public static final int RETURN_NOTIFICATION_ID = 9402;
+    public static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.ADB_PAIRING;
+    public static final int RETURN_NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.ADB_PAIRING_RETURN;
     private static final String TAG = "AdbPairingNative";
     private static final String CHANNEL_ID = "adb_pairing_channel";
 

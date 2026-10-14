@@ -51,7 +51,7 @@ import org.appdevforall.k2go.install.presentation.EtaText;
 public final class DashboardRebuildService extends Service {
 
     private static final String CHANNEL_ID = "dashboard_update_channel";
-    private static final int NOTIFICATION_ID = 10;   // app-global; distinct from the other services
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.DASHBOARD_REBUILD;
 
     public static final String ACTION_START = "org.iiab.controller.DASHBOARD_UPDATE_START";
     /** ADFA-5333: re-own an already-running rebuild (poll only, never POST a new one). */

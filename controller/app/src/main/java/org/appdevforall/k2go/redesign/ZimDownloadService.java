@@ -35,7 +35,7 @@ import org.json.JSONObject;
 public final class ZimDownloadService extends Service implements ContentDownloadSession.Host {
 
     private static final String CHANNEL_ID = "zim_download_channel";
-    private static final int NOTIFICATION_ID = 5;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.ZIM_DOWNLOAD;
 
     public static final String ACTION_START = "org.iiab.controller.ZIM_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.ZIM_DOWNLOAD_RETRY";
