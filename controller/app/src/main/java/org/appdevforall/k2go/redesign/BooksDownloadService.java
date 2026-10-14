@@ -36,7 +36,7 @@ import org.json.JSONObject;
 public final class BooksDownloadService extends Service implements ContentDownloadSession.Host {
 
     private static final String CHANNEL_ID = "books_download_channel";
-    private static final int NOTIFICATION_ID = 6;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.BOOKS_DOWNLOAD;
 
     public static final String ACTION_START = "org.iiab.controller.BOOKS_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.BOOKS_DOWNLOAD_RETRY";

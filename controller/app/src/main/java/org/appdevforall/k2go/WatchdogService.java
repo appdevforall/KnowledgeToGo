@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class WatchdogService extends Service {
     private static final String TAG = "IIAB-Watchdog";
     private static final String CHANNEL_ID = "watchdog_channel";
-    private static final int NOTIFICATION_ID = 2;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.WATCHDOG;
 
     public static final String ACTION_START = "org.iiab.controller.WATCHDOG_START";
     public static final String ACTION_STOP = "org.iiab.controller.WATCHDOG_STOP";

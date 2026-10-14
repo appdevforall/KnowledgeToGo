@@ -36,7 +36,7 @@ import androidx.core.app.NotificationCompat;
 public class TerminalSessionService extends Service {
 
     private static final String CHANNEL_ID = "terminal_channel";
-    private static final int NOTIFICATION_ID = 4;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.TERMINAL_SESSION;
 
     public static final String ACTION_START = "org.iiab.controller.TERMINAL_START";
     public static final String ACTION_STOP = "org.iiab.controller.TERMINAL_STOP";

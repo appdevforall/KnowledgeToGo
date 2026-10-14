@@ -25,6 +25,8 @@ import android.text.TextUtils;
 import androidx.core.app.NotificationCompat;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.notifications.NotificationIds;
+import org.appdevforall.k2go.notifications.NotificationRequestCodes;
 
 import java.util.List;
 
@@ -33,11 +35,10 @@ public final class InstallNotifications {
     private static final String CHANNEL_ID = "install_channel";
 
     /** The ongoing foreground notification id (InstallService posts it via startForeground). */
-    public static final int ONGOING_ID = 3;
+    public static final int ONGOING_ID = NotificationIds.INSTALL_ONGOING;
 
-    /** The dismissible module-failure notification id. K2GO-458: explicit unique value; the old
-     *  ONGOING_ID + 4 resolved to 7, which collided with the download/seed foreground services. */
-    private static final int MODULE_FAIL_ID = 13;
+    /** The dismissible module-failure notification id, distinct from the foreground one. */
+    private static final int MODULE_FAIL_ID = NotificationIds.INSTALL_MODULE_FAILURE;
 
     private InstallNotifications() {
     }
@@ -99,9 +100,9 @@ public final class InstallNotifications {
         if (installPipeline && st.isHeld()) {
             b.addAction(0, ctx.getString(st.isSoftFailed() ? R.string.k2go_dl_retry
                                                            : R.string.k2go_dl_resume),
-                    serviceAction(ctx, InstallService.ACTION_RESUME, 2));
+                    serviceAction(ctx, InstallService.ACTION_RESUME, NotificationRequestCodes.ServiceAction.RESUME));
         } else if (installPipeline && st.phase == InstallState.Phase.DOWNLOADING) {
-            b.addAction(0, ctx.getString(R.string.k2go_dl_pause), serviceAction(ctx, InstallService.ACTION_PAUSE, 3));
+            b.addAction(0, ctx.getString(R.string.k2go_dl_pause), serviceAction(ctx, InstallService.ACTION_PAUSE, NotificationRequestCodes.ServiceAction.PAUSE));
         } else if (!installPipeline) {
             // ADFA-5119: a module queue, a scratch reset and a dashboard rebuild get a way to LOOK,
             // never a way to stop. Cancel was the only action they had, and on these three it is a
@@ -132,7 +133,7 @@ public final class InstallNotifications {
                 .putExtra(org.appdevforall.k2go.redesign.SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pi = PendingIntent.getActivity(ctx,
-                org.appdevforall.k2go.redesign.OpReturnNavigator.RC_MODULE_FAILURE, open,
+                NotificationRequestCodes.Return.MODULE_FAILURE, open,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Notification n = new NotificationCompat.Builder(ctx, CHANNEL_ID)
                 .setContentTitle(ctx.getString(R.string.k2go_mod_phase_failed))

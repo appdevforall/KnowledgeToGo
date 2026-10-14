@@ -34,28 +34,22 @@ import org.appdevforall.k2go.deepop.DeepOpProgressRepository;
 import org.appdevforall.k2go.deepop.DeepOpState;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.install.presentation.ModuleQueueRepository;
+import org.appdevforall.k2go.notifications.NotificationRequestCodes;
 
 public final class OpReturnNavigator {
     private OpReturnNavigator() {}
 
     // PendingIntent identity = request code + component/action/data (extras are IGNORED). Two
     // notifications that open the same Activity with only different extras MUST use different request
-    // codes, or FLAG_UPDATE_CURRENT lets the last-built one rewrite the others' tap target. One source
-    // for the per-target codes lives here; notify() applies the code the builder chose (carried in EXTRA_RC).
-    public static final int RC_CONTENT_DOWNLOAD  = 1;
-    public static final int RC_BACKUP_RESTORE    = 2;
-    public static final int RC_DASHBOARD_REBUILD = 3;
-    public static final int RC_INSTALL           = 4;
-    public static final int RC_CLONE_SHARE       = 5;
-    public static final int RC_MODULE_FAILURE    = 6;
-
-    // Carries the builder's request code to notify(). filterEquals ignores extras, so this never
-    // changes intent identity; the request code does.
+    // codes, or FLAG_UPDATE_CURRENT lets the last-built one rewrite the others' tap target. The codes
+    // are one source in NotificationRequestCodes.Return; each builder stamps its code into EXTRA_RC and
+    // notify() reads it back. filterEquals ignores extras, so EXTRA_RC never changes intent identity.
     private static final String EXTRA_RC = "op_return_rc";
 
     /** Content downloads (kiwix / books / kolibri): the shared provisioning progress screen. */
     public static Intent contentDownload(Context ctx) {
-        return new Intent(ctx, SetupProgressActivity.class).putExtra(EXTRA_RC, RC_CONTENT_DOWNLOAD);
+        return new Intent(ctx, SetupProgressActivity.class)
+                .putExtra(EXTRA_RC, NotificationRequestCodes.Return.CONTENT_DOWNLOAD);
     }
 
     /** Backup / restore live op: the backup/restore job screen; BackupJobFragment re-binds to the
@@ -66,7 +60,7 @@ public final class OpReturnNavigator {
         return new Intent(ctx, SetupLibraryActivity.class)
                 .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true)
                 .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, mode)
-                .putExtra(EXTRA_RC, RC_BACKUP_RESTORE);
+                .putExtra(EXTRA_RC, NotificationRequestCodes.Return.BACKUP_RESTORE);
     }
 
     /** Dashboard rebuild: the module-management dashboard card with its in-progress indicator. */
@@ -74,7 +68,7 @@ public final class OpReturnNavigator {
         return new Intent(ctx, SetupLibraryActivity.class)
                 .putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
                 .putExtra(SetupLibraryActivity.EXTRA_DASHBOARD_DETAIL, true)
-                .putExtra(EXTRA_RC, RC_DASHBOARD_REBUILD);
+                .putExtra(EXTRA_RC, NotificationRequestCodes.Return.DASHBOARD_REBUILD);
     }
 
     /** Rootfs / module install: a bare LibraryActivity. It detects a live rootfs install itself
@@ -83,14 +77,15 @@ public final class OpReturnNavigator {
      *  Do NOT set EXTRA_INSTALLING here: it forces LibraryActivity.installing=true, which suppresses
      *  that module re-route and would strand a module install's notification on the gate. */
     public static Intent install(Context ctx) {
-        return new Intent(ctx, LibraryActivity.class).putExtra(EXTRA_RC, RC_INSTALL);
+        return new Intent(ctx, LibraryActivity.class)
+                .putExtra(EXTRA_RC, NotificationRequestCodes.Return.INSTALL);
     }
 
     /** Clone / share: the Connect/clone tab. */
     public static Intent cloneShare(Context ctx) {
         return new Intent(ctx, LibraryActivity.class)
                 .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone)
-                .putExtra(EXTRA_RC, RC_CLONE_SHARE);
+                .putExtra(EXTRA_RC, NotificationRequestCodes.Return.CLONE_SHARE);
     }
 
     /**

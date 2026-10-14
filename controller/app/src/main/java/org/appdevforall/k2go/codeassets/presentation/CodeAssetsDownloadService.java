@@ -27,7 +27,7 @@ import org.json.JSONObject;
 public final class CodeAssetsDownloadService extends ContentDownloadServiceBase {
 
     private static final String CHANNEL_ID = "code_assets_download_channel";
-    private static final int NOTIFICATION_ID = 7;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.CODE_ASSETS_DOWNLOAD;
 
     public static final String ACTION_START = "org.appdevforall.k2go.CODE_ASSETS_DOWNLOAD_START";
     public static final String ACTION_PAUSE = "org.appdevforall.k2go.CODE_ASSETS_DOWNLOAD_PAUSE";

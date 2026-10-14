@@ -35,7 +35,7 @@ public final class CloneShareService extends Service {
 
     private static final String TAG = "IIAB-CloneShare";
     private static final String CHANNEL_ID = "clone_channel";
-    private static final int NOTIFICATION_ID = 8;
+    private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.CLONE_SHARE;
 
     public static final String ACTION_START = "org.iiab.controller.CLONE_SHARE_START";
     public static final String ACTION_STOP = "org.iiab.controller.CLONE_SHARE_STOP";
