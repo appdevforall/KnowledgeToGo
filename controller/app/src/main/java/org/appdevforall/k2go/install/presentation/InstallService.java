@@ -931,12 +931,16 @@ public final class InstallService extends Service {
 
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
-        final String installCmd = ("maps".equals(nextModule) && hasMapsConfig)
+        final String runroleCmd = ("maps".equals(nextModule) && hasMapsConfig)
                 ? mapsInstallCmd()
                 : "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
+        // K2GO-464: refresh the stale rootfs apt index before the runrole, or a pinned dep 404s as the
+        // box ages. Best-effort (short timeout, || true) so an offline/local-only install still runs.
+        final String installCmd =
+                "apt-get -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 update || true ; " + runroleCmd;
 
         // K2GO-394: the runrole (post-processing) as a deferred step. For maps it runs only AFTER the
         // base maps are downloaded through dash-node (the gate below); other modules run it at once.
