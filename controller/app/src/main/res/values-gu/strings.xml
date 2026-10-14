@@ -1409,4 +1409,5 @@
     <string name="k2go_code_assets_update_failed">બિલ્ડ સંસાધનો અપડેટ કરી શકાયા નહીં</string>
     <string name="k2go_code_assets_update_some_failed">કેટલાક બિલ્ડ સંસાધનો અપડેટ કરી શકાયા નહીં</string>
     <string name="k2go_code_dev_count">%1$d સાધનો</string>
+    <string name="k2go_setup_waiting_network">Wi-Fi અથવા મોબાઇલ ડેટા વાપરવાની તમારી મંજૂરીની રાહ જોઈ રહ્યું છે</string>
 </resources>

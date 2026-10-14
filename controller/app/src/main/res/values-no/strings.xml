@@ -1406,4 +1406,5 @@
     <string name="k2go_code_assets_update_failed">Kunne ikke oppdatere byggeressursene</string>
     <string name="k2go_code_assets_update_some_failed">Noen byggeressurser kunne ikke oppdateres</string>
     <string name="k2go_code_dev_count">%1$d verktøy</string>
+    <string name="k2go_setup_waiting_network">Venter på Wi-Fi eller ditt samtykke til å bruke mobildata</string>
 </resources>
