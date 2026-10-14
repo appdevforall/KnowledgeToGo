@@ -632,8 +632,8 @@ else
   echo "code_install: True"  >> "$LOCAL_VARS_DEST"
   echo "code_enabled: True"  >> "$LOCAL_VARS_DEST"
 
-  # K2GO-212: the forgejo role ships install/enabled False in every vars template (carried via
-  # tools/upstream-patches until iiab#4505 merges), so enable it for Standard/Full here (not Basic).
+  # K2GO-212: the forgejo role (upstream iiab#4505, now in master) ships install/enabled False in
+  # every vars template, so enable it for Standard/Full here (not Basic).
   case "$LOCAL_VARS_URL" in
     *_small*)
       log "Basic tier: Forgejo left off."
