@@ -3,37 +3,27 @@
  * Name        : BooksDownloadService.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4850 / ADFA-4893. Foreground shell for the Books stream: owns the notification and
- *               the Books-specific bits (id/title/url arrays, the {items:[{id,title,url}]} body,
- *               item-count percent) and delegates the queue + client + progress/pause/reconnect state
- *               to the shared ContentDownloadSession — the same engine ZIM uses, so both behave
- *               identically. The server downloads each EPUB from Gutenberg and uploads it into
- *               Calibre-Web; the device only POSTs + polls.
+ * Description : ADFA-4850 / ADFA-4893 / K2GO-449. Foreground shell for the Books stream. The generic
+ *               service behavior (onStartCommand dispatch, notification, channel, Host) now lives in
+ *               ContentDownloadServiceBase; this subclass provides only the Books bits: the session
+ *               singleton, the action strings, the notification title, the START item (id/title/url
+ *               arrays, the {items:[{id,title,url}]} body, item-count percent), and the wishlist
+ *               cleanup on cancel/done. The server downloads each EPUB from Gutenberg and uploads it
+ *               into Calibre-Web; the device only POSTs + polls.
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public final class BooksDownloadService extends Service implements ContentDownloadSession.Host {
+public final class BooksDownloadService extends ContentDownloadServiceBase {
 
     private static final String CHANNEL_ID = "books_download_channel";
     private static final int NOTIFICATION_ID = org.appdevforall.k2go.notifications.NotificationIds.BOOKS_DOWNLOAD;
@@ -58,7 +48,7 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     public interface Listener { void onUpdate(); }
 
     private static final ContentDownloadSession SESSION = new ContentDownloadSession("books");
-    // The whole per-item snapshot (id/title/url-as-bodies, titles-as-labels) now lives in SESSION, so
+    // The whole per-item snapshot (id/title/url-as-bodies, titles-as-labels) lives in SESSION, so
     // status and the metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
     // ---- static API the UI observes (delegates to the shared session) -------------------------
@@ -100,91 +90,47 @@ public final class BooksDownloadService extends Service implements ContentDownlo
 
     public static void finishSession() { SESSION.purge(); }
 
-    private final Handler main = new Handler(Looper.getMainLooper());
-
-    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); SESSION.attach(this); }
-    @Nullable @Override public IBinder onBind(Intent intent) { return null; }
+    // ---- per-module hooks for ContentDownloadServiceBase --------------------------------------
+    @Override protected ContentDownloadSession session() { return SESSION; }
+    @Override protected int notificationId() { return NOTIFICATION_ID; }
+    @Override protected String channelId() { return CHANNEL_ID; }
+    @Override protected String channelName() { return getString(R.string.k2go_books_dl_channel_name); }
+    @Override protected String notifTitle() { return getString(R.string.k2go_books_dl_notif_title); }
+    @Override protected String notifText() { return ""; }   // books threads the current book title via notify(label)
+    @Override protected String actionPause() { return ACTION_PAUSE; }
+    @Override protected String actionResume() { return ACTION_RESUME; }
+    @Override protected String actionCancel() { return ACTION_CANCEL; }
+    @Override protected String actionRetry() { return ACTION_RETRY; }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        SESSION.attach(this);
-        String action = intent != null ? intent.getAction() : null;
-
-        if (ACTION_CANCEL.equals(action)) {
-            // ADFA-4897: Cancel abandons the order -> drop the remaining wishlist (DONE books were
-            // already removed one by one via onItemDone) so a later drain does not re-add them.
-            BooksWishlist.clear(getApplicationContext());
-            SESSION.cancelAndPurge();
-            return START_NOT_STICKY;
+    protected void beginFromIntent(Intent intent) {
+        String[] ids = intent.getStringArrayExtra(EXTRA_IDS);
+        if (ids == null || ids.length == 0) { stopSelf(); return; }
+        String[] titles = intent.getStringArrayExtra(EXTRA_TITLES);
+        String[] urls = intent.getStringArrayExtra(EXTRA_URLS);
+        if (titles == null) titles = ids;
+        if (urls == null) urls = new String[ids.length];
+        JSONObject[] bodies = new JSONObject[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            try {
+                JSONObject item = new JSONObject().put("id", ids[i]).put("title", titles[i]).put("url", urls[i]);
+                bodies[i] = new JSONObject().put("items", new JSONArray().put(item));
+            } catch (Exception e) { bodies[i] = new JSONObject(); }
         }
-        if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
-        if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
-
-        if (SESSION.isRunning()) return START_NOT_STICKY;
-
-        if (ACTION_RETRY.equals(action)) {
-            if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
-            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
-            SESSION.resumeQueue();
-        } else { // ACTION_START: fresh session from the extras
-            String[] ids = intent.getStringArrayExtra(EXTRA_IDS);
-            if (ids == null || ids.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            String[] titles = intent.getStringArrayExtra(EXTRA_TITLES);
-            String[] urls = intent.getStringArrayExtra(EXTRA_URLS);
-            if (titles == null) titles = ids;
-            if (urls == null) urls = new String[ids.length];
-            JSONObject[] bodies = new JSONObject[ids.length];
-            for (int i = 0; i < ids.length; i++) {
-                try {
-                    JSONObject item = new JSONObject().put("id", ids[i]).put("title", titles[i]).put("url", urls[i]);
-                    bodies[i] = new JSONObject().put("items", new JSONArray().put(item));
-                } catch (Exception e) { bodies[i] = new JSONObject(); }
-            }
-            startForeground(NOTIFICATION_ID, buildNotification(titles.length > 0 ? titles[0] : ""));
-            // keys = ids: the book id is both the download id and the wishlist key (ADFA-4897).
-            SESSION.begin(ids, titles, null, bodies);   // books: no per-item byte size -> count-based percent
-        }
-        return START_NOT_STICKY;
+        // keys = ids: the book id is both the download id and the wishlist key (ADFA-4897).
+        SESSION.begin(ids, titles, null, bodies);   // books: no per-item byte size -> count-based percent
     }
 
-    // ---- ContentDownloadSession.Host (Books specifics) ----------------------------------------
-    @Override public void notify(String label) {
-        if (!SESSION.isRunning()) return;
-        NotificationManager m = getSystemService(NotificationManager.class);
-        if (m != null) m.notify(NOTIFICATION_ID, buildNotification(label));
+    /** ADFA-4897: Cancel abandons the order -> drop the remaining wishlist so a later drain does not re-add. */
+    @Override protected void onCancel() {
+        BooksWishlist.clear(getApplicationContext());
     }
 
-    @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
+    /** Tap the notification -> the shared content-download progress screen (K2GO-382). */
+    @Override protected Intent returnIntent() { return OpReturnNavigator.contentDownload(this); }
 
     /** ADFA-4897: book confirmed added to the library -> drop it from the durable wishlist. */
     @Override public void onItemDone(String key) {
         if (key != null && !key.isEmpty()) BooksWishlist.remove(getApplicationContext(), key);
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel ch = new NotificationChannel(
-                    CHANNEL_ID, getString(R.string.k2go_books_dl_channel_name), NotificationManager.IMPORTANCE_LOW);
-            NotificationManager m = getSystemService(NotificationManager.class);
-            if (m != null) m.createNotificationChannel(ch);
-        }
-    }
-
-    private Notification buildNotification(String title) {
-        // K2GO-382: route via the single owner (OpReturnNavigator).
-        PendingIntent open = OpReturnNavigator.notify(this, OpReturnNavigator.contentDownload(this));
-        PendingIntent cancel = PendingIntent.getService(this, 1,
-                new Intent(this, BooksDownloadService.class).setAction(ACTION_CANCEL),
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.k2go_books_dl_notif_title))
-                .setContentText(title)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentIntent(open)
-                .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.k2go_zim_notif_cancel), cancel)
-                .build();
     }
 }
