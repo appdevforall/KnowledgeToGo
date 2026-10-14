@@ -21,6 +21,16 @@ public class AdbPairingReceiver extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 9401;
     public static final int RETURN_NOTIFICATION_ID = 9402;
     private static final String TAG = "AdbPairingNative";
+    private static final String CHANNEL_ID = "adb_pairing_channel";
+
+    /** The channel must exist before notify(): on Android 8+ posting to an uncreated channel is
+     *  silently dropped, so these pairing notifications never showed. */
+    private static void ensureChannel(NotificationManager nm) {
+        if (nm == null || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) return;
+        if (nm.getNotificationChannel(CHANNEL_ID) != null) return;
+        nm.createNotificationChannel(new android.app.NotificationChannel(
+                CHANNEL_ID, "ADB pairing", NotificationManager.IMPORTANCE_DEFAULT));
+    }
 
 
     @Override
@@ -41,7 +51,8 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                     // Update notification to remove the loading spinner
                     NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (nm != null) {
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "adb_pairing_channel")
+                        ensureChannel(nm);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                                 .setContentTitle("Pairing initiated")
                                 .setContentText("Returning to app...");
@@ -85,7 +96,8 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                     android.app.PendingIntent pi = android.app.PendingIntent.getActivity(context, 0, open, piFlags);
                     NotificationManager nmReturn = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (nmReturn != null) {
-                        NotificationCompat.Builder rb = new NotificationCompat.Builder(context, "adb_pairing_channel")
+                        ensureChannel(nmReturn);
+                        NotificationCompat.Builder rb = new NotificationCompat.Builder(context, CHANNEL_ID)
                                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                                 .setContentTitle("Paired")
                                 .setContentText("Tap to return to K2Go")
