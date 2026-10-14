@@ -57,7 +57,7 @@ public final class KolibriSeedService extends Service {
 
     private static final String TAG = "K2Go-Provision";
     private static final String CHANNEL_ID = "kolibri_seed_channel";
-    private static final int NOTIFICATION_ID = 7;
+    private static final int NOTIFICATION_ID = 9;   // K2GO-458: unique id (7 = CodeAssetsDownloadService); these can run concurrently
 
     public static final String ACTION_START = "org.iiab.controller.KOLIBRI_SEED_START";
     public static final String ACTION_RETRY = "org.iiab.controller.KOLIBRI_SEED_RETRY";

@@ -52,7 +52,7 @@ public final class ForgejoSeedService extends Service {
 
     private static final String TAG = "K2Go-Provision";
     private static final String CHANNEL_ID = "forgejo_seed_channel";
-    private static final int NOTIFICATION_ID = 8;
+    private static final int NOTIFICATION_ID = 14;   // K2GO-458: unique id (8 = CloneShareService); these can run concurrently
 
     public static final String ACTION_START = "org.iiab.controller.FORGEJO_SEED_START";
     /** K2GO-422: force a fresh seed past a leftover "done" status (an intentional post-install re-seed). */
