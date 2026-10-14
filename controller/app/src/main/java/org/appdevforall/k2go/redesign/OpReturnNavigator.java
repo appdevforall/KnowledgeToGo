@@ -38,9 +38,24 @@ import org.appdevforall.k2go.install.presentation.ModuleQueueRepository;
 public final class OpReturnNavigator {
     private OpReturnNavigator() {}
 
+    // PendingIntent identity = request code + component/action/data (extras are IGNORED). Two
+    // notifications that open the same Activity with only different extras MUST use different request
+    // codes, or FLAG_UPDATE_CURRENT lets the last-built one rewrite the others' tap target. One source
+    // for the per-target codes lives here; notify() applies the code the builder chose (carried in EXTRA_RC).
+    public static final int RC_CONTENT_DOWNLOAD  = 1;
+    public static final int RC_BACKUP_RESTORE    = 2;
+    public static final int RC_DASHBOARD_REBUILD = 3;
+    public static final int RC_INSTALL           = 4;
+    public static final int RC_CLONE_SHARE       = 5;
+    public static final int RC_MODULE_FAILURE    = 6;
+
+    // Carries the builder's request code to notify(). filterEquals ignores extras, so this never
+    // changes intent identity; the request code does.
+    private static final String EXTRA_RC = "op_return_rc";
+
     /** Content downloads (kiwix / books / kolibri): the shared provisioning progress screen. */
     public static Intent contentDownload(Context ctx) {
-        return new Intent(ctx, SetupProgressActivity.class);
+        return new Intent(ctx, SetupProgressActivity.class).putExtra(EXTRA_RC, RC_CONTENT_DOWNLOAD);
     }
 
     /** Backup / restore live op: the backup/restore job screen; BackupJobFragment re-binds to the
@@ -50,14 +65,16 @@ public final class OpReturnNavigator {
                 ? BackupJobFragment.MODE_RESTORE : BackupJobFragment.MODE_BACKUP;
         return new Intent(ctx, SetupLibraryActivity.class)
                 .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true)
-                .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, mode);
+                .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, mode)
+                .putExtra(EXTRA_RC, RC_BACKUP_RESTORE);
     }
 
     /** Dashboard rebuild: the module-management dashboard card with its in-progress indicator. */
     public static Intent dashboardRebuild(Context ctx) {
         return new Intent(ctx, SetupLibraryActivity.class)
                 .putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
-                .putExtra(SetupLibraryActivity.EXTRA_DASHBOARD_DETAIL, true);
+                .putExtra(SetupLibraryActivity.EXTRA_DASHBOARD_DETAIL, true)
+                .putExtra(EXTRA_RC, RC_DASHBOARD_REBUILD);
     }
 
     /** Rootfs / module install: a bare LibraryActivity. It detects a live rootfs install itself
@@ -66,13 +83,14 @@ public final class OpReturnNavigator {
      *  Do NOT set EXTRA_INSTALLING here: it forces LibraryActivity.installing=true, which suppresses
      *  that module re-route and would strand a module install's notification on the gate. */
     public static Intent install(Context ctx) {
-        return new Intent(ctx, LibraryActivity.class);
+        return new Intent(ctx, LibraryActivity.class).putExtra(EXTRA_RC, RC_INSTALL);
     }
 
     /** Clone / share: the Connect/clone tab. */
     public static Intent cloneShare(Context ctx) {
         return new Intent(ctx, LibraryActivity.class)
-                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone);
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone)
+                .putExtra(EXTRA_RC, RC_CLONE_SHARE);
     }
 
     /**
@@ -101,7 +119,7 @@ public final class OpReturnNavigator {
     public static PendingIntent notify(Context ctx, Intent target) {
         target.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(ctx, 0, target,
+        return PendingIntent.getActivity(ctx, target.getIntExtra(EXTRA_RC, 0), target,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
