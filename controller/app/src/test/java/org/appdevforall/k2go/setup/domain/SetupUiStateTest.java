@@ -95,4 +95,26 @@ public class SetupUiStateTest {
         assertTrue(on.runInBackgroundVisible);
         assertFalse(running().runInBackgroundEnabled(false).build().runInBackgroundVisible);
     }
+
+    // ---- K2GO-408: a banked proot stage held on a metered network without consent ----
+
+    @Test
+    public void waitingForNetworkIsNonTerminalAmberAndLeaveable() {
+        SetupUiState ui = new SetupUiState.Inputs().waitingForNetwork(true).build();
+        assertEquals(SetupUiState.StatusTone.WAITING, ui.tone);
+        assertEquals(SetupUiState.StatusMessage.WAITING_FOR_NETWORK, ui.message);
+        assertTrue(ui.animate);
+        assertEquals(SetupUiState.Controls.RUNNING, ui.controls);   // non-terminal, never FINISH_FAILURE
+        assertTrue("the user must not be pinned while held", ui.runInBackgroundVisible);
+    }
+
+    @Test
+    public void waitingForNetworkWinsOverTheModuleStage() {
+        // Even mid-module-flow with the server not up (which would read INSTALLING), the hold dominates.
+        SetupUiState ui = new SetupUiState.Inputs()
+                .waitingForNetwork(true).moduleFlow(true).batchServerUp(false)
+                .runInBackgroundEnabled(false).build();
+        assertEquals(SetupUiState.StatusMessage.WAITING_FOR_NETWORK, ui.message);
+        assertTrue(ui.runInBackgroundVisible);   // overrides the gated runInBackgroundEnabled input
+    }
 }
