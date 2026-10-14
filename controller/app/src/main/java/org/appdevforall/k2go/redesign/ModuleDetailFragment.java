@@ -198,10 +198,10 @@ public class ModuleDetailFragment extends Fragment {
                         });
                     }
                     // K2GO-449: an installed content module's update action comes from the ModuleActions
-                    // registry (code_addons, code_assets, ...), so this fragment no longer carries one if
-                    // per module. Forgejo's repos action stays special above (status-gated).
+                    // registry (code_addons, code_assets, ...). A gated entry (forgejo) is handled by the
+                    // module's own status flow above, so apply only the plain (ungated) entries here.
                     ModuleActions.InstalledAction ia = ModuleActions.installed(c.key());
-                    if (ia != null) {
+                    if (ia != null && ia.gate == null) {
                         installNowBtn.setText(ia.labelRes);
                         installNowBtn.setOnClickListener(v -> ia.handler.run(requireActivity(), installNowBtn));
                         installNowBtn.setVisibility(View.VISIBLE);
