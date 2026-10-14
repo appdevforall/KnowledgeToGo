@@ -7,10 +7,11 @@
  *               engine. Holds the instance behavior every content service copied: the onStartCommand
  *               dispatch of pause/resume/cancel/retry, the notification + channel, and the
  *               ContentDownloadSession.Host plumbing. Per-module bits come from abstract hooks (the
- *               module's session, its action strings, the START item-building, and the notification
- *               text). The per-type ContentDownloadSession singleton stays owned by the subclass, so
- *               this adds no new state. CodeAssetsDownloadService adopts it first; ZimDownloadService /
- *               BooksDownloadService / maps migrate onto it in later, separately reviewed slices.
+ *               module's session, its action strings, the notification title/fallback text, the START
+ *               item-building, and optional cancel cleanup). The notification shows the current item
+ *               label and, when the module provides a returnIntent(), routes tap-to-return through
+ *               OpReturnNavigator, per the long-running operation contract. The per-type
+ *               ContentDownloadSession singleton stays owned by the subclass, so this adds no new state.
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
@@ -42,6 +43,7 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
     protected abstract String channelId();
     protected abstract String channelName();
     protected abstract String notifTitle();
+    /** Fallback notification text, shown before the first item label arrives. */
     protected abstract String notifText();
     protected abstract String actionPause();
     protected abstract String actionResume();
@@ -58,7 +60,13 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
         session().attach(this);
         final String a = intent != null ? intent.getAction() : null;
         if (a != null) {
-            if (a.equals(actionCancel())) { session().cancelAndPurge(); return START_NOT_STICKY; }
+            if (a.equals(actionCancel())) {
+                // Run the module's cancel cleanup, but never let it block the purge: cancel must always
+                // tear down the session and the foreground service, even if a hook throws.
+                try { onCancel(); } catch (RuntimeException e) { /* best-effort */ }
+                session().cancelAndPurge();
+                return START_NOT_STICKY;
+            }
             if (a.equals(actionPause())) { session().pauseActive(); return START_NOT_STICKY; }
             if (a.equals(actionResume())) { session().resumeActive(); return START_NOT_STICKY; }
         }
@@ -66,10 +74,10 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
 
         if (a != null && a.equals(actionRetry())) {
             if (!session().hasSession()) { stopSelf(); return START_NOT_STICKY; }
-            startForeground(notificationId(), buildNotification());
+            startForeground(notificationId(), buildNotification(currentLabel()));
             session().resumeQueue();
         } else { // START (any other action): a fresh session built by the subclass
-            startForeground(notificationId(), buildNotification());
+            startForeground(notificationId(), buildNotification(null));
             beginFromIntent(intent);
         }
         return START_NOT_STICKY;
@@ -79,12 +87,24 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
     @Override public void notify(String label) {
         if (!session().isRunning()) return;
         NotificationManager m = getSystemService(NotificationManager.class);
-        if (m != null) m.notify(notificationId(), buildNotification());
+        if (m != null) m.notify(notificationId(), buildNotification(label));
     }
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
 
     @Override public void onItemDone(String key) { /* default: no wishlist; a subclass may override */ }
+
+    /** Extra work when the user cancels, before the session is purged. Default: nothing. */
+    protected void onCancel() { }
+
+    /** The screen a notification tap returns to, or null for no tap target. Default: no tap target. */
+    @Nullable protected Intent returnIntent() { return null; }
+
+    /** The current item label, or null when no session is active (the notification content text). */
+    @Nullable private String currentLabel() {
+        ContentDownloadSession s = session();
+        return s.hasSession() ? s.label(s.index()) : null;
+    }
 
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -95,18 +115,23 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
         }
     }
 
-    protected Notification buildNotification() {
+    protected Notification buildNotification(@Nullable String contentText) {
         Intent cancel = new Intent(this, getClass()).setAction(actionCancel());
         PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(this, channelId())
+        String text = (contentText != null && !contentText.isEmpty()) ? contentText : notifText();
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, channelId())
                 .setContentTitle(notifTitle())
-                .setContentText(notifText())
+                .setContentText(text)
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.k2go_dash_cancel), cancelIntent)
-                .build();
+                .addAction(0, getString(R.string.k2go_dash_cancel), cancelIntent);
+        // Operation contract: tap-to-return routes through the single owner (OpReturnNavigator). The
+        // destination is per module (null = no tap target); the onboarding streams override returnIntent().
+        Intent ret = returnIntent();
+        if (ret != null) b.setContentIntent(OpReturnNavigator.notify(this, ret));
+        return b.build();
     }
 }
