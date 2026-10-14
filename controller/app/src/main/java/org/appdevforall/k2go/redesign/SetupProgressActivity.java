@@ -481,8 +481,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // ADFA-4842: proot = maps OR a module batch. A proot-only run finishes when the queue is
         // terminal, without waiting on any REST drain.
         boolean prootShown = mapsShown || moduleShown;
+        // K2GO-408: ModuleQueueRepository is process-scoped, so a DONE/failed verdict from an EARLIER
+        // run lingers. It is THIS run's verdict only once the proot order was actually handed off
+        // (drained); while a stage is still banked (held for network, or not yet drained) a stale DONE
+        // must never read as done -- that would redirect/finish away from the "waiting for network" hold.
+        boolean prootHandedOff = !MapsProvisioner.hasPending(this) && !ModuleProvisioner.hasPending(this);
         boolean prootTerminal = pipeline.mapsStartFailed() || pipeline.moduleStartFailed()
-                || (prootShown && mq.phase == ModuleQueueState.Phase.DONE);
+                || (prootShown && prootHandedOff && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
@@ -529,7 +534,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // clean, finished download instead of redirecting to the library. Only read the
         // queue's verdict when it belongs to THIS run — the same three signals prootTerminal
         // already uses, so the two stay in agreement.
-        boolean queueVerdictIsOurs = prootShown || pipeline.mapsStartFailed() || pipeline.moduleStartFailed();
+        boolean queueVerdictIsOurs = (prootShown && prootHandedOff)   // K2GO-408: not a stale earlier-run verdict
+                || pipeline.mapsStartFailed() || pipeline.moduleStartFailed();
         int prootFailed = !queueVerdictIsOurs ? 0
                 : (mq.phase == ModuleQueueState.Phase.DONE)
                         ? (mq.failedModules == null ? 0 : mq.failedModules.size())
