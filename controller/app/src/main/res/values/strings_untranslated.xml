@@ -9,4 +9,8 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources></resources>
+<resources>
+    <!-- K2GO-408: shown when a banked proot module/maps install is held on a metered network without
+         consent (or offline). Migrate to strings.xml with all 33 locale values before the PR merges. -->
+    <string name="k2go_setup_waiting_network" translatable="false">Waiting for Wi-Fi or your OK to use mobile data</string>
+</resources>

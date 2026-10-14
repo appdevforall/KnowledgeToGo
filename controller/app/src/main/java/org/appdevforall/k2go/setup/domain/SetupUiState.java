@@ -19,7 +19,7 @@ public final class SetupUiState {
     public enum StatusTone { NEUTRAL, WAITING }
 
     /** The status line message (mapped to a string resource by the Activity). */
-    public enum StatusMessage { STARTING, SLOW, ADDING, INSTALLING }
+    public enum StatusMessage { STARTING, SLOW, ADDING, INSTALLING, WAITING_FOR_NETWORK }
 
     /** The bottom-controls mode (mapped to show()/scheduleRedirect()/cancelRedirect() by the Activity). */
     public enum Controls { REDIRECT, FINISH_SUCCESS, FINISH_FAILURE, RUNNING }
@@ -40,6 +40,13 @@ public final class SetupUiState {
     }
 
     public static SetupUiState from(Inputs in) {
+        // K2GO-408: a banked proot stage (module or maps) is held on a metered network without consent.
+        // Non-terminal: amber "waiting for Wi-Fi or consent", keep Run-in-background so the user is never
+        // pinned; the 2s poll resumes it once the network frees or consent is granted.
+        if (in.waitingForNetwork) {
+            return new SetupUiState(StatusTone.WAITING, StatusMessage.WAITING_FOR_NETWORK,
+                    true, Controls.RUNNING, true);
+        }
         // Amber "working" while a module runs, its post-batch restart is pending, or the batch ended
         // with a failed module; never while the server is slow (that is a terminal failure).
         boolean amberWaiting = !in.batchServerSlow
@@ -68,7 +75,9 @@ public final class SetupUiState {
     public static final class Inputs {
         boolean batchServerSlow, batchServerSettling, batchServerUp, moduleFlow, moduleFailed;
         boolean servicesReady, slowByPolls, success, failure, redirectCancelled, runInBackgroundEnabled;
+        boolean waitingForNetwork;   // K2GO-408: proot stage held on metered-without-consent / offline
 
+        public Inputs waitingForNetwork(boolean v) { this.waitingForNetwork = v; return this; }
         public Inputs batchServerSlow(boolean v) { this.batchServerSlow = v; return this; }
         public Inputs batchServerSettling(boolean v) { this.batchServerSettling = v; return this; }
         public Inputs batchServerUp(boolean v) { this.batchServerUp = v; return this; }

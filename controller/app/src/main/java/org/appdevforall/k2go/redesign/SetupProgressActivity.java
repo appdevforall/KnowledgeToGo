@@ -575,6 +575,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         SetupUiState ui = new SetupUiState.Inputs()
                 .batchServerSlow(batchServerSlow).batchServerSettling(batchServerSettling)
                 .batchServerUp(batchServerUp).moduleFlow(moduleFlow).moduleFailed(moduleFailed)
+                .waitingForNetwork(pipeline.moduleWaitingForNetwork() || pipeline.mapsWaitingForNetwork())   // K2GO-408
                 .servicesReady(pipeline.servicesReady()).slowByPolls(pipeline.readyPolls() >= SetupProgressController.SLOW_AFTER_POLLS)
                 .success(verdict.success()).failure(verdict.failure()).redirectCancelled(redirectCancelled)
                 .runInBackgroundEnabled((pipeline.servicesReady() || forgejoSeedActive()) && !prootActive)
@@ -639,6 +640,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             case SLOW: return R.string.k2go_setup_slow;
             case STARTING: return R.string.k2go_setup_starting;
             case INSTALLING: return R.string.install_busy_modules;
+            case WAITING_FOR_NETWORK: return R.string.k2go_setup_waiting_network;   // K2GO-408
             case ADDING:
             default: return R.string.k2go_setup_adding;
         }
