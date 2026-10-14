@@ -19,6 +19,13 @@
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:node="remove" />
 
+    <!-- K2GO-398: the app does not use the Advertising ID (collection is disabled below).
+         Firebase Measurement auto-merges the AD_ID permission; remove it so the Play
+         Advertising ID declaration is honestly "No". -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+
     <application>
         <!-- K2GO-398 / K2GO-402: same Firebase privacy hardening as the standard flavor (this flavor also
              ships Firebase). Disable Advertising ID / SSAID collection and ad personalization (K2Go may
