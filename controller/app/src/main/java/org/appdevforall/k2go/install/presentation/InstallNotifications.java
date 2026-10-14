@@ -131,7 +131,8 @@ public final class InstallNotifications {
         Intent open = new Intent(ctx, org.appdevforall.k2go.redesign.SetupLibraryActivity.class)
                 .putExtra(org.appdevforall.k2go.redesign.SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pi = PendingIntent.getActivity(ctx, 0, open,
+        PendingIntent pi = PendingIntent.getActivity(ctx,
+                org.appdevforall.k2go.redesign.OpReturnNavigator.RC_MODULE_FAILURE, open,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Notification n = new NotificationCompat.Builder(ctx, CHANNEL_ID)
                 .setContentTitle(ctx.getString(R.string.k2go_mod_phase_failed))
