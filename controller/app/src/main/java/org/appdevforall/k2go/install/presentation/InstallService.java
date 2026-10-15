@@ -937,12 +937,8 @@ public final class InstallService extends Service {
                 "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
-        // K2GO-464: refresh the apt index before any runrole. The rootfs ships a snapshot apt index;
-        // once Debian security supersedes a pinned dependency the old .deb is removed (404 on
-        // security.debian.org), so a runrole that apt-installs (calibre-web, kolibri, maps, ...) fails
-        // as the box ages. apt-get update re-resolves to the current versions (validated on device).
-        // Best-effort with a short network timeout so an offline or purely-local install still runs:
-        // the runrole then fails on its own if it truly needs the network, as before.
+        // K2GO-464: refresh the stale rootfs apt index before the runrole, or a pinned dep 404s as the
+        // box ages. Best-effort (short timeout, || true) so an offline/local-only install still runs.
         final String installCmd =
                 "apt-get -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 update || true ; " + runroleCmd;
 
