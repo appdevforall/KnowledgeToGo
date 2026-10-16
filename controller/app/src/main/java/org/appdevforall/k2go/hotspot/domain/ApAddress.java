@@ -45,15 +45,18 @@ public final class ApAddress {
      */
     public static String pick(List<Candidate> candidates, String hint, String wifiIp) {
         if (candidates == null) return null;
-        // Pass 0: the mechanism named its own interface -> trust its address, even if not site-local
-        // (reads the REAL assigned IP; this is not the removed 192.168.49.1 guess). Covers odd OEM
-        // subnets that burned us before (K2GO-375).
+        // Hinted call (Wi-Fi Direct): bind STRICTLY to the named group interface and never fall through
+        // to the generic passes. Trust its address even if not site-local (reads the REAL assigned IP,
+        // not the removed 192.168.49.1 guess; covers odd OEM subnets, K2GO-375). Return null until that
+        // interface has its IPv4, so the caller keeps polling its own group instead of grabbing a
+        // lingering ap0 / second-p2p IP (K2GO-471 review).
         if (hint != null) {
             for (Candidate c : candidates) {
                 if (usable(c) && hint.equals(c.ifaceName) && notWifi(c, wifiIp)) return c.ipv4;
             }
+            return null;
         }
-        // Pass 1: a known hotspot interface name (ap.., swlan.., wlan1/2, p2p..).
+        // No hint (LocalOnlyHotspot). Pass 1: a known hotspot interface name (ap.., swlan.., wlan1/2).
         for (Candidate c : candidates) {
             if (usable(c) && isHotspotName(c.ifaceName) && notWifi(c, wifiIp)) return c.ipv4;
         }
@@ -72,10 +75,12 @@ public final class ApAddress {
         return wifiIp == null || !wifiIp.equals(c.ipv4);
     }
 
-    /** Hotspot / group-owner interfaces across OEMs, plus the Wi-Fi Direct p2p.. interface (K2GO-127). */
+    // Known LocalOnlyHotspot / group-owner interface names across OEMs. The Wi-Fi Direct p2p.. interface
+    // is intentionally NOT here: it is matched only via an explicit hint (the WFD path), so a lingering
+    // p2p group never wins a no-hint LocalOnlyHotspot resolution (K2GO-471 review).
     private static boolean isHotspotName(String n) {
         return n != null && (n.startsWith("ap") || n.startsWith("swlan")
-                || n.equals("wlan1") || n.equals("wlan2") || n.startsWith("p2p"));
+                || n.equals("wlan1") || n.equals("wlan2"));
     }
 
     /** The station Wi-Fi and VPN/point-to-point interfaces: never the AP the other phone joins. */

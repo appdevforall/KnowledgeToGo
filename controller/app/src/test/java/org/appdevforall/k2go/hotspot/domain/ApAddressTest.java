@@ -83,4 +83,23 @@ public class ApAddressTest {
                 c("p2p-wlan0-0", "192.168.49.1", true, true, false));
         assertEquals("192.168.49.1", ApAddress.pick(cs, "p2p-wlan0-0", null));
     }
+
+    @Test
+    public void hint_is_strict_and_does_not_fall_through_to_other_interfaces() {
+        // K2GO-471 review: the hinted group interface has no IPv4 yet; do NOT grab a lingering ap0,
+        // return null so Wi-Fi Direct keeps polling its own group.
+        List<Candidate> cs = Arrays.asList(
+                c("p2p-wlan0-0", null, true, false, false),           // group iface, no address yet
+                c("ap0", "192.168.43.1", true, true, false));         // a lingering/unrelated AP iface
+        assertNull(ApAddress.pick(cs, "p2p-wlan0-0", null));
+    }
+
+    @Test
+    public void no_hint_does_not_match_a_p2p_interface_by_name() {
+        // K2GO-471 review: a stale non-site-local p2p group must not win a LocalOnlyHotspot (no-hint)
+        // resolution; p2p is matched only via an explicit hint.
+        List<Candidate> cs = Collections.singletonList(
+                c("p2p-wlan0-0", "25.13.4.1", true, false, false));
+        assertNull(ApAddress.pick(cs, null, null));
+    }
 }

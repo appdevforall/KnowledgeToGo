@@ -231,7 +231,9 @@ public class ConnectFragment extends Fragment {
             advance.setVisibility(View.VISIBLE);
             advance.setText(R.string.k2go_home_retry);
             styleAdvance(true);
-            advance.setOnClickListener(x -> hs.stop(this::ensureHotspot));
+            // K2GO-471 review: hs.stop runs onDone after an async teardown; guard against the fragment
+            // being gone by then, since ensureHotspot calls requireContext().
+            advance.setOnClickListener(x -> hs.stop(() -> { if (isAdded()) ensureHotspot(); }));
             connFooter.setVisibility(View.GONE);
             return;
         }
