@@ -1417,4 +1417,25 @@
     <string name="k2go_code_assets_update_some_failed">சில பில்ட் வளங்களைப் புதுப்பிக்க முடியவில்லை</string>
     <string name="k2go_code_dev_count">%1$d கருவிகள்</string>
     <string name="k2go_setup_waiting_network">Wi-Fi அல்லது மொபைல் டேட்டாவைப் பயன்படுத்த உங்கள் அனுமதிக்காகக் காத்திருக்கிறது</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">ஹாட்ஸ்பாட்</string>
+    <string name="k2go_settings_hotspot_sub">நெட்வொர்க் பெயர், கடவுச்சொல் மற்றும் அலைவரிசை</string>
+    <string name="k2go_hotspot_hint">இந்த மொபைலின் ஹாட்ஸ்பாட்டில் இணைய மக்கள் பயன்படுத்தும் பெயரையும் கடவுச்சொல்லையும் அமைக்கவும். மறுதொடக்கத்திற்குப் பிறகும் அவை அப்படியே இருக்கும், எனவே ஒரு முறை அறிவிக்கலாம்.</string>
+    <string name="k2go_hotspot_unsupported">இந்த மொபைல் ஹாட்ஸ்பாட்டுக்கு தற்காலிக பெயரையும் கடவுச்சொல்லையும் பயன்படுத்துகிறது. நிலையான பெயர், கடவுச்சொல் மற்றும் அலைவரிசைக்கு Wi-Fi Direct உடன் Android 10 அல்லது புதியது தேவை.</string>
+    <string name="k2go_hotspot_custom_toggle">தனிப்பயன் பெயரையும் கடவுச்சொல்லையும் பயன்படுத்து</string>
+    <string name="k2go_hotspot_default_line">பெயர்: %1$s\nகடவுச்சொல்: %2$s</string>
+    <string name="k2go_hotspot_default_hint">அருகில் உள்ள யாரும் இவற்றைக் கொண்டு இணையலாம். மாற்ற தனிப்பயன் பெயரையும் கடவுச்சொல்லையும் இயக்கவும்.</string>
+    <string name="k2go_hotspot_name_label">நெட்வொர்க் பெயர்</string>
+    <string name="k2go_hotspot_name_hint">எடுத்துக்காட்டாக ROOM1</string>
+    <string name="k2go_hotspot_password_label">கடவுச்சொல்</string>
+    <string name="k2go_hotspot_save">சேமி</string>
+    <string name="k2go_hotspot_reset">இயல்புநிலை பெயர் மற்றும் கடவுச்சொல்லுக்குத் திரும்பு</string>
+    <string name="k2go_hotspot_saved">சேமிக்கப்பட்டது. ஹாட்ஸ்பாட் அடுத்த முறை தொடங்கும்போது அமலுக்கு வரும்.</string>
+    <string name="k2go_hotspot_err_name">முன்னொட்டுக்குப் பிந்தைய பெயர் மிக நீளமாக உள்ளது அல்லது தவறான எழுத்துகள் உள்ளன.</string>
+    <string name="k2go_hotspot_err_password">கடவுச்சொல் 8 முதல் 63 எழுத்துகள் வரை இருக்க வேண்டும், கட்டுப்பாட்டு எழுத்துகள் இல்லாமல்.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi அலைவரிசை</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz அதிக சாதனங்களையும் பழைய மொபைல்களையும் அடையும். 5 GHz வேகமானது ஆனால் குறுகிய வரம்பு.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">தானியங்கு</string>
 </resources>

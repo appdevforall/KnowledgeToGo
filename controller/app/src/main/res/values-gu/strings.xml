@@ -1410,4 +1410,25 @@
     <string name="k2go_code_assets_update_some_failed">કેટલાક બિલ્ડ સંસાધનો અપડેટ કરી શકાયા નહીં</string>
     <string name="k2go_code_dev_count">%1$d સાધનો</string>
     <string name="k2go_setup_waiting_network">Wi-Fi અથવા મોબાઇલ ડેટા વાપરવાની તમારી મંજૂરીની રાહ જોઈ રહ્યું છે</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">હોટસ્પોટ</string>
+    <string name="k2go_settings_hotspot_sub">નેટવર્ક નામ, પાસવર્ડ અને બૅન્ડ</string>
+    <string name="k2go_hotspot_hint">આ ફોનના હોટસ્પોટમાં જોડાવા લોકો જે નામ અને પાસવર્ડ વાપરે છે તે સેટ કરો. પુનઃપ્રારંભ પછી પણ એ જ રહે છે, તેથી તમે એક વાર જાહેર કરી શકો છો.</string>
+    <string name="k2go_hotspot_unsupported">આ ફોન હોટસ્પોટ માટે કામચલાઉ નામ અને પાસવર્ડ વાપરે છે. સ્થિર નામ, પાસવર્ડ અને બૅન્ડ માટે Wi-Fi Direct સાથે Android 10 અથવા નવું જરૂરી છે.</string>
+    <string name="k2go_hotspot_custom_toggle">કસ્ટમ નામ અને પાસવર્ડ વાપરો</string>
+    <string name="k2go_hotspot_default_line">નામ: %1$s\nપાસવર્ડ: %2$s</string>
+    <string name="k2go_hotspot_default_hint">નજીકના કોઈ પણ આ વડે જોડાઈ શકે છે. બદલવા માટે કસ્ટમ નામ અને પાસવર્ડ ચાલુ કરો.</string>
+    <string name="k2go_hotspot_name_label">નેટવર્ક નામ</string>
+    <string name="k2go_hotspot_name_hint">ઉદાહરણ તરીકે ROOM1</string>
+    <string name="k2go_hotspot_password_label">પાસવર્ડ</string>
+    <string name="k2go_hotspot_save">સાચવો</string>
+    <string name="k2go_hotspot_reset">ડિફૉલ્ટ નામ અને પાસવર્ડ પર પાછા ફરો</string>
+    <string name="k2go_hotspot_saved">સાચવ્યું. હોટસ્પોટ આગલી વાર શરૂ થશે ત્યારે લાગુ થશે.</string>
+    <string name="k2go_hotspot_err_name">ઉપસર્ગ પછીનું નામ ખૂબ લાંબું છે અથવા અમાન્ય અક્ષરો ધરાવે છે.</string>
+    <string name="k2go_hotspot_err_password">પાસવર્ડ 8 થી 63 અક્ષરનો હોવો જોઈએ, નિયંત્રણ અક્ષરો વિના.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi બૅન્ડ</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz વધુ ઉપકરણો અને જૂના ફોન સુધી પહોંચે છે. 5 GHz ઝડપી છે પણ રેન્જ ઓછી છે.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">આપમેળે</string>
 </resources>

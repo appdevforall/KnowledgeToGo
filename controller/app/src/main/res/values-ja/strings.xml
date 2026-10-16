@@ -1398,4 +1398,25 @@
     <string name="k2go_code_assets_update_some_failed">一部のビルドアセットを更新できませんでした</string>
     <string name="k2go_code_dev_count">%1$d個のツール</string>
     <string name="k2go_setup_waiting_network">Wi-Fi またはモバイルデータ使用の許可を待っています</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">ホットスポット</string>
+    <string name="k2go_settings_hotspot_sub">ネットワーク名、パスワード、周波数帯</string>
+    <string name="k2go_hotspot_hint">この端末のホットスポットに参加するために使う名前とパスワードを設定します。再起動後も変わらないので、一度掲示すれば済みます。</string>
+    <string name="k2go_hotspot_unsupported">この端末はホットスポットに一時的な名前とパスワードを使用します。固定の名前、パスワード、周波数帯には Wi-Fi Direct 対応の Android 10 以降が必要です。</string>
+    <string name="k2go_hotspot_custom_toggle">カスタムの名前とパスワードを使用</string>
+    <string name="k2go_hotspot_default_line">名前: %1$s\nパスワード: %2$s</string>
+    <string name="k2go_hotspot_default_hint">近くにいる人は誰でもこれで参加できます。変更するにはカスタムの名前とパスワードをオンにします。</string>
+    <string name="k2go_hotspot_name_label">ネットワーク名</string>
+    <string name="k2go_hotspot_name_hint">例: ROOM1</string>
+    <string name="k2go_hotspot_password_label">パスワード</string>
+    <string name="k2go_hotspot_save">保存</string>
+    <string name="k2go_hotspot_reset">既定の名前とパスワードに戻す</string>
+    <string name="k2go_hotspot_saved">保存しました。次回ホットスポットを開始したときに有効になります。</string>
+    <string name="k2go_hotspot_err_name">接頭辞の後の名前が長すぎるか、無効な文字が含まれています。</string>
+    <string name="k2go_hotspot_err_password">パスワードは制御文字なしで 8～63 文字にしてください。</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi 周波数帯</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz はより多くの端末や古い端末に届きます。5 GHz は高速ですが範囲が狭くなります。</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">自動</string>
 </resources>

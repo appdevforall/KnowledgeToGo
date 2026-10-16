@@ -171,6 +171,15 @@ describe, or a single standing "Docs maintenance" issue — never a new per-edit
 Rule of thumb: if a change does not add traceability, audit, coordination, or visibility,
 it does not get a ticket.
 
+**UI-affecting PRs:** mark any PR that changes user-facing UI or strings with the GitHub label
+`ui` (set in the web UI when the PR is opened). The label is orthogonal to the conventional type:
+the type (`feat`/`fix`/...) still carries the nature of the change; `ui` is an additional
+cross-cutting tag (like `security` or `perf`), never folded into the type (no `feat+ui`, no bare
+`ui` type). A PR with the `ui` label adds a "UI changes" section to its body that lists each
+user-facing string added or changed (the new wording, and before -> after when changed) and notes
+that light and dark were verified. This lets the UI auditor filter by the label and review the exact
+words without reading the whole diff.
+
 ---
 
 ## Design map (keep this updated as we advance)

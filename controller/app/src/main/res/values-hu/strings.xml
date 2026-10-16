@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">Néhány build-erőforrást nem sikerült frissíteni</string>
     <string name="k2go_code_dev_count">%1$d eszköz</string>
     <string name="k2go_setup_waiting_network">Várakozás Wi-Fi-re vagy a mobiladat használatához adott engedélyedre</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Hálózatnév, jelszó és sáv</string>
+    <string name="k2go_hotspot_hint">Állítsa be a nevet és jelszót, amellyel mások csatlakoznak a telefon hotspotjához. Újraindítás után is ugyanazok maradnak, így egyszer kell kifüggeszteni őket.</string>
+    <string name="k2go_hotspot_unsupported">Ez a telefon ideiglenes nevet és jelszót használ a hotspothoz. Az állandó név, jelszó és sáv Android 10 vagy újabb rendszert igényel Wi-Fi Direct funkcióval.</string>
+    <string name="k2go_hotspot_custom_toggle">Egyéni név és jelszó használata</string>
+    <string name="k2go_hotspot_default_line">Név: %1$s\nJelszó: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Bárki a közelben csatlakozhat ezekkel. Kapcsolja be az egyéni nevet és jelszót a módosításukhoz.</string>
+    <string name="k2go_hotspot_name_label">Hálózatnév</string>
+    <string name="k2go_hotspot_name_hint">például ROOM1</string>
+    <string name="k2go_hotspot_password_label">Jelszó</string>
+    <string name="k2go_hotspot_save">Mentés</string>
+    <string name="k2go_hotspot_reset">Visszaállítás az alapértelmezett névre és jelszóra</string>
+    <string name="k2go_hotspot_saved">Mentve. A hotspot következő indításakor lép életbe.</string>
+    <string name="k2go_hotspot_err_name">Az előtag utáni név túl hosszú vagy érvénytelen karaktereket tartalmaz.</string>
+    <string name="k2go_hotspot_err_password">A jelszónak 8 és 63 karakter között kell lennie, vezérlőkarakterek nélkül.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi sáv</string>
+    <string name="k2go_hotspot_band_hint">A 2.4 GHz több eszközt és régebbi telefont ér el. Az 5 GHz gyorsabb, de kisebb hatótávolságú.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Automatikus</string>
 </resources>

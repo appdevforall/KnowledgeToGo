@@ -1407,4 +1407,25 @@
     <string name="k2go_code_assets_update_some_failed">Niektórych zasobów kompilacji nie udało się zaktualizować</string>
     <string name="k2go_code_dev_count">%1$d narzędzi</string>
     <string name="k2go_setup_waiting_network">Oczekiwanie na Wi-Fi lub Twoją zgodę na użycie danych komórkowych</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Nazwa sieci, hasło i pasmo</string>
+    <string name="k2go_hotspot_hint">Ustaw nazwę i hasło, których ludzie używają, aby połączyć się z hotspotem tego telefonu. Pozostają takie same po ponownym uruchomieniu, więc możesz je podać raz.</string>
+    <string name="k2go_hotspot_unsupported">Ten telefon używa tymczasowej nazwy i hasła dla hotspotu. Stała nazwa, hasło i pasmo wymagają Androida 10 lub nowszego z Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Użyj własnej nazwy i hasła</string>
+    <string name="k2go_hotspot_default_line">Nazwa: %1$s\nHasło: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Każdy w pobliżu może się połączyć przy użyciu tych danych. Włącz własną nazwę i hasło, aby je zmienić.</string>
+    <string name="k2go_hotspot_name_label">Nazwa sieci</string>
+    <string name="k2go_hotspot_name_hint">na przykład ROOM1</string>
+    <string name="k2go_hotspot_password_label">Hasło</string>
+    <string name="k2go_hotspot_save">Zapisz</string>
+    <string name="k2go_hotspot_reset">Przywróć domyślną nazwę i hasło</string>
+    <string name="k2go_hotspot_saved">Zapisano. Zacznie obowiązywać przy następnym uruchomieniu hotspotu.</string>
+    <string name="k2go_hotspot_err_name">Nazwa po prefiksie jest za długa lub zawiera nieprawidłowe znaki.</string>
+    <string name="k2go_hotspot_err_password">Hasło musi mieć od 8 do 63 znaków, bez znaków sterujących.</string>
+    <string name="k2go_hotspot_band_label">Pasmo Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz dociera do większej liczby urządzeń i starszych telefonów. 5 GHz jest szybsze, ale ma mniejszy zasięg.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Automatyczne</string>
 </resources>

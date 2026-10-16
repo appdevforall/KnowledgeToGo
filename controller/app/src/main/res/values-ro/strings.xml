@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">Unele resurse de compilare nu au putut fi actualizate</string>
     <string name="k2go_code_dev_count">%1$d instrumente</string>
     <string name="k2go_setup_waiting_network">Se așteaptă Wi-Fi sau acordul tău de a folosi datele mobile</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Nume de rețea, parolă și bandă</string>
+    <string name="k2go_hotspot_hint">Setează numele și parola cu care oamenii se conectează la hotspotul acestui telefon. Rămân la fel după repornire, așa că le poți afișa o singură dată.</string>
+    <string name="k2go_hotspot_unsupported">Acest telefon folosește un nume și o parolă temporare pentru hotspot. Un nume, o parolă și o bandă fixe necesită Android 10 sau mai nou cu Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Folosește un nume și o parolă personalizate</string>
+    <string name="k2go_hotspot_default_line">Nume: %1$s\nParolă: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Oricine din apropiere se poate conecta cu acestea. Activează un nume și o parolă personalizate pentru a le schimba.</string>
+    <string name="k2go_hotspot_name_label">Nume de rețea</string>
+    <string name="k2go_hotspot_name_hint">de exemplu ROOM1</string>
+    <string name="k2go_hotspot_password_label">Parolă</string>
+    <string name="k2go_hotspot_save">Salvează</string>
+    <string name="k2go_hotspot_reset">Revino la numele și parola implicite</string>
+    <string name="k2go_hotspot_saved">Salvat. Se aplică la următoarea pornire a hotspotului.</string>
+    <string name="k2go_hotspot_err_name">Numele de după prefix este prea lung sau are caractere nevalide.</string>
+    <string name="k2go_hotspot_err_password">Parola trebuie să aibă între 8 și 63 de caractere, fără caractere de control.</string>
+    <string name="k2go_hotspot_band_label">Bandă Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz ajunge la mai multe dispozitive și telefoane mai vechi. 5 GHz este mai rapid, dar cu rază mai mică.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Automată</string>
 </resources>

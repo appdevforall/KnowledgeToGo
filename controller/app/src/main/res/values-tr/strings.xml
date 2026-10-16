@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">Bazı derleme kaynakları güncellenemedi</string>
     <string name="k2go_code_dev_count">%1$d araç</string>
     <string name="k2go_setup_waiting_network">Wi-Fi veya mobil veri kullanımı için izninizi bekliyor</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Etkin nokta</string>
+    <string name="k2go_settings_hotspot_sub">Ağ adı, parola ve bant</string>
+    <string name="k2go_hotspot_hint">İnsanların bu telefonun etkin noktasına katılmak için kullandığı adı ve parolayı ayarlayın. Yeniden başlatmalarda aynı kalır, böylece bir kez paylaşabilirsiniz.</string>
+    <string name="k2go_hotspot_unsupported">Bu telefon etkin nokta için geçici bir ad ve parola kullanır. Sabit ad, parola ve bant, Wi-Fi Direct özellikli Android 10 veya üzerini gerektirir.</string>
+    <string name="k2go_hotspot_custom_toggle">Özel bir ad ve parola kullan</string>
+    <string name="k2go_hotspot_default_line">Ad: %1$s\nParola: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Yakındaki herkes bunlarla katılabilir. Değiştirmek için özel bir ad ve parola açın.</string>
+    <string name="k2go_hotspot_name_label">Ağ adı</string>
+    <string name="k2go_hotspot_name_hint">örneğin ROOM1</string>
+    <string name="k2go_hotspot_password_label">Parola</string>
+    <string name="k2go_hotspot_save">Kaydet</string>
+    <string name="k2go_hotspot_reset">Varsayılan ad ve parolaya dön</string>
+    <string name="k2go_hotspot_saved">Kaydedildi. Etkin nokta bir sonraki başlatıldığında geçerli olur.</string>
+    <string name="k2go_hotspot_err_name">Önekten sonraki ad çok uzun veya geçersiz karakterler içeriyor.</string>
+    <string name="k2go_hotspot_err_password">Parola, kontrol karakterleri olmadan 8 ila 63 karakter olmalıdır.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi bandı</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz daha fazla cihaza ve eski telefona ulaşır. 5 GHz daha hızlıdır ama menzili daha kısadır.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Otomatik</string>
 </resources>

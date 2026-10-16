@@ -1404,4 +1404,25 @@
     <string name="k2go_code_assets_update_some_failed">Ορισμένοι πόροι δόμησης δεν ήταν δυνατό να ενημερωθούν</string>
     <string name="k2go_code_dev_count">%1$d εργαλεία</string>
     <string name="k2go_setup_waiting_network">Αναμονή για Wi-Fi ή για τη συγκατάθεσή σας για χρήση δεδομένων κινητής</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Σημείο πρόσβασης</string>
+    <string name="k2go_settings_hotspot_sub">Όνομα δικτύου, κωδικός και ζώνη</string>
+    <string name="k2go_hotspot_hint">Ορίστε το όνομα και τον κωδικό που χρησιμοποιούν οι άλλοι για να συνδεθούν στο σημείο πρόσβασης αυτού του τηλεφώνου. Παραμένουν ίδια μετά την επανεκκίνηση, ώστε να τα ανακοινώσετε μία φορά.</string>
+    <string name="k2go_hotspot_unsupported">Αυτό το τηλέφωνο χρησιμοποιεί προσωρινό όνομα και κωδικό για το σημείο πρόσβασης. Σταθερό όνομα, κωδικός και ζώνη απαιτούν Android 10 ή νεότερο με Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Χρήση προσαρμοσμένου ονόματος και κωδικού</string>
+    <string name="k2go_hotspot_default_line">Όνομα: %1$s\nΚωδικός: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Οποιοσδήποτε κοντά μπορεί να συνδεθεί με αυτά. Ενεργοποιήστε προσαρμοσμένο όνομα και κωδικό για να τα αλλάξετε.</string>
+    <string name="k2go_hotspot_name_label">Όνομα δικτύου</string>
+    <string name="k2go_hotspot_name_hint">για παράδειγμα ROOM1</string>
+    <string name="k2go_hotspot_password_label">Κωδικός</string>
+    <string name="k2go_hotspot_save">Αποθήκευση</string>
+    <string name="k2go_hotspot_reset">Επαναφορά προεπιλεγμένου ονόματος και κωδικού</string>
+    <string name="k2go_hotspot_saved">Αποθηκεύτηκε. Ισχύει την επόμενη φορά που θα ξεκινήσει το σημείο πρόσβασης.</string>
+    <string name="k2go_hotspot_err_name">Το όνομα μετά το πρόθεμα είναι πολύ μεγάλο ή έχει μη έγκυρους χαρακτήρες.</string>
+    <string name="k2go_hotspot_err_password">Ο κωδικός πρέπει να έχει 8 έως 63 χαρακτήρες, χωρίς χαρακτήρες ελέγχου.</string>
+    <string name="k2go_hotspot_band_label">Ζώνη Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">Τα 2.4 GHz φτάνουν σε περισσότερες συσκευές και παλαιότερα τηλέφωνα. Τα 5 GHz είναι ταχύτερα αλλά με μικρότερη εμβέλεια.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Αυτόματη</string>
 </resources>

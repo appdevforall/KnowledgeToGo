@@ -86,6 +86,7 @@ public class SettingsSubFragment extends Fragment {
             case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
             case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
             case "dns":      title.setText(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
+            case "hotspot":  title.setText(getString(R.string.k2go_settings_hotspot)); buildHotspot(ctx, list); break;
             case "authentication": title.setText(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
             case "auth:calibre": title.setText(getString(R.string.k2go_auth_svc_books)); buildServiceAuth(ctx, list, "calibre"); break;
             case "auth:kolibri": title.setText(getString(R.string.k2go_auth_svc_courses)); buildServiceAuth(ctx, list, "kolibri"); break;
@@ -660,6 +661,194 @@ public class SettingsSubFragment extends Fragment {
             }
         });
         probeService(service, reachable -> { if (isAdded()) note.setVisibility(reachable ? View.GONE : View.VISIBLE); });
+    }
+
+    // ---- Hotspot (K2GO-127): the local Wi-Fi Direct hotspot's name, password and band. Same
+    //      custom-switch / revert pattern as Authentication, but wired to the local
+    //      HotspotCredentialsStore (no box): off = the shared factory default, on = owner-set. ----
+    private void buildHotspot(Context ctx, LinearLayout list) {
+        if (!org.appdevforall.k2go.hotspot.LocalHotspotManager.supportsFixedCredentials(ctx)) {
+            // Below Android 10 (or no Wi-Fi Direct) the hotspot uses LocalOnlyHotspot with random
+            // credentials, so a custom name/password/band does not apply. Say so instead of offering
+            // controls that would silently do nothing.
+            SettingsUi.caption(ctx, list, getString(R.string.k2go_hotspot_unsupported));
+            return;
+        }
+        final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore store =
+                new org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore(ctx);
+
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_hotspot_hint));
+
+        // The single control: "Use a custom name and password".
+        LinearLayout toggleRow = new LinearLayout(ctx);
+        toggleRow.setOrientation(LinearLayout.HORIZONTAL);
+        toggleRow.setGravity(Gravity.CENTER_VERTICAL);
+        toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = SettingsUi.dp(ctx, 16);
+        toggleRow.setPadding(p16, p16, p16, p16);
+        toggleRow.addView(dnsText(ctx, getString(R.string.k2go_hotspot_custom_toggle),
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+                new LinearLayout.LayoutParams(0, -2, 1f));
+        final MaterialSwitch sw = new MaterialSwitch(ctx);
+        sw.setMinimumHeight(0);
+        toggleRow.addView(sw, new LinearLayout.LayoutParams(-2, -2));
+        LinearLayout.LayoutParams trlp = new LinearLayout.LayoutParams(-1, -2);
+        trlp.topMargin = SettingsUi.dp(ctx, 16);
+        list.addView(toggleRow, trlp);
+
+        // OFF group: the default name + password, read-only, plus a hint.
+        final LinearLayout offGroup = new LinearLayout(ctx);
+        offGroup.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams oglp = new LinearLayout.LayoutParams(-1, -2);
+        oglp.topMargin = SettingsUi.dp(ctx, 16);
+        list.addView(offGroup, oglp);
+
+        final TextView defaultLine = dnsText(ctx,
+                getString(R.string.k2go_hotspot_default_line,
+                        org.appdevforall.k2go.hotspot.domain.HotspotCredentials.name(store.defaultSuffix()),
+                        org.appdevforall.k2go.hotspot.domain.HotspotCredentials.DEFAULT_PASSWORD),
+                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink);
+        offGroup.addView(defaultLine);
+        TextView offHint = dnsText(ctx, getString(R.string.k2go_hotspot_default_hint),
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        LinearLayout.LayoutParams ohlp = new LinearLayout.LayoutParams(-1, -2);
+        ohlp.topMargin = SettingsUi.dp(ctx, 12);
+        offHint.setLayoutParams(ohlp);
+        offGroup.addView(offHint);
+
+        // ON group: editable name suffix + password.
+        final LinearLayout fields = new LinearLayout(ctx);
+        fields.setOrientation(LinearLayout.VERTICAL);
+        fields.setVisibility(View.GONE);
+        list.addView(fields, new LinearLayout.LayoutParams(-1, -2));
+
+        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_hotspot_name_label),
+                org.appdevforall.k2go.hotspot.domain.HotspotCredentials.PREFIX));
+        final EditText nameSuffix = dnsInput(ctx);
+        nameSuffix.setHint(getString(R.string.k2go_hotspot_name_hint));
+        fields.addView(nameSuffix);
+
+        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_hotspot_password_label), ""));
+        final EditText password = dnsInput(ctx);
+        password.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
+        attachEyeToggle(password);
+        fields.addView(password);
+
+        final com.google.android.material.button.MaterialButton save =
+                new com.google.android.material.button.MaterialButton(
+                        new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Filled), null);
+        save.setText(getString(R.string.k2go_hotspot_save));
+        LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(-1, -2);
+        svlp.topMargin = SettingsUi.dp(ctx, 16);
+        fields.addView(save, svlp);
+
+        final TextView reset = dnsText(ctx, getString(R.string.k2go_hotspot_reset),
+                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        reset.setClickable(true);
+        reset.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
+        rslp.topMargin = SettingsUi.dp(ctx, 12);
+        reset.setLayoutParams(rslp);
+        fields.addView(reset);
+
+        final TextView status = dnsText(ctx, "",
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        status.setVisibility(View.GONE);
+        fields.addView(status);
+
+        // Prefill the editable fields: custom values if set, else the current defaults.
+        nameSuffix.setText(store.isCustom() && !store.customSuffix().isEmpty()
+                ? store.customSuffix() : store.defaultSuffix());
+        password.setText(store.isCustom() && !store.customPassphrase().isEmpty()
+                ? store.customPassphrase()
+                : org.appdevforall.k2go.hotspot.domain.HotspotCredentials.DEFAULT_PASSWORD);
+
+        final boolean[] suppress = {false};
+        sw.setOnCheckedChangeListener((b, on) -> {
+            fields.setVisibility(on ? View.VISIBLE : View.GONE);
+            offGroup.setVisibility(on ? View.GONE : View.VISIBLE);
+            if (on || suppress[0]) return;
+            // Revert to the default; the now-visible default group is the confirmation (the status view
+            // lives inside the hidden fields group, so writing it here would never be seen).
+            store.clearCustom();
+        });
+
+        save.setOnClickListener(v -> {
+            String suffix = nameSuffix.getText().toString().trim();
+            String pass = password.getText().toString();
+            if (org.appdevforall.k2go.hotspot.domain.HotspotCredentials.nameProblem(suffix)
+                    != org.appdevforall.k2go.hotspot.domain.HotspotCredentials.Problem.NONE) {
+                setStatus(status, getString(R.string.k2go_hotspot_err_name), R.color.k2go_clay);
+                return;
+            }
+            if (org.appdevforall.k2go.hotspot.domain.HotspotCredentials.passwordProblem(pass)
+                    != org.appdevforall.k2go.hotspot.domain.HotspotCredentials.Problem.NONE) {
+                setStatus(status, getString(R.string.k2go_hotspot_err_password), R.color.k2go_clay);
+                return;
+            }
+            // Entering the factory default values is not a customization: revert instead of marking custom.
+            if (suffix.equals(store.defaultSuffix())
+                    && pass.equals(org.appdevforall.k2go.hotspot.domain.HotspotCredentials.DEFAULT_PASSWORD)) {
+                store.clearCustom();
+            } else {
+                store.setCustom(suffix, pass);
+            }
+            setStatus(status, getString(R.string.k2go_hotspot_saved), R.color.k2go_teal);
+        });
+
+        reset.setOnClickListener(v -> sw.setChecked(false));   // the switch listener does the revert
+
+        // Initial state: switch reflects default (off) vs custom (on).
+        suppress[0] = true;
+        sw.setChecked(store.isCustom());
+        suppress[0] = false;
+        fields.setVisibility(store.isCustom() ? View.VISIBLE : View.GONE);
+        offGroup.setVisibility(store.isCustom() ? View.GONE : View.VISIBLE);
+
+        // ---- Wi-Fi band: 2.4 GHz (default) / 5 GHz / Automatic, via a single-choice dialog. ----
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_hotspot_band_hint));
+        final LinearLayout bandRow = new LinearLayout(ctx);
+        bandRow.setOrientation(LinearLayout.HORIZONTAL);
+        bandRow.setGravity(Gravity.CENTER_VERTICAL);
+        bandRow.setBackgroundResource(R.drawable.k2go_card_bg);
+        bandRow.setPadding(p16, p16, p16, p16);
+        bandRow.setClickable(true);
+        bandRow.addView(dnsText(ctx, getString(R.string.k2go_hotspot_band_label),
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+                new LinearLayout.LayoutParams(0, -2, 1f));
+        final TextView bandValue = dnsText(ctx, bandLabel(store.band()),
+                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_teal);
+        bandRow.addView(bandValue);
+        LinearLayout.LayoutParams brlp = new LinearLayout.LayoutParams(-1, -2);
+        brlp.topMargin = SettingsUi.dp(ctx, 8);
+        list.addView(bandRow, brlp);
+        bandRow.setOnClickListener(v -> {
+            final org.appdevforall.k2go.hotspot.domain.HotspotBand[] bands =
+                    org.appdevforall.k2go.hotspot.domain.HotspotBand.values();
+            final String[] items = new String[bands.length];
+            for (int i = 0; i < bands.length; i++) items[i] = bandLabel(bands[i]);
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(ctx)
+                    .setTitle(getString(R.string.k2go_hotspot_band_label))
+                    .setSingleChoiceItems(items, store.band().ordinal(), (d, which) -> {
+                        store.setBand(bands[which]);
+                        bandValue.setText(bandLabel(bands[which]));
+                        d.dismiss();
+                    })
+                    .show();
+        });
+    }
+
+    private String bandLabel(org.appdevforall.k2go.hotspot.domain.HotspotBand band) {
+        switch (band) {
+            case FIVE_GHZ:
+                return getString(R.string.k2go_hotspot_band_5);
+            case AUTO:
+                return getString(R.string.k2go_hotspot_band_auto);
+            default:
+                return getString(R.string.k2go_hotspot_band_24);
+        }
     }
 
     /** Wire the Material "visibility" eye as the end drawable inside a password field (tap to toggle).

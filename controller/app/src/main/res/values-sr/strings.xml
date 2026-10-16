@@ -1410,4 +1410,25 @@
     <string name="k2go_code_assets_update_some_failed">Неки ресурси за изградњу нису могли бити ажурирани</string>
     <string name="k2go_code_dev_count">%1$d алата</string>
     <string name="k2go_setup_waiting_network">Чека се Wi-Fi или ваша сагласност за коришћење мобилних података</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Хотспот</string>
+    <string name="k2go_settings_hotspot_sub">Назив мреже, лозинка и опсег</string>
+    <string name="k2go_hotspot_hint">Подесите назив и лозинку које људи користе да се придруже хотспоту овог телефона. Остају исти након поновног покретања, па их можете објавити једном.</string>
+    <string name="k2go_hotspot_unsupported">Овај телефон користи привремени назив и лозинку за хотспот. Стални назив, лозинка и опсег захтевају Android 10 или новији са Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Користи прилагођени назив и лозинку</string>
+    <string name="k2go_hotspot_default_line">Назив: %1$s\nЛозинка: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Свако у близини може да се придружи помоћу њих. Укључите прилагођени назив и лозинку да бисте их променили.</string>
+    <string name="k2go_hotspot_name_label">Назив мреже</string>
+    <string name="k2go_hotspot_name_hint">на пример ROOM1</string>
+    <string name="k2go_hotspot_password_label">Лозинка</string>
+    <string name="k2go_hotspot_save">Сачувај</string>
+    <string name="k2go_hotspot_reset">Врати подразумевани назив и лозинку</string>
+    <string name="k2go_hotspot_saved">Сачувано. Примењује се при следећем покретању хотспота.</string>
+    <string name="k2go_hotspot_err_name">Назив после префикса је предугачак или има неважеће знакове.</string>
+    <string name="k2go_hotspot_err_password">Лозинка мора имати од 8 до 63 знака, без контролних знакова.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi опсег</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz досеже до више уређаја и старијих телефона. 5 GHz је бржи али краћег домета.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Аутоматски</string>
 </resources>
