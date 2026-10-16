@@ -296,17 +296,23 @@ public final class LocalHotspotManager {
         }
     }
 
-    /** Tears down the reservation, if any. */
+    /** Tears down the hotspot (Wi-Fi Direct group or LocalOnlyHotspot reservation), if any. */
+    public void stop() { stop(null); }
+
+    /**
+     * Tears down the hotspot and publishes OFF, then runs [onDone] on the main thread. [onDone] fires
+     * only after the Wi-Fi Direct removeGroup has actually completed, so a terminal shutdown ("Turn off
+     * K2Go") can wait for the radio to be gone before it kills the process (K2GO-470): the Wi-Fi Direct
+     * group is autonomous and outlives the process otherwise. [onDone] runs at once when nothing is up.
+     */
     @SuppressLint("NewApi")
-    public void stop() {
+    public void stop(Runnable onDone) {
+        generation++;   // K2GO-375: stop any in-flight AP-IP poll before any async teardown
         // K2GO-127: tear down a Wi-Fi Direct group if that path is active (it outlives the process,
         // so an explicit removeGroup matters). WifiDirectHotspotManager.stop() is safe when idle.
         Object wd = wifiDirect;
         wifiDirect = null;
-        if (Build.VERSION.SDK_INT >= 29 && wd instanceof WifiDirectHotspotManager) {
-            try { ((WifiDirectHotspotManager) wd).stop(); }
-            catch (Throwable t) { Log.w(TAG, "Error stopping Wi-Fi Direct: " + t.getMessage()); }
-        }
+        // Close the LocalOnlyHotspot reservation (synchronous; the reservation is process-bound).
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                     && reservation instanceof WifiManager.LocalOnlyHotspotReservation) {
@@ -316,9 +322,20 @@ public final class LocalHotspotManager {
             Log.w(TAG, "Error closing reservation: " + t.getMessage());
         } finally {
             reservation = null;
-            generation++;   // K2GO-375: stop any in-flight AP-IP poll
-            publish(State.off());
         }
+        // The Wi-Fi Direct removeGroup is async; onDone fires once it has really completed (K2GO-470).
+        if (Build.VERSION.SDK_INT >= 29 && wd instanceof WifiDirectHotspotManager) {
+            final Runnable done = onDone;
+            try {
+                ((WifiDirectHotspotManager) wd).stop(() -> { if (done != null) done.run(); });
+            } catch (Throwable t) {
+                Log.w(TAG, "Error stopping Wi-Fi Direct: " + t.getMessage());
+                if (onDone != null) onDone.run();
+            }
+        } else if (onDone != null) {
+            onDone.run();
+        }
+        publish(State.off());   // UI reflects OFF now; the Wi-Fi Direct removeGroup finishes in the bg
     }
 
     /**

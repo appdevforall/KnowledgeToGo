@@ -17,6 +17,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.ServerController;
 import org.appdevforall.k2go.ServerStateRepository;
+import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.install.presentation.InstallProgressRepository;
 import org.appdevforall.k2go.install.presentation.InstallState;
 import org.appdevforall.k2go.system.data.PendingContent;
@@ -86,6 +87,7 @@ public class LibraryActivity extends AppCompatActivity
     private boolean gateDismissed = false;
     private boolean closing = false;
     private boolean closedDone = false;
+    private volatile boolean hotspotTornDown = false;   // K2GO-470: set when the turn-off hotspot teardown confirms
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
     /** ADFA-5119: a failure left no system — nothing may open the door until the user chooses. */
     private boolean gateHeldForRecovery = false;
@@ -1112,6 +1114,10 @@ public class LibraryActivity extends AppCompatActivity
     public void turnOffK2Go() {
         if (closing) return;
         closing = true;
+        // K2GO-470: a terminal "off" takes the hotspot radio down too. The Wi-Fi Direct group is
+        // autonomous and outlives the process, so tear it down now (concurrent with the box stop) and
+        // confirm it before exit (finishAndExit waits on this). Fires at once when no hotspot is up.
+        LocalHotspotManager.get().stop(() -> hotspotTornDown = true);
         // ADFA-4834: minimal shutdown feedback — a status line + the service currently stopping,
         // shown over the exit animation and kept until the environment is really stopped, so we
         // never bounce back to the Library mid-shutdown. Works with or without the Lottie.
@@ -1166,8 +1172,19 @@ public class LibraryActivity extends AppCompatActivity
      */
     private void finishAndExit() {
         finishAndRemoveTask();
-        new Handler(Looper.getMainLooper()).postDelayed(
-                () -> android.os.Process.killProcess(android.os.Process.myPid()), 200L);
+        // K2GO-470: keep the original settle delay, then do not kill the process until the hotspot
+        // teardown (Wi-Fi Direct removeGroup) has confirmed, so no AP keeps broadcasting after "Turn
+        // off". Bounded so a stalled teardown can never hang the exit.
+        new Handler(Looper.getMainLooper()).postDelayed(() -> awaitHotspotThenKill(0), 200L);
+    }
+
+    // K2GO-470: poll the one-shot teardown latch set by the turn-off hotspot stop, then terminate.
+    private void awaitHotspotThenKill(int waitedMs) {
+        if (hotspotTornDown || waitedMs >= 3000) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            return;
+        }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> awaitHotspotThenKill(waitedMs + 100), 100L);
     }
 
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
