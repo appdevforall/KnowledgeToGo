@@ -88,6 +88,17 @@ public final class LocalHotspotManager {
     // Object type kept generic so this file compiles on API < 26; cast at use sites.
     private Object reservation; // WifiManager.LocalOnlyHotspotReservation
 
+    // K2GO-127: the preferred fixed-credential Wi-Fi Direct path. Non-null while a WFD group is
+    // attempting or up; the LocalOnlyHotspot is the fallback below it. At most one is active.
+    private Object wifiDirect;  // WifiDirectHotspotManager (Object so this file compiles on API < 29)
+    private org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore credsStore;
+
+    // K2GO-127: synchronous re-entry guard. ensureHotspot() calls start() on setMode AND on every
+    // render; the STARTING LiveData state is posted asynchronously, so two rapid calls both passed
+    // the phase check and raced (Wi-Fi Direct + LocalOnlyHotspot started at once). This flag blocks
+    // re-entry immediately and is cleared the moment any terminal state (ON/OFF/FAILED) is published.
+    private volatile boolean starting;
+
     // Reactive half of the AND trigger: set when the user opens the native hotspot
     // settings, so the UI can later check "tried native + still no hotspot + no SIM".
     private volatile boolean nativeHotspotAttempted = false;
@@ -95,6 +106,13 @@ public final class LocalHotspotManager {
     private LocalHotspotManager() {}
 
     public LiveData<State> state() { return state; }
+
+    // K2GO-127: every state change flows through here so the synchronous re-entry guard clears on any
+    // terminal state. STARTING keeps the guard set (a start is still in flight, e.g. WFD -> LOH fallback).
+    private void publish(State s) {
+        if (s.phase != Phase.STARTING) starting = false;
+        state.postValue(s);
+    }
 
     /** True when the underlying API is available (Android 8.0+). */
     public static boolean isSupported() {
@@ -123,21 +141,83 @@ public final class LocalHotspotManager {
     @SuppressLint({"MissingPermission", "NewApi"})
     public void start(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            state.postValue(State.failed(0));
+            publish(State.failed(0));
             return;
         }
+        if (starting) return;   // synchronous guard: the STARTING LiveData state is posted async
         State cur = state.getValue();
-        if (cur != null && (cur.phase == Phase.ON || cur.phase == Phase.STARTING)) {
-            return; // already running / starting
+        if (cur != null && cur.phase == Phase.ON) {
+            return; // already up
         }
+        starting = true;
+        final Context app = context.getApplicationContext();
         generation++;   // K2GO-375: a fresh attempt invalidates any poll left over from a prior reservation
+        publish(State.starting());
+        // K2GO-127: prefer a fixed-credential Wi-Fi Direct group (API 29+, if the phone reports
+        // support). Any failure or incapability falls back to the proven LocalOnlyHotspot.
+        if (Build.VERSION.SDK_INT >= 29
+                && app.getPackageManager().hasSystemFeature(
+                        android.content.pm.PackageManager.FEATURE_WIFI_DIRECT)) {
+            startWifiDirect(app);
+            return;
+        }
+        startLocalOnly(app);
+    }
+
+    @androidx.annotation.RequiresApi(29)
+    private void startWifiDirect(final Context app) {
+        if (credsStore == null) {
+            credsStore = new org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore(app);
+        }
+        final int gen = generation;
+        final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore store = credsStore;
+        // Resolve the stored credentials off the main thread (the first SharedPreferences read hits
+        // disk), then launch Wi-Fi Direct back on the main thread where the P2P callbacks must run.
+        org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
+            final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore.Creds c = store.resolve();
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (gen != generation) return;   // superseded by a newer start/stop while resolving
+                launchWifiDirect(app, c, gen);
+            });
+        });
+    }
+
+    @androidx.annotation.RequiresApi(29)
+    private void launchWifiDirect(final Context app,
+            final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore.Creds c, final int gen) {
+        final WifiDirectHotspotManager m = new WifiDirectHotspotManager(app);
+        wifiDirect = m;
+        m.start(c.name, c.passphrase,
+                android.net.wifi.p2p.WifiP2pConfig.GROUP_OWNER_BAND_2GHZ,
+                new WifiDirectHotspotManager.Callbacks() {
+                    @Override public void onUp(String ssid, String pass, String ip) {
+                        if (gen != generation) { m.stop(); return; }   // superseded by a newer start/stop
+                        Log.d(TAG, "Wi-Fi Direct up, ssid=" + ssid);
+                        publish(State.on(ssid, pass, ip));
+                    }
+                    @Override public void onFailed(String reason) {
+                        Log.w(TAG, "Wi-Fi Direct unavailable, falling back to LocalOnlyHotspot: " + reason);
+                        if (gen != generation) return;
+                        wifiDirect = null;
+                        startLocalOnly(app);   // the proven fallback (random credentials)
+                    }
+                    @Override public void onLost(String reason) {
+                        Log.w(TAG, "Wi-Fi Direct group lost: " + reason);
+                        if (gen != generation) return;
+                        wifiDirect = null;
+                        publish(State.off());
+                    }
+                });
+    }
+
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void startLocalOnly(Context context) {
         WifiManager wifi = (WifiManager) context.getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
         if (wifi == null) {
-            state.postValue(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_GENERIC));
+            publish(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_GENERIC));
             return;
         }
-        state.postValue(State.starting());
         Handler handler = new Handler(Looper.getMainLooper());
         try {
             wifi.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
@@ -163,7 +243,7 @@ public final class LocalHotspotManager {
                     pass = unquote(pass);
                     Log.d(TAG, "LocalOnlyHotspot started, ssid=" + ssid);
                     // ON is emitted with no IP yet; the poll re-emits once the AP interface has one.
-                    state.postValue(State.on(ssid, pass, null));
+                    publish(State.on(ssid, pass, null));
                     beginHotspotIpPoll(ssid, pass);
                 }
 
@@ -172,7 +252,7 @@ public final class LocalHotspotManager {
                     Log.d(TAG, "LocalOnlyHotspot stopped");
                     reservation = null;
                     generation++;   // K2GO-375: stop any in-flight AP-IP poll
-                    state.postValue(State.off());
+                    publish(State.off());
                 }
 
                 @Override
@@ -180,22 +260,30 @@ public final class LocalHotspotManager {
                     Log.w(TAG, "LocalOnlyHotspot failed, reason=" + reason);
                     reservation = null;
                     generation++;   // K2GO-375: stop any in-flight AP-IP poll
-                    state.postValue(State.failed(reason));
+                    publish(State.failed(reason));
                 }
             }, handler);
         } catch (SecurityException se) {
             Log.w(TAG, "startLocalOnlyHotspot denied: " + se.getMessage());
-            state.postValue(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_GENERIC));
+            publish(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_GENERIC));
         } catch (IllegalStateException ise) {
             // e.g. Wi-Fi off, or a hotspot already active.
             Log.w(TAG, "startLocalOnlyHotspot illegal state: " + ise.getMessage());
-            state.postValue(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_INCOMPATIBLE_MODE));
+            publish(State.failed(WifiManager.LocalOnlyHotspotCallback.ERROR_INCOMPATIBLE_MODE));
         }
     }
 
     /** Tears down the reservation, if any. */
     @SuppressLint("NewApi")
     public void stop() {
+        // K2GO-127: tear down a Wi-Fi Direct group if that path is active (it outlives the process,
+        // so an explicit removeGroup matters). WifiDirectHotspotManager.stop() is safe when idle.
+        Object wd = wifiDirect;
+        wifiDirect = null;
+        if (Build.VERSION.SDK_INT >= 29 && wd instanceof WifiDirectHotspotManager) {
+            try { ((WifiDirectHotspotManager) wd).stop(); }
+            catch (Throwable t) { Log.w(TAG, "Error stopping Wi-Fi Direct: " + t.getMessage()); }
+        }
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                     && reservation instanceof WifiManager.LocalOnlyHotspotReservation) {
@@ -206,7 +294,7 @@ public final class LocalHotspotManager {
         } finally {
             reservation = null;
             generation++;   // K2GO-375: stop any in-flight AP-IP poll
-            state.postValue(State.off());
+            publish(State.off());
         }
     }
 
@@ -227,7 +315,7 @@ public final class LocalHotspotManager {
                 if (cur.hotspotIp != null) return;                  // already resolved
                 String ip = NetworkInterfaces.discover().hotspotIp;
                 if (ip != null) {
-                    state.setValue(State.on(ssid, pass, ip));       // resolved: re-emit with the real IP
+                    publish(State.on(ssid, pass, ip));              // resolved: re-emit through the one path
                     return;
                 }
                 if (++tries >= AP_IP_MAX_POLLS) return;             // safety cap; never spin forever
