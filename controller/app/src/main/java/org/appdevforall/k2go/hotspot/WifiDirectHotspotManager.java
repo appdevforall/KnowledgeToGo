@@ -120,13 +120,23 @@ public final class WifiDirectHotspotManager {
     }
 
     /** Tears down the group and stops watching. Safe to call at any time, including mid-start. */
+    public void stop() { stop(null); }
+
+    /**
+     * Tears down the group and stops watching, then runs [onComplete] on the main thread. Safe to call
+     * at any time, including mid-start. The channel is closed only AFTER removeGroup's callback fires:
+     * closing it first aborts the pending async removeGroup, so the autonomous group would outlive the
+     * process (K2GO-470). [onComplete] lets a terminal shutdown wait until the group is really gone.
+     */
     @SuppressLint("MissingPermission")
-    public void stop() {
+    public void stop(Runnable onComplete) {
         runState = RunState.STOPPED;
         cancelWatchdog();
         unwatch();
-        safeRemoveGroup(null);
-        closeChannel();
+        safeRemoveGroup(() -> {
+            closeChannel();
+            if (onComplete != null) onComplete.run();
+        });
     }
 
     // ------------------------------------------------------------------ internals
