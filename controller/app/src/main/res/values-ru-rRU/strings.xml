@@ -1494,4 +1494,5 @@
     <string name="k2go_hotspot_band_24">2.4 ГГц</string>
     <string name="k2go_hotspot_band_5">5 ГГц</string>
     <string name="k2go_hotspot_band_auto">Автоматически</string>
+    <string name="k2go_connect_address_unresolved">Не удалось получить адрес точки доступа.</string>
 </resources>

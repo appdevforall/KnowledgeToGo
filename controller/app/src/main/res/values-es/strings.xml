@@ -1494,4 +1494,5 @@
     <string name="k2go_hotspot_band_24">2.4 GHz</string>
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automática</string>
+    <string name="k2go_connect_address_unresolved">No se pudo obtener la dirección del hotspot.</string>
 </resources>

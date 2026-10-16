@@ -966,6 +966,8 @@
     <string name="k2go_connect_starting_hotspot">Starting hotspot…</string>
     <!-- K2GO-375: shown under the Open-library QR while the hotspot AP interface has no IP yet. -->
     <string name="k2go_connect_resolving_address">Finding hotspot address…</string>
+    <!-- K2GO-471: terminal when the hotspot started but its IPv4 never resolved; pairs with a Retry. -->
+    <string name="k2go_connect_address_unresolved">Could not get the hotspot address.</string>
     <string name="k2go_connect_hotspot_failed">Couldn\'t start the hotspot</string>
     <string name="k2go_connect_enable_location">Turn on Wi-Fi and grant the permission, then try again.</string>
     <string name="k2go_connect_no_wifi">Not on a Wi-Fi network</string>

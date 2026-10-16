@@ -731,6 +731,14 @@ public class CloneFragment extends Fragment {
                 secJoin.caption.setText(getString(R.string.k2go_connect_hotspot_unsupported));
                 secJoin.subCaption.setText(getString(R.string.k2go_connect_try_wifi));
             } else if (phase == LocalHotspotManager.Phase.FAILED
+                    && st != null && st.failureReason == LocalHotspotManager.REASON_ADDRESS_UNRESOLVED) {
+                // K2GO-471: the hotspot started but its IPv4 never resolved. A clear terminal (not a
+                // start failure), matching Connect, so the user is never stuck on the resolving ellipsis.
+                secJoin.frame.setVisibility(View.GONE);
+                secJoin.setFallback(requireContext(), null);
+                secJoin.caption.setText(getString(R.string.k2go_connect_address_unresolved));
+                secJoin.subCaption.setText("");
+            } else if (phase == LocalHotspotManager.Phase.FAILED
                     || (phase != LocalHotspotManager.Phase.ON && !HotspotPermissions.granted(requireContext()))) {
                 // FAILED, or the hotspot permission is not granted (denied): show the hint instead of a
                 // perpetual "starting" placeholder (K2GO-439).

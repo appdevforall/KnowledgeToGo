@@ -1418,4 +1418,5 @@
     <string name="k2go_hotspot_band_24">2.4 GHz</string>
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automatikus</string>
+    <string name="k2go_connect_address_unresolved">Nem sikerült lekérni a hotspot címét.</string>
 </resources>

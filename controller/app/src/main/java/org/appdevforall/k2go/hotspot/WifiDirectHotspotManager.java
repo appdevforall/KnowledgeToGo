@@ -47,9 +47,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
 
 /** Preferred on-phone AP: a fixed-credential Wi-Fi Direct group. See the file header. API 29+. */
 @RequiresApi(29)
@@ -161,7 +159,9 @@ public final class WifiDirectHotspotManager {
         try {
             mgr.requestGroupInfo(channel, group -> {
                 if (runState == RunState.STOPPED) return;
-                String ip = (group == null) ? null : ipv4Of(group.getInterface());
+                // K2GO-471: resolve through the one producer (framework-authoritative + java.net),
+                // hinting the group interface, instead of a private getByName scan here.
+                String ip = (group == null) ? null : ApAddressResolver.resolveOnce(app, group.getInterface());
                 if (group != null && ip != null) {
                     runState = RunState.UP;
                     cancelWatchdog();
@@ -270,18 +270,6 @@ public final class WifiDirectHotspotManager {
         }
         channel = null;
         mgr = null;
-    }
-
-    private static String ipv4Of(String ifaceName) {
-        if (ifaceName == null) return null;
-        try {
-            NetworkInterface ni = NetworkInterface.getByName(ifaceName);
-            if (ni == null) return null;
-            for (InetAddress a : java.util.Collections.list(ni.getInetAddresses())) {
-                if (a instanceof Inet4Address) return a.getHostAddress();
-            }
-        } catch (Exception ignored) { }
-        return null;
     }
 
     private static String reasonText(int reason) {
