@@ -79,7 +79,7 @@ body {
 }
 .theme-toggle:hover { border-color: var(--primary); }
 .theme-toggle:active { transform: scale(.94); }
-.theme-ico { transition: opacity .25s ease, transform .35s ease; }
+.theme-ico { width: 22px; height: 22px; display: block; transition: opacity .25s ease, transform .35s ease; }  /* K2GO-472: M3 SVG, not emoji */
 
 /* ------------------------------ Banner ------------------------------ */
 .status-banner {

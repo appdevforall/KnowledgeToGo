@@ -3,6 +3,8 @@ window.i18n = {
     "powered_by": "powered by Internet-in-a-Box",
     "books": "Read a book",
     "code": "Code on the Go",
+    "code_addons": "Code on the Go Add-ons",
+    "code_assets": "Code on the Go build assets",
     "forgejo": "Host code",
     "kiwix": "Explore Wikipedia",
     "kolibri": "Take courses",
