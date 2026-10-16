@@ -119,6 +119,18 @@ public final class LocalHotspotManager {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
+    /**
+     * Whether this phone can hold a FIXED hotspot name/password/band (Wi-Fi Direct, API 29+). Below
+     * this the hotspot falls back to LocalOnlyHotspot with random credentials, so a custom name,
+     * password or band does not apply. One owner of this fact for both start()'s path selection and
+     * the settings UI.
+     */
+    public static boolean supportsFixedCredentials(Context ctx) {
+        return Build.VERSION.SDK_INT >= 29
+                && ctx.getApplicationContext().getPackageManager()
+                        .hasSystemFeature(android.content.pm.PackageManager.FEATURE_WIFI_DIRECT);
+    }
+
     public void markNativeHotspotAttempted() { nativeHotspotAttempted = true; }
     public boolean wasNativeHotspotAttempted() { return nativeHotspotAttempted; }
     public void clearNativeHotspotAttempted() { nativeHotspotAttempted = false; }
@@ -155,9 +167,7 @@ public final class LocalHotspotManager {
         publish(State.starting());
         // K2GO-127: prefer a fixed-credential Wi-Fi Direct group (API 29+, if the phone reports
         // support). Any failure or incapability falls back to the proven LocalOnlyHotspot.
-        if (Build.VERSION.SDK_INT >= 29
-                && app.getPackageManager().hasSystemFeature(
-                        android.content.pm.PackageManager.FEATURE_WIFI_DIRECT)) {
+        if (supportsFixedCredentials(app)) {
             startWifiDirect(app);
             return;
         }
@@ -175,20 +185,33 @@ public final class LocalHotspotManager {
         // disk), then launch Wi-Fi Direct back on the main thread where the P2P callbacks must run.
         org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
             final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore.Creds c = store.resolve();
+            final org.appdevforall.k2go.hotspot.domain.HotspotBand band = store.band();
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (gen != generation) return;   // superseded by a newer start/stop while resolving
-                launchWifiDirect(app, c, gen);
+                launchWifiDirect(app, c, band, gen);
             });
         });
     }
 
     @androidx.annotation.RequiresApi(29)
+    private static int p2pBand(org.appdevforall.k2go.hotspot.domain.HotspotBand band) {
+        switch (band) {
+            case FIVE_GHZ:
+                return android.net.wifi.p2p.WifiP2pConfig.GROUP_OWNER_BAND_5GHZ;
+            case AUTO:
+                return android.net.wifi.p2p.WifiP2pConfig.GROUP_OWNER_BAND_AUTO;
+            default:
+                return android.net.wifi.p2p.WifiP2pConfig.GROUP_OWNER_BAND_2GHZ;
+        }
+    }
+
+    @androidx.annotation.RequiresApi(29)
     private void launchWifiDirect(final Context app,
-            final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore.Creds c, final int gen) {
+            final org.appdevforall.k2go.hotspot.data.HotspotCredentialsStore.Creds c,
+            final org.appdevforall.k2go.hotspot.domain.HotspotBand band, final int gen) {
         final WifiDirectHotspotManager m = new WifiDirectHotspotManager(app);
         wifiDirect = m;
-        m.start(c.name, c.passphrase,
-                android.net.wifi.p2p.WifiP2pConfig.GROUP_OWNER_BAND_2GHZ,
+        m.start(c.name, c.passphrase, p2pBand(band),
                 new WifiDirectHotspotManager.Callbacks() {
                     @Override public void onUp(String ssid, String pass, String ip) {
                         if (gen != generation) { m.stop(); return; }   // superseded by a newer start/stop
