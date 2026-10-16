@@ -8,7 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================================
     const THEME_KEY = "k2go-theme";
     const THEME_ORDER = ["system", "light", "dark"];
-    const THEME_GLYPH = { system: "🌓", light: "☀️", dark: "🌙" };
+    // K2GO-472: Material 3 icon paths (24x24, currentColor): contrast (system) / light_mode / dark_mode.
+    // applyTheme swaps only the <path d> so the SVG wrapper and sizing stay put.
+    const THEME_PATH = {
+        system: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18V4c4.41 0 8 3.59 8 8s-3.59 8-8 8z",
+        light: "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z",
+        dark: "M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"
+    };
     let themeMode = localStorage.getItem(THEME_KEY) || "system";
 
     const themeBtn = document.getElementById("themeToggle");
@@ -17,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (mode === "light" || mode === "dark") root.setAttribute("data-theme", mode);
         else root.removeAttribute("data-theme");
         if (themeBtn) {
-            const ico = themeBtn.querySelector(".theme-ico");
-            if (ico) ico.textContent = THEME_GLYPH[mode] || THEME_GLYPH.system;
+            const p = themeBtn.querySelector(".theme-ico path");
+            if (p) p.setAttribute("d", THEME_PATH[mode] || THEME_PATH.system);
             const label = (window.i18n && window.i18n["theme_label"]) || "Theme";
             const which = (window.i18n && window.i18n["theme_" + mode]) || mode;
             themeBtn.setAttribute("aria-label", label + ": " + which);
@@ -75,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const services = {
         'books': '/books/',
         'code': '/code/',
+        'code-addons': '/code-addons/',   // K2GO-472: card revealed only when installed (404 -> hidden)
+        'code-assets': '/code-assets/',   // K2GO-472
         'forgejo': '/forgejo/',
         'kiwix': '/kiwix/',
         'kolibri': '/kolibri/',

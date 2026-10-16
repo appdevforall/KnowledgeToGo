@@ -22,7 +22,9 @@
         <p class="product-subtitle" data-i18n="powered_by">powered by Internet-in-a-Box</p>
     </div>
     <button id="themeToggle" class="theme-toggle" type="button" aria-label="Theme">
-        <span class="theme-ico" aria-hidden="true">🌓</span>
+        <!-- K2GO-472: Material 3 theme icons (light_mode / dark_mode / contrast); app.js swaps the path
+             per mode. Default is the "contrast" (system) glyph until app.js applies the saved mode. -->
+        <svg class="theme-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18V4c4.41 0 8 3.59 8 8s-3.59 8-8 8z"/></svg>
     </button>
 </header>
 
@@ -42,6 +44,22 @@
     <a href="/code" class="card card-code hidden">
         <svg class="card-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
         <span class="card-name" data-i18n="code">Code on the Go</span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text status-ready" data-i18n="ready">Ready</span><span class="card-status-text status-connecting" data-i18n="connecting">Connecting</span></span>
+    </a>
+
+    <!-- K2GO-472: the app split Code on the Go into add-ons and build assets (served at /code-addons,
+         /code-assets). Labels mirror the app strings dash_code_addons / dash_code_assets, which are
+         translatable=false there (English in every locale), so these two keep the English default in
+         all locales. Discovery (app.js) reveals each only when its module answers (404 -> hidden). -->
+    <a href="/code-addons" class="card card-code-addons hidden">
+        <svg class="card-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V19c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V21H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
+        <span class="card-name" data-i18n="code_addons">Code on the Go Add-ons</span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text status-ready" data-i18n="ready">Ready</span><span class="card-status-text status-connecting" data-i18n="connecting">Connecting</span></span>
+    </a>
+
+    <a href="/code-assets" class="card card-code-assets hidden">
+        <svg class="card-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4l16-.02V7z"/></svg>
+        <span class="card-name" data-i18n="code_assets">Code on the Go build assets</span>
         <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text status-ready" data-i18n="ready">Ready</span><span class="card-status-text status-connecting" data-i18n="connecting">Connecting</span></span>
     </a>
 
