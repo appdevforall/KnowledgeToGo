@@ -1397,4 +1397,5 @@
     <string name="k2go_code_assets_update_failed">빌드 자산을 업데이트할 수 없음</string>
     <string name="k2go_code_assets_update_some_failed">일부 빌드 자산을 업데이트하지 못함</string>
     <string name="k2go_code_dev_count">도구 %1$d개</string>
+    <string name="k2go_setup_waiting_network">Wi-Fi 또는 모바일 데이터 사용 동의를 기다리는 중</string>
 </resources>

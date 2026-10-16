@@ -72,6 +72,8 @@ public final class SetupProgressController {
     private boolean moduleLaunched = false;  // ADFA-4842: same shape as the maps stage tracking
     private long moduleLaunchedAt = 0L;
     private boolean moduleStartFailed = false;
+    private boolean mapsWaitingForNetwork = false;   // K2GO-408: proot stage held on metered-without-consent / offline (non-terminal)
+    private boolean moduleWaitingForNetwork = false;
     private boolean rebuildRunningSeen = false;   // ADFA-5011: latched once THIS rebuild is seen running
     private boolean rebuildStartKicked = false;   // ADFA-5011: index booted the environment once (actuator)
     private boolean rebuildServerUp = false;      // REST core answered after the rebuild
@@ -165,7 +167,10 @@ public final class SetupProgressController {
                 // K2GO-423: keep polling past server-up while a Forgejo seed is pending/running: it
                 // starts only once the server is observed up (a live dash-node), and must be driven to
                 // completion here, not left for a silent Home drain.
-                if (!host.serverObservedUp() || host.forgejoSeedActive()) main.postDelayed(readyPoll, READY_POLL_MS);
+                // K2GO-408: also keep polling while a proot stage is HELD for network (the server is
+                // still up, so serverObservedUp() alone would stop the loop and never resume the hold).
+                if (!host.serverObservedUp() || host.forgejoSeedActive()
+                        || moduleWaitingForNetwork || mapsWaitingForNetwork) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
             // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so we
@@ -236,20 +241,33 @@ public final class SetupProgressController {
         // Stage 1: proot (maps and/or module management), exclusive of all REST work.
         if (!mapsStartFailed && MapsProvisioner.hasPending(c)) {
             if (!queueRunning) {
-                if (launched(MapsProvisioner.drain(c))) {
-                    mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime();
+                // K2GO-408: hold (do not fail) on a metered network without consent, or offline. Leave
+                // the order banked; the 2s poll re-attempts and resumes on Wi-Fi or consent.
+                if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsHeavyStartNow(c)) {
+                    mapsWaitingForNetwork = true;
                 } else {
-                    mapsStartFailed = true;
+                    mapsWaitingForNetwork = false;
+                    if (launched(MapsProvisioner.drain(c))) {
+                        mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime();
+                    } else {
+                        mapsStartFailed = true;
+                    }
                 }
             }
             return true;
         }
         if (!moduleStartFailed && ModuleProvisioner.hasPending(c)) {   // ADFA-4842: module management batch
             if (!queueRunning) {
-                if (launched(ModuleProvisioner.drain(c))) {
-                    moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime();
+                // K2GO-408: same metered/offline hold as maps above.
+                if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsHeavyStartNow(c)) {
+                    moduleWaitingForNetwork = true;
                 } else {
-                    moduleStartFailed = true;
+                    moduleWaitingForNetwork = false;
+                    if (launched(ModuleProvisioner.drain(c))) {
+                        moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime();
+                    } else {
+                        moduleStartFailed = true;
+                    }
                 }
             }
             return true;
@@ -303,6 +321,8 @@ public final class SetupProgressController {
     public boolean mapsStartFailed() { return mapsStartFailed; }
     public boolean moduleLaunched() { return moduleLaunched; }
     public boolean moduleStartFailed() { return moduleStartFailed; }
+    public boolean mapsWaitingForNetwork() { return mapsWaitingForNetwork; }
+    public boolean moduleWaitingForNetwork() { return moduleWaitingForNetwork; }
     public boolean rebuildServerUp() { return rebuildServerUp; }
     public boolean rebuildServerFailed() { return rebuildServerFailed; }
     public long moduleServerWaitAt() { return moduleServerWaitAt; }

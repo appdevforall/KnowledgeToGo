@@ -1413,4 +1413,5 @@
     <string name="k2go_code_assets_update_failed">Nepavyko atnaujinti kūrimo išteklių</string>
     <string name="k2go_code_assets_update_some_failed">Kai kurių kūrimo išteklių nepavyko atnaujinti</string>
     <string name="k2go_code_dev_count">%1$d įrankių</string>
+    <string name="k2go_setup_waiting_network">Laukiama Wi-Fi arba jūsų sutikimo naudoti mobiliuosius duomenis</string>
 </resources>
