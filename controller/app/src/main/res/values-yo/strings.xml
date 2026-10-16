@@ -1417,4 +1417,25 @@
     <string name="k2go_code_assets_update_some_failed">Àwọn ohun èlò ìkọ́ kan kò lè ṣe ìmúdójúìwọn</string>
     <string name="k2go_code_dev_count">%1$d irinṣẹ́</string>
     <string name="k2go_setup_waiting_network">Ń dúró de Wi-Fi tàbí ìgbàniláàyè rẹ láti lo dátà fóònù</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Oruko nẹtiwọọki, ọrọ aṣinà ati ẹgbẹ igbohunsafẹfẹ</string>
+    <string name="k2go_hotspot_hint">Ṣeto oruko ati ọrọ aṣinà ti awọn eniyan n lo lati darapọ mọ hotspot foonu yii. Wọn duro bakanna lẹhin atundi, nitorinaa o le kede wọn ẹẹkan.</string>
+    <string name="k2go_hotspot_unsupported">Foonu yii n lo oruko ati ọrọ aṣinà igba diẹ fun hotspot. Oruko, ọrọ aṣinà ati ẹgbẹ igbohunsafẹfẹ titi lailai nilo Android 10 tabi tuntun pẹlu Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Lo oruko ati ọrọ aṣinà adani</string>
+    <string name="k2go_hotspot_default_line">Oruko: %1$s\nỌrọ aṣinà: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Ẹnikẹni to wa nitosi le darapọ pẹlu iwọnyi. Tan oruko ati ọrọ aṣinà adani lati yi wọn pada.</string>
+    <string name="k2go_hotspot_name_label">Oruko nẹtiwọọki</string>
+    <string name="k2go_hotspot_name_hint">fun apẹẹrẹ ROOM1</string>
+    <string name="k2go_hotspot_password_label">Ọrọ aṣinà</string>
+    <string name="k2go_hotspot_save">Fipamọ</string>
+    <string name="k2go_hotspot_reset">Pada si oruko ati ọrọ aṣinà aiyipada</string>
+    <string name="k2go_hotspot_saved">Ti fipamọ. Yoo waye nigbamii ti hotspot ba bẹrẹ.</string>
+    <string name="k2go_hotspot_err_name">Oruko lẹhin ami-iṣaaju gun ju tabi ni awọn kikọ ti ko tọ.</string>
+    <string name="k2go_hotspot_err_password">Ọrọ aṣinà gbọdọ jẹ kikọ 8 si 63, laisi awọn kikọ iṣakoso.</string>
+    <string name="k2go_hotspot_band_label">Ẹgbẹ igbohunsafẹfẹ Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz de awọn ẹrọ pupọ ati awọn foonu agbalagba. 5 GHz yara ju ṣugbọn ibiti o kuru.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Laifọwọyi</string>
 </resources>

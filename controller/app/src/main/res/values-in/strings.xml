@@ -1404,4 +1404,25 @@
     <string name="k2go_code_assets_update_some_failed">Beberapa aset build tidak dapat diperbarui</string>
     <string name="k2go_code_dev_count">%1$d alat</string>
     <string name="k2go_setup_waiting_network">Menunggu Wi-Fi atau izin Anda untuk menggunakan data seluler</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Nama jaringan, kata sandi, dan pita</string>
+    <string name="k2go_hotspot_hint">Atur nama dan kata sandi yang digunakan orang untuk bergabung ke hotspot ponsel ini. Keduanya tetap sama setelah mulai ulang, jadi Anda bisa mengumumkannya sekali.</string>
+    <string name="k2go_hotspot_unsupported">Ponsel ini menggunakan nama dan kata sandi sementara untuk hotspot. Nama, kata sandi, dan pita tetap memerlukan Android 10 atau lebih baru dengan Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Gunakan nama dan kata sandi khusus</string>
+    <string name="k2go_hotspot_default_line">Nama: %1$s\nKata sandi: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Siapa pun di dekat Anda bisa bergabung dengan ini. Aktifkan nama dan kata sandi khusus untuk mengubahnya.</string>
+    <string name="k2go_hotspot_name_label">Nama jaringan</string>
+    <string name="k2go_hotspot_name_hint">misalnya ROOM1</string>
+    <string name="k2go_hotspot_password_label">Kata sandi</string>
+    <string name="k2go_hotspot_save">Simpan</string>
+    <string name="k2go_hotspot_reset">Kembalikan ke nama dan kata sandi default</string>
+    <string name="k2go_hotspot_saved">Tersimpan. Berlaku saat hotspot dimulai berikutnya.</string>
+    <string name="k2go_hotspot_err_name">Nama setelah awalan terlalu panjang atau memiliki karakter yang tidak valid.</string>
+    <string name="k2go_hotspot_err_password">Kata sandi harus 8 hingga 63 karakter, tanpa karakter kontrol.</string>
+    <string name="k2go_hotspot_band_label">Pita Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz menjangkau lebih banyak perangkat dan ponsel lama. 5 GHz lebih cepat tetapi jangkauannya lebih pendek.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Otomatis</string>
 </resources>

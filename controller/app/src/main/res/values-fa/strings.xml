@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">برخی منابع ساخت به‌روزرسانی نشدند</string>
     <string name="k2go_code_dev_count">%1$d ابزار</string>
     <string name="k2go_setup_waiting_network">در انتظار Wi-Fi یا اجازه شما برای استفاده از داده تلفن همراه</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">نقطه اتصال</string>
+    <string name="k2go_settings_hotspot_sub">نام شبکه، گذرواژه و باند</string>
+    <string name="k2go_hotspot_hint">نام و گذرواژه‌ای را که دیگران برای پیوستن به نقطه اتصال این تلفن استفاده می‌کنند تنظیم کنید. پس از راه‌اندازی مجدد ثابت می‌مانند، بنابراین می‌توانید یک‌بار آن‌ها را اعلام کنید.</string>
+    <string name="k2go_hotspot_unsupported">این تلفن برای نقطه اتصال از نام و گذرواژه موقت استفاده می‌کند. نام، گذرواژه و باند ثابت به Android 10 یا جدیدتر با Wi-Fi Direct نیاز دارند.</string>
+    <string name="k2go_hotspot_custom_toggle">استفاده از نام و گذرواژه سفارشی</string>
+    <string name="k2go_hotspot_default_line">نام: %1$s\nگذرواژه: %2$s</string>
+    <string name="k2go_hotspot_default_hint">هر کسی در نزدیکی می‌تواند با این‌ها بپیوندد. برای تغییر آن‌ها نام و گذرواژه سفارشی را روشن کنید.</string>
+    <string name="k2go_hotspot_name_label">نام شبکه</string>
+    <string name="k2go_hotspot_name_hint">برای مثال ROOM1</string>
+    <string name="k2go_hotspot_password_label">گذرواژه</string>
+    <string name="k2go_hotspot_save">ذخیره</string>
+    <string name="k2go_hotspot_reset">بازگشت به نام و گذرواژه پیش‌فرض</string>
+    <string name="k2go_hotspot_saved">ذخیره شد. در دفعه بعدی که نقطه اتصال شروع شود اعمال می‌شود.</string>
+    <string name="k2go_hotspot_err_name">نام بعد از پیشوند بسیار طولانی است یا نویسه‌های نامعتبر دارد.</string>
+    <string name="k2go_hotspot_err_password">گذرواژه باید بین ۸ تا ۶۳ نویسه و بدون نویسه‌های کنترلی باشد.</string>
+    <string name="k2go_hotspot_band_label">باند Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">۲٫۴ گیگاهرتز به دستگاه‌ها و تلفن‌های قدیمی‌تر بیشتری می‌رسد. ۵ گیگاهرتز سریع‌تر است اما برد کوتاه‌تری دارد.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">خودکار</string>
 </resources>

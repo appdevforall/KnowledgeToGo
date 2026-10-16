@@ -1404,4 +1404,25 @@
     <string name="k2go_code_assets_update_some_failed">Някои ресурси за компилиране не можаха да бъдат актуализирани</string>
     <string name="k2go_code_dev_count">%1$d инструмента</string>
     <string name="k2go_setup_waiting_network">Изчакване на Wi-Fi или вашето съгласие за използване на мобилни данни</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Точка за достъп</string>
+    <string name="k2go_settings_hotspot_sub">Име на мрежата, парола и честотна лента</string>
+    <string name="k2go_hotspot_hint">Задайте името и паролата, с които хората се свързват към точката за достъп на този телефон. Остават същите след рестартиране, така че можете да ги обявите веднъж.</string>
+    <string name="k2go_hotspot_unsupported">Този телефон използва временни име и парола за точката за достъп. Постоянни име, парола и лента изискват Android 10 или по-нов с Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Използване на собствени име и парола</string>
+    <string name="k2go_hotspot_default_line">Име: %1$s\nПарола: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Всеки наблизо може да се свърже с тях. Включете собствени име и парола, за да ги промените.</string>
+    <string name="k2go_hotspot_name_label">Име на мрежата</string>
+    <string name="k2go_hotspot_name_hint">например ROOM1</string>
+    <string name="k2go_hotspot_password_label">Парола</string>
+    <string name="k2go_hotspot_save">Запазване</string>
+    <string name="k2go_hotspot_reset">Връщане към името и паролата по подразбиране</string>
+    <string name="k2go_hotspot_saved">Запазено. Влиза в сила при следващото стартиране на точката за достъп.</string>
+    <string name="k2go_hotspot_err_name">Името след префикса е твърде дълго или съдържа невалидни знаци.</string>
+    <string name="k2go_hotspot_err_password">Паролата трябва да е от 8 до 63 знака, без контролни знаци.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi лента</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz достига до повече устройства и по-стари телефони. 5 GHz е по-бърз, но с по-малък обхват.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Автоматично</string>
 </resources>

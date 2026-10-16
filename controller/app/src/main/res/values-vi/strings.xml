@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">Một số tài nguyên build không thể cập nhật</string>
     <string name="k2go_code_dev_count">%1$d công cụ</string>
     <string name="k2go_setup_waiting_network">Đang chờ Wi-Fi hoặc sự đồng ý của bạn để dùng dữ liệu di động</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Điểm phát sóng</string>
+    <string name="k2go_settings_hotspot_sub">Tên mạng, mật khẩu và băng tần</string>
+    <string name="k2go_hotspot_hint">Đặt tên và mật khẩu mà mọi người dùng để tham gia điểm phát sóng của điện thoại này. Chúng giữ nguyên sau khi khởi động lại, nên bạn có thể công bố một lần.</string>
+    <string name="k2go_hotspot_unsupported">Điện thoại này dùng tên và mật khẩu tạm thời cho điểm phát sóng. Tên, mật khẩu và băng tần cố định cần Android 10 trở lên có Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Dùng tên và mật khẩu tùy chỉnh</string>
+    <string name="k2go_hotspot_default_line">Tên: %1$s\nMật khẩu: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Bất kỳ ai ở gần đều có thể tham gia bằng những thông tin này. Bật tên và mật khẩu tùy chỉnh để thay đổi.</string>
+    <string name="k2go_hotspot_name_label">Tên mạng</string>
+    <string name="k2go_hotspot_name_hint">ví dụ ROOM1</string>
+    <string name="k2go_hotspot_password_label">Mật khẩu</string>
+    <string name="k2go_hotspot_save">Lưu</string>
+    <string name="k2go_hotspot_reset">Khôi phục tên và mật khẩu mặc định</string>
+    <string name="k2go_hotspot_saved">Đã lưu. Có hiệu lực vào lần khởi động điểm phát sóng tiếp theo.</string>
+    <string name="k2go_hotspot_err_name">Tên sau tiền tố quá dài hoặc có ký tự không hợp lệ.</string>
+    <string name="k2go_hotspot_err_password">Mật khẩu phải có từ 8 đến 63 ký tự, không có ký tự điều khiển.</string>
+    <string name="k2go_hotspot_band_label">Băng tần Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz tiếp cận nhiều thiết bị và điện thoại cũ hơn. 5 GHz nhanh hơn nhưng phạm vi ngắn hơn.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Tự động</string>
 </resources>

@@ -1484,4 +1484,25 @@
     <string name="k2go_code_assets_update_some_failed">Certaines ressources de compilation n\'ont pas pu être mises à jour</string>
     <string name="k2go_code_dev_count">%1$d outils</string>
     <string name="k2go_setup_waiting_network">En attente du Wi-Fi ou de votre accord pour utiliser les données mobiles</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Point d\'accès</string>
+    <string name="k2go_settings_hotspot_sub">Nom du réseau, mot de passe et bande</string>
+    <string name="k2go_hotspot_hint">Définissez le nom et le mot de passe que les gens utilisent pour rejoindre le point d\'accès de ce téléphone. Ils restent les mêmes après un redémarrage, vous pouvez donc les afficher une seule fois.</string>
+    <string name="k2go_hotspot_unsupported">Ce téléphone utilise un nom et un mot de passe temporaires pour le point d\'accès. Un nom, un mot de passe et une bande fixes nécessitent Android 10 ou plus récent avec Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Utiliser un nom et un mot de passe personnalisés</string>
+    <string name="k2go_hotspot_default_line">Nom : %1$s\nMot de passe : %2$s</string>
+    <string name="k2go_hotspot_default_hint">Toute personne à proximité peut se connecter avec ces informations. Activez un nom et un mot de passe personnalisés pour les modifier.</string>
+    <string name="k2go_hotspot_name_label">Nom du réseau</string>
+    <string name="k2go_hotspot_name_hint">par exemple ROOM1</string>
+    <string name="k2go_hotspot_password_label">Mot de passe</string>
+    <string name="k2go_hotspot_save">Enregistrer</string>
+    <string name="k2go_hotspot_reset">Revenir au nom et au mot de passe par défaut</string>
+    <string name="k2go_hotspot_saved">Enregistré. Prend effet au prochain démarrage du point d\'accès.</string>
+    <string name="k2go_hotspot_err_name">Le nom après le préfixe est trop long ou contient des caractères non valides.</string>
+    <string name="k2go_hotspot_err_password">Le mot de passe doit comporter de 8 à 63 caractères, sans caractères de contrôle.</string>
+    <string name="k2go_hotspot_band_label">Bande Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz atteint plus d\'appareils et de téléphones anciens. 5 GHz est plus rapide mais de portée plus courte.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Automatique</string>
 </resources>

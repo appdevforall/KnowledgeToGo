@@ -1398,4 +1398,25 @@
     <string name="k2go_code_assets_update_some_failed">일부 빌드 자산을 업데이트하지 못함</string>
     <string name="k2go_code_dev_count">도구 %1$d개</string>
     <string name="k2go_setup_waiting_network">Wi-Fi 또는 모바일 데이터 사용 동의를 기다리는 중</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">핫스팟</string>
+    <string name="k2go_settings_hotspot_sub">네트워크 이름, 비밀번호 및 대역</string>
+    <string name="k2go_hotspot_hint">사람들이 이 휴대전화의 핫스팟에 연결할 때 사용하는 이름과 비밀번호를 설정하세요. 다시 시작해도 동일하게 유지되므로 한 번만 게시하면 됩니다.</string>
+    <string name="k2go_hotspot_unsupported">이 휴대전화는 핫스팟에 임시 이름과 비밀번호를 사용합니다. 고정 이름, 비밀번호 및 대역에는 Wi-Fi Direct를 지원하는 Android 10 이상이 필요합니다.</string>
+    <string name="k2go_hotspot_custom_toggle">사용자 지정 이름과 비밀번호 사용</string>
+    <string name="k2go_hotspot_default_line">이름: %1$s\n비밀번호: %2$s</string>
+    <string name="k2go_hotspot_default_hint">근처의 누구나 이것으로 연결할 수 있습니다. 변경하려면 사용자 지정 이름과 비밀번호를 켜세요.</string>
+    <string name="k2go_hotspot_name_label">네트워크 이름</string>
+    <string name="k2go_hotspot_name_hint">예: ROOM1</string>
+    <string name="k2go_hotspot_password_label">비밀번호</string>
+    <string name="k2go_hotspot_save">저장</string>
+    <string name="k2go_hotspot_reset">기본 이름과 비밀번호로 되돌리기</string>
+    <string name="k2go_hotspot_saved">저장되었습니다. 다음에 핫스팟을 시작할 때 적용됩니다.</string>
+    <string name="k2go_hotspot_err_name">접두사 뒤의 이름이 너무 길거나 잘못된 문자가 있습니다.</string>
+    <string name="k2go_hotspot_err_password">비밀번호는 제어 문자 없이 8~63자여야 합니다.</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi 대역</string>
+    <string name="k2go_hotspot_band_hint">2.4GHz는 더 많은 기기와 구형 휴대전화에 도달합니다. 5GHz는 더 빠르지만 범위가 짧습니다.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">자동</string>
 </resources>

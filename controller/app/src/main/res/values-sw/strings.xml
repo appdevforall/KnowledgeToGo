@@ -1417,4 +1417,25 @@
     <string name="k2go_code_assets_update_some_failed">Baadhi ya rasilimali za ujenzi hazikuweza kusasishwa</string>
     <string name="k2go_code_dev_count">zana %1$d</string>
     <string name="k2go_setup_waiting_network">Inasubiri Wi-Fi au idhini yako ya kutumia data ya simu</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Mtandao-hewa</string>
+    <string name="k2go_settings_hotspot_sub">Jina la mtandao, nenosiri na bendi</string>
+    <string name="k2go_hotspot_hint">Weka jina na nenosiri ambalo watu hutumia kujiunga na mtandao-hewa wa simu hii. Hubaki sawa baada ya kuwasha upya, hivyo waweza kuyatangaza mara moja.</string>
+    <string name="k2go_hotspot_unsupported">Simu hii hutumia jina na nenosiri la muda kwa mtandao-hewa. Jina, nenosiri na bendi za kudumu zinahitaji Android 10 au mpya zaidi yenye Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Tumia jina na nenosiri maalum</string>
+    <string name="k2go_hotspot_default_line">Jina: %1$s\nNenosiri: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Mtu yeyote aliye karibu anaweza kujiunga kwa haya. Washa jina na nenosiri maalum ili kuyabadilisha.</string>
+    <string name="k2go_hotspot_name_label">Jina la mtandao</string>
+    <string name="k2go_hotspot_name_hint">kwa mfano ROOM1</string>
+    <string name="k2go_hotspot_password_label">Nenosiri</string>
+    <string name="k2go_hotspot_save">Hifadhi</string>
+    <string name="k2go_hotspot_reset">Rudisha jina na nenosiri chaguo-msingi</string>
+    <string name="k2go_hotspot_saved">Imehifadhiwa. Itaanza kutumika wakati mtandao-hewa utakapoanza tena.</string>
+    <string name="k2go_hotspot_err_name">Jina baada ya kiambishi ni refu mno au lina herufi batili.</string>
+    <string name="k2go_hotspot_err_password">Nenosiri lazima liwe na herufi 8 hadi 63, bila herufi za udhibiti.</string>
+    <string name="k2go_hotspot_band_label">Bendi ya Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz hufikia vifaa vingi zaidi na simu za zamani. 5 GHz ni haraka zaidi lakini ina masafa mafupi.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Kiotomatiki</string>
 </resources>

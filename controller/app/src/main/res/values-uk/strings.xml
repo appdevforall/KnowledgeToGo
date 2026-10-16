@@ -1397,4 +1397,25 @@
     <string name="k2go_code_assets_update_some_failed">Деякі ресурси збирання не вдалося оновити</string>
     <string name="k2go_code_dev_count">%1$d інструментів</string>
     <string name="k2go_setup_waiting_network">Очікування Wi-Fi або вашої згоди на використання мобільних даних</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Точка доступу</string>
+    <string name="k2go_settings_hotspot_sub">Назва мережі, пароль і діапазон</string>
+    <string name="k2go_hotspot_hint">Задайте назву та пароль, з якими люди під\'єднуються до точки доступу цього телефона. Вони не змінюються після перезапуску, тож їх можна вказати один раз.</string>
+    <string name="k2go_hotspot_unsupported">Цей телефон використовує тимчасові назву та пароль для точки доступу. Постійні назва, пароль і діапазон потребують Android 10 або новішої з Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Використовувати власні назву та пароль</string>
+    <string name="k2go_hotspot_default_line">Назва: %1$s\nПароль: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Будь-хто поруч може під\'єднатися з цими даними. Увімкніть власні назву та пароль, щоб змінити їх.</string>
+    <string name="k2go_hotspot_name_label">Назва мережі</string>
+    <string name="k2go_hotspot_name_hint">наприклад ROOM1</string>
+    <string name="k2go_hotspot_password_label">Пароль</string>
+    <string name="k2go_hotspot_save">Зберегти</string>
+    <string name="k2go_hotspot_reset">Повернути назву та пароль за замовчуванням</string>
+    <string name="k2go_hotspot_saved">Збережено. Набуде чинності під час наступного запуску точки доступу.</string>
+    <string name="k2go_hotspot_err_name">Назва після префікса задовга або містить неприпустимі символи.</string>
+    <string name="k2go_hotspot_err_password">Пароль має містити від 8 до 63 символів, без керуючих символів.</string>
+    <string name="k2go_hotspot_band_label">Діапазон Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 ГГц охоплює більше пристроїв і старих телефонів. 5 ГГц швидший, але з меншим радіусом.</string>
+    <string name="k2go_hotspot_band_24">2.4 ГГц</string>
+    <string name="k2go_hotspot_band_5">5 ГГц</string>
+    <string name="k2go_hotspot_band_auto">Автоматично</string>
 </resources>

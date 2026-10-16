@@ -1398,4 +1398,25 @@
     <string name="k2go_code_assets_update_some_failed">部分构建资源无法更新</string>
     <string name="k2go_code_dev_count">%1$d个工具</string>
     <string name="k2go_setup_waiting_network">正在等待 Wi-Fi 或您同意使用移动数据</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">热点</string>
+    <string name="k2go_settings_hotspot_sub">网络名称、密码和频段</string>
+    <string name="k2go_hotspot_hint">设置他人加入此手机热点时使用的名称和密码。重启后保持不变，因此可以张贴一次。</string>
+    <string name="k2go_hotspot_unsupported">此手机为热点使用临时名称和密码。固定的名称、密码和频段需要支持 Wi-Fi Direct 的 Android 10 或更高版本。</string>
+    <string name="k2go_hotspot_custom_toggle">使用自定义名称和密码</string>
+    <string name="k2go_hotspot_default_line">名称：%1$s\n密码：%2$s</string>
+    <string name="k2go_hotspot_default_hint">附近任何人都可以用它们加入。打开自定义名称和密码即可更改。</string>
+    <string name="k2go_hotspot_name_label">网络名称</string>
+    <string name="k2go_hotspot_name_hint">例如 ROOM1</string>
+    <string name="k2go_hotspot_password_label">密码</string>
+    <string name="k2go_hotspot_save">保存</string>
+    <string name="k2go_hotspot_reset">恢复为默认名称和密码</string>
+    <string name="k2go_hotspot_saved">已保存。将在下次启动热点时生效。</string>
+    <string name="k2go_hotspot_err_name">前缀后的名称过长或含有无效字符。</string>
+    <string name="k2go_hotspot_err_password">密码必须为 8 到 63 个字符，且不含控制字符。</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi 频段</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz 覆盖更多设备和较旧的手机。5 GHz 更快但范围更短。</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">自动</string>
 </resources>

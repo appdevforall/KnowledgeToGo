@@ -9,27 +9,4 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources>
-    <!-- K2GO-127 (PR B): hotspot name/password/band settings. Migrate to strings.xml (33 locales)
-         before merge. -->
-    <string name="k2go_settings_hotspot" translatable="false">Hotspot</string>
-    <string name="k2go_settings_hotspot_sub" translatable="false">Network name, password and band</string>
-    <string name="k2go_hotspot_hint" translatable="false">Set the name and password people use to join this phone\'s hotspot. They stay the same across restarts, so you can post them once.</string>
-    <string name="k2go_hotspot_unsupported" translatable="false">This phone uses a temporary name and password for the hotspot. A fixed name, password and band need Android 10 or newer with Wi-Fi Direct.</string>
-    <string name="k2go_hotspot_custom_toggle" translatable="false">Use a custom name and password</string>
-    <string name="k2go_hotspot_default_line" translatable="false">Name: %1$s\nPassword: %2$s</string>
-    <string name="k2go_hotspot_default_hint" translatable="false">Anyone nearby can join with these. Turn on a custom name and password to change them.</string>
-    <string name="k2go_hotspot_name_label" translatable="false">Network name</string>
-    <string name="k2go_hotspot_name_hint" translatable="false">for example ROOM1</string>
-    <string name="k2go_hotspot_password_label" translatable="false">Password</string>
-    <string name="k2go_hotspot_save" translatable="false">Save</string>
-    <string name="k2go_hotspot_reset" translatable="false">Revert to the default name and password</string>
-    <string name="k2go_hotspot_saved" translatable="false">Saved. It takes effect the next time the hotspot starts.</string>
-    <string name="k2go_hotspot_err_name" translatable="false">The name after the prefix is too long or has invalid characters.</string>
-    <string name="k2go_hotspot_err_password" translatable="false">The password must be 8 to 63 characters, with no control characters.</string>
-    <string name="k2go_hotspot_band_label" translatable="false">Wi-Fi band</string>
-    <string name="k2go_hotspot_band_hint" translatable="false">2.4 GHz reaches more devices and older phones. 5 GHz is faster but shorter range.</string>
-    <string name="k2go_hotspot_band_24" translatable="false">2.4 GHz</string>
-    <string name="k2go_hotspot_band_5" translatable="false">5 GHz</string>
-    <string name="k2go_hotspot_band_auto" translatable="false">Automatic</string>
-</resources>
+<resources></resources>

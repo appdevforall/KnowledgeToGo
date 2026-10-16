@@ -1404,4 +1404,25 @@
     <string name="k2go_code_assets_update_some_failed">Niektoré zdroje zostavenia sa nepodarilo aktualizovať</string>
     <string name="k2go_code_dev_count">%1$d nástrojov</string>
     <string name="k2go_setup_waiting_network">Čaká sa na Wi-Fi alebo váš súhlas s použitím mobilných dát</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">Hotspot</string>
+    <string name="k2go_settings_hotspot_sub">Názov siete, heslo a pásmo</string>
+    <string name="k2go_hotspot_hint">Nastavte názov a heslo, s ktorými sa ľudia pripájajú k hotspotu tohto telefónu. Po reštarte zostávajú rovnaké, takže ich stačí zverejniť raz.</string>
+    <string name="k2go_hotspot_unsupported">Tento telefón používa pre hotspot dočasný názov a heslo. Pevný názov, heslo a pásmo vyžadujú Android 10 alebo novší s Wi-Fi Direct.</string>
+    <string name="k2go_hotspot_custom_toggle">Použiť vlastný názov a heslo</string>
+    <string name="k2go_hotspot_default_line">Názov: %1$s\nHeslo: %2$s</string>
+    <string name="k2go_hotspot_default_hint">Ktokoľvek nablízku sa môže pripojiť s týmito údajmi. Zapnite vlastný názov a heslo, ak ich chcete zmeniť.</string>
+    <string name="k2go_hotspot_name_label">Názov siete</string>
+    <string name="k2go_hotspot_name_hint">napríklad ROOM1</string>
+    <string name="k2go_hotspot_password_label">Heslo</string>
+    <string name="k2go_hotspot_save">Uložiť</string>
+    <string name="k2go_hotspot_reset">Obnoviť predvolený názov a heslo</string>
+    <string name="k2go_hotspot_saved">Uložené. Prejaví sa pri ďalšom spustení hotspotu.</string>
+    <string name="k2go_hotspot_err_name">Názov za predponou je príliš dlhý alebo obsahuje neplatné znaky.</string>
+    <string name="k2go_hotspot_err_password">Heslo musí mať 8 až 63 znakov, bez riadiacich znakov.</string>
+    <string name="k2go_hotspot_band_label">Pásmo Wi-Fi</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz dosiahne viac zariadení a starších telefónov. 5 GHz je rýchlejšie, ale s kratším dosahom.</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">Automaticky</string>
 </resources>

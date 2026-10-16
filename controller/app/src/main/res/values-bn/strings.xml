@@ -1410,4 +1410,25 @@
     <string name="k2go_code_assets_update_some_failed">কিছু বিল্ড অ্যাসেট আপডেট করা যায়নি</string>
     <string name="k2go_code_dev_count">%1$d টুল</string>
     <string name="k2go_setup_waiting_network">Wi-Fi বা মোবাইল ডেটা ব্যবহারের আপনার অনুমতির জন্য অপেক্ষা করছে</string>
+    <!-- K2GO-127 hotspot (machine-translated, pending human review). -->
+    <string name="k2go_settings_hotspot">হটস্পট</string>
+    <string name="k2go_settings_hotspot_sub">নেটওয়ার্কের নাম, পাসওয়ার্ড ও ব্যান্ড</string>
+    <string name="k2go_hotspot_hint">এই ফোনের হটস্পটে যোগ দিতে লোকেরা যে নাম ও পাসওয়ার্ড ব্যবহার করে তা সেট করুন। পুনরায় চালুর পরেও একই থাকে, তাই একবার জানিয়ে দিতে পারেন।</string>
+    <string name="k2go_hotspot_unsupported">এই ফোন হটস্পটের জন্য অস্থায়ী নাম ও পাসওয়ার্ড ব্যবহার করে। স্থায়ী নাম, পাসওয়ার্ড ও ব্যান্ডের জন্য Wi-Fi Direct সহ Android 10 বা নতুন প্রয়োজন।</string>
+    <string name="k2go_hotspot_custom_toggle">কাস্টম নাম ও পাসওয়ার্ড ব্যবহার করুন</string>
+    <string name="k2go_hotspot_default_line">নাম: %1$s\nপাসওয়ার্ড: %2$s</string>
+    <string name="k2go_hotspot_default_hint">কাছের যে কেউ এগুলো দিয়ে যোগ দিতে পারে। পরিবর্তন করতে কাস্টম নাম ও পাসওয়ার্ড চালু করুন।</string>
+    <string name="k2go_hotspot_name_label">নেটওয়ার্কের নাম</string>
+    <string name="k2go_hotspot_name_hint">উদাহরণস্বরূপ ROOM1</string>
+    <string name="k2go_hotspot_password_label">পাসওয়ার্ড</string>
+    <string name="k2go_hotspot_save">সংরক্ষণ করুন</string>
+    <string name="k2go_hotspot_reset">ডিফল্ট নাম ও পাসওয়ার্ডে ফিরে যান</string>
+    <string name="k2go_hotspot_saved">সংরক্ষিত হয়েছে। পরেরবার হটস্পট চালু হলে কার্যকর হবে।</string>
+    <string name="k2go_hotspot_err_name">উপসর্গের পরের নাম খুব দীর্ঘ বা অবৈধ অক্ষর রয়েছে।</string>
+    <string name="k2go_hotspot_err_password">পাসওয়ার্ড অবশ্যই 8 থেকে 63 অক্ষরের হতে হবে, কোনো নিয়ন্ত্রণ অক্ষর ছাড়া।</string>
+    <string name="k2go_hotspot_band_label">Wi-Fi ব্যান্ড</string>
+    <string name="k2go_hotspot_band_hint">2.4 GHz আরও ডিভাইস ও পুরোনো ফোনে পৌঁছায়। 5 GHz দ্রুততর কিন্তু পরিসর কম।</string>
+    <string name="k2go_hotspot_band_24">2.4 GHz</string>
+    <string name="k2go_hotspot_band_5">5 GHz</string>
+    <string name="k2go_hotspot_band_auto">স্বয়ংক্রিয়</string>
 </resources>
