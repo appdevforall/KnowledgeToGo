@@ -222,6 +222,19 @@ public class ConnectFragment extends Fragment {
             singleStatus(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi));
             return;
         }
+        // K2GO-471: the hotspot came up but its IPv4 never resolved (the second QR cannot be built).
+        // This is a distinct terminal from a start failure: say so plainly and offer a retry instead
+        // of the enable-location hint, so the user is never stuck on "Finding hotspot address...".
+        if (phase == LocalHotspotManager.Phase.FAILED
+                && st != null && st.failureReason == LocalHotspotManager.REASON_ADDRESS_UNRESOLVED) {
+            singleStatus(getString(R.string.k2go_connect_address_unresolved), "");
+            advance.setVisibility(View.VISIBLE);
+            advance.setText(R.string.k2go_home_retry);
+            styleAdvance(true);
+            advance.setOnClickListener(x -> hs.stop(this::ensureHotspot));
+            connFooter.setVisibility(View.GONE);
+            return;
+        }
         // FAILED, or the hotspot permission is not granted (denied): show the hint instead of a
         // perpetual "starting" placeholder (K2GO-439).
         if (phase == LocalHotspotManager.Phase.FAILED

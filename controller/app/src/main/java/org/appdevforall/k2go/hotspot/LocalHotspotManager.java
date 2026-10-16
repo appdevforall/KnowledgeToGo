@@ -32,7 +32,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
+import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
 
 /**
  * App-scoped singleton that starts/stops a LocalOnlyHotspot and publishes its state.
@@ -84,6 +84,11 @@ public final class LocalHotspotManager {
     private static final long AP_IP_POLL_MS = 1000L;
     private static final int AP_IP_MAX_POLLS = 120;   // ~2 min safety cap (mirrors CloneFragment's budget)
     private int generation = 0;
+
+    // K2GO-471: terminal reason when the hotspot started but its IPv4 never resolved within budget.
+    // Distinct from the LocalOnlyHotspotCallback.ERROR_* codes (1..4), so the UI can tell this apart
+    // and offer a retry instead of the "couldn't start the hotspot" / enable-location hint.
+    public static final int REASON_ADDRESS_UNRESOLVED = 1001;
 
     // Object type kept generic so this file compiles on API < 26; cast at use sites.
     private Object reservation; // WifiManager.LocalOnlyHotspotReservation
@@ -267,7 +272,7 @@ public final class LocalHotspotManager {
                     Log.d(TAG, "LocalOnlyHotspot started, ssid=" + ssid);
                     // ON is emitted with no IP yet; the poll re-emits once the AP interface has one.
                     publish(State.on(ssid, pass, null));
-                    beginHotspotIpPoll(ssid, pass);
+                    beginHotspotIpPoll(context.getApplicationContext(), ssid, pass);
                 }
 
                 @Override
@@ -339,12 +344,14 @@ public final class LocalHotspotManager {
     }
 
     /**
-     * K2GO-375: resolve the AP interface's IPv4 and re-emit State with it. Runs on the main looper,
-     * re-scheduling itself once a second until the address appears or the safety cap is hit. Bails the
-     * instant its generation is superseded (a newer start/stop) or the phase is no longer ON, so it never
-     * outlives the reservation it was started for.
+     * K2GO-375 / K2GO-471: resolve the AP IPv4 through the one producer (ApAddressResolver) and re-emit
+     * State with it. Runs on the main looper, re-scheduling once a second until the address appears or
+     * the safety cap is hit. Bails the instant its generation is superseded (a newer start/stop) or the
+     * phase is no longer ON, so it never outlives the reservation it was started for. K2GO-471: on
+     * exhaustion it publishes a FAILED terminal (REASON_ADDRESS_UNRESOLVED) instead of returning
+     * silently, so the UI never sits forever on "Finding hotspot address...".
      */
-    private void beginHotspotIpPoll(final String ssid, final String pass) {
+    private void beginHotspotIpPoll(final Context ctx, final String ssid, final String pass) {
         final int gen = generation;
         pollHandler.post(new Runnable() {
             private int tries = 0;
@@ -353,12 +360,15 @@ public final class LocalHotspotManager {
                 State cur = state.getValue();
                 if (cur == null || cur.phase != Phase.ON) return;   // no longer ON
                 if (cur.hotspotIp != null) return;                  // already resolved
-                String ip = NetworkInterfaces.discover().hotspotIp;
+                String ip = ApAddressResolver.resolveOnce(ctx, null);
                 if (ip != null) {
                     publish(State.on(ssid, pass, ip));              // resolved: re-emit through the one path
                     return;
                 }
-                if (++tries >= AP_IP_MAX_POLLS) return;             // safety cap; never spin forever
+                if (++tries >= AP_IP_MAX_POLLS) {                    // K2GO-471: terminal, not a silent stop
+                    publish(State.failed(REASON_ADDRESS_UNRESOLVED));
+                    return;
+                }
                 pollHandler.postDelayed(this, AP_IP_POLL_MS);
             }
         });

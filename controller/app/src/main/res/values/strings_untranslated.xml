@@ -9,4 +9,8 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources></resources>
+<resources>
+    <!-- K2GO-471: shown when the hotspot started but its IPv4 never resolved (the second QR cannot be
+         built). Pairs with a Retry action. Migrate to strings.xml with all locale values before merge. -->
+    <string name="k2go_connect_address_unresolved" translatable="false">Could not get the hotspot address.</string>
+</resources>
