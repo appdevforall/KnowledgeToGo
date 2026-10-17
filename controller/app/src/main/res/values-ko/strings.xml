@@ -1420,4 +1420,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">자동</string>
     <string name="k2go_connect_address_unresolved">핫스팟 주소를 가져올 수 없습니다.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d개 항목을 사용할 수 없음</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d개 과정이 불완전합니다: 서버에 일부 파일이 없습니다.</string>
 </resources>

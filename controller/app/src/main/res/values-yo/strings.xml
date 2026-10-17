@@ -1439,4 +1439,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Laifọwọyi</string>
     <string name="k2go_connect_address_unresolved">Kò lè rí àdírẹ́sì hotspot náà.</string>
+    <string name="k2go_kolibri_item_partial_fmt">Nkan %1$d kò sí</string>
+    <string name="k2go_kolibri_partial_fmt">Ẹ̀kọ́ %1$d dé láìpé: olupin kò ní àwọn fáìlì kan.</string>
 </resources>

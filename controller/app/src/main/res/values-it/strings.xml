@@ -1419,4 +1419,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automatica</string>
     <string name="k2go_connect_address_unresolved">Impossibile ottenere l\'indirizzo dell\'hotspot.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d elementi non disponibili</string>
+    <string name="k2go_kolibri_partial_fmt">Corsi incompleti: %1$d. Il server non ha alcuni file.</string>
 </resources>

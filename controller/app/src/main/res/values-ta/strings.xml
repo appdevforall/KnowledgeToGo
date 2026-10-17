@@ -1439,4 +1439,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">தானியங்கு</string>
     <string name="k2go_connect_address_unresolved">ஹாட்ஸ்பாட் முகவரியைப் பெற முடியவில்லை.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d உருப்படிகள் கிடைக்கவில்லை</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d பாடநெறிகள் முழுமையில்லாமல் வந்தன: சேவையகத்தில் சில கோப்புகள் இல்லை.</string>
 </resources>

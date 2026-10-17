@@ -1432,4 +1432,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">স্বয়ংক্রিয়</string>
     <string name="k2go_connect_address_unresolved">হটস্পটের ঠিকানা পাওয়া যায়নি।</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$dটি আইটেম উপলব্ধ নেই</string>
+    <string name="k2go_kolibri_partial_fmt">%1$dটি কোর্স অসম্পূর্ণ এসেছে: সার্ভারে কিছু ফাইল নেই।</string>
 </resources>

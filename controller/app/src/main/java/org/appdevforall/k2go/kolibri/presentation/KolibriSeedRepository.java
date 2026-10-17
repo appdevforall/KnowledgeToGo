@@ -165,8 +165,9 @@ public final class KolibriSeedRepository {
         });
     }
 
-    public void itemFinished(int index, boolean ok) {
-        mutate(from -> from.finishItem(index, ok));
+    /** @param missing what a DONE item could not deliver (K2GO-475); 0 when complete */
+    public void itemFinished(int index, boolean ok, int missing) {
+        mutate(from -> from.finishItem(index, ok, missing));
     }
 
     /**

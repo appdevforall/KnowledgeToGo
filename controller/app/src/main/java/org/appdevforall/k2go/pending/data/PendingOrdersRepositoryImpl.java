@@ -86,7 +86,8 @@ public final class PendingOrdersRepositoryImpl implements PendingOrdersRepositor
 
     /** Courses order = {@code {channelId, version, name, bytes}}. */
     private void addCourses(List<PendingOrder> out) {
-        JSONArray a = KolibriWishlist.all(app);
+        // K2GO-475: an order a running session already holds is a download, not a pending order.
+        JSONArray a = org.appdevforall.k2go.kolibri.presentation.KolibriProvisioner.banked(app);
         for (int i = 0; i < a.length(); i++) {
             JSONObject o = a.optJSONObject(i);
             if (o == null) continue;

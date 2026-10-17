@@ -1426,4 +1426,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automaticky</string>
     <string name="k2go_connect_address_unresolved">Nepodarilo sa získať adresu hotspotu.</string>
+    <string name="k2go_kolibri_item_partial_fmt">Nedostupné položky: %1$d</string>
+    <string name="k2go_kolibri_partial_fmt">Neúplné kurzy: %1$d. Server nemá niektoré súbory.</string>
 </resources>

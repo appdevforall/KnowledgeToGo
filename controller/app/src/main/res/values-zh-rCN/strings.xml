@@ -1420,4 +1420,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">自动</string>
     <string name="k2go_connect_address_unresolved">无法获取热点地址。</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d 项不可用</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d 门课程不完整：服务器缺少部分文件。</string>
 </resources>

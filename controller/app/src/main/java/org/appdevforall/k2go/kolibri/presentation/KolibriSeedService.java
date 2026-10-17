@@ -7,7 +7,8 @@
  *               channels through the in-server REST job engine: one job per
  *               channel, SEQUENTIALLY, CONTINUING past a failed one. The heavy
  *               work runs on the live Debian/proot server, so the device only
- *               POSTs and polls. Session state lives in KolibriSeedRepository.
+ *               POSTs and polls, through the shared RestContentClient (K2GO-475).
+ *               Session state lives in KolibriSeedRepository.
  * ============================================================================
  */
 package org.appdevforall.k2go.kolibri.presentation;
@@ -30,21 +31,20 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.kolibri.data.KolibriRestClient;
+import org.appdevforall.k2go.content.RestContentClient;
+import org.appdevforall.k2go.kolibri.data.KolibriDownloadRequest;
+import org.appdevforall.k2go.kolibri.data.KolibriWishlist;
 import org.appdevforall.k2go.kolibri.domain.ChannelSelection;
-import org.appdevforall.k2go.kolibri.domain.SeedPlan;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Drives the seeding session.
  *
- * <p><b>One job per channel, not one job for the batch.</b> The REST client can
- * post the whole {@link SeedPlan} at once and the server would walk it, but then
+ * <p><b>One job per channel, not one job for the batch.</b> The box accepts every
+ * channel in one job and would walk them, but then
  * a single failing channel ends the run and there is nothing to retry but the
  * lot. Per-channel jobs give the same per-item status, per-item retry and
  * continue-past-failure the ZIM and Books services provide, which is what
@@ -69,14 +69,9 @@ public final class KolibriSeedService extends Service {
     /** Node ids per channel, joined with commas; empty means the whole channel. */
     public static final String EXTRA_NODE_IDS = "nodeIds";
 
-    /** Total tries per channel before it is marked failed and the batch moves on. */
-    private static final int MAX_ATTEMPTS = 3;
-    private static final long RETRY_DELAY_MS = 4000L;
-
     private final Handler main = new Handler(Looper.getMainLooper());
 
-    private KolibriRestClient client;
-    private int attempts;
+    private RestContentClient client;
 
     // ---- entry points ------------------------------------------------------
 
@@ -94,6 +89,12 @@ public final class KolibriSeedService extends Service {
     /** Re-queues a failed channel; resumes the loop if it had already stopped. */
     public static void retry(Context ctx, int index) {
         KolibriSeedRepository repo = KolibriSeedRepository.get();
+        // K2GO-475: bank the order again, so a process death during the retry re-drains it.
+        KolibriSeedState.Item item = itemAt(index);
+        if (item != null && item.status() == KolibriSeedState.Status.FAILED) {
+            KolibriWishlist.add(ctx.getApplicationContext(), item.channelId(), 0, item.label(),
+                    item.bytes(), item.nodeIds());
+        }
         repo.retryItem(index);
         if (!repo.isRunning()) {
             ContextCompat.startForegroundService(ctx,
@@ -129,7 +130,14 @@ public final class KolibriSeedService extends Service {
             if (client != null) {
                 client.cancel();
             }
-            repo.sessionStopped();
+            // K2GO-475: cancel abandons this session's orders, not the ones banked meanwhile.
+            // Clearing the session, not just stopping it, matters: a stopped session keeps its
+            // ACTIVE item, so it never reads complete and ContentAdmission would hold every
+            // later ZIM/Books/Courses drain until Finish.
+            for (KolibriSeedState.Item it : repo.current().items()) {
+                KolibriWishlist.removeIfSelection(getApplicationContext(), it.channelId(), it.nodeIds());
+            }
+            repo.clearSession();
             main.post(() -> {
                 stopForeground(true);
                 stopSelf();
@@ -138,6 +146,8 @@ public final class KolibriSeedService extends Service {
         }
 
         if (repo.isRunning()) {
+            // A duplicate start still owes Android its startForeground() call.
+            startForeground(NOTIFICATION_ID, buildNotification(currentLabel()));
             return START_NOT_STICKY;
         }
 
@@ -194,12 +204,16 @@ public final class KolibriSeedService extends Service {
             sessionComplete();
             return;
         }
-        attempts = 0;
         repo.itemStarted(i);
         updateNotification(labelAt(i));
         startItem(i);
     }
 
+    /**
+     * One job per channel. No retry loop here: the box owns reconnection and resume, and
+     * the shared client already retries the kickoff while the box warms up. A failed
+     * channel is marked failed for a manual retry and the batch carries on.
+     */
     private void startItem(final int index) {
         final KolibriSeedRepository repo = KolibriSeedRepository.get();
         final KolibriSeedState.Item item = itemAt(index);
@@ -208,19 +222,19 @@ public final class KolibriSeedService extends Service {
             return;
         }
 
-        SeedPlan plan = planFor(item);
-        if (plan.isEmpty()) {
+        JSONObject body = bodyFor(item);
+        if (body == null) {
             // A selection that produced nothing would have Kolibri report success
             // with zero transferred. Fail it here instead of shipping the no-op.
             Log.w(TAG, "kolibri seed [" + index + "] unusable selection; skipping");
-            repo.itemFinished(index, false);
+            itemEnded(index, item, false, 0);
             processNext();
             return;
         }
 
         Log.i(TAG, "kolibri seed start [" + index + "] " + item.channelId());
-        client = new KolibriRestClient();
-        client.seed(plan, new KolibriRestClient.Listener() {
+        client = new RestContentClient("kolibri");
+        client.start(body, new RestContentClient.Listener() {
             @Override
             public void onProgress(int percent, String speed) {
                 repo.itemProgress(index, percent, parseRate(speed));
@@ -240,36 +254,46 @@ public final class KolibriSeedService extends Service {
             }
 
             @Override
+            public void onPaused(int percent) {
+                // This flow has no pause control, so a job found paused (attached after a
+                // restart) would otherwise wait forever and hold every other stream.
+                if (client != null) {
+                    client.resume();
+                }
+            }
+
+            @Override
             public void onDone() {
-                Log.i(TAG, "kolibri seed done [" + index + "]");
-                repo.itemFinished(index, true);
+                onDone(null);
+            }
+
+            @Override
+            public void onDone(JSONObject result) {
+                int missing = KolibriDownloadRequest.missing(result);
+                Log.i(TAG, "kolibri seed done [" + index + "] missing=" + missing);
+                itemEnded(index, item, true, missing);
                 processNext();
             }
 
             @Override
             public void onError(String message) {
                 Log.w(TAG, "kolibri seed [" + index + "] error: " + message);
-                retryOrFail(index);
+                itemEnded(index, item, false, 0);
+                processNext();
             }
         });
     }
 
     /**
-     * A transient failure — the server still warming up, a flaky mirror — should
-     * not cost the channel. Retry a couple of times, then mark it failed and
-     * carry on with the rest: a partly seeded device is better than none.
+     * Records the outcome and retires the banked order for this item. The order stays in the
+     * wishlist until here, so a process death mid-download re-drains it and the shared client
+     * re-attaches to the job the box is still running. A failed item leaves the wishlist too:
+     * its retry lives on the session row, and keeping it banked would re-drain it forever.
      */
-    private void retryOrFail(int index) {
-        attempts++;
-        if (attempts < MAX_ATTEMPTS) {
-            Log.w(TAG, "kolibri seed [" + index + "] transient failure, retry "
-                    + attempts + "/" + (MAX_ATTEMPTS - 1));
-            main.postDelayed(() -> startItem(index), RETRY_DELAY_MS);
-            return;
-        }
-        Log.w(TAG, "kolibri seed [" + index + "] failed after " + attempts + " attempts");
-        KolibriSeedRepository.get().itemFinished(index, false);
-        processNext();
+    private void itemEnded(int index, KolibriSeedState.Item item, boolean ok, int missing) {
+        KolibriSeedRepository repo = KolibriSeedRepository.get();
+        repo.itemFinished(index, ok, missing);
+        KolibriWishlist.removeIfSelection(getApplicationContext(), item.channelId(), item.nodeIds());
     }
 
     private void sessionComplete() {
@@ -282,17 +306,16 @@ public final class KolibriSeedService extends Service {
 
     // ---- helpers -----------------------------------------------------------
 
-    private SeedPlan planFor(KolibriSeedState.Item item) {
+    /** The REST body for an item, or null when its selection is unusable. */
+    private static JSONObject bodyFor(KolibriSeedState.Item item) {
         try {
             ChannelSelection sel = item.isWholeChannel()
                     ? ChannelSelection.wholeChannel(item.channelId())
                     : ChannelSelection.ofSubtrees(item.channelId(), item.nodeIds());
-            Map<String, Long> sizes = new HashMap<>();
-            sizes.put(sel.channelId(), item.bytes());
-            return SeedPlan.of(Collections.singletonList(sel), sizes);
-        } catch (IllegalArgumentException bad) {
+            return KolibriDownloadRequest.body(sel);
+        } catch (Exception bad) {
             Log.w(TAG, "kolibri seed: " + bad.getMessage());
-            return SeedPlan.empty();
+            return null;
         }
     }
 

@@ -1613,4 +1613,6 @@
     <string name="k2go_hotspot_band_24">2.4 GHz</string>
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automatic</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d items not available</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d course(s) arrived incomplete: the server does not have some files.</string>
 </resources>

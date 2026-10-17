@@ -129,6 +129,29 @@ public final class KolibriWishlist {
         }
     }
 
+    /**
+     * K2GO-475: removes the entry only while it still holds this selection. The order is kept
+     * until its item finishes, so a pick the user changed meanwhile (same channel, new nodes)
+     * must survive the old item's completion.
+     */
+    public static void removeIfSelection(Context ctx, String channelId, List<String> nodeIds) {
+        String id = ChannelId.normalise(channelId);
+        if (id == null) {
+            return;
+        }
+        LinkedHashMap<String, JSONObject> merged = load(ctx);
+        JSONObject cur = merged.get(id);
+        if (cur == null) {
+            return;
+        }
+        JSONArray have = cur.optJSONArray("nodeIds");
+        String banked = (have == null ? new JSONArray() : have).toString();
+        if (banked.equals(normalisedNodes(nodeIds).toString())) {
+            merged.remove(id);
+            save(ctx, merged);
+        }
+    }
+
     /** True when this channel is already in the order. */
     public static boolean contains(Context ctx, String channelId) {
         String id = ChannelId.normalise(channelId);

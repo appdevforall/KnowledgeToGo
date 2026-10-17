@@ -282,7 +282,7 @@ public final class PendingContent {
         try {
             zim = ZimWishlist.size(app);
             books = BooksWishlist.size(app);
-            courses = KolibriWishlist.size(app);
+            courses = org.appdevforall.k2go.kolibri.presentation.KolibriProvisioner.banked(app).length();
             maps = MapsWishlist.has(app);
         } catch (Exception e) {
             // A wishlist that will not parse must not take a screen down with it; the

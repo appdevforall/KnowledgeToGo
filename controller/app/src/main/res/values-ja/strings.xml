@@ -1420,4 +1420,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">自動</string>
     <string name="k2go_connect_address_unresolved">ホットスポットのアドレスを取得できませんでした。</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d 件は利用できません</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d 件のコースが不完全です: サーバーに一部のファイルがありません。</string>
 </resources>

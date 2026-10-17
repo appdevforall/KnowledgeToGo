@@ -99,8 +99,12 @@ public final class KolibriSeedingFragment extends Fragment {
         // same failure count to decide between redirecting home and offering Finish.
         boolean settled = s.isComplete();
         int failed = s.failedCount();
-        if (settled && failed == 0) {
+        int partial = s.partialCount();
+        if (settled && failed == 0 && partial == 0) {
             detailView.setText(R.string.k2go_zim_all_ready);
+        } else if (settled && failed == 0) {
+            // K2GO-475: done, but the box could not deliver all of it. Not "all ready".
+            detailView.setText(getString(R.string.k2go_kolibri_partial_fmt, partial));
         } else if (settled) {
             detailView.setText(getString(R.string.k2go_kolibri_failed_fmt, failed));
         } else {
@@ -122,6 +126,9 @@ public final class KolibriSeedingFragment extends Fragment {
                         KolibriSeedState.Item it = items.get(index);
                         if (it.status() == KolibriSeedState.Status.FAILED) {
                             return getString(R.string.k2go_zim_item_failed_suffix).trim();
+                        }
+                        if (it.isPartial()) {
+                            return getString(R.string.k2go_kolibri_item_partial_fmt, it.missing());
                         }
                         return it.bytes() > 0 ? ByteFormatter.toHuman(it.bytes()) : null;
                     }

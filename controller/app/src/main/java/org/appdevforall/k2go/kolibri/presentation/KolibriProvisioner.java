@@ -6,8 +6,9 @@
  * Description : ADFA-4954. Post-install drain of the Kolibri wishlist. Once the
  *               system is installed and the server is up, hands the banked order
  *               to KolibriSeedService. Kolibri is a LIVE operation (server up),
- *               so this must only run when the server is alive. Idempotent: the
- *               wishlist is cleared once handed off.
+ *               so this must only run when the server is alive. The order stays
+ *               banked until each item ends (K2GO-475); ContentAdmission keeps a
+ *               running session from being drained twice.
  * ============================================================================
  */
 package org.appdevforall.k2go.kolibri.presentation;
@@ -38,7 +39,24 @@ public final class KolibriProvisioner {
 
     /** True when there is a banked Kolibri order waiting. */
     public static boolean hasPending(Context ctx) {
-        return KolibriWishlist.size(ctx) > 0;
+        return banked(ctx).length() > 0;
+    }
+
+    /**
+     * K2GO-475: wishlist entries no session is working on. The wishlist keeps an order until
+     * its item ends, so without this an in-flight course would also read as queued.
+     */
+    public static JSONArray banked(Context ctx) {
+        JSONArray all = KolibriWishlist.all(ctx);
+        KolibriSeedState session = KolibriSeedRepository.get().current();
+        JSONArray out = new JSONArray();
+        for (int i = 0; i < all.length(); i++) {
+            JSONObject o = all.optJSONObject(i);
+            if (o != null && !session.holds(o.optString("channelId", ""))) {
+                out.put(o);
+            }
+        }
+        return out;
     }
 
     /**
@@ -61,7 +79,11 @@ public final class KolibriProvisioner {
     }
 
     /**
-     * Hands the wishlist to {@link KolibriSeedService} and clears it.
+     * Hands the wishlist to {@link KolibriSeedService}.
+     *
+     * <p>K2GO-475: the wishlist is not cleared here. The service retires each entry when its
+     * item ends, so a process death mid-download leaves the unfinished part banked, the next
+     * pass drains it again, and the shared client re-attaches to the job the box still runs.
      *
      * <p>ADFA-5074: this javadoc lived above {@code canDrainNow}, together with a second,
      * orphaned block describing a return value. Both are folded here, where the method is.
@@ -94,7 +116,7 @@ public final class KolibriProvisioner {
         if (!canDrainNow(ctx)) {
             return false;
         }
-        if (KolibriWishlist.size(ctx) == 0) {
+        if (!hasPending(ctx)) {
             return false;
         }
 
@@ -144,10 +166,6 @@ public final class KolibriProvisioner {
                 b,
                 nodes.toArray(new String[0]));
 
-        // TODO(ADFA-4874): clearing here means that if the process dies mid-download
-        // both the wishlist and the session are lost (orphaned partial). The durable
-        // background-jobs monitor should own this hand-off so it survives process death.
-        KolibriWishlist.clear(app);
         return true;
     }
 

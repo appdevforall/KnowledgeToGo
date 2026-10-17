@@ -1419,4 +1419,6 @@
     <string name="k2go_hotspot_band_5">5 ГГц</string>
     <string name="k2go_hotspot_band_auto">Автоматично</string>
     <string name="k2go_connect_address_unresolved">Не вдалося отримати адресу точки доступу.</string>
+    <string name="k2go_kolibri_item_partial_fmt">Недоступно елементів: %1$d</string>
+    <string name="k2go_kolibri_partial_fmt">Неповних курсів: %1$d. На сервері немає деяких файлів.</string>
 </resources>

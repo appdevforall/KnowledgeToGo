@@ -56,6 +56,12 @@ const STALL_TIMEOUT_MS = envMs('K2GO_KOLIBRI_STALL_MS', 15 * 60_000);
  *  import does not produce a loop of failed logins. */
 const MAX_REAUTH = 3;
 
+/** K2GO-475: how long a job waits for Kolibri to come up. After a box restart the
+ *  engine relaunches the job (and the app re-drains) while Kolibri is still starting;
+ *  failing at once would lose the order. */
+const READY_WAIT_MS = envMs('K2GO_KOLIBRI_READY_WAIT_MS', 10 * 60_000);
+const READY_POLL_MS = envMs('K2GO_KOLIBRI_READY_POLL_MS', 5000);
+
 /** Kolibri tasks a live runner of this process is polling. Not adopted by another job:
  *  two jobs sharing one task would cancel or clear it under each other. Empty after a
  *  restart, which is when adoption is needed. */
@@ -181,6 +187,37 @@ function authErrorMessage(e: unknown): string {
     }
 }
 
+/** Logs in, waiting while Kolibri is unreachable (still starting). Other auth
+ *  failures, or a wait past READY_WAIT_MS, fail with the actionable message. */
+async function loginWhenReady(ctx: RunnerContext): Promise<KolibriSession> {
+    const deadline = Date.now() + READY_WAIT_MS;
+    let logged = false;
+    for (;;) {
+        throwIfStopped(ctx);
+        try {
+            return await loginForContent();
+        } catch (e) {
+            const starting = e instanceof KolibriAuthError && e.reason === 'unreachable';
+            if (!starting || Date.now() >= deadline) throw new Error(authErrorMessage(e));
+            if (!logged) {
+                ctx.log('Kolibri is not up yet: waiting for it');
+                logged = true;
+            }
+            await stoppableSleep(ctx, READY_POLL_MS);
+        }
+    }
+}
+
+/** sleep() that ends early when the job is paused or canceled. */
+function stoppableSleep(ctx: RunnerContext, ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        const onAbort = () => { clearTimeout(t); resolve(); };
+        // Removed on timeout too: one listener per wait would pile up on the job's signal.
+        const t = setTimeout(() => { ctx.signal.removeEventListener('abort', onAbort); resolve(); }, ms);
+        ctx.signal.addEventListener('abort', onAbort, { once: true });
+    });
+}
+
 /** Mutable session container: an import can run for hours and outlive the Django
  *  session expiry, so the poll needs to be able to replace it. */
 interface SessionHolder { current: KolibriSession }
@@ -202,12 +239,7 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 
     ctx.update({ phase: 'queued', percent: 0 });
 
-    let holder: SessionHolder;
-    try {
-        holder = { current: await loginForContent() };
-    } catch (e) {
-        throw new Error(authErrorMessage(e));
-    }
+    const holder: SessionHolder = { current: await loginWhenReady(ctx) };
 
     // proot prerequisite: 'importcontent' ALWAYS calls
     // lookup_channel_listing_status() → NetworkClient.discover_from_address(). With

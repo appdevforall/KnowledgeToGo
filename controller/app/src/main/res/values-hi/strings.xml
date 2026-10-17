@@ -1496,4 +1496,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">स्वचालित</string>
     <string name="k2go_connect_address_unresolved">हॉटस्पॉट का पता नहीं मिल सका।</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d आइटम उपलब्ध नहीं</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d कोर्स अधूरे आए: सर्वर में कुछ फ़ाइलें नहीं हैं।</string>
 </resources>
