@@ -11,11 +11,12 @@
 
 # The published assets to mirror from. mirror_code_assets.py reads the committed
 # manifest (files/code_assets_manifest.json) for the file set, so this is only the
-# base URL. The assets live on appdevforall.org/dev-assets today and move to
-# Cloudflare R2 soon; when that happens, change only this default.
+# base URL. The assets live on Cloudflare R2, served from the public custom domain
+# dev-assets.appdevforall.org (K2GO-474). The manifest paths and the .md5 layout are
+# unchanged; only this base moved off the old appdevforall.org/dev-assets host.
 # TO UPDATE a deployed box without a re-bake, dash-node re-runs the same mirror
 # in-server; a re-bake or 'runrole --reinstall code_assets' re-mirrors here.
-code_assets_source_base: "https://appdevforall.org/dev-assets"
+code_assets_source_base: "https://dev-assets.appdevforall.org"
 
 # Local serve path. Used for the copy-link URLs the browse page builds.
 code_assets_url: /code-assets
