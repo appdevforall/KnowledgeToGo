@@ -18,7 +18,7 @@ import assert from 'node:assert/strict';
 import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError, login } from './kolibri.session';
 import {
     mapPhase, mapPercent, normalizeUuid, buildTaskPayload, overallPercent, sampleSpeed,
-    toRemoteChannel, failureMessage,
+    toRemoteChannel, failureMessage, importOutcome, isSameImport,
 } from './kolibri.map';
 
 // ─── cookieValue ─────────────────────────────────────────────────────────────
@@ -75,10 +75,11 @@ test('mapPhase covers the nine Kolibri states', () => {
     assert.equal(mapPhase('QUEUED'), 'queued');
     assert.equal(mapPhase('SELECTED'), 'queued');
     assert.equal(mapPhase('RUNNING'), 'downloading');
-    assert.equal(mapPhase('COMPLETED'), 'done');
-    assert.equal(mapPhase('FAILED'), 'error');
-    assert.equal(mapPhase('CANCELING'), 'canceled');
-    assert.equal(mapPhase('CANCELED'), 'canceled');
+    // Never terminal: the runner verifies first and the engine writes the outcome.
+    assert.equal(mapPhase('COMPLETED'), 'processing');
+    assert.equal(mapPhase('FAILED'), 'processing');
+    assert.equal(mapPhase('CANCELING'), 'processing');
+    assert.equal(mapPhase('CANCELED'), 'processing');
 });
 
 test('mapPhase degrades an unknown state without breaking', () => {
@@ -137,7 +138,8 @@ test('buildTaskPayload uses remoteimport and always sends channel_name', () => {
     assert.equal(p.channel_id, CH);
     // Mandatory: without it Kolibri answers 400, even though it is decorative.
     assert.equal(p.channel_name, 'Khan Academy');
-    assert.equal(p.fail_on_error, true);
+    // One dead file on Studio must not abort the import; the runner verifies instead.
+    assert.equal(p.fail_on_error, false);
 });
 
 test('buildTaskPayload NEVER includes peer', () => {
@@ -175,6 +177,60 @@ test('buildTaskPayload only sends all_thumbnails when requested', () => {
 test('buildTaskPayload omits an empty exclude_node_ids', () => {
     const p = buildTaskPayload({ channelId: CH, channelName: 'x', excludeNodeIds: [] });
     assert.equal('exclude_node_ids' in p, false);
+});
+
+// ─── importOutcome ───────────────────────────────────────────────────────────
+
+test('importOutcome is complete only when every requested resource is available', () => {
+    assert.equal(importOutcome({ requested: 3, available: 3, notFound: 0 }), 'complete');
+});
+
+test('importOutcome is partial when some resources or nodes are missing', () => {
+    assert.equal(importOutcome({ requested: 5, available: 3, notFound: 0 }), 'partial');
+    assert.equal(importOutcome({ requested: 3, available: 3, notFound: 1 }), 'partial');
+});
+
+test('importOutcome is failed when nothing is available, including an empty selection', () => {
+    assert.equal(importOutcome({ requested: 5, available: 0, notFound: 0 }), 'failed');
+    assert.equal(importOutcome({ requested: 0, available: 0, notFound: 2 }), 'failed');
+});
+
+// ─── isSameImport ────────────────────────────────────────────────────────────
+
+const N1 = '11111111111111111111111111111111';
+const N2 = '22222222222222222222222222222222';
+
+function task(over: Record<string, unknown> = {}) {
+    return {
+        type: 'kolibri.core.content.tasks.remoteimport',
+        status: 'RUNNING',
+        kwargs: { node_ids: [N2, N1], exclude_node_ids: null },
+        extra_metadata: { channel_id: CH },
+        ...over,
+    };
+}
+
+test('isSameImport adopts a running import of the same selection, in any order', () => {
+    assert.equal(isSameImport(task(), CH, [N1, N2], []), true);
+    assert.equal(isSameImport(task({ status: 'QUEUED' }), CH, [N1, N2], []), true);
+});
+
+test('isSameImport refuses a finished or canceling task', () => {
+    for (const status of ['COMPLETED', 'FAILED', 'CANCELED', 'CANCELING']) {
+        assert.equal(isSameImport(task({ status }), CH, [N1, N2], []), false, status);
+    }
+});
+
+test('isSameImport refuses another channel, selection or task type', () => {
+    assert.equal(isSameImport(task(), '0'.repeat(32), [N1, N2], []), false);
+    assert.equal(isSameImport(task(), CH, [N1], []), false);
+    assert.equal(isSameImport(task(), CH, [N1, N2], [N1]), false);
+    assert.equal(isSameImport(task({ type: 'kolibri.core.content.tasks.deletechannel' }),
+        CH, [N1, N2], []), false);
+});
+
+test('isSameImport matches a whole-channel import (no node_ids)', () => {
+    assert.equal(isSameImport(task({ kwargs: { node_ids: null } }), CH, [], []), true);
 });
 
 // ─── overallPercent ──────────────────────────────────────────────────────────

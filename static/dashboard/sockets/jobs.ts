@@ -31,6 +31,8 @@ export interface Job {
     speed: number;
     detail: string | null; // free-form current item / message
     error: string | null;
+    /** K2GO-475: JSON outcome a runner records on success (e.g. a partial import's counts). */
+    result: string | null;
     created: number;
     updated: number;
 }
@@ -41,6 +43,7 @@ export interface JobUpdate {
     speed?: number;
     detail?: string | null;
     error?: string | null;
+    result?: string | null;
 }
 
 /** Passed to a runner: report progress, check cancellation, spawn tracked children. */
@@ -116,6 +119,9 @@ class JobManager {
             created INTEGER NOT NULL,
             updated INTEGER NOT NULL
         );`);
+        // K2GO-475: added after the first release; older databases get the column here.
+        const cols = this.db.prepare(`PRAGMA table_info(jobs)`).all() as Array<{ name: string }>;
+        if (!cols.some((c) => c.name === 'result')) this.db.exec(`ALTER TABLE jobs ADD COLUMN result TEXT`);
     }
 
     registerRunner(type: JobType, runner: Runner): void {
@@ -129,11 +135,11 @@ class JobManager {
         const id = `${type}-${now}-${Math.random().toString(36).slice(2, 8)}`;
         const job: Job = {
             id, type, target: JSON.stringify(items), phase: 'queued',
-            percent: -1, speed: 0, detail: null, error: null, created: now, updated: now,
+            percent: -1, speed: 0, detail: null, error: null, result: null, created: now, updated: now,
         };
         this.db.prepare(
-            `INSERT INTO jobs (id,type,target,phase,percent,speed,detail,error,created,updated)
-             VALUES (@id,@type,@target,@phase,@percent,@speed,@detail,@error,@created,@updated)`
+            `INSERT INTO jobs (id,type,target,phase,percent,speed,detail,error,result,created,updated)
+             VALUES (@id,@type,@target,@phase,@percent,@speed,@detail,@error,@result,@created,@updated)`
         ).run(job);
         this.launch(job);
         return job;
@@ -203,7 +209,7 @@ class JobManager {
         if (this.runtime.has(id)) return false;   // already running
         // Leave 'paused' for an ACTIVE phase before relaunching, so the completion guard in launch()
         // (which only finalizes an ACTIVE job to 'done') and the UI both see it running at once.
-        this.patch(id, { phase: 'queued' });
+        this.patch(id, { phase: 'queued', result: null });
         this.launch(job);
         return true;
     }
@@ -219,7 +225,7 @@ class JobManager {
         if (this.runtime.has(id)) return false;
         // Move off 'error' to an ACTIVE phase before relaunch (clears the error, satisfies the
         // completion guard, and the UI shows it running immediately).
-        this.patch(id, { phase: 'queued', error: null });
+        this.patch(id, { phase: 'queued', error: null, result: null });
         this.launch(job);
         return true;
     }
@@ -263,10 +269,11 @@ class JobManager {
             speed: patch.speed ?? cur.speed,
             detail: patch.detail !== undefined ? patch.detail : cur.detail,
             error: patch.error !== undefined ? patch.error : cur.error,
+            result: patch.result !== undefined ? patch.result : cur.result,
             updated: Date.now(),
         };
         this.db.prepare(
-            `UPDATE jobs SET phase=@phase,percent=@percent,speed=@speed,detail=@detail,error=@error,updated=@updated WHERE id=@id`
+            `UPDATE jobs SET phase=@phase,percent=@percent,speed=@speed,detail=@detail,error=@error,result=@result,updated=@updated WHERE id=@id`
         ).run(next);
     }
 
