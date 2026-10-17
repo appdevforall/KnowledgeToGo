@@ -1419,4 +1419,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">خودکار</string>
     <string name="k2go_connect_address_unresolved">نشانی هات‌اسپات دریافت نشد.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d مورد در دسترس نیست</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d دوره ناقص رسید: سرور برخی از فایل‌ها را ندارد.</string>
 </resources>

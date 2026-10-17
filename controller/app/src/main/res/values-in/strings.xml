@@ -1426,4 +1426,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Otomatis</string>
     <string name="k2go_connect_address_unresolved">Tidak dapat memperoleh alamat hotspot.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d item tidak tersedia</string>
+    <string name="k2go_kolibri_partial_fmt">%1$d kursus tiba tidak lengkap: server tidak memiliki beberapa file.</string>
 </resources>

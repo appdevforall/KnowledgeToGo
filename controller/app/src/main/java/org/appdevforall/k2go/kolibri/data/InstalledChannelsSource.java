@@ -33,7 +33,7 @@ import java.util.List;
  * core. That is why it is worth asking even when the picker cannot start a download
  * — knowing what is already there is useful in its own right.
  *
- * <p>Separate from {@link KolibriRestClient} on purpose. That one owns a download
+ * <p>Separate from the download client ({@code RestContentClient}) on purpose. That one owns a download
  * job: it POSTs, polls, retries and can be cancelled. This is a question with an
  * answer. Folding a query into the job client would have given the job client a
  * second life-cycle.

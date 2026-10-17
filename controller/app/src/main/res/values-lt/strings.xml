@@ -1436,4 +1436,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automatinis</string>
     <string name="k2go_connect_address_unresolved">Nepavyko gauti prieigos taško adreso.</string>
+    <string name="k2go_kolibri_item_partial_fmt">Nepasiekiamų elementų: %1$d</string>
+    <string name="k2go_kolibri_partial_fmt">Nepilnų kursų: %1$d. Serveryje nėra kai kurių failų.</string>
 </resources>

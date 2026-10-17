@@ -1419,4 +1419,6 @@
     <string name="k2go_hotspot_band_5">5 جيجاهرتز</string>
     <string name="k2go_hotspot_band_auto">تلقائي</string>
     <string name="k2go_connect_address_unresolved">تعذّر الحصول على عنوان نقطة الاتصال.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d عناصر غير متاحة</string>
+    <string name="k2go_kolibri_partial_fmt">وصلت %1$d دورة غير مكتملة: الخادم لا يحتوي على بعض الملفات.</string>
 </resources>

@@ -289,4 +289,43 @@ public class KolibriSeedStateTest {
         assertEquals("", i.label());
         assertEquals(0L, i.bytes());
     }
+
+    // K2GO-475: a DONE item can still be partial; it is terminal and counts as done.
+
+    @Test
+    public void aPartialItemIsDoneAndReportsWhatIsMissing() {
+        KolibriSeedState s = three().finishItem(0, true, 4).finishItem(1, true).finishItem(2, false);
+        KolibriSeedState.Item partial = s.items().get(0);
+        assertEquals(KolibriSeedState.Status.DONE, partial.status());
+        assertTrue(partial.isPartial());
+        assertEquals(4, partial.missing());
+        assertFalse(s.items().get(1).isPartial());
+        assertEquals(1, s.partialCount());
+        assertEquals(1, s.failedCount());
+        assertTrue(s.isComplete());
+    }
+
+    @Test
+    public void aFailedItemIsNeverPartial() {
+        KolibriSeedState s = three().finishItem(0, false, 7);
+        assertFalse(s.items().get(0).isPartial());
+        assertEquals(0, s.items().get(0).missing());
+    }
+
+    @Test
+    public void retryingClearsTheMissingCount() {
+        KolibriSeedState s = three().finishItem(0, false).retry(0).finishItem(0, true);
+        assertEquals(0, s.items().get(0).missing());
+        assertEquals(0, s.partialCount());
+    }
+
+    @Test
+    public void holdsOnlyChannelsWithUnfinishedWork() {
+        KolibriSeedState s = three().startingItem(0).finishItem(1, true);
+        assertTrue(s.holds(KHAN));      // in flight
+        assertFalse(s.holds(ASAF));     // done: its order is retired, a new pick is queued
+        assertTrue(s.holds(STORY));     // pending in this session
+        assertFalse(s.holds("00000000000000000000000000000000"));
+        assertFalse(KolibriSeedState.idle().holds(KHAN));
+    }
 }

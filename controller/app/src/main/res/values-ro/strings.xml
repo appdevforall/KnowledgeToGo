@@ -1419,4 +1419,6 @@
     <string name="k2go_hotspot_band_5">5 GHz</string>
     <string name="k2go_hotspot_band_auto">Automată</string>
     <string name="k2go_connect_address_unresolved">Nu s-a putut obține adresa hotspotului.</string>
+    <string name="k2go_kolibri_item_partial_fmt">%1$d elemente indisponibile</string>
+    <string name="k2go_kolibri_partial_fmt">Cursuri incomplete: %1$d. Serverul nu are unele fișiere.</string>
 </resources>

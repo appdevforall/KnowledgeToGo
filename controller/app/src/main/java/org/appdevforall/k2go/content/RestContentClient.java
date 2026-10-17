@@ -56,6 +56,8 @@ public final class RestContentClient {
         void onIndexing();                           // indexing phase (indeterminate)
         void onLog(String line);                     // free-form detail line (for logs)
         void onDone();                               // success (terminal)
+        /** K2GO-475: success with the job's {@code result} (null when the type records none). */
+        default void onDone(JSONObject result) { onDone(); }
         void onError(String message);                // failure (terminal)
         /** ADFA-4893: 'paused' phase (best-effort). Default no-op so existing implementers compile unchanged. */
         default void onPaused(int percent) {}
@@ -121,6 +123,11 @@ public final class RestContentClient {
                     String id = resp.optString("id", "");
                     if (id.isEmpty()) { fail("content service did not start the job"); return; }
                     jobId = id;
+                    // A cancel that landed while the POST was in flight saw no job id to cancel.
+                    if (finished) {
+                        try { httpJson("POST", base + "/jobs/" + id + "/cancel", null); } catch (Exception ignore) { /* best effort */ }
+                        return;
+                    }
                     main.postDelayed(pollTask, POLL_MS);
                     return;
                 } catch (Exception e) {
@@ -142,6 +149,7 @@ public final class RestContentClient {
             long speed = j.optLong("speed", 0L);
             String detail = j.isNull("detail") ? null : j.optString("detail", null);
             String error = j.isNull("error") ? null : j.optString("error", null);
+            JSONObject result = j.optJSONObject("result");
             int retryAttempt = j.optInt("retryAttempt", 0);   // ADFA-4893: reconnect state (0 when not retrying)
             int retryTotal = j.optInt("retryTotal", 0);
 
@@ -149,7 +157,7 @@ public final class RestContentClient {
 
             // Terminal phases first.
             switch (phase) {
-                case "done":     done(); return;
+                case "done":     done(result); return;
                 case "error":    fail(error != null ? error : "download failed"); return;
                 case "canceled": fail("canceled"); return;
                 case "paused": {
@@ -213,12 +221,12 @@ public final class RestContentClient {
         }
     }
 
-    private void done() {
+    private void done(JSONObject result) {
         if (finished) return;
         finished = true;
         final Listener l = listener;
         teardown();
-        if (l != null) deliver(l::onDone);
+        if (l != null) deliver(() -> l.onDone(result));
     }
 
     private void fail(String message) {
@@ -270,7 +278,8 @@ public final class RestContentClient {
         return null;
     }
 
-    /** Item ids in a start body: kiwix {ids:[..]} (strings), books {items:[{id,..}]} (objects). */
+    /** Item ids in a start body: kiwix {ids:[..]} (strings), books {items:[{id,..}]}, kolibri
+     *  {items:[{channelId,..}]} (objects). */
     private static java.util.Set<String> idsFromBody(JSONObject body) {
         java.util.Set<String> out = new java.util.HashSet<>();
         JSONArray ids = body.optJSONArray("ids");
@@ -280,9 +289,23 @@ public final class RestContentClient {
         JSONArray items = body.optJSONArray("items");
         if (items != null) for (int i = 0; i < items.length(); i++) {
             JSONObject o = items.optJSONObject(i);
-            if (o != null) { String s = o.optString("id", ""); if (!s.isEmpty()) out.add(s); }
+            if (o != null) { String s = itemId(o); if (!s.isEmpty()) out.add(s); }
         }
         return out;
+    }
+
+    /** The item's identity for attach. A Kolibri item is its channel plus its node selection:
+     *  the channel alone would attach a new pick to a running job for a different selection. */
+    private static String itemId(JSONObject o) {
+        String id = o.optString("id", "");
+        if (!id.isEmpty()) return id;
+        String channel = o.optString("channelId", "");
+        if (channel.isEmpty()) return "";
+        java.util.List<String> nodes = new java.util.ArrayList<>();
+        JSONArray arr = o.optJSONArray("nodeIds");
+        if (arr != null) for (int i = 0; i < arr.length(); i++) nodes.add(arr.optString(i, ""));
+        java.util.Collections.sort(nodes);
+        return channel + "|" + String.join(",", nodes);
     }
 
     /** Item ids in a job's target (toApi 'ids'): kiwix elements are strings, books elements are objects. */
@@ -291,7 +314,7 @@ public final class RestContentClient {
         JSONArray arr = job.optJSONArray("ids");
         if (arr != null) for (int i = 0; i < arr.length(); i++) {
             Object el = arr.opt(i);
-            if (el instanceof JSONObject) { String s = ((JSONObject) el).optString("id", ""); if (!s.isEmpty()) out.add(s); }
+            if (el instanceof JSONObject) { String s = itemId((JSONObject) el); if (!s.isEmpty()) out.add(s); }
             else if (el != null) { String s = String.valueOf(el); if (!s.isEmpty()) out.add(s); }
         }
         return out;

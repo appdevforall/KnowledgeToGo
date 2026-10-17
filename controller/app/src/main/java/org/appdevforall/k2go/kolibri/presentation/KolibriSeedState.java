@@ -50,9 +50,10 @@ public final class KolibriSeedState {
         private final List<String> nodeIds;
         private final Status status;
         private final int percent;
+        private final int missing;
 
         Item(String channelId, String label, long bytes, List<String> nodeIds,
-             Status status, int percent) {
+             Status status, int percent, int missing) {
             this.channelId = channelId;
             this.label = label == null ? "" : label;
             this.bytes = Math.max(0L, bytes);
@@ -61,6 +62,7 @@ public final class KolibriSeedState {
                     : Collections.unmodifiableList(new ArrayList<>(nodeIds));
             this.status = status == null ? Status.PENDING : status;
             this.percent = percent;
+            this.missing = Math.max(0, missing);
         }
 
         /** The whole channel. */
@@ -73,7 +75,7 @@ public final class KolibriSeedState {
          */
         public static Item pending(String channelId, String label, long bytes,
                                    List<String> nodeIds) {
-            return new Item(channelId, label, bytes, nodeIds, Status.PENDING, 0);
+            return new Item(channelId, label, bytes, nodeIds, Status.PENDING, 0, 0);
         }
 
         public String channelId() {
@@ -122,8 +124,25 @@ public final class KolibriSeedState {
             return status == Status.DONE || status == Status.FAILED;
         }
 
+        /**
+         * K2GO-475: what the box could not deliver for a DONE item (resources Kolibri did not
+         * make available, plus picked nodes the channel no longer has). 0 when complete.
+         */
+        public int missing() {
+            return missing;
+        }
+
+        /** DONE, but some of the pick is not on the device. */
+        public boolean isPartial() {
+            return status == Status.DONE && missing > 0;
+        }
+
         Item with(Status s, int pct) {
-            return new Item(channelId, label, bytes, nodeIds, s, pct);
+            return new Item(channelId, label, bytes, nodeIds, s, pct, 0);
+        }
+
+        Item done(int missingCount) {
+            return new Item(channelId, label, bytes, nodeIds, Status.DONE, 100, missingCount);
         }
     }
 
@@ -212,6 +231,31 @@ public final class KolibriSeedState {
             }
         }
         return true;
+    }
+
+    /**
+     * K2GO-475: true while this session still has unfinished work for the channel. A banked
+     * order stays in the wishlist until its item ends, so readers that count "queued" orders
+     * use this to leave out the ones this session is already downloading.
+     */
+    public boolean holds(String channelId) {
+        for (Item i : items) {
+            if (!i.isTerminal() && i.channelId().equals(channelId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Items that finished with part of the pick unavailable (K2GO-475). */
+    public int partialCount() {
+        int n = 0;
+        for (Item i : items) {
+            if (i.isPartial()) {
+                n++;
+            }
+        }
+        return n;
     }
 
     public int failedCount() {
@@ -325,11 +369,16 @@ public final class KolibriSeedState {
     }
 
     KolibriSeedState finishItem(int i, boolean ok) {
+        return finishItem(i, ok, 0);
+    }
+
+    /** @param missing what a DONE item could not deliver; ignored for a failed one */
+    KolibriSeedState finishItem(int i, boolean ok, int missing) {
         if (i < 0 || i >= items.size()) {
             return this;
         }
         List<Item> next = new ArrayList<>(items);
-        next.set(i, next.get(i).with(ok ? Status.DONE : Status.FAILED, ok ? 100 : 0));
+        next.set(i, ok ? next.get(i).done(missing) : next.get(i).with(Status.FAILED, 0));
         return new KolibriSeedState(Collections.unmodifiableList(next), running, i, 0L, seq);
     }
 
