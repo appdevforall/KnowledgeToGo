@@ -1367,7 +1367,7 @@
     <string name="k2go_kolibri_included">ऊपर वाले फ़ोल्डर के साथ शामिल</string>
     <string name="k2go_kolibri_open_topic">फ़ोल्डर खोलें</string>
     <string name="k2go_kolibri_choose_topics">विषय चुनें</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d विषय चुने गए</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d आइटम चुने गए</string>
     <string name="k2go_kolibri_whole_course">पूरा कोर्स</string>
     <string name="k2go_kolibri_checking">देखा जा रहा है कि यह डिवाइस क्या कर सकता है…</string>
     <string name="k2go_kolibri_not_installed">इस सिस्टम पर कोर्स इंस्टॉल नहीं है, इसलिए सामग्री नहीं जोड़ी जा सकती।</string>
@@ -1498,4 +1498,5 @@
     <string name="k2go_connect_address_unresolved">हॉटस्पॉट का पता नहीं मिल सका।</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d आइटम उपलब्ध नहीं</string>
     <string name="k2go_kolibri_partial_fmt">%1$d कोर्स अधूरे आए: सर्वर में कुछ फ़ाइलें नहीं हैं।</string>
+    <string name="k2go_kolibri_takes_body_live">कोर्स बहुत बड़े हो सकते हैं और डाउनलोड होने में बहुत समय ले सकते हैं, खासकर धीमे कनेक्शन पर। डाउनलोड अभी शुरू होता है, बैकग्राउंड में चलता रहता है और रुकने पर फिर से शुरू हो जाता है।</string>
 </resources>

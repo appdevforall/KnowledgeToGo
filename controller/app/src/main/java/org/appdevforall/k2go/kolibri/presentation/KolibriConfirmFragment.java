@@ -67,6 +67,7 @@ public final class KolibriConfirmFragment extends Fragment {
     private LinearLayout breakdown;
     private TextView fits;
     private TextView liveNote;
+    private TextView takesBody;
     private Button confirm;
 
     @Nullable
@@ -81,6 +82,7 @@ public final class KolibriConfirmFragment extends Fragment {
         breakdown = v.findViewById(R.id.k2go_kconf_breakdown);
         fits = v.findViewById(R.id.k2go_kconf_fits);
         liveNote = v.findViewById(R.id.k2go_kconf_live_note);
+        takesBody = v.findViewById(R.id.k2go_kconf_takes);
         confirm = v.findViewById(R.id.k2go_kconf_confirm);
         v.findViewById(R.id.k2go_kconf_back).setOnClickListener(x -> back());
 
@@ -137,13 +139,13 @@ public final class KolibriConfirmFragment extends Fragment {
             // download and a 2 GB one, and the line must not hide which one it is.
             breakdown.addView(row(c.name(),
                     vm.sizeUnknownFor(c) ? getString(R.string.k2go_kolibri_size_unknown)
-                            : ByteFormatter.toHuman(costOf(c)),
+                            : ByteFormatter.humanBytes(costOf(c)),
                     false));
             breakdown.addView(scopeNote(c));
             breakdown.addView(divider());
         }
         breakdown.addView(row(getString(R.string.k2go_zim_total),
-                ByteFormatter.toHuman(totalCost(chosen)), true));
+                ByteFormatter.humanBytes(totalCost(chosen)), true));
 
         applyFitState(chosen);
     }
@@ -162,14 +164,14 @@ public final class KolibriConfirmFragment extends Fragment {
 
         if (Boolean.TRUE.equals(verdict)) {
             fits.setText(getString(R.string.k2go_zim_fits_fmt,
-                    ByteFormatter.toHuman(plan.requiredBytes()),
-                    freeBytes == null ? "" : ByteFormatter.toHuman(freeBytes)));
+                    ByteFormatter.humanBytes(plan.requiredBytes()),
+                    freeBytes == null ? "" : ByteFormatter.humanBytes(freeBytes)));
             paint(R.color.k2go_ok_ink, R.drawable.k2go_ok_bg);
             fitAllows = true;
         } else if (Boolean.FALSE.equals(verdict)) {
             fits.setText(getString(R.string.k2go_zim_nofit_fmt,
-                    ByteFormatter.toHuman(plan.requiredBytes()),
-                    freeBytes == null ? "" : ByteFormatter.toHuman(freeBytes)));
+                    ByteFormatter.humanBytes(plan.requiredBytes()),
+                    freeBytes == null ? "" : ByteFormatter.humanBytes(freeBytes)));
             paint(R.color.k2go_warn_ink, R.drawable.k2go_warn_bg);
             fitAllows = false;
         } else {
@@ -181,11 +183,8 @@ public final class KolibriConfirmFragment extends Fragment {
             fitAllows = true;
         }
 
-        // Per the template the forward action carries the SIZE, not the count.
-        confirm.setText(getString(R.string.k2go_zim_add_setup_fmt,
-                ByteFormatter.toHuman(plan.estimatedBytes())));
-
-        applyDispatch(chosen, fitAllows && !chosen.isEmpty());
+        applyDispatch(chosen, fitAllows && !chosen.isEmpty(),
+                ByteFormatter.humanBytes(plan.estimatedBytes()));
     }
 
     /**
@@ -198,7 +197,16 @@ public final class KolibriConfirmFragment extends Fragment {
      * "not on offer" and "your box is off" stop the same button for very different
      * reasons.
      */
-    private void applyDispatch(List<Channel> chosen, boolean allowedByFit) {
+    private void applyDispatch(List<Channel> chosen, boolean allowedByFit, String size) {
+        // Per the template the forward action carries the SIZE, not the count. The wording
+        // follows what the press does: bank for later, or download now (K2GO-475).
+        // While the dispatcher is still checking, the door is the best guess: only the wizard banks.
+        boolean live = ready == null || ready.isChecking()
+                ? !isWizard() : ready.dispatch().runsLive();
+        confirm.setText(getString(live ? R.string.k2go_zim_start_fmt
+                : R.string.k2go_zim_add_setup_fmt, size));
+        takesBody.setText(live ? R.string.k2go_kolibri_takes_body_live
+                : R.string.k2go_kolibri_takes_body);
         if (ready == null || ready.isChecking()) {
             refuse(R.string.k2go_kolibri_checking);
             return;
@@ -516,7 +524,8 @@ public final class KolibriConfirmFragment extends Fragment {
      */
     private long costOf(Channel c) {
         long declared = vm.bytesFor(c);
-        return ready == null ? declared : ready.library().costOf(c.id(), declared);
+        return ready == null ? declared
+                : ready.library().costOf(c.id(), declared, vm.isNarrowed(c.id()));
     }
 
     private void paint(int textColor, int background) {

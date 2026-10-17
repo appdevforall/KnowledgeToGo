@@ -137,4 +137,32 @@ public class InstalledLibraryTest {
                 InstalledChannel.of(KHAN, "Khan", 3, 1, 1, GB, GB)));
         assertTrue(l.has("c9d7f950-ab6b-5a11-99e3-d6c10d7f0103"));
     }
+
+    // K2GO-475: a narrowed pick costs what was picked, not the channel's remainder.
+
+    @Test
+    public void aNarrowedPickOnAPartlyInstalledChannelCostsThePick() {
+        InstalledLibrary l = InstalledLibrary.of(Collections.singletonList(
+                InstalledChannel.of(KHAN, "Khan", 3, 100, 80, 40 * GB, 4 * GB)));   // 36 GB missing
+        long threeVideos = 3L * 1024 * 1024;
+        assertEquals(threeVideos, l.costOf(KHAN, threeVideos, true));
+        // The whole channel still costs its remainder.
+        assertEquals(36 * GB, l.costOf(KHAN, 40 * GB, false));
+    }
+
+    @Test
+    public void aNarrowedPickIsCappedByWhatTheChannelStillMisses() {
+        InstalledLibrary l = InstalledLibrary.of(Collections.singletonList(
+                InstalledChannel.of(KHAN, "Khan", 3, 100, 99, 10 * GB, 9 * GB)));   // 1 GB missing
+        assertEquals(1 * GB, l.costOf(KHAN, 5 * GB, true));
+    }
+
+    @Test
+    public void aNarrowedPickOfACompleteOrAbsentChannel() {
+        InstalledLibrary complete = InstalledLibrary.of(Collections.singletonList(
+                InstalledChannel.of(KHAN, "Khan", 3, 100, 100, 4 * GB, 4 * GB)));
+        assertEquals(0L, complete.costOf(KHAN, 2 * GB, true));
+        assertEquals(2 * GB, complete.costOf(ABSENT, 2 * GB, true));
+        assertEquals(2 * GB, InstalledLibrary.unknown().costOf(KHAN, 2 * GB, true));
+    }
 }

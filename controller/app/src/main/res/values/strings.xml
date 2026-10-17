@@ -1488,7 +1488,7 @@
     <string name="k2go_kolibri_included">Included with the folder above</string>
     <string name="k2go_kolibri_open_topic">Open folder</string>
     <string name="k2go_kolibri_choose_topics">Choose topics</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d topics selected</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d items selected</string>
     <string name="k2go_kolibri_whole_course">Whole course</string>
     <string name="k2go_kolibri_checking">Checking what this device can do…</string>
     <string name="k2go_kolibri_not_installed">Courses isn\'t installed on this system, so content can\'t be added.</string>
@@ -1615,4 +1615,5 @@
     <string name="k2go_hotspot_band_auto">Automatic</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d items not available</string>
     <string name="k2go_kolibri_partial_fmt">%1$d course(s) arrived incomplete: the server does not have some files.</string>
+    <string name="k2go_kolibri_takes_body_live">Courses can be very large and take a long time to download, especially on a slow connection. The download starts now, keeps going in the background, and resumes if interrupted.</string>
 </resources>

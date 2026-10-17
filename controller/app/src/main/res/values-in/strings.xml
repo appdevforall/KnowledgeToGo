@@ -1297,7 +1297,7 @@
     <string name="k2go_kolibri_included">Termasuk dalam folder di atas</string>
     <string name="k2go_kolibri_open_topic">Buka folder</string>
     <string name="k2go_kolibri_choose_topics">Pilih topik</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d topik dipilih</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d item dipilih</string>
     <string name="k2go_kolibri_whole_course">Seluruh kursus</string>
     <string name="k2go_kolibri_checking">Memeriksa apa yang bisa dilakukan perangkat ini…</string>
     <string name="k2go_kolibri_not_installed">Kursus tidak terpasang di sistem ini, jadi konten tidak bisa ditambahkan.</string>
@@ -1428,4 +1428,5 @@
     <string name="k2go_connect_address_unresolved">Tidak dapat memperoleh alamat hotspot.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d item tidak tersedia</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kursus tiba tidak lengkap: server tidak memiliki beberapa file.</string>
+    <string name="k2go_kolibri_takes_body_live">Kursus bisa sangat besar dan lama diunduh, terutama dengan koneksi lambat. Unduhan dimulai sekarang, terus berjalan di latar belakang, dan dilanjutkan jika terputus.</string>
 </resources>

@@ -1303,7 +1303,7 @@
     <string name="k2go_kolibri_included">Укључено са фасциклом изнад</string>
     <string name="k2go_kolibri_open_topic">Отвори фасциклу</string>
     <string name="k2go_kolibri_choose_topics">Изабери теме</string>
-    <string name="k2go_kolibri_narrowed_fmt">Изабрано тема: %1$d</string>
+    <string name="k2go_kolibri_narrowed_fmt">Изабрано ставки: %1$d</string>
     <string name="k2go_kolibri_whole_course">Цео курс</string>
     <string name="k2go_kolibri_checking">Проверава се шта овај уређај може…</string>
     <string name="k2go_kolibri_not_installed">Курсеви нису инсталирани на овом систему, па се садржај не може додати.</string>
@@ -1434,4 +1434,5 @@
     <string name="k2go_connect_address_unresolved">Није могуће добити адресу хотспота.</string>
     <string name="k2go_kolibri_item_partial_fmt">Недоступних ставки: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Непотпуних курсева: %1$d. Сервер нема неке датотеке.</string>
+    <string name="k2go_kolibri_takes_body_live">Курсеви могу бити веома велики и њихово преузимање може дуго трајати, нарочито на спорој вези. Преузимање почиње сада, наставља се у позадини и наставља се ако се прекине.</string>
 </resources>

@@ -262,4 +262,15 @@ public class OperationDispatcherTest {
         assertEquals(Dispatch.DEFER,
                 OperationDispatcher.resolve(INSTALL_COURSES, RUNNING.withReplacementPending(), true));
     }
+
+    @Test
+    public void onlyTheLiveAnswersDownloadNow() {
+        assertTrue(OperationDispatcher.Dispatch.RUN_LIVE.runsLive());
+        assertTrue(OperationDispatcher.Dispatch.ENSURE_SERVER_THEN_RUN_LIVE.runsLive());
+        for (OperationDispatcher.Dispatch d : new OperationDispatcher.Dispatch[] {
+                OperationDispatcher.Dispatch.DEFER, OperationDispatcher.Dispatch.RUN_STOPPED,
+                OperationDispatcher.Dispatch.UNAVAILABLE, OperationDispatcher.Dispatch.BLOCKED_DAMAGED}) {
+            assertFalse(d.name(), d.runsLive());
+        }
+    }
 }

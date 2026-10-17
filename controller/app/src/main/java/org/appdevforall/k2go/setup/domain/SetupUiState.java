@@ -22,7 +22,8 @@ public final class SetupUiState {
     public enum StatusMessage { STARTING, SLOW, ADDING, INSTALLING, WAITING_FOR_NETWORK }
 
     /** The bottom-controls mode (mapped to show()/scheduleRedirect()/cancelRedirect() by the Activity). */
-    public enum Controls { REDIRECT, FINISH_SUCCESS, FINISH_FAILURE, RUNNING }
+    /** FINISH_PARTIAL (K2GO-475): Finish plus a note, never the auto-redirect, so the user reads it. */
+    public enum Controls { REDIRECT, FINISH_SUCCESS, FINISH_PARTIAL, FINISH_FAILURE, RUNNING }
 
     public final StatusTone tone;
     public final StatusMessage message;
@@ -65,6 +66,7 @@ public final class SetupUiState {
         Controls controls;
         if (in.success && !in.redirectCancelled) controls = Controls.REDIRECT;
         else if (in.success) controls = Controls.FINISH_SUCCESS;                    // success, countdown cancelled by the user
+        else if (in.partial) controls = Controls.FINISH_PARTIAL;
         else if (in.failure) controls = Controls.FINISH_FAILURE;
         else controls = Controls.RUNNING;
 
@@ -75,6 +77,7 @@ public final class SetupUiState {
     public static final class Inputs {
         boolean batchServerSlow, batchServerSettling, batchServerUp, moduleFlow, moduleFailed;
         boolean servicesReady, slowByPolls, success, failure, redirectCancelled, runInBackgroundEnabled;
+        boolean partial;             // K2GO-475: finished, some content not on the server
         boolean waitingForNetwork;   // K2GO-408: proot stage held on metered-without-consent / offline
 
         public Inputs waitingForNetwork(boolean v) { this.waitingForNetwork = v; return this; }
@@ -87,6 +90,7 @@ public final class SetupUiState {
         public Inputs slowByPolls(boolean v) { this.slowByPolls = v; return this; }
         public Inputs success(boolean v) { this.success = v; return this; }
         public Inputs failure(boolean v) { this.failure = v; return this; }
+        public Inputs partial(boolean v) { this.partial = v; return this; }
         public Inputs redirectCancelled(boolean v) { this.redirectCancelled = v; return this; }
         public Inputs runInBackgroundEnabled(boolean v) { this.runInBackgroundEnabled = v; return this; }
         public SetupUiState build() { return SetupUiState.from(this); }

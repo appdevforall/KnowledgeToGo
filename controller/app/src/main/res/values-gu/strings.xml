@@ -1303,7 +1303,7 @@
     <string name="k2go_kolibri_included">ઉપરના ફોલ્ડર સાથે સમાવિષ્ટ</string>
     <string name="k2go_kolibri_open_topic">ફોલ્ડર ખોલો</string>
     <string name="k2go_kolibri_choose_topics">વિષયો પસંદ કરો</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d વિષયો પસંદ કર્યા</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d આઇટમ પસંદ કરી</string>
     <string name="k2go_kolibri_whole_course">સંપૂર્ણ કોર્સ</string>
     <string name="k2go_kolibri_checking">આ ઉપકરણ શું કરી શકે તે તપાસાઈ રહ્યું છે…</string>
     <string name="k2go_kolibri_not_installed">આ સિસ્ટમ પર કોર્સ ઇન્સ્ટોલ નથી, તેથી સામગ્રી ઉમેરી શકાતી નથી.</string>
@@ -1434,4 +1434,5 @@
     <string name="k2go_connect_address_unresolved">હોટસ્પોટનું સરનામું મેળવી શકાયું નથી.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d આઇટમ ઉપલબ્ધ નથી</string>
     <string name="k2go_kolibri_partial_fmt">%1$d કોર્સ અધૂરા આવ્યા: સર્વર પાસે કેટલીક ફાઇલો નથી.</string>
+    <string name="k2go_kolibri_takes_body_live">કોર્સ ખૂબ મોટા હોઈ શકે છે અને ડાઉનલોડ થવામાં લાંબો સમય લાગી શકે છે, ખાસ કરીને ધીમા કનેક્શન પર. ડાઉનલોડ હમણાં શરૂ થાય છે, પૃષ્ઠભૂમિમાં ચાલુ રહે છે અને અટકે તો ફરી શરૂ થાય છે.</string>
 </resources>

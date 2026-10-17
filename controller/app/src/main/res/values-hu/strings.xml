@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">A fenti mappával együtt jön</string>
     <string name="k2go_kolibri_open_topic">Mappa megnyitása</string>
     <string name="k2go_kolibri_choose_topics">Témák kiválasztása</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d téma kiválasztva</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d elem kiválasztva</string>
     <string name="k2go_kolibri_whole_course">Teljes tanfolyam</string>
     <string name="k2go_kolibri_checking">Ellenőrizzük, mire képes ez az eszköz…</string>
     <string name="k2go_kolibri_not_installed">A Tanfolyamok nincs telepítve ezen a rendszeren, így nem adható hozzá tartalom.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">Nem sikerült lekérni a hotspot címét.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d elem nem érhető el</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurzus hiányosan érkezett: a szerveren nincs meg néhány fájl.</string>
+    <string name="k2go_kolibri_takes_body_live">A kurzusok nagyon nagyok lehetnek, és a letöltésük sokáig tarthat, főleg lassú kapcsolaton. A letöltés most indul, a háttérben folytatódik, és megszakadás után újraindul.</string>
 </resources>

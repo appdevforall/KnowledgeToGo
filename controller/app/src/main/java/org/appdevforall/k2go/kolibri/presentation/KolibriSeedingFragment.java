@@ -130,7 +130,7 @@ public final class KolibriSeedingFragment extends Fragment {
                         if (it.isPartial()) {
                             return getString(R.string.k2go_kolibri_item_partial_fmt, it.missing());
                         }
-                        return it.bytes() > 0 ? ByteFormatter.toHuman(it.bytes()) : null;
+                        return it.bytes() > 0 ? ByteFormatter.humanBytes(it.bytes()) : null;
                     }
                 },
                 index -> KolibriSeedService.retry(requireContext(), index));
@@ -146,12 +146,12 @@ public final class KolibriSeedingFragment extends Fragment {
      */
     private String detailLine(KolibriSeedState s) {
         String speed = s.speedBytesPerSec() > 0
-                ? "  " + ByteFormatter.toHuman(s.speedBytesPerSec())
+                ? "  " + ByteFormatter.humanBytes(s.speedBytesPerSec())
                 + getString(R.string.k2go_rate_per_second)
                 : "";
         return getString(R.string.k2go_zim_prep_detail_fmt,
-                ByteFormatter.toHuman(s.transferredBytes()),
-                ByteFormatter.toHuman(s.totalBytes()),
+                ByteFormatter.humanBytes(s.transferredBytes()),
+                ByteFormatter.humanBytes(s.totalBytes()),
                 speed, s.terminalCount(), s.size());
     }
 }

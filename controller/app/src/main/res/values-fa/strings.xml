@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">همراه پوشهٔ بالا گنجانده شده</string>
     <string name="k2go_kolibri_open_topic">باز کردن پوشه</string>
     <string name="k2go_kolibri_choose_topics">انتخاب موضوع‌ها</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d موضوع انتخاب شد</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d مورد انتخاب شد</string>
     <string name="k2go_kolibri_whole_course">کل دوره</string>
     <string name="k2go_kolibri_checking">در حال بررسی توانایی این دستگاه…</string>
     <string name="k2go_kolibri_not_installed">دوره‌ها روی این سیستم نصب نیست، بنابراین نمی‌توان محتوا افزود.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">نشانی هات‌اسپات دریافت نشد.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d مورد در دسترس نیست</string>
     <string name="k2go_kolibri_partial_fmt">%1$d دوره ناقص رسید: سرور برخی از فایل‌ها را ندارد.</string>
+    <string name="k2go_kolibri_takes_body_live">دوره‌ها ممکن است بسیار بزرگ باشند و دانلودشان زمان زیادی ببرد، به‌ویژه با اتصال کند. دانلود اکنون شروع می‌شود، در پس‌زمینه ادامه می‌یابد و در صورت قطع شدن از سر گرفته می‌شود.</string>
 </resources>

@@ -71,7 +71,12 @@ public final class OperationDispatcher {
         /** This platform is not on this system, so the operation is not on offer. */
         UNAVAILABLE,
         /** The system is half-installed and will not boot; only a repair may run. */
-        BLOCKED_DAMAGED
+        BLOCKED_DAMAGED;
+
+        /** K2GO-475: the operation downloads now (after the box is up), not after an install. */
+        public boolean runsLive() {
+            return this == RUN_LIVE || this == ENSURE_SERVER_THEN_RUN_LIVE;
+        }
     }
 
     private OperationDispatcher() {

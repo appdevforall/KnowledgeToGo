@@ -1291,7 +1291,7 @@
     <string name="k2go_kolibri_included">已随上方文件夹一起包含</string>
     <string name="k2go_kolibri_open_topic">打开文件夹</string>
     <string name="k2go_kolibri_choose_topics">选择主题</string>
-    <string name="k2go_kolibri_narrowed_fmt">已选择 %1$d 个主题</string>
+    <string name="k2go_kolibri_narrowed_fmt">已选择 %1$d 项</string>
     <string name="k2go_kolibri_whole_course">整个课程</string>
     <string name="k2go_kolibri_checking">正在检查此设备可以做什么…</string>
     <string name="k2go_kolibri_not_installed">本系统未安装课程，因此无法添加内容。</string>
@@ -1422,4 +1422,5 @@
     <string name="k2go_connect_address_unresolved">无法获取热点地址。</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d 项不可用</string>
     <string name="k2go_kolibri_partial_fmt">%1$d 门课程不完整：服务器缺少部分文件。</string>
+    <string name="k2go_kolibri_takes_body_live">课程可能非常大，下载可能需要很长时间，尤其是在网络较慢时。下载现在开始，会在后台继续，中断后会自动恢复。</string>
 </resources>

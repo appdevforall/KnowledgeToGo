@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">Inbegrepen bij de map hierboven</string>
     <string name="k2go_kolibri_open_topic">Map openen</string>
     <string name="k2go_kolibri_choose_topics">Onderwerpen kiezen</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d onderwerpen gekozen</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d items geselecteerd</string>
     <string name="k2go_kolibri_whole_course">Hele cursus</string>
     <string name="k2go_kolibri_checking">Er wordt gekeken wat dit apparaat kan…</string>
     <string name="k2go_kolibri_not_installed">Cursussen is niet geïnstalleerd op dit systeem, dus er kan geen inhoud worden toegevoegd.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">Kan het hotspotadres niet ophalen.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d items niet beschikbaar</string>
     <string name="k2go_kolibri_partial_fmt">%1$d cursus(sen) onvolledig: de server heeft sommige bestanden niet.</string>
+    <string name="k2go_kolibri_takes_body_live">Cursussen kunnen erg groot zijn en lang duren om te downloaden, vooral met een trage verbinding. Het downloaden begint nu, gaat door op de achtergrond en wordt hervat als het wordt onderbroken.</string>
 </resources>

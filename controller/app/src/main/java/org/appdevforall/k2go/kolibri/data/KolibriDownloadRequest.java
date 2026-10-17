@@ -19,11 +19,12 @@ public final class KolibriDownloadRequest {
     }
 
     /**
-     * {@code {items:[{channelId, nodeIds?, allThumbnails?}]}}.
+     * {@code {items:[{channelId, nodeIds?}]}}.
      *
      * <p>The channel name is not sent: the box resolves it from its own Studio proxy.
      * {@code nodeIds} is omitted for a whole channel, because an empty array means zero
-     * nodes to Kolibri, which finishes clean and downloads nothing.
+     * nodes to Kolibri, which finishes clean and downloads nothing. No {@code allThumbnails}:
+     * the thumbnails of every topic in the channel cost far more than a small pick (K2GO-475).
      */
     public static JSONObject body(ChannelSelection s) throws Exception {
         JSONObject item = new JSONObject().put("channelId", s.channelId());
@@ -33,9 +34,6 @@ public final class KolibriDownloadRequest {
                 arr.put(n);
             }
             item.put("nodeIds", arr);
-        }
-        if (s.wantsAllThumbnails()) {
-            item.put("allThumbnails", true);
         }
         return new JSONObject().put("items", new JSONArray().put(item));
     }

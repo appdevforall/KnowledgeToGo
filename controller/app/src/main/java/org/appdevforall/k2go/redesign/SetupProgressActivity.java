@@ -555,7 +555,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 .zim(new StreamState(zimSession, zimSession && ZimDownloadService.isComplete(), zimFailed))
                 .books(new StreamState(booksSession, booksSession && BooksDownloadService.isComplete(), booksFailed))
                 .kolibri(new StreamState(kolibriState.hasSession(),
-                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount()))
+                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriState.failedCount(),
+                        kolibriState.partialCount()))
                 .prootFailed(prootFailed).forgejoSeedFailed(forgejoSeedFailed)
                 .build());
         boolean allComplete = verdict.allComplete();
@@ -583,7 +584,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 .batchServerUp(batchServerUp).moduleFlow(moduleFlow).moduleFailed(moduleFailed)
                 .waitingForNetwork(pipeline.moduleWaitingForNetwork() || pipeline.mapsWaitingForNetwork())   // K2GO-408
                 .servicesReady(pipeline.servicesReady()).slowByPolls(pipeline.readyPolls() >= SetupProgressController.SLOW_AFTER_POLLS)
-                .success(verdict.success()).failure(verdict.failure()).redirectCancelled(redirectCancelled)
+                .success(verdict.success()).failure(verdict.failure()).partial(verdict.partial())
+                .redirectCancelled(redirectCancelled)
                 .runInBackgroundEnabled((pipeline.servicesReady() || forgejoSeedActive()) && !prootActive)
                 .build();
         tint(dot, ui.tone == SetupUiState.StatusTone.WAITING ? R.color.k2go_amber : R.color.k2go_leaf);
@@ -622,8 +624,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 show(finishBtn, true); show(runBgBtn, false);
                 show(redirect, false); show(cancel, false); show(finishNote, false);
                 break;
+            case FINISH_PARTIAL:   // K2GO-475: done, but say what the server could not provide
+                cancelRedirect();
+                finishNote.setText(getString(R.string.k2go_kolibri_partial_fmt, verdict.partialTotal()));
+                show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+                show(redirect, false); show(cancel, false);
+                break;
             case FINISH_FAILURE:
                 cancelRedirect();
+                finishNote.setText(R.string.k2go_setup_finish_note);
                 show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
                 show(redirect, false); show(cancel, false);
                 break;
@@ -709,6 +718,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 break;
             case FINISH_FAILURE:
                 cancelRedirect();
+                finishNote.setText(R.string.k2go_setup_finish_note);   // the content path may have set the partial note
                 show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
                 show(redirect, false); show(cancel, false);
                 break;

@@ -1310,7 +1310,7 @@
     <string name="k2go_kolibri_included">Yuxarıdaki qovluqla birlikdə daxildir</string>
     <string name="k2go_kolibri_open_topic">Qovluğu aç</string>
     <string name="k2go_kolibri_choose_topics">Mövzuları seç</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d mövzu seçildi</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d element seçildi</string>
     <string name="k2go_kolibri_whole_course">Bütün kurs</string>
     <string name="k2go_kolibri_checking">Bu cihazın nə edə biləcəyi yoxlanılır…</string>
     <string name="k2go_kolibri_not_installed">Kurslar bu sistemdə quraşdırılmayıb, ona görə məzmun əlavə etmək olmaz.</string>
@@ -1441,4 +1441,5 @@
     <string name="k2go_connect_address_unresolved">Hotspot ünvanı alına bilmədi.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d element mövcud deyil</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs natamam gəldi: serverdə bəzi fayllar yoxdur.</string>
+    <string name="k2go_kolibri_takes_body_live">Kurslar çox böyük ola və yüklənməsi uzun çəkə bilər, xüsusən yavaş bağlantıda. Yükləmə indi başlayır, arxa planda davam edir və kəsilsə davam etdirilir.</string>
 </resources>

@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">Đã bao gồm trong thư mục ở trên</string>
     <string name="k2go_kolibri_open_topic">Mở thư mục</string>
     <string name="k2go_kolibri_choose_topics">Chọn chủ đề</string>
-    <string name="k2go_kolibri_narrowed_fmt">Đã chọn %1$d chủ đề</string>
+    <string name="k2go_kolibri_narrowed_fmt">Đã chọn %1$d mục</string>
     <string name="k2go_kolibri_whole_course">Toàn bộ khóa học</string>
     <string name="k2go_kolibri_checking">Đang kiểm tra thiết bị này làm được gì…</string>
     <string name="k2go_kolibri_not_installed">Khóa học chưa được cài trên hệ thống này nên không thể thêm nội dung.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">Không thể lấy địa chỉ điểm phát sóng.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d mục không khả dụng</string>
     <string name="k2go_kolibri_partial_fmt">%1$d khóa học bị thiếu: máy chủ không có một số tệp.</string>
+    <string name="k2go_kolibri_takes_body_live">Khóa học có thể rất lớn và mất nhiều thời gian để tải xuống, nhất là với kết nối chậm. Việc tải xuống bắt đầu ngay, tiếp tục chạy nền và tiếp tục lại nếu bị gián đoạn.</string>
 </resources>

@@ -17,11 +17,18 @@ public final class StreamState {
     public final boolean complete;
     /** Items of this type that failed (0 when there is no session). */
     public final int failed;
+    /** K2GO-475: items that finished with part of the pick unavailable on the server. */
+    public final int partial;
 
     public StreamState(boolean session, boolean complete, int failed) {
+        this(session, complete, failed, 0);
+    }
+
+    public StreamState(boolean session, boolean complete, int failed, int partial) {
         this.session = session;
         this.complete = complete;
         this.failed = failed;
+        this.partial = partial;
     }
 
     /** No longer blocks completion: not in this run, or finished. */

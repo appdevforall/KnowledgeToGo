@@ -1303,7 +1303,7 @@
     <string name="k2go_kolibri_included">উপরের ফোল্ডারের সঙ্গে অন্তর্ভুক্ত</string>
     <string name="k2go_kolibri_open_topic">ফোল্ডার খুলুন</string>
     <string name="k2go_kolibri_choose_topics">বিষয় বেছে নিন</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$dটি বিষয় নির্বাচিত</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$dটি আইটেম নির্বাচিত</string>
     <string name="k2go_kolibri_whole_course">সম্পূর্ণ কোর্স</string>
     <string name="k2go_kolibri_checking">এই ডিভাইসটি কী করতে পারে তা দেখা হচ্ছে…</string>
     <string name="k2go_kolibri_not_installed">এই সিস্টেমে কোর্স ইনস্টল করা নেই, তাই কনটেন্ট যোগ করা যাবে না।</string>
@@ -1434,4 +1434,5 @@
     <string name="k2go_connect_address_unresolved">হটস্পটের ঠিকানা পাওয়া যায়নি।</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$dটি আইটেম উপলব্ধ নেই</string>
     <string name="k2go_kolibri_partial_fmt">%1$dটি কোর্স অসম্পূর্ণ এসেছে: সার্ভারে কিছু ফাইল নেই।</string>
+    <string name="k2go_kolibri_takes_body_live">কোর্সগুলো অনেক বড় হতে পারে এবং ডাউনলোড হতে অনেক সময় লাগতে পারে, বিশেষ করে ধীর সংযোগে। ডাউনলোড এখনই শুরু হয়, পটভূমিতে চলতে থাকে এবং বাধা পেলে আবার শুরু হয়।</string>
 </resources>

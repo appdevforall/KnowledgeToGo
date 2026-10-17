@@ -340,7 +340,7 @@ public final class KolibriBrowseFragment extends Fragment {
         size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
         size.setText(vm.sizeUnknownFor(c)
                 ? getString(R.string.k2go_kolibri_size_unknown)
-                : ByteFormatter.toHuman(vm.bytesFor(c)));
+                : ByteFormatter.humanBytes(vm.bytesFor(c)));
         size.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         size.setGravity(Gravity.END);
         top.addView(size);
@@ -376,7 +376,7 @@ public final class KolibriBrowseFragment extends Fragment {
             TextView warn = new TextView(requireContext());
             warn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
             warn.setText(getString(R.string.k2go_zc_nospace,
-                    ByteFormatter.toHuman(rowBytes), ByteFormatter.humanMb(freeMb)));
+                    ByteFormatter.humanBytes(rowBytes), ByteFormatter.humanMb(freeMb)));
             warn.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
             LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -479,14 +479,15 @@ public final class KolibriBrowseFragment extends Fragment {
                 : 0;
         storageBar.setProgress(pct);
         storageLabel.setText(getString(R.string.k2go_zim_storage_fmt,
-                ByteFormatter.humanMb(used), ByteFormatter.humanMb(sel),
+                ByteFormatter.humanMb(used),
+                ByteFormatter.humanBytes(vm == null ? 0L : vm.selectionBytes()),
                 ByteFormatter.humanMb(freeMb)));
 
         // The bar carries the SIZE, per the template, not the count: it is the
         // number the next screen has to justify.
         long bytes = vm == null ? 0L : vm.selectionBytes();
         review.setEnabled(vm != null && vm.selectionCount() > 0);
-        review.setText(getString(R.string.k2go_zim_review_fmt, ByteFormatter.toHuman(bytes)));
+        review.setText(getString(R.string.k2go_zim_review_fmt, ByteFormatter.humanBytes(bytes)));
     }
 
     /**

@@ -1307,7 +1307,7 @@
     <string name="k2go_kolibri_included">Įtraukta su aukščiau esančiu aplanku</string>
     <string name="k2go_kolibri_open_topic">Atverti aplanką</string>
     <string name="k2go_kolibri_choose_topics">Pasirinkti temas</string>
-    <string name="k2go_kolibri_narrowed_fmt">Pasirinkta temų: %1$d</string>
+    <string name="k2go_kolibri_narrowed_fmt">Pasirinkta elementų: %1$d</string>
     <string name="k2go_kolibri_whole_course">Visas kursas</string>
     <string name="k2go_kolibri_checking">Tikrinama, ką gali šis įrenginys…</string>
     <string name="k2go_kolibri_not_installed">Kursai šioje sistemoje neįdiegti, todėl turinio pridėti negalima.</string>
@@ -1438,4 +1438,5 @@
     <string name="k2go_connect_address_unresolved">Nepavyko gauti prieigos taško adreso.</string>
     <string name="k2go_kolibri_item_partial_fmt">Nepasiekiamų elementų: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Nepilnų kursų: %1$d. Serveryje nėra kai kurių failų.</string>
+    <string name="k2go_kolibri_takes_body_live">Kursai gali būti labai dideli ir ilgai atsisiųsti, ypač esant lėtam ryšiui. Atsisiuntimas prasideda dabar, tęsiasi fone ir atnaujinamas, jei nutrūksta.</string>
 </resources>

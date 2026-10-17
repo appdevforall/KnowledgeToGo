@@ -1377,7 +1377,7 @@
     <string name="k2go_kolibri_included">Inclus avec le dossier ci-dessus</string>
     <string name="k2go_kolibri_open_topic">Ouvrir le dossier</string>
     <string name="k2go_kolibri_choose_topics">Choisir des thèmes</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d thèmes sélectionnés</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d éléments sélectionnés</string>
     <string name="k2go_kolibri_whole_course">Cours entier</string>
     <string name="k2go_kolibri_checking">Vérification de ce que cet appareil peut faire…</string>
     <string name="k2go_kolibri_not_installed">Cours n’est pas installé sur ce système : impossible d’ajouter du contenu.</string>
@@ -1508,4 +1508,5 @@
     <string name="k2go_connect_address_unresolved">Impossible d\'obtenir l\'adresse du point d\'accès.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d éléments indisponibles</string>
     <string name="k2go_kolibri_partial_fmt">%1$d cours incomplet(s) : le serveur n\'a pas certains fichiers.</string>
+    <string name="k2go_kolibri_takes_body_live">Les cours peuvent être très volumineux et longs à télécharger, surtout avec une connexion lente. Le téléchargement commence maintenant, continue en arrière-plan et reprend s\'il est interrompu.</string>
 </resources>

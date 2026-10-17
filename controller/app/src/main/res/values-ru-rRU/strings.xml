@@ -1366,7 +1366,7 @@
     <string name="k2go_kolibri_included">Входит в папку выше</string>
     <string name="k2go_kolibri_open_topic">Открыть папку</string>
     <string name="k2go_kolibri_choose_topics">Выбрать темы</string>
-    <string name="k2go_kolibri_narrowed_fmt">Выбрано тем: %1$d</string>
+    <string name="k2go_kolibri_narrowed_fmt">Выбрано элементов: %1$d</string>
     <string name="k2go_kolibri_whole_course">Весь курс</string>
     <string name="k2go_kolibri_checking">Проверяем, что может это устройство…</string>
     <string name="k2go_kolibri_not_installed">Курсы не установлены в этой системе, поэтому добавить содержимое нельзя.</string>
@@ -1497,4 +1497,5 @@
     <string name="k2go_connect_address_unresolved">Не удалось получить адрес точки доступа.</string>
     <string name="k2go_kolibri_item_partial_fmt">Недоступно элементов: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Неполных курсов: %1$d. На сервере нет некоторых файлов.</string>
+    <string name="k2go_kolibri_takes_body_live">Курсы могут быть очень большими, и их загрузка может занять много времени, особенно при медленном соединении. Загрузка начинается сейчас, продолжается в фоне и возобновляется, если прервётся.</string>
 </resources>
