@@ -142,6 +142,24 @@ public final class TopicNode {
     }
 
     /**
+     * K2GO-476: a folder whose source measured its size (the box counts each distinct file
+     * once), so the size is not summed from children: shared files would count twice.
+     *
+     * @return the node, or {@code null} when {@code rawId} is not a valid node id
+     */
+    public static TopicNode measured(String rawId, String title, String kind,
+                                     long subtreeBytes, int descendantCount,
+                                     List<TopicNode> children) {
+        TopicNode summed = of(rawId, title, kind, false, 0L, descendantCount, children, true);
+        if (summed == null) {
+            return null;
+        }
+        return new TopicNode(summed.id(), summed.title(), summed.kind(), false, 0L,
+                Math.max(0L, subtreeBytes), true, summed.descendantCount(), 0, 0L,
+                summed.children());
+    }
+
+    /**
      * Builds a topic (folder) from a precomputed bundle row (ADFA-5094).
      *
      * <p>Unlike {@link #of}, the subtree size and count are <em>given</em>, not summed
