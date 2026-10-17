@@ -34,4 +34,13 @@ public class ByteFormatterTest {
         String s = ByteFormatter.toHuman(1_219_422_532L);
         assertTrue(s, s.equals("1.1 GiB"));
     }
+
+    @Test
+    public void humanBytesUsesTheUiLabelsWithoutMbTruncation() {
+        // K2GO-475: one label set for a size and its total; 2.9 MiB must not read "2 MB".
+        assertEquals("3 MB", ByteFormatter.humanBytes(2_900_000L + 140_000L));
+        assertEquals("145 KB", ByteFormatter.humanBytes(145L * 1024));
+        assertEquals("1.5 GB", ByteFormatter.humanBytes(1536L * 1024 * 1024));
+        assertEquals("0 MB", ByteFormatter.humanBytes(0L));
+    }
 }

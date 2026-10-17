@@ -19,15 +19,18 @@ package org.appdevforall.k2go.setup.domain;
 
 public final class RunVerdict {
 
-    public enum State { WORKING, SUCCESS, FAILURE }
+    /** PARTIAL (K2GO-475): finished with no failure, but some content the server did not have. */
+    public enum State { WORKING, SUCCESS, PARTIAL, FAILURE }
 
     private final boolean allComplete;
     private final int failedTotal;
+    private final int partialTotal;
     private final State state;
 
-    private RunVerdict(boolean allComplete, int failedTotal, State state) {
+    private RunVerdict(boolean allComplete, int failedTotal, int partialTotal, State state) {
         this.allComplete = allComplete;
         this.failedTotal = failedTotal;
+        this.partialTotal = partialTotal;
         this.state = state;
     }
 
@@ -47,16 +50,20 @@ public final class RunVerdict {
         }
         int failedTotal = s.zim.failed + s.books.failed + s.kolibri.failed
                 + s.prootFailed + (s.forgejoSeedFailed ? 1 : 0);
+        int partialTotal = s.zim.partial + s.books.partial + s.kolibri.partial;
         State state;
-        if (allComplete && failedTotal == 0 && !s.batchServerSlow) state = State.SUCCESS;
-        else if (allComplete && (failedTotal > 0 || s.batchServerSlow)) state = State.FAILURE;
+        if (allComplete && failedTotal == 0 && !s.batchServerSlow) {
+            state = partialTotal > 0 ? State.PARTIAL : State.SUCCESS;
+        } else if (allComplete && (failedTotal > 0 || s.batchServerSlow)) state = State.FAILURE;
         else state = State.WORKING;
-        return new RunVerdict(allComplete, failedTotal, state);
+        return new RunVerdict(allComplete, failedTotal, partialTotal, state);
     }
 
     public boolean allComplete() { return allComplete; }
     public int failedTotal() { return failedTotal; }
     public boolean success() { return state == State.SUCCESS; }
     public boolean failure() { return state == State.FAILURE; }
+    public boolean partial() { return state == State.PARTIAL; }
+    public int partialTotal() { return partialTotal; }
     public State state() { return state; }
 }

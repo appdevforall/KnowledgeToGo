@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">Yukarıdaki klasörle birlikte gelir</string>
     <string name="k2go_kolibri_open_topic">Klasörü aç</string>
     <string name="k2go_kolibri_choose_topics">Konu seç</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d konu seçildi</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d öğe seçildi</string>
     <string name="k2go_kolibri_whole_course">Kursun tamamı</string>
     <string name="k2go_kolibri_checking">Bu cihazın neler yapabildiği denetleniyor…</string>
     <string name="k2go_kolibri_not_installed">Kurslar bu sistemde kurulu değil, bu yüzden içerik eklenemez.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">Etkin nokta adresi alınamadı.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d öğe kullanılamıyor</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs eksik geldi: sunucuda bazı dosyalar yok.</string>
+    <string name="k2go_kolibri_takes_body_live">Kurslar çok büyük olabilir ve özellikle yavaş bir bağlantıda indirilmesi uzun sürebilir. İndirme şimdi başlar, arka planda devam eder ve kesilirse kaldığı yerden sürer.</string>
 </resources>

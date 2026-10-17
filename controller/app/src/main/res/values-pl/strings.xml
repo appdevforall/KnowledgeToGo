@@ -1300,7 +1300,7 @@
     <string name="k2go_kolibri_included">Zawarte w folderze powyżej</string>
     <string name="k2go_kolibri_open_topic">Otwórz folder</string>
     <string name="k2go_kolibri_choose_topics">Wybierz tematy</string>
-    <string name="k2go_kolibri_narrowed_fmt">Wybrano %1$d tematów</string>
+    <string name="k2go_kolibri_narrowed_fmt">Wybrane elementy: %1$d</string>
     <string name="k2go_kolibri_whole_course">Cały kurs</string>
     <string name="k2go_kolibri_checking">Sprawdzanie, co potrafi to urządzenie…</string>
     <string name="k2go_kolibri_not_installed">Kursy nie są zainstalowane w tym systemie, więc nie można dodać treści.</string>
@@ -1431,4 +1431,5 @@
     <string name="k2go_connect_address_unresolved">Nie można uzyskać adresu hotspotu.</string>
     <string name="k2go_kolibri_item_partial_fmt">Niedostępne elementy: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Niekompletne kursy: %1$d. Serwer nie ma niektórych plików.</string>
+    <string name="k2go_kolibri_takes_body_live">Kursy mogą być bardzo duże, a ich pobieranie może trwać długo, zwłaszcza przy wolnym połączeniu. Pobieranie zaczyna się teraz, trwa w tle i zostanie wznowione po przerwaniu.</string>
 </resources>

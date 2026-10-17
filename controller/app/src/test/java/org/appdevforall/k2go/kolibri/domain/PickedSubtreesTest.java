@@ -179,8 +179,5 @@ public class PickedSubtreesTest {
         List<String> ids = sel.nodeIds();
         assertEquals(1, ids.size());
         assertEquals(MATH, ids.get(0));
-        // A partial import needs the topic artwork the unpicked branches would have
-        // brought, or the browsing screen looks broken.
-        assertTrue(sel.wantsAllThumbnails());
     }
 }

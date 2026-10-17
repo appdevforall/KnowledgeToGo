@@ -54,6 +54,11 @@ public final class ByteFormatter {
         return String.format(Locale.US, "%.0f KB", kb);
     }
 
+    /** UI size label from a byte count (K2GO-475): no MB truncation before formatting. */
+    public static String humanBytes(long bytes) {
+        return humanGb(Math.max(0L, bytes) / (double) GIB);
+    }
+
     /** UI size label from a whole number of MB. */
     public static String humanMb(long mb) {
         return humanGb(mb / 1024.0);

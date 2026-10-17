@@ -400,7 +400,7 @@ public final class KolibriTopicsFragment extends Fragment {
             // Same sentence the channel row uses, so "doesn't fit" reads the same
             // wherever the user meets it.
             content.addView(note(getString(R.string.k2go_zc_nospace,
-                            ByteFormatter.toHuman(node.subtreeBytes()),
+                            ByteFormatter.humanBytes(node.subtreeBytes()),
                             ByteFormatter.humanMb(freeMb)),
                     R.color.k2go_amber_text));
         } else if (!node.hasSubtreeSize()) {
@@ -434,7 +434,7 @@ public final class KolibriTopicsFragment extends Fragment {
      */
     private String sizeLabel(TopicNode node) {
         if (node.hasSubtreeSize()) {
-            return ByteFormatter.toHuman(node.subtreeBytes());
+            return ByteFormatter.humanBytes(node.subtreeBytes());
         }
         if (node.descendantCount() > 0) {
             return getString(R.string.k2go_kolibri_resources_fmt, node.descendantCount());
@@ -451,7 +451,7 @@ public final class KolibriTopicsFragment extends Fragment {
     private View looseRow(TopicNode node) {
         String text = getString(R.string.k2go_kolibri_resources_fmt, node.looseResourceCount());
         if (node.looseResourceBytes() > 0) {
-            text = text + " · " + ByteFormatter.toHuman(node.looseResourceBytes());
+            text = text + " · " + ByteFormatter.humanBytes(node.looseResourceBytes());
         }
         TextView t = new TextView(requireContext());
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
@@ -483,7 +483,8 @@ public final class KolibriTopicsFragment extends Fragment {
                 : 0;
         storageBar.setProgress(pct);
         storageLabel.setText(getString(R.string.k2go_zim_storage_fmt,
-                ByteFormatter.humanMb(used), ByteFormatter.humanMb(sel),
+                ByteFormatter.humanMb(used),
+                ByteFormatter.humanBytes(catalogVm == null ? 0L : catalogVm.selectionBytes()),
                 ByteFormatter.humanMb(freeMb)));
 
         // The action carries the size of THIS channel's narrowing, not the whole
@@ -494,7 +495,7 @@ public final class KolibriTopicsFragment extends Fragment {
         // contradiction the user meets two taps apart. It just says Continue.
         long bytes = picks.isEmpty() ? channelBytes() : picks.totalBytes();
         done.setText(isWizard()
-                ? getString(R.string.k2go_zim_add_setup_fmt, ByteFormatter.toHuman(bytes))
+                ? getString(R.string.k2go_zim_add_setup_fmt, ByteFormatter.humanBytes(bytes))
                 : getString(R.string.k2go_continue));
     }
 

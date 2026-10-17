@@ -117,4 +117,10 @@ public class SetupUiStateTest {
         assertEquals(SetupUiState.StatusMessage.WAITING_FOR_NETWORK, ui.message);
         assertTrue(ui.runInBackgroundVisible);   // overrides the gated runInBackgroundEnabled input
     }
+
+    @Test
+    public void partialFinishesWithANoteAndNeverRedirects() {
+        SetupUiState ui = running().partial(true).build();
+        assertEquals(SetupUiState.Controls.FINISH_PARTIAL, ui.controls);
+    }
 }

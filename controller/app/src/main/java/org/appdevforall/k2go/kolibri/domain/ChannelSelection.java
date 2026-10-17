@@ -121,17 +121,6 @@ public final class ChannelSelection {
         return nodeIds.isEmpty();
     }
 
-    /**
-     * Whether to ask Kolibri for every topic thumbnail in the channel.
-     *
-     * <p>Only worth it for a partial selection: without it the topics the user did
-     * not pick have no artwork and the browsing screen looks broken. A whole
-     * channel already brings them, so asking again is pure extra download.
-     */
-    public boolean wantsAllThumbnails() {
-        return !isWholeChannel();
-    }
-
     @Override
     public String toString() {
         return isWholeChannel()

@@ -141,4 +141,24 @@ public class RunVerdictTest {
         assertFalse(new StreamState(true, false, 0).settledForCompletion());   // running
         assertTrue(new StreamState(true, true, 0).settledForCompletion());     // done
     }
+
+    // K2GO-475: a course that arrived incomplete is neither a clean success nor a failure.
+
+    @Test
+    public void partialCourseIsPartialNotSuccess() {
+        RunVerdict v = RunVerdict.of(restDone()
+                .kolibri(new StreamState(true, true, 0, 1)).build());
+        assertTrue(v.allComplete());
+        assertTrue(v.partial());
+        assertFalse(v.success());
+        assertEquals(1, v.partialTotal());
+    }
+
+    @Test
+    public void aFailureOutranksAPartial() {
+        RunVerdict v = RunVerdict.of(restDone()
+                .kolibri(new StreamState(true, true, 1, 1)).build());
+        assertTrue(v.failure());
+        assertFalse(v.partial());
+    }
 }

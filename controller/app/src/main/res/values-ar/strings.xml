@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">مُضمَّن مع المجلد أعلاه</string>
     <string name="k2go_kolibri_open_topic">فتح المجلد</string>
     <string name="k2go_kolibri_choose_topics">اختيار المواضيع</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d مواضيع مختارة</string>
+    <string name="k2go_kolibri_narrowed_fmt">تم تحديد %1$d عنصر</string>
     <string name="k2go_kolibri_whole_course">الدورة كاملة</string>
     <string name="k2go_kolibri_checking">جارٍ التحقق مما يمكن لهذا الجهاز فعله…</string>
     <string name="k2go_kolibri_not_installed">الدورات غير مثبّتة على هذا النظام، لذا لا يمكن إضافة محتوى.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">تعذّر الحصول على عنوان نقطة الاتصال.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d عناصر غير متاحة</string>
     <string name="k2go_kolibri_partial_fmt">وصلت %1$d دورة غير مكتملة: الخادم لا يحتوي على بعض الملفات.</string>
+    <string name="k2go_kolibri_takes_body_live">قد تكون الدورات كبيرة جدًا وتستغرق وقتًا طويلًا للتنزيل، خاصةً مع اتصال بطيء. يبدأ التنزيل الآن، ويستمر في الخلفية، ويُستأنف إذا انقطع.</string>
 </resources>

@@ -1300,7 +1300,7 @@
     <string name="k2go_kolibri_included">Inkludert med mappen over</string>
     <string name="k2go_kolibri_open_topic">Åpne mappe</string>
     <string name="k2go_kolibri_choose_topics">Velg emner</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d emner valgt</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d elementer valgt</string>
     <string name="k2go_kolibri_whole_course">Hele kurset</string>
     <string name="k2go_kolibri_checking">Sjekker hva denne enheten kan…</string>
     <string name="k2go_kolibri_not_installed">Kurs er ikke installert på dette systemet, så innhold kan ikke legges til.</string>
@@ -1431,4 +1431,5 @@
     <string name="k2go_connect_address_unresolved">Kunne ikke hente hotspot-adressen.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d elementer er ikke tilgjengelige</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs ble ufullstendige: serveren mangler noen filer.</string>
+    <string name="k2go_kolibri_takes_body_live">Kurs kan være svært store og ta lang tid å laste ned, særlig med en treg forbindelse. Nedlastingen starter nå, fortsetter i bakgrunnen og gjenopptas hvis den blir avbrutt.</string>
 </resources>

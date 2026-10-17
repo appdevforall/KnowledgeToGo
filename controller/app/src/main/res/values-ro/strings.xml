@@ -1290,7 +1290,7 @@
     <string name="k2go_kolibri_included">Inclus cu dosarul de mai sus</string>
     <string name="k2go_kolibri_open_topic">Deschide dosarul</string>
     <string name="k2go_kolibri_choose_topics">Alege teme</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d teme selectate</string>
+    <string name="k2go_kolibri_narrowed_fmt">Elemente selectate: %1$d</string>
     <string name="k2go_kolibri_whole_course">Cursul întreg</string>
     <string name="k2go_kolibri_checking">Se verifică ce poate face acest dispozitiv…</string>
     <string name="k2go_kolibri_not_installed">Cursuri nu este instalat pe acest sistem, deci nu se poate adăuga conținut.</string>
@@ -1421,4 +1421,5 @@
     <string name="k2go_connect_address_unresolved">Nu s-a putut obține adresa hotspotului.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d elemente indisponibile</string>
     <string name="k2go_kolibri_partial_fmt">Cursuri incomplete: %1$d. Serverul nu are unele fișiere.</string>
+    <string name="k2go_kolibri_takes_body_live">Cursurile pot fi foarte mari și pot dura mult la descărcare, mai ales pe o conexiune lentă. Descărcarea începe acum, continuă în fundal și se reia dacă este întreruptă.</string>
 </resources>

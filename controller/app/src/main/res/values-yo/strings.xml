@@ -1310,7 +1310,7 @@
     <string name="k2go_kolibri_included">Ó wà pẹ̀lú fáìlì tó wà lókè</string>
     <string name="k2go_kolibri_open_topic">Ṣí fáìlì</string>
     <string name="k2go_kolibri_choose_topics">Yan àwọn àkòrí</string>
-    <string name="k2go_kolibri_narrowed_fmt">Àkòrí %1$d ti yàn</string>
+    <string name="k2go_kolibri_narrowed_fmt">A ti yan nkan %1$d</string>
     <string name="k2go_kolibri_whole_course">Gbogbo ìdánilẹ́kọ̀ọ́</string>
     <string name="k2go_kolibri_checking">À ń yẹ ohun tí ẹ̀rọ yìí lè ṣe wò…</string>
     <string name="k2go_kolibri_not_installed">Ìdánilẹ́kọ̀ọ́ kò sí lórí ètò yìí, nítorí náà a kò lè fi àkóónú kún un.</string>
@@ -1441,4 +1441,5 @@
     <string name="k2go_connect_address_unresolved">Kò lè rí àdírẹ́sì hotspot náà.</string>
     <string name="k2go_kolibri_item_partial_fmt">Nkan %1$d kò sí</string>
     <string name="k2go_kolibri_partial_fmt">Ẹ̀kọ́ %1$d dé láìpé: olupin kò ní àwọn fáìlì kan.</string>
+    <string name="k2go_kolibri_takes_body_live">Àwọn ẹ̀kọ́ lè tóbi gan-an kí wọ́n sì gba àkókò pípẹ́ láti gbàsílẹ̀, pàápàá lórí ìsopọ̀ tó lọ́ra. Ìgbàsílẹ̀ bẹ̀rẹ̀ báyìí, ó ń bá a lọ ní abẹ́lẹ̀, ó sì máa tẹ̀síwájú tí ó bá dáwọ́ dúró.</string>
 </resources>

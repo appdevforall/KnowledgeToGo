@@ -1369,7 +1369,7 @@
     <string name="k2go_kolibri_included">Incluído com a pasta acima</string>
     <string name="k2go_kolibri_open_topic">Abrir pasta</string>
     <string name="k2go_kolibri_choose_topics">Escolher tópicos</string>
-    <string name="k2go_kolibri_narrowed_fmt">%1$d tópicos selecionados</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d itens selecionados</string>
     <string name="k2go_kolibri_whole_course">Curso completo</string>
     <string name="k2go_kolibri_checking">Verificando o que este dispositivo pode fazer…</string>
     <string name="k2go_kolibri_not_installed">Cursos não está instalado neste sistema, então não é possível adicionar conteúdo.</string>
@@ -1500,4 +1500,5 @@
     <string name="k2go_connect_address_unresolved">Não foi possível obter o endereço do ponto de acesso.</string>
     <string name="k2go_kolibri_item_partial_fmt">%1$d itens indisponíveis</string>
     <string name="k2go_kolibri_partial_fmt">%1$d curso(s) chegaram incompletos: o servidor não tem alguns arquivos.</string>
+    <string name="k2go_kolibri_takes_body_live">Os cursos podem ser muito grandes e demorar para baixar, especialmente com uma conexão lenta. O download começa agora, continua em segundo plano e é retomado se for interrompido.</string>
 </resources>

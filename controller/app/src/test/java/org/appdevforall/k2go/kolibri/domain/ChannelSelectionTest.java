@@ -119,15 +119,6 @@ public class ChannelSelectionTest {
     }
 
     @Test
-    public void thumbnailsAreOnlyWorthAskingForOnAPartialSelection() {
-        // A whole channel already brings its topic artwork; asking again is pure
-        // extra download. A partial one would otherwise browse with gaps.
-        assertFalse(ChannelSelection.wholeChannel(CHANNEL).wantsAllThumbnails());
-        assertTrue(ChannelSelection.ofSubtrees(CHANNEL, Collections.singletonList(NODE_A))
-                .wantsAllThumbnails());
-    }
-
-    @Test
     public void nodeIdsAreNotMutableFromOutside() {
         ChannelSelection s = ChannelSelection.ofSubtrees(
                 CHANNEL, Collections.singletonList(NODE_A));

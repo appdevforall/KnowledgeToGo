@@ -1310,7 +1310,7 @@
     <string name="k2go_kolibri_included">Imejumuishwa na folda ya juu</string>
     <string name="k2go_kolibri_open_topic">Fungua folda</string>
     <string name="k2go_kolibri_choose_topics">Chagua mada</string>
-    <string name="k2go_kolibri_narrowed_fmt">Mada %1$d zimechaguliwa</string>
+    <string name="k2go_kolibri_narrowed_fmt">Vipengele %1$d vimechaguliwa</string>
     <string name="k2go_kolibri_whole_course">Kozi yote</string>
     <string name="k2go_kolibri_checking">Inaangalia kifaa hiki kinaweza nini…</string>
     <string name="k2go_kolibri_not_installed">Kozi hazijasakinishwa kwenye mfumo huu, kwa hivyo maudhui hayawezi kuongezwa.</string>
@@ -1441,4 +1441,5 @@
     <string name="k2go_connect_address_unresolved">Imeshindwa kupata anwani ya mtandao-hewa.</string>
     <string name="k2go_kolibri_item_partial_fmt">Vipengele %1$d havipatikani</string>
     <string name="k2go_kolibri_partial_fmt">Kozi %1$d zimefika bila kukamilika: seva haina baadhi ya faili.</string>
+    <string name="k2go_kolibri_takes_body_live">Kozi zinaweza kuwa kubwa sana na kuchukua muda mrefu kupakua, hasa kwenye muunganisho wa polepole. Upakuaji unaanza sasa, unaendelea chinichini, na unaendelea ukikatizwa.</string>
 </resources>

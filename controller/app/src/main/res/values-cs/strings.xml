@@ -1297,7 +1297,7 @@
     <string name="k2go_kolibri_included">Součást složky výše</string>
     <string name="k2go_kolibri_open_topic">Otevřít složku</string>
     <string name="k2go_kolibri_choose_topics">Vybrat témata</string>
-    <string name="k2go_kolibri_narrowed_fmt">Vybráno %1$d témat</string>
+    <string name="k2go_kolibri_narrowed_fmt">Vybrané položky: %1$d</string>
     <string name="k2go_kolibri_whole_course">Celý kurz</string>
     <string name="k2go_kolibri_checking">Zjišťuje se, co toto zařízení umí…</string>
     <string name="k2go_kolibri_not_installed">Kurzy nejsou v tomto systému nainstalované, obsah tedy nelze přidat.</string>
@@ -1428,4 +1428,5 @@
     <string name="k2go_connect_address_unresolved">Nepodařilo se získat adresu hotspotu.</string>
     <string name="k2go_kolibri_item_partial_fmt">Nedostupné položky: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Neúplné kurzy: %1$d. Server nemá některé soubory.</string>
+    <string name="k2go_kolibri_takes_body_live">Kurzy mohou být velmi velké a jejich stahování může trvat dlouho, zvlášť na pomalém připojení. Stahování začne hned, pokračuje na pozadí a po přerušení se obnoví.</string>
 </resources>

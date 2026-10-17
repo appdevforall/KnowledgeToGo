@@ -132,6 +132,25 @@ public final class InstalledLibrary {
         return remaining > 0 ? remaining : Math.max(0L, publishedSize);
     }
 
+    /**
+     * K2GO-475: what adding this selection would cost.
+     *
+     * @param declared the published size for a whole channel, or the picked bytes for a
+     *                 narrowed one
+     * @param narrowed true when only some topics or resources were picked
+     * @return for a whole channel, {@link #costOf(String, long)}. For a narrowed pick, the
+     *         picked bytes, capped by what the channel still misses: the remainder of a
+     *         partly installed channel is far more than a few picked videos, and quoting it
+     *         priced 3 videos at 36 GB
+     */
+    public long costOf(String rawChannelId, long declared, boolean narrowed) {
+        if (!narrowed) {
+            return costOf(rawChannelId, declared);
+        }
+        long pick = Math.max(0L, declared);
+        return Math.min(pick, costOf(rawChannelId, pick));
+    }
+
     @Override
     public String toString() {
         return known ? "InstalledLibrary{" + byId.size() + " channels}"
