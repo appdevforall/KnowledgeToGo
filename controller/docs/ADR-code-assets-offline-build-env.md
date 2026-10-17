@@ -60,11 +60,12 @@ that uses `location.origin` so the pasted URL is the box's own address, with no 
 page adapts to light and dark. The icon closes the gap that the served add-ons gallery still
 has (K2GO-99 follow-up).
 
-### 5. Source move to R2
+### 5. Source on R2
 
-The assets move from `appdevforall.org/dev-assets` to Cloudflare R2 soon. The source base is a
-single role variable (`code_assets_source_base`) and the mirror's `--source-base` default; when
-R2 lands, only that default changes, not the manifest or the code.
+The assets live on Cloudflare R2, served from the public custom domain
+`dev-assets.appdevforall.org` (K2GO-474). The source base is a single role variable
+(`code_assets_source_base`) and the mirror's `--source-base` default; the move off the old
+`appdevforall.org/dev-assets` host changed only that base, not the manifest paths or the code.
 
 ### 6. Ships as an overlay, baked on Full via runrole
 

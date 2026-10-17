@@ -21,9 +21,10 @@ downloaded and verified against its published md5. When every file reuses and
 the generated page is unchanged, a short-circuit reports up-to-date and builds
 no staging, so the wrapper keeps the live tree.
 
-Source move. The source base is the --source-base argument (the role passes
-code_assets_source_base). The assets live on appdevforall.org/dev-assets today
-and move to Cloudflare R2 soon; only that default changes then, not this script.
+Source. The source base is the --source-base argument (the role passes
+code_assets_source_base). The assets live on Cloudflare R2, served from the public
+custom domain dev-assets.appdevforall.org (K2GO-474); only the base moved off the old
+appdevforall.org/dev-assets host, the manifest paths and the .md5 layout are unchanged.
 
 See controller/docs/ADR-code-assets-offline-build-env.md.
 """
@@ -421,8 +422,8 @@ def finalize(serve_base, out, manifest_path=MANIFEST_DEFAULT, verbose=True):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Mirror the Code on the Go build assets.")
-    ap.add_argument("--source-base", default="https://appdevforall.org/dev-assets",
-                    help="site to mirror from (moves to R2; only this default changes)")
+    ap.add_argument("--source-base", default="https://dev-assets.appdevforall.org",
+                    help="site to mirror from (R2 custom domain; the role passes code_assets_source_base)")
     ap.add_argument("--serve-base", default="/code-assets",
                     help="local serve path, used for the copy-link URLs on the page")
     ap.add_argument("--manifest", default=str(MANIFEST_DEFAULT),
