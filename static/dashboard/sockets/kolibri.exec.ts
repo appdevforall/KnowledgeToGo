@@ -17,7 +17,7 @@
 // PRECONDITION: the startup layer guarantees Kolibri is alive and its workers
 // active. The runner checks it anyway and fails with an actionable message
 // instead of hanging indefinitely.
-import { jobs, RunnerContext, CanceledError, PausedError, JobUpdate, classifyStop } from './jobs';
+import { jobs, RunnerContext, CanceledError, JobUpdate, throwIfStopped } from './jobs';
 import {
     loginForContent, apiJson, apiFetch, ensureContentOrigin,
     KolibriSession, KolibriAuthError, KolibriApiError, STUDIO_URL,
@@ -55,6 +55,11 @@ const STALL_TIMEOUT_MS = envMs('K2GO_KOLIBRI_STALL_MS', 15 * 60_000);
 /** Login retries per job. Bounded so a credential revoked halfway through the
  *  import does not produce a loop of failed logins. */
 const MAX_REAUTH = 3;
+
+/** Kolibri tasks a live runner of this process is polling. Not adopted by another job:
+ *  two jobs sharing one task would cancel or clear it under each other. Empty after a
+ *  restart, which is when adoption is needed. */
+const polled = new Set<string>();
 
 interface KolibriItem {
     channelId?: string;
@@ -220,10 +225,9 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 
     const total: ImportResult = { requested: 0, available: 0, notFound: 0 };
     let index = 0;
+    let failure = '';
     for (const item of parsed) {
-        const stop = classifyStop(ctx);
-        if (stop === 'paused') throw new PausedError();
-        if (stop === 'canceled') throw new CanceledError();
+        throwIfStopped(ctx);
         index++;
 
         const channelName = item.channelName
@@ -253,14 +257,17 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         ctx.log(`verified: ${r.available}/${r.requested} resources available, `
             + `${r.notFound} requested node(s) not in the channel`);
         if (importOutcome(r) === 'failed') {
-            throw new Error(r.requested === 0
+            failure = r.requested === 0
                 ? `The selected content of ${label} is no longer in the channel`
-                : `Kolibri finished ${label} but none of its ${r.requested} resources is available`);
+                : `Kolibri finished ${label} but none of its ${r.requested} resources is available`;
+            ctx.log(failure);
         }
         total.requested += r.requested;
         total.available += r.available;
         total.notFound += r.notFound;
     }
+    // One empty channel in a multi-channel job is a partial result, not a failed job.
+    if (importOutcome(total) === 'failed') throw new Error(failure);
 
     // The engine writes 'done'; this records what 'done' delivered.
     ctx.update({
@@ -277,8 +284,8 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 async function findRunningImport(session: KolibriSession, item: ParsedItem): Promise<string | null> {
     try {
         const tasks = await apiJson<KolibriJob[]>(session, '/api/tasks/tasks/', {}, 30000);
-        const hit = (Array.isArray(tasks) ? tasks : []).find((t) =>
-            isSameImport(t, item.channelId, item.nodeIds, item.excludeNodeIds));
+        const hit = (Array.isArray(tasks) ? tasks : []).find((t) => !polled.has(t.id)
+            && isSameImport(t, item.channelId, item.nodeIds, item.excludeNodeIds));
         return hit?.id ?? null;
     } catch {
         return null;   // Listing is an optimisation; queueing a new task is always correct.
@@ -287,7 +294,7 @@ async function findRunningImport(session: KolibriSession, item: ParsedItem): Pro
 
 async function queueImport(ctx: RunnerContext, session: KolibriSession,
                            item: ParsedItem, channelName: string): Promise<string> {
-    ctx.log(`queueing import of ${item.channelId} — ${channelName}`);
+    ctx.log(`queueing import of ${item.channelId}: ${channelName}`);
     const payload = buildTaskPayload({
         channelId: item.channelId,
         channelName,
@@ -301,6 +308,29 @@ async function queueImport(ctx: RunnerContext, session: KolibriSession,
     const kolibriJob = Array.isArray(created) ? created[0] : created;
     if (!kolibriJob?.id) throw new Error('Kolibri did not return a job id');
     return kolibriJob.id;
+}
+
+/**
+ * Cancels a Kolibri task. apiFetch does not throw on an HTTP error, so the status is
+ * checked: after a long import the session has often expired, and a silent 403 would
+ * leave Kolibri downloading behind a stopped job.
+ */
+async function cancelInKolibri(ctx: RunnerContext, holder: SessionHolder,
+                               kolibriJobId: string): Promise<void> {
+    const post = () => apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
+        { method: 'POST', body: '{}' });
+    try {
+        let res = await post();
+        if ((res.status === 401 || res.status === 403) && await reauthenticate(ctx, holder)) {
+            res = await post();
+        }
+        ctx.log(res.ok
+            ? `job ${kolibriJobId} canceled in Kolibri`
+            : `could not cancel job ${kolibriJobId} in Kolibri: HTTP ${res.status}`);
+    } catch (e) {
+        ctx.log(`could not cancel job ${kolibriJobId} in Kolibri: `
+            + (e instanceof Error ? e.message : String(e)));
+    }
 }
 
 /**
@@ -327,11 +357,10 @@ async function pollKolibriJob(
     let reauths = 0;
     let finished = false;   // Kolibri reported a terminal state
 
+    polled.add(kolibriJobId);
     try {
         for (;;) {
-            const stop = classifyStop(ctx);
-            if (stop === 'paused') throw new PausedError();
-            if (stop === 'canceled') throw new CanceledError();
+            throwIfStopped(ctx);
 
             let job: KolibriJob;
             try {
@@ -403,7 +432,7 @@ async function pollKolibriJob(
             if (TERMINAL_STATES.has(job.status)) {
                 finished = true;
                 if (job.status === 'FAILED') {
-                    // job.exception is only the class name — a bad channel id reports
+                    // job.exception is only the class name: a bad channel id reports
                     // a bare "HTTPError". failureMessage digs the real line out of the
                     // traceback so the operator is told what actually went wrong.
                     const detail = failureMessage(job.exception, job.traceback);
@@ -420,14 +449,9 @@ async function pollKolibriJob(
             await sleep(POLL_MS);
         }
     } finally {
-        if (!finished) {
-            try {
-                await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
-                    { method: 'POST', body: '{}' });
-                ctx.log(`job ${kolibriJobId} canceled in Kolibri`);
-            } catch { /* best effort */ }
-        }
-        // CAREFUL: DELETE /api/tasks/tasks/<id>/ returns 405 — the viewset defines
+        polled.delete(kolibriJobId);
+        if (!finished) await cancelInKolibri(ctx, holder, kolibriJobId);
+        // CAREFUL: DELETE /api/tasks/tasks/<id>/ returns 405: the viewset defines
         // delete() but not destroy(), so the router does not route it. Clearing a task
         // that is still CANCELING fails; that row is left for Kolibri's own cleanup.
         try {

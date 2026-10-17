@@ -179,7 +179,7 @@ test('buildTaskPayload omits an empty exclude_node_ids', () => {
     assert.equal('exclude_node_ids' in p, false);
 });
 
-// ─── importOutcome ───────────────────────────────────────────────────────────
+// importOutcome
 
 test('importOutcome is complete only when every requested resource is available', () => {
     assert.equal(importOutcome({ requested: 3, available: 3, notFound: 0 }), 'complete');
@@ -195,7 +195,7 @@ test('importOutcome is failed when nothing is available, including an empty sele
     assert.equal(importOutcome({ requested: 0, available: 0, notFound: 2 }), 'failed');
 });
 
-// ─── isSameImport ────────────────────────────────────────────────────────────
+// isSameImport
 
 const N1 = '11111111111111111111111111111111';
 const N2 = '22222222222222222222222222222222';

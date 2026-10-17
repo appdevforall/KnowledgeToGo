@@ -93,6 +93,13 @@ export function classifyStop(ctx: RunnerContext): 'paused' | 'canceled' | null {
     return null;
 }
 
+/** Throws the error that matches why the job is stopping, if it is. */
+export function throwIfStopped(ctx: RunnerContext): void {
+    const stop = classifyStop(ctx);
+    if (stop === 'paused') throw new PausedError();
+    if (stop === 'canceled') throw new CanceledError();
+}
+
 const DB_PATH = process.env.K2GO_JOBS_DB || '/library/dashboard/jobs.db';
 const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
 
