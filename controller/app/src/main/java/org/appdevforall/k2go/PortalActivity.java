@@ -585,7 +585,9 @@ public class PortalActivity extends AppCompatActivity {
         customView = null;
         androidx.core.view.WindowInsetsControllerCompat wic =
                 androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+        // Keep the bars hidden if the user had turned on the manual fullscreen (btnHome); only video
+        // fullscreen was asking for them, so do not override that state on exit.
+        if (!fullscreenOn) wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(savedOrientation);
         if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
@@ -610,6 +612,7 @@ public class PortalActivity extends AppCompatActivity {
         if (kiwixMgr != null) kiwixMgr.detach();   // ADFA-5004
         if (kolibriGuard != null) kolibriGuard.detach();   // K2GO-395
         if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
+        hideVideoFullscreen();   // K2GO-473: if destroyed mid-fullscreen, notify the player callback + detach the view
         super.onDestroy();
     }
 
