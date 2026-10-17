@@ -366,15 +366,7 @@ public class PortalActivity extends AppCompatActivity {
 
             @Override
             public void onHideCustomView() {
-                if (customView == null) return;
-                ((android.view.ViewGroup) getWindow().getDecorView()).removeView(customView);
-                customView = null;
-                androidx.core.view.WindowInsetsControllerCompat wic =
-                        androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-                wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-                getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                setRequestedOrientation(savedOrientation);
-                if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
+                PortalActivity.this.hideVideoFullscreen();
             }
         });
 
@@ -585,9 +577,25 @@ public class PortalActivity extends AppCompatActivity {
         }
     }
 
+    /** Leaves HTML5 video fullscreen: remove the player view, restore the bars and orientation. One
+     *  owner of the teardown, called by the WebChromeClient's onHideCustomView and by Back. */
+    private void hideVideoFullscreen() {
+        if (customView == null) return;
+        ((android.view.ViewGroup) getWindow().getDecorView()).removeView(customView);
+        customView = null;
+        androidx.core.view.WindowInsetsControllerCompat wic =
+                androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(savedOrientation);
+        if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
+    }
+
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (customView != null) {   // in video fullscreen: exit it first, do not leave the viewer
+            hideVideoFullscreen();
+        } else if (webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();
