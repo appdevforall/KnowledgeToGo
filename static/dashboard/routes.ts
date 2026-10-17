@@ -47,6 +47,11 @@ function isType(t: string): t is JobType {
 }
 
 /** Public shape returned to clients: ids as an array, no raw JSON column. */
+function parseResult(raw: string | null): unknown {
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+}
+
 function toApi(job: Job) {
     let ids: string[] = [];
     try { ids = JSON.parse(job.target) as string[]; } catch { ids = []; }
@@ -59,6 +64,7 @@ function toApi(job: Job) {
         speed: job.speed,
         detail: job.detail,
         error: job.error,
+        result: parseResult(job.result),
         updated: job.updated,
     };
 }

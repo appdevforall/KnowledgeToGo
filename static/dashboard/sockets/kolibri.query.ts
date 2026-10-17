@@ -9,6 +9,7 @@
 //                            the CLI and the tasks demand a UUID)
 //   browseChannelTree()      granular tree for choosing subtrees
 //   estimateSelection()      exact bytes of a selection, before downloading it
+//   selectionStatus()        how much of a selection is available, after importing it
 //   deleteChannel()          remove a channel
 //
 // Local totals are read from SQLite in readonly (the books.query.ts pattern) rather
@@ -26,7 +27,7 @@ import {
 import {
     TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent, toRemoteChannel,
 } from './kolibri.map';
-import type { RemoteChannel } from './kolibri.map';
+import type { RemoteChannel, ImportResult } from './kolibri.map';
 
 const KOLIBRI_HOME = process.env.KOLIBRI_HOME || '/library/kolibri';
 const MAIN_DB = path.join(KOLIBRI_HOME, 'db.sqlite3');
@@ -350,6 +351,66 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
             }
         }
         return rootNode;
+    } finally {
+        db.close();
+    }
+}
+
+/**
+ * How much of a selection Kolibri has made available, read after the import completes.
+ *
+ * Counts resources (non-topic nodes with at least one required file) inside the selected
+ * MPTT ranges and outside the excluded ones. `available` is Kolibri's own per-node flag,
+ * set at the end of the import from the files really on disk. With no nodeIds the
+ * selection is the whole channel.
+ *
+ * Known limit: a resource whose only files Kolibri cannot render counts as missing (rare).
+ */
+export function selectionStatus(
+    channelId: string, nodeIds: string[], excludeNodeIds: string[],
+): ImportResult {
+    if (!fs.existsSync(MAIN_DB)) return { requested: 0, available: 0, notFound: nodeIds.length };
+    const db = new Database(MAIN_DB, { readonly: true });
+    try {
+        type Range = { lft: number; rght: number };
+        const rangesOf = (ids: string[]): Range[] => {
+            const stmt = db.prepare(
+                'SELECT lft, rght FROM content_contentnode WHERE id = ? AND channel_id = ?');
+            return ids
+                .map((id) => stmt.get(id, channelId) as Range | undefined)
+                .filter((r): r is Range => r !== undefined);
+        };
+
+        let include: Range[];
+        let notFound = 0;
+        if (nodeIds.length > 0) {
+            include = rangesOf(nodeIds);
+            notFound = nodeIds.length - include.length;
+        } else {
+            const root = db.prepare(
+                `SELECT cn.lft, cn.rght FROM content_channelmetadata cm
+                   JOIN content_contentnode cn ON cn.id = cm.root_id
+                  WHERE cm.id = ?`).get(channelId) as Range | undefined;
+            include = root ? [root] : [];
+        }
+        if (include.length === 0) return { requested: 0, available: 0, notFound };
+        const exclude = rangesOf(excludeNodeIds);
+
+        const inRange = (r: Range[]) => r.map(() => '(n.lft >= ? AND n.rght <= ?)').join(' OR ');
+        const params: number[] = [];
+        include.forEach((r) => params.push(r.lft, r.rght));
+        exclude.forEach((r) => params.push(r.lft, r.rght));
+
+        const row = db.prepare(`
+            SELECT COUNT(*) AS requested, COALESCE(SUM(n.available), 0) AS available
+              FROM content_contentnode n
+             WHERE n.channel_id = ? AND n.kind != 'topic'
+               AND EXISTS (SELECT 1 FROM content_file f
+                            WHERE f.contentnode_id = n.id AND f.supplementary = 0)
+               AND (${inRange(include)})
+               ${exclude.length > 0 ? `AND NOT (${inRange(exclude)})` : ''}`,
+        ).get(channelId, ...params) as { requested: number; available: number };
+        return { requested: row.requested, available: row.available, notFound };
     } finally {
         db.close();
     }

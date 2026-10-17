@@ -17,15 +17,17 @@
 // PRECONDITION: the startup layer guarantees Kolibri is alive and its workers
 // active. The runner checks it anyway and fails with an actionable message
 // instead of hanging indefinitely.
-import { jobs, RunnerContext, CanceledError, JobUpdate } from './jobs';
+import { jobs, RunnerContext, CanceledError, JobUpdate, throwIfStopped } from './jobs';
 import {
     loginForContent, apiJson, apiFetch, ensureContentOrigin,
     KolibriSession, KolibriAuthError, KolibriApiError, STUDIO_URL,
 } from './kolibri.session';
 import {
-    buildTaskPayload, failureMessage, mapPercent, mapPhase, normalizeUuid,
-    overallPercent, sampleSpeed, PRE_RUN_STATES, TERMINAL_STATES,
+    buildTaskPayload, failureMessage, importOutcome, isSameImport, mapPercent, mapPhase,
+    normalizeUuid, overallPercent, sampleSpeed, PRE_RUN_STATES, TERMINAL_STATES,
 } from './kolibri.map';
+import type { ImportResult, KolibriTaskRow } from './kolibri.map';
+import { selectionStatus } from './kolibri.query';
 
 /** Positive integers from the environment, with a default. Adjustable in
  *  operation (very slow networks) and in tests. */
@@ -54,6 +56,11 @@ const STALL_TIMEOUT_MS = envMs('K2GO_KOLIBRI_STALL_MS', 15 * 60_000);
  *  import does not produce a loop of failed logins. */
 const MAX_REAUTH = 3;
 
+/** Kolibri tasks a live runner of this process is polling. Not adopted by another job:
+ *  two jobs sharing one task would cancel or clear it under each other. Empty after a
+ *  restart, which is when adoption is needed. */
+const polled = new Set<string>();
+
 interface KolibriItem {
     channelId?: string;
     channelName?: string;
@@ -70,13 +77,14 @@ interface ParsedItem {
     allThumbnails?: boolean;
 }
 
-interface KolibriJob {
+interface KolibriJob extends KolibriTaskRow {
     id: string;
     status: string;
     percentage: number | null;
     exception: string | null;
     traceback: string | null;
     extra_metadata?: {
+        channel_id?: string;
         channel_name?: string;
         database_ready?: boolean;
         file_size?: number;
@@ -215,9 +223,11 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             + 'import fails to resolve the origin, this is the likely cause.');
     }
 
+    const total: ImportResult = { requested: 0, available: 0, notFound: 0 };
     let index = 0;
+    let failure = '';
     for (const item of parsed) {
-        ctx.throwIfCanceled();
+        throwIfStopped(ctx);
         index++;
 
         const channelName = item.channelName
@@ -229,33 +239,108 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             : channelName;
 
         ctx.update({ phase: 'queued', detail: label });
-        ctx.log(`queueing import of ${item.channelId} — ${channelName}`);
 
-        const payload = buildTaskPayload({
-            channelId: item.channelId,
-            channelName,
-            nodeIds: item.nodeIds,
-            excludeNodeIds: item.excludeNodeIds,
-            // Only on a partial selection: there the thumbnails of the unselected
-            // topics would not come and the browse would have gaps. On a full
-            // channel they already come, so asking for them only adds download.
-            allThumbnails: item.allThumbnails ?? item.nodeIds.length > 0,
-        });
+        const kolibriJobId = await findRunningImport(holder.current, item)
+            ?? await queueImport(ctx, holder.current, item, channelName);
+        ctx.log(`Kolibri job: ${kolibriJobId}`);
 
-        const created = await apiJson<KolibriJob | KolibriJob[]>(
-            holder.current, '/api/tasks/tasks/',
-            { method: 'POST', body: JSON.stringify(payload) }, 30000);
-        const kolibriJob = Array.isArray(created) ? created[0] : created;
-        if (!kolibriJob?.id) throw new Error('Kolibri did not return a job id');
-        ctx.log(`Kolibri job: ${kolibriJob.id}`);
+        await pollKolibriJob(ctx, holder, kolibriJobId, label, index, parsed.length);
 
-        await pollKolibriJob(ctx, holder, kolibriJob.id, label, index, parsed.length);
+        let r: ImportResult;
+        try {
+            r = selectionStatus(item.channelId, item.nodeIds, item.excludeNodeIds);
+        } catch (e) {
+            // Retrying is cheap: Kolibri skips the files it already has.
+            throw new Error(`Could not verify the import of ${label}: `
+                + (e instanceof Error ? e.message : String(e)));
+        }
+        ctx.log(`verified: ${r.available}/${r.requested} resources available, `
+            + `${r.notFound} requested node(s) not in the channel`);
+        if (importOutcome(r) === 'failed') {
+            failure = r.requested === 0
+                ? `The selected content of ${label} is no longer in the channel`
+                : `Kolibri finished ${label} but none of its ${r.requested} resources is available`;
+            ctx.log(failure);
+        }
+        total.requested += r.requested;
+        total.available += r.available;
+        total.notFound += r.notFound;
     }
+    // One empty channel in a multi-channel job is a partial result, not a failed job.
+    if (importOutcome(total) === 'failed') throw new Error(failure);
 
-    ctx.update({ phase: 'done', percent: 100, detail: null });
+    // The engine writes 'done'; this records what 'done' delivered.
+    ctx.update({
+        detail: null,
+        result: JSON.stringify({ outcome: importOutcome(total), ...total }),
+    });
 };
 
-/** Follows a Kolibri job to its terminal state, mirroring the progress. */
+/**
+ * The id of an import for this item that Kolibri is already running, or null.
+ * After a dashboard restart the engine relaunches this runner; adopting the running
+ * task avoids a second import of the same selection.
+ */
+async function findRunningImport(session: KolibriSession, item: ParsedItem): Promise<string | null> {
+    try {
+        const tasks = await apiJson<KolibriJob[]>(session, '/api/tasks/tasks/', {}, 30000);
+        const hit = (Array.isArray(tasks) ? tasks : []).find((t) => !polled.has(t.id)
+            && isSameImport(t, item.channelId, item.nodeIds, item.excludeNodeIds));
+        return hit?.id ?? null;
+    } catch {
+        return null;   // Listing is an optimisation; queueing a new task is always correct.
+    }
+}
+
+async function queueImport(ctx: RunnerContext, session: KolibriSession,
+                           item: ParsedItem, channelName: string): Promise<string> {
+    ctx.log(`queueing import of ${item.channelId}: ${channelName}`);
+    const payload = buildTaskPayload({
+        channelId: item.channelId,
+        channelName,
+        nodeIds: item.nodeIds,
+        excludeNodeIds: item.excludeNodeIds,
+        allThumbnails: item.allThumbnails === true,
+    });
+    const created = await apiJson<KolibriJob | KolibriJob[]>(
+        session, '/api/tasks/tasks/',
+        { method: 'POST', body: JSON.stringify(payload) }, 30000);
+    const kolibriJob = Array.isArray(created) ? created[0] : created;
+    if (!kolibriJob?.id) throw new Error('Kolibri did not return a job id');
+    return kolibriJob.id;
+}
+
+/**
+ * Cancels a Kolibri task. apiFetch does not throw on an HTTP error, so the status is
+ * checked: after a long import the session has often expired, and a silent 403 would
+ * leave Kolibri downloading behind a stopped job.
+ */
+async function cancelInKolibri(ctx: RunnerContext, holder: SessionHolder,
+                               kolibriJobId: string): Promise<void> {
+    const post = () => apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
+        { method: 'POST', body: '{}' });
+    try {
+        let res = await post();
+        if ((res.status === 401 || res.status === 403) && await reauthenticate(ctx, holder)) {
+            res = await post();
+        }
+        ctx.log(res.ok
+            ? `job ${kolibriJobId} canceled in Kolibri`
+            : `could not cancel job ${kolibriJobId} in Kolibri: HTTP ${res.status}`);
+    } catch (e) {
+        ctx.log(`could not cancel job ${kolibriJobId} in Kolibri: `
+            + (e instanceof Error ? e.message : String(e)));
+    }
+}
+
+/**
+ * Follows a Kolibri job to COMPLETED, mirroring the progress. Throws on any other end.
+ *
+ * Whatever way this returns or throws, the Kolibri task is left finished and cleared:
+ * a stop, a stall or a lost poll cancels it, so it never keeps downloading behind a
+ * job that is no longer running. A pause is a cancel too: resume() queues the import
+ * again, and Kolibri skips the files it already has.
+ */
 async function pollKolibriJob(
     ctx: RunnerContext,
     holder: SessionHolder,
@@ -270,134 +355,109 @@ async function pollKolibriJob(
     let lastProgressAt = Date.now();
     let taken = false;
     let reauths = 0;
+    let finished = false;   // Kolibri reported a terminal state
 
-    const cancelInKolibri = async (): Promise<void> => {
-        try {
-            await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
-                { method: 'POST', body: '{}' });
-        } catch { /* best effort */ }
-    };
+    polled.add(kolibriJobId);
+    try {
+        for (;;) {
+            throwIfStopped(ctx);
 
-    const clearInKolibri = async (): Promise<void> => {
-        // CAREFUL: DELETE /api/tasks/tasks/<id>/ returns 405 — the viewset defines
-        // delete() but not destroy(), so the router does not route it.
+            let job: KolibriJob;
+            try {
+                job = await apiJson<KolibriJob>(holder.current, `/api/tasks/tasks/${kolibriJobId}/`);
+            } catch (e) {
+                // Expired session: an import can run for hours and outlive the Django
+                // session. Re-authenticate and carry on, instead of losing a job that
+                // Kolibri is probably completing.
+                if (e instanceof KolibriApiError && e.isAuthExpired && reauths < MAX_REAUTH) {
+                    reauths++;
+                    if (await reauthenticate(ctx, holder)) { continue; }
+                }
+                // A one-off polling failure must not kill the job: Kolibri keeps
+                // working. We only abort if it persists beyond the stall timeout.
+                if (Date.now() - lastProgressAt > STALL_TIMEOUT_MS) {
+                    throw new Error(`polling of ${kolibriJobId} failed persistently: `
+                        + (e instanceof Error ? e.message : String(e)));
+                }
+                await sleep(POLL_MS);
+                continue;
+            }
+
+            const meta = job.extra_metadata ?? {};
+            const now = Date.now();
+
+            const patch: JobUpdate = {
+                phase: mapPhase(job.status),
+                detail: total > 1 ? label : (meta.channel_name || label),
+            };
+            const local = mapPercent(job.percentage);
+            if (local >= 0) patch.percent = overallPercent(index, total, local);
+
+            const bytes = meta.transferred_file_size ?? 0;
+            const speed = sampleSpeed(lastBytes, bytes, lastSampleAt, now);
+            if (speed !== null) {
+                patch.speed = speed;
+                lastBytes = bytes;
+                lastSampleAt = now;
+                lastProgressAt = now;
+            }
+            ctx.update(patch);
+
+            // The queued grace only applies BEFORE a worker takes the job. If it has
+            // already run and went back to QUEUED, that is Kolibri's own retry
+            // (enqueue_args.max_retries) and it is legitimate: we do not confuse it
+            // with dead workers.
+            if (PRE_RUN_STATES.has(job.status) && !taken) {
+                if (now - started > QUEUED_GRACE_MS) {
+                    throw new Error(
+                        `Job ${kolibriJobId} is still in ${job.status} after `
+                        + `${Math.round((now - started) / 1000)} s: the Kolibri workers do `
+                        + 'not seem to be active (kolibri start includes them; kolibri services '
+                        + 'starts them without HTTP).');
+                }
+            } else if (!taken) {
+                // It has just moved to RUNNING: we reset the stall clock so as not to
+                // count the time it spent queued.
+                taken = true;
+                lastProgressAt = now;
+            }
+
+            if (job.status === 'RUNNING' && now - lastProgressAt > STALL_TIMEOUT_MS) {
+                throw new Error(
+                    `No progress for ${humanMs(STALL_TIMEOUT_MS)}: Kolibri is `
+                    + 'retrying the download in a loop (unstable network). Job canceled; '
+                    + 'on retry it resumes where it left off.');
+            }
+
+            if (TERMINAL_STATES.has(job.status)) {
+                finished = true;
+                if (job.status === 'FAILED') {
+                    // job.exception is only the class name: a bad channel id reports
+                    // a bare "HTTPError". failureMessage digs the real line out of the
+                    // traceback so the operator is told what actually went wrong.
+                    const detail = failureMessage(job.exception, job.traceback);
+                    ctx.log(`FAILURE in Kolibri: ${detail}`);
+                    if (job.traceback) ctx.log(job.traceback.split('\n').slice(-6).join('\n'));
+                    throw new Error(`Kolibri failed importing ${label}: ${detail}`);
+                }
+                if (job.status === 'CANCELED') throw new CanceledError();
+                const mb = Math.round((meta.transferred_file_size ?? 0) / 1048576);
+                ctx.log(`completed: ${mb} MB transferred`);
+                return;
+            }
+
+            await sleep(POLL_MS);
+        }
+    } finally {
+        polled.delete(kolibriJobId);
+        if (!finished) await cancelInKolibri(ctx, holder, kolibriJobId);
+        // CAREFUL: DELETE /api/tasks/tasks/<id>/ returns 405: the viewset defines
+        // delete() but not destroy(), so the router does not route it. Clearing a task
+        // that is still CANCELING fails; that row is left for Kolibri's own cleanup.
         try {
             await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/clear/`,
                 { method: 'POST', body: '{}' });
         } catch { /* best effort */ }
-    };
-
-    for (;;) {
-        if (ctx.isCanceled()) {
-            // Cancel in Kolibri too: otherwise it would keep downloading in the
-            // background even though our job already shows as canceled.
-            await cancelInKolibri();
-            ctx.log(`job ${kolibriJobId} canceled in Kolibri`);
-            throw new CanceledError();
-        }
-
-        let job: KolibriJob;
-        try {
-            job = await apiJson<KolibriJob>(holder.current, `/api/tasks/tasks/${kolibriJobId}/`);
-        } catch (e) {
-            // Expired session: an import can run for hours and outlive the Django
-            // session. Re-authenticate and carry on, instead of losing a job that
-            // Kolibri is probably completing.
-            if (e instanceof KolibriApiError && e.isAuthExpired && reauths < MAX_REAUTH) {
-                reauths++;
-                if (await reauthenticate(ctx, holder)) { continue; }
-            }
-            // A one-off polling failure must not kill the job: Kolibri keeps
-            // working. We only abort if it persists beyond the stall timeout.
-            if (Date.now() - lastProgressAt > STALL_TIMEOUT_MS) {
-                throw new Error(`polling of ${kolibriJobId} failed persistently: `
-                    + (e instanceof Error ? e.message : String(e)));
-            }
-            await sleep(POLL_MS);
-            continue;
-        }
-
-        const meta = job.extra_metadata ?? {};
-        const now = Date.now();
-
-        const patch: JobUpdate = {
-            phase: mapPhase(job.status),
-            detail: total > 1 ? label : (meta.channel_name || label),
-        };
-        const local = mapPercent(job.percentage);
-        if (local >= 0) patch.percent = overallPercent(index, total, local);
-
-        const bytes = meta.transferred_file_size ?? 0;
-        const speed = sampleSpeed(lastBytes, bytes, lastSampleAt, now);
-        if (speed !== null) {
-            patch.speed = speed;
-            lastBytes = bytes;
-            lastSampleAt = now;
-            lastProgressAt = now;
-        }
-        ctx.update(patch);
-
-        // The queued grace only applies BEFORE a worker takes the job. If it has
-        // already run and went back to QUEUED, that is Kolibri's own retry
-        // (enqueue_args.max_retries) and it is legitimate: we do not confuse it
-        // with dead workers.
-        if (PRE_RUN_STATES.has(job.status) && !taken) {
-            if (now - started > QUEUED_GRACE_MS) {
-                throw new Error(
-                    `Job ${kolibriJobId} is still in ${job.status} after `
-                    + `${Math.round((now - started) / 1000)} s: the Kolibri workers do `
-                    + 'not seem to be active (kolibri start includes them; kolibri services '
-                    + 'starts them without HTTP).');
-            }
-        } else if (!taken) {
-            // It has just moved to RUNNING: we reset the stall clock so as not to
-            // count the time it spent queued.
-            taken = true;
-            lastProgressAt = now;
-        }
-
-        if (job.status === 'RUNNING' && now - lastProgressAt > STALL_TIMEOUT_MS) {
-            await cancelInKolibri();
-            throw new Error(
-                `No progress for ${humanMs(STALL_TIMEOUT_MS)}: Kolibri is `
-                + 'retrying the download in a loop (unstable network). Job canceled; '
-                + 'on retry it resumes where it left off.');
-        }
-
-        if (TERMINAL_STATES.has(job.status)) {
-            // Cleared on ALL terminal paths, not only on success: otherwise the
-            // failed jobs pile up in Kolibri's queue.
-            if (job.status === 'FAILED') {
-                // job.exception is only the class name — a bad channel id reports
-                // a bare "HTTPError". failureMessage digs the real line out of the
-                // traceback so the operator is told what actually went wrong.
-                const detail = failureMessage(job.exception, job.traceback);
-                ctx.log(`FAILURE in Kolibri: ${detail}`);
-                if (job.traceback) ctx.log(job.traceback.split('\n').slice(-6).join('\n'));
-                await clearInKolibri();
-                throw new Error(`Kolibri failed importing ${label}: ${detail}`);
-            }
-            if (job.status === 'CANCELED') {
-                await clearInKolibri();
-                throw new CanceledError();
-            }
-
-            // COMPLETED does NOT guarantee anything was downloaded: with
-            // non-existent node_ids the task ends fine without transferring a byte.
-            const expected = meta.total_resources ?? 0;
-            const got = meta.transferred_resources ?? 0;
-            const mb = Math.round((meta.transferred_file_size ?? 0) / 1048576);
-            ctx.log(`completed: ${got}/${expected} resources, ${mb} MB`);
-            await clearInKolibri();
-            if (expected > 0 && got === 0) {
-                throw new Error(
-                    `Kolibri finished without transferring anything of ${label}: check the nodeIds. `
-                    + 'An empty selection finishes successfully and with no content.');
-            }
-            return;
-        }
-
-        await sleep(POLL_MS);
     }
 }
 

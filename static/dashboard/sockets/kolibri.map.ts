@@ -43,8 +43,16 @@ export function normalizeUuid(raw: unknown): string | null {
     return HEX32.test(v) ? v : null;
 }
 
-/** Translates a Kolibri state into a jobs-engine phase. */
-export function mapPhase(kolibriStatus: string): Phase {
+/** Phases a runner may report while it works. The terminal phases belong to the jobs engine. */
+export type ActivePhase = 'queued' | 'downloading' | 'processing';
+
+/**
+ * Translates a Kolibri state into a jobs-engine phase while the job runs.
+ *
+ * Never returns a terminal phase: a COMPLETED task still has to be verified, so the
+ * runner decides the outcome and the engine writes it (K2GO-475).
+ */
+export function mapPhase(kolibriStatus: string): ActivePhase {
     switch (kolibriStatus) {
         case 'PENDING':
         case 'SCHEDULED':
@@ -53,15 +61,8 @@ export function mapPhase(kolibriStatus: string): Phase {
             return 'queued';
         case 'RUNNING':
             return 'downloading';
-        case 'COMPLETED':
-            return 'done';
-        case 'FAILED':
-            return 'error';
-        case 'CANCELING':
-        case 'CANCELED':
-            return 'canceled';
         default:
-            // A state added in some future version: do not break, keep reporting progress.
+            // Terminal or CANCELING states, and any state a future version adds.
             return 'processing';
     }
 }
@@ -112,19 +113,69 @@ export function buildTaskPayload(item: TaskPayloadInput): Record<string, unknown
         type: TASK_REMOTE_IMPORT,
         channel_id: item.channelId,
         channel_name: item.channelName,
-        // Without this, 404 / ENOENT / invalid-name errors are counted as
-        // "skipped" and the task finishes as COMPLETED.
-        fail_on_error: true,
+        // Studio has dead files (a missing thumbnail returns 404). With true, one of them
+        // aborts the whole import. The runner verifies the result in Kolibri's db instead.
+        fail_on_error: false,
         renderable_only: true,
     };
     if (item.nodeIds && item.nodeIds.length > 0) payload.node_ids = item.nodeIds;
     if (item.excludeNodeIds && item.excludeNodeIds.length > 0) {
         payload.exclude_node_ids = item.excludeNodeIds;
     }
-    // On a partial selection, without this the topic browse has gaps: thumbnails
-    // for unselected topics are never downloaded.
+    // Thumbnails of every topic in the channel. Only when the caller asks: on a small pick
+    // it costs far more than the pick itself.
     if (item.allThumbnails) payload.all_thumbnails = true;
     return payload;
+}
+
+/** Resource counts of one import, read from Kolibri's db after the task completes. */
+export interface ImportResult {
+    /** Resources in the selection. */
+    requested: number;
+    /** Resources Kolibri marks available. */
+    available: number;
+    /** Requested node ids that the channel no longer has. */
+    notFound: number;
+}
+
+/**
+ * The outcome of an import, from what is really in Kolibri's db.
+ *
+ * COMPLETED alone proves nothing: with fail_on_error off, missing files are skipped, and
+ * unknown node ids finish with no transfer at all.
+ */
+export function importOutcome(r: ImportResult): 'complete' | 'partial' | 'failed' {
+    if (r.available <= 0) return 'failed';
+    return r.available < r.requested || r.notFound > 0 ? 'partial' : 'complete';
+}
+
+/** The pieces of a Kolibri task the adoption check reads. */
+export interface KolibriTaskRow {
+    type?: string;
+    status?: string;
+    kwargs?: { node_ids?: string[] | null; exclude_node_ids?: string[] | null };
+    extra_metadata?: { channel_id?: string };
+}
+
+function sameIds(a: string[] | null | undefined, b: string[]): boolean {
+    const x = (a ?? []).map(normalizeUuid).filter((v): v is string => v !== null).sort();
+    const y = [...b].sort();
+    return x.length === y.length && x.every((v, i) => v === y[i]);
+}
+
+/**
+ * True when a task already in Kolibri is the import this item asks for and is still
+ * running. The runner then polls that task instead of queueing a duplicate (after a
+ * dashboard restart). A CANCELING task is not adopted: it ends as CANCELED.
+ */
+export function isSameImport(task: KolibriTaskRow, channelId: string,
+                             nodeIds: string[], excludeNodeIds: string[]): boolean {
+    if (task.type !== TASK_REMOTE_IMPORT) return false;
+    const status = task.status ?? '';
+    if (TERMINAL_STATES.has(status) || status === 'CANCELING') return false;
+    if (normalizeUuid(task.extra_metadata?.channel_id) !== channelId) return false;
+    return sameIds(task.kwargs?.node_ids, nodeIds)
+        && sameIds(task.kwargs?.exclude_node_ids, excludeNodeIds);
 }
 
 /**
