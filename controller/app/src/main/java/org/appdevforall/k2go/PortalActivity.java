@@ -84,6 +84,12 @@ public class PortalActivity extends AppCompatActivity {
     private android.webkit.ValueCallback<android.net.Uri[]> filePathCallback;
     private final static int FILECHOOSER_RESULTCODE = 100;
 
+    // HTML5 <video> fullscreen for the content WebView (Kolibri, Kiwix, ...): the player-provided view,
+    // its callback, and the orientation to restore when leaving fullscreen.
+    private View customView;
+    private android.webkit.WebChromeClient.CustomViewCallback customViewCallback;
+    private int savedOrientation;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -333,6 +339,35 @@ public class PortalActivity extends AppCompatActivity {
                 Log.d(TAG, "WebConsole: " + consoleMessage.message());
                 return true;
             }
+
+            // Without these, the WebView has nowhere to mount an HTML5 <video> fullscreen, so a player's
+            // fullscreen button does nothing and the video stays inline (tiny, portrait). Mount the
+            // player-provided view over the whole window, go immersive + landscape, restore on exit.
+            // Generic: any video (Kolibri, Kiwix, ...). configChanges=orientation|screenSize in the
+            // manifest means the rotation does not recreate the activity, so playback is not reloaded.
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                if (customView != null) { callback.onCustomViewHidden(); return; }
+                customView = view;
+                customViewCallback = callback;
+                savedOrientation = getRequestedOrientation();
+                ((android.view.ViewGroup) getWindow().getDecorView()).addView(customView,
+                        new android.widget.FrameLayout.LayoutParams(
+                                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                                android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
+                androidx.core.view.WindowInsetsControllerCompat wic =
+                        androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+                wic.setSystemBarsBehavior(
+                        androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                wic.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                PortalActivity.this.hideVideoFullscreen();
+            }
         });
 
         // Downloads (ADFA-4512): a WebView never downloads on its own. Navigation routing
@@ -542,9 +577,27 @@ public class PortalActivity extends AppCompatActivity {
         }
     }
 
+    /** Leaves HTML5 video fullscreen: remove the player view, restore the bars and orientation. One
+     *  owner of the teardown, called by the WebChromeClient's onHideCustomView and by Back. */
+    private void hideVideoFullscreen() {
+        if (customView == null) return;
+        ((android.view.ViewGroup) getWindow().getDecorView()).removeView(customView);
+        customView = null;
+        androidx.core.view.WindowInsetsControllerCompat wic =
+                androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        // Keep the bars hidden if the user had turned on the manual fullscreen (btnHome); only video
+        // fullscreen was asking for them, so do not override that state on exit.
+        if (!fullscreenOn) wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(savedOrientation);
+        if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
+    }
+
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (customView != null) {   // in video fullscreen: exit it first, do not leave the viewer
+            hideVideoFullscreen();
+        } else if (webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();
@@ -559,6 +612,7 @@ public class PortalActivity extends AppCompatActivity {
         if (kiwixMgr != null) kiwixMgr.detach();   // ADFA-5004
         if (kolibriGuard != null) kolibriGuard.detach();   // K2GO-395
         if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
+        hideVideoFullscreen();   // K2GO-473: if destroyed mid-fullscreen, notify the player callback + detach the view
         super.onDestroy();
     }
 
