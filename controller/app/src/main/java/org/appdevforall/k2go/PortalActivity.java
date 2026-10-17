@@ -84,6 +84,12 @@ public class PortalActivity extends AppCompatActivity {
     private android.webkit.ValueCallback<android.net.Uri[]> filePathCallback;
     private final static int FILECHOOSER_RESULTCODE = 100;
 
+    // HTML5 <video> fullscreen for the content WebView (Kolibri, Kiwix, ...): the player-provided view,
+    // its callback, and the orientation to restore when leaving fullscreen.
+    private View customView;
+    private android.webkit.WebChromeClient.CustomViewCallback customViewCallback;
+    private int savedOrientation;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -332,6 +338,43 @@ public class PortalActivity extends AppCompatActivity {
                 // Surfaces in-page diagnostics (incl. IIAB-TOUCH probes) to logcat.
                 Log.d(TAG, "WebConsole: " + consoleMessage.message());
                 return true;
+            }
+
+            // Without these, the WebView has nowhere to mount an HTML5 <video> fullscreen, so a player's
+            // fullscreen button does nothing and the video stays inline (tiny, portrait). Mount the
+            // player-provided view over the whole window, go immersive + landscape, restore on exit.
+            // Generic: any video (Kolibri, Kiwix, ...). configChanges=orientation|screenSize in the
+            // manifest means the rotation does not recreate the activity, so playback is not reloaded.
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                if (customView != null) { callback.onCustomViewHidden(); return; }
+                customView = view;
+                customViewCallback = callback;
+                savedOrientation = getRequestedOrientation();
+                ((android.view.ViewGroup) getWindow().getDecorView()).addView(customView,
+                        new android.widget.FrameLayout.LayoutParams(
+                                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                                android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
+                androidx.core.view.WindowInsetsControllerCompat wic =
+                        androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+                wic.setSystemBarsBehavior(
+                        androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                wic.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                if (customView == null) return;
+                ((android.view.ViewGroup) getWindow().getDecorView()).removeView(customView);
+                customView = null;
+                androidx.core.view.WindowInsetsControllerCompat wic =
+                        androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+                wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                setRequestedOrientation(savedOrientation);
+                if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
             }
         });
 
