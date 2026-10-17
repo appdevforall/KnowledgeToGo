@@ -124,15 +124,21 @@ export async function login(
     //    so a GET is enough.
     let cookie = '';
     let csrfToken: string | null = null;
+    let seedStatus = 0;
     try {
         const seed = await fetchWithTimeout(`${KOLIBRI_BASE}/api/auth/session/current/`,
             { headers: { ...agent } });
         const setCookies = seed.headers.getSetCookie();
         cookie = mergeCookies('', setCookies);
         csrfToken = cookieValue(setCookies, CSRF_COOKIE);
+        seedStatus = seed.status;
     } catch (e) {
         throw new KolibriAuthError('unreachable',
             `Kolibri did not respond at ${KOLIBRI_BASE}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+    if (seedStatus >= 500) {
+        // Listening but not serving yet (still starting): not a protocol problem.
+        throw new KolibriAuthError('unreachable', `Kolibri answered HTTP ${seedStatus}`);
     }
     if (!csrfToken) {
         throw new KolibriAuthError('protocol',
@@ -174,6 +180,9 @@ export async function login(
         throw new KolibriAuthError('protocol',
             `Kolibri rejected the login request (HTTP 400), not the credentials: `
             + (detail.slice(0, 200) || 'no detail'));
+    }
+    if (res.status >= 500) {
+        throw new KolibriAuthError('unreachable', `Login returned HTTP ${res.status}`);
     }
     if (!res.ok) {
         throw new KolibriAuthError('protocol', `Login returned HTTP ${res.status}`);
