@@ -18,6 +18,9 @@ public final class CatalogFreshness {
     /** How long before the app bothers checking the manifest again. */
     public static final long DEFAULT_TTL_MS = 7L * 24 * 60 * 60 * 1000;
 
+    /** K2GO-476: after a failed pull (download or hash), wait this long before pulling again. */
+    public static final long FAILURE_BACKOFF_MS = 24L * 60 * 60 * 1000;
+
     private CatalogFreshness() {
     }
 
@@ -43,5 +46,17 @@ public final class CatalogFreshness {
         if (remoteHash == null || remoteHash.isEmpty()) return false;
         if (localHash == null || localHash.isEmpty()) return true;
         return !localHash.equals(remoteHash);
+    }
+
+    /**
+     * K2GO-476: true when a pulled overlay should be read instead of the APK asset. An app update
+     * can ship an asset newer than an overlay pulled weeks before; the overlay must not win then.
+     * Dates are the files' {@code generated} headers (ISO, so they compare as text). An asset
+     * with no date predates them all; an overlay with no date loses to a dated asset.
+     */
+    public static boolean overlayIsCurrent(String overlayGenerated, String assetGenerated) {
+        if (assetGenerated == null || assetGenerated.isEmpty()) return true;
+        if (overlayGenerated == null || overlayGenerated.isEmpty()) return false;
+        return overlayGenerated.compareTo(assetGenerated) >= 0;
     }
 }

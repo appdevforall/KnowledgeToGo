@@ -61,32 +61,43 @@ public final class CatalogRefreshWorker extends Worker {
         if (!force && !CatalogFreshness.dueForCheck(store.lastCheckMs(name), now, CatalogFreshness.DEFAULT_TTL_MS)) {
             return Result.success();   // still fresh; do not hit the network
         }
+        // K2GO-476: a pull that failed recently (a bad publish) is not repeated on every open.
+        long lastFailure = store.lastFailureMs(name);
+        if (!force && lastFailure > 0
+                && !CatalogFreshness.dueForCheck(lastFailure, now, CatalogFreshness.FAILURE_BACKOFF_MS)) {
+            return Result.success();
+        }
 
+        // K2GO-476: a check counts only once it has an answer. Recording it before the download
+        // let one failed pull hide behind the TTL for a week.
+        File overlay = CatalogOverlay.file(ctx, basename);
         CatalogManifestClient client = new CatalogManifestClient();
-        CatalogManifestClient.Result res = client.fetchManifest(manifestUrl, store.etag(name));
+        // Without the overlay there is nothing a 304 could confirm, so ask for the manifest.
+        CatalogManifestClient.Result res = client.fetchManifest(manifestUrl,
+                overlay.exists() ? store.etag(name) : null);
         if (res.status == CatalogManifestClient.Status.FAILED) {
             return Result.retry();     // offline / server hiccup: back off and try again
         }
-        store.recordChecked(name, now);
         if (res.status == CatalogManifestClient.Status.NOT_MODIFIED) {
+            store.recordChecked(name, now);
             return Result.success();
         }
 
         CatalogManifest m = res.manifest;
-        if (!CatalogFreshness.changed(store.activeHash(name), m.hash())) {
+        if (overlay.exists() && !CatalogFreshness.changed(store.activeHash(name), m.hash())) {
             // Same content the app already uses; just refresh the ETag so next check is cheaper.
             store.recordApplied(name, m.hash(), m.generated(), res.etag, now);
             return Result.success();
         }
 
-        File overlay = CatalogOverlay.file(ctx, basename);
-        if (!client.downloadTo(m.url(), overlay)) {
-            return Result.retry();
-        }
-        if (!hashMatches(overlay, m.hash())) {
-            Log.w(TAG, "catalog " + name + " hash mismatch after download; discarding");
-            overlay.delete();
-            return Result.retry();
+        // Download beside the overlay, verify, then swap: a bad file never replaces a good one.
+        // The tmp from an attempt the process did not finish is overwritten here.
+        File tmp = new File(overlay.getAbsolutePath() + ".tmp");
+        if (!client.downloadTo(m.url(), tmp) || !hashMatches(tmp, m.hash()) || !tmp.renameTo(overlay)) {
+            Log.w(TAG, "catalog " + name + " pull failed; keeping the current one for now");
+            tmp.delete();
+            store.recordFailed(name, now);
+            return Result.success();   // backed off by FAILURE_BACKOFF_MS, not retried in a loop
         }
         store.recordApplied(name, m.hash(), m.generated(), res.etag, now);
         Log.d(TAG, "catalog " + name + " updated to " + m.version());

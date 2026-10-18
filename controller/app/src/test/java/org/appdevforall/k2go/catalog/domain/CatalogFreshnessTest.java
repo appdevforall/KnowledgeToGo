@@ -38,4 +38,20 @@ public class CatalogFreshnessTest {
         assertFalse(CatalogFreshness.changed("h1", null));   // unknown remote -> no swap
         assertFalse(CatalogFreshness.changed("h1", ""));
     }
+
+    // K2GO-476: a pulled overlay must not hide a newer asset an app update shipped.
+
+    @Test
+    public void anOverlayIsUsedUnlessTheAssetIsNewer() {
+        assertTrue(CatalogFreshness.overlayIsCurrent("2026-10-17", "2026-08-31"));
+        assertTrue(CatalogFreshness.overlayIsCurrent("2026-10-17", "2026-10-17"));
+        assertFalse(CatalogFreshness.overlayIsCurrent("2026-08-31", "2026-10-17"));
+    }
+
+    @Test
+    public void undatedFilesFollowTheirAge() {
+        assertTrue(CatalogFreshness.overlayIsCurrent("2026-10-17T23:48:31Z", ""));   // old undated asset
+        assertTrue(CatalogFreshness.overlayIsCurrent("", ""));                       // both predate dates
+        assertFalse(CatalogFreshness.overlayIsCurrent("", "2026-10-17T23:48:31Z"));  // dated asset wins
+    }
 }

@@ -20,12 +20,9 @@ import org.appdevforall.k2go.kolibri.domain.TopicNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.zip.GZIPInputStream;
 
 /**
  * The topic tree bundled with the app, as a {@link TreeSource}.
@@ -107,12 +104,15 @@ public final class BundledTreeSource implements TreeSource {
             }
             BundledTreeIndex.Builder builder = BundledTreeIndex.builder();
 
-            // Prefer the pulled overlay over the APK asset when it is present.
+            // Prefer the pulled overlay over the APK asset, unless an app update shipped a newer
+            // asset (K2GO-476).
             File overlay = CatalogOverlay.file(appContext, ASSET);
-            boolean useOverlay = overlay.exists();
-            long mtime = useOverlay ? overlay.lastModified() : 0L;
+            boolean useOverlay = CatalogOverlay.preferOverlay(appContext, ASSET, APK_ASSET);
+            // The overlay's own mtime even when the asset won, or reloadIfOverlayChanged would
+            // see a difference on every call and re-read the whole tree each time.
+            long mtime = overlay.exists() ? overlay.lastModified() : 0L;
 
-            try (InputStream is = readGzipAware(useOverlay
+            try (InputStream is = CatalogOverlay.gzipAware(useOverlay
                     ? new FileInputStream(overlay) : appContext.getAssets().open(APK_ASSET));
                  BufferedReader r = new BufferedReader(
                          new InputStreamReader(is, StandardCharsets.UTF_8))) {
@@ -134,30 +134,5 @@ public final class BundledTreeSource implements TreeSource {
             cachedOverlayMtime = mtime;
             return cachedIndex;
         }
-    }
-
-    /**
-     * Reads {@code in} whether it is gzip or plain, so the single reader serves both tree sources:
-     * the R2 overlay is a real gzip, while the APK asset is the same bundle but already decompressed
-     * by AGP (which strips the {@code .gz} from any {@code *.gz} asset at merge time). The 2-byte
-     * gzip signature (0x1f 0x8b) decides, so the two paths cannot drift out of sync again. The
-     * caller closes the returned stream, which closes {@code in}.
-     */
-    private static InputStream readGzipAware(InputStream in) throws IOException {
-        PushbackInputStream pb = new PushbackInputStream(in, 2);
-        byte[] sig = new byte[2];
-        int n = 0;
-        while (n < 2) {
-            int r = pb.read(sig, n, 2 - n);
-            if (r < 0) {
-                break;
-            }
-            n += r;
-        }
-        boolean gzip = n == 2 && (sig[0] & 0xff) == 0x1f && (sig[1] & 0xff) == 0x8b;
-        if (n > 0) {
-            pb.unread(sig, 0, n);
-        }
-        return gzip ? new GZIPInputStream(pb) : pb;
     }
 }
