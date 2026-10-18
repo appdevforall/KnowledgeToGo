@@ -180,6 +180,19 @@ def write(rows, out_path, source):
 # writing, and cross-checks the walked resource count against the catalog's
 # total_resource_count so a failed/short channel is visible rather than silent.
 
+# A new channel list shorter than this share of the current one is a failed fetch.
+MIN_KEEP = 0.8
+
+
+def existing_count(path):
+    """The channel count in the header of the current catalog asset, or 0."""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return int(json.loads(f.readline()).get("count") or 0)
+    except (OSError, ValueError):
+        return 0
+
+
 def download_channel_db(channel_id):
     """Fetch a channel's published content DB to a temp file. Caller deletes it."""
     req = urllib.request.Request(DB_URL.format(channel_id),
@@ -196,21 +209,26 @@ def download_channel_db(channel_id):
 
 def walk_channel_db(db_path):
     """Flat rows for one channel from its content DB: {id,parent,title,kind,is_leaf,
-    size,count,subbytes}. size = own content bytes; count/subbytes = subtree totals."""
+    size,count,subbytes,dbytes}. size = own content bytes; count = subtree resources;
+    subbytes/dbytes = bytes of the DISTINCT files below (K2GO-476)."""
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     try:
         nodes = con.execute(
             "SELECT id, parent_id, title, kind, rght FROM content_contentnode").fetchall()
-        own = {}
-        for r in con.execute(
-                "SELECT f.contentnode_id AS nid, COALESCE(SUM(lf.file_size), 0) AS b "
-                "FROM content_file f JOIN content_localfile lf ON lf.id = f.local_file_id "
-                "WHERE f.thumbnail = 0 AND f.supplementary = 0 "
-                "GROUP BY f.contentnode_id"):
-            own[r["nid"]] = int(r["b"] or 0)
+        files = con.execute(
+            "SELECT f.contentnode_id AS nid, f.local_file_id AS fid, lf.file_size AS b "
+            "FROM content_file f JOIN content_localfile lf ON lf.id = f.local_file_id "
+            "WHERE f.thumbnail = 0 AND f.supplementary = 0").fetchall()
     finally:
         con.close()
+
+    own = {}
+    occurrences = {}   # file id -> (size, [node ids that use it])
+    for r in files:
+        size = int(r["b"] or 0)
+        own[r["nid"]] = own.get(r["nid"], 0) + size
+        occurrences.setdefault(r["fid"], (size, []))[1].append(r["nid"])
 
     rows = []
     for n in nodes:
@@ -223,19 +241,46 @@ def walk_channel_db(db_path):
             "count": 0, "subbytes": 0,
         })
 
-    # Subtree totals bottom-up: a node's rght exceeds all its descendants', so
+    # Resource counts bottom-up: a node's rght exceeds all its descendants', so
     # ascending-rght order processes children before parents (one MPTT tree/channel).
     sub_c = {r["id"]: (1 if r["is_leaf"] else 0) for r in rows}
-    sub_b = {r["id"]: r["size"] for r in rows}
     for r in sorted(rows, key=lambda x: x["rght"]):
         p = r["parent"]
         if p in sub_c:
             sub_c[p] += sub_c[r["id"]]
-            sub_b[p] += sub_b[r["id"]]
+
+    sub_b, direct_b = distinct_bytes(occurrences, {r["id"]: r["parent"] for r in rows},
+                                     {r["id"] for r in rows if r["is_leaf"]})
     for r in rows:
         r["count"] = sub_c[r["id"]]
-        r["subbytes"] = sub_b[r["id"]]
+        r["subbytes"] = sub_b.get(r["id"], 0)
+        r["dbytes"] = direct_b.get(r["id"], 0)
     return rows
+
+
+def distinct_bytes(occurrences, parent_of, leaves):
+    """Bytes of the distinct files under each node, and under each folder's direct leaves.
+
+    A file used by several nodes (the same video in two topics) counts once per folder,
+    as Kolibri downloads it once. Each occurrence walks up its ancestors and stops at one
+    this file already reached, so the cost is about occurrences x depth.
+    The box applies the same rule (static/dashboard/sockets/kolibri.query.ts).
+    """
+    sub_b, direct_b = {}, {}
+    for size, nodes in occurrences.values():
+        seen, direct_seen = set(), set()
+        for node in nodes:
+            if node in leaves:
+                parent = parent_of.get(node)
+                if parent and parent not in direct_seen:
+                    direct_seen.add(parent)
+                    direct_b[parent] = direct_b.get(parent, 0) + size
+            cur = node
+            while cur and cur not in seen:
+                seen.add(cur)
+                sub_b[cur] = sub_b.get(cur, 0) + size
+                cur = parent_of.get(cur)
+    return sub_b, direct_b
 
 
 def project_rows(rows, variant):
@@ -255,23 +300,21 @@ def project_rows(rows, variant):
     direct = {}
     for r in rows:
         if r["is_leaf"]:
-            d = direct.setdefault(r["parent"], [0, 0])
-            d[0] += 1
-            d[1] += r["size"]
+            direct[r["parent"]] = direct.get(r["parent"], 0) + 1
     out = []
     for r in rows:
         if r["is_leaf"] and r["kind"] != "topic":
             continue
-        dc, db = direct.get(r["id"], (0, 0))
         out.append({"id": r["id"], "parent": r["parent"], "title": r["title"],
                     "kind": r["kind"], "count": r["count"], "bytes": r["subbytes"],
-                    "dcount": dc, "dbytes": db})
+                    "dcount": direct.get(r["id"], 0), "dbytes": r["dbytes"]})
     return out
 
 
-def serialize(rows):
-    body = "\n".join(json.dumps(r, ensure_ascii=False, sort_keys=True) for r in rows)
-    return (body + "\n").encode("utf-8")
+def serialize(rows, header=None):
+    lines = [json.dumps(header, ensure_ascii=False, sort_keys=True)] if header else []
+    lines += [json.dumps(r, ensure_ascii=False, sort_keys=True) for r in rows]
+    return ("\n".join(lines) + "\n").encode("utf-8")
 
 
 def human(n):
@@ -344,6 +387,11 @@ def main():
     # ---- catalog mode (unchanged default behaviour) ----
     if not args.tree and not args.measure:
         out = args.out or os.path.normpath(DEFAULT_OUT)
+        before = existing_count(out)
+        if before and len(channels) < before * MIN_KEEP:
+            print(">> [kolibri] only {} channels vs {} in the current asset; keeping it".format(
+                len(channels), before), file=sys.stderr)
+            return 1
         size = write(channels, out, source)
         print(">> [kolibri catalog] {} channels -> {} ({:.0f} KB)".format(
             len(channels), out, size / 1024.0))
@@ -362,6 +410,10 @@ def main():
         flag = "   <-- MISMATCH: a channel DB failed to download/parse"
     print(">> walked {:,} nodes, {:,} resource leaves; catalog reports {:,} resources{}".format(
         len(rows), walked_res, catalog_res, flag))
+    if flag and not args.measure:
+        # A short tree would replace the good one on every device that refreshes.
+        print(">> [kolibri tree] incomplete walk; keeping the existing asset", file=sys.stderr)
+        return 1
 
     if args.measure:
         print(">> sizes (nothing written):")
@@ -374,7 +426,9 @@ def main():
     tmp = out + ".tmp"
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(tmp, "wb") as f:
-        f.write(serialize(proj))
+        f.write(serialize(proj, {"catalog": "kolibri-tree", "variant": args.tree,
+                                 "generated": datetime.datetime.now(datetime.timezone.utc)
+                                 .strftime("%Y-%m-%dT%H:%M:%SZ")}))
     os.replace(tmp, out)
     print(">> [kolibri tree:{}] {} nodes -> {} ({})".format(
         args.tree, len(proj), out, human(os.path.getsize(out))))

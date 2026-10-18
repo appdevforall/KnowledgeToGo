@@ -28,6 +28,7 @@ import {
     TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent, toRemoteChannel,
 } from './kolibri.map';
 import type { RemoteChannel, ImportResult } from './kolibri.map';
+import { distinctSubtreeBytes } from './kolibri.map';
 
 const KOLIBRI_HOME = process.env.KOLIBRI_HOME || '/library/kolibri';
 const MAIN_DB = path.join(KOLIBRI_HOME, 'db.sqlite3');
@@ -252,6 +253,8 @@ interface StudioNode {
     lft: number;
     rght: number;
     files: StudioFile[];
+    /** K2GO-476: a topic's distinct-file bytes, measured over its whole range. */
+    subtree_bytes?: number;
     children: { more: unknown | null; results: StudioNode[] };
 }
 
@@ -263,7 +266,7 @@ interface CnRow {
     lft: number;
     rght: number;
 }
-interface FileRow { node_id: string; preset: string; file_size: number; }
+interface FileRow { node_id: string; preset: string; file_size: number; file_id: string; }
 
 // A generous ceiling that keeps the JSON well under LocalTreeSource's 8 MB cap while
 // covering ordinary channels whole. A subtree larger than this is truncated and its root
@@ -303,7 +306,8 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
         // built node without its files, under-counting its size. Files for nodes past the cap
         // are simply never looked up.
         const files = db.prepare(
-            `SELECT f.contentnode_id AS node_id, f.preset AS preset, lf.file_size AS file_size
+            `SELECT f.contentnode_id AS node_id, f.preset AS preset, lf.file_size AS file_size,
+                    f.local_file_id AS file_id
                FROM content_file f
                JOIN content_localfile lf ON lf.id = f.local_file_id
               WHERE f.thumbnail = 0 AND f.supplementary = 0
@@ -313,11 +317,24 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
         ).all(root.channel_id, root.lft, root.rght) as FileRow[];
 
         const filesByNode = new Map<string, StudioFile[]>();
+        const uses = new Map<string, { size: number; nodes: string[] }>();
         for (const f of files) {
             const arr = filesByNode.get(f.node_id) ?? [];
             arr.push({ file_size: f.file_size ?? 0, preset: f.preset ?? '' });
             filesByNode.set(f.node_id, arr);
+            const u = uses.get(f.file_id) ?? { size: f.file_size ?? 0, nodes: [] };
+            u.nodes.push(f.node_id);
+            uses.set(f.file_id, u);
         }
+        // Folder sizes from the whole range, not only the capped rows, so a truncated
+        // subtree still reports exact folder sizes (one rule with the catalog generator).
+        const parentOf = new Map<string, string | null>(
+            (db.prepare(
+                `SELECT id, parent_id FROM content_contentnode
+                  WHERE channel_id = ? AND lft >= ? AND rght <= ?`,
+            ).all(root.channel_id, root.lft, root.rght) as Array<{ id: string; parent_id: string | null }>)
+                .map((r) => [r.id, r.parent_id]));
+        const subtreeBytes = distinctSubtreeBytes(uses, parentOf);
 
         const byId = new Map<string, StudioNode>();
         for (const r of rows) {
@@ -329,6 +346,7 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
                 lft: r.lft,
                 rght: r.rght,
                 files: filesByNode.get(r.id) ?? [],
+                ...(r.kind === 'topic' ? { subtree_bytes: subtreeBytes.get(r.id) ?? 0 } : {}),
                 children: { more: null, results: [] },
             });
         }

@@ -18,7 +18,7 @@ import assert from 'node:assert/strict';
 import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError, login } from './kolibri.session';
 import {
     mapPhase, mapPercent, normalizeUuid, buildTaskPayload, overallPercent, sampleSpeed,
-    toRemoteChannel, failureMessage, importOutcome, isSameImport,
+    toRemoteChannel, failureMessage, importOutcome, isSameImport, distinctSubtreeBytes,
 } from './kolibri.map';
 
 // ─── cookieValue ─────────────────────────────────────────────────────────────
@@ -461,4 +461,22 @@ test('login without a consumer keeps this process own agent', async () => {
     // identity: omitting the argument has to leave the header untouched, not empty it.
     const seen = await captureUserAgents(() => login({ username: 'Admin', password: 'x' }));
     assert.deepEqual(seen, [null, null]);
+});
+
+// distinctSubtreeBytes
+
+test('distinctSubtreeBytes counts a file shared by two topics once per folder', () => {
+    // root -> A -> v1, root -> B -> v2; v1 and v2 use the same 100-byte video, B also a 7-byte file.
+    const parentOf = new Map<string, string | null>([
+        ['root', null], ['A', 'root'], ['B', 'root'], ['v1', 'A'], ['v2', 'B'],
+    ]);
+    const uses = new Map([
+        ['video', { size: 100, nodes: ['v1', 'v2'] }],
+        ['pdf', { size: 7, nodes: ['v2'] }],
+    ]);
+    const b = distinctSubtreeBytes(uses, parentOf);
+    assert.equal(b.get('A'), 100);
+    assert.equal(b.get('B'), 107);
+    assert.equal(b.get('root'), 107);   // not 207: the shared video counts once
+    assert.equal(b.get('v1'), 100);
 });

@@ -30,15 +30,21 @@ jobs:
         with:
           python-version: '3.x'
 
+      # K2GO-476: the generator rules (distinct-file sizes) are checked before anything is built.
+      - name: Test catalog generators
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
+
       # The generators query Studio/Kiwix once, here, on a runner with bandwidth — not from
       # every release build (ADR-4954 D1). Never fail the job: a blocked fetch keeps the
-      # committed asset, and we simply skip its upload below.
+      # committed asset, and we simply skip its upload below. K2GO-476: a fresh file is marked
+      # (.ok_<name>), because the committed asset is always in the checkout and is older than
+      # what R2 already serves; republishing it would roll every device back.
       - name: Generate catalogs
         run: |
-          python3 tools/build_kolibri_catalog.py || echo "::warning::kolibri generator failed; its upload will be skipped"
-          python3 tools/build_kolibri_catalog.py --tree topics && gzip -9 -n -f src/main/assets/kolibri_tree.jsonl || echo "::warning::kolibri tree generator failed; its upload will be skipped"
-          python3 tools/build_kiwix_catalog.py   || echo "::warning::kiwix generator failed; its upload will be skipped"
-          python3 tools/build_maps_catalog.py    || echo "::warning::maps generator failed; its upload will be skipped"
+          python3 tools/build_kolibri_catalog.py && touch .ok_kolibri || echo "::warning::kolibri generator failed; its upload will be skipped"
+          python3 tools/build_kolibri_catalog.py --tree topics && gzip -9 -n -f src/main/assets/kolibri_tree.jsonl && touch .ok_kolibri-tree || echo "::warning::kolibri tree generator failed; its upload will be skipped"
+          python3 tools/build_kiwix_catalog.py && touch .ok_kiwix || echo "::warning::kiwix generator failed; its upload will be skipped"
+          python3 tools/build_maps_catalog.py && touch .ok_maps || echo "::warning::maps generator failed; its upload will be skipped"
 
       - name: Build manifests and upload to Cloudflare R2
         env:
@@ -59,6 +65,10 @@ jobs:
           #   the "a newer version exists" signal; "none" -> file-level hash only (e.g. Kiwix CSV).
           publish() {
             name="$1"; file="$2"; ctype="$3"; items_mode="$4"
+            if [ ! -f ".ok_$name" ]; then
+              echo "::warning::$name was not generated this run; skipping (kept what is already published)"
+              return 0
+            fi
             if [ ! -f "$file" ]; then
               echo "::warning::$file not found; skipping $name (kept whatever is already published)"
               return 0

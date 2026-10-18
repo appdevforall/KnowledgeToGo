@@ -200,4 +200,26 @@ public class StudioCatalogMapperTest {
         assertNull(StudioCatalogMapper.tree(new JSONObject().put("id", "nope")));
         assertNull(StudioCatalogMapper.tree(null));
     }
+
+    @Test
+    public void aTopicTheBoxMeasuredUsesThatSizeNotTheSumOfItsChildren() throws Exception {
+        // K2GO-476: two leaves use the same 100-byte video; the box sends the distinct total.
+        String v1 = "11111111111111111111111111111111";
+        String v2 = "22222222222222222222222222222222";
+        JSONObject leaf1 = new JSONObject().put("id", v1).put("kind", "video").put("is_leaf", true)
+                .put("files", new JSONArray().put(new JSONObject().put("file_size", 100)));
+        JSONObject leaf2 = new JSONObject().put("id", v2).put("kind", "video").put("is_leaf", true)
+                .put("files", new JSONArray().put(new JSONObject().put("file_size", 100)));
+        JSONObject topic = new JSONObject().put("id", NODE).put("kind", "topic").put("is_leaf", false)
+                .put("lft", 1).put("rght", 6).put("subtree_bytes", 100)
+                .put("children", new JSONObject().put("more", JSONObject.NULL)
+                        .put("results", new JSONArray().put(leaf1).put(leaf2)));
+        TopicNode t = StudioCatalogMapper.tree(topic);
+        assertTrue(t.hasSubtreeSize());
+        assertEquals(100L, t.subtreeBytes());
+        assertEquals(2, t.children().size());
+        // Without the field (Studio) the folder still sums its children.
+        topic.remove("subtree_bytes");
+        assertEquals(200L, StudioCatalogMapper.tree(topic).subtreeBytes());
+    }
 }

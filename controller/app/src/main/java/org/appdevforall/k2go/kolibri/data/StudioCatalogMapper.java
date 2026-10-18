@@ -134,6 +134,13 @@ public final class StudioCatalogMapper {
             complete = childrenBlock.isNull("more");
         }
 
+        // K2GO-476: the box measures a topic's distinct-file size; Studio does not send it.
+        long measured = node.optLong("subtree_bytes", -1L);
+        if (!node.optBoolean("is_leaf", false) && measured >= 0L) {
+            return TopicNode.measured(node.optString("id", ""), node.optString("title", ""),
+                    node.optString("kind", ""), measured, descendantCount(node), kids);
+        }
+
         return TopicNode.of(
                 node.optString("id", ""),
                 node.optString("title", ""),

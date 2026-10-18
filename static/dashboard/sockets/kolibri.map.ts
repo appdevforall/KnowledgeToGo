@@ -273,3 +273,33 @@ export function sampleSpeed(
     const dtSec = Math.max(0.001, (nextAtMs - prevAtMs) / 1000);
     return Math.max(0, Math.round((nextBytes - prevBytes) / dtSec));
 }
+
+/**
+ * K2GO-476: bytes of the DISTINCT files under each node.
+ *
+ * A file used by several nodes (the same video in two topics) counts once per folder,
+ * as Kolibri downloads it once; summing per node inflated folders 1.2x-1.7x. Each use
+ * walks up its ancestors and stops at one this file already reached. The catalog
+ * generator applies the same rule (controller/app/tools/build_kolibri_catalog.py).
+ *
+ * @param uses     file id -> its size and the node ids that use it
+ * @param parentOf node id -> parent node id
+ */
+export function distinctSubtreeBytes(
+    uses: Map<string, { size: number; nodes: string[] }>,
+    parentOf: Map<string, string | null>,
+): Map<string, number> {
+    const out = new Map<string, number>();
+    for (const { size, nodes } of uses.values()) {
+        const seen = new Set<string>();
+        for (const node of nodes) {
+            let cur: string | null | undefined = node;
+            while (cur && !seen.has(cur)) {
+                seen.add(cur);
+                out.set(cur, (out.get(cur) ?? 0) + size);
+                cur = parentOf.get(cur);
+            }
+        }
+    }
+    return out;
+}
