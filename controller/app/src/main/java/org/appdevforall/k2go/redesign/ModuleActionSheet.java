@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.system.domain.Operation;
@@ -134,20 +132,9 @@ public final class ModuleActionSheet {
         final String key = card != null ? card.key() : null;
         final boolean sel = card != null && card.hasSelector;   // ADFA-4958: maps = module WITH a content selector
 
-        final BottomSheetDialog dlg = new BottomSheetDialog(ctx);
-        LinearLayout content = new LinearLayout(ctx);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_surface));
-        content.setPadding(dp(ctx, 16), dp(ctx, 10), dp(ctx, 16), dp(ctx, 20));
-
-        // Drag handle.
-        View handle = new View(ctx);
-        handle.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_hairline));
-        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(dp(ctx, 42), dp(ctx, 5));
-        hlp.gravity = Gravity.CENTER_HORIZONTAL;
-        hlp.bottomMargin = dp(ctx, 12);
-        content.addView(handle, hlp);
-
+        // K2GO-477: K2GoBottomSheet owns the chrome, the open-expanded behavior and the lifecycle
+        // (auto-dismiss on stop). This builder only adds this sheet's header and action rows.
+        K2GoBottomSheet.show(act, (androidx.lifecycle.LifecycleOwner) act, (dlg, content) -> {
         // Header: glyph + title + subtitle (project · state).
         LinearLayout header = new LinearLayout(ctx);
         header.setOrientation(LinearLayout.HORIZONTAL);
@@ -302,17 +289,7 @@ public final class ModuleActionSheet {
                         if (onChanged != null) onChanged.run();
                     }));
         }
-        // ADFA-5061: scrollable. The sheet was a plain LinearLayout in a FrameLayout, so its
-        // tallest configuration — About, a two-line Install, Schedule and Hide under a header
-        // whose subtitle can wrap in a verbose locale — clipped its bottom rows in landscape and
-        // at large font scales, with no way to reach them. Adding a row made that reachable
-        // rather than theoretical, and the fix belongs here rather than in a row budget.
-        androidx.core.widget.NestedScrollView scroller = new androidx.core.widget.NestedScrollView(ctx);
-        scroller.addView(content, new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT));
-        dlg.setContentView(scroller);
-        dlg.show();
+        }, null);
     }
 
     private static View row(Context ctx, int iconRes, String label, Emphasis emphasis,

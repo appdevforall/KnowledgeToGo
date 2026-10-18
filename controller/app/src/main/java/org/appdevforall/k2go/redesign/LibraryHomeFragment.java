@@ -449,19 +449,10 @@ public class LibraryHomeFragment extends Fragment {
      */
     private void openCodeDevSheet() {
         final Context ctx = requireContext();
-        final com.google.android.material.bottomsheet.BottomSheetDialog dlg =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(ctx);
-        LinearLayout content = new LinearLayout(ctx);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_surface));
-        content.setPadding(dpx(16), dpx(10), dpx(16), dpx(20));
-
-        View handle = new View(ctx);
-        handle.setBackgroundColor(ContextCompat.getColor(ctx, R.color.k2go_hairline));
-        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(dpx(42), dpx(5));
-        hlp.gravity = Gravity.CENTER_HORIZONTAL; hlp.bottomMargin = dpx(12);
-        content.addView(handle, hlp);
-
+        // K2GO-477: the chrome, the open-expanded behavior and the lifecycle (auto-dismiss on stop)
+        // are owned by K2GoBottomSheet. This builder adds only the group's title, count and member
+        // rows; the onDismiss hook drops the row-view refs the members hold.
+        K2GoBottomSheet.show(requireActivity(), getViewLifecycleOwner(), (dlg, content) -> {
         TextView title = new TextView(ctx);
         // K2GO-445: spell out "Development" in the sheet header (room here), while the tile keeps "Dev".
         title.setText(R.string.k2go_code_dev_sheet_title);
@@ -555,14 +546,9 @@ public class LibraryHomeFragment extends Fragment {
             content.addView(rowv);
         }
 
-        // Drop the row-view refs when the sheet closes, so the persistent member Cards do not keep
-        // detached views (built from the Activity context) alive until the next populate.
-        dlg.setOnDismissListener(d -> { for (Card mm : codeDevMembers) { mm.dot = null; mm.status = null; } });
-
-        androidx.core.widget.NestedScrollView scroller = new androidx.core.widget.NestedScrollView(ctx);
-        scroller.addView(content, new android.widget.FrameLayout.LayoutParams(-1, -2));
-        dlg.setContentView(scroller);
-        dlg.show();
+        // K2GO-477: drop the row-view refs when the sheet closes, so the persistent member Cards do
+        // not keep detached views (built from the Activity context) alive until the next populate.
+        }, () -> { for (Card mm : codeDevMembers) { mm.dot = null; mm.status = null; } });
     }
 
     private int dpx(int dp) {
