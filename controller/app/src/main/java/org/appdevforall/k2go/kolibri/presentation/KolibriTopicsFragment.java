@@ -294,10 +294,8 @@ public final class KolibriTopicsFragment extends Fragment {
         long asOf = s.node() == null ? 0L : s.node().asOfMs();
         // INVISIBLE, not GONE: the empty slot keeps the count at the end of the row.
         updated.setVisibility(asOf > 0L ? View.VISIBLE : View.INVISIBLE);
-        if (asOf > 0L) {
-            updated.setText(getString(R.string.k2go_kolibri_catalog_updated,
-                    CatalogDateLabel.of(requireContext(), asOf, true)));
-        }
+        updated.setText(asOf > 0L ? getString(R.string.k2go_kolibri_catalog_updated,
+                CatalogDateLabel.of(requireContext(), asOf, true)) : "");
         updateStorage();
     }
 
