@@ -113,10 +113,12 @@ public final class BundledCatalogSource {
             String generated = "";
             int skipped = 0;
 
-            // ADFA-5094: prefer the pulled overlay over the APK asset when it is present.
+            // ADFA-5094: prefer the pulled overlay over the APK asset, unless an app update shipped
+            // a newer asset (K2GO-476).
             File overlay = CatalogOverlay.file(appContext, ASSET);
-            boolean useOverlay = overlay.exists();
-            long mtime = useOverlay ? overlay.lastModified() : 0L;
+            boolean useOverlay = CatalogOverlay.preferOverlay(appContext, ASSET, ASSET);
+            // The overlay's own mtime even when the asset won (see BundledTreeSource).
+            long mtime = overlay.exists() ? overlay.lastModified() : 0L;
 
             try (InputStream is = useOverlay
                     ? new FileInputStream(overlay) : appContext.getAssets().open(ASSET);

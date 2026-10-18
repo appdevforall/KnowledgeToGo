@@ -88,12 +88,11 @@ public final class CatalogManifestClient {
     }
 
     /**
-     * Download the catalog body to {@code dest} via a temp file swapped in on success, so a
-     * partial download never replaces a good overlay. Returns true on success.
+     * Download the catalog body to {@code tmp}. Returns true on success. The caller verifies the
+     * file and only then swaps it in, so a bad download never replaces a good overlay (K2GO-476).
      */
-    public boolean downloadTo(String url, File dest) {
+    public boolean downloadTo(String url, File tmp) {
         HttpURLConnection conn = null;
-        File tmp = new File(dest.getAbsolutePath() + ".tmp");
         try {
             conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
@@ -110,7 +109,7 @@ public final class CatalogManifestClient {
                     out.write(buf, 0, n);
                 }
             }
-            return tmp.renameTo(dest);
+            return true;
         } catch (Throwable t) {
             Log.w(TAG, "catalog download failed: " + t.getMessage());
             tmp.delete();

@@ -48,9 +48,20 @@ public final class CatalogRefreshStore {
         return prefs.getString(key(catalog, "etag"), "");
     }
 
+    /** Epoch millis of the last failed pull (0 when the last attempt succeeded). */
+    public long lastFailureMs(String catalog) {
+        return prefs.getLong(key(catalog, "last_failure"), 0L);
+    }
+
+    /** K2GO-476: a pull failed (download or hash); the worker backs off from it. */
+    public void recordFailed(String catalog, long nowMs) {
+        prefs.edit().putLong(key(catalog, "last_failure"), nowMs).apply();
+    }
+
     /** Record that a check happened now (whether or not it changed anything). */
     public void recordChecked(String catalog, long nowMs) {
-        prefs.edit().putLong(key(catalog, "last_check"), nowMs).apply();
+        prefs.edit().putLong(key(catalog, "last_check"), nowMs)
+                .remove(key(catalog, "last_failure")).apply();
     }
 
     /** Record a successful swap: the new hash/generated and the manifest ETag, and the check time. */
@@ -60,6 +71,7 @@ public final class CatalogRefreshStore {
                 .putString(key(catalog, "generated"), generated == null ? "" : generated)
                 .putString(key(catalog, "etag"), etag == null ? "" : etag)
                 .putLong(key(catalog, "last_check"), nowMs)
+                .remove(key(catalog, "last_failure"))
                 .apply();
     }
 }
