@@ -292,7 +292,8 @@ public final class KolibriTopicsFragment extends Fragment {
 
         // K2GO-476: how old these numbers are, so an offline plan can judge them.
         long asOf = s.node() == null ? 0L : s.node().asOfMs();
-        updated.setVisibility(asOf > 0L ? View.VISIBLE : View.GONE);
+        // INVISIBLE, not GONE: the empty slot keeps the count at the end of the row.
+        updated.setVisibility(asOf > 0L ? View.VISIBLE : View.INVISIBLE);
         if (asOf > 0L) {
             updated.setText(getString(R.string.k2go_kolibri_catalog_updated,
                     CatalogDateLabel.of(requireContext(), asOf, true)));

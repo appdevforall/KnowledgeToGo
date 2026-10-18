@@ -22,6 +22,9 @@ final class CatalogDateLabel {
                 | DateUtils.FORMAT_ABBREV_MONTH;
         if (withTime) {
             flags |= DateUtils.FORMAT_SHOW_TIME;
+        } else {
+            // A date-only header is a UTC calendar day; in the device's zone it can read as the day before.
+            flags |= DateUtils.FORMAT_UTC;
         }
         return DateUtils.formatDateTime(ctx, ms, flags);
     }
