@@ -145,26 +145,32 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- Count on its own line so it can never share the scrollable chip row. -->
-        <TextView
-            android:id="@+id/k2go_kbrowse_count"
+        <!-- Own row so it can never share the scrollable chip row. Catalog date (start), count
+             (end): the same row as the topic levels (K2GO-476). -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="end"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
-        <!-- ADFA-5094: catalog freshness — shows the pulled date once refreshed, else the bundled one. -->
-        <TextView
-            android:id="@+id/k2go_kbrowse_updated"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:gravity="end"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/k2go_kbrowse_updated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/k2go_kbrowse_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView

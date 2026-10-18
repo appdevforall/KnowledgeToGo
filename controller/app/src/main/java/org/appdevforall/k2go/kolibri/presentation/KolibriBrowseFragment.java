@@ -253,7 +253,9 @@ public final class KolibriBrowseFragment extends Fragment {
         String on = s.generatedOn();
         if (updated != null) {
             if (on == null || on.isEmpty()) {
-                updated.setVisibility(View.GONE);
+                // INVISIBLE, not GONE: the empty slot keeps the count at the end of the row.
+                updated.setVisibility(View.INVISIBLE);
+                updated.setText("");
             } else {
                 updated.setVisibility(View.VISIBLE);
                 // K2GO-476: the same localized date as the topic levels; a date-only header has no time.
