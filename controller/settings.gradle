@@ -1,4 +1,3 @@
-rootProject.name = "iiab-controller2"
+rootProject.name = "k2go"
 include ':app'
-include ':controller'
 include ':termux-core'
