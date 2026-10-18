@@ -92,7 +92,8 @@ public final class LocalTreeSource implements TreeSource {
             if (body.isEmpty()) {
                 return null;
             }
-            return StudioCatalogMapper.tree(new JSONObject(body));
+            TopicNode node = StudioCatalogMapper.tree(new JSONObject(body));
+            return node == null ? null : node.withAsOf(System.currentTimeMillis());
         } catch (Exception e) {
             // A miss here is ordinary — the channel may simply not be imported
             // yet — so this is debug, not a warning: the fallback covers it.

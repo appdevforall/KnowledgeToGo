@@ -54,4 +54,20 @@ public class CatalogFreshnessTest {
         assertTrue(CatalogFreshness.overlayIsCurrent("", ""));                       // both predate dates
         assertFalse(CatalogFreshness.overlayIsCurrent("", "2026-10-17T23:48:31Z"));  // dated asset wins
     }
+
+    @Test
+    public void generatedHeadersParseAsUtc() {
+        assertTrue(CatalogFreshness.generatedMs("2026-10-17T23:48:31Z") == 1792280911000L);
+        assertTrue(CatalogFreshness.generatedMs("2026-10-12") == 1791763200000L);
+        assertTrue(CatalogFreshness.generatedMs("") == 0L);
+        assertTrue(CatalogFreshness.generatedMs("not a date") == 0L);
+        assertTrue(CatalogFreshness.generatedMs("2026-10-12junk") == 0L);
+    }
+
+    @Test
+    public void onlyAFullTimestampHasATime() {
+        assertTrue(CatalogFreshness.generatedHasTime("2026-10-17T23:48:31Z"));
+        assertFalse(CatalogFreshness.generatedHasTime("2026-10-12"));
+        assertFalse(CatalogFreshness.generatedHasTime("2026-10-12 junk"));
+    }
 }

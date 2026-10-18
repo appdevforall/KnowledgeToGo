@@ -78,6 +78,7 @@ public final class KolibriTopicsFragment extends Fragment {
     private TextView title;
     private TextView trail;
     private TextView count;
+    private TextView updated;
     private TextView status;
     private LinearLayout list;
     private TextView storageLabel;
@@ -113,6 +114,7 @@ public final class KolibriTopicsFragment extends Fragment {
         title = v.findViewById(R.id.k2go_ktopics_title);
         trail = v.findViewById(R.id.k2go_ktopics_trail);
         count = v.findViewById(R.id.k2go_ktopics_count);
+        updated = v.findViewById(R.id.k2go_ktopics_updated);
         status = v.findViewById(R.id.k2go_ktopics_status);
         list = v.findViewById(R.id.k2go_ktopics_list);
         storageLabel = v.findViewById(R.id.k2go_ktopics_storage_label);
@@ -287,6 +289,14 @@ public final class KolibriTopicsFragment extends Fragment {
             shown++;
         }
         count.setText(getString(R.string.k2go_zc_count_items, shown));
+
+        // K2GO-476: how old these numbers are, so an offline plan can judge them.
+        long asOf = s.node() == null ? 0L : s.node().asOfMs();
+        updated.setVisibility(asOf > 0L ? View.VISIBLE : View.GONE);
+        if (asOf > 0L) {
+            updated.setText(getString(R.string.k2go_kolibri_catalog_updated,
+                    CatalogDateLabel.of(requireContext(), asOf, true)));
+        }
         updateStorage();
     }
 

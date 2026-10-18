@@ -54,6 +54,33 @@ public final class CatalogFreshness {
      * Dates are the files' {@code generated} headers (ISO, so they compare as text). An asset
      * with no date predates them all; an overlay with no date loses to a dated asset.
      */
+    /**
+     * K2GO-476: a catalog's {@code generated} header ("2026-10-17" or "2026-10-17T23:48:31Z",
+     * UTC) as epoch millis, or 0 when absent or unreadable.
+     */
+    public static long generatedMs(String generated) {
+        if (generated == null || generated.isEmpty()) return 0L;
+        String[] patterns = {"yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd"};
+        for (String pattern : patterns) {
+            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat(pattern, java.util.Locale.US);
+            f.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            f.setLenient(false);
+            try {
+                java.text.ParsePosition pos = new java.text.ParsePosition(0);
+                java.util.Date d = f.parse(generated, pos);
+                if (d != null && pos.getIndex() == generated.length()) return d.getTime();
+            } catch (RuntimeException ignore) {
+                // try the next shape
+            }
+        }
+        return 0L;
+    }
+
+    /** Whether a {@code generated} header carries a time of day, not only a date. */
+    public static boolean generatedHasTime(String generated) {
+        return generated != null && generated.length() > 10 && generatedMs(generated) > 0L;
+    }
+
     public static boolean overlayIsCurrent(String overlayGenerated, String assetGenerated) {
         if (assetGenerated == null || assetGenerated.isEmpty()) return true;
         if (overlayGenerated == null || overlayGenerated.isEmpty()) return false;

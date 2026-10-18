@@ -52,11 +52,20 @@ public final class TopicNode {
     private final int looseResourceCount;
     private final long looseResourceBytes;
     private final List<TopicNode> children;
+    private final long asOfMs;
 
     private TopicNode(String id, String title, String kind, boolean leaf,
                       long ownBytes, long subtreeBytes, boolean subtreeSizeKnown,
                       int descendantCount, int looseResourceCount, long looseResourceBytes,
                       List<TopicNode> children) {
+        this(id, title, kind, leaf, ownBytes, subtreeBytes, subtreeSizeKnown, descendantCount,
+                looseResourceCount, looseResourceBytes, children, 0L);
+    }
+
+    private TopicNode(String id, String title, String kind, boolean leaf,
+                      long ownBytes, long subtreeBytes, boolean subtreeSizeKnown,
+                      int descendantCount, int looseResourceCount, long looseResourceBytes,
+                      List<TopicNode> children, long asOfMs) {
         this.id = id;
         this.title = title;
         this.kind = kind;
@@ -68,6 +77,28 @@ public final class TopicNode {
         this.looseResourceCount = looseResourceCount;
         this.looseResourceBytes = looseResourceBytes;
         this.children = children;
+        this.asOfMs = Math.max(0L, asOfMs);
+    }
+
+    /**
+     * K2GO-476: when this level's data was true (epoch millis), 0 when unknown. A live source
+     * stamps its fetch time, the bundle its generation time; a level mixing both keeps the older.
+     */
+    public long asOfMs() {
+        return asOfMs;
+    }
+
+    /** This node, stamped with when its data was true. */
+    public TopicNode withAsOf(long ms) {
+        return new TopicNode(id, title, kind, leaf, ownBytes, subtreeBytes, subtreeSizeKnown,
+                descendantCount, looseResourceCount, looseResourceBytes, children, ms);
+    }
+
+    /** This node with other children; its own size and date are kept. */
+    public TopicNode withChildren(List<TopicNode> kids) {
+        return new TopicNode(id, title, kind, leaf, ownBytes, subtreeBytes, subtreeSizeKnown,
+                descendantCount, looseResourceCount, looseResourceBytes,
+                Collections.unmodifiableList(new ArrayList<>(kids)), asOfMs);
     }
 
     /**

@@ -84,7 +84,8 @@ public final class StudioTreeSource implements TreeSource {
             if (body.isEmpty()) {
                 return null;
             }
-            return StudioCatalogMapper.tree(new JSONObject(body));
+            TopicNode node = StudioCatalogMapper.tree(new JSONObject(body));
+            return node == null ? null : node.withAsOf(System.currentTimeMillis());
         } catch (Exception e) {
             Log.w(TAG, "studio tree " + nodeId + " failed: " + e.getMessage());
             return null;
