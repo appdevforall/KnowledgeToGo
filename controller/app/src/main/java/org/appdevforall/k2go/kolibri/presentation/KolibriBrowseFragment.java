@@ -256,7 +256,12 @@ public final class KolibriBrowseFragment extends Fragment {
                 updated.setVisibility(View.GONE);
             } else {
                 updated.setVisibility(View.VISIBLE);
-                updated.setText(getString(R.string.k2go_kolibri_catalog_updated, on));
+                // K2GO-476: the same localized date as the topic levels; a date-only header has no time.
+                long ms = org.appdevforall.k2go.catalog.domain.CatalogFreshness.generatedMs(on);
+                updated.setText(getString(R.string.k2go_kolibri_catalog_updated,
+                        ms > 0L ? CatalogDateLabel.of(requireContext(), ms,
+                                org.appdevforall.k2go.catalog.domain.CatalogFreshness.generatedHasTime(on))
+                                : on));
             }
         }
         updateStorage();

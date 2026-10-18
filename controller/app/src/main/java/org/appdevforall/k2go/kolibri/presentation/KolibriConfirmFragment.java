@@ -325,8 +325,11 @@ public final class KolibriConfirmFragment extends Fragment {
             sels.add(vm.selectionFor(c));
             // Priced by what is missing, so the fit check answers the question the
             // user is actually asking: will the download fit, not would the whole
-            // channel have fitted.
-            sizes.put(c.id(), costOf(c));
+            // channel have fitted. A size that is only a floor stays out, which makes
+            // the plan inexact (K2GO-476).
+            if (!vm.sizeUnknownFor(c)) {
+                sizes.put(c.id(), costOf(c));
+            }
         }
         return SeedPlan.of(sels, sizes);
     }

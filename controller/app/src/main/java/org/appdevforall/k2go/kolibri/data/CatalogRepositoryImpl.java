@@ -52,9 +52,7 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
         // metadata is imported), then Studio when online, and finally the bundled tree — the
         // offline floor that lets the user browse a channel even with the box unimported and no
         // internet. Live sources win when they can answer, so the bundle is consulted last.
-        this(new BundledCatalogSource(context),
-                new FallbackTreeSource(new LocalTreeSource(),
-                        new FallbackTreeSource(new StudioTreeSource(), new BundledTreeSource(context))));
+        this(new BundledCatalogSource(context), liveFirst(new BundledTreeSource(context)));
         // Keep the bundled catalog current: a weekly refresh plus an opportunistic (TTL-gated)
         // check now. Only the Context constructor schedules — the test constructor below does not.
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
@@ -70,6 +68,13 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.refreshNow(
                 context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
                 androidx.work.NetworkType.UNMETERED);
+    }
+
+    /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle. */
+    private static TreeSource liveFirst(BundledTreeSource bundled) {
+        return new FallbackTreeSource(new LocalTreeSource(),
+                new FallbackTreeSource(new BundleSizedTreeSource(new StudioTreeSource(), bundled),
+                        bundled));
     }
 
     /** For tests and for pointing the tree source elsewhere (e.g. a local-first composite). */

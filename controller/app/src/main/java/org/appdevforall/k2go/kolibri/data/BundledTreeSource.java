@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets;
  * <p>Blocking; call from an IO thread. Never throws (the {@link TreeSource} contract): a
  * missing asset or unknown node id is a {@code null} return, so a caller can move on.
  */
-public final class BundledTreeSource implements TreeSource {
+public final class BundledTreeSource implements TreeSource, BundleSizedTreeSource.Sizes {
 
     private static final String TAG = "K2Go-Kolibri";
     // ADFA-5094: the OVERLAY basename — what the refresh worker writes and what R2 serves. It is a
@@ -56,6 +56,8 @@ public final class BundledTreeSource implements TreeSource {
     private static final String APK_ASSET = "kolibri_tree.jsonl";
 
     private static volatile BundledTreeIndex cachedIndex;
+    // K2GO-476: the loaded file's "generated" header as epoch millis, 0 when it has none.
+    private static volatile long cachedGeneratedMs = 0L;
     // -1 = not loaded, 0 = APK asset, >0 = the pulled overlay's lastModified.
     private static volatile long cachedOverlayMtime = -1L;
 
@@ -69,7 +71,22 @@ public final class BundledTreeSource implements TreeSource {
     public TopicNode fetchTree(String nodeId) {
         reloadIfOverlayChanged();
         BundledTreeIndex idx = load();
-        return idx == null ? null : idx.fetchOneLevel(nodeId);
+        TopicNode node = idx == null ? null : idx.fetchOneLevel(nodeId);
+        return node == null ? null : node.withAsOf(cachedGeneratedMs);
+    }
+
+    /** K2GO-476: when the loaded bundle was generated (epoch millis), 0 when unknown. */
+    public long generatedMs() {
+        reloadIfOverlayChanged();
+        load();
+        return cachedGeneratedMs;
+    }
+
+    /** K2GO-476: a folder's size in the bundle, or -1 when it is not there. */
+    public long bytesOf(String nodeId) {
+        reloadIfOverlayChanged();
+        BundledTreeIndex idx = load();
+        return idx == null ? -1L : idx.bytesOf(nodeId);
     }
 
     /** Drops the cache. For tests and for the in-place tree refresh (ADFA-5094). */
@@ -103,6 +120,7 @@ public final class BundledTreeSource implements TreeSource {
                 return cachedIndex;
             }
             BundledTreeIndex.Builder builder = BundledTreeIndex.builder();
+            long generatedMs = 0L;
 
             // Prefer the pulled overlay over the APK asset, unless an app update shipped a newer
             // asset (K2GO-476).
@@ -117,7 +135,15 @@ public final class BundledTreeSource implements TreeSource {
                  BufferedReader r = new BufferedReader(
                          new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
+                boolean first = true;
                 while ((line = r.readLine()) != null) {
+                    if (first) {
+                        first = false;
+                        generatedMs = headerMs(line);
+                        if (generatedMs > 0L) {
+                            continue;
+                        }
+                    }
                     builder.add(line);
                 }
             } catch (Exception e) {
@@ -131,8 +157,21 @@ public final class BundledTreeSource implements TreeSource {
                 Log.w(TAG, "bundled tree: skipped " + builder.skipped() + " unusable line(s)");
             }
             cachedIndex = builder.build();
+            cachedGeneratedMs = generatedMs;
             cachedOverlayMtime = mtime;
             return cachedIndex;
+        }
+    }
+
+    /** The header line's generated time, or 0 when the line is a node (an undated file). */
+    private static long headerMs(String line) {
+        try {
+            org.json.JSONObject o = new org.json.JSONObject(line.trim());
+            return o.has("id") ? 0L
+                    : org.appdevforall.k2go.catalog.domain.CatalogFreshness.generatedMs(
+                            o.optString("generated", ""));
+        } catch (Exception e) {
+            return 0L;
         }
     }
 }

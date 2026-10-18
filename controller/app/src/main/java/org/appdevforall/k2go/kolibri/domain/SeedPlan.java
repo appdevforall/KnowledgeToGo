@@ -140,11 +140,13 @@ public final class SeedPlan {
 
     /**
      * True when {@link #estimatedBytes()} can be trusted as a real figure: every
-     * channel has a published size <em>and</em> every selection is a whole channel.
+     * channel in the plan has a size.
      *
-     * <p>A partial selection makes the total an over-estimate, because the catalog
-     * only carries whole-channel sizes. Callers should present an inexact total as
-     * an upper bound, and should not refuse to start on the strength of it alone.
+     * <p>K2GO-476: a partial selection used to count as inexact because the catalog
+     * carried only whole-channel sizes. Picks now carry their own size (K2GO-475), so the
+     * caller leaves a channel out of the size map when its pick has an unknown size, and
+     * that alone makes the total inexact. An inexact total is an upper bound or a floor;
+     * callers should not refuse to start on the strength of it alone.
      */
     public boolean isEstimateExact() {
         if (selections.isEmpty()) {
@@ -152,11 +154,6 @@ public final class SeedPlan {
         }
         if (channelsWithUnknownSize() > 0) {
             return false;
-        }
-        for (ChannelSelection s : selections) {
-            if (!s.isWholeChannel()) {
-                return false;
-            }
         }
         return true;
     }

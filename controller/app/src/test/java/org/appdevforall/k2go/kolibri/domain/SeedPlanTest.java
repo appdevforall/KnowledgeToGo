@@ -102,15 +102,15 @@ public class SeedPlanTest {
     }
 
     @Test
-    public void aPartialSelectionMakesTheEstimateInexactEvenWithAKnownSize() {
-        // The catalog only carries whole-channel sizes, so a subtree total is an
-        // upper bound, not a figure.
+    public void aPartialSelectionWithAKnownSizeIsExact() {
+        // K2GO-476: a pick carries its own size since K2GO-475; the caller leaves an unknown
+        // one out of the map, which is what makes a plan inexact.
         SeedPlan p = SeedPlan.of(
                 Collections.singletonList(
                         ChannelSelection.ofSubtrees(STORYBOOK, Collections.singletonList(NODE))),
                 sizes(STORYBOOK, 8L * GB));
         assertEquals(0, p.channelsWithUnknownSize());
-        assertFalse(p.isEstimateExact());
+        assertTrue(p.isEstimateExact());
     }
 
     @Test
@@ -178,13 +178,22 @@ public class SeedPlanTest {
 
     @Test
     public void anInexactEstimateCannotDecideFit() {
-        // The case a phone needs most: a small subtree of a very large channel.
-        // Answering FALSE here would block it on an over-estimate.
+        // A pick whose size is unknown stays out of the map: answering FALSE would block it.
         SeedPlan p = SeedPlan.of(
                 Collections.singletonList(
                         ChannelSelection.ofSubtrees(STORYBOOK, Collections.singletonList(NODE))),
-                sizes(STORYBOOK, 8L * GB));
+                Collections.<String, Long>emptyMap());
         assertNull(p.fitsIn(1L * GB));
+    }
+
+    @Test
+    public void aPartialSelectionWithAKnownSizeDecidesFit() {
+        SeedPlan p = SeedPlan.of(
+                Collections.singletonList(
+                        ChannelSelection.ofSubtrees(STORYBOOK, Collections.singletonList(NODE))),
+                sizes(STORYBOOK, 257L * 1024 * 1024));
+        assertEquals(Boolean.TRUE, p.fitsIn(1L * GB));
+        assertEquals(Boolean.FALSE, p.fitsIn(100L * 1024 * 1024));
     }
 
     @Test

@@ -104,6 +104,13 @@ public final class BundledTreeIndex {
                 self.id, self.title, self.kind, self.bytes, self.count, self.dcount, self.dbytes, kids);
     }
 
+    /** K2GO-476: a folder's size in the bundle, or -1 when the bundle does not have it. */
+    public long bytesOf(String rawId) {
+        String id = ChannelId.normalise(rawId);
+        Row r = id == null ? null : byId.get(id);
+        return r == null ? -1L : r.bytes;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
