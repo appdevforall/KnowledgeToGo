@@ -24,14 +24,26 @@ public final class AppThemeController {
 
     private static final String KEY = "k2go_theme";
 
+    /** The modes the user can pick, in Settings order: light, follow system, dark. */
+    public static final int[] MODES = {
+            AppCompatDelegate.MODE_NIGHT_NO,
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+            AppCompatDelegate.MODE_NIGHT_YES};
+
     private AppThemeController() {
     }
 
-    /** The saved mode: MODE_NIGHT_NO, MODE_NIGHT_YES or MODE_NIGHT_FOLLOW_SYSTEM (the default). */
+    /** The saved mode, one of {@link #MODES}; follow system when unset or unknown. */
     public static int current(Context ctx) {
-        int mode = prefs(ctx).getInt(KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        return mode == AppCompatDelegate.MODE_NIGHT_NO || mode == AppCompatDelegate.MODE_NIGHT_YES
-                ? mode : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+        return normalize(prefs(ctx).getInt(KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM));
+    }
+
+    /** {@code mode} when it is one of {@link #MODES}, else follow system. */
+    static int normalize(int mode) {
+        for (int m : MODES) {
+            if (m == mode) return mode;
+        }
+        return AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
     }
 
     /** Saves the choice and applies it to the running activities. */

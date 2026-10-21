@@ -108,12 +108,13 @@ public class SettingsFragment extends Fragment {
 
     private void chooseTheme() {
         final String[] labels = {getString(R.string.k2go_theme_light), getString(R.string.k2go_theme_system), getString(R.string.k2go_theme_dark)};
-        final int[] modes = {
-                AppCompatDelegate.MODE_NIGHT_NO,
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-                AppCompatDelegate.MODE_NIGHT_YES};
+        // Labels follow AppThemeController.MODES order.
+        final int[] modes = AppThemeController.MODES;
         int cur = AppThemeController.current(requireContext());
-        int checked = cur == AppCompatDelegate.MODE_NIGHT_NO ? 0 : (cur == AppCompatDelegate.MODE_NIGHT_YES ? 2 : 1);
+        int checked = 0;
+        for (int i = 0; i < modes.length; i++) {
+            if (modes[i] == cur) checked = i;
+        }
         // K2GO-385 (pill roles Q3): a single-choice list picker -- a themed M3 dialog with a leading
         // filled radio on the current theme, not a bare setItems list. Tap applies and closes, as before.
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(
