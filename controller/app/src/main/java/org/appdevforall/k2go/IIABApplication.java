@@ -27,6 +27,8 @@ public class IIABApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // K2GO-478: the saved light/dark choice, before any activity inflates.
+        org.appdevforall.k2go.apptheme.data.AppThemeController.restore(this);
         // ADFA-4640: wire up persistence for the server log (survives app restarts).
         org.appdevforall.k2go.LogRepository.get().init(this);
         // ADFA-5343 (Phase 1): establish the app-scoped server-lifecycle reconciler.
