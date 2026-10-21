@@ -1,7 +1,6 @@
 package org.appdevforall.k2go.redesign;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.apptheme.data.AppThemeController;
 import org.appdevforall.k2go.feedback.presentation.FeedbackFragment;
 
 /** Settings v3 top level: Language · Theme · Help · Send feedback · About · Advanced, with a
@@ -112,7 +112,7 @@ public class SettingsFragment extends Fragment {
                 AppCompatDelegate.MODE_NIGHT_NO,
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
                 AppCompatDelegate.MODE_NIGHT_YES};
-        int cur = prefs().getInt("k2go_theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        int cur = AppThemeController.current(requireContext());
         int checked = cur == AppCompatDelegate.MODE_NIGHT_NO ? 0 : (cur == AppCompatDelegate.MODE_NIGHT_YES ? 2 : 1);
         // K2GO-385 (pill roles Q3): a single-choice list picker -- a themed M3 dialog with a leading
         // filled radio on the current theme, not a bare setItems list. Tap applies and closes, as before.
@@ -120,15 +120,14 @@ public class SettingsFragment extends Fragment {
                 new android.view.ContextThemeWrapper(requireContext(), R.style.Theme_K2Go))
                 .setTitle(getString(R.string.k2go_settings_theme))
                 .setSingleChoiceItems(labels, checked, (d, w) -> {
-                    prefs().edit().putInt("k2go_theme", modes[w]).apply();
-                    AppCompatDelegate.setDefaultNightMode(modes[w]);
+                    AppThemeController.apply(requireContext(), modes[w]);
                     d.dismiss();
                 })
                 .show();
     }
 
     private String themeLabel() {
-        switch (prefs().getInt("k2go_theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)) {
+        switch (AppThemeController.current(requireContext())) {
             case AppCompatDelegate.MODE_NIGHT_NO: return getString(R.string.k2go_theme_light);
             case AppCompatDelegate.MODE_NIGHT_YES: return getString(R.string.k2go_theme_dark);
             default: return getString(R.string.k2go_theme_system);
@@ -165,11 +164,6 @@ public class SettingsFragment extends Fragment {
                 })
                 .setNegative(R.string.k2go_cancel, null)
                 .show();
-    }
-
-    private SharedPreferences prefs() {
-        return requireContext().getSharedPreferences(
-                getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
     }
 
     private String versionName() {
