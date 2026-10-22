@@ -1442,4 +1442,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Vipengele %1$d havipatikani</string>
     <string name="k2go_kolibri_partial_fmt">Kozi %1$d zimefika bila kukamilika: seva haina baadhi ya faili.</string>
     <string name="k2go_kolibri_takes_body_live">Kozi zinaweza kuwa kubwa sana na kuchukua muda mrefu kupakua, hasa kwenye muunganisho wa polepole. Upakuaji unaanza sasa, unaendelea chinichini, na unaendelea ukikatizwa.</string>
+    <string name="k2go_update_checking">Inakagua masasisho...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s zimebaki</string>
+    <string name="k2go_eta_sec">%1$d s zimebaki</string>
+    <string name="k2go_code_addons_update_up_to_date">Viongezi tayari vimesasishwa</string>
+    <string name="k2go_code_assets_update_up_to_date">Rasilimali za ujenzi tayari zimesasishwa</string>
 </resources>

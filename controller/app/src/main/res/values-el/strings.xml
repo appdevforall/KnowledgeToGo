@@ -1429,4 +1429,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d στοιχεία μη διαθέσιμα</string>
     <string name="k2go_kolibri_partial_fmt">%1$d μάθημα(τα) ήρθαν ελλιπή: ο διακομιστής δεν έχει κάποια αρχεία.</string>
     <string name="k2go_kolibri_takes_body_live">Τα μαθήματα μπορεί να είναι πολύ μεγάλα και να χρειαστούν πολύ χρόνο για λήψη, ειδικά με αργή σύνδεση. Η λήψη ξεκινά τώρα, συνεχίζεται στο παρασκήνιο και συνεχίζεται αν διακοπεί.</string>
+    <string name="k2go_update_checking">Έλεγχος για ενημερώσεις...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s απομένουν</string>
+    <string name="k2go_eta_sec">%1$d s απομένουν</string>
+    <string name="k2go_code_addons_update_up_to_date">Τα πρόσθετα είναι ήδη ενημερωμένα</string>
+    <string name="k2go_code_assets_update_up_to_date">Οι πόροι δόμησης είναι ήδη ενημερωμένοι</string>
 </resources>

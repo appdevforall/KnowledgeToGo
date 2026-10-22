@@ -62,7 +62,7 @@ const codeAssetsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // The mirror stages the UNCHANGED files into STAGE from the live tree and prints an aria2
     // input-file for only the changed files (empty = nothing changed). STAGE is NOT pre-cleared, so
     // a resume keeps its partials; the plan is deterministic and safe to re-run.
-    ctx.update({ phase: 'downloading', percent: -1, speed: 0, detail: 'build assets' });
+    ctx.update({ phase: 'downloading', percent: -1, speed: 0, eta: -1, detail: 'build assets' });
     let input: string;
     try {
         input = await runMirror(ctx, MIRROR, ['--print-aria2-input', '--reuse-from', SERVE, '--out', STAGE], true);
@@ -77,7 +77,7 @@ const codeAssetsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (input.trim() === '') {
         // Every file unchanged: keep the live tree, nothing to download or swap.
         rmrf(STAGE);
-        ctx.update({ phase: 'done', percent: 100, speed: 0, detail: 'up to date' });
+        ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: 'up to date' });
         return;
     }
 
@@ -96,7 +96,7 @@ const codeAssetsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.throwIfCanceled();
 
     // --- Build the page (aria2 verified each file by checksum; no re-hash) --
-    ctx.update({ phase: 'processing', percent: -1, speed: 0, detail: 'finishing' });
+    ctx.update({ phase: 'processing', percent: -1, speed: 0, eta: -1, detail: 'finishing' });
     try {
         await runMirror(ctx, MIRROR, ['--finalize-only', '--out', STAGE], false);
     } catch (e) {
@@ -107,7 +107,7 @@ const codeAssetsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.throwIfCanceled();
 
     // --- Swap (atomic rename; restore the previous tree if the move fails) --
-    ctx.update({ phase: 'processing', percent: 100, speed: 0, detail: 'installing' });
+    ctx.update({ phase: 'processing', percent: 100, speed: 0, eta: -1, detail: 'installing' });
     try { fs.rmSync(inputFile, { force: true }); } catch { /* leave nothing non-served behind */ }
     cleanAria2Files(STAGE);
     rmrf(OLD);
@@ -123,7 +123,7 @@ const codeAssetsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     }
     rmrf(OLD);
 
-    ctx.update({ phase: 'done', percent: 100, speed: 0 });
+    ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1 });
 };
 
 jobs.registerRunner('code-assets', codeAssetsRunner);

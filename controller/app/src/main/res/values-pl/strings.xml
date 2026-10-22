@@ -1432,4 +1432,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Niedostępne elementy: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Niekompletne kursy: %1$d. Serwer nie ma niektórych plików.</string>
     <string name="k2go_kolibri_takes_body_live">Kursy mogą być bardzo duże, a ich pobieranie może trwać długo, zwłaszcza przy wolnym połączeniu. Pobieranie zaczyna się teraz, trwa w tle i zostanie wznowione po przerwaniu.</string>
+    <string name="k2go_update_checking">Sprawdzanie aktualizacji...</string>
+    <string name="k2go_eta_min_sec">pozostało %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">pozostało %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Dodatki już aktualne</string>
+    <string name="k2go_code_assets_update_up_to_date">Zasoby kompilacji już aktualne</string>
 </resources>

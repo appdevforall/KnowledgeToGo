@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d elemente indisponibile</string>
     <string name="k2go_kolibri_partial_fmt">Cursuri incomplete: %1$d. Serverul nu are unele fișiere.</string>
     <string name="k2go_kolibri_takes_body_live">Cursurile pot fi foarte mari și pot dura mult la descărcare, mai ales pe o conexiune lentă. Descărcarea începe acum, continuă în fundal și se reia dacă este întreruptă.</string>
+    <string name="k2go_update_checking">Se caută actualizări...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s rămase</string>
+    <string name="k2go_eta_sec">%1$d s rămase</string>
+    <string name="k2go_code_addons_update_up_to_date">Suplimente deja actualizate</string>
+    <string name="k2go_code_assets_update_up_to_date">Resurse de compilare deja actualizate</string>
 </resources>

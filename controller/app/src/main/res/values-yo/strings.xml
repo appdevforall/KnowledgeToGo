@@ -1442,4 +1442,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Nkan %1$d kò sí</string>
     <string name="k2go_kolibri_partial_fmt">Ẹ̀kọ́ %1$d dé láìpé: olupin kò ní àwọn fáìlì kan.</string>
     <string name="k2go_kolibri_takes_body_live">Àwọn ẹ̀kọ́ lè tóbi gan-an kí wọ́n sì gba àkókò pípẹ́ láti gbàsílẹ̀, pàápàá lórí ìsopọ̀ tó lọ́ra. Ìgbàsílẹ̀ bẹ̀rẹ̀ báyìí, ó ń bá a lọ ní abẹ́lẹ̀, ó sì máa tẹ̀síwájú tí ó bá dáwọ́ dúró.</string>
+    <string name="k2go_update_checking">Ń wá àwọn ìmúdójúìwọ̀n...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s tó kù</string>
+    <string name="k2go_eta_sec">%1$d s tó kù</string>
+    <string name="k2go_code_addons_update_up_to_date">Àwọn afikún ti jẹ́ tuntun tẹ́lẹ̀</string>
+    <string name="k2go_code_assets_update_up_to_date">Àwọn ohun èlò ìkọ́ ti jẹ́ tuntun tẹ́lẹ̀</string>
 </resources>

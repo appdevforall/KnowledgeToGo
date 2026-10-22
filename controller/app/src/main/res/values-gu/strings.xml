@@ -1435,4 +1435,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d આઇટમ ઉપલબ્ધ નથી</string>
     <string name="k2go_kolibri_partial_fmt">%1$d કોર્સ અધૂરા આવ્યા: સર્વર પાસે કેટલીક ફાઇલો નથી.</string>
     <string name="k2go_kolibri_takes_body_live">કોર્સ ખૂબ મોટા હોઈ શકે છે અને ડાઉનલોડ થવામાં લાંબો સમય લાગી શકે છે, ખાસ કરીને ધીમા કનેક્શન પર. ડાઉનલોડ હમણાં શરૂ થાય છે, પૃષ્ઠભૂમિમાં ચાલુ રહે છે અને અટકે તો ફરી શરૂ થાય છે.</string>
+    <string name="k2go_update_checking">અપડેટ્સ તપાસી રહ્યું છે...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s બાકી</string>
+    <string name="k2go_eta_sec">%1$d s બાકી</string>
+    <string name="k2go_code_addons_update_up_to_date">એડ-ઓન પહેલેથી જ અપ ટૂ ડેટ</string>
+    <string name="k2go_code_assets_update_up_to_date">બિલ્ડ સંસાધનો પહેલેથી જ અપ ટૂ ડેટ</string>
 </resources>

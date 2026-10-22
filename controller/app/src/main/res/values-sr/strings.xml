@@ -1435,4 +1435,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Недоступних ставки: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Непотпуних курсева: %1$d. Сервер нема неке датотеке.</string>
     <string name="k2go_kolibri_takes_body_live">Курсеви могу бити веома велики и њихово преузимање може дуго трајати, нарочито на спорој вези. Преузимање почиње сада, наставља се у позадини и наставља се ако се прекине.</string>
+    <string name="k2go_update_checking">Провера ажурирања...</string>
+    <string name="k2go_eta_min_sec">преостало %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">преостало %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Додаци већ ажурирани</string>
+    <string name="k2go_code_assets_update_up_to_date">Ресурси за изградњу већ ажурирани</string>
 </resources>

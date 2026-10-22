@@ -1429,4 +1429,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Nedostupné položky: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Neúplné kurzy: %1$d. Server nemá niektoré súbory.</string>
     <string name="k2go_kolibri_takes_body_live">Kurzy môžu byť veľmi veľké a ich sťahovanie môže trvať dlho, najmä pri pomalom pripojení. Sťahovanie sa začne hneď, pokračuje na pozadí a po prerušení sa obnoví.</string>
+    <string name="k2go_update_checking">Vyhľadávajú sa aktualizácie...</string>
+    <string name="k2go_eta_min_sec">zostáva %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">zostáva %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Doplnky už aktuálne</string>
+    <string name="k2go_code_assets_update_up_to_date">Zdroje zostavenia už aktuálne</string>
 </resources>

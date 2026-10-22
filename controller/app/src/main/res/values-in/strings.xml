@@ -1429,4 +1429,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d item tidak tersedia</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kursus tiba tidak lengkap: server tidak memiliki beberapa file.</string>
     <string name="k2go_kolibri_takes_body_live">Kursus bisa sangat besar dan lama diunduh, terutama dengan koneksi lambat. Unduhan dimulai sekarang, terus berjalan di latar belakang, dan dilanjutkan jika terputus.</string>
+    <string name="k2go_update_checking">Memeriksa pembaruan...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s tersisa</string>
+    <string name="k2go_eta_sec">%1$d s tersisa</string>
+    <string name="k2go_code_addons_update_up_to_date">Add-on sudah terkini</string>
+    <string name="k2go_code_assets_update_up_to_date">Aset build sudah terkini</string>
 </resources>

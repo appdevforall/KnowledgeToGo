@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d mục không khả dụng</string>
     <string name="k2go_kolibri_partial_fmt">%1$d khóa học bị thiếu: máy chủ không có một số tệp.</string>
     <string name="k2go_kolibri_takes_body_live">Khóa học có thể rất lớn và mất nhiều thời gian để tải xuống, nhất là với kết nối chậm. Việc tải xuống bắt đầu ngay, tiếp tục chạy nền và tiếp tục lại nếu bị gián đoạn.</string>
+    <string name="k2go_update_checking">Đang kiểm tra bản cập nhật...</string>
+    <string name="k2go_eta_min_sec">còn %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">còn %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Tiện ích bổ sung đã là mới nhất</string>
+    <string name="k2go_code_assets_update_up_to_date">Tài nguyên build đã là mới nhất</string>
 </resources>

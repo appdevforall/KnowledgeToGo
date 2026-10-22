@@ -1498,4 +1498,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d elementos no disponibles</string>
     <string name="k2go_kolibri_partial_fmt">%1$d curso(s) llegaron incompletos: el servidor no tiene algunos archivos.</string>
     <string name="k2go_kolibri_takes_body_live">Los cursos pueden ser muy grandes y tardar mucho en descargarse, sobre todo con una conexión lenta. La descarga empieza ahora, sigue en segundo plano y se reanuda si se interrumpe.</string>
+    <string name="k2go_update_checking">Buscando actualizaciones...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s restantes</string>
+    <string name="k2go_eta_sec">%1$d s restantes</string>
+    <string name="k2go_code_addons_update_up_to_date">Complementos ya actualizados</string>
+    <string name="k2go_code_assets_update_up_to_date">Recursos de compilación ya actualizados</string>
 </resources>

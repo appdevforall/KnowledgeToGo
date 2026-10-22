@@ -1423,4 +1423,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d 项不可用</string>
     <string name="k2go_kolibri_partial_fmt">%1$d 门课程不完整：服务器缺少部分文件。</string>
     <string name="k2go_kolibri_takes_body_live">课程可能非常大，下载可能需要很长时间，尤其是在网络较慢时。下载现在开始，会在后台继续，中断后会自动恢复。</string>
+    <string name="k2go_update_checking">正在检查更新...</string>
+    <string name="k2go_eta_min_sec">剩余 %1$d 分 %2$d 秒</string>
+    <string name="k2go_eta_sec">剩余 %1$d 秒</string>
+    <string name="k2go_code_addons_update_up_to_date">附加组件已是最新</string>
+    <string name="k2go_code_assets_update_up_to_date">构建资源已是最新</string>
 </resources>
