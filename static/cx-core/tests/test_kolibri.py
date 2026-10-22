@@ -108,7 +108,7 @@ class KolibriExportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             db = os.path.join(d, "db.sqlite3")
             _make_db(db, cid=VALID_ID)
-            adapter = _StubbedKolibri(db)
+            adapter = _StubbedKolibri(db, staging_dir=os.path.join(d, "staging"))
             stream = adapter.open_export(VALID_ID)
             self.assertIsNotNone(stream)
             self.assertEqual(stream.filename, f"{VALID_ID}.tar")
@@ -126,9 +126,24 @@ class KolibriExportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             db = os.path.join(d, "db.sqlite3")
             _make_db(db, cid=VALID_ID)
-            adapter = _StubbedKolibri(db)
+            adapter = _StubbedKolibri(db, staging_dir=os.path.join(d, "staging"))
             self.assertIsNone(adapter.open_export("not-a-channel-id"))
             self.assertIsNone(adapter.open_export("a" * 32))  # valid shape, not installed
+
+    def test_open_export_fails_when_staging_disk_is_short(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)  # channel available bytes = 100 in the fixture
+            adapter = _StubbedKolibri(db, staging_dir=os.path.join(d, "staging"))
+            # Force the preflight to see almost no free space.
+            adapter._stage_export = lambda *a: (_ for _ in ()).throw(AssertionError("must not stage"))
+            import cx_core.adapters.kolibri as k
+            orig = k.shutil.disk_usage
+            k.shutil.disk_usage = lambda p: type("U", (), {"total": 0, "used": 0, "free": 1})()
+            try:
+                self.assertIsNone(adapter.open_export(VALID_ID))
+            finally:
+                k.shutil.disk_usage = orig
 
 
 if __name__ == "__main__":

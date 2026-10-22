@@ -30,7 +30,7 @@ class Registry:
     def load(config: Config) -> "Registry":
         candidates: List[ContentAdapter] = [
             KiwixAdapter(config.zims_dir),
-            KolibriAdapter(config.kolibri_db, config.kolibri_bin),
+            KolibriAdapter(config.kolibri_db, config.kolibri_bin, config.staging_dir),
             CalibreAdapter(config.calibre_db),
         ]
         return Registry([a for a in candidates if a.is_installed()])

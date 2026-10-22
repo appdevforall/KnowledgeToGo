@@ -11,7 +11,9 @@ buffered whole in memory and no second full copy is written to disk.
 from __future__ import annotations
 
 import os
+import queue
 import tarfile
+import threading
 from typing import Iterator, List, Optional, Tuple
 
 CHUNK = 1024 * 1024
@@ -40,23 +42,6 @@ def resolve_within(root: str, rel: str) -> Optional[str]:
     return None
 
 
-class _ChunkSink:
-    """A write-only file object that collects what tarfile writes, so a streaming tar can
-    be drained chunk by chunk between members."""
-
-    def __init__(self) -> None:
-        self._parts: List[bytes] = []
-
-    def write(self, data: bytes) -> int:
-        self._parts.append(bytes(data))
-        return len(data)
-
-    def drain(self) -> bytes:
-        out = b"".join(self._parts)
-        self._parts = []
-        return out
-
-
 def _entries(root: str, arcname: str) -> List[Tuple[str, str]]:
     """(absolute path, archive name) pairs for root and everything under it, sorted so the
     archive is deterministic. Directories are included so empty ones survive."""
@@ -70,19 +55,43 @@ def _entries(root: str, arcname: str) -> List[Tuple[str, str]]:
     return pairs
 
 
+_DONE = object()
+
+
 def tar_stream(root: str, arcname: str = ".", chunk: int = CHUNK) -> Iterator[bytes]:
-    """Stream a tar of a directory tree, member by member, draining the buffer between each
-    so nothing larger than one member is held in memory. Read-only on root."""
-    sink = _ChunkSink()
-    tar = tarfile.open(fileobj=sink, mode="w|")
-    try:
-        for full, arc in _entries(root, arcname):
-            tar.add(full, arcname=arc, recursive=False)
-            data = sink.drain()
+    """Stream a tar of a directory tree. tarfile writes into a bounded queue that the
+    consumer drains, so a producer that gets ahead BLOCKS: the memory held is a few of
+    tarfile's write blocks (tens of KB), never a whole member. So a multi-gigabyte file
+    inside the tree streams without being buffered. Read-only on root."""
+    q: "queue.Queue" = queue.Queue(maxsize=8)
+    error: dict = {}
+
+    class _QueueSink:
+        def write(self, data: bytes) -> int:
             if data:
-                yield data
-    finally:
-        tar.close()
-    tail = sink.drain()
-    if tail:
-        yield tail
+                q.put(bytes(data))  # blocks when full: backpressure bounds memory
+            return len(data)
+
+    def produce() -> None:
+        try:
+            tar = tarfile.open(fileobj=_QueueSink(), mode="w|")
+            try:
+                for full, arc in _entries(root, arcname):
+                    tar.add(full, arcname=arc, recursive=False)
+            finally:
+                tar.close()
+        except BaseException as exc:  # surfaced to the consumer below
+            error["exc"] = exc
+        finally:
+            q.put(_DONE)
+
+    worker = threading.Thread(target=produce, daemon=True)
+    worker.start()
+    while True:
+        item = q.get()
+        if item is _DONE:
+            break
+        yield item
+    worker.join()
+    if "exc" in error:
+        raise error["exc"]

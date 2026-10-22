@@ -16,11 +16,15 @@ from .router import dispatch
 
 _MAX_BODY = 1 * 1024 * 1024  # a plan request is small; cap the read defensively
 _BAD_JSON = object()  # sentinel: body present but not valid JSON
+_TOO_LARGE = object()  # sentinel: declared body exceeds _MAX_BODY
 
 
 def make_handler(registry: Registry):
     class Handler(BaseHTTPRequestHandler):
         server_version = "cx-core/0.1"
+        # HTTP/1.1 so the chunked export stream is valid (HTTP/1.0 would hand the client the
+        # chunk-size lines as body). The JSON path sends Content-Length, so keep-alive holds.
+        protocol_version = "HTTP/1.1"
 
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
@@ -34,6 +38,11 @@ def make_handler(registry: Registry):
         def do_POST(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             body = self._read_json_body()
+            if body is _TOO_LARGE:
+                # Unread body would desync the next keep-alive request, so close the socket.
+                self.close_connection = True
+                self._send(413, {"error": "request body too large"})
+                return
             if body is _BAD_JSON:
                 self._send(400, {"error": "invalid JSON body"})
                 return
@@ -47,7 +56,9 @@ def make_handler(registry: Registry):
                 return _BAD_JSON
             if length <= 0:
                 return None
-            raw = self.rfile.read(min(length, _MAX_BODY))
+            if length > _MAX_BODY:
+                return _TOO_LARGE  # do not read a truncated body
+            raw = self.rfile.read(length)
             try:
                 return json.loads(raw.decode("utf-8"))
             except (ValueError, UnicodeDecodeError):
@@ -64,10 +75,14 @@ def make_handler(registry: Registry):
         def _stream(self, status: int, stream: ExportStream) -> None:
             # Chunked transfer: the item size is not known up front for a tar, and the front
             # moves the bytes. on_close releases any staging after the last byte.
+            # Close after the stream: the body length is unknown up front, so a chunked
+            # response plus an explicit close keeps the connection state simple.
+            self.close_connection = True
             self.send_response(status)
             self.send_header("Content-Type", stream.content_type)
             self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
             self.send_header("Transfer-Encoding", "chunked")
+            self.send_header("Connection", "close")
             self.end_headers()
             try:
                 for block in stream.chunks:

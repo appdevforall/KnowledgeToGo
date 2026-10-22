@@ -27,6 +27,10 @@ class Config:
     kolibri_db: str = "/library/kolibri/db.sqlite3"
     kolibri_bin: str = "/usr/bin/kolibri"
     calibre_db: str = "/library/calibre-web/metadata.db"
+    # Where an export is staged. On the content volume, not /tmp (often tmpfs / small), so a
+    # multi-gigabyte channel export has room and the free-space preflight measures the right
+    # disk.
+    staging_dir: str = "/library/.cx-staging"
 
     @staticmethod
     def from_env() -> "Config":
@@ -37,4 +41,5 @@ class Config:
             kolibri_db=os.environ.get("CX_KOLIBRI_DB", "/library/kolibri/db.sqlite3"),
             kolibri_bin=os.environ.get("CX_KOLIBRI_BIN", "/usr/bin/kolibri"),
             calibre_db=os.environ.get("CX_CALIBRE_DB", "/library/calibre-web/metadata.db"),
+            staging_dir=os.environ.get("CX_STAGING_DIR", "/library/.cx-staging"),
         )

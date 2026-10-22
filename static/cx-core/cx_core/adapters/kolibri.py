@@ -38,6 +38,17 @@ def export_commands(channel_id: str, dest: str, kolibri_bin: str) -> List[List[s
         base + ["exportcontent", channel_id, dest],
     ]
 
+
+def _has_room(path: str, needed_bytes: int) -> bool:
+    """True when the volume holding path has room for the export. The export copies about
+    the channel's own bytes; a small headroom factor covers the DB and rounding. On an
+    unmeasurable path, allow it rather than block (the export still fails cleanly on ENOSPC)."""
+    try:
+        free = shutil.disk_usage(path).free
+    except OSError:
+        return True
+    return free >= int(needed_bytes * 1.05)
+
 # Available bytes per installed channel. {where} scopes it to one channel for get().
 _CHANNELS_SQL = """
 WITH channel_files AS (
@@ -77,9 +88,13 @@ def build_channel_item(channel_id: str, name: Optional[str], version, size_bytes
 class KolibriAdapter(ContentAdapter):
     app = "kolibri"
 
-    def __init__(self, db_path: str, kolibri_bin: str = "/usr/bin/kolibri"):
+    def __init__(
+        self, db_path: str, kolibri_bin: str = "/usr/bin/kolibri",
+        staging_dir: str = "/library/.cx-staging",
+    ):
         self._db = db_path
         self._bin = kolibri_bin
+        self._staging_dir = staging_dir
         # KOLIBRI_HOME is the directory that holds db.sqlite3; the export CLI reads it.
         self._home = os.path.dirname(db_path)
 
@@ -118,13 +133,23 @@ class KolibriAdapter(ContentAdapter):
 
     def open_export(self, local_ref: str) -> Optional[ExportStream]:
         # Delegate to Kolibri's own export: it stages the channel DB + the channel's
-        # content-addressed files into a temp tree, which we then tar-stream. Read-only on
-        # the source (export copies out). The temp tree is removed after streaming.
+        # content-addressed files into a staging tree, which we then tar-stream. Read-only on
+        # the source (export copies out). The tree is removed after streaming.
         if not _CHANNEL_ID_RE.match(local_ref or ""):
             return None
-        if not self._query(local_ref):  # not an installed channel
+        channel = self._query(local_ref)
+        if not channel:  # not an installed channel
             return None
-        dest = tempfile.mkdtemp(prefix="cxkolibri-")
+        # Preflight the staging disk against the channel size, so we fail cleanly here
+        # instead of hitting ENOSPC part way through the export (the box owns its own disk
+        # check, mirroring the front's phone-disk preflight).
+        try:
+            os.makedirs(self._staging_dir, exist_ok=True)
+        except OSError:
+            return None
+        if not _has_room(self._staging_dir, channel[0].bytes):
+            return None
+        dest = tempfile.mkdtemp(prefix="cxkolibri-", dir=self._staging_dir)
         try:
             staged = self._stage_export(local_ref, dest)
         except OSError:
