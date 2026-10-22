@@ -25,6 +25,7 @@ import {
 import { isRestartableService, restartService } from './sockets/services';
 import { getFirehoseState } from './sockets/log-rotate';
 import { resolveRebuildState } from './sockets/rebuild-status';
+import { cxProxy } from './sockets/cx-proxy';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
@@ -70,6 +71,11 @@ function toApi(job: Job) {
 }
 
 export const apiRouter: Router = express.Router();
+
+// --- Content-exchange core (cx-core) relay -------------------------------------------------
+// K2GO-427. Forward /v1/* to the in-box cx-core service (127.0.0.1:9500). Reached externally
+// at /k2go-api/v1/*. dash-node only relays; the core owns the content state (ADR D1b).
+apiRouter.use('/v1', cxProxy);
 
 // --- Books: direct (non-job) queries over the offline catalog + Calibre-Web library ---------
 // ADFA-4850. Ported from the socket.io handlers; the download itself stays a durable job
