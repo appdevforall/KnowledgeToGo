@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Недоступно елементів: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Неповних курсів: %1$d. На сервері немає деяких файлів.</string>
     <string name="k2go_kolibri_takes_body_live">Курси можуть бути дуже великими, і їх завантаження може тривати довго, особливо на повільному з\'єднанні. Завантаження починається зараз, триває у фоні й відновлюється, якщо перерветься.</string>
+    <string name="k2go_update_checking">Перевірка оновлень...</string>
+    <string name="k2go_eta_min_sec">залишилось %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">залишилось %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Додатки вже актуальні</string>
+    <string name="k2go_code_assets_update_up_to_date">Ресурси збирання вже актуальні</string>
 </resources>

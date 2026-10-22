@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d مورد در دسترس نیست</string>
     <string name="k2go_kolibri_partial_fmt">%1$d دوره ناقص رسید: سرور برخی از فایل‌ها را ندارد.</string>
     <string name="k2go_kolibri_takes_body_live">دوره‌ها ممکن است بسیار بزرگ باشند و دانلودشان زمان زیادی ببرد، به‌ویژه با اتصال کند. دانلود اکنون شروع می‌شود، در پس‌زمینه ادامه می‌یابد و در صورت قطع شدن از سر گرفته می‌شود.</string>
+    <string name="k2go_update_checking">در حال بررسی به‌روزرسانی‌ها...</string>
+    <string name="k2go_eta_min_sec">باقی‌مانده %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">باقی‌مانده %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">افزونه‌ها از پیش به‌روز هستند</string>
+    <string name="k2go_code_assets_update_up_to_date">منابع ساخت از پیش به‌روز هستند</string>
 </resources>

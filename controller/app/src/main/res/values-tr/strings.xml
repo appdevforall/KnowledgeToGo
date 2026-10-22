@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d öğe kullanılamıyor</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs eksik geldi: sunucuda bazı dosyalar yok.</string>
     <string name="k2go_kolibri_takes_body_live">Kurslar çok büyük olabilir ve özellikle yavaş bir bağlantıda indirilmesi uzun sürebilir. İndirme şimdi başlar, arka planda devam eder ve kesilirse kaldığı yerden sürer.</string>
+    <string name="k2go_update_checking">Güncellemeler denetleniyor...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s kaldı</string>
+    <string name="k2go_eta_sec">%1$d s kaldı</string>
+    <string name="k2go_code_addons_update_up_to_date">Eklentiler zaten güncel</string>
+    <string name="k2go_code_assets_update_up_to_date">Derleme kaynakları zaten güncel</string>
 </resources>

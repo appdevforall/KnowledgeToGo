@@ -1439,4 +1439,9 @@
     <string name="k2go_kolibri_item_partial_fmt">Nepasiekiamų elementų: %1$d</string>
     <string name="k2go_kolibri_partial_fmt">Nepilnų kursų: %1$d. Serveryje nėra kai kurių failų.</string>
     <string name="k2go_kolibri_takes_body_live">Kursai gali būti labai dideli ir ilgai atsisiųsti, ypač esant lėtam ryšiui. Atsisiuntimas prasideda dabar, tęsiasi fone ir atnaujinamas, jei nutrūksta.</string>
+    <string name="k2go_update_checking">Ieškoma naujinių...</string>
+    <string name="k2go_eta_min_sec">liko %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">liko %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">Priedai jau atnaujinti</string>
+    <string name="k2go_code_assets_update_up_to_date">Kūrimo ištekliai jau atnaujinti</string>
 </resources>

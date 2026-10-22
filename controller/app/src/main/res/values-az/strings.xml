@@ -1442,4 +1442,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d element mövcud deyil</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs natamam gəldi: serverdə bəzi fayllar yoxdur.</string>
     <string name="k2go_kolibri_takes_body_live">Kurslar çox böyük ola və yüklənməsi uzun çəkə bilər, xüsusən yavaş bağlantıda. Yükləmə indi başlayır, arxa planda davam edir və kəsilsə davam etdirilir.</string>
+    <string name="k2go_update_checking">Yeniləmələr yoxlanılır...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s qalıb</string>
+    <string name="k2go_eta_sec">%1$d s qalıb</string>
+    <string name="k2go_code_addons_update_up_to_date">Əlavələr artıq yenilənib</string>
+    <string name="k2go_code_assets_update_up_to_date">Qurma resursları artıq yenilənib</string>
 </resources>

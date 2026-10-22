@@ -56,10 +56,12 @@ public final class ModuleActions {
     static {
         INSTALLED.put("code_addons", new InstalledAction(
                 R.string.k2go_code_addons_update, R.drawable.ic_refresh,
-                (act, v) -> org.appdevforall.k2go.addons.presentation.AddonsRefresh.start(act, v)));
+                (act, v) -> org.appdevforall.k2go.redesign.ContentUpdaterView.mount(
+                        act, v, org.appdevforall.k2go.addons.presentation.AddonsUpdater.INSTANCE)));
         INSTALLED.put("code_assets", new InstalledAction(
                 R.string.k2go_code_assets_update, R.drawable.ic_refresh,
-                (act, v) -> org.appdevforall.k2go.codeassets.presentation.CodeAssetsRefresh.start(act, v)));
+                (act, v) -> org.appdevforall.k2go.redesign.ContentUpdaterView.mount(
+                        act, v, org.appdevforall.k2go.codeassets.presentation.CodeAssetsUpdater.INSTANCE)));
         // K2GO-422 / K2GO-449: Forgejo "Update repos", gated on live box status (manageable AND repos
         // present). The gate reads ForgejoStatusClient off the main thread. The module detail screen keeps
         // its own richer Forgejo flow (install-repos / blocked / update plus the repos opt-in); this entry

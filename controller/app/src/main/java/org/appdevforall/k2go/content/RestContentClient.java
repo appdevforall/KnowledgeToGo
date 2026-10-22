@@ -53,6 +53,9 @@ public final class RestContentClient {
      *  {@code speed} is a display token WITHOUT the per-second suffix (caller appends it). */
     public interface Listener {
         void onProgress(int percent, String speed); // download phase
+        /** K2GO-503: progress with the job's total ETA in seconds (-1 unknown). Default forwards to the
+         *  2-arg form, so existing implementers compile unchanged; only the content session reads it. */
+        default void onProgress(int percent, String speed, long etaSeconds) { onProgress(percent, speed); }
         void onIndexing();                           // indexing phase (indeterminate)
         void onLog(String line);                     // free-form detail line (for logs)
         void onDone();                               // success (terminal)
@@ -147,6 +150,7 @@ public final class RestContentClient {
             String phase = j.optString("phase", "");
             int percent = j.optInt("percent", -1);
             long speed = j.optLong("speed", 0L);
+            long eta = j.optLong("eta", -1L);   // K2GO-503: whole-job seconds remaining (-1 unknown)
             String detail = j.isNull("detail") ? null : j.optString("detail", null);
             String error = j.isNull("error") ? null : j.optString("error", null);
             JSONObject result = j.optJSONObject("result");
@@ -173,8 +177,8 @@ public final class RestContentClient {
                         final int a = retryAttempt, t = retryTotal;
                         deliver(() -> listener.onReconnecting(a, t));
                     } else if (percent >= 0) {
-                        final int p = percent; final String rate = formatRate(speed);
-                        deliver(() -> listener.onProgress(p, rate));
+                        final int p = percent; final String rate = formatRate(speed); final long et = eta;
+                        deliver(() -> listener.onProgress(p, rate, et));
                     } else if ("indexing".equals(phase) || "processing".equals(phase)) {
                         if (!indexing) { indexing = true; deliver(() -> listener.onIndexing()); }
                     }

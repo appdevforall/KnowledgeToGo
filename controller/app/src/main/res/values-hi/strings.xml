@@ -1499,4 +1499,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d आइटम उपलब्ध नहीं</string>
     <string name="k2go_kolibri_partial_fmt">%1$d कोर्स अधूरे आए: सर्वर में कुछ फ़ाइलें नहीं हैं।</string>
     <string name="k2go_kolibri_takes_body_live">कोर्स बहुत बड़े हो सकते हैं और डाउनलोड होने में बहुत समय ले सकते हैं, खासकर धीमे कनेक्शन पर। डाउनलोड अभी शुरू होता है, बैकग्राउंड में चलता रहता है और रुकने पर फिर से शुरू हो जाता है।</string>
+    <string name="k2go_update_checking">अपडेट जाँचे जा रहे हैं...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s शेष</string>
+    <string name="k2go_eta_sec">%1$d s शेष</string>
+    <string name="k2go_code_addons_update_up_to_date">ऐड-ऑन पहले से ही अप टू डेट</string>
+    <string name="k2go_code_assets_update_up_to_date">बिल्ड संसाधन पहले से ही अप टू डेट</string>
 </resources>

@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d عناصر غير متاحة</string>
     <string name="k2go_kolibri_partial_fmt">وصلت %1$d دورة غير مكتملة: الخادم لا يحتوي على بعض الملفات.</string>
     <string name="k2go_kolibri_takes_body_live">قد تكون الدورات كبيرة جدًا وتستغرق وقتًا طويلًا للتنزيل، خاصةً مع اتصال بطيء. يبدأ التنزيل الآن، ويستمر في الخلفية، ويُستأنف إذا انقطع.</string>
+    <string name="k2go_update_checking">جارٍ البحث عن تحديثات...</string>
+    <string name="k2go_eta_min_sec">متبقٍ %1$d min %2$d s</string>
+    <string name="k2go_eta_sec">متبقٍ %1$d s</string>
+    <string name="k2go_code_addons_update_up_to_date">الإضافات محدّثة بالفعل</string>
+    <string name="k2go_code_assets_update_up_to_date">أصول البناء محدّثة بالفعل</string>
 </resources>

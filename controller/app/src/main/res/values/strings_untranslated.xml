@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  strings_untranslated.xml — WIP UI strings pending localization (K2GO l10n policy).
+  strings_untranslated.xml : WIP UI strings pending localization (K2GO l10n policy).
 
   This is the tracking list for strings that are user-facing but NOT yet translated to the 33
   locales. They carry translatable="false" HERE (so lint's MissingTranslation is satisfied and the
@@ -9,4 +9,5 @@
   ONLY external string file. There are no per-feature string files; everything else lives in
   strings.xml.
 -->
-<resources></resources>
+<resources>
+</resources>

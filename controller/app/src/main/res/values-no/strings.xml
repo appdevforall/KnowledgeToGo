@@ -1432,4 +1432,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d elementer er ikke tilgjengelige</string>
     <string name="k2go_kolibri_partial_fmt">%1$d kurs ble ufullstendige: serveren mangler noen filer.</string>
     <string name="k2go_kolibri_takes_body_live">Kurs kan være svært store og ta lang tid å laste ned, særlig med en treg forbindelse. Nedlastingen starter nå, fortsetter i bakgrunnen og gjenopptas hvis den blir avbrutt.</string>
+    <string name="k2go_update_checking">Ser etter oppdateringer...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s igjen</string>
+    <string name="k2go_eta_sec">%1$d s igjen</string>
+    <string name="k2go_code_addons_update_up_to_date">Tillegg allerede oppdatert</string>
+    <string name="k2go_code_assets_update_up_to_date">Byggeressurser allerede oppdatert</string>
 </resources>
