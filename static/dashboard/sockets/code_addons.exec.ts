@@ -58,6 +58,36 @@ function runMirror(ctx: RunnerContext, mirror: string, args: string[], capture: 
     });
 }
 
+// K2GO-503: the staged catalog carries every file size; sum the bytes this run will actually
+// download (match the catalog by basename to the aria2 input's out= entries) so the shared helper
+// shows an overall percent and a total ETA from the first tick. Best-effort: 0 just disables the
+// hint (the helper still aggregates from aria2's own learned totals).
+const CATALOG_REL = 'v1/catalog.json';
+function addonsDownloadBytes(stageDir: string, body: string): number {
+    let sizeByName: Map<string, number>;
+    try {
+        const cat = JSON.parse(fs.readFileSync(`${stageDir}/${CATALOG_REL}`, 'utf8')) as {
+            addons?: Array<Record<string, { url?: string; size?: number } | undefined>>;
+        };
+        sizeByName = new Map<string, number>();
+        for (const a of cat.addons || []) {
+            for (const k of ['download', 'sourceTarball']) {
+                const e = a[k];
+                if (e && typeof e.url === 'string' && typeof e.size === 'number') {
+                    const name = e.url.split('/').pop();
+                    if (name) sizeByName.set(name, e.size);
+                }
+            }
+        }
+    } catch { return 0; }
+    let total = 0;
+    for (const line of body.split('\n')) {
+        const m = /^\s*out=(.+?)\s*$/.exec(line);
+        if (m) total += sizeByName.get(m[1]) || 0;
+    }
+    return total;
+}
+
 const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const MIRROR = mirrorPath();
     if (!fs.existsSync(MIRROR)) throw new Error(`mirror script not found: ${MIRROR}`);
@@ -66,7 +96,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // The mirror stages the small files into STAGE from the published site + the live tree and prints a
     // status marker plus an aria2 input-file for the heavy binaries. STAGE is NOT pre-cleared, so a
     // resume keeps its partials; the plan is deterministic and safe to re-run.
-    ctx.update({ phase: 'downloading', percent: -1, speed: 0, detail: 'add-ons' });
+    ctx.update({ phase: 'downloading', percent: -1, speed: 0, eta: -1, detail: 'add-ons' });
     let planned: string;
     try {
         planned = await runMirror(ctx, MIRROR,
@@ -86,7 +116,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (marker === '#status=uptodate') {
         // Same published build: keep the live tree, nothing to download or swap.
         rmrf(STAGE);
-        ctx.update({ phase: 'done', percent: 100, speed: 0, detail: 'up to date' });
+        ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: 'up to date' });
         return;
     }
 
@@ -98,7 +128,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         fs.mkdirSync(STAGE, { recursive: true });
         fs.writeFileSync(inputFile, body + '\n');
         try {
-            await downloadWithAria2(ctx, { destDir: STAGE, inputFile, phase: 'downloading' });
+            await downloadWithAria2(ctx, { destDir: STAGE, inputFile, phase: 'downloading', totalBytesHint: addonsDownloadBytes(STAGE, body) });
         } catch (e) {
             const se = stopError(ctx);
             if (se instanceof PausedError) throw se;                     // keep STAGE: resume continues
@@ -110,7 +140,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.throwIfCanceled();
 
     // --- Verify (aria2 checked each binary by sha-256; no re-hash) ----------
-    ctx.update({ phase: 'processing', percent: -1, speed: 0, detail: 'finishing' });
+    ctx.update({ phase: 'processing', percent: -1, speed: 0, eta: -1, detail: 'finishing' });
     try {
         await runMirror(ctx, MIRROR, ['--finalize-only', '--out', STAGE, '--serve-base', SERVE_BASE], false);
     } catch (e) {
@@ -121,7 +151,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.throwIfCanceled();
 
     // --- Swap (atomic rename; restore the previous tree if the move fails) --
-    ctx.update({ phase: 'processing', percent: 100, speed: 0, detail: 'installing' });
+    ctx.update({ phase: 'processing', percent: 100, speed: 0, eta: -1, detail: 'installing' });
     cleanAria2Files(STAGE);
     rmrf(OLD);
     if (fs.existsSync(SERVE)) fs.renameSync(SERVE, OLD);
@@ -136,7 +166,7 @@ const codeAddonsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     }
     rmrf(OLD);
 
-    ctx.update({ phase: 'done', percent: 100, speed: 0 });
+    ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1 });
 };
 
 jobs.registerRunner('code-addons', codeAddonsRunner);

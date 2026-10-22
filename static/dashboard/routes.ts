@@ -63,6 +63,7 @@ function toApi(job: Job) {
         phase: job.phase,
         percent: job.percent,
         speed: job.speed,
+        eta: job.eta,
         detail: job.detail,
         error: job.error,
         result: parseResult(job.result),

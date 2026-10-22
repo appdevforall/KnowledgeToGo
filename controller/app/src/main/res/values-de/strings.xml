@@ -1422,4 +1422,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d Elemente nicht verfügbar</string>
     <string name="k2go_kolibri_partial_fmt">%1$d Kurs(e) unvollständig: Dem Server fehlen einige Dateien.</string>
     <string name="k2go_kolibri_takes_body_live">Kurse können sehr groß sein und lange zum Herunterladen brauchen, besonders bei einer langsamen Verbindung. Der Download startet jetzt, läuft im Hintergrund weiter und wird nach einer Unterbrechung fortgesetzt.</string>
+    <string name="k2go_update_checking">Suche nach Updates...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s verbleibend</string>
+    <string name="k2go_eta_sec">%1$d s verbleibend</string>
+    <string name="k2go_code_addons_update_up_to_date">Add-ons bereits aktuell</string>
+    <string name="k2go_code_assets_update_up_to_date">Build-Ressourcen bereits aktuell</string>
 </resources>

@@ -52,6 +52,9 @@ public final class CodeAssetsDownloadService extends ContentDownloadServiceBase 
     public static boolean hasFailed() { return SESSION.hasFailed(); }
     public static int percent() { return SESSION.percent(); }
     public static long speed() { return SESSION.speed(); }
+    public static long etaSeconds() { return SESSION.eta(); }
+    public static boolean lastWasUpToDate() { return SESSION.lastWasUpToDate(); }
+    public static String currentDetail() { return SESSION.currentDetail(); }
     public static int reconnectAttempt() { return SESSION.reconnectAttempt(); }
     public static int reconnectTotal() { return SESSION.reconnectTotal(); }
     public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }

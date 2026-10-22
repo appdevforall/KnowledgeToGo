@@ -1442,4 +1442,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d உருப்படிகள் கிடைக்கவில்லை</string>
     <string name="k2go_kolibri_partial_fmt">%1$d பாடநெறிகள் முழுமையில்லாமல் வந்தன: சேவையகத்தில் சில கோப்புகள் இல்லை.</string>
     <string name="k2go_kolibri_takes_body_live">பாடநெறிகள் மிகப் பெரியதாக இருக்கலாம், குறிப்பாக மெதுவான இணைப்பில் பதிவிறக்க நீண்ட நேரம் ஆகலாம். பதிவிறக்கம் இப்போதே தொடங்கி, பின்னணியில் தொடர்ந்து, தடைப்பட்டால் மீண்டும் தொடரும்.</string>
+    <string name="k2go_update_checking">புதுப்பிப்புகளைச் சரிபார்க்கிறது...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s மீதம்</string>
+    <string name="k2go_eta_sec">%1$d s மீதம்</string>
+    <string name="k2go_code_addons_update_up_to_date">ஆட்-ஆன்கள் ஏற்கனவே புதுப்பிக்கப்பட்டுள்ளன</string>
+    <string name="k2go_code_assets_update_up_to_date">பில்ட் வளங்கள் ஏற்கனவே புதுப்பிக்கப்பட்டுள்ளன</string>
 </resources>

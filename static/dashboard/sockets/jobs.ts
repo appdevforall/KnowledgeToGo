@@ -29,6 +29,8 @@ export interface Job {
     phase: JobPhase;
     percent: number;
     speed: number;
+    // K2GO-503: whole-job seconds remaining, or -1 when unknown (indeterminate, idle, or no total).
+    eta: number;
     detail: string | null; // free-form current item / message
     error: string | null;
     /** K2GO-475: JSON outcome a runner records on success (e.g. a partial import's counts). */
@@ -41,6 +43,7 @@ export interface JobUpdate {
     phase?: JobPhase;
     percent?: number;
     speed?: number;
+    eta?: number;
     detail?: string | null;
     error?: string | null;
     result?: string | null;
@@ -121,6 +124,7 @@ class JobManager {
             phase TEXT NOT NULL,
             percent INTEGER NOT NULL DEFAULT -1,
             speed INTEGER NOT NULL DEFAULT 0,
+            eta INTEGER NOT NULL DEFAULT -1,
             detail TEXT,
             error TEXT,
             created INTEGER NOT NULL,
@@ -129,6 +133,8 @@ class JobManager {
         // K2GO-475: added after the first release; older databases get the column here.
         const cols = this.db.prepare(`PRAGMA table_info(jobs)`).all() as Array<{ name: string }>;
         if (!cols.some((c) => c.name === 'result')) this.db.exec(`ALTER TABLE jobs ADD COLUMN result TEXT`);
+        // K2GO-503: older databases predate the eta column.
+        if (!cols.some((c) => c.name === 'eta')) this.db.exec(`ALTER TABLE jobs ADD COLUMN eta INTEGER NOT NULL DEFAULT -1`);
     }
 
     registerRunner(type: JobType, runner: Runner): void {
@@ -142,11 +148,11 @@ class JobManager {
         const id = `${type}-${now}-${Math.random().toString(36).slice(2, 8)}`;
         const job: Job = {
             id, type, target: JSON.stringify(items), phase: 'queued',
-            percent: -1, speed: 0, detail: null, error: null, result: null, created: now, updated: now,
+            percent: -1, speed: 0, eta: -1, detail: null, error: null, result: null, created: now, updated: now,
         };
         this.db.prepare(
-            `INSERT INTO jobs (id,type,target,phase,percent,speed,detail,error,result,created,updated)
-             VALUES (@id,@type,@target,@phase,@percent,@speed,@detail,@error,@result,@created,@updated)`
+            `INSERT INTO jobs (id,type,target,phase,percent,speed,eta,detail,error,result,created,updated)
+             VALUES (@id,@type,@target,@phase,@percent,@speed,@eta,@detail,@error,@result,@created,@updated)`
         ).run(job);
         this.launch(job);
         return job;
@@ -274,13 +280,14 @@ class JobManager {
             phase: patch.phase ?? cur.phase,
             percent: patch.percent ?? cur.percent,
             speed: patch.speed ?? cur.speed,
+            eta: patch.eta ?? cur.eta,
             detail: patch.detail !== undefined ? patch.detail : cur.detail,
             error: patch.error !== undefined ? patch.error : cur.error,
             result: patch.result !== undefined ? patch.result : cur.result,
             updated: Date.now(),
         };
         this.db.prepare(
-            `UPDATE jobs SET phase=@phase,percent=@percent,speed=@speed,detail=@detail,error=@error,result=@result,updated=@updated WHERE id=@id`
+            `UPDATE jobs SET phase=@phase,percent=@percent,speed=@speed,eta=@eta,detail=@detail,error=@error,result=@result,updated=@updated WHERE id=@id`
         ).run(next);
     }
 
@@ -318,7 +325,7 @@ class JobManager {
             .then(() => runner(ctx))
             .then(() => {
                 const cur = this.get(job.id);
-                if (cur && ACTIVE.includes(cur.phase)) this.patch(job.id, { phase: 'done', percent: 100 });
+                if (cur && ACTIVE.includes(cur.phase)) this.patch(job.id, { phase: 'done', percent: 100, eta: -1 });
             })
             .catch((err: unknown) => {
                 if (err instanceof PausedError || rt.paused) {

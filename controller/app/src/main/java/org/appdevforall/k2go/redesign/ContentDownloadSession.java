@@ -69,6 +69,8 @@ public final class ContentDownloadSession {
     private int index = 0;
     private int percent = 0;
     private long speed = 0;
+    private long eta = -1;                    // K2GO-503: whole-job seconds remaining (-1 unknown)
+    private volatile String lastDetail = "";  // K2GO-503: last box 'detail' (for the up-to-date result)
 
     public ContentDownloadSession(String type) { this.type = type; }
 
@@ -85,6 +87,11 @@ public final class ContentDownloadSession {
     public int index() { return index; }
     public int percent() { return percent; }
     public long speed() { return speed; }
+    public long eta() { return eta; }
+    /** K2GO-503: the last 'detail' the box reported (the current item or the terminal note). */
+    public String currentDetail() { return lastDetail; }
+    /** K2GO-503: true when the finished job reported the content was already current ('up to date'). */
+    public boolean lastWasUpToDate() { return "up to date".equalsIgnoreCase(lastDetail); }
     public String[] labels() { return labels; }
     public long[] sizes() { return sizes; }
     public String label(int i) { return i >= 0 && i < labels.length ? labels[i] : ""; }
@@ -139,7 +146,7 @@ public final class ContentDownloadSession {
         this.sizes = sizes != null && sizes.length == count ? sizes : new long[count];
         this.bodies = bodies != null && bodies.length == count ? bodies : new JSONObject[count];
         status = new int[count];
-        index = 0; percent = 0; speed = 0;
+        index = 0; percent = 0; speed = 0; eta = -1; lastDetail = "";
         paused = false; reconnectAttempt = 0; reconnectTotal = 0;
         running = true;
         lastProgressAt = SystemClock.elapsedRealtime();
@@ -184,7 +191,7 @@ public final class ContentDownloadSession {
     public void purge() {
         status = new int[0];
         keys = new String[0]; labels = new String[0]; sizes = new long[0]; bodies = new JSONObject[0];
-        index = 0; percent = 0; speed = 0;
+        index = 0; percent = 0; speed = 0; eta = -1; lastDetail = "";
         running = false; paused = false; reconnectAttempt = 0; reconnectTotal = 0;
         lastProgressAt = 0L;
     }
@@ -207,10 +214,11 @@ public final class ContentDownloadSession {
         client = new RestContentClient(type);
         JSONObject body = i >= 0 && i < bodies.length && bodies[i] != null ? bodies[i] : new JSONObject();
         client.start(body, new RestContentClient.Listener() {
-            @Override public void onProgress(int pct, String rate) {
+            @Override public void onProgress(int pct, String rate) { onProgress(pct, rate, -1L); }
+            @Override public void onProgress(int pct, String rate, long etaSeconds) {
                 if (paused) paused = false;
                 reconnectAttempt = 0;
-                percent = pct; speed = parseRate(rate);
+                percent = pct; speed = parseRate(rate); eta = etaSeconds;
                 lastProgressAt = SystemClock.elapsedRealtime();
                 if (status[i] != PROCESSING) status[i] = ACTIVE;
                 publish();
@@ -226,7 +234,7 @@ public final class ContentDownloadSession {
                 reconnectAttempt = attempt; reconnectTotal = total;
                 lastProgressAt = SystemClock.elapsedRealtime(); publish();
             }
-            @Override public void onLog(String line) { /* logcat only */ }
+            @Override public void onLog(String line) { lastDetail = line; }   // K2GO-503: up-to-date vs installed
             @Override public void onDone() {
                 status[i] = DONE; publish();
                 // ADFA-4897: item confirmed done -> drop its wishlist entry, so a later process death

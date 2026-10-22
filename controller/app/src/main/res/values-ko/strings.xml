@@ -1423,4 +1423,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d개 항목을 사용할 수 없음</string>
     <string name="k2go_kolibri_partial_fmt">%1$d개 과정이 불완전합니다: 서버에 일부 파일이 없습니다.</string>
     <string name="k2go_kolibri_takes_body_live">과정은 매우 클 수 있으며, 특히 느린 연결에서는 다운로드하는 데 오래 걸릴 수 있습니다. 다운로드는 지금 시작되며 백그라운드에서 계속되고 중단되면 다시 시작됩니다.</string>
+    <string name="k2go_update_checking">업데이트 확인 중...</string>
+    <string name="k2go_eta_min_sec">%1$d분 %2$d초 남음</string>
+    <string name="k2go_eta_sec">%1$d초 남음</string>
+    <string name="k2go_code_addons_update_up_to_date">애드온이 이미 최신 상태입니다</string>
+    <string name="k2go_code_assets_update_up_to_date">빌드 자산이 이미 최신 상태입니다</string>
 </resources>

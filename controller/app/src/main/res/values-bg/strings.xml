@@ -1429,4 +1429,9 @@
     <string name="k2go_kolibri_item_partial_fmt">%1$d елемента не са налични</string>
     <string name="k2go_kolibri_partial_fmt">%1$d курс(а) пристигнаха непълни: сървърът няма някои файлове.</string>
     <string name="k2go_kolibri_takes_body_live">Курсовете могат да са много големи и да се изтеглят дълго, особено при бавна връзка. Изтеглянето започва сега, продължава във фонов режим и се възобновява, ако бъде прекъснато.</string>
+    <string name="k2go_update_checking">Проверка за актуализации...</string>
+    <string name="k2go_eta_min_sec">%1$d min %2$d s оставащи</string>
+    <string name="k2go_eta_sec">%1$d s оставащи</string>
+    <string name="k2go_code_addons_update_up_to_date">Добавките вече са актуални</string>
+    <string name="k2go_code_assets_update_up_to_date">Ресурсите за компилиране вече са актуални</string>
 </resources>
