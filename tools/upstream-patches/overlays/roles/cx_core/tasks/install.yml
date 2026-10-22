@@ -1,0 +1,81 @@
+# Install the content-exchange core and its launch wrapper. The core is pure Python 3
+# stdlib (no pip install), so "install" is a file copy plus registering a supervisor.
+# The supervisor is PDSM under proot and systemd otherwise, chosen by is_proot.
+
+- name: Create the install dir {{ cx_core_serve_path }}
+  file:
+    path: "{{ cx_core_serve_path }}"    # /opt/cx-core
+    state: directory
+    mode: "0755"
+
+- name: Copy the core source into {{ cx_core_serve_path }}
+  copy:
+    src: "{{ cx_core_src_dir }}/"       # trailing slash: copy the contents
+    dest: "{{ cx_core_serve_path }}/"
+    remote_src: yes
+    mode: preserve
+
+- name: Create the export staging dir (on the content volume, not /tmp)
+  file:
+    path: "{{ content_base }}/.cx-staging"    # /library/.cx-staging (core CX_STAGING_DIR default)
+    state: directory
+    mode: "0755"
+
+
+# ---- Launch wrapper: PDSM under proot ----
+
+- name: Install the PDSM service wrapper (proot)
+  copy:
+    src: "{{ cx_core_pdsm_src }}"       # static/pdsm/cx-core
+    dest: /usr/local/pdsm/services-available/cx-core
+    remote_src: yes
+    mode: "0755"
+  when: is_proot
+
+- name: Enable + start cx-core via PDSM (proot)
+  command: "pdsm {{ item }} cx-core"
+  with_items:
+    - enable
+    - restart
+  when: is_proot
+
+
+# ---- Launch wrapper: systemd otherwise (IIAB) ----
+
+- name: Install the systemd unit (not proot)
+  template:
+    src: cx-core.service.j2
+    dest: /etc/systemd/system/cx-core.service
+    mode: "0644"
+  when: not is_proot
+
+- name: Enable + start cx-core via systemd (not proot)
+  systemd:
+    name: cx-core
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+  when: not is_proot
+
+
+# ---- Health check: the REST API answers on loopback ----
+
+- name: Wait for the core to answer GET /v1/apps on 127.0.0.1:{{ cx_core_port }}
+  uri:
+    url: "http://127.0.0.1:{{ cx_core_port }}/v1/apps"
+    status_code: 200
+  register: cx_core_health
+  until: cx_core_health.status == 200
+  retries: 10
+  delay: 2
+
+
+- name: "Set 'cx_core_installed: True'"
+  set_fact:
+    cx_core_installed: True
+
+- name: "Add 'cx_core_installed: True' to {{ iiab_state_file }}"
+  lineinfile:
+    path: "{{ iiab_state_file }}"    # /etc/iiab/iiab_state.yml
+    regexp: '^cx_core_installed'
+    line: 'cx_core_installed: True'

@@ -1,0 +1,106 @@
+#!/bin/sh
+# /usr/local/pdsm/services-available/cx-core
+# PDSM service wrapper for the content-exchange core (Python stdlib REST service).
+# K2GO-427: run `python3 -m cx_core` from the install dir, with a respawn supervisor
+# and a health probe. Same shape as the dash-node wrapper; the core is identical on
+# every environment, only the supervisor differs (pdsm here, systemd on IIAB).
+
+PDSM_COMMON="/usr/local/pdsm/lib/pdsm-common.sh"
+[ -r "$PDSM_COMMON" ] && . "$PDSM_COMMON"
+
+SERVICE_NAME="cx-core"
+APP_DIR="/opt/cx-core"
+# The port the health probe and the service agree on. The service reads CX_PORT from
+# the environment (default 9500); keep this one value so the probe cannot drift.
+CX_PORT="${CX_PORT:-9500}"
+export CX_PORT
+LOGFILE="/var/log/cx-core.log"
+SUP_PIDFILE="/var/run/cx-core.sup.pid"
+
+running() {
+  # Match the actual server process, not the supervisor shell.
+  pgrep -f "python3 -m cx_core" >/dev/null 2>&1
+}
+
+start() {
+  if running; then
+    echo "[pdsm:$SERVICE_NAME] already running"
+    return 0
+  fi
+
+  echo "[pdsm:$SERVICE_NAME] starting..."
+  cd "$APP_DIR" || return 1
+
+  # Supervisor: respawn the server if it exits. Its PID is recorded so stop() can end
+  # the respawn loop before killing the server. LOGFILE is passed via the env so the
+  # inner shell expands it at runtime (avoids brittle nested quoting).
+  LOGFILE="$LOGFILE" nohup sh -c \
+    'while :; do python3 -m cx_core >> "$LOGFILE" 2>&1; echo "[cx-core] exited ($?); respawning in 2s" >> "$LOGFILE"; sleep 2; done' \
+    >/dev/null 2>&1 &
+  echo $! > "$SUP_PIDFILE"
+
+  for i in $(seq 1 "${PDSM_START_TIMEOUT:-8}"); do
+    if running; then
+      echo "[pdsm:$SERVICE_NAME] started"
+      return 0
+    fi
+    sleep 1
+  done
+
+  echo "[pdsm:$SERVICE_NAME] failed to start" >&2
+  return 1
+}
+
+stop() {
+  # Kill the supervisor first so it stops respawning, then the server itself.
+  if [ -f "$SUP_PIDFILE" ]; then
+    kill "$(cat "$SUP_PIDFILE")" 2>/dev/null || true
+    rm -f "$SUP_PIDFILE"
+  fi
+
+  if ! running; then
+    echo "[pdsm:$SERVICE_NAME] already stopped"
+    return 0
+  fi
+
+  echo "[pdsm:$SERVICE_NAME] stopping..."
+  pkill -f "python3 -m cx_core" 2>/dev/null || true
+
+  for i in $(seq 1 "${PDSM_START_TIMEOUT:-5}"); do
+    if ! running; then
+      echo "[pdsm:$SERVICE_NAME] stopped"
+      return 0
+    fi
+    sleep 1
+  done
+
+  pkill -9 -f "python3 -m cx_core" 2>/dev/null || true
+  echo "[pdsm:$SERVICE_NAME] forced stop"
+  return 1
+}
+
+status() {
+  if running; then
+    echo "[pdsm:$SERVICE_NAME] running (PID: $(pgrep -f "python3 -m cx_core" | head -n 1))"
+    return 0
+  fi
+  echo "[pdsm:$SERVICE_NAME] not running"
+  return 3
+}
+
+health() {
+  # Liveness: the REST API answers 2xx on loopback (the apps list is always 200).
+  if command -v curl >/dev/null 2>&1 && \
+     curl -fs -o /dev/null "http://127.0.0.1:${CX_PORT}/v1/apps"; then
+    echo "[pdsm:$SERVICE_NAME] healthy"
+    return 0
+  fi
+  echo "[pdsm:$SERVICE_NAME] unhealthy"
+  return 1
+}
+
+case "$1" in
+  start|stop|status|health) "$1" ;;
+  restart) stop; start ;;
+  *) echo "Usage: $0 {start|stop|restart|status|health}" >&2; exit 1 ;;
+esac
