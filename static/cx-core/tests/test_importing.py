@@ -74,6 +74,23 @@ class SafeExtractTarTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 safe_extract_tar(tar_path, os.path.join(d, "out"))
 
+    def test_rejects_too_many_members(self):
+        with tempfile.TemporaryDirectory() as d:
+            tar_path = os.path.join(d, "many.tar")
+            _tar(tar_path, [("a.txt", "file"), ("b.txt", "file")])
+            with self.assertRaises(ValueError):
+                safe_extract_tar(tar_path, os.path.join(d, "out"), max_members=1)
+
+    def test_rejects_summed_size_over_cap(self):
+        with tempfile.TemporaryDirectory() as d:
+            tar_path = os.path.join(d, "big.tar")
+            # each member is 4 bytes of "data"; two members = 8 > cap of 5.
+            _tar(tar_path, [("a.txt", "file"), ("b.txt", "file")])
+            with self.assertRaises(ValueError):
+                safe_extract_tar(tar_path, os.path.join(d, "out"), max_bytes=5)
+            # nothing landed
+            self.assertFalse(os.path.exists(os.path.join(d, "out", "a.txt")))
+
 
 if __name__ == "__main__":
     unittest.main()

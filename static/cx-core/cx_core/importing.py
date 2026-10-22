@@ -11,8 +11,13 @@ reading an arbitrary path the caller names.
 from __future__ import annotations
 
 import os
+import shutil
 import tarfile
 from typing import Optional
+
+# A sane ceiling on members in one item archive. A legitimate Kolibri channel bundle is
+# thousands of files; millions is a decompression-bomb shape, not a real item.
+MAX_MEMBERS = 500000
 
 
 def escapes_root(name: str) -> bool:
@@ -46,11 +51,20 @@ def is_within_dir(root: str, path: str) -> bool:
     return path_real == root_real or path_real.startswith(root_real + os.sep)
 
 
-def safe_extract_tar(tar_path: str, dest: str) -> None:
+def safe_extract_tar(
+    tar_path: str, dest: str, max_members: int = MAX_MEMBERS, max_bytes: Optional[int] = None
+) -> None:
     """Extract a tar into dest after validating every member. Raises ValueError on a member
-    that escapes the root or is a link / special file. Never writes outside dest."""
+    that escapes the root or is a link / special file, when the member count exceeds
+    ``max_members``, or when the summed ACTUAL member sizes (from the tar metadata, not from
+    any caller-supplied figure) exceed ``max_bytes`` or, when that is None, the free space on
+    the destination volume. This bounds a decompression bomb that declares a tiny size but
+    extracts to gigabytes / millions of files. Never writes outside dest."""
     with tarfile.open(tar_path, "r") as tar:
         members = tar.getmembers()
+        if len(members) > max_members:
+            raise ValueError(f"archive has too many members ({len(members)} > {max_members})")
+        total = 0
         for m in members:
             if escapes_root(m.name):
                 raise ValueError(f"unsafe archive member (path traversal): {m.name!r}")
@@ -58,7 +72,17 @@ def safe_extract_tar(tar_path: str, dest: str) -> None:
                 raise ValueError(f"unsafe archive member (link): {m.name!r}")
             if not (m.isfile() or m.isdir()):
                 raise ValueError(f"unsafe archive member (special file): {m.name!r}")
+            if m.isfile():
+                total += max(0, m.size)
         os.makedirs(dest, exist_ok=True)
+        limit = max_bytes
+        if limit is None:
+            try:
+                limit = shutil.disk_usage(dest).free
+            except OSError:
+                limit = None
+        if limit is not None and total > limit:
+            raise ValueError(f"archive too large to extract ({total} bytes > {limit} free)")
         # Members are already validated; the stdlib "data" filter is a second, independent
         # barrier (it also rejects traversal and dangerous members) where available.
         try:

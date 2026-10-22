@@ -13,6 +13,7 @@ credential value.
 from __future__ import annotations
 
 import http.cookiejar
+import io
 import json
 import os
 import re
@@ -23,6 +24,7 @@ import uuid as _uuid
 from typing import Tuple
 
 _CSRF_RE = re.compile(r'name="csrf_token"[^>]*value="([^"]+)"')
+_UPLOAD_BLOCK = 1024 * 1024
 
 
 def resolve_calibre_credentials(credentials_file: str) -> Tuple[str, str]:
@@ -42,6 +44,54 @@ def resolve_calibre_credentials(credentials_file: str) -> Tuple[str, str]:
     return "Admin", "changeme"
 
 
+def safe_upload_name(name: str) -> str:
+    """A filename safe to place in a multipart Content-Disposition header. The name comes
+    from an untrusted archive member, so CR / LF (which would inject headers) and double
+    quotes (which would break the quoted value) are stripped. Never empty."""
+    cleaned = name.replace("\r", "").replace("\n", "").replace('"', "").strip()
+    cleaned = os.path.basename(cleaned)
+    return cleaned or "upload.bin"
+
+
+class _ConcatStream(io.RawIOBase):
+    """A read-only stream of prefix bytes, then a file's bytes, then suffix bytes. Lets the
+    multipart body be sent without reading the (possibly multi-gigabyte) file into memory."""
+
+    def __init__(self, prefix: bytes, file_path: str, suffix: bytes):
+        self._pre = io.BytesIO(prefix)
+        self._file = open(file_path, "rb")
+        self._suf = io.BytesIO(suffix)
+        self._stage = 0  # 0 prefix, 1 file, 2 suffix, 3 done
+
+    def readable(self) -> bool:
+        return True
+
+    def readinto(self, buffer) -> int:
+        sources = (self._pre, self._file, self._suf)
+        while self._stage < 3:
+            got = sources[self._stage].readinto(buffer)
+            if got:
+                return got
+            self._stage += 1
+        return 0
+
+    def close(self) -> None:
+        try:
+            self._file.close()
+        finally:
+            super().close()
+
+
+def _multipart_frame(boundary: str, fields: dict, file_field: str, filename: str) -> Tuple[bytes, bytes]:
+    sep = f"--{boundary}\r\n"
+    head = ""
+    for name, value in fields.items():
+        head += sep + f'Content-Disposition: form-data; name="{name}"\r\n\r\n{value}\r\n'
+    head += sep + f'Content-Disposition: form-data; name="{file_field}"; filename="{filename}"\r\n'
+    head += "Content-Type: application/octet-stream\r\n\r\n"
+    return head.encode("utf-8"), f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+
 class CalibreWebClient:
     """A minimal Calibre-Web client: log in, then upload book files."""
 
@@ -51,12 +101,12 @@ class CalibreWebClient:
         self._pass = password
         self._timeout = timeout
         self._csrf = ""
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
-        )
+        self._jar = http.cookiejar.CookieJar()
+        self._opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self._jar))
 
     def login(self) -> bool:
-        """Establish a session. Returns True when the login form was accepted."""
+        """Establish a session and confirm it actually authenticated. Calibre-Web re-serves
+        the login form with 200 on bad credentials, so a 2xx alone is not success."""
         page = self._opener.open(f"{self._base}/login", timeout=self._timeout).read().decode("utf-8", "replace")
         match = _CSRF_RE.search(page)
         if not match:
@@ -72,19 +122,31 @@ class CalibreWebClient:
             f"{self._base}/login", data=form,
             headers={"Content-Type": "application/x-www-form-urlencoded", "Referer": f"{self._base}/login"},
         )
-        with self._opener.open(req, timeout=self._timeout) as resp:
-            return resp.status in (200, 302, 303)
+        try:
+            with self._opener.open(req, timeout=self._timeout) as resp:
+                final_url = resp.geturl()
+                body = resp.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError:
+            return False
+        # A successful login (remember_me=on) sets a remember_token cookie and redirects off
+        # /login; a failure re-renders the login form (password field present).
+        if any(c.name == "remember_token" for c in self._jar):
+            return True
+        return not final_url.rstrip("/").endswith("/login") and 'name="password"' not in body
 
     def upload(self, file_path: str, filename: str) -> bool:
-        """POST one book file to /upload as multipart. Returns True on a 2xx/redirect."""
-        with open(file_path, "rb") as handle:
-            file_bytes = handle.read()
+        """POST one book file to /upload as multipart, streaming the file. Returns True on a
+        2xx/redirect."""
+        name = safe_upload_name(filename)
         boundary = "----cxcore" + _uuid.uuid4().hex
-        body = _multipart(boundary, {"csrf_token": self._csrf}, "btn-upload", filename, file_bytes)
+        prefix, suffix = _multipart_frame(boundary, {"csrf_token": self._csrf}, "btn-upload", name)
+        length = len(prefix) + os.path.getsize(file_path) + len(suffix)
+        body = _ConcatStream(prefix, file_path, suffix)
         req = urllib.request.Request(
             f"{self._base}/upload", data=body,
             headers={
                 "Content-Type": f"multipart/form-data; boundary={boundary}",
+                "Content-Length": str(length),
                 "Referer": f"{self._base}/",
             },
         )
@@ -93,19 +155,5 @@ class CalibreWebClient:
                 return 200 <= resp.status < 400
         except urllib.error.HTTPError as exc:
             return 200 <= exc.code < 400
-
-
-def _multipart(boundary: str, fields: dict, file_field: str, filename: str, content: bytes) -> bytes:
-    sep = f"--{boundary}".encode()
-    parts = []
-    for name, value in fields.items():
-        parts += [sep, f'Content-Disposition: form-data; name="{name}"'.encode(), b"", str(value).encode()]
-    parts += [
-        sep,
-        f'Content-Disposition: form-data; name="{file_field}"; filename="{filename}"'.encode(),
-        b"Content-Type: application/octet-stream",
-        b"",
-        content,
-    ]
-    parts += [f"--{boundary}--".encode(), b""]
-    return b"\r\n".join(parts)
+        finally:
+            body.close()
