@@ -1,11 +1,11 @@
 name: Build and Release K2Go APKs
 
 on:
+  # Tag-only: a release ships by pushing a v* tag. Manual (workflow_dispatch) builds that go to R2
+  # live in android-r2-republish.yml, so the manual path has one home, not two.
   push:
-    # Only triggers automatically when a release tag is pushed (e.g., v1.0.0)
     tags:
       - 'v*'
-  workflow_dispatch:
 
 jobs:
   build-and-release:
@@ -84,20 +84,6 @@ jobs:
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-
-      # --- ON-DEMAND AAB ARTIFACT ---
-      # K2GO-433: a manual run (workflow_dispatch) has no tag, so the R2 upload below is skipped.
-      # This step exposes the Play AAB as a run artifact instead. A build from any branch can then
-      # go to Play Console without a release tag or a versionName bump. Retention is short: this copy
-      # is a throwaway upload, not a kept release.
-      - name: Upload Play AAB artifact
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: k2go-play-aab
-          path: controller/**/build/outputs/bundle/playRelease/*.aab
-          if-no-files-found: error
-          retention-days: 1
 
       # --- GITHUB RELEASES ---
 

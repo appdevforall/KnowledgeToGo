@@ -1,0 +1,246 @@
+"""Kolibri adapter (read side).
+
+Kolibri identity is authoritative and upstream: channel_id (32 hex) plus an integer
+version come from Kolibri Studio, so we reuse them, never recompute. The box keeps them
+in the Kolibri content database (db.sqlite3), read in readonly: the same source and the
+same aggregation dash-node uses (sockets/kolibri.query.ts), so there is one source of truth.
+
+bytes is the on-disk available size of the channel (what the box actually holds), summed
+over its DISTINCT local files. The DISTINCT matters: one local file can hang off several
+content nodes, and a flat join would count its bytes once per node.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import sqlite3
+import subprocess
+import tarfile
+import tempfile
+from typing import List, Optional
+
+from ..export import has_room, tar_stream
+from ..importing import safe_extract_tar, single_child_dir
+from ..model import (
+    ABSENT,
+    AUTHORITATIVE,
+    NEWER_HERE,
+    OLDER_HERE,
+    SAME_VERSION,
+    Dedup,
+    Identity,
+    ManifestItem,
+)
+from ..ports import ContentAdapter, ExportStream
+
+_CHANNEL_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
+
+
+def export_commands(channel_id: str, dest: str, kolibri_bin: str) -> List[List[str]]:
+    """The two Kolibri management commands that stage a channel export into dest: the
+    channel DB, then its content files. Pure (builds argv only). Delegating to Kolibri is
+    the one owner of "how a channel is exported"; the content store is content-addressed,
+    so import dedups shared files across channels by itself."""
+    base = [kolibri_bin, "manage"]
+    return [
+        base + ["exportchannel", channel_id, dest],
+        base + ["exportcontent", channel_id, dest],
+    ]
+
+
+def import_commands(channel_id: str, source: str, kolibri_bin: str) -> List[List[str]]:
+    """The two Kolibri disk-import commands: register the channel DB, then copy its content
+    from the exported folder. Pure (argv only). The content store is content-addressed, so
+    files shared with channels already present are deduped by Kolibri itself."""
+    base = [kolibri_bin, "manage"]
+    return [
+        base + ["importchannel", "disk", channel_id, source],
+        base + ["importcontent", "disk", channel_id, source],
+    ]
+
+
+def _to_int(*values) -> Optional[int]:
+    """First value that parses as an int, else None. The version may arrive as an int or a
+    string over JSON, and the build mirrors it."""
+    for value in values:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
+
+# Available bytes per installed channel. {where} scopes it to one channel for get().
+_CHANNELS_SQL = """
+WITH channel_files AS (
+    SELECT DISTINCT cn.channel_id AS channel_id, f.local_file_id AS local_file_id
+    FROM content_file f
+    JOIN content_contentnode cn ON cn.id = f.contentnode_id
+)
+SELECT cm.id, cm.name, cm.version,
+       COALESCE(SUM(CASE WHEN lf.available = 1 THEN lf.file_size ELSE 0 END), 0) AS bytes_available
+FROM content_channelmetadata cm
+LEFT JOIN channel_files p      ON p.channel_id = cm.id
+LEFT JOIN content_localfile lf ON lf.id = p.local_file_id
+{where}
+GROUP BY cm.id, cm.name, cm.version
+ORDER BY cm.name
+"""
+
+
+def build_channel_item(channel_id: str, name: Optional[str], version, size_bytes: int) -> ManifestItem:
+    """Build the manifest item for one installed channel. Pure."""
+    v = int(version) if version is not None else 0
+    dedup = Dedup(
+        line=channel_id,
+        build=str(v),  # the integer version is both the exact build and the version axis
+        version=v,
+        id_kind=AUTHORITATIVE,
+    )
+    return ManifestItem(
+        app="kolibri",
+        kind="channel",
+        title=name or channel_id,
+        bytes=size_bytes,
+        identity=Identity(local_ref=channel_id, dedup=dedup),
+    )
+
+
+class KolibriAdapter(ContentAdapter):
+    app = "kolibri"
+
+    def __init__(
+        self, db_path: str, kolibri_bin: str = "/usr/bin/kolibri",
+        staging_dir: str = "/library/.cx-staging",
+    ):
+        self._db = db_path
+        self._bin = kolibri_bin
+        self._staging_dir = staging_dir
+        # KOLIBRI_HOME is the directory that holds db.sqlite3; the export CLI reads it.
+        self._home = os.path.dirname(db_path)
+
+    def is_installed(self) -> bool:
+        return os.path.exists(self._db)
+
+    def _query(self, only_id: Optional[str]) -> List[ManifestItem]:
+        if not os.path.exists(self._db):
+            return []
+        sql = _CHANNELS_SQL.format(where="WHERE cm.id = ?" if only_id else "")
+        params = (only_id,) if only_id else ()
+        try:
+            con = sqlite3.connect(f"file:{self._db}?mode=ro", uri=True)
+        except sqlite3.Error:
+            return []
+        try:
+            rows = con.execute(sql, params).fetchall()
+        except sqlite3.Error:
+            # A locked DB (Kolibri writing during an import) or a schema change: report
+            # nothing rather than crash. Kolibri remains the authority.
+            return []
+        finally:
+            con.close()
+        return [build_channel_item(r[0], r[1], r[2], r[3]) for r in rows]
+
+    def list(self) -> List[ManifestItem]:
+        return self._query(None)
+
+    def get(self, local_ref: str) -> Optional[ManifestItem]:
+        # localRef is a channel_id used only as a bound SQL parameter (never a path), so a
+        # single scoped query is enough; no path-containment guard applies here.
+        if not local_ref:
+            return None
+        items = self._query(local_ref)
+        return items[0] if items else None
+
+    def open_export(self, local_ref: str) -> Optional[ExportStream]:
+        # Delegate to Kolibri's own export: it stages the channel DB + the channel's
+        # content-addressed files into a staging tree, which we then tar-stream. Read-only on
+        # the source (export copies out). The tree is removed after streaming.
+        if not _CHANNEL_ID_RE.match(local_ref or ""):
+            return None
+        channel = self._query(local_ref)
+        if not channel:  # not an installed channel
+            return None
+        # Preflight the staging disk against the channel size, so we fail cleanly here
+        # instead of hitting ENOSPC part way through the export (the box owns its own disk
+        # check, mirroring the front's phone-disk preflight).
+        try:
+            os.makedirs(self._staging_dir, exist_ok=True)
+        except OSError:
+            return None
+        if not has_room(self._staging_dir, channel[0].bytes):
+            return None
+        dest = tempfile.mkdtemp(prefix="cxkolibri-", dir=self._staging_dir)
+        try:
+            staged = self._stage_export(local_ref, dest)
+        except OSError:
+            staged = False
+        if not staged:
+            shutil.rmtree(dest, ignore_errors=True)
+            return None
+        return ExportStream(
+            filename=f"{local_ref}.tar",
+            content_type="application/x-tar",
+            chunks=tar_stream(dest, arcname=local_ref),
+            on_close=lambda: shutil.rmtree(dest, ignore_errors=True),
+        )
+
+    def _stage_export(self, channel_id: str, dest: str) -> bool:
+        """Run the Kolibri export CLI into dest. A seam, so a test can stage a fake tree
+        without a live Kolibri. Returns True on success."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        for argv in export_commands(channel_id, dest, self._bin):
+            result = subprocess.run(
+                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
+            )
+            if result.returncode != 0:
+                return False
+        return True
+
+    def check(self, dedup: dict) -> str:
+        # The line is the channel_id; the integer version is the axis. Authoritative.
+        line = dedup.get("line")
+        incoming = _to_int(dedup.get("version"), dedup.get("build"))
+        local = [it.identity.dedup for it in self.list() if it.identity.dedup.line == line]
+        if not local:
+            return ABSENT
+        local_version = max(d.version for d in local)
+        if incoming is None or local_version == incoming:
+            return SAME_VERSION
+        return OLDER_HERE if local_version < incoming else NEWER_HERE
+
+    def import_item(self, entry: dict, payload_path: str) -> dict:
+        # The payload is the export tar. Extract it safely, then delegate the disk import to
+        # Kolibri. Idempotent: Kolibri's import re-registers and dedups, never double-counts.
+        channel_id = (entry.get("identity") or {}).get("localRef", "")
+        if not _CHANNEL_ID_RE.match(channel_id or ""):
+            return {"ok": False, "reason": "invalid channel id"}
+        if not os.path.isfile(payload_path):
+            return {"ok": False, "reason": "payload not found"}
+        os.makedirs(self._staging_dir, exist_ok=True)
+        work = tempfile.mkdtemp(prefix="cximport-", dir=self._staging_dir)
+        try:
+            try:
+                safe_extract_tar(payload_path, work)
+            except (ValueError, tarfile.TarError) as exc:
+                return {"ok": False, "reason": f"bad archive: {exc}"}
+            source = single_child_dir(work) or work
+            if not self._stage_import(channel_id, source):
+                return {"ok": False, "reason": "kolibri import failed"}
+            return {"ok": True, "app": "kolibri", "localRef": channel_id}
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+    def _stage_import(self, channel_id: str, source: str) -> bool:
+        """Run the Kolibri disk-import CLI from source. A seam, like _stage_export."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        for argv in import_commands(channel_id, source, self._bin):
+            result = subprocess.run(
+                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
+            )
+            if result.returncode != 0:
+                return False
+        return True
