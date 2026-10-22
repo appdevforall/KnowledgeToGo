@@ -1,0 +1,28 @@
+# cx_core_install: True
+# cx_core_enabled: True
+
+# The content-exchange core: an in-box REST service (Python stdlib, no third-party
+# deps) that lists, exports and imports content per item across Kiwix, Kolibri and
+# Calibre. It is client-agnostic: dash-node (K2Go) or the IIAB Console reach it over
+# its localhost REST API. Design: controller/docs/ADR-content-exchange.md (K2GO-427).
+#
+# The core code is identical on every environment; only the supervisor differs. Under
+# proot (K2Go) it runs as a PDSM service; on a systemd host (IIAB) it runs as a systemd
+# unit. This role installs the source and the right wrapper, chosen by is_proot.
+
+# Where the source tree is copied FROM. Default is the K2Go repo path on the box
+# (/opt/iiab-android). An IIAB deploy overrides this to wherever it stages the source.
+cx_core_src_dir: /opt/iiab-android/static/cx-core
+
+# Where the core is installed TO (app code, a fixed path). `python3 -m cx_core` runs
+# from here. The CX_* runtime paths (zims, kolibri db, staging) default to the box
+# layout inside the core itself, so this role sets none of them.
+cx_core_serve_path: /opt/cx-core
+
+# The localhost port the core binds. Matches the core's own default and the health
+# probe in the service wrappers.
+cx_core_port: 9500
+
+# The PDSM service wrapper to install under proot. Ships in the repo next to the
+# dash-node wrapper; both drivers (this role and the iiab-android bootstrap) copy it.
+cx_core_pdsm_src: "{{ cx_core_src_dir }}/../pdsm/cx-core"

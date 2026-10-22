@@ -1,0 +1,23 @@
+# Reflect cx_core_enabled on the running service. Idempotent verbs (pdsm start reports
+# "already running"; systemd state=started does not bounce a live unit), so this runs on
+# every play without churning the service. install.yml already did the first start.
+
+- name: Start cx-core via PDSM (proot)
+  command: pdsm start cx-core
+  when: is_proot and cx_core_enabled
+
+- name: Stop cx-core via PDSM (proot)
+  command: pdsm stop cx-core
+  when: is_proot and not cx_core_enabled
+
+- name: Start cx-core via systemd (not proot)
+  systemd:
+    name: cx-core
+    state: started
+  when: not is_proot and cx_core_enabled
+
+- name: Stop cx-core via systemd (not proot)
+  systemd:
+    name: cx-core
+    state: stopped
+  when: not is_proot and not cx_core_enabled
