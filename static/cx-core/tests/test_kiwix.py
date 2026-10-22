@@ -6,10 +6,11 @@ import uuid
 from cx_core.adapters.kiwix import (
     KiwixAdapter,
     build_item,
+    is_safe_local_ref,
     parse_zim_filename,
     read_zim_uuid,
 )
-from cx_core.model import AUTHORITATIVE
+from cx_core.model import AUTHORITATIVE, SOFT
 
 
 def _zim_header(u: uuid.UUID) -> bytes:
@@ -72,6 +73,20 @@ class BuildItemTest(unittest.TestCase):
         )
         self.assertIsNone(item.integrity)
 
+    def test_missing_uuid_degrades_to_soft(self):
+        item = build_item("devdocs_en_angular_2026-05.zim", 2411725, None)
+        self.assertIsNone(item.identity.dedup.build)
+        self.assertEqual(item.identity.dedup.id_kind, SOFT)
+
+
+class IsSafeLocalRefTest(unittest.TestCase):
+    def test_plain_filename_allowed(self):
+        self.assertTrue(is_safe_local_ref("wikipedia_en_all_2023-10.zim"))
+
+    def test_traversal_and_separators_rejected(self):
+        for bad in ["../x.zim", "a/b.zim", "a\\b.zim", "/etc/passwd", "..", ".", ""]:
+            self.assertFalse(is_safe_local_ref(bad), bad)
+
 
 class KiwixAdapterEndToEndTest(unittest.TestCase):
     def test_list_reads_installed_zims_with_uuid_and_size(self):
@@ -95,8 +110,31 @@ class KiwixAdapterEndToEndTest(unittest.TestCase):
             self.assertEqual(it.bytes, len(payload))
 
             # get() finds it by local_ref, and misses cleanly.
-            self.assertIsNotNone(adapter.get(name))
+            got = adapter.get(name)
+            self.assertIsNotNone(got)
+            self.assertEqual(got.identity.dedup.build, str(u))
             self.assertIsNone(adapter.get("nope.zim"))
+
+    def test_bad_header_zim_lists_soft_with_no_build(self):
+        with tempfile.TemporaryDirectory() as d:
+            # a .zim whose header is too short / not a ZIM: still listed, but degraded.
+            with open(os.path.join(d, "broken_en_x_2020-01.zim"), "wb") as f:
+                f.write(b"not a zim")
+            items = KiwixAdapter(d).list()
+            self.assertEqual(len(items), 1)
+            self.assertIsNone(items[0].identity.dedup.build)
+            self.assertEqual(items[0].identity.dedup.id_kind, SOFT)
+
+    def test_get_rejects_traversal_without_touching_fs(self):
+        with tempfile.TemporaryDirectory() as d:
+            # a readable ZIM one level up must NOT be reachable through a traversal ref.
+            with open(os.path.join(d, "secret_en_x_2020-01.zim"), "wb") as f:
+                f.write(_zim_header(uuid.uuid4()))
+            sub = os.path.join(d, "content")
+            os.mkdir(sub)
+            adapter = KiwixAdapter(sub)
+            self.assertIsNone(adapter.get("../secret_en_x_2020-01.zim"))
+            self.assertIsNone(adapter.get("..\\secret_en_x_2020-01.zim"))
 
     def test_absent_dir_is_not_installed(self):
         adapter = KiwixAdapter("/no/such/dir/for/cx-core")

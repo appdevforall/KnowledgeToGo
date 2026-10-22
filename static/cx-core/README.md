@@ -62,3 +62,9 @@ boundary is kept clean so Kolibri and Calibre slot in next.
 Deployment (D1d: an Ansible-role baseline plus a dash-node-style live self-update) is
 not built here; this slice only has to be runnable. Live on-device verification needs a
 box and is a follow-up.
+
+The registry resolves installed apps once at startup (a snapshot). Reacting to a module
+being installed or removed at runtime is a deferred design item: it must consume the
+install system's single source of truth (ModuleRegistry / install events), not re-derive
+installed-state per request. A second owner of "what is installed" is the design trap this
+avoids.

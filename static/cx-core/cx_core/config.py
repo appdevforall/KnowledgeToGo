@@ -6,17 +6,29 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
+DEFAULT_PORT = 9500
+
+
+def _parse_port(raw: str) -> int:
+    """Parse a TCP port from the environment, falling back to the default on an empty,
+    non-numeric or out-of-range value instead of crashing the service at startup."""
+    try:
+        port = int(raw)
+    except (TypeError, ValueError):
+        return DEFAULT_PORT
+    return port if 1 <= port <= 65535 else DEFAULT_PORT
+
 
 @dataclass(frozen=True)
 class Config:
     host: str = "127.0.0.1"  # localhost only, like dash-node; the front reaches it in-box
-    port: int = 9500
+    port: int = DEFAULT_PORT
     zims_dir: str = "/library/zims/content/"
 
     @staticmethod
     def from_env() -> "Config":
         return Config(
             host=os.environ.get("CX_HOST", "127.0.0.1"),
-            port=int(os.environ.get("CX_PORT", "9500")),
+            port=_parse_port(os.environ.get("CX_PORT", str(DEFAULT_PORT))),
             zims_dir=os.environ.get("CX_ZIMS_DIR", "/library/zims/content/"),
         )

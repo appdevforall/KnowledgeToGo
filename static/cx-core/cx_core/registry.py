@@ -3,6 +3,12 @@ adapter. The read API is just the core composing every loaded adapter (ADR mappi
 
 Keeping the candidate list here is the one place a new app is wired in. An adapter is
 loaded only when its app is installed, so the service is aware only of what is present.
+
+The registry is a STARTUP SNAPSHOT: it resolves installed-state once at load. Reacting to
+a module being installed or removed at runtime is a deferred design item, and it must
+consume the install system's single source of truth (ModuleRegistry / install events), not
+re-derive installed-state per request or add a self-invalidating cache here: a second owner
+of "what is installed" is the ADR-5343 failure mode.
 """
 
 from __future__ import annotations

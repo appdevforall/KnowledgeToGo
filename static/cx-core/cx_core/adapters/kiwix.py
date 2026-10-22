@@ -18,7 +18,7 @@ import re
 import uuid
 from typing import List, Optional, Tuple
 
-from ..model import AUTHORITATIVE, Dedup, Identity, ManifestItem
+from ..model import AUTHORITATIVE, SOFT, Dedup, Identity, ManifestItem
 from ..ports import ContentAdapter
 
 # openzim header: magic number is uint32 little-endian 0x044D495A at offset 0, and the
@@ -49,6 +49,17 @@ def read_zim_uuid_from_file(path: str) -> Optional[str]:
         return None
 
 
+def is_safe_local_ref(local_ref: str) -> bool:
+    """True when local_ref is a plain filename contained in one directory: no path
+    separators, no parent/current reference, no null byte. So joining it onto the
+    content dir cannot escape that dir (path-traversal guard). Pure and filesystem
+    free, like the repo's ArchiveEntry.escapesRoot / ModuleName.isAllowed guards.
+    Reused by get() now and by export() in the next slice."""
+    if not local_ref or local_ref in (".", ".."):
+        return False
+    return not ("/" in local_ref or "\\" in local_ref or "\x00" in local_ref)
+
+
 def parse_zim_filename(name: str) -> Tuple[str, str, str, str]:
     """Decompose a Kiwix filename into (creator, lang, flavour, date).
 
@@ -76,7 +87,10 @@ def build_item(name: str, size_bytes: int, zim_uuid: Optional[str]) -> ManifestI
         line={"creator": creator, "lang": lang, "flavour": flavour},
         build=zim_uuid,
         version=date,
-        id_kind=AUTHORITATIVE,
+        # The UUID is the authoritative cross-box key. When it could not be read
+        # (short / non-ZIM / unreadable header) the item is degraded, so the dedup
+        # is advisory only: never a confident authoritative match on a missing id.
+        id_kind=AUTHORITATIVE if zim_uuid else SOFT,
     )
     return ManifestItem(
         app="kiwix",
@@ -117,3 +131,16 @@ class KiwixAdapter(ContentAdapter):
             items.append(build_item(name, size, read_zim_uuid_from_file(path)))
         items.sort(key=lambda it: it.identity.local_ref)
         return items
+
+    def get(self, local_ref: str) -> Optional[ManifestItem]:
+        # Resolve the one requested file instead of scanning list() and opening every
+        # ZIM header. The containment guard runs FIRST, so a traversal ref never reaches
+        # the filesystem.
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return None
+        path = os.path.join(self._dir, local_ref)
+        try:
+            size = os.path.getsize(path)
+        except OSError:
+            return None
+        return build_item(local_ref, size, read_zim_uuid_from_file(path))
