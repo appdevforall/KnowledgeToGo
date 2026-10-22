@@ -25,6 +25,7 @@ class Config:
     port: int = DEFAULT_PORT
     zims_dir: str = "/library/zims/content/"
     kolibri_db: str = "/library/kolibri/db.sqlite3"
+    kolibri_bin: str = "/usr/bin/kolibri"
     calibre_db: str = "/library/calibre-web/metadata.db"
 
     @staticmethod
@@ -34,5 +35,6 @@ class Config:
             port=_parse_port(os.environ.get("CX_PORT", str(DEFAULT_PORT))),
             zims_dir=os.environ.get("CX_ZIMS_DIR", "/library/zims/content/"),
             kolibri_db=os.environ.get("CX_KOLIBRI_DB", "/library/kolibri/db.sqlite3"),
+            kolibri_bin=os.environ.get("CX_KOLIBRI_BIN", "/usr/bin/kolibri"),
             calibre_db=os.environ.get("CX_CALIBRE_DB", "/library/calibre-web/metadata.db"),
         )

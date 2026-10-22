@@ -142,5 +142,25 @@ class KiwixAdapterEndToEndTest(unittest.TestCase):
         self.assertEqual(adapter.list(), [])
 
 
+class KiwixExportTest(unittest.TestCase):
+    def test_open_export_streams_the_zim_as_is(self):
+        with tempfile.TemporaryDirectory() as d:
+            name = "devdocs_en_angular_2026-05.zim"
+            payload = _zim_header(uuid.uuid4()) + os.urandom(200)
+            with open(os.path.join(d, name), "wb") as f:
+                f.write(payload)
+            stream = KiwixAdapter(d).open_export(name)
+            self.assertIsNotNone(stream)
+            self.assertEqual(stream.filename, name)
+            self.assertEqual(stream.content_type, "application/octet-stream")
+            self.assertEqual(b"".join(stream.chunks), payload)
+
+    def test_open_export_rejects_traversal_and_missing(self):
+        with tempfile.TemporaryDirectory() as d:
+            adapter = KiwixAdapter(d)
+            self.assertIsNone(adapter.open_export("../x.zim"))
+            self.assertIsNone(adapter.open_export("absent.zim"))
+
+
 if __name__ == "__main__":
     unittest.main()

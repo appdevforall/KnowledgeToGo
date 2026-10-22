@@ -13,11 +13,30 @@ content nodes, and a flat join would count its bytes once per node.
 from __future__ import annotations
 
 import os
+import re
+import shutil
 import sqlite3
+import subprocess
+import tempfile
 from typing import List, Optional
 
+from ..export import tar_stream
 from ..model import AUTHORITATIVE, Dedup, Identity, ManifestItem
-from ..ports import ContentAdapter
+from ..ports import ContentAdapter, ExportStream
+
+_CHANNEL_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
+
+
+def export_commands(channel_id: str, dest: str, kolibri_bin: str) -> List[List[str]]:
+    """The two Kolibri management commands that stage a channel export into dest: the
+    channel DB, then its content files. Pure (builds argv only). Delegating to Kolibri is
+    the one owner of "how a channel is exported"; the content store is content-addressed,
+    so import dedups shared files across channels by itself."""
+    base = [kolibri_bin, "manage"]
+    return [
+        base + ["exportchannel", channel_id, dest],
+        base + ["exportcontent", channel_id, dest],
+    ]
 
 # Available bytes per installed channel. {where} scopes it to one channel for get().
 _CHANNELS_SQL = """
@@ -58,8 +77,11 @@ def build_channel_item(channel_id: str, name: Optional[str], version, size_bytes
 class KolibriAdapter(ContentAdapter):
     app = "kolibri"
 
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, kolibri_bin: str = "/usr/bin/kolibri"):
         self._db = db_path
+        self._bin = kolibri_bin
+        # KOLIBRI_HOME is the directory that holds db.sqlite3; the export CLI reads it.
+        self._home = os.path.dirname(db_path)
 
     def is_installed(self) -> bool:
         return os.path.exists(self._db)
@@ -93,3 +115,38 @@ class KolibriAdapter(ContentAdapter):
             return None
         items = self._query(local_ref)
         return items[0] if items else None
+
+    def open_export(self, local_ref: str) -> Optional[ExportStream]:
+        # Delegate to Kolibri's own export: it stages the channel DB + the channel's
+        # content-addressed files into a temp tree, which we then tar-stream. Read-only on
+        # the source (export copies out). The temp tree is removed after streaming.
+        if not _CHANNEL_ID_RE.match(local_ref or ""):
+            return None
+        if not self._query(local_ref):  # not an installed channel
+            return None
+        dest = tempfile.mkdtemp(prefix="cxkolibri-")
+        try:
+            staged = self._stage_export(local_ref, dest)
+        except OSError:
+            staged = False
+        if not staged:
+            shutil.rmtree(dest, ignore_errors=True)
+            return None
+        return ExportStream(
+            filename=f"{local_ref}.tar",
+            content_type="application/x-tar",
+            chunks=tar_stream(dest, arcname=local_ref),
+            on_close=lambda: shutil.rmtree(dest, ignore_errors=True),
+        )
+
+    def _stage_export(self, channel_id: str, dest: str) -> bool:
+        """Run the Kolibri export CLI into dest. A seam, so a test can stage a fake tree
+        without a live Kolibri. Returns True on success."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        for argv in export_commands(channel_id, dest, self._bin):
+            result = subprocess.run(
+                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
+            )
+            if result.returncode != 0:
+                return False
+        return True

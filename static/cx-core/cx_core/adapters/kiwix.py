@@ -18,8 +18,9 @@ import re
 import uuid
 from typing import List, Optional, Tuple
 
+from ..export import file_stream
 from ..model import AUTHORITATIVE, SOFT, Dedup, Identity, ManifestItem
-from ..ports import ContentAdapter
+from ..ports import ContentAdapter, ExportStream
 
 # openzim header: magic number is uint32 little-endian 0x044D495A at offset 0, and the
 # 16-byte UUID is at offset 8. We only need the first 24 bytes.
@@ -144,3 +145,17 @@ class KiwixAdapter(ContentAdapter):
         except OSError:
             return None
         return build_item(local_ref, size, read_zim_uuid_from_file(path))
+
+    def open_export(self, local_ref: str) -> Optional[ExportStream]:
+        # The item IS the .zim file: stream it as-is (no archive wrapper). Same containment
+        # guard as get(), so a traversal ref never reaches the filesystem.
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return None
+        path = os.path.join(self._dir, local_ref)
+        if not os.path.isfile(path):
+            return None
+        return ExportStream(
+            filename=local_ref,
+            content_type="application/octet-stream",
+            chunks=file_stream(path),
+        )

@@ -18,8 +18,9 @@ import os
 import sqlite3
 from typing import List, Optional
 
+from ..export import resolve_within, tar_stream
 from ..model import SOFT, Dedup, Identity, ManifestItem, normalize_text
-from ..ports import ContentAdapter
+from ..ports import ContentAdapter, ExportStream
 
 # One row per book, with its authors, formats, total byte-size and one external id if any.
 _BOOKS_SQL = """
@@ -69,9 +70,44 @@ class CalibreAdapter(ContentAdapter):
 
     def __init__(self, db_path: str):
         self._db = db_path
+        # The Calibre library root is the directory that holds metadata.db; each book's
+        # files live under <root>/<books.path>/.
+        self._lib_root = os.path.dirname(db_path)
 
     def is_installed(self) -> bool:
         return os.path.exists(self._db)
+
+    def _book_path(self, uuid: str) -> Optional[str]:
+        """The relative on-disk directory for a book uuid, from metadata.db. None if absent."""
+        if not uuid or not os.path.exists(self._db):
+            return None
+        try:
+            con = sqlite3.connect(f"file:{self._db}?mode=ro", uri=True)
+        except sqlite3.Error:
+            return None
+        try:
+            row = con.execute("SELECT path FROM books WHERE uuid = ?", (uuid,)).fetchone()
+        except sqlite3.Error:
+            return None
+        finally:
+            con.close()
+        return row[0] if row and row[0] else None
+
+    def open_export(self, local_ref: str) -> Optional[ExportStream]:
+        # Export the book's own directory (its format files, cover and opf), the layout
+        # Calibre itself reads back. books.path comes from the DB, so a containment guard
+        # keeps a crafted path from escaping the library root.
+        rel = self._book_path(local_ref)
+        if rel is None:
+            return None
+        book_dir = resolve_within(self._lib_root, rel)
+        if book_dir is None or not os.path.isdir(book_dir):
+            return None
+        return ExportStream(
+            filename=f"{local_ref}.tar",
+            content_type="application/x-tar",
+            chunks=tar_stream(book_dir, arcname=local_ref),
+        )
 
     def _query(self, only_uuid: Optional[str]) -> List[ManifestItem]:
         if not os.path.exists(self._db):

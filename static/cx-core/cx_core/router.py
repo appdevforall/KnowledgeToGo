@@ -1,7 +1,8 @@
-"""Pure request routing for the /v1 read API. Kept free of the HTTP server so the route
-logic is unit-testable without a socket: given a registry, a method and a path, it
-returns (status, payload). The outer contract (ADR) maps each route 1:1 to an adapter
-operation; this slice is the read side only.
+"""Pure request routing for the /v1 API. Kept free of the HTTP server so the route logic
+is unit-testable without a socket: given a registry, a method, a path and (for POST) a
+parsed body, it returns (status, payload). The outer contract (ADR) maps each route 1:1 to
+an adapter operation. A read route's payload is JSON; the export-item route's payload is an
+ExportStream the server streams as octets.
 """
 
 from __future__ import annotations
@@ -24,14 +25,45 @@ def _content_rows(registry: Registry, only_app: Optional[str]) -> Response:
     return 200, {"items": items}
 
 
-def dispatch(registry: Registry, method: str, path: str, query: dict) -> Response:
-    """Route one request. ``query`` is a dict of first values (e.g. {"app": "kiwix"})."""
-    if method != "GET":
-        return 405, {"error": "method not allowed"}
+def _export_plan(registry: Registry, body: Any) -> Response:
+    """Return the manifest entries + exact bytes for the requested items, moving NO payload,
+    so the front can preflight the phone disk and let the user pick before any byte moves.
+    Partial is first-class: items that cannot be planned are reported, not fatal."""
+    items = body.get("items") if isinstance(body, dict) else None
+    if not isinstance(items, list):
+        return 400, {"error": "body must be {items: [{app, localRef}]}"}
+    found: List[dict] = []
+    missing: List[dict] = []
+    total = 0
+    for req in items:
+        app = req.get("app") if isinstance(req, dict) else None
+        local_ref = req.get("localRef") if isinstance(req, dict) else None
+        if not registry.has(app):
+            missing.append({"app": app, "localRef": local_ref, "reason": "unknown app"})
+            continue
+        item = registry.get(app).get(local_ref) if local_ref else None
+        if item is None:
+            missing.append({"app": app, "localRef": local_ref, "reason": "not found"})
+            continue
+        found.append(item.to_json())
+        total += item.bytes
+    return 200, {"items": found, "missing": missing, "totalBytes": total}
 
-    # Normalize: drop the trailing slash (but keep the root) and split.
+
+def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None) -> Response:
+    """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
+    for a POST."""
     trimmed = path.rstrip("/") or "/"
     segments = [unquote(s) for s in trimmed.split("/") if s != ""]
+
+    if method == "POST":
+        # POST /v1/export/plan : plan an export (sizes only, no payload moved).
+        if segments == ["v1", "export", "plan"]:
+            return _export_plan(registry, body)
+        return 404, {"error": "not found"}
+
+    if method != "GET":
+        return 405, {"error": "method not allowed"}
 
     # GET /v1/apps : installed apps that have a loaded adapter.
     if segments == ["v1", "apps"]:
@@ -50,5 +82,16 @@ def dispatch(registry: Registry, method: str, path: str, query: dict) -> Respons
         if item is None:
             return 404, {"error": "item not found"}
         return 200, item.to_json()
+
+    # GET /v1/export/item/{app}/{localRef} : stream that one item's archive (payload is an
+    # ExportStream; the server streams it). The front moves the bytes and owns the sequence.
+    if len(segments) == 5 and segments[0] == "v1" and segments[1] == "export" and segments[2] == "item":
+        app, local_ref = segments[3], segments[4]
+        if not registry.has(app):
+            return 404, {"error": f"unknown app: {app}"}
+        stream = registry.get(app).open_export(local_ref)
+        if stream is None:
+            return 404, {"error": "item not found or not exportable"}
+        return 200, stream
 
     return 404, {"error": "not found"}

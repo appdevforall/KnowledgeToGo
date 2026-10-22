@@ -33,20 +33,23 @@ class BuildBookItemTest(unittest.TestCase):
         self.assertEqual(item.title, "u-3")
 
 
-def _make_db(path):
+def _make_db(path, book_path="Tolkien/The Hobbit (1)"):
     con = sqlite3.connect(path)
     con.executescript("""
-        CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT, sort TEXT, uuid TEXT);
+        CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT, sort TEXT, path TEXT, uuid TEXT);
         CREATE TABLE data (id INTEGER PRIMARY KEY, book INTEGER, format TEXT, uncompressed_size INTEGER, name TEXT);
         CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT);
         CREATE TABLE books_authors_link (id INTEGER PRIMARY KEY, book INTEGER, author INTEGER);
         CREATE TABLE identifiers (id INTEGER PRIMARY KEY, book INTEGER, type TEXT, val TEXT);
-        INSERT INTO books (id, title, sort, uuid) VALUES (1, 'The Hobbit', 'Hobbit, The', 'u-1');
         INSERT INTO authors (id, name) VALUES (1, 'J.R.R. Tolkien');
         INSERT INTO books_authors_link (book, author) VALUES (1, 1);
         INSERT INTO data (book, format, uncompressed_size, name) VALUES (1, 'EPUB', 1000, 'hobbit'), (1, 'PDF', 2000, 'hobbit');
         INSERT INTO identifiers (book, type, val) VALUES (1, 'isbn', '9780261103344');
     """)
+    con.execute(
+        "INSERT INTO books (id, title, sort, path, uuid) VALUES (1, 'The Hobbit', 'Hobbit, The', ?, 'u-1')",
+        (book_path,),
+    )
     con.commit()
     con.close()
 
@@ -79,6 +82,45 @@ class CalibreAdapterEndToEndTest(unittest.TestCase):
         adapter = CalibreAdapter("/no/such/metadata.db")
         self.assertFalse(adapter.is_installed())
         self.assertEqual(adapter.list(), [])
+
+
+class CalibreExportTest(unittest.TestCase):
+    def test_open_export_tars_the_book_dir(self):
+        import io
+        import tarfile
+
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            book_dir = os.path.join(lib, "Tolkien", "The Hobbit (1)")
+            os.makedirs(book_dir)
+            with open(os.path.join(book_dir, "hobbit.epub"), "wb") as f:
+                f.write(b"EPUBDATA")
+            with open(os.path.join(book_dir, "cover.jpg"), "wb") as f:
+                f.write(b"JPG")
+
+            stream = CalibreAdapter(db).open_export("u-1")
+            self.assertIsNotNone(stream)
+            self.assertEqual(stream.filename, "u-1.tar")
+            blob = b"".join(stream.chunks)
+            with tarfile.open(fileobj=io.BytesIO(blob), mode="r") as tar:
+                names = sorted(m.name for m in tar.getmembers() if m.isfile())
+                self.assertEqual(names, ["u-1/cover.jpg", "u-1/hobbit.epub"])
+
+    def test_open_export_missing_book_or_dir_is_none(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)  # row exists but the book dir was never created
+            adapter = CalibreAdapter(db)
+            self.assertIsNone(adapter.open_export("u-1"))
+            self.assertIsNone(adapter.open_export("no-such-uuid"))
+
+    def test_open_export_rejects_traversal_path(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            # a malicious books.path must not escape the library root.
+            _make_db(db, book_path="../../etc")
+            self.assertIsNone(CalibreAdapter(db).open_export("u-1"))
 
 
 if __name__ == "__main__":

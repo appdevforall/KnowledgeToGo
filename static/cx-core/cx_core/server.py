@@ -10,8 +10,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 from .config import Config
+from .ports import ExportStream
 from .registry import Registry
 from .router import dispatch
+
+_MAX_BODY = 1 * 1024 * 1024  # a plan request is small; cap the read defensively
+_BAD_JSON = object()  # sentinel: body present but not valid JSON
 
 
 def make_handler(registry: Registry):
@@ -22,7 +26,32 @@ def make_handler(registry: Registry):
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
             status, payload = dispatch(registry, "GET", parts.path, query)
+            if isinstance(payload, ExportStream):
+                self._stream(status, payload)
+            else:
+                self._send(status, payload)
+
+        def do_POST(self) -> None:  # noqa: N802 (http.server naming)
+            parts = urlsplit(self.path)
+            body = self._read_json_body()
+            if body is _BAD_JSON:
+                self._send(400, {"error": "invalid JSON body"})
+                return
+            status, payload = dispatch(registry, "POST", parts.path, {}, body)
             self._send(status, payload)
+
+        def _read_json_body(self):
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+            except ValueError:
+                return _BAD_JSON
+            if length <= 0:
+                return None
+            raw = self.rfile.read(min(length, _MAX_BODY))
+            try:
+                return json.loads(raw.decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                return _BAD_JSON
 
         def _send(self, status: int, payload) -> None:
             body = json.dumps(payload).encode("utf-8")
@@ -31,6 +60,26 @@ def make_handler(registry: Registry):
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
+
+        def _stream(self, status: int, stream: ExportStream) -> None:
+            # Chunked transfer: the item size is not known up front for a tar, and the front
+            # moves the bytes. on_close releases any staging after the last byte.
+            self.send_response(status)
+            self.send_header("Content-Type", stream.content_type)
+            self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
+            self.send_header("Transfer-Encoding", "chunked")
+            self.end_headers()
+            try:
+                for block in stream.chunks:
+                    if not block:
+                        continue
+                    self.wfile.write(b"%X\r\n" % len(block))
+                    self.wfile.write(block)
+                    self.wfile.write(b"\r\n")
+                self.wfile.write(b"0\r\n\r\n")
+            finally:
+                if stream.on_close:
+                    stream.on_close()
 
         def log_message(self, *_args) -> None:
             # Quiet by default; the front owns user-facing progress / logging.

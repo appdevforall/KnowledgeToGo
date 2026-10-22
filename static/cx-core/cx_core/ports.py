@@ -12,9 +12,21 @@ the adapter DELEGATES to it rather than re-deriving: one source of truth.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import Callable, Iterable, List, Optional
 
 from .model import ManifestItem
+
+
+@dataclass
+class ExportStream:
+    """One item staged for export: a byte stream the core serves and the front moves
+    (ADR D1c). ``on_close`` releases any staging (a temp export tree) after streaming."""
+
+    filename: str
+    content_type: str
+    chunks: Iterable[bytes]
+    on_close: Optional[Callable[[], None]] = None
 
 
 class ContentAdapter(ABC):
@@ -38,4 +50,10 @@ class ContentAdapter(ABC):
         for item in self.list():
             if item.identity.local_ref == local_ref:
                 return item
+        return None
+
+    def open_export(self, local_ref: str) -> Optional[ExportStream]:
+        """Stage one item and return a byte stream, or None when the item is absent or the
+        adapter cannot export it. Read-only on the source. Default: export not supported.
+        (The full ADR port also has importItem / delete; those arrive with later pillars.)"""
         return None
