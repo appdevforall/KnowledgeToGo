@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Callable, Iterable, List, Optional
 
-from .model import ManifestItem
+from .model import ABSENT, AUTHORITATIVE, ManifestItem
 
 
 @dataclass
@@ -34,6 +34,8 @@ class ContentAdapter(ABC):
 
     #: Stable adapter key used in the REST API (e.g. "kiwix"). Lowercase, URL-safe.
     app: str = ""
+    #: Authority of this app's dedup id: AUTHORITATIVE (hard verdict) or SOFT (advisory).
+    id_kind: str = AUTHORITATIVE
 
     @abstractmethod
     def is_installed(self) -> bool:
@@ -54,6 +56,18 @@ class ContentAdapter(ABC):
 
     def open_export(self, local_ref: str) -> Optional[ExportStream]:
         """Stage one item and return a byte stream, or None when the item is absent or the
-        adapter cannot export it. Read-only on the source. Default: export not supported.
-        (The full ADR port also has importItem / delete; those arrive with later pillars.)"""
+        adapter cannot export it. Read-only on the source. Default: export not supported."""
         return None
+
+    def check(self, dedup: dict) -> str:
+        """The receiver's verdict for an incoming item, from its dedup key (ABSENT /
+        SAME_VERSION / OLDER_HERE / NEWER_HERE). Reads only; moves nothing. Default: ABSENT.
+        A soft idKind (Calibre) makes the verdict advisory, never an automatic skip."""
+        return ABSENT
+
+    def import_item(self, entry: dict, payload_path: str) -> dict:
+        """Ingest one already-local item archive into the app index, delegating to the app's
+        own import. Idempotent: a re-import must not double-count or corrupt. ``payload_path``
+        is a box-visible local file the front placed. Default: not supported.
+        (The full ADR port also has delete; it arrives with its own slice.)"""
+        return {"ok": False, "reason": "import not supported"}

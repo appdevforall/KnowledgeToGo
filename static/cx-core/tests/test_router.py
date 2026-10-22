@@ -1,3 +1,5 @@
+import os
+import tempfile
 import unittest
 
 from cx_core.model import AUTHORITATIVE, Dedup, Identity, ManifestItem
@@ -20,10 +22,13 @@ def _item(app: str, local_ref: str) -> ManifestItem:
 
 
 class FakeAdapter(ContentAdapter):
-    def __init__(self, app, items, export=None):
+    def __init__(self, app, items, export=None, verdict="ABSENT", id_kind="authoritative", import_result=None):
         self.app = app
+        self.id_kind = id_kind
         self._items = items
         self._export = export
+        self._verdict = verdict
+        self._import_result = import_result or {"ok": True, "app": app}
 
     def is_installed(self):
         return True
@@ -33,6 +38,13 @@ class FakeAdapter(ContentAdapter):
 
     def open_export(self, local_ref):
         return self._export
+
+    def check(self, dedup):
+        return self._verdict
+
+    def import_item(self, entry, payload_path):
+        self.imported = (entry, payload_path)
+        return self._import_result
 
 
 def _registry():
@@ -127,6 +139,63 @@ class ExportRouteTest(unittest.TestCase):
     def test_export_item_unknown_app_404(self):
         status, _ = dispatch(self.reg, "GET", "/v1/export/item/nope/x", {})
         self.assertEqual(status, 404)
+
+
+class ImportRouteTest(unittest.TestCase):
+    def test_dedup_check_returns_verdict_and_idkind(self):
+        reg = Registry([
+            FakeAdapter("kiwix", [], verdict="OLDER_HERE", id_kind="authoritative"),
+            FakeAdapter("calibre", [], verdict="SAME_VERSION", id_kind="soft"),
+        ])
+        body = {"items": [
+            {"app": "kiwix", "dedup": {"line": {}}},
+            {"app": "calibre", "dedup": {"line": {}}},
+            {"app": "nope", "dedup": {"line": {}}},
+        ]}
+        status, out = dispatch(reg, "POST", "/v1/dedup/check", {}, body)
+        self.assertEqual(status, 200)
+        self.assertEqual(out["results"][0], {"app": "kiwix", "verdict": "OLDER_HERE", "idKind": "authoritative"})
+        self.assertEqual(out["results"][1], {"app": "calibre", "verdict": "SAME_VERSION", "idKind": "soft"})
+        self.assertEqual(out["results"][2]["verdict"], "NO_APP")
+
+    def test_import_validate_partial(self):
+        reg = Registry([FakeAdapter("kiwix", [], verdict="ABSENT")])
+        body = {"items": [
+            {"app": "kiwix", "identity": {"localRef": "a.zim", "dedup": {"line": {}}}},
+            {"app": "calibre", "identity": {"localRef": "b", "dedup": {}}},
+        ]}
+        status, out = dispatch(reg, "POST", "/v1/import/validate", {}, body)
+        self.assertEqual(status, 200)
+        self.assertEqual(out["results"][0]["status"], "importable")
+        self.assertEqual(out["results"][0]["verdict"], "ABSENT")
+        self.assertEqual(out["results"][1]["status"], "NO_APP")
+
+    def test_import_item_happy_path(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [], import_result={"ok": True, "app": "kiwix"})
+            reg = Registry([fake], import_root=root)
+            payload = os.path.join(root, "a.zim")
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10}, "payloadPath": payload}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 200)
+            self.assertTrue(out["ok"])
+            self.assertEqual(fake.imported[1], payload)
+
+    def test_import_item_rejects_payload_outside_area(self):
+        with tempfile.TemporaryDirectory() as root:
+            reg = Registry([FakeAdapter("kiwix", [])], import_root=root)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": "/etc/passwd"}
+            status, _ = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 400)
+
+    def test_import_item_adapter_failure_422(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [], import_result={"ok": False, "reason": "bad archive"})
+            reg = Registry([fake], import_root=root)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": os.path.join(root, "x")}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 422)
+            self.assertFalse(out["ok"])
 
 
 if __name__ == "__main__":

@@ -3,7 +3,15 @@ import sqlite3
 import tempfile
 import unittest
 
-from cx_core.adapters.kolibri import KolibriAdapter, build_channel_item, export_commands
+import io
+import tarfile
+
+from cx_core.adapters.kolibri import (
+    KolibriAdapter,
+    build_channel_item,
+    export_commands,
+    import_commands,
+)
 from cx_core.model import AUTHORITATIVE
 
 VALID_ID = "c1f2b7e6ac9f56a2bb44fa7a48b66dce"
@@ -81,6 +89,87 @@ class ExportCommandsTest(unittest.TestCase):
                 ["/usr/bin/kolibri", "manage", "exportcontent", VALID_ID, "/tmp/dest"],
             ],
         )
+
+
+class ImportCommandsTest(unittest.TestCase):
+    def test_builds_the_two_disk_import_commands(self):
+        self.assertEqual(
+            import_commands(VALID_ID, "/src/dir", "/usr/bin/kolibri"),
+            [
+                ["/usr/bin/kolibri", "manage", "importchannel", "disk", VALID_ID, "/src/dir"],
+                ["/usr/bin/kolibri", "manage", "importcontent", "disk", VALID_ID, "/src/dir"],
+            ],
+        )
+
+
+class KolibriCheckTest(unittest.TestCase):
+    def setUp(self):
+        self._d = tempfile.TemporaryDirectory()
+        self.db = os.path.join(self._d.name, "db.sqlite3")
+        _make_db(self.db, cid=VALID_ID)  # version 14
+        self.adapter = KolibriAdapter(self.db)
+
+    def tearDown(self):
+        self._d.cleanup()
+
+    def test_same_version(self):
+        self.assertEqual(self.adapter.check({"line": VALID_ID, "version": 14}), "SAME_VERSION")
+
+    def test_older_here_when_incoming_newer(self):
+        self.assertEqual(self.adapter.check({"line": VALID_ID, "version": 20}), "OLDER_HERE")
+
+    def test_newer_here_when_incoming_older(self):
+        self.assertEqual(self.adapter.check({"line": VALID_ID, "version": 5}), "NEWER_HERE")
+
+    def test_absent_when_no_such_channel(self):
+        self.assertEqual(self.adapter.check({"line": "f" * 32, "version": 1}), "ABSENT")
+
+
+class _ImportStubKolibri(KolibriAdapter):
+    def _stage_import(self, channel_id, source):
+        self.import_channel = channel_id
+        self.import_source = source
+        return True
+
+
+def _bundle_tar(tar_path, channel_id):
+    with tarfile.open(tar_path, "w") as t:
+        for rel, data in [
+            (f"{channel_id}/content/databases/{channel_id}.sqlite3", b"DB"),
+            (f"{channel_id}/content/storage/a/b/abc.mp4", b"MP4"),
+        ]:
+            ti = tarfile.TarInfo(rel)
+            ti.size = len(data)
+            t.addfile(ti, io.BytesIO(data))
+
+
+class KolibriImportTest(unittest.TestCase):
+    def test_import_extracts_and_delegates_to_kolibri(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "chan.tar")
+            _bundle_tar(tar_path, VALID_ID)
+            adapter = _ImportStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            self.assertTrue(result["ok"])
+            self.assertEqual(adapter.import_channel, VALID_ID)
+            # single_child_dir found the inner <channel_id> bundle root.
+            self.assertEqual(os.path.basename(adapter.import_source), VALID_ID)
+
+    def test_import_rejects_bad_archive(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "evil.tar")
+            with tarfile.open(tar_path, "w") as t:
+                data = b"x"
+                ti = tarfile.TarInfo("../escape")
+                ti.size = len(data)
+                t.addfile(ti, io.BytesIO(data))
+            adapter = _ImportStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            self.assertFalse(result["ok"])
 
 
 class _StubbedKolibri(KolibriAdapter):

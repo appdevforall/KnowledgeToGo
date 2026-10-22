@@ -162,5 +162,60 @@ class KiwixExportTest(unittest.TestCase):
             self.assertIsNone(adapter.open_export("absent.zim"))
 
 
+class KiwixCheckTest(unittest.TestCase):
+    def setUp(self):
+        self._d = tempfile.TemporaryDirectory()
+        self.u1 = uuid.uuid4()
+        with open(os.path.join(self._d.name, "wikipedia_en_all_2023-10.zim"), "wb") as f:
+            f.write(_zim_header(self.u1) + b"\x00" * 10)
+        self.adapter = KiwixAdapter(self._d.name)
+
+    def tearDown(self):
+        self._d.cleanup()
+
+    def _dedup(self, creator="wikipedia", flavour="all", build=None, version="2023-10"):
+        return {"line": {"creator": creator, "lang": "en", "flavour": flavour},
+                "build": build, "version": version}
+
+    def test_same_uuid_is_same_version(self):
+        self.assertEqual(self.adapter.check(self._dedup(build=str(self.u1))), "SAME_VERSION")
+
+    def test_newer_incoming_means_older_here(self):
+        self.assertEqual(self.adapter.check(self._dedup(build="other", version="2024-01")), "OLDER_HERE")
+
+    def test_older_incoming_means_newer_here(self):
+        self.assertEqual(self.adapter.check(self._dedup(build="other", version="2022-01")), "NEWER_HERE")
+
+    def test_different_line_is_absent(self):
+        self.assertEqual(self.adapter.check(self._dedup(creator="gutenberg")), "ABSENT")
+
+
+class KiwixImportTest(unittest.TestCase):
+    def test_import_places_zim_and_reports_ok(self):
+        with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
+            payload = os.path.join(src, "payload.zim")
+            data = _zim_header(uuid.uuid4()) + os.urandom(64)
+            with open(payload, "wb") as f:
+                f.write(data)
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent/indexer")  # reindex is a no-op
+            entry = {"identity": {"localRef": "gutenberg_en_all_2024-01.zim"}}
+            result = adapter.import_item(entry, payload)
+            self.assertTrue(result["ok"])
+            placed = os.path.join(zdir, "gutenberg_en_all_2024-01.zim")
+            self.assertTrue(os.path.isfile(placed))
+            with open(placed, "rb") as f:
+                self.assertEqual(f.read(), data)
+
+    def test_import_rejects_traversal_localref(self):
+        with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
+            payload = os.path.join(src, "p.zim")
+            with open(payload, "wb") as f:
+                f.write(b"x")
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent")
+            result = adapter.import_item({"identity": {"localRef": "../evil.zim"}}, payload)
+            self.assertFalse(result["ok"])
+            self.assertFalse(os.path.exists(os.path.join(os.path.dirname(zdir), "evil.zim")))
+
+
 if __name__ == "__main__":
     unittest.main()

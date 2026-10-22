@@ -17,6 +17,15 @@ from typing import Any, Optional
 AUTHORITATIVE = "authoritative"
 SOFT = "soft"
 
+# Presence: the receiver's verdict for an incoming item (ADR check()). For an
+# authoritative idKind the verdict is a hard fact; for a soft idKind (Calibre) it is
+# advisory only, never an automatic skip. OLDER_HERE means the box's copy is older than
+# the incoming one (import would upgrade); NEWER_HERE means the box's copy is newer.
+ABSENT = "ABSENT"
+SAME_VERSION = "SAME_VERSION"
+OLDER_HERE = "OLDER_HERE"
+NEWER_HERE = "NEWER_HERE"
+
 _WS = re.compile(r"\s+")
 
 

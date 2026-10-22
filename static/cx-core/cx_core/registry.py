@@ -23,17 +23,20 @@ from .ports import ContentAdapter
 
 
 class Registry:
-    def __init__(self, adapters: List[ContentAdapter]):
+    def __init__(self, adapters: List[ContentAdapter], import_root: str = "/library/.cx-staging"):
         self._by_app: Dict[str, ContentAdapter] = {a.app: a for a in adapters}
+        # The only directory an import payload may live in: the core refuses a payloadPath
+        # outside it (containment). The front places the payload here.
+        self.import_root = import_root
 
     @staticmethod
     def load(config: Config) -> "Registry":
         candidates: List[ContentAdapter] = [
-            KiwixAdapter(config.zims_dir),
+            KiwixAdapter(config.zims_dir, config.kiwix_indexer),
             KolibriAdapter(config.kolibri_db, config.kolibri_bin, config.staging_dir),
-            CalibreAdapter(config.calibre_db),
+            CalibreAdapter(config.calibre_db, config.calibre_url, config.credentials_file, config.staging_dir),
         ]
-        return Registry([a for a in candidates if a.is_installed()])
+        return Registry([a for a in candidates if a.is_installed()], config.staging_dir)
 
     def apps(self) -> List[str]:
         return sorted(self._by_app.keys())

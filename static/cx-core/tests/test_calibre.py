@@ -3,7 +3,12 @@ import sqlite3
 import tempfile
 import unittest
 
-from cx_core.adapters.calibre import CalibreAdapter, build_book_item
+import io
+import json
+import tarfile
+
+from cx_core.adapters.calibre import CalibreAdapter, _content_files, build_book_item
+from cx_core.adapters.calibreweb import resolve_calibre_credentials
 from cx_core.model import SOFT
 
 
@@ -121,6 +126,101 @@ class CalibreExportTest(unittest.TestCase):
             # a malicious books.path must not escape the library root.
             _make_db(db, book_path="../../etc")
             self.assertIsNone(CalibreAdapter(db).open_export("u-1"))
+
+
+class CalibreCheckTest(unittest.TestCase):
+    def test_soft_match_is_advisory_same_version_else_absent(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            adapter = CalibreAdapter(db)
+            self.assertEqual(adapter.id_kind, SOFT)
+            self.assertEqual(
+                adapter.check({"line": {"title": "the hobbit", "authors": "j.r.r. tolkien"}}),
+                "SAME_VERSION",
+            )
+            self.assertEqual(adapter.check({"line": {"title": "other", "authors": "x"}}), "ABSENT")
+
+
+class ContentFilesTest(unittest.TestCase):
+    def test_selects_by_format_else_excludes_sidecars(self):
+        with tempfile.TemporaryDirectory() as d:
+            for name in ["hobbit.epub", "hobbit.pdf", "cover.jpg", "metadata.opf"]:
+                with open(os.path.join(d, name), "wb") as f:
+                    f.write(b"x")
+            by_format = sorted(os.path.basename(p) for p in _content_files(d, {"epub", "pdf"}))
+            self.assertEqual(by_format, ["hobbit.epub", "hobbit.pdf"])
+            no_format = sorted(os.path.basename(p) for p in _content_files(d, set()))
+            self.assertEqual(no_format, ["hobbit.epub", "hobbit.pdf"])  # cover/opf excluded
+
+
+class ResolveCredentialsTest(unittest.TestCase):
+    def setUp(self):
+        self._saved = {k: os.environ.pop(k, None) for k in ("K2GO_CALIBRE_USER", "K2GO_CALIBRE_PASS")}
+
+    def tearDown(self):
+        for k, v in self._saved.items():
+            if v is not None:
+                os.environ[k] = v
+            else:
+                os.environ.pop(k, None)
+
+    def test_env_wins(self):
+        os.environ["K2GO_CALIBRE_USER"] = "envuser"
+        os.environ["K2GO_CALIBRE_PASS"] = "envpass"
+        self.assertEqual(resolve_calibre_credentials("/no/file"), ("envuser", "envpass"))
+
+    def test_file_then_default(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = os.path.join(d, "credentials.json")
+            with open(store, "w") as f:
+                json.dump({"calibre": {"username": "fileuser", "password": "filepass"}}, f)
+            self.assertEqual(resolve_calibre_credentials(store), ("fileuser", "filepass"))
+            self.assertEqual(resolve_calibre_credentials("/no/such/file"), ("Admin", "changeme"))
+
+
+class _UploadStubCalibre(CalibreAdapter):
+    def _upload_files(self, files):
+        self.uploaded = sorted(os.path.basename(f) for f in files)
+        return len(files)
+
+
+def _book_tar(tar_path, uuid, names):
+    with tarfile.open(tar_path, "w") as t:
+        for name in names:
+            data = b"book-bytes"
+            ti = tarfile.TarInfo(f"{uuid}/{name}")
+            ti.size = len(data)
+            t.addfile(ti, io.BytesIO(data))
+
+
+class CalibreImportTest(unittest.TestCase):
+    def test_import_extracts_and_uploads_format_files(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "metadata.db")
+            _make_db(db)
+            tar_path = os.path.join(d, "book.tar")
+            _book_tar(tar_path, "u-1", ["hobbit.epub", "cover.jpg", "metadata.opf"])
+            adapter = _UploadStubCalibre(db, staging_dir=os.path.join(d, "staging"))
+            entry = {"identity": {"localRef": "u-1", "dedup": {"line": {"formats": ["EPUB"]}}}}
+            result = adapter.import_item(entry, tar_path)
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["uploaded"], 1)
+            self.assertEqual(adapter.uploaded, ["hobbit.epub"])
+
+    def test_import_rejects_bad_archive(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "metadata.db")
+            _make_db(db)
+            tar_path = os.path.join(d, "evil.tar")
+            with tarfile.open(tar_path, "w") as t:
+                data = b"x"
+                ti = tarfile.TarInfo("../escape")
+                ti.size = len(data)
+                t.addfile(ti, io.BytesIO(data))
+            adapter = _UploadStubCalibre(db, staging_dir=os.path.join(d, "staging"))
+            result = adapter.import_item({"identity": {"localRef": "u-1"}}, tar_path)
+            self.assertFalse(result["ok"])
 
 
 if __name__ == "__main__":

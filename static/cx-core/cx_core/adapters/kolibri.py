@@ -17,11 +17,22 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import tarfile
 import tempfile
 from typing import List, Optional
 
-from ..export import tar_stream
-from ..model import AUTHORITATIVE, Dedup, Identity, ManifestItem
+from ..export import has_room, tar_stream
+from ..importing import safe_extract_tar, single_child_dir
+from ..model import (
+    ABSENT,
+    AUTHORITATIVE,
+    NEWER_HERE,
+    OLDER_HERE,
+    SAME_VERSION,
+    Dedup,
+    Identity,
+    ManifestItem,
+)
 from ..ports import ContentAdapter, ExportStream
 
 _CHANNEL_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
@@ -39,15 +50,28 @@ def export_commands(channel_id: str, dest: str, kolibri_bin: str) -> List[List[s
     ]
 
 
-def _has_room(path: str, needed_bytes: int) -> bool:
-    """True when the volume holding path has room for the export. The export copies about
-    the channel's own bytes; a small headroom factor covers the DB and rounding. On an
-    unmeasurable path, allow it rather than block (the export still fails cleanly on ENOSPC)."""
-    try:
-        free = shutil.disk_usage(path).free
-    except OSError:
-        return True
-    return free >= int(needed_bytes * 1.05)
+def import_commands(channel_id: str, source: str, kolibri_bin: str) -> List[List[str]]:
+    """The two Kolibri disk-import commands: register the channel DB, then copy its content
+    from the exported folder. Pure (argv only). The content store is content-addressed, so
+    files shared with channels already present are deduped by Kolibri itself."""
+    base = [kolibri_bin, "manage"]
+    return [
+        base + ["importchannel", "disk", channel_id, source],
+        base + ["importcontent", "disk", channel_id, source],
+    ]
+
+
+def _to_int(*values) -> Optional[int]:
+    """First value that parses as an int, else None. The version may arrive as an int or a
+    string over JSON, and the build mirrors it."""
+    for value in values:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
 
 # Available bytes per installed channel. {where} scopes it to one channel for get().
 _CHANNELS_SQL = """
@@ -147,7 +171,7 @@ class KolibriAdapter(ContentAdapter):
             os.makedirs(self._staging_dir, exist_ok=True)
         except OSError:
             return None
-        if not _has_room(self._staging_dir, channel[0].bytes):
+        if not has_room(self._staging_dir, channel[0].bytes):
             return None
         dest = tempfile.mkdtemp(prefix="cxkolibri-", dir=self._staging_dir)
         try:
@@ -169,6 +193,51 @@ class KolibriAdapter(ContentAdapter):
         without a live Kolibri. Returns True on success."""
         env = dict(os.environ, KOLIBRI_HOME=self._home)
         for argv in export_commands(channel_id, dest, self._bin):
+            result = subprocess.run(
+                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
+            )
+            if result.returncode != 0:
+                return False
+        return True
+
+    def check(self, dedup: dict) -> str:
+        # The line is the channel_id; the integer version is the axis. Authoritative.
+        line = dedup.get("line")
+        incoming = _to_int(dedup.get("version"), dedup.get("build"))
+        local = [it.identity.dedup for it in self.list() if it.identity.dedup.line == line]
+        if not local:
+            return ABSENT
+        local_version = max(d.version for d in local)
+        if incoming is None or local_version == incoming:
+            return SAME_VERSION
+        return OLDER_HERE if local_version < incoming else NEWER_HERE
+
+    def import_item(self, entry: dict, payload_path: str) -> dict:
+        # The payload is the export tar. Extract it safely, then delegate the disk import to
+        # Kolibri. Idempotent: Kolibri's import re-registers and dedups, never double-counts.
+        channel_id = (entry.get("identity") or {}).get("localRef", "")
+        if not _CHANNEL_ID_RE.match(channel_id or ""):
+            return {"ok": False, "reason": "invalid channel id"}
+        if not os.path.isfile(payload_path):
+            return {"ok": False, "reason": "payload not found"}
+        os.makedirs(self._staging_dir, exist_ok=True)
+        work = tempfile.mkdtemp(prefix="cximport-", dir=self._staging_dir)
+        try:
+            try:
+                safe_extract_tar(payload_path, work)
+            except (ValueError, tarfile.TarError) as exc:
+                return {"ok": False, "reason": f"bad archive: {exc}"}
+            source = single_child_dir(work) or work
+            if not self._stage_import(channel_id, source):
+                return {"ok": False, "reason": "kolibri import failed"}
+            return {"ok": True, "app": "kolibri", "localRef": channel_id}
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+    def _stage_import(self, channel_id: str, source: str) -> bool:
+        """Run the Kolibri disk-import CLI from source. A seam, like _stage_export."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        for argv in import_commands(channel_id, source, self._bin):
             result = subprocess.run(
                 argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
             )

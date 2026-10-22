@@ -15,11 +15,23 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
+import subprocess
 import uuid
 from typing import List, Optional, Tuple
 
 from ..export import file_stream
-from ..model import AUTHORITATIVE, SOFT, Dedup, Identity, ManifestItem
+from ..model import (
+    ABSENT,
+    AUTHORITATIVE,
+    NEWER_HERE,
+    OLDER_HERE,
+    SAME_VERSION,
+    SOFT,
+    Dedup,
+    Identity,
+    ManifestItem,
+)
 from ..ports import ContentAdapter, ExportStream
 
 # openzim header: magic number is uint32 little-endian 0x044D495A at offset 0, and the
@@ -108,9 +120,11 @@ def build_item(name: str, size_bytes: int, zim_uuid: Optional[str]) -> ManifestI
 
 class KiwixAdapter(ContentAdapter):
     app = "kiwix"
+    id_kind = AUTHORITATIVE
 
-    def __init__(self, zims_dir: str):
+    def __init__(self, zims_dir: str, indexer: str = "/usr/bin/iiab-make-kiwix-lib"):
         self._dir = zims_dir
+        self._indexer = indexer
 
     def is_installed(self) -> bool:
         return os.path.isdir(self._dir)
@@ -159,3 +173,48 @@ class KiwixAdapter(ContentAdapter):
             content_type="application/octet-stream",
             chunks=file_stream(path),
         )
+
+    def check(self, dedup: dict) -> str:
+        # Same (creator, lang, flavour) line is the comparable set; the UUID is the exact
+        # build and the date is the version axis. Authoritative, so the verdict is a hard fact.
+        line = dedup.get("line")
+        build = dedup.get("build")
+        version = dedup.get("version") or ""
+        local = [it.identity.dedup for it in self.list() if it.identity.dedup.line == line]
+        if not local:
+            return ABSENT
+        if build and any(d.build == build for d in local):
+            return SAME_VERSION
+        local_version = max((d.version or "") for d in local)
+        if local_version == version:
+            return SAME_VERSION
+        return OLDER_HERE if local_version < version else NEWER_HERE
+
+    def import_item(self, entry: dict, payload_path: str) -> dict:
+        # The payload is the .zim itself: place it in the zims dir under its own name, then
+        # re-run the indexer so the library entry appears. Overwriting the same name is
+        # idempotent (same content, same UUID).
+        local_ref = (entry.get("identity") or {}).get("localRef", "")
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return {"ok": False, "reason": "invalid localRef"}
+        if not os.path.isfile(payload_path):
+            return {"ok": False, "reason": "payload not found"}
+        os.makedirs(self._dir, exist_ok=True)
+        dest = os.path.join(self._dir, local_ref)
+        try:
+            shutil.copyfile(payload_path, dest)
+        except OSError as exc:
+            return {"ok": False, "reason": f"copy failed: {exc}"}
+        self._reindex()
+        return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
+
+    def _reindex(self) -> None:
+        """Rebuild the Kiwix library index. A seam, so a test need not run the real indexer.
+        NOTE: this runs outside the dash-node jobs engine, so a concurrent kiwix download +
+        its end-of-run reindex can race (routes.ts ADFA-5004). The front serializes imports."""
+        if not self._indexer or not os.path.exists(self._indexer):
+            return
+        try:
+            subprocess.run([self._indexer], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        except OSError:
+            pass

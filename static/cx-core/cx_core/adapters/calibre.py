@@ -15,12 +15,18 @@ The adapter reads metadata.db in readonly (the sockets/books.query.ts pattern). 
 from __future__ import annotations
 
 import os
+import os
+import shutil
 import sqlite3
+import tarfile
+import tempfile
 from typing import List, Optional
 
 from ..export import resolve_within, tar_stream
-from ..model import SOFT, Dedup, Identity, ManifestItem, normalize_text
+from ..importing import safe_extract_tar, single_child_dir
+from ..model import ABSENT, SAME_VERSION, SOFT, Dedup, Identity, ManifestItem, normalize_text
 from ..ports import ContentAdapter, ExportStream
+from .calibreweb import CalibreWebClient, resolve_calibre_credentials
 
 # One row per book, with its authors, formats, total byte-size and one external id if any.
 _BOOKS_SQL = """
@@ -65,17 +71,96 @@ def build_book_item(
     )
 
 
+def _content_files(book_dir: str, formats: set) -> List[str]:
+    """The book's content files to upload. When the manifest lists formats, pick files with
+    those extensions; otherwise take every file except the Calibre sidecars (cover, opf)."""
+    out: List[str] = []
+    try:
+        names = sorted(os.listdir(book_dir))
+    except OSError:
+        return out
+    for name in names:
+        full = os.path.join(book_dir, name)
+        if not os.path.isfile(full):
+            continue
+        ext = os.path.splitext(name)[1].lstrip(".").lower()
+        if formats:
+            if ext in formats:
+                out.append(full)
+        elif name.lower() != "metadata.opf" and not name.lower().startswith("cover."):
+            out.append(full)
+    return out
+
+
 class CalibreAdapter(ContentAdapter):
     app = "calibre"
+    id_kind = SOFT  # arbitrary media has no authoritative cross-box id; verdicts are advisory
 
-    def __init__(self, db_path: str):
+    def __init__(
+        self, db_path: str,
+        calibre_url: str = "http://127.0.0.1:8083",
+        credentials_file: str = "/library/dashboard/credentials.json",
+        staging_dir: str = "/library/.cx-staging",
+    ):
         self._db = db_path
         # The Calibre library root is the directory that holds metadata.db; each book's
         # files live under <root>/<books.path>/.
         self._lib_root = os.path.dirname(db_path)
+        self._url = calibre_url
+        self._credentials_file = credentials_file
+        self._staging_dir = staging_dir
 
     def is_installed(self) -> bool:
         return os.path.exists(self._db)
+
+    def check(self, dedup: dict) -> str:
+        # Soft: there is no authoritative cross-box id for arbitrary media, so the verdict is
+        # advisory. Match on the normalized title + authors of the soft key; present -> "you
+        # may already have this" (SAME_VERSION), else ABSENT. Never an automatic skip.
+        line = dedup.get("line") or {}
+        title, authors = line.get("title"), line.get("authors")
+        for item in self.list():
+            local = item.identity.dedup.line
+            if local.get("title") == title and local.get("authors") == authors:
+                return SAME_VERSION
+        return ABSENT
+
+    def import_item(self, entry: dict, payload_path: str) -> dict:
+        # The payload is the tar of the book's own directory. Extract it safely, then add each
+        # content-format file through Calibre-Web's upload (calibredb is not installed).
+        # Soft identity: a re-import can create a duplicate record, so the front checks first.
+        if not os.path.isfile(payload_path):
+            return {"ok": False, "reason": "payload not found"}
+        formats = {f.lower() for f in ((entry.get("identity") or {}).get("dedup", {}).get("line", {}).get("formats") or [])}
+        os.makedirs(self._staging_dir, exist_ok=True)
+        work = tempfile.mkdtemp(prefix="cximport-", dir=self._staging_dir)
+        try:
+            try:
+                safe_extract_tar(payload_path, work)
+            except (ValueError, tarfile.TarError) as exc:
+                return {"ok": False, "reason": f"bad archive: {exc}"}
+            files = _content_files(single_child_dir(work) or work, formats)
+            if not files:
+                return {"ok": False, "reason": "no book files in archive"}
+            uploaded = self._upload_files(files)
+            if uploaded == 0:
+                return {"ok": False, "reason": "calibre upload failed"}
+            return {"ok": True, "app": "calibre", "localRef": (entry.get("identity") or {}).get("localRef"), "uploaded": uploaded}
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+    def _upload_files(self, files: List[str]) -> int:
+        """Log into Calibre-Web and upload each file. A seam, so a test need not run a live
+        Calibre-Web. Returns the number uploaded."""
+        user, password = resolve_calibre_credentials(self._credentials_file)
+        client = CalibreWebClient(self._url, user, password)
+        if not client.login():
+            return 0
+        done = 0
+        for path in files:
+            if client.upload(path, os.path.basename(path)):
+                done += 1
+        return done
 
     def _book_path(self, uuid: str) -> Optional[str]:
         """The relative on-disk directory for a book uuid, from metadata.db. None if absent."""
