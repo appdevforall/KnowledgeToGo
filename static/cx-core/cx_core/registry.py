@@ -15,7 +15,9 @@ from __future__ import annotations
 
 from typing import Dict, List
 
+from .adapters.calibre import CalibreAdapter
 from .adapters.kiwix import KiwixAdapter
+from .adapters.kolibri import KolibriAdapter
 from .config import Config
 from .ports import ContentAdapter
 
@@ -28,7 +30,8 @@ class Registry:
     def load(config: Config) -> "Registry":
         candidates: List[ContentAdapter] = [
             KiwixAdapter(config.zims_dir),
-            # Kolibri and Calibre adapters slot in here as they are built.
+            KolibriAdapter(config.kolibri_db),
+            CalibreAdapter(config.calibre_db),
         ]
         return Registry([a for a in candidates if a.is_installed()])
 

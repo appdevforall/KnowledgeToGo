@@ -24,6 +24,8 @@ class Config:
     host: str = "127.0.0.1"  # localhost only, like dash-node; the front reaches it in-box
     port: int = DEFAULT_PORT
     zims_dir: str = "/library/zims/content/"
+    kolibri_db: str = "/library/kolibri/db.sqlite3"
+    calibre_db: str = "/library/calibre-web/metadata.db"
 
     @staticmethod
     def from_env() -> "Config":
@@ -31,4 +33,6 @@ class Config:
             host=os.environ.get("CX_HOST", "127.0.0.1"),
             port=_parse_port(os.environ.get("CX_PORT", str(DEFAULT_PORT))),
             zims_dir=os.environ.get("CX_ZIMS_DIR", "/library/zims/content/"),
+            kolibri_db=os.environ.get("CX_KOLIBRI_DB", "/library/kolibri/db.sqlite3"),
+            calibre_db=os.environ.get("CX_CALIBRE_DB", "/library/calibre-web/metadata.db"),
         )
