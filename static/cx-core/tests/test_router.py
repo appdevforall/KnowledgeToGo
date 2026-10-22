@@ -1,0 +1,202 @@
+import os
+import tempfile
+import unittest
+
+from cx_core.model import AUTHORITATIVE, Dedup, Identity, ManifestItem
+from cx_core.ports import ContentAdapter, ExportStream
+from cx_core.registry import Registry
+from cx_core.router import dispatch
+
+
+def _item(app: str, local_ref: str) -> ManifestItem:
+    return ManifestItem(
+        app=app,
+        kind="zim",
+        title=local_ref,
+        bytes=10,
+        identity=Identity(
+            local_ref=local_ref,
+            dedup=Dedup(line={}, build=None, version="", id_kind=AUTHORITATIVE),
+        ),
+    )
+
+
+class FakeAdapter(ContentAdapter):
+    def __init__(self, app, items, export=None, verdict="ABSENT", id_kind="authoritative", import_result=None):
+        self.app = app
+        self.id_kind = id_kind
+        self._items = items
+        self._export = export
+        self._verdict = verdict
+        self._import_result = import_result or {"ok": True, "app": app}
+
+    def is_installed(self):
+        return True
+
+    def list(self):
+        return self._items
+
+    def open_export(self, local_ref):
+        return self._export
+
+    def check(self, dedup):
+        return self._verdict
+
+    def import_item(self, entry, payload_path):
+        self.imported = (entry, payload_path)
+        return self._import_result
+
+
+def _registry():
+    return Registry([
+        FakeAdapter("kiwix", [_item("kiwix", "a.zim"), _item("kiwix", "b.zim")]),
+        FakeAdapter("calibre", [_item("calibre", "book-uuid-1")]),
+    ])
+
+
+class RouterTest(unittest.TestCase):
+    def setUp(self):
+        self.reg = _registry()
+
+    def test_apps(self):
+        status, body = dispatch(self.reg, "GET", "/v1/apps", {})
+        self.assertEqual(status, 200)
+        self.assertEqual(body, {"apps": ["calibre", "kiwix"]})
+
+    def test_content_all(self):
+        status, body = dispatch(self.reg, "GET", "/v1/content", {})
+        self.assertEqual(status, 200)
+        self.assertEqual(len(body["items"]), 3)
+
+    def test_content_filtered_by_app(self):
+        status, body = dispatch(self.reg, "GET", "/v1/content", {"app": "kiwix"})
+        self.assertEqual(status, 200)
+        self.assertEqual([i["identity"]["localRef"] for i in body["items"]], ["a.zim", "b.zim"])
+
+    def test_content_unknown_app_filter_404(self):
+        status, body = dispatch(self.reg, "GET", "/v1/content", {"app": "nope"})
+        self.assertEqual(status, 404)
+
+    def test_item_detail(self):
+        status, body = dispatch(self.reg, "GET", "/v1/content/calibre/book-uuid-1", {})
+        self.assertEqual(status, 200)
+        self.assertEqual(body["identity"]["localRef"], "book-uuid-1")
+
+    def test_item_detail_unknown_app(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/content/nope/x", {})
+        self.assertEqual(status, 404)
+
+    def test_item_detail_missing_item(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/content/kiwix/missing.zim", {})
+        self.assertEqual(status, 404)
+
+    def test_trailing_slash_tolerated(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/apps/", {})
+        self.assertEqual(status, 200)
+
+    def test_unknown_get_404_and_unknown_post_404(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/unknown", {})
+        self.assertEqual(status, 404)
+        status, _ = dispatch(self.reg, "POST", "/v1/unknown", {}, {})
+        self.assertEqual(status, 404)
+
+    def test_other_method_405(self):
+        status, _ = dispatch(self.reg, "DELETE", "/v1/apps", {})
+        self.assertEqual(status, 405)
+
+
+class ExportRouteTest(unittest.TestCase):
+    def setUp(self):
+        self.reg = _registry()
+
+    def test_export_plan_found_and_missing(self):
+        body = {"items": [
+            {"app": "kiwix", "localRef": "a.zim"},
+            {"app": "kiwix", "localRef": "gone.zim"},
+            {"app": "nope", "localRef": "x"},
+        ]}
+        status, out = dispatch(self.reg, "POST", "/v1/export/plan", {}, body)
+        self.assertEqual(status, 200)
+        self.assertEqual([i["identity"]["localRef"] for i in out["items"]], ["a.zim"])
+        self.assertEqual(out["totalBytes"], 10)
+        self.assertEqual(len(out["missing"]), 2)
+
+    def test_export_plan_bad_body(self):
+        status, _ = dispatch(self.reg, "POST", "/v1/export/plan", {}, {"nope": 1})
+        self.assertEqual(status, 400)
+
+    def test_export_item_streams(self):
+        stream = ExportStream("a.zim", "application/octet-stream", [b"abc"])
+        reg = Registry([FakeAdapter("kiwix", [_item("kiwix", "a.zim")], export=stream)])
+        status, payload = dispatch(reg, "GET", "/v1/export/item/kiwix/a.zim", {})
+        self.assertEqual(status, 200)
+        self.assertIs(payload, stream)
+
+    def test_export_item_not_exportable_404(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/export/item/kiwix/a.zim", {})
+        self.assertEqual(status, 404)  # FakeAdapter has no export stream
+
+    def test_export_item_unknown_app_404(self):
+        status, _ = dispatch(self.reg, "GET", "/v1/export/item/nope/x", {})
+        self.assertEqual(status, 404)
+
+
+class ImportRouteTest(unittest.TestCase):
+    def test_dedup_check_returns_verdict_and_idkind(self):
+        reg = Registry([
+            FakeAdapter("kiwix", [], verdict="OLDER_HERE", id_kind="authoritative"),
+            FakeAdapter("calibre", [], verdict="SAME_VERSION", id_kind="soft"),
+        ])
+        body = {"items": [
+            {"app": "kiwix", "dedup": {"line": {}}},
+            {"app": "calibre", "dedup": {"line": {}}},
+            {"app": "nope", "dedup": {"line": {}}},
+        ]}
+        status, out = dispatch(reg, "POST", "/v1/dedup/check", {}, body)
+        self.assertEqual(status, 200)
+        self.assertEqual(out["results"][0], {"app": "kiwix", "verdict": "OLDER_HERE", "idKind": "authoritative"})
+        self.assertEqual(out["results"][1], {"app": "calibre", "verdict": "SAME_VERSION", "idKind": "soft"})
+        self.assertEqual(out["results"][2]["verdict"], "NO_APP")
+
+    def test_import_validate_partial(self):
+        reg = Registry([FakeAdapter("kiwix", [], verdict="ABSENT")])
+        body = {"items": [
+            {"app": "kiwix", "identity": {"localRef": "a.zim", "dedup": {"line": {}}}},
+            {"app": "calibre", "identity": {"localRef": "b", "dedup": {}}},
+        ]}
+        status, out = dispatch(reg, "POST", "/v1/import/validate", {}, body)
+        self.assertEqual(status, 200)
+        self.assertEqual(out["results"][0]["status"], "importable")
+        self.assertEqual(out["results"][0]["verdict"], "ABSENT")
+        self.assertEqual(out["results"][1]["status"], "NO_APP")
+
+    def test_import_item_happy_path(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [], import_result={"ok": True, "app": "kiwix"})
+            reg = Registry([fake], import_root=root)
+            payload = os.path.join(root, "a.zim")
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10}, "payloadPath": payload}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 200)
+            self.assertTrue(out["ok"])
+            self.assertEqual(fake.imported[1], payload)
+
+    def test_import_item_rejects_payload_outside_area(self):
+        with tempfile.TemporaryDirectory() as root:
+            reg = Registry([FakeAdapter("kiwix", [])], import_root=root)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": "/etc/passwd"}
+            status, _ = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 400)
+
+    def test_import_item_adapter_failure_422(self):
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [], import_result={"ok": False, "reason": "bad archive"})
+            reg = Registry([fake], import_root=root)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": os.path.join(root, "x")}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 422)
+            self.assertFalse(out["ok"])
+
+
+if __name__ == "__main__":
+    unittest.main()
