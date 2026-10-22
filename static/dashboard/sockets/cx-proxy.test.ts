@@ -105,6 +105,26 @@ test('cxProxy streams a chunked response intact (the export path)', async () => 
     }
 });
 
+test('cxProxy passes Content-Disposition through (the export filename)', async () => {
+    const core = http.createServer((req, res) => {
+        res.writeHead(200, {
+            'content-type': 'application/octet-stream',
+            'content-disposition': 'attachment; filename="foo.zim"',
+        });
+        res.end('zim-bytes');
+    });
+    const corePort = await listen(core);
+    process.env.CX_PORT = String(corePort);
+    const app = await startProxyApp();
+    try {
+        const r = await get(app.port, '/v1/export/item/kiwix/foo.zim');
+        assert.equal(r.status, 200);
+        assert.equal(r.headers['content-disposition'], 'attachment; filename="foo.zim"');
+    } finally {
+        app.close(); core.close();
+    }
+});
+
 test('cxProxy returns 502 when the core is unreachable', async () => {
     // Point at a port with nothing listening.
     const dead = http.createServer();

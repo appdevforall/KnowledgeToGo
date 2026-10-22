@@ -38,10 +38,15 @@ export function cxProxy(req: Request, res: Response): void {
         { host: CX_HOST, port: cxPort(), method: req.method, path: corePath, headers },
         (up) => {
             res.status(up.statusCode || 502);
-            // Pass the content type through; let Node frame the body (length or chunked) so a
-            // streamed export is relayed as-is.
+            // Pass through the headers the client needs: content type, the download filename
+            // (GET /v1/export/item sets Content-Disposition), and the length when the core knows
+            // it. A streamed (chunked) export has no content-length, so Node frames it as chunked.
             const ct = up.headers['content-type'];
             if (ct) res.setHeader('content-type', ct);
+            const cd = up.headers['content-disposition'];
+            if (cd) res.setHeader('content-disposition', cd);
+            const cl = up.headers['content-length'];
+            if (cl) res.setHeader('content-length', cl);
             up.pipe(res);
         },
     );

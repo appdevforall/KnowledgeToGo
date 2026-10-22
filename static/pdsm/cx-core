@@ -18,7 +18,9 @@ LOGFILE="/var/log/cx-core.log"
 SUP_PIDFILE="/var/run/cx-core.sup.pid"
 
 running() {
-  # Match the actual server process, not the supervisor shell.
+  # Liveness-approximate: this also matches the supervisor shell, not only the server.
+  # health() (curl GET /v1/apps) is the authoritative liveness gate. Kept identical to the
+  # dash-node wrapper on purpose; unifying the two is a follow-up, not a per-service fix.
   pgrep -f "python3 -m cx_core" >/dev/null 2>&1
 }
 
