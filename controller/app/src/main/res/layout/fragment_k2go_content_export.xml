@@ -76,6 +76,25 @@
             app:trackThickness="6dp"
             app:trackCornerRadius="3dp" />
 
+        <!-- Per-category (one progress bar per app being exported) -->
+        <TextView
+            android:id="@+id/k2go_cxx_categories_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textColor="@color/k2go_ink"
+            android:text="@string/k2go_cx_export_categories"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/k2go_cxx_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
         <!-- Settled message (done / partial / error) -->
         <TextView
             android:id="@+id/k2go_cxx_message"

@@ -119,7 +119,9 @@ public final class ContentDeleteService extends Service {
                 // delivery's start-foreground obligation while the worker winds down.
                 startForeground(NOTIFICATION_ID, buildNotification(currentLabel()));
             } else {
-                // Nothing is draining (the run already settled): tear down here.
+                // Nothing is draining (the run already settled, or a fresh service instance handles the
+                // cancel): satisfy the FGS start-foreground obligation before tearing down.
+                startForeground(NOTIFICATION_ID, buildNotification(currentLabel()));
                 SESSION.clear();
                 stopForeground(true);
                 stopSelf();

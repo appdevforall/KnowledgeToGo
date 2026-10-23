@@ -70,42 +70,55 @@ public final class ImportManifestReader {
         return out;
     }
 
-    /** Scan a manifest-less folder: recognize what each file belongs to by its name alone. */
+    /** Scan a manifest-less folder: recognize what each file belongs to by its name alone. A v2 bundle
+     *  file arrives as a relative path ("kiwix/foo.zim"): recognize and key on its basename, but keep
+     *  the full relative path as the payload so the carrier can open it. */
     public static ImportManifest scan(List<ImportCarrier.DriveFile> files) throws Exception {
         List<ImportEntry> entries = new ArrayList<>();
         List<String> unrecognized = new ArrayList<>();
         if (files != null) {
             for (ImportCarrier.DriveFile file : files) {
-                String name = file.name();
-                if (name == null || MANIFEST_NAME.equalsIgnoreCase(name)) {
+                String payload = file.name();
+                if (payload == null) {
                     continue;
                 }
-                String app = ImportScan.recognizeApp(name);
+                String base = basename(payload);
+                if (MANIFEST_NAME.equalsIgnoreCase(base)) {
+                    continue;
+                }
+                String app = ImportScan.recognizeApp(base);
                 if (ImportScan.APP_KIWIX.equals(app)) {
-                    entries.add(kiwixEntry(name, file.size()));
+                    entries.add(kiwixEntry(payload, base, file.size()));
                 } else {
-                    unrecognized.add(name);
+                    unrecognized.add(payload);
                 }
             }
         }
         return new ImportManifest(entries, false, unrecognized);
     }
 
-    /** Synthesize a Kiwix entry from a .zim filename: dedup keys from the name, no UUID (soft). */
-    private static ImportEntry kiwixEntry(String name, long size) throws Exception {
-        String[] p = ImportScan.parseZimFilename(name);
-        String stem = name.toLowerCase(java.util.Locale.US).endsWith(".zim")
-                ? name.substring(0, name.length() - 4) : name;
+    /** The file name after the last path separator (the item's own handle), for a flat or nested name. */
+    private static String basename(String path) {
+        int slash = path.lastIndexOf('/');
+        return slash >= 0 ? path.substring(slash + 1) : path;
+    }
+
+    /** Synthesize a Kiwix entry from a .zim basename: dedup keys from the name, no UUID (soft). The
+     *  payload is the drive-relative path, the identity localRef is the basename. */
+    private static ImportEntry kiwixEntry(String payload, String base, long size) throws Exception {
+        String[] p = ImportScan.parseZimFilename(base);
+        String stem = base.toLowerCase(java.util.Locale.US).endsWith(".zim")
+                ? base.substring(0, base.length() - 4) : base;
         JSONObject line = new JSONObject()
                 .put("creator", p[0]).put("lang", p[1]).put("flavour", p[2]);
         JSONObject dedup = new JSONObject()
                 .put("line", line).put("build", JSONObject.NULL)
                 .put("version", p[3]).put("idKind", "SOFT");
-        JSONObject identity = new JSONObject().put("localRef", name).put("dedup", dedup);
+        JSONObject identity = new JSONObject().put("localRef", base).put("dedup", dedup);
         JSONObject entry = new JSONObject()
                 .put("app", ImportScan.APP_KIWIX).put("kind", "zim")
                 .put("title", stem).put("bytes", size)
-                .put("identity", identity).put("payload", name);
-        return new ImportEntry(ImportScan.APP_KIWIX, name, stem, size, name, entry.toString());
+                .put("identity", identity).put("payload", payload);
+        return new ImportEntry(ImportScan.APP_KIWIX, base, stem, size, payload, entry.toString());
     }
 }

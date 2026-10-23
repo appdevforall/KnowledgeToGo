@@ -32,8 +32,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
@@ -41,6 +39,7 @@ import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
 import org.appdevforall.k2go.storage.StorageProbe;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 import java.util.ArrayList;
@@ -112,6 +111,16 @@ public class ContentManagerFragment extends Fragment {
             public void toggle(String selectionId) {
                 viewModel.toggle(selectionId);
             }
+
+            @Override
+            public int groupState(String app) {
+                return viewModel.groupState(app);
+            }
+
+            @Override
+            public void toggleGroup(String app) {
+                viewModel.toggleGroup(app);
+            }
         });
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
         list.setAdapter(adapter);
@@ -179,9 +188,11 @@ public class ContentManagerFragment extends Fragment {
         }
         for (ContentGroup group : content.groups()) {
             rows.add(new ContentManagerAdapter.GroupRow(
+                    group.app(),
                     appDisplayName(group.app()),
                     getString(R.string.k2go_cx_group_meta_fmt,
-                            group.items().size(), ByteFormatter.humanBytes(group.totalBytes()))));
+                            group.items().size(), ByteFormatter.humanBytes(group.totalBytes())),
+                    !group.isEmpty()));
             if (group.isEmpty()) {
                 rows.add(new ContentManagerAdapter.EmptyRow(getString(R.string.k2go_cx_group_empty)));
             } else {
@@ -216,6 +227,10 @@ public class ContentManagerFragment extends Fragment {
 
     /** Updates the bottom action bar from the selection. Export and Delete act; Share is pending. */
     private void renderSelection(SelectionSummary sel) {
+        // Rebind rows so group headers (tri-state) and item checkboxes match the new selection.
+        if (adapter != null) {
+            adapter.refreshSelectionStates();
+        }
         if (sel == null || sel.isEmpty()) {
             actionBar.setVisibility(View.GONE);
             return;
@@ -228,9 +243,10 @@ public class ContentManagerFragment extends Fragment {
     /** The selection captured when Export was tapped, held across the folder picker round-trip. */
     private List<ContentItem> pendingExport;
 
-    /** Export: if a run is already active, just show it; otherwise capture the selection and pick a drive. */
+    /** Export: if a run is still active, just show it; otherwise capture the selection and pick a drive.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onExportClicked() {
-        if (ContentExportService.session().hasSession()) {
+        if (ContentExportService.session().isRunning()) {
             showProgress();
             return;
         }
@@ -243,9 +259,10 @@ public class ContentManagerFragment extends Fragment {
         openTree.launch(null);
     }
 
-    /** Import: if a run is already active, show it; otherwise pick the drive that holds the bundle. */
+    /** Import: if a run is still active, show it; otherwise pick the drive that holds the bundle.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onImportClicked() {
-        if (ContentImportService.session().hasSession()) {
+        if (ContentImportService.session().isRunning()) {
             showImportProgress();
             return;
         }
@@ -336,11 +353,12 @@ public class ContentManagerFragment extends Fragment {
         }
         String message = getString(R.string.k2go_cx_export_confirm_fmt,
                 selected.size(), ByteFormatter.humanBytes(total));
-        new MaterialAlertDialogBuilder(requireContext())
+        // Export is not destructive: a plain primary confirm (the shared branded dialog).
+        new BrandDialog(requireContext())
                 .setTitle(R.string.k2go_cx_action_export)
                 .setMessage(message)
-                .setNegativeButton(R.string.k2go_dash_cancel, null)
-                .setPositiveButton(R.string.k2go_cx_action_export, (d, w) -> startExport(treeUri, selected))
+                .setPositive(R.string.k2go_cx_action_export, () -> startExport(treeUri, selected))
+                .setNegative(R.string.k2go_dash_cancel, null)
                 .show();
     }
 
@@ -363,9 +381,10 @@ public class ContentManagerFragment extends Fragment {
 
     // ---- delete --------------------------------------------------------------------------------
 
-    /** Delete: if a run is already active, just show it; otherwise confirm and start. */
+    /** Delete: if a run is still active, just show it; otherwise confirm and start.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onDeleteClicked() {
-        if (ContentDeleteService.session().hasSession()) {
+        if (ContentDeleteService.session().isRunning()) {
             showDeleteProgress();
             return;
         }
@@ -384,11 +403,12 @@ public class ContentManagerFragment extends Fragment {
         }
         String message = getString(R.string.k2go_cx_delete_confirm_fmt,
                 selected.size(), ByteFormatter.humanBytes(total));
-        new MaterialAlertDialogBuilder(requireContext())
+        // Delete is destructive: the shared branded dialog's clay confirm (mirrors confirmReinstall).
+        new BrandDialog(requireContext())
                 .setTitle(R.string.k2go_cx_delete_confirm_title)
                 .setMessage(message)
-                .setNegativeButton(R.string.k2go_dash_cancel, null)
-                .setPositiveButton(R.string.k2go_cx_action_delete, (d, w) -> startDelete(selected))
+                .setDestructive(R.string.k2go_cx_action_delete, () -> startDelete(selected))
+                .setNegative(R.string.k2go_dash_cancel, null)
                 .show();
     }
 
