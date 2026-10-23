@@ -22,13 +22,15 @@ def _item(app: str, local_ref: str) -> ManifestItem:
 
 
 class FakeAdapter(ContentAdapter):
-    def __init__(self, app, items, export=None, verdict="ABSENT", id_kind="authoritative", import_result=None):
+    def __init__(self, app, items, export=None, verdict="ABSENT", id_kind="authoritative",
+                 import_result=None, delete_result=None):
         self.app = app
         self.id_kind = id_kind
         self._items = items
         self._export = export
         self._verdict = verdict
         self._import_result = import_result or {"ok": True, "app": app}
+        self._delete_result = delete_result or {"ok": True, "app": app, "freedBytes": 10}
 
     def is_installed(self):
         return True
@@ -45,6 +47,10 @@ class FakeAdapter(ContentAdapter):
     def import_item(self, entry, payload_path):
         self.imported = (entry, payload_path)
         return self._import_result
+
+    def delete(self, local_ref):
+        self.deleted = local_ref
+        return self._delete_result
 
 
 def _registry():
@@ -196,6 +202,59 @@ class ImportRouteTest(unittest.TestCase):
             status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
             self.assertEqual(status, 422)
             self.assertFalse(out["ok"])
+
+
+class DeleteRouteTest(unittest.TestCase):
+    def setUp(self):
+        self.reg = _registry()
+
+    def test_delete_item_delegates_and_returns_freed(self):
+        status, out = dispatch(self.reg, "DELETE", "/v1/content/kiwix/a.zim", {})
+        self.assertEqual(status, 200)
+        self.assertTrue(out["ok"])
+        self.assertEqual(out["freedBytes"], 10)
+        self.assertEqual(self.reg.get("kiwix").deleted, "a.zim")
+
+    def test_delete_missing_item_404(self):
+        status, _ = dispatch(self.reg, "DELETE", "/v1/content/kiwix/gone.zim", {})
+        self.assertEqual(status, 404)
+
+    def test_delete_unknown_app_404(self):
+        status, _ = dispatch(self.reg, "DELETE", "/v1/content/nope/x", {})
+        self.assertEqual(status, 404)
+
+    def test_delete_adapter_failure_422(self):
+        reg = Registry([FakeAdapter(
+            "kiwix", [_item("kiwix", "a.zim")],
+            delete_result={"ok": False, "reason": "kolibri delete failed"})])
+        status, out = dispatch(reg, "DELETE", "/v1/content/kiwix/a.zim", {})
+        self.assertEqual(status, 422)
+        self.assertFalse(out["ok"])
+
+    def test_delete_non_item_path_405(self):
+        status, _ = dispatch(self.reg, "DELETE", "/v1/content", {})
+        self.assertEqual(status, 405)
+
+
+class StorageRouteTest(unittest.TestCase):
+    def test_storage_aggregates_disk_and_per_app(self):
+        reg = Registry(
+            [FakeAdapter("kiwix", [_item("kiwix", "a.zim"), _item("kiwix", "b.zim")]),
+             FakeAdapter("calibre", [_item("calibre", "book-1")])],
+            content_volume="/library")
+        import cx_core.router as r
+        orig = r.disk_total_free
+        r.disk_total_free = lambda p: (1000, 400)
+        try:
+            status, out = dispatch(reg, "GET", "/v1/storage", {})
+        finally:
+            r.disk_total_free = orig
+        self.assertEqual(status, 200)
+        self.assertEqual(out["volume"], "/library")
+        self.assertEqual(out["totalBytes"], 1000)
+        self.assertEqual(out["freeBytes"], 400)
+        self.assertEqual(out["usedByContentBytes"], 30)  # kiwix 20 + calibre 10
+        self.assertEqual(out["perApp"], [{"app": "calibre", "bytes": 10}, {"app": "kiwix", "bytes": 20}])
 
 
 if __name__ == "__main__":

@@ -223,5 +223,55 @@ class CalibreImportTest(unittest.TestCase):
             self.assertFalse(result["ok"])
 
 
+class _DeleteStubCalibre(CalibreAdapter):
+    """Overrides the Calibre-Web seam so delete delegation is testable without a live service."""
+
+    def __init__(self, *args, succeed=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._succeed = succeed
+
+    def _remove_book(self, book_id):
+        self.removed = book_id
+        return self._succeed
+
+
+class CalibreBookIdTest(unittest.TestCase):
+    def test_resolves_integer_id_from_uuid(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            adapter = CalibreAdapter(db)
+            self.assertEqual(adapter._book_id("u-1"), 1)
+            self.assertIsNone(adapter._book_id("nope"))
+
+
+class CalibreDeleteTest(unittest.TestCase):
+    def test_delete_delegates_to_calibreweb_by_integer_id(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            adapter = _DeleteStubCalibre(db)
+            result = adapter.delete("u-1")
+            self.assertTrue(result["ok"])
+            self.assertEqual(adapter.removed, 1)  # the integer library id, not the uuid
+            # A book is self-contained, so freedBytes is its known size (EPUB 1000 + PDF 2000).
+            self.assertEqual(result["freedBytes"], 3000)
+
+    def test_delete_missing_book_is_not_ok(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            result = _DeleteStubCalibre(db).delete("no-such-uuid")
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["reason"], "item not found")
+
+    def test_delete_calibreweb_failure_is_not_ok(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            result = _DeleteStubCalibre(db, succeed=False).delete("u-1")
+            self.assertFalse(result["ok"])
+
+
 if __name__ == "__main__":
     unittest.main()

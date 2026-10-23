@@ -70,6 +70,28 @@ class ServerHttpTest(unittest.TestCase):
         c.close()
         self.assertEqual(out, {"apps": ["kiwix"]})
 
+    def test_delete_item_over_http(self):
+        c = self._conn()
+        c.request("DELETE", f"/v1/content/kiwix/{self.zim_name}")
+        resp = c.getresponse()
+        out = json.loads(resp.read())
+        c.close()
+        self.assertEqual(resp.status, 200)
+        self.assertTrue(out["ok"])
+        self.assertEqual(out["freedBytes"], len(self.zim_bytes))
+        self.assertFalse(os.path.exists(os.path.join(self._dir.name, self.zim_name)))
+
+    def test_storage_over_http(self):
+        c = self._conn()
+        c.request("GET", "/v1/storage")
+        resp = c.getresponse()
+        out = json.loads(resp.read())
+        c.close()
+        self.assertEqual(resp.status, 200)
+        # All content lives in the one ZIM, so the per-app total accounts for it.
+        self.assertEqual(out["usedByContentBytes"], len(self.zim_bytes))
+        self.assertEqual(out["perApp"], [{"app": "kiwix", "bytes": len(self.zim_bytes)}])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -208,6 +208,26 @@ class KiwixAdapter(ContentAdapter):
         self._reindex()
         return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
 
+    def delete(self, local_ref: str) -> dict:
+        # A ZIM is self-contained, so the file IS the unit: remove it, then re-run the indexer
+        # to drop its library.xml entry. freedBytes is the file size exactly (no shared bytes).
+        # Same containment guard as get(), so a traversal ref never reaches the filesystem.
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return {"ok": False, "reason": "invalid localRef"}
+        path = os.path.join(self._dir, local_ref)
+        if not os.path.isfile(path):
+            return {"ok": False, "reason": "item not found"}
+        try:
+            freed = os.path.getsize(path)
+        except OSError:
+            freed = 0
+        try:
+            os.remove(path)
+        except OSError as exc:
+            return {"ok": False, "reason": f"delete failed: {exc}"}
+        self._reindex()
+        return {"ok": True, "app": "kiwix", "localRef": local_ref, "freedBytes": freed}
+
     def _reindex(self) -> None:
         """Rebuild the Kiwix library index. A seam, so a test need not run the real indexer.
         NOTE: this runs outside the dash-node jobs engine, so a concurrent kiwix download +

@@ -21,7 +21,7 @@ import tarfile
 import tempfile
 from typing import List, Optional
 
-from ..export import has_room, tar_stream
+from ..export import free_bytes, has_room, tar_stream
 from ..importing import safe_extract_tar, single_child_dir
 from ..model import (
     ABSENT,
@@ -59,6 +59,20 @@ def import_commands(channel_id: str, source: str, kolibri_bin: str) -> List[List
         base + ["importchannel", "disk", channel_id, source],
         base + ["importcontent", "disk", channel_id, source],
     ]
+
+
+def delete_command(channel_id: str, kolibri_bin: str) -> List[str]:
+    """The Kolibri management command that deletes a channel and its unused content files.
+    Pure (builds argv only). This is Kolibri's OWN delete: it does the shared-file refcounting,
+    so it frees only files no other channel still uses (a direct rm would corrupt other
+    channels, since the content store is content-addressed and shared).
+
+    dash-node runs the equivalent delete as the async Kolibri REST TASK
+    (kolibri.core.content.tasks.deletechannel) because it is a long-lived Node service that
+    must not block. cx-core reaches Kolibri through the CLI (as its export / import do), where
+    the command is synchronous: we wait for it inherently and then report the reclaimed bytes.
+    """
+    return [kolibri_bin, "manage", "deletechannel", channel_id]
 
 
 def _to_int(*values) -> Optional[int]:
@@ -244,3 +258,35 @@ class KolibriAdapter(ContentAdapter):
             if result.returncode != 0:
                 return False
         return True
+
+    def delete(self, local_ref: str) -> dict:
+        # Delegate to Kolibri's own delete (it refcounts shared files). Measure the reclaim as a
+        # free-space delta around the CLI call: the filesystem is the one source for bytes
+        # actually freed, so we never re-derive the refcount here (ADR-5343 guard).
+        # freedBytes is APPROXIMATE: the delta reads the WHOLE content volume, and the front
+        # serializes only cx-core's OWN deletes, so a concurrent box process (a download, log
+        # writes) can skew it. totalBytes / freeBytes from GET /v1/storage stay authoritative.
+        # NOT yet confirmed on-device: that `kolibri manage deletechannel` is synchronous and
+        # removes the content FILES (not just metadata). If it is async, freedBytes reads ~0 and
+        # the channel may still be deleting after this returns: verify on the box, and if needed
+        # swap _delete_channel to also run `deletecontent` or to the REST task dash-node uses.
+        if not _CHANNEL_ID_RE.match(local_ref or ""):
+            return {"ok": False, "reason": "invalid channel id"}
+        if not self._query(local_ref):
+            return {"ok": False, "reason": "item not found"}
+        before = free_bytes(self._home)
+        if not self._delete_channel(local_ref):
+            return {"ok": False, "reason": "kolibri delete failed"}
+        after = free_bytes(self._home)
+        freed = max(0, after - before) if before is not None and after is not None else None
+        return {"ok": True, "app": "kolibri", "localRef": local_ref, "freedBytes": freed}
+
+    def _delete_channel(self, channel_id: str) -> bool:
+        """Run the Kolibri delete CLI (synchronous). A seam, like _stage_export / _stage_import,
+        so a test need not run a live Kolibri. Returns True on success."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        result = subprocess.run(
+            delete_command(channel_id, self._bin),
+            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False,
+        )
+        return result.returncode == 0

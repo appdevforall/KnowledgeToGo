@@ -6,9 +6,11 @@ import unittest
 import io
 import tarfile
 
+import cx_core.adapters.kolibri as kolibri_mod
 from cx_core.adapters.kolibri import (
     KolibriAdapter,
     build_channel_item,
+    delete_command,
     export_commands,
     import_commands,
 )
@@ -233,6 +235,63 @@ class KolibriExportTest(unittest.TestCase):
                 self.assertIsNone(adapter.open_export(VALID_ID))
             finally:
                 k.shutil.disk_usage = orig
+
+
+class DeleteCommandTest(unittest.TestCase):
+    def test_builds_the_delegated_delete_command(self):
+        self.assertEqual(
+            delete_command(VALID_ID, "/usr/bin/kolibri"),
+            ["/usr/bin/kolibri", "manage", "deletechannel", VALID_ID],
+        )
+
+
+class _DeleteStubKolibri(KolibriAdapter):
+    """Overrides the CLI seam so delete delegation is testable without a live Kolibri."""
+
+    def __init__(self, *args, succeed=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._succeed = succeed
+
+    def _delete_channel(self, channel_id):
+        self.deleted = channel_id
+        return self._succeed
+
+
+class KolibriDeleteTest(unittest.TestCase):
+    def setUp(self):
+        self._d = tempfile.TemporaryDirectory()
+        self.db = os.path.join(self._d.name, "db.sqlite3")
+        _make_db(self.db, cid=VALID_ID)
+        # Measure the reclaim as a free-space delta: 1000 before, 1300 after -> 300 freed.
+        self._free = [1000, 1300]
+        self._orig_free = kolibri_mod.free_bytes
+        kolibri_mod.free_bytes = lambda path: self._free.pop(0)
+
+    def tearDown(self):
+        kolibri_mod.free_bytes = self._orig_free
+        self._d.cleanup()
+
+    def test_delete_delegates_and_reports_freed_delta(self):
+        adapter = _DeleteStubKolibri(self.db)
+        result = adapter.delete(VALID_ID)
+        self.assertTrue(result["ok"])
+        self.assertEqual(adapter.deleted, VALID_ID)
+        self.assertEqual(result["freedBytes"], 300)
+
+    def test_delete_failure_is_not_ok(self):
+        adapter = _DeleteStubKolibri(self.db, succeed=False)
+        result = adapter.delete(VALID_ID)
+        self.assertFalse(result["ok"])
+
+    def test_delete_missing_channel_404_shaped(self):
+        adapter = _DeleteStubKolibri(self.db)
+        result = adapter.delete("f" * 32)  # valid shape, not installed
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["reason"], "item not found")
+
+    def test_delete_invalid_channel_id_rejected(self):
+        adapter = _DeleteStubKolibri(self.db)
+        self.assertFalse(adapter.delete("not-a-channel-id")["ok"])
 
 
 if __name__ == "__main__":

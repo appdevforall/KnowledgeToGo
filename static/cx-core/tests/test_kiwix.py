@@ -217,5 +217,29 @@ class KiwixImportTest(unittest.TestCase):
             self.assertFalse(os.path.exists(os.path.join(os.path.dirname(zdir), "evil.zim")))
 
 
+class KiwixDeleteTest(unittest.TestCase):
+    def test_delete_removes_file_and_reports_exact_size(self):
+        with tempfile.TemporaryDirectory() as zdir:
+            name = "wikipedia_en_all_2024-01.zim"
+            data = _zim_header(uuid.uuid4()) + os.urandom(321)
+            with open(os.path.join(zdir, name), "wb") as f:
+                f.write(data)
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent/indexer")  # reindex is a no-op
+            result = adapter.delete(name)
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["freedBytes"], len(data))  # a ZIM is self-contained
+            self.assertFalse(os.path.exists(os.path.join(zdir, name)))
+
+    def test_delete_missing_item_is_not_ok(self):
+        with tempfile.TemporaryDirectory() as zdir:
+            result = KiwixAdapter(zdir, indexer="/nonexistent").delete("absent.zim")
+            self.assertFalse(result["ok"])
+
+    def test_delete_rejects_traversal(self):
+        with tempfile.TemporaryDirectory() as zdir:
+            result = KiwixAdapter(zdir, indexer="/nonexistent").delete("../evil.zim")
+            self.assertFalse(result["ok"])
+
+
 if __name__ == "__main__":
     unittest.main()

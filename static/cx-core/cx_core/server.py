@@ -49,6 +49,12 @@ def make_handler(registry: Registry):
             status, payload = dispatch(registry, "POST", parts.path, {}, body)
             self._send(status, payload)
 
+        def do_DELETE(self) -> None:  # noqa: N802 (http.server naming)
+            parts = urlsplit(self.path)
+            query = {k: v[0] for k, v in parse_qs(parts.query).items()}
+            status, payload = dispatch(registry, "DELETE", parts.path, query)
+            self._send(status, payload)
+
         def _read_json_body(self):
             try:
                 length = int(self.headers.get("Content-Length", 0))

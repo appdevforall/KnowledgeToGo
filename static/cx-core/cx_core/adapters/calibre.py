@@ -162,6 +162,46 @@ class CalibreAdapter(ContentAdapter):
                 done += 1
         return done
 
+    def delete(self, local_ref: str) -> dict:
+        # calibredb is absent, so delete through Calibre-Web's own remove (POST /delete/{id}),
+        # which drops the book row plus its FK rows and files. Its delete keys on the integer
+        # library id, so resolve it from the uuid first. A book is self-contained (no shared
+        # files), so freedBytes is the item's KNOWN size (already summed from data, like Kiwix
+        # uses the file size): no need for a racy free-space delta.
+        item = self.get(local_ref)
+        book_id = self._book_id(local_ref)
+        if item is None or book_id is None:
+            return {"ok": False, "reason": "item not found"}
+        if not self._remove_book(book_id):
+            return {"ok": False, "reason": "calibre delete failed"}
+        return {"ok": True, "app": "calibre", "localRef": local_ref, "freedBytes": item.bytes}
+
+    def _book_id(self, uuid: str) -> Optional[int]:
+        """The integer books.id for a book uuid, from metadata.db. None if absent. Calibre-Web
+        delete keys on this id, not the uuid."""
+        if not uuid or not os.path.exists(self._db):
+            return None
+        try:
+            con = sqlite3.connect(f"file:{self._db}?mode=ro", uri=True)
+        except sqlite3.Error:
+            return None
+        try:
+            row = con.execute("SELECT id FROM books WHERE uuid = ?", (uuid,)).fetchone()
+        except sqlite3.Error:
+            return None
+        finally:
+            con.close()
+        return int(row[0]) if row and row[0] is not None else None
+
+    def _remove_book(self, book_id: int) -> bool:
+        """Log into Calibre-Web and remove one book. A seam, like _upload_files, so a test need
+        not run a live Calibre-Web. Returns True on success."""
+        user, password = resolve_calibre_credentials(self._credentials_file)
+        client = CalibreWebClient(self._url, user, password)
+        if not client.login():
+            return False
+        return client.remove(book_id)
+
     def _book_path(self, uuid: str) -> Optional[str]:
         """The relative on-disk directory for a book uuid, from metadata.db. None if absent."""
         if not uuid or not os.path.exists(self._db):
