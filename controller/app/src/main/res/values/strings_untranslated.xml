@@ -63,4 +63,28 @@
     <string name="k2go_cx_delete_notif_title" translatable="false">Deleting content</string>
     <string name="k2go_cx_delete_notif_text" translatable="false">Deleting content...</string>
     <string name="k2go_cx_delete_channel_name" translatable="false">Content delete</string>
+
+    <!-- K2GO-427 import action (slice 3). WIP: localize + migrate at the feature closing PR. -->
+    <string name="k2go_cx_import_from_drive" translatable="false">Import from drive</string>
+    <string name="k2go_cx_import_title" translatable="false">Import content</string>
+    <string name="k2go_cx_import_subtitle" translatable="false">Content found on the drive. Pick what fits this device.</string>
+    <string name="k2go_cx_import_subtitle_scanned" translatable="false">No index on the drive. Recovered the content it could read.</string>
+    <string name="k2go_cx_import_reading" translatable="false">Reading the drive...</string>
+    <string name="k2go_cx_import_read_error" translatable="false">Could not read the drive. Try again.</string>
+    <string name="k2go_cx_import_nothing" translatable="false">No importable content on the drive.</string>
+    <string name="k2go_cx_import_unrecognized_fmt" translatable="false">Not recognized without an index: %1$s</string>
+    <string name="k2go_cx_import_source_fmt" translatable="false">From: %1$s</string>
+    <string name="k2go_cx_import_action" translatable="false">Import selected</string>
+    <string name="k2go_cx_import_wont_fit" translatable="false">The selection does not fit in the device free space. Pick fewer items.</string>
+    <string name="k2go_cx_import_state_new" translatable="false">New</string>
+    <string name="k2go_cx_import_state_update" translatable="false">Update available</string>
+    <string name="k2go_cx_import_state_same" translatable="false">Already on this device</string>
+    <string name="k2go_cx_import_state_older" translatable="false">Older than your copy</string>
+    <string name="k2go_cx_import_state_no_app" translatable="false">No app for this content</string>
+    <string name="k2go_cx_import_state_advisory_fmt" translatable="false">%1$s (best guess)</string>
+    <string name="k2go_cx_import_done_fmt" translatable="false">Imported %1$d items.</string>
+    <string name="k2go_cx_import_partial_fmt" translatable="false">Imported %1$d of %2$d items. Some items failed. Retry to finish.</string>
+    <string name="k2go_cx_import_notif_title" translatable="false">Importing content</string>
+    <string name="k2go_cx_import_notif_text" translatable="false">Preparing import...</string>
+    <string name="k2go_cx_import_channel_name" translatable="false">Content import</string>
 </resources>

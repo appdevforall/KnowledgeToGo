@@ -61,6 +61,16 @@ public final class CxCoreDataSource {
         return postJson(V1 + "/export/plan", body);
     }
 
+    /** {@code POST /v1/import/validate} with {@code {items:[<entry>]}} -> {@code {results:[...]}}. */
+    public JSONObject postImportValidate(JSONObject body) throws Exception {
+        return postJson(V1 + "/import/validate", body);
+    }
+
+    /** {@code POST /v1/import/item} with {@code {app, entry, payloadPath}} -> the ingest result. */
+    public JSONObject postImportItem(JSONObject body) throws Exception {
+        return postJson(V1 + "/import/item", body);
+    }
+
     /**
      * {@code DELETE /v1/content/{app}/{localRef}} -> {@code {ok, freedBytes}} on success or
      * {@code {ok:false, reason}} on an adapter failure. Path segments are percent-encoded (the core

@@ -231,6 +231,15 @@
         </service>
 
         <service
+            android:name=".contentexchange.presentation.ContentImportService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Imports selected library content from a user-chosen drive through the co-located server REST engine." />
+        </service>
+
+        <service
             android:name=".contentexchange.presentation.ContentDeleteService"
             android:exported="false"
             android:foregroundServiceType="specialUse">
