@@ -68,6 +68,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write          # K2GO-506: sign the build provenance (Sigstore)
+      attestations: write
     steps:
     - name: Download built binaries
       uses: actions/download-artifact@v7
@@ -79,6 +81,14 @@ jobs:
       run: |
         cd ${{ github.workspace }}/termux-artifacts
         zip -r ../termux-binaries-latest.zip .
+
+    # K2GO-506: signed build provenance for the zip. Any copy (GitHub, R2, a box) can be checked
+    # against this run: gh attestation verify termux-binaries-latest.zip --repo <owner>/<repo>
+    # If it fails, the publish stops: no release ships without provenance.
+    - name: Attest build provenance
+      uses: actions/attest@v4
+      with:
+        subject-path: ${{ github.workspace }}/termux-binaries-latest.zip
 
     - name: Generate dynamic tag (date & time)
       run: echo "TAG_NAME=binaries-$(date +'%Y-%m-%d_%H-%M')" >> $GITHUB_ENV
@@ -92,17 +102,11 @@ jobs:
         files: ${{ github.workspace }}/termux-binaries-latest.zip
         prerelease: true
 
-    - name: Cleanup old binaries releases (keep last 6)
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Replaces dev-drprasad/delete-older-releases (Node 20). Keep the 6 newest
-        # binaries-* releases; delete older ones (release + its tag) via gh CLI.
-        gh release list --repo "$GITHUB_REPOSITORY" --limit 200 \
-          --json tagName,createdAt --jq 'sort_by(.createdAt) | reverse | .[].tagName' \
-          | grep '^binaries-' \
-          | tail -n +7 \
-          | while read -r tag; do
-              echo "Deleting old release + tag: $tag"
-              gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
-            done
+  # K2GO-506: archive the new release to R2, then prune old releases. The prune keeps the newest 6
+  # and every tag that main or a v* tag pins, and deletes only releases already archived in R2.
+  lifecycle:
+    needs: publish
+    uses: ./.github/workflows/binaries-lifecycle.yml
+    secrets: inherit
+    permissions:
+      contents: write

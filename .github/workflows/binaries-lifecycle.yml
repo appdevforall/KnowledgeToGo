@@ -1,0 +1,53 @@
+name: Binaries lifecycle (archive + retention)
+
+# K2GO-506: archive every native-binaries release to R2 (never pruned), then prune old GitHub
+# releases without deleting a pinned or unarchived build. build-static-binaries.yml calls it after
+# each publish. Run it by hand to backfill the archive, or with dry_run to preview a prune.
+# See controller/docs/UPDATING_NATIVE_BINARIES.md.
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report only: archive nothing and delete nothing"
+        type: boolean
+        default: false
+
+jobs:
+  lifecycle:
+    name: Archive to R2, then prune GitHub releases
+    runs-on: ubuntu-latest
+    # One run at a time: two prunes in parallel would delete the same release twice.
+    concurrency:
+      group: binaries-lifecycle
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      BUCKET_NAME: "k2go-apk-repo"
+      DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # all branches and v* tags: prune reads their binary_version.txt pins
+
+      # Fake gh/aws only: proves the keep/delete rules before the real run touches GitHub or R2.
+      - name: Self-test the lifecycle script
+        run: bash tools/proot-builder/test-binaries-lifecycle.sh
+
+      - name: Ensure AWS CLI is available
+        run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
+
+      # Archive first: prune deletes only releases that are already archived.
+      - name: Archive releases to R2
+        run: bash tools/proot-builder/binaries-lifecycle.sh sync
+
+      - name: Prune GitHub releases (keep the newest and every pinned tag)
+        run: bash tools/proot-builder/binaries-lifecycle.sh prune
