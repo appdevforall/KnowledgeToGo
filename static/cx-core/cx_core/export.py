@@ -31,6 +31,26 @@ def has_room(path: str, needed_bytes: int) -> bool:
     return free >= int(needed_bytes * 1.05)
 
 
+def disk_total_free(path: str) -> Tuple[int, int]:
+    """(total, free) bytes of the volume holding path, or (0, 0) when it is unmeasurable.
+    Used by the storage summary (GET /v1/storage)."""
+    try:
+        usage = shutil.disk_usage(path)
+    except OSError:
+        return 0, 0
+    return usage.total, usage.free
+
+
+def free_bytes(path: str) -> Optional[int]:
+    """Free bytes of the volume holding path, or None when it is unmeasurable. Used to
+    measure delete reclaim as a free-space delta, so shared-file refcounting (Kolibri) is
+    reflected honestly: the filesystem is the single source for space actually freed."""
+    try:
+        return shutil.disk_usage(path).free
+    except OSError:
+        return None
+
+
 def file_stream(path: str, chunk: int = CHUNK) -> Iterator[bytes]:
     """Yield a file's bytes in chunks. Opens lazily (on first iteration), read-only."""
     with open(path, "rb") as f:

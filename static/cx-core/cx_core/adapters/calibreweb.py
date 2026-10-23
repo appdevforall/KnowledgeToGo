@@ -157,3 +157,23 @@ class CalibreWebClient:
             return 200 <= exc.code < 400
         finally:
             body.close()
+
+    def remove(self, book_id: int) -> bool:
+        """POST /delete/{id} to remove a book (calibredb is absent), exactly as dash-node does
+        (sockets/books.query.ts removeBook): a logged-in session + CSRF token. ``book_id`` is
+        the Calibre-Web library id (integer), not the book uuid. Returns True on a 2xx/redirect.
+        Deleting the row also drops its FK rows (data / authors / identifiers) and its files,
+        so Calibre-Web stays the one owner of its library."""
+        form = urllib.parse.urlencode({"csrf_token": self._csrf}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{self._base}/delete/{book_id}", data=form,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Referer": f"{self._base}/",
+            },
+        )
+        try:
+            with self._opener.open(req, timeout=self._timeout) as resp:
+                return 200 <= resp.status < 400
+        except urllib.error.HTTPError as exc:
+            return 200 <= exc.code < 400

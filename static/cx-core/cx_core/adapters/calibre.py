@@ -22,7 +22,7 @@ import tarfile
 import tempfile
 from typing import List, Optional
 
-from ..export import resolve_within, tar_stream
+from ..export import free_bytes, resolve_within, tar_stream
 from ..importing import safe_extract_tar, single_child_dir
 from ..model import ABSENT, SAME_VERSION, SOFT, Dedup, Identity, ManifestItem, normalize_text
 from ..ports import ContentAdapter, ExportStream
@@ -161,6 +161,47 @@ class CalibreAdapter(ContentAdapter):
             if client.upload(path, os.path.basename(path)):
                 done += 1
         return done
+
+    def delete(self, local_ref: str) -> dict:
+        # calibredb is absent, so delete through Calibre-Web's own remove (POST /delete/{id}),
+        # which drops the book row plus its FK rows and files. Its delete keys on the integer
+        # library id, so resolve it from the uuid first. A book is self-contained (no shared
+        # files), but we still report freedBytes as the free-space delta: one honest source.
+        book_id = self._book_id(local_ref)
+        if book_id is None:
+            return {"ok": False, "reason": "item not found"}
+        before = free_bytes(self._lib_root)
+        if not self._remove_book(book_id):
+            return {"ok": False, "reason": "calibre delete failed"}
+        after = free_bytes(self._lib_root)
+        freed = max(0, after - before) if before is not None and after is not None else None
+        return {"ok": True, "app": "calibre", "localRef": local_ref, "freedBytes": freed}
+
+    def _book_id(self, uuid: str) -> Optional[int]:
+        """The integer books.id for a book uuid, from metadata.db. None if absent. Calibre-Web
+        delete keys on this id, not the uuid."""
+        if not uuid or not os.path.exists(self._db):
+            return None
+        try:
+            con = sqlite3.connect(f"file:{self._db}?mode=ro", uri=True)
+        except sqlite3.Error:
+            return None
+        try:
+            row = con.execute("SELECT id FROM books WHERE uuid = ?", (uuid,)).fetchone()
+        except sqlite3.Error:
+            return None
+        finally:
+            con.close()
+        return int(row[0]) if row and row[0] is not None else None
+
+    def _remove_book(self, book_id: int) -> bool:
+        """Log into Calibre-Web and remove one book. A seam, like _upload_files, so a test need
+        not run a live Calibre-Web. Returns True on success."""
+        user, password = resolve_calibre_credentials(self._credentials_file)
+        client = CalibreWebClient(self._url, user, password)
+        if not client.login():
+            return False
+        return client.remove(book_id)
 
     def _book_path(self, uuid: str) -> Optional[str]:
         """The relative on-disk directory for a book uuid, from metadata.db. None if absent."""

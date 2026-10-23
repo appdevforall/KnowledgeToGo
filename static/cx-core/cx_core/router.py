@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any, List, Optional, Tuple
 from urllib.parse import unquote
 
-from .export import has_room
+from .export import disk_total_free, has_room
 from .importing import is_within_dir
 from .registry import Registry
 
@@ -114,6 +114,39 @@ def _import_item(registry: Registry, body: Any) -> Response:
     return (200, result) if result.get("ok") else (422, result)
 
 
+def _delete_item(registry: Registry, app: str, local_ref: str) -> Response:
+    """Delete one item, delegating to the app's own delete. 404 when the item is absent, so a
+    repeated delete is idempotent-safe. The destructive confirm is the front's (D1c); the core
+    only executes."""
+    if not registry.has(app):
+        return 404, {"error": f"unknown app: {app}"}
+    adapter = registry.get(app)
+    if adapter.get(local_ref) is None:
+        return 404, {"error": "item not found"}
+    result = adapter.delete(local_ref)
+    return (200, result) if result.get("ok") else (422, result)
+
+
+def _storage(registry: Registry) -> Response:
+    """Box storage summary: the content volume's total / free disk, plus how much of it the
+    loaded adapters account for (per app and in total). The PHONE's own free disk is app-side
+    (StatFs), not here."""
+    total, free = disk_total_free(registry.content_volume)
+    per_app: List[dict] = []
+    used = 0
+    for adapter in registry.adapters():
+        app_bytes = sum(item.bytes for item in adapter.list())
+        per_app.append({"app": adapter.app, "bytes": app_bytes})
+        used += app_bytes
+    return 200, {
+        "volume": registry.content_volume,
+        "totalBytes": total,
+        "freeBytes": free,
+        "usedByContentBytes": used,
+        "perApp": per_app,
+    }
+
+
 def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None) -> Response:
     """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
     for a POST."""
@@ -135,12 +168,22 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
             return _import_item(registry, body)
         return 404, {"error": "not found"}
 
+    if method == "DELETE":
+        # DELETE /v1/content/{app}/{localRef} : reclaim space by removing one item.
+        if len(segments) == 4 and segments[0] == "v1" and segments[1] == "content":
+            return _delete_item(registry, segments[2], segments[3])
+        return 405, {"error": "method not allowed"}
+
     if method != "GET":
         return 405, {"error": "method not allowed"}
 
     # GET /v1/apps : installed apps that have a loaded adapter.
     if segments == ["v1", "apps"]:
         return 200, {"apps": registry.apps()}
+
+    # GET /v1/storage : box content-volume disk summary + per-app content totals.
+    if segments == ["v1", "storage"]:
+        return _storage(registry)
 
     # GET /v1/content[?app=] : everything this box has, optionally filtered by app.
     if segments == ["v1", "content"]:

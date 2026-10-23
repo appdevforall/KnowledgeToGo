@@ -3,10 +3,9 @@
 One adapter owns "how THIS app identifies, stores, exports, imports and deletes its
 content". The core and the manifest stay app-agnostic; a new app = a new adapter.
 
-This slice is the READ side only, so the port declares the read methods. The full
-port in the ADR also has check / export / importItem / delete; those arrive with the
-later pillars and are added here then. Where an app has an authoritative mechanism,
-the adapter DELEGATES to it rather than re-deriving: one source of truth.
+The port now carries the full lifecycle: read, check, export, importItem and delete.
+Where an app has an authoritative mechanism, the adapter DELEGATES to it rather than
+re-deriving: one source of truth.
 """
 
 from __future__ import annotations
@@ -68,6 +67,16 @@ class ContentAdapter(ABC):
     def import_item(self, entry: dict, payload_path: str) -> dict:
         """Ingest one already-local item archive into the app index, delegating to the app's
         own import. Idempotent: a re-import must not double-count or corrupt. ``payload_path``
-        is a box-visible local file the front placed. Default: not supported.
-        (The full ADR port also has delete; it arrives with its own slice.)"""
+        is a box-visible local file the front placed. Default: not supported."""
         return {"ok": False, "reason": "import not supported"}
+
+    def delete(self, local_ref: str) -> dict:
+        """Remove one item to reclaim space, delegating to the app's own delete (never driving
+        the app DB + files directly): the app owns its storage invariants and the next list()
+        reflects the removal, so there is no separate state to track. Returns
+        {ok: True, freedBytes: int, ...} on success, or {ok: False, reason} on failure.
+        ``freedBytes`` is what the app ACTUALLY reclaimed, not the item's nominal size (a
+        Kolibri channel shares files, so only non-shared bytes are freed). The front confirms
+        the destructive action with the user first; the core only executes. Default: not
+        supported."""
+        return {"ok": False, "reason": "delete not supported"}

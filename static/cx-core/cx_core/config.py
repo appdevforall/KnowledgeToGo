@@ -23,6 +23,9 @@ def _parse_port(raw: str) -> int:
 class Config:
     host: str = "127.0.0.1"  # localhost only, like dash-node; the front reaches it in-box
     port: int = DEFAULT_PORT
+    # The content volume: the disk the storage summary measures (GET /v1/storage). All app
+    # content (zims, kolibri, calibre) lives under it, so one disk_usage read is the box total.
+    content_dir: str = "/library"
     zims_dir: str = "/library/zims/content/"
     kiwix_indexer: str = "/usr/bin/iiab-make-kiwix-lib"
     kolibri_db: str = "/library/kolibri/db.sqlite3"
@@ -40,6 +43,7 @@ class Config:
         return Config(
             host=os.environ.get("CX_HOST", "127.0.0.1"),
             port=_parse_port(os.environ.get("CX_PORT", str(DEFAULT_PORT))),
+            content_dir=os.environ.get("CX_CONTENT_DIR", "/library"),
             zims_dir=os.environ.get("CX_ZIMS_DIR", "/library/zims/content/"),
             kiwix_indexer=os.environ.get("CX_KIWIX_INDEXER", "/usr/bin/iiab-make-kiwix-lib"),
             kolibri_db=os.environ.get("CX_KOLIBRI_DB", "/library/kolibri/db.sqlite3"),

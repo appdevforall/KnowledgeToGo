@@ -7,6 +7,7 @@ import io
 import json
 import tarfile
 
+import cx_core.adapters.calibre as calibre_mod
 from cx_core.adapters.calibre import CalibreAdapter, _content_files, build_book_item
 from cx_core.adapters.calibreweb import resolve_calibre_credentials
 from cx_core.model import SOFT
@@ -220,6 +221,63 @@ class CalibreImportTest(unittest.TestCase):
                 t.addfile(ti, io.BytesIO(data))
             adapter = _UploadStubCalibre(db, staging_dir=os.path.join(d, "staging"))
             result = adapter.import_item({"identity": {"localRef": "u-1"}}, tar_path)
+            self.assertFalse(result["ok"])
+
+
+class _DeleteStubCalibre(CalibreAdapter):
+    """Overrides the Calibre-Web seam so delete delegation is testable without a live service."""
+
+    def __init__(self, *args, succeed=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._succeed = succeed
+
+    def _remove_book(self, book_id):
+        self.removed = book_id
+        return self._succeed
+
+
+class CalibreBookIdTest(unittest.TestCase):
+    def test_resolves_integer_id_from_uuid(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            adapter = CalibreAdapter(db)
+            self.assertEqual(adapter._book_id("u-1"), 1)
+            self.assertIsNone(adapter._book_id("nope"))
+
+
+class CalibreDeleteTest(unittest.TestCase):
+    def setUp(self):
+        self._free = [1000, 1250]  # 250 reclaimed
+        self._orig_free = calibre_mod.free_bytes
+        calibre_mod.free_bytes = lambda path: self._free.pop(0)
+
+    def tearDown(self):
+        calibre_mod.free_bytes = self._orig_free
+
+    def test_delete_delegates_to_calibreweb_by_integer_id(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            adapter = _DeleteStubCalibre(db)
+            result = adapter.delete("u-1")
+            self.assertTrue(result["ok"])
+            self.assertEqual(adapter.removed, 1)  # the integer library id, not the uuid
+            self.assertEqual(result["freedBytes"], 250)
+
+    def test_delete_missing_book_is_not_ok(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            result = _DeleteStubCalibre(db).delete("no-such-uuid")
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["reason"], "item not found")
+
+    def test_delete_calibreweb_failure_is_not_ok(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            result = _DeleteStubCalibre(db, succeed=False).delete("u-1")
             self.assertFalse(result["ok"])
 
 
