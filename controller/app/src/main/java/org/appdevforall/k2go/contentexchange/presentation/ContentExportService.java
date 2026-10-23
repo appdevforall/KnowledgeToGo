@@ -241,7 +241,9 @@ public final class ContentExportService extends Service {
 
             try (ContentExportSource.ItemPayload payload = source.open(ref)) {
                 String name = ExportFilenames.resolve(payload.filename(), ref, used);
-                ExportCarrier.PayloadSink sink = carrier.openPayload(name);
+                // Write into the item's per-app subfolder; the sink reports the stored path
+                // ("app/name"), which becomes the manifest payload.
+                ExportCarrier.PayloadSink sink = carrier.openPayload(ref.app(), name);
                 SESSION.setPayloadName(i, sink.name());
                 copy(payload.stream(), sink.stream(), i, job, runStart);
                 job.setDone(i);
@@ -376,7 +378,10 @@ public final class ContentExportService extends Service {
         for (int i = 0; i < SESSION.itemCount(); i++) {
             String name = SESSION.payloadName(i);
             if (name != null) {
-                used.add(name);
+                // payloadName is the bundle-relative path ("app/file"); ExportFilenames dedups on the
+                // bare file name, so seed the bare name.
+                int slash = name.lastIndexOf('/');
+                used.add(slash >= 0 ? name.substring(slash + 1) : name);
             }
         }
         return used;

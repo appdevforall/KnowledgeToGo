@@ -86,4 +86,33 @@ public class ImportManifestReaderTest {
         assertEquals(1, m.unrecognized().size());
         assertEquals("channel.tar", m.unrecognized().get(0));
     }
+
+    @Test
+    public void parseKeepsASubfolderPayloadVerbatim() throws Exception {
+        // A v2 manifest records "app/file" as the payload; the reader must keep it for openPayload.
+        List<ImportEntry> out = ImportManifestReader.parse(
+                manifest(entry("calibre", "book-7", "calibre/book-7.tar", 30L)));
+        assertEquals(1, out.size());
+        assertEquals("calibre/book-7.tar", out.get(0).payloadName());
+        assertEquals("book-7", out.get(0).localRef());
+    }
+
+    @Test
+    public void scanRecognizesAZimInsideAnAppSubfolder() throws Exception {
+        // A v2 no-manifest bundle: the drive file arrives as a relative path. Recognize on the basename,
+        // keep the full relative path as the payload, use the basename as the identity.
+        List<ImportCarrier.DriveFile> files = new ArrayList<>();
+        files.add(new ImportCarrier.DriveFile("kiwix/wikipedia_en_all_2023-10.zim", 123L));
+
+        ImportManifest m = ImportManifestReader.scan(files);
+        assertEquals(1, m.entries().size());
+        ImportEntry zim = m.entries().get(0);
+        assertEquals("kiwix", zim.app());
+        assertEquals("wikipedia_en_all_2023-10.zim", zim.localRef());
+        assertEquals("kiwix/wikipedia_en_all_2023-10.zim", zim.payloadName());
+        JSONObject back = new JSONObject(zim.entryJson());
+        assertEquals("kiwix/wikipedia_en_all_2023-10.zim", back.getString("payload"));
+        assertEquals("wikipedia", back.getJSONObject("identity").getJSONObject("dedup")
+                .getJSONObject("line").getString("creator"));
+    }
 }
