@@ -32,8 +32,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
@@ -41,6 +39,7 @@ import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
 import org.appdevforall.k2go.storage.StorageProbe;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 import java.util.ArrayList;
@@ -338,11 +337,12 @@ public class ContentManagerFragment extends Fragment {
         }
         String message = getString(R.string.k2go_cx_export_confirm_fmt,
                 selected.size(), ByteFormatter.humanBytes(total));
-        new MaterialAlertDialogBuilder(requireContext())
+        // Export is not destructive: a plain primary confirm (the shared branded dialog).
+        new BrandDialog(requireContext())
                 .setTitle(R.string.k2go_cx_action_export)
                 .setMessage(message)
-                .setNegativeButton(R.string.k2go_dash_cancel, null)
-                .setPositiveButton(R.string.k2go_cx_action_export, (d, w) -> startExport(treeUri, selected))
+                .setPositive(R.string.k2go_cx_action_export, () -> startExport(treeUri, selected))
+                .setNegative(R.string.k2go_dash_cancel, null)
                 .show();
     }
 
@@ -387,11 +387,12 @@ public class ContentManagerFragment extends Fragment {
         }
         String message = getString(R.string.k2go_cx_delete_confirm_fmt,
                 selected.size(), ByteFormatter.humanBytes(total));
-        new MaterialAlertDialogBuilder(requireContext())
+        // Delete is destructive: the shared branded dialog's clay confirm (mirrors confirmReinstall).
+        new BrandDialog(requireContext())
                 .setTitle(R.string.k2go_cx_delete_confirm_title)
                 .setMessage(message)
-                .setNegativeButton(R.string.k2go_dash_cancel, null)
-                .setPositiveButton(R.string.k2go_cx_action_delete, (d, w) -> startDelete(selected))
+                .setDestructive(R.string.k2go_cx_action_delete, () -> startDelete(selected))
+                .setNegative(R.string.k2go_dash_cancel, null)
                 .show();
     }
 
