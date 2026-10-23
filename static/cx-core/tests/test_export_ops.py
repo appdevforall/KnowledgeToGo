@@ -266,15 +266,39 @@ class SweepTest(unittest.TestCase):
             _, prep = ops.prepare("kolibri", "chan")
             op_id = prep["opId"]
             _wait_state(ops, op_id, "ready")
-            status, stream = ops.fetch(op_id)  # opens the stream, pins the op in use
+            status, stream = ops.fetch(op_id)  # returns the stream, not yet pinned
             self.assertEqual(status, 200)
+            self.assertFalse(ops._ops[op_id].in_use)  # the pin waits for streaming to start
             temp = ops._ops[op_id].temp
-            ops._ops[op_id].last_seen -= 120  # older than the TTL
+            stream.on_open()                    # the server pins at the top of streaming
+            self.assertTrue(ops._ops[op_id].in_use)
+            ops._ops[op_id].last_seen -= 120    # older than the TTL
             ops._sweep_expired()
             self.assertIn(op_id, ops._ops)      # pinned: survives the sweep
             self.assertTrue(os.path.exists(temp))
             b"".join(stream.chunks)             # drain, then close as the server would
             stream.on_close()
+            self.assertNotIn(op_id, ops._ops)
+            self.assertFalse(os.path.exists(temp))
+
+    def test_fetch_failure_before_streaming_does_not_leave_op_pinned(self):
+        # If open_fetch raises (or the stream never starts), the op must not be stuck in_use:
+        # it is cleaned up so it cannot survive the sweep forever.
+        class _RaisingFetch(_StagingFake):
+            def open_fetch(self, local_ref, staged_dir=None):
+                raise RuntimeError("boom")
+
+        with tempfile.TemporaryDirectory() as d:
+            gate = threading.Event()
+            gate.set()
+            ops = _ops(_RaisingFetch(gate=gate), d, ttl=60)
+            _, prep = ops.prepare("kolibri", "chan")
+            op_id = prep["opId"]
+            _wait_state(ops, op_id, "ready")
+            temp = ops._ops[op_id].temp
+            status, _ = ops.fetch(op_id)
+            self.assertEqual(status, 500)
+            # The op (and its temp) were dropped, so nothing is left pinned or orphaned.
             self.assertNotIn(op_id, ops._ops)
             self.assertFalse(os.path.exists(temp))
 

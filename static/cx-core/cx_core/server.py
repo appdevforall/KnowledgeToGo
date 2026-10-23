@@ -93,6 +93,10 @@ def make_handler(registry: Registry, ops: ExportOps):
             self.send_header("Connection", "close")
             self.end_headers()
             try:
+                # Pin the op for the stream's life inside the same try whose finally runs
+                # on_close, so the pin is always released (even on a client disconnect).
+                if stream.on_open:
+                    stream.on_open()
                 for block in stream.chunks:
                     if not block:
                         continue

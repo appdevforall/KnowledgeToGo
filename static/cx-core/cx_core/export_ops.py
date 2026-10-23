@@ -169,15 +169,20 @@ class ExportOps:
             op.last_seen = time.monotonic()
             if op.state != READY:
                 return 409, {"error": f"op not ready: {op.state}"}
-            # Pin the op for the whole stream: a long fetch bumps nothing, so without this the
-            # TTL sweep could rmtree its temp while tar_stream still reads it.
-            op.in_use = True
             app, local_ref, temp = op.app, op.local_ref, op.temp
-        stream = self._registry.get(app).open_fetch(local_ref, temp)
+        # Open the stream OUTSIDE the lock. The op is not pinned yet: on_open pins it once the
+        # server actually begins streaming, so a failure here (or before streaming starts)
+        # leaves the op merely fresh and reclaimable by the normal sweep, never stuck in_use.
+        try:
+            stream = self._registry.get(app).open_fetch(local_ref, temp)
+        except Exception:
+            self._finish(op_id)
+            return 500, {"error": "failed to open export"}
         if stream is None:
             # The item vanished between prepare and fetch: clean up and report absent.
             self._finish(op_id)
             return 404, {"error": "item not found or not exportable"}
+        stream.on_open = lambda: self._pin(op_id)
         stream.on_close = lambda: self._finish(op_id)
         return 200, stream
 
@@ -238,6 +243,16 @@ class ExportOps:
                 op.state = ERROR
                 op.error = message
                 op.last_seen = time.monotonic()
+
+    def _pin(self, op_id: str) -> None:
+        """Mark the op in use for the life of an open fetch stream. The server calls this at the
+        top of streaming; _finish (the stream's on_close) drops the op and clears the pin with
+        it. Keeping the pin here, not in fetch(), means a pre-stream failure never leaves it
+        set."""
+        with self._lock:
+            op = self._ops.get(op_id)
+            if op is not None:
+                op.in_use = True
 
     def _finish(self, op_id: str) -> None:
         """Drop the op and remove its temp. The one cleanup primitive, idempotent."""

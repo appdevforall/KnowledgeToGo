@@ -19,15 +19,18 @@ from .model import ABSENT, AUTHORITATIVE, ManifestItem
 
 @dataclass
 class ExportStream:
-    """One item's byte stream the core serves and the front moves (ADR D1c). ``on_close``
-    runs after the last byte; the EXPORT OP LAYER sets it (to drop the op and remove its
-    temp), not the adapter: the adapter only opens the stream, the op layer owns the
-    lifecycle (K2GO-507)."""
+    """One item's byte stream the core serves and the front moves (ADR D1c). ``on_open`` runs
+    when the server begins streaming and ``on_close`` after the last byte (or on any streaming
+    error); the EXPORT OP LAYER sets both: on_open pins the op for the stream's life, on_close
+    unpins and drops it. The server fires on_open at the top of the same try whose finally runs
+    on_close, so the pin and its release are a matched pair even when the client disconnects.
+    The adapter only opens the stream; the op layer owns the lifecycle (K2GO-507)."""
 
     filename: str
     content_type: str
     chunks: Iterable[bytes]
     on_close: Optional[Callable[[], None]] = None
+    on_open: Optional[Callable[[], None]] = None
 
 
 @dataclass
