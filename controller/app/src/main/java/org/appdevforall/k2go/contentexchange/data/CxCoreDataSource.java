@@ -37,6 +37,9 @@ public final class CxCoreDataSource {
 
     private static final int CONNECT_TIMEOUT_MS = 5000;
     private static final int READ_TIMEOUT_MS = 20000;
+    /** Delete blocks on the box's own delete (Kolibri deletechannel, Kiwix reindex), which can run
+     *  well past the read-side timeout, so it waits longer than a plain read. */
+    private static final int DELETE_READ_TIMEOUT_MS = 120000;
 
     /** {@code GET /v1/apps} -> {@code {"apps": [...]}}. */
     public JSONObject getApps() throws Exception {
@@ -68,7 +71,11 @@ public final class CxCoreDataSource {
         return postJson(V1 + "/import/item", body);
     }
 
-    /** {@code DELETE /v1/content/{app}/{localRef}} -> {@code {ok, freedBytes}}. */
+    /**
+     * {@code DELETE /v1/content/{app}/{localRef}} -> {@code {ok, freedBytes}} on success or
+     * {@code {ok:false, reason}} on an adapter failure. Path segments are percent-encoded (the core
+     * decodes them). A 4xx/5xx (e.g. 404 for an item already gone) throws, like the other calls.
+     */
     public JSONObject deleteContent(String app, String localRef) throws Exception {
         return deleteJson(V1 + "/content/" + encodeSegment(app) + "/" + encodeSegment(localRef));
     }
@@ -132,7 +139,7 @@ public final class CxCoreDataSource {
         try {
             c.setUseCaches(false);
             c.setConnectTimeout(CONNECT_TIMEOUT_MS);
-            c.setReadTimeout(READ_TIMEOUT_MS);
+            c.setReadTimeout(DELETE_READ_TIMEOUT_MS);
             c.setRequestMethod("DELETE");
             c.setRequestProperty("Accept", "application/json");
             int code = c.getResponseCode();
