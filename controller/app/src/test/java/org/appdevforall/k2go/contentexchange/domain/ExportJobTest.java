@@ -29,7 +29,57 @@ public class ExportJobTest {
         job.setActive(1);
         job.setCopied(1, 50L);          // +50 of the 100-byte item
         assertEquals(95, job.overallPercent());
-        assertEquals(50, job.currentItemPercent());
+        // Overall is byte-weighted by copied bytes regardless of phase; the item bar is two-phase.
+        job.setPhase(1, ExportJob.PHASE_WRITE);
+        assertEquals(75, job.currentItemPercent());   // write half: 50 + 50% of 50
+    }
+
+    @Test
+    public void currentItemBarIsTwoPhase() {
+        ExportJob job = new ExportJob();
+        job.begin(new long[]{100L});
+        job.setActive(0);
+        // An active item starts in the prepare phase: the first half of the bar tracks stagedBytes.
+        assertEquals(ExportJob.PHASE_PREPARE, job.phase(0));
+        assertEquals(0, job.currentItemPercent());
+        job.setStaged(0, 50L);
+        assertEquals(25, job.currentItemPercent());    // half-staged = quarter of the whole bar
+        job.setStaged(0, 100L);
+        assertEquals(50, job.currentItemPercent());    // fully staged = the midpoint
+        // The write phase fills the second half from copiedBytes.
+        job.setPhase(0, ExportJob.PHASE_WRITE);
+        assertEquals(50, job.currentItemPercent());    // nothing written yet
+        job.setCopied(0, 50L);
+        assertEquals(75, job.currentItemPercent());
+        job.setCopied(0, 100L);
+        assertEquals(100, job.currentItemPercent());
+    }
+
+    @Test
+    public void currentItemBarWithUnknownSizeStillAdvancesByPhase() {
+        ExportJob job = new ExportJob();
+        job.begin(new long[]{0L});     // size unknown
+        job.setActive(0);
+        job.setStaged(0, 123L);
+        assertEquals(0, job.currentItemPercent());     // prepare half cannot show a fraction
+        job.setPhase(0, ExportJob.PHASE_WRITE);
+        assertEquals(50, job.currentItemPercent());    // but the bar still jumps to the midpoint
+    }
+
+    @Test
+    public void setActiveResetsPhaseAndStaged() {
+        ExportJob job = new ExportJob();
+        job.begin(new long[]{100L});
+        job.setActive(0);
+        job.setStaged(0, 40L);
+        job.setPhase(0, ExportJob.PHASE_WRITE);
+        job.setCopied(0, 30L);
+        // A retry re-activates the item: it returns to the prepare phase with staged/copied cleared.
+        job.setActive(0);
+        assertEquals(ExportJob.PHASE_PREPARE, job.phase(0));
+        assertEquals(0L, job.staged(0));
+        assertEquals(0L, job.copied(0));
+        assertEquals(0, job.currentItemPercent());
     }
 
     @Test

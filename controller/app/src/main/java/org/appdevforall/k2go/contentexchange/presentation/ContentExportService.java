@@ -39,6 +39,8 @@ import org.appdevforall.k2go.contentexchange.domain.ExportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ExportFilenames;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ExportPlan;
+import org.appdevforall.k2go.contentexchange.domain.ExportPrep;
+import org.appdevforall.k2go.contentexchange.domain.ExportStatus;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.notifications.NotificationIds;
 
@@ -69,6 +71,11 @@ public final class ContentExportService extends Service {
     private static final int COPY_BUFFER = 64 * 1024;
     private static final long PUBLISH_INTERVAL_MS = 250L;
     private static final long NOTIFY_INTERVAL_MS = 1000L;
+    /** K2GO-507: gap between export-staging status polls (mirrors content/RestContentClient). */
+    private static final long POLL_INTERVAL_MS = 1000L;
+    /** K2GO-507: consecutive status-poll failures tolerated before an item fails. A staging run lasts
+     *  minutes, so one relay blip or a busy core must not discard it (mirrors RestContentClient). */
+    private static final int MAX_POLL_ERRORS = 10;
 
     /** The single run state the progress fragment observes. */
     private static final ExportSession SESSION = new ExportSession();
@@ -244,15 +251,27 @@ public final class ContentExportService extends Service {
             SESSION.publish();
             notifyNow();
 
-            try (ContentExportSource.ItemPayload payload = source.open(ref)) {
-                String name = ExportFilenames.forItem(SESSION.label(i), payload.filename(), ref, used);
-                // Write into the item's per-app subfolder; the sink reports the stored path
-                // ("app/name"), which becomes the manifest payload.
-                ExportCarrier.PayloadSink sink = carrier.openPayload(ref.app(), name);
-                SESSION.setPayloadName(i, sink.name());
-                copy(payload.stream(), sink.stream(), i, job, runStart);
+            String opId = null;
+            try {
+                // Prepare phase (K2GO-507): ask the box to stage the item and poll until it is ready.
+                // The poll feeds the prepare-half bar and IS the liveness signal, so there is no
+                // wall-clock timeout; only the later fetch has a per-read stall timeout.
+                opId = stage(source, ref, i, job);
+                // Write phase: fetch the staged stream and copy it to the drive.
+                job.setPhase(i, ExportJob.PHASE_WRITE);
+                SESSION.publish();
+                try (ContentExportSource.ItemPayload payload = source.fetch(opId)) {
+                    String name = ExportFilenames.forItem(SESSION.label(i), payload.filename(), ref, used);
+                    // Write into the item's per-app subfolder; the sink reports the stored path
+                    // ("app/name"), which becomes the manifest payload.
+                    ExportCarrier.PayloadSink sink = carrier.openPayload(ref.app(), name);
+                    SESSION.setPayloadName(i, sink.name());
+                    copy(payload.stream(), sink.stream(), i, job, runStart);
+                }
+                // The core clears the op when the fetch stream closes, so the happy path does not abort.
                 job.setDone(i);
             } catch (IOException e) {
+                source.abort(opId);   // no-op when opId is null or the op is already dropped
                 job.setFailed(i);
                 SESSION.publish();
                 if (isNoSpace(e)) {
@@ -262,6 +281,7 @@ public final class ContentExportService extends Service {
                 }
                 continue;   // a per-item failure: skip it, keep going
             } catch (Exception e) {
+                source.abort(opId);
                 job.setFailed(i);
                 SESSION.publish();
                 continue;
@@ -330,6 +350,90 @@ public final class ContentExportService extends Service {
                 }
             }
             sink.flush();
+        }
+    }
+
+    /**
+     * Prepare one item and poll the box until it is staged, feeding the prepare-half bar from the
+     * staged byte count. Returns the opId to fetch. The poll is the liveness signal (K2GO-507): a slow
+     * multi-GB stage keeps the operation alive as long as its byte count grows, so there is no
+     * wall-clock timeout here. A swept operation (status 404 -> {@code GONE}) triggers exactly one
+     * re-prepare; a second sweep fails the item. Cancellation and a box staging error abort the
+     * operation here before throwing, so the caller does not double-abort (its opId is still null).
+     */
+    private String stage(ContentExportSource source, ItemRef ref, int i, ExportJob job) throws Exception {
+        ExportPrep prep = source.prepare(ref);
+        String opId = prep.opId();
+        if (prep.ready()) {
+            return opId;   // nothing to stage: Kiwix/Calibre stream directly
+        }
+        boolean reprepared = false;
+        int pollErrors = 0;
+        while (true) {
+            if (checkCancelled(source, opId)) {
+                throw new IOException("cancelled");
+            }
+            sleepPoll();
+            if (checkCancelled(source, opId)) {
+                throw new IOException("cancelled");
+            }
+            ExportStatus st;
+            try {
+                st = source.status(opId);
+            } catch (Exception e) {
+                // A swept op returns GONE (handled below), not an exception; this is a transient poll
+                // failure (relay blip, busy core). Keep the same op and retry, up to the blip budget,
+                // so a staging run of several minutes is not lost to one hiccup.
+                if (++pollErrors > MAX_POLL_ERRORS) {
+                    throw e;
+                }
+                continue;
+            }
+            pollErrors = 0;
+            switch (st.state()) {
+                case READY:
+                    return opId;
+                case ERROR:
+                    source.abort(opId);
+                    throw new Exception(st.error() != null && !st.error().isEmpty()
+                            ? st.error() : "the box could not stage this item");
+                case GONE:
+                    // The op was swept (e.g. a core restart). Re-prepare once; a second loss fails it.
+                    if (reprepared) {
+                        throw new Exception("the export operation was lost");
+                    }
+                    reprepared = true;
+                    prep = source.prepare(ref);
+                    opId = prep.opId();
+                    if (prep.ready()) {
+                        return opId;
+                    }
+                    break;
+                case STAGING:
+                default:
+                    job.setStaged(i, st.stagedBytes());
+                    SESSION.publish();
+                    maybeNotify(SystemClock.elapsedRealtime());
+                    break;
+            }
+        }
+    }
+
+    /** True (and aborts the op) when the run was cancelled, so the staging loop can stop. */
+    private boolean checkCancelled(ContentExportSource source, String opId) {
+        if (SESSION.isCancelled()) {
+            source.abort(opId);
+            return true;
+        }
+        return false;
+    }
+
+    private static void sleepPoll() throws IOException {
+        try {
+            Thread.sleep(POLL_INTERVAL_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("interrupted");   // worker shutdown: end the item
         }
     }
 

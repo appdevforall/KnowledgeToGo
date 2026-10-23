@@ -16,9 +16,19 @@ public final class ExportJob {
     public static final int DONE = 2;
     public static final int FAILED = 3;
 
+    /** K2GO-507: the two phases of an active item's progress bar. The box stages the item
+     *  ({@link #PHASE_PREPARE}, fed by stagedBytes) before it streams ({@link #PHASE_WRITE}, fed by
+     *  copiedBytes). The bar maps prepare to 0..50 percent and write to 50..100 percent. */
+    public static final int PHASE_PREPARE = 0;
+    public static final int PHASE_WRITE = 1;
+
     private int[] status = new int[0];
     private long[] planned = new long[0];
     private long[] copied = new long[0];
+    /** K2GO-507: per-item phase and bytes staged so far. These mirror the box's op status (the single
+     *  source of truth); the job never stores a competing "where is this export", it projects the poll. */
+    private int[] phase = new int[0];
+    private long[] staged = new long[0];
     private int index = -1;
 
     /**
@@ -30,6 +40,8 @@ public final class ExportJob {
         status = new int[n];
         planned = new long[n];
         copied = new long[n];
+        phase = new int[n];
+        staged = new long[n];
         index = -1;
         for (int i = 0; i < n; i++) {
             if (plannedBytes[i] < 0) {
@@ -75,7 +87,32 @@ public final class ExportJob {
         if (i >= 0 && i < status.length) {
             status[i] = ACTIVE;
             copied[i] = 0L;
+            // An item starts in the prepare phase: the box stages it before it streams (K2GO-507).
+            phase[i] = PHASE_PREPARE;
+            staged[i] = 0L;
             index = i;
+        }
+    }
+
+    public int phase(int i) {
+        return i >= 0 && i < phase.length ? phase[i] : PHASE_WRITE;
+    }
+
+    /** Move the active item from staging to streaming (prepare -> write). */
+    public void setPhase(int i, int newPhase) {
+        if (i >= 0 && i < phase.length) {
+            phase[i] = newPhase;
+        }
+    }
+
+    public long staged(int i) {
+        return i >= 0 && i < staged.length ? staged[i] : 0L;
+    }
+
+    /** Record the absolute bytes staged so far on the box for item {@code i} (prepare-phase progress). */
+    public void setStaged(int i, long bytes) {
+        if (i >= 0 && i < staged.length) {
+            staged[i] = Math.max(0L, bytes);
         }
     }
 
@@ -199,12 +236,28 @@ public final class ExportJob {
         return (int) Math.min(100L, (long) settled * 100L / n);
     }
 
-    /** Percent of the active item written so far (0 when its size is unknown). */
+    /**
+     * The active item's two-phase bar value (K2GO-507): the prepare phase fills 0..50 from stagedBytes,
+     * the write phase fills 50..100 from copiedBytes, both against the item's planned size. Returns 0
+     * when no item is active; when the size is unknown the prepare phase reads 0 and the write phase
+     * reads 50 (the bar still advances by phase, it just cannot show a within-phase fraction).
+     */
     public int currentItemPercent() {
         int i = index;
-        if (i < 0 || i >= planned.length || planned[i] <= 0) {
+        if (i < 0 || i >= planned.length) {
             return 0;
         }
-        return (int) Math.min(100L, copied[i] * 100L / planned[i]);
+        if (phase[i] == PHASE_PREPARE) {
+            return half(staged[i], planned[i]);            // 0..50
+        }
+        return 50 + half(copied[i], planned[i]);           // 50..100
+    }
+
+    /** {@code done/total} scaled into 0..50, or 0 when the total is unknown. */
+    private static int half(long done, long total) {
+        if (total <= 0) {
+            return 0;
+        }
+        return (int) Math.min(50L, done * 50L / total);
     }
 }
