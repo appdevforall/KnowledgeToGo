@@ -42,6 +42,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     public static final String EXTRA_ZIM_SETUP = "zimSetup";
     /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
     public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+    /** K2GO-427: open the content manager (gestor) directly, from Settings. */
+    public static final String EXTRA_CONTENT_MANAGER = "contentManager";
 
     /**
      * ADFA-5150: the one way into recovery — restore a backup, install over the internet, or clone from
@@ -135,6 +137,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
                 && !launchIntent.getBooleanExtra(EXTRA_DASHBOARD_DETAIL, false)
                 && !launchIntent.getBooleanExtra(EXTRA_MAPS_SETUP, false)
                 && !launchIntent.getBooleanExtra(EXTRA_ZIM_SETUP, false)
+                && !launchIntent.getBooleanExtra(EXTRA_CONTENT_MANAGER, false)
                 && !launchIntent.getBooleanExtra(EXTRA_CONTENT_ONLY, false);
         if (wizardSetup) {
             // Fence the FAB off the top-right help icon (72dp), the same as the wizard activity.
@@ -163,6 +166,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             } else if (moduleMgmt || moduleDetail != null || dashboardDetail) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
+            } else if (getIntent().getBooleanExtra(EXTRA_CONTENT_MANAGER, false)) {
+                first = new org.appdevforall.k2go.contentexchange.presentation.ContentManagerFragment();   // K2GO-427
             } else if (mapsSetup) {
                 selectedTier = readInstalledTier();   // ADFA-4958: maps content selector, entered from Home
                 first = new MapsChooseFragment();

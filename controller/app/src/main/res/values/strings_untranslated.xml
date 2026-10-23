@@ -10,4 +10,27 @@
   strings.xml.
 -->
 <resources>
+    <!-- K2GO-427 content manager (slice 1). WIP: localize to all locales before the feature ships
+         (closing l10n gate), then migrate these into strings.xml. The app names "Books" / "Courses" /
+         "Wikipedia & ZIM" are the app's own content vocabulary and are translatable. -->
+    <string name="k2go_cx_title" translatable="false">Content manager</string>
+    <string name="k2go_cx_subtitle" translatable="false">Content on this box, grouped by app. Select items to manage them.</string>
+    <string name="k2go_cx_loading" translatable="false">Loading content...</string>
+    <string name="k2go_cx_error" translatable="false">Could not reach the box. Try again.</string>
+    <string name="k2go_cx_empty" translatable="false">No content on this box yet.</string>
+    <string name="k2go_cx_used_fmt" translatable="false">Used by content: %1$s</string>
+    <string name="k2go_cx_free_fmt" translatable="false">Free on box: %1$s</string>
+    <string name="k2go_cx_free_unavailable" translatable="false">Free space: unavailable</string>
+    <string name="k2go_cx_group_meta_fmt" translatable="false">%1$d items : %2$s</string>
+    <string name="k2go_cx_group_empty" translatable="false">No items</string>
+    <string name="k2go_cx_selected_fmt" translatable="false">%1$d selected : %2$s</string>
+    <string name="k2go_cx_action_export" translatable="false">Export</string>
+    <string name="k2go_cx_action_share" translatable="false">Share</string>
+    <string name="k2go_cx_action_delete" translatable="false">Delete</string>
+    <string name="k2go_cx_actions_pending" translatable="false">Export, share and delete are not available yet.</string>
+    <string name="k2go_cx_app_kiwix" translatable="false">Wikipedia &amp; ZIM</string>
+    <string name="k2go_cx_app_kolibri" translatable="false">Courses</string>
+    <string name="k2go_cx_app_calibre" translatable="false">Books</string>
+    <string name="k2go_settings_content_mgr" translatable="false">Content manager</string>
+    <string name="k2go_settings_content_mgr_sub" translatable="false">Manage, export and remove content</string>
 </resources>
