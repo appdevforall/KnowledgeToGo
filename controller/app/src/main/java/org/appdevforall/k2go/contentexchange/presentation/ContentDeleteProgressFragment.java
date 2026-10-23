@@ -140,12 +140,21 @@ public class ContentDeleteProgressFragment extends Fragment {
         message.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onDestroyView() {
+        // The scheduled pop runs on the view's handler; if the view is gone it will not run, so clear
+        // the guard here so it does not stay true across a view recreation.
+        leaving = false;
+        super.onDestroyView();
+    }
+
     /**
      * Leave this progress screen. The pop is deferred to the next main-loop tick and re-checked there.
      * render() runs from onResume() and from the session listener, which the FragmentManager can drive
-     * from inside a transaction, so a synchronous pop here throws "FragmentManager is already executing
-     * transactions" (K2GO-427). The foreground service also begins the session on a separate message, so
-     * at the first render the session may not exist yet: only leave if it is still gone on the tick.
+     * from inside a transaction; the foreground service also begins the session on a later message, so
+     * the first render can see no session yet. Deferring plus the enqueued popBackStack() (never a
+     * synchronous onBackPressed) avoids "FragmentManager is already executing transactions" (K2GO-427),
+     * and re-checking hasSession() on the tick keeps the screen if a run just started.
      */
     private void goBack() {
         if (leaving) {
@@ -164,7 +173,8 @@ public class ContentDeleteProgressFragment extends Fragment {
                 leaving = false;   // a run exists now: stay, and let a later leave (Finish) reschedule
                 return;
             }
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+            // Enqueued pop of this screen's own back-stack entry: deterministic and async-safe.
+            getParentFragmentManager().popBackStack();
         });
     }
 }
