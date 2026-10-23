@@ -200,7 +200,10 @@ class FetchTest(unittest.TestCase):
             _, prep = ops.prepare("kolibri", "chan")
             status, _ = ops.fetch(prep["opId"])
             self.assertEqual(status, 409)
-            gate.set()  # release the thread so tearDown is clean
+            # Release the staging thread and let it finish before the temp dir is cleaned up,
+            # so the thread is not writing into a dir being removed under it.
+            gate.set()
+            _wait_state(ops, prep["opId"], "ready")
 
     def test_fetch_unknown_op_404(self):
         with tempfile.TemporaryDirectory() as d:
