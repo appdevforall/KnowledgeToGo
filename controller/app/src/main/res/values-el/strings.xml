@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Πρόταση</string>
     <string name="feedback_cat_content">Αίτημα περιεχομένου</string>
     <string name="feedback_message_hint">Περιγράψτε τα σχόλιά σας</string>
-    <string name="feedback_email_hint">Το email σας (προαιρετικό)</string>
     <string name="feedback_send">Αποστολή</string>
     <string name="feedback_empty_message">Γράψτε πρώτα τα σχόλιά σας.</string>
     <string name="feedback_no_email_app">Δεν βρέθηκε εφαρμογή email.</string>

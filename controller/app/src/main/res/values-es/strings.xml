@@ -508,7 +508,6 @@
     <string name="feedback_cat_suggestion">Sugerencia</string>
     <string name="feedback_cat_content">Pedido de contenido</string>
     <string name="feedback_message_hint">Describe tu comentario</string>
-    <string name="feedback_email_hint">Tu correo (opcional)</string>
     <string name="feedback_send">Enviar</string>
     <string name="feedback_empty_message">Escribe tu comentario primero.</string>
     <string name="feedback_no_email_app">No se encontró una app de correo.</string>

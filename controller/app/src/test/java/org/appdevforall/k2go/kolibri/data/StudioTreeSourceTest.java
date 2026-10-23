@@ -18,8 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link StudioTreeSource} against a local {@link MockWebServer},
- * following {@code HttpOutboundSenderTest}.
+ * Unit tests for {@link StudioTreeSource} against a local {@link MockWebServer}.
  *
  * <p>This is the only class in the Kolibri catalog slice that touches the
  * network, so it is the only one whose failure modes cannot be reasoned about

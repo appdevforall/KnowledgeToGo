@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Sugestie</string>
     <string name="feedback_cat_content">Cerere de conținut</string>
     <string name="feedback_message_hint">Descrie feedbackul tău</string>
-    <string name="feedback_email_hint">Email-ul tău (opțional)</string>
     <string name="feedback_send">Trimite</string>
     <string name="feedback_empty_message">Te rugăm să scrii mai întâi feedbackul tău.</string>
     <string name="feedback_no_email_app">Nu s-a găsit nicio aplicație de email.</string>

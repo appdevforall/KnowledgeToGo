@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Suggestie</string>
     <string name="feedback_cat_content">Inhoudsverzoek</string>
     <string name="feedback_message_hint">Beschrijf je feedback</string>
-    <string name="feedback_email_hint">Je e-mail (optioneel)</string>
     <string name="feedback_send">Verzenden</string>
     <string name="feedback_empty_message">Schrijf eerst je feedback.</string>
     <string name="feedback_no_email_app">Geen e-mailapp gevonden.</string>

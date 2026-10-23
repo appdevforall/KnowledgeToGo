@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">제안</string>
     <string name="feedback_cat_content">콘텐츠 요청</string>
     <string name="feedback_message_hint">피드백을 작성하세요</string>
-    <string name="feedback_email_hint">이메일(선택 사항)</string>
     <string name="feedback_send">보내기</string>
     <string name="feedback_empty_message">먼저 피드백을 작성하세요.</string>
     <string name="feedback_no_email_app">이메일 앱을 찾을 수 없습니다.</string>

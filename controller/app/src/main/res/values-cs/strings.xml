@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Návrh</string>
     <string name="feedback_cat_content">Žádost o obsah</string>
     <string name="feedback_message_hint">Popište svou zpětnou vazbu</string>
-    <string name="feedback_email_hint">Váš e-mail (nepovinné)</string>
     <string name="feedback_send">Odeslat</string>
     <string name="feedback_empty_message">Nejprve prosím napište svou zpětnou vazbu.</string>
     <string name="feedback_no_email_app">Nebyla nalezena žádná e-mailová aplikace.</string>

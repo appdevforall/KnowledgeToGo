@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">建议</string>
     <string name="feedback_cat_content">内容请求</string>
     <string name="feedback_message_hint">描述你的反馈</string>
-    <string name="feedback_email_hint">你的邮箱（可选）</string>
     <string name="feedback_send">发送</string>
     <string name="feedback_empty_message">请先写下你的反馈。</string>
     <string name="feedback_no_email_app">未找到邮件应用。</string>

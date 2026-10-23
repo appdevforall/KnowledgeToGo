@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Sugestia</string>
     <string name="feedback_cat_content">Prośba o treść</string>
     <string name="feedback_message_hint">Opisz swoją opinię</string>
-    <string name="feedback_email_hint">Twój e-mail (opcjonalnie)</string>
     <string name="feedback_send">Wyślij</string>
     <string name="feedback_empty_message">Najpierw napisz swoją opinię.</string>
     <string name="feedback_no_email_app">Nie znaleziono aplikacji e-mail.</string>

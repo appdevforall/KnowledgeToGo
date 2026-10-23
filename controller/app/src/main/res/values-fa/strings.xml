@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">پیشنهاد</string>
     <string name="feedback_cat_content">درخواست محتوا</string>
     <string name="feedback_message_hint">بازخورد خود را توصیف کنید</string>
-    <string name="feedback_email_hint">ایمیل شما (اختیاری)</string>
     <string name="feedback_send">ارسال</string>
     <string name="feedback_empty_message">لطفاً ابتدا بازخورد خود را بنویسید.</string>
     <string name="feedback_no_email_app">هیچ برنامه ایمیلی یافت نشد.</string>

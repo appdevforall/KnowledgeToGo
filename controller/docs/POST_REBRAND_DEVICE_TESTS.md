@@ -179,7 +179,7 @@ identity-sensitive. Heavy rows (⬇ needs a full download / ⇄ needs a second d
 | I8 | proot boot | Cold start | UP, 0 spurious kills | binds derive from `getFilesDir()`; ADFA-5365 intact |
 | I9 | proot seccomp verdict | First launch on affected device | one ADFA-5362 learn line, then `PROOT_NO_SECCOMP=1` | verdict keyed on `versionCode` → re-learns (expected, not a regression) |
 | I10 | OTA signer pin | new→new update | updates in place | `ApkVerifier`/`CertDigests` — rebuilt APK must carry the pinned cert |
-| I11 | Debug delivery (debug builds) | `am broadcast -a org.appdevforall.k2go.DEBUG_DELIVERY -n org.appdevforall.k2go/…DebugDeliveryReceiver` | receiver enqueues | the ONE new-namespace action; must match new id |
+| I11 | ~~Debug delivery (debug builds)~~ | n/a | n/a | Removed: the delivery backbone and its debug receiver were deleted (K2GO-504) |
 | I12 | Firebase/analytics | build + first run | google-services matches package | keyed on `package_name`; resolved for the shipped build, local dev copy stale (§1, §3.3) |
 
 ### 3.2 Functional sweep (rebrand must not have moved anything)

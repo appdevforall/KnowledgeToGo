@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Pasiūlymas</string>
     <string name="feedback_cat_content">Turinio užklausa</string>
     <string name="feedback_message_hint">Aprašykite savo atsiliepimą</string>
-    <string name="feedback_email_hint">Jūsų el. paštas (nebūtina)</string>
     <string name="feedback_send">Siųsti</string>
     <string name="feedback_empty_message">Pirmiausia parašykite savo atsiliepimą.</string>
     <string name="feedback_no_email_app">Nerasta el. pašto programa.</string>

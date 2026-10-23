@@ -47,7 +47,6 @@ public final class FeedbackRenderer {
         }
         appendOptional(b, "Binaries", p.binariesTag());
         appendOptional(b, "Screen", p.screen());
-        appendOptional(b, "Contact", p.contactEmail());
 
         b.append("\n--- Your message ---\n").append(p.message()).append("\n");
 

@@ -171,7 +171,7 @@ calls two entry points in order:
    the low-disk path stays the single escalation authority.
 
 Both paths skip the reap while a deep op (clone/backup/restore/install) holds the box
-(`EnvironmentLock.currentHolder`), report to developers through the delivery backbone, and relaunch
+(`EnvironmentLock.currentHolder`), report to developers through the section 7 channels, and relaunch
 through the ADR-5343 reconciler (`requestReconcileNow`, desired stays UP).
 
 ## 7. Reporting (two channels, not analytics)
