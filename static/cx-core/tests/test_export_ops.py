@@ -58,7 +58,7 @@ class _StagingFake(ContentAdapter):
             return None
         return ExportPlan(True, self._total, f"{local_ref}.tar", "application/x-tar")
 
-    def stage_export(self, local_ref, dest):
+    def stage_export(self, local_ref, dest, should_cancel=None):
         if self._gate is not None:
             self._gate.wait(5)
         if self._fail:
@@ -256,18 +256,42 @@ class SweepTest(unittest.TestCase):
             self.assertNotIn(op_id, ops._ops)
             self.assertFalse(os.path.exists(temp))
 
-    def test_startup_sweep_removes_only_export_temps(self):
+    def test_ttl_sweep_never_reclaims_an_op_being_fetched(self):
+        # A multi-gigabyte fetch can stream longer than the TTL without bumping last_seen; the
+        # sweep must not rmtree its temp out from under the open stream.
+        with tempfile.TemporaryDirectory() as d:
+            gate = threading.Event()
+            gate.set()
+            ops = _ops(_StagingFake(gate=gate), d, ttl=60)
+            _, prep = ops.prepare("kolibri", "chan")
+            op_id = prep["opId"]
+            _wait_state(ops, op_id, "ready")
+            status, stream = ops.fetch(op_id)  # opens the stream, pins the op in use
+            self.assertEqual(status, 200)
+            temp = ops._ops[op_id].temp
+            ops._ops[op_id].last_seen -= 120  # older than the TTL
+            ops._sweep_expired()
+            self.assertIn(op_id, ops._ops)      # pinned: survives the sweep
+            self.assertTrue(os.path.exists(temp))
+            b"".join(stream.chunks)             # drain, then close as the server would
+            stream.on_close()
+            self.assertNotIn(op_id, ops._ops)
+            self.assertFalse(os.path.exists(temp))
+
+    def test_startup_sweep_removes_export_and_legacy_temps_only(self):
         with tempfile.TemporaryDirectory() as d:
             orphan = os.path.join(d, "cxexport-abc123")
-            an_import = os.path.join(d, "cximport-xyz")  # an in-flight import must survive
+            legacy = os.path.join(d, "cxkolibri-old99")  # a pre-change temp (e.g. on the A16)
+            an_import = os.path.join(d, "cximport-xyz")   # an in-flight import must survive
             unrelated = os.path.join(d, "kolibri")
-            for p in (orphan, an_import, unrelated):
+            for p in (orphan, legacy, an_import, unrelated):
                 os.makedirs(p)
                 with open(os.path.join(p, "f"), "wb") as f:
                     f.write(b"x")
             ops = _ops(_DirectFake(), d)
             ops.sweep_startup()
             self.assertFalse(os.path.exists(orphan))
+            self.assertFalse(os.path.exists(legacy))
             self.assertTrue(os.path.exists(an_import))
             self.assertTrue(os.path.exists(unrelated))
 

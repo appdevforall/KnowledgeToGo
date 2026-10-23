@@ -1,6 +1,8 @@
 import os
 import sqlite3
+import sys
 import tempfile
+import time
 import unittest
 
 import io
@@ -9,6 +11,7 @@ import tarfile
 import cx_core.adapters.kolibri as kolibri_mod
 from cx_core.adapters.kolibri import (
     KolibriAdapter,
+    _run_cancellable,
     build_channel_item,
     delete_command,
     export_commands,
@@ -178,7 +181,7 @@ class _StubbedKolibri(KolibriAdapter):
     """Overrides the CLI seam so the export assembly + streaming is testable without a live
     Kolibri: it writes a tiny Kolibri-shaped export tree into dest."""
 
-    def _stage_export(self, channel_id, dest):
+    def _stage_export(self, channel_id, dest, should_cancel=None):
         self.staged_dest = dest
         dbs = os.path.join(dest, "content", "databases")
         storage = os.path.join(dest, "content", "storage", "a", "b")
@@ -240,6 +243,26 @@ class KolibriExportTest(unittest.TestCase):
             adapter = _StubbedKolibri(db, staging_dir=os.path.join(d, "staging"))
             self.assertIsNone(adapter.open_fetch(VALID_ID, None))
             self.assertIsNone(adapter.open_fetch(VALID_ID, os.path.join(d, "missing")))
+
+
+class RunCancellableTest(unittest.TestCase):
+    def test_completed_command_returns_true(self):
+        self.assertTrue(_run_cancellable([sys.executable, "-c", "pass"], dict(os.environ)))
+
+    def test_failed_command_returns_false(self):
+        self.assertFalse(
+            _run_cancellable([sys.executable, "-c", "import sys; sys.exit(3)"], dict(os.environ)))
+
+    def test_cancel_terminates_a_long_command(self):
+        start = time.time()
+        # A 30 s child that is cancelled at once: it must be terminated promptly, not waited out.
+        ok = _run_cancellable(
+            [sys.executable, "-c", "import time; time.sleep(30)"],
+            dict(os.environ),
+            should_cancel=lambda: True,
+        )
+        self.assertFalse(ok)
+        self.assertLess(time.time() - start, 10)
 
 
 class DeleteCommandTest(unittest.TestCase):

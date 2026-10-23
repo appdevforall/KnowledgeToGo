@@ -75,6 +75,27 @@ def delete_command(channel_id: str, kolibri_bin: str) -> List[str]:
     return [kolibri_bin, "manage", "deletechannel", channel_id]
 
 
+def _run_cancellable(argv: List[str], env: dict, should_cancel=None) -> bool:
+    """Run one child process to completion, polling ``should_cancel`` about once a second.
+    When it returns True the process is terminated (then killed if it does not exit) and this
+    returns False. Otherwise returns True on exit code 0. This is how an aborted export stops
+    the long-running Kolibri CLI instead of leaving it writing into a removed dir."""
+    proc = subprocess.Popen(argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    while True:
+        try:
+            proc.wait(timeout=1.0)
+            return proc.returncode == 0
+        except subprocess.TimeoutExpired:
+            if should_cancel and should_cancel():
+                proc.terminate()
+                try:
+                    proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                    proc.wait()
+                return False
+
+
 def _to_int(*values) -> Optional[int]:
     """First value that parses as an int, else None. The version may arrive as an int or a
     string over JSON, and the build mirrors it."""
@@ -185,14 +206,15 @@ class KolibriAdapter(ContentAdapter):
             content_type="application/x-tar",
         )
 
-    def stage_export(self, local_ref: str, dest: str) -> bool:
+    def stage_export(self, local_ref: str, dest: str, should_cancel=None) -> bool:
         # Stage the channel into dest (the op layer's temp). Delegate to Kolibri's own export:
         # it writes the channel DB + the content-addressed files that import dedups for free.
-        # Read-only on the source (export copies out).
+        # Read-only on the source (export copies out). ``should_cancel`` lets the op layer stop
+        # the export CLI on abort instead of leaving it running into a deleted dir.
         if not _CHANNEL_ID_RE.match(local_ref or ""):
             return False
         try:
-            return self._stage_export(local_ref, dest)
+            return self._stage_export(local_ref, dest, should_cancel)
         except OSError:
             return False
 
@@ -206,15 +228,14 @@ class KolibriAdapter(ContentAdapter):
             chunks=tar_stream(staged_dir, arcname=local_ref),
         )
 
-    def _stage_export(self, channel_id: str, dest: str) -> bool:
+    def _stage_export(self, channel_id: str, dest: str, should_cancel=None) -> bool:
         """Run the Kolibri export CLI into dest. A seam, so a test can stage a fake tree
-        without a live Kolibri. Returns True on success."""
+        without a live Kolibri. Each command runs as a child process polled against
+        ``should_cancel``, so an abort terminates the export instead of letting it finish into a
+        deleted dir. Returns True on success, False on CLI failure or cancellation."""
         env = dict(os.environ, KOLIBRI_HOME=self._home)
         for argv in export_commands(channel_id, dest, self._bin):
-            result = subprocess.run(
-                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
-            )
-            if result.returncode != 0:
+            if not _run_cancellable(argv, env, should_cancel):
                 return False
         return True
 

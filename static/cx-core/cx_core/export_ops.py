@@ -47,6 +47,11 @@ Response = Tuple[int, Any]
 # reclaims only export op temps and never touches an in-flight import.
 TEMP_PREFIX = "cxexport-"
 
+# Prefixes the startup sweep also reclaims for one release: before this change the Kolibri
+# adapter staged into "cxkolibri-" temps, so an orphan from an older build (or a device test)
+# must still be swept. Not used for the import flow's "cximport-" temps, which self-clean.
+_LEGACY_SWEEP_PREFIXES = ("cxkolibri-",)
+
 # How long an op may go without a status or fetch before the lazy sweep reclaims it. The
 # client polls status throughout a staging export, so a live op keeps bumping last_seen;
 # the timeout only catches an abandoned op.
@@ -67,6 +72,12 @@ class _Op:
     total_bytes: int
     error: Optional[str] = None
     last_seen: float = field(default_factory=time.monotonic)
+    # True while a fetch stream is open on this op. The TTL sweep never reclaims an in-use op,
+    # so a multi-gigabyte fetch that streams longer than the TTL (and bumps nothing meanwhile)
+    # is not swept out from under tar_stream. Set by fetch() when the stream opens, cleared by
+    # dropping the op in the stream's on_close. Lost on process death, but then the op itself
+    # is gone and the startup sweep reclaims the orphan temp.
+    in_use: bool = False
 
 
 def _dir_size(path: str) -> int:
@@ -158,6 +169,9 @@ class ExportOps:
             op.last_seen = time.monotonic()
             if op.state != READY:
                 return 409, {"error": f"op not ready: {op.state}"}
+            # Pin the op for the whole stream: a long fetch bumps nothing, so without this the
+            # TTL sweep could rmtree its temp while tar_stream still reads it.
+            op.in_use = True
             app, local_ref, temp = op.app, op.local_ref, op.temp
         stream = self._registry.get(app).open_fetch(local_ref, temp)
         if stream is None:
@@ -184,16 +198,24 @@ class ExportOps:
             names = os.listdir(self._staging_dir)
         except OSError:
             return
+        prefixes = (TEMP_PREFIX,) + _LEGACY_SWEEP_PREFIXES
         for name in names:
-            if name.startswith(TEMP_PREFIX):
+            if name.startswith(prefixes):
                 shutil.rmtree(os.path.join(self._staging_dir, name), ignore_errors=True)
 
     def _run_stage(self, op_id: str, app: str, local_ref: str, temp: str) -> None:
         """Stage the item into temp off the request thread, then flip the op to ready or
         error. If the op was dropped meanwhile (DELETE or sweep), the flip is a no-op and the
-        temp was already removed by whoever dropped it."""
+        temp was already removed by whoever dropped it. The adapter polls ``should_cancel``
+        and stops its staging work (terminates the subprocess) once the op is gone, so an
+        abort actually cancels the server-side work instead of letting it run on into a
+        deleted dir."""
+        def should_cancel() -> bool:
+            with self._lock:
+                return op_id not in self._ops
+
         try:
-            ok = self._registry.get(app).stage_export(local_ref, temp)
+            ok = self._registry.get(app).stage_export(local_ref, temp, should_cancel)
         except Exception as exc:  # any adapter / CLI failure surfaces as an op error
             self._set_error(op_id, f"stage failed: {exc}")
             return
@@ -229,7 +251,8 @@ class ExportOps:
         stale = []
         with self._lock:
             for op_id, op in list(self._ops.items()):
-                if now - op.last_seen > self._ttl:
+                # Never reclaim an op with an open fetch stream: its temp is in use.
+                if not op.in_use and now - op.last_seen > self._ttl:
                     stale.append(self._ops.pop(op_id))
         for op in stale:
             if op.temp:

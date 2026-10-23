@@ -76,10 +76,14 @@ class ContentAdapter(ABC):
         Read-only on the source: no staging, no temp. Default: export not supported."""
         return None
 
-    def stage_export(self, local_ref: str, dest: str) -> bool:
+    def stage_export(self, local_ref: str, dest: str,
+                     should_cancel: Optional[Callable[[], bool]] = None) -> bool:
         """Stage the item into ``dest`` (the op layer's temp dir), for a plan with
         stages=True. Read-only on the source (copies out). Runs off the request thread, so it
-        may be slow. Returns True on success. Default: nothing to stage."""
+        may be slow. ``should_cancel``, when supplied, is polled during long work: once it
+        returns True (the op was aborted or swept) the adapter must stop and return False, so a
+        cancel actually stops the server-side work. Returns True on success. Default: nothing
+        to stage."""
         return False
 
     def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
