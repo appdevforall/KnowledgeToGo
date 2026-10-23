@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-427: export progress. Shows the overall and current-item progress (bar / percent / bytes /
+     speed / ETA) while the foreground service drains the queue, then a settled state (done or partial)
+     with Retry / Finish. Material 3 tokens; no hardcoded colours. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/k2go_cxx_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/k2go_ink"
+            android:text="@string/k2go_cx_export_title" />
+
+        <TextView
+            android:id="@+id/k2go_cxx_destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_muted" />
+
+        <!-- Overall -->
+        <TextView
+            android:id="@+id/k2go_cxx_overall_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textColor="@color/k2go_ink" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/k2go_cxx_overall_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp" />
+
+        <TextView
+            android:id="@+id/k2go_cxx_overall_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <!-- Current item -->
+        <TextView
+            android:id="@+id/k2go_cxx_item_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:maxLines="2"
+            android:ellipsize="middle"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/k2go_cxx_item_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            app:trackThickness="6dp"
+            app:trackCornerRadius="3dp" />
+
+        <!-- Settled message (done / partial / error) -->
+        <TextView
+            android:id="@+id/k2go_cxx_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/k2go_ink"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/k2go_cxx_skipped"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted"
+            android:visibility="gone" />
+
+        <!-- Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
+
+            <Button
+                android:id="@+id/k2go_cxx_cancel"
+                style="@style/Widget.K2Go.Button.Text.Destructive"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="@string/k2go_dash_cancel" />
+
+            <Button
+                android:id="@+id/k2go_cxx_retry"
+                style="@style/Widget.K2Go.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                android:text="@string/k2go_cx_export_retry" />
+
+            <Button
+                android:id="@+id/k2go_cxx_finish"
+                style="@style/Widget.K2Go.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:text="@string/k2go_cx_export_finish" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
