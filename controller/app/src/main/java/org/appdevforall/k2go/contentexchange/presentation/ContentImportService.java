@@ -151,11 +151,17 @@ public final class ContentImportService extends Service {
         String action = intent != null ? intent.getAction() : null;
 
         if (ACTION_CANCEL.equals(action)) {
+            // Release the grant and flag cancel. If a worker is draining it owns teardown (its cancelled
+            // branch clears the session and stops the service), so clearing or stopping here would race
+            // its reads of refs/job. Clear and stop on this thread only when no run is active.
             releaseGrant(getApplicationContext(), SESSION.treeUri());
+            boolean wasRunning = SESSION.isRunning();
             SESSION.markCancelled();
-            SESSION.clear();
-            stopForeground(true);
-            stopSelf();
+            if (!wasRunning) {
+                SESSION.clear();
+                stopForeground(true);
+                stopSelf();
+            }
             return START_NOT_STICKY;
         }
 

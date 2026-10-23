@@ -234,13 +234,17 @@ public class ContentManagerFragment extends Fragment {
         if (treeUri == null) {
             return;
         }
-        // Persist read so the review read and the foreground service keep access after this screen is gone.
-        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        // Import only reads the drive, so take READ only (export is the write side). Persist it so the
+        // review read and the foreground service keep access after this screen is gone.
+        android.content.ContentResolver resolver = requireContext().getContentResolver();
         try {
-            requireContext().getContentResolver().takePersistableUriPermission(treeUri, flags);
+            resolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } catch (SecurityException e) {
             // Could not persist; proceed with the transient permission for this session.
         }
+        // Same bound as export: an import abandoned before it starts (back out of review) leaves a stale
+        // grant, so drop every persisted tree except the active runs and the one just taken.
+        pruneGrantsExcept(resolver, treeUri);
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, ImportReviewFragment.newInstance(treeUri))
                 .addToBackStack(null)
@@ -259,7 +263,7 @@ public class ContentManagerFragment extends Fragment {
         if (treeUri == null || pendingExport == null || pendingExport.isEmpty()) {
             return;
         }
-        // Persist read+write so the foreground service keeps access after this screen is gone.
+        // Export writes the bundle, so persist read+write; keep access after this screen is gone.
         int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
         android.content.ContentResolver resolver = requireContext().getContentResolver();
         try {
@@ -267,11 +271,31 @@ public class ContentManagerFragment extends Fragment {
         } catch (SecurityException e) {
             // The grant could not be persisted; proceed with the transient permission for this session.
         }
-        // Safety net against unbounded growth: the run releases its own grant when it finishes, but an
-        // export abandoned before "Finish" (e.g. the process is killed) would leave a stale grant. Export
-        // is the app's only persisted-grant user, so drop every persisted tree except the one just taken.
+        // Safety net against unbounded growth: a run releases its own grant when it finishes, but a run
+        // abandoned before "Finish" (or a killed process) would leave a stale grant.
+        pruneGrantsExcept(resolver, treeUri);
+        confirmAndStart(treeUri, pendingExport);
+    }
+
+    /**
+     * Release every persisted SAF grant except the ones still in use: the tree just taken plus any
+     * active export / import run's tree. There are now two grant users (export writes, import reads),
+     * so the prune must keep each active run's tree or one picker would revoke the other's drive.
+     */
+    private void pruneGrantsExcept(android.content.ContentResolver resolver, Uri justTaken) {
+        java.util.Set<String> keep = new java.util.HashSet<>();
+        keep.add(justTaken.toString());
+        String activeExport = ContentExportService.session().treeUri();
+        if (activeExport != null) {
+            keep.add(activeExport);
+        }
+        String activeImport = ContentImportService.session().treeUri();
+        if (activeImport != null) {
+            keep.add(activeImport);
+        }
+        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
         for (android.content.UriPermission p : resolver.getPersistedUriPermissions()) {
-            if (!p.getUri().equals(treeUri)) {
+            if (!keep.contains(p.getUri().toString())) {
                 try {
                     resolver.releasePersistableUriPermission(p.getUri(), flags);
                 } catch (Exception ignored) {
@@ -279,7 +303,6 @@ public class ContentManagerFragment extends Fragment {
                 }
             }
         }
-        confirmAndStart(treeUri, pendingExport);
     }
 
     private void confirmAndStart(Uri treeUri, List<ContentItem> selected) {
