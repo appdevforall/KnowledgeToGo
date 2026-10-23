@@ -45,6 +45,9 @@ public class ImportProgressFragment extends Fragment {
 
     private final ImportSession session = ContentImportService.session();
 
+    /** One-shot guard so a re-entrant render() does not schedule the back-pop twice. */
+    private boolean leaving;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
@@ -174,9 +177,41 @@ public class ImportProgressFragment extends Fragment {
         return String.format(Locale.US, "%d:%02d", m, s);
     }
 
+    @Override
+    public void onDestroyView() {
+        // The scheduled pop runs on the view's handler; if the view is gone it will not run, so clear
+        // the guard here so it does not stay true across a view recreation.
+        leaving = false;
+        super.onDestroyView();
+    }
+
+    /**
+     * Leave this progress screen. The pop is deferred to the next main-loop tick and re-checked there.
+     * render() runs from onResume() and from the session listener, which the FragmentManager can drive
+     * from inside a transaction; the foreground service also begins the session on a later message, so
+     * the first render can see no session yet. Deferring plus the enqueued popBackStack() (never a
+     * synchronous onBackPressed) avoids "FragmentManager is already executing transactions" (K2GO-427),
+     * and re-checking hasSession() on the tick keeps the screen if a run just started.
+     */
     private void goBack() {
-        if (isAdded()) {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        if (leaving) {
+            return;
         }
+        View v = getView();
+        if (v == null) {
+            return;
+        }
+        leaving = true;
+        v.post(() -> {
+            if (!isAdded()) {
+                return;
+            }
+            if (session.hasSession()) {
+                leaving = false;   // a run exists now: stay, and let a later leave (Finish) reschedule
+                return;
+            }
+            // Enqueued pop of this screen's own back-stack entry: deterministic and async-safe.
+            getParentFragmentManager().popBackStack();
+        });
     }
 }
