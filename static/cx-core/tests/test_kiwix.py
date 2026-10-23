@@ -143,23 +143,38 @@ class KiwixAdapterEndToEndTest(unittest.TestCase):
 
 
 class KiwixExportTest(unittest.TestCase):
-    def test_open_export_streams_the_zim_as_is(self):
+    def test_prepare_export_is_direct_with_total_bytes(self):
         with tempfile.TemporaryDirectory() as d:
             name = "devdocs_en_angular_2026-05.zim"
             payload = _zim_header(uuid.uuid4()) + os.urandom(200)
             with open(os.path.join(d, name), "wb") as f:
                 f.write(payload)
-            stream = KiwixAdapter(d).open_export(name)
+            plan = KiwixAdapter(d).prepare_export(name)
+            self.assertIsNotNone(plan)
+            self.assertFalse(plan.stages)  # a ZIM streams directly, nothing to stage
+            self.assertEqual(plan.total_bytes, len(payload))
+            self.assertEqual(plan.filename, name)
+            self.assertEqual(plan.content_type, "application/octet-stream")
+
+    def test_open_fetch_streams_the_zim_as_is(self):
+        with tempfile.TemporaryDirectory() as d:
+            name = "devdocs_en_angular_2026-05.zim"
+            payload = _zim_header(uuid.uuid4()) + os.urandom(200)
+            with open(os.path.join(d, name), "wb") as f:
+                f.write(payload)
+            stream = KiwixAdapter(d).open_fetch(name)
             self.assertIsNotNone(stream)
             self.assertEqual(stream.filename, name)
             self.assertEqual(stream.content_type, "application/octet-stream")
             self.assertEqual(b"".join(stream.chunks), payload)
 
-    def test_open_export_rejects_traversal_and_missing(self):
+    def test_export_rejects_traversal_and_missing(self):
         with tempfile.TemporaryDirectory() as d:
             adapter = KiwixAdapter(d)
-            self.assertIsNone(adapter.open_export("../x.zim"))
-            self.assertIsNone(adapter.open_export("absent.zim"))
+            self.assertIsNone(adapter.prepare_export("../x.zim"))
+            self.assertIsNone(adapter.prepare_export("absent.zim"))
+            self.assertIsNone(adapter.open_fetch("../x.zim"))
+            self.assertIsNone(adapter.open_fetch("absent.zim"))
 
 
 class KiwixCheckTest(unittest.TestCase):
