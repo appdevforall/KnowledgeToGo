@@ -602,6 +602,46 @@ tasks.register("copyHelpAssets", Sync) {
     into file("src/main/assets/help")
 }
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn "copyHelpAssets" }
+
+// ---- K2GO-504: release manifest privacy guard ---------------------------------
+// Play held a build over its Data safety form. Firebase Analytics merges advertising permissions that
+// the flavor manifests remove with tools:node="remove", and its collection must start OFF until the
+// user opts in. This check fails the build when a merged release manifest gets one of these
+// permissions back (a Firebase bump, a lost removal) or loses the collection flag. CI runs it.
+def adPermissions = ['com.google.android.gms.permission.AD_ID',
+                     'android.permission.ACCESS_ADSERVICES_AD_ID',
+                     'android.permission.ACCESS_ADSERVICES_ATTRIBUTION']
+def verifyManifestPrivacy = tasks.register("verifyManifestPrivacy") {
+    group = "verification"
+    description = "Fail if a merged release manifest has ad permissions or starts analytics collection ON."
+}
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        def variantName = variant.name
+        def manifest = variant.artifacts.get(com.android.build.api.artifact.SingleArtifact.MERGED_MANIFEST.INSTANCE)
+        def check = tasks.register("verify${variantName.capitalize()}ManifestPrivacy") {
+            inputs.file(manifest)
+            doLast {
+                def root = new groovy.xml.XmlSlurper(false, false).parse(manifest.get().asFile)
+                def nameOf = { it.@'android:name'.text() }
+                def problems = root.'*'
+                        .findAll { it.name() in ['uses-permission', 'uses-permission-sdk-23'] }
+                        .collect(nameOf).findAll { it in adPermissions }
+                // Only variants that link Firebase Analytics (its measurement components) need the flag.
+                if (root.application.'**'.any { nameOf(it).startsWith('com.google.android.gms.measurement.') }) {
+                    def flag = root.application.'meta-data'.find { nameOf(it) == 'firebase_analytics_collection_enabled' }
+                    if (flag.@'android:value'.text() != 'false') {
+                        problems << 'firebase_analytics_collection_enabled is missing or not "false"'
+                    }
+                }
+                if (problems) {
+                    throw new GradleException("K2GO-504: ${variantName} merged manifest: ${problems.join('; ')}")
+                }
+            }
+        }
+        verifyManifestPrivacy.configure { dependsOn check }
+    }
+}
 // ---- rootfs size auto-capture (offline fallback) ------------------------------
 // Fetches the stable latest_<tier>_<abi>.meta4 <size> for each edition and writes
 // src/main/assets/rootfs_sizes.csv, so the app's OFFLINE fallback (RootfsCatalog)
