@@ -17,6 +17,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
+import org.appdevforall.k2go.contentexchange.domain.GroupSelection;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 import java.util.ArrayList;
@@ -40,6 +41,12 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
         boolean isSelected(String selectionId);
 
         void toggle(String selectionId);
+
+        /** Tri-state of a group (by app): {@link GroupSelection#NONE}/{@code SOME}/{@code ALL}. */
+        int groupState(String app);
+
+        /** Select or clear every item in a group (by app). */
+        void toggleGroup(String app);
     }
 
     static final int TYPE_HEADER = 0;
@@ -57,6 +64,11 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     public void submit(List<Row> newRows) {
         rows.clear();
         rows.addAll(newRows);
+        notifyDataSetChanged();
+    }
+
+    /** Rebind visible rows so group headers and item checkboxes reflect a changed selection. */
+    public void refreshSelectionStates() {
         notifyDataSetChanged();
     }
 
@@ -78,7 +90,7 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             case TYPE_HEADER:
                 return new HeaderVH(ctx);
             case TYPE_GROUP:
-                return new GroupVH(ctx);
+                return new GroupVH(ctx, selection);
             case TYPE_EMPTY:
                 return new EmptyVH(ctx);
             default:
@@ -131,13 +143,17 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public static final class GroupRow extends Row {
+        final String app;
         final String name;
         final String meta;
+        final boolean selectable;   // the group has at least one item that can be picked
 
-        public GroupRow(String name, String meta) {
+        public GroupRow(String app, String name, String meta, boolean selectable) {
             super(TYPE_GROUP);
+            this.app = app;
             this.name = name;
             this.meta = meta;
+            this.selectable = selectable;
         }
     }
 
@@ -225,15 +241,30 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     static final class GroupVH extends RecyclerView.ViewHolder {
+        private final MaterialCheckBox checkBox;
         private final TextView name;
         private final TextView meta;
+        private final SelectionController selection;
+        private String boundApp;
 
-        GroupVH(Context ctx) {
+        GroupVH(Context ctx, SelectionController selection) {
             super(new LinearLayout(ctx));
+            this.selection = selection;
             LinearLayout root = (LinearLayout) itemView;
             root.setOrientation(LinearLayout.HORIZONTAL);
             root.setGravity(Gravity.CENTER_VERTICAL);
             root.setLayoutParams(fullWidth(px(ctx, 16), px(ctx, 8)));
+
+            checkBox = new MaterialCheckBox(ctx);
+            checkBox.setContentDescription(ctx.getString(R.string.k2go_cx_select_group));
+            // Same 40dp leading slot as the item rows, so the group box sits above the item boxes.
+            FrameLayout slot = new FrameLayout(ctx);
+            FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(-2, -2);
+            clp.gravity = Gravity.CENTER;
+            slot.addView(checkBox, clp);
+            LinearLayout.LayoutParams slotLp = new LinearLayout.LayoutParams(px(ctx, 40), -2);
+            slotLp.rightMargin = px(ctx, 4);
+            root.addView(slot, slotLp);
 
             name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink);
             name.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -241,11 +272,28 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
 
             meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
             root.addView(meta);
+
+            // User taps only: setCheckedState() during bind does not fire this (no OnCheckedChange
+            // listener), so a recycled header never toggles the model by itself.
+            checkBox.setOnClickListener(v -> {
+                if (boundApp != null) {
+                    this.selection.toggleGroup(boundApp);
+                }
+            });
         }
 
         void bind(GroupRow row) {
+            boundApp = row.app;
             name.setText(row.name);
             meta.setText(row.meta);
+            // An empty group gets a disabled box, not a live control that does nothing when tapped.
+            checkBox.setEnabled(row.selectable);
+            int state = row.selectable ? selection.groupState(row.app) : GroupSelection.NONE;
+            checkBox.setCheckedState(state == GroupSelection.ALL
+                    ? MaterialCheckBox.STATE_CHECKED
+                    : state == GroupSelection.SOME
+                    ? MaterialCheckBox.STATE_INDETERMINATE
+                    : MaterialCheckBox.STATE_UNCHECKED);
         }
     }
 

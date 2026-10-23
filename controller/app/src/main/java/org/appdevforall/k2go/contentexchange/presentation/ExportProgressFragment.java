@@ -11,15 +11,18 @@
  */
 package org.appdevforall.k2go.contentexchange.presentation;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -28,6 +31,7 @@ import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.util.ByteFormatter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +43,8 @@ public class ExportProgressFragment extends Fragment {
     private TextView overallDetail;
     private TextView itemLabel;
     private LinearProgressIndicator itemBar;
+    private TextView categoriesLabel;
+    private LinearLayout categories;
     private TextView message;
     private TextView skipped;
     private Button cancel;
@@ -57,6 +63,8 @@ public class ExportProgressFragment extends Fragment {
         overallDetail = root.findViewById(R.id.k2go_cxx_overall_detail);
         itemLabel = root.findViewById(R.id.k2go_cxx_item_label);
         itemBar = root.findViewById(R.id.k2go_cxx_item_bar);
+        categoriesLabel = root.findViewById(R.id.k2go_cxx_categories_label);
+        categories = root.findViewById(R.id.k2go_cxx_categories);
         message = root.findViewById(R.id.k2go_cxx_message);
         skipped = root.findViewById(R.id.k2go_cxx_skipped);
         cancel = root.findViewById(R.id.k2go_cxx_cancel);
@@ -111,6 +119,7 @@ public class ExportProgressFragment extends Fragment {
         overallDetail.setText(preparing ? "" : overallDetail());
 
         renderCurrentItem(running, preparing);
+        renderCategories(running, preparing);
         renderSettled(running, preparing, error);
 
         cancel.setVisibility(running ? View.VISIBLE : View.GONE);
@@ -129,6 +138,86 @@ public class ExportProgressFragment extends Fragment {
         } else {
             itemLabel.setVisibility(View.GONE);
             itemBar.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * One progress bar per app being exported ("3 bars if 3 categories"), beside the overall bar. Shown
+     * only while running with at least two apps: with a single app the overall bar already is it.
+     */
+    private void renderCategories(boolean running, boolean preparing) {
+        List<ExportSession.Category> cats = (running && !preparing)
+                ? session.categories() : Collections.emptyList();
+        if (cats.size() < 2) {
+            categoriesLabel.setVisibility(View.GONE);
+            categories.setVisibility(View.GONE);
+            categories.removeAllViews();
+            return;
+        }
+        categoriesLabel.setVisibility(View.VISIBLE);
+        categories.setVisibility(View.VISIBLE);
+        Context ctx = requireContext();
+        // The apps are fixed for a run, so build the rows once, then just update text/progress.
+        if (categories.getChildCount() != cats.size()) {
+            categories.removeAllViews();
+            for (int i = 0; i < cats.size(); i++) {
+                categories.addView(buildCategoryRow(ctx));
+            }
+        }
+        for (int i = 0; i < cats.size(); i++) {
+            ExportSession.Category c = cats.get(i);
+            LinearLayout row = (LinearLayout) categories.getChildAt(i);
+            TextView label = (TextView) row.getChildAt(0);
+            LinearProgressIndicator bar = (LinearProgressIndicator) row.getChildAt(1);
+            label.setText(getString(R.string.k2go_cx_export_category_fmt, appDisplayName(c.app), c.percent));
+            bar.setProgressCompat(c.percent, true);
+        }
+    }
+
+    /** A per-category row: the app label over its own progress bar. */
+    private LinearLayout buildCategoryRow(Context ctx) {
+        int gap = px(ctx, 8);
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        rlp.topMargin = gap;
+        row.setLayoutParams(rlp);
+
+        TextView label = new TextView(ctx);
+        label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        label.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+        row.addView(label);
+
+        LinearProgressIndicator bar = new LinearProgressIndicator(ctx);
+        bar.setMax(100);
+        bar.setTrackThickness(px(ctx, 6));
+        bar.setTrackCornerRadius(px(ctx, 3));
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        blp.topMargin = px(ctx, 4);
+        row.addView(bar, blp);
+        return row;
+    }
+
+    private static int px(Context ctx, int dp) {
+        return Math.round(dp * ctx.getResources().getDisplayMetrics().density);
+    }
+
+    /** Friendly app label; falls back to the raw key for an unknown app. */
+    private String appDisplayName(String app) {
+        if (app == null) {
+            return "";
+        }
+        switch (app) {
+            case "kiwix":
+                return getString(R.string.k2go_cx_app_kiwix);
+            case "kolibri":
+                return getString(R.string.k2go_cx_app_kolibri);
+            case "calibre":
+                return getString(R.string.k2go_cx_app_calibre);
+            default:
+                return app;
         }
     }
 

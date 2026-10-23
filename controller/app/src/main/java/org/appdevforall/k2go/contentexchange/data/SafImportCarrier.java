@@ -25,9 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * One SAF document tree as an {@link ImportCarrier}. The tree Uri comes from
@@ -40,6 +44,10 @@ public final class SafImportCarrier implements ImportCarrier {
     private static final String MANIFEST_NAME = "manifest.json";
     /** A manifest larger than this is treated as absent: the real index is a few KB. */
     private static final long MANIFEST_MAX_BYTES = 8L * 1024 * 1024;
+    private static final String MIME_DIR = DocumentsContract.Document.MIME_TYPE_DIR;
+    /** The per-app subfolders a v2 bundle lays items in; walked one level for the no-manifest scan. */
+    private static final Set<String> APP_SUBFOLDERS = new HashSet<>(
+            Arrays.asList("kiwix", "kolibri", "calibre"));
 
     private final ContentResolver resolver;
     private final Uri treeUri;
@@ -106,20 +114,83 @@ public final class SafImportCarrier implements ImportCarrier {
         index();
         String id = docIds.get(name);
         if (id == null) {
+            // A v2 payload path ("app/file") whose folder the index did not pre-walk: walk it directly.
+            int slash = name.indexOf('/');
+            if (slash > 0) {
+                id = resolveNestedId(name.substring(0, slash), name.substring(slash + 1));
+            }
+        }
+        if (id == null) {
             throw new IOException("File not found on the drive: " + name);
         }
         return openStream(DocumentsContract.buildDocumentUriUsingTree(treeUri, id));
     }
 
-    /** List the folder's direct children once (name + size + document id). */
+    /**
+     * Index the bundle once: files directly in the chosen folder by bare name (a flat pre-v2 bundle),
+     * plus files one level down in each per-app subfolder by relative path ("app/file", a v2 bundle).
+     * Both forms land in the same map, so {@code openPayload} and the no-manifest scan resolve either.
+     */
     private void index() throws IOException {
         if (docIds != null) {
             return;
         }
         Map<String, String> ids = new LinkedHashMap<>();
         List<DriveFile> found = new ArrayList<>();
-        Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
-                treeUri, DocumentsContract.getTreeDocumentId(treeUri));
+        String rootId = DocumentsContract.getTreeDocumentId(treeUri);
+        for (String[] row : listChildren(rootId)) {
+            String id = row[0];
+            String name = row[1];
+            if (name == null) {
+                continue;
+            }
+            if (MIME_DIR.equals(row[3])) {
+                // Walk one level into a known app subfolder; index its files by "app/file".
+                if (APP_SUBFOLDERS.contains(name.toLowerCase(Locale.US))) {
+                    for (String[] sub : listChildren(id)) {
+                        String subName = sub[1];
+                        if (subName == null || MIME_DIR.equals(sub[3])) {
+                            continue;
+                        }
+                        String rel = name + "/" + subName;
+                        ids.put(rel, sub[0]);
+                        found.add(new DriveFile(rel, parseSize(sub[2])));
+                    }
+                }
+                continue;
+            }
+            ids.put(name, id);
+            found.add(new DriveFile(name, parseSize(row[2])));
+        }
+        this.docIds = ids;
+        this.files = found;
+    }
+
+    /** Resolve "dir/child" by walking into the named subfolder (one level), for a folder the index did
+     *  not pre-walk. Returns the child's document id, or null. */
+    private String resolveNestedId(String dir, String child) throws IOException {
+        String dirId = null;
+        for (String[] row : listChildren(DocumentsContract.getTreeDocumentId(treeUri))) {
+            if (dir.equals(row[1]) && MIME_DIR.equals(row[3])) {
+                dirId = row[0];
+                break;
+            }
+        }
+        if (dirId == null) {
+            return null;
+        }
+        for (String[] row : listChildren(dirId)) {
+            if (child.equals(row[1]) && !MIME_DIR.equals(row[3])) {
+                return row[0];
+            }
+        }
+        return null;
+    }
+
+    /** One children query, each row as {docId, displayName, size, mimeType}. */
+    private List<String[]> listChildren(String parentDocId) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, parentDocId);
         String[] columns = {
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
@@ -131,23 +202,24 @@ public final class SafImportCarrier implements ImportCarrier {
                 throw new IOException("Could not read the selected folder");
             }
             while (c.moveToNext()) {
-                String id = c.getString(0);
-                String name = c.getString(1);
-                long size = c.isNull(2) ? 0L : c.getLong(2);
-                String mime = c.getString(3);
-                if (name == null || DocumentsContract.Document.MIME_TYPE_DIR.equals(mime)) {
-                    continue;   // files only: sub-folders are not part of a flat bundle
-                }
-                ids.put(name, id);
-                found.add(new DriveFile(name, size));
+                rows.add(new String[]{
+                        c.getString(0), c.getString(1),
+                        c.isNull(2) ? "0" : Long.toString(c.getLong(2)), c.getString(3)});
             }
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {
             throw new IOException("Could not read the selected folder: " + e.getMessage(), e);
         }
-        this.docIds = ids;
-        this.files = found;
+        return rows;
+    }
+
+    private static long parseSize(String s) {
+        try {
+            return Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
     }
 
     private InputStream openStream(Uri docUri) throws IOException {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.GetStorageStatusUseCase;
+import org.appdevforall.k2go.contentexchange.domain.GroupSelection;
 import org.appdevforall.k2go.contentexchange.domain.ListManagedContentUseCase;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
@@ -111,6 +112,53 @@ public class ContentManagerViewModel extends ViewModel {
     public void clearSelection() {
         if (!selectedIds.isEmpty()) {
             selectedIds.clear();
+            publishSelection();
+        }
+    }
+
+    /**
+     * Tri-state of a group (by app) for the header's "select all" control: NONE, SOME or ALL. Derived
+     * from the single selection source, never stored separately.
+     */
+    public int groupState(String app) {
+        ManagedContent content = lastContent;
+        if (content == null || app == null) {
+            return GroupSelection.NONE;
+        }
+        int selectable = 0;
+        int selected = 0;
+        for (ContentGroup group : content.groups()) {
+            if (!app.equals(group.app())) {
+                continue;
+            }
+            for (ContentItem item : group.items()) {
+                selectable++;
+                if (selectedIds.contains(item.selectionId())) {
+                    selected++;
+                }
+            }
+        }
+        return GroupSelection.state(selectable, selected);
+    }
+
+    /** Select or clear every item in a group (by app) in one tap of its header control. */
+    public void toggleGroup(String app) {
+        ManagedContent content = lastContent;
+        if (content == null || app == null) {
+            return;
+        }
+        boolean selectAll = GroupSelection.shouldSelectAll(groupState(app));
+        boolean changed = false;
+        for (ContentGroup group : content.groups()) {
+            if (!app.equals(group.app())) {
+                continue;
+            }
+            for (ContentItem item : group.items()) {
+                String id = item.selectionId();
+                changed |= selectAll ? selectedIds.add(id) : selectedIds.remove(id);
+            }
+        }
+        if (changed) {
             publishSelection();
         }
     }

@@ -20,7 +20,9 @@ import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 final class ExportSession {
 
@@ -236,6 +238,54 @@ final class ExportSession {
 
     int currentItemPercent() {
         return job.currentItemPercent();
+    }
+
+    /** One per-app progress row (a category), in the order the apps first appear in the request. */
+    static final class Category {
+        final String app;
+        final int percent;
+        final long copiedBytes;
+        final long plannedBytes;
+
+        Category(String app, int percent, long copiedBytes, long plannedBytes) {
+            this.app = app;
+            this.percent = percent;
+            this.copiedBytes = copiedBytes;
+            this.plannedBytes = plannedBytes;
+        }
+    }
+
+    /**
+     * Per-category (per-app) progress for the run, derived from the job and the request: one bar per
+     * app being exported. Not stored separately: the job and refs stay the single source.
+     */
+    List<Category> categories() {
+        Map<String, long[]> agg = new LinkedHashMap<>();   // app -> {plannedSum, copiedSum}
+        for (int i = 0; i < refs.length; i++) {
+            String app = refs[i] != null && refs[i].app() != null ? refs[i].app() : "";
+            long[] v = agg.get(app);
+            if (v == null) {
+                v = new long[2];
+                agg.put(app, v);
+            }
+            long planned = Math.max(0L, job.planned(i));
+            v[0] += planned;
+            long copied;
+            if (job.status(i) == ExportJob.DONE) {
+                copied = planned;
+            } else {
+                copied = planned > 0 ? Math.min(job.copied(i), planned) : job.copied(i);
+            }
+            v[1] += Math.max(0L, copied);
+        }
+        List<Category> out = new ArrayList<>();
+        for (Map.Entry<String, long[]> e : agg.entrySet()) {
+            long planned = e.getValue()[0];
+            long copied = e.getValue()[1];
+            int percent = planned > 0 ? (int) Math.min(100L, copied * 100L / planned) : 0;
+            out.add(new Category(e.getKey(), percent, copied, planned));
+        }
+        return out;
     }
 
     long copiedTotal() {
