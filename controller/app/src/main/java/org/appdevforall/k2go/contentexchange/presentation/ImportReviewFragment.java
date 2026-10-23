@@ -154,23 +154,26 @@ public class ImportReviewFragment extends Fragment {
             String currentApp = null;
             int groupCount = 0;
             long groupBytes = 0L;
+            boolean groupSelectable = false;
             int groupHeaderAt = -1;
             for (ImportReviewItem item : st.items) {
                 String app = item.entry().app();
                 if (currentApp == null || !currentApp.equals(app)) {
                     currentApp = app;
                     groupHeaderAt = rows.size();
-                    rows.add(new ImportReviewAdapter.GroupRow(app, appDisplayName(app), ""));
+                    rows.add(new ImportReviewAdapter.GroupRow(app, appDisplayName(app), "", false));
                     groupCount = 0;
                     groupBytes = 0L;
+                    groupSelectable = false;
                 }
                 rows.add(itemRow(item));
                 groupCount++;
                 groupBytes += Math.max(0L, item.entry().bytes());
+                groupSelectable |= item.selectable();
                 // Rewrite the group header meta as the running totals (header was added first).
                 rows.set(groupHeaderAt, new ImportReviewAdapter.GroupRow(app, appDisplayName(app),
                         getString(R.string.k2go_cx_group_meta_fmt, groupCount,
-                                ByteFormatter.humanBytes(groupBytes))));
+                                ByteFormatter.humanBytes(groupBytes)), groupSelectable));
             }
         }
 

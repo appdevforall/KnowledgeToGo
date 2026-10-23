@@ -137,12 +137,14 @@ final class ImportReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         final String app;
         final String name;
         final String meta;
+        final boolean selectable;   // the group has at least one item that can be picked
 
-        GroupRow(String app, String name, String meta) {
+        GroupRow(String app, String name, String meta, boolean selectable) {
             super(TYPE_GROUP);
             this.app = app;
             this.name = name;
             this.meta = meta;
+            this.selectable = selectable;
         }
     }
 
@@ -269,7 +271,10 @@ final class ImportReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             boundApp = row.app;
             name.setText(row.name);
             meta.setText(row.meta);
-            int state = selection.groupState(row.app);
+            // A group with nothing selectable (all same-version / no-app) gets a disabled box, not a
+            // live control that does nothing when tapped.
+            checkBox.setEnabled(row.selectable);
+            int state = row.selectable ? selection.groupState(row.app) : GroupSelection.NONE;
             checkBox.setCheckedState(state == GroupSelection.ALL
                     ? MaterialCheckBox.STATE_CHECKED
                     : state == GroupSelection.SOME

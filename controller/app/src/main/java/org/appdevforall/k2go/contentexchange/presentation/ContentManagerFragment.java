@@ -191,7 +191,8 @@ public class ContentManagerFragment extends Fragment {
                     group.app(),
                     appDisplayName(group.app()),
                     getString(R.string.k2go_cx_group_meta_fmt,
-                            group.items().size(), ByteFormatter.humanBytes(group.totalBytes()))));
+                            group.items().size(), ByteFormatter.humanBytes(group.totalBytes())),
+                    !group.isEmpty()));
             if (group.isEmpty()) {
                 rows.add(new ContentManagerAdapter.EmptyRow(getString(R.string.k2go_cx_group_empty)));
             } else {
