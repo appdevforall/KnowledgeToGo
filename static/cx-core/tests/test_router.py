@@ -2,6 +2,7 @@ import os
 import tempfile
 import unittest
 
+from cx_core import VERSION
 from cx_core.model import AUTHORITATIVE, Dedup, Identity, ManifestItem
 from cx_core.ports import ContentAdapter, ExportStream
 from cx_core.registry import Registry
@@ -38,9 +39,6 @@ class FakeAdapter(ContentAdapter):
     def list(self):
         return self._items
 
-    def open_export(self, local_ref):
-        return self._export
-
     def check(self, dedup):
         return self._verdict
 
@@ -67,7 +65,12 @@ class RouterTest(unittest.TestCase):
     def test_apps(self):
         status, body = dispatch(self.reg, "GET", "/v1/apps", {})
         self.assertEqual(status, 200)
-        self.assertEqual(body, {"apps": ["calibre", "kiwix"]})
+        self.assertEqual(body, {"apps": ["calibre", "kiwix"], "version": VERSION})
+
+    def test_version(self):
+        status, body = dispatch(self.reg, "GET", "/v1/version", {})
+        self.assertEqual(status, 200)
+        self.assertEqual(body, {"version": VERSION})
 
     def test_content_all(self):
         status, body = dispatch(self.reg, "GET", "/v1/content", {})
@@ -131,20 +134,31 @@ class ExportRouteTest(unittest.TestCase):
         status, _ = dispatch(self.reg, "POST", "/v1/export/plan", {}, {"nope": 1})
         self.assertEqual(status, 400)
 
-    def test_export_item_streams(self):
-        stream = ExportStream("a.zim", "application/octet-stream", [b"abc"])
-        reg = Registry([FakeAdapter("kiwix", [_item("kiwix", "a.zim")], export=stream)])
-        status, payload = dispatch(reg, "GET", "/v1/export/item/kiwix/a.zim", {})
-        self.assertEqual(status, 200)
-        self.assertIs(payload, stream)
 
-    def test_export_item_not_exportable_404(self):
-        status, _ = dispatch(self.reg, "GET", "/v1/export/item/kiwix/a.zim", {})
-        self.assertEqual(status, 404)  # FakeAdapter has no export stream
+class ExportOpRouteTest(unittest.TestCase):
+    """The export long-op routes forward to the ops registry; the op mechanics live in
+    test_export_ops. Here we check the routing and the missing-ops guard."""
 
-    def test_export_item_unknown_app_404(self):
-        status, _ = dispatch(self.reg, "GET", "/v1/export/item/nope/x", {})
-        self.assertEqual(status, 404)
+    def setUp(self):
+        self.reg = _registry()
+
+    def test_prepare_bad_body_400(self):
+        from cx_core.export_ops import ExportOps
+        ops = ExportOps(self.reg, staging_dir="/tmp", ttl_seconds=60)
+        status, _ = dispatch(self.reg, "POST", "/v1/export/prepare", {}, {"nope": 1}, ops=ops)
+        self.assertEqual(status, 400)
+
+    def test_prepare_without_ops_500(self):
+        status, _ = dispatch(self.reg, "POST", "/v1/export/prepare", {},
+                             {"app": "kiwix", "localRef": "a.zim"}, ops=None)
+        self.assertEqual(status, 500)
+
+    def test_status_fetch_delete_without_ops_500(self):
+        for method, path in [("GET", "/v1/export/status/abc"),
+                             ("GET", "/v1/export/fetch/abc"),
+                             ("DELETE", "/v1/export/abc")]:
+            status, _ = dispatch(self.reg, method, path, {}, ops=None)
+            self.assertEqual(status, 500)
 
 
 class ImportRouteTest(unittest.TestCase):

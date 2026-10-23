@@ -10,7 +10,9 @@ from __future__ import annotations
 from typing import Any, List, Optional, Tuple
 from urllib.parse import unquote
 
+from . import VERSION
 from .export import disk_total_free, has_room
+from .export_ops import ExportOps
 from .importing import is_within_dir
 from .registry import Registry
 
@@ -149,13 +151,31 @@ def _storage(registry: Registry) -> Response:
     }
 
 
-def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None) -> Response:
+def _export_prepare(ops: Optional[ExportOps], body: Any) -> Response:
+    """Start (or mark ready) one export long operation and return its opId (K2GO-507)."""
+    if ops is None:
+        return 500, {"error": "export ops unavailable"}
+    if not isinstance(body, dict):
+        return 400, {"error": "body must be {app, localRef}"}
+    app = body.get("app")
+    local_ref = body.get("localRef")
+    if not isinstance(app, str) or not isinstance(local_ref, str) or not local_ref:
+        return 400, {"error": "app and localRef are required"}
+    return ops.prepare(app, local_ref)
+
+
+def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None,
+             ops: Optional[ExportOps] = None) -> Response:
     """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
-    for a POST."""
+    for a POST; ``ops`` is the export long-operation registry (the server supplies it, the
+    export-op routes need it)."""
     trimmed = path.rstrip("/") or "/"
     segments = [unquote(s) for s in trimmed.split("/") if s != ""]
 
     if method == "POST":
+        # POST /v1/export/prepare : start an export long operation, return its opId.
+        if segments == ["v1", "export", "prepare"]:
+            return _export_prepare(ops, body)
         # POST /v1/export/plan : plan an export (sizes only, no payload moved).
         if segments == ["v1", "export", "plan"]:
             return _export_plan(registry, body)
@@ -171,6 +191,11 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         return 404, {"error": "not found"}
 
     if method == "DELETE":
+        # DELETE /v1/export/{opId} : abort an export long operation.
+        if len(segments) == 3 and segments[0] == "v1" and segments[1] == "export":
+            if ops is None:
+                return 500, {"error": "export ops unavailable"}
+            return ops.delete(segments[2])
         # DELETE /v1/content/{app}/{localRef} : reclaim space by removing one item.
         if len(segments) == 4 and segments[0] == "v1" and segments[1] == "content":
             return _delete_item(registry, segments[2], segments[3])
@@ -179,9 +204,26 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
     if method != "GET":
         return 405, {"error": "method not allowed"}
 
-    # GET /v1/apps : installed apps that have a loaded adapter.
+    # GET /v1/version : which core build this box runs (mirrors dash-node /system/version).
+    if segments == ["v1", "version"]:
+        return 200, {"version": VERSION}
+
+    # GET /v1/apps : installed apps that have a loaded adapter, plus the core version.
     if segments == ["v1", "apps"]:
-        return 200, {"apps": registry.apps()}
+        return 200, {"apps": registry.apps(), "version": VERSION}
+
+    # GET /v1/export/status/{opId} : the op state + the staged-bytes heartbeat.
+    if len(segments) == 4 and segments[0] == "v1" and segments[1] == "export" and segments[2] == "status":
+        if ops is None:
+            return 500, {"error": "export ops unavailable"}
+        return ops.status(segments[3])
+
+    # GET /v1/export/fetch/{opId} : stream the prepared item (payload is an ExportStream the
+    # server streams). 409 until the op is ready; the stream's on_close drops the op.
+    if len(segments) == 4 and segments[0] == "v1" and segments[1] == "export" and segments[2] == "fetch":
+        if ops is None:
+            return 500, {"error": "export ops unavailable"}
+        return ops.fetch(segments[3])
 
     # GET /v1/storage : box content-volume disk summary + per-app content totals.
     if segments == ["v1", "storage"]:
@@ -200,16 +242,5 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         if item is None:
             return 404, {"error": "item not found"}
         return 200, item.to_json()
-
-    # GET /v1/export/item/{app}/{localRef} : stream that one item's archive (payload is an
-    # ExportStream; the server streams it). The front moves the bytes and owns the sequence.
-    if len(segments) == 5 and segments[0] == "v1" and segments[1] == "export" and segments[2] == "item":
-        app, local_ref = segments[3], segments[4]
-        if not registry.has(app):
-            return 404, {"error": f"unknown app: {app}"}
-        stream = registry.get(app).open_export(local_ref)
-        if stream is None:
-            return 404, {"error": "item not found or not exportable"}
-        return 200, stream
 
     return 404, {"error": "not found"}

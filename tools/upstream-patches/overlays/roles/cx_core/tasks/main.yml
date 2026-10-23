@@ -20,6 +20,18 @@
     - name: Enable/Disable the content-exchange core service
       include_tasks: enable-or-disable.yml
 
+    # Read the core build from the installed source (the single source: cx_core/__init__.py
+    # VERSION), so the box can report which core it runs. Mirrors dash-node's package.json
+    # version in /system/version (K2GO-507).
+    - name: Read the installed cx_core source version
+      slurp:
+        src: "{{ cx_core_serve_path }}/cx_core/__init__.py"
+      register: cx_core_init_py
+
+    - name: Set cx_core_version from the source
+      set_fact:
+        cx_core_version: "{{ cx_core_init_py.content | b64decode | regex_search('VERSION\\s*=\\s*\"([^\"]+)\"', '\\1') | first }}"
+
     - name: Add 'cx_core' variable values to {{ iiab_ini_file }}
       ini_file:
         path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
@@ -37,6 +49,8 @@
           value: "{{ cx_core_enabled }}"
         - option: cx_core_port
           value: "{{ cx_core_port }}"
+        - option: version
+          value: "{{ cx_core_version }}"
 
   rescue:
 

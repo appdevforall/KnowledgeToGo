@@ -9,7 +9,9 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
+from . import VERSION
 from .config import Config
+from .export_ops import ExportOps
 from .ports import ExportStream
 from .registry import Registry
 from .router import dispatch
@@ -19,9 +21,9 @@ _BAD_JSON = object()  # sentinel: body present but not valid JSON
 _TOO_LARGE = object()  # sentinel: declared body exceeds _MAX_BODY
 
 
-def make_handler(registry: Registry):
+def make_handler(registry: Registry, ops: ExportOps):
     class Handler(BaseHTTPRequestHandler):
-        server_version = "cx-core/0.1"
+        server_version = f"cx-core/{VERSION}"
         # HTTP/1.1 so the chunked export stream is valid (HTTP/1.0 would hand the client the
         # chunk-size lines as body). The JSON path sends Content-Length, so keep-alive holds.
         protocol_version = "HTTP/1.1"
@@ -29,7 +31,7 @@ def make_handler(registry: Registry):
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "GET", parts.path, query)
+            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops)
             if isinstance(payload, ExportStream):
                 self._stream(status, payload)
             else:
@@ -46,13 +48,13 @@ def make_handler(registry: Registry):
             if body is _BAD_JSON:
                 self._send(400, {"error": "invalid JSON body"})
                 return
-            status, payload = dispatch(registry, "POST", parts.path, {}, body)
+            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops)
             self._send(status, payload)
 
         def do_DELETE(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "DELETE", parts.path, query)
+            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops)
             self._send(status, payload)
 
         def _read_json_body(self):
@@ -111,7 +113,11 @@ def make_handler(registry: Registry):
 
 def serve(config: Config) -> None:
     registry = Registry.load(config)
-    httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry))
-    print(f"cx-core listening on http://{config.host}:{config.port} "
+    ops = ExportOps(registry, config.staging_dir)
+    # Reclaim export op temps left by a dead process before serving (K2GO-507 process-death
+    # cleanup owner): a fresh process holds no ops, so any op temp on disk is an orphan.
+    ops.sweep_startup()
+    httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry, ops))
+    print(f"cx-core {VERSION} listening on http://{config.host}:{config.port} "
           f"(apps: {', '.join(registry.apps()) or 'none'})")
     httpd.serve_forever()
