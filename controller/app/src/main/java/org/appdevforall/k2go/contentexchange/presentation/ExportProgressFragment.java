@@ -53,6 +53,9 @@ public class ExportProgressFragment extends Fragment {
 
     private final ExportSession session = ContentExportService.session();
 
+    /** One-shot guard so a re-entrant render() does not schedule the back-pop twice. */
+    private boolean leaving;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
@@ -281,9 +284,31 @@ public class ExportProgressFragment extends Fragment {
         return String.format(Locale.US, "%d:%02d", m, s);
     }
 
+    /**
+     * Leave this progress screen. The pop is deferred to the next main-loop tick and re-checked there.
+     * render() runs from onResume() and from the session listener, which the FragmentManager can drive
+     * from inside a transaction, so a synchronous pop here throws "FragmentManager is already executing
+     * transactions" (K2GO-427). The foreground service also begins the session on a separate message, so
+     * at the first render the session may not exist yet: only leave if it is still gone on the tick.
+     */
     private void goBack() {
-        if (isAdded()) {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        if (leaving) {
+            return;
         }
+        View v = getView();
+        if (v == null) {
+            return;
+        }
+        leaving = true;
+        v.post(() -> {
+            if (!isAdded()) {
+                return;
+            }
+            if (session.hasSession()) {
+                leaving = false;   // a run exists now: stay, and let a later leave (Finish) reschedule
+                return;
+            }
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        });
     }
 }
