@@ -237,7 +237,7 @@ public final class ContentExportService extends Service {
             notifyNow();
 
             try (ContentExportSource.ItemPayload payload = source.open(ref)) {
-                String name = ExportFilenames.resolve(payload.filename(), ref, used);
+                String name = ExportFilenames.forItem(SESSION.label(i), payload.filename(), ref, used);
                 ExportCarrier.PayloadSink sink = carrier.openPayload(name);
                 SESSION.setPayloadName(i, sink.name());
                 copy(payload.stream(), sink.stream(), i, job, runStart);
