@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-427: import review. Reads a bundle from the picked drive, validates it against this box, and
+     lists the items grouped by app with a state badge (new / update / already have / older / no app) and
+     a checkbox. The bottom bar shows the selected total against the device free space (the phone-disk
+     preflight) and enables Import only when the selection fits. Material 3 tokens; no hardcoded colours. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/k2go_cxr_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="4dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/k2go_teal" />
+
+    <TextView
+        android:id="@+id/k2go_cxr_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="@color/k2go_muted"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/k2go_cxr_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="vertical" />
+
+    <!-- Bottom bar: the phone-disk preflight + Import. Shown when at least one item is selected. -->
+    <LinearLayout
+        android:id="@+id/k2go_cxr_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/k2go_surface"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/k2go_cxr_selection_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:id="@+id/k2go_cxr_free_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <TextView
+            android:id="@+id/k2go_cxr_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_warn_ink"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/k2go_cxr_import"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/k2go_cx_import_action" />
+    </LinearLayout>
+</LinearLayout>

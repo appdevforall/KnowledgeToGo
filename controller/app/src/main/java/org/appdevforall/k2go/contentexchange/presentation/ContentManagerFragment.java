@@ -60,9 +60,12 @@ public class ContentManagerFragment extends Fragment {
     private View actionBar;
     private TextView selectionLabel;
     private Button exportButton;
+    private Button importButton;
 
     /** The folder picker; its result carries the drive/folder the user chose for the export. */
     private ActivityResultLauncher<Uri> openTree;
+    /** A separate folder picker for the import source (import starts from a drive, not a selection). */
+    private ActivityResultLauncher<Uri> openImportTree;
 
     @Nullable
     @Override
@@ -73,10 +76,14 @@ public class ContentManagerFragment extends Fragment {
         actionBar = root.findViewById(R.id.k2go_cx_actionbar);
         selectionLabel = root.findViewById(R.id.k2go_cx_selection_label);
         exportButton = root.findViewById(R.id.k2go_cx_export);
+        importButton = root.findViewById(R.id.k2go_cx_import);
 
         openTree = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::onTreePicked);
+        openImportTree = registerForActivityResult(
+                new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
+        importButton.setOnClickListener(v -> onImportClicked());
 
         TextView back = root.findViewById(R.id.k2go_cx_back);
         back.setText(getString(R.string.k2go_back_link));
@@ -210,6 +217,41 @@ public class ContentManagerFragment extends Fragment {
         pendingExport = selected;
         // SAF folder picker: no storage permission is requested; the persisted grant is the authority.
         openTree.launch(null);
+    }
+
+    /** Import: if a run is already active, show it; otherwise pick the drive that holds the bundle. */
+    private void onImportClicked() {
+        if (ContentImportService.session().hasSession()) {
+            showImportProgress();
+            return;
+        }
+        // SAF folder picker: no storage permission is requested; the persisted grant is the authority.
+        openImportTree.launch(null);
+    }
+
+    /** The import folder picker returned. Null means the user cancelled. */
+    private void onImportTreePicked(@Nullable Uri treeUri) {
+        if (treeUri == null) {
+            return;
+        }
+        // Persist read so the review read and the foreground service keep access after this screen is gone.
+        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        try {
+            requireContext().getContentResolver().takePersistableUriPermission(treeUri, flags);
+        } catch (SecurityException e) {
+            // Could not persist; proceed with the transient permission for this session.
+        }
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, ImportReviewFragment.newInstance(treeUri))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void showImportProgress() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ImportProgressFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     /** The folder picker returned. Null means the user cancelled. */
