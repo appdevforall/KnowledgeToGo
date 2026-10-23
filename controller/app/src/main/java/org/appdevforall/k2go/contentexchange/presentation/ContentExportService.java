@@ -368,64 +368,67 @@ public final class ContentExportService extends Service {
             return opId;   // nothing to stage: Kiwix/Calibre stream directly
         }
         boolean reprepared = false;
+        boolean handedOff = false;   // true once a READY op is returned: the fetch owns it from then on
         int pollErrors = 0;
-        while (true) {
-            if (checkCancelled(source, opId)) {
-                throw new IOException("cancelled");
-            }
-            sleepPoll();
-            if (checkCancelled(source, opId)) {
-                throw new IOException("cancelled");
-            }
-            ExportStatus st;
-            try {
-                st = source.status(opId);
-            } catch (Exception e) {
-                // A swept op returns GONE (handled below), not an exception; this is a transient poll
-                // failure (relay blip, busy core). Keep the same op and retry, up to the blip budget,
-                // so a staging run of several minutes is not lost to one hiccup.
-                if (++pollErrors > MAX_POLL_ERRORS) {
-                    throw e;
+        try {
+            while (true) {
+                if (SESSION.isCancelled()) {
+                    throw new IOException("cancelled");
                 }
-                continue;
-            }
-            pollErrors = 0;
-            switch (st.state()) {
-                case READY:
-                    return opId;
-                case ERROR:
-                    source.abort(opId);
-                    throw new Exception(st.error() != null && !st.error().isEmpty()
-                            ? st.error() : "the box could not stage this item");
-                case GONE:
-                    // The op was swept (e.g. a core restart). Re-prepare once; a second loss fails it.
-                    if (reprepared) {
-                        throw new Exception("the export operation was lost");
+                sleepPoll();
+                if (SESSION.isCancelled()) {
+                    throw new IOException("cancelled");
+                }
+                ExportStatus st;
+                try {
+                    st = source.status(opId);
+                } catch (Exception e) {
+                    // A swept op returns GONE (handled below), not an exception; this is a transient
+                    // poll failure (relay blip, busy core). Keep the same op and retry, up to the blip
+                    // budget, so a staging run of several minutes is not lost to one hiccup.
+                    if (++pollErrors > MAX_POLL_ERRORS) {
+                        throw e;
                     }
-                    reprepared = true;
-                    prep = source.prepare(ref);
-                    opId = prep.opId();
-                    if (prep.ready()) {
+                    continue;
+                }
+                pollErrors = 0;
+                switch (st.state()) {
+                    case READY:
+                        handedOff = true;
                         return opId;
-                    }
-                    break;
-                case STAGING:
-                default:
-                    job.setStaged(i, st.stagedBytes());
-                    SESSION.publish();
-                    maybeNotify(SystemClock.elapsedRealtime());
-                    break;
+                    case ERROR:
+                        throw new Exception(st.error() != null && !st.error().isEmpty()
+                                ? st.error() : "the box could not stage this item");
+                    case GONE:
+                        // The op was swept (e.g. a core restart). Re-prepare once; a second loss fails it.
+                        if (reprepared) {
+                            throw new Exception("the export operation was lost");
+                        }
+                        reprepared = true;
+                        prep = source.prepare(ref);
+                        opId = prep.opId();
+                        if (prep.ready()) {
+                            handedOff = true;
+                            return opId;
+                        }
+                        break;
+                    case STAGING:
+                    default:
+                        job.setStaged(i, st.stagedBytes());
+                        SESSION.publish();
+                        maybeNotify(SystemClock.elapsedRealtime());
+                        break;
+                }
+            }
+        } finally {
+            // stage() owns the op until it hands a READY one to the fetch. On any abnormal exit (cancel,
+            // box staging error, poll-budget exhaustion, worker interrupt) abort the current op so a live
+            // multi-GB stage is not left running on the box until its TTL sweep. A GONE op is already
+            // swept, so the abort is a harmless no-op.
+            if (!handedOff) {
+                source.abort(opId);
             }
         }
-    }
-
-    /** True (and aborts the op) when the run was cancelled, so the staging loop can stop. */
-    private boolean checkCancelled(ContentExportSource source, String opId) {
-        if (SESSION.isCancelled()) {
-            source.abort(opId);
-            return true;
-        }
-        return false;
     }
 
     private static void sleepPoll() throws IOException {
