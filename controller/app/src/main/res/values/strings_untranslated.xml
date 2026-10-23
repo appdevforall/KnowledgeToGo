@@ -16,11 +16,5 @@
 
     <!-- K2GO-427 export progress: header over the per-app (per-category) progress bars (WIP, pending l10n). -->
     <string name="k2go_cx_export_categories" translatable="false">By category</string>
-    <!-- K2GO-427 export progress: one category row label, app name then its percent (WIP, pending l10n). -->
-    <string name="k2go_cx_export_category_fmt" translatable="false">%1$s: %2$d%%</string>
-
-    <!-- K2GO-507 export progress: current-item label while the box stages it (prepare half of the
-         two-phase bar), before it starts streaming. %1$s is the item title (WIP, pending l10n). -->
-    <string name="k2go_cx_export_item_preparing_fmt" translatable="false">Preparing %1$s...</string>
 
 </resources>

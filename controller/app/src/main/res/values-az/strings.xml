@@ -1467,6 +1467,8 @@
     <string name="k2go_cx_export_title">Məzmunu ixrac et</string>
     <string name="k2go_cx_export_destination_fmt">Hara: %1$s</string>
     <string name="k2go_cx_export_preparing">İxrac hazırlanır...</string>
+    <string name="k2go_cx_export_item_preparing_fmt">%1$s hazırlanır...</string>
+    <string name="k2go_cx_export_category_fmt">%1$s: %2$d%%</string>
     <string name="k2go_cx_export_overall_fmt">Ümumi: %1$d%%</string>
     <string name="k2go_cx_export_eta_fmt">%1$s qalıb</string>
     <string name="k2go_cx_export_confirm_fmt">%1$d element (%2$s) seçilmiş diskə ixrac edilsin?</string>
