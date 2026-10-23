@@ -7,7 +7,9 @@
  *               grouped by app, each item with its size, plus total used and the
  *               free disk, with per-item multi-select. The EXPORT action is wired
  *               (pick a drive via SAF, then write the open-format bundle through the
- *               foreground service); Share / Delete are later slices and stay disabled.
+ *               foreground service) and the DELETE action is wired (confirm, then remove each
+ *               selected item on the box through the foreground service, refreshing the list and
+ *               reclaimed space on settle); Share is a later slice and stays disabled.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -60,6 +62,11 @@ public class ContentManagerFragment extends Fragment {
     private View actionBar;
     private TextView selectionLabel;
     private Button exportButton;
+    private Button deleteButton;
+
+    /** Set when a delete run is launched, so the manager reloads the list (and reclaimed space) when
+     *  it next resumes. Cleared once the reload runs and the run has settled. */
+    private boolean deleteLaunched;
 
     /** The folder picker; its result carries the drive/folder the user chose for the export. */
     private ActivityResultLauncher<Uri> openTree;
@@ -73,10 +80,13 @@ public class ContentManagerFragment extends Fragment {
         actionBar = root.findViewById(R.id.k2go_cx_actionbar);
         selectionLabel = root.findViewById(R.id.k2go_cx_selection_label);
         exportButton = root.findViewById(R.id.k2go_cx_export);
+        deleteButton = root.findViewById(R.id.k2go_cx_delete);
 
         openTree = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::onTreePicked);
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
+        deleteButton.setEnabled(true);
+        deleteButton.setOnClickListener(v -> onDeleteClicked());
 
         TextView back = root.findViewById(R.id.k2go_cx_back);
         back.setText(getString(R.string.k2go_back_link));
@@ -106,6 +116,20 @@ public class ContentManagerFragment extends Fragment {
             viewModel.load();
         }
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // After a delete run, the box content changed: reload so deleted items disappear and the
+        // used/free figures update. Keep the flag while the run is still draining, so returning
+        // again reloads the now-further-along state.
+        if (deleteLaunched) {
+            viewModel.load();
+            if (!ContentDeleteService.session().isRunning()) {
+                deleteLaunched = false;
+            }
+        }
     }
 
     private void render(ContentManagerUiState st) {
@@ -183,7 +207,7 @@ public class ContentManagerFragment extends Fragment {
                 : getString(R.string.k2go_cx_free_unavailable);
     }
 
-    /** Updates the bottom action bar from the selection. Buttons stay disabled (slice 1). */
+    /** Updates the bottom action bar from the selection. Export and Delete act; Share is pending. */
     private void renderSelection(SelectionSummary sel) {
         if (sel == null || sel.isEmpty()) {
             actionBar.setVisibility(View.GONE);
@@ -268,6 +292,58 @@ public class ContentManagerFragment extends Fragment {
     private void showProgress() {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ExportProgressFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // ---- delete --------------------------------------------------------------------------------
+
+    /** Delete: if a run is already active, just show it; otherwise confirm and start. */
+    private void onDeleteClicked() {
+        if (ContentDeleteService.session().hasSession()) {
+            showDeleteProgress();
+            return;
+        }
+        List<ContentItem> selected = viewModel.selectedItems();
+        if (selected.isEmpty()) {
+            return;
+        }
+        confirmAndDelete(selected);
+    }
+
+    /** Destructive confirm: name the count and the space reclaimed, and make the removal unambiguous. */
+    private void confirmAndDelete(List<ContentItem> selected) {
+        long total = 0L;
+        for (ContentItem item : selected) {
+            total += Math.max(0L, item.bytes());
+        }
+        String message = getString(R.string.k2go_cx_delete_confirm_fmt,
+                selected.size(), ByteFormatter.humanBytes(total));
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.k2go_cx_delete_confirm_title)
+                .setMessage(message)
+                .setNegativeButton(R.string.k2go_dash_cancel, null)
+                .setPositiveButton(R.string.k2go_cx_action_delete, (d, w) -> startDelete(selected))
+                .show();
+    }
+
+    private void startDelete(List<ContentItem> selected) {
+        ItemRef[] refs = new ItemRef[selected.size()];
+        String[] labels = new String[selected.size()];
+        for (int i = 0; i < selected.size(); i++) {
+            refs[i] = new ItemRef(selected.get(i).app(), selected.get(i).localRef());
+            String title = selected.get(i).title();
+            labels[i] = title != null && !title.isEmpty() ? title : selected.get(i).localRef();
+        }
+        ContentDeleteService.start(requireContext(), refs, labels);
+        viewModel.clearSelection();
+        deleteLaunched = true;
+        showDeleteProgress();
+    }
+
+    private void showDeleteProgress() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ContentDeleteProgressFragment())
                 .addToBackStack(null)
                 .commit();
     }

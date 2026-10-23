@@ -27,7 +27,7 @@
     <string name="k2go_cx_action_export" translatable="false">Export</string>
     <string name="k2go_cx_action_share" translatable="false">Share</string>
     <string name="k2go_cx_action_delete" translatable="false">Delete</string>
-    <string name="k2go_cx_actions_pending" translatable="false">Share and delete are not available yet.</string>
+    <string name="k2go_cx_actions_pending" translatable="false">Share is not available yet.</string>
     <string name="k2go_cx_app_kiwix" translatable="false">Wikipedia &amp; ZIM</string>
     <string name="k2go_cx_app_kolibri" translatable="false">Courses</string>
     <string name="k2go_cx_app_calibre" translatable="false">Books</string>
@@ -49,4 +49,18 @@
     <string name="k2go_cx_export_notif_title" translatable="false">Exporting content</string>
     <string name="k2go_cx_export_notif_text" translatable="false">Preparing export...</string>
     <string name="k2go_cx_export_channel_name" translatable="false">Content export</string>
+
+    <!-- K2GO-427 delete action (slice 4). WIP: localize + migrate at the feature closing PR. -->
+    <string name="k2go_cx_delete_title" translatable="false">Delete content</string>
+    <string name="k2go_cx_delete_confirm_title" translatable="false">Delete content</string>
+    <string name="k2go_cx_delete_confirm_fmt" translatable="false">Remove %1$d items (%2$s) from this box? This cannot be undone. The content is deleted from the box, not just hidden, and is no longer available to anyone who uses this box.</string>
+    <string name="k2go_cx_delete_overall_fmt" translatable="false">Overall: %1$d%%</string>
+    <string name="k2go_cx_delete_reclaimed_fmt" translatable="false">Reclaimed: %1$s</string>
+    <string name="k2go_cx_delete_done_fmt" translatable="false">Deleted %1$d items. Reclaimed %2$s.</string>
+    <string name="k2go_cx_delete_partial_fmt" translatable="false">Deleted %1$d of %2$d items. Some items could not be removed. Retry to finish.</string>
+    <string name="k2go_cx_delete_retry" translatable="false">Retry</string>
+    <string name="k2go_cx_delete_finish" translatable="false">Finish</string>
+    <string name="k2go_cx_delete_notif_title" translatable="false">Deleting content</string>
+    <string name="k2go_cx_delete_notif_text" translatable="false">Deleting content...</string>
+    <string name="k2go_cx_delete_channel_name" translatable="false">Content delete</string>
 </resources>
