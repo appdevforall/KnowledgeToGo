@@ -36,8 +36,10 @@ prevents. The CI check `binary-bump-consistency` enforces it.
 ## Retention and archive (K2GO-506)
 
 - **GitHub** keeps the 6 newest `binaries-*` releases, plus every release that
-  `binary_version.txt` pins on any branch (`main`, `development`, open PRs) or `v*` app tag.
-  It deletes a release only after that release is archived in R2. The build downloads from GitHub (`syncNativeArtifacts`), so
+  `binary_version.txt` pins on any branch of this repository (`main`, `development`, PR
+  branches; not PRs from forks) or `v*` app tag. A branch keeps its release while the branch
+  exists, so delete branches you no longer need. GitHub deletes a release only after that
+  release is archived in R2. The build downloads from GitHub (`syncNativeArtifacts`), so
   pin a tag that GitHub still has.
 - **R2** archives every release and never deletes it:
   `https://k2go-download.appdevforall.org/binaries/<tag>/termux-binaries-latest.zip`

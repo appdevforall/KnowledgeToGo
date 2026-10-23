@@ -26,7 +26,7 @@ PREFIX="binaries"
 KEEP="${KEEP:-6}"
 PIN_FILE="controller/binary_version.txt"
 DRY_RUN="${DRY_RUN:-0}"
-[[ "$KEEP" =~ ^[0-9]+$ ]] || { echo "::error::KEEP must be a number, got '$KEEP'" >&2; exit 2; }
+[[ "$KEEP" =~ ^[0-9]+$ ]] || { echo "::error::KEEP must be a number, got '$KEEP'"; exit 2; }
 
 s3() { aws --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" "$@"; }
 

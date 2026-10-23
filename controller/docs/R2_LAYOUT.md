@@ -24,7 +24,7 @@ Public at `https://k2go-download.appdevforall.org`.
 | `K2Go-<version>-<abi>-release.apk`, `K2Go-<version>-play-release.aab` (root) | Website APKs and the Play AAB | `android-release-build.yml`, `android-r2-republish.yml` | Overwritten per release |
 | `update.json` (root) | OTA manifest for the standard flavor | `android-release-build.yml` | Overwritten per release |
 | `catalogs/<file>`, `catalogs/<name>.manifest.json` | Content catalogs (Kolibri, Kiwix, Maps) and their manifests (sha256, url) | `publish-catalogs.yml` (weekly) | Overwritten |
-| `binaries/<tag>/termux-binaries-latest.zip` (+ `.sha256`) | Native binaries archive, one folder per `binaries-*` release | `binaries-lifecycle.yml` (K2GO-506) | Immutable, never deleted |
+| `binaries/<tag>/termux-binaries-latest.zip` (+ `.sha256`) | Native binaries archive, one folder per `binaries-*` release | `binaries-lifecycle.yml` (K2GO-506) | Written once per release, never deleted |
 
 The APKs at the root predate these rules. They stay there because the website and
 `update.json` link to them.

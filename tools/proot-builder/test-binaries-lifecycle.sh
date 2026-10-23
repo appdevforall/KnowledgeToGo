@@ -47,6 +47,8 @@ case "$1 $2" in
 esac
 EOF
 chmod +x "$STUB/gh" "$STUB/aws"
+# The workflow runs this inside the real job env: drop its run mode and credentials.
+unset DRY_RUN KEEP GH_TOKEN GITHUB_TOKEN AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
 export PATH="$STUB:$PATH" STATE GITHUB_REPOSITORY=owner/repo BUCKET_NAME=bucket R2_ACCOUNT_ID=account
 
 # Pins: v0.9.0-beta has no pin file, v1.0.0 pins 02, development pins 03, main pins 09 (CRLF).

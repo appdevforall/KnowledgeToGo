@@ -84,6 +84,7 @@ jobs:
 
     # K2GO-506: signed build provenance for the zip. Any copy (GitHub, R2, a box) can be checked
     # against this run: gh attestation verify termux-binaries-latest.zip --repo <owner>/<repo>
+    # If it fails, the publish stops: no release ships without provenance.
     - name: Attest build provenance
       uses: actions/attest@v4
       with:
