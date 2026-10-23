@@ -91,6 +91,16 @@ public class ImportReviewFragment extends Fragment {
             public void toggle(int index) {
                 viewModel.toggle(index);
             }
+
+            @Override
+            public int groupState(String app) {
+                return viewModel.groupState(app);
+            }
+
+            @Override
+            public void toggleGroup(String app) {
+                viewModel.toggleGroup(app);
+            }
         });
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
         list.setAdapter(adapter);
@@ -150,7 +160,7 @@ public class ImportReviewFragment extends Fragment {
                 if (currentApp == null || !currentApp.equals(app)) {
                     currentApp = app;
                     groupHeaderAt = rows.size();
-                    rows.add(new ImportReviewAdapter.GroupRow(appDisplayName(app), ""));
+                    rows.add(new ImportReviewAdapter.GroupRow(app, appDisplayName(app), ""));
                     groupCount = 0;
                     groupBytes = 0L;
                 }
@@ -158,7 +168,7 @@ public class ImportReviewFragment extends Fragment {
                 groupCount++;
                 groupBytes += Math.max(0L, item.entry().bytes());
                 // Rewrite the group header meta as the running totals (header was added first).
-                rows.set(groupHeaderAt, new ImportReviewAdapter.GroupRow(appDisplayName(app),
+                rows.set(groupHeaderAt, new ImportReviewAdapter.GroupRow(app, appDisplayName(app),
                         getString(R.string.k2go_cx_group_meta_fmt, groupCount,
                                 ByteFormatter.humanBytes(groupBytes))));
             }
@@ -202,6 +212,10 @@ public class ImportReviewFragment extends Fragment {
     }
 
     private void renderSelection(ImportSelectionSummary sel) {
+        // Rebind rows so group headers (tri-state) and item checkboxes match the new selection.
+        if (adapter != null) {
+            adapter.refreshSelectionStates();
+        }
         if (sel == null || sel.isEmpty()) {
             actionBar.setVisibility(View.GONE);
             currentFits = false;

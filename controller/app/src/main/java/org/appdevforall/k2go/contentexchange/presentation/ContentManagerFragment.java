@@ -111,6 +111,16 @@ public class ContentManagerFragment extends Fragment {
             public void toggle(String selectionId) {
                 viewModel.toggle(selectionId);
             }
+
+            @Override
+            public int groupState(String app) {
+                return viewModel.groupState(app);
+            }
+
+            @Override
+            public void toggleGroup(String app) {
+                viewModel.toggleGroup(app);
+            }
         });
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
         list.setAdapter(adapter);
@@ -178,6 +188,7 @@ public class ContentManagerFragment extends Fragment {
         }
         for (ContentGroup group : content.groups()) {
             rows.add(new ContentManagerAdapter.GroupRow(
+                    group.app(),
                     appDisplayName(group.app()),
                     getString(R.string.k2go_cx_group_meta_fmt,
                             group.items().size(), ByteFormatter.humanBytes(group.totalBytes()))));
@@ -215,6 +226,10 @@ public class ContentManagerFragment extends Fragment {
 
     /** Updates the bottom action bar from the selection. Export and Delete act; Share is pending. */
     private void renderSelection(SelectionSummary sel) {
+        // Rebind rows so group headers (tri-state) and item checkboxes match the new selection.
+        if (adapter != null) {
+            adapter.refreshSelectionStates();
+        }
         if (sel == null || sel.isEmpty()) {
             actionBar.setVisibility(View.GONE);
             return;

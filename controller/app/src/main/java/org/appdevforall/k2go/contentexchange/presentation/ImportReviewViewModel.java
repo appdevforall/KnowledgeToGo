@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel;
 
 import org.appdevforall.k2go.contentexchange.data.ImportManifestReader;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
+import org.appdevforall.k2go.contentexchange.domain.GroupSelection;
 import org.appdevforall.k2go.contentexchange.domain.ImportEntry;
 import org.appdevforall.k2go.contentexchange.domain.ImportManifest;
 import org.appdevforall.k2go.contentexchange.domain.ImportPreflight;
@@ -120,6 +121,47 @@ public class ImportReviewViewModel extends ViewModel {
                 publishSelection();
                 return;
             }
+        }
+    }
+
+    /**
+     * Tri-state of a group (by app) over its SELECTABLE items only (a same-version or no-app item can
+     * never be picked, so it is not counted). Derived from the single selection source.
+     */
+    int groupState(String app) {
+        if (app == null) {
+            return GroupSelection.NONE;
+        }
+        int selectable = 0;
+        int chosen = 0;
+        for (ImportReviewItem it : items) {
+            if (!it.selectable() || !app.equals(safe(it.entry().app()))) {
+                continue;
+            }
+            selectable++;
+            if (selected.contains(it.index())) {
+                chosen++;
+            }
+        }
+        return GroupSelection.state(selectable, chosen);
+    }
+
+    /** Select or clear every selectable item in a group (by app) in one tap of its header control. */
+    void toggleGroup(String app) {
+        if (app == null) {
+            return;
+        }
+        boolean selectAll = GroupSelection.shouldSelectAll(groupState(app));
+        boolean changed = false;
+        for (ImportReviewItem it : items) {
+            if (!it.selectable() || !app.equals(safe(it.entry().app()))) {
+                continue;
+            }
+            int idx = it.index();
+            changed |= selectAll ? selected.add(idx) : selected.remove(idx);
+        }
+        if (changed) {
+            publishSelection();
         }
     }
 

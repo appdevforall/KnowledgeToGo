@@ -10,4 +10,8 @@
   strings.xml.
 -->
 <resources>
+
+    <!-- K2GO-427 content manager: group "select all" checkbox accessibility label (WIP, pending l10n). -->
+    <string name="k2go_cx_select_group" translatable="false">Select all in this group</string>
+
 </resources>
