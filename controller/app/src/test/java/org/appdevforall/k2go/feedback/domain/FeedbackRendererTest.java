@@ -1,6 +1,7 @@
 package org.appdevforall.k2go.feedback.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -28,6 +29,14 @@ public class FeedbackRendererTest {
         assertTrue(body.contains("Device: Acme Phone X"));
         assertTrue(body.contains("ABI: arm64-v8a"));
         assertTrue(body.contains("\n--- Your message ---\nIt broke when I tapped share\n"));
+    }
+
+    @Test public void bodyCarriesNoContactData() {
+        // K2GO-504: Play rejected a build over an email field. The report holds no contact data;
+        // the user's own mail app supplies the reply address.
+        String body = new FeedbackRenderer().render(payload()).body();
+        assertFalse(body.contains("Contact"));
+        assertFalse(body.contains("@"));
     }
 
     @Test public void subjectIsProductTagged() {

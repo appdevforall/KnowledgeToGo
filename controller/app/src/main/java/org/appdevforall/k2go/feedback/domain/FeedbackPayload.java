@@ -4,7 +4,7 @@ package org.appdevforall.k2go.feedback.domain;
  * Immutable, transport-agnostic description of a single feedback or crash report.
  *
  * <p>Pure domain type (no Android, no I/O). It is rendered to an email by
- * {@link FeedbackRenderer}. It holds no personal data: the reply address comes from the
+ * {@link FeedbackRenderer}. It holds no contact data: the reply address comes from the
  * user's own mail app.
  *
  * <p>Required: {@code type}, {@code appVersion}, {@code appBuild}, {@code androidRelease},

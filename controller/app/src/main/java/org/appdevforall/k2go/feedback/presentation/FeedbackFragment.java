@@ -27,8 +27,8 @@ import org.appdevforall.k2go.feedback.domain.FeedbackType;
 
 /**
  * "Send feedback" form (operator v1): category + message. Builds a {@link FeedbackPayload} and
- * hands it to the user's mail app. The form asks for no email address: the user's own mail app
- * supplies the reply address, and the app collects no personal data (K2GO-504, Play Data safety).
+ * hands it to the user's mail app. The form asks for no contact data: the user's own mail app
+ * supplies the reply address (K2GO-504, Play Data safety).
  */
 public class FeedbackFragment extends Fragment {
 
