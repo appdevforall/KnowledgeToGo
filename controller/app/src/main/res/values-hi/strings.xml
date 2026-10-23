@@ -1569,4 +1569,7 @@
     <string name="k2go_cx_import_notif_title">कंटेंट आयात हो रहा है</string>
     <string name="k2go_cx_import_notif_text">आयात तैयार हो रहा है...</string>
     <string name="k2go_cx_import_channel_name">कंटेंट आयात</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">कंटेंट प्रबंधक</string>
+    <string name="k2go_settings_content_mgr_sub">सामग्री प्रबंधित करें, निर्यात करें और हटाएं</string>
 </resources>

@@ -10,7 +10,4 @@
   strings.xml.
 -->
 <resources>
-    <!-- K2GO-427 content manager settings entry. WIP: localize + migrate before the feature ships. -->
-    <string name="k2go_settings_content_mgr" translatable="false">Content manager</string>
-    <string name="k2go_settings_content_mgr_sub" translatable="false">Manage, export and remove content</string>
 </resources>

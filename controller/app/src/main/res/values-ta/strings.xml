@@ -1512,4 +1512,7 @@
     <string name="k2go_cx_import_notif_title">உள்ளடக்கம் இறக்குமதி செய்யப்படுகிறது</string>
     <string name="k2go_cx_import_notif_text">இறக்குமதி தயாராகிறது...</string>
     <string name="k2go_cx_import_channel_name">உள்ளடக்க இறக்குமதி</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">உள்ளடக்க மேலாளர்</string>
+    <string name="k2go_settings_content_mgr_sub">உள்ளடக்கத்தை நிர்வகிக்கவும், ஏற்றுமதி செய்யவும், அகற்றவும்</string>
 </resources>

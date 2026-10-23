@@ -1492,4 +1492,7 @@
     <string name="k2go_cx_import_notif_title">İçerik içe aktarılıyor</string>
     <string name="k2go_cx_import_notif_text">İçe aktarma hazırlanıyor...</string>
     <string name="k2go_cx_import_channel_name">İçerik içe aktarma</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">İçerik yöneticisi</string>
+    <string name="k2go_settings_content_mgr_sub">İçeriği yönetin, dışa aktarın ve kaldırın</string>
 </resources>

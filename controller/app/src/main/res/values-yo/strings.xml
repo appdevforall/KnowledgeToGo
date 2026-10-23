@@ -1512,4 +1512,7 @@
     <string name="k2go_cx_import_notif_title">Ń kó àkóónú wọlé</string>
     <string name="k2go_cx_import_notif_text">Ń múra sílẹ̀ fún ìkówọlé...</string>
     <string name="k2go_cx_import_channel_name">Ìkówọlé àkóónú</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Alábòójútó àkóónú</string>
+    <string name="k2go_settings_content_mgr_sub">Ṣàkóso, kó jáde, àti yọ àkóónú kúrò</string>
 </resources>

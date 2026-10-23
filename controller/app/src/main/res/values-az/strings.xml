@@ -1512,4 +1512,7 @@
     <string name="k2go_cx_import_notif_title">Məzmun idxal edilir</string>
     <string name="k2go_cx_import_notif_text">İdxal hazırlanır...</string>
     <string name="k2go_cx_import_channel_name">Məzmun idxalı</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Məzmun meneceri</string>
+    <string name="k2go_settings_content_mgr_sub">Məzmunu idarə edin, ixrac edin və silin</string>
 </resources>

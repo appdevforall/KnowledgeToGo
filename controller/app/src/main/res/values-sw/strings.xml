@@ -1512,4 +1512,7 @@
     <string name="k2go_cx_import_notif_title">Inaingiza maudhui</string>
     <string name="k2go_cx_import_notif_text">Inaandaa uingizaji...</string>
     <string name="k2go_cx_import_channel_name">Uingizaji wa maudhui</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Meneja maudhui</string>
+    <string name="k2go_settings_content_mgr_sub">Dhibiti, hamisha na ondoa maudhui</string>
 </resources>

@@ -1502,4 +1502,7 @@
     <string name="k2go_cx_import_notif_title">Importerer innhold</string>
     <string name="k2go_cx_import_notif_text">Forbereder import...</string>
     <string name="k2go_cx_import_channel_name">Innholdsimport</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Innholdsbehandling</string>
+    <string name="k2go_settings_content_mgr_sub">Administrer, eksporter og fjern innhold</string>
 </resources>

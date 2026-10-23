@@ -1505,4 +1505,7 @@
     <string name="k2go_cx_import_notif_title">Увоз садржаја</string>
     <string name="k2go_cx_import_notif_text">Припрема увоза...</string>
     <string name="k2go_cx_import_channel_name">Увоз садржаја</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Менаџер садржаја</string>
+    <string name="k2go_settings_content_mgr_sub">Управљање, извоз и уклањање садржаја</string>
 </resources>

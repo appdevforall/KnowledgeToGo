@@ -1493,4 +1493,7 @@
     <string name="k2go_cx_import_notif_title">콘텐츠 가져오는 중</string>
     <string name="k2go_cx_import_notif_text">가져오기를 준비하는 중...</string>
     <string name="k2go_cx_import_channel_name">콘텐츠 가져오기</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">콘텐츠 관리</string>
+    <string name="k2go_settings_content_mgr_sub">콘텐츠 관리, 내보내기 및 삭제</string>
 </resources>

@@ -1505,4 +1505,7 @@
     <string name="k2go_cx_import_notif_title">কনটেন্ট আমদানি হচ্ছে</string>
     <string name="k2go_cx_import_notif_text">আমদানি প্রস্তুত হচ্ছে...</string>
     <string name="k2go_cx_import_channel_name">কনটেন্ট আমদানি</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">কনটেন্ট ম্যানেজার</string>
+    <string name="k2go_settings_content_mgr_sub">কন্টেন্ট পরিচালনা, এক্সপোর্ট এবং অপসারণ করুন</string>
 </resources>

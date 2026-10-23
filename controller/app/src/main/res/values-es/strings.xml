@@ -1568,4 +1568,7 @@
     <string name="k2go_cx_import_notif_title">Importando contenido</string>
     <string name="k2go_cx_import_notif_text">Preparando la importación...</string>
     <string name="k2go_cx_import_channel_name">Importación de contenido</string>
+    <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
+    <string name="k2go_settings_content_mgr">Gestor de contenido</string>
+    <string name="k2go_settings_content_mgr_sub">Gestionar, exportar y eliminar contenido</string>
 </resources>

@@ -1687,4 +1687,7 @@
     <string name="k2go_cx_import_notif_title">Importing content</string>
     <string name="k2go_cx_import_notif_text">Preparing import...</string>
     <string name="k2go_cx_import_channel_name">Content import</string>
+    <!-- K2GO-427 content manager settings entry (migrated from strings_untranslated.xml). -->
+    <string name="k2go_settings_content_mgr">Content manager</string>
+    <string name="k2go_settings_content_mgr_sub">Manage, export and remove content</string>
 </resources>
