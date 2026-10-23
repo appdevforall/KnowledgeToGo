@@ -58,6 +58,21 @@ public final class CxCoreDataSource {
         return postJson(V1 + "/export/plan", body);
     }
 
+    /** {@code POST /v1/import/validate} with {@code {items:[<entry>]}} -> {@code {results:[...]}}. */
+    public JSONObject postImportValidate(JSONObject body) throws Exception {
+        return postJson(V1 + "/import/validate", body);
+    }
+
+    /** {@code POST /v1/import/item} with {@code {app, entry, payloadPath}} -> the ingest result. */
+    public JSONObject postImportItem(JSONObject body) throws Exception {
+        return postJson(V1 + "/import/item", body);
+    }
+
+    /** {@code DELETE /v1/content/{app}/{localRef}} -> {@code {ok, freedBytes}}. */
+    public JSONObject deleteContent(String app, String localRef) throws Exception {
+        return deleteJson(V1 + "/content/" + encodeSegment(app) + "/" + encodeSegment(localRef));
+    }
+
     /**
      * {@code GET /v1/export/item/{app}/{localRef}} -> the item's streaming archive. The core sends a
      * chunked response with no Content-Length; the caller streams the body and closes the returned
@@ -100,6 +115,26 @@ public final class CxCoreDataSource {
             try (OutputStream os = c.getOutputStream()) {
                 os.write(payload);
             }
+            int code = c.getResponseCode();
+            boolean ok = code >= 200 && code < 400;
+            String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
+            if (!ok) {
+                throw new Exception("HTTP " + code + ": " + text);
+            }
+            return new JSONObject(text.isEmpty() ? "{}" : text);
+        } finally {
+            c.disconnect();
+        }
+    }
+
+    private static JSONObject deleteJson(String urlStr) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
+        try {
+            c.setUseCaches(false);
+            c.setConnectTimeout(CONNECT_TIMEOUT_MS);
+            c.setReadTimeout(READ_TIMEOUT_MS);
+            c.setRequestMethod("DELETE");
+            c.setRequestProperty("Accept", "application/json");
             int code = c.getResponseCode();
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());

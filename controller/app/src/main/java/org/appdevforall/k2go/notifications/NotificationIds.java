@@ -38,6 +38,7 @@ public final class NotificationIds {
     public static final int INSTALL_MODULE_FAILURE = 13;  // InstallNotifications (dismissible "install failed")
     public static final int FORGEJO_SEED           = 14;  // ForgejoSeedService
     public static final int CONTENT_EXPORT         = 15;  // ContentExportService (K2GO-427)
+    public static final int CONTENT_IMPORT         = 16;  // ContentImportService (K2GO-427)
 
     // High range: single-purpose notifications that re-alert in place (they replace, never stack),
     // kept well away from the low range. Listed here too so the one source stays complete.

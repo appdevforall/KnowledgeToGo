@@ -38,8 +38,9 @@ public final class ExportFilenames {
         return unique;
     }
 
-    /** Strip the path, drop illegal and control characters, trim. Returns null when nothing remains. */
-    static String safeBaseName(String raw) {
+    /** Strip the path, drop illegal and control characters, trim. Returns null when nothing remains.
+     *  Public so the import staging path reuses the one "safe FAT basename" rule. */
+    public static String safeBaseName(String raw) {
         if (raw == null) {
             return null;
         }
