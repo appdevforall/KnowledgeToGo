@@ -66,7 +66,7 @@ public class ExportProgressFragment extends Fragment {
         cancel.setOnClickListener(v -> ContentExportService.cancel(requireContext()));
         retry.setOnClickListener(v -> ContentExportService.retry(requireContext()));
         finish.setOnClickListener(v -> {
-            ContentExportService.finishSession();
+            ContentExportService.finishSession(requireContext());
             goBack();
         });
         return root;

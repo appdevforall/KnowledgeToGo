@@ -107,9 +107,28 @@ public final class ContentExportService extends Service {
                 new Intent(ctx, ContentExportService.class).setAction(ACTION_CANCEL));
     }
 
-    /** Clear a settled session (the "Finish" button). Safe to call when nothing is running. */
-    public static void finishSession() {
+    /** Clear a settled session (the "Finish" button) and release its one-shot SAF grant. Safe to
+     *  call when nothing is running. */
+    public static void finishSession(Context ctx) {
+        releaseGrant(ctx, SESSION.treeUri());
         SESSION.clear();
+    }
+
+    /**
+     * Release the persisted SAF grant for a finished export. Export is one-shot (pick a drive, write,
+     * done), so the grant is not needed afterwards; releasing it keeps the app's persisted-permission
+     * set from growing toward the system cap. Idempotent: releasing a grant not held is a no-op.
+     */
+    static void releaseGrant(Context ctx, String treeUri) {
+        if (treeUri == null) {
+            return;
+        }
+        try {
+            ctx.getContentResolver().releasePersistableUriPermission(Uri.parse(treeUri),
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        } catch (Exception ignored) {
+            // already released, or never persisted (transient grant): nothing to free
+        }
     }
 
     @Override
@@ -129,6 +148,7 @@ public final class ContentExportService extends Service {
         String action = intent != null ? intent.getAction() : null;
 
         if (ACTION_CANCEL.equals(action)) {
+            releaseGrant(getApplicationContext(), SESSION.treeUri());
             SESSION.markCancelled();
             SESSION.clear();
             stopForeground(true);
@@ -171,7 +191,14 @@ public final class ContentExportService extends Service {
 
     // ---- the run -------------------------------------------------------------------------------
 
-    /** Plan (fresh only), then drain the pending items and write the manifest over what landed. */
+    /**
+     * Plan (fresh only), then drain the pending items and write the manifest over what landed.
+     *
+     * <p>v1 limitation (accepted): the run state is in-memory, so a process death mid-export loses it
+     * (no cross-process-death resume), and because the manifest is written last, an interrupted run
+     * leaves payloads on the drive with no manifest. v1 does within-run per-item retry only; durable
+     * op-state and the manifest-interrupt hardening are v1.x (the import side also validates and skips).
+     */
     private void drain(boolean fresh) {
         ExportCarrier carrier;
         ContentExportSource source = new CxCoreExportSource(new CxCoreDataSource());
@@ -247,6 +274,10 @@ public final class ContentExportService extends Service {
         }
 
         writeManifest(source, carrier, job);
+        if (SESSION.allDone()) {
+            // Fully exported: one-shot done, so free the grant now (a partial run keeps it for Retry).
+            releaseGrant(getApplicationContext(), SESSION.treeUri());
+        }
         SESSION.setRunning(false);
         SESSION.setRate(0L, -1L);
         SESSION.publish();

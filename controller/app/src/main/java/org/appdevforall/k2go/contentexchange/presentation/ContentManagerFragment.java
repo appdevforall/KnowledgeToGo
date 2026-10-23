@@ -218,11 +218,24 @@ public class ContentManagerFragment extends Fragment {
             return;
         }
         // Persist read+write so the foreground service keeps access after this screen is gone.
+        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        android.content.ContentResolver resolver = requireContext().getContentResolver();
         try {
-            requireContext().getContentResolver().takePersistableUriPermission(treeUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            resolver.takePersistableUriPermission(treeUri, flags);
         } catch (SecurityException e) {
             // The grant could not be persisted; proceed with the transient permission for this session.
+        }
+        // Safety net against unbounded growth: the run releases its own grant when it finishes, but an
+        // export abandoned before "Finish" (e.g. the process is killed) would leave a stale grant. Export
+        // is the app's only persisted-grant user, so drop every persisted tree except the one just taken.
+        for (android.content.UriPermission p : resolver.getPersistedUriPermissions()) {
+            if (!p.getUri().equals(treeUri)) {
+                try {
+                    resolver.releasePersistableUriPermission(p.getUri(), flags);
+                } catch (Exception ignored) {
+                    // best-effort prune
+                }
+            }
         }
         confirmAndStart(treeUri, pendingExport);
     }
