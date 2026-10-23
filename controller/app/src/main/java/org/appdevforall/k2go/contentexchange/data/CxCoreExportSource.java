@@ -1,0 +1,105 @@
+/*
+ * ============================================================================
+ * Name        : CxCoreExportSource.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-427. Data-layer implementation of the export source port against
+ *               cx-core (through dash-node's /v1 relay): POST /v1/export/plan, the
+ *               streaming GET /v1/export/item, and the collection-manifest assembly.
+ * ============================================================================
+ */
+package org.appdevforall.k2go.contentexchange.data;
+
+import org.appdevforall.k2go.contentexchange.domain.ContentExportSource;
+import org.appdevforall.k2go.contentexchange.domain.ExportItem;
+import org.appdevforall.k2go.contentexchange.domain.ExportPlan;
+import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Plans an export, streams one item, and builds the collection manifest.
+ *
+ * <p>The per-item entries the plan returns (identity + dedup + integrity) are captured here so the
+ * manifest can be assembled from the authoritative source rather than re-derived. That cache is this
+ * object's own copy of its own HTTP response, keyed by {@link ItemRef}: it is not a second source of
+ * truth for "what content exists" (the core owns that), only the plan this run already fetched.
+ *
+ * <p>Instances are single-run and used off the main thread; the capture is not shared.
+ */
+public final class CxCoreExportSource implements ContentExportSource {
+
+    private final CxCoreDataSource dataSource;
+
+    /** Captured plan entries for the manifest, by item, preserving request order. */
+    private final Map<ItemRef, JSONObject> entries = new LinkedHashMap<>();
+
+    public CxCoreExportSource(CxCoreDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public ExportPlan plan(List<ItemRef> refs) throws Exception {
+        JSONArray reqItems = new JSONArray();
+        for (ItemRef ref : refs) {
+            reqItems.put(new JSONObject().put("app", ref.app()).put("localRef", ref.localRef()));
+        }
+        JSONObject response = dataSource.postExportPlan(new JSONObject().put("items", reqItems));
+
+        entries.clear();
+        List<ExportItem> items = new ArrayList<>();
+        long total = 0L;
+        JSONArray found = response.optJSONArray("items");
+        if (found != null) {
+            for (int i = 0; i < found.length(); i++) {
+                JSONObject entry = found.optJSONObject(i);
+                if (entry == null) {
+                    continue;
+                }
+                JSONObject identity = entry.optJSONObject("identity");
+                String app = entry.optString("app", "");
+                String localRef = identity != null ? identity.optString("localRef", "") : "";
+                if (app.isEmpty() || localRef.isEmpty()) {
+                    continue;
+                }
+                ItemRef ref = new ItemRef(app, localRef);
+                long bytes = entry.optLong("bytes", 0L);
+                items.add(new ExportItem(ref, entry.optString("title", localRef), bytes));
+                entries.put(ref, entry);
+                total += bytes;
+            }
+        }
+
+        List<String> skipped = new ArrayList<>();
+        JSONArray missing = response.optJSONArray("missing");
+        if (missing != null) {
+            for (int i = 0; i < missing.length(); i++) {
+                JSONObject m = missing.optJSONObject(i);
+                if (m == null) {
+                    continue;
+                }
+                skipped.add(m.optString("app", "?") + "/" + m.optString("localRef", "?")
+                        + " (" + m.optString("reason", "skipped") + ")");
+            }
+        }
+        // Prefer the server total; fall back to the summed item bytes.
+        long reported = response.optLong("totalBytes", total);
+        return new ExportPlan(items, skipped, reported);
+    }
+
+    @Override
+    public ItemPayload open(ItemRef ref) throws Exception {
+        CxCoreDataSource.Stream stream = dataSource.openExportItem(ref.app(), ref.localRef());
+        return new ItemPayload(stream.body(), stream.filename(), stream);
+    }
+
+    @Override
+    public byte[] buildManifest(List<ItemRef> order, Map<ItemRef, String> payloadNames) throws Exception {
+        return CollectionManifest.build(entries, order, payloadNames);
+    }
+}

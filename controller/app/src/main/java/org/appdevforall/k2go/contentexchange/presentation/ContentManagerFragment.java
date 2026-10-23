@@ -5,19 +5,24 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-427. The content manager (gestor): lists managed content
  *               grouped by app, each item with its size, plus total used and the
- *               free disk, with per-item multi-select. SLICE 1 (foundation): the
- *               bottom action bar (Export / Share / Delete) is present but
- *               disabled; those actions are later slices.
+ *               free disk, with per-item multi-select. The EXPORT action is wired
+ *               (pick a drive via SAF, then write the open-format bundle through the
+ *               foreground service); Share / Delete are later slices and stay disabled.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,9 +30,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
+import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
 import org.appdevforall.k2go.storage.StorageProbe;
@@ -51,6 +59,10 @@ public class ContentManagerFragment extends Fragment {
     private TextView status;
     private View actionBar;
     private TextView selectionLabel;
+    private Button exportButton;
+
+    /** The folder picker; its result carries the drive/folder the user chose for the export. */
+    private ActivityResultLauncher<Uri> openTree;
 
     @Nullable
     @Override
@@ -60,6 +72,11 @@ public class ContentManagerFragment extends Fragment {
         status = root.findViewById(R.id.k2go_cx_status);
         actionBar = root.findViewById(R.id.k2go_cx_actionbar);
         selectionLabel = root.findViewById(R.id.k2go_cx_selection_label);
+        exportButton = root.findViewById(R.id.k2go_cx_export);
+
+        openTree = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::onTreePicked);
+        exportButton.setEnabled(true);
+        exportButton.setOnClickListener(v -> onExportClicked());
 
         TextView back = root.findViewById(R.id.k2go_cx_back);
         back.setText(getString(R.string.k2go_back_link));
@@ -175,6 +192,84 @@ public class ContentManagerFragment extends Fragment {
         selectionLabel.setText(getString(R.string.k2go_cx_selected_fmt,
                 sel.count, ByteFormatter.humanBytes(sel.bytes)));
         actionBar.setVisibility(View.VISIBLE);
+    }
+
+    /** The selection captured when Export was tapped, held across the folder picker round-trip. */
+    private List<ContentItem> pendingExport;
+
+    /** Export: if a run is already active, just show it; otherwise capture the selection and pick a drive. */
+    private void onExportClicked() {
+        if (ContentExportService.session().hasSession()) {
+            showProgress();
+            return;
+        }
+        List<ContentItem> selected = viewModel.selectedItems();
+        if (selected.isEmpty()) {
+            return;
+        }
+        pendingExport = selected;
+        // SAF folder picker: no storage permission is requested; the persisted grant is the authority.
+        openTree.launch(null);
+    }
+
+    /** The folder picker returned. Null means the user cancelled. */
+    private void onTreePicked(@Nullable Uri treeUri) {
+        if (treeUri == null || pendingExport == null || pendingExport.isEmpty()) {
+            return;
+        }
+        // Persist read+write so the foreground service keeps access after this screen is gone.
+        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        android.content.ContentResolver resolver = requireContext().getContentResolver();
+        try {
+            resolver.takePersistableUriPermission(treeUri, flags);
+        } catch (SecurityException e) {
+            // The grant could not be persisted; proceed with the transient permission for this session.
+        }
+        // Safety net against unbounded growth: the run releases its own grant when it finishes, but an
+        // export abandoned before "Finish" (e.g. the process is killed) would leave a stale grant. Export
+        // is the app's only persisted-grant user, so drop every persisted tree except the one just taken.
+        for (android.content.UriPermission p : resolver.getPersistedUriPermissions()) {
+            if (!p.getUri().equals(treeUri)) {
+                try {
+                    resolver.releasePersistableUriPermission(p.getUri(), flags);
+                } catch (Exception ignored) {
+                    // best-effort prune
+                }
+            }
+        }
+        confirmAndStart(treeUri, pendingExport);
+    }
+
+    private void confirmAndStart(Uri treeUri, List<ContentItem> selected) {
+        long total = 0L;
+        for (ContentItem item : selected) {
+            total += Math.max(0L, item.bytes());
+        }
+        String message = getString(R.string.k2go_cx_export_confirm_fmt,
+                selected.size(), ByteFormatter.humanBytes(total));
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.k2go_cx_action_export)
+                .setMessage(message)
+                .setNegativeButton(R.string.k2go_dash_cancel, null)
+                .setPositiveButton(R.string.k2go_cx_action_export, (d, w) -> startExport(treeUri, selected))
+                .show();
+    }
+
+    private void startExport(Uri treeUri, List<ContentItem> selected) {
+        ItemRef[] refs = new ItemRef[selected.size()];
+        for (int i = 0; i < selected.size(); i++) {
+            refs[i] = new ItemRef(selected.get(i).app(), selected.get(i).localRef());
+        }
+        ContentExportService.start(requireContext(), treeUri, refs);
+        viewModel.clearSelection();
+        showProgress();
+    }
+
+    private void showProgress() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ExportProgressFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     /** Friendly app label; falls back to the raw adapter key for an unknown app. */

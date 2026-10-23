@@ -221,6 +221,15 @@
                 android:value="Downloads offline library books through the co-located server REST engine." />
         </service>
 
+        <service
+            android:name=".contentexchange.presentation.ContentExportService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Exports selected library content to a user-chosen drive through the co-located server REST engine." />
+        </service>
+
         <!-- ADFA-5333: runs the LIVE dash-node update in the background (notification only) instead of
              behind a blocking modal. Same shape as the download services above: not exported, and
              specialUse because it drives the in-server blue-green rebuild rather than a stock transfer. -->

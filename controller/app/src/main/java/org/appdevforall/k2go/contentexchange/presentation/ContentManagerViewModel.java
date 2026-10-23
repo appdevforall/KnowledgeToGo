@@ -11,8 +11,10 @@ import org.appdevforall.k2go.contentexchange.domain.ListManagedContentUseCase;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +46,9 @@ public class ContentManagerViewModel extends ViewModel {
     private final Set<String> selectedIds = new HashSet<>();
     /** selectionId -> item bytes, rebuilt on each successful load, for the selection total. */
     private final Map<String, Long> bytesById = new HashMap<>();
+    /** The last loaded content, so the action slices can resolve the selected items. Volatile: set on
+     *  the loader thread, read on the main thread after the SUCCESS state is observed. */
+    private volatile ManagedContent lastContent;
 
     public ContentManagerViewModel(ListManagedContentUseCase listContent, GetStorageStatusUseCase getStorage) {
         this.listContent = listContent;
@@ -65,6 +70,7 @@ public class ContentManagerViewModel extends ViewModel {
             try {
                 ManagedContent content = listContent.execute();
                 StorageStatus storage = getStorage.execute();
+                lastContent = content;
                 indexBytes(content);
                 state.postValue(ContentManagerUiState.success(content, storage));
             } catch (Exception e) {
@@ -75,6 +81,23 @@ public class ContentManagerViewModel extends ViewModel {
 
     public boolean isSelected(String selectionId) {
         return selectedIds.contains(selectionId);
+    }
+
+    /** The currently selected items (for an action slice: export / delete). Empty if nothing loaded. */
+    public List<ContentItem> selectedItems() {
+        List<ContentItem> out = new ArrayList<>();
+        ManagedContent content = lastContent;
+        if (content == null) {
+            return out;
+        }
+        for (ContentGroup group : content.groups()) {
+            for (ContentItem item : group.items()) {
+                if (selectedIds.contains(item.selectionId())) {
+                    out.add(item);
+                }
+            }
+        }
+        return out;
     }
 
     /** Toggles one item's selection and republishes the summary. */
