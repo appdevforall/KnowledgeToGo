@@ -19,17 +19,16 @@ import org.appdevforall.k2go.BuildConfig;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.deviceinfo.data.BuildDeviceAbiProvider;
 import org.appdevforall.k2go.deviceinfo.domain.GetDeviceArchUseCase;
-import org.appdevforall.k2go.feedback.data.FeedbackConfig;
 import org.appdevforall.k2go.feedback.data.FeedbackTransport;
 import org.appdevforall.k2go.feedback.data.FeedbackDiagnostics;
+import org.appdevforall.k2go.feedback.data.MailtoFeedbackTransport;
 import org.appdevforall.k2go.feedback.domain.FeedbackPayload;
 import org.appdevforall.k2go.feedback.domain.FeedbackType;
 
 /**
- * "Send feedback" form (operator v1): category + message + optional contact email.
- * Builds a {@link FeedbackPayload} and sends it via the {@link FeedbackTransport} chosen
- * by {@link FeedbackConfig} (mailto by default; the Cloudflare Worker behind a flag).
- * This form and the payload stay the same regardless of transport.
+ * "Send feedback" form (operator v1): category + message. Builds a {@link FeedbackPayload} and
+ * hands it to the user's mail app. The form asks for no email address: the user's own mail app
+ * supplies the reply address, and the app collects no personal data (K2GO-504, Play Data safety).
  */
 public class FeedbackFragment extends Fragment {
 
@@ -47,7 +46,6 @@ public class FeedbackFragment extends Fragment {
 
         Spinner category = v.findViewById(R.id.feedback_category);
         EditText message = v.findViewById(R.id.feedback_message);
-        EditText email = v.findViewById(R.id.feedback_email);
         Button send = v.findViewById(R.id.feedback_send);
 
         Button forceCrash = v.findViewById(R.id.feedback_force_crash);
@@ -72,10 +70,8 @@ public class FeedbackFragment extends Fragment {
                 Toast.makeText(requireContext(), R.string.feedback_empty_message, Toast.LENGTH_SHORT).show();
                 return;
             }
-            String contact = email.getText().toString().trim();
             FeedbackPayload payload = FeedbackPayload.builder(typeFor(category.getSelectedItemPosition()))
                     .message(msg)
-                    .contactEmail(contact.isEmpty() ? null : contact)
                     .appVersion(FeedbackDiagnostics.appVersionName(requireContext()))
                     .appBuild(FeedbackDiagnostics.appVersionCode(requireContext()))
                     .androidRelease(Build.VERSION.RELEASE)
@@ -83,7 +79,7 @@ public class FeedbackFragment extends Fragment {
                     .abi(new GetDeviceArchUseCase(new BuildDeviceAbiProvider()).execute())
                     .binariesTag(FeedbackDiagnostics.binariesTag(requireContext()))
                     .build();
-            FeedbackTransport transport = FeedbackConfig.create(requireContext());
+            FeedbackTransport transport = new MailtoFeedbackTransport();
             boolean ok = transport.send(requireContext(), payload);
             if (ok) {
                 // ADFA-4466 Phase 2: feedback-channel adoption (no content; no-op unless opted in).

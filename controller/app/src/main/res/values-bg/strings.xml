@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Предложение</string>
     <string name="feedback_cat_content">Заявка за съдържание</string>
     <string name="feedback_message_hint">Опишете вашата обратна връзка</string>
-    <string name="feedback_email_hint">Вашият имейл (по избор)</string>
     <string name="feedback_send">Изпрати</string>
     <string name="feedback_empty_message">Моля, първо напишете вашата обратна връзка.</string>
     <string name="feedback_no_email_app">Не е намерено имейл приложение.</string>

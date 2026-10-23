@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">اقتراح</string>
     <string name="feedback_cat_content">طلب محتوى</string>
     <string name="feedback_message_hint">صف ملاحظاتك</string>
-    <string name="feedback_email_hint">بريدك الإلكتروني (اختياري)</string>
     <string name="feedback_send">إرسال</string>
     <string name="feedback_empty_message">يرجى كتابة ملاحظاتك أولًا.</string>
     <string name="feedback_no_email_app">لم يتم العثور على تطبيق بريد.</string>

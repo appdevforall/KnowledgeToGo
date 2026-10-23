@@ -6,10 +6,8 @@ import android.widget.Toast;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.analytics.AnalyticsClient;
-import org.appdevforall.k2go.feedback.data.FeedbackConfig;
 import org.appdevforall.k2go.feedback.data.HybridFeedbackSender;
 import org.appdevforall.k2go.feedback.data.MailtoFeedbackTransport;
-import org.appdevforall.k2go.feedback.data.WorkerFeedbackTransport;
 import org.appdevforall.k2go.feedback.domain.EmailContent;
 import org.appdevforall.k2go.feedback.domain.FeedbackPayload;
 import org.appdevforall.k2go.feedback.domain.FeedbackRenderer;
@@ -20,8 +18,7 @@ import org.appdevforall.k2go.feedback.domain.FeedbackRenderer;
  * <p>With a screenshot it goes through {@link HybridFeedbackSender} — a single native share that
  * carries text + image so it works across email and messaging in one send (and coaxes even Slack
  * into keeping the text, with a clipboard-text fallback). With no screenshot there is nothing an
- * image-only receiver could strip, so the plain mail path is used (unchanged). The worker transport,
- * when enabled, POSTs and shows no chooser.
+ * image-only receiver could strip, so the plain mail path is used (unchanged).
  *
  * <p>The UI is entirely native (the system share sheet); there is no custom app picker and no
  * per-app branching.
@@ -32,10 +29,6 @@ public final class FeedbackShareRouter {
     }
 
     public static void share(Activity activity, FeedbackPayload payload) {
-        if (FeedbackConfig.WORKER.equals(FeedbackConfig.transport(activity))) {
-            report(activity, new WorkerFeedbackTransport().send(activity, payload));
-            return;
-        }
         EmailContent content = new FeedbackRenderer().render(payload);
         if (content.attachmentPath() == null) {
             report(activity, new MailtoFeedbackTransport().send(activity, payload));

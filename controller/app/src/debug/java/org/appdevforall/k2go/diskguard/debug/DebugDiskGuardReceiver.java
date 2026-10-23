@@ -13,7 +13,7 @@ import org.appdevforall.k2go.diskguard.DiskGuard;
  * first filling ~58 GB. Lives in src/debug, so it never ships in release.
  *
  * <p>Exported (it is the whole point — an adb-reachable surface, unlike the app's non-exported
- * services), mirroring {@link org.appdevforall.k2go.delivery.debug.DebugDeliveryReceiver}.
+ * services).
  *
  * <p>Two modes. The low-disk path: a huge floor makes any real free-space reading CRITICAL, tripping
  * the guard for real:

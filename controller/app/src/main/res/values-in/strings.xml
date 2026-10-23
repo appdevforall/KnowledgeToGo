@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Saran</string>
     <string name="feedback_cat_content">Permintaan konten</string>
     <string name="feedback_message_hint">Jelaskan masukan Anda</string>
-    <string name="feedback_email_hint">Email Anda (opsional)</string>
     <string name="feedback_send">Kirim</string>
     <string name="feedback_empty_message">Silakan tulis masukan Anda terlebih dahulu.</string>
     <string name="feedback_no_email_app">Tidak ada aplikasi email yang ditemukan.</string>

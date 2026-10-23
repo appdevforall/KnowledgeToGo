@@ -33,19 +33,8 @@
             android:minLines="4"
             android:textColor="?android:attr/textColorPrimary"
             android:textColorHint="?android:attr/textColorSecondary"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:importantForAutofill="no" />
-
-        <EditText
-            android:id="@+id/feedback_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/feedback_email_hint"
-            android:inputType="textEmailAddress"
-            android:autofillHints="emailAddress"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textColorHint="?android:attr/textColorSecondary"
-            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/feedback_send"

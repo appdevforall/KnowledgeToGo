@@ -5,10 +5,8 @@ import android.content.Context;
 import org.appdevforall.k2go.feedback.domain.FeedbackPayload;
 
 /**
- * Where a feedback report goes. Two implementations exist: {@link MailtoFeedbackTransport}
- * (the current default) and {@link WorkerFeedbackTransport} (the delivery backbone).
- * {@link FeedbackConfig} selects one via a flag, so switching is a config change — no
- * rework in the form. See ADFA-4507.
+ * Where a feedback report goes. The only implementation is {@link MailtoFeedbackTransport}: it
+ * hands the report to the user's mail app, so the app itself sends nothing off the device.
  */
 public interface FeedbackTransport {
 

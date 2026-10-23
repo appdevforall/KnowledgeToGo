@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">পরামর্শ</string>
     <string name="feedback_cat_content">কন্টেন্ট অনুরোধ</string>
     <string name="feedback_message_hint">আপনার প্রতিক্রিয়া বর্ণনা করুন</string>
-    <string name="feedback_email_hint">আপনার ইমেল (ঐচ্ছিক)</string>
     <string name="feedback_send">পাঠান</string>
     <string name="feedback_empty_message">অনুগ্রহ করে প্রথমে আপনার প্রতিক্রিয়া লিখুন।</string>
     <string name="feedback_no_email_app">কোনো ইমেল অ্যাপ পাওয়া যায়নি।</string>

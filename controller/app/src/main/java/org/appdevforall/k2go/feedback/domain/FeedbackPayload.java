@@ -4,9 +4,8 @@ package org.appdevforall.k2go.feedback.domain;
  * Immutable, transport-agnostic description of a single feedback or crash report.
  *
  * <p>Pure domain type (no Android, no I/O). It is rendered to an email by
- * {@link FeedbackRenderer} today; the same fields map 1:1 to the JSON a future HTTPS
- * endpoint (Cloudflare Worker) will accept, so adding that transport is additive and
- * does not change this type.
+ * {@link FeedbackRenderer}. It holds no personal data: the reply address comes from the
+ * user's own mail app.
  *
  * <p>Required: {@code type}, {@code appVersion}, {@code appBuild}, {@code androidRelease},
  * {@code device}, {@code abi}. Everything else is optional and is omitted from the
@@ -16,7 +15,6 @@ public final class FeedbackPayload {
 
     private final FeedbackType type;
     private final String message;
-    private final String contactEmail;
     private final String appVersion;
     private final int appBuild;
     private final String androidRelease;
@@ -35,7 +33,6 @@ public final class FeedbackPayload {
         }
         this.type = b.type;
         this.message = b.message == null ? "" : b.message;
-        this.contactEmail = b.contactEmail;
         this.appVersion = b.appVersion;
         this.appBuild = b.appBuild;
         this.androidRelease = b.androidRelease;
@@ -52,8 +49,6 @@ public final class FeedbackPayload {
     public FeedbackType type() { return type; }
 
     public String message() { return message; }
-
-    public String contactEmail() { return contactEmail; }
 
     public String appVersion() { return appVersion; }
 
@@ -86,7 +81,6 @@ public final class FeedbackPayload {
     public static final class Builder {
         private final FeedbackType type;
         private String message;
-        private String contactEmail;
         private String appVersion;
         private int appBuild;
         private String androidRelease;
@@ -104,8 +98,6 @@ public final class FeedbackPayload {
         }
 
         public Builder message(String v) { this.message = v; return this; }
-
-        public Builder contactEmail(String v) { this.contactEmail = v; return this; }
 
         public Builder appVersion(String v) { this.appVersion = v; return this; }
 

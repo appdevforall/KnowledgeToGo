@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Forslag</string>
     <string name="feedback_cat_content">Innholdsforespørsel</string>
     <string name="feedback_message_hint">Beskriv tilbakemeldingen din</string>
-    <string name="feedback_email_hint">E-posten din (valgfritt)</string>
     <string name="feedback_send">Send</string>
     <string name="feedback_empty_message">Skriv tilbakemeldingen din først.</string>
     <string name="feedback_no_email_app">Ingen e-postapp funnet.</string>

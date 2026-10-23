@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Đề xuất</string>
     <string name="feedback_cat_content">Yêu cầu nội dung</string>
     <string name="feedback_message_hint">Mô tả phản hồi của bạn</string>
-    <string name="feedback_email_hint">Email của bạn (tùy chọn)</string>
     <string name="feedback_send">Gửi</string>
     <string name="feedback_empty_message">Vui lòng viết phản hồi của bạn trước.</string>
     <string name="feedback_no_email_app">Không tìm thấy ứng dụng email.</string>

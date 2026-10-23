@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Təklif</string>
     <string name="feedback_cat_content">Məzmun tələbi</string>
     <string name="feedback_message_hint">Rəyinizi təsvir edin</string>
-    <string name="feedback_email_hint">E-poçtunuz (isteğe bağlı)</string>
     <string name="feedback_send">Göndər</string>
     <string name="feedback_empty_message">Zəhmət olmasa əvvəlcə rəyinizi yazın.</string>
     <string name="feedback_no_email_app">E-poçt tətbiqi tapılmadı.</string>

@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Vorschlag</string>
     <string name="feedback_cat_content">Inhaltsanfrage</string>
     <string name="feedback_message_hint">Beschreibe dein Feedback</string>
-    <string name="feedback_email_hint">Deine E-Mail (optional)</string>
     <string name="feedback_send">Senden</string>
     <string name="feedback_empty_message">Bitte schreibe zuerst dein Feedback.</string>
     <string name="feedback_no_email_app">Keine E-Mail-App gefunden.</string>

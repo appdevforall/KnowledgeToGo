@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">સૂચન</string>
     <string name="feedback_cat_content">સામગ્રી વિનંતી</string>
     <string name="feedback_message_hint">તમારો પ્રતિસાદ વર્ણવો</string>
-    <string name="feedback_email_hint">તમારો ઈમેઇલ (વૈકલ્પિક)</string>
     <string name="feedback_send">મોકલો</string>
     <string name="feedback_empty_message">કૃપા કરી પહેલાં તમારો પ્રતિસાદ લખો.</string>
     <string name="feedback_no_email_app">કોઈ ઈમેઇલ ઍપ મળી નથી.</string>

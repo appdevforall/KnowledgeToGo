@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Javaslat</string>
     <string name="feedback_cat_content">Tartalomkérés</string>
     <string name="feedback_message_hint">Írja le a visszajelzését</string>
-    <string name="feedback_email_hint">Az Ön e-mail-címe (opcionális)</string>
     <string name="feedback_send">Küldés</string>
     <string name="feedback_empty_message">Először írja meg a visszajelzését.</string>
     <string name="feedback_no_email_app">Nem található e-mail alkalmazás.</string>

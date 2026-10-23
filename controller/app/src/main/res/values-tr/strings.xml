@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Öneri</string>
     <string name="feedback_cat_content">İçerik isteği</string>
     <string name="feedback_message_hint">Geri bildiriminizi açıklayın</string>
-    <string name="feedback_email_hint">E-postanız (isteğe bağlı)</string>
     <string name="feedback_send">Gönder</string>
     <string name="feedback_empty_message">Lütfen önce geri bildiriminizi yazın.</string>
     <string name="feedback_no_email_app">E-posta uygulaması bulunamadı.</string>

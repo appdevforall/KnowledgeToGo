@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Пропозиція</string>
     <string name="feedback_cat_content">Запит вмісту</string>
     <string name="feedback_message_hint">Опишіть свій відгук</string>
-    <string name="feedback_email_hint">Ваш email (необов\'язково)</string>
     <string name="feedback_send">Надіслати</string>
     <string name="feedback_empty_message">Спочатку напишіть свій відгук.</string>
     <string name="feedback_no_email_app">Застосунок електронної пошти не знайдено.</string>

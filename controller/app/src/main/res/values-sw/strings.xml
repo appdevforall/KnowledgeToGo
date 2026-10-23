@@ -442,7 +442,6 @@
     <string name="feedback_cat_suggestion">Pendekezo</string>
     <string name="feedback_cat_content">Ombi la maudhui</string>
     <string name="feedback_message_hint">Eleza maoni yako</string>
-    <string name="feedback_email_hint">Barua pepe yako (si lazima)</string>
     <string name="feedback_send">Tuma</string>
     <string name="feedback_empty_message">Tafadhali andika maoni yako kwanza.</string>
     <string name="feedback_no_email_app">Hakuna programu ya barua pepe iliyopatikana.</string>

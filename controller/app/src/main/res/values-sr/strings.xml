@@ -441,7 +441,6 @@
     <string name="feedback_cat_suggestion">Предлог</string>
     <string name="feedback_cat_content">Захтев за садржај</string>
     <string name="feedback_message_hint">Опишите своје повратне информације</string>
-    <string name="feedback_email_hint">Ваш имејл (опционо)</string>
     <string name="feedback_send">Пошаљи</string>
     <string name="feedback_empty_message">Прво напишите своје повратне информације.</string>
     <string name="feedback_no_email_app">Није пронађена имејл апликација.</string>
