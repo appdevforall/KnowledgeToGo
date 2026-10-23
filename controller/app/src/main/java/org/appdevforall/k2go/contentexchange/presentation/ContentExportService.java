@@ -152,10 +152,15 @@ public final class ContentExportService extends Service {
             // FGS start-foreground obligation before tearing down. Idempotent if already foreground.
             startForeground(NOTIFICATION_ID, buildNotification(null));
             releaseGrant(getApplicationContext(), SESSION.treeUri());
+            boolean wasRunning = SESSION.isRunning();
             SESSION.markCancelled();
-            SESSION.clear();
-            stopForeground(true);
-            stopSelf();
+            if (!wasRunning) {
+                // No worker draining: tear down here. When a run IS draining, its cancelled branch owns
+                // teardown (clear + stop), so clearing here would race the worker's reads of refs/job.
+                SESSION.clear();
+                stopForeground(true);
+                stopSelf();
+            }
             return START_NOT_STICKY;
         }
 
