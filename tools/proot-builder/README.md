@@ -49,6 +49,17 @@ real launch; foreign arch under QEMU → proot is version-only). A dynamic binar
 integrity-only; **aria2c's real download (TLS+DNS) is validated on-device or in an
 Android-emulator job**, never on a plain runner.
 
+## Retention and archive: `binaries-lifecycle.sh`
+```
+binaries-lifecycle.sh sync|prune      # DRY_RUN=1 reports only
+```
+`sync` archives every `binaries-*` release to R2 (`binaries/<tag>/`, never deleted).
+`prune` deletes old GitHub releases but keeps the newest 6, every tag that a branch or a `v*`
+tag pins, and every release not archived yet. `test-binaries-lifecycle.sh` checks these rules
+with fake `gh`/`aws` (no network). The workflow `binaries-lifecycle.yml` runs the test, then
+the script; see `controller/docs/UPDATING_NATIVE_BINARIES.md`.
+
 ## Tickets
 Epic **ADFA-1028** · gate **ADFA-4465** · xz static fix **ADFA-4468** ·
 version-adoption umbrella **ADFA-4464**.
+Retention and R2 archive: **K2GO-506**.

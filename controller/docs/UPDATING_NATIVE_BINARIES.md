@@ -32,3 +32,23 @@ binaries (gitignored) no longer match the committed manifest, and the SHA256 aud
 `syncNativeArtifacts` fails on the next build (first offender is usually `libaria2c.so`),
 forcing a re-download. PR #150 bumped only `binary_version.txt`; this is the miss this doc
 prevents. The CI check `binary-bump-consistency` enforces it.
+
+## Retention and archive (K2GO-506)
+
+- **GitHub** keeps the 6 newest `binaries-*` releases, plus every release that
+  `binary_version.txt` pins on any branch (`main`, `development`, open PRs) or `v*` app tag.
+  It deletes a release only after that release is archived in R2. The build downloads from GitHub (`syncNativeArtifacts`), so
+  pin a tag that GitHub still has.
+- **R2** archives every release and never deletes it:
+  `https://k2go-download.appdevforall.org/binaries/<tag>/termux-binaries-latest.zip`
+  (and `.sha256`). Use it for debugging, or to restore a release that GitHub rotated out.
+- The workflow **Binaries lifecycle** (`binaries-lifecycle.yml`) does the archive and the
+  prune. `build-static-binaries.yml` calls it after each publish. Run it by hand to backfill
+  the archive, or with `dry_run` to see what a prune would delete.
+- **Provenance:** builds from K2GO-506 on carry a signed build attestation. Verify a copy from
+  any source (GitHub, R2, a box) against the workflow run that built it:
+  ```bash
+  gh attestation verify termux-binaries-latest.zip --repo appdevforall/KnowledgeToGo
+  ```
+
+The R2 bucket layout: [R2_LAYOUT.md](R2_LAYOUT.md).
