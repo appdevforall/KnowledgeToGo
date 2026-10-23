@@ -21,6 +21,34 @@ public final class ExportFilenames {
     /** Characters not allowed in a FAT / exFAT file name, plus the path separators. */
     private static final String ILLEGAL = "\\/:*?\"<>|";
 
+    /** The app whose server name is already stable and human-readable: a ZIM is named by its own
+     *  filename convention and Kiwix addresses it by that name, so it is kept as-is. Every other
+     *  app's suggested name is an opaque id, so its archive is renamed from the item title. */
+    private static final String APP_KEEPS_NATIVE_NAME = "kiwix";
+
+    /** Length of the short id suffix appended after a readable title. */
+    private static final int SHORT_ID_LEN = 8;
+
+    /**
+     * Resolve the name to store this item under, and record it in {@code used}.
+     *
+     * <p>Kiwix keeps its native, already-readable name; every other app's opaque id is replaced by
+     * a readable {@code "<title>-<short id>.<ext>"} name. The manifest keeps the full identity, so
+     * only the on-drive file name changes here.
+     *
+     * @param title     the item title, used to build a readable name; may be null/empty
+     * @param suggested the server-suggested name ({@code Content-Disposition}); may be null/empty
+     * @param ref       the item address: its app selects the rule, its localRef the short id
+     * @param used      names already taken in this bundle; the returned name is added to it
+     */
+    public static String forItem(String title, String suggested, ItemRef ref, Set<String> used) {
+        String app = ref != null ? ref.app() : null;
+        if (APP_KEEPS_NATIVE_NAME.equals(app)) {
+            return resolve(suggested, ref, used);
+        }
+        return readable(title, suggested, ref, used);
+    }
+
     /**
      * Resolve the name to store this item under, and record it in {@code used}.
      *
@@ -38,6 +66,31 @@ public final class ExportFilenames {
         return unique;
     }
 
+    /**
+     * Build a readable name {@code "<title>-<short id>.<ext>"} for an item whose server-suggested
+     * name is an opaque id. The title keeps spaces and accents (exFAT / FAT store Unicode), only the
+     * FAT-illegal characters are stripped; the short id is the first {@value #SHORT_ID_LEN}
+     * characters of the localRef, lowercased; the extension is taken from the server-suggested name.
+     * Falls back to {@link #resolve} when the title is null, empty, or sanitizes to nothing.
+     *
+     * @param title     the item title; may be null/empty
+     * @param suggested the server-suggested name, used only for its extension; may be null/empty
+     * @param ref       the item address, used for the short id and the fallback name
+     * @param used      names already taken in this bundle; the returned name is added to it
+     */
+    public static String readable(String title, String suggested, ItemRef ref, Set<String> used) {
+        String base = safeTitle(title);
+        if (base == null) {
+            return resolve(suggested, ref, used);
+        }
+        String shortId = shortId(ref != null ? ref.localRef() : null);
+        String ext = extensionOf(suggested);
+        String candidate = base + (shortId != null ? "-" + shortId : "") + ext;
+        String unique = deduplicate(candidate, used);
+        used.add(unique);
+        return unique;
+    }
+
     /** Strip the path, drop illegal and control characters, trim. Returns null when nothing remains.
      *  Public so the import staging path reuses the one "safe FAT basename" rule. */
     public static String safeBaseName(String raw) {
@@ -49,6 +102,18 @@ public final class ExportFilenames {
         if (slash >= 0) {
             name = name.substring(slash + 1);
         }
+        return sanitize(name);
+    }
+
+    /** Make a free-text label FAT-safe without the path-strip of {@link #safeBaseName}: a "/" in a
+     *  title (e.g. "Grade 1/2 Math") is dropped as an illegal character, not treated as a separator
+     *  that truncates the name. Returns null when nothing usable remains. */
+    public static String safeTitle(String raw) {
+        return raw == null ? null : sanitize(raw);
+    }
+
+    /** Drop illegal and control characters, trim, and strip leading dots. Returns null when empty. */
+    private static String sanitize(String name) {
         StringBuilder out = new StringBuilder(name.length());
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
@@ -63,6 +128,28 @@ public final class ExportFilenames {
             trimmed = trimmed.substring(1);
         }
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    /** First {@value #SHORT_ID_LEN} characters of the localRef, lowercased and FAT-safe. Returns
+     *  null when nothing usable remains, so the caller drops the suffix. */
+    private static String shortId(String localRef) {
+        String safe = safeBaseName(localRef);
+        if (safe == null) {
+            return null;
+        }
+        String head = safe.length() > SHORT_ID_LEN ? safe.substring(0, SHORT_ID_LEN) : safe;
+        head = head.toLowerCase(java.util.Locale.US);
+        return head.isEmpty() ? null : head;
+    }
+
+    /** The extension (with its dot) of the server-suggested name, or "" when it has none. */
+    private static String extensionOf(String suggested) {
+        String safe = safeBaseName(suggested);
+        if (safe == null) {
+            return "";
+        }
+        int dot = safe.lastIndexOf('.');
+        return dot > 0 ? safe.substring(dot) : "";
     }
 
     private static String fallback(ItemRef ref) {

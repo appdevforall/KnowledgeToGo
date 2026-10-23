@@ -245,7 +245,7 @@ public final class ContentExportService extends Service {
             notifyNow();
 
             try (ContentExportSource.ItemPayload payload = source.open(ref)) {
-                String name = ExportFilenames.resolve(payload.filename(), ref, used);
+                String name = ExportFilenames.forItem(SESSION.label(i), payload.filename(), ref, used);
                 // Write into the item's per-app subfolder; the sink reports the stored path
                 // ("app/name"), which becomes the manifest payload.
                 ExportCarrier.PayloadSink sink = carrier.openPayload(ref.app(), name);
