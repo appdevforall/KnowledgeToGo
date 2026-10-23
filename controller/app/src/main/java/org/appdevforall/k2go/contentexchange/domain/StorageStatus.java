@@ -13,8 +13,11 @@ import java.util.List;
  * degrades to showing content without the free-disk figure (never an error). An
  * {@link #unavailable()} instance carries this state.
  *
- * <p>Note: this is the BOX volume as the core sees it. The phone's own free disk
- * (StatFs) is an app-side concern for the later export-preflight slice, not here.
+ * <p>Note: {@code freeBytes} / {@code totalBytes} describe the BOX volume as the core
+ * sees it. On K2Go that is a fiction (the box writes into a subtree of the phone
+ * storage), so the manager takes only the CONTENT totals ({@code usedByContentBytes},
+ * {@code perApp}) from here and reads the real free disk phone-side via
+ * {@code storage.StorageProbe}. The box figures are kept for the box-side IIAB Console.
  *
  * <p>Immutable value object. Pure domain type.
  */

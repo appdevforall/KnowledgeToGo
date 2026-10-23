@@ -35,6 +35,7 @@ import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
+import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 /**
@@ -121,19 +122,27 @@ public class ContentManagerFragment extends Fragment {
         status.setVisibility(View.VISIBLE);
     }
 
-    /** Total used by content + the free disk (hidden when /v1/storage is not reachable yet). */
+    /**
+     * Used-by-content (from the core) + free disk. On K2Go the app owns the phone-disk truth, so the
+     * free figure comes from the shared {@link StorageProbe} (StatFs), NOT the core's {@code /v1/storage}
+     * box-volume number (a fiction on the phone). From the core we take only the content totals:
+     * {@code usedByContentBytes} when {@code /v1/storage} is available (dedup-aware), else the item sum.
+     */
     private void renderStorage(StorageStatus storage, ManagedContent content) {
         LinearLayout box = new LinearLayout(requireContext());
         box.setOrientation(LinearLayout.VERTICAL);
         box.setBackgroundResource(R.drawable.k2go_card_bg);
         box.setPadding(px(16), px(14), px(16), px(14));
 
+        long used = (storage != null && storage.available())
+                ? storage.usedByContentBytes() : content.totalBytes();
         box.addView(summaryLine(getString(R.string.k2go_cx_used_fmt,
-                ByteFormatter.humanBytes(content.totalBytes())), true));
+                ByteFormatter.humanBytes(used)), true));
 
-        if (storage != null && storage.available()) {
+        Long freeBytes = StorageProbe.freeBytes(requireContext());
+        if (freeBytes != null) {
             box.addView(summaryLine(getString(R.string.k2go_cx_free_fmt,
-                    ByteFormatter.humanBytes(storage.freeBytes())), false));
+                    ByteFormatter.humanBytes(freeBytes)), false));
         } else {
             box.addView(summaryLine(getString(R.string.k2go_cx_free_unavailable), false));
         }

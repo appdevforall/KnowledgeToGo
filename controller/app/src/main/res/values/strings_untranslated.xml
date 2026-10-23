@@ -19,7 +19,7 @@
     <string name="k2go_cx_error" translatable="false">Could not reach the box. Try again.</string>
     <string name="k2go_cx_empty" translatable="false">No content on this box yet.</string>
     <string name="k2go_cx_used_fmt" translatable="false">Used by content: %1$s</string>
-    <string name="k2go_cx_free_fmt" translatable="false">Free on box: %1$s</string>
+    <string name="k2go_cx_free_fmt" translatable="false">Free on device: %1$s</string>
     <string name="k2go_cx_free_unavailable" translatable="false">Free space: unavailable</string>
     <string name="k2go_cx_group_meta_fmt" translatable="false">%1$d items : %2$s</string>
     <string name="k2go_cx_group_empty" translatable="false">No items</string>
