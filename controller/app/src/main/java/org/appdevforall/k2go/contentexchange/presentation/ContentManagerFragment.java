@@ -228,9 +228,10 @@ public class ContentManagerFragment extends Fragment {
     /** The selection captured when Export was tapped, held across the folder picker round-trip. */
     private List<ContentItem> pendingExport;
 
-    /** Export: if a run is already active, just show it; otherwise capture the selection and pick a drive. */
+    /** Export: if a run is still active, just show it; otherwise capture the selection and pick a drive.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onExportClicked() {
-        if (ContentExportService.session().hasSession()) {
+        if (ContentExportService.session().isRunning()) {
             showProgress();
             return;
         }
@@ -243,9 +244,10 @@ public class ContentManagerFragment extends Fragment {
         openTree.launch(null);
     }
 
-    /** Import: if a run is already active, show it; otherwise pick the drive that holds the bundle. */
+    /** Import: if a run is still active, show it; otherwise pick the drive that holds the bundle.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onImportClicked() {
-        if (ContentImportService.session().hasSession()) {
+        if (ContentImportService.session().isRunning()) {
             showImportProgress();
             return;
         }
@@ -363,9 +365,10 @@ public class ContentManagerFragment extends Fragment {
 
     // ---- delete --------------------------------------------------------------------------------
 
-    /** Delete: if a run is already active, just show it; otherwise confirm and start. */
+    /** Delete: if a run is still active, just show it; otherwise confirm and start.
+     *  A settled (finished) run is not active, so a new tap starts fresh instead of reopening it. */
     private void onDeleteClicked() {
-        if (ContentDeleteService.session().hasSession()) {
+        if (ContentDeleteService.session().isRunning()) {
             showDeleteProgress();
             return;
         }

@@ -148,6 +148,9 @@ public final class ContentExportService extends Service {
         String action = intent != null ? intent.getAction() : null;
 
         if (ACTION_CANCEL.equals(action)) {
+            // A fresh service instance may handle this cancel (no run ever started in it), so satisfy the
+            // FGS start-foreground obligation before tearing down. Idempotent if already foreground.
+            startForeground(NOTIFICATION_ID, buildNotification(null));
             releaseGrant(getApplicationContext(), SESSION.treeUri());
             SESSION.markCancelled();
             SESSION.clear();

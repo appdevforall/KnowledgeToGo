@@ -158,6 +158,9 @@ public final class ContentImportService extends Service {
             boolean wasRunning = SESSION.isRunning();
             SESSION.markCancelled();
             if (!wasRunning) {
+                // No worker owns teardown: a fresh service instance may be handling this cancel, so
+                // satisfy the FGS start-foreground obligation before stopping.
+                startForeground(NOTIFICATION_ID, buildNotification(null));
                 SESSION.clear();
                 stopForeground(true);
                 stopSelf();
