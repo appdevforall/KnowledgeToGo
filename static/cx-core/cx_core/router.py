@@ -129,8 +129,10 @@ def _delete_item(registry: Registry, app: str, local_ref: str) -> Response:
 
 def _storage(registry: Registry) -> Response:
     """Box storage summary: the content volume's total / free disk, plus how much of it the
-    loaded adapters account for (per app and in total). The PHONE's own free disk is app-side
-    (StatFs), not here."""
+    loaded adapters account for (per app and in total). totalBytes / freeBytes come from the
+    filesystem and are authoritative; usedByContentBytes (and perApp) is an ESTIMATE: it sums
+    per-app item bytes, so a Kolibri file shared across channels is counted once per channel.
+    The PHONE's own free disk is app-side (StatFs), not here."""
     total, free = disk_total_free(registry.content_volume)
     per_app: List[dict] = []
     used = 0

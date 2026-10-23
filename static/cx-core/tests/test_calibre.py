@@ -7,7 +7,6 @@ import io
 import json
 import tarfile
 
-import cx_core.adapters.calibre as calibre_mod
 from cx_core.adapters.calibre import CalibreAdapter, _content_files, build_book_item
 from cx_core.adapters.calibreweb import resolve_calibre_credentials
 from cx_core.model import SOFT
@@ -247,14 +246,6 @@ class CalibreBookIdTest(unittest.TestCase):
 
 
 class CalibreDeleteTest(unittest.TestCase):
-    def setUp(self):
-        self._free = [1000, 1250]  # 250 reclaimed
-        self._orig_free = calibre_mod.free_bytes
-        calibre_mod.free_bytes = lambda path: self._free.pop(0)
-
-    def tearDown(self):
-        calibre_mod.free_bytes = self._orig_free
-
     def test_delete_delegates_to_calibreweb_by_integer_id(self):
         with tempfile.TemporaryDirectory() as lib:
             db = os.path.join(lib, "metadata.db")
@@ -263,7 +254,8 @@ class CalibreDeleteTest(unittest.TestCase):
             result = adapter.delete("u-1")
             self.assertTrue(result["ok"])
             self.assertEqual(adapter.removed, 1)  # the integer library id, not the uuid
-            self.assertEqual(result["freedBytes"], 250)
+            # A book is self-contained, so freedBytes is its known size (EPUB 1000 + PDF 2000).
+            self.assertEqual(result["freedBytes"], 3000)
 
     def test_delete_missing_book_is_not_ok(self):
         with tempfile.TemporaryDirectory() as lib:

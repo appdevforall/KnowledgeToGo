@@ -22,7 +22,7 @@ import tarfile
 import tempfile
 from typing import List, Optional
 
-from ..export import free_bytes, resolve_within, tar_stream
+from ..export import resolve_within, tar_stream
 from ..importing import safe_extract_tar, single_child_dir
 from ..model import ABSENT, SAME_VERSION, SOFT, Dedup, Identity, ManifestItem, normalize_text
 from ..ports import ContentAdapter, ExportStream
@@ -166,16 +166,15 @@ class CalibreAdapter(ContentAdapter):
         # calibredb is absent, so delete through Calibre-Web's own remove (POST /delete/{id}),
         # which drops the book row plus its FK rows and files. Its delete keys on the integer
         # library id, so resolve it from the uuid first. A book is self-contained (no shared
-        # files), but we still report freedBytes as the free-space delta: one honest source.
+        # files), so freedBytes is the item's KNOWN size (already summed from data, like Kiwix
+        # uses the file size): no need for a racy free-space delta.
+        item = self.get(local_ref)
         book_id = self._book_id(local_ref)
-        if book_id is None:
+        if item is None or book_id is None:
             return {"ok": False, "reason": "item not found"}
-        before = free_bytes(self._lib_root)
         if not self._remove_book(book_id):
             return {"ok": False, "reason": "calibre delete failed"}
-        after = free_bytes(self._lib_root)
-        freed = max(0, after - before) if before is not None and after is not None else None
-        return {"ok": True, "app": "calibre", "localRef": local_ref, "freedBytes": freed}
+        return {"ok": True, "app": "calibre", "localRef": local_ref, "freedBytes": item.bytes}
 
     def _book_id(self, uuid: str) -> Optional[int]:
         """The integer books.id for a book uuid, from metadata.db. None if absent. Calibre-Web

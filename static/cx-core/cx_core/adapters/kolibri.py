@@ -260,10 +260,16 @@ class KolibriAdapter(ContentAdapter):
         return True
 
     def delete(self, local_ref: str) -> dict:
-        # Delegate to Kolibri's own delete (refcounts shared files). Measure the reclaim as a
-        # free-space delta around the synchronous CLI call: the filesystem is the one source
-        # for bytes actually freed, so we never re-derive the refcount here (ADR-5343 guard).
-        # The front serializes delete ops (D1c), so the delta is not polluted by a concurrent op.
+        # Delegate to Kolibri's own delete (it refcounts shared files). Measure the reclaim as a
+        # free-space delta around the CLI call: the filesystem is the one source for bytes
+        # actually freed, so we never re-derive the refcount here (ADR-5343 guard).
+        # freedBytes is APPROXIMATE: the delta reads the WHOLE content volume, and the front
+        # serializes only cx-core's OWN deletes, so a concurrent box process (a download, log
+        # writes) can skew it. totalBytes / freeBytes from GET /v1/storage stay authoritative.
+        # NOT yet confirmed on-device: that `kolibri manage deletechannel` is synchronous and
+        # removes the content FILES (not just metadata). If it is async, freedBytes reads ~0 and
+        # the channel may still be deleting after this returns: verify on the box, and if needed
+        # swap _delete_channel to also run `deletecontent` or to the REST task dash-node uses.
         if not _CHANNEL_ID_RE.match(local_ref or ""):
             return {"ok": False, "reason": "invalid channel id"}
         if not self._query(local_ref):
