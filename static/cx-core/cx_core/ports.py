@@ -24,13 +24,19 @@ class ExportStream:
     error); the EXPORT OP LAYER sets both: on_open pins the op for the stream's life, on_close
     unpins and drops it. The server fires on_open at the top of the same try whose finally runs
     on_close, so the pin and its release are a matched pair even when the client disconnects.
-    The adapter only opens the stream; the op layer owns the lifecycle (K2GO-507)."""
+    The adapter only opens the stream; the op layer owns the lifecycle (K2GO-507).
+
+    ``completed`` is set True by the server after the FULL body has been written (the clean
+    terminator), and stays False on a mid-stream client drop. The export op ignores it (it drops
+    the temp either way), but the share gate reads it so a share item counts as delivered only on
+    a clean close, never on a drop (K2GO-376)."""
 
     filename: str
     content_type: str
     chunks: Iterable[bytes]
     on_close: Optional[Callable[[], None]] = None
     on_open: Optional[Callable[[], None]] = None
+    completed: bool = False
 
 
 @dataclass

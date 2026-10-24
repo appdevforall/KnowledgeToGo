@@ -15,23 +15,30 @@ from .export_ops import ExportOps
 from .ports import ExportStream
 from .registry import Registry
 from .router import dispatch
+from .share_ops import ShareOps
 
 _MAX_BODY = 1 * 1024 * 1024  # a plan request is small; cap the read defensively
 _BAD_JSON = object()  # sentinel: body present but not valid JSON
 _TOO_LARGE = object()  # sentinel: declared body exceeds _MAX_BODY
 
 
-def make_handler(registry: Registry, ops: ExportOps):
+def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
     class Handler(BaseHTTPRequestHandler):
         server_version = f"cx-core/{VERSION}"
         # HTTP/1.1 so the chunked export stream is valid (HTTP/1.0 would hand the client the
         # chunk-size lines as body). The JSON path sends Content-Length, so keep-alive holds.
         protocol_version = "HTTP/1.1"
 
+        def _share_token(self):
+            # The share session token travels in a header, never the URL query, so it does not
+            # land in access logs (it is the only auth for the gate).
+            return self.headers.get("X-Share-Token")
+
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops)
+            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops, share=share,
+                                       token=self._share_token())
             if isinstance(payload, ExportStream):
                 self._stream(status, payload)
             else:
@@ -48,13 +55,15 @@ def make_handler(registry: Registry, ops: ExportOps):
             if body is _BAD_JSON:
                 self._send(400, {"error": "invalid JSON body"})
                 return
-            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops)
+            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops, share=share,
+                                       token=self._share_token())
             self._send(status, payload)
 
         def do_DELETE(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops)
+            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops, share=share,
+                                       token=self._share_token())
             self._send(status, payload)
 
         def _read_json_body(self):
@@ -86,15 +95,18 @@ def make_handler(registry: Registry, ops: ExportOps):
             # Close after the stream: the body length is unknown up front, so a chunked
             # response plus an explicit close keeps the connection state simple.
             self.close_connection = True
-            self.send_response(status)
-            self.send_header("Content-Type", stream.content_type)
-            self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
-            self.send_header("Transfer-Encoding", "chunked")
-            self.send_header("Connection", "close")
-            self.end_headers()
             try:
-                # Pin the op for the stream's life inside the same try whose finally runs
-                # on_close, so the pin is always released (even on a client disconnect).
+                # Write the headers INSIDE the same try whose finally runs on_close, so on_close
+                # is guaranteed on every exit: a client that disconnects during the header write
+                # must still release the op pin and the share single-flight slot (K2GO-376),
+                # never strand them. on_open follows the headers, so a pre-header failure runs
+                # on_close without a matching on_open: the op cleanup (_finish) is safe either way.
+                self.send_response(status)
+                self.send_header("Content-Type", stream.content_type)
+                self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
+                self.send_header("Transfer-Encoding", "chunked")
+                self.send_header("Connection", "close")
+                self.end_headers()
                 if stream.on_open:
                     stream.on_open()
                 for block in stream.chunks:
@@ -104,6 +116,10 @@ def make_handler(registry: Registry, ops: ExportOps):
                     self.wfile.write(block)
                     self.wfile.write(b"\r\n")
                 self.wfile.write(b"0\r\n\r\n")
+                # The full body (and its terminator) is written: a clean close. A mid-stream
+                # client drop raises above and leaves this False, so the share gate counts the
+                # item delivered only on a clean close (K2GO-376).
+                stream.completed = True
             finally:
                 if stream.on_close:
                     stream.on_close()
@@ -118,10 +134,14 @@ def make_handler(registry: Registry, ops: ExportOps):
 def serve(config: Config) -> None:
     registry = Registry.load(config)
     ops = ExportOps(registry, config.staging_dir)
+    share = ShareOps(registry, ops)
     # Reclaim export op temps left by a dead process before serving (K2GO-507 process-death
-    # cleanup owner): a fresh process holds no ops, so any op temp on disk is an orphan.
+    # cleanup owner): a fresh process holds no ops, so any op temp on disk is an orphan. The
+    # share sweep then drops any in-memory sessions (K2GO-376 closer 2); a share session's own
+    # on-disk footprint is its child export temps, already reclaimed by the export sweep above.
     ops.sweep_startup()
-    httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry, ops))
+    share.sweep_startup()
+    httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry, ops, share))
     print(f"cx-core {VERSION} listening on http://{config.host}:{config.port} "
           f"(apps: {', '.join(registry.apps()) or 'none'})")
     httpd.serve_forever()

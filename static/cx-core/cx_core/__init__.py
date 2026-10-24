@@ -7,5 +7,5 @@ K2GO-507 export long-operation design.
 # The core build. Bumped per core change so a box can report which core it runs (GET
 # /v1/version), mirroring dash-node's package.json version and /system/version. The
 # cx_core Ansible role writes this into the [cx_core] section of iiab.ini.
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 __version__ = VERSION

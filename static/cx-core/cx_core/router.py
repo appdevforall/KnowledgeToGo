@@ -15,6 +15,7 @@ from .export import disk_total_free, has_room
 from .export_ops import ExportOps
 from .importing import is_within_dir
 from .registry import Registry
+from .share_ops import ShareOps
 
 Response = Tuple[int, Any]
 
@@ -165,10 +166,14 @@ def _export_prepare(ops: Optional[ExportOps], body: Any) -> Response:
 
 
 def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None,
-             ops: Optional[ExportOps] = None) -> Response:
+             ops: Optional[ExportOps] = None, share: Optional[ShareOps] = None,
+             token: Optional[str] = None) -> Response:
     """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
-    for a POST; ``ops`` is the export long-operation registry (the server supplies it, the
-    export-op routes need it)."""
+    for a POST; ``ops`` is the export long-operation registry and ``share`` is the share-gate
+    registry (the server supplies both; the routes that need them guard against None). ``token``
+    is the share session token: the server reads it from the ``X-Share-Token`` request header
+    (never the URL, so it stays out of access logs) and passes it here, so the router stays
+    header-agnostic and unit-testable without a socket."""
     trimmed = path.rstrip("/") or "/"
     segments = [unquote(s) for s in trimmed.split("/") if s != ""]
 
@@ -179,6 +184,17 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         # POST /v1/export/plan : plan an export (sizes only, no payload moved).
         if segments == ["v1", "export", "plan"]:
             return _export_plan(registry, body)
+        # POST /v1/share : open a share session, return its sessionId + token + manifest pointer.
+        if segments == ["v1", "share"]:
+            if share is None:
+                return 500, {"error": "share unavailable"}
+            items = body.get("items") if isinstance(body, dict) else None
+            return share.create(items)
+        # POST /v1/share/{sessionId}/complete : the receiver signals a clean, done transfer.
+        if len(segments) == 4 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "complete":
+            if share is None:
+                return 500, {"error": "share unavailable"}
+            return share.complete(segments[2], token)
         # POST /v1/dedup/check : receiver dedup verdicts, nothing moved.
         if segments == ["v1", "dedup", "check"]:
             return _dedup_check(registry, body)
@@ -196,6 +212,11 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
             if ops is None:
                 return 500, {"error": "export ops unavailable"}
             return ops.delete(segments[2])
+        # DELETE /v1/share/{sessionId} : cancel a share session (abort, by host or receiver).
+        if len(segments) == 3 and segments[0] == "v1" and segments[1] == "share":
+            if share is None:
+                return 500, {"error": "share unavailable"}
+            return share.delete(segments[2], token)
         # DELETE /v1/content/{app}/{localRef} : reclaim space by removing one item.
         if len(segments) == 4 and segments[0] == "v1" and segments[1] == "content":
             return _delete_item(registry, segments[2], segments[3])
@@ -224,6 +245,19 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         if ops is None:
             return 500, {"error": "export ops unavailable"}
         return ops.fetch(segments[3])
+
+    # GET /v1/share/{sessionId}/manifest : the bundle manifest over the session's item set.
+    if len(segments) == 4 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "manifest":
+        if share is None:
+            return 500, {"error": "share unavailable"}
+        return share.manifest(segments[2], token)
+
+    # GET /v1/share/{sessionId}/fetch/{itemRef} : stream one shared item (payload is an
+    # ExportStream the server streams). 409 while the item stages; the receiver retries.
+    if len(segments) == 5 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "fetch":
+        if share is None:
+            return 500, {"error": "share unavailable"}
+        return share.fetch(segments[2], segments[4], token)
 
     # GET /v1/storage : box content-volume disk summary + per-app content totals.
     if segments == ["v1", "storage"]:
