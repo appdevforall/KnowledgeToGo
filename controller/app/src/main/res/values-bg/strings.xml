@@ -1454,6 +1454,8 @@
     <string name="k2go_cx_export_title">Експорт на съдържание</string>
     <string name="k2go_cx_export_destination_fmt">Към: %1$s</string>
     <string name="k2go_cx_export_preparing">Подготовка на експорта...</string>
+    <string name="k2go_cx_export_item_preparing_fmt">Подготовка на %1$s...</string>
+    <string name="k2go_cx_export_category_fmt">%1$s: %2$d%%</string>
     <string name="k2go_cx_export_overall_fmt">Общо: %1$d%%</string>
     <string name="k2go_cx_export_eta_fmt">Остават %1$s</string>
     <string name="k2go_cx_export_confirm_fmt">Да се експортират ли %1$d елемента (%2$s) на избрания диск?</string>

@@ -3,11 +3,11 @@
  * Name        : CxCoreDataSource.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-427. App-side client of the content-exchange core (cx-core)
+ * Description : K2GO-427 / K2GO-507. App-side client of the content-exchange core (cx-core)
  *               through dash-node's relay (/k2go-api/v1/*). Read side (list + storage)
- *               plus the export calls (plan + streaming item). Same HttpURLConnection
- *               shape as content/RestContentClient. The one place this feature touches
- *               HttpURLConnection.
+ *               plus the export long operation (prepare / status / fetch / abort) and the
+ *               import calls. Same HttpURLConnection shape as content/RestContentClient. The
+ *               one place this feature touches HttpURLConnection.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.data;
@@ -40,6 +40,12 @@ public final class CxCoreDataSource {
     /** Delete blocks on the box's own delete (Kolibri deletechannel, Kiwix reindex), which can run
      *  well past the read-side timeout, so it waits longer than a plain read. */
     private static final int DELETE_READ_TIMEOUT_MS = 120000;
+    /** K2GO-507: the export fetch read timeout is a per-read (inactivity) gap, NOT a total wall
+     *  clock. {@link HttpURLConnection#setReadTimeout} fires only when a single read blocks this
+     *  long with no bytes, and it resets on every read, so a multi-GB staged tar can stream for
+     *  minutes as long as bytes keep flowing; only a genuine stall trips it. The op is already
+     *  staged when we fetch, so the response head returns fast. */
+    private static final int FETCH_STALL_TIMEOUT_MS = 60000;
 
     /** {@code GET /v1/apps} -> {@code {"apps": [...]}}. */
     public JSONObject getApps() throws Exception {
@@ -81,24 +87,43 @@ public final class CxCoreDataSource {
     }
 
     /**
-     * {@code GET /v1/export/item/{app}/{localRef}} -> the item's streaming archive. The core sends a
-     * chunked response with no Content-Length; the caller streams the body and closes the returned
-     * handle to release the connection. Path segments are percent-encoded (the core decodes them).
+     * {@code POST /v1/export/prepare} with {@code {app, localRef}} -> {@code {opId, state, totalBytes}}.
+     * Starts (or finds nothing to stage for) the export operation; returns fast. K2GO-507.
      */
-    public Stream openExportItem(String app, String localRef) throws Exception {
-        String url = V1 + "/export/item/" + encodeSegment(app) + "/" + encodeSegment(localRef);
+    public JSONObject postExportPrepare(String app, String localRef) throws Exception {
+        JSONObject body = new JSONObject().put("app", app).put("localRef", localRef);
+        return postJson(V1 + "/export/prepare", body);
+    }
+
+    /**
+     * {@code GET /v1/export/status/{opId}} -> {@code {state, stagedBytes, totalBytes, error?}}. A 404
+     * means the op was swept; it surfaces as {@link CxHttpException} with {@code code() == 404} so the
+     * caller can re-prepare rather than keep polling a dead id. K2GO-507.
+     */
+    public JSONObject getExportStatus(String opId) throws Exception {
+        return getJson(V1 + "/export/status/" + encodeSegment(opId));
+    }
+
+    /**
+     * {@code GET /v1/export/fetch/{opId}} -> the staged archive as a chunked stream. The op is already
+     * staged, so the response head returns fast; the body uses a per-read STALL timeout (see
+     * {@link #FETCH_STALL_TIMEOUT_MS}), not a wall clock. The caller streams the body and closes the
+     * returned handle to release the connection (the core clears the op on close). K2GO-507.
+     */
+    public Stream openExportFetch(String opId) throws Exception {
+        String url = V1 + "/export/fetch/" + encodeSegment(opId);
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         try {
             c.setUseCaches(false);
             c.setConnectTimeout(CONNECT_TIMEOUT_MS);
-            c.setReadTimeout(READ_TIMEOUT_MS);
+            c.setReadTimeout(FETCH_STALL_TIMEOUT_MS);
             c.setRequestMethod("GET");
             c.setRequestProperty("Accept", "application/octet-stream");
             int code = c.getResponseCode();
             if (code < 200 || code >= 400) {
                 String text = readAll(c.getErrorStream());
                 c.disconnect();
-                throw new Exception("HTTP " + code + ": " + text);
+                throw new CxHttpException(code, text);
             }
             String filename = parseContentDispositionFilename(c.getHeaderField("Content-Disposition"));
             return new Stream(c, c.getInputStream(), filename);
@@ -106,6 +131,11 @@ public final class CxCoreDataSource {
             c.disconnect();
             throw e;
         }
+    }
+
+    /** {@code DELETE /v1/export/{opId}} -> {@code {ok}}. Client abort of an in-flight op. K2GO-507. */
+    public JSONObject deleteExportOp(String opId) throws Exception {
+        return deleteJson(V1 + "/export/" + encodeSegment(opId));
     }
 
     private static JSONObject postJson(String urlStr, JSONObject body) throws Exception {
@@ -126,7 +156,7 @@ public final class CxCoreDataSource {
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
             if (!ok) {
-                throw new Exception("HTTP " + code + ": " + text);
+                throw new CxHttpException(code, text);
             }
             return new JSONObject(text.isEmpty() ? "{}" : text);
         } finally {
@@ -146,7 +176,7 @@ public final class CxCoreDataSource {
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
             if (!ok) {
-                throw new Exception("HTTP " + code + ": " + text);
+                throw new CxHttpException(code, text);
             }
             return new JSONObject(text.isEmpty() ? "{}" : text);
         } finally {
@@ -166,7 +196,7 @@ public final class CxCoreDataSource {
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
             if (!ok) {
-                throw new Exception("HTTP " + code + ": " + text);
+                throw new CxHttpException(code, text);
             }
             return new JSONObject(text.isEmpty() ? "{}" : text);
         } finally {
@@ -213,6 +243,24 @@ public final class CxCoreDataSource {
         }
         int semi = value.indexOf(';');
         return semi >= 0 ? value.substring(0, semi).trim() : value;
+    }
+
+    /**
+     * A non-2xx/3xx HTTP response, carrying the status code so a caller can branch on it: the export
+     * status poll treats {@code code() == 404} as "operation swept" and re-prepares. Extends
+     * {@link Exception}, so callers that only {@code catch (Exception)} keep working. K2GO-507.
+     */
+    public static final class CxHttpException extends Exception {
+        private final int code;
+
+        CxHttpException(int code, String message) {
+            super("HTTP " + code + ": " + message);
+            this.code = code;
+        }
+
+        public int code() {
+            return code;
+        }
     }
 
     /** A live streaming response: the body plus the server-suggested name. Close to release the socket. */

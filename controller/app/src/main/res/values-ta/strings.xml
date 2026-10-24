@@ -1467,6 +1467,8 @@
     <string name="k2go_cx_export_title">உள்ளடக்கத்தை ஏற்றுமதி செய்</string>
     <string name="k2go_cx_export_destination_fmt">இதற்கு: %1$s</string>
     <string name="k2go_cx_export_preparing">ஏற்றுமதி தயாராகிறது...</string>
+    <string name="k2go_cx_export_item_preparing_fmt">%1$s தயாராகிறது...</string>
+    <string name="k2go_cx_export_category_fmt">%1$s: %2$d%%</string>
     <string name="k2go_cx_export_overall_fmt">மொத்தம்: %1$d%%</string>
     <string name="k2go_cx_export_eta_fmt">%1$s மீதம்</string>
     <string name="k2go_cx_export_confirm_fmt">%1$d உருப்படிகளை (%2$s) தேர்ந்தெடுத்த டிரைவுக்கு ஏற்றுமதி செய்யவா?</string>

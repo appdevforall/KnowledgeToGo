@@ -240,6 +240,11 @@ final class ExportSession {
         return job.currentItemPercent();
     }
 
+    /** The active item's phase (prepare or write) so the UI can label the staging half. K2GO-507. */
+    int currentItemPhase() {
+        return job.phase(job.index());
+    }
+
     /** One per-app progress row (a category), in the order the apps first appear in the request. */
     static final class Category {
         final String app;

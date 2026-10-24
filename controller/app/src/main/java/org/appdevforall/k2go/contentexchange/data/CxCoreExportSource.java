@@ -3,9 +3,9 @@
  * Name        : CxCoreExportSource.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-427. Data-layer implementation of the export source port against
- *               cx-core (through dash-node's /v1 relay): POST /v1/export/plan, the
- *               streaming GET /v1/export/item, and the collection-manifest assembly.
+ * Description : K2GO-427 / K2GO-507. Data-layer implementation of the export source port against
+ *               cx-core (through dash-node's /v1 relay): POST /v1/export/plan, the export long
+ *               operation (prepare / status / fetch / abort), and the collection-manifest assembly.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.data;
@@ -13,6 +13,8 @@ package org.appdevforall.k2go.contentexchange.data;
 import org.appdevforall.k2go.contentexchange.domain.ContentExportSource;
 import org.appdevforall.k2go.contentexchange.domain.ExportItem;
 import org.appdevforall.k2go.contentexchange.domain.ExportPlan;
+import org.appdevforall.k2go.contentexchange.domain.ExportPrep;
+import org.appdevforall.k2go.contentexchange.domain.ExportStatus;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,9 +95,59 @@ public final class CxCoreExportSource implements ContentExportSource {
     }
 
     @Override
-    public ItemPayload open(ItemRef ref) throws Exception {
-        CxCoreDataSource.Stream stream = dataSource.openExportItem(ref.app(), ref.localRef());
+    public ExportPrep prepare(ItemRef ref) throws Exception {
+        JSONObject r = dataSource.postExportPrepare(ref.app(), ref.localRef());
+        String opId = r.optString("opId", "");
+        if (opId.isEmpty()) {
+            throw new Exception("export prepare returned no opId");
+        }
+        boolean ready = "ready".equals(r.optString("state", ""));
+        return new ExportPrep(opId, ready, r.optLong("totalBytes", 0L));
+    }
+
+    @Override
+    public ExportStatus status(String opId) throws Exception {
+        JSONObject r;
+        try {
+            r = dataSource.getExportStatus(opId);
+        } catch (CxCoreDataSource.CxHttpException e) {
+            if (e.code() == 404) {
+                return ExportStatus.gone();   // the op was swept: the caller re-prepares
+            }
+            throw e;
+        }
+        ExportStatus.State state;
+        switch (r.optString("state", "")) {
+            case "ready":
+                state = ExportStatus.State.READY;
+                break;
+            case "error":
+                state = ExportStatus.State.ERROR;
+                break;
+            default:
+                state = ExportStatus.State.STAGING;
+                break;
+        }
+        String error = r.isNull("error") ? null : r.optString("error", null);
+        return new ExportStatus(state, r.optLong("stagedBytes", 0L), r.optLong("totalBytes", 0L), error);
+    }
+
+    @Override
+    public ItemPayload fetch(String opId) throws Exception {
+        CxCoreDataSource.Stream stream = dataSource.openExportFetch(opId);
         return new ItemPayload(stream.body(), stream.filename(), stream);
+    }
+
+    @Override
+    public void abort(String opId) {
+        if (opId == null || opId.isEmpty()) {
+            return;
+        }
+        try {
+            dataSource.deleteExportOp(opId);
+        } catch (Exception ignored) {
+            // Best-effort: a swept or already-dropped op 404s; the box's TTL sweep is the backstop.
+        }
     }
 
     @Override

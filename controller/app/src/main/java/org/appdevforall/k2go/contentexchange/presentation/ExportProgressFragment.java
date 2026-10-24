@@ -136,7 +136,12 @@ public class ExportProgressFragment extends Fragment {
         if (running && !preparing && i >= 0) {
             itemLabel.setVisibility(View.VISIBLE);
             itemBar.setVisibility(View.VISIBLE);
-            itemLabel.setText(session.label(i));
+            // K2GO-507: during the prepare half the box is staging the item (it has not started
+            // streaming yet), so name that so the slow first half of the bar reads as staging.
+            String title = session.label(i);
+            itemLabel.setText(session.currentItemPhase() == ExportJob.PHASE_PREPARE
+                    ? getString(R.string.k2go_cx_export_item_preparing_fmt, title)
+                    : title);
             itemBar.setProgressCompat(session.currentItemPercent(), true);
         } else {
             itemLabel.setVisibility(View.GONE);

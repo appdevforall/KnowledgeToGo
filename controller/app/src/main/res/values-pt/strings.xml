@@ -1526,6 +1526,8 @@
     <string name="k2go_cx_export_title">Exportar conteúdo</string>
     <string name="k2go_cx_export_destination_fmt">Para: %1$s</string>
     <string name="k2go_cx_export_preparing">Preparando a exportação...</string>
+    <string name="k2go_cx_export_item_preparing_fmt">Preparando %1$s...</string>
+    <string name="k2go_cx_export_category_fmt">%1$s: %2$d%%</string>
     <string name="k2go_cx_export_overall_fmt">Total: %1$d%%</string>
     <string name="k2go_cx_export_eta_fmt">%1$s restantes</string>
     <string name="k2go_cx_export_confirm_fmt">Exportar %1$d itens (%2$s) para a unidade selecionada?</string>
