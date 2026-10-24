@@ -19,13 +19,34 @@ from .model import ABSENT, AUTHORITATIVE, ManifestItem
 
 @dataclass
 class ExportStream:
-    """One item staged for export: a byte stream the core serves and the front moves
-    (ADR D1c). ``on_close`` releases any staging (a temp export tree) after streaming."""
+    """One item's byte stream the core serves and the front moves (ADR D1c). ``on_open`` runs
+    when the server begins streaming and ``on_close`` after the last byte (or on any streaming
+    error); the EXPORT OP LAYER sets both: on_open pins the op for the stream's life, on_close
+    unpins and drops it. The server fires on_open at the top of the same try whose finally runs
+    on_close, so the pin and its release are a matched pair even when the client disconnects.
+    The adapter only opens the stream; the op layer owns the lifecycle (K2GO-507)."""
 
     filename: str
     content_type: str
     chunks: Iterable[bytes]
     on_close: Optional[Callable[[], None]] = None
+    on_open: Optional[Callable[[], None]] = None
+
+
+@dataclass
+class ExportPlan:
+    """How to export one item (K2GO-507). ``stages`` is True when the item must be staged
+    into a temp before its bytes can stream (a Kolibri channel), False when it streams
+    directly (a Kiwix .zim, a Calibre book dir). ``total_bytes`` is the size to move: the
+    disk preflight and the progress denominator. ``filename`` / ``content_type`` describe
+    the stream. Returned by ``prepare_export``; None when the item is absent or not
+    exportable. The op layer owns the temp and the staging thread; the adapter only reports
+    this plan and, when asked, stages and opens the stream."""
+
+    stages: bool
+    total_bytes: int
+    filename: str
+    content_type: str
 
 
 class ContentAdapter(ABC):
@@ -53,9 +74,25 @@ class ContentAdapter(ABC):
                 return item
         return None
 
-    def open_export(self, local_ref: str) -> Optional[ExportStream]:
-        """Stage one item and return a byte stream, or None when the item is absent or the
-        adapter cannot export it. Read-only on the source. Default: export not supported."""
+    def prepare_export(self, local_ref: str) -> "Optional[ExportPlan]":
+        """Validate that this item can be exported and report its export plan (K2GO-507).
+        Read-only on the source: no staging, no temp. Default: export not supported."""
+        return None
+
+    def stage_export(self, local_ref: str, dest: str,
+                     should_cancel: Optional[Callable[[], bool]] = None) -> bool:
+        """Stage the item into ``dest`` (the op layer's temp dir), for a plan with
+        stages=True. Read-only on the source (copies out). Runs off the request thread, so it
+        may be slow. ``should_cancel``, when supplied, is polled during long work: once it
+        returns True (the op was aborted or swept) the adapter must stop and return False, so a
+        cancel actually stops the server-side work. Returns True on success. Default: nothing
+        to stage."""
+        return False
+
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+        """Open the byte stream for a prepared export: the staged tar (``staged_dir`` set) or
+        the direct file / tar (``staged_dir`` None). The op layer sets ``on_close``. Returns
+        None when the item is no longer exportable. Default: not supported."""
         return None
 
     def check(self, dedup: dict) -> str:

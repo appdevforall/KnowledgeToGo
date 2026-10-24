@@ -1,7 +1,11 @@
 """Content-exchange core: an in-box REST service for granular content exchange.
 
-See controller/docs/ADR-content-exchange.md for the frozen Pillar 0 contracts.
-This package holds the read side of Pillar 1 (list + identity + size).
+See controller/docs/ADR-content-exchange.md for the frozen Pillar 0 contracts and the
+K2GO-507 export long-operation design.
 """
 
-__version__ = "0.1.0"
+# The core build. Bumped per core change so a box can report which core it runs (GET
+# /v1/version), mirroring dash-node's package.json version and /system/version. The
+# cx_core Ansible role writes this into the [cx_core] section of iiab.ini.
+VERSION = "0.2.0"
+__version__ = VERSION

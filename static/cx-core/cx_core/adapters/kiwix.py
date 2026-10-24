@@ -32,7 +32,7 @@ from ..model import (
     Identity,
     ManifestItem,
 )
-from ..ports import ContentAdapter, ExportStream
+from ..ports import ContentAdapter, ExportPlan, ExportStream
 
 # openzim header: magic number is uint32 little-endian 0x044D495A at offset 0, and the
 # 16-byte UUID is at offset 8. We only need the first 24 bytes.
@@ -160,19 +160,37 @@ class KiwixAdapter(ContentAdapter):
             return None
         return build_item(local_ref, size, read_zim_uuid_from_file(path))
 
-    def open_export(self, local_ref: str) -> Optional[ExportStream]:
-        # The item IS the .zim file: stream it as-is (no archive wrapper). Same containment
+    def prepare_export(self, local_ref: str) -> Optional[ExportPlan]:
+        # A ZIM streams directly (it IS the file), so nothing is staged. Same containment
         # guard as get(), so a traversal ref never reaches the filesystem.
-        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+        path = self._export_path(local_ref)
+        if path is None:
             return None
-        path = os.path.join(self._dir, local_ref)
-        if not os.path.isfile(path):
+        return ExportPlan(
+            stages=False,
+            total_bytes=os.path.getsize(path),
+            filename=local_ref,
+            content_type="application/octet-stream",
+        )
+
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+        # Direct app: staged_dir is unused. Re-validate at fetch time (the file may have
+        # vanished between prepare and fetch).
+        path = self._export_path(local_ref)
+        if path is None:
             return None
         return ExportStream(
             filename=local_ref,
             content_type="application/octet-stream",
             chunks=file_stream(path),
         )
+
+    def _export_path(self, local_ref: str) -> Optional[str]:
+        """The on-disk path of an exportable ZIM, or None. Containment-guarded, like get()."""
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return None
+        path = os.path.join(self._dir, local_ref)
+        return path if os.path.isfile(path) else None
 
     def check(self, dedup: dict) -> str:
         # Same (creator, lang, flavour) line is the comparable set; the UUID is the exact

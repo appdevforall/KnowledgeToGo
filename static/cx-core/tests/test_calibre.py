@@ -90,7 +90,18 @@ class CalibreAdapterEndToEndTest(unittest.TestCase):
 
 
 class CalibreExportTest(unittest.TestCase):
-    def test_open_export_tars_the_book_dir(self):
+    def test_prepare_export_is_direct_with_total_bytes(self):
+        with tempfile.TemporaryDirectory() as lib:
+            db = os.path.join(lib, "metadata.db")
+            _make_db(db)
+            os.makedirs(os.path.join(lib, "Tolkien", "The Hobbit (1)"))
+            plan = CalibreAdapter(db).prepare_export("u-1")
+            self.assertIsNotNone(plan)
+            self.assertFalse(plan.stages)  # a book dir streams directly
+            self.assertEqual(plan.total_bytes, 3000)  # 1000 EPUB + 2000 PDF
+            self.assertEqual(plan.filename, "u-1.tar")
+
+    def test_open_fetch_tars_the_book_dir(self):
         import io
         import tarfile
 
@@ -104,7 +115,7 @@ class CalibreExportTest(unittest.TestCase):
             with open(os.path.join(book_dir, "cover.jpg"), "wb") as f:
                 f.write(b"JPG")
 
-            stream = CalibreAdapter(db).open_export("u-1")
+            stream = CalibreAdapter(db).open_fetch("u-1")
             self.assertIsNotNone(stream)
             self.assertEqual(stream.filename, "u-1.tar")
             blob = b"".join(stream.chunks)
@@ -112,20 +123,22 @@ class CalibreExportTest(unittest.TestCase):
                 names = sorted(m.name for m in tar.getmembers() if m.isfile())
                 self.assertEqual(names, ["u-1/cover.jpg", "u-1/hobbit.epub"])
 
-    def test_open_export_missing_book_or_dir_is_none(self):
+    def test_export_missing_book_or_dir_is_none(self):
         with tempfile.TemporaryDirectory() as lib:
             db = os.path.join(lib, "metadata.db")
             _make_db(db)  # row exists but the book dir was never created
             adapter = CalibreAdapter(db)
-            self.assertIsNone(adapter.open_export("u-1"))
-            self.assertIsNone(adapter.open_export("no-such-uuid"))
+            self.assertIsNone(adapter.prepare_export("u-1"))
+            self.assertIsNone(adapter.prepare_export("no-such-uuid"))
+            self.assertIsNone(adapter.open_fetch("u-1"))
 
-    def test_open_export_rejects_traversal_path(self):
+    def test_export_rejects_traversal_path(self):
         with tempfile.TemporaryDirectory() as lib:
             db = os.path.join(lib, "metadata.db")
             # a malicious books.path must not escape the library root.
             _make_db(db, book_path="../../etc")
-            self.assertIsNone(CalibreAdapter(db).open_export("u-1"))
+            self.assertIsNone(CalibreAdapter(db).prepare_export("u-1"))
+            self.assertIsNone(CalibreAdapter(db).open_fetch("u-1"))
 
 
 class CalibreCheckTest(unittest.TestCase):

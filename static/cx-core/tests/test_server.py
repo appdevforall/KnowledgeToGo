@@ -7,7 +7,9 @@ import unittest
 import uuid
 from http.server import ThreadingHTTPServer
 
+from cx_core import VERSION
 from cx_core.adapters.kiwix import KiwixAdapter
+from cx_core.export_ops import ExportOps
 from cx_core.registry import Registry
 from cx_core.server import make_handler
 
@@ -30,7 +32,8 @@ class ServerHttpTest(unittest.TestCase):
         self.zim_name = "wikipedia_en_all_2024-01.zim"
         self.zim_bytes = _zim(os.path.join(self._dir.name, self.zim_name), body_len=200000)
         reg = Registry([KiwixAdapter(self._dir.name)])
-        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(reg))
+        ops = ExportOps(reg, staging_dir=self._dir.name, ttl_seconds=60)
+        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(reg, ops))
         self.port = self.httpd.server_address[1]
         self._t = threading.Thread(target=self.httpd.serve_forever, daemon=True)
         self._t.start()
@@ -43,14 +46,46 @@ class ServerHttpTest(unittest.TestCase):
     def _conn(self):
         return http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
 
-    def test_export_item_stream_matches_source(self):
+    def test_export_longop_stream_matches_source(self):
+        # Prepare -> status (ready, direct app) -> fetch over a real socket, so the chunked
+        # stream is decoded by a real client (K2GO-507 flow, Kiwix = direct).
         c = self._conn()
-        c.request("GET", f"/v1/export/item/kiwix/{self.zim_name}")
+        body = json.dumps({"app": "kiwix", "localRef": self.zim_name})
+        c.request("POST", "/v1/export/prepare", body=body,
+                  headers={"Content-Type": "application/json"})
+        prep = json.loads(c.getresponse().read())
+        c.close()
+        self.assertEqual(prep["state"], "ready")
+        self.assertEqual(prep["totalBytes"], len(self.zim_bytes))
+        op_id = prep["opId"]
+
+        c = self._conn()
+        c.request("GET", f"/v1/export/status/{op_id}")
+        st = json.loads(c.getresponse().read())
+        c.close()
+        self.assertEqual(st["state"], "ready")
+        self.assertEqual(st["stagedBytes"], len(self.zim_bytes))
+
+        c = self._conn()
+        c.request("GET", f"/v1/export/fetch/{op_id}")
         resp = c.getresponse()
         self.assertEqual(resp.status, 200)
         got = resp.read()
         c.close()
         self.assertEqual(got, self.zim_bytes)
+
+        # The op is dropped after fetch (on_close), so a second status is 404.
+        c = self._conn()
+        c.request("GET", f"/v1/export/status/{op_id}")
+        self.assertEqual(c.getresponse().status, 404)
+        c.close()
+
+    def test_version_over_http(self):
+        c = self._conn()
+        c.request("GET", "/v1/version")
+        out = json.loads(c.getresponse().read())
+        c.close()
+        self.assertEqual(out, {"version": VERSION})
 
     def test_export_plan_over_http(self):
         c = self._conn()
@@ -68,7 +103,7 @@ class ServerHttpTest(unittest.TestCase):
         resp = c.getresponse()
         out = json.loads(resp.read())
         c.close()
-        self.assertEqual(out, {"apps": ["kiwix"]})
+        self.assertEqual(out, {"apps": ["kiwix"], "version": VERSION})
 
     def test_delete_item_over_http(self):
         c = self._conn()

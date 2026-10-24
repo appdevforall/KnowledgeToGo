@@ -15,7 +15,6 @@ The adapter reads metadata.db in readonly (the sockets/books.query.ts pattern). 
 from __future__ import annotations
 
 import os
-import os
 import shutil
 import sqlite3
 import tarfile
@@ -25,7 +24,7 @@ from typing import List, Optional
 from ..export import resolve_within, tar_stream
 from ..importing import safe_extract_tar, single_child_dir
 from ..model import ABSENT, SAME_VERSION, SOFT, Dedup, Identity, ManifestItem, normalize_text
-from ..ports import ContentAdapter, ExportStream
+from ..ports import ContentAdapter, ExportPlan, ExportStream
 from .calibreweb import CalibreWebClient, resolve_calibre_credentials
 
 # One row per book, with its authors, formats, total byte-size and one external id if any.
@@ -218,21 +217,42 @@ class CalibreAdapter(ContentAdapter):
             con.close()
         return row[0] if row and row[0] else None
 
-    def open_export(self, local_ref: str) -> Optional[ExportStream]:
-        # Export the book's own directory (its format files, cover and opf), the layout
-        # Calibre itself reads back. books.path comes from the DB, so a containment guard
-        # keeps a crafted path from escaping the library root.
-        rel = self._book_path(local_ref)
-        if rel is None:
+    def prepare_export(self, local_ref: str) -> Optional[ExportPlan]:
+        # A book's directory streams directly as a tar, so nothing is staged. total_bytes is
+        # the item's summed data size (the tar also carries the cover / opf sidecars, so the
+        # stream is a little larger; total_bytes is the progress denominator, not exact).
+        book_dir = self._export_dir(local_ref)
+        if book_dir is None:
             return None
-        book_dir = resolve_within(self._lib_root, rel)
-        if book_dir is None or not os.path.isdir(book_dir):
+        item = self.get(local_ref)
+        return ExportPlan(
+            stages=False,
+            total_bytes=item.bytes if item else 0,
+            filename=f"{local_ref}.tar",
+            content_type="application/x-tar",
+        )
+
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+        # Direct app: staged_dir is unused. Re-resolve at fetch time.
+        book_dir = self._export_dir(local_ref)
+        if book_dir is None:
             return None
         return ExportStream(
             filename=f"{local_ref}.tar",
             content_type="application/x-tar",
             chunks=tar_stream(book_dir, arcname=local_ref),
         )
+
+    def _export_dir(self, local_ref: str) -> Optional[str]:
+        # books.path comes from the DB, so a containment guard keeps a crafted path from
+        # escaping the library root.
+        rel = self._book_path(local_ref)
+        if rel is None:
+            return None
+        book_dir = resolve_within(self._lib_root, rel)
+        if book_dir is None or not os.path.isdir(book_dir):
+            return None
+        return book_dir
 
     def _query(self, only_uuid: Optional[str]) -> List[ManifestItem]:
         if not os.path.exists(self._db):
