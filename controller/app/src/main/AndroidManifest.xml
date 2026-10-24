@@ -248,6 +248,15 @@
                 android:value="Removes selected library content from the co-located server to reclaim device storage." />
         </service>
 
+        <service
+            android:name=".contentexchange.presentation.ContentShareService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Shares selected library content to a nearby device over a local-only connection to the co-located server." />
+        </service>
+
         <!-- ADFA-5333: runs the LIVE dash-node update in the background (notification only) instead of
              behind a blocking modal. Same shape as the download services above: not exported, and
              specialUse because it drives the in-server blue-green rebuild rather than a stock transfer. -->

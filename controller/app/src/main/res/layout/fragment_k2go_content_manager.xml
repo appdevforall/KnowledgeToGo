@@ -2,8 +2,8 @@
 <!-- K2GO-427: content manager (gestor). A RecyclerView lists managed content grouped by app, each
      item with its size (recycled rows: a large library must not inflate one view per item). The
      header block (title + subtitle + storage summary) and the per-app group headers are row types in
-     the same list. The bottom action bar (Export / Share / Delete) is present but disabled in this
-     slice: the actions are later slices. -->
+     the same list. The bottom action bar (Export / Share / Delete) acts on the selection; the
+     buttons are enabled by the fragment. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -55,7 +55,7 @@
         android:paddingBottom="24dp"
         android:scrollbars="vertical" />
 
-    <!-- Bottom action bar: shown when at least one item is selected. Disabled in this slice. -->
+    <!-- Bottom action bar: shown when at least one item is selected. -->
     <LinearLayout
         android:id="@+id/k2go_cx_actionbar"
         android:layout_width="match_parent"
@@ -110,14 +110,5 @@
                 android:enabled="false"
                 android:text="@string/k2go_cx_action_delete" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/k2go_cx_stub_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/k2go_cx_actions_pending"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
     </LinearLayout>
 </LinearLayout>
