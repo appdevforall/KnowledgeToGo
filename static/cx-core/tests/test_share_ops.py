@@ -542,6 +542,44 @@ class ShareRouteTest(unittest.TestCase):
             self.assertEqual(status, 500, path)
 
 
+class PreHeaderDropTest(unittest.TestCase):
+    """A client that disconnects DURING the response header write must still fire the stream's
+    on_close, so the single-flight slot is released and the safety cap can reclaim the session.
+    The server writes the headers inside the same try whose finally runs on_close; this checks
+    that guarantee through the real handler (white-box, because a real-socket drop timed exactly
+    at the header write is not deterministic)."""
+
+    def test_pre_header_disconnect_releases_slot_so_cap_reclaims(self):
+        with tempfile.TemporaryDirectory() as d:
+            share, ops, reg = _share([_DirectFake({"a.zim": 10})], d, cap=3600)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            status, stream = share.fetch(sid, "0", token)  # claims the single-flight slot
+            self.assertEqual(status, 200)
+            self.assertIn("0", share._sessions[sid].streaming)
+
+            # A handler whose header write fails, as if the client dropped during the headers.
+            handler_cls = make_handler(reg, ops, share)
+
+            class _FailHeaders(handler_cls):
+                def send_response(self, *_a, **_k):
+                    raise BrokenPipeError("client gone during headers")
+
+            handler = _FailHeaders.__new__(_FailHeaders)  # skip the socket __init__
+            handler.close_connection = False
+            with self.assertRaises(BrokenPipeError):
+                handler._stream(200, stream)
+
+            # on_close ran in the finally despite the header failure: the slot is released and the
+            # item is NOT delivered (the body never streamed).
+            self.assertNotIn("0", share._sessions[sid].streaming)
+            _, man = share.manifest(sid, token)
+            self.assertFalse(man["items"][0]["delivered"])
+            # With the slot released, the cap reclaims the otherwise-abandoned session.
+            share._sessions[sid].last_seen -= 4000
+            share._sweep_capped()
+            self.assertNotIn(sid, share._sessions)
+
+
 class ShareHttpTest(unittest.TestCase):
     """End-to-end over a real socket: POST create, GET manifest, GET fetch (chunked stream
     decoded by a real client), POST complete, all with the token in the X-Share-Token header."""

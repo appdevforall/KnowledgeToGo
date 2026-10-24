@@ -95,15 +95,18 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
             # Close after the stream: the body length is unknown up front, so a chunked
             # response plus an explicit close keeps the connection state simple.
             self.close_connection = True
-            self.send_response(status)
-            self.send_header("Content-Type", stream.content_type)
-            self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
-            self.send_header("Transfer-Encoding", "chunked")
-            self.send_header("Connection", "close")
-            self.end_headers()
             try:
-                # Pin the op for the stream's life inside the same try whose finally runs
-                # on_close, so the pin is always released (even on a client disconnect).
+                # Write the headers INSIDE the same try whose finally runs on_close, so on_close
+                # is guaranteed on every exit: a client that disconnects during the header write
+                # must still release the op pin and the share single-flight slot (K2GO-376),
+                # never strand them. on_open follows the headers, so a pre-header failure runs
+                # on_close without a matching on_open: the op cleanup (_finish) is safe either way.
+                self.send_response(status)
+                self.send_header("Content-Type", stream.content_type)
+                self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
+                self.send_header("Transfer-Encoding", "chunked")
+                self.send_header("Connection", "close")
+                self.end_headers()
                 if stream.on_open:
                     stream.on_open()
                 for block in stream.chunks:

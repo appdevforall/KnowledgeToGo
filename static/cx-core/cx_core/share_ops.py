@@ -138,9 +138,13 @@ class ShareOps:
 
     def manifest(self, session_id: str, token: Any) -> Response:
         """The bundle manifest over the session's scoped set: per-item identity, size and
-        upstream hash when present, each tagged with its itemRef and whether it is already
-        delivered (so a resuming receiver skips it). Reuses the read-side item JSON, so it is the
-        same manifest shape the disk export builds."""
+        upstream hash when present, each tagged with its itemRef and a ``delivered`` flag.
+        Reuses the read-side item JSON, so it is the same manifest shape the disk export builds.
+
+        ``delivered`` is ADVISORY: it means the SENDER streamed this item to completion once (a
+        clean stream close), NOT that the receiver persisted it. It is a progress / resume HINT.
+        The receiver's resume authority must be its OWN persisted state, so it never skips an item
+        it received but failed to save."""
         session = self._resolve(session_id, token)
         if isinstance(session, tuple):
             return session
