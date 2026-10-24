@@ -1497,4 +1497,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Tartalomkezelő</string>
     <string name="k2go_settings_content_mgr_sub">Tartalom kezelése, exportálása és eltávolítása</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Az összes kijelölése ebben a csoportban</string>
+    <string name="k2go_cx_export_categories">Kategória szerint</string>
 </resources>

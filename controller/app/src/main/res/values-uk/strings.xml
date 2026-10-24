@@ -1497,4 +1497,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Менеджер контенту</string>
     <string name="k2go_settings_content_mgr_sub">Керування, експорт і видалення вмісту</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Вибрати все в цій групі</string>
+    <string name="k2go_cx_export_categories">За категорією</string>
 </resources>

@@ -1517,4 +1517,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Məzmun meneceri</string>
     <string name="k2go_settings_content_mgr_sub">Məzmunu idarə edin, ixrac edin və silin</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Bu qrupda hamısını seç</string>
+    <string name="k2go_cx_export_categories">Kateqoriyaya görə</string>
 </resources>
