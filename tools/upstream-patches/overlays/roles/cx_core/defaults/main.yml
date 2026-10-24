@@ -26,3 +26,24 @@ cx_core_port: 9500
 # The PDSM service wrapper to install under proot. Ships in the repo next to the
 # dash-node wrapper; both drivers (this role and the iiab-android bootstrap) copy it.
 cx_core_pdsm_src: "{{ cx_core_src_dir }}/../pdsm/cx-core"
+
+
+# ---- Off-loopback Share exposure (K2GO-376, Pillar Share) ----
+# Granular wireless Share lets a paired peer on the hotspot PULL selected content from
+# this box's live cx-core /v1/share gate. cx-core stays bound to loopback: a dedicated
+# nginx listener is the ONLY off-box surface, and it proxies ONLY /v1/share/<session>/
+# ... (never the rest of the /v1 API). The share token (X-Share-Token header) is the
+# auth; this scope is defense in depth. Design + the rootfs contract:
+# controller/docs/cx-core-share-exposure.md.
+
+# The TCP port the Share listener binds on 0.0.0.0. 8095 is free on an IIAB box: the
+# 80xx cluster uses 8080/8083/8089 (calibre / calibre-web / sugarizer), 8085 is the
+# K2Go portal, and AzuraCast sits at 10000+. Site-configurable, per IIAB tradition;
+# the receiver's QR carries <senderHotspotIp>:<this port>.
+cx_core_share_port: 8095
+
+# Master switch for the off-box Share surface. False removes the listener and keeps
+# cx-core loopback-only (in-box content exchange still works; only wireless Share is
+# off). A kill-switch for the one security-sensitive surface, independent of
+# cx_core_enabled.
+cx_core_share_expose: True

@@ -21,3 +21,41 @@
     name: cx-core
     state: stopped
   when: not is_proot and not cx_core_enabled
+
+
+# ---- Off-loopback Share listener (K2GO-376). The dedicated :{{ cx_core_share_port }}
+# nginx server block that exposes ONLY /v1/share/<session>/... Installed when cx-core
+# is enabled AND share exposure is on; removed otherwise (fail-closed). The rootfs must
+# include /etc/nginx/k2go-http.d/*.conf at the nginx http context for it to take effect
+# (controller/docs/cx-core-share-exposure.md); until then the file sits inert, so no
+# exposure happens by accident. ----
+
+- name: Ensure the http-level include dir for the Share server block exists
+  file:
+    path: /etc/nginx/k2go-http.d
+    state: directory
+    mode: "0755"
+  when: cx_core_enabled and cx_core_share_expose
+
+- name: "Expose the cx-core Share gate off loopback via NGINX (:{{ cx_core_share_port }})"
+  template:
+    src: cx-core-share-nginx.conf.j2
+    dest: /etc/nginx/k2go-http.d/cx-core-share.conf
+    mode: "0644"
+  when: cx_core_enabled and cx_core_share_expose
+
+- name: Remove the cx-core Share listener (exposure off or cx-core disabled)
+  file:
+    path: /etc/nginx/k2go-http.d/cx-core-share.conf
+    state: absent
+  when: not (cx_core_enabled and cx_core_share_expose)
+
+- name: Reload 'nginx' systemd service (not proot)
+  systemd:
+    name: nginx
+    state: reloaded
+  when: not is_proot
+
+- name: Restart 'nginx' via pdsm (proot)
+  command: pdsm restart nginx
+  when: is_proot
