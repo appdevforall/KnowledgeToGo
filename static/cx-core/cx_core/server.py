@@ -29,10 +29,16 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
         # chunk-size lines as body). The JSON path sends Content-Length, so keep-alive holds.
         protocol_version = "HTTP/1.1"
 
+        def _share_token(self):
+            # The share session token travels in a header, never the URL query, so it does not
+            # land in access logs (it is the only auth for the gate).
+            return self.headers.get("X-Share-Token")
+
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops, share=share)
+            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops, share=share,
+                                       token=self._share_token())
             if isinstance(payload, ExportStream):
                 self._stream(status, payload)
             else:
@@ -49,13 +55,15 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
             if body is _BAD_JSON:
                 self._send(400, {"error": "invalid JSON body"})
                 return
-            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops, share=share)
+            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops, share=share,
+                                       token=self._share_token())
             self._send(status, payload)
 
         def do_DELETE(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops, share=share)
+            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops, share=share,
+                                       token=self._share_token())
             self._send(status, payload)
 
         def _read_json_body(self):
@@ -105,6 +113,10 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
                     self.wfile.write(block)
                     self.wfile.write(b"\r\n")
                 self.wfile.write(b"0\r\n\r\n")
+                # The full body (and its terminator) is written: a clean close. A mid-stream
+                # client drop raises above and leaves this False, so the share gate counts the
+                # item delivered only on a clean close (K2GO-376).
+                stream.completed = True
             finally:
                 if stream.on_close:
                     stream.on_close()

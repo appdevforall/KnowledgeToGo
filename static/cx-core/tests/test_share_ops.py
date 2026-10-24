@@ -1,8 +1,8 @@
 """Share gate tests (K2GO-376): the shared contract for granular wireless Share.
 
 Everything runs on loopback, like the export op tests: a share session wraps the export op,
-so these cover the gate (token, scope, the five closers) and the per-item transfer reuse. The
-app forks (sender / receiver) build against this contract.
+so these cover the gate (token in a header, the scope, the two lifetimes, single-flight,
+clean-close delivery) and the per-item transfer reuse. The app forks build against this.
 """
 
 import http.client
@@ -95,10 +95,12 @@ class _StagingFake(ContentAdapter):
         return ExportStream(f"{local_ref}.tar", "application/x-tar", [data])
 
 
-def _share(adapters, staging, ttl=60):
+def _share(adapters, staging, cap=3600, conn_ttl=600):
+    """Build a share gate over an export op. ``cap`` is the Layer-2 session safety cap; the
+    ``conn_ttl`` is the Layer-1 export-op (connection) idle TTL: two separate timeouts."""
     reg = Registry(adapters, import_root=staging, content_volume=staging)
-    ops = ExportOps(reg, staging_dir=staging, ttl_seconds=ttl)
-    share = ShareOps(reg, ops, ttl_seconds=ttl)
+    ops = ExportOps(reg, staging_dir=staging, ttl_seconds=conn_ttl)
+    share = ShareOps(reg, ops, safety_cap_seconds=cap)
     return share, ops, reg
 
 
@@ -109,14 +111,26 @@ def _create(share, items):
 
 
 def _drain(stream):
-    """Drive a stream as the server would: on_open, consume the chunks, on_close."""
+    """Drive a stream as the server would on a CLEAN close: on_open, consume the chunks, mark
+    completed (the server sets this after the full body), on_close."""
     if stream.on_open:
         stream.on_open()
     try:
-        return b"".join(stream.chunks)
+        data = b"".join(stream.chunks)
+        stream.completed = True
+        return data
     finally:
         if stream.on_close:
             stream.on_close()
+
+
+def _drain_drop(stream):
+    """Drive a stream as a MID-STREAM client drop: open, then close without a full read, so
+    ``completed`` stays False and the item is not counted delivered."""
+    if stream.on_open:
+        stream.on_open()
+    if stream.on_close:
+        stream.on_close()
 
 
 def _fetch_ready(share, sid, item_ref, token, timeout=5):
@@ -131,6 +145,12 @@ def _fetch_ready(share, sid, item_ref, token, timeout=5):
     raise AssertionError("item never became ready")
 
 
+def _wait_ready(ops, op_id, timeout=5):
+    end = time.time() + timeout
+    while ops._ops[op_id].state != "ready" and time.time() < end:
+        time.sleep(0.01)
+
+
 class CreateTest(unittest.TestCase):
     def test_create_returns_session_token_and_pointer(self):
         with tempfile.TemporaryDirectory() as d:
@@ -140,7 +160,7 @@ class CreateTest(unittest.TestCase):
             self.assertIn("sessionId", body)
             self.assertTrue(body["token"])
             self.assertEqual(body["manifestUrl"], f"/v1/share/{body['sessionId']}/manifest")
-            # The pointer carries no token: the token travels as a separate field.
+            # The pointer carries no token: the token travels as the X-Share-Token header.
             self.assertNotIn(body["token"], body["manifestUrl"])
 
     def test_distinct_sessions_get_distinct_tokens(self):
@@ -156,8 +176,8 @@ class CreateTest(unittest.TestCase):
             share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
             self.assertEqual(share.create([])[0], 400)
             self.assertEqual(share.create("nope")[0], 400)
-            self.assertEqual(share.create([{"app": "kiwix"}])[0], 400)  # no localRef
-            self.assertEqual(share.create([{"localRef": "a.zim"}])[0], 400)  # no app
+            self.assertEqual(share.create([{"app": "kiwix"}])[0], 400)
+            self.assertEqual(share.create([{"localRef": "a.zim"}])[0], 400)
             self.assertEqual(share.create([{"app": "kiwix", "localRef": ""}])[0], 400)
 
     def test_duplicate_items_are_deduped(self):
@@ -172,7 +192,7 @@ class CreateTest(unittest.TestCase):
 
 
 class ManifestTest(unittest.TestCase):
-    def test_manifest_lists_scoped_items_with_itemref_and_total(self):
+    def test_manifest_lists_scoped_items_with_itemref_total_and_delivered(self):
         with tempfile.TemporaryDirectory() as d:
             share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 25})], d)
             sid, token = _create(share, [
@@ -183,6 +203,7 @@ class ManifestTest(unittest.TestCase):
             self.assertEqual(status, 200)
             self.assertEqual([i["itemRef"] for i in body["items"]], ["0", "1"])
             self.assertEqual([i["identity"]["localRef"] for i in body["items"]], ["a.zim", "b.zim"])
+            self.assertEqual([i["delivered"] for i in body["items"]], [False, False])
             self.assertEqual(body["totalBytes"], 35)
             self.assertEqual(body["missing"], [])
 
@@ -239,7 +260,6 @@ class FetchTest(unittest.TestCase):
             self.assertEqual(share.fetch(sid, "x", token)[0], 404)   # not an index
 
     def test_fetch_absent_item_404(self):
-        # The item was in scope at create but is not exportable now: prepare returns None.
         with tempfile.TemporaryDirectory() as d:
             share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
             sid, token = _create(share, [{"app": "kiwix", "localRef": "gone.zim"}])
@@ -274,11 +294,27 @@ class FetchTest(unittest.TestCase):
             self.assertIsNotNone(seen, "staging error never surfaced")
             self.assertEqual(seen["state"], "error")
 
+    def test_single_flight_rejects_a_second_concurrent_fetch_of_one_item(self):
+        # Two open streams on one item would share the child op's temp, and the first close would
+        # remove it under the second. The gate single-flights: a second fetch of a busy item gets
+        # 409 busy until the first stream closes.
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            status1, stream1 = share.fetch(sid, "0", token)   # claims the slot
+            self.assertEqual(status1, 200)
+            status2, body2 = share.fetch(sid, "0", token)     # same item still open
+            self.assertEqual(status2, 409)
+            self.assertEqual(body2["state"], "busy")
+            _drain(stream1)                                   # closes the first stream: releases
+            status3, stream3 = share.fetch(sid, "0", token)   # free again
+            self.assertEqual(status3, 200)
+            _drain(stream3)
 
-class AutoCloseTest(unittest.TestCase):
-    def test_delivering_every_item_auto_closes_the_gate(self):
-        # Closer 4 (implicit progress): once every scoped item has been delivered, the gate
-        # closes itself, so a later manifest is 404.
+
+class CompleteTest(unittest.TestCase):
+    def test_complete_closes_cleanly(self):
+        # Closer: COMPLETE (the receiver has every item). Supersedes any drop-based auto-close.
         with tempfile.TemporaryDirectory() as d:
             share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 7})], d)
             sid, token = _create(share, [
@@ -286,15 +322,52 @@ class AutoCloseTest(unittest.TestCase):
                 {"app": "kiwix", "localRef": "b.zim"},
             ])
             _drain(share.fetch(sid, "0", token)[1])
-            self.assertEqual(share.manifest(sid, token)[0], 200)  # one item left, still open
             _drain(share.fetch(sid, "1", token)[1])
-            self.assertEqual(share.manifest(sid, token)[0], 404)  # all delivered: auto-closed
+            status, body = share.complete(sid, token)
+            self.assertEqual(status, 200)
+            self.assertTrue(body["ok"])
+            self.assertEqual(share.manifest(sid, token)[0], 404)  # released
+
+    def test_complete_token_enforcement_and_double_complete(self):
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            self.assertEqual(share.complete(sid, None)[0], 401)
+            self.assertEqual(share.complete(sid, "wrong")[0], 403)
+            self.assertEqual(share.complete("deadbeef", token)[0], 404)
+            self.assertEqual(share.complete(sid, token)[0], 200)
+            self.assertEqual(share.complete(sid, token)[0], 404)  # already closed
 
 
-class DeleteTest(unittest.TestCase):
-    def test_delete_closes_and_revokes_child_temp(self):
-        # Closer 3 (explicit done). Fetch one of two items so the gate does not auto-close,
-        # leave a staged child op, then DELETE and confirm the gate and the temp are gone.
+class DeliveredTest(unittest.TestCase):
+    def test_delivered_only_on_clean_close_dropped_item_resumes(self):
+        # delivered is set on a clean close only. A dropped item stays pending and re-fetches
+        # (the resume model): the gate does not close on a drop.
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 7})], d)
+            sid, token = _create(share, [
+                {"app": "kiwix", "localRef": "a.zim"},
+                {"app": "kiwix", "localRef": "b.zim"},
+            ])
+            _drain(share.fetch(sid, "0", token)[1])        # clean -> delivered
+            _drain_drop(share.fetch(sid, "1", token)[1])   # drop  -> not delivered
+            _, man = share.manifest(sid, token)
+            delivered = {i["itemRef"]: i["delivered"] for i in man["items"]}
+            self.assertTrue(delivered["0"])
+            self.assertFalse(delivered["1"])
+            self.assertEqual(share.manifest(sid, token)[0], 200)  # a dropped item did not close it
+            # Resume: re-fetch the dropped item, this time cleanly.
+            status, stream = share.fetch(sid, "1", token)
+            self.assertEqual(status, 200)
+            _drain(stream)
+            _, man2 = share.manifest(sid, token)
+            self.assertTrue({i["itemRef"]: i["delivered"] for i in man2["items"]}["1"])
+
+
+class CancelTest(unittest.TestCase):
+    def test_delete_cancels_and_revokes_child_temp(self):
+        # Closer: CANCEL (DELETE). Fetch starts a staging child op (leaves a temp on disk); the
+        # cancel revokes the session, the token and the child temp.
         with tempfile.TemporaryDirectory() as d:
             gate = threading.Event()
             gate.set()
@@ -303,12 +376,9 @@ class DeleteTest(unittest.TestCase):
                 {"app": "kolibri", "localRef": "c0"},
                 {"app": "kolibri", "localRef": "c1"},
             ])
-            # Create a ready-but-unconsumed child op for item 1 (so a temp exists on disk).
-            share.fetch(sid, "1", token)  # starts staging
+            share.fetch(sid, "1", token)  # 409 staging, but creates the child op + temp
             op_id = share._sessions[sid].item_ops["1"]
-            end = time.time() + 5
-            while ops._ops[op_id].state != "ready" and time.time() < end:
-                time.sleep(0.01)
+            _wait_ready(ops, op_id)
             temp = ops._ops[op_id].temp
             self.assertTrue(os.path.isdir(temp))
             status, body = share.delete(sid, token)
@@ -328,7 +398,7 @@ class DeleteTest(unittest.TestCase):
             self.assertEqual(share.delete(sid, token)[0], 200)
 
     def test_double_delete_is_404_already_closed(self):
-        # The receiver Finish and the sender onDestroy may both DELETE; the second sees 404.
+        # The receiver and the sender onDestroy may both DELETE; the second sees 404.
         with tempfile.TemporaryDirectory() as d:
             share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
             sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
@@ -336,44 +406,49 @@ class DeleteTest(unittest.TestCase):
             self.assertEqual(share.delete(sid, token)[0], 404)
 
 
-class SweepTest(unittest.TestCase):
-    def test_ttl_sweep_reclaims_abandoned_session_and_temp(self):
-        # Closer 1 (TTL + idle): an abandoned session expires and takes its child temp with it.
+class SafetyCapTest(unittest.TestCase):
+    def test_session_survives_past_the_connection_idle(self):
+        # The point of the two lifetimes: a paused transfer older than the connection idle TTL
+        # (10 min) but younger than the session safety cap (hours) must NOT be reclaimed.
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d, cap=3600, conn_ttl=60)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            share._sessions[sid].last_seen -= 120  # older than conn idle 60, younger than cap 3600
+            share._sweep_capped()
+            self.assertIn(sid, share._sessions)
+            self.assertEqual(share.manifest(sid, token)[0], 200)
+
+    def test_safety_cap_reclaims_abandoned_session_and_temp(self):
         with tempfile.TemporaryDirectory() as d:
             gate = threading.Event()
             gate.set()
-            share, ops, _reg = _share([_StagingFake({"chan": 40}, gate=gate)], d, ttl=60)
+            share, ops, _reg = _share([_StagingFake({"chan": 40}, gate=gate)], d, cap=3600)
             sid, token = _create(share, [{"app": "kolibri", "localRef": "chan"}])
-            share.fetch(sid, "0", token)  # starts staging, leaves a child op + temp
+            share.fetch(sid, "0", token)  # 409 staging, leaves a child op + temp
             op_id = share._sessions[sid].item_ops["0"]
-            end = time.time() + 5
-            while ops._ops[op_id].state != "ready" and time.time() < end:
-                time.sleep(0.01)
+            _wait_ready(ops, op_id)
             temp = ops._ops[op_id].temp
-            share._sessions[sid].last_seen -= 120  # older than the TTL
-            share._sweep_expired()
+            share._sessions[sid].last_seen -= 4000  # abandoned past the cap
+            share._sweep_capped()
             self.assertNotIn(sid, share._sessions)
             self.assertFalse(os.path.exists(temp))
 
-    def test_ttl_sweep_never_reclaims_a_session_with_an_open_stream(self):
-        # A single large item can stream longer than the TTL without a new request to bump
-        # last_seen; the gate must survive under its own transfer (in_use).
+    def test_safety_cap_never_reclaims_a_session_with_an_open_stream(self):
         with tempfile.TemporaryDirectory() as d:
-            share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 7})], d, ttl=60)
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 7})], d, cap=3600)
             sid, token = _create(share, [
                 {"app": "kiwix", "localRef": "a.zim"},
                 {"app": "kiwix", "localRef": "b.zim"},
             ])
-            status, stream = share.fetch(sid, "0", token)
+            status, stream = share.fetch(sid, "0", token)  # item 0 now streaming
             self.assertEqual(status, 200)
-            stream.on_open()                               # the server pins at top of streaming
-            share._sessions[sid].last_seen -= 120
-            share._sweep_expired()
-            self.assertIn(sid, share._sessions)            # pinned: survives the sweep
-            b"".join(stream.chunks)
-            stream.on_close()                              # unpins; item 1 undelivered, stays open
-            self.assertIn(sid, share._sessions)
-            self.assertEqual(share._sessions[sid].in_use, 0)
+            share._sessions[sid].last_seen -= 4000         # past the cap
+            share._sweep_capped()
+            self.assertIn(sid, share._sessions)            # streaming: survives
+            _drain(stream)                                 # closes: clears streaming
+            share._sessions[sid].last_seen -= 4000
+            share._sweep_capped()
+            self.assertNotIn(sid, share._sessions)         # now abandoned: reclaimed
 
     def test_startup_sweep_clears_in_memory_sessions(self):
         with tempfile.TemporaryDirectory() as d:
@@ -384,23 +459,21 @@ class SweepTest(unittest.TestCase):
             self.assertEqual(share._sessions, {})
 
     def test_boot_reclaims_a_leftover_share_session_and_its_temp(self):
-        # Closer 2 (process death): sessions live only in memory, so a fresh process holds
-        # none; the session's on-disk footprint is its child export temps, reclaimed by the
-        # export op's startup sweep. This mirrors exactly what serve() runs on boot.
+        # Process death: sessions live only in memory, so a fresh process holds none; the
+        # session's on-disk footprint is its child export temps, reclaimed by the export op's
+        # startup sweep. This mirrors exactly what serve() runs on boot.
         with tempfile.TemporaryDirectory() as d:
             gate = threading.Event()
             gate.set()
-            share, ops, _reg = _share([_StagingFake({"chan": 40}, gate=gate)], d, ttl=60)
+            share, ops, _reg = _share([_StagingFake({"chan": 40}, gate=gate)], d)
             sid, token = _create(share, [{"app": "kolibri", "localRef": "chan"}])
             share.fetch(sid, "0", token)  # leaves a staged cxexport-* temp on disk
             op_id = share._sessions[sid].item_ops["0"]
-            end = time.time() + 5
-            while ops._ops[op_id].state != "ready" and time.time() < end:
-                time.sleep(0.01)
+            _wait_ready(ops, op_id)
             temp = ops._ops[op_id].temp
             self.assertTrue(os.path.isdir(temp))
             # Simulate a restart: a new process, new registries on the same staging dir.
-            new_share, new_ops, _ = _share([_StagingFake({"chan": 40})], d, ttl=60)
+            new_share, new_ops, _ = _share([_StagingFake({"chan": 40})], d)
             new_ops.sweep_startup()     # reclaims the orphan temp
             new_share.sweep_startup()   # holds no sessions
             self.assertFalse(os.path.exists(temp))
@@ -409,7 +482,8 @@ class SweepTest(unittest.TestCase):
 
 class ShareRouteTest(unittest.TestCase):
     """The share routes forward to the ShareOps registry; the gate mechanics live above. Here
-    we check the routing, the token-via-query wiring, and the missing-share guard."""
+    we check the routing, the token-via-param wiring (the server reads the X-Share-Token header
+    and passes it as dispatch's token), and the missing-share guard."""
 
     def setUp(self):
         self._d = tempfile.TemporaryDirectory()
@@ -418,7 +492,7 @@ class ShareRouteTest(unittest.TestCase):
     def tearDown(self):
         self._d.cleanup()
 
-    def test_post_creates_and_get_manifest_and_fetch_and_delete(self):
+    def test_post_create_manifest_fetch_complete(self):
         status, body = dispatch(self.reg, "POST", "/v1/share", {},
                                 {"items": [{"app": "kiwix", "localRef": "a.zim"},
                                            {"app": "kiwix", "localRef": "b.zim"}]},
@@ -426,42 +500,51 @@ class ShareRouteTest(unittest.TestCase):
         self.assertEqual(status, 200)
         sid, token = body["sessionId"], body["token"]
 
-        status, man = dispatch(self.reg, "GET", f"/v1/share/{sid}/manifest",
-                               {"token": token}, ops=self.ops, share=self.share)
+        status, man = dispatch(self.reg, "GET", f"/v1/share/{sid}/manifest", {},
+                               ops=self.ops, share=self.share, token=token)
         self.assertEqual(status, 200)
         self.assertEqual(len(man["items"]), 2)
 
-        status, stream = dispatch(self.reg, "GET", f"/v1/share/{sid}/fetch/0",
-                                  {"token": token}, ops=self.ops, share=self.share)
+        status, stream = dispatch(self.reg, "GET", f"/v1/share/{sid}/fetch/0", {},
+                                  ops=self.ops, share=self.share, token=token)
         self.assertEqual(status, 200)
         self.assertIsInstance(stream, ExportStream)
         self.assertEqual(len(_drain(stream)), 10)
 
-        status, out = dispatch(self.reg, "DELETE", f"/v1/share/{sid}",
-                               {"token": token}, ops=self.ops, share=self.share)
+        status, out = dispatch(self.reg, "POST", f"/v1/share/{sid}/complete", {}, None,
+                               ops=self.ops, share=self.share, token=token)
+        self.assertEqual(status, 200)
+        self.assertTrue(out["ok"])
+
+    def test_delete_route_cancels(self):
+        sid, token = _create(self.share, [{"app": "kiwix", "localRef": "a.zim"}])
+        status, out = dispatch(self.reg, "DELETE", f"/v1/share/{sid}", {},
+                               ops=self.ops, share=self.share, token=token)
         self.assertEqual(status, 200)
         self.assertTrue(out["ok"])
 
     def test_manifest_without_token_401(self):
         sid, _token = _create(self.share, [{"app": "kiwix", "localRef": "a.zim"}])
         status, _ = dispatch(self.reg, "GET", f"/v1/share/{sid}/manifest", {},
-                             ops=self.ops, share=self.share)
+                             ops=self.ops, share=self.share, token=None)
         self.assertEqual(status, 401)
 
     def test_share_routes_without_share_500(self):
         for method, path, body in [
             ("POST", "/v1/share", {"items": [{"app": "kiwix", "localRef": "a.zim"}]}),
+            ("POST", "/v1/share/abc/complete", None),
             ("GET", "/v1/share/abc/manifest", None),
             ("GET", "/v1/share/abc/fetch/0", None),
             ("DELETE", "/v1/share/abc", None),
         ]:
-            status, _ = dispatch(self.reg, method, path, {}, body, ops=self.ops, share=None)
+            status, _ = dispatch(self.reg, method, path, {}, body, ops=self.ops, share=None,
+                                 token="t")
             self.assertEqual(status, 500, path)
 
 
 class ShareHttpTest(unittest.TestCase):
     """End-to-end over a real socket: POST create, GET manifest, GET fetch (chunked stream
-    decoded by a real client), DELETE, all with the token as a query parameter."""
+    decoded by a real client), POST complete, all with the token in the X-Share-Token header."""
 
     def setUp(self):
         self._d = tempfile.TemporaryDirectory()
@@ -482,13 +565,13 @@ class ShareHttpTest(unittest.TestCase):
 
     # Connection: close on each request so the server does not keep a worker thread blocked on
     # the next request line, which otherwise logs a reset when the suite tears the server down.
-    _CLOSE = {"Connection": "close"}
-
-    def _json(self, method, path, body=None):
+    def _req(self, method, path, body=None, token=None):
         c = self._conn()
-        headers = dict(self._CLOSE)
+        headers = {"Connection": "close"}
         if body is not None:
             headers["Content-Type"] = "application/json"
+        if token is not None:
+            headers["X-Share-Token"] = token
         c.request(method, path, body=json.dumps(body) if body is not None else None, headers=headers)
         resp = c.getresponse()
         status = resp.status
@@ -497,39 +580,51 @@ class ShareHttpTest(unittest.TestCase):
         return status, (json.loads(out) if out else None)
 
     def test_round_trip_over_http(self):
-        status, created = self._json(
+        status, created = self._req(
             "POST", "/v1/share",
             {"items": [{"app": "kiwix", "localRef": "a.zim"}, {"app": "kiwix", "localRef": "b.zim"}]})
         self.assertEqual(status, 200)
         sid, token = created["sessionId"], created["token"]
         self.assertEqual(created["manifestUrl"], f"/v1/share/{sid}/manifest")
 
-        status, man = self._json("GET", f"/v1/share/{sid}/manifest?token={token}")
+        status, man = self._req("GET", f"/v1/share/{sid}/manifest", token=token)
         self.assertEqual(status, 200)
         self.assertEqual(man["totalBytes"], len(self.payload) + 7)
         self.assertEqual([i["itemRef"] for i in man["items"]], ["0", "1"])
 
         c = self._conn()
-        c.request("GET", f"/v1/share/{sid}/fetch/0?token={token}", headers=self._CLOSE)
+        c.request("GET", f"/v1/share/{sid}/fetch/0", headers={"Connection": "close", "X-Share-Token": token})
         resp = c.getresponse()
         self.assertEqual(resp.status, 200)
         got = resp.read()
         c.close()
         self.assertEqual(got, self.payload)
 
-        # One of two items fetched: the gate is still open, so an explicit DELETE closes it.
-        status, out = self._json("DELETE", f"/v1/share/{sid}?token={token}")
+        # A clean fetch marks the item delivered in the manifest (resume skips it).
+        status, man2 = self._req("GET", f"/v1/share/{sid}/manifest", token=token)
+        delivered = {i["itemRef"]: i["delivered"] for i in man2["items"]}
+        self.assertTrue(delivered["0"])
+        self.assertFalse(delivered["1"])
+
+        status, out = self._req("POST", f"/v1/share/{sid}/complete", token=token)
         self.assertEqual(status, 200)
         self.assertTrue(out["ok"])
 
-        status, _ = self._json("GET", f"/v1/share/{sid}/manifest?token={token}")
-        self.assertEqual(status, 404)  # closed
+        status, _ = self._req("GET", f"/v1/share/{sid}/manifest", token=token)
+        self.assertEqual(status, 404)  # released
 
-    def test_manifest_wrong_token_over_http_403(self):
-        _, created = self._json(
-            "POST", "/v1/share", {"items": [{"app": "kiwix", "localRef": "a.zim"}]})
+    def test_token_in_query_is_not_accepted(self):
+        # FIX: the token must NOT be read from the URL (it would land in access logs). A query
+        # token with no header is unauthenticated.
+        _, created = self._req("POST", "/v1/share", {"items": [{"app": "kiwix", "localRef": "a.zim"}]})
+        sid, token = created["sessionId"], created["token"]
+        status, _ = self._req("GET", f"/v1/share/{sid}/manifest?token={token}")  # no header
+        self.assertEqual(status, 401)
+
+    def test_manifest_wrong_token_header_403(self):
+        _, created = self._req("POST", "/v1/share", {"items": [{"app": "kiwix", "localRef": "a.zim"}]})
         sid = created["sessionId"]
-        status, _ = self._json("GET", f"/v1/share/{sid}/manifest?token=wrong")
+        status, _ = self._req("GET", f"/v1/share/{sid}/manifest", token="wrong")
         self.assertEqual(status, 403)
 
 
