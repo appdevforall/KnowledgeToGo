@@ -1692,4 +1692,7 @@
     <!-- K2GO-427 content manager settings entry (migrated from strings_untranslated.xml). -->
     <string name="k2go_settings_content_mgr">Content manager</string>
     <string name="k2go_settings_content_mgr_sub">Manage, export and remove content</string>
+    <!-- K2GO-427 content manager / export strings (migrated from strings_untranslated.xml). -->
+    <string name="k2go_cx_select_group">Select all in this group</string>
+    <string name="k2go_cx_export_categories">By category</string>
 </resources>

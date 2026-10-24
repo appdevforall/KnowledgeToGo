@@ -1517,4 +1517,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Alábòójútó àkóónú</string>
     <string name="k2go_settings_content_mgr_sub">Ṣàkóso, kó jáde, àti yọ àkóónú kúrò</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Yan gbogbo rẹ̀ nínú ẹgbẹ́ yìí</string>
+    <string name="k2go_cx_export_categories">Nípa ẹ̀ka</string>
 </resources>

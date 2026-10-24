@@ -1507,4 +1507,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Menedżer treści</string>
     <string name="k2go_settings_content_mgr_sub">Zarządzaj, eksportuj i usuwaj treści</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Zaznacz wszystko w tej grupie</string>
+    <string name="k2go_cx_export_categories">Według kategorii</string>
 </resources>

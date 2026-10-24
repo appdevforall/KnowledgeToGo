@@ -1497,4 +1497,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">Inhoudbeheer</string>
     <string name="k2go_settings_content_mgr_sub">Inhoud beheren, exporteren en verwijderen</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">Alles in deze groep selecteren</string>
+    <string name="k2go_cx_export_categories">Op categorie</string>
 </resources>

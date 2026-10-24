@@ -1517,4 +1517,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">உள்ளடக்க மேலாளர்</string>
     <string name="k2go_settings_content_mgr_sub">உள்ளடக்கத்தை நிர்வகிக்கவும், ஏற்றுமதி செய்யவும், அகற்றவும்</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">இந்தக் குழுவில் அனைத்தையும் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_cx_export_categories">வகை வாரியாக</string>
 </resources>

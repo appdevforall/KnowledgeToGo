@@ -1498,4 +1498,7 @@
     <!-- K2GO-427 content manager settings entry (machine translation, pending human review). -->
     <string name="k2go_settings_content_mgr">콘텐츠 관리</string>
     <string name="k2go_settings_content_mgr_sub">콘텐츠 관리, 내보내기 및 삭제</string>
+    <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
+    <string name="k2go_cx_select_group">이 그룹에서 모두 선택</string>
+    <string name="k2go_cx_export_categories">카테고리별</string>
 </resources>
