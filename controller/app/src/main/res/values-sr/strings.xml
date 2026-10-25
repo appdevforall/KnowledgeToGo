@@ -1513,4 +1513,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Изабери све у овој групи</string>
     <string name="k2go_cx_export_categories">По категорији</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Дели садржај</string>
+    <string name="k2go_cx_share_subtitle_fmt">Дељење %1$d ставки</string>
+    <string name="k2go_cx_share_preparing">Припрема за дељење...</string>
+    <string name="k2go_cx_share_starting_hotspot">Покретање хотспота...</string>
+    <string name="k2go_cx_share_resolving_address">Тражење адресе хотспота...</string>
+    <string name="k2go_cx_share_step_join">Придружи се</string>
+    <string name="k2go_cx_share_step_receive">Прими</string>
+    <string name="k2go_cx_share_join_caption">Скенирај на другом телефону да се придружиш овом хотспоту.</string>
+    <string name="k2go_cx_share_receive_caption">Затим скенирај ово да примиш садржај.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Овај телефон не може да покрене хотспот за дељење.</string>
+    <string name="k2go_cx_share_hotspot_failed">Хотспот није могуће покренути.</string>
+    <string name="k2go_cx_share_need_permission">За дељење је потребна дозвола за хотспот.</string>
+    <string name="k2go_cx_share_error">Дељење није могуће покренути.</string>
+    <string name="k2go_cx_share_waiting">Држи овај екран отворен док други телефон не заврши.</string>
+    <string name="k2go_cx_share_done">Готово</string>
+    <string name="k2go_cx_share_stop">Заустави</string>
+    <string name="k2go_cx_share_notif_title">Дељење садржаја</string>
+    <string name="k2go_cx_share_notif_text">Хотспот и дељење остају отворени.</string>
+    <string name="k2go_cx_share_channel_name">Дељење садржаја</string>
 </resources>

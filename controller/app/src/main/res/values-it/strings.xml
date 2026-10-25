@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Seleziona tutto in questo gruppo</string>
     <string name="k2go_cx_export_categories">Per categoria</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Condividi contenuti</string>
+    <string name="k2go_cx_share_subtitle_fmt">Condivisione di %1$d elementi</string>
+    <string name="k2go_cx_share_preparing">Preparazione della condivisione...</string>
+    <string name="k2go_cx_share_starting_hotspot">Avvio dell\'hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">Ricerca dell\'indirizzo dell\'hotspot...</string>
+    <string name="k2go_cx_share_step_join">Partecipa</string>
+    <string name="k2go_cx_share_step_receive">Ricevi</string>
+    <string name="k2go_cx_share_join_caption">Esegui la scansione sull\'altro telefono per partecipare a questo hotspot.</string>
+    <string name="k2go_cx_share_receive_caption">Poi esegui la scansione di questo per ricevere i contenuti.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Questo telefono non può avviare un hotspot per la condivisione.</string>
+    <string name="k2go_cx_share_hotspot_failed">Impossibile avviare l\'hotspot.</string>
+    <string name="k2go_cx_share_need_permission">L\'autorizzazione hotspot è necessaria per la condivisione.</string>
+    <string name="k2go_cx_share_error">Impossibile avviare la condivisione.</string>
+    <string name="k2go_cx_share_waiting">Tieni questa schermata aperta finché l\'altro telefono non ha terminato.</string>
+    <string name="k2go_cx_share_done">Fatto</string>
+    <string name="k2go_cx_share_stop">Interrompi</string>
+    <string name="k2go_cx_share_notif_title">Condivisione dei contenuti</string>
+    <string name="k2go_cx_share_notif_text">L\'hotspot e la condivisione restano aperti.</string>
+    <string name="k2go_cx_share_channel_name">Condivisione contenuti</string>
 </resources>

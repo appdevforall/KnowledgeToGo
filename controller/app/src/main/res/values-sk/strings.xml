@@ -1507,4 +1507,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Vybrať všetko v tejto skupine</string>
     <string name="k2go_cx_export_categories">Podľa kategórie</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Zdieľať obsah</string>
+    <string name="k2go_cx_share_subtitle_fmt">Zdieľanie %1$d položiek</string>
+    <string name="k2go_cx_share_preparing">Príprava zdieľania...</string>
+    <string name="k2go_cx_share_starting_hotspot">Spúšťanie hotspotu...</string>
+    <string name="k2go_cx_share_resolving_address">Hľadanie adresy hotspotu...</string>
+    <string name="k2go_cx_share_step_join">Pripojiť sa</string>
+    <string name="k2go_cx_share_step_receive">Prijať</string>
+    <string name="k2go_cx_share_join_caption">Naskenujte na druhom telefóne a pripojte sa k tomuto hotspotu.</string>
+    <string name="k2go_cx_share_receive_caption">Potom naskenujte toto na prijatie obsahu.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Tento telefón nemôže spustiť hotspot na zdieľanie.</string>
+    <string name="k2go_cx_share_hotspot_failed">Hotspot sa nepodarilo spustiť.</string>
+    <string name="k2go_cx_share_need_permission">Na zdieľanie je potrebné povolenie hotspotu.</string>
+    <string name="k2go_cx_share_error">Zdieľanie sa nepodarilo spustiť.</string>
+    <string name="k2go_cx_share_waiting">Nechajte túto obrazovku otvorenú, kým druhý telefón neskončí.</string>
+    <string name="k2go_cx_share_done">Hotovo</string>
+    <string name="k2go_cx_share_stop">Zastaviť</string>
+    <string name="k2go_cx_share_notif_title">Zdieľanie obsahu</string>
+    <string name="k2go_cx_share_notif_text">Hotspot a zdieľanie zóstajú otvorené.</string>
+    <string name="k2go_cx_share_channel_name">Zdieľanie obsahu</string>
 </resources>

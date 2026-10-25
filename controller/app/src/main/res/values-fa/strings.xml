@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">انتخاب همه در این گروه</string>
     <string name="k2go_cx_export_categories">بر اساس دسته</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">اشتراک‌گذاری محتوا</string>
+    <string name="k2go_cx_share_subtitle_fmt">در حال اشتراک‌گذاری %1$d مورد</string>
+    <string name="k2go_cx_share_preparing">در حال آماده‌سازی برای اشتراک‌گذاری...</string>
+    <string name="k2go_cx_share_starting_hotspot">در حال راه‌اندازی نقطه اتصال...</string>
+    <string name="k2go_cx_share_resolving_address">در حال یافتن نشانی نقطه اتصال...</string>
+    <string name="k2go_cx_share_step_join">پیوستن</string>
+    <string name="k2go_cx_share_step_receive">دریافت</string>
+    <string name="k2go_cx_share_join_caption">برای پیوستن به این نقطه اتصال، در تلفن دیگر اسکن کنید.</string>
+    <string name="k2go_cx_share_receive_caption">سپس برای دریافت محتوا این را اسکن کنید.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">این تلفن نمی‌تواند برای اشتراک‌گذاری نقطه اتصال راه‌اندازی کند.</string>
+    <string name="k2go_cx_share_hotspot_failed">نقطه اتصال راه‌اندازی نشد.</string>
+    <string name="k2go_cx_share_need_permission">برای اشتراک‌گذاری به اجازه نقطه اتصال نیاز است.</string>
+    <string name="k2go_cx_share_error">اشتراک‌گذاری آغاز نشد.</string>
+    <string name="k2go_cx_share_waiting">این صفحه را باز نگه دارید تا تلفن دیگر تمام شود.</string>
+    <string name="k2go_cx_share_done">انجام شد</string>
+    <string name="k2go_cx_share_stop">توقف</string>
+    <string name="k2go_cx_share_notif_title">در حال اشتراک‌گذاری محتوا</string>
+    <string name="k2go_cx_share_notif_text">نقطه اتصال و اشتراک‌گذاری باز می‌مانند.</string>
+    <string name="k2go_cx_share_channel_name">اشتراک‌گذاری محتوا</string>
 </resources>

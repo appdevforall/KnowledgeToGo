@@ -1520,4 +1520,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Chagua zote katika kundi hili</string>
     <string name="k2go_cx_export_categories">Kwa kategoria</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Shiriki maudhui</string>
+    <string name="k2go_cx_share_subtitle_fmt">Inashiriki vipengele %1$d</string>
+    <string name="k2go_cx_share_preparing">Inajiandaa kushiriki...</string>
+    <string name="k2go_cx_share_starting_hotspot">Inaanzisha hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">Inatafuta anwani ya hotspot...</string>
+    <string name="k2go_cx_share_step_join">Jiunge</string>
+    <string name="k2go_cx_share_step_receive">Pokea</string>
+    <string name="k2go_cx_share_join_caption">Changanua kwenye simu nyingine ili kujiunga na hotspot hii.</string>
+    <string name="k2go_cx_share_receive_caption">Kisha changanua hii ili kupokea maudhui.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Simu hii haiwezi kuanzisha hotspot ya kushiriki.</string>
+    <string name="k2go_cx_share_hotspot_failed">Imeshindwa kuanzisha hotspot.</string>
+    <string name="k2go_cx_share_need_permission">Ruhusa ya hotspot inahitajika ili kushiriki.</string>
+    <string name="k2go_cx_share_error">Imeshindwa kuanza kushiriki.</string>
+    <string name="k2go_cx_share_waiting">Weka skrini hii wazi hadi simu nyingine imalize.</string>
+    <string name="k2go_cx_share_done">Imekamilika</string>
+    <string name="k2go_cx_share_stop">Simamisha</string>
+    <string name="k2go_cx_share_notif_title">Inashiriki maudhui</string>
+    <string name="k2go_cx_share_notif_text">Hotspot na ushirikishaji vinasalia wazi.</string>
+    <string name="k2go_cx_share_channel_name">Ushirikishaji wa maudhui</string>
 </resources>

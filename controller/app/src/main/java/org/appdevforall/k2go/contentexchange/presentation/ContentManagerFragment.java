@@ -9,7 +9,8 @@
  *               (pick a drive via SAF, then write the open-format bundle through the
  *               foreground service) and the DELETE action is wired (confirm, then remove each
  *               selected item on the box through the foreground service, refreshing the list and
- *               reclaimed space on settle); Share is a later slice and stays disabled.
+ *               reclaimed space on settle). SHARE is wired too (K2GO-376): over the selection it
+ *               opens a wireless share session and shows the invite QR through the share service.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -38,9 +39,14 @@ import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
+import org.appdevforall.k2go.hotspot.HotspotPermissions;
+import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
+import org.appdevforall.k2go.util.SnackbarDuration;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +69,13 @@ public class ContentManagerFragment extends Fragment {
     private Button exportButton;
     private Button importButton;
     private Button deleteButton;
+    private Button shareButton;
+
+    /** The selection captured when Share was tapped, held across the hotspot-permission round-trip. */
+    private List<ContentItem> pendingShare;
+    /** Runtime hotspot permission (NEARBY_WIFI_DEVICES / ACCESS_FINE_LOCATION), requested before the
+     *  share foreground service brings the hotspot up (it cannot prompt from a service). */
+    private ActivityResultLauncher<String[]> hotspotPerm;
 
     /** Set when a delete run is launched, so the manager reloads the list (and reclaimed space) when
      *  it next resumes. Cleared once the reload runs and the run has settled. */
@@ -84,15 +97,20 @@ public class ContentManagerFragment extends Fragment {
         exportButton = root.findViewById(R.id.k2go_cx_export);
         importButton = root.findViewById(R.id.k2go_cx_import);
         deleteButton = root.findViewById(R.id.k2go_cx_delete);
+        shareButton = root.findViewById(R.id.k2go_cx_share);
 
         openTree = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::onTreePicked);
         openImportTree = registerForActivityResult(
                 new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
+        hotspotPerm = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(), result -> onHotspotPermissionResult());
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
         importButton.setOnClickListener(v -> onImportClicked());
         deleteButton.setEnabled(true);
         deleteButton.setOnClickListener(v -> onDeleteClicked());
+        shareButton.setEnabled(true);
+        shareButton.setOnClickListener(v -> onShareClicked());
 
         TextView back = root.findViewById(R.id.k2go_cx_back);
         back.setText(getString(R.string.k2go_back_link));
@@ -225,7 +243,7 @@ public class ContentManagerFragment extends Fragment {
                 : getString(R.string.k2go_cx_free_unavailable);
     }
 
-    /** Updates the bottom action bar from the selection. Export and Delete act; Share is pending. */
+    /** Updates the bottom action bar from the selection. Export, Share and Delete all act on it. */
     private void renderSelection(SelectionSummary sel) {
         // Rebind rows so group headers (tri-state) and item checkboxes match the new selection.
         if (adapter != null) {
@@ -375,6 +393,64 @@ public class ContentManagerFragment extends Fragment {
     private void showProgress() {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ExportProgressFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // ---- share ---------------------------------------------------------------------------------
+
+    /** Share: if a run is still live, just show it; otherwise capture the selection and make sure the
+     *  hotspot permission is granted (the service cannot prompt) before starting. */
+    private void onShareClicked() {
+        if (ContentShareService.session().hasSession()) {
+            showShareProgress();
+            return;
+        }
+        List<ContentItem> selected = viewModel.selectedItems();
+        if (selected.isEmpty()) {
+            return;
+        }
+        pendingShare = selected;
+        if (!LocalHotspotManager.isSupported()) {
+            String msg = getString(R.string.k2go_cx_share_hotspot_unsupported);
+            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
+            return;
+        }
+        if (HotspotPermissions.granted(requireContext())) {
+            startShare(pendingShare);
+        } else {
+            hotspotPerm.launch(HotspotPermissions.required());
+        }
+    }
+
+    /** The hotspot-permission request returned: start when granted, otherwise say why we cannot. */
+    private void onHotspotPermissionResult() {
+        if (!isAdded()) {
+            return;
+        }
+        if (pendingShare != null && HotspotPermissions.granted(requireContext())) {
+            startShare(pendingShare);
+        } else {
+            pendingShare = null;   // the request was declined; drop the held selection
+            String msg = getString(R.string.k2go_cx_share_need_permission);
+            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
+        }
+    }
+
+    private void startShare(List<ContentItem> selected) {
+        ItemRef[] refs = new ItemRef[selected.size()];
+        for (int i = 0; i < selected.size(); i++) {
+            refs[i] = new ItemRef(selected.get(i).app(), selected.get(i).localRef());
+        }
+        ContentShareService.start(requireContext(), refs);
+        pendingShare = null;
+        viewModel.clearSelection();
+        showShareProgress();
+    }
+
+    private void showShareProgress() {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ContentShareFragment())
                 .addToBackStack(null)
                 .commit();
     }

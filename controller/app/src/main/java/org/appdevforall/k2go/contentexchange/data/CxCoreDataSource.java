@@ -13,6 +13,8 @@
 package org.appdevforall.k2go.contentexchange.data;
 
 import org.appdevforall.k2go.config.BoxEndpoints;
+import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +24,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * The one place in this feature that touches {@link HttpURLConnection}. It issues
@@ -138,7 +141,66 @@ public final class CxCoreDataSource {
         return deleteJson(V1 + "/export/" + encodeSegment(opId));
     }
 
+    // ---- share gate (K2GO-376) -----------------------------------------------------------------
+    // These hit the sender's OWN cx-core over the loopback relay. The receiver reaches the same
+    // session over the hotspot (a separate off-loopback exposure); the app never copies bytes. The
+    // token minted here is the session's only auth and travels in the X-Share-Token header.
+
+    /**
+     * {@code POST /v1/share} with {@code {items:[{app,localRef}]}} -> {@code {sessionId, token,
+     * manifestUrl}}. Opens a scoped share session on the local cx-core and returns the token the
+     * sender puts in the QR; no token header (this call mints it). K2GO-376.
+     */
+    public ShareCreated postShareCreate(List<ItemRef> items) throws Exception {
+        JSONArray arr = new JSONArray();
+        for (ItemRef ref : items) {
+            arr.put(new JSONObject().put("app", ref.app()).put("localRef", ref.localRef()));
+        }
+        JSONObject body = new JSONObject().put("items", arr);
+        JSONObject res = postJson(V1 + "/share", body, null);
+        return new ShareCreated(
+                res.optString("sessionId", ""),
+                res.optString("token", ""),
+                res.optString("manifestUrl", ""));
+    }
+
+    /**
+     * {@code POST /v1/share/{sessionId}/complete} (X-Share-Token) -> {@code {ok}}. The clean-success
+     * close; the receiver drives it. A 404 means already closed (harmless). K2GO-376.
+     */
+    public JSONObject postShareComplete(String sessionId, String token) throws Exception {
+        return postJson(V1 + "/share/" + encodeSegment(sessionId) + "/complete", new JSONObject(), token);
+    }
+
+    /**
+     * {@code DELETE /v1/share/{sessionId}} (X-Share-Token) -> {@code {ok}}. Cancel / abort, by host
+     * or receiver; the sender's foreground service calls it on teardown (the app-side closer). A 404
+     * means already closed, so a double close is harmless. K2GO-376.
+     */
+    public JSONObject deleteShare(String sessionId, String token) throws Exception {
+        return deleteJson(V1 + "/share/" + encodeSegment(sessionId), token);
+    }
+
+    /** The result of opening a share session: the id, the auth token, and the manifest path. */
+    public static final class ShareCreated {
+        public final String sessionId;
+        public final String token;
+        public final String manifestUrl;
+
+        ShareCreated(String sessionId, String token, String manifestUrl) {
+            this.sessionId = sessionId;
+            this.token = token;
+            this.manifestUrl = manifestUrl;
+        }
+    }
+
     private static JSONObject postJson(String urlStr, JSONObject body) throws Exception {
+        return postJson(urlStr, body, null);
+    }
+
+    /** POST with an optional {@code X-Share-Token} header (K2GO-376: the token is the gate's only
+     *  auth, so it rides a header, never the URL query, to stay out of relay / nginx access logs). */
+    private static JSONObject postJson(String urlStr, JSONObject body, String shareToken) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
@@ -148,6 +210,9 @@ public final class CxCoreDataSource {
             c.setDoOutput(true);
             c.setRequestProperty("Content-Type", "application/json");
             c.setRequestProperty("Accept", "application/json");
+            if (shareToken != null) {
+                c.setRequestProperty("X-Share-Token", shareToken);
+            }
             byte[] payload = body.toString().getBytes(StandardCharsets.UTF_8);
             try (OutputStream os = c.getOutputStream()) {
                 os.write(payload);
@@ -165,6 +230,11 @@ public final class CxCoreDataSource {
     }
 
     private static JSONObject deleteJson(String urlStr) throws Exception {
+        return deleteJson(urlStr, null);
+    }
+
+    /** DELETE with an optional {@code X-Share-Token} header (K2GO-376; see {@link #postJson}). */
+    private static JSONObject deleteJson(String urlStr, String shareToken) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
@@ -172,6 +242,9 @@ public final class CxCoreDataSource {
             c.setReadTimeout(DELETE_READ_TIMEOUT_MS);
             c.setRequestMethod("DELETE");
             c.setRequestProperty("Accept", "application/json");
+            if (shareToken != null) {
+                c.setRequestProperty("X-Share-Token", shareToken);
+            }
             int code = c.getResponseCode();
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());

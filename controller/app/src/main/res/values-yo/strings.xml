@@ -1520,4 +1520,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Yan gbogbo rẹ̀ nínú ẹgbẹ́ yìí</string>
     <string name="k2go_cx_export_categories">Nípa ẹ̀ka</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Pín àkóónú</string>
+    <string name="k2go_cx_share_subtitle_fmt">ń pín àwọn nǹkan %1$d</string>
+    <string name="k2go_cx_share_preparing">ń múra látì pín...</string>
+    <string name="k2go_cx_share_starting_hotspot">ń bẹ̀rẹ̀ hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">ń wá àdírẹ́sì hotspot...</string>
+    <string name="k2go_cx_share_step_join">Darapọ̀</string>
+    <string name="k2go_cx_share_step_receive">Gbà</string>
+    <string name="k2go_cx_share_join_caption">Ṣàyẹ̀wò lórí fóònù kejì látì darapọ̀ mọ́ hotspot yìí.</string>
+    <string name="k2go_cx_share_receive_caption">Lẹ́yìn náà ṣàyẹ̀wò èyí látì gba àkóónú náà.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Fóònù yìí kò lè bẹ̀rẹ̀ hotspot látì pín.</string>
+    <string name="k2go_cx_share_hotspot_failed">Kò lè bẹ̀rẹ̀ hotspot.</string>
+    <string name="k2go_cx_share_need_permission">A nílò ìọ̀nda hotspot látì pín.</string>
+    <string name="k2go_cx_share_error">Kò lè bẹ̀rẹ̀ pínpín.</string>
+    <string name="k2go_cx_share_waiting">Jẹ́ kí ojú-ìwé yìí ṣí sílẹ̀ títí fóònù kejì yóò fi parí.</string>
+    <string name="k2go_cx_share_done">Ó parí</string>
+    <string name="k2go_cx_share_stop">Dúró</string>
+    <string name="k2go_cx_share_notif_title">ń pín àkóónú</string>
+    <string name="k2go_cx_share_notif_text">Hotspot àti pínpín yóò wà ní ṣíṣí.</string>
+    <string name="k2go_cx_share_channel_name">Pínpín àkóónú</string>
 </resources>

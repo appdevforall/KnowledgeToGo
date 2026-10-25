@@ -1510,4 +1510,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Velg alle i denne gruppen</string>
     <string name="k2go_cx_export_categories">Etter kategori</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Del innhold</string>
+    <string name="k2go_cx_share_subtitle_fmt">Deler %1$d elementer</string>
+    <string name="k2go_cx_share_preparing">Forbereder deling...</string>
+    <string name="k2go_cx_share_starting_hotspot">Starter hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">Finner hotspot-adressen...</string>
+    <string name="k2go_cx_share_step_join">Bli med</string>
+    <string name="k2go_cx_share_step_receive">Motta</string>
+    <string name="k2go_cx_share_join_caption">Skann på den andre telefonen for å bli med i denne hotspoten.</string>
+    <string name="k2go_cx_share_receive_caption">Skann deretter dette for å motta innholdet.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Denne telefonen kan ikke starte en hotspot for deling.</string>
+    <string name="k2go_cx_share_hotspot_failed">Kunne ikke starte hotspoten.</string>
+    <string name="k2go_cx_share_need_permission">Hotspot-tillatelsen er nødvendig for å dele.</string>
+    <string name="k2go_cx_share_error">Kunne ikke starte deling.</string>
+    <string name="k2go_cx_share_waiting">Hold denne skjermen åpen til den andre telefonen er ferdig.</string>
+    <string name="k2go_cx_share_done">Ferdig</string>
+    <string name="k2go_cx_share_stop">Stopp</string>
+    <string name="k2go_cx_share_notif_title">Deler innhold</string>
+    <string name="k2go_cx_share_notif_text">Hotspoten og delingen forblir åpne.</string>
+    <string name="k2go_cx_share_channel_name">Innholdsdeling</string>
 </resources>

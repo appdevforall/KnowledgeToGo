@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">تحديد الكل في هذه المجموعة</string>
     <string name="k2go_cx_export_categories">حسب الفئة</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">مشاركة المحتوى</string>
+    <string name="k2go_cx_share_subtitle_fmt">مشاركة %1$d عنصر</string>
+    <string name="k2go_cx_share_preparing">جارٍ التحضير للمشاركة...</string>
+    <string name="k2go_cx_share_starting_hotspot">جارٍ بدء نقطة الاتصال...</string>
+    <string name="k2go_cx_share_resolving_address">جارٍ البحث عن عنوان نقطة الاتصال...</string>
+    <string name="k2go_cx_share_step_join">انضمام</string>
+    <string name="k2go_cx_share_step_receive">استقبال</string>
+    <string name="k2go_cx_share_join_caption">امسح على الهاتف الآخر للانضمام إلى نقطة الاتصال هذه.</string>
+    <string name="k2go_cx_share_receive_caption">ثم امسح هذا لاستقبال المحتوى.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">لا يمكن لهذا الهاتف بدء نقطة اتصال للمشاركة.</string>
+    <string name="k2go_cx_share_hotspot_failed">تعذّر بدء نقطة الاتصال.</string>
+    <string name="k2go_cx_share_need_permission">إذن نقطة الاتصال مطلوب للمشاركة.</string>
+    <string name="k2go_cx_share_error">تعذّر بدء المشاركة.</string>
+    <string name="k2go_cx_share_waiting">أبقِ هذه الشاشة مفتوحة حتى ينتهي الهاتف الآخر.</string>
+    <string name="k2go_cx_share_done">تم</string>
+    <string name="k2go_cx_share_stop">إيقاف</string>
+    <string name="k2go_cx_share_notif_title">جارٍ مشاركة المحتوى</string>
+    <string name="k2go_cx_share_notif_text">تظل نقطة الاتصال والمشاركة مفتوحتين.</string>
+    <string name="k2go_cx_share_channel_name">مشاركة المحتوى</string>
 </resources>

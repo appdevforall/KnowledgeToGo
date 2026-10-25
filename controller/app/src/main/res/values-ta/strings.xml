@@ -1520,4 +1520,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">இந்தக் குழுவில் அனைத்தையும் தேர்ந்தெடுக்கவும்</string>
     <string name="k2go_cx_export_categories">வகை வாரியாக</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">உள்ளடக்கத்தைப் பகிர்</string>
+    <string name="k2go_cx_share_subtitle_fmt">%1$d உருப்படிகள் பகிரப்படுகின்றன</string>
+    <string name="k2go_cx_share_preparing">பகிர்வதற்குத் தயாராகிறது...</string>
+    <string name="k2go_cx_share_starting_hotspot">ஹாட்ஸ்பாட் தொடங்கப்படுகிறது...</string>
+    <string name="k2go_cx_share_resolving_address">ஹாட்ஸ்பாட் முகவரி கண்டறியப்படுகிறது...</string>
+    <string name="k2go_cx_share_step_join">இணைக</string>
+    <string name="k2go_cx_share_step_receive">பெறுக</string>
+    <string name="k2go_cx_share_join_caption">இந்த ஹாட்ஸ்பாட்டில் இணைய மற்றொரு ஃபோனில் ஸ்கேன் செய்யவும்.</string>
+    <string name="k2go_cx_share_receive_caption">பிறகு உள்ளடக்கத்தைப் பெற இதை ஸ்கேன் செய்யவும்.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">இந்த ஃபோன் பகிர்வதற்கு ஹாட்ஸ்பாட்டைத் தொடங்க முடியாது.</string>
+    <string name="k2go_cx_share_hotspot_failed">ஹாட்ஸ்பாட்டைத் தொடங்க முடியவில்லை.</string>
+    <string name="k2go_cx_share_need_permission">பகிர்வதற்கு ஹாட்ஸ்பாட் அனுமதி தேவை.</string>
+    <string name="k2go_cx_share_error">பகிர்வதைத் தொடங்க முடியவில்லை.</string>
+    <string name="k2go_cx_share_waiting">மற்றொரு ஃபோன் முடிக்கும் வரை இந்தத் திரையைத் திறந்தே வையுங்கள்.</string>
+    <string name="k2go_cx_share_done">முடிந்தது</string>
+    <string name="k2go_cx_share_stop">நிறுத்து</string>
+    <string name="k2go_cx_share_notif_title">உள்ளடக்கம் பகிரப்படுகிறது</string>
+    <string name="k2go_cx_share_notif_text">ஹாட்ஸ்பாட்டும் பகிர்வும் திறந்தே இருக்கும்.</string>
+    <string name="k2go_cx_share_channel_name">உள்ளடக்கப் பகிர்வு</string>
 </resources>

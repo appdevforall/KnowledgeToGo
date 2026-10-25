@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Selectează tot din acest grup</string>
     <string name="k2go_cx_export_categories">După categorie</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Partajează conținutul</string>
+    <string name="k2go_cx_share_subtitle_fmt">Se partajează %1$d elemente</string>
+    <string name="k2go_cx_share_preparing">Se pregătește partajarea...</string>
+    <string name="k2go_cx_share_starting_hotspot">Se pornește hotspotul...</string>
+    <string name="k2go_cx_share_resolving_address">Se caută adresa hotspotului...</string>
+    <string name="k2go_cx_share_step_join">Alătură-te</string>
+    <string name="k2go_cx_share_step_receive">Primește</string>
+    <string name="k2go_cx_share_join_caption">Scanează pe celălalt telefon pentru a te alătura acestui hotspot.</string>
+    <string name="k2go_cx_share_receive_caption">Apoi scanează asta pentru a primi conținutul.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Acest telefon nu poate porni un hotspot pentru partajare.</string>
+    <string name="k2go_cx_share_hotspot_failed">Hotspotul nu a putut fi pornit.</string>
+    <string name="k2go_cx_share_need_permission">Permisiunea pentru hotspot este necesară pentru partajare.</string>
+    <string name="k2go_cx_share_error">Partajarea nu a putut fi pornită.</string>
+    <string name="k2go_cx_share_waiting">Ține acest ecran deschis până când celălalt telefon termină.</string>
+    <string name="k2go_cx_share_done">Gata</string>
+    <string name="k2go_cx_share_stop">Oprește</string>
+    <string name="k2go_cx_share_notif_title">Se partajează conținutul</string>
+    <string name="k2go_cx_share_notif_text">Hotspotul și partajarea rămân deschise.</string>
+    <string name="k2go_cx_share_channel_name">Partajarea conținutului</string>
 </resources>

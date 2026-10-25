@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-376: share invite screen. The sender opens a scoped share session on its own cx-core, then
+     shows two stacked QR sections (reused view_k2go_qr_section): (1) join the hotspot, (2) scan to
+     receive. A foreground service holds the hotspot and the gate open until the user taps Done.
+     Material 3 tokens; no hardcoded colours. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/k2go_cxs_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/k2go_ink"
+            android:text="@string/k2go_cx_share_title" />
+
+        <TextView
+            android:id="@+id/k2go_cxs_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_muted" />
+
+        <!-- Preparing / hotspot / error status (no dead QR frame while not ready). -->
+        <TextView
+            android:id="@+id/k2go_cxs_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/k2go_ink"
+            android:visibility="gone" />
+
+        <!-- Section 1: join the hotspot (Wi-Fi QR + SSID/password fallback). -->
+        <include
+            android:id="@+id/k2go_cxs_join"
+            layout="@layout/view_k2go_qr_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <!-- Section 2: scan to receive (the share invite QR). -->
+        <include
+            android:id="@+id/k2go_cxs_receive"
+            layout="@layout/view_k2go_qr_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/k2go_cxs_waiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted"
+            android:text="@string/k2go_cx_share_waiting"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/k2go_cxs_done"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/k2go_cx_share_done" />
+    </LinearLayout>
+</ScrollView>
