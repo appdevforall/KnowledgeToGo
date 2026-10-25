@@ -44,6 +44,7 @@ import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
+import org.appdevforall.k2go.util.SnackbarDuration;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -411,7 +412,8 @@ public class ContentManagerFragment extends Fragment {
         }
         pendingShare = selected;
         if (!LocalHotspotManager.isSupported()) {
-            Snackbar.make(requireView(), R.string.k2go_cx_share_hotspot_unsupported, Snackbar.LENGTH_LONG).show();
+            String msg = getString(R.string.k2go_cx_share_hotspot_unsupported);
+            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
             return;
         }
         if (HotspotPermissions.granted(requireContext())) {
@@ -429,7 +431,9 @@ public class ContentManagerFragment extends Fragment {
         if (pendingShare != null && HotspotPermissions.granted(requireContext())) {
             startShare(pendingShare);
         } else {
-            Snackbar.make(requireView(), R.string.k2go_cx_share_need_permission, Snackbar.LENGTH_LONG).show();
+            pendingShare = null;   // the request was declined; drop the held selection
+            String msg = getString(R.string.k2go_cx_share_need_permission);
+            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
         }
     }
 

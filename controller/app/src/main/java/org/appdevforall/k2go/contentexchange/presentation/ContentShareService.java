@@ -127,7 +127,11 @@ public final class ContentShareService extends Service {
         }
 
         if (SESSION.hasSession()) {
-            return START_STICKY;   // a duplicate start while a share is live: ignore (fragment shows it)
+            // A duplicate start while a share is live. This onStartCommand may come from
+            // startForegroundService, so honor the FGS start obligation before ignoring it; the
+            // fragment shows the running share.
+            startForeground(NOTIFICATION_ID, buildNotification());
+            return START_STICKY;
         }
 
         // START: a fresh share over the intent's selection.
