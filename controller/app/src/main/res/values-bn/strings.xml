@@ -1513,4 +1513,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">এই গ্রুপের সবগুলো নির্বাচন করুন</string>
     <string name="k2go_cx_export_categories">বিভাগ অনুসারে</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">কন্টেন্ট শেয়ার করুন</string>
+    <string name="k2go_cx_share_subtitle_fmt">%1$dটি আইটেম শেয়ার করা হচ্ছে</string>
+    <string name="k2go_cx_share_preparing">শেয়ার করার প্রস্তুতি নেওয়া হচ্ছে...</string>
+    <string name="k2go_cx_share_starting_hotspot">হটস্পট চালু করা হচ্ছে...</string>
+    <string name="k2go_cx_share_resolving_address">হটস্পট ঠিকানা খোঁজা হচ্ছে...</string>
+    <string name="k2go_cx_share_step_join">যোগ দিন</string>
+    <string name="k2go_cx_share_step_receive">গ্রহণ করুন</string>
+    <string name="k2go_cx_share_join_caption">এই হটস্পটে যোগ দিতে অন্য ফোনে স্ক্যান করুন।</string>
+    <string name="k2go_cx_share_receive_caption">তারপর কন্টেন্ট পেতে এটি স্ক্যান করুন।</string>
+    <string name="k2go_cx_share_hotspot_unsupported">এই ফোনটি শেয়ার করার জন্য হটস্পট চালু করতে পারে না।</string>
+    <string name="k2go_cx_share_hotspot_failed">হটস্পট চালু করা যায়নি।</string>
+    <string name="k2go_cx_share_need_permission">শেয়ার করার জন্য হটস্পট অনুমতি প্রয়োজন।</string>
+    <string name="k2go_cx_share_error">শেয়ার করা শুরু করা যায়নি।</string>
+    <string name="k2go_cx_share_waiting">অন্য ফোনটি শেষ না হওয়া পর্যন্ত এই স্ক্রিনটি খোলা রাখুন।</string>
+    <string name="k2go_cx_share_done">সম্পন্ন</string>
+    <string name="k2go_cx_share_stop">বন্ধ করুন</string>
+    <string name="k2go_cx_share_notif_title">কন্টেন্ট শেয়ার করা হচ্ছে</string>
+    <string name="k2go_cx_share_notif_text">হটস্পট এবং শেয়ার খোলা থাকে।</string>
+    <string name="k2go_cx_share_channel_name">কন্টেন্ট শেয়ারিং</string>
 </resources>

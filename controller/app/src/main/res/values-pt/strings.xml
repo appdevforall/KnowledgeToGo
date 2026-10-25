@@ -1579,4 +1579,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Selecionar tudo neste grupo</string>
     <string name="k2go_cx_export_categories">Por categoria</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Partilhar conteúdo</string>
+    <string name="k2go_cx_share_subtitle_fmt">A partilhar %1$d itens</string>
+    <string name="k2go_cx_share_preparing">A preparar a partilha...</string>
+    <string name="k2go_cx_share_starting_hotspot">A iniciar o hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">A procurar o endereço do hotspot...</string>
+    <string name="k2go_cx_share_step_join">Juntar-se</string>
+    <string name="k2go_cx_share_step_receive">Receber</string>
+    <string name="k2go_cx_share_join_caption">Leia no outro telefone para se juntar a este hotspot.</string>
+    <string name="k2go_cx_share_receive_caption">Depois leia isto para receber o conteúdo.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Este telefone não consegue iniciar um hotspot para partilhar.</string>
+    <string name="k2go_cx_share_hotspot_failed">Não foi possível iniciar o hotspot.</string>
+    <string name="k2go_cx_share_need_permission">A permissão do hotspot é necessária para partilhar.</string>
+    <string name="k2go_cx_share_error">Não foi possível iniciar a partilha.</string>
+    <string name="k2go_cx_share_waiting">Mantenha este ecrã aberto até o outro telefone terminar.</string>
+    <string name="k2go_cx_share_done">Concluído</string>
+    <string name="k2go_cx_share_stop">Parar</string>
+    <string name="k2go_cx_share_notif_title">A partilhar conteúdo</string>
+    <string name="k2go_cx_share_notif_text">O hotspot e a partilha permanecem abertos.</string>
+    <string name="k2go_cx_share_channel_name">Partilha de conteúdo</string>
 </resources>

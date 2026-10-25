@@ -1695,4 +1695,24 @@
     <!-- K2GO-427 content manager / export strings (migrated from strings_untranslated.xml). -->
     <string name="k2go_cx_select_group">Select all in this group</string>
     <string name="k2go_cx_export_categories">By category</string>
+    <!-- K2GO-376 wireless Share (sender) strings (migrated from strings_untranslated.xml). -->
+    <string name="k2go_cx_share_title">Share content</string>
+    <string name="k2go_cx_share_subtitle_fmt">Sharing %1$d items</string>
+    <string name="k2go_cx_share_preparing">Preparing to share...</string>
+    <string name="k2go_cx_share_starting_hotspot">Starting the hotspot...</string>
+    <string name="k2go_cx_share_resolving_address">Finding the hotspot address...</string>
+    <string name="k2go_cx_share_step_join">Join</string>
+    <string name="k2go_cx_share_step_receive">Receive</string>
+    <string name="k2go_cx_share_join_caption">Scan on the other phone to join this hotspot.</string>
+    <string name="k2go_cx_share_receive_caption">Then scan this to receive the content.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">This phone cannot start a hotspot to share.</string>
+    <string name="k2go_cx_share_hotspot_failed">Could not start the hotspot.</string>
+    <string name="k2go_cx_share_need_permission">The hotspot permission is needed to share.</string>
+    <string name="k2go_cx_share_error">Could not start sharing.</string>
+    <string name="k2go_cx_share_waiting">Keep this screen open until the other phone finishes.</string>
+    <string name="k2go_cx_share_done">Done</string>
+    <string name="k2go_cx_share_stop">Stop</string>
+    <string name="k2go_cx_share_notif_title">Sharing content</string>
+    <string name="k2go_cx_share_notif_text">The hotspot and the share stay open.</string>
+    <string name="k2go_cx_share_channel_name">Content sharing</string>
 </resources>

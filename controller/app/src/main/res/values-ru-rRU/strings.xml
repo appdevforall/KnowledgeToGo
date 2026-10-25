@@ -1576,4 +1576,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Выбрать все в этой группе</string>
     <string name="k2go_cx_export_categories">По категории</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Поделиться контентом</string>
+    <string name="k2go_cx_share_subtitle_fmt">Отправка %1$d элементов</string>
+    <string name="k2go_cx_share_preparing">Подготовка к отправке...</string>
+    <string name="k2go_cx_share_starting_hotspot">Запуск точки доступа...</string>
+    <string name="k2go_cx_share_resolving_address">Поиск адреса точки доступа...</string>
+    <string name="k2go_cx_share_step_join">Присоединиться</string>
+    <string name="k2go_cx_share_step_receive">Получить</string>
+    <string name="k2go_cx_share_join_caption">Отсканируйте на другом телефоне, чтобы присоединиться к этой точке доступа.</string>
+    <string name="k2go_cx_share_receive_caption">Затем отсканируйте это, чтобы получить контент.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Этот телефон не может запустить точку доступа для обмена.</string>
+    <string name="k2go_cx_share_hotspot_failed">Не удалось запустить точку доступа.</string>
+    <string name="k2go_cx_share_need_permission">Для обмена требуется разрешение на точку доступа.</string>
+    <string name="k2go_cx_share_error">Не удалось начать обмен.</string>
+    <string name="k2go_cx_share_waiting">Держите этот экран открытым, пока другой телефон не завершит.</string>
+    <string name="k2go_cx_share_done">Готово</string>
+    <string name="k2go_cx_share_stop">Остановить</string>
+    <string name="k2go_cx_share_notif_title">Отправка контента</string>
+    <string name="k2go_cx_share_notif_text">Точка доступа и обмен остаются открытыми.</string>
+    <string name="k2go_cx_share_channel_name">Обмен контентом</string>
 </resources>

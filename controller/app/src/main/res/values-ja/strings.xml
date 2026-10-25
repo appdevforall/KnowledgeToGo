@@ -1501,4 +1501,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">このグループをすべて選択</string>
     <string name="k2go_cx_export_categories">カテゴリ別</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">コンテンツを共有</string>
+    <string name="k2go_cx_share_subtitle_fmt">%1$d 件のアイテムを共有中</string>
+    <string name="k2go_cx_share_preparing">共有を準備しています...</string>
+    <string name="k2go_cx_share_starting_hotspot">ホットスポットを開始しています...</string>
+    <string name="k2go_cx_share_resolving_address">ホットスポットのアドレスを探しています...</string>
+    <string name="k2go_cx_share_step_join">参加</string>
+    <string name="k2go_cx_share_step_receive">受信</string>
+    <string name="k2go_cx_share_join_caption">このホットスポットに参加するには、もう一方のスマートフォンでスキャンしてください。</string>
+    <string name="k2go_cx_share_receive_caption">次に、コンテンツを受信するにはこれをスキャンしてください。</string>
+    <string name="k2go_cx_share_hotspot_unsupported">このスマートフォンは共有用のホットスポットを開始できません。</string>
+    <string name="k2go_cx_share_hotspot_failed">ホットスポットを開始できませんでした。</string>
+    <string name="k2go_cx_share_need_permission">共有にはホットスポットの権限が必要です。</string>
+    <string name="k2go_cx_share_error">共有を開始できませんでした。</string>
+    <string name="k2go_cx_share_waiting">もう一方のスマートフォンが完了するまで、この画面を開いたままにしてください。</string>
+    <string name="k2go_cx_share_done">完了</string>
+    <string name="k2go_cx_share_stop">停止</string>
+    <string name="k2go_cx_share_notif_title">コンテンツを共有中</string>
+    <string name="k2go_cx_share_notif_text">ホットスポットと共有は開いたままになります。</string>
+    <string name="k2go_cx_share_channel_name">コンテンツ共有</string>
 </resources>

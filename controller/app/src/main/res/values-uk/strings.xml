@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Вибрати все в цій групі</string>
     <string name="k2go_cx_export_categories">За категорією</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Поділитися вмістом</string>
+    <string name="k2go_cx_share_subtitle_fmt">Надсилання %1$d елементів</string>
+    <string name="k2go_cx_share_preparing">Підготовка до надсилання...</string>
+    <string name="k2go_cx_share_starting_hotspot">Запуск точки доступу...</string>
+    <string name="k2go_cx_share_resolving_address">Пошук адреси точки доступу...</string>
+    <string name="k2go_cx_share_step_join">Приєднатися</string>
+    <string name="k2go_cx_share_step_receive">Отримати</string>
+    <string name="k2go_cx_share_join_caption">Відскануйте на іншому телефоні, щоб приєднатися до цієї точки доступу.</string>
+    <string name="k2go_cx_share_receive_caption">Потім відскануйте це, щоб отримати вміст.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Цей телефон не може запустити точку доступу для надсилання.</string>
+    <string name="k2go_cx_share_hotspot_failed">Не вдалося запустити точку доступу.</string>
+    <string name="k2go_cx_share_need_permission">Для надсилання потрібен дозвіл на точку доступу.</string>
+    <string name="k2go_cx_share_error">Не вдалося розпочати надсилання.</string>
+    <string name="k2go_cx_share_waiting">Тримайте цей екран відкритим, доки інший телефон не завершить.</string>
+    <string name="k2go_cx_share_done">Готово</string>
+    <string name="k2go_cx_share_stop">Зупинити</string>
+    <string name="k2go_cx_share_notif_title">Надсилання вмісту</string>
+    <string name="k2go_cx_share_notif_text">Точка доступу та надсилання залишаються відкритими.</string>
+    <string name="k2go_cx_share_channel_name">Обмін вмістом</string>
 </resources>

@@ -10,27 +10,4 @@
   strings.xml.
 -->
 <resources>
-
-    <!-- K2GO-376: wireless Share (sender). WIP: migrate to strings.xml with all locale values at the
-         l10n close, before the PR merges. -->
-    <string name="k2go_cx_share_title" translatable="false">Share content</string>
-    <string name="k2go_cx_share_subtitle_fmt" translatable="false">Sharing %1$d items</string>
-    <string name="k2go_cx_share_preparing" translatable="false">Preparing to share...</string>
-    <string name="k2go_cx_share_starting_hotspot" translatable="false">Starting the hotspot...</string>
-    <string name="k2go_cx_share_resolving_address" translatable="false">Finding the hotspot address...</string>
-    <string name="k2go_cx_share_step_join" translatable="false">Join</string>
-    <string name="k2go_cx_share_step_receive" translatable="false">Receive</string>
-    <string name="k2go_cx_share_join_caption" translatable="false">Scan on the other phone to join this hotspot.</string>
-    <string name="k2go_cx_share_receive_caption" translatable="false">Then scan this to receive the content.</string>
-    <string name="k2go_cx_share_hotspot_unsupported" translatable="false">This phone cannot start a hotspot to share.</string>
-    <string name="k2go_cx_share_hotspot_failed" translatable="false">Could not start the hotspot.</string>
-    <string name="k2go_cx_share_need_permission" translatable="false">The hotspot permission is needed to share.</string>
-    <string name="k2go_cx_share_error" translatable="false">Could not start sharing.</string>
-    <string name="k2go_cx_share_waiting" translatable="false">Keep this screen open until the other phone finishes.</string>
-    <string name="k2go_cx_share_done" translatable="false">Done</string>
-    <string name="k2go_cx_share_stop" translatable="false">Stop</string>
-    <string name="k2go_cx_share_notif_title" translatable="false">Sharing content</string>
-    <string name="k2go_cx_share_notif_text" translatable="false">The hotspot and the share stay open.</string>
-    <string name="k2go_cx_share_channel_name" translatable="false">Content sharing</string>
-
 </resources>

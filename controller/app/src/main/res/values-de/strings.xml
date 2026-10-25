@@ -1500,4 +1500,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Alle in dieser Gruppe auswählen</string>
     <string name="k2go_cx_export_categories">Nach Kategorie</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Inhalt teilen</string>
+    <string name="k2go_cx_share_subtitle_fmt">%1$d Elemente werden geteilt</string>
+    <string name="k2go_cx_share_preparing">Teilen wird vorbereitet...</string>
+    <string name="k2go_cx_share_starting_hotspot">Hotspot wird gestartet...</string>
+    <string name="k2go_cx_share_resolving_address">Hotspot-Adresse wird gesucht...</string>
+    <string name="k2go_cx_share_step_join">Beitreten</string>
+    <string name="k2go_cx_share_step_receive">Empfangen</string>
+    <string name="k2go_cx_share_join_caption">Auf dem anderen Telefon scannen, um diesem Hotspot beizutreten.</string>
+    <string name="k2go_cx_share_receive_caption">Dann dies scannen, um den Inhalt zu empfangen.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Dieses Telefon kann keinen Hotspot zum Teilen starten.</string>
+    <string name="k2go_cx_share_hotspot_failed">Hotspot konnte nicht gestartet werden.</string>
+    <string name="k2go_cx_share_need_permission">Die Hotspot-Berechtigung ist zum Teilen erforderlich.</string>
+    <string name="k2go_cx_share_error">Teilen konnte nicht gestartet werden.</string>
+    <string name="k2go_cx_share_waiting">Lassen Sie diesen Bildschirm geöffnet, bis das andere Telefon fertig ist.</string>
+    <string name="k2go_cx_share_done">Fertig</string>
+    <string name="k2go_cx_share_stop">Stopp</string>
+    <string name="k2go_cx_share_notif_title">Inhalt wird geteilt</string>
+    <string name="k2go_cx_share_notif_text">Der Hotspot und die Freigabe bleiben geöffnet.</string>
+    <string name="k2go_cx_share_channel_name">Inhaltsfreigabe</string>
 </resources>

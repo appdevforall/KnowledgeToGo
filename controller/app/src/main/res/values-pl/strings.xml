@@ -1510,4 +1510,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Zaznacz wszystko w tej grupie</string>
     <string name="k2go_cx_export_categories">Według kategorii</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Udostępnij zawartość</string>
+    <string name="k2go_cx_share_subtitle_fmt">Udostępnianie %1$d elementów</string>
+    <string name="k2go_cx_share_preparing">Przygotowywanie do udostępniania...</string>
+    <string name="k2go_cx_share_starting_hotspot">Uruchamianie hotspotu...</string>
+    <string name="k2go_cx_share_resolving_address">Wyszukiwanie adresu hotspotu...</string>
+    <string name="k2go_cx_share_step_join">Dołącz</string>
+    <string name="k2go_cx_share_step_receive">Odbierz</string>
+    <string name="k2go_cx_share_join_caption">Zeskanuj na drugim telefonie, aby dołączyć do tego hotspotu.</string>
+    <string name="k2go_cx_share_receive_caption">Następnie zeskanuj to, aby odebrać zawartość.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Ten telefon nie może uruchomić hotspotu do udostępniania.</string>
+    <string name="k2go_cx_share_hotspot_failed">Nie można uruchomić hotspotu.</string>
+    <string name="k2go_cx_share_need_permission">Do udostępniania wymagane jest uprawnienie hotspotu.</string>
+    <string name="k2go_cx_share_error">Nie można rozpocząć udostępniania.</string>
+    <string name="k2go_cx_share_waiting">Pozostaw ten ekran otwarty, aż drugi telefon zakończy.</string>
+    <string name="k2go_cx_share_done">Gotowe</string>
+    <string name="k2go_cx_share_stop">Zatrzymaj</string>
+    <string name="k2go_cx_share_notif_title">Udostępnianie zawartości</string>
+    <string name="k2go_cx_share_notif_text">Hotspot i udostępnianie pozostają otwarte.</string>
+    <string name="k2go_cx_share_channel_name">Udostępnianie zawartości</string>
 </resources>

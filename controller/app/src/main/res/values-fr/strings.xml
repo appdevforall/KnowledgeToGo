@@ -1587,4 +1587,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Tout sélectionner dans ce groupe</string>
     <string name="k2go_cx_export_categories">Par catégorie</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Partager le contenu</string>
+    <string name="k2go_cx_share_subtitle_fmt">Partage de %1$d éléments</string>
+    <string name="k2go_cx_share_preparing">Préparation du partage...</string>
+    <string name="k2go_cx_share_starting_hotspot">Démarrage du point d\'accès...</string>
+    <string name="k2go_cx_share_resolving_address">Recherche de l\'adresse du point d\'accès...</string>
+    <string name="k2go_cx_share_step_join">Rejoindre</string>
+    <string name="k2go_cx_share_step_receive">Recevoir</string>
+    <string name="k2go_cx_share_join_caption">Scannez sur l\'autre téléphone pour rejoindre ce point d\'accès.</string>
+    <string name="k2go_cx_share_receive_caption">Ensuite, scannez ceci pour recevoir le contenu.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Ce téléphone ne peut pas démarrer un point d\'accès pour partager.</string>
+    <string name="k2go_cx_share_hotspot_failed">Impossible de démarrer le point d\'accès.</string>
+    <string name="k2go_cx_share_need_permission">L\'autorisation du point d\'accès est nécessaire pour partager.</string>
+    <string name="k2go_cx_share_error">Impossible de démarrer le partage.</string>
+    <string name="k2go_cx_share_waiting">Gardez cet écran ouvert jusqu\'à ce que l\'autre téléphone ait terminé.</string>
+    <string name="k2go_cx_share_done">Terminé</string>
+    <string name="k2go_cx_share_stop">Arrêter</string>
+    <string name="k2go_cx_share_notif_title">Partage du contenu</string>
+    <string name="k2go_cx_share_notif_text">Le point d\'accès et le partage restent ouverts.</string>
+    <string name="k2go_cx_share_channel_name">Partage de contenu</string>
 </resources>

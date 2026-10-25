@@ -1507,4 +1507,24 @@
     <!-- K2GO-427 content manager / export strings (machine translation, pending human review). -->
     <string name="k2go_cx_select_group">Избор на всички в тази група</string>
     <string name="k2go_cx_export_categories">По категория</string>
+    <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
+    <string name="k2go_cx_share_title">Споделяне на съдържание</string>
+    <string name="k2go_cx_share_subtitle_fmt">Споделяне на %1$d елемента</string>
+    <string name="k2go_cx_share_preparing">Подготовка за споделяне...</string>
+    <string name="k2go_cx_share_starting_hotspot">Стартиране на точката за достъп...</string>
+    <string name="k2go_cx_share_resolving_address">Търсене на адреса на точката за достъп...</string>
+    <string name="k2go_cx_share_step_join">Присъединяване</string>
+    <string name="k2go_cx_share_step_receive">Получаване</string>
+    <string name="k2go_cx_share_join_caption">Сканирайте на другия телефон, за да се присъедините към тази точка за достъп.</string>
+    <string name="k2go_cx_share_receive_caption">След това сканирайте това, за да получите съдържанието.</string>
+    <string name="k2go_cx_share_hotspot_unsupported">Този телефон не може да стартира точка за достъп за споделяне.</string>
+    <string name="k2go_cx_share_hotspot_failed">Точката за достъп не можа да се стартира.</string>
+    <string name="k2go_cx_share_need_permission">За споделяне е необходимо разрешение за точка за достъп.</string>
+    <string name="k2go_cx_share_error">Споделянето не можа да стартира.</string>
+    <string name="k2go_cx_share_waiting">Дръжте този екран отворен, докато другият телефон приключи.</string>
+    <string name="k2go_cx_share_done">Готово</string>
+    <string name="k2go_cx_share_stop">Спиране</string>
+    <string name="k2go_cx_share_notif_title">Споделяне на съдържание</string>
+    <string name="k2go_cx_share_notif_text">Точката за достъп и споделянето остават отворени.</string>
+    <string name="k2go_cx_share_channel_name">Споделяне на съдържание</string>
 </resources>
