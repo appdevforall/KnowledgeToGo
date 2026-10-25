@@ -170,8 +170,17 @@ curl -i http://127.0.0.1:8095/v1/storage                 # other API: 404
 curl -i -XPOST http://127.0.0.1:8095/v1/share            # create (bare): 404
 curl -i -XPOST http://127.0.0.1:8095/v1/share/           # create (trailing slash): 404
 curl -i -XPOST http://127.0.0.1:8095/v1/share//          # create (double slash): 404
+curl -i --path-as-is -XPOST http://127.0.0.1:8095/v1/share%2f    # create (encoded slash): 404
+curl -i --path-as-is -XPOST http://127.0.0.1:8095/v1/share/%2e%2e # climb attempt: 404
+curl -i --path-as-is http://127.0.0.1:8095/v1/share/x/%2e%2e/content # climb to another API: 404
 curl -i http://127.0.0.1:8095/                           # root: 404
 ```
+
+The encoded cases confirm the create guard holds when a client hand-encodes the slash or
+tries to climb: nginx normalizes `%2f` / `%2e%2e` before it matches a location, and cx-core
+splits the path before it unquotes each segment, so an encoded slash never collapses the path
+back to the two-segment `v1/share` create route. Use `curl --path-as-is` so curl does not
+normalize them away before the request leaves the host.
 
 The tell is the body: a cx-core JSON error (`{"error":...}`) on any of the negative
 cases means the scope leaked (the request reached cx-core). A bare nginx 404 means the

@@ -46,4 +46,12 @@ cx_core_share_port: 8095
 # cx-core loopback-only (in-box content exchange still works; only wireless Share is
 # off). A kill-switch for the one security-sensitive surface, independent of
 # cx_core_enabled.
+#
+# v1 decision (K2GO-376): ON by default on EVERY platform (proot phones AND systemd
+# boxes: rpi / pc, arm64 / amd64), so the surface can be observed in the field. The
+# listener is inert without an active share session (unknown-session 404, create
+# blocked), and every reachable endpoint is token-gated, so an always-bound port leaks
+# no content. If observation shows a systemd box should not open it by default, gate the
+# install by platform or arch later (an is_proot / arch condition on the install tasks),
+# not by removing the switch.
 cx_core_share_expose: True
