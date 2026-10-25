@@ -33,7 +33,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
@@ -68,8 +72,12 @@ public class ContentManagerFragment extends Fragment {
     private TextView selectionLabel;
     private Button exportButton;
     private Button importButton;
+    private Button receiveButton;
     private Button deleteButton;
     private Button shareButton;
+
+    /** The invite-QR scanner for the receive flow (same ZXing contract Clone uses). */
+    private ActivityResultLauncher<ScanOptions> inviteScan;
 
     /** The selection captured when Share was tapped, held across the hotspot-permission round-trip. */
     private List<ContentItem> pendingShare;
@@ -96,6 +104,7 @@ public class ContentManagerFragment extends Fragment {
         selectionLabel = root.findViewById(R.id.k2go_cx_selection_label);
         exportButton = root.findViewById(R.id.k2go_cx_export);
         importButton = root.findViewById(R.id.k2go_cx_import);
+        receiveButton = root.findViewById(R.id.k2go_cx_receive);
         deleteButton = root.findViewById(R.id.k2go_cx_delete);
         shareButton = root.findViewById(R.id.k2go_cx_share);
 
@@ -104,9 +113,11 @@ public class ContentManagerFragment extends Fragment {
                 new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(), result -> onHotspotPermissionResult());
+        inviteScan = registerForActivityResult(new ScanContract(), r -> onInviteScanned(r.getContents()));
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
         importButton.setOnClickListener(v -> onImportClicked());
+        receiveButton.setOnClickListener(v -> onReceiveClicked());
         deleteButton.setEnabled(true);
         deleteButton.setOnClickListener(v -> onDeleteClicked());
         shareButton.setEnabled(true);
@@ -313,6 +324,41 @@ public class ContentManagerFragment extends Fragment {
     private void showImportProgress() {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ImportProgressFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // ---- receive (wireless Share, K2GO-376) ----------------------------------------------------
+
+    /** Receive: if an import run is still active, show it; otherwise scan the sender's invite QR. The
+     *  user joins the sender hotspot first (the invite's companion Wi-Fi QR, handled by the system). */
+    private void onReceiveClicked() {
+        if (ContentImportService.session().isRunning()) {
+            showImportProgress();
+            return;
+        }
+        ScanOptions o = new ScanOptions();
+        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        o.setPrompt(getString(R.string.k2go_cx_receive_scan_prompt));
+        o.setBeepEnabled(false);
+        o.setBarcodeImageEnabled(false);
+        o.setOrientationLocked(false);
+        inviteScan.launch(o);
+    }
+
+    /** The scanner returned. Null means the user cancelled; a non-invite or invalid QR is rejected. */
+    private void onInviteScanned(@Nullable String contents) {
+        if (!isAdded() || contents == null) {
+            return;
+        }
+        ShareHandshake.ShareInvite invite = ShareHandshake.decode(contents);
+        if (invite == null) {
+            String msg = getString(R.string.k2go_cx_receive_invalid);
+            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
+            return;
+        }
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, ContentReceiveFragment.newInstance(invite))
                 .addToBackStack(null)
                 .commit();
     }

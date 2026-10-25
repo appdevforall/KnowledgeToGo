@@ -43,20 +43,40 @@ public final class WifiNetworkBinder {
 
     /** Bind the process to the local Network whose subnet contains hostIp. Returns true if bound. */
     public static boolean bindToHostNetwork(Context ctx, String hostIp) {
-        if (ctx == null || hostIp == null) return false;
+        Network match = findHostNetwork(ctx, hostIp);   // handles null ctx / hostIp / cm
+        if (match == null) {
+            Log.i(TAG, "No local network matches host " + hostIp + "; not binding (direct/local route)");
+            return false;
+        }
         ConnectivityManager cm = (ConnectivityManager)
                 ctx.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) return false;
+        boolean ok = cm.bindProcessToNetwork(match);
+        Log.i(TAG, "Bound process to " + match + " to reach host " + hostIp + " -> " + ok);
+        return ok;
+    }
+
+    /**
+     * The local {@link Network} whose link subnet contains {@code hostIp}, or {@code null} when none
+     * matches (this device is itself the AP, or the host is reached by the default route). Caller can
+     * open a connection on the returned Network to pin ONLY that socket to the peer's Wi-Fi / hotspot,
+     * instead of {@link #bindToHostNetwork} which pins the whole process (needed only for a native
+     * child such as rsync). The subnet match is the single source for "which Network reaches the host".
+     */
+    public static Network findHostNetwork(Context ctx, String hostIp) {
+        if (ctx == null || hostIp == null) return null;
+        ConnectivityManager cm = (ConnectivityManager)
+                ctx.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return null;
 
         InetAddress host;
         try {
             host = InetAddress.getByName(hostIp);
         } catch (Exception e) {
-            return false;
+            return null;
         }
-        if (!(host instanceof Inet4Address)) return false;
+        if (!(host instanceof Inet4Address)) return null;
 
-        Network match = null;
         try {
             for (Network net : cm.getAllNetworks()) {
                 LinkProperties lp = cm.getLinkProperties(net);
@@ -64,23 +84,14 @@ public final class WifiNetworkBinder {
                 for (LinkAddress la : lp.getLinkAddresses()) {
                     InetAddress local = la.getAddress();
                     if (local instanceof Inet4Address && sameSubnet(local, host, la.getPrefixLength())) {
-                        match = net;
-                        break;
+                        return net;
                     }
                 }
-                if (match != null) break;
             }
         } catch (Exception e) {
             Log.w(TAG, "Network enumeration failed", e);
         }
-
-        if (match == null) {
-            Log.i(TAG, "No local network matches host " + hostIp + "; not binding (direct/local route)");
-            return false;
-        }
-        boolean ok = cm.bindProcessToNetwork(match);
-        Log.i(TAG, "Bound process to " + match + " to reach host " + hostIp + " -> " + ok);
-        return ok;
+        return null;
     }
 
     /** Release any process-level network binding (back to the system default). */

@@ -32,6 +32,18 @@
         android:layout_marginTop="4dp"
         android:text="@string/k2go_cx_import_from_drive" />
 
+    <!-- Receive starts from a paired sender, not from on-box content, so it is a top-level action like
+         Import from drive. Always visible. -->
+    <Button
+        android:id="@+id/k2go_cx_receive"
+        style="@style/Widget.K2Go.Button.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/k2go_cx_receive_from_network" />
+
     <TextView
         android:id="@+id/k2go_cx_status"
         android:layout_width="match_parent"
