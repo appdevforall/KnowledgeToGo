@@ -337,6 +337,11 @@ public class ContentManagerFragment extends Fragment {
             showImportProgress();
             return;
         }
+        // Tear our own hotspot down the moment Receive starts: the sender's AP IP (always 192.168.49.1)
+        // collides with our own hotspot IP if we are hosting, which traps the connection locally.
+        // Stopping here lets the interface release while the user scans; ContentReceiveFragment also
+        // waits for the release before it connects. K2GO-376.
+        LocalHotspotManager.get().stop();
         ScanOptions o = new ScanOptions();
         o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
         o.setPrompt(getString(R.string.k2go_cx_receive_scan_prompt));

@@ -34,9 +34,13 @@ import org.appdevforall.k2go.contentexchange.data.ShareManifestReader;
 import org.appdevforall.k2go.contentexchange.domain.ImportEntry;
 import org.appdevforall.k2go.contentexchange.domain.ImportPreflight;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.util.ByteFormatter;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -92,7 +96,7 @@ public class ContentReceiveFragment extends Fragment {
         back.setText(getString(R.string.k2go_back_link));
         back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
         receiveButton.setOnClickListener(v -> onReceiveClicked());
-        retryButton.setOnClickListener(v -> fetchManifest());
+        retryButton.setOnClickListener(v -> prepareThenFetch());
 
         appContext = requireContext().getApplicationContext();
         host = requireArguments().getString(ARG_HOST);
@@ -100,8 +104,63 @@ public class ContentReceiveFragment extends Fragment {
         token = requireArguments().getString(ARG_TOKEN);
         manifestUrl = requireArguments().getString(ARG_MANIFEST);
 
-        fetchManifest();   // idempotent GET; safe to re-run on a recreate or a Try-again tap
+        prepareThenFetch();   // stop our own hotspot (its AP IP collides with the sender), then fetch
         return root;
+    }
+
+    /**
+     * The sender's LocalOnlyHotspot AP IP is always 192.168.49.1. If THIS device is also hosting a
+     * hotspot, its own 192.168.49.1 (the p2p0 interface) makes the sender address a LOCAL address, so
+     * the kernel traps the connection on loopback (the local route beats any per-Network binding) and
+     * the receiver reaches itself instead of the sender ("Could not reach the sender"). Tear our own
+     * hotspot down and wait until the sender address is no longer one of our interfaces, then fetch.
+     * The hotspot stays off; only Share starts it again. K2GO-376.
+     */
+    private void prepareThenFetch() {
+        showConnecting();
+        LocalHotspotManager.get().stop();   // no-op if we are not hosting
+        waitHostRemoteThenFetch(0);
+    }
+
+    /** Poll off the main thread until the sender address is no longer a local interface address, then
+     *  fetch. Gives up after ~12s and fetches anyway (the Try-again button remains). */
+    private void waitHostRemoteThenFetch(int attempt) {
+        worker.execute(() -> {
+            boolean local = isLocalAddress(host);
+            main.post(() -> {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+                if (!local || attempt >= 24) {
+                    fetchManifest();
+                } else {
+                    main.postDelayed(() -> {
+                        if (isAdded()) {
+                            waitHostRemoteThenFetch(attempt + 1);
+                        }
+                    }, 500);
+                }
+            });
+        });
+    }
+
+    /** True when {@code ip} is assigned to one of this device's own interfaces. Uses
+     *  {@link NetworkInterface} (not ConnectivityManager), so it also sees a p2p0 hotspot AP that
+     *  ConnectivityManager does not expose as a Network. */
+    private static boolean isLocalAddress(String ip) {
+        try {
+            InetAddress target = InetAddress.getByName(ip);
+            for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                for (InetAddress a : Collections.list(ni.getInetAddresses())) {
+                    if (a.equals(target)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // On error, treat as not-local: the fetch will surface any reachability problem itself.
+        }
+        return false;
     }
 
     /** Fetch and parse the sender's manifest on a worker, then render the summary or an error. */
