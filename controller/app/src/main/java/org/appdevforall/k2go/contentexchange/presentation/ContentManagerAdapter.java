@@ -1,6 +1,7 @@
 package org.appdevforall.k2go.contentexchange.presentation;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -316,6 +317,9 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             root.addView(slot, slotLp);
 
             name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge, R.color.k2go_ink);
+            // Bold so the category title keeps the highest visual weight: an accent color would read
+            // lighter than the near-white item titles in dark, which is the opposite of what we want.
+            name.setTypeface(name.getTypeface(), Typeface.BOLD);
             root.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
 
             meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
