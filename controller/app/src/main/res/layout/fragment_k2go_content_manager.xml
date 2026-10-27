@@ -5,6 +5,7 @@
      the same list. The bottom action bar (Export / Share / Delete) acts on the selection; the
      buttons are enabled by the fragment. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -93,6 +94,9 @@
             android:orientation="horizontal"
             android:layout_marginTop="8dp">
 
+            <!-- maxLines=1 + autosize: the label shrinks to fit the third-width slot (down to ~20% from
+                 14sp) instead of wrapping to two lines; the outlined pair also trims its horizontal
+                 padding a little so a word like "Compartir" keeps its size on most screens. M3-compliant. -->
             <Button
                 android:id="@+id/k2go_cx_export"
                 style="@style/Widget.K2Go.Button.Outlined"
@@ -100,6 +104,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="11sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
                 android:enabled="false"
                 android:text="@string/k2go_cx_action_export" />
 
@@ -110,6 +121,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="11sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
                 android:enabled="false"
                 android:text="@string/k2go_cx_action_share" />
 
@@ -119,6 +137,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="11sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
                 android:enabled="false"
                 android:text="@string/k2go_cx_action_delete" />
         </LinearLayout>
