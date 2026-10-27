@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-427: category header band for the content manager. A filled teal-tonal surface (distinct in
+     hue from the cream item cards) so a per-app group reads as a header that dominates its items. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/k2go_teal_tonal" />
+    <corners android:radius="12dp" />
+</shape>

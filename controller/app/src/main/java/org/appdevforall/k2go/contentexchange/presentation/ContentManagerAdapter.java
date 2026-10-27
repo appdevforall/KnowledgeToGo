@@ -1,11 +1,11 @@
 package org.appdevforall.k2go.contentexchange.presentation;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,7 +21,9 @@ import org.appdevforall.k2go.contentexchange.domain.GroupSelection;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Recycling adapter for the content manager. A single flat row list with four view
@@ -54,7 +56,12 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     static final int TYPE_ITEM = 2;
     static final int TYPE_EMPTY = 3;
 
+    /** Every row (header, groups and their items). Stays complete across a collapse toggle. */
     private final List<Row> rows = new ArrayList<>();
+    /** The rows actually shown: {@link #rows} minus the items of collapsed groups. */
+    private final List<Row> shown = new ArrayList<>();
+    /** Apps whose items are hidden (collapsed). Default expanded = empty. Survives a reload. */
+    private final Set<String> collapsed = new HashSet<>();
     private final SelectionController selection;
 
     public ContentManagerAdapter(SelectionController selection) {
@@ -64,6 +71,7 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     public void submit(List<Row> newRows) {
         rows.clear();
         rows.addAll(newRows);
+        rebuildShown();
         notifyDataSetChanged();
     }
 
@@ -72,14 +80,48 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
         notifyDataSetChanged();
     }
 
+    /** Whether a group's items are hidden. Read by its header to pick the chevron direction. */
+    boolean isCollapsed(String app) {
+        return collapsed.contains(app);
+    }
+
+    /** Flips a group between expanded and collapsed and rebuilds the shown rows. */
+    void toggleCollapse(String app) {
+        if (app == null) {
+            return;
+        }
+        if (!collapsed.remove(app)) {
+            collapsed.add(app);
+        }
+        rebuildShown();
+        notifyDataSetChanged();
+    }
+
+    /** Recomputes {@link #shown}: a collapsed group keeps its header but drops its item/empty rows. */
+    private void rebuildShown() {
+        shown.clear();
+        boolean skip = false;   // inside a collapsed group (set at its header, cleared at the next one)
+        for (Row row : rows) {
+            if (row.type == TYPE_GROUP) {
+                skip = collapsed.contains(((GroupRow) row).app);
+                shown.add(row);
+            } else if (skip && (row.type == TYPE_ITEM || row.type == TYPE_EMPTY)) {
+                // An item, or the "No items" note, under a collapsed group: hidden. The top-level
+                // empty-manager note has no preceding group, so skip is false and it still shows.
+            } else {
+                shown.add(row);
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return rows.get(position).type;
+        return shown.get(position).type;
     }
 
     @Override
     public int getItemCount() {
-        return rows.size();
+        return shown.size();
     }
 
     @NonNull
@@ -90,7 +132,7 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             case TYPE_HEADER:
                 return new HeaderVH(ctx);
             case TYPE_GROUP:
-                return new GroupVH(ctx, selection);
+                return new GroupVH(ctx, selection, this);
             case TYPE_EMPTY:
                 return new EmptyVH(ctx);
             default:
@@ -100,7 +142,7 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Row row = rows.get(position);
+        Row row = shown.get(position);
         switch (row.type) {
             case TYPE_HEADER:
                 ((HeaderVH) holder).bind((HeaderRow) row);
@@ -244,15 +286,22 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
         private final MaterialCheckBox checkBox;
         private final TextView name;
         private final TextView meta;
+        private final ImageView chevron;
         private final SelectionController selection;
+        private final ContentManagerAdapter adapter;   // owns the collapse state (read + toggle)
         private String boundApp;
 
-        GroupVH(Context ctx, SelectionController selection) {
+        GroupVH(Context ctx, SelectionController selection, ContentManagerAdapter adapter) {
             super(new LinearLayout(ctx));
             this.selection = selection;
+            this.adapter = adapter;
             LinearLayout root = (LinearLayout) itemView;
             root.setOrientation(LinearLayout.HORIZONTAL);
             root.setGravity(Gravity.CENTER_VERTICAL);
+            // A category header: a filled tonal band (distinct in hue from the cream item cards) with
+            // title-scale text, so the group reads as a header that dominates its items. M3 tonal.
+            root.setBackgroundResource(R.drawable.k2go_group_header_bg);
+            root.setPadding(px(ctx, 12), px(ctx, 12), px(ctx, 12), px(ctx, 12));
             root.setLayoutParams(fullWidth(px(ctx, 16), px(ctx, 8)));
 
             checkBox = new MaterialCheckBox(ctx);
@@ -266,18 +315,34 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             slotLp.rightMargin = px(ctx, 4);
             root.addView(slot, slotLp);
 
-            name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink);
-            name.setTypeface(name.getTypeface(), Typeface.BOLD);
+            name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge, R.color.k2go_ink);
             root.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
 
-            meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
-            root.addView(meta);
+            meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
+            LinearLayout.LayoutParams metaLp = new LinearLayout.LayoutParams(-2, -2);
+            metaLp.leftMargin = px(ctx, 8);
+            root.addView(meta, metaLp);
 
-            // User taps only: setCheckedState() during bind does not fire this (no OnCheckedChange
-            // listener), so a recycled header never toggles the model by itself.
+            // Accordion affordance: a chevron showing whether the group is collapsed; the whole header
+            // toggles it (see the root click below). Muted so the title stays the dominant element.
+            chevron = new ImageView(ctx);
+            chevron.setContentDescription(ctx.getString(R.string.k2go_cx_toggle_group));
+            chevron.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            LinearLayout.LayoutParams chLp = new LinearLayout.LayoutParams(px(ctx, 24), px(ctx, 24));
+            chLp.leftMargin = px(ctx, 8);
+            root.addView(chevron, chLp);
+
+            // Checkbox tap selects the whole group; its own listener consumes the tap, so it never
+            // reaches the row. A tap anywhere else on the header expands or collapses the group.
+            // setCheckedState() during bind fires no listener, so a recycled header stays inert.
             checkBox.setOnClickListener(v -> {
                 if (boundApp != null) {
                     this.selection.toggleGroup(boundApp);
+                }
+            });
+            root.setOnClickListener(v -> {
+                if (boundApp != null) {
+                    this.adapter.toggleCollapse(boundApp);
                 }
             });
         }
@@ -294,6 +359,9 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
                     : state == GroupSelection.SOME
                     ? MaterialCheckBox.STATE_INDETERMINATE
                     : MaterialCheckBox.STATE_UNCHECKED);
+            // Collapsed -> down chevron (more below); expanded -> up chevron (tap to close).
+            chevron.setImageResource(adapter.isCollapsed(row.app)
+                    ? R.drawable.ic_expand_more : R.drawable.ic_expand_less);
         }
     }
 

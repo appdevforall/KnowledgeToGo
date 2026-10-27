@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- K2GO-427: content manager (gestor). A RecyclerView lists managed content grouped by app, each
      item with its size (recycled rows: a large library must not inflate one view per item). The
-     header block (title + subtitle + storage summary) and the per-app group headers are row types in
-     the same list. The bottom action bar (Export / Share / Delete) acts on the selection; the
-     buttons are enabled by the fragment. -->
+     header block (title + subtitle + storage summary) and the per-app category headers are row types
+     in the same list; a category header is a tonal band that dominates its items and toggles them
+     (accordion). The entry actions (Import, Receive) and the selection action bar (Export / Share /
+     Delete) are pinned below the list, never inside the scroll, so content rows never hide them. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -21,34 +22,13 @@
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="@color/k2go_teal" />
 
-    <!-- Import starts from a drive, not from on-box content, so it is a top-level action separate from
-         the per-item selection below. Always visible. -->
-    <Button
-        android:id="@+id/k2go_cx_import"
-        style="@style/Widget.K2Go.Button.Outlined"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/k2go_cx_import_from_drive" />
-
-    <!-- Receive starts from a paired sender, not from on-box content, so it is a top-level action like
-         Import from drive. Always visible. -->
-    <Button
-        android:id="@+id/k2go_cx_receive"
-        style="@style/Widget.K2Go.Button.Outlined"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/k2go_cx_receive_from_network" />
-
+    <!-- Loading / error message. Shown in place of the list (weighted like it), so the pinned bottom
+         bars stay at the bottom while content is loading or unavailable. -->
     <TextView
         android:id="@+id/k2go_cx_status"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="20dp"
@@ -68,7 +48,36 @@
         android:paddingBottom="24dp"
         android:scrollbars="vertical" />
 
-    <!-- Bottom action bar: shown when at least one item is selected. -->
+    <!-- Entry actions: pinned below the list, always visible. Import reads a drive and Receive pulls
+         from a paired sender, so both start from outside the on-box content (not from the selection). -->
+    <LinearLayout
+        android:id="@+id/k2go_cx_entrybar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/k2go_surface"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp">
+
+        <Button
+            android:id="@+id/k2go_cx_import"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_cx_import_from_drive" />
+
+        <Button
+            android:id="@+id/k2go_cx_receive"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/k2go_cx_receive_from_network" />
+    </LinearLayout>
+
+    <!-- Selection action bar: shown when at least one item is selected. -->
     <LinearLayout
         android:id="@+id/k2go_cx_actionbar"
         android:layout_width="match_parent"
