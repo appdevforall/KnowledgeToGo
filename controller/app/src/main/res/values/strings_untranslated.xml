@@ -25,4 +25,10 @@
     <string name="k2go_cx_receive_action" translatable="false">Receive</string>
     <string name="k2go_cx_receive_retry" translatable="false">Try again</string>
 
+    <!-- K2GO-376 Share sender transport selector. Shown only when both a hotspot and a Wi-Fi address
+         exist. Migrate to strings.xml (33 locales) before merge. -->
+    <string name="k2go_cx_share_transport_label" translatable="false">Receiver connects over</string>
+    <string name="k2go_cx_share_transport_hotspot" translatable="false">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi" translatable="false">Wi-Fi</string>
+
 </resources>

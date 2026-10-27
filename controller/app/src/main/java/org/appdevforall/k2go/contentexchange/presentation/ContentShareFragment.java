@@ -22,12 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
 import org.appdevforall.k2go.redesign.QrSection;
+import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
 public class ContentShareFragment extends Fragment {
 
@@ -38,6 +42,8 @@ public class ContentShareFragment extends Fragment {
     private View receiveRoot;
     private QrSection secJoin;
     private QrSection secReceive;
+    private TextView transportLabel;
+    private MaterialButtonToggleGroup transportToggle;
     private Button done;
 
     private final ShareSession session = ContentShareService.session();
@@ -45,6 +51,11 @@ public class ContentShareFragment extends Fragment {
 
     /** One-shot guard so a re-entrant render() does not schedule the back-pop twice (K2GO-427). */
     private boolean leaving;
+
+    /** K2GO-376 transport selector: which address the receive QR carries when both exist. false =
+     *  the hotspot AP IP (the default, fast + direct); true = the station Wi-Fi IP (both phones on
+     *  the same network). Ignored when only one address is available. */
+    private boolean useWifiAddress;
 
     @Nullable
     @Override
@@ -66,6 +77,20 @@ public class ContentShareFragment extends Fragment {
         ((TextView) receiveRoot.findViewById(R.id.sec_badge)).setText("2");
         ((TextView) receiveRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_receive);
 
+        transportLabel = root.findViewById(R.id.k2go_cxs_transport_label);
+        transportToggle = root.findViewById(R.id.k2go_cxs_transport);
+        transportToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) {
+                return;   // react only to the newly selected button, not the one being cleared
+            }
+            boolean wifi = checkedId == R.id.k2go_cxs_transport_wifi;
+            if (wifi == useWifiAddress) {
+                return;   // no change (also absorbs the programmatic sync in renderInvite, no re-render loop)
+            }
+            useWifiAddress = wifi;
+            renderInvite();   // re-encode the receive QR at the chosen address
+        });
+
         done.setOnClickListener(v -> {
             ContentShareService.cancel(requireContext());
             goBack();
@@ -73,6 +98,10 @@ public class ContentShareFragment extends Fragment {
         // The AP IPv4 lands a beat after the hotspot reports ON; re-render when it (or the phase) changes
         // so the receive QR appears the moment every piece is ready. Observed once, tied to the view.
         hs.state().observe(getViewLifecycleOwner(), st -> render());
+        // K2GO-376: also re-render on any network change (Wi-Fi off/on gives a new DHCP IP), so the
+        // Wi-Fi-transport QR never advertises a stale station address. Same reactive trigger Connect and
+        // Clone use (ADFA-5064); renderInvite() re-resolves the station IP and redraws the QR.
+        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), t -> render());
         return root;
     }
 
@@ -156,13 +185,36 @@ public class ContentShareFragment extends Fragment {
                 sec.subCaption.setText("");
                 sec.setFallback(requireContext(), null);
             }
+            transportLabel.setVisibility(View.GONE);
+            transportToggle.setVisibility(View.GONE);
             waiting.setVisibility(View.GONE);
             return;
         }
 
         String ssid = st != null && st.ssid != null ? st.ssid : "";
         String pass = st != null && st.passphrase != null ? st.passphrase : "";
-        String ip = st != null ? st.hotspotIp : null;
+        String hotspotIp = st != null ? st.hotspotIp : null;
+        String wifiIp = ApAddressResolver.resolveStationWifiIp(requireContext());
+
+        // Transport selector: a choice only when BOTH addresses exist and differ. With one, use it and
+        // hide the toggle (the common case). The hotspot is the default (fast, direct); Wi-Fi lets two
+        // phones already on the same network pull over it, avoiding the Wi-Fi Direct link. When Wi-Fi is
+        // chosen there is nothing to join, so the join-hotspot section is hidden too.
+        boolean both = hotspotIp != null && wifiIp != null && !hotspotIp.equals(wifiIp);
+        transportLabel.setVisibility(both ? View.VISIBLE : View.GONE);
+        transportToggle.setVisibility(both ? View.VISIBLE : View.GONE);
+        // The selection persists across a Wi-Fi blip: on Wi-Fi loss the toggle just hides and the QR
+        // falls back to whatever address is left; when Wi-Fi returns (a new DHCP IP), the choice is
+        // still Wi-Fi and the QR redraws at the fresh address, instead of silently reverting to hotspot.
+        if (both) {
+            int want = useWifiAddress ? R.id.k2go_cxs_transport_wifi : R.id.k2go_cxs_transport_hotspot;
+            if (transportToggle.getCheckedButtonId() != want) {
+                transportToggle.check(want);   // sync UI to the field; the listener no-ops (state matches)
+            }
+        }
+        joinRoot.setVisibility(both && useWifiAddress ? View.GONE : View.VISIBLE);
+        String ip = both ? (useWifiAddress ? wifiIp : hotspotIp)
+                         : (hotspotIp != null ? hotspotIp : wifiIp);
 
         // Section 1: join the hotspot (standard Wi-Fi auto-join QR + the credentials as fallback).
         secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
@@ -197,6 +249,8 @@ public class ContentShareFragment extends Fragment {
         secReceive.stopPending();
         joinRoot.setVisibility(View.GONE);
         receiveRoot.setVisibility(View.GONE);
+        transportLabel.setVisibility(View.GONE);
+        transportToggle.setVisibility(View.GONE);
         waiting.setVisibility(View.GONE);
     }
 
