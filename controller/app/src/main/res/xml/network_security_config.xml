@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ADFA-4714 (tech-debt S18): scope cleartext HTTP.
-  The app reaches the on-device box only over http on loopback:
-    - localhost:8085  (portal / dashboard / pdf.js / k2go-docs)
-    - 127.0.0.1:8114  (tier-3 help tooltips)
-  Permit cleartext there; deny it everywhere else. HTTPS is always allowed (e.g. the OTA
-  update at iiab.switnet.org). Native aria2 downloads run in a separate process and are not
-  governed by this config. QR-encoded LAN URLs shown to other devices are strings, not
-  requests from this app.
+  Cleartext HTTP is permitted app-wide. Two cleartext needs, neither reachable over HTTPS:
+    1. The on-device box over loopback: localhost:8085 (portal / dashboard / pdf.js / k2go-docs),
+       127.0.0.1:8114 (tier-3 help), and the loopback cx-core / dash-node REST APIs.
+    2. Content-exchange Share (K2GO-376): the receiver pulls from a peer's live cx-core over plain
+       HTTP on the LAN : the sender's hotspot AP IP (192.168.49.1) or its Wi-Fi IP (dynamic). Both
+       vary, so there is no fixed host to scope a domain-config to, and network-security-config has
+       no CIDR form. The transfer is token-gated (X-Share-Token header) and LAN-only.
+  ADFA-4714 had scoped cleartext to loopback only; K2GO-376's receiver re-widens it to the LAN,
+  which is the minimum that lets a device pull from an ad-hoc peer : HTTPS would need a shared
+  certificate the on-the-spot QR pairing has no way to provision. HTTPS stays available everywhere
+  (e.g. the OTA self-update). Native aria2 downloads run in a separate process, not governed here.
 -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">localhost</domain>
-        <domain includeSubdomains="false">127.0.0.1</domain>
-    </domain-config>
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
