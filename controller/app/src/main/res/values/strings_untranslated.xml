@@ -11,6 +11,10 @@
 -->
 <resources>
 
+    <!-- K2GO-427 content manager, category header accordion. Migrate to strings.xml (33 locales)
+         before merge. Content description of the expand/collapse chevron on a category header. -->
+    <string name="k2go_cx_toggle_group" translatable="false">Show or hide items</string>
+
     <!-- K2GO-376 wireless Share, receiver side. Migrate to strings.xml (33 locales) before merge. -->
     <string name="k2go_cx_receive_from_network" translatable="false">Receive over Wi-Fi</string>
     <string name="k2go_cx_receive_title" translatable="false">Receive</string>

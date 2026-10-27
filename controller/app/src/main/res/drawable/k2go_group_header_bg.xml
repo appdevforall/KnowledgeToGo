@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-427: category header band for the content manager. A tonal fill with a teal outline (the
+     k2go_card_teal "prominent card" pattern) so a per-app group header stands out clearly from the
+     plain item cards, especially in dark mode where the fills alone read too close. Existing tokens. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/k2go_teal_tonal" />
+    <stroke android:width="2dp" android:color="@color/k2go_teal" />
+    <corners android:radius="12dp" />
+</shape>
