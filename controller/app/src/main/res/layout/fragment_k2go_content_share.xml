@@ -4,6 +4,7 @@
      receive. A foreground service holds the hotspot and the gate open until the user taps Done.
      Material 3 tokens; no hardcoded colours. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -47,6 +48,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
+
+        <!-- K2GO-376 transport selector: when the sender has BOTH a hotspot AP IP and a station Wi-Fi
+             IP, the user picks which address the receive QR carries. Hotspot is fast and direct; Wi-Fi
+             works when both phones are already on the same network and avoids the Wi-Fi Direct link.
+             Shown (by the fragment) only when both addresses exist; otherwise the one address is used. -->
+        <TextView
+            android:id="@+id/k2go_cxs_transport_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="@color/k2go_muted"
+            android:text="@string/k2go_cx_share_transport_label"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/k2go_cxs_transport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/k2go_cxs_transport_hotspot"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_cx_share_transport_hotspot" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/k2go_cxs_transport_wifi"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_cx_share_transport_wifi" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- Section 2: scan to receive (the share invite QR). -->
         <include

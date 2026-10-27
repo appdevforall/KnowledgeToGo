@@ -34,6 +34,7 @@ import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.BoxImportStaging;
 import org.appdevforall.k2go.contentexchange.data.CxCoreDataSource;
 import org.appdevforall.k2go.contentexchange.data.CxCoreImportSource;
+import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
@@ -55,6 +56,12 @@ public final class ContentImportService extends Service {
     public static final String ACTION_CANCEL = "org.appdevforall.k2go.CONTENT_IMPORT_CANCEL";
 
     public static final String EXTRA_TREE_URI = "treeUri";
+    /** Network (Share) source: the sender's hotspot address, token and manifest path (K2GO-376). A
+     *  START intent carries either {@link #EXTRA_TREE_URI} (drive) or these (network), never both. */
+    public static final String EXTRA_NET_HOST = "netHost";
+    public static final String EXTRA_NET_PORT = "netPort";
+    public static final String EXTRA_SHARE_TOKEN = "shareToken";
+    public static final String EXTRA_MANIFEST_URL = "manifestUrl";
     public static final String EXTRA_APPS = "apps";
     public static final String EXTRA_LOCAL_REFS = "localRefs";
     public static final String EXTRA_TITLES = "titles";
@@ -90,6 +97,33 @@ public final class ContentImportService extends Service {
         }
         Intent i = new Intent(ctx, ContentImportService.class).setAction(ACTION_START)
                 .putExtra(EXTRA_TREE_URI, treeUri.toString())
+                .putExtra(EXTRA_APPS, apps)
+                .putExtra(EXTRA_LOCAL_REFS, locals)
+                .putExtra(EXTRA_TITLES, titles)
+                .putExtra(EXTRA_ENTRIES, entries)
+                .putExtra(EXTRA_PAYLOADS, payloads)
+                .putExtra(EXTRA_BYTES, bytes);
+        ContextCompat.startForegroundService(ctx, i);
+    }
+
+    /**
+     * Start a network import: pull the sender-scoped items from its gate over the hotspot (K2GO-376).
+     * Same per-item queue / staging / ingest as the drive path; only the carrier (the source) differs.
+     */
+    public static void startNetwork(Context ctx, String host, int port, String token, String manifestUrl,
+                                    ItemRef[] refs, String[] titles, String[] entries,
+                                    String[] payloads, long[] bytes) {
+        String[] apps = new String[refs.length];
+        String[] locals = new String[refs.length];
+        for (int i = 0; i < refs.length; i++) {
+            apps[i] = refs[i].app();
+            locals[i] = refs[i].localRef();
+        }
+        Intent i = new Intent(ctx, ContentImportService.class).setAction(ACTION_START)
+                .putExtra(EXTRA_NET_HOST, host)
+                .putExtra(EXTRA_NET_PORT, port)
+                .putExtra(EXTRA_SHARE_TOKEN, token)
+                .putExtra(EXTRA_MANIFEST_URL, manifestUrl)
                 .putExtra(EXTRA_APPS, apps)
                 .putExtra(EXTRA_LOCAL_REFS, locals)
                 .putExtra(EXTRA_TITLES, titles)
@@ -190,13 +224,15 @@ public final class ContentImportService extends Service {
             return START_NOT_STICKY;
         }
         String treeUri = intent.getStringExtra(EXTRA_TREE_URI);
+        String netHost = intent.getStringExtra(EXTRA_NET_HOST);
         String[] apps = intent.getStringArrayExtra(EXTRA_APPS);
         String[] locals = intent.getStringArrayExtra(EXTRA_LOCAL_REFS);
         String[] titles = intent.getStringArrayExtra(EXTRA_TITLES);
         String[] entries = intent.getStringArrayExtra(EXTRA_ENTRIES);
         String[] payloads = intent.getStringArrayExtra(EXTRA_PAYLOADS);
         long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
-        if (treeUri == null || apps == null || locals == null || apps.length == 0
+        boolean network = netHost != null;
+        if ((treeUri == null && !network) || apps == null || locals == null || apps.length == 0
                 || apps.length != locals.length) {
             stopSelf();
             return START_NOT_STICKY;
@@ -205,7 +241,13 @@ public final class ContentImportService extends Service {
         for (int i = 0; i < apps.length; i++) {
             refs[i] = new ItemRef(apps[i], locals[i]);
         }
-        SESSION.begin(refs, titles, entries, payloads, bytes, treeUri);
+        if (network) {
+            SESSION.beginNetwork(refs, titles, entries, payloads, bytes, netHost,
+                    intent.getIntExtra(EXTRA_NET_PORT, 0),
+                    intent.getStringExtra(EXTRA_SHARE_TOKEN), intent.getStringExtra(EXTRA_MANIFEST_URL));
+        } else {
+            SESSION.begin(refs, titles, entries, payloads, bytes, treeUri);
+        }
         startForeground(NOTIFICATION_ID, buildNotification(null));
         worker.execute(this::drain);
         return START_NOT_STICKY;
@@ -225,9 +267,17 @@ public final class ContentImportService extends Service {
         BoxImportStaging staging = new BoxImportStaging(getApplicationContext());
         ImportCarrier carrier;
         try {
-            carrier = new SafImportCarrier(getApplicationContext(), Uri.parse(SESSION.treeUri()));
+            // The carrier is the only sender-specific dependency: a drive (SAF) source or a paired
+            // sender over the hotspot (network). Everything after it (stage + ingest) is identical.
+            if (SESSION.isNetwork()) {
+                carrier = new NetworkImportCarrier(getApplicationContext(), SESSION.shareHost(),
+                        SESSION.sharePort(), SESSION.shareToken(), SESSION.shareManifestUrl(),
+                        SESSION::isCancelled);
+            } else {
+                carrier = new SafImportCarrier(getApplicationContext(), Uri.parse(SESSION.treeUri()));
+            }
         } catch (Exception e) {
-            finishWithError("Could not open the drive: " + e.getMessage());
+            finishWithError("Could not open the source: " + e.getMessage());
             return;
         }
         SESSION.setSource(carrier.sourceLabel());
@@ -283,7 +333,14 @@ public final class ContentImportService extends Service {
 
         if (SESSION.allDone()) {
             // Fully imported: one-shot done, so free the grant now (a partial run keeps it for Retry).
-            releaseGrant(getApplicationContext(), SESSION.treeUri());
+            releaseGrant(getApplicationContext(), SESSION.treeUri());   // null treeUri (network) is a no-op
+            try {
+                // Clean success: tell a network sender the receiver has everything, so its gate
+                // releases the session (best effort; the sender also self-bounds).
+                carrier.onAllDelivered();
+            } catch (Exception ignored) {
+                // the sender's safety cap backstops a failed signal
+            }
         }
         SESSION.setRunning(false);
         SESSION.setRate(0L, -1L);

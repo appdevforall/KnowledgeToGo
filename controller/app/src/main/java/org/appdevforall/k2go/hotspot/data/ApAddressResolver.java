@@ -43,6 +43,18 @@ public final class ApAddressResolver {
         return ApAddress.pick(candidates, ifaceHint, wifiIp);
     }
 
+    /**
+     * This device's station Wi-Fi IPv4 (the Wi-Fi it is a client on), or null when it is not on Wi-Fi.
+     * K2GO-376: the Share address selector offers this as the alternative to the hotspot AP IP, so two
+     * peers already on the same Wi-Fi pull over it instead of the finicky Wi-Fi Direct link. Same
+     * producer as resolveOnce (one interface scan plus the framework source), so both addresses agree.
+     */
+    public static String resolveStationWifiIp(Context ctx) {
+        List<ApAddress.Candidate> candidates = new ArrayList<>(NetworkInterfaces.candidates());
+        candidates.addAll(linkPropertyCandidates(ctx));
+        return NetworkInterfaces.stationWifiIp(candidates);
+    }
+
     /** ConnectivityManager/LinkProperties candidates. Best-effort: any failure yields an empty list. */
     private static List<ApAddress.Candidate> linkPropertyCandidates(Context ctx) {
         List<ApAddress.Candidate> out = new ArrayList<>();

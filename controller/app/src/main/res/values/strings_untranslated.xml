@@ -10,4 +10,25 @@
   strings.xml.
 -->
 <resources>
+
+    <!-- K2GO-376 wireless Share, receiver side. Migrate to strings.xml (33 locales) before merge. -->
+    <string name="k2go_cx_receive_from_network" translatable="false">Receive over Wi-Fi</string>
+    <string name="k2go_cx_receive_title" translatable="false">Receive</string>
+    <string name="k2go_cx_receive_scan_prompt" translatable="false">Scan the sender invite code</string>
+    <string name="k2go_cx_receive_invalid" translatable="false">That code is not a Share invite.</string>
+    <string name="k2go_cx_receive_connecting" translatable="false">Connecting to the sender...</string>
+    <string name="k2go_cx_receive_error" translatable="false">Could not reach the sender. Join the sender Wi-Fi first, then try again.</string>
+    <string name="k2go_cx_receive_nothing" translatable="false">The sender has nothing to receive.</string>
+    <!-- %1$d = item count, %2$s = total size -->
+    <string name="k2go_cx_receive_ready_fmt" translatable="false">%1$d items to receive : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit" translatable="false">This may not fit. The receive stops if the device runs out of space.</string>
+    <string name="k2go_cx_receive_action" translatable="false">Receive</string>
+    <string name="k2go_cx_receive_retry" translatable="false">Try again</string>
+
+    <!-- K2GO-376 Share sender transport selector. Shown only when both a hotspot and a Wi-Fi address
+         exist. Migrate to strings.xml (33 locales) before merge. -->
+    <string name="k2go_cx_share_transport_label" translatable="false">Receiver connects over</string>
+    <string name="k2go_cx_share_transport_hotspot" translatable="false">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi" translatable="false">Wi-Fi</string>
+
 </resources>

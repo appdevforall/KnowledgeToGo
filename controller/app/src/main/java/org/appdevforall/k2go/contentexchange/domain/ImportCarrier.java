@@ -26,6 +26,15 @@ public interface ImportCarrier {
     /** Open a readable stream for one payload file; the caller copies it, then closes it. */
     InputStream openPayload(String name) throws IOException;
 
+    /**
+     * Signal that the run finished with every requested item delivered (a clean success). The default
+     * is a no-op (a drive source has nothing to close); the network carrier uses it to tell the sender
+     * gate the receiver has everything, so the share session is released. Called at most once, only on
+     * a fully-complete run.
+     */
+    default void onAllDelivered() throws IOException {
+    }
+
     /** One file in the source folder: its display name and byte size. Immutable value. */
     final class DriveFile {
 

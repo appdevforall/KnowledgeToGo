@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-376: receive (wireless Share). After the user joins the sender hotspot and scans the invite
+     QR, this fetches the sender manifest over the hotspot, shows what will be received against the
+     device free space (the receiver-side preflight), and starts the network import. The sender scoped
+     the items, so there is no per-item selection here. Material 3 tokens; no hardcoded colours. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/k2go_cxrv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="4dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/k2go_teal" />
+
+    <TextView
+        android:id="@+id/k2go_cxrv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="16dp"
+        android:text="@string/k2go_cx_receive_title"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="@color/k2go_ink" />
+
+    <TextView
+        android:id="@+id/k2go_cxrv_status"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="24dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="@color/k2go_muted" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/k2go_surface"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/k2go_cxrv_free_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/k2go_cxrv_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_warn_ink"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/k2go_cxrv_receive"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/k2go_cx_receive_action"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/k2go_cxrv_retry"
+            style="@style/Widget.K2Go.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/k2go_cx_receive_retry"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

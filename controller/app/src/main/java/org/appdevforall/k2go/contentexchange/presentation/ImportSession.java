@@ -39,6 +39,15 @@ final class ImportSession {
     /** The persisted SAF tree the run reads from; kept so a retry reaches the same drive. */
     private String treeUri;
 
+    // Network (Share) source, when the run pulls from a paired sender instead of a drive (K2GO-376).
+    // shareHost == null means the SAF (drive) path; non-null means the network path, and these carry
+    // the sender address + token + manifest path so the service rebuilds the carrier (and a retry
+    // reaches the same sender).
+    private String shareHost;
+    private int sharePort;
+    private String shareToken;
+    private String shareManifestUrl;
+
     private ItemRef[] refs = new ItemRef[0];
     private String[] labels = new String[0];
     private String[] entryJson = new String[0];
@@ -61,6 +70,10 @@ final class ImportSession {
         this.entryJson = entries != null ? entries : new String[this.refs.length];
         this.payloadNames = payloads != null ? payloads : new String[this.refs.length];
         this.treeUri = treeUri;
+        this.shareHost = null;   // SAF path by default; beginNetwork sets the network coordinates
+        this.sharePort = 0;
+        this.shareToken = null;
+        this.shareManifestUrl = null;
         this.sourceLabel = "";
         this.errorMessage = null;
         this.started = true;
@@ -68,8 +81,21 @@ final class ImportSession {
         this.running = true;
         this.speed = 0L;
         this.etaSeconds = -1L;
-        job.begin(bytes != null ? bytes : new long[this.refs.length]);
+        // Single-phase: the receiver has one download phase per item (no box-prepare), so the per-item
+        // bar fills 0..100 from the bytes pulled, not the export two-phase bar (K2GO-376).
+        job.begin(bytes != null ? bytes : new long[this.refs.length], true);
         publish();
+    }
+
+    /** Start a network (Share) run: the same per-item state as {@link #begin}, plus the sender address,
+     *  token and manifest path the carrier pulls from. No SAF tree (the source is the hotspot). */
+    void beginNetwork(ItemRef[] request, String[] titles, String[] entries, String[] payloads,
+                      long[] bytes, String host, int port, String token, String manifestUrl) {
+        begin(request, titles, entries, payloads, bytes, null);
+        this.shareHost = host;
+        this.sharePort = port;
+        this.shareToken = token;
+        this.shareManifestUrl = manifestUrl;
     }
 
     void setSource(String label) {
@@ -111,6 +137,10 @@ final class ImportSession {
         entryJson = new String[0];
         payloadNames = new String[0];
         treeUri = null;
+        shareHost = null;
+        sharePort = 0;
+        shareToken = null;
+        shareManifestUrl = null;
         job.begin(new long[0]);
         speed = 0L;
         etaSeconds = -1L;
@@ -139,6 +169,27 @@ final class ImportSession {
 
     String treeUri() {
         return treeUri;
+    }
+
+    /** True when this run pulls from a paired sender over the network, not from a SAF drive. */
+    boolean isNetwork() {
+        return shareHost != null;
+    }
+
+    String shareHost() {
+        return shareHost;
+    }
+
+    int sharePort() {
+        return sharePort;
+    }
+
+    String shareToken() {
+        return shareToken;
+    }
+
+    String shareManifestUrl() {
+        return shareManifestUrl;
     }
 
     boolean isCancelled() {
