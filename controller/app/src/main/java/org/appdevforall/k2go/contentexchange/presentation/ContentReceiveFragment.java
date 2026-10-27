@@ -17,6 +17,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
@@ -174,6 +176,8 @@ public class ContentReceiveFragment extends Fragment {
                         appContext, host, port, token, manifestUrl, () -> false);
                 parsed = ShareManifestReader.parse(carrier.readManifest());
             } catch (Exception e) {
+                Log.w("IIAB-CxReceive", "manifest fetch failed host=" + host + " port=" + port
+                        + " manifestUrl=" + manifestUrl, e);
                 post(() -> showError());
                 return;
             }
@@ -253,11 +257,20 @@ public class ContentReceiveFragment extends Fragment {
         showProgress();
     }
 
-    /** Swap to the shared import progress screen. Not added to the back stack, so Finish there pops
-     *  straight back to the manager (this transient connect screen is not re-shown). */
+    /**
+     * Swap to the shared import progress screen. Drop this transient receive screen's own back-stack
+     * entry first (it must not be re-shown on Finish), then show progress over the manager on a fresh
+     * entry : so Finish pops cleanly back to the manager with no orphaned fragment left overlapping it
+     * (K2GO-376), and the network path ends up with the same single manager->progress entry as the SAF
+     * path. Runs from a button tap, not inside a FragmentManager transaction, so the immediate pop is
+     * safe.
+     */
     private void showProgress() {
-        requireActivity().getSupportFragmentManager().beginTransaction()
+        FragmentManager fm = requireActivity().getSupportFragmentManager();
+        fm.popBackStackImmediate();
+        fm.beginTransaction()
                 .replace(R.id.k2go_setup_host, new ImportProgressFragment())
+                .addToBackStack(null)
                 .commit();
     }
 
