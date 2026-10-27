@@ -81,7 +81,9 @@ final class ImportSession {
         this.running = true;
         this.speed = 0L;
         this.etaSeconds = -1L;
-        job.begin(bytes != null ? bytes : new long[this.refs.length]);
+        // Single-phase: the receiver has one download phase per item (no box-prepare), so the per-item
+        // bar fills 0..100 from the bytes pulled, not the export two-phase bar (K2GO-376).
+        job.begin(bytes != null ? bytes : new long[this.refs.length], true);
         publish();
     }
 

@@ -30,12 +30,21 @@ public final class ExportJob {
     private int[] phase = new int[0];
     private long[] staged = new long[0];
     private int index = -1;
+    /** K2GO-376: import has no box-prepare phase (the sender already staged the item), so its per-item
+     *  bar is a single download phase that fills 0..100 from copiedBytes, not the export two-phase bar. */
+    private boolean singlePhase;
 
     /**
      * Start a run over {@code planned[i]} bytes per item (0 = unknown size). A negative planned
      * value marks an item the core could not plan: it starts {@link #FAILED}, not downloadable.
      */
     public void begin(long[] plannedBytes) {
+        begin(plannedBytes, false);
+    }
+
+    /** Single-phase variant (import): the active item's bar fills 0..100 straight from copiedBytes. */
+    public void begin(long[] plannedBytes, boolean singlePhase) {
+        this.singlePhase = singlePhase;
         int n = plannedBytes != null ? plannedBytes.length : 0;
         status = new int[n];
         planned = new long[n];
@@ -247,6 +256,9 @@ public final class ExportJob {
         if (i < 0 || i >= planned.length) {
             return 0;
         }
+        if (singlePhase) {
+            return pct(copied[i], planned[i]);             // import: one download phase, 0..100
+        }
         if (phase[i] == PHASE_PREPARE) {
             return half(staged[i], planned[i]);            // 0..50
         }
@@ -259,5 +271,13 @@ public final class ExportJob {
             return 0;
         }
         return (int) Math.min(50L, done * 50L / total);
+    }
+
+    /** {@code done/total} scaled into 0..100, or 0 when the total is unknown. */
+    private static int pct(long done, long total) {
+        if (total <= 0) {
+            return 0;
+        }
+        return (int) Math.min(100L, done * 100L / total);
     }
 }
