@@ -84,6 +84,14 @@ android {
         }
     }
 
+    // K2GO-510: no config splits in the Play AAB, so Play installs one complete base.apk. Clone
+    // "Send app" shares that file; with splits it has no native binaries and only default strings.
+    bundle {
+        abi { enableSplit = false }
+        language { enableSplit = false }
+        density { enableSplit = false }
+    }
+
     buildFeatures {
         buildConfig true
     }
