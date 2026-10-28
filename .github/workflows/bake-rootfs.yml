@@ -11,10 +11,31 @@ name: Bake & publish K2Go RootFS
 # A one-shot `seed-base` job runs first: it puts the STATIC proot-distro base (the two
 # Debian tarballs K2Go builds on) into R2 exactly once, then only verifies its presence
 # on every later run. Retention: the prune keeps the newest 7 batches per (tier,arch).
+#
+# K2GO-511: mode=test builds only. It uploads nothing and keeps no artifacts, so it is
+# safe for trying an IIAB change. The seed-base job still runs: the builder downloads the
+# base from R2, and seed-base only mirrors the pinned upstream base when it is missing.
+
+run-name: Bake rootfs (${{ inputs.mode }}, ${{ inputs.mode == 'test' && format('{0} {1}', inputs.tier, inputs.arch) || 'all tiers, both arches' }})
 
 on:
   workflow_dispatch:   # manual only for now
     inputs:
+      mode:
+        description: "test = build only, nothing uploaded. publish = upload to R2 and move the latest_* pointers."
+        type: choice
+        options: [test, publish]
+        default: test
+      tier:
+        description: "Tier to build (test mode only; publish always builds all)."
+        type: choice
+        options: [all, basic, standard, full, matomo]
+        default: all
+      arch:
+        description: "Architecture to build (test mode only; publish always builds both)."
+        type: choice
+        options: [all, arm64-v8a, armeabi-v7a]
+        default: all
       binaries_tag:
         description: "Native-binaries release tag to pin (blank = binary_version.txt on main). e.g. binaries-2026-09-01_03-22 to bake on a specific proot build without merging."
         required: false
@@ -103,27 +124,42 @@ jobs:
       fail-fast: false     # one arch must not cancel the other
       max-parallel: 2      # one node per arch, both at once
       matrix:
-        arch: [arm64-v8a, armeabi-v7a]
+        arch: ${{ fromJSON(inputs.mode == 'test' && inputs.arch != 'all' && format('["{0}"]', inputs.arch) || '["arm64-v8a","armeabi-v7a"]') }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Ensure AWS CLI is available
+        if: inputs.mode == 'publish'
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
 
-      - name: Build all tiers for ${{ matrix.arch }}
+      - name: Build ${{ inputs.mode == 'test' && inputs.tier || 'all' }} tier(s) for ${{ matrix.arch }}
         run: |
           TAG_ARG=""
           [ -n "${{ inputs.binaries_tag }}" ] && TAG_ARG="--binaries-tag ${{ inputs.binaries_tag }}"
+          TIER_ARG="--all-tier"
+          [ "${{ inputs.mode }}" = test ] && [ "${{ inputs.tier }}" != all ] && TIER_ARG="--tier ${{ inputs.tier }}"
           sudo bash ./tools/rootfs-builder/build-iiab-rootfs.sh \
-            --all-tier --arch "${{ matrix.arch }}" \
+            $TIER_ARG --arch "${{ matrix.arch }}" \
             $TAG_ARG \
             --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
           # the builder runs as root; hand dist/ back to the runner so the upload step can read it
           sudo chown -R "$(id -u):$(id -g)" dist
 
+      - name: Summary (built files)
+        if: always()
+        run: |
+          {
+            echo "### ${{ inputs.mode }} bake, ${{ matrix.arch }}"
+            if [ "${{ inputs.mode }}" = test ]; then echo "Test mode: nothing was uploaded."; fi
+            echo '```'
+            ls -lh dist 2>/dev/null || echo "dist/ was not created"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Publish to R2 + prune (keep newest 7 per tier/arch)
+        if: inputs.mode == 'publish'
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
