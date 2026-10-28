@@ -33,12 +33,14 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import java.io.File;
+import java.io.IOException;
 import org.appdevforall.k2go.ApkServer;
 import org.appdevforall.k2go.BuildConfig;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.ServerController;
 import org.appdevforall.k2go.SyncHandshakeHelper;
 import org.appdevforall.k2go.env.EnvironmentLock;
+import org.appdevforall.k2go.sync.data.ApkAbiReader;
 import org.appdevforall.k2go.sync.domain.ApkShareName;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
@@ -886,14 +888,26 @@ public class CloneFragment extends Fragment {
         if (apkServer != null) return;
         try {
             String apkPath = requireContext().getApplicationInfo().sourceDir;
-            String arch = (archBits() == 64) ? "arm64-v8a" : "armeabi-v7a";
-            apkFileName = ApkShareName.fileName(BuildConfig.VERSION_NAME, arch);
+            apkFileName = sharedApkName(apkPath);
             apkServer = new ApkServer(shareConfig.apkPort, apkPath, apkFileName);
             apkServer.start();
         } catch (Exception e) {
             Log.e("IIAB-Clone", "APK server failed to start", e);
             Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_app_share_fail), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** K2GO-510: name the shared APK after the ABIs it carries (ADFA-4540), not after this phone. */
+    private String sharedApkName(String apkPath) {
+        String arch;
+        try {
+            arch = ApkShareName.archLabel(ApkAbiReader.abis(apkPath));
+        } catch (IOException | RuntimeException e) {
+            // The name is a hint: it must never block the share.
+            Log.w("IIAB-Clone", "Could not read the APK ABIs", e);
+            arch = null;   // "unknown": do not guess
+        }
+        return ApkShareName.fileName(BuildConfig.VERSION_NAME, arch);
     }
 
     private void stopApkServer() {
@@ -907,7 +921,9 @@ public class CloneFragment extends Fragment {
     private void shareApkViaSheet() {
         try {
             File apk = new File(requireContext().getApplicationInfo().sourceDir);
-            Uri uri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", apk);
+            // Without a display name the receiver gets the file as "base.apk".
+            Uri uri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider",
+                    apk, apkFileName != null ? apkFileName : sharedApkName(apk.getPath()));
             Intent i = new Intent(Intent.ACTION_SEND)
                     .setType("application/vnd.android.package-archive")
                     .putExtra(Intent.EXTRA_STREAM, uri)
