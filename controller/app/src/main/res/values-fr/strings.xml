@@ -1607,4 +1607,5 @@
     <string name="k2go_cx_share_notif_title">Partage du contenu</string>
     <string name="k2go_cx_share_notif_text">Le point d\'accès et le partage restent ouverts.</string>
     <string name="k2go_cx_share_channel_name">Partage de contenu</string>
+    <string name="k2go_cx_toggle_group">Afficher ou masquer les éléments</string>
 </resources>

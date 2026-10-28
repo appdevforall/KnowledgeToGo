@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">İçerik paylaşılıyor</string>
     <string name="k2go_cx_share_notif_text">Etkin nokta ve paylaşım açık kalır.</string>
     <string name="k2go_cx_share_channel_name">İçerik paylaşımı</string>
+    <string name="k2go_cx_toggle_group">Öğeleri göster veya gizle</string>
 </resources>

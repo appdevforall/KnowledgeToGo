@@ -1715,4 +1715,5 @@
     <string name="k2go_cx_share_notif_title">Sharing content</string>
     <string name="k2go_cx_share_notif_text">The hotspot and the share stay open.</string>
     <string name="k2go_cx_share_channel_name">Content sharing</string>
+    <string name="k2go_cx_toggle_group">Show or hide items</string>
 </resources>

@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">Надсилання вмісту</string>
     <string name="k2go_cx_share_notif_text">Точка доступу та надсилання залишаються відкритими.</string>
     <string name="k2go_cx_share_channel_name">Обмін вмістом</string>
+    <string name="k2go_cx_toggle_group">Показати або сховати елементи</string>
 </resources>

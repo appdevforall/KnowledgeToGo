@@ -1540,4 +1540,5 @@
     <string name="k2go_cx_share_notif_title">Inashiriki maudhui</string>
     <string name="k2go_cx_share_notif_text">Hotspot na ushirikishaji vinasalia wazi.</string>
     <string name="k2go_cx_share_channel_name">Ushirikishaji wa maudhui</string>
+    <string name="k2go_cx_toggle_group">Onyesha au ficha vipengele</string>
 </resources>

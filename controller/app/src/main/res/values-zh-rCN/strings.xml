@@ -1521,4 +1521,5 @@
     <string name="k2go_cx_share_notif_title">正在共享内容</string>
     <string name="k2go_cx_share_notif_text">热点和共享将保持打开状态。</string>
     <string name="k2go_cx_share_channel_name">内容共享</string>
+    <string name="k2go_cx_toggle_group">显示或隐藏项目</string>
 </resources>

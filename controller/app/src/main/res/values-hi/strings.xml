@@ -1597,4 +1597,5 @@
     <string name="k2go_cx_share_notif_title">सामग्री साझा की जा रही है</string>
     <string name="k2go_cx_share_notif_text">हॉटस्पॉट और शेयरिंग खुले रहते हैं।</string>
     <string name="k2go_cx_share_channel_name">सामग्री शेयरिंग</string>
+    <string name="k2go_cx_toggle_group">आइटम दिखाएँ या छिपाएँ</string>
 </resources>

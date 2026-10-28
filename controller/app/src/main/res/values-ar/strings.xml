@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">جارٍ مشاركة المحتوى</string>
     <string name="k2go_cx_share_notif_text">تظل نقطة الاتصال والمشاركة مفتوحتين.</string>
     <string name="k2go_cx_share_channel_name">مشاركة المحتوى</string>
+    <string name="k2go_cx_toggle_group">إظهار أو إخفاء العناصر</string>
 </resources>
