@@ -4,12 +4,12 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Domain rule: the coloquial file name the shared APK travels
- *               under when a peer downloads it over the Share tab. Stamps the
+ *               under (Clone "Send app": QR download and share sheet). Stamps the
  *               brand, the build version and the arch so the receiver can tell
  *               exactly which build they were handed offline, instead of the old
  *               "-Latest" (true but ambiguous). Pure, no android.*; the single
- *               source of truth for the download name so the HTTP header and the
- *               QR URL cannot drift apart. ADFA-4540.
+ *               source of truth for the download name so the HTTP header, the
+ *               QR URL and the share sheet cannot drift apart. ADFA-4540.
  * ============================================================================
  */
 package org.appdevforall.k2go.sync.domain;
