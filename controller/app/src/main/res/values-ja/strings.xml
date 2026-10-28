@@ -1521,4 +1521,5 @@
     <string name="k2go_cx_share_notif_title">コンテンツを共有中</string>
     <string name="k2go_cx_share_notif_text">ホットスポットと共有は開いたままになります。</string>
     <string name="k2go_cx_share_channel_name">コンテンツ共有</string>
+    <string name="k2go_cx_toggle_group">項目を表示または非表示</string>
 </resources>

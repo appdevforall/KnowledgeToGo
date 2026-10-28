@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">Đang chia sẻ nội dung</string>
     <string name="k2go_cx_share_notif_text">Điểm phát sóng và phiên chia sẻ vẫn mở.</string>
     <string name="k2go_cx_share_channel_name">Chia sẻ nội dung</string>
+    <string name="k2go_cx_toggle_group">Hiện hoặc ẩn các mục</string>
 </resources>

@@ -1530,4 +1530,5 @@
     <string name="k2go_cx_share_notif_title">Deler innhold</string>
     <string name="k2go_cx_share_notif_text">Hotspoten og delingen forblir åpne.</string>
     <string name="k2go_cx_share_channel_name">Innholdsdeling</string>
+    <string name="k2go_cx_toggle_group">Vis eller skjul elementer</string>
 </resources>

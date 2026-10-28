@@ -1521,4 +1521,5 @@
     <string name="k2go_cx_share_notif_title">콘텐츠 공유 중</string>
     <string name="k2go_cx_share_notif_text">핫스팅과 공유가 열린 상태로 유지됩니다.</string>
     <string name="k2go_cx_share_channel_name">콘텐츠 공유</string>
+    <string name="k2go_cx_toggle_group">항목 표시 또는 숨기기</string>
 </resources>

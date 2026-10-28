@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">Condivisione dei contenuti</string>
     <string name="k2go_cx_share_notif_text">L\'hotspot e la condivisione restano aperti.</string>
     <string name="k2go_cx_share_channel_name">Condivisione contenuti</string>
+    <string name="k2go_cx_toggle_group">Mostra o nascondi gli elementi</string>
 </resources>

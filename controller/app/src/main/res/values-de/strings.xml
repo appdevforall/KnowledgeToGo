@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">Inhalt wird geteilt</string>
     <string name="k2go_cx_share_notif_text">Der Hotspot und die Freigabe bleiben geöffnet.</string>
     <string name="k2go_cx_share_channel_name">Inhaltsfreigabe</string>
+    <string name="k2go_cx_toggle_group">Elemente ein- oder ausblenden</string>
 </resources>

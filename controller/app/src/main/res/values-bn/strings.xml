@@ -1533,4 +1533,5 @@
     <string name="k2go_cx_share_notif_title">কন্টেন্ট শেয়ার করা হচ্ছে</string>
     <string name="k2go_cx_share_notif_text">হটস্পট এবং শেয়ার খোলা থাকে।</string>
     <string name="k2go_cx_share_channel_name">কন্টেন্ট শেয়ারিং</string>
+    <string name="k2go_cx_toggle_group">আইটেম দেখান বা লুকান</string>
 </resources>

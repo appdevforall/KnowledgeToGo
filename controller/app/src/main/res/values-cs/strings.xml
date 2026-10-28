@@ -1527,4 +1527,5 @@
     <string name="k2go_cx_share_notif_title">Sdílení obsahu</string>
     <string name="k2go_cx_share_notif_text">Hotspot a sdílení zůstávají otevřené.</string>
     <string name="k2go_cx_share_channel_name">Sdílení obsahu</string>
+    <string name="k2go_cx_toggle_group">Zobrazit nebo skrýt položky</string>
 </resources>

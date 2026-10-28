@@ -1520,4 +1520,5 @@
     <string name="k2go_cx_share_notif_title">در حال اشتراک‌گذاری محتوا</string>
     <string name="k2go_cx_share_notif_text">نقطه اتصال و اشتراک‌گذاری باز می‌مانند.</string>
     <string name="k2go_cx_share_channel_name">اشتراک‌گذاری محتوا</string>
+    <string name="k2go_cx_toggle_group">نمایش یا پنهان کردن موارد</string>
 </resources>

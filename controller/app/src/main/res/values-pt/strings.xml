@@ -1599,4 +1599,5 @@
     <string name="k2go_cx_share_notif_title">A partilhar conteúdo</string>
     <string name="k2go_cx_share_notif_text">O hotspot e a partilha permanecem abertos.</string>
     <string name="k2go_cx_share_channel_name">Partilha de conteúdo</string>
+    <string name="k2go_cx_toggle_group">Mostrar ou ocultar itens</string>
 </resources>

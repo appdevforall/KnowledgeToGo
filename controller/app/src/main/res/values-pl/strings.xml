@@ -1530,4 +1530,5 @@
     <string name="k2go_cx_share_notif_title">Udostępnianie zawartości</string>
     <string name="k2go_cx_share_notif_text">Hotspot i udostępnianie pozostają otwarte.</string>
     <string name="k2go_cx_share_channel_name">Udostępnianie zawartości</string>
+    <string name="k2go_cx_toggle_group">Pokaż lub ukryj elementy</string>
 </resources>
