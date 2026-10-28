@@ -902,7 +902,8 @@ public class CloneFragment extends Fragment {
         String arch;
         try {
             arch = ApkShareName.archLabel(ApkAbiReader.abis(apkPath));
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
+            // The name is a hint: it must never block the share.
             Log.w("IIAB-Clone", "Could not read the APK ABIs", e);
             arch = null;   // "unknown": do not guess
         }
@@ -922,7 +923,7 @@ public class CloneFragment extends Fragment {
             File apk = new File(requireContext().getApplicationInfo().sourceDir);
             // Without a display name the receiver gets the file as "base.apk".
             Uri uri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider",
-                    apk, sharedApkName(apk.getPath()));
+                    apk, apkFileName != null ? apkFileName : sharedApkName(apk.getPath()));
             Intent i = new Intent(Intent.ACTION_SEND)
                     .setType("application/vnd.android.package-archive")
                     .putExtra(Intent.EXTRA_STREAM, uri)

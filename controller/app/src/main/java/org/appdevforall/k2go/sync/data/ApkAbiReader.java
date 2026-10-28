@@ -29,9 +29,11 @@ public final class ApkAbiReader {
         try (ZipFile zip = new ZipFile(apkPath)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
             while (entries.hasMoreElements()) {
-                String name = entries.nextElement().getName();
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
                 int slash = name.indexOf('/', 4);
-                if (name.startsWith("lib/") && slash > 4) {
+                // A bare lib/<abi>/ directory entry carries no library.
+                if (!entry.isDirectory() && name.startsWith("lib/") && slash > 4) {
                     abis.add(name.substring(4, slash));
                 }
             }

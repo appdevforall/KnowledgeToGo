@@ -235,6 +235,9 @@ validation, allowing config-directive/URL injection.
   parse boundary (returns `null` -> existing "invalid QR" toast), and
   `RsyncManager` re-checks defensively before writing the daemon config / building
   the client URL. Reusable by the remaining injection fixes (S4, D2) as they migrate.
+- `data/ApkAbiReader` (K2GO-510): lists the `lib/<abi>/` folders of the APK that
+  Clone "Send app" shares; `domain/ApkShareName.archLabel` names the file after them.
+  **Legacy seam:** `CloneFragment.sharedApkName()`.
 
 **Slice (DONE) — deploy module-name allowlist (`org.iiab.controller.deploy.domain`)**
 Phase-1 security slice closing tech-debt **D2** (command injection). The install

@@ -54,6 +54,12 @@ public class ApkAbiReaderTest {
                 ApkAbiReader.abis(apk("AndroidManifest.xml", "classes.dex", "assets/lib/x.so", "lib/")));
     }
 
+    @Test
+    public void emptyAbiDirectoryDoesNotCount() throws IOException {
+        assertEquals(Collections.singleton("arm64-v8a"),
+                ApkAbiReader.abis(apk("lib/x86/", "lib/arm64-v8a/", "lib/arm64-v8a/libproot.so")));
+    }
+
     @Test(expected = IOException.class)
     public void unreadableFileThrows() throws IOException {
         ApkAbiReader.abis(new File(tmp.getRoot(), "missing.apk").getPath());
