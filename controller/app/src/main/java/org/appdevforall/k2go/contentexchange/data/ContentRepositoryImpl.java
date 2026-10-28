@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Data-layer implementation of the domain {@link ContentRepository} port. Maps the
- * cx-core JSON (via {@link CxCoreDataSource}) into domain entities.
+ * conex-core JSON (via {@link ConexCoreDataSource}) into domain entities.
  *
  * <p>Per the port contract: {@link #fetchApps()} / {@link #fetchContent()} throw on
  * a real failure (box unreachable); {@link #fetchStorage()} never throws and returns
@@ -23,11 +23,11 @@ import java.util.List;
  */
 public final class ContentRepositoryImpl implements ContentRepository {
 
-    private static final String TAG = "CxContentRepository";
+    private static final String TAG = "ConexContentRepository";
 
-    private final CxCoreDataSource dataSource;
+    private final ConexCoreDataSource dataSource;
 
-    public ContentRepositoryImpl(CxCoreDataSource dataSource) {
+    public ContentRepositoryImpl(ConexCoreDataSource dataSource) {
         this.dataSource = dataSource;
     }
 

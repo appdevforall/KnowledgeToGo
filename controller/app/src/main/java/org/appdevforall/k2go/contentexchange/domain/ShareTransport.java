@@ -14,7 +14,7 @@ package org.appdevforall.k2go.contentexchange.domain;
 /**
  * Transport settings for granular wireless Share (K2GO-376).
  *
- * <p>Share is the network twin of Export: the receiver PULLS from the sender's live cx-core
+ * <p>Share is the network twin of Export: the receiver PULLS from the sender's live conex-core
  * (ADR "Pillar Share"). On the sender the share session is created over the loopback relay, but
  * the RECEIVER reaches the gate over the hotspot at {@code http://<senderHotspotIp>:SHARE_PORT}.
  * That off-loopback exposure is a separate server-side slice (plain HTTP, v1 only); this is the
@@ -26,7 +26,7 @@ public final class ShareTransport {
     }
 
     /**
-     * TCP port the sender's cx-core is exposed on, off loopback, for the paired receiver. Must
+     * TCP port the sender's conex-core is exposed on, off loopback, for the paired receiver. Must
      * match the scoped-exposure slice (candidate 8095, plain HTTP for v1). The loopback relay the
      * sender uses to CREATE the session is unrelated to this port.
      */

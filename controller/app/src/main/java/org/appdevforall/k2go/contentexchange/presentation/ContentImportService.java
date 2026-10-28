@@ -32,8 +32,8 @@ import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.BoxImportStaging;
-import org.appdevforall.k2go.contentexchange.data.CxCoreDataSource;
-import org.appdevforall.k2go.contentexchange.data.CxCoreImportSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreImportSource;
 import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
@@ -263,7 +263,7 @@ public final class ContentImportService extends Service {
      * v1 does within-run per-item retry only. Durable op-state and byte-resume are v1.x.
      */
     private void drain() {
-        ImportSource source = new CxCoreImportSource(new CxCoreDataSource());
+        ImportSource source = new ConexCoreImportSource(new ConexCoreDataSource());
         BoxImportStaging staging = new BoxImportStaging(getApplicationContext());
         ImportCarrier carrier;
         try {

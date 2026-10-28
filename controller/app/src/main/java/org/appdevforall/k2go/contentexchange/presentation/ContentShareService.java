@@ -4,10 +4,10 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-376. Sender foreground service for granular wireless Share. Over the current
- *               content-manager selection it opens a scoped share session on the LOCAL cx-core
+ *               content-manager selection it opens a scoped share session on the LOCAL conex-core
  *               (loopback), brings the hotspot up (only if it was off), holds both the hotspot and
  *               the gate open with CPU + Wi-Fi locks, and on teardown closes the gate (DELETE) and
- *               stops the hotspot only if it started it. It copies NO bytes: cx-core streams to the
+ *               stops the hotspot only if it started it. It copies NO bytes: conex-core streams to the
  *               receiver that pulls over the hotspot. The invite/QR fragment observes SESSION.
  * ============================================================================
  */
@@ -30,7 +30,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.contentexchange.data.CxCoreDataSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
@@ -61,7 +61,7 @@ public final class ContentShareService extends Service {
 
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
 
-    // The open session on the local cx-core, held so onDestroy can close the gate. Set by the worker.
+    // The open session on the local conex-core, held so onDestroy can close the gate. Set by the worker.
     private volatile String sessionId;
     private volatile String token;
     // True only when THIS service started the hotspot, so teardown never yanks a hotspot that Connect
@@ -152,14 +152,14 @@ public final class ContentShareService extends Service {
 
     // ---- the run -------------------------------------------------------------------------------
 
-    /** Open the scoped share session on the local cx-core and publish the invite. Copies no bytes. */
+    /** Open the scoped share session on the local conex-core and publish the invite. Copies no bytes. */
     private void openSession(ItemRef[] refs) {
         List<ItemRef> items = new ArrayList<>();
         for (ItemRef ref : refs) {
             items.add(ref);
         }
         try {
-            CxCoreDataSource.ShareCreated created = new CxCoreDataSource().postShareCreate(items);
+            ConexCoreDataSource.ShareCreated created = new ConexCoreDataSource().postShareCreate(items);
             if (created.sessionId.isEmpty() || created.token.isEmpty() || created.manifestUrl.isEmpty()) {
                 SESSION.fail(getString(R.string.k2go_cx_share_error));
                 return;
@@ -227,15 +227,15 @@ public final class ContentShareService extends Service {
         }
         // Close the gate (the app-side closer, ADR "Pillar Share"). Off the main thread; the process
         // usually outlives this service (the app is still open). A rare race where the id is not stored
-        // yet, or a process kill, is covered by cx-core's safety cap and the receiver's complete.
+        // yet, or a process kill, is covered by conex-core's safety cap and the receiver's complete.
         final String id = sessionId;
         final String tok = token;
         if (id != null && tok != null) {
             new Thread(() -> {
                 try {
-                    new CxCoreDataSource().deleteShare(id, tok);
+                    new ConexCoreDataSource().deleteShare(id, tok);
                 } catch (Exception ignored) {
-                    // best-effort close; cx-core's safety cap reclaims an abandoned session
+                    // best-effort close; conex-core's safety cap reclaims an abandoned session
                 }
             }, "content-share-close").start();
         }

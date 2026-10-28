@@ -677,13 +677,13 @@ else
       ;;
   esac
 
-  # K2GO-427: the cx_core role (content-exchange core) ships as an overlay with no
+  # K2GO-427: the conex_core role (content-exchange core) ships as an overlay with no
   # 6-generic-apps include, so the main install does not run it; it runs on demand via
   # runrole (the post-install step below does the bake-time install). Enabled on every
   # tier: a tiny Python stdlib service, not a heavy mirror, and no internet needed.
-  sed -i -E '/^[[:space:]]*cx_core_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
-  echo "cx_core_install: True"  >> "$LOCAL_VARS_DEST"
-  echo "cx_core_enabled: True"  >> "$LOCAL_VARS_DEST"
+  sed -i -E '/^[[:space:]]*conex_core_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
+  echo "conex_core_install: True"  >> "$LOCAL_VARS_DEST"
+  echo "conex_core_enabled: True"  >> "$LOCAL_VARS_DEST"
 fi
 
 #-----------------------------
@@ -852,15 +852,15 @@ install_welcome_zim
 install_iiaboa_dashboard
 
 #-----------------------------
-# K2GO-427: install and start the content-exchange core (cx-core) via its role. The cx_core
+# K2GO-427: install and start the content-exchange core (conex-core) via its role. The conex_core
 # role ships as an overlay with no 6-generic-apps include, so the main install does not run it;
 # run it here via runrole (the same path the app uses for on-demand installs). The role copies
 # the source, registers the PDSM service (proot) and writes the IIAB flags. Pure Python stdlib,
-# no internet needed. Non-fatal: a failure leaves the box without cx-core but does not fail the bake.
+# no internet needed. Non-fatal: a failure leaves the box without conex-core but does not fail the bake.
 #-----------------------------
-if is_role_enabled cx_core; then
-  log "Installing the content-exchange core (runrole cx_core)..."
-  ( cd /opt/iiab/iiab && ./runrole cx_core ) || warn "cx_core runrole failed; box will lack the content-exchange core"
+if is_role_enabled conex_core; then
+  log "Installing the content-exchange core (runrole conex_core)..."
+  ( cd /opt/iiab/iiab && ./runrole conex_core ) || warn "conex_core runrole failed; box will lack the content-exchange core"
 fi
 
 #-----------------------------

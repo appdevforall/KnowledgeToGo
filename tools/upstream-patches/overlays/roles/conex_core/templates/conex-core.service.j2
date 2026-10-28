@@ -1,0 +1,16 @@
+# conex-core: content-exchange core (K2GO-427). systemd unit for IIAB hosts; the proot
+# (K2Go) path uses the PDSM wrapper instead. The core is Python stdlib, localhost-only.
+[Unit]
+Description=Content exchange core (REST service for Kiwix/Kolibri/Calibre)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ conex_core_serve_path }}
+Environment=CONEX_PORT={{ conex_core_port }}
+ExecStart=/usr/bin/python3 -m conex_core
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

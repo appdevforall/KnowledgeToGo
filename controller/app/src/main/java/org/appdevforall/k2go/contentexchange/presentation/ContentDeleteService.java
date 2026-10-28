@@ -28,8 +28,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.contentexchange.data.CxCoreDataSource;
-import org.appdevforall.k2go.contentexchange.data.CxCoreDeleteSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreDeleteSource;
 import org.appdevforall.k2go.contentexchange.domain.ContentDeleteSource;
 import org.appdevforall.k2go.contentexchange.domain.DeleteJob;
 import org.appdevforall.k2go.contentexchange.domain.DeleteResult;
@@ -172,7 +172,7 @@ public final class ContentDeleteService extends Service {
      * in flight finishes.
      */
     private void drain() {
-        ContentDeleteSource source = new CxCoreDeleteSource(new CxCoreDataSource());
+        ContentDeleteSource source = new ConexCoreDeleteSource(new ConexCoreDataSource());
         DeleteJob job = SESSION.job();
 
         for (int i = job.firstPending(); i >= 0; i = job.firstPending()) {
