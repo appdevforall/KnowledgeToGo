@@ -70,4 +70,4 @@ The fix is one line in `kernel/signal.c`, `ptrace_stop()`:
 - **Test devices:** build the kernel from the device commit with the line above and flash only
   the kernel into the matching official `boot.img`. With this kernel, K2Go runs normally on the
   OnePlus 7T. A ROM update replaces the kernel, so you must apply the patch again after each
-  update.
+  ROM or kernel update.
