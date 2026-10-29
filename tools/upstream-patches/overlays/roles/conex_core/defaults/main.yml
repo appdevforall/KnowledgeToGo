@@ -73,3 +73,21 @@ conex_core_share_port: 8095
 # install by platform or arch later (an is_proot / arch condition on the install tasks),
 # not by removing the switch.
 conex_core_share_expose: True
+
+
+# ---- Data ownership (iiab#4546 lifecycle contract; see README "Data ownership") ----
+# Declares what each uninstall / reinstall class owns. Program data is role-managed:
+# rebuilt on reinstall, removed on uninstall. User data is content the user created and
+# is NEVER deleted here. conex-core owns NO user data: the exchanged content lives in
+# Kiwix / Kolibri / Calibre, which own it. These lists document ownership; uninstall.yml
+# acts on explicit, platform-split paths (the PDSM wrapper is NOT here: proot_services
+# owns it upstream and removing it under proot is destructive, so uninstall only disables
+# it; the systemd unit IS role-owned and is removed on the systemd path).
+conex_core_program_data:
+  - "{{ conex_core_serve_path }}"                     # /opt/conex-core (copied source)
+  - "{{ content_base }}/.conex-staging"              # export scratch
+  - "{{ conex_core_env_file }}"                       # operator env file (systemd path only)
+  - /etc/systemd/system/conex-core.service           # supervisor unit (systemd path only)
+  - /etc/nginx/k2go-http.d/conex-core-share.conf     # Share listener (K2GO-376)
+conex_core_user_settings: []                          # none seeded force:false
+conex_core_user_data: []                              # exchanged content is owned by Kiwix/Kolibri/Calibre

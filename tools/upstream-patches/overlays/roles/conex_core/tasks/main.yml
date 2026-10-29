@@ -1,83 +1,53 @@
-- name: Assert that "conex_core_install is sameas true" (boolean not string etc)
-  assert:
-    that: conex_core_install is sameas true
-    fail_msg: "PLEASE SET 'conex_core_install: True' e.g. IN: /etc/iiab/local_vars.yml"
-    quiet: yes
+# conex_core lifecycle. This MIRRORS the iiab#4546 shared runner
+# (roles/0-init/tasks/lifecycle.yml) but dispatches the phases itself, because that
+# runner (and its iiab_state module / installed lookup) is not on iiab master, which we
+# bake today. When #4546 lands upstream this main.yml collapses to a one-line
+# "include_role: 0-init, tasks_from: lifecycle", and the phase files below are already in
+# the standard shape. Phases: install (first install / --reinstall), configure (every
+# apply), enable-or-disable (every apply), state (after a successful apply), uninstall
+# (--uninstall). See the awstats template and the README "Role task lifecycle".
 
-- name: Assert that "conex_core_enabled | type_debug == 'bool'" (boolean not string etc)
-  assert:
-    that: conex_core_enabled | type_debug == 'bool'
-    fail_msg: "PLEASE GIVE VARIABLE 'conex_core_enabled' A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
-    quiet: yes
+# Uninstall is OUTSIDE the block/rescue on purpose: an explicit uninstall must fail loud,
+# not be swallowed by skip_role_on_error in a larger play. 'uninstall' is undefined on
+# master, so default it false.
+- name: Uninstall conex_core
+  include_tasks: uninstall.yml
+  when: uninstall | default(false) | bool
 
+- name: Apply conex_core
+  when: not (uninstall | default(false) | bool)
+  block:
 
-- block:
+    - name: Assert that "conex_core_install is sameas true" (boolean not string etc)
+      assert:
+        that: conex_core_install is sameas true
+        fail_msg: "PLEASE SET 'conex_core_install: True' e.g. IN: /etc/iiab/local_vars.yml"
+        quiet: yes
 
-    - name: Install the content-exchange core if 'conex_core_installed' not defined, e.g. in {{ iiab_state_file }}
+    - name: Assert that "conex_core_enabled | type_debug == 'bool'" (boolean not string etc)
+      assert:
+        that: conex_core_enabled | type_debug == 'bool'
+        fail_msg: "PLEASE GIVE VARIABLE 'conex_core_enabled' A PROPER (UNQUOTED) ANSIBLE BOOLEAN VALUE e.g. IN: /etc/iiab/local_vars.yml"
+        quiet: yes
+
+    # install.yml may copy source and register the supervisor, so it runs only on first
+    # install (marker undefined) or --reinstall. A plain apply skips it: settings that must
+    # be reconciled every time live in configure.yml / enable-or-disable.yml instead.
+    - name: Install or repair conex_core
       include_tasks: install.yml
-      when: conex_core_installed is undefined
+      when: conex_core_installed is undefined or (reinstall | default(false) | bool)
 
-    # Operator Calibre-Web credential overrides for the systemd path (IIAB). Rewritten on
-    # EVERY role run (not install-once), so an operator who changed the Calibre-Web login
-    # can re-run the role to reconfigure, or clear the vars to revert to the box default,
-    # without reinstalling. Gated not is_proot: on proot (K2Go) dash-node owns these creds
-    # in credentials.json. K2GO-512.
-    - name: Write the conex-core operator EnvironmentFile (not proot)
-      template:
-        src: conex-core.env.j2
-        dest: "{{ conex_core_env_file }}"
-        mode: "0600"
-      register: conex_core_env_file_task
-      when: not is_proot
-      # The file carries the Calibre-Web password; no_log keeps it out of --diff and -vvv output.
-      no_log: true
+    - name: Configure conex_core
+      include_tasks: configure.yml
 
-    # Restart ONLY when the file content changed (mirrors the Share nginx-reload pattern
-    # in enable-or-disable.yml): systemd reads an EnvironmentFile at start, so the unit
-    # must restart to pick up a new login. No daemon_reload: the file, not the unit,
-    # changed. install.yml already installed the unit, so it exists here on first run.
-    - name: Restart conex-core to apply the operator EnvironmentFile (changed, not proot)
-      systemd:
-        name: conex-core
-        state: restarted
-      when:
-        - not is_proot
-        - conex_core_env_file_task is changed
-
-    - name: Enable/Disable the content-exchange core service
+    - name: Enable or disable conex_core
       include_tasks: enable-or-disable.yml
 
-    # Read the core build from the installed source (the single source: conex_core/__init__.py
-    # VERSION), so the box can report which core it runs. Mirrors dash-node's package.json
-    # version in /system/version (K2GO-507).
-    - name: Read the installed conex_core source version
-      slurp:
-        src: "{{ conex_core_serve_path }}/conex_core/__init__.py"
-      register: conex_core_init_py
-
-    - name: Set conex_core_version from the source
-      set_fact:
-        conex_core_version: "{{ conex_core_init_py.content | b64decode | regex_search('VERSION\\s*=\\s*\"([^\"]+)\"', '\\1') | first }}"
-
-    - name: Add 'conex_core' variable values to {{ iiab_ini_file }}
-      ini_file:
-        path: "{{ iiab_ini_file }}"    # /etc/iiab/iiab.ini
-        section: conex_core
-        option: "{{ item.option }}"
-        value: "{{ item.value | string }}"
-      with_items:
-        - option: name
-          value: Content exchange core
-        - option: description
-          value: 'In-box REST service for granular content exchange (Kiwix, Kolibri, Calibre).'
-        - option: conex_core_install
-          value: "{{ conex_core_install }}"
-        - option: conex_core_enabled
-          value: "{{ conex_core_enabled }}"
-        - option: conex_core_port
-          value: "{{ conex_core_port }}"
-        - option: version
-          value: "{{ conex_core_version }}"
+    # Marker is written LAST, only after a successful apply (install + configure + a
+    # healthy enable). A failure above lands in rescue and leaves no marker, so the next
+    # run re-runs install.
+    - name: Record conex_core state
+      include_tasks: state.yml
 
   rescue:
 
