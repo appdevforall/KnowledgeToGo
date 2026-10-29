@@ -1,0 +1,28 @@
+# Configure phase (every apply; local, nothing fetched). Reconciles the operator
+# Calibre-Web credential overrides on the systemd path (IIAB). On proot (K2Go) dash-node
+# owns these creds in credentials.json, so this phase is a no-op there. K2GO-512.
+
+# Rewritten on EVERY apply (not install-once), so an operator who changed the Calibre-Web
+# login can re-run the role to reconfigure, or clear the vars to revert to the box
+# default, without reinstalling.
+- name: Write the conex-core operator EnvironmentFile (not proot)
+  template:
+    src: conex-core.env.j2
+    dest: "{{ conex_core_env_file }}"
+    mode: "0600"
+  register: conex_core_env_file_task
+  when: not is_proot
+  # The file carries the Calibre-Web password; no_log keeps it out of --diff and -vvv output.
+  no_log: true
+
+# Restart ONLY when the file content changed (mirrors the Share nginx-reload gate):
+# systemd reads an EnvironmentFile at start, so the unit must restart to pick up a new
+# login. No daemon_reload: the file, not the unit, changed. install.yml installed the
+# unit, so it exists here.
+- name: Restart conex-core to apply the operator EnvironmentFile (changed, not proot)
+  systemd:
+    name: conex-core
+    state: restarted
+  when:
+    - not is_proot
+    - conex_core_env_file_task is changed

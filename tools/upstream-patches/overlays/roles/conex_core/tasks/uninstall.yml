@@ -1,0 +1,109 @@
+# Uninstall phase (--uninstall only; local, no network). Platform-split by design:
+#  - proot (PDSM): stop + disable only. The wrapper in services-available is NOT removed:
+#    proot_services owns it and nothing re-creates it, so removal is destructive. This is
+#    the house rule: the service manager disables, it never removes the definition.
+#  - systemd (IIAB): stop + disable + remove the role-owned unit. Native, like apt purge.
+# conex-core owns NO user content: the exchanged items live in Kiwix / Kolibri / Calibre
+# and are NEVER deleted here. See the design note and the README "Data ownership".
+
+# ---- Share listener (off-loopback). Remove only our own conf; leave the shared
+# k2go-http.d dir / include alone. ----
+- name: Remove the conex-core Share listener
+  file:
+    path: /etc/nginx/k2go-http.d/conex-core-share.conf
+    state: absent
+  register: cx_share_uninstall
+
+- name: Reload 'nginx' systemd service after removing the Share listener (not proot)
+  systemd:
+    name: nginx
+    state: reloaded
+  when:
+    - not is_proot
+    - cx_share_uninstall is changed
+  failed_when: false
+
+- name: Restart 'nginx' via pdsm after removing the Share listener (proot)
+  command: pdsm restart nginx
+  changed_when: true
+  when:
+    - is_proot
+    - cx_share_uninstall is changed
+  failed_when: false
+
+
+# ---- Service state: stop + disable. proot LEAVES the wrapper; systemd removes the unit. ----
+
+- name: Stop + disable conex-core via PDSM (proot)
+  command: "pdsm {{ item }} conex-core"
+  with_items:
+    - stop
+    - disable
+  when: is_proot
+  failed_when: false    # tolerate already-stopped / already-disabled
+
+- name: Stat the systemd unit (not proot)
+  stat:
+    path: /etc/systemd/system/conex-core.service
+  register: conex_core_unit
+  when: not is_proot
+
+- name: Stop + disable conex-core via systemd (not proot)
+  systemd:
+    name: conex-core
+    enabled: no
+    state: stopped
+  when: not is_proot and conex_core_unit.stat.exists
+  failed_when: false
+
+- name: Remove the role-owned systemd unit (not proot)
+  file:
+    path: /etc/systemd/system/conex-core.service
+    state: absent
+  register: conex_core_unit_removed
+  when: not is_proot
+
+- name: Reload systemd after removing the unit (not proot)
+  systemd:
+    daemon_reload: yes
+  when: not is_proot and conex_core_unit_removed is changed
+
+
+# ---- Program code, program data, managed settings. NEVER user content. ----
+
+- name: Remove conex-core program code and scratch data
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ conex_core_serve_path }}"              # /opt/conex-core
+    - "{{ content_base }}/.conex-staging"        # export scratch
+
+- name: Remove the operator EnvironmentFile (not proot)
+  file:
+    path: "{{ conex_core_env_file }}"            # /etc/iiab/conex-core.env
+    state: absent
+  when: not is_proot
+
+
+# ---- Record uninstalled state in iiab.ini, then drop the marker LAST. ----
+
+- name: Record that conex_core is uninstalled in {{ iiab_ini_file }}
+  ini_file:
+    path: "{{ iiab_ini_file }}"
+    section: conex_core
+    option: conex_core_install
+    value: "False"
+
+- name: Record that conex_core is disabled in {{ iiab_ini_file }}
+  ini_file:
+    path: "{{ iiab_ini_file }}"
+    section: conex_core
+    option: conex_core_enabled
+    value: "False"
+
+- name: Remove the conex_core marker from {{ iiab_state_file }}
+  lineinfile:
+    path: "{{ iiab_state_file }}"    # /etc/iiab/iiab_state.yml
+    regexp: '^conex_core_installed'
+    state: absent
