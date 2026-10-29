@@ -28,6 +28,24 @@ conex_core_port: 9500
 conex_core_pdsm_src: "{{ conex_core_src_dir }}/../pdsm/conex-core"
 
 
+# ---- Operator overrides for the systemd path (IIAB), not proot (K2GO-512) ----
+# On proot the core reads the K2Go rootfs defaults directly and dash-node owns the
+# Calibre-Web login in credentials.json (dash-node verifies it against live
+# Calibre-Web before saving). A systemd box has no dash-node, so the role writes an
+# EnvironmentFile instead. Empty values here mean "use the core's own box default",
+# so a stock box needs no override.
+
+# Where the role writes those overrides (0600). /etc/iiab exists on an IIAB box.
+conex_core_env_file: /etc/iiab/conex-core.env
+
+# Calibre-Web login the core uses to add and remove books. Leave EMPTY to use the
+# box default: IIAB seeds calibre-web app.db with Admin / changeme, which the core
+# already falls back to. Set BOTH in /etc/iiab/local_vars.yml ONLY when the box
+# Calibre-Web password was changed from that default; re-run the role to apply.
+conex_core_calibre_user: ""
+conex_core_calibre_pass: ""
+
+
 # ---- Off-loopback Share exposure (K2GO-376, Pillar Share) ----
 # Granular wireless Share lets a paired peer on the hotspot PULL selected content from
 # this box's live conex-core /v1/share gate. conex-core stays bound to loopback: a dedicated
