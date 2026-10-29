@@ -35,6 +35,17 @@ git submodule update --init --recursive
 
 After cloning, open the project in your IDE and sync the Gradle files. The NDK will compile the native components used by the Termux engine.
 
+## Known unsupported devices
+
+K2Go cannot run on the builds below because of a kernel defect, not an app defect. A kernel
+version alone does not identify an affected build: the ROM version, kernel branch and commit do.
+For the full identification, symptoms and workaround, refer to
+[docs/KNOWN_PLATFORM_ISSUES.md](docs/KNOWN_PLATFORM_ISSUES.md).
+
+| ROM | Kernel (repository, branch) | Defect | Status |
+|---|---|---|---|
+| LineageOS 23.2, 24.0 (sm8150, e.g. OnePlus 7T) | `LineageOS/android_kernel_oneplus_sm8150`, `lineage-23.2` / `lineage-24.0` | Upstream fix `05b289263772` is missing: proot cannot fork | Confirmed on 23.2 |
+
 ## Acknowledgments
 
 K2Go is built on top of the **[Termux](https://github.com/termux/termux-app)** project. The Termux engine is vendored as a Git submodule (`controller/termux-core/termux-source`, tracking [`appdevforall/termux-app`](https://github.com/appdevforall/termux-app) — a fork of upstream Termux) so we can run a Linux environment and native tooling on Android while still receiving upstream updates.
