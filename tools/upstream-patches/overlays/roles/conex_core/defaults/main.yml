@@ -1,0 +1,57 @@
+# conex_core_install: True
+# conex_core_enabled: True
+
+# The content-exchange core: an in-box REST service (Python stdlib, no third-party
+# deps) that lists, exports and imports content per item across Kiwix, Kolibri and
+# Calibre. It is client-agnostic: dash-node (K2Go) or the IIAB Console reach it over
+# its localhost REST API. Design: controller/docs/ADR-content-exchange.md (K2GO-427).
+#
+# The core code is identical on every environment; only the supervisor differs. Under
+# proot (K2Go) it runs as a PDSM service; on a systemd host (IIAB) it runs as a systemd
+# unit. This role installs the source and the right wrapper, chosen by is_proot.
+
+# Where the source tree is copied FROM. Default is the K2Go repo path on the box
+# (/opt/iiab-android). An IIAB deploy overrides this to wherever it stages the source.
+conex_core_src_dir: /opt/iiab-android/static/conex-core
+
+# Where the core is installed TO (app code, a fixed path). `python3 -m conex_core` runs
+# from here. The CONEX_* runtime paths (zims, kolibri db, staging) default to the box
+# layout inside the core itself, so this role sets none of them.
+conex_core_serve_path: /opt/conex-core
+
+# The localhost port the core binds. Matches the core's own default and the health
+# probe in the service wrappers.
+conex_core_port: 9500
+
+# The PDSM service wrapper to install under proot. Ships in the repo next to the
+# dash-node wrapper; both drivers (this role and the iiab-android bootstrap) copy it.
+conex_core_pdsm_src: "{{ conex_core_src_dir }}/../pdsm/conex-core"
+
+
+# ---- Off-loopback Share exposure (K2GO-376, Pillar Share) ----
+# Granular wireless Share lets a paired peer on the hotspot PULL selected content from
+# this box's live conex-core /v1/share gate. conex-core stays bound to loopback: a dedicated
+# nginx listener is the ONLY off-box surface, and it proxies ONLY /v1/share/<session>/
+# ... (never the rest of the /v1 API). The share token (X-Share-Token header) is the
+# auth; this scope is defense in depth. Design + the rootfs contract:
+# controller/docs/conex-core-share-exposure.md.
+
+# The TCP port the Share listener binds on 0.0.0.0. 8095 is free on an IIAB box: the
+# 80xx cluster uses 8080/8083/8089 (calibre / calibre-web / sugarizer), 8085 is the
+# K2Go portal, and AzuraCast sits at 10000+. Site-configurable, per IIAB tradition;
+# the receiver's QR carries <senderHotspotIp>:<this port>.
+conex_core_share_port: 8095
+
+# Master switch for the off-box Share surface. False removes the listener and keeps
+# conex-core loopback-only (in-box content exchange still works; only wireless Share is
+# off). A kill-switch for the one security-sensitive surface, independent of
+# conex_core_enabled.
+#
+# v1 decision (K2GO-376): ON by default on EVERY platform (proot phones AND systemd
+# boxes: rpi / pc, arm64 / amd64), so the surface can be observed in the field. The
+# listener is inert without an active share session (unknown-session 404, create
+# blocked), and every reachable endpoint is token-gated, so an always-bound port leaks
+# no content. If observation shows a systemd box should not open it by default, gate the
+# install by platform or arch later (an is_proot / arch condition on the install tasks),
+# not by removing the switch.
+conex_core_share_expose: True

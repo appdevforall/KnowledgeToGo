@@ -4,11 +4,11 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-376. The network ImportCarrier: the mirror of SafImportCarrier, but each item is
- *               read over HTTP from the sender's live cx-core gate on the shared hotspot, not from a
+ *               read over HTTP from the sender's live conex-core gate on the shared hotspot, not from a
  *               SAF drive. readManifest() GETs the invite's manifest URL; openPayload(itemRef) GETs
  *               /v1/share/<id>/fetch/<itemRef>, retrying while the sender stages the item; the token
  *               rides the X-Share-Token header, never the URL. Everything downstream (stage to
- *               /library/.cx-staging, POST /v1/import/item) is unchanged from the disk path, so the
+ *               /library/.conex-staging, POST /v1/import/item) is unchanged from the disk path, so the
  *               carrier is the only sender-specific dependency of the import service. On a clean finish
  *               the carrier POSTs /complete so the gate releases the session (the receiver-driven close).
  * ============================================================================
@@ -51,7 +51,7 @@ import java.util.List;
  */
 public final class NetworkImportCarrier implements ImportCarrier {
 
-    private static final String TAG = "IIAB-CxNetCarrier";
+    private static final String TAG = "IIAB-ConexNetCarrier";
 
     private static final int CONNECT_TIMEOUT_MS = 8000;
     /** Small JSON reads (manifest, complete response). */

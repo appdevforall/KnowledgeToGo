@@ -720,8 +720,8 @@ chk "PDSM installed (/usr/local/bin/pdsm)"     "test -e '$ROOTFS/usr/local/bin/p
 chk "flag_install_ready present"               "test -e '$ROOTFS/usr/local/pdsm/flag_install_ready'"
 chk "local_vars.yml has is_proot: True"        "grep -qiE '^[[:space:]]*is_proot[[:space:]]*:[[:space:]]*True' '$ROOTFS/etc/iiab/local_vars.yml'"
 chk "IIAB-oA repo cloned (/opt/iiab-android)"  "test -d '$ROOTFS/opt/iiab-android'"
-chk "cx-core installed (/opt/cx-core/cx_core)" "test -d '$ROOTFS/opt/cx-core/cx_core'"
-chk "cx-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/cx-core'"
+chk "conex-core installed (/opt/conex-core/conex_core)" "test -d '$ROOTFS/opt/conex-core/conex_core'"
+chk "conex-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/conex-core'"
 
 # Ansible result: use the PLAY RECAP (authoritative). We do NOT count loose
 # 'fatal:'/'FAILED!' lines, because block/rescue tasks (e.g. the WiFi-AP probe

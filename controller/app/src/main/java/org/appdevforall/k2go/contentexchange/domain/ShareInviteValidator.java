@@ -16,7 +16,7 @@ import org.appdevforall.k2go.sync.domain.SyncCredentialValidator;
 /**
  * Pure validation of a Share invite (ADR "Pillar Share"). The invite carries the sender's reachable
  * address and port, a session token, and the manifest path. On the sender these come from trusted
- * local sources (the hotspot owner and the sender's own cx-core), but the RECEIVER scans the same
+ * local sources (the hotspot owner and the sender's own conex-core), but the RECEIVER scans the same
  * QR as untrusted input, and both forks build against this one rule so the contract cannot drift.
  *
  * <p>The receiver later composes URLs from these fields ({@code http://host:port} + a share path),
@@ -25,7 +25,7 @@ import org.appdevforall.k2go.sync.domain.SyncCredentialValidator;
  */
 public final class ShareInviteValidator {
 
-    /** The cx-core token is {@code secrets.token_urlsafe(32)}: url-safe base64, ~43 chars. */
+    /** The conex-core token is {@code secrets.token_urlsafe(32)}: url-safe base64, ~43 chars. */
     private static final int MAX_TOKEN_LEN = 256;
     /** The manifest path is short ({@code /v1/share/<id>/manifest}); cap it well above that. */
     private static final int MAX_PATH_LEN = 512;

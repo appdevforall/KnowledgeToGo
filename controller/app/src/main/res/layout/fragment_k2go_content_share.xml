@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-376: share invite screen. The sender opens a scoped share session on its own cx-core, then
+<!-- K2GO-376: share invite screen. The sender opens a scoped share session on its own conex-core, then
      shows two stacked QR sections (reused view_k2go_qr_section): (1) join the hotspot, (2) scan to
      receive. A foreground service holds the hotspot and the gate open until the user taps Done.
      Material 3 tokens; no hardcoded colours. -->

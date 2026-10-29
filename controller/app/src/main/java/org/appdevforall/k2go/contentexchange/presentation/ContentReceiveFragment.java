@@ -176,7 +176,7 @@ public class ContentReceiveFragment extends Fragment {
                         appContext, host, port, token, manifestUrl, () -> false);
                 parsed = ShareManifestReader.parse(carrier.readManifest());
             } catch (Exception e) {
-                Log.w("IIAB-CxReceive", "manifest fetch failed host=" + host + " port=" + port
+                Log.w("IIAB-ConexReceive", "manifest fetch failed host=" + host + " port=" + port
                         + " manifestUrl=" + manifestUrl, e);
                 post(() -> showError());
                 return;

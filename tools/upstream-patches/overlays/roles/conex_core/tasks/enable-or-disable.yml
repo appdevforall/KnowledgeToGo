@@ -1,0 +1,72 @@
+# Reflect conex_core_enabled on the running service. Idempotent verbs (pdsm start reports
+# "already running"; systemd state=started does not bounce a live unit), so this runs on
+# every play without churning the service. install.yml already did the first start.
+
+- name: Start conex-core via PDSM (proot)
+  command: pdsm start conex-core
+  when: is_proot and conex_core_enabled
+
+- name: Stop conex-core via PDSM (proot)
+  command: pdsm stop conex-core
+  when: is_proot and not conex_core_enabled
+
+- name: Start conex-core via systemd (not proot)
+  systemd:
+    name: conex-core
+    state: started
+  when: not is_proot and conex_core_enabled
+
+- name: Stop conex-core via systemd (not proot)
+  systemd:
+    name: conex-core
+    state: stopped
+  when: not is_proot and not conex_core_enabled
+
+
+# ---- Off-loopback Share listener (K2GO-376). The dedicated :{{ conex_core_share_port }}
+# nginx server block that exposes ONLY /v1/share/<session>/... Installed when conex-core
+# is enabled AND share exposure is on; removed otherwise (fail-closed). The rootfs must
+# include /etc/nginx/k2go-http.d/*.conf at the nginx http context for it to take effect
+# (controller/docs/conex-core-share-exposure.md); until then the file sits inert, so no
+# exposure happens by accident. ----
+
+- name: Ensure the http-level include dir for the Share server block exists
+  file:
+    path: /etc/nginx/k2go-http.d
+    state: directory
+    mode: "0755"
+  when: conex_core_enabled and conex_core_share_expose
+
+- name: "Expose the conex-core Share gate off loopback via NGINX (:{{ conex_core_share_port }})"
+  template:
+    src: conex-core-share-nginx.conf.j2
+    dest: /etc/nginx/k2go-http.d/conex-core-share.conf
+    mode: "0644"
+  when: conex_core_enabled and conex_core_share_expose
+  register: cx_share_conf
+
+- name: Remove the conex-core Share listener (exposure off or conex-core disabled)
+  file:
+    path: /etc/nginx/k2go-http.d/conex-core-share.conf
+    state: absent
+  when: not (conex_core_enabled and conex_core_share_expose)
+  register: cx_share_removed
+
+# Reload nginx ONLY when the Share listener was written or removed in this run, not on every
+# play. Gating on the change avoids bouncing nginx (and, on proot, every live :8085 connection)
+# when nothing changed. A graceful systemd reload, or a pdsm restart on proot (pdsm has no
+# reload verb), picks up the new :{{ conex_core_share_port }} listen socket.
+- name: Reload 'nginx' systemd service when the Share listener changed (not proot)
+  systemd:
+    name: nginx
+    state: reloaded
+  when:
+    - not is_proot
+    - (cx_share_conf is changed) or (cx_share_removed is changed)
+
+- name: Restart 'nginx' via pdsm when the Share listener changed (proot)
+  command: pdsm restart nginx
+  changed_when: true
+  when:
+    - is_proot
+    - (cx_share_conf is changed) or (cx_share_removed is changed)

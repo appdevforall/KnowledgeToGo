@@ -4,7 +4,7 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-427. Foreground service that drains the export queue: plan the selected
- *               items, then per item pull the streaming archive from cx-core and write it to the
+ *               items, then per item pull the streaming archive from conex-core and write it to the
  *               SAF destination, writing the collection manifest last over the items that landed.
  *               Reuses the download-service pattern (foreground specialUse + per-item queue +
  *               retry + notification), but the bytes flow phone <- box -> drive here, so it is a
@@ -31,8 +31,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.contentexchange.data.CxCoreDataSource;
-import org.appdevforall.k2go.contentexchange.data.CxCoreExportSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
+import org.appdevforall.k2go.contentexchange.data.ConexCoreExportSource;
 import org.appdevforall.k2go.contentexchange.data.SafExportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ContentExportSource;
 import org.appdevforall.k2go.contentexchange.domain.ExportCarrier;
@@ -216,7 +216,7 @@ public final class ContentExportService extends Service {
      */
     private void drain(boolean fresh) {
         ExportCarrier carrier;
-        ContentExportSource source = new CxCoreExportSource(new CxCoreDataSource());
+        ContentExportSource source = new ConexCoreExportSource(new ConexCoreDataSource());
         try {
             carrier = new SafExportCarrier(getApplicationContext(), Uri.parse(SESSION.treeUri()));
         } catch (Exception e) {

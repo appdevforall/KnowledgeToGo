@@ -6,9 +6,9 @@
  * Description : K2GO-427. Bridges one SAF-read archive to a box-visible path the core can ingest.
  *               proot runs with -r <rootfs> and no separate bind for /library, so box /library maps
  *               to host <rootfs>/library (EnvironmentControl.rootfs = filesDir/rootfs/installed-rootfs/
- *               iiab). This writes the staged archive under host <rootfs>/library/.cx-staging and
- *               reports the matching box path /library/.cx-staging/<name> for POST /v1/import/item.
- *               The core default CX_STAGING_DIR is /library/.cx-staging (its is_within_dir guard).
+ *               iiab). This writes the staged archive under host <rootfs>/library/.conex-staging and
+ *               reports the matching box path /library/.conex-staging/<name> for POST /v1/import/item.
+ *               The core default CONEX_STAGING_DIR is /library/.conex-staging (its is_within_dir guard).
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.data;
@@ -25,9 +25,9 @@ import java.io.OutputStream;
 
 public final class BoxImportStaging {
 
-    /** The box-side import area, matching the core's default {@code CX_STAGING_DIR}. */
-    private static final String BOX_STAGING_DIR = "/library/.cx-staging";
-    private static final String HOST_STAGING_SUBPATH = "library/.cx-staging";
+    /** The box-side import area, matching the core's default {@code CONEX_STAGING_DIR}. */
+    private static final String BOX_STAGING_DIR = "/library/.conex-staging";
+    private static final String HOST_STAGING_SUBPATH = "library/.conex-staging";
 
     private final File hostDir;
 

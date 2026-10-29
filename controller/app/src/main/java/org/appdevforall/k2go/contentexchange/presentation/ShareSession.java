@@ -21,7 +21,7 @@ final class ShareSession {
         void onUpdate();
     }
 
-    /** PREPARING: creating the session on the local cx-core. READY: the invite exists; show the QR. */
+    /** PREPARING: creating the session on the local conex-core. READY: the invite exists; show the QR. */
     enum Phase { PREPARING, READY, ERROR }
 
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -42,7 +42,7 @@ final class ShareSession {
 
     // ---- service-side mutation -----------------------------------------------------------------
 
-    /** Start a run: the item count is fixed now; the invite arrives once cx-core opens the session. */
+    /** Start a run: the item count is fixed now; the invite arrives once conex-core opens the session. */
     void beginPreparing(int itemCount) {
         this.itemCount = itemCount;
         this.sessionId = null;
@@ -54,7 +54,7 @@ final class ShareSession {
         publish();
     }
 
-    /** The local cx-core opened the session: the invite is ready to render. */
+    /** The local conex-core opened the session: the invite is ready to render. */
     void setReady(String sessionId, String token, String manifestUrl) {
         this.sessionId = sessionId;
         this.token = token;
