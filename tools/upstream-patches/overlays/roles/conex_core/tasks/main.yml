@@ -17,6 +17,33 @@
       include_tasks: install.yml
       when: conex_core_installed is undefined
 
+    # Operator Calibre-Web credential overrides for the systemd path (IIAB). Rewritten on
+    # EVERY role run (not install-once), so an operator who changed the Calibre-Web login
+    # can re-run the role to reconfigure, or clear the vars to revert to the box default,
+    # without reinstalling. Gated not is_proot: on proot (K2Go) dash-node owns these creds
+    # in credentials.json. K2GO-512.
+    - name: Write the conex-core operator EnvironmentFile (not proot)
+      template:
+        src: conex-core.env.j2
+        dest: "{{ conex_core_env_file }}"
+        mode: "0600"
+      register: conex_core_env_file_task
+      when: not is_proot
+      # The file carries the Calibre-Web password; no_log keeps it out of --diff and -vvv output.
+      no_log: true
+
+    # Restart ONLY when the file content changed (mirrors the Share nginx-reload pattern
+    # in enable-or-disable.yml): systemd reads an EnvironmentFile at start, so the unit
+    # must restart to pick up a new login. No daemon_reload: the file, not the unit,
+    # changed. install.yml already installed the unit, so it exists here on first run.
+    - name: Restart conex-core to apply the operator EnvironmentFile (changed, not proot)
+      systemd:
+        name: conex-core
+        state: restarted
+      when:
+        - not is_proot
+        - conex_core_env_file_task is changed
+
     - name: Enable/Disable the content-exchange core service
       include_tasks: enable-or-disable.yml
 

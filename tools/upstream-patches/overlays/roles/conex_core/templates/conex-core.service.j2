@@ -8,6 +8,14 @@ After=network.target
 Type=simple
 WorkingDirectory={{ conex_core_serve_path }}
 Environment=CONEX_PORT={{ conex_core_port }}
+# Kolibri CLI path from IIAB's own kolibri role var (roles/kolibri). Its default
+# is /usr/bin/kolibri, same as the core default; binding to the var keeps one
+# source if a site remaps it. Falls back when the kolibri role is absent.
+Environment=CONEX_KOLIBRI_BIN={{ kolibri_exec_path | default('/usr/bin/kolibri') }}
+# Optional operator overrides (0600), e.g. the Calibre-Web login when it was
+# changed from the box default. The role writes this file; the leading "-" lets
+# the unit start when it is absent. See roles/conex_core/defaults/main.yml.
+EnvironmentFile=-{{ conex_core_env_file }}
 ExecStart=/usr/bin/python3 -m conex_core
 Restart=always
 RestartSec=2
