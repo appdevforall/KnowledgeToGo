@@ -29,6 +29,8 @@
         mode: "0600"
       register: conex_core_env_file_task
       when: not is_proot
+      # The file carries the Calibre-Web password; no_log keeps it out of --diff and -vvv output.
+      no_log: true
 
     # Restart ONLY when the file content changed (mirrors the Share nginx-reload pattern
     # in enable-or-disable.yml): systemd reads an EnvironmentFile at start, so the unit
