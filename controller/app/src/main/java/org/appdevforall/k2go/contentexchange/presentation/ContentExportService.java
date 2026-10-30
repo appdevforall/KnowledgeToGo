@@ -71,6 +71,9 @@ public final class ContentExportService extends Service {
     private static final int COPY_BUFFER = 64 * 1024;
     private static final long PUBLISH_INTERVAL_MS = 250L;
     private static final long NOTIFY_INTERVAL_MS = 1000L;
+    /** Minimum width of the trailing window used to sample the transfer rate (delta bytes / delta
+     *  time), so the speed shown is the recent rate, not the cumulative average from the run start. */
+    private static final long RATE_WINDOW_MS = 500L;
     /** K2GO-507: gap between export-staging status polls (mirrors content/RestContentClient). */
     private static final long POLL_INTERVAL_MS = 1000L;
     /** K2GO-507: consecutive status-poll failures tolerated before an item fails. A staging run lasts
@@ -266,7 +269,7 @@ public final class ContentExportService extends Service {
                     // ("app/name"), which becomes the manifest payload.
                     ExportCarrier.PayloadSink sink = carrier.openPayload(ref.app(), name);
                     SESSION.setPayloadName(i, sink.name());
-                    copy(payload.stream(), sink.stream(), i, job, runStart);
+                    copy(payload.stream(), sink.stream(), i, job);
                 }
                 // The core clears the op when the fetch stream closes, so the happy path does not abort.
                 job.setDone(i);
@@ -288,7 +291,7 @@ public final class ContentExportService extends Service {
             }
 
             long now = SystemClock.elapsedRealtime();
-            if (now - lastSampleAt >= 500L) {
+            if (now - lastSampleAt >= RATE_WINDOW_MS) {
                 sampleRate(job, now - lastSampleAt, job.copiedTotal() - lastSampleBytes);
                 lastSampleAt = now;
                 lastSampleBytes = job.copiedTotal();
@@ -321,11 +324,16 @@ public final class ContentExportService extends Service {
      * commonly surfaces at flush/close, not write) propagates and the item is marked failed, never
      * a silent partial written as done.
      */
-    private void copy(InputStream in, OutputStream out, int i, ExportJob job, long runStart)
+    private void copy(InputStream in, OutputStream out, int i, ExportJob job)
             throws IOException {
         byte[] buffer = new byte[COPY_BUFFER];
         long total = 0L;
         long lastPublish = 0L;
+        // Trailing-window rate: anchor at this item's copy start and re-anchor once the window is
+        // wide enough. A cumulative average (all bytes / whole run elapsed) reads far too low on a
+        // single large item that warms up slowly, so sample the recent throughput instead.
+        long windowAt = SystemClock.elapsedRealtime();
+        long windowBytes = job.copiedTotal();
         try (OutputStream sink = out) {
             int read;
             while ((read = in.read(buffer)) != -1) {
@@ -337,12 +345,11 @@ public final class ContentExportService extends Service {
                 job.setCopied(i, total);
                 long now = SystemClock.elapsedRealtime();
                 if (now - lastPublish >= PUBLISH_INTERVAL_MS) {
-                    long elapsed = now - runStart;
-                    if (elapsed > 0) {
-                        long speed = job.copiedTotal() * 1000L / elapsed;
-                        long remaining = job.plannedTotal() - job.copiedTotal();
-                        long eta = speed > 0 ? Math.max(0L, remaining / speed) : -1L;
-                        SESSION.setRate(speed, eta);
+                    long windowMs = now - windowAt;
+                    if (windowMs >= RATE_WINDOW_MS) {
+                        sampleRate(job, windowMs, job.copiedTotal() - windowBytes);
+                        windowAt = now;
+                        windowBytes = job.copiedTotal();
                     }
                     SESSION.publish();
                     maybeNotify(now);
