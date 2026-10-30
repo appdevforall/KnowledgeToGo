@@ -130,7 +130,7 @@ public class RootfsCatalog {
     }
 
     /** Sidecar URL for the UNCOMPRESSED size (ADFA-5110), e.g. {@code .../latest_full_arm64-v8a.installed}
-     *  (dev_latest_* when the dev-channel marker is set) — a single integer, bytes. */
+     *  (dev_latest_* when the dev-channel marker is set) : a single integer, bytes. */
     public String installedUrl(RootfsTier tier, RootfsAbi abi) {
         return BASE_URL + pointerPrefix() + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".installed";
     }
