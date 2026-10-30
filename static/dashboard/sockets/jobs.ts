@@ -105,6 +105,9 @@ export function throwIfStopped(ctx: RunnerContext): void {
 
 const DB_PATH = process.env.K2GO_JOBS_DB || '/library/dashboard/jobs.db';
 const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
+// K2GO-317: grace a paused child gets to flush its resume checkpoint on SIGTERM before killAll
+// SIGKILLs a survivor that ignored it.
+const PAUSE_GRACE_MS = 2500;
 
 class JobManager {
     private db: Database.Database;
@@ -192,10 +195,11 @@ class JobManager {
     }
 
     /**
-     * ADFA-4894 (control surface): pause a running job. Stops the runner like cancel — kills its
-     * children, aborts an in-flight fetch — but marks it 'paused' and, crucially, the runner does NOT
-     * clean its partial (it checks {@link RunnerContext.isPaused}), so {@link #resume} continues from
-     * the checkpoint. Only an ACTIVE job can be paused. Idempotent on a non-active job.
+     * ADFA-4894 (control surface): pause a running job. Stops the runner like cancel, but with
+     * SIGTERM not SIGKILL (K2GO-317), so a child like pmtiles can flush a complete resume checkpoint
+     * before it exits; it aborts an in-flight fetch, marks it 'paused', and the runner does NOT clean
+     * its partial (it checks {@link RunnerContext.isPaused}), so {@link #resume} continues from the
+     * checkpoint. Only an ACTIVE job can be paused. Idempotent on a non-active job.
      */
     pause(id: string): boolean {
         const job = this.get(id);
@@ -204,7 +208,7 @@ class JobManager {
         const rt = this.runtime.get(id);
         if (rt) {
             rt.paused = true;
-            this.killAll(rt);
+            this.killAll(rt, 'SIGTERM');   // graceful: let the child flush its resume checkpoint
             try { rt.ac.abort(); } catch { /* interrupt an in-flight fetch */ }
         }
         this.patch(id, { phase: 'paused' });
@@ -213,8 +217,8 @@ class JobManager {
 
     /**
      * ADFA-4894: resume a paused job — re-launch the runner, which continues from its on-disk
-     * checkpoint (aria2 --continue for kiwix; per-item for books). No-op unless the job is 'paused'
-     * and nothing is already running for it.
+     * checkpoint (aria2 --continue for kiwix; per-item for books; the pmtiles resume journal for
+     * maps). No-op unless the job is 'paused' and nothing is already running for it.
      */
     resume(id: string): boolean {
         const job = this.get(id);
@@ -258,17 +262,33 @@ class JobManager {
     }
 
     /**
-     * ADFA-4896: SIGKILL a job's children. A runner that shells through a wrapper (e.g. maps via
-     * `sudo`) spawns detached, so the wrapper is a process-group leader; we kill the whole group
+     * ADFA-4896: stop a job's children. A runner that shells through a wrapper (e.g. maps via
+     * `sudo`) spawns detached, so the wrapper is a process-group leader; we signal the whole group
      * (-pid) so the real worker dies with it, not just the wrapper — otherwise the worker is
      * reparented and runs to completion in the background (the region ends up added even though the
-     * job was canceled). For a non-detached child (kiwix's aria2c), -pid names a group that doesn't
-     * exist and the group kill is a harmless no-op; the direct kill still stops it.
+     * job was stopped). For a non-detached child (kiwix's aria2c), -pid names a group that doesn't
+     * exist and the group signal is a harmless no-op; the direct signal still stops it.
+     *
+     * K2GO-317: cancel uses SIGKILL (the partial is discarded anyway); pause passes SIGTERM so the
+     * child flushes a complete resume checkpoint first (a SIGKILL leaves a truncated journal that
+     * cannot resume). A child that ignores SIGTERM is SIGKILLed after a grace, skipped when the child
+     * has already exited (p.exitCode/signalCode) so an already-exited process is never re-signaled.
      */
-    private killAll(rt: { procs: Set<ChildProcess> }): void {
+    private killAll(rt: { procs: Set<ChildProcess> }, signal: NodeJS.Signals = 'SIGKILL'): void {
         for (const p of rt.procs) {
-            try { if (p.pid) process.kill(-p.pid, 'SIGKILL'); } catch { /* no such group / already gone */ }
-            try { p.kill('SIGKILL'); } catch { /* already gone */ }
+            try { if (p.pid) process.kill(-p.pid, signal); } catch { /* no such group / already gone */ }
+            try { p.kill(signal); } catch { /* already gone */ }
+            if (signal !== 'SIGKILL') {
+                // Graceful SIGTERM above let the child flush its resume checkpoint. If it is still
+                // running after the grace, SIGKILL the group. p.exitCode/signalCode is Node's own
+                // record of whether this child exited, so a finished child is never re-signaled (no
+                // reused-PID hit); the group kill is a caught no-op if the group is already gone.
+                setTimeout(() => {
+                    if (p.exitCode !== null || p.signalCode !== null) return;
+                    try { if (p.pid) process.kill(-p.pid, 'SIGKILL'); } catch { /* gone */ }
+                    try { p.kill('SIGKILL'); } catch { /* gone */ }
+                }, PAUSE_GRACE_MS).unref();
+            }
         }
     }
 

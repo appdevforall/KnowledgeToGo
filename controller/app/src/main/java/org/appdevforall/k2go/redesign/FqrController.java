@@ -95,9 +95,10 @@ public final class FqrController {
     private TextView overlayPct, overlayTitle;
     private TextView overlayMin;
     private boolean overlayMinimized = false;
-    // ADFA-4896: the Stop/Retry control on the overlay. It drives the server pause/resume endpoints,
-    // but there is no maps checkpoint yet (resume re-extracts from 0), so we present it honestly as
-    // Stop -> Retry, not Pause -> Resume. overlayStopped is the last state the poll reported.
+    // ADFA-4896 / K2GO-317: the Pause/Resume control on the overlay. It drives the server pause/resume
+    // endpoints; pause stops gracefully (SIGTERM) so pmtiles flushes its resume journal, and resume
+    // continues from that checkpoint instead of restarting. overlayStopped (true = paused) is the last
+    // state the poll reported and the SOLE writer of the label.
     private com.google.android.material.button.MaterialButton overlayStop;
     private boolean overlayStopped = false;
 
@@ -370,30 +371,29 @@ public final class FqrController {
         if (box == null) return;
         showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
-            @Override public void onProgress(int percent, long speed) {
-                if (overlayStopped) {   // retried/running again: back to Stop, live teal bar
+            @Override public void onProgress(int percent, long speed, int etaSeconds) {
+                if (overlayStopped) {   // resumed/running again: back to Pause, live teal bar
                     overlayStopped = false;
-                    if (overlayStop != null) overlayStop.setText(R.string.k2go_clone_stop_confirm);
+                    if (overlayStop != null) overlayStop.setText(R.string.k2go_dl_pause);
                     setBarState(cPrimary, true);
                 }
-                if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Stop/Retry tap
-                updateOverlay(percent, speed);
+                if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Pause/Resume tap
+                updateOverlay(percent, speed, etaSeconds);
             }
             @Override public void onPaused(int percent) {
-                // Server phase is 'paused', but with no checkpoint this is a full stop: show "Stopped"
-                // and offer Retry (which re-extracts from 0). No percent -- it would imply a resume
-                // point that doesn't exist.
+                // K2GO-317: paused keeps the partial + resume journal (SIGTERM checkpoint), so resume
+                // continues from here. Show "Paused" at the reached percent and offer Resume; freeze the
+                // bar at that percent in amber so a paused job never looks live.
                 overlayStopped = true;
-                if (overlayStop != null) { overlayStop.setText(R.string.k2go_dl_retry); overlayStop.setEnabled(true); }
-                if (overlayPct != null) overlayPct.setText(R.string.k2go_card_stopped);
-                // #2: freeze the bar (determinate, no animation) so it doesn't keep animating under "Stopped".
+                if (overlayStop != null) { overlayStop.setText(R.string.k2go_dl_resume); overlayStop.setEnabled(true); }
+                if (overlayPct != null) overlayPct.setText(R.string.k2go_dl_paused_notif);
                 if (overlayBar != null && overlayBar.isIndeterminate()) setBarMode(false);
                 if (overlayBar != null && percent >= 0) overlayBar.setProgressCompat(percent, false);
-                setBarState(cAmber, false);   // amber + dimmed: a halted job must not look live
+                setBarState(cAmber, false);   // amber + dimmed: a paused job must not look live
             }
             @Override public void onDone() {
                 setBarState(cLeaf, true);     // done: a full leaf bar reads as success
-                updateOverlay(100, 0);
+                updateOverlay(100, 0, -1);
                 if (overlayTitle != null) overlayTitle.setText(R.string.k2go_fqr_region_added); // may be gone if hidden
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
             }
@@ -447,18 +447,22 @@ public final class FqrController {
         overlayPct = new TextView(themed);
         overlayPct.setText(R.string.k2go_fqr_starting);
         M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
+        // K2GO-317: keep percent/speed/ETA on one line next to the buttons; on a narrow width the
+        // rightmost (ETA) ellipsizes rather than wrapping and growing the row.
+        overlayPct.setSingleLine(true);
+        overlayPct.setEllipsize(android.text.TextUtils.TruncateAt.END);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        // ADFA-4896: Stop/Retry beside Cancel. The label follows the reported state; the tap fires the
+        // ADFA-4896: Pause/Resume beside Cancel. The label follows the reported state; the tap fires the
         // matching verb and the poll (onPaused/onProgress) is the source of truth.
         overlayStopped = false;
         // K2GO-385: download-controls role ladder (design k2go-download-card-style-sizes-v1) -- the
-        // keep-the-download primary (Stop/Retry) is the FILLED teal button; Cancel, which discards the
+        // keep-the-download primary (Pause/Resume) is the FILLED teal button; Cancel, which discards the
         // transfer, is a TEXT button in clay. Never two equal outline pills. FQR's overlay is a themed
         // (day/night) surface, so the app button styles' theme teal/clay are right here -- not the fixed
         // boot tokens. The role look lives only in the styles; no colour is set in Java.
         ContextThemeWrapper filledCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Filled);
         overlayStop = new MaterialButton(filledCtx, null);
-        overlayStop.setText(R.string.k2go_clone_stop_confirm);
+        overlayStop.setText(R.string.k2go_dl_pause);
         overlayStop.setOnClickListener(v -> toggleStop());
         row.addView(overlayStop);
         ContextThemeWrapper textDangerCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Text_Destructive);
@@ -477,10 +481,10 @@ public final class FqrController {
         activity.addContentView(overlay, params);
     }
 
-    /** ADFA-4896: fire Stop (server pause) or Retry (server resume — re-extracts from 0, no maps
-     *  checkpoint). The poll (onPaused/onProgress) is the SOLE writer of the label/state; here we only
-     *  fire the verb and disable the button until the next poll confirms, so the label never flickers
-     *  between the tap and the server catching up. */
+    /** ADFA-4896 / K2GO-317: fire Pause (server pause, SIGTERM checkpoint) or Resume (server resume,
+     *  continues from the pmtiles journal). The poll (onPaused/onProgress) is the SOLE writer of the
+     *  label/state; here we only fire the verb and disable the button until the next poll confirms, so
+     *  the label never flickers between the tap and the server catching up. */
     private void toggleStop() {
         if (overlayStop != null) overlayStop.setEnabled(false);
         if (overlayStopped) client.resume(); else client.pause();
@@ -497,17 +501,26 @@ public final class FqrController {
         if (overlayMin != null) overlayMin.setText(overlayMinimized ? R.string.k2go_fqr_show : R.string.k2go_hide);
     }
 
-    private void updateOverlay(int percent, long speed) {
+    private void updateOverlay(int percent, long speed, int etaSeconds) {
         if (overlayBar == null || overlayPct == null) return;
         final String rate = speed > 0 ? "  ·  " + humanRate(speed) : "";
+        final String eta = etaText(etaSeconds);
         if (percent < 0) {
             if (!overlayBar.isIndeterminate()) setBarMode(true);
-            overlayPct.setText(str(R.string.k2go_fqr_working) + rate);
+            overlayPct.setText(str(R.string.k2go_fqr_working) + rate + eta);
         } else {
             if (overlayBar.isIndeterminate()) setBarMode(false);
             overlayBar.setProgressCompat(percent, true);
-            overlayPct.setText(str(R.string.k2go_fqr_percent, percent) + rate);
+            overlayPct.setText(str(R.string.k2go_fqr_percent, percent) + rate + eta);
         }
+    }
+
+    /** K2GO-317: compact ETA for the progress line ("  ·  45 s left" / "  ·  ~3 min"); empty when
+     *  unknown (<0) or done (0). Reuses the shared eta strings, so no new copy or l10n debt. */
+    private String etaText(int seconds) {
+        if (seconds <= 0) return "";
+        if (seconds < 60) return "  ·  " + str(R.string.k2go_eta_sec, seconds);
+        return "  ·  " + str(R.string.k2go_eta_minutes_fmt, (seconds + 30) / 60);
     }
 
     /** Switch the Material progress indicator between indeterminate/determinate. The indicator forbids

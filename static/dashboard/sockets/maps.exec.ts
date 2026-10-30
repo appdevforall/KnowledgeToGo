@@ -36,13 +36,15 @@ function runMapsCmd(args: string[], log: (l: string) => void): Promise<void> {
 }
 
 /** ADFA-4896: remove a region's half-written pmtiles left in TMP_DIR by a killed extract — the
- *  script's `delete` doesn't touch this dir. Name-scoped (`*.full-region.<name>.pmtiles`), so a
- *  concurrent extract for another region is untouched. Best-effort. */
+ *  script's `delete` doesn't touch this dir. Name-scoped (`*.full-region.<name>.pmtiles` and its
+ *  K2GO-317 `.resume` journal), so a concurrent extract for another region is untouched. Best-effort. */
 function cleanupTmpPartials(name: string, log: (l: string) => void): void {
     try {
-        const suffix = `.full-region.${name}.pmtiles`;
+        const base = `.full-region.${name}.pmtiles`;
         for (const f of fs.readdirSync(MAPS_TMP_DIR)) {
-            if (f.endsWith(suffix)) {
+            // K2GO-317: the partial AND its sibling resume journal (<partial>.resume). The journal
+            // alone would linger and mislead resolve_source / a later extract of the same name.
+            if (f.endsWith(base) || f.endsWith(base + '.resume')) {
                 try { fs.unlinkSync(path.join(MAPS_TMP_DIR, f)); log(`[maps] pruned partial ${f}`); } catch { /* gone */ }
             }
         }
@@ -69,67 +71,96 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (!parsed.ok) throw new Error(parsed.error);
 
     ctx.update({ phase: 'processing', percent: -1, detail: name });
-    const args = [EXTRACT_SCRIPT, 'extract', name, parsed.box, 'noninteractive'];
+    // K2GO-317: DashNode opts into the custom build's integrator mode. sudo resets the environment
+    // (Defaults env_reset, only debian_chroot kept), so the vars are passed THROUGH sudo with `env`,
+    // not on the node-side spawn env (which sudo would strip). json = the machine-readable progress
+    // parsed below; 8 = the measured throughput knee (tunable upstream via IIAB_PMTILES_DOWNLOAD_THREADS).
+    const args = ['env', 'IIAB_PMTILES_PROGRESS=json', 'IIAB_PMTILES_DOWNLOAD_THREADS=8',
+        'PYTHONUNBUFFERED=1', EXTRACT_SCRIPT, 'extract', name, parsed.box, 'noninteractive'];
 
-    // ADFA-4879: tile-extract.py runs three sequential pmtiles extracts (vector, satellite,
-    // terrain). Each prints an in-layer bar ("fetching chunks NN%") and ends with one
-    // "Extract transferred ... archive size of ..." line. We derive an OVERALL percent from the
-    // completed-layer count refined by the current layer's %, so the bar climbs smoothly 0..100
-    // instead of resetting three times. If the in-layer % doesn't survive the non-TTY pipe, the
-    // layer-count alone still advances it (0 -> 33 -> 66), and the runner sets 100 on success.
+    // tile-extract.py runs three sequential pmtiles extracts (vector, satellite, terrain), each with
+    // --progress=json (go-pmtiles states commit): one JSON line per second on stdout carrying
+    // bytes_done/bytes_total, speed_bps, eta_s and a per-extract phase (plan|download|finalize|done).
+    // We derive ONE overall percent = (completed layers + the current layer's byte fraction) / 3, so
+    // the bar climbs 0..100 ONCE instead of the old per-layer 0->100 reset (the "dancing" bar). A layer
+    // is complete on its "phase":"done" line. The within-layer fraction is the byte ratio (not a
+    // scraped text percent), so it is smooth too. A stop (pause/cancel) is detected from the engine's
+    // job flags (classifyStop in the catch below), not the JSON; the pmtiles exit code is only a
+    // secondary signal for a resumable stop that was not engine-initiated. speed and eta come from JSON.
     const TOTAL_LAYERS = 3;
-    const RATE: Record<string, number> = { B: 1, kB: 1e3, MB: 1e6, GB: 1e9 };   // pmtiles unit -> bytes
     let layersDone = 0;
-    let lastPct = 0;
+    let overall = 0;   // monotonic across the whole FQR
 
     await new Promise<void>((resolve, reject) => {
         // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
         // the python worker down with it (otherwise pause/cancel only kill the sudo wrapper and the
         // extract finishes in the background).
-        const p = ctx.spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' }, detached: true });
-        const onData = (buf: Buffer) => {
-            const text = buf.toString();
-            ctx.log(text.trim());
-            const pm = [...text.matchAll(/fetching chunks\s+(\d+)\s*%/g)];
-            if (pm.length) lastPct = parseInt(pm[pm.length - 1][1], 10);
-            const completed = (text.match(/Extract transferred/g) || []).length;
-            if (completed) { layersDone = Math.min(TOTAL_LAYERS, layersDone + completed); lastPct = 0; }
-            const overall = Math.min(99, Math.round((layersDone * 100 + lastPct) / TOTAL_LAYERS));
+        const p = ctx.spawn('sudo', args, { env: { ...process.env }, detached: true });
+        // pmtiles writes the JSON progress on stdout, one line per second. A 'data' chunk can split a
+        // line across two events, so buffer stdout and act only on complete '\n'-terminated lines: an
+        // unbuffered split would drop that second's progress. stderr carries pmtiles/script logs (never
+        // the JSON), so it is logged as-is.
+        const handleLine = (line: string) => {
+            const s = line.trim();
+            if (!s) return;
+            ctx.log(s);
+            if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; eta_s?: number | null };
+            try { j = JSON.parse(s); } catch { return; }
+            if (typeof j.phase !== 'string') return;
+            let frac = 0;
+            if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
+                frac = Math.min(1, (j.bytes_done ?? 0) / (j.bytes_total as number));
+            } else if (j.phase === 'finalize' || j.phase === 'done') {
+                frac = 1;
+            }
+            overall = Math.max(overall, Math.min(99, Math.round(((layersDone + frac) / TOTAL_LAYERS) * 100)));
             const patch: JobUpdate = { phase: 'processing', percent: overall, detail: name };
-            // pmtiles prints a live transfer rate ("2.4 MB/s"); surface the latest as job.speed
-            // (bytes/sec) so the app can show it. Omitted when absent, so it isn't reset to 0.
-            const sm = [...text.matchAll(/([\d.]+)\s*(B|kB|MB|GB)\/s/g)];
-            if (sm.length) { const last = sm[sm.length - 1]; patch.speed = Math.round(parseFloat(last[1]) * (RATE[last[2]] ?? 1)); }
+            if (typeof j.speed_bps === 'number' && j.speed_bps > 0) patch.speed = j.speed_bps;
+            if (typeof j.eta_s === 'number' && j.eta_s >= 0) patch.eta = Math.round(j.eta_s);
             ctx.update(patch);
+            if (j.phase === 'done') layersDone = Math.min(TOTAL_LAYERS, layersDone + 1);
         };
-        p.stdout?.on('data', onData);
-        p.stderr?.on('data', onData);
+        let stdoutBuf = '';
+        p.stdout?.on('data', (buf: Buffer) => {
+            stdoutBuf += buf.toString();
+            let nl: number;
+            while ((nl = stdoutBuf.indexOf('\n')) >= 0) {
+                handleLine(stdoutBuf.slice(0, nl));
+                stdoutBuf = stdoutBuf.slice(nl + 1);
+            }
+        });
+        p.stderr?.on('data', (buf: Buffer) => { const t = buf.toString().trim(); if (t) ctx.log(t); });
         p.on('error', reject);
         p.on('exit', (code, signal) => {
             if (code === 0) return resolve();
-            // Non-zero or killed: could be a pause/cancel (group-killed by the engine) or a real
-            // failure. The catch below classifies it via classifyStop(ctx); this message is only
-            // surfaced for a genuine error.
+            // Non-zero or killed: an engine pause/cancel (group-killed) or tile-extract's own exit.
+            // The stop kind is read from the engine's job flags (classifyStop) in the catch, not from
+            // this code: tile-extract.py remaps every non-zero child exit to 1 (see the catch note).
             reject(new Error(signal ? `tile-extract killed by ${signal}` : `tile-extract exited with code ${code}`));
         });
     }).catch(async (e: unknown) => {
-        // ADFA-4896: any non-success purges the partial (no maps checkpoint -> never keep half-work),
-        // then re-throws as pause/cancel/error so the engine records the right terminal phase. On
-        // pause the job is resumable (resume re-extracts clean); on cancel the region is gone.
-        await purgeRegion(name, ctx.log);
+        // K2GO-317: the custom go-pmtiles build keeps an on-disk resume journal (<output>.resume, the
+        // single owner of the checkpoint), so an engine-initiated PAUSE keeps the partial + journal and
+        // re-running tile-extract resumes from the checkpoint instead of re-extracting from 0. A cancel,
+        // or any other exit, purges.
+        // NOTE: tile-extract.py raises on a failed run, so it exits 1 for every pmtiles failure. A
+        // non-engine resumable stop (pmtiles exit 2 network-gave-up / 3 self-paused) is therefore
+        // indistinguishable here from a hard failure and is purged. Preserving those needs the script
+        // to propagate the child exit code; tracked as a follow-up.
         const stop = classifyStop(ctx);
-        if (stop === 'paused') throw new PausedError();
-        if (stop === 'canceled') throw new CanceledError();
+        if (stop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
+        if (stop === 'paused') throw new PausedError();     // keep partial: resume continues
+        await purgeRegion(name, ctx.log);                   // not an engine stop: purge and surface
         throw e;
     });
 
-    // A stop can race in exactly as the extract finishes (code 0). Honor it — purge and stop —
-    // rather than marking done, so a paused/canceled job never leaves a completed region behind.
+    // A stop can race in exactly as the extract finishes (code 0). Honor it rather than marking
+    // done. A cancel purges; a pause keeps the finished partial (resume then re-runs and completes
+    // at once — the journal was already removed on success, so nothing half-written is left).
     const lateStop = classifyStop(ctx);
-    if (lateStop) {
-        await purgeRegion(name, ctx.log);
-        throw lateStop === 'paused' ? new PausedError() : new CanceledError();
-    }
+    if (lateStop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
+    if (lateStop === 'paused') throw new PausedError();
 
     ctx.update({ phase: 'done', percent: 100 });
 };
