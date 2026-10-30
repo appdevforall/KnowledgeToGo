@@ -8,6 +8,7 @@ import org.appdevforall.k2go.rootfs.domain.RootfsAbi;
 import org.appdevforall.k2go.rootfs.domain.RootfsTier;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
@@ -58,11 +59,18 @@ public class RootfsCatalog {
     /** Parsed CSV of UNCOMPRESSED sizes (optional 5th column, ADFA-5110). Absent => estimate. */
     private static volatile Map<String, Long> csvInstalled;
 
-    /** No-arg: emergency-net only (no CSV). Kept for callers without a Context. */
-    public RootfsCatalog() { }
+    /** Application context for the dev-channel marker check; null for the no-arg (prod-only) catalog. */
+    private final Context appContext;
 
-    /** Context-aware: loads the packaged CSV so fallbackBytes() returns the last-known size. */
-    public RootfsCatalog(Context context) { ensureCsvLoaded(context); }
+    /** No-arg: emergency-net only (no CSV) and the stable latest_* channel. Kept for callers without a Context. */
+    public RootfsCatalog() { this.appContext = null; }
+
+    /** Context-aware: loads the packaged CSV so fallbackBytes() returns the last-known size, and lets
+     *  metaUrl()/installedUrl() route to the dev_latest_* staging channel when the marker is set. */
+    public RootfsCatalog(Context context) {
+        this.appContext = (context != null) ? context.getApplicationContext() : null;
+        ensureCsvLoaded(context);
+    }
 
     private static void ensureCsvLoaded(Context context) {
         if (csvSizes != null || context == null) return;
@@ -102,15 +110,29 @@ public class RootfsCatalog {
         return tier.toLowerCase(Locale.US) + "|" + abi.toLowerCase(Locale.US);
     }
 
-    /** Builds the stable Metalink URL, e.g. {@code .../latest_basic_arm64-v8a.meta4}. */
-    public String metaUrl(RootfsTier tier, RootfsAbi abi) {
-        return BASE_URL + "latest_" + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".meta4";
+    // K2GO-511: install from the dev_latest_* staging channel instead of the stable latest_* when the
+    // user drops an 'enable-rootfs-dev' marker in filesDir (HOME). The app NEVER creates it; it is a
+    // deliberate opt-in from the box terminal. No marker (or no Context) => the stable latest_*.
+    private static final String DEV_CHANNEL_MARKER = "enable-rootfs-dev";
+
+    private String pointerPrefix() {
+        if (appContext != null
+                && new File(appContext.getFilesDir(), DEV_CHANNEL_MARKER).exists()) {
+            return "dev_latest_";
+        }
+        return "latest_";
     }
 
-    /** Stable sidecar URL for the UNCOMPRESSED size (ADFA-5110),
-     *  e.g. {@code .../latest_full_arm64-v8a.installed} — a single integer, bytes. */
+    /** Builds the Metalink URL, e.g. {@code .../latest_basic_arm64-v8a.meta4} (dev_latest_* when the
+     *  dev-channel marker is set). */
+    public String metaUrl(RootfsTier tier, RootfsAbi abi) {
+        return BASE_URL + pointerPrefix() + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".meta4";
+    }
+
+    /** Sidecar URL for the UNCOMPRESSED size (ADFA-5110), e.g. {@code .../latest_full_arm64-v8a.installed}
+     *  (dev_latest_* when the dev-channel marker is set) : a single integer, bytes. */
     public String installedUrl(RootfsTier tier, RootfsAbi abi) {
-        return BASE_URL + "latest_" + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".installed";
+        return BASE_URL + pointerPrefix() + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".installed";
     }
 
     /**
