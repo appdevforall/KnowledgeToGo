@@ -491,9 +491,17 @@ public final class InstallService extends Service {
         // still intact and still bootable.
         work = org.appdevforall.k2go.install.domain.AbandonedInstall.Work.ROOTFS_BUILD;
         String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "armeabi-v7a" : "arm64-v8a";
-        String tierString = tier.name().toLowerCase(Locale.US);
-        String directUrl = org.appdevforall.k2go.config.DownloadEndpoints.ROOTFS_STORE
-                + "/latest_" + tierString + "_" + archSuffix + ".meta4";
+        // Unify the rootfs pointer URL through RootfsCatalog (single builder). The Context-aware
+        // catalog routes to the dev_latest_* staging channel when the enable-rootfs-dev marker is set
+        // in filesDir (K2GO-511), else the stable latest_*.
+        org.appdevforall.k2go.rootfs.domain.RootfsTier rTier =
+                (tier == null) ? org.appdevforall.k2go.rootfs.domain.RootfsTier.BASIC
+                               : org.appdevforall.k2go.rootfs.domain.RootfsTier.valueOf(tier.name());
+        org.appdevforall.k2go.rootfs.domain.RootfsAbi rAbi =
+                "armeabi-v7a".equals(archSuffix)
+                        ? org.appdevforall.k2go.rootfs.domain.RootfsAbi.ARMEABI_V7A
+                        : org.appdevforall.k2go.rootfs.domain.RootfsAbi.ARM64_V8A;
+        String directUrl = new org.appdevforall.k2go.rootfs.data.RootfsCatalog(this).metaUrl(rTier, rAbi);
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
         aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
