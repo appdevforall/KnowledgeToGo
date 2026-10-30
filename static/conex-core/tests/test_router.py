@@ -201,6 +201,22 @@ class ImportRouteTest(unittest.TestCase):
             self.assertTrue(out["ok"])
             self.assertEqual(fake.imported[1], payload)
 
+    def test_import_item_no_free_space_preflight(self):
+        # The box runs under proot, whose statvfs under-reports free space, so the router must
+        # not preflight the disk: even an implausibly large declared size still reaches the
+        # adapter. The phone app is the one source of truth for free space (Android StatFs); a
+        # real ENOSPC fails cleanly in the adapter (422).
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [], import_result={"ok": True, "app": "kiwix"})
+            reg = Registry([fake], import_root=root)
+            payload = os.path.join(root, "a.zim")
+            body = {"app": "kiwix",
+                    "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10 ** 18},
+                    "payloadPath": payload}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 200)
+            self.assertTrue(out["ok"])
+
     def test_import_item_rejects_payload_outside_area(self):
         with tempfile.TemporaryDirectory() as root:
             reg = Registry([FakeAdapter("kiwix", [])], import_root=root)

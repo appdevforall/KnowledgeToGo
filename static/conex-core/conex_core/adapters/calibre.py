@@ -138,6 +138,11 @@ class CalibreAdapter(ContentAdapter):
                 safe_extract_tar(payload_path, work)
             except (ValueError, tarfile.TarError) as exc:
                 return {"ok": False, "reason": f"bad archive: {exc}"}
+            except OSError as exc:
+                # A real ENOSPC or IO error during extraction. No free-space preflight runs (the
+                # box runs under proot, whose statvfs under-reports free space), so fail cleanly
+                # here instead of letting the error crash the request.
+                return {"ok": False, "reason": f"extract failed: {exc}"}
             files = _content_files(single_child_dir(work) or work, formats)
             if not files:
                 return {"ok": False, "reason": "no book files in archive"}
