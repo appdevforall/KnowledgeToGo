@@ -1716,4 +1716,19 @@
     <string name="k2go_cx_share_notif_text">The hotspot and the share stay open.</string>
     <string name="k2go_cx_share_channel_name">Content sharing</string>
     <string name="k2go_cx_toggle_group">Show or hide items</string>
+    <!-- K2GO-376 wireless Share (receiver) strings (migrated from strings_untranslated.xml). -->
+    <string name="k2go_cx_receive_from_network">Receive over Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Receive</string>
+    <string name="k2go_cx_receive_scan_prompt">Scan the sender invite code</string>
+    <string name="k2go_cx_receive_invalid">That code is not a Share invite.</string>
+    <string name="k2go_cx_receive_connecting">Connecting to the sender...</string>
+    <string name="k2go_cx_receive_error">Could not reach the sender. Join the sender Wi-Fi first, then try again.</string>
+    <string name="k2go_cx_receive_nothing">The sender has nothing to receive.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d items to receive : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">This may not fit. The receive stops if the device runs out of space.</string>
+    <string name="k2go_cx_receive_action">Receive</string>
+    <string name="k2go_cx_receive_retry">Try again</string>
+    <string name="k2go_cx_share_transport_label">Receiver connects over</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

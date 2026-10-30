@@ -1534,4 +1534,19 @@
     <string name="k2go_cx_share_notif_text">હોટ્સ્પોટ અને શેરિંગ ખુલ્લા રહે છે.</string>
     <string name="k2go_cx_share_channel_name">સામગ્રી શેરिંગ</string>
     <string name="k2go_cx_toggle_group">આઇટમ્સ બતાવો અથવા છુપાવો</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi દ્વારા મેળવો</string>
+    <string name="k2go_cx_receive_title">મેળવો</string>
+    <string name="k2go_cx_receive_scan_prompt">મોકલનારનો આમંત્રણ કોડ સ્કૅન કરો</string>
+    <string name="k2go_cx_receive_invalid">આ કોડ શેર આમંત્રણ નથી.</string>
+    <string name="k2go_cx_receive_connecting">મોકલનાર સાથે કનેક્ટ થઈ રહ્યું છે...</string>
+    <string name="k2go_cx_receive_error">મોકલનાર સુધી પહોંચી શકાયું નથી. પહેલા મોકલનારના Wi-Fi સાથે જોડાઓ, પછી ફરી પ્રયાસ કરો.</string>
+    <string name="k2go_cx_receive_nothing">મોકલનાર પાસે મેળવવા માટે કંઈ નથી.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d આઇટમ મેળવવાની છે : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">આ કદાચ ન સમાય. જો ઉપકરણમાં જગ્યા ખૂટી જાય તો મેળવવાનું બંધ થઈ જાય છે.</string>
+    <string name="k2go_cx_receive_action">મેળવો</string>
+    <string name="k2go_cx_receive_retry">ફરી પ્રયાસ કરો</string>
+    <string name="k2go_cx_share_transport_label">મેળવનાર આના દ્વારા કનેક્ટ થાય છે</string>
+    <string name="k2go_cx_share_transport_hotspot">હોટસ્પોટ</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

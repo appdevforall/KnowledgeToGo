@@ -1534,4 +1534,19 @@
     <string name="k2go_cx_share_notif_text">Хотспот и дељење остају отворени.</string>
     <string name="k2go_cx_share_channel_name">Дељење садржаја</string>
     <string name="k2go_cx_toggle_group">Прикажи или сакриј ставке</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Прими преко Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Прими</string>
+    <string name="k2go_cx_receive_scan_prompt">Скенирајте позивни код пошиљаоца</string>
+    <string name="k2go_cx_receive_invalid">Тај код није позивница за дељење.</string>
+    <string name="k2go_cx_receive_connecting">Повезивање са пошиљаоцем...</string>
+    <string name="k2go_cx_receive_error">Није могуће доћи до пошиљаоца. Прво се повежите на Wi-Fi пошиљаоца, па покушајте поново.</string>
+    <string name="k2go_cx_receive_nothing">Пошиљалац нема ништа за пријем.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d ставки за пријем : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Можда неће стати. Пријем се зауставља ако на уређају понестане простора.</string>
+    <string name="k2go_cx_receive_action">Прими</string>
+    <string name="k2go_cx_receive_retry">Покушај поново</string>
+    <string name="k2go_cx_share_transport_label">Прималац се повезује преко</string>
+    <string name="k2go_cx_share_transport_hotspot">Хотспот</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

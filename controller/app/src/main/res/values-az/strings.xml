@@ -1541,4 +1541,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot və paylaşma açıq qalır.</string>
     <string name="k2go_cx_share_channel_name">Məzmun paylaşımı</string>
     <string name="k2go_cx_toggle_group">Elementləri göstər və ya gizlət</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi ilə qəbul et</string>
+    <string name="k2go_cx_receive_title">Qəbul et</string>
+    <string name="k2go_cx_receive_scan_prompt">Göndərənin dəvət kodunu skan edin</string>
+    <string name="k2go_cx_receive_invalid">Bu kod paylaşma dəvəti deyil.</string>
+    <string name="k2go_cx_receive_connecting">Göndərənə qoşulur...</string>
+    <string name="k2go_cx_receive_error">Göndərənə çatmaq mümkün olmadı. Əvvəlcə göndərənin Wi-Fi şəbəkəsinə qoşulun, sonra yenidən cəhd edin.</string>
+    <string name="k2go_cx_receive_nothing">Göndərəndə qəbul ediləcək heç nə yoxdur.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d element qəbul ediləcək : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Bu sığmaya bilər. Cihazda yer bitərsə, qəbul dayanır.</string>
+    <string name="k2go_cx_receive_action">Qəbul et</string>
+    <string name="k2go_cx_receive_retry">Yenidən cəhd et</string>
+    <string name="k2go_cx_share_transport_label">Qəbul edən bununla qoşulur</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

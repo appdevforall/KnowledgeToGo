@@ -1541,4 +1541,19 @@
     <string name="k2go_cx_share_notif_text">ஹாட்ஸ்பாட்டும் பகிர்வும் திறந்தே இருக்கும்.</string>
     <string name="k2go_cx_share_channel_name">உள்ளடக்கப் பகிர்வு</string>
     <string name="k2go_cx_toggle_group">உருப்படிகளைக் காட்டு அல்லது மறை</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi மூலம் பெறுக</string>
+    <string name="k2go_cx_receive_title">பெறுக</string>
+    <string name="k2go_cx_receive_scan_prompt">அனுப்புநரின் அழைப்புக் குறியீட்டை ஸ்கேன் செய்யவும்</string>
+    <string name="k2go_cx_receive_invalid">அந்தக் குறியீடு பகிர்வு அழைப்பு அல்ல.</string>
+    <string name="k2go_cx_receive_connecting">அனுப்புநருடன் இணைக்கிறது...</string>
+    <string name="k2go_cx_receive_error">அனுப்புநரை அடைய முடியவில்லை. முதலில் அனுப்புநரின் Wi-Fi உடன் இணையவும், பிறகு மீண்டும் முயலவும்.</string>
+    <string name="k2go_cx_receive_nothing">அனுப்புநரிடம் பெற எதுவும் இல்லை.</string>
+    <string name="k2go_cx_receive_ready_fmt">பெற வேண்டிய உருப்படிகள் %1$d : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">இது பொருந்தாமல் போகலாம். சாதனத்தில் இடம் தீர்ந்தால் பெறுதல் நிற்கும்.</string>
+    <string name="k2go_cx_receive_action">பெறுக</string>
+    <string name="k2go_cx_receive_retry">மீண்டும் முயலவும்</string>
+    <string name="k2go_cx_share_transport_label">பெறுநர் இதன் மூலம் இணைகிறார்</string>
+    <string name="k2go_cx_share_transport_hotspot">ஹாட்ஸ்பாட்</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

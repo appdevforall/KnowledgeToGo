@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">تظل نقطة الاتصال والمشاركة مفتوحتين.</string>
     <string name="k2go_cx_share_channel_name">مشاركة المحتوى</string>
     <string name="k2go_cx_toggle_group">إظهار أو إخفاء العناصر</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">الاستلام عبر Wi-Fi</string>
+    <string name="k2go_cx_receive_title">استلام</string>
+    <string name="k2go_cx_receive_scan_prompt">امسح رمز الدعوة من المُرسِل</string>
+    <string name="k2go_cx_receive_invalid">هذا الرمز ليس دعوة مشاركة.</string>
+    <string name="k2go_cx_receive_connecting">جارٍ الاتصال بالمُرسِل...</string>
+    <string name="k2go_cx_receive_error">تعذّر الوصول إلى المُرسِل. اتصل أولاً بشبكة Wi-Fi الخاصة بالمُرسِل ثم حاول مرة أخرى.</string>
+    <string name="k2go_cx_receive_nothing">لا يوجد لدى المُرسِل ما يمكن استلامه.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d عناصر للاستلام : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">قد لا تتسع المساحة. يتوقف الاستلام إذا نفدت مساحة الجهاز.</string>
+    <string name="k2go_cx_receive_action">استلام</string>
+    <string name="k2go_cx_receive_retry">حاول مرة أخرى</string>
+    <string name="k2go_cx_share_transport_label">يتصل المُستلِم عبر</string>
+    <string name="k2go_cx_share_transport_hotspot">نقطة اتصال</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

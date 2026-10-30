@@ -1597,4 +1597,19 @@
     <string name="k2go_cx_share_notif_text">Точка доступа и обмен остаются открытыми.</string>
     <string name="k2go_cx_share_channel_name">Обмен контентом</string>
     <string name="k2go_cx_toggle_group">Показать или скрыть элементы</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Получить по Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Получение</string>
+    <string name="k2go_cx_receive_scan_prompt">Отсканируйте код приглашения отправителя</string>
+    <string name="k2go_cx_receive_invalid">Этот код не является приглашением к обмену.</string>
+    <string name="k2go_cx_receive_connecting">Подключение к отправителю...</string>
+    <string name="k2go_cx_receive_error">Не удалось связаться с отправителем. Сначала подключитесь к Wi-Fi отправителя, затем повторите попытку.</string>
+    <string name="k2go_cx_receive_nothing">У отправителя нет ничего для получения.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d элементов для получения : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Это может не поместиться. Получение остановится, если на устройстве закончится место.</string>
+    <string name="k2go_cx_receive_action">Получить</string>
+    <string name="k2go_cx_receive_retry">Повторить попытку</string>
+    <string name="k2go_cx_share_transport_label">Получатель подключается через</string>
+    <string name="k2go_cx_share_transport_hotspot">Точка доступа</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

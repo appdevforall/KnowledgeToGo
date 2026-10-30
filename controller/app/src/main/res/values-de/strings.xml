@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">Der Hotspot und die Freigabe bleiben geöffnet.</string>
     <string name="k2go_cx_share_channel_name">Inhaltsfreigabe</string>
     <string name="k2go_cx_toggle_group">Elemente ein- oder ausblenden</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Über WLAN empfangen</string>
+    <string name="k2go_cx_receive_title">Empfangen</string>
+    <string name="k2go_cx_receive_scan_prompt">Scanne den Einladungscode des Absenders</string>
+    <string name="k2go_cx_receive_invalid">Dieser Code ist keine Freigabe-Einladung.</string>
+    <string name="k2go_cx_receive_connecting">Verbindung zum Absender wird hergestellt...</string>
+    <string name="k2go_cx_receive_error">Absender nicht erreichbar. Verbinde dich zuerst mit dem WLAN des Absenders und versuche es dann erneut.</string>
+    <string name="k2go_cx_receive_nothing">Der Absender hat nichts zu empfangen.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d Elemente zum Empfangen : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Das passt möglicherweise nicht. Der Empfang stoppt, wenn auf dem Gerät kein Speicher mehr frei ist.</string>
+    <string name="k2go_cx_receive_action">Empfangen</string>
+    <string name="k2go_cx_receive_retry">Erneut versuchen</string>
+    <string name="k2go_cx_share_transport_label">Der Empfänger verbindet sich über</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">WLAN</string>
 </resources>

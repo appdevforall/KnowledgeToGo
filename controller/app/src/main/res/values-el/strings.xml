@@ -1528,4 +1528,19 @@
     <string name="k2go_cx_share_notif_text">Το hotspot και η κοινή χρήση παραμένουν ανοιχτά.</string>
     <string name="k2go_cx_share_channel_name">Κοινή χρήση περιεχομένου</string>
     <string name="k2go_cx_toggle_group">Εμφάνιση ή απόκρυψη στοιχείων</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Λήψη μέσω Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Λήψη</string>
+    <string name="k2go_cx_receive_scan_prompt">Σαρώστε τον κωδικό πρόσκλησης του αποστολέα</string>
+    <string name="k2go_cx_receive_invalid">Αυτός ο κωδικός δεν είναι πρόσκληση κοινής χρήσης.</string>
+    <string name="k2go_cx_receive_connecting">Σύνδεση με τον αποστολέα...</string>
+    <string name="k2go_cx_receive_error">Δεν ήταν δυνατή η σύνδεση με τον αποστολέα. Συνδεθείτε πρώτα στο Wi-Fi του αποστολέα και δοκιμάστε ξανά.</string>
+    <string name="k2go_cx_receive_nothing">Ο αποστολέας δεν έχει τίποτα να λάβετε.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d στοιχεία προς λήψη : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Ίσως να μην χωράει. Η λήψη σταματά αν ο χώρος της συσκευής εξαντληθεί.</string>
+    <string name="k2go_cx_receive_action">Λήψη</string>
+    <string name="k2go_cx_receive_retry">Δοκιμάστε ξανά</string>
+    <string name="k2go_cx_share_transport_label">Ο παραλήπτης συνδέεται μέσω</string>
+    <string name="k2go_cx_share_transport_hotspot">Σημείο πρόσβασης</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

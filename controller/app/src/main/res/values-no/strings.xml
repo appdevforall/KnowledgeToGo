@@ -1531,4 +1531,19 @@
     <string name="k2go_cx_share_notif_text">Hotspoten og delingen forblir åpne.</string>
     <string name="k2go_cx_share_channel_name">Innholdsdeling</string>
     <string name="k2go_cx_toggle_group">Vis eller skjul elementer</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Motta via Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Motta</string>
+    <string name="k2go_cx_receive_scan_prompt">Skann avsenderens invitasjonskode</string>
+    <string name="k2go_cx_receive_invalid">Den koden er ikke en delingsinvitasjon.</string>
+    <string name="k2go_cx_receive_connecting">Kobler til avsenderen...</string>
+    <string name="k2go_cx_receive_error">Kunne ikke nå avsenderen. Koble til avsenderens Wi-Fi først, og prøv igjen.</string>
+    <string name="k2go_cx_receive_nothing">Avsenderen har ingenting å motta.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d elementer å motta : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Dette får kanskje ikke plass. Mottaket stopper hvis enheten går tom for plass.</string>
+    <string name="k2go_cx_receive_action">Motta</string>
+    <string name="k2go_cx_receive_retry">Prøv igjen</string>
+    <string name="k2go_cx_share_transport_label">Mottakeren kobler til via</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

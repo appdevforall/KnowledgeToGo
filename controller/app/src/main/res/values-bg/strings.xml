@@ -1528,4 +1528,19 @@
     <string name="k2go_cx_share_notif_text">Точката за достъп и споделянето остават отворени.</string>
     <string name="k2go_cx_share_channel_name">Споделяне на съдържание</string>
     <string name="k2go_cx_toggle_group">Показване или скриване на елементите</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Получаване през Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Получаване</string>
+    <string name="k2go_cx_receive_scan_prompt">Сканирайте кода за покана на подателя</string>
+    <string name="k2go_cx_receive_invalid">Този код не е покана за споделяне.</string>
+    <string name="k2go_cx_receive_connecting">Свързване с подателя...</string>
+    <string name="k2go_cx_receive_error">Не можа да се осъществи връзка с подателя. Първо се свържете с Wi-Fi на подателя, след което опитайте отново.</string>
+    <string name="k2go_cx_receive_nothing">Подателят няма нищо за получаване.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d елемента за получаване : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Това може да не се побере. Получаването спира, ако устройството остане без място.</string>
+    <string name="k2go_cx_receive_action">Получаване</string>
+    <string name="k2go_cx_receive_retry">Опитайте отново</string>
+    <string name="k2go_cx_share_transport_label">Получателят се свързва чрез</string>
+    <string name="k2go_cx_share_transport_hotspot">Точка за достъп</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>
