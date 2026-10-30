@@ -302,6 +302,9 @@ public class LibraryActivity extends AppCompatActivity
                 showInstallProgress(st);
             } else if (st.isTerminal()) {
                 hideInstallProgress();
+                // K2GO-515: was THIS instance the install monitor? (EXTRA_INSTALLING / a live install at
+                // open / it saw the install run.) Captured before the reset below; see the CANCELLED branch.
+                boolean wasMonitoringInstall = installing;
                 installing = false; // install finished; let the server-alive observer lift the gate
                 // ADFA-5119: the user gave up on this install. The service has already removed the
                 // partial download, the half-written rootfs and the wishlists, and cleared
@@ -310,7 +313,12 @@ public class LibraryActivity extends AppCompatActivity
                 // this ticket exists to close. Go back to the decision instead: the tier and the
                 // content, chosen again from the start.
                 if (st.phase == InstallState.Phase.CANCELLED) {
-                    if (!isFinishing()) {
+                    // K2GO-515: CANCELLED is a one-shot "route back to the choice". Consume it (postIdle)
+                    // so a stale CANCELLED cannot hijack a later unrelated open (e.g. "Copy from a phone"
+                    // opening the Clone tab). Only the install-monitor instance routes back; others just
+                    // clear the stale signal. (FAILED already gates on "our install" via InstallGuard.isLive.)
+                    InstallProgressRepository.get().postIdle();
+                    if (wasMonitoringInstall && !isFinishing()) {
                         startActivity(new android.content.Intent(this, SetupLibraryActivity.class));
                         finish();
                     }
