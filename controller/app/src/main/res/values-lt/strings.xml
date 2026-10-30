@@ -1538,4 +1538,19 @@
     <string name="k2go_cx_share_notif_text">Viešoji interneto prieiga ir bendrinimas lieka atidaryti.</string>
     <string name="k2go_cx_share_channel_name">Turinio bendrinimas</string>
     <string name="k2go_cx_toggle_group">Rodyti arba slėpti elementus</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Gauti per Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Gauti</string>
+    <string name="k2go_cx_receive_scan_prompt">Nuskaitykite siuntėjo kvietimo kodą</string>
+    <string name="k2go_cx_receive_invalid">Šis kodas nėra bendrinimo kvietimas.</string>
+    <string name="k2go_cx_receive_connecting">Jungiamasi prie siuntėjo...</string>
+    <string name="k2go_cx_receive_error">Nepavyko pasiekti siuntėjo. Pirmiausia prisijunkite prie siuntėjo Wi-Fi, tada bandykite dar kartą.</string>
+    <string name="k2go_cx_receive_nothing">Siuntėjas neturi ką gauti.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d elementų, kuriuos reikia gauti : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Gali netilpti. Gavimas sustoja, jei įrenginyje baigiasi vieta.</string>
+    <string name="k2go_cx_receive_action">Gauti</string>
+    <string name="k2go_cx_receive_retry">Bandyti dar kartą</string>
+    <string name="k2go_cx_share_transport_label">Gavėjas jungiasi per</string>
+    <string name="k2go_cx_share_transport_hotspot">Prieigos taškas</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

@@ -1541,4 +1541,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot àti pínpín yóò wà ní ṣíṣí.</string>
     <string name="k2go_cx_share_channel_name">Pínpín àkóónú</string>
     <string name="k2go_cx_toggle_group">Fi han tabi fi awọn nkan pamọ</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Gbà nípasẹ̀ Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Gbà</string>
+    <string name="k2go_cx_receive_scan_prompt">Ṣayẹ̀wò kóòdù ìpè olùfiránṣẹ́</string>
+    <string name="k2go_cx_receive_invalid">Kóòdù yẹn kì í ṣe ìpè Pínpín.</string>
+    <string name="k2go_cx_receive_connecting">Ń sopọ̀ sí olùfiránṣẹ́...</string>
+    <string name="k2go_cx_receive_error">Kò lè dé ọ̀dọ̀ olùfiránṣẹ́. Kọ́kọ́ darapọ̀ mọ́ Wi-Fi olùfiránṣẹ́, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.</string>
+    <string name="k2go_cx_receive_nothing">Olùfiránṣẹ́ kò ní nǹkan kankan láti gbà.</string>
+    <string name="k2go_cx_receive_ready_fmt">Àwọn nǹkan %1$d láti gbà : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Èyí lè má bá a mu. Gbígbà yóò dúró bí ààyè ẹ̀rọ bá tán.</string>
+    <string name="k2go_cx_receive_action">Gbà</string>
+    <string name="k2go_cx_receive_retry">Gbìyànjú lẹ́ẹ̀kan sí i</string>
+    <string name="k2go_cx_share_transport_label">Olùgbà á sopọ̀ nípasẹ̀</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

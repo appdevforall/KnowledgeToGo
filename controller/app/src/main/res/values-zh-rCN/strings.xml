@@ -1522,4 +1522,19 @@
     <string name="k2go_cx_share_notif_text">热点和共享将保持打开状态。</string>
     <string name="k2go_cx_share_channel_name">内容共享</string>
     <string name="k2go_cx_toggle_group">显示或隐藏项目</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">通过 Wi-Fi 接收</string>
+    <string name="k2go_cx_receive_title">接收</string>
+    <string name="k2go_cx_receive_scan_prompt">扫描发送方的邀请码</string>
+    <string name="k2go_cx_receive_invalid">该代码不是共享邀请。</string>
+    <string name="k2go_cx_receive_connecting">正在连接发送方...</string>
+    <string name="k2go_cx_receive_error">无法连接到发送方。请先加入发送方的 Wi-Fi，然后重试。</string>
+    <string name="k2go_cx_receive_nothing">发送方没有可接收的内容。</string>
+    <string name="k2go_cx_receive_ready_fmt">待接收 %1$d 个项目 : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">可能放不下。如果设备空间不足，接收将停止。</string>
+    <string name="k2go_cx_receive_action">接收</string>
+    <string name="k2go_cx_receive_retry">重试</string>
+    <string name="k2go_cx_share_transport_label">接收方的连接方式</string>
+    <string name="k2go_cx_share_transport_hotspot">热点</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

@@ -1522,4 +1522,19 @@
     <string name="k2go_cx_share_notif_text">ホットスポットと共有は開いたままになります。</string>
     <string name="k2go_cx_share_channel_name">コンテンツ共有</string>
     <string name="k2go_cx_toggle_group">項目を表示または非表示</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi で受信</string>
+    <string name="k2go_cx_receive_title">受信</string>
+    <string name="k2go_cx_receive_scan_prompt">送信者の招待コードをスキャン</string>
+    <string name="k2go_cx_receive_invalid">そのコードは共有の招待ではありません。</string>
+    <string name="k2go_cx_receive_connecting">送信者に接続しています...</string>
+    <string name="k2go_cx_receive_error">送信者に接続できませんでした。先に送信者の Wi-Fi に接続してから、もう一度お試しください。</string>
+    <string name="k2go_cx_receive_nothing">送信者に受信できるものがありません。</string>
+    <string name="k2go_cx_receive_ready_fmt">受信する項目 %1$d 件 : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">収まらない可能性があります。デバイスの空き容量がなくなると受信は停止します。</string>
+    <string name="k2go_cx_receive_action">受信</string>
+    <string name="k2go_cx_receive_retry">もう一度試す</string>
+    <string name="k2go_cx_share_transport_label">受信者の接続方法</string>
+    <string name="k2go_cx_share_transport_hotspot">ホットスポット</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

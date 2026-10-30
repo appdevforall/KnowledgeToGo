@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">Hotspotul și partajarea rămân deschise.</string>
     <string name="k2go_cx_share_channel_name">Partajarea conținutului</string>
     <string name="k2go_cx_toggle_group">Afișați sau ascundeți elementele</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Primește prin Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Primește</string>
+    <string name="k2go_cx_receive_scan_prompt">Scanează codul de invitație al expeditorului</string>
+    <string name="k2go_cx_receive_invalid">Acest cod nu este o invitație de partajare.</string>
+    <string name="k2go_cx_receive_connecting">Se conectează la expeditor...</string>
+    <string name="k2go_cx_receive_error">Expeditorul nu a putut fi contactat. Conectează-te mai întâi la Wi-Fi-ul expeditorului, apoi încearcă din nou.</string>
+    <string name="k2go_cx_receive_nothing">Expeditorul nu are nimic de primit.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d elemente de primit : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Este posibil să nu încapă. Primirea se oprește dacă dispozitivul rămâne fără spațiu.</string>
+    <string name="k2go_cx_receive_action">Primește</string>
+    <string name="k2go_cx_receive_retry">Încearcă din nou</string>
+    <string name="k2go_cx_share_transport_label">Destinatarul se conectează prin</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

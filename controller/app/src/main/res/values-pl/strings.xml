@@ -1531,4 +1531,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot i udostępnianie pozostają otwarte.</string>
     <string name="k2go_cx_share_channel_name">Udostępnianie zawartości</string>
     <string name="k2go_cx_toggle_group">Pokaż lub ukryj elementy</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Odbierz przez Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Odbierz</string>
+    <string name="k2go_cx_receive_scan_prompt">Zeskanuj kod zaproszenia nadawcy</string>
+    <string name="k2go_cx_receive_invalid">Ten kod nie jest zaproszeniem do udostępniania.</string>
+    <string name="k2go_cx_receive_connecting">Łączenie z nadawcą...</string>
+    <string name="k2go_cx_receive_error">Nie można połączyć się z nadawcą. Najpierw połącz się z Wi-Fi nadawcy, a potem spróbuj ponownie.</string>
+    <string name="k2go_cx_receive_nothing">Nadawca nie ma nic do odebrania.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d elementów do odebrania : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">To może się nie zmieścić. Odbieranie zatrzyma się, gdy w urządzeniu zabraknie miejsca.</string>
+    <string name="k2go_cx_receive_action">Odbierz</string>
+    <string name="k2go_cx_receive_retry">Spróbuj ponownie</string>
+    <string name="k2go_cx_share_transport_label">Odbiorca łączy się przez</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

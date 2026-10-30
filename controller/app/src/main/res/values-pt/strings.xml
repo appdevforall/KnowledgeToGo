@@ -1600,4 +1600,19 @@
     <string name="k2go_cx_share_notif_text">O hotspot e a partilha permanecem abertos.</string>
     <string name="k2go_cx_share_channel_name">Partilha de conteúdo</string>
     <string name="k2go_cx_toggle_group">Mostrar ou ocultar itens</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Receber por Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Receber</string>
+    <string name="k2go_cx_receive_scan_prompt">Leia o código de convite do remetente</string>
+    <string name="k2go_cx_receive_invalid">Esse código não é um convite de compartilhamento.</string>
+    <string name="k2go_cx_receive_connecting">Conectando ao remetente...</string>
+    <string name="k2go_cx_receive_error">Não foi possível alcançar o remetente. Conecte-se primeiro ao Wi-Fi do remetente e tente novamente.</string>
+    <string name="k2go_cx_receive_nothing">O remetente não tem nada para receber.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d itens para receber : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Isso pode não caber. A recepção para se o dispositivo ficar sem espaço.</string>
+    <string name="k2go_cx_receive_action">Receber</string>
+    <string name="k2go_cx_receive_retry">Tentar novamente</string>
+    <string name="k2go_cx_share_transport_label">O destinatário conecta-se por</string>
+    <string name="k2go_cx_share_transport_hotspot">Ponto de acesso</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

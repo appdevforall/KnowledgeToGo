@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">De hotspot en het delen blijven open.</string>
     <string name="k2go_cx_share_channel_name">Inhoud delen</string>
     <string name="k2go_cx_toggle_group">Items tonen of verbergen</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Ontvangen via Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Ontvangen</string>
+    <string name="k2go_cx_receive_scan_prompt">Scan de uitnodigingscode van de afzender</string>
+    <string name="k2go_cx_receive_invalid">Die code is geen deel-uitnodiging.</string>
+    <string name="k2go_cx_receive_connecting">Verbinden met de afzender...</string>
+    <string name="k2go_cx_receive_error">Kan de afzender niet bereiken. Maak eerst verbinding met de Wi-Fi van de afzender en probeer het opnieuw.</string>
+    <string name="k2go_cx_receive_nothing">De afzender heeft niets te ontvangen.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d items om te ontvangen : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Dit past misschien niet. Het ontvangen stopt als het apparaat geen ruimte meer heeft.</string>
+    <string name="k2go_cx_receive_action">Ontvangen</string>
+    <string name="k2go_cx_receive_retry">Opnieuw proberen</string>
+    <string name="k2go_cx_share_transport_label">De ontvanger maakt verbinding via</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

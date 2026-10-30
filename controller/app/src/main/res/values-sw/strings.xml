@@ -1541,4 +1541,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot na ushirikishaji vinasalia wazi.</string>
     <string name="k2go_cx_share_channel_name">Ushirikishaji wa maudhui</string>
     <string name="k2go_cx_toggle_group">Onyesha au ficha vipengele</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Pokea kupitia Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Pokea</string>
+    <string name="k2go_cx_receive_scan_prompt">Changanua msimbo wa mwaliko wa mtumaji</string>
+    <string name="k2go_cx_receive_invalid">Msimbo huo si mwaliko wa Kushiriki.</string>
+    <string name="k2go_cx_receive_connecting">Inaunganisha kwa mtumaji...</string>
+    <string name="k2go_cx_receive_error">Imeshindwa kumfikia mtumaji. Jiunge kwanza na Wi-Fi ya mtumaji, kisha ujaribu tena.</string>
+    <string name="k2go_cx_receive_nothing">Mtumaji hana chochote cha kupokea.</string>
+    <string name="k2go_cx_receive_ready_fmt">Vipengele %1$d vya kupokea : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Huenda hii isitoshe. Upokeaji husimama ikiwa kifaa kitaishiwa na nafasi.</string>
+    <string name="k2go_cx_receive_action">Pokea</string>
+    <string name="k2go_cx_receive_retry">Jaribu tena</string>
+    <string name="k2go_cx_share_transport_label">Mpokeaji anaunganisha kupitia</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

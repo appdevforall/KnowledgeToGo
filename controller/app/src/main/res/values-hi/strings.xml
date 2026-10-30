@@ -1598,4 +1598,19 @@
     <string name="k2go_cx_share_notif_text">हॉटस्पॉट और शेयरिंग खुले रहते हैं।</string>
     <string name="k2go_cx_share_channel_name">सामग्री शेयरिंग</string>
     <string name="k2go_cx_toggle_group">आइटम दिखाएँ या छिपाएँ</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi से प्राप्त करें</string>
+    <string name="k2go_cx_receive_title">प्राप्त करें</string>
+    <string name="k2go_cx_receive_scan_prompt">भेजने वाले का आमंत्रण कोड स्कैन करें</string>
+    <string name="k2go_cx_receive_invalid">यह कोड शेयर आमंत्रण नहीं है।</string>
+    <string name="k2go_cx_receive_connecting">भेजने वाले से कनेक्ट हो रहा है...</string>
+    <string name="k2go_cx_receive_error">भेजने वाले तक नहीं पहुँचा जा सका। पहले भेजने वाले के Wi-Fi से जुड़ें, फिर दोबारा प्रयास करें।</string>
+    <string name="k2go_cx_receive_nothing">भेजने वाले के पास प्राप्त करने के लिए कुछ नहीं है।</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d आइटम प्राप्त करने हैं : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">यह शायद न समाए। यदि डिवाइस में जगह समाप्त हो जाती है तो प्राप्त करना रुक जाता है।</string>
+    <string name="k2go_cx_receive_action">प्राप्त करें</string>
+    <string name="k2go_cx_receive_retry">फिर से प्रयास करें</string>
+    <string name="k2go_cx_share_transport_label">प्राप्तकर्ता इसके माध्यम से कनेक्ट होता है</string>
+    <string name="k2go_cx_share_transport_hotspot">हॉटस्पॉट</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

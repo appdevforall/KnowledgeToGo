@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">A hotspot és a megosztás nyitva marad.</string>
     <string name="k2go_cx_share_channel_name">Tartalommegosztás</string>
     <string name="k2go_cx_toggle_group">Elemek megjelenítése vagy elrejtése</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Fogadás Wi-Fin keresztül</string>
+    <string name="k2go_cx_receive_title">Fogadás</string>
+    <string name="k2go_cx_receive_scan_prompt">Olvassa be a küldő meghívókódját</string>
+    <string name="k2go_cx_receive_invalid">Ez a kód nem megosztási meghívó.</string>
+    <string name="k2go_cx_receive_connecting">Csatlakozás a küldőhöz...</string>
+    <string name="k2go_cx_receive_error">Nem sikerült elérni a küldőt. Előbb csatlakozzon a küldő Wi-Fi hálózatához, majd próbálja újra.</string>
+    <string name="k2go_cx_receive_nothing">A küldőnek nincs mit fogadnia.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d elem fogadható : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Lehet, hogy nem fér el. A fogadás leáll, ha az eszközön elfogy a hely.</string>
+    <string name="k2go_cx_receive_action">Fogadás</string>
+    <string name="k2go_cx_receive_retry">Újrapróbálkozás</string>
+    <string name="k2go_cx_share_transport_label">A fogadó fél így csatlakozik</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

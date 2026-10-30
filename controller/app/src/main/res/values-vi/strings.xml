@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">Điểm phát sóng và phiên chia sẻ vẫn mở.</string>
     <string name="k2go_cx_share_channel_name">Chia sẻ nội dung</string>
     <string name="k2go_cx_toggle_group">Hiện hoặc ẩn các mục</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Nhận qua Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Nhận</string>
+    <string name="k2go_cx_receive_scan_prompt">Quét mã lời mời của người gửi</string>
+    <string name="k2go_cx_receive_invalid">Mã đó không phải là lời mời Chia sẻ.</string>
+    <string name="k2go_cx_receive_connecting">Đang kết nối với người gửi...</string>
+    <string name="k2go_cx_receive_error">Không thể kết nối với người gửi. Trước tiên hãy tham gia Wi-Fi của người gửi, rồi thử lại.</string>
+    <string name="k2go_cx_receive_nothing">Người gửi không có gì để nhận.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d mục cần nhận : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Có thể không đủ chỗ. Việc nhận sẽ dừng nếu thiết bị hết dung lượng.</string>
+    <string name="k2go_cx_receive_action">Nhận</string>
+    <string name="k2go_cx_receive_retry">Thử lại</string>
+    <string name="k2go_cx_share_transport_label">Người nhận kết nối qua</string>
+    <string name="k2go_cx_share_transport_hotspot">Điểm phát sóng</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

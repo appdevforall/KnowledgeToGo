@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">نقطه اتصال و اشتراک‌گذاری باز می‌مانند.</string>
     <string name="k2go_cx_share_channel_name">اشتراک‌گذاری محتوا</string>
     <string name="k2go_cx_toggle_group">نمایش یا پنهان کردن موارد</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">دریافت از طریق Wi-Fi</string>
+    <string name="k2go_cx_receive_title">دریافت</string>
+    <string name="k2go_cx_receive_scan_prompt">کد دعوت فرستنده را اسکن کنید</string>
+    <string name="k2go_cx_receive_invalid">این کد یک دعوت اشتراک‌گذاری نیست.</string>
+    <string name="k2go_cx_receive_connecting">در حال اتصال به فرستنده...</string>
+    <string name="k2go_cx_receive_error">اتصال به فرستنده ممکن نشد. ابتدا به Wi-Fi فرستنده بپیوندید، سپس دوباره تلاش کنید.</string>
+    <string name="k2go_cx_receive_nothing">فرستنده چیزی برای دریافت ندارد.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d مورد برای دریافت : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">ممکن است جا نشود. اگر فضای دستگاه تمام شود، دریافت متوقف می‌شود.</string>
+    <string name="k2go_cx_receive_action">دریافت</string>
+    <string name="k2go_cx_receive_retry">دوباره تلاش کنید</string>
+    <string name="k2go_cx_share_transport_label">گیرنده از این طریق متصل می‌شود</string>
+    <string name="k2go_cx_share_transport_hotspot">نقطه اتصال</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

@@ -1528,4 +1528,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot a zdieľanie zóstajú otvorené.</string>
     <string name="k2go_cx_share_channel_name">Zdieľanie obsahu</string>
     <string name="k2go_cx_toggle_group">Zobraziť alebo skryť položky</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Prijať cez Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Prijať</string>
+    <string name="k2go_cx_receive_scan_prompt">Naskenujte kód pozvánky odosielateľa</string>
+    <string name="k2go_cx_receive_invalid">Tento kód nie je pozvánka na zdieľanie.</string>
+    <string name="k2go_cx_receive_connecting">Pripájanie k odosielateľovi...</string>
+    <string name="k2go_cx_receive_error">K odosielateľovi sa nepodarilo pripojiť. Najprv sa pripojte k Wi-Fi odosielateľa a skúste to znova.</string>
+    <string name="k2go_cx_receive_nothing">Odosielateľ nemá nič na prijatie.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d položiek na prijatie : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Možno sa to nezmestí. Prijímanie sa zastaví, ak v zariadení dôjde miesto.</string>
+    <string name="k2go_cx_receive_action">Prijať</string>
+    <string name="k2go_cx_receive_retry">Skúsiť znova</string>
+    <string name="k2go_cx_share_transport_label">Príjemca sa pripája cez</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

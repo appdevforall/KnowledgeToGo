@@ -1528,4 +1528,19 @@
     <string name="k2go_cx_share_notif_text">Hotspot dan sesi berbagi tetap terbuka.</string>
     <string name="k2go_cx_share_channel_name">Berbagi konten</string>
     <string name="k2go_cx_toggle_group">Tampilkan atau sembunyikan item</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Terima lewat Wi-Fi</string>
+    <string name="k2go_cx_receive_title">Terima</string>
+    <string name="k2go_cx_receive_scan_prompt">Pindai kode undangan pengirim</string>
+    <string name="k2go_cx_receive_invalid">Kode itu bukan undangan Berbagi.</string>
+    <string name="k2go_cx_receive_connecting">Menghubungkan ke pengirim...</string>
+    <string name="k2go_cx_receive_error">Tidak dapat menjangkau pengirim. Gabung dulu ke Wi-Fi pengirim, lalu coba lagi.</string>
+    <string name="k2go_cx_receive_nothing">Pengirim tidak punya apa pun untuk diterima.</string>
+    <string name="k2go_cx_receive_ready_fmt">%1$d item untuk diterima : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Ini mungkin tidak muat. Penerimaan berhenti jika ruang perangkat habis.</string>
+    <string name="k2go_cx_receive_action">Terima</string>
+    <string name="k2go_cx_receive_retry">Coba lagi</string>
+    <string name="k2go_cx_share_transport_label">Penerima terhubung melalui</string>
+    <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>

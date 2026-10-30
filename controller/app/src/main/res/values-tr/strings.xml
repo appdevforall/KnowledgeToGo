@@ -1521,4 +1521,19 @@
     <string name="k2go_cx_share_notif_text">Etkin nokta ve paylaşım açık kalır.</string>
     <string name="k2go_cx_share_channel_name">İçerik paylaşımı</string>
     <string name="k2go_cx_toggle_group">Öğeleri göster veya gizle</string>
+    <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
+    <string name="k2go_cx_receive_from_network">Wi-Fi ile al</string>
+    <string name="k2go_cx_receive_title">Al</string>
+    <string name="k2go_cx_receive_scan_prompt">Gönderenin davet kodunu tarayın</string>
+    <string name="k2go_cx_receive_invalid">Bu kod bir Paylaşım daveti değil.</string>
+    <string name="k2go_cx_receive_connecting">Gönderene bağlanılıyor...</string>
+    <string name="k2go_cx_receive_error">Gönderene ulaşılamadı. Önce gönderenin Wi-Fi ağına bağlanın, sonra tekrar deneyin.</string>
+    <string name="k2go_cx_receive_nothing">Gönderende alınacak bir şey yok.</string>
+    <string name="k2go_cx_receive_ready_fmt">Alınacak %1$d öğe : %2$s</string>
+    <string name="k2go_cx_receive_wont_fit">Bu sığmayabilir. Cihazda yer kalmazsa alma işlemi durur.</string>
+    <string name="k2go_cx_receive_action">Al</string>
+    <string name="k2go_cx_receive_retry">Tekrar dene</string>
+    <string name="k2go_cx_share_transport_label">Alıcı şununla bağlanır</string>
+    <string name="k2go_cx_share_transport_hotspot">Etkin nokta</string>
+    <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
 </resources>
