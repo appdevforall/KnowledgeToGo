@@ -46,7 +46,8 @@ public final class MapsRegionClient {
 
     /** Region download progress (single durable job). */
     public interface DownloadListener {
-        void onProgress(int percent, long speedBytesPerSec);   // percent may be -1; speed 0 if unknown
+        // percent may be -1 (indeterminate); speed 0 and etaSeconds -1 when unknown. K2GO-317: eta.
+        void onProgress(int percent, long speedBytesPerSec, int etaSeconds);
         void onDone();
         void onError(String message);
         /** ADFA-4894: the job is paused (partial kept on the box); resume() continues it. Default
@@ -127,7 +128,8 @@ public final class MapsRegionClient {
                 default: {   // queued / downloading / processing: report progress if known
                     final int p = percent;
                     final long sp = j.optLong("speed", 0L);
-                    deliver(() -> dl.onProgress(p, sp));
+                    final int eta = j.optInt("eta", -1);   // K2GO-317: seconds remaining, -1 unknown
+                    deliver(() -> dl.onProgress(p, sp, eta));
                 }
             }
             main.postDelayed(pollTask, POLL_MS);
@@ -202,8 +204,8 @@ public final class MapsRegionClient {
         });
     }
 
-    /** ADFA-4894: resume a paused download; the server continues it via --continue, and the poll
-     *  reports progress again via onProgress(). */
+    /** ADFA-4894: resume a paused download; the server continues it from its on-disk checkpoint
+     *  (K2GO-317: the pmtiles resume journal), and the poll reports progress again via onProgress(). */
     public void resume() {
         final String id = jobId;
         if (id == null || id.isEmpty()) return;
