@@ -720,8 +720,13 @@ chk "PDSM installed (/usr/local/bin/pdsm)"     "test -e '$ROOTFS/usr/local/bin/p
 chk "flag_install_ready present"               "test -e '$ROOTFS/usr/local/pdsm/flag_install_ready'"
 chk "local_vars.yml has is_proot: True"        "grep -qiE '^[[:space:]]*is_proot[[:space:]]*:[[:space:]]*True' '$ROOTFS/etc/iiab/local_vars.yml'"
 chk "IIAB-oA repo cloned (/opt/iiab-android)"  "test -d '$ROOTFS/opt/iiab-android'"
-chk "conex-core installed (/opt/conex-core/conex_core)" "test -d '$ROOTFS/opt/conex-core/conex_core'"
-chk "conex-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/conex-core'"
+# conex-core ships only with the K2Go content tiers. The matomo tier is a headless
+# Matomo-only build (no K2Go modules) and by design has no conex-core, so these two
+# checks would FAIL an otherwise clean build and abort an all-tier bake. Skip for matomo.
+if [[ "$TIER_NAME" != "matomo" ]]; then
+  chk "conex-core installed (/opt/conex-core/conex_core)" "test -d '$ROOTFS/opt/conex-core/conex_core'"
+  chk "conex-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/conex-core'"
+fi
 
 # Ansible result: use the PLAY RECAP (authoritative). We do NOT count loose
 # 'fatal:'/'FAILED!' lines, because block/rescue tasks (e.g. the WiFi-AP probe
