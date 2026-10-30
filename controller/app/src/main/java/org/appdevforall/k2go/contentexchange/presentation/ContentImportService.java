@@ -40,6 +40,7 @@ import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.notifications.NotificationIds;
 
 import java.io.IOException;
@@ -286,8 +287,7 @@ public final class ContentImportService extends Service {
         SESSION.setSource(carrier.sourceLabel());
 
         ExportJob job = SESSION.job();
-        long runStart = SystemClock.elapsedRealtime();
-        long lastSampleAt = runStart;
+        long lastSampleAt = SystemClock.elapsedRealtime();
         long lastSampleBytes = job.copiedTotal();
 
         for (int i = job.firstPending(); i >= 0; i = job.firstPending()) {
@@ -403,8 +403,7 @@ public final class ContentImportService extends Service {
             return;
         }
         long speed = Math.max(0L, dBytes * 1000L / dtMs);
-        long remaining = job.plannedTotal() - job.copiedTotal();
-        long eta = speed > 0 ? Math.max(0L, remaining / speed) : -1L;
+        long eta = DownloadEta.secondsRemaining(job.copiedTotal(), job.plannedTotal(), speed);
         SESSION.setRate(speed, eta);
     }
 
