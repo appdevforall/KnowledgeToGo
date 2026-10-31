@@ -1536,7 +1536,7 @@
     <string name="k2go_cx_toggle_group">Прикажи или сакриј ставке</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Прими преко Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Прими</string>
+    <string name="k2go_cx_receive_title">Прими садржај</string>
     <string name="k2go_cx_receive_scan_prompt">Скенирајте позивни код пошиљаоца</string>
     <string name="k2go_cx_receive_invalid">Тај код није позивница за дељење.</string>
     <string name="k2go_cx_receive_connecting">Повезивање са пошиљаоцем...</string>

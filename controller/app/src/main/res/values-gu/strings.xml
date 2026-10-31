@@ -1536,7 +1536,7 @@
     <string name="k2go_cx_toggle_group">આઇટમ્સ બતાવો અથવા છુપાવો</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi દ્વારા મેળવો</string>
-    <string name="k2go_cx_receive_title">મેળવો</string>
+    <string name="k2go_cx_receive_title">કન્ટેન્ટ મેળવો</string>
     <string name="k2go_cx_receive_scan_prompt">મોકલનારનો આમંત્રણ કોડ સ્કૅન કરો</string>
     <string name="k2go_cx_receive_invalid">આ કોડ શેર આમંત્રણ નથી.</string>
     <string name="k2go_cx_receive_connecting">મોકલનાર સાથે કનેક્ટ થઈ રહ્યું છે...</string>

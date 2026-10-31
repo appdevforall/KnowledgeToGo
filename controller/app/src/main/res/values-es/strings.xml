@@ -1599,7 +1599,7 @@
     <string name="k2go_cx_toggle_group">Mostrar u ocultar elementos</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Recibir por Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Recibir</string>
+    <string name="k2go_cx_receive_title">Recibir contenido</string>
     <string name="k2go_cx_receive_scan_prompt">Escanea el código de invitación del emisor</string>
     <string name="k2go_cx_receive_invalid">Ese código no es una invitación para compartir.</string>
     <string name="k2go_cx_receive_connecting">Conectando con el emisor...</string>

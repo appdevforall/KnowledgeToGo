@@ -1543,7 +1543,7 @@
     <string name="k2go_cx_toggle_group">Fi han tabi fi awọn nkan pamọ</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Gbà nípasẹ̀ Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Gbà</string>
+    <string name="k2go_cx_receive_title">Gbà àkóónú</string>
     <string name="k2go_cx_receive_scan_prompt">Ṣayẹ̀wò kóòdù ìpè olùfiránṣẹ́</string>
     <string name="k2go_cx_receive_invalid">Kóòdù yẹn kì í ṣe ìpè Pínpín.</string>
     <string name="k2go_cx_receive_connecting">Ń sopọ̀ sí olùfiránṣẹ́...</string>

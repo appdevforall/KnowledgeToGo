@@ -1524,7 +1524,7 @@
     <string name="k2go_cx_toggle_group">항목 표시 또는 숨기기</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi로 받기</string>
-    <string name="k2go_cx_receive_title">받기</string>
+    <string name="k2go_cx_receive_title">콘텐츠 받기</string>
     <string name="k2go_cx_receive_scan_prompt">보낸 사람의 초대 코드를 스캔하세요</string>
     <string name="k2go_cx_receive_invalid">이 코드는 공유 초대가 아닙니다.</string>
     <string name="k2go_cx_receive_connecting">보낸 사람에 연결하는 중...</string>

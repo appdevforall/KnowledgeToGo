@@ -1600,7 +1600,7 @@
     <string name="k2go_cx_toggle_group">आइटम दिखाएँ या छिपाएँ</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi से प्राप्त करें</string>
-    <string name="k2go_cx_receive_title">प्राप्त करें</string>
+    <string name="k2go_cx_receive_title">कंटेंट प्राप्त करें</string>
     <string name="k2go_cx_receive_scan_prompt">भेजने वाले का आमंत्रण कोड स्कैन करें</string>
     <string name="k2go_cx_receive_invalid">यह कोड शेयर आमंत्रण नहीं है।</string>
     <string name="k2go_cx_receive_connecting">भेजने वाले से कनेक्ट हो रहा है...</string>

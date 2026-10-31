@@ -1524,7 +1524,7 @@
     <string name="k2go_cx_toggle_group">显示或隐藏项目</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">通过 Wi-Fi 接收</string>
-    <string name="k2go_cx_receive_title">接收</string>
+    <string name="k2go_cx_receive_title">接收内容</string>
     <string name="k2go_cx_receive_scan_prompt">扫描发送方的邀请码</string>
     <string name="k2go_cx_receive_invalid">该代码不是共享邀请。</string>
     <string name="k2go_cx_receive_connecting">正在连接发送方...</string>

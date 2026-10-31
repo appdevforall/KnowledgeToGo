@@ -34,6 +34,7 @@ import java.util.Locale;
 
 public class ImportProgressFragment extends Fragment {
 
+    private TextView title;
     private TextView source;
     private TextView overallLabel;
     private LinearProgressIndicator overallBar;
@@ -57,6 +58,7 @@ public class ImportProgressFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_content_import, container, false);
+        title = root.findViewById(R.id.k2go_cxi_title);
         source = root.findViewById(R.id.k2go_cxi_source);
         overallLabel = root.findViewById(R.id.k2go_cxi_overall_label);
         overallBar = root.findViewById(R.id.k2go_cxi_overall_bar);
@@ -117,6 +119,9 @@ public class ImportProgressFragment extends Fragment {
             goBack();
             return;
         }
+        // A Wi-Fi receive reuses this import screen; title it "Receive content" so the receive flow does
+        // not read "Import content" (K2GO-269 wording).
+        title.setText(session.isNetwork() ? R.string.k2go_cx_receive_title : R.string.k2go_cx_import_title);
         source.setText(getString(R.string.k2go_cx_import_source_fmt, session.sourceLabel()));
 
         boolean running = session.isRunning();

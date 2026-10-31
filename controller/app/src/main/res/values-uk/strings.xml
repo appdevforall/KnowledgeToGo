@@ -1523,7 +1523,7 @@
     <string name="k2go_cx_toggle_group">Показати або сховати елементи</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Отримати через Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Отримання</string>
+    <string name="k2go_cx_receive_title">Отримання контенту</string>
     <string name="k2go_cx_receive_scan_prompt">Відскануйте код запрошення відправника</string>
     <string name="k2go_cx_receive_invalid">Цей код не є запрошенням до спільного доступу.</string>
     <string name="k2go_cx_receive_connecting">Підключення до відправника...</string>

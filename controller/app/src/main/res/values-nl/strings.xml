@@ -1523,7 +1523,7 @@
     <string name="k2go_cx_toggle_group">Items tonen of verbergen</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Ontvangen via Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Ontvangen</string>
+    <string name="k2go_cx_receive_title">Inhoud ontvangen</string>
     <string name="k2go_cx_receive_scan_prompt">Scan de uitnodigingscode van de afzender</string>
     <string name="k2go_cx_receive_invalid">Die code is geen deel-uitnodiging.</string>
     <string name="k2go_cx_receive_connecting">Verbinden met de afzender...</string>
