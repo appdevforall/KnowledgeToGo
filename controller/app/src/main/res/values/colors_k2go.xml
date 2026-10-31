@@ -26,6 +26,10 @@
     <!-- K2GO-385 (01): tonal teal container for a selected option card (radio + fill). A soft tint, not
          the solid teal pill, so the selection does not read as a filled action button. -->
     <color name="k2go_teal_tonal">#DCE9E5</color>
+    <!-- K2GO-269: content-manager category band fill. Its own role, not the selected-option tint it used
+         to borrow, so the dark twin can be raised for contrast without changing the selection card.
+         Light value is unchanged from the old shared tint; see the -night twin for the dark raise. -->
+    <color name="k2go_group_header_band">#DCE9E5</color>
     <color name="k2go_leaf">#2E9E5B</color>
     <color name="k2go_amber">#F2A23C</color>
     <color name="k2go_amber_text">#B0740F</color>

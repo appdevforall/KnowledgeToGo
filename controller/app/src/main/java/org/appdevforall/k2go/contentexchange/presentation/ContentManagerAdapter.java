@@ -1,7 +1,6 @@
 package org.appdevforall.k2go.contentexchange.presentation;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -316,10 +315,11 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             slotLp.rightMargin = px(ctx, 4);
             root.addView(slot, slotLp);
 
+            // Title 2 of the title hierarchy: plain TitleLarge (22sp) in k2go_ink, the same level the
+            // Connect and Clone screens use for their in-screen section titles. No bold: the band (fill
+            // plus teal outline) carries the grouping signal, so the header reads one coherent step above
+            // the TitleMedium item titles instead of a heavier, out-of-scale weight.
             name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge, R.color.k2go_ink);
-            // Bold so the category title keeps the highest visual weight: an accent color would read
-            // lighter than the near-white item titles in dark, which is the opposite of what we want.
-            name.setTypeface(name.getTypeface(), Typeface.BOLD);
             root.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
 
             meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
