@@ -1,6 +1,8 @@
 package org.appdevforall.k2go.contentexchange.presentation;
 
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,7 +129,9 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context ctx = parent.getContext();
+        // Theme the row context with Theme.K2Go so the title text-appearance attrs resolve to the
+        // app's own appearances (Atkinson Hyperlegible), the same type system the XML screens use.
+        Context ctx = new ContextThemeWrapper(parent.getContext(), R.style.Theme_K2Go);
         switch (viewType) {
             case TYPE_HEADER:
                 return new HeaderVH(ctx);
@@ -231,9 +235,18 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
         return lp;
     }
 
-    private static TextView text(Context ctx, int appearance, int colorRes) {
+    /**
+     * Builds a TextView whose appearance comes from a THEME text-appearance attr (for example
+     * {@code textAppearanceTitleLarge}), not a raw Material3 style. The app theme remaps the title
+     * roles to its own K2Go appearances (Atkinson Hyperlegible, with tuned sizes and weights), so
+     * routing through the attr keeps these code-drawn rows on the same type system as the XML
+     * screens. Color is re-applied AFTER the appearance, which would otherwise reset it.
+     */
+    private static TextView text(Context ctx, int appearanceAttr, int colorRes) {
         TextView tv = new TextView(ctx);
-        tv.setTextAppearance(appearance);
+        TypedValue style = new TypedValue();
+        ctx.getTheme().resolveAttribute(appearanceAttr, style, true);
+        tv.setTextAppearance(style.resourceId);
         tv.setTextColor(ContextCompat.getColor(ctx, colorRes));
         return tv;
     }
@@ -250,10 +263,12 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             root.setOrientation(LinearLayout.VERTICAL);
             root.setLayoutParams(fullWidth(px(ctx, 16), px(ctx, 4)));
 
-            title = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_HeadlineMedium, R.color.k2go_ink);
+            // Screen title (Title 1). textAppearanceHeadlineMedium resolves to TextAppearance.K2Go.Display
+            // (Atkinson Hyperlegible, 28sp bold): the same role the Library/Connect/Clone/Settings titles use.
+            title = text(ctx, com.google.android.material.R.attr.textAppearanceHeadlineMedium, R.color.k2go_ink);
             root.addView(title);
 
-            subtitle = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_muted);
+            subtitle = text(ctx, com.google.android.material.R.attr.textAppearanceBodyLarge, R.color.k2go_muted);
             LinearLayout.LayoutParams subLp = new LinearLayout.LayoutParams(-1, -2);
             subLp.topMargin = px(ctx, 4);
             root.addView(subtitle, subLp);
@@ -266,9 +281,9 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             cardLp.topMargin = px(ctx, 16);
             root.addView(card, cardLp);
 
-            used = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink);
+            used = text(ctx, com.google.android.material.R.attr.textAppearanceTitleMedium, R.color.k2go_ink);
             card.addView(used);
-            free = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
+            free = text(ctx, com.google.android.material.R.attr.textAppearanceBodyMedium, R.color.k2go_muted);
             LinearLayout.LayoutParams freeLp = new LinearLayout.LayoutParams(-1, -2);
             freeLp.topMargin = px(ctx, 2);
             card.addView(free, freeLp);
@@ -315,14 +330,15 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             slotLp.rightMargin = px(ctx, 4);
             root.addView(slot, slotLp);
 
-            // Title 2 of the title hierarchy: plain TitleLarge (22sp) in k2go_ink, the same level the
-            // Connect and Clone screens use for their in-screen section titles. No bold: the band (fill
-            // plus teal outline) carries the grouping signal, so the header reads one coherent step above
-            // the TitleMedium item titles instead of a heavier, out-of-scale weight.
-            name = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge, R.color.k2go_ink);
+            // Category header (Title 2). textAppearanceTitleLarge resolves to TextAppearance.K2Go.Title
+            // (Atkinson Hyperlegible, 18sp): the same role Connect and Clone use for their in-screen
+            // section titles. No manual bold: the K2Go title style carries its own weight, and the band
+            // (fill plus teal outline) carries the grouping signal, so the header sits one coherent step
+            // above the item titles.
+            name = text(ctx, com.google.android.material.R.attr.textAppearanceTitleLarge, R.color.k2go_ink);
             root.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
 
-            meta = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
+            meta = text(ctx, com.google.android.material.R.attr.textAppearanceBodyMedium, R.color.k2go_muted);
             LinearLayout.LayoutParams metaLp = new LinearLayout.LayoutParams(-2, -2);
             metaLp.leftMargin = px(ctx, 8);
             root.addView(meta, metaLp);
@@ -396,10 +412,13 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             slotLp.rightMargin = px(ctx, 4);
             row.addView(slot, slotLp);
 
-            title = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink);
+            // Item title, one step below the group header. textAppearanceTitleMedium is NOT remapped to
+            // the app font, so route through textAppearanceBodyLarge (TextAppearance.K2Go.Body, Atkinson
+            // Hyperlegible, 16sp): keeps the item on the app font and below the 18sp group title.
+            title = text(ctx, com.google.android.material.R.attr.textAppearanceBodyLarge, R.color.k2go_ink);
             row.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
 
-            size = text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+            size = text(ctx, com.google.android.material.R.attr.textAppearanceBodySmall, R.color.k2go_muted);
             LinearLayout.LayoutParams szLp = new LinearLayout.LayoutParams(-2, -2);
             szLp.leftMargin = px(ctx, 8);
             row.addView(size, szLp);
@@ -428,7 +447,7 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
         private final TextView tv;
 
         EmptyVH(Context ctx) {
-            super(text(ctx, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+            super(text(ctx, com.google.android.material.R.attr.textAppearanceBodySmall, R.color.k2go_muted));
             tv = (TextView) itemView;
             tv.setLayoutParams(fullWidth(0, px(ctx, 12)));
         }
