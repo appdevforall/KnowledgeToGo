@@ -19,7 +19,7 @@
             android:id="@+id/k2go_cxs_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink"
             android:text="@string/k2go_cx_share_title" />
 
