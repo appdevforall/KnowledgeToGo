@@ -41,6 +41,7 @@ import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.notifications.NotificationIds;
 
 import java.io.IOException;
@@ -76,6 +77,9 @@ public final class ContentImportService extends Service {
     private static final int COPY_BUFFER = 64 * 1024;
     private static final long PUBLISH_INTERVAL_MS = 250L;
     private static final long NOTIFY_INTERVAL_MS = 1000L;
+    /** Minimum width of the trailing window used to sample the transfer rate (delta bytes / delta
+     *  time), so the speed shown is the recent rate, not the cumulative average from the run start. */
+    private static final long RATE_WINDOW_MS = 500L;
 
     /** The single run state the progress fragment observes. */
     private static final ImportSession SESSION = new ImportSession();
@@ -285,8 +289,7 @@ public final class ContentImportService extends Service {
         SESSION.setSource(carrier.sourceLabel());
 
         ExportJob job = SESSION.job();
-        long runStart = SystemClock.elapsedRealtime();
-        long lastSampleAt = runStart;
+        long lastSampleAt = SystemClock.elapsedRealtime();
         long lastSampleBytes = job.copiedTotal();
 
         for (int i = job.firstPending(); i >= 0; i = job.firstPending()) {
@@ -300,7 +303,7 @@ public final class ContentImportService extends Service {
 
             String stored = BoxImportStaging.safeName(SESSION.payloadName(i));
             try {
-                copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job, runStart);
+                copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job);
                 source.importItem(ref.app(), SESSION.entryJson(i), BoxImportStaging.boxPath(stored));
                 job.setDone(i);
             } catch (Exception e) {
@@ -321,7 +324,7 @@ public final class ContentImportService extends Service {
             staging.remove(stored);
 
             long now = SystemClock.elapsedRealtime();
-            if (now - lastSampleAt >= 500L) {
+            if (now - lastSampleAt >= RATE_WINDOW_MS) {
                 sampleRate(job, now - lastSampleAt, job.copiedTotal() - lastSampleBytes);
                 lastSampleAt = now;
                 lastSampleBytes = job.copiedTotal();
@@ -361,11 +364,16 @@ public final class ContentImportService extends Service {
      * failed, never a silent partial written as done.
      */
     private void copyToStaging(ImportCarrier carrier, BoxImportStaging staging, String payloadName,
-                               String storedName, int i, ExportJob job, long runStart)
+                               String storedName, int i, ExportJob job)
             throws IOException {
         byte[] buffer = new byte[COPY_BUFFER];
         long total = 0L;
         long lastPublish = 0L;
+        // Trailing-window rate: anchor at this item's copy start and re-anchor once the window is
+        // wide enough. A cumulative average (all bytes / whole run elapsed) reads far too low on a
+        // single large item that warms up slowly, so sample the recent throughput instead.
+        long windowAt = SystemClock.elapsedRealtime();
+        long windowBytes = job.copiedTotal();
         try (InputStream in = carrier.openPayload(payloadName);
              OutputStream out = staging.open(storedName)) {
             int read;
@@ -378,12 +386,11 @@ public final class ContentImportService extends Service {
                 job.setCopied(i, total);
                 long now = SystemClock.elapsedRealtime();
                 if (now - lastPublish >= PUBLISH_INTERVAL_MS) {
-                    long elapsed = now - runStart;
-                    if (elapsed > 0) {
-                        long speed = job.copiedTotal() * 1000L / elapsed;
-                        long remaining = job.plannedTotal() - job.copiedTotal();
-                        long eta = speed > 0 ? Math.max(0L, remaining / speed) : -1L;
-                        SESSION.setRate(speed, eta);
+                    long windowMs = now - windowAt;
+                    if (windowMs >= RATE_WINDOW_MS) {
+                        sampleRate(job, windowMs, job.copiedTotal() - windowBytes);
+                        windowAt = now;
+                        windowBytes = job.copiedTotal();
                     }
                     SESSION.publish();
                     maybeNotify(now);
@@ -401,8 +408,7 @@ public final class ContentImportService extends Service {
             return;
         }
         long speed = Math.max(0L, dBytes * 1000L / dtMs);
-        long remaining = job.plannedTotal() - job.copiedTotal();
-        long eta = speed > 0 ? Math.max(0L, remaining / speed) : -1L;
+        long eta = DownloadEta.secondsRemaining(job.copiedTotal(), job.plannedTotal(), speed);
         SESSION.setRate(speed, eta);
     }
 
