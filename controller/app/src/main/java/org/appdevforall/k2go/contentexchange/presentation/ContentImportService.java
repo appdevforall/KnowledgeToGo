@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -69,6 +70,7 @@ public final class ContentImportService extends Service {
     public static final String EXTRA_PAYLOADS = "payloads";
     public static final String EXTRA_BYTES = "bytes";
 
+    private static final String TAG = "ContentImportService";
     private static final String CHANNEL_ID = "content_import_channel";
     private static final int NOTIFICATION_ID = NotificationIds.CONTENT_IMPORT;
     private static final int COPY_BUFFER = 64 * 1024;
@@ -303,6 +305,9 @@ public final class ContentImportService extends Service {
                 job.setDone(i);
             } catch (Exception e) {
                 // The staging copy or the ingest failed: mark the item and keep its slot for a retry.
+                // Log it: the box side (conex-core) does not surface per-item import errors to the app,
+                // so without this the real cause of a failed import is invisible.
+                Log.w(TAG, "Import failed for " + ref.app() + "/" + ref.localRef() + ": " + e.getMessage(), e);
                 job.setFailed(i);
                 SESSION.publish();
                 staging.remove(stored);

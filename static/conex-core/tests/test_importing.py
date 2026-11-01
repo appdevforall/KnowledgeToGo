@@ -1,5 +1,6 @@
 import io
 import os
+import shutil
 import tarfile
 import tempfile
 import unittest
@@ -90,6 +91,26 @@ class SafeExtractTarTest(unittest.TestCase):
                 safe_extract_tar(tar_path, os.path.join(d, "out"), max_bytes=5)
             # nothing landed
             self.assertFalse(os.path.exists(os.path.join(d, "out", "a.txt")))
+
+    def test_no_disk_free_bound_without_cap(self):
+        # The box runs under proot, whose statvfs under-reports free space, so safe_extract_tar
+        # must never reject an extraction based on disk free. With no max_bytes it extracts even
+        # when the disk reports nearly full; if the disk were consulted, this mock would fire.
+        with tempfile.TemporaryDirectory() as d:
+            tar_path = os.path.join(d, "ok.tar")
+            _tar(tar_path, [("item/a.txt", "file"), ("item/b.txt", "file")])
+            dest = os.path.join(d, "out")
+            orig = shutil.disk_usage
+
+            def boom(_path):
+                raise AssertionError("free space must not be consulted during import extraction")
+
+            shutil.disk_usage = boom
+            try:
+                safe_extract_tar(tar_path, dest)  # no max_bytes
+            finally:
+                shutil.disk_usage = orig
+            self.assertTrue(os.path.isfile(os.path.join(dest, "item", "a.txt")))
 
 
 if __name__ == "__main__":

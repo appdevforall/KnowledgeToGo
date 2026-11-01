@@ -7,8 +7,10 @@ package org.appdevforall.k2go.contentexchange.domain;
  * and passed in here.
  *
  * <p>The check is against the selected archive bytes. An extract-in-place app (Kiwix / Kolibri) needs
- * more transient room while the core unpacks the staged archive; that is the core's own {@code 507}
- * backstop, not modelled here, so this is a first-cut "will the copy fit" guard, not a guarantee.
+ * more transient room while the core unpacks the staged archive. The core no longer preflights that
+ * space (proot under-reports free space, so its old {@code 507} false-rejected valid imports); a real
+ * shortfall now fails cleanly during ingest and surfaces as "no space". So this stays a first-cut
+ * "will the copy fit" guard, not a guarantee.
  */
 public final class ImportPreflight {
 

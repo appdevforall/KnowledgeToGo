@@ -11,7 +11,7 @@ from typing import Any, List, Optional, Tuple
 from urllib.parse import unquote
 
 from . import VERSION
-from .export import disk_total_free, has_room
+from .export import disk_total_free
 from .export_ops import ExportOps
 from .importing import is_within_dir
 from .registry import Registry
@@ -108,11 +108,10 @@ def _import_item(registry: Registry, body: Any) -> Response:
     # Containment: the payload must live inside the import area, never an arbitrary path.
     if not is_within_dir(registry.import_root, payload_path):
         return 400, {"error": "payloadPath is outside the import area"}
-    # Preflight the staging disk against the declared item size, so a large import fails
-    # cleanly here rather than ENOSPC mid-extract (the box checks its own disk).
-    declared = entry.get("bytes")
-    if isinstance(declared, int) and declared > 0 and not has_room(registry.import_root, declared):
-        return 507, {"error": "insufficient space to import"}
+    # No free-space preflight here. The box runs under proot, whose statvfs under-reports the
+    # free space on the content volume, so a disk check here false-rejected imports on devices
+    # with ample room. The phone app is the one source of truth for free space (Android StatFs)
+    # and gates before this call; a real ENOSPC during ingest still fails cleanly (422).
     result = registry.get(app).import_item(entry, payload_path)
     return (200, result) if result.get("ok") else (422, result)
 

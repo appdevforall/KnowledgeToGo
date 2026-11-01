@@ -176,6 +176,29 @@ class KolibriImportTest(unittest.TestCase):
             result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
             self.assertFalse(result["ok"])
 
+    def test_import_fails_cleanly_on_extract_oserror(self):
+        # A real ENOSPC or IO error during extraction must return a clean failure, not raise:
+        # no free-space preflight runs (the box runs under proot, whose statvfs under-reports
+        # free space). The reason carries the OS message so the app can detect "no space".
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "chan.tar")
+            _bundle_tar(tar_path, VALID_ID)
+            adapter = _ImportStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            orig = kolibri_mod.safe_extract_tar
+
+            def boom(*_a, **_k):
+                raise OSError(28, "No space left on device")
+
+            kolibri_mod.safe_extract_tar = boom
+            try:
+                result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            finally:
+                kolibri_mod.safe_extract_tar = orig
+            self.assertFalse(result["ok"])
+            self.assertIn("No space left on device", result["reason"])
+
 
 class _StubbedKolibri(KolibriAdapter):
     """Overrides the CLI seam so the export assembly + streaming is testable without a live

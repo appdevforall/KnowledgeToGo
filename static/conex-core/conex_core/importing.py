@@ -11,7 +11,6 @@ reading an arbitrary path the caller names.
 from __future__ import annotations
 
 import os
-import shutil
 import tarfile
 from typing import Optional
 
@@ -57,9 +56,15 @@ def safe_extract_tar(
     """Extract a tar into dest after validating every member. Raises ValueError on a member
     that escapes the root or is a link / special file, when the member count exceeds
     ``max_members``, or when the summed ACTUAL member sizes (from the tar metadata, not from
-    any caller-supplied figure) exceed ``max_bytes`` or, when that is None, the free space on
-    the destination volume. This bounds a decompression bomb that declares a tiny size but
-    extracts to gigabytes / millions of files. Never writes outside dest."""
+    any caller-supplied figure) exceed ``max_bytes`` (when one is given). This bounds a
+    decompression bomb that declares a tiny size but extracts to gigabytes / millions of files.
+    Never writes outside dest.
+
+    Free space is NOT checked here. The box runs under proot, whose statvfs under-reports the
+    free space on the content volume, so a free-space bound false-rejected legitimate large
+    imports on devices with ample room. The phone app is the one source of truth for free space
+    (Android StatFs) and gates before an import; a real ENOSPC during extraction fails cleanly
+    and the partial work dir is removed by the caller."""
     with tarfile.open(tar_path, "r") as tar:
         members = tar.getmembers()
         if len(members) > max_members:
@@ -75,14 +80,8 @@ def safe_extract_tar(
             if m.isfile():
                 total += max(0, m.size)
         os.makedirs(dest, exist_ok=True)
-        limit = max_bytes
-        if limit is None:
-            try:
-                limit = shutil.disk_usage(dest).free
-            except OSError:
-                limit = None
-        if limit is not None and total > limit:
-            raise ValueError(f"archive too large to extract ({total} bytes > {limit} free)")
+        if max_bytes is not None and total > max_bytes:
+            raise ValueError(f"archive too large to extract ({total} bytes > {max_bytes} cap)")
         # Members are already validated; the stdlib "data" filter is a second, independent
         # barrier (it also rejects traversal and dangerous members) where available.
         try:
