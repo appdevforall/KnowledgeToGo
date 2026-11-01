@@ -664,7 +664,7 @@
     <string name="k2go_settings_module_mgmt_sub">Ajouter des applis à votre bibliothèque</string>
 
     <string name="k2go_mod_hub_title">Ajouter des modules</string>
-    <string name="k2go_mod_hub_sub">Applis que vous pouvez installer sur votre bibliothèque. Fonctionne sur l\'appareil — aucune connexion Internet requise.</string>
+    <string name="k2go_mod_hub_sub">Applis que vous pouvez installer sur votre bibliothèque. Fonctionne sur l\'appareil: aucune connexion Internet requise.</string>
     <string name="k2go_mod_hub_prompt">Que souhaitez-vous installer ?</string>
     <string name="k2go_mod_proceed_fmt">Installer %1$d</string>
     <string name="k2go_mod_schedule">Planifier l\'installation</string>

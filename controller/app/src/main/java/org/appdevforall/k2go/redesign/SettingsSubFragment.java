@@ -32,6 +32,7 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import org.appdevforall.k2go.network.presentation.DnsSettingsViewModel;
 import org.appdevforall.k2go.network.presentation.DnsSettingsViewModelFactory;
+import org.appdevforall.k2go.ui.K2GoText;
 
 /** Settings sub-screen host: Language (functional — UI + content), About (version, permissions,
  *  usage-stats consent), Advanced (power-user features, preview for now). Keeps the bottom nav;
@@ -255,15 +256,13 @@ public class SettingsSubFragment extends Fragment {
         toggleRow.setOrientation(LinearLayout.HORIZONTAL);
         toggleRow.setGravity(Gravity.CENTER_VERTICAL);
         toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
-        int p14 = SettingsUi.dp(ctx, 14);
-        toggleRow.setPadding(p14, p14, p14, p14);
+        int tp = SettingsUi.dp(ctx, 16);   // card padding on the 4dp grid, matching SettingsUi.baseRow
+        toggleRow.setPadding(tp, tp, tp, tp);
         LinearLayout tcol = new LinearLayout(ctx);
         tcol.setOrientation(LinearLayout.VERTICAL);
         tcol.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
-        tcol.addView(dnsText(ctx, getString(R.string.setup_dns),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink));
-        tcol.addView(dnsText(ctx, getString(R.string.k2go_dns_toggle_sub),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+        tcol.addView(K2GoText.body(ctx, getString(R.string.setup_dns), R.color.k2go_ink));
+        tcol.addView(K2GoText.label(ctx, getString(R.string.k2go_dns_toggle_sub), R.color.k2go_muted));
         toggleRow.addView(tcol);
         final MaterialSwitch sw = new MaterialSwitch(ctx);
         sw.setMinimumHeight(0);
@@ -277,13 +276,10 @@ public class SettingsSubFragment extends Fragment {
         defaultCard.setBackgroundResource(R.drawable.k2go_info_bg);
         int p16 = SettingsUi.dp(ctx, 16);
         defaultCard.setPadding(p16, p16, p16, p16);
-        defaultCard.addView(dnsText(ctx, getString(R.string.k2go_dns_default_title),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_info_ink));
-        final TextView defaultLine = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_info_ink);
+        defaultCard.addView(K2GoText.body(ctx, getString(R.string.k2go_dns_default_title), R.color.k2go_info_ink));
+        final TextView defaultLine = K2GoText.body(ctx, "", R.color.k2go_info_ink);
         defaultCard.addView(defaultLine);
-        defaultCard.addView(dnsText(ctx, getString(R.string.k2go_dns_default_note),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_info_ink));
+        defaultCard.addView(K2GoText.label(ctx, getString(R.string.k2go_dns_default_note), R.color.k2go_info_ink));
         LinearLayout.LayoutParams dclp = new LinearLayout.LayoutParams(-1, -2);
         dclp.topMargin = SettingsUi.dp(ctx, 8);
         list.addView(defaultCard, dclp);
@@ -295,8 +291,7 @@ public class SettingsSubFragment extends Fragment {
         fields.addView(dnsFieldLabel(ctx, getString(R.string.dns_primary), getString(R.string.k2go_dns_required)));
         final EditText primary = dnsInput(ctx);
         fields.addView(primary);
-        final TextView errorText = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_clay);
+        final TextView errorText = K2GoText.label(ctx, "", R.color.k2go_clay);
         errorText.setVisibility(View.GONE);
         LinearLayout.LayoutParams elp = new LinearLayout.LayoutParams(-1, -2);
         elp.topMargin = SettingsUi.dp(ctx, 4);
@@ -329,8 +324,7 @@ public class SettingsSubFragment extends Fragment {
         silp.rightMargin = SettingsUi.dp(ctx, 10);
         statusIcon.setVisibility(View.GONE);
         statusCard.addView(statusIcon, silp);
-        final TextView statusText = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted);
+        final TextView statusText = K2GoText.body(ctx, "", R.color.k2go_muted);
         statusCard.addView(statusText);
         statusCard.setVisibility(View.GONE);
         LinearLayout.LayoutParams sclp = new LinearLayout.LayoutParams(-1, -2);
@@ -422,8 +416,8 @@ public class SettingsSubFragment extends Fragment {
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBackgroundResource(R.drawable.k2go_card_bg);
-        int p14 = SettingsUi.dp(ctx, 14);
-        row.setPadding(p14, p14, p14, p14);
+        int p16 = SettingsUi.dp(ctx, 16);   // card padding on the 4dp grid, matching SettingsUi.baseRow
+        row.setPadding(p16, p16, p16, p16);
         row.setClickable(true);
         row.setOnClickListener(v -> openSub("auth:" + service));
         LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(-1, -2);
@@ -433,10 +427,8 @@ public class SettingsSubFragment extends Fragment {
         LinearLayout col = new LinearLayout(ctx);
         col.setOrientation(LinearLayout.VERTICAL);
         col.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
-        col.addView(dnsText(ctx, name,
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink));
-        col.addView(dnsText(ctx, platform,
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+        col.addView(K2GoText.body(ctx, name, R.color.k2go_ink));
+        col.addView(K2GoText.label(ctx, platform, R.color.k2go_muted));
         row.addView(col);
 
         // K2GO-385 (pill roles Q4): the service state (Default / Custom / Not installed) is a STATUS,
@@ -484,8 +476,7 @@ public class SettingsSubFragment extends Fragment {
         SettingsUi.caption(ctx, list, getString(subRes));
 
         // Subtle "not running yet" line (no banner) — only shown when the service isn't reachable.
-        final TextView note = dnsText(ctx, getString(R.string.k2go_auth_not_running),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        final TextView note = K2GoText.label(ctx, getString(R.string.k2go_auth_not_running), R.color.k2go_muted);
         note.setVisibility(View.GONE);
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(-1, -2);
         nlp.topMargin = SettingsUi.dp(ctx, 4);
@@ -498,8 +489,7 @@ public class SettingsSubFragment extends Fragment {
         toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
         int p16 = SettingsUi.dp(ctx, 16);
         toggleRow.setPadding(p16, p16, p16, p16);
-        toggleRow.addView(dnsText(ctx, getString(R.string.k2go_auth_custom_toggle),
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+        toggleRow.addView(K2GoText.body(ctx, getString(R.string.k2go_auth_custom_toggle), R.color.k2go_ink),
                 new LinearLayout.LayoutParams(0, -2, 1f));
         final MaterialSwitch sw = new MaterialSwitch(ctx);
         sw.setMinimumHeight(0);
@@ -518,18 +508,15 @@ public class SettingsSubFragment extends Fragment {
         LinearLayout statusRow = new LinearLayout(ctx);
         statusRow.setOrientation(LinearLayout.HORIZONTAL);
         statusRow.setGravity(Gravity.CENTER_VERTICAL);
-        TextView check = dnsText(ctx, "✓",
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_leaf);
+        TextView check = K2GoText.body(ctx, "✓", R.color.k2go_leaf);
         LinearLayout.LayoutParams cklp = new LinearLayout.LayoutParams(-2, -2);
         cklp.rightMargin = SettingsUi.dp(ctx, 8);
         check.setLayoutParams(cklp);
         statusRow.addView(check);
-        statusRow.addView(dnsText(ctx, getString(R.string.k2go_auth_using_default),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink));
+        statusRow.addView(K2GoText.body(ctx, getString(R.string.k2go_auth_using_default), R.color.k2go_ink));
         offGroup.addView(statusRow);
 
-        TextView toggleHint = dnsText(ctx, getString(R.string.k2go_auth_toggle_hint),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        TextView toggleHint = K2GoText.label(ctx, getString(R.string.k2go_auth_toggle_hint), R.color.k2go_muted);
         LinearLayout.LayoutParams thlp = new LinearLayout.LayoutParams(-1, -2);
         thlp.topMargin = SettingsUi.dp(ctx, 12);
         toggleHint.setLayoutParams(thlp);
@@ -553,8 +540,7 @@ public class SettingsSubFragment extends Fragment {
         attachEyeToggle(password);   // eye lives inside the field (no floating "Show")
         fields.addView(password);
 
-        TextView eyeHint = dnsText(ctx, getString(R.string.k2go_auth_eye_hint),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        TextView eyeHint = K2GoText.label(ctx, getString(R.string.k2go_auth_eye_hint), R.color.k2go_muted);
         LinearLayout.LayoutParams ehlp = new LinearLayout.LayoutParams(-2, -2);
         ehlp.topMargin = SettingsUi.dp(ctx, 6);
         eyeHint.setLayoutParams(ehlp);
@@ -569,8 +555,7 @@ public class SettingsSubFragment extends Fragment {
         fields.addView(save, svlp);
 
         // Reset = revert to the box default = simply flip the switch off.
-        final TextView reset = dnsText(ctx, getString(R.string.k2go_auth_reset),
-                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        final TextView reset = K2GoText.label(ctx, getString(R.string.k2go_auth_reset), R.color.k2go_teal);
         reset.setClickable(true);
         reset.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
@@ -578,8 +563,7 @@ public class SettingsSubFragment extends Fragment {
         reset.setLayoutParams(rslp);
         fields.addView(reset);
 
-        final TextView status = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        final TextView status = K2GoText.label(ctx, "", R.color.k2go_muted);
         status.setVisibility(View.GONE);
         fields.addView(status);
 
@@ -686,8 +670,7 @@ public class SettingsSubFragment extends Fragment {
         toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
         int p16 = SettingsUi.dp(ctx, 16);
         toggleRow.setPadding(p16, p16, p16, p16);
-        toggleRow.addView(dnsText(ctx, getString(R.string.k2go_hotspot_custom_toggle),
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+        toggleRow.addView(K2GoText.body(ctx, getString(R.string.k2go_hotspot_custom_toggle), R.color.k2go_ink),
                 new LinearLayout.LayoutParams(0, -2, 1f));
         final MaterialSwitch sw = new MaterialSwitch(ctx);
         sw.setMinimumHeight(0);
@@ -703,14 +686,11 @@ public class SettingsSubFragment extends Fragment {
         oglp.topMargin = SettingsUi.dp(ctx, 16);
         list.addView(offGroup, oglp);
 
-        final TextView defaultLine = dnsText(ctx,
-                getString(R.string.k2go_hotspot_default_line,
+        final TextView defaultLine = K2GoText.body(ctx, getString(R.string.k2go_hotspot_default_line,
                         org.appdevforall.k2go.hotspot.domain.HotspotCredentials.name(store.defaultSuffix()),
-                        org.appdevforall.k2go.hotspot.domain.HotspotCredentials.DEFAULT_PASSWORD),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink);
+                        org.appdevforall.k2go.hotspot.domain.HotspotCredentials.DEFAULT_PASSWORD), R.color.k2go_ink);
         offGroup.addView(defaultLine);
-        TextView offHint = dnsText(ctx, getString(R.string.k2go_hotspot_default_hint),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        TextView offHint = K2GoText.label(ctx, getString(R.string.k2go_hotspot_default_hint), R.color.k2go_muted);
         LinearLayout.LayoutParams ohlp = new LinearLayout.LayoutParams(-1, -2);
         ohlp.topMargin = SettingsUi.dp(ctx, 12);
         offHint.setLayoutParams(ohlp);
@@ -744,8 +724,7 @@ public class SettingsSubFragment extends Fragment {
         svlp.topMargin = SettingsUi.dp(ctx, 16);
         fields.addView(save, svlp);
 
-        final TextView reset = dnsText(ctx, getString(R.string.k2go_hotspot_reset),
-                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        final TextView reset = K2GoText.label(ctx, getString(R.string.k2go_hotspot_reset), R.color.k2go_teal);
         reset.setClickable(true);
         reset.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
@@ -753,8 +732,7 @@ public class SettingsSubFragment extends Fragment {
         reset.setLayoutParams(rslp);
         fields.addView(reset);
 
-        final TextView status = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        final TextView status = K2GoText.label(ctx, "", R.color.k2go_muted);
         status.setVisibility(View.GONE);
         fields.addView(status);
 
@@ -815,11 +793,9 @@ public class SettingsSubFragment extends Fragment {
         bandRow.setBackgroundResource(R.drawable.k2go_card_bg);
         bandRow.setPadding(p16, p16, p16, p16);
         bandRow.setClickable(true);
-        bandRow.addView(dnsText(ctx, getString(R.string.k2go_hotspot_band_label),
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+        bandRow.addView(K2GoText.body(ctx, getString(R.string.k2go_hotspot_band_label), R.color.k2go_ink),
                 new LinearLayout.LayoutParams(0, -2, 1f));
-        final TextView bandValue = dnsText(ctx, bandLabel(store.band()),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_teal);
+        final TextView bandValue = K2GoText.body(ctx, bandLabel(store.band()), R.color.k2go_teal);
         bandRow.addView(bandValue);
         LinearLayout.LayoutParams brlp = new LinearLayout.LayoutParams(-1, -2);
         brlp.topMargin = SettingsUi.dp(ctx, 8);
@@ -916,23 +892,13 @@ public class SettingsSubFragment extends Fragment {
         status.setVisibility(View.VISIBLE);
     }
 
-    private TextView dnsText(Context ctx, String s, int appearance, int colorRes) {
-        TextView t = new TextView(ctx);
-        t.setText(s);
-        t.setTextAppearance(appearance);
-        t.setTextColor(ContextCompat.getColor(ctx, colorRes));
-        return t;
-    }
-
     private View dnsFieldLabel(Context ctx, String label, String hintRight) {
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        TextView l = dnsText(ctx, label,
-                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        TextView l = K2GoText.label(ctx, label, R.color.k2go_teal);
         l.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
         row.addView(l);
-        row.addView(dnsText(ctx, hintRight,
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+        row.addView(K2GoText.label(ctx, hintRight, R.color.k2go_muted));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.topMargin = SettingsUi.dp(ctx, 16);
         row.setLayoutParams(lp);

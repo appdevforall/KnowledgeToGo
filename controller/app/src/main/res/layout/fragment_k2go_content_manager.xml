@@ -9,18 +9,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/k2go_paper">
 
-    <TextView
-        android:id="@+id/k2go_cx_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="20dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="4dp"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="@color/k2go_teal" />
+    <!-- Unified Settings chrome: back glyph + title in one pinned top row, so the screen is always
+         titled (even on the "could not reach the box" state, when the list is hidden). -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="16dp" android:paddingBottom="8dp">
+        <TextView android:id="@+id/k2go_cx_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
+            android:textColor="@color/k2go_ink" android:clickable="true" android:focusable="true" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/k2go_cx_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
+    </LinearLayout>
 
     <!-- Loading / error message. Shown in place of the list (weighted like it), so the pinned bottom
          bars stay at the bottom while content is loading or unavailable. -->

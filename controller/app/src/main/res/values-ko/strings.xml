@@ -587,7 +587,7 @@
     <string name="k2go_settings_module_mgmt">모듈 관리</string>
     <string name="k2go_settings_module_mgmt_sub">라이브러리에 앱 추가</string>
     <string name="k2go_mod_hub_title">모듈 추가</string>
-    <string name="k2go_mod_hub_sub">라이브러리에 설치할 수 있는 앱입니다. 기기에서 실행 — 인터넷이 필요 없습니다.</string>
+    <string name="k2go_mod_hub_sub">라이브러리에 설치할 수 있는 앱입니다. 기기에서 실행: 인터넷이 필요 없습니다.</string>
     <string name="k2go_mod_hub_prompt">무엇을 설치하시겠어요?</string>
     <string name="k2go_mod_proceed_fmt">%1$d개 설치</string>
     <string name="k2go_mod_schedule">설치 예약</string>

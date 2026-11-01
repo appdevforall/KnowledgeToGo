@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Quản lý mô-đun</string>
     <string name="k2go_settings_module_mgmt_sub">Thêm ứng dụng vào thư viện của bạn</string>
     <string name="k2go_mod_hub_title">Thêm mô-đun</string>
-    <string name="k2go_mod_hub_sub">Các ứng dụng bạn có thể cài vào thư viện. Chạy trên thiết bị — không cần internet.</string>
+    <string name="k2go_mod_hub_sub">Các ứng dụng bạn có thể cài vào thư viện. Chạy trên thiết bị: không cần internet.</string>
     <string name="k2go_mod_hub_prompt">Bạn muốn cài gì?</string>
     <string name="k2go_mod_proceed_fmt">Cài %1$d</string>
     <string name="k2go_mod_schedule">Lên lịch cài đặt</string>

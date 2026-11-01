@@ -174,14 +174,12 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public static final class HeaderRow extends Row {
-        final String title;
         final String subtitle;
         final String usedLine;
         final String freeLine;
 
-        public HeaderRow(String title, String subtitle, String usedLine, String freeLine) {
+        public HeaderRow(String subtitle, String usedLine, String freeLine) {
             super(TYPE_HEADER);
-            this.title = title;
             this.subtitle = subtitle;
             this.usedLine = usedLine;
             this.freeLine = freeLine;
@@ -252,7 +250,6 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     static final class HeaderVH extends RecyclerView.ViewHolder {
-        private final TextView title;
         private final TextView subtitle;
         private final TextView used;
         private final TextView free;
@@ -261,17 +258,12 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             super(new LinearLayout(ctx));
             LinearLayout root = (LinearLayout) itemView;
             root.setOrientation(LinearLayout.VERTICAL);
-            root.setLayoutParams(fullWidth(px(ctx, 16), px(ctx, 4)));
+            root.setLayoutParams(fullWidth(px(ctx, 4), px(ctx, 4)));
 
-            // Screen title (Title 1). textAppearanceHeadlineMedium resolves to TextAppearance.K2Go.Display
-            // (Atkinson Hyperlegible, 28sp bold): the same role the Library/Connect/Clone/Settings titles use.
-            title = text(ctx, com.google.android.material.R.attr.textAppearanceHeadlineMedium, R.color.k2go_ink);
-            root.addView(title);
-
+            // The screen title now lives in the pinned header row (one source), so this scrolling
+            // header is the intro line plus the storage card. Intro = Body (Atkinson), muted.
             subtitle = text(ctx, com.google.android.material.R.attr.textAppearanceBodyLarge, R.color.k2go_muted);
-            LinearLayout.LayoutParams subLp = new LinearLayout.LayoutParams(-1, -2);
-            subLp.topMargin = px(ctx, 4);
-            root.addView(subtitle, subLp);
+            root.addView(subtitle);
 
             LinearLayout card = new LinearLayout(ctx);
             card.setOrientation(LinearLayout.VERTICAL);
@@ -281,16 +273,18 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             cardLp.topMargin = px(ctx, 16);
             root.addView(card, cardLp);
 
-            used = text(ctx, com.google.android.material.R.attr.textAppearanceTitleMedium, R.color.k2go_ink);
+            // used = value emphasis (Title, 18sp); free = supporting (Label, 14sp). Both route through
+            // REMAPPED theme attrs so they are Atkinson: TitleMedium / BodyMedium are not remapped and
+            // would fall back to the stock font, which is the mixed-typeface look being removed.
+            used = text(ctx, com.google.android.material.R.attr.textAppearanceTitleLarge, R.color.k2go_ink);
             card.addView(used);
-            free = text(ctx, com.google.android.material.R.attr.textAppearanceBodyMedium, R.color.k2go_muted);
+            free = text(ctx, com.google.android.material.R.attr.textAppearanceLabelLarge, R.color.k2go_muted);
             LinearLayout.LayoutParams freeLp = new LinearLayout.LayoutParams(-1, -2);
             freeLp.topMargin = px(ctx, 2);
             card.addView(free, freeLp);
         }
 
         void bind(HeaderRow row) {
-            title.setText(row.title);
             subtitle.setText(row.subtitle);
             used.setText(row.usedLine);
             free.setText(row.freeLine);
@@ -338,7 +332,9 @@ public final class ContentManagerAdapter extends RecyclerView.Adapter<RecyclerVi
             name = text(ctx, com.google.android.material.R.attr.textAppearanceTitleLarge, R.color.k2go_ink);
             root.addView(name, new LinearLayout.LayoutParams(0, -2, 1f));
 
-            meta = text(ctx, com.google.android.material.R.attr.textAppearanceBodyMedium, R.color.k2go_muted);
+            // Group meta (item count + size): supporting Label scale. BodyMedium is not remapped and
+            // would render in the stock font; LabelLarge resolves to TextAppearance.K2Go.Label (Atkinson).
+            meta = text(ctx, com.google.android.material.R.attr.textAppearanceLabelLarge, R.color.k2go_muted);
             LinearLayout.LayoutParams metaLp = new LinearLayout.LayoutParams(-2, -2);
             metaLp.leftMargin = px(ctx, 8);
             root.addView(meta, metaLp);

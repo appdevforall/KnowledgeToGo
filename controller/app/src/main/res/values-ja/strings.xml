@@ -587,7 +587,7 @@
     <string name="k2go_settings_module_mgmt">モジュール管理</string>
     <string name="k2go_settings_module_mgmt_sub">ライブラリにアプリを追加</string>
     <string name="k2go_mod_hub_title">モジュールを追加</string>
-    <string name="k2go_mod_hub_sub">ライブラリにインストールできるアプリです。デバイス上で動作 — インターネットは不要です。</string>
+    <string name="k2go_mod_hub_sub">ライブラリにインストールできるアプリです。デバイス上で動作: インターネットは不要です。</string>
     <string name="k2go_mod_hub_prompt">何をインストールしますか？</string>
     <string name="k2go_mod_proceed_fmt">%1$d 個をインストール</string>
     <string name="k2go_mod_schedule">インストールを予約</string>

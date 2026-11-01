@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ADFA-4842: Module management hub. Play Store-style entry: a vertical list of installable
      proot modules (shown only when NOT installed, per probeAll), each opening its detail card.
-     "Install N selected" is pinned at the bottom (outside the scroll), like the Get More hub. -->
+     "Install N selected" is pinned at the bottom (outside the scroll), like the Get More hub.
+     Unified Settings chrome: the back glyph and title sit in one pinned top row (same as the shared
+     Settings sub-screens), so the title stays up and does not scroll away. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/k2go_paper">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="16dp" android:paddingBottom="8dp">
+        <TextView android:id="@+id/k2go_mod_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
+            android:textColor="@color/k2go_ink" android:clickable="true" android:focusable="true" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/k2go_mod_hub_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,31 +31,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="24dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
             android:paddingBottom="24dp">
-
-            <TextView
-                android:id="@+id/k2go_mod_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/k2go_teal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/k2go_mod_hub_title"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/k2go_ink" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="@string/k2go_mod_hub_sub"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="@color/k2go_muted" />
@@ -67,8 +64,8 @@
         android:id="@+id/k2go_mod_proceed"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         android:visibility="gone" />

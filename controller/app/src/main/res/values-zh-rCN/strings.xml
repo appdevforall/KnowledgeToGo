@@ -587,7 +587,7 @@
     <string name="k2go_settings_module_mgmt">模块管理</string>
     <string name="k2go_settings_module_mgmt_sub">向图书馆添加应用</string>
     <string name="k2go_mod_hub_title">添加模块</string>
-    <string name="k2go_mod_hub_sub">您可以安装到图书馆的应用。在设备上运行 — 无需联网。</string>
+    <string name="k2go_mod_hub_sub">您可以安装到图书馆的应用。在设备上运行: 无需联网。</string>
     <string name="k2go_mod_hub_prompt">您想安装什么？</string>
     <string name="k2go_mod_proceed_fmt">安装 %1$d 个</string>
     <string name="k2go_mod_schedule">安排安装</string>

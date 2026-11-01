@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Gestione moduli</string>
     <string name="k2go_settings_module_mgmt_sub">Aggiungi app alla tua libreria</string>
     <string name="k2go_mod_hub_title">Aggiungi moduli</string>
-    <string name="k2go_mod_hub_sub">App che puoi installare nella tua libreria. Funziona sul dispositivo — senza internet.</string>
+    <string name="k2go_mod_hub_sub">App che puoi installare nella tua libreria. Funziona sul dispositivo: senza internet.</string>
     <string name="k2go_mod_hub_prompt">Cosa vuoi installare?</string>
     <string name="k2go_mod_proceed_fmt">Installa %1$d</string>
     <string name="k2go_mod_schedule">Pianifica installazione</string>

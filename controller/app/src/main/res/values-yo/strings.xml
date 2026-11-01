@@ -606,7 +606,7 @@
     <string name="k2go_settings_module_mgmt">Ìṣàkóso mọ́díù</string>
     <string name="k2go_settings_module_mgmt_sub">Fi àwọn áàpù kún ilé-ìkàwé rẹ</string>
     <string name="k2go_mod_hub_title">Fi mọ́díù kún</string>
-    <string name="k2go_mod_hub_sub">Àwọn áàpù tí o lè fi sórí ilé-ìkàwé rẹ. Ó ń ṣiṣẹ́ lórí ẹ̀rọ — kò sí àìní íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_mod_hub_sub">Àwọn áàpù tí o lè fi sórí ilé-ìkàwé rẹ. Ó ń ṣiṣẹ́ lórí ẹ̀rọ: kò sí àìní íńtánẹ́ẹ̀tì.</string>
     <string name="k2go_mod_hub_prompt">Kí ni o fẹ́ fi sórí ẹ̀rọ?</string>
     <string name="k2go_mod_proceed_fmt">Fi %1$d sórí ẹ̀rọ</string>
     <string name="k2go_mod_schedule">Ṣètò àkókò fífi sórí ẹ̀rọ</string>

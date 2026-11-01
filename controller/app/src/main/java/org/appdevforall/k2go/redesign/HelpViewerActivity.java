@@ -80,12 +80,8 @@ public class HelpViewerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_help);
 
-        MaterialToolbar toolbar = findViewById(R.id.k2go_help_toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getString(R.string.k2go_settings_help));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        // Unified Settings chrome: the standard "<" back glyph + title, instead of a MaterialToolbar.
+        findViewById(R.id.k2go_help_back).setOnClickListener(v -> onBackPressed());
 
         final WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))

@@ -599,7 +599,7 @@
     <string name="k2go_settings_module_mgmt">মডিউল ব্যবস্থাপনা</string>
     <string name="k2go_settings_module_mgmt_sub">আপনার লাইব্রেরিতে অ্যাপ যোগ করুন</string>
     <string name="k2go_mod_hub_title">মডিউল যোগ করুন</string>
-    <string name="k2go_mod_hub_sub">যেসব অ্যাপ আপনি আপনার লাইব্রেরিতে ইনস্টল করতে পারেন। ডিভাইসে চলে — ইন্টারনেটের দরকার নেই।</string>
+    <string name="k2go_mod_hub_sub">যেসব অ্যাপ আপনি আপনার লাইব্রেরিতে ইনস্টল করতে পারেন। ডিভাইসে চলে: ইন্টারনেটের দরকার নেই।</string>
     <string name="k2go_mod_hub_prompt">আপনি কী ইনস্টল করতে চান?</string>
     <string name="k2go_mod_proceed_fmt">%1$dটি ইনস্টল করুন</string>
     <string name="k2go_mod_schedule">ইনস্টল নির্ধারণ করুন</string>

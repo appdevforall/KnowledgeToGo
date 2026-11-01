@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">إدارة الوحدات</string>
     <string name="k2go_settings_module_mgmt_sub">أضف تطبيقات إلى مكتبتك</string>
     <string name="k2go_mod_hub_title">إضافة وحدات</string>
-    <string name="k2go_mod_hub_sub">تطبيقات يمكنك تثبيتها في مكتبتك. تعمل على الجهاز — دون حاجة إلى الإنترنت.</string>
+    <string name="k2go_mod_hub_sub">تطبيقات يمكنك تثبيتها في مكتبتك. تعمل على الجهاز: دون حاجة إلى الإنترنت.</string>
     <string name="k2go_mod_hub_prompt">ما الذي تريد تثبيته؟</string>
     <string name="k2go_mod_proceed_fmt">تثبيت %1$d</string>
     <string name="k2go_mod_schedule">جدولة التثبيت</string>

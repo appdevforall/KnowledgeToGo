@@ -1,0 +1,106 @@
+// K2GO-529: build-time guard for the UI type scale (the "teeth" of the pincer).
+// It fails the build when app UI reaches for an escape hatch instead of the K2Go tokens / kit:
+//   : a raw Material3 text appearance applied in code (TextAppearance_Material3_*),
+//   : a non-remapped theme attribute (textAppearanceTitleMedium / textAppearanceBodyMedium),
+//   : a literal text size (android:textSize, or setTextSize(<number>)),
+//   : a hardcoded UI colour (#rrggbb in a layout, or Color.parseColor / Color.<CONST> in code).
+// Baseline: ui-type-scale-baseline.txt records the current (legacy) violations once; only NEW
+// violations fail. It shrinks as the kit migration removes legacy usages (strangler-fig).
+// Regenerate deliberately, then review the diff:  ./gradlew updateUiTypeScaleBaseline
+// Contract: controller/docs/ADR-ui-type-scale-and-guard.md . Precedent: verifyManifestPrivacy.
+
+def uiGuardBaseline = file("ui-type-scale-baseline.txt")
+def uiGuardJavaDir = file("src/main/java")
+def uiGuardResDir = file("src/main/res")
+
+// id -> [regex, appliesToJava, appliesToLayoutXml]
+def uiGuardRules = [
+        'raw-material3'   : [~/TextAppearance_Material3_/,                                   true,  false],
+        'attr-medium-code': [~/R\.attr\.textAppearance(TitleMedium|BodyMedium)/,             true,  false],
+        'attr-medium-xml' : [~/\?attr\/textAppearance(TitleMedium|BodyMedium)/,              false, true ],
+        'textsize-xml'    : [~/android:textSize\s*=/,                                        false, true ],
+        'textsize-code'   : [~/setTextSize\s*\(\s*-?\d/,                                     true,  false],
+        'color-code'      : [~/Color\.(parseColor|rgb|argb|WHITE|BLACK|RED|GREEN|BLUE|GRAY|LTGRAY|DKGRAY|YELLOW|CYAN|MAGENTA|TRANSPARENT)\b/, true, false],
+        'color-xml'       : [~/"#[0-9a-fA-F]{3,8}"/,                                         false, true ],
+]
+
+// Returns the set of current violations as "<path>|<rule>|<source line>" entries.
+def uiGuardScan = {
+    def violations = [] as Set
+    def rootPath = rootProject.projectDir.toPath()
+    def scanFile = { File f, boolean isJava ->
+        def rel = rootPath.relativize(f.toPath()).toString().replace('\\', '/')
+        f.eachLine('UTF-8') { line ->
+            def t = line.trim()
+            // Skip comment-only lines so a mention in a comment is not a violation.
+            if (t.startsWith('//') || t.startsWith('*') || t.startsWith('/*') || t.startsWith('<!--')) return
+            uiGuardRules.each { id, spec ->
+                def (pat, inJava, inXml) = spec
+                if (((isJava && inJava) || (!isJava && inXml)) && pat.matcher(line).find()) {
+                    violations << (rel + '|' + id + '|' + t)
+                }
+            }
+        }
+    }
+    if (uiGuardJavaDir.exists()) {
+        uiGuardJavaDir.eachFileRecurse { if (it.isFile() && it.name.endsWith('.java')) scanFile(it, true) }
+    }
+    if (uiGuardResDir.exists()) {
+        uiGuardResDir.listFiles()?.findAll { it.isDirectory() && it.name.startsWith('layout') }?.each { dir ->
+            dir.eachFileRecurse { if (it.isFile() && it.name.endsWith('.xml')) scanFile(it, false) }
+        }
+    }
+    return violations
+}
+
+def uiGuardReadBaseline = {
+    if (!uiGuardBaseline.exists()) return [] as Set
+    return (uiGuardBaseline.readLines('UTF-8').findAll { it.trim() && !it.trim().startsWith('#') }) as Set
+}
+
+def verifyUiTypeScale = tasks.register("verifyUiTypeScale") {
+    group = "verification"
+    description = "Fail the build on NEW UI type-scale violations (see controller/docs/ADR-ui-type-scale-and-guard.md)."
+    inputs.dir(uiGuardJavaDir).optional().withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(uiGuardResDir).optional().withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(uiGuardBaseline).optional()
+    def stamp = layout.buildDirectory.file("ui-type-scale-guard.ok")
+    outputs.file(stamp)
+    doLast {
+        def added = (uiGuardScan() - uiGuardReadBaseline()).toList().sort()
+        def stampFile = stamp.get().asFile
+        stampFile.parentFile.mkdirs()
+        if (!added.isEmpty()) {
+            stampFile.delete()
+            def msg = new StringBuilder()
+            msg.append("K2GO-529: ${added.size()} new UI type-scale violation(s).\n")
+            msg.append("Use the K2Go tokens / kit, not a raw style, attribute, size or colour.\n")
+            msg.append("See controller/docs/ADR-ui-type-scale-and-guard.md for the four roles.\n")
+            msg.append("If a violation is intentional (for example an icon-glyph size), run\n")
+            msg.append("  ./gradlew updateUiTypeScaleBaseline\n")
+            msg.append("and review the baseline diff. New violations:\n")
+            added.each { msg.append("  ").append(it).append("\n") }
+            throw new GradleException(msg.toString())
+        }
+        stampFile.text = "ok\n"
+    }
+}
+
+tasks.register("updateUiTypeScaleBaseline") {
+    group = "verification"
+    description = "Rewrite ui-type-scale-baseline.txt from the current violations. Review the diff before commit."
+    doLast {
+        def current = uiGuardScan().toList().sort()
+        uiGuardBaseline.withWriter('UTF-8') { w ->
+            w.writeLine("# K2GO-529 UI type-scale guard baseline. Generated by ./gradlew updateUiTypeScaleBaseline.")
+            w.writeLine("# Format per line: <path>|<rule>|<source line>. Only violations NOT listed here fail the build.")
+            w.writeLine("# This list shrinks as the kit migration removes legacy usages. Do not hand-edit casually.")
+            current.each { w.writeLine(it) }
+        }
+        println "ui-type-scale-baseline.txt: ${current.size()} entries"
+    }
+}
+
+// Run on every build so the clean path is the only path the build accepts (up-to-date when
+// the sources and the baseline are unchanged).
+tasks.matching { it.name == "preBuild" }.configureEach { dependsOn verifyUiTypeScale }

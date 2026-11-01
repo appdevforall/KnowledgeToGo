@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">مدیریت ماژول‌ها</string>
     <string name="k2go_settings_module_mgmt_sub">افزودن برنامه به کتابخانه شما</string>
     <string name="k2go_mod_hub_title">افزودن ماژول‌ها</string>
-    <string name="k2go_mod_hub_sub">برنامه‌هایی که می‌توانید روی کتابخانه خود نصب کنید. روی دستگاه اجرا می‌شود — نیازی به اینترنت نیست.</string>
+    <string name="k2go_mod_hub_sub">برنامه‌هایی که می‌توانید روی کتابخانه خود نصب کنید. روی دستگاه اجرا می‌شود: نیازی به اینترنت نیست.</string>
     <string name="k2go_mod_hub_prompt">می‌خواهید چه چیزی نصب کنید؟</string>
     <string name="k2go_mod_proceed_fmt">نصب %1$d</string>
     <string name="k2go_mod_schedule">زمان‌بندی نصب</string>

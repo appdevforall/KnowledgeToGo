@@ -594,7 +594,7 @@
     <string name="k2go_settings_module_mgmt_sub">Pridėkite programų į savo biblioteką</string>
 
     <string name="k2go_mod_hub_title">Pridėti modulių</string>
-    <string name="k2go_mod_hub_sub">Programos, kurias galite įdiegti į savo biblioteką. Veikia įrenginyje — interneto nereikia.</string>
+    <string name="k2go_mod_hub_sub">Programos, kurias galite įdiegti į savo biblioteką. Veikia įrenginyje: interneto nereikia.</string>
     <string name="k2go_mod_hub_prompt">Ką norėtumėte įdiegti?</string>
     <string name="k2go_mod_proceed_fmt">Įdiegti %1$d</string>
     <string name="k2go_mod_schedule">Suplanuoti įdiegimą</string>
