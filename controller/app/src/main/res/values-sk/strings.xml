@@ -1530,7 +1530,7 @@
     <string name="k2go_cx_toggle_group">Zobraziť alebo skryť položky</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Prijať cez Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Prijať</string>
+    <string name="k2go_cx_receive_title">Prijať obsah</string>
     <string name="k2go_cx_receive_scan_prompt">Naskenujte kód pozvánky odosielateľa</string>
     <string name="k2go_cx_receive_invalid">Tento kód nie je pozvánka na zdieľanie.</string>
     <string name="k2go_cx_receive_connecting">Pripájanie k odosielateľovi...</string>

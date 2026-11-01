@@ -1524,7 +1524,7 @@
     <string name="k2go_cx_toggle_group">項目を表示または非表示</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi で受信</string>
-    <string name="k2go_cx_receive_title">受信</string>
+    <string name="k2go_cx_receive_title">コンテンツを受信</string>
     <string name="k2go_cx_receive_scan_prompt">送信者の招待コードをスキャン</string>
     <string name="k2go_cx_receive_invalid">そのコードは共有の招待ではありません。</string>
     <string name="k2go_cx_receive_connecting">送信者に接続しています...</string>

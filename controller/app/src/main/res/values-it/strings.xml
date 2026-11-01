@@ -1523,7 +1523,7 @@
     <string name="k2go_cx_toggle_group">Mostra o nascondi gli elementi</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Ricevi via Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Ricevi</string>
+    <string name="k2go_cx_receive_title">Ricevi contenuti</string>
     <string name="k2go_cx_receive_scan_prompt">Scansiona il codice di invito del mittente</string>
     <string name="k2go_cx_receive_invalid">Questo codice non è un invito alla condivisione.</string>
     <string name="k2go_cx_receive_connecting">Connessione al mittente...</string>

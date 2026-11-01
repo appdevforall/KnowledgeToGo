@@ -22,8 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
@@ -31,6 +29,7 @@ import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
 import org.appdevforall.k2go.redesign.QrSection;
+import org.appdevforall.k2go.redesign.SegmentedTabs;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
 public class ContentShareFragment extends Fragment {
@@ -42,8 +41,9 @@ public class ContentShareFragment extends Fragment {
     private View receiveRoot;
     private QrSection secJoin;
     private QrSection secReceive;
-    private TextView transportLabel;
-    private MaterialButtonToggleGroup transportToggle;
+    private View transportRow;
+    private TextView transportHotspot;
+    private TextView transportWifi;
     private Button done;
 
     private final ShareSession session = ContentShareService.session();
@@ -77,19 +77,11 @@ public class ContentShareFragment extends Fragment {
         ((TextView) receiveRoot.findViewById(R.id.sec_badge)).setText("2");
         ((TextView) receiveRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_receive);
 
-        transportLabel = root.findViewById(R.id.k2go_cxs_transport_label);
-        transportToggle = root.findViewById(R.id.k2go_cxs_transport);
-        transportToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (!isChecked) {
-                return;   // react only to the newly selected button, not the one being cleared
-            }
-            boolean wifi = checkedId == R.id.k2go_cxs_transport_wifi;
-            if (wifi == useWifiAddress) {
-                return;   // no change (also absorbs the programmatic sync in renderInvite, no re-render loop)
-            }
-            useWifiAddress = wifi;
-            renderInvite();   // re-encode the receive QR at the chosen address
-        });
+        transportRow = root.findViewById(R.id.k2go_cxs_transport);
+        transportHotspot = root.findViewById(R.id.k2go_cxs_transport_hotspot);
+        transportWifi = root.findViewById(R.id.k2go_cxs_transport_wifi);
+        transportHotspot.setOnClickListener(v -> selectTransport(false));
+        transportWifi.setOnClickListener(v -> selectTransport(true));
 
         done.setOnClickListener(v -> {
             ContentShareService.cancel(requireContext());
@@ -185,8 +177,7 @@ public class ContentShareFragment extends Fragment {
                 sec.subCaption.setText("");
                 sec.setFallback(requireContext(), null);
             }
-            transportLabel.setVisibility(View.GONE);
-            transportToggle.setVisibility(View.GONE);
+            transportRow.setVisibility(View.GONE);
             waiting.setVisibility(View.GONE);
             return;
         }
@@ -197,20 +188,17 @@ public class ContentShareFragment extends Fragment {
         String wifiIp = ApAddressResolver.resolveStationWifiIp(requireContext());
 
         // Transport selector: a choice only when BOTH addresses exist and differ. With one, use it and
-        // hide the toggle (the common case). The hotspot is the default (fast, direct); Wi-Fi lets two
+        // hide the strip (the common case). The hotspot is the default (fast, direct); Wi-Fi lets two
         // phones already on the same network pull over it, avoiding the Wi-Fi Direct link. When Wi-Fi is
         // chosen there is nothing to join, so the join-hotspot section is hidden too.
         boolean both = hotspotIp != null && wifiIp != null && !hotspotIp.equals(wifiIp);
-        transportLabel.setVisibility(both ? View.VISIBLE : View.GONE);
-        transportToggle.setVisibility(both ? View.VISIBLE : View.GONE);
-        // The selection persists across a Wi-Fi blip: on Wi-Fi loss the toggle just hides and the QR
+        transportRow.setVisibility(both ? View.VISIBLE : View.GONE);
+        // The selection persists across a Wi-Fi blip: on Wi-Fi loss the strip just hides and the QR
         // falls back to whatever address is left; when Wi-Fi returns (a new DHCP IP), the choice is
         // still Wi-Fi and the QR redraws at the fresh address, instead of silently reverting to hotspot.
         if (both) {
-            int want = useWifiAddress ? R.id.k2go_cxs_transport_wifi : R.id.k2go_cxs_transport_hotspot;
-            if (transportToggle.getCheckedButtonId() != want) {
-                transportToggle.check(want);   // sync UI to the field; the listener no-ops (state matches)
-            }
+            SegmentedTabs.paint(transportHotspot, !useWifiAddress);
+            SegmentedTabs.paint(transportWifi, useWifiAddress);
         }
         joinRoot.setVisibility(both && useWifiAddress ? View.GONE : View.VISIBLE);
         String ip = both ? (useWifiAddress ? wifiIp : hotspotIp)
@@ -241,6 +229,15 @@ public class ContentShareFragment extends Fragment {
         }
     }
 
+    /** Pick the address the receive QR carries and repaint the strip (Connect/Clone mode pattern). */
+    private void selectTransport(boolean wifi) {
+        if (wifi == useWifiAddress) {
+            return;   // already selected; no re-encode
+        }
+        useWifiAddress = wifi;
+        renderInvite();   // re-encode the receive QR at the chosen address and repaint the strip
+    }
+
     /** Show a single status line (preparing / hotspot / error) instead of the two QR cards. */
     private void showStatus(String text) {
         status.setText(text);
@@ -249,8 +246,7 @@ public class ContentShareFragment extends Fragment {
         secReceive.stopPending();
         joinRoot.setVisibility(View.GONE);
         receiveRoot.setVisibility(View.GONE);
-        transportLabel.setVisibility(View.GONE);
-        transportToggle.setVisibility(View.GONE);
+        transportRow.setVisibility(View.GONE);
         waiting.setVisibility(View.GONE);
     }
 

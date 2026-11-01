@@ -1543,7 +1543,7 @@
     <string name="k2go_cx_toggle_group">Elementləri göstər və ya gizlət</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi ilə qəbul et</string>
-    <string name="k2go_cx_receive_title">Qəbul et</string>
+    <string name="k2go_cx_receive_title">Məzmunu qəbul et</string>
     <string name="k2go_cx_receive_scan_prompt">Göndərənin dəvət kodunu skan edin</string>
     <string name="k2go_cx_receive_invalid">Bu kod paylaşma dəvəti deyil.</string>
     <string name="k2go_cx_receive_connecting">Göndərənə qoşulur...</string>

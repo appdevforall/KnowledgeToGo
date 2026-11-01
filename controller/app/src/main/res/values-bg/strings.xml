@@ -1530,7 +1530,7 @@
     <string name="k2go_cx_toggle_group">Показване или скриване на елементите</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Получаване през Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Получаване</string>
+    <string name="k2go_cx_receive_title">Получаване на съдържание</string>
     <string name="k2go_cx_receive_scan_prompt">Сканирайте кода за покана на подателя</string>
     <string name="k2go_cx_receive_invalid">Този код не е покана за споделяне.</string>
     <string name="k2go_cx_receive_connecting">Свързване с подателя...</string>

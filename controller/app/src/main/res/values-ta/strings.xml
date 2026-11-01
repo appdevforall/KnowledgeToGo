@@ -1543,7 +1543,7 @@
     <string name="k2go_cx_toggle_group">உருப்படிகளைக் காட்டு அல்லது மறை</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi மூலம் பெறுக</string>
-    <string name="k2go_cx_receive_title">பெறுக</string>
+    <string name="k2go_cx_receive_title">உள்ளடக்கத்தைப் பெறுக</string>
     <string name="k2go_cx_receive_scan_prompt">அனுப்புநரின் அழைப்புக் குறியீட்டை ஸ்கேன் செய்யவும்</string>
     <string name="k2go_cx_receive_invalid">அந்தக் குறியீடு பகிர்வு அழைப்பு அல்ல.</string>
     <string name="k2go_cx_receive_connecting">அனுப்புநருடன் இணைக்கிறது...</string>

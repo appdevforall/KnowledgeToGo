@@ -27,7 +27,7 @@
         android:paddingRight="20dp"
         android:paddingTop="16dp"
         android:text="@string/k2go_cx_receive_title"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
         android:textColor="@color/k2go_ink" />
 
     <TextView

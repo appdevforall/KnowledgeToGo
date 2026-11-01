@@ -25,11 +25,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.util.ByteFormatter;
+import org.appdevforall.k2go.util.Motion;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +52,9 @@ public class ExportProgressFragment extends Fragment {
     private Button cancel;
     private Button retry;
     private Button finish;
+    private View animBox;
+    private LottieAnimationView anim;
+    private boolean reduceMotion;
 
     private final ExportSession session = ContentExportService.session();
 
@@ -73,6 +78,20 @@ public class ExportProgressFragment extends Fragment {
         cancel = root.findViewById(R.id.k2go_cxx_cancel);
         retry = root.findViewById(R.id.k2go_cxx_retry);
         finish = root.findViewById(R.id.k2go_cxx_finish);
+
+        // Two-phones transfer animation, shared with Clone (R.raw.k2go_clone_loop). Reduce motion holds
+        // a single frame instead of looping; the screen never depends on movement to be understood.
+        animBox = root.findViewById(R.id.k2go_cxx_anim_box);
+        anim = root.findViewById(R.id.k2go_cxx_anim);
+        reduceMotion = Motion.reduced(getContext());
+        if (anim != null) {
+            anim.setAnimation(R.raw.k2go_clone_loop);
+            if (reduceMotion) {
+                anim.setProgress(0.5f);
+            } else {
+                anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
+            }
+        }
 
         cancel.setOnClickListener(v -> ContentExportService.cancel(requireContext()));
         retry.setOnClickListener(v -> ContentExportService.retry(requireContext()));
@@ -98,6 +117,9 @@ public class ExportProgressFragment extends Fragment {
     public void onPause() {
         super.onPause();
         session.setListener(null);
+        if (anim != null && anim.isAnimating()) {
+            anim.pauseAnimation();
+        }
     }
 
     private void render() {
@@ -129,6 +151,24 @@ public class ExportProgressFragment extends Fragment {
         boolean settled = !running;
         retry.setVisibility(settled && session.canRetry() ? View.VISIBLE : View.GONE);
         finish.setVisibility(settled && !preparing ? View.VISIBLE : View.GONE);
+        renderAnim(running || preparing);
+    }
+
+    /** Show the transfer animation only while the transfer is in flight; play it unless motion is off. */
+    private void renderAnim(boolean active) {
+        if (animBox != null) {
+            animBox.setVisibility(active ? View.VISIBLE : View.GONE);
+        }
+        if (anim == null) {
+            return;
+        }
+        if (active && !reduceMotion) {
+            if (!anim.isAnimating()) {
+                anim.playAnimation();
+            }
+        } else if (anim.isAnimating()) {
+            anim.pauseAnimation();
+        }
     }
 
     private void renderCurrentItem(boolean running, boolean preparing) {

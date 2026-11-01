@@ -1543,7 +1543,7 @@
     <string name="k2go_cx_toggle_group">Onyesha au ficha vipengele</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Pokea kupitia Wi-Fi</string>
-    <string name="k2go_cx_receive_title">Pokea</string>
+    <string name="k2go_cx_receive_title">Pokea maudhui</string>
     <string name="k2go_cx_receive_scan_prompt">Changanua msimbo wa mwaliko wa mtumaji</string>
     <string name="k2go_cx_receive_invalid">Msimbo huo si mwaliko wa Kushiriki.</string>
     <string name="k2go_cx_receive_connecting">Inaunganisha kwa mtumaji...</string>

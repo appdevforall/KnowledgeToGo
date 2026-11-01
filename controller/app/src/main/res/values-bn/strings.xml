@@ -1536,7 +1536,7 @@
     <string name="k2go_cx_toggle_group">আইটেম দেখান বা লুকান</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi এর মাধ্যমে গ্রহণ করুন</string>
-    <string name="k2go_cx_receive_title">গ্রহণ করুন</string>
+    <string name="k2go_cx_receive_title">কনটেন্ট গ্রহণ করুন</string>
     <string name="k2go_cx_receive_scan_prompt">প্রেরকের আমন্ত্রণ কোড স্ক্যান করুন</string>
     <string name="k2go_cx_receive_invalid">এই কোডটি কোনো শেয়ার আমন্ত্রণ নয়।</string>
     <string name="k2go_cx_receive_connecting">প্রেরকের সাথে সংযোগ করা হচ্ছে...</string>

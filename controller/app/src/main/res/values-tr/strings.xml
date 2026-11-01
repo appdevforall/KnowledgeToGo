@@ -1523,7 +1523,7 @@
     <string name="k2go_cx_toggle_group">Öğeleri göster veya gizle</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
     <string name="k2go_cx_receive_from_network">Wi-Fi ile al</string>
-    <string name="k2go_cx_receive_title">Al</string>
+    <string name="k2go_cx_receive_title">İçeriği al</string>
     <string name="k2go_cx_receive_scan_prompt">Gönderenin davet kodunu tarayın</string>
     <string name="k2go_cx_receive_invalid">Bu kod bir Paylaşım daveti değil.</string>
     <string name="k2go_cx_receive_connecting">Gönderene bağlanılıyor...</string>
