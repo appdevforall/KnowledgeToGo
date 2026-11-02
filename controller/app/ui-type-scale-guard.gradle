@@ -12,6 +12,7 @@
 def uiGuardBaseline = file("ui-type-scale-baseline.txt")
 def uiGuardJavaDir = file("src/main/java")
 def uiGuardResDir = file("src/main/res")
+def uiGuardScript = file("ui-type-scale-guard.gradle")
 
 // id -> [regex, appliesToJava, appliesToLayoutXml]
 def uiGuardRules = [
@@ -64,6 +65,7 @@ def verifyUiTypeScale = tasks.register("verifyUiTypeScale") {
     inputs.dir(uiGuardJavaDir).optional().withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(uiGuardResDir).optional().withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(uiGuardBaseline).optional()
+    inputs.file(uiGuardScript)   // re-run when the rules change, not only when the scanned sources do
     def stamp = layout.buildDirectory.file("ui-type-scale-guard.ok")
     outputs.file(stamp)
     doLast {
