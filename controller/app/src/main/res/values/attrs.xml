@@ -12,4 +12,10 @@
         <!-- Keep the "Show details" toggle hidden until there is log content (default false). -->
         <attr name="hideUntilContent" format="boolean" />
     </declare-styleable>
+
+    <!-- K2GO-529: the shared Settings-area pinned header (org.appdevforall.k2go.ui.K2GoHeaderView). -->
+    <declare-styleable name="K2GoHeaderView">
+        <!-- The screen title shown next to the back glyph. Omit to set it at runtime via setTitle. -->
+        <attr name="k2goTitle" format="string" />
+    </declare-styleable>
 </resources>

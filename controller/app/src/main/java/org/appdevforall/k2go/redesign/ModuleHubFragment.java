@@ -158,9 +158,6 @@ public class ModuleHubFragment extends Fragment {
         host = root.findViewById(R.id.k2go_mod_cards);
         proceed = root.findViewById(R.id.k2go_mod_proceed);
 
-        TextView back = root.findViewById(R.id.k2go_mod_back);
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
-
         proceed.setOnClickListener(v -> {
             if (org.appdevforall.k2go.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, org.appdevforall.k2go.util.BusyMessage.resFor(requireContext())).show(); return; }
             if (getActivity() instanceof SetupLibraryActivity) {

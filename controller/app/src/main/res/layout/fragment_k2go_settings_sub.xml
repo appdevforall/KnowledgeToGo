@@ -3,15 +3,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="@color/k2go_paper">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:gravity="center_vertical"
-        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="16dp" android:paddingBottom="8dp">
-        <TextView android:id="@+id/k2go_sub_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
-            android:textColor="@color/k2go_ink" android:clickable="true" android:focusable="true" />
-        <TextView android:id="@+id/k2go_sub_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
-    </LinearLayout>
+    <org.appdevforall.k2go.ui.K2GoHeaderView android:id="@+id/k2go_sub_header"
+        android:layout_width="match_parent" android:layout_height="wrap_content" />
 
     <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
         android:layout_weight="1" android:fillViewport="true">

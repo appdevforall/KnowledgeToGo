@@ -32,6 +32,7 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import org.appdevforall.k2go.network.presentation.DnsSettingsViewModel;
 import org.appdevforall.k2go.network.presentation.DnsSettingsViewModelFactory;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
 import org.appdevforall.k2go.ui.K2GoText;
 
 /** Settings sub-screen host: Language (functional — UI + content), About (version, permissions,
@@ -77,22 +78,20 @@ public class SettingsSubFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_settings_sub, c, false);
         Context ctx = requireContext();
         LinearLayout list = root.findViewById(R.id.k2go_sub_list);
-        TextView title = root.findViewById(R.id.k2go_sub_title);
-        root.findViewById(R.id.k2go_sub_back).setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().popBackStack());
+        K2GoHeaderView header = root.findViewById(R.id.k2go_sub_header);
 
         String screen = getArguments() != null ? getArguments().getString(ARG, "") : "";
         switch (screen) {
-            case "language": title.setText(getString(R.string.k2go_settings_language)); buildLanguage(ctx, list); break;
-            case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
-            case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
-            case "dns":      title.setText(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
-            case "hotspot":  title.setText(getString(R.string.k2go_settings_hotspot)); buildHotspot(ctx, list); break;
-            case "authentication": title.setText(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
-            case "auth:calibre": title.setText(getString(R.string.k2go_auth_svc_books)); buildServiceAuth(ctx, list, "calibre"); break;
-            case "auth:kolibri": title.setText(getString(R.string.k2go_auth_svc_courses)); buildServiceAuth(ctx, list, "kolibri"); break;
-            case "auth:forgejo": title.setText(getString(R.string.k2go_card_forgejo)); buildServiceAuth(ctx, list, "forgejo"); break;   // K2GO-417
-            default:         title.setText(getString(R.string.k2go_tab_settings));
+            case "language": header.setTitle(getString(R.string.k2go_settings_language)); buildLanguage(ctx, list); break;
+            case "about":    header.setTitle(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
+            case "advanced": header.setTitle(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
+            case "dns":      header.setTitle(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
+            case "hotspot":  header.setTitle(getString(R.string.k2go_settings_hotspot)); buildHotspot(ctx, list); break;
+            case "authentication": header.setTitle(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
+            case "auth:calibre": header.setTitle(getString(R.string.k2go_auth_svc_books)); buildServiceAuth(ctx, list, "calibre"); break;
+            case "auth:kolibri": header.setTitle(getString(R.string.k2go_auth_svc_courses)); buildServiceAuth(ctx, list, "kolibri"); break;
+            case "auth:forgejo": header.setTitle(getString(R.string.k2go_card_forgejo)); buildServiceAuth(ctx, list, "forgejo"); break;   // K2GO-417
+            default:         header.setTitle(getString(R.string.k2go_tab_settings));
         }
         return root;
     }

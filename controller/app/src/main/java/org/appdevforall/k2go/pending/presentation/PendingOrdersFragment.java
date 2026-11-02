@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.pending.domain.PendingOrder;
 import org.appdevforall.k2go.redesign.SetupProgressActivity;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 public class PendingOrdersFragment extends Fragment {
@@ -44,9 +45,7 @@ public class PendingOrdersFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_settings_sub, c, false);
-        ((TextView) root.findViewById(R.id.k2go_sub_title)).setText(getString(R.string.k2go_pending_title));
-        root.findViewById(R.id.k2go_sub_back).setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().popBackStack());
+        ((K2GoHeaderView) root.findViewById(R.id.k2go_sub_header)).setTitle(getString(R.string.k2go_pending_title));
         list = root.findViewById(R.id.k2go_sub_list);
 
         vm = new ViewModelProvider(this, new PendingOrdersViewModelFactory(requireContext()))

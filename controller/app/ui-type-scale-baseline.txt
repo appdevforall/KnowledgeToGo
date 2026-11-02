@@ -31,7 +31,6 @@ app/src/main/java/org/appdevforall/k2go/pending/presentation/PendingOrdersFragme
 app/src/main/java/org/appdevforall/k2go/pending/presentation/PendingOrdersFragment.java|raw-material3|name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
 app/src/main/java/org/appdevforall/k2go/pending/presentation/PendingOrdersFragment.java|raw-material3|size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
 app/src/main/java/org/appdevforall/k2go/pending/presentation/PendingOrdersFragment.java|raw-material3|t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-app/src/main/java/org/appdevforall/k2go/redesign/BackupRestoreFragment.java|textsize-code|back.setTextSize(26);
 app/src/main/java/org/appdevforall/k2go/redesign/BooksConfirmFragment.java|raw-material3|n.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
 app/src/main/java/org/appdevforall/k2go/redesign/BooksConfirmFragment.java|raw-material3|subv.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
 app/src/main/java/org/appdevforall/k2go/redesign/BooksLandingFragment.java|raw-material3|sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
@@ -125,6 +124,7 @@ app/src/main/java/org/appdevforall/k2go/redesign/ZimLandingFragment.java|raw-mat
 app/src/main/java/org/appdevforall/k2go/redesign/ZimLandingFragment.java|raw-material3|t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
 app/src/main/java/org/appdevforall/k2go/redesign/ZimLandingFragment.java|raw-material3|t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
 app/src/main/java/org/appdevforall/k2go/sync/transport/QrCodec.java|color-code|bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+app/src/main/java/org/appdevforall/k2go/ui/K2GoHeaderView.java|textsize-code|back.setTextSize(26);                   // icon-glyph size (the guard's documented fixed-size exception)
 app/src/main/java/org/appdevforall/k2go/ui/dialog/BrandDialog.java|color-code|dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 app/src/main/java/org/appdevforall/k2go/ui/dialog/BrandDialog.java|raw-material3|err.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
 app/src/main/java/org/appdevforall/k2go/widget/LiveLogPanel.java|raw-material3|label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
@@ -133,7 +133,6 @@ app/src/main/res/layout-land/dialog_install_planner_settings.xml|textsize-xml|an
 app/src/main/res/layout/activity_crash_report.xml|textsize-xml|android:textSize="12sp"
 app/src/main/res/layout/activity_crash_report.xml|textsize-xml|android:textSize="14sp" />
 app/src/main/res/layout/activity_crash_report.xml|textsize-xml|android:textSize="20sp"
-app/src/main/res/layout/activity_k2go_help.xml|textsize-xml|android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
 app/src/main/res/layout/activity_k2go_lang_picker.xml|textsize-xml|android:text="‹" android:textColor="@color/k2go_teal" android:textSize="24sp" android:textStyle="bold"
 app/src/main/res/layout/activity_k2go_setup_progress.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/activity_k2go_wizard.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceTitleMedium" android:textStyle="bold" />
@@ -156,7 +155,6 @@ app/src/main/res/layout/fragment_about.xml|textsize-xml|android:layout_marginTop
 app/src/main/res/layout/fragment_about.xml|textsize-xml|android:textSize="13sp"/>
 app/src/main/res/layout/fragment_about.xml|textsize-xml|android:textSize="15sp" android:textStyle="bold"/>
 app/src/main/res/layout/fragment_about.xml|textsize-xml|android:textSize="20sp" android:textStyle="bold"/>
-app/src/main/res/layout/fragment_feedback.xml|textsize-xml|android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
 app/src/main/res/layout/fragment_k2go_backup_job.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_backup_job.xml|textsize-xml|android:textSize="11sp"
 app/src/main/res/layout/fragment_k2go_books_confirm.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -199,7 +197,6 @@ app/src/main/res/layout/fragment_k2go_connect.xml|attr-medium-xml|android:textAp
 app/src/main/res/layout/fragment_k2go_content_delete.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_content_export.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_content_import.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
-app/src/main/res/layout/fragment_k2go_content_manager.xml|textsize-xml|android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
 app/src/main/res/layout/fragment_k2go_content_receive.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_content_share.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_forgejo_seeding.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -217,9 +214,7 @@ app/src/main/res/layout/fragment_k2go_maps_landing.xml|attr-medium-xml|android:t
 app/src/main/res/layout/fragment_k2go_maps_landing.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceTitleMedium"
 app/src/main/res/layout/fragment_k2go_maps_preparing.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_module_detail.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
-app/src/main/res/layout/fragment_k2go_module_hub.xml|textsize-xml|android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
 app/src/main/res/layout/fragment_k2go_module_install.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
-app/src/main/res/layout/fragment_k2go_settings_sub.xml|textsize-xml|android:text="‹" android:textSize="26sp" android:paddingLeft="0dp" android:paddingRight="12dp"
 app/src/main/res/layout/fragment_k2go_zim_category.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_zim_confirm.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_zim_confirm.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium" />

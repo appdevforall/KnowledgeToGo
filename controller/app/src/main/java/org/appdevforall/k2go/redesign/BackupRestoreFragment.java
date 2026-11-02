@@ -32,6 +32,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
 import org.appdevforall.k2go.ui.K2GoText;
 
 public class BackupRestoreFragment extends Fragment {
@@ -58,27 +59,12 @@ public class BackupRestoreFragment extends Fragment {
         rootCol.setOrientation(LinearLayout.VERTICAL);
         rootCol.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_paper));
 
-        // Unified Settings chrome: back glyph + title in one pinned top row (same as the shared
-        // Settings sub-screens), so the title stays up instead of scrolling with the content.
-        LinearLayout header = new LinearLayout(requireContext());
-        header.setOrientation(LinearLayout.HORIZONTAL);
-        header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setPadding(px(16), px(16), px(16), px(8));
+        // Unified Settings chrome: the one shared pinned header (back glyph + title), defined once in
+        // K2GoHeaderView so this code-built screen matches the XML ones.
+        K2GoHeaderView header = new K2GoHeaderView(requireContext());
+        header.setTitle(getString(R.string.k2go_br_title));
         rootCol.addView(header, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        TextView back = new TextView(requireContext());
-        back.setText("‹");
-        back.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-        back.setTextSize(26);
-        back.setPadding(0, 0, px(12), 0);
-        back.setClickable(true);
-        back.setFocusable(true);
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
-        header.addView(back);
-
-        TextView title = K2GoText.display(requireContext(), getString(R.string.k2go_br_title), R.color.k2go_ink);
-        header.addView(title);
 
         NestedScrollView scroll = new NestedScrollView(requireContext());
         scroll.setFillViewport(true);

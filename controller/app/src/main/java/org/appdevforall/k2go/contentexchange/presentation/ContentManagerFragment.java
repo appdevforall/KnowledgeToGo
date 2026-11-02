@@ -123,9 +123,6 @@ public class ContentManagerFragment extends Fragment {
         shareButton.setEnabled(true);
         shareButton.setOnClickListener(v -> onShareClicked());
 
-        TextView back = root.findViewById(R.id.k2go_cx_back);
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
-
         viewModel = new ViewModelProvider(this, new ContentManagerViewModelFactory())
                 .get(ContentManagerViewModel.class);
 

@@ -44,11 +44,6 @@ public class FeedbackFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
         org.appdevforall.k2go.help.TooltipWiring.wireAll(v);
 
-        // Unified Settings chrome: the standard "<" back glyph pops the sub-screen, like SettingsSubFragment.
-        View back = v.findViewById(R.id.k2go_sub_back);
-        if (back != null) back.setOnClickListener(x ->
-                requireActivity().getSupportFragmentManager().popBackStack());
-
         Spinner category = v.findViewById(R.id.feedback_category);
         EditText message = v.findViewById(R.id.feedback_message);
         Button send = v.findViewById(R.id.feedback_send);
