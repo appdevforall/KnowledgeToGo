@@ -17,8 +17,11 @@ public final class BoxEndpoints {
 
     private BoxEndpoints() {}
 
+    /** TCP port of the box's main nginx server (the portal). */
+    public static final int PORT = 8085;
+
     /** Scheme + host + port of the box's nginx services. No trailing slash. */
-    public static final String BASE = "http://localhost:8085";
+    public static final String BASE = "http://localhost:" + PORT;
 
     /**
      * REST core (dash-node engine) namespace on the box. ADFA-4933: the engine used to

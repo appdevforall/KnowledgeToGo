@@ -1,0 +1,41 @@
+# conex-core Share gate at http://box{{ conex_core_url }}/v1/share/ (K2GO-376, Pillar Share). The
+# ONLY off-loopback surface of the content-exchange core. Installed by roles/conex_core
+# (tasks/enable-or-disable.yml) into nginx conf.d, like any role, so it rides the box's main
+# server on every platform (IIAB and K2Go).
+#
+# A paired peer PULLS selected content from this box. conex-core stays bound to 127.0.0.1;
+# these locations proxy ONLY the receiver surface /v1/share/<session>/... to it. No other /v1
+# endpoint is proxied, so the rest of the API is not reachable off-box. The share-session token
+# (X-Share-Token header) is the real auth, enforced inside conex-core; this scope is defense in
+# depth. Plain HTTP by design: the link is the closed local network and the token is the auth.
+# See controller/docs/conex-core-share-exposure.md.
+
+# Deny by default: nothing under {{ conex_core_url }}/ is reachable unless a rule below allows it.
+location ^~ {{ conex_core_url }}/ {
+    return 404;
+}
+
+# The bare prefix is session creation too. An exact 404 here, so nginx does not answer with its
+# automatic 301 to the slash form of the proxied prefix below.
+location = {{ conex_core_url }}/v1/share {
+    return 404;
+}
+
+# The receiver surface only: GET .../manifest, GET .../fetch/<ref>, POST .../complete,
+# DELETE /v1/share/<session>. Every one is token-gated inside conex-core (401 no token, 403
+# mismatch, 404 unknown session). "^~" keeps a regex location from overriding this prefix match.
+location ^~ {{ conex_core_url }}/v1/share/ {
+    # Block session creation. POST /v1/share mints a token for ARBITRARY items, so it is NEVER
+    # exposed off-box (the sender creates the session in-box over loopback). conex-core strips
+    # trailing slashes, so ".../v1/share/" and ".../v1/share//" reach create too. Match them on
+    # the decoded URI here, so the guard holds even if merge_slashes is off in the http block.
+    if ($uri ~ "^{{ conex_core_url }}/v1/share/+$") {
+        return 404;
+    }
+    proxy_pass http://127.0.0.1:{{ conex_core_port }}/v1/share/;
+    proxy_http_version 1.1;
+    proxy_buffering off;              # stream multi-GB items; do not buffer to disk
+    proxy_request_buffering off;
+    proxy_read_timeout 3600s;         # a large item over a slow link
+    proxy_send_timeout 3600s;
+}

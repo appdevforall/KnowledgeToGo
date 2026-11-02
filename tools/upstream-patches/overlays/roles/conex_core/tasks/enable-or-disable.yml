@@ -1,6 +1,6 @@
 # Enable/disable phase (every apply). Reflects conex_core_enabled on the supervisor, then
 # verifies the core answers, then reflects conex_core_share_expose on the off-loopback
-# Share listener. Verbs are idempotent, so this runs on every play without churn.
+# Share gate. Verbs are idempotent, so this runs on every play without churn.
 
 # ---- Service state: enable + start, or stop + disable ----
 
@@ -47,50 +47,48 @@
   when: conex_core_enabled
 
 
-# ---- Off-loopback Share listener (K2GO-376). The dedicated :{{ conex_core_share_port }}
-# nginx server block that exposes ONLY /v1/share/<session>/... Installed when conex-core
-# is enabled AND share exposure is on; removed otherwise (fail-closed). The rootfs must
-# include /etc/nginx/k2go-http.d/*.conf at the nginx http context for it to take effect
-# (controller/docs/conex-core-share-exposure.md); until then the file sits inert, so no
-# exposure happens by accident. ----
+# ---- Off-loopback Share gate (K2GO-376). The role's own nginx conf in conf.d, like any
+# role: locations on the box's main server that expose ONLY {{ conex_core_url }}/v1/share/...
+# Installed when conex-core is enabled AND share exposure is on; removed otherwise
+# (fail-closed). ----
 
-- name: Ensure the http-level include dir for the Share server block exists
-  file:
-    path: /etc/nginx/k2go-http.d
-    state: directory
-    mode: "0755"
-  when: conex_core_enabled and conex_core_share_expose
-
-- name: "Expose the conex-core Share gate off loopback via NGINX (:{{ conex_core_share_port }})"
+- name: Enable http://box{{ conex_core_url }}/v1/share/ via NGINX, by installing {{ nginx_conf_dir }}/conex-core-nginx.conf
   template:
-    src: conex-core-share-nginx.conf.j2
-    dest: /etc/nginx/k2go-http.d/conex-core-share.conf
+    src: conex-core-nginx.conf.j2
+    dest: "{{ nginx_conf_dir }}/conex-core-nginx.conf"    # /etc/nginx/conf.d
     mode: "0644"
   when: conex_core_enabled and conex_core_share_expose
   register: cx_share_conf
 
-- name: Remove the conex-core Share listener (exposure off or conex-core disabled)
+- name: Disable http://box{{ conex_core_url }}/v1/share/ via NGINX, by removing {{ nginx_conf_dir }}/conex-core-nginx.conf
   file:
-    path: /etc/nginx/k2go-http.d/conex-core-share.conf
+    path: "{{ nginx_conf_dir }}/conex-core-nginx.conf"    # /etc/nginx/conf.d
     state: absent
   when: not (conex_core_enabled and conex_core_share_expose)
   register: cx_share_removed
 
-# Reload nginx ONLY when the Share listener was written or removed in this run, not on every
-# play. Gating on the change avoids bouncing nginx (and, on proot, every live :8085 connection)
-# when nothing changed. A graceful systemd reload, or a pdsm restart on proot (pdsm has no
-# reload verb), picks up the new :{{ conex_core_share_port }} listen socket.
-- name: Reload 'nginx' systemd service when the Share listener changed (not proot)
+# An earlier role version wrote a separate :8095 server block into this dir, which needed an
+# include in the global nginx.conf. Remove it on boxes that ran that version.
+- name: Remove the retired Share listener dir /etc/nginx/k2go-http.d
+  file:
+    path: /etc/nginx/k2go-http.d
+    state: absent
+  register: cx_share_legacy
+
+# Reload nginx ONLY when the Share conf changed in this run, not on every play. Gating on the
+# change avoids bouncing nginx (and, on proot, every live portal connection) when nothing
+# changed. A graceful systemd reload, or a pdsm restart on proot (pdsm has no reload verb).
+- name: Reload 'nginx' systemd service when the Share conf changed (not proot)
   systemd:
     name: nginx
     state: reloaded
   when:
     - not is_proot
-    - (cx_share_conf is changed) or (cx_share_removed is changed)
+    - (cx_share_conf is changed) or (cx_share_removed is changed) or (cx_share_legacy is changed)
 
-- name: Restart 'nginx' via pdsm when the Share listener changed (proot)
+- name: Restart 'nginx' via pdsm when the Share conf changed (proot)
   command: pdsm restart nginx
   changed_when: true
   when:
     - is_proot
-    - (cx_share_conf is changed) or (cx_share_removed is changed)
+    - (cx_share_conf is changed) or (cx_share_removed is changed) or (cx_share_legacy is changed)
