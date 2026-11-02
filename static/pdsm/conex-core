@@ -36,8 +36,10 @@ start() {
   # Supervisor: respawn the server if it exits. Its PID is recorded so stop() can end
   # the respawn loop before killing the server. LOGFILE is passed via the env so the
   # inner shell expands it at runtime (avoids brittle nested quoting).
+  # python -u: unbuffered, so the log captures output while the server runs forever (without
+  # it, block-buffered stdout never flushes and /var/log/conex-core.log stays empty).
   LOGFILE="$LOGFILE" nohup sh -c \
-    'while :; do python3 -m conex_core >> "$LOGFILE" 2>&1; echo "[conex-core] exited ($?); respawning in 2s" >> "$LOGFILE"; sleep 2; done' \
+    'while :; do python3 -u -m conex_core >> "$LOGFILE" 2>&1; echo "[conex-core] exited ($?); respawning in 2s" >> "$LOGFILE"; sleep 2; done' \
     >/dev/null 2>&1 &
   echo $! > "$SUP_PIDFILE"
 

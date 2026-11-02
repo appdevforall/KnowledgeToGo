@@ -6,6 +6,8 @@ the system Python 3. Bound to localhost, like dash-node; the front reaches it in
 from __future__ import annotations
 
 import json
+import logging
+import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
@@ -21,6 +23,12 @@ _MAX_BODY = 1 * 1024 * 1024  # a plan request is small; cap the read defensively
 _BAD_JSON = object()  # sentinel: body present but not valid JSON
 _TOO_LARGE = object()  # sentinel: declared body exceeds _MAX_BODY
 
+# One logger for the service. The supervisor (PDSM wrapper or systemd) redirects stdout to
+# /var/log/conex-core.log, so a record here is the box-side trace of a failure. Access logs
+# stay off (log_message is a no-op); only errors, uncaught exceptions and startup are logged,
+# so a failed import leaves a trace without a per-request firehose.
+log = logging.getLogger("conex_core")
+
 
 def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
     class Handler(BaseHTTPRequestHandler):
@@ -34,11 +42,20 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
             # land in access logs (it is the only auth for the gate).
             return self.headers.get("X-Share-Token")
 
+        def _dispatch(self, method: str, path: str, query: dict, body=None):
+            # Single dispatch boundary: an uncaught error in a handler becomes a logged 500
+            # with a JSON body, never a dropped connection the front reads as a network error.
+            try:
+                return dispatch(registry, method, path, query, body, ops=ops, share=share,
+                                token=self._share_token())
+            except Exception:
+                log.exception("unhandled error: %s %s", method, path)
+                return 500, {"error": "internal error"}
+
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "GET", parts.path, query, ops=ops, share=share,
-                                       token=self._share_token())
+            status, payload = self._dispatch("GET", parts.path, query)
             if isinstance(payload, ExportStream):
                 self._stream(status, payload)
             else:
@@ -55,15 +72,13 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
             if body is _BAD_JSON:
                 self._send(400, {"error": "invalid JSON body"})
                 return
-            status, payload = dispatch(registry, "POST", parts.path, {}, body, ops=ops, share=share,
-                                       token=self._share_token())
+            status, payload = self._dispatch("POST", parts.path, {}, body)
             self._send(status, payload)
 
         def do_DELETE(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = dispatch(registry, "DELETE", parts.path, query, ops=ops, share=share,
-                                       token=self._share_token())
+            status, payload = self._dispatch("DELETE", parts.path, query)
             self._send(status, payload)
 
         def _read_json_body(self):
@@ -83,6 +98,13 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
 
         def _send(self, status: int, payload) -> None:
             body = json.dumps(payload).encode("utf-8")
+            if status >= 400:
+                # Log every error response, so an import or share failure leaves a box-side
+                # trace. Log the path WITHOUT its query string: a client may put the share token
+                # in ?token=... (conex-core reads it from the header, but the query value must not
+                # land in the log).
+                detail = payload.get("error") or payload.get("reason") if isinstance(payload, dict) else ""
+                log.warning("%s %s -> %d %s", self.command, urlsplit(self.path).path, status, detail or "")
             self.send_response(status)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(body)))
@@ -132,6 +154,11 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
 
 
 def serve(config: Config) -> None:
+    # Log to stdout, which the supervisor redirects to /var/log/conex-core.log. A StreamHandler
+    # flushes each record, so a failure is on disk at once even though the process never exits;
+    # the supervisor also runs python with -u so any other output is unbuffered too.
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout,
+                        format="%(asctime)s conex-core %(levelname)s %(message)s")
     registry = Registry.load(config)
     ops = ExportOps(registry, config.staging_dir)
     share = ShareOps(registry, ops)
@@ -142,6 +169,6 @@ def serve(config: Config) -> None:
     ops.sweep_startup()
     share.sweep_startup()
     httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry, ops, share))
-    print(f"conex-core {VERSION} listening on http://{config.host}:{config.port} "
-          f"(apps: {', '.join(registry.apps()) or 'none'})")
+    log.info("conex-core %s listening on http://%s:%d (apps: %s)", VERSION, config.host,
+             config.port, ", ".join(registry.apps()) or "none")
     httpd.serve_forever()

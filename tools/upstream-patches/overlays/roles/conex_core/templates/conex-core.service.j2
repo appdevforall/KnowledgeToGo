@@ -16,7 +16,8 @@ Environment=CONEX_KOLIBRI_BIN={{ kolibri_exec_path | default('/usr/bin/kolibri')
 # changed from the box default. The role writes this file; the leading "-" lets
 # the unit start when it is absent. See roles/conex_core/defaults/main.yml.
 EnvironmentFile=-{{ conex_core_env_file }}
-ExecStart=/usr/bin/python3 -m conex_core
+# -u: unbuffered stdout, so journald captures output while the server runs forever.
+ExecStart=/usr/bin/python3 -u -m conex_core
 Restart=always
 RestartSec=2
 

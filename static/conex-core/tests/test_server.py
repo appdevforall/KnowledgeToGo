@@ -87,6 +87,28 @@ class ServerHttpTest(unittest.TestCase):
         c.close()
         self.assertEqual(out, {"version": VERSION})
 
+    def test_error_response_is_logged(self):
+        # Every >= 400 response leaves a box-side trace (K2GO-376 observability): a failed
+        # import used to vanish because conex-core logged nothing.
+        with self.assertLogs("conex_core", level="WARNING") as cm:
+            c = self._conn()
+            c.request("GET", "/v1/content/nope/x")
+            self.assertEqual(c.getresponse().status, 404)
+            c.close()
+        self.assertTrue(any("/v1/content/nope/x" in m and "404" in m for m in cm.output), cm.output)
+
+    def test_error_log_omits_url_query(self):
+        # The error log strips the query string, so a share token a client puts in the URL
+        # (?token=...) never lands in /var/log/conex-core.log.
+        with self.assertLogs("conex_core", level="WARNING") as cm:
+            c = self._conn()
+            c.request("GET", "/v1/content/nope/x?token=SECRETTOKEN123")
+            self.assertEqual(c.getresponse().status, 404)
+            c.close()
+        joined = "\n".join(cm.output)
+        self.assertNotIn("SECRETTOKEN123", joined, joined)
+        self.assertIn("/v1/content/nope/x", joined)
+
     def test_export_plan_over_http(self):
         c = self._conn()
         payload = json.dumps({"items": [{"app": "kiwix", "localRef": self.zim_name}]})
@@ -126,6 +148,43 @@ class ServerHttpTest(unittest.TestCase):
         # All content lives in the one ZIM, so the per-app total accounts for it.
         self.assertEqual(out["usedByContentBytes"], len(self.zim_bytes))
         self.assertEqual(out["perApp"], [{"app": "kiwix", "bytes": len(self.zim_bytes)}])
+
+
+class _RaisingAdapter:
+    """An adapter whose list() raises, to exercise the handler's uncaught-error path."""
+    app = "boom"
+    id_kind = "authoritative"
+
+    def is_installed(self):
+        return True
+
+    def list(self):
+        raise RuntimeError("boom in list")
+
+
+class ServerErrorPathTest(unittest.TestCase):
+    def test_uncaught_exception_returns_500_and_logs(self):
+        # An uncaught handler error becomes a logged 500 with a JSON body, not a dropped
+        # connection the front reads as an opaque network error (K2GO-376 observability).
+        reg = Registry([_RaisingAdapter()])
+        ops = ExportOps(reg, staging_dir=tempfile.mkdtemp(), ttl_seconds=60)
+        httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(reg, ops))
+        port = httpd.server_address[1]
+        t = threading.Thread(target=httpd.serve_forever, daemon=True)
+        t.start()
+        try:
+            with self.assertLogs("conex_core", level="ERROR") as cm:
+                c = http.client.HTTPConnection("127.0.0.1", port, timeout=10)
+                c.request("GET", "/v1/content")
+                resp = c.getresponse()
+                body = json.loads(resp.read())
+                c.close()
+            self.assertEqual(resp.status, 500)
+            self.assertEqual(body, {"error": "internal error"})
+            self.assertTrue(any("unhandled error" in m for m in cm.output), cm.output)
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
 
 
 if __name__ == "__main__":
