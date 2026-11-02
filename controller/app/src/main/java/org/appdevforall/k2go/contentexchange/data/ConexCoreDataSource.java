@@ -43,6 +43,13 @@ public final class ConexCoreDataSource {
     /** Delete blocks on the box's own delete (Kolibri deletechannel, Kiwix reindex), which can run
      *  well past the read-side timeout, so it waits longer than a plain read. */
     private static final int DELETE_READ_TIMEOUT_MS = 120000;
+    /** Import blocks on the box's own ingest: for Kolibri that is importchannel + importcontent
+     *  copying the whole channel on-device (measured about 141s for a 3.3 GB channel; larger channels
+     *  take proportionally longer). At the generic 20s read timeout every sizable Kolibri import
+     *  false-failed while the box kept importing, so import waits far longer. A fixed ceiling is still
+     *  fragile for a very large channel; the robust follow-up is to make import a prepare/poll long
+     *  operation like export (K2GO-507). */
+    private static final int IMPORT_READ_TIMEOUT_MS = 900000;
     /** K2GO-507: the export fetch read timeout is a per-read (inactivity) gap, NOT a total wall
      *  clock. {@link HttpURLConnection#setReadTimeout} fires only when a single read blocks this
      *  long with no bytes, and it resets on every read, so a multi-GB staged tar can stream for
@@ -77,7 +84,7 @@ public final class ConexCoreDataSource {
 
     /** {@code POST /v1/import/item} with {@code {app, entry, payloadPath}} -> the ingest result. */
     public JSONObject postImportItem(JSONObject body) throws Exception {
-        return postJson(V1 + "/import/item", body);
+        return postJson(V1 + "/import/item", body, null, IMPORT_READ_TIMEOUT_MS);
     }
 
     /**
@@ -195,17 +202,23 @@ public final class ConexCoreDataSource {
     }
 
     private static JSONObject postJson(String urlStr, JSONObject body) throws Exception {
-        return postJson(urlStr, body, null);
+        return postJson(urlStr, body, null, READ_TIMEOUT_MS);
+    }
+
+    private static JSONObject postJson(String urlStr, JSONObject body, String shareToken) throws Exception {
+        return postJson(urlStr, body, shareToken, READ_TIMEOUT_MS);
     }
 
     /** POST with an optional {@code X-Share-Token} header (K2GO-376: the token is the gate's only
-     *  auth, so it rides a header, never the URL query, to stay out of relay / nginx access logs). */
-    private static JSONObject postJson(String urlStr, JSONObject body, String shareToken) throws Exception {
+     *  auth, so it rides a header, never the URL query, to stay out of relay / nginx access logs).
+     *  {@code readTimeoutMs} lets a slow box op (import ingest) wait past the generic read timeout. */
+    private static JSONObject postJson(String urlStr, JSONObject body, String shareToken,
+                                       int readTimeoutMs) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
             c.setConnectTimeout(CONNECT_TIMEOUT_MS);
-            c.setReadTimeout(READ_TIMEOUT_MS);
+            c.setReadTimeout(readTimeoutMs);
             c.setRequestMethod("POST");
             c.setDoOutput(true);
             c.setRequestProperty("Content-Type", "application/json");
