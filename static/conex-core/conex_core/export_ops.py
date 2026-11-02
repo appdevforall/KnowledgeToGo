@@ -38,8 +38,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Tuple
 
-from .export import has_room
-
 Response = Tuple[int, Any]
 
 # The op temp prefix. Op-owned and app-agnostic (the op layer creates the temp, not the
@@ -115,8 +113,10 @@ class ExportOps:
         plan = self._registry.get(app).prepare_export(local_ref)
         if plan is None:
             return 404, {"error": "item not found or not exportable"}
-        if plan.stages and not has_room(self._staging_dir, plan.total_bytes):
-            return 507, {"error": "insufficient space to stage export"}
+        # No free-space preflight. The box runs under proot, whose statvfs under-reports the free
+        # space on the content volume, so this check false-rejected valid exports on devices with
+        # ample room (the import path dropped the same check for the same reason). A genuine ENOSPC
+        # during staging surfaces as an op error through _run_stage, and the temp is swept.
         op_id = secrets.token_hex(16)
         if plan.stages:
             try:

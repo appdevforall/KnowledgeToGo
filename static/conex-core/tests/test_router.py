@@ -233,6 +233,19 @@ class ImportRouteTest(unittest.TestCase):
             self.assertEqual(status, 422)
             self.assertFalse(out["ok"])
 
+    def test_import_item_no_space_507(self):
+        # A space shortfall (the adapter tags code "no_space") maps to 507, not 422, so the front
+        # stops the run with a space message instead of a per-item retry.
+        with tempfile.TemporaryDirectory() as root:
+            fake = FakeAdapter("kiwix", [],
+                               import_result={"ok": False, "code": "no_space", "reason": "extract failed"})
+            reg = Registry([fake], import_root=root)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": os.path.join(root, "x")}
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            self.assertEqual(status, 507)
+            self.assertFalse(out["ok"])
+            self.assertEqual(out["code"], "no_space")
+
 
 class DeleteRouteTest(unittest.TestCase):
     def setUp(self):

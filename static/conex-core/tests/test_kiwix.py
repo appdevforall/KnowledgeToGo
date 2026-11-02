@@ -231,6 +231,29 @@ class KiwixImportTest(unittest.TestCase):
             self.assertFalse(result["ok"])
             self.assertFalse(os.path.exists(os.path.join(os.path.dirname(zdir), "evil.zim")))
 
+    def test_import_enospc_sets_no_space_code(self):
+        # A ZIM is one large file: an ENOSPC during the copy carries the structural code "no_space"
+        # so the front stops the run with a space message, not a per-item retry.
+        import conex_core.adapters.kiwix as kiwix_mod
+        with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
+            payload = os.path.join(src, "payload.zim")
+            with open(payload, "wb") as f:
+                f.write(_zim_header(uuid.uuid4()) + os.urandom(16))
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent")
+            orig = kiwix_mod.shutil.copyfile
+
+            def boom(*_a, **_k):
+                raise OSError(28, "No space left on device")
+
+            kiwix_mod.shutil.copyfile = boom
+            try:
+                result = adapter.import_item(
+                    {"identity": {"localRef": "gutenberg_en_all_2024-01.zim"}}, payload)
+            finally:
+                kiwix_mod.shutil.copyfile = orig
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["code"], "no_space")
+
 
 class KiwixDeleteTest(unittest.TestCase):
     def test_delete_removes_file_and_reports_exact_size(self):
