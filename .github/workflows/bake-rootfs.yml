@@ -61,6 +61,11 @@ env:
   # proot-distro base lives in a folder). Set it only if the layout gains a prefix.
   R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
 
+# One bake at a time: two overlapping runs would race on the same pointers. A relaunch queues.
+concurrency:
+  group: bake-rootfs
+  cancel-in-progress: false
+
 jobs:
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
   # (github.com/termux/proot-distro), fetched from the upstream release. It is STATIC, so seed it
@@ -185,11 +190,23 @@ jobs:
           # staging bake cannot change or delete anything a production install depends on.
           if [ "$MODE" = dev ]; then PP="dev_latest_"; else PP="latest_"; fi
 
+          # R2 drops a multipart upload now and then (InvalidPart, first-byte timeout), which
+          # failed a finished 70-min bake. Retry the whole cp; each attempt restarts the upload.
+          s3cp() {
+            local n
+            for n in 1 2 3 4 5; do
+              aws s3 cp "$@" --endpoint-url "$ENDPOINT" && return 0
+              echo "!! aws s3 cp failed (attempt $n/5), retry in $((n * 15))s" >&2
+              sleep $((n * 15))
+            done
+            return 1
+          }
+
           # 1) Big artifacts FIRST (data before any pointer that resolves to them).
           shopt -s nullglob
           for f in k2go_*.tar.gz; do
             echo ">> upload artifact $f"
-            aws s3 cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}" --endpoint-url "$ENDPOINT"
+            s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}"
           done
 
           # 2) Per-artifact sidecars (.meta4/.sha256/.installed/.torrent). The stable latest_*
@@ -198,7 +215,7 @@ jobs:
           #    PUBLISH_QUEUE.tsv) so a staging bake never overwrites what the production catalogs read.
           EXCLUDES=(--exclude "*.tar.gz" --exclude "latest_*.meta4" --exclude "latest_*.installed")
           if [ "$MODE" = dev ]; then EXCLUDES+=(--exclude "build-*.log" --exclude "PUBLISH_QUEUE*.tsv"); fi
-          aws s3 cp . "s3://${BUCKET_NAME}/${PFX}" --recursive "${EXCLUDES[@]}" --endpoint-url "$ENDPOINT"
+          s3cp . "s3://${BUCKET_NAME}/${PFX}" --recursive "${EXCLUDES[@]}"
 
           # 3) Flip the pointers LAST (only after the data is fully up, so a client reading a pointer
           #    never lands on a half-uploaded tarball). The builder writes latest_*; dev republishes
@@ -206,7 +223,7 @@ jobs:
           for f in latest_*.meta4 latest_*.installed; do
             dest="${f/latest_/$PP}"
             echo ">> pointer $dest"
-            aws s3 cp "$f" "s3://${BUCKET_NAME}/${PFX}${dest}" --endpoint-url "$ENDPOINT"
+            s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${dest}"
           done
 
           # 4) Prune (publish only; dev never deletes): keep the newest $KEEP batches per (tier,arch);
