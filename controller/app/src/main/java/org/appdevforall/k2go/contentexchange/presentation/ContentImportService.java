@@ -445,6 +445,10 @@ public final class ContentImportService extends Service {
             pollErrors = 0;
             switch (st.state()) {
                 case DONE:
+                    // Release the consumed op now (an idempotent drop on the box), so a finished
+                    // import does not linger until the TTL sweep. This is import's normal-completion
+                    // cleanup, since it has no fetch stream whose close drops the op as export does.
+                    source.abortImport(opId);
                     return;
                 case ERROR:
                     if (st.noSpace()) {
