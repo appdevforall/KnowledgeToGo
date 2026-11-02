@@ -12,6 +12,7 @@ content nodes, and a flat join would count its bytes once per node.
 
 from __future__ import annotations
 
+import errno
 import os
 import re
 import shutil
@@ -22,7 +23,7 @@ import tempfile
 from typing import List, Optional
 
 from ..export import free_bytes, tar_stream
-from ..importing import safe_extract_tar, single_child_dir
+from ..importing import safe_extract_tar, single_child_dir, volume_nearly_full
 from ..model import (
     ABSENT,
     AUTHORITATIVE,
@@ -269,10 +270,21 @@ class KolibriAdapter(ContentAdapter):
             except OSError as exc:
                 # A real ENOSPC or IO error during extraction. No free-space preflight runs (the
                 # box runs under proot, whose statvfs under-reports free space), so fail cleanly
-                # here instead of letting the error crash the request.
-                return {"ok": False, "reason": f"extract failed: {exc}"}
+                # here instead of letting the error crash the request. ENOSPC gets a structural
+                # code so the front stops the run with a space message, not a per-item retry.
+                failure = {"ok": False, "reason": f"extract failed: {exc}"}
+                if exc.errno == errno.ENOSPC:
+                    failure["code"] = "no_space"
+                return failure
             source = single_child_dir(work) or work
             if not self._stage_import(channel_id, source):
+                # The Kolibri CLI hides its errno. When it fails with the content volume essentially
+                # full, the cause is out-of-space (the channel copy into KOLIBRI_HOME is the third
+                # full copy on one volume), so report it structurally; otherwise it is a real import
+                # failure.
+                if volume_nearly_full(self._home):
+                    return {"ok": False, "code": "no_space",
+                            "reason": "kolibri import failed: no space left on the content volume"}
                 return {"ok": False, "reason": "kolibri import failed"}
             return {"ok": True, "app": "kolibri", "localRef": channel_id}
         finally:

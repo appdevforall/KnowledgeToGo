@@ -20,17 +20,6 @@ from typing import Iterator, List, Optional, Tuple
 CHUNK = 1024 * 1024
 
 
-def has_room(path: str, needed_bytes: int) -> bool:
-    """True when the volume holding path has room for about needed_bytes, with a small
-    headroom factor. On an unmeasurable path, allow it (the operation still fails cleanly on
-    ENOSPC). Shared by the export staging preflight and the import preflight."""
-    try:
-        free = shutil.disk_usage(path).free
-    except OSError:
-        return True
-    return free >= int(needed_bytes * 1.05)
-
-
 def disk_total_free(path: str) -> Tuple[int, int]:
     """(total, free) bytes of the volume holding path, or (0, 0) when it is unmeasurable.
     Used by the storage summary (GET /v1/storage)."""

@@ -111,9 +111,13 @@ def _import_item(registry: Registry, body: Any) -> Response:
     # No free-space preflight here. The box runs under proot, whose statvfs under-reports the
     # free space on the content volume, so a disk check here false-rejected imports on devices
     # with ample room. The phone app is the one source of truth for free space (Android StatFs)
-    # and gates before this call; a real ENOSPC during ingest still fails cleanly (422).
+    # and gates before this call; a real ENOSPC during ingest still fails cleanly. A space
+    # shortfall returns 507 (the adapter tags it code "no_space") so the front stops the run with
+    # a space message; any other failure stays 422 (a per-item retry).
     result = registry.get(app).import_item(entry, payload_path)
-    return (200, result) if result.get("ok") else (422, result)
+    if result.get("ok"):
+        return 200, result
+    return (507, result) if result.get("code") == "no_space" else (422, result)
 
 
 def _delete_item(registry: Registry, app: str, local_ref: str) -> Response:

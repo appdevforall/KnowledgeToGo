@@ -137,6 +137,13 @@ class _ImportStubKolibri(KolibriAdapter):
         return True
 
 
+class _ImportFailStubKolibri(KolibriAdapter):
+    """The CLI import seam fails (non-zero exit), so import_item takes its failure branch."""
+
+    def _stage_import(self, channel_id, source):
+        return False
+
+
 def _bundle_tar(tar_path, channel_id):
     with tarfile.open(tar_path, "w") as t:
         for rel, data in [
@@ -179,7 +186,7 @@ class KolibriImportTest(unittest.TestCase):
     def test_import_fails_cleanly_on_extract_oserror(self):
         # A real ENOSPC or IO error during extraction must return a clean failure, not raise:
         # no free-space preflight runs (the box runs under proot, whose statvfs under-reports
-        # free space). The reason carries the OS message so the app can detect "no space".
+        # free space). An ENOSPC carries the structural code "no_space" so the app stops the run.
         with tempfile.TemporaryDirectory() as d:
             db = os.path.join(d, "db.sqlite3")
             _make_db(db, cid=VALID_ID)
@@ -197,7 +204,67 @@ class KolibriImportTest(unittest.TestCase):
             finally:
                 kolibri_mod.safe_extract_tar = orig
             self.assertFalse(result["ok"])
+            self.assertEqual(result["code"], "no_space")
             self.assertIn("No space left on device", result["reason"])
+
+    def test_import_extract_io_error_without_space_has_no_code(self):
+        # A non-ENOSPC OSError during extraction is a plain failure, not a space problem: no code,
+        # so the app retries the item instead of stopping the whole run.
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "chan.tar")
+            _bundle_tar(tar_path, VALID_ID)
+            adapter = _ImportStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            orig = kolibri_mod.safe_extract_tar
+
+            def boom(*_a, **_k):
+                raise OSError(5, "I/O error")
+
+            kolibri_mod.safe_extract_tar = boom
+            try:
+                result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            finally:
+                kolibri_mod.safe_extract_tar = orig
+            self.assertFalse(result["ok"])
+            self.assertNotIn("code", result)
+
+    def test_import_no_space_when_kolibri_stage_fails_on_full_volume(self):
+        # The Kolibri CLI hides its errno. When it fails with the content volume essentially full,
+        # the core reports it structurally as no_space so the front stops the run with a space
+        # message instead of a per-item retry.
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "chan.tar")
+            _bundle_tar(tar_path, VALID_ID)
+            adapter = _ImportFailStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            orig = kolibri_mod.volume_nearly_full
+            kolibri_mod.volume_nearly_full = lambda path: True
+            try:
+                result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            finally:
+                kolibri_mod.volume_nearly_full = orig
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["code"], "no_space")
+
+    def test_import_generic_failure_when_kolibri_stage_fails_with_room(self):
+        # The Kolibri CLI failed but the volume has room, so it is a real import failure, not a
+        # space problem: no code, so the app retries the item.
+        with tempfile.TemporaryDirectory() as d:
+            db = os.path.join(d, "db.sqlite3")
+            _make_db(db, cid=VALID_ID)
+            tar_path = os.path.join(d, "chan.tar")
+            _bundle_tar(tar_path, VALID_ID)
+            adapter = _ImportFailStubKolibri(db, staging_dir=os.path.join(d, "staging"))
+            orig = kolibri_mod.volume_nearly_full
+            kolibri_mod.volume_nearly_full = lambda path: False
+            try:
+                result = adapter.import_item({"identity": {"localRef": VALID_ID}}, tar_path)
+            finally:
+                kolibri_mod.volume_nearly_full = orig
+            self.assertFalse(result["ok"])
+            self.assertNotIn("code", result)
 
 
 class _StubbedKolibri(KolibriAdapter):

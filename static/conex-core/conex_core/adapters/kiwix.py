@@ -13,6 +13,7 @@ convention <creator>_<lang>_<flavour>_<date>.zim, the same keys kiwix_catalog.cs
 
 from __future__ import annotations
 
+import errno
 import os
 import re
 import shutil
@@ -222,7 +223,12 @@ class KiwixAdapter(ContentAdapter):
         try:
             shutil.copyfile(payload_path, dest)
         except OSError as exc:
-            return {"ok": False, "reason": f"copy failed: {exc}"}
+            # ENOSPC gets a structural code so the front stops the run with a space message, not a
+            # per-item retry (a ZIM is one large file, the likeliest out-of-space import).
+            failure = {"ok": False, "reason": f"copy failed: {exc}"}
+            if exc.errno == errno.ENOSPC:
+                failure["code"] = "no_space"
+            return failure
         self._reindex()
         return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
 

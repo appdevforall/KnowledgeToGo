@@ -14,6 +14,7 @@ The adapter reads metadata.db in readonly (the sockets/books.query.ts pattern). 
 
 from __future__ import annotations
 
+import errno
 import os
 import shutil
 import sqlite3
@@ -141,8 +142,12 @@ class CalibreAdapter(ContentAdapter):
             except OSError as exc:
                 # A real ENOSPC or IO error during extraction. No free-space preflight runs (the
                 # box runs under proot, whose statvfs under-reports free space), so fail cleanly
-                # here instead of letting the error crash the request.
-                return {"ok": False, "reason": f"extract failed: {exc}"}
+                # here instead of letting the error crash the request. ENOSPC gets a structural
+                # code so the front stops the run with a space message, not a per-item retry.
+                failure = {"ok": False, "reason": f"extract failed: {exc}"}
+                if exc.errno == errno.ENOSPC:
+                    failure["code"] = "no_space"
+                return failure
             files = _content_files(single_child_dir(work) or work, formats)
             if not files:
                 return {"ok": False, "reason": "no book files in archive"}

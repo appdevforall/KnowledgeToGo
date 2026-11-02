@@ -11,12 +11,29 @@ reading an arbitrary path the caller names.
 from __future__ import annotations
 
 import os
+import shutil
 import tarfile
 from typing import Optional
 
 # A sane ceiling on members in one item archive. A legitimate Kolibri channel bundle is
 # thousands of files; millions is a decompression-bomb shape, not a real item.
 MAX_MEMBERS = 500000
+
+# A volume with less free than this has, for content purposes, no room left. Used AFTER an app
+# ingest (the Kolibri CLI) fails, to tell a real out-of-space apart from any other failure: the
+# CLI hides its errno, but at a true ENOSPC the volume reads about zero free. proot under-reports
+# free space, which only makes this fire more readily, never miss a real shortfall.
+NO_SPACE_FLOOR_BYTES = 64 * 1024 * 1024
+
+
+def volume_nearly_full(path: str) -> bool:
+    """True when the volume holding path has effectively no free space left (below
+    NO_SPACE_FLOOR_BYTES). On an unmeasurable path, return False: do not claim no-space without a
+    reading."""
+    try:
+        return shutil.disk_usage(path).free < NO_SPACE_FLOOR_BYTES
+    except OSError:
+        return False
 
 
 def escapes_root(name: str) -> bool:

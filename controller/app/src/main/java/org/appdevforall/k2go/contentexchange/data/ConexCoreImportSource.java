@@ -12,6 +12,7 @@
 package org.appdevforall.k2go.contentexchange.data;
 
 import org.appdevforall.k2go.contentexchange.domain.ImportEntry;
+import org.appdevforall.k2go.contentexchange.domain.ImportNoSpaceException;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ImportVerdict;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
@@ -58,9 +59,18 @@ public final class ConexCoreImportSource implements ImportSource {
                 .put("app", app)
                 .put("entry", new JSONObject(entryJson))
                 .put("payloadPath", payloadBoxPath);
-        JSONObject result = dataSource.postImportItem(body);
-        if (!result.optBoolean("ok", false)) {
-            throw new Exception(result.optString("reason", result.optString("error", "import failed")));
+        try {
+            JSONObject result = dataSource.postImportItem(body);
+            if (!result.optBoolean("ok", false)) {
+                throw new Exception(result.optString("reason", result.optString("error", "import failed")));
+            }
+        } catch (ConexCoreDataSource.ConexHttpException e) {
+            // 507 = a stage ran out of disk (the core tags the result code "no_space"). Map it to a
+            // typed signal so the service stops the run with a space message, not a per-item retry.
+            if (e.code() == 507) {
+                throw new ImportNoSpaceException(e.getMessage());
+            }
+            throw e;
         }
     }
 

@@ -39,6 +39,7 @@ import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
+import org.appdevforall.k2go.contentexchange.domain.ImportNoSpaceException;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.download.domain.DownloadEta;
@@ -420,6 +421,12 @@ public final class ContentImportService extends Service {
 
     private static boolean isNoSpace(Throwable e) {
         for (Throwable t = e; t != null; t = t.getCause()) {
+            // Structural signal: the core mapped an out-of-space ingest to 507, which the import
+            // source rethrows as this typed exception. Preferred over the prose scan below, which
+            // still catches a local staging-copy ENOSPC (a raw IOException, never through the core).
+            if (t instanceof ImportNoSpaceException) {
+                return true;
+            }
             String msg = t.getMessage();
             if (msg != null) {
                 String lower = msg.toLowerCase(java.util.Locale.US);

@@ -127,16 +127,17 @@ class PrepareTest(unittest.TestCase):
             status, _ = ops.prepare("kolibri", "missing")
             self.assertEqual(status, 404)
 
-    def test_no_room_507(self):
+    def test_no_free_space_preflight(self):
+        # The box runs under proot, whose statvfs under-reports free space, so prepare must not
+        # preflight the staging disk: even an implausibly large item still starts staging (no 507).
+        # A real ENOSPC surfaces as an op error through _run_stage; the front is the source of
+        # free-space truth. (Mirrors the import path.) fail=True keeps the fake from writing the
+        # declared size; only the prepare return (no preflight) is under test here.
         with tempfile.TemporaryDirectory() as d:
-            ops = _ops(_StagingFake(total=10 ** 9), d)
-            orig = export_ops.has_room
-            export_ops.has_room = lambda path, n: False
-            try:
-                status, _ = ops.prepare("kolibri", "chan")
-            finally:
-                export_ops.has_room = orig
-            self.assertEqual(status, 507)
+            ops = _ops(_StagingFake(total=10 ** 18, fail=True), d)
+            status, out = ops.prepare("kolibri", "chan")
+            self.assertEqual(status, 200)
+            self.assertEqual(out["state"], "staging")
 
 
 class StatusTest(unittest.TestCase):
