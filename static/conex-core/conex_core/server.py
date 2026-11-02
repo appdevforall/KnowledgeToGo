@@ -156,7 +156,7 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
 def serve(config: Config) -> None:
     # Log to stdout, which the supervisor redirects to /var/log/conex-core.log. A StreamHandler
     # flushes each record, so a failure is on disk at once even though the process never exits;
-    # the supervisor also runs python with -u so any other output is unbuffered too.
+    # __main__ also line-buffers stdout/stderr so any other output (e.g. a traceback) reaches it.
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format="%(asctime)s conex-core %(levelname)s %(message)s")
     registry = Registry.load(config)
