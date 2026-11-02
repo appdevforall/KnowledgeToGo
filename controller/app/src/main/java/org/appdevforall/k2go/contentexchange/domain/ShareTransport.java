@@ -11,14 +11,16 @@
  */
 package org.appdevforall.k2go.contentexchange.domain;
 
+import org.appdevforall.k2go.config.BoxEndpoints;
+
 /**
  * Transport settings for granular wireless Share (K2GO-376).
  *
  * <p>Share is the network twin of Export: the receiver PULLS from the sender's live conex-core
  * (ADR "Pillar Share"). On the sender the share session is created over the loopback relay, but
- * the RECEIVER reaches the gate over the hotspot at {@code http://<senderHotspotIp>:SHARE_PORT}.
- * That off-loopback exposure is a separate server-side slice (plain HTTP, v1 only); this is the
- * single constant the app points at it, so it stays in step with the exposure port.
+ * the RECEIVER reaches the gate over the hotspot at
+ * {@code http://<senderHotspotIp>:SHARE_PORT + SHARE_PATH_PREFIX + /v1/share/...}. The gate is the
+ * conex_core role's own nginx conf on the box's main server (plain HTTP, v1 only).
  */
 public final class ShareTransport {
 
@@ -26,11 +28,18 @@ public final class ShareTransport {
     }
 
     /**
-     * TCP port the sender's conex-core is exposed on, off loopback, for the paired receiver. Must
-     * match the scoped-exposure slice (candidate 8095, plain HTTP for v1). The loopback relay the
-     * sender uses to CREATE the session is unrelated to this port.
+     * TCP port the receiver reaches the sender's Share gate on: the box's main nginx server, where
+     * the conex_core role installs the gate. The loopback relay the sender uses to CREATE the
+     * session is a separate path.
      */
-    public static final int SHARE_PORT = 8095;
+    public static final int SHARE_PORT = BoxEndpoints.PORT;
+
+    /**
+     * URL prefix of the Share gate on that server. Must match the conex_core role variable
+     * {@code conex_core_url}. conex-core itself serves {@code /v1/share/...}; the gate maps
+     * {@code SHARE_PATH_PREFIX + /v1/share/...} onto it.
+     */
+    public static final String SHARE_PATH_PREFIX = "/conex-core";
 
     /** The receiver reaches the gate over plain HTTP on the hotspot (no TLS for v1; see the ADR). */
     public static final String SCHEME = "http";

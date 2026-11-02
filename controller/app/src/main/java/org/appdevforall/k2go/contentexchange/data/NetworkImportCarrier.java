@@ -6,7 +6,7 @@
  * Description : K2GO-376. The network ImportCarrier: the mirror of SafImportCarrier, but each item is
  *               read over HTTP from the sender's live conex-core gate on the shared hotspot, not from a
  *               SAF drive. readManifest() GETs the invite's manifest URL; openPayload(itemRef) GETs
- *               /v1/share/<id>/fetch/<itemRef>, retrying while the sender stages the item; the token
+ *               its sibling .../fetch/<itemRef>, retrying while the sender stages the item; the token
  *               rides the X-Share-Token header, never the URL. Everything downstream (stage to
  *               /library/.conex-staging, POST /v1/import/item) is unchanged from the disk path, so the
  *               carrier is the only sender-specific dependency of the import service. On a clean finish

@@ -18,7 +18,7 @@ import org.junit.Test;
 public class ShareHandshakeTest {
 
     private static final String HOST = "192.168.49.1";
-    private static final int PORT = 8095;
+    private static final int PORT = 8085;
     private static final String TOKEN = "n5Xk3_Qq-7bGf2hJkLmNoPqRsTuVwXyZ0123456789AB";
     private static final String MANIFEST = "/v1/share/abc123/manifest";
 
@@ -32,7 +32,7 @@ public class ShareHandshakeTest {
         assertEquals(PORT, invite.port);
         assertEquals(TOKEN, invite.token);
         assertEquals(MANIFEST, invite.manifestUrl);
-        assertEquals("http://192.168.49.1:8095", invite.baseUrl());
+        assertEquals("http://192.168.49.1:8085", invite.baseUrl());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ShareHandshakeTest {
     @Test
     public void decodeRejectsAnInjectedToken() {
         assertNull(ShareHandshake.decode(
-                "{\"app\":\"iiab_share\",\"addr\":\"192.168.49.1:8095\",\"token\":\"bad token\",\"manifestUrl\":\""
+                "{\"app\":\"iiab_share\",\"addr\":\"192.168.49.1:8085\",\"token\":\"bad token\",\"manifestUrl\":\""
                         + MANIFEST + "\"}"));
     }
 

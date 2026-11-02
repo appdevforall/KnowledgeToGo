@@ -6,15 +6,18 @@
 # conex-core owns NO user content: the exchanged items live in Kiwix / Kolibri / Calibre
 # and are NEVER deleted here. See the design note and the README "Data ownership".
 
-# ---- Share listener (off-loopback). Remove only our own conf; leave the shared
-# k2go-http.d dir / include alone. ----
-- name: Remove the conex-core Share listener
+# ---- Share gate (off-loopback). Remove our own nginx conf, plus the retired
+# k2go-http.d listener dir that an earlier role version created. ----
+- name: Remove the conex-core Share gate nginx conf (and the retired listener dir)
   file:
-    path: /etc/nginx/k2go-http.d/conex-core-share.conf
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - "{{ nginx_conf_dir }}/conex-core-nginx.conf"    # /etc/nginx/conf.d
+    - /etc/nginx/k2go-http.d
   register: cx_share_uninstall
 
-- name: Reload 'nginx' systemd service after removing the Share listener (not proot)
+- name: Reload 'nginx' systemd service after removing the Share gate (not proot)
   systemd:
     name: nginx
     state: reloaded
@@ -23,7 +26,7 @@
     - cx_share_uninstall is changed
   failed_when: false
 
-- name: Restart 'nginx' via pdsm after removing the Share listener (proot)
+- name: Restart 'nginx' via pdsm after removing the Share gate (proot)
   command: pdsm restart nginx
   changed_when: true
   when:

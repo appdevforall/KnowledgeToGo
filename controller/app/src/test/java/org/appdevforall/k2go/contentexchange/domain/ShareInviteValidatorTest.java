@@ -16,7 +16,7 @@ import org.junit.Test;
 public class ShareInviteValidatorTest {
 
     private static final String HOST = "192.168.49.1";
-    private static final int PORT = 8095;
+    private static final int PORT = 8085;
     // url-safe base64, the shape of secrets.token_urlsafe(32).
     private static final String TOKEN = "n5Xk3_Qq-7bGf2hJkLmNoPqRsTuVwXyZ0123456789AB";
     private static final String MANIFEST = "/v1/share/abc123/manifest";

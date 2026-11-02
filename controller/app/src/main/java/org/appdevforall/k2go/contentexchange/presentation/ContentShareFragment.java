@@ -214,8 +214,11 @@ public class ContentShareFragment extends Fragment {
         // Section 2: the share invite QR. Needs the AP IPv4, which resolves a beat after ON.
         secReceive.caption.setText(R.string.k2go_cx_share_receive_caption);
         secReceive.subCaption.setText("");
+        // The core returns its own path (/v1/share/<id>/manifest); the receiver reaches it through
+        // the off-box gate prefix, so the invite carries the prefixed path.
         String invite = ip != null
-                ? ShareHandshake.encode(ip, ShareTransport.SHARE_PORT, session.token(), session.manifestUrl())
+                ? ShareHandshake.encode(ip, ShareTransport.SHARE_PORT, session.token(),
+                        ShareTransport.SHARE_PATH_PREFIX + session.manifestUrl())
                 : null;
         if (invite == null) {
             // No dead QR at a guessed address; hold the slot until the real AP IP arrives (render reruns).

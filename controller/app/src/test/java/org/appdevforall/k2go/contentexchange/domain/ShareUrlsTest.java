@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class ShareUrlsTest {
 
-    private static final String BASE = "http://192.168.43.1:8095";
+    private static final String BASE = "http://192.168.43.1:8085";
     private static final String MANIFEST = "/v1/share/abc123/manifest";
 
     @Test
@@ -22,6 +22,15 @@ public class ShareUrlsTest {
         assertEquals(BASE + "/v1/share/abc123/fetch/0", ShareUrls.fetch(BASE, MANIFEST, "0"));
         assertEquals(BASE + "/v1/share/abc123/fetch/12", ShareUrls.fetch(BASE, MANIFEST, "12"));
         assertEquals(BASE + "/v1/share/abc123/complete", ShareUrls.complete(BASE, MANIFEST));
+    }
+
+    @Test
+    public void composesSiblingsUnderTheGatePrefix() {
+        // The invite carries the gate-prefixed path; fetch and complete keep that prefix.
+        String gated = ShareTransport.SHARE_PATH_PREFIX + MANIFEST;
+        assertEquals(BASE + "/conex-core/v1/share/abc123/manifest", ShareUrls.manifest(BASE, gated));
+        assertEquals(BASE + "/conex-core/v1/share/abc123/fetch/3", ShareUrls.fetch(BASE, gated, "3"));
+        assertEquals(BASE + "/conex-core/v1/share/abc123/complete", ShareUrls.complete(BASE, gated));
     }
 
     @Test
@@ -53,9 +62,9 @@ public class ShareUrlsTest {
 
     @Test
     public void baseMustBeABareOrigin() {
-        rejectBase("http://h:8095/");           // trailing slash
-        rejectBase("http://h:8095/v1");         // carries a path
-        rejectBase("ftp://h:8095");             // not http(s)
+        rejectBase("http://h:8085/");           // trailing slash
+        rejectBase("http://h:8085/v1");         // carries a path
+        rejectBase("ftp://h:8085");             // not http(s)
         rejectBase(null);
     }
 

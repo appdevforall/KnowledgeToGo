@@ -19,11 +19,12 @@ import org.json.JSONObject;
 /**
  * Encodes and parses the Share invite QR (ADR "Pillar Share"). The payload is small JSON:
  *
- * <pre>{"app":"iiab_share","addr":"&lt;host&gt;:&lt;port&gt;","token":"&lt;t&gt;","manifestUrl":"/v1/share/&lt;id&gt;/manifest"}</pre>
+ * <pre>{"app":"iiab_share","addr":"&lt;host&gt;:&lt;port&gt;","token":"&lt;t&gt;","manifestUrl":"/conex-core/v1/share/&lt;id&gt;/manifest"}</pre>
  *
  * <p>{@code addr} is the sender's hotspot IP and the share port joined with a colon (the one field
- * the ADR calls the address). The receiver composes {@code http://addr + manifestUrl} for the
- * manifest and {@code http://addr + /v1/share/<id>/fetch/<ref>} for each item, with the token in the
+ * the ADR calls the address); {@code manifestUrl} carries the gate prefix. The receiver composes
+ * {@code http://addr + manifestUrl} for the manifest and its sibling {@code .../fetch/<ref>} for each
+ * item ({@link org.appdevforall.k2go.contentexchange.domain.ShareUrls}), with the token in the
  * {@code X-Share-Token} header (never the URL). Parsing is fail-closed: an invite that does not
  * validate returns {@code null}, mirroring {@code SyncHandshakeHelper.parsePayload}.
  */

@@ -47,29 +47,28 @@ conex_core_calibre_pass: ""
 
 
 # ---- Off-loopback Share exposure (K2GO-376, Pillar Share) ----
-# Granular wireless Share lets a paired peer on the hotspot PULL selected content from
-# this box's live conex-core /v1/share gate. conex-core stays bound to loopback: a dedicated
-# nginx listener is the ONLY off-box surface, and it proxies ONLY /v1/share/<session>/
-# ... (never the rest of the /v1 API). The share token (X-Share-Token header) is the
-# auth; this scope is defense in depth. Design + the rootfs contract:
-# controller/docs/conex-core-share-exposure.md.
+# Granular wireless Share lets a paired peer on the local network PULL selected content from
+# this box's live conex-core /v1/share gate. conex-core stays bound to loopback: the role's
+# own nginx conf (conf.d, on the box's main server) is the ONLY off-box surface, and it
+# proxies ONLY {{ conex_core_url }}/v1/share/<session>/... (never the rest of the /v1 API).
+# The share token (X-Share-Token header) is the auth; this scope is defense in depth.
+# Design: controller/docs/conex-core-share-exposure.md.
 
-# The TCP port the Share listener binds on 0.0.0.0. 8095 is free on an IIAB box: the
-# 80xx cluster uses 8080/8083/8089 (calibre / calibre-web / sugarizer), 8085 is the
-# K2Go portal, and AzuraCast sits at 10000+. Site-configurable, per IIAB tradition;
-# the receiver's QR carries <senderHotspotIp>:<this port>.
-conex_core_share_port: 8095
+# URL prefix of the Share gate on the box's main nginx server: http://box/conex-core/v1/share/
+# The K2Go app composes the receiver URLs from it (ShareTransport.SHARE_PATH_PREFIX): change both
+# together.
+conex_core_url: /conex-core
 
-# Master switch for the off-box Share surface. False removes the listener and keeps
+# Master switch for the off-box Share surface. False removes the gate and keeps
 # conex-core loopback-only (in-box content exchange still works; only wireless Share is
 # off). A kill-switch for the one security-sensitive surface, independent of
 # conex_core_enabled.
 #
 # v1 decision (K2GO-376): ON by default on EVERY platform (proot phones AND systemd
 # boxes: rpi / pc, arm64 / amd64), so the surface can be observed in the field. The
-# listener is inert without an active share session (unknown-session 404, create
-# blocked), and every reachable endpoint is token-gated, so an always-bound port leaks
-# no content. If observation shows a systemd box should not open it by default, gate the
+# gate is inert without an active share session (unknown-session 404, create blocked),
+# and every reachable endpoint is token-gated, so an always-installed gate leaks no
+# content. If observation shows a systemd box should not open it by default, gate the
 # install by platform or arch later (an is_proot / arch condition on the install tasks),
 # not by removing the switch.
 conex_core_share_expose: True
@@ -88,6 +87,6 @@ conex_core_program_data:
   - "{{ content_base }}/.conex-staging"              # export scratch
   - "{{ conex_core_env_file }}"                       # operator env file (systemd path only)
   - /etc/systemd/system/conex-core.service           # supervisor unit (systemd path only)
-  - /etc/nginx/k2go-http.d/conex-core-share.conf     # Share listener (K2GO-376)
+  - "{{ nginx_conf_dir }}/conex-core-nginx.conf"     # Share gate nginx conf (K2GO-376)
 conex_core_user_settings: []                          # none seeded force:false
 conex_core_user_data: []                              # exchanged content is owned by Kiwix/Kolibri/Calibre
