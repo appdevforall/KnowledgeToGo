@@ -45,6 +45,12 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     /** K2GO-427: open the content manager (gestor) directly, from Settings. */
     public static final String EXTRA_CONTENT_MANAGER = "contentManager";
 
+    /** K2GO-534: the one Intent that opens the content manager, shared by Settings and the Library
+     *  "Manage" button, so the extra is set in a single place. */
+    public static Intent contentManagerIntent(android.content.Context ctx) {
+        return new Intent(ctx, SetupLibraryActivity.class).putExtra(EXTRA_CONTENT_MANAGER, true);
+    }
+
     /**
      * ADFA-5150: the one way into recovery — restore a backup, install over the internet, or clone from
      * a peer, all three offered here. The route to it (this class + {@link #EXTRA_BACKUP_RESTORE}) was

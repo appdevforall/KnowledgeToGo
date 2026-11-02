@@ -525,6 +525,7 @@
     <string name="k2go_tab_clone">Клонирај</string>
     <string name="k2go_tab_settings">Подешавања</string>
     <string name="k2go_get_more">+  Преузми још</string>
+    <string name="k2go_manage">Управљај</string>
     <string name="k2go_perm_allow">Дозволи</string>
     <string name="k2go_connect_available">Доступно док је апликација отворена.</string>
     <string name="k2go_back">Назад</string>

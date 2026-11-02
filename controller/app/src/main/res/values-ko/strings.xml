@@ -513,6 +513,7 @@
     <string name="k2go_tab_clone">복제</string>
     <string name="k2go_tab_settings">설정</string>
     <string name="k2go_get_more">+  더 받기</string>
+    <string name="k2go_manage">관리</string>
     <string name="k2go_perm_allow">허용</string>
     <string name="k2go_connect_available">앱이 열려 있는 동안 사용할 수 있습니다.</string>
     <string name="k2go_back">뒤로</string>

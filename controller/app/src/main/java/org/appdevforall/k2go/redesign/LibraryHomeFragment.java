@@ -165,6 +165,7 @@ public class LibraryHomeFragment extends Fragment {
         cardsHost = root.findViewById(R.id.k2go_cards);
         getMoreFooter = root.findViewById(R.id.k2go_get_more_footer);
         root.findViewById(R.id.k2go_get_more).setOnClickListener(v -> openGetMore());
+        root.findViewById(R.id.k2go_manage).setOnClickListener(v -> openContentManager());
         relayout();
         return root;
     }
@@ -262,7 +263,11 @@ public class LibraryHomeFragment extends Fragment {
             applyState(c, c.state);   // keep the live status across a relayout
             cells.add(card);
         }
-        if (getMoreInGrid) cells.add(makeGetMoreCell(cardH));
+        if (getMoreInGrid) {
+            // ADFA-4799: the footer actions fold into the grid as the last cells on wide screens.
+            cells.add(makeActionCell(cardH, getString(R.string.k2go_get_more), v -> openGetMore()));
+            cells.add(makeActionCell(cardH, getString(R.string.k2go_manage), v -> openContentManager()));
+        }
 
         int i = 0, n = cells.size();
         while (i < n) {
@@ -289,17 +294,17 @@ public class LibraryHomeFragment extends Fragment {
         }
     }
 
-    /** Card-shaped "Get more" cell used as the last grid cell in medium/expanded. */
-    private View makeGetMoreCell(int cardH) {
+    /** Card-shaped footer-action cell used as a last grid cell in medium/expanded (Get more, Manage). */
+    private View makeActionCell(int cardH, CharSequence label, View.OnClickListener onClick) {
         TextView t = new TextView(requireContext());
-        t.setText(getString(R.string.k2go_get_more));
+        t.setText(label);
         t.setGravity(Gravity.CENTER);
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
         t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         t.setBackgroundResource(R.drawable.k2go_getmore_bg);
         t.setClickable(true);
         t.setFocusable(true);
-        t.setOnClickListener(v -> openGetMore());
+        t.setOnClickListener(onClick);
         int m = Math.round(getResources().getDisplayMetrics().density * 8);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, cardH);
         lp.setMargins(m, m, m, m);
@@ -347,6 +352,12 @@ public class LibraryHomeFragment extends Fragment {
             i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_ONLY, true);
         }
         startActivity(i);
+    }
+
+    // Manage: open the content manager (the contentexchange screen), the same target as
+    // Settings > Content manager. The Library is the direct access, beside "Get more".
+    private void openContentManager() {
+        startActivity(SetupLibraryActivity.contentManagerIntent(requireContext()));
     }
 
     private void onCardClick(Card c) {
