@@ -42,7 +42,7 @@ class FakeAdapter(ContentAdapter):
     def check(self, dedup):
         return self._verdict
 
-    def import_item(self, entry, payload_path):
+    def import_item(self, entry, payload_path, should_cancel=None, on_progress=None):
         self.imported = (entry, payload_path)
         return self._import_result
 
@@ -190,61 +190,47 @@ class ImportRouteTest(unittest.TestCase):
         self.assertEqual(out["results"][0]["verdict"], "ABSENT")
         self.assertEqual(out["results"][1]["status"], "NO_APP")
 
-    def test_import_item_happy_path(self):
-        with tempfile.TemporaryDirectory() as root:
-            fake = FakeAdapter("kiwix", [], import_result={"ok": True, "app": "kiwix"})
-            reg = Registry([fake], import_root=root)
-            payload = os.path.join(root, "a.zim")
-            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10}, "payloadPath": payload}
-            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
-            self.assertEqual(status, 200)
-            self.assertTrue(out["ok"])
-            self.assertEqual(fake.imported[1], payload)
+    # Import is a long op (K2GO-376): POST /v1/import/item STARTS the op and returns its opId; the
+    # ingest result is polled via GET /v1/import/status. These check the routing and the missing-ops
+    # guard; the op mechanics (the ingest result, no_space, cancel) live in test_import_ops.
 
-    def test_import_item_no_free_space_preflight(self):
-        # The box runs under proot, whose statvfs under-reports free space, so the router must
-        # not preflight the disk: even an implausibly large declared size still reaches the
-        # adapter. The phone app is the one source of truth for free space (Android StatFs); a
-        # real ENOSPC fails cleanly in the adapter (422).
+    def test_import_start_returns_opid(self):
+        from conex_core.import_ops import ImportOps
         with tempfile.TemporaryDirectory() as root:
             fake = FakeAdapter("kiwix", [], import_result={"ok": True, "app": "kiwix"})
             reg = Registry([fake], import_root=root)
+            import_ops = ImportOps(reg, import_root=root, ttl_seconds=60)
             payload = os.path.join(root, "a.zim")
-            body = {"app": "kiwix",
-                    "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10 ** 18},
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}, "bytes": 10},
                     "payloadPath": payload}
-            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body, import_ops=import_ops)
             self.assertEqual(status, 200)
-            self.assertTrue(out["ok"])
+            self.assertEqual(out["state"], "running")
+            self.assertIn("opId", out)
 
-    def test_import_item_rejects_payload_outside_area(self):
+    def test_import_start_without_import_ops_500(self):
         with tempfile.TemporaryDirectory() as root:
             reg = Registry([FakeAdapter("kiwix", [])], import_root=root)
-            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": "/etc/passwd"}
-            status, _ = dispatch(reg, "POST", "/v1/import/item", {}, body)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}},
+                    "payloadPath": os.path.join(root, "x")}
+            status, _ = dispatch(reg, "POST", "/v1/import/item", {}, body, import_ops=None)
+            self.assertEqual(status, 500)
+
+    def test_import_start_rejects_payload_outside_area(self):
+        from conex_core.import_ops import ImportOps
+        with tempfile.TemporaryDirectory() as root:
+            reg = Registry([FakeAdapter("kiwix", [])], import_root=root)
+            import_ops = ImportOps(reg, import_root=root, ttl_seconds=60)
+            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}},
+                    "payloadPath": "/etc/passwd"}
+            status, _ = dispatch(reg, "POST", "/v1/import/item", {}, body, import_ops=import_ops)
             self.assertEqual(status, 400)
 
-    def test_import_item_adapter_failure_422(self):
-        with tempfile.TemporaryDirectory() as root:
-            fake = FakeAdapter("kiwix", [], import_result={"ok": False, "reason": "bad archive"})
-            reg = Registry([fake], import_root=root)
-            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": os.path.join(root, "x")}
-            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
-            self.assertEqual(status, 422)
-            self.assertFalse(out["ok"])
-
-    def test_import_item_no_space_507(self):
-        # A space shortfall (the adapter tags code "no_space") maps to 507, not 422, so the front
-        # stops the run with a space message instead of a per-item retry.
-        with tempfile.TemporaryDirectory() as root:
-            fake = FakeAdapter("kiwix", [],
-                               import_result={"ok": False, "code": "no_space", "reason": "extract failed"})
-            reg = Registry([fake], import_root=root)
-            body = {"app": "kiwix", "entry": {"identity": {"localRef": "a.zim"}}, "payloadPath": os.path.join(root, "x")}
-            status, out = dispatch(reg, "POST", "/v1/import/item", {}, body)
-            self.assertEqual(status, 507)
-            self.assertFalse(out["ok"])
-            self.assertEqual(out["code"], "no_space")
+    def test_import_status_and_delete_without_import_ops_500(self):
+        reg = _registry()
+        for method, path in [("GET", "/v1/import/status/abc"), ("DELETE", "/v1/import/abc")]:
+            status, _ = dispatch(reg, method, path, {}, import_ops=None)
+            self.assertEqual(status, 500)
 
 
 class DeleteRouteTest(unittest.TestCase):

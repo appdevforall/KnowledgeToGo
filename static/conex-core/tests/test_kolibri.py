@@ -1,8 +1,6 @@
 import os
 import sqlite3
-import sys
 import tempfile
-import time
 import unittest
 
 import io
@@ -11,13 +9,13 @@ import tarfile
 import conex_core.adapters.kolibri as kolibri_mod
 from conex_core.adapters.kolibri import (
     KolibriAdapter,
-    _run_cancellable,
     build_channel_item,
     delete_command,
     export_commands,
     import_commands,
 )
 from conex_core.model import AUTHORITATIVE
+from conex_core.watchdog import FAILED, OK, SuperviseResult
 
 VALID_ID = "c1f2b7e6ac9f56a2bb44fa7a48b66dce"
 
@@ -131,17 +129,17 @@ class KolibriCheckTest(unittest.TestCase):
 
 
 class _ImportStubKolibri(KolibriAdapter):
-    def _stage_import(self, channel_id, source):
+    def _stage_import(self, channel_id, source, should_cancel=None, on_progress=None):
         self.import_channel = channel_id
         self.import_source = source
-        return True
+        return SuperviseResult(OK, 0, "ok")
 
 
 class _ImportFailStubKolibri(KolibriAdapter):
     """The CLI import seam fails (non-zero exit), so import_item takes its failure branch."""
 
-    def _stage_import(self, channel_id, source):
-        return False
+    def _stage_import(self, channel_id, source, should_cancel=None, on_progress=None):
+        return SuperviseResult(FAILED, 1, "exited with code 1")
 
 
 def _bundle_tar(tar_path, channel_id):
@@ -333,26 +331,6 @@ class KolibriExportTest(unittest.TestCase):
             adapter = _StubbedKolibri(db, staging_dir=os.path.join(d, "staging"))
             self.assertIsNone(adapter.open_fetch(VALID_ID, None))
             self.assertIsNone(adapter.open_fetch(VALID_ID, os.path.join(d, "missing")))
-
-
-class RunCancellableTest(unittest.TestCase):
-    def test_completed_command_returns_true(self):
-        self.assertTrue(_run_cancellable([sys.executable, "-c", "pass"], dict(os.environ)))
-
-    def test_failed_command_returns_false(self):
-        self.assertFalse(
-            _run_cancellable([sys.executable, "-c", "import sys; sys.exit(3)"], dict(os.environ)))
-
-    def test_cancel_terminates_a_long_command(self):
-        start = time.time()
-        # A 30 s child that is cancelled at once: it must be terminated promptly, not waited out.
-        ok = _run_cancellable(
-            [sys.executable, "-c", "import time; time.sleep(30)"],
-            dict(os.environ),
-            should_cancel=lambda: True,
-        )
-        self.assertFalse(ok)
-        self.assertLess(time.time() - start, 10)
 
 
 class DeleteCommandTest(unittest.TestCase):

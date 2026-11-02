@@ -209,7 +209,10 @@ class KiwixAdapter(ContentAdapter):
             return SAME_VERSION
         return OLDER_HERE if local_version < version else NEWER_HERE
 
-    def import_item(self, entry: dict, payload_path: str) -> dict:
+    def import_item(self, entry: dict, payload_path: str, should_cancel=None,
+                    on_progress=None) -> dict:
+        # The import long op passes should_cancel / on_progress for a supervised CLI; the Kiwix
+        # import is a file move plus a re-index, so it ignores both and runs to completion.
         # The payload is the .zim itself: place it in the zims dir under its own name, then
         # re-run the indexer so the library entry appears. Overwriting the same name is
         # idempotent (same content, same UUID).

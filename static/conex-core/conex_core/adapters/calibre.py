@@ -125,7 +125,10 @@ class CalibreAdapter(ContentAdapter):
                 return SAME_VERSION
         return ABSENT
 
-    def import_item(self, entry: dict, payload_path: str) -> dict:
+    def import_item(self, entry: dict, payload_path: str, should_cancel=None,
+                    on_progress=None) -> dict:
+        # The import long op passes should_cancel / on_progress for a supervised CLI; Calibre's
+        # import is a short in-process upload, so it ignores both and runs to completion.
         # The payload is the tar of the book's own directory. Extract it safely, then add each
         # content-format file through Calibre-Web's upload (calibredb is not installed).
         # Soft identity: a re-import can create a duplicate record, so the front checks first.
