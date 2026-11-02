@@ -604,6 +604,7 @@
     <string name="k2go_tab_clone">Clone</string>
     <string name="k2go_tab_settings">Settings</string>
     <string name="k2go_get_more">+  Get more</string>
+    <string name="k2go_manage">Manage</string>
     <string name="k2go_perm_allow">Allow</string>
     <string name="k2go_connect_available">Available while the app is open.</string>
     <string name="k2go_back">Back</string>

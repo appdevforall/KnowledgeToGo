@@ -46,11 +46,8 @@ public class SettingsFragment extends Fragment {
             ctx.startActivity(i);
         });
         // K2GO-427: content manager (gestor) : list content by app, sizes, free disk, multi-select.
-        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_content_mgr), getString(R.string.k2go_settings_content_mgr_sub), null, v -> {
-            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
-            i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_MANAGER, true);
-            ctx.startActivity(i);
-        });
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_content_mgr), getString(R.string.k2go_settings_content_mgr_sub), null,
+                v -> ctx.startActivity(SetupLibraryActivity.contentManagerIntent(ctx)));
         // ADFA-5169: always-visible entry to the queued content orders (finding 6). Shows a count, or
         // "None" when empty. Opens as a settings sub-screen (bottom nav stays), like Language/About.
         pendingRow = SettingsUi.row(ctx, list, getString(R.string.k2go_settings_pending), null, pendingValue(ctx), v -> {

@@ -512,6 +512,7 @@
     <string name="k2go_tab_clone">Klónozás</string>
     <string name="k2go_tab_settings">Beállítások</string>
     <string name="k2go_get_more">+  Továbbiak</string>
+    <string name="k2go_manage">Kezelés</string>
     <string name="k2go_perm_allow">Engedélyezés</string>
     <string name="k2go_connect_available">Csak addig érhető el, amíg az app nyitva van.</string>
     <string name="k2go_back">Vissza</string>

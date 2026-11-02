@@ -513,6 +513,7 @@
     <string name="k2go_tab_clone">クローン</string>
     <string name="k2go_tab_settings">設定</string>
     <string name="k2go_get_more">+  もっと入手</string>
+    <string name="k2go_manage">管理</string>
     <string name="k2go_perm_allow">許可</string>
     <string name="k2go_connect_available">アプリが開いている間に利用できます。</string>
     <string name="k2go_back">戻る</string>

@@ -512,6 +512,7 @@
     <string name="k2go_tab_clone">Sao chép</string>
     <string name="k2go_tab_settings">Cài đặt</string>
     <string name="k2go_get_more">+  Tải thêm</string>
+    <string name="k2go_manage">Quản lý</string>
     <string name="k2go_perm_allow">Cho phép</string>
     <string name="k2go_connect_available">Khả dụng khi ứng dụng đang mở.</string>
     <string name="k2go_back">Quay lại</string>

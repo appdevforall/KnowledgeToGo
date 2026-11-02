@@ -512,6 +512,7 @@
     <string name="k2go_tab_clone">Klonuj</string>
     <string name="k2go_tab_settings">Ustawienia</string>
     <string name="k2go_get_more">+  Pobierz więcej</string>
+    <string name="k2go_manage">Zarządzaj</string>
     <string name="k2go_perm_allow">Zezwól</string>
     <string name="k2go_connect_available">Dostępne, gdy aplikacja jest otwarta.</string>
     <string name="k2go_back">Wstecz</string>
