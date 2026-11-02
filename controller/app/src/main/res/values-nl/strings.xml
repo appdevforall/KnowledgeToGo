@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Modulebeheer</string>
     <string name="k2go_settings_module_mgmt_sub">Apps toevoegen aan je bibliotheek</string>
     <string name="k2go_mod_hub_title">Modules toevoegen</string>
-    <string name="k2go_mod_hub_sub">Apps die je op je bibliotheek kunt installeren. Draait op het apparaat — geen internet nodig.</string>
+    <string name="k2go_mod_hub_sub">Apps die je op je bibliotheek kunt installeren. Draait op het apparaat: geen internet nodig.</string>
     <string name="k2go_mod_hub_prompt">Wat wil je installeren?</string>
     <string name="k2go_mod_proceed_fmt">%1$d installeren</string>
     <string name="k2go_mod_schedule">Installatie plannen</string>

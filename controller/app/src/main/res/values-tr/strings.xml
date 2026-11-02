@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Modül yönetimi</string>
     <string name="k2go_settings_module_mgmt_sub">Kitaplığınıza uygulama ekleyin</string>
     <string name="k2go_mod_hub_title">Modül ekle</string>
-    <string name="k2go_mod_hub_sub">Kitaplığınıza kurabileceğiniz uygulamalar. Cihazda çalışır — internet gerekmez.</string>
+    <string name="k2go_mod_hub_sub">Kitaplığınıza kurabileceğiniz uygulamalar. Cihazda çalışır: internet gerekmez.</string>
     <string name="k2go_mod_hub_prompt">Neyi kurmak istersiniz?</string>
     <string name="k2go_mod_proceed_fmt">%1$d tanesini kur</string>
     <string name="k2go_mod_schedule">Kurulumu zamanla</string>

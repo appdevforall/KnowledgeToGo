@@ -123,10 +123,6 @@ public class ContentManagerFragment extends Fragment {
         shareButton.setEnabled(true);
         shareButton.setOnClickListener(v -> onShareClicked());
 
-        TextView back = root.findViewById(R.id.k2go_cx_back);
-        back.setText(getString(R.string.k2go_back_link));
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
-
         viewModel = new ViewModelProvider(this, new ContentManagerViewModelFactory())
                 .get(ContentManagerViewModel.class);
 
@@ -207,7 +203,6 @@ public class ContentManagerFragment extends Fragment {
     private List<ContentManagerAdapter.Row> buildRows(ManagedContent content, StorageStatus storage) {
         List<ContentManagerAdapter.Row> rows = new ArrayList<>();
         rows.add(new ContentManagerAdapter.HeaderRow(
-                getString(R.string.k2go_cx_title),
                 getString(R.string.k2go_cx_subtitle),
                 usedLine(content, storage),
                 freeLine()));

@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Gestionarea modulelor</string>
     <string name="k2go_settings_module_mgmt_sub">Adaugă aplicații în biblioteca ta</string>
     <string name="k2go_mod_hub_title">Adaugă module</string>
-    <string name="k2go_mod_hub_sub">Aplicații pe care le poți instala în biblioteca ta. Rulează pe dispozitiv — fără internet.</string>
+    <string name="k2go_mod_hub_sub">Aplicații pe care le poți instala în biblioteca ta. Rulează pe dispozitiv: fără internet.</string>
     <string name="k2go_mod_hub_prompt">Ce ai vrea să instalezi?</string>
     <string name="k2go_mod_proceed_fmt">Instalează %1$d</string>
     <string name="k2go_mod_schedule">Programează instalarea</string>

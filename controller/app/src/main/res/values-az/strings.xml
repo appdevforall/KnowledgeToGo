@@ -606,7 +606,7 @@
     <string name="k2go_settings_module_mgmt">Modul idarəetməsi</string>
     <string name="k2go_settings_module_mgmt_sub">Kitabxananıza tətbiq əlavə edin</string>
     <string name="k2go_mod_hub_title">Modul əlavə et</string>
-    <string name="k2go_mod_hub_sub">Kitabxananıza quraşdıra biləcəyiniz tətbiqlər. Cihazda işləyir — internet lazım deyil.</string>
+    <string name="k2go_mod_hub_sub">Kitabxananıza quraşdıra biləcəyiniz tətbiqlər. Cihazda işləyir: internet lazım deyil.</string>
     <string name="k2go_mod_hub_prompt">Nə quraşdırmaq istəyirsiniz?</string>
     <string name="k2go_mod_proceed_fmt">%1$d quraşdır</string>
     <string name="k2go_mod_schedule">Quraşdırmanı planla</string>

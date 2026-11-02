@@ -717,7 +717,7 @@
 
     <!-- ADFA-4842: Module management (proot module installs, Play Store-style cards). -->
     <string name="k2go_mod_hub_title">Add modules</string>
-    <string name="k2go_mod_hub_sub">Apps you can install on your library. Runs on the device — no internet needed.</string>
+    <string name="k2go_mod_hub_sub">Apps you can install on your library. Runs on the device: no internet needed.</string>
     <string name="k2go_mod_hub_prompt">What would you like to install?</string>
     <string name="k2go_mod_proceed_fmt">Install %1$d</string>
     <string name="k2go_mod_schedule">Schedule install</string>

@@ -662,7 +662,7 @@
     <string name="k2go_settings_module_mgmt">Управление модулями</string>
     <string name="k2go_settings_module_mgmt_sub">Добавьте приложения в библиотеку</string>
     <string name="k2go_mod_hub_title">Добавить модули</string>
-    <string name="k2go_mod_hub_sub">Приложения, которые можно установить в библиотеку. Работают на устройстве — интернет не нужен.</string>
+    <string name="k2go_mod_hub_sub">Приложения, которые можно установить в библиотеку. Работают на устройстве: интернет не нужен.</string>
     <string name="k2go_mod_hub_prompt">Что вы хотите установить?</string>
     <string name="k2go_mod_proceed_fmt">Установить %1$d</string>
     <string name="k2go_mod_schedule">Запланировать установку</string>

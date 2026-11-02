@@ -593,7 +593,7 @@
     <string name="k2go_settings_module_mgmt">Pengelolaan modul</string>
     <string name="k2go_settings_module_mgmt_sub">Tambahkan aplikasi ke pustaka Anda</string>
     <string name="k2go_mod_hub_title">Tambah modul</string>
-    <string name="k2go_mod_hub_sub">Aplikasi yang bisa Anda pasang di pustaka. Berjalan di perangkat — tanpa internet.</string>
+    <string name="k2go_mod_hub_sub">Aplikasi yang bisa Anda pasang di pustaka. Berjalan di perangkat: tanpa internet.</string>
     <string name="k2go_mod_hub_prompt">Apa yang ingin Anda pasang?</string>
     <string name="k2go_mod_proceed_fmt">Pasang %1$d</string>
     <string name="k2go_mod_schedule">Jadwalkan pemasangan</string>

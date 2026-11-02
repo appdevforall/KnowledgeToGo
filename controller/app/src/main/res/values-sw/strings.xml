@@ -606,7 +606,7 @@
     <string name="k2go_settings_module_mgmt">Usimamizi wa moduli</string>
     <string name="k2go_settings_module_mgmt_sub">Ongeza programu kwenye maktaba yako</string>
     <string name="k2go_mod_hub_title">Ongeza moduli</string>
-    <string name="k2go_mod_hub_sub">Programu unazoweza kusakinisha kwenye maktaba yako. Hufanya kazi kwenye kifaa — hakuna intaneti inayohitajika.</string>
+    <string name="k2go_mod_hub_sub">Programu unazoweza kusakinisha kwenye maktaba yako. Hufanya kazi kwenye kifaa: hakuna intaneti inayohitajika.</string>
     <string name="k2go_mod_hub_prompt">Ungependa kusakinisha nini?</string>
     <string name="k2go_mod_proceed_fmt">Sakinisha %1$d</string>
     <string name="k2go_mod_schedule">Panga usakinishaji</string>

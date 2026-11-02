@@ -650,6 +650,8 @@ androidComponents {
         verifyManifestPrivacy.configure { dependsOn check }
     }
 }
+// ---- K2GO-529: UI type-scale guard --------------------------------------------
+apply from: "ui-type-scale-guard.gradle"
 // ---- rootfs size auto-capture (offline fallback) ------------------------------
 // Fetches the stable latest_<tier>_<abi>.meta4 <size> for each edition and writes
 // src/main/assets/rootfs_sizes.csv, so the app's OFFLINE fallback (RootfsCatalog)

@@ -593,7 +593,7 @@
     <string name="k2go_settings_module_mgmt">Διαχείριση λειτουργικών μονάδων</string>
     <string name="k2go_settings_module_mgmt_sub">Προσθήκη εφαρμογών στη βιβλιοθήκη σας</string>
     <string name="k2go_mod_hub_title">Προσθήκη μονάδων</string>
-    <string name="k2go_mod_hub_sub">Εφαρμογές που μπορείτε να εγκαταστήσετε στη βιβλιοθήκη σας. Εκτελούνται στη συσκευή — χωρίς ανάγκη διαδικτύου.</string>
+    <string name="k2go_mod_hub_sub">Εφαρμογές που μπορείτε να εγκαταστήσετε στη βιβλιοθήκη σας. Εκτελούνται στη συσκευή: χωρίς ανάγκη διαδικτύου.</string>
     <string name="k2go_mod_hub_prompt">Τι θα θέλατε να εγκαταστήσετε;</string>
     <string name="k2go_mod_proceed_fmt">Εγκατάσταση %1$d</string>
     <string name="k2go_mod_schedule">Προγραμματισμός εγκατάστασης</string>

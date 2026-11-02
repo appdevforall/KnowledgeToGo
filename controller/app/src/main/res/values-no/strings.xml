@@ -587,7 +587,7 @@
     <string name="k2go_settings_module_mgmt_sub">Legg til apper i biblioteket ditt</string>
 
     <string name="k2go_mod_hub_title">Legg til moduler</string>
-    <string name="k2go_mod_hub_sub">Apper du kan installere i biblioteket. Kjører på enheten — ingen internett nødvendig.</string>
+    <string name="k2go_mod_hub_sub">Apper du kan installere i biblioteket. Kjører på enheten: ingen internett nødvendig.</string>
     <string name="k2go_mod_hub_prompt">Hva vil du installere?</string>
     <string name="k2go_mod_proceed_fmt">Installer %1$d</string>
     <string name="k2go_mod_schedule">Planlegg installasjon</string>

@@ -9,18 +9,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/k2go_paper">
 
-    <TextView
-        android:id="@+id/k2go_cx_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="20dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="4dp"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="@color/k2go_teal" />
+    <!-- Unified Settings chrome: the shared pinned header (back glyph + title), always titled even on
+         the "could not reach the box" state when the list is hidden. -->
+    <org.appdevforall.k2go.ui.K2GoHeaderView
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        app:k2goTitle="@string/k2go_cx_title" />
 
     <!-- Loading / error message. Shown in place of the list (weighted like it), so the pinned bottom
          bars stay at the bottom while content is loading or unavailable. -->

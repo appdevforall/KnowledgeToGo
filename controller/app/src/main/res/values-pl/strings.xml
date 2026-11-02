@@ -587,7 +587,7 @@
     <string name="k2go_settings_module_mgmt_sub">Dodaj aplikacje do biblioteki</string>
 
     <string name="k2go_mod_hub_title">Dodaj moduły</string>
-    <string name="k2go_mod_hub_sub">Aplikacje, które możesz zainstalować w bibliotece. Działa na urządzeniu — internet niepotrzebny.</string>
+    <string name="k2go_mod_hub_sub">Aplikacje, które możesz zainstalować w bibliotece. Działa na urządzeniu: internet niepotrzebny.</string>
     <string name="k2go_mod_hub_prompt">Co chcesz zainstalować?</string>
     <string name="k2go_mod_proceed_fmt">Zainstaluj %1$d</string>
     <string name="k2go_mod_schedule">Zaplanuj instalację</string>

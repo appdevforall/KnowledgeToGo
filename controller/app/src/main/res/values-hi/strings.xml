@@ -663,7 +663,7 @@
     <string name="k2go_settings_module_mgmt">मॉड्यूल प्रबंधन</string>
     <string name="k2go_settings_module_mgmt_sub">अपनी लाइब्रेरी में ऐप्स जोड़ें</string>
     <string name="k2go_mod_hub_title">मॉड्यूल जोड़ें</string>
-    <string name="k2go_mod_hub_sub">ऐप्स जो आप अपनी लाइब्रेरी पर इंस्टॉल कर सकते हैं। डिवाइस पर चलते हैं — इंटरनेट की ज़रूरत नहीं।</string>
+    <string name="k2go_mod_hub_sub">ऐप्स जो आप अपनी लाइब्रेरी पर इंस्टॉल कर सकते हैं। डिवाइस पर चलते हैं: इंटरनेट की ज़रूरत नहीं।</string>
     <string name="k2go_mod_hub_prompt">आप क्या इंस्टॉल करना चाहेंगे?</string>
     <string name="k2go_mod_proceed_fmt">%1$d इंस्टॉल करें</string>
     <string name="k2go_mod_schedule">इंस्टॉल शेड्यूल करें</string>

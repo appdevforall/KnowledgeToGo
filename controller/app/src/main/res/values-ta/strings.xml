@@ -606,7 +606,7 @@
     <string name="k2go_settings_module_mgmt">தொகுதி மேலாண்மை</string>
     <string name="k2go_settings_module_mgmt_sub">உங்கள் நூலகத்தில் செயலிகளைச் சேர்</string>
     <string name="k2go_mod_hub_title">தொகுதிகளைச் சேர்</string>
-    <string name="k2go_mod_hub_sub">உங்கள் நூலகத்தில் நிறுவக்கூடிய செயலிகள். சாதனத்தில் இயங்கும் — இணையம் தேவையில்லை.</string>
+    <string name="k2go_mod_hub_sub">உங்கள் நூலகத்தில் நிறுவக்கூடிய செயலிகள். சாதனத்தில் இயங்கும்: இணையம் தேவையில்லை.</string>
     <string name="k2go_mod_hub_prompt">எதை நிறுவ விரும்புகிறீர்கள்?</string>
     <string name="k2go_mod_proceed_fmt">%1$d நிறுவு</string>
     <string name="k2go_mod_schedule">நிறுவலைத் திட்டமிடு</string>

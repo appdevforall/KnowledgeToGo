@@ -599,7 +599,7 @@
     <string name="k2go_settings_module_mgmt">મૉડ્યુલ મૅનેજમેન્ટ</string>
     <string name="k2go_settings_module_mgmt_sub">તમારી લાઇબ્રેરીમાં ઍપ ઉમેરો</string>
     <string name="k2go_mod_hub_title">મૉડ્યુલ ઉમેરો</string>
-    <string name="k2go_mod_hub_sub">તમે તમારી લાઇબ્રેરીમાં ઇન્સ્ટોલ કરી શકો તેવી ઍપ. ડિવાઇસ પર ચાલે છે — ઇન્ટરનેટની જરૂર નથી.</string>
+    <string name="k2go_mod_hub_sub">તમે તમારી લાઇબ્રેરીમાં ઇન્સ્ટોલ કરી શકો તેવી ઍપ. ડિવાઇસ પર ચાલે છે: ઇન્ટરનેટની જરૂર નથી.</string>
     <string name="k2go_mod_hub_prompt">તમે શું ઇન્સ્ટોલ કરવા માંગો છો?</string>
     <string name="k2go_mod_proceed_fmt">%1$d ઇન્સ્ટોલ કરો</string>
     <string name="k2go_mod_schedule">ઇન્સ્ટોલ શેડ્યૂલ કરો</string>

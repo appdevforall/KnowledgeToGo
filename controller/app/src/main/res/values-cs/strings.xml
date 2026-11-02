@@ -593,7 +593,7 @@
     <string name="k2go_settings_module_mgmt">Správa modulů</string>
     <string name="k2go_settings_module_mgmt_sub">Přidejte aplikace do knihovny</string>
     <string name="k2go_mod_hub_title">Přidat moduly</string>
-    <string name="k2go_mod_hub_sub">Aplikace, které můžete nainstalovat do knihovny. Běží v zařízení — bez internetu.</string>
+    <string name="k2go_mod_hub_sub">Aplikace, které můžete nainstalovat do knihovny. Běží v zařízení: bez internetu.</string>
     <string name="k2go_mod_hub_prompt">Co chcete nainstalovat?</string>
     <string name="k2go_mod_proceed_fmt">Nainstalovat %1$d</string>
     <string name="k2go_mod_schedule">Naplánovat instalaci</string>

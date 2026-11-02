@@ -599,7 +599,7 @@
     <string name="k2go_settings_module_mgmt">Управљање модулима</string>
     <string name="k2go_settings_module_mgmt_sub">Додајте апликације у вашу библиотеку</string>
     <string name="k2go_mod_hub_title">Додај модуле</string>
-    <string name="k2go_mod_hub_sub">Апликације које можете инсталирати у вашу библиотеку. Ради на уређају — интернет није потребан.</string>
+    <string name="k2go_mod_hub_sub">Апликације које можете инсталирати у вашу библиотеку. Ради на уређају: интернет није потребан.</string>
     <string name="k2go_mod_hub_prompt">Шта желите да инсталирате?</string>
     <string name="k2go_mod_proceed_fmt">Инсталирај %1$d</string>
     <string name="k2go_mod_schedule">Закажи инсталацију</string>

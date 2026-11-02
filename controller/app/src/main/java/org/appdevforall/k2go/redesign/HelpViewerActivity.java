@@ -27,8 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.webkit.WebViewAssetLoader;
 
-import com.google.android.material.appbar.MaterialToolbar;
-
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.help.domain.HelpEntry;
@@ -79,13 +77,6 @@ public class HelpViewerActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_help);
-
-        MaterialToolbar toolbar = findViewById(R.id.k2go_help_toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getString(R.string.k2go_settings_help));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         final WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))

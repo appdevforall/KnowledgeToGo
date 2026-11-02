@@ -32,6 +32,8 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
+import org.appdevforall.k2go.ui.K2GoText;
 
 public class BackupRestoreFragment extends Fragment {
 
@@ -53,29 +55,32 @@ public class BackupRestoreFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
+        LinearLayout rootCol = new LinearLayout(requireContext());
+        rootCol.setOrientation(LinearLayout.VERTICAL);
+        rootCol.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_paper));
+
+        // Unified Settings chrome: the one shared pinned header (back glyph + title), defined once in
+        // K2GoHeaderView so this code-built screen matches the XML ones.
+        K2GoHeaderView header = new K2GoHeaderView(requireContext());
+        header.setTitle(getString(R.string.k2go_br_title));
+        rootCol.addView(header, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         NestedScrollView scroll = new NestedScrollView(requireContext());
         scroll.setFillViewport(true);
+        rootCol.addView(scroll, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
 
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
-        col.setPadding(px(20), px(18), px(20), px(24));
+        col.setPadding(px(16), px(4), px(16), px(24));
         scroll.addView(col, new NestedScrollView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        TextView back = new TextView(requireContext());
-        back.setText(getString(R.string.k2go_back_link));
-        back.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-        back.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-        back.setPadding(0, 0, 0, px(12));
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
-        col.addView(back);
-
-        col.addView(heading(getString(R.string.k2go_br_title), true,
-                com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall, R.color.k2go_ink, 0));
         col.addView(heading(getString(R.string.k2go_br_desc), false,
-                com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, R.color.k2go_muted, 6));
+                R.style.TextAppearance_K2Go_Body, R.color.k2go_muted, 0));
         col.addView(heading(getString(R.string.k2go_br_prompt), true,
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink, 20));
+                R.style.TextAppearance_K2Go_Title, R.color.k2go_ink, 20));
 
         LinearLayout cards = new LinearLayout(requireContext());
         cards.setOrientation(LinearLayout.VERTICAL);
@@ -87,20 +92,20 @@ public class BackupRestoreFragment extends Fragment {
                 R.color.k2go_teal, R.color.k2go_ink, v -> open(BackupJobFragment.MODE_BACKUP)));
         cards.addView(card(R.drawable.ic_unarchive, R.string.k2go_br_restore_title, R.string.k2go_br_restore_sub,
                 R.color.k2go_teal, R.color.k2go_ink, v -> open(BackupJobFragment.MODE_RESTORE)));
-        // ADFA-5023: destructive third option — reinstall from scratch. Hairline-separated and red so it
+        // ADFA-5023: destructive third option : reinstall from scratch. Hairline-separated and red so it
         // reads as distinct/dangerous; a strong confirm precedes the wipe (delete + fresh install).
         cards.addView(hairline());
         cards.addView(card(R.drawable.ic_refresh, R.string.k2go_reinstall_title, R.string.k2go_reinstall_sub,
                 R.color.k2go_nav_exit, R.color.k2go_nav_exit, v -> confirmReinstall()));
 
-        // ADFA-4961: returning from a finished op → index-style "returning to Home" countdown + Cancel.
+        // ADFA-4961: returning from a finished op : index-style "returning to Home" countdown + Cancel.
         if (sReturnPending) {
             sReturnPending = false;
             col.addView(buildReturnBar());
             startReturnToHome();
         }
 
-        return scroll;
+        return rootCol;
     }
 
     private void open(String jobMode) {
@@ -120,12 +125,7 @@ public class BackupRestoreFragment extends Fragment {
         lp.topMargin = px(16);
         bar.setLayoutParams(lp);
 
-        TextView msg = new TextView(requireContext());
-        msg.setText(getString(R.string.k2go_bj_returning));
-        msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-        // ADFA-4961: set the color AFTER the appearance — setTextAppearance() overrides textColor, which
-        // was leaving this line the theme's light default (invisible on the pale info background).
-        msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_info_ink));
+        TextView msg = K2GoText.body(requireContext(), getString(R.string.k2go_bj_returning), R.color.k2go_info_ink);
         bar.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         TextView cancel = new TextView(requireContext());
@@ -184,9 +184,7 @@ public class BackupRestoreFragment extends Fragment {
     private TextView heading(String text, boolean bold, int appearance, int colorRes, int topDp) {
         TextView t = new TextView(requireContext());
         t.setText(text);
-        if (bold) t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
-        t.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
-        t.setTextAppearance(appearance);
+        K2GoText.apply(t, appearance, colorRes, bold);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.topMargin = px(topDp);
@@ -244,17 +242,12 @@ public class BackupRestoreFragment extends Fragment {
         textCol.setOrientation(LinearLayout.VERTICAL);
         row.addView(textCol, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        TextView t = new TextView(requireContext());
-        t.setText(getString(titleRes));
-        t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
-        t.setTextColor(ContextCompat.getColor(requireContext(), titleColorRes));
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        // Card name: Title scale (Atkinson), the given colour, bold.
+        TextView t = K2GoText.title(requireContext(), getString(titleRes), titleColorRes, true);
         textCol.addView(t);
 
-        TextView sub = new TextView(requireContext());
-        sub.setText(getString(subRes));
-        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        // Card supporting text ("what it is"): readable Body scale, muted, not the reserved tiny scale.
+        TextView sub = K2GoText.body(requireContext(), getString(subRes), R.color.k2go_muted);
         LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         slp.topMargin = px(4);

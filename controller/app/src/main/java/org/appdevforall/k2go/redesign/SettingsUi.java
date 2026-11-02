@@ -1,7 +1,6 @@
 package org.appdevforall.k2go.redesign;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -9,8 +8,11 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.ui.K2GoText;
 
-/** Programmatic row builders shared by the Settings top level and its sub-screens. */
+/** Programmatic row builders shared by the Settings top level and its sub-screens.
+ *  Type comes from the one {@link K2GoText} scale (row title = Body, supporting text = Label,
+ *  section label = sectionLabel, value emphasis = Title). Spacing stays on the 4dp grid. */
 final class SettingsUi {
     private SettingsUi() {}
 
@@ -19,22 +21,18 @@ final class SettingsUi {
     static int dp(Context c, int v) { return Math.round(v * c.getResources().getDisplayMetrics().density); }
 
     static void sectionHeader(Context c, LinearLayout list, String text) {
-        TextView t = new TextView(c);
-        t.setText(text);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_teal));
+        TextView t = K2GoText.sectionLabel(c, text);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, -2);
-        lp.topMargin = dp(c, 18); lp.bottomMargin = dp(c, 4);
+        lp.topMargin = dp(c, 20); lp.bottomMargin = dp(c, 4);
         list.addView(t, lp);
     }
 
     static void caption(Context c, LinearLayout list, String text) {
-        TextView t = new TextView(c);
-        t.setText(text);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
+        // Screen / section intro prose: Body scale, muted. The reserved tiny Caption scale is only
+        // for a terse helper attached to one control, never for the line that introduces a screen.
+        TextView t = K2GoText.body(c, text, R.color.k2go_muted);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
-        lp.bottomMargin = dp(c, 2);
+        lp.bottomMargin = dp(c, 4);
         list.addView(t, lp);
     }
 
@@ -63,19 +61,17 @@ final class SettingsUi {
     }
 
     /**
-     * A labelled language "box" (ADFA-4798): a section label, a bordered value row with a
-     * ▾ affordance, and an optional helper line below. Returns the value {@link TextView} so
+     * A labelled "box" selector (ADFA-4798): a section label, a bordered value row with a
+     * affordance, and an optional helper line below. Returns the value {@link TextView} so
      * the caller can update it in place after a pick (no full rebuild needed).
      */
     static TextView selector(Context c, LinearLayout list, String label, String value,
                              String helper, View.OnClickListener onClick) {
-        TextView lbl = new TextView(c);
-        lbl.setText(label);
-        lbl.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
-        lbl.setTextColor(ContextCompat.getColor(c, R.color.k2go_teal));
+        // A field label (tracked teal), distinct from a section header: no all-caps here.
+        TextView lbl = K2GoText.label(c, label, R.color.k2go_teal);
         lbl.setLetterSpacing(0.08f);
         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(-1, -2);
-        llp.topMargin = dp(c, 18);
+        llp.topMargin = dp(c, 20);
         list.addView(lbl, llp);
 
         LinearLayout box = new LinearLayout(c);
@@ -88,11 +84,7 @@ final class SettingsUi {
         blp.topMargin = dp(c, 8);
         list.addView(box, blp);
 
-        TextView val = new TextView(c);
-        val.setText(value);
-        val.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        val.setTextColor(ContextCompat.getColor(c, R.color.k2go_ink));
-        val.setTypeface(val.getTypeface(), Typeface.BOLD);
+        TextView val = K2GoText.title(c, value, R.color.k2go_ink, true);
         box.addView(val, new LinearLayout.LayoutParams(0, -2, 1f));
 
         TextView chev = new TextView(c);
@@ -102,10 +94,7 @@ final class SettingsUi {
         box.addView(chev);
 
         if (helper != null && !helper.isEmpty()) {
-            TextView h = new TextView(c);
-            h.setText(helper);
-            h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            h.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
+            TextView h = K2GoText.body(c, helper, R.color.k2go_muted);
             LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(-1, -2);
             hlp.topMargin = dp(c, 8);
             list.addView(h, hlp);
@@ -115,10 +104,7 @@ final class SettingsUi {
 
     /** A soft note / callout box (ADFA-4798). */
     static void note(Context c, LinearLayout list, String text) {
-        TextView t = new TextView(c);
-        t.setText(text);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
+        TextView t = K2GoText.body(c, text, R.color.k2go_muted);
         t.setBackgroundResource(R.drawable.k2go_card_bg);
         t.setPadding(dp(c, 16), dp(c, 16), dp(c, 16), dp(c, 16));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
@@ -163,26 +149,20 @@ final class SettingsUi {
         row.addView(sub(c, value));
     }
 
+    // Row title: Body scale, ink. Supporting text / value: Label scale, muted. One readable step
+    // apart, both above the reserved Caption scale that only a terse control helper may use.
     private static TextView title(Context c, String s) {
-        TextView t = new TextView(c);
-        t.setText(s);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
-        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_ink));
-        return t;
+        return K2GoText.body(c, s, R.color.k2go_ink);
     }
     private static TextView sub(Context c, String s) {
-        TextView t = new TextView(c);
-        t.setText(s);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
-        return t;
+        return K2GoText.label(c, s, R.color.k2go_muted);
     }
     private static LinearLayout baseRow(Context c, LinearLayout list) {
         LinearLayout row = new LinearLayout(c);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBackgroundResource(R.drawable.k2go_card_bg);
-        row.setPadding(dp(c, 14), dp(c, 14), dp(c, 14), dp(c, 14));
+        row.setPadding(dp(c, 16), dp(c, 16), dp(c, 16), dp(c, 16));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.topMargin = dp(c, 8);
         list.addView(row, lp);

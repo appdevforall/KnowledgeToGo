@@ -586,7 +586,7 @@
     <string name="k2go_settings_module_mgmt">Modulkezelés</string>
     <string name="k2go_settings_module_mgmt_sub">Appok hozzáadása a könyvtáradhoz</string>
     <string name="k2go_mod_hub_title">Modulok hozzáadása</string>
-    <string name="k2go_mod_hub_sub">Appok, amelyeket telepíthetsz a könyvtáradra. Az eszközön fut — nem kell internet.</string>
+    <string name="k2go_mod_hub_sub">Appok, amelyeket telepíthetsz a könyvtáradra. Az eszközön fut: nem kell internet.</string>
     <string name="k2go_mod_hub_prompt">Mit szeretnél telepíteni?</string>
     <string name="k2go_mod_proceed_fmt">%1$d telepítése</string>
     <string name="k2go_mod_schedule">Telepítés ütemezése</string>

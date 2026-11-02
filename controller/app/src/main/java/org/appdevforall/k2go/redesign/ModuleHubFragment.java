@@ -39,6 +39,7 @@ import com.google.android.material.button.MaterialButton;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
+import org.appdevforall.k2go.ui.K2GoText;
 import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.Snackbars;
 
@@ -104,6 +105,21 @@ public class ModuleHubFragment extends Fragment {
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
+    // K2Go type standard (K2GO-529): a card / list item is three readable Atkinson tiers: a Title
+    // name, a Body "what it is" context line, and a Label detail line. The reserved Caption scale
+    // (12sp) is only for a terse per-screen helper, never for the lines that identify an item.
+    private TextView cardName(String s) {
+        return K2GoText.title(requireContext(), s, R.color.k2go_ink, true);
+    }
+
+    private TextView cardContext(String s) {
+        return K2GoText.body(requireContext(), s, R.color.k2go_muted);
+    }
+
+    private TextView cardDetail(String s) {
+        return K2GoText.label(requireContext(), s, R.color.k2go_muted);
+    }
+
     // K2GO-426: one fixed-width leading slot for every row (checkbox XOR icon) so a selectable row
     // and an installed row share the exact same indentation.
     private static final int LEAD_SLOT_DP = 40;
@@ -141,10 +157,6 @@ public class ModuleHubFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_module_hub, container, false);
         host = root.findViewById(R.id.k2go_mod_cards);
         proceed = root.findViewById(R.id.k2go_mod_proceed);
-
-        TextView back = root.findViewById(R.id.k2go_mod_back);
-        back.setText(getString(R.string.k2go_back_link));
-        back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
         proceed.setOnClickListener(v -> {
             if (org.appdevforall.k2go.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, org.appdevforall.k2go.util.BusyMessage.resFor(requireContext())).show(); return; }
@@ -273,8 +285,7 @@ public class ModuleHubFragment extends Fragment {
                 TextView installing = new TextView(requireContext());
                 installing.setGravity(Gravity.CENTER);
                 installing.setPadding(px(8), px(24), px(8), px(24));
-                installing.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-                installing.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+                K2GoText.apply(installing, R.style.TextAppearance_K2Go_Body, R.color.k2go_muted, false);
                 String mod = org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get().currentModule();
                 installing.setText(mod != null && !mod.isEmpty()
                         ? getString(R.string.install_status_installing_module, mod)
@@ -290,8 +301,7 @@ public class ModuleHubFragment extends Fragment {
                 TextView msg = new TextView(requireContext());
                 msg.setGravity(Gravity.CENTER);
                 msg.setPadding(px(8), px(24), px(8), px(24));
-                msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-                msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+                K2GoText.apply(msg, R.style.TextAppearance_K2Go_Body, R.color.k2go_muted, false);
                 msg.setText(R.string.k2go_mod_needs_system);
                 host.addView(msg);
                 com.google.android.material.button.MaterialButton recover =
@@ -311,8 +321,8 @@ public class ModuleHubFragment extends Fragment {
 
         TextView helper = new TextView(requireContext());   // ADFA-4958
         helper.setText(R.string.k2go_mod_mgmt_helper);
-        helper.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        helper.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        // The one reserved Caption line: a terse helper on how to use the list ("tap to open...").
+        K2GoText.apply(helper, R.style.TextAppearance_K2Go_Caption, R.color.k2go_muted, false);
         LinearLayout.LayoutParams helperLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         helperLp.bottomMargin = px(8);
@@ -342,8 +352,7 @@ public class ModuleHubFragment extends Fragment {
             TextView msg = new TextView(requireContext());
             msg.setGravity(Gravity.CENTER);
             msg.setPadding(0, px(24), 0, px(24));
-            msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            K2GoText.apply(msg, R.style.TextAppearance_K2Go_Body, R.color.k2go_muted, false);
             msg.setText(R.string.k2go_gm_checking);
             host.addView(msg);
         } else {
@@ -353,8 +362,7 @@ public class ModuleHubFragment extends Fragment {
             if (anyInstallable && !stateUnknown) {
                 TextView note = new TextView(requireContext());
                 note.setText(R.string.k2go_mod_time_note);
-                note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-                note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
+                K2GoText.apply(note, R.style.TextAppearance_K2Go_Body, R.color.k2go_warn_ink, false);
                 note.setBackgroundResource(R.drawable.k2go_warn_bg);
                 note.setPadding(px(16), px(14), px(16), px(14));
                 LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
@@ -374,12 +382,7 @@ public class ModuleHubFragment extends Fragment {
     private void addHiddenSection() {
         if (HiddenModules.isEmpty(requireContext())) return;
 
-        TextView header = new TextView(requireContext());
-        header.setText(R.string.k2go_mod_hidden_header);
-        header.setAllCaps(true);
-        header.setLetterSpacing(0.08f);
-        header.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
-        header.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        TextView header = K2GoText.sectionLabel(requireContext(), getString(R.string.k2go_mod_hidden_header));
         LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         hlp.topMargin = px(18); hlp.bottomMargin = px(6);
@@ -405,17 +408,8 @@ public class ModuleHubFragment extends Fragment {
 
             LinearLayout col = new LinearLayout(requireContext());
             col.setOrientation(LinearLayout.VERTICAL);
-            TextView name = new TextView(requireContext());
-            name.setText(getString(c.titleRes));
-            name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
-            name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-            name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-            col.addView(name);
-            TextView sub = new TextView(requireContext());
-            sub.setText(R.string.k2go_mod_hidden_sub);
-            sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-            sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-            col.addView(sub);
+            col.addView(cardName(getString(c.titleRes)));
+            col.addView(cardDetail(getString(R.string.k2go_mod_hidden_sub)));
             row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
             // K2GO-385 (PR3): an action is a real M3 button (filled primary stadium), not an outlined
@@ -428,10 +422,7 @@ public class ModuleHubFragment extends Fragment {
             host.addView(row);
         }
 
-        TextView foot = new TextView(requireContext());
-        foot.setText(R.string.k2go_mod_hidden_foot);
-        foot.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        foot.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        TextView foot = cardDetail(getString(R.string.k2go_mod_hidden_foot));
         LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         flp.topMargin = px(4);
@@ -483,25 +474,13 @@ public class ModuleHubFragment extends Fragment {
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
 
-        TextView title = new TextView(requireContext());
-        title.setText(getString(c.titleRes));
-        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
-        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        col.addView(title);
+        // Name (Title) : what it is (Body context) : the longer description (Label detail).
+        col.addView(cardName(getString(c.titleRes)));
+        col.addView(cardContext(getString(c.subRes)));
 
-        TextView sub = new TextView(requireContext());
-        sub.setText(getString(c.subRes));
-        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        col.addView(sub);
-
-        TextView desc = new TextView(requireContext());
-        desc.setText(getString(c.descRes));
+        TextView desc = cardDetail(getString(c.descRes));
         desc.setMaxLines(2);
         desc.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        desc.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        desc.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         dlp.topMargin = px(4);
@@ -555,16 +534,8 @@ public class ModuleHubFragment extends Fragment {
 
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
-        TextView title = new TextView(requireContext());
-        title.setText(R.string.k2go_dash_card_title);
-        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
-        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        col.addView(title);
-        TextView sub = new TextView(requireContext());
-        sub.setText(R.string.k2go_dash_version_unknown);
-        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        col.addView(cardName(getString(R.string.k2go_dash_card_title)));
+        TextView sub = cardDetail(getString(R.string.k2go_dash_version_unknown));
         col.addView(sub);
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
