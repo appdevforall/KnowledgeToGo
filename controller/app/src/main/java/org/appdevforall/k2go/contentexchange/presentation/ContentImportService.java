@@ -41,6 +41,7 @@ import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ImportNoSpaceException;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
+import org.appdevforall.k2go.contentexchange.domain.ImportStatus;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.notifications.NotificationIds;
@@ -81,6 +82,11 @@ public final class ContentImportService extends Service {
     /** Minimum width of the trailing window used to sample the transfer rate (delta bytes / delta
      *  time), so the speed shown is the recent rate, not the cumulative average from the run start. */
     private static final long RATE_WINDOW_MS = 500L;
+    /** K2GO-376: gap between import-ingest status polls (mirrors ContentExportService). */
+    private static final long POLL_INTERVAL_MS = 1000L;
+    /** K2GO-376: consecutive status-poll failures tolerated before an item fails. The ingest runs
+     *  minutes, so one relay blip or a busy core must not discard it (mirrors ContentExportService). */
+    private static final int MAX_POLL_ERRORS = 10;
 
     /** The single run state the progress fragment observes. */
     private static final ImportSession SESSION = new ImportSession();
@@ -305,7 +311,7 @@ public final class ContentImportService extends Service {
             String stored = BoxImportStaging.safeName(SESSION.payloadName(i));
             try {
                 copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job);
-                source.importItem(ref.app(), SESSION.entryJson(i), BoxImportStaging.boxPath(stored));
+                ingest(source, ref, i, stored);
                 job.setDone(i);
             } catch (Exception e) {
                 // The staging copy or the ingest failed: mark the item and keep its slot for a retry.
@@ -399,6 +405,78 @@ public final class ContentImportService extends Service {
                 }
             }
             out.flush();
+        }
+    }
+
+    /**
+     * Ingest one already-staged item on the box as a long operation (K2GO-376): start it, then poll
+     * its status until it is done. Each poll is a SHORT request, so a slow Kolibri import (35-141 s)
+     * never times out at the dash-node/nginx relay. The poll IS the liveness signal: there is no
+     * wall-clock deadline here (the box's own watchdog ends a stalled ingest). A swept op (status
+     * GONE) re-starts exactly once; a second loss fails the item. A box error throws (the
+     * out-of-space case as {@link ImportNoSpaceException}, so the run stops with a space message, not
+     * a per-item retry). The item stays active while this runs; its bar sits at the copied bytes
+     * (the copy is done), as the old blocking ingest showed.
+     */
+    private void ingest(ImportSource source, ItemRef ref, int i, String storedName) throws Exception {
+        String boxPath = BoxImportStaging.boxPath(storedName);
+        String opId = source.startImport(ref.app(), SESSION.entryJson(i), boxPath);
+        boolean restarted = false;
+        int pollErrors = 0;
+        while (true) {
+            if (SESSION.isCancelled()) {
+                source.abortImport(opId);
+                throw new IOException("cancelled");
+            }
+            sleepPoll();
+            ImportStatus st;
+            try {
+                st = source.importStatus(opId);
+            } catch (Exception e) {
+                // A swept op returns GONE (handled below), not an exception; this is a transient poll
+                // failure (relay blip, busy core). Keep the same op and retry, up to the blip budget,
+                // so an ingest of minutes is not lost to one hiccup.
+                if (++pollErrors > MAX_POLL_ERRORS) {
+                    source.abortImport(opId);
+                    throw e;
+                }
+                continue;
+            }
+            pollErrors = 0;
+            switch (st.state()) {
+                case DONE:
+                    return;
+                case ERROR:
+                    if (st.noSpace()) {
+                        throw new ImportNoSpaceException(st.error() != null && !st.error().isEmpty()
+                                ? st.error() : "no space left on the device");
+                    }
+                    throw new Exception(st.error() != null && !st.error().isEmpty()
+                            ? st.error() : "the box could not import this item");
+                case GONE:
+                    // The op was swept (e.g. a core restart). Re-start once; a second loss fails it.
+                    if (restarted) {
+                        throw new Exception("the import operation was lost");
+                    }
+                    restarted = true;
+                    opId = source.startImport(ref.app(), SESSION.entryJson(i), boxPath);
+                    break;
+                case RUNNING:
+                default:
+                    // Keep the session fresh so the UI shows the item is still being imported.
+                    SESSION.publish();
+                    maybeNotify(SystemClock.elapsedRealtime());
+                    break;
+            }
+        }
+    }
+
+    private static void sleepPoll() throws IOException {
+        try {
+            Thread.sleep(POLL_INTERVAL_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("interrupted");   // worker shutdown: end the item
         }
     }
 

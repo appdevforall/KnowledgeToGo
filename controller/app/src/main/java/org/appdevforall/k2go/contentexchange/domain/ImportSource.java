@@ -19,11 +19,22 @@ public interface ImportSource {
     List<ImportVerdict> validate(List<ImportEntry> entries) throws Exception;
 
     /**
-     * Ingest one item whose archive already sits at {@code payloadBoxPath}: a box-visible path inside
-     * the core's import area. The core delegates to the app's own import. Throws when the core rejects
-     * the item (bad path, no space, adapter failure).
+     * Start the import long operation for one item whose archive already sits at
+     * {@code payloadBoxPath}: a box-visible path inside the core's import area. Returns the opId to
+     * poll (K2GO-376). A Kolibri import takes 35 to 141 s, so it cannot be one blocking request; the
+     * caller starts it here and polls {@link #importStatus}. Throws when the core rejects the start
+     * (bad path, unknown app).
      */
-    void importItem(String app, String entryJson, String payloadBoxPath) throws Exception;
+    String startImport(String app, String entryJson, String payloadBoxPath) throws Exception;
+
+    /**
+     * Poll one import operation's status. {@link ImportStatus.State#GONE} means the op was swept, so
+     * the caller re-starts once. Throws on a transport failure (the caller tolerates a few blips).
+     */
+    ImportStatus importStatus(String opId) throws Exception;
+
+    /** Abort one import operation (best-effort): the box stops the ingest and drops the op. */
+    void abortImport(String opId);
 
     /**
      * Delete one item from the box, delegating to the app's own delete. Available for the replace-older
