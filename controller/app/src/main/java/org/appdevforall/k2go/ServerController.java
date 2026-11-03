@@ -46,9 +46,6 @@ public class ServerController {
          *  screen can show an animated "starting" message during the long silent warm-up, instead of
          *  a blank line until the first pdsm service reports ~15s later. */
         default void onStartupBegan() {}
-        /** ADFA-4837: the pdsm service currently starting, for a boot progress line (symmetric to
-         *  onShutdownProgress). Heavy services (kolibri/kiwix) warm up lazily after this. */
-        default void onStartupProgress(String service) {}
     }
 
     private final AppCompatActivity activity;
@@ -76,7 +73,6 @@ public class ServerController {
     private volatile org.appdevforall.k2go.env.domain.ServerLiveness lastLiveness;
     /** Guards the read-prev-then-write of {@link #lastLiveness} against the boot-time reset (Phase 2). */
     private final Object livenessLock = new Object();
-    private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
     private final Handler serverCheckHandler = new Handler(android.os.Looper.getMainLooper());
     // ADFA-5343 (Phase 4d-2): connectivity-only poll now — server liveness moved to the reconciler tick,
@@ -278,13 +274,9 @@ public class ServerController {
             @Override
             public void onOutputLine(String line) {
                 // ADFA-5365: whoever launched it, the environment's progress lands in one place.
-                org.appdevforall.k2go.env.EnvironmentProgress.alive();
+                // The boot screen reads the per-service line from here, whichever path launched.
+                org.appdevforall.k2go.env.EnvironmentProgress.alive(line);
                 activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
-                java.util.regex.Matcher m = PDSM_SVC.matcher(line);
-                if (m.find()) {
-                    final String svc = m.group(1);
-                    activity.runOnUiThread(() -> host.onStartupProgress(svc));
-                }
             }
             @Override
             public void onProcessExit(int exitCode) {
