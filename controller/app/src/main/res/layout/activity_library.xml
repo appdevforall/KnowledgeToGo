@@ -185,7 +185,7 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_boot_muted" />
 
-        <!-- Boot only: the exact app build (BuildConfig.VERSION_NAME), under the service line. -->
+        <!-- Boot and shutdown: the exact app build (BuildConfig.VERSION_NAME), under the service line. -->
         <TextView
             android:id="@+id/k2go_boot_version"
             android:layout_width="match_parent"

@@ -595,7 +595,7 @@ public class LibraryActivity extends AppCompatActivity
     private void hideInstallProgress() {
         stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
-        if (bootVersion != null) bootVersion.setVisibility(View.GONE);   // the shutdown line reuses this panel
+        if (bootVersion != null) bootVersion.setVisibility(View.GONE);   // the shutdown screen shows it again
         if (dlActions != null) dlActions.setVisibility(View.GONE);   // ADFA-5119
         // ADFA-5119: the lift is NOT undone here, deliberately. This runs the instant the install
         // reaches a terminal, and the very next thing is the gate's OPEN flip — so dropping the
@@ -1153,6 +1153,7 @@ public class LibraryActivity extends AppCompatActivity
             if (installStatus != null) installStatus.setText(getString(R.string.server_shutting_down));
             if (installDetail != null) installDetail.setText("");
             if (installBar != null) installBar.setVisibility(View.GONE);
+            showVersionLine();
         }
         if (bootGate != null && !reduceMotion()) {
             bootGate.setVisibility(View.VISIBLE);
@@ -1233,7 +1234,13 @@ public class LibraryActivity extends AppCompatActivity
     /** The boot gate shows the exact app build on its own line, under the service line. */
     private void showBootVersion() {
         onStartupBegan();
-        if (closing || installing || gateDismissed || bootVersion == null) return;
+        if (closing || installing || gateDismissed) return;
+        showVersionLine();
+    }
+
+    /** The exact app build, under the service line; shown on the boot and the shutdown screens. */
+    private void showVersionLine() {
+        if (bootVersion == null) return;
         bootVersion.setText(org.appdevforall.k2go.BuildConfig.VERSION_NAME);
         bootVersion.setVisibility(View.VISIBLE);
     }
