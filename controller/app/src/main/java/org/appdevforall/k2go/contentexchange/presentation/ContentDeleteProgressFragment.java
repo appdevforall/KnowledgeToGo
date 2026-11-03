@@ -22,11 +22,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.domain.DeleteJob;
 import org.appdevforall.k2go.util.ByteFormatter;
+import org.appdevforall.k2go.util.Motion;
 
 public class ContentDeleteProgressFragment extends Fragment {
 
@@ -39,6 +41,9 @@ public class ContentDeleteProgressFragment extends Fragment {
     private Button cancel;
     private Button retry;
     private Button finish;
+    private View animBox;
+    private LottieAnimationView anim;
+    private boolean reduceMotion;
 
     private final DeleteSession session = ContentDeleteService.session();
 
@@ -58,6 +63,17 @@ public class ContentDeleteProgressFragment extends Fragment {
         cancel = root.findViewById(R.id.k2go_cxd_cancel);
         retry = root.findViewById(R.id.k2go_cxd_retry);
         finish = root.findViewById(R.id.k2go_cxd_finish);
+
+        // Content -> shredder loop (K2GO-376). Reduce motion holds a single frame instead of looping.
+        animBox = root.findViewById(R.id.k2go_cxd_anim_box);
+        anim = root.findViewById(R.id.k2go_cxd_anim);
+        reduceMotion = Motion.reduced(getContext());
+        anim.setAnimation(R.raw.k2go_delete_shred_loop);
+        if (reduceMotion) {
+            anim.setProgress(0.5f);
+        } else {
+            anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
+        }
 
         cancel.setOnClickListener(v -> ContentDeleteService.cancel(requireContext()));
         retry.setOnClickListener(v -> ContentDeleteService.retry(requireContext()));
@@ -83,6 +99,9 @@ public class ContentDeleteProgressFragment extends Fragment {
     public void onPause() {
         super.onPause();
         session.setListener(null);
+        if (anim.isAnimating()) {
+            anim.pauseAnimation();
+        }
     }
 
     private void render() {
@@ -106,6 +125,19 @@ public class ContentDeleteProgressFragment extends Fragment {
         boolean settled = !running;
         retry.setVisibility(settled && session.canRetry() ? View.VISIBLE : View.GONE);
         finish.setVisibility(settled ? View.VISIBLE : View.GONE);
+        renderAnim(running);
+    }
+
+    /** Show the delete animation only while deleting; play it unless motion is off. */
+    private void renderAnim(boolean active) {
+        animBox.setVisibility(active ? View.VISIBLE : View.GONE);
+        if (active && !reduceMotion) {
+            if (!anim.isAnimating()) {
+                anim.playAnimation();
+            }
+        } else if (anim.isAnimating()) {
+            anim.pauseAnimation();
+        }
     }
 
     private void renderCurrentItem(boolean running) {

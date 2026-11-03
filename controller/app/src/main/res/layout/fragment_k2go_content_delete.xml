@@ -30,6 +30,43 @@
                 android:textColor="@color/k2go_ink"
                 android:text="@string/k2go_cx_delete_title" />
 
+            <!-- K2GO-376: delete animation (content -> shredder loop). The loop draws the shredder on the
+                 right; this overlay composites the K2Go logo (the library, the source) on the left, on the
+                 same grid as the import overlay. Shown only while deleting; reduce-motion holds a frame. -->
+            <FrameLayout
+                android:id="@+id/k2go_cxd_anim_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/k2go_cxd_anim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <Space android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="60" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="940"
+                        android:orientation="horizontal">
+                        <ImageView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="360"
+                            android:src="@drawable/ic_launcher_foreground" android:scaleType="centerCrop" android:contentDescription="@null" />
+                        <Space android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="640" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+
             <!-- Overall -->
             <TextView
                 android:id="@+id/k2go_cxd_overall_label"

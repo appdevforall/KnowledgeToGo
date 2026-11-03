@@ -38,9 +38,10 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="@color/k2go_muted" />
 
-            <!-- K2GO-427: two-phones transfer animation (the same Lottie loop as Clone, ADFA-5143). The
-                 loop ships without icons; the two K2Go logos are composited by this overlay. The fragment
-                 shows this box only while the transfer runs and honours reduce-motion (a held frame). -->
+            <!-- K2GO-427: transfer animation. Wi-Fi receive plays the two-phones Clone loop (ADFA-5143) with
+                 both logos; a drive import plays the microSD loop, which draws the card on the left, so the
+                 fragment hides the left logo (K2GO-376). The loops ship without the K2Go logo: this overlay
+                 composites it. Shown only while the transfer runs; reduce-motion holds a frame. -->
             <FrameLayout
                 android:id="@+id/k2go_cxi_anim_box"
                 android:layout_width="match_parent"
@@ -60,23 +61,24 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <Space android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="300" />
+                    <Space android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="60" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="480"
+                        android:layout_weight="940"
                         android:orientation="horizontal">
-                        <Space android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="25" />
-                        <ImageView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="295"
-                            android:src="@drawable/ic_launcher_foreground" android:scaleType="fitCenter" android:contentDescription="@null" />
-                        <Space android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="360" />
-                        <ImageView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="295"
-                            android:src="@drawable/ic_launcher_foreground" android:scaleType="fitCenter" android:contentDescription="@null" />
-                        <Space android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="25" />
+                        <ImageView android:id="@+id/k2go_cxi_anim_logo_left"
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="360"
+                            android:src="@drawable/ic_launcher_foreground" android:scaleType="centerCrop" android:contentDescription="@null" />
+                        <Space android:id="@+id/k2go_cxi_anim_gap"
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="280" />
+                        <ImageView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="360"
+                            android:src="@drawable/ic_launcher_foreground" android:scaleType="centerCrop" android:contentDescription="@null" />
+                        <Space android:id="@+id/k2go_cxi_anim_edge"
+                            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0" />
                     </LinearLayout>
 
-                    <Space android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="220" />
                 </LinearLayout>
             </FrameLayout>
 
