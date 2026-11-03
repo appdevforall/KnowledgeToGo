@@ -74,6 +74,11 @@ public final class EnvironmentProgress {
     /** The environment printed {@code line}: a sign of life, also passed to the viewer if one is attached. */
     public static void alive(String line) {
         alive();
+        line(line);
+    }
+
+    /** Passes {@code line} to the viewer only. Stop output uses this: a stopping box is not a sign of life. */
+    public static void line(String line) {
         final LineListener l = lineListener;
         if (l != null) {
             l.onLine(line);

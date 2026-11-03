@@ -904,19 +904,27 @@ public class LibraryActivity extends AppCompatActivity
 
     private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
-    /** Viewer of the boot output: each "[pdsm:<service>] ..." line names the service on the gate. */
-    private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener bootLines = line -> {
+    /** Viewer of the pdsm output: each "[pdsm:<service>] ..." line names the service on the boot or shutdown screen. */
+    private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener pdsmLines = line -> {
         java.util.regex.Matcher m = PDSM_SVC.matcher(line);
         if (m.find()) {
             final String svc = m.group(1);
-            runOnUiThread(() -> showBootService(svc));
+            runOnUiThread(() -> {
+                if (closing) showShutdownService(svc);
+                else showBootService(svc);
+            });
         }
     };
+
+    /** ADFA-4834: the service currently stopping, under "Shutting down...". */
+    private void showShutdownService(String service) {
+        if (installDetail != null) installDetail.setText(service);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(bootLines);
+        org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(pdsmLines);
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
@@ -946,7 +954,7 @@ public class LibraryActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        org.appdevforall.k2go.env.EnvironmentProgress.clearLineListener(bootLines);
+        org.appdevforall.k2go.env.EnvironmentProgress.clearLineListener(pdsmLines);
         if (serverController != null) serverController.onPause();
         if (updateController != null) updateController.unregisterDownloadReceiver();
     }
@@ -1248,7 +1256,7 @@ public class LibraryActivity extends AppCompatActivity
     // ADFA-4837: boot progress — show which service is starting under the boot animation, mirroring
     // the shutdown line, so start/close feel symmetric. Only during the initial boot gate (not during
     // an install, which owns the same overlay, and not while closing). The service comes from the boot
-    // output the environment already prints (bootLines); this screen only displays it.
+    // output the environment already prints (pdsmLines); this screen only displays it.
     private void showBootService(String service) {
         if (closing || installing || gateDismissed || installProgress == null) return;
         installProgress.setVisibility(View.VISIBLE);

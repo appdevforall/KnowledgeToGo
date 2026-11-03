@@ -58,7 +58,10 @@ public final class EnvironmentControl {
         EnvironmentProgress.cleared();
         new PRootEngine().executeInContainer(ctx.getApplicationContext(), rootfs(ctx).getAbsolutePath(), CMD_STOP,
                 new PRootEngine.OutputListener() {
-                    @Override public void onOutputLine(String line) { if (log != null) log.onLine("[PDSM Stop] " + line); }
+                    @Override public void onOutputLine(String line) {
+                        EnvironmentProgress.line(line);   // the shutdown screen names the stopping service
+                        if (log != null) log.onLine("[PDSM Stop] " + line);
+                    }
                     @Override public void onProcessExit(int exitCode) { if (onDone != null) onDone.run(); }
                     @Override public void onError(String error) { if (onDone != null) onDone.run(); }
                 });
