@@ -185,6 +185,17 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_boot_muted" />
 
+        <!-- Boot only: the exact app build (BuildConfig.VERSION_NAME), under the service line. -->
+        <TextView
+            android:id="@+id/k2go_boot_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_boot_muted"
+            android:visibility="gone" />
+
         <!-- ADFA-5119: the two controls that end the wait. The first carries three labels one at a
              time (Pause / Resume / Retry) because all three mean the same thing to the user — keep
              this download — and only the current state decides which word is true. Cancel is the

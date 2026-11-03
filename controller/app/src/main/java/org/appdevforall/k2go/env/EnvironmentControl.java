@@ -85,7 +85,7 @@ public final class EnvironmentControl {
         engine.executeInContainer(ctx.getApplicationContext(), rootfsDir.getAbsolutePath(), CMD_START,
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) {
-                        EnvironmentProgress.alive();   // ADFA-5365: this boot is still moving
+                        EnvironmentProgress.alive(line);   // ADFA-5365: this boot is still moving
                         if (log != null) log.onLine("[Server] " + line);
                     }
                     @Override public void onProcessExit(int exitCode) { if (log != null) log.onLine("[Server] engine exit " + exitCode); }

@@ -76,6 +76,7 @@ public class LibraryActivity extends AppCompatActivity
     private LottieAnimationView bootGate;
     private View installProgress;
     private android.widget.TextView installStatus, installDetail, installPercent, installEta;
+    private android.widget.TextView bootVersion;
     // ADFA-4895: the three-column row, shown only once the transfer is really running.
     private android.widget.TextView dlPercent, dlRate, dlEta;
     private View downloadRow;
@@ -176,6 +177,7 @@ public class LibraryActivity extends AppCompatActivity
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
+        bootVersion = findViewById(R.id.k2go_boot_version);
         installPercentRow = findViewById(R.id.k2go_install_percent_row);
         installPercent = findViewById(R.id.k2go_install_percent);
         installEta = findViewById(R.id.k2go_install_eta);
@@ -435,6 +437,7 @@ public class LibraryActivity extends AppCompatActivity
             // down (the real D3 case). Settings turn-off = setUserWantsOn(false) = stop + no background.
             if (systemInstalled && savedInstanceState == null) {
                 org.appdevforall.k2go.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
+                showBootVersion();
             }
             // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
@@ -459,6 +462,7 @@ public class LibraryActivity extends AppCompatActivity
     private void showInstallProgress(InstallState st) {
         if (installProgress == null || st == null || !st.isRunning()) return;
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
+        if (bootVersion != null) bootVersion.setVisibility(View.GONE);
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         // ADFA-5119: the figure rows RESERVE their line instead of collapsing it. Only one of the two
@@ -591,6 +595,7 @@ public class LibraryActivity extends AppCompatActivity
     private void hideInstallProgress() {
         stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
+        if (bootVersion != null) bootVersion.setVisibility(View.GONE);   // the shutdown line reuses this panel
         if (dlActions != null) dlActions.setVisibility(View.GONE);   // ADFA-5119
         // ADFA-5119: the lift is NOT undone here, deliberately. This runs the instant the install
         // reaches a terminal, and the very next thing is the gate's OPEN flip — so dropping the
@@ -897,9 +902,21 @@ public class LibraryActivity extends AppCompatActivity
         // of a module batch. Home only observes ServerStateRepository and reflects it.
     }
 
+    private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
+
+    /** Viewer of the boot output: each "[pdsm:<service>] ..." line names the service on the gate. */
+    private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener bootLines = line -> {
+        java.util.regex.Matcher m = PDSM_SVC.matcher(line);
+        if (m.find()) {
+            final String svc = m.group(1);
+            runOnUiThread(() -> showBootService(svc));
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
+        org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(bootLines);
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
@@ -929,6 +946,7 @@ public class LibraryActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        org.appdevforall.k2go.env.EnvironmentProgress.clearLineListener(bootLines);
         if (serverController != null) serverController.onPause();
         if (updateController != null) updateController.unregisterDownloadReceiver();
     }
@@ -1212,10 +1230,19 @@ public class LibraryActivity extends AppCompatActivity
         startBootEllipsis();
     }
 
+    /** The boot gate shows the exact app build on its own line, under the service line. */
+    private void showBootVersion() {
+        onStartupBegan();
+        if (closing || installing || gateDismissed || bootVersion == null) return;
+        bootVersion.setText(org.appdevforall.k2go.BuildConfig.VERSION_NAME);
+        bootVersion.setVisibility(View.VISIBLE);
+    }
+
     // ADFA-4837: boot progress — show which service is starting under the boot animation, mirroring
     // the shutdown line, so start/close feel symmetric. Only during the initial boot gate (not during
-    // an install, which owns the same overlay, and not while closing).
-    @Override public void onStartupProgress(String service) {
+    // an install, which owns the same overlay, and not while closing). The service comes from the boot
+    // output the environment already prints (bootLines); this screen only displays it.
+    private void showBootService(String service) {
         if (closing || installing || gateDismissed || installProgress == null) return;
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.GONE);
