@@ -54,6 +54,14 @@ public class ImportProgressFragment extends Fragment {
     /** One-shot guard so a re-entrant render() does not schedule the back-pop twice. */
     private boolean leaving;
 
+    /** Seconds before a fully successful run opens the Library (same pause as the Clone exit). */
+    private static final int REDIRECT_SECS = 3;
+    private TextView redirect;
+    private TextView redirectCancel;
+    private int redirectSecs = -1;          // -1 = no countdown running
+    private boolean redirectCancelled;      // view-scoped: Cancel holds for this screen only
+    private final Runnable redirectTick = this::onRedirectTick;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
@@ -69,6 +77,13 @@ public class ImportProgressFragment extends Fragment {
         cancel = root.findViewById(R.id.k2go_cxi_cancel);
         retry = root.findViewById(R.id.k2go_cxi_retry);
         finish = root.findViewById(R.id.k2go_cxi_finish);
+        redirect = root.findViewById(R.id.k2go_cxi_redirect);
+        redirectCancel = root.findViewById(R.id.k2go_cxi_redirect_cancel);
+        redirectCancel.setOnClickListener(v -> {
+            redirectCancelled = true;
+            stopRedirect();
+            render();
+        });
 
         // Two-phones transfer animation, shared with Clone (R.raw.k2go_clone_loop). Reduce motion holds
         // a single frame instead of looping; the screen never depends on movement to be understood.
@@ -108,6 +123,7 @@ public class ImportProgressFragment extends Fragment {
     public void onPause() {
         super.onPause();
         session.setListener(null);
+        stopRedirect();   // render() on resume restarts it unless the user cancelled
         if (anim != null && anim.isAnimating()) {
             anim.pauseAnimation();
         }
@@ -175,6 +191,7 @@ public class ImportProgressFragment extends Fragment {
     private void renderSettled(boolean running, String error) {
         if (running) {
             message.setVisibility(View.GONE);
+            renderRedirect(false);
             return;
         }
         int done = countDone();
@@ -187,8 +204,62 @@ public class ImportProgressFragment extends Fragment {
         } else {
             text = getString(R.string.k2go_cx_import_partial_fmt, done, total);
         }
+        boolean success = error == null && session.allDone();
         message.setText(text);
+        message.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
+                success ? R.color.k2go_leaf : R.color.k2go_ink));
         message.setVisibility(View.VISIBLE);
+        renderRedirect(success && !redirectCancelled);
+    }
+
+    /** On full success, count down to the Library; Cancel (or any non-success state) hides it. */
+    private void renderRedirect(boolean active) {
+        if (!active) {
+            stopRedirect();
+            redirect.setVisibility(View.GONE);
+            redirectCancel.setVisibility(View.GONE);
+            return;
+        }
+        if (redirectSecs < 0) {
+            redirectSecs = REDIRECT_SECS;
+            onRedirectTick();
+        }
+        redirectCancel.setVisibility(View.VISIBLE);
+    }
+
+    private void onRedirectTick() {
+        View v = getView();
+        if (v == null || !isAdded() || redirectSecs < 0) {
+            return;
+        }
+        if (redirectSecs == 0) {
+            redirectSecs = -1;
+            openLibrary();
+            return;
+        }
+        redirect.setText(getString(R.string.k2go_clone_exit_redirecting, redirectSecs));
+        redirect.setVisibility(View.VISIBLE);
+        redirectSecs--;
+        v.postDelayed(redirectTick, 1000L);
+    }
+
+    private void stopRedirect() {
+        View v = getView();
+        if (v != null) {
+            v.removeCallbacks(redirectTick);
+        }
+        redirectSecs = -1;
+    }
+
+    /** Close the run and land on the Library tab, clearing the Content Exchange screens above it. */
+    private void openLibrary() {
+        ContentImportService.finishSession(requireContext());
+        startActivity(new android.content.Intent(requireContext(),
+                org.appdevforall.k2go.redesign.LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(org.appdevforall.k2go.redesign.LibraryActivity.EXTRA_TAB, R.id.nav_library));
+        requireActivity().finish();
     }
 
     private int countDone() {
@@ -227,6 +298,7 @@ public class ImportProgressFragment extends Fragment {
         // The scheduled pop runs on the view's handler; if the view is gone it will not run, so clear
         // the guard here so it does not stay true across a view recreation.
         leaving = false;
+        stopRedirect();
         super.onDestroyView();
     }
 
