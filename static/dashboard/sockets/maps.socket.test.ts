@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateSecureCommand, parseBox, buildArgs, displayBounds, parseEstimate } from './maps.socket';
+import { validateSecureCommand, parseBox, buildArgs, displayBounds, parseEstimate, parseEstimateFrom } from './maps.socket';
 
 const SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const sudo = (rest: string) => `sudo ${SCRIPT} ${rest}`;
@@ -43,6 +43,17 @@ test('parseEstimate reads the interactive size prompt into bytes (ADFA-4879)', (
     assert.equal(e!.archive, 8_340_000);
     assert.equal(e!.free_after, 73_580_000_000);
     assert.equal(e!.free, 73_580_000_000 + 8_340_000);
+});
+
+test('parseEstimateFrom reads the prompt from stdout (older script) or stderr (newer script)', () => {
+    const prompt = 'New region will be 9.7 MB downloaded, 9.6 MB on disk. This will\n' +
+        'leave about 60.96 GB free space on this partition. Continue? y/n ';
+    const fromOut = parseEstimateFrom(prompt, '');
+    const fromErr = parseEstimateFrom('', 'Determining download size...\n\n' + prompt);
+    assert.ok(fromOut);
+    assert.deepEqual(fromErr, fromOut);
+    assert.equal(fromErr!.transfer, 9_700_000);
+    assert.equal(parseEstimateFrom('', 'Determining download size...'), null);
 });
 
 test('parseEstimate returns null before the size line appears', () => {
