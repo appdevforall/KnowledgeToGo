@@ -216,6 +216,11 @@ jobs:
           EXCLUDES=(--exclude "*.tar.gz" --exclude "latest_*.meta4" --exclude "latest_*.installed")
           if [ "$MODE" = dev ]; then EXCLUDES+=(--exclude "build-*.log" --exclude "PUBLISH_QUEUE*.tsv"); fi
           s3cp . "s3://${BUCKET_NAME}/${PFX}" --recursive "${EXCLUDES[@]}"
+          # dev keeps its build logs under dev_build-* so promote-rootfs can carry them to build-*
+          # (the module-size catalog reads build-full-arm64-v8a.log).
+          if [ "$MODE" = dev ]; then
+            for f in build-*.log; do s3cp "$f" "s3://${BUCKET_NAME}/${PFX}dev_${f}"; done
+          fi
 
           # 3) Flip the pointers LAST (only after the data is fully up, so a client reading a pointer
           #    never lands on a half-uploaded tarball). The builder writes latest_*; dev republishes
