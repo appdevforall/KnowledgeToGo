@@ -48,6 +48,10 @@ public class ImportProgressFragment extends Fragment {
     private View animBox;
     private LottieAnimationView anim;
     private boolean reduceMotion;
+    private View animLogoLeft;
+    private View animGap;
+    private View animEdge;
+    private int loopRes;   // the loop currently loaded, 0 = none yet
 
     private final ImportSession session = ContentImportService.session();
 
@@ -85,19 +89,16 @@ public class ImportProgressFragment extends Fragment {
             render();
         });
 
-        // Two-phones transfer animation, shared with Clone (R.raw.k2go_clone_loop). Reduce motion holds
-        // a single frame instead of looping; the screen never depends on movement to be understood.
+        // Transfer animation. Wi-Fi receive is phone to phone, so it shares the Clone loop (two logos); a
+        // drive import plays the microSD loop, which draws the card on the left, so the left logo is hidden.
+        // Reduce motion holds a single frame instead of looping; the screen never depends on movement.
+        // The loop is picked in render(): the service may begin the session after this view exists.
         animBox = root.findViewById(R.id.k2go_cxi_anim_box);
         anim = root.findViewById(R.id.k2go_cxi_anim);
+        animLogoLeft = root.findViewById(R.id.k2go_cxi_anim_logo_left);
+        animGap = root.findViewById(R.id.k2go_cxi_anim_gap);
+        animEdge = root.findViewById(R.id.k2go_cxi_anim_edge);
         reduceMotion = Motion.reduced(getContext());
-        if (anim != null) {
-            anim.setAnimation(R.raw.k2go_clone_loop);
-            if (reduceMotion) {
-                anim.setProgress(0.5f);
-            } else {
-                anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
-            }
-        }
 
         cancel.setOnClickListener(v -> ContentImportService.cancel(requireContext()));
         retry.setOnClickListener(v -> ContentImportService.retry(requireContext()));
@@ -158,8 +159,35 @@ public class ImportProgressFragment extends Fragment {
         renderAnim(running);
     }
 
+    /** Load the loop for this run's source once: Clone loop for Wi-Fi, microSD loop for a drive. */
+    private void bindLoop() {
+        boolean network = session.isNetwork();
+        int res = network ? R.raw.k2go_clone_loop : R.raw.k2go_import_sd_loop;
+        if (anim == null || res == loopRes) {
+            return;
+        }
+        loopRes = res;
+        animLogoLeft.setVisibility(network ? View.VISIBLE : View.INVISIBLE);   // INVISIBLE keeps the weight grid
+        // The receiver logo sits where its loop puts the glow: 0.82 W (Clone loop) or 0.80 W (microSD loop).
+        setWeight(animGap, network ? 280 : 260);
+        setWeight(animEdge, network ? 0 : 20);
+        anim.setAnimation(res);
+        if (reduceMotion) {
+            anim.setProgress(0.5f);
+        } else {
+            anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
+        }
+    }
+
+    private static void setWeight(View v, float weight) {
+        android.widget.LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) v.getLayoutParams();
+        lp.weight = weight;
+        v.setLayoutParams(lp);
+    }
+
     /** Show the transfer animation only while the transfer is in flight; play it unless motion is off. */
     private void renderAnim(boolean active) {
+        bindLoop();
         if (animBox != null) {
             animBox.setVisibility(active ? View.VISIBLE : View.GONE);
         }
