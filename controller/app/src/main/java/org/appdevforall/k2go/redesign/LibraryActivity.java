@@ -417,6 +417,7 @@ public class LibraryActivity extends AppCompatActivity
                         org.appdevforall.k2go.env.ServerLifecycleReconciler.get();
                 r.setUserWantsOn(this, true);
                 r.requestReconcileNow();   // act now, not on the next tick
+                showBootVersion();
             }
             main.postDelayed(this::evaluateRecovery,
                     nothingToBoot ? NO_SYSTEM_GATE_MS : GATE_SAFETY_MS);
