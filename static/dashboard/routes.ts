@@ -10,7 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages, getCalibreSession, verifyCalibreCredentials } from './sockets/books.query';
-import { parseBox, parseEstimate } from './sockets/maps.socket';
+import { parseBox, parseEstimateFrom } from './sockets/maps.socket';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
     browseChannelTree, buildLocalSubtree, estimateSelection, deleteChannel, getKolibriTask,
@@ -133,7 +133,7 @@ apiRouter.post('/books/library/:id/remove', async (req: Request, res: Response):
 
 // Size estimate for a region, for the in-app consent step: { transfer, archive, free, free_after }
 // (bytes). We do NOT modify tile-extract.py — we drive its existing INTERACTIVE `extract`, read the
-// size prompt it prints (parseEstimate), then abort WITHOUT downloading. Hardened default-safe: we
+// size prompt it prints (parseEstimateFrom: stdout or stderr), then abort WITHOUT downloading. Hardened default-safe: we
 // close stdin immediately, so the script's confirm `input()` raises EOFError and aborts on its own
 // even if the prompt wording changes — the estimate is printed before that input(), so we still
 // capture it. Needs connectivity + a moment (pmtiles --dry-run).
@@ -162,7 +162,7 @@ apiRouter.post('/maps/estimate', (req: Request, res: Response): void => {
             finish(() => { if (!res.headersSent) res.status(409).json({ error: 'overlaps an existing region' }); });
             return;
         }
-        const est = parseEstimate(out);
+        const est = parseEstimateFrom(out, err);
         if (est) finish(() => { if (!res.headersSent) res.json({ ok: true, ...est }); });
     };
     p.stdout.on('data', (d: Buffer) => { out += d.toString(); check(); });
@@ -170,7 +170,7 @@ apiRouter.post('/maps/estimate', (req: Request, res: Response): void => {
     p.on('error', (e) => finish(() => { if (!res.headersSent) res.status(500).json({ error: String(e) }); }));
     p.on('exit', () => finish(() => {
         if (res.headersSent) return;
-        const est = parseEstimate(out);
+        const est = parseEstimateFrom(out, err);
         if (est) res.json({ ok: true, ...est });
         else res.status(500).json({ error: err.trim() || 'no size estimate in output', raw: out.slice(-200) });
     }));
