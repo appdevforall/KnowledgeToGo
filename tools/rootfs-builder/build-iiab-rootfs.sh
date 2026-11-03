@@ -342,7 +342,20 @@ ensure_go() {
     warn "Existing Go ${v:-unknown} < ${GO_MIN}; bootstrapping a newer toolchain."
   fi
   gv="$GO_VERSION"
-  [[ -z "$gv" ]] && gv="$(curl -fsSL 'https://go.dev/VERSION?m=text' 2>/dev/null | head -1 | tr -d '[:space:]' || true)"
+  # K2GO-511: no pin -> reuse a cached toolchain before asking go.dev, so the --all-tier loop
+  # never depends on the network again (a failed go.dev query failed a finished tier).
+  if [[ -z "$gv" ]]; then
+    for cand in "${WORKDIR}"/go-toolchain/*/go/bin/go; do
+      [[ -x "$cand" ]] || continue
+      v="$(go_version_num "$cand")"
+      if [[ -n "$v" ]] && ver_ge "$v" "$GO_MIN"; then GO_BIN="$cand"; log "Using cached Go ${v}"; return 0; fi
+    done
+    for _try in 1 2 3; do
+      gv="$(curl -fsSL 'https://go.dev/VERSION?m=text' 2>/dev/null | head -1 | tr -d '[:space:]' || true)"
+      [[ -n "$gv" ]] && break
+      warn "go.dev version query failed (attempt ${_try}/3)"; sleep $((_try * 10))
+    done
+  fi
   [[ "$gv" == go* ]] || gv="go${gv}"
   [[ -n "$gv" && "$gv" != "go" ]] || die "Could not determine a Go version to download (set --go-version)."
   m="$(uname -m)"
@@ -381,6 +394,7 @@ ensure_go() {
 
 # Sets MKMETALINK to a usable binary. Priority: --mkmetalink-bin > PATH > go install.
 ensure_mkmetalink() {
+  [[ -n "${MKMETALINK:-}" && -x "$MKMETALINK" ]] && return 0   # already resolved (preflight)
   if [[ -n "$MKMETALINK_BIN" ]]; then
     [[ -x "$MKMETALINK_BIN" ]] || die "--mkmetalink-bin is not executable: $MKMETALINK_BIN"
     MKMETALINK="$MKMETALINK_BIN"; return 0
@@ -582,6 +596,10 @@ fi
 # Free disk (>=8 GB recommended for full)
 AVAIL_GB="$(df -BG --output=avail "$(dirname "$WORKDIR")" 2>/dev/null | tail -1 | tr -dc '0-9' || echo 0)"
 [[ "${AVAIL_GB:-0}" -ge 8 ]] || warn "Low free space (~${AVAIL_GB}G). full needs ~8-10G."
+
+# K2GO-511: resolve the metalink tool now, so a missing Go/mkmetalink fails in minute 1,
+# not after the build. Step [5/5] reuses it.
+ensure_mkmetalink
 
 # ----------------------------- 1) Debian base ---------------------------------
 if [[ -n "$BASE_LOCAL_OVERRIDE" ]]; then
