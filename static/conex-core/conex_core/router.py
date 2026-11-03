@@ -13,7 +13,7 @@ from urllib.parse import unquote
 from . import VERSION
 from .export import disk_total_free
 from .export_ops import ExportOps
-from .importing import is_within_dir
+from .import_ops import ImportOps
 from .registry import Registry
 from .share_ops import ShareOps
 
@@ -93,33 +93,6 @@ def _import_validate(registry: Registry, body: Any) -> Response:
     return 200, {"results": results}
 
 
-def _import_item(registry: Registry, body: Any) -> Response:
-    """Ingest one already-local item archive. The front placed payloadPath on a box-visible
-    path inside the import area and drives the per-item sequence."""
-    if not isinstance(body, dict):
-        return 400, {"error": "body must be {app, entry, payloadPath}"}
-    app = body.get("app")
-    entry = body.get("entry")
-    payload_path = body.get("payloadPath")
-    if not registry.has(app):
-        return 404, {"error": f"unknown app: {app}"}
-    if not isinstance(entry, dict) or not isinstance(payload_path, str) or not payload_path:
-        return 400, {"error": "entry and payloadPath are required"}
-    # Containment: the payload must live inside the import area, never an arbitrary path.
-    if not is_within_dir(registry.import_root, payload_path):
-        return 400, {"error": "payloadPath is outside the import area"}
-    # No free-space preflight here. The box runs under proot, whose statvfs under-reports the
-    # free space on the content volume, so a disk check here false-rejected imports on devices
-    # with ample room. The phone app is the one source of truth for free space (Android StatFs)
-    # and gates before this call; a real ENOSPC during ingest still fails cleanly. A space
-    # shortfall returns 507 (the adapter tags it code "no_space") so the front stops the run with
-    # a space message; any other failure stays 422 (a per-item retry).
-    result = registry.get(app).import_item(entry, payload_path)
-    if result.get("ok"):
-        return 200, result
-    return (507, result) if result.get("code") == "no_space" else (422, result)
-
-
 def _delete_item(registry: Registry, app: str, local_ref: str) -> Response:
     """Delete one item, delegating to the app's own delete. 404 when the item is absent, so a
     repeated delete is idempotent-safe. The destructive confirm is the front's (D1c); the core
@@ -170,13 +143,14 @@ def _export_prepare(ops: Optional[ExportOps], body: Any) -> Response:
 
 def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None,
              ops: Optional[ExportOps] = None, share: Optional[ShareOps] = None,
-             token: Optional[str] = None) -> Response:
+             token: Optional[str] = None, import_ops: Optional[ImportOps] = None) -> Response:
     """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
-    for a POST; ``ops`` is the export long-operation registry and ``share`` is the share-gate
-    registry (the server supplies both; the routes that need them guard against None). ``token``
-    is the share session token: the server reads it from the ``X-Share-Token`` request header
-    (never the URL, so it stays out of access logs) and passes it here, so the router stays
-    header-agnostic and unit-testable without a socket."""
+    for a POST; ``ops`` is the export long-operation registry, ``import_ops`` the import
+    long-operation registry, and ``share`` the share-gate registry (the server supplies all; the
+    routes that need them guard against None). ``token`` is the share session token: the server
+    reads it from the ``X-Share-Token`` request header (never the URL, so it stays out of access
+    logs) and passes it here, so the router stays header-agnostic and unit-testable without a
+    socket."""
     trimmed = path.rstrip("/") or "/"
     segments = [unquote(s) for s in trimmed.split("/") if s != ""]
 
@@ -204,9 +178,15 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         # POST /v1/import/validate : what will import and what is skipped, nothing moved.
         if segments == ["v1", "import", "validate"]:
             return _import_validate(registry, body)
-        # POST /v1/import/item : ingest one already-local item archive.
+        # POST /v1/import/item : start the import long operation, return its opId. Import is a long
+        # op (K2GO-376): the ingest runs minutes on a real channel, so a single blocking POST times
+        # out at the relay. The op starts off the request thread; the client polls import status.
         if segments == ["v1", "import", "item"]:
-            return _import_item(registry, body)
+            if import_ops is None:
+                return 500, {"error": "import ops unavailable"}
+            if not isinstance(body, dict):
+                return 400, {"error": "body must be {app, entry, payloadPath}"}
+            return import_ops.start(body.get("app"), body.get("entry"), body.get("payloadPath"))
         return 404, {"error": "not found"}
 
     if method == "DELETE":
@@ -215,6 +195,11 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
             if ops is None:
                 return 500, {"error": "export ops unavailable"}
             return ops.delete(segments[2])
+        # DELETE /v1/import/{opId} : abort an import long operation.
+        if len(segments) == 3 and segments[0] == "v1" and segments[1] == "import":
+            if import_ops is None:
+                return 500, {"error": "import ops unavailable"}
+            return import_ops.delete(segments[2])
         # DELETE /v1/share/{sessionId} : cancel a share session (abort, by host or receiver).
         if len(segments) == 3 and segments[0] == "v1" and segments[1] == "share":
             if share is None:
@@ -241,6 +226,12 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         if ops is None:
             return 500, {"error": "export ops unavailable"}
         return ops.status(segments[3])
+
+    # GET /v1/import/status/{opId} : the import op state + the moved-bytes heartbeat + the result.
+    if len(segments) == 4 and segments[0] == "v1" and segments[1] == "import" and segments[2] == "status":
+        if import_ops is None:
+            return 500, {"error": "import ops unavailable"}
+        return import_ops.status(segments[3])
 
     # GET /v1/export/fetch/{opId} : stream the prepared item (payload is an ExportStream the
     # server streams). 409 until the op is ready; the stream's on_close drops the op.

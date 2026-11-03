@@ -75,9 +75,28 @@ public final class ConexCoreDataSource {
         return postJson(V1 + "/import/validate", body);
     }
 
-    /** {@code POST /v1/import/item} with {@code {app, entry, payloadPath}} -> the ingest result. */
-    public JSONObject postImportItem(JSONObject body) throws Exception {
+    /**
+     * {@code POST /v1/import/item} with {@code {app, entry, payloadPath}} -> {@code {opId, state,
+     * totalBytes}}. Starts the import long operation (K2GO-376) and returns fast, so a 35-141 s
+     * Kolibri import does not block one request past the dash-node/nginx relay read timeout.
+     */
+    public JSONObject postImportStart(JSONObject body) throws Exception {
         return postJson(V1 + "/import/item", body);
+    }
+
+    /**
+     * {@code GET /v1/import/status/{opId}} -> {@code {state, movedBytes, totalBytes, error?, code?,
+     * result?}}. A 404 means the op was swept; it surfaces as {@link ConexHttpException} with
+     * {@code code() == 404} so the caller re-starts rather than poll a dead id. Each poll is a short
+     * request on the generic read timeout. K2GO-376.
+     */
+    public JSONObject getImportStatus(String opId) throws Exception {
+        return getJson(V1 + "/import/status/" + encodeSegment(opId));
+    }
+
+    /** {@code DELETE /v1/import/{opId}} -> {@code {ok}}. Client abort of an in-flight import op. K2GO-376. */
+    public JSONObject deleteImportOp(String opId) throws Exception {
+        return deleteJson(V1 + "/import/" + encodeSegment(opId));
     }
 
     /**

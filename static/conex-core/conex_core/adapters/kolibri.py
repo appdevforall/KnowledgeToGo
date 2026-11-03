@@ -13,6 +13,7 @@ content nodes, and a flat join would count its bytes once per node.
 from __future__ import annotations
 
 import errno
+import logging
 import os
 import re
 import shutil
@@ -24,6 +25,7 @@ from typing import List, Optional
 
 from ..export import free_bytes, tar_stream
 from ..importing import safe_extract_tar, single_child_dir, volume_nearly_full
+from ..watchdog import CANCELLED, OK, SuperviseResult, run_supervised
 from ..model import (
     ABSENT,
     AUTHORITATIVE,
@@ -37,6 +39,8 @@ from ..model import (
 from ..ports import ContentAdapter, ExportPlan, ExportStream
 
 _CHANNEL_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
+
+_LOG = logging.getLogger("conex_core")
 
 
 def export_commands(channel_id: str, dest: str, kolibri_bin: str) -> List[List[str]]:
@@ -74,27 +78,6 @@ def delete_command(channel_id: str, kolibri_bin: str) -> List[str]:
     the command is synchronous: we wait for it inherently and then report the reclaimed bytes.
     """
     return [kolibri_bin, "manage", "deletechannel", channel_id]
-
-
-def _run_cancellable(argv: List[str], env: dict, should_cancel=None) -> bool:
-    """Run one child process to completion, polling ``should_cancel`` about once a second.
-    When it returns True the process is terminated (then killed if it does not exit) and this
-    returns False. Otherwise returns True on exit code 0. This is how an aborted export stops
-    the long-running Kolibri CLI instead of leaving it writing into a removed dir."""
-    proc = subprocess.Popen(argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    while True:
-        try:
-            proc.wait(timeout=1.0)
-            return proc.returncode == 0
-        except subprocess.TimeoutExpired:
-            if should_cancel and should_cancel():
-                proc.terminate()
-                try:
-                    proc.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    proc.kill()
-                    proc.wait()
-                return False
 
 
 def _to_int(*values) -> Optional[int]:
@@ -214,10 +197,7 @@ class KolibriAdapter(ContentAdapter):
         # the export CLI on abort instead of leaving it running into a deleted dir.
         if not _CHANNEL_ID_RE.match(local_ref or ""):
             return False
-        try:
-            return self._stage_export(local_ref, dest, should_cancel)
-        except OSError:
-            return False
+        return self._stage_export(local_ref, dest, should_cancel)
 
     def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
         # Tar-stream the staged tree. The op layer sets on_close (drop the op + remove temp).
@@ -230,13 +210,17 @@ class KolibriAdapter(ContentAdapter):
         )
 
     def _stage_export(self, channel_id: str, dest: str, should_cancel=None) -> bool:
-        """Run the Kolibri export CLI into dest. A seam, so a test can stage a fake tree
-        without a live Kolibri. Each command runs as a child process polled against
-        ``should_cancel``, so an abort terminates the export instead of letting it finish into a
-        deleted dir. Returns True on success, False on CLI failure or cancellation."""
+        """Run the Kolibri export CLI into dest under the liveness watchdog. A seam, so a test can
+        stage a fake tree without a live Kolibri. The watchdog ends a child that stalls or runs
+        away and honors should_cancel, so an abort stops the export instead of letting it finish
+        into a deleted dir. Returns True on success, False on cancellation or a CLI failure; the
+        failure detail is logged box-side, and the export op reports a generic staging error."""
         env = dict(os.environ, KOLIBRI_HOME=self._home)
         for argv in export_commands(channel_id, dest, self._bin):
-            if not _run_cancellable(argv, env, should_cancel):
+            result = run_supervised(argv, env, dest_dir=dest, should_cancel=should_cancel, log=_LOG)
+            if not result.ok:
+                if result.state != CANCELLED:
+                    _LOG.warning("kolibri export %s: %s", channel_id, result.detail)
                 return False
         return True
 
@@ -252,9 +236,11 @@ class KolibriAdapter(ContentAdapter):
             return SAME_VERSION
         return OLDER_HERE if local_version < incoming else NEWER_HERE
 
-    def import_item(self, entry: dict, payload_path: str) -> dict:
-        # The payload is the export tar. Extract it safely, then delegate the disk import to
-        # Kolibri. Idempotent: Kolibri's import re-registers and dedups, never double-counts.
+    def import_item(self, entry: dict, payload_path: str, should_cancel=None,
+                    on_progress=None) -> dict:
+        # The payload is the export tar. Extract it safely, then delegate the disk import to Kolibri
+        # under the liveness watchdog (import is a long op). Idempotent: Kolibri's import
+        # re-registers and dedups, never double-counts.
         channel_id = (entry.get("identity") or {}).get("localRef", "")
         if not _CHANNEL_ID_RE.match(channel_id or ""):
             return {"ok": False, "reason": "invalid channel id"}
@@ -277,29 +263,36 @@ class KolibriAdapter(ContentAdapter):
                     failure["code"] = "no_space"
                 return failure
             source = single_child_dir(work) or work
-            if not self._stage_import(channel_id, source):
-                # The Kolibri CLI hides its errno. When it fails with the content volume essentially
-                # full, the cause is out-of-space (the channel copy into KOLIBRI_HOME is the third
-                # full copy on one volume), so report it structurally; otherwise it is a real import
-                # failure.
+            outcome = self._stage_import(channel_id, source, should_cancel, on_progress)
+            if outcome.state == CANCELLED:
+                # The op was aborted, so the CLI was stopped. The op is already being dropped; the
+                # reason is only for completeness.
+                return {"ok": False, "reason": "import cancelled"}
+            if not outcome.ok:
+                # The Kolibri CLI stopped. When the content volume is essentially full, the cause is
+                # out-of-space (the channel copy into KOLIBRI_HOME is a third full copy on one
+                # volume), so report it structurally; otherwise report the watchdog detail (a stall,
+                # an OOM kill, or a non-zero exit) so a failed import is not opaque.
                 if volume_nearly_full(self._home):
                     return {"ok": False, "code": "no_space",
                             "reason": "kolibri import failed: no space left on the content volume"}
-                return {"ok": False, "reason": "kolibri import failed"}
+                return {"ok": False, "reason": f"kolibri import {outcome.detail}"}
             return {"ok": True, "app": "kolibri", "localRef": channel_id}
         finally:
             shutil.rmtree(work, ignore_errors=True)
 
-    def _stage_import(self, channel_id: str, source: str) -> bool:
-        """Run the Kolibri disk-import CLI from source. A seam, like _stage_export."""
+    def _stage_import(self, channel_id: str, source: str, should_cancel=None,
+                      on_progress=None) -> SuperviseResult:
+        """Run the Kolibri disk-import CLI from source under the liveness watchdog. A seam, like
+        _stage_export. Returns the watchdog result: ok, or the first command's failure with its
+        detail. KOLIBRI_HOME is the dest-growth fallback when /proc/<pid>/io is unreadable."""
         env = dict(os.environ, KOLIBRI_HOME=self._home)
         for argv in import_commands(channel_id, source, self._bin):
-            result = subprocess.run(
-                argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False
-            )
-            if result.returncode != 0:
-                return False
-        return True
+            result = run_supervised(argv, env, dest_dir=self._home, should_cancel=should_cancel,
+                                    on_progress=on_progress, log=_LOG)
+            if not result.ok:
+                return result
+        return SuperviseResult(OK, 0, "ok")
 
     def delete(self, local_ref: str) -> dict:
         # Delegate to Kolibri's own delete (it refcounts shared files). Measure the reclaim as a

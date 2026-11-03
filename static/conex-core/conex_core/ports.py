@@ -107,10 +107,16 @@ class ContentAdapter(ABC):
         A soft idKind (Calibre) makes the verdict advisory, never an automatic skip."""
         return ABSENT
 
-    def import_item(self, entry: dict, payload_path: str) -> dict:
+    def import_item(self, entry: dict, payload_path: str,
+                    should_cancel: Optional[Callable[[], bool]] = None,
+                    on_progress: Optional[Callable[[int], None]] = None) -> dict:
         """Ingest one already-local item archive into the app index, delegating to the app's
         own import. Idempotent: a re-import must not double-count or corrupt. ``payload_path``
-        is a box-visible local file the front placed. Default: not supported."""
+        is a box-visible local file the front placed. Runs off the request thread as the import
+        long operation, so it may be slow. ``should_cancel``, when supplied, is polled during the
+        long CLI work so an aborted op stops the ingest; ``on_progress(moved_bytes)`` reports the
+        bytes moved so far for the progress heartbeat. An app whose import is quick and in-process
+        may ignore both. Default: not supported."""
         return {"ok": False, "reason": "import not supported"}
 
     def delete(self, local_ref: str) -> dict:

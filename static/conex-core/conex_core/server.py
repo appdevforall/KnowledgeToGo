@@ -14,6 +14,7 @@ from urllib.parse import parse_qs, urlsplit
 from . import VERSION
 from .config import Config
 from .export_ops import ExportOps
+from .import_ops import ImportOps
 from .ports import ExportStream
 from .registry import Registry
 from .router import dispatch
@@ -30,7 +31,8 @@ _TOO_LARGE = object()  # sentinel: declared body exceeds _MAX_BODY
 log = logging.getLogger("conex_core")
 
 
-def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
+def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None,
+                 import_ops: ImportOps = None):
     class Handler(BaseHTTPRequestHandler):
         server_version = f"conex-core/{VERSION}"
         # HTTP/1.1 so the chunked export stream is valid (HTTP/1.0 would hand the client the
@@ -47,7 +49,7 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None):
             # with a JSON body, never a dropped connection the front reads as a network error.
             try:
                 return dispatch(registry, method, path, query, body, ops=ops, share=share,
-                                token=self._share_token())
+                                token=self._share_token(), import_ops=import_ops)
             except Exception:
                 log.exception("unhandled error: %s %s", method, path)
                 return 500, {"error": "internal error"}
@@ -161,14 +163,17 @@ def serve(config: Config) -> None:
                         format="%(asctime)s conex-core %(levelname)s %(message)s")
     registry = Registry.load(config)
     ops = ExportOps(registry, config.staging_dir)
+    import_ops = ImportOps(registry, registry.import_root)
     share = ShareOps(registry, ops)
-    # Reclaim export op temps left by a dead process before serving (K2GO-507 process-death
-    # cleanup owner): a fresh process holds no ops, so any op temp on disk is an orphan. The
-    # share sweep then drops any in-memory sessions (K2GO-376 closer 2); a share session's own
-    # on-disk footprint is its child export temps, already reclaimed by the export sweep above.
+    # Reclaim op temps left by a dead process before serving (the process-death cleanup owner): a
+    # fresh process holds no ops, so any op temp on disk is an orphan. Export reclaims its staging
+    # temps, import its work temps; the share sweep then drops any in-memory sessions (K2GO-376
+    # closer 2), whose only on-disk footprint is child export temps already reclaimed above.
     ops.sweep_startup()
+    import_ops.sweep_startup()
     share.sweep_startup()
-    httpd = ThreadingHTTPServer((config.host, config.port), make_handler(registry, ops, share))
+    httpd = ThreadingHTTPServer(
+        (config.host, config.port), make_handler(registry, ops, share, import_ops))
     log.info("conex-core %s listening on http://%s:%d (apps: %s)", VERSION, config.host,
              config.port, ", ".join(registry.apps()) or "none")
     httpd.serve_forever()
