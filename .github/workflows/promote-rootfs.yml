@@ -52,6 +52,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
           SOURCE: ${{ inputs.source }}
           TIERS: ${{ inputs.tier == 'all' && 'basic standard full matomo' || inputs.tier }}
           ARCHES: ${{ inputs.arch == 'all' && 'arm64-v8a armeabi-v7a' || inputs.arch }}
