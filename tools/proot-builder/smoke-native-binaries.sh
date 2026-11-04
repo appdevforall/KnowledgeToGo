@@ -187,22 +187,34 @@ proot_launch() {
 # Without it the daemon keeps running untraced and blocks the next `pdsm start`.
 # Needs a static busybox on the host (busybox-static) as the in-rootfs shell.
 proot_exitkill() {
-  local bb; bb="$(command -v busybox)" || return 1
-  rm -rf ekroot && mkdir -p ekroot && cp "$bb" ekroot/busybox || return 1
+  # Every failure writes its reason to ekdiag (printed by the caller): a gate must say why it failed.
+  rm -rf ekroot ekdiag ekproot.log
+  local bb; bb="$(command -v busybox)" || { echo "no host busybox" > ekdiag; return 1; }
+  mkdir -p ekroot && cp "$bb" ekroot/busybox || { echo "cannot copy $bb into the rootfs" > ekdiag; return 1; }
   # Direct exec (native only), not run_bin: a backgrounded function would make $! a subshell,
   # and the kill below would miss proot.
   "$BIN/libproot.so" -r "$WORK/ekroot" -w / /busybox sh -c \
     "/busybox setsid /busybox sh -c 'echo \$\$ > /d.pid; exec /busybox sleep 300' & exec /busybox sleep 300" \
-    >/dev/null 2>&1 &
-  local p=$! i=0 d
-  while [ ! -s ekroot/d.pid ] && [ "$i" -lt 50 ]; do sleep 0.1; i=$((i + 1)); done
+    >"$WORK/ekproot.log" 2>&1 &
+  local p=$! i=0 d st
+  while [ ! -s ekroot/d.pid ] && [ "$i" -lt 100 ]; do sleep 0.1; i=$((i + 1)); done
   d="$(cat ekroot/d.pid 2>/dev/null)"
-  if [ -z "$d" ] || [ ! -d "/proc/$d" ]; then kill -9 "$p" 2>/dev/null; return 1; fi
+  if [ -z "$d" ]; then
+    { echo "the daemon wrote no pid in 10 s; proot output:"; tail -n 20 "$WORK/ekproot.log"; } > ekdiag
+    kill -9 "$p" 2>/dev/null; return 1
+  fi
+  if [ ! -d "/proc/$d" ]; then
+    { echo "daemon $d was not running before the kill; proot output:"; tail -n 20 "$WORK/ekproot.log"; } > ekdiag
+    kill -9 "$p" 2>/dev/null; return 1
+  fi
   kill -9 "$p"; sleep 1
-  # A zombie is dead: the CI runner adopts orphans and reaps them late, so /proc/<pid> can stay.
-  # Without EXITKILL the daemon keeps running (state S), not Z.
-  if [ -d "/proc/$d" ] && ! grep -q '^State:[[:space:]]*Z' "/proc/$d/status" 2>/dev/null; then
-    grep -E '^(State|TracerPid|PPid):' "/proc/$d/status" > ekroot/diag 2>/dev/null
+  # Read the status once: gone or a zombie both mean dead. The CI runner adopts orphans and reaps
+  # them late, so a zombie can stay in /proc. Without EXITKILL the daemon keeps running (State S).
+  st="$(cat "/proc/$d/status" 2>/dev/null)"
+  if [ -n "$st" ] && ! printf '%s
+' "$st" | grep -q '^State:[[:space:]]*Z'; then
+    { echo "daemon $d survived the SIGKILL of proot:"; printf '%s
+' "$st" | grep -E '^(State|TracerPid|PPid):'; } > ekdiag
     kill -9 "$d"; return 1
   fi
 }
@@ -210,7 +222,7 @@ if [ "$NATIVE" -eq 1 ] && bin_runs "$BIN/libproot.so"; then
   chk "proot launches a command in a minimal rootfs (stdout=hello)" proot_launch
   if command -v busybox >/dev/null 2>&1; then
     chk "a daemon inside proot dies when proot is SIGKILLed (EXITKILL)" proot_exitkill
-    [ -s ekroot/diag ] && sed 's/^/[smoke]   survivor /' ekroot/diag
+    [ -s ekdiag ] && sed 's/^/[smoke]   exitkill: /' ekdiag
   else
     skip "EXITKILL check: no host busybox (install busybox-static)"
   fi
