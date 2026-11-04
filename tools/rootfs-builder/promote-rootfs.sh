@@ -5,12 +5,12 @@
 # Copyright : Copyright (c) 2026 AppDevForAll
 #
 # A pointer (latest_<tier>_<arch>.meta4/.installed) is a byte copy of a dated build's
-# sidecar, so promotion is a server-side copy, never a rebuild. The default source is the
+# sidecar, so promotion is a copy, never a rebuild. The default source is the
 # dev channel (dev_latest_*): the exact build that was tested on devices. SOURCE can also
 # name a dated tarball (k2go_<date>_<tier>_<sha>_<arch>.tar.gz) to roll production back.
 #
 # Every pair is validated BEFORE any copy, so a bad pair stops the run with production
-# untouched. Reads go through the public base (no credentials); only the copy uses aws.
+# untouched. Reads go through the public base (no credentials); only the upload uses aws.
 #
 # Env:
 #   TIERS        "basic standard full matomo" (default) or a subset
@@ -74,13 +74,16 @@ if [ "$DRY_RUN" != 0 ]; then
 fi
 
 # 2) Copy. Per pair the .installed goes before the .meta4, the pointer the app reads first.
-#    No retry here: the run is idempotent (it re-reads the source), so a failed copy is fixed by
-#    running the promotion again.
+#    Download through the public base and upload with s3cp: the same PutObject path the bake
+#    publishes these pointers with. A server-side s3-to-s3 copy failed on R2 (HeadObject 400).
+#    The run is idempotent (it re-reads the source), so a failed copy is fixed by running it again.
 : "${BUCKET_NAME:?}" "${ENDPOINT:?}"
+source "$(dirname "$0")/r2-cp.sh"   # s3cp: aws s3 cp with retries
+tmp="$(mktemp)"; trap 'rm -f "$tmp"' EXIT
 for p in "${plan[@]}"; do
     from="${p%%|*}"; to="${p##*|}"
     echo ">> copy $from -> $to"
-    aws s3 cp "s3://${BUCKET_NAME}/${PFX}${from}" "s3://${BUCKET_NAME}/${PFX}${to}" --endpoint-url "$ENDPOINT" \
+    { curl -sf -m 60 -o "$tmp" "$PUBLIC_BASE/${PFX}${from}" && s3cp "$tmp" "s3://${BUCKET_NAME}/${PFX}${to}"; } \
         || fail "copy $from -> $to failed; production can be mixed now. Run the promotion again."
 done
 
