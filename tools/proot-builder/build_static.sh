@@ -117,52 +117,6 @@ XZ_VER=$(grep -m1 '^TERMUX_PKG_VERSION=' "$XZ_DIR/build.sh" | cut -d= -f2 | tr -
 echo "[3/4] Patching build scripts for static compilation..."
 cd "$TERMUX_REPO"
 
-# --- K2GO-544: source prefetch with mirror fallback ---
-# termux_download retries one URL only, and samba.org stalls often enough to kill a full build.
-# Fetch on the host instead: each mirror up to 3 tries, check the recipe's SHA256, then point the
-# recipe at the local copy (termux_download accepts file:// URLs; the repo is mounted in the
-# container at /home/builder/termux-packages). @VERSION@ = the recipe's TERMUX_PKG_VERSION.
-prefetch_source() {
-    local pkg="$1"; shift
-    local recipe="packages/$pkg/build.sh" dir="$TERMUX_REPO/iiab-sources"
-    local ver sha url name try
-    ver=$(grep -m1 '^TERMUX_PKG_VERSION=' "$recipe" | cut -d= -f2 | tr -d '"'\''')
-    sha=$(grep -m1 '^TERMUX_PKG_SHA256=' "$recipe" | cut -d= -f2 | tr -d '"'\''')
-    [ -n "$sha" ] || { echo "!! [IIAB] $pkg: recipe has no SHA256, cannot verify a mirror"; return 1; }
-    mkdir -p "$dir"
-    for url in "$@"; do
-        url="${url//@VERSION@/$ver}"
-        name="${url##*/}"
-        for try in 1 2 3; do
-            if [ -f "$dir/$name" ] && [ "$(sha256sum "$dir/$name" | cut -d' ' -f1)" = "$sha" ]; then
-                :   # already fetched by an earlier run
-            elif ! curl -fsSL --connect-timeout 30 --speed-limit 1000 --speed-time 30 \
-                    -o "$dir/$name.part" "$url" \
-                 || [ "$(sha256sum "$dir/$name.part" | cut -d' ' -f1)" != "$sha" ]; then
-                echo "!! [IIAB] $pkg: $url failed (try $try/3)"
-                rm -f "$dir/$name.part"
-                sleep $((try * 10))
-                continue
-            else
-                mv "$dir/$name.part" "$dir/$name"
-            fi
-            chmod 644 "$dir/$name"
-            sed -i "s|^TERMUX_PKG_SRCURL=.*|TERMUX_PKG_SRCURL=file:///home/builder/termux-packages/iiab-sources/$name|" "$recipe"
-            echo ">> [IIAB] $pkg $ver source ready from $url (SHA256 ok)"
-            return 0
-        done
-    done
-    echo "!! [IIAB] $pkg: no mirror delivered $ver with SHA256 $sha"
-    return 1
-}
-
-if [ "$REBUILD_PROOT" -eq 1 ]; then
-    prefetch_source libtalloc \
-        "https://download.samba.org/pub/talloc/talloc-@VERSION@.tar.gz" \
-        "https://ftp.samba.org/pub/talloc/talloc-@VERSION@.tar.gz" \
-        "https://www.samba.org/ftp/talloc/talloc-@VERSION@.tar.gz"
-fi
-
 # --- NCURSES PATCH ---
 # Forces ncurses to inject the database of these terminals directly into the binary
 echo 'TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-fallbacks=xterm-256color,xterm,linux,vt100"' >> packages/ncurses/build.sh
