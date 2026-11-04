@@ -143,11 +143,12 @@ STUB
     if ! grep -q "rep_memset_explicit" $TERMUX_PKG_SRCDIR/src/cli/cli.c; then
         cat << 'STUB' >> $TERMUX_PKG_SRCDIR/src/cli/cli.c
 
-/* IIAB: Samba lib/replace symbol needed by the static libtalloc >= 2.5.0. */
-void *rep_memset_explicit(void *block, int c, size_t size)
+/* IIAB: Samba lib/replace symbol needed by the static libtalloc >= 2.5.0. Weak, so a real
+ * definition wins if the archive ever ships one (no duplicate symbol). */
+__attribute__((weak)) void *rep_memset_explicit(void *block, int c, size_t size)
 {
 	void *ptr = memset(block, c, size);
-	__asm__ volatile("" : : "r"(block) : "memory");
+	__asm__ volatile("" : : "g"(block) : "memory");
 	return ptr;
 }
 STUB
