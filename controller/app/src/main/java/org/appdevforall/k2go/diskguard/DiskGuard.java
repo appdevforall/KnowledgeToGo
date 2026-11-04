@@ -20,10 +20,11 @@
  *               (DiskGuardEscalation) does the guard stop and stay down as a last
  *               resort and tell the user. Trips are reported to developers.
  *
- *               Why Android-side: the fill happens when the box proot dies and a
- *               service is orphaned off proot. An in-box kill does not reach the
- *               orphan (device-proven 2026-09-04, HD1901); only an app-side reap
- *               works. See controller/docs/ADR-386.
+ *               Why Android-side: the fill happened when the box proot died and a
+ *               service kept running off proot, where an in-box kill did not reach
+ *               it (device-proven 2026-09-04, HD1901). Since K2GO-544 proot sets
+ *               PTRACE_O_EXITKILL, so no service outlives its proot, and the reap
+ *               (kill the proot) ends a runaway writer. See controller/docs/ADR-386.
  * ============================================================================
  */
 package org.appdevforall.k2go.diskguard;
@@ -121,7 +122,7 @@ public final class DiskGuard {
     /**
      * The SECOND reap trigger (ADR-386 §6). The low-disk path above catches a disk that already went
      * low. This path catches a firehose the in-box guard keeps truncating -- so the disk may never go
-     * low -- but that the box cannot stop because the writer is an off-proot orphan. It reads the live
+     * low -- and that comes back until the box restarts. It reads the live
      * dash-node signal, and if the signal is a fresh recurring firehose it CONFIRMS by re-probing live
      * log growth before it reaps. Safe to call every poller tick; a no-op unless a firehose is live now.
      */
@@ -226,8 +227,8 @@ public final class DiskGuard {
     /**
      * Act on a firehose that a fresh signal (or the debug hook) flagged. Confirm-before-acting: the
      * signal is only an ALERT; reap solely if a log is actually growing fast RIGHT NOW. Then reap and
-     * restart (restart-to-keep-alive), the same as the low-disk path. The app-side reap DOES reach the
-     * off-proot orphan (unlike an in-box kill), so a fresh box does not refill. The low-disk path stays
+     * restart (restart-to-keep-alive), the same as the low-disk path. Killing the proot ends the writer with
+     * it (K2GO-544), so a fresh box does not refill. The low-disk path stays
      * the sole escalation authority, so a firehose reap never counts toward stop-and-stay-down.
      */
     private static boolean actOnFirehose(Context ctx, String source, int streak, List<String> paths) {
@@ -252,7 +253,7 @@ public final class DiskGuard {
      * True when the box's {@code *.log} files are growing fast enough to be a firehose: read the total
      * {@code .log} bytes under {@code /var/log}, wait {@link #GROWTH_PROBE_MS}, read again, and require a
      * delta of at least {@link #GROWTH_MIN_BYTES}. Summing all logs (not one file) is robust to WHICH log
-     * the orphan writes. It is not fooled by a normal log, which never grows this fast. A rare race -- the
+     * the runaway writer uses. It is not fooled by a normal log, which never grows this fast. A rare race -- the
      * in-box guard truncating the firehose during the probe -- reads as no growth this tick, not a false
      * reap; the next tick catches it (the guard runs every 10 min, so the overlap is unlikely).
      */

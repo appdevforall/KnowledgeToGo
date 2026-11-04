@@ -3,8 +3,8 @@
  * Name        : EnvironmentProcess.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-5061. Whether our environment proot is running, read from
- *               the host's /proc. No container, no socket, nothing mutated.
+ * Description : ADFA-5061. Find our environment proot in the host's /proc, and
+ *               stop it on request. No container, no socket.
  * ============================================================================
  */
 package org.appdevforall.k2go.env;
@@ -35,13 +35,10 @@ import java.io.FileInputStream;
  * path that matters — an environment we did not start and cannot talk to has to go before a new
  * one can come up.
  *
- * <p><b>Not wired yet, deliberately.</b> {@code ServerController.startEnvironment} called
- * {@link #killOrphan} for one build and it was removed after a device run: it cannot tell an
- * abandoned environment from one this same process started seconds earlier, and it killed a proot
- * 3.5 s into its own boot. Detection is the easy half. The rest — a handle held per process rather
- * than per Activity, "ensure it is up" instead of "start", and a grace period while services are
- * still coming up — is the ticket this class was written for. Read {@link #isRunning} freely; do
- * not reach for {@link #killOrphan} until that decision exists to hold it.
+ * <p>{@link #killOrphan} cannot tell an abandoned environment from one that is still booting, so
+ * only callers that own that decision use it: {@code ServerLifecycleReconciler} (STOP teardown, and
+ * kill-and-relaunch after the boot grace) and {@code ServerController} ({@code EnvironmentEnsure}
+ * KILL_AND_RELAUNCH). See ADR-5343.
  */
 public final class EnvironmentProcess {
 
