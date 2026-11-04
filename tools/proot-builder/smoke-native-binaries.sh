@@ -189,7 +189,9 @@ proot_launch() {
 proot_exitkill() {
   local bb; bb="$(command -v busybox)" || return 1
   rm -rf ekroot && mkdir -p ekroot && cp "$bb" ekroot/busybox || return 1
-  run_bin "$BIN/libproot.so" -r "$WORK/ekroot" -w / /busybox sh -c \
+  # Direct exec (native only), not run_bin: a backgrounded function would make $! a subshell,
+  # and the kill below would miss proot.
+  "$BIN/libproot.so" -r "$WORK/ekroot" -w / /busybox sh -c \
     "/busybox setsid /busybox sh -c 'echo \$\$ > /d.pid; exec /busybox sleep 300' & exec /busybox sleep 300" \
     >/dev/null 2>&1 &
   local p=$! i=0 d
