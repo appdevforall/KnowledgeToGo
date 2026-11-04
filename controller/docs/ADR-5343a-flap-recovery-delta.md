@@ -118,6 +118,8 @@ D2's `EnvironmentProcess.reapEnvironmentHttpFront()` (`env/EnvironmentProcess.ja
 
 **Disposition.** Keep D2 as-is now (required: without it a legitimate relaunch cannot rebind `:8085`, §5). **Retire it when the guest-side service-lifetime fix lands** — at which point `reapEnvironmentHttpFront()` and the `ENV_HTTP_PORT` constant come out and `killOrphan` returns to signalling the proot alone. Tracked here; not a Phase-4 blocker, but the natural companion to the rootfs/runrole work that owns guest teardown.
 
+**Retired (2026-11-04, K2GO-544).** The guest-side fix landed in the proot build: proot sets `PTRACE_O_EXITKILL`, so the kernel kills every box process when the proot dies, also on SIGKILL. `reapEnvironmentHttpFront()`, `ENV_HTTP_PORT` and the name list behind `reapBox` are gone; `killOrphan` and `reapBox` signal the proot alone. The binaries smoke gate checks that a `setsid` daemon dies with proot.
+
 ---
 
 ## 10. Corrected root cause (device testing) and the in-proot recovery direction
