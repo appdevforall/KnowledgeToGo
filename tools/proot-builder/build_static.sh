@@ -137,6 +137,22 @@ int __android_log_write(int prio, const char* tag, const char* text) { return 0;
 STUB
     fi
 
+    # K2GO-544: talloc >= 2.5.0 calls rep_memset_explicit from Samba's lib/replace, which the static
+    # libtalloc.a does not carry (link error since the 2026-10-25 scheduled build). Same body as
+    # Samba's: https://gitlab.com/samba-team/samba/-/blob/master/lib/replace/replace.c
+    if ! grep -q "rep_memset_explicit" $TERMUX_PKG_SRCDIR/src/cli/cli.c; then
+        cat << 'STUB' >> $TERMUX_PKG_SRCDIR/src/cli/cli.c
+
+/* IIAB: Samba lib/replace symbol needed by the static libtalloc >= 2.5.0. */
+void *rep_memset_explicit(void *block, int c, size_t size)
+{
+	void *ptr = memset(block, c, size);
+	__asm__ volatile("" : : "r"(block) : "memory");
+	return ptr;
+}
+STUB
+    fi
+
     # K2GO-411: translate aarch32 futex_time64 (#422) -> classic futex so 32-bit Go
     # binaries run on pre-5.1 kernels (e.g. Android 4.14, where futex_time64 is
     # ENOSYS). PRoot ships utimensat_time64 (v5.3.0); this follows the same path.
