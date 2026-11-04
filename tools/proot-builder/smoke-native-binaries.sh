@@ -183,8 +183,31 @@ proot_launch() {
   local out; out="$(run_bin "$BIN/libproot.so" -r "$WORK/rootfs" -w / /probe --version 2>/dev/null)" || return 1
   echo "$out" | grep -qi 'tar'
 }
+# K2GO-544: a daemonised (setsid) guest must die when proot is SIGKILLed (PTRACE_O_EXITKILL).
+# Without it the daemon keeps running untraced and blocks the next `pdsm start`.
+# Needs a static busybox on the host (busybox-static) as the in-rootfs shell.
+proot_exitkill() {
+  local bb; bb="$(command -v busybox)" || return 1
+  rm -rf ekroot && mkdir -p ekroot && cp "$bb" ekroot/busybox || return 1
+  # Direct exec (native only), not run_bin: a backgrounded function would make $! a subshell,
+  # and the kill below would miss proot.
+  "$BIN/libproot.so" -r "$WORK/ekroot" -w / /busybox sh -c \
+    "/busybox setsid /busybox sh -c 'echo \$\$ > /d.pid; exec /busybox sleep 300' & exec /busybox sleep 300" \
+    >/dev/null 2>&1 &
+  local p=$! i=0 d
+  while [ ! -s ekroot/d.pid ] && [ "$i" -lt 50 ]; do sleep 0.1; i=$((i + 1)); done
+  d="$(cat ekroot/d.pid 2>/dev/null)"
+  if [ -z "$d" ] || [ ! -d "/proc/$d" ]; then kill -9 "$p" 2>/dev/null; return 1; fi
+  kill -9 "$p"; sleep 1
+  if [ -d "/proc/$d" ]; then kill -9 "$d"; return 1; fi
+}
 if [ "$NATIVE" -eq 1 ] && bin_runs "$BIN/libproot.so"; then
   chk "proot launches a command in a minimal rootfs (stdout=hello)" proot_launch
+  if command -v busybox >/dev/null 2>&1; then
+    chk "a daemon inside proot dies when proot is SIGKILLed (EXITKILL)" proot_exitkill
+  else
+    skip "EXITKILL check: no host busybox (install busybox-static)"
+  fi
 elif bin_runs "$BIN/libproot.so"; then
   skip "proot launch (emulated $ARCH); version OK — full launch verified on native arch / device"
 else
