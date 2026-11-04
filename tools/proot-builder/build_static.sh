@@ -21,6 +21,11 @@ REBUILD_LESS=0
 BUILD_DIR="$(pwd)"
 OUTPUT_DIR="$(pwd)/dist"
 
+# Which Android ABI(s) to build. "all" = both (release default); set to a single
+# Android arch (arm64-v8a | armeabi-v7a) with --arch to halve build time while testing
+# (e.g. a device-only proot check needs only arm64-v8a). Names match smoke-native-binaries.sh.
+ARCH_FILTER="all"
+
 # Function to create the sidecar metadata file
 write_meta() {
     local bin_path="$1"
@@ -53,9 +58,10 @@ while [[ "$#" -gt 0 ]]; do
         --rebuild-less)  REBUILD_LESS=1; shift ;;
         --build-dir)     BUILD_DIR="$2"; shift 2 ;;
         --out-dir)       OUTPUT_DIR="$2"; shift 2 ;;
+        --arch)          ARCH_FILTER="$2"; shift 2 ;;
         *)
             echo "Unknown argument: $1"
-            echo "Usage: $0 [--rebuild-all] [--build-dir /opt/termux-build] [--out-dir /var/www/artifacts]"
+            echo "Usage: $0 [--rebuild-all] [--build-dir /opt/termux-build] [--out-dir /var/www/artifacts] [--arch all|arm64-v8a|armeabi-v7a]"
             exit 1
             ;;
     esac
@@ -399,7 +405,18 @@ termux_step_post_make() {
 EOF
 
 # Define target architectures: "Termux_Arch:Android_Arch"
-ARCHS=("aarch64:arm64-v8a" "arm:armeabi-v7a")
+ALL_ARCHS=("aarch64:arm64-v8a" "arm:armeabi-v7a")
+ARCHS=()
+for mapping in "${ALL_ARCHS[@]}"; do
+    if [ "$ARCH_FILTER" = "all" ] || [ "$ARCH_FILTER" = "${mapping##*:}" ]; then
+        ARCHS+=("$mapping")
+    fi
+done
+if [ "${#ARCHS[@]}" -eq 0 ]; then
+    echo "ERROR: --arch '$ARCH_FILTER' matched no architecture. Use: all | arm64-v8a | armeabi-v7a"
+    exit 1
+fi
+echo ">> Building architectures: ${ARCHS[*]##*:}"
 
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
