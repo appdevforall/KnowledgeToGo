@@ -199,12 +199,18 @@ proot_exitkill() {
   d="$(cat ekroot/d.pid 2>/dev/null)"
   if [ -z "$d" ] || [ ! -d "/proc/$d" ]; then kill -9 "$p" 2>/dev/null; return 1; fi
   kill -9 "$p"; sleep 1
-  if [ -d "/proc/$d" ]; then kill -9 "$d"; return 1; fi
+  # A zombie is dead: the CI runner adopts orphans and reaps them late, so /proc/<pid> can stay.
+  # Without EXITKILL the daemon keeps running (state S), not Z.
+  if [ -d "/proc/$d" ] && ! grep -q '^State:[[:space:]]*Z' "/proc/$d/status" 2>/dev/null; then
+    grep -E '^(State|TracerPid|PPid):' "/proc/$d/status" > ekroot/diag 2>/dev/null
+    kill -9 "$d"; return 1
+  fi
 }
 if [ "$NATIVE" -eq 1 ] && bin_runs "$BIN/libproot.so"; then
   chk "proot launches a command in a minimal rootfs (stdout=hello)" proot_launch
   if command -v busybox >/dev/null 2>&1; then
     chk "a daemon inside proot dies when proot is SIGKILLed (EXITKILL)" proot_exitkill
+    [ -s ekroot/diag ] && sed 's/^/[smoke]   survivor /' ekroot/diag
   else
     skip "EXITKILL check: no host busybox (install busybox-static)"
   fi
