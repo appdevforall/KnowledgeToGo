@@ -117,6 +117,35 @@ XZ_VER=$(grep -m1 '^TERMUX_PKG_VERSION=' "$XZ_DIR/build.sh" | cut -d= -f2 | tr -
 echo "[3/4] Patching build scripts for static compilation..."
 cd "$TERMUX_REPO"
 
+# --- K2GO-544: download resilience (mirror rotation inside termux_download) ---
+# termux_download retries one URL only, and samba.org stalls often enough to kill a full build.
+# Retry 9 times in total and rotate known mirrors on each retry (3 servers x 3 tries). Termux still
+# downloads to its own cache and checks the recipe SHA256 itself; nothing local is reused.
+TDL="scripts/build/termux_download.sh"
+if ! grep -q 'iiab_mirror_url' "$TDL"; then
+    { cat << 'MIRROR'
+# IIAB K2GO-544: URL for retry number $2 of $1, rotating known mirrors (unknown hosts: unchanged).
+iiab_mirror_url() {
+	local url="$1" try="$2" path
+	case "$url" in
+	https://www.samba.org/ftp/*)
+		path="${url#https://www.samba.org/ftp/}"
+		local -a m=("https://www.samba.org/ftp/$path" "https://download.samba.org/pub/$path" "https://ftp.samba.org/pub/$path")
+		echo "${m[$(( try % ${#m[@]} ))]}" ;;
+	*) echo "$url" ;;
+	esac
+}
+
+MIRROR
+      cat "$TDL"; } > "$TDL.iiab" && mv "$TDL.iiab" "$TDL"
+    sed -i 's/^\([[:space:]]*\)local retry=2$/\1local retry=8/' "$TDL"
+    sed -i 's/^\([[:space:]]*\)local delay=60$/\1local delay=20/' "$TDL"
+    sed -i 's/^\([[:space:]]*\)echo "Retrying #\${try} download \${URL} in \${delay}"$/\1URL="$(iiab_mirror_url "$1" "$try")"\n&/' "$TDL"
+fi
+grep -q '^iiab_mirror_url() {' "$TDL"                  || { echo "!! [IIAB] termux_download.sh: mirror function not added"; exit 1; }
+grep -q 'local retry=8$' "$TDL"                        || { echo "!! [IIAB] termux_download.sh anchor 'local retry=2' not found"; exit 1; }
+grep -q 'URL="$(iiab_mirror_url "$1" "$try")"' "$TDL"  || { echo "!! [IIAB] termux_download.sh anchor 'Retrying #' not found"; exit 1; }
+
 # --- NCURSES PATCH ---
 # Forces ncurses to inject the database of these terminals directly into the binary
 echo 'TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-fallbacks=xterm-256color,xterm,linux,vt100"' >> packages/ncurses/build.sh
