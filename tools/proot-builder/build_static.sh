@@ -187,6 +187,20 @@ STUB
     grep -q '{ PR_fchmodat2,' "$sysdir/seccomp.c" || \
         sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_fchmodat2, 0 },/' "$sysdir/seccomp.c"
 
+    # --- K2GO-544: PTRACE_O_EXITKILL, so no box process outlives its proot. ---
+    # proot kills its tracees on exit and on catchable signals, but a SIGKILLed proot cannot. Its
+    # daemonised services then run untraced (ENOSYS) and the next `pdsm start` reads them as running.
+    # With EXITKILL the kernel kills every tracee when proot dies for any reason. Auto-attached
+    # tracees inherit the option. Needs Linux >= 3.8 (minSdk 24 kernels are newer).
+    # https://man7.org/linux/man-pages/man2/ptrace.2.html (PTRACE_O_EXITKILL)
+    local evc="$TERMUX_PKG_SRCDIR/src/tracee/event.c"
+    grep -q 'PTRACE_O_EXITKILL);' "$evc" || \
+        sed -i 's/^\([[:space:]]*\)PTRACE_O_TRACEEXIT);$/\1PTRACE_O_TRACEEXIT\t|\n\1PTRACE_O_EXITKILL);/' "$evc"
+    grep -q 'define PTRACE_O_EXITKILL' "$evc" || \
+        sed -i 's|^#include "compat.h"$|&\n#ifndef PTRACE_O_EXITKILL\n#define PTRACE_O_EXITKILL 0x00100000 /* K2GO-544 */\n#endif|' "$evc"
+    grep -q 'PTRACE_O_EXITKILL);' "$evc"         || { echo "!! [IIAB] event.c anchor 'PTRACE_O_TRACEEXIT);' not found"; exit 1; }
+    grep -q 'define PTRACE_O_EXITKILL' "$evc"   || { echo "!! [IIAB] event.c anchor '#include \"compat.h\"' not found"; exit 1; }
+
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
 }
