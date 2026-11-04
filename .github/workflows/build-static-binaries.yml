@@ -2,19 +2,26 @@ name: Build static binaries (PRoot)
 
 on:
   workflow_dispatch:
+    inputs:
+      layout:
+        description: "parallel = one runner per ABI (default). serial = both ABIs on one runner (the original layout)."
+        type: choice
+        options: [parallel, serial]
+        default: parallel
   schedule:
     - cron: '0 3 * * 0'
 
 jobs:
-  # K2GO-548: one runner per ABI, in parallel. Each builds only its jniLibs/<abi>; the assemble
-  # job joins them into the same bundle the serial build made. One ABI failing cancels the other.
+  # K2GO-548: parallel (default; also the schedule, which has no inputs) = one runner per ABI.
+  # serial = one runner builds both ABIs ("--arch all"). Either way the assemble job joins the
+  # jniLibs trees into the same bundle. In parallel, one ABI failing cancels the other.
   build-binaries:
     name: Compile static termux packages (${{ matrix.abi }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        abi: [arm64-v8a, armeabi-v7a]
+        abi: ${{ fromJSON(inputs.layout == 'serial' && '["all"]' || '["arm64-v8a", "armeabi-v7a"]') }}
 
     steps:
     - name: Checkout project code
