@@ -193,7 +193,8 @@ proot_exitkill() {
   mkdir -p ekroot && cp "$bb" ekroot/busybox || { echo "cannot copy $bb into the rootfs" > ekdiag; return 1; }
   # Direct exec (native only), not run_bin: a backgrounded function would make $! a subshell,
   # and the kill below would miss proot.
-  "$BIN/libproot.so" -r "$WORK/ekroot" -w / /busybox sh -c \
+  # -b /dev: sh opens /dev/null for a background job; without it the daemon never starts.
+  "$BIN/libproot.so" -r "$WORK/ekroot" -b /dev -w / /busybox sh -c \
     "/busybox setsid /busybox sh -c 'echo \$\$ > /d.pid; exec /busybox sleep 300' & exec /busybox sleep 300" \
     >"$WORK/ekproot.log" 2>&1 &
   local p=$! i=0 d st
