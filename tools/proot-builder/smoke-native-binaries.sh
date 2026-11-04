@@ -214,10 +214,8 @@ proot_exitkill() {
   # Read the status once: gone or a zombie both mean dead. The CI runner adopts orphans and reaps
   # them late, so a zombie can stay in /proc. Without EXITKILL the daemon keeps running (State S).
   st="$(cat "/proc/$d/status" 2>/dev/null)"
-  if [ -n "$st" ] && ! printf '%s
-' "$st" | grep -q '^State:[[:space:]]*Z'; then
-    { echo "daemon $d survived the SIGKILL of proot:"; printf '%s
-' "$st" | grep -E '^(State|TracerPid|PPid):'; } > ekdiag
+  if [ -n "$st" ] && ! printf '%s\n' "$st" | grep -q '^State:[[:space:]]*Z'; then
+    { echo "daemon $d survived the SIGKILL of proot:"; printf '%s\n' "$st" | grep -E '^(State|TracerPid|PPid):'; } > ekdiag
     kill -9 "$d"; return 1
   fi
 }
