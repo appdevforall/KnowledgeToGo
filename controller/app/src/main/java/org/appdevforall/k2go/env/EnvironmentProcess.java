@@ -101,7 +101,8 @@ public final class EnvironmentProcess {
      * <p>Only for the case that has no other answer: the environment is up, the services are not,
      * and the app cannot reach inside — a proot cannot be entered once started, and the channel
      * that could restart the services is the REST core, which is what is down. So the recovery is
-     * to end this one and bring up a fresh one.
+     * to end this one and bring up a fresh one. {@link #reapBox} (the disk guard) also uses it to
+     * stop a box whose services are up but filling the disk.
      *
      * <p>Deliberately not {@code killall proot}: that call exists elsewhere in this codebase and
      * would take an install's runrole with it. The matcher requires the environment's own command
