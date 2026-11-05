@@ -1,5 +1,5 @@
 #!/bin/sh
-# tools/rebuild-dashboard.sh [BRANCH] [CLONE_DIR] — ADFA-5011 / ADFA-5051
+# tools/rebuild-dashboard.sh <BRANCH> [CLONE_DIR] : ADFA-5011 / ADFA-5051
 #
 # Rebuild ONLY the dash-node REST API from the on-device clone, without a rootfs rebuild.
 # Blue-green + verify-before-commit so the live API is never left in a broken or misreporting state:
@@ -31,8 +31,8 @@ usage() {
 rebuild-dashboard.sh — rebuild ONLY the dash-node REST API from the on-device clone, no rootfs
 rebuild. Blue-green + verify-before-commit (ADFA-5011).
 
-Usage: sh rebuild-dashboard.sh [BRANCH] [CLONE_DIR]
-  BRANCH     git branch to fetch + reset --hard from origin (default: $K2GO_BRANCH, else main)
+Usage: sh rebuild-dashboard.sh <BRANCH> [CLONE_DIR]
+  BRANCH     REQUIRED: git branch to fetch + reset --hard from origin ($1 or env K2GO_BRANCH; no default)
   CLONE_DIR  clone location to build from       (default: /opt/iiab-android)
 
 Run inside the proot box. Fetches origin/<BRANCH>, builds in a staging dir, smoke-tests it,
@@ -41,8 +41,28 @@ USAGE
 }
 case "${1:-}" in -h|--help) usage; exit 0 ;; esac
 
-BRANCH="${1:-${K2GO_BRANCH:-main}}"
+# Safety (K2GO): the branch is REQUIRED. This rebuild runs `git reset --hard origin/<branch>`, so a bare
+# run with no branch used to fall back to main and reset + rebuild to it, which has wrecked a working
+# dashboard. With neither arg nor K2GO_BRANCH set, do NOTHING: print a ready-to-paste command and exit.
+# The app always passes K2GO_BRANCH, so its rebuild flow is unchanged; only a hand-run with no branch stops.
 CLONE_DIR="${2:-/opt/iiab-android}"
+# Absolute path to THIS script, so the suggested command pastes and runs from any directory.
+SELF="$(cd "$(dirname "$0")" 2>/dev/null && pwd)/$(basename "$0")"
+BRANCH="${1:-${K2GO_BRANCH:-}}"
+if [ -z "$BRANCH" ]; then
+  # Suggest the branch the clone currently has checked out (that is almost always the one to rebuild).
+  guess="$(git -C "$CLONE_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+  if [ -z "$guess" ] || [ "$guess" = "HEAD" ]; then guess="<branch>"; fi
+  {
+    echo "ERROR: no branch given. This rebuild runs 'git reset --hard origin/<branch>', so a branch is"
+    echo "required. Nothing was changed. Copy the line below (full path, ready to paste):"
+    echo
+    echo "sh $SELF $guess"
+    echo
+    echo "clone_dir is an optional 2nd arg (default: /opt/iiab-android)."
+  } >&2
+  exit 2
+fi
 SRC="$CLONE_DIR/static/dashboard"
 LIVE="/library/dashboard"
 STAGE="/library/dashboard.staging"
