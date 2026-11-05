@@ -244,15 +244,19 @@ STUB
     # proot kills its tracees on exit and on catchable signals, but a SIGKILLed proot cannot. Its
     # daemonised services then run untraced (ENOSYS) and the next `pdsm start` reads them as running.
     # With EXITKILL the kernel kills every tracee when proot dies for any reason. Auto-attached
-    # tracees inherit the option. Needs Linux >= 3.8 (minSdk 24 kernels are newer).
+    # tracees inherit the option.
+    # K2GO-550: EXITKILL needs Linux >= 3.8. An older kernel rejects it (proot exits at start) or
+    # accepts it without effect, so proot asks for it only on >= 3.8, the same uname check proot
+    # already does for PTRACE_EVENT_SECCOMP. This leaves the seccomp option logic as it is. Without
+    # EXITKILL the app reaps the box processes that outlive proot (EnvironmentProcess).
     # https://man7.org/linux/man-pages/man2/ptrace.2.html (PTRACE_O_EXITKILL)
     local evc="$TERMUX_PKG_SRCDIR/src/tracee/event.c"
-    grep -q 'PTRACE_O_EXITKILL);' "$evc" || \
-        sed -i 's/^\([[:space:]]*\)PTRACE_O_TRACEEXIT);$/\1PTRACE_O_TRACEEXIT\t|\n\1PTRACE_O_EXITKILL);/' "$evc"
-    grep -q 'define PTRACE_O_EXITKILL' "$evc" || \
-        sed -i 's|^#include "compat.h"$|&\n#ifndef PTRACE_O_EXITKILL\n#define PTRACE_O_EXITKILL 0x00100000 /* K2GO-544 */\n#endif|' "$evc"
-    grep -q 'PTRACE_O_EXITKILL);' "$evc"         || { echo "!! [IIAB] event.c anchor 'PTRACE_O_TRACEEXIT);' not found"; exit 1; }
-    grep -q 'define PTRACE_O_EXITKILL' "$evc"   || { echo "!! [IIAB] event.c anchor '#include \"compat.h\"' not found"; exit 1; }
+    grep -q 'kernel_supports_exitkill() ?' "$evc" || \
+        sed -i 's/^\([[:space:]]*\)PTRACE_O_TRACEEXIT);$/\1PTRACE_O_TRACEEXIT\t|\n\1(kernel_supports_exitkill() ? PTRACE_O_EXITKILL : 0));/' "$evc"
+    grep -q 'static bool kernel_supports_exitkill' "$evc" || \
+        sed -i 's|^#include "compat.h"$|&\n#ifndef PTRACE_O_EXITKILL\n#define PTRACE_O_EXITKILL 0x00100000 /* K2GO-544 */\n#endif\n\n/* K2GO-550: PTRACE_O_EXITKILL needs Linux >= 3.8. */\nstatic bool kernel_supports_exitkill(void)\n{\n\tstruct utsname uts;\n\tint major = 0, minor = 0;\n\n\tif (uname(\&uts) < 0)\n\t\treturn true;\n\tsscanf(uts.release, "%d.%d", \&major, \&minor);\n\treturn (major > 3) \|\| (major == 3 \&\& minor >= 8);\n}|' "$evc"
+    grep -q 'kernel_supports_exitkill() ?' "$evc"         || { echo "!! [IIAB] event.c anchor 'PTRACE_O_TRACEEXIT);' not found"; exit 1; }
+    grep -q 'static bool kernel_supports_exitkill' "$evc" || { echo "!! [IIAB] event.c anchor '#include \"compat.h\"' not found"; exit 1; }
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
