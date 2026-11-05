@@ -2,13 +2,26 @@ name: Build static binaries (PRoot)
 
 on:
   workflow_dispatch:
+    inputs:
+      layout:
+        description: "parallel = one runner per ABI (default). serial = both ABIs on one runner (the original layout)."
+        type: choice
+        options: [parallel, serial]
+        default: parallel
   schedule:
     - cron: '0 3 * * 0'
 
 jobs:
+  # K2GO-548: parallel (default; also the schedule, which has no inputs) = one runner per ABI.
+  # serial = one runner builds both ABIs ("--arch all"). Either way the assemble job joins the
+  # jniLibs trees into the same bundle. In parallel, one ABI failing cancels the other.
   build-binaries:
-    name: Compile static termux packages
+    name: Compile static termux packages (${{ matrix.abi }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        abi: ${{ fromJSON(inputs.layout == 'serial' && '["all"]' || '["arm64-v8a", "armeabi-v7a"]') }}
 
     steps:
     - name: Checkout project code
@@ -19,9 +32,33 @@ jobs:
 
     - name: Run Compilation (this will take awhile)
       run: |
-        ./tools/proot-builder/build_static.sh --rebuild-all \
+        ./tools/proot-builder/build_static.sh --rebuild-all --arch ${{ matrix.abi }} \
           --build-dir ${{ github.workspace }}/termux-build \
           --out-dir ${{ github.workspace }}/termux-artifacts
+
+    - name: Save this ABI's binaries
+      uses: actions/upload-artifact@v6
+      with:
+        name: termux-binaries-${{ matrix.abi }}
+        path: ${{ github.workspace }}/termux-artifacts/jniLibs/
+
+  assemble:
+    name: Assemble the bundle (manifest + CA)
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project code
+      uses: actions/checkout@v5
+
+    - name: Download every ABI into one jniLibs tree
+      uses: actions/download-artifact@v7
+      with:
+        pattern: termux-binaries-*
+        merge-multiple: true
+        path: ${{ github.workspace }}/termux-artifacts/jniLibs
+
+    - name: Write ninja_manifest.json and cacert.pem
+      run: bash tools/proot-builder/make-manifest.sh "${{ github.workspace }}/termux-artifacts"
 
     - name: Save artifacts to GitHub panel
       uses: actions/upload-artifact@v6
@@ -35,7 +72,7 @@ jobs:
   # here blocks the publish job below, so a broken rebuild is never released.
   smoke-test:
     name: Smoke/contract test (ADFA-4465)
-    needs: build-binaries
+    needs: assemble
     runs-on: ubuntu-24.04-arm
     steps:
     - name: Checkout project code
@@ -50,7 +87,7 @@ jobs:
     - name: Tools for the proot launch + emulation fallback
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y binutils qemu-user-static binfmt-support
+        sudo apt-get install -y binutils qemu-user-static binfmt-support busybox-static
         chmod +x tools/proot-builder/smoke-native-binaries.sh
 
     - name: Register binfmt (QEMU) for foreign-arch binaries
@@ -64,7 +101,7 @@ jobs:
 
   publish:
     name: Publish rolling release
-    needs: [build-binaries, smoke-test]
+    needs: [assemble, smoke-test]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -1,0 +1,63 @@
+name: Promote K2Go RootFS
+
+# K2GO-511. Moves the production pointers (latest_*) to a tested build: by default the dev
+# channel (dev_latest_*), the exact build that was installed and tested on devices. A server-side
+# copy, never a rebuild. SOURCE can also name a dated tarball to roll production back.
+# dry_run (the default) validates every pair and prints the plan without copying.
+# Logic: tools/rootfs-builder/promote-rootfs.sh.
+
+run-name: Promote rootfs (${{ inputs.dry_run && 'dry run' || 'LIVE' }}, ${{ inputs.source }}, ${{ inputs.tier }} ${{ inputs.arch }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "dev_latest = the dev channel. Or a dated tarball name (k2go_<date>_<tier>_<sha>_<arch>.tar.gz) to roll back; it sets tier and arch."
+        default: dev_latest
+      tier:
+        description: "Tier to promote (ignored for a dated source)."
+        type: choice
+        options: [all, basic, standard, full, matomo]
+        default: all
+      arch:
+        description: "Architecture to promote (ignored for a dated source)."
+        type: choice
+        options: [all, arm64-v8a, armeabi-v7a]
+        default: all
+      dry_run:
+        description: "Validate and print the plan only; copy nothing."
+        type: boolean
+        default: true
+
+env:
+  BUCKET_NAME: k2go-rootfs
+  R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev' }}
+  R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
+
+# Same group as the bake: a promotion never races a bake on the same pointers.
+concurrency:
+  group: bake-rootfs
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Promote (${{ inputs.dry_run && 'dry run' || 'live' }})
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          SOURCE: ${{ inputs.source }}
+          TIERS: ${{ inputs.tier == 'all' && 'basic standard full matomo' || inputs.tier }}
+          ARCHES: ${{ inputs.arch == 'all' && 'arm64-v8a armeabi-v7a' || inputs.arch }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: |
+          export PUBLIC_BASE="$ROOTFS_PUBLIC_BASE" PFX="${R2_KEY_PREFIX:-}"
+          export ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          bash tools/rootfs-builder/promote-rootfs.sh

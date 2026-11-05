@@ -3,13 +3,14 @@
  * Name        : EnvironmentProcess.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-5061. Whether our environment proot is running, read from
- *               the host's /proc. No container, no socket, nothing mutated.
+ * Description : ADFA-5061. Find our environment proot in the host's /proc, and
+ *               stop it on request. No container, no socket.
  * ============================================================================
  */
 package org.appdevforall.k2go.env;
 
 import android.content.Context;
+import android.system.Os;
 import android.util.Log;
 
 import org.appdevforall.k2go.env.domain.EnvironmentProcessMatcher;
@@ -35,22 +36,14 @@ import java.io.FileInputStream;
  * path that matters — an environment we did not start and cannot talk to has to go before a new
  * one can come up.
  *
- * <p><b>Not wired yet, deliberately.</b> {@code ServerController.startEnvironment} called
- * {@link #killOrphan} for one build and it was removed after a device run: it cannot tell an
- * abandoned environment from one this same process started seconds earlier, and it killed a proot
- * 3.5 s into its own boot. Detection is the easy half. The rest — a handle held per process rather
- * than per Activity, "ensure it is up" instead of "start", and a grace period while services are
- * still coming up — is the ticket this class was written for. Read {@link #isRunning} freely; do
- * not reach for {@link #killOrphan} until that decision exists to hold it.
+ * <p>{@link #killOrphan} cannot tell an abandoned environment from one that is still booting, so
+ * only callers that own that decision use it: {@code ServerLifecycleReconciler} (STOP teardown, and
+ * kill-and-relaunch after the boot grace) and {@code ServerController} ({@code EnvironmentEnsure}
+ * KILL_AND_RELAUNCH). See ADR-5343.
  */
 public final class EnvironmentProcess {
 
     private static final String TAG = "K2Go-Env";
-
-    /** ADFA-5343a (D2): the box's nginx HTTP port ({@code config/BoxEndpoints.java:21}). Its listener is
-     *  the reparented orphan that keeps the port after a proot kill; reclaiming it is what lets a fresh
-     *  proot's {@code pdsm start} rebind. */
-    private static final int ENV_HTTP_PORT = 8085;
 
     private EnvironmentProcess() {
     }
@@ -109,7 +102,8 @@ public final class EnvironmentProcess {
      * <p>Only for the case that has no other answer: the environment is up, the services are not,
      * and the app cannot reach inside — a proot cannot be entered once started, and the channel
      * that could restart the services is the REST core, which is what is down. So the recovery is
-     * to end this one and bring up a fresh one.
+     * to end this one and bring up a fresh one. {@link #reapBox} (the disk guard) also uses it to
+     * stop a box whose services are up but filling the disk.
      *
      * <p>Deliberately not {@code killall proot}: that call exists elsewhere in this codebase and
      * would take an install's runrole with it. The matcher requires the environment's own command
@@ -128,104 +122,30 @@ public final class EnvironmentProcess {
                 android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
                 Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
                 signalled = true;
+                // Its guests show TracerPid 0 only once the proot has exited.
+                awaitExit(pid);
             } catch (Exception e) {
                 Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
             }
         }
-        // ADFA-5343a (D2): killing the proot is not enough. Its services daemonise — nginx setsid()s and
-        // reparents to init — so they survive the proot and keep :8085, and every relaunched proot's
-        // `pdsm start` then cannot rebind (the ADFA-5336 unrecoverable loop). Reclaim the HTTP front too.
-        boolean reaped = reapEnvironmentHttpFront();
-        return signalled || reaped;
+        // K2GO-544: with PTRACE_O_EXITKILL the kernel kills every box process with the proot.
+        // K2GO-550: kernels older than 3.8 have no EXITKILL, so reap what outlived it.
+        return reapUntraced() > 0 || signalled;
     }
 
     /**
-     * ADFA-5343a (D2): reclaim the environment's orphaned nginx — the box's HTTP front on {@code :8085}
-     * ({@code config/BoxEndpoints.java:21}) — which daemonises ({@code setsid}, reparents to init) and
-     * survives the proot, keeping the port so a relaunched proot's {@code pdsm start} cannot rebind (the
-     * ADFA-5336 loop).
+     * K2GO-550: kill every box process that no proot traces ({@link
+     * EnvironmentProcessMatcher#isUntracedGuest}). On Linux >= 3.8 there is none. Best-effort.
      *
-     * <p><b>Found by cmdline, not by the port.</b> An app cannot read {@code /proc/net/tcp} on modern
-     * Android (blocked since API 29), so the socket→pid path is unavailable here; nginx is instead
-     * matched on {@code /proc/<pid>/cmdline} ({@code "nginx: master process nginx"} / worker). That is
-     * still scoped to us: nginx runs in the app's own uid <em>and</em> SELinux domain (device-verified,
-     * ADR-5343a §2), so it is killable, and the box's only nginx is ours. Killing each matching pid reaps
-     * master and workers together; idempotent — a no-op when none is running.
-     *
-     * @return true when at least one nginx process was signalled.
+     * @return how many processes were signalled
      */
-    public static boolean reapEnvironmentHttpFront() {
+    public static int reapUntraced() {
         File[] entries = new File("/proc").listFiles();
         if (entries == null) {
-            return false;
-        }
-        boolean reaped = false;
-        for (File dir : entries) {
-            int pid;
-            try {
-                pid = Integer.parseInt(dir.getName());
-            } catch (NumberFormatException notAPid) {
-                continue;
-            }
-            String cmd = readCmdline(new File(dir, "cmdline"));
-            if (cmd != null && cmd.contains("nginx")) {
-                try {
-                    android.os.Process.killProcess(pid);   // same uid + SELinux domain as us
-                    reaped = true;
-                } catch (Exception ignored) {
-                    // vanished mid-scan, or not ours to signal
-                }
-            }
-        }
-        if (reaped) {
-            Log.i(TAG, "ADFA-5343a: reclaimed the orphaned nginx holding the HTTP front (:"
-                    + ENV_HTTP_PORT + ")");
-        }
-        return reaped;
-    }
-
-    /**
-     * K2GO-386 (barrier 2): a FULL box teardown — kill the proot and reap the box's daemonised services.
-     * This is the disk-guard's recovery action when free space is critical. Device-proven (2026-09-04): a
-     * targeted restart or an in-proot kill does NOT stop a runaway orphaned off proot; only a full teardown
-     * (what {@code am force-stop} does) does. Each service runs in the app's own uid + SELinux domain, so
-     * {@code killProcess} reaches it — the same technique as {@link #reapEnvironmentHttpFront}. Best-effort
-     * and idempotent.
-     *
-     * @return true when at least one process was signalled.
-     */
-    public static boolean reapBox(Context ctx) {
-        boolean any = false;
-        if (ctx != null) {
-            int proot = findPid(ctx);
-            if (proot > 0) {
-                try {
-                    android.os.Process.killProcess(proot);
-                    Log.i(TAG, "K2GO-386: killed the box proot, pid " + proot);
-                    any = true;
-                } catch (Exception e) {
-                    Log.w(TAG, "K2GO-386: could not kill the box proot pid " + proot, e);
-                }
-            }
-        }
-        // The box's services daemonise (setsid, reparent to init) and survive the proot; reap them by name.
-        return reapByNames(BOX_SERVICE_TOKENS) || any;
-    }
-
-    /** Cmdline tokens of the box's daemonised services (dash-node = "node"). Scoped to us: these run only
-     *  in the app's uid, so a match is always a box process. */
-    private static final String[] BOX_SERVICE_TOKENS =
-            {"php-fpm", "nginx", "mariadb", "mysqld", "kolibri", "kiwix", "calibre", "node"};
-
-    /** Kill every non-self process whose cmdline contains any of {@code tokens} (same uid + SELinux domain
-     *  as us, so killable). Best-effort; entries vanishing mid-scan are ignored. */
-    private static boolean reapByNames(String[] tokens) {
-        File[] entries = new File("/proc").listFiles();
-        if (entries == null) {
-            return false;
+            return 0;
         }
         int myPid = android.os.Process.myPid();
-        boolean reaped = false;
+        int reaped = 0;
         for (File dir : entries) {
             int pid;
             try {
@@ -236,36 +156,71 @@ public final class EnvironmentProcess {
             if (pid == myPid) {
                 continue;
             }
-            String cmd = readCmdline(new File(dir, "cmdline"));
-            if (cmd == null) {
-                continue;
+            String exe;
+            try {
+                exe = Os.readlink(dir.getPath() + "/exe");
+            } catch (Exception notOurs) {
+                continue;   // vanished, or another uid
             }
-            for (String token : tokens) {
-                if (cmd.contains(token)) {
-                    try {
-                        android.os.Process.killProcess(pid);
-                        reaped = true;
-                    } catch (Exception ignored) {
-                        // vanished mid-scan, or not ours to signal
-                    }
-                    break;
+            if (EnvironmentProcessMatcher.isUntracedGuest(exe, readText(new File(dir, "status")))) {
+                try {
+                    android.os.Process.killProcess(pid);
+                    reaped++;
+                } catch (Exception ignored) {
+                    // vanished mid-scan
                 }
             }
+        }
+        if (reaped > 0) {
+            Log.i(TAG, "K2GO-550: reaped " + reaped + " box process(es) that outlived their proot");
         }
         return reaped;
     }
 
-    /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
-    private static String readCmdline(File cmdline) {
-        try (FileInputStream in = new FileInputStream(cmdline)) {
+    /** Wait up to {@link #EXIT_WAIT_MS} until {@code pid} is gone or a zombie. */
+    private static void awaitExit(int pid) {
+        long deadline = android.os.SystemClock.elapsedRealtime() + EXIT_WAIT_MS;
+        File status = new File("/proc/" + pid + "/status");
+        while (android.os.SystemClock.elapsedRealtime() < deadline) {
+            String s = readText(status);
+            if (s == null || s.contains("State:\tZ")) {
+                return;
+            }
+            android.os.SystemClock.sleep(50);
+        }
+    }
+
+    private static final long EXIT_WAIT_MS = 2000;
+
+    /**
+     * K2GO-386 (barrier 2): a FULL box teardown. This is the disk-guard's recovery action when free
+     * space is critical. Killing the proot is the whole teardown: with PTRACE_O_EXITKILL (K2GO-544)
+     * the kernel kills every box service with it; on older kernels {@link #killOrphan} reaps the
+     * survivors (K2GO-550). Best-effort and idempotent.
+     *
+     * @return true when the proot was signalled.
+     */
+    public static boolean reapBox(Context ctx) {
+        return killOrphan(ctx);
+    }
+
+    /** A small {@code /proc} file as text, or null if it cannot be read. */
+    private static String readText(File file) {
+        try (FileInputStream in = new FileInputStream(file)) {
             byte[] buf = new byte[4096];
             int total = 0, r;
             while (total < buf.length && (r = in.read(buf, total, buf.length - total)) != -1) {
                 total += r;
             }
-            return total == 0 ? null : new String(buf, 0, total).replace('\0', ' ').trim();
+            return new String(buf, 0, total);
         } catch (Exception e) {
-            return null;   // vanished, or not ours to read
+            return null;
         }
+    }
+
+    /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
+    private static String readCmdline(File cmdline) {
+        String s = readText(cmdline);   // null: vanished, or not ours to read
+        return (s == null || s.isEmpty()) ? null : s.replace('\0', ' ').trim();
     }
 }

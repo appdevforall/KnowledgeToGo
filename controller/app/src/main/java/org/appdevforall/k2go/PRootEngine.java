@@ -198,6 +198,10 @@ public class PRootEngine {
                 pb.environment().putAll(ProotEnvironment.build(
                         nativeDir, prefixDir.getCanonicalPath(), prootTmpPath, mode));
 
+                // K2GO-550: a proot that died on a kernel without EXITKILL leaves its guests
+                // running untraced; they would hold the ports the new proot's services need.
+                org.appdevforall.k2go.env.EnvironmentProcess.reapUntraced();
+
                 // ADFA-4458: wait on THIS call's process, not the shared field, so a
                 // concurrent proot call can't make us return on the wrong process.
                 Process proc = pb.start();

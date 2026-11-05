@@ -19,7 +19,7 @@ name: Bake & publish K2Go RootFS
 # downloads). The seed-base job runs in every mode: the builder downloads the base from R2, and
 # seed-base only mirrors the pinned upstream base when it is missing.
 
-run-name: Bake rootfs (${{ inputs.mode }}, ${{ inputs.mode != 'publish' && format('{0} {1}', inputs.tier, inputs.arch) || 'all tiers, both arches' }})
+run-name: Bake rootfs (${{ inputs.mode }}, ${{ inputs.mode != 'publish' && format('{0} {1}', inputs.tier, inputs.arch) || 'all tiers, both arches' }}, ${{ inputs.layout }})
 
 on:
   workflow_dispatch:   # manual only for now
@@ -43,6 +43,21 @@ on:
         description: "Native-binaries release tag to pin (blank = binary_version.txt on main). e.g. binaries-2026-09-01_03-22 to bake on a specific proot build without merging."
         required: false
         default: ""
+      layout:
+        description: "Nodes. dual = 2 nodes (one per arch, tiers in series). serial = one node per tier and arch, 4 at a time. parallel = one node per tier and arch, all 8 at once."
+        type: choice
+        options: [dual, serial, parallel]
+        default: dual
+      fail_fast:
+        description: "Cancel every node as soon as one fails (nothing publishes anyway)."
+        type: boolean
+        default: true
+      go_version:
+        description: "Go toolchain for mkmetalink (pinned; blank = latest from go.dev)."
+        default: "go1.27.3"
+      mkmetalink_version:
+        description: "mkmetalink module version (pinned; 'latest' to track upstream)."
+        default: "v0.1.0"
   # Re-enable when we want it scheduled:
   # schedule:
   #   - cron: '0 4 * * 0'   # Sundays 04:00 UTC
@@ -121,18 +136,50 @@ jobs:
           done
           echo "Base seed/verify complete for proot-distro-v${PD_VERSION}."
 
+
+  # K2GO-511: the node layout. dual = one node per arch, all tiers in series (the old shape).
+  # serial = one node per (tier, arch), 4 at a time. parallel = one node per (tier, arch), all 8
+  # at once. The concurrent-job cap is per organization and shared with every workflow; jobs over
+  # the cap queue, they do not fail.
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+      max_parallel: ${{ steps.p.outputs.max_parallel }}
+    steps:
+      - id: p
+        run: |
+          set -euo pipefail
+          MODE="${{ inputs.mode }}"; TIER="${{ inputs.tier }}"; ARCH="${{ inputs.arch }}"
+          LAYOUT="${{ inputs.layout }}"
+          # publish always builds every tier for both arches
+          [ "$MODE" = publish ] && { TIER=all; ARCH=all; }
+          if [ "$ARCH" = all ]; then arches="arm64-v8a armeabi-v7a"; else arches="$ARCH"; fi
+          if [ "$TIER" = all ]; then tiers="basic standard full matomo"; else tiers="$TIER"; fi
+          if [ "$LAYOUT" = dual ]; then
+            maxp=2
+            m=$(for a in $arches; do jq -cn --arg a "$a" --arg t "$TIER" '{arch:$a,tier:$t}'; done | jq -cs .)
+          else
+            if [ "$LAYOUT" = serial ]; then maxp=4; else maxp=8; fi
+            m=$(for a in $arches; do for t in $tiers; do jq -cn --arg a "$a" --arg t "$t" '{arch:$a,tier:$t}'; done; done | jq -cs .)
+          fi
+          echo "matrix=$m" >> "$GITHUB_OUTPUT"
+          echo "max_parallel=$maxp" >> "$GITHUB_OUTPUT"
+          echo "layout=$LAYOUT max_parallel=$maxp matrix=$m"
+
   bake:
-    needs: seed-base            # the static base must be present on R2 before we publish artifacts
-    name: RootFS ${{ matrix.arch }}
+    needs: [seed-base, plan]    # the static base must be present on R2 before we publish artifacts
+    name: RootFS ${{ matrix.arch }} ${{ matrix.tier }}
     # Native arm64 runner (the builder uses native proot, not QEMU). Adjust the label
     # if the org uses a different arm64 runner (e.g. a self-hosted one).
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 330   # under the 6h hard cap; all-tier per node is ~1.5h
+    timeout-minutes: 330   # under the 6h hard cap; an all-tier node (dual) is ~1.5h
     strategy:
-      fail-fast: false     # one arch must not cancel the other
-      max-parallel: 2      # one node per arch, both at once
+      # Default on: one failed node cancels the rest, since nothing publishes anyway.
+      fail-fast: ${{ inputs.fail_fast }}
+      max-parallel: ${{ fromJSON(needs.plan.outputs.max_parallel) }}
       matrix:
-        arch: ${{ fromJSON(inputs.mode != 'publish' && inputs.arch != 'all' && format('["{0}"]', inputs.arch) || '["arm64-v8a","armeabi-v7a"]') }}
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
 
     steps:
       - name: Checkout
@@ -142,15 +189,17 @@ jobs:
         if: inputs.mode != 'test'
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
 
-      - name: Build ${{ inputs.mode != 'publish' && inputs.tier || 'all' }} tier(s) for ${{ matrix.arch }}
+      - name: Build ${{ matrix.tier }} for ${{ matrix.arch }}
         run: |
           TAG_ARG=""
           [ -n "${{ inputs.binaries_tag }}" ] && TAG_ARG="--binaries-tag ${{ inputs.binaries_tag }}"
-          TIER_ARG="--all-tier"
-          [ "${{ inputs.mode }}" != publish ] && [ "${{ inputs.tier }}" != all ] && TIER_ARG="--tier ${{ inputs.tier }}"
+          TIER_ARG="--tier ${{ matrix.tier }}"
+          [ "${{ matrix.tier }}" = all ] && TIER_ARG="--all-tier"
           sudo bash ./tools/rootfs-builder/build-iiab-rootfs.sh \
             $TIER_ARG --arch "${{ matrix.arch }}" \
             $TAG_ARG \
+            --go-version "${{ inputs.go_version }}" \
+            --mkmetalink-version "${{ inputs.mkmetalink_version || 'latest' }}" \
             --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
           # the builder runs as root; hand dist/ back to the runner so the upload step can read it
           sudo chown -R "$(id -u):$(id -g)" dist
@@ -159,83 +208,128 @@ jobs:
         if: always()
         run: |
           {
-            echo "### ${{ inputs.mode }} bake, ${{ matrix.arch }}"
+            echo "### ${{ inputs.mode }} bake, ${{ matrix.arch }} ${{ matrix.tier }}"
             case "${{ inputs.mode }}" in
               test) echo "Test mode: nothing was uploaded." ;;
-              dev)  echo "Dev mode: staged as dev_latest_* (production latest_* untouched)." ;;
+              *)    echo "Data uploaded; pointers move only when every node passes (publish job)." ;;
             esac
             echo '```'
             ls -lh dist 2>/dev/null || echo "dist/ was not created"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Publish to R2 (${{ inputs.mode }}) + prune
+      # K2GO-511: each node uploads only DATA (dated tarballs + their sidecars). Nothing points to
+      # them yet, so a node that passes while another fails exposes nothing. The publish job flips
+      # the pointers once every node passed.
+      - name: Upload data to R2 (${{ inputs.mode }})
         if: inputs.mode != 'test'
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
         run: |
           set -euo pipefail
-          ARCH="${{ matrix.arch }}"
-          MODE="${{ inputs.mode }}"
-          KEEP=7          # keep newest 7 batches per (tier,arch); heavy uploads, ~100GB at 7
           ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
           PFX="${R2_KEY_PREFIX:-}"          # '' or 'rootfs/'
+          source "$GITHUB_WORKSPACE/tools/rootfs-builder/r2-cp.sh"   # s3cp: aws s3 cp with retries
           cd dist
 
-          # K2GO-511: dev and publish upload the SAME dated tarballs but write DIFFERENT pointer
-          # families. publish owns the stable latest_* pointers and the shared catalog inputs
-          # (build-*.log, PUBLISH_QUEUE*.tsv) the production catalogs consume. dev writes only
-          # dev_latest_* and touches NEITHER latest_* NOR those shared inputs, and never prunes, so a
-          # staging bake cannot change or delete anything a production install depends on.
-          if [ "$MODE" = dev ]; then PP="dev_latest_"; else PP="latest_"; fi
-
-          # R2 drops a multipart upload now and then (InvalidPart, first-byte timeout), which
-          # failed a finished 70-min bake. Retry the whole cp; each attempt restarts the upload.
-          s3cp() {
-            local n
-            for n in 1 2 3 4 5; do
-              aws s3 cp "$@" --endpoint-url "$ENDPOINT" && return 0
-              echo "!! aws s3 cp failed (attempt $n/5), retry in $((n * 15))s" >&2
-              sleep $((n * 15))
-            done
-            return 1
-          }
-
-          # 1) Big artifacts FIRST (data before any pointer that resolves to them).
+          # Big artifacts first, then their per-artifact sidecars (.meta4/.sha256/.installed/
+          # .torrent). Pointers, logs and the queue stay for the publish job.
           shopt -s nullglob
           for f in k2go_*.tar.gz; do
             echo ">> upload artifact $f"
             s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}"
           done
+          s3cp . "s3://${BUCKET_NAME}/${PFX}" --recursive --exclude "*.tar.gz" \
+            --exclude "latest_*" --exclude "build-*.log" --exclude "PUBLISH_QUEUE*.tsv"
 
-          # 2) Per-artifact sidecars (.meta4/.sha256/.installed/.torrent). The stable latest_*
-          #    pointers are held for step 3 so a client never reads a pointer to a half-uploaded
-          #    file. dev ALSO holds back the shared catalog inputs (build-<tier>-<arch>.log,
-          #    PUBLISH_QUEUE.tsv) so a staging bake never overwrites what the production catalogs read.
-          EXCLUDES=(--exclude "*.tar.gz" --exclude "latest_*.meta4" --exclude "latest_*.installed")
-          if [ "$MODE" = dev ]; then EXCLUDES+=(--exclude "build-*.log" --exclude "PUBLISH_QUEUE*.tsv"); fi
-          s3cp . "s3://${BUCKET_NAME}/${PFX}" --recursive "${EXCLUDES[@]}"
+      - name: Hand pointers and logs to the publish job
+        if: inputs.mode != 'test'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pointers-${{ matrix.arch }}-${{ matrix.tier }}
+          path: |
+            dist/latest_*
+            dist/build-*.log
+            dist/PUBLISH_QUEUE*.tsv
+          if-no-files-found: error
+          retention-days: 3
 
-          # 3) Flip the pointers LAST (only after the data is fully up, so a client reading a pointer
-          #    never lands on a half-uploaded tarball). The builder writes latest_*; dev republishes
-          #    those same bytes under dev_latest_* and leaves latest_* untouched.
+  # K2GO-511: the all-or-nothing gate. Runs only when EVERY bake node succeeded; one failure and no
+  # pointer moves, exactly as before. Flips the pointers last, after all data is on R2.
+  publish:
+    needs: [plan, bake]
+    if: inputs.mode != 'test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Collect pointers and logs from every node
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pointers-*
+          path: nodes
+
+      - name: Publish pointers to R2 (${{ inputs.mode }}) + prune
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          MODE="${{ inputs.mode }}"
+          KEEP=7          # keep newest 7 batches per (tier,arch); heavy uploads, ~100GB at 7
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          PFX="${R2_KEY_PREFIX:-}"          # '' or 'rootfs/'
+          source "$GITHUB_WORKSPACE/tools/rootfs-builder/r2-cp.sh"   # s3cp: aws s3 cp with retries
+
+          # Merge the nodes into one staging dir. Each node of an arch writes its own
+          # PUBLISH_QUEUE_<arch>.tsv with only its rows, so concatenate those (one header).
+          mkdir -p stage
+          shopt -s nullglob
+          for d in nodes/*/; do
+            for f in "$d"latest_* "$d"build-*.log; do cp "$f" stage/; done
+            for q in "$d"PUBLISH_QUEUE*.tsv; do
+              qn="stage/$(basename "$q")"
+              if [ -f "$qn" ]; then grep -v '^built_utc' "$q" >> "$qn" || true; else cp "$q" "$qn"; fi
+            done
+          done
+          cd stage
+          ls -l
+
+          # K2GO-511: dev and publish write DIFFERENT pointer families. publish owns the stable
+          # latest_* pointers and the shared catalog inputs (build-*.log, PUBLISH_QUEUE*.tsv) the
+          # production catalogs consume. dev writes only dev_latest_* and dev_build-*.log, never
+          # those shared inputs, and never prunes, so a staging bake cannot change or delete
+          # anything a production install depends on.
+          if [ "$MODE" = dev ]; then PP="dev_latest_"; else PP="latest_"; fi
           for f in latest_*.meta4 latest_*.installed; do
             dest="${f/latest_/$PP}"
             echo ">> pointer $dest"
             s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${dest}"
           done
-
-          # 4) Prune (publish only; dev never deletes): keep the newest $KEEP batches per (tier,arch);
-          #    delete older + sidecars. Only the heavy dated tarballs accumulate (they carry
-          #    <date>_<sha>); logs and the TSV overwrite in place, so they never pile up. The prefix
-          #    filter matches k2go_* only, so proot-distro-v*/ is never touched.
-          #    FOLLOW-UP (K2GO-511): this prune is not yet pointer-aware, so it could delete a dated
-          #    tarball a dev_latest_* staging pointer still names. Safe today (dev never reaches this
-          #    branch, publish is manual); the pointer-protected two-lane prune is a separate step.
+          # dev keeps its logs as dev_build-* so promote-rootfs can carry them to build-*
+          # (the module-size catalog reads build-full-arm64-v8a.log).
+          for f in build-*.log; do
+            if [ "$MODE" = dev ]; then s3cp "$f" "s3://${BUCKET_NAME}/${PFX}dev_${f}"
+            else s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}"; fi
+          done
           if [ "$MODE" = publish ]; then
-            for meta in latest_*_"${ARCH}".meta4; do
-              base="${meta%.meta4}"; te="${base#latest_}"; tier="${te%_${ARCH}}"
+            for f in PUBLISH_QUEUE*.tsv; do s3cp "$f" "s3://${BUCKET_NAME}/${PFX}${f}"; done
+          fi
+
+          # Prune (publish only; dev never deletes): keep the newest $KEEP batches per (tier,arch);
+          # delete older + sidecars. Only the heavy dated tarballs accumulate (they carry
+          # <date>_<sha>); logs and the TSV overwrite in place, so they never pile up. The prefix
+          # filter matches k2go_* only, so proot-distro-v*/ is never touched.
+          # FOLLOW-UP (K2GO-511): this prune is not yet pointer-aware, so it could delete a dated
+          # tarball a dev_latest_* staging pointer still names. Safe today (dev never reaches this
+          # branch, publish is manual); the pointer-protected two-lane prune is a separate step.
+          if [ "$MODE" = publish ]; then
+            for meta in latest_*.meta4; do
+              base="${meta%.meta4}"; te="${base#latest_}"
+              ARCH="${te##*_}"; tier="${te%_${ARCH}}"
               mapfile -t keys < <(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" \
                 --prefix "${PFX}k2go_" --endpoint-url "$ENDPOINT" \
                 --query "sort_by(Contents,&LastModified)[?contains(Key,'_${tier}_') && ends_with(Key,'_${ARCH}.tar.gz')].Key" \

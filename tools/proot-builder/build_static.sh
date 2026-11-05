@@ -4,6 +4,7 @@
 # Compiles self-contained static binaries for PRoot, Aria2c, Tar, Gzip, XZ, Rsync, Nano, and Less
 # -----------------------------------------------------------------------------
 set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"   # K2GO-548: sibling scripts, before any cd
 
 # ==========================================
 # 1. PARSE COMMAND LINE FLAGS
@@ -20,6 +21,11 @@ REBUILD_LESS=0
 # Default directories
 BUILD_DIR="$(pwd)"
 OUTPUT_DIR="$(pwd)/dist"
+
+# Which Android ABI(s) to build. "all" = both (release default); set to a single
+# Android arch (arm64-v8a | armeabi-v7a) with --arch to halve build time while testing
+# (e.g. a device-only proot check needs only arm64-v8a). Names match smoke-native-binaries.sh.
+ARCH_FILTER="all"
 
 # Function to create the sidecar metadata file
 write_meta() {
@@ -53,9 +59,10 @@ while [[ "$#" -gt 0 ]]; do
         --rebuild-less)  REBUILD_LESS=1; shift ;;
         --build-dir)     BUILD_DIR="$2"; shift 2 ;;
         --out-dir)       OUTPUT_DIR="$2"; shift 2 ;;
+        --arch)          ARCH_FILTER="$2"; shift 2 ;;
         *)
             echo "Unknown argument: $1"
-            echo "Usage: $0 [--rebuild-all] [--build-dir /opt/termux-build] [--out-dir /var/www/artifacts]"
+            echo "Usage: $0 [--rebuild-all] [--build-dir /opt/termux-build] [--out-dir /var/www/artifacts] [--arch all|arm64-v8a|armeabi-v7a]"
             exit 1
             ;;
     esac
@@ -111,6 +118,35 @@ XZ_VER=$(grep -m1 '^TERMUX_PKG_VERSION=' "$XZ_DIR/build.sh" | cut -d= -f2 | tr -
 echo "[3/4] Patching build scripts for static compilation..."
 cd "$TERMUX_REPO"
 
+# --- K2GO-544: download resilience (mirror rotation inside termux_download) ---
+# termux_download retries one URL only, and samba.org stalls often enough to kill a full build.
+# Retry 9 times in total and rotate known mirrors on each retry (3 servers x 3 tries). Termux still
+# downloads to its own cache and checks the recipe SHA256 itself; nothing local is reused.
+TDL="scripts/build/termux_download.sh"
+if ! grep -q 'iiab_mirror_url' "$TDL"; then
+    { cat << 'MIRROR'
+# IIAB K2GO-544: URL for retry number $2 of $1, rotating known mirrors (unknown hosts: unchanged).
+iiab_mirror_url() {
+	local url="$1" try="$2" path
+	case "$url" in
+	https://www.samba.org/ftp/*)
+		path="${url#https://www.samba.org/ftp/}"
+		local -a m=("https://www.samba.org/ftp/$path" "https://download.samba.org/pub/$path" "https://ftp.samba.org/pub/$path")
+		echo "${m[$(( try % ${#m[@]} ))]}" ;;
+	*) echo "$url" ;;
+	esac
+}
+
+MIRROR
+      cat "$TDL"; } > "$TDL.iiab" && mv "$TDL.iiab" "$TDL"
+    sed -i 's/^\([[:space:]]*\)local retry=2$/\1local retry=8/' "$TDL"
+    sed -i 's/^\([[:space:]]*\)local delay=60$/\1local delay=20/' "$TDL"
+    sed -i 's/^\([[:space:]]*\)echo "Retrying #\${try} download \${URL} in \${delay}"$/\1URL="$(iiab_mirror_url "$1" "$try")"\n&/' "$TDL"
+fi
+grep -q '^iiab_mirror_url() {' "$TDL"                  || { echo "!! [IIAB] termux_download.sh: mirror function not added"; exit 1; }
+grep -q 'local retry=8$' "$TDL"                        || { echo "!! [IIAB] termux_download.sh anchor 'local retry=2' not found"; exit 1; }
+grep -q 'URL="$(iiab_mirror_url "$1" "$try")"' "$TDL"  || { echo "!! [IIAB] termux_download.sh anchor 'Retrying #' not found"; exit 1; }
+
 # --- NCURSES PATCH ---
 # Forces ncurses to inject the database of these terminals directly into the binary
 echo 'TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-fallbacks=xterm-256color,xterm,linux,vt100"' >> packages/ncurses/build.sh
@@ -134,6 +170,23 @@ termux_step_pre_configure() {
 int __android_log_print(int prio, const char* tag, const char* fmt, ...) { return 0; }
 int __android_log_vprint(int prio, const char* tag, const char* fmt, void* ap) { return 0; }
 int __android_log_write(int prio, const char* tag, const char* text) { return 0; }
+STUB
+    fi
+
+    # K2GO-544: talloc >= 2.5.0 calls rep_memset_explicit from Samba's lib/replace, which the static
+    # libtalloc.a does not carry (link error since the 2026-10-25 scheduled build). Same body as
+    # Samba's: https://gitlab.com/samba-team/samba/-/blob/master/lib/replace/replace.c
+    if ! grep -q "rep_memset_explicit" $TERMUX_PKG_SRCDIR/src/cli/cli.c; then
+        cat << 'STUB' >> $TERMUX_PKG_SRCDIR/src/cli/cli.c
+
+/* IIAB: Samba lib/replace symbol needed by the static libtalloc >= 2.5.0. Weak, so a real
+ * definition wins if the archive ever ships one (no duplicate symbol). */
+__attribute__((weak)) void *rep_memset_explicit(void *block, int c, size_t size)
+{
+	void *ptr = memset(block, c, size);
+	__asm__ volatile("" : : "g"(block) : "memory");
+	return ptr;
+}
 STUB
     fi
 
@@ -186,6 +239,24 @@ STUB
     # 452 is never trapped on kernel>=6.6 seccomp-accelerated hosts and passes through untranslated.
     grep -q '{ PR_fchmodat2,' "$sysdir/seccomp.c" || \
         sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_fchmodat2, 0 },/' "$sysdir/seccomp.c"
+
+    # --- K2GO-544: PTRACE_O_EXITKILL, so no box process outlives its proot. ---
+    # proot kills its tracees on exit and on catchable signals, but a SIGKILLed proot cannot. Its
+    # daemonised services then run untraced (ENOSYS) and the next `pdsm start` reads them as running.
+    # With EXITKILL the kernel kills every tracee when proot dies for any reason. Auto-attached
+    # tracees inherit the option.
+    # K2GO-550: EXITKILL needs Linux >= 3.8. An older kernel rejects it (proot exits at start) or
+    # accepts it without effect, so proot asks for it only on >= 3.8, the same uname check proot
+    # already does for PTRACE_EVENT_SECCOMP. This leaves the seccomp option logic as it is. Without
+    # EXITKILL the app reaps the box processes that outlive proot (EnvironmentProcess).
+    # https://man7.org/linux/man-pages/man2/ptrace.2.html (PTRACE_O_EXITKILL)
+    local evc="$TERMUX_PKG_SRCDIR/src/tracee/event.c"
+    grep -q 'kernel_supports_exitkill() ?' "$evc" || \
+        sed -i 's/^\([[:space:]]*\)PTRACE_O_TRACEEXIT);$/\1PTRACE_O_TRACEEXIT\t|\n\1(kernel_supports_exitkill() ? PTRACE_O_EXITKILL : 0));/' "$evc"
+    grep -q 'static bool kernel_supports_exitkill' "$evc" || \
+        sed -i 's|^#include "compat.h"$|&\n#ifndef PTRACE_O_EXITKILL\n#define PTRACE_O_EXITKILL 0x00100000 /* K2GO-544 */\n#endif\n\n/* K2GO-550: PTRACE_O_EXITKILL needs Linux >= 3.8. */\nstatic bool kernel_supports_exitkill(void)\n{\n\tstruct utsname uts;\n\tint major = 0, minor = 0;\n\n\tif (uname(\&uts) < 0)\n\t\treturn true;\n\tsscanf(uts.release, "%d.%d", \&major, \&minor);\n\treturn (major > 3) \|\| (major == 3 \&\& minor >= 8);\n}|' "$evc"
+    grep -q 'kernel_supports_exitkill() ?' "$evc"         || { echo "!! [IIAB] event.c anchor 'PTRACE_O_TRACEEXIT);' not found"; exit 1; }
+    grep -q 'static bool kernel_supports_exitkill' "$evc" || { echo "!! [IIAB] event.c anchor '#include \"compat.h\"' not found"; exit 1; }
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
@@ -368,7 +439,18 @@ termux_step_post_make() {
 EOF
 
 # Define target architectures: "Termux_Arch:Android_Arch"
-ARCHS=("aarch64:arm64-v8a" "arm:armeabi-v7a")
+ALL_ARCHS=("aarch64:arm64-v8a" "arm:armeabi-v7a")
+ARCHS=()
+for mapping in "${ALL_ARCHS[@]}"; do
+    if [ "$ARCH_FILTER" = "all" ] || [ "$ARCH_FILTER" = "${mapping##*:}" ]; then
+        ARCHS+=("$mapping")
+    fi
+done
+if [ "${#ARCHS[@]}" -eq 0 ]; then
+    echo "ERROR: --arch '$ARCH_FILTER' matched no architecture. Use: all | arm64-v8a | armeabi-v7a"
+    exit 1
+fi
+echo ">> Building architectures: ${ARCHS[*]##*:}"
 
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
@@ -558,72 +640,7 @@ done
 # ===================================================================
 # SUPPLY CHAIN SECURITY & AUTOMATION (SBOM)
 # ===================================================================
-echo ">> [IIAB] Generating Supply Chain Manifest and Certificates..."
-
-echo "   -> Fetching latest cacert.pem..."
-curl -sS -o "$OUTPUT_DIR/cacert.pem" https://curl.se/ca/cacert.pem
-
-MANIFEST_FILE="$OUTPUT_DIR/ninja_manifest.json"
-echo "   -> Generating $MANIFEST_FILE..."
-
-cat <<EOF > "$MANIFEST_FILE"
-{
-  "build_date": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
-  "builder_info": "IIAB build_static.sh",
-  "binaries": {
-EOF
-
-FIRST_ARCH=1
-for arch_dir in "$OUTPUT_DIR/jniLibs"/*; do
-    if [ ! -d "$arch_dir" ]; then continue; fi
-    arch_name=$(basename "$arch_dir")
-
-    if [ $FIRST_ARCH -eq 0 ]; then echo "    ," >> "$MANIFEST_FILE"; fi
-    FIRST_ARCH=0
-
-    echo "    \"$arch_name\": {" >> "$MANIFEST_FILE"
-
-    FIRST_BIN=1
-    for bin_file in "$arch_dir"/*.so; do
-        if [ ! -f "$bin_file" ]; then continue; fi
-        bin_name=$(basename "$bin_file")
-
-        sha256=$(sha256sum "$bin_file" | awk '{print $1}')
-        size=$(stat -c%s "$bin_file" 2>/dev/null || stat -f%z "$bin_file")
-
-        # Read sidecar metadata if it exists
-        BIN_VER="unknown"
-        BIN_DATE="unknown"
-        META_FILE="${bin_file}.meta"
-
-        if [ -f "$META_FILE" ]; then
-            source "$META_FILE"
-            BIN_VER="$VERSION"
-            BIN_DATE="$BUILD_DATE"
-        else
-            # Fallback to physical file modification date
-            BIN_DATE=$(date -u -r "$bin_file" +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo "unknown")
-        fi
-
-        if [ $FIRST_BIN -eq 0 ]; then echo "      ," >> "$MANIFEST_FILE"; fi
-        FIRST_BIN=0
-
-        cat <<EOF >> "$MANIFEST_FILE"
-      "$bin_name": {
-        "version": "$BIN_VER",
-        "build_date": "$BIN_DATE",
-        "sha256": "$sha256",
-        "size_bytes": $size
-      }
-EOF
-    done
-    echo "    }" >> "$MANIFEST_FILE"
-done
-
-cat <<EOF >> "$MANIFEST_FILE"
-  }
-}
-EOF
+bash "$SCRIPT_DIR/make-manifest.sh" "$OUTPUT_DIR"
 
 # ===================================================================
 # 9. FIX WEB SERVER PERMISSIONS

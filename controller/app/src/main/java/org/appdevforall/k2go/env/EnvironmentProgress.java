@@ -52,6 +52,39 @@ public final class EnvironmentProgress {
         lastSignOfLifeMs = SystemClock.elapsedRealtime();
     }
 
+    /** Receives each line the environment prints, on the engine's output thread. */
+    public interface LineListener {
+        void onLine(String line);
+    }
+
+    /** A viewer of the boot output (the boot screen). Nothing is stored: a late viewer sees later lines only. */
+    private static volatile LineListener lineListener;
+
+    public static void setLineListener(LineListener listener) {
+        lineListener = listener;
+    }
+
+    /** Clears the viewer only if it is still {@code listener}, so one screen never unhooks another. */
+    public static void clearLineListener(LineListener listener) {
+        if (lineListener == listener) {
+            lineListener = null;
+        }
+    }
+
+    /** The environment printed {@code line}: a sign of life, also passed to the viewer if one is attached. */
+    public static void alive(String line) {
+        alive();
+        line(line);
+    }
+
+    /** Passes {@code line} to the viewer only. Stop output uses this: a stopping box is not a sign of life. */
+    public static void line(String line) {
+        final LineListener l = lineListener;
+        if (l != null) {
+            l.onLine(line);
+        }
+    }
+
     /**
      * The environment is gone (a stop, or a teardown). Drops the stamp so the next decision has no
      * stale progress to trust — a signal from a proot that no longer exists is not a signal.

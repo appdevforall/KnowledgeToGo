@@ -139,6 +139,12 @@ function parseEstimate(text: string): MapsEstimate | null {
     return { transfer, archive, free: freeAfter + archive, free_after: freeAfter };
 }
 
+// Older tile-extract.py prints the size prompt on stdout, newer on stderr. Read both streams so
+// any dash-node works with any rootfs; each stream is parsed alone so an interleave never splits it.
+function parseEstimateFrom(stdout: string, stderr: string): MapsEstimate | null {
+    return parseEstimate(stdout) ?? parseEstimate(stderr);
+}
+
 type CommandType = 'extract' | 'delete' | 'update-json' | '';
 
 interface ValidatedCommand {
@@ -210,4 +216,4 @@ function buildArgs(v: ValidatedCommand): string[] {
     return args;
 }
 
-export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate };
+export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate, parseEstimateFrom };

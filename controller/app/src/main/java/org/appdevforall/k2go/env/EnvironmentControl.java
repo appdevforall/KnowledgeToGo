@@ -58,7 +58,10 @@ public final class EnvironmentControl {
         EnvironmentProgress.cleared();
         new PRootEngine().executeInContainer(ctx.getApplicationContext(), rootfs(ctx).getAbsolutePath(), CMD_STOP,
                 new PRootEngine.OutputListener() {
-                    @Override public void onOutputLine(String line) { if (log != null) log.onLine("[PDSM Stop] " + line); }
+                    @Override public void onOutputLine(String line) {
+                        EnvironmentProgress.line(line);   // the shutdown screen names the stopping service
+                        if (log != null) log.onLine("[PDSM Stop] " + line);
+                    }
                     @Override public void onProcessExit(int exitCode) { if (onDone != null) onDone.run(); }
                     @Override public void onError(String error) { if (onDone != null) onDone.run(); }
                 });
@@ -85,7 +88,7 @@ public final class EnvironmentControl {
         engine.executeInContainer(ctx.getApplicationContext(), rootfsDir.getAbsolutePath(), CMD_START,
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) {
-                        EnvironmentProgress.alive();   // ADFA-5365: this boot is still moving
+                        EnvironmentProgress.alive(line);   // ADFA-5365: this boot is still moving
                         if (log != null) log.onLine("[Server] " + line);
                     }
                     @Override public void onProcessExit(int exitCode) { if (log != null) log.onLine("[Server] engine exit " + exitCode); }
