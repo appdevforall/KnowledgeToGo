@@ -1047,9 +1047,7 @@
     <string name="k2go_fqr_download">Herunterladen</string>
     <string name="k2go_fqr_not_now">Nicht jetzt</string>
     <string name="k2go_fqr_downloading">“%1$s” wird heruntergeladen</string>
-    <string name="k2go_fqr_show">Anzeigen</string>
     <string name="k2go_fqr_starting">Wird gestartet…</string>
-    <string name="k2go_fqr_working">Wird bearbeitet…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Region hinzugefügt</string>
     <string name="k2go_fqr_download_failed">Download fehlgeschlagen</string>

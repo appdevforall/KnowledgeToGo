@@ -1054,9 +1054,7 @@
     <string name="k2go_fqr_download">Stiahnuť</string>
     <string name="k2go_fqr_not_now">Teraz nie</string>
     <string name="k2go_fqr_downloading">Sťahuje sa “%1$s”</string>
-    <string name="k2go_fqr_show">Zobraziť</string>
     <string name="k2go_fqr_starting">Spúšťa sa…</string>
-    <string name="k2go_fqr_working">Pracuje sa…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Oblasť pridaná</string>
     <string name="k2go_fqr_download_failed">Sťahovanie zlyhalo</string>

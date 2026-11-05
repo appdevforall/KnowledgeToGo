@@ -1060,9 +1060,7 @@
     <string name="k2go_fqr_download">Преузми</string>
     <string name="k2go_fqr_not_now">Не сада</string>
     <string name="k2go_fqr_downloading">Преузимање “%1$s”</string>
-    <string name="k2go_fqr_show">Прикажи</string>
     <string name="k2go_fqr_starting">Покретање…</string>
-    <string name="k2go_fqr_working">Ради се…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Регион додат</string>
     <string name="k2go_fqr_download_failed">Преузимање није успело</string>

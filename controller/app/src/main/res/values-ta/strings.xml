@@ -1067,9 +1067,7 @@
     <string name="k2go_fqr_download">பதிவிறக்கு</string>
     <string name="k2go_fqr_not_now">இப்போது வேண்டாம்</string>
     <string name="k2go_fqr_downloading">“%1$s” பதிவிறக்கப்படுகிறது</string>
-    <string name="k2go_fqr_show">காட்டு</string>
     <string name="k2go_fqr_starting">தொடங்கப்படுகிறது…</string>
-    <string name="k2go_fqr_working">வேலை செய்கிறது…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">பகுதி சேர்க்கப்பட்டது</string>
     <string name="k2go_fqr_download_failed">பதிவிறக்கம் தோல்வியடைந்தது</string>

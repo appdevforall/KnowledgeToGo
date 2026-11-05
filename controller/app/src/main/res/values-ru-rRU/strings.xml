@@ -1123,9 +1123,7 @@
     <string name="k2go_fqr_download">Загрузить</string>
     <string name="k2go_fqr_not_now">Не сейчас</string>
     <string name="k2go_fqr_downloading">Загрузка “%1$s”</string>
-    <string name="k2go_fqr_show">Показать</string>
     <string name="k2go_fqr_starting">Запуск…</string>
-    <string name="k2go_fqr_working">Обработка…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Регион добавлен</string>
     <string name="k2go_fqr_download_failed">Не удалось загрузить</string>

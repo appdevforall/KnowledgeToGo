@@ -1047,9 +1047,7 @@
     <string name="k2go_fqr_download">Descarcă</string>
     <string name="k2go_fqr_not_now">Nu acum</string>
     <string name="k2go_fqr_downloading">Se descarcă “%1$s”</string>
-    <string name="k2go_fqr_show">Arată</string>
     <string name="k2go_fqr_starting">Se pornește…</string>
-    <string name="k2go_fqr_working">Se lucrează…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Regiune adăugată</string>
     <string name="k2go_fqr_download_failed">Descărcarea a eșuat</string>

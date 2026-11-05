@@ -1048,9 +1048,7 @@
     <string name="k2go_fqr_download">ダウンロード</string>
     <string name="k2go_fqr_not_now">今はしない</string>
     <string name="k2go_fqr_downloading">「%1$s」をダウンロード中</string>
-    <string name="k2go_fqr_show">表示</string>
     <string name="k2go_fqr_starting">開始中…</string>
-    <string name="k2go_fqr_working">処理中…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">地域を追加しました</string>
     <string name="k2go_fqr_download_failed">ダウンロードに失敗しました</string>

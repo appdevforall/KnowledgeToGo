@@ -1054,9 +1054,7 @@
     <string name="k2go_fqr_download">Λήψη</string>
     <string name="k2go_fqr_not_now">Όχι τώρα</string>
     <string name="k2go_fqr_downloading">Λήψη “%1$s”</string>
-    <string name="k2go_fqr_show">Εμφάνιση</string>
     <string name="k2go_fqr_starting">Έναρξη…</string>
-    <string name="k2go_fqr_working">Επεξεργασία…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Η περιοχή προστέθηκε</string>
     <string name="k2go_fqr_download_failed">Η λήψη απέτυχε</string>

@@ -1054,9 +1054,7 @@
     <string name="k2go_fqr_download">Изтегли</string>
     <string name="k2go_fqr_not_now">Не сега</string>
     <string name="k2go_fqr_downloading">Изтегляне на “%1$s”</string>
-    <string name="k2go_fqr_show">Покажи</string>
     <string name="k2go_fqr_starting">Стартиране…</string>
-    <string name="k2go_fqr_working">Обработка…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Регионът е добавен</string>
     <string name="k2go_fqr_download_failed">Неуспешно изтегляне</string>

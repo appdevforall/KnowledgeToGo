@@ -1063,9 +1063,7 @@
     <string name="k2go_fqr_download">Atsisiųsti</string>
     <string name="k2go_fqr_not_now">Ne dabar</string>
     <string name="k2go_fqr_downloading">Atsisiunčiama “%1$s”</string>
-    <string name="k2go_fqr_show">Rodyti</string>
     <string name="k2go_fqr_starting">Pradedama…</string>
-    <string name="k2go_fqr_working">Vykdoma…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Regionas pridėtas</string>
     <string name="k2go_fqr_download_failed">Atsisiųsti nepavyko</string>
