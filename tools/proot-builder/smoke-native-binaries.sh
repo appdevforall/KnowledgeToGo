@@ -190,7 +190,7 @@ proot_launch() {
 # than 3.8 rejects it and proot exits), so the daemon outlives proot; the app reaps it.
 proot_exitkill() {
   # Every failure writes its reason to ekdiag (printed by the caller): a gate must say why it failed.
-  local old="$1" wrap=""
+  local old="${1:-}" wrap=""
   [ -n "$old" ] && wrap="setarch $(uname -m) --uname-2.6"
   rm -rf ekroot ekdiag ekproot.log
   local bb; bb="$(command -v busybox)" || { echo "no host busybox" > ekdiag; return 1; }
