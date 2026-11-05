@@ -120,6 +120,8 @@ D2's `EnvironmentProcess.reapEnvironmentHttpFront()` (`env/EnvironmentProcess.ja
 
 **Retired (2026-11-04, K2GO-544).** The guest-side fix landed in the proot build: proot sets `PTRACE_O_EXITKILL`, so the kernel kills every box process when the proot dies, also on SIGKILL. `reapEnvironmentHttpFront()`, `ENV_HTTP_PORT` and the name list behind `reapBox` are gone; `killOrphan` and `reapBox` signal the proot alone. The binaries smoke gate checks that a `setsid` daemon dies with proot (arm64-v8a only: armeabi-v7a runs under QEMU there and was checked on a device).
 
+**Kernels without EXITKILL (2026-11-05, K2GO-550).** EXITKILL needs Linux 3.8. proot asks for it only on 3.8 or later (a `uname` check), so the box also starts on older kernels. There, a box process can outlive its proot. `EnvironmentProcess.reapUntraced()` kills each process that runs the proot loader and has `TracerPid` 0. It reads the actual state and needs no service list. It runs before every proot launch (`PRootEngine`) and in `killOrphan`. With EXITKILL it finds nothing.
+
 ---
 
 ## 10. Corrected root cause (device testing) and the in-proot recovery direction
