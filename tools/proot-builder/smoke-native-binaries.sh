@@ -186,8 +186,12 @@ proot_launch() {
 # K2GO-544: a daemonised (setsid) guest must die when proot is SIGKILLed (PTRACE_O_EXITKILL).
 # Without it the daemon keeps running untraced and blocks the next `pdsm start`.
 # Needs a static busybox on the host (busybox-static) as the in-rootfs shell.
+# K2GO-550: with "old", proot runs under uname 2.6. It must not ask for EXITKILL (a real kernel older
+# than 3.8 rejects it and proot exits), so the daemon outlives proot; the app reaps it.
 proot_exitkill() {
   # Every failure writes its reason to ekdiag (printed by the caller): a gate must say why it failed.
+  local old="$1" wrap=""
+  [ -n "$old" ] && wrap="setarch $(uname -m) --uname-2.6"
   rm -rf ekroot ekdiag ekproot.log
   local bb; bb="$(command -v busybox)" || { echo "no host busybox" > ekdiag; return 1; }
   mkdir -p ekroot && cp "$bb" ekroot/busybox || { echo "cannot copy $bb into the rootfs" > ekdiag; return 1; }
@@ -195,7 +199,7 @@ proot_exitkill() {
   # and the kill below would miss proot.
   # Same options the app launches the box with (PRootEngine.java), so the gate exercises the real
   # launch. The binds matter: sh opens /dev/null for a background job.
-  "$BIN/libproot.so" --sysvipc -0 --link2symlink --kill-on-exit -r "$WORK/ekroot" \
+  $wrap "$BIN/libproot.so" --sysvipc -0 --link2symlink --kill-on-exit -r "$WORK/ekroot" \
     -b /dev -b /proc -b /sys -w / /busybox sh -c \
     "/busybox setsid /busybox sh -c 'echo \$\$ > /d.pid; exec /busybox sleep 300' & exec /busybox sleep 300" \
     >"$WORK/ekproot.log" 2>&1 &
@@ -214,7 +218,13 @@ proot_exitkill() {
   # Read the status once: gone or a zombie both mean dead. The CI runner adopts orphans and reaps
   # them late, so a zombie can stay in /proc. Without EXITKILL the daemon keeps running (State S).
   st="$(cat "/proc/$d/status" 2>/dev/null)"
-  if [ -n "$st" ] && ! printf '%s\n' "$st" | grep -q '^State:[[:space:]]*Z'; then
+  local alive=0
+  [ -n "$st" ] && ! printf '%s\n' "$st" | grep -q '^State:[[:space:]]*Z' && alive=1
+  if [ -n "$old" ]; then
+    [ "$alive" -eq 1 ] && { kill -9 "$d"; return 0; }
+    echo "under uname 2.6 the daemon died with proot: proot still asks for EXITKILL" > ekdiag; return 1
+  fi
+  if [ "$alive" -eq 1 ]; then
     { echo "daemon $d survived the SIGKILL of proot:"; printf '%s\n' "$st" | grep -E '^(State|TracerPid|PPid):'; } > ekdiag
     kill -9 "$d"; return 1
   fi
@@ -224,6 +234,8 @@ if [ "$NATIVE" -eq 1 ] && bin_runs "$BIN/libproot.so"; then
   if command -v busybox >/dev/null 2>&1; then
     chk "a daemon inside proot dies when proot is SIGKILLed (EXITKILL)" proot_exitkill
     [ -s ekdiag ] && sed 's/^/[smoke]   exitkill: /' ekdiag
+    chk "on a kernel older than 3.8 (uname 2.6) proot does not ask for EXITKILL" proot_exitkill old
+    [ -s ekdiag ] && sed 's/^/[smoke]   exitkill-old: /' ekdiag
   else
     skip "EXITKILL check: no host busybox (install busybox-static)"
   fi

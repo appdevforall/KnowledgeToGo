@@ -10,6 +10,7 @@
 package org.appdevforall.k2go.env;
 
 import android.content.Context;
+import android.system.Os;
 import android.util.Log;
 
 import org.appdevforall.k2go.env.domain.EnvironmentProcessMatcher;
@@ -121,20 +122,81 @@ public final class EnvironmentProcess {
                 android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
                 Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
                 signalled = true;
+                // Its guests show TracerPid 0 only once the proot has exited.
+                awaitExit(pid);
             } catch (Exception e) {
                 Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
             }
         }
-        // K2GO-544: proot traces its services with PTRACE_O_EXITKILL, so the kernel kills every box
-        // process when the proot dies. No host-side reap is needed (ADR-5343a section 9, retired).
-        return signalled;
+        // K2GO-544: with PTRACE_O_EXITKILL the kernel kills every box process with the proot.
+        // K2GO-550: kernels older than 3.8 have no EXITKILL, so reap what outlived it.
+        return reapUntraced() > 0 || signalled;
     }
+
+    /**
+     * K2GO-550: kill every box process that no proot traces ({@link
+     * EnvironmentProcessMatcher#isUntracedGuest}). On Linux >= 3.8 there is none. Best-effort.
+     *
+     * @return how many processes were signalled
+     */
+    public static int reapUntraced() {
+        File[] entries = new File("/proc").listFiles();
+        if (entries == null) {
+            return 0;
+        }
+        int myPid = android.os.Process.myPid();
+        int reaped = 0;
+        for (File dir : entries) {
+            int pid;
+            try {
+                pid = Integer.parseInt(dir.getName());
+            } catch (NumberFormatException notAPid) {
+                continue;
+            }
+            if (pid == myPid) {
+                continue;
+            }
+            String exe;
+            try {
+                exe = Os.readlink(dir.getPath() + "/exe");
+            } catch (Exception notOurs) {
+                continue;   // vanished, or another uid
+            }
+            if (EnvironmentProcessMatcher.isUntracedGuest(exe, readText(new File(dir, "status")))) {
+                try {
+                    android.os.Process.killProcess(pid);
+                    reaped++;
+                } catch (Exception ignored) {
+                    // vanished mid-scan
+                }
+            }
+        }
+        if (reaped > 0) {
+            Log.i(TAG, "K2GO-550: reaped " + reaped + " box process(es) that outlived their proot");
+        }
+        return reaped;
+    }
+
+    /** Wait up to {@link #EXIT_WAIT_MS} until {@code pid} is gone or a zombie. */
+    private static void awaitExit(int pid) {
+        long deadline = android.os.SystemClock.elapsedRealtime() + EXIT_WAIT_MS;
+        File status = new File("/proc/" + pid + "/status");
+        while (android.os.SystemClock.elapsedRealtime() < deadline) {
+            String s = readText(status);
+            if (s == null || s.contains("State:\tZ")) {
+                return;
+            }
+            android.os.SystemClock.sleep(50);
+        }
+    }
+
+    private static final long EXIT_WAIT_MS = 2000;
 
     /**
      * K2GO-386 (barrier 2): a FULL box teardown. This is the disk-guard's recovery action when free
      * space is critical. Killing the proot is the whole teardown: with PTRACE_O_EXITKILL (K2GO-544)
-     * the kernel kills every box service with it, so no service can keep running off proot.
-     * Best-effort and idempotent.
+     * the kernel kills every box service with it; on older kernels {@link #killOrphan} reaps the
+     * survivors (K2GO-550). Best-effort and idempotent.
      *
      * @return true when the proot was signalled.
      */
@@ -142,17 +204,23 @@ public final class EnvironmentProcess {
         return killOrphan(ctx);
     }
 
-    /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
-    private static String readCmdline(File cmdline) {
-        try (FileInputStream in = new FileInputStream(cmdline)) {
+    /** A small {@code /proc} file as text, or null if it cannot be read. */
+    private static String readText(File file) {
+        try (FileInputStream in = new FileInputStream(file)) {
             byte[] buf = new byte[4096];
             int total = 0, r;
             while (total < buf.length && (r = in.read(buf, total, buf.length - total)) != -1) {
                 total += r;
             }
-            return total == 0 ? null : new String(buf, 0, total).replace('\0', ' ').trim();
+            return new String(buf, 0, total);
         } catch (Exception e) {
-            return null;   // vanished, or not ours to read
+            return null;
         }
+    }
+
+    /** {@code /proc/<pid>/cmdline} as a space-joined string, or null if it cannot be read. */
+    private static String readCmdline(File cmdline) {
+        String s = readText(cmdline);   // null: vanished, or not ours to read
+        return (s == null || s.isEmpty()) ? null : s.replace('\0', ' ').trim();
     }
 }

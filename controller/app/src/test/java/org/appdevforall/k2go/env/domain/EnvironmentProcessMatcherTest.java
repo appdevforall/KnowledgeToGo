@@ -80,4 +80,49 @@ public class EnvironmentProcessMatcherTest {
         assertFalse(EnvironmentProcessMatcher.isOurEnvironment(environmentCmdline(), null));
         assertFalse(EnvironmentProcessMatcher.isOurEnvironment(environmentCmdline(), ""));
     }
+
+    // ---- K2GO-550: untraced box guests ----------------------------------------
+
+    private static final String LOADER =
+            "/data/app/~~x/org.appdevforall.k2go-y/lib/arm64/libproot-loader.so";
+
+    private static String status(String tracerPid) {
+        return "Name:\tnginx\nState:\tS (sleeping)\nTgid:\t4242\nPid:\t4242\nPPid:\t1\n"
+                + "TracerPid:\t" + tracerPid + "\nUid:\t10171\t10171\t10171\t10171\n";
+    }
+
+    @Test
+    public void aGuestWhoseProotDiedIsUntraced() {
+        assertTrue(EnvironmentProcessMatcher.isUntracedGuest(LOADER, status("0")));
+    }
+
+    @Test
+    public void aGuestOfALiveProotIsNotUntraced() {
+        // The environment's services, or an install runrole's: their proot still traces them.
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest(LOADER, status("12345")));
+    }
+
+    @Test
+    public void theLoaderFromAReplacedApkOrThe32BitLoaderStillMatch() {
+        // After an app update the old lib dir is gone and /proc shows " (deleted)".
+        assertTrue(EnvironmentProcessMatcher.isUntracedGuest(LOADER + " (deleted)", status("0")));
+        assertTrue(EnvironmentProcessMatcher.isUntracedGuest(
+                LOADER.replace("libproot-loader.so", "libproot-loader32.so"), status("0")));
+    }
+
+    @Test
+    public void aProcessThatIsNotAGuestIsNeverUntraced() {
+        // proot itself, the app, rsync: not run through the loader.
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest(
+                "/data/app/~~x/org.appdevforall.k2go-y/lib/arm64/libproot.so", status("0")));
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest("/system/bin/app_process64", status("0")));
+    }
+
+    @Test
+    public void unreadableGuestInputMatchesNothing() {
+        // The caller's next step is a SIGKILL, so every unknown fails closed.
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest(null, status("0")));
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest(LOADER, null));
+        assertFalse(EnvironmentProcessMatcher.isUntracedGuest(LOADER, "Name:\tnginx\n"));
+    }
 }
