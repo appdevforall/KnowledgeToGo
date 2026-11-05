@@ -122,11 +122,11 @@ public final class EnvironmentProcess {
                 android.os.Process.killProcess(pid);   // SIGKILL, same UID as us
                 Log.i(TAG, "ADFA-5061: killed an orphaned environment proot, pid " + pid);
                 signalled = true;
+                // Its guests show TracerPid 0 only once the proot has exited.
+                awaitExit(pid);
             } catch (Exception e) {
                 Log.w(TAG, "ADFA-5061: could not kill environment pid " + pid, e);
             }
-            // Its guests show TracerPid 0 only once the proot has exited.
-            awaitExit(pid);
         }
         // K2GO-544: with PTRACE_O_EXITKILL the kernel kills every box process with the proot.
         // K2GO-550: kernels older than 3.8 have no EXITKILL, so reap what outlived it.
