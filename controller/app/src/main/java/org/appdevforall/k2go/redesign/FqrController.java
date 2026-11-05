@@ -275,7 +275,10 @@ public final class FqrController {
             @Override public void onError(String message) {
                 if (estimateCanceled) return;
                 dismissDialog();
-                errorDialog(R.string.k2go_fqr_estimate_error_title, message);
+                // K2GO-317 follow-up: the size estimate needs the internet (a server dry-run), so it fails
+                // offline. Keep the drawn region (name + box) and offer Retry instead of discarding it, so
+                // the user can turn on Wi-Fi and try again without redrawing the same region.
+                retryableEstimateError(name, box, message);
             }
         });
     }
@@ -1099,6 +1102,19 @@ public final class FqrController {
                 .setTitle(titleRes)
                 .setMessage(message)
                 .setPositive(android.R.string.ok, (BrandDialog.OnClick) null)
+                .show();
+    }
+
+    /** K2GO-317 follow-up: an estimate failed (usually offline). Keep the drawn region and offer Retry
+     *  (re-run the estimate for the same name + box), so the user does not redraw; "Not now" gives up and
+     *  clears the selection, like the consent dialog's bail-outs. */
+    private void retryableEstimateError(String name, String box, CharSequence message) {
+        new BrandDialog(themed)
+                .setTitle(R.string.k2go_fqr_estimate_error_title)
+                .setMessage(message)
+                .setPositive(R.string.k2go_dl_retry, () -> handleExtract(name, box))
+                .setNegative(R.string.k2go_fqr_not_now, () -> resetMapSelection())
+                .setOnCancel(() -> resetMapSelection())
                 .show();
     }
 
