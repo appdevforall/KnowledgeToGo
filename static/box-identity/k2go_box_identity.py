@@ -21,6 +21,8 @@ import uuid
 
 FORGEJO_BIN = "/library/forgejo/forgejo"
 FORGEJO_INI = "/etc/forgejo/app.ini"
+# The kinds `forgejo generate secret` makes. Other *_URI lines in app.ini are not secrets.
+FORGEJO_KINDS = ("SECRET_KEY", "INTERNAL_TOKEN", "JWT_SECRET", "LFS_JWT_SECRET")
 # Forgejo makes these JWT signing keys itself when they are missing.
 FORGEJO_KEYS = ("/library/forgejo/data/jwt/private.pem",
                 "/library/forgejo/data/actions_id_token/private.pem")
@@ -98,7 +100,7 @@ def forgejo_secrets():
     with open(FORGEJO_INI) as f:
         for line in f:
             m = re.match(r"^\s*([A-Z_]+)_URI\s*=\s*file:(\S+)", line)
-            if m:
+            if m and m.group(1) in FORGEJO_KINDS:
                 found.append((m.group(1), m.group(2)))
     return found
 
@@ -159,11 +161,16 @@ def kolibri_provisioned():
     return bool(row and row[0])
 
 
+PID_FILE = os.path.join(KOLIBRI_HOME, "server.pid")
+
+
 def kolibri_running():
+    # The pid alone is not enough: after a crash Android can give that pid to another process.
     try:
-        with open(os.path.join(KOLIBRI_HOME, "server.pid")) as f:
+        with open(PID_FILE) as f:
             pid = int(f.readline().split()[0])
-        return os.path.exists("/proc/%d" % pid)
+        with open("/proc/%d/cmdline" % pid, "rb") as f:
+            return b"kolibri" in f.read()
     except (OSError, ValueError, IndexError):
         return False
 
@@ -174,9 +181,10 @@ def iiab_vars(keys):
         try:
             with open(path) as f:
                 for line in f:
-                    m = re.match(r"^([a-z_]+)\s*:\s*(.*?)\s*(?:#.*)?$", line)
+                    # Top-level scalars only: a quoted value, or a plain one up to " #".
+                    m = re.match(r"""^([a-z_]+)\s*:\s*(?:"([^"]*)"|'([^']*)'|(.*?))(?:\s+#.*)?\s*$""", line)
                     if m and m.group(1) in keys and m.group(1) not in found:
-                        found[m.group(1)] = m.group(2).strip("'\"")
+                        found[m.group(1)] = next(g for g in m.group(2, 3, 4) if g is not None)
         except OSError:
             continue
     missing = [k for k in keys if not found.get(k) or "{{" in found[k]]
@@ -210,6 +218,9 @@ def kolibri_strip():
     # Removes the facility (and its root private key), the users, the DatabaseID and the device
     # settings. Content stays.
     if kolibri_installed():
+        if kolibri_running():
+            raise RuntimeError("Kolibri is running")
+        remove(PID_FILE)  # stale: deprovision refuses to run while it names a live pid
         kolibri_cmd("deprovision", "--destroy-all-user-data", "--permanent-irrevocable-data-loss")
 
 
