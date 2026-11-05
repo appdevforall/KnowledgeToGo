@@ -1047,9 +1047,7 @@
     <string name="k2go_fqr_download">Завантажити</string>
     <string name="k2go_fqr_not_now">Не зараз</string>
     <string name="k2go_fqr_downloading">Завантаження “%1$s”</string>
-    <string name="k2go_fqr_show">Показати</string>
     <string name="k2go_fqr_starting">Запуск…</string>
-    <string name="k2go_fqr_working">Виконання…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Регіон додано</string>
     <string name="k2go_fqr_download_failed">Помилка завантаження</string>

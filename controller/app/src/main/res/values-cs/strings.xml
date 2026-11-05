@@ -1054,9 +1054,7 @@
     <string name="k2go_fqr_download">Stáhnout</string>
     <string name="k2go_fqr_not_now">Teď ne</string>
     <string name="k2go_fqr_downloading">Stahování “%1$s”</string>
-    <string name="k2go_fqr_show">Zobrazit</string>
     <string name="k2go_fqr_starting">Spouštění…</string>
-    <string name="k2go_fqr_working">Zpracování…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Oblast přidána</string>
     <string name="k2go_fqr_download_failed">Stahování selhalo</string>

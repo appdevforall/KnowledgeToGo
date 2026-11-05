@@ -1124,9 +1124,7 @@
     <string name="k2go_fqr_download">डाउनलोड</string>
     <string name="k2go_fqr_not_now">अभी नहीं</string>
     <string name="k2go_fqr_downloading">“%1$s” डाउनलोड हो रहा है</string>
-    <string name="k2go_fqr_show">दिखाएँ</string>
     <string name="k2go_fqr_starting">शुरू हो रहा है…</string>
-    <string name="k2go_fqr_working">काम हो रहा है…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">क्षेत्र जोड़ा गया</string>
     <string name="k2go_fqr_download_failed">डाउनलोड विफल</string>

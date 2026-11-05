@@ -1126,9 +1126,7 @@
     <string name="k2go_fqr_download">Transferir</string>
     <string name="k2go_fqr_not_now">Agora não</string>
     <string name="k2go_fqr_downloading">A transferir “%1$s”</string>
-    <string name="k2go_fqr_show">Mostrar</string>
     <string name="k2go_fqr_starting">A iniciar…</string>
-    <string name="k2go_fqr_working">A trabalhar…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Região adicionada</string>
     <string name="k2go_fqr_download_failed">A transferência falhou</string>

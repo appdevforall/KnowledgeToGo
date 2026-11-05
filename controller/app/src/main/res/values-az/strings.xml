@@ -1067,9 +1067,7 @@
     <string name="k2go_fqr_download">Yüklə</string>
     <string name="k2go_fqr_not_now">İndi yox</string>
     <string name="k2go_fqr_downloading">“%1$s” yüklənir</string>
-    <string name="k2go_fqr_show">Göstər</string>
     <string name="k2go_fqr_starting">Başlayır…</string>
-    <string name="k2go_fqr_working">İşləyir…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Region əlavə olundu</string>
     <string name="k2go_fqr_download_failed">Yükləmə alınmadı</string>

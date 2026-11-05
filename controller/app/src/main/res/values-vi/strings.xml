@@ -1047,9 +1047,7 @@
     <string name="k2go_fqr_download">Tải</string>
     <string name="k2go_fqr_not_now">Không phải bây giờ</string>
     <string name="k2go_fqr_downloading">Đang tải “%1$s”</string>
-    <string name="k2go_fqr_show">Hiển thị</string>
     <string name="k2go_fqr_starting">Đang bắt đầu…</string>
-    <string name="k2go_fqr_working">Đang xử lý…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Đã thêm khu vực</string>
     <string name="k2go_fqr_download_failed">Tải thất bại</string>

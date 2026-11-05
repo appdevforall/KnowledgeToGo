@@ -1067,9 +1067,7 @@
     <string name="k2go_fqr_download">Pakua</string>
     <string name="k2go_fqr_not_now">Si sasa</string>
     <string name="k2go_fqr_downloading">Inapakua “%1$s”</string>
-    <string name="k2go_fqr_show">Onyesha</string>
     <string name="k2go_fqr_starting">Inaanza…</string>
-    <string name="k2go_fqr_working">Inafanya kazi…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Eneo limeongezwa</string>
     <string name="k2go_fqr_download_failed">Upakuaji umeshindwa</string>

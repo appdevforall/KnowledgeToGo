@@ -1056,9 +1056,7 @@
     <string name="k2go_fqr_download">Last ned</string>
     <string name="k2go_fqr_not_now">Ikke nå</string>
     <string name="k2go_fqr_downloading">Laster ned “%1$s”</string>
-    <string name="k2go_fqr_show">Vis</string>
     <string name="k2go_fqr_starting">Starter…</string>
-    <string name="k2go_fqr_working">Arbeider…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Region lagt til</string>
     <string name="k2go_fqr_download_failed">Nedlasting mislyktes</string>

@@ -1047,9 +1047,7 @@
     <string name="k2go_fqr_download">Letöltés</string>
     <string name="k2go_fqr_not_now">Most nem</string>
     <string name="k2go_fqr_downloading">“%1$s” letöltése</string>
-    <string name="k2go_fqr_show">Mutasd</string>
     <string name="k2go_fqr_starting">Indítás…</string>
-    <string name="k2go_fqr_working">Feldolgozás…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Régió hozzáadva</string>
     <string name="k2go_fqr_download_failed">A letöltés sikertelen</string>

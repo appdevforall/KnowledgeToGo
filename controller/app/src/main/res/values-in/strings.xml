@@ -1054,9 +1054,7 @@
     <string name="k2go_fqr_download">Unduh</string>
     <string name="k2go_fqr_not_now">Nanti saja</string>
     <string name="k2go_fqr_downloading">Mengunduh “%1$s”</string>
-    <string name="k2go_fqr_show">Tampilkan</string>
     <string name="k2go_fqr_starting">Memulai…</string>
-    <string name="k2go_fqr_working">Sedang bekerja…</string>
     <string name="k2go_fqr_percent">%1$d%%</string>
     <string name="k2go_fqr_region_added">Wilayah ditambahkan</string>
     <string name="k2go_fqr_download_failed">Unduhan gagal</string>

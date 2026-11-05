@@ -29,6 +29,19 @@
  *               members (ZIM, Books, Courses and the STOPPED maps-layer install of ContentType.MAPS),
  *               it is user-driven: it exists only when someone draws a region here and consents, so it
  *               is an Operation, not a ContentType. See ADR-5062-maps-two-operations.md.
+ *
+ *               K2GO-541: the progress overlay is a compact, DRAGGABLE card with a circular ring on
+ *               the left (the ring is the percent; ETA + percent stack inside it over a ghost track)
+ *               and a text column on the right (region name, "size : speed", controls). A tap on the
+ *               ring minimizes it to just the ring, a floating button; dragging moves it anywhere on
+ *               the map. The action button is Material vector icons: pause/resume while running, and
+ *               Retry (refresh arrow) after a failure, next to a cancel X. A failed download is
+ *               retryable, not fatal: phone networks drop often, so onError keeps the panel and offers
+ *               Retry instead of dismissing (the server resumes from its checkpoint, K2GO-317). Type
+ *               uses the K2Go type scale (TextAppearance.K2Go.*, K2GO-529) with the Atkinson face
+ *               applied explicitly (the tokens set it via appcompat fontFamily, which framework
+ *               setTextAppearance drops on a plain TextView); colours stay the M3 theme attributes
+ *               above, so it follows light/dark.
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
@@ -36,7 +49,10 @@ package org.appdevforall.k2go.redesign;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import androidx.core.content.res.ResourcesCompat;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
@@ -53,11 +69,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.view.AccessibilityDelegateCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate;
@@ -82,25 +99,42 @@ public final class FqrController {
     // Material 3 + day/night for our own overlays/dialogs, without changing PortalActivity's global
     // theme: build every view/dialog through this wrapper so ?attr colors + the app font resolve.
     private final Context themed;
-    private final int cSurface, cSurfaceContainer, cSurfaceHighest, cOnSurface, cOnSurfaceVariant, cPrimary, cError;
+    private final int cSurface, cSurfaceContainer, cSurfaceHighest, cOnSurface, cOnSurfaceVariant, cPrimary, cOnPrimary, cError;
     // K2GO-385 (C1): state colours for the download bar -- amber = stopped (halted, not live), leaf = done.
     // Fixed tokens (same in day/night), so a halted or finished job reads the same on either theme.
-    private final int cAmber, cLeaf;
+    private final int cAmber, cLeaf, cRingTrack;
 
     private volatile boolean active = false;   // written on UI thread, read on the WebView binder thread
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
     private boolean estimateCanceled; // ADFA-5043: set when the user backs out of "Calculating…" so a late estimate is dropped
-    private View overlay;             // floating progress card (null when hidden)
-    private LinearProgressIndicator overlayBar;
-    private TextView overlayPct, overlayTitle;
-    private TextView overlayMin;
+    // K2GO-541: a compact, DRAGGABLE progress card with a circular ring (the ring is the percent);
+    // minimizes to just the ring. null when hidden. The drag position lives on the view's translation
+    // (persists across minimize/expand, re-clamped to the screen), and resets when the overlay is rebuilt.
+    private View overlay;
+    private CircularProgressIndicator overlayRing;              // the ring = the percent
+    private TextView overlayEta, overlayPct;                    // inside the ring: ETA + percent
+    private TextView overlayStatus, overlaySize;   // header action word + the "size : speed" line
+    private View overlayHeader, overlayMeta;       // chrome, hidden when minimized
+    private String overlaySizeStr = "";                        // the size half of the "size : speed" line
     private boolean overlayMinimized = false;
-    // ADFA-4896 / K2GO-317: the Pause/Resume control on the overlay. It drives the server pause/resume
-    // endpoints; pause stops gracefully (SIGTERM) so pmtiles flushes its resume journal, and resume
-    // continues from that checkpoint instead of restarting. overlayStopped (true = paused) is the last
-    // state the poll reported and the SOLE writer of the label.
-    private com.google.android.material.button.MaterialButton overlayStop;
+    // ADFA-4896 / K2GO-317 / K2GO-541: Pause/Resume is an icon on the ring card. It drives the server
+    // pause/resume endpoints; pause stops gracefully (SIGTERM) so pmtiles flushes its resume journal, and
+    // resume continues from that checkpoint instead of restarting. overlayStopped (true = paused) is the
+    // last state the poll reported and the SOLE writer of the icon; the tap only fires the verb.
+    private ImageView overlayStopIcon;                          // pause (two bars) <-> resume (play)
+    private View overlayStopBtn;
     private boolean overlayStopped = false;
+    // K2GO-541: a failed download is retryable, not fatal. overlayFailed parks the panel in a "failed +
+    // Retry" state; the poll (or Retry) clears it. dlName/dlBox keep the current download so Retry can
+    // re-invoke it, and one reusable listener serves both the first attempt and every retry.
+    private boolean overlayFailed = false;
+    private String dlName, dlBox;
+    private MapsRegionClient.DownloadListener dlListener;
+    // K2GO-541: the K2Go type tokens carry Atkinson via appcompat `fontFamily`, which framework
+    // setTextAppearance ignores on a plain TextView; applyOverlayType re-applies this face explicitly.
+    private Typeface overlayFont;
+    private View overlayGrip;   // K2GO-541: top drag handle (affordance); the whole card drags
+    private int touchSlop;                                      // drag-vs-tap threshold
 
     // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
     private View deleteSheet;
@@ -137,9 +171,12 @@ public final class FqrController {
         // colorPrimary/colorError are declared by appcompat (not the Material R.attr), unlike the
         // Material3-specific surface roles above; read them from the appcompat namespace.
         this.cPrimary         = attr(androidx.appcompat.R.attr.colorPrimary, 0xFF4CAF7D);
+        this.cOnPrimary       = attr(com.google.android.material.R.attr.colorOnPrimary, 0xFF0B2A20);
         this.cError           = attr(androidx.appcompat.R.attr.colorError, 0xFFE05353);
         this.cAmber           = androidx.core.content.ContextCompat.getColor(themed, R.color.k2go_amber);
         this.cLeaf            = androidx.core.content.ContextCompat.getColor(themed, R.color.k2go_leaf);
+        // K2GO-541: the ring's ghost track, visible from 0% so the shape reads before it fills.
+        this.cRingTrack       = ColorUtils.blendARGB(cSurfaceContainer, cOnSurfaceVariant, 0.3f);
     }
 
     private int attr(int attrId, int fallback) {
@@ -369,176 +406,476 @@ public final class FqrController {
     private void startDownload(String name) {
         final String box = pendingBox;
         if (box == null) return;
+        dlName = name;
+        dlBox = box;
         showOverlay(name, pendingArchive);
-        client.download(name, box, new MapsRegionClient.DownloadListener() {
+        client.download(name, box, downloadListener());
+    }
+
+    /** K2GO-541: one reusable listener, so Retry can re-invoke the download on the same overlay. The poll
+     *  (onProgress/onPaused/onDone) stays the SOLE writer of the running/paused visuals. onError no longer
+     *  cancels and dismisses: phone networks drop often (Wi-Fi, router, cell handoff), so a failure parks
+     *  the panel in a retryable failed state instead of throwing the user out. */
+    private MapsRegionClient.DownloadListener downloadListener() {
+        if (dlListener != null) return dlListener;
+        dlListener = new MapsRegionClient.DownloadListener() {
             @Override public void onProgress(int percent, long speed, int etaSeconds) {
-                if (overlayStopped) {   // resumed/running again: back to Pause, live teal bar
+                if (overlayFailed) clearFailed();   // a live poll arrived: recovered on its own
+                if (overlayStopped) {   // resumed/running again: back to Pause, live teal ring
                     overlayStopped = false;
-                    if (overlayStop != null) overlayStop.setText(R.string.k2go_dl_pause);
-                    setBarState(cPrimary, true);
+                    setStopIcon(false);
+                    setRingState(cPrimary, true);
+                    if (overlayStatus != null) overlayStatus.setText(R.string.k2go_maps_dl_title);
                 }
-                if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Pause/Resume tap
+                setStopEnabled(true);   // re-enable after a Pause/Resume tap
                 updateOverlay(percent, speed, etaSeconds);
             }
             @Override public void onPaused(int percent) {
                 // K2GO-317: paused keeps the partial + resume journal (SIGTERM checkpoint), so resume
-                // continues from here. Show "Paused" at the reached percent and offer Resume; freeze the
-                // bar at that percent in amber so a paused job never looks live.
+                // continues from here. Freeze the ring at the reached percent in amber and offer Resume;
+                // a paused job never looks live.
                 overlayStopped = true;
-                if (overlayStop != null) { overlayStop.setText(R.string.k2go_dl_resume); overlayStop.setEnabled(true); }
-                if (overlayPct != null) overlayPct.setText(R.string.k2go_dl_paused_notif);
-                if (overlayBar != null && overlayBar.isIndeterminate()) setBarMode(false);
-                if (overlayBar != null && percent >= 0) overlayBar.setProgressCompat(percent, false);
-                setBarState(cAmber, false);   // amber + dimmed: a paused job must not look live
+                setStopIcon(true);
+                setStopEnabled(true);
+                if (overlayStatus != null) overlayStatus.setText(R.string.k2go_dl_paused_notif);
+                if (overlayEta != null) overlayEta.setText("");   // a paused job must not advertise a time-to-finish
+                if (overlayRing != null && percent >= 0) overlayRing.setProgressCompat(percent, false);
+                setRingState(cAmber, false);   // amber + dimmed: a paused job must not look live
             }
             @Override public void onDone() {
-                setBarState(cLeaf, true);     // done: a full leaf bar reads as success
+                setRingState(cLeaf, true);     // done: a full leaf ring reads as success
                 updateOverlay(100, 0, -1);
-                if (overlayTitle != null) overlayTitle.setText(R.string.k2go_fqr_region_added); // may be gone if hidden
+                if (overlayStatus != null) overlayStatus.setText(R.string.k2go_fqr_region_added); // may be gone if minimized
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
             }
             @Override public void onError(String message) {
-                hideOverlay();
-                if (!"canceled".equals(message)) {
-                    errorDialog(R.string.k2go_fqr_download_failed, message);
+                if ("canceled".equals(message)) { hideOverlay(); return; }
+                showFailed();   // keep the panel; offer Retry instead of dismissing
+            }
+        };
+        return dlListener;
+    }
+
+    // ---- Floating progress overlay -----------------------------------------------------------
+    // A draggable card. Header: the action ("Downloading map data" / "Paused") + a minimize icon.
+    // Body: a circular ring on the left (the ring is the percent; ETA + percent sit inside it, over a
+    // ghost track that fills), and a text column on the right (region name, "size : speed", controls).
+    // A tap on the ring (or the minimize icon) collapses it to just the ring, a floating button; tapping
+    // the ring again expands it. Dragging anywhere on the card (except the buttons) moves it; a top handle
+    // marks the affordance.
+    // Expanded card width. 330dp (+10% over the first 300dp) leaves headroom for locales whose strings run
+    // longer than Spanish, so the name / "size : speed" / title have more room before they ellipsize.
+    private static final int CARD_W_DP = 330;
+    private void showOverlay(String name, long sizeBytes) {
+        hideOverlay();
+        overlayMinimized = false;
+        overlayStopped = false;
+        overlayFailed = false;
+        overlaySizeStr = sizeBytes > 0 ? human(sizeBytes) : "";   // constant for this overlay; computed once
+        touchSlop = android.view.ViewConfiguration.get(activity).getScaledTouchSlop();
+        // The family resource did not render; load the regular face directly (all overlay roles are regular).
+        if (overlayFont == null) overlayFont = ResourcesCompat.getFont(themed, R.font.atkinson_hyperlegible_regular);
+
+        LinearLayout card = surfaceCard(dp(16), 24f);
+        card.setGravity(Gravity.CENTER_HORIZONTAL);
+        card.setElevation(dp(10));
+
+        // K2GO-541: a top grab handle signals the card is draggable (the whole card drags, below); a thin
+        // target is hard to hit, so the affordance only has to be visible, not the hit area. Hidden minimized.
+        View grip = new View(themed);
+        GradientDrawable gripBg = new GradientDrawable();
+        gripBg.setShape(GradientDrawable.RECTANGLE);
+        gripBg.setCornerRadius(dp(2));
+        gripBg.setColor(cOnSurfaceVariant);
+        grip.setBackground(gripBg);
+        grip.setAlpha(0.6f);
+        LinearLayout.LayoutParams gripLp = new LinearLayout.LayoutParams(dp(48), dp(4));
+        gripLp.bottomMargin = dp(10);
+        card.addView(grip, gripLp);
+        overlayGrip = grip;
+
+        // Header: action word (left) + minimize icon (right).
+        LinearLayout header = new LinearLayout(themed);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        overlayStatus = new TextView(themed);
+        overlayStatus.setText(R.string.k2go_maps_dl_title);
+        overlayStatus.setSingleLine(true);
+        overlayStatus.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        // Title in onSurface at the Title type scale (18sp, the consent dialog title size), regular weight:
+        // bold saturated the compact header. Not the teal accent: the ring carries the state colour.
+        applyOverlayType(overlayStatus, R.style.TextAppearance_K2Go_Title, cOnSurface);
+        header.addView(overlayStatus, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        ImageView minBtn = new ImageView(themed);
+        minBtn.setImageResource(R.drawable.ic_expand_more);
+        minBtn.setColorFilter(cOnSurfaceVariant);
+        int mpad = dp(4);
+        minBtn.setPadding(mpad, mpad, mpad, mpad);
+        minBtn.setContentDescription(str(R.string.k2go_hide));
+        minBtn.setOnClickListener(v -> toggleMinimize());
+        header.addView(minBtn, new LinearLayout.LayoutParams(dp(32), dp(32)));
+        LinearLayout.LayoutParams headerLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        headerLp.bottomMargin = dp(8);
+        card.addView(header, headerLp);
+        overlayHeader = header;
+
+        // Body: ring (left) + text column (right).
+        LinearLayout body = new LinearLayout(themed);
+        body.setOrientation(LinearLayout.HORIZONTAL);
+        body.setGravity(Gravity.CENTER_VERTICAL);
+
+        // Ring + ETA / percent centered inside it. Determinate from 0 so the ghost track shows at once.
+        FrameLayout ringFrame = new FrameLayout(themed);
+        overlayRing = new CircularProgressIndicator(themed);
+        overlayRing.setIndicatorSize(dp(108));
+        overlayRing.setTrackThickness(dp(8));
+        overlayRing.setTrackCornerRadius(dp(4));
+        overlayRing.setIndicatorColor(cPrimary);
+        overlayRing.setTrackColor(cRingTrack);
+        overlayRing.setIndeterminate(false);
+        overlayRing.setProgressCompat(0, false);
+        ringFrame.addView(overlayRing, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+
+        LinearLayout center = new LinearLayout(themed);
+        center.setOrientation(LinearLayout.VERTICAL);
+        center.setGravity(Gravity.CENTER);
+        // K2GO-541: let the ETA wrap inside the ring ("10 s" / "restantes") instead of one wide line, so a
+        // longer phrase in another language stacks over the percent rather than overflowing. maxWidth keeps
+        // the wrapped lines within the ring's interior.
+        overlayEta = new TextView(themed);
+        overlayEta.setGravity(Gravity.CENTER);
+        overlayEta.setMaxLines(2);
+        overlayEta.setMaxWidth(dp(84));
+        applyOverlayType(overlayEta, R.style.TextAppearance_K2Go_Caption, cOnSurfaceVariant);
+        overlayEta.setText(R.string.k2go_fqr_starting);   // ETA present from the start, held until done
+        overlayPct = ringText(R.style.TextAppearance_K2Go_Title, cOnSurface);
+        overlayPct.setText(str(R.string.k2go_fqr_percent, 0));
+        // WRAP_CONTENT, not the vertical-LinearLayout default (MATCH_PARENT): a WRAP column with
+        // MATCH_PARENT children collapses its width and clips the single-line text inside the ring.
+        center.addView(overlayEta, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        center.addView(overlayPct, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ringFrame.addView(center, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+        body.addView(ringFrame, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        // Right column: region name, "size : speed", controls. A long name ellipsizes.
+        LinearLayout meta = new LinearLayout(themed);
+        meta.setOrientation(LinearLayout.VERTICAL);
+        TextView overlayName = new TextView(themed);   // set once here; no later reads, so a local
+        overlayName.setText(name);
+        overlayName.setSingleLine(true);
+        overlayName.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        applyOverlayType(overlayName, R.style.TextAppearance_K2Go_Body, cOnSurface);
+        meta.addView(overlayName);
+        overlaySize = new TextView(themed);
+        overlaySize.setSingleLine(true);
+        overlaySize.setText(sizeLine(0));
+        applyOverlayType(overlaySize, R.style.TextAppearance_K2Go_Caption, cOnSurfaceVariant);
+        LinearLayout.LayoutParams sizeLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        sizeLp.topMargin = dp(4);
+        meta.addView(overlaySize, sizeLp);
+
+        LinearLayout controls = new LinearLayout(themed);
+        controls.setOrientation(LinearLayout.HORIZONTAL);
+        controls.setGravity(Gravity.CENTER_VERTICAL);
+        FrameLayout stopBtn = new FrameLayout(themed);
+        stopBtn.setBackground(circle(cPrimary));
+        stopBtn.setContentDescription(str(R.string.k2go_dl_pause));
+        stopBtn.setOnClickListener(v -> onAction());
+        overlayStopIcon = new ImageView(themed);
+        overlayStopIcon.setImageResource(R.drawable.ic_pause_24);
+        overlayStopIcon.setColorFilter(cOnPrimary);
+        stopBtn.addView(overlayStopIcon, new FrameLayout.LayoutParams(dp(24), dp(24), Gravity.CENTER));
+        controls.addView(stopBtn, new LinearLayout.LayoutParams(dp(44), dp(44)));
+        overlayStopBtn = stopBtn;
+        ImageView cancel = new ImageView(themed);
+        cancel.setImageResource(R.drawable.ic_close_24);
+        cancel.setColorFilter(cError);
+        int cpad = dp(12);
+        cancel.setPadding(cpad, cpad, cpad, cpad);
+        cancel.setContentDescription(str(R.string.k2go_cancel));
+        cancel.setOnClickListener(v -> confirmCancel());
+        LinearLayout.LayoutParams cancelLp = new LinearLayout.LayoutParams(dp(44), dp(44));
+        cancelLp.leftMargin = dp(16);
+        controls.addView(cancel, cancelLp);
+        LinearLayout.LayoutParams ctrlLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ctrlLp.topMargin = dp(8);
+        meta.addView(controls, ctrlLp);
+
+        LinearLayout.LayoutParams metaLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        metaLp.leftMargin = dp(16);
+        body.addView(meta, metaLp);
+        overlayMeta = meta;
+        card.addView(body, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        // Drag: the ring taps to minimize and drags to move; the rest of the card is one big drag area (the
+        // buttons stay tappable because a clickable child consumes the touch first). Position persists across
+        // minimize and is clamped to the screen.
+        attachDrag(ringFrame, true);
+        attachDrag(card, false);
+
+        // Accessibility: the ring toggles minimize/expand on tap, but a touch listener is invisible to
+        // TalkBack, and when minimized the labeled chevron is gone : the ring would be the only control with
+        // no way to operate it. Expose the ring as a focusable button with a click action that toggles.
+        ringFrame.setContentDescription(str(R.string.k2go_maps_dl_title));
+        ViewCompat.setAccessibilityDelegate(ringFrame, new AccessibilityDelegateCompat() {
+            @Override public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfoCompat info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK);
+                info.setClickable(true);
+            }
+            @Override public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) { toggleMinimize(); return true; }
+                return super.performAccessibilityAction(host, action, args);
+            }
+        });
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                dp(CARD_W_DP), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        params.topMargin = dp(16);
+        overlay = card;
+        activity.addContentView(overlay, params);
+    }
+
+    /** A centered single-line text for the ring interior (percent). */
+    private TextView ringText(int appearance, int color) {
+        TextView t = new TextView(themed);
+        t.setGravity(Gravity.CENTER);
+        t.setSingleLine(true);
+        applyOverlayType(t, appearance, color);
+        return t;
+    }
+
+    /** K2GO-541: route overlay text through the K2Go type token AND re-apply the Atkinson face. The tokens
+     *  set the font via appcompat `fontFamily`, which framework setTextAppearance ignores on a plain
+     *  TextView, so the text would fall back to the system font. Every overlay role is regular weight. */
+    private void applyOverlayType(TextView t, int appearanceRes, int color) {
+        M3Text.apply(t, appearanceRes, color);
+        if (overlayFont != null) t.setTypeface(overlayFont);
+    }
+
+    /** ADFA-4896 / K2GO-317: fire Pause or Resume. The poll (onPaused/onProgress) is the SOLE writer of
+     *  the icon/state; here we only fire the verb and disable the button until the next poll confirms, so
+     *  the control never flickers between the tap and the server catching up. */
+    private void toggleStop() {
+        setStopEnabled(false);
+        if (overlayStopped) client.resume(); else client.pause();
+    }
+
+    /** K2GO-541: the action button is Retry when the download failed, otherwise Pause/Resume. */
+    private void onAction() {
+        if (overlayFailed) retryDownload();
+        else toggleStop();
+    }
+
+    /** K2GO-541: a failed download is retryable, not fatal. Keep the panel up, freeze the ring red at the
+     *  reached percent, and turn the action button into Retry (refresh arrow). The X still cancels and
+     *  dismisses. Retry re-invokes the download; the server resumes from its checkpoint (K2GO-317). */
+    private void showFailed() {
+        overlayFailed = true;
+        overlayStopped = false;
+        if (overlayMinimized) toggleMinimize();   // expand so Retry and the "failed" word are visible
+        setStopEnabled(true);
+        if (overlayStopIcon != null) overlayStopIcon.setImageResource(R.drawable.ic_refresh);
+        if (overlayStopBtn != null) overlayStopBtn.setContentDescription(str(R.string.k2go_dl_retry));
+        if (overlayStatus != null) overlayStatus.setText(R.string.k2go_fqr_download_failed);
+        if (overlayEta != null) overlayEta.setText("");   // no time-to-finish on a stopped job
+        setRingState(cError, false);   // red + dimmed: the job is not running
+    }
+
+    private void retryDownload() {
+        setStopEnabled(false);   // guard a double tap until the first poll or error confirms
+        clearFailed();
+        if (overlayEta != null) overlayEta.setText(R.string.k2go_fqr_starting);
+        client.download(dlName, dlBox, downloadListener());
+    }
+
+    /** Restore the running look (live teal ring, Pause icon, "Downloading" word) out of the failed state. */
+    private void clearFailed() {
+        overlayFailed = false;
+        setStopIcon(false);
+        if (overlayStatus != null) overlayStatus.setText(R.string.k2go_maps_dl_title);
+        setRingState(cPrimary, true);
+    }
+
+    /** K2GO-541: canceling discards the partial, so confirm first (the X was a one-tap destructive action). */
+    private void confirmCancel() {
+        new BrandDialog(themed)
+                .setTitle(R.string.k2go_dl_cancel_title)
+                .setDestructive(R.string.k2go_cancel, () -> { client.cancel(); hideOverlay(); })
+                .setNegative(R.string.k2go_dl_cancel_keep, null)
+                .show();
+    }
+
+    private void setStopEnabled(boolean enabled) {
+        if (overlayStopBtn != null) {
+            overlayStopBtn.setEnabled(enabled);
+            overlayStopBtn.setAlpha(enabled ? 1f : 0.5f);
+        }
+    }
+
+    /** paused=true shows Resume (play); false shows Pause (two bars). Called only by the poll. */
+    private void setStopIcon(boolean paused) {
+        if (overlayStopIcon != null) {
+            overlayStopIcon.setImageResource(paused ? R.drawable.ic_play_arrow_24 : R.drawable.ic_pause_24);
+        }
+        if (overlayStopBtn != null) {
+            overlayStopBtn.setContentDescription(str(paused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause));
+        }
+    }
+
+    /** Toggle expanded <-> minimized (only the ring). Minimized: the ring shrinks and shows just the
+     *  percent; the grip, name/size and controls hide; the card becomes a circular floating button. */
+    private void toggleMinimize() {
+        if (overlay == null || overlayRing == null) return;
+        int[] before = ringCenterOnScreen();   // keep the ring visually anchored across the size change
+        overlayMinimized = !overlayMinimized;
+        int chrome = overlayMinimized ? View.GONE : View.VISIBLE;
+        if (overlayGrip != null) overlayGrip.setVisibility(chrome);
+        if (overlayHeader != null) overlayHeader.setVisibility(chrome);
+        if (overlayMeta != null) overlayMeta.setVisibility(chrome);
+        if (overlayEta != null) overlayEta.setVisibility(chrome);   // minimized ring shows only the percent
+        overlayRing.setIndicatorSize(dp(overlayMinimized ? 64 : 108));
+        overlayRing.setTrackThickness(dp(overlayMinimized ? 6 : 8));
+        applyOverlayType(overlayPct,
+                overlayMinimized ? R.style.TextAppearance_K2Go_Label
+                                 : R.style.TextAppearance_K2Go_Title,
+                cOnSurface);
+        ViewGroup.LayoutParams lp = overlay.getLayoutParams();
+        lp.width = overlayMinimized ? ViewGroup.LayoutParams.WRAP_CONTENT : dp(CARD_W_DP);
+        overlay.setLayoutParams(lp);
+        LinearLayout card = (LinearLayout) overlay;
+        int pad = dp(overlayMinimized ? 8 : 16);
+        card.setPadding(pad, pad, pad, pad);
+        card.setBackground(rounded(cSurfaceContainer, overlayMinimized ? 100f : 24f, false));
+        // The card re-centers (CENTER_HORIZONTAL) and the ring resizes, so the same translation would land
+        // the ring somewhere else. Shift the translation by the ring's on-screen move so it stays put, then
+        // clamp back on-screen.
+        overlay.post(() -> {
+            if (overlay == null || overlayRing == null) return;
+            int[] after = ringCenterOnScreen();
+            overlay.setTranslationX(overlay.getTranslationX() + (before[0] - after[0]));
+            overlay.setTranslationY(overlay.getTranslationY() + (before[1] - after[1]));
+            clampToParent();
+        });
+    }
+
+    /** The ring's center in screen coordinates (includes the current translation and the live ring size). */
+    private int[] ringCenterOnScreen() {
+        int[] p = new int[2];
+        overlayRing.getLocationOnScreen(p);
+        p[0] += overlayRing.getWidth() / 2;
+        p[1] += overlayRing.getHeight() / 2;
+        return p;
+    }
+
+    private void updateOverlay(int percent, long speed, int etaSeconds) {
+        if (overlayRing == null) return;
+        if (overlaySize != null) overlaySize.setText(sizeLine(speed));   // "708 MB : 1.3 MB/s"
+        if (overlayEta != null) {
+            String eta = etaPlain(etaSeconds);
+            if (!eta.isEmpty()) overlayEta.setText(eta);        // hold the last known ETA; never blank mid-download
+            else if (percent >= 100) overlayEta.setText("");    // done: clear the estimate
+        }
+        if (percent >= 0) {                                     // hold the ring + percent on an unknown poll
+            overlayRing.setProgressCompat(percent, true);
+            overlayPct.setText(str(R.string.k2go_fqr_percent, percent));
+        }
+    }
+
+    /** The "size : speed" line under the name ("708 MB : 1.3 MB/s"); size alone until the speed arrives. */
+    private String sizeLine(long speed) {
+        String r = humanRate(speed);
+        if (r.isEmpty()) return overlaySizeStr;
+        return overlaySizeStr.isEmpty() ? r : overlaySizeStr + " · " + r;
+    }
+
+    /** K2GO-317: ETA as its own line inside the ring ("45 s left" / "~3 min"); empty when unknown (<0)
+     *  or done (0). Reuses the shared eta strings, so no new copy or l10n debt. */
+    private String etaPlain(int seconds) {
+        if (seconds <= 0) return "";
+        if (seconds < 60) return str(R.string.k2go_eta_sec, seconds);
+        return str(R.string.k2go_eta_minutes_fmt, (seconds + 30) / 60);
+    }
+
+    /** K2GO-385 (C1): colour the ring by state and dim it when the job is not live (teal = downloading,
+     *  amber = paused, leaf = done), so a stopped job never looks like a running one. */
+    private void setRingState(int color, boolean live) {
+        if (overlayRing == null) return;
+        overlayRing.setIndicatorColor(color);
+        overlayRing.setAlpha(live ? 1f : 0.55f);
+    }
+
+    private GradientDrawable circle(int color) {
+        GradientDrawable g = new GradientDrawable();
+        g.setShape(GradientDrawable.OVAL);
+        g.setColor(color);
+        return g;
+    }
+
+    // K2GO-541: drag the overlay by moving its translation, clamped to the content area. The position
+    // lives on the view (persists across minimize/expand) and resets when the overlay is rebuilt. A tap
+    // (no drag) on the ring toggles minimize; the grip only drags.
+    private void attachDrag(View handle, boolean tapToggles) {
+        handle.setOnTouchListener(new View.OnTouchListener() {
+            private float downX, downY, startTx, startTy;
+            private boolean dragging;
+            @Override public boolean onTouch(View v, android.view.MotionEvent e) {
+                if (overlay == null) return false;
+                switch (e.getActionMasked()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        downX = e.getRawX(); downY = e.getRawY();
+                        startTx = overlay.getTranslationX(); startTy = overlay.getTranslationY();
+                        dragging = false;
+                        return true;
+                    case android.view.MotionEvent.ACTION_MOVE:
+                        float dx = e.getRawX() - downX, dy = e.getRawY() - downY;
+                        if (!dragging && Math.hypot(dx, dy) < touchSlop) return true;
+                        dragging = true;
+                        overlay.setTranslationX(clampTx(startTx + dx));
+                        overlay.setTranslationY(clampTy(startTy + dy));
+                        return true;
+                    case android.view.MotionEvent.ACTION_UP:
+                        if (!dragging && tapToggles) toggleMinimize();   // a real lift, not a canceled gesture
+                        return true;
+                    case android.view.MotionEvent.ACTION_CANCEL:
+                        return true;
+                    default:
+                        return false;
                 }
             }
         });
     }
 
-    // ---- Floating progress overlay -----------------------------------------------------------
-    private void showOverlay(String name, long sizeBytes) {
-        hideOverlay();
-        LinearLayout cardV = surfaceCard(dp(16), 16f);
-        cardV.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout top = new LinearLayout(themed);
-        top.setOrientation(LinearLayout.HORIZONTAL);
-        top.setGravity(Gravity.CENTER_VERTICAL);
-        overlayTitle = new TextView(themed);
-        final String title = str(R.string.k2go_fqr_downloading, name)
-                + (sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "");   // "Downloading “x” · 2.1 GB"
-        overlayTitle.setText(title);
-        // ADFA-5027: M3 title role (carries its own medium weight — no manual BOLD).
-        M3Text.apply(overlayTitle, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
-        top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        overlayMin = new TextView(themed);
-        overlayMin.setText(R.string.k2go_hide);   // minimize to a compact card; tap again to Show
-        M3Text.apply(overlayMin, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, cPrimary);
-        overlayMin.setPadding(dp(12), 0, dp(4), 0);
-        overlayMin.setOnClickListener(v -> toggleMinimize());
-        top.addView(overlayMin);
-        cardV.addView(top);
-
-        overlayBar = new LinearProgressIndicator(themed);
-        overlayBar.setIndeterminate(true);
-        overlayBar.setTrackCornerRadius(dp(2));
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        blp.topMargin = dp(12);
-        cardV.addView(overlayBar, blp);
-
-        LinearLayout row = new LinearLayout(themed);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        rlp.topMargin = dp(8);
-        overlayPct = new TextView(themed);
-        overlayPct.setText(R.string.k2go_fqr_starting);
-        M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
-        // K2GO-317: keep percent/speed/ETA on one line next to the buttons; on a narrow width the
-        // rightmost (ETA) ellipsizes rather than wrapping and growing the row.
-        overlayPct.setSingleLine(true);
-        overlayPct.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        // ADFA-4896: Pause/Resume beside Cancel. The label follows the reported state; the tap fires the
-        // matching verb and the poll (onPaused/onProgress) is the source of truth.
-        overlayStopped = false;
-        // K2GO-385: download-controls role ladder (design k2go-download-card-style-sizes-v1) -- the
-        // keep-the-download primary (Pause/Resume) is the FILLED teal button; Cancel, which discards the
-        // transfer, is a TEXT button in clay. Never two equal outline pills. FQR's overlay is a themed
-        // (day/night) surface, so the app button styles' theme teal/clay are right here -- not the fixed
-        // boot tokens. The role look lives only in the styles; no colour is set in Java.
-        ContextThemeWrapper filledCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Filled);
-        overlayStop = new MaterialButton(filledCtx, null);
-        overlayStop.setText(R.string.k2go_dl_pause);
-        overlayStop.setOnClickListener(v -> toggleStop());
-        row.addView(overlayStop);
-        ContextThemeWrapper textDangerCtx = new ContextThemeWrapper(themed, R.style.ThemeOverlay_K2Go_Button_Text_Destructive);
-        MaterialButton cancel = new MaterialButton(textDangerCtx, null);
-        cancel.setText(R.string.k2go_cancel);
-        cancel.setOnClickListener(v -> { client.cancel(); hideOverlay(); });
-        row.addView(cancel);
-        cardV.addView(row, rlp);
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.TOP;
-        params.setMargins(dp(12), dp(12), dp(12), 0);
-        overlay = cardV;
-        overlayMinimized = false;
-        activity.addContentView(overlay, params);
-    }
-
-    /** ADFA-4896 / K2GO-317: fire Pause (server pause, SIGTERM checkpoint) or Resume (server resume,
-     *  continues from the pmtiles journal). The poll (onPaused/onProgress) is the SOLE writer of the
-     *  label/state; here we only fire the verb and disable the button until the next poll confirms, so
-     *  the label never flickers between the tap and the server catching up. */
-    private void toggleStop() {
-        if (overlayStop != null) overlayStop.setEnabled(false);
-        if (overlayStopped) client.resume(); else client.pause();
-    }
-
-    private void toggleMinimize() {
+    private void clampToParent() {
         if (overlay == null) return;
-        overlayMinimized = !overlayMinimized;
-        LinearLayout cardV = (LinearLayout) overlay;
-        // Minimized = keep the title + the slim advancing bar; hide only the percent/cancel row,
-        // so progress stays visible even when collapsed (the point of minimizing is minimal chrome).
-        View controls = cardV.getChildAt(cardV.getChildCount() - 1);
-        controls.setVisibility(overlayMinimized ? View.GONE : View.VISIBLE);
-        if (overlayMin != null) overlayMin.setText(overlayMinimized ? R.string.k2go_fqr_show : R.string.k2go_hide);
+        overlay.setTranslationX(clampTx(overlay.getTranslationX()));
+        overlay.setTranslationY(clampTy(overlay.getTranslationY()));
     }
 
-    private void updateOverlay(int percent, long speed, int etaSeconds) {
-        if (overlayBar == null || overlayPct == null) return;
-        final String rate = speed > 0 ? "  ·  " + humanRate(speed) : "";
-        final String eta = etaText(etaSeconds);
-        if (percent < 0) {
-            if (!overlayBar.isIndeterminate()) setBarMode(true);
-            overlayPct.setText(str(R.string.k2go_fqr_working) + rate + eta);
-        } else {
-            if (overlayBar.isIndeterminate()) setBarMode(false);
-            overlayBar.setProgressCompat(percent, true);
-            overlayPct.setText(str(R.string.k2go_fqr_percent, percent) + rate + eta);
-        }
+    private float clampTx(float tx) {
+        if (!(overlay.getParent() instanceof View)) return tx;
+        View parent = (View) overlay.getParent();
+        float min = -overlay.getLeft();
+        float max = parent.getWidth() - overlay.getRight();
+        if (max < min) max = min;
+        return Math.max(min, Math.min(max, tx));
     }
 
-    /** K2GO-317: compact ETA for the progress line ("  ·  45 s left" / "  ·  ~3 min"); empty when
-     *  unknown (<0) or done (0). Reuses the shared eta strings, so no new copy or l10n debt. */
-    private String etaText(int seconds) {
-        if (seconds <= 0) return "";
-        if (seconds < 60) return "  ·  " + str(R.string.k2go_eta_sec, seconds);
-        return "  ·  " + str(R.string.k2go_eta_minutes_fmt, (seconds + 30) / 60);
-    }
-
-    /** Switch the Material progress indicator between indeterminate/determinate. The indicator forbids
-     *  the switch while visible, so toggle visibility around it. */
-    private void setBarMode(boolean indeterminate) {
-        if (overlayBar == null) return;
-        int vis = overlayBar.getVisibility();
-        overlayBar.setVisibility(View.GONE);
-        overlayBar.setIndeterminate(indeterminate);
-        overlayBar.setVisibility(vis == View.GONE ? View.VISIBLE : vis);
-    }
-
-    /** K2GO-385 (C1): colour the download bar by state and dim it when the job is not live, so a stopped
-     *  job never looks like a running one (teal = downloading, amber = stopped, leaf = done). */
-    private void setBarState(int color, boolean live) {
-        if (overlayBar == null) return;
-        overlayBar.setIndicatorColor(color);
-        overlayBar.setAlpha(live ? 1f : 0.55f);
+    private float clampTy(float ty) {
+        if (!(overlay.getParent() instanceof View)) return ty;
+        View parent = (View) overlay.getParent();
+        float min = -overlay.getTop();
+        float max = parent.getHeight() - overlay.getBottom();
+        if (max < min) max = min;
+        return Math.max(min, Math.min(max, ty));
     }
 
     /** bytes/sec -> "2.4 MB/s". Empty for non-positive (speed not reported yet). */
@@ -554,10 +891,14 @@ public final class FqrController {
         if (overlay == null) return;
         ViewGroup parent = (ViewGroup) overlay.getParent();
         if (parent != null) parent.removeView(overlay);
-        overlay = null; overlayBar = null; overlayPct = null; overlayTitle = null; overlayMin = null;
-        overlayStop = null;
+        overlay = null; overlayRing = null; overlayEta = null; overlayPct = null;
+        overlayStatus = null; overlaySize = null;
+        overlayHeader = null; overlayMeta = null;
+        overlayStopIcon = null; overlayStopBtn = null;
+        overlayGrip = null;
         overlayMinimized = false;
         overlayStopped = false;
+        overlayFailed = false;
     }
 
     // ---- Delete: unified list bottom-sheet + manual capture ----------------------------------
