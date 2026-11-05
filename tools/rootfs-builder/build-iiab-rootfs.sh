@@ -728,6 +728,15 @@ run_in_proot "$INSTALL_CMD" 2>&1 | tee "$LOGFILE"
 INSTALL_RC="${PIPESTATUS[0]}"
 set -e
 
+# K2GO-549: the published rootfs is public, so it must not carry per-box secrets or IDs: every
+# box would share them. The box step that makes them at the first start owns the list, and
+# strips them here (static/box-identity/k2go_box_identity.py). The checks in [3/5] verify it.
+log "Stripping per-box secrets and IDs (K2GO-549)..."
+set +e
+run_in_proot "/usr/local/sbin/k2go-box-identity --strip" 2>&1 | tee -a "$LOGFILE"
+STRIP_RC="${PIPESTATUS[0]}"
+set -e
+
 # ----------------------------- 3) Validate "clean build" ----------------------
 log "[3/5] Validating build..."
 PASS=1
@@ -745,6 +754,15 @@ if [[ "$TIER_NAME" != "matomo" ]]; then
   chk "conex-core installed (/opt/conex-core/conex_core)" "test -d '$ROOTFS/opt/conex-core/conex_core'"
   chk "conex-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/conex-core'"
 fi
+
+# K2GO-549: no per-box secret or ID ships, and the step that makes them at first start is enabled.
+chk "per-box strip ran (K2GO-549)"              "test '$STRIP_RC' -eq 0"
+chk "per-box identity step enabled"             "test -x '$ROOTFS/usr/local/sbin/k2go-box-identity' && test -x '$ROOTFS/usr/local/pdsm/services-enabled/00-k2go-box-identity'"
+chk "no Forgejo secret or signing key ships"    "test -z \"\$(ls '$ROOTFS'/etc/forgejo/{secret_key,internal_token,jwt_secret,lfs_jwt_secret} '$ROOTFS'/library/forgejo/data/{jwt,actions_id_token}/private.pem 2>/dev/null)\""
+db_rows() { python3 -c "import os,sqlite3,sys; p=sys.argv[1]; print(sqlite3.connect(p).execute(sys.argv[2]).fetchone()[0] if os.path.exists(p) else 0)" "$1" "$2"; }
+chk "no Calibre-Web key ships"                  "test ! -e '$ROOTFS/library/calibre-web/config/.key' && test \"\$(db_rows '$ROOTFS/library/calibre-web/config/app.db' 'SELECT COUNT(*) FROM flask_settings')\" = 0"
+chk "no Kolibri facility key ships"             "test \"\$(db_rows '$ROOTFS/library/kolibri/db.sqlite3' 'SELECT COUNT(*) FROM morango_certificate WHERE private_key IS NOT NULL')\" = 0"
+chk "no machine-id or IIAB uuid ships"          "test ! -s '$ROOTFS/etc/machine-id' && test ! -e '$ROOTFS/var/lib/dbus/machine-id' && test ! -e '$ROOTFS/etc/iiab/uuid'"
 
 # Ansible result: use the PLAY RECAP (authoritative). We do NOT count loose
 # 'fatal:'/'FAILED!' lines, because block/rescue tasks (e.g. the WiFi-AP probe

@@ -852,6 +852,17 @@ install_welcome_zim
 install_iiaboa_dashboard
 
 #-----------------------------
+# K2GO-549: the per-box identity step. The rootfs bake strips the per-box secrets (the published
+# image is public); this one-shot PDSM entry makes them at the first box start, before the
+# services. On a device install the roles already made them, so the step finds nothing to do.
+#-----------------------------
+log "Installing the per-box identity step (K2GO-549)..."
+cp "${K2GO_OPT_DIR}/static/box-identity/k2go_box_identity.py" /usr/local/sbin/k2go-box-identity
+cp "${K2GO_OPT_DIR}/static/pdsm/00-k2go-box-identity" /usr/local/pdsm/services-available/00-k2go-box-identity
+chmod +x /usr/local/sbin/k2go-box-identity /usr/local/pdsm/services-available/00-k2go-box-identity
+/usr/local/bin/pdsm enable 00-k2go-box-identity
+
+#-----------------------------
 # K2GO-427: install and start the content-exchange core (conex-core) via its role. The conex_core
 # role ships as an overlay with no 6-generic-apps include, so the main install does not run it;
 # run it here via runrole (the same path the app uses for on-demand installs). The role copies
