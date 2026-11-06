@@ -19,7 +19,7 @@ const MAPS_TMP_DIR = '/library/downloads/maps';
 // name: letters/digits/hyphen/underscore, 1..34 (same rule as the socket handler).
 const NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
-interface MapItem { name?: string; box?: string; noninteractive?: boolean; }
+interface MapItem { name?: string; box?: string; noninteractive?: boolean; est?: number; }
 
 /** ADFA-4896: run a tile-extract maintenance command to completion, best-effort. Used for the
  *  stop/cancel cleanup, which must run while the job's own context is being torn down, so it does
@@ -91,6 +91,17 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const TOTAL_LAYERS = 3;
     let layersDone = 0;
     let overall = 0;   // monotonic across the whole FQR
+    // K2GO-317: the device passes the total-bytes estimate (the consent "transfer" figure) so the ring and ETA
+    // run off CUMULATIVE bytes vs that total : not 1/3-per-layer buckets (which stick on the big layer and jump
+    // at layer boundaries) : and off a SMOOTHED speed, not go-pmtiles' raw per-layer eta_s (instantaneous, and
+    // reset every layer). estBytes 0 (an old job) falls back to the layer-bucket math.
+    const estBytes = Math.max(0, Number(item.est) || 0);
+    let completedBytes = 0;    // bytes of the layers already finished this run
+    let curLayerTotal = 0;     // the in-progress layer's byte total
+    let emaBps = -1;           // EMA of speed_bps; smooths the bursty per-request rate that made the ETA swing
+    let speedSamples = 0;      // warm-up guard: hold the ETA until the smoothed speed has settled
+    const SPEED_ALPHA = 0.25;  // ~4 s window at one JSON line per second
+    const WARMUP_SAMPLES = 3;
     // K2GO-317 follow-up: go-pmtiles prints exit_code on each layer's last JSON line. On a stop we read it
     // to tell a resumable network drop (2) from a hard failure. The last value seen is the relevant one.
     let lastExitCode: number | null = null;
@@ -133,28 +144,53 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s) return;
             ctx.log(s);
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
-            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; exit_code?: number };
             try { j = JSON.parse(s); } catch { return; }
             if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
-            let frac = 0;
+            let etaOut = -1;   // seconds remaining, -1 = unknown (jobs.ts holds the previous value)
             if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
-                // bytes_done ALREADY includes resumed_bytes (on a resume it starts at the resumed amount
-                // and climbs to bytes_total), so this is the true progress of a resumed layer too. Do NOT
-                // add resumed_bytes here: that double-counts and clamps a resumed layer to 100%.
-                frac = Math.min(1, (j.bytes_done ?? 0) / (j.bytes_total as number));
-                const bd = j.bytes_done ?? 0;   // reset the stall watchdog whenever bytes advance
-                if (bd !== lastBytes) { lastBytes = bd; armStall(); }
+                curLayerTotal = j.bytes_total as number;
+                // bytes_done ALREADY includes resumed_bytes (a resumed layer starts at the resumed amount and
+                // climbs to bytes_total), so cumulative progress is just completedBytes + bytes_done.
+                const bd = j.bytes_done ?? 0;
+                if (bd !== lastBytes) { lastBytes = bd; armStall(); }   // stall watchdog on byte progress
+                const doneBytes = completedBytes + bd;
+                const sp = (typeof j.speed_bps === 'number' && j.speed_bps > 0) ? j.speed_bps : 0;
+                if (sp > 0) { emaBps = emaBps < 0 ? sp : SPEED_ALPHA * sp + (1 - SPEED_ALPHA) * emaBps; speedSamples++; }
+                if (estBytes > 0) {
+                    // On the last layer every size is known, so the exact sum is the true total (this corrects
+                    // an over/under estimate); on earlier layers trust the whole-region estimate (it covers the
+                    // layers not seen yet). max() keeps a low estimate from reading over 100 before then.
+                    const known = completedBytes + curLayerTotal;
+                    const total = (layersDone >= TOTAL_LAYERS - 1) ? known : Math.max(estBytes, known);
+                    overall = Math.max(overall, Math.min(99, Math.round((doneBytes / total) * 100)));
+                    if (speedSamples >= WARMUP_SAMPLES && emaBps > 0) etaOut = Math.max(0, Math.round((total - doneBytes) / emaBps));
+                } else {
+                    const frac = Math.min(1, bd / (j.bytes_total as number));   // fallback: per-layer bucket
+                    overall = Math.max(overall, Math.min(99, Math.round(((layersDone + frac) / TOTAL_LAYERS) * 100)));
+                    if (speedSamples >= WARMUP_SAMPLES && emaBps > 0 && curLayerTotal > bd) etaOut = Math.max(0, Math.round((curLayerTotal - bd) / emaBps));
+                }
             } else if (j.phase === 'finalize' || j.phase === 'done') {
-                frac = 1;
                 clearStall();   // nothing downloading now: do not let a stale watchdog fire
+                if ((j.bytes_total ?? 0) > 0) curLayerTotal = j.bytes_total as number;   // a layer with no download line
+                const doneBytes = completedBytes + curLayerTotal;
+                if (estBytes > 0) {
+                    const total = (layersDone >= TOTAL_LAYERS - 1) ? doneBytes : Math.max(estBytes, doneBytes);
+                    overall = Math.max(overall, Math.min(99, Math.round((doneBytes / total) * 100)));
+                } else {
+                    overall = Math.max(overall, Math.min(99, Math.round(((layersDone + 1) / TOTAL_LAYERS) * 100)));
+                }
             }
-            overall = Math.max(overall, Math.min(99, Math.round(((layersDone + frac) / TOTAL_LAYERS) * 100)));
             const patch: JobUpdate = { phase: 'processing', percent: overall, detail: name };
-            if (typeof j.speed_bps === 'number' && j.speed_bps > 0) patch.speed = j.speed_bps;
-            if (typeof j.eta_s === 'number' && j.eta_s >= 0) patch.eta = Math.round(j.eta_s);
+            if (emaBps > 0) patch.speed = Math.round(emaBps);   // smoothed, so the "size : speed" line stops jumping
+            if (etaOut >= 0) patch.eta = etaOut;
             ctx.update(patch);
-            if (j.phase === 'done') layersDone = Math.min(TOTAL_LAYERS, layersDone + 1);
+            if (j.phase === 'done') {
+                layersDone = Math.min(TOTAL_LAYERS, layersDone + 1);
+                completedBytes += curLayerTotal;   // roll the finished layer into the cumulative base
+                curLayerTotal = 0;
+            }
         };
         let stdoutBuf = '';
         p.stdout?.on('data', (buf: Buffer) => {

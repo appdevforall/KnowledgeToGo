@@ -82,14 +82,16 @@ public final class MapsRegionClient {
         });
     }
 
-    /** Start the region download and poll it to completion. */
-    public void download(@NonNull String name, @NonNull String box, @NonNull DownloadListener l) {
+    /** Start the region download and poll it to completion. estBytes is the consent-step size estimate; the
+     *  server uses it to drive the overall percent and ETA from cumulative bytes (K2GO-317). 0 = unknown. */
+    public void download(@NonNull String name, @NonNull String box, long estBytes, @NonNull DownloadListener l) {
         this.dl = l;
         this.finished = false;
         this.pollErrors = 0;
         AppExecutors.get().io().execute(() -> {
             try {
                 JSONObject item = new JSONObject().put("name", name).put("box", box);
+                if (estBytes > 0) item.put("est", estBytes);   // K2GO-317: total-bytes estimate for overall %/ETA
                 JSONObject body = new JSONObject().put("items", new JSONArray().put(item));
                 JSONObject resp = httpJson("POST", BASE + "/download", body);
                 String id = resp.optString("id", "");
