@@ -1611,4 +1611,13 @@
     <string name="k2go_cx_share_transport_label">Получатель подключается через</string>
     <string name="k2go_cx_share_transport_hotspot">Точка доступа</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Наводим последние штрихи в вашей системе</string>
+    <string name="k2go_preparing_word_1">Персонализация...</string>
+    <string name="k2go_preparing_word_2">Упорядочивание...</string>
+    <string name="k2go_preparing_word_3">Шлифовка...</string>
+    <string name="k2go_preparing_word_4">Настройка...</string>
+    <string name="k2go_preparing_word_5">Расстановка...</string>
+    <string name="k2go_preparing_word_6">Всё настраиваем...</string>
+    <string name="k2go_preparing_word_7">Делаем её вашей...</string>
+    <string name="k2go_preparing_word_8">Почти готово...</string>
 </resources>

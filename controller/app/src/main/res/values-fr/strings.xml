@@ -1622,4 +1622,13 @@
     <string name="k2go_cx_share_transport_label">Le destinataire se connecte via</string>
     <string name="k2go_cx_share_transport_hotspot">Point d\'accès</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Préparation des dernières touches de votre système</string>
+    <string name="k2go_preparing_word_1">Personnalisation...</string>
+    <string name="k2go_preparing_word_2">Organisation...</string>
+    <string name="k2go_preparing_word_3">Finitions...</string>
+    <string name="k2go_preparing_word_4">Réglages...</string>
+    <string name="k2go_preparing_word_5">Rangement...</string>
+    <string name="k2go_preparing_word_6">Mise en place...</string>
+    <string name="k2go_preparing_word_7">À votre image...</string>
+    <string name="k2go_preparing_word_8">Presque fini...</string>
 </resources>

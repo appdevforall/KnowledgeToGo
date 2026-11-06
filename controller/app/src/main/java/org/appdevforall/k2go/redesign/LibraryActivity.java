@@ -74,6 +74,8 @@ public class LibraryActivity extends AppCompatActivity
     private ServerController serverController;
 
     private LottieAnimationView bootGate;
+    /** K2GO-553: covers the gate or the open Library while a launch makes the per-box values. */
+    private org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen preparing;
     private View installProgress;
     private android.widget.TextView installStatus, installDetail, installPercent, installEta;
     private android.widget.TextView bootVersion;
@@ -173,6 +175,16 @@ public class LibraryActivity extends AppCompatActivity
         syncSelection(currentTab);
 
         bootGate = findViewById(R.id.k2go_boot_gate);
+        preparing = new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen(
+                findViewById(R.id.k2go_preparing), this,
+                new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen.Host() {
+                    // Gate up or already open: a launch after an install can start with the Library
+                    // on screen. "begin" only comes from an environment launch, never mid-close.
+                    @Override public boolean canCover() { return !closing; }
+                    // Themed surface, not the gate's fixed light paper.
+                    @Override public void onShown() { setGateStatusBar(false); }
+                    @Override public void onHidden() { if (!gateDismissed) setGateStatusBar(true); }
+                });
         installProgress = findViewById(R.id.k2go_install_progress);
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
@@ -371,9 +383,8 @@ public class LibraryActivity extends AppCompatActivity
                     if (PendingContent.anyBanked(this)) {
                         startActivity(new android.content.Intent(this, SetupProgressActivity.class));
                     }
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (!gateDismissed) onServerReady();
-                    }, GATE_SAFETY_MS);
+                    new Handler(Looper.getMainLooper()).postDelayed(this::onGateSafetyTimeout,
+                            GATE_SAFETY_MS);
                 } else {
                     onServerReady(); // FAILED: lift the gate; land on the library (offline)
                 }
@@ -447,11 +458,8 @@ public class LibraryActivity extends AppCompatActivity
             // to the offline library) — the same contract as the first-run `if (installing)` branch,
             // which also has no safety net. A genuinely hung install (no terminal) is a separate
             // concern owned by the installer, not something to paper over by opening a broken system.
-            main.postDelayed(() -> {
-                if (!gateDismissed && !installing) {
-                    onServerReady();
-                }
-            }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
+            main.postDelayed(this::onGateSafetyTimeout,
+                    systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
         }
     }
 
@@ -786,6 +794,21 @@ public class LibraryActivity extends AppCompatActivity
         c.setAppearanceLightStatusBars(lightStatusBar);
     }
 
+    /**
+     * K2GO-553: the gate safety timeout. A boot that prepares the system takes longer than
+     * {@link #GATE_SAFETY_MS}, so while the preparing screen holds, wait more (it caps the hold).
+     */
+    private void onGateSafetyTimeout() {
+        if (gateDismissed || installing) return;
+        long hold = preparing != null ? preparing.holdRemainingMs() : 0L;
+        if (hold > 0L) {
+            new Handler(Looper.getMainLooper()).postDelayed(this::onGateSafetyTimeout,
+                    Math.min(hold, GATE_SAFETY_MS));
+            return;
+        }
+        onServerReady();
+    }
+
     private void onServerReady() {
         if (gateDismissed || bootGate == null) {
             return;
@@ -907,6 +930,7 @@ public class LibraryActivity extends AppCompatActivity
 
     /** Viewer of the pdsm output: each "[pdsm:<service>] ..." line names the service on the boot or shutdown screen. */
     private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener pdsmLines = line -> {
+        if (preparing != null) preparing.onLine(line);   // K2GO-553
         java.util.regex.Matcher m = PDSM_SVC.matcher(line);
         if (m.find()) {
             final String svc = m.group(1);
@@ -926,6 +950,7 @@ public class LibraryActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(pdsmLines);
+        if (preparing != null) preparing.onResumed();   // K2GO-553: the reconciler may boot during the splash
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
@@ -980,6 +1005,7 @@ public class LibraryActivity extends AppCompatActivity
         // Activity (the Handler would otherwise keep a reference to this screen via the TextViews).
         if (bootEllipsis != null) bootEllipsis.stop();
         if (readingEllipsis != null) readingEllipsis.stop();
+        if (preparing != null) preparing.release();
         super.onDestroy();
     }
 

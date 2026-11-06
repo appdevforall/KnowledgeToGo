@@ -1542,4 +1542,13 @@
     <string name="k2go_cx_share_transport_label">Príjemca sa pripája cez</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Dokončujeme posledné úpravy vášho systému</string>
+    <string name="k2go_preparing_word_1">Prispôsobovanie...</string>
+    <string name="k2go_preparing_word_2">Usporadúvanie...</string>
+    <string name="k2go_preparing_word_3">Vylepšovanie...</string>
+    <string name="k2go_preparing_word_4">Ladenie...</string>
+    <string name="k2go_preparing_word_5">Rozmiestňovanie...</string>
+    <string name="k2go_preparing_word_6">Všetko sa nastavuje...</string>
+    <string name="k2go_preparing_word_7">Aby bol len váš...</string>
+    <string name="k2go_preparing_word_8">Takmer hotovo...</string>
 </resources>

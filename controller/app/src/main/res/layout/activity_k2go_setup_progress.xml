@@ -154,4 +154,7 @@
                 android:text="@string/k2go_zim_finish" />
         </LinearLayout>
     </LinearLayout>
+
+    <!-- K2GO-553: covers the index while the first start prepares the system. -->
+    <include layout="@layout/view_k2go_preparing" />
 </FrameLayout>

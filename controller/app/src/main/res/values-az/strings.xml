@@ -1555,4 +1555,13 @@
     <string name="k2go_cx_share_transport_label">Qəbul edən bununla qoşulur</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Sisteminizə son toxunuşlar edilir</string>
+    <string name="k2go_preparing_word_1">Fərdiləşdirilir...</string>
+    <string name="k2go_preparing_word_2">Təşkil olunur...</string>
+    <string name="k2go_preparing_word_3">Cilalanır...</string>
+    <string name="k2go_preparing_word_4">Tənzimlənir...</string>
+    <string name="k2go_preparing_word_5">Yerləşdirilir...</string>
+    <string name="k2go_preparing_word_6">Hər şey qurulur...</string>
+    <string name="k2go_preparing_word_7">Sizə uyğunlaşdırılır...</string>
+    <string name="k2go_preparing_word_8">Az qaldı...</string>
 </resources>

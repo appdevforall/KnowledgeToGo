@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">Destinatarul se conectează prin</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Pregătim ultimele retușuri pentru sistemul tău</string>
+    <string name="k2go_preparing_word_1">Personalizare...</string>
+    <string name="k2go_preparing_word_2">Organizare...</string>
+    <string name="k2go_preparing_word_3">Șlefuire...</string>
+    <string name="k2go_preparing_word_4">Reglare...</string>
+    <string name="k2go_preparing_word_5">Aranjare...</string>
+    <string name="k2go_preparing_word_6">Configurăm totul...</string>
+    <string name="k2go_preparing_word_7">Îl facem al tău...</string>
+    <string name="k2go_preparing_word_8">Aproape gata...</string>
 </resources>

@@ -229,4 +229,7 @@
                 android:text="@string/k2go_dl_cancel" />
         </LinearLayout>
     </LinearLayout>
+
+    <!-- K2GO-553: replaces the boot gate (and its panel) for a boot that prepares the system. -->
+    <include layout="@layout/view_k2go_preparing" />
 </FrameLayout>

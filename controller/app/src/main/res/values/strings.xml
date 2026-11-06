@@ -1730,4 +1730,14 @@
     <string name="k2go_cx_share_transport_label">Receiver connects over</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <!-- K2GO-553: "Preparing system" boot screen. -->
+    <string name="k2go_preparing_headline">Preparing the last touches for your system</string>
+    <string name="k2go_preparing_word_1">Personalizing...</string>
+    <string name="k2go_preparing_word_2">Organizing...</string>
+    <string name="k2go_preparing_word_3">Polishing...</string>
+    <string name="k2go_preparing_word_4">Tuning...</string>
+    <string name="k2go_preparing_word_5">Arranging...</string>
+    <string name="k2go_preparing_word_6">Setting things up...</string>
+    <string name="k2go_preparing_word_7">Making it yours...</string>
+    <string name="k2go_preparing_word_8">Almost there...</string>
 </resources>

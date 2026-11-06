@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">De ontvanger maakt verbinding via</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">De laatste hand leggen aan je systeem</string>
+    <string name="k2go_preparing_word_1">Personaliseren...</string>
+    <string name="k2go_preparing_word_2">Organiseren...</string>
+    <string name="k2go_preparing_word_3">Oppoetsen...</string>
+    <string name="k2go_preparing_word_4">Afstemmen...</string>
+    <string name="k2go_preparing_word_5">Ordenen...</string>
+    <string name="k2go_preparing_word_6">Alles instellen...</string>
+    <string name="k2go_preparing_word_7">Helemaal van jou maken...</string>
+    <string name="k2go_preparing_word_8">Bijna klaar...</string>
 </resources>

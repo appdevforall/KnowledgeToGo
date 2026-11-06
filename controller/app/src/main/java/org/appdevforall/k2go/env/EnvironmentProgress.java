@@ -10,6 +10,8 @@ package org.appdevforall.k2go.env;
 
 import android.os.SystemClock;
 
+import org.appdevforall.k2go.boxidentity.domain.BoxIdentityLine;
+
 /**
  * The environment's last sign of life, in one place.
  *
@@ -35,6 +37,14 @@ public final class EnvironmentProgress {
     /** Monotonic stamp of the last sign of life, or {@code 0} for "no signal". */
     private static volatile long lastSignOfLifeMs = 0L;
 
+    /**
+     * K2GO-553: this launch printed the box identity "begin" line and has not answered since, so
+     * this boot is still making the per-box values. Held here because the reconciler can launch the
+     * box before any screen listens. Set by that line; cleared when the box first answers
+     * ({@link #answered()}), by a new launch, by a stop, and by process death.
+     */
+    private static volatile boolean preparingLaunch = false;
+
     private EnvironmentProgress() {
     }
 
@@ -45,6 +55,7 @@ public final class EnvironmentProgress {
      */
     public static void launched() {
         lastSignOfLifeMs = SystemClock.elapsedRealtime();
+        preparingLaunch = false;
     }
 
     /** The environment produced output: it is still moving. */
@@ -74,6 +85,9 @@ public final class EnvironmentProgress {
     /** The environment printed {@code line}: a sign of life, also passed to the viewer if one is attached. */
     public static void alive(String line) {
         alive();
+        if (BoxIdentityLine.isBegin(line)) {
+            preparingLaunch = true;
+        }
         line(line);
     }
 
@@ -91,6 +105,17 @@ public final class EnvironmentProgress {
      */
     public static void cleared() {
         lastSignOfLifeMs = 0L;
+        preparingLaunch = false;
+    }
+
+    /** K2GO-553: true while the current launch prepares the system (see the field). */
+    public static boolean preparingLaunch() {
+        return preparingLaunch;
+    }
+
+    /** K2GO-553: the box answers; a later services stop in the same launch is not a preparing boot. */
+    public static void answered() {
+        preparingLaunch = false;
     }
 
     /**

@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">Il destinatario si connette tramite</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Ultimi ritocchi al tuo sistema</string>
+    <string name="k2go_preparing_word_1">Personalizzazione...</string>
+    <string name="k2go_preparing_word_2">Organizzazione...</string>
+    <string name="k2go_preparing_word_3">Rifinitura...</string>
+    <string name="k2go_preparing_word_4">Regolazione...</string>
+    <string name="k2go_preparing_word_5">Sistemazione...</string>
+    <string name="k2go_preparing_word_6">Configurazione in corso...</string>
+    <string name="k2go_preparing_word_7">Lo rendiamo tuo...</string>
+    <string name="k2go_preparing_word_8">Quasi pronto...</string>
 </resources>

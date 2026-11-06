@@ -1552,4 +1552,13 @@
     <string name="k2go_cx_share_transport_label">Gavėjas jungiasi per</string>
     <string name="k2go_cx_share_transport_hotspot">Prieigos taškas</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Paskutiniai jūsų sistemos patobulinimai</string>
+    <string name="k2go_preparing_word_1">Personalizuojama...</string>
+    <string name="k2go_preparing_word_2">Tvarkoma...</string>
+    <string name="k2go_preparing_word_3">Šlifuojama...</string>
+    <string name="k2go_preparing_word_4">Derinama...</string>
+    <string name="k2go_preparing_word_5">Išdėstoma...</string>
+    <string name="k2go_preparing_word_6">Viskas nustatoma...</string>
+    <string name="k2go_preparing_word_7">Pritaikoma jums...</string>
+    <string name="k2go_preparing_word_8">Beveik baigta...</string>
 </resources>

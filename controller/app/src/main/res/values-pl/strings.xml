@@ -1545,4 +1545,13 @@
     <string name="k2go_cx_share_transport_label">Odbiorca łączy się przez</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Ostatnie szlify Twojego systemu</string>
+    <string name="k2go_preparing_word_1">Personalizowanie...</string>
+    <string name="k2go_preparing_word_2">Porządkowanie...</string>
+    <string name="k2go_preparing_word_3">Szlifowanie...</string>
+    <string name="k2go_preparing_word_4">Dostrajanie...</string>
+    <string name="k2go_preparing_word_5">Układanie...</string>
+    <string name="k2go_preparing_word_6">Konfigurowanie wszystkiego...</string>
+    <string name="k2go_preparing_word_7">Dopasowywanie do Ciebie...</string>
+    <string name="k2go_preparing_word_8">Prawie gotowe...</string>
 </resources>

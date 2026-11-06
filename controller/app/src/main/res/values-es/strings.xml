@@ -1611,4 +1611,13 @@
     <string name="k2go_cx_share_transport_label">El receptor se conecta por</string>
     <string name="k2go_cx_share_transport_hotspot">Punto de acceso</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Preparando los últimos detalles de tu sistema</string>
+    <string name="k2go_preparing_word_1">Personalizando...</string>
+    <string name="k2go_preparing_word_2">Organizando...</string>
+    <string name="k2go_preparing_word_3">Puliendo...</string>
+    <string name="k2go_preparing_word_4">Ajustando...</string>
+    <string name="k2go_preparing_word_5">Acomodando...</string>
+    <string name="k2go_preparing_word_6">Configurando todo...</string>
+    <string name="k2go_preparing_word_7">Haciéndolo tuyo...</string>
+    <string name="k2go_preparing_word_8">Ya casi...</string>
 </resources>

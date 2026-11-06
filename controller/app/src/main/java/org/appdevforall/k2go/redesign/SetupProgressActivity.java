@@ -103,6 +103,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     // server proot is process-scoped so it survives into LibraryActivity.
     private org.appdevforall.k2go.ServerController serverController;
     private org.appdevforall.k2go.util.EllipsisAnimator statusEllipsis;   // ADFA-4842: animated "…" on the amber wait line
+    /** K2GO-553: covers the index while the first start makes the per-box values. */
+    private org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen preparing;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -110,6 +112,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     protected void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
         setContentView(R.layout.activity_k2go_setup_progress);
+        // K2GO-553: covers the index while the first start prepares the system; the sections continue below.
+        preparing = new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen(
+                findViewById(R.id.k2go_preparing), this, () -> !isFinishing());
         // K2GO-422: launched by the "Install repos" button, so this run tracks the post-install seed.
         postInstallSeed = getIntent() != null && getIntent().getBooleanExtra(EXTRA_FORGEJO_SEED, false);
 
@@ -232,6 +237,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
+        org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(prepLines);   // K2GO-553
+        preparing.onResumed();
         // ADFA-5074: the pipeline runs whatever is on top. It used to be started only when the
         // index was showing, which was fine while a detail could only be opened by tapping a row
         // — you had already been on the index, so the loop was already going. The hint route
@@ -252,6 +259,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
     @Override
     protected void onPause() {
         super.onPause();
+        org.appdevforall.k2go.env.EnvironmentProgress.clearLineListener(prepLines);
         pipeline.pause();
         if (statusEllipsis != null) statusEllipsis.stop();   // ADFA-4842
         cancelRedirect();
@@ -260,6 +268,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             ZimDownloadService.setListener(null);
             BooksDownloadService.setListener(null);
         }
+    }
+
+    /** K2GO-553: this screen's viewer of the boot output (one slot, shared with the Library). */
+    private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener prepLines = line -> {
+        if (preparing != null) preparing.onLine(line);
+    };
+
+    @Override
+    protected void onDestroy() {
+        if (preparing != null) preparing.release();
+        super.onDestroy();
     }
 
     @Override

@@ -1542,4 +1542,13 @@
     <string name="k2go_cx_share_transport_label">Penerima terhubung melalui</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Menyiapkan sentuhan akhir untuk sistem Anda</string>
+    <string name="k2go_preparing_word_1">Mempersonalisasi...</string>
+    <string name="k2go_preparing_word_2">Mengatur...</string>
+    <string name="k2go_preparing_word_3">Memoles...</string>
+    <string name="k2go_preparing_word_4">Menyetel...</string>
+    <string name="k2go_preparing_word_5">Menata...</string>
+    <string name="k2go_preparing_word_6">Menyiapkan semuanya...</string>
+    <string name="k2go_preparing_word_7">Menjadikannya milik Anda...</string>
+    <string name="k2go_preparing_word_8">Hampir selesai...</string>
 </resources>

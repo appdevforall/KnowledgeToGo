@@ -1612,4 +1612,13 @@
     <string name="k2go_cx_share_transport_label">प्राप्तकर्ता इसके माध्यम से कनेक्ट होता है</string>
     <string name="k2go_cx_share_transport_hotspot">हॉटस्पॉट</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">आपके सिस्टम को अंतिम रूप दिया जा रहा है</string>
+    <string name="k2go_preparing_word_1">निजीकरण हो रहा है...</string>
+    <string name="k2go_preparing_word_2">व्यवस्थित हो रहा है...</string>
+    <string name="k2go_preparing_word_3">निखारा जा रहा है...</string>
+    <string name="k2go_preparing_word_4">ट्यून हो रहा है...</string>
+    <string name="k2go_preparing_word_5">सजाया जा रहा है...</string>
+    <string name="k2go_preparing_word_6">सब कुछ सेट हो रहा है...</string>
+    <string name="k2go_preparing_word_7">इसे आपका बनाया जा रहा है...</string>
+    <string name="k2go_preparing_word_8">बस थोड़ा और...</string>
 </resources>

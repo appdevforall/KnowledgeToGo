@@ -1536,4 +1536,13 @@
     <string name="k2go_cx_share_transport_label">受信者の接続方法</string>
     <string name="k2go_cx_share_transport_hotspot">ホットスポット</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">システムの最後の仕上げをしています</string>
+    <string name="k2go_preparing_word_1">カスタマイズ中...</string>
+    <string name="k2go_preparing_word_2">整理中...</string>
+    <string name="k2go_preparing_word_3">磨き上げ中...</string>
+    <string name="k2go_preparing_word_4">調整中...</string>
+    <string name="k2go_preparing_word_5">配置中...</string>
+    <string name="k2go_preparing_word_6">すべてを設定中...</string>
+    <string name="k2go_preparing_word_7">あなた仕様に...</string>
+    <string name="k2go_preparing_word_8">もうすぐです...</string>
 </resources>

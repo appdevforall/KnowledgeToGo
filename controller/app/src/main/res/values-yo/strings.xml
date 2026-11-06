@@ -1555,4 +1555,13 @@
     <string name="k2go_cx_share_transport_label">Olùgbà á sopọ̀ nípasẹ̀</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">À ń ṣe àtúnṣe ìkẹyìn sí ètò rẹ</string>
+    <string name="k2go_preparing_word_1">Ń ṣe é fún ọ...</string>
+    <string name="k2go_preparing_word_2">Ń ṣètò...</string>
+    <string name="k2go_preparing_word_3">Ń dán an...</string>
+    <string name="k2go_preparing_word_4">Ń ṣàtúnṣe...</string>
+    <string name="k2go_preparing_word_5">Ń tò ó...</string>
+    <string name="k2go_preparing_word_6">Ń ṣètò ohun gbogbo...</string>
+    <string name="k2go_preparing_word_7">Ń sọ ọ́ di tìrẹ...</string>
+    <string name="k2go_preparing_word_8">Ó ti fẹ́ parí...</string>
 </resources>
