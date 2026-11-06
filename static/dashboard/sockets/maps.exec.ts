@@ -108,6 +108,14 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // K2GO-317: set true when WE proactively SIGTERM a stalled download (watchdog below), so the catch
     // keeps the journal and surfaces PAUSED just like an engine pause.
     let stalled = false;
+    // K2GO-317: tile-extract.py's own mirror/catalog HEAD request (between layers) can fail with a transient
+    // network error when the phone link blips. go-pmtiles never ran for that layer, so there is no exit_code 2;
+    // without this the catch would purge every completed layer, and the r2 skip could not then save them on a
+    // retry. Detect the signature in stderr and treat it as resumable (keep partials, surface PAUSED). The
+    // rolling tail guards against the signature splitting across stderr chunks.
+    let sawNetError = false;
+    let stderrTail = '';
+    const NET_ERR_RE = /ConnectionError|Max retries exceeded|HTTPSConnectionPool|Failed to establish a new connection|Connection (refused|reset)|Temporary failure in name resolution|Name or service not known/i;
 
     await new Promise<void>((resolve, reject) => {
         // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
@@ -226,7 +234,13 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 stdoutBuf = stdoutBuf.slice(nl + 1);
             }
         });
-        p.stderr?.on('data', (buf: Buffer) => { const t = buf.toString().trim(); if (t) ctx.log(t); });
+        p.stderr?.on('data', (buf: Buffer) => {
+            const t = buf.toString().trim();
+            if (!t) return;
+            ctx.log(t);
+            stderrTail = (stderrTail + '\n' + t).slice(-4000);   // bounded tail so a split signature still matches
+            if (!sawNetError && NET_ERR_RE.test(stderrTail)) sawNetError = true;
+        });
         p.on('error', reject);
         p.on('exit', (code, signal) => {
             clearStall();
@@ -246,13 +260,17 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         //   2. A network drop: our watchdog SIGTERMs the stalled download (stalled=true) so go-pmtiles
         //      flushes the current bytes; if the watchdog did not catch it first, go-pmtiles gives up on its
         //      own and reports exit_code 2 on its last JSON line (tile-extract.py masks the process exit to
-        //      1, so we read the JSON line). Either way we keep the journal. A cancel, or any other exit, is
-        //      a hard error: purge.
+        //      1, so we read the JSON line). Either way we keep the journal.
+        //   3. tile-extract.py's OWN mirror/catalog request hit a transient network error (sawNetError, from
+        //      its stderr). go-pmtiles never ran for that layer, so there is no exit_code 2. We keep every
+        //      completed layer so the resume skips it (r2) instead of re-downloading.
+        // A cancel, or any other exit, is a hard error: purge.
         const stop = classifyStop(ctx);
         if (stop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
         if (stop === 'paused') throw new PausedError();     // keep partial: resume continues
         if (stalled) throw new PausedError();               // our stall-pause flushed a full journal
         if (lastExitCode === 2) throw new PausedError();    // go-pmtiles gave up on its own: still resumable
+        if (sawNetError) throw new PausedError();           // tile-extract's own mirror request blipped: keep partials, resume skips completed layers
         await purgeRegion(name, ctx.log);                   // hard error: purge and surface
         throw e;
     });
