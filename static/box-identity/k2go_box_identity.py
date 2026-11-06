@@ -41,6 +41,7 @@ FORGEJO_KEYS = ("/library/forgejo/data/jwt/private.pem",
                 "/library/forgejo/data/actions_id_token/private.pem")
 CALIBRE_CONFIG = "/library/calibre-web/config"
 CALIBRE_DB = os.path.join(CALIBRE_CONFIG, "app.db")
+CALIBRE_LIBRARY_DB = "/library/calibre-web/metadata.db"  # conex_core/config.py calibre_db
 KOLIBRI_HOME = "/library/kolibri"
 KOLIBRI_DB = os.path.join(KOLIBRI_HOME, "db.sqlite3")
 DASH_JOBS_DB = "/library/dashboard/jobs.db"  # static/dashboard/sockets/jobs.ts DB_PATH
@@ -286,11 +287,14 @@ def forgejo_clear(keep_key):
         if not (keep_key and kind == "SECRET_KEY"):
             remove(path)
     remove(*FORGEJO_KEYS)
-    # Logins made on the other phone (remember-me tokens, sessions) and runner registrations.
-    scrub(forgejo_db(), (("forgejo_auth_token", "DELETE FROM forgejo_auth_token"),
-                         ("session", "DELETE FROM session"),
-                         ("action_runner_token", "DELETE FROM action_runner_token"),
-                         ("action_runner", "DELETE FROM action_runner")))
+    # Records of the other phone: logins, grants, runners, peers, job and hook history.
+    # The activity feed (action) is user data and stays.
+    scrub(forgejo_db(), [(t, "DELETE FROM " + t) for t in FORGEJO_RECORDS])
+
+
+FORGEJO_RECORDS = ("forgejo_auth_token", "session", "oauth2_grant", "oauth2_authorization_code",
+                   "action_runner_token", "action_runner", "notice", "hook_task", "task",
+                   "federation_host", "federated_user", "federated_user_activity", "following_repo")
 
 
 def forgejo_rotate():
@@ -325,13 +329,18 @@ def calibre_strip():
         raise RuntimeError("Calibre-Web settings schema changed")  # fail the bake, do not ship a key
     scrub(CALIBRE_DB, [("flask_settings", "DELETE FROM flask_settings"),
                        ("user_session", "DELETE FROM user_session"),
-                       ("remote_auth_token", "DELETE FROM remote_auth_token")]
+                       ("remote_auth_token", "DELETE FROM remote_auth_token"),
+                       ("kobo_synced_books", "DELETE FROM kobo_synced_books"),
+                       ("downloads", "DELETE FROM downloads")]
           + [("settings", "UPDATE settings SET %s = NULL" % c) for c in encrypted])
 
 
 def calibre_rotate():
     making()
     calibre_strip()
+    # Calibre desktop names its device here. OR REPLACE: the row is unique per device.
+    scrub(CALIBRE_LIBRARY_DB, (("last_read_positions",
+                                "UPDATE OR REPLACE last_read_positions SET device = '' WHERE device != ''"),))
     return ["key", "sessions"]
 
 
@@ -421,15 +430,17 @@ KOLIBRI_SCRUB = (
     ("discovery_pinneddevice", "DELETE FROM discovery_pinneddevice"),
     ("device_learnerdevicestatus", "DELETE FROM device_learnerdevicestatus"),
     ("device_usersyncstatus", "DELETE FROM device_usersyncstatus"),
+    ("device_osuser", "DELETE FROM device_osuser"),
     ("logger_usersessionlog", "UPDATE logger_usersessionlog SET device_info = NULL"),
-    # The InstanceID includes the db path (REKEY_HOME here). Kolibri makes the live one at start.
-    ("morango_instanceidmodel", "DELETE FROM morango_instanceidmodel"),
+    ("logger_contentsessionlog", "UPDATE logger_contentsessionlog SET visitor_id = NULL"),
 )
 KOLIBRI_SIDE_DBS = (
     ("sessions.sqlite3", (("kolibriauth_session", "DELETE FROM kolibriauth_session"),)),
     ("syncqueue.sqlite3", (("device_syncqueue", "DELETE FROM device_syncqueue"),)),
     ("networklocation.sqlite3", (("discovery_networklocation",
                                   "DELETE FROM discovery_networklocation WHERE location_type IS NOT 'reserved'"),)),
+    # A peer import job keeps the peer URL. Kolibri schedules its periodic jobs again at start.
+    ("job_storage.sqlite3", (("jobs", "DELETE FROM jobs"),)),
 )
 
 
@@ -485,6 +496,9 @@ def kolibri_rotate():
         con.commit()
     finally:
         con.close()
+    # Before the re-key: recreatefacility copies the rows into the new facility and deletes the
+    # Morango store rows of the old one, so no old value stays in the store.
+    scrub(copy, KOLIBRI_SCRUB)
 
     for old in sorted(kolibri_facilities(copy)):
         before = kolibri_facilities(copy)
@@ -508,9 +522,11 @@ def kolibri_rotate():
         finally:
             con.close()
 
-    scrub(copy, KOLIBRI_SCRUB)
-    # recreatefacility deleted the notifications of the old user IDs: compact them away.
-    scrub(os.path.join(REKEY_HOME, "notifications.sqlite3"), ())
+    # The InstanceID that recreatefacility made includes REKEY_HOME. Kolibri makes the live one at
+    # start. Then compact away the old facility, and the notifications of the old user IDs.
+    scrub(copy, (("morango_instanceidmodel", "DELETE FROM morango_instanceidmodel"),))
+    scrub(os.path.join(REKEY_HOME, "notifications.sqlite3"),
+          (("notifications_notificationslog", "DELETE FROM notifications_notificationslog"),))
     for name, statements in KOLIBRI_SIDE_DBS:
         scrub(os.path.join(KOLIBRI_HOME, name), statements)
     # db.sqlite3 last: if the process dies between the two, the next start re-keys again.
