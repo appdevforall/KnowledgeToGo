@@ -11,6 +11,9 @@ package org.appdevforall.k2go;
 
 import org.appdevforall.k2go.deploy.domain.ArchiveEntry;
 import org.appdevforall.k2go.deploy.domain.ExtractProgress;
+import org.appdevforall.k2go.deploy.domain.TarVerboseLine;
+import org.appdevforall.k2go.system.domain.TransferRate;
+import org.appdevforall.k2go.system.domain.WindowedRate;
 
 import android.content.Context;
 import android.os.Handler;
@@ -24,13 +27,33 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public class TarExtractor {
     private static final String TAG = "IIAB-TarExtractor";
     private Process tarProcess;
     private boolean isExtracting = false;
+
+    /** K2GO-555: a wide trailing window for the extract rate. tar names a member at its start, so the
+     *  per-member byte delta is bursty; a wide window averages the burst into honest throughput and
+     *  pairs with the presentation EtaSmoother's dwell. */
+    private static final long EXTRACT_RATE_WINDOW_MS = 5_000L;
+
+    /** K2GO-555: the archive listing -- member paths (for the traversal and rootfs guards) plus the
+     *  per-path uncompressed size and their total, so the extract phase can weight progress by bytes. */
+    private static final class Listing {
+        final List<String> paths;
+        final Map<String, Long> sizeByPath;
+        final long totalBytes;
+        Listing(List<String> paths, Map<String, Long> sizeByPath, long totalBytes) {
+            this.paths = paths;
+            this.sizeByPath = sizeByPath;
+            this.totalBytes = totalBytes;
+        }
+    }
 
     /** ADFA-5118: the two passes the app makes over the same .tar.gz — the safety/listing pass
      *  ({@code VERIFY}, {@link #listEntries}) and the extraction pass ({@code EXTRACT}). */
@@ -185,17 +208,21 @@ public class TarExtractor {
                     }
                 }
 
-                List<String> entries = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
-                for (String entry : entries) {
+                Listing listing = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
+                for (String entry : listing.paths) {
                     if (ArchiveEntry.escapesRoot(entry)) {
                         throw new Exception("Unsafe archive entry (path traversal): " + entry);
                     }
                 }
 
-                // ADFA-4915: entries.size() is the extraction denominator (members), already
-                // computed above for the traversal/ABI checks — no extra tar pass.
-                final long totalMembers = entries.size();
+                // ADFA-4915 / K2GO-555: the extraction denominator, from the one listing pass (no extra
+                // tar pass). totalBytes (uncompressed) weights progress by real work; totalMembers is the
+                // fallback when the listing yields no sizes, so the bar can never stall at zero.
+                final long totalMembers = listing.paths.size();
+                final long totalBytes = listing.totalBytes;
+                final boolean byteMode = totalBytes > 0L;
                 final long[] doneMembers = {0L};
+                final long[] doneBytes = {0L};
 
                 // For untrusted imports/restores: it must be a valid rootfs of THIS
                 // app's architecture (ABI policy: 32<->32, 64<->64). Reuses the
@@ -203,7 +230,7 @@ public class TarExtractor {
                 if (validateRootfs) {
                     org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr =
                             org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
-                                    .validateWithEntries(context, archivePath, isGzip, tarBinary, entries);
+                                    .validateWithEntries(context, archivePath, isGzip, tarBinary, listing.paths);
                     String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
                             .rejectionMessage(context, vr);
                     if (why != null) {
@@ -249,6 +276,9 @@ public class TarExtractor {
                 // reader thread below (tar -v emits one line per member as it lands on disk). extractStartMs
                 // is the pass clock that thread uses for the rate/ETA.
                 final long extractStartMs = SystemClock.elapsedRealtime();
+                // K2GO-555: the EXTRACT rate is a trailing window, not the cumulative average. The reader
+                // thread is the only writer, so this instance needs no synchronization.
+                final WindowedRate extractRate = new WindowedRate(EXTRACT_RATE_WINDOW_MS);
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     long[] lastLog = {0L};
@@ -266,23 +296,25 @@ public class TarExtractor {
                                 Log.d(TAG, "Tar Output: " + line);
                             }
                             doneMembers[0]++;   // ADFA-4915: ~one verbose line per member (stray stderr lines just push toward the 99% clamp)
+                            // K2GO-555: weight the EXTRACT bar + ETA by uncompressed bytes written, not
+                            // member count. tar -v names each member as it lands on disk; look its size up
+                            // from the listing and accumulate. An unknown line (stray/stderr) adds 0 bytes,
+                            // so there is no index drift. Members vary hugely in size, so the file-count ETA
+                            // climbed to absurd values mid-extract; bytes track the real work.
+                            Long sz = listing.sizeByPath.get(line);
+                            if (sz != null) doneBytes[0] += sz;
                             if (now - lastEmit[0] >= 50) {
                                 lastEmit[0] = now;
                                 final String l = line;
-                                final long d = doneMembers[0];
-                                final int pct = ExtractProgress.percent(d, totalMembers);
+                                final long d = byteMode ? doneBytes[0] : doneMembers[0];
+                                final long tot = byteMode ? totalBytes : totalMembers;
+                                final int pct = ExtractProgress.percent(d, tot);
+                                final long rate = extractRate.sample(d, SystemClock.elapsedRealtime() - extractStartMs);
                                 uiHandler.post(() -> {
                                     listener.onProgress(l);
-                                    listener.onProgress(pct, d, totalMembers, l);
+                                    listener.onProgress(pct, d, tot, l);
                                 });
-                                // K2GO-384: the unified EXTRACT bar + ETA track MEMBERS WRITTEN (one tar -v
-                                // line per member as it lands on disk), not compressed bytes read from the
-                                // .gz. The byte count saturated at ~99% the instant the archive was fully
-                                // piped into tar, freezing the bar and reading "under a min" for minutes
-                                // while tar was still writing the (much larger) rootfs. Members track the
-                                // real work, so the bar keeps moving and the ETA reads honest minutes.
-                                emitPhase(listener, uiHandler, Phase.EXTRACT,
-                                        d, totalMembers, SystemClock.elapsedRealtime() - extractStartMs, l);
+                                emitPhase(listener, uiHandler, Phase.EXTRACT, d, tot, rate, l);
                             }
                         }
                     } catch (Exception ignored) {
@@ -395,15 +427,17 @@ public class TarExtractor {
 
 
     /**
-     * ADFA-5118: compute this pass's percent + a live ETA (rate averaged by TransferRate over the
-     * pass so far) and hand them to the listener on the UI thread. Used by both the VERIFY and the
-     * EXTRACT feeder; the unified 0..100 mapping is done by the presentation layer.
+     * ADFA-5118 / K2GO-555: compute this pass's percent and a live ETA from a caller-supplied rate,
+     * then hand them to the listener on the UI thread. The caller owns the rate source: VERIFY passes
+     * the cumulative average (reading the archive is steady work), EXTRACT passes a trailing-window
+     * rate (tar names a member at its start, so the per-member byte delta is bursty). The unified
+     * 0..100 mapping is done by the presentation layer. {@code ratePerSec} is in the same unit as
+     * {@code done}/{@code total} per second (bytes, or members on the no-size fallback).
      */
     private static void emitPhase(ExtractionListener listener, Handler uiHandler, Phase phase,
-                                  long done, long total, long elapsedMs, String line) {
-        final long rate = org.appdevforall.k2go.system.domain.TransferRate.perSecond(done, elapsedMs);
+                                  long done, long total, long ratePerSec, String line) {
         final int pct = ExtractProgress.percent(done, total);
-        final long eta = ExtractProgress.etaSeconds(done, total, rate);
+        final long eta = ExtractProgress.etaSeconds(done, total, ratePerSec);
         final String l = line == null ? "" : line;
         uiHandler.post(() -> listener.onExtractPhase(phase, pct, eta, l));
     }
@@ -415,22 +449,29 @@ public class TarExtractor {
      *
      * <p>ADFA-5118: this is the VERIFY pass of the unified bar. On the gzip path it counts
      * compressed bytes consumed against the archive size on disk and emits determinate
-     * progress + an ETA (via {@code onExtractPhase}); {@code tar -t} already streams each
-     * member name, so the current file is surfaced too — symmetric with the extract pass.
+     * progress + an ETA (via {@code onExtractPhase}); {@code tar -tv} already streams each
+     * member, so the current file is surfaced too — symmetric with the extract pass.
+     *
+     * <p>K2GO-555: the listing is {@code tar -tv} (verbose), so each member carries its byte
+     * size. {@link TarVerboseLine} parses every line into a path (for the traversal and rootfs
+     * guards) plus the size, and the sizes feed the byte-weighted extract bar.
      */
-    private List<String> listEntries(String tarBinary, String archivePath, boolean isGzip,
-                                     java.util.concurrent.atomic.AtomicBoolean cancelledBeforeExtract,
-                                     java.util.concurrent.atomic.AtomicBoolean pauseAtBoundary,
-                                     ExtractionListener listener) throws Exception {
+    private Listing listEntries(String tarBinary, String archivePath, boolean isGzip,
+                                java.util.concurrent.atomic.AtomicBoolean cancelledBeforeExtract,
+                                java.util.concurrent.atomic.AtomicBoolean pauseAtBoundary,
+                                ExtractionListener listener) throws Exception {
         List<String> names = new ArrayList<>();
+        Map<String, Long> sizeByPath = new LinkedHashMap<>();
+        long[] totalBytes = {0L};
         List<String> listCmd = new ArrayList<>();
         listCmd.add(tarBinary);
         if (isGzip) {
-            listCmd.add("-t");
+            // K2GO-555: -v so each member line carries its size; gzip is decompressed in Java and piped.
+            listCmd.add("-tv");
             listCmd.add("-f");
             listCmd.add("-");
         } else {
-            listCmd.add("-tf");
+            listCmd.add("-tvf");
             listCmd.add(archivePath);
         }
 
@@ -456,8 +497,8 @@ public class TarExtractor {
                         long now = SystemClock.elapsedRealtime();
                         if (compressedTotal > 0L && now - lastEmit >= 200) {
                             lastEmit = now;
-                            emitPhase(listener, uiHandler, Phase.VERIFY,
-                                    cis.count, compressedTotal, now - startMs, lastFile[0]);
+                            emitPhase(listener, uiHandler, Phase.VERIFY, cis.count, compressedTotal,
+                                    TransferRate.perSecond(cis.count, now - startMs), lastFile[0]);
                         }
                     }
                     os.flush();
@@ -482,8 +523,23 @@ public class TarExtractor {
                     listProcess.destroy();
                     throw new HeldForDecisionException();
                 }
-                names.add(line);
-                lastFile[0] = line;   // ADFA-5118: the member tar -t is listing right now
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                // K2GO-555: stdout of `tar -tv` is member lines only (stderr is separate here). Parse
+                // each into its path and size. The path-traversal and rootfs guards read these paths, so
+                // a line we cannot parse is a path we cannot verify -> fail closed, do not extract blind.
+                TarVerboseLine e = TarVerboseLine.parse(line);
+                if (e == null) {
+                    listProcess.destroy();
+                    throw new Exception("Unparseable archive listing line: " + line);
+                }
+                names.add(e.path);
+                if (e.size > 0L) {
+                    sizeByPath.put(e.path, e.size);
+                    totalBytes[0] += e.size;
+                }
+                lastFile[0] = e.path;   // ADFA-5118: the member tar is listing right now
             }
         }
 
@@ -493,7 +549,7 @@ public class TarExtractor {
             // Could not verify the archive -> fail closed rather than extract blind.
             throw new Exception("Could not read archive listing for verification (tar exit " + exitCode + ")");
         }
-        return names;
+        return new Listing(names, sizeByPath, totalBytes[0]);
     }
 
     /** Available bytes on the destination's filesystem, or -1 if unavailable (ADFA-4544). */
