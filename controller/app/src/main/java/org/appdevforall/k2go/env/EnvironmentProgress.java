@@ -10,6 +10,8 @@ package org.appdevforall.k2go.env;
 
 import android.os.SystemClock;
 
+import org.appdevforall.k2go.boxidentity.domain.BoxIdentityLine;
+
 /**
  * The environment's last sign of life, in one place.
  *
@@ -35,6 +37,13 @@ public final class EnvironmentProgress {
     /** Monotonic stamp of the last sign of life, or {@code 0} for "no signal". */
     private static volatile long lastSignOfLifeMs = 0L;
 
+    /**
+     * K2GO-549: this launch printed the box identity "begin" line, so this boot makes the per-box
+     * values. Held here because the reconciler can launch the box before any screen listens. Same
+     * lifetime as the stamp: a new launch or a stop clears it, and process death drops it.
+     */
+    private static volatile boolean preparingLaunch = false;
+
     private EnvironmentProgress() {
     }
 
@@ -45,6 +54,7 @@ public final class EnvironmentProgress {
      */
     public static void launched() {
         lastSignOfLifeMs = SystemClock.elapsedRealtime();
+        preparingLaunch = false;
     }
 
     /** The environment produced output: it is still moving. */
@@ -74,6 +84,9 @@ public final class EnvironmentProgress {
     /** The environment printed {@code line}: a sign of life, also passed to the viewer if one is attached. */
     public static void alive(String line) {
         alive();
+        if (BoxIdentityLine.isBegin(line)) {
+            preparingLaunch = true;
+        }
         line(line);
     }
 
@@ -91,6 +104,12 @@ public final class EnvironmentProgress {
      */
     public static void cleared() {
         lastSignOfLifeMs = 0L;
+        preparingLaunch = false;
+    }
+
+    /** K2GO-549: true when the current launch printed the box identity "begin" line. */
+    public static boolean preparingLaunch() {
+        return preparingLaunch;
     }
 
     /**
