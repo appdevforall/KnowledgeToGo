@@ -109,15 +109,16 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s) return;
             ctx.log(s);
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
-            let j: { phase?: string; bytes_done?: number; bytes_total?: number; resumed_bytes?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
             try { j = JSON.parse(s); } catch { return; }
             if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
             let frac = 0;
             if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
-                // K2GO-317: count the bytes already resumed from the journal, not just this run's new
-                // bytes, so a resumed layer reports its true progress instead of restarting the ring at 0.
-                frac = Math.min(1, ((j.resumed_bytes ?? 0) + (j.bytes_done ?? 0)) / (j.bytes_total as number));
+                // bytes_done ALREADY includes resumed_bytes (on a resume it starts at the resumed amount
+                // and climbs to bytes_total), so this is the true progress of a resumed layer too. Do NOT
+                // add resumed_bytes here: that double-counts and clamps a resumed layer to 100%.
+                frac = Math.min(1, (j.bytes_done ?? 0) / (j.bytes_total as number));
             } else if (j.phase === 'finalize' || j.phase === 'done') {
                 frac = 1;
             }
