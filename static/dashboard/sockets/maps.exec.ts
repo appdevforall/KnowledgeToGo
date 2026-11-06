@@ -51,12 +51,12 @@ function cleanupTmpPartials(name: string, log: (l: string) => void): void {
     } catch { /* dir missing / unreadable — nothing to prune */ }
 }
 
-/** ADFA-4896: discard a region's partial extract and drop it from the catalog. There is no maps
- *  checkpoint yet, so pause is stop+restart and cancel is remove — both discard the partial so a
- *  resume/retry re-extracts from a clean slate and nothing half-written is left behind or listed.
- *  Two places to clean: TMP_DIR (a mid-extract kill) and, via the script's `delete` (which runs
- *  update-json itself), the served dir + extracts.json (the rare race where the extract finished
- *  just as the stop landed). delete on a name that was never served is a harmless no-op. */
+/** ADFA-4896 / K2GO-317: discard a region's partial extract and drop it from the catalog. Used for a
+ *  CANCEL and for a hard (non-resumable) error only. A pause or a resumable network drop does NOT come
+ *  here: those keep the partial + .resume journal so a re-run continues from the checkpoint. Two places
+ *  to clean: TMP_DIR (a mid-extract kill) and, via the script's `delete` (which runs update-json itself),
+ *  the served dir + extracts.json (the rare race where the extract finished just as the stop landed).
+ *  delete on a name that was never served is a harmless no-op. */
 async function purgeRegion(name: string, log: (l: string) => void): Promise<void> {
     cleanupTmpPartials(name, log);
     await runMapsCmd(['delete', name], log);
@@ -84,12 +84,16 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // We derive ONE overall percent = (completed layers + the current layer's byte fraction) / 3, so
     // the bar climbs 0..100 ONCE instead of the old per-layer 0->100 reset (the "dancing" bar). A layer
     // is complete on its "phase":"done" line. The within-layer fraction is the byte ratio (not a
-    // scraped text percent), so it is smooth too. A stop (pause/cancel) is detected from the engine's
-    // job flags (classifyStop in the catch below), not the JSON; the pmtiles exit code is only a
-    // secondary signal for a resumable stop that was not engine-initiated. speed and eta come from JSON.
+    // scraped text percent), so it is smooth too. A stop by pause or cancel is read from the engine's
+    // job flags (classifyStop in the catch below). A network drop, which is not an engine stop, is read
+    // from the last JSON line's exit_code (2 = resumable; the catch keeps the journal for it). speed and
+    // eta come from the JSON.
     const TOTAL_LAYERS = 3;
     let layersDone = 0;
     let overall = 0;   // monotonic across the whole FQR
+    // K2GO-317 follow-up: go-pmtiles prints exit_code on each layer's last JSON line. On a stop we read it
+    // to tell a resumable network drop (2) from a hard failure. The last value seen is the relevant one.
+    let lastExitCode: number | null = null;
 
     await new Promise<void>((resolve, reject) => {
         // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
@@ -105,12 +109,15 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s) return;
             ctx.log(s);
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
-            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; eta_s?: number | null };
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; resumed_bytes?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
             try { j = JSON.parse(s); } catch { return; }
+            if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
             let frac = 0;
             if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
-                frac = Math.min(1, (j.bytes_done ?? 0) / (j.bytes_total as number));
+                // K2GO-317: count the bytes already resumed from the journal, not just this run's new
+                // bytes, so a resumed layer reports its true progress instead of restarting the ring at 0.
+                frac = Math.min(1, ((j.resumed_bytes ?? 0) + (j.bytes_done ?? 0)) / (j.bytes_total as number));
             } else if (j.phase === 'finalize' || j.phase === 'done') {
                 frac = 1;
             }
@@ -140,18 +147,19 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             reject(new Error(signal ? `tile-extract killed by ${signal}` : `tile-extract exited with code ${code}`));
         });
     }).catch(async (e: unknown) => {
-        // K2GO-317: the custom go-pmtiles build keeps an on-disk resume journal (<output>.resume, the
-        // single owner of the checkpoint), so an engine-initiated PAUSE keeps the partial + journal and
-        // re-running tile-extract resumes from the checkpoint instead of re-extracting from 0. A cancel,
-        // or any other exit, purges.
-        // NOTE: tile-extract.py raises on a failed run, so it exits 1 for every pmtiles failure. A
-        // non-engine resumable stop (pmtiles exit 2 network-gave-up / 3 self-paused) is therefore
-        // indistinguishable here from a hard failure and is purged. Preserving those needs the script
-        // to propagate the child exit code; tracked as a follow-up.
+        // The custom go-pmtiles build keeps an on-disk resume journal (<output>.resume, the single owner
+        // of the checkpoint), so re-running tile-extract continues from it instead of re-extracting from 0.
+        // A stop is resumable in two ways; for both we keep the journal and surface PAUSED, so the device
+        // offers Resume (which re-runs the same command and continues from the checkpoint):
+        //   1. An engine-initiated PAUSE (SIGTERM): the engine flags it, classifyStop sees it.
+        //   2. A network drop: go-pmtiles gives up, keeps the journal, and reports exit_code 2 on its last
+        //      JSON line. tile-extract.py masks the process exit to 1 (K2GO-317 follow-up), so we read the
+        //      JSON line, not the exit status. A cancel, or any other exit, is a hard error: purge.
         const stop = classifyStop(ctx);
         if (stop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
         if (stop === 'paused') throw new PausedError();     // keep partial: resume continues
-        await purgeRegion(name, ctx.log);                   // not an engine stop: purge and surface
+        if (lastExitCode === 2) throw new PausedError();    // resumable network drop: keep partial + journal
+        await purgeRegion(name, ctx.log);                   // hard error: purge and surface
         throw e;
     });
 

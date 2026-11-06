@@ -705,12 +705,16 @@ public final class FqrController {
         setRingState(cPrimary, true);
     }
 
-    /** K2GO-541: canceling discards the partial, so confirm first (the X was a one-tap destructive action). */
+    /** K2GO-317: canceling discards the partial, so the X first PAUSES the download (the partial and its
+     *  resume journal stay safe, and no more data is spent while the user decides), then confirms. "Cancel"
+     *  cancels from that paused point; "Keep downloading" resumes from it. pause/resume are no-ops when the
+     *  job is not running, so a tap on the X of a paused or failed panel still just offers the choice. */
     private void confirmCancel() {
+        client.pause();
         new BrandDialog(themed)
                 .setTitle(R.string.k2go_dl_cancel_title)
                 .setDestructive(R.string.k2go_cancel, () -> { client.cancel(); hideOverlay(); })
-                .setNegative(R.string.k2go_dl_cancel_keep, null)
+                .setNegative(R.string.k2go_dl_cancel_keep, () -> client.resume())
                 .show();
     }
 
