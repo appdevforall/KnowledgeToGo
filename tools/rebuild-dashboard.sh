@@ -49,6 +49,9 @@ STAGE="/library/dashboard.staging"
 BACKUP="/library/dashboard.dist.bak"
 NGINX_CONF_DIR="/etc/nginx/conf.d"
 TEST_PORT="${K2GO_REBUILD_TEST_PORT:-4010}"
+# K2GO-557: the staged 2nd node is cold and, on a low-RAM 32-bit device, needs more than the old
+# blind `sleep 3` to boot (measured: ~11s to first 200 on a 1.4 GB arm32 Q8). Poll up to this long.
+STAGE_SMOKE_SECS="${K2GO_REBUILD_STAGE_TIMEOUT:-45}"
 # The app runs the newest scripts from a temp dir (extracted via `git show`), so it can point us at
 # the matching smoke test there; falls back to the clone's copy for a manual/dev run.
 SMOKE="${K2GO_SMOKE:-$CLONE_DIR/tools/dashboard-smoketest.sh}"
@@ -76,15 +79,18 @@ purge_staging() {
     find "$STAGE" -name '*.l2s.*' -exec rm -f {} + 2>/dev/null || true
     rm -rf "$STAGE" 2>/dev/null || true
 }
-# ADFA-5051: poll the LIVE API's smoke test until it passes (~30s) or give up (1 = not healthy).
-verify_live() {
-    _i=1
-    while [ "$_i" -le 15 ]; do
-        if sh "$SMOKE" "http://127.0.0.1:4000/api" >>"$LOG" 2>&1; then return 0; fi
-        sleep 2; _i=$((_i + 1))
+# ADFA-5051 + K2GO-557: ONE poll helper for BOTH the staged and the live smoke check. Was two rules
+# for the same thing: verify_live polled ~30s, but the staged gate was a blind `sleep 3`, so a cold
+# 2nd node on a slow/low-RAM device false-failed. $1 = base url, $2 = max seconds (~2s per try).
+poll_smoke() {
+    _deadline=$(( $(date +%s) + ${2:-30} ))
+    while :; do
+        if sh "$SMOKE" "$1" >>"$LOG" 2>&1; then return 0; fi
+        [ "$(date +%s)" -ge "$_deadline" ] && return 1
+        sleep 2
     done
-    return 1
 }
+verify_live() { poll_smoke "http://127.0.0.1:4000/api" 30; }
 cleanup() { [ -n "${TESTPID:-}" ] && kill "$TESTPID" 2>/dev/null || true; purge_staging; rmdir "$LOCK" 2>/dev/null || true; rm -f "$PHASE" "$PIDFILE" 2>/dev/null || true; }
 fail() { log "FAIL: $*"; set_status "error"; cleanup; exit 1; }
 # ADFA-5333: a cancel (SIGTERM/INT during the building phase) self-heals the state — set the status to
@@ -122,31 +128,74 @@ purge_staging; mkdir -p "$STAGE" || fail "mkdir staging"
 # Warm the install from the live node_modules to speed `yarn install`. Use tar (not cp -a) and EXCLUDE
 # proot's ".l2s." loop artifacts so the copy never trips on them (cp -a would ELOOP) and staging stays
 # cleanly removable; yarn reconciles anything missing.
-# Also EXCLUDE better-sqlite3/build: a prior rebuild leaves proot ".l2s." hardlink artifacts AND dangling
-# symlinks (e.g. build/.../deps/sqlite3.a) there, which node-gyp's own `clean` step cannot unlink under
-# proot (EPERM) — that failed EVERY rebuild after the first (the first, post-bake, had a clean build dir).
-# Excluding the "*.l2s.*" targets alone kept those symlinks, so it was not enough. Dropping the whole
-# native build dir lets node-gyp compile better-sqlite3 fresh — which `[4/4] Building fresh packages` does
-# regardless — so the warm copy is a cache of the pure-JS deps only. Other packages' build/ dirs are kept.
+# Also EXCLUDE better-sqlite3/build: proot leaves ".l2s." hardlink artifacts AND dangling symlinks
+# (e.g. build/.../deps/sqlite3.a) there, which node-gyp's own `clean` cannot unlink under proot (EPERM).
+# K2GO-557 seeds the one compiled binary back explicitly below, so the warm copy stays a cache of the
+# pure-JS deps only. Other packages' build/ dirs are kept.
 if [ -d "$LIVE/node_modules" ]; then
     ( cd "$LIVE" && tar --exclude='*.l2s.*' --exclude='better-sqlite3/build' -cf - node_modules ) | ( cd "$STAGE" && tar -xf - ) || true
 fi
-# ADFA-4893: stream yarn install/build to BOTH the console and the log — no more staring at a stopped
-# screen. POSIX sh has no `pipefail`, so capture the real exit code to a file inside the group before
-# the pipe, then check it. (yarn install prints progress; `yarn build` = tsc, silent on success.)
-{ ( cd "$STAGE" && yarn install && yarn build ); echo $? > "$STAGE/.buildrc"; } 2>&1 | tee -a "$LOG"
-[ "$(cat "$STAGE/.buildrc" 2>/dev/null || echo 1)" = 0 ] || fail "yarn install/build (offline or build error) — live untouched"
+
+# --- K2GO-557: avoid the ~20-min better-sqlite3 node-gyp recompile. Small hops, not one pillar:
+#     (2a) reconcile JS deps WITHOUT building native; (2b) reuse the already-compiled native binary
+#     from the live box when it is still compatible: node enforces the CPU-ABI and Node-ABI match at
+#     require(), and we gate the package version; else compile from source; (2c) tsc. Correctness never
+#     depends on reuse: any miss falls back to the pre-K2GO-557 full install. Measured on a 1.4 GB arm32
+#     Q8: 36s + 4s + 84s = ~2 min, vs the full recompile's yarn install alone = ~20 min.
+BSQ_REL="node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+native_ok=0
+# 2a) JS deps only: --ignore-scripts skips better-sqlite3's "prebuild-install || node-gyp rebuild",
+#     so nothing compiles here. This assumes better-sqlite3 is the only native dep; a new native dep
+#     would be left unbuilt on the reuse path and caught (fail-closed) by the step 3 smoke, never
+#     shipped silently.
+log "staging: reconcile JS deps (no native build)"
+if ( cd "$STAGE" && yarn install --ignore-scripts ) >>"$LOG" 2>&1; then
+    _lv=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$LIVE/node_modules/better-sqlite3/package.json" 2>/dev/null | head -1)
+    _sv=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$STAGE/node_modules/better-sqlite3/package.json" 2>/dev/null | head -1)
+    if [ -f "$LIVE/$BSQ_REL" ] && [ -n "$_lv" ] && [ "$_lv" = "$_sv" ]; then
+        log "staging: reuse live better_sqlite3.node (better-sqlite3 $_lv unchanged)"
+        mkdir -p "$STAGE/node_modules/better-sqlite3/build/Release"
+        cp -f "$LIVE/$BSQ_REL" "$STAGE/$BSQ_REL"
+        if ( cd "$STAGE" && node -e 'require("better-sqlite3")(":memory:").close()' ) >>"$LOG" 2>&1; then
+            native_ok=1; log "staging: reused native binary loads OK (skipped recompile)"
+        else
+            log "staging: reused binary did not load -> compiling from source"
+            rm -f "$STAGE/$BSQ_REL"
+        fi
+    else
+        log "staging: better-sqlite3 changed (${_lv:-?} -> ${_sv:-?}) or no live binary -> compiling from source"
+    fi
+else
+    log "staging: 'yarn install --ignore-scripts' failed -> full install"
+fi
+# 2b) compile native from source only when reuse did not apply (the pre-K2GO-557 behavior).
+if [ "$native_ok" != 1 ]; then
+    log "staging: building native deps from source (yarn install)"
+    { ( cd "$STAGE" && yarn install ); echo $? > "$STAGE/.nativerc"; } 2>&1 | tee -a "$LOG"
+    [ "$(cat "$STAGE/.nativerc" 2>/dev/null || echo 1)" = 0 ] || fail "yarn install (native build: offline or error) — live untouched"
+fi
+# 2c) compile TypeScript -> dist (always; cheap).
+log "staging: tsc build"
+{ ( cd "$STAGE" && yarn build ); echo $? > "$STAGE/.buildrc"; } 2>&1 | tee -a "$LOG"
+[ "$(cat "$STAGE/.buildrc" 2>/dev/null || echo 1)" = 0 ] || fail "yarn build (tsc error) — live untouched"
 [ -f "$STAGE/dist/server.js" ] || fail "no dist/server.js after build — live untouched"
 
 # 3) smoke-test the STAGED build on a temp port (does not touch the live :4000).
-log "smoke test staged build on :$TEST_PORT"
+# K2GO-557: poll until healthy (up to $STAGE_SMOKE_SECS) instead of a blind `sleep 3`. A cold 2nd node
+# on a low-RAM 32-bit device takes ~11s to answer, so `sleep 3` false-failed the update.
+log "smoke test staged build on :$TEST_PORT (poll up to ${STAGE_SMOKE_SECS}s)"
 ( cd "$STAGE" && PORT="$TEST_PORT" node dist/server.js >>"$LOG" 2>&1 ) &
 TESTPID=$!
-sleep 3
-sh "$SMOKE" "http://127.0.0.1:$TEST_PORT/api" >>"$LOG" 2>&1
-RC=$?
+if poll_smoke "http://127.0.0.1:$TEST_PORT/api" "$STAGE_SMOKE_SECS"; then RC=0; else RC=1; fi
 kill "$TESTPID" 2>/dev/null || true; wait "$TESTPID" 2>/dev/null || true; TESTPID=""
-[ "$RC" -eq 0 ] || fail "staged smoke test failed (rc=$RC) — NOT promoting; live untouched"
+[ "$RC" -eq 0 ] || fail "staged smoke test failed (rc=$RC, waited ${STAGE_SMOKE_SECS}s) — NOT promoting; live untouched"
+
+# K2GO-557: dry-run stops here with the staged build validated and the live dashboard untouched.
+# Lets a low-RAM device be measured end-to-end (build + smoke) without a live promote/restart.
+if [ "${K2GO_REBUILD_DRYRUN:-0}" = 1 ]; then
+    log "DRY-RUN: staged build + smoke passed; skipping promote (live untouched)"
+    set_status "done"; exit 0
+fi
 
 # 4) promote — swap the dist FIRST and verify it live; only advance source + package.json (and the
 #    nginx vhost) AFTER the live check passes. That way a failed verify rolls back the dist and the
