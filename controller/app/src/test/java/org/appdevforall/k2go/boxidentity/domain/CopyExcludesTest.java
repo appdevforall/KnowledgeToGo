@@ -24,13 +24,21 @@ public class CopyExcludesTest {
 
     @Test
     public void anchorsAtTheRsyncModuleRoot() {
-        assertEquals("/library/kolibri/logs/*.txt\n/tmp/*\n", CopyExcludes.forRsync(TEXT));
+        assertEquals("/library/kolibri/logs/*.txt\n/tmp/*\n/sdcard/\n", CopyExcludes.forRsync(TEXT));
     }
 
     @Test
     public void anchorsAtTheTarMemberPrefix() {
-        assertEquals("installed-rootfs/iiab/library/kolibri/logs/*.txt\ninstalled-rootfs/iiab/tmp/*\n",
+        assertEquals("installed-rootfs/iiab/library/kolibri/logs/*.txt\ninstalled-rootfs/iiab/tmp/*\n"
+                        + "installed-rootfs/iiab/sdcard/*\n",
                 CopyExcludes.forTar(TEXT, "installed-rootfs/iiab/"));
+    }
+
+    @Test
+    public void mountPointIsNeverOpenedNorDeleted() {
+        // rsync: the whole dir is excluded (a read error stops all deletions), and protected.
+        assertTrue(CopyExcludes.forRsync("").contains("/sdcard/\n"));
+        assertEquals(Arrays.asList("P /sdcard/"), CopyExcludes.rsyncProtectRules());
     }
 
     @Test

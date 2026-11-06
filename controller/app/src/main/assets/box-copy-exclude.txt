@@ -114,5 +114,4 @@ core.[0-9]*
 hs_err_pid*.log
 var/lib/systemd/coredump/*
 var/lib/systemd/pstore/*
-# Bind target of the Android shared storage.
-sdcard/*
+# Mount points (sdcard) are in CopyExcludes.MOUNT_POINTS, not here.

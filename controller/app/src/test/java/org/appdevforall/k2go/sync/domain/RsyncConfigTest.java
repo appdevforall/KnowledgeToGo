@@ -87,10 +87,13 @@ public class RsyncConfigTest {
     @Test
     public void withExcludesGoesBeforeTheSource() {
         List<String> a = RsyncConfig.withExcludes(RsyncConfig.clientArgs(
-                "/lib/librsync.so", "/c/p", "rsync://u@h:1/m/", "/dest"), "/c/ex.rsync");
-        assertEquals("--exclude-from=/c/ex.rsync", a.get(6));
-        assertEquals("--delete-excluded", a.get(7));
-        assertEquals("rsync://u@h:1/m/", a.get(8));
-        assertEquals("/dest", a.get(9));
+                "/lib/librsync.so", "/c/p", "rsync://u@h:1/m/", "/dest"), "/c/ex.rsync",
+                java.util.Collections.singletonList("P /sdcard/"));
+        // The protect rule comes before the excludes: rsync uses the first rule that matches.
+        assertEquals("--filter=P /sdcard/", a.get(6));
+        assertEquals("--exclude-from=/c/ex.rsync", a.get(7));
+        assertEquals("--delete-excluded", a.get(8));
+        assertEquals("rsync://u@h:1/m/", a.get(9));
+        assertEquals("/dest", a.get(10));
     }
 }

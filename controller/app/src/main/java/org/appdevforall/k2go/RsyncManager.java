@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
+import org.appdevforall.k2go.boxidentity.domain.CopyExcludes;
 import org.appdevforall.k2go.sync.domain.RsyncConfig;
 import org.appdevforall.k2go.sync.domain.RsyncOutcome;
 import org.appdevforall.k2go.sync.domain.RsyncProgress;
@@ -137,7 +138,7 @@ public class RsyncManager implements TransportEngine {
                 // K2GO-549: also filter here, for a sender whose APK has no exclude list.
                 ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.clientArgs(
                         rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
-                        CopyExcludeFiles.rsync(context).getAbsolutePath()));
+                        CopyExcludeFiles.rsync(context).getAbsolutePath(), CopyExcludes.rsyncProtectRules()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();
@@ -294,7 +295,7 @@ public class RsyncManager implements TransportEngine {
 
                 ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.dryRunArgs(
                         rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
-                        CopyExcludeFiles.rsync(context).getAbsolutePath()));
+                        CopyExcludeFiles.rsync(context).getAbsolutePath(), CopyExcludes.rsyncProtectRules()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();

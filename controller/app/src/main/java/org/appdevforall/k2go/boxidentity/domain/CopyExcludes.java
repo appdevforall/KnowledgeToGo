@@ -12,6 +12,13 @@ public final class CopyExcludes {
 
     public static final String ASSET = "box-copy-exclude.txt";
 
+    /**
+     * Bind targets in the box root (PRootEngine). With the box stopped they are empty stubs that
+     * cannot be read. rsync must not open them: one read error makes it skip every deletion on the
+     * receiver. The receiver must not delete them either.
+     */
+    public static final String[] MOUNT_POINTS = {"sdcard"};
+
     private CopyExcludes() {
     }
 
@@ -28,19 +35,35 @@ public final class CopyExcludes {
     }
 
     /**
-     * For an rsync daemon "exclude from" file whose module path is the box root: a leading "/"
-     * anchors the pattern at the module root.
+     * For an rsync "exclude from" file whose transfer root is the box root (the Clone daemon and
+     * the pull): a leading "/" anchors the pattern at that root. A mount point is excluded as a
+     * whole dir, so neither side opens it.
      */
     public static String forRsync(String text) {
-        return join(text, "/");
+        StringBuilder sb = new StringBuilder(join(text, "/"));
+        for (String m : MOUNT_POINTS) sb.append('/').append(m).append("/\n");
+        return sb.toString();
+    }
+
+    /**
+     * rsync filter rules that keep the receiver's mount points: with --delete-excluded, an
+     * excluded dir is deleted unless a protect rule comes first.
+     */
+    public static List<String> rsyncProtectRules() {
+        List<String> out = new ArrayList<>();
+        for (String m : MOUNT_POINTS) out.add("P /" + m + "/");
+        return out;
     }
 
     /**
      * For GNU tar {@code --anchored --no-wildcards-match-slash --exclude-from}. {@code memberPrefix}
-     * is the archive name of the box root, for example "installed-rootfs/iiab/".
+     * is the archive name of the box root, for example "installed-rootfs/iiab/". A mount point
+     * keeps its empty dir in the archive; --ignore-failed-read covers the unreadable stub.
      */
     public static String forTar(String text, String memberPrefix) {
-        return join(text, memberPrefix);
+        StringBuilder sb = new StringBuilder(join(text, memberPrefix));
+        for (String m : MOUNT_POINTS) sb.append(memberPrefix).append(m).append("/*\n");
+        return sb.toString();
     }
 
     private static String join(String text, String prefix) {
