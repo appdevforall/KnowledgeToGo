@@ -57,6 +57,10 @@
 #   # Identifier override (skip reading the rootfs / remote):
 #   sudo ./build-iiab-rootfs.sh --tier 3 --arch arm64-v8a --iiab-commit ab88e5d
 #
+#   # K2Go ref (branch, default main) for the iiab-android installer and its /opt/iiab-android
+#   # clone, so a branch can be baked before it merges:
+#   sudo ./build-iiab-rootfs.sh --tier 3 --arch arm64-v8a --k2go-ref fix/K2GO-123-example
+#
 #   # Mirrors: PRIMARY is priority 10; each mirror gets 11,12,13,... Edit MIRRORS[]
 #   # in the Config below, or append at runtime (repeatable). --reset-mirrors clears
 #   # the built-in list first (e.g. to publish to Cloudflare only):
@@ -128,7 +132,7 @@ GO_VERSION=""                      # "" = latest stable from go.dev; or pin e.g.
 GO_MIN="1.25.1"                    # mkmetalink go.mod requires Go >= this
 KERNEL_STR="6.17.0-PRoot-IIAB"                       # same -k as PRootEngine.java
 REPO="appdevforall/KnowledgeToGo"
-INSTALLER_URL="https://raw.githubusercontent.com/${REPO}/main/iiab-android"
+K2GO_REF="main"           # --k2go-ref: the K2Go branch the installer and its clone come from
 # Release tag holding the native binaries (the same zip the APK uses). Empty =
 # auto: read controller/binary_version.txt from main.
 BINARIES_TAG=""
@@ -173,6 +177,7 @@ while [[ $# -gt 0 ]]; do
     --go-version)         GO_VERSION="$2"; shift 2 ;;
     --iiab-ref)     IIAB_REF="$2"; shift 2 ;;
     --iiab-commit)  IIAB_COMMIT="$2"; shift 2 ;;
+    --k2go-ref)     K2GO_REF="$2"; shift 2 ;;
     --all-arch)     ALL_ARCH=1; shift ;;
     --all-tier)     ALL_TIER=1; shift ;;
     --scratch-build)       SCRATCH_BUILD=1; shift ;;
@@ -185,6 +190,9 @@ while [[ $# -gt 0 ]]; do
     *) die "Unknown argument: $1 (use --help)" ;;
   esac
 done
+
+[[ "$K2GO_REF" =~ ^[A-Za-z0-9._/-]+$ ]] || die "Invalid --k2go-ref: $K2GO_REF"
+INSTALLER_URL="https://raw.githubusercontent.com/${REPO}/${K2GO_REF}/iiab-android"
 
 # Normalize tier name <-> number. TIER_NUM is passed to the installer as
 # AUTO_INSTALL_SIZE; 4 selects the installer's headless Matomo-only profile.
@@ -709,7 +717,7 @@ run_in_proot() {
       TMPDIR=/tmp TERM=xterm-256color LANG=C.UTF-8 \
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
       AUTO_INSTALL_SIZE="${TIER_NUM}" \
-      ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-1}" \
+      ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-1}"       K2GO_REF="${K2GO_REF}" \
       DEBIAN_FRONTEND=noninteractive \
       debian_chroot=iiab \
     /bin/bash -lc "$1"

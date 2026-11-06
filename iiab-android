@@ -42,6 +42,7 @@ fi
 #-----------------------------
 GIT_REPO_K2GO="https://github.com/appdevforall/KnowledgeToGo"
 K2GO_OPT_DIR="/opt/iiab-android"
+K2GO_REF="${K2GO_REF:-main}"   # the bake can pin a branch (build-iiab-rootfs.sh --k2go-ref)
 SITE_UPDATER="/opt/iiab-android/static/site/site-updater.sh"
 BASE_VARS_URL="https://raw.githubusercontent.com/iiab/iiab/refs/heads/master/vars/"
 LOCAL_VARS_DEST="/etc/iiab/local_vars.yml"
@@ -341,12 +342,12 @@ install_update_repo() {
 local current_pwd="$(pwd)"
   if [ ! -d "$K2GO_OPT_DIR" ]; then
     cd /opt/
-    git clone "$GIT_REPO_K2GO" "$K2GO_OPT_DIR"
+    git clone --branch "$K2GO_REF" "$GIT_REPO_K2GO" "$K2GO_OPT_DIR"
     cd $current_pwd
   else
     cd "$K2GO_OPT_DIR"
-    git fetch origin main > /dev/null 2>&1 || true
-    git reset --hard origin/main > /dev/null 2>&1 || true
+    git fetch origin "$K2GO_REF" > /dev/null 2>&1 || true
+    git reset --hard FETCH_HEAD > /dev/null 2>&1 || true
     cd $current_pwd
   fi
 }

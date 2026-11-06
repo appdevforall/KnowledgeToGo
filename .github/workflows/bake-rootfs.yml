@@ -195,9 +195,11 @@ jobs:
           [ -n "${{ inputs.binaries_tag }}" ] && TAG_ARG="--binaries-tag ${{ inputs.binaries_tag }}"
           TIER_ARG="--tier ${{ matrix.tier }}"
           [ "${{ matrix.tier }}" = all ] && TIER_ARG="--all-tier"
+          # test/dev bake the dispatched branch end to end (builder, installer, clone); publish uses main.
+          K2GO_REF="${{ inputs.mode == 'publish' && 'main' || github.ref_name }}"
           sudo bash ./tools/rootfs-builder/build-iiab-rootfs.sh \
             $TIER_ARG --arch "${{ matrix.arch }}" \
-            $TAG_ARG \
+            $TAG_ARG --k2go-ref "$K2GO_REF" \
             --go-version "${{ inputs.go_version }}" \
             --mkmetalink-version "${{ inputs.mkmetalink_version || 'latest' }}" \
             --publish-url "$ROOTFS_PUBLIC_BASE" --reset-mirrors
