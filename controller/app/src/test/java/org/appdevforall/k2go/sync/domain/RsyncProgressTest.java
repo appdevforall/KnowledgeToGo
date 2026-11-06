@@ -31,6 +31,40 @@ public class RsyncProgressTest {
         assertEquals(88, p.percent);
     }
 
+    // K2GO-550: rsync 3.5.2 writes the byte column with a "B" unit.
+    @Test
+    public void parsesByteColumnWithUnit() {
+        RsyncProgress p = RsyncProgress.parse("    122,191,872B  58%  122MB/s    0:00:00");
+        assertNotNull(p);
+        assertEquals(122191872L, p.bytes);
+        assertEquals(58, p.percent);
+        assertEquals("122MB/s", p.speed);
+        assertEquals("0:00:00", p.eta);
+    }
+
+    // Real rsync 3.5.2 output (OnePlus 7T, shipped librsync.so): first sample and a final line
+    // with the (xfr#, to-chk) suffix.
+    @Test
+    public void parsesRsync352Lines() {
+        RsyncProgress first = RsyncProgress.parse("         32,768B   0%       0B/s    0:00:00  ");
+        assertNotNull(first);
+        assertEquals(32768L, first.bytes);
+        assertEquals("0B/s", first.speed);
+
+        RsyncProgress last = RsyncProgress.parse(
+                "     30,000,000B 100%    143MB/s    0:00:00 (xfr#1, to-chk=0/2)");
+        assertNotNull(last);
+        assertEquals(30000000L, last.bytes);
+        assertEquals(100, last.percent);
+        assertEquals("143MB/s", last.speed);
+    }
+
+    @Test
+    public void parsesRsync352StatsLine() {
+        assertEquals(30000000L, RsyncProgress.parseTransferredBytes(
+                "Total transferred file size: 30,000,000 bytes", -1L));
+    }
+
     @Test
     public void returnsNullWhenNoProgressToken() {
         assertNull(RsyncProgress.parse("sending incremental file list"));
