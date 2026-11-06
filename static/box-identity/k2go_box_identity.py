@@ -200,8 +200,14 @@ def system_make(rotate=False):
     return made
 
 
+# Made again when missing: the aria2 DHT node ID (it also lists peer IPs) and the clock sequence
+# of v1 UUIDs (two copies would make the same UUIDs).
+SYSTEM_STATE = ("/root/.cache/aria2/dht.dat", "/root/.cache/aria2/dht6.dat",
+                "/var/lib/libuuid/clock.txt", "/var/lib/dbus/machine-id")
+
+
 def system_rotate():
-    remove("/var/lib/dbus/machine-id")
+    remove(*SYSTEM_STATE)
     return system_make(rotate=True)
 
 
@@ -209,7 +215,7 @@ def system_strip():
     # An empty machine-id is the Debian "not yet made" state. The dbus copy is unused in proot.
     if os.path.exists("/etc/machine-id"):
         open("/etc/machine-id", "w").close()
-    remove("/var/lib/dbus/machine-id", "/etc/iiab/uuid")
+    remove("/etc/iiab/uuid", *SYSTEM_STATE)
     shutil.rmtree(BINDING_DIR, ignore_errors=True)
 
 
@@ -280,9 +286,11 @@ def forgejo_clear(keep_key):
         if not (keep_key and kind == "SECRET_KEY"):
             remove(path)
     remove(*FORGEJO_KEYS)
-    # Logins made on the other phone: remember-me tokens and stored sessions.
+    # Logins made on the other phone (remember-me tokens, sessions) and runner registrations.
     scrub(forgejo_db(), (("forgejo_auth_token", "DELETE FROM forgejo_auth_token"),
-                         ("session", "DELETE FROM session")))
+                         ("session", "DELETE FROM session"),
+                         ("action_runner_token", "DELETE FROM action_runner_token"),
+                         ("action_runner", "DELETE FROM action_runner")))
 
 
 def forgejo_rotate():
@@ -407,6 +415,9 @@ KOLIBRI_SCRUB = (
     ("morango_transfersession", "DELETE FROM morango_transfersession"),
     ("morango_syncsession", "DELETE FROM morango_syncsession"),
     ("morango_nonce", "DELETE FROM morango_nonce"),
+    # Per-box keys that Kolibri makes again on demand.
+    ("morango_sharedkey", "DELETE FROM morango_sharedkey"),
+    ("device_deviceappkey", "DELETE FROM device_deviceappkey"),
     ("discovery_pinneddevice", "DELETE FROM discovery_pinneddevice"),
     ("device_learnerdevicestatus", "DELETE FROM device_learnerdevicestatus"),
     ("device_usersyncstatus", "DELETE FROM device_usersyncstatus"),
@@ -443,17 +454,21 @@ def kolibri_rotate():
     shutil.rmtree(REKEY_HOME, ignore_errors=True)
     os.makedirs(REKEY_HOME, 0o700)
     copy = os.path.join(REKEY_HOME, "db.sqlite3")
-    with beating("kolibri: copying the database"):
-        live = sqlite3.connect(KOLIBRI_DB)
-        try:
-            # The swap removes the live WAL, so all of it must be in the main file first.
-            if live.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()[0]:
-                raise RuntimeError("Kolibri db is busy")
-            dst = sqlite3.connect(copy)
-            live.backup(dst)
-            dst.close()
-        finally:
-            live.close()
+    # All of them: Kolibri does not make the tables of a missing side db, and deleting a user
+    # also deletes rows in notifications.sqlite3.
+    with beating("kolibri: copying the databases"):
+        for name in os.listdir(KOLIBRI_HOME):
+            if name.endswith(".sqlite3"):
+                live = sqlite3.connect(os.path.join(KOLIBRI_HOME, name))
+                try:
+                    # The swap removes the live WAL, so all of it must be in the main file first.
+                    if live.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()[0]:
+                        raise RuntimeError(name + " is busy")
+                    dst = sqlite3.connect(os.path.join(REKEY_HOME, name))
+                    live.backup(dst)
+                    dst.close()
+                finally:
+                    live.close()
     # The same Kolibri setup, so that no upgrade step runs in REKEY_HOME.
     for name in (".data_version", "options.ini", "plugins.json"):
         if os.path.exists(os.path.join(KOLIBRI_HOME, name)):
@@ -494,11 +509,17 @@ def kolibri_rotate():
             con.close()
 
     scrub(copy, KOLIBRI_SCRUB)
+    # recreatefacility deleted the notifications of the old user IDs: compact them away.
+    scrub(os.path.join(REKEY_HOME, "notifications.sqlite3"), ())
     for name, statements in KOLIBRI_SIDE_DBS:
         scrub(os.path.join(KOLIBRI_HOME, name), statements)
-    shutil.copymode(KOLIBRI_DB, copy)
-    remove(KOLIBRI_DB + "-wal", KOLIBRI_DB + "-shm")
-    os.replace(copy, KOLIBRI_DB)
+    # db.sqlite3 last: if the process dies between the two, the next start re-keys again.
+    for name in ("notifications.sqlite3", "db.sqlite3"):
+        new, live = os.path.join(REKEY_HOME, name), os.path.join(KOLIBRI_HOME, name)
+        if os.path.exists(new):
+            shutil.copymode(live, new)
+            remove(live + "-wal", live + "-shm")
+            os.replace(new, live)
     shutil.rmtree(REKEY_HOME, ignore_errors=True)
     return ["facility", "database-id"]
 
