@@ -57,6 +57,10 @@
 #   # Identifier override (skip reading the rootfs / remote):
 #   sudo ./build-iiab-rootfs.sh --tier 3 --arch arm64-v8a --iiab-commit ab88e5d
 #
+#   # K2Go ref (branch, default main) for the iiab-android installer and its /opt/iiab-android
+#   # clone, so a branch can be baked before it merges:
+#   sudo ./build-iiab-rootfs.sh --tier 3 --arch arm64-v8a --k2go-ref fix/K2GO-123-example
+#
 #   # Mirrors: PRIMARY is priority 10; each mirror gets 11,12,13,... Edit MIRRORS[]
 #   # in the Config below, or append at runtime (repeatable). --reset-mirrors clears
 #   # the built-in list first (e.g. to publish to Cloudflare only):
@@ -128,7 +132,7 @@ GO_VERSION=""                      # "" = latest stable from go.dev; or pin e.g.
 GO_MIN="1.25.1"                    # mkmetalink go.mod requires Go >= this
 KERNEL_STR="6.17.0-PRoot-IIAB"                       # same -k as PRootEngine.java
 REPO="appdevforall/KnowledgeToGo"
-INSTALLER_URL="https://raw.githubusercontent.com/${REPO}/main/iiab-android"
+K2GO_REF="main"           # --k2go-ref: the K2Go branch the installer and its clone come from
 # Release tag holding the native binaries (the same zip the APK uses). Empty =
 # auto: read controller/binary_version.txt from main.
 BINARIES_TAG=""
@@ -173,6 +177,7 @@ while [[ $# -gt 0 ]]; do
     --go-version)         GO_VERSION="$2"; shift 2 ;;
     --iiab-ref)     IIAB_REF="$2"; shift 2 ;;
     --iiab-commit)  IIAB_COMMIT="$2"; shift 2 ;;
+    --k2go-ref)     K2GO_REF="$2"; shift 2 ;;
     --all-arch)     ALL_ARCH=1; shift ;;
     --all-tier)     ALL_TIER=1; shift ;;
     --scratch-build)       SCRATCH_BUILD=1; shift ;;
@@ -185,6 +190,9 @@ while [[ $# -gt 0 ]]; do
     *) die "Unknown argument: $1 (use --help)" ;;
   esac
 done
+
+[[ "$K2GO_REF" =~ ^[A-Za-z0-9._/-]+$ ]] || die "Invalid --k2go-ref: $K2GO_REF"
+INSTALLER_URL="https://raw.githubusercontent.com/${REPO}/${K2GO_REF}/iiab-android"
 
 # Normalize tier name <-> number. TIER_NUM is passed to the installer as
 # AUTO_INSTALL_SIZE; 4 selects the installer's headless Matomo-only profile.
@@ -709,7 +717,7 @@ run_in_proot() {
       TMPDIR=/tmp TERM=xterm-256color LANG=C.UTF-8 \
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
       AUTO_INSTALL_SIZE="${TIER_NUM}" \
-      ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-1}" \
+      ENABLE_FORGEJO_SEED="${ENABLE_FORGEJO_SEED:-1}"       K2GO_REF="${K2GO_REF}" \
       DEBIAN_FRONTEND=noninteractive \
       debian_chroot=iiab \
     /bin/bash -lc "$1"
@@ -726,6 +734,15 @@ chmod +x /usr/local/sbin/iiab-android
 set +e
 run_in_proot "$INSTALL_CMD" 2>&1 | tee "$LOGFILE"
 INSTALL_RC="${PIPESTATUS[0]}"
+set -e
+
+# K2GO-549: the published rootfs is public, so it must not carry per-box secrets or IDs: every
+# box would share them. The box step that makes them at the first start owns the list, and
+# strips them here (static/box-identity/k2go_box_identity.py). The checks in [3/5] verify it.
+log "Stripping per-box secrets and IDs (K2GO-549)..."
+set +e
+run_in_proot "/usr/local/sbin/k2go-box-identity --strip" 2>&1 | tee -a "$LOGFILE"
+STRIP_RC="${PIPESTATUS[0]}"
 set -e
 
 # ----------------------------- 3) Validate "clean build" ----------------------
@@ -745,6 +762,17 @@ if [[ "$TIER_NAME" != "matomo" ]]; then
   chk "conex-core installed (/opt/conex-core/conex_core)" "test -d '$ROOTFS/opt/conex-core/conex_core'"
   chk "conex-core PDSM service registered"          "test -x '$ROOTFS/usr/local/pdsm/services-available/conex-core'"
 fi
+
+# K2GO-549: no per-box secret or ID ships, and the step that makes them at first start is enabled.
+chk "per-box strip ran (K2GO-549)"              "test '$STRIP_RC' -eq 0"
+chk "per-box identity step enabled"             "test -x '$ROOTFS/usr/local/sbin/k2go-box-identity' && test -x '$ROOTFS/usr/local/pdsm/services-enabled/00-k2go-box-identity'"
+# Secret paths come from app.ini (*_URI = file:<path>), the same source the box step reads.
+fj_files() { sed -nE 's/^[[:space:]]*[A-Z_]+_URI[[:space:]]*=[[:space:]]*file:([^[:space:]]+).*/\1/p' "$ROOTFS/etc/forgejo/app.ini" 2>/dev/null | sed "s#^#$ROOTFS#"; }
+chk "no Forgejo secret or signing key ships"    "test -z \"\$(ls \$(fj_files) '$ROOTFS'/library/forgejo/data/{jwt,actions_id_token}/private.pem 2>/dev/null)\""
+db_rows() { python3 -c "import os,sqlite3,sys; p=sys.argv[1]; print(sqlite3.connect(p).execute(sys.argv[2]).fetchone()[0] if os.path.exists(p) else 0)" "$1" "$2"; }
+chk "no Calibre-Web key ships"                  "test ! -e '$ROOTFS/library/calibre-web/config/.key' && test \"\$(db_rows '$ROOTFS/library/calibre-web/config/app.db' 'SELECT COUNT(*) FROM flask_settings')\" = 0"
+chk "no Kolibri facility key ships"             "test \"\$(db_rows '$ROOTFS/library/kolibri/db.sqlite3' 'SELECT COUNT(*) FROM morango_certificate WHERE private_key IS NOT NULL')\" = 0"
+chk "no machine-id or IIAB uuid ships"          "test ! -s '$ROOTFS/etc/machine-id' && test ! -e '$ROOTFS/var/lib/dbus/machine-id' && test ! -e '$ROOTFS/etc/iiab/uuid'"
 
 # Ansible result: use the PLAY RECAP (authoritative). We do NOT count loose
 # 'fatal:'/'FAILED!' lines, because block/rescue tasks (e.g. the WiFi-AP probe

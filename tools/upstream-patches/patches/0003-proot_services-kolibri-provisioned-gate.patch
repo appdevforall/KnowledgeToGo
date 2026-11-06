@@ -1,0 +1,26 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
+Summary:         Do not start an unprovisioned Kolibri under pdsm: its setup wizard lets any network client create the superuser. K2Go provisions at first box start (K2GO-549); on failure Kolibri stays down and the next start retries.
+
+--- a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
++++ b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
+@@ -22,6 +22,18 @@
+     return 0
+   fi
+ 
++  # Never serve an unprovisioned Kolibri: its setup wizard would let any network client create
++  # the superuser. Gate on Kolibri's own provisioned flag; the provisioning step runs again at
++  # the next start. A read error (no sqlite3, no table yet) does not block the start.
++  db="${KOLIBRI_HOME%/}/db.sqlite3"
++  q="SELECT is_provisioned FROM device_devicesettings LIMIT 1;"
++  if [ -f "$db" ] && command -v sqlite3 >/dev/null 2>&1 &&
++     provisioned=$(sqlite3 -cmd ".timeout 5000" "$db" "$q" 2>/dev/null) &&
++     [ "$provisioned" != "1" ]; then
++    echo "[pdsm:$SERVICE_NAME] device not provisioned; not starting (the setup wizard would be open)" >&2
++    return 1
++  fi
++
+   echo "[pdsm:$SERVICE_NAME] starting..."
+   # Ensure nginx is up as a requirement
+   require_service "nginx"

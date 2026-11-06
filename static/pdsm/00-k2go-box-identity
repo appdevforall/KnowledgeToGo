@@ -1,0 +1,25 @@
+#!/bin/sh
+# /usr/local/pdsm/services-available/00-k2go-box-identity
+# One-shot PDSM entry (K2GO-549): makes the per-box secrets that the published rootfs does not
+# ship, before any service starts. pdsm starts services-enabled/* in lexical order and one at a
+# time, so the "00-" prefix runs this first. It is not a daemon: start runs the step and returns.
+
+SERVICE_NAME="k2go-box-identity"
+STEP="/usr/local/sbin/k2go-box-identity"
+
+case "$1" in
+  start|restart)
+    [ -x "$STEP" ] || { echo "[pdsm:$SERVICE_NAME] $STEP not found" >&2; exit 0; }
+    "$STEP" || echo "[pdsm:$SERVICE_NAME] step failed (continuing)" >&2
+    ;;
+  stop)
+    ;;
+  status)
+    echo "[pdsm:$SERVICE_NAME] one-shot (runs at start)"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}" >&2
+    exit 1
+    ;;
+esac
+exit 0
