@@ -1,6 +1,7 @@
 package org.appdevforall.k2go.boxidentity.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,11 +14,11 @@ public final class CopyExcludes {
     public static final String ASSET = "box-copy-exclude.txt";
 
     /**
-     * Bind targets in the box root (PRootEngine). With the box stopped they are empty stubs that
-     * cannot be read. rsync must not open them: one read error makes it skip every deletion on the
-     * receiver. The receiver must not delete them either.
+     * Bind targets in the box root (PRootEngine) that cannot be read while the box is stopped.
+     * rsync must not open them: one read error makes it skip every deletion on the receiver. The
+     * receiver must not delete them either. Add a bind target here if its stub is unreadable.
      */
-    public static final String[] MOUNT_POINTS = {"sdcard"};
+    public static final List<String> MOUNT_POINTS = Collections.singletonList("sdcard");
 
     private CopyExcludes() {
     }
