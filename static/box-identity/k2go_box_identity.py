@@ -98,15 +98,29 @@ def run(label, cmd, timeout, **kw):
     return out
 
 
+# The app shows a "preparing system" boot screen between these two lines. Contract with the app:
+# "begin" only when this start makes a value, before the first one; "end" only after "begin".
+_begun = False
+
+
+def making():
+    global _begun
+    if not _begun:
+        _begun = True
+        print("[k2go-box-identity] begin", flush=True)
+
+
 # --- system IDs -------------------------------------------------------------------------------
 
 def system_make():
     made = []
     if not has_value("/etc/machine-id"):
+        making()
         write_atomic("/etc/machine-id", (uuid.uuid4().hex + "\n").encode(), 0o444)
         made.append("machine-id")
     # Same format as IIAB 1-prep/tasks/uuid.yml (uuidgen).
     if os.path.isdir("/etc/iiab") and not has_value("/etc/iiab/uuid"):
+        making()
         write_atomic("/etc/iiab/uuid", (str(uuid.uuid4()) + "\n").encode(), 0o644)
         made.append("iiab-uuid")
     return made
@@ -139,6 +153,7 @@ def forgejo_make():
     for kind, path in forgejo_secrets():
         if has_value(path):
             continue
+        making()
         out = run("forgejo: generating " + kind, [FORGEJO_BIN, "generate", "secret", kind],
                   120, stdout=subprocess.PIPE).strip()
         if not out:
@@ -230,6 +245,7 @@ def kolibri_make():
     if kolibri_running():
         raise RuntimeError("Kolibri is running")
     v = iiab_vars(KOLIBRI_VARS)
+    making()
     # One transaction: the facility, its root key, the DatabaseID and the superuser. If it fails
     # or the process dies, nothing is kept, the pdsm kolibri gate keeps the unprovisioned Kolibri
     # down (tools/upstream-patches/patches/0003-*), and the next start runs it again.
@@ -273,6 +289,8 @@ def main(argv):
             result = "FAILED (%s)" % type(e).__name__
             failed += 1
         print("[k2go-box-identity] %s: %s" % (name, result), flush=True)
+    if _begun:
+        print("[k2go-box-identity] end", flush=True)
     # The bake must fail on a failed strip. A box start informs and continues.
     return 1 if (strip and failed) else 0
 
