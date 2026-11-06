@@ -773,6 +773,7 @@ db_rows() { python3 -c "import os,sqlite3,sys; p=sys.argv[1]; print(sqlite3.conn
 chk "no Calibre-Web key ships"                  "test ! -e '$ROOTFS/library/calibre-web/config/.key' && test \"\$(db_rows '$ROOTFS/library/calibre-web/config/app.db' 'SELECT COUNT(*) FROM flask_settings')\" = 0"
 chk "no Kolibri facility key ships"             "test \"\$(db_rows '$ROOTFS/library/kolibri/db.sqlite3' 'SELECT COUNT(*) FROM morango_certificate WHERE private_key IS NOT NULL')\" = 0"
 chk "no machine-id or IIAB uuid ships"          "test ! -s '$ROOTFS/etc/machine-id' && test ! -e '$ROOTFS/var/lib/dbus/machine-id' && test ! -e '$ROOTFS/etc/iiab/uuid'"
+chk "no per-phone binding ships"                "test ! -e '$ROOTFS/etc/k2go/binding'"
 
 # Ansible result: use the PLAY RECAP (authoritative). We do NOT count loose
 # 'fatal:'/'FAILED!' lines, because block/rescue tasks (e.g. the WiFi-AP probe

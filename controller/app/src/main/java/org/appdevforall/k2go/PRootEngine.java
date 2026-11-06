@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.appdevforall.k2go.boxidentity.data.DeviceIdStore;
 import org.appdevforall.k2go.network.data.FileResolvConfWriter;
 import org.appdevforall.k2go.network.data.PrefsDnsConfigRepository;
 import org.appdevforall.k2go.network.domain.ApplyDnsUseCase;
@@ -173,6 +174,15 @@ public class PRootEngine {
                 // Map the host folder to /tmp within the guest OS (Standard Linux)
                 args.add("-b");
                 args.add(prootTmpPath + ":/tmp");
+
+                // K2GO-549: the box step k2go-box-identity reads it. Without it, the box keeps its values.
+                try {
+                    File deviceId = DeviceIdStore.ensure(context.getNoBackupFilesDir());
+                    args.add("-b");
+                    args.add(deviceId.getCanonicalPath() + ":" + DeviceIdStore.GUEST_PATH);
+                } catch (Exception idEx) {
+                    Log.w(TAG, "Device ID bind skipped: " + idEx.getMessage());
+                }
 
                 // 4. Set Working Directory
                 args.add("-w");
