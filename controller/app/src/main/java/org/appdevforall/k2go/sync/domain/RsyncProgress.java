@@ -7,8 +7,8 @@
  *               (percent / speed / eta) and the --stats "Total transferred file
  *               size" line. Pure (no android.*, no I/O), so it is unit-testable
  *               on a plain JVM and clonable by an external host (Share-export,
- *               S14 step 1). Regexes are unchanged from the previous inline
- *               parsing in RsyncManager.
+ *               S14 step 1). The progress regex accepts both the rsync 3.5.1
+ *               byte column and the 3.5.2 one with a "B" unit.
  * ============================================================================
  */
 package org.appdevforall.k2go.sync.domain;
