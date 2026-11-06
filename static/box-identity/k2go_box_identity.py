@@ -339,6 +339,8 @@ def calibre_strip():
 
 
 def calibre_rotate():
+    if not os.path.exists(CALIBRE_DB):
+        return []  # not installed (Standard tier)
     making()
     calibre_strip()
     # Calibre desktop names its device here. OR REPLACE: the row is unique per device.
