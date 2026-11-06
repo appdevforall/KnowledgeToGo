@@ -42,7 +42,7 @@ public class TarExtractor {
      *  pairs with the presentation EtaSmoother's dwell. */
     private static final long EXTRACT_RATE_WINDOW_MS = 5_000L;
 
-    /** K2GO-555: the archive listing -- member paths (for the traversal and rootfs guards) plus the
+    /** K2GO-555: the archive listing: member paths (for the traversal and rootfs guards) plus the
      *  per-path uncompressed size and their total, so the extract phase can weight progress by bytes. */
     private static final class Listing {
         final List<String> paths;
@@ -69,9 +69,10 @@ public class TarExtractor {
 
         /**
          * ADFA-4915: determinate extraction progress. {@code percent} is clamped to
-         * [0,99] while extracting and set to 100 exactly once on completion; {@code done}
-         * / {@code total} are archive-member counts; {@code line} is the current verbose
-         * tar line (may be empty). Default no-op.
+         * [0,99] while extracting and set to 100 exactly once on completion. K2GO-555:
+         * {@code done} / {@code total} are uncompressed bytes when the listing has sizes,
+         * else archive-member counts; {@code line} is the current verbose tar line (may be
+         * empty). Consumers use {@code percent}; the counts are advisory. Default no-op.
          */
         default void onProgress(int percent, long done, long total, String line) { }
 
