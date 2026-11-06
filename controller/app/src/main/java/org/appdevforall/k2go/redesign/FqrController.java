@@ -278,7 +278,7 @@ public final class FqrController {
                 // K2GO-317 follow-up: the size estimate needs the internet (a server dry-run), so it fails
                 // offline. Keep the drawn region (name + box) and offer Retry instead of discarding it, so
                 // the user can turn on Wi-Fi and try again without redrawing the same region.
-                retryableEstimateError(name, box, message);
+                retryableEstimateError(name, box);
             }
         });
     }
@@ -1107,11 +1107,12 @@ public final class FqrController {
 
     /** K2GO-317 follow-up: an estimate failed (usually offline). Keep the drawn region and offer Retry
      *  (re-run the estimate for the same name + box), so the user does not redraw; "Not now" gives up and
-     *  clears the selection, like the consent dialog's bail-outs. */
-    private void retryableEstimateError(String name, String box, CharSequence message) {
+     *  clears the selection, like the consent dialog's bail-outs. The body is a LOCALIZED string (the data
+     *  layer's friendlyError is raw English); reuses install_msg_no_connection, translated in every locale. */
+    private void retryableEstimateError(String name, String box) {
         new BrandDialog(themed)
                 .setTitle(R.string.k2go_fqr_estimate_error_title)
-                .setMessage(message)
+                .setMessage(str(R.string.install_msg_no_connection))
                 .setPositive(R.string.k2go_dl_retry, () -> handleExtract(name, box))
                 .setNegative(R.string.k2go_fqr_not_now, () -> resetMapSelection())
                 .setOnCancel(() -> resetMapSelection())
