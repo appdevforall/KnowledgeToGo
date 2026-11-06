@@ -1,0 +1,30 @@
+Upstream-PR:     WIP: pending the IIAB maps-role update that pins the r2 go-pmtiles build
+Upstream-Status: open
+Applies-to:      roles/maps/defaults/main.yml
+Summary:         Pin the pmtiles binary to the 1.31.2-r2 build (armhf, arm64, amd64). r2 adds the skip-already-complete-layer check, so a resume no longer re-downloads a layer that already finished (K2GO-317). Interim carry for our bake, ahead of the upstream maps-role update; drop it when that update lands (as 0003 was dropped for iiab#4565). The device-side companion is dash-node 1.5.0 (pause grace, stall and idle watchdogs).
+
+diff --git a/roles/maps/defaults/main.yml b/roles/maps/defaults/main.yml
+index 661fa87..4eb753c 100644
+--- a/roles/maps/defaults/main.yml
++++ b/roles/maps/defaults/main.yml
+@@ -32,14 +32,14 @@ maps_tools:
+     # in README.md.
+     releases:
+       armhf:
+-        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-m16/go-pmtiles_1.31.2-m16_Linux_armv7.tar.gz
+-        sha256sum: 3ca57c093c915906546bff251b02627682c134385f7cde2ff101b2aa360efaf3
++        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-r2/go-pmtiles_1.31.2-r2_Linux_armv7.tar.gz
++        sha256sum: fc09956de173ca13e8d7af6d1eb1c0b67b1a2b02fb54e5ee42ab1207ee5e4481
+       arm64:
+-        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-m16/go-pmtiles_1.31.2-m16_Linux_arm64.tar.gz
+-        sha256sum: c43bcdf275ac6eaf63504c36a9e0c674ff7b22396d6affa9bc76e84432c6a757
++        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-r2/go-pmtiles_1.31.2-r2_Linux_arm64.tar.gz
++        sha256sum: e3234a33297145f58686b381554b4eeae66a0ba4e6a3b91e13a9700119643306
+       amd64:
+-        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-m16/go-pmtiles_1.31.2-m16_Linux_x86_64.tar.gz
+-        sha256sum: b2f2e522e624d7ffc4a1079398635e323a41332c4b8124bdd1b243eb76cf2c55
++        src_url: https://iiab.switnet.org/binaries/pmtiles-1.31.2-r2/go-pmtiles_1.31.2-r2_Linux_x86_64.tar.gz
++        sha256sum: 065c820e802528ba4009902ced49355538a938fc56602571e5f163494c618faf
+     archive_tmp_dir: "/opt/iiab/downloads/maps/pmtiles"
+     archive_tmp_file: "/opt/iiab/downloads/maps/pmtiles/pmtiles.tar.gz"
+     executable_path: "{{ maps_tools.base_dir }}/pmtiles"
