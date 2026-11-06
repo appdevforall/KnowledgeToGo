@@ -1542,4 +1542,13 @@
     <string name="k2go_cx_share_transport_label">Ο παραλήπτης συνδέεται μέσω</string>
     <string name="k2go_cx_share_transport_hotspot">Σημείο πρόσβασης</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Οι τελευταίες πινελιές στο σύστημά σας</string>
+    <string name="k2go_preparing_word_1">Εξατομίκευση...</string>
+    <string name="k2go_preparing_word_2">Οργάνωση...</string>
+    <string name="k2go_preparing_word_3">Γυάλισμα...</string>
+    <string name="k2go_preparing_word_4">Ρύθμιση...</string>
+    <string name="k2go_preparing_word_5">Τακτοποίηση...</string>
+    <string name="k2go_preparing_word_6">Όλα ρυθμίζονται...</string>
+    <string name="k2go_preparing_word_7">Το κάνουμε δικό σας...</string>
+    <string name="k2go_preparing_word_8">Σχεδόν έτοιμο...</string>
 </resources>

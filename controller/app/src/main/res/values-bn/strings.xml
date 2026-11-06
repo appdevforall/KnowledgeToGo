@@ -1548,4 +1548,13 @@
     <string name="k2go_cx_share_transport_label">গ্রহণকারী যার মাধ্যমে সংযোগ করে</string>
     <string name="k2go_cx_share_transport_hotspot">হটস্পট</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">আপনার সিস্টেমে শেষ ছোঁয়া দেওয়া হচ্ছে</string>
+    <string name="k2go_preparing_word_1">ব্যক্তিগতকরণ হচ্ছে...</string>
+    <string name="k2go_preparing_word_2">সাজানো হচ্ছে...</string>
+    <string name="k2go_preparing_word_3">ঘষামাজা চলছে...</string>
+    <string name="k2go_preparing_word_4">টিউন করা হচ্ছে...</string>
+    <string name="k2go_preparing_word_5">গোছানো হচ্ছে...</string>
+    <string name="k2go_preparing_word_6">সবকিছু প্রস্তুত হচ্ছে...</string>
+    <string name="k2go_preparing_word_7">আপনার মতো করে তোলা হচ্ছে...</string>
+    <string name="k2go_preparing_word_8">প্রায় শেষ...</string>
 </resources>

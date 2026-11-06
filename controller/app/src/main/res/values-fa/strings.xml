@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">گیرنده از این طریق متصل می‌شود</string>
     <string name="k2go_cx_share_transport_hotspot">نقطه اتصال</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">در حال انجام آخرین تنظیمات سیستم شما</string>
+    <string name="k2go_preparing_word_1">در حال شخصی‌سازی...</string>
+    <string name="k2go_preparing_word_2">در حال سازمان‌دهی...</string>
+    <string name="k2go_preparing_word_3">در حال صیقل‌دادن...</string>
+    <string name="k2go_preparing_word_4">در حال تنظیم...</string>
+    <string name="k2go_preparing_word_5">در حال چیدمان...</string>
+    <string name="k2go_preparing_word_6">در حال آماده‌سازی همه‌چیز...</string>
+    <string name="k2go_preparing_word_7">مخصوص شما می‌شود...</string>
+    <string name="k2go_preparing_word_8">تقریباً تمام است...</string>
 </resources>

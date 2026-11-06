@@ -1542,4 +1542,13 @@
     <string name="k2go_cx_share_transport_label">Получателят се свързва чрез</string>
     <string name="k2go_cx_share_transport_hotspot">Точка за достъп</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Последни щрихи по вашата система</string>
+    <string name="k2go_preparing_word_1">Персонализиране...</string>
+    <string name="k2go_preparing_word_2">Подреждане...</string>
+    <string name="k2go_preparing_word_3">Полиране...</string>
+    <string name="k2go_preparing_word_4">Настройване...</string>
+    <string name="k2go_preparing_word_5">Разполагане...</string>
+    <string name="k2go_preparing_word_6">Подготвяме всичко...</string>
+    <string name="k2go_preparing_word_7">Правим я ваша...</string>
+    <string name="k2go_preparing_word_8">Почти готово...</string>
 </resources>

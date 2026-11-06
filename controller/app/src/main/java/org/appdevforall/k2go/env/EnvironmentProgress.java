@@ -38,9 +38,10 @@ public final class EnvironmentProgress {
     private static volatile long lastSignOfLifeMs = 0L;
 
     /**
-     * K2GO-549: this launch printed the box identity "begin" line, so this boot makes the per-box
-     * values. Held here because the reconciler can launch the box before any screen listens. Same
-     * lifetime as the stamp: a new launch or a stop clears it, and process death drops it.
+     * K2GO-553: this launch printed the box identity "begin" line and has not answered since, so
+     * this boot is still making the per-box values. Held here because the reconciler can launch the
+     * box before any screen listens. Set by that line; cleared when the box first answers
+     * ({@link #answered()}), by a new launch, by a stop, and by process death.
      */
     private static volatile boolean preparingLaunch = false;
 
@@ -107,9 +108,14 @@ public final class EnvironmentProgress {
         preparingLaunch = false;
     }
 
-    /** K2GO-549: true when the current launch printed the box identity "begin" line. */
+    /** K2GO-553: true while the current launch prepares the system (see the field). */
     public static boolean preparingLaunch() {
         return preparingLaunch;
+    }
+
+    /** K2GO-553: the box answers; a later services stop in the same launch is not a preparing boot. */
+    public static void answered() {
+        preparingLaunch = false;
     }
 
     /**

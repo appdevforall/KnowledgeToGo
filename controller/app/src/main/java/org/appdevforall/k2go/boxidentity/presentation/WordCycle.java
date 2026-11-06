@@ -3,7 +3,7 @@
  * Name        : WordCycle.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-549. Random word order for the "Preparing system" screen.
+ * Description : K2GO-553. Random word order for the "Preparing system" screen.
  * ============================================================================
  */
 package org.appdevforall.k2go.boxidentity.presentation;

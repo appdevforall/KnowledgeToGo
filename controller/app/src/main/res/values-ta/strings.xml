@@ -1555,4 +1555,13 @@
     <string name="k2go_cx_share_transport_label">பெறுநர் இதன் மூலம் இணைகிறார்</string>
     <string name="k2go_cx_share_transport_hotspot">ஹாட்ஸ்பாட்</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">உங்கள் சிஸ்டத்துக்கு இறுதித் தொடுதல்கள்</string>
+    <string name="k2go_preparing_word_1">தனிப்பயனாக்குகிறது...</string>
+    <string name="k2go_preparing_word_2">ஒழுங்கமைக்கிறது...</string>
+    <string name="k2go_preparing_word_3">மெருகூட்டுகிறது...</string>
+    <string name="k2go_preparing_word_4">சரிசெய்கிறது...</string>
+    <string name="k2go_preparing_word_5">அடுக்குகிறது...</string>
+    <string name="k2go_preparing_word_6">அனைத்தையும் அமைக்கிறது...</string>
+    <string name="k2go_preparing_word_7">உங்களுடையதாக்குகிறது...</string>
+    <string name="k2go_preparing_word_8">கிட்டத்தட்ட முடிந்தது...</string>
 </resources>

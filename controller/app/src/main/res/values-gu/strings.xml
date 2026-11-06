@@ -1548,4 +1548,13 @@
     <string name="k2go_cx_share_transport_label">મેળવનાર આના દ્વારા કનેક્ટ થાય છે</string>
     <string name="k2go_cx_share_transport_hotspot">હોટસ્પોટ</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">તમારી સિસ્ટમને અંતિમ સ્પર્શ આપી રહ્યા છીએ</string>
+    <string name="k2go_preparing_word_1">વ્યક્તિગત બનાવી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_2">ગોઠવી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_3">ચમકાવી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_4">ટ્યુન કરી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_5">સજાવી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_6">બધું તૈયાર કરી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_7">તેને તમારું બનાવી રહ્યા છીએ...</string>
+    <string name="k2go_preparing_word_8">લગભગ થઈ ગયું...</string>
 </resources>

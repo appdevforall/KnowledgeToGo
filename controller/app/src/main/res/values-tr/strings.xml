@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">Alıcı şununla bağlanır</string>
     <string name="k2go_cx_share_transport_hotspot">Etkin nokta</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Sisteminize son dokunuşlar yapılıyor</string>
+    <string name="k2go_preparing_word_1">Kişiselleştiriliyor...</string>
+    <string name="k2go_preparing_word_2">Düzenleniyor...</string>
+    <string name="k2go_preparing_word_3">Parlatılıyor...</string>
+    <string name="k2go_preparing_word_4">İnce ayar yapılıyor...</string>
+    <string name="k2go_preparing_word_5">Yerleştiriliyor...</string>
+    <string name="k2go_preparing_word_6">Her şey hazırlanıyor...</string>
+    <string name="k2go_preparing_word_7">Size özel hale getiriliyor...</string>
+    <string name="k2go_preparing_word_8">Neredeyse bitti...</string>
 </resources>

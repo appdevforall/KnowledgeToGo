@@ -1545,4 +1545,13 @@
     <string name="k2go_cx_share_transport_label">Mottakeren kobler til via</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Legger siste hånd på systemet ditt</string>
+    <string name="k2go_preparing_word_1">Tilpasser...</string>
+    <string name="k2go_preparing_word_2">Organiserer...</string>
+    <string name="k2go_preparing_word_3">Pusser...</string>
+    <string name="k2go_preparing_word_4">Finjusterer...</string>
+    <string name="k2go_preparing_word_5">Ordner...</string>
+    <string name="k2go_preparing_word_6">Setter opp alt...</string>
+    <string name="k2go_preparing_word_7">Gjør det til ditt...</string>
+    <string name="k2go_preparing_word_8">Nesten ferdig...</string>
 </resources>

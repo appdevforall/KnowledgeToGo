@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">A fogadó fél így csatlakozik</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Az utolsó simítások a rendszereden</string>
+    <string name="k2go_preparing_word_1">Személyre szabás...</string>
+    <string name="k2go_preparing_word_2">Rendezés...</string>
+    <string name="k2go_preparing_word_3">Csiszolás...</string>
+    <string name="k2go_preparing_word_4">Hangolás...</string>
+    <string name="k2go_preparing_word_5">Elrendezés...</string>
+    <string name="k2go_preparing_word_6">Minden beállítása...</string>
+    <string name="k2go_preparing_word_7">A tiéd lesz...</string>
+    <string name="k2go_preparing_word_8">Mindjárt kész...</string>
 </resources>

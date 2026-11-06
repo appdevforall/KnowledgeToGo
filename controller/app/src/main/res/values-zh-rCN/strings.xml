@@ -1536,4 +1536,13 @@
     <string name="k2go_cx_share_transport_label">接收方的连接方式</string>
     <string name="k2go_cx_share_transport_hotspot">热点</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">正在为你的系统做最后的润色</string>
+    <string name="k2go_preparing_word_1">正在个性化...</string>
+    <string name="k2go_preparing_word_2">正在整理...</string>
+    <string name="k2go_preparing_word_3">正在打磨...</string>
+    <string name="k2go_preparing_word_4">正在调整...</string>
+    <string name="k2go_preparing_word_5">正在布置...</string>
+    <string name="k2go_preparing_word_6">正在完成设置...</string>
+    <string name="k2go_preparing_word_7">正在打造专属于你的系统...</string>
+    <string name="k2go_preparing_word_8">马上就好...</string>
 </resources>

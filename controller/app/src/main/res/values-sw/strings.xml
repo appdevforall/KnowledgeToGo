@@ -1555,4 +1555,13 @@
     <string name="k2go_cx_share_transport_label">Mpokeaji anaunganisha kupitia</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Tunaweka miguso ya mwisho kwenye mfumo wako</string>
+    <string name="k2go_preparing_word_1">Tunabinafsisha...</string>
+    <string name="k2go_preparing_word_2">Tunapanga...</string>
+    <string name="k2go_preparing_word_3">Tunang\'arisha...</string>
+    <string name="k2go_preparing_word_4">Tunarekebisha...</string>
+    <string name="k2go_preparing_word_5">Tunaweka sawa...</string>
+    <string name="k2go_preparing_word_6">Tunaandaa kila kitu...</string>
+    <string name="k2go_preparing_word_7">Tunaufanya kuwa wako...</string>
+    <string name="k2go_preparing_word_8">Karibu tumemaliza...</string>
 </resources>

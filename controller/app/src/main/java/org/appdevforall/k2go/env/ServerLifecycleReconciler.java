@@ -141,6 +141,7 @@ public final class ServerLifecycleReconciler {
             serverUpSinceMs = 0L;
             org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).logServerStopped(uptime);
         }
+        if (alive) EnvironmentProgress.answered();   // K2GO-553: ends this launch's preparing boot
         ServerStateRepository.get().post(ServerState.of(alive, SystemStateEvaluator.evaluate(ctx, alive)));
 
         synchronized (this) {

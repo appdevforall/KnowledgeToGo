@@ -230,6 +230,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- K2GO-549: replaces the boot gate (and its panel) for a boot that prepares the system. -->
+    <!-- K2GO-553: replaces the boot gate (and its panel) for a boot that prepares the system. -->
     <include layout="@layout/view_k2go_preparing" />
 </FrameLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- K2GO-549: "Preparing system" boot screen. Replaces the boot gate for a boot that makes the
+<!-- K2GO-553: "Preparing system" boot screen. Replaces the boot gate for a boot that makes the
      per-box values. Themed surface (not the gate's fixed paper); the Lottie is text-free and the
      words are composited here. Driven by boxidentity/presentation/PreparingSystemScreen. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">Der Empfänger verbindet sich über</string>
     <string name="k2go_cx_share_transport_hotspot">Hotspot</string>
     <string name="k2go_cx_share_transport_wifi">WLAN</string>
+    <string name="k2go_preparing_headline">Letzte Feinarbeiten an deinem System</string>
+    <string name="k2go_preparing_word_1">Personalisieren...</string>
+    <string name="k2go_preparing_word_2">Organisieren...</string>
+    <string name="k2go_preparing_word_3">Polieren...</string>
+    <string name="k2go_preparing_word_4">Feinabstimmen...</string>
+    <string name="k2go_preparing_word_5">Anordnen...</string>
+    <string name="k2go_preparing_word_6">Alles wird eingerichtet...</string>
+    <string name="k2go_preparing_word_7">Ganz nach deinem Geschmack...</string>
+    <string name="k2go_preparing_word_8">Fast fertig...</string>
 </resources>

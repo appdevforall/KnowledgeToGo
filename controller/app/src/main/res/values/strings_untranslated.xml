@@ -10,16 +10,5 @@
   strings.xml.
 -->
 <resources>
-    <!-- K2GO-549: "Preparing system" boot screen (prototype). -->
-    <string name="k2go_preparing_headline" translatable="false">Preparing the last touches for your system</string>
-    <string-array name="k2go_preparing_words" translatable="false">
-        <item>Personalizing...</item>
-        <item>Organizing...</item>
-        <item>Polishing...</item>
-        <item>Tuning...</item>
-        <item>Arranging...</item>
-        <item>Setting things up...</item>
-        <item>Making it yours...</item>
-        <item>Almost there...</item>
-    </string-array>
+
 </resources>

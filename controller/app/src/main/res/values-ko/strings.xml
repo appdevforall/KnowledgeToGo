@@ -1536,4 +1536,13 @@
     <string name="k2go_cx_share_transport_label">받는 사람 연결 방식</string>
     <string name="k2go_cx_share_transport_hotspot">핫스팟</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">시스템의 마지막 손질을 하고 있습니다</string>
+    <string name="k2go_preparing_word_1">맞춤 설정 중...</string>
+    <string name="k2go_preparing_word_2">정리 중...</string>
+    <string name="k2go_preparing_word_3">다듬는 중...</string>
+    <string name="k2go_preparing_word_4">조정 중...</string>
+    <string name="k2go_preparing_word_5">배치 중...</string>
+    <string name="k2go_preparing_word_6">모든 것을 설정하는 중...</string>
+    <string name="k2go_preparing_word_7">나만의 것으로...</string>
+    <string name="k2go_preparing_word_8">거의 다 됐어요...</string>
 </resources>

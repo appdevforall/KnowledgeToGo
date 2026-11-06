@@ -1535,4 +1535,13 @@
     <string name="k2go_cx_share_transport_label">Người nhận kết nối qua</string>
     <string name="k2go_cx_share_transport_hotspot">Điểm phát sóng</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Đang hoàn thiện những chi tiết cuối cho hệ thống của bạn</string>
+    <string name="k2go_preparing_word_1">Đang cá nhân hóa...</string>
+    <string name="k2go_preparing_word_2">Đang sắp xếp...</string>
+    <string name="k2go_preparing_word_3">Đang trau chuốt...</string>
+    <string name="k2go_preparing_word_4">Đang tinh chỉnh...</string>
+    <string name="k2go_preparing_word_5">Đang bố trí...</string>
+    <string name="k2go_preparing_word_6">Đang thiết lập mọi thứ...</string>
+    <string name="k2go_preparing_word_7">Đang biến nó thành của bạn...</string>
+    <string name="k2go_preparing_word_8">Sắp xong rồi...</string>
 </resources>

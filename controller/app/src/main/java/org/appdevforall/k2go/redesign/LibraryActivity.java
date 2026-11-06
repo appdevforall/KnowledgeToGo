@@ -74,7 +74,7 @@ public class LibraryActivity extends AppCompatActivity
     private ServerController serverController;
 
     private LottieAnimationView bootGate;
-    /** K2GO-549: replaces the boot gate for a boot that makes the per-box values. */
+    /** K2GO-553: replaces the boot gate for a boot that makes the per-box values. */
     private org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen preparing;
     private View installProgress;
     private android.widget.TextView installStatus, installDetail, installPercent, installEta;
@@ -176,7 +176,13 @@ public class LibraryActivity extends AppCompatActivity
 
         bootGate = findViewById(R.id.k2go_boot_gate);
         preparing = new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen(
-                findViewById(R.id.k2go_preparing));
+                findViewById(R.id.k2go_preparing), this,
+                new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen.Host() {
+                    @Override public boolean canCover() { return !closing && !installing && !gateDismissed; }
+                    // Themed surface, not the gate's fixed light paper.
+                    @Override public void onShown() { setGateStatusBar(false); }
+                    @Override public void onHidden() { if (!gateDismissed) setGateStatusBar(true); }
+                });
         installProgress = findViewById(R.id.k2go_install_progress);
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
@@ -787,7 +793,7 @@ public class LibraryActivity extends AppCompatActivity
     }
 
     /**
-     * K2GO-549: the gate safety timeout. A boot that prepares the system takes longer than
+     * K2GO-553: the gate safety timeout. A boot that prepares the system takes longer than
      * {@link #GATE_SAFETY_MS}, so while the preparing screen holds, wait more (it caps the hold).
      */
     private void onGateSafetyTimeout() {
@@ -799,13 +805,6 @@ public class LibraryActivity extends AppCompatActivity
             return;
         }
         onServerReady();
-    }
-
-    /** K2GO-549: the box printed its "begin" line, so this boot prepares the system. */
-    private void showPreparing() {
-        if (closing || installing || gateDismissed || preparing == null) return;
-        preparing.show();
-        setGateStatusBar(false);   // themed surface, not the gate's fixed light paper
     }
 
     private void onServerReady() {
@@ -822,7 +821,6 @@ public class LibraryActivity extends AppCompatActivity
         }
         gateDismissed = true;
         setGateStatusBar(false);   // gate is lifting; return the status-bar icons to the theme default
-        if (preparing != null) preparing.dismiss();   // K2GO-549: fades out over the OPEN flip
         hideInstallProgress();
         maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
@@ -930,10 +928,7 @@ public class LibraryActivity extends AppCompatActivity
 
     /** Viewer of the pdsm output: each "[pdsm:<service>] ..." line names the service on the boot or shutdown screen. */
     private final org.appdevforall.k2go.env.EnvironmentProgress.LineListener pdsmLines = line -> {
-        if (org.appdevforall.k2go.boxidentity.domain.BoxIdentityLine.isBegin(line)) {
-            runOnUiThread(this::showPreparing);   // K2GO-549: the screen was already listening
-            return;
-        }
+        if (preparing != null) preparing.onLine(line);   // K2GO-553
         java.util.regex.Matcher m = PDSM_SVC.matcher(line);
         if (m.find()) {
             final String svc = m.group(1);
@@ -953,9 +948,7 @@ public class LibraryActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         org.appdevforall.k2go.env.EnvironmentProgress.setLineListener(pdsmLines);
-        // K2GO-549: "begin" may have printed before this screen listened (the reconciler boots
-        // during the splash). The alive observer already lifted the gate if the server is up.
-        if (org.appdevforall.k2go.env.EnvironmentProgress.preparingLaunch()) showPreparing();
+        if (preparing != null) preparing.onResumed();   // K2GO-553: the reconciler may boot during the splash
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened

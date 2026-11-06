@@ -3,7 +3,7 @@
  * Name        : BoxIdentityLine.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-549. Reads the box identity step's boot output line.
+ * Description : K2GO-553. Reads the box identity step's boot output line.
  * ============================================================================
  */
 package org.appdevforall.k2go.boxidentity.domain;

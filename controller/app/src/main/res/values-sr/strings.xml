@@ -1548,4 +1548,13 @@
     <string name="k2go_cx_share_transport_label">Прималац се повезује преко</string>
     <string name="k2go_cx_share_transport_hotspot">Хотспот</string>
     <string name="k2go_cx_share_transport_wifi">Wi-Fi</string>
+    <string name="k2go_preparing_headline">Последње припреме вашег система</string>
+    <string name="k2go_preparing_word_1">Персонализација...</string>
+    <string name="k2go_preparing_word_2">Организовање...</string>
+    <string name="k2go_preparing_word_3">Дотеривање...</string>
+    <string name="k2go_preparing_word_4">Подешавање...</string>
+    <string name="k2go_preparing_word_5">Распоређивање...</string>
+    <string name="k2go_preparing_word_6">Све се подешава...</string>
+    <string name="k2go_preparing_word_7">Прилагођавамо га вама...</string>
+    <string name="k2go_preparing_word_8">Скоро готово...</string>
 </resources>
