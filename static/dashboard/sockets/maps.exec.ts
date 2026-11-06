@@ -115,25 +115,45 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         // extract finishes in the background).
         const p = ctx.spawn('sudo', args, { env: { ...process.env }, detached: true });
         // K2GO-317 (progress retention): go-pmtiles' own network give-up checkpoints a STALE journal and
-        // loses the bytes since its last periodic checkpoint (measured ~2/3 of a large region). A SIGTERM
-        // makes it flush the CURRENT bytes losslessly (measured: it resumes from exactly where it stopped).
-        // So this watchdog SIGTERMs the download itself once it makes no progress for STALL_MS, instead of
-        // waiting ~15-20 s for the lossy give-up. Armed on byte progress; cleared when nothing is in flight
-        // (finalize/done) or the child exits. An engine pause/cancel still wins: it fires first and the
-        // catch checks classifyStop before `stalled`.
-        const STALL_MS = 7000;
+        // loses the bytes since its last periodic checkpoint. A SIGTERM makes it flush the CURRENT bytes
+        // losslessly (measured: it resumes from exactly where it stopped), so BOTH watchdogs below SIGTERM
+        // the download group to turn a hang into a lossless, resumable pause.
+        // STALL (byte): fires when the transfer is truly WEDGED : no byte progress AND no retry progress for
+        // STALL_MS, in phase:download. A normal network drop is NOT a wedge : go-pmtiles retries (bumping
+        // `retries`), which we count as activity and re-arm, so this does not preempt its retry; that drop
+        // takes go-pmtiles' own retry-then-exit_code-2 path. STALL_MS is long (30 s) because several normal
+        // phases make no bytes for a while (plan, finalize/fsync, the next layer's start, a 5 s retry wait
+        // plus a slow new connection); a shorter window false-pauses, which re-plans the layer and, before
+        // the go-pmtiles skip fix, re-downloads every completed layer : worse than no watchdog.
+        // IDLE (line): go-pmtiles emits one JSON line per second in EVERY phase, so NO line for IDLE_MS means
+        // the process is frozen (e.g. storage stopped responding in plan or finalize, which the byte
+        // watchdog, armed only in download, would miss). Re-armed on every progress line; disarmed once all
+        // layers are done, so the final move (which emits no lines) does not false-fire. An engine
+        // pause/cancel still wins: it fires first and the catch checks classifyStop before `stalled`.
+        const STALL_MS = 30_000;
+        const IDLE_MS = 30_000;
         let lastBytes = -1;
+        let lastRetries = -1;   // a change in go-pmtiles' retry count is activity, not a stall
         let stallTimer: ReturnType<typeof setTimeout> | null = null;
+        let idleTimer: ReturnType<typeof setTimeout> | null = null;
         const clearStall = () => { if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; } };
+        const clearIdle = () => { if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } };
+        // Turn a stall or freeze into a lossless, resumable pause: SIGTERM the group so go-pmtiles flushes a
+        // complete journal. The `stalled` guard makes either watchdog fire at most once.
+        const sigtermPause = (msg: string): void => {
+            if (stalled) return;
+            stalled = true;
+            ctx.log(msg);
+            try { if (p.pid) process.kill(-p.pid, 'SIGTERM'); } catch { /* group already gone */ }
+            try { p.kill('SIGTERM'); } catch { /* already gone */ }
+        };
         const armStall = () => {
             clearStall();
-            stallTimer = setTimeout(() => {
-                if (stalled) return;
-                stalled = true;
-                ctx.log('[maps] download stalled; flushing the resume journal and pausing (no progress lost)');
-                try { if (p.pid) process.kill(-p.pid, 'SIGTERM'); } catch { /* group already gone */ }
-                try { p.kill('SIGTERM'); } catch { /* already gone */ }
-            }, STALL_MS);
+            stallTimer = setTimeout(() => sigtermPause('[maps] download stalled; flushing the resume journal and pausing (no progress lost)'), STALL_MS);
+        };
+        const armIdle = () => {
+            clearIdle();
+            idleTimer = setTimeout(() => sigtermPause('[maps] no progress line for 30 s (extract frozen); flushing the resume journal and pausing'), IDLE_MS);
         };
         // pmtiles writes the JSON progress on stdout, one line per second. A 'data' chunk can split a
         // line across two events, so buffer stdout and act only on complete '\n'-terminated lines: an
@@ -144,17 +164,21 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s) return;
             ctx.log(s);
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
-            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; exit_code?: number };
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; exit_code?: number; retries?: number };
             try { j = JSON.parse(s); } catch { return; }
             if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
+            armIdle();   // any progress line is a heartbeat: re-arm the frozen-process watchdog
             let etaOut = -1;   // seconds remaining, -1 = unknown (jobs.ts holds the previous value)
             if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
                 curLayerTotal = j.bytes_total as number;
                 // bytes_done ALREADY includes resumed_bytes (a resumed layer starts at the resumed amount and
                 // climbs to bytes_total), so cumulative progress is just completedBytes + bytes_done.
                 const bd = j.bytes_done ?? 0;
-                if (bd !== lastBytes) { lastBytes = bd; armStall(); }   // stall watchdog on byte progress
+                // Re-arm on byte progress OR a rise in the retry count (go-pmtiles is retrying, not wedged),
+                // so a retry cycle with no new bytes does not trip the stall watchdog.
+                const rt = j.retries ?? 0;
+                if (bd !== lastBytes || rt !== lastRetries) { lastBytes = bd; lastRetries = rt; armStall(); }
                 const doneBytes = completedBytes + bd;
                 const sp = (typeof j.speed_bps === 'number' && j.speed_bps > 0) ? j.speed_bps : 0;
                 if (sp > 0) { emaBps = emaBps < 0 ? sp : SPEED_ALPHA * sp + (1 - SPEED_ALPHA) * emaBps; speedSamples++; }
@@ -190,6 +214,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 layersDone = Math.min(TOTAL_LAYERS, layersDone + 1);
                 completedBytes += curLayerTotal;   // roll the finished layer into the cumulative base
                 curLayerTotal = 0;
+                if (layersDone >= TOTAL_LAYERS) clearIdle();   // all layers done: the final move emits no lines
             }
         };
         let stdoutBuf = '';
@@ -205,6 +230,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         p.on('error', reject);
         p.on('exit', (code, signal) => {
             clearStall();
+            clearIdle();
             if (code === 0) return resolve();
             // Non-zero or killed: an engine pause/cancel (group-killed) or tile-extract's own exit.
             // The stop kind is read from the engine's job flags (classifyStop) in the catch, not from
