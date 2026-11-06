@@ -1,6 +1,7 @@
 package org.appdevforall.k2go.sync.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -29,6 +30,15 @@ public class RsyncConfigTest {
         assertTrue(conf.contains("max connections = 3\n"));
         assertTrue(conf.contains("auth users = iiab_peer\n"));
         assertTrue(conf.contains("secrets file = /c/rsyncd.secrets\n"));
+        assertFalse(conf.contains("exclude from"));
+    }
+
+    @Test
+    public void daemonConfCarriesTheExcludeFile() {
+        String conf = RsyncConfig.buildDaemonConf("/c/rsyncd.pid", "/c/rsyncd.lock", 8730,
+                "iiab_sync", "/data/share", "iiab_peer", "/c/rsyncd.secrets", "/c/ex.rsync");
+        assertTrue(conf.endsWith("exclude from = /c/ex.rsync\n"));
+        assertTrue(conf.indexOf("exclude from") > conf.indexOf("[iiab_sync]"));
     }
 
     @Test

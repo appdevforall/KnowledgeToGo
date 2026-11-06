@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
 import org.appdevforall.k2go.sync.domain.RsyncConfig;
 import org.appdevforall.k2go.sync.domain.RsyncOutcome;
 import org.appdevforall.k2go.sync.domain.RsyncProgress;
@@ -77,11 +78,16 @@ public class RsyncManager implements TransportEngine {
             secretStore = new SecretStore(cacheDir);
             File secretsFile = secretStore.writeServerSecrets(config.user, pass);
 
+            // K2GO-549: the share is the box root. A copy never carries its records. An exception
+            // here fails the start: no share without the list.
+            File excludes = CopyExcludeFiles.rsync(context);
+
             // PHASE 1 FIX: 'max connections = 3' protects the I/O bottleneck.
             // Config/argv assembly lives in the pure RsyncConfig domain (S14 step 1).
             String configContent = RsyncConfig.buildDaemonConf(
                     pidFile.getAbsolutePath(), lockFile.getAbsolutePath(), config.rsyncPort,
-                    config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath());
+                    config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath(),
+                    excludes.getAbsolutePath());
 
             writeTextToFile(configFile, configContent);
 

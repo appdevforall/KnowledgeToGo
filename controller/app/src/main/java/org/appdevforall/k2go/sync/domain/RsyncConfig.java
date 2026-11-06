@@ -32,6 +32,16 @@ public final class RsyncConfig {
     public static String buildDaemonConf(String pidPath, String lockPath, int port,
                                          String moduleName, String sharePath,
                                          String user, String secretsPath) {
+        return buildDaemonConf(pidPath, lockPath, port, moduleName, sharePath, user, secretsPath, null);
+    }
+
+    /**
+     * Same, plus a daemon-side exclude file (may be null). The daemon enforces it, so the
+     * receiver never gets those files, whatever its own options are.
+     */
+    public static String buildDaemonConf(String pidPath, String lockPath, int port,
+                                         String moduleName, String sharePath,
+                                         String user, String secretsPath, String excludeFromPath) {
         return "pid file = " + pidPath + "\n" +
                 "lock file = " + lockPath + "\n" +
                 "port = " + port + "\n" +
@@ -46,7 +56,8 @@ public final class RsyncConfig {
                 "timeout = 300\n" +
                 "max connections = 3\n" +
                 "auth users = " + user + "\n" +
-                "secrets file = " + secretsPath + "\n";
+                "secrets file = " + secretsPath + "\n" +
+                (excludeFromPath != null ? "exclude from = " + excludeFromPath + "\n" : "");
     }
 
     /** Builds the {@code rsync://user@host:port/module/} client URL. */
