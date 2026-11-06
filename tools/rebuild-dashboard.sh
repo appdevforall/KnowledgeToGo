@@ -134,6 +134,8 @@ log "rebuild start (branch=$BRANCH, clone=$CLONE_DIR)"
 log "git fetch + reset --hard origin/$BRANCH"
 git -C "$CLONE_DIR" fetch origin "$BRANCH" >>"$LOG" 2>&1 || fail "git fetch (offline?)"
 git -C "$CLONE_DIR" reset --hard "origin/$BRANCH" >>"$LOG" 2>&1 || fail "git reset"
+# K2GO: name the exact commit being built, so the operator can confirm it is the intended one.
+log "building commit $(git -C "$CLONE_DIR" log -1 --format='%h %s' 2>/dev/null)"
 
 # 2) build in staging. Reuse live node_modules to speed the install; build fresh dist.
 log "staging build"

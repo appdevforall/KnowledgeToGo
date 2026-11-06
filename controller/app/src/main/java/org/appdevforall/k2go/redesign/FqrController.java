@@ -113,6 +113,11 @@ public final class FqrController {
     private View overlay;
     private CircularProgressIndicator overlayRing;              // the ring = the percent
     private TextView overlayEta, overlayPct;                    // inside the ring: ETA + percent
+    // K2GO-317: the highest percent shown so far (client high-water mark) and the blink used while a resume
+    // re-derives progress. A resume relaunches the runner, which re-counts completed layers from 0, so it
+    // briefly reports LESS than we already showed. We hold the peak and blink, never fall back to 0 and climb.
+    private int overlayPeakPct = -1;
+    private android.animation.ObjectAnimator overlayBlink;
     private TextView overlayStatus, overlaySize;   // header action word + the "size : speed" line
     private View overlayHeader, overlayMeta;       // chrome, hidden when minimized
     private String overlaySizeStr = "";                        // the size half of the "size : speed" line
@@ -401,18 +406,22 @@ public final class FqrController {
         // (startDownload is invoked from the positive button above.)
         pendingBox = box;
         pendingArchive = archive;
+        pendingTransfer = transfer;
     }
 
     private String pendingBox;      // box paired with the name at consent time
     private long pendingArchive;    // on-disk size (bytes) to show in the overlay header
+    private long pendingTransfer;   // K2GO-317: estimated download bytes (consent "transfer"), sent to the server
+    private long dlEstBytes;        // the estimate in effect for the current download (reused on Retry)
 
     private void startDownload(String name) {
         final String box = pendingBox;
         if (box == null) return;
         dlName = name;
         dlBox = box;
+        dlEstBytes = pendingTransfer;
         showOverlay(name, pendingArchive);
-        client.download(name, box, downloadListener());
+        client.download(name, box, dlEstBytes, downloadListener());
     }
 
     /** K2GO-541: one reusable listener, so Retry can re-invoke the download on the same overlay. The poll
@@ -440,12 +449,19 @@ public final class FqrController {
                 overlayStopped = true;
                 setStopIcon(true);
                 setStopEnabled(true);
+                stopPctBlink();   // K2GO-317: a paused ring is steady amber, not blinking
                 if (overlayStatus != null) overlayStatus.setText(R.string.k2go_dl_paused_notif);
                 if (overlayEta != null) overlayEta.setText("");   // a paused job must not advertise a time-to-finish
-                if (overlayRing != null && percent >= 0) overlayRing.setProgressCompat(percent, false);
+                // K2GO-317: never show less than the peak already reached (a late re-derivation can report lower).
+                int shown = Math.max(percent, overlayPeakPct);
+                if (shown >= 0) {
+                    if (overlayRing != null) overlayRing.setProgressCompat(shown, false);
+                    if (overlayPct != null) overlayPct.setText(str(R.string.k2go_fqr_percent, shown));
+                }
                 setRingState(cAmber, false);   // amber + dimmed: a paused job must not look live
             }
             @Override public void onDone() {
+                stopPctBlink();                // K2GO-317: every exit path stops the blink (done, like pause/fail/hide)
                 setRingState(cLeaf, true);     // done: a full leaf ring reads as success
                 updateOverlay(100, 0, -1);
                 if (overlayStatus != null) overlayStatus.setText(R.string.k2go_fqr_region_added); // may be gone if minimized
@@ -550,7 +566,10 @@ public final class FqrController {
         overlayEta = new TextView(themed);
         overlayEta.setGravity(Gravity.CENTER);
         overlayEta.setMaxLines(2);
-        overlayEta.setMaxWidth(dp(84));
+        // K2GO-541: narrow enough that "6 s restantes" wraps to two short lines inside the ring : the magnitude
+        // ("6 s") over the remaining-word ("restantes") : instead of one wide line. Tuned for es/en; a locale
+        // with a longer remaining-word (de "verbleibend") may need a wider value or per-locale stacked strings.
+        overlayEta.setMaxWidth(dp(64));
         applyOverlayType(overlayEta, R.style.TextAppearance_K2Go_Caption, cOnSurfaceVariant);
         overlayEta.setText(R.string.k2go_fqr_starting);   // ETA present from the start, held until done
         overlayPct = ringText(R.style.TextAppearance_K2Go_Title, cOnSurface);
@@ -690,6 +709,7 @@ public final class FqrController {
         if (overlayStopBtn != null) overlayStopBtn.setContentDescription(str(R.string.k2go_dl_retry));
         if (overlayStatus != null) overlayStatus.setText(R.string.k2go_fqr_download_failed);
         if (overlayEta != null) overlayEta.setText("");   // no time-to-finish on a stopped job
+        stopPctBlink();   // K2GO-317: a failed panel must not keep the percent blinking
         setRingState(cError, false);   // red + dimmed: the job is not running
     }
 
@@ -697,7 +717,7 @@ public final class FqrController {
         setStopEnabled(false);   // guard a double tap until the first poll or error confirms
         clearFailed();
         if (overlayEta != null) overlayEta.setText(R.string.k2go_fqr_starting);
-        client.download(dlName, dlBox, downloadListener());
+        client.download(dlName, dlBox, dlEstBytes, downloadListener());
     }
 
     /** Restore the running look (live teal ring, Pause icon, "Downloading" word) out of the failed state. */
@@ -786,15 +806,42 @@ public final class FqrController {
     private void updateOverlay(int percent, long speed, int etaSeconds) {
         if (overlayRing == null) return;
         if (overlaySize != null) overlaySize.setText(sizeLine(speed));   // "708 MB : 1.3 MB/s"
-        if (overlayEta != null) {
+        // K2GO-317: a resume relaunches the runner, which re-derives the overall percent from 0 (it re-counts
+        // completed layers), so it momentarily reports LESS than we already showed. Do NOT drop the ring back
+        // to that lower value (it reads as "restarting"): hold the peak and blink the percent to show it is
+        // still working. When the server climbs back past the peak, resume advancing from there. The size/speed
+        // line keeps updating throughout, so the card still shows live activity while the number holds.
+        boolean regressing = (percent >= 0 && percent < overlayPeakPct);
+        if (overlayEta != null && !regressing) {
             String eta = etaPlain(etaSeconds);
             if (!eta.isEmpty()) overlayEta.setText(eta);        // hold the last known ETA; never blank mid-download
             else if (percent >= 100) overlayEta.setText("");    // done: clear the estimate
         }
-        if (percent >= 0) {                                     // hold the ring + percent on an unknown poll
-            overlayRing.setProgressCompat(percent, true);
-            overlayPct.setText(str(R.string.k2go_fqr_percent, percent));
+        if (percent >= 0) {
+            if (regressing) {
+                startPctBlink();                                // hold peak, blink: a resume is re-deriving progress
+            } else {
+                stopPctBlink();
+                overlayPeakPct = percent;
+                overlayRing.setProgressCompat(percent, true);
+                overlayPct.setText(str(R.string.k2go_fqr_percent, percent));
+            }
         }
+    }
+
+    /** K2GO-317: pulse the percent while a resume re-derives progress (the server dips below the peak). It
+     *  signals work in flight without dropping the ring; stopped once progress passes the peak again. */
+    private void startPctBlink() {
+        if (overlayBlink != null || overlayPct == null) return;
+        overlayBlink = android.animation.ObjectAnimator.ofFloat(overlayPct, "alpha", 1f, 0.2f);
+        overlayBlink.setDuration(450);
+        overlayBlink.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+        overlayBlink.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        overlayBlink.start();
+    }
+    private void stopPctBlink() {
+        if (overlayBlink != null) { overlayBlink.cancel(); overlayBlink = null; }
+        if (overlayPct != null) overlayPct.setAlpha(1f);
     }
 
     /** The "size : speed" line under the name ("708 MB : 1.3 MB/s"); size alone until the speed arrives. */
@@ -896,6 +943,8 @@ public final class FqrController {
 
     private void hideOverlay() {
         if (overlay == null) return;
+        stopPctBlink();            // K2GO-317: cancel the blink before overlayPct is cleared
+        overlayPeakPct = -1;       // the high-water mark is per download; a new overlay starts fresh
         ViewGroup parent = (ViewGroup) overlay.getParent();
         if (parent != null) parent.removeView(overlay);
         overlay = null; overlayRing = null; overlayEta = null; overlayPct = null;

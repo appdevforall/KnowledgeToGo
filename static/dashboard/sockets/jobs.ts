@@ -105,9 +105,15 @@ export function throwIfStopped(ctx: RunnerContext): void {
 
 const DB_PATH = process.env.K2GO_JOBS_DB || '/library/dashboard/jobs.db';
 const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
-// K2GO-317: grace a paused child gets to flush its resume checkpoint on SIGTERM before killAll
-// SIGKILLs a survivor that ignored it.
-const PAUSE_GRACE_MS = 2500;
+// K2GO-317: time a paused child gets to flush its resume checkpoint on SIGTERM before killAll
+// SIGKILLs a survivor that ignored it. The flush is not bounded: go-pmtiles fsyncs the output (up to
+// the periodic-checkpoint interval of unsynced data) before it writes the journal, so a fast link onto
+// slow storage can take many seconds. So this is a last-resort cap, not the expected path: the child
+// normally exits on its own right after the flush (go-pmtiles ends with phase:paused, exit_code:3) and
+// the exit handler resolves before this fires. The job is already shown 'paused' the moment we SIGTERM
+// (patch below), so a long cap has no user-visible cost. A SIGKILL during the save does not corrupt: the
+// journal is replaced atomically and lists only on-disk data.
+const PAUSE_GRACE_MS = 60_000;
 
 class JobManager {
     private db: Database.Database;
