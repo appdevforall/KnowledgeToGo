@@ -94,12 +94,36 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // K2GO-317 follow-up: go-pmtiles prints exit_code on each layer's last JSON line. On a stop we read it
     // to tell a resumable network drop (2) from a hard failure. The last value seen is the relevant one.
     let lastExitCode: number | null = null;
+    // K2GO-317: set true when WE proactively SIGTERM a stalled download (watchdog below), so the catch
+    // keeps the journal and surfaces PAUSED just like an engine pause.
+    let stalled = false;
 
     await new Promise<void>((resolve, reject) => {
         // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
         // the python worker down with it (otherwise pause/cancel only kill the sudo wrapper and the
         // extract finishes in the background).
         const p = ctx.spawn('sudo', args, { env: { ...process.env }, detached: true });
+        // K2GO-317 (progress retention): go-pmtiles' own network give-up checkpoints a STALE journal and
+        // loses the bytes since its last periodic checkpoint (measured ~2/3 of a large region). A SIGTERM
+        // makes it flush the CURRENT bytes losslessly (measured: it resumes from exactly where it stopped).
+        // So this watchdog SIGTERMs the download itself once it makes no progress for STALL_MS, instead of
+        // waiting ~15-20 s for the lossy give-up. Armed on byte progress; cleared when nothing is in flight
+        // (finalize/done) or the child exits. An engine pause/cancel still wins: it fires first and the
+        // catch checks classifyStop before `stalled`.
+        const STALL_MS = 7000;
+        let lastBytes = -1;
+        let stallTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearStall = () => { if (stallTimer) { clearTimeout(stallTimer); stallTimer = null; } };
+        const armStall = () => {
+            clearStall();
+            stallTimer = setTimeout(() => {
+                if (stalled) return;
+                stalled = true;
+                ctx.log('[maps] download stalled; flushing the resume journal and pausing (no progress lost)');
+                try { if (p.pid) process.kill(-p.pid, 'SIGTERM'); } catch { /* group already gone */ }
+                try { p.kill('SIGTERM'); } catch { /* already gone */ }
+            }, STALL_MS);
+        };
         // pmtiles writes the JSON progress on stdout, one line per second. A 'data' chunk can split a
         // line across two events, so buffer stdout and act only on complete '\n'-terminated lines: an
         // unbuffered split would drop that second's progress. stderr carries pmtiles/script logs (never
@@ -109,17 +133,21 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s) return;
             ctx.log(s);
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
-            let j: { phase?: string; bytes_done?: number; bytes_total?: number; resumed_bytes?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
+            let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; eta_s?: number | null; exit_code?: number };
             try { j = JSON.parse(s); } catch { return; }
             if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
             let frac = 0;
             if (j.phase === 'download' && (j.bytes_total ?? 0) > 0) {
-                // K2GO-317: count the bytes already resumed from the journal, not just this run's new
-                // bytes, so a resumed layer reports its true progress instead of restarting the ring at 0.
-                frac = Math.min(1, ((j.resumed_bytes ?? 0) + (j.bytes_done ?? 0)) / (j.bytes_total as number));
+                // bytes_done ALREADY includes resumed_bytes (on a resume it starts at the resumed amount
+                // and climbs to bytes_total), so this is the true progress of a resumed layer too. Do NOT
+                // add resumed_bytes here: that double-counts and clamps a resumed layer to 100%.
+                frac = Math.min(1, (j.bytes_done ?? 0) / (j.bytes_total as number));
+                const bd = j.bytes_done ?? 0;   // reset the stall watchdog whenever bytes advance
+                if (bd !== lastBytes) { lastBytes = bd; armStall(); }
             } else if (j.phase === 'finalize' || j.phase === 'done') {
                 frac = 1;
+                clearStall();   // nothing downloading now: do not let a stale watchdog fire
             }
             overall = Math.max(overall, Math.min(99, Math.round(((layersDone + frac) / TOTAL_LAYERS) * 100)));
             const patch: JobUpdate = { phase: 'processing', percent: overall, detail: name };
@@ -140,6 +168,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         p.stderr?.on('data', (buf: Buffer) => { const t = buf.toString().trim(); if (t) ctx.log(t); });
         p.on('error', reject);
         p.on('exit', (code, signal) => {
+            clearStall();
             if (code === 0) return resolve();
             // Non-zero or killed: an engine pause/cancel (group-killed) or tile-extract's own exit.
             // The stop kind is read from the engine's job flags (classifyStop) in the catch, not from
@@ -152,13 +181,16 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         // A stop is resumable in two ways; for both we keep the journal and surface PAUSED, so the device
         // offers Resume (which re-runs the same command and continues from the checkpoint):
         //   1. An engine-initiated PAUSE (SIGTERM): the engine flags it, classifyStop sees it.
-        //   2. A network drop: go-pmtiles gives up, keeps the journal, and reports exit_code 2 on its last
-        //      JSON line. tile-extract.py masks the process exit to 1 (K2GO-317 follow-up), so we read the
-        //      JSON line, not the exit status. A cancel, or any other exit, is a hard error: purge.
+        //   2. A network drop: our watchdog SIGTERMs the stalled download (stalled=true) so go-pmtiles
+        //      flushes the current bytes; if the watchdog did not catch it first, go-pmtiles gives up on its
+        //      own and reports exit_code 2 on its last JSON line (tile-extract.py masks the process exit to
+        //      1, so we read the JSON line). Either way we keep the journal. A cancel, or any other exit, is
+        //      a hard error: purge.
         const stop = classifyStop(ctx);
         if (stop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
         if (stop === 'paused') throw new PausedError();     // keep partial: resume continues
-        if (lastExitCode === 2) throw new PausedError();    // resumable network drop: keep partial + journal
+        if (stalled) throw new PausedError();               // our stall-pause flushed a full journal
+        if (lastExitCode === 2) throw new PausedError();    // go-pmtiles gave up on its own: still resumable
         await purgeRegion(name, ctx.log);                   // hard error: purge and surface
         throw e;
     });
