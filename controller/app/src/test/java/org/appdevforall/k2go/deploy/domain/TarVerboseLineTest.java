@@ -54,6 +54,23 @@ public class TarVerboseLineTest {
     }
 
     @Test
+    public void deviceNodeKeepsPathZeroSize() {
+        // A char/block device shows "major,minor" where a file shows its size. The path must still be
+        // captured: a rootfs has many nodes under ./dev and the traversal guard checks every member.
+        TarVerboseLine e = TarVerboseLine.parse("crw-rw-rw- root/root 1,3 2026-11-06 08:00 ./dev/null");
+        assertEquals("./dev/null", e.path);
+        assertEquals(0L, e.size);
+    }
+
+    @Test
+    public void deviceNodeWithSpaceInMajorMinor() {
+        // Some tar builds print "major, minor" with a space; the path is still captured, size 0.
+        TarVerboseLine e = TarVerboseLine.parse("brw-rw-rw- root/root 8, 0 2026-11-06 08:00 ./dev/sda");
+        assertEquals("./dev/sda", e.path);
+        assertEquals(0L, e.size);
+    }
+
+    @Test
     public void modeWithAclSuffixStillParses() {
         // GNU tar may append '+' or '.' to the mode for an ACL / SELinux context; the type char is still first.
         TarVerboseLine e = TarVerboseLine.parse("-rw-rw-rw-+ shell/shell   100 2026-11-06 08:00 ./acl_file");
