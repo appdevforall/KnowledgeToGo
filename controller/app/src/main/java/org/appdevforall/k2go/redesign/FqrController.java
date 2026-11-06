@@ -461,6 +461,7 @@ public final class FqrController {
                 setRingState(cAmber, false);   // amber + dimmed: a paused job must not look live
             }
             @Override public void onDone() {
+                stopPctBlink();                // K2GO-317: every exit path stops the blink (done, like pause/fail/hide)
                 setRingState(cLeaf, true);     // done: a full leaf ring reads as success
                 updateOverlay(100, 0, -1);
                 if (overlayStatus != null) overlayStatus.setText(R.string.k2go_fqr_region_added); // may be gone if minimized
