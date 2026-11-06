@@ -205,8 +205,9 @@ def kolibri_make():
     if kolibri_running():
         raise RuntimeError("Kolibri is running")
     v = iiab_vars(KOLIBRI_VARS)
-    # One transaction: the facility, its root key, the DatabaseID and the superuser. If the
-    # process dies, nothing is kept and the next start runs it again.
+    # One transaction: the facility, its root key, the DatabaseID and the superuser. If it fails
+    # or the process dies, nothing is kept, the pdsm kolibri gate keeps the unprovisioned Kolibri
+    # down (tools/upstream-patches/patches/0003-*), and the next start runs it again.
     kolibri_cmd("provisiondevice", "--facility", v["kolibri_facility"],
                 "--superusername", v["kolibri_admin_user"],
                 "--superuserpassword", v["kolibri_admin_password"],
