@@ -72,6 +72,32 @@ def write_atomic(path, data, mode, group=None):
     os.replace(tmp, path)
 
 
+# While the box boots, the app kills it after 60 s with no output line
+# (controller/.../env/domain/EnvironmentEnsure.java, DEFAULT_BOOT_SILENCE_GRACE_MS). A long step
+# prints a line every HEARTBEAT_S so a slow phone is not killed in the middle of it.
+HEARTBEAT_S = 10
+
+
+def run(label, cmd, timeout, **kw):
+    """subprocess.run(check=True) with a heartbeat line. Returns stdout when stdout=PIPE."""
+    p = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kw)
+    waited = 0
+    while True:
+        try:
+            out, _ = p.communicate(timeout=HEARTBEAT_S)
+            break
+        except subprocess.TimeoutExpired:
+            waited += HEARTBEAT_S
+            if waited >= timeout:
+                p.kill()
+                p.communicate()
+                raise
+            print("[k2go-box-identity] %s (%ds)" % (label, waited), flush=True)
+    if p.returncode:
+        raise subprocess.CalledProcessError(p.returncode, cmd[0])
+    return out
+
+
 # --- system IDs -------------------------------------------------------------------------------
 
 def system_make():
@@ -113,9 +139,8 @@ def forgejo_make():
     for kind, path in forgejo_secrets():
         if has_value(path):
             continue
-        out = subprocess.run([FORGEJO_BIN, "generate", "secret", kind], check=True,
-                             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                             timeout=120).stdout.strip()
+        out = run("forgejo: generating " + kind, [FORGEJO_BIN, "generate", "secret", kind],
+                  120, stdout=subprocess.PIPE).strip()
         if not out:
             raise RuntimeError("forgejo returned an empty secret")
         # Same owner and mode as the forgejo role (roles/forgejo/tasks/install.yml).
@@ -195,9 +220,8 @@ def iiab_vars(keys):
 
 
 def kolibri_cmd(*args):
-    subprocess.run(["kolibri", "manage"] + list(args), check=True, stdin=subprocess.DEVNULL,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=900,
-                   env=dict(os.environ, KOLIBRI_HOME=KOLIBRI_HOME))
+    run("kolibri: " + args[0], ["kolibri", "manage"] + list(args), 900,
+        stdout=subprocess.DEVNULL, env=dict(os.environ, KOLIBRI_HOME=KOLIBRI_HOME))
 
 
 def kolibri_make():
