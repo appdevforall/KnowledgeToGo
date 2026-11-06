@@ -31,6 +31,17 @@ public class RsyncProgressTest {
         assertEquals(88, p.percent);
     }
 
+    // K2GO-550: rsync 3.5.2 writes the byte column with a "B" unit.
+    @Test
+    public void parsesByteColumnWithUnit() {
+        RsyncProgress p = RsyncProgress.parse("    122,191,872B  58%  122MB/s    0:00:00");
+        assertNotNull(p);
+        assertEquals(122191872L, p.bytes);
+        assertEquals(58, p.percent);
+        assertEquals("122MB/s", p.speed);
+        assertEquals("0:00:00", p.eta);
+    }
+
     @Test
     public void returnsNullWhenNoProgressToken() {
         assertNull(RsyncProgress.parse("sending incremental file list"));

@@ -34,9 +34,9 @@ public final class RsyncProgress {
     // ADFA-5160: capture the leading transferred-bytes column (with grouping separators)
     // as well as the percent. rsync's own percent divides by an estimate that grows as it
     // discovers files, so it jumps around; the byte count is a stable numerator the caller
-    // can divide by a known total instead.
+    // can divide by a known total instead. rsync 3.5.2 appends a "B" unit to the bytes.
     private static final Pattern PROGRESS =
-            Pattern.compile("([\\d,]+)\\s+(\\d+)%\\s+([\\d\\.]+[a-zA-Z/s]+)\\s+([\\d:]+)");
+            Pattern.compile("([\\d,]+)B?\\s+(\\d+)%\\s+([\\d\\.]+[a-zA-Z/s]+)\\s+([\\d:]+)");
 
     private static final Pattern STATS =
             Pattern.compile("Total transferred file size:\\s+([\\d,\\.]+)\\s+bytes");
