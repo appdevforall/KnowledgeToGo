@@ -56,6 +56,7 @@ def remove(*paths):
 
 def write_atomic(path, data, mode, group=None):
     tmp = path + ".k2go-tmp"
+    remove(tmp)  # a read-only tmp left by a killed run would block O_TRUNC for a non-root uid
     fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode)
     try:
         os.write(fd, data)
