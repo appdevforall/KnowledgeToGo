@@ -289,11 +289,14 @@ def forgejo_clear(keep_key):
     remove(*FORGEJO_KEYS)
     # Records of the other phone: logins, grants, runners, peers, job and hook history.
     # The activity feed (action) is user data and stays.
-    scrub(forgejo_db(), [(t, "DELETE FROM " + t) for t in FORGEJO_RECORDS])
+    scrub(forgejo_db(), [(t, "DELETE FROM " + t) for t in FORGEJO_RECORDS]
+          # Ended migrations only (stopped, failed, finished: modules/structs/task.go). A queued or
+          # running one still owns a repo that waits for it.
+          + [("task", "DELETE FROM task WHERE status IN (2, 3, 4)")])
 
 
 FORGEJO_RECORDS = ("forgejo_auth_token", "session", "oauth2_grant", "oauth2_authorization_code",
-                   "action_runner_token", "action_runner", "notice", "hook_task", "task",
+                   "action_runner_token", "action_runner", "notice", "hook_task",
                    "federation_host", "federated_user", "federated_user_activity", "following_repo")
 
 

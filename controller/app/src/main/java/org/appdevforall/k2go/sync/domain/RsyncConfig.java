@@ -88,6 +88,19 @@ public final class RsyncConfig {
                 destDir));
     }
 
+    /**
+     * Adds a client-side exclude file to a pull argv ({@link #clientArgs} or {@link #dryRunArgs}).
+     * The client sends the rules to the sender, so a sender without its own list does not send
+     * those files either. --delete-excluded also removes them from the destination.
+     */
+    public static List<String> withExcludes(List<String> pullArgs, String excludeFromPath) {
+        List<String> a = new ArrayList<>(pullArgs);
+        int src = a.size() - 2;   // the remote URL, then the destination
+        a.add(src, "--delete-excluded");
+        a.add(src, "--exclude-from=" + excludeFromPath);
+        return a;
+    }
+
     /** argv for the dry-run transfer-size estimate. */
     public static List<String> dryRunArgs(String rsyncBinPath, String passFilePath,
                                           String remoteUrl, String destDir) {

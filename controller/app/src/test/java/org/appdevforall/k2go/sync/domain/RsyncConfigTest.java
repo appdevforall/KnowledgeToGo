@@ -83,4 +83,14 @@ public class RsyncConfigTest {
         assertEquals("--password-file=/c/rsync_client.pass", a.get(5));
         assertEquals(8, a.size());
     }
+
+    @Test
+    public void withExcludesGoesBeforeTheSource() {
+        List<String> a = RsyncConfig.withExcludes(RsyncConfig.clientArgs(
+                "/lib/librsync.so", "/c/p", "rsync://u@h:1/m/", "/dest"), "/c/ex.rsync");
+        assertEquals("--exclude-from=/c/ex.rsync", a.get(6));
+        assertEquals("--delete-excluded", a.get(7));
+        assertEquals("rsync://u@h:1/m/", a.get(8));
+        assertEquals("/dest", a.get(9));
+    }
 }

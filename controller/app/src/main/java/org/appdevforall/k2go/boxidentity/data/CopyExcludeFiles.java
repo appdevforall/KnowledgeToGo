@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-/** Writes the {@link CopyExcludes} list to the cache dir, in the form each copy tool reads. */
+/** Writes the {@link CopyExcludes} list to a file, in the form each copy tool reads. */
 public final class CopyExcludeFiles {
 
     private CopyExcludeFiles() {
@@ -38,7 +38,8 @@ public final class CopyExcludeFiles {
     }
 
     private static File write(Context ctx, String name, String content) throws IOException {
-        File f = new File(ctx.getCacheDir(), name);
+        // Not the cache dir: Android can clear it while the Clone daemon still reads the file.
+        File f = new File(ctx.getNoBackupFilesDir(), name);
         try (FileOutputStream out = new FileOutputStream(f)) {
             out.write(content.getBytes(StandardCharsets.UTF_8));
         }

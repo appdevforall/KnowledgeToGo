@@ -134,8 +134,10 @@ public class RsyncManager implements TransportEngine {
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
-                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.clientArgs(
-                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
+                // K2GO-549: also filter here, for a sender whose APK has no exclude list.
+                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.clientArgs(
+                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
+                        CopyExcludeFiles.rsync(context).getAbsolutePath()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();
@@ -290,8 +292,9 @@ public class RsyncManager implements TransportEngine {
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
-                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.dryRunArgs(
-                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
+                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.dryRunArgs(
+                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
+                        CopyExcludeFiles.rsync(context).getAbsolutePath()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();
