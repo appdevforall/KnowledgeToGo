@@ -74,7 +74,7 @@ public class LibraryActivity extends AppCompatActivity
     private ServerController serverController;
 
     private LottieAnimationView bootGate;
-    /** K2GO-553: replaces the boot gate for a boot that makes the per-box values. */
+    /** K2GO-553: covers the gate or the open Library while a launch makes the per-box values. */
     private org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen preparing;
     private View installProgress;
     private android.widget.TextView installStatus, installDetail, installPercent, installEta;
@@ -178,7 +178,9 @@ public class LibraryActivity extends AppCompatActivity
         preparing = new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen(
                 findViewById(R.id.k2go_preparing), this,
                 new org.appdevforall.k2go.boxidentity.presentation.PreparingSystemScreen.Host() {
-                    @Override public boolean canCover() { return !closing && !installing && !gateDismissed; }
+                    // Gate up or already open: a launch after an install can start with the Library
+                    // on screen. "begin" only comes from an environment launch, never mid-close.
+                    @Override public boolean canCover() { return !closing; }
                     // Themed surface, not the gate's fixed light paper.
                     @Override public void onShown() { setGateStatusBar(false); }
                     @Override public void onHidden() { if (!gateDismissed) setGateStatusBar(true); }

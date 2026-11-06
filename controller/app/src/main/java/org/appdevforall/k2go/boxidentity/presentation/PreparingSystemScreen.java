@@ -36,7 +36,7 @@ import java.util.Random;
  */
 public final class PreparingSystemScreen {
 
-    /** The host's own reason to keep the screen off (for example, its gate is already open). */
+    /** The host's own reason to keep the screen off (for example, it is closing). */
     public interface Host {
         boolean canCover();
 
@@ -66,6 +66,8 @@ public final class PreparingSystemScreen {
     private final boolean reduced;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private long shownAtMs = -1L;
+    /** The activity's feedback FAB sits above the layout, so it is hidden while the screen covers. */
+    private View hiddenFab;
 
     private final Runnable holdExpired = this::dismiss;
 
@@ -116,6 +118,11 @@ public final class PreparingSystemScreen {
         anim.setRepeatCount(LottieDrawable.INFINITE);
         word.setText(words[cycle.next()]);
         handler.postDelayed(holdExpired, MAX_HOLD_MS);
+        View fab = root.getRootView().findViewById(R.id.fab_feedback);
+        if (fab != null && fab.getVisibility() == View.VISIBLE) {
+            fab.setVisibility(View.INVISIBLE);
+            hiddenFab = fab;
+        }
         host.onShown();
         if (reduced) {
             anim.setProgress(0f);   // a still first frame; the text carries the meaning
@@ -158,6 +165,10 @@ public final class PreparingSystemScreen {
     private void hideNow() {
         anim.cancelAnimation();
         root.setVisibility(View.GONE);
+        if (hiddenFab != null) {
+            hiddenFab.setVisibility(View.VISIBLE);
+            hiddenFab = null;
+        }
         host.onHidden();
     }
 
