@@ -45,7 +45,7 @@ public class SyncStateViewModel extends ViewModel {
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
     // startProbe() and reacts to the phases published on SyncProgressRepository; the chosen
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
-    private SyncHandshakeHelper.SyncCredentials pendingCreds;
+    private volatile SyncHandshakeHelper.SyncCredentials pendingCreds;   // read by the probe thread
     private File pendingDestDir;
     private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
     private Context appContext; // application context, for releasing the network binding
@@ -96,7 +96,8 @@ public class SyncStateViewModel extends ViewModel {
                 try { Thread.sleep(500); } catch (InterruptedException e) { return; }
             }
             SyncTransferState now = repo.current();
-            if (now == null || now.phase != SyncTransferState.Phase.CONNECTING) return;   // cancelled while waiting
+            // Cancelled, or a newer scan replaced this probe, while waiting.
+            if (pendingCreds != creds || now == null || now.phase != SyncTransferState.Phase.CONNECTING) return;
             // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
             // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
             // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
