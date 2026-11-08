@@ -67,6 +67,24 @@ public final class NetworkInterfaces {
     }
 
     /**
+     * True when {@code ip} is assigned to one of this device's own interfaces, including a p2p0 hotspot
+     * AP that ConnectivityManager does not expose. A peer at a local address is unreachable: the local
+     * route wins and the connection reaches this device (K2GO-376, K2GO-561). False on error.
+     */
+    public static boolean isLocalAddress(String ip) {
+        try {
+            InetAddress target = InetAddress.getByName(ip);
+            for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                for (InetAddress a : Collections.list(ni.getInetAddresses())) {
+                    if (a.equals(target)) return true;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    /**
      * Scans the interfaces and returns the station Wi-Fi (wlan0) and the AP IPv4. The AP choice goes
      * through {@link ApAddress}, the single decision. For the full producer (which also consults
      * ConnectivityManager/LinkProperties), use {@code ApAddressResolver.resolveOnce}.
