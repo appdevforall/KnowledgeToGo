@@ -20,7 +20,8 @@ import androidx.core.content.ContextCompat;
 
 
 public class SplashActivity extends AppCompatActivity
-        implements org.appdevforall.k2go.ui.EdgeToEdge.SelfManaged {
+        implements org.appdevforall.k2go.ui.EdgeToEdge.SelfManaged,
+                   org.appdevforall.k2go.ui.ForegroundActivityHolder.DialogExempt {
 
     private static final long EXIT_AT_MS = 3100L;
     private static final long EXIT_FADE_MS = 400L;

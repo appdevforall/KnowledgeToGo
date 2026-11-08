@@ -87,8 +87,13 @@ public class DashboardDetailFragment extends Fragment {
             } else if (DashboardRebuildService.STATE_DONE.equals(state)) {
                 setUpdating(false);
                 refreshAfterLiveUpdate();
-            } else if (DashboardRebuildService.STATE_ERROR.equals(state)
-                    || DashboardRebuildService.STATE_CANCELLED.equals(state)) {
+            } else if (DashboardRebuildService.STATE_ERROR.equals(state)) {
+                setUpdating(false);
+                fetchUpdateStatus();   // version unchanged; re-resolve the pill/emphasis
+                // K2GO-557: pop the in-app failure dialog now (the user is watching). The service already
+                // set the pending-failure flag, so if this card is gone it re-shows app-wide instead.
+                showFailureHere();
+            } else if (DashboardRebuildService.STATE_CANCELLED.equals(state)) {
                 setUpdating(false);
                 fetchUpdateStatus();   // version unchanged; re-resolve the pill/emphasis
             }
@@ -154,6 +159,23 @@ public class DashboardDetailFragment extends Fragment {
         ContextCompat.registerReceiver(requireContext(), rebuildState, f,
                 ContextCompat.RECEIVER_NOT_EXPORTED);
         resolveInitialUpdatingState();
+        // K2GO-557: if a past update failed while this card was away, re-show it HERE (Try again retries
+        // in place). onStart runs before the app-wide holder's resume, so the card's "Try again" wins over
+        // the holder's generic "Open dashboard" (the shared dialog guard prevents a double).
+        if (!DashboardRebuildService.isRunning() && UpdateStatusCache.pendingFailure(requireContext())) {
+            showFailureHere();
+        }
+    }
+
+    /** K2GO-557: the in-app update-failure dialog for THIS card, where "Try again" re-runs the gated start
+     *  in place (gates, confirm, low-memory advisory, then start). */
+    private void showFailureHere() {
+        if (!isAdded()) return;
+        final View root = getView();
+        if (root == null) return;
+        org.appdevforall.k2go.dashboard.presentation.DashUpdateFailureDialog.show(
+                requireActivity(), R.string.k2go_dash_update_retry,
+                () -> { if (isAdded()) DashboardRebuild.confirmAndStart(this, root, updateAvailable); });
     }
 
     @Override

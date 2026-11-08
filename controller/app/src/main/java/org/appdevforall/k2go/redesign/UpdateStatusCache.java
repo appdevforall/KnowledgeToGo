@@ -24,6 +24,11 @@ public final class UpdateStatusCache {
     // installed dash-node version changes (a rebuild), its served JS/HTML changed under the WebView,
     // so we clear the cache once and record the new version here.
     private static final String KEY_CACHE_VER = "cache_cleared_version";
+    // K2GO-557: a live update failed and the user has not acknowledged it yet. The single source of
+    // truth for "there is an unacked update failure", written by DashboardRebuildService (the one owner
+    // that always runs to completion) and cleared on success, on a new start, or when the in-app failure
+    // dialog is dismissed. The failure is surfaced IN-APP, not as a system notification.
+    private static final String KEY_PENDING_FAILURE = "pending_failure";
 
     private static SharedPreferences prefs(Context ctx) {
         return ctx.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -55,5 +60,15 @@ public final class UpdateStatusCache {
     /** ADFA-5051 follow-up: record the dashboard version the WebView cache was just cleared for. */
     public static void setCacheClearedVersion(Context ctx, String version) {
         prefs(ctx).edit().putString(KEY_CACHE_VER, version == null ? "" : version).apply();
+    }
+
+    /** K2GO-557: mark (or clear) an unacknowledged live-update failure. */
+    public static void setPendingFailure(Context ctx, boolean pending) {
+        prefs(ctx).edit().putBoolean(KEY_PENDING_FAILURE, pending).apply();
+    }
+
+    /** K2GO-557: true when a live update failed and the user has not seen the in-app notice yet. */
+    public static boolean pendingFailure(Context ctx) {
+        return prefs(ctx).getBoolean(KEY_PENDING_FAILURE, false);
     }
 }

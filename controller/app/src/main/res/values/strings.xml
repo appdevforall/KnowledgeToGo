@@ -1740,4 +1740,13 @@
     <string name="k2go_preparing_word_6">Setting things up...</string>
     <string name="k2go_preparing_word_7">Making it yours...</string>
     <string name="k2go_preparing_word_8">Almost there...</string>
+    <!-- K2GO-557: in-app update alerts -->
+    <string name="k2go_dash_lowmem_title">Device is low on memory</string>
+    <string name="k2go_dash_lowmem_text">Your device is low on memory. The update may fail. Close other apps first, or start anyway.</string>
+    <string name="k2go_dash_lowmem_not_now">Not now</string>
+    <string name="k2go_dash_lowmem_start_anyway">Start anyway</string>
+    <string name="k2go_dash_update_failed_title">Dashboard update failed</string>
+    <string name="k2go_dash_update_failed_text">Close other apps and try again. If it keeps failing, contact us.</string>
+    <string name="k2go_dash_update_retry">Try again</string>
+    <string name="k2go_dash_update_open_dashboard">Open dashboard</string>
 </resources>
