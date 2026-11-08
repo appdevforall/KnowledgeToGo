@@ -17,6 +17,8 @@
 #   ARCHES       "arm64-v8a armeabi-v7a" (default) or a subset
 #   SOURCE       dev_latest (default) | k2go_<date>_<tier>_<sha>_<arch>.tar.gz
 #   DRY_RUN      1 (default) = plan and checks only; 0 = copy
+#   REQUIRE_SIG  1 = also require a .minisig next to each tarball (set by the workflow when signing
+#                is enabled); 0 (default) = do not require it
 #   PUBLIC_BASE  public URL of the bucket
 #   BUCKET_NAME, ENDPOINT, PFX : needed only when DRY_RUN=0
 # =============================================================================
@@ -26,6 +28,7 @@ TIERS="${TIERS:-basic standard full matomo}"
 ARCHES="${ARCHES:-arm64-v8a armeabi-v7a}"
 SOURCE="${SOURCE:-dev_latest}"
 DRY_RUN="${DRY_RUN:-1}"
+REQUIRE_SIG="${REQUIRE_SIG:-0}"
 PUBLIC_BASE="${PUBLIC_BASE:-https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev}"
 PFX="${PFX:-}"
 TARBALL_RE='k2go_[0-9.]+_[a-z]+_[0-9a-f]+_[a-z0-9-]+\.tar\.gz'
@@ -56,6 +59,9 @@ for arch in $ARCHES; do
         [ -n "$want" ] || fail "$tier/$arch: ${src}.meta4 missing or names no tarball"
         [[ "$want" == *"_${tier}_"*"_${arch}.tar.gz" ]] || fail "$tier/$arch: ${src}.meta4 names $want"
         http_ok "$want" || fail "$tier/$arch: tarball $want is not on R2"
+        if [ "$REQUIRE_SIG" = 1 ]; then
+            http_ok "${want}.minisig" || fail "$tier/$arch: signature ${want}.minisig is not on R2"
+        fi
         http_ok "${src}.installed" || fail "$tier/$arch: ${src}.installed missing"
         now="$(tarball_of "${dst}.meta4")"
         echo ">> $tier/$arch: ${now:-<none>} -> $want"

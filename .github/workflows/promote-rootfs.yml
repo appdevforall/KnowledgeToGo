@@ -57,6 +57,7 @@ jobs:
           TIERS: ${{ inputs.tier == 'all' && 'basic standard full matomo' || inputs.tier }}
           ARCHES: ${{ inputs.arch == 'all' && 'arm64-v8a armeabi-v7a' || inputs.arch }}
           DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+          REQUIRE_SIG: ${{ vars.ROOTFS_SIGNING_ENABLED == 'true' && '1' || '0' }}
         run: |
           export PUBLIC_BASE="$ROOTFS_PUBLIC_BASE" PFX="${R2_KEY_PREFIX:-}"
           export ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
