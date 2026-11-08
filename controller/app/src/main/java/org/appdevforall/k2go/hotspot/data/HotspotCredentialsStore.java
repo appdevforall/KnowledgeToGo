@@ -88,7 +88,7 @@ public final class HotspotCredentialsStore {
         prefs.edit().putBoolean(KEY_CUSTOM, false).apply();
     }
 
-    // Hotspot band choice, persisted by its stable id (see domain HotspotBand). Default 2.4 GHz.
+    // Hotspot band choice, persisted by its stable id (see domain HotspotBand). Default Automatic.
     private static final String KEY_BAND = "band";
 
     public HotspotBand band() {

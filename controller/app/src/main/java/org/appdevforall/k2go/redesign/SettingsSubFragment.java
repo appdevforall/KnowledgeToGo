@@ -784,7 +784,7 @@ public class SettingsSubFragment extends Fragment {
         fields.setVisibility(store.isCustom() ? View.VISIBLE : View.GONE);
         offGroup.setVisibility(store.isCustom() ? View.GONE : View.VISIBLE);
 
-        // ---- Wi-Fi band: 2.4 GHz (default) / 5 GHz / Automatic, via a single-choice dialog. ----
+        // ---- Wi-Fi band: 2.4 GHz / 5 GHz / Automatic (default), via a single-choice dialog. ----
         SettingsUi.caption(ctx, list, getString(R.string.k2go_hotspot_band_hint));
         final LinearLayout bandRow = new LinearLayout(ctx);
         bandRow.setOrientation(LinearLayout.HORIZONTAL);

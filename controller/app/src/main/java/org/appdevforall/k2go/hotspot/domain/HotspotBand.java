@@ -6,8 +6,9 @@
  * Description : K2GO-127. The hotspot's Wi-Fi band choice. One source for the band set, their
  *               stable persisted ids, and their order. The presentation layer maps each to a label
  *               and the Wi-Fi Direct layer maps each to WifiP2pConfig.GROUP_OWNER_BAND_*; neither
- *               re-lists the choices. Pure JVM (no Android). 2.4 GHz is the default: it reaches
- *               more and older devices.
+ *               re-lists the choices. Pure JVM (no Android). Automatic is the default (K2GO-561):
+ *               the group follows the channel of the connected Wi-Fi, so the radio does not
+ *               split time between two channels (a fixed 2.4 GHz gave ~3 MB/s next to 5 GHz Wi-Fi).
  * ============================================================================
  */
 package org.appdevforall.k2go.hotspot.domain;
@@ -22,7 +23,7 @@ public enum HotspotBand {
 
     HotspotBand(int id) { this.id = id; }
 
-    public static final HotspotBand DEFAULT = TWO_GHZ;
+    public static final HotspotBand DEFAULT = AUTO;
 
     /** The band for a stored id, or {@link #DEFAULT} for an unknown/corrupt id. */
     public static HotspotBand fromId(int id) {
