@@ -35,6 +35,22 @@ git submodule update --init --recursive
 
 After cloning, open the project in your IDE and sync the Gradle files. The NDK will compile the native components used by the Termux engine.
 
+## Official rootfs signatures
+
+The official rootfs tarballs are signed with minisign (Ed25519). The signature lets the app
+and a developer trust the exact bytes of a tarball. See
+[docs/ADR-K2GO-554-signed-rootfs-skip-listing.md](docs/ADR-K2GO-554-signed-rootfs-skip-listing.md)
+for the design, the rollout order, and the fail-closed fallback.
+
+- Public key (committed, not a secret): [rootfs-signing.pub](rootfs-signing.pub), key id
+  `C5E45B250781C960`. The app pins this key, and CI and developers verify against it.
+- Private key: the CI secret `ROOTFS_MINISIGN_KEY_BASE64` (base64 of the minisign secret
+  key). The release owner holds it offline. It is NOT in this repository.
+
+To verify a tarball out of band, run one command:
+
+    minisign -Vm k2go_<date>_<tier>_<sha>_<arch>.tar.gz -p rootfs-signing.pub
+
 ## Known unsupported devices
 
 K2Go cannot run on the builds below because of a kernel defect, not an app defect. A kernel
@@ -48,7 +64,7 @@ For the full identification, symptoms and workaround, refer to
 
 ## Acknowledgments
 
-K2Go is built on top of the **[Termux](https://github.com/termux/termux-app)** project. The Termux engine is vendored as a Git submodule (`controller/termux-core/termux-source`, tracking [`appdevforall/termux-app`](https://github.com/appdevforall/termux-app) — a fork of upstream Termux) so we can run a Linux environment and native tooling on Android while still receiving upstream updates.
+K2Go is built on top of the **[Termux](https://github.com/termux/termux-app)** project. The Termux engine is vendored as a Git submodule (`controller/termux-core/termux-source`, tracking [`appdevforall/termux-app`](https://github.com/appdevforall/termux-app), a fork of upstream Termux) so we can run a Linux environment and native tooling on Android while still receiving upstream updates.
 
 Our deepest thanks to the **Termux team and contributors** for their foundational work, without which K2Go would not be possible.
 

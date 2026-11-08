@@ -65,11 +65,11 @@ on:
 env:
   BUCKET_NAME: k2go-rootfs
   R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-  # Public base that goes into the .meta4 <url> — where the APK actually downloads the
+  # Public base that goes into the .meta4 <url>: where the APK actually downloads the
   # rootfs FROM, so it has to name the bucket that holds it. The two buckets are separate
   # and so are their names: k2go-download.appdevforall.org serves the APK repo only.
   # K2GO-90: this defaulted to k2go-download.appdevforall.org/rootfs, a path-based route that
-  # was never created. The metalinks published with it resolved to 404 — and since
+  # was never created. The metalinks published with it resolved to 404, and since
   # --reset-mirrors leaves a single source, there was nothing to fall back to.
   ROOTFS_PUBLIC_BASE: ${{ vars.ROOTFS_PUBLIC_BASE || 'https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev' }}
   # Key prefix inside the bucket. Empty: the keys sit at the bucket root (only the static
@@ -220,6 +220,48 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # K2GO-554: sign each dated tarball with minisign (prehashed Ed25519) BEFORE the upload, so the
+      # detached <tarball>.minisig rides the same data upload as a per-artifact sidecar (never a
+      # pointer). Dormant until the repo variable ROOTFS_SIGNING_ENABLED is 'true' (BC4: the app must
+      # verify signatures on every channel before signing turns on). The builder stays secret-free;
+      # only this step sees the key. See controller/docs/ADR-K2GO-554-signed-rootfs-skip-listing.md.
+      - name: Sign tarballs with minisign (${{ inputs.mode }})
+        if: inputs.mode != 'test' && vars.ROOTFS_SIGNING_ENABLED == 'true'
+        env:
+          ROOTFS_MINISIGN_KEY_BASE64: ${{ secrets.ROOTFS_MINISIGN_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+          [ -n "${ROOTFS_MINISIGN_KEY_BASE64:-}" ] \
+            || { echo "FATAL: signing is enabled but secret ROOTFS_MINISIGN_KEY_BASE64 is empty" >&2; exit 1; }
+          command -v minisign >/dev/null 2>&1 || { sudo apt-get update && sudo apt-get install -y minisign; }
+          PUB="$GITHUB_WORKSPACE/controller/rootfs-signing.pub"
+          [ -f "$PUB" ] || { echo "FATAL: public key $PUB is missing" >&2; exit 1; }
+          # Decode the passwordless secret key to a private temp file; shred it on exit.
+          umask 077
+          KEY="$(mktemp)"; trap 'shred -u "$KEY" 2>/dev/null || rm -f "$KEY"' EXIT
+          printf '%s' "$ROOTFS_MINISIGN_KEY_BASE64" | base64 -d > "$KEY"
+          shopt -s nullglob
+          cd dist
+          for tb in k2go_*.tar.gz; do
+            # Bake gate (D4): refuse any absolute or '..' member before signing, so the signature
+            # certifies a tarball that already passed the traversal check (lets the app skip listing).
+            # Capture the listing first so a tar read error fails closed (a pipe to grep would hide
+            # it under pipefail and sign an unlistable tarball).
+            members="$(tar -tzf "$tb")" \
+              || { echo "FATAL: cannot list $tb; refusing to sign" >&2; exit 1; }
+            if printf '%s\n' "$members" | grep -Eq '^/|(^|/)\.\.(/|$)'; then
+              echo "FATAL: $tb has an unsafe member (absolute or ..); refusing to sign" >&2; exit 1
+            fi
+            echo ">> sign $tb"
+            minisign -S -H -s "$KEY" -m "$tb" -t "k2go rootfs ${tb%.tar.gz}" </dev/null
+            # The app verifier accepts ONLY the prehashed form (algorithm tag "ED"); assert it here.
+            tag="$(sed -n 2p "${tb}.minisig" | base64 -d 2>/dev/null | head -c2 || true)"
+            [ "$tag" = "ED" ] || { echo "FATAL: ${tb}.minisig is not prehashed (tag '$tag', want ED)" >&2; exit 1; }
+            # Self-verify the fresh signature with the committed public key (catches a mangled secret).
+            minisign -Vm "$tb" -p "$PUB" >/dev/null \
+              || { echo "FATAL: self-verify failed for $tb" >&2; exit 1; }
+          done
+
       # K2GO-511: each node uploads only DATA (dated tarballs + their sidecars). Nothing points to
       # them yet, so a node that passes while another fails exposes nothing. The publish job flips
       # the pointers once every node passed.
@@ -340,10 +382,33 @@ jobs:
               if (( n > KEEP )); then
                 for key in "${keys[@]:0:n-KEEP}"; do
                   echo ">> prune $key (+ sidecars)"
-                  for ext in '' .meta4 .sha256 .installed .torrent; do
+                  for ext in '' .meta4 .sha256 .installed .torrent .minisig; do
                     aws s3 rm "s3://${BUCKET_NAME}/${key}${ext}" --endpoint-url "$ENDPOINT" || true
                   done
                 done
               fi
             done
           fi
+
+      # K2GO-554 consistency check: every pointer just published must resolve to a tarball that
+      # carries a .minisig on R2 (no pointer to an unsigned tarball). Dormant until signing is
+      # enabled. The prune above deletes a tarball's .minisig in lockstep with it, so an orphan
+      # signature cannot accumulate.
+      - name: Verify published signatures (K2GO-554)
+        if: vars.ROOTFS_SIGNING_ENABLED == 'true'
+        run: |
+          set -euo pipefail
+          PFX="${R2_KEY_PREFIX:-}"
+          TARBALL_RE='k2go_[0-9.]+_[a-z]+_[0-9a-f]+_[a-z0-9-]+\.tar\.gz'
+          shopt -s nullglob
+          rc=0
+          for m in stage/latest_*.meta4; do
+            tb="$(grep -oE "$TARBALL_RE" "$m" | head -1 || true)"
+            [ -n "$tb" ] || { echo "FATAL: $(basename "$m") names no tarball" >&2; rc=1; continue; }
+            if curl -sfI -m 30 "${ROOTFS_PUBLIC_BASE}/${PFX}${tb}.minisig" >/dev/null; then
+              echo ">> ok: ${tb}.minisig present"
+            else
+              echo "FATAL: ${tb}.minisig missing on R2 (pointer $(basename "$m"))" >&2; rc=1
+            fi
+          done
+          exit "$rc"
