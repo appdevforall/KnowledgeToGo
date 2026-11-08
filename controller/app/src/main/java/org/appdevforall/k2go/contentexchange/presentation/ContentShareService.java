@@ -34,6 +34,7 @@ import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.notifications.NotificationIds;
 
 import java.util.ArrayList;
@@ -179,7 +180,7 @@ public final class ContentShareService extends Service {
             return;
         }
         if (HotspotPermissions.granted(this)) {
-            LocalHotspotManager.get().acquire(getApplicationContext(), LocalHotspotManager.Holder.CONTENT_SHARE);
+            LocalHotspotManager.get().acquire(getApplicationContext(), HotspotHolders.Holder.CONTENT_SHARE);
         }
     }
 
@@ -211,7 +212,7 @@ public final class ContentShareService extends Service {
     public void onDestroy() {
         releaseHardwareLocks();
         // Shared singleton: the hotspot stops only when no other feature holds it (K2GO-561).
-        LocalHotspotManager.get().release(LocalHotspotManager.Holder.CONTENT_SHARE);
+        LocalHotspotManager.get().release(HotspotHolders.Holder.CONTENT_SHARE);
         // Close the gate (the app-side closer, ADR "Pillar Share"). Off the main thread; the process
         // usually outlives this service (the app is still open). A rare race where the id is not stored
         // yet, or a process kill, is covered by conex-core's safety cap and the receiver's complete.

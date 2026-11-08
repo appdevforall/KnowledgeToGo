@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
@@ -66,7 +67,7 @@ public class ConnectFragment extends Fragment {
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
                     if (HotspotPermissions.granted(requireContext())) {
-                        hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CONNECT);
+                        hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CONNECT);
                     }
                     render();
                 });
@@ -128,7 +129,7 @@ public class ConnectFragment extends Fragment {
     private void ensureHotspot() {
         if (!LocalHotspotManager.isSupported()) return;
         if (HotspotPermissions.granted(requireContext())) {
-            hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CONNECT);
+            hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CONNECT);
         } else if (!hs.isOn()) {
             hotspotPerm.launch(HotspotPermissions.required());
         }

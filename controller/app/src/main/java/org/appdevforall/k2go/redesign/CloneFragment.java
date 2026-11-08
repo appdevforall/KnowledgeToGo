@@ -44,6 +44,7 @@ import org.appdevforall.k2go.sync.data.ApkAbiReader;
 import org.appdevforall.k2go.sync.domain.ApkShareName;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.presentation.SyncProgressRepository;
 import org.appdevforall.k2go.sync.presentation.SyncStateViewModel;
@@ -457,12 +458,12 @@ public class CloneFragment extends Fragment {
 
     // ADFA-5158: renderPrepare runs on every render; start() ignores a call while a start is in flight.
     private void acquireHotspot() {
-        hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CLONE);
+        hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CLONE);
     }
 
     /** K2GO-561: the Wi-Fi Direct group outlives the screen and slows Wi-Fi, so Clone lets go of it. */
     private void releaseHotspot() {
-        hs.release(LocalHotspotManager.Holder.CLONE);
+        hs.release(HotspotHolders.Holder.CLONE);
     }
 
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
