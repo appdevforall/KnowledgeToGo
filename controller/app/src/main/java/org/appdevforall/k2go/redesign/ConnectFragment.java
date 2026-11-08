@@ -66,7 +66,7 @@ public class ConnectFragment extends Fragment {
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
                     if (HotspotPermissions.granted(requireContext())) {
-                        hs.start(requireContext().getApplicationContext());
+                        hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CONNECT);
                     }
                     render();
                 });
@@ -126,10 +126,10 @@ public class ConnectFragment extends Fragment {
     }
 
     private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported() || hs.isOn()) return;
+        if (!LocalHotspotManager.isSupported()) return;
         if (HotspotPermissions.granted(requireContext())) {
-            hs.start(requireContext().getApplicationContext());
-        } else {
+            hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CONNECT);
+        } else if (!hs.isOn()) {
             hotspotPerm.launch(HotspotPermissions.required());
         }
     }

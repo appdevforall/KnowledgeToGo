@@ -74,8 +74,6 @@ public class CloneFragment extends Fragment {
     private boolean startedStep = false;
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
-    // K2GO-561: true only while Clone started the shared hotspot, so Clone never stops Connect's.
-    private boolean ownsHotspot;
     private TransportEngine transport;
     private ShareConfig shareConfig;
     private String tempPass;
@@ -176,7 +174,7 @@ public class CloneFragment extends Fragment {
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
-                    if (HotspotPermissions.granted(requireContext())) startOwnedHotspot();
+                    if (HotspotPermissions.granted(requireContext())) acquireHotspot();
                     render();
                 });
         barcodeLauncher = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
@@ -446,14 +444,10 @@ public class CloneFragment extends Fragment {
     }
 
     private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported() || hs.isOn()) return;
-        // ADFA-5158: renderPrepare runs on every render; don't re-request a start while one is in flight
-        // (the "Caller already has an active LocalOnlyHotspot request" log spam).
-        LocalHotspotManager.State st = hs.state().getValue();
-        if (st != null && st.phase == LocalHotspotManager.Phase.STARTING) return;
+        if (!LocalHotspotManager.isSupported()) return;
         if (HotspotPermissions.granted(requireContext())) {
-            startOwnedHotspot();
-        } else if (!locationAsked) {
+            acquireHotspot();   // also when already up: Clone holds it, so another holder's release cannot drop it
+        } else if (!hs.isOn() && !locationAsked) {
             // ADFA-5146: launch the request exactly once. Do NOT re-launch on later renders (incl. the one
             // the permission callback triggers): a synchronous deny would otherwise recurse into overflow.
             locationAsked = true;
@@ -461,18 +455,14 @@ public class CloneFragment extends Fragment {
         }
     }
 
-    private void startOwnedHotspot() {
-        LocalHotspotManager.State st = hs.state().getValue();
-        if (hs.isOn() || (st != null && st.phase == LocalHotspotManager.Phase.STARTING)) return;
-        ownsHotspot = true;
-        hs.start(requireContext().getApplicationContext());
+    // ADFA-5158: renderPrepare runs on every render; start() ignores a call while a start is in flight.
+    private void acquireHotspot() {
+        hs.acquire(requireContext().getApplicationContext(), LocalHotspotManager.Holder.CLONE);
     }
 
-    /** K2GO-561: the Wi-Fi Direct group outlives the screen and slows Wi-Fi, so drop the one Clone started. */
+    /** K2GO-561: the Wi-Fi Direct group outlives the screen and slows Wi-Fi, so Clone lets go of it. */
     private void releaseHotspot() {
-        if (!ownsHotspot) return;
-        ownsHotspot = false;
-        hs.stop();
+        hs.release(LocalHotspotManager.Holder.CLONE);
     }
 
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */

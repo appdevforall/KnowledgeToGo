@@ -64,10 +64,6 @@ public final class ContentShareService extends Service {
     // The open session on the local conex-core, held so onDestroy can close the gate. Set by the worker.
     private volatile String sessionId;
     private volatile String token;
-    // True only when THIS service started the hotspot, so teardown never yanks a hotspot that Connect
-    // or Clone brought up (LocalHotspotManager is a shared, process-bound singleton).
-    private volatile boolean ownedHotspot;
-
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
 
@@ -174,22 +170,16 @@ public final class ContentShareService extends Service {
     }
 
     /**
-     * Bring the hotspot up only if it is currently off. If Connect or Clone already has it up (ON or
-     * STARTING), this service does not own it and must not stop it on teardown. The runtime hotspot
-     * permission is gated by the fragment before start; without it the hotspot stays off and the
-     * fragment surfaces the failure from LocalHotspotManager's state.
+     * Hold the shared hotspot for this share (starts it if off). The runtime hotspot permission is
+     * gated by the fragment before start; without it the hotspot stays off and the fragment surfaces
+     * the failure from LocalHotspotManager's state.
      */
     private void ensureHotspot() {
         if (!LocalHotspotManager.isSupported()) {
             return;
         }
-        LocalHotspotManager hs = LocalHotspotManager.get();
-        LocalHotspotManager.State st = hs.state().getValue();
-        LocalHotspotManager.Phase phase = st != null ? st.phase : LocalHotspotManager.Phase.OFF;
-        boolean up = phase == LocalHotspotManager.Phase.ON || phase == LocalHotspotManager.Phase.STARTING;
-        if (!up && HotspotPermissions.granted(this)) {
-            ownedHotspot = true;
-            hs.start(getApplicationContext());
+        if (HotspotPermissions.granted(this)) {
+            LocalHotspotManager.get().acquire(getApplicationContext(), LocalHotspotManager.Holder.CONTENT_SHARE);
         }
     }
 
@@ -220,11 +210,8 @@ public final class ContentShareService extends Service {
     @Override
     public void onDestroy() {
         releaseHardwareLocks();
-        // Stop the hotspot only if this service started it (shared singleton: never yank Connect's).
-        if (ownedHotspot) {
-            LocalHotspotManager.get().stop();
-            ownedHotspot = false;
-        }
+        // Shared singleton: the hotspot stops only when no other feature holds it (K2GO-561).
+        LocalHotspotManager.get().release(LocalHotspotManager.Holder.CONTENT_SHARE);
         // Close the gate (the app-side closer, ADR "Pillar Share"). Off the main thread; the process
         // usually outlives this service (the app is still open). A rare race where the id is not stored
         // yet, or a process kill, is covered by conex-core's safety cap and the receiver's complete.
