@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Đang thiết lập mọi thứ...</string>
     <string name="k2go_preparing_word_7">Đang biến nó thành của bạn...</string>
     <string name="k2go_preparing_word_8">Sắp xong rồi...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Thiết bị sắp hết bộ nhớ</string>
+    <string name="k2go_dash_lowmem_text">Thiết bị của bạn sắp hết bộ nhớ. Bản cập nhật có thể thất bại. Hãy đóng các ứng dụng khác trước, hoặc vẫn bắt đầu.</string>
+    <string name="k2go_dash_lowmem_not_now">Để sau</string>
+    <string name="k2go_dash_lowmem_start_anyway">Vẫn bắt đầu</string>
+    <string name="k2go_dash_update_failed_title">Cập nhật bảng điều khiển thất bại</string>
+    <string name="k2go_dash_update_failed_text">Đóng các ứng dụng khác và thử lại. Nếu vẫn thất bại, hãy liên hệ với chúng tôi.</string>
+    <string name="k2go_dash_update_retry">Thử lại</string>
+    <string name="k2go_dash_update_open_dashboard">Mở bảng điều khiển</string>
 </resources>

@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Alles instellen...</string>
     <string name="k2go_preparing_word_7">Helemaal van jou maken...</string>
     <string name="k2go_preparing_word_8">Bijna klaar...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Apparaat heeft weinig geheugen</string>
+    <string name="k2go_dash_lowmem_text">Je apparaat heeft weinig geheugen. De update kan mislukken. Sluit eerst andere apps, of start toch.</string>
+    <string name="k2go_dash_lowmem_not_now">Niet nu</string>
+    <string name="k2go_dash_lowmem_start_anyway">Toch starten</string>
+    <string name="k2go_dash_update_failed_title">Dashboard-update mislukt</string>
+    <string name="k2go_dash_update_failed_text">Sluit andere apps en probeer het opnieuw. Als het blijft mislukken, neem contact met ons op.</string>
+    <string name="k2go_dash_update_retry">Opnieuw proberen</string>
+    <string name="k2go_dash_update_open_dashboard">Dashboard openen</string>
 </resources>

@@ -1545,4 +1545,13 @@
     <string name="k2go_preparing_word_6">すべてを設定中...</string>
     <string name="k2go_preparing_word_7">あなた仕様に...</string>
     <string name="k2go_preparing_word_8">もうすぐです...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">デバイスのメモリが不足しています</string>
+    <string name="k2go_dash_lowmem_text">デバイスのメモリが不足しています。更新に失敗する可能性があります。先に他のアプリを閉じるか、このまま開始してください。</string>
+    <string name="k2go_dash_lowmem_not_now">後で</string>
+    <string name="k2go_dash_lowmem_start_anyway">このまま開始</string>
+    <string name="k2go_dash_update_failed_title">ダッシュボードの更新に失敗しました</string>
+    <string name="k2go_dash_update_failed_text">他のアプリを閉じてもう一度お試しください。繰り返し失敗する場合はお問い合わせください。</string>
+    <string name="k2go_dash_update_retry">再試行</string>
+    <string name="k2go_dash_update_open_dashboard">ダッシュボードを開く</string>
 </resources>

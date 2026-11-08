@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Her şey hazırlanıyor...</string>
     <string name="k2go_preparing_word_7">Size özel hale getiriliyor...</string>
     <string name="k2go_preparing_word_8">Neredeyse bitti...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Cihazın belleği az</string>
+    <string name="k2go_dash_lowmem_text">Cihazınızın belleği az. Güncelleme başarısız olabilir. Önce diğer uygulamaları kapatın veya yine de başlatın.</string>
+    <string name="k2go_dash_lowmem_not_now">Şimdi değil</string>
+    <string name="k2go_dash_lowmem_start_anyway">Yine de başlat</string>
+    <string name="k2go_dash_update_failed_title">Pano güncellemesi başarısız oldu</string>
+    <string name="k2go_dash_update_failed_text">Diğer uygulamaları kapatıp tekrar deneyin. Sorun sürerse bizimle iletişime geçin.</string>
+    <string name="k2go_dash_update_retry">Tekrar dene</string>
+    <string name="k2go_dash_update_open_dashboard">Panoyu aç</string>
 </resources>

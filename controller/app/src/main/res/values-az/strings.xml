@@ -1564,4 +1564,13 @@
     <string name="k2go_preparing_word_6">Hər şey qurulur...</string>
     <string name="k2go_preparing_word_7">Sizə uyğunlaşdırılır...</string>
     <string name="k2go_preparing_word_8">Az qaldı...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Cihazın yaddaşı azdır</string>
+    <string name="k2go_dash_lowmem_text">Cihazınızın yaddaşı azdır. Yeniləmə uğursuz ola bilər. Əvvəlcə digər tətbiqləri bağlayın və ya yenə də başladın.</string>
+    <string name="k2go_dash_lowmem_not_now">İndi yox</string>
+    <string name="k2go_dash_lowmem_start_anyway">Yenə də başlat</string>
+    <string name="k2go_dash_update_failed_title">Panelin yenilənməsi uğursuz oldu</string>
+    <string name="k2go_dash_update_failed_text">Digər tətbiqləri bağlayıb yenidən cəhd edin. Davamlı uğursuz olarsa, bizimlə əlaqə saxlayın.</string>
+    <string name="k2go_dash_update_retry">Yenidən cəhd et</string>
+    <string name="k2go_dash_update_open_dashboard">Paneli aç</string>
 </resources>

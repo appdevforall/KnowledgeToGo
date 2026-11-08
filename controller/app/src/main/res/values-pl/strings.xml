@@ -1554,4 +1554,13 @@
     <string name="k2go_preparing_word_6">Konfigurowanie wszystkiego...</string>
     <string name="k2go_preparing_word_7">Dopasowywanie do Ciebie...</string>
     <string name="k2go_preparing_word_8">Prawie gotowe...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Urządzenie ma mało pamięci</string>
+    <string name="k2go_dash_lowmem_text">Twoje urządzenie ma mało pamięci. Aktualizacja może się nie powieść. Najpierw zamknij inne aplikacje lub uruchom mimo to.</string>
+    <string name="k2go_dash_lowmem_not_now">Nie teraz</string>
+    <string name="k2go_dash_lowmem_start_anyway">Uruchom mimo to</string>
+    <string name="k2go_dash_update_failed_title">Aktualizacja pulpitu nie powiodła się</string>
+    <string name="k2go_dash_update_failed_text">Zamknij inne aplikacje i spróbuj ponownie. Jeśli problem będzie się powtarzać, skontaktuj się z nami.</string>
+    <string name="k2go_dash_update_retry">Spróbuj ponownie</string>
+    <string name="k2go_dash_update_open_dashboard">Otwórz pulpit</string>
 </resources>

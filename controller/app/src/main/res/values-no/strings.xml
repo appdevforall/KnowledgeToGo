@@ -1554,4 +1554,13 @@
     <string name="k2go_preparing_word_6">Setter opp alt...</string>
     <string name="k2go_preparing_word_7">Gjør det til ditt...</string>
     <string name="k2go_preparing_word_8">Nesten ferdig...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Enheten har lite minne</string>
+    <string name="k2go_dash_lowmem_text">Enheten din har lite minne. Oppdateringen kan mislykkes. Lukk andre apper først, eller start likevel.</string>
+    <string name="k2go_dash_lowmem_not_now">Ikke nå</string>
+    <string name="k2go_dash_lowmem_start_anyway">Start likevel</string>
+    <string name="k2go_dash_update_failed_title">Oppdatering av dashbordet mislyktes</string>
+    <string name="k2go_dash_update_failed_text">Lukk andre apper og prøv igjen. Hvis det fortsatt mislykkes, kontakt oss.</string>
+    <string name="k2go_dash_update_retry">Prøv igjen</string>
+    <string name="k2go_dash_update_open_dashboard">Åpne dashbord</string>
 </resources>

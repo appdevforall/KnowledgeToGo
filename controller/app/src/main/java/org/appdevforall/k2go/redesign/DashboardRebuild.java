@@ -66,8 +66,12 @@ public final class DashboardRebuild {
                                           : R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
                 .setCheckbox(R.string.k2go_dash_update_site, true)
+                // K2GO-557: after the user confirms, a low-memory device gets one more in-app advisory
+                // ("Not now / Start anyway") before the update actually starts. Fine memory proceeds at once.
                 .setPositive(updateAvailable ? R.string.k2go_dash_update : R.string.k2go_dash_rebuild,
-                        BrandDialog.Role.PRIMARY, checked -> start(host, anchor, checked))
+                        BrandDialog.Role.PRIMARY,
+                        checked -> org.appdevforall.k2go.dashboard.presentation.LowMemoryGate.guard(
+                                host.requireActivity(), () -> start(host, anchor, checked)))
                 .setNegative(android.R.string.cancel, null)
                 .show();
     }

@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Configurazione in corso...</string>
     <string name="k2go_preparing_word_7">Lo rendiamo tuo...</string>
     <string name="k2go_preparing_word_8">Quasi pronto...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Il dispositivo ha poca memoria</string>
+    <string name="k2go_dash_lowmem_text">Il tuo dispositivo ha poca memoria. L\'aggiornamento potrebbe non riuscire. Chiudi prima le altre app, oppure avvia comunque.</string>
+    <string name="k2go_dash_lowmem_not_now">Non ora</string>
+    <string name="k2go_dash_lowmem_start_anyway">Avvia comunque</string>
+    <string name="k2go_dash_update_failed_title">Aggiornamento della dashboard non riuscito</string>
+    <string name="k2go_dash_update_failed_text">Chiudi le altre app e riprova. Se continua a non funzionare, contattaci.</string>
+    <string name="k2go_dash_update_retry">Riprova</string>
+    <string name="k2go_dash_update_open_dashboard">Apri la dashboard</string>
 </resources>

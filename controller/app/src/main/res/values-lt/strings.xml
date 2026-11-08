@@ -1561,4 +1561,13 @@
     <string name="k2go_preparing_word_6">Viskas nustatoma...</string>
     <string name="k2go_preparing_word_7">Pritaikoma jums...</string>
     <string name="k2go_preparing_word_8">Beveik baigta...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Įrenginyje mažai atminties</string>
+    <string name="k2go_dash_lowmem_text">Jūsų įrenginyje mažai atminties. Naujinimas gali nepavykti. Pirmiausia uždarykite kitas programas arba vis tiek paleiskite.</string>
+    <string name="k2go_dash_lowmem_not_now">Ne dabar</string>
+    <string name="k2go_dash_lowmem_start_anyway">Vis tiek paleisti</string>
+    <string name="k2go_dash_update_failed_title">Nepavyko atnaujinti skydelio</string>
+    <string name="k2go_dash_update_failed_text">Uždarykite kitas programas ir bandykite dar kartą. Jei vis tiek nepavyksta, susisiekite su mumis.</string>
+    <string name="k2go_dash_update_retry">Bandyti dar kartą</string>
+    <string name="k2go_dash_update_open_dashboard">Atidaryti skydelį</string>
 </resources>

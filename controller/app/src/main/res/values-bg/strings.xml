@@ -1551,4 +1551,13 @@
     <string name="k2go_preparing_word_6">Подготвяме всичко...</string>
     <string name="k2go_preparing_word_7">Правим я ваша...</string>
     <string name="k2go_preparing_word_8">Почти готово...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Устройството е с малко памет</string>
+    <string name="k2go_dash_lowmem_text">Устройството ви е с малко памет. Актуализацията може да е неуспешна. Първо затворете други приложения или стартирайте въпреки това.</string>
+    <string name="k2go_dash_lowmem_not_now">Не сега</string>
+    <string name="k2go_dash_lowmem_start_anyway">Стартиране въпреки това</string>
+    <string name="k2go_dash_update_failed_title">Актуализацията на таблото е неуспешна</string>
+    <string name="k2go_dash_update_failed_text">Затворете други приложения и опитайте отново. Ако продължава да е неуспешна, свържете се с нас.</string>
+    <string name="k2go_dash_update_retry">Опитайте отново</string>
+    <string name="k2go_dash_update_open_dashboard">Отваряне на таблото</string>
 </resources>

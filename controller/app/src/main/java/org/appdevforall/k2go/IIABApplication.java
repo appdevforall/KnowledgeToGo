@@ -76,6 +76,9 @@ public class IIABApplication extends Application {
         // K2GO-439: one owner pads every activity's content by the system-bar insets (targetSdk 35
         // edge-to-edge); screens that manage their own insets opt out via EdgeToEdge.SelfManaged.
         registerActivityLifecycleCallbacks(new org.appdevforall.k2go.ui.EdgeToEdgeCallbacks());
+        // K2GO-557: one app-scoped holder of the foreground Activity. Exposes current() (a reusable
+        // handle for app-wide work) and re-shows a pending dash-node update failure on the next resume.
+        registerActivityLifecycleCallbacks(new org.appdevforall.k2go.ui.ForegroundActivityHolder());
     }
 
     /**

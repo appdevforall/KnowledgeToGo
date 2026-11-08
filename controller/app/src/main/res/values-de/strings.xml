@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Alles wird eingerichtet...</string>
     <string name="k2go_preparing_word_7">Ganz nach deinem Geschmack...</string>
     <string name="k2go_preparing_word_8">Fast fertig...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Gerät hat wenig Arbeitsspeicher</string>
+    <string name="k2go_dash_lowmem_text">Ihr Gerät hat wenig Arbeitsspeicher. Die Aktualisierung kann fehlschlagen. Schließen Sie zuerst andere Apps oder fahren Sie trotzdem fort.</string>
+    <string name="k2go_dash_lowmem_not_now">Jetzt nicht</string>
+    <string name="k2go_dash_lowmem_start_anyway">Trotzdem starten</string>
+    <string name="k2go_dash_update_failed_title">Dashboard-Aktualisierung fehlgeschlagen</string>
+    <string name="k2go_dash_update_failed_text">Schließen Sie andere Apps und versuchen Sie es erneut. Wenn es weiterhin fehlschlägt, kontaktieren Sie uns.</string>
+    <string name="k2go_dash_update_retry">Erneut versuchen</string>
+    <string name="k2go_dash_update_open_dashboard">Dashboard öffnen</string>
 </resources>

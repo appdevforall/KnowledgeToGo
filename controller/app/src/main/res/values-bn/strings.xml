@@ -1557,4 +1557,13 @@
     <string name="k2go_preparing_word_6">সবকিছু প্রস্তুত হচ্ছে...</string>
     <string name="k2go_preparing_word_7">আপনার মতো করে তোলা হচ্ছে...</string>
     <string name="k2go_preparing_word_8">প্রায় শেষ...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">ডিভাইসে মেমরি কম</string>
+    <string name="k2go_dash_lowmem_text">আপনার ডিভাইসে মেমরি কম। আপডেট ব্যর্থ হতে পারে। প্রথমে অন্য অ্যাপ বন্ধ করুন, বা তবুও শুরু করুন।</string>
+    <string name="k2go_dash_lowmem_not_now">এখন নয়</string>
+    <string name="k2go_dash_lowmem_start_anyway">তবুও শুরু করুন</string>
+    <string name="k2go_dash_update_failed_title">ড্যাশবোর্ড আপডেট ব্যর্থ হয়েছে</string>
+    <string name="k2go_dash_update_failed_text">অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন। যদি বারবার ব্যর্থ হয়, আমাদের সাথে যোগাযোগ করুন।</string>
+    <string name="k2go_dash_update_retry">আবার চেষ্টা করুন</string>
+    <string name="k2go_dash_update_open_dashboard">ড্যাশবোর্ড খুলুন</string>
 </resources>

@@ -1551,4 +1551,13 @@
     <string name="k2go_preparing_word_6">Vše se nastavuje...</string>
     <string name="k2go_preparing_word_7">Aby byl jen váš...</string>
     <string name="k2go_preparing_word_8">Skoro hotovo...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Zařízení má málo paměti</string>
+    <string name="k2go_dash_lowmem_text">Vaše zařízení má málo paměti. Aktualizace může selhat. Nejprve zavřete ostatní aplikace, nebo ji přesto spusťte.</string>
+    <string name="k2go_dash_lowmem_not_now">Teď ne</string>
+    <string name="k2go_dash_lowmem_start_anyway">Přesto spustit</string>
+    <string name="k2go_dash_update_failed_title">Aktualizace nástěnky selhala</string>
+    <string name="k2go_dash_update_failed_text">Zavřete ostatní aplikace a zkuste to znovu. Pokud selhává dál, kontaktujte nás.</string>
+    <string name="k2go_dash_update_retry">Zkusit znovu</string>
+    <string name="k2go_dash_update_open_dashboard">Otevřít nástěnku</string>
 </resources>

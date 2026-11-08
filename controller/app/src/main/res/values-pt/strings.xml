@@ -1623,4 +1623,13 @@
     <string name="k2go_preparing_word_6">A configurar tudo...</string>
     <string name="k2go_preparing_word_7">A torná-lo seu...</string>
     <string name="k2go_preparing_word_8">Quase pronto...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">O dispositivo está com pouca memória</string>
+    <string name="k2go_dash_lowmem_text">Seu dispositivo está com pouca memória. A atualização pode falhar. Feche outros apps primeiro ou inicie mesmo assim.</string>
+    <string name="k2go_dash_lowmem_not_now">Agora não</string>
+    <string name="k2go_dash_lowmem_start_anyway">Iniciar mesmo assim</string>
+    <string name="k2go_dash_update_failed_title">Falha na atualização do painel</string>
+    <string name="k2go_dash_update_failed_text">Feche outros apps e tente novamente. Se continuar falhando, fale conosco.</string>
+    <string name="k2go_dash_update_retry">Tentar novamente</string>
+    <string name="k2go_dash_update_open_dashboard">Abrir painel</string>
 </resources>

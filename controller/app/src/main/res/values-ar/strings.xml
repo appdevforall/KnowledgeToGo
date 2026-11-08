@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">جارٍ إعداد كل شيء...</string>
     <string name="k2go_preparing_word_7">نجعله خاصًا بك...</string>
     <string name="k2go_preparing_word_8">أوشكنا على الانتهاء...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">الذاكرة منخفضة في الجهاز</string>
+    <string name="k2go_dash_lowmem_text">ذاكرة جهازك منخفضة. قد يفشل التحديث. أغلق التطبيقات الأخرى أولاً، أو ابدأ على أي حال.</string>
+    <string name="k2go_dash_lowmem_not_now">ليس الآن</string>
+    <string name="k2go_dash_lowmem_start_anyway">ابدأ على أي حال</string>
+    <string name="k2go_dash_update_failed_title">فشل تحديث لوحة التحكم</string>
+    <string name="k2go_dash_update_failed_text">أغلق التطبيقات الأخرى وحاول مرة أخرى. إذا استمر الفشل، فتواصل معنا.</string>
+    <string name="k2go_dash_update_retry">إعادة المحاولة</string>
+    <string name="k2go_dash_update_open_dashboard">فتح لوحة التحكم</string>
 </resources>

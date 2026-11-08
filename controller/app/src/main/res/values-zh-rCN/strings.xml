@@ -1545,4 +1545,13 @@
     <string name="k2go_preparing_word_6">正在完成设置...</string>
     <string name="k2go_preparing_word_7">正在打造专属于你的系统...</string>
     <string name="k2go_preparing_word_8">马上就好...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">设备内存不足</string>
+    <string name="k2go_dash_lowmem_text">您的设备内存不足。更新可能会失败。请先关闭其他应用，或仍然开始。</string>
+    <string name="k2go_dash_lowmem_not_now">以后再说</string>
+    <string name="k2go_dash_lowmem_start_anyway">仍然开始</string>
+    <string name="k2go_dash_update_failed_title">仪表板更新失败</string>
+    <string name="k2go_dash_update_failed_text">关闭其他应用后重试。如果持续失败，请联系我们。</string>
+    <string name="k2go_dash_update_retry">重试</string>
+    <string name="k2go_dash_update_open_dashboard">打开仪表板</string>
 </resources>

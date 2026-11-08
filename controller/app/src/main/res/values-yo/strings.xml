@@ -1564,4 +1564,13 @@
     <string name="k2go_preparing_word_6">Ń ṣètò ohun gbogbo...</string>
     <string name="k2go_preparing_word_7">Ń sọ ọ́ di tìrẹ...</string>
     <string name="k2go_preparing_word_8">Ó ti fẹ́ parí...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Ẹrọ ní ìrántí kékeré</string>
+    <string name="k2go_dash_lowmem_text">Ẹrọ rẹ ní ìrántí kékeré. Ìmúdójúìwọ̀n lè kùnà. Ti àwọn áàpù mìíràn pa lákọ̀ọ́kọ́, tàbí bẹ̀rẹ̀ lọ́nàkọnà.</string>
+    <string name="k2go_dash_lowmem_not_now">Kì í ṣe nísinsìnyí</string>
+    <string name="k2go_dash_lowmem_start_anyway">Bẹ̀rẹ̀ lọ́nàkọnà</string>
+    <string name="k2go_dash_update_failed_title">Ìmúdójúìwọ̀n dasibodu kùnà</string>
+    <string name="k2go_dash_update_failed_text">Ti àwọn áàpù mìíràn pa kí o sì tún gbìyànjú. Tí ó bá ń kùnà nígbàgbogbo, kàn sí wa.</string>
+    <string name="k2go_dash_update_retry">Tún gbìyànjú</string>
+    <string name="k2go_dash_update_open_dashboard">Ṣí dasibodu</string>
 </resources>

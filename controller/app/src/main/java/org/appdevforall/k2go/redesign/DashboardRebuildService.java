@@ -143,6 +143,8 @@ public final class DashboardRebuildService extends Service {
         if (started) return START_NOT_STICKY;
         started = true;
         RUNNING = true;
+        // K2GO-557: a fresh run (start or re-own) clears any stale unacked failure from a previous attempt.
+        UpdateStatusCache.setPendingFailure(this, false);
         startedAtMs = android.os.SystemClock.elapsedRealtime();   // ADFA-5343 (Phase 3B): arm the stall backstop
         broadcastState(STATE_RUNNING);
         if (ACTION_ATTACH.equals(action)) {
@@ -266,15 +268,28 @@ public final class DashboardRebuildService extends Service {
     private void finish(String state, @StringRes int msgRes) {
         poller.removeCallbacksAndMessages(null);
         RUNNING = false;
-        // Keep the final notification on screen after we drop the foreground state.
-        stopForeground(Service.STOP_FOREGROUND_DETACH);
-        NotificationManager m = getSystemService(NotificationManager.class);
-        if (m != null) m.notify(NOTIFICATION_ID, buildFinal(msgRes));
+        if (STATE_ERROR.equals(state)) {
+            // K2GO-557: the failure is surfaced IN-APP (DashUpdateFailureDialog), not as a system
+            // notification. Set the single pending-failure flag BEFORE broadcasting, so a visible card
+            // reads it fresh and a failure with no screen watching re-shows on the next foreground. Drop
+            // the ongoing progress notification: no silent "success-looking" final for an error.
+            UpdateStatusCache.setPendingFailure(this, true);
+            stopForeground(Service.STOP_FOREGROUND_REMOVE);
+        } else {
+            if (STATE_DONE.equals(state)) UpdateStatusCache.setPendingFailure(this, false);   // success clears it
+            // Success: keep the notification on screen and replace it with the quiet final one.
+            stopForeground(Service.STOP_FOREGROUND_DETACH);
+            NotificationManager m = getSystemService(NotificationManager.class);
+            if (m != null) m.notify(NOTIFICATION_ID, buildFinal(msgRes));
+        }
         broadcastState(state);
         stopSelf();
     }
 
-    @Override public void onDestroy() { RUNNING = false; super.onDestroy(); }   // safety if torn down early
+    @Override public void onDestroy() {
+        RUNNING = false;   // safety if torn down early
+        super.onDestroy();
+    }
 
     private void broadcastState(String state) {
         sendBroadcast(new Intent(ACTION_STATE).setPackage(getPackageName()).putExtra(EXTRA_STATE, state));
@@ -282,10 +297,10 @@ public final class DashboardRebuildService extends Service {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel ch = new NotificationChannel(
-                    CHANNEL_ID, getString(R.string.k2go_dash_update_channel_name), NotificationManager.IMPORTANCE_LOW);
             NotificationManager m = getSystemService(NotificationManager.class);
-            if (m != null) m.createNotificationChannel(ch);
+            if (m == null) return;
+            m.createNotificationChannel(new NotificationChannel(
+                    CHANNEL_ID, getString(R.string.k2go_dash_update_channel_name), NotificationManager.IMPORTANCE_LOW));
         }
     }
 
@@ -330,7 +345,8 @@ public final class DashboardRebuildService extends Service {
         return EtaText.percentAndEta(this, lastPercent, lastEtaSeconds);
     }
 
-    /** Final result notification (done/error) — dismissible, auto-cancels on tap. */
+    /** Final SUCCESS notification: dismissible, auto-cancels on tap, quiet (LOW channel). A failure is
+     *  surfaced in-app (K2GO-557, DashUpdateFailureDialog), so this final is only ever a success. */
     private Notification buildFinal(@StringRes int msgRes) {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_dash_live_title))
@@ -342,4 +358,5 @@ public final class DashboardRebuildService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
     }
+
 }

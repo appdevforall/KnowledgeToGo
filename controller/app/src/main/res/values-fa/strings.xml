@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">در حال آماده‌سازی همه‌چیز...</string>
     <string name="k2go_preparing_word_7">مخصوص شما می‌شود...</string>
     <string name="k2go_preparing_word_8">تقریباً تمام است...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">حافظهٔ دستگاه کم است</string>
+    <string name="k2go_dash_lowmem_text">حافظهٔ دستگاه شما کم است. ممکن است به‌روزرسانی ناموفق باشد. ابتدا برنامه‌های دیگر را ببندید یا به‌هرحال شروع کنید.</string>
+    <string name="k2go_dash_lowmem_not_now">اکنون نه</string>
+    <string name="k2go_dash_lowmem_start_anyway">به‌هرحال شروع کن</string>
+    <string name="k2go_dash_update_failed_title">به‌روزرسانی داشبورد ناموفق بود</string>
+    <string name="k2go_dash_update_failed_text">برنامه‌های دیگر را ببندید و دوباره تلاش کنید. اگر همچنان ناموفق بود، با ما تماس بگیرید.</string>
+    <string name="k2go_dash_update_retry">تلاش دوباره</string>
+    <string name="k2go_dash_update_open_dashboard">باز کردن داشبورد</string>
 </resources>

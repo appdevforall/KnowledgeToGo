@@ -1564,4 +1564,13 @@
     <string name="k2go_preparing_word_6">அனைத்தையும் அமைக்கிறது...</string>
     <string name="k2go_preparing_word_7">உங்களுடையதாக்குகிறது...</string>
     <string name="k2go_preparing_word_8">கிட்டத்தட்ட முடிந்தது...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">சாதனத்தில் நினைவகம் குறைவு</string>
+    <string name="k2go_dash_lowmem_text">உங்கள் சாதனத்தில் நினைவகம் குறைவாக உள்ளது. புதுப்பிப்பு தோல்வியடையலாம். முதலில் மற்ற ஆப்ஸை மூடுங்கள் அல்லது எப்படியும் தொடங்குங்கள்.</string>
+    <string name="k2go_dash_lowmem_not_now">இப்போது வேண்டாம்</string>
+    <string name="k2go_dash_lowmem_start_anyway">எப்படியும் தொடங்கு</string>
+    <string name="k2go_dash_update_failed_title">டாஷ்போர்டு புதுப்பிப்பு தோல்வியடைந்தது</string>
+    <string name="k2go_dash_update_failed_text">மற்ற ஆப்ஸை மூடிவிட்டு மீண்டும் முயலுங்கள். தொடர்ந்து தோல்வியடைந்தால், எங்களைத் தொடர்பு கொள்ளுங்கள்.</string>
+    <string name="k2go_dash_update_retry">மீண்டும் முயல்</string>
+    <string name="k2go_dash_update_open_dashboard">டாஷ்போர்டைத் திற</string>
 </resources>

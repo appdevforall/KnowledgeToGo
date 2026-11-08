@@ -1557,4 +1557,13 @@
     <string name="k2go_preparing_word_6">Све се подешава...</string>
     <string name="k2go_preparing_word_7">Прилагођавамо га вама...</string>
     <string name="k2go_preparing_word_8">Скоро готово...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Уређај има мало меморије</string>
+    <string name="k2go_dash_lowmem_text">Ваш уређај има мало меморије. Ажурирање можда неће успети. Прво затворите друге апликације или свеједно покрените.</string>
+    <string name="k2go_dash_lowmem_not_now">Не сада</string>
+    <string name="k2go_dash_lowmem_start_anyway">Свеједно покрени</string>
+    <string name="k2go_dash_update_failed_title">Ажурирање контролне табле није успело</string>
+    <string name="k2go_dash_update_failed_text">Затворите друге апликације и покушајте поново. Ако и даље не успева, контактирајте нас.</string>
+    <string name="k2go_dash_update_retry">Покушај поново</string>
+    <string name="k2go_dash_update_open_dashboard">Отвори контролну таблу</string>
 </resources>
