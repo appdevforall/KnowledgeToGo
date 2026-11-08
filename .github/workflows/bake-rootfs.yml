@@ -245,7 +245,11 @@ jobs:
           for tb in k2go_*.tar.gz; do
             # Bake gate (D4): refuse any absolute or '..' member before signing, so the signature
             # certifies a tarball that already passed the traversal check (lets the app skip listing).
-            if tar -tzf "$tb" | grep -Eq '^/|(^|/)\.\.(/|$)'; then
+            # Capture the listing first so a tar read error fails closed (a pipe to grep would hide
+            # it under pipefail and sign an unlistable tarball).
+            members="$(tar -tzf "$tb")" \
+              || { echo "FATAL: cannot list $tb; refusing to sign" >&2; exit 1; }
+            if printf '%s\n' "$members" | grep -Eq '^/|(^|/)\.\.(/|$)'; then
               echo "FATAL: $tb has an unsafe member (absolute or ..); refusing to sign" >&2; exit 1
             fi
             echo ">> sign $tb"
