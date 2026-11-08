@@ -21,7 +21,9 @@ import androidx.lifecycle.ViewModel;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.RsyncManager;
 import org.appdevforall.k2go.SyncHandshakeHelper;
+import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
+import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
 import org.appdevforall.k2go.sync.transport.WifiNetworkBinder;
 import org.appdevforall.k2go.util.AppExecutors;
@@ -43,7 +45,7 @@ public class SyncStateViewModel extends ViewModel {
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
     // startProbe() and reacts to the phases published on SyncProgressRepository; the chosen
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
-    private SyncHandshakeHelper.SyncCredentials pendingCreds;
+    private volatile SyncHandshakeHelper.SyncCredentials pendingCreds;   // read by the probe thread
     private File pendingDestDir;
     private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
     private Context appContext; // application context, for releasing the network binding
@@ -84,12 +86,23 @@ public class SyncStateViewModel extends ViewModel {
         final SyncProgressRepository repo = SyncProgressRepository.get();
         repo.postConnecting();
 
-        // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
-        // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
-        // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
-        WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
+        // K2GO-561: our own hotspot shares the sender's AP address (192.168.49.1), so the pull would
+        // reach this phone. Stop it (same guard as Content Exchange receive, K2GO-376).
+        LocalHotspotManager.get().stop();
 
         AppExecutors.get().io().execute(() -> {
+            // The p2p0 address goes away a moment after the group is removed. ~12 s cap.
+            for (int i = 0; i < 24 && NetworkInterfaces.isLocalAddress(creds.ip); i++) {
+                try { Thread.sleep(500); } catch (InterruptedException e) { return; }
+            }
+            // Cancelled, or a newer scan replaced this probe, while waiting. Not the repo phase: it is
+            // posted async, so this thread can still read the IDLE before CONNECTING.
+            if (pendingCreds != creds) return;
+            // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
+            // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
+            // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
+            WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
+
             boolean reachable = false;
             try {
                 Socket socket = new Socket();
@@ -153,6 +166,7 @@ public class SyncStateViewModel extends ViewModel {
 
     /** User declined the transfer (or cancelled mid-probe): stop any dry-run and reset. */
     public void cancelProbe() {
+        pendingCreds = null;   // a probe still waiting for the hotspot to go away bails out
         if (transport != null) transport.stop();
         releaseNetwork();
         SyncProgressRepository.get().postIdle();

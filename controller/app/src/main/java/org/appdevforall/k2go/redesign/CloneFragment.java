@@ -44,6 +44,7 @@ import org.appdevforall.k2go.sync.data.ApkAbiReader;
 import org.appdevforall.k2go.sync.domain.ApkShareName;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.presentation.SyncProgressRepository;
 import org.appdevforall.k2go.sync.presentation.SyncStateViewModel;
@@ -174,9 +175,7 @@ public class CloneFragment extends Fragment {
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
-                    if (HotspotPermissions.granted(requireContext())) {
-                        hs.start(requireContext().getApplicationContext());
-                    }
+                    if (HotspotPermissions.granted(requireContext())) acquireHotspot();
                     render();
                 });
         barcodeLauncher = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
@@ -399,7 +398,7 @@ public class CloneFragment extends Fragment {
 
     private void enterSide(Side sd) { atFork = false; page = Page.PREPARE; setSide(sd); }
 
-    private void goToFork() { atFork = true; render(); }
+    private void goToFork() { atFork = true; if (!daemonStarted) releaseHotspot(); render(); }
 
     private void setSide(Side sd) {
         side = sd;
@@ -437,7 +436,7 @@ public class CloneFragment extends Fragment {
     private void setMode(Mode m) {
         mode = m;
         locationAsked = false;   // ADFA-5146: a mode switch is a fresh attempt — allow one more perm prompt
-        if (m == Mode.HOTSPOT) ensureHotspot();
+        if (m == Mode.HOTSPOT) ensureHotspot(); else releaseHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
         // ADFA-5154: Hotspot ① has a QR, Wi-Fi ① doesn't, so the two tabs differ in height — switching
         // mid-scroll would leave the view offset. Snap back to the top (Connect avoids this: single QR
@@ -446,19 +445,25 @@ public class CloneFragment extends Fragment {
     }
 
     private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported() || hs.isOn()) return;
-        // ADFA-5158: renderPrepare runs on every render; don't re-request a start while one is in flight
-        // (the "Caller already has an active LocalOnlyHotspot request" log spam).
-        LocalHotspotManager.State st = hs.state().getValue();
-        if (st != null && st.phase == LocalHotspotManager.Phase.STARTING) return;
+        if (!LocalHotspotManager.isSupported()) return;
         if (HotspotPermissions.granted(requireContext())) {
-            hs.start(requireContext().getApplicationContext());
-        } else if (!locationAsked) {
+            acquireHotspot();   // also when already up: Clone holds it, so another holder's release cannot drop it
+        } else if (!hs.isOn() && !locationAsked) {
             // ADFA-5146: launch the request exactly once. Do NOT re-launch on later renders (incl. the one
             // the permission callback triggers): a synchronous deny would otherwise recurse into overflow.
             locationAsked = true;
             hotspotPerm.launch(HotspotPermissions.required());
         }
+    }
+
+    // ADFA-5158: renderPrepare runs on every render; start() ignores a call while a start is in flight.
+    private void acquireHotspot() {
+        hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CLONE);
+    }
+
+    /** K2GO-561: the Wi-Fi Direct group outlives the screen and slows Wi-Fi, so Clone lets go of it. */
+    private void releaseHotspot() {
+        hs.release(HotspotHolders.Holder.CLONE);
     }
 
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
@@ -1482,6 +1487,7 @@ public class CloneFragment extends Fragment {
         // nothing is in flight; an ongoing share/pull must keep the server down until it ends.
         if (!SyncProgressRepository.get().isActive() && !daemonStarted) { stopProtection(); releaseCloneEnv(); }
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
+        if (!daemonStarted && !requireActivity().isChangingConfigurations()) releaseHotspot();
         stopApkServer();   // ADFA-4785
     }
 
@@ -1495,6 +1501,7 @@ public class CloneFragment extends Fragment {
                     daemonStarted = false;
                     userStopped = true;   // do not auto-restart on the next render
                     CloneSendSession.clear();   // ADFA-4960: the send session ended
+                    releaseHotspot();
                     releaseCloneEnv();    // ADFA-4956: boot the server back + drop the deep-env lock
                     render();
                 })

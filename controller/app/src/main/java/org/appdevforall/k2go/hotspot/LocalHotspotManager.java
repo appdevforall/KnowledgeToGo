@@ -33,6 +33,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 
 /**
  * App-scoped singleton that starts/stops a LocalOnlyHotspot and publishes its state.
@@ -75,6 +76,9 @@ public final class LocalHotspotManager {
     public static LocalHotspotManager get() { return INSTANCE; }
 
     private final MutableLiveData<State> state = new MutableLiveData<>(State.off());
+
+    // K2GO-561: who uses the hotspot. stop() empties it: the hotspot is gone for everyone.
+    private final HotspotHolders holders = new HotspotHolders();
 
     // K2GO-375: the AP interface gets its IPv4 a beat after onStarted fires, and that assignment is not
     // a default-network change (the AP is never the default network), so no ConnectivityManager callback
@@ -301,6 +305,17 @@ public final class LocalHotspotManager {
         }
     }
 
+    /** Starts the hotspot, or keeps it up, on behalf of [holder]. */
+    public void acquire(Context context, HotspotHolders.Holder holder) {
+        holders.add(holder);
+        start(context);
+    }
+
+    /** [holder] no longer needs the hotspot. Stops it when no other holder is left. */
+    public void release(HotspotHolders.Holder holder) {
+        if (holders.releaseLast(holder)) stop();
+    }
+
     /** Tears down the hotspot (Wi-Fi Direct group or LocalOnlyHotspot reservation), if any. */
     public void stop() { stop(null); }
 
@@ -312,6 +327,7 @@ public final class LocalHotspotManager {
      */
     @SuppressLint("NewApi")
     public void stop(Runnable onDone) {
+        holders.clear();
         generation++;   // K2GO-375: stop any in-flight AP-IP poll before any async teardown
         // K2GO-127: tear down a Wi-Fi Direct group if that path is active (it outlives the process,
         // so an explicit removeGroup matters). WifiDirectHotspotManager.stop() is safe when idle.

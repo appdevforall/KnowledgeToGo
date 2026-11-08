@@ -38,11 +38,9 @@ import org.appdevforall.k2go.contentexchange.domain.ImportPreflight;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
+import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.util.ByteFormatter;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -128,7 +126,7 @@ public class ContentReceiveFragment extends Fragment {
      *  fetch. Gives up after ~12s and fetches anyway (the Try-again button remains). */
     private void waitHostRemoteThenFetch(int attempt) {
         worker.execute(() -> {
-            boolean local = isLocalAddress(host);
+            boolean local = NetworkInterfaces.isLocalAddress(host);
             main.post(() -> {
                 if (!isAdded() || getView() == null) {
                     return;
@@ -144,25 +142,6 @@ public class ContentReceiveFragment extends Fragment {
                 }
             });
         });
-    }
-
-    /** True when {@code ip} is assigned to one of this device's own interfaces. Uses
-     *  {@link NetworkInterface} (not ConnectivityManager), so it also sees a p2p0 hotspot AP that
-     *  ConnectivityManager does not expose as a Network. */
-    private static boolean isLocalAddress(String ip) {
-        try {
-            InetAddress target = InetAddress.getByName(ip);
-            for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                for (InetAddress a : Collections.list(ni.getInetAddresses())) {
-                    if (a.equals(target)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-            // On error, treat as not-local: the fetch will surface any reachability problem itself.
-        }
-        return false;
     }
 
     /** Fetch and parse the sender's manifest on a worker, then render the summary or an error. */

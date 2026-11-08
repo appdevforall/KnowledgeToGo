@@ -15,8 +15,8 @@ import org.junit.Test;
 
 public final class HotspotBandTest {
 
-    @Test public void default_isTwoGhz() {
-        assertSame(HotspotBand.TWO_GHZ, HotspotBand.DEFAULT);
+    @Test public void default_isAuto() {
+        assertSame(HotspotBand.AUTO, HotspotBand.DEFAULT);
     }
 
     @Test public void fromId_roundTripsEveryValue() {
