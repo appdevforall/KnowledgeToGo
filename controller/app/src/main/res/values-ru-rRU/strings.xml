@@ -1620,4 +1620,13 @@
     <string name="k2go_preparing_word_6">Всё настраиваем...</string>
     <string name="k2go_preparing_word_7">Делаем её вашей...</string>
     <string name="k2go_preparing_word_8">Почти готово...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">На устройстве мало памяти</string>
+    <string name="k2go_dash_lowmem_text">На вашем устройстве мало памяти. Обновление может не выполниться. Сначала закройте другие приложения или всё равно запустите.</string>
+    <string name="k2go_dash_lowmem_not_now">Не сейчас</string>
+    <string name="k2go_dash_lowmem_start_anyway">Всё равно запустить</string>
+    <string name="k2go_dash_update_failed_title">Не удалось обновить панель</string>
+    <string name="k2go_dash_update_failed_text">Закройте другие приложения и повторите попытку. Если ошибка повторяется, свяжитесь с нами.</string>
+    <string name="k2go_dash_update_retry">Повторить</string>
+    <string name="k2go_dash_update_open_dashboard">Открыть панель</string>
 </resources>

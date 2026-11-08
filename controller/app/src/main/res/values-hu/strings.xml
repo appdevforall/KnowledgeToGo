@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Minden beállítása...</string>
     <string name="k2go_preparing_word_7">A tiéd lesz...</string>
     <string name="k2go_preparing_word_8">Mindjárt kész...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Az eszköz memóriája kevés</string>
+    <string name="k2go_dash_lowmem_text">Az eszközödön kevés a memória. A frissítés meghiúsulhat. Előbb zárj be más alkalmazásokat, vagy indítsd el mégis.</string>
+    <string name="k2go_dash_lowmem_not_now">Most nem</string>
+    <string name="k2go_dash_lowmem_start_anyway">Indítás mégis</string>
+    <string name="k2go_dash_update_failed_title">Az irányítópult frissítése sikertelen</string>
+    <string name="k2go_dash_update_failed_text">Zárj be más alkalmazásokat, és próbáld újra. Ha továbbra is sikertelen, lépj kapcsolatba velünk.</string>
+    <string name="k2go_dash_update_retry">Újra</string>
+    <string name="k2go_dash_update_open_dashboard">Irányítópult megnyitása</string>
 </resources>

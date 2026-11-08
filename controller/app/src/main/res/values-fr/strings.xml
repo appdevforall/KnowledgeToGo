@@ -1631,4 +1631,13 @@
     <string name="k2go_preparing_word_6">Mise en place...</string>
     <string name="k2go_preparing_word_7">À votre image...</string>
     <string name="k2go_preparing_word_8">Presque fini...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">L\'appareil manque de mémoire</string>
+    <string name="k2go_dash_lowmem_text">Votre appareil manque de mémoire. La mise à jour peut échouer. Fermez d\'abord les autres applis, ou lancez quand même.</string>
+    <string name="k2go_dash_lowmem_not_now">Pas maintenant</string>
+    <string name="k2go_dash_lowmem_start_anyway">Lancer quand même</string>
+    <string name="k2go_dash_update_failed_title">Échec de la mise à jour du tableau de bord</string>
+    <string name="k2go_dash_update_failed_text">Fermez les autres applis et réessayez. Si cela échoue encore, contactez-nous.</string>
+    <string name="k2go_dash_update_retry">Réessayer</string>
+    <string name="k2go_dash_update_open_dashboard">Ouvrir le tableau de bord</string>
 </resources>

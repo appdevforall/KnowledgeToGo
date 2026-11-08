@@ -1544,4 +1544,13 @@
     <string name="k2go_preparing_word_6">Configurăm totul...</string>
     <string name="k2go_preparing_word_7">Îl facem al tău...</string>
     <string name="k2go_preparing_word_8">Aproape gata...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Dispozitivul are memorie insuficientă</string>
+    <string name="k2go_dash_lowmem_text">Dispozitivul tău are memorie insuficientă. Actualizarea poate eșua. Închide mai întâi alte aplicații sau pornește oricum.</string>
+    <string name="k2go_dash_lowmem_not_now">Nu acum</string>
+    <string name="k2go_dash_lowmem_start_anyway">Pornește oricum</string>
+    <string name="k2go_dash_update_failed_title">Actualizarea panoului a eșuat</string>
+    <string name="k2go_dash_update_failed_text">Închide alte aplicații și încearcă din nou. Dacă tot eșuează, contactează-ne.</string>
+    <string name="k2go_dash_update_retry">Încearcă din nou</string>
+    <string name="k2go_dash_update_open_dashboard">Deschide panoul</string>
 </resources>

@@ -1551,4 +1551,13 @@
     <string name="k2go_preparing_word_6">Όλα ρυθμίζονται...</string>
     <string name="k2go_preparing_word_7">Το κάνουμε δικό σας...</string>
     <string name="k2go_preparing_word_8">Σχεδόν έτοιμο...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Η συσκευή έχει λίγη μνήμη</string>
+    <string name="k2go_dash_lowmem_text">Η συσκευή σας έχει λίγη μνήμη. Η ενημέρωση μπορεί να αποτύχει. Κλείστε πρώτα άλλες εφαρμογές ή ξεκινήστε έτσι κι αλλιώς.</string>
+    <string name="k2go_dash_lowmem_not_now">Όχι τώρα</string>
+    <string name="k2go_dash_lowmem_start_anyway">Έναρξη ούτως ή άλλως</string>
+    <string name="k2go_dash_update_failed_title">Η ενημέρωση του πίνακα απέτυχε</string>
+    <string name="k2go_dash_update_failed_text">Κλείστε άλλες εφαρμογές και δοκιμάστε ξανά. Αν συνεχίζει να αποτυγχάνει, επικοινωνήστε μαζί μας.</string>
+    <string name="k2go_dash_update_retry">Δοκιμάστε ξανά</string>
+    <string name="k2go_dash_update_open_dashboard">Άνοιγμα πίνακα</string>
 </resources>

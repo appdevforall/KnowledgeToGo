@@ -1551,4 +1551,13 @@
     <string name="k2go_preparing_word_6">Menyiapkan semuanya...</string>
     <string name="k2go_preparing_word_7">Menjadikannya milik Anda...</string>
     <string name="k2go_preparing_word_8">Hampir selesai...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Memori perangkat rendah</string>
+    <string name="k2go_dash_lowmem_text">Memori perangkat Anda rendah. Pembaruan mungkin gagal. Tutup aplikasi lain dulu, atau tetap mulai.</string>
+    <string name="k2go_dash_lowmem_not_now">Nanti saja</string>
+    <string name="k2go_dash_lowmem_start_anyway">Tetap mulai</string>
+    <string name="k2go_dash_update_failed_title">Pembaruan dasbor gagal</string>
+    <string name="k2go_dash_update_failed_text">Tutup aplikasi lain dan coba lagi. Jika terus gagal, hubungi kami.</string>
+    <string name="k2go_dash_update_retry">Coba lagi</string>
+    <string name="k2go_dash_update_open_dashboard">Buka dasbor</string>
 </resources>

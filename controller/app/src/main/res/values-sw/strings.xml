@@ -1564,4 +1564,13 @@
     <string name="k2go_preparing_word_6">Tunaandaa kila kitu...</string>
     <string name="k2go_preparing_word_7">Tunaufanya kuwa wako...</string>
     <string name="k2go_preparing_word_8">Karibu tumemaliza...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Kifaa kina kumbukumbu ndogo</string>
+    <string name="k2go_dash_lowmem_text">Kifaa chako kina kumbukumbu ndogo. Sasisho linaweza kushindwa. Funga programu zingine kwanza, au anza hata hivyo.</string>
+    <string name="k2go_dash_lowmem_not_now">Si sasa</string>
+    <string name="k2go_dash_lowmem_start_anyway">Anza hata hivyo</string>
+    <string name="k2go_dash_update_failed_title">Kusasisha dashibodi kumeshindwa</string>
+    <string name="k2go_dash_update_failed_text">Funga programu zingine na ujaribu tena. Ikiendelea kushindwa, wasiliana nasi.</string>
+    <string name="k2go_dash_update_retry">Jaribu tena</string>
+    <string name="k2go_dash_update_open_dashboard">Fungua dashibodi</string>
 </resources>

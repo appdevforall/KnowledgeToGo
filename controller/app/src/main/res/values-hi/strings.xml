@@ -1621,4 +1621,13 @@
     <string name="k2go_preparing_word_6">सब कुछ सेट हो रहा है...</string>
     <string name="k2go_preparing_word_7">इसे आपका बनाया जा रहा है...</string>
     <string name="k2go_preparing_word_8">बस थोड़ा और...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">डिवाइस में मेमोरी कम है</string>
+    <string name="k2go_dash_lowmem_text">आपके डिवाइस में मेमोरी कम है. अपडेट विफल हो सकता है. पहले दूसरे ऐप बंद करें, या फिर भी शुरू करें.</string>
+    <string name="k2go_dash_lowmem_not_now">अभी नहीं</string>
+    <string name="k2go_dash_lowmem_start_anyway">फिर भी शुरू करें</string>
+    <string name="k2go_dash_update_failed_title">डैशबोर्ड अपडेट विफल रहा</string>
+    <string name="k2go_dash_update_failed_text">दूसरे ऐप बंद करें और फिर से कोशिश करें. अगर यह बार-बार विफल हो, तो हमसे संपर्क करें.</string>
+    <string name="k2go_dash_update_retry">फिर से कोशिश करें</string>
+    <string name="k2go_dash_update_open_dashboard">डैशबोर्ड खोलें</string>
 </resources>

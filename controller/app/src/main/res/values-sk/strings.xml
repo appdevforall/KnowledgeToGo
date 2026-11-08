@@ -1551,4 +1551,13 @@
     <string name="k2go_preparing_word_6">Všetko sa nastavuje...</string>
     <string name="k2go_preparing_word_7">Aby bol len váš...</string>
     <string name="k2go_preparing_word_8">Takmer hotovo...</string>
+    <!-- K2GO-557: machine-translated, pending human review -->
+    <string name="k2go_dash_lowmem_title">Zariadenie má málo pamäte</string>
+    <string name="k2go_dash_lowmem_text">Vaše zariadenie má málo pamäte. Aktualizácia môže zlyhať. Najprv zatvorte ostatné aplikácie, alebo ju napriek tomu spustite.</string>
+    <string name="k2go_dash_lowmem_not_now">Teraz nie</string>
+    <string name="k2go_dash_lowmem_start_anyway">Napriek tomu spustiť</string>
+    <string name="k2go_dash_update_failed_title">Aktualizácia panela zlyhala</string>
+    <string name="k2go_dash_update_failed_text">Zatvorte ostatné aplikácie a skúste to znova. Ak zlyháva naďalej, kontaktujte nás.</string>
+    <string name="k2go_dash_update_retry">Skúsiť znova</string>
+    <string name="k2go_dash_update_open_dashboard">Otvoriť panel</string>
 </resources>
