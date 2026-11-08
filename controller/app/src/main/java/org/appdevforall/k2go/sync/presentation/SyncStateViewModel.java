@@ -95,9 +95,9 @@ public class SyncStateViewModel extends ViewModel {
             for (int i = 0; i < 24 && NetworkInterfaces.isLocalAddress(creds.ip); i++) {
                 try { Thread.sleep(500); } catch (InterruptedException e) { return; }
             }
-            SyncTransferState now = repo.current();
-            // Cancelled, or a newer scan replaced this probe, while waiting.
-            if (pendingCreds != creds || now == null || now.phase != SyncTransferState.Phase.CONNECTING) return;
+            // Cancelled, or a newer scan replaced this probe, while waiting. Not the repo phase: it is
+            // posted async, so this thread can still read the IDLE before CONNECTING.
+            if (pendingCreds != creds) return;
             // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
             // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
             // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
@@ -166,6 +166,7 @@ public class SyncStateViewModel extends ViewModel {
 
     /** User declined the transfer (or cancelled mid-probe): stop any dry-run and reset. */
     public void cancelProbe() {
+        pendingCreds = null;   // a probe still waiting for the hotspot to go away bails out
         if (transport != null) transport.stop();
         releaseNetwork();
         SyncProgressRepository.get().postIdle();
