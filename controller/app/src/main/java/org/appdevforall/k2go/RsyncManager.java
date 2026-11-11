@@ -260,6 +260,12 @@ public class RsyncManager implements TransportEngine {
                 }
 
             } catch (Exception e) {
+                // A user Cancel closes the stream under the reader. The cancel path already reset
+                // the screen (CloneFragment.onReceiveCancel), so it is not an error.
+                if (isCancelled) {
+                    Log.i(TAG, "Rsync client stopped by the user");
+                    return;
+                }
                 Log.e(TAG, "Rsync Client Exception", e);
                 mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_fatal, e.getMessage())));
             }
