@@ -141,7 +141,7 @@ public final class MapsRegionClient {
         }
     }
 
-    /** The downloaded regions catalog, read from the box's public /maps/extracts.json. */
+    /** K2GO-566: the downloaded regions, listed by dash-node from the <name>.fqr dirs (GET /maps/regions). */
     public interface RegionsListener {
         void onRegions(JSONObject regions);   // { "<name>": { ui_bounds:[...], ... }, ... }
         void onError(String message);
@@ -150,7 +150,7 @@ public final class MapsRegionClient {
     public void listRegions(@NonNull RegionsListener l) {
         AppExecutors.get().io().execute(() -> {
             try {
-                JSONObject j = httpJson("GET", BoxEndpoints.BASE + "/maps/extracts.json", null);
+                JSONObject j = httpJson("GET", BoxEndpoints.API + "/maps/regions", null);
                 JSONObject regions = j.optJSONObject("regions");
                 final JSONObject out = regions != null ? regions : new JSONObject();
                 main.post(() -> l.onRegions(out));

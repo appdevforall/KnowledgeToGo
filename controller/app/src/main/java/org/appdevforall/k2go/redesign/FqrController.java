@@ -1041,6 +1041,7 @@ public final class FqrController {
         if (o == null) return null;
         JSONArray a = o.optJSONArray("ui_bounds");
         if (a == null) a = o.optJSONArray("render_bounds");
+        if (a == null) a = o.optJSONArray("bbox");   // K2GO-566: new .fqr meta.json shape
         if (a == null || a.length() < 4) return null;
         return new double[]{ a.optDouble(0), a.optDouble(1), a.optDouble(2), a.optDouble(3) };
     }
