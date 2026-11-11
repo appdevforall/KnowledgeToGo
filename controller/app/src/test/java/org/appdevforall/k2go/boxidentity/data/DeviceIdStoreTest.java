@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : DeviceIdStoreTest.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-560. Unit tests for DeviceIdStore.
+ * ============================================================================
+ */
 package org.appdevforall.k2go.boxidentity.data;
 
 import static org.junit.Assert.assertEquals;

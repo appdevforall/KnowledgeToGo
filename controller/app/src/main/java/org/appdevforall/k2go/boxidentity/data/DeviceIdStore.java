@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : DeviceIdStore.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-560. Random ID of this app install, bound into the box.
+ * ============================================================================
+ */
 package org.appdevforall.k2go.boxidentity.data;
 
 import java.io.File;

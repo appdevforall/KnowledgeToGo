@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : CopyExcludeFiles.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-560. Writes the box copy exclude list for rsync and tar.
+ * ============================================================================
+ */
 package org.appdevforall.k2go.boxidentity.data;
 
 import android.content.Context;

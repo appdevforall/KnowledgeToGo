@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : CopyExcludesTest.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-560. Unit tests for CopyExcludes.
+ * ============================================================================
+ */
 package org.appdevforall.k2go.boxidentity.domain;
 
 import static org.junit.Assert.assertEquals;

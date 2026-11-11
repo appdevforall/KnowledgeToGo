@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : CopyExcludes.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-560. Box records that Clone and Backup do not carry.
+ * ============================================================================
+ */
 package org.appdevforall.k2go.boxidentity.domain;
 
 import java.util.ArrayList;
