@@ -52,6 +52,10 @@ on:
         description: "Cancel every node as soon as one fails (nothing publishes anyway)."
         type: boolean
         default: true
+      run_prebuild_tests:
+        description: "Run the pre-build tests first and gate the bake on them. Leave on unless you must bypass."
+        type: boolean
+        default: true
       go_version:
         description: "Go toolchain for mkmetalink (pinned; blank = latest from go.dev)."
         default: "go1.27.3"
@@ -85,6 +89,7 @@ jobs:
   # K2GO-567: fast native tests gate the bake. The test logic lives in its own workflow (editable
   # without touching this one, which stays pure construction); the bake runs only if it passes.
   prebuild-tests:
+    if: ${{ inputs.run_prebuild_tests }}
     uses: ./.github/workflows/prebuild-tests.yml
 
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
@@ -174,6 +179,9 @@ jobs:
 
   bake:
     needs: [prebuild-tests, seed-base, plan]    # K2GO-567: tests gate the bake; base present before publish
+    # always() so a SKIPPED prebuild-tests (run_prebuild_tests=false) does not auto-skip the bake; the
+    # bake still runs only if prebuild-tests did not FAIL/cancel and the base + plan succeeded.
+    if: ${{ always() && needs.prebuild-tests.result != 'failure' && needs.prebuild-tests.result != 'cancelled' && needs.seed-base.result == 'success' && needs.plan.result == 'success' }}
     name: RootFS ${{ matrix.arch }} ${{ matrix.tier }}
     # Native arm64 runner (the builder uses native proot, not QEMU). Adjust the label
     # if the org uses a different arm64 runner (e.g. a self-hosted one).
