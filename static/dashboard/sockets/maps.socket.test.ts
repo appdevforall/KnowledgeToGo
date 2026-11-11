@@ -1,10 +1,39 @@
 /// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateSecureCommand, parseBox, buildArgs, displayBounds, parseEstimate, parseEstimateFrom } from './maps.socket';
+import { validateSecureCommand, parseBox, buildArgs, displayBounds, parseEstimate, parseEstimateFrom, listFqrRegions } from './maps.socket';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 const SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const sudo = (rest: string) => `sudo ${SCRIPT} ${rest}`;
+
+test('listFqrRegions: lists <name>.fqr dirs and reads meta.json bbox (K2GO-566)', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'fqr-'));
+    try {
+        fs.mkdirSync(path.join(root, 'ttest.fqr'));
+        fs.writeFileSync(path.join(root, 'ttest.fqr', 'meta.json'),
+            JSON.stringify({ bbox: [-108.5577, 28.0298, -101.073, 36.1073] }));
+        // incomplete region (no meta.json): still listed by name so it can be deleted, no bounds
+        fs.mkdirSync(path.join(root, 'broken.fqr'));
+        // a non-.fqr dir and a stray file: ignored
+        fs.mkdirSync(path.join(root, 'notes'));
+        fs.writeFileSync(path.join(root, 'readme.txt'), 'x');
+
+        const out = listFqrRegions(root);
+        assert.deepEqual(Object.keys(out).sort(), ['broken', 'ttest']);
+        assert.deepEqual(out.ttest.ui_bounds, [-108.5577, 28.0298, -101.073, 36.1073]);
+        assert.deepEqual(out.ttest.bbox, [-108.5577, 28.0298, -101.073, 36.1073]);
+        assert.deepEqual(out.broken, {});
+    } finally {
+        fs.rmSync(root, { recursive: true, force: true });
+    }
+});
+
+test('listFqrRegions: a missing maps dir is empty, not an error (K2GO-566)', () => {
+    assert.deepEqual(listFqrRegions(path.join(os.tmpdir(), 'no-such-maps-' + Date.now())), {});
+});
 
 test('displayBounds prefers ui_bounds, then render_bounds/bbox/array', () => {
     assert.deepEqual(
