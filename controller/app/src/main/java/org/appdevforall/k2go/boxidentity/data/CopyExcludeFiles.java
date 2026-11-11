@@ -39,9 +39,18 @@ public final class CopyExcludeFiles {
 
     private static File write(Context ctx, String name, String content) throws IOException {
         // Not the cache dir: Android can clear it while the Clone daemon still reads the file.
-        File f = new File(ctx.getNoBackupFilesDir(), name);
-        try (FileOutputStream out = new FileOutputStream(f)) {
+        File dir = ctx.getNoBackupFilesDir();
+        File f = new File(dir, name);
+        File tmp = new File(dir, name + ".tmp");
+        try (FileOutputStream out = new FileOutputStream(tmp)) {
             out.write(content.getBytes(StandardCharsets.UTF_8));
+            out.getFD().sync();
+        }
+        // The rsync daemon reads the file at each connection: replace it whole, never truncate it.
+        // renameTo replaces an existing file on Android (POSIX rename).
+        if (!tmp.renameTo(f)) {
+            tmp.delete();
+            throw new IOException("cannot write " + f);
         }
         return f;
     }
