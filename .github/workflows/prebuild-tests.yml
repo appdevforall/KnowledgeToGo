@@ -8,6 +8,8 @@ name: Pre-build tests (gate the rootfs bake)
 # run's actor (built-in notification) and the bake does not run.
 
 on:
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
     inputs:
       iiab_ref:
