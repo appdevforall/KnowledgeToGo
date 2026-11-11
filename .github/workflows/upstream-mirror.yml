@@ -21,14 +21,20 @@ env:
   R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}
 
 jobs:
+  # One job per arch so the slow downloads run in parallel, not one after another.
   kiwix-tools:
-    name: Mirror kiwix-tools
+    name: Mirror kiwix-tools (${{ matrix.arch }})
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [aarch64, armv8, armhf, armv6]
     steps:
       - name: Ensure AWS CLI is available
         run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
 
-      - name: Mirror kiwix-tools to R2 (skip when unchanged, keep history)
+      - name: Mirror kiwix-tools ${{ matrix.arch }} to R2 (resume, skip when unchanged, keep history)
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
@@ -38,59 +44,51 @@ jobs:
           PFX="${R2_KEY_PREFIX:-}"
           KIWIX_BASE="https://download.kiwix.org/release/kiwix-tools"
           R2_DIR="upstream/kiwix/kiwix-tools"
-          # The arm generic names the kiwix role can request (kiwix_arch_dict).
-          ARCHES="aarch64 armv8 armhf armv6"
+          a="${{ matrix.arch }}"
+          generic="kiwix-tools_linux-${a}.tar.gz"
 
-          overall=0
-          for a in ${ARCHES}; do
-            generic="kiwix-tools_linux-${a}.tar.gz"
-            echo "::group::${generic}"
+          # Resolve the "latest" symlink to the versioned name (timed, so a slow mirror cannot hang).
+          resolved="$(curl -fsSL -r 0-0 --max-time 60 --retry 3 --retry-all-errors \
+                        -o /dev/null -w '%{url_effective}' "${KIWIX_BASE}/${generic}" || true)"
+          versioned="$(basename "${resolved:-}")"
+          case "${versioned}" in
+            *-[0-9]*.tar.gz) : ;;
+            *) versioned="${generic%.tar.gz}-$(date -u +%Y%m%d).tar.gz" ;;
+          esac
 
-            # Resolve the "latest" symlink to the versioned name (timed, so a slow mirror cannot hang).
-            resolved="$(curl -fsSL -r 0-0 --max-time 60 --retry 3 --retry-all-errors \
-                          -o /dev/null -w '%{url_effective}' "${KIWIX_BASE}/${generic}" || true)"
-            versioned="$(basename "${resolved:-}")"
-            case "${versioned}" in
-              *-[0-9]*.tar.gz) : ;;
-              *) versioned="${generic%.tar.gz}-$(date -u +%Y%m%d).tar.gz" ;;
-            esac
+          # kiwix.org is very slow and drops often. -C - resumes the partial on each retry instead of
+          # restarting from zero, and --speed-time aborts a dead connection fast so the next retry
+          # (which resumes) fires sooner. The job timeout above is the real upper bound.
+          rm -f "${versioned}"
+          curl -fL -C - -o "${versioned}" \
+               --retry 50 --retry-delay 10 --retry-all-errors \
+               --speed-limit 1024 --speed-time 60 \
+               "${KIWIX_BASE}/${generic}"
+          sha_now="$(sha256sum "${versioned}" | awk '{print $1}')"
 
-            if ! curl -fL --retry 20 --retry-delay 5 --retry-all-errors --max-time 3000 \
-                   -o "${versioned}" "${KIWIX_BASE}/${generic}"; then
-              echo ">> WARNING: cannot download ${generic}; leaving the R2 copy as is."
-              rm -f "${versioned}"; overall=1; echo "::endgroup::"; continue
-            fi
-            sha_now="$(sha256sum "${versioned}" | awk '{print $1}')"
+          # Skip when the content already on R2 is identical.
+          gkey="${PFX}${R2_DIR}/${generic}"
+          sha_r2="$(aws s3 cp "s3://${BUCKET_NAME}/${gkey}.sha256" - \
+                      --endpoint-url "${ENDPOINT}" 2>/dev/null | awk '{print $1}' || true)"
+          if [ -n "${sha_r2}" ] && [ "${sha_now}" = "${sha_r2}" ]; then
+            echo ">> ${a} unchanged (${sha_now}); skipping."
+            exit 0
+          fi
+          echo ">> ${a} changed (R2=${sha_r2:-none} new=${sha_now}); publishing ${versioned}."
 
-            # Skip when the content already on R2 is identical.
-            gkey="${PFX}${R2_DIR}/${generic}"
-            sha_r2="$(aws s3 cp "s3://${BUCKET_NAME}/${gkey}.sha256" - \
-                        --endpoint-url "${ENDPOINT}" 2>/dev/null | awk '{print $1}' || true)"
-            if [ -n "${sha_r2}" ] && [ "${sha_now}" = "${sha_r2}" ]; then
-              echo ">> unchanged (${sha_now}); skipping."
-              rm -f "${versioned}"; echo "::endgroup::"; continue
-            fi
-            echo ">> changed (R2=${sha_r2:-none} new=${sha_now}); publishing ${versioned}."
+          echo "${sha_now}  ${versioned}" > "${versioned}.sha256"
+          curl -fsL --retry 10 --retry-all-errors --max-time 120 \
+               -o "${versioned}.md5" "${KIWIX_BASE}/${versioned}.md5" 2>/dev/null \
+            || { echo "(no upstream .md5)"; rm -f "${versioned}.md5"; }
 
-            echo "${sha_now}  ${versioned}" > "${versioned}.sha256"
-            curl -fsL --retry 10 --retry-all-errors --max-time 120 \
-                 -o "${versioned}.md5" "${KIWIX_BASE}/${versioned}.md5" 2>/dev/null \
-              || { echo "(no upstream .md5)"; rm -f "${versioned}.md5"; }
+          # Immutable versioned object (history, never deleted).
+          vkey="${PFX}${R2_DIR}/${versioned}"
+          aws s3 cp "${versioned}"        "s3://${BUCKET_NAME}/${vkey}"        --endpoint-url "${ENDPOINT}"
+          aws s3 cp "${versioned}.sha256" "s3://${BUCKET_NAME}/${vkey}.sha256" --endpoint-url "${ENDPOINT}"
+          [ -f "${versioned}.md5" ] && \
+            aws s3 cp "${versioned}.md5"  "s3://${BUCKET_NAME}/${vkey}.md5"    --endpoint-url "${ENDPOINT}" || true
 
-            # Immutable versioned object (history, never deleted).
-            vkey="${PFX}${R2_DIR}/${versioned}"
-            aws s3 cp "${versioned}"        "s3://${BUCKET_NAME}/${vkey}"        --endpoint-url "${ENDPOINT}"
-            aws s3 cp "${versioned}.sha256" "s3://${BUCKET_NAME}/${vkey}.sha256" --endpoint-url "${ENDPOINT}"
-            [ -f "${versioned}.md5" ] && \
-              aws s3 cp "${versioned}.md5"  "s3://${BUCKET_NAME}/${vkey}.md5"    --endpoint-url "${ENDPOINT}" || true
-
-            # Generic name the fallback reads = copy of the current content.
-            echo "${sha_now}  ${generic}" > "${generic}.sha256"
-            aws s3 cp "${versioned}"       "s3://${BUCKET_NAME}/${gkey}"        --endpoint-url "${ENDPOINT}"
-            aws s3 cp "${generic}.sha256"  "s3://${BUCKET_NAME}/${gkey}.sha256" --endpoint-url "${ENDPOINT}"
-
-            rm -f "${versioned}" "${versioned}.sha256" "${versioned}.md5" "${generic}.sha256"
-            echo "::endgroup::"
-          done
-
-          exit "${overall}"
+          # Generic name the fallback reads = copy of the current content.
+          echo "${sha_now}  ${generic}" > "${generic}.sha256"
+          aws s3 cp "${versioned}"       "s3://${BUCKET_NAME}/${gkey}"        --endpoint-url "${ENDPOINT}"
+          aws s3 cp "${generic}.sha256"  "s3://${BUCKET_NAME}/${gkey}.sha256" --endpoint-url "${ENDPOINT}"
