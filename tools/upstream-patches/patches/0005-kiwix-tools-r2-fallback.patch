@@ -1,0 +1,51 @@
+Upstream-PR:     none (K2Go carry patch)
+Upstream-Status: not sent upstream (K2Go-specific R2 fallback)
+Applies-to:      roles/kiwix/defaults/main.yml, roles/kiwix/tasks/install.yml
+Summary:         Add a K2Go R2 mirror as a FALLBACK for the kiwix-tools download. kiwix.org stays primary; on a failed download the role retries from the mirror (upstream/kiwix/kiwix-tools), which .github/workflows/upstream-mirror.yml refreshes weekly. kiwix.org once stalled a bake (curl rc=92) and blocked the publish. The role still builds the file name from kiwix_arch, so no version is pinned.
+
+diff --git a/roles/kiwix/defaults/main.yml b/roles/kiwix/defaults/main.yml
+index 9ed6ecb..1000d2c 100644
+--- a/roles/kiwix/defaults/main.yml
++++ b/roles/kiwix/defaults/main.yml
+@@ -22,6 +22,8 @@
+ kiwix_library_xml: "{{ iiab_zim_path }}/library.xml"
+ 
+ kiwix_base_url: https://download.kiwix.org/release/kiwix-tools/
++# K2GO-563: fallback mirror, used only if kiwix.org fails (see tasks/install.yml).
++kiwix_r2_base_url: https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev/upstream/kiwix/kiwix-tools/
+ #kiwix_base_url: https://download.kiwix.org/nightly/2022-10-04/
+ #kiwix_base_url: "{{ iiab_download_url }}/"    # e.g. https://download.iiab.io/packages/
+ 
+diff --git a/roles/kiwix/tasks/install.yml b/roles/kiwix/tasks/install.yml
+index 05c0cff..600ff2a 100644
+--- a/roles/kiwix/tasks/install.yml
++++ b/roles/kiwix/tasks/install.yml
+@@ -16,12 +16,22 @@
+ # 2022-10-04: get_url might be removed in future (unarchive below can handle
+ # everything!)  Conversely: (1) unarchive doesn't support timeout (2) one day
+ # /opt/iiab/downloads might have practical value beyond hoarding (unlikely!)
+-- name: Download {{ kiwix_base_url }}{{ kiwix_tar_gz }} into /opt/iiab/downloads (ACTUAL filename should include kiwix-tools version, or nightly build date)
+-  get_curl:
+-    url: "{{ kiwix_base_url }}{{ kiwix_tar_gz }}"    # e.g. https://download.kiwix.org/release/kiwix-tools/ + kiwix-tools_linux-x86_64.tar.gz
+-    dest: "{{ downloads_dir }}/kiwix-tools.tar.gz"
+-    timeout: "{{ download_timeout }}"
+-  register: kiwix_dl    # PATH /opt/iiab/downloads + ACTUAL filename put in kiwix_dl.dest, for unarchive ~28 lines below
++# K2GO-563: try kiwix.org first; fall back to the K2Go R2 mirror on failure.
++- name: Download {{ kiwix_tar_gz }} (kiwix.org primary, K2Go R2 mirror fallback)
++  block:
++    - name: Download {{ kiwix_tar_gz }} from kiwix.org
++      get_curl:
++        url: "{{ kiwix_base_url }}{{ kiwix_tar_gz }}"
++        dest: "{{ downloads_dir }}/kiwix-tools.tar.gz"
++        timeout: "{{ download_timeout }}"
++      register: kiwix_dl
++  rescue:
++    - name: Fall back to the K2Go R2 mirror
++      get_curl:
++        url: "{{ kiwix_r2_base_url }}{{ kiwix_tar_gz }}"
++        dest: "{{ downloads_dir }}/kiwix-tools.tar.gz"
++        timeout: "{{ download_timeout }}"
++      register: kiwix_dl
+ 
+ # - name: "2023-05-14: TEMPORARY PATCH REVERTING TO KIWIX-TOOLS 3.4.0 IF BUGGY 32-BIT (armhf) VERSION 3.5.0 IS DETECTED -- #3574"
+ #   get_url:
