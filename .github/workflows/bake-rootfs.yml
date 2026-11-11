@@ -82,6 +82,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # K2GO-567: fast native tests gate the bake. The test logic lives in its own workflow (editable
+  # without touching this one, which stays pure construction); the bake runs only if it passes.
+  prebuild-tests:
+    uses: ./.github/workflows/prebuild-tests.yml
+
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
   # (github.com/termux/proot-distro), fetched from the upstream release. It is STATIC, so seed it
   # into R2 ONCE; every later run only HEADs it (no re-download). Bumping PD_VERSION seeds a
@@ -168,7 +173,7 @@ jobs:
           echo "layout=$LAYOUT max_parallel=$maxp matrix=$m"
 
   bake:
-    needs: [seed-base, plan]    # the static base must be present on R2 before we publish artifacts
+    needs: [prebuild-tests, seed-base, plan]    # K2GO-567: tests gate the bake; base present before publish
     name: RootFS ${{ matrix.arch }} ${{ matrix.tier }}
     # Native arm64 runner (the builder uses native proot, not QEMU). Adjust the label
     # if the org uses a different arm64 runner (e.g. a self-hosted one).

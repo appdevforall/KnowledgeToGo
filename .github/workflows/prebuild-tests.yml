@@ -1,0 +1,74 @@
+name: Pre-build tests (gate the rootfs bake)
+
+# K2GO-567. Fast, NATIVE tests that must pass BEFORE the rootfs bake (bake-rootfs.yml). No proot,
+# no root. Runs the dash-node unit tests plus the contract tests, which check the REAL upstream
+# artifacts with our tools/upstream-patches applied, so upstream drift is caught before a build
+# ships the break. Kept SEPARATE from bake-rootfs.yml (pure construction) so the test logic is
+# edited here; bake-rootfs.yml calls this as its first job (needs:). On failure GitHub emails the
+# run's actor (built-in notification) and the bake does not run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      iiab_ref:
+        description: "iiab/iiab ref to check the upstream contract against."
+        default: "master"
+  workflow_call:
+    inputs:
+      iiab_ref:
+        type: string
+        required: false
+        default: "master"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prebuild-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: dash-node + contract tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: static/dashboard/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: dash-node tests (typecheck + unit)
+        working-directory: static/dashboard
+        run: |
+          npm ci --ignore-scripts
+          npm run typecheck
+          npm test
+
+      # Fetch the real upstream maps role (the artifact the bake uses) and apply our in-flight
+      # patches, so the contract test checks what will actually be baked, not a frozen fixture.
+      # A patch that no longer applies (context drift) fails here, which is itself a useful signal.
+      - name: Fetch upstream iiab and apply our patches
+        run: |
+          set -euo pipefail
+          ref='${{ inputs.iiab_ref }}'
+          git clone --depth 1 --branch "${ref:-master}" https://github.com/iiab/iiab.git /tmp/iiab
+          tools/upstream-patches/apply-upstream-patches.sh --root /tmp/iiab
+          echo "TILE_EXTRACT_PY=/tmp/iiab/roles/maps/templates/tile-extract.py.j2" >> "$GITHUB_ENV"
+
+      - name: Contract tests (real + patched upstream)
+        run: |
+          set -euo pipefail
+          test -f "$TILE_EXTRACT_PY" \
+            || { echo "::error::upstream tile-extract.py.j2 missing at $TILE_EXTRACT_PY (contract drift)"; exit 1; }
+          bash tools/rootfs-builder/tests/run-contract-tests.sh
