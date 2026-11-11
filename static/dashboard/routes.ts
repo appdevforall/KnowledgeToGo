@@ -10,7 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages, getCalibreSession, verifyCalibreCredentials } from './sockets/books.query';
-import { parseBox, parseEstimateFrom } from './sockets/maps.socket';
+import { parseBox, parseEstimateFrom, listFqrRegions } from './sockets/maps.socket';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
     browseChannelTree, buildLocalSubtree, estimateSelection, deleteChannel, getKolibriTask,
@@ -176,20 +176,40 @@ apiRouter.post('/maps/estimate', (req: Request, res: Response): void => {
     }));
 });
 
-// Delete a downloaded region. tile-extract.py's `delete` runs update-json itself.
+// K2GO-566: delete a downloaded region. Upstream's tile-extract.py `delete` is now INTERACTIVE
+// (one "Confirm delete? y/n" prompt, no noninteractive flag), so we answer "y" on stdin and close
+// it. A timeout guards against a future prompt change leaving the child blocked on input().
+const MAPS_DELETE_TIMEOUT_MS = 30000;
 apiRouter.post('/maps/delete', (req: Request, res: Response): void => {
     const name = String((req.body as { name?: unknown })?.name ?? '').trim();
     if (!MAPS_NAME_RE.test(name)) { res.status(400).json({ error: 'invalid region name' }); return; }
     const p = spawn('sudo', [MAPS_SCRIPT, 'delete', name],
         { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
-    let err = '';
+    let err = '', done = false;
+    const finish = (fn: () => void) => { if (done) return; done = true; clearTimeout(timer); fn(); };
+    const timer = setTimeout(() => finish(() => {
+        try { p.kill('SIGKILL'); } catch { /* already gone */ }
+        if (!res.headersSent) res.status(504).json({ error: 'delete timed out' });
+    }), MAPS_DELETE_TIMEOUT_MS);
+    p.stdin?.write('y\n');   // answer the single "Confirm delete?" prompt
+    p.stdin?.end();
     p.stderr.on('data', (d: Buffer) => { err += d.toString(); });
-    p.on('error', (e) => { if (!res.headersSent) res.status(500).json({ error: String(e) }); });
-    p.on('exit', (code) => {
+    p.on('error', (e) => finish(() => { if (!res.headersSent) res.status(500).json({ error: String(e) }); }));
+    p.on('exit', (code) => finish(() => {
         if (res.headersSent) return;
         if (code === 0) res.json({ ok: true });
         else res.status(500).json({ error: err.trim() || `delete exited ${code}` });
-    });
+    }));
+});
+
+// K2GO-566: list downloaded FQRs. Upstream dropped the static /maps/extracts.json the app read;
+// regions are now <name>.fqr/ dirs. Enumerate them so the in-app manage + delete list works.
+apiRouter.get('/maps/regions', (_req: Request, res: Response): void => {
+    try {
+        res.json({ regions: listFqrRegions() });
+    } catch (e) {
+        res.status(500).json({ error: e instanceof Error ? e.message : 'could not list regions' });
+    }
 });
 
 // --- Kiwix: list installed ZIMs + delete (ADFA-5004) ------------------------------------------

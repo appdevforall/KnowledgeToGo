@@ -4,29 +4,19 @@ import path from 'path';
 // Critical paths in the backend
 const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
 const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
-const CATALOG_JSON = '/library/www/maps/extracts.json';
+const HOSTING_DIR = '/library/www/maps';   // where tile-extract.py keeps the <name>.fqr/ region dirs
 
 // ---------------------------------------------------------------------------
 // CONTRACT (source of truth: iiab/iiab roles/maps/templates/tile-extract.py.j2)
 //   sudo tile-extract.py extract <name> <box> [noninteractive]
-//   sudo tile-extract.py delete  <name>
-//   sudo tile-extract.py update-json
+//   sudo tile-extract.py delete  <name>    (K2GO-566: now interactive upstream; we add a
+//                                           noninteractive form via tools/upstream-patches)
 //   name: [A-Za-z0-9_-], length 1..34 (uppercase and hyphen ARE valid)
 //   box : 4 comma floats min_lon,min_lat,max_lon,max_lat; min<max both axes; span<360
-// extracts.json: { regions: { <name>: { render_bounds:[..], ui_bounds:[..],
-//                 dates:{terrain,vector,satellite} } } }
-// Display uses ui_bounds (render_bounds can be -180..180 on antimeridian crossings).
+// K2GO-566: upstream dropped the central extracts.json and update-json. Regions are now
+// <name>.fqr/ directories under HOSTING_DIR, each with meta.json {"bbox":[minLon,minLat,
+// maxLon,maxLat]} and the layer pmtiles. See listFqrRegions().
 // ---------------------------------------------------------------------------
-
-interface CatalogRegion {
-    name: string;
-    bbox: string;
-    coords: number[];
-    render_bbox?: string;
-    render_coords?: number[];
-    layers: string[];
-    dates?: Record<string, string>;
-}
 
 function toBounds(candidate: unknown): number[] | null {
     if (!Array.isArray(candidate) || candidate.length < 4) return null;
@@ -45,53 +35,40 @@ function displayBounds(regionData: any): number[] | null {
     );
 }
 
-function getMapsCatalog(): CatalogRegion[] {
+// K2GO-566: list downloaded Full Quality Regions by scanning HOSTING_DIR for <name>.fqr/
+// directories (upstream replaced the central extracts.json catalog). Every .fqr dir is returned
+// by name so an incomplete one can still be deleted; ui_bounds/bbox are filled only when the
+// region's meta.json is readable. Pure over `hostingDir` so it is unit-testable off the box.
+export function listFqrRegions(
+    hostingDir: string = HOSTING_DIR,
+): Record<string, { bbox?: number[]; ui_bounds?: number[] }> {
+    const out: Record<string, { bbox?: number[]; ui_bounds?: number[] }> = {};
+    let entries: string[];
     try {
-        if (!fs.existsSync(CATALOG_JSON)) return [];
-
-        console.log('[Maps] Reading extracts.json catalog...');
-        const fileContent = fs.readFileSync(CATALOG_JSON, 'utf8');
-        if (!fileContent.trim()) return [];
-
-        const data = JSON.parse(fileContent);
-
-        const regions: CatalogRegion[] = [];
-        if (data && data.regions && typeof data.regions === 'object') {
-            for (const name of Object.keys(data.regions)) {
-                const regionData = data.regions[name];
-
-                const ui = displayBounds(regionData);
-                if (!ui) {
-                    console.warn(`[Maps] Skipping region "${name}": no readable bounds.`);
-                    continue;
-                }
-
-                const render = toBounds(regionData?.render_bounds);
-                const dates =
-                    regionData && typeof regionData.dates === 'object' && regionData.dates
-                        ? (regionData.dates as Record<string, string>)
-                        : undefined;
-
-                const layers = dates ? Object.keys(dates) : [];
-                const fmt = (b: number[]) => b.map((c) => c.toFixed(4)).join(', ');
-                const renderDiffers = render && render.some((v, i) => v !== ui[i]);
-
-                regions.push({
-                    name,
-                    coords: ui,
-                    bbox: fmt(ui),
-                    render_coords: render ?? undefined,
-                    render_bbox: renderDiffers ? fmt(render as number[]) : undefined,
-                    layers,
-                    dates,
-                });
-            }
-        }
-        return regions;
-    } catch (error) {
-        console.error('[Maps] Error reading maps catalog:', error);
-        return [];
+        entries = fs.readdirSync(hostingDir);
+    } catch {
+        return out;   // no maps dir yet -> no regions, not an error
     }
+    for (const entry of entries) {
+        if (!entry.endsWith('.fqr')) continue;
+        const name = entry.slice(0, -4);   // strip ".fqr"
+        if (!name) continue;
+        const dir = path.join(hostingDir, entry);
+        try {
+            if (!fs.statSync(dir).isDirectory()) continue;
+        } catch {
+            continue;
+        }
+        let bbox: number[] | null = null;
+        try {
+            const meta = JSON.parse(fs.readFileSync(path.join(dir, 'meta.json'), 'utf8'));
+            bbox = toBounds((meta as { bbox?: unknown })?.bbox);
+        } catch {
+            bbox = null;   // missing/malformed meta.json: still list the region (deletable), no bounds
+        }
+        out[name] = bbox ? { bbox, ui_bounds: bbox } : {};
+    }
+    return out;
 }
 
 const regionNameRegex = /^[A-Za-z0-9_-]{1,34}$/;
@@ -216,4 +193,4 @@ function buildArgs(v: ValidatedCommand): string[] {
     return args;
 }
 
-export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate, parseEstimateFrom };
+export { validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate, parseEstimateFrom };
