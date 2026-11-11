@@ -1,6 +1,6 @@
 {
   "name": "dashboard-console",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "better-sqlite3": "^12.8.0",
+    "better-sqlite3": "12.11.1",
     "express": "^5.2.1",
     "helmet": "^8.1.0"
   }

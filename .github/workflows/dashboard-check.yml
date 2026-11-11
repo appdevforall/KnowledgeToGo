@@ -36,6 +36,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: static/dashboard/package-lock.json
 
+      # K2GO-557: better-sqlite3 must stay pinned to an exact version. A range (^ or ~) lets a
+      # fresh install on the box resolve a newer 12.x than the one baked into the rootfs, which
+      # forces a ~20-min native recompile during the live self-update instead of reusing the
+      # compiled better_sqlite3.node.
+      - name: Assert better-sqlite3 is pinned exact
+        run: |
+          node -e "const v=require('./package.json').dependencies['better-sqlite3']; if(!/^[0-9]+[.][0-9]+[.][0-9]+$/.test(v)){console.error('better-sqlite3 must be an exact version, not a range. Got '+v);process.exit(1)} console.log('better-sqlite3 pinned exact: '+v)"
+
       # --ignore-scripts: skip the better-sqlite3 native build (not needed to type-check
       # or run the maps unit tests); still installs all JS/TS deps + devDeps.
       - name: Install dependencies
