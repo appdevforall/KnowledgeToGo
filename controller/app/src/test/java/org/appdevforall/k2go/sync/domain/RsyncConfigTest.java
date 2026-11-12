@@ -1,6 +1,7 @@
 package org.appdevforall.k2go.sync.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -29,6 +30,15 @@ public class RsyncConfigTest {
         assertTrue(conf.contains("max connections = 3\n"));
         assertTrue(conf.contains("auth users = iiab_peer\n"));
         assertTrue(conf.contains("secrets file = /c/rsyncd.secrets\n"));
+        assertFalse(conf.contains("exclude from"));
+    }
+
+    @Test
+    public void daemonConfCarriesTheExcludeFile() {
+        String conf = RsyncConfig.buildDaemonConf("/c/rsyncd.pid", "/c/rsyncd.lock", 8730,
+                "iiab_sync", "/data/share", "iiab_peer", "/c/rsyncd.secrets", "/c/ex.rsync");
+        assertTrue(conf.endsWith("exclude from = /c/ex.rsync\n"));
+        assertTrue(conf.indexOf("exclude from") > conf.indexOf("[iiab_sync]"));
     }
 
     @Test
@@ -72,5 +82,18 @@ public class RsyncConfigTest {
         assertTrue(a.contains("--stats"));
         assertEquals("--password-file=/c/rsync_client.pass", a.get(5));
         assertEquals(8, a.size());
+    }
+
+    @Test
+    public void withExcludesGoesBeforeTheSource() {
+        List<String> a = RsyncConfig.withExcludes(RsyncConfig.clientArgs(
+                "/lib/librsync.so", "/c/p", "rsync://u@h:1/m/", "/dest"), "/c/ex.rsync",
+                java.util.Collections.singletonList("P /sdcard/"));
+        // The protect rule comes before the excludes: rsync uses the first rule that matches.
+        assertEquals("--filter=P /sdcard/", a.get(6));
+        assertEquals("--exclude-from=/c/ex.rsync", a.get(7));
+        assertEquals("--delete-excluded", a.get(8));
+        assertEquals("rsync://u@h:1/m/", a.get(9));
+        assertEquals("/dest", a.get(10));
     }
 }

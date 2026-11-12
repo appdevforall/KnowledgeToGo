@@ -14,6 +14,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
+import org.appdevforall.k2go.boxidentity.domain.CopyExcludes;
 import org.appdevforall.k2go.sync.domain.RsyncConfig;
 import org.appdevforall.k2go.sync.domain.RsyncOutcome;
 import org.appdevforall.k2go.sync.domain.RsyncProgress;
@@ -77,11 +79,16 @@ public class RsyncManager implements TransportEngine {
             secretStore = new SecretStore(cacheDir);
             File secretsFile = secretStore.writeServerSecrets(config.user, pass);
 
+            // K2GO-549: the share is the box root. A copy never carries its records. An exception
+            // here fails the start: no share without the list.
+            File excludes = CopyExcludeFiles.rsync(context);
+
             // PHASE 1 FIX: 'max connections = 3' protects the I/O bottleneck.
             // Config/argv assembly lives in the pure RsyncConfig domain (S14 step 1).
             String configContent = RsyncConfig.buildDaemonConf(
                     pidFile.getAbsolutePath(), lockFile.getAbsolutePath(), config.rsyncPort,
-                    config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath());
+                    config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath(),
+                    excludes.getAbsolutePath());
 
             writeTextToFile(configFile, configContent);
 
@@ -128,8 +135,10 @@ public class RsyncManager implements TransportEngine {
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
-                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.clientArgs(
-                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
+                // K2GO-549: also filter here, for a sender whose APK has no exclude list.
+                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.clientArgs(
+                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
+                        CopyExcludeFiles.rsync(context).getAbsolutePath(), CopyExcludes.rsyncProtectRules()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();
@@ -232,7 +241,8 @@ public class RsyncManager implements TransportEngine {
                         + (RsyncOutcome.isSuccess(exitCode) && exitCode != 0
                             ? " (non-zero treated as complete — see any [Rsync Output Error] lines above)" : ""));
                 if (isCancelled) {
-                    mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_cancelled)));
+                    // The cancel path already reset the screen (CloneFragment.onReceiveCancel).
+                    Log.i(TAG, "Rsync client stopped by the user");
                 } else {
                     switch (RsyncOutcome.classifyTransfer(exitCode)) {
                         case COMPLETE:
@@ -251,6 +261,12 @@ public class RsyncManager implements TransportEngine {
                 }
 
             } catch (Exception e) {
+                // A user Cancel closes the stream under the reader. The cancel path already reset
+                // the screen (CloneFragment.onReceiveCancel), so it is not an error.
+                if (isCancelled) {
+                    Log.i(TAG, "Rsync client stopped by the user");
+                    return;
+                }
                 Log.e(TAG, "Rsync Client Exception", e);
                 mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_fatal, e.getMessage())));
             }
@@ -284,8 +300,9 @@ public class RsyncManager implements TransportEngine {
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
-                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.dryRunArgs(
-                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
+                ProcessBuilder pb = new ProcessBuilder(RsyncConfig.withExcludes(RsyncConfig.dryRunArgs(
+                        rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir),
+                        CopyExcludeFiles.rsync(context).getAbsolutePath(), CopyExcludes.rsyncProtectRules()));
 
                 pb.redirectErrorStream(true);
                 rsyncProcess = pb.start();

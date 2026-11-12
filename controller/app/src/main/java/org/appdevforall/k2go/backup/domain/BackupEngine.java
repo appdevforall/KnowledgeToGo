@@ -17,12 +17,14 @@ package org.appdevforall.k2go.backup.domain;
 import android.content.Context;
 import android.util.Log;
 
+import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
 import org.appdevforall.k2go.deploy.domain.ExtractProgress;
 import org.appdevforall.k2go.system.domain.TransferRate;
 import org.appdevforall.k2go.util.ProcessRunner;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -87,7 +89,17 @@ public final class BackupEngine {
         // rootfs content, and are unreadable with the box stopped ("Cannot open: Permission denied"). Skipping
         // them keeps tar's exit honest (0) instead of failing the whole backup on a file that must not be in
         // it. The old "tar | gzip" pipe hit the same read error but gzip's exit=0 silently masked tar's exit=2.
+        // K2GO-549: a backup never carries the box records. GNU tar applies --anchored and
+        // --no-wildcards-match-slash only to the --exclude-from that follows them.
+        File excludes;
+        try {
+            excludes = CopyExcludeFiles.tar(ctx, "installed-rootfs/iiab/");
+        } catch (IOException e) {
+            Log.e(TAG, "backup: exclude list not written", e);
+            return false;
+        }
         String cmd = "'" + tarBin + "' -cf - --ignore-failed-read "
+                + "--anchored --no-wildcards-match-slash --exclude-from='" + excludes.getAbsolutePath() + "' "
                 + (manifestArg != null ? manifestArg : "")
                 + "-C '" + iiabRootDir.getAbsolutePath() + "' installed-rootfs";
 
