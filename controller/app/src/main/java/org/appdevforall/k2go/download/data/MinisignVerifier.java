@@ -1,17 +1,12 @@
 package org.appdevforall.k2go.download.data;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import org.bouncycastle.crypto.digests.Blake2bDigest;
 import org.bouncycastle.math.ec.rfc8032.Ed25519;
 
 /**
- * Verifies a minisign signature over a file (K2GO-554).
+ * Authenticates the trusted comment of a minisign signature (K2GO-554, ADR Amendment 1 A2).
  *
  * <p>minisign public key, base64 of 42 bytes: "Ed"(2) + keyId(8) + Ed25519 pubkey(32).
  *
@@ -22,9 +17,10 @@ import org.bouncycastle.math.ec.rfc8032.Ed25519;
  *   trusted comment: ...                           (authenticated, see global signature)
  *   &lt;base64 of 64 bytes&gt;  = Ed25519 global signature over ( signature(64) || trustedComment )
  * </pre>
- * sigAlg "ED" is the prehashed form: the signed message is the BLAKE2b-512 digest of the
- * file. This verifier accepts only "ED", so the digest is streamed and a multi-GB rootfs
- * never loads into memory (the reason BouncyCastle is used instead of a byte[]-only API).
+ * The app checks only the global signature: one Ed25519 verify, no read of the signed file. The
+ * trusted comment carries the manifest (sha-256 and size of the file), and the app binds the bytes
+ * with its own SHA-256 pass. The main signature (BLAKE2b over the whole file) is for
+ * {@code minisign -Vm} on a PC; on a phone with no hardware crypto it costs minutes.
  */
 public final class MinisignVerifier {
 
@@ -53,113 +49,42 @@ public final class MinisignVerifier {
     }
 
     /**
-     * @return true iff {@code minisigContent} is a valid prehashed minisign signature over
-     *         {@code file}, produced by {@code pub}.
+     * The trusted comment of {@code minisigContent} when its global signature verifies under the
+     * pinned key its key id names; otherwise null (no or malformed signature, unknown key id, legacy
+     * non-prehashed tag, bad signature). Never throws: any problem means "not trusted" (fail closed).
      */
-    public static boolean verify(File file, String minisigContent, PublicKey pub) throws IOException {
-        String[] lines = minisigContent.replace("\r\n", "\n").replace("\r", "\n").split("\n");
-        if (lines.length < 4) {
-            return false;
-        }
-
-        byte[] sigBlob = base64(lines[1].trim());
-        if (sigBlob.length != 74) {
-            return false;
-        }
-        // "ED" = prehashed BLAKE2b. We reject the legacy "Ed" form on purpose: only the
-        // prehashed form can be verified without loading the whole file into memory.
-        if (sigBlob[0] != 'E' || sigBlob[1] != 'D') {
-            return false;
-        }
-        if (!Arrays.equals(Arrays.copyOfRange(sigBlob, 2, 10), pub.keyId)) {
-            return false;
-        }
-        byte[] signature = Arrays.copyOfRange(sigBlob, 10, 74); // 64 bytes
-
-        String trustedComment = lines[2];
-        if (trustedComment.startsWith(TRUSTED_PREFIX)) {
-            trustedComment = trustedComment.substring(TRUSTED_PREFIX.length());
-        }
-        byte[] globalSig = base64(lines[3].trim());
-        if (globalSig.length != 64) {
-            return false;
-        }
-
-        // 1) main signature over the streamed BLAKE2b-512 of the file.
-        byte[] digest = blake2b512(file);
-        if (!Ed25519.verify(signature, 0, pub.key, 0, digest, 0, digest.length)) {
-            return false;
-        }
-
-        // 2) global signature binds the trusted comment to the signature.
-        byte[] tc = trustedComment.getBytes(StandardCharsets.UTF_8);
-        byte[] globalMsg = new byte[signature.length + tc.length];
-        System.arraycopy(signature, 0, globalMsg, 0, signature.length);
-        System.arraycopy(tc, 0, globalMsg, signature.length, tc.length);
-        return Ed25519.verify(globalSig, 0, pub.key, 0, globalMsg, 0, globalMsg.length);
-    }
-
-    /** The 8-byte key id a signature names, or null when the content is malformed. */
-    public static byte[] signatureKeyId(String minisigContent) {
+    public static String authenticatedComment(String minisigContent, TrustedSigningKeys keys) {
         try {
+            if (minisigContent == null) {
+                return null;
+            }
             String[] lines = minisigContent.replace("\r\n", "\n").replace("\r", "\n").split("\n");
-            if (lines.length < 2) {
+            if (lines.length < 4 || !lines[2].startsWith(TRUSTED_PREFIX)) {
                 return null;
             }
             byte[] sigBlob = base64(lines[1].trim());
-            if (sigBlob.length != 74) {
+            // "ED" = prehashed. The bake writes only this form; reject anything else.
+            if (sigBlob.length != 74 || sigBlob[0] != 'E' || sigBlob[1] != 'D') {
                 return null;
             }
-            return Arrays.copyOfRange(sigBlob, 2, 10);
+            PublicKey pub = keys.forKeyId(Arrays.copyOfRange(sigBlob, 2, 10));
+            if (pub == null) {
+                return null;            // unknown key id: not trusted (fail closed)
+            }
+            byte[] globalSig = base64(lines[3].trim());
+            if (globalSig.length != 64) {
+                return null;
+            }
+            String comment = lines[2].substring(TRUSTED_PREFIX.length());
+            byte[] tc = comment.getBytes(StandardCharsets.UTF_8);
+            byte[] globalMsg = new byte[64 + tc.length];
+            System.arraycopy(sigBlob, 10, globalMsg, 0, 64);
+            System.arraycopy(tc, 0, globalMsg, 64, tc.length);
+            return Ed25519.verify(globalSig, 0, pub.key, 0, globalMsg, 0, globalMsg.length)
+                    ? comment : null;
         } catch (RuntimeException e) {
             return null;
         }
-    }
-
-    /**
-     * Verify against the pinned key that the signature's key id names. Returns false (not
-     * trusted) when the key id is not pinned, so an unknown signer is never trusted.
-     */
-    public static boolean verifyTrusted(File file, String minisigContent, TrustedSigningKeys keys)
-            throws IOException {
-        byte[] keyId = signatureKeyId(minisigContent);
-        if (keyId == null) {
-            return false;
-        }
-        PublicKey pub = keys.forKeyId(keyId);
-        if (pub == null) {
-            return false;            // unknown key id: not trusted (K2GO-554 D9, fail closed)
-        }
-        return verify(file, minisigContent, pub);
-    }
-
-    /**
-     * The app's trust decision: true only when {@code file} carries a valid signature from a
-     * pinned key. Never throws. Any problem (no or malformed signature, unreadable file, unknown
-     * key, bad signature) means "not trusted", so the caller takes the full, slow path
-     * (K2GO-554 D9, fail closed).
-     */
-    public static boolean isTrusted(File file, String minisigContent, TrustedSigningKeys keys) {
-        try {
-            return minisigContent != null && verifyTrusted(file, minisigContent, keys);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /** Streaming BLAKE2b-512, so a multi-GB file never loads into memory. */
-    private static byte[] blake2b512(File file) throws IOException {
-        Blake2bDigest d = new Blake2bDigest(512);
-        byte[] buf = new byte[1 << 16];
-        try (InputStream in = new FileInputStream(file)) {
-            int n;
-            while ((n = in.read(buf)) > 0) {
-                d.update(buf, 0, n);
-            }
-        }
-        byte[] out = new byte[64];
-        d.doFinal(out, 0);
-        return out;
     }
 
     // BouncyCastle's Base64 works on the host JVM and on every Android API level (unlike

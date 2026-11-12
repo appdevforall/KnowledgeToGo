@@ -1,8 +1,8 @@
 package org.appdevforall.k2go.download.data;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -15,11 +15,12 @@ import org.bouncycastle.util.encoders.Base64;
 import org.junit.Test;
 
 /**
- * JVM unit tests for the minisign verifier and the pinned-key trust decision (K2GO-554).
+ * JVM unit tests for the minisign trusted-comment check and the pinned-key selection (K2GO-554,
+ * ADR Amendment 1 A2).
  *
  * <p>Vectors are generated in the test with BouncyCastle: an Ed25519 key and a prehashed ("ED")
- * minisign signature built exactly as minisign writes one. The test is therefore hermetic and
- * runs in CI with no external files.
+ * minisign signature built exactly as minisign writes one. The test is hermetic and runs in CI
+ * with no external files.
  */
 public class MinisignVerifierTest {
 
@@ -75,6 +76,9 @@ public class MinisignVerifierTest {
         }
     }
 
+    private static final String MANIFEST = "k2go-rootfs v1 file=x.tar.gz size=1 sha256="
+            + "0000000000000000000000000000000000000000000000000000000000000000";
+
     private static String b64(byte[] b) {
         return new String(Base64.encode(b), StandardCharsets.US_ASCII);
     }
@@ -95,74 +99,60 @@ public class MinisignVerifierTest {
         return f;
     }
 
-    // ---- the signature primitive -------------------------------------------------
+    private static String replaceLine(String minisig, int index, String line) {
+        String[] lines = minisig.split("\n");
+        lines[index] = line;
+        return String.join("\n", lines) + "\n";
+    }
 
     @Test
-    public void verifiesValidSignature() throws Exception {
+    public void authenticatesTheCommentOfAPinnedKey() throws Exception {
         Key k = new Key();
-        File f = tmp("hello rootfs");
-        String sig = k.sign(f, "built 2026.315");
-        assertTrue(MinisignVerifier.verify(f, sig, MinisignVerifier.PublicKey.parse(k.pubLine())));
+        String sig = k.sign(tmp("rootfs"), MANIFEST);
+        assertEquals(MANIFEST, MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.of(k.pubLine())));
     }
 
     @Test
-    public void rejectsTamperedFile() throws Exception {
+    public void rejectsACommentEditedAfterSigning() throws Exception {
         Key k = new Key();
-        File f = tmp("hello rootfs");
-        String sig = k.sign(f, "c");
-        Files.write(f.toPath(), "hxllo rootfs".getBytes(StandardCharsets.UTF_8));
-        assertFalse(MinisignVerifier.verify(f, sig, MinisignVerifier.PublicKey.parse(k.pubLine())));
+        String sig = k.sign(tmp("rootfs"), MANIFEST);
+        String edited = replaceLine(sig, 2, "trusted comment: " + MANIFEST.replace("size=1", "size=2"));
+        assertNull(MinisignVerifier.authenticatedComment(edited, TrustedSigningKeys.of(k.pubLine())));
     }
 
     @Test
-    public void rejectsWrongKey() throws Exception {
-        Key signer = new Key();
-        Key other = new Key();
-        File f = tmp("data");
-        String sig = signer.sign(f, "c");
-        assertFalse(MinisignVerifier.verify(f, sig, MinisignVerifier.PublicKey.parse(other.pubLine())));
-    }
-
-    @Test
-    public void rejectsLegacyNonPrehashedTag() throws Exception {
-        // minisign's legacy "Ed" form signs the whole file, not its BLAKE2b digest, and cannot be
-        // verified by streaming. The verifier must accept only the prehashed "ED" form.
-        Key k = new Key();
-        File f = tmp("data");
-        String[] lines = k.sign(f, "c").split("\n");
-        byte[] blob = Base64.decode(lines[1].trim());
-        blob[1] = 'd';                            // "ED" -> "Ed"
-        lines[1] = b64(blob);
-        String legacy = String.join("\n", lines) + "\n";
-        assertFalse(MinisignVerifier.verify(f, legacy, MinisignVerifier.PublicKey.parse(k.pubLine())));
-    }
-
-    // ---- the pinned-key trust decision -------------------------------------------
-
-    @Test
-    public void trustedWhenKeyPinned() throws Exception {
-        Key k = new Key();
-        TrustedSigningKeys keys = TrustedSigningKeys.of(k.pubLine());
-        File f = tmp("x");
-        assertTrue(MinisignVerifier.isTrusted(f, k.sign(f, "c"), keys));
-    }
-
-    @Test
-    public void notTrustedWhenKeyIdUnknown() throws Exception {
+    public void rejectsAnUnknownKeyId() throws Exception {
         Key signer = new Key(new byte[] {9, 9, 9, 9, 9, 9, 9, 9});
         Key pinned = new Key(new byte[] {1, 1, 1, 1, 1, 1, 1, 1});
-        TrustedSigningKeys keys = TrustedSigningKeys.of(pinned.pubLine());
-        File f = tmp("x");
-        // a perfectly valid signature, but from a key id we do not pin -> fail closed
-        assertFalse(MinisignVerifier.isTrusted(f, signer.sign(f, "c"), keys));
+        String sig = signer.sign(tmp("rootfs"), MANIFEST);
+        assertNull(MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.of(pinned.pubLine())));
     }
 
     @Test
-    public void notTrustedOnMalformedOrMissingSignature() throws Exception {
+    public void rejectsAnotherKeyThatReusesThePinnedKeyId() throws Exception {
+        // Same key id, different key material: the key id only selects the key, the signature decides.
+        Key signer = new Key();
+        Key pinned = new Key();
+        String sig = signer.sign(tmp("rootfs"), MANIFEST);
+        assertNull(MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.of(pinned.pubLine())));
+    }
+
+    @Test
+    public void rejectsTheLegacyNonPrehashedTag() throws Exception {
+        Key k = new Key();
+        String sig = k.sign(tmp("rootfs"), MANIFEST);
+        byte[] blob = Base64.decode(sig.split("\n")[1].trim());
+        blob[1] = 'd';                            // "ED" -> "Ed"
+        assertNull(MinisignVerifier.authenticatedComment(replaceLine(sig, 1, b64(blob)),
+                TrustedSigningKeys.of(k.pubLine())));
+    }
+
+    @Test
+    public void rejectsMalformedOrMissingSignatures() {
         TrustedSigningKeys keys = TrustedSigningKeys.of(new Key().pubLine());
-        File f = tmp("x");
-        assertFalse(MinisignVerifier.isTrusted(f, "not a minisig", keys));
-        assertFalse(MinisignVerifier.isTrusted(f, null, keys));
+        assertNull(MinisignVerifier.authenticatedComment(null, keys));
+        assertNull(MinisignVerifier.authenticatedComment("not a minisig", keys));
+        assertNull(MinisignVerifier.authenticatedComment("a\n!!notbase64!!\ntrusted comment: x\nb\n", keys));
     }
 
     @Test

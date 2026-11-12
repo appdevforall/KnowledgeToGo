@@ -27,6 +27,7 @@ import java.net.URL;
 import org.appdevforall.k2go.download.domain.MetalinkSplit;
 import org.appdevforall.k2go.download.domain.MetalinkFile;
 import org.appdevforall.k2go.download.domain.DownloadVerifier;
+import org.appdevforall.k2go.download.domain.RootfsManifest;
 import org.appdevforall.k2go.download.data.MinisignVerifier;
 import org.appdevforall.k2go.download.data.TrustedSigningKeys;
 import org.appdevforall.k2go.download.domain.ByteToken;
@@ -234,7 +235,8 @@ public class Aria2Manager {
                             // Fully downloaded and verified (no control file) -> skip download.
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
-                            final boolean trusted = checkSignature && isTrustedArtifact(existing, mf);
+                            // This branch runs only after DownloadVerifier returned OK above.
+                            final boolean trusted = checkSignature && signedManifestVouchesFor(mf, true);
                             mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
                             return;
                         } else if (len > mf.sizeBytes()) {
@@ -524,6 +526,7 @@ public class Aria2Manager {
                 // verify the artifact against the .meta4 <size> + file-level SHA-256
                 // before reporting success, so an incomplete/corrupt/stale file cannot
                 // reach extraction.
+                boolean bytesVerified = false;
                 if (mf != null && mf.canVerify()) {
                     File artifact = new File(downloadDir, mf.fileName());
                     DownloadVerifier.Result vr = DownloadVerifier.verify(artifact, mf.sizeBytes(), mf.sha256());
@@ -539,9 +542,9 @@ public class Aria2Manager {
                     }
                     pruneStaleSiblings(downloadDir, mf.fileName());
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
+                    bytesVerified = true;
                 }
-                final boolean trusted = checkSignature && mf != null && mf.canVerify()
-                        && isTrustedArtifact(new File(downloadDir, mf.fileName()), mf);
+                final boolean trusted = checkSignature && signedManifestVouchesFor(mf, bytesVerified);
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
 
             } catch (Exception e) {
@@ -628,22 +631,31 @@ public class Aria2Manager {
     }
 
     /**
-     * K2GO-554 D6: is this an OFFICIAL, SIGNED artifact we may fast-extract? True only when a detached
-     * minisign sidecar sits next to the downloaded tarball on a mirror AND verifies against a pinned key.
-     * Fail closed: a missing sidecar (404), a malformed or wrong signature, or any error returns false, so
-     * the caller keeps the full listing + extract. Signing is dormant until rollout (ADR BC4), so today
-     * every mirror 404s the sidecar and this is false everywhere: no behavior change until then.
+     * K2GO-554 (ADR Amendment 1, A2/A3): is this an OFFICIAL artifact we may fast-extract? True only when
+     * {@code bytesVerified} (DownloadVerifier returned OK against {@code mf}) and the {@code .minisig}
+     * next to the tarball carries a manifest, authenticated by a pinned key, that names this file, size
+     * and sha-256. The rule lives in {@link RootfsManifest#judge}. No second read of the file happens
+     * here. Fail closed: unverified bytes, no sidecar, a bad signature, no manifest, or a mismatch
+     * returns false, and the caller keeps the full path.
      */
-    private boolean isTrustedArtifact(File artifact, MetalinkFile mf) {
-        if (artifact == null || !artifact.isFile() || mf == null) return false;
+    private boolean signedManifestVouchesFor(MetalinkFile mf, boolean bytesVerified) {
+        if (mf == null) return false;
+        if (!bytesVerified) {
+            Log.i(TAG, "Signature check " + mf.fileName() + ": " + RootfsManifest.Verdict.BYTES_NOT_VERIFIED);
+            return false;
+        }
         for (String mirror : mf.mirrors()) {
             String sig = fetchText(mirror + ".minisig");
-            if (sig != null) {
-                // The sidecar exists on this mirror, so its verdict is final (a valid official artifact's
-                // signature verifies). Do not try other mirrors hoping for a different answer.
-                return MinisignVerifier.isTrusted(artifact, sig, TrustedSigningKeys.PRODUCTION);
-            }
+            if (sig == null) continue;
+            // The sidecar exists on this mirror, so its verdict is final. Do not try other mirrors
+            // hoping for a different answer.
+            RootfsManifest.Verdict v = RootfsManifest.judge(true,
+                    MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.PRODUCTION),
+                    mf.fileName(), mf.sizeBytes(), mf.sha256());
+            Log.i(TAG, "Signature check " + mf.fileName() + ": " + v);
+            return v == RootfsManifest.Verdict.TRUSTED;
         }
+        Log.i(TAG, "Signature check " + mf.fileName() + ": no .minisig");
         return false;
     }
 
