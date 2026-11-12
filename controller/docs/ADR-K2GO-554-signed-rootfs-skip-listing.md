@@ -1,6 +1,6 @@
 # ADR-K2GO-554 : Signed official rootfs skips the second archive pass
 
-- Status: Proposed
+- Status: Proposed (amended 2026-11-12, see Amendment 1)
 - Date: 2026-11-07
 - Ticket: K2GO-554 (relates to K2GO-555, K2GO-372, K2GO-511, K2GO-457, ADFA-5110)
 - Author: AppDevForAll
@@ -189,6 +189,91 @@ them, and a workflow change must never break the app from the commit before this
   belt. Code for both PRs may be written in parallel, but the signing workflow is
   ENABLED last.
 
+## Amendment 1 (2026-11-12): identity from a signed manifest, one hash pass
+
+### Goals
+
+The app must prove two facts, with the fewest full reads of the tarball, on a device
+with no hardware crypto:
+
+- Identity: the bytes are the bytes we signed, not a file with our names on it.
+- Integrity: the bytes arrived complete and unchanged.
+
+### Measurements
+
+Instrumented tests in the app process (same ART and BouncyCastle as production).
+
+| Device | SHA-256 (Conscrypt) | BLAKE2b-512 (BouncyCastle) | Ed25519 verify |
+|---|---|---|---|
+| Q8: Unisoc SC7731E, 4x Cortex-A7, 32-bit, no SHA2/AES extensions | 32-36 MiB/s | 3.4 MiB/s | 15.7 ms |
+| OnePlus 7T: arm64, SHA2 extensions | about 860 MiB/s | (not the limit) | 4.7 ms |
+
+- Time is linear in size (100 MiB and 250 MiB runs). Projection for the Q8 full
+  armeabi-v7a tarball (3788 MiB): BLAKE2b 19 min, SHA-256 1.8 min.
+- On the OnePlus 7T, the D5 verify over the 4 GB full tarball took 2 min 12 s with no
+  progress. The UI stayed at the last download percent. SHA-256 over the same file
+  took 3.4 s.
+- The D5 verify reads the whole `.gz` a second time, after DownloadVerifier already
+  read it for SHA-256. On a device with no hardware crypto, it is the slowest step
+  after the extraction.
+- aria2 1.37.0 with the app flags, against a local test server: a changed byte exits
+  1, a short file exits 8, and a corrupted piece on resume is detected and fetched
+  again (exit 0, correct bytes). aria2 does NOT compare the file-level hash: a forged
+  meta4 (correct file hash, piece hashes of a different file) exits 0 with the
+  different file. aria2 gives integrity per piece, not identity.
+
+### Decisions
+
+- A1. Manifest in the trusted comment (amends D1, D2). The signing step keeps one
+  `.minisig` per tarball and keeps `-H`. Its trusted comment becomes a manifest:
+  `k2go-rootfs v1 file=<tarball name> size=<gz bytes> sha256=<gz sha-256> meta4=<sha-256 of the dated .meta4>`.
+  The global signature authenticates the trusted comment, and that check does not read
+  the tarball. The main signature still covers the whole tarball, for
+  `minisign -Vm` on a PC. There is no new sidecar, so the PR1 lifecycle is unchanged.
+- A2. Identity check (amends D5). The app checks the key id and verifies the global
+  signature only (one Ed25519 verify). Then it parses the manifest strictly: exact
+  prefix and version, all required fields, size as digits, sha256 as 64 lowercase hex.
+  An unknown version or a missing field means "no manifest".
+- A3. Trusted download, one hash pass (amends D6). The download is trusted when the
+  manifest is authentic, its `file`, `size` and `sha256` equal the meta4 values, and
+  DownloadVerifier returns OK. DownloadVerifier is the existing SHA-256 pass
+  (ADFA-4676), so the trusted path adds one small fetch and one Ed25519 verify to
+  today's download. The device does not compute BLAKE2b.
+- A4. BitTorrent on the signed rootfs download: decision pending. The meta4 carries a
+  `<metaurl mediatype="torrent">`, and aria2 turns the download into a BitTorrent
+  session with the HTTP mirrors as web seeds. Pieces are then checked against the SHA-1
+  hashes of the unsigned `.torrent`, not the meta4 SHA-256 pieces. Measured on
+  2026-11-12: `--follow-torrent=false` does NOT disable this (it applies only to a
+  `.torrent` fetched over HTTP, not to a metalink metaurl). With the app hash pass of
+  A3 this is not an identity gap. To use only HTTP, the app must give aria2 a meta4
+  without the metaurl (the same local-meta4 handoff as A6), or the builder must stop
+  writing the metaurl. DHT and LPD were enabled in 2026-05 with no recorded reason.
+- A5. Trusted import (amends D7). An import needs the tarball and its `.minisig`
+  (2 files). Identity: A2. Integrity: one SHA-256 pass of the tarball against the
+  manifest `sha256` and `size`. Then the import skips the listing and the treehash.
+- A6. Deferred: zero hash passes on download. This is possible when the sha-256 of
+  the meta4 bytes equals the manifest `meta4`, the app gives aria2 that exact meta4 as
+  a local file (today aria2 fetches the meta4 URL again: `Aria2Manager.java:212` versus
+  `:372`), and BitTorrent is off (A4). aria2 then checks each piece against
+  authenticated hashes during the download, and the app checks only the size. This
+  removes the ADFA-4676 re-hash, so it needs its own tests first.
+- A7. No manifest means no fast path (amends D9). A `.minisig` without a manifest
+  (for example the 2026.316 dev artifacts) is not trusted on the device, and the full
+  path runs. There is no BLAKE2b fallback on the device: on a low-end phone it costs 7
+  to 19 minutes with no progress.
+
+### Transition
+
+| Files published | Old APK | New APK, download | New APK, import | Developer on a PC |
+|---|---|---|---|---|
+| tarball, no `.minisig` | today | full path | full path | `sha256sum -c` (integrity only) |
+| tarball + `.minisig`, no manifest | today | full path | full path | `minisign -Vm` |
+| tarball + `.minisig` with manifest | today (ignores `.minisig`) | trusted, one SHA-256 pass | trusted, one SHA-256 pass | `minisign -Vm`; the trusted comment shows the expected sha-256 |
+
+Order: (1) the app with A2 to A5 reaches all channels (BC4); (2) CI writes the
+manifest (only the `-t` value changes); (3) new bakes carry the manifest. An older
+`.minisig` without a manifest stays valid for `minisign -Vm`.
+
 ## Out of scope
 
 - Replacing the meta4 or the aria2 download path. The signature is additive.
@@ -208,6 +293,7 @@ them, and a workflow change must never break the app from the commit before this
   Streaming proven: a 1 GB file verifies under a 128 MB heap. Size: BouncyCastle is
   already a transitive dependency of the app, so the verify path adds about 0 MB. The
   Q8 timing of BLAKE2b over the full `.gz` is deferred (performance, not feasibility).
+  Measured on 2026-11-12: see Amendment 1.
 - PR1 (bake/CI): the signing key already exists (H and D3: secret
   `ROOTFS_MINISIGN_KEY_BASE64`, public key `controller/rootfs-signing.pub`). Add a
   dedicated signing step to the bake workflow that, after the build, runs the
