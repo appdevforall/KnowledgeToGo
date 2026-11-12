@@ -57,6 +57,10 @@ jobs:
           npm run typecheck
           npm test
 
+      - name: box-identity tests
+        working-directory: static/box-identity
+        run: python -m unittest -v test_k2go_box_identity
+
       # Fetch the real upstream maps role (the artifact the bake uses) and apply our in-flight
       # patches, so the contract test checks what will actually be baked, not a frozen fixture.
       # A patch that no longer applies (context drift) fails here, which is itself a useful signal.
