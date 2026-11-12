@@ -65,7 +65,9 @@ jobs:
             echo "::group::${generic}"
 
             # Resolve the "latest" symlink to the real versioned name (for the immutable record).
-            resolved="$(curl -fsSL -r 0-0 -o /dev/null -w '%{url_effective}' "${KIWIX_BASE}/${generic}" || true)"
+            # Bounded: a 1-byte range request, timed, so a slow mirror cannot hang the job here.
+            resolved="$(curl -fsSL -r 0-0 --max-time 60 --retry 3 --retry-all-errors \
+                          -o /dev/null -w '%{url_effective}' "${KIWIX_BASE}/${generic}" || true)"
             versioned="$(basename "${resolved:-}")"
             case "${versioned}" in
               *-[0-9]*.tar.gz) : ;;                                        # has a version, keep it
