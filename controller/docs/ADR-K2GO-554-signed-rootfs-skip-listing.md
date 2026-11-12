@@ -238,8 +238,13 @@ Instrumented tests in the app process (same ART and BouncyCastle as production).
   manifest is authentic, its `file`, `size` and `sha256` equal the meta4 values, and
   DownloadVerifier returns OK. DownloadVerifier is the existing SHA-256 pass
   (ADFA-4676), so the trusted path adds one small fetch and one Ed25519 verify to
-  today's download. The device does not compute BLAKE2b.
-- A4. BitTorrent on the signed rootfs download: decision pending. The meta4 carries a
+  today's download. The device does not compute BLAKE2b. The signed `file` must also
+  be the bake artifact name for the tier and ABI that the app requested
+  (`k2go_<yyyy.ddd>_<tier>_<sha>_<abi>.tar.gz`). Without this check, an unsigned meta4
+  could offer an official tarball of another ABI or tier, and the app would trust it
+  and skip the guards.
+- A4. BitTorrent on the signed rootfs download: kept as is (decided 2026-11-12). It is
+  resolved together with A6, which needs the same local-meta4 handoff. The meta4 carries a
   `<metaurl mediatype="torrent">`, and aria2 turns the download into a BitTorrent
   session with the HTTP mirrors as web seeds. Pieces are then checked against the SHA-1
   hashes of the unsigned `.torrent`, not the meta4 SHA-256 pieces. Measured on
