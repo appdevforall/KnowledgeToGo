@@ -1554,4 +1554,7 @@
     <string name="k2go_dash_update_failed_text">他のアプリを閉じてもう一度お試しください。繰り返し失敗する場合はお問い合わせください。</string>
     <string name="k2go_dash_update_retry">再試行</string>
     <string name="k2go_dash_update_open_dashboard">ダッシュボードを開く</string>
+    <string name="k2go_damaged_clone_title">コピーが中断されました</string>
+    <string name="k2go_damaged_clone_body">もう一方のスマートフォンからのコピーが完了前に止まったため、システムを起動できません。もう一度コピーするか、バックアップまたは新規インストールで復旧してください。</string>
+    <string name="k2go_damaged_clone_retry">コピーを再試行</string>
 </resources>

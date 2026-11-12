@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">Zárj be más alkalmazásokat, és próbáld újra. Ha továbbra is sikertelen, lépj kapcsolatba velünk.</string>
     <string name="k2go_dash_update_retry">Újra</string>
     <string name="k2go_dash_update_open_dashboard">Irányítópult megnyitása</string>
+    <string name="k2go_damaged_clone_title">A másolás megszakadt</string>
+    <string name="k2go_damaged_clone_body">A másik telefonról indított másolás a befejezés előtt leállt, és a rendszer nem tud elindulni. Próbálja újra a másolást, vagy állítsa helyre biztonsági mentésből vagy új telepítéssel.</string>
+    <string name="k2go_damaged_clone_retry">Másolás újra</string>
 </resources>

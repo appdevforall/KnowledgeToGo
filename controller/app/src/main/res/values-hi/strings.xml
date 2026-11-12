@@ -1630,4 +1630,7 @@
     <string name="k2go_dash_update_failed_text">दूसरे ऐप बंद करें और फिर से कोशिश करें. अगर यह बार-बार विफल हो, तो हमसे संपर्क करें.</string>
     <string name="k2go_dash_update_retry">फिर से कोशिश करें</string>
     <string name="k2go_dash_update_open_dashboard">डैशबोर्ड खोलें</string>
+    <string name="k2go_damaged_clone_title">कॉपी रुक गई</string>
+    <string name="k2go_damaged_clone_body">दूसरे फ़ोन से कॉपी पूरी होने से पहले रुक गई, और सिस्टम शुरू नहीं हो सकता। कॉपी फिर से आज़माएँ, या बैकअप या नए इंस्टॉल से रिकवर करें।</string>
+    <string name="k2go_damaged_clone_retry">कॉपी फिर से आज़माएँ</string>
 </resources>

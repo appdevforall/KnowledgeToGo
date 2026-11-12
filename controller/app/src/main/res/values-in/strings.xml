@@ -1560,4 +1560,7 @@
     <string name="k2go_dash_update_failed_text">Tutup aplikasi lain dan coba lagi. Jika terus gagal, hubungi kami.</string>
     <string name="k2go_dash_update_retry">Coba lagi</string>
     <string name="k2go_dash_update_open_dashboard">Buka dasbor</string>
+    <string name="k2go_damaged_clone_title">Penyalinan terputus</string>
+    <string name="k2go_damaged_clone_body">Penyalinan dari ponsel lain berhenti sebelum selesai, dan sistem tidak dapat dimulai. Coba salin lagi, atau pulihkan dengan cadangan atau instalasi baru.</string>
+    <string name="k2go_damaged_clone_retry">Coba salin lagi</string>
 </resources>

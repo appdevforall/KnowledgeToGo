@@ -1573,4 +1573,7 @@
     <string name="k2go_dash_update_failed_text">Digər tətbiqləri bağlayıb yenidən cəhd edin. Davamlı uğursuz olarsa, bizimlə əlaqə saxlayın.</string>
     <string name="k2go_dash_update_retry">Yenidən cəhd et</string>
     <string name="k2go_dash_update_open_dashboard">Paneli aç</string>
+    <string name="k2go_damaged_clone_title">Kopyalama dayandı</string>
+    <string name="k2go_damaged_clone_body">Digər telefondan kopyalama başa çatmadan dayandı və sistem işə düşə bilmir. Kopyalamanı yenidən cəhd edin və ya ehtiyat nüsxə, yaxud yeni quraşdırma ilə bərpa edin.</string>
+    <string name="k2go_damaged_clone_retry">Kopyalamanı təkrarla</string>
 </resources>

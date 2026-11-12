@@ -1573,4 +1573,7 @@
     <string name="k2go_dash_update_failed_text">Funga programu zingine na ujaribu tena. Ikiendelea kushindwa, wasiliana nasi.</string>
     <string name="k2go_dash_update_retry">Jaribu tena</string>
     <string name="k2go_dash_update_open_dashboard">Fungua dashibodi</string>
+    <string name="k2go_damaged_clone_title">Unakili umekatizwa</string>
+    <string name="k2go_damaged_clone_body">Unakili kutoka simu nyingine ulisimama kabla ya kumalizika, na mfumo hauwezi kuanza. Jaribu kunakili tena, au rejesha kwa nakala rudufu au usakinishaji mpya.</string>
+    <string name="k2go_damaged_clone_retry">Jaribu kunakili tena</string>
 </resources>

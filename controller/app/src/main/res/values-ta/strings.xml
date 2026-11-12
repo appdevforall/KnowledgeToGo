@@ -1573,4 +1573,7 @@
     <string name="k2go_dash_update_failed_text">மற்ற ஆப்ஸை மூடிவிட்டு மீண்டும் முயலுங்கள். தொடர்ந்து தோல்வியடைந்தால், எங்களைத் தொடர்பு கொள்ளுங்கள்.</string>
     <string name="k2go_dash_update_retry">மீண்டும் முயல்</string>
     <string name="k2go_dash_update_open_dashboard">டாஷ்போர்டைத் திற</string>
+    <string name="k2go_damaged_clone_title">நகலெடுப்பு தடைபட்டது</string>
+    <string name="k2go_damaged_clone_body">மற்ற தொலைபேசியிலிருந்து நகலெடுப்பு முடிவதற்கு முன் நின்றுவிட்டது, கணினியைத் தொடங்க முடியவில்லை. மீண்டும் நகலெடுக்க முயலவும், அல்லது காப்புப்பிரதி அல்லது புதிய நிறுவல் மூலம் மீட்டெடுக்கவும்.</string>
+    <string name="k2go_damaged_clone_retry">மீண்டும் நகலெடு</string>
 </resources>
