@@ -198,7 +198,10 @@ public class RsyncManager implements TransportEngine {
                         String finalFile = lastFile;
                         int finalPct = pct;
                         String finalEta = eta;
-                        mainHandler.post(() -> listener.onProgress(finalPct, progress.speed, finalEta, finalFile));
+                        // K2GO-562: a tick queued before stop() must not repaint a cancelled transfer.
+                        mainHandler.post(() -> {
+                            if (!isCancelled) listener.onProgress(finalPct, progress.speed, finalEta, finalFile);
+                        });
                     }
                     // PHASE 1 FIX: Strict match for actual rsync errors, ignoring files named "error"
                     //
