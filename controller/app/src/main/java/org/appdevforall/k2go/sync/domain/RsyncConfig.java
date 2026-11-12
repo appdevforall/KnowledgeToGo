@@ -32,6 +32,16 @@ public final class RsyncConfig {
     public static String buildDaemonConf(String pidPath, String lockPath, int port,
                                          String moduleName, String sharePath,
                                          String user, String secretsPath) {
+        return buildDaemonConf(pidPath, lockPath, port, moduleName, sharePath, user, secretsPath, null);
+    }
+
+    /**
+     * Same, plus a daemon-side exclude file (may be null). The daemon enforces it, so the
+     * receiver never gets those files, whatever its own options are.
+     */
+    public static String buildDaemonConf(String pidPath, String lockPath, int port,
+                                         String moduleName, String sharePath,
+                                         String user, String secretsPath, String excludeFromPath) {
         return "pid file = " + pidPath + "\n" +
                 "lock file = " + lockPath + "\n" +
                 "port = " + port + "\n" +
@@ -46,7 +56,8 @@ public final class RsyncConfig {
                 "timeout = 300\n" +
                 "max connections = 3\n" +
                 "auth users = " + user + "\n" +
-                "secrets file = " + secretsPath + "\n";
+                "secrets file = " + secretsPath + "\n" +
+                (excludeFromPath != null ? "exclude from = " + excludeFromPath + "\n" : "");
     }
 
     /** Builds the {@code rsync://user@host:port/module/} client URL. */
@@ -75,6 +86,24 @@ public final class RsyncConfig {
                 "--password-file=" + passFilePath,
                 remoteUrl,
                 destDir));
+    }
+
+    /**
+     * Adds a client-side exclude file to a pull argv ({@link #clientArgs} or {@link #dryRunArgs}).
+     * The client sends the rules to the sender, so a sender without its own list does not send
+     * those files either. --delete-excluded also removes them from the destination, except what
+     * a {@code protectRules} entry ("P /path/") keeps: those go first, as the first match wins.
+     */
+    public static List<String> withExcludes(List<String> pullArgs, String excludeFromPath,
+                                            List<String> protectRules) {
+        List<String> a = new ArrayList<>(pullArgs);
+        int src = a.size() - 2;   // the remote URL, then the destination
+        List<String> extra = new ArrayList<>();
+        for (String rule : protectRules) extra.add("--filter=" + rule);
+        extra.add("--exclude-from=" + excludeFromPath);
+        extra.add("--delete-excluded");
+        a.addAll(src, extra);
+        return a;
     }
 
     /** argv for the dry-run transfer-size estimate. */

@@ -1,0 +1,117 @@
+# Records that a box copy (Clone, Backup) does not carry (K2GO-549). One list for both.
+# Each line is a path or glob relative to the box root (installed-rootfs/iiab).
+# CopyExcludes anchors each line at the box root for rsync and for GNU tar.
+# Rules: "*" does not match "/". Never "**". Keep a dir that a service needs at start:
+# exclude its contents with "dir/*".
+# Database rows (sessions, peers, sync state) are removed on the receiver by k2go-box-identity.
+
+# Kolibri. Logs hold the superuser password, client IPs and User-Agents.
+library/kolibri/logs/*.txt
+library/kolibri/logs/archive/*
+library/kolibri/process_cache/*/cache.db*
+library/kolibri/server.pid
+library/kolibri/process_control.flag
+library/kolibri/*.sqlite3-shm
+
+# Calibre-Web
+var/log/calibre-web.log*
+usr/local/calibre-web-py3/access.log*
+usr/local/calibre-web-py3/calibre-web.log*
+library/calibre-web/xklb-metadata.db*
+var/log/xklb.log*
+library/downloads/calibre-web/*
+
+# Forgejo. Keep library/forgejo/log: pdsm appends to it.
+library/forgejo/log/*.log*
+library/forgejo/data/repositories/*/*.git/logs
+library/forgejo/backups/*.zip
+library/forgejo/data/actions_log/*
+library/forgejo/data/forgejo.db-shm
+
+# dash-node and maps. A copied job would restart the download of the other phone.
+library/dashboard/jobs.db
+library/dashboard/jobs.db-wal
+library/dashboard/jobs.db-shm
+library/dashboard/credentials.json.tmp-*
+var/log/dash-node.log*
+var/log/dash-rebuild.log*
+var/log/forgejo-seed.log*
+var/log/forgejo-refresh.log*
+var/log/code-addons-refresh.log*
+var/log/code-assets-refresh.log*
+library/downloads/maps/*
+library/www/maps/*.aria2
+library/www/maps/*.meta4
+
+# conex-core
+var/log/conex-core.log*
+library/.conex-staging/*
+
+# Web tier. Keep var/log/nginx: nginx does not start without it.
+var/log/nginx/*.log*
+var/log/php*-fpm.log*
+var/lib/php/sessions/sess_*
+var/log/uwsgi/app/*.log*
+var/lib/nginx/*/*
+library/working/*/*
+
+# System logs and mail
+var/log/apt/*
+var/log/dpkg.log*
+var/log/alternatives.log*
+var/log/fontconfig.log*
+var/log/exim4/*
+var/log/wtmp.*
+var/log/btmp.*
+var/log/journal/*
+var/log/runit/*/*
+var/mail/*
+var/spool/exim4/input/*
+var/spool/exim4/msglog/*
+var/spool/exim4/db/*
+opt/iiab/iiab/iiab-install.log
+opt/iiab/iiab/iiab-debug.log
+root/.local/state/pipx/log/*
+
+# Shell and tool history
+root/.bash_history
+root/.*_history
+root/.lesshst
+root/.viminfo
+root/.wget-hsts
+root/.local/share/nano/*
+root/.ssh/known_hosts*
+home/*/.bash_history
+home/*/.*_history
+home/*/.lesshst
+home/*/.viminfo
+home/*/.wget-hsts
+home/*/.local/share/nano/*
+home/*/.ssh/known_hosts*
+
+# Per-box state that the box makes again
+root/.cache/aria2/dht.dat
+root/.cache/aria2/dht6.dat
+var/lib/libuuid/clock.txt
+
+# Git reflogs. The clones stay.
+opt/*/.git/logs
+opt/*/.git/FETCH_HEAD
+opt/*/.git/ORIG_HEAD
+opt/iiab/*/.git/logs
+opt/iiab/*/.git/FETCH_HEAD
+opt/iiab/*/.git/ORIG_HEAD
+
+# Runtime state. A stale pid makes a service stop the wrong process or skip its start.
+run/*.pid
+run/*/*.pid
+run/k2go/*
+var/lib/sudo/lectured/*
+tmp/*
+var/tmp/*
+# Core dumps. Not a bare "core": that matches the Kolibri core package.
+core.[0-9]*
+hs_err_pid*.log
+var/lib/systemd/coredump/*
+var/lib/systemd/pstore/*
+# Mount points (sdcard) are in CopyExcludes.MOUNT_POINTS, not here.
