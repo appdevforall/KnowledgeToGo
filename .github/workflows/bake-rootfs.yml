@@ -265,8 +265,20 @@ jobs:
             if printf '%s\n' "$members" | grep -Eq '^/|(^|/)\.\.(/|$)'; then
               echo "FATAL: $tb has an unsafe member (absolute or ..); refusing to sign" >&2; exit 1
             fi
-            echo ">> sign $tb"
-            minisign -S -H -s "$KEY" -m "$tb" -t "k2go rootfs ${tb%.tar.gz}" </dev/null
+            # ADR Amendment 1 (A1): the trusted comment is a manifest that the app authenticates with
+            # the global signature alone, so the phone never hashes the tarball for identity. The
+            # sha-256 is recomputed here: a stale .sha256 or .meta4 fails the bake instead of shipping
+            # a manifest that the app rejects.
+            sha="$(sha256sum "$tb" | awk '{print $1}')"
+            [ "$sha" = "$(awk '{print $1}' "${tb}.sha256")" ] \
+              || { echo "FATAL: ${tb}.sha256 does not match $tb" >&2; exit 1; }
+            { [ -f "${tb}.meta4" ] && grep -q "$sha" "${tb}.meta4"; } \
+              || { echo "FATAL: ${tb}.meta4 is missing or does not carry the sha-256 of $tb" >&2; exit 1; }
+            manifest="k2go-rootfs v1 file=$tb size=$(stat -c%s "$tb") sha256=$sha meta4=$(sha256sum "${tb}.meta4" | awk '{print $1}')"
+            echo ">> sign $tb: $manifest"
+            minisign -S -H -s "$KEY" -m "$tb" -t "$manifest" </dev/null
+            [ "$(sed -n 3p "${tb}.minisig")" = "trusted comment: $manifest" ] \
+              || { echo "FATAL: ${tb}.minisig does not carry the manifest" >&2; exit 1; }
             # The app verifier accepts ONLY the prehashed form (algorithm tag "ED"); assert it here.
             tag="$(sed -n 2p "${tb}.minisig" | base64 -d 2>/dev/null | head -c2 || true)"
             [ "$tag" = "ED" ] || { echo "FATAL: ${tb}.minisig is not prehashed (tag '$tag', want ED)" >&2; exit 1; }

@@ -301,6 +301,18 @@ Enforces the ABI-separation policy + rootfs sanity at the two untrusted gates.
   `tools/rootfs-builder/iiab_tree_hash.py`), the in-app backup-writer emitting both members, and
   the arbitrary-file attack-vector analysis.
 
+**Slice (PR #760): signed rootfs trust (`org.appdevforall.k2go.download`)**
+K2GO-554: an official signed download skips the archive listing pass.
+
+- `domain/RootfsManifest` (pure JVM): strict parse of the manifest in the minisign
+  trusted comment, and `judge` = integrity (bytes passed the SHA-256 check) + identity
+  (authentic manifest names this file, size, sha-256) + the requested tier/ABI.
+  `deploy/domain/ExtractProgress.trustedStreamTotal` lifts the gzip ISIZE past 4 GiB.
+- `data/MinisignVerifier` checks only the global signature (no read of the tarball);
+  `data/TrustedSigningKeys` pins the public key.
+- **Legacy seam:** `Aria2Manager.signedManifestVouchesFor` (after DownloadVerifier) ->
+  `InstallService` -> `TarExtractor` trusted single pass. ADR-K2GO-554 (Amendment 1).
+
 **Legacy (NOT yet layered)**: the redesign retired the original god classes
 `MainActivity` and `DeployFragment` (they no longer exist; DONE-slice seams above
 that still name them are pre-redesign records). The current god-tier classes,

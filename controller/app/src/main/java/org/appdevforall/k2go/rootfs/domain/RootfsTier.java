@@ -1,5 +1,7 @@
 package org.appdevforall.k2go.rootfs.domain;
 
+import java.util.Locale;
+
 /**
  * The deployment tiers a rootfs image is published for.
  *
@@ -12,5 +14,10 @@ package org.appdevforall.k2go.rootfs.domain;
 public enum RootfsTier {
     BASIC,
     STANDARD,
-    FULL
+    FULL;
+
+    /** Server-side filename token for this tier (e.g. {@code basic} in {@code latest_basic_arm64-v8a.meta4}). */
+    public String id() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 }

@@ -175,4 +175,30 @@ public class ExtractProgressTest {
     @Test public void steppedNullLabelIsEmptyNotNullText() {
         assertEquals("[1/3] ", ExtractProgress.stepped(0, 3, null));
     }
+
+    // K2GO-554: gzip ISIZE is the stream size modulo 2^32; the published total fixes the wraps.
+    private static final long TWO_32 = 4294967296L;
+
+    @Test public void trustedStreamTotalKeepsIsizeBelowFourGiB() {
+        // standard armeabi-v7a: published 3,873,980,011, stream a few percent larger, no wrap.
+        assertEquals(3950000000L, ExtractProgress.trustedStreamTotal(3950000000L, 3873980011L));
+    }
+
+    @Test public void trustedStreamTotalLiftsAWrappedIsize() {
+        // full armeabi-v7a: published 6,104,910,154, stream 6.3 GB, ISIZE wrapped once.
+        long stream = 6300000000L;
+        assertEquals(stream, ExtractProgress.trustedStreamTotal(stream - TWO_32, 6104910154L));
+    }
+
+    @Test public void trustedStreamTotalLiftsAStreamJustAboveFourGiB() {
+        // standard arm64: published 4,054,192,780 (under 4 GiB), but tar headers push the stream over.
+        long stream = 4350000000L;
+        assertEquals(stream, ExtractProgress.trustedStreamTotal(stream - TWO_32, 4054192780L));
+    }
+
+    @Test public void trustedStreamTotalFallsBackWhenOneSideIsUnknown() {
+        assertEquals(6104910154L, ExtractProgress.trustedStreamTotal(-1L, 6104910154L));
+        assertEquals(2005032704L, ExtractProgress.trustedStreamTotal(2005032704L, 0L));
+        assertEquals(0L, ExtractProgress.trustedStreamTotal(-1L, 0L));
+    }
 }

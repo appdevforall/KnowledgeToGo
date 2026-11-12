@@ -27,6 +27,9 @@ import java.net.URL;
 import org.appdevforall.k2go.download.domain.MetalinkSplit;
 import org.appdevforall.k2go.download.domain.MetalinkFile;
 import org.appdevforall.k2go.download.domain.DownloadVerifier;
+import org.appdevforall.k2go.download.domain.RootfsManifest;
+import org.appdevforall.k2go.download.data.MinisignVerifier;
+import org.appdevforall.k2go.download.data.TrustedSigningKeys;
 import org.appdevforall.k2go.download.domain.ByteToken;
 import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.download.domain.Aria2ProgressLine;
@@ -34,6 +37,8 @@ import org.appdevforall.k2go.download.domain.Aria2ProgressLine;
 public class Aria2Manager {
 
     private static final String TAG = "IIAB-Aria2-Native";
+    /** K2GO-554: upper bound for a signature sidecar read; a minisig is about 300 bytes. */
+    private static final int SIDECAR_MAX_BYTES = 16 * 1024;
     /**
      * ADFA-4895: volatile for the same reason as the flag below, and it is the more important of
      * the two. It is assigned on the download thread and read by {@code stopDownload()} on the
@@ -108,6 +113,15 @@ public class Aria2Manager {
             onProgress(percentage, speed, eta);
         }
         void onComplete(String downloadPath);
+        /**
+         * K2GO-554 D6: the download completed AND {@code trusted} = it was verified against the .meta4
+         * and carries a signature from a pinned key. A default forwards to the single-arg form, so callers
+         * that do not care about trust are untouched; the install path overrides this to skip the listing
+         * pass on a trusted artifact.
+         */
+        default void onComplete(String downloadPath, boolean trusted) {
+            onComplete(downloadPath);
+        }
         void onError(String error);
 
         /**
@@ -146,6 +160,17 @@ public class Aria2Manager {
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
+        startDownload(context, url, null, listener);
+    }
+
+    /**
+     * K2GO-554: {@code signedTarget} non-null = after the integrity gate passes, also look for an
+     * official signed manifest for this tier and ABI next to the artifact, and report trust via
+     * {@link DownloadListener#onComplete(String, boolean)}. Only the rootfs install opts in; other
+     * downloads pass null, so they pay no sidecar lookups.
+     */
+    public void startDownload(Context context, String url, RootfsManifest.Target signedTarget,
+                              DownloadListener listener) {
         stopRequest = Stop.NONE;
         Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -213,7 +238,10 @@ public class Aria2Manager {
                             // Fully downloaded and verified (no control file) -> skip download.
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
-                            mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
+                            // This branch runs only after DownloadVerifier returned OK above.
+                            final boolean trusted = signedTarget != null
+                                    && signedManifestVouchesFor(mf, true, signedTarget);
+                            mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
                             return;
                         } else if (len > mf.sizeBytes()) {
                             // Larger than the declared size: no piece map can match it. Discard.
@@ -502,6 +530,7 @@ public class Aria2Manager {
                 // verify the artifact against the .meta4 <size> + file-level SHA-256
                 // before reporting success, so an incomplete/corrupt/stale file cannot
                 // reach extraction.
+                boolean bytesVerified = false;
                 if (mf != null && mf.canVerify()) {
                     File artifact = new File(downloadDir, mf.fileName());
                     DownloadVerifier.Result vr = DownloadVerifier.verify(artifact, mf.sizeBytes(), mf.sha256());
@@ -517,8 +546,11 @@ public class Aria2Manager {
                     }
                     pruneStaleSiblings(downloadDir, mf.fileName());
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
+                    bytesVerified = true;
                 }
-                mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
+                final boolean trusted = signedTarget != null
+                        && signedManifestVouchesFor(mf, bytesVerified, signedTarget);
+                mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
 
             } catch (Exception e) {
                 // The stream was closed by our own stop; a deliberate stop is not a fatal error,
@@ -597,6 +629,70 @@ public class Aria2Manager {
             }
         } catch (Exception e) {
             Log.w(TAG, "fetchMetalink fallback (" + e.getMessage() + ")");
+            return null;
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
+    /**
+     * K2GO-554 (ADR Amendment 1, A2/A3): is this an OFFICIAL artifact we may fast-extract? True only when
+     * {@code bytesVerified} (DownloadVerifier returned OK against {@code mf}) and the {@code .minisig}
+     * next to the tarball carries a manifest, authenticated by a pinned key, that names this file, size
+     * and sha-256 for the expected tier and ABI. The rule lives in {@link RootfsManifest#judge}. No
+     * second read of the file happens here. Fail closed: unverified bytes, no sidecar, a bad signature,
+     * no manifest, a mismatch, or another tier/ABI returns false, and the caller keeps the full path.
+     */
+    private boolean signedManifestVouchesFor(MetalinkFile mf, boolean bytesVerified,
+                                             RootfsManifest.Target expected) {
+        if (mf == null) return false;
+        if (!bytesVerified) {
+            Log.i(TAG, "Signature check " + mf.fileName() + ": " + RootfsManifest.Verdict.BYTES_NOT_VERIFIED);
+            return false;
+        }
+        for (String mirror : mf.mirrors()) {
+            String sig = fetchText(mirror + ".minisig");
+            if (sig == null) continue;
+            // The sidecar exists on this mirror, so its verdict is final. Do not try other mirrors
+            // hoping for a different answer.
+            RootfsManifest.Verdict v = RootfsManifest.judge(true,
+                    MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.PRODUCTION),
+                    mf.fileName(), mf.sizeBytes(), mf.sha256(), expected);
+            Log.i(TAG, "Signature check " + mf.fileName() + ": " + v);
+            return v == RootfsManifest.Verdict.TRUSTED;
+        }
+        Log.i(TAG, "Signature check " + mf.fileName() + ": no .minisig");
+        return false;
+    }
+
+    /**
+     * K2GO-554 D6: GET a small text sidecar (the .minisig, about 300 bytes), or null on any non-200,
+     * error, or a body above {@code SIDECAR_MAX_BYTES}. The mirror URL comes from the unsigned meta4,
+     * so the read is capped: a hostile host cannot stream an endless body into memory.
+     */
+    private String fetchText(String url) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.setRequestProperty("User-Agent", "K2Go");
+            if (conn.getResponseCode() != 200) {
+                return null;
+            }
+            try (InputStream in = conn.getInputStream()) {
+                java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                byte[] buf = new byte[4096];
+                int r;
+                while ((r = in.read(buf)) != -1) {
+                    bos.write(buf, 0, r);
+                    if (bos.size() > SIDECAR_MAX_BYTES) {
+                        return null;
+                    }
+                }
+                return new String(bos.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
+            }
+        } catch (Exception e) {
             return null;
         } finally {
             if (conn != null) conn.disconnect();
