@@ -191,6 +191,12 @@ public final class InstallService extends Service {
     private boolean reinstall;
     private boolean resetMode;
 
+    // K2GO-554 D6: the published uncompressed (installed) size for the tier+abi being downloaded,
+    // resolved once where the tier/abi are known (startRootfsDownload). onRootfsDownloaded injects it
+    // into the extractor only when the download is trusted (officially signed), so the extract can skip
+    // the second listing pass. 0 until resolved.
+    private long rootfsInstalledBytes = 0L;
+
     // ADFA-4476 slice 3: per-module install queue state (module mode only).
     private boolean moduleMode;
     private java.util.Deque<String> moduleQueue;
@@ -501,10 +507,15 @@ public final class InstallService extends Service {
                 "armeabi-v7a".equals(archSuffix)
                         ? org.appdevforall.k2go.rootfs.domain.RootfsAbi.ARMEABI_V7A
                         : org.appdevforall.k2go.rootfs.domain.RootfsAbi.ARM64_V8A;
-        String directUrl = new org.appdevforall.k2go.rootfs.data.RootfsCatalog(this).metaUrl(rTier, rAbi);
+        org.appdevforall.k2go.rootfs.data.RootfsCatalog catalog =
+                new org.appdevforall.k2go.rootfs.data.RootfsCatalog(this);
+        String directUrl = catalog.metaUrl(rTier, rAbi);
+        // K2GO-554 D6: resolve the published uncompressed total here, where the tier/abi are known, so
+        // onRootfsDownloaded can inject it when the download turns out to be trusted (signed).
+        rootfsInstalledBytes = catalog.installedBytes(rTier, rAbi);
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
-        aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
+        aria2Manager.startDownload(this, directUrl, true, new Aria2Manager.DownloadListener() {   // K2GO-554 D6: rootfs opts into signature trust
             @Override
             public void onProgress(int percentage, String speed, String eta) {
                 // Still live, and not a leftover: Aria2NetworkProfiler reports through this form
@@ -585,8 +596,13 @@ public final class InstallService extends Service {
 
             @Override
             public void onComplete(String downloadPath) {
+                onComplete(downloadPath, false);   // K2GO-554: a caller that does not report trust means untrusted
+            }
+
+            @Override
+            public void onComplete(String downloadPath, boolean trusted) {
                 if (cancelled) return;
-                onRootfsDownloaded(downloadPath);
+                onRootfsDownloaded(downloadPath, trusted);
             }
 
             @Override
@@ -635,7 +651,11 @@ public final class InstallService extends Service {
         });
     }
 
-    private void onRootfsDownloaded(String downloadPath) {
+    private void onRootfsDownloaded(String downloadPath, boolean trusted) {
+        // K2GO-554 D6: a trusted (officially signed) download skips the listing pass; the extract bar is
+        // then driven by feeder bytes against the published .installed total. 0 keeps the full slow path.
+        final long trustedTotal = (trusted && rootfsInstalledBytes > 0L) ? rootfsInstalledBytes : 0L;
+        final boolean singlePass = trustedTotal > 0L;
         // ADFA-5118: the archive-listing pass is now the determinate VERIFY phase of the unified bar.
         // Start indeterminate (-1) until the first byte lands; the gzip feeder then drives real % + ETA.
         InstallProgressRepository.get().postVerifying(-1, "", "");
@@ -654,6 +674,7 @@ public final class InstallService extends Service {
         // to stop tar, so the cleanup's rm -rf raced a process still writing the tree.
         extractor = new TarExtractor();
         extractor.startExtraction(this, downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(),
+                trustedTotal,
                 new TarExtractor.ExtractionListener() {
                     // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
                     // the member-count callback is only the fallback for a non-gzip archive.
@@ -669,7 +690,11 @@ public final class InstallService extends Service {
                     public void onExtractPhase(TarExtractor.Phase phase, int passPercent, long etaSeconds, String line) {
                         byteSeen = true;
                         boolean extract = phase == TarExtractor.Phase.EXTRACT;
-                        int unified = org.appdevforall.k2go.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
+                        // K2GO-554 D6: the trusted path runs a single extract pass (no verify listing), so it
+                        // owns the whole bar; the untrusted path keeps verify=[0,50) + extract=[50,100).
+                        int unified = singlePass
+                                ? org.appdevforall.k2go.deploy.domain.ExtractProgress.unifiedPercent(passPercent, 0, 1)
+                                : org.appdevforall.k2go.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
                         if (extract) {
                             int bucket = etaSmoother.smooth(
                                     org.appdevforall.k2go.install.domain.EtaSmoother.bucketOf(etaSeconds),

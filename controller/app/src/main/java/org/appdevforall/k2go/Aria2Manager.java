@@ -27,6 +27,8 @@ import java.net.URL;
 import org.appdevforall.k2go.download.domain.MetalinkSplit;
 import org.appdevforall.k2go.download.domain.MetalinkFile;
 import org.appdevforall.k2go.download.domain.DownloadVerifier;
+import org.appdevforall.k2go.download.data.MinisignVerifier;
+import org.appdevforall.k2go.download.data.TrustedSigningKeys;
 import org.appdevforall.k2go.download.domain.ByteToken;
 import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.download.domain.Aria2ProgressLine;
@@ -108,6 +110,15 @@ public class Aria2Manager {
             onProgress(percentage, speed, eta);
         }
         void onComplete(String downloadPath);
+        /**
+         * K2GO-554 D6: the download completed AND {@code trusted} = it was verified against the .meta4
+         * and carries a signature from a pinned key. A default forwards to the single-arg form, so callers
+         * that do not care about trust are untouched; the install path overrides this to skip the listing
+         * pass on a trusted artifact.
+         */
+        default void onComplete(String downloadPath, boolean trusted) {
+            onComplete(downloadPath);
+        }
         void onError(String error);
 
         /**
@@ -146,6 +157,16 @@ public class Aria2Manager {
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
+        startDownload(context, url, false, listener);
+    }
+
+    /**
+     * K2GO-554 D6: {@code checkSignature} = after the integrity gate passes, also look for an official
+     * minisign sidecar next to the artifact and report trust via {@link
+     * DownloadListener#onComplete(String, boolean)}. Only the rootfs install opts in; other downloads
+     * leave it false, so they pay no sidecar lookups.
+     */
+    public void startDownload(Context context, String url, boolean checkSignature, DownloadListener listener) {
         stopRequest = Stop.NONE;
         Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -213,7 +234,8 @@ public class Aria2Manager {
                             // Fully downloaded and verified (no control file) -> skip download.
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
-                            mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
+                            final boolean trusted = checkSignature && isTrustedArtifact(existing, mf);
+                            mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
                             return;
                         } else if (len > mf.sizeBytes()) {
                             // Larger than the declared size: no piece map can match it. Discard.
@@ -518,7 +540,9 @@ public class Aria2Manager {
                     pruneStaleSiblings(downloadDir, mf.fileName());
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
                 }
-                mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
+                final boolean trusted = checkSignature && mf != null && mf.canVerify()
+                        && isTrustedArtifact(new File(downloadDir, mf.fileName()), mf);
+                mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
 
             } catch (Exception e) {
                 // The stream was closed by our own stop; a deliberate stop is not a fatal error,
@@ -597,6 +621,53 @@ public class Aria2Manager {
             }
         } catch (Exception e) {
             Log.w(TAG, "fetchMetalink fallback (" + e.getMessage() + ")");
+            return null;
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
+    /**
+     * K2GO-554 D6: is this an OFFICIAL, SIGNED artifact we may fast-extract? True only when a detached
+     * minisign sidecar sits next to the downloaded tarball on a mirror AND verifies against a pinned key.
+     * Fail closed: a missing sidecar (404), a malformed or wrong signature, or any error returns false, so
+     * the caller keeps the full listing + extract. Signing is dormant until rollout (ADR BC4), so today
+     * every mirror 404s the sidecar and this is false everywhere: no behavior change until then.
+     */
+    private boolean isTrustedArtifact(File artifact, MetalinkFile mf) {
+        if (artifact == null || !artifact.isFile() || mf == null) return false;
+        for (String mirror : mf.mirrors()) {
+            String sig = fetchText(mirror + ".minisig");
+            if (sig != null) {
+                // The sidecar exists on this mirror, so its verdict is final (a valid official artifact's
+                // signature verifies). Do not try other mirrors hoping for a different answer.
+                return MinisignVerifier.isTrusted(artifact, sig, TrustedSigningKeys.PRODUCTION);
+            }
+        }
+        return false;
+    }
+
+    /** K2GO-554 D6: GET a small text sidecar (the .minisig), or null on any non-200 / error. */
+    private String fetchText(String url) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.setRequestProperty("User-Agent", "K2Go");
+            if (conn.getResponseCode() != 200) {
+                return null;
+            }
+            try (InputStream in = conn.getInputStream()) {
+                java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                byte[] buf = new byte[4096];
+                int r;
+                while ((r = in.read(buf)) != -1) {
+                    bos.write(buf, 0, r);
+                }
+                return new String(bos.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
+            }
+        } catch (Exception e) {
             return null;
         } finally {
             if (conn != null) conn.disconnect();

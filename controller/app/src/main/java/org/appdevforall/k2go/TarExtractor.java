@@ -140,7 +140,19 @@ public class TarExtractor {
      *        archive to look like a rootfs of THIS app's architecture before extracting.
      */
     public void startExtraction(Context context, String archivePath, String destDir, boolean validateRootfs, ExtractionListener listener) {
-        startExtraction(context, archivePath, destDir, validateRootfs, null, null, null, listener);
+        startExtraction(context, archivePath, destDir, validateRootfs, null, null, null, 0L, listener);
+    }
+
+    /**
+     * K2GO-554 D6: the install path for an OFFICIAL, SIGNED download. A {@code trustedTotalBytes}
+     * above 0 means the caller verified the tarball signature against a pinned key, so this skips the
+     * listing pass (the bake gate already checked traversal before signing) and drives the extract bar
+     * by uncompressed bytes fed to tar against that published total (K2GO-554 D8). A value of 0 takes
+     * the full, untrusted path. This path never validates the rootfs ABI, which is import/restore only.
+     */
+    public void startExtraction(Context context, String archivePath, String destDir,
+                                long trustedTotalBytes, ExtractionListener listener) {
+        startExtraction(context, archivePath, destDir, false, null, null, null, trustedTotalBytes, listener);
     }
 
     /**
@@ -162,8 +174,10 @@ public class TarExtractor {
                                 java.util.concurrent.atomic.AtomicBoolean cancelledBeforeExtract,
                                 java.util.concurrent.atomic.AtomicBoolean pauseAtBoundary,
                                 java.util.concurrent.atomic.AtomicBoolean forceCancelDuringExtract,
+                                long trustedTotalBytes,
                                 ExtractionListener listener) {
         if (isExtracting) return;
+        final boolean trusted = trustedTotalBytes > 0L;
 
         new Thread(() -> {
             isExtracting = true;
@@ -198,46 +212,67 @@ public class TarExtractor {
                 // it: this is the fail-closed gate every caller shares (import, install, restore), it
                 // judges the artifact actually about to be extracted, and both delegate to the one rule
                 // in RootfsIdentity. Deleting either does not make the other cover it.
-                if (validateRootfs) {
-                    org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result early =
-                            org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.identityRejection(
-                                    org.appdevforall.k2go.deploy.data.RootfsManifest.read(archivePath));
-                    String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
-                            .rejectionMessage(context, early);
-                    if (why != null) {
-                        throw new Exception(why);
+                // K2GO-554 D6: a trusted (officially signed, pre-verified) download skips the listing
+                // pass. The bake gate already ran the path-traversal check on this exact tarball before
+                // it was signed, and the install path never validates ABI, so the on-device listing would
+                // only pay a second full gzip decompression for nothing. The denominator is the published
+                // .installed total the caller passed in; the extract bar is driven by feeder bytes (D8).
+                final Listing listing;
+                final long totalMembers;
+                final long totalBytes;
+                final boolean byteMode;
+                if (trusted) {
+                    listing = null;
+                    totalMembers = 0L;
+                    // K2GO-554 D8: the honest denominator is the uncompressed-stream size, which is exactly
+                    // what the feeder reads out of the gzip. Read it from the gzip ISIZE trailer (no
+                    // decompression). Fall back to the published .installed total (du of the tree, a few
+                    // percent smaller, so the bar would clamp at 99 early) only if the trailer is unreadable.
+                    long isize = isGzip ? gzipUncompressedSize(archivePath) : -1L;
+                    totalBytes = (isize > 0L) ? isize : trustedTotalBytes;
+                    byteMode = true;
+                } else {
+                    if (validateRootfs) {
+                        org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result early =
+                                org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.identityRejection(
+                                        org.appdevforall.k2go.deploy.data.RootfsManifest.read(archivePath));
+                        String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
+                                .rejectionMessage(context, early);
+                        if (why != null) {
+                            throw new Exception(why);
+                        }
+                    }
+
+                    listing = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
+                    for (String entry : listing.paths) {
+                        if (ArchiveEntry.escapesRoot(entry)) {
+                            throw new Exception("Unsafe archive entry (path traversal): " + entry);
+                        }
+                    }
+
+                    // ADFA-4915 / K2GO-555: the extraction denominator, from the one listing pass (no extra
+                    // tar pass). totalBytes (uncompressed) weights progress by real work; totalMembers is the
+                    // fallback when the listing yields no sizes, so the bar can never stall at zero.
+                    totalMembers = listing.paths.size();
+                    totalBytes = listing.totalBytes;
+                    byteMode = totalBytes > 0L;
+
+                    // For untrusted imports/restores: it must be a valid rootfs of THIS
+                    // app's architecture (ABI policy: 32<->32, 64<->64). Reuses the
+                    // listing above. Fail closed before extracting.
+                    if (validateRootfs) {
+                        org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr =
+                                org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
+                                        .validateWithEntries(context, archivePath, isGzip, tarBinary, listing.paths);
+                        String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
+                                .rejectionMessage(context, vr);
+                        if (why != null) {
+                            throw new Exception(why);
+                        }
                     }
                 }
-
-                Listing listing = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
-                for (String entry : listing.paths) {
-                    if (ArchiveEntry.escapesRoot(entry)) {
-                        throw new Exception("Unsafe archive entry (path traversal): " + entry);
-                    }
-                }
-
-                // ADFA-4915 / K2GO-555: the extraction denominator, from the one listing pass (no extra
-                // tar pass). totalBytes (uncompressed) weights progress by real work; totalMembers is the
-                // fallback when the listing yields no sizes, so the bar can never stall at zero.
-                final long totalMembers = listing.paths.size();
-                final long totalBytes = listing.totalBytes;
-                final boolean byteMode = totalBytes > 0L;
                 final long[] doneMembers = {0L};
                 final long[] doneBytes = {0L};
-
-                // For untrusted imports/restores: it must be a valid rootfs of THIS
-                // app's architecture (ABI policy: 32<->32, 64<->64). Reuses the
-                // listing above. Fail closed before extracting.
-                if (validateRootfs) {
-                    org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result vr =
-                            org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
-                                    .validateWithEntries(context, archivePath, isGzip, tarBinary, listing.paths);
-                    String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
-                            .rejectionMessage(context, vr);
-                    if (why != null) {
-                        throw new Exception(why);
-                    }
-                }
 
                 // K2GO-384: the point of no return. Verify and every fail-closed check have passed and
                 // nothing has been written yet. A cancel confirmed during verify (or in the tiny window at
@@ -277,9 +312,15 @@ public class TarExtractor {
                 // reader thread below (tar -v emits one line per member as it lands on disk). extractStartMs
                 // is the pass clock that thread uses for the rate/ETA.
                 final long extractStartMs = SystemClock.elapsedRealtime();
-                // K2GO-555: the EXTRACT rate is a trailing window, not the cumulative average. The reader
-                // thread is the only writer, so this instance needs no synchronization.
+                // K2GO-555: the EXTRACT rate is a trailing window, not the cumulative average. Exactly one
+                // thread samples it per run: the reader thread on the untrusted path, the gzip feeder on
+                // the trusted path (K2GO-554 D8), never both at once, so it needs no synchronization.
                 final WindowedRate extractRate = new WindowedRate(EXTRACT_RATE_WINDOW_MS);
+                // K2GO-554 D8: the member tar is writing right now, set by the reader thread and read by
+                // the feeder (a different thread) so the trusted-path bar can still name the file (the
+                // trusted path has no listing). AtomicReference for cross-thread visibility of the label.
+                final java.util.concurrent.atomic.AtomicReference<String> lastMember =
+                        new java.util.concurrent.atomic.AtomicReference<>("");
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     long[] lastLog = {0L};
@@ -297,25 +338,30 @@ public class TarExtractor {
                                 Log.d(TAG, "Tar Output: " + line);
                             }
                             doneMembers[0]++;   // ADFA-4915: ~one verbose line per member (stray stderr lines just push toward the 99% clamp)
-                            // K2GO-555: weight the EXTRACT bar + ETA by uncompressed bytes written, not
-                            // member count. tar -v names each member as it lands on disk; look its size up
-                            // from the listing and accumulate. An unknown line (stray/stderr) adds 0 bytes,
-                            // so there is no index drift. Members vary hugely in size, so the file-count ETA
-                            // climbed to absurd values mid-extract; bytes track the real work.
-                            Long sz = listing.sizeByPath.get(line);
-                            if (sz != null) doneBytes[0] += sz;
-                            if (now - lastEmit[0] >= 50) {
-                                lastEmit[0] = now;
-                                final String l = line;
-                                final long d = byteMode ? doneBytes[0] : doneMembers[0];
-                                final long tot = byteMode ? totalBytes : totalMembers;
-                                final int pct = ExtractProgress.percent(d, tot);
-                                final long rate = extractRate.sample(d, SystemClock.elapsedRealtime() - extractStartMs);
-                                uiHandler.post(() -> {
-                                    listener.onProgress(l);
-                                    listener.onProgress(pct, d, tot, l);
-                                });
-                                emitPhase(listener, uiHandler, Phase.EXTRACT, d, tot, rate, l);
+                            lastMember.set(line);   // K2GO-554 D8: the feeder reads this to name the file on the trusted path
+                            // K2GO-554 D6: on the trusted path there is no listing, so the reader only drains
+                            // tar output (keeping the diagnostic tail) and the feeder owns the bar below.
+                            if (!trusted) {
+                                // K2GO-555: weight the EXTRACT bar + ETA by uncompressed bytes written, not
+                                // member count. tar -v names each member as it lands on disk; look its size up
+                                // from the listing and accumulate. An unknown line (stray/stderr) adds 0 bytes,
+                                // so there is no index drift. Members vary hugely in size, so the file-count ETA
+                                // climbed to absurd values mid-extract; bytes track the real work.
+                                Long sz = listing.sizeByPath.get(line);
+                                if (sz != null) doneBytes[0] += sz;
+                                if (now - lastEmit[0] >= 50) {
+                                    lastEmit[0] = now;
+                                    final String l = line;
+                                    final long d = byteMode ? doneBytes[0] : doneMembers[0];
+                                    final long tot = byteMode ? totalBytes : totalMembers;
+                                    final int pct = ExtractProgress.percent(d, tot);
+                                    final long rate = extractRate.sample(d, SystemClock.elapsedRealtime() - extractStartMs);
+                                    uiHandler.post(() -> {
+                                        listener.onProgress(l);
+                                        listener.onProgress(pct, d, tot, l);
+                                    });
+                                    emitPhase(listener, uiHandler, Phase.EXTRACT, d, tot, rate, l);
+                                }
                             }
                         }
                     } catch (Exception ignored) {
@@ -341,6 +387,7 @@ public class TarExtractor {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
+                        long lastFeedEmit = 0L;   // K2GO-554 D8: throttle for the trusted-path feeder-byte emit
                         while ((bytesRead = gis.read(buffer)) != -1) {
                             // K2GO-384 (ADR-5343c): force-cancel DURING extract (acknowledged destructive).
                             // Reads its OWN token, never cancelledBeforeExtract -- a safe-zone abort must not be
@@ -355,6 +402,19 @@ public class TarExtractor {
                             try {
                                 tarInput.write(buffer, 0, bytesRead);
                                 totalWritten += bytesRead;
+                                // K2GO-554 D8: on the trusted path there is no listing to weight the bar by
+                                // member, so drive it by uncompressed bytes fed to tar. OS pipe backpressure
+                                // (~64 KB) keeps the feeder within a pipe-buffer of tar's real consumption,
+                                // so this tracks disk progress without saturating early.
+                                if (trusted) {
+                                    long now = SystemClock.elapsedRealtime();
+                                    if (now - lastFeedEmit >= 50L) {
+                                        lastFeedEmit = now;
+                                        final long rate = extractRate.sample(totalWritten, now - extractStartMs);
+                                        emitPhase(listener, uiHandler, Phase.EXTRACT,
+                                                totalWritten, totalBytes, rate, lastMember.get());
+                                    }
+                                }
                             } catch (java.io.IOException pipe) {
                                 // ADFA-4544: tar (the pipe reader) closed its stdin early -> it
                                 // failed or was killed. Don't report a generic decompression error;
@@ -441,6 +501,28 @@ public class TarExtractor {
         final long eta = ExtractProgress.etaSeconds(done, total, ratePerSec);
         final String l = line == null ? "" : line;
         uiHandler.post(() -> listener.onExtractPhase(phase, pct, eta, l));
+    }
+
+    /**
+     * K2GO-554 D8: the uncompressed size a single-stream gzip stores in its last 4 bytes (ISIZE,
+     * RFC 1952, little-endian, modulo 2^32). It is exactly the number of bytes the feeder reads out of
+     * the gzip, so it is the honest denominator for the trusted byte bar: no decompression, no tar
+     * header/padding drift. The rootfs is one gzip stream well under 4 GB, so ISIZE is exact. Returns
+     * -1 when the trailer cannot be read.
+     */
+    private static long gzipUncompressedSize(String path) {
+        try (java.io.RandomAccessFile f = new java.io.RandomAccessFile(path, "r")) {
+            long len = f.length();
+            if (len < 18L) {
+                return -1L;   // smaller than a gzip header + trailer
+            }
+            f.seek(len - 4L);
+            byte[] b = new byte[4];
+            f.readFully(b);
+            return (b[0] & 0xFFL) | ((b[1] & 0xFFL) << 8) | ((b[2] & 0xFFL) << 16) | ((b[3] & 0xFFL) << 24);
+        } catch (Exception e) {
+            return -1L;
+        }
     }
 
     /**

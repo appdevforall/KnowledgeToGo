@@ -447,7 +447,7 @@ public final class DeepOpService extends Service {
                 .stepped(VERIFY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_checking)), 0);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
-                cancelBeforeExtract, pauseRequested, forceExtractCancel,
+                cancelBeforeExtract, pauseRequested, forceExtractCancel, 0L,   // K2GO-554: untrusted import, full listing
                 new TarExtractor.ExtractionListener() {
                     @Override public void onComplete(String destDir) { passRunning = false; main.post(() -> endRestore(path, true, null)); }
                     @Override public void onError(String error) {
