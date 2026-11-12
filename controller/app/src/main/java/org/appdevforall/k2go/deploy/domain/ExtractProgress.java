@@ -51,9 +51,11 @@ public final class ExtractProgress {
     /**
      * K2GO-554: the uncompressed size of a trusted gzip stream, for the single-pass byte bar. The gzip
      * ISIZE trailer is that size modulo 2^32, which is exact below 4 GiB but wraps for larger rootfs
-     * (every full tier). The published installed total ({@code .installed}, the du of the tree) is a
-     * few percent below the stream size, so it fixes the multiple of 2^32 while ISIZE keeps the exact
-     * low bits. Returns the published total when ISIZE is unknown, and ISIZE when there is no total.
+     * (every full tier). The installed total the caller passes (today the bundled rootfs_sizes.csv
+     * snapshot of the {@code .installed} sidecars, the du of the tree) is a few percent below the
+     * stream size, so it fixes the multiple of 2^32 while ISIZE keeps the exact low bits. It only has
+     * to be within about 2 GiB of the real size. Returns the installed total when ISIZE is unknown,
+     * and ISIZE when there is no total.
      *
      * @param gzipIsize      the ISIZE trailer, or a negative value when unreadable.
      * @param publishedTotal the published installed size, or 0 when unknown.
