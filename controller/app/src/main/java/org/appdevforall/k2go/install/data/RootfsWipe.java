@@ -27,8 +27,12 @@ public final class RootfsWipe {
      * extract still gives a complete tree.
      */
     public static boolean wipe(File rootfs, String reason) {
+        String path = rootfs.getAbsolutePath();
         try {
-            ProcessRunner.Result r = ProcessRunner.run(new String[]{"rm", "-rf", rootfs.getAbsolutePath()});
+            if (ProcessRunner.run(new String[]{"rm", "-rf", path}).isSuccess()) return true;
+            // rm cannot unlink entries of a read-only directory; the app owns the tree, so open it up.
+            ProcessRunner.run(new String[]{"chmod", "-R", "u+rwx", path});
+            ProcessRunner.Result r = ProcessRunner.run(new String[]{"rm", "-rf", path});
             if (r.isSuccess()) return true;
             Log.w(TAG, "rm -rf rootfs (" + reason + ") failed (exit " + r.exitCode + "): " + r.output);
         } catch (Exception e) {
