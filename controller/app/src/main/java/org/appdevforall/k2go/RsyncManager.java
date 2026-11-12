@@ -241,7 +241,8 @@ public class RsyncManager implements TransportEngine {
                         + (RsyncOutcome.isSuccess(exitCode) && exitCode != 0
                             ? " (non-zero treated as complete — see any [Rsync Output Error] lines above)" : ""));
                 if (isCancelled) {
-                    mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_cancelled)));
+                    // The cancel path already reset the screen (CloneFragment.onReceiveCancel).
+                    Log.i(TAG, "Rsync client stopped by the user");
                 } else {
                     switch (RsyncOutcome.classifyTransfer(exitCode)) {
                         case COMPLETE:
