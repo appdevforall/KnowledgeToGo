@@ -1,6 +1,6 @@
 # ADR-K2GO-554 : Signed official rootfs skips the second archive pass
 
-- Status: Proposed (amended 2026-11-12, see Amendment 1)
+- Status: Accepted (2026-11-12, with Amendment 1)
 - Date: 2026-11-07
 - Ticket: K2GO-554 (relates to K2GO-555, K2GO-372, K2GO-511, K2GO-457, ADFA-5110)
 - Author: AppDevForAll
