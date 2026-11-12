@@ -74,11 +74,7 @@ public final class InstallGuard {
      * takes it over. Re-planting within the same launch is a no-op in effect (same token).
      */
     public static void begin(Context ctx) {
-        try (FileWriter w = new FileWriter(marker(ctx), false)) {
-            w.write(ProcessSession.ID);
-        } catch (IOException ignored) {
-            // Best-effort: if we can't write the marker, behaviour degrades to the old in-memory guard.
-        }
+        write(ctx, ProcessSession.ID);
     }
 
     public static void end(Context ctx) {

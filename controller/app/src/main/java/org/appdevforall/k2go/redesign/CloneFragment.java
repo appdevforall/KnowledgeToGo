@@ -1403,7 +1403,9 @@ public class CloneFragment extends Fragment {
         Context termCtx = getContext();
         if (termCtx != null) {
             cloneLockHeld = true;   // EnvironmentLock.release() is idempotent and self-heals a stale file
-            cloneGuardHeld = org.appdevforall.k2go.InstallGuard.isLive(termCtx);   // ADFA-5343 (Phase 5a): our own live marker, this process
+            cloneGuardHeld = org.appdevforall.k2go.InstallGuard.isLive(termCtx)   // ADFA-5343 (Phase 5a): our own live marker, this process
+                    // K2GO-562: a Cancel that lost the race to the last byte already marked the copy damaged.
+                    || (ok && org.appdevforall.k2go.InstallGuard.isCloneDamaged(termCtx));
         }
         releaseCloneEnv(ok);   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
