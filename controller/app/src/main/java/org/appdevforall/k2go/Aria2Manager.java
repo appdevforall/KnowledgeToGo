@@ -37,6 +37,8 @@ import org.appdevforall.k2go.download.domain.Aria2ProgressLine;
 public class Aria2Manager {
 
     private static final String TAG = "IIAB-Aria2-Native";
+    /** K2GO-554: upper bound for a signature sidecar read; a minisig is about 300 bytes. */
+    private static final int SIDECAR_MAX_BYTES = 16 * 1024;
     /**
      * ADFA-4895: volatile for the same reason as the flag below, and it is the more important of
      * the two. It is assigned on the download thread and read by {@code stopDownload()} on the
@@ -663,7 +665,11 @@ public class Aria2Manager {
         return false;
     }
 
-    /** K2GO-554 D6: GET a small text sidecar (the .minisig), or null on any non-200 / error. */
+    /**
+     * K2GO-554 D6: GET a small text sidecar (the .minisig, about 300 bytes), or null on any non-200,
+     * error, or a body above {@code SIDECAR_MAX_BYTES}. The mirror URL comes from the unsigned meta4,
+     * so the read is capped: a hostile host cannot stream an endless body into memory.
+     */
     private String fetchText(String url) {
         HttpURLConnection conn = null;
         try {
@@ -680,6 +686,9 @@ public class Aria2Manager {
                 int r;
                 while ((r = in.read(buf)) != -1) {
                     bos.write(buf, 0, r);
+                    if (bos.size() > SIDECAR_MAX_BYTES) {
+                        return null;
+                    }
                 }
                 return new String(bos.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
             }

@@ -655,7 +655,8 @@ public final class InstallService extends Service {
 
     private void onRootfsDownloaded(String downloadPath, boolean trusted) {
         // K2GO-554 D6: a trusted (officially signed) download skips the listing pass; the extract bar is
-        // then driven by feeder bytes against the published .installed total. 0 keeps the full slow path.
+        // then driven by feeder bytes against the uncompressed stream size, which the extractor derives
+        // from the gzip trailer and this published total. 0 keeps the full slow path.
         final long trustedTotal = (trusted && rootfsInstalledBytes > 0L) ? rootfsInstalledBytes : 0L;
         final boolean singlePass = trustedTotal > 0L;
         // ADFA-5118: the archive-listing pass is now the determinate VERIFY phase of the unified bar.

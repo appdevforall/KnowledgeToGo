@@ -323,8 +323,8 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.github.MuntashirAkon:libadb-android:3.1.1'
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
-    // K2GO-554 spike: minisign (Ed25519 + BLAKE2b-512) signature verification of the rootfs
-    // tarball. BC lightweight crypto streams BLAKE2b so a multi-GB .gz never loads into memory.
+    // K2GO-554: Ed25519 check of the minisign signature on the rootfs manifest (lightweight API only,
+    // R8 strips the rest). Already a transitive dependency; declared because the app uses it directly.
     // jdk15to18 variant for Android (no multi-release jar).
     implementation 'org.bouncycastle:bcprov-jdk15to18:1.78.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

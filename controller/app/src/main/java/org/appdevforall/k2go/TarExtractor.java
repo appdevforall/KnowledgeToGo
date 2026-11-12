@@ -145,10 +145,10 @@ public class TarExtractor {
 
     /**
      * K2GO-554 D6: the install path for an OFFICIAL, SIGNED download. A {@code trustedTotalBytes}
-     * above 0 means the caller verified the tarball signature against a pinned key, so this skips the
-     * listing pass (the bake gate already checked traversal before signing) and drives the extract bar
-     * by uncompressed bytes fed to tar against that published total (K2GO-554 D8). A value of 0 takes
-     * the full, untrusted path. This path never validates the rootfs ABI, which is import/restore only.
+     * above 0 (the published installed size) means the caller verified the tarball against its signed
+     * manifest, so a gzip archive skips the listing pass (the bake gate already checked traversal
+     * before signing) and the extract bar runs on the uncompressed bytes fed to tar (K2GO-554 D8). A
+     * value of 0, or a non-gzip archive, takes the full, untrusted path.
      */
     public void startExtraction(Context context, String archivePath, String destDir,
                                 long trustedTotalBytes, ExtractionListener listener) {
@@ -177,7 +177,6 @@ public class TarExtractor {
                                 long trustedTotalBytes,
                                 ExtractionListener listener) {
         if (isExtracting) return;
-        final boolean trusted = trustedTotalBytes > 0L;
 
         new Thread(() -> {
             isExtracting = true;
@@ -196,6 +195,10 @@ public class TarExtractor {
                 Log.d(TAG, "Using tar binary: " + tarBinary);
 
                 boolean isGzip = archivePath.toLowerCase().endsWith(".gz");
+                // K2GO-554 D6: trust skips the listing only on the gzip path, where the feeder drives the
+                // bar, and never when the caller asked for rootfs validation, which needs the listing.
+                // Any other combination takes the full path (fail closed).
+                final boolean trusted = trustedTotalBytes > 0L && isGzip && !validateRootfs;
 
                 // D11: refuse path-traversal. List the archive members first and
                 // bail out (without extracting anything) if any member is absolute
@@ -215,8 +218,8 @@ public class TarExtractor {
                 // K2GO-554 D6: a trusted (officially signed, pre-verified) download skips the listing
                 // pass. The bake gate already ran the path-traversal check on this exact tarball before
                 // it was signed, and the install path never validates ABI, so the on-device listing would
-                // only pay a second full gzip decompression for nothing. The denominator is the published
-                // .installed total the caller passed in; the extract bar is driven by feeder bytes (D8).
+                // only pay a second full gzip decompression for nothing. The extract bar is driven by the
+                // feeder bytes (D8) against the uncompressed stream size.
                 final Listing listing;
                 final long totalMembers;
                 final long totalBytes;
@@ -225,11 +228,11 @@ public class TarExtractor {
                     listing = null;
                     totalMembers = 0L;
                     // K2GO-554 D8: the honest denominator is the uncompressed-stream size, which is exactly
-                    // what the feeder reads out of the gzip. Read it from the gzip ISIZE trailer (no
-                    // decompression). Fall back to the published .installed total (du of the tree, a few
-                    // percent smaller, so the bar would clamp at 99 early) only if the trailer is unreadable.
-                    long isize = isGzip ? gzipUncompressedSize(archivePath) : -1L;
-                    totalBytes = (isize > 0L) ? isize : trustedTotalBytes;
+                    // what the feeder reads out of the gzip. The ISIZE trailer gives it without
+                    // decompression, but modulo 2^32; the published total fixes the wraps (full tiers
+                    // are above 4 GiB).
+                    totalBytes = ExtractProgress.trustedStreamTotal(
+                            gzipUncompressedSize(archivePath), trustedTotalBytes);
                     byteMode = true;
                 } else {
                     if (validateRootfs) {
@@ -505,10 +508,9 @@ public class TarExtractor {
 
     /**
      * K2GO-554 D8: the uncompressed size a single-stream gzip stores in its last 4 bytes (ISIZE,
-     * RFC 1952, little-endian, modulo 2^32). It is exactly the number of bytes the feeder reads out of
-     * the gzip, so it is the honest denominator for the trusted byte bar: no decompression, no tar
-     * header/padding drift. The rootfs is one gzip stream well under 4 GB, so ISIZE is exact. Returns
-     * -1 when the trailer cannot be read.
+     * RFC 1952, little-endian, MODULO 2^32). Below 4 GiB it is exactly the number of bytes the feeder
+     * reads out of the gzip; above, it wraps, so callers lift it with
+     * {@link ExtractProgress#trustedStreamTotal}. Returns -1 when the trailer cannot be read.
      */
     private static long gzipUncompressedSize(String path) {
         try (java.io.RandomAccessFile f = new java.io.RandomAccessFile(path, "r")) {

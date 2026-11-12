@@ -49,6 +49,23 @@ public final class ExtractProgress {
     }
 
     /**
+     * K2GO-554: the uncompressed size of a trusted gzip stream, for the single-pass byte bar. The gzip
+     * ISIZE trailer is that size modulo 2^32, which is exact below 4 GiB but wraps for larger rootfs
+     * (every full tier). The published installed total ({@code .installed}, the du of the tree) is a
+     * few percent below the stream size, so it fixes the multiple of 2^32 while ISIZE keeps the exact
+     * low bits. Returns the published total when ISIZE is unknown, and ISIZE when there is no total.
+     *
+     * @param gzipIsize      the ISIZE trailer, or a negative value when unreadable.
+     * @param publishedTotal the published installed size, or 0 when unknown.
+     */
+    public static long trustedStreamTotal(long gzipIsize, long publishedTotal) {
+        if (gzipIsize < 0L) return Math.max(publishedTotal, 0L);
+        if (publishedTotal <= 0L) return gzipIsize;
+        long wraps = Math.round((publishedTotal - gzipIsize) / 4294967296.0);
+        return gzipIsize + Math.max(wraps, 0L) * 4294967296L;
+    }
+
+    /**
      * ADFA-5118: map a single pass's percent onto the unified two-pass bar — the shape the rootfs
      * install runs. Verify owns [0,50), extract owns [50,100). The result is capped at 99 so only
      * true completion (set by the caller) reaches 100, which keeps the bar monotone across the
