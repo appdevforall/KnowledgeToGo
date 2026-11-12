@@ -158,16 +158,17 @@ public class Aria2Manager {
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
-        startDownload(context, url, false, listener);
+        startDownload(context, url, null, listener);
     }
 
     /**
-     * K2GO-554 D6: {@code checkSignature} = after the integrity gate passes, also look for an official
-     * minisign sidecar next to the artifact and report trust via {@link
-     * DownloadListener#onComplete(String, boolean)}. Only the rootfs install opts in; other downloads
-     * leave it false, so they pay no sidecar lookups.
+     * K2GO-554: {@code signedTarget} non-null = after the integrity gate passes, also look for an
+     * official signed manifest for this tier and ABI next to the artifact, and report trust via
+     * {@link DownloadListener#onComplete(String, boolean)}. Only the rootfs install opts in; other
+     * downloads pass null, so they pay no sidecar lookups.
      */
-    public void startDownload(Context context, String url, boolean checkSignature, DownloadListener listener) {
+    public void startDownload(Context context, String url, RootfsManifest.Target signedTarget,
+                              DownloadListener listener) {
         stopRequest = Stop.NONE;
         Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -236,7 +237,8 @@ public class Aria2Manager {
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
                             // This branch runs only after DownloadVerifier returned OK above.
-                            final boolean trusted = checkSignature && signedManifestVouchesFor(mf, true);
+                            final boolean trusted = signedTarget != null
+                                    && signedManifestVouchesFor(mf, true, signedTarget);
                             mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
                             return;
                         } else if (len > mf.sizeBytes()) {
@@ -544,7 +546,8 @@ public class Aria2Manager {
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
                     bytesVerified = true;
                 }
-                final boolean trusted = checkSignature && signedManifestVouchesFor(mf, bytesVerified);
+                final boolean trusted = signedTarget != null
+                        && signedManifestVouchesFor(mf, bytesVerified, signedTarget);
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
 
             } catch (Exception e) {
@@ -634,11 +637,12 @@ public class Aria2Manager {
      * K2GO-554 (ADR Amendment 1, A2/A3): is this an OFFICIAL artifact we may fast-extract? True only when
      * {@code bytesVerified} (DownloadVerifier returned OK against {@code mf}) and the {@code .minisig}
      * next to the tarball carries a manifest, authenticated by a pinned key, that names this file, size
-     * and sha-256. The rule lives in {@link RootfsManifest#judge}. No second read of the file happens
-     * here. Fail closed: unverified bytes, no sidecar, a bad signature, no manifest, or a mismatch
-     * returns false, and the caller keeps the full path.
+     * and sha-256 for the expected tier and ABI. The rule lives in {@link RootfsManifest#judge}. No
+     * second read of the file happens here. Fail closed: unverified bytes, no sidecar, a bad signature,
+     * no manifest, a mismatch, or another tier/ABI returns false, and the caller keeps the full path.
      */
-    private boolean signedManifestVouchesFor(MetalinkFile mf, boolean bytesVerified) {
+    private boolean signedManifestVouchesFor(MetalinkFile mf, boolean bytesVerified,
+                                             RootfsManifest.Target expected) {
         if (mf == null) return false;
         if (!bytesVerified) {
             Log.i(TAG, "Signature check " + mf.fileName() + ": " + RootfsManifest.Verdict.BYTES_NOT_VERIFIED);
@@ -651,7 +655,7 @@ public class Aria2Manager {
             // hoping for a different answer.
             RootfsManifest.Verdict v = RootfsManifest.judge(true,
                     MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.PRODUCTION),
-                    mf.fileName(), mf.sizeBytes(), mf.sha256());
+                    mf.fileName(), mf.sizeBytes(), mf.sha256(), expected);
             Log.i(TAG, "Signature check " + mf.fileName() + ": " + v);
             return v == RootfsManifest.Verdict.TRUSTED;
         }

@@ -515,7 +515,9 @@ public final class InstallService extends Service {
         rootfsInstalledBytes = catalog.installedBytes(rTier, rAbi);
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
-        aria2Manager.startDownload(this, directUrl, true, new Aria2Manager.DownloadListener() {   // K2GO-554 D6: rootfs opts into signature trust
+        aria2Manager.startDownload(this, directUrl,   // K2GO-554: rootfs opts into signature trust for this tier/ABI
+                new org.appdevforall.k2go.download.domain.RootfsManifest.Target(rTier.id(), rAbi.id()),
+                new Aria2Manager.DownloadListener() {
             @Override
             public void onProgress(int percentage, String speed, String eta) {
                 // Still live, and not a leftover: Aria2NetworkProfiler reports through this form

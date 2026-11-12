@@ -65,20 +65,45 @@ public class RootfsManifestTest {
         assertNull(RootfsManifest.parse(GOOD + " size=1"));
     }
 
+    private static final RootfsManifest.Target BASIC_ARM64 = new RootfsManifest.Target("basic", "arm64-v8a");
+
     @Test
-    public void judgeNeedsBothIntegrityAndIdentity() {
+    public void judgeNeedsIntegrityIdentityAndTheRequestedTarget() {
         assertEquals(RootfsManifest.Verdict.TRUSTED,
-                RootfsManifest.judge(true, GOOD, NAME, 1589997791L, SHA));
+                RootfsManifest.judge(true, GOOD, NAME, 1589997791L, SHA, BASIC_ARM64));
         assertEquals("authentic manifest, but nobody hashed the bytes",
                 RootfsManifest.Verdict.BYTES_NOT_VERIFIED,
-                RootfsManifest.judge(false, GOOD, NAME, 1589997791L, SHA));
+                RootfsManifest.judge(false, GOOD, NAME, 1589997791L, SHA, BASIC_ARM64));
         assertEquals(RootfsManifest.Verdict.NOT_AUTHENTIC,
-                RootfsManifest.judge(true, null, NAME, 1589997791L, SHA));
+                RootfsManifest.judge(true, null, NAME, 1589997791L, SHA, BASIC_ARM64));
         assertEquals(RootfsManifest.Verdict.NO_MANIFEST,
-                RootfsManifest.judge(true, "k2go rootfs k2go_2026.316_basic_7dbe02c_arm64-v8a", NAME, 1589997791L, SHA));
-        assertEquals("an official manifest for another artifact",
+                RootfsManifest.judge(true, "k2go rootfs k2go_2026.316_basic_7dbe02c_arm64-v8a",
+                        NAME, 1589997791L, SHA, BASIC_ARM64));
+        assertEquals("an official manifest for another artifact than the meta4 names",
                 RootfsManifest.Verdict.MISMATCH,
-                RootfsManifest.judge(true, GOOD, NAME.replace("basic", "full"), 1589997791L, SHA));
+                RootfsManifest.judge(true, GOOD, NAME.replace("basic", "full"), 1589997791L, SHA, BASIC_ARM64));
+        assertEquals("an official arm64 tarball offered to a device that asked for armeabi-v7a",
+                RootfsManifest.Verdict.WRONG_TARGET,
+                RootfsManifest.judge(true, GOOD, NAME, 1589997791L, SHA,
+                        new RootfsManifest.Target("basic", "armeabi-v7a")));
+        assertEquals("an official basic tarball offered for a full install",
+                RootfsManifest.Verdict.WRONG_TARGET,
+                RootfsManifest.judge(true, GOOD, NAME, 1589997791L, SHA,
+                        new RootfsManifest.Target("full", "arm64-v8a")));
+        assertEquals("no target means not trusted",
+                RootfsManifest.Verdict.WRONG_TARGET,
+                RootfsManifest.judge(true, GOOD, NAME, 1589997791L, SHA, null));
+    }
+
+    @Test
+    public void isForMatchesOnlyTheBakeArtifactName() {
+        RootfsManifest m = RootfsManifest.parse(GOOD);
+        assertTrue(m.isFor(BASIC_ARM64));
+        assertFalse(m.isFor(new RootfsManifest.Target("basic", "arm64-v8")));
+        assertFalse(m.isFor(new RootfsManifest.Target("bas", "arm64-v8a")));
+        assertFalse(m.isFor(new RootfsManifest.Target(".*", ".*")));
+        assertFalse(RootfsManifest.parse(GOOD.replace("file=" + NAME, "file=other_basic_arm64-v8a.tar.gz"))
+                .isFor(BASIC_ARM64));
     }
 
     @Test

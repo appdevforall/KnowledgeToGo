@@ -126,13 +126,13 @@ public class RootfsCatalog {
     /** Builds the Metalink URL, e.g. {@code .../latest_basic_arm64-v8a.meta4} (dev_latest_* when the
      *  dev-channel marker is set). */
     public String metaUrl(RootfsTier tier, RootfsAbi abi) {
-        return BASE_URL + pointerPrefix() + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".meta4";
+        return BASE_URL + pointerPrefix() + tier.id() + "_" + abi.id() + ".meta4";
     }
 
     /** Sidecar URL for the UNCOMPRESSED size (ADFA-5110), e.g. {@code .../latest_full_arm64-v8a.installed}
      *  (dev_latest_* when the dev-channel marker is set) : a single integer, bytes. */
     public String installedUrl(RootfsTier tier, RootfsAbi abi) {
-        return BASE_URL + pointerPrefix() + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".installed";
+        return BASE_URL + pointerPrefix() + tier.id() + "_" + abi.id() + ".installed";
     }
 
     /**

@@ -3,6 +3,7 @@ package org.appdevforall.k2go.download.domain;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * The manifest the bake writes into the minisign trusted comment of a rootfs tarball
@@ -63,23 +64,46 @@ public final class RootfsManifest {
     }
 
     /** The outcome of the trust decision for one downloaded artifact. */
-    public enum Verdict { TRUSTED, BYTES_NOT_VERIFIED, NOT_AUTHENTIC, NO_MANIFEST, MISMATCH }
+    public enum Verdict { TRUSTED, BYTES_NOT_VERIFIED, NOT_AUTHENTIC, NO_MANIFEST, MISMATCH, WRONG_TARGET }
+
+    /** The tier and ABI the app asked for, as the server filename tokens (e.g. "full", "armeabi-v7a"). */
+    public static final class Target {
+        public final String tier;
+        public final String abi;
+
+        public Target(String tier, String abi) {
+            this.tier = tier;
+            this.abi = abi;
+        }
+    }
 
     /**
-     * The trust decision (ADR Amendment 1, A3). TRUSTED needs both halves: integrity (the bytes
-     * passed the SHA-256 check against {@code sha256Hex}, reported by the caller as
-     * {@code bytesVerified}) and identity (an authenticated manifest that names this exact file,
-     * size and sha-256).
+     * The trust decision (ADR Amendment 1, A3). TRUSTED needs integrity (the bytes passed the
+     * SHA-256 check against {@code sha256Hex}, reported as {@code bytesVerified}) and identity (an
+     * authenticated manifest that names this exact file, size and sha-256, for the tier and ABI the
+     * app asked for). The target check stops an official tarball of another ABI or tier, offered by
+     * an unsigned meta4, from being trusted.
      *
      * @param authenticatedComment the trusted comment after its signature verified, or null
      */
     public static Verdict judge(boolean bytesVerified, String authenticatedComment,
-                                String fileName, long sizeBytes, String sha256Hex) {
+                                String fileName, long sizeBytes, String sha256Hex, Target expected) {
         if (!bytesVerified) return Verdict.BYTES_NOT_VERIFIED;
         if (authenticatedComment == null) return Verdict.NOT_AUTHENTIC;
         RootfsManifest m = parse(authenticatedComment);
         if (m == null) return Verdict.NO_MANIFEST;
-        return m.vouchesFor(fileName, sizeBytes, sha256Hex) ? Verdict.TRUSTED : Verdict.MISMATCH;
+        if (!m.vouchesFor(fileName, sizeBytes, sha256Hex)) return Verdict.MISMATCH;
+        return m.isFor(expected) ? Verdict.TRUSTED : Verdict.WRONG_TARGET;
+    }
+
+    /**
+     * True when the signed file name is the bake artifact for this tier and ABI:
+     * {@code k2go_<yyyy.ddd>_<tier>_<sha>_<abi>.tar.gz} (tools/rootfs-builder/build-iiab-rootfs.sh).
+     */
+    public boolean isFor(Target expected) {
+        return expected != null && expected.tier != null && expected.abi != null
+                && file.matches("k2go_[0-9]{4}\\.[0-9]{3}_" + Pattern.quote(expected.tier)
+                        + "_[0-9a-f]+_" + Pattern.quote(expected.abi) + "\\.tar\\.gz");
     }
 
     /** True when this manifest names exactly this artifact (file name, size and sha-256). */
