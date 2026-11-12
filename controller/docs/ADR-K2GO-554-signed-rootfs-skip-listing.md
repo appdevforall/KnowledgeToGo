@@ -210,6 +210,15 @@ Instrumented tests in the app process (same ART and BouncyCastle as production).
 
 - Time is linear in size (100 MiB and 250 MiB runs). Projection for the Q8 full
   armeabi-v7a tarball (3788 MiB): BLAKE2b 19 min, SHA-256 1.8 min.
+- The SHA-256 rates in the table read files that are still in the page cache. On a
+  real Q8 install the tarball is larger than RAM and is read from storage: SHA-256
+  ran at 11.9 MiB/s (3 min 10 s for the 2.26 GB standard tarball).
+- End to end with Amendment 1, OnePlus 7T, dev full arm64 (4.0 GB): the trust check
+  took 0.16 s (2 min 12 s with the D5 BLAKE2b verify), and the time from download end
+  to extraction done fell from 4 min 46 s to 2 min 31 s.
+- End to end with Amendment 1, Q8, dev standard armeabi-v7a (2.26 GB): the trust
+  check took 1.3 s, mostly the `.minisig` fetch on a slow link. No listing ran. The
+  remaining verify cost is the existing SHA-256 pass, which A6 would remove.
 - On the OnePlus 7T, the D5 verify over the 4 GB full tarball took 2 min 12 s with no
   progress. The UI stayed at the last download percent. SHA-256 over the same file
   took 3.4 s.
