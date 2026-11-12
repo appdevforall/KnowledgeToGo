@@ -1,0 +1,117 @@
+# Mirror upstream build dependencies to the K2Go R2 bucket, so the rootfs bake never
+# depends on a slow or flaky upstream host at build time (K2GO-563).
+#
+# Why: the arm64 basic bake leg once stalled fetching kiwix-tools from download.kiwix.org
+# (curl rc=92, "retry time exceeded"), which failed the whole run. kiwix.org has been
+# unreliable. This job keeps a known-good copy on R2 under a stable, version-agnostic name
+# that the kiwix role reads (see patch 0005-kiwix-tools-r2-mirror.patch).
+#
+# Layout on R2 (bucket k2go-rootfs, served from https://pub-d64c885cef6c42db8c7925144d73d0ee.r2.dev):
+#   upstream/<project>/<project-element>/<content>
+#   e.g. upstream/kiwix/kiwix-tools/kiwix-tools_linux-aarch64.tar.gz          (generic: what the bake reads)
+#        upstream/kiwix/kiwix-tools/kiwix-tools_linux-aarch64-3.8.2.tar.gz    (immutable: the history)
+#
+# Behaviour: weekly (and on demand). For each file it resolves the upstream "latest" symlink
+# to the real versioned name, downloads it, and compares its sha256 with the copy already on R2.
+# If unchanged it skips the upload. If changed it publishes the new immutable versioned object
+# (history is kept, never deleted) and refreshes the generic name the bake reads.
+
+name: Mirror upstream deps to R2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 0"   # Sundays 04:00 UTC, like the static-binaries cron
+
+concurrency:
+  group: upstream-mirror
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  BUCKET_NAME: k2go-rootfs
+  R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  R2_KEY_PREFIX: ${{ vars.ROOTFS_KEY_PREFIX }}   # '' or 'rootfs/', same as the bake
+
+jobs:
+  kiwix-tools:
+    name: Mirror kiwix-tools
+    runs-on: ubuntu-latest        # pure download + upload; no arm runner needed
+    steps:
+      - name: Ensure AWS CLI is available
+        run: aws --version || { sudo apt-get update && sudo apt-get install -y awscli; }
+
+      - name: Mirror kiwix-tools to R2 (skip when unchanged, keep history)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          PFX="${R2_KEY_PREFIX:-}"
+          KIWIX_BASE="https://download.kiwix.org/release/kiwix-tools"
+          R2_DIR="upstream/kiwix/kiwix-tools"
+
+          # Generic (version-agnostic) names the iiab kiwix role can request. kiwix_arch_dict maps
+          # aarch64 -> aarch64 and the 32-bit arm families to armv8 / armhf / armv6. We mirror the
+          # whole realistic set so R2 always has whatever the build resolves to; each is small.
+          ARCHES="aarch64 armv8 armhf armv6"
+
+          overall=0
+          for a in ${ARCHES}; do
+            generic="kiwix-tools_linux-${a}.tar.gz"
+            echo "::group::${generic}"
+
+            # Resolve the "latest" symlink to the real versioned name (for the immutable record).
+            resolved="$(curl -fsSL -r 0-0 -o /dev/null -w '%{url_effective}' "${KIWIX_BASE}/${generic}" || true)"
+            versioned="$(basename "${resolved:-}")"
+            case "${versioned}" in
+              *-[0-9]*.tar.gz) : ;;                                        # has a version, keep it
+              *) versioned="${generic%.tar.gz}-$(date -u +%Y%m%d).tar.gz" ;;  # no version exposed: date-stamp
+            esac
+
+            # Download the current content via the generic URL (exactly what the bake would fetch).
+            if ! curl -fL --retry 20 --retry-delay 5 --retry-all-errors --max-time 3000 \
+                   -o "${versioned}" "${KIWIX_BASE}/${generic}"; then
+              echo ">> WARNING: could not download ${generic} from kiwix.org; leaving R2 copy as is."
+              rm -f "${versioned}"; overall=1; echo "::endgroup::"; continue
+            fi
+            sha_now="$(sha256sum "${versioned}" | awk '{print $1}')"
+
+            # Change detection: compare with the sha256 sidecar of the generic object on R2.
+            gkey="${PFX}${R2_DIR}/${generic}"
+            sha_r2="$(aws s3 cp "s3://${BUCKET_NAME}/${gkey}.sha256" - \
+                        --endpoint-url "${ENDPOINT}" 2>/dev/null | awk '{print $1}' || true)"
+            if [ -n "${sha_r2}" ] && [ "${sha_now}" = "${sha_r2}" ]; then
+              echo ">> unchanged (${sha_now}); skipping upload."
+              rm -f "${versioned}"; echo "::endgroup::"; continue
+            fi
+            echo ">> changed (R2=${sha_r2:-none} new=${sha_now}); publishing ${versioned}."
+
+            # Integrity sidecars: our sha256, plus the upstream .md5 when one exists.
+            echo "${sha_now}  ${versioned}" > "${versioned}.sha256"
+            curl -fsL --retry 10 --retry-all-errors --max-time 120 \
+                 -o "${versioned}.md5" "${KIWIX_BASE}/${versioned}.md5" 2>/dev/null \
+              || { echo "(no upstream .md5 for ${versioned})"; rm -f "${versioned}.md5"; }
+
+            # 1) immutable versioned object = the history (never deleted).
+            vkey="${PFX}${R2_DIR}/${versioned}"
+            aws s3 cp "${versioned}"        "s3://${BUCKET_NAME}/${vkey}"        --endpoint-url "${ENDPOINT}"
+            aws s3 cp "${versioned}.sha256" "s3://${BUCKET_NAME}/${vkey}.sha256" --endpoint-url "${ENDPOINT}"
+            [ -f "${versioned}.md5" ] && \
+              aws s3 cp "${versioned}.md5"  "s3://${BUCKET_NAME}/${vkey}.md5"    --endpoint-url "${ENDPOINT}" || true
+
+            # 2) generic name the bake reads = copy of the current content, with its own sha256.
+            echo "${sha_now}  ${generic}" > "${generic}.sha256"
+            aws s3 cp "${versioned}"       "s3://${BUCKET_NAME}/${gkey}"        --endpoint-url "${ENDPOINT}"
+            aws s3 cp "${generic}.sha256"  "s3://${BUCKET_NAME}/${gkey}.sha256" --endpoint-url "${ENDPOINT}"
+
+            rm -f "${versioned}" "${versioned}.sha256" "${versioned}.md5" "${generic}.sha256"
+            echo "::endgroup::"
+          done
+
+          # A single arch failing to download is a warning, not a hard failure: the existing R2
+          # copy still serves the bake. Exit non-zero only to surface it in the run list.
+          exit "${overall}"
