@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">Închide alte aplicații și încearcă din nou. Dacă tot eșuează, contactează-ne.</string>
     <string name="k2go_dash_update_retry">Încearcă din nou</string>
     <string name="k2go_dash_update_open_dashboard">Deschide panoul</string>
+    <string name="k2go_damaged_clone_title">Copierea a fost întreruptă</string>
+    <string name="k2go_damaged_clone_body">Copierea de pe celălalt telefon s-a oprit înainte de final și sistemul nu poate porni. Încercați din nou copierea sau recuperați cu o copie de rezervă ori cu o instalare nouă.</string>
+    <string name="k2go_damaged_clone_retry">Reîncearcă copierea</string>
 </resources>

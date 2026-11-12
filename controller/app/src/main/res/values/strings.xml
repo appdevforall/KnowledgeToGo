@@ -1749,4 +1749,7 @@
     <string name="k2go_dash_update_failed_text">Close other apps and try again. If it keeps failing, contact us.</string>
     <string name="k2go_dash_update_retry">Try again</string>
     <string name="k2go_dash_update_open_dashboard">Open dashboard</string>
+    <string name="k2go_damaged_clone_title">Copy interrupted</string>
+    <string name="k2go_damaged_clone_body">The copy from the other phone stopped before it finished, and the system can\'t start. Try the copy again, or recover with a backup or a new install.</string>
+    <string name="k2go_damaged_clone_retry">Retry the copy</string>
 </resources>

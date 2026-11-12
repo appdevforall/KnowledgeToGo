@@ -1554,4 +1554,7 @@
     <string name="k2go_dash_update_failed_text">关闭其他应用后重试。如果持续失败，请联系我们。</string>
     <string name="k2go_dash_update_retry">重试</string>
     <string name="k2go_dash_update_open_dashboard">打开仪表板</string>
+    <string name="k2go_damaged_clone_title">复制已中断</string>
+    <string name="k2go_damaged_clone_body">从另一部手机的复制在完成前停止了，系统无法启动。请重试复制，或使用备份或全新安装来恢复。</string>
+    <string name="k2go_damaged_clone_retry">重试复制</string>
 </resources>

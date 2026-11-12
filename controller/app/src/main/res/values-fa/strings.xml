@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">برنامه‌های دیگر را ببندید و دوباره تلاش کنید. اگر همچنان ناموفق بود، با ما تماس بگیرید.</string>
     <string name="k2go_dash_update_retry">تلاش دوباره</string>
     <string name="k2go_dash_update_open_dashboard">باز کردن داشبورد</string>
+    <string name="k2go_damaged_clone_title">کپی متوقف شد</string>
+    <string name="k2go_damaged_clone_body">کپی از گوشی دیگر پیش از پایان متوقف شد و سیستم نمی‌تواند راه‌اندازی شود. کپی را دوباره امتحان کنید، یا با یک نسخه پشتیبان یا نصب تازه بازیابی کنید.</string>
+    <string name="k2go_damaged_clone_retry">تلاش دوباره برای کپی</string>
 </resources>

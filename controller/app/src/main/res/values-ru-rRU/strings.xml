@@ -1629,4 +1629,7 @@
     <string name="k2go_dash_update_failed_text">Закройте другие приложения и повторите попытку. Если ошибка повторяется, свяжитесь с нами.</string>
     <string name="k2go_dash_update_retry">Повторить</string>
     <string name="k2go_dash_update_open_dashboard">Открыть панель</string>
+    <string name="k2go_damaged_clone_title">Копирование прервано</string>
+    <string name="k2go_damaged_clone_body">Копирование с другого телефона остановилось до завершения, и система не может запуститься. Повторите копирование или восстановите систему из резервной копии или новой установкой.</string>
+    <string name="k2go_damaged_clone_retry">Повторить копирование</string>
 </resources>

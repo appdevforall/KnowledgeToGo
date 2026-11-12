@@ -1573,4 +1573,7 @@
     <string name="k2go_dash_update_failed_text">Ti àwọn áàpù mìíràn pa kí o sì tún gbìyànjú. Tí ó bá ń kùnà nígbàgbogbo, kàn sí wa.</string>
     <string name="k2go_dash_update_retry">Tún gbìyànjú</string>
     <string name="k2go_dash_update_open_dashboard">Ṣí dasibodu</string>
+    <string name="k2go_damaged_clone_title">Ìdàkọ ti dá dúró</string>
+    <string name="k2go_damaged_clone_body">Ìdàkọ láti fóònù kejì dúró kí ó tó parí, ètò náà kò sì lè bẹ̀rẹ̀. Gbìyànjú ìdàkọ náà lẹ́ẹ̀kan sí i, tàbí gbà á padà pẹ̀lú àfẹ̀yìntì tàbí ìfisórí tuntun.</string>
+    <string name="k2go_damaged_clone_retry">Tún ìdàkọ gbìyànjú</string>
 </resources>

@@ -1566,4 +1566,7 @@
     <string name="k2go_dash_update_failed_text">অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন। যদি বারবার ব্যর্থ হয়, আমাদের সাথে যোগাযোগ করুন।</string>
     <string name="k2go_dash_update_retry">আবার চেষ্টা করুন</string>
     <string name="k2go_dash_update_open_dashboard">ড্যাশবোর্ড খুলুন</string>
+    <string name="k2go_damaged_clone_title">কপি বাধাগ্রস্ত হয়েছে</string>
+    <string name="k2go_damaged_clone_body">অন্য ফোন থেকে কপি শেষ হওয়ার আগেই থেমে গেছে, এবং সিস্টেম চালু হতে পারছে না। আবার কপি করার চেষ্টা করুন, অথবা ব্যাকআপ বা নতুন ইনস্টলের মাধ্যমে পুনরুদ্ধার করুন।</string>
+    <string name="k2go_damaged_clone_retry">আবার কপি করুন</string>
 </resources>

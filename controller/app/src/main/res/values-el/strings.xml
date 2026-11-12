@@ -1560,4 +1560,7 @@
     <string name="k2go_dash_update_failed_text">Κλείστε άλλες εφαρμογές και δοκιμάστε ξανά. Αν συνεχίζει να αποτυγχάνει, επικοινωνήστε μαζί μας.</string>
     <string name="k2go_dash_update_retry">Δοκιμάστε ξανά</string>
     <string name="k2go_dash_update_open_dashboard">Άνοιγμα πίνακα</string>
+    <string name="k2go_damaged_clone_title">Η αντιγραφή διακόπηκε</string>
+    <string name="k2go_damaged_clone_body">Η αντιγραφή από το άλλο τηλέφωνο σταμάτησε πριν ολοκληρωθεί και το σύστημα δεν μπορεί να ξεκινήσει. Δοκιμάστε ξανά την αντιγραφή ή κάντε ανάκτηση από αντίγραφο ασφαλείας ή με νέα εγκατάσταση.</string>
+    <string name="k2go_damaged_clone_retry">Επανάληψη αντιγραφής</string>
 </resources>

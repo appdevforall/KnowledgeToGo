@@ -1560,4 +1560,7 @@
     <string name="k2go_dash_update_failed_text">Затворете други приложения и опитайте отново. Ако продължава да е неуспешна, свържете се с нас.</string>
     <string name="k2go_dash_update_retry">Опитайте отново</string>
     <string name="k2go_dash_update_open_dashboard">Отваряне на таблото</string>
+    <string name="k2go_damaged_clone_title">Копирането е прекъснато</string>
+    <string name="k2go_damaged_clone_body">Копирането от другия телефон спря, преди да завърши, и системата не може да стартира. Опитайте копирането отново или възстановете от резервно копие или с нова инсталация.</string>
+    <string name="k2go_damaged_clone_retry">Повтори копирането</string>
 </resources>

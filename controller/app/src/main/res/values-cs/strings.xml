@@ -1560,4 +1560,7 @@
     <string name="k2go_dash_update_failed_text">Zavřete ostatní aplikace a zkuste to znovu. Pokud selhává dál, kontaktujte nás.</string>
     <string name="k2go_dash_update_retry">Zkusit znovu</string>
     <string name="k2go_dash_update_open_dashboard">Otevřít nástěnku</string>
+    <string name="k2go_damaged_clone_title">Kopírování přerušeno</string>
+    <string name="k2go_damaged_clone_body">Kopírování z druhého telefonu se zastavilo před dokončením a systém nelze spustit. Zkuste kopírování znovu nebo obnovte systém ze zálohy či novou instalací.</string>
+    <string name="k2go_damaged_clone_retry">Zkusit kopírování znovu</string>
 </resources>

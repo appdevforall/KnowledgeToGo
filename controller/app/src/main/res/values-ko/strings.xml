@@ -1554,4 +1554,7 @@
     <string name="k2go_dash_update_failed_text">다른 앱을 닫고 다시 시도하세요. 계속 실패하면 문의해 주세요.</string>
     <string name="k2go_dash_update_retry">다시 시도</string>
     <string name="k2go_dash_update_open_dashboard">대시보드 열기</string>
+    <string name="k2go_damaged_clone_title">복사가 중단됨</string>
+    <string name="k2go_damaged_clone_body">다른 휴대폰에서의 복사가 끝나기 전에 중지되어 시스템을 시작할 수 없습니다. 다시 복사하거나 백업 또는 새로 설치하여 복구하세요.</string>
+    <string name="k2go_damaged_clone_retry">다시 복사</string>
 </resources>

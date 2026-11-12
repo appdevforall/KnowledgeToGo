@@ -1566,4 +1566,7 @@
     <string name="k2go_dash_update_failed_text">Затворите друге апликације и покушајте поново. Ако и даље не успева, контактирајте нас.</string>
     <string name="k2go_dash_update_retry">Покушај поново</string>
     <string name="k2go_dash_update_open_dashboard">Отвори контролну таблу</string>
+    <string name="k2go_damaged_clone_title">Копирање прекинуто</string>
+    <string name="k2go_damaged_clone_body">Копирање са другог телефона је стало пре краја и систем не може да се покрене. Покушајте копирање поново или опоравите систем из резервне копије или новом инсталацијом.</string>
+    <string name="k2go_damaged_clone_retry">Покушај копирање поново</string>
 </resources>

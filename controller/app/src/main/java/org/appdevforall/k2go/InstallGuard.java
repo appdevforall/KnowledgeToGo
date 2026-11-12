@@ -58,6 +58,9 @@ public final class InstallGuard {
      */
     private static final String DAMAGED_TOKEN = "DAMAGED";
 
+    /** K2GO-562: known damage left by a Clone receive that did not finish. Still reads {@link #isDamaged}. */
+    private static final String CLONE_DAMAGED_TOKEN = DAMAGED_TOKEN + ":CLONE";
+
     private InstallGuard() {
     }
 
@@ -71,11 +74,7 @@ public final class InstallGuard {
      * takes it over. Re-planting within the same launch is a no-op in effect (same token).
      */
     public static void begin(Context ctx) {
-        try (FileWriter w = new FileWriter(marker(ctx), false)) {
-            w.write(ProcessSession.ID);
-        } catch (IOException ignored) {
-            // Best-effort: if we can't write the marker, behaviour degrades to the old in-memory guard.
-        }
+        write(ctx, ProcessSession.ID);
     }
 
     public static void end(Context ctx) {
@@ -94,8 +93,17 @@ public final class InstallGuard {
      * like {@link #begin}.
      */
     public static void markDamaged(Context ctx) {
+        write(ctx, DAMAGED_TOKEN);
+    }
+
+    /** K2GO-562: like {@link #markDamaged}, and the damaged dialog offers to retry the copy. */
+    public static void markCloneDamaged(Context ctx) {
+        write(ctx, CLONE_DAMAGED_TOKEN);
+    }
+
+    private static void write(Context ctx, String token) {
         try (FileWriter w = new FileWriter(marker(ctx), false)) {
-            w.write(DAMAGED_TOKEN);
+            w.write(token);
         } catch (IOException ignored) {
             // Best-effort: a marker left LIVE still recovers next launch (token mismatch -> INTERRUPTED).
         }
@@ -133,7 +141,13 @@ public final class InstallGuard {
      * from trying; it would only flap the reconciler on a torn rootfs). See ADR-5343c. Never deletes.
      */
     public static boolean isDamaged(Context ctx) {
-        return DAMAGED_TOKEN.equals(read(ctx));
+        String token = read(ctx);
+        return token != null && token.startsWith(DAMAGED_TOKEN);
+    }
+
+    /** K2GO-562: the damage came from a Clone receive that did not finish. */
+    public static boolean isCloneDamaged(Context ctx) {
+        return CLONE_DAMAGED_TOKEN.equals(read(ctx));
     }
 
     /**

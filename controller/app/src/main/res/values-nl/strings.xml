@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">Sluit andere apps en probeer het opnieuw. Als het blijft mislukken, neem contact met ons op.</string>
     <string name="k2go_dash_update_retry">Opnieuw proberen</string>
     <string name="k2go_dash_update_open_dashboard">Dashboard openen</string>
+    <string name="k2go_damaged_clone_title">Kopie onderbroken</string>
+    <string name="k2go_damaged_clone_body">De kopie van de andere telefoon is gestopt voordat deze klaar was, en het systeem kan niet starten. Probeer de kopie opnieuw, of herstel met een back-up of een nieuwe installatie.</string>
+    <string name="k2go_damaged_clone_retry">Kopie opnieuw proberen</string>
 </resources>

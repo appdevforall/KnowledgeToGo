@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">Đóng các ứng dụng khác và thử lại. Nếu vẫn thất bại, hãy liên hệ với chúng tôi.</string>
     <string name="k2go_dash_update_retry">Thử lại</string>
     <string name="k2go_dash_update_open_dashboard">Mở bảng điều khiển</string>
+    <string name="k2go_damaged_clone_title">Sao chép bị gián đoạn</string>
+    <string name="k2go_damaged_clone_body">Việc sao chép từ điện thoại kia đã dừng trước khi hoàn tất và hệ thống không thể khởi động. Hãy thử sao chép lại, hoặc khôi phục bằng bản sao lưu hay cài đặt mới.</string>
+    <string name="k2go_damaged_clone_retry">Thử sao chép lại</string>
 </resources>

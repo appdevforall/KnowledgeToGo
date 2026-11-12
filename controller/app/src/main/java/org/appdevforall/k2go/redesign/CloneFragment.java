@@ -572,9 +572,17 @@ public class CloneFragment extends Fragment {
     /** Boot the (possibly replaced) system back and drop the deep-env lock. Idempotent; no-op if we
      *  don't hold it. Called on every terminal path (stop / complete / cancel / detach-when-idle). */
     private void releaseCloneEnv() {
+        releaseCloneEnv(true);
+    }
+
+    /** @param copied false when a receive stopped mid-transfer: the tree is partly replaced (K2GO-562). */
+    private void releaseCloneEnv(boolean copied) {
         if (!cloneLockHeld) return;
         Context ctx = getContext();
-        if (cloneGuardHeld && ctx != null) org.appdevforall.k2go.InstallGuard.end(ctx);
+        if (cloneGuardHeld && ctx != null) {
+            if (copied) org.appdevforall.k2go.InstallGuard.end(ctx);
+            else org.appdevforall.k2go.InstallGuard.markCloneDamaged(ctx);
+        }
         cloneGuardHeld = false;
         // ADFA-5343 (Phase 3): don't boot the server here. Set desired=UP (the persisted intent) and drop
         // the lock; the reconciler observes holder==NONE and brings the box back via its one actuator —
@@ -1015,7 +1023,7 @@ public class CloneFragment extends Fragment {
         SyncTransferState st = SyncProgressRepository.get().current();
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
             transport.stop();
-            releaseCloneEnv();   // ADFA-4956: overwrite aborted mid-pull — boot back, end guard, drop lock
+            releaseCloneEnv(false);   // ADFA-4956: overwrite aborted mid-pull, drop lock
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
         } else {
@@ -1395,9 +1403,11 @@ public class CloneFragment extends Fragment {
         Context termCtx = getContext();
         if (termCtx != null) {
             cloneLockHeld = true;   // EnvironmentLock.release() is idempotent and self-heals a stale file
-            cloneGuardHeld = org.appdevforall.k2go.InstallGuard.isLive(termCtx);   // ADFA-5343 (Phase 5a): our own live marker, this process
+            cloneGuardHeld = org.appdevforall.k2go.InstallGuard.isLive(termCtx)   // ADFA-5343 (Phase 5a): our own live marker, this process
+                    // K2GO-562: a Cancel that lost the race to the last byte already marked the copy damaged.
+                    || (ok && org.appdevforall.k2go.InstallGuard.isCloneDamaged(termCtx));
         }
-        releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
+        releaseCloneEnv(ok);   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
 
         if (ok) {

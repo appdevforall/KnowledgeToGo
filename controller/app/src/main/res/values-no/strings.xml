@@ -1563,4 +1563,7 @@
     <string name="k2go_dash_update_failed_text">Lukk andre apper og prøv igjen. Hvis det fortsatt mislykkes, kontakt oss.</string>
     <string name="k2go_dash_update_retry">Prøv igjen</string>
     <string name="k2go_dash_update_open_dashboard">Åpne dashbord</string>
+    <string name="k2go_damaged_clone_title">Kopieringen ble avbrutt</string>
+    <string name="k2go_damaged_clone_body">Kopieringen fra den andre telefonen stoppet før den var ferdig, og systemet kan ikke starte. Prøv kopieringen på nytt, eller gjenopprett med en sikkerhetskopi eller en ny installasjon.</string>
+    <string name="k2go_damaged_clone_retry">Prøv kopieringen på nytt</string>
 </resources>

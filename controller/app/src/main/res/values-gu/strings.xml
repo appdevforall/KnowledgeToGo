@@ -1566,4 +1566,7 @@
     <string name="k2go_dash_update_failed_text">બીજી ઍપ બંધ કરો અને ફરી પ્રયાસ કરો. જો વારંવાર નિષ્ફળ થાય, તો અમારો સંપર્ક કરો.</string>
     <string name="k2go_dash_update_retry">ફરી પ્રયાસ કરો</string>
     <string name="k2go_dash_update_open_dashboard">ડૅશબોર્ડ ખોલો</string>
+    <string name="k2go_damaged_clone_title">કૉપિ અટકી ગઈ</string>
+    <string name="k2go_damaged_clone_body">બીજા ફોનમાંથી કૉપિ પૂરી થાય તે પહેલાં અટકી ગઈ, અને સિસ્ટમ શરૂ થઈ શકતી નથી. ફરીથી કૉપિ કરવાનો પ્રયાસ કરો, અથવા બેકઅપ કે નવા ઇન્સ્ટોલથી પુનઃપ્રાપ્ત કરો.</string>
+    <string name="k2go_damaged_clone_retry">ફરીથી કૉપિ કરો</string>
 </resources>

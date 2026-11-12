@@ -1553,4 +1553,7 @@
     <string name="k2go_dash_update_failed_text">Diğer uygulamaları kapatıp tekrar deneyin. Sorun sürerse bizimle iletişime geçin.</string>
     <string name="k2go_dash_update_retry">Tekrar dene</string>
     <string name="k2go_dash_update_open_dashboard">Panoyu aç</string>
+    <string name="k2go_damaged_clone_title">Kopyalama kesildi</string>
+    <string name="k2go_damaged_clone_body">Diğer telefondan kopyalama bitmeden durdu ve sistem başlatılamıyor. Kopyalamayı yeniden deneyin ya da bir yedekle veya yeni bir kurulumla kurtarın.</string>
+    <string name="k2go_damaged_clone_retry">Kopyalamayı yeniden dene</string>
 </resources>

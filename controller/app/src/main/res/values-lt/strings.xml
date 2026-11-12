@@ -1570,4 +1570,7 @@
     <string name="k2go_dash_update_failed_text">Uždarykite kitas programas ir bandykite dar kartą. Jei vis tiek nepavyksta, susisiekite su mumis.</string>
     <string name="k2go_dash_update_retry">Bandyti dar kartą</string>
     <string name="k2go_dash_update_open_dashboard">Atidaryti skydelį</string>
+    <string name="k2go_damaged_clone_title">Kopijavimas nutrūko</string>
+    <string name="k2go_damaged_clone_body">Kopijavimas iš kito telefono sustojo nepasibaigęs, ir sistema negali pasileisti. Bandykite kopijuoti dar kartą arba atkurkite iš atsarginės kopijos ar nauju diegimu.</string>
+    <string name="k2go_damaged_clone_retry">Kopijuoti dar kartą</string>
 </resources>
