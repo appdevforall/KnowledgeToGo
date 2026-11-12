@@ -10,5 +10,7 @@
   strings.xml.
 -->
 <resources>
-
+    <string name="k2go_damaged_clone_title" translatable="false">Copy interrupted</string>
+    <string name="k2go_damaged_clone_body" translatable="false">The copy from the other phone stopped before it finished, and the system can\u2019t start. Try the copy again, or recover with a backup or a new install.</string>
+    <string name="k2go_damaged_clone_retry" translatable="false">Retry the copy</string>
 </resources>

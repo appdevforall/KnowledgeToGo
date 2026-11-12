@@ -2,6 +2,7 @@ package org.appdevforall.k2go.redesign;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -1054,22 +1055,41 @@ public class LibraryActivity extends AppCompatActivity
         // report captures is this dialog, which is the right picture (routing is ADFA-5130's: email keeps
         // the attachment, Slack gets the text). setDismissOnNeutral(false) keeps the dialog up so the two
         // real choices -- recover, or close -- are still there after reporting.
-        new org.appdevforall.k2go.ui.dialog.BrandDialog(this)
+        org.appdevforall.k2go.ui.dialog.BrandDialog d = new org.appdevforall.k2go.ui.dialog.BrandDialog(this)
                 .setIcon(R.drawable.ic_error_outline_24, R.color.k2go_clay)
-                .setTitle(R.string.k2go_damaged_title)
-                .setMessage(R.string.k2go_damaged_body)
-                .setPositive(R.string.k2go_damaged_recover, () -> {
-                    SetupLibraryActivity.recover(this);   // ADFA-5150: the shared route
-                    finish();   // the dialog closes so the user can't fall back onto the held gate
-                })
                 .setNegative(R.string.k2go_damaged_close, () -> finishAffinity())
-                .setNeutral(R.string.k2go_damaged_report, () -> org.appdevforall.k2go.feedback.presentation.FeedbackFab
-                        .sendFeedback(this, "install-failed",
-                                org.appdevforall.k2go.feedback.domain.FeedbackType.BUG,
-                                installFailureReport()))
-                .setDismissOnNeutral(false)
-                .setCancelable(false)
-                .show();
+                .setCancelable(false);
+        org.appdevforall.k2go.ui.dialog.BrandDialog.OnClick recover = () -> {
+            SetupLibraryActivity.recover(this);   // ADFA-5150: the shared route
+            finish();   // the dialog closes so the user can't fall back onto the held gate
+        };
+        if (org.appdevforall.k2go.InstallGuard.isCloneDamaged(this)) {
+            // K2GO-562: the user knows what stopped (their copy), so retrying it comes first; no report.
+            d.setTitle(R.string.k2go_damaged_clone_title)
+                    .setMessage(R.string.k2go_damaged_clone_body)
+                    .setPositive(R.string.k2go_damaged_clone_retry, () -> {
+                        startActivity(cloneSetupIntent(this));
+                        finish();
+                    })
+                    .setNeutral(R.string.k2go_damaged_recover, recover);
+        } else {
+            d.setTitle(R.string.k2go_damaged_title)
+                    .setMessage(R.string.k2go_damaged_body)
+                    .setPositive(R.string.k2go_damaged_recover, recover)
+                    .setNeutral(R.string.k2go_damaged_report, () -> org.appdevforall.k2go.feedback.presentation.FeedbackFab
+                            .sendFeedback(this, "install-failed",
+                                    org.appdevforall.k2go.feedback.domain.FeedbackType.BUG,
+                                    installFailureReport()))
+                    .setDismissOnNeutral(false);
+        }
+        d.show();
+    }
+
+    /** The Clone tab for a phone with no usable system: setup mode skips the damaged dialog on arrival. */
+    public static Intent cloneSetupIntent(Context ctx) {
+        return new Intent(ctx, LibraryActivity.class)
+                .putExtra(EXTRA_TAB, R.id.nav_clone)
+                .putExtra(EXTRA_SETTING_UP, true);
     }
 
     /**

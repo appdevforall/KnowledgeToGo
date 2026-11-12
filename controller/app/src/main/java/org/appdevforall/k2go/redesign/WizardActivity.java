@@ -151,9 +151,7 @@ public class WizardActivity extends AppCompatActivity {
             // this is the one navigation that must land with no system and nothing yet in flight. It
             // now says that, instead of claiming setup is finished. The difference is that the extra
             // dies with this Intent: leave before scanning and the next launch is back here, correctly.
-            startActivity(new Intent(this, LibraryActivity.class)
-                    .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone)
-                    .putExtra(LibraryActivity.EXTRA_SETTING_UP, true));
+            startActivity(LibraryActivity.cloneSetupIntent(this));
             finish();
         });
         primary.setOnClickListener(v -> onPrimary());
