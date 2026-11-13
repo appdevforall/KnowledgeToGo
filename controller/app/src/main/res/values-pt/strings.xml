@@ -1657,4 +1657,5 @@
     <string name="k2go_privacy_unreachable">Não foi possível ler estas definições. Verifique se o servidor está ligado e tente novamente.</string>
     <string name="k2go_privacy_unsupported">Estas definições precisam de um painel mais recente. Atualize o painel e tente novamente.</string>
     <string name="k2go_privacy_none">Nenhum serviço instalado contacta servidores externos por conta própria.</string>
+    <string name="k2go_privacy_saved_later">Guardado. A alteração aplica-se na próxima vez que o serviço iniciar.</string>
 </resources>

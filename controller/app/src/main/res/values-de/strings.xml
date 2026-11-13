@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_unreachable">Diese Einstellungen konnten nicht gelesen werden. Prüfen Sie, ob der Server läuft, und versuchen Sie es erneut.</string>
     <string name="k2go_privacy_unsupported">Diese Einstellungen benötigen ein neueres Dashboard. Aktualisieren Sie das Dashboard und versuchen Sie es erneut.</string>
     <string name="k2go_privacy_none">Kein installierter Dienst kontaktiert von sich aus externe Server.</string>
+    <string name="k2go_privacy_saved_later">Gespeichert. Die Änderung gilt beim nächsten Start des Dienstes.</string>
 </resources>

@@ -1598,4 +1598,5 @@
     <string name="k2go_privacy_unreachable">Bu ayarları oxumaq mümkün olmadı. Serverin işlədiyinə əmin olun, sonra yenidən cəhd edin.</string>
     <string name="k2go_privacy_unsupported">Bu ayarlar daha yeni idarə paneli tələb edir. İdarə panelini yeniləyin, sonra yenidən cəhd edin.</string>
     <string name="k2go_privacy_none">Öz-özünə xarici serverlərlə əlaqə saxlayan quraşdırılmış xidmət yoxdur.</string>
+    <string name="k2go_privacy_saved_later">Yadda saxlanıldı. Dəyişiklik xidmət növbəti dəfə başlayanda tətbiq olunur.</string>
 </resources>

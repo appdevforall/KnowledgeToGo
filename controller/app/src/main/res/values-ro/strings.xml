@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_unreachable">Aceste setări nu au putut fi citite. Asigurați-vă că serverul este pornit, apoi încercați din nou.</string>
     <string name="k2go_privacy_unsupported">Aceste setări necesită un panou mai nou. Actualizați panoul, apoi încercați din nou.</string>
     <string name="k2go_privacy_none">Niciun serviciu instalat nu contactează singur servere externe.</string>
+    <string name="k2go_privacy_saved_later">Salvat. Modificarea se aplică la următoarea pornire a serviciului.</string>
 </resources>

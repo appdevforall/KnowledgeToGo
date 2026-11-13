@@ -1654,4 +1654,5 @@
     <string name="k2go_privacy_unreachable">No se pudo leer esta configuración. Asegúrese de que el servidor esté encendido e inténtelo de nuevo.</string>
     <string name="k2go_privacy_unsupported">Esta configuración necesita un panel más reciente. Actualice el panel e inténtelo de nuevo.</string>
     <string name="k2go_privacy_none">Ningún servicio instalado contacta servidores externos por su cuenta.</string>
+    <string name="k2go_privacy_saved_later">Guardado. El cambio se aplica la próxima vez que se inicie el servicio.</string>
 </resources>

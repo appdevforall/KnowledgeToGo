@@ -1665,4 +1665,5 @@
     <string name="k2go_privacy_unreachable">Impossible de lire ces paramètres. Vérifiez que le serveur est allumé, puis réessayez.</string>
     <string name="k2go_privacy_unsupported">Ces paramètres nécessitent un tableau de bord plus récent. Mettez à jour le tableau de bord, puis réessayez.</string>
     <string name="k2go_privacy_none">Aucun service installé ne contacte de lui-même des serveurs externes.</string>
+    <string name="k2go_privacy_saved_later">Enregistré. La modification s\'applique au prochain démarrage du service.</string>
 </resources>

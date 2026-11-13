@@ -1579,4 +1579,5 @@
     <string name="k2go_privacy_unreachable">无法读取这些设置。请确认服务器已开启，然后重试。</string>
     <string name="k2go_privacy_unsupported">这些设置需要更新的仪表板。请更新仪表板，然后重试。</string>
     <string name="k2go_privacy_none">没有会自行联系外部服务器的已安装服务。</string>
+    <string name="k2go_privacy_saved_later">已保存。更改将在服务下次启动时生效。</string>
 </resources>

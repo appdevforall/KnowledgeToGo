@@ -49,7 +49,8 @@ public class GetOutboundSwitchesUseCaseTest {
             @Override public List<OutboundSwitch> list() throws PrivacyException {
                 throw new PrivacyException(PrivacyException.Reason.UNREACHABLE, "down");
             }
-            @Override public OutboundSwitch set(String s, boolean o) { throw new AssertionError(); }
+            @Override public boolean set(String s, boolean o) { throw new AssertionError(); }
+            @Override public void requestRestart(String s) { throw new AssertionError(); }
         };
         new GetOutboundSwitchesUseCase(failing).execute();
     }

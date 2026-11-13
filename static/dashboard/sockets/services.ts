@@ -28,24 +28,9 @@ export function isRestartableService(name: string): boolean {
 
 const PDSM = '/usr/local/bin/pdsm';
 
-/** Fire-and-forget `pdsm restart <svc>` in-proot. setsid => own session, mirroring the
- *  dash-node rebuild call (routes.ts): a restart can never kill the run that issued it.
- *  Detached + stdio ignored + unref so dash-node does not wait on it. The caller MUST have
- *  validated `svc` with isRestartableService first. Spawn failures are logged, never thrown:
- *  an unheard 'error' event would otherwise crash the REST core. */
-export function restartService(svc: string): void {
-    try {
-        const child = spawn('setsid', [PDSM, 'restart', svc], { detached: true, stdio: 'ignore' });
-        child.on('error', (e) => console.error(`[services] restart ${svc} failed to spawn: ${e}`));
-        child.unref();
-    } catch (e) {
-        console.error(`[services] restart ${svc} spawn threw: ${e}`);
-    }
-}
-
 /** One restart per service at a time. A request while one runs is folded into ONE more run after
- *  it, so two quick changes never interleave their stop/start steps. In memory only: if dash-node
- *  dies, the config is already on disk and the service reads it at its next start. */
+ *  it, so two quick requests never interleave their stop/start steps. In memory only: if dash-node
+ *  dies, nothing is lost (a config change is already on disk; the service reads it at its next start). */
 export function createRestartQueue(run: (svc: string, done: () => void) => void): (svc: string) => void {
     const running = new Set<string>();
     const again = new Set<string>();
@@ -62,25 +47,27 @@ export function createRestartQueue(run: (svc: string, done: () => void) => void)
     };
 }
 
-/** `pdsm restart <svc>` only when the service runs: a restart would also START a stopped service.
- *  Exits 0 when the service is stopped; else the restart's own code, which is logged. */
-function runRestartIfRunning(svc: string, done: () => void): void {
+/** `pdsm restart <svc>` in-proot. setsid => own session, mirroring the dash-node rebuild call
+ *  (routes.ts): a restart can never kill the run that issued it. `-w` waits for the restart, so the
+ *  queue knows when it ends; a non-zero exit is logged. Spawn failures are logged, never thrown: an
+ *  unheard 'error' event would otherwise crash the REST core. */
+function runRestart(svc: string, done: () => void): void {
     let finished = false;
     const finish = () => { if (!finished) { finished = true; done(); } };
     try {
-        const child = spawn('setsid', ['-w', 'sh', '-c', '"$0" status "$1" >/dev/null 2>&1 || exit 0; exec "$0" restart "$1"', PDSM, svc],
-            { detached: true, stdio: 'ignore' });
-        child.on('error', (e) => { console.error(`[services] restart-if-running ${svc} failed to spawn: ${e}`); finish(); });
+        const child = spawn('setsid', ['-w', PDSM, 'restart', svc], { detached: true, stdio: 'ignore' });
+        child.on('error', (e) => { console.error(`[services] restart ${svc} failed to spawn: ${e}`); finish(); });
         child.on('exit', (code) => {
-            if (code !== 0) console.error(`[services] restart-if-running ${svc} exited ${code}`);
+            if (code !== 0) console.error(`[services] restart ${svc} exited ${code}`);
             finish();
         });
         child.unref();
     } catch (e) {
-        console.error(`[services] restart-if-running ${svc} spawn threw: ${e}`);
+        console.error(`[services] restart ${svc} spawn threw: ${e}`);
         finish();
     }
 }
 
-/** K2GO-559. Same caller contract as restartService: validate `svc` with isRestartableService first. */
-export const restartIfRunning = createRestartQueue(runRestartIfRunning);
+/** Fire-and-forget, serialized per service. The caller MUST have validated `svc` with
+ *  isRestartableService first. */
+export const restartService = createRestartQueue(runRestart);

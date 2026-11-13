@@ -1595,4 +1595,5 @@
     <string name="k2go_privacy_unreachable">Nepavyko nuskaityti šių nustatymų. Įsitikinkite, kad serveris veikia, ir bandykite dar kartą.</string>
     <string name="k2go_privacy_unsupported">Šiems nustatymams reikia naujesnės sąsajos. Atnaujinkite sąsają ir bandykite dar kartą.</string>
     <string name="k2go_privacy_none">Nė viena įdiegta paslauga pati nesijungia prie išorinių serverių.</string>
+    <string name="k2go_privacy_saved_later">Išsaugota. Pakeitimas bus pritaikytas kitą kartą paleidus paslaugą.</string>
 </resources>

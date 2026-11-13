@@ -1585,4 +1585,5 @@
     <string name="k2go_privacy_unreachable">Tieto nastavenia sa nepodarilo načítať. Overte, že server beží, a skúste to znova.</string>
     <string name="k2go_privacy_unsupported">Tieto nastavenia vyžadujú novšiu nástenku. Aktualizujte nástenku a skúste to znova.</string>
     <string name="k2go_privacy_none">Žiadna nainštalovaná služba sa sama nespája s vonkajšími servermi.</string>
+    <string name="k2go_privacy_saved_later">Uložené. Zmena sa použije pri ďalšom spustení služby.</string>
 </resources>

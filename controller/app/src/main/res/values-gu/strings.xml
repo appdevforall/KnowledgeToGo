@@ -1591,4 +1591,5 @@
     <string name="k2go_privacy_unreachable">આ સેટિંગ્સ વાંચી શકાઈ નહીં. સર્વર ચાલુ છે તેની ખાતરી કરો, પછી ફરી પ્રયાસ કરો.</string>
     <string name="k2go_privacy_unsupported">આ સેટિંગ્સ માટે નવું ડેશબોર્ડ જરૂરી છે. ડેશબોર્ડ અપડેટ કરો, પછી ફરી પ્રયાસ કરો.</string>
     <string name="k2go_privacy_none">કોઈ ઇન્સ્ટોલ કરેલી સેવા જાતે બહારના સર્વર સાથે સંપર્ક કરતી નથી.</string>
+    <string name="k2go_privacy_saved_later">સાચવ્યું. સેવા આગલી વાર શરૂ થાય ત્યારે ફેરફાર લાગુ થશે.</string>
 </resources>

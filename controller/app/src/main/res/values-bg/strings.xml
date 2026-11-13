@@ -1585,4 +1585,5 @@
     <string name="k2go_privacy_unreachable">Тези настройки не можаха да се прочетат. Уверете се, че сървърът работи, и опитайте отново.</string>
     <string name="k2go_privacy_unsupported">Тези настройки изискват по-ново табло. Обновете таблото и опитайте отново.</string>
     <string name="k2go_privacy_none">Няма инсталирана услуга, която сама да се свързва с външни сървъри.</string>
+    <string name="k2go_privacy_saved_later">Запазено. Промяната се прилага при следващото стартиране на услугата.</string>
 </resources>

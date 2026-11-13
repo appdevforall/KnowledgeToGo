@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_unreachable">Не вдалося прочитати ці налаштування. Переконайтеся, що сервер увімкнено, і спробуйте ще раз.</string>
     <string name="k2go_privacy_unsupported">Для цих налаштувань потрібна новіша панель. Оновіть панель і спробуйте ще раз.</string>
     <string name="k2go_privacy_none">Жодна встановлена служба не зв\'язується сама із зовнішніми серверами.</string>
+    <string name="k2go_privacy_saved_later">Збережено. Зміна застосується під час наступного запуску служби.</string>
 </resources>

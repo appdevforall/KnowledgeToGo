@@ -165,8 +165,9 @@ function writeAtomic(path: string, data: string): void {
     }
 }
 
-/** Set the switch. Returns the new state and whether the file changed (the caller restarts the
- *  service only then). Throws when the service is not installed or the file cannot be written. */
+/** Set the switch. Returns the new state and whether the file changed (the service then needs a
+ *  restart, which the caller asks from the lifecycle owner). Throws when the service is not
+ *  installed or the file cannot be written. */
 export function applyOutbound(sw: PrivacySwitch, outbound: boolean): { state: PrivacyState; changed: boolean } {
     const text = fs.readFileSync(sw.file, 'utf8');
     if (outboundFromText(sw, text) === outbound) {
@@ -179,7 +180,9 @@ export function applyOutbound(sw: PrivacySwitch, outbound: boolean): { state: Pr
 // --- One-time privacy defaults on update (K2GO-559) -------------------------------------------
 // A box baked before tools/upstream-patches 0007/0008 has both outbound contacts on. When it first
 // runs this dash-node, turn every installed switch OFF once, so it matches a new bake; after that
-// the user decides. Owner: dash-node, at startup. The marker is written only after every config is
+// the user decides. It only writes configs; each service reads its config at its next start (no
+// restart here: restarts belong to the server lifecycle owner, ADR-5343). Owner of the marker:
+// dash-node, at startup. The marker is written only after every config is
 // written (each write is atomic): a crash before it re-runs the step at the next start, which is
 // safe because an OFF switch stays OFF. The marker lives next to credentials.json, which a
 // dash-node rebuild keeps.
@@ -187,16 +190,13 @@ export const PRIVACY_DEFAULTS_MARKER = process.env.K2GO_PRIVACY_DEFAULTS_MARKER
     || '/library/dashboard/privacy-defaults.done';
 
 export function applyPrivacyDefaultsOnce(
-    switches: readonly PrivacySwitch[], marker: string, restart: (service: string) => void,
+    switches: readonly PrivacySwitch[], marker: string,
 ): { ran: boolean; changed: PrivacyServiceId[] } {
     if (fs.existsSync(marker)) return { ran: false, changed: [] };
     const changed: PrivacyServiceId[] = [];
     for (const sw of switches) {
         if (!readState(sw).installed) continue;   // not on the box: nothing to switch
-        if (applyOutbound(sw, false).changed) {
-            changed.push(sw.service);
-            restart(sw.service);
-        }
+        if (applyOutbound(sw, false).changed) changed.push(sw.service);
     }
     const tmp = marker + '.k2go-tmp';
     fs.writeFileSync(tmp, new Date().toISOString() + '\n');

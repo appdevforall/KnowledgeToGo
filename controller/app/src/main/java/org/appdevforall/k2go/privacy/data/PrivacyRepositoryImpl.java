@@ -6,6 +6,7 @@
  * Description : K2GO-559. dash-node client for the privacy switches:
  *                 GET  /k2go-api/system/privacy            -> {services:[{service,installed,outbound}]}
  *                 POST /k2go-api/system/privacy/<service>  {outbound} -> {service,installed,outbound,changed}
+ *                 POST /k2go-api/system/service/<service>/restart  -> 202 (in-place restart, ADR-5343a)
  *               Localhost-only, like all of /k2go-api.
  * ============================================================================
  */
@@ -35,6 +36,7 @@ public final class PrivacyRepositoryImpl implements PrivacyRepository {
     private static final int READ_TIMEOUT_MS = 15000;
 
     private final String base;
+    private final String restartBase;
 
     public PrivacyRepositoryImpl() {
         this(BoxEndpoints.API);
@@ -43,6 +45,7 @@ public final class PrivacyRepositoryImpl implements PrivacyRepository {
     /** {@code apiBase} is the /k2go-api root (tests pass a local server). */
     public PrivacyRepositoryImpl(String apiBase) {
         this.base = apiBase + "/system/privacy";
+        this.restartBase = apiBase + "/system/service/";
     }
 
     @Override
@@ -61,13 +64,18 @@ public final class PrivacyRepositoryImpl implements PrivacyRepository {
     }
 
     @Override
-    public OutboundSwitch set(String service, boolean outbound) throws PrivacyException {
+    public boolean set(String service, boolean outbound) throws PrivacyException {
         try {
             JSONObject body = new JSONObject().put("outbound", outbound);
-            return parse(new JSONObject(request("POST", base + "/" + service, body)));
+            return new JSONObject(request("POST", base + "/" + service, body)).optBoolean("changed", true);
         } catch (JSONException e) {
             throw new PrivacyException(PrivacyException.Reason.FAILED, e.getMessage());
         }
+    }
+
+    @Override
+    public void requestRestart(String service) throws PrivacyException {
+        request("POST", restartBase + service + "/restart", new JSONObject());
     }
 
     private static OutboundSwitch parse(JSONObject o) {

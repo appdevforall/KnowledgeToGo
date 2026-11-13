@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_unreachable">Kan deze instellingen niet lezen. Controleer of de server aan staat en probeer het opnieuw.</string>
     <string name="k2go_privacy_unsupported">Deze instellingen vereisen een nieuwer dashboard. Werk het dashboard bij en probeer het opnieuw.</string>
     <string name="k2go_privacy_none">Geen geïnstalleerde dienst neemt zelf contact op met externe servers.</string>
+    <string name="k2go_privacy_saved_later">Opgeslagen. De wijziging geldt bij de volgende start van de dienst.</string>
 </resources>

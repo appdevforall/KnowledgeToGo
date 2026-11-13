@@ -1591,4 +1591,5 @@
     <string name="k2go_privacy_unreachable">এই সেটিংস পড়া যায়নি। সার্ভার চালু আছে কিনা নিশ্চিত করুন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_privacy_unsupported">এই সেটিংসের জন্য নতুন ড্যাশবোর্ড দরকার। ড্যাশবোর্ড আপডেট করুন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_privacy_none">কোনো ইনস্টল করা পরিষেবা নিজে থেকে বাইরের সার্ভারের সাথে যোগাযোগ করে না।</string>
+    <string name="k2go_privacy_saved_later">সংরক্ষিত হয়েছে। পরিষেবাটি পরের বার চালু হলে পরিবর্তনটি প্রয়োগ হবে।</string>
 </resources>

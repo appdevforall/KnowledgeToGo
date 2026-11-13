@@ -1585,4 +1585,5 @@
     <string name="k2go_privacy_unreachable">Tidak dapat membaca pengaturan ini. Pastikan server menyala, lalu coba lagi.</string>
     <string name="k2go_privacy_unsupported">Pengaturan ini memerlukan dasbor yang lebih baru. Perbarui dasbor, lalu coba lagi.</string>
     <string name="k2go_privacy_none">Tidak ada layanan terpasang yang menghubungi server luar dengan sendirinya.</string>
+    <string name="k2go_privacy_saved_later">Tersimpan. Perubahan berlaku saat layanan dimulai berikutnya.</string>
 </resources>

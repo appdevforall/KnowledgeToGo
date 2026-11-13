@@ -1579,4 +1579,5 @@
     <string name="k2go_privacy_unreachable">이 설정을 읽을 수 없습니다. 서버가 켜져 있는지 확인한 다음 다시 시도하세요.</string>
     <string name="k2go_privacy_unsupported">이 설정에는 최신 대시보드가 필요합니다. 대시보드를 업데이트한 다음 다시 시도하세요.</string>
     <string name="k2go_privacy_none">스스로 외부 서버에 연결하는 설치된 서비스가 없습니다.</string>
+    <string name="k2go_privacy_saved_later">저장했습니다. 변경 사항은 다음에 서비스가 시작될 때 적용됩니다.</string>
 </resources>

@@ -30,8 +30,10 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.privacy.domain.OutboundSwitch;
+import org.appdevforall.k2go.privacy.domain.SetOutboundUseCase;
 import org.appdevforall.k2go.ui.K2GoHeaderView;
 import org.appdevforall.k2go.ui.K2GoText;
+import org.appdevforall.k2go.util.BusyMessage;
 import org.appdevforall.k2go.util.Snackbars;
 
 public class PrivacyFragment extends Fragment {
@@ -46,11 +48,12 @@ public class PrivacyFragment extends Fragment {
         ((K2GoHeaderView) root.findViewById(R.id.k2go_sub_header)).setTitle(getString(R.string.k2go_settings_privacy));
         list = root.findViewById(R.id.k2go_sub_list);
 
-        vm = new ViewModelProvider(this, new PrivacyViewModelFactory()).get(PrivacyViewModel.class);
+        vm = new ViewModelProvider(this, new PrivacyViewModelFactory(requireContext())).get(PrivacyViewModel.class);
         vm.state().observe(getViewLifecycleOwner(), this::render);
         vm.notice().observe(getViewLifecycleOwner(), n -> {
             if (n == null || !n.take()) return;
-            Snackbars.make(root, getString(n.saved ? R.string.k2go_privacy_saved : R.string.k2go_privacy_save_failed)).show();
+            int text = noticeText(n.result);
+            if (text != 0) Snackbars.make(root, getString(text)).show();
         });
         vm.load();
         return root;
@@ -84,6 +87,18 @@ public class PrivacyFragment extends Fragment {
                 for (OutboundSwitch sw : st.switches) {
                     list.addView(switchRow(ctx, sw, st.busy()));
                 }
+        }
+    }
+
+    /** BUSY names the operation that holds the box, with the shared refusal text. 0 = no message. */
+    private int noticeText(SetOutboundUseCase.Result result) {
+        if (result == null) return R.string.k2go_privacy_save_failed;
+        switch (result) {
+            case BUSY:       return BusyMessage.resFor(requireContext());
+            case NEXT_START: return R.string.k2go_privacy_saved_later;
+            case UNCHANGED:  return 0;   // the box already had it: no restart, nothing to say
+            case RESTARTING:
+            default:         return R.string.k2go_privacy_saved;
         }
     }
 

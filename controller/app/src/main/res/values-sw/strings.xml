@@ -1598,4 +1598,5 @@
     <string name="k2go_privacy_unreachable">Imeshindwa kusoma mipangilio hii. Hakikisha seva imewashwa, kisha ujaribu tena.</string>
     <string name="k2go_privacy_unsupported">Mipangilio hii inahitaji dashibodi mpya zaidi. Sasisha dashibodi, kisha ujaribu tena.</string>
     <string name="k2go_privacy_none">Hakuna huduma iliyosakinishwa inayowasiliana na seva za nje yenyewe.</string>
+    <string name="k2go_privacy_saved_later">Imehifadhiwa. Mabadiliko yatatumika huduma itakapoanza tena.</string>
 </resources>

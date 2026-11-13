@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_unreachable">Ezeket a beállításokat nem sikerült beolvasni. Ellenőrizze, hogy a kiszolgáló fut-e, majd próbálja újra.</string>
     <string name="k2go_privacy_unsupported">Ezekhez a beállításokhoz újabb irányítópult kell. Frissítse az irányítópultot, majd próbálja újra.</string>
     <string name="k2go_privacy_none">Egyik telepített szolgáltatás sem kapcsolódik magától külső kiszolgálókhoz.</string>
+    <string name="k2go_privacy_saved_later">Mentve. A módosítás a szolgáltatás következő indításakor lép életbe.</string>
 </resources>

@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModel;
 import org.appdevforall.k2go.privacy.domain.GetOutboundSwitchesUseCase;
 import org.appdevforall.k2go.privacy.domain.OutboundSwitch;
 import org.appdevforall.k2go.privacy.domain.PrivacyException;
-import org.appdevforall.k2go.privacy.domain.PrivacyRepository;
+import org.appdevforall.k2go.privacy.domain.SetOutboundUseCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,11 +26,12 @@ import java.util.concurrent.Executors;
 /** The box owns the state; this keeps no copy past the last answer, and re-reads on {@link #load()}. */
 public class PrivacyViewModel extends ViewModel {
 
-    /** A one-shot result of a set, for a snackbar. {@link #take()} is true only once. */
+    /** A one-shot result of a set, for a snackbar. {@link #take()} is true only once.
+     *  {@code result} is null when the box did not take the change. */
     public static final class Notice {
-        public final boolean saved;
+        public final SetOutboundUseCase.Result result;
         private boolean taken;
-        Notice(boolean saved) { this.saved = saved; }
+        Notice(SetOutboundUseCase.Result result) { this.result = result; }
         public synchronized boolean take() {
             if (taken) return false;
             taken = true;
@@ -39,15 +40,15 @@ public class PrivacyViewModel extends ViewModel {
     }
 
     private final GetOutboundSwitchesUseCase getSwitches;
-    private final PrivacyRepository repository;
+    private final SetOutboundUseCase setOutbound;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<PrivacyUiState> state = new MutableLiveData<>(
             new PrivacyUiState(PrivacyUiState.Status.LOADING, Collections.emptyList(), null));
     private final MutableLiveData<Notice> notice = new MutableLiveData<>();
 
-    public PrivacyViewModel(GetOutboundSwitchesUseCase getSwitches, PrivacyRepository repository) {
+    public PrivacyViewModel(GetOutboundSwitchesUseCase getSwitches, SetOutboundUseCase setOutbound) {
         this.getSwitches = getSwitches;
-        this.repository = repository;
+        this.setOutbound = setOutbound;
     }
 
     public LiveData<PrivacyUiState> state() { return state; }
@@ -75,16 +76,18 @@ public class PrivacyViewModel extends ViewModel {
         state.setValue(new PrivacyUiState(PrivacyUiState.Status.READY,
                 replace(before, new OutboundSwitch(service, true, outbound)), service));
         executor.execute(() -> {
-            List<OutboundSwitch> after = before;
-            boolean saved = false;
+            List<OutboundSwitch> after = before;   // BUSY or a failure: back to what the box reported
+            SetOutboundUseCase.Result result = null;
             try {
-                after = replace(before, repository.set(service, outbound));
-                saved = true;
+                result = setOutbound.execute(service, outbound);
+                if (result != SetOutboundUseCase.Result.BUSY) {
+                    after = replace(before, new OutboundSwitch(service, true, outbound));
+                }
             } catch (PrivacyException ignored) {
-                // The switch goes back to the last state the box reported.
+                // The box did not take the change.
             }
             state.postValue(new PrivacyUiState(PrivacyUiState.Status.READY, after, null));
-            notice.postValue(new Notice(saved));
+            notice.postValue(new Notice(result));
         });
     }
 

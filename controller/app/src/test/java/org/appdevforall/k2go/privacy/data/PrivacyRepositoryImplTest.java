@@ -49,15 +49,30 @@ public class PrivacyRepositoryImplTest {
     }
 
     @Test
-    public void setPostsTheValueAndReturnsTheNewState() throws Exception {
+    public void setPostsTheValueAndReturnsChanged() throws Exception {
         server.enqueue(new MockResponse().setBody(
                 "{\"service\":\"forgejo\",\"installed\":true,\"outbound\":true,\"changed\":true}"));
-        OutboundSwitch s = repo.set("forgejo", true);
-        assertTrue(s.outbound());
+        assertTrue(repo.set("forgejo", true));
         RecordedRequest r = server.takeRequest();
         assertEquals("POST", r.getMethod());
         assertEquals("/k2go-api/system/privacy/forgejo", r.getPath());
         assertEquals("{\"outbound\":true}", r.getBody().readUtf8());
+    }
+
+    @Test
+    public void setReportsUnchanged() throws Exception {
+        server.enqueue(new MockResponse().setBody(
+                "{\"service\":\"kolibri\",\"installed\":true,\"outbound\":false,\"changed\":false}"));
+        assertFalse(repo.set("kolibri", false));
+    }
+
+    @Test
+    public void requestRestartUsesTheServiceRestartActuator() throws Exception {
+        server.enqueue(new MockResponse().setResponseCode(202).setBody("{\"ok\":true}"));
+        repo.requestRestart("kolibri");
+        RecordedRequest r = server.takeRequest();
+        assertEquals("POST", r.getMethod());
+        assertEquals("/k2go-api/system/service/kolibri/restart", r.getPath());
     }
 
     @Test

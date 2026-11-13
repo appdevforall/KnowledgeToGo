@@ -1774,4 +1774,5 @@
     <string name="k2go_privacy_unreachable">Could not read these settings. Make sure that the server is on, then try again.</string>
     <string name="k2go_privacy_unsupported">These settings need a newer dashboard. Update the dashboard, then try again.</string>
     <string name="k2go_privacy_none">No installed service contacts outside servers on its own.</string>
+    <string name="k2go_privacy_saved_later">Saved. The change applies when the service starts next time.</string>
 </resources>
