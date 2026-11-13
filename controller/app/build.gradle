@@ -243,6 +243,11 @@ android {
             // Multiply original version by 10 and add the architecture ID
             // Ex: Version 50 -> Universal: 500, ARM32: 501, ARM64: 502
             output.versionCodeOverride = (variant.versionCode * 10) + baseAbiVersionCode
+            // K2GO-564: a Play candidate takes the code Play assigns next (highest used + 1),
+            // passed by .github/workflows/play-candidate.yml. Other flavors keep the rule above.
+            if (variant.flavorName == "play" && project.hasProperty('playVersionCode')) {
+                output.versionCodeOverride = project.property('playVersionCode') as int
+            }
 
             // Shorten the split's ABI in the filename: arm64-v8a -> v8a, armeabi-v7a -> v7a.
             // Gradle names outputs after the split, so archivesBaseName alone cannot do this.

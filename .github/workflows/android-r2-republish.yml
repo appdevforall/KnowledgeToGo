@@ -12,11 +12,16 @@ name: Republish APK + AAB to R2 (interim manual)
 # PRECONDITION: bump versionCode in controller/app/build.gradle and merge to main FIRST, then run this
 # from main. Play rejects a duplicate versionCode, and a same-code republish is not seen as an update.
 #
-# The tagged-release path stays in android-release-build.yml, untouched. TO RETIRE once monthly tagged
+# The release path is play-release.yml (K2GO-564), which calls android-release-build.yml. TO RETIRE once monthly tagged
 # releases are stable: delete this file.
 
 on:
   workflow_dispatch:
+    inputs:
+      play_version_code:
+        description: "Play AAB versionCode: the highest code in Play Console + 1 (K2GO-564). Empty = build.gradle code x 10."
+        required: false
+        default: ""
 
 jobs:
   build-and-republish:
@@ -70,8 +75,17 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
+          PLAY_VERSION_CODE: ${{ inputs.play_version_code }}
         run: |
+          # Play candidates (play-candidate.yml) move the Play code past build.gradle x 10, so the
+          # fallback AAB takes the code from the input. It changes the play flavor only.
+          playCode=()
+          if [ -n "$PLAY_VERSION_CODE" ]; then
+            [[ "$PLAY_VERSION_CODE" =~ ^[0-9]+$ ]] || { echo "::error::play_version_code must be a number"; exit 1; }
+            playCode=(-PplayVersionCode="$PLAY_VERSION_CODE")
+          fi
           ./gradlew assembleStandardRelease bundlePlayRelease \
+            "${playCode[@]}" \
             -PversionSuffix="" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \

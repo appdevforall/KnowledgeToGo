@@ -1,16 +1,22 @@
 name: Build and Release K2Go APKs
 
 on:
-  # Tag-only: a release ships by pushing a v* tag. Manual (workflow_dispatch) builds that go to R2
-  # live in android-r2-republish.yml, so the manual path has one home, not two.
-  push:
-    tags:
-      - 'v*'
+  # K2GO-564: only play-release.yml starts a release, after Google approved the candidate, so GitHub
+  # and Play ship the same commit. A hand-pushed v* tag does not start this workflow.
+  # Manual builds that go to R2 between releases live in android-r2-republish.yml.
+  workflow_call:
+    inputs:
+      tag:
+        description: "Release tag to build, for example v1.2.0"
+        type: string
+        required: true
 
 jobs:
   build-and-release:
     name: Build Release APKs & Upload to R2
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
 
     defaults:
       run:
@@ -20,6 +26,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
         with:
+          ref: ${{ inputs.tag }}
           submodules: recursive
 
       # TODO (Future): Add a Jira step here to verify if the version exists in Jira
@@ -77,8 +84,9 @@ jobs:
           # In-APK traceability is unaffected: BuildConfig.GIT_SHA still records the commit.
           # K2GO-431: build both flavors. standard -> GitHub + R2 + OTA update.json (as before);
           # fdroid -> R2 only (F-Droid distributes it; it carries no in-app OTA).
-          # K2GO-433: also build the Play AAB (play flavor); archived to R2 below.
-          ./gradlew assembleStandardRelease assembleFdroidRelease bundlePlayRelease \
+          # K2GO-564: the Play AAB is built and archived by play-candidate.yml; Google approves that
+          # exact build, so the release does not build a second one.
+          ./gradlew assembleStandardRelease assembleFdroidRelease \
             -PversionSuffix="" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
@@ -88,11 +96,11 @@ jobs:
       # --- GITHUB RELEASES ---
 
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
-          # Automatically marks as Pre-release if the tag ends in "-beta" or "-rc"
-          prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+          # Marks a "-beta" tag as a pre-release. rc tags never reach this workflow (K2GO-564).
+          tag_name: ${{ env.RELEASE_TAG }}
+          prerelease: ${{ contains(env.RELEASE_TAG, '-beta') }}
           files: controller/**/build/outputs/apk/standard/release/*.apk
           generate_release_notes: true
         env:
@@ -101,7 +109,6 @@ jobs:
       # --- CLOUDFLARE R2 UPLOAD ---
 
       - name: Upload to Cloudflare R2
-        if: startsWith(github.ref, 'refs/tags/v')
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
@@ -122,22 +129,12 @@ jobs:
               --content-type "application/vnd.android.package-archive"
           done
 
-          # K2GO-433: archive the Play AAB to R2 (backup copy, one object per release by versioned filename).
-          for aab in $(find . -path "*/build/outputs/bundle/playRelease/*.aab"); do
-            filename=$(basename "$aab")
-            echo "Uploading $filename to Cloudflare R2 ($BUCKET_NAME)..."
-            aws s3 cp "$aab" "s3://$BUCKET_NAME/$filename" \
-              --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
-              --content-type "application/octet-stream"
-          done
-
       # --- OTA MANIFEST (update.json) ---
       # ADFA-4984: publish the OTA manifest LAST, after the APKs are already in R2, so it never
       # points at a missing binary. update.json is a fixed key -> it overwrites the previous manifest
       # and always resolves to the latest release (no .1/.2 copies). The changelog is copied verbatim
       # from the top entry of controller/ci/ota-release-notes.md, which must match the release tag.
       - name: Generate and upload update.json
-        if: startsWith(github.ref, 'refs/tags/v')
         working-directory: ${{ github.workspace }}
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
@@ -147,7 +144,7 @@ jobs:
           BUCKET_NAME: "k2go-apk-repo"
         run: |
           set -euo pipefail
-          TAG="${GITHUB_REF#refs/tags/}"
+          TAG="$RELEASE_TAG"
           echo "Release tag: $TAG"
 
           # versionCodeBase = the app module's raw versionCode (the app divides the installed,
