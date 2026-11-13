@@ -79,9 +79,12 @@ public class BackupJobFragment extends Fragment {
     private boolean leaveWarned = false;   // ADFA-4971: first Back reassures, later Backs background the app
     private androidx.activity.OnBackPressedCallback backGate;
 
-    private final ActivityResultLauncher<String> createDoc =
-            registerForActivityResult(new ActivityResultContracts.CreateDocument("application/gzip"), uri -> {
-                if (uri != null) startBackup(uri); else popToIntro(false);
+    // K2GO-570: a backup writes two files (X.tar.gz, X.tar.json), so the user picks a folder.
+    private final ActivityResultLauncher<Uri> pickFolder =
+            registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), uri -> {
+                if (uri == null) { popToIntro(false); return; }
+                org.appdevforall.k2go.backup.data.BackupFolder.remember(requireContext(), uri);
+                startBackup(uri);
             });
     private final ActivityResultLauncher<String[]> openDoc =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
@@ -173,7 +176,7 @@ public class BackupJobFragment extends Fragment {
             return;
         }
         if (isRestore()) openDoc.launch(new String[]{"application/gzip", "application/x-gzip", "*/*"});
-        else createDoc.launch(org.appdevforall.k2go.backup.domain.BackupEngine.suggestedFileName(requireContext()));
+        else pickFolder.launch(org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext()));
     }
 
     // ---- BACKUP ----
@@ -213,7 +216,7 @@ public class BackupJobFragment extends Fragment {
                     setStatusAnimated(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
                             DeepOpService.COPY_PASS, DeepOpService.RESTORE_PASSES,
                             getString(R.string.k2go_br_status_copying)));
-                    DeepOpService.startRestore(requireContext(), uri);
+                    DeepOpService.startRestore(requireContext(), uri, null);
                 })
                 .setNegative(R.string.cancel, () -> popToIntro(false))
                 .show();

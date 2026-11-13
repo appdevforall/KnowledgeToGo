@@ -19,7 +19,7 @@
  *               ServerController never both own the proot container.
  *
  *               Job shapes:
- *                 BACKUP  (EXTRA_URI = SAF dest)   : stop services -> stream tar|gzip -> post terminal.
+ *                 BACKUP  (EXTRA_URI = SAF folder) : stop services -> stream tar|gzip -> X.tar.json -> terminal.
  *                 RESTORE (EXTRA_URI = SAF source) : stage the file -> stop services -> extract -> terminal.
  *               K2GO-372: the caller now only shows the destructive confirm (which needs the file's name,
  *               not its bytes); every read of the archive belongs to the service, so it is measured, it
@@ -76,7 +76,9 @@ public final class DeepOpService extends Service {
     public static final String ACTION_RESUME = "org.iiab.controller.DEEPOP_RESUME";
     public static final String ACTION_CANCEL_CONFIRM = "org.iiab.controller.DEEPOP_CANCEL_CONFIRM";
     public static final String ACTION_FORCE_CANCEL = "org.iiab.controller.DEEPOP_FORCE_CANCEL";   // K2GO-384: acknowledged cancel DURING extract
-    public static final String EXTRA_URI = "uri";     // backup: SAF dest; restore: SAF source
+    public static final String EXTRA_URI = "uri";     // backup: SAF folder (tree); restore: SAF source
+    /** K2GO-570: restore only, optional: the X.tar.json next to the picked tarball. */
+    public static final String EXTRA_COMPANION = "companion";
 
     /** K2GO-372: a restore is one run of three passes — stage the file, verify it, extract it — so they
      *  share one bar instead of each filling it and sending it back to zero. */
@@ -86,6 +88,14 @@ public final class DeepOpService extends Service {
     public static final int COPY_PASS = 0;
     private static final int VERIFY_PASS = 1;
     private static final int EXTRACT_PASS = 2;
+    /** K2GO-570: a backup that matches its X.tar.json skips the listing: copy, then extract. */
+    public static final int FAST_RESTORE_PASSES = 2;
+    private static final int FAST_EXTRACT_PASS = 1;
+    /** Pass model of this run: set before the copy from whether a companion came with it. */
+    private volatile int passes = RESTORE_PASSES;
+    private volatile int extractPass = EXTRACT_PASS;
+    /** Non-null when the staged tarball matched its X.tar.json: the extract total, and no listing. */
+    private volatile org.appdevforall.k2go.backup.domain.BackupCompanion verifiedCompanion;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private PowerManager.WakeLock wakeLock;
@@ -122,15 +132,17 @@ public final class DeepOpService extends Service {
      *  ACTION_RESUME can re-run verify+extract on it (no re-copy) and ACTION_CANCEL_CONFIRM can delete it. */
     private volatile String heldTempPath = null;
 
-    /** Start a backup: stream a gzip'd tar of the rootfs to the SAF destination. */
-    public static void startBackup(Context ctx, Uri dest) {
-        Intent i = new Intent(ctx, DeepOpService.class).setAction(ACTION_BACKUP).putExtra(EXTRA_URI, dest.toString());
+    /** Start a backup: write X.tar.gz and X.tar.json into the SAF folder {@code tree}. */
+    public static void startBackup(Context ctx, Uri tree) {
+        Intent i = new Intent(ctx, DeepOpService.class).setAction(ACTION_BACKUP).putExtra(EXTRA_URI, tree.toString());
         startFg(ctx, i);
     }
 
-    /** Start a restore: stage the picked archive, then extract it over the rootfs (destructive). */
-    public static void startRestore(Context ctx, Uri source) {
+    /** Start a restore: stage the picked archive, then extract it over the rootfs (destructive).
+     *  @param companion the X.tar.json of the archive, or {@code null}. */
+    public static void startRestore(Context ctx, Uri source, @androidx.annotation.Nullable Uri companion) {
         Intent i = new Intent(ctx, DeepOpService.class).setAction(ACTION_RESTORE).putExtra(EXTRA_URI, source.toString());
+        if (companion != null) i.putExtra(EXTRA_COMPANION, companion.toString());
         startFg(ctx, i);
     }
 
@@ -190,9 +202,13 @@ public final class DeepOpService extends Service {
         // promised, and it means the explicit stop below has little left to wait for.
         // K2GO-448: the restore's first stage ("[1/3] Copying the file") must carry the prefix from the
         // start, so the notification and the initial indeterminate state match the progress emits below.
+        if (restoring && intent.getStringExtra(EXTRA_COMPANION) != null) {
+            passes = FAST_RESTORE_PASSES;
+            extractPass = FAST_EXTRACT_PASS;
+        }
         stepText = restoring
                 ? org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                        COPY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_copying))
+                        COPY_PASS, passes, getString(R.string.k2go_br_status_copying))
                 : getString(R.string.k2go_br_status_stopping);
         startForeground(NOTIFICATION_ID, buildNotification(stepText));
         acquireHardwareLocks();
@@ -203,7 +219,7 @@ public final class DeepOpService extends Service {
         post(stepText, -1);
 
         final String uriStr = intent.getStringExtra(EXTRA_URI);
-        if (restoring) stageThenRestore(uriStr);
+        if (restoring) stageThenRestore(uriStr, intent.getStringExtra(EXTRA_COMPANION));
         else EnvironmentControl.stop(this, this::log, () -> runBackup(uriStr));
         return START_NOT_STICKY;
     }
@@ -214,13 +230,29 @@ public final class DeepOpService extends Service {
         currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: backup is cancellable throughout (read-only)
         setStep(getString(R.string.k2go_br_status_backing), -1);
         AppExecutors.get().io().execute(() -> {
-            boolean ok;
-            try (OutputStream os = getContentResolver().openOutputStream(Uri.parse(uriStr))) {
-                // K2GO-384: byte-accurate progress + ETA; streamBackup reports from its tar-stdout read loop.
-                // post() is thread-safe. backupCancelled lets the on-screen (or notification) Cancel stop tar.
-                ok = os != null && BackupEngine.streamBackup(this, os,
-                        (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds),
-                        backupCancelled);
+            boolean ok = false;
+            final Uri[] written = new Uri[2];   // K2GO-570: X.tar.gz, X.tar.json
+            try {
+                final android.content.ContentResolver cr = getContentResolver();
+                final Uri tree = Uri.parse(uriStr);
+                final Uri folder = android.provider.DocumentsContract.buildDocumentUriUsingTree(
+                        tree, android.provider.DocumentsContract.getTreeDocumentId(tree));
+                final String tarName = BackupEngine.suggestedFileName(this);
+                written[0] = android.provider.DocumentsContract.createDocument(cr, folder, "application/gzip", tarName);
+                final BackupEngine.Stats stats = new BackupEngine.Stats();
+                try (OutputStream os = written[0] == null ? null : cr.openOutputStream(written[0])) {
+                    // K2GO-384: byte-accurate progress + ETA; streamBackup reports from its tar-stdout read loop.
+                    // post() is thread-safe. backupCancelled lets the on-screen (or notification) Cancel stop tar.
+                    ok = os != null && BackupEngine.streamBackup(this, os,
+                            (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds),
+                            backupCancelled, stats);
+                }
+                // K2GO-570: X.tar.json last, so a backup without it is an incomplete one.
+                if (ok) {
+                    written[1] = android.provider.DocumentsContract.createDocument(cr, folder, "application/json",
+                            org.appdevforall.k2go.backup.domain.BackupCompanion.companionName(tarName));
+                    ok = written[1] != null && writeCompanion(cr, written[1], stats);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "backup failed", e);
                 ok = false;
@@ -231,7 +263,7 @@ public final class DeepOpService extends Service {
                 if (!success) {
                     // K2GO-384: an unfinished backup left an incomplete/damaged .tar.gz at the SAF destination.
                     // Removing it is the default (no prompt) -- a partial gzip'd tar is useless and unresumable.
-                    deleteBackupDoc(uriStr);
+                    for (Uri u : written) if (u != null) deleteBackupDoc(u);
                     if (backupCancelled.get()) { finishCancelled(); return; }   // user cancel -> bifurcation
                 }
                 finishJob(success, getString(R.string.k2go_br_backup_done), getString(R.string.k2go_br_backup_failed));
@@ -240,12 +272,32 @@ public final class DeepOpService extends Service {
     }
 
     /** K2GO-384: remove the incomplete/damaged backup file a cancelled or failed run left at the SAF
-     *  destination. Best-effort -- a document picked via CREATE_DOCUMENT supports delete; if not, leave it. */
-    private void deleteBackupDoc(String uriStr) {
+     *  destination. Best-effort -- a document the app created supports delete; if not, leave it. */
+    private void deleteBackupDoc(Uri doc) {
         try {
-            android.provider.DocumentsContract.deleteDocument(getContentResolver(), Uri.parse(uriStr));
+            android.provider.DocumentsContract.deleteDocument(getContentResolver(), doc);
         } catch (Exception e) {
             Log.w(TAG, "could not delete incomplete backup doc: " + e.getMessage());
+        }
+    }
+
+    /** K2GO-570: write X.tar.json from what the stream measured. */
+    private boolean writeCompanion(android.content.ContentResolver cr, Uri doc, BackupEngine.Stats stats) {
+        java.text.SimpleDateFormat iso = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US);
+        iso.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        org.appdevforall.k2go.backup.domain.BackupCompanion c = new org.appdevforall.k2go.backup.domain.BackupCompanion(
+                iso.format(new java.util.Date()), org.appdevforall.k2go.BuildConfig.VERSION_NAME,
+                org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId(), null,
+                stats.gzBytes, stats.gzSha256, stats.tarBytes);
+        if (!c.isComplete()) return false;
+        try (OutputStream os = cr.openOutputStream(doc)) {
+            if (os == null) return false;
+            os.write(org.appdevforall.k2go.backup.data.BackupCompanionJson.write(c)
+                    .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "could not write the backup companion", e);
+            return false;
         }
     }
 
@@ -259,17 +311,24 @@ public final class DeepOpService extends Service {
      * leaving the screen cannot strand it. It runs before the damage marker is planted, because nothing
      * is written yet — see the marker comment in {@link #runRestore}.
      */
-    private void stageThenRestore(final String uriStr) {
+    private void stageThenRestore(final String uriStr, final String companionStr) {
         final File temp = new File(getCacheDir(), "restore.tar.gz");
         final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
             final long compressed = sourceSize(src);
+            final org.appdevforall.k2go.backup.domain.BackupCompanion companion =
+                    companionStr == null ? null : readCompanion(Uri.parse(companionStr));
             String failure = rejectBeforeCopy(src);
             if (failure == null) {
                 failure = rejectForSpace(compressed);
             }
             if (failure == null) {
-                failure = stageArchive(src, temp, compressed);
+                failure = stageArchive(src, temp, compressed, companion);
+            }
+            if (failure == null && verifiedCompanion == null && passes != RESTORE_PASSES) {
+                // K2GO-570: no usable or matching X.tar.json: the full path (listing) decides.
+                passes = RESTORE_PASSES;
+                extractPass = EXTRACT_PASS;
             }
             final String outcome = failure;
             main.post(() -> {
@@ -362,10 +421,14 @@ public final class DeepOpService extends Service {
      *             percent rather than a made-up one.
      * @return {@code null} on success, otherwise the message to show the user.
      */
-    private String stageArchive(Uri src, File temp, long size) {
+    private String stageArchive(Uri src, File temp, long size,
+                                @androidx.annotation.Nullable org.appdevforall.k2go.backup.domain.BackupCompanion companion) {
         try (InputStream in = getContentResolver().openInputStream(src);
              OutputStream out = new java.io.FileOutputStream(temp)) {
             if (in == null) throw new IOException("The picked file could not be opened");
+            // K2GO-570: hash during the copy, so checking X.tar.json costs no extra pass.
+            final java.security.MessageDigest sha =
+                    companion == null ? null : java.security.MessageDigest.getInstance("SHA-256");
             byte[] buf = new byte[1 << 16];
             long copied = 0L, lastEmit = 0L;
             final long startMs = android.os.SystemClock.elapsedRealtime();
@@ -382,13 +445,14 @@ public final class DeepOpService extends Service {
                 }
                 if (cancelBeforeExtract.get()) return "";
                 out.write(buf, 0, n);
+                if (sha != null) sha.update(buf, 0, n);
                 copied += n;
                 long now = android.os.SystemClock.elapsedRealtime();
                 if (size > 0L && now - lastEmit >= 200L) {
                     lastEmit = now;
                     final int pct = org.appdevforall.k2go.deploy.domain.ExtractProgress
                             .unifiedPercent(org.appdevforall.k2go.deploy.domain.ExtractProgress
-                                    .percent(copied, size), COPY_PASS, RESTORE_PASSES);
+                                    .percent(copied, size), COPY_PASS, passes);
                     // K2GO-384: the copy is the restore's first pass; give it the same live per-pass ETA
                     // the extract/verify passes already report (TarExtractor computes theirs the same way).
                     final long rate = org.appdevforall.k2go.system.domain.TransferRate
@@ -396,16 +460,36 @@ public final class DeepOpService extends Service {
                     final long eta = org.appdevforall.k2go.deploy.domain.ExtractProgress
                             .etaSeconds(copied, size, rate);
                     main.post(() -> setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
-                            .stepped(COPY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_copying)), pct, eta));
+                            .stepped(COPY_PASS, passes, getString(R.string.k2go_br_status_copying)), pct, eta));
                 }
             }
             out.flush();
+            if (companion != null) {
+                String hex = org.appdevforall.k2go.download.domain.DownloadVerifier.toHex(sha.digest());
+                if (companion.matches(copied, hex)) verifiedCompanion = companion;
+                else Log.w(TAG, "X.tar.json does not match the archive; full restore path");
+            }
             return null;
         } catch (Exception e) {
             Log.e(TAG, "Staging the picked archive failed", e);
             //noinspection ResultOfMethodCallIgnored
             temp.delete();
             return getString(R.string.k2go_br_restore_unreadable);
+        }
+    }
+
+    /** K2GO-570: the X.tar.json of the picked archive, or {@code null} when it is unreadable or incomplete. */
+    private org.appdevforall.k2go.backup.domain.BackupCompanion readCompanion(Uri doc) {
+        try (InputStream in = getContentResolver().openInputStream(doc)) {
+            if (in == null) return null;
+            byte[] buf = new byte[org.appdevforall.k2go.backup.data.BackupCompanionJson.MAX_BYTES + 1];
+            int n = 0, r;
+            while (n < buf.length && (r = in.read(buf, n, buf.length - n)) != -1) n += r;
+            return org.appdevforall.k2go.backup.data.BackupCompanionJson.read(
+                    new String(buf, 0, n, java.nio.charset.StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            Log.w(TAG, "could not read X.tar.json: " + e.getMessage());
+            return null;
         }
     }
 
@@ -443,11 +527,16 @@ public final class DeepOpService extends Service {
         if (done || passRunning) return;   // K2GO-384: one verify+extract pass at a time (service is the owner)
         passRunning = true;
         currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: verify -- cancellable (kill + hold)
-        setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
-                .stepped(VERIFY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_checking)), 0);
+        final org.appdevforall.k2go.backup.domain.BackupCompanion fast = verifiedCompanion;
+        if (fast == null) {
+            setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
+                    .stepped(VERIFY_PASS, passes, getString(R.string.k2go_br_status_checking)), 0);
+        }
         final File destParent = org.appdevforall.k2go.SystemStateEvaluator.rootfsBaseDir(this);
+        // K2GO-570: a matched X.tar.json gives the extract total and skips the listing; otherwise the
+        // full listing (K2GO-554: untrusted import).
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
-                cancelBeforeExtract, pauseRequested, forceExtractCancel, 0L,   // K2GO-554: untrusted import, full listing
+                cancelBeforeExtract, pauseRequested, forceExtractCancel, fast == null ? 0L : fast.tarBytes,
                 new TarExtractor.ExtractionListener() {
                     @Override public void onComplete(String destDir) { passRunning = false; main.post(() -> endRestore(path, true, null)); }
                     @Override public void onError(String error) {
@@ -475,9 +564,9 @@ public final class DeepOpService extends Service {
                         InstallGuard.begin(DeepOpService.this);
                         // K2GO-562: a restore replaces the system, so nothing of the old tree may stay.
                         final String wiping = org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                                EXTRACT_PASS, RESTORE_PASSES, getString(R.string.install_status_wiping_old));
+                                extractPass, passes, getString(R.string.install_status_wiping_old));
                         final int at = org.appdevforall.k2go.deploy.domain.ExtractProgress
-                                .unifiedPercent(0, EXTRACT_PASS, RESTORE_PASSES);
+                                .unifiedPercent(0, extractPass, passes);
                         main.post(() -> setStep(wiping, at));
                         org.appdevforall.k2go.install.data.RootfsWipe.wipe(
                                 org.appdevforall.k2go.SystemStateEvaluator.rootfsDir(DeepOpService.this), "restore");
@@ -515,10 +604,10 @@ public final class DeepOpService extends Service {
                         // write and decoupled from these progress emits -- so it no longer rides on the
                         // first extract progress callback.
                         final int unified = org.appdevforall.k2go.deploy.domain.ExtractProgress
-                                .unifiedPercent(passPercent, extracting ? EXTRACT_PASS : VERIFY_PASS,
-                                        RESTORE_PASSES);
+                                .unifiedPercent(passPercent, extracting ? extractPass : VERIFY_PASS,
+                                        passes);
                         final String label = org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                                extracting ? EXTRACT_PASS : VERIFY_PASS, RESTORE_PASSES,
+                                extracting ? extractPass : VERIFY_PASS, passes,
                                 getString(extracting
                                         ? R.string.k2go_br_status_restoring
                                         : R.string.k2go_br_status_checking));

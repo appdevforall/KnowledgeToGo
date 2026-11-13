@@ -46,7 +46,8 @@ public final class DownloadVerifier {
         }
     }
 
-    private static String toHex(byte[] b) {
+    /** Lowercase hex of a digest. K2GO-570: shared with the backup writer and the restore copy. */
+    public static String toHex(byte[] b) {
         StringBuilder s = new StringBuilder(b.length * 2);
         for (byte x : b) s.append(Character.forDigit((x >> 4) & 0xF, 16)).append(Character.forDigit(x & 0xF, 16));
         return s.toString().toLowerCase(Locale.US);

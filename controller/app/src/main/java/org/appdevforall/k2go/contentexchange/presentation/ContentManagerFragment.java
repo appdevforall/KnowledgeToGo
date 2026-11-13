@@ -398,6 +398,11 @@ public class ContentManagerFragment extends Fragment {
         if (activeImport != null) {
             keep.add(activeImport);
         }
+        // K2GO-570: the backup folder grant belongs to backups, not to Content Exchange.
+        Uri backupFolder = org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext());
+        if (backupFolder != null) {
+            keep.add(backupFolder.toString());
+        }
         int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
         for (android.content.UriPermission p : resolver.getPersistedUriPermissions()) {
             if (!keep.contains(p.getUri().toString())) {
