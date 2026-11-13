@@ -235,6 +235,27 @@ EOS
   chmod +x /usr/local/sbin/hostnamectl
 }
 
+disable_role_32bits() {
+  local role="$1" file="$2"
+  local comment="#32bits;pending support."
+
+  is_32bits || return 0
+
+  # role_install
+  if grep -qE "^[[:space:]]*${role}_install:" "$file"; then
+    sed -i -E "s|^[[:space:]]*(${role}_install:)[[:space:]]*.*|\\1 False ${comment}|" "$file"
+  else
+    printf '%s_install: False %s\n' "$role" "$comment" >> "$file"
+  fi
+
+  # role_enabled
+  if grep -qE "^[[:space:]]*${role}_enabled:" "$file"; then
+    sed -i -E "s|^[[:space:]]*(${role}_enabled:)[[:space:]]*.*|\\1 False ${comment}|" "$file"
+  else
+    printf '%s_enabled: False %s\n' "$role" "$comment" >> "$file"
+  fi
+}
+
 is_role_enabled() {
   local role="$1"
   local file="${2:-$LOCAL_VARS_DEST}"
@@ -584,12 +605,13 @@ fi
 install_update_repo
 
 #-----------------------------
-# Role overrides before the main install
+# Temporary workaround regarding roles on 32bits
 #-----------------------------
 if [ "${MATOMO_ONLY:-0}" = "1" ]; then
   # ADFA-5229: headless Matomo-only build to capture a clean Matomo runrole task log. Turn the
-  # content roles OFF (on ALL arches, so the log isn't padded by them), do NOT force 'code', and
-  # turn matomo ON so the role actually RUNS. Without the matomo flag it stays at the template default (False) and the role is skipped — which is exactly
+  # content roles OFF (on ALL arches, so the log isn't padded by them — disable_role_32bits only
+  # acts on 32-bit), do NOT force 'code', and turn matomo ON so the role actually RUNS. Without the
+  # matomo flag it stays at the template default (False) and the role is skipped — which is exactly
   # why the earlier build-matomo-*.log had no `TASK [matomo : ...]`. matomo pulls MariaDB + PHP on
   # demand as its deps, so mysql/php need not be pre-enabled here.
   for r in kiwix maps osm_vector_maps; do
