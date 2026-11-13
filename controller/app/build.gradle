@@ -44,12 +44,12 @@ android {
 
         // 3. Version Control (OTA)
         // NOTE: the APK carries this number x 10 (71 -> 710); see "VERSION CODE AND APK NAME" below
-        versionCode 71
+        versionCode 72
         // Dynamic version suffix: CI passes -PversionSuffix explicitly; local builds fall back to
         // the git short SHA (ADFA-4787) so any installed APK is traceable to its commit.
         def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix')
                 : (project.ext.gitSha ? "-${project.ext.gitSha}" : "")
-        versionName "v1.1.0${ciSuffix}"
+        versionName "v1.2.0${ciSuffix}"
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         // Analytics is a per-flavor property (see productFlavors): the "standard" flavor turns it on
         // when google-services.json is present; "fdroid" forces it off. The safe default here is OFF.
