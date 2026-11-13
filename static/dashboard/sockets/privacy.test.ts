@@ -6,7 +6,7 @@ import os from 'os';
 import path from 'path';
 import {
     readIniOption, setIniOption, parseIniBool, outboundFromText, valueFor, readState, applyOutbound,
-    findSwitch, PRIVACY_SWITCHES, PrivacySwitch, applyPrivacyDefaultsOnce, isPending, startEpochMs,
+    findSwitch, PRIVACY_SWITCHES, PrivacySwitch, applyPrivacyDefaultsOnce, isPending, startEpochMs, startTicks,
 } from './privacy';
 import { isRestartableService, createRestartQueue } from './services';
 
@@ -241,12 +241,15 @@ test('isPending: a config newer than the running process is pending; no process 
     assert.equal(isPending(2_000, null), false);    // not running: its next start reads the config
 });
 
-test('startEpochMs: field 22 of /proc/<pid>/stat against /proc/uptime', () => {
-    // pid (comm with ) and spaces) state ... ; starttime = 5000 ticks = 50 s after boot.
+test('startTicks: field 22 of /proc/<pid>/stat, also when the name has spaces and parens', () => {
     const fields = Array.from({ length: 30 }, (_, i) => String(i + 3));
     fields[19] = '5000';
-    const stat = '1234 (python3 kolibri) ' + fields.join(' ');
-    // Booted 200 s ago, so the process started 150 s ago.
-    assert.equal(startEpochMs(stat, '200.00 300.00\n', 1_000_000), 1_000_000 - 150_000);
-    assert.equal(startEpochMs('garbage', 'x', 0), null);
+    assert.equal(startTicks('1234 (python3 (k) x) ' + fields.join(' ')), 5000);
+    assert.equal(startTicks('garbage'), null);
+});
+
+test('startEpochMs: measured against this process (no /proc/uptime in the box)', () => {
+    // This process started at t=1_000_000 ms with 3000 ticks; the service has 5000 ticks: 20 s later.
+    assert.equal(startEpochMs(5000, 3000, 1_000_000), 1_020_000);
+    assert.equal(startEpochMs(1000, 3000, 1_000_000), 980_000);
 });

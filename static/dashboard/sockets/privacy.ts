@@ -157,14 +157,17 @@ export function isPending(configMtimeMs: number, processStartMs: number | null):
     return processStartMs !== null && configMtimeMs > processStartMs;
 }
 
-/** Epoch ms when a process started, from its /proc/<pid>/stat (field 22: start time in clock ticks
- *  after boot) and /proc/uptime. null when the text does not parse. */
-export function startEpochMs(statText: string, uptimeText: string, nowMs: number, hz = 100): number | null {
+/** Field 22 of /proc/<pid>/stat: the start time in clock ticks after boot. null when it does not parse. */
+export function startTicks(statText: string): number | null {
     const fields = statText.slice(statText.lastIndexOf(')') + 2).split(' ');   // field 3 onward
     const ticks = Number(fields[19]);
-    const uptime = parseFloat(uptimeText);
-    if (!Number.isFinite(ticks) || !Number.isFinite(uptime)) return null;
-    return nowMs - (uptime - ticks / hz) * 1000;
+    return fields.length > 19 && Number.isFinite(ticks) ? ticks : null;
+}
+
+/** Epoch ms when a process started, measured against this process: Android denies /proc/uptime in
+ *  the box, but /proc/self/stat and a same-uid /proc/<pid>/stat are readable. */
+export function startEpochMs(ticks: number, selfTicks: number, selfStartMs: number, hz = 100): number {
+    return selfStartMs + ((ticks - selfTicks) / hz) * 1000;
 }
 
 /** Start time of the newest process that matches `pattern`, or null when none runs. */
@@ -172,12 +175,16 @@ function processStartMs(pattern: string): number | null {
     try {
         const r = spawnSync('pgrep', ['-f', pattern], { encoding: 'utf8', timeout: 3000 });
         if (r.status !== 0 || !r.stdout) return null;
-        const uptime = fs.readFileSync('/proc/uptime', 'utf8');
+        const selfTicks = startTicks(fs.readFileSync('/proc/self/stat', 'utf8'));
+        if (selfTicks === null) return null;
+        const selfStartMs = Date.now() - process.uptime() * 1000;
         let newest: number | null = null;
         for (const pid of r.stdout.split('\n').filter((x) => /^\d+$/.test(x))) {
             try {
-                const t = startEpochMs(fs.readFileSync(`/proc/${pid}/stat`, 'utf8'), uptime, Date.now());
-                if (t !== null && (newest === null || t > newest)) newest = t;
+                const ticks = startTicks(fs.readFileSync(`/proc/${pid}/stat`, 'utf8'));
+                if (ticks === null) continue;
+                const t = startEpochMs(ticks, selfTicks, selfStartMs);
+                if (newest === null || t > newest) newest = t;
             } catch { /* the process ended */ }
         }
         return newest;
