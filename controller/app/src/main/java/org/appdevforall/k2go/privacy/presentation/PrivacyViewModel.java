@@ -69,6 +69,7 @@ public class PrivacyViewModel extends ViewModel {
     public void setOutbound(String service, boolean outbound) {
         PrivacyUiState now = current();
         if (now.busy() || now.status != PrivacyUiState.Status.READY) return;
+        if (sameAsReported(now.switches, service, outbound)) return;   // nothing to change on the box
         final List<OutboundSwitch> before = now.switches;
         // While in flight the switch shows the requested value; the box's answer replaces it.
         state.setValue(new PrivacyUiState(PrivacyUiState.Status.READY,
@@ -90,6 +91,13 @@ public class PrivacyViewModel extends ViewModel {
     private PrivacyUiState current() {
         PrivacyUiState s = state.getValue();
         return s != null ? s : new PrivacyUiState(PrivacyUiState.Status.LOADING, Collections.emptyList(), null);
+    }
+
+    private static boolean sameAsReported(List<OutboundSwitch> list, String service, boolean outbound) {
+        for (OutboundSwitch s : list) {
+            if (s.service().equals(service)) return s.outbound() == outbound;
+        }
+        return false;
     }
 
     private static List<OutboundSwitch> replace(List<OutboundSwitch> list, OutboundSwitch updated) {

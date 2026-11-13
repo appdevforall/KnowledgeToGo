@@ -113,8 +113,12 @@ public class PrivacyFragment extends Fragment {
         toggle.setMinimumHeight(0);
         toggle.setChecked(sw.outbound());
         toggle.setEnabled(!locked);
-        // Posted: the new state rebuilds the list, so let this switch finish its own click first.
-        toggle.setOnCheckedChangeListener((b, checked) -> b.post(() -> vm.setOutbound(sw.service(), checked)));
+        // A click, not a checked-change: only the user's tap may send a change, never a state that
+        // Android or a re-render sets. Posted: the new state rebuilds the list, so let the click finish.
+        toggle.setOnClickListener(v -> {
+            final boolean checked = toggle.isChecked();
+            v.post(() -> vm.setOutbound(sw.service(), checked));
+        });
         row.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
         return row;
     }
