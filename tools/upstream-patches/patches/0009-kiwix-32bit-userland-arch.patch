@@ -1,0 +1,24 @@
+Upstream-PR:     none (K2Go carry patch)
+Upstream-Status: not sent upstream (upstream is dropping 32-bit; K2Go keeps it)
+Applies-to:      roles/kiwix/defaults/main.yml
+Summary:         Pick the kiwix-tools build from the userland arch (dpkg_arch), not the kernel. A 32-bit library on a 64-bit phone reports machine=aarch64 and got the 64-bit build; armhf now maps to armv6 (built for ARMv6 and newer CPUs) and i386 to i586. Same signal as roles/maps (pmtiles).
+
+diff --git a/roles/kiwix/defaults/main.yml b/roles/kiwix/defaults/main.yml
+index 1000d2c..1bb033c 100644
+--- a/roles/kiwix/defaults/main.yml
++++ b/roles/kiwix/defaults/main.yml
+@@ -40,7 +40,13 @@ kiwix_arch_dict:      # 'dpkg --print-architecture' key would be: (to mitigate #
+ # CLAIM: 'ansible_machine might be "i686", whereas ansible_architecture on the same host would be "i386"'
+ # https://stackoverflow.com/questions/44713880/how-do-i-make-decision-based-on-arch-in-ansible-playbooks/44714226#44714226
+ #kiwix_arch: "{{ kiwix_arch_dict[ansible_facts.machine] | default('unsupported') }}"
+-kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine, 'unsupported') }}"
++# K2Go: a 32-bit userland on a 64-bit kernel reports machine=aarch64 (or x86_64), so pick the
++# build from the userland arch (dpkg_arch, set by 0-init), as roles/maps does. armv6 targets
++# ARMv6 and newer CPUs (the armv8 build targets ARMv8 CPUs only).
++kiwix_dpkg_arch_dict:
++  armhf: armv6
++  i386: i586
++kiwix_arch: "{{ kiwix_dpkg_arch_dict.get(dpkg_arch.stdout | default(''), kiwix_arch_dict.get(ansible_facts.machine, 'unsupported')) }}"
+ #kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine | default('') | lower, 'unsupported') }}"
+ 
+ # Latest official kiwix-tools release, per Kiwix permalink redirects:

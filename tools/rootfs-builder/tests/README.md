@@ -9,6 +9,7 @@ directory and fixtures.
 
     tests/
       maps/fqr/          - maps Full Quality Region (FQR) contract (K2GO-566)
+      kiwix/arch/        - kiwix-tools build follows the userland arch (32-bit libraries)
       kiwix/downloads/   - (future) Kiwix binary download + R2 rescue
 
 Conventions:

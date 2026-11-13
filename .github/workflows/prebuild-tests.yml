@@ -71,10 +71,13 @@ jobs:
           git clone --depth 1 --branch "${ref:-master}" https://github.com/iiab/iiab.git /tmp/iiab
           tools/upstream-patches/apply-upstream-patches.sh --root /tmp/iiab
           echo "TILE_EXTRACT_PY=/tmp/iiab/roles/maps/templates/tile-extract.py.j2" >> "$GITHUB_ENV"
+          echo "KIWIX_DEFAULTS_YML=/tmp/iiab/roles/kiwix/defaults/main.yml" >> "$GITHUB_ENV"
 
       - name: Contract tests (real + patched upstream)
         run: |
           set -euo pipefail
           test -f "$TILE_EXTRACT_PY" \
             || { echo "::error::upstream tile-extract.py.j2 missing at $TILE_EXTRACT_PY (contract drift)"; exit 1; }
+          test -f "$KIWIX_DEFAULTS_YML" \
+            || { echo "::error::upstream kiwix defaults missing at $KIWIX_DEFAULTS_YML (contract drift)"; exit 1; }
           bash tools/rootfs-builder/tests/run-contract-tests.sh
