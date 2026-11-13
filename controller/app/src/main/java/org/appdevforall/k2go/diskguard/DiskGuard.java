@@ -43,6 +43,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.delivery.data.CrashReportConsent;
 import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
@@ -258,7 +259,7 @@ public final class DiskGuard {
      * reap; the next tick catches it (the guard runs every 10 min, so the overlap is unlikely).
      */
     private static boolean confirmFirehoseGrowing(Context ctx) {
-        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        File varLog = new File(SystemStateEvaluator.rootfsDir(ctx), "var/log");
         long before = totalLogBytes(varLog);
         try {
             Thread.sleep(GROWTH_PROBE_MS);
@@ -350,7 +351,7 @@ public final class DiskGuard {
      * the bytes reclaimed, or 0.
      */
     private static long reclaimRunawayLog(Context ctx) {
-        File varLog = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab/var/log");
+        File varLog = new File(SystemStateEvaluator.rootfsDir(ctx), "var/log");
         File biggest = biggestLog(varLog);
         if (biggest == null || biggest.length() < RUNAWAY_LOG_MIN_BYTES) return 0L;
         long size = biggest.length();

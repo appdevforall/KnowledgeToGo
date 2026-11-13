@@ -22,13 +22,14 @@ public final class SystemStateEvaluator {
     private SystemStateEvaluator() {
     }
 
-    /** Where the installed rootfs lives, under the app's files dir. */
-    private static final String ROOTFS_PATH = "rootfs/installed-rootfs/iiab";
+    /** The app's rootfs area under its files dir: the installed tree, downloads and backups. */
+    public static File rootfsBaseDir(Context ctx) {
+        return new File(ctx.getFilesDir(), "rootfs");
+    }
 
-    /** ADFA-5061: the one place the rootfs path is spelled, so a reader elsewhere
-     *  does not have to write it out again and drift from this one. */
-    public static java.io.File rootfsDir(Context ctx) {
-        return new File(ctx.getFilesDir(), ROOTFS_PATH);
+    /** ADFA-5061, K2GO-568: the one place the rootfs paths are spelled. */
+    public static File rootfsDir(Context ctx) {
+        return new File(rootfsBaseDir(ctx), "installed-rootfs/iiab");
     }
 
     private static volatile String cachedTermuxArch;

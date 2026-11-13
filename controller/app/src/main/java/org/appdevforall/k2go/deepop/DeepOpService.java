@@ -445,7 +445,7 @@ public final class DeepOpService extends Service {
         currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: verify -- cancellable (kill + hold)
         setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
                 .stepped(VERIFY_PASS, RESTORE_PASSES, getString(R.string.k2go_br_status_checking)), 0);
-        final File destParent = new File(getFilesDir(), "rootfs");
+        final File destParent = org.appdevforall.k2go.SystemStateEvaluator.rootfsBaseDir(this);
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
                 cancelBeforeExtract, pauseRequested, forceExtractCancel, 0L,   // K2GO-554: untrusted import, full listing
                 new TarExtractor.ExtractionListener() {

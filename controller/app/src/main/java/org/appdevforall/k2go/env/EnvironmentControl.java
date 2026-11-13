@@ -25,6 +25,7 @@ import org.appdevforall.k2go.PRootEngine;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Locale;
+import org.appdevforall.k2go.SystemStateEvaluator;
 
 public final class EnvironmentControl {
 
@@ -37,11 +38,6 @@ public final class EnvironmentControl {
     private static final String CMD_START = PATH_ENV + "'/usr/local/bin/pdsm start && tail -f /dev/null'";
 
     private EnvironmentControl() {}
-
-    /** The installed rootfs services directory the pdsm commands run in. */
-    public static File rootfs(Context ctx) {
-        return new File(ctx.getApplicationContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-    }
 
     /** Optional log sink for the pdsm output lines. */
     public interface LineSink { void onLine(String line); }
@@ -56,7 +52,7 @@ public final class EnvironmentControl {
         // than at the call sites, so every stop clears it. There are three (the reconciler's teardown
         // and DeepOp's backup and restore) and an invariant only one of them upholds is one that rots.
         EnvironmentProgress.cleared();
-        new PRootEngine().executeInContainer(ctx.getApplicationContext(), rootfs(ctx).getAbsolutePath(), CMD_STOP,
+        new PRootEngine().executeInContainer(ctx.getApplicationContext(), SystemStateEvaluator.rootfsDir(ctx).getAbsolutePath(), CMD_STOP,
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) {
                         EnvironmentProgress.line(line);   // the shutdown screen names the stopping service
@@ -81,7 +77,7 @@ public final class EnvironmentControl {
      * proot is never stacked.
      */
     public static PRootEngine start(Context ctx, final LineSink log) {
-        File rootfsDir = rootfs(ctx);
+        File rootfsDir = SystemStateEvaluator.rootfsDir(ctx);
         createFakeSysData(rootfsDir);
         PRootEngine engine = new PRootEngine();
         EnvironmentProgress.launched();   // ADFA-5365: the launch is the environment's first sign of life

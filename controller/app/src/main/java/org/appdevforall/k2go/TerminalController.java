@@ -648,7 +648,7 @@ public class TerminalController {
                 // -------------------------------------------------------------
                 // GENERATE ORCHESTRATOR CLI 'iiab' (Monolithic Tool)
                 // -------------------------------------------------------------
-                File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
+                File rootfsDir = SystemStateEvaluator.rootfsDir(activity);
                 File libproot = new File(activity.getApplicationInfo().nativeLibraryDir, "libproot.so");
                 File prootLoader = new File(activity.getApplicationInfo().nativeLibraryDir, "libproot-loader.so");
                 File prootLoader32 = new File(activity.getApplicationInfo().nativeLibraryDir, "libproot-loader32.so");
@@ -674,7 +674,7 @@ public class TerminalController {
                 cliStr.append("#!/system/bin/sh\n\n");
 
                 // Global script variables
-                File backupsDir = new File(activity.getFilesDir(), "rootfs/backups");
+                File backupsDir = new File(SystemStateEvaluator.rootfsBaseDir(activity), "backups");
                 cliStr.append("ROOTFS_DIR=\"").append(rootfsDir.getAbsolutePath()).append("\"\n");
                 cliStr.append("BACKUPS_DIR=\"").append(backupsDir.getAbsolutePath()).append("\"\n");
                 cliStr.append("export PROOT_TMP_DIR=\"").append(tmpDir.getAbsolutePath()).append("\"\n");

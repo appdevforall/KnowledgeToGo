@@ -185,7 +185,7 @@ public class Aria2Manager {
                 }
 
                 // 2. Prepare the download directory and auxiliary files
-                File downloadDir = new File(context.getFilesDir(), "rootfs/downloads");
+                File downloadDir = new File(SystemStateEvaluator.rootfsBaseDir(context), "downloads");
                 if (!downloadDir.exists()) downloadDir.mkdirs();
 
                 // Secure DHT file within our app (avoids the com.termux crash)
