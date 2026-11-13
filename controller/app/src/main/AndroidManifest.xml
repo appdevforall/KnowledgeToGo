@@ -35,8 +35,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-    <!-- K2GO-560: no fullBackupContent. allowBackup="false" stops all backup on Android 11 and lower;
-         data_extraction_rules covers Android 12 and higher. -->
+    <!-- K2GO-560: no fullBackupContent; see res/xml/data_extraction_rules.xml. -->
     <application
         android:name=".IIABApplication"
         android:localeConfig="@xml/locales_config"

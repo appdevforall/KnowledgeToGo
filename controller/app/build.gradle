@@ -625,7 +625,7 @@ def adPermissions = ['com.google.android.gms.permission.AD_ID',
                      'android.permission.ACCESS_ADSERVICES_ATTRIBUTION']
 def verifyManifestPrivacy = tasks.register("verifyManifestPrivacy") {
     group = "verification"
-    description = "Fail if a merged release manifest has ad permissions or starts analytics collection ON."
+    description = "Fail if a merged release manifest has ad permissions, starts analytics collection ON, or lets app data leave through Android backup."
 }
 androidComponents {
     onVariants(selector().withBuildType("release")) { variant ->
@@ -646,6 +646,9 @@ androidComponents {
                         problems << 'firebase_analytics_collection_enabled is missing or not "false"'
                     }
                 }
+                // K2GO-560: no app data leaves through Android backup or phone-to-phone transfer.
+                if (root.application.@'android:allowBackup'.text() != 'false') problems << 'allowBackup is not "false"'
+                if (!root.application.@'android:dataExtractionRules'.text()) problems << 'dataExtractionRules is missing'
                 if (problems) {
                     throw new GradleException("K2GO-504: ${variantName} merged manifest: ${problems.join('; ')}")
                 }
