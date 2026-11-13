@@ -18,6 +18,18 @@ public class BackupCompanionJsonTest {
     }
 
     @Test
+    public void k2go571_debArchRoundTripsAndOldFilesStillRead() throws Exception {
+        BackupCompanion c = BackupCompanionJson.read(BackupCompanionJson.write(new BackupCompanion(
+                "2026-11-13T10:00:00Z", "1.2.0", "armeabi-v7a", "armhf", null, 1000L, SHA, 5000L)));
+        assertEquals("armeabi-v7a", c.abi);
+        assertEquals("armhf", c.debArch);
+        // A file written before deb_arch existed still reads, with no deb_arch.
+        BackupCompanion old = BackupCompanionJson.read(BackupCompanionJson.write(sample()));
+        assertNull(old.debArch);
+        assertTrue(old.isComplete());
+    }
+
+    @Test
     public void roundTrip() throws Exception {
         BackupCompanion c = BackupCompanionJson.read(BackupCompanionJson.write(sample()));
         assertEquals("arm64-v8a", c.abi);

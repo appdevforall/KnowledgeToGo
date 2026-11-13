@@ -513,21 +513,15 @@ public class CloneFragment extends Fragment {
         return kids != null && kids.length > 0;
     }
 
-    /**
-     * This app's ACTUAL installed ABI width, read from nativeLibraryDir — not the device's 64-bit
-     * capability. A 32-bit install on a 64-bit phone must report 32, because the rootfs/library arch
-     * follows the app's install ABI, not the hardware.
-     * (ADFA-4784: the earlier Build.SUPPORTED_64_BIT_ABIS check wrongly passed 32-on-64 as compatible.)
-     */
+    /** This app's process width (ADFA-4784), from the one source (K2GO-571: AbiSource). */
     private int archBits() {
-        try {
-            String dir = requireContext().getApplicationInfo().nativeLibraryDir;
-            if (dir != null) {
-                if (dir.contains("arm64") || dir.contains("x86_64") || dir.endsWith("64")) return 64;
-                if (dir.contains("arm") || dir.contains("x86")) return 32;
-            }
-        } catch (Exception ignored) { }
-        return (Build.SUPPORTED_64_BIT_ABIS != null && Build.SUPPORTED_64_BIT_ABIS.length > 0) ? 64 : 32;
+        return org.appdevforall.k2go.arch.data.AbiSource.appBits();
+    }
+
+    /** K2GO-571: the width of the library this phone sends: the installed one, else the app's. */
+    private int libraryBits() {
+        return org.appdevforall.k2go.arch.domain.LibraryArch.bitsOf(
+                org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(requireContext()));
     }
 
     // ------------------------------------------------------------ Background protection (ADFA-4782)
@@ -880,7 +874,7 @@ public class CloneFragment extends Fragment {
         }
         long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
         long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
-        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
+        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, libraryBits(), sysB, contentB);
         // ADFA-5236: encode at the rendered QR size (@dimen/k2go_qr_size) so it stays crisp per bucket.
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, getResources().getDimensionPixelSize(R.dimen.k2go_qr_size)));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
@@ -988,9 +982,10 @@ public class CloneFragment extends Fragment {
     }
 
     // ADFA-4784: hard guardrail — a library built for a different CPU can't run here. The sender's
-    // arch travels in the QR (creds.archBits); unknown (0) or equal is fine, anything else is blocked.
+    // library width travels in the QR (creds.archBits). K2GO-571: unknown (0) is fine; otherwise the
+    // ADR rule decides (equal, or a 32-bit library on a 64-bit app when the phone runs 32-bit).
     private boolean archCompatible(int hostBits) {
-        return hostBits == 0 || hostBits == archBits();
+        return hostBits == 0 || org.appdevforall.k2go.arch.data.AbiSource.canRunBits(hostBits);
     }
 
     private void showIncompat(int hostBits) {

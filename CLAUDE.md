@@ -322,6 +322,18 @@ K2GO-559: Settings > Privacy, one switch per box service that contacts an outsid
   service's own config (`static/dashboard/sockets/privacy.ts`); the app keeps no copy.
 - `presentation/`: `PrivacyFragment` + `PrivacyViewModel` + factory. Entry: `SettingsFragment`.
 
+**Slice (K2GO-571): library architecture (`org.appdevforall.k2go.arch`)**
+One source per fact: the app ABI and the installed library's ABI (ADR-K2GO-571).
+
+- `domain/LibraryArch` (pure JVM): ABI id <-> bits <-> Debian arch, and `canRun` = same width, or
+  a 32-bit library on a 64-bit app when the phone runs 32-bit programs. Unit-tested.
+- `data/InstalledLibraryAbi`: ELF class of a program in the installed tree, else its identity
+  file. No cache. `data/AbiSource`: app ABI (`Process.is64Bit()`), 32-bit support, library ABI.
+- **Seams:** Clone QR + gate (`CloneFragment`), restore/import identity + ELF checks
+  (`RootfsIdentity`, `RootfsArchiveValidator`), signed-image check and backup companion
+  (`DeepOpService`), backup identity + name (`BackupEngine`), 64-bit-only module gate
+  (`ModuleCards.runsOn`), fresh-install arch (`SystemStateEvaluator.termuxArch`).
+
 **Legacy (NOT yet layered)**: the redesign retired the original god classes
 `MainActivity` and `DeployFragment` (they no longer exist; DONE-slice seams above
 that still name them are pre-redesign records). The current god-tier classes,

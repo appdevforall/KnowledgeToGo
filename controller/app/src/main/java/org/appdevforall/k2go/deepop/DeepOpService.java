@@ -293,9 +293,11 @@ public final class DeepOpService extends Service {
     private boolean writeCompanion(android.content.ContentResolver cr, Uri doc, BackupEngine.Stats stats) {
         java.text.SimpleDateFormat iso = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US);
         iso.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        // K2GO-571: the packed library's ABI, so the JSON alone tells a 32-bit backup from a 64-bit one.
+        String libAbi = org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(this);
         org.appdevforall.k2go.backup.domain.BackupCompanion c = new org.appdevforall.k2go.backup.domain.BackupCompanion(
                 iso.format(new java.util.Date()), org.appdevforall.k2go.BuildConfig.VERSION_NAME,
-                org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId(), null,
+                libAbi, org.appdevforall.k2go.arch.domain.LibraryArch.debArchOf(libAbi), null,
                 stats.gzBytes, stats.gzSha256, stats.tarBytes);
         if (!c.isComplete()) return false;
         try (OutputStream os = cr.openOutputStream(doc)) {
@@ -331,7 +333,7 @@ public final class DeepOpService extends Service {
             // checks kind and ABI from it). Decide before the copy, so the bar never steps back.
             final org.appdevforall.k2go.deploy.domain.ExpectedArchive companion =
                     companionStr == null || identity == null || !identity.present
-                            ? null : readCompanion(Uri.parse(companionStr), src);
+                            ? null : readCompanion(Uri.parse(companionStr), src, identity.arch);
             if (companion == null) {
                 passes = RESTORE_PASSES;
                 extractPass = EXTRACT_PASS;
@@ -499,8 +501,11 @@ public final class DeepOpService extends Service {
      * K2GO-569/570: what the companion of {@code tarball} says about it, or {@code null} (full path).
      * X.tar.json gives integrity only. X.tar.gz.minisig gives identity too: a pinned-key signature over
      * a manifest that names this exact file, for this ABI, with its uncompressed size.
+     *
+     * @param archiveAbi the ABI that the archive's identity names. K2GO-571: it can differ from the
+     *        app's ABI when the rule lets a 32-bit library run on a 64-bit app.
      */
-    private org.appdevforall.k2go.deploy.domain.ExpectedArchive readCompanion(Uri doc, Uri tarball) {
+    private org.appdevforall.k2go.deploy.domain.ExpectedArchive readCompanion(Uri doc, Uri tarball, String archiveAbi) {
         final org.appdevforall.k2go.backup.domain.ArchivePair.Kind kind = org.appdevforall.k2go.backup.domain
                 .ArchivePair.kind(org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, doc));
         if (kind != org.appdevforall.k2go.backup.domain.ArchivePair.Kind.JSON
@@ -522,7 +527,7 @@ public final class DeepOpService extends Service {
                                     text, org.appdevforall.k2go.download.data.TrustedSigningKeys.PRODUCTION));
             String tarName = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, tarball);
             org.appdevforall.k2go.deploy.domain.ExpectedArchive e = m == null ? null
-                    : m.expectedFor(tarName, org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId());
+                    : m.expectedFor(tarName, archiveAbi);
             Log.i(TAG, "restore signature check " + tarName + ": " + (e != null ? "trusted" : "not trusted"));
             return e;
         } catch (Exception e) {

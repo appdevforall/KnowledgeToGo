@@ -20,7 +20,8 @@ public final class BackupCompanion {
 
     public final String created;     // ISO-8601 UTC
     public final String appVersion;
-    public final String abi;
+    public final String abi;         // K2GO-571: the ABI of the packed library, not of the app
+    public final String debArch;     // K2GO-571: arm64 or armhf; null in files written before it
     public final String tier;        // null when not known
     public final long gzBytes;
     public final String gzSha256;    // lowercase hex
@@ -28,9 +29,15 @@ public final class BackupCompanion {
 
     public BackupCompanion(String created, String appVersion, String abi, String tier,
                            long gzBytes, String gzSha256, long tarBytes) {
+        this(created, appVersion, abi, null, tier, gzBytes, gzSha256, tarBytes);
+    }
+
+    public BackupCompanion(String created, String appVersion, String abi, String debArch, String tier,
+                           long gzBytes, String gzSha256, long tarBytes) {
         this.created = created;
         this.appVersion = appVersion;
         this.abi = abi;
+        this.debArch = debArch;
         this.tier = tier;
         this.gzBytes = gzBytes;
         this.gzSha256 = gzSha256 == null ? null : gzSha256.toLowerCase(Locale.ROOT);

@@ -102,4 +102,15 @@ public class RootfsIdentityTest {
         assertEquals(RootfsIdentity.Verdict.NOT_A_ROOTFS,
                 RootfsIdentity.check(true, "rootfs", "arm64-v8a", "arm64-v8a"));
     }
+
+    @Test
+    public void k2go571_a32BitRootfsOnA64BitAppDependsOnThePhone() {
+        assertEquals(RootfsIdentity.Verdict.OK,
+                RootfsIdentity.check(true, ROOTFS, ARM32, ARM64, true));
+        assertEquals(RootfsIdentity.Verdict.WRONG_ARCH,
+                RootfsIdentity.check(true, ROOTFS, ARM32, ARM64, false));
+        // A 64-bit rootfs never runs on a 32-bit app.
+        assertEquals(RootfsIdentity.Verdict.WRONG_ARCH,
+                RootfsIdentity.check(true, ROOTFS, ARM64, ARM32, true));
+    }
 }

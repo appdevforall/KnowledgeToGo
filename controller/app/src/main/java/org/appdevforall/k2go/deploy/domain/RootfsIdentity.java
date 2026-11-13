@@ -62,13 +62,23 @@ public final class RootfsIdentity {
      * @param appAbi  the ABI this app runs as; the archive must match it to be unpackable.
      */
     public static Verdict check(boolean present, String kind, String arch, String appAbi) {
+        return check(present, kind, arch, appAbi, false);
+    }
+
+    /**
+     * K2GO-571: as above, but a 32-bit rootfs is also unpackable on a 64-bit app when the phone runs
+     * 32-bit programs ({@link org.appdevforall.k2go.arch.domain.LibraryArch#canRun}).
+     */
+    public static Verdict check(boolean present, String kind, String arch, String appAbi,
+                                boolean phoneRuns32Bit) {
         if (!present) {
             return Verdict.OK;
         }
         if (!KIND_ROOTFS.contains(kind)) {
             return Verdict.NOT_A_ROOTFS;
         }
-        if (arch != null && !arch.isEmpty() && appAbi != null && !arch.equals(appAbi)) {
+        if (arch != null && !arch.isEmpty() && appAbi != null && !arch.equals(appAbi)
+                && !org.appdevforall.k2go.arch.domain.LibraryArch.canRun(arch, appAbi, phoneRuns32Bit)) {
             return Verdict.WRONG_ARCH;
         }
         return Verdict.OK;
