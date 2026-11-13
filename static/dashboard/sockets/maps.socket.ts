@@ -1,21 +1,26 @@
 import fs from 'fs';
 import path from 'path';
 
-// Critical paths in the backend
-const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
-const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
+// Critical paths in the backend. TILE_EXTRACT is the one path every maps caller uses.
+export const TILE_EXTRACT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const HOSTING_DIR = '/library/www/maps';   // where tile-extract.py keeps the <name>.fqr/ region dirs
 
 // ---------------------------------------------------------------------------
-// CONTRACT (source of truth: iiab/iiab roles/maps/templates/tile-extract.py.j2)
-//   sudo tile-extract.py extract <name> <box> [noninteractive]
-//   sudo tile-extract.py delete  <name>    (K2GO-566: now interactive upstream; we add a
-//                                           noninteractive form via tools/upstream-patches)
+// CONTRACT (source of truth: iiab/iiab roles/maps/templates/tile-extract.py.j2; the
+// tools/rootfs-builder/tests/maps/fqr contract test pins the markers used here)
+//   Current CLI (iiab#4574, argparse):
+//     extract <name> --bbox=<box> [--yes] [--progress json] [--threads N]
+//     delete  <name> [--yes]
+//   --yes asks no questions. Without it, `delete` can ask twice (unfinished files, then the
+//   region). One Full Quality Region download or delete runs at a time (a lock file); a second
+//   one exits 1 with LOCK_BUSY_RE. Exit 3 = paused (the .resume journal is saved).
+//   Older CLI (a rootfs baked before iiab#4574): extract <name> <box> [noninteractive] with the
+//   IIAB_PMTILES_* env vars, and an interactive `delete <name>` that asks once and does not
+//   remove an unfinished download. hasModernCli() tells them apart.
 //   name: [A-Za-z0-9_-], length 1..34 (uppercase and hyphen ARE valid)
 //   box : 4 comma floats min_lon,min_lat,max_lon,max_lat; min<max both axes; span<360
-// K2GO-566: upstream dropped the central extracts.json and update-json. Regions are now
-// <name>.fqr/ directories under HOSTING_DIR, each with meta.json {"bbox":[minLon,minLat,
-// maxLon,maxLat]} and the layer pmtiles. See listFqrRegions().
+// Regions are <name>.fqr/ directories under HOSTING_DIR, each with meta.json {"bbox":[minLon,
+// minLat,maxLon,maxLat]} and the layer pmtiles (K2GO-566). See listFqrRegions().
 // ---------------------------------------------------------------------------
 
 function toBounds(candidate: unknown): number[] | null {
@@ -71,7 +76,8 @@ export function listFqrRegions(
     return out;
 }
 
-const regionNameRegex = /^[A-Za-z0-9_-]{1,34}$/;
+// A region name: letters, digits, hyphen, underscore; 1..34 (tile-extract.py validate_extract_name).
+export const REGION_NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
 type BoxResult = { ok: true; box: string } | { ok: false; error: string };
 
@@ -122,75 +128,98 @@ function parseEstimateFrom(stdout: string, stderr: string): MapsEstimate | null 
     return parseEstimate(stdout) ?? parseEstimate(stderr);
 }
 
-type CommandType = 'extract' | 'delete' | 'update-json' | '';
-
-interface ValidatedCommand {
-    type: CommandType;
-    region: string;
-    bbox?: string;
-    noninteractive?: boolean;
-    error?: string;
+// ---- tile-extract.py CLI (iiab#4574) -------------------------------------------------------
+// A box can run a newer dash-node than its rootfs (dash-node updates itself), so the arguments
+// follow what the INSTALLED script supports. Both markers come from its argparse setup.
+export function hasModernCli(scriptSource: string): boolean {
+    return scriptSource.includes('"--yes"') && scriptSource.includes('"--bbox"');
 }
 
-function validateSecureCommand(rawCommand: string): ValidatedCommand {
-    const cleaned = (rawCommand || '').replace(/\s+/g, ' ').trim();
-    const tokens = cleaned.split(' ').filter(Boolean);
-
-    if (tokens[0] !== 'sudo' || tokens[1] !== EXTRACT_SCRIPT) {
-        return { type: '', region: '', error: `The command must start with: sudo ${EXTRACT_SCRIPT}` };
+/** Reads the installed script on each call: a re-run of the maps role can replace it. */
+export function installedHasModernCli(script: string = TILE_EXTRACT): boolean {
+    try {
+        return hasModernCli(fs.readFileSync(script, 'utf8'));
+    } catch {
+        return true;   // unreadable: assume the current CLI (every rootfs from now on has it)
     }
-
-    const action = tokens[2];
-
-    if (action === 'update-json' && tokens.length === 3) {
-        return { type: 'update-json', region: '' };
-    }
-
-    const regionName = tokens[3];
-
-    if (!regionName || !regionNameRegex.test(regionName)) {
-        return {
-            type: '',
-            region: '',
-            error: 'Invalid region name. Allowed: letters (A-Z, a-z), digits, hyphen (-) and underscore (_); length 1-34.',
-        };
-    }
-
-    if (action === 'delete' && tokens.length === 4) {
-        return { type: 'delete', region: regionName };
-    }
-
-    if (action === 'extract' && tokens.length >= 5) {
-        let rest = tokens.slice(4);
-        let noninteractive = false;
-        if (rest[rest.length - 1] === 'noninteractive') {
-            noninteractive = true;
-            rest = rest.slice(0, -1);
-        }
-        const parsed = parseBox(rest.join(''));
-        if (parsed.ok) {
-            return { type: 'extract', region: regionName, bbox: parsed.box, noninteractive };
-        }
-        return { type: '', region: '', error: parsed.error };
-    }
-
-    return {
-        type: '',
-        region: '',
-        error:
-            'Invalid command format. Allowed:\n' +
-            `  sudo ${EXTRACT_SCRIPT} extract {region} {minLon,minLat,maxLon,maxLat} [noninteractive]\n` +
-            `  sudo ${EXTRACT_SCRIPT} delete {region}\n` +
-            `  sudo ${EXTRACT_SCRIPT} update-json`,
-    };
 }
 
-function buildArgs(v: ValidatedCommand): string[] {
-    if (v.type === 'update-json') return [EXTRACT_SCRIPT, 'update-json'];
-    if (v.type === 'delete') return [EXTRACT_SCRIPT, 'delete', v.region];
-    const args = [EXTRACT_SCRIPT, 'extract', v.region, v.bbox as string];
-    if (v.noninteractive) args.push('noninteractive');
-    return args;
+// sudo drops the environment, so PYTHONUNBUFFERED (live stdout for the progress lines) and the
+// older CLI's IIAB_PMTILES_* settings go through `env` after sudo.
+// 8 threads: the measured throughput knee (iiab#4565 benchmarks; more was not faster).
+const DOWNLOAD_THREADS = '8';
+
+export function extractArgs(name: string, box: string, modern: boolean): string[] {
+    if (modern) {
+        return ['env', 'PYTHONUNBUFFERED=1', TILE_EXTRACT, 'extract', name, `--bbox=${box}`,
+            '--yes', '--progress', 'json', '--threads', DOWNLOAD_THREADS];
+    }
+    return ['env', 'IIAB_PMTILES_PROGRESS=json', `IIAB_PMTILES_DOWNLOAD_THREADS=${DOWNLOAD_THREADS}`,
+        'PYTHONUNBUFFERED=1', TILE_EXTRACT, 'extract', name, box, 'noninteractive'];
 }
 
-export { validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate, parseEstimateFrom };
+/** The size estimate: an interactive extract. With stdin at EOF its confirm aborts by itself after
+ *  it prints the size, so nothing downloads. --bbox= keeps a negative longitude off argparse. */
+export function estimateArgs(probeName: string, box: string, modern: boolean): string[] {
+    return [TILE_EXTRACT, 'extract', probeName, modern ? `--bbox=${box}` : box];
+}
+
+/** The older delete has no --yes: the caller answers its one question on stdin. */
+export function deleteArgs(name: string, modern: boolean): string[] {
+    return modern ? [TILE_EXTRACT, 'delete', name, '--yes'] : [TILE_EXTRACT, 'delete', name];
+}
+
+// ---- How a stopped extract ends ---------------------------------------------------------------
+// One Full Quality Region download or delete at a time on the box (iiab#4574).
+export const LOCK_BUSY_RE = /another Full Quality Region download or delete is running/;
+
+// tile-extract.py's OWN network requests (catalog, mirror list, HEAD) failed: pmtiles did not run,
+// so there is no exit_code 2, but the cause is the link (K2GO-317). The last three lines are the
+// messages of the current script, which catches the requests errors itself.
+export const NET_ERR_RE = new RegExp([
+    'ConnectionError', 'Max retries exceeded', 'HTTPSConnectionPool',
+    'Failed to establish a new connection', 'Connection (refused|reset)',
+    'Temporary failure in name resolution', 'Name or service not known',
+    'Cannot download the map data catalog',
+    'from any of the available mirrors',
+].join('|'), 'i');
+
+// The script refused because a region of this name (or an overlapping one) appeared under its lock.
+export const REGION_CONFLICT_RE = /a region with this name, or an overlapping region, now exists/;
+
+/** Whether a job made the region dir that a purge would delete: the dir was not there when the job
+ *  took its turn, and the script did not stop because another run made it in the meantime. */
+export function jobOwnsRegion(existedAtStart: boolean, stderrTail: string): boolean {
+    return !existedAtStart && !REGION_CONFLICT_RE.test(stderrTail);
+}
+
+export interface ExtractEnd {
+    stop: 'paused' | 'canceled' | null;   // the engine's own flags (classifyStop)
+    stalled: boolean;                      // our watchdog SIGTERMed a stalled download
+    lastJsonExit: number | null;           // exit_code on go-pmtiles' last JSON line
+    exitCode: number | null;               // tile-extract.py's exit code (null if killed)
+    stderrTail: string;
+}
+
+/**
+ * What the runner does after a non-zero end of tile-extract.py:
+ *  canceled : the user canceled: discard the job's own work.
+ *  paused   : keep the partial and its .resume journal; Resume continues from it.
+ *  busy     : another Full Quality Region operation held the box lock; nothing ran, retry later.
+ *  error    : a real failure.
+ * Exit code 2 is read from the JSON line only: argparse also exits 2 (usage error).
+ */
+export function classifyExtractEnd(e: ExtractEnd): 'canceled' | 'paused' | 'busy' | 'error' {
+    if (e.stop === 'canceled') return 'canceled';
+    if (e.stop === 'paused' || e.stalled) return 'paused';
+    if (e.lastJsonExit === 2) return 'paused';      // go-pmtiles gave up on the network
+    if (e.exitCode === 3) return 'paused';          // a SIGTERM or SIGINT from outside: journal saved
+    // go-pmtiles itself failed for another cause (1 error, 4 file on the server changed): a network
+    // line earlier in the log (a retried reset) must not turn that into a pause that cannot resume.
+    if (e.lastJsonExit !== null && e.lastJsonExit !== 0) return 'error';
+    if (LOCK_BUSY_RE.test(e.stderrTail)) return 'busy';
+    if (NET_ERR_RE.test(e.stderrTail)) return 'paused';
+    return 'error';
+}
+
+export { displayBounds, parseBox, parseEstimate, parseEstimateFrom };

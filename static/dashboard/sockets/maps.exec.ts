@@ -1,49 +1,31 @@
 // sockets/maps.exec.ts — ADFA-4838
 //
 // Maps runner for the durable job engine: extract a tile region via tile-extract.py.
-// Ported from the Phase 1 maps.socket handler; reuses its box validation. A job item
-// is { name, box, noninteractive? }; deletion stays a separate op (not a long job).
-import { jobs, RunnerContext, CanceledError, PausedError, classifyStop, JobUpdate } from './jobs';
-import { parseBox } from './maps.socket';
-import { spawn } from 'child_process';
+// A job item is { name, box, est? }; deletion stays a separate op (not a long job).
+import { jobs, Job, RunnerContext, CanceledError, PausedError, classifyStop, throwIfStopped, JobUpdate } from './jobs';
+import {
+    parseBox, listFqrRegions, REGION_NAME_RE, extractArgs, deleteArgs, installedHasModernCli,
+    classifyExtractEnd, LOCK_BUSY_RE, jobOwnsRegion,
+} from './maps.socket';
+import { delay } from './net-retry';
+import { spawn, StdioOptions } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
-const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
-// ADFA-4896: tile-extract.py extracts each pmtiles into TMP_DIR and only shutil.move()s all three
-// into the served dir once ALL have finished, updating extracts.json last. So a killed extract
-// leaves half-written pmtiles HERE (never in the catalog) — and the script's own `delete` only
-// cleans the served dir, NOT this one. We prune these ourselves. Must match TMP_DIR in the script.
+// Older CLI only (a rootfs baked before iiab#4574): tile-extract.py downloads each pmtiles into
+// TMP_DIR and moves them into the served dir when all are done, and its `delete` does not clean
+// TMP_DIR, so a killed extract leaves half-written files here. The current `delete` removes them
+// itself, under the script's lock. Must match TMP_DIR in the script.
 const MAPS_TMP_DIR = '/library/downloads/maps';
-// name: letters/digits/hyphen/underscore, 1..34 (same rule as the socket handler).
-const NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
-interface MapItem { name?: string; box?: string; noninteractive?: boolean; est?: number; }
+interface MapItem { name?: string; box?: string; est?: number; }
 
-/** ADFA-4896: run a tile-extract maintenance command to completion, best-effort. Used for the
- *  stop/cancel cleanup, which must run while the job's own context is being torn down, so it does
- *  NOT go through ctx.spawn (that child would be killed with the job). Never rejects — a failed
- *  purge is logged, not fatal. */
-function runMapsCmd(args: string[], log: (l: string) => void): Promise<void> {
-    return new Promise((resolve) => {
-        const p = spawn('sudo', [EXTRACT_SCRIPT, ...args]);
-        p.stdout?.on('data', (d: Buffer) => log(d.toString().trim()));
-        p.stderr?.on('data', (d: Buffer) => log(d.toString().trim()));
-        p.on('error', () => resolve());
-        p.on('exit', () => resolve());
-    });
-}
-
-/** ADFA-4896: remove a region's half-written pmtiles left in TMP_DIR by a killed extract — the
- *  script's `delete` doesn't touch this dir. Name-scoped (`*.full-region.<name>.pmtiles` and its
- *  K2GO-317 `.resume` journal), so a concurrent extract for another region is untouched. Best-effort. */
+/** Older CLI only: remove a region's half-written pmtiles and their K2GO-317 `.resume` journals from
+ *  TMP_DIR. Name-scoped (`*.full-region.<name>.pmtiles`), so another region's download is untouched. */
 function cleanupTmpPartials(name: string, log: (l: string) => void): void {
     try {
         const base = `.full-region.${name}.pmtiles`;
         for (const f of fs.readdirSync(MAPS_TMP_DIR)) {
-            // K2GO-317: the partial AND its sibling resume journal (<partial>.resume). The journal
-            // alone would linger and mislead resolve_source / a later extract of the same name.
             if (f.endsWith(base) || f.endsWith(base + '.resume')) {
                 try { fs.unlinkSync(path.join(MAPS_TMP_DIR, f)); log(`[maps] pruned partial ${f}`); } catch { /* gone */ }
             }
@@ -51,32 +33,119 @@ function cleanupTmpPartials(name: string, log: (l: string) => void): void {
     } catch { /* dir missing / unreadable — nothing to prune */ }
 }
 
-/** ADFA-4896 / K2GO-317: discard a region's partial extract and drop it from the catalog. Used for a
- *  CANCEL and for a hard (non-resumable) error only. A pause or a resumable network drop does NOT come
- *  here: those keep the partial + .resume journal so a re-run continues from the checkpoint. Two places
- *  to clean: TMP_DIR (a mid-extract kill) and, via the script's `delete` (which runs update-json itself),
- *  the served dir + extracts.json (the rare race where the extract finished just as the stop landed).
- *  delete on a name that was never served is a harmless no-op. */
-async function purgeRegion(name: string, log: (l: string) => void): Promise<void> {
-    cleanupTmpPartials(name, log);
-    await runMapsCmd(['delete', name], log);
+export interface DeleteResult { ok: boolean; busy: boolean; timedOut: boolean; error: string; }
+
+const DELETE_TIMEOUT_MS = 30_000;
+
+/** Delete the region `name` and the files of its unfinished download. Used by the app's delete
+ *  (POST /maps/delete) and by the runner's purge. Never rejects. `busy` = the script's lock was held
+ *  by another Full Quality Region download or delete, so nothing was deleted. */
+export function deleteRegion(name: string, log: (l: string) => void = () => { /* quiet */ }): Promise<DeleteResult> {
+    const modern = installedHasModernCli();
+    if (!modern) cleanupTmpPartials(name, log);
+    // --yes needs no stdin: with no pipe there is nothing to break (no EPIPE).
+    const stdio: StdioOptions = [modern ? 'ignore' : 'pipe', 'pipe', 'pipe'];
+    return new Promise((resolve) => {
+        const p = spawn('sudo', deleteArgs(name, modern), { env: { ...process.env, PYTHONUNBUFFERED: '1' }, stdio, detached: true });
+        let err = '', done = false;
+        const finish = (r: DeleteResult) => { if (done) return; done = true; clearTimeout(timer); resolve(r); };
+        // Guards a child that stays blocked (for example on a question this caller does not answer).
+        const timer = setTimeout(() => {
+            // detached: sudo leads a group, so this also stops the python worker and frees its lock
+            try { if (p.pid) process.kill(-p.pid, 'SIGKILL'); } catch { /* group already gone */ }
+            try { p.kill('SIGKILL'); } catch { /* already gone */ }
+            finish({ ok: false, busy: false, timedOut: true, error: 'delete timed out' });
+        }, DELETE_TIMEOUT_MS);
+        if (!modern) {
+            // The older delete asks one question. The child can exit before it reads stdin; that
+            // write error is not the result (the exit code is), so it is ignored.
+            p.stdin?.on('error', () => { /* EPIPE: the exit code reports the result */ });
+            p.stdin?.end('y\n');
+        }
+        p.stdout?.on('data', (d: Buffer) => log(d.toString().trim()));
+        p.stderr?.on('data', (d: Buffer) => { const t = d.toString(); err += t; log(t.trim()); });
+        p.on('error', (e) => finish({ ok: false, busy: false, timedOut: false, error: String(e) }));
+        p.on('exit', (code) => finish({
+            ok: code === 0, busy: LOCK_BUSY_RE.test(err), timedOut: false,
+            error: err.trim() || `delete exited ${code}`,
+        }));
+    });
 }
+
+const PURGE_TRIES = 3;
+const PURGE_RETRY_MS = 2_000;
+
+/** ADFA-4896 / K2GO-317: discard a job's own work after a CANCEL or a hard error: its unfinished
+ *  download and, only when this job made it, its region. A region of the same name that this job did
+ *  not make (another job finished it, or it was there before) is kept, because the delete would
+ *  remove it too. A pause or a resumable network drop does NOT come here. Best-effort: logs only. */
+async function purgeRegion(name: string, ownsRegion: boolean, log: (l: string) => void): Promise<void> {
+    if (!ownsRegion && name in listFqrRegions()) {
+        log(`[maps] keep the region "${name}": this job did not make it`);
+        return;
+    }
+    for (let attempt = 1; ; attempt++) {
+        const r = await deleteRegion(name, log);
+        if (r.ok) return;
+        if (!r.busy || attempt >= PURGE_TRIES) { log(`[maps] purge of "${name}" failed: ${r.error}`); return; }
+        await delay(PURGE_RETRY_MS);
+    }
+}
+
+// One maps job runs tile-extract.py at a time on this server. The script allows one Full Quality
+// Region download or delete per box (iiab#4574), so a second job waits here as 'queued' instead of
+// failing on the lock, and a job's purge ends before the next job starts. In memory only: a job
+// takes the turn when it is free and gives it back in its `finally`; a restart starts with no holder.
+let turnHolder: string | null = null;
+const TURN_POLL_MS = 2_000;
+
+async function waitForTurn(ctx: RunnerContext, holder: string, onWait: () => void): Promise<void> {
+    if (turnHolder !== null && turnHolder !== holder) onWait();
+    while (turnHolder !== null && turnHolder !== holder) {
+        await delay(TURN_POLL_MS, ctx.signal).catch(() => { /* stopped: checked next */ });
+        throwIfStopped(ctx);
+    }
+    turnHolder = holder;
+}
+
+function releaseTurn(holder: string): void {
+    if (turnHolder === holder) turnHolder = null;
+}
+
+// The box lock is held outside this server (a delete from the app, or a terminal command):
+// try again after this wait. Each try fetches the map catalog, so the wait is not short.
+const BUSY_RETRY_MS = 30_000;
 
 const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const item = (ctx.items[0] ?? {}) as MapItem;
     const name = String(item.name ?? '');
     const rawBox = String(item.box ?? '');
-    if (!NAME_RE.test(name)) throw new Error('invalid region name (A-Z a-z 0-9 _ -, length 1-34)');
+    if (!REGION_NAME_RE.test(name)) throw new Error('invalid region name (A-Z a-z 0-9 _ -, length 1-34)');
     const parsed = parseBox(rawBox);
     if (!parsed.ok) throw new Error(parsed.error);
 
+    try {
+        await waitForTurn(ctx, ctx.job.id, () => ctx.update({ phase: 'queued', percent: -1, detail: name }));
+    } catch (e) {
+        // Canceled while it waited: a resumed job can still have the unfinished files of its pause.
+        if (e instanceof CanceledError) discardRegion(name, ctx.job.id);
+        throw e;
+    }
+    try {
+        await runRegion(ctx, name, parsed.box, Math.max(0, Number(item.est) || 0));
+    } finally {
+        releaseTurn(ctx.job.id);
+    }
+};
+
+async function runRegion(ctx: RunnerContext, name: string, box: string, estBytes: number): Promise<void> {
     ctx.update({ phase: 'processing', percent: -1, detail: name });
-    // K2GO-317: DashNode opts into the custom build's integrator mode. sudo resets the environment
-    // (Defaults env_reset, only debian_chroot kept), so the vars are passed THROUGH sudo with `env`,
-    // not on the node-side spawn env (which sudo would strip). json = the machine-readable progress
-    // parsed below; 8 = the measured throughput knee (tunable upstream via IIAB_PMTILES_DOWNLOAD_THREADS).
-    const args = ['env', 'IIAB_PMTILES_PROGRESS=json', 'IIAB_PMTILES_DOWNLOAD_THREADS=8',
-        'PYTHONUNBUFFERED=1', EXTRACT_SCRIPT, 'extract', name, parsed.box, 'noninteractive'];
+    // Read once the job has its turn: a purge deletes the region only when this job made it.
+    const existedAtStart = name in listFqrRegions();
+    // K2GO-317: DashNode opts into the custom go-pmtiles build's integrator mode: json = the
+    // machine-readable progress parsed below. The arguments follow the installed script's CLI.
+    const modern = installedHasModernCli();
+    const args = extractArgs(name, box, modern);
 
     // tile-extract.py runs three sequential pmtiles extracts (vector, satellite, terrain), each with
     // --progress=json (go-pmtiles states commit): one JSON line per second on stdout carrying
@@ -84,10 +153,9 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // We derive ONE overall percent = (completed layers + the current layer's byte fraction) / 3, so
     // the bar climbs 0..100 ONCE instead of the old per-layer 0->100 reset (the "dancing" bar). A layer
     // is complete on its "phase":"done" line. The within-layer fraction is the byte ratio (not a
-    // scraped text percent), so it is smooth too. A stop by pause or cancel is read from the engine's
-    // job flags (classifyStop in the catch below). A network drop, which is not an engine stop, is read
-    // from the last JSON line's exit_code (2 = resumable; the catch keeps the journal for it). speed and
-    // eta come from the JSON.
+    // scraped text percent), so it is smooth too. How a non-zero end is handled is decided by
+    // classifyExtractEnd (maps.socket.ts) from the engine's flags, the watchdog, the last JSON
+    // exit_code and the script's own exit code and messages. speed and eta come from the JSON.
     const TOTAL_LAYERS = 3;
     let layersDone = 0;
     let overall = 0;   // monotonic across the whole FQR
@@ -95,33 +163,28 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // run off CUMULATIVE bytes vs that total : not 1/3-per-layer buckets (which stick on the big layer and jump
     // at layer boundaries) : and off a SMOOTHED speed, not go-pmtiles' raw per-layer eta_s (instantaneous, and
     // reset every layer). estBytes 0 (an old job) falls back to the layer-bucket math.
-    const estBytes = Math.max(0, Number(item.est) || 0);
     let completedBytes = 0;    // bytes of the layers already finished this run
     let curLayerTotal = 0;     // the in-progress layer's byte total
     let emaBps = -1;           // EMA of speed_bps; smooths the bursty per-request rate that made the ETA swing
     let speedSamples = 0;      // warm-up guard: hold the ETA until the smoothed speed has settled
     const SPEED_ALPHA = 0.25;  // ~4 s window at one JSON line per second
     const WARMUP_SAMPLES = 3;
-    // K2GO-317 follow-up: go-pmtiles prints exit_code on each layer's last JSON line. On a stop we read it
-    // to tell a resumable network drop (2) from a hard failure. The last value seen is the relevant one.
-    let lastExitCode: number | null = null;
-    // K2GO-317: set true when WE proactively SIGTERM a stalled download (watchdog below), so the catch
-    // keeps the journal and surfaces PAUSED just like an engine pause.
-    let stalled = false;
-    // K2GO-317: tile-extract.py's own mirror/catalog HEAD request (between layers) can fail with a transient
-    // network error when the phone link blips. go-pmtiles never ran for that layer, so there is no exit_code 2;
-    // without this the catch would purge every completed layer, and the r2 skip could not then save them on a
-    // retry. Detect the signature in stderr and treat it as resumable (keep partials, surface PAUSED). The
-    // rolling tail guards against the signature splitting across stderr chunks.
-    let sawNetError = false;
-    let stderrTail = '';
-    const NET_ERR_RE = /ConnectionError|Max retries exceeded|HTTPSConnectionPool|Failed to establish a new connection|Connection (refused|reset)|Temporary failure in name resolution|Name or service not known/i;
 
-    await new Promise<void>((resolve, reject) => {
+    interface RunEnd { code: number | null; signal: NodeJS.Signals | null; stalled: boolean; lastJsonExit: number | null; stderrTail: string; }
+
+    const runOnce = () => new Promise<RunEnd>((resolve, reject) => {
+        // K2GO-317 follow-up: go-pmtiles prints exit_code on each layer's last JSON line. On a stop we read it
+        // to tell a resumable network drop (2) from a hard failure. The last value seen is the relevant one.
+        let lastJsonExit: number | null = null;
+        // K2GO-317: set true when WE proactively SIGTERM a stalled download (watchdog below), so the end
+        // keeps the journal and surfaces PAUSED just like an engine pause.
+        let stalled = false;
+        // A bounded tail of stderr: the script's own messages (lock busy, network errors) are read from it.
+        let stderrTail = '';
         // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
         // the python worker down with it (otherwise pause/cancel only kill the sudo wrapper and the
-        // extract finishes in the background).
-        const p = ctx.spawn('sudo', args, { env: { ...process.env }, detached: true });
+        // extract finishes in the background). No stdin: with --yes the script asks nothing.
+        const p = ctx.spawn('sudo', args, { env: { ...process.env }, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
         // K2GO-317 (progress retention): go-pmtiles' own network give-up checkpoints a STALE journal and
         // loses the bytes since its last periodic checkpoint. A SIGTERM makes it flush the CURRENT bytes
         // losslessly (measured: it resumes from exactly where it stopped), so BOTH watchdogs below SIGTERM
@@ -137,7 +200,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         // the process is frozen (e.g. storage stopped responding in plan or finalize, which the byte
         // watchdog, armed only in download, would miss). Re-armed on every progress line; disarmed once all
         // layers are done, so the final move (which emits no lines) does not false-fire. An engine
-        // pause/cancel still wins: it fires first and the catch checks classifyStop before `stalled`.
+        // pause/cancel still wins: it fires first and classifyExtractEnd checks the engine flags first.
         const STALL_MS = 30_000;
         const IDLE_MS = 30_000;
         let lastBytes = -1;
@@ -174,7 +237,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (!s.startsWith('{') || s.indexOf('"phase"') < 0) return;
             let j: { phase?: string; bytes_done?: number; bytes_total?: number; speed_bps?: number; exit_code?: number; retries?: number };
             try { j = JSON.parse(s); } catch { return; }
-            if (typeof j.exit_code === 'number') lastExitCode = j.exit_code;   // present on each layer's last line
+            if (typeof j.exit_code === 'number') lastJsonExit = j.exit_code;   // present on each layer's last line
             if (typeof j.phase !== 'string') return;
             armIdle();   // any progress line is a heartbeat: re-arm the frozen-process watchdog
             let etaOut = -1;   // seconds remaining, -1 = unknown (jobs.ts holds the previous value)
@@ -238,53 +301,91 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             const t = buf.toString().trim();
             if (!t) return;
             ctx.log(t);
-            stderrTail = (stderrTail + '\n' + t).slice(-4000);   // bounded tail so a split signature still matches
-            if (!sawNetError && NET_ERR_RE.test(stderrTail)) sawNetError = true;
+            stderrTail = (stderrTail + '\n' + t).slice(-4000);   // bounded, so a message split across chunks still matches
         });
         p.on('error', reject);
         p.on('exit', (code, signal) => {
             clearStall();
             clearIdle();
-            if (code === 0) return resolve();
-            // Non-zero or killed: an engine pause/cancel (group-killed) or tile-extract's own exit.
-            // The stop kind is read from the engine's job flags (classifyStop) in the catch, not from
-            // this code: tile-extract.py remaps every non-zero child exit to 1 (see the catch note).
-            reject(new Error(signal ? `tile-extract killed by ${signal}` : `tile-extract exited with code ${code}`));
+            resolve({ code, signal, stalled, lastJsonExit, stderrTail });
         });
-    }).catch(async (e: unknown) => {
-        // The custom go-pmtiles build keeps an on-disk resume journal (<output>.resume, the single owner
-        // of the checkpoint), so re-running tile-extract continues from it instead of re-extracting from 0.
-        // A stop is resumable in two ways; for both we keep the journal and surface PAUSED, so the device
-        // offers Resume (which re-runs the same command and continues from the checkpoint):
-        //   1. An engine-initiated PAUSE (SIGTERM): the engine flags it, classifyStop sees it.
-        //   2. A network drop: our watchdog SIGTERMs the stalled download (stalled=true) so go-pmtiles
-        //      flushes the current bytes; if the watchdog did not catch it first, go-pmtiles gives up on its
-        //      own and reports exit_code 2 on its last JSON line (tile-extract.py masks the process exit to
-        //      1, so we read the JSON line). Either way we keep the journal.
-        //   3. tile-extract.py's OWN mirror/catalog request hit a transient network error (sawNetError, from
-        //      its stderr). go-pmtiles never ran for that layer, so there is no exit_code 2. We keep every
-        //      completed layer so the resume skips it (r2) instead of re-downloading.
-        // A cancel, or any other exit, is a hard error: purge.
-        const stop = classifyStop(ctx);
-        if (stop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
-        if (stop === 'paused') throw new PausedError();     // keep partial: resume continues
-        if (stalled) throw new PausedError();               // our stall-pause flushed a full journal
-        if (lastExitCode === 2) throw new PausedError();    // go-pmtiles gave up on its own: still resumable
-        if (sawNetError) throw new PausedError();           // tile-extract's own mirror request blipped: keep partials, resume skips completed layers
-        await purgeRegion(name, ctx.log);                   // hard error: purge and surface
-        throw e;
     });
 
+    for (;;) {
+        let end: RunEnd;
+        try {
+            end = await runOnce();
+        } catch (e) {
+            // The spawn itself failed (no sudo, no script): nothing ran, so there is nothing to purge.
+            throwIfStopped(ctx);
+            throw e;
+        }
+        if (end.code === 0) break;
+        const verdict = classifyExtractEnd({
+            stop: classifyStop(ctx), stalled: end.stalled, lastJsonExit: end.lastJsonExit,
+            exitCode: end.code, stderrTail: end.stderrTail,
+        });
+        if (verdict === 'busy') {
+            ctx.log('[maps] another Full Quality Region download or delete is running on the box; waiting');
+            ctx.update({ phase: 'queued', percent: overall > 0 ? overall : -1, detail: name });
+            await delay(BUSY_RETRY_MS, ctx.signal).catch(() => { /* stopped: checked next */ });
+            if (classifyStop(ctx) === 'canceled') { await purgeRegion(name, false, ctx.log); throw new CanceledError(); }
+            throwIfStopped(ctx);
+            ctx.update({ phase: 'processing', percent: overall > 0 ? overall : -1, detail: name });
+            continue;
+        }
+        // The custom go-pmtiles build keeps an on-disk resume journal (<output>.resume, the single owner
+        // of the checkpoint), so re-running tile-extract continues from it instead of re-extracting from 0.
+        if (verdict === 'paused') throw new PausedError();
+        // A cancel or a hard error discards this job's work: its unfinished download, and the region
+        // dir only if this job made it (a cancel or a failure during the final move).
+        await purgeRegion(name, jobOwnsRegion(existedAtStart, end.stderrTail), ctx.log);
+        if (verdict === 'canceled') throw new CanceledError();
+        const last = end.stderrTail.trim().split('\n').pop() ?? '';
+        throw new Error(end.signal ? `tile-extract killed by ${end.signal}`
+            : `tile-extract exited with code ${end.code}${last ? `: ${last}` : ''}`);
+    }
+
     // A stop can race in exactly as the extract finishes (code 0). Honor it rather than marking
-    // done. A cancel purges; a pause keeps the finished partial (resume then re-runs and completes
-    // at once — the journal was already removed on success, so nothing half-written is left).
+    // done. A cancel removes the region this job just made; a pause keeps it (resume then re-runs
+    // and ends at once: the region exists, so the script does nothing and exits 0).
     const lateStop = classifyStop(ctx);
-    if (lateStop === 'canceled') { await purgeRegion(name, ctx.log); throw new CanceledError(); }
+    if (lateStop === 'canceled') { await purgeRegion(name, !existedAtStart, ctx.log); throw new CanceledError(); }
     if (lateStop === 'paused') throw new PausedError();
 
+    // With --yes the script exits 0 and downloads nothing when the box overlaps a region (a queued
+    // job meets the region an earlier job made). Report that, not 'done'. Current CLI only: an older
+    // rootfs can keep its regions in a layout that listFqrRegions does not read.
+    if (modern && !(name in listFqrRegions())) {
+        await purgeRegion(name, false, ctx.log);   // no region: this removes only unfinished files
+        throw new Error(`nothing was downloaded for "${name}": the box overlaps a downloaded region`);
+    }
+
     ctx.update({ phase: 'done', percent: 100 });
-};
+}
+
+/** Remove the unfinished download of a job that is not running (it was paused, or it was canceled
+ *  while it waited). It waits for the turn, so it never deletes under a running job. Fire-and-forget:
+ *  a restart before the turn comes drops it, and the files stay until the next delete of that name. */
+function discardRegion(name: string, jobId: string): void {
+    const holder = `discard:${jobId}`;
+    const log = (l: string) => { if (l) console.log(`[maps] ${jobId}: ${l}`); };
+    void (async () => {
+        while (turnHolder !== null) await delay(TURN_POLL_MS);
+        turnHolder = holder;
+        try { await purgeRegion(name, false, log); } finally { releaseTurn(holder); }
+    })();
+}
+
+/** Cancel of a PAUSED maps job: its runner already exited, so nothing else removes the unfinished
+ *  download it kept for Resume. */
+function discardPausedRegion(job: Job): void {
+    let name = '';
+    try { name = String((JSON.parse(job.target) as MapItem[])[0]?.name ?? ''); } catch { /* bad row */ }
+    if (REGION_NAME_RE.test(name)) discardRegion(name, job.id);
+}
 
 jobs.registerRunner('maps', mapsRunner);
+jobs.registerDiscard('maps', discardPausedRegion);
 
 export { mapsRunner };

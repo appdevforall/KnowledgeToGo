@@ -119,6 +119,37 @@ test('cancel finalizes a paused job (no orphan)', async () => {
     assert.equal(jobs.get(job.id)?.phase, 'canceled');   // not left 'paused'
 });
 
+test('cancel of a paused job runs the type discard once; a running job does not', async () => {
+    // A pause keeps the partial for Resume, so only the discard removes it after a later Cancel.
+    const g = gatedRunner();
+    jobs.registerRunner('books', g.runner);
+    const discarded: string[] = [];
+    jobs.registerDiscard('books', (j) => { discarded.push(j.id); });
+
+    const paused = jobs.create('books', [{ id: 1 }]);
+    await tick();
+    assert.equal(jobs.pause(paused.id), true);
+    await tick();
+    assert.equal(jobs.cancel(paused.id), true);
+    assert.deepEqual(discarded, [paused.id]);
+
+    const running = jobs.create('books', [{ id: 2 }]);
+    await tick();
+    assert.equal(jobs.cancel(running.id), true);   // its runner does its own cleanup
+    await tick();
+    assert.deepEqual(discarded, [paused.id]);
+});
+
+test('classifyStop: a cancel during a pause wins', () => {
+    const { classifyStop } = require('./jobs') as typeof import('./jobs');
+    const ctx = (paused: boolean, canceled: boolean) =>
+        ({ isPaused: () => paused, isCanceled: () => canceled }) as unknown as RunnerContext;
+    assert.equal(classifyStop(ctx(true, true)), 'canceled');
+    assert.equal(classifyStop(ctx(true, false)), 'paused');
+    assert.equal(classifyStop(ctx(false, true)), 'canceled');
+    assert.equal(classifyStop(ctx(false, false)), null);
+});
+
 test('the verbs no-op outside their phase', async () => {
     jobs.registerRunner('kiwix', async (ctx: RunnerContext) => {
         ctx.update({ phase: 'done', percent: 100 });   // completes immediately
