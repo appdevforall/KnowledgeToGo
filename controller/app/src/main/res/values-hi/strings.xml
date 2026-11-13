@@ -1633,4 +1633,15 @@
     <string name="k2go_damaged_clone_title">कॉपी रुक गई</string>
     <string name="k2go_damaged_clone_body">दूसरे फ़ोन से कॉपी पूरी होने से पहले रुक गई, और सिस्टम शुरू नहीं हो सकता। कॉपी फिर से आज़माएँ, या बैकअप या नए इंस्टॉल से रिकवर करें।</string>
     <string name="k2go_damaged_clone_retry">कॉपी फिर से आज़माएँ</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">तेज़ी से पुनर्स्थापित करें</string>
+    <string name="k2go_br_pair_companion_msg">उसी फ़ोल्डर से %1$s या %2$s भी चुनें। तब ऐप कॉपी करते समय संग्रह की जाँच करता है और एक पूरा चरण छोड़ देता है।</string>
+    <string name="k2go_br_pair_tarball_title">संग्रह चुनें</string>
+    <string name="k2go_br_pair_tarball_msg">%1$s चुनें, इस फ़ाइल के साथ का संग्रह।</string>
+    <string name="k2go_br_pair_missing">%1$s उसी फ़ोल्डर में नहीं है।</string>
+    <string name="k2go_br_pair_select">चुनें</string>
+    <string name="k2go_br_pair_skip">छोड़ें</string>
+    <string name="k2go_br_folder_title">बैकअप फ़ोल्डर चुनें</string>
+    <string name="k2go_br_folder_msg">बैकअप एक फ़ोल्डर में दो फ़ाइलें सहेजता है। Android ऐप्स को सीधे Download फ़ोल्डर का उपयोग नहीं करने देता: इसे खोलें और इसके अंदर एक फ़ोल्डर बनाएँ या चुनें।</string>
+    <string name="k2go_br_folder_choose">फ़ोल्डर चुनें</string>
 </resources>

@@ -25,6 +25,28 @@ public class RootfsManifestTest {
         assertEquals(1589997791L, m.size);
         assertEquals(SHA, m.sha256);
         assertEquals(M4, m.meta4);
+        assertEquals(-1L, m.usize);
+    }
+
+    @Test
+    public void readsUsizeAndMatchesAnyTierForTheAbi() {
+        RootfsManifest m = RootfsManifest.parse(GOOD + " usize=5000000000");
+        assertNotNull(m);
+        assertEquals(5000000000L, m.usize);
+        assertTrue(m.isForAbi("arm64-v8a"));
+        assertFalse(m.isForAbi("armeabi-v7a"));
+        assertNull(RootfsManifest.parse(GOOD + " usize=12x"));
+    }
+
+    @Test
+    public void restoreTrustsOnlyThisFileForThisAbiWithUsize() {
+        RootfsManifest m = RootfsManifest.parse(GOOD + " usize=5000000000");
+        assertNotNull(m.expectedFor(NAME, "arm64-v8a"));
+        assertEquals(5000000000L, m.expectedFor(NAME, "arm64-v8a").tarBytes);
+        assertTrue(m.expectedFor(NAME, "arm64-v8a").matches(1589997791L, SHA));
+        assertNull(m.expectedFor("other.tar.gz", "arm64-v8a"));
+        assertNull(m.expectedFor(NAME, "armeabi-v7a"));
+        assertNull(RootfsManifest.parse(GOOD).expectedFor(NAME, "arm64-v8a"));   // no usize
     }
 
     @Test

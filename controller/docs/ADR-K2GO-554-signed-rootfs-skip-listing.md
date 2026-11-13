@@ -288,6 +288,27 @@ Order: (1) the app with A2 to A5 reaches all channels (BC4); (2) CI writes the
 manifest (only the `-t` value changes); (3) new bakes carry the manifest. An older
 `.minisig` without a manifest stays valid for `minisign -Vm`.
 
+## Amendment 2 (2026-11-13, K2GO-570): app backups skip the listing too
+
+- B1. A backup writes `X.tar.gz` and `X.tar.json` (format `k2go-backup/1`: size and
+  sha-256 of the tarball, uncompressed size, ABI, app version). The writer computes
+  them while it writes. `X.tar.json` is written last.
+- B2. A restore with a matching `X.tar.json` (sha-256 and size checked during the
+  copy, before the wipe) skips the listing and extracts in one pass. The extract
+  total is the uncompressed size. A missing or mismatched `X.tar.json` keeps the
+  full path. Amends D7: a user backup no longer always keeps the listing.
+- B3. Without the listing, the gzip feeder checks each tar header
+  (`TarHeaderGuard`) and stops before a member that escapes the root. Identity
+  (kind, ABI) is still checked from the first member.
+- B4. Accepted risk: `X.tar.json` is not signed. A crafted backup with bad paths and
+  a valid `X.tar.json` now fails after the wipe, not before. Nothing is written
+  outside the rootfs. Analysis: K2GO-570.
+- B5 (K2GO-569). The bake adds `usize` (uncompressed tar size) to the signed manifest.
+  It is the extract total of a trusted download (replaces the catalog `.installed`
+  estimate) and of a signed restore. A manifest without `usize` keeps the full path.
+  A restore picks one file; the app finds `X.tar.json` or `X.tar.gz.minisig` next to
+  it by name (`ArchivePair`).
+
 ## Out of scope
 
 - Replacing the meta4 or the aria2 download path. The signature is additive.

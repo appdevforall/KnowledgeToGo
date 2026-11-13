@@ -196,9 +196,20 @@ public class TarExtractor {
 
                 boolean isGzip = archivePath.toLowerCase().endsWith(".gz");
                 // K2GO-554 D6: trust skips the listing only on the gzip path, where the feeder drives the
-                // bar, and never when the caller asked for rootfs validation, which needs the listing.
-                // Any other combination takes the full path (fail closed).
-                final boolean trusted = trustedTotalBytes > 0L && isGzip && !validateRootfs;
+                // bar. Any other combination takes the full path (fail closed).
+                // K2GO-570: a trusted restore still validates identity (kind + ABI) from the first member;
+                // with no identity member it takes the full path, where the structural check runs.
+                org.appdevforall.k2go.deploy.data.RootfsManifest.Identity identity = null;
+                if (validateRootfs) {
+                    identity = org.appdevforall.k2go.deploy.data.RootfsManifest.read(archivePath);
+                    String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.rejectionMessage(context,
+                            org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.identityRejection(identity));
+                    if (why != null) {
+                        throw new Exception(why);
+                    }
+                }
+                final boolean trusted = trustedTotalBytes > 0L && isGzip
+                        && (!validateRootfs || (identity != null && identity.present));
 
                 // D11: refuse path-traversal. List the archive members first and
                 // bail out (without extracting anything) if any member is absolute
@@ -235,17 +246,6 @@ public class TarExtractor {
                             gzipUncompressedSize(archivePath), trustedTotalBytes);
                     byteMode = true;
                 } else {
-                    if (validateRootfs) {
-                        org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.Result early =
-                                org.appdevforall.k2go.deploy.data.RootfsArchiveValidator.identityRejection(
-                                        org.appdevforall.k2go.deploy.data.RootfsManifest.read(archivePath));
-                        String why = org.appdevforall.k2go.deploy.data.RootfsArchiveValidator
-                                .rejectionMessage(context, early);
-                        if (why != null) {
-                            throw new Exception(why);
-                        }
-                    }
-
                     listing = listEntries(tarBinary, archivePath, isGzip, cancelledBeforeExtract, pauseAtBoundary, listener);
                     for (String entry : listing.paths) {
                         if (ArchiveEntry.escapesRoot(entry)) {
@@ -390,6 +390,9 @@ public class TarExtractor {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
+                        // K2GO-570: without the listing, check each member name before tar sees it.
+                        final org.appdevforall.k2go.deploy.domain.TarHeaderGuard guard =
+                                trusted ? new org.appdevforall.k2go.deploy.domain.TarHeaderGuard() : null;
                         long lastFeedEmit = 0L;   // K2GO-554 D8: throttle for the trusted-path feeder-byte emit
                         while ((bytesRead = gis.read(buffer)) != -1) {
                             // K2GO-384 (ADR-5343c): force-cancel DURING extract (acknowledged destructive).
@@ -401,6 +404,14 @@ public class TarExtractor {
                                 tarProcess.destroy();
                                 pipeBroke = true;
                                 break;
+                            }
+                            if (guard != null) {
+                                int safe = guard.accept(buffer, 0, bytesRead);
+                                if (safe < bytesRead) {
+                                    if (safe > 0) tarInput.write(buffer, 0, safe);
+                                    tarProcess.destroy();
+                                    throw new Exception("Unsafe archive entry (path traversal): " + guard.rejected());
+                                }
                             }
                             try {
                                 tarInput.write(buffer, 0, bytesRead);

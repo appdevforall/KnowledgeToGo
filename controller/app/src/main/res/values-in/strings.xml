@@ -1563,4 +1563,15 @@
     <string name="k2go_damaged_clone_title">Penyalinan terputus</string>
     <string name="k2go_damaged_clone_body">Penyalinan dari ponsel lain berhenti sebelum selesai, dan sistem tidak dapat dimulai. Coba salin lagi, atau pulihkan dengan cadangan atau instalasi baru.</string>
     <string name="k2go_damaged_clone_retry">Coba salin lagi</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Pulihkan lebih cepat</string>
+    <string name="k2go_br_pair_companion_msg">Pilih juga %1$s atau %2$s dari folder yang sama. Aplikasi lalu memeriksa arsip saat menyalinnya dan melewati satu tahap penuh.</string>
+    <string name="k2go_br_pair_tarball_title">Pilih arsip</string>
+    <string name="k2go_br_pair_tarball_msg">Pilih %1$s, arsip pasangan file ini.</string>
+    <string name="k2go_br_pair_missing">%1$s tidak ada di folder yang sama.</string>
+    <string name="k2go_br_pair_select">Pilih</string>
+    <string name="k2go_br_pair_skip">Lewati</string>
+    <string name="k2go_br_folder_title">Pilih folder cadangan</string>
+    <string name="k2go_br_folder_msg">Cadangan menyimpan dua file di dalam folder. Android tidak mengizinkan aplikasi memakai folder Download itu sendiri: buka folder itu, lalu buat atau pilih folder di dalamnya.</string>
+    <string name="k2go_br_folder_choose">Pilih folder</string>
 </resources>

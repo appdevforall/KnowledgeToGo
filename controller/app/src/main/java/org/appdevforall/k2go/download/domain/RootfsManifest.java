@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 /**
  * The manifest the bake writes into the minisign trusted comment of a rootfs tarball
  * (ADR-K2GO-554 Amendment 1, A1/A2):
- * {@code k2go-rootfs v1 file=<name> size=<gz bytes> sha256=<gz sha-256> meta4=<meta4 sha-256>}.
+ * {@code k2go-rootfs v1 file=<name> size=<gz bytes> sha256=<gz sha-256> meta4=<meta4 sha-256>
+ * usize=<uncompressed tar bytes>}. K2GO-569: {@code usize} is optional; without it a restore takes
+ * the full path.
  *
  * <p>The parse is strict. Anything else (another prefix or version, an unknown or repeated key,
  * a malformed value, a missing required key) means "no manifest", so the caller takes the
@@ -24,12 +26,15 @@ public final class RootfsManifest {
     public final String sha256;
     /** sha-256 of the dated .meta4, or null when absent. Reserved for zero-pass download (A6). */
     public final String meta4;
+    /** Uncompressed tar stream size, or -1 when absent. The exact extract total, also above 4 GiB. */
+    public final long usize;
 
-    private RootfsManifest(String file, long size, String sha256, String meta4) {
+    private RootfsManifest(String file, long size, String sha256, String meta4, long usize) {
         this.file = file;
         this.size = size;
         this.sha256 = sha256;
         this.meta4 = meta4;
+        this.usize = usize;
     }
 
     /** The manifest in an authenticated trusted comment, or null when there is none. */
@@ -44,7 +49,8 @@ public final class RootfsManifest {
                 return null;
             }
             String key = token.substring(0, eq);
-            if (!key.equals("file") && !key.equals("size") && !key.equals("sha256") && !key.equals("meta4")) {
+            if (!key.equals("file") && !key.equals("size") && !key.equals("sha256") && !key.equals("meta4")
+                    && !key.equals("usize")) {
                 return null;
             }
             if (kv.put(key, token.substring(eq + 1)) != null) {
@@ -55,12 +61,15 @@ public final class RootfsManifest {
         String size = kv.get("size");
         String sha256 = kv.get("sha256");
         String meta4 = kv.get("meta4");
+        String usize = kv.get("usize");
         if (file == null || size == null || !size.matches("[0-9]{1,18}")
                 || sha256 == null || !sha256.matches(HEX64)
-                || (meta4 != null && !meta4.matches(HEX64))) {
+                || (meta4 != null && !meta4.matches(HEX64))
+                || (usize != null && !usize.matches("[0-9]{1,18}"))) {
             return null;
         }
-        return new RootfsManifest(file, Long.parseLong(size), sha256, meta4);
+        return new RootfsManifest(file, Long.parseLong(size), sha256, meta4,
+                usize == null ? -1L : Long.parseLong(usize));
     }
 
     /** The outcome of the trust decision for one downloaded artifact. */
@@ -104,6 +113,22 @@ public final class RootfsManifest {
         return expected != null && expected.tier != null && expected.abi != null
                 && file.matches("k2go_[0-9]{4}\\.[0-9]{3}_" + Pattern.quote(expected.tier)
                         + "_[0-9a-f]+_" + Pattern.quote(expected.abi) + "\\.tar\\.gz");
+    }
+
+    /** K2GO-569: true when the signed file name is a bake artifact of any tier for this ABI (a restore). */
+    public boolean isForAbi(String abi) {
+        return abi != null && file.matches("k2go_[0-9]{4}\\.[0-9]{3}_[a-z0-9-]+_[0-9a-f]+_"
+                + Pattern.quote(abi) + "\\.tar\\.gz");
+    }
+
+    /**
+     * K2GO-569: what a signed restore may trust about the tarball named {@code fileName}, or
+     * {@code null}: this manifest must name that file, be a bake artifact for {@code abi}, and carry
+     * {@code usize}. The copy then checks the size and sha-256.
+     */
+    public org.appdevforall.k2go.deploy.domain.ExpectedArchive expectedFor(String fileName, String abi) {
+        return usize > 0 && file.equals(fileName) && isForAbi(abi)
+                ? new org.appdevforall.k2go.deploy.domain.ExpectedArchive(size, sha256, usize) : null;
     }
 
     /** True when this manifest names exactly this artifact (file name, size and sha-256). */

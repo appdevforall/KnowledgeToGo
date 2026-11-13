@@ -1569,4 +1569,15 @@
     <string name="k2go_damaged_clone_title">Копирање прекинуто</string>
     <string name="k2go_damaged_clone_body">Копирање са другог телефона је стало пре краја и систем не може да се покрене. Покушајте копирање поново или опоравите систем из резервне копије или новом инсталацијом.</string>
     <string name="k2go_damaged_clone_retry">Покушај копирање поново</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Брже враћање</string>
+    <string name="k2go_br_pair_companion_msg">Изаберите и %1$s или %2$s из исте фасцикле. Апликација тада проверава архиву док је копира и прескаче један цео пролаз.</string>
+    <string name="k2go_br_pair_tarball_title">Изаберите архиву</string>
+    <string name="k2go_br_pair_tarball_msg">Изаберите %1$s, архиву која иде уз ову датотеку.</string>
+    <string name="k2go_br_pair_missing">%1$s није у истој фасцикли.</string>
+    <string name="k2go_br_pair_select">Изабери</string>
+    <string name="k2go_br_pair_skip">Прескочи</string>
+    <string name="k2go_br_folder_title">Изаберите фасциклу за резервне копије</string>
+    <string name="k2go_br_folder_msg">Резервна копија чува две датотеке у фасцикли. Android не дозвољава апликацијама да користе саму фасциклу Download: отворите је и направите или изаберите фасциклу у њој.</string>
+    <string name="k2go_br_folder_choose">Изабери фасциклу</string>
 </resources>

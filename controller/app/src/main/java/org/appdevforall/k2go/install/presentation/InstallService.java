@@ -192,11 +192,6 @@ public final class InstallService extends Service {
     private boolean reinstall;
     private boolean resetMode;
 
-    // K2GO-554 D6: the published uncompressed (installed) size for the tier+abi being downloaded,
-    // resolved once where the tier/abi are known (startRootfsDownload). onRootfsDownloaded injects it
-    // into the extractor only when the download is trusted (officially signed), so the extract can skip
-    // the second listing pass. 0 until resolved.
-    private long rootfsInstalledBytes = 0L;
 
     // ADFA-4476 slice 3: per-module install queue state (module mode only).
     private boolean moduleMode;
@@ -504,9 +499,6 @@ public final class InstallService extends Service {
         org.appdevforall.k2go.rootfs.data.RootfsCatalog catalog =
                 new org.appdevforall.k2go.rootfs.data.RootfsCatalog(this);
         String directUrl = catalog.metaUrl(rTier, rAbi);
-        // K2GO-554 D6: resolve the published uncompressed total here, where the tier/abi are known, so
-        // onRootfsDownloaded can inject it when the download turns out to be trusted (signed).
-        rootfsInstalledBytes = catalog.installedBytes(rTier, rAbi);
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
         aria2Manager.startDownload(this, directUrl,   // K2GO-554: rootfs opts into signature trust for this tier/ABI
@@ -592,13 +584,13 @@ public final class InstallService extends Service {
 
             @Override
             public void onComplete(String downloadPath) {
-                onComplete(downloadPath, false);   // K2GO-554: a caller that does not report trust means untrusted
+                onComplete(downloadPath, 0L);   // K2GO-554: a caller that does not report trust means untrusted
             }
 
             @Override
-            public void onComplete(String downloadPath, boolean trusted) {
+            public void onComplete(String downloadPath, long trustedTotal) {
                 if (cancelled) return;
-                onRootfsDownloaded(downloadPath, trusted);
+                onRootfsDownloaded(downloadPath, trustedTotal);
             }
 
             @Override
@@ -647,11 +639,10 @@ public final class InstallService extends Service {
         });
     }
 
-    private void onRootfsDownloaded(String downloadPath, boolean trusted) {
+    /** @param trustedTotal the signed uncompressed size of a trusted download, or 0 (full slow path). */
+    private void onRootfsDownloaded(String downloadPath, long trustedTotal) {
         // K2GO-554 D6: a trusted (officially signed) download skips the listing pass; the extract bar is
-        // then driven by feeder bytes against the uncompressed stream size, which the extractor derives
-        // from the gzip trailer and this published total. 0 keeps the full slow path.
-        final long trustedTotal = (trusted && rootfsInstalledBytes > 0L) ? rootfsInstalledBytes : 0L;
+        // then driven by feeder bytes against the signed uncompressed size (K2GO-569: usize).
         final boolean singlePass = trustedTotal > 0L;
         // ADFA-5118: the archive-listing pass is now the determinate VERIFY phase of the unified bar.
         // Start indeterminate (-1) until the first byte lands; the gzip feeder then drives real % + ETA.

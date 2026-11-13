@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">کپی متوقف شد</string>
     <string name="k2go_damaged_clone_body">کپی از گوشی دیگر پیش از پایان متوقف شد و سیستم نمی‌تواند راه‌اندازی شود. کپی را دوباره امتحان کنید، یا با یک نسخه پشتیبان یا نصب تازه بازیابی کنید.</string>
     <string name="k2go_damaged_clone_retry">تلاش دوباره برای کپی</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">بازیابی سریع‌تر</string>
+    <string name="k2go_br_pair_companion_msg">%1$s یا %2$s را هم از همان پوشه انتخاب کنید. در این صورت برنامه بایگانی را هنگام کپی بررسی می‌کند و یک مرحله کامل را حذف می‌کند.</string>
+    <string name="k2go_br_pair_tarball_title">بایگانی را انتخاب کنید</string>
+    <string name="k2go_br_pair_tarball_msg">%1$s را انتخاب کنید، بایگانی مربوط به این فایل.</string>
+    <string name="k2go_br_pair_missing">%1$s در همان پوشه نیست.</string>
+    <string name="k2go_br_pair_select">انتخاب</string>
+    <string name="k2go_br_pair_skip">رد شدن</string>
+    <string name="k2go_br_folder_title">یک پوشه برای پشتیبان‌ها انتخاب کنید</string>
+    <string name="k2go_br_folder_msg">پشتیبان دو فایل را در یک پوشه ذخیره می‌کند. Android اجازه نمی‌دهد برنامه‌ها از خود پوشه Download استفاده کنند: آن را باز کنید و پوشه‌ای در آن بسازید یا انتخاب کنید.</string>
+    <string name="k2go_br_folder_choose">انتخاب پوشه</string>
 </resources>

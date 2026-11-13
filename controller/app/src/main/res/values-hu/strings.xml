@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">A másolás megszakadt</string>
     <string name="k2go_damaged_clone_body">A másik telefonról indított másolás a befejezés előtt leállt, és a rendszer nem tud elindulni. Próbálja újra a másolást, vagy állítsa helyre biztonsági mentésből vagy új telepítéssel.</string>
     <string name="k2go_damaged_clone_retry">Másolás újra</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Gyorsabb visszaállítás</string>
+    <string name="k2go_br_pair_companion_msg">Válaszd ki a(z) %1$s vagy %2$s fájlt is ugyanabból a mappából. Az alkalmazás így másolás közben ellenőrzi az archívumot, és kihagy egy teljes kört.</string>
+    <string name="k2go_br_pair_tarball_title">Válaszd ki az archívumot</string>
+    <string name="k2go_br_pair_tarball_msg">Válaszd ki a(z) %1$s fájlt, az ehhez tartozó archívumot.</string>
+    <string name="k2go_br_pair_missing">A(z) %1$s nincs ugyanabban a mappában.</string>
+    <string name="k2go_br_pair_select">Kiválasztás</string>
+    <string name="k2go_br_pair_skip">Kihagyás</string>
+    <string name="k2go_br_folder_title">Válassz mappát a mentésekhez</string>
+    <string name="k2go_br_folder_msg">A mentés két fájlt tárol egy mappában. Az Android nem engedi, hogy az alkalmazások magát a Download mappát használják: nyisd meg, és hozz létre vagy válassz benne egy mappát.</string>
+    <string name="k2go_br_folder_choose">Mappa kiválasztása</string>
 </resources>

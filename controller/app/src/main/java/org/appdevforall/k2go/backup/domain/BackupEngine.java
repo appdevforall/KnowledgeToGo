@@ -42,12 +42,19 @@ public final class BackupEngine {
      *  from uncompressed bytes archived vs a pre-counted total. Emitted from the tar-stdout read loop. */
     public interface ProgressListener { void onProgress(int percent, long etaSeconds); }
 
+    /** K2GO-570: what a finished backup wrote, for X.tar.json. Filled only when the stream completes. */
+    public static final class Stats {
+        public long gzBytes;
+        public String gzSha256;
+        public long tarBytes;
+    }
+
     /**
      * Suggested external filename: {@code k2go_YYYY.DDD_<epochSecs>_<arch>.tar.gz}.
      *
-     * <p>K2GO-377: the prefix follows the built rootfs artifacts onto the product's own name. It is
-     * only ever a suggestion for the SAF picker — nothing reads it back, and a restore identifies an
-     * archive by the manifest inside it, so backups written under the old name keep working.
+     * <p>K2GO-377: the prefix follows the built rootfs artifacts onto the product's own name. A restore
+     * identifies an archive by the manifest inside it, so backups written under the old name keep
+     * working. K2GO-570: X.tar.json is named after it (see BackupCompanion).
      */
     public static String suggestedFileName(Context ctx) {
         java.util.Calendar c = java.util.Calendar.getInstance();
@@ -73,7 +80,7 @@ public final class BackupEngine {
      * caller distinguishes a cancel from a failure by that same flag and removes the incomplete SAF file.
      */
     public static boolean streamBackup(Context ctx, OutputStream dest, ProgressListener listener,
-                                       AtomicBoolean cancelled) {
+                                       AtomicBoolean cancelled, Stats stats) {
         File iiabRootDir = SystemStateEvaluator.rootfsBaseDir(ctx);
         File nativeDir = new File(ctx.getApplicationInfo().nativeLibraryDir);
         File staticTar = new File(nativeDir, "libtar.so");
@@ -130,16 +137,27 @@ public final class BackupEngine {
             // emits. The guard lets close() finish the gzip stream and free its Deflater WITHOUT closing dest,
             // which the caller owns and closes. System.nanoTime (not android SystemClock) keeps this domain
             // class off android.* and is monotonic for durations.
+            // K2GO-570: hash and count the compressed bytes on their way out, so X.tar.json costs no extra pass.
+            final java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-256");
+            final long[] gzBytes = {0L};
             final OutputStream guarded = new java.io.FilterOutputStream(dest) {
                 @Override public void write(byte[] b, int off, int len) throws java.io.IOException {
                     out.write(b, off, len);   // FilterOutputStream's default writes byte-by-byte; delegate whole
+                    sha.update(b, off, len);
+                    gzBytes[0] += len;
+                }
+                @Override public void write(int b) throws java.io.IOException {
+                    out.write(b);
+                    sha.update((byte) b);
+                    gzBytes[0]++;
                 }
                 @Override public void close() { /* caller owns dest */ }
             };
+            long processed = 0L;
             try (GZIPOutputStream gz = new GZIPOutputStream(guarded);
                  InputStream in = p.getInputStream()) {
                 byte[] buf = new byte[1 << 16];   // 64 KB
-                long processed = 0L, lastEmitMs = 0L;
+                long lastEmitMs = 0L;
                 final long startNs = System.nanoTime();
                 int n;
                 while ((n = in.read(buf)) > 0) {
@@ -170,6 +188,11 @@ public final class BackupEngine {
                 // are proot mount stubs (iiab/sdcard, ...); RECORD them so a genuinely dropped file is never
                 // silent (the honesty this slice restored -- the old tar|gzip pipe masked all of this).
                 Log.w(TAG, "backup ok; tar skipped unreadable entries:\n" + tail);
+            }
+            if (exit == 0 && stats != null) {
+                stats.gzBytes = gzBytes[0];
+                stats.gzSha256 = org.appdevforall.k2go.download.domain.DownloadVerifier.toHex(sha.digest());
+                stats.tarBytes = processed;
             }
             return exit == 0;
         } catch (Exception e) {

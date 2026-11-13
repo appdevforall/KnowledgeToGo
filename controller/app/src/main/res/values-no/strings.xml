@@ -1566,4 +1566,15 @@
     <string name="k2go_damaged_clone_title">Kopieringen ble avbrutt</string>
     <string name="k2go_damaged_clone_body">Kopieringen fra den andre telefonen stoppet før den var ferdig, og systemet kan ikke starte. Prøv kopieringen på nytt, eller gjenopprett med en sikkerhetskopi eller en ny installasjon.</string>
     <string name="k2go_damaged_clone_retry">Prøv kopieringen på nytt</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Gjenopprett raskere</string>
+    <string name="k2go_br_pair_companion_msg">Velg også %1$s eller %2$s fra samme mappe. Appen kontrollerer da arkivet mens den kopierer det, og hopper over én hel runde.</string>
+    <string name="k2go_br_pair_tarball_title">Velg arkivet</string>
+    <string name="k2go_br_pair_tarball_msg">Velg %1$s, arkivet som hører til denne filen.</string>
+    <string name="k2go_br_pair_missing">%1$s er ikke i samme mappe.</string>
+    <string name="k2go_br_pair_select">Velg</string>
+    <string name="k2go_br_pair_skip">Hopp over</string>
+    <string name="k2go_br_folder_title">Velg en mappe for sikkerhetskopier</string>
+    <string name="k2go_br_folder_msg">Sikkerhetskopien lagrer to filer i en mappe. Android lar ikke apper bruke selve Download-mappen: åpne den og opprett eller velg en mappe inni den.</string>
+    <string name="k2go_br_folder_choose">Velg mappe</string>
 </resources>

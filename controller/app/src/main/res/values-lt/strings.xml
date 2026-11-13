@@ -1573,4 +1573,15 @@
     <string name="k2go_damaged_clone_title">Kopijavimas nutrūko</string>
     <string name="k2go_damaged_clone_body">Kopijavimas iš kito telefono sustojo nepasibaigęs, ir sistema negali pasileisti. Bandykite kopijuoti dar kartą arba atkurkite iš atsarginės kopijos ar nauju diegimu.</string>
     <string name="k2go_damaged_clone_retry">Kopijuoti dar kartą</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Atkurti greičiau</string>
+    <string name="k2go_br_pair_companion_msg">Taip pat pasirinkite %1$s arba %2$s iš to paties aplanko. Tada programa patikrina archyvą kopijuodama ir praleidžia vieną pilną ėjimą.</string>
+    <string name="k2go_br_pair_tarball_title">Pasirinkite archyvą</string>
+    <string name="k2go_br_pair_tarball_msg">Pasirinkite %1$s, archyvą, priklausantį šiam failui.</string>
+    <string name="k2go_br_pair_missing">%1$s nėra tame pačiame aplanke.</string>
+    <string name="k2go_br_pair_select">Pasirinkti</string>
+    <string name="k2go_br_pair_skip">Praleisti</string>
+    <string name="k2go_br_folder_title">Pasirinkite atsarginių kopijų aplanką</string>
+    <string name="k2go_br_folder_msg">Atsarginė kopija išsaugo du failus aplanke. Android neleidžia programoms naudoti paties Download aplanko: atidarykite jį ir sukurkite arba pasirinkite aplanką jame.</string>
+    <string name="k2go_br_folder_choose">Pasirinkti aplanką</string>
 </resources>

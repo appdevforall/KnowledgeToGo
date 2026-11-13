@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">Sao chép bị gián đoạn</string>
     <string name="k2go_damaged_clone_body">Việc sao chép từ điện thoại kia đã dừng trước khi hoàn tất và hệ thống không thể khởi động. Hãy thử sao chép lại, hoặc khôi phục bằng bản sao lưu hay cài đặt mới.</string>
     <string name="k2go_damaged_clone_retry">Thử sao chép lại</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Khôi phục nhanh hơn</string>
+    <string name="k2go_br_pair_companion_msg">Chọn thêm %1$s hoặc %2$s trong cùng thư mục. Khi đó ứng dụng kiểm tra tệp lưu trữ trong lúc sao chép và bỏ qua một lượt đầy đủ.</string>
+    <string name="k2go_br_pair_tarball_title">Chọn tệp lưu trữ</string>
+    <string name="k2go_br_pair_tarball_msg">Chọn %1$s, tệp lưu trữ đi kèm tệp này.</string>
+    <string name="k2go_br_pair_missing">%1$s không nằm trong cùng thư mục.</string>
+    <string name="k2go_br_pair_select">Chọn</string>
+    <string name="k2go_br_pair_skip">Bỏ qua</string>
+    <string name="k2go_br_folder_title">Chọn thư mục sao lưu</string>
+    <string name="k2go_br_folder_msg">Bản sao lưu lưu hai tệp vào một thư mục. Android không cho ứng dụng dùng trực tiếp thư mục Download: hãy mở thư mục đó rồi tạo hoặc chọn một thư mục bên trong.</string>
+    <string name="k2go_br_folder_choose">Chọn thư mục</string>
 </resources>

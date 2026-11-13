@@ -1563,4 +1563,15 @@
     <string name="k2go_damaged_clone_title">Η αντιγραφή διακόπηκε</string>
     <string name="k2go_damaged_clone_body">Η αντιγραφή από το άλλο τηλέφωνο σταμάτησε πριν ολοκληρωθεί και το σύστημα δεν μπορεί να ξεκινήσει. Δοκιμάστε ξανά την αντιγραφή ή κάντε ανάκτηση από αντίγραφο ασφαλείας ή με νέα εγκατάσταση.</string>
     <string name="k2go_damaged_clone_retry">Επανάληψη αντιγραφής</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Γρηγορότερη επαναφορά</string>
+    <string name="k2go_br_pair_companion_msg">Επιλέξτε επίσης %1$s ή %2$s από τον ίδιο φάκελο. Η εφαρμογή ελέγχει τότε το αρχείο κατά την αντιγραφή και παραλείπει ένα πλήρες πέρασμα.</string>
+    <string name="k2go_br_pair_tarball_title">Επιλέξτε το αρχείο</string>
+    <string name="k2go_br_pair_tarball_msg">Επιλέξτε %1$s, το αρχείο που συνοδεύει αυτό.</string>
+    <string name="k2go_br_pair_missing">Το %1$s δεν βρίσκεται στον ίδιο φάκελο.</string>
+    <string name="k2go_br_pair_select">Επιλογή</string>
+    <string name="k2go_br_pair_skip">Παράλειψη</string>
+    <string name="k2go_br_folder_title">Επιλέξτε φάκελο αντιγράφων ασφαλείας</string>
+    <string name="k2go_br_folder_msg">Το αντίγραφο ασφαλείας αποθηκεύει δύο αρχεία σε έναν φάκελο. Το Android δεν επιτρέπει στις εφαρμογές να χρησιμοποιούν τον ίδιο τον φάκελο Download: ανοίξτε τον και δημιουργήστε ή επιλέξτε έναν φάκελο μέσα του.</string>
+    <string name="k2go_br_folder_choose">Επιλογή φακέλου</string>
 </resources>

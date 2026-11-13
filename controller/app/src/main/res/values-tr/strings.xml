@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">Kopyalama kesildi</string>
     <string name="k2go_damaged_clone_body">Diğer telefondan kopyalama bitmeden durdu ve sistem başlatılamıyor. Kopyalamayı yeniden deneyin ya da bir yedekle veya yeni bir kurulumla kurtarın.</string>
     <string name="k2go_damaged_clone_retry">Kopyalamayı yeniden dene</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Daha hızlı geri yükle</string>
+    <string name="k2go_br_pair_companion_msg">Aynı klasörden %1$s veya %2$s dosyasını da seçin. Uygulama arşivi kopyalarken denetler ve tam bir geçişi atlar.</string>
+    <string name="k2go_br_pair_tarball_title">Arşivi seçin</string>
+    <string name="k2go_br_pair_tarball_msg">Bu dosyaya ait arşiv olan %1$s dosyasını seçin.</string>
+    <string name="k2go_br_pair_missing">%1$s aynı klasörde değil.</string>
+    <string name="k2go_br_pair_select">Seç</string>
+    <string name="k2go_br_pair_skip">Atla</string>
+    <string name="k2go_br_folder_title">Bir yedek klasörü seçin</string>
+    <string name="k2go_br_folder_msg">Yedek, bir klasöre iki dosya kaydeder. Android, uygulamaların Download klasörünün kendisini kullanmasına izin vermez: klasörü açın ve içinde bir klasör oluşturun veya seçin.</string>
+    <string name="k2go_br_folder_choose">Klasör seç</string>
 </resources>

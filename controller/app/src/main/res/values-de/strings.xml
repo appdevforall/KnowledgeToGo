@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">Kopie unterbrochen</string>
     <string name="k2go_damaged_clone_body">Die Kopie vom anderen Telefon wurde vor dem Abschluss gestoppt und das System kann nicht starten. Versuchen Sie die Kopie erneut oder stellen Sie das System aus einem Backup oder mit einer Neuinstallation wieder her.</string>
     <string name="k2go_damaged_clone_retry">Kopie wiederholen</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Schneller wiederherstellen</string>
+    <string name="k2go_br_pair_companion_msg">Wähle auch %1$s oder %2$s aus demselben Ordner. Die App prüft das Archiv dann beim Kopieren und spart einen vollständigen Durchgang.</string>
+    <string name="k2go_br_pair_tarball_title">Archiv auswählen</string>
+    <string name="k2go_br_pair_tarball_msg">Wähle %1$s, das Archiv zu dieser Datei.</string>
+    <string name="k2go_br_pair_missing">%1$s ist nicht im selben Ordner.</string>
+    <string name="k2go_br_pair_select">Auswählen</string>
+    <string name="k2go_br_pair_skip">Überspringen</string>
+    <string name="k2go_br_folder_title">Backup-Ordner wählen</string>
+    <string name="k2go_br_folder_msg">Das Backup speichert zwei Dateien in einem Ordner. Android erlaubt Apps nicht, den Ordner Download selbst zu verwenden: Öffne ihn und erstelle oder wähle darin einen Ordner.</string>
+    <string name="k2go_br_folder_choose">Ordner wählen</string>
 </resources>

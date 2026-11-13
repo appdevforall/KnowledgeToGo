@@ -1569,4 +1569,15 @@
     <string name="k2go_damaged_clone_title">কপি বাধাগ্রস্ত হয়েছে</string>
     <string name="k2go_damaged_clone_body">অন্য ফোন থেকে কপি শেষ হওয়ার আগেই থেমে গেছে, এবং সিস্টেম চালু হতে পারছে না। আবার কপি করার চেষ্টা করুন, অথবা ব্যাকআপ বা নতুন ইনস্টলের মাধ্যমে পুনরুদ্ধার করুন।</string>
     <string name="k2go_damaged_clone_retry">আবার কপি করুন</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">আরও দ্রুত পুনরুদ্ধার</string>
+    <string name="k2go_br_pair_companion_msg">একই ফোল্ডার থেকে %1$s বা %2$s-ও নির্বাচন করুন। তখন অ্যাপটি কপি করার সময় আর্কাইভ যাচাই করে এবং একটি পূর্ণ ধাপ বাদ দেয়।</string>
+    <string name="k2go_br_pair_tarball_title">আর্কাইভ নির্বাচন করুন</string>
+    <string name="k2go_br_pair_tarball_msg">%1$s নির্বাচন করুন, এই ফাইলের সাথের আর্কাইভ।</string>
+    <string name="k2go_br_pair_missing">%1$s একই ফোল্ডারে নেই।</string>
+    <string name="k2go_br_pair_select">নির্বাচন</string>
+    <string name="k2go_br_pair_skip">এড়িয়ে যান</string>
+    <string name="k2go_br_folder_title">ব্যাকআপ ফোল্ডার বেছে নিন</string>
+    <string name="k2go_br_folder_msg">ব্যাকআপ একটি ফোল্ডারে দুটি ফাইল সংরক্ষণ করে। Android অ্যাপকে সরাসরি Download ফোল্ডার ব্যবহার করতে দেয় না: এটি খুলুন এবং এর ভিতরে একটি ফোল্ডার তৈরি করুন বা বেছে নিন।</string>
+    <string name="k2go_br_folder_choose">ফোল্ডার বেছে নিন</string>
 </resources>

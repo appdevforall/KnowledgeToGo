@@ -274,7 +274,11 @@ jobs:
               || { echo "FATAL: ${tb}.sha256 does not match $tb" >&2; exit 1; }
             { [ -f "${tb}.meta4" ] && grep -q "$sha" "${tb}.meta4"; } \
               || { echo "FATAL: ${tb}.meta4 is missing or does not carry the sha-256 of $tb" >&2; exit 1; }
-            manifest="k2go-rootfs v1 file=$tb size=$(stat -c%s "$tb") sha256=$sha meta4=$(sha256sum "${tb}.meta4" | awk '{print $1}')"
+            # K2GO-569: usize = exact uncompressed tar stream size, the app's extract total on a trusted
+            # restore (the gzip ISIZE wraps above 4 GiB, and .installed is du -sb of the tree).
+            usize="$(gzip -dc "$tb" | wc -c)" \
+              || { echo "FATAL: cannot decompress $tb to measure usize" >&2; exit 1; }
+            manifest="k2go-rootfs v1 file=$tb size=$(stat -c%s "$tb") sha256=$sha meta4=$(sha256sum "${tb}.meta4" | awk '{print $1}') usize=$usize"
             echo ">> sign $tb: $manifest"
             minisign -S -H -s "$KEY" -m "$tb" -t "$manifest" </dev/null
             [ "$(sed -n 3p "${tb}.minisig")" = "trusted comment: $manifest" ] \
