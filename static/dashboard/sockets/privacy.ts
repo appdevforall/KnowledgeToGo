@@ -70,7 +70,8 @@ export function readIniOption(text: string, section: string, key: string): strin
     lines.forEach((l, i) => {
         if (owner[i] !== sec) return;
         const m = KEY_RE.exec(l);
-        if (m && m[2].toLowerCase() === k) value = m[3].replace(/^(["'])(.*)\1$/, '$2');
+        // configobj and go-ini both drop an inline comment that follows whitespace.
+        if (m && m[2].toLowerCase() === k) value = m[3].replace(/\s+[;#].*$/, '').replace(/^(["'])(.*)\1$/, '$2');
     });
     return value;
 }
@@ -135,8 +136,9 @@ export function readState(sw: PrivacySwitch): PrivacyState {
     let text: string;
     try {
         text = fs.readFileSync(sw.file, 'utf8');
-    } catch {
-        return { service: sw.service, installed: false, outbound: false };
+    } catch (e: any) {
+        if (e?.code === 'ENOENT') return { service: sw.service, installed: false, outbound: false };
+        throw e;
     }
     return { service: sw.service, installed: true, outbound: outboundFromText(sw, text) };
 }
@@ -145,16 +147,21 @@ export function readState(sw: PrivacySwitch): PrivacyState {
 function writeAtomic(file: string, data: string): void {
     const st = fs.statSync(file);
     const tmp = file + '.k2go-tmp';
-    const fd = fs.openSync(tmp, 'w', st.mode & 0o7777);
     try {
-        fs.writeSync(fd, data);
-        fs.fsyncSync(fd);
-    } finally {
-        fs.closeSync(fd);
+        const fd = fs.openSync(tmp, 'w', st.mode & 0o7777);
+        try {
+            fs.writeSync(fd, data);
+            fs.fsyncSync(fd);
+        } finally {
+            fs.closeSync(fd);
+        }
+        fs.chmodSync(tmp, st.mode & 0o7777);   // openSync applies the umask
+        try { fs.chownSync(tmp, st.uid, st.gid); } catch { /* not root: the file keeps our uid */ }
+        fs.renameSync(tmp, file);
+    } catch (e) {
+        fs.rmSync(tmp, { force: true });
+        throw e;
     }
-    fs.chmodSync(tmp, st.mode & 0o7777);   // openSync applies the umask
-    try { fs.chownSync(tmp, st.uid, st.gid); } catch { /* not root: the file keeps our uid */ }
-    fs.renameSync(tmp, file);
 }
 
 /** Set the switch. Returns the new state and whether the file changed (the caller restarts the

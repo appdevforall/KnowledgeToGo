@@ -29,6 +29,12 @@ test('readIniOption: ignores comments, strips quotes, last repeated key wins', (
     assert.equal(readIniOption('[a]\nk = "v"\n', 'a', 'k'), 'v');
 });
 
+test('readIniOption: drops an inline comment after whitespace', () => {
+    assert.equal(readIniOption('[cron.update_checker]\nENABLED = false ; offline box\n', 'cron.update_checker', 'ENABLED'), 'false');
+    assert.equal(readIniOption('[Deployment]\nDISABLE_PING = True  # note\n', 'Deployment', 'DISABLE_PING'), 'True');
+    assert.equal(outboundFromText(FORGEJO, '[cron.update_checker]\nENABLED = false ; offline box\n'), false);
+});
+
 test('setIniOption: replaces an existing key in place, keeps every other line', () => {
     const t = '; head\n[Deployment]\nHTTP_PORT = 8009\n  DISABLE_PING=False\n\n[Paths]\nX = 1\n';
     assert.equal(setIniOption(t, 'Deployment', 'DISABLE_PING', 'True'),
@@ -129,6 +135,11 @@ test('applyOutbound: turning Forgejo back on writes ENABLED = true', () => {
     const sw = tmpSwitch(FORGEJO, '[cron.update_checker]\nENABLED = false\n');
     assert.equal(applyOutbound(sw, true).state.outbound, true);
     assert.equal(fs.readFileSync(sw.file, 'utf8'), '[cron.update_checker]\nENABLED = true\n');
+});
+
+test('readState: an unreadable file is an error, not "not installed"', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'k2go-privacy-'));
+    assert.throws(() => readState({ ...KOLIBRI, file: dir }));   // EISDIR
 });
 
 test('applyOutbound: throws when the service is not installed (no file is made)', () => {
