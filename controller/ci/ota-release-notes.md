@@ -11,6 +11,12 @@ tag). This file is only the short summary end users read when they update.
 Rule: the version header must match the release tag / `versionName` so the CI picks
 the right entry.
 
+## v1.2.0
+Faster and more private. Official systems and your own backups install and
+restore in about half the time. Each phone now has its own identity, copies leave
+personal records behind, and a new Privacy screen keeps outside connections off
+unless you turn them on.
+
 ## v1.1.0
 A maintenance update. Code on the Go gains its add-ons gallery and offline build
 assets; Host code (Forgejo) now installs reliably; content updates and rebuilds
