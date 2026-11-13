@@ -91,8 +91,9 @@ export class PausedError extends Error {
  * are the source of truth and each runner does just its own cleanup on 'canceled'.
  */
 export function classifyStop(ctx: RunnerContext): 'paused' | 'canceled' | null {
-    if (ctx.isPaused()) return 'paused';
+    // Cancel first: a Cancel during a pause's flush sets both flags, and it is the last decision.
     if (ctx.isCanceled()) return 'canceled';
+    if (ctx.isPaused()) return 'paused';
     return null;
 }
 
@@ -118,6 +119,7 @@ const PAUSE_GRACE_MS = 60_000;
 class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
+    private discards = new Map<JobType, (job: Job) => void>();
     private runtime = new Map<string, { canceled: boolean; paused: boolean; procs: Set<ChildProcess>; ac: AbortController; retryAttempt: number; retryTotal: number }>();
     // ADFA-4879: bounded rolling log tail per job for the live-log REST endpoint.
     private readonly logTail = new RollingLog();
@@ -148,6 +150,12 @@ class JobManager {
 
     registerRunner(type: JobType, runner: Runner): void {
         this.runners.set(type, runner);
+    }
+
+    /** Cleanup for a Cancel of a PAUSED job of this type: its runner already exited and kept its
+     *  partial for Resume, so only this removes it. Optional per type; fire-and-forget. */
+    registerDiscard(type: JobType, discard: (job: Job) => void): void {
+        this.discards.set(type, discard);
     }
 
     /** Create + start a job. Returns the persisted row immediately (phase 'queued').
@@ -194,8 +202,11 @@ class JobManager {
         }
         // ADFA-4896: finalize to 'canceled' from any non-terminal phase, INCLUDING 'paused'. A paused
         // job's runner has already exited (no rt to kill), so without this it would linger 'paused'
-        // forever after a Cancel-after-Stop. For maps the partial was already purged at pause time, so
-        // there is nothing left to clean here.
+        // forever after a Cancel-after-Stop. A pause keeps the partial for Resume (K2GO-317), so a
+        // type that registered a discard removes it here.
+        if (!rt && job.phase === 'paused') {
+            try { this.discards.get(job.type)?.(job); } catch (e) { console.log(`[job ${id}] discard failed: ${String(e)}`); }
+        }
         if (ACTIVE.includes(job.phase) || job.phase === 'paused') this.patch(id, { phase: 'canceled' });
         return true;
     }

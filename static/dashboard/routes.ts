@@ -10,7 +10,8 @@ import fs from 'fs';
 import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages, getCalibreSession, verifyCalibreCredentials } from './sockets/books.query';
-import { parseBox, parseEstimateFrom, listFqrRegions } from './sockets/maps.socket';
+import { parseBox, parseEstimateFrom, listFqrRegions, REGION_NAME_RE, estimateArgs, installedHasModernCli } from './sockets/maps.socket';
+import { deleteRegion } from './sockets/maps.exec';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
     browseChannelTree, buildLocalSubtree, estimateSelection, deleteChannel, getKolibriTask,
@@ -29,10 +30,7 @@ import { conexProxy } from './sockets/conex-proxy';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
-// role and is NOT modified here — we only talk to its existing CLI (same trusted binary
-// maps.exec.ts already spawns): `extract` (interactive, for the estimate) and `delete`.
-const MAPS_SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
-const MAPS_NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
+// role; the CLI and its contract live in sockets/maps.socket.ts.
 
 // ADFA-5004: Kiwix ZIM management (list + delete), reached from the app so users can free space
 // without the retired web dashboard. ZIMS_DIR/KIWIX_INDEXER mirror sockets/kiwix.exec.ts — keep in
@@ -132,20 +130,19 @@ apiRouter.post('/books/library/:id/remove', async (req: Request, res: Response):
 // Declared before the generic /:type/* routes so the literal paths win.
 
 // Size estimate for a region, for the in-app consent step: { transfer, archive, free, free_after }
-// (bytes). We do NOT modify tile-extract.py — we drive its existing INTERACTIVE `extract`, read the
-// size prompt it prints (parseEstimateFrom: stdout or stderr), then abort WITHOUT downloading. Hardened default-safe: we
-// close stdin immediately, so the script's confirm `input()` raises EOFError and aborts on its own
-// even if the prompt wording changes — the estimate is printed before that input(), so we still
-// capture it. Needs connectivity + a moment (pmtiles --dry-run).
+// (bytes). We drive the script's INTERACTIVE `extract`, read the size prompt it prints
+// (parseEstimateFrom: stdout or stderr), then it aborts WITHOUT downloading: stdin is at EOF, so its
+// confirm input() raises EOFError even if the prompt wording changes. The estimate is printed before
+// that input(), so we still capture it. It takes no lock, so it also works while a region downloads.
+// Needs connectivity + a moment (pmtiles --dry-run).
 const MAPS_ESTIMATE_TIMEOUT_MS = 60000;
 apiRouter.post('/maps/estimate', (req: Request, res: Response): void => {
     const parsed = parseBox(String((req.body as { box?: unknown })?.box ?? ''));
     if (!parsed.ok) { res.status(400).json({ error: parsed.error }); return; }
     // A unique throwaway name so we never hit the "overwrite existing?" branch.
     const probeName = 'est_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const p = spawn('sudo', [MAPS_SCRIPT, 'extract', probeName, parsed.box],
-        { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
-    p.stdin?.end();   // never feed input => any confirm() aborts via EOFError; no download can start
+    const p = spawn('sudo', estimateArgs(probeName, parsed.box, installedHasModernCli()),
+        { env: { ...process.env, PYTHONUNBUFFERED: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
 
     let out = '', err = '', done = false;
     const finish = (fn: () => void) => {
@@ -176,30 +173,16 @@ apiRouter.post('/maps/estimate', (req: Request, res: Response): void => {
     }));
 });
 
-// K2GO-566: delete a downloaded region. Upstream's tile-extract.py `delete` is now INTERACTIVE
-// (one "Confirm delete? y/n" prompt, no noninteractive flag), so we answer "y" on stdin and close
-// it. A timeout guards against a future prompt change leaving the child blocked on input().
-const MAPS_DELETE_TIMEOUT_MS = 30000;
-apiRouter.post('/maps/delete', (req: Request, res: Response): void => {
+// K2GO-566: delete a downloaded region, and the files of an unfinished download of it. 409 when
+// another Full Quality Region download or delete holds the box lock (iiab#4574): nothing was deleted.
+apiRouter.post('/maps/delete', async (req: Request, res: Response): Promise<void> => {
     const name = String((req.body as { name?: unknown })?.name ?? '').trim();
-    if (!MAPS_NAME_RE.test(name)) { res.status(400).json({ error: 'invalid region name' }); return; }
-    const p = spawn('sudo', [MAPS_SCRIPT, 'delete', name],
-        { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
-    let err = '', done = false;
-    const finish = (fn: () => void) => { if (done) return; done = true; clearTimeout(timer); fn(); };
-    const timer = setTimeout(() => finish(() => {
-        try { p.kill('SIGKILL'); } catch { /* already gone */ }
-        if (!res.headersSent) res.status(504).json({ error: 'delete timed out' });
-    }), MAPS_DELETE_TIMEOUT_MS);
-    p.stdin?.write('y\n');   // answer the single "Confirm delete?" prompt
-    p.stdin?.end();
-    p.stderr.on('data', (d: Buffer) => { err += d.toString(); });
-    p.on('error', (e) => finish(() => { if (!res.headersSent) res.status(500).json({ error: String(e) }); }));
-    p.on('exit', (code) => finish(() => {
-        if (res.headersSent) return;
-        if (code === 0) res.json({ ok: true });
-        else res.status(500).json({ error: err.trim() || `delete exited ${code}` });
-    }));
+    if (!REGION_NAME_RE.test(name)) { res.status(400).json({ error: 'invalid region name' }); return; }
+    const r = await deleteRegion(name);
+    if (r.ok) res.json({ ok: true });
+    else if (r.busy) res.status(409).json({ error: 'another map region download or delete is running', busy: true });
+    else if (r.timedOut) res.status(504).json({ error: r.error });
+    else res.status(500).json({ error: r.error });
 });
 
 // K2GO-566: list downloaded FQRs. Upstream dropped the static /maps/extracts.json the app read;
