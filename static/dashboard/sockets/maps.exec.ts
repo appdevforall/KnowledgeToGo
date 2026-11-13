@@ -144,7 +144,8 @@ async function runRegion(ctx: RunnerContext, name: string, box: string, estBytes
     const existedAtStart = name in listFqrRegions();
     // K2GO-317: DashNode opts into the custom go-pmtiles build's integrator mode: json = the
     // machine-readable progress parsed below. The arguments follow the installed script's CLI.
-    const args = extractArgs(name, box, installedHasModernCli());
+    const modern = installedHasModernCli();
+    const args = extractArgs(name, box, modern);
 
     // tile-extract.py runs three sequential pmtiles extracts (vector, satellite, terrain), each with
     // --progress=json (go-pmtiles states commit): one JSON line per second on stdout carrying
@@ -351,6 +352,14 @@ async function runRegion(ctx: RunnerContext, name: string, box: string, estBytes
     const lateStop = classifyStop(ctx);
     if (lateStop === 'canceled') { await purgeRegion(name, !existedAtStart, ctx.log); throw new CanceledError(); }
     if (lateStop === 'paused') throw new PausedError();
+
+    // With --yes the script exits 0 and downloads nothing when the box overlaps a region (a queued
+    // job meets the region an earlier job made). Report that, not 'done'. Current CLI only: an older
+    // rootfs can keep its regions in a layout that listFqrRegions does not read.
+    if (modern && !(name in listFqrRegions())) {
+        await purgeRegion(name, false, ctx.log);   // no region: this removes only unfinished files
+        throw new Error(`nothing was downloaded for "${name}": the box overlaps a downloaded region`);
+    }
 
     ctx.update({ phase: 'done', percent: 100 });
 }
