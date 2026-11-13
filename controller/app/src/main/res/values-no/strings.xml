@@ -1587,4 +1587,5 @@
     <string name="k2go_privacy_save_failed">Kunne ikke lagre endringen. Prøv igjen.</string>
     <string name="k2go_privacy_unreachable">Kunne ikke lese disse innstillingene. Kontroller at tjeneren er på, og prøv igjen.</string>
     <string name="k2go_privacy_unsupported">Disse innstillingene krever et nyere dashbord. Oppdater dashbordet, og prøv igjen.</string>
+    <string name="k2go_privacy_none">Ingen installert tjeneste kontakter eksterne tjenere på egen hånd.</string>
 </resources>

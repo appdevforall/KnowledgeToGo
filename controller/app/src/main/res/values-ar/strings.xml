@@ -1577,4 +1577,5 @@
     <string name="k2go_privacy_save_failed">تعذّر حفظ التغيير. حاول مرة أخرى.</string>
     <string name="k2go_privacy_unreachable">تعذّرت قراءة هذه الإعدادات. تأكد من أن الخادم قيد التشغيل، ثم حاول مرة أخرى.</string>
     <string name="k2go_privacy_unsupported">تحتاج هذه الإعدادات إلى لوحة تحكم أحدث. حدّث لوحة التحكم، ثم حاول مرة أخرى.</string>
+    <string name="k2go_privacy_none">لا توجد خدمة مثبتة تتصل بخوادم خارجية من تلقاء نفسها.</string>
 </resources>

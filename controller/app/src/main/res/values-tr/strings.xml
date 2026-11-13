@@ -1577,4 +1577,5 @@
     <string name="k2go_privacy_save_failed">Değişiklik kaydedilemedi. Tekrar deneyin.</string>
     <string name="k2go_privacy_unreachable">Bu ayarlar okunamadı. Sunucunun açık olduğundan emin olun, ardından tekrar deneyin.</string>
     <string name="k2go_privacy_unsupported">Bu ayarlar daha yeni bir pano gerektiriyor. Panoyu güncelleyin, ardından tekrar deneyin.</string>
+    <string name="k2go_privacy_none">Kendi kendine dış sunuculara bağlanan yüklü bir hizmet yok.</string>
 </resources>

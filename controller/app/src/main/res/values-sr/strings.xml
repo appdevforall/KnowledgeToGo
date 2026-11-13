@@ -1590,4 +1590,5 @@
     <string name="k2go_privacy_save_failed">Измена није могла да се сачува. Покушајте поново.</string>
     <string name="k2go_privacy_unreachable">Ова подешавања нису могла да се прочитају. Проверите да ли је сервер укључен, па покушајте поново.</string>
     <string name="k2go_privacy_unsupported">Ова подешавања захтевају новију контролну таблу. Ажурирајте контролну таблу, па покушајте поново.</string>
+    <string name="k2go_privacy_none">Ниједна инсталирана услуга се сама не повезује са спољним серверима.</string>
 </resources>

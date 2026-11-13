@@ -1654,4 +1654,5 @@
     <string name="k2go_privacy_save_failed">बदलाव सहेजा नहीं जा सका। फिर से कोशिश करें।</string>
     <string name="k2go_privacy_unreachable">ये सेटिंग्स पढ़ी नहीं जा सकीं। सुनिश्चित करें कि सर्वर चालू है, फिर से कोशिश करें।</string>
     <string name="k2go_privacy_unsupported">इन सेटिंग्स के लिए नया डैशबोर्ड चाहिए। डैशबोर्ड अपडेट करें, फिर से कोशिश करें।</string>
+    <string name="k2go_privacy_none">कोई भी इंस्टॉल की गई सेवा अपने आप बाहरी सर्वर से संपर्क नहीं करती।</string>
 </resources>

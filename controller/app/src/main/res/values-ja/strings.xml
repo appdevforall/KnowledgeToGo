@@ -1578,4 +1578,5 @@
     <string name="k2go_privacy_save_failed">変更を保存できませんでした。もう一度お試しください。</string>
     <string name="k2go_privacy_unreachable">これらの設定を読み込めませんでした。サーバーがオンになっていることを確認してから、もう一度お試しください。</string>
     <string name="k2go_privacy_unsupported">これらの設定には新しいダッシュボードが必要です。ダッシュボードを更新してから、もう一度お試しください。</string>
+    <string name="k2go_privacy_none">外部サーバーに自動で接続するインストール済みのサービスはありません。</string>
 </resources>

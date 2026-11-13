@@ -1584,4 +1584,5 @@
     <string name="k2go_privacy_save_failed">Промяната не можа да се запази. Опитайте отново.</string>
     <string name="k2go_privacy_unreachable">Тези настройки не можаха да се прочетат. Уверете се, че сървърът работи, и опитайте отново.</string>
     <string name="k2go_privacy_unsupported">Тези настройки изискват по-ново табло. Обновете таблото и опитайте отново.</string>
+    <string name="k2go_privacy_none">Няма инсталирана услуга, която сама да се свързва с външни сървъри.</string>
 </resources>

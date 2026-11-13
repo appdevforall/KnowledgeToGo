@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/** Rule: show only the services this app can name, in {@link #ORDER}. A newer box server may
- *  report a service that this app does not know yet; it is left out, not shown unnamed. */
+/** Rule: show only the INSTALLED services that this app can name, in {@link #ORDER}. A service
+ *  that is not on the box has nothing to switch. A newer box server may report a service that this
+ *  app does not know yet; it is left out, not shown unnamed. */
 public final class GetOutboundSwitchesUseCase {
 
     static final List<String> ORDER = Arrays.asList(OutboundSwitch.KOLIBRI, OutboundSwitch.FORGEJO);
@@ -32,7 +33,10 @@ public final class GetOutboundSwitchesUseCase {
         List<OutboundSwitch> out = new ArrayList<>();
         for (String id : ORDER) {
             for (OutboundSwitch s : reported) {
-                if (id.equals(s.service())) { out.add(s); break; }
+                if (id.equals(s.service())) {
+                    if (s.installed()) out.add(s);
+                    break;
+                }
             }
         }
         return out;

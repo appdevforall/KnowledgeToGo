@@ -75,6 +75,12 @@ public class PrivacyFragment extends Fragment {
                 return;
             case READY:
             default:
+                if (st.switches.isEmpty()) {
+                    TextView none = K2GoText.body(ctx, getString(R.string.k2go_privacy_none), R.color.k2go_ink);
+                    none.setPadding(0, dp(ctx, 16), 0, 0);
+                    list.addView(none);
+                    return;
+                }
                 for (OutboundSwitch sw : st.switches) {
                     list.addView(switchRow(ctx, sw, st.busy()));
                 }
@@ -102,16 +108,11 @@ public class PrivacyFragment extends Fragment {
                 ? R.string.k2go_privacy_kolibri_title : R.string.k2go_privacy_forgejo_title), R.color.k2go_ink));
         col.addView(K2GoText.label(ctx, getString(kolibri
                 ? R.string.k2go_privacy_kolibri_sub : R.string.k2go_privacy_forgejo_sub), R.color.k2go_muted));
-        if (!sw.installed()) {
-            TextView ni = K2GoText.label(ctx, getString(R.string.k2go_state_not_installed), R.color.k2go_muted);
-            ni.setPadding(0, dp(ctx, 4), 0, 0);
-            col.addView(ni);
-        }
 
         MaterialSwitch toggle = new MaterialSwitch(ctx);
         toggle.setMinimumHeight(0);
-        toggle.setChecked(sw.installed() && sw.outbound());
-        toggle.setEnabled(sw.installed() && !locked);
+        toggle.setChecked(sw.outbound());
+        toggle.setEnabled(!locked);
         // Posted: the new state rebuilds the list, so let this switch finish its own click first.
         toggle.setOnCheckedChangeListener((b, checked) -> b.post(() -> vm.setOutbound(sw.service(), checked)));
         row.addView(toggle, new LinearLayout.LayoutParams(-2, -2));

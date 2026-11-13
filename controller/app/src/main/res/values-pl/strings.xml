@@ -1587,4 +1587,5 @@
     <string name="k2go_privacy_save_failed">Nie udało się zapisać zmiany. Spróbuj ponownie.</string>
     <string name="k2go_privacy_unreachable">Nie udało się odczytać tych ustawień. Upewnij się, że serwer jest włączony, i spróbuj ponownie.</string>
     <string name="k2go_privacy_unsupported">Te ustawienia wymagają nowszego panelu. Zaktualizuj panel i spróbuj ponownie.</string>
+    <string name="k2go_privacy_none">Żadna zainstalowana usługa nie łączy się sama z zewnętrznymi serwerami.</string>
 </resources>

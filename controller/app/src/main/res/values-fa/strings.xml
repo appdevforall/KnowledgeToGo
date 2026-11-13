@@ -1577,4 +1577,5 @@
     <string name="k2go_privacy_save_failed">ذخیره تغییر ممکن نشد. دوباره تلاش کنید.</string>
     <string name="k2go_privacy_unreachable">خواندن این تنظیمات ممکن نشد. مطمئن شوید سرور روشن است، سپس دوباره تلاش کنید.</string>
     <string name="k2go_privacy_unsupported">این تنظیمات به داشبورد جدیدتری نیاز دارند. داشبورد را به‌روزرسانی کنید، سپس دوباره تلاش کنید.</string>
+    <string name="k2go_privacy_none">هیچ سرویس نصب‌شده‌ای خودش با سرورهای بیرونی ارتباط نمی‌گیرد.</string>
 </resources>

@@ -1584,4 +1584,5 @@
     <string name="k2go_privacy_save_failed">Tidak dapat menyimpan perubahan. Coba lagi.</string>
     <string name="k2go_privacy_unreachable">Tidak dapat membaca pengaturan ini. Pastikan server menyala, lalu coba lagi.</string>
     <string name="k2go_privacy_unsupported">Pengaturan ini memerlukan dasbor yang lebih baru. Perbarui dasbor, lalu coba lagi.</string>
+    <string name="k2go_privacy_none">Tidak ada layanan terpasang yang menghubungi server luar dengan sendirinya.</string>
 </resources>

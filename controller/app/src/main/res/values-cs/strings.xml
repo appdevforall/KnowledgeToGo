@@ -1584,4 +1584,5 @@
     <string name="k2go_privacy_save_failed">Změnu se nepodařilo uložit. Zkuste to znovu.</string>
     <string name="k2go_privacy_unreachable">Tato nastavení se nepodařilo načíst. Ověřte, že server běží, a zkuste to znovu.</string>
     <string name="k2go_privacy_unsupported">Tato nastavení vyžadují novější nástěnku. Aktualizujte nástěnku a zkuste to znovu.</string>
+    <string name="k2go_privacy_none">Žádná nainstalovaná služba se sama nespojuje s vnějšími servery.</string>
 </resources>

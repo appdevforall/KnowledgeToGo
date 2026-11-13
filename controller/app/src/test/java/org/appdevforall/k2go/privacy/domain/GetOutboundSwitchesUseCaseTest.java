@@ -31,6 +31,14 @@ public class GetOutboundSwitchesUseCaseTest {
     }
 
     @Test
+    public void dropsAServiceThatIsNotInstalled() {
+        List<OutboundSwitch> out = GetOutboundSwitchesUseCase.known(Arrays.asList(
+                new OutboundSwitch(OutboundSwitch.KOLIBRI, false, false), sw(OutboundSwitch.FORGEJO)));
+        assertEquals(1, out.size());
+        assertEquals(OutboundSwitch.FORGEJO, out.get(0).service());
+    }
+
+    @Test
     public void emptyStaysEmpty() {
         assertTrue(GetOutboundSwitchesUseCase.known(Collections.emptyList()).isEmpty());
     }

@@ -1577,4 +1577,5 @@
     <string name="k2go_privacy_save_failed">Không thể lưu thay đổi. Hãy thử lại.</string>
     <string name="k2go_privacy_unreachable">Không thể đọc các cài đặt này. Hãy đảm bảo máy chủ đang bật, rồi thử lại.</string>
     <string name="k2go_privacy_unsupported">Các cài đặt này cần bảng điều khiển mới hơn. Hãy cập nhật bảng điều khiển, rồi thử lại.</string>
+    <string name="k2go_privacy_none">Không có dịch vụ đã cài đặt nào tự liên hệ với máy chủ bên ngoài.</string>
 </resources>
