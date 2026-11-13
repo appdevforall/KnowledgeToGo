@@ -214,10 +214,10 @@ public class LibraryHomeFragment extends Fragment {
     // K2GO-445/415/416: drop a module the app runtime cannot run (a 64-bit-only module on a 32-bit app)
     // or one the user hid from Home. The group tile (no backing module) is never dropped here.
     private void filterHidden(List<Card> list) {
-        final String libraryAbi = org.appdevforall.k2go.arch.data.AbiSource.moduleAbi(requireContext());
+        final org.appdevforall.k2go.arch.domain.LibraryHost library = org.appdevforall.k2go.arch.data.AbiSource.moduleHost(requireContext());
         for (java.util.Iterator<Card> it = list.iterator(); it.hasNext(); ) {
             Card card = it.next();
-            if (!org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(card.requires64, libraryAbi)) {
+            if (!org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(card.requires64, library)) {
                 it.remove(); continue;
             }
             ModuleCards.Card m = ModuleCards.byEndpoint(card.endpoint);

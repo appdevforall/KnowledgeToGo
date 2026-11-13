@@ -137,8 +137,8 @@ public class GetMoreHubFragment extends Fragment {
         }
         // K2GO-415/571: drop content whose backing module cannot run in this library (a 32-bit
         // library cannot run a 64-bit module like Kiwix), so the user cannot pick content with nowhere to land.
-        final String libraryAbi = libraryAbi();
-        for (Item it : ITEMS) if (!archSupports(it.endpoint, libraryAbi)) available.remove(it.key);
+        final org.appdevforall.k2go.arch.domain.LibraryHost library = libraryHost();
+        for (Item it : ITEMS) if (!archSupports(it.endpoint, library)) available.remove(it.key);
     }
 
     @Override
@@ -269,19 +269,19 @@ public class GetMoreHubFragment extends Fragment {
     /** K2GO-415/571: a 64-bit-only module (e.g. Kiwix) has nowhere to land in a 32-bit library, so its
      *  content is not offered there. Keyed on the library ABI via Card.runsOn(); generalizes to any
      *  future requires64Bit module. */
-    private static boolean archSupports(String endpoint, String libraryAbi) {
+    private static boolean archSupports(String endpoint, org.appdevforall.k2go.arch.domain.LibraryHost library) {
         ModuleCards.Card c = ModuleCards.byEndpoint(endpoint);
-        return c == null || c.runsOn(libraryAbi);
+        return c == null || c.runsOn(library);
     }
 
-    /** The ABI of the library the content lands in: the installed one, or the app's when the wizard
+    /** The library the content lands in: the installed one, or a fresh install's when the wizard
      *  installs a new system (no library yet, or a reinstall that replaces the current one). */
-    private String libraryAbi() {
+    private org.appdevforall.k2go.arch.domain.LibraryHost libraryHost() {
         android.content.Context c = getContext();
         boolean replacing = getActivity() instanceof SetupLibraryActivity
                 && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
-        return c != null && !replacing ? org.appdevforall.k2go.arch.data.AbiSource.moduleAbi(c)
-                : org.appdevforall.k2go.arch.data.AbiSource.appAbi();
+        return c != null && !replacing ? org.appdevforall.k2go.arch.data.AbiSource.moduleHost(c)
+                : org.appdevforall.k2go.arch.domain.LibraryHost.freshInstall(org.appdevforall.k2go.arch.data.AbiSource.appAbi());
     }
 
     /** The items to show: those whose module answered, in the declared order. */
@@ -289,8 +289,8 @@ public class GetMoreHubFragment extends Fragment {
         List<Item> out = new ArrayList<>();
         // K2GO-415: also gate on the app runtime as defense in depth (live path), so a 64-bit-only
         // module never shows in a 32-bit runtime even if its endpoint somehow answered.
-        final String libraryAbi = libraryAbi();
-        for (Item it : ITEMS) if (available.contains(it.key) && archSupports(it.endpoint, libraryAbi)) out.add(it);
+        final org.appdevforall.k2go.arch.domain.LibraryHost library = libraryHost();
+        for (Item it : ITEMS) if (available.contains(it.key) && archSupports(it.endpoint, library)) out.add(it);
         return out;
     }
 

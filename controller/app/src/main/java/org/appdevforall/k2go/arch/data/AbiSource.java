@@ -14,6 +14,7 @@ import android.os.Build;
 
 import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.arch.domain.LibraryArch;
+import org.appdevforall.k2go.arch.domain.LibraryHost;
 
 public final class AbiSource {
 
@@ -45,13 +46,14 @@ public final class AbiSource {
     }
 
     /**
-     * The library ABI for the module gate: the app's when no library is installed (a fresh install gets
-     * it), else the installed one. {@code null} while a tree exists but its ABI cannot be told (a restore
-     * or a Clone mid-way), so a 64-bit-only module stays hidden.
+     * The library for the module gate: a fresh install's when no library is installed, else the installed
+     * one, read from its tree. The ABI is {@code null} while a tree exists but its ABI cannot be told (a
+     * restore or a Clone mid-way), so a 64-bit-only module stays hidden.
      */
-    public static String moduleAbi(Context ctx) {
+    public static LibraryHost moduleHost(Context ctx) {
         java.io.File root = SystemStateEvaluator.rootfsDir(ctx);
-        return root.isDirectory() ? InstalledLibraryAbi.read(root) : appAbi();
+        if (!root.isDirectory()) return LibraryHost.freshInstall(appAbi());
+        return new LibraryHost(InstalledLibraryAbi.read(root), KiwixLibrarySupport.read(root));
     }
 
     /** {@link LibraryArch#canRun(String, String, boolean)} for this app on this phone. */

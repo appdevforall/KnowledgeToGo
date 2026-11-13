@@ -48,11 +48,15 @@ public final class LibraryArch {
     }
 
     /**
-     * True when a module can run in a library of {@code libraryAbi}. A 64-bit-only module (e.g. Kiwix)
-     * needs a 64-bit library; an unknown ABI ({@code null}) fails closed.
+     * True when a module can run in {@code host}. A {@code requires64Bit} module (only Kiwix) runs in a
+     * 64-bit library, or in a 32-bit library that can host it (K2GO-573). An unknown host or ABI fails
+     * closed.
      */
-    public static boolean supportsModule(boolean requires64Bit, String libraryAbi) {
-        return !requires64Bit || bitsOf(libraryAbi) == 64;
+    public static boolean supportsModule(boolean requires64Bit, LibraryHost host) {
+        if (!requires64Bit) return true;
+        if (host == null) return false;
+        int bits = bitsOf(host.abi);
+        return bits == 64 || (bits == 32 && host.kiwixOn32Bit);
     }
 
     /** {@link #canRun(int, int, boolean)} for ABI ids. */
