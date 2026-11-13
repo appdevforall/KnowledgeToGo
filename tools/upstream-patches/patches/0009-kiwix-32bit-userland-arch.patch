@@ -1,24 +1,23 @@
 Upstream-PR:     none (K2Go carry patch)
 Upstream-Status: not sent upstream (upstream is dropping 32-bit; K2Go keeps it)
 Applies-to:      roles/kiwix/defaults/main.yml, roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix
-Summary:         Pick the kiwix-tools build from the userland arch (dpkg_arch), not the kernel: a 32-bit library on a 64-bit phone reports machine=aarch64 and got the 64-bit build. armhf maps to armv6 on every kernel (one library moves between phones; armv6 also runs on ARMv7 CPUs), i386 to i586. The pdsm kiwix service keeps up to 4 ZIMs open (libkiwix cache env vars), so RSS stays flat with several books.
+Summary:         Pick the kiwix-tools build from the userland arch (dpkg_arch), not the kernel: a 32-bit library on a 64-bit phone reports machine=aarch64 and got the 64-bit build. armhf maps to armv6 on every kernel (one library moves between phones; armv6 also runs on ARMv7 CPUs). The pdsm kiwix service keeps up to 4 ZIMs open (libkiwix cache env vars), so RSS stays flat with several books.
 
 diff --git a/roles/kiwix/defaults/main.yml b/roles/kiwix/defaults/main.yml
-index 1000d2c..26b4d39 100644
+index 1000d2c..a7e9d94 100644
 --- a/roles/kiwix/defaults/main.yml
 +++ b/roles/kiwix/defaults/main.yml
-@@ -40,7 +40,14 @@ kiwix_arch_dict:      # 'dpkg --print-architecture' key would be: (to mitigate #
+@@ -40,7 +40,13 @@ kiwix_arch_dict:      # 'dpkg --print-architecture' key would be: (to mitigate #
  # CLAIM: 'ansible_machine might be "i686", whereas ansible_architecture on the same host would be "i386"'
  # https://stackoverflow.com/questions/44713880/how-do-i-make-decision-based-on-arch-in-ansible-playbooks/44714226#44714226
  #kiwix_arch: "{{ kiwix_arch_dict[ansible_facts.machine] | default('unsupported') }}"
 -kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine, 'unsupported') }}"
-+# K2Go: a 32-bit userland on a 64-bit kernel reports machine=aarch64 (or x86_64), so pick the
++# K2Go: a 32-bit userland on a 64-bit kernel reports machine=aarch64, so pick the
 +# build from the userland arch (dpkg_arch, set by 0-init), as roles/maps does. armhf gets armv6 on
 +# every kernel: one 32-bit library moves between phones (bake, backup, Clone), and armv6 also runs
 +# on ARMv7 CPUs. A 64-bit kernel emulates its CP15 barriers (CONFIG_CP15_BARRIER_EMULATION).
 +kiwix_dpkg_arch_dict:
 +  armhf: armv6
-+  i386: i586
 +kiwix_arch: "{{ kiwix_dpkg_arch_dict.get(dpkg_arch.stdout | default(''), kiwix_arch_dict.get(ansible_facts.machine, 'unsupported')) }}"
  #kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine | default('') | lower, 'unsupported') }}"
  
