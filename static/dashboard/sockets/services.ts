@@ -51,9 +51,17 @@ export function createRestartQueue(run: (svc: string, done: () => void) => void)
  *  (routes.ts): a restart can never kill the run that issued it. `-w` waits for the restart, so the
  *  queue knows when it ends; a non-zero exit is logged. Spawn failures are logged, never thrown: an
  *  unheard 'error' event would otherwise crash the REST core. */
+const RESTART_MAX_WAIT_MS = 10 * 60 * 1000;
+
 function runRestart(svc: string, done: () => void): void {
     let finished = false;
-    const finish = () => { if (!finished) { finished = true; done(); } };
+    // A restart that never ends must not hold the service's queue slot forever.
+    const cap = setTimeout(() => {
+        console.error(`[services] restart ${svc} still running after ${RESTART_MAX_WAIT_MS / 60000} min; queue freed`);
+        finish();
+    }, RESTART_MAX_WAIT_MS);
+    cap.unref();
+    const finish = () => { if (!finished) { finished = true; clearTimeout(cap); done(); } };
     try {
         const child = spawn('setsid', ['-w', PDSM, 'restart', svc], { detached: true, stdio: 'ignore' });
         child.on('error', (e) => { console.error(`[services] restart ${svc} failed to spawn: ${e}`); finish(); });
