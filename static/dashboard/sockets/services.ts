@@ -43,16 +43,44 @@ export function restartService(svc: string): void {
     }
 }
 
-/** Like restartService, but only when the service runs: `pdsm restart` would also START a stopped
- *  service. A stopped service reads its config at its next start anyway (K2GO-559). Same caller
- *  contract: validate `svc` with isRestartableService first. */
-export function restartIfRunning(svc: string): void {
+/** One restart per service at a time. A request while one runs is folded into ONE more run after
+ *  it, so two quick changes never interleave their stop/start steps. In memory only: if dash-node
+ *  dies, the config is already on disk and the service reads it at its next start. */
+export function createRestartQueue(run: (svc: string, done: () => void) => void): (svc: string) => void {
+    const running = new Set<string>();
+    const again = new Set<string>();
+    const start = (svc: string): void => {
+        running.add(svc);
+        run(svc, () => {
+            running.delete(svc);
+            if (again.delete(svc)) start(svc);
+        });
+    };
+    return (svc: string) => {
+        if (running.has(svc)) again.add(svc);
+        else start(svc);
+    };
+}
+
+/** `pdsm restart <svc>` only when the service runs: a restart would also START a stopped service.
+ *  Exits 0 when the service is stopped; else the restart's own code, which is logged. */
+function runRestartIfRunning(svc: string, done: () => void): void {
+    let finished = false;
+    const finish = () => { if (!finished) { finished = true; done(); } };
     try {
-        const child = spawn('setsid', ['sh', '-c', '"$0" status "$1" >/dev/null 2>&1 && exec "$0" restart "$1"', PDSM, svc],
+        const child = spawn('setsid', ['-w', 'sh', '-c', '"$0" status "$1" >/dev/null 2>&1 || exit 0; exec "$0" restart "$1"', PDSM, svc],
             { detached: true, stdio: 'ignore' });
-        child.on('error', (e) => console.error(`[services] restart-if-running ${svc} failed to spawn: ${e}`));
+        child.on('error', (e) => { console.error(`[services] restart-if-running ${svc} failed to spawn: ${e}`); finish(); });
+        child.on('exit', (code) => {
+            if (code !== 0) console.error(`[services] restart-if-running ${svc} exited ${code}`);
+            finish();
+        });
         child.unref();
     } catch (e) {
         console.error(`[services] restart-if-running ${svc} spawn threw: ${e}`);
+        finish();
     }
 }
+
+/** K2GO-559. Same caller contract as restartService: validate `svc` with isRestartableService first. */
+export const restartIfRunning = createRestartQueue(runRestartIfRunning);

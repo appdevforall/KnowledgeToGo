@@ -144,7 +144,8 @@ export function readState(sw: PrivacySwitch): PrivacyState {
 }
 
 /** Same mode and owner as the file it replaces; write + fsync + rename, so a crash leaves the old file. */
-function writeAtomic(file: string, data: string): void {
+function writeAtomic(path: string, data: string): void {
+    const file = fs.realpathSync(path);   // a symlinked config keeps its link: we replace the target
     const st = fs.statSync(file);
     const tmp = file + '.k2go-tmp';
     try {

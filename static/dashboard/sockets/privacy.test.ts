@@ -8,7 +8,7 @@ import {
     readIniOption, setIniOption, parseIniBool, outboundFromText, valueFor, readState, applyOutbound,
     findSwitch, PRIVACY_SWITCHES, PrivacySwitch,
 } from './privacy';
-import { isRestartableService } from './services';
+import { isRestartableService, createRestartQueue } from './services';
 
 const KOLIBRI = findSwitch('kolibri')!;
 const FORGEJO = findSwitch('forgejo')!;
@@ -142,8 +142,54 @@ test('readState: an unreadable file is an error, not "not installed"', () => {
     assert.throws(() => readState({ ...KOLIBRI, file: dir }));   // EISDIR
 });
 
+test('applyOutbound: a symlinked config keeps its link; the target gets the change', (t) => {
+    const sw = tmpSwitch(FORGEJO, '[cron.update_checker]\nENABLED = true\n');
+    const link = sw.file + '.link';
+    try { fs.symlinkSync(sw.file, link); } catch { t.skip('no symlink permission'); return; }
+    applyOutbound({ ...sw, file: link }, false);
+    assert.equal(fs.lstatSync(link).isSymbolicLink(), true);
+    assert.equal(fs.readFileSync(sw.file, 'utf8'), '[cron.update_checker]\nENABLED = false\n');
+});
+
 test('applyOutbound: throws when the service is not installed (no file is made)', () => {
     const sw = tmpSwitch(FORGEJO, null);
     assert.throws(() => applyOutbound(sw, false));
     assert.equal(fs.existsSync(sw.file), false);
+});
+
+// --- Restart queue: one restart per service at a time ----------------------------------------
+
+function fakeQueue() {
+    const runs: string[] = [];
+    const pending = new Map<string, () => void>();
+    const request = createRestartQueue((svc, done) => { runs.push(svc); pending.set(svc, done); });
+    const finish = (svc: string) => { const d = pending.get(svc)!; pending.delete(svc); d(); };
+    return { runs, request, finish };
+}
+
+test('restart queue: a request while one runs waits, then runs once', () => {
+    const q = fakeQueue();
+    q.request('kolibri');
+    q.request('kolibri');
+    q.request('kolibri');                  // folded into the same one follow-up run
+    assert.deepEqual(q.runs, ['kolibri']);
+    q.finish('kolibri');
+    assert.deepEqual(q.runs, ['kolibri', 'kolibri']);
+    q.finish('kolibri');
+    assert.deepEqual(q.runs, ['kolibri', 'kolibri']);
+});
+
+test('restart queue: different services do not wait for each other', () => {
+    const q = fakeQueue();
+    q.request('kolibri');
+    q.request('forgejo');
+    assert.deepEqual(q.runs, ['kolibri', 'forgejo']);
+});
+
+test('restart queue: a request after the run ended starts a new run at once', () => {
+    const q = fakeQueue();
+    q.request('forgejo');
+    q.finish('forgejo');
+    q.request('forgejo');
+    assert.deepEqual(q.runs, ['forgejo', 'forgejo']);
 });

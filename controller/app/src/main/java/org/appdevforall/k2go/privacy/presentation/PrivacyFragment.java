@@ -112,7 +112,8 @@ public class PrivacyFragment extends Fragment {
         toggle.setMinimumHeight(0);
         toggle.setChecked(sw.installed() && sw.outbound());
         toggle.setEnabled(sw.installed() && !locked);
-        toggle.setOnCheckedChangeListener((b, checked) -> vm.setOutbound(sw.service(), checked));
+        // Posted: the new state rebuilds the list, so let this switch finish its own click first.
+        toggle.setOnCheckedChangeListener((b, checked) -> b.post(() -> vm.setOutbound(sw.service(), checked)));
         row.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
         return row;
     }

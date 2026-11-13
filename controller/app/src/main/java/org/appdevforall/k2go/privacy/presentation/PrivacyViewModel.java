@@ -70,7 +70,9 @@ public class PrivacyViewModel extends ViewModel {
         PrivacyUiState now = current();
         if (now.busy() || now.status != PrivacyUiState.Status.READY) return;
         final List<OutboundSwitch> before = now.switches;
-        state.setValue(new PrivacyUiState(PrivacyUiState.Status.READY, before, service));
+        // While in flight the switch shows the requested value; the box's answer replaces it.
+        state.setValue(new PrivacyUiState(PrivacyUiState.Status.READY,
+                replace(before, new OutboundSwitch(service, true, outbound)), service));
         executor.execute(() -> {
             List<OutboundSwitch> after = before;
             boolean saved = false;
