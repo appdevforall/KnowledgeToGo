@@ -1,0 +1,20 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/forgejo/templates/app.ini.j2
+Summary:         Turn off the Forgejo update checker ([cron.update_checker] ENABLED = false). It is on by default and contacts the Forgejo release endpoint from each server (K2GO-559).
+
+diff --git a/roles/forgejo/templates/app.ini.j2 b/roles/forgejo/templates/app.ini.j2
+index d936adb..643fff7 100644
+--- a/roles/forgejo/templates/app.ini.j2
++++ b/roles/forgejo/templates/app.ini.j2
+@@ -77,6 +77,10 @@ REGISTER_EMAIL_CONFIRM = false
+ [mailer]
+ ENABLED = false
+ 
++[cron.update_checker]
++; No outbound version check: the server may run offline or on a metered link.
++ENABLED = false
++
+ [log]
+ ROOT_PATH = {{ forgejo_log_root }}
+ MODE = console
