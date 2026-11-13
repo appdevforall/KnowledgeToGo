@@ -27,6 +27,7 @@ public final class BackupCompanionJson {
         o.put("created", c.created);
         o.put("app_version", c.appVersion);
         o.put("abi", c.abi);
+        if (c.debArch != null) o.put("deb_arch", c.debArch);
         if (c.tier != null) o.put("tier", c.tier);
         o.put("gz_bytes", c.gzBytes);
         o.put("gz_sha256", c.gzSha256);
@@ -44,6 +45,7 @@ public final class BackupCompanionJson {
                     o.optString("created", null),
                     o.optString("app_version", null),
                     o.optString("abi", null),
+                    o.has("deb_arch") ? o.optString("deb_arch", null) : null,
                     o.has("tier") ? o.optString("tier", null) : null,
                     o.optLong("gz_bytes", -1L),
                     o.optString("gz_sha256", null),

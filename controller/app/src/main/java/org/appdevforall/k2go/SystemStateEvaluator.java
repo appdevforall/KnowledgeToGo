@@ -121,22 +121,8 @@ public final class SystemStateEvaluator {
         archCalculated = true;
     }
 
+    /** The app's ABI: what a fresh install gets (K2GO-571: one source, AbiSource; ARM only since K2GO-565). */
     private static String getTermuxArch(Context ctx) {
-        try {
-            android.content.pm.ApplicationInfo info = ctx.getApplicationInfo();
-            String nativeLibDir = info.nativeLibraryDir;
-            if (nativeLibDir != null) {
-                if (nativeLibDir.endsWith("arm64") || nativeLibDir.contains("arm64-v8a")) return "arm64-v8a";
-                if (nativeLibDir.endsWith("arm") || nativeLibDir.contains("armeabi-v7a")) return "armeabi-v7a";
-                if (nativeLibDir.endsWith("x86_64") || nativeLibDir.contains("x86_64")) return "x86_64";
-                if (nativeLibDir.endsWith("x86") || nativeLibDir.contains("x86")) return "x86";
-            }
-        } catch (Exception e) {
-            android.util.Log.e("IIAB-SysState", "Error obtaining native architecture", e);
-        }
-        if (android.os.Build.SUPPORTED_ABIS.length > 0) {
-            return android.os.Build.SUPPORTED_ABIS[0];
-        }
-        return "unknown";
+        return org.appdevforall.k2go.arch.data.AbiSource.appAbi();
     }
 }

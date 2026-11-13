@@ -60,7 +60,8 @@ public final class BackupEngine {
         java.util.Calendar c = java.util.Calendar.getInstance();
         int year = c.get(java.util.Calendar.YEAR);
         int day = c.get(java.util.Calendar.DAY_OF_YEAR);
-        String abi = org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId();
+        // K2GO-571: the backup holds the library, so its name carries the library's ABI.
+        String abi = org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(ctx);
         String arch = abi != null && abi.contains("64") ? "aarch64" : "armhf";
         return String.format(java.util.Locale.US, "k2go_%04d.%03d_%d_%s.tar.gz",
                 year, day, System.currentTimeMillis() / 1000L, arch);
@@ -251,12 +252,13 @@ public final class BackupEngine {
             if (stageRoot.exists()) ProcessRunner.run(new String[]{"rm", "-rf", stageRoot.getAbsolutePath()});
             File iiabStage = new File(stageRoot, "installed-rootfs/iiab");
             if (!iiabStage.mkdirs()) return null;
-            String appAbi = org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId();
-            String debArch = appAbi != null && appAbi.contains("64") ? "arm64" : "armhf";
+            // K2GO-571: the identity of the packed library, not of the app that packs it.
+            String libAbi = org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(ctx);
+            String debArch = org.appdevforall.k2go.arch.domain.LibraryArch.debArchOf(libAbi);
             java.util.Calendar c = java.util.Calendar.getInstance();
             String built = String.format(java.util.Locale.US, "%04d.%03d",
                     c.get(java.util.Calendar.YEAR), c.get(java.util.Calendar.DAY_OF_YEAR));
-            String json = "{\"schema\":1,\"kind\":\"k2go-rootfs\",\"arch\":\"" + appAbi
+            String json = "{\"schema\":1,\"kind\":\"k2go-rootfs\",\"arch\":\"" + libAbi
                     + "\",\"deb_arch\":\"" + debArch + "\",\"built\":\"" + built
                     + "\",\"builder\":\"knowledgetogo-app\",\"origin\":\"device-backup\"}";
             try (java.io.FileOutputStream o = new java.io.FileOutputStream(new File(iiabStage, ".k2go-rootfs.json"))) {

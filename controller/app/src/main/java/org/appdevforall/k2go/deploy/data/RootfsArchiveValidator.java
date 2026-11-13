@@ -67,7 +67,8 @@ public final class RootfsArchiveValidator {
                         id != null && id.present,
                         id == null ? null : id.kind,
                         id == null ? null : id.arch,
-                        RootfsManifest.appAbiId());
+                        RootfsManifest.appAbiId(),
+                        org.appdevforall.k2go.arch.data.AbiSource.phoneRuns32Bit());
         switch (v) {
             case NOT_A_ROOTFS: return Result.NOT_A_ROOTFS;
             case WRONG_ARCH:   return Result.WRONG_ARCH;
@@ -161,8 +162,9 @@ public final class RootfsArchiveValidator {
             if (cls == ElfClass.UNKNOWN) {
                 return Result.OK_NO_MANIFEST; // probed member wasn't a plain ELF -> arch undetermined
             }
-            int want = android.os.Process.is64Bit() ? ElfClass.BITS_64 : ElfClass.BITS_32;
-            return (cls == want) ? Result.OK_NO_MANIFEST : Result.WRONG_ARCH;
+            // K2GO-571: the same rule as the identity check (a 32-bit tree may run on a 64-bit app).
+            return org.appdevforall.k2go.arch.data.AbiSource.canRunBits(cls)
+                    ? Result.OK_NO_MANIFEST : Result.WRONG_ARCH;
         } catch (Exception e) {
             Log.e(TAG, "Validation (with entries) error", e);
             return Result.UNREADABLE;

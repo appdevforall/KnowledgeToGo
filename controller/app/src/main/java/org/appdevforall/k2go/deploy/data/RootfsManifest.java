@@ -64,9 +64,9 @@ public final class RootfsManifest {
         // Static utility; not instantiable.
     }
 
-    /** The running app's ABI id, in the manifest's vocabulary. */
+    /** The running app's ABI id, in the manifest's vocabulary (K2GO-571: one source, AbiSource). */
     public static String appAbiId() {
-        return android.os.Process.is64Bit() ? "arm64-v8a" : "armeabi-v7a";
+        return org.appdevforall.k2go.arch.data.AbiSource.appAbi();
     }
 
     /** Read the identity manifest from {@code archivePath}, or {@link Identity#absent()}. */

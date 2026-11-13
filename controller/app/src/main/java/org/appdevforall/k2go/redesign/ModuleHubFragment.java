@@ -242,9 +242,12 @@ public class ModuleHubFragment extends Fragment {
      */
     private void confirmByProbe(final int gen) {
         final Set<String> answered = new HashSet<>();
+        final String libraryAbi = getContext() != null
+                ? org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(getContext())
+                : org.appdevforall.k2go.arch.data.AbiSource.appAbi();
         for (final ModuleCards.Card c : ModuleCards.all()) {
-            // K2GO-416: delegate the runtime-ABI rule to its owner (Card), do not re-derive it here.
-            if (!c.runsOnThisRuntime()) continue;   // 64-bit-only module cannot run in this app runtime
+            // K2GO-416/571: delegate the ABI rule to its owner (Card), do not re-derive it here.
+            if (!c.runsOn(libraryAbi)) continue;   // 64-bit-only module cannot run in this library
             if (installed.contains(c.key())) continue;       // disk already says yes
             // K2GO-393: a completion-gated module (maps, a proot install) is answered by its
             // iiab_state marker, which the disk floor above already read. It always writes that
@@ -337,8 +340,9 @@ public class ModuleHubFragment extends Fragment {
         // "what do I have". A module cannot be uninstalled, so the row is not an offer to undo
         // anything; it is the only place the answer exists.
         List<ModuleCards.Card> items = new ArrayList<>();
+        final String libraryAbi = org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(requireContext());
         for (ModuleCards.Card c : ModuleCards.all()) {
-            if (!c.runsOnThisRuntime()) continue;   // never going to run in this app runtime
+            if (!c.runsOn(libraryAbi)) continue;   // K2GO-571: never going to run in this library
             items.add(c);
         }
         boolean anyInstallable = false;
