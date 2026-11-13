@@ -172,7 +172,8 @@ jobs:
           fi
 
           # jq escapes the multiline changelog safely into a JSON string. Installs up to v1.1 pick
-          # apk_arm64_v8a / apk_armeabi_v7a by ABI, so those keys also name the one APK.
+          # apk_arm64_v8a / apk_armeabi_v7a by ABI, so those keys also name the one APK. Remove
+          # those two keys when no v1.1 install remains (v1.2+ reads apk_universal only).
           jq -n \
             --argjson vcode "$VCODE" \
             --arg vname "$TAG" \
