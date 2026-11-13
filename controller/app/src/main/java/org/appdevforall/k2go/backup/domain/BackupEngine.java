@@ -17,6 +17,7 @@ package org.appdevforall.k2go.backup.domain;
 import android.content.Context;
 import android.util.Log;
 
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
 import org.appdevforall.k2go.deploy.domain.ExtractProgress;
 import org.appdevforall.k2go.system.domain.TransferRate;
@@ -73,7 +74,7 @@ public final class BackupEngine {
      */
     public static boolean streamBackup(Context ctx, OutputStream dest, ProgressListener listener,
                                        AtomicBoolean cancelled) {
-        File iiabRootDir = new File(ctx.getFilesDir(), "rootfs");
+        File iiabRootDir = SystemStateEvaluator.rootfsBaseDir(ctx);
         File nativeDir = new File(ctx.getApplicationInfo().nativeLibraryDir);
         File staticTar = new File(nativeDir, "libtar.so");
         String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";

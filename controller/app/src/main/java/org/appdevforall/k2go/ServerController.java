@@ -255,7 +255,7 @@ public class ServerController {
      * already there) and it records the environment as coming up.
      */
     private void doLaunchEnvironment() {
-        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File rootfsDir = SystemStateEvaluator.rootfsDir(activity);
         host.addToLog(activity.getString(R.string.log_server_booting_native));
         host.onStartupBegan();   // ADFA-4837: fill the pre-pdsm silent window
         // ADFA-5343a (D1): a fresh environment is starting — restart the service-downtime clock so the
@@ -301,7 +301,7 @@ public class ServerController {
      * point is that no service is left writing). Reuses the same pdsm command as the graceful stop.
      */
     public void stopEnvironment(Runnable onDone) {
-        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File rootfsDir = SystemStateEvaluator.rootfsDir(activity);
         host.addToLog(activity.getString(R.string.log_server_stopping_gracefully));
         PRootEngine stopEngine = new PRootEngine();
         stopEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(),

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.system.Os;
 import android.util.Log;
 
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.env.domain.EnvironmentProcessMatcher;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public final class EnvironmentProcess {
     /** The rootfs proot is pointed at, canonical, or null when it cannot be resolved. */
     private static String rootfsPath(Context ctx) {
         try {
-            return new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab").getCanonicalPath();
+            return SystemStateEvaluator.rootfsDir(ctx).getCanonicalPath();
         } catch (Exception e) {
             return null;
         }

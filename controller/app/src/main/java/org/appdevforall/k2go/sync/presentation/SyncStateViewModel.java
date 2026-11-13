@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.RsyncManager;
 import org.appdevforall.k2go.SyncHandshakeHelper;
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
@@ -119,7 +120,7 @@ public class SyncStateViewModel extends ViewModel {
                 return;
             }
 
-            File destDir = new File(appCtx.getFilesDir(), "rootfs/installed-rootfs/iiab");
+            File destDir = SystemStateEvaluator.rootfsDir(appCtx);
             if (!destDir.exists()) destDir.mkdirs();
             pendingDestDir = destDir;
             repo.postCalculating();

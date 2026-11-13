@@ -40,6 +40,7 @@ import org.appdevforall.k2go.InstallationPlanner;
 import org.appdevforall.k2go.ModuleRegistry;
 import org.appdevforall.k2go.PRootEngine;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.TarExtractor;
 import org.appdevforall.k2go.util.ProcessRunner;
 import org.appdevforall.k2go.deploy.domain.ModuleName;
@@ -299,8 +300,8 @@ public final class InstallService extends Service {
             started = true;
             rebuildMode = true;
             org.appdevforall.k2go.InstallGuard.begin(this);   // exclusive: no concurrent proot op
-            iiabRootDir = new File(getFilesDir(), "rootfs");
-            debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
+            iiabRootDir = SystemStateEvaluator.rootfsBaseDir(this);
+            debianRootfs = SystemStateEvaluator.rootfsDir(this);
             if (prootEngine == null) prootEngine = new PRootEngine();
             startForeground(InstallNotifications.ONGOING_ID, buildNotification(getString(R.string.k2go_dash_rebuilding)));
             acquireHardwareLocks();
@@ -328,8 +329,8 @@ public final class InstallService extends Service {
         // isSystemInstalled=false, no global proot kill) until this install reaches a clean terminal.
         org.appdevforall.k2go.InstallGuard.begin(this);
 
-        iiabRootDir = new File(getFilesDir(), "rootfs");
-        debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
+        iiabRootDir = SystemStateEvaluator.rootfsBaseDir(this);
+        debianRootfs = SystemStateEvaluator.rootfsDir(this);
 
         if (isModules) {
             // ADFA-4476 slice 3: the service owns the module install queue, so it survives a
@@ -1768,7 +1769,7 @@ public final class InstallService extends Service {
             // 1. The transfer. The whole directory: aria2 leaves the tarball, the control file and
             // the network profiler's probe files in it, and it is recreated on the next download.
             File downloads = (iiabRootDir != null) ? new File(iiabRootDir, "downloads")
-                                                   : new File(getFilesDir(), "rootfs/downloads");
+                                                   : new File(SystemStateEvaluator.rootfsBaseDir(this), "downloads");
             if (downloads.exists()) {
                 ProcessRunner.Result rm = ProcessRunner.run(
                         new String[]{"rm", "-rf", downloads.getAbsolutePath()});

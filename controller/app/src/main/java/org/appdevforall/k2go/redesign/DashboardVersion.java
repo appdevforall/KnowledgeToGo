@@ -45,8 +45,8 @@ public final class DashboardVersion {
     /** Installed dash-node version from the rootfs package.json, or null if not found/parseable. */
     @Nullable
     public static String installed(@NonNull Context ctx) {
-        File pkg = new File(ctx.getFilesDir(),
-                "rootfs/installed-rootfs/iiab/library/dashboard/package.json");
+        File pkg = new File(org.appdevforall.k2go.SystemStateEvaluator.rootfsDir(ctx),
+                "library/dashboard/package.json");
         if (!pkg.exists()) return null;
         StringBuilder sb = new StringBuilder();
         try (BufferedReader r = new BufferedReader(new FileReader(pkg))) {

@@ -26,6 +26,7 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import androidx.core.content.ContextCompat;
@@ -469,7 +470,7 @@ public class CloneFragment extends Fragment {
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
     private void ensureDaemon(String ip) {
         if (daemonStarted || daemonStarting || userStopped || ip == null) return;
-        File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File rootfsDir = SystemStateEvaluator.rootfsDir(requireContext());
         boolean hasLib = rootfsPresent();
         if (!hasLib && !shareAnyway) return;   // ADFA-4786: don't silently share an empty library; renderStartState shows the notice
         // ADFA-4956: serving a live rootfs yields a torn clone. Coordinate as a deep-env op — refuse if
@@ -507,7 +508,7 @@ public class CloneFragment extends Fragment {
 
     /** ADFA-4786: true only when a real library is installed (dir exists and is non-empty). */
     private boolean rootfsPresent() {
-        File d = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File d = SystemStateEvaluator.rootfsDir(requireContext());
         String[] kids = d.isDirectory() ? d.list() : null;
         return kids != null && kids.length > 0;
     }
