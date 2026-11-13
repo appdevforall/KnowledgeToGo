@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  K2GO-560: no app data leaves through Android backup or phone-to-phone transfer, on any Android
+  version. allowBackup="false" stops cloud backup on every version, and the transfer on Android 11
+  and lower. On Android 12 and higher the transfer can stay on, so these rules exclude every domain.
+  Each domain is listed because Android walks each one apart.
+  A copied box cannot work (Android backup skips symlinks, which the rootfs needs) and it carries
+  per-box records. Clone moves a box.
+  No cross-platform-transfer section: that export needs a matching iOS app, and K2Go has none.
+  https://developer.android.com/identity/data/autobackup#include-exclude-android-12
+-->
+<data-extraction-rules>
+    <device-transfer>
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
+        <exclude domain="device_root" path="." />
+        <exclude domain="device_file" path="." />
+        <exclude domain="device_database" path="." />
+        <exclude domain="device_sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>
