@@ -47,10 +47,10 @@ public final class ModuleCards {
         public String endpoint() { return module.endpoint; }
         public boolean requires64Bit() { return module.requires64Bit; }
 
-        /** K2GO-415/571: true when this module can run in a library of {@code libraryAbi}
-         *  (AbiSource.moduleAbi). The library's ABI decides, not the app's (ADR-K2GO-571). */
-        public boolean runsOn(String libraryAbi) {
-            return org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(requires64Bit(), libraryAbi);
+        /** K2GO-415/571/573: true when this module can run in {@code host} (AbiSource.moduleHost).
+         *  The library decides, not the app (ADR-K2GO-571). */
+        public boolean runsOn(org.appdevforall.k2go.arch.domain.LibraryHost host) {
+            return org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(requires64Bit(), host);
         }
     }
 

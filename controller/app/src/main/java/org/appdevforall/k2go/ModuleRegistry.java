@@ -34,7 +34,7 @@ public class ModuleRegistry {
     public static final List<IiabModule> MASTER_ROSTER = Arrays.asList(
             new IiabModule("books", R.string.dash_books, false, "calibreweb"), // var base calibreweb_install; Ansible role dir is calibre-web (see RoleNames, ADFA-4629)
             new IiabModule("code", R.string.dash_code, false, "code"),         // YAML uses code_install
-            new IiabModule("kiwix", R.string.dash_kiwix, true, "kiwix"),       // YAML uses kiwix_install. TRUE = Hidden on 32-bit!
+            new IiabModule("kiwix", R.string.dash_kiwix, true, "kiwix"),       // YAML uses kiwix_install. TRUE: on a 32-bit library only if it can host Kiwix (K2GO-573, LibraryArch.supportsModule)
             new IiabModule("kolibri", R.string.dash_kolibri, false, "kolibri"), // YAML uses kolibri_install
             new IiabModule("maps", R.string.dash_maps, false, "maps"),         // YAML uses maps_install
             new IiabModule("matomo", R.string.dash_matomo, false, "matomo"),   // YAML uses matomo_install

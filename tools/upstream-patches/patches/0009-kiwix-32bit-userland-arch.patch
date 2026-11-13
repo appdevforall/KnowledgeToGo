@@ -1,0 +1,49 @@
+Upstream-PR:     none (K2Go carry patch)
+Upstream-Status: not sent upstream (upstream is dropping 32-bit; K2Go keeps it)
+Applies-to:      roles/kiwix/defaults/main.yml, roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix
+Summary:         Pick the kiwix-tools build from the userland arch (dpkg_arch), not the kernel: a 32-bit library on a 64-bit phone reports machine=aarch64 and got the 64-bit build. armhf maps to armv6 on every kernel (one library moves between phones; armv6 also runs on ARMv7 CPUs). The pdsm kiwix service keeps up to 4 ZIMs open (libkiwix cache env vars), so RSS stays flat with several books.
+
+diff --git a/roles/kiwix/defaults/main.yml b/roles/kiwix/defaults/main.yml
+index 1000d2c..a7e9d94 100644
+--- a/roles/kiwix/defaults/main.yml
++++ b/roles/kiwix/defaults/main.yml
+@@ -40,7 +40,13 @@ kiwix_arch_dict:      # 'dpkg --print-architecture' key would be: (to mitigate #
+ # CLAIM: 'ansible_machine might be "i686", whereas ansible_architecture on the same host would be "i386"'
+ # https://stackoverflow.com/questions/44713880/how-do-i-make-decision-based-on-arch-in-ansible-playbooks/44714226#44714226
+ #kiwix_arch: "{{ kiwix_arch_dict[ansible_facts.machine] | default('unsupported') }}"
+-kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine, 'unsupported') }}"
++# K2Go: a 32-bit userland on a 64-bit kernel reports machine=aarch64, so pick the
++# build from the userland arch (dpkg_arch, set by 0-init), as roles/maps does. armhf gets armv6 on
++# every kernel: one 32-bit library moves between phones (bake, backup, Clone), and armv6 also runs
++# on ARMv7 CPUs. A 64-bit kernel emulates its CP15 barriers (CONFIG_CP15_BARRIER_EMULATION).
++kiwix_dpkg_arch_dict:
++  armhf: armv6
++kiwix_arch: "{{ kiwix_dpkg_arch_dict.get(dpkg_arch.stdout | default(''), kiwix_arch_dict.get(ansible_facts.machine, 'unsupported')) }}"
+ #kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine | default('') | lower, 'unsupported') }}"
+ 
+ # Latest official kiwix-tools release, per Kiwix permalink redirects:
+diff --git a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix
+index 08ebc04..26d4142 100644
+--- a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix
++++ b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kiwix
+@@ -13,6 +13,10 @@ KIWIX_PORT="3000"
+ KIWIX_LIBRARY="/library/zims/library.xml"
+ KIWIX_URL_ROOT="/kiwix/"
+ KIWIX_THREADS="4"
++# K2Go: keep up to this many ZIMs (and their searchers) open. libkiwix keeps 1 for 10 books or
++# fewer, so each change of book reopens an archive and RSS jumps (1.4 GB with 4 books on 32-bit).
++# https://github.com/kiwix/libkiwix/blob/main/src/library.cpp
++KIWIX_CACHE_SIZE="4"
+ 
+ running() {
+   # NOTE: if `ps aux | grep $SERVICE_NAME` shows nothing, this should fail too.
+@@ -29,6 +33,9 @@ start() {
+   require_service "nginx"
+ 
+   echo "[pdsm:$SERVICE_NAME] starting..."
++  export KIWIX_ARCHIVE_CACHE_SIZE="$KIWIX_CACHE_SIZE"
++  export KIWIX_SEARCHER_CACHE_SIZE="$KIWIX_CACHE_SIZE"
++  export KIWIX_SUGGESTION_SEARCHER_CACHE_SIZE="$KIWIX_CACHE_SIZE"
+   # --daemon will background kiwix-serve by itself
+   "$KIWIX_BIN" \
+     --daemon \

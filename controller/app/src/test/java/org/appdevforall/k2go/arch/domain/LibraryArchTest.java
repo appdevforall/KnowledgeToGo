@@ -50,11 +50,24 @@ public class LibraryArchTest {
     }
 
     @Test
-    public void aModuleThatNeeds64BitRunsOnlyInAKnown64BitLibrary() {
-        assertTrue(LibraryArch.supportsModule(true, LibraryArch.ARM64));
-        assertFalse(LibraryArch.supportsModule(true, LibraryArch.ARM32));
-        assertFalse(LibraryArch.supportsModule(true, null));   // mid-restore: fail closed
-        assertTrue(LibraryArch.supportsModule(false, LibraryArch.ARM32));
+    public void kiwixRunsInA64BitLibraryOrA32BitLibraryThatCanHostIt() {
+        assertTrue(LibraryArch.supportsModule(true, new LibraryHost(LibraryArch.ARM64, false)));
+        assertTrue(LibraryArch.supportsModule(true, new LibraryHost(LibraryArch.ARM32, true)));
+        assertFalse(LibraryArch.supportsModule(true, new LibraryHost(LibraryArch.ARM32, false))); // old 32-bit box
+        assertFalse(LibraryArch.supportsModule(true, new LibraryHost(null, true)));   // mid-restore: fail closed
+        assertFalse(LibraryArch.supportsModule(true, null));
+    }
+
+    @Test
+    public void anOrdinaryModuleRunsInAnyLibrary() {
+        assertTrue(LibraryArch.supportsModule(false, new LibraryHost(LibraryArch.ARM32, false)));
+        assertTrue(LibraryArch.supportsModule(false, new LibraryHost(null, false)));
         assertTrue(LibraryArch.supportsModule(false, null));
+    }
+
+    @Test
+    public void aFresh32BitInstallDoesNotCountOnKiwix() {
+        assertFalse(LibraryArch.supportsModule(true, LibraryHost.freshInstall(LibraryArch.ARM32)));
+        assertTrue(LibraryArch.supportsModule(true, LibraryHost.freshInstall(LibraryArch.ARM64)));
     }
 }
