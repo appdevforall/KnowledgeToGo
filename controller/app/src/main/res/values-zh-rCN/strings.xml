@@ -1557,4 +1557,15 @@
     <string name="k2go_damaged_clone_title">复制已中断</string>
     <string name="k2go_damaged_clone_body">从另一部手机的复制在完成前停止了，系统无法启动。请重试复制，或使用备份或全新安装来恢复。</string>
     <string name="k2go_damaged_clone_retry">重试复制</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">更快恢复</string>
+    <string name="k2go_br_pair_companion_msg">请同时从同一文件夹选择 %1$s 或 %2$s。这样应用会在复制时校验归档，并省去一次完整处理。</string>
+    <string name="k2go_br_pair_tarball_title">选择归档</string>
+    <string name="k2go_br_pair_tarball_msg">请选择 %1$s，即与此文件配套的归档。</string>
+    <string name="k2go_br_pair_missing">%1$s 不在同一文件夹中。</string>
+    <string name="k2go_br_pair_select">选择</string>
+    <string name="k2go_br_pair_skip">跳过</string>
+    <string name="k2go_br_folder_title">选择备份文件夹</string>
+    <string name="k2go_br_folder_msg">备份会在一个文件夹中保存两个文件。Android 不允许应用直接使用 Download 文件夹：请打开它，并在其中新建或选择一个文件夹。</string>
+    <string name="k2go_br_folder_choose">选择文件夹</string>
 </resources>

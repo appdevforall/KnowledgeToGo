@@ -37,11 +37,14 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.lottie.LottieAnimationView;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.backup.data.SiblingFinder;
+import org.appdevforall.k2go.backup.domain.ArchivePair;
 import org.appdevforall.k2go.deepop.DeepOpProgressRepository;
 import org.appdevforall.k2go.deepop.DeepOpService;
 import org.appdevforall.k2go.deepop.DeepOpState;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
+import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.Snackbars;
 
 public class BackupJobFragment extends Fragment {
@@ -88,8 +91,60 @@ public class BackupJobFragment extends Fragment {
             });
     private final ActivityResultLauncher<String[]> openDoc =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-                if (uri != null) prepareRestore(uri); else popToIntro(false);
+                if (uri != null) onRestorePicked(uri); else popToIntro(false);
             });
+
+    // K2GO-569: the second file of a pair, when the app cannot read the folder of the first one.
+    private final OpenNear openNear = new OpenNear();
+    private Uri pairFirst;              // the file the user picked first
+    private boolean pairWantsTarball;   // true: the first was the companion; false: it was the tarball
+    private static final String STATE_PAIR_FIRST = "pair_first";
+    private static final String STATE_PAIR_WANTS_TARBALL = "pair_wants_tarball";
+    private final ActivityResultLauncher<String[]> openSecond =
+            registerForActivityResult(openNear, uri -> {
+                final Uri first = pairFirst;
+                pairFirst = null;
+                if (first == null) { popToIntro(false); return; }
+                if (pairWantsTarball) {
+                    if (uri != null) prepareRestore(uri, first); else popToIntro(false);
+                } else {
+                    prepareRestore(first, uri);   // no pick: the full path
+                }
+            });
+
+    @Override
+    public void onCreate(@Nullable Bundle s) {
+        super.onCreate(s);
+        // K2GO-569: the second picker can outlive this instance (a recreation while it is open).
+        if (s != null && s.getString(STATE_PAIR_FIRST) != null) {
+            pairFirst = Uri.parse(s.getString(STATE_PAIR_FIRST));
+            pairWantsTarball = s.getBoolean(STATE_PAIR_WANTS_TARBALL);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        if (pairFirst != null) {
+            out.putString(STATE_PAIR_FIRST, pairFirst.toString());
+            out.putBoolean(STATE_PAIR_WANTS_TARBALL, pairWantsTarball);
+        }
+    }
+
+    /** OpenDocument that starts in the folder of the first file (API 26+). */
+    private static final class OpenNear extends ActivityResultContracts.OpenDocument {
+        Uri near;
+
+        @NonNull
+        @Override
+        public android.content.Intent createIntent(@NonNull android.content.Context context, @NonNull String[] input) {
+            android.content.Intent i = super.createIntent(context, input);
+            if (near != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                i.putExtra(android.provider.DocumentsContract.EXTRA_INITIAL_URI, near);
+            }
+            return i;
+        }
+    }
 
     private boolean isRestore() { return MODE_RESTORE.equals(mode); }
     private EnvironmentLock.Owner myOwner() { return isRestore() ? EnvironmentLock.Owner.RESTORE : EnvironmentLock.Owner.BACKUP; }
@@ -175,8 +230,23 @@ public class BackupJobFragment extends Fragment {
             popToIntro(false);
             return;
         }
-        if (isRestore()) openDoc.launch(new String[]{"application/gzip", "application/x-gzip", "*/*"});
-        else pickFolder.launch(org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext()));
+        if (isRestore()) {
+            openDoc.launch(new String[]{"application/gzip", "application/x-gzip", "*/*"});
+            return;
+        }
+        Uri folder = org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext());
+        if (folder != null) {
+            pickFolder.launch(folder);
+            return;
+        }
+        // K2GO-570: the picker opens on Download, which Android refuses as a folder; say so first.
+        new BrandDialog(requireContext())
+                .setTitle(R.string.k2go_br_folder_title)
+                .setMessage(R.string.k2go_br_folder_msg)
+                .setPositive(R.string.k2go_br_folder_choose, BrandDialog.Role.PRIMARY, () -> pickFolder.launch(null))
+                .setNegative(R.string.cancel, () -> popToIntro(false))
+                .setOnCancel(() -> popToIntro(false))
+                .show();
     }
 
     // ---- BACKUP ----
@@ -204,7 +274,75 @@ public class BackupJobFragment extends Fragment {
      * leaves the current system untouched, which is what made the pre-flight pass safe to delete rather
      * than merely move — it was a second place answering a question the extractor already answers.
      */
-    private void prepareRestore(Uri uri) {
+    /**
+     * K2GO-569: the user picks one file of a pair; the app finds the other one by name. A tarball
+     * with its X.tar.json or X.tar.gz.minisig restores in two passes; a tarball alone in three.
+     * The lookup is provider IPC and disk access, so it runs off the main thread.
+     */
+    private void onRestorePicked(Uri picked) {
+        if (!isAdded()) return;
+        final android.content.Context ctx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            final String name = SiblingFinder.displayName(ctx, picked);
+            final ArchivePair.Kind kind = ArchivePair.kind(name);
+            final boolean canSee = SiblingFinder.canSeeSiblings(ctx, picked);
+            Uri found = null;
+            if (kind == ArchivePair.Kind.TARBALL) {
+                found = SiblingFinder.find(ctx, picked, ArchivePair.json(name));
+                if (found == null) found = SiblingFinder.find(ctx, picked, ArchivePair.signature(name));
+            } else if (kind != ArchivePair.Kind.OTHER) {
+                found = SiblingFinder.find(ctx, picked, ArchivePair.tarball(name));
+            }
+            final Uri sibling = found;
+            main.post(() -> onPairLookedUp(picked, name, kind, canSee, sibling));
+        });
+    }
+
+    private void onPairLookedUp(Uri picked, String name, ArchivePair.Kind kind, boolean canSee, @Nullable Uri sibling) {
+        if (!isAdded()) return;
+        if (kind == ArchivePair.Kind.TARBALL) {
+            if (sibling != null || canSee) {
+                prepareRestore(picked, sibling);
+            } else {
+                askForSecond(picked, false, getString(R.string.k2go_br_pair_companion_title),
+                        getString(R.string.k2go_br_pair_companion_msg, ArchivePair.json(name), ArchivePair.signature(name)),
+                        R.string.k2go_br_pair_skip);
+            }
+        } else if (kind == ArchivePair.Kind.OTHER) {
+            prepareRestore(picked, null);   // not a pair file: the extractor judges it
+        } else if (sibling != null) {
+            prepareRestore(sibling, picked);
+        } else if (canSee) {
+            Snackbars.make(requireView(), getString(R.string.k2go_br_pair_missing, ArchivePair.tarball(name))).show();
+            popToIntro(false);
+        } else {
+            askForSecond(picked, true, getString(R.string.k2go_br_pair_tarball_title),
+                    getString(R.string.k2go_br_pair_tarball_msg, ArchivePair.tarball(name)), R.string.cancel);
+        }
+    }
+
+    private void askForSecond(Uri first, boolean wantsTarball, String title, String message, int noRes) {
+        pairFirst = first;
+        pairWantsTarball = wantsTarball;
+        new BrandDialog(requireContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositive(R.string.k2go_br_pair_select, BrandDialog.Role.PRIMARY, () -> {
+                    openNear.near = first;
+                    openSecond.launch(new String[]{"*/*"});
+                })
+                .setNegative(noRes, () -> {
+                    pairFirst = null;
+                    if (wantsTarball) popToIntro(false); else prepareRestore(first, null);
+                })
+                .setOnCancel(() -> {
+                    pairFirst = null;
+                    popToIntro(false);
+                })
+                .show();
+    }
+
+    private void prepareRestore(Uri uri, @Nullable Uri companion) {
         if (!isAdded()) return;
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_br_restore_title))
@@ -214,9 +352,9 @@ public class BackupJobFragment extends Fragment {
                     // K2GO-448: same "[1/3]" prefix the service posts, from the same source, so the
                     // optimistic status matches instead of flashing an unprefixed "Copying the file".
                     setStatusAnimated(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                            DeepOpService.COPY_PASS, DeepOpService.RESTORE_PASSES,
+                            DeepOpService.COPY_PASS, DeepOpService.restorePasses(companion != null),
                             getString(R.string.k2go_br_status_copying)));
-                    DeepOpService.startRestore(requireContext(), uri, null);
+                    DeepOpService.startRestore(requireContext(), uri, companion);
                 })
                 .setNegative(R.string.cancel, () -> popToIntro(false))
                 .show();

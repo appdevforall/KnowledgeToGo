@@ -1632,4 +1632,15 @@
     <string name="k2go_damaged_clone_title">Копирование прервано</string>
     <string name="k2go_damaged_clone_body">Копирование с другого телефона остановилось до завершения, и система не может запуститься. Повторите копирование или восстановите систему из резервной копии или новой установкой.</string>
     <string name="k2go_damaged_clone_retry">Повторить копирование</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Восстановить быстрее</string>
+    <string name="k2go_br_pair_companion_msg">Выберите также %1$s или %2$s из той же папки. Тогда приложение проверяет архив во время копирования и пропускает один полный проход.</string>
+    <string name="k2go_br_pair_tarball_title">Выберите архив</string>
+    <string name="k2go_br_pair_tarball_msg">Выберите %1$s, архив к этому файлу.</string>
+    <string name="k2go_br_pair_missing">%1$s нет в той же папке.</string>
+    <string name="k2go_br_pair_select">Выбрать</string>
+    <string name="k2go_br_pair_skip">Пропустить</string>
+    <string name="k2go_br_folder_title">Выберите папку для резервных копий</string>
+    <string name="k2go_br_folder_msg">Резервная копия сохраняет два файла в папке. Android не разрешает приложениям использовать саму папку Download: откройте её и создайте или выберите папку внутри.</string>
+    <string name="k2go_br_folder_choose">Выбрать папку</string>
 </resources>

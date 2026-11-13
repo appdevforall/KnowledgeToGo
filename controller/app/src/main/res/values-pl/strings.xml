@@ -1566,4 +1566,15 @@
     <string name="k2go_damaged_clone_title">Kopiowanie przerwane</string>
     <string name="k2go_damaged_clone_body">Kopiowanie z drugiego telefonu zatrzymało się przed zakończeniem i system nie może się uruchomić. Spróbuj skopiować ponownie albo odzyskaj system z kopii zapasowej lub przez nową instalację.</string>
     <string name="k2go_damaged_clone_retry">Ponów kopiowanie</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Szybsze przywracanie</string>
+    <string name="k2go_br_pair_companion_msg">Wybierz też %1$s lub %2$s z tego samego folderu. Aplikacja sprawdzi wtedy archiwum podczas kopiowania i pominie jeden pełny przebieg.</string>
+    <string name="k2go_br_pair_tarball_title">Wybierz archiwum</string>
+    <string name="k2go_br_pair_tarball_msg">Wybierz %1$s, archiwum pasujące do tego pliku.</string>
+    <string name="k2go_br_pair_missing">%1$s nie znajduje się w tym samym folderze.</string>
+    <string name="k2go_br_pair_select">Wybierz</string>
+    <string name="k2go_br_pair_skip">Pomiń</string>
+    <string name="k2go_br_folder_title">Wybierz folder na kopie zapasowe</string>
+    <string name="k2go_br_folder_msg">Kopia zapasowa zapisuje dwa pliki w folderze. Android nie pozwala aplikacjom używać samego folderu Download: otwórz go i utwórz lub wybierz folder w jego wnętrzu.</string>
+    <string name="k2go_br_folder_choose">Wybierz folder</string>
 </resources>

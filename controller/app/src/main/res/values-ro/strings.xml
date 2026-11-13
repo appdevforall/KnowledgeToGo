@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">Copierea a fost întreruptă</string>
     <string name="k2go_damaged_clone_body">Copierea de pe celălalt telefon s-a oprit înainte de final și sistemul nu poate porni. Încercați din nou copierea sau recuperați cu o copie de rezervă ori cu o instalare nouă.</string>
     <string name="k2go_damaged_clone_retry">Reîncearcă copierea</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Restaurare mai rapidă</string>
+    <string name="k2go_br_pair_companion_msg">Selectează și %1$s sau %2$s din același dosar. Aplicația verifică atunci arhiva în timp ce o copiază și sare peste o trecere completă.</string>
+    <string name="k2go_br_pair_tarball_title">Selectează arhiva</string>
+    <string name="k2go_br_pair_tarball_msg">Selectează %1$s, arhiva care corespunde acestui fișier.</string>
+    <string name="k2go_br_pair_missing">%1$s nu este în același dosar.</string>
+    <string name="k2go_br_pair_select">Selectează</string>
+    <string name="k2go_br_pair_skip">Omite</string>
+    <string name="k2go_br_folder_title">Alege un dosar pentru copii de rezervă</string>
+    <string name="k2go_br_folder_msg">Copia de rezervă salvează două fișiere într-un dosar. Android nu permite aplicațiilor să folosească direct dosarul Download: deschide-l și creează sau alege un dosar în interior.</string>
+    <string name="k2go_br_folder_choose">Alege dosarul</string>
 </resources>

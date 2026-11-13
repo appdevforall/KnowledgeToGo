@@ -1576,4 +1576,15 @@
     <string name="k2go_damaged_clone_title">Kopyalama dayandı</string>
     <string name="k2go_damaged_clone_body">Digər telefondan kopyalama başa çatmadan dayandı və sistem işə düşə bilmir. Kopyalamanı yenidən cəhd edin və ya ehtiyat nüsxə, yaxud yeni quraşdırma ilə bərpa edin.</string>
     <string name="k2go_damaged_clone_retry">Kopyalamanı təkrarla</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Daha sürətli bərpa</string>
+    <string name="k2go_br_pair_companion_msg">Eyni qovluqdan %1$s və ya %2$s faylını da seçin. Tətbiq arxivi kopyalayarkən yoxlayır və bir tam keçidi ötürür.</string>
+    <string name="k2go_br_pair_tarball_title">Arxivi seçin</string>
+    <string name="k2go_br_pair_tarball_msg">Bu fayla aid arxiv olan %1$s faylını seçin.</string>
+    <string name="k2go_br_pair_missing">%1$s eyni qovluqda deyil.</string>
+    <string name="k2go_br_pair_select">Seç</string>
+    <string name="k2go_br_pair_skip">Ötür</string>
+    <string name="k2go_br_folder_title">Ehtiyat nüsxə qovluğu seçin</string>
+    <string name="k2go_br_folder_msg">Ehtiyat nüsxə iki faylı bir qovluğa yazır. Android tətbiqlərə Download qovluğunun özündən istifadə etməyə icazə vermir: onu açın və içində qovluq yaradın və ya seçin.</string>
+    <string name="k2go_br_folder_choose">Qovluq seç</string>
 </resources>

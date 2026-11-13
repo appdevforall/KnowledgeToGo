@@ -1632,4 +1632,15 @@
     <string name="k2go_damaged_clone_title">Copia interrumpida</string>
     <string name="k2go_damaged_clone_body">La copia desde el otro teléfono se detuvo antes de terminar y el sistema no puede iniciar. Intenta la copia de nuevo, o recupéralo con un respaldo o una instalación nueva.</string>
     <string name="k2go_damaged_clone_retry">Reintentar la copia</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Restaurar más rápido</string>
+    <string name="k2go_br_pair_companion_msg">Selecciona también %1$s o %2$s de la misma carpeta. Así la app revisa el archivo mientras lo copia y se ahorra una pasada completa.</string>
+    <string name="k2go_br_pair_tarball_title">Selecciona el archivo</string>
+    <string name="k2go_br_pair_tarball_msg">Selecciona %1$s, el archivo que va con este.</string>
+    <string name="k2go_br_pair_missing">%1$s no está en la misma carpeta.</string>
+    <string name="k2go_br_pair_select">Seleccionar</string>
+    <string name="k2go_br_pair_skip">Omitir</string>
+    <string name="k2go_br_folder_title">Elige una carpeta para respaldos</string>
+    <string name="k2go_br_folder_msg">El respaldo guarda dos archivos en una carpeta. Android no permite que las apps usen la carpeta Download directamente: ábrela y crea o elige una carpeta dentro de ella.</string>
+    <string name="k2go_br_folder_choose">Elegir carpeta</string>
 </resources>

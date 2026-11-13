@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 public final class BackupCompanion {
 
     public static final String FORMAT = "k2go-backup/1";
-    private static final String TAR_SUFFIX = ".tar.gz";
-    private static final String JSON_SUFFIX = ".tar.json";
     private static final Pattern SHA256_HEX = Pattern.compile("[0-9a-f]{64}");
 
     public final String created;     // ISO-8601 UTC
@@ -46,24 +44,9 @@ public final class BackupCompanion {
                 && gzSha256 != null && SHA256_HEX.matcher(gzSha256).matches();
     }
 
-    /** True when the tarball bytes are the ones this file describes. */
-    public boolean matches(long size, String sha256Hex) {
-        return isComplete() && size == gzBytes && sha256Hex != null
-                && gzSha256.equals(sha256Hex.toLowerCase(Locale.ROOT));
-    }
-
-    /** {@code X.tar.gz} -> {@code X.tar.json}, else {@code null}. */
-    public static String companionName(String tarballName) {
-        if (tarballName == null || !tarballName.endsWith(TAR_SUFFIX)
-                || tarballName.length() == TAR_SUFFIX.length()) return null;
-        return tarballName.substring(0, tarballName.length() - TAR_SUFFIX.length()) + JSON_SUFFIX;
-    }
-
-    /** {@code X.tar.json} -> {@code X.tar.gz}, else {@code null}. */
-    public static String tarballName(String companionName) {
-        if (companionName == null || !companionName.endsWith(JSON_SUFFIX)
-                || companionName.length() == JSON_SUFFIX.length()) return null;
-        return companionName.substring(0, companionName.length() - JSON_SUFFIX.length()) + TAR_SUFFIX;
+    /** What this file says about its tarball, for the restore copy check. */
+    public org.appdevforall.k2go.deploy.domain.ExpectedArchive expected() {
+        return new org.appdevforall.k2go.deploy.domain.ExpectedArchive(gzBytes, gzSha256, tarBytes);
     }
 
     private static boolean notEmpty(String s) {

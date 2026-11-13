@@ -24,9 +24,9 @@ public class BackupCompanionJsonTest {
         assertNull(c.tier);
         assertEquals(1000L, c.gzBytes);
         assertEquals(5000L, c.tarBytes);
-        assertTrue(c.matches(1000L, SHA.toUpperCase()));
-        assertFalse(c.matches(999L, SHA));
-        assertFalse(c.matches(1000L, SHA.replace('0', '1')));
+        assertTrue(c.expected().matches(1000L, SHA.toUpperCase()));
+        assertFalse(c.expected().matches(999L, SHA));
+        assertFalse(c.expected().matches(1000L, SHA.replace('0', '1')));
     }
 
     @Test
@@ -40,14 +40,5 @@ public class BackupCompanionJsonTest {
                 + "\"abi\":\"a\",\"gz_bytes\":1,\"gz_sha256\":\"abc\",\"tar_bytes\":1}"));
         assertNull(BackupCompanionJson.read("{\"format\":\"k2go-backup/1\",\"created\":\"x\",\"app_version\":\"v\","
                 + "\"abi\":\"a\",\"gz_bytes\":1,\"gz_sha256\":\"" + SHA + "\"}"));
-    }
-
-    @Test
-    public void companionNames() {
-        assertEquals("k2go_2026.317_1_aarch64.tar.json", BackupCompanion.companionName("k2go_2026.317_1_aarch64.tar.gz"));
-        assertEquals("k2go_2026.317_1_aarch64.tar.gz", BackupCompanion.tarballName("k2go_2026.317_1_aarch64.tar.json"));
-        assertNull(BackupCompanion.companionName("backup.zip"));
-        assertNull(BackupCompanion.companionName(".tar.gz"));
-        assertNull(BackupCompanion.tarballName("backup.json"));
     }
 }

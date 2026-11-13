@@ -1643,4 +1643,15 @@
     <string name="k2go_damaged_clone_title">Copie interrompue</string>
     <string name="k2go_damaged_clone_body">La copie depuis l\'autre téléphone s\'est arrêtée avant la fin et le système ne peut pas démarrer. Réessayez la copie, ou récupérez le système avec une sauvegarde ou une nouvelle installation.</string>
     <string name="k2go_damaged_clone_retry">Réessayer la copie</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Restaurer plus vite</string>
+    <string name="k2go_br_pair_companion_msg">Sélectionnez aussi %1$s ou %2$s dans le même dossier. L\'appli vérifie alors l\'archive pendant la copie et évite un passage complet.</string>
+    <string name="k2go_br_pair_tarball_title">Sélectionnez l\'archive</string>
+    <string name="k2go_br_pair_tarball_msg">Sélectionnez %1$s, l\'archive qui va avec ce fichier.</string>
+    <string name="k2go_br_pair_missing">%1$s n\'est pas dans le même dossier.</string>
+    <string name="k2go_br_pair_select">Sélectionner</string>
+    <string name="k2go_br_pair_skip">Passer</string>
+    <string name="k2go_br_folder_title">Choisissez un dossier de sauvegarde</string>
+    <string name="k2go_br_folder_msg">La sauvegarde enregistre deux fichiers dans un dossier. Android ne permet pas aux applis d\'utiliser directement le dossier Download : ouvrez-le, puis créez ou choisissez un dossier à l\'intérieur.</string>
+    <string name="k2go_br_folder_choose">Choisir le dossier</string>
 </resources>

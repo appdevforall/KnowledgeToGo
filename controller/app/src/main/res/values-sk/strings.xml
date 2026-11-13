@@ -1563,4 +1563,15 @@
     <string name="k2go_damaged_clone_title">Kopírovanie prerušené</string>
     <string name="k2go_damaged_clone_body">Kopírovanie z druhého telefónu sa zastavilo pred dokončením a systém sa nemôže spustiť. Skúste kopírovanie znova alebo obnovte systém zo zálohy či novou inštaláciou.</string>
     <string name="k2go_damaged_clone_retry">Skúsiť kopírovanie znova</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Rýchlejšie obnovenie</string>
+    <string name="k2go_br_pair_companion_msg">Vyberte aj %1$s alebo %2$s z rovnakého priečinka. Aplikácia potom archív skontroluje počas kopírovania a vynechá jeden celý prechod.</string>
+    <string name="k2go_br_pair_tarball_title">Vyberte archív</string>
+    <string name="k2go_br_pair_tarball_msg">Vyberte %1$s, archív, ktorý patrí k tomuto súboru.</string>
+    <string name="k2go_br_pair_missing">%1$s nie je v rovnakom priečinku.</string>
+    <string name="k2go_br_pair_select">Vybrať</string>
+    <string name="k2go_br_pair_skip">Preskočiť</string>
+    <string name="k2go_br_folder_title">Vyberte priečinok na zálohy</string>
+    <string name="k2go_br_folder_msg">Záloha ukladá dva súbory do priečinka. Android nedovolí aplikáciám použiť samotný priečinok Download: otvorte ho a vytvorte alebo vyberte priečinok v ňom.</string>
+    <string name="k2go_br_folder_choose">Vybrať priečinok</string>
 </resources>

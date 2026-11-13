@@ -303,6 +303,11 @@ manifest (only the `-t` value changes); (3) new bakes carry the manifest. An old
 - B4. Accepted risk: `X.tar.json` is not signed. A crafted backup with bad paths and
   a valid `X.tar.json` now fails after the wipe, not before. Nothing is written
   outside the rootfs. Analysis: K2GO-570.
+- B5 (K2GO-569). The bake adds `usize` (uncompressed tar size) to the signed manifest.
+  It is the extract total of a trusted download (replaces the catalog `.installed`
+  estimate) and of a signed restore. A manifest without `usize` keeps the full path.
+  A restore picks one file; the app finds `X.tar.json` or `X.tar.gz.minisig` next to
+  it by name (`ArchivePair`).
 
 ## Out of scope
 

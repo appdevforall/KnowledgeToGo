@@ -114,12 +114,12 @@ public class Aria2Manager {
         }
         void onComplete(String downloadPath);
         /**
-         * K2GO-554 D6: the download completed AND {@code trusted} = it was verified against the .meta4
-         * and carries a signature from a pinned key. A default forwards to the single-arg form, so callers
-         * that do not care about trust are untouched; the install path overrides this to skip the listing
-         * pass on a trusted artifact.
+         * K2GO-554 D6: the download completed. {@code trustedTotal} > 0 when it was verified against the
+         * .meta4 and carries a signature from a pinned key: it is the signed uncompressed size (K2GO-569:
+         * usize), else 0. A default forwards to the single-arg form, so callers that do not care about
+         * trust are untouched; the install path overrides this to skip the listing pass.
          */
-        default void onComplete(String downloadPath, boolean trusted) {
+        default void onComplete(String downloadPath, long trustedTotal) {
             onComplete(downloadPath);
         }
         void onError(String error);
@@ -239,8 +239,8 @@ public class Aria2Manager {
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
                             // This branch runs only after DownloadVerifier returned OK above.
-                            final boolean trusted = signedTarget != null
-                                    && signedManifestVouchesFor(mf, true, signedTarget);
+                            final long trusted = signedTarget == null ? 0L
+                                    : signedTotal(mf, true, signedTarget);
                             mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
                             return;
                         } else if (len > mf.sizeBytes()) {
@@ -548,8 +548,8 @@ public class Aria2Manager {
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
                     bytesVerified = true;
                 }
-                final boolean trusted = signedTarget != null
-                        && signedManifestVouchesFor(mf, bytesVerified, signedTarget);
+                final long trusted = signedTarget == null ? 0L
+                        : signedTotal(mf, bytesVerified, signedTarget);
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath(), trusted));
 
             } catch (Exception e) {
@@ -641,28 +641,30 @@ public class Aria2Manager {
      * next to the tarball carries a manifest, authenticated by a pinned key, that names this file, size
      * and sha-256 for the expected tier and ABI. The rule lives in {@link RootfsManifest#judge}. No
      * second read of the file happens here. Fail closed: unverified bytes, no sidecar, a bad signature,
-     * no manifest, a mismatch, or another tier/ABI returns false, and the caller keeps the full path.
+     * no manifest, a mismatch, another tier/ABI, or no usize returns 0, and the caller keeps the full path.
+     *
+     * @return the signed uncompressed size (K2GO-569: usize, the extract total), or 0 when not trusted.
      */
-    private boolean signedManifestVouchesFor(MetalinkFile mf, boolean bytesVerified,
-                                             RootfsManifest.Target expected) {
-        if (mf == null) return false;
+    private long signedTotal(MetalinkFile mf, boolean bytesVerified, RootfsManifest.Target expected) {
+        if (mf == null) return 0L;
         if (!bytesVerified) {
             Log.i(TAG, "Signature check " + mf.fileName() + ": " + RootfsManifest.Verdict.BYTES_NOT_VERIFIED);
-            return false;
+            return 0L;
         }
         for (String mirror : mf.mirrors()) {
             String sig = fetchText(mirror + ".minisig");
             if (sig == null) continue;
             // The sidecar exists on this mirror, so its verdict is final. Do not try other mirrors
             // hoping for a different answer.
-            RootfsManifest.Verdict v = RootfsManifest.judge(true,
-                    MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.PRODUCTION),
+            String comment = MinisignVerifier.authenticatedComment(sig, TrustedSigningKeys.PRODUCTION);
+            RootfsManifest.Verdict v = RootfsManifest.judge(true, comment,
                     mf.fileName(), mf.sizeBytes(), mf.sha256(), expected);
-            Log.i(TAG, "Signature check " + mf.fileName() + ": " + v);
-            return v == RootfsManifest.Verdict.TRUSTED;
+            long usize = v == RootfsManifest.Verdict.TRUSTED ? RootfsManifest.parse(comment).usize : -1L;
+            Log.i(TAG, "Signature check " + mf.fileName() + ": " + v + " usize=" + usize);
+            return Math.max(usize, 0L);
         }
         Log.i(TAG, "Signature check " + mf.fileName() + ": no .minisig");
-        return false;
+        return 0L;
     }
 
     /**

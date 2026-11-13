@@ -1557,4 +1557,15 @@
     <string name="k2go_damaged_clone_title">복사가 중단됨</string>
     <string name="k2go_damaged_clone_body">다른 휴대폰에서의 복사가 끝나기 전에 중지되어 시스템을 시작할 수 없습니다. 다시 복사하거나 백업 또는 새로 설치하여 복구하세요.</string>
     <string name="k2go_damaged_clone_retry">다시 복사</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">더 빠르게 복원</string>
+    <string name="k2go_br_pair_companion_msg">같은 폴더에서 %1$s 또는 %2$s도 선택하세요. 그러면 앱이 복사하는 동안 아카이브를 확인하고 전체 단계 하나를 건너뜁니다.</string>
+    <string name="k2go_br_pair_tarball_title">아카이브 선택</string>
+    <string name="k2go_br_pair_tarball_msg">이 파일과 짝이 되는 아카이브 %1$s을(를) 선택하세요.</string>
+    <string name="k2go_br_pair_missing">%1$s이(가) 같은 폴더에 없습니다.</string>
+    <string name="k2go_br_pair_select">선택</string>
+    <string name="k2go_br_pair_skip">건너뛰기</string>
+    <string name="k2go_br_folder_title">백업 폴더 선택</string>
+    <string name="k2go_br_folder_msg">백업은 폴더에 파일 두 개를 저장합니다. Android에서는 앱이 Download 폴더 자체를 사용할 수 없습니다. Download를 열고 그 안에 폴더를 만들거나 선택하세요.</string>
+    <string name="k2go_br_folder_choose">폴더 선택</string>
 </resources>
