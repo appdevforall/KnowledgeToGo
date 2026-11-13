@@ -1,7 +1,7 @@
 Upstream-PR:     none (K2Go carry patch)
 Upstream-Status: not sent upstream (K2Go-specific R2 fallback)
 Applies-to:      roles/kiwix/defaults/main.yml, roles/kiwix/tasks/install.yml
-Summary:         Add a K2Go R2 mirror as a FALLBACK for the kiwix-tools download. kiwix.org stays primary; on a failed download the role retries from the mirror (upstream/kiwix/kiwix-tools), which .github/workflows/upstream-mirror.yml refreshes weekly. kiwix.org once stalled a bake (curl rc=92) and blocked the publish. The role still builds the file name from kiwix_arch, so no version is pinned.
+Summary:         Add a K2Go R2 mirror as a FALLBACK for the kiwix-tools download. kiwix.org stays primary; on a failed download the role retries from the mirror (upstream/kiwix/kiwix-tools), which .github/workflows/upstream-mirror.yml refreshes weekly. kiwix.org once stalled a bake (curl rc=92) and blocked the publish. The role still builds the file name from kiwix_arch, so no version is pinned. The download file keeps that name (with the arch), so a relaunch never reuses a tarball of another arch (K2GO-573).
 
 diff --git a/roles/kiwix/defaults/main.yml b/roles/kiwix/defaults/main.yml
 index 9ed6ecb..1000d2c 100644
@@ -36,14 +36,14 @@ index 05c0cff..600ff2a 100644
 +    - name: Download {{ kiwix_tar_gz }} from kiwix.org
 +      get_curl:
 +        url: "{{ kiwix_base_url }}{{ kiwix_tar_gz }}"
-+        dest: "{{ downloads_dir }}/kiwix-tools.tar.gz"
++        dest: "{{ downloads_dir }}/{{ kiwix_tar_gz }}"    # K2GO-573: arch in the name; get_curl skips an existing dest
 +        timeout: "{{ download_timeout }}"
 +      register: kiwix_dl
 +  rescue:
 +    - name: Fall back to the K2Go R2 mirror
 +      get_curl:
 +        url: "{{ kiwix_r2_base_url }}{{ kiwix_tar_gz }}"
-+        dest: "{{ downloads_dir }}/kiwix-tools.tar.gz"
++        dest: "{{ downloads_dir }}/{{ kiwix_tar_gz }}"
 +        timeout: "{{ download_timeout }}"
 +      register: kiwix_dl
  

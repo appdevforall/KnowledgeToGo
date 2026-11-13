@@ -14,7 +14,7 @@ index 1000d2c..1bb033c 100644
 -kiwix_arch: "{{ kiwix_arch_dict.get(ansible_facts.machine, 'unsupported') }}"
 +# K2Go: a 32-bit userland on a 64-bit kernel reports machine=aarch64 (or x86_64), so pick the
 +# build from the userland arch (dpkg_arch, set by 0-init), as roles/maps does. armv6 targets
-+# ARMv6 and newer CPUs (the armv8 build targets ARMv8 CPUs only).
++# ARMv6 and newer CPUs, so it also covers ARMv7-only phones.
 +kiwix_dpkg_arch_dict:
 +  armhf: armv6
 +  i386: i586
