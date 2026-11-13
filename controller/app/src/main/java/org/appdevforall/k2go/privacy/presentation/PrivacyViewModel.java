@@ -37,6 +37,8 @@ public class PrivacyViewModel extends ViewModel {
             RESTARTING,
             /** A destructive operation holds the box: the restart was refused, the change waits. */
             BUSY,
+            /** Saved, but the restart was not requested: it applies at the next app open. */
+            LATER,
             /** The box did not take the write or the restart request. */
             FAILED
         }
@@ -111,7 +113,7 @@ public class PrivacyViewModel extends ViewModel {
             switch (restart.execute(service)) {
                 case RESTARTING: notice.postValue(new Notice(Notice.Kind.RESTARTING, service)); break;
                 case BUSY:       notice.postValue(new Notice(Notice.Kind.BUSY, service)); break;
-                default:         notice.postValue(new Notice(Notice.Kind.FAILED, service)); break;
+                default:         notice.postValue(new Notice(Notice.Kind.LATER, service)); break;   // saved; pending
             }
         });
     }

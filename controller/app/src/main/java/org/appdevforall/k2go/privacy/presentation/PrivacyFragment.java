@@ -95,6 +95,7 @@ public class PrivacyFragment extends Fragment {
             case ASK_RESTART: askRestart(n.service, name); break;
             case RESTARTING:  snack(root, getString(R.string.k2go_privacy_restarting, name)); break;
             case BUSY:        snack(root, getString(BusyMessage.resFor(requireContext()))); break;
+            case LATER:       snack(root, getString(R.string.k2go_privacy_restart_later_note)); break;
             case FAILED:
             default:          snack(root, getString(R.string.k2go_privacy_save_failed)); break;
         }
