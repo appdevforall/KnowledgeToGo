@@ -16,7 +16,7 @@
 import { spawn } from 'child_process';
 
 export const RESTARTABLE_SERVICES: readonly string[] = [
-    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web',
+    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web', 'forgejo',
 ];
 
 /** A name is restartable only when it is exactly one of the known upstream content
@@ -40,5 +40,19 @@ export function restartService(svc: string): void {
         child.unref();
     } catch (e) {
         console.error(`[services] restart ${svc} spawn threw: ${e}`);
+    }
+}
+
+/** Like restartService, but only when the service runs: `pdsm restart` would also START a stopped
+ *  service. A stopped service reads its config at its next start anyway (K2GO-559). Same caller
+ *  contract: validate `svc` with isRestartableService first. */
+export function restartIfRunning(svc: string): void {
+    try {
+        const child = spawn('setsid', ['sh', '-c', '"$0" status "$1" >/dev/null 2>&1 && exec "$0" restart "$1"', PDSM, svc],
+            { detached: true, stdio: 'ignore' });
+        child.on('error', (e) => console.error(`[services] restart-if-running ${svc} failed to spawn: ${e}`));
+        child.unref();
+    } catch (e) {
+        console.error(`[services] restart-if-running ${svc} spawn threw: ${e}`);
     }
 }
