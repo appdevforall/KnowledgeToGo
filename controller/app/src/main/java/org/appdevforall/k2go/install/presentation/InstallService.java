@@ -476,14 +476,7 @@ public final class InstallService extends Service {
         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementStarting(this,
                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.REINSTALL);
         postProvisioning(getString(R.string.install_status_wiping_old));
-        try {
-            ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-            if (!wipe.isSuccess()) {
-                Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipe.exitCode + "): " + wipe.output);
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
-        }
+        org.appdevforall.k2go.install.data.RootfsWipe.wipe(debianRootfs, "reinstall");
         if (cancelled) return;
         persistInstalledTier();
         startRootfsDownload();
@@ -766,18 +759,11 @@ public final class InstallService extends Service {
                     org.appdevforall.k2go.system.domain.SystemReplacement.Cause.RESET);
             // 1. WIPE
             postProvisioning(getString(R.string.install_status_wiping_old));
-            try {
-                ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                if (!wipe.isSuccess()) {
-                    Log.w(TAG, "rm -rf rootfs (reset) failed (exit " + wipe.exitCode + "): " + wipe.output);
-                }
-                // The system is gone from here on, and no wizard ran before a reset,
-                // so any order still pending was placed against what was just wiped.
-                org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(this,
-                        org.appdevforall.k2go.system.domain.SystemReplacement.Cause.RESET);
-            } catch (Exception e) {
-                Log.w(TAG, "rm -rf rootfs (reset) failed", e);
-            }
+            org.appdevforall.k2go.install.data.RootfsWipe.wipe(debianRootfs, "reset");
+            // The system is gone from here on, and no wizard ran before a reset,
+            // so any order still pending was placed against what was just wiped.
+            org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(this,
+                    org.appdevforall.k2go.system.domain.SystemReplacement.Cause.RESET);
             debianRootfs.mkdirs();
             if (cancelled) return;
 
@@ -1792,9 +1778,7 @@ public final class InstallService extends Service {
             // 2. A rootfs that only got half written. By the time `work` is ROOTFS_BUILD there is no
             // system worth keeping, so anything here is wreckage by definition.
             if (debianRootfs != null && debianRootfs.exists()) {
-                ProcessRunner.Result rm = ProcessRunner.run(
-                        new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                if (!rm.isSuccess()) Log.w(TAG, "could not remove the partial rootfs: " + rm.output);
+                org.appdevforall.k2go.install.data.RootfsWipe.wipe(debianRootfs, "abandoned install");
             }
 
             // 3. Sessions and orders, through the single door (ADFA-5070/5074). Enumerating the

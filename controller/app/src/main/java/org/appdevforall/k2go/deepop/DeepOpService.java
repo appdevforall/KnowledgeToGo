@@ -473,6 +473,14 @@ public final class DeepOpService extends Service {
                     @Override public void onExtractStarting() {
                         currentCancelKind = DeepOpState.CancelKind.DESTRUCTIVE;   // K2GO-384: past the point of no return
                         InstallGuard.begin(DeepOpService.this);
+                        // K2GO-562: a restore replaces the system, so nothing of the old tree may stay.
+                        final String wiping = org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
+                                EXTRACT_PASS, RESTORE_PASSES, getString(R.string.install_status_wiping_old));
+                        final int at = org.appdevforall.k2go.deploy.domain.ExtractProgress
+                                .unifiedPercent(0, EXTRACT_PASS, RESTORE_PASSES);
+                        main.post(() -> setStep(wiping, at));
+                        org.appdevforall.k2go.install.data.RootfsWipe.wipe(
+                                org.appdevforall.k2go.SystemStateEvaluator.rootfsDir(DeepOpService.this), "restore");
                     }
                     // K2GO-384: cancelled before any write (Option B) -- the rootfs is untouched and no marker
                     // was planted. Delete the staged temp and end (the screen returns to the bifurcation, so
