@@ -135,8 +135,8 @@ public class GetMoreHubFragment extends Fragment {
         if (tier == InstallationPlanner.Tier.FULL || tier == InstallationPlanner.Tier.STANDARD) {
             available.add("courses");
         }
-        // K2GO-415/571: drop content whose backing module cannot run in this library (a 32-bit
-        // library cannot run a 64-bit module like Kiwix), so the user cannot pick content with nowhere to land.
+        // K2GO-415/571/573: drop content whose backing module cannot run in this library (Kiwix in an
+        // old 32-bit library), so the user cannot pick content with nowhere to land.
         final org.appdevforall.k2go.arch.domain.LibraryHost library = libraryHost();
         for (Item it : ITEMS) if (!archSupports(it.endpoint, library)) available.remove(it.key);
     }
@@ -266,9 +266,8 @@ public class GetMoreHubFragment extends Fragment {
         });
     }
 
-    /** K2GO-415/571: a 64-bit-only module (e.g. Kiwix) has nowhere to land in a 32-bit library, so its
-     *  content is not offered there. Keyed on the library ABI via Card.runsOn(); generalizes to any
-     *  future requires64Bit module. */
+    /** K2GO-415/571/573: content whose module cannot run in this library is not offered there.
+     *  The rule lives in Card.runsOn() (LibraryArch.supportsModule). */
     private static boolean archSupports(String endpoint, org.appdevforall.k2go.arch.domain.LibraryHost library) {
         ModuleCards.Card c = ModuleCards.byEndpoint(endpoint);
         return c == null || c.runsOn(library);
@@ -287,8 +286,8 @@ public class GetMoreHubFragment extends Fragment {
     /** The items to show: those whose module answered, in the declared order. */
     private List<Item> visibleItems() {
         List<Item> out = new ArrayList<>();
-        // K2GO-415: also gate on the app runtime as defense in depth (live path), so a 64-bit-only
-        // module never shows in a 32-bit runtime even if its endpoint somehow answered.
+        // K2GO-415/573: also gate here as defense in depth (live path), so a module this library cannot
+        // host never shows even if its endpoint somehow answered.
         final org.appdevforall.k2go.arch.domain.LibraryHost library = libraryHost();
         for (Item it : ITEMS) if (available.contains(it.key) && archSupports(it.endpoint, library)) out.add(it);
         return out;

@@ -211,7 +211,7 @@ public class LibraryHomeFragment extends Fragment {
         }
     }
 
-    // K2GO-445/415/416: drop a module the app runtime cannot run (a 64-bit-only module on a 32-bit app)
+    // K2GO-445/415/416/573: drop a module this library cannot host (Kiwix in an old 32-bit library)
     // or one the user hid from Home. The group tile (no backing module) is never dropped here.
     private void filterHidden(List<Card> list) {
         final org.appdevforall.k2go.arch.domain.LibraryHost library = org.appdevforall.k2go.arch.data.AbiSource.moduleHost(requireContext());

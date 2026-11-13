@@ -247,7 +247,7 @@ public class ModuleHubFragment extends Fragment {
                 : org.appdevforall.k2go.arch.domain.LibraryHost.freshInstall(org.appdevforall.k2go.arch.data.AbiSource.appAbi());
         for (final ModuleCards.Card c : ModuleCards.all()) {
             // K2GO-416/571: delegate the ABI rule to its owner (Card), do not re-derive it here.
-            if (!c.runsOn(library)) continue;   // 64-bit-only module cannot run in this library
+            if (!c.runsOn(library)) continue;   // this library cannot host it (K2GO-571/573)
             if (installed.contains(c.key())) continue;       // disk already says yes
             // K2GO-393: a completion-gated module (maps, a proot install) is answered by its
             // iiab_state marker, which the disk floor above already read. It always writes that
