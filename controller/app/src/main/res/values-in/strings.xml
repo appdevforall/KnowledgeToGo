@@ -1574,4 +1574,14 @@
     <string name="k2go_br_folder_title">Pilih folder cadangan</string>
     <string name="k2go_br_folder_msg">Cadangan menyimpan dua file di dalam folder. Android tidak mengizinkan aplikasi memakai folder Download itu sendiri: buka folder itu, lalu buat atau pilih folder di dalamnya.</string>
     <string name="k2go_br_folder_choose">Pilih folder</string>
+    <string name="k2go_settings_privacy_sub">Layanan yang menghubungi server luar</string>
+    <string name="k2go_privacy_intro">Beberapa layanan di server dapat menghubungi server luar dengan sendirinya. Koneksi ini nonaktif secara bawaan. Aktifkan salah satunya hanya jika Anda menginginkannya.</string>
+    <string name="k2go_privacy_kolibri_title">Statistik penggunaan Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Mengirim angka penggunaan dan ID server ke Learning Equality saat Kolibri dimulai dan sekali sehari.</string>
+    <string name="k2go_privacy_forgejo_title">Pemeriksaan pembaruan Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Menanyakan ke proyek Forgejo apakah ada versi yang lebih baru.</string>
+    <string name="k2go_privacy_saved">Tersimpan. Layanan dimulai ulang untuk menerapkan perubahan.</string>
+    <string name="k2go_privacy_save_failed">Tidak dapat menyimpan perubahan. Coba lagi.</string>
+    <string name="k2go_privacy_unreachable">Tidak dapat membaca pengaturan ini. Pastikan server menyala, lalu coba lagi.</string>
+    <string name="k2go_privacy_unsupported">Pengaturan ini memerlukan dasbor yang lebih baru. Perbarui dasbor, lalu coba lagi.</string>
 </resources>

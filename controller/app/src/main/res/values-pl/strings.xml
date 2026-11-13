@@ -1577,4 +1577,14 @@
     <string name="k2go_br_folder_title">Wybierz folder na kopie zapasowe</string>
     <string name="k2go_br_folder_msg">Kopia zapasowa zapisuje dwa pliki w folderze. Android nie pozwala aplikacjom używać samego folderu Download: otwórz go i utwórz lub wybierz folder w jego wnętrzu.</string>
     <string name="k2go_br_folder_choose">Wybierz folder</string>
+    <string name="k2go_settings_privacy_sub">Usługi łączące się z zewnętrznymi serwerami</string>
+    <string name="k2go_privacy_intro">Niektóre usługi na serwerze mogą same łączyć się z zewnętrznymi serwerami. Te połączenia są domyślnie wyłączone. Włącz któreś tylko wtedy, gdy tego chcesz.</string>
+    <string name="k2go_privacy_kolibri_title">Statystyki użycia Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Wysyła dane o użyciu i identyfikatory serwera do Learning Equality przy uruchomieniu Kolibri i raz dziennie.</string>
+    <string name="k2go_privacy_forgejo_title">Sprawdzanie aktualizacji Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Pyta projekt Forgejo, czy jest dostępna nowsza wersja.</string>
+    <string name="k2go_privacy_saved">Zapisano. Usługa uruchamia się ponownie, aby zastosować zmianę.</string>
+    <string name="k2go_privacy_save_failed">Nie udało się zapisać zmiany. Spróbuj ponownie.</string>
+    <string name="k2go_privacy_unreachable">Nie udało się odczytać tych ustawień. Upewnij się, że serwer jest włączony, i spróbuj ponownie.</string>
+    <string name="k2go_privacy_unsupported">Te ustawienia wymagają nowszego panelu. Zaktualizuj panel i spróbuj ponownie.</string>
 </resources>

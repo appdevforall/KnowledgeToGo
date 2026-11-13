@@ -1568,4 +1568,14 @@
     <string name="k2go_br_folder_title">백업 폴더 선택</string>
     <string name="k2go_br_folder_msg">백업은 폴더에 파일 두 개를 저장합니다. Android에서는 앱이 Download 폴더 자체를 사용할 수 없습니다. Download를 열고 그 안에 폴더를 만들거나 선택하세요.</string>
     <string name="k2go_br_folder_choose">폴더 선택</string>
+    <string name="k2go_settings_privacy_sub">외부 서버에 연결하는 서비스</string>
+    <string name="k2go_privacy_intro">서버의 일부 서비스는 스스로 외부 서버에 연결할 수 있습니다. 이 연결은 기본적으로 꺼져 있습니다. 원하는 경우에만 켜세요.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri 사용 통계</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri가 시작될 때와 하루에 한 번 사용 수치와 서버 ID를 Learning Equality에 보냅니다.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo 업데이트 확인</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo 프로젝트에 새 버전이 있는지 확인합니다.</string>
+    <string name="k2go_privacy_saved">저장했습니다. 변경 사항을 적용하기 위해 서비스를 다시 시작합니다.</string>
+    <string name="k2go_privacy_save_failed">변경 사항을 저장할 수 없습니다. 다시 시도하세요.</string>
+    <string name="k2go_privacy_unreachable">이 설정을 읽을 수 없습니다. 서버가 켜져 있는지 확인한 다음 다시 시도하세요.</string>
+    <string name="k2go_privacy_unsupported">이 설정에는 최신 대시보드가 필요합니다. 대시보드를 업데이트한 다음 다시 시도하세요.</string>
 </resources>

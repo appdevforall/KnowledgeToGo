@@ -1567,4 +1567,14 @@
     <string name="k2go_br_folder_title">اختر مجلدًا للنسخ الاحتياطية</string>
     <string name="k2go_br_folder_msg">تحفظ النسخة الاحتياطية ملفين في مجلد. لا يسمح Android للتطبيقات باستخدام مجلد Download نفسه: افتحه وأنشئ مجلدًا بداخله أو اختر واحدًا.</string>
     <string name="k2go_br_folder_choose">اختيار المجلد</string>
+    <string name="k2go_settings_privacy_sub">خدمات تتصل بخوادم خارجية</string>
+    <string name="k2go_privacy_intro">يمكن لبعض الخدمات على الخادم الاتصال بخوادم خارجية من تلقاء نفسها. هذه الاتصالات متوقفة افتراضيًا. شغّل أحدها فقط إذا كنت تريده.</string>
+    <string name="k2go_privacy_kolibri_title">إحصاءات استخدام Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">يرسل أرقام الاستخدام ومعرّفات الخادم إلى Learning Equality عند بدء Kolibri ومرة واحدة يوميًا.</string>
+    <string name="k2go_privacy_forgejo_title">التحقق من تحديثات Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">يسأل مشروع Forgejo عمّا إذا كان هناك إصدار أحدث.</string>
+    <string name="k2go_privacy_saved">تم الحفظ. تُعاد تشغيل الخدمة لتطبيق التغيير.</string>
+    <string name="k2go_privacy_save_failed">تعذّر حفظ التغيير. حاول مرة أخرى.</string>
+    <string name="k2go_privacy_unreachable">تعذّرت قراءة هذه الإعدادات. تأكد من أن الخادم قيد التشغيل، ثم حاول مرة أخرى.</string>
+    <string name="k2go_privacy_unsupported">تحتاج هذه الإعدادات إلى لوحة تحكم أحدث. حدّث لوحة التحكم، ثم حاول مرة أخرى.</string>
 </resources>

@@ -1568,4 +1568,14 @@
     <string name="k2go_br_folder_title">选择备份文件夹</string>
     <string name="k2go_br_folder_msg">备份会在一个文件夹中保存两个文件。Android 不允许应用直接使用 Download 文件夹：请打开它，并在其中新建或选择一个文件夹。</string>
     <string name="k2go_br_folder_choose">选择文件夹</string>
+    <string name="k2go_settings_privacy_sub">会联系外部服务器的服务</string>
+    <string name="k2go_privacy_intro">服务器上的某些服务可能会自行联系外部服务器。这些连接默认关闭。仅在需要时开启。</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri 使用统计</string>
+    <string name="k2go_privacy_kolibri_sub">在 Kolibri 启动时以及每天一次，将使用数据和服务器 ID 发送给 Learning Equality。</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo 更新检查</string>
+    <string name="k2go_privacy_forgejo_sub">向 Forgejo 项目询问是否有更新的版本。</string>
+    <string name="k2go_privacy_saved">已保存。服务将重新启动以应用更改。</string>
+    <string name="k2go_privacy_save_failed">无法保存更改。请重试。</string>
+    <string name="k2go_privacy_unreachable">无法读取这些设置。请确认服务器已开启，然后重试。</string>
+    <string name="k2go_privacy_unsupported">这些设置需要更新的仪表板。请更新仪表板，然后重试。</string>
 </resources>

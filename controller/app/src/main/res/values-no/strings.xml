@@ -1577,4 +1577,14 @@
     <string name="k2go_br_folder_title">Velg en mappe for sikkerhetskopier</string>
     <string name="k2go_br_folder_msg">Sikkerhetskopien lagrer to filer i en mappe. Android lar ikke apper bruke selve Download-mappen: åpne den og opprett eller velg en mappe inni den.</string>
     <string name="k2go_br_folder_choose">Velg mappe</string>
+    <string name="k2go_settings_privacy_sub">Tjenester som kontakter eksterne tjenere</string>
+    <string name="k2go_privacy_intro">Noen tjenester på tjeneren kan kontakte eksterne tjenere på egen hånd. Disse tilkoblingene er av som standard. Slå på en bare hvis du vil.</string>
+    <string name="k2go_privacy_kolibri_title">Bruksstatistikk for Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Sender brukstall og tjener-ID-er til Learning Equality når Kolibri starter, og én gang om dagen.</string>
+    <string name="k2go_privacy_forgejo_title">Oppdateringssjekk for Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Spør Forgejo-prosjektet om en nyere versjon er tilgjengelig.</string>
+    <string name="k2go_privacy_saved">Lagret. Tjenesten starter på nytt for å bruke endringen.</string>
+    <string name="k2go_privacy_save_failed">Kunne ikke lagre endringen. Prøv igjen.</string>
+    <string name="k2go_privacy_unreachable">Kunne ikke lese disse innstillingene. Kontroller at tjeneren er på, og prøv igjen.</string>
+    <string name="k2go_privacy_unsupported">Disse innstillingene krever et nyere dashbord. Oppdater dashbordet, og prøv igjen.</string>
 </resources>

@@ -1574,4 +1574,14 @@
     <string name="k2go_br_folder_title">Vyberte priečinok na zálohy</string>
     <string name="k2go_br_folder_msg">Záloha ukladá dva súbory do priečinka. Android nedovolí aplikáciám použiť samotný priečinok Download: otvorte ho a vytvorte alebo vyberte priečinok v ňom.</string>
     <string name="k2go_br_folder_choose">Vybrať priečinok</string>
+    <string name="k2go_settings_privacy_sub">Služby, ktoré sa spájajú s vonkajšími servermi</string>
+    <string name="k2go_privacy_intro">Niektoré služby na serveri sa môžu samy spojiť s vonkajšími servermi. Tieto spojenia sú predvolene vypnuté. Zapnite niektoré, len ak ho chcete.</string>
+    <string name="k2go_privacy_kolibri_title">Štatistiky používania Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Odosiela údaje o používaní a ID servera organizácii Learning Equality pri spustení Kolibri a raz denne.</string>
+    <string name="k2go_privacy_forgejo_title">Kontrola aktualizácií Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Zisťuje od projektu Forgejo, či je dostupná novšia verzia.</string>
+    <string name="k2go_privacy_saved">Uložené. Služba sa reštartuje, aby zmenu použila.</string>
+    <string name="k2go_privacy_save_failed">Zmenu sa nepodarilo uložiť. Skúste to znova.</string>
+    <string name="k2go_privacy_unreachable">Tieto nastavenia sa nepodarilo načítať. Overte, že server beží, a skúste to znova.</string>
+    <string name="k2go_privacy_unsupported">Tieto nastavenia vyžadujú novšiu nástenku. Aktualizujte nástenku a skúste to znova.</string>
 </resources>

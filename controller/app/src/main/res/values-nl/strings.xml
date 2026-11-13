@@ -1567,4 +1567,14 @@
     <string name="k2go_br_folder_title">Kies een back-upmap</string>
     <string name="k2go_br_folder_msg">De back-up slaat twee bestanden op in een map. Android laat apps de map Download zelf niet gebruiken: open hem en maak of kies er een map in.</string>
     <string name="k2go_br_folder_choose">Map kiezen</string>
+    <string name="k2go_settings_privacy_sub">Diensten die contact opnemen met externe servers</string>
+    <string name="k2go_privacy_intro">Sommige diensten op de server kunnen zelf contact opnemen met externe servers. Deze verbindingen staan standaard uit. Zet er alleen een aan als u dat wilt.</string>
+    <string name="k2go_privacy_kolibri_title">Gebruiksstatistieken van Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Stuurt gebruikscijfers en server-ID\'s naar Learning Equality wanneer Kolibri start en eenmaal per dag.</string>
+    <string name="k2go_privacy_forgejo_title">Updatecontrole van Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Vraagt het Forgejo-project of er een nieuwere versie is.</string>
+    <string name="k2go_privacy_saved">Opgeslagen. De dienst start opnieuw om de wijziging toe te passen.</string>
+    <string name="k2go_privacy_save_failed">Kan de wijziging niet opslaan. Probeer het opnieuw.</string>
+    <string name="k2go_privacy_unreachable">Kan deze instellingen niet lezen. Controleer of de server aan staat en probeer het opnieuw.</string>
+    <string name="k2go_privacy_unsupported">Deze instellingen vereisen een nieuwer dashboard. Werk het dashboard bij en probeer het opnieuw.</string>
 </resources>

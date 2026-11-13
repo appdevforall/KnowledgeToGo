@@ -1580,4 +1580,14 @@
     <string name="k2go_br_folder_title">ব্যাকআপ ফোল্ডার বেছে নিন</string>
     <string name="k2go_br_folder_msg">ব্যাকআপ একটি ফোল্ডারে দুটি ফাইল সংরক্ষণ করে। Android অ্যাপকে সরাসরি Download ফোল্ডার ব্যবহার করতে দেয় না: এটি খুলুন এবং এর ভিতরে একটি ফোল্ডার তৈরি করুন বা বেছে নিন।</string>
     <string name="k2go_br_folder_choose">ফোল্ডার বেছে নিন</string>
+    <string name="k2go_settings_privacy_sub">যে পরিষেবাগুলো বাইরের সার্ভারের সাথে যোগাযোগ করে</string>
+    <string name="k2go_privacy_intro">সার্ভারের কিছু পরিষেবা নিজে থেকেই বাইরের সার্ভারের সাথে যোগাযোগ করতে পারে। এই সংযোগগুলো ডিফল্টভাবে বন্ধ থাকে। শুধু চাইলে একটি চালু করুন।</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri ব্যবহারের পরিসংখ্যান</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri চালু হলে এবং দিনে একবার ব্যবহারের সংখ্যা ও সার্ভার আইডি Learning Equality-তে পাঠায়।</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo আপডেট পরীক্ষা</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo প্রকল্পকে জিজ্ঞাসা করে নতুন সংস্করণ আছে কিনা।</string>
+    <string name="k2go_privacy_saved">সংরক্ষিত হয়েছে। পরিবর্তন প্রয়োগ করতে পরিষেবাটি পুনরায় চালু হচ্ছে।</string>
+    <string name="k2go_privacy_save_failed">পরিবর্তন সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।</string>
+    <string name="k2go_privacy_unreachable">এই সেটিংস পড়া যায়নি। সার্ভার চালু আছে কিনা নিশ্চিত করুন, তারপর আবার চেষ্টা করুন।</string>
+    <string name="k2go_privacy_unsupported">এই সেটিংসের জন্য নতুন ড্যাশবোর্ড দরকার। ড্যাশবোর্ড আপডেট করুন, তারপর আবার চেষ্টা করুন।</string>
 </resources>

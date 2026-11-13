@@ -1,0 +1,154 @@
+/*
+ * ============================================================================
+ * Name        : PrivacyFragment.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2GO-559. Settings -> Privacy: one switch per box service that can contact an
+ *               outside server on its own. Observes PrivacyViewModel; reuses the settings
+ *               sub-screen chrome (header + back + scroll list).
+ * ============================================================================
+ */
+package org.appdevforall.k2go.privacy.presentation;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+
+import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.privacy.domain.OutboundSwitch;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
+import org.appdevforall.k2go.ui.K2GoText;
+import org.appdevforall.k2go.util.Snackbars;
+
+public class PrivacyFragment extends Fragment {
+
+    private PrivacyViewModel vm;
+    private LinearLayout list;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
+        View root = inflater.inflate(R.layout.fragment_k2go_settings_sub, c, false);
+        ((K2GoHeaderView) root.findViewById(R.id.k2go_sub_header)).setTitle(getString(R.string.k2go_settings_privacy));
+        list = root.findViewById(R.id.k2go_sub_list);
+
+        vm = new ViewModelProvider(this, new PrivacyViewModelFactory()).get(PrivacyViewModel.class);
+        vm.state().observe(getViewLifecycleOwner(), this::render);
+        vm.notice().observe(getViewLifecycleOwner(), n -> {
+            if (n == null || !n.take()) return;
+            Snackbars.make(root, getString(n.saved ? R.string.k2go_privacy_saved : R.string.k2go_privacy_save_failed)).show();
+        });
+        vm.load();
+        return root;
+    }
+
+    private void render(PrivacyUiState st) {
+        if (list == null || st == null) return;
+        Context ctx = requireContext();
+        list.removeAllViews();
+        list.addView(K2GoText.body(ctx, getString(R.string.k2go_privacy_intro), R.color.k2go_muted));
+
+        switch (st.status) {
+            case LOADING:
+                list.addView(spinner(ctx));
+                return;
+            case UNSUPPORTED:
+                list.addView(problem(ctx, R.string.k2go_privacy_unsupported));
+                return;
+            case UNREACHABLE:
+            case FAILED:
+                list.addView(problem(ctx, R.string.k2go_privacy_unreachable));
+                return;
+            case READY:
+            default:
+                for (OutboundSwitch sw : st.switches) {
+                    list.addView(switchRow(ctx, sw, st.busy()));
+                }
+        }
+    }
+
+    private View switchRow(Context ctx, OutboundSwitch sw, boolean locked) {
+        boolean kolibri = OutboundSwitch.KOLIBRI.equals(sw.service());
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = dp(ctx, 16);
+        row.setPadding(p16, p16, p16, p16);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(ctx, 8);
+        row.setLayoutParams(lp);
+
+        LinearLayout col = new LinearLayout(ctx);
+        col.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(0, -2, 1f);
+        clp.rightMargin = dp(ctx, 12);
+        row.addView(col, clp);
+        col.addView(K2GoText.body(ctx, getString(kolibri
+                ? R.string.k2go_privacy_kolibri_title : R.string.k2go_privacy_forgejo_title), R.color.k2go_ink));
+        col.addView(K2GoText.label(ctx, getString(kolibri
+                ? R.string.k2go_privacy_kolibri_sub : R.string.k2go_privacy_forgejo_sub), R.color.k2go_muted));
+        if (!sw.installed()) {
+            TextView ni = K2GoText.label(ctx, getString(R.string.k2go_state_not_installed), R.color.k2go_muted);
+            ni.setPadding(0, dp(ctx, 4), 0, 0);
+            col.addView(ni);
+        }
+
+        MaterialSwitch toggle = new MaterialSwitch(ctx);
+        toggle.setMinimumHeight(0);
+        toggle.setChecked(sw.installed() && sw.outbound());
+        toggle.setEnabled(sw.installed() && !locked);
+        toggle.setOnCheckedChangeListener((b, checked) -> vm.setOutbound(sw.service(), checked));
+        row.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
+        return row;
+    }
+
+    private View spinner(Context ctx) {
+        CircularProgressIndicator p = new CircularProgressIndicator(ctx);
+        p.setIndeterminate(true);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, -2);
+        lp.gravity = Gravity.CENTER_HORIZONTAL;
+        lp.topMargin = dp(ctx, 24);
+        p.setLayoutParams(lp);
+        return p;
+    }
+
+    private View problem(Context ctx, int msgRes) {
+        LinearLayout box = new LinearLayout(ctx);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = dp(ctx, 16);
+        box.setPadding(p16, p16, p16, p16);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(ctx, 16);
+        box.setLayoutParams(lp);
+        box.addView(K2GoText.body(ctx, getString(msgRes), R.color.k2go_ink));
+
+        MaterialButton retry = new MaterialButton(
+                new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Outlined), null);
+        retry.setText(getString(R.string.k2go_home_retry));
+        retry.setOnClickListener(v -> vm.load());
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(-2, -2);
+        blp.topMargin = dp(ctx, 12);
+        box.addView(retry, blp);
+        return box;
+    }
+
+    private static int dp(Context c, int v) {
+        return Math.round(v * c.getResources().getDisplayMetrics().density);
+    }
+}

@@ -1567,4 +1567,14 @@
     <string name="k2go_br_folder_title">Bir yedek klasörü seçin</string>
     <string name="k2go_br_folder_msg">Yedek, bir klasöre iki dosya kaydeder. Android, uygulamaların Download klasörünün kendisini kullanmasına izin vermez: klasörü açın ve içinde bir klasör oluşturun veya seçin.</string>
     <string name="k2go_br_folder_choose">Klasör seç</string>
+    <string name="k2go_settings_privacy_sub">Dış sunuculara bağlanan hizmetler</string>
+    <string name="k2go_privacy_intro">Sunucudaki bazı hizmetler kendi kendine dış sunuculara bağlanabilir. Bu bağlantılar varsayılan olarak kapalıdır. Yalnızca istiyorsanız birini açın.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri kullanım istatistikleri</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri başladığında ve günde bir kez kullanım sayılarını ve sunucu kimliklerini Learning Equality\'ye gönderir.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo güncelleme denetimi</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo projesine daha yeni bir sürüm olup olmadığını sorar.</string>
+    <string name="k2go_privacy_saved">Kaydedildi. Değişikliği uygulamak için hizmet yeniden başlatılıyor.</string>
+    <string name="k2go_privacy_save_failed">Değişiklik kaydedilemedi. Tekrar deneyin.</string>
+    <string name="k2go_privacy_unreachable">Bu ayarlar okunamadı. Sunucunun açık olduğundan emin olun, ardından tekrar deneyin.</string>
+    <string name="k2go_privacy_unsupported">Bu ayarlar daha yeni bir pano gerektiriyor. Panoyu güncelleyin, ardından tekrar deneyin.</string>
 </resources>

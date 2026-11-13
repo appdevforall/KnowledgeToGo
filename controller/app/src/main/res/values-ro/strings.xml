@@ -1567,4 +1567,14 @@
     <string name="k2go_br_folder_title">Alege un dosar pentru copii de rezervă</string>
     <string name="k2go_br_folder_msg">Copia de rezervă salvează două fișiere într-un dosar. Android nu permite aplicațiilor să folosească direct dosarul Download: deschide-l și creează sau alege un dosar în interior.</string>
     <string name="k2go_br_folder_choose">Alege dosarul</string>
+    <string name="k2go_settings_privacy_sub">Servicii care contactează servere externe</string>
+    <string name="k2go_privacy_intro">Unele servicii de pe server pot contacta singure servere externe. Aceste conexiuni sunt dezactivate implicit. Activați una doar dacă o doriți.</string>
+    <string name="k2go_privacy_kolibri_title">Statistici de utilizare Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Trimite cifre de utilizare și ID-urile serverului către Learning Equality la pornirea Kolibri și o dată pe zi.</string>
+    <string name="k2go_privacy_forgejo_title">Verificarea actualizărilor Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Întreabă proiectul Forgejo dacă este disponibilă o versiune mai nouă.</string>
+    <string name="k2go_privacy_saved">Salvat. Serviciul repornește pentru a aplica modificarea.</string>
+    <string name="k2go_privacy_save_failed">Modificarea nu a putut fi salvată. Încercați din nou.</string>
+    <string name="k2go_privacy_unreachable">Aceste setări nu au putut fi citite. Asigurați-vă că serverul este pornit, apoi încercați din nou.</string>
+    <string name="k2go_privacy_unsupported">Aceste setări necesită un panou mai nou. Actualizați panoul, apoi încercați din nou.</string>
 </resources>

@@ -1580,4 +1580,14 @@
     <string name="k2go_br_folder_title">બૅકઅપ ફોલ્ડર પસંદ કરો</string>
     <string name="k2go_br_folder_msg">બૅકઅપ એક ફોલ્ડરમાં બે ફાઇલો સાચવે છે. Android ઍપ્સને સીધું Download ફોલ્ડર વાપરવા દેતું નથી: તેને ખોલો અને તેની અંદર ફોલ્ડર બનાવો અથવા પસંદ કરો.</string>
     <string name="k2go_br_folder_choose">ફોલ્ડર પસંદ કરો</string>
+    <string name="k2go_settings_privacy_sub">બહારના સર્વર સાથે સંપર્ક કરતી સેવાઓ</string>
+    <string name="k2go_privacy_intro">સર્વર પરની કેટલીક સેવાઓ જાતે બહારના સર્વર સાથે સંપર્ક કરી શકે છે. આ જોડાણો ડિફૉલ્ટ રૂપે બંધ છે. તમે ઇચ્છો તો જ એક ચાલુ કરો.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri ઉપયોગના આંકડા</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri શરૂ થાય ત્યારે અને દિવસમાં એક વાર ઉપયોગના આંકડા અને સર્વર ID Learning Equality ને મોકલે છે.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo અપડેટ તપાસ</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo પ્રોજેક્ટને પૂછે છે કે નવું સંસ્કરણ ઉપલબ્ધ છે કે નહીં.</string>
+    <string name="k2go_privacy_saved">સાચવ્યું. ફેરફાર લાગુ કરવા સેવા ફરી શરૂ થાય છે.</string>
+    <string name="k2go_privacy_save_failed">ફેરફાર સાચવી શકાયો નહીં. ફરી પ્રયાસ કરો.</string>
+    <string name="k2go_privacy_unreachable">આ સેટિંગ્સ વાંચી શકાઈ નહીં. સર્વર ચાલુ છે તેની ખાતરી કરો, પછી ફરી પ્રયાસ કરો.</string>
+    <string name="k2go_privacy_unsupported">આ સેટિંગ્સ માટે નવું ડેશબોર્ડ જરૂરી છે. ડેશબોર્ડ અપડેટ કરો, પછી ફરી પ્રયાસ કરો.</string>
 </resources>

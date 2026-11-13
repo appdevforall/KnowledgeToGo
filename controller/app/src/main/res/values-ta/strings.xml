@@ -1587,4 +1587,14 @@
     <string name="k2go_br_folder_title">காப்புப்பிரதி கோப்புறையைத் தேர்ந்தெடுக்கவும்</string>
     <string name="k2go_br_folder_msg">காப்புப்பிரதி ஒரு கோப்புறையில் இரண்டு கோப்புகளைச் சேமிக்கிறது. Download கோப்புறையையே நேரடியாகப் பயன்படுத்த Android ஆப்களை அனுமதிப்பதில்லை: அதைத் திறந்து அதற்குள் ஒரு கோப்புறையை உருவாக்கவும் அல்லது தேர்ந்தெடுக்கவும்.</string>
     <string name="k2go_br_folder_choose">கோப்புறையைத் தேர்ந்தெடு</string>
+    <string name="k2go_settings_privacy_sub">வெளிச் சேவையகங்களைத் தொடர்புகொள்ளும் சேவைகள்</string>
+    <string name="k2go_privacy_intro">சேவையகத்தில் உள்ள சில சேவைகள் தாமாகவே வெளிச் சேவையகங்களைத் தொடர்புகொள்ளலாம். இந்த இணைப்புகள் இயல்பாக முடக்கப்பட்டுள்ளன. நீங்கள் விரும்பினால் மட்டுமே ஒன்றை இயக்கவும்.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri பயன்பாட்டுப் புள்ளிவிவரங்கள்</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri தொடங்கும்போதும் நாளுக்கு ஒருமுறையும் பயன்பாட்டு எண்களையும் சேவையக ID-களையும் Learning Equality-க்கு அனுப்புகிறது.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo புதுப்பிப்புச் சரிபார்ப்பு</string>
+    <string name="k2go_privacy_forgejo_sub">புதிய பதிப்பு உள்ளதா என Forgejo திட்டத்திடம் கேட்கிறது.</string>
+    <string name="k2go_privacy_saved">சேமிக்கப்பட்டது. மாற்றத்தைப் பயன்படுத்த சேவை மீண்டும் தொடங்குகிறது.</string>
+    <string name="k2go_privacy_save_failed">மாற்றத்தைச் சேமிக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <string name="k2go_privacy_unreachable">இந்த அமைப்புகளைப் படிக்க முடியவில்லை. சேவையகம் இயங்குகிறதா எனச் சரிபார்த்து, மீண்டும் முயலவும்.</string>
+    <string name="k2go_privacy_unsupported">இந்த அமைப்புகளுக்குப் புதிய டாஷ்போர்டு தேவை. டாஷ்போர்டைப் புதுப்பித்து, மீண்டும் முயலவும்.</string>
 </resources>

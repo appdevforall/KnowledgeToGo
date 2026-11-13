@@ -1574,4 +1574,14 @@
     <string name="k2go_br_folder_title">Επιλέξτε φάκελο αντιγράφων ασφαλείας</string>
     <string name="k2go_br_folder_msg">Το αντίγραφο ασφαλείας αποθηκεύει δύο αρχεία σε έναν φάκελο. Το Android δεν επιτρέπει στις εφαρμογές να χρησιμοποιούν τον ίδιο τον φάκελο Download: ανοίξτε τον και δημιουργήστε ή επιλέξτε έναν φάκελο μέσα του.</string>
     <string name="k2go_br_folder_choose">Επιλογή φακέλου</string>
+    <string name="k2go_settings_privacy_sub">Υπηρεσίες που επικοινωνούν με εξωτερικούς διακομιστές</string>
+    <string name="k2go_privacy_intro">Ορισμένες υπηρεσίες στον διακομιστή μπορούν να επικοινωνούν μόνες τους με εξωτερικούς διακομιστές. Αυτές οι συνδέσεις είναι απενεργοποιημένες από προεπιλογή. Ενεργοποιήστε μία μόνο αν τη θέλετε.</string>
+    <string name="k2go_privacy_kolibri_title">Στατιστικά χρήσης Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Στέλνει αριθμούς χρήσης και αναγνωριστικά διακομιστή στο Learning Equality όταν ξεκινά το Kolibri και μία φορά την ημέρα.</string>
+    <string name="k2go_privacy_forgejo_title">Έλεγχος ενημερώσεων Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Ρωτά το έργο Forgejo αν υπάρχει νεότερη έκδοση.</string>
+    <string name="k2go_privacy_saved">Αποθηκεύτηκε. Η υπηρεσία επανεκκινείται για να εφαρμόσει την αλλαγή.</string>
+    <string name="k2go_privacy_save_failed">Δεν ήταν δυνατή η αποθήκευση της αλλαγής. Δοκιμάστε ξανά.</string>
+    <string name="k2go_privacy_unreachable">Δεν ήταν δυνατή η ανάγνωση αυτών των ρυθμίσεων. Βεβαιωθείτε ότι ο διακομιστής λειτουργεί και δοκιμάστε ξανά.</string>
+    <string name="k2go_privacy_unsupported">Αυτές οι ρυθμίσεις χρειάζονται νεότερο πίνακα. Ενημερώστε τον πίνακα και δοκιμάστε ξανά.</string>
 </resources>

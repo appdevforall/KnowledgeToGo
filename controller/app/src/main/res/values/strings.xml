@@ -1763,4 +1763,14 @@
     <string name="k2go_br_folder_title">Choose a backup folder</string>
     <string name="k2go_br_folder_msg">The backup saves two files in a folder. Android does not let apps use the Download folder itself, so open it and create or pick a folder inside it.</string>
     <string name="k2go_br_folder_choose">Choose folder</string>
+    <string name="k2go_settings_privacy_sub">Services that contact outside servers</string>
+    <string name="k2go_privacy_intro">Some services on the server can contact outside servers on their own. These connections are off by default. Turn one on only if you want it.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri usage statistics</string>
+    <string name="k2go_privacy_kolibri_sub">Sends usage numbers and server IDs to Learning Equality when Kolibri starts and once a day.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo update check</string>
+    <string name="k2go_privacy_forgejo_sub">Asks the Forgejo project if a newer version is available.</string>
+    <string name="k2go_privacy_saved">Saved. The service restarts to use the change.</string>
+    <string name="k2go_privacy_save_failed">Could not save the change. Try again.</string>
+    <string name="k2go_privacy_unreachable">Could not read these settings. Make sure that the server is on, then try again.</string>
+    <string name="k2go_privacy_unsupported">These settings need a newer dashboard. Update the dashboard, then try again.</string>
 </resources>

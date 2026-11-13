@@ -1580,4 +1580,14 @@
     <string name="k2go_br_folder_title">Изаберите фасциклу за резервне копије</string>
     <string name="k2go_br_folder_msg">Резервна копија чува две датотеке у фасцикли. Android не дозвољава апликацијама да користе саму фасциклу Download: отворите је и направите или изаберите фасциклу у њој.</string>
     <string name="k2go_br_folder_choose">Изабери фасциклу</string>
+    <string name="k2go_settings_privacy_sub">Услуге које се повезују са спољним серверима</string>
+    <string name="k2go_privacy_intro">Неке услуге на серверу могу саме да се повежу са спољним серверима. Ове везе су подразумевано искључене. Укључите неку само ако то желите.</string>
+    <string name="k2go_privacy_kolibri_title">Статистика коришћења Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Шаље податке о коришћењу и ID-јеве сервера организацији Learning Equality при покретању Kolibri и једном дневно.</string>
+    <string name="k2go_privacy_forgejo_title">Провера ажурирања Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Пита пројекат Forgejo да ли постоји новија верзија.</string>
+    <string name="k2go_privacy_saved">Сачувано. Услуга се поново покреће да би применила измену.</string>
+    <string name="k2go_privacy_save_failed">Измена није могла да се сачува. Покушајте поново.</string>
+    <string name="k2go_privacy_unreachable">Ова подешавања нису могла да се прочитају. Проверите да ли је сервер укључен, па покушајте поново.</string>
+    <string name="k2go_privacy_unsupported">Ова подешавања захтевају новију контролну таблу. Ажурирајте контролну таблу, па покушајте поново.</string>
 </resources>

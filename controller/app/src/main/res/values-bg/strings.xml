@@ -1574,4 +1574,14 @@
     <string name="k2go_br_folder_title">Изберете папка за резервни копия</string>
     <string name="k2go_br_folder_msg">Резервното копие записва два файла в папка. Android не позволява на приложенията да използват самата папка Download: отворете я и създайте или изберете папка в нея.</string>
     <string name="k2go_br_folder_choose">Избор на папка</string>
+    <string name="k2go_settings_privacy_sub">Услуги, които се свързват с външни сървъри</string>
+    <string name="k2go_privacy_intro">Някои услуги на сървъра могат сами да се свързват с външни сървъри. Тези връзки са изключени по подразбиране. Включете някоя само ако я искате.</string>
+    <string name="k2go_privacy_kolibri_title">Статистика за използването на Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Изпраща данни за използването и идентификатори на сървъра до Learning Equality при стартиране на Kolibri и веднъж на ден.</string>
+    <string name="k2go_privacy_forgejo_title">Проверка за обновления на Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Пита проекта Forgejo дали има по-нова версия.</string>
+    <string name="k2go_privacy_saved">Запазено. Услугата се рестартира, за да приложи промяната.</string>
+    <string name="k2go_privacy_save_failed">Промяната не можа да се запази. Опитайте отново.</string>
+    <string name="k2go_privacy_unreachable">Тези настройки не можаха да се прочетат. Уверете се, че сървърът работи, и опитайте отново.</string>
+    <string name="k2go_privacy_unsupported">Тези настройки изискват по-ново табло. Обновете таблото и опитайте отново.</string>
 </resources>
