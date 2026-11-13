@@ -6,7 +6,7 @@ import os from 'os';
 import path from 'path';
 import {
     readIniOption, setIniOption, parseIniBool, outboundFromText, valueFor, readState, applyOutbound,
-    findSwitch, PRIVACY_SWITCHES, PrivacySwitch,
+    findSwitch, PRIVACY_SWITCHES, PrivacySwitch, applyPrivacyDefaultsOnce,
 } from './privacy';
 import { isRestartableService, createRestartQueue } from './services';
 
@@ -192,4 +192,48 @@ test('restart queue: a request after the run ended starts a new run at once', ()
     q.finish('forgejo');
     q.request('forgejo');
     assert.deepEqual(q.runs, ['forgejo', 'forgejo']);
+});
+
+// --- One-time privacy defaults on update -------------------------------------------------------
+
+function defaultsBox(kolibri: string | null, forgejo: string | null) {
+    const k = tmpSwitch(KOLIBRI, kolibri);
+    const f = tmpSwitch(FORGEJO, forgejo);
+    const marker = path.join(path.dirname(k.file), 'privacy-defaults.done');
+    const restarted: string[] = [];
+    return { k, f, marker, restarted, run: () => applyPrivacyDefaultsOnce([k, f], marker, (s) => restarted.push(s)) };
+}
+
+test('defaults once: first run turns both off, restarts both, then writes the marker', () => {
+    const b = defaultsBox('[Deployment]\nHTTP_PORT = 8009\n', '[server]\nHTTP_PORT = 3300\n');
+    assert.deepEqual(b.run(), { ran: true, changed: ['kolibri', 'forgejo'] });
+    assert.equal(readState(b.k).outbound, false);
+    assert.equal(readState(b.f).outbound, false);
+    assert.deepEqual(b.restarted, ['kolibri', 'forgejo']);
+    assert.equal(fs.existsSync(b.marker), true);
+});
+
+test('defaults once: with the marker it does nothing, so a switch the user turned on stays on', () => {
+    const b = defaultsBox('[Deployment]\nDISABLE_PING = True\n', '[cron.update_checker]\nENABLED = false\n');
+    b.run();
+    applyOutbound(b.k, true);                       // the user turns Kolibri on after the update
+    b.restarted.length = 0;
+    assert.deepEqual(b.run(), { ran: false, changed: [] });
+    assert.equal(readState(b.k).outbound, true);
+    assert.deepEqual(b.restarted, []);
+});
+
+test('defaults once: a service that is not installed is skipped; an OFF switch is not restarted', () => {
+    const b = defaultsBox('[Deployment]\nDISABLE_PING = True\n', null);
+    assert.deepEqual(b.run(), { ran: true, changed: [] });
+    assert.deepEqual(b.restarted, []);
+    assert.equal(fs.existsSync(b.f.file), false);   // no config is made for a missing service
+    assert.equal(fs.existsSync(b.marker), true);
+});
+
+test('defaults once: a failed config write leaves no marker, so the next start tries again', () => {
+    const b = defaultsBox('[Deployment]\nHTTP_PORT = 8009\n', null);
+    const unreadable = { ...b.f, file: path.dirname(b.k.file) };   // a directory: read throws EISDIR
+    assert.throws(() => applyPrivacyDefaultsOnce([b.k, unreadable], b.marker, () => {}));
+    assert.equal(fs.existsSync(b.marker), false);
 });
