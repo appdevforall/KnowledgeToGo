@@ -46,10 +46,9 @@ public final class BackupCompanion {
                 && gzSha256 != null && SHA256_HEX.matcher(gzSha256).matches();
     }
 
-    /** True when the tarball bytes are the ones this file describes. */
-    public boolean matches(long size, String sha256Hex) {
-        return isComplete() && size == gzBytes && sha256Hex != null
-                && gzSha256.equals(sha256Hex.toLowerCase(Locale.ROOT));
+    /** What this file says about its tarball, for the restore copy check. */
+    public org.appdevforall.k2go.deploy.domain.ExpectedArchive expected() {
+        return new org.appdevforall.k2go.deploy.domain.ExpectedArchive(gzBytes, gzSha256, tarBytes);
     }
 
     /** {@code X.tar.gz} -> {@code X.tar.json}, else {@code null}. */

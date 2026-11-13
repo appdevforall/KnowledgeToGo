@@ -37,6 +37,8 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.lottie.LottieAnimationView;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.backup.data.SiblingFinder;
+import org.appdevforall.k2go.backup.domain.BackupCompanion;
 import org.appdevforall.k2go.deepop.DeepOpProgressRepository;
 import org.appdevforall.k2go.deepop.DeepOpService;
 import org.appdevforall.k2go.deepop.DeepOpState;
@@ -88,8 +90,36 @@ public class BackupJobFragment extends Fragment {
             });
     private final ActivityResultLauncher<String[]> openDoc =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-                if (uri != null) prepareRestore(uri); else popToIntro(false);
+                if (uri != null) onRestorePicked(uri); else popToIntro(false);
             });
+
+    // K2GO-569: the second file of a pair, when the app cannot read the folder of the first one.
+    private final OpenNear openNear = new OpenNear();
+    private Uri pairFirst;              // the file the user picked first
+    private boolean pairWantsTarball;   // true: the first was the companion; false: it was the tarball
+    private final ActivityResultLauncher<String[]> openSecond =
+            registerForActivityResult(openNear, uri -> {
+                if (pairWantsTarball) {
+                    if (uri != null) prepareRestore(uri, pairFirst); else popToIntro(false);
+                } else {
+                    prepareRestore(pairFirst, uri);   // no pick: the full path
+                }
+            });
+
+    /** OpenDocument that starts in the folder of the first file (API 26+). */
+    private static final class OpenNear extends ActivityResultContracts.OpenDocument {
+        Uri near;
+
+        @NonNull
+        @Override
+        public android.content.Intent createIntent(@NonNull android.content.Context context, @NonNull String[] input) {
+            android.content.Intent i = super.createIntent(context, input);
+            if (near != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                i.putExtra(android.provider.DocumentsContract.EXTRA_INITIAL_URI, near);
+            }
+            return i;
+        }
+    }
 
     private boolean isRestore() { return MODE_RESTORE.equals(mode); }
     private EnvironmentLock.Owner myOwner() { return isRestore() ? EnvironmentLock.Owner.RESTORE : EnvironmentLock.Owner.BACKUP; }
@@ -204,7 +234,65 @@ public class BackupJobFragment extends Fragment {
      * leaves the current system untouched, which is what made the pre-flight pass safe to delete rather
      * than merely move — it was a second place answering a question the extractor already answers.
      */
-    private void prepareRestore(Uri uri) {
+    /**
+     * K2GO-569: the user picks one file of a pair; the app finds the other one by name. A tarball
+     * with its X.tar.json or X.tar.gz.minisig restores in two passes; a tarball alone in three.
+     */
+    private void onRestorePicked(Uri picked) {
+        if (!isAdded()) return;
+        final android.content.Context ctx = requireContext();
+        final String name = SiblingFinder.displayName(ctx, picked);
+        final boolean canSee = SiblingFinder.canSeeSiblings(ctx, picked);
+        if (name != null && name.endsWith(".tar.gz")) {
+            String json = BackupCompanion.companionName(name);
+            Uri companion = SiblingFinder.find(ctx, picked, json);
+            if (companion == null) companion = SiblingFinder.find(ctx, picked, name + ".minisig");
+            if (companion != null || canSee || json == null) {
+                prepareRestore(picked, companion);
+            } else {
+                askForSecond(picked, false, getString(R.string.k2go_br_pair_companion_title),
+                        getString(R.string.k2go_br_pair_companion_msg, json, name + ".minisig"),
+                        R.string.k2go_br_pair_skip);
+            }
+            return;
+        }
+        String tarName = name == null ? null
+                : name.endsWith(".tar.json") ? BackupCompanion.tarballName(name)
+                : name.endsWith(".tar.gz.minisig") ? name.substring(0, name.length() - ".minisig".length())
+                : null;
+        if (tarName == null) {   // not a pair file: the extractor judges it
+            prepareRestore(picked, null);
+            return;
+        }
+        Uri tarball = SiblingFinder.find(ctx, picked, tarName);
+        if (tarball != null) {
+            prepareRestore(tarball, picked);
+        } else if (canSee) {
+            Snackbars.make(requireView(), getString(R.string.k2go_br_pair_missing, tarName)).show();
+            popToIntro(false);
+        } else {
+            askForSecond(picked, true, getString(R.string.k2go_br_pair_tarball_title),
+                    getString(R.string.k2go_br_pair_tarball_msg, tarName), R.string.cancel);
+        }
+    }
+
+    private void askForSecond(Uri first, boolean wantsTarball, String title, String message, int noRes) {
+        pairFirst = first;
+        pairWantsTarball = wantsTarball;
+        new BrandDialog(requireContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositive(R.string.k2go_br_pair_select, BrandDialog.Role.PRIMARY, () -> {
+                    openNear.near = first;
+                    openSecond.launch(new String[]{"*/*"});
+                })
+                .setNegative(noRes, () -> {
+                    if (wantsTarball) popToIntro(false); else prepareRestore(first, null);
+                })
+                .show();
+    }
+
+    private void prepareRestore(Uri uri, @Nullable Uri companion) {
         if (!isAdded()) return;
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_br_restore_title))
@@ -214,9 +302,10 @@ public class BackupJobFragment extends Fragment {
                     // K2GO-448: same "[1/3]" prefix the service posts, from the same source, so the
                     // optimistic status matches instead of flashing an unprefixed "Copying the file".
                     setStatusAnimated(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                            DeepOpService.COPY_PASS, DeepOpService.RESTORE_PASSES,
+                            DeepOpService.COPY_PASS, companion != null
+                                    ? DeepOpService.FAST_RESTORE_PASSES : DeepOpService.RESTORE_PASSES,
                             getString(R.string.k2go_br_status_copying)));
-                    DeepOpService.startRestore(requireContext(), uri, null);
+                    DeepOpService.startRestore(requireContext(), uri, companion);
                 })
                 .setNegative(R.string.cancel, () -> popToIntro(false))
                 .show();

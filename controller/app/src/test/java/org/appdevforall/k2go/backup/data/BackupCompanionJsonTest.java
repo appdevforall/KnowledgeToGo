@@ -24,9 +24,9 @@ public class BackupCompanionJsonTest {
         assertNull(c.tier);
         assertEquals(1000L, c.gzBytes);
         assertEquals(5000L, c.tarBytes);
-        assertTrue(c.matches(1000L, SHA.toUpperCase()));
-        assertFalse(c.matches(999L, SHA));
-        assertFalse(c.matches(1000L, SHA.replace('0', '1')));
+        assertTrue(c.expected().matches(1000L, SHA.toUpperCase()));
+        assertFalse(c.expected().matches(999L, SHA));
+        assertFalse(c.expected().matches(1000L, SHA.replace('0', '1')));
     }
 
     @Test

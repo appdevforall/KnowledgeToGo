@@ -10,5 +10,12 @@
   strings.xml.
 -->
 <resources>
-
+    <!-- K2GO-569: restore picks one file of a pair; the app asks for the other one when it cannot see the folder. -->
+    <string name="k2go_br_pair_companion_title" translatable="false">Restore faster</string>
+    <string name="k2go_br_pair_companion_msg" translatable="false">Also select %1$s or %2$s from the same folder. The app then checks the archive while it copies it and skips one full pass.</string>
+    <string name="k2go_br_pair_tarball_title" translatable="false">Select the archive</string>
+    <string name="k2go_br_pair_tarball_msg" translatable="false">Select %1$s, the archive that goes with this file.</string>
+    <string name="k2go_br_pair_missing" translatable="false">%1$s is not in the same folder.</string>
+    <string name="k2go_br_pair_select" translatable="false">Select</string>
+    <string name="k2go_br_pair_skip" translatable="false">Skip</string>
 </resources>

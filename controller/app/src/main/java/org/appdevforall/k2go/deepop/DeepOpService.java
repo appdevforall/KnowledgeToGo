@@ -77,7 +77,7 @@ public final class DeepOpService extends Service {
     public static final String ACTION_CANCEL_CONFIRM = "org.iiab.controller.DEEPOP_CANCEL_CONFIRM";
     public static final String ACTION_FORCE_CANCEL = "org.iiab.controller.DEEPOP_FORCE_CANCEL";   // K2GO-384: acknowledged cancel DURING extract
     public static final String EXTRA_URI = "uri";     // backup: SAF folder (tree); restore: SAF source
-    /** K2GO-570: restore only, optional: the X.tar.json next to the picked tarball. */
+    /** K2GO-569/570: restore only, optional: the X.tar.json or X.tar.gz.minisig of the tarball. */
     public static final String EXTRA_COMPANION = "companion";
 
     /** K2GO-372: a restore is one run of three passes — stage the file, verify it, extract it — so they
@@ -88,14 +88,14 @@ public final class DeepOpService extends Service {
     public static final int COPY_PASS = 0;
     private static final int VERIFY_PASS = 1;
     private static final int EXTRACT_PASS = 2;
-    /** K2GO-570: a backup that matches its X.tar.json skips the listing: copy, then extract. */
+    /** K2GO-569/570: an archive that matches its companion skips the listing: copy, then extract. */
     public static final int FAST_RESTORE_PASSES = 2;
     private static final int FAST_EXTRACT_PASS = 1;
     /** Pass model of this run: set before the copy from whether a companion came with it. */
     private volatile int passes = RESTORE_PASSES;
     private volatile int extractPass = EXTRACT_PASS;
-    /** Non-null when the staged tarball matched its X.tar.json: the extract total, and no listing. */
-    private volatile org.appdevforall.k2go.backup.domain.BackupCompanion verifiedCompanion;
+    /** Non-null when the staged tarball matched its companion: the extract total, and no listing. */
+    private volatile org.appdevforall.k2go.deploy.domain.ExpectedArchive verifiedCompanion;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private PowerManager.WakeLock wakeLock;
@@ -139,7 +139,7 @@ public final class DeepOpService extends Service {
     }
 
     /** Start a restore: stage the picked archive, then extract it over the rootfs (destructive).
-     *  @param companion the X.tar.json of the archive, or {@code null}. */
+     *  @param companion the X.tar.json or X.tar.gz.minisig of the archive, or {@code null}. */
     public static void startRestore(Context ctx, Uri source, @androidx.annotation.Nullable Uri companion) {
         Intent i = new Intent(ctx, DeepOpService.class).setAction(ACTION_RESTORE).putExtra(EXTRA_URI, source.toString());
         if (companion != null) i.putExtra(EXTRA_COMPANION, companion.toString());
@@ -316,8 +316,8 @@ public final class DeepOpService extends Service {
         final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
             final long compressed = sourceSize(src);
-            final org.appdevforall.k2go.backup.domain.BackupCompanion companion =
-                    companionStr == null ? null : readCompanion(Uri.parse(companionStr));
+            final org.appdevforall.k2go.deploy.domain.ExpectedArchive companion =
+                    companionStr == null ? null : readCompanion(Uri.parse(companionStr), src);
             String failure = rejectBeforeCopy(src);
             if (failure == null) {
                 failure = rejectForSpace(compressed);
@@ -326,7 +326,7 @@ public final class DeepOpService extends Service {
                 failure = stageArchive(src, temp, compressed, companion);
             }
             if (failure == null && verifiedCompanion == null && passes != RESTORE_PASSES) {
-                // K2GO-570: no usable or matching X.tar.json: the full path (listing) decides.
+                // K2GO-569/570: no usable or matching companion: the full path (listing) decides.
                 passes = RESTORE_PASSES;
                 extractPass = EXTRACT_PASS;
             }
@@ -422,11 +422,11 @@ public final class DeepOpService extends Service {
      * @return {@code null} on success, otherwise the message to show the user.
      */
     private String stageArchive(Uri src, File temp, long size,
-                                @androidx.annotation.Nullable org.appdevforall.k2go.backup.domain.BackupCompanion companion) {
+                                @androidx.annotation.Nullable org.appdevforall.k2go.deploy.domain.ExpectedArchive companion) {
         try (InputStream in = getContentResolver().openInputStream(src);
              OutputStream out = new java.io.FileOutputStream(temp)) {
             if (in == null) throw new IOException("The picked file could not be opened");
-            // K2GO-570: hash during the copy, so checking X.tar.json costs no extra pass.
+            // K2GO-569/570: hash during the copy, so checking the companion costs no extra pass.
             final java.security.MessageDigest sha =
                     companion == null ? null : java.security.MessageDigest.getInstance("SHA-256");
             byte[] buf = new byte[1 << 16];
@@ -467,7 +467,7 @@ public final class DeepOpService extends Service {
             if (companion != null) {
                 String hex = org.appdevforall.k2go.download.domain.DownloadVerifier.toHex(sha.digest());
                 if (companion.matches(copied, hex)) verifiedCompanion = companion;
-                else Log.w(TAG, "X.tar.json does not match the archive; full restore path");
+                else Log.w(TAG, "the companion does not match the archive; full restore path");
             }
             return null;
         } catch (Exception e) {
@@ -478,19 +478,40 @@ public final class DeepOpService extends Service {
         }
     }
 
-    /** K2GO-570: the X.tar.json of the picked archive, or {@code null} when it is unreadable or incomplete. */
-    private org.appdevforall.k2go.backup.domain.BackupCompanion readCompanion(Uri doc) {
+    /**
+     * K2GO-569/570: what the companion of {@code tarball} says about it, or {@code null} (full path).
+     * X.tar.json gives integrity only. X.tar.gz.minisig gives identity too: a pinned-key signature over
+     * a manifest that names this exact file, for this ABI, with its uncompressed size.
+     */
+    private org.appdevforall.k2go.deploy.domain.ExpectedArchive readCompanion(Uri doc, Uri tarball) {
+        String name = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, doc);
+        if (name == null) return null;
         try (InputStream in = getContentResolver().openInputStream(doc)) {
             if (in == null) return null;
             byte[] buf = new byte[org.appdevforall.k2go.backup.data.BackupCompanionJson.MAX_BYTES + 1];
             int n = 0, r;
             while (n < buf.length && (r = in.read(buf, n, buf.length - n)) != -1) n += r;
-            return org.appdevforall.k2go.backup.data.BackupCompanionJson.read(
-                    new String(buf, 0, n, java.nio.charset.StandardCharsets.UTF_8));
+            String text = new String(buf, 0, n, java.nio.charset.StandardCharsets.UTF_8);
+            if (name.endsWith(".tar.json")) {
+                org.appdevforall.k2go.backup.domain.BackupCompanion c =
+                        org.appdevforall.k2go.backup.data.BackupCompanionJson.read(text);
+                return c == null ? null : c.expected();
+            }
+            if (name.endsWith(".minisig")) {
+                org.appdevforall.k2go.download.domain.RootfsManifest m =
+                        org.appdevforall.k2go.download.domain.RootfsManifest.parse(
+                                org.appdevforall.k2go.download.data.MinisignVerifier.authenticatedComment(
+                                        text, org.appdevforall.k2go.download.data.TrustedSigningKeys.PRODUCTION));
+                String tarName = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, tarball);
+                boolean ok = m != null && m.usize > 0 && m.file.equals(tarName)
+                        && m.isForAbi(org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId());
+                Log.i(TAG, "restore signature check " + tarName + ": " + (ok ? "trusted" : "not trusted"));
+                return ok ? new org.appdevforall.k2go.deploy.domain.ExpectedArchive(m.size, m.sha256, m.usize) : null;
+            }
         } catch (Exception e) {
-            Log.w(TAG, "could not read X.tar.json: " + e.getMessage());
-            return null;
+            Log.w(TAG, "could not read the companion: " + e.getMessage());
         }
+        return null;
     }
 
     private void runRestore(final String path) {
@@ -527,13 +548,13 @@ public final class DeepOpService extends Service {
         if (done || passRunning) return;   // K2GO-384: one verify+extract pass at a time (service is the owner)
         passRunning = true;
         currentCancelKind = DeepOpState.CancelKind.CANCELLABLE;   // K2GO-384: verify -- cancellable (kill + hold)
-        final org.appdevforall.k2go.backup.domain.BackupCompanion fast = verifiedCompanion;
+        final org.appdevforall.k2go.deploy.domain.ExpectedArchive fast = verifiedCompanion;
         if (fast == null) {
             setStep(org.appdevforall.k2go.deploy.domain.ExtractProgress
                     .stepped(VERIFY_PASS, passes, getString(R.string.k2go_br_status_checking)), 0);
         }
         final File destParent = org.appdevforall.k2go.SystemStateEvaluator.rootfsBaseDir(this);
-        // K2GO-570: a matched X.tar.json gives the extract total and skips the listing; otherwise the
+        // K2GO-569/570: a matched companion gives the extract total and skips the listing; otherwise the
         // full listing (K2GO-554: untrusted import).
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
                 cancelBeforeExtract, pauseRequested, forceExtractCancel, fast == null ? 0L : fast.tarBytes,
