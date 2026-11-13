@@ -36,13 +36,9 @@ jobs:
           RC_TAG: ${{ inputs.rc_tag }}
         run: |
           set -euo pipefail
-          if ! [[ "$RC_TAG" =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-rc\.[0-9]+$ ]]; then
-            echo "::error::'$RC_TAG' is not a candidate tag (vX.Y.Z-rc.N)"; exit 1
-          fi
-          final="${BASH_REMATCH[1]}"
-          if git ls-remote --exit-code --tags origin "refs/tags/$final" >/dev/null; then
-            echo "::error::$final already exists; a released version is closed"; exit 1
-          fi
+          # Refuses a malformed tag, a released version, and a candidate older than the newest.
+          git ls-remote --tags origin 'v*' | sed 's#.*refs/tags/##; s#\^{}$##' | sort -u > "$RUNNER_TEMP/tags.txt"
+          final=$(python3 tools/play-publish/play_publish.py final-tag --rc-tag "$RC_TAG" --tags "$RUNNER_TEMP/tags.txt")
           git fetch --no-tags origin "refs/tags/$RC_TAG:refs/tags/$RC_TAG"
           git tag "$final" "$RC_TAG^{commit}"
           git push origin "refs/tags/$final"

@@ -43,6 +43,30 @@ class RcTagTest(unittest.TestCase):
             pp.next_rc_tag({"v1.2.0", "v1.2.0-rc.2"}, "v1.2.0")
 
 
+class FinalTagTest(unittest.TestCase):
+    TAGS = {"v1.1.0", "v1.2.0-rc.1", "v1.2.0-rc.2"}
+
+    def test_newest_candidate_becomes_the_release(self):
+        self.assertEqual("v1.2.0", pp.final_tag(self.TAGS, "v1.2.0-rc.2"))
+
+    def test_an_older_candidate_is_refused(self):
+        with self.assertRaises(pp.PlanError):
+            pp.final_tag(self.TAGS, "v1.2.0-rc.1")
+
+    def test_a_missing_candidate_is_refused(self):
+        with self.assertRaises(pp.PlanError):
+            pp.final_tag(self.TAGS, "v1.2.0-rc.3")
+
+    def test_a_released_version_is_closed(self):
+        with self.assertRaises(pp.PlanError):
+            pp.final_tag(self.TAGS | {"v1.2.0"}, "v1.2.0-rc.2")
+
+    def test_only_candidate_tags_are_accepted(self):
+        for bad in ("v1.2.0", "v1.2.0-rc.2; rm -rf /", "1.2.0-rc.2", "v1.2.0-internal.723"):
+            with self.assertRaises(pp.PlanError):
+                pp.final_tag(self.TAGS | {bad}, bad)
+
+
 class NotesTest(unittest.TestCase):
     MD = "# OTA update notes\n\nIntro.\n\n## v1.2.0\nLine one.\n\nLine two.\n\n## v1.1.0\nOld.\n"
 

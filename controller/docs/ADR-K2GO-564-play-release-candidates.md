@@ -38,9 +38,11 @@ same commit `vX.Y.Z`. We never rebuild after the approval.
    ([semver items 3 and 9](https://semver.org/#spec-item-9))
 2. Button 1, `play-candidate.yml`: build the Play AAB, take versionCode = highest code that
    Play knows + 1, send to review with `ERROR_IF_IN_REVIEW`, tag the commit `vX.Y.Z-rc.N`, and
-   archive the AAB to R2. The rc tag is pushed only after Play accepts the upload.
+   archive the AAB to R2. The rc tag is pushed only after Play accepts the upload. It runs only
+   from `main`. A run on the internal track (no formal review) gets no rc tag.
 3. Google approves or rejects (email, Play Console). A person reads the verdict.
-4. Button 2, `play-release.yml`: tag the rc commit as `vX.Y.Z` and run the release build
+4. Button 2, `play-release.yml`: accept only the newest rc of the version (each new candidate
+   replaces the older one in Play), tag its commit as `vX.Y.Z` and run the release build
    (GitHub Release, website APKs, R2, OTA `update.json`). In Play Console, press
    "Publish changes". The release build no longer builds a Play AAB.
 5. Play credentials: a Google Cloud service account with "Release apps to testing tracks" on
@@ -55,4 +57,5 @@ same commit `vX.Y.Z`. We never rebuild after the approval.
   `build.gradle`. The website APKs keep the `build.gradle` codes. The two channels have
   different signers and cannot update each other, so the codes do not conflict.
 - `android-r2-republish.yml` stays as the manual fallback until the first candidate run works.
+  Its input `play_version_code` takes the highest code in Play Console + 1.
   Then its Play AAB part is removed.

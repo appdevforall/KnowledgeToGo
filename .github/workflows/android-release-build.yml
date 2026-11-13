@@ -102,12 +102,11 @@ jobs:
       # --- GITHUB RELEASES ---
 
       - name: Create GitHub Release
-        if: startsWith(env.RELEASE_TAG, 'v')
         uses: softprops/action-gh-release@v3
         with:
-          # Automatically marks as Pre-release if the tag ends in "-beta" or "-rc"
+          # Marks a "-beta" tag as a pre-release. rc tags never reach this workflow (K2GO-564).
           tag_name: ${{ env.RELEASE_TAG }}
-          prerelease: ${{ contains(env.RELEASE_TAG, '-beta') || contains(env.RELEASE_TAG, '-rc') }}
+          prerelease: ${{ contains(env.RELEASE_TAG, '-beta') }}
           files: controller/**/build/outputs/apk/standard/release/*.apk
           generate_release_notes: true
         env:
@@ -116,7 +115,6 @@ jobs:
       # --- CLOUDFLARE R2 UPLOAD ---
 
       - name: Upload to Cloudflare R2
-        if: startsWith(env.RELEASE_TAG, 'v')
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
@@ -143,7 +141,6 @@ jobs:
       # and always resolves to the latest release (no .1/.2 copies). The changelog is copied verbatim
       # from the top entry of controller/ci/ota-release-notes.md, which must match the release tag.
       - name: Generate and upload update.json
-        if: startsWith(env.RELEASE_TAG, 'v')
         working-directory: ${{ github.workspace }}
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}

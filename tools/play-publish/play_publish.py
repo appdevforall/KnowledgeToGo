@@ -10,6 +10,7 @@ so the runner needs no pip packages.
 Commands (the service account JSON comes from $PLAY_SERVICE_ACCOUNT_JSON):
   plan --gradle F --notes F --tags F     print version, rc tag and release notes as GitHub outputs
   next-code --package P --base N         print the Play versionCode for the next upload
+  final-tag --rc-tag T --tags F          print the release tag for an approved candidate
   publish --package P --track T --aab F --code N --name S --notes-file F
 """
 import argparse
@@ -30,6 +31,7 @@ UPLOAD_API = "https://androidpublisher.googleapis.com/upload/androidpublisher/v3
 SCOPE = "https://www.googleapis.com/auth/androidpublisher"
 NOTES_MAX = 500  # Play limit for "What's new" per language.
 SEMVER = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+RC_TAG = re.compile(r"^(v\d+\.\d+\.\d+)-rc\.(\d+)$")
 
 
 class PlanError(Exception):
@@ -56,14 +58,35 @@ def version_code_base(gradle_text):
     return int(m.group(1))
 
 
+def _rc_numbers(tags, version):
+    pattern = re.compile(r"^" + re.escape(version) + r"-rc\.(\d+)$")
+    return [int(m.group(1)) for m in (pattern.match(t) for t in tags) if m]
+
+
 def next_rc_tag(tags, version):
     """Next "vX.Y.Z-rc.N" for this version. A released version (its final tag exists) is
     closed: a new change after a release is a new version (semver item 3)."""
     if version in tags:
         raise PlanError("%s is already released; bump versionName first" % version)
-    pattern = re.compile(r"^" + re.escape(version) + r"-rc\.(\d+)$")
-    used = [int(m.group(1)) for m in (pattern.match(t) for t in tags) if m]
-    return "%s-rc.%d" % (version, max(used, default=0) + 1)
+    return "%s-rc.%d" % (version, max(_rc_numbers(tags, version), default=0) + 1)
+
+
+def final_tag(tags, rc_tag):
+    """The release tag for an approved candidate: "v1.2.0-rc.2" -> "v1.2.0". Only the newest
+    candidate can be released, because each new candidate replaces the older one in Play."""
+    m = RC_TAG.match(rc_tag)
+    if not m:
+        raise PlanError("%r is not a candidate tag (vX.Y.Z-rc.N)" % rc_tag)
+    version = m.group(1)
+    if rc_tag not in tags:
+        raise PlanError("%s does not exist" % rc_tag)
+    if version in tags:
+        raise PlanError("%s already exists; a released version is closed" % version)
+    newest = max(_rc_numbers(tags, version))
+    if int(m.group(2)) != newest:
+        raise PlanError("%s-rc.%d is newer than %s; Play holds the newest candidate"
+                        % (version, newest, rc_tag))
+    return version
 
 
 def release_notes(md_text, version):
@@ -187,8 +210,16 @@ def cmd_next_code(args):
                                   play.call("GET", play.edit_url(edit, "/bundles")),
                                   play.call("GET", play.edit_url(edit, "/apks")))
     finally:
-        play.call("DELETE", play.edit_url(edit))
+        try:
+            play.call("DELETE", play.edit_url(edit))
+        except SystemExit:
+            pass  # Keep the first error; an unused edit expires on its own.
     print(next_version_code(used, args.base))
+
+
+def cmd_final_tag(args):
+    tags = set(open(args.tags, encoding="utf-8").read().split())
+    print(final_tag(tags, args.rc_tag))
 
 
 def cmd_publish(args):
@@ -222,6 +253,10 @@ def main(argv=None):
     s.add_argument("--package", required=True)
     s.add_argument("--base", required=True, type=int)
     s.set_defaults(func=cmd_next_code)
+    s = sub.add_parser("final-tag")
+    s.add_argument("--rc-tag", required=True)
+    s.add_argument("--tags", required=True, help="file with one git tag name per line")
+    s.set_defaults(func=cmd_final_tag)
     s = sub.add_parser("publish")
     s.add_argument("--package", required=True)
     s.add_argument("--track", required=True, choices=["internal", "alpha", "beta", "production"])
