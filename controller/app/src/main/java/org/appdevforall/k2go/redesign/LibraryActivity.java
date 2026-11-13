@@ -451,6 +451,8 @@ public class LibraryActivity extends AppCompatActivity
             if (systemInstalled && savedInstanceState == null) {
                 org.appdevforall.k2go.env.ServerLifecycleReconciler.get().setUserWantsOn(this, true);
                 showBootVersion();
+                // K2GO-559: privacy changes left for "Later" (or the one-time off) apply at app open.
+                org.appdevforall.k2go.privacy.presentation.PendingRestartsOnOpen.run(this);
             }
             // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout

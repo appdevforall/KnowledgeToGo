@@ -24,6 +24,7 @@ import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
 import { isRestartableService, restartService } from './sockets/services';
+import { PRIVACY_SWITCHES, findSwitch, readState, applyOutbound } from './sockets/privacy';
 import { getFirehoseState } from './sockets/log-rotate';
 import { resolveRebuildState } from './sockets/rebuild-status';
 import { conexProxy } from './sockets/conex-proxy';
@@ -819,6 +820,34 @@ apiRouter.post('/system/service/:svc/restart', (req: Request, res: Response): vo
     }
     restartService(svc);
     res.status(202).json({ ok: true, service: svc, restarting: true });
+});
+
+// --- System: privacy switches (K2GO-559) ------------------------------------------------------
+// One switch per box service that contacts an outside server on its own. The state is the
+// service's own config setting (sockets/privacy.ts). This only writes the config and reports it as
+// `pending`; the restart is the user's decision, requested via /system/service/:svc/restart (ADR-5343).
+apiRouter.get('/system/privacy', (_req: Request, res: Response): void => {
+    try {
+        res.json({ services: PRIVACY_SWITCHES.map(readState) });
+    } catch (e: any) {
+        console.error(`[privacy] read: ${e?.message || e}`);
+        res.status(500).json({ error: 'read failed' });
+    }
+});
+
+apiRouter.post('/system/privacy/:service', (req: Request, res: Response): void => {
+    const sw = findSwitch(String(req.params.service || ''));
+    if (!sw) { res.status(400).json({ error: 'unknown service' }); return; }
+    const outbound = (req.body as { outbound?: unknown })?.outbound;
+    if (typeof outbound !== 'boolean') { res.status(400).json({ error: 'outbound must be a boolean' }); return; }
+    try {
+        if (!readState(sw).installed) { res.status(409).json({ error: 'not installed', service: sw.service }); return; }
+        const { state, changed } = applyOutbound(sw, outbound);
+        res.json({ ...state, changed });
+    } catch (e: any) {
+        console.error(`[privacy] ${sw.service}: ${e?.message || e}`);
+        res.status(500).json({ error: 'write failed', service: sw.service });
+    }
 });
 
 // --- Kolibri: readiness, catalogue and selection (ADFA-4949) ----------------------

@@ -1587,4 +1587,20 @@
     <string name="k2go_br_folder_title">Ehtiyat nüsxə qovluğu seçin</string>
     <string name="k2go_br_folder_msg">Ehtiyat nüsxə iki faylı bir qovluğa yazır. Android tətbiqlərə Download qovluğunun özündən istifadə etməyə icazə vermir: onu açın və içində qovluq yaradın və ya seçin.</string>
     <string name="k2go_br_folder_choose">Qovluq seç</string>
+    <string name="k2go_settings_privacy_sub">Xarici serverlərlə əlaqə saxlayan xidmətlər</string>
+    <string name="k2go_privacy_intro">Serverdəki bəzi xidmətlər öz-özünə xarici serverlərlə əlaqə saxlaya bilər. Bu əlaqələr standart olaraq söndürülüb. Yalnız istədiyiniz halda birini yandırın.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri istifadə statistikası</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri başlayanda və gündə bir dəfə istifadə rəqəmlərini və server ID-lərini Learning Equality-yə göndərir.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo yeniləmə yoxlaması</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo layihəsindən daha yeni versiyanın olub-olmadığını soruşur.</string>
+    <string name="k2go_privacy_save_failed">Dəyişikliyi yadda saxlamaq mümkün olmadı. Yenidən cəhd edin.</string>
+    <string name="k2go_privacy_unreachable">Bu ayarları oxumaq mümkün olmadı. Serverin işlədiyinə əmin olun, sonra yenidən cəhd edin.</string>
+    <string name="k2go_privacy_unsupported">Bu ayarlar daha yeni idarə paneli tələb edir. İdarə panelini yeniləyin, sonra yenidən cəhd edin.</string>
+    <string name="k2go_privacy_none">Öz-özünə xarici serverlərlə əlaqə saxlayan quraşdırılmış xidmət yoxdur.</string>
+    <string name="k2go_privacy_restart_title">%1$s indi yenidən başladılsın?</string>
+    <string name="k2go_privacy_restart_msg">%1$s işləyən xidmətdir və hazırda kimsə ondan istifadə edə bilər. Dəyişiklik yalnız %1$s yenidən başladıqdan sonra qüvvəyə minir, bu təxminən 30 saniyə çəkir.</string>
+    <string name="k2go_privacy_restart_now">İndi yenidən başlat</string>
+    <string name="k2go_privacy_restart_later">Sonra</string>
+    <string name="k2go_privacy_restart_later_note">Yadda saxlanıldı. Dəyişiklik tətbiq növbəti dəfə açılanda tətbiq olunur.</string>
+    <string name="k2go_privacy_restarting">%1$s yenidən başladılır. Təxminən 30 saniyəyə qayıdacaq.</string>
 </resources>

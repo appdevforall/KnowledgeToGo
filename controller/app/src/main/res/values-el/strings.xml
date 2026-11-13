@@ -1574,4 +1574,20 @@
     <string name="k2go_br_folder_title">Επιλέξτε φάκελο αντιγράφων ασφαλείας</string>
     <string name="k2go_br_folder_msg">Το αντίγραφο ασφαλείας αποθηκεύει δύο αρχεία σε έναν φάκελο. Το Android δεν επιτρέπει στις εφαρμογές να χρησιμοποιούν τον ίδιο τον φάκελο Download: ανοίξτε τον και δημιουργήστε ή επιλέξτε έναν φάκελο μέσα του.</string>
     <string name="k2go_br_folder_choose">Επιλογή φακέλου</string>
+    <string name="k2go_settings_privacy_sub">Υπηρεσίες που επικοινωνούν με εξωτερικούς διακομιστές</string>
+    <string name="k2go_privacy_intro">Ορισμένες υπηρεσίες στον διακομιστή μπορούν να επικοινωνούν μόνες τους με εξωτερικούς διακομιστές. Αυτές οι συνδέσεις είναι απενεργοποιημένες από προεπιλογή. Ενεργοποιήστε μία μόνο αν τη θέλετε.</string>
+    <string name="k2go_privacy_kolibri_title">Στατιστικά χρήσης Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Στέλνει αριθμούς χρήσης και αναγνωριστικά διακομιστή στο Learning Equality όταν ξεκινά το Kolibri και μία φορά την ημέρα.</string>
+    <string name="k2go_privacy_forgejo_title">Έλεγχος ενημερώσεων Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Ρωτά το έργο Forgejo αν υπάρχει νεότερη έκδοση.</string>
+    <string name="k2go_privacy_save_failed">Δεν ήταν δυνατή η αποθήκευση της αλλαγής. Δοκιμάστε ξανά.</string>
+    <string name="k2go_privacy_unreachable">Δεν ήταν δυνατή η ανάγνωση αυτών των ρυθμίσεων. Βεβαιωθείτε ότι ο διακομιστής λειτουργεί και δοκιμάστε ξανά.</string>
+    <string name="k2go_privacy_unsupported">Αυτές οι ρυθμίσεις χρειάζονται νεότερο πίνακα. Ενημερώστε τον πίνακα και δοκιμάστε ξανά.</string>
+    <string name="k2go_privacy_none">Καμία εγκατεστημένη υπηρεσία δεν επικοινωνεί μόνη της με εξωτερικούς διακομιστές.</string>
+    <string name="k2go_privacy_restart_title">Επανεκκίνηση του %1$s τώρα;</string>
+    <string name="k2go_privacy_restart_msg">Το %1$s είναι υπηρεσία σε λειτουργία και κάποιος μπορεί να τη χρησιμοποιεί τώρα. Η αλλαγή ισχύει μόνο μετά την επανεκκίνηση του %1$s, που διαρκεί περίπου 30 δευτερόλεπτα.</string>
+    <string name="k2go_privacy_restart_now">Επανεκκίνηση τώρα</string>
+    <string name="k2go_privacy_restart_later">Αργότερα</string>
+    <string name="k2go_privacy_restart_later_note">Αποθηκεύτηκε. Η αλλαγή εφαρμόζεται την επόμενη φορά που θα ανοίξει η εφαρμογή.</string>
+    <string name="k2go_privacy_restarting">Γίνεται επανεκκίνηση του %1$s. Επιστρέφει σε περίπου 30 δευτερόλεπτα.</string>
 </resources>

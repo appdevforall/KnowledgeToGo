@@ -1577,4 +1577,20 @@
     <string name="k2go_br_folder_title">Velg en mappe for sikkerhetskopier</string>
     <string name="k2go_br_folder_msg">Sikkerhetskopien lagrer to filer i en mappe. Android lar ikke apper bruke selve Download-mappen: åpne den og opprett eller velg en mappe inni den.</string>
     <string name="k2go_br_folder_choose">Velg mappe</string>
+    <string name="k2go_settings_privacy_sub">Tjenester som kontakter eksterne tjenere</string>
+    <string name="k2go_privacy_intro">Noen tjenester på tjeneren kan kontakte eksterne tjenere på egen hånd. Disse tilkoblingene er av som standard. Slå på en bare hvis du vil.</string>
+    <string name="k2go_privacy_kolibri_title">Bruksstatistikk for Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Sender brukstall og tjener-ID-er til Learning Equality når Kolibri starter, og én gang om dagen.</string>
+    <string name="k2go_privacy_forgejo_title">Oppdateringssjekk for Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Spør Forgejo-prosjektet om en nyere versjon er tilgjengelig.</string>
+    <string name="k2go_privacy_save_failed">Kunne ikke lagre endringen. Prøv igjen.</string>
+    <string name="k2go_privacy_unreachable">Kunne ikke lese disse innstillingene. Kontroller at tjeneren er på, og prøv igjen.</string>
+    <string name="k2go_privacy_unsupported">Disse innstillingene krever et nyere dashbord. Oppdater dashbordet, og prøv igjen.</string>
+    <string name="k2go_privacy_none">Ingen installert tjeneste kontakter eksterne tjenere på egen hånd.</string>
+    <string name="k2go_privacy_restart_title">Starte %1$s på nytt nå?</string>
+    <string name="k2go_privacy_restart_msg">%1$s er en tjeneste som kjører, og noen kan bruke den akkurat nå. Endringen gjelder først etter at %1$s er startet på nytt, noe som tar omtrent 30 sekunder.</string>
+    <string name="k2go_privacy_restart_now">Start på nytt nå</string>
+    <string name="k2go_privacy_restart_later">Senere</string>
+    <string name="k2go_privacy_restart_later_note">Lagret. Endringen gjelder neste gang appen åpnes.</string>
+    <string name="k2go_privacy_restarting">Starter %1$s på nytt. Tilbake om omtrent 30 sekunder.</string>
 </resources>

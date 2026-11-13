@@ -1574,4 +1574,20 @@
     <string name="k2go_br_folder_title">Vyberte složku pro zálohy</string>
     <string name="k2go_br_folder_msg">Záloha ukládá dva soubory do složky. Android nedovolí aplikacím použít samotnou složku Download: otevřete ji a vytvořte nebo vyberte složku uvnitř.</string>
     <string name="k2go_br_folder_choose">Vybrat složku</string>
+    <string name="k2go_settings_privacy_sub">Služby, které se spojují s vnějšími servery</string>
+    <string name="k2go_privacy_intro">Některé služby na serveru se mohou samy spojit s vnějšími servery. Tato spojení jsou ve výchozím stavu vypnutá. Zapněte některé, jen pokud ho chcete.</string>
+    <string name="k2go_privacy_kolibri_title">Statistiky používání Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Odesílá údaje o používání a ID serveru organizaci Learning Equality při spuštění Kolibri a jednou denně.</string>
+    <string name="k2go_privacy_forgejo_title">Kontrola aktualizací Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Zjišťuje u projektu Forgejo, zda je k dispozici novější verze.</string>
+    <string name="k2go_privacy_save_failed">Změnu se nepodařilo uložit. Zkuste to znovu.</string>
+    <string name="k2go_privacy_unreachable">Tato nastavení se nepodařilo načíst. Ověřte, že server běží, a zkuste to znovu.</string>
+    <string name="k2go_privacy_unsupported">Tato nastavení vyžadují novější nástěnku. Aktualizujte nástěnku a zkuste to znovu.</string>
+    <string name="k2go_privacy_none">Žádná nainstalovaná služba se sama nespojuje s vnějšími servery.</string>
+    <string name="k2go_privacy_restart_title">Restartovat %1$s nyní?</string>
+    <string name="k2go_privacy_restart_msg">%1$s je běžící služba a někdo ji teď může používat. Změna se projeví až po restartu %1$s, který trvá asi 30 sekund.</string>
+    <string name="k2go_privacy_restart_now">Restartovat nyní</string>
+    <string name="k2go_privacy_restart_later">Později</string>
+    <string name="k2go_privacy_restart_later_note">Uloženo. Změna se použije při příštím otevření aplikace.</string>
+    <string name="k2go_privacy_restarting">%1$s se restartuje. Bude zpět asi za 30 sekund.</string>
 </resources>

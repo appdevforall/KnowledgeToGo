@@ -1568,4 +1568,20 @@
     <string name="k2go_br_folder_title">バックアップ用のフォルダを選択</string>
     <string name="k2go_br_folder_msg">バックアップはフォルダに 2 つのファイルを保存します。Android ではアプリが Download フォルダそのものを使用できません。Download を開き、その中にフォルダを作成または選択してください。</string>
     <string name="k2go_br_folder_choose">フォルダを選択</string>
+    <string name="k2go_settings_privacy_sub">外部サーバーに接続するサービス</string>
+    <string name="k2go_privacy_intro">サーバー上の一部のサービスは、自動で外部サーバーに接続することがあります。これらの接続は既定でオフです。必要な場合のみオンにしてください。</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri の利用統計</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri の起動時と 1 日 1 回、利用状況の数値とサーバー ID を Learning Equality に送信します。</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo の更新確認</string>
+    <string name="k2go_privacy_forgejo_sub">新しいバージョンがあるかを Forgejo プロジェクトに問い合わせます。</string>
+    <string name="k2go_privacy_save_failed">変更を保存できませんでした。もう一度お試しください。</string>
+    <string name="k2go_privacy_unreachable">これらの設定を読み込めませんでした。サーバーがオンになっていることを確認してから、もう一度お試しください。</string>
+    <string name="k2go_privacy_unsupported">これらの設定には新しいダッシュボードが必要です。ダッシュボードを更新してから、もう一度お試しください。</string>
+    <string name="k2go_privacy_none">外部サーバーに自動で接続するインストール済みのサービスはありません。</string>
+    <string name="k2go_privacy_restart_title">%1$s を今すぐ再起動しますか?</string>
+    <string name="k2go_privacy_restart_msg">%1$s は稼働中のサービスで、今だれかが使用している可能性があります。変更は %1$s の再起動後に有効になります。再起動には約 30 秒かかります。</string>
+    <string name="k2go_privacy_restart_now">今すぐ再起動</string>
+    <string name="k2go_privacy_restart_later">後で</string>
+    <string name="k2go_privacy_restart_later_note">保存しました。変更は次にアプリを開いたときに適用されます。</string>
+    <string name="k2go_privacy_restarting">%1$s を再起動しています。約 30 秒で戻ります。</string>
 </resources>

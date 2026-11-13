@@ -211,7 +211,6 @@ public class SettingsSubFragment extends Fragment {
                 org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(ctx),
                 checked -> org.appdevforall.k2go.delivery.data.CrashReportConsent.setEnabled(ctx, checked));
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
-        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_privacy), null);
     }
 
     private void openAppSettings(Context ctx) {

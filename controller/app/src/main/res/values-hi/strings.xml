@@ -1644,4 +1644,20 @@
     <string name="k2go_br_folder_title">बैकअप फ़ोल्डर चुनें</string>
     <string name="k2go_br_folder_msg">बैकअप एक फ़ोल्डर में दो फ़ाइलें सहेजता है। Android ऐप्स को सीधे Download फ़ोल्डर का उपयोग नहीं करने देता: इसे खोलें और इसके अंदर एक फ़ोल्डर बनाएँ या चुनें।</string>
     <string name="k2go_br_folder_choose">फ़ोल्डर चुनें</string>
+    <string name="k2go_settings_privacy_sub">बाहरी सर्वर से संपर्क करने वाली सेवाएँ</string>
+    <string name="k2go_privacy_intro">सर्वर की कुछ सेवाएँ अपने आप बाहरी सर्वर से संपर्क कर सकती हैं। ये कनेक्शन डिफ़ॉल्ट रूप से बंद हैं। केवल चाहें तो ही किसी को चालू करें।</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri उपयोग आँकड़े</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri शुरू होने पर और दिन में एक बार उपयोग के आँकड़े और सर्वर आईडी Learning Equality को भेजता है।</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo अपडेट जाँच</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo प्रोजेक्ट से पूछता है कि कोई नया संस्करण उपलब्ध है या नहीं।</string>
+    <string name="k2go_privacy_save_failed">बदलाव सहेजा नहीं जा सका। फिर से कोशिश करें।</string>
+    <string name="k2go_privacy_unreachable">ये सेटिंग्स पढ़ी नहीं जा सकीं। सुनिश्चित करें कि सर्वर चालू है, फिर से कोशिश करें।</string>
+    <string name="k2go_privacy_unsupported">इन सेटिंग्स के लिए नया डैशबोर्ड चाहिए। डैशबोर्ड अपडेट करें, फिर से कोशिश करें।</string>
+    <string name="k2go_privacy_none">कोई भी इंस्टॉल की गई सेवा अपने आप बाहरी सर्वर से संपर्क नहीं करती।</string>
+    <string name="k2go_privacy_restart_title">%1$s को अभी फिर से शुरू करें?</string>
+    <string name="k2go_privacy_restart_msg">%1$s एक चालू सेवा है और अभी कोई इसका उपयोग कर रहा हो सकता है। बदलाव %1$s के फिर से शुरू होने के बाद ही लागू होता है, जिसमें लगभग 30 सेकंड लगते हैं।</string>
+    <string name="k2go_privacy_restart_now">अभी फिर से शुरू करें</string>
+    <string name="k2go_privacy_restart_later">बाद में</string>
+    <string name="k2go_privacy_restart_later_note">सहेजा गया। अगली बार ऐप खुलने पर बदलाव लागू होगा।</string>
+    <string name="k2go_privacy_restarting">%1$s फिर से शुरू हो रहा है। लगभग 30 सेकंड में वापस आएगा।</string>
 </resources>

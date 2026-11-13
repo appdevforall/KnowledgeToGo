@@ -1574,4 +1574,20 @@
     <string name="k2go_br_folder_title">Vyberte priečinok na zálohy</string>
     <string name="k2go_br_folder_msg">Záloha ukladá dva súbory do priečinka. Android nedovolí aplikáciám použiť samotný priečinok Download: otvorte ho a vytvorte alebo vyberte priečinok v ňom.</string>
     <string name="k2go_br_folder_choose">Vybrať priečinok</string>
+    <string name="k2go_settings_privacy_sub">Služby, ktoré sa spájajú s vonkajšími servermi</string>
+    <string name="k2go_privacy_intro">Niektoré služby na serveri sa môžu samy spojiť s vonkajšími servermi. Tieto spojenia sú predvolene vypnuté. Zapnite niektoré, len ak ho chcete.</string>
+    <string name="k2go_privacy_kolibri_title">Štatistiky používania Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Odosiela údaje o používaní a ID servera organizácii Learning Equality pri spustení Kolibri a raz denne.</string>
+    <string name="k2go_privacy_forgejo_title">Kontrola aktualizácií Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Zisťuje od projektu Forgejo, či je dostupná novšia verzia.</string>
+    <string name="k2go_privacy_save_failed">Zmenu sa nepodarilo uložiť. Skúste to znova.</string>
+    <string name="k2go_privacy_unreachable">Tieto nastavenia sa nepodarilo načítať. Overte, že server beží, a skúste to znova.</string>
+    <string name="k2go_privacy_unsupported">Tieto nastavenia vyžadujú novšiu nástenku. Aktualizujte nástenku a skúste to znova.</string>
+    <string name="k2go_privacy_none">Žiadna nainštalovaná služba sa sama nespája s vonkajšími servermi.</string>
+    <string name="k2go_privacy_restart_title">Reštartovať %1$s teraz?</string>
+    <string name="k2go_privacy_restart_msg">%1$s je spustená služba a niekto ju môže práve používať. Zmena sa prejaví až po reštarte %1$s, ktorý trvá asi 30 sekúnd.</string>
+    <string name="k2go_privacy_restart_now">Reštartovať teraz</string>
+    <string name="k2go_privacy_restart_later">Neskôr</string>
+    <string name="k2go_privacy_restart_later_note">Uložené. Zmena sa použije pri ďalšom otvorení aplikácie.</string>
+    <string name="k2go_privacy_restarting">%1$s sa reštartuje. Bude späť asi o 30 sekúnd.</string>
 </resources>

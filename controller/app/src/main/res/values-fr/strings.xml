@@ -1654,4 +1654,20 @@
     <string name="k2go_br_folder_title">Choisissez un dossier de sauvegarde</string>
     <string name="k2go_br_folder_msg">La sauvegarde enregistre deux fichiers dans un dossier. Android ne permet pas aux applis d\'utiliser directement le dossier Download : ouvrez-le, puis créez ou choisissez un dossier à l\'intérieur.</string>
     <string name="k2go_br_folder_choose">Choisir le dossier</string>
+    <string name="k2go_settings_privacy_sub">Services qui contactent des serveurs externes</string>
+    <string name="k2go_privacy_intro">Certains services du serveur peuvent contacter d\'eux-mêmes des serveurs externes. Ces connexions sont désactivées par défaut. N\'en activez une que si vous le souhaitez.</string>
+    <string name="k2go_privacy_kolibri_title">Statistiques d\'utilisation de Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Envoie des chiffres d\'utilisation et les identifiants du serveur à Learning Equality au démarrage de Kolibri et une fois par jour.</string>
+    <string name="k2go_privacy_forgejo_title">Recherche de mises à jour Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Demande au projet Forgejo si une version plus récente est disponible.</string>
+    <string name="k2go_privacy_save_failed">Impossible d\'enregistrer la modification. Réessayez.</string>
+    <string name="k2go_privacy_unreachable">Impossible de lire ces paramètres. Vérifiez que le serveur est allumé, puis réessayez.</string>
+    <string name="k2go_privacy_unsupported">Ces paramètres nécessitent un tableau de bord plus récent. Mettez à jour le tableau de bord, puis réessayez.</string>
+    <string name="k2go_privacy_none">Aucun service installé ne contacte de lui-même des serveurs externes.</string>
+    <string name="k2go_privacy_restart_title">Redémarrer %1$s maintenant ?</string>
+    <string name="k2go_privacy_restart_msg">%1$s est un service actif et quelqu\'un l\'utilise peut-être en ce moment. La modification ne s\'applique qu\'après le redémarrage de %1$s, qui prend environ 30 secondes.</string>
+    <string name="k2go_privacy_restart_now">Redémarrer maintenant</string>
+    <string name="k2go_privacy_restart_later">Plus tard</string>
+    <string name="k2go_privacy_restart_later_note">Enregistré. La modification s\'applique à la prochaine ouverture de l\'application.</string>
+    <string name="k2go_privacy_restarting">Redémarrage de %1$s. Retour dans environ 30 secondes.</string>
 </resources>

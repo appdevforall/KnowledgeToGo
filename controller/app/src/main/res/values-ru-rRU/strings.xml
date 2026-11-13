@@ -1643,4 +1643,20 @@
     <string name="k2go_br_folder_title">Выберите папку для резервных копий</string>
     <string name="k2go_br_folder_msg">Резервная копия сохраняет два файла в папке. Android не разрешает приложениям использовать саму папку Download: откройте её и создайте или выберите папку внутри.</string>
     <string name="k2go_br_folder_choose">Выбрать папку</string>
+    <string name="k2go_settings_privacy_sub">Службы, которые связываются с внешними серверами</string>
+    <string name="k2go_privacy_intro">Некоторые службы на сервере могут сами связываться с внешними серверами. По умолчанию эти соединения выключены. Включайте их, только если они вам нужны.</string>
+    <string name="k2go_privacy_kolibri_title">Статистика использования Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Отправляет данные об использовании и идентификаторы сервера в Learning Equality при запуске Kolibri и раз в сутки.</string>
+    <string name="k2go_privacy_forgejo_title">Проверка обновлений Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Спрашивает у проекта Forgejo, есть ли более новая версия.</string>
+    <string name="k2go_privacy_save_failed">Не удалось сохранить изменение. Повторите попытку.</string>
+    <string name="k2go_privacy_unreachable">Не удалось прочитать эти настройки. Убедитесь, что сервер включён, и повторите попытку.</string>
+    <string name="k2go_privacy_unsupported">Для этих настроек нужна более новая панель. Обновите панель и повторите попытку.</string>
+    <string name="k2go_privacy_none">Ни одна установленная служба не связывается сама с внешними серверами.</string>
+    <string name="k2go_privacy_restart_title">Перезапустить %1$s сейчас?</string>
+    <string name="k2go_privacy_restart_msg">%1$s работает, и кто-то может пользоваться им прямо сейчас. Изменение вступит в силу только после перезапуска %1$s, это занимает около 30 секунд.</string>
+    <string name="k2go_privacy_restart_now">Перезапустить сейчас</string>
+    <string name="k2go_privacy_restart_later">Позже</string>
+    <string name="k2go_privacy_restart_later_note">Сохранено. Изменение применится при следующем открытии приложения.</string>
+    <string name="k2go_privacy_restarting">Перезапуск %1$s. Вернётся примерно через 30 секунд.</string>
 </resources>

@@ -313,6 +313,15 @@ K2GO-554: an official signed download skips the archive listing pass.
 - **Legacy seam:** `Aria2Manager.signedManifestVouchesFor` (after DownloadVerifier) ->
   `InstallService` -> `TarExtractor` trusted single pass. ADR-K2GO-554 (Amendment 1).
 
+**Slice (DONE): privacy switches (`org.appdevforall.k2go.privacy`)**
+K2GO-559: Settings > Privacy, one switch per box service that contacts an outside server.
+
+- `domain/`: `OutboundSwitch`, `PrivacyRepository` (port), `GetOutboundSwitchesUseCase`
+  (installed, known services only; fixed order). Pure JVM, unit-tested.
+- `data/PrivacyRepositoryImpl`: dash-node `/k2go-api/system/privacy`. The state lives in each
+  service's own config (`static/dashboard/sockets/privacy.ts`); the app keeps no copy.
+- `presentation/`: `PrivacyFragment` + `PrivacyViewModel` + factory. Entry: `SettingsFragment`.
+
 **Legacy (NOT yet layered)**: the redesign retired the original god classes
 `MainActivity` and `DeployFragment` (they no longer exist; DONE-slice seams above
 that still name them are pre-redesign records). The current god-tier classes,

@@ -16,7 +16,7 @@
 import { spawn } from 'child_process';
 
 export const RESTARTABLE_SERVICES: readonly string[] = [
-    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web',
+    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web', 'forgejo',
 ];
 
 /** A name is restartable only when it is exactly one of the known upstream content
@@ -28,17 +28,54 @@ export function isRestartableService(name: string): boolean {
 
 const PDSM = '/usr/local/bin/pdsm';
 
-/** Fire-and-forget `pdsm restart <svc>` in-proot. setsid => own session, mirroring the
- *  dash-node rebuild call (routes.ts): a restart can never kill the run that issued it.
- *  Detached + stdio ignored + unref so dash-node does not wait on it. The caller MUST have
- *  validated `svc` with isRestartableService first. Spawn failures are logged, never thrown:
- *  an unheard 'error' event would otherwise crash the REST core. */
-export function restartService(svc: string): void {
+/** One restart per service at a time. A request while one runs is folded into ONE more run after
+ *  it, so two quick requests never interleave their stop/start steps. In memory only: if dash-node
+ *  dies, nothing is lost (a config change is already on disk; the service reads it at its next start). */
+export function createRestartQueue(run: (svc: string, done: () => void) => void): (svc: string) => void {
+    const running = new Set<string>();
+    const again = new Set<string>();
+    const start = (svc: string): void => {
+        running.add(svc);
+        run(svc, () => {
+            running.delete(svc);
+            if (again.delete(svc)) start(svc);
+        });
+    };
+    return (svc: string) => {
+        if (running.has(svc)) again.add(svc);
+        else start(svc);
+    };
+}
+
+/** `pdsm restart <svc>` in-proot. setsid => own session, mirroring the dash-node rebuild call
+ *  (routes.ts): a restart can never kill the run that issued it. `-w` waits for the restart, so the
+ *  queue knows when it ends; a non-zero exit is logged. Spawn failures are logged, never thrown: an
+ *  unheard 'error' event would otherwise crash the REST core. */
+const RESTART_MAX_WAIT_MS = 10 * 60 * 1000;
+
+function runRestart(svc: string, done: () => void): void {
+    let finished = false;
+    // A restart that never ends must not hold the service's queue slot forever.
+    const cap = setTimeout(() => {
+        console.error(`[services] restart ${svc} still running after ${RESTART_MAX_WAIT_MS / 60000} min; queue freed`);
+        finish();
+    }, RESTART_MAX_WAIT_MS);
+    cap.unref();
+    const finish = () => { if (!finished) { finished = true; clearTimeout(cap); done(); } };
     try {
-        const child = spawn('setsid', [PDSM, 'restart', svc], { detached: true, stdio: 'ignore' });
-        child.on('error', (e) => console.error(`[services] restart ${svc} failed to spawn: ${e}`));
+        const child = spawn('setsid', ['-w', PDSM, 'restart', svc], { detached: true, stdio: 'ignore' });
+        child.on('error', (e) => { console.error(`[services] restart ${svc} failed to spawn: ${e}`); finish(); });
+        child.on('exit', (code) => {
+            if (code !== 0) console.error(`[services] restart ${svc} exited ${code}`);
+            finish();
+        });
         child.unref();
     } catch (e) {
         console.error(`[services] restart ${svc} spawn threw: ${e}`);
+        finish();
     }
 }
+
+/** Fire-and-forget, serialized per service. The caller MUST have validated `svc` with
+ *  isRestartableService first. */
+export const restartService = createRestartQueue(runRestart);

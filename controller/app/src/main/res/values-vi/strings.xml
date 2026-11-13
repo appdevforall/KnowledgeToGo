@@ -1567,4 +1567,20 @@
     <string name="k2go_br_folder_title">Chọn thư mục sao lưu</string>
     <string name="k2go_br_folder_msg">Bản sao lưu lưu hai tệp vào một thư mục. Android không cho ứng dụng dùng trực tiếp thư mục Download: hãy mở thư mục đó rồi tạo hoặc chọn một thư mục bên trong.</string>
     <string name="k2go_br_folder_choose">Chọn thư mục</string>
+    <string name="k2go_settings_privacy_sub">Các dịch vụ liên hệ với máy chủ bên ngoài</string>
+    <string name="k2go_privacy_intro">Một số dịch vụ trên máy chủ có thể tự liên hệ với máy chủ bên ngoài. Các kết nối này tắt theo mặc định. Chỉ bật một kết nối nếu bạn muốn.</string>
+    <string name="k2go_privacy_kolibri_title">Thống kê sử dụng Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Gửi số liệu sử dụng và ID máy chủ đến Learning Equality khi Kolibri khởi động và mỗi ngày một lần.</string>
+    <string name="k2go_privacy_forgejo_title">Kiểm tra cập nhật Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Hỏi dự án Forgejo xem có phiên bản mới hơn không.</string>
+    <string name="k2go_privacy_save_failed">Không thể lưu thay đổi. Hãy thử lại.</string>
+    <string name="k2go_privacy_unreachable">Không thể đọc các cài đặt này. Hãy đảm bảo máy chủ đang bật, rồi thử lại.</string>
+    <string name="k2go_privacy_unsupported">Các cài đặt này cần bảng điều khiển mới hơn. Hãy cập nhật bảng điều khiển, rồi thử lại.</string>
+    <string name="k2go_privacy_none">Không có dịch vụ đã cài đặt nào tự liên hệ với máy chủ bên ngoài.</string>
+    <string name="k2go_privacy_restart_title">Khởi động lại %1$s ngay?</string>
+    <string name="k2go_privacy_restart_msg">%1$s là dịch vụ đang chạy và có thể có người đang dùng. Thay đổi chỉ có hiệu lực sau khi %1$s khởi động lại, mất khoảng 30 giây.</string>
+    <string name="k2go_privacy_restart_now">Khởi động lại ngay</string>
+    <string name="k2go_privacy_restart_later">Để sau</string>
+    <string name="k2go_privacy_restart_later_note">Đã lưu. Thay đổi sẽ áp dụng vào lần mở ứng dụng tiếp theo.</string>
+    <string name="k2go_privacy_restarting">Đang khởi động lại %1$s. Sẽ trở lại sau khoảng 30 giây.</string>
 </resources>

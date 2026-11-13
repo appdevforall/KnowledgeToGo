@@ -1584,4 +1584,20 @@
     <string name="k2go_br_folder_title">Pasirinkite atsarginių kopijų aplanką</string>
     <string name="k2go_br_folder_msg">Atsarginė kopija išsaugo du failus aplanke. Android neleidžia programoms naudoti paties Download aplanko: atidarykite jį ir sukurkite arba pasirinkite aplanką jame.</string>
     <string name="k2go_br_folder_choose">Pasirinkti aplanką</string>
+    <string name="k2go_settings_privacy_sub">Paslaugos, kurios jungiasi prie išorinių serverių</string>
+    <string name="k2go_privacy_intro">Kai kurios serverio paslaugos gali pačios jungtis prie išorinių serverių. Pagal numatytuosius nustatymus šie ryšiai išjungti. Įjunkite kurį nors tik jei to norite.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri naudojimo statistika</string>
+    <string name="k2go_privacy_kolibri_sub">Siunčia naudojimo duomenis ir serverio ID į Learning Equality, kai Kolibri paleidžiama, ir kartą per dieną.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo naujinių tikrinimas</string>
+    <string name="k2go_privacy_forgejo_sub">Klausia Forgejo projekto, ar yra naujesnė versija.</string>
+    <string name="k2go_privacy_save_failed">Nepavyko išsaugoti pakeitimo. Bandykite dar kartą.</string>
+    <string name="k2go_privacy_unreachable">Nepavyko nuskaityti šių nustatymų. Įsitikinkite, kad serveris veikia, ir bandykite dar kartą.</string>
+    <string name="k2go_privacy_unsupported">Šiems nustatymams reikia naujesnės sąsajos. Atnaujinkite sąsają ir bandykite dar kartą.</string>
+    <string name="k2go_privacy_none">Nė viena įdiegta paslauga pati nesijungia prie išorinių serverių.</string>
+    <string name="k2go_privacy_restart_title">Paleisti %1$s iš naujo dabar?</string>
+    <string name="k2go_privacy_restart_msg">%1$s yra veikianti paslauga ir šiuo metu kas nors gali ja naudotis. Pakeitimas įsigalioja tik paleidus %1$s iš naujo, tai trunka apie 30 sekundžių.</string>
+    <string name="k2go_privacy_restart_now">Paleisti iš naujo dabar</string>
+    <string name="k2go_privacy_restart_later">Vėliau</string>
+    <string name="k2go_privacy_restart_later_note">Išsaugota. Pakeitimas bus pritaikytas kitą kartą atidarius programą.</string>
+    <string name="k2go_privacy_restarting">%1$s paleidžiama iš naujo. Grįš maždaug po 30 sekundžių.</string>
 </resources>

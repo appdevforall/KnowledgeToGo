@@ -1646,4 +1646,20 @@
     <string name="k2go_br_folder_title">Escolha uma pasta de backup</string>
     <string name="k2go_br_folder_msg">O backup salva dois arquivos em uma pasta. O Android não deixa os apps usarem a pasta Download diretamente: abra-a e crie ou escolha uma pasta dentro dela.</string>
     <string name="k2go_br_folder_choose">Escolher pasta</string>
+    <string name="k2go_settings_privacy_sub">Serviços que contactam servidores externos</string>
+    <string name="k2go_privacy_intro">Alguns serviços no servidor podem contactar servidores externos por conta própria. Estas ligações estão desativadas por padrão. Ative uma apenas se quiser.</string>
+    <string name="k2go_privacy_kolibri_title">Estatísticas de uso do Kolibri</string>
+    <string name="k2go_privacy_kolibri_sub">Envia números de uso e IDs do servidor para a Learning Equality quando o Kolibri inicia e uma vez por dia.</string>
+    <string name="k2go_privacy_forgejo_title">Verificação de atualizações do Forgejo</string>
+    <string name="k2go_privacy_forgejo_sub">Pergunta ao projeto Forgejo se há uma versão mais recente.</string>
+    <string name="k2go_privacy_save_failed">Não foi possível guardar a alteração. Tente novamente.</string>
+    <string name="k2go_privacy_unreachable">Não foi possível ler estas definições. Verifique se o servidor está ligado e tente novamente.</string>
+    <string name="k2go_privacy_unsupported">Estas definições precisam de um painel mais recente. Atualize o painel e tente novamente.</string>
+    <string name="k2go_privacy_none">Nenhum serviço instalado contacta servidores externos por conta própria.</string>
+    <string name="k2go_privacy_restart_title">Reiniciar %1$s agora?</string>
+    <string name="k2go_privacy_restart_msg">%1$s é um serviço em execução e alguém pode estar a usá-lo agora. A alteração só tem efeito depois de reiniciar %1$s, o que demora cerca de 30 segundos.</string>
+    <string name="k2go_privacy_restart_now">Reiniciar agora</string>
+    <string name="k2go_privacy_restart_later">Mais tarde</string>
+    <string name="k2go_privacy_restart_later_note">Guardado. A alteração aplica-se na próxima vez que a app abrir.</string>
+    <string name="k2go_privacy_restarting">A reiniciar %1$s. Volta em cerca de 30 segundos.</string>
 </resources>

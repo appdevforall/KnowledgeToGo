@@ -1568,4 +1568,20 @@
     <string name="k2go_br_folder_title">백업 폴더 선택</string>
     <string name="k2go_br_folder_msg">백업은 폴더에 파일 두 개를 저장합니다. Android에서는 앱이 Download 폴더 자체를 사용할 수 없습니다. Download를 열고 그 안에 폴더를 만들거나 선택하세요.</string>
     <string name="k2go_br_folder_choose">폴더 선택</string>
+    <string name="k2go_settings_privacy_sub">외부 서버에 연결하는 서비스</string>
+    <string name="k2go_privacy_intro">서버의 일부 서비스는 스스로 외부 서버에 연결할 수 있습니다. 이 연결은 기본적으로 꺼져 있습니다. 원하는 경우에만 켜세요.</string>
+    <string name="k2go_privacy_kolibri_title">Kolibri 사용 통계</string>
+    <string name="k2go_privacy_kolibri_sub">Kolibri가 시작될 때와 하루에 한 번 사용 수치와 서버 ID를 Learning Equality에 보냅니다.</string>
+    <string name="k2go_privacy_forgejo_title">Forgejo 업데이트 확인</string>
+    <string name="k2go_privacy_forgejo_sub">Forgejo 프로젝트에 새 버전이 있는지 확인합니다.</string>
+    <string name="k2go_privacy_save_failed">변경 사항을 저장할 수 없습니다. 다시 시도하세요.</string>
+    <string name="k2go_privacy_unreachable">이 설정을 읽을 수 없습니다. 서버가 켜져 있는지 확인한 다음 다시 시도하세요.</string>
+    <string name="k2go_privacy_unsupported">이 설정에는 최신 대시보드가 필요합니다. 대시보드를 업데이트한 다음 다시 시도하세요.</string>
+    <string name="k2go_privacy_none">스스로 외부 서버에 연결하는 설치된 서비스가 없습니다.</string>
+    <string name="k2go_privacy_restart_title">지금 %1$s을(를) 다시 시작할까요?</string>
+    <string name="k2go_privacy_restart_msg">%1$s은(는) 실행 중인 서비스이며 지금 누군가 사용 중일 수 있습니다. 변경 사항은 %1$s을(를) 다시 시작한 후에만 적용되며 약 30초가 걸립니다.</string>
+    <string name="k2go_privacy_restart_now">지금 다시 시작</string>
+    <string name="k2go_privacy_restart_later">나중에</string>
+    <string name="k2go_privacy_restart_later_note">저장했습니다. 다음에 앱을 열 때 변경 사항이 적용됩니다.</string>
+    <string name="k2go_privacy_restarting">%1$s을(를) 다시 시작하는 중입니다. 약 30초 후에 돌아옵니다.</string>
 </resources>

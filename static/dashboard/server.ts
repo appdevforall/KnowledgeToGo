@@ -16,6 +16,18 @@ import './sockets/forgejo.exec';        // K2GO-443: forgejo repo-refresh runner
 import { apiRouter } from './routes';
 import { startServiceHeal } from './sockets/service-heal';
 import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
+import { applyPrivacyDefaultsOnce, PRIVACY_DEFAULTS_MARKER, PRIVACY_SWITCHES } from './sockets/privacy';
+
+// K2GO-559: one-time privacy defaults, before the API answers. Only the live service runs it: the
+// rebuild's staged smoke instance sets PORT and must not change the box (tools/rebuild-dashboard.sh).
+if (process.env.PORT === undefined) {
+    try {
+        const r = applyPrivacyDefaultsOnce(PRIVACY_SWITCHES, PRIVACY_DEFAULTS_MARKER);
+        if (r.ran) console.log(`[privacy] defaults applied once; turned off (pending: restarted at the next app open): ${r.changed.join(', ') || 'none'}`);
+    } catch (e) {
+        console.error('[privacy] one-time defaults failed; retry at next start', e);
+    }
+}
 
 const app = express();
 const server = http.createServer(app);
