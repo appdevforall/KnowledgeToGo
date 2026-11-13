@@ -146,14 +146,8 @@ public class UpdateController {
                     Log.d(TAG, "OTA: Server Base=" + serverVersionCodeBase + " | Local Base=" + localVersionCodeBase + " (Raw Local: " + currentVersionCode + ")");
 
                     if (serverVersionCodeBase > localVersionCodeBase) {
-                        String deviceArch = Build.SUPPORTED_ABIS.length > 0 ? Build.SUPPORTED_ABIS[0] : "unknown";
-                        String apkKey = "apk_universal";
-                        if (deviceArch.contains("arm64") || deviceArch.contains("aarch64")) {
-                            apkKey = "apk_arm64_v8a";
-                        } else if (deviceArch.contains("armeabi") || deviceArch.contains("armv7")) {
-                            apkKey = "apk_armeabi_v7a";
-                        }
-                        String apkName = json.optString(apkKey, json.optString("apk_universal"));
+                        // K2GO-565: one APK for every ABI.
+                        String apkName = json.getString("apk_universal");
                         String downloadUrl = APK_BASE_URL + apkName;
                         activity.runOnUiThread(() -> showUpdateDialog(serverVersionName, changelog, downloadUrl));
                     } else if (isManual) {

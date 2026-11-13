@@ -147,8 +147,8 @@ jobs:
           TAG="$RELEASE_TAG"
           echo "Release tag: $TAG"
 
-          # versionCodeBase = the app module's raw versionCode (the app divides the installed,
-          # ABI-multiplied code by 10 to compare). First versionCode in controller/app/build.gradle.
+          # versionCodeBase = the app module's raw versionCode (the app divides the installed
+          # code, base x 10, by 10 to compare). First versionCode in controller/app/build.gradle.
           VCODE=$(grep -oE 'versionCode[[:space:]]+[0-9]+' controller/app/build.gradle | head -1 | grep -oE '[0-9]+')
           echo "versionCodeBase: $VCODE"
 
@@ -162,29 +162,24 @@ jobs:
           CHANGELOG=$(awk '/^## /{n++; next} n==1{print}' controller/ci/ota-release-notes.md | sed '/^[[:space:]]*$/d')
           echo "Changelog:"; printf '%s\n' "$CHANGELOG"
 
-          # Built APK basenames per ABI (the binaries just uploaded to R2).
+          # The one standard APK just uploaded to R2 (K2GO-565: no ABI splits).
           # OTA update.json covers the standard flavor only (fdroid ships with OTA disabled).
-          find_apk() { find controller -path "*/build/outputs/apk/standard/release/*$1*.apk" -printf '%f\n' | head -1; }
-          # The APK filenames abbreviate the split's ABI (arm64-v8a -> v8a); see build.gradle.
-          APK_ARM64=$(find_apk "-v8a-")
-          APK_ARM32=$(find_apk "-v7a-")
-          APK_UNIVERSAL=$(find_apk "-universal-")
-          echo "arm64=$APK_ARM64 | arm32=$APK_ARM32 | universal=$APK_UNIVERSAL"
-          if [ -z "$APK_ARM64" ] || [ -z "$APK_ARM32" ] || [ -z "$APK_UNIVERSAL" ]; then
-            echo "::error::Missing one or more built APKs (arm64='$APK_ARM64' arm32='$APK_ARM32' universal='$APK_UNIVERSAL'); aborting instead of publishing an incomplete manifest."
+          APK=$(find controller -path "*/build/outputs/apk/standard/release/*.apk" -printf '%f\n')
+          echo "apk=$APK"
+          if [ -z "$APK" ] || [ "$(printf '%s\n' "$APK" | wc -l)" -ne 1 ]; then
+            echo "::error::Expected exactly one standard APK, found: '$APK'. Aborting instead of publishing a wrong manifest."
             exit 1
           fi
 
-          # jq escapes the multiline changelog safely into a JSON string.
+          # jq escapes the multiline changelog safely into a JSON string. Installs up to v1.1 pick
+          # apk_arm64_v8a / apk_armeabi_v7a by ABI, so those keys also name the one APK.
           jq -n \
             --argjson vcode "$VCODE" \
             --arg vname "$TAG" \
             --arg changelog "$CHANGELOG" \
-            --arg arm64 "$APK_ARM64" \
-            --arg arm32 "$APK_ARM32" \
-            --arg universal "$APK_UNIVERSAL" \
+            --arg apk "$APK" \
             '{versionCodeBase: $vcode, versionName: $vname, changelog: $changelog,
-              apk_arm64_v8a: $arm64, apk_armeabi_v7a: $arm32, apk_universal: $universal}' \
+              apk_universal: $apk, apk_arm64_v8a: $apk, apk_armeabi_v7a: $apk}' \
             > update.json
           echo "----- update.json -----"; cat update.json
 

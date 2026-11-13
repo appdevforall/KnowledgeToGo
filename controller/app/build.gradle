@@ -5,10 +5,6 @@ plugins {
     // (present -> Firebase on; absent -> AnalyticsClient compiles out and the build still works).
 }
 
-// 1. AUTO-VERSIONING MAP (Must be defined outside the 'android' block)
-// Assigns a unique ID to each architecture so Version Codes do not collide.
-ext.abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2]
-
 // ADFA-4787: make every build traceable to its commit. Reads the short git SHA (plus a "-dirty"
 // marker for an unclean working tree) so LOCAL Android Studio builds are stamped too — CI still
 // overrides this via -PversionSuffix. Degrades to "" if git isn't available (e.g. source tarball),
@@ -47,7 +43,7 @@ android {
         targetSdk 36
 
         // 3. Version Control (OTA)
-        // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
+        // NOTE: the APK carries this number x 10 (71 -> 710); see "VERSION CODE AND APK NAME" below
         versionCode 71
         // Dynamic version suffix: CI passes -PversionSuffix explicitly; local builds fall back to
         // the git short SHA (ADFA-4787) so any installed APK is traceable to its commit.
@@ -65,23 +61,15 @@ android {
         // off (F-Droid forbids an app that downloads and installs its own APK; the store updates it).
         buildConfigField "boolean", "OTA_ENABLED", "true"
 
-        // 4. Supported architectures (NDK) - Dropping x86/x86_64
+        // 4. Supported architectures: ARM only. No rootfs exists for x86, so an x86 install
+        // could never finish setup. K2GO-565: one APK carries both ARM ABIs (no ABI splits), so
+        // a phone can share the app with any other phone, 32-bit or 64-bit.
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-    }
-
-    // 5. GENERATE MULTIPLE APKS (Splits)
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a"
-            universalApk true // Also generates a fat APK with both architectures
-        }
     }
 
     // K2GO-510: no config splits in the Play AAB, so Play installs one complete base.apk. Clone
@@ -228,45 +216,32 @@ android {
         includeInBundle = false
     }
 
-    // 9. DYNAMIC VERSIONING OVERRIDE
-    // Applies the math algorithm to ensure unique Version Codes per APK split
+    // 9. VERSION CODE AND APK NAME
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            // Try to fetch the ABI code defined at the top of the file
-            def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter(com.android.build.OutputFile.ABI))
+            // Keep versionCode x 10. Releases up to v1.1 shipped ABI splits as base*10 + 0/1/2
+            // (universal/arm32/arm64), so a bare base (72) would be a downgrade from 712 and Android
+            // would refuse the update. The OTA updater divides by 10 (update/domain/UpdateCheck).
+            output.versionCodeOverride = variant.versionCode * 10
 
-            // If null, it's the Universal APK. We assign 0.
-            if (baseAbiVersionCode == null) {
-                baseAbiVersionCode = 0
-            }
-
-            // Multiply original version by 10 and add the architecture ID
-            // Ex: Version 50 -> Universal: 500, ARM32: 501, ARM64: 502
-            output.versionCodeOverride = (variant.versionCode * 10) + baseAbiVersionCode
             // K2GO-564: a Play candidate takes the code Play assigns next (highest used + 1),
             // passed by .github/workflows/play-candidate.yml. Other flavors keep the rule above.
             if (variant.flavorName == "play" && project.hasProperty('playVersionCode')) {
                 output.versionCodeOverride = project.property('playVersionCode') as int
             }
 
-            // Shorten the split's ABI in the filename: arm64-v8a -> v8a, armeabi-v7a -> v7a.
-            // Gradle names outputs after the split, so archivesBaseName alone cannot do this.
-            // Renaming here, beside the version-code override, keeps one block owning the outputs.
-            //   K2Go-v1.0.0-v8a-release.apk                  a tagged release (no suffix)
-            //   K2Go-v0.8.0-beta-4fb99eb4-v8a-release.apk    a Firebase or local build
-            def abi = output.getFilter(com.android.build.OutputFile.ABI)
-            def shortAbi = abi == null ? "universal" : abi.replace("arm64-", "").replace("armeabi-", "")
-            // K2GO-402: two flavors can share versionName+abi+buildType. Disambiguate the fdroid APK
-            // with a "-fdroid" marker; keep the standard build's filename unchanged (CI expects it).
+            //   K2Go-v1.2.0-release.apk                  a tagged release (no suffix)
+            //   K2Go-v1.2.0-4fb99eb4-release.apk         a Firebase or local build
+            // K2GO-402: the flavors share versionName+buildType, so fdroid and play get a marker.
             def flavorMark = variant.flavorName == "fdroid" ? "-fdroid"
                     : variant.flavorName == "play" ? "-play" : ""
-            output.outputFileName = "K2Go-${variant.versionName}${flavorMark}-${shortAbi}-${variant.buildType.name}.apk"
+            output.outputFileName = "K2Go-${variant.versionName}${flavorMark}-${variant.buildType.name}.apk"
         }
     }
 }
 
 // Gradle 9: archivesName replaces the deprecated archivesBaseName (BasePluginConvention, removed in
-// Gradle 9). It names the AAB bundle and other base-plugin archives "K2Go-<version>"; the per-ABI APK
+// Gradle 9). It names the AAB bundle and other base-plugin archives "K2Go-<version>"; the APK
 // names are set in the applicationVariants block above. The APK carries the product name, not the
 // technical id (these files are downloaded by people from a public bucket); the id still lives inside.
 base {
