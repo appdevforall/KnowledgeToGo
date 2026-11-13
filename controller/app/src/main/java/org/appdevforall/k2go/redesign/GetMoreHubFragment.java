@@ -280,7 +280,7 @@ public class GetMoreHubFragment extends Fragment {
         android.content.Context c = getContext();
         boolean replacing = getActivity() instanceof SetupLibraryActivity
                 && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
-        return c != null && !replacing ? org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(c)
+        return c != null && !replacing ? org.appdevforall.k2go.arch.data.AbiSource.moduleAbi(c)
                 : org.appdevforall.k2go.arch.data.AbiSource.appAbi();
     }
 

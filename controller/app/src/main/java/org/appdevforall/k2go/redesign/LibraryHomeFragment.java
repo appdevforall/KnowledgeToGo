@@ -214,10 +214,12 @@ public class LibraryHomeFragment extends Fragment {
     // K2GO-445/415/416: drop a module the app runtime cannot run (a 64-bit-only module on a 32-bit app)
     // or one the user hid from Home. The group tile (no backing module) is never dropped here.
     private void filterHidden(List<Card> list) {
-        final String libraryAbi = org.appdevforall.k2go.arch.data.AbiSource.libraryOrAppAbi(requireContext());
+        final String libraryAbi = org.appdevforall.k2go.arch.data.AbiSource.moduleAbi(requireContext());
         for (java.util.Iterator<Card> it = list.iterator(); it.hasNext(); ) {
             Card card = it.next();
-            if (unsupported(card, libraryAbi)) { it.remove(); continue; }
+            if (!org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(card.requires64, libraryAbi)) {
+                it.remove(); continue;
+            }
             ModuleCards.Card m = ModuleCards.byEndpoint(card.endpoint);
             if (m != null && HiddenModules.contains(requireContext(), m.key())) it.remove();
         }
@@ -576,13 +578,6 @@ public class LibraryHomeFragment extends Fragment {
 
     @Override public void onResume() { super.onResume(); main.post(poll); }
     @Override public void onPause() { super.onPause(); main.removeCallbacks(poll); }
-
-    // K2GO-416/571: a 64-bit-only module is unsupported in a 32-bit library, even on a 64-bit app
-    // (ADR-K2GO-571). Home uses its own Card type (field requires64), so it applies the same rule as
-    // ModuleCards.Card.runsOn() to the library ABI the caller read once.
-    private static boolean unsupported(Card c, String libraryAbi) {
-        return c.requires64 && org.appdevforall.k2go.arch.domain.LibraryArch.bitsOf(libraryAbi) != 64;
-    }
 
     // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
     private volatile boolean provisionProbing = false;

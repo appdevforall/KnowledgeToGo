@@ -47,13 +47,10 @@ public final class ModuleCards {
         public String endpoint() { return module.endpoint; }
         public boolean requires64Bit() { return module.requires64Bit; }
 
-        /** K2GO-415/571: true when this module can run in a library of {@code libraryAbi}. A 64-bit-only
-         *  module (e.g. Kiwix) runs inside the library, so the library's ABI decides, not the app's:
-         *  a 64-bit app can run a 32-bit library (ADR-K2GO-571). Callers pass
-         *  AbiSource.libraryOrAppAbi(ctx). One home for this check so callers do not re-derive it. */
+        /** K2GO-415/571: true when this module can run in a library of {@code libraryAbi}
+         *  (AbiSource.moduleAbi). The library's ABI decides, not the app's (ADR-K2GO-571). */
         public boolean runsOn(String libraryAbi) {
-            return !requires64Bit()
-                    || org.appdevforall.k2go.arch.domain.LibraryArch.bitsOf(libraryAbi) == 64;
+            return org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(requires64Bit(), libraryAbi);
         }
     }
 

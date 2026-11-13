@@ -55,7 +55,9 @@ app process. A 64-bit app accepts a 32-bit library when the phone can run 32-bit
    - Backup (identity file, file name, companion): the library ABI. The companion `X.tar.json`
      also gets `deb_arch` (`arm64` or `armhf`), the same pair as the identity file, so the JSON alone
      tells a 32-bit backup from a 64-bit one. Readers ignore unknown keys, so older files still read.
-   - 64-bit-only modules: offered only when the library is 64-bit.
+   - 64-bit-only modules: offered only when the library is 64-bit. With no library, the app ABI
+     decides. When a tree exists but its ABI cannot be read (a restore or a Clone mid-way), the
+     module stays hidden (fail closed). The rule lives in `LibraryArch.supportsModule`.
    - Fresh install with no library: the app ABI (no change).
 4. No cache. The identity file is a few hundred bytes, read when a caller needs it. A restore or
    a Clone that replaces the library is seen at once, and there is no state to set or clear.

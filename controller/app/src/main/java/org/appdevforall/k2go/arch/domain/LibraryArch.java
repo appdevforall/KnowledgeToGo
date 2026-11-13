@@ -47,6 +47,14 @@ public final class LibraryArch {
         return libraryBits == appBits || (libraryBits == 32 && appBits == 64 && phoneRuns32Bit);
     }
 
+    /**
+     * True when a module can run in a library of {@code libraryAbi}. A 64-bit-only module (e.g. Kiwix)
+     * needs a 64-bit library; an unknown ABI ({@code null}) fails closed.
+     */
+    public static boolean supportsModule(boolean requires64Bit, String libraryAbi) {
+        return !requires64Bit || bitsOf(libraryAbi) == 64;
+    }
+
     /** {@link #canRun(int, int, boolean)} for ABI ids. */
     public static boolean canRun(String libraryAbi, String appAbi, boolean phoneRuns32Bit) {
         return canRun(bitsOf(libraryAbi), bitsOf(appAbi), phoneRuns32Bit);

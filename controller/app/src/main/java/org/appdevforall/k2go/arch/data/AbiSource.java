@@ -44,6 +44,16 @@ public final class AbiSource {
         return abi != null ? abi : appAbi();
     }
 
+    /**
+     * The library ABI for the module gate: the app's when no library is installed (a fresh install gets
+     * it), else the installed one. {@code null} while a tree exists but its ABI cannot be told (a restore
+     * or a Clone mid-way), so a 64-bit-only module stays hidden.
+     */
+    public static String moduleAbi(Context ctx) {
+        java.io.File root = SystemStateEvaluator.rootfsDir(ctx);
+        return root.isDirectory() ? InstalledLibraryAbi.read(root) : appAbi();
+    }
+
     /** {@link LibraryArch#canRun(String, String, boolean)} for this app on this phone. */
     public static boolean canRun(String libraryAbi) {
         return LibraryArch.canRun(libraryAbi, appAbi(), phoneRuns32Bit());

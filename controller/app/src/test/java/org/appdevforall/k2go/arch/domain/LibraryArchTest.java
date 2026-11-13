@@ -48,4 +48,13 @@ public class LibraryArchTest {
         assertNull(LibraryArch.debArchOf(null));
         assertTrue(LibraryArch.canRun(LibraryArch.ARM32, LibraryArch.ARM64, true));
     }
+
+    @Test
+    public void aModuleThatNeeds64BitRunsOnlyInAKnown64BitLibrary() {
+        assertTrue(LibraryArch.supportsModule(true, LibraryArch.ARM64));
+        assertFalse(LibraryArch.supportsModule(true, LibraryArch.ARM32));
+        assertFalse(LibraryArch.supportsModule(true, null));   // mid-restore: fail closed
+        assertTrue(LibraryArch.supportsModule(false, LibraryArch.ARM32));
+        assertTrue(LibraryArch.supportsModule(false, null));
+    }
 }
