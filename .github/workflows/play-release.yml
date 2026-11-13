@@ -1,0 +1,64 @@
+name: Play release (publish an approved candidate)
+
+# K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
+# Run this after Google approved a candidate. It tags the SAME commit as the rc tag with the final
+# version (v1.2.0-rc.2 -> v1.2.0) and runs the release build: GitHub Release, website APKs, R2 and
+# the OTA update.json. Nothing is rebuilt for Play: in Play Console, press "Publish changes" to
+# release the AAB that Google approved (Play has no API for that button).
+
+on:
+  workflow_dispatch:
+    inputs:
+      rc_tag:
+        description: "Approved candidate tag, for example v1.2.0-rc.2"
+        required: true
+
+concurrency:
+  group: play-publish
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag the approved candidate as the release
+    runs-on: ubuntu-latest
+    environment: google-play
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.final.outputs.tag }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Create the final tag on the candidate commit
+        id: final
+        env:
+          RC_TAG: ${{ inputs.rc_tag }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$RC_TAG" =~ ^(v[0-9]+\.[0-9]+\.[0-9]+)-rc\.[0-9]+$ ]]; then
+            echo "::error::'$RC_TAG' is not a candidate tag (vX.Y.Z-rc.N)"; exit 1
+          fi
+          final="${BASH_REMATCH[1]}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$final" >/dev/null; then
+            echo "::error::$final already exists; a released version is closed"; exit 1
+          fi
+          git fetch --no-tags origin "refs/tags/$RC_TAG:refs/tags/$RC_TAG"
+          git tag "$final" "$RC_TAG^{commit}"
+          git push origin "refs/tags/$final"
+          echo "tag=$final" >> "$GITHUB_OUTPUT"
+          {
+            echo "## $final tagged on $(git rev-parse "$RC_TAG^{commit}") (from $RC_TAG)"
+            echo "- Now press **Publish changes** in Play Console to release the approved AAB."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # A tag pushed with GITHUB_TOKEN does not start other workflows, so call the release build here.
+  release:
+    name: Release build (GitHub, website, OTA)
+    needs: tag
+    permissions:
+      contents: write
+    uses: ./.github/workflows/android-release-build.yml
+    with:
+      tag: ${{ needs.tag.outputs.tag }}
+    secrets: inherit
