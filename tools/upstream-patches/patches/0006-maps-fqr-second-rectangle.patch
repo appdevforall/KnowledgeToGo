@@ -1,0 +1,18 @@
+Upstream-PR:     https://github.com/iiab/iiab/pull/4577
+Upstream-Status: open
+Applies-to:      roles/maps/templates/index.html.j2
+Summary:         Fix the TypeError when you draw a second region-download rectangle. removeOtherRectangles is a plain inner function, so `this` is undefined there; use thisControl. Without the fix, rectangle B is not drawn and the tool stops until Cancel (K2GO-566). Drop this patch when iiab#4577 is in the pinned iiab/iiab commit.
+
+diff --git a/roles/maps/templates/index.html.j2 b/roles/maps/templates/index.html.j2
+index 6973d6e4e..d92f0b8e3 100644
+--- a/roles/maps/templates/index.html.j2
++++ b/roles/maps/templates/index.html.j2
+@@ -1754,7 +1754,7 @@
+                     function removeOtherRectangles(id) {
+                         for (let feature of thisControl._drawControl.getFeatures().features) {
+                             if (feature.id !== id) {
+-                                this._terraDrawInstance.removeFeatures([feature.id])
++                                thisControl._terraDrawInstance.removeFeatures([feature.id])
+                             }
+                         }
+                     }
