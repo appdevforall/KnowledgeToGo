@@ -13,13 +13,15 @@ package org.appdevforall.k2go.update.domain;
  * Pure (framework-free) rules for the in-app OTA updater.
  *
  * <p>The server publishes a {@code versionCodeBase}; the installed app's raw
- * {@code versionCode} maps to the same base by integer division by 10 (the
- * project's per-ABI versioning scheme). An update is offered only when the
- * server base is strictly greater.
+ * {@code versionCode} is that base x 10 (build.gradle), so integer division by 10
+ * maps it back. An update is offered only when the server base is strictly greater.
  */
 public final class UpdateCheck {
 
-    /** The project encodes the ABI in the last digit of the versionCode. */
+    /**
+     * The APK versionCode is base x 10. Up to v1.1 the last digit named the ABI split
+     * (0/1/2); since K2GO-565 it is always 0, kept so that v1.1 split installs update.
+     */
     public static final int VERSION_CODE_ABI_FACTOR = 10;
 
     private UpdateCheck() {
