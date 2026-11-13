@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">Kopie onderbroken</string>
     <string name="k2go_damaged_clone_body">De kopie van de andere telefoon is gestopt voordat deze klaar was, en het systeem kan niet starten. Probeer de kopie opnieuw, of herstel met een back-up of een nieuwe installatie.</string>
     <string name="k2go_damaged_clone_retry">Kopie opnieuw proberen</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Sneller herstellen</string>
+    <string name="k2go_br_pair_companion_msg">Selecteer ook %1$s of %2$s uit dezelfde map. De app controleert het archief dan tijdens het kopiëren en slaat een volledige ronde over.</string>
+    <string name="k2go_br_pair_tarball_title">Selecteer het archief</string>
+    <string name="k2go_br_pair_tarball_msg">Selecteer %1$s, het archief bij dit bestand.</string>
+    <string name="k2go_br_pair_missing">%1$s staat niet in dezelfde map.</string>
+    <string name="k2go_br_pair_select">Selecteren</string>
+    <string name="k2go_br_pair_skip">Overslaan</string>
+    <string name="k2go_br_folder_title">Kies een back-upmap</string>
+    <string name="k2go_br_folder_msg">De back-up slaat twee bestanden op in een map. Android laat apps de map Download zelf niet gebruiken: open hem en maak of kies er een map in.</string>
+    <string name="k2go_br_folder_choose">Map kiezen</string>
 </resources>

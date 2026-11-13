@@ -1556,4 +1556,15 @@
     <string name="k2go_damaged_clone_title">توقف النسخ</string>
     <string name="k2go_damaged_clone_body">توقف النسخ من الهاتف الآخر قبل أن ينتهي، ولا يمكن تشغيل النظام. أعد محاولة النسخ، أو استعد النظام من نسخة احتياطية أو بتثبيت جديد.</string>
     <string name="k2go_damaged_clone_retry">أعد محاولة النسخ</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">استعادة أسرع</string>
+    <string name="k2go_br_pair_companion_msg">اختر أيضًا %1$s أو %2$s من المجلد نفسه. عندها يتحقق التطبيق من الأرشيف أثناء نسخه ويتخطى مرورًا كاملًا.</string>
+    <string name="k2go_br_pair_tarball_title">اختر الأرشيف</string>
+    <string name="k2go_br_pair_tarball_msg">اختر %1$s، الأرشيف المرتبط بهذا الملف.</string>
+    <string name="k2go_br_pair_missing">%1$s ليس في المجلد نفسه.</string>
+    <string name="k2go_br_pair_select">اختيار</string>
+    <string name="k2go_br_pair_skip">تخطي</string>
+    <string name="k2go_br_folder_title">اختر مجلدًا للنسخ الاحتياطية</string>
+    <string name="k2go_br_folder_msg">تحفظ النسخة الاحتياطية ملفين في مجلد. لا يسمح Android للتطبيقات باستخدام مجلد Download نفسه: افتحه وأنشئ مجلدًا بداخله أو اختر واحدًا.</string>
+    <string name="k2go_br_folder_choose">اختيار المجلد</string>
 </resources>

@@ -1557,4 +1557,15 @@
     <string name="k2go_damaged_clone_title">コピーが中断されました</string>
     <string name="k2go_damaged_clone_body">もう一方のスマートフォンからのコピーが完了前に止まったため、システムを起動できません。もう一度コピーするか、バックアップまたは新規インストールで復旧してください。</string>
     <string name="k2go_damaged_clone_retry">コピーを再試行</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">より速く復元</string>
+    <string name="k2go_br_pair_companion_msg">同じフォルダから %1$s または %2$s も選択してください。アプリはコピー中にアーカイブを確認し、1 回分の処理を省略します。</string>
+    <string name="k2go_br_pair_tarball_title">アーカイブを選択</string>
+    <string name="k2go_br_pair_tarball_msg">このファイルに対応するアーカイブ %1$s を選択してください。</string>
+    <string name="k2go_br_pair_missing">%1$s は同じフォルダにありません。</string>
+    <string name="k2go_br_pair_select">選択</string>
+    <string name="k2go_br_pair_skip">スキップ</string>
+    <string name="k2go_br_folder_title">バックアップ用のフォルダを選択</string>
+    <string name="k2go_br_folder_msg">バックアップはフォルダに 2 つのファイルを保存します。Android ではアプリが Download フォルダそのものを使用できません。Download を開き、その中にフォルダを作成または選択してください。</string>
+    <string name="k2go_br_folder_choose">フォルダを選択</string>
 </resources>

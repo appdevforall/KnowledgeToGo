@@ -1576,4 +1576,15 @@
     <string name="k2go_damaged_clone_title">Unakili umekatizwa</string>
     <string name="k2go_damaged_clone_body">Unakili kutoka simu nyingine ulisimama kabla ya kumalizika, na mfumo hauwezi kuanza. Jaribu kunakili tena, au rejesha kwa nakala rudufu au usakinishaji mpya.</string>
     <string name="k2go_damaged_clone_retry">Jaribu kunakili tena</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Rejesha kwa haraka zaidi</string>
+    <string name="k2go_br_pair_companion_msg">Chagua pia %1$s au %2$s kutoka folda ileile. Kisha programu hukagua kumbukumbu wakati inainakili na kuruka mzunguko mmoja kamili.</string>
+    <string name="k2go_br_pair_tarball_title">Chagua kumbukumbu</string>
+    <string name="k2go_br_pair_tarball_msg">Chagua %1$s, kumbukumbu inayoenda na faili hii.</string>
+    <string name="k2go_br_pair_missing">%1$s haiko kwenye folda ileile.</string>
+    <string name="k2go_br_pair_select">Chagua</string>
+    <string name="k2go_br_pair_skip">Ruka</string>
+    <string name="k2go_br_folder_title">Chagua folda ya nakala rudufu</string>
+    <string name="k2go_br_folder_msg">Nakala rudufu huhifadhi faili mbili kwenye folda. Android hairuhusu programu kutumia folda ya Download yenyewe: ifungue kisha unda au chagua folda ndani yake.</string>
+    <string name="k2go_br_folder_choose">Chagua folda</string>
 </resources>

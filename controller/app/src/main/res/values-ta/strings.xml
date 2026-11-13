@@ -1576,4 +1576,15 @@
     <string name="k2go_damaged_clone_title">நகலெடுப்பு தடைபட்டது</string>
     <string name="k2go_damaged_clone_body">மற்ற தொலைபேசியிலிருந்து நகலெடுப்பு முடிவதற்கு முன் நின்றுவிட்டது, கணினியைத் தொடங்க முடியவில்லை. மீண்டும் நகலெடுக்க முயலவும், அல்லது காப்புப்பிரதி அல்லது புதிய நிறுவல் மூலம் மீட்டெடுக்கவும்.</string>
     <string name="k2go_damaged_clone_retry">மீண்டும் நகலெடு</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">விரைவாக மீட்டமை</string>
+    <string name="k2go_br_pair_companion_msg">அதே கோப்புறையிலிருந்து %1$s அல்லது %2$s-ஐயும் தேர்ந்தெடுக்கவும். அப்போது ஆப் நகலெடுக்கும்போதே காப்பகத்தைச் சரிபார்த்து ஒரு முழுச் சுற்றைத் தவிர்க்கும்.</string>
+    <string name="k2go_br_pair_tarball_title">காப்பகத்தைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_br_pair_tarball_msg">%1$s-ஐத் தேர்ந்தெடுக்கவும், இந்தக் கோப்புடன் வரும் காப்பகம்.</string>
+    <string name="k2go_br_pair_missing">%1$s அதே கோப்புறையில் இல்லை.</string>
+    <string name="k2go_br_pair_select">தேர்ந்தெடு</string>
+    <string name="k2go_br_pair_skip">தவிர்</string>
+    <string name="k2go_br_folder_title">காப்புப்பிரதி கோப்புறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_br_folder_msg">காப்புப்பிரதி ஒரு கோப்புறையில் இரண்டு கோப்புகளைச் சேமிக்கிறது. Download கோப்புறையையே நேரடியாகப் பயன்படுத்த Android ஆப்களை அனுமதிப்பதில்லை: அதைத் திறந்து அதற்குள் ஒரு கோப்புறையை உருவாக்கவும் அல்லது தேர்ந்தெடுக்கவும்.</string>
+    <string name="k2go_br_folder_choose">கோப்புறையைத் தேர்ந்தெடு</string>
 </resources>

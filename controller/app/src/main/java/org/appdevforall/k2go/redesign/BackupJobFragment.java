@@ -230,8 +230,23 @@ public class BackupJobFragment extends Fragment {
             popToIntro(false);
             return;
         }
-        if (isRestore()) openDoc.launch(new String[]{"application/gzip", "application/x-gzip", "*/*"});
-        else pickFolder.launch(org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext()));
+        if (isRestore()) {
+            openDoc.launch(new String[]{"application/gzip", "application/x-gzip", "*/*"});
+            return;
+        }
+        Uri folder = org.appdevforall.k2go.backup.data.BackupFolder.get(requireContext());
+        if (folder != null) {
+            pickFolder.launch(folder);
+            return;
+        }
+        // K2GO-570: the picker opens on Download, which Android refuses as a folder; say so first.
+        new BrandDialog(requireContext())
+                .setTitle(R.string.k2go_br_folder_title)
+                .setMessage(R.string.k2go_br_folder_msg)
+                .setPositive(R.string.k2go_br_folder_choose, BrandDialog.Role.PRIMARY, () -> pickFolder.launch(null))
+                .setNegative(R.string.cancel, () -> popToIntro(false))
+                .setOnCancel(() -> popToIntro(false))
+                .show();
     }
 
     // ---- BACKUP ----
@@ -319,6 +334,10 @@ public class BackupJobFragment extends Fragment {
                 .setNegative(noRes, () -> {
                     pairFirst = null;
                     if (wantsTarball) popToIntro(false); else prepareRestore(first, null);
+                })
+                .setOnCancel(() -> {
+                    pairFirst = null;
+                    popToIntro(false);
                 })
                 .show();
     }

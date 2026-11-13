@@ -1576,4 +1576,15 @@
     <string name="k2go_damaged_clone_title">Ìdàkọ ti dá dúró</string>
     <string name="k2go_damaged_clone_body">Ìdàkọ láti fóònù kejì dúró kí ó tó parí, ètò náà kò sì lè bẹ̀rẹ̀. Gbìyànjú ìdàkọ náà lẹ́ẹ̀kan sí i, tàbí gbà á padà pẹ̀lú àfẹ̀yìntì tàbí ìfisórí tuntun.</string>
     <string name="k2go_damaged_clone_retry">Tún ìdàkọ gbìyànjú</string>
+    <!-- K2GO-569/570: restore pair and backup folder. Machine translation, pending human review. -->
+    <string name="k2go_br_pair_companion_title">Mú pada sípò ní kíákíá</string>
+    <string name="k2go_br_pair_companion_msg">Yan %1$s tàbí %2$s náà láti inú fódà kan náà. Nígbà náà ìṣàfilọ́lẹ̀ á ṣàyẹ̀wò àpamọ́ nígbà tí ó ń dà á kọ, á sì fo ìpele kíkún kan.</string>
+    <string name="k2go_br_pair_tarball_title">Yan àpamọ́ náà</string>
+    <string name="k2go_br_pair_tarball_msg">Yan %1$s, àpamọ́ tí ó bá fáìlì yìí lọ.</string>
+    <string name="k2go_br_pair_missing">%1$s kò sí nínú fódà kan náà.</string>
+    <string name="k2go_br_pair_select">Yan</string>
+    <string name="k2go_br_pair_skip">Fò ó</string>
+    <string name="k2go_br_folder_title">Yan fódà ẹ̀dà àfipamọ́</string>
+    <string name="k2go_br_folder_msg">Ẹ̀dà àfipamọ́ máa ń fi fáìlì méjì pamọ́ sínú fódà kan. Android kò jẹ́ kí àwọn ìṣàfilọ́lẹ̀ lo fódà Download fúnra rẹ̀: ṣí i, kí o sì ṣẹ̀dá tàbí yan fódà kan nínú rẹ̀.</string>
+    <string name="k2go_br_folder_choose">Yan fódà</string>
 </resources>
