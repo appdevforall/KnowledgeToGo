@@ -1593,10 +1593,14 @@
     <string name="k2go_privacy_kolibri_sub">Kolibri தொடங்கும்போதும் நாளுக்கு ஒருமுறையும் பயன்பாட்டு எண்களையும் சேவையக ID-களையும் Learning Equality-க்கு அனுப்புகிறது.</string>
     <string name="k2go_privacy_forgejo_title">Forgejo புதுப்பிப்புச் சரிபார்ப்பு</string>
     <string name="k2go_privacy_forgejo_sub">புதிய பதிப்பு உள்ளதா என Forgejo திட்டத்திடம் கேட்கிறது.</string>
-    <string name="k2go_privacy_saved">சேமிக்கப்பட்டது. மாற்றத்தைப் பயன்படுத்த சேவை மீண்டும் தொடங்குகிறது.</string>
     <string name="k2go_privacy_save_failed">மாற்றத்தைச் சேமிக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
     <string name="k2go_privacy_unreachable">இந்த அமைப்புகளைப் படிக்க முடியவில்லை. சேவையகம் இயங்குகிறதா எனச் சரிபார்த்து, மீண்டும் முயலவும்.</string>
     <string name="k2go_privacy_unsupported">இந்த அமைப்புகளுக்குப் புதிய டாஷ்போர்டு தேவை. டாஷ்போர்டைப் புதுப்பித்து, மீண்டும் முயலவும்.</string>
     <string name="k2go_privacy_none">நிறுவப்பட்ட எந்தச் சேவையும் தானாக வெளிச் சேவையகங்களைத் தொடர்புகொள்வதில்லை.</string>
-    <string name="k2go_privacy_saved_later">சேமிக்கப்பட்டது. அடுத்த முறை சேவை தொடங்கும்போது மாற்றம் பயன்படுத்தப்படும்.</string>
+    <string name="k2go_privacy_restart_title">%1$s ஐ இப்போது மீண்டும் தொடங்கவா?</string>
+    <string name="k2go_privacy_restart_msg">%1$s இயங்கும் சேவை, இப்போது யாராவது அதைப் பயன்படுத்தக்கூடும். %1$s மீண்டும் தொடங்கிய பிறகே மாற்றம் நடைமுறைக்கு வரும், இதற்கு சுமார் 30 வினாடிகள் ஆகும்.</string>
+    <string name="k2go_privacy_restart_now">இப்போது மீண்டும் தொடங்கு</string>
+    <string name="k2go_privacy_restart_later">பிறகு</string>
+    <string name="k2go_privacy_restart_later_note">சேமிக்கப்பட்டது. அடுத்த முறை ஆப் திறக்கும்போது மாற்றம் பயன்படுத்தப்படும்.</string>
+    <string name="k2go_privacy_restarting">%1$s மீண்டும் தொடங்குகிறது. சுமார் 30 வினாடிகளில் திரும்பும்.</string>
 </resources>

@@ -79,8 +79,8 @@ public final class PrivacyRepositoryImpl implements PrivacyRepository {
     }
 
     private static OutboundSwitch parse(JSONObject o) {
-        return new OutboundSwitch(o.optString("service", ""),
-                o.optBoolean("installed", false), o.optBoolean("outbound", false));
+        return new OutboundSwitch(o.optString("service", ""), o.optBoolean("installed", false),
+                o.optBoolean("outbound", false), o.optBoolean("pending", false));
     }
 
     private static String request(String method, String url, JSONObject body) throws PrivacyException {

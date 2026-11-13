@@ -1580,10 +1580,14 @@
     <string name="k2go_privacy_kolibri_sub">Στέλνει αριθμούς χρήσης και αναγνωριστικά διακομιστή στο Learning Equality όταν ξεκινά το Kolibri και μία φορά την ημέρα.</string>
     <string name="k2go_privacy_forgejo_title">Έλεγχος ενημερώσεων Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Ρωτά το έργο Forgejo αν υπάρχει νεότερη έκδοση.</string>
-    <string name="k2go_privacy_saved">Αποθηκεύτηκε. Η υπηρεσία επανεκκινείται για να εφαρμόσει την αλλαγή.</string>
     <string name="k2go_privacy_save_failed">Δεν ήταν δυνατή η αποθήκευση της αλλαγής. Δοκιμάστε ξανά.</string>
     <string name="k2go_privacy_unreachable">Δεν ήταν δυνατή η ανάγνωση αυτών των ρυθμίσεων. Βεβαιωθείτε ότι ο διακομιστής λειτουργεί και δοκιμάστε ξανά.</string>
     <string name="k2go_privacy_unsupported">Αυτές οι ρυθμίσεις χρειάζονται νεότερο πίνακα. Ενημερώστε τον πίνακα και δοκιμάστε ξανά.</string>
     <string name="k2go_privacy_none">Καμία εγκατεστημένη υπηρεσία δεν επικοινωνεί μόνη της με εξωτερικούς διακομιστές.</string>
-    <string name="k2go_privacy_saved_later">Αποθηκεύτηκε. Η αλλαγή εφαρμόζεται την επόμενη φορά που θα ξεκινήσει η υπηρεσία.</string>
+    <string name="k2go_privacy_restart_title">Επανεκκίνηση του %1$s τώρα;</string>
+    <string name="k2go_privacy_restart_msg">Το %1$s είναι υπηρεσία σε λειτουργία και κάποιος μπορεί να τη χρησιμοποιεί τώρα. Η αλλαγή ισχύει μόνο μετά την επανεκκίνηση του %1$s, που διαρκεί περίπου 30 δευτερόλεπτα.</string>
+    <string name="k2go_privacy_restart_now">Επανεκκίνηση τώρα</string>
+    <string name="k2go_privacy_restart_later">Αργότερα</string>
+    <string name="k2go_privacy_restart_later_note">Αποθηκεύτηκε. Η αλλαγή εφαρμόζεται την επόμενη φορά που θα ανοίξει η εφαρμογή.</string>
+    <string name="k2go_privacy_restarting">Γίνεται επανεκκίνηση του %1$s. Επιστρέφει σε περίπου 30 δευτερόλεπτα.</string>
 </resources>

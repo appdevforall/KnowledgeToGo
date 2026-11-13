@@ -6,6 +6,7 @@
 // New bakes ship each one off (tools/upstream-patches 0007, 0008); this also reaches boxes
 // installed before that change.
 import fs from 'fs';
+import { spawnSync } from 'child_process';
 
 export type PrivacyServiceId = 'kolibri' | 'forgejo';
 
@@ -15,6 +16,8 @@ export interface PrivacySwitch {
     file: string;
     section: string;
     key: string;
+    /** `pgrep -f` pattern of the running service process (its start time decides "pending"). */
+    process: string;
     /** true: the key turns the outbound contact OFF (Kolibri DISABLE_PING). */
     inverted: boolean;
 }
@@ -25,6 +28,9 @@ export interface PrivacyState {
     installed: boolean;
     /** The service may contact its outside server. */
     outbound: boolean;
+    /** The config changed after the running service started: a restart applies it. Derived on each
+     *  read (config mtime vs process start), never stored. False when the service does not run. */
+    pending: boolean;
 }
 
 export const PRIVACY_SWITCHES: readonly PrivacySwitch[] = [
@@ -33,13 +39,13 @@ export const PRIVACY_SWITCHES: readonly PrivacySwitch[] = [
     {
         service: 'kolibri',
         file: process.env.K2GO_KOLIBRI_OPTIONS_INI || '/library/kolibri/options.ini',
-        section: 'Deployment', key: 'DISABLE_PING', inverted: true,
+        section: 'Deployment', key: 'DISABLE_PING', inverted: true, process: 'kolibri start',
     },
     // Forgejo release check (default on). https://forgejo.org/docs/latest/admin/config-cheat-sheet/
     {
         service: 'forgejo',
         file: process.env.K2GO_FORGEJO_APP_INI || '/etc/forgejo/app.ini',
-        section: 'cron.update_checker', key: 'ENABLED', inverted: false,
+        section: 'cron.update_checker', key: 'ENABLED', inverted: false, process: 'forgejo web',
     },
 ];
 
@@ -137,10 +143,47 @@ export function readState(sw: PrivacySwitch): PrivacyState {
     try {
         text = fs.readFileSync(sw.file, 'utf8');
     } catch (e: any) {
-        if (e?.code === 'ENOENT') return { service: sw.service, installed: false, outbound: false };
+        if (e?.code === 'ENOENT') return { service: sw.service, installed: false, outbound: false, pending: false };
         throw e;
     }
-    return { service: sw.service, installed: true, outbound: outboundFromText(sw, text) };
+    return {
+        service: sw.service, installed: true, outbound: outboundFromText(sw, text),
+        pending: isPending(fs.statSync(sw.file).mtimeMs, processStartMs(sw.process)),
+    };
+}
+
+/** Pending = the config is newer than the running process. No process: the next start reads it. */
+export function isPending(configMtimeMs: number, processStartMs: number | null): boolean {
+    return processStartMs !== null && configMtimeMs > processStartMs;
+}
+
+/** Epoch ms when a process started, from its /proc/<pid>/stat (field 22: start time in clock ticks
+ *  after boot) and /proc/uptime. null when the text does not parse. */
+export function startEpochMs(statText: string, uptimeText: string, nowMs: number, hz = 100): number | null {
+    const fields = statText.slice(statText.lastIndexOf(')') + 2).split(' ');   // field 3 onward
+    const ticks = Number(fields[19]);
+    const uptime = parseFloat(uptimeText);
+    if (!Number.isFinite(ticks) || !Number.isFinite(uptime)) return null;
+    return nowMs - (uptime - ticks / hz) * 1000;
+}
+
+/** Start time of the newest process that matches `pattern`, or null when none runs. */
+function processStartMs(pattern: string): number | null {
+    try {
+        const r = spawnSync('pgrep', ['-f', pattern], { encoding: 'utf8', timeout: 3000 });
+        if (r.status !== 0 || !r.stdout) return null;
+        const uptime = fs.readFileSync('/proc/uptime', 'utf8');
+        let newest: number | null = null;
+        for (const pid of r.stdout.split('\n').filter((x) => /^\d+$/.test(x))) {
+            try {
+                const t = startEpochMs(fs.readFileSync(`/proc/${pid}/stat`, 'utf8'), uptime, Date.now());
+                if (t !== null && (newest === null || t > newest)) newest = t;
+            } catch { /* the process ended */ }
+        }
+        return newest;
+    } catch {
+        return null;
+    }
 }
 
 /** Same mode and owner as the file it replaces; write + fsync + rename, so a crash leaves the old file. */
@@ -171,7 +214,7 @@ function writeAtomic(path: string, data: string): void {
 export function applyOutbound(sw: PrivacySwitch, outbound: boolean): { state: PrivacyState; changed: boolean } {
     const text = fs.readFileSync(sw.file, 'utf8');
     if (outboundFromText(sw, text) === outbound) {
-        return { state: { service: sw.service, installed: true, outbound }, changed: false };
+        return { state: readState(sw), changed: false };
     }
     writeAtomic(sw.file, setIniOption(text, sw.section, sw.key, valueFor(sw, outbound)));
     return { state: readState(sw), changed: true };
@@ -180,10 +223,10 @@ export function applyOutbound(sw: PrivacySwitch, outbound: boolean): { state: Pr
 // --- One-time privacy defaults on update (K2GO-559) -------------------------------------------
 // A box baked before tools/upstream-patches 0007/0008 has both outbound contacts on. When it first
 // runs this dash-node, turn every installed switch OFF once, so it matches a new bake; after that
-// the user decides. It only writes configs; each service reads its config at its next start (no
-// restart here: restarts belong to the server lifecycle owner, ADR-5343). Owner of the marker:
-// dash-node, at startup. The marker is written only after every config is
-// written (each write is atomic): a crash before it re-runs the step at the next start, which is
+// the user decides. It only writes configs (no restart here: restarts belong to the server
+// lifecycle owner, ADR-5343); the change then reads as `pending` and the app restarts it at its
+// next open. Owner of the marker: dash-node, at startup. The marker is written only after every
+// config is written (each write is atomic): a crash before it re-runs the step at the next start, which is
 // safe because an OFF switch stays OFF. The marker lives next to credentials.json, which a
 // dash-node rebuild keeps.
 export const PRIVACY_DEFAULTS_MARKER = process.env.K2GO_PRIVACY_DEFAULTS_MARKER

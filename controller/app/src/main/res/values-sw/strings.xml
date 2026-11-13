@@ -1593,10 +1593,14 @@
     <string name="k2go_privacy_kolibri_sub">Hutuma takwimu za matumizi na vitambulisho vya seva kwa Learning Equality Kolibri inapoanza na mara moja kwa siku.</string>
     <string name="k2go_privacy_forgejo_title">Ukaguzi wa masasisho ya Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Huuliza mradi wa Forgejo kama toleo jipya linapatikana.</string>
-    <string name="k2go_privacy_saved">Imehifadhiwa. Huduma inaanza upya ili kutumia mabadiliko.</string>
     <string name="k2go_privacy_save_failed">Imeshindwa kuhifadhi mabadiliko. Jaribu tena.</string>
     <string name="k2go_privacy_unreachable">Imeshindwa kusoma mipangilio hii. Hakikisha seva imewashwa, kisha ujaribu tena.</string>
     <string name="k2go_privacy_unsupported">Mipangilio hii inahitaji dashibodi mpya zaidi. Sasisha dashibodi, kisha ujaribu tena.</string>
     <string name="k2go_privacy_none">Hakuna huduma iliyosakinishwa inayowasiliana na seva za nje yenyewe.</string>
-    <string name="k2go_privacy_saved_later">Imehifadhiwa. Mabadiliko yatatumika huduma itakapoanza tena.</string>
+    <string name="k2go_privacy_restart_title">Anzisha upya %1$s sasa?</string>
+    <string name="k2go_privacy_restart_msg">%1$s ni huduma inayofanya kazi na huenda mtu anaitumia sasa hivi. Mabadiliko yanaanza kutumika tu baada ya %1$s kuanzishwa upya, jambo linalochukua takriban sekunde 30.</string>
+    <string name="k2go_privacy_restart_now">Anzisha upya sasa</string>
+    <string name="k2go_privacy_restart_later">Baadaye</string>
+    <string name="k2go_privacy_restart_later_note">Imehifadhiwa. Mabadiliko yatatumika programu itakapofunguliwa tena.</string>
+    <string name="k2go_privacy_restarting">Inaanzisha upya %1$s. Itarudi baada ya takriban sekunde 30.</string>
 </resources>

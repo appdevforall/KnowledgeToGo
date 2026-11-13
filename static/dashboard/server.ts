@@ -23,7 +23,7 @@ import { applyPrivacyDefaultsOnce, PRIVACY_DEFAULTS_MARKER, PRIVACY_SWITCHES } f
 if (process.env.PORT === undefined) {
     try {
         const r = applyPrivacyDefaultsOnce(PRIVACY_SWITCHES, PRIVACY_DEFAULTS_MARKER);
-        if (r.ran) console.log(`[privacy] defaults applied once; turned off (applies at the next service start): ${r.changed.join(', ') || 'none'}`);
+        if (r.ran) console.log(`[privacy] defaults applied once; turned off (pending: restarted at the next app open): ${r.changed.join(', ') || 'none'}`);
     } catch (e) {
         console.error('[privacy] one-time defaults failed; retry at next start', e);
     }

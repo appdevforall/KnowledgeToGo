@@ -17,11 +17,17 @@ public final class OutboundSwitch {
     private final String service;
     private final boolean installed;
     private final boolean outbound;
+    private final boolean pendingRestart;
 
     public OutboundSwitch(String service, boolean installed, boolean outbound) {
+        this(service, installed, outbound, false);
+    }
+
+    public OutboundSwitch(String service, boolean installed, boolean outbound, boolean pendingRestart) {
         this.service = service;
         this.installed = installed;
         this.outbound = outbound;
+        this.pendingRestart = pendingRestart;
     }
 
     public String service() { return service; }
@@ -31,4 +37,7 @@ public final class OutboundSwitch {
 
     /** The service may contact its outside server. */
     public boolean outbound() { return outbound; }
+
+    /** The config changed after the running service started: a restart applies it (box-derived). */
+    public boolean pendingRestart() { return pendingRestart; }
 }

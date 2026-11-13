@@ -1586,10 +1586,14 @@
     <string name="k2go_privacy_kolibri_sub">Шаље податке о коришћењу и ID-јеве сервера организацији Learning Equality при покретању Kolibri и једном дневно.</string>
     <string name="k2go_privacy_forgejo_title">Провера ажурирања Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Пита пројекат Forgejo да ли постоји новија верзија.</string>
-    <string name="k2go_privacy_saved">Сачувано. Услуга се поново покреће да би применила измену.</string>
     <string name="k2go_privacy_save_failed">Измена није могла да се сачува. Покушајте поново.</string>
     <string name="k2go_privacy_unreachable">Ова подешавања нису могла да се прочитају. Проверите да ли је сервер укључен, па покушајте поново.</string>
     <string name="k2go_privacy_unsupported">Ова подешавања захтевају новију контролну таблу. Ажурирајте контролну таблу, па покушајте поново.</string>
     <string name="k2go_privacy_none">Ниједна инсталирана услуга се сама не повезује са спољним серверима.</string>
-    <string name="k2go_privacy_saved_later">Сачувано. Измена се примењује при следећем покретању услуге.</string>
+    <string name="k2go_privacy_restart_title">Поново покренути %1$s сада?</string>
+    <string name="k2go_privacy_restart_msg">%1$s је услуга која ради и неко је можда управо користи. Измена ступа на снагу тек када се %1$s поново покрене, што траје око 30 секунди.</string>
+    <string name="k2go_privacy_restart_now">Поново покрени сада</string>
+    <string name="k2go_privacy_restart_later">Касније</string>
+    <string name="k2go_privacy_restart_later_note">Сачувано. Измена се примењује при следећем отварању апликације.</string>
+    <string name="k2go_privacy_restarting">%1$s се поново покреће. Враћа се за око 30 секунди.</string>
 </resources>

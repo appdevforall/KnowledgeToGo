@@ -1769,10 +1769,14 @@
     <string name="k2go_privacy_kolibri_sub">Sends usage numbers and server IDs to Learning Equality when Kolibri starts and once a day.</string>
     <string name="k2go_privacy_forgejo_title">Forgejo update check</string>
     <string name="k2go_privacy_forgejo_sub">Asks the Forgejo project if a newer version is available.</string>
-    <string name="k2go_privacy_saved">Saved. The service restarts to use the change.</string>
     <string name="k2go_privacy_save_failed">Could not save the change. Try again.</string>
     <string name="k2go_privacy_unreachable">Could not read these settings. Make sure that the server is on, then try again.</string>
     <string name="k2go_privacy_unsupported">These settings need a newer dashboard. Update the dashboard, then try again.</string>
     <string name="k2go_privacy_none">No installed service contacts outside servers on its own.</string>
-    <string name="k2go_privacy_saved_later">Saved. The change applies when the service starts next time.</string>
+    <string name="k2go_privacy_restart_title">Restart %1$s now?</string>
+    <string name="k2go_privacy_restart_msg">%1$s is a live service and someone may be using it right now. The change takes effect only after %1$s restarts, which takes about 30 seconds.</string>
+    <string name="k2go_privacy_restart_now">Restart now</string>
+    <string name="k2go_privacy_restart_later">Later</string>
+    <string name="k2go_privacy_restart_later_note">Saved. The change applies the next time the app opens.</string>
+    <string name="k2go_privacy_restarting">Restarting %1$s. It is back in about 30 seconds.</string>
 </resources>

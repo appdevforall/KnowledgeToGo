@@ -1573,10 +1573,14 @@
     <string name="k2go_privacy_kolibri_sub">Használati adatokat és kiszolgálóazonosítókat küld a Learning Equality részére a Kolibri indulásakor és naponta egyszer.</string>
     <string name="k2go_privacy_forgejo_title">Forgejo frissítéskeresés</string>
     <string name="k2go_privacy_forgejo_sub">Megkérdezi a Forgejo projektet, hogy van-e újabb verzió.</string>
-    <string name="k2go_privacy_saved">Mentve. A szolgáltatás újraindul a módosítás alkalmazásához.</string>
     <string name="k2go_privacy_save_failed">A módosítást nem sikerült menteni. Próbálja újra.</string>
     <string name="k2go_privacy_unreachable">Ezeket a beállításokat nem sikerült beolvasni. Ellenőrizze, hogy a kiszolgáló fut-e, majd próbálja újra.</string>
     <string name="k2go_privacy_unsupported">Ezekhez a beállításokhoz újabb irányítópult kell. Frissítse az irányítópultot, majd próbálja újra.</string>
     <string name="k2go_privacy_none">Egyik telepített szolgáltatás sem kapcsolódik magától külső kiszolgálókhoz.</string>
-    <string name="k2go_privacy_saved_later">Mentve. A módosítás a szolgáltatás következő indításakor lép életbe.</string>
+    <string name="k2go_privacy_restart_title">Újraindítja most: %1$s?</string>
+    <string name="k2go_privacy_restart_msg">A(z) %1$s futó szolgáltatás, és lehet, hogy éppen használja valaki. A módosítás csak a(z) %1$s újraindítása után lép életbe, ami körülbelül 30 másodperc.</string>
+    <string name="k2go_privacy_restart_now">Újraindítás most</string>
+    <string name="k2go_privacy_restart_later">Később</string>
+    <string name="k2go_privacy_restart_later_note">Mentve. A módosítás az alkalmazás következő megnyitásakor lép életbe.</string>
+    <string name="k2go_privacy_restarting">A(z) %1$s újraindul. Körülbelül 30 másodperc múlva újra elérhető.</string>
 </resources>

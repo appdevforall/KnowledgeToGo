@@ -30,9 +30,9 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.privacy.domain.OutboundSwitch;
-import org.appdevforall.k2go.privacy.domain.SetOutboundUseCase;
 import org.appdevforall.k2go.ui.K2GoHeaderView;
 import org.appdevforall.k2go.ui.K2GoText;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.BusyMessage;
 import org.appdevforall.k2go.util.Snackbars;
 
@@ -52,8 +52,7 @@ public class PrivacyFragment extends Fragment {
         vm.state().observe(getViewLifecycleOwner(), this::render);
         vm.notice().observe(getViewLifecycleOwner(), n -> {
             if (n == null || !n.take()) return;
-            int text = noticeText(n.result);
-            if (text != 0) Snackbars.make(root, getString(text)).show();
+            onNotice(root, n);
         });
         vm.load();
         return root;
@@ -90,16 +89,38 @@ public class PrivacyFragment extends Fragment {
         }
     }
 
-    /** BUSY names the operation that holds the box, with the shared refusal text. 0 = no message. */
-    private int noticeText(SetOutboundUseCase.Result result) {
-        if (result == null) return R.string.k2go_privacy_save_failed;
-        switch (result) {
-            case BUSY:       return BusyMessage.resFor(requireContext());
-            case NEXT_START: return R.string.k2go_privacy_saved_later;
-            case UNCHANGED:  return 0;   // the box already had it: no restart, nothing to say
-            case RESTARTING:
-            default:         return R.string.k2go_privacy_saved;
+    private void onNotice(View root, PrivacyViewModel.Notice n) {
+        String name = serviceName(n.service);
+        switch (n.kind) {
+            case ASK_RESTART: askRestart(n.service, name); break;
+            case RESTARTING:  snack(root, getString(R.string.k2go_privacy_restarting, name)); break;
+            case BUSY:        snack(root, getString(BusyMessage.resFor(requireContext()))); break;
+            case FAILED:
+            default:          snack(root, getString(R.string.k2go_privacy_save_failed)); break;
         }
+    }
+
+    /** Live services: someone may be using them, so the restart is the user's decision. */
+    private void askRestart(String service, String name) {
+        new BrandDialog(requireContext())
+                .setTitle(getString(R.string.k2go_privacy_restart_title, name))
+                .setMessage(getString(R.string.k2go_privacy_restart_msg, name))
+                .setPositive(R.string.k2go_privacy_restart_now, BrandDialog.Role.PRIMARY, () -> vm.restartNow(service))
+                .setNegative(R.string.k2go_privacy_restart_later, () -> {
+                    View v = getView();
+                    if (v != null) snack(v, getString(R.string.k2go_privacy_restart_later_note));
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    private void snack(View anchor, String text) {
+        Snackbars.make(anchor, text).show();
+    }
+
+    /** Product names stay untranslated. */
+    private static String serviceName(String service) {
+        return OutboundSwitch.FORGEJO.equals(service) ? "Forgejo" : "Kolibri";
     }
 
     private View switchRow(Context ctx, OutboundSwitch sw, boolean locked) {

@@ -1583,10 +1583,14 @@
     <string name="k2go_privacy_kolibri_sub">Wysyła dane o użyciu i identyfikatory serwera do Learning Equality przy uruchomieniu Kolibri i raz dziennie.</string>
     <string name="k2go_privacy_forgejo_title">Sprawdzanie aktualizacji Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Pyta projekt Forgejo, czy jest dostępna nowsza wersja.</string>
-    <string name="k2go_privacy_saved">Zapisano. Usługa uruchamia się ponownie, aby zastosować zmianę.</string>
     <string name="k2go_privacy_save_failed">Nie udało się zapisać zmiany. Spróbuj ponownie.</string>
     <string name="k2go_privacy_unreachable">Nie udało się odczytać tych ustawień. Upewnij się, że serwer jest włączony, i spróbuj ponownie.</string>
     <string name="k2go_privacy_unsupported">Te ustawienia wymagają nowszego panelu. Zaktualizuj panel i spróbuj ponownie.</string>
     <string name="k2go_privacy_none">Żadna zainstalowana usługa nie łączy się sama z zewnętrznymi serwerami.</string>
-    <string name="k2go_privacy_saved_later">Zapisano. Zmiana zostanie zastosowana przy następnym uruchomieniu usługi.</string>
+    <string name="k2go_privacy_restart_title">Uruchomić ponownie %1$s teraz?</string>
+    <string name="k2go_privacy_restart_msg">%1$s to działająca usługa i ktoś może z niej teraz korzystać. Zmiana zacznie obowiązywać dopiero po ponownym uruchomieniu %1$s, co trwa około 30 sekund.</string>
+    <string name="k2go_privacy_restart_now">Uruchom ponownie teraz</string>
+    <string name="k2go_privacy_restart_later">Później</string>
+    <string name="k2go_privacy_restart_later_note">Zapisano. Zmiana zostanie zastosowana przy następnym otwarciu aplikacji.</string>
+    <string name="k2go_privacy_restarting">Ponowne uruchamianie %1$s. Wróci za około 30 sekund.</string>
 </resources>

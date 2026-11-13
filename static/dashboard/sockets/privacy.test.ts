@@ -6,7 +6,7 @@ import os from 'os';
 import path from 'path';
 import {
     readIniOption, setIniOption, parseIniBool, outboundFromText, valueFor, readState, applyOutbound,
-    findSwitch, PRIVACY_SWITCHES, PrivacySwitch, applyPrivacyDefaultsOnce,
+    findSwitch, PRIVACY_SWITCHES, PrivacySwitch, applyPrivacyDefaultsOnce, isPending, startEpochMs,
 } from './privacy';
 import { isRestartableService, createRestartQueue } from './services';
 
@@ -110,14 +110,14 @@ function tmpSwitch(base: PrivacySwitch, content: string | null): PrivacySwitch {
 
 test('readState: a missing file means not installed', () => {
     const sw = tmpSwitch(KOLIBRI, null);
-    assert.deepEqual(readState(sw), { service: 'kolibri', installed: false, outbound: false });
+    assert.deepEqual(readState(sw), { service: 'kolibri', installed: false, outbound: false, pending: false });
 });
 
 test('applyOutbound: writes the switch, keeps the rest of the file, reports the change', () => {
     const sw = tmpSwitch(KOLIBRI, '[Deployment]\nHTTP_PORT = 8009\n');
     assert.equal(readState(sw).outbound, true);
     const r = applyOutbound(sw, false);
-    assert.deepEqual(r, { state: { service: 'kolibri', installed: true, outbound: false }, changed: true });
+    assert.deepEqual(r, { state: { service: 'kolibri', installed: true, outbound: false, pending: false }, changed: true });
     assert.equal(fs.readFileSync(sw.file, 'utf8'), '[Deployment]\nHTTP_PORT = 8009\nDISABLE_PING = True\n');
     assert.equal(fs.existsSync(sw.file + '.k2go-tmp'), false);
 });
@@ -231,4 +231,22 @@ test('defaults once: a failed config write leaves no marker, so the next start t
     const unreadable = { ...b.f, file: path.dirname(b.k.file) };   // a directory: read throws EISDIR
     assert.throws(() => applyPrivacyDefaultsOnce([b.k, unreadable], b.marker));
     assert.equal(fs.existsSync(b.marker), false);
+});
+
+// --- Pending restart: derived from config mtime vs the running process start --------------------
+
+test('isPending: a config newer than the running process is pending; no process is never pending', () => {
+    assert.equal(isPending(2_000, 1_000), true);
+    assert.equal(isPending(1_000, 2_000), false);   // the service started after the change: applied
+    assert.equal(isPending(2_000, null), false);    // not running: its next start reads the config
+});
+
+test('startEpochMs: field 22 of /proc/<pid>/stat against /proc/uptime', () => {
+    // pid (comm with ) and spaces) state ... ; starttime = 5000 ticks = 50 s after boot.
+    const fields = Array.from({ length: 30 }, (_, i) => String(i + 3));
+    fields[19] = '5000';
+    const stat = '1234 (python3 kolibri) ' + fields.join(' ');
+    // Booted 200 s ago, so the process started 150 s ago.
+    assert.equal(startEpochMs(stat, '200.00 300.00\n', 1_000_000), 1_000_000 - 150_000);
+    assert.equal(startEpochMs('garbage', 'x', 0), null);
 });

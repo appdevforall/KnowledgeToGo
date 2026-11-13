@@ -3,7 +3,7 @@
  * Name        : EnvironmentLockGate.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-559. EnvironmentGate backed by EnvironmentLock, the one "is the box held" source.
+ * Description : K2GO-559. EnvironmentGate backed by EnvironmentLock, the one "what holds the box" source.
  * ============================================================================
  */
 package org.appdevforall.k2go.privacy.data;
@@ -23,6 +23,8 @@ public final class EnvironmentLockGate implements EnvironmentGate {
 
     @Override
     public boolean isBusy() {
-        return EnvironmentLock.isHeld(appContext);
+        // The lock's own classification: a STOPPED-class holder runs the box down to change it.
+        return EnvironmentLock.currentHolder(appContext).executionClass
+                == org.appdevforall.k2go.system.domain.Operation.ExecutionClass.STOPPED;
     }
 }

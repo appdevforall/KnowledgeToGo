@@ -1573,10 +1573,14 @@
     <string name="k2go_privacy_kolibri_sub">Invia dati di utilizzo e ID del server a Learning Equality all\'avvio di Kolibri e una volta al giorno.</string>
     <string name="k2go_privacy_forgejo_title">Controllo aggiornamenti di Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Chiede al progetto Forgejo se è disponibile una versione più recente.</string>
-    <string name="k2go_privacy_saved">Salvato. Il servizio si riavvia per applicare la modifica.</string>
     <string name="k2go_privacy_save_failed">Impossibile salvare la modifica. Riprova.</string>
     <string name="k2go_privacy_unreachable">Impossibile leggere queste impostazioni. Verifica che il server sia acceso, poi riprova.</string>
     <string name="k2go_privacy_unsupported">Queste impostazioni richiedono una dashboard più recente. Aggiorna la dashboard, poi riprova.</string>
     <string name="k2go_privacy_none">Nessun servizio installato contatta server esterni di sua iniziativa.</string>
-    <string name="k2go_privacy_saved_later">Salvato. La modifica si applica al prossimo avvio del servizio.</string>
+    <string name="k2go_privacy_restart_title">Riavviare %1$s ora?</string>
+    <string name="k2go_privacy_restart_msg">%1$s è un servizio attivo e qualcuno potrebbe usarlo in questo momento. La modifica ha effetto solo dopo il riavvio di %1$s, che richiede circa 30 secondi.</string>
+    <string name="k2go_privacy_restart_now">Riavvia ora</string>
+    <string name="k2go_privacy_restart_later">Più tardi</string>
+    <string name="k2go_privacy_restart_later_note">Salvato. La modifica si applica alla prossima apertura dell\'app.</string>
+    <string name="k2go_privacy_restarting">Riavvio di %1$s in corso. Torna disponibile in circa 30 secondi.</string>
 </resources>

@@ -1573,10 +1573,14 @@
     <string name="k2go_privacy_kolibri_sub">Stuurt gebruikscijfers en server-ID\'s naar Learning Equality wanneer Kolibri start en eenmaal per dag.</string>
     <string name="k2go_privacy_forgejo_title">Updatecontrole van Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Vraagt het Forgejo-project of er een nieuwere versie is.</string>
-    <string name="k2go_privacy_saved">Opgeslagen. De dienst start opnieuw om de wijziging toe te passen.</string>
     <string name="k2go_privacy_save_failed">Kan de wijziging niet opslaan. Probeer het opnieuw.</string>
     <string name="k2go_privacy_unreachable">Kan deze instellingen niet lezen. Controleer of de server aan staat en probeer het opnieuw.</string>
     <string name="k2go_privacy_unsupported">Deze instellingen vereisen een nieuwer dashboard. Werk het dashboard bij en probeer het opnieuw.</string>
     <string name="k2go_privacy_none">Geen geïnstalleerde dienst neemt zelf contact op met externe servers.</string>
-    <string name="k2go_privacy_saved_later">Opgeslagen. De wijziging geldt bij de volgende start van de dienst.</string>
+    <string name="k2go_privacy_restart_title">%1$s nu opnieuw starten?</string>
+    <string name="k2go_privacy_restart_msg">%1$s is een actieve dienst en wordt misschien nu gebruikt. De wijziging geldt pas nadat %1$s opnieuw is gestart, wat ongeveer 30 seconden duurt.</string>
+    <string name="k2go_privacy_restart_now">Nu opnieuw starten</string>
+    <string name="k2go_privacy_restart_later">Later</string>
+    <string name="k2go_privacy_restart_later_note">Opgeslagen. De wijziging geldt de volgende keer dat de app opent.</string>
+    <string name="k2go_privacy_restarting">%1$s wordt opnieuw gestart. Over ongeveer 30 seconden terug.</string>
 </resources>

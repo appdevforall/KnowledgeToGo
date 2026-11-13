@@ -1593,10 +1593,14 @@
     <string name="k2go_privacy_kolibri_sub">Ń fi àwọn nọ́mbà ìlò àti ID sáfà ránṣẹ́ sí Learning Equality nígbà tí Kolibri bá bẹ̀rẹ̀ àti lẹ́ẹ̀kan lójúmọ́.</string>
     <string name="k2go_privacy_forgejo_title">Àyẹ̀wò ìmúdójúìwọ̀n Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Ń béèrè lọ́wọ́ iṣẹ́ àkànṣe Forgejo bóyá ẹ̀yà tuntun wà.</string>
-    <string name="k2go_privacy_saved">A ti fi pamọ́. Iṣẹ́ náà ń tún bẹ̀rẹ̀ láti lo àyípadà náà.</string>
     <string name="k2go_privacy_save_failed">Kò ṣeé ṣe láti fi àyípadà náà pamọ́. Gbìyànjú lẹ́ẹ̀kan sí i.</string>
     <string name="k2go_privacy_unreachable">Kò ṣeé ṣe láti ka àwọn ètò wọ̀nyí. Rí i dájú pé sáfà wà ní títàn, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.</string>
     <string name="k2go_privacy_unsupported">Àwọn ètò wọ̀nyí nílò dáàṣíbọ́ọ̀dù tuntun. Ṣàtúnṣe dáàṣíbọ́ọ̀dù, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.</string>
     <string name="k2go_privacy_none">Kò sí iṣẹ́ tí a fi sórí ẹ̀rọ tí ń kàn sí sáfà ìta fúnra rẹ̀.</string>
-    <string name="k2go_privacy_saved_later">A ti fi pamọ́. Àyípadà náà yóò ṣiṣẹ́ nígbà tí iṣẹ́ náà bá bẹ̀rẹ̀ nígbà míràn.</string>
+    <string name="k2go_privacy_restart_title">Tún %1$s bẹ̀rẹ̀ nísinsìnyí?</string>
+    <string name="k2go_privacy_restart_msg">%1$s jẹ́ iṣẹ́ tí ń ṣiṣẹ́ lọ́wọ́, ẹnìkan sì lè máa lò ó nísinsìnyí. Àyípadà náà yóò ṣiṣẹ́ lẹ́yìn tí %1$s bá tún bẹ̀rẹ̀ nìkan, èyí gba nǹkan bí ìṣẹ́jú-àáyá 30.</string>
+    <string name="k2go_privacy_restart_now">Tún bẹ̀rẹ̀ nísinsìnyí</string>
+    <string name="k2go_privacy_restart_later">Nígbà míràn</string>
+    <string name="k2go_privacy_restart_later_note">A ti fi pamọ́. Àyípadà náà yóò ṣiṣẹ́ nígbà tí a bá ṣí áàpù náà nígbà míràn.</string>
+    <string name="k2go_privacy_restarting">Ń tún %1$s bẹ̀rẹ̀. Yóò padà ní nǹkan bí ìṣẹ́jú-àáyá 30.</string>
 </resources>

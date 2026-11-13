@@ -824,8 +824,8 @@ apiRouter.post('/system/service/:svc/restart', (req: Request, res: Response): vo
 
 // --- System: privacy switches (K2GO-559) ------------------------------------------------------
 // One switch per box service that contacts an outside server on its own. The state is the
-// service's own config setting (sockets/privacy.ts). This only writes the config: the app asks for
-// the restart through /system/service/:svc/restart when no exclusive box operation runs (ADR-5343).
+// service's own config setting (sockets/privacy.ts). This only writes the config and reports it as
+// `pending`; the restart is the user's decision, requested via /system/service/:svc/restart (ADR-5343).
 apiRouter.get('/system/privacy', (_req: Request, res: Response): void => {
     try {
         res.json({ services: PRIVACY_SWITCHES.map(readState) });

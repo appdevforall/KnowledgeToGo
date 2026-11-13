@@ -1580,10 +1580,14 @@
     <string name="k2go_privacy_kolibri_sub">Mengirim angka penggunaan dan ID server ke Learning Equality saat Kolibri dimulai dan sekali sehari.</string>
     <string name="k2go_privacy_forgejo_title">Pemeriksaan pembaruan Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">Menanyakan ke proyek Forgejo apakah ada versi yang lebih baru.</string>
-    <string name="k2go_privacy_saved">Tersimpan. Layanan dimulai ulang untuk menerapkan perubahan.</string>
     <string name="k2go_privacy_save_failed">Tidak dapat menyimpan perubahan. Coba lagi.</string>
     <string name="k2go_privacy_unreachable">Tidak dapat membaca pengaturan ini. Pastikan server menyala, lalu coba lagi.</string>
     <string name="k2go_privacy_unsupported">Pengaturan ini memerlukan dasbor yang lebih baru. Perbarui dasbor, lalu coba lagi.</string>
     <string name="k2go_privacy_none">Tidak ada layanan terpasang yang menghubungi server luar dengan sendirinya.</string>
-    <string name="k2go_privacy_saved_later">Tersimpan. Perubahan berlaku saat layanan dimulai berikutnya.</string>
+    <string name="k2go_privacy_restart_title">Mulai ulang %1$s sekarang?</string>
+    <string name="k2go_privacy_restart_msg">%1$s adalah layanan yang sedang berjalan dan mungkin sedang digunakan seseorang. Perubahan baru berlaku setelah %1$s dimulai ulang, yang memakan waktu sekitar 30 detik.</string>
+    <string name="k2go_privacy_restart_now">Mulai ulang sekarang</string>
+    <string name="k2go_privacy_restart_later">Nanti</string>
+    <string name="k2go_privacy_restart_later_note">Tersimpan. Perubahan berlaku saat aplikasi dibuka berikutnya.</string>
+    <string name="k2go_privacy_restarting">Memulai ulang %1$s. Kembali dalam sekitar 30 detik.</string>
 </resources>

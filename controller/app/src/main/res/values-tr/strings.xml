@@ -1573,10 +1573,14 @@
     <string name="k2go_privacy_kolibri_sub">Kolibri başladığında ve günde bir kez kullanım sayılarını ve sunucu kimliklerini Learning Equality\'ye gönderir.</string>
     <string name="k2go_privacy_forgejo_title">Forgejo güncelleme denetimi</string>
     <string name="k2go_privacy_forgejo_sub">Forgejo projesine daha yeni bir sürüm olup olmadığını sorar.</string>
-    <string name="k2go_privacy_saved">Kaydedildi. Değişikliği uygulamak için hizmet yeniden başlatılıyor.</string>
     <string name="k2go_privacy_save_failed">Değişiklik kaydedilemedi. Tekrar deneyin.</string>
     <string name="k2go_privacy_unreachable">Bu ayarlar okunamadı. Sunucunun açık olduğundan emin olun, ardından tekrar deneyin.</string>
     <string name="k2go_privacy_unsupported">Bu ayarlar daha yeni bir pano gerektiriyor. Panoyu güncelleyin, ardından tekrar deneyin.</string>
     <string name="k2go_privacy_none">Kendi kendine dış sunuculara bağlanan yüklü bir hizmet yok.</string>
-    <string name="k2go_privacy_saved_later">Kaydedildi. Değişiklik, hizmet bir sonraki başlatıldığında uygulanır.</string>
+    <string name="k2go_privacy_restart_title">%1$s şimdi yeniden başlatılsın mı?</string>
+    <string name="k2go_privacy_restart_msg">%1$s çalışan bir hizmettir ve şu anda biri kullanıyor olabilir. Değişiklik ancak %1$s yeniden başlatıldıktan sonra geçerli olur; bu yaklaşık 30 saniye sürer.</string>
+    <string name="k2go_privacy_restart_now">Şimdi yeniden başlat</string>
+    <string name="k2go_privacy_restart_later">Daha sonra</string>
+    <string name="k2go_privacy_restart_later_note">Kaydedildi. Değişiklik, uygulama bir sonraki açılışta uygulanır.</string>
+    <string name="k2go_privacy_restarting">%1$s yeniden başlatılıyor. Yaklaşık 30 saniye içinde geri gelir.</string>
 </resources>

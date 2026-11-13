@@ -18,7 +18,7 @@ import org.appdevforall.k2go.privacy.data.EnvironmentLockGate;
 import org.appdevforall.k2go.privacy.data.PrivacyRepositoryImpl;
 import org.appdevforall.k2go.privacy.domain.GetOutboundSwitchesUseCase;
 import org.appdevforall.k2go.privacy.domain.PrivacyRepository;
-import org.appdevforall.k2go.privacy.domain.SetOutboundUseCase;
+import org.appdevforall.k2go.privacy.domain.RestartServiceUseCase;
 
 public class PrivacyViewModelFactory implements ViewModelProvider.Factory {
 
@@ -34,8 +34,8 @@ public class PrivacyViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(PrivacyViewModel.class)) {
             PrivacyRepository repository = new PrivacyRepositoryImpl();
-            return (T) new PrivacyViewModel(new GetOutboundSwitchesUseCase(repository),
-                    new SetOutboundUseCase(repository, new EnvironmentLockGate(appContext)));
+            return (T) new PrivacyViewModel(new GetOutboundSwitchesUseCase(repository), repository,
+                    new RestartServiceUseCase(repository, new EnvironmentLockGate(appContext)));
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

@@ -11,6 +11,7 @@ package org.appdevforall.k2go.privacy.domain;
 /** The answer comes from the server lifecycle owner (ADR-5343); this port only asks it. */
 public interface EnvironmentGate {
 
-    /** True while an install, restore, clone, backup, download or dashboard update holds the box. */
+    /** True while a destructive operation holds the box (it stops it to replace or write the system:
+     *  install, restore, clone, backup). Downloads, sharing and other live work do not count. */
     boolean isBusy();
 }

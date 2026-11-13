@@ -1586,10 +1586,14 @@
     <string name="k2go_privacy_kolibri_sub">Kolibri চালু হলে এবং দিনে একবার ব্যবহারের সংখ্যা ও সার্ভার আইডি Learning Equality-তে পাঠায়।</string>
     <string name="k2go_privacy_forgejo_title">Forgejo আপডেট পরীক্ষা</string>
     <string name="k2go_privacy_forgejo_sub">Forgejo প্রকল্পকে জিজ্ঞাসা করে নতুন সংস্করণ আছে কিনা।</string>
-    <string name="k2go_privacy_saved">সংরক্ষিত হয়েছে। পরিবর্তন প্রয়োগ করতে পরিষেবাটি পুনরায় চালু হচ্ছে।</string>
     <string name="k2go_privacy_save_failed">পরিবর্তন সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।</string>
     <string name="k2go_privacy_unreachable">এই সেটিংস পড়া যায়নি। সার্ভার চালু আছে কিনা নিশ্চিত করুন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_privacy_unsupported">এই সেটিংসের জন্য নতুন ড্যাশবোর্ড দরকার। ড্যাশবোর্ড আপডেট করুন, তারপর আবার চেষ্টা করুন।</string>
     <string name="k2go_privacy_none">কোনো ইনস্টল করা পরিষেবা নিজে থেকে বাইরের সার্ভারের সাথে যোগাযোগ করে না।</string>
-    <string name="k2go_privacy_saved_later">সংরক্ষিত হয়েছে। পরিষেবাটি পরের বার চালু হলে পরিবর্তনটি প্রয়োগ হবে।</string>
+    <string name="k2go_privacy_restart_title">এখন %1$s পুনরায় চালু করবেন?</string>
+    <string name="k2go_privacy_restart_msg">%1$s একটি চালু পরিষেবা এবং এই মুহূর্তে কেউ এটি ব্যবহার করতে পারে। %1$s পুনরায় চালু হওয়ার পরেই পরিবর্তনটি কার্যকর হয়, এতে প্রায় 30 সেকেন্ড লাগে।</string>
+    <string name="k2go_privacy_restart_now">এখন পুনরায় চালু করুন</string>
+    <string name="k2go_privacy_restart_later">পরে</string>
+    <string name="k2go_privacy_restart_later_note">সংরক্ষিত হয়েছে। পরের বার অ্যাপ খুললে পরিবর্তনটি প্রয়োগ হবে।</string>
+    <string name="k2go_privacy_restarting">%1$s পুনরায় চালু হচ্ছে। প্রায় 30 সেকেন্ডে ফিরে আসবে।</string>
 </resources>

@@ -37,13 +37,15 @@ public class PrivacyRepositoryImplTest {
     @Test
     public void listParsesEachService() throws Exception {
         server.enqueue(new MockResponse().setBody("{\"services\":["
-                + "{\"service\":\"kolibri\",\"installed\":true,\"outbound\":false},"
+                + "{\"service\":\"kolibri\",\"installed\":true,\"outbound\":false,\"pending\":true},"
                 + "{\"service\":\"forgejo\",\"installed\":false,\"outbound\":false}]}"));
         List<OutboundSwitch> out = repo.list();
         assertEquals(2, out.size());
         assertEquals("kolibri", out.get(0).service());
         assertTrue(out.get(0).installed());
         assertFalse(out.get(0).outbound());
+        assertTrue(out.get(0).pendingRestart());
+        assertFalse(out.get(1).pendingRestart());
         assertFalse(out.get(1).installed());
         assertEquals("/k2go-api/system/privacy", server.takeRequest().getPath());
     }

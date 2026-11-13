@@ -1573,10 +1573,14 @@
     <string name="k2go_privacy_kolibri_sub">هنگام شروع Kolibri و روزی یک بار، آمار استفاده و شناسه‌های سرور را به Learning Equality می‌فرستد.</string>
     <string name="k2go_privacy_forgejo_title">بررسی به‌روزرسانی Forgejo</string>
     <string name="k2go_privacy_forgejo_sub">از پروژه Forgejo می‌پرسد که آیا نسخه جدیدتری هست.</string>
-    <string name="k2go_privacy_saved">ذخیره شد. سرویس برای اعمال تغییر دوباره راه‌اندازی می‌شود.</string>
     <string name="k2go_privacy_save_failed">ذخیره تغییر ممکن نشد. دوباره تلاش کنید.</string>
     <string name="k2go_privacy_unreachable">خواندن این تنظیمات ممکن نشد. مطمئن شوید سرور روشن است، سپس دوباره تلاش کنید.</string>
     <string name="k2go_privacy_unsupported">این تنظیمات به داشبورد جدیدتری نیاز دارند. داشبورد را به‌روزرسانی کنید، سپس دوباره تلاش کنید.</string>
     <string name="k2go_privacy_none">هیچ سرویس نصب‌شده‌ای خودش با سرورهای بیرونی ارتباط نمی‌گیرد.</string>
-    <string name="k2go_privacy_saved_later">ذخیره شد. تغییر دفعه بعد که سرویس شروع شود اعمال می‌شود.</string>
+    <string name="k2go_privacy_restart_title">%1$s اکنون دوباره راه‌اندازی شود؟</string>
+    <string name="k2go_privacy_restart_msg">%1$s یک سرویس در حال اجراست و ممکن است کسی همین حالا از آن استفاده کند. تغییر فقط پس از راه‌اندازی دوباره %1$s اعمال می‌شود که حدود 30 ثانیه طول می‌کشد.</string>
+    <string name="k2go_privacy_restart_now">اکنون راه‌اندازی دوباره</string>
+    <string name="k2go_privacy_restart_later">بعداً</string>
+    <string name="k2go_privacy_restart_later_note">ذخیره شد. تغییر دفعه بعد که برنامه باز شود اعمال می‌شود.</string>
+    <string name="k2go_privacy_restarting">%1$s در حال راه‌اندازی دوباره است. حدود 30 ثانیه دیگر برمی‌گردد.</string>
 </resources>
