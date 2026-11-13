@@ -98,6 +98,15 @@ public class TarHeaderGuardTest {
     }
 
     @Test
+    public void ignoresOffset345InGnuFormat() {
+        byte[] h = header("../x", 0, '0', "12345670123");   // GNU keeps atime here, not a prefix
+        System.arraycopy("ustar  \0".getBytes(StandardCharsets.US_ASCII), 0, h, 257, 8);
+        TarHeaderGuard g = new TarHeaderGuard();
+        assertEquals(0, g.accept(h, 0, 512));
+        assertEquals("../x", g.rejected());
+    }
+
+    @Test
     public void readsAGnuLongName() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         member(out, "././@LongLink", "installed-rootfs/../../x\0".getBytes(), 'L');
@@ -119,6 +128,26 @@ public class TarHeaderGuardTest {
         TarHeaderGuard g = new TarHeaderGuard();
         assertEquals(badAt, feed(g, out.toByteArray(), 8192));
         assertEquals("/abs/file", g.rejected());
+    }
+
+    @Test
+    public void skipsOldGnuSparseExtensionBlocks() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] h = header("installed-rootfs/sparse", 512, 'S', null);
+        h[482] = 1;                                  // isextended
+        out.write(h, 0, 512);
+        byte[] ext1 = header("../looks-like-a-name", 0, '0', null);
+        ext1[504] = 1;                               // another extension block follows
+        out.write(ext1, 0, 512);
+        out.write(header("../also-not-a-header", 0, '0', null), 0, 512);
+        out.write(header("../data-not-a-header", 0, '0', null), 0, 512);   // the 512 data bytes
+        int badAt = out.size();
+        member(out, "../escape", new byte[1], '0');
+        for (int chunk : new int[]{1, 512, 8192}) {
+            TarHeaderGuard g = new TarHeaderGuard();
+            assertStoppedAt(badAt, feed(g, out.toByteArray(), chunk));
+            assertEquals("../escape", g.rejected());
+        }
     }
 
     @Test

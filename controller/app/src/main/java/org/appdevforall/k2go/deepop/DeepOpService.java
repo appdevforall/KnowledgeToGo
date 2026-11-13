@@ -89,9 +89,14 @@ public final class DeepOpService extends Service {
     private static final int VERIFY_PASS = 1;
     private static final int EXTRACT_PASS = 2;
     /** K2GO-569/570: an archive that matches its companion skips the listing: copy, then extract. */
-    public static final int FAST_RESTORE_PASSES = 2;
+    private static final int FAST_RESTORE_PASSES = 2;
     private static final int FAST_EXTRACT_PASS = 1;
-    /** Pass model of this run: set before the copy from whether a companion came with it. */
+    /** The pass count a restore starts with: two when a companion came with the archive. */
+    public static int restorePasses(boolean withCompanion) {
+        return withCompanion ? FAST_RESTORE_PASSES : RESTORE_PASSES;
+    }
+
+    /** Pass model of this run: set at start, and set back to three before the copy when the fast path cannot apply. */
     private volatile int passes = RESTORE_PASSES;
     private volatile int extractPass = EXTRACT_PASS;
     /** Non-null when the staged tarball matched its companion: the extract total, and no listing. */
@@ -202,7 +207,7 @@ public final class DeepOpService extends Service {
         // promised, and it means the explicit stop below has little left to wait for.
         // K2GO-448: the restore's first stage ("[1/3] Copying the file") must carry the prefix from the
         // start, so the notification and the initial indeterminate state match the progress emits below.
-        if (restoring && intent.getStringExtra(EXTRA_COMPANION) != null) {
+        if (restoring && restorePasses(intent.getStringExtra(EXTRA_COMPANION) != null) == FAST_RESTORE_PASSES) {
             passes = FAST_RESTORE_PASSES;
             extractPass = FAST_EXTRACT_PASS;
         }
@@ -247,10 +252,13 @@ public final class DeepOpService extends Service {
                             (percent, etaSeconds) -> post(getString(R.string.k2go_br_status_backing), percent, etaSeconds),
                             backupCancelled, stats);
                 }
-                // K2GO-570: X.tar.json last, so a backup without it is an incomplete one.
+                // K2GO-570: X.tar.json last, so a backup without it is an incomplete one. Named after the
+                // name the provider gave the tarball (it can add " (1)"), so the restore finds the pair.
                 if (ok) {
-                    written[1] = android.provider.DocumentsContract.createDocument(cr, folder, "application/json",
-                            org.appdevforall.k2go.backup.domain.BackupCompanion.companionName(tarName));
+                    String actual = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, written[0]);
+                    String json = org.appdevforall.k2go.backup.domain.ArchivePair.json(actual != null ? actual : tarName);
+                    written[1] = json == null ? null : android.provider.DocumentsContract.createDocument(
+                            cr, folder, "application/json", json);
                     ok = written[1] != null && writeCompanion(cr, written[1], stats);
                 }
             } catch (Exception e) {
@@ -316,17 +324,27 @@ public final class DeepOpService extends Service {
         final Uri src = Uri.parse(uriStr);
         AppExecutors.get().io().execute(() -> {
             final long compressed = sourceSize(src);
+            final RootfsManifest.Identity identity = pickedIdentity(src);
+            String failure = identity == null ? null : RootfsArchiveValidator.rejectionMessage(this,
+                    RootfsArchiveValidator.identityRejection(identity));
+            // K2GO-569/570: the fast path needs a usable companion and the identity member (the extractor
+            // checks kind and ABI from it). Decide before the copy, so the bar never steps back.
             final org.appdevforall.k2go.deploy.domain.ExpectedArchive companion =
-                    companionStr == null ? null : readCompanion(Uri.parse(companionStr), src);
-            String failure = rejectBeforeCopy(src);
+                    companionStr == null || identity == null || !identity.present
+                            ? null : readCompanion(Uri.parse(companionStr), src);
+            if (companion == null) {
+                passes = RESTORE_PASSES;
+                extractPass = EXTRACT_PASS;
+            }
             if (failure == null) {
                 failure = rejectForSpace(compressed);
             }
             if (failure == null) {
                 failure = stageArchive(src, temp, compressed, companion);
             }
-            if (failure == null && verifiedCompanion == null && passes != RESTORE_PASSES) {
-                // K2GO-569/570: no usable or matching companion: the full path (listing) decides.
+            if (failure == null && companion != null && verifiedCompanion == null) {
+                // ponytail: rare (a companion that does not match its tarball); the bar steps back from
+                // the end of a two-pass copy to the listing of three passes. The full path decides.
                 passes = RESTORE_PASSES;
                 extractPass = EXTRACT_PASS;
             }
@@ -351,19 +369,19 @@ public final class DeepOpService extends Service {
     }
 
     /**
-     * K2GO-372: judge the picked file before paying to copy it.
+     * K2GO-372: read the picked file's identity before paying to copy it.
      *
      * <p>The identity manifest is the archive's first member, so this reads a few KB of the SAF stream
-     * and refuses a wrong-ABI or non-rootfs file in about a second, instead of after a multi-gigabyte
+     * and the caller refuses a wrong-ABI or non-rootfs file in about a second, instead of after a multi-gigabyte
      * copy the user then watches be thrown away. An archive with no manifest is not judged here — the
      * extractor's structural check still has the last word, on the copy.
      *
-     * @return the reason to show, or {@code null} when nothing here rejects it.
+     * @return the identity of the picked file, or {@code null} when it cannot be read here (no verdict;
+     *         the copy below says so properly).
      */
-    private String rejectBeforeCopy(Uri src) {
-        RootfsManifest.Identity id;
+    private RootfsManifest.Identity pickedIdentity(Uri src) {
         try (InputStream raw = getContentResolver().openInputStream(src)) {
-            if (raw == null) return getString(R.string.k2go_br_restore_unreadable);
+            if (raw == null) return null;
             // A SAF uri carries no filename to read an extension from, so ask the bytes: gzip's two
             // magic bytes. Honest for any source, and it drops the naming assumption the old
             // path-based caller could afford.
@@ -371,12 +389,11 @@ public final class DeepOpService extends Service {
             buf.mark(2);
             final boolean isGzip = buf.read() == 0x1f && buf.read() == 0x8b;
             buf.reset();
-            id = RootfsManifest.read(buf, isGzip);
+            return RootfsManifest.read(buf, isGzip);
         } catch (Exception e) {
             Log.w(TAG, "Could not read the picked file's manifest", e);
-            return null;   // unreadable here is not a verdict; the copy below will say so properly
+            return null;
         }
-        return RootfsArchiveValidator.rejectionMessage(this, RootfsArchiveValidator.identityRejection(id));
     }
 
     /** The picked file's length, or {@code -1} when the provider will not report one. */
@@ -484,30 +501,30 @@ public final class DeepOpService extends Service {
      * a manifest that names this exact file, for this ABI, with its uncompressed size.
      */
     private org.appdevforall.k2go.deploy.domain.ExpectedArchive readCompanion(Uri doc, Uri tarball) {
-        String name = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, doc);
-        if (name == null) return null;
+        final org.appdevforall.k2go.backup.domain.ArchivePair.Kind kind = org.appdevforall.k2go.backup.domain
+                .ArchivePair.kind(org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, doc));
+        if (kind != org.appdevforall.k2go.backup.domain.ArchivePair.Kind.JSON
+                && kind != org.appdevforall.k2go.backup.domain.ArchivePair.Kind.SIGNATURE) return null;
         try (InputStream in = getContentResolver().openInputStream(doc)) {
             if (in == null) return null;
             byte[] buf = new byte[org.appdevforall.k2go.backup.data.BackupCompanionJson.MAX_BYTES + 1];
             int n = 0, r;
             while (n < buf.length && (r = in.read(buf, n, buf.length - n)) != -1) n += r;
             String text = new String(buf, 0, n, java.nio.charset.StandardCharsets.UTF_8);
-            if (name.endsWith(".tar.json")) {
+            if (kind == org.appdevforall.k2go.backup.domain.ArchivePair.Kind.JSON) {
                 org.appdevforall.k2go.backup.domain.BackupCompanion c =
                         org.appdevforall.k2go.backup.data.BackupCompanionJson.read(text);
                 return c == null ? null : c.expected();
             }
-            if (name.endsWith(".minisig")) {
-                org.appdevforall.k2go.download.domain.RootfsManifest m =
-                        org.appdevforall.k2go.download.domain.RootfsManifest.parse(
-                                org.appdevforall.k2go.download.data.MinisignVerifier.authenticatedComment(
-                                        text, org.appdevforall.k2go.download.data.TrustedSigningKeys.PRODUCTION));
-                String tarName = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, tarball);
-                boolean ok = m != null && m.usize > 0 && m.file.equals(tarName)
-                        && m.isForAbi(org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId());
-                Log.i(TAG, "restore signature check " + tarName + ": " + (ok ? "trusted" : "not trusted"));
-                return ok ? new org.appdevforall.k2go.deploy.domain.ExpectedArchive(m.size, m.sha256, m.usize) : null;
-            }
+            org.appdevforall.k2go.download.domain.RootfsManifest m =
+                    org.appdevforall.k2go.download.domain.RootfsManifest.parse(
+                            org.appdevforall.k2go.download.data.MinisignVerifier.authenticatedComment(
+                                    text, org.appdevforall.k2go.download.data.TrustedSigningKeys.PRODUCTION));
+            String tarName = org.appdevforall.k2go.backup.data.SiblingFinder.displayName(this, tarball);
+            org.appdevforall.k2go.deploy.domain.ExpectedArchive e = m == null ? null
+                    : m.expectedFor(tarName, org.appdevforall.k2go.deploy.data.RootfsManifest.appAbiId());
+            Log.i(TAG, "restore signature check " + tarName + ": " + (e != null ? "trusted" : "not trusted"));
+            return e;
         } catch (Exception e) {
             Log.w(TAG, "could not read the companion: " + e.getMessage());
         }

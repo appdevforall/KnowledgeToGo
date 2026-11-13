@@ -121,6 +121,16 @@ public final class RootfsManifest {
                 + Pattern.quote(abi) + "\\.tar\\.gz");
     }
 
+    /**
+     * K2GO-569: what a signed restore may trust about the tarball named {@code fileName}, or
+     * {@code null}: this manifest must name that file, be a bake artifact for {@code abi}, and carry
+     * {@code usize}. The copy then checks the size and sha-256.
+     */
+    public org.appdevforall.k2go.deploy.domain.ExpectedArchive expectedFor(String fileName, String abi) {
+        return usize > 0 && file.equals(fileName) && isForAbi(abi)
+                ? new org.appdevforall.k2go.deploy.domain.ExpectedArchive(size, sha256, usize) : null;
+    }
+
     /** True when this manifest names exactly this artifact (file name, size and sha-256). */
     public boolean vouchesFor(String fileName, long sizeBytes, String sha256Hex) {
         return file.equals(fileName)

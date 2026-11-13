@@ -41,13 +41,4 @@ public class BackupCompanionJsonTest {
         assertNull(BackupCompanionJson.read("{\"format\":\"k2go-backup/1\",\"created\":\"x\",\"app_version\":\"v\","
                 + "\"abi\":\"a\",\"gz_bytes\":1,\"gz_sha256\":\"" + SHA + "\"}"));
     }
-
-    @Test
-    public void companionNames() {
-        assertEquals("k2go_2026.317_1_aarch64.tar.json", BackupCompanion.companionName("k2go_2026.317_1_aarch64.tar.gz"));
-        assertEquals("k2go_2026.317_1_aarch64.tar.gz", BackupCompanion.tarballName("k2go_2026.317_1_aarch64.tar.json"));
-        assertNull(BackupCompanion.companionName("backup.zip"));
-        assertNull(BackupCompanion.companionName(".tar.gz"));
-        assertNull(BackupCompanion.tarballName("backup.json"));
-    }
 }

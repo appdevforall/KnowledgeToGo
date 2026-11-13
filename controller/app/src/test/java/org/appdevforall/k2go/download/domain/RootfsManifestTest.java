@@ -39,6 +39,17 @@ public class RootfsManifestTest {
     }
 
     @Test
+    public void restoreTrustsOnlyThisFileForThisAbiWithUsize() {
+        RootfsManifest m = RootfsManifest.parse(GOOD + " usize=5000000000");
+        assertNotNull(m.expectedFor(NAME, "arm64-v8a"));
+        assertEquals(5000000000L, m.expectedFor(NAME, "arm64-v8a").tarBytes);
+        assertTrue(m.expectedFor(NAME, "arm64-v8a").matches(1589997791L, SHA));
+        assertNull(m.expectedFor("other.tar.gz", "arm64-v8a"));
+        assertNull(m.expectedFor(NAME, "armeabi-v7a"));
+        assertNull(RootfsManifest.parse(GOOD).expectedFor(NAME, "arm64-v8a"));   // no usize
+    }
+
+    @Test
     public void meta4IsOptional() {
         RootfsManifest m = RootfsManifest.parse("k2go-rootfs v1 file=" + NAME + " size=1 sha256=" + SHA);
         assertNotNull(m);

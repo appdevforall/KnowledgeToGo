@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.UriPermission;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
@@ -49,7 +50,7 @@ public final class SiblingFinder {
 
     /** True when the app can read the folder of {@code picked}: a sibling it does not find is absent. */
     public static boolean canSeeSiblings(Context ctx, Uri picked) {
-        return grantedTree(ctx, picked) != null || (StoragePermission.isGranted(ctx) && parentDir(picked) != null);
+        return grantedTree(ctx, picked) != null || (pathAccess(ctx) && parentDir(picked) != null);
     }
 
     /** The document named {@code name} in the folder of {@code picked}, or {@code null}. */
@@ -62,12 +63,18 @@ public final class SiblingFinder {
             Uri doc = DocumentsContract.buildDocumentUriUsingTree(tree, id);
             if (name.equals(displayName(ctx, doc))) return doc;
         }
-        if (StoragePermission.isGranted(ctx)) {
+        if (pathAccess(ctx)) {
             File dir = parentDir(picked);
             File f = dir == null ? null : new File(dir, name);
             if (f != null && f.isFile()) return Uri.fromFile(f);
         }
         return null;
+    }
+
+    /** True when File paths on shared storage are readable: All-files access, and not Android 10 scoped storage. */
+    private static boolean pathAccess(Context ctx) {
+        return StoragePermission.isGranted(ctx)
+                && (Build.VERSION.SDK_INT != Build.VERSION_CODES.Q || Environment.isExternalStorageLegacy());
     }
 
     /** A persisted folder grant that covers {@code picked}, or {@code null}. */

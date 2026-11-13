@@ -38,12 +38,13 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.backup.data.SiblingFinder;
-import org.appdevforall.k2go.backup.domain.BackupCompanion;
+import org.appdevforall.k2go.backup.domain.ArchivePair;
 import org.appdevforall.k2go.deepop.DeepOpProgressRepository;
 import org.appdevforall.k2go.deepop.DeepOpService;
 import org.appdevforall.k2go.deepop.DeepOpState;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
+import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.Snackbars;
 
 public class BackupJobFragment extends Fragment {
@@ -97,14 +98,38 @@ public class BackupJobFragment extends Fragment {
     private final OpenNear openNear = new OpenNear();
     private Uri pairFirst;              // the file the user picked first
     private boolean pairWantsTarball;   // true: the first was the companion; false: it was the tarball
+    private static final String STATE_PAIR_FIRST = "pair_first";
+    private static final String STATE_PAIR_WANTS_TARBALL = "pair_wants_tarball";
     private final ActivityResultLauncher<String[]> openSecond =
             registerForActivityResult(openNear, uri -> {
+                final Uri first = pairFirst;
+                pairFirst = null;
+                if (first == null) { popToIntro(false); return; }
                 if (pairWantsTarball) {
-                    if (uri != null) prepareRestore(uri, pairFirst); else popToIntro(false);
+                    if (uri != null) prepareRestore(uri, first); else popToIntro(false);
                 } else {
-                    prepareRestore(pairFirst, uri);   // no pick: the full path
+                    prepareRestore(first, uri);   // no pick: the full path
                 }
             });
+
+    @Override
+    public void onCreate(@Nullable Bundle s) {
+        super.onCreate(s);
+        // K2GO-569: the second picker can outlive this instance (a recreation while it is open).
+        if (s != null && s.getString(STATE_PAIR_FIRST) != null) {
+            pairFirst = Uri.parse(s.getString(STATE_PAIR_FIRST));
+            pairWantsTarball = s.getBoolean(STATE_PAIR_WANTS_TARBALL);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        if (pairFirst != null) {
+            out.putString(STATE_PAIR_FIRST, pairFirst.toString());
+            out.putBoolean(STATE_PAIR_WANTS_TARBALL, pairWantsTarball);
+        }
+    }
 
     /** OpenDocument that starts in the folder of the first file (API 26+). */
     private static final class OpenNear extends ActivityResultContracts.OpenDocument {
@@ -237,42 +262,47 @@ public class BackupJobFragment extends Fragment {
     /**
      * K2GO-569: the user picks one file of a pair; the app finds the other one by name. A tarball
      * with its X.tar.json or X.tar.gz.minisig restores in two passes; a tarball alone in three.
+     * The lookup is provider IPC and disk access, so it runs off the main thread.
      */
     private void onRestorePicked(Uri picked) {
         if (!isAdded()) return;
-        final android.content.Context ctx = requireContext();
-        final String name = SiblingFinder.displayName(ctx, picked);
-        final boolean canSee = SiblingFinder.canSeeSiblings(ctx, picked);
-        if (name != null && name.endsWith(".tar.gz")) {
-            String json = BackupCompanion.companionName(name);
-            Uri companion = SiblingFinder.find(ctx, picked, json);
-            if (companion == null) companion = SiblingFinder.find(ctx, picked, name + ".minisig");
-            if (companion != null || canSee || json == null) {
-                prepareRestore(picked, companion);
+        final android.content.Context ctx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            final String name = SiblingFinder.displayName(ctx, picked);
+            final ArchivePair.Kind kind = ArchivePair.kind(name);
+            final boolean canSee = SiblingFinder.canSeeSiblings(ctx, picked);
+            Uri found = null;
+            if (kind == ArchivePair.Kind.TARBALL) {
+                found = SiblingFinder.find(ctx, picked, ArchivePair.json(name));
+                if (found == null) found = SiblingFinder.find(ctx, picked, ArchivePair.signature(name));
+            } else if (kind != ArchivePair.Kind.OTHER) {
+                found = SiblingFinder.find(ctx, picked, ArchivePair.tarball(name));
+            }
+            final Uri sibling = found;
+            main.post(() -> onPairLookedUp(picked, name, kind, canSee, sibling));
+        });
+    }
+
+    private void onPairLookedUp(Uri picked, String name, ArchivePair.Kind kind, boolean canSee, @Nullable Uri sibling) {
+        if (!isAdded()) return;
+        if (kind == ArchivePair.Kind.TARBALL) {
+            if (sibling != null || canSee) {
+                prepareRestore(picked, sibling);
             } else {
                 askForSecond(picked, false, getString(R.string.k2go_br_pair_companion_title),
-                        getString(R.string.k2go_br_pair_companion_msg, json, name + ".minisig"),
+                        getString(R.string.k2go_br_pair_companion_msg, ArchivePair.json(name), ArchivePair.signature(name)),
                         R.string.k2go_br_pair_skip);
             }
-            return;
-        }
-        String tarName = name == null ? null
-                : name.endsWith(".tar.json") ? BackupCompanion.tarballName(name)
-                : name.endsWith(".tar.gz.minisig") ? name.substring(0, name.length() - ".minisig".length())
-                : null;
-        if (tarName == null) {   // not a pair file: the extractor judges it
-            prepareRestore(picked, null);
-            return;
-        }
-        Uri tarball = SiblingFinder.find(ctx, picked, tarName);
-        if (tarball != null) {
-            prepareRestore(tarball, picked);
+        } else if (kind == ArchivePair.Kind.OTHER) {
+            prepareRestore(picked, null);   // not a pair file: the extractor judges it
+        } else if (sibling != null) {
+            prepareRestore(sibling, picked);
         } else if (canSee) {
-            Snackbars.make(requireView(), getString(R.string.k2go_br_pair_missing, tarName)).show();
+            Snackbars.make(requireView(), getString(R.string.k2go_br_pair_missing, ArchivePair.tarball(name))).show();
             popToIntro(false);
         } else {
             askForSecond(picked, true, getString(R.string.k2go_br_pair_tarball_title),
-                    getString(R.string.k2go_br_pair_tarball_msg, tarName), R.string.cancel);
+                    getString(R.string.k2go_br_pair_tarball_msg, ArchivePair.tarball(name)), R.string.cancel);
         }
     }
 
@@ -287,6 +317,7 @@ public class BackupJobFragment extends Fragment {
                     openSecond.launch(new String[]{"*/*"});
                 })
                 .setNegative(noRes, () -> {
+                    pairFirst = null;
                     if (wantsTarball) popToIntro(false); else prepareRestore(first, null);
                 })
                 .show();
@@ -302,8 +333,7 @@ public class BackupJobFragment extends Fragment {
                     // K2GO-448: same "[1/3]" prefix the service posts, from the same source, so the
                     // optimistic status matches instead of flashing an unprefixed "Copying the file".
                     setStatusAnimated(org.appdevforall.k2go.deploy.domain.ExtractProgress.stepped(
-                            DeepOpService.COPY_PASS, companion != null
-                                    ? DeepOpService.FAST_RESTORE_PASSES : DeepOpService.RESTORE_PASSES,
+                            DeepOpService.COPY_PASS, DeepOpService.restorePasses(companion != null),
                             getString(R.string.k2go_br_status_copying)));
                     DeepOpService.startRestore(requireContext(), uri, companion);
                 })

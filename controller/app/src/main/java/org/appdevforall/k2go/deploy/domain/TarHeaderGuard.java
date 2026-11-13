@@ -14,7 +14,7 @@ package org.appdevforall.k2go.deploy.domain;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 
-/** Streaming tar header walker (ustar, GNU long names, pax "path"). Pure JVM, not thread-safe. */
+/** Streaming tar header walker (ustar, GNU long names and old sparse, pax "path"). Pure JVM, not thread-safe. */
 public final class TarHeaderGuard {
 
     private static final int BLOCK = 512;
@@ -32,6 +32,9 @@ public final class TarHeaderGuard {
     /** Name for the next member, from a GNU long name or a pax "path". */
     private String pendingName;
     private String rejected;
+    /** Old GNU sparse: extension blocks follow the header, then {@link #sparseData} bytes of data. */
+    private boolean sparseExt;
+    private long sparseData;
 
     /**
      * Passes {@code len} bytes of the uncompressed stream through the guard.
@@ -63,6 +66,13 @@ public final class TarHeaderGuard {
             pos += n;
             if (headerFill < BLOCK) break;
             headerFill = 0;
+            if (sparseExt) {   // byte 504 of an extension block: more extension blocks follow
+                if (header[504] == 0) {
+                    sparseExt = false;
+                    skip = sparseData;
+                }
+                continue;
+            }
             String bad = onHeader();
             if (bad != null) {
                 rejected = bad;
@@ -98,7 +108,12 @@ public final class TarHeaderGuard {
         }
         final String name = pendingName != null ? pendingName : ustarName();
         pendingName = null;
-        skip = padded;
+        if (type == 'S' && header[482] != 0) {   // old GNU sparse with extension blocks
+            sparseExt = true;
+            sparseData = padded;
+        } else {
+            skip = padded;
+        }
         return ArchiveEntry.escapesRoot(name) ? name : null;
     }
 
@@ -115,8 +130,9 @@ public final class TarHeaderGuard {
 
     private String ustarName() {
         String name = cString(header, 0, 100);
+        // POSIX "ustar\0" only. GNU "ustar  " keeps atime/ctime/sparse data at offset 345, not a prefix.
         boolean ustar = header[257] == 'u' && header[258] == 's' && header[259] == 't'
-                && header[260] == 'a' && header[261] == 'r';
+                && header[260] == 'a' && header[261] == 'r' && header[262] == 0;
         if (ustar) {
             String prefix = cString(header, 345, 155);
             if (!prefix.isEmpty()) return prefix + "/" + name;
