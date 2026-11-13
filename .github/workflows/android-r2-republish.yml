@@ -12,7 +12,7 @@ name: Republish APK + AAB to R2 (interim manual)
 # PRECONDITION: bump versionCode in controller/app/build.gradle and merge to main FIRST, then run this
 # from main. Play rejects a duplicate versionCode, and a same-code republish is not seen as an update.
 #
-# The tagged-release path stays in android-release-build.yml, untouched. TO RETIRE once monthly tagged
+# The release path is play-release.yml (K2GO-564), which calls android-release-build.yml. TO RETIRE once monthly tagged
 # releases are stable: delete this file.
 
 on:

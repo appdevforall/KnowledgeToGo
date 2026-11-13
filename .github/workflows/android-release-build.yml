@@ -1,15 +1,9 @@
 name: Build and Release K2Go APKs
 
 on:
-  # Tag-only: a release ships by pushing a v* tag. Manual (workflow_dispatch) builds that go to R2
-  # live in android-r2-republish.yml, so the manual path has one home, not two.
-  # K2GO-564: an rc tag marks a Play candidate (play-candidate.yml), not a release, so it is excluded.
-  # play-release.yml calls this workflow with the final tag (workflow_call), because a tag that a
-  # workflow pushes with GITHUB_TOKEN does not start other workflows.
-  push:
-    tags:
-      - 'v*'
-      - '!v*-rc.*'
+  # K2GO-564: only play-release.yml starts a release, after Google approved the candidate, so GitHub
+  # and Play ship the same commit. A hand-pushed v* tag does not start this workflow.
+  # Manual builds that go to R2 between releases live in android-r2-republish.yml.
   workflow_call:
     inputs:
       tag:
@@ -22,7 +16,7 @@ jobs:
     name: Build Release APKs & Upload to R2
     runs-on: ubuntu-latest
     env:
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      RELEASE_TAG: ${{ inputs.tag }}
 
     defaults:
       run:
@@ -32,7 +26,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
         with:
-          ref: ${{ inputs.tag || github.ref }}
+          ref: ${{ inputs.tag }}
           submodules: recursive
 
       # TODO (Future): Add a Jira step here to verify if the version exists in Jira

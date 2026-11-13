@@ -44,7 +44,8 @@ same commit `vX.Y.Z`. We never rebuild after the approval.
 4. Button 2, `play-release.yml`: accept only the newest rc of the version (each new candidate
    replaces the older one in Play), tag its commit as `vX.Y.Z` and run the release build
    (GitHub Release, website APKs, R2, OTA `update.json`). In Play Console, press
-   "Publish changes". The release build no longer builds a Play AAB.
+   "Publish changes". The release build no longer builds a Play AAB, and it runs only when
+   `play-release.yml` calls it: a hand-pushed `v*` tag does not start a release.
 5. Play credentials: a Google Cloud service account with "Release apps to testing tracks" on
    this app only. Its JSON key is the secret `PLAY_SERVICE_ACCOUNT_JSON` of the GitHub
    environment `google-play`, which asks a repo admin to approve each run.
