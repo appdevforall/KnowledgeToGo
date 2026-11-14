@@ -125,6 +125,34 @@ test('conexProxy passes Content-Disposition through (the export filename)', asyn
     }
 });
 
+test('conexProxy forwards X-Share-Token (the sender close DELETE)', async () => {
+    const core = http.createServer((req, res) => {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ token: req.headers['x-share-token'] ?? null, method: req.method }));
+    });
+    const corePort = await listen(core);
+    process.env.CONEX_PORT = String(corePort);
+    const app = await startProxyApp();
+    try {
+        const r = await new Promise<{ status: number; body: string }>((resolve, reject) => {
+            const req = http.request({ host: '127.0.0.1', port: app.port, path: '/v1/share/abc',
+                method: 'DELETE', headers: { 'x-share-token': 'tok-123' } }, (res) => {
+                let data = '';
+                res.on('data', (c) => { data += c; });
+                res.on('end', () => resolve({ status: res.statusCode || 0, body: data }));
+            });
+            req.on('error', reject);
+            req.end();
+        });
+        assert.equal(r.status, 200);
+        assert.deepEqual(JSON.parse(r.body), { token: 'tok-123', method: 'DELETE' });
+        const none = await get(app.port, '/v1/apps');
+        assert.equal(JSON.parse(none.body).token, null);
+    } finally {
+        app.close(); core.close();
+    }
+});
+
 test('conexProxy returns 502 when the core is unreachable', async () => {
     // Point at a port with nothing listening.
     const dead = http.createServer();
