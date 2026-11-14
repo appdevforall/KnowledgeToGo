@@ -30,7 +30,7 @@ class _DirectFake(ContentAdapter):
             return None
         return ExportPlan(False, self._total, local_ref, "application/octet-stream")
 
-    def open_fetch(self, local_ref, staged_dir=None):
+    def open_fetch(self, local_ref, staged_dir=None, offset=0):
         if not self._present:
             return None
         return ExportStream(local_ref, "application/octet-stream", [b"x" * self._total])
@@ -67,7 +67,7 @@ class _StagingFake(ContentAdapter):
             f.write(b"x" * self._total)
         return True
 
-    def open_fetch(self, local_ref, staged_dir=None):
+    def open_fetch(self, local_ref, staged_dir=None, offset=0):
         path = os.path.join(staged_dir or "", "part.bin")
         data = b""
         if os.path.isfile(path):
@@ -286,7 +286,7 @@ class SweepTest(unittest.TestCase):
         # If open_fetch raises (or the stream never starts), the op must not be stuck in_use:
         # it is cleaned up so it cannot survive the sweep forever.
         class _RaisingFetch(_StagingFake):
-            def open_fetch(self, local_ref, staged_dir=None):
+            def open_fetch(self, local_ref, staged_dir=None, offset=0):
                 raise RuntimeError("boom")
 
         with tempfile.TemporaryDirectory() as d:

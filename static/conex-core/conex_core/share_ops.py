@@ -170,8 +170,9 @@ class ShareOps:
         return 200, {"sessionId": session_id, "items": found, "missing": missing,
                      "totalBytes": total}
 
-    def fetch(self, session_id: str, item_ref: str, token: Any):
-        """Stream one shared item. Lazily creates the child export op the first time an item is
+    def fetch(self, session_id: str, item_ref: str, token: Any, offset: int = 0):
+        """Stream one shared item, from ``offset`` when the receiver resumes a cut item and the
+        item is a byte-exact file (a direct ZIM, K2GO-577); a staged tar always starts at 0. Lazily creates the child export op the first time an item is
         fetched, then drives it: 409 {state: staging} while a staging app (Kolibri) stages (the
         receiver retries this same URL), 409 {state: busy} when the item already has an open
         stream (single-flight), (200, ExportStream) once ready. The stream's on_close releases
@@ -203,7 +204,7 @@ class ShareOps:
                 op_id = self._ensure_op(session_id, item_ref, app, local_ref)
                 if isinstance(op_id, tuple):
                     return op_id  # prepare failed: 404 absent, 507 no space
-                status, result = self._export.fetch(op_id)
+                status, result = self._export.fetch(op_id, offset)
                 if status == 404 and attempt == 1:
                     self._drop_op(session_id, item_ref, op_id)
                     continue

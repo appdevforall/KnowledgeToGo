@@ -96,7 +96,8 @@ only auth, so it must not reach access logs).
 - `GET /v1/share/{sessionId}/fetch/{itemRef}` -> the chunked octet stream for one item.
   `409 {state: staging}` while a staging item (Kolibri) stages (the receiver retries),
   `409 {state: busy}` when the item already has an open stream (single-flight), `200` streams
-  once ready.
+  once ready. `Range: bytes=N-` resumes a cut direct item (ZIM): `206` with `Content-Range`.
+  Any other range, or a staged item, gets `200` from byte 0.
 - `POST /v1/share/{sessionId}/complete` -> `{ok: true}`. The receiver's clean-success close.
 - `DELETE /v1/share/{sessionId}` -> `{ok: true}`. Cancel (abort) by host or receiver. Both
   closers revoke the token and every child temp; `404` on an unknown or already-closed session.

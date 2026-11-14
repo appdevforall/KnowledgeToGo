@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import os
 import queue
+import re
 import shutil
 import tarfile
 import threading
@@ -40,14 +41,28 @@ def free_bytes(path: str) -> Optional[int]:
         return None
 
 
-def file_stream(path: str, chunk: int = CHUNK) -> Iterator[bytes]:
-    """Yield a file's bytes in chunks. Opens lazily (on first iteration), read-only."""
+def file_stream(path: str, chunk: int = CHUNK, start: int = 0) -> Iterator[bytes]:
+    """Yield a file's bytes in chunks, from byte ``start``. Opens lazily (on first iteration),
+    read-only."""
     with open(path, "rb") as f:
+        if start:
+            f.seek(start)
         while True:
             block = f.read(chunk)
             if not block:
                 return
             yield block
+
+
+_RANGE_FROM = re.compile(r"^bytes=(\d{1,19})-$")
+
+
+def parse_range_start(header: Optional[str]) -> int:
+    """The start byte of a single open range ``bytes=N-`` (resume a cut transfer), else 0. Any
+    other form (no header, a closed or multi range) reads as 0, so the server sends the whole
+    body with 200, which RFC 9110 allows for a range it does not support."""
+    match = _RANGE_FROM.match((header or "").strip())
+    return int(match.group(1)) if match else 0
 
 
 def resolve_within(root: str, rel: str) -> Optional[str]:

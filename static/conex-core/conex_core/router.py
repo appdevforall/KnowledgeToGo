@@ -143,14 +143,16 @@ def _export_prepare(ops: Optional[ExportOps], body: Any) -> Response:
 
 def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any = None,
              ops: Optional[ExportOps] = None, share: Optional[ShareOps] = None,
-             token: Optional[str] = None, import_ops: Optional[ImportOps] = None) -> Response:
+             token: Optional[str] = None, import_ops: Optional[ImportOps] = None,
+             range_start: int = 0) -> Response:
     """Route one request. ``query`` is a dict of first values; ``body`` is the parsed JSON
     for a POST; ``ops`` is the export long-operation registry, ``import_ops`` the import
     long-operation registry, and ``share`` the share-gate registry (the server supplies all; the
     routes that need them guard against None). ``token`` is the share session token: the server
     reads it from the ``X-Share-Token`` request header (never the URL, so it stays out of access
     logs) and passes it here, so the router stays header-agnostic and unit-testable without a
-    socket."""
+    socket. ``range_start`` is the start byte of a ``Range: bytes=N-`` request header (0 when
+    absent); only the share fetch uses it, to resume a cut item (K2GO-577)."""
     trimmed = path.rstrip("/") or "/"
     segments = [unquote(s) for s in trimmed.split("/") if s != ""]
 
@@ -251,7 +253,7 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
     if len(segments) == 5 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "fetch":
         if share is None:
             return 500, {"error": "share unavailable"}
-        return share.fetch(segments[2], segments[4], token)
+        return share.fetch(segments[2], segments[4], token, range_start)
 
     # GET /v1/storage : box content-volume disk summary + per-app content totals.
     if segments == ["v1", "storage"]:

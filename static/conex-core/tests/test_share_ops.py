@@ -49,7 +49,7 @@ class _DirectFake(ContentAdapter):
             return None
         return ExportPlan(False, self._items[local_ref], local_ref, "application/octet-stream")
 
-    def open_fetch(self, local_ref, staged_dir=None):
+    def open_fetch(self, local_ref, staged_dir=None, offset=0):
         if local_ref not in self._items:
             return None
         return ExportStream(local_ref, "application/octet-stream", [b"x" * self._items[local_ref]])
@@ -86,7 +86,7 @@ class _StagingFake(ContentAdapter):
             f.write(b"x" * self._items[local_ref])
         return True
 
-    def open_fetch(self, local_ref, staged_dir=None):
+    def open_fetch(self, local_ref, staged_dir=None, offset=0):
         path = os.path.join(staged_dir or "", "part.bin")
         data = b""
         if os.path.isfile(path):

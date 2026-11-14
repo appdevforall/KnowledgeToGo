@@ -199,7 +199,8 @@ class KolibriAdapter(ContentAdapter):
             return False
         return self._stage_export(local_ref, dest, should_cancel)
 
-    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None,
+                   offset: int = 0) -> Optional[ExportStream]:
         # Tar-stream the staged tree. The op layer sets on_close (drop the op + remove temp).
         if not staged_dir or not os.path.isdir(staged_dir):
             return None

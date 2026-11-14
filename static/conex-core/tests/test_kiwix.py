@@ -5,6 +5,7 @@ import uuid
 
 from conex_core.adapters.kiwix import (
     KiwixAdapter,
+    zim_checksum_pos,
     build_item,
     is_safe_local_ref,
     parse_zim_filename,
@@ -16,6 +17,29 @@ from conex_core.model import AUTHORITATIVE, SOFT
 def _zim_header(u: uuid.UUID) -> bytes:
     # magic uint32 LE + 4 version bytes + 16-byte uuid at offset 8.
     return (0x044D495A).to_bytes(4, "little") + b"\x06\x00\x00\x00" + u.bytes
+
+
+def _valid_zim(body_len: int = 64) -> bytes:
+    """A ZIM with the openzim layout the import checks: checksumPos at offset 72 points at the
+    trailing MD5 of every byte before it."""
+    import hashlib
+    head = bytearray(_zim_header(uuid.uuid4()) + b"\x00" * (80 - 24))
+    pos = 80 + body_len
+    head[72:80] = pos.to_bytes(8, "little")
+    data = bytes(head) + os.urandom(body_len)
+    return data + hashlib.md5(data).digest()
+
+
+class ZimChecksumPosTest(unittest.TestCase):
+    def test_reads_pos_when_md5_is_the_last_16_bytes(self):
+        data = _valid_zim(10)
+        self.assertEqual(zim_checksum_pos(data[:80], len(data)), len(data) - 16)
+
+    def test_rejects_size_mismatch_bad_magic_and_short_header(self):
+        data = _valid_zim(10)
+        self.assertIsNone(zim_checksum_pos(data[:80], len(data) + 1))
+        self.assertIsNone(zim_checksum_pos(b"\x00" * 80, len(data)))
+        self.assertIsNone(zim_checksum_pos(data[:40], len(data)))
 
 
 class ReadZimUuidTest(unittest.TestCase):
@@ -175,6 +199,27 @@ class KiwixExportTest(unittest.TestCase):
             self.assertEqual(stream.content_type, "application/octet-stream")
             self.assertEqual(b"".join(stream.chunks), payload)
 
+    def test_open_fetch_resumes_inside_the_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            name = "devdocs_en_angular_2026-05.zim"
+            payload = _zim_header(uuid.uuid4()) + os.urandom(200)
+            with open(os.path.join(d, name), "wb") as f:
+                f.write(payload)
+            stream = KiwixAdapter(d).open_fetch(name, offset=100)
+            self.assertEqual((stream.offset, stream.size), (100, len(payload)))
+            self.assertEqual(b"".join(stream.chunks), payload[100:])
+
+    def test_open_fetch_ignores_an_offset_outside_the_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            name = "devdocs_en_angular_2026-05.zim"
+            payload = _zim_header(uuid.uuid4()) + os.urandom(200)
+            with open(os.path.join(d, name), "wb") as f:
+                f.write(payload)
+            for offset in (len(payload), len(payload) + 5, -1):
+                stream = KiwixAdapter(d).open_fetch(name, offset=offset)
+                self.assertEqual(stream.offset, 0)
+                self.assertEqual(b"".join(stream.chunks), payload)
+
     def test_export_rejects_traversal_and_missing(self):
         with tempfile.TemporaryDirectory() as d:
             adapter = KiwixAdapter(d)
@@ -216,7 +261,7 @@ class KiwixImportTest(unittest.TestCase):
     def test_import_places_zim_and_reports_ok(self):
         with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
             payload = os.path.join(src, "payload.zim")
-            data = _zim_header(uuid.uuid4()) + os.urandom(64)
+            data = _valid_zim()
             with open(payload, "wb") as f:
                 f.write(data)
             adapter = KiwixAdapter(zdir, indexer="/nonexistent/indexer")  # reindex is a no-op
@@ -227,6 +272,38 @@ class KiwixImportTest(unittest.TestCase):
             self.assertTrue(os.path.isfile(placed))
             with open(placed, "rb") as f:
                 self.assertEqual(f.read(), data)
+            self.assertEqual(os.listdir(zdir), ["gutenberg_en_all_2024-01.zim"])
+
+    def test_import_removes_a_temp_left_by_a_dead_process(self):
+        with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
+            with open(os.path.join(zdir, "old_en_all_2020-01.zim.k2go-import"), "wb") as f:
+                f.write(b"half")
+            payload = os.path.join(src, "payload.zim")
+            with open(payload, "wb") as f:
+                f.write(_valid_zim())
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent")
+            self.assertTrue(adapter.import_item(
+                {"identity": {"localRef": "gutenberg_en_all_2024-01.zim"}}, payload)["ok"])
+            self.assertEqual(os.listdir(zdir), ["gutenberg_en_all_2024-01.zim"])
+
+    def test_import_rejects_a_bad_checksum_and_keeps_the_existing_zim(self):
+        with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
+            name = "gutenberg_en_all_2024-01.zim"
+            good = _valid_zim()
+            with open(os.path.join(zdir, name), "wb") as f:
+                f.write(good)
+            bad = bytearray(good)
+            bad[100] ^= 0xFF   # one spliced byte in the body
+            payload = os.path.join(src, "payload.zim")
+            with open(payload, "wb") as f:
+                f.write(bytes(bad))
+            adapter = KiwixAdapter(zdir, indexer="/nonexistent")
+            result = adapter.import_item({"identity": {"localRef": name}}, payload)
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["code"], "corrupt")
+            self.assertEqual(os.listdir(zdir), [name])   # no temp left behind
+            with open(os.path.join(zdir, name), "rb") as f:
+                self.assertEqual(f.read(), good)
 
     def test_import_rejects_traversal_localref(self):
         with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
@@ -245,19 +322,19 @@ class KiwixImportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as zdir:
             payload = os.path.join(src, "payload.zim")
             with open(payload, "wb") as f:
-                f.write(_zim_header(uuid.uuid4()) + os.urandom(16))
+                f.write(_valid_zim())
             adapter = KiwixAdapter(zdir, indexer="/nonexistent")
-            orig = kiwix_mod.shutil.copyfile
+            orig = kiwix_mod.copy_verified_zim
 
             def boom(*_a, **_k):
                 raise OSError(28, "No space left on device")
 
-            kiwix_mod.shutil.copyfile = boom
+            kiwix_mod.copy_verified_zim = boom
             try:
                 result = adapter.import_item(
                     {"identity": {"localRef": "gutenberg_en_all_2024-01.zim"}}, payload)
             finally:
-                kiwix_mod.shutil.copyfile = orig
+                kiwix_mod.copy_verified_zim = orig
             self.assertFalse(result["ok"])
             self.assertEqual(result["code"], "no_space")
 

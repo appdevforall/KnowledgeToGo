@@ -14,9 +14,9 @@ convention <creator>_<lang>_<flavour>_<date>.zim, the same keys kiwix_catalog.cs
 from __future__ import annotations
 
 import errno
+import hashlib
 import os
 import re
-import shutil
 import subprocess
 import uuid
 from typing import List, Optional, Tuple
@@ -40,6 +40,13 @@ from ..ports import ContentAdapter, ExportPlan, ExportStream
 ZIM_MAGIC = 0x044D495A
 _ZIM_HEADER_MIN = 24
 
+# The header's checksumPos (uint64 LE at offset 72) points at the file's MD5, the last 16 bytes.
+# The MD5 covers every byte before it (openzim spec), so a whole-file check needs no extra data.
+_ZIM_CHECKSUM_POS_AT = 72
+_ZIM_MD5_LEN = 16
+_COPY_CHUNK = 1024 * 1024
+_IMPORT_TEMP_SUFFIX = ".k2go-import"
+
 # A trailing YYYY-MM or YYYY-MM-DD is the version (date) axis in the filename.
 _DATE_RE = re.compile(r"^\d{4}-\d{2}(-\d{2})?$")
 
@@ -61,6 +68,55 @@ def read_zim_uuid_from_file(path: str) -> Optional[str]:
             return read_zim_uuid(f.read(_ZIM_HEADER_MIN))
     except OSError:
         return None
+
+
+def zim_checksum_pos(header: bytes, size: int) -> Optional[int]:
+    """Where the ZIM's MD5 starts, or None when the header or the size do not match the openzim
+    layout (the MD5 is always the last 16 bytes). Pure."""
+    end = _ZIM_CHECKSUM_POS_AT + 8
+    if len(header) < end or int.from_bytes(header[0:4], "little") != ZIM_MAGIC:
+        return None
+    pos = int.from_bytes(header[_ZIM_CHECKSUM_POS_AT:end], "little")
+    return pos if pos + _ZIM_MD5_LEN == size and pos >= end else None
+
+
+def copy_verified_zim(src: str, dest: str) -> bool:
+    """Copy src to dest and check the ZIM's own MD5 on the way. False (dest removed) when the
+    layout is wrong or the MD5 does not match: a resumed transfer that spliced bad bytes never
+    reaches the library. An OSError (ENOSPC) propagates, with dest removed."""
+    size = os.path.getsize(src)
+    md5 = hashlib.md5()
+    try:
+        with open(src, "rb") as fin, open(dest, "wb") as fout:
+            pos = zim_checksum_pos(fin.read(_ZIM_CHECKSUM_POS_AT + 8), size)
+            if pos is None:
+                ok = False
+            else:
+                fin.seek(0)
+                done = 0
+                while done < pos:
+                    block = fin.read(min(_COPY_CHUNK, pos - done))
+                    if not block:
+                        break
+                    md5.update(block)
+                    fout.write(block)
+                    done += len(block)
+                stored = fin.read(_ZIM_MD5_LEN)
+                fout.write(stored)
+                ok = done == pos and md5.digest() == stored
+    except OSError:
+        _remove_quietly(dest)
+        raise
+    if not ok:
+        _remove_quietly(dest)
+    return ok
+
+
+def _remove_quietly(path: str) -> None:
+    try:
+        os.remove(path)
+    except OSError:
+        pass
 
 
 def is_safe_local_ref(local_ref: str) -> bool:
@@ -177,16 +233,22 @@ class KiwixAdapter(ContentAdapter):
             content_type="application/octet-stream",
         )
 
-    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None,
+                   offset: int = 0) -> Optional[ExportStream]:
         # Direct app: staged_dir is unused. Re-validate at fetch time (the file may have
-        # vanished between prepare and fetch).
+        # vanished between prepare and fetch). The ZIM is the file itself, so a resume offset
+        # inside it is honored (K2GO-577); any other offset streams the whole file.
         path = self._export_path(local_ref)
         if path is None:
             return None
+        size = os.path.getsize(path)
+        start = offset if 0 < offset < size else 0
         return ExportStream(
             filename=local_ref,
             content_type="application/octet-stream",
-            chunks=file_stream(path),
+            chunks=file_stream(path, start=start),
+            size=size,
+            offset=start,
         )
 
     def _export_path(self, local_ref: str) -> Optional[str]:
@@ -218,7 +280,8 @@ class KiwixAdapter(ContentAdapter):
         # import is a file move plus a re-index, so it ignores both and runs to completion.
         # The payload is the .zim itself: place it in the zims dir under its own name, then
         # re-run the indexer so the library entry appears. Overwriting the same name is
-        # idempotent (same content, same UUID).
+        # idempotent (same content, same UUID). The copy goes to a temp name (no .zim, so list()
+        # skips it) and replaces the target only after the ZIM's MD5 matches (K2GO-577).
         local_ref = (entry.get("identity") or {}).get("localRef", "")
         if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
             return {"ok": False, "reason": "invalid localRef"}
@@ -226,9 +289,14 @@ class KiwixAdapter(ContentAdapter):
             return {"ok": False, "reason": "payload not found"}
         os.makedirs(self._dir, exist_ok=True)
         dest = os.path.join(self._dir, local_ref)
+        temp = dest + _IMPORT_TEMP_SUFFIX
+        self._sweep_import_temps()  # a temp left by a process that died mid-import
         try:
-            shutil.copyfile(payload_path, dest)
+            if not copy_verified_zim(payload_path, temp):
+                return {"ok": False, "reason": "ZIM checksum mismatch", "code": "corrupt"}
+            os.replace(temp, dest)
         except OSError as exc:
+            _remove_quietly(temp)
             # ENOSPC gets a structural code so the front stops the run with a space message, not a
             # per-item retry (a ZIM is one large file, the likeliest out-of-space import).
             failure = {"ok": False, "reason": f"copy failed: {exc}"}
@@ -237,6 +305,16 @@ class KiwixAdapter(ContentAdapter):
             return failure
         self._reindex()
         return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
+
+    def _sweep_import_temps(self) -> None:
+        """Remove import temps in the zims dir. The front serializes imports, so none is live here."""
+        try:
+            names = os.listdir(self._dir)
+        except OSError:
+            return
+        for name in names:
+            if name.endswith(_IMPORT_TEMP_SUFFIX):
+                _remove_quietly(os.path.join(self._dir, name))
 
     def delete(self, local_ref: str) -> dict:
         # A ZIM is self-contained, so the file IS the unit: remove it, then re-run the indexer

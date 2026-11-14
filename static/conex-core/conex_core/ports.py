@@ -29,7 +29,11 @@ class ExportStream:
     ``completed`` is set True by the server after the FULL body has been written (the clean
     terminator), and stays False on a mid-stream client drop. The export op ignores it (it drops
     the temp either way), but the share gate reads it so a share item counts as delivered only on
-    a clean close, never on a drop (K2GO-376)."""
+    a clean close, never on a drop (K2GO-376).
+
+    ``size`` is the full byte length when the body is one exact file (a direct ZIM), else None (a
+    tar). ``offset`` is where the body starts in it: above 0 only when the adapter honored a resume
+    request, and then the server answers 206 with Content-Range (K2GO-577)."""
 
     filename: str
     content_type: str
@@ -37,6 +41,8 @@ class ExportStream:
     on_close: Optional[Callable[[], None]] = None
     on_open: Optional[Callable[[], None]] = None
     completed: bool = False
+    size: Optional[int] = None
+    offset: int = 0
 
 
 @dataclass
@@ -95,10 +101,13 @@ class ContentAdapter(ABC):
         to stage."""
         return False
 
-    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None,
+                   offset: int = 0) -> Optional[ExportStream]:
         """Open the byte stream for a prepared export: the staged tar (``staged_dir`` set) or
-        the direct file / tar (``staged_dir`` None). The op layer sets ``on_close``. Returns
-        None when the item is no longer exportable. Default: not supported."""
+        the direct file / tar (``staged_dir`` None). ``offset`` asks to resume from that byte; an
+        adapter honors it only for a byte-exact file and sets the stream's ``offset``, else it
+        streams from 0. The op layer sets ``on_close``. Returns None when the item is no longer
+        exportable. Default: not supported."""
         return None
 
     def check(self, dedup: dict) -> str:

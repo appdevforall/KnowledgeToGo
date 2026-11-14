@@ -104,9 +104,10 @@ class ExportOps(OpRegistry):
             payload["error"] = error
         return 200, payload
 
-    def fetch(self, op_id: str):
-        """Open the byte stream for a ready op. Returns (200, ExportStream); the stream's on_close
-        drops the op and removes the temp. 409 when not ready, 404 when unknown."""
+    def fetch(self, op_id: str, offset: int = 0):
+        """Open the byte stream for a ready op, from ``offset`` when the adapter can resume there.
+        Returns (200, ExportStream); the stream's on_close drops the op and removes the temp. 409
+        when not ready, 404 when unknown."""
         self._sweep_expired()
         with self._lock:
             op = self._ops.get(op_id)
@@ -120,7 +121,7 @@ class ExportOps(OpRegistry):
         # actually begins streaming, so a failure here leaves the op merely fresh and reclaimable by
         # the normal sweep, never stuck in_use.
         try:
-            stream = self._registry.get(app).open_fetch(local_ref, temp)
+            stream = self._registry.get(app).open_fetch(local_ref, temp, offset=offset)
         except Exception:
             self._finish(op_id)
             return 500, {"error": "failed to open export"}

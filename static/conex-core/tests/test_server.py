@@ -12,6 +12,7 @@ from conex_core.adapters.kiwix import KiwixAdapter
 from conex_core.export_ops import ExportOps
 from conex_core.registry import Registry
 from conex_core.server import make_handler
+from conex_core.share_ops import ShareOps
 
 
 def _zim(path, body_len=500):
@@ -186,6 +187,57 @@ class ServerErrorPathTest(unittest.TestCase):
             httpd.shutdown()
             httpd.server_close()
 
+
+
+class ShareRangeHttpTest(unittest.TestCase):
+    """A cut ZIM resumes over the share gate: Range bytes=N- gets 206 with the tail (K2GO-577)."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.name = "wikipedia_en_all_2024-01.zim"
+        self.data = _zim(os.path.join(self._dir.name, self.name), body_len=300000)
+        reg = Registry([KiwixAdapter(self._dir.name)])
+        ops = ExportOps(reg, staging_dir=self._dir.name, ttl_seconds=60)
+        share = ShareOps(reg, ops)
+        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(reg, ops, share))
+        self.port = self.httpd.server_address[1]
+        threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
+        status, created = share.create([{"app": "kiwix", "localRef": self.name}])
+        self.sid, self.token = created["sessionId"], created["token"]
+        self.share = share
+
+    def tearDown(self):
+        self.httpd.shutdown()
+        self.httpd.server_close()
+        self._dir.cleanup()
+
+    def _fetch(self, range_header=None):
+        c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+        headers = {"Connection": "close", "X-Share-Token": self.token}
+        if range_header:
+            headers["Range"] = range_header
+        c.request("GET", f"/v1/share/{self.sid}/fetch/0", headers=headers)
+        resp = c.getresponse()
+        out = (resp.status, resp.getheader("Content-Range"), resp.getheader("Accept-Ranges"),
+               resp.read())
+        c.close()
+        return out
+
+    def test_open_range_resumes_with_206_and_marks_delivered(self):
+        cut = 123457
+        status, content_range, accept, body = self._fetch(f"bytes={cut}-")
+        self.assertEqual(status, 206)
+        self.assertEqual(content_range, f"bytes {cut}-{len(self.data) - 1}/{len(self.data)}")
+        self.assertEqual(accept, "bytes")
+        self.assertEqual(body, self.data[cut:])
+        _, man = self.share.manifest(self.sid, self.token)
+        self.assertTrue(man["items"][0]["delivered"])
+
+    def test_no_or_unsupported_range_sends_the_whole_file(self):
+        for header in (None, "bytes=0-10", f"bytes={len(self.data)}-"):
+            status, content_range, _, body = self._fetch(header)
+            self.assertEqual((status, content_range), (200, None), header)
+            self.assertEqual(body, self.data)
 
 if __name__ == "__main__":
     unittest.main()

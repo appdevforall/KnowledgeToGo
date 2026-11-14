@@ -245,7 +245,8 @@ class CalibreAdapter(ContentAdapter):
             content_type="application/x-tar",
         )
 
-    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None) -> Optional[ExportStream]:
+    def open_fetch(self, local_ref: str, staged_dir: Optional[str] = None,
+                   offset: int = 0) -> Optional[ExportStream]:
         # Direct app: staged_dir is unused. Re-resolve at fetch time.
         book_dir = self._export_dir(local_ref)
         if book_dir is None:

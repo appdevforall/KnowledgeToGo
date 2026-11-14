@@ -4,7 +4,7 @@ import tarfile
 import tempfile
 import unittest
 
-from conex_core.export import file_stream, resolve_within, tar_stream
+from conex_core.export import file_stream, parse_range_start, resolve_within, tar_stream
 
 
 class FileStreamTest(unittest.TestCase):
@@ -15,6 +15,16 @@ class FileStreamTest(unittest.TestCase):
             with open(p, "wb") as f:
                 f.write(data)
             self.assertEqual(b"".join(file_stream(p, chunk=1024 * 1024)), data)
+
+
+class ParseRangeStartTest(unittest.TestCase):
+    def test_open_range_gives_its_start(self):
+        self.assertEqual(parse_range_start("bytes=16777216-"), 16777216)
+        self.assertEqual(parse_range_start(" bytes=0- "), 0)
+
+    def test_other_forms_read_as_zero(self):
+        for header in (None, "", "bytes=1-5", "bytes=-500", "bytes=1-,5-", "items=3-", "bytes=x-"):
+            self.assertEqual(parse_range_start(header), 0, header)
 
 
 class ResolveWithinTest(unittest.TestCase):

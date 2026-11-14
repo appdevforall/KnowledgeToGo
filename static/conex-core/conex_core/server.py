@@ -13,6 +13,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from . import VERSION
 from .config import Config
+from .export import parse_range_start
 from .export_ops import ExportOps
 from .import_ops import ImportOps
 from .ports import ExportStream
@@ -44,12 +45,13 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None,
             # land in access logs (it is the only auth for the gate).
             return self.headers.get("X-Share-Token")
 
-        def _dispatch(self, method: str, path: str, query: dict, body=None):
+        def _dispatch(self, method: str, path: str, query: dict, body=None, range_start: int = 0):
             # Single dispatch boundary: an uncaught error in a handler becomes a logged 500
             # with a JSON body, never a dropped connection the front reads as a network error.
             try:
                 return dispatch(registry, method, path, query, body, ops=ops, share=share,
-                                token=self._share_token(), import_ops=import_ops)
+                                token=self._share_token(), import_ops=import_ops,
+                                range_start=range_start)
             except Exception:
                 log.exception("unhandled error: %s %s", method, path)
                 return 500, {"error": "internal error"}
@@ -57,7 +59,8 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None,
         def do_GET(self) -> None:  # noqa: N802 (http.server naming)
             parts = urlsplit(self.path)
             query = {k: v[0] for k, v in parse_qs(parts.query).items()}
-            status, payload = self._dispatch("GET", parts.path, query)
+            status, payload = self._dispatch("GET", parts.path, query,
+                                             range_start=parse_range_start(self.headers.get("Range")))
             if isinstance(payload, ExportStream):
                 self._stream(status, payload)
             else:
@@ -125,7 +128,15 @@ def make_handler(registry: Registry, ops: ExportOps, share: ShareOps = None,
                 # must still release the op pin and the share single-flight slot (K2GO-376),
                 # never strand them. on_open follows the headers, so a pre-header failure runs
                 # on_close without a matching on_open: the op cleanup (_finish) is safe either way.
-                self.send_response(status)
+                if stream.offset > 0 and stream.size is not None:
+                    # The adapter resumed inside a byte-exact file: a partial body (K2GO-577).
+                    self.send_response(206)
+                    self.send_header("Content-Range",
+                                     f"bytes {stream.offset}-{stream.size - 1}/{stream.size}")
+                else:
+                    self.send_response(status)
+                if stream.size is not None:
+                    self.send_header("Accept-Ranges", "bytes")
                 self.send_header("Content-Type", stream.content_type)
                 self.send_header("Content-Disposition", f'attachment; filename="{stream.filename}"')
                 self.send_header("Transfer-Encoding", "chunked")
