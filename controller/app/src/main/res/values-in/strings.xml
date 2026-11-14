@@ -1590,4 +1590,22 @@
     <string name="k2go_privacy_restart_later">Nanti</string>
     <string name="k2go_privacy_restart_later_note">Tersimpan. Perubahan berlaku saat aplikasi dibuka berikutnya.</string>
     <string name="k2go_privacy_restarting">Memulai ulang %1$s. Kembali dalam sekitar 30 detik.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Ponsel ini</string>
+    <string name="k2go_about_sec_app">Aplikasi K2Go</string>
+    <string name="k2go_about_sec_library">Perpustakaan</string>
+    <string name="k2go_about_processor">Prosesor</string>
+    <string name="k2go_about_runs_32">Menjalankan aplikasi 32-bit</string>
+    <string name="k2go_about_yes">Ya</string>
+    <string name="k2go_about_no">Tidak</string>
+    <string name="k2go_about_version">Versi</string>
+    <string name="k2go_about_runs_as">Berjalan sebagai</string>
+    <string name="k2go_about_architecture">Arsitektur</string>
+    <string name="k2go_about_bits_abi">%1$d-bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Belum dipasang</string>
+    <string name="k2go_about_unknown">Tidak diketahui</string>
+    <string name="k2go_about_copy">Salin detail</string>
+    <string name="k2go_about_copied">Detail disalin</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

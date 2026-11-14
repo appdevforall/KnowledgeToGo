@@ -84,6 +84,7 @@ public class SettingsSubFragment extends Fragment {
         switch (screen) {
             case "language": header.setTitle(getString(R.string.k2go_settings_language)); buildLanguage(ctx, list); break;
             case "about":    header.setTitle(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
+            case "about:version": header.setTitle(getString(R.string.k2go_settings_app_version)); buildVersionDetails(ctx, list); break;
             case "advanced": header.setTitle(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
             case "dns":      header.setTitle(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
             case "hotspot":  header.setTitle(getString(R.string.k2go_settings_hotspot)); buildHotspot(ctx, list); break;
@@ -182,7 +183,8 @@ public class SettingsSubFragment extends Fragment {
 
     // ---- About ----
     private void buildAbout(Context ctx, LinearLayout list) {
-        SettingsUi.infoRow(ctx, list, getString(R.string.k2go_settings_app_version), versionName(ctx));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_app_version), null, versionName(ctx),
+                v -> openSub("about:version"));
         // ADFA-4984: manual OTA entry ("update on the air"). LibraryActivity owns the UpdateController.
         // K2GO-403: hidden in the fdroid build, which ships no in-app updater (updates come from F-Droid).
         if (org.appdevforall.k2go.BuildConfig.OTA_ENABLED) {
@@ -211,6 +213,74 @@ public class SettingsSubFragment extends Fragment {
                 org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(ctx),
                 checked -> org.appdevforall.k2go.delivery.data.CrashReportConsent.setEnabled(ctx, checked));
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
+    }
+
+    // ---- App version details: Android version and the phone / app / library architectures.
+    //      Each value has its own source (ADR-K2GO-571); the file read runs off the main thread. ----
+    private void buildVersionDetails(Context ctx, LinearLayout list) {
+        final Context app = ctx.getApplicationContext();
+        org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
+            org.appdevforall.k2go.deviceinfo.domain.PlatformInfo p =
+                    org.appdevforall.k2go.deviceinfo.data.PlatformInfoReader.read(app);
+            list.post(() -> { if (isAdded()) showVersionDetails(ctx, list, p); });
+        });
+    }
+
+    private void showVersionDetails(Context ctx, LinearLayout list,
+                                    org.appdevforall.k2go.deviceinfo.domain.PlatformInfo p) {
+        StringBuilder copy = new StringBuilder();
+        String phone = getString(R.string.k2go_about_sec_phone);
+        SettingsUi.sectionHeader(ctx, list, phone);
+        copy.append(phone).append('\n');
+        detail(ctx, list, copy, getString(R.string.k2go_about_android),
+                getString(R.string.k2go_about_android_value, p.androidRelease, p.sdkInt));
+        detail(ctx, list, copy, getString(R.string.k2go_about_processor), bits(p.phoneAbi, false));
+        detail(ctx, list, copy, getString(R.string.k2go_about_runs_32),
+                getString(p.phoneRuns32Bit ? R.string.k2go_about_yes : R.string.k2go_about_no));
+
+        String app = getString(R.string.k2go_about_sec_app);
+        SettingsUi.sectionHeader(ctx, list, app);
+        copy.append(app).append('\n');
+        detail(ctx, list, copy, getString(R.string.k2go_about_version), versionName(ctx));
+        detail(ctx, list, copy, getString(R.string.k2go_about_runs_as), bits(p.appAbi, false));
+
+        String lib = getString(R.string.k2go_about_sec_library);
+        SettingsUi.sectionHeader(ctx, list, lib);
+        copy.append(lib).append('\n');
+        String libValue;
+        switch (p.libraryState) {
+            case KNOWN:         libValue = bits(p.libraryAbi, true); break;
+            case NOT_INSTALLED: libValue = getString(R.string.k2go_about_not_installed); break;
+            default:            libValue = getString(R.string.k2go_about_unknown);
+        }
+        detail(ctx, list, copy, getString(R.string.k2go_about_architecture), libValue);
+
+        final String text = copy.toString().trim();
+        SettingsUi.row(ctx, list, getString(R.string.k2go_about_copy), null, null, v -> {
+            android.content.ClipboardManager cm =
+                    (android.content.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+            if (cm != null) cm.setPrimaryClip(android.content.ClipData.newPlainText("K2Go", text));
+            String msg = getString(R.string.k2go_about_copied);
+            com.google.android.material.snackbar.Snackbar.make(v, msg,
+                    org.appdevforall.k2go.util.SnackbarDuration.millisForText(msg)).show();
+        });
+        // Room under the last row so the floating feedback button never covers a value.
+        list.addView(new View(ctx), new LinearLayout.LayoutParams(-1, SettingsUi.dp(ctx, 96)));
+    }
+
+    private void detail(Context ctx, LinearLayout list, StringBuilder copy, String title, String value) {
+        SettingsUi.infoRow(ctx, list, title, value);
+        copy.append(title).append(": ").append(value).append('\n');
+    }
+
+    /** "64-bit (arm64-v8a)", or for the library "32-bit (Debian armhf)": width and the exact id,
+     *  so a reader never has to infer one from the other. */
+    private String bits(String abi, boolean debian) {
+        if (abi == null || abi.isEmpty() || "unknown".equals(abi)) return getString(R.string.k2go_about_unknown);
+        int b = org.appdevforall.k2go.arch.domain.LibraryArch.bitsOf(abi);
+        String id = debian ? org.appdevforall.k2go.arch.domain.LibraryArch.debArchOf(abi) : abi;
+        if (b == 0 || id == null) return abi;
+        return getString(debian ? R.string.k2go_about_bits_debian : R.string.k2go_about_bits_abi, b, id);
     }
 
     private void openAppSettings(Context ctx) {

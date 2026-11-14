@@ -1603,4 +1603,22 @@
     <string name="k2go_privacy_restart_later">Baadaye</string>
     <string name="k2go_privacy_restart_later_note">Imehifadhiwa. Mabadiliko yatatumika programu itakapofunguliwa tena.</string>
     <string name="k2go_privacy_restarting">Inaanzisha upya %1$s. Itarudi baada ya takriban sekunde 30.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Simu hii</string>
+    <string name="k2go_about_sec_app">Programu ya K2Go</string>
+    <string name="k2go_about_sec_library">Maktaba</string>
+    <string name="k2go_about_processor">Kichakataji</string>
+    <string name="k2go_about_runs_32">Huendesha programu za biti 32</string>
+    <string name="k2go_about_yes">Ndiyo</string>
+    <string name="k2go_about_no">Hapana</string>
+    <string name="k2go_about_version">Toleo</string>
+    <string name="k2go_about_runs_as">Inaendeshwa kama</string>
+    <string name="k2go_about_architecture">Muundo</string>
+    <string name="k2go_about_bits_abi">Biti %1$d (%2$s)</string>
+    <string name="k2go_about_bits_debian">Biti %1$d (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Haijasakinishwa</string>
+    <string name="k2go_about_unknown">Haijulikani</string>
+    <string name="k2go_about_copy">Nakili maelezo</string>
+    <string name="k2go_about_copied">Maelezo yamenakiliwa</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

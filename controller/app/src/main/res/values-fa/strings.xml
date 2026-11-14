@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">بعداً</string>
     <string name="k2go_privacy_restart_later_note">ذخیره شد. تغییر دفعه بعد که برنامه باز شود اعمال می‌شود.</string>
     <string name="k2go_privacy_restarting">%1$s در حال راه‌اندازی دوباره است. حدود 30 ثانیه دیگر برمی‌گردد.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">این تلفن</string>
+    <string name="k2go_about_sec_app">برنامه K2Go</string>
+    <string name="k2go_about_sec_library">کتابخانه</string>
+    <string name="k2go_about_processor">پردازنده</string>
+    <string name="k2go_about_runs_32">برنامه‌های ۳۲ بیتی را اجرا می‌کند</string>
+    <string name="k2go_about_yes">بله</string>
+    <string name="k2go_about_no">خیر</string>
+    <string name="k2go_about_version">نسخه</string>
+    <string name="k2go_about_runs_as">اجرا به‌صورت</string>
+    <string name="k2go_about_architecture">معماری</string>
+    <string name="k2go_about_bits_abi">%1$d بیتی (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d بیتی (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">نصب نشده</string>
+    <string name="k2go_about_unknown">نامشخص</string>
+    <string name="k2go_about_copy">کپی جزئیات</string>
+    <string name="k2go_about_copied">جزئیات کپی شد</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

@@ -1603,4 +1603,22 @@
     <string name="k2go_privacy_restart_later">Nígbà míràn</string>
     <string name="k2go_privacy_restart_later_note">A ti fi pamọ́. Àyípadà náà yóò ṣiṣẹ́ nígbà tí a bá ṣí áàpù náà nígbà míràn.</string>
     <string name="k2go_privacy_restarting">Ń tún %1$s bẹ̀rẹ̀. Yóò padà ní nǹkan bí ìṣẹ́jú-àáyá 30.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Fóònù yìí</string>
+    <string name="k2go_about_sec_app">Áàpù K2Go</string>
+    <string name="k2go_about_sec_library">Ìkàwé</string>
+    <string name="k2go_about_processor">Ẹ̀rọ ìṣiṣẹ́</string>
+    <string name="k2go_about_runs_32">Ń ṣiṣẹ́ àwọn áàpù 32-bit</string>
+    <string name="k2go_about_yes">Bẹ́ẹ̀ni</string>
+    <string name="k2go_about_no">Rárá</string>
+    <string name="k2go_about_version">Ẹ̀yà</string>
+    <string name="k2go_about_runs_as">Ń ṣiṣẹ́ bí</string>
+    <string name="k2go_about_architecture">Ìgbékalẹ̀</string>
+    <string name="k2go_about_bits_abi">%1$d-bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Kò tíì fi sórí</string>
+    <string name="k2go_about_unknown">Àìmọ̀</string>
+    <string name="k2go_about_copy">Da àlàyé kọ</string>
+    <string name="k2go_about_copied">A ti da àlàyé kọ</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

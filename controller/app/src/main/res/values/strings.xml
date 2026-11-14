@@ -1779,4 +1779,23 @@
     <string name="k2go_privacy_restart_later">Later</string>
     <string name="k2go_privacy_restart_later_note">Saved. The change applies the next time the app opens.</string>
     <string name="k2go_privacy_restarting">Restarting %1$s. It is back in about 30 seconds.</string>
+    <!-- About > App version details. Source strings -->
+    <string name="k2go_about_android" translatable="false">Android</string>
+    <string name="k2go_about_sec_phone">This phone</string>
+    <string name="k2go_about_sec_app">K2Go app</string>
+    <string name="k2go_about_sec_library">Library</string>
+    <string name="k2go_about_processor">Processor</string>
+    <string name="k2go_about_runs_32">Runs 32-bit apps</string>
+    <string name="k2go_about_yes">Yes</string>
+    <string name="k2go_about_no">No</string>
+    <string name="k2go_about_version">Version</string>
+    <string name="k2go_about_runs_as">Runs as</string>
+    <string name="k2go_about_architecture">Architecture</string>
+    <string name="k2go_about_bits_abi">%1$d-bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Not installed</string>
+    <string name="k2go_about_unknown">Unknown</string>
+    <string name="k2go_about_copy">Copy details</string>
+    <string name="k2go_about_copied">Details copied</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

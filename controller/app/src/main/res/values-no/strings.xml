@@ -1593,4 +1593,22 @@
     <string name="k2go_privacy_restart_later">Senere</string>
     <string name="k2go_privacy_restart_later_note">Lagret. Endringen gjelder neste gang appen åpnes.</string>
     <string name="k2go_privacy_restarting">Starter %1$s på nytt. Tilbake om omtrent 30 sekunder.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Denne telefonen</string>
+    <string name="k2go_about_sec_app">K2Go-appen</string>
+    <string name="k2go_about_sec_library">Bibliotek</string>
+    <string name="k2go_about_processor">Prosessor</string>
+    <string name="k2go_about_runs_32">Kjører 32-biters apper</string>
+    <string name="k2go_about_yes">Ja</string>
+    <string name="k2go_about_no">Nei</string>
+    <string name="k2go_about_version">Versjon</string>
+    <string name="k2go_about_runs_as">Kjører som</string>
+    <string name="k2go_about_architecture">Arkitektur</string>
+    <string name="k2go_about_bits_abi">%1$d-bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Ikke installert</string>
+    <string name="k2go_about_unknown">Ukjent</string>
+    <string name="k2go_about_copy">Kopier detaljer</string>
+    <string name="k2go_about_copied">Detaljer kopiert</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

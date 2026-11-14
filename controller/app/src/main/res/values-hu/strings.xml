@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">Később</string>
     <string name="k2go_privacy_restart_later_note">Mentve. A módosítás az alkalmazás következő megnyitásakor lép életbe.</string>
     <string name="k2go_privacy_restarting">A(z) %1$s újraindul. Körülbelül 30 másodperc múlva újra elérhető.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Ez a telefon</string>
+    <string name="k2go_about_sec_app">K2Go alkalmazás</string>
+    <string name="k2go_about_sec_library">Könyvtár</string>
+    <string name="k2go_about_processor">Processzor</string>
+    <string name="k2go_about_runs_32">Futtat 32 bites alkalmazásokat</string>
+    <string name="k2go_about_yes">Igen</string>
+    <string name="k2go_about_no">Nem</string>
+    <string name="k2go_about_version">Verzió</string>
+    <string name="k2go_about_runs_as">Futás módja</string>
+    <string name="k2go_about_architecture">Architektúra</string>
+    <string name="k2go_about_bits_abi">%1$d bites (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bites (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Nincs telepítve</string>
+    <string name="k2go_about_unknown">Ismeretlen</string>
+    <string name="k2go_about_copy">Részletek másolása</string>
+    <string name="k2go_about_copied">Részletek másolva</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

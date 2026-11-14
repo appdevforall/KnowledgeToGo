@@ -1596,4 +1596,22 @@
     <string name="k2go_privacy_restart_later">Касније</string>
     <string name="k2go_privacy_restart_later_note">Сачувано. Измена се примењује при следећем отварању апликације.</string>
     <string name="k2go_privacy_restarting">%1$s се поново покреће. Враћа се за око 30 секунди.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Овај телефон</string>
+    <string name="k2go_about_sec_app">Апликација K2Go</string>
+    <string name="k2go_about_sec_library">Библиотека</string>
+    <string name="k2go_about_processor">Процесор</string>
+    <string name="k2go_about_runs_32">Покреће 32-битне апликације</string>
+    <string name="k2go_about_yes">Да</string>
+    <string name="k2go_about_no">Не</string>
+    <string name="k2go_about_version">Верзија</string>
+    <string name="k2go_about_runs_as">Ради као</string>
+    <string name="k2go_about_architecture">Архитектура</string>
+    <string name="k2go_about_bits_abi">%1$d-битна (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-битна (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Није инсталирана</string>
+    <string name="k2go_about_unknown">Непознато</string>
+    <string name="k2go_about_copy">Копирај детаље</string>
+    <string name="k2go_about_copied">Детаљи су копирани</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

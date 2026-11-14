@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">Пізніше</string>
     <string name="k2go_privacy_restart_later_note">Збережено. Зміна застосується під час наступного відкриття застосунку.</string>
     <string name="k2go_privacy_restarting">Перезапуск %1$s. Повернеться приблизно за 30 секунд.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Цей телефон</string>
+    <string name="k2go_about_sec_app">Застосунок K2Go</string>
+    <string name="k2go_about_sec_library">Бібліотека</string>
+    <string name="k2go_about_processor">Процесор</string>
+    <string name="k2go_about_runs_32">Запускає 32-бітні застосунки</string>
+    <string name="k2go_about_yes">Так</string>
+    <string name="k2go_about_no">Ні</string>
+    <string name="k2go_about_version">Версія</string>
+    <string name="k2go_about_runs_as">Працює як</string>
+    <string name="k2go_about_architecture">Архітектура</string>
+    <string name="k2go_about_bits_abi">%1$d-біт (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-біт (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Не встановлено</string>
+    <string name="k2go_about_unknown">Невідомо</string>
+    <string name="k2go_about_copy">Копіювати відомості</string>
+    <string name="k2go_about_copied">Відомості скопійовано</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

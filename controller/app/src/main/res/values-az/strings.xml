@@ -1603,4 +1603,22 @@
     <string name="k2go_privacy_restart_later">Sonra</string>
     <string name="k2go_privacy_restart_later_note">Yadda saxlanıldı. Dəyişiklik tətbiq növbəti dəfə açılanda tətbiq olunur.</string>
     <string name="k2go_privacy_restarting">%1$s yenidən başladılır. Təxminən 30 saniyəyə qayıdacaq.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Bu telefon</string>
+    <string name="k2go_about_sec_app">K2Go tətbiqi</string>
+    <string name="k2go_about_sec_library">Kitabxana</string>
+    <string name="k2go_about_processor">Prosessor</string>
+    <string name="k2go_about_runs_32">32-bit tətbiqləri işlədir</string>
+    <string name="k2go_about_yes">Bəli</string>
+    <string name="k2go_about_no">Xeyr</string>
+    <string name="k2go_about_version">Versiya</string>
+    <string name="k2go_about_runs_as">İşləmə rejimi</string>
+    <string name="k2go_about_architecture">Arxitektura</string>
+    <string name="k2go_about_bits_abi">%1$d-bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Quraşdırılmayıb</string>
+    <string name="k2go_about_unknown">Naməlum</string>
+    <string name="k2go_about_copy">Təfərrüatları kopyala</string>
+    <string name="k2go_about_copied">Təfərrüatlar kopyalandı</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>
