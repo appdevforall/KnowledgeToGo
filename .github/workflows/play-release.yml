@@ -1,10 +1,10 @@
 name: Play release (publish an approved candidate)
 
 # K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
-# Run this after Google approved a candidate. It tags the SAME commit as the rc tag with the final
-# version (v1.2.0-rc.2 -> v1.2.0) and runs the release build: GitHub Release, website APKs, R2 and
-# the OTA update.json. Nothing is rebuilt for Play: in Play Console, press "Publish changes" to
-# release the AAB that Google approved (Play has no API for that button).
+# Run this after Google approved a candidate. It tags the candidate commit with the final version
+# (v1.2.0-rc.2 -> v1.2.0) and runs the release build: GitHub Release, website APKs, R2 and the OTA
+# update.json. An rc build is never released as final: the tagged commit must have versionName
+# "v1.2.0" (check-release), so an rc commit is refused until the final-build step exists (K2GO-564).
 
 on:
   workflow_dispatch:
@@ -40,6 +40,9 @@ jobs:
           git ls-remote --tags origin 'v*' | sed 's#.*refs/tags/##; s#\^{}$##' | sort -u > "$RUNNER_TEMP/tags.txt"
           final=$(python3 tools/play-publish/play_publish.py final-tag --rc-tag "$RC_TAG" --tags "$RUNNER_TEMP/tags.txt")
           git fetch --no-tags origin "refs/tags/$RC_TAG:refs/tags/$RC_TAG"
+          # An rc build is never released as final: the tagged commit must say versionName "$final".
+          git show "$RC_TAG:controller/app/build.gradle" > "$RUNNER_TEMP/build.gradle"
+          python3 tools/play-publish/play_publish.py check-release --gradle "$RUNNER_TEMP/build.gradle" --tag "$final"
           git tag "$final" "$RC_TAG^{commit}"
           git push origin "refs/tags/$final"
           echo "tag=$final" >> "$GITHUB_OUTPUT"

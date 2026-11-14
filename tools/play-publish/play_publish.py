@@ -11,6 +11,7 @@ Commands (the service account JSON comes from $PLAY_SERVICE_ACCOUNT_JSON):
   plan --gradle F --notes F --tags F     print version, rc tag and release notes as GitHub outputs
   next-code --package P --base N         print the Play versionCode for the next upload
   final-tag --rc-tag T --tags F          print the release tag for an approved candidate
+  check-release --gradle F --tag T       fail unless versionName is exactly the final tag T
   publish --package P --track T --aab F --code N --name S --notes-file F
 """
 import argparse
@@ -30,7 +31,8 @@ API = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications"
 UPLOAD_API = "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications"
 SCOPE = "https://www.googleapis.com/auth/androidpublisher"
 NOTES_MAX = 500  # Play limit for "What's new" per language.
-SEMVER = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+SEMVER = re.compile(r"^v\d+\.\d+\.\d+$")
+LABEL = re.compile(r"^(v\d+\.\d+\.\d+)(?:-rc\.(\d+))?$")
 RC_TAG = re.compile(r"^(v\d+\.\d+\.\d+)-rc\.(\d+)$")
 
 
@@ -41,14 +43,35 @@ class PlanError(Exception):
 # ---- pure rules (unit-tested) -------------------------------------------------------------
 
 def version_name(gradle_text):
-    """The release version in build.gradle, e.g. "v1.2.0". Must be plain semver: the rc
-    marker lives in the git tag and the Play release name, never in the binary."""
+    """The version label in build.gradle: "v1.2.0-rc.1" for a candidate, "v1.2.0" for the
+    final release. The same label names the git tag, the Play release and the R2 files."""
     m = re.search(r'versionName\s+"(v[^"$]+)\$\{ciSuffix\}"', gradle_text)
     if not m:
         raise PlanError("versionName not found in build.gradle")
-    if not SEMVER.match(m.group(1)):
-        raise PlanError("versionName %r is not vMAJOR.MINOR.PATCH" % m.group(1))
+    if not LABEL.match(m.group(1)):
+        raise PlanError("versionName %r is not vMAJOR.MINOR.PATCH[-rc.N]" % m.group(1))
     return m.group(1)
+
+
+def candidate_tag(tags, label):
+    """The rc tag of a candidate build is its versionName. It must be the next candidate of an
+    unreleased version, so a used, skipped or final label is refused."""
+    m = LABEL.match(label)
+    if not m or m.group(2) is None:
+        raise PlanError("versionName %r is not a candidate (vX.Y.Z-rc.N)" % label)
+    expected = next_rc_tag(tags, m.group(1))
+    if label != expected:
+        raise PlanError("versionName is %s; the next candidate is %s" % (label, expected))
+    return label
+
+
+def check_release(gradle_text, tag):
+    """A release tag goes only on a build whose versionName is that exact final version:
+    an rc build is never released as final."""
+    label = version_name(gradle_text)
+    if label != tag or not SEMVER.match(tag):
+        raise PlanError("versionName is %s, so this build cannot be released as %s" % (label, tag))
+    return tag
 
 
 def version_code_base(gradle_text):
@@ -191,9 +214,9 @@ class Play:
 
 def cmd_plan(args):
     gradle = open(args.gradle, encoding="utf-8").read()
-    version = version_name(gradle)
     tags = set(open(args.tags, encoding="utf-8").read().split())
-    rc = next_rc_tag(tags, version)
+    rc = candidate_tag(tags, version_name(gradle))
+    version = RC_TAG.match(rc).group(1)
     notes = release_notes(open(args.notes, encoding="utf-8").read(), version)
     with open(args.notes_out, "w", encoding="utf-8") as f:
         f.write(notes)
@@ -220,6 +243,10 @@ def cmd_next_code(args):
 def cmd_final_tag(args):
     tags = set(open(args.tags, encoding="utf-8").read().split())
     print(final_tag(tags, args.rc_tag))
+
+
+def cmd_check_release(args):
+    print(check_release(open(args.gradle, encoding="utf-8").read(), args.tag))
 
 
 def cmd_publish(args):
@@ -257,6 +284,10 @@ def main(argv=None):
     s.add_argument("--rc-tag", required=True)
     s.add_argument("--tags", required=True, help="file with one git tag name per line")
     s.set_defaults(func=cmd_final_tag)
+    s = sub.add_parser("check-release")
+    s.add_argument("--gradle", required=True)
+    s.add_argument("--tag", required=True)
+    s.set_defaults(func=cmd_check_release)
     s = sub.add_parser("publish")
     s.add_argument("--package", required=True)
     s.add_argument("--track", required=True, choices=["internal", "alpha", "beta", "production"])
