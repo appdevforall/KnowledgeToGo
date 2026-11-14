@@ -33,6 +33,10 @@ export function conexProxy(req: Request, res: Response): void {
         headers['content-type'] = 'application/json';
         headers['content-length'] = String(payload.length);
     }
+    // The share-session token is the gate's only auth (the sender's close DELETE carries it).
+    // Forward it, and never log it.
+    const shareToken = req.headers['x-share-token'];
+    if (typeof shareToken === 'string' && shareToken) headers['x-share-token'] = shareToken;
 
     const upstream = http.request(
         { host: CONEX_HOST, port: conexPort(), method: req.method, path: corePath, headers },
