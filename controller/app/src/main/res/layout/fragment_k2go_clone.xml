@@ -134,7 +134,7 @@
 
             <ImageView android:id="@+id/k2go_clone_qr" android:layout_width="@dimen/k2go_qr_size" android:layout_height="@dimen/k2go_qr_size"
                 android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
-                android:background="@drawable/k2go_card_bg" android:contentDescription="@string/k2go_tab_clone" />
+                android:background="@drawable/k2go_card_bg" android:contentDescription="@string/qr_content_description" />
 
             <TextView android:id="@+id/k2go_clone_caption" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
