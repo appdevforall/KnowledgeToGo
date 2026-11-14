@@ -1678,4 +1678,5 @@
     <string name="k2go_about_copy">Copiar detalhes</string>
     <string name="k2go_about_copied">Detalhes copiados</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Isso interrompe qualquer cópia em andamento. O outro telefone perde o progresso e precisa começar de novo com um novo código.</string>
 </resources>

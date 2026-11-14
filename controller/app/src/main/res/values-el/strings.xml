@@ -1606,4 +1606,5 @@
     <string name="k2go_about_copy">Αντιγραφή λεπτομερειών</string>
     <string name="k2go_about_copied">Οι λεπτομέρειες αντιγράφηκαν</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Αυτό σταματά κάθε αντιγραφή σε εξέλιξη. Το άλλο τηλέφωνο χάνει την πρόοδό του και πρέπει να ξεκινήσει ξανά με νέο κωδικό.</string>
 </resources>

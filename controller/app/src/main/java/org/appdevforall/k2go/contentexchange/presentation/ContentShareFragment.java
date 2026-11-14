@@ -108,7 +108,9 @@ public class ContentShareFragment extends Fragment {
                         }
                         new BrandDialog(requireContext())
                                 .setTitle(R.string.k2go_clone_stopshare_title)
-                                .setMessage(R.string.k2go_clone_stopshare_msg)
+                                // Own message, not Clone's "can start again": resume is not
+                                // guaranteed for every app yet (K2GO-577 covers ZIM only).
+                                .setMessage(R.string.k2go_cx_share_stop_msg)
                                 .setNegative(R.string.k2go_cancel, null)
                                 .setDestructive(R.string.k2go_clone_stop_confirm, () -> stopAndLeave())
                                 .show();

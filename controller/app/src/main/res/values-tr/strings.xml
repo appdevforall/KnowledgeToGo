@@ -1599,4 +1599,5 @@
     <string name="k2go_about_copy">Ayrıntıları kopyala</string>
     <string name="k2go_about_copied">Ayrıntılar kopyalandı</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Bu, devam eden tüm kopyalamaları durdurur. Diğer telefon ilerlemesini kaybeder ve yeni bir kodla yeniden başlamalıdır.</string>
 </resources>

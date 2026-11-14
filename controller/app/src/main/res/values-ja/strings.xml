@@ -1600,4 +1600,5 @@
     <string name="k2go_about_copy">詳細をコピー</string>
     <string name="k2go_about_copied">詳細をコピーしました</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">進行中のコピーはすべて停止します。もう一方のスマートフォンは進捗を失い、新しいコードでやり直す必要があります。</string>
 </resources>

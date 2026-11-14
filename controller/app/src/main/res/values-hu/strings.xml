@@ -1599,4 +1599,5 @@
     <string name="k2go_about_copy">Részletek másolása</string>
     <string name="k2go_about_copied">Részletek másolva</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Ez leállít minden folyamatban lévő másolást. A másik telefon elveszíti az előrehaladását, és új kóddal kell újrakezdenie.</string>
 </resources>

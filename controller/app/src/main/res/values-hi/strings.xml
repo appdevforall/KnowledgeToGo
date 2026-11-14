@@ -1676,4 +1676,5 @@
     <string name="k2go_about_copy">विवरण कॉपी करें</string>
     <string name="k2go_about_copied">विवरण कॉपी हो गया</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">इससे चल रही कोई भी कॉपी रुक जाती है। दूसरा फ़ोन अपनी प्रगति खो देता है और उसे नए कोड के साथ फिर से शुरू करना होगा।</string>
 </resources>
