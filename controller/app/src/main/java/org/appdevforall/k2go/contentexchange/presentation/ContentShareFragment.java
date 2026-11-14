@@ -6,7 +6,7 @@
  * Description : K2GO-376. Shows the Share invite: two stacked QR sections (join the hotspot, then
  *               scan to receive) once the sender foreground service has opened the share session and
  *               the hotspot is up. Reads state only (the ShareSession + the shared LocalHotspotManager
- *               state); all work is the service's. Done closes the gate + the hotspot via the service.
+ *               state); all work is the service's. Done or Back closes the gate + the hotspot via the service.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -93,10 +94,16 @@ public class ContentShareFragment extends Fragment {
         transportHotspot.setOnClickListener(v -> selectTransport(false));
         transportWifi.setOnClickListener(v -> selectTransport(true));
 
-        done.setOnClickListener(v -> {
-            ContentShareService.cancel(requireContext());
-            goBack();
-        });
+        done.setOnClickListener(v -> stopAndLeave());
+        // Back ends the share like Done: a share left running would make the next Share reopen it
+        // instead of the new selection.
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        stopAndLeave();
+                    }
+                });
         // The AP IPv4 lands a beat after the hotspot reports ON; re-render when it (or the phase) changes
         // so the receive QR appears the moment every piece is ready. Observed once, tied to the view.
         hs.state().observe(getViewLifecycleOwner(), st -> render());
@@ -290,6 +297,11 @@ public class ContentShareFragment extends Fragment {
         boolean joinShown = joinRoot.getVisibility() == View.VISIBLE;
         QrSection.setStep(receiveRoot, joinShown ? "2" : "1", getString(R.string.k2go_cx_action_share));
         secReceive.caption.setText(joinShown ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan);
+    }
+
+    private void stopAndLeave() {
+        ContentShareService.cancel(requireContext());
+        goBack();
     }
 
     /**
