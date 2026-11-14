@@ -171,7 +171,7 @@ export function startEpochMs(ticks: number, selfTicks: number, selfStartMs: numb
 }
 
 /** Start time of the newest process that matches `pattern`, or null when none runs. */
-function processStartMs(pattern: string): number | null {
+export function processStartMs(pattern: string): number | null {
     try {
         const r = spawnSync('pgrep', ['-f', pattern], { encoding: 'utf8', timeout: 3000 });
         if (r.status !== 0 || !r.stdout) return null;

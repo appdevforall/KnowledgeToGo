@@ -17,7 +17,7 @@ import { apiRouter } from './routes';
 import { startServiceHeal } from './sockets/service-heal';
 import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
 import { applyPrivacyDefaultsOnce, PRIVACY_DEFAULTS_MARKER, PRIVACY_SWITCHES } from './sockets/privacy';
-import { applyLogLessOnce, LOG_LESS_MARKER, LOG_LESS_TARGETS } from './sockets/log-less';
+import { applyLogLessOnce, LOG_LESS_MARKER, LOG_LESS_TARGETS, LOG_PURGE_MARKER, purgeOldLogsOnce } from './sockets/log-less';
 
 // K2GO-559: one-time privacy defaults, before the API answers. Only the live service runs it: the
 // rebuild's staged smoke instance sets PORT and must not change the box (tools/rebuild-dashboard.sh).
@@ -31,6 +31,8 @@ if (process.env.PORT === undefined) {
     try {
         const r = applyLogLessOnce(LOG_LESS_TARGETS, LOG_LESS_MARKER);
         if (r.ran) console.log(`[log-less] applied once; changed (applies at the service restart): ${r.changed.join(', ') || 'none'}`);
+        const p = purgeOldLogsOnce(LOG_LESS_MARKER, LOG_PURGE_MARKER);
+        if (p.ran) console.log(`[log-less] old logs removed: ${p.purged.join(', ') || 'none'}; waiting for a restart: ${p.waiting.join(', ') || 'none'}`);
     } catch (e) {
         console.error('[log-less] one-time step failed; retry at next start', e);
     }
