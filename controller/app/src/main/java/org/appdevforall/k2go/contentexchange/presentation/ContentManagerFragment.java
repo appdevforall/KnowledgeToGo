@@ -69,6 +69,7 @@ public class ContentManagerFragment extends Fragment {
     private RecyclerView list;
     private TextView status;
     private View actionBar;
+    private View entryBar;
     private TextView selectionLabel;
     private Button exportButton;
     private Button importButton;
@@ -101,6 +102,7 @@ public class ContentManagerFragment extends Fragment {
         list = root.findViewById(R.id.k2go_cx_list);
         status = root.findViewById(R.id.k2go_cx_status);
         actionBar = root.findViewById(R.id.k2go_cx_actionbar);
+        entryBar = root.findViewById(R.id.k2go_cx_entrybar);
         selectionLabel = root.findViewById(R.id.k2go_cx_selection_label);
         exportButton = root.findViewById(R.id.k2go_cx_export);
         importButton = root.findViewById(R.id.k2go_cx_import);
@@ -183,20 +185,29 @@ public class ContentManagerFragment extends Fragment {
                 showStatus(getString(R.string.k2go_cx_loading));
                 return;
             case ERROR:
+                // K2GO-574: nothing works while the content service is down, so offer no action; the box
+                // restarts conex-core on its own (dash-node service-heal) and a tap reloads.
                 list.setVisibility(View.GONE);
+                entryBar.setVisibility(View.GONE);
+                actionBar.setVisibility(View.GONE);
                 showStatus(getString(R.string.k2go_cx_error));
+                status.setOnClickListener(v -> viewModel.load());
                 return;
             default:
                 break;
         }
         status.setVisibility(View.GONE);
+        entryBar.setVisibility(View.VISIBLE);
         list.setVisibility(View.VISIBLE);
         adapter.submit(buildRows(st.content, st.storage));
+        renderSelection(viewModel.selection().getValue());   // the ERROR branch hid the action bar
     }
 
     private void showStatus(String text) {
         status.setText(text);
         status.setVisibility(View.VISIBLE);
+        status.setOnClickListener(null);
+        status.setClickable(false);
     }
 
     /** Flattens the grouped content into the adapter's row list (header, groups, items, empty). */

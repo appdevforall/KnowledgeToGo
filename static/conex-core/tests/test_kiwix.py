@@ -100,7 +100,9 @@ class KiwixAdapterEndToEndTest(unittest.TestCase):
             with open(os.path.join(d, "readme.txt"), "w") as f:
                 f.write("x")
 
-            adapter = KiwixAdapter(d)
+            server = os.path.join(d, "kiwix-serve")
+            open(server, "w").close()
+            adapter = KiwixAdapter(d, server=server)
             self.assertTrue(adapter.is_installed())
             items = adapter.list()
             self.assertEqual(len(items), 1)
@@ -135,6 +137,11 @@ class KiwixAdapterEndToEndTest(unittest.TestCase):
             adapter = KiwixAdapter(sub)
             self.assertIsNone(adapter.get("../secret_en_x_2020-01.zim"))
             self.assertIsNone(adapter.get("..\\secret_en_x_2020-01.zim"))
+
+    def test_zims_dir_without_kiwix_serve_is_not_installed(self):
+        # K2GO-574: an old 32-bit library has the zims dir but no kiwix-serve.
+        with tempfile.TemporaryDirectory() as d:
+            self.assertFalse(KiwixAdapter(d, server=os.path.join(d, "missing")).is_installed())
 
     def test_absent_dir_is_not_installed(self):
         adapter = KiwixAdapter("/no/such/dir/for/conex-core")

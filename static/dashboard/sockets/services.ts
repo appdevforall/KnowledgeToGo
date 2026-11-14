@@ -16,7 +16,7 @@
 import { spawn } from 'child_process';
 
 export const RESTARTABLE_SERVICES: readonly string[] = [
-    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web', 'forgejo',
+    'nginx', 'php-fpm', 'mariadb', 'kolibri', 'kiwix', 'calibre-web', 'forgejo', 'conex-core',
 ];
 
 /** A name is restartable only when it is exactly one of the known upstream content

@@ -37,7 +37,7 @@ class Registry:
     @staticmethod
     def load(config: Config) -> "Registry":
         candidates: List[ContentAdapter] = [
-            KiwixAdapter(config.zims_dir, config.kiwix_indexer),
+            KiwixAdapter(config.zims_dir, config.kiwix_indexer, config.kiwix_serve),
             KolibriAdapter(config.kolibri_db, config.kolibri_bin, config.staging_dir),
             CalibreAdapter(config.calibre_db, config.calibre_url, config.credentials_file, config.staging_dir),
         ]

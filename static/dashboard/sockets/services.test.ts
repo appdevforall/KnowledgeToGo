@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isRestartableService, RESTARTABLE_SERVICES } from './services';
-import { dueForRestart, classifyProbe } from './service-heal';
+import { dueForRestart, classifyProbe, isRefused } from './service-heal';
 
 // --- isRestartableService: the /system/service/:svc/restart allowlist -------------------------
 
@@ -13,6 +13,7 @@ test('isRestartableService: accepts every upstream content service', () => {
     // The concrete cases §10 wires first.
     assert.equal(isRestartableService('kiwix'), true);
     assert.equal(isRestartableService('kolibri'), true);
+    assert.equal(isRestartableService('conex-core'), true);   // K2GO-574: service-heal restarts it
 });
 
 test('isRestartableService: rejects dash-node (k2go\'s own service, not a content service)', () => {
@@ -66,4 +67,16 @@ test('classifyProbe: a wedged upstream (5xx) and no reply (null) both heal', () 
     assert.equal(classifyProbe(503), 'down');
     assert.equal(classifyProbe(504), 'down');
     assert.equal(classifyProbe(null), 'down');   // timeout / connection refused
+});
+
+// --- isRefused: conex-core is healed only when its process is gone (K2GO-574) ---------------
+
+test('isRefused: a refused connection means the process is gone', () => {
+    assert.equal(isRefused({ cause: { code: 'ECONNREFUSED' } }), true);
+    assert.equal(isRefused({ code: 'ECONNREFUSED' }), true);
+});
+
+test('isRefused: a timeout (busy service) or no error is not refused', () => {
+    assert.equal(isRefused({ name: 'TimeoutError', code: 23 }), false);
+    assert.equal(isRefused(null), false);
 });

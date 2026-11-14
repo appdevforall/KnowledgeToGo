@@ -10,12 +10,22 @@
 // box heals itself (§10). The app/reconciler owns box up/down and does NOT manage individual
 // box services (§10 layering); this watcher is the dashboard REST core owning its own service
 // tree — the single owner of "is my content service tree healthy?".
+import { existsSync } from 'fs';
+import { conexPort } from './conex-proxy';
 import { restartService } from './services';
 
 /** A watched content service: its pdsm name and the loopback URL that reflects its health.
  *  kiwix first (the device-confirmed wedge, §10); the others are added here as they are
  *  device-verified — the endpoint already accepts the full supported set. */
-interface Watch { svc: string; probeUrl: string; }
+interface Watch {
+    svc: string;
+    probeUrl: string;
+    /** Heal only a missing process: any reply is ok and only a refused connection is down, so a busy
+     *  service (a slow reply) is never restarted in the middle of an import or export. */
+    processOnly?: boolean;
+    /** Not installed on this box when this file is missing: leave it alone. */
+    installedFile?: string;
+}
 
 // The box fronts content on nginx :8085 (dash-node-nginx.conf); a HEAD on the public path is
 // exactly the served page's own probe, run here on loopback. Origin/timing are env-overridable
@@ -27,6 +37,9 @@ const PROBE_TIMEOUT_MS = Number(process.env.K2GO_HEAL_PROBE_TIMEOUT_MS) || 4_000
 
 const WATCHED: Watch[] = [
     { svc: 'kiwix', probeUrl: `${PUBLIC_ORIGIN}/kiwix/` },
+    // K2GO-574: Content Exchange. /v1/apps is the route its pdsm health check uses.
+    { svc: 'conex-core', probeUrl: `http://127.0.0.1:${conexPort()}/v1/apps`, processOnly: true,
+      installedFile: '/usr/local/pdsm/services-available/conex-core' },
 ];
 
 /** Enough time has passed since the last restart attempt to try again. A per-service
@@ -54,13 +67,21 @@ export function classifyProbe(status: number | null): ProbeResult {
     return 'down';
 }
 
+/** True when a fetch failed because nothing listens on the port (the process is gone). */
+export function isRefused(e: unknown): boolean {
+    const err = e as { code?: string; cause?: { code?: string } } | null;
+    return err?.code === 'ECONNREFUSED' || err?.cause?.code === 'ECONNREFUSED';
+}
+
 /** HEAD the probe URL and classify the outcome. Only a 'down' verdict heals; 'absent' (404,
  *  not installed) and 'ok' are left alone. */
-async function probe(url: string): Promise<ProbeResult> {
+async function probe(w: Watch): Promise<ProbeResult> {
+    if (w.installedFile && !existsSync(w.installedFile)) return 'absent';
     try {
-        const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
-        return classifyProbe(res.status);
-    } catch {
+        const res = await fetch(w.probeUrl, { method: 'HEAD', signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
+        return w.processOnly ? 'ok' : classifyProbe(res.status);
+    } catch (e) {
+        if (w.processOnly) return isRefused(e) ? 'down' : 'ok';
         return classifyProbe(null);
     }
 }
@@ -72,7 +93,7 @@ export function startServiceHeal(): NodeJS.Timeout {
 
     const tick = async (): Promise<void> => {
         for (const w of WATCHED) {
-            if (await probe(w.probeUrl) !== 'down') continue;   // 'ok'/'absent' need no heal
+            if (await probe(w) !== 'down') continue;   // 'ok'/'absent' need no heal
             const now = Date.now();
             if (!dueForRestart(lastAttempt.get(w.svc) ?? 0, now, COOLDOWN_MS)) continue;
             lastAttempt.set(w.svc, now);
