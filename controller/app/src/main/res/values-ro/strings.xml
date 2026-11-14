@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_share_step_join">Alătură-te</string>
     <string name="k2go_cx_share_step_receive">Primește</string>
     <string name="k2go_cx_share_join_caption">Scanează pe celălalt telefon pentru a te alătura acestui hotspot.</string>
-    <string name="k2go_cx_share_receive_caption">Apoi scanează asta pentru a primi conținutul.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Acest telefon nu poate porni un hotspot pentru partajare.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspotul nu a putut fi pornit.</string>
     <string name="k2go_cx_share_need_permission">Permisiunea pentru hotspot este necesară pentru partajare.</string>

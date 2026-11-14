@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_share_step_join">انضمام</string>
     <string name="k2go_cx_share_step_receive">استقبال</string>
     <string name="k2go_cx_share_join_caption">امسح على الهاتف الآخر للانضمام إلى نقطة الاتصال هذه.</string>
-    <string name="k2go_cx_share_receive_caption">ثم امسح هذا لاستقبال المحتوى.</string>
     <string name="k2go_cx_share_hotspot_unsupported">لا يمكن لهذا الهاتف بدء نقطة اتصال للمشاركة.</string>
     <string name="k2go_cx_share_hotspot_failed">تعذّر بدء نقطة الاتصال.</string>
     <string name="k2go_cx_share_need_permission">إذن نقطة الاتصال مطلوب للمشاركة.</string>

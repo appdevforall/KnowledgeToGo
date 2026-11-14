@@ -1528,7 +1528,6 @@
     <string name="k2go_cx_share_step_join">Qoşul</string>
     <string name="k2go_cx_share_step_receive">Qəbul et</string>
     <string name="k2go_cx_share_join_caption">Bu hotspota qoşulmaq üçün digər telefonda skan edin.</string>
-    <string name="k2go_cx_share_receive_caption">Sonra məzmunu qəbul etmək üçün bunu skan edin.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Bu telefon paylaşmaq üçün hotspot başlada bilmir.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot başladıla bilmədi.</string>
     <string name="k2go_cx_share_need_permission">Paylaşmaq üçün hotspot icazəsi lazımdır.</string>

@@ -226,7 +226,6 @@ public class ContentShareFragment extends Fragment {
                 getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
 
         // Section 2: the share invite QR. Needs the AP IPv4, which resolves a beat after ON.
-        secReceive.caption.setText(R.string.k2go_cx_share_receive_caption);
         secReceive.subCaption.setText("");
         // The core returns its own path (/v1/share/<id>/manifest); the receiver reaches it through
         // the off-box gate prefix, so the invite carries the prefixed path.
@@ -285,10 +284,12 @@ public class ContentShareFragment extends Fragment {
         numberSteps();
     }
 
-    /** Number the steps the user sees: with the join step hidden (Wi-Fi transport), the invite is 1. */
+    /** Number the steps the user sees: with the join step hidden (Wi-Fi transport), the invite is 1.
+     *  The caption is Clone's one-code / two-code wording. */
     private void numberSteps() {
         boolean joinShown = joinRoot.getVisibility() == View.VISIBLE;
         QrSection.setStep(receiveRoot, joinShown ? "2" : "1", getString(R.string.k2go_cx_action_share));
+        secReceive.caption.setText(joinShown ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan);
     }
 
     /**

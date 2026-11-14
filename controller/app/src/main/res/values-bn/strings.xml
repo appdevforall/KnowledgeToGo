@@ -1521,7 +1521,6 @@
     <string name="k2go_cx_share_step_join">যোগ দিন</string>
     <string name="k2go_cx_share_step_receive">গ্রহণ করুন</string>
     <string name="k2go_cx_share_join_caption">এই হটস্পটে যোগ দিতে অন্য ফোনে স্ক্যান করুন।</string>
-    <string name="k2go_cx_share_receive_caption">তারপর কন্টেন্ট পেতে এটি স্ক্যান করুন।</string>
     <string name="k2go_cx_share_hotspot_unsupported">এই ফোনটি শেয়ার করার জন্য হটস্পট চালু করতে পারে না।</string>
     <string name="k2go_cx_share_hotspot_failed">হটস্পট চালু করা যায়নি।</string>
     <string name="k2go_cx_share_need_permission">শেয়ার করার জন্য হটস্পট অনুমতি প্রয়োজন।</string>

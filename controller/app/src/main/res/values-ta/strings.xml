@@ -1528,7 +1528,6 @@
     <string name="k2go_cx_share_step_join">இணைக</string>
     <string name="k2go_cx_share_step_receive">பெறுக</string>
     <string name="k2go_cx_share_join_caption">இந்த ஹாட்ஸ்பாட்டில் இணைய மற்றொரு ஃபோனில் ஸ்கேன் செய்யவும்.</string>
-    <string name="k2go_cx_share_receive_caption">பிறகு உள்ளடக்கத்தைப் பெற இதை ஸ்கேன் செய்யவும்.</string>
     <string name="k2go_cx_share_hotspot_unsupported">இந்த ஃபோன் பகிர்வதற்கு ஹாட்ஸ்பாட்டைத் தொடங்க முடியாது.</string>
     <string name="k2go_cx_share_hotspot_failed">ஹாட்ஸ்பாட்டைத் தொடங்க முடியவில்லை.</string>
     <string name="k2go_cx_share_need_permission">பகிர்வதற்கு ஹாட்ஸ்பாட் அனுமதி தேவை.</string>

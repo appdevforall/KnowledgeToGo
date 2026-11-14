@@ -1703,7 +1703,6 @@
     <string name="k2go_cx_share_step_join">Join</string>
     <string name="k2go_cx_share_step_receive">Receive</string>
     <string name="k2go_cx_share_join_caption">Scan on the other phone to join this hotspot.</string>
-    <string name="k2go_cx_share_receive_caption">Then scan this to receive the content.</string>
     <string name="k2go_cx_share_hotspot_unsupported">This phone cannot start a hotspot to share.</string>
     <string name="k2go_cx_share_hotspot_failed">Could not start the hotspot.</string>
     <string name="k2go_cx_share_need_permission">The hotspot permission is needed to share.</string>

@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_share_step_join">پیوستن</string>
     <string name="k2go_cx_share_step_receive">دریافت</string>
     <string name="k2go_cx_share_join_caption">برای پیوستن به این نقطه اتصال، در تلفن دیگر اسکن کنید.</string>
-    <string name="k2go_cx_share_receive_caption">سپس برای دریافت محتوا این را اسکن کنید.</string>
     <string name="k2go_cx_share_hotspot_unsupported">این تلفن نمی‌تواند برای اشتراک‌گذاری نقطه اتصال راه‌اندازی کند.</string>
     <string name="k2go_cx_share_hotspot_failed">نقطه اتصال راه‌اندازی نشد.</string>
     <string name="k2go_cx_share_need_permission">برای اشتراک‌گذاری به اجازه نقطه اتصال نیاز است.</string>

@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_share_step_join">Partecipa</string>
     <string name="k2go_cx_share_step_receive">Ricevi</string>
     <string name="k2go_cx_share_join_caption">Esegui la scansione sull\'altro telefono per partecipare a questo hotspot.</string>
-    <string name="k2go_cx_share_receive_caption">Poi esegui la scansione di questo per ricevere i contenuti.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Questo telefono non può avviare un hotspot per la condivisione.</string>
     <string name="k2go_cx_share_hotspot_failed">Impossibile avviare l\'hotspot.</string>
     <string name="k2go_cx_share_need_permission">L\'autorizzazione hotspot è necessaria per la condivisione.</string>

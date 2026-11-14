@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_step_join">加入</string>
     <string name="k2go_cx_share_step_receive">接收</string>
     <string name="k2go_cx_share_join_caption">在另一部手机上扫描以加入此热点。</string>
-    <string name="k2go_cx_share_receive_caption">然后扫描此码以接收内容。</string>
     <string name="k2go_cx_share_hotspot_unsupported">此手机无法启动用于共享的热点。</string>
     <string name="k2go_cx_share_hotspot_failed">无法启动热点。</string>
     <string name="k2go_cx_share_need_permission">共享需要热点权限。</string>

@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_share_step_join">Deelnemen</string>
     <string name="k2go_cx_share_step_receive">Ontvangen</string>
     <string name="k2go_cx_share_join_caption">Scan op de andere telefoon om deel te nemen aan deze hotspot.</string>
-    <string name="k2go_cx_share_receive_caption">Scan dit vervolgens om de inhoud te ontvangen.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Deze telefoon kan geen hotspot starten om te delen.</string>
     <string name="k2go_cx_share_hotspot_failed">Kan de hotspot niet starten.</string>
     <string name="k2go_cx_share_need_permission">De hotspot-machtiging is nodig om te delen.</string>

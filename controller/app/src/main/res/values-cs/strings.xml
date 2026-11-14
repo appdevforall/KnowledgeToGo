@@ -1515,7 +1515,6 @@
     <string name="k2go_cx_share_step_join">Připojit se</string>
     <string name="k2go_cx_share_step_receive">Přijmout</string>
     <string name="k2go_cx_share_join_caption">Naskenujte na druhém telefonu a připojte se k tomuto hotspotu.</string>
-    <string name="k2go_cx_share_receive_caption">Potom naskenujte toto pro příjem obsahu.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Tento telefon nemůže spustit hotspot pro sdílení.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot se nepodařilo spustit.</string>
     <string name="k2go_cx_share_need_permission">Pro sdílení je potřeba oprávnění hotspotu.</string>
