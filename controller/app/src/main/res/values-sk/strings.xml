@@ -1590,4 +1590,22 @@
     <string name="k2go_privacy_restart_later">Neskôr</string>
     <string name="k2go_privacy_restart_later_note">Uložené. Zmena sa použije pri ďalšom otvorení aplikácie.</string>
     <string name="k2go_privacy_restarting">%1$s sa reštartuje. Bude späť asi o 30 sekúnd.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Tento telefón</string>
+    <string name="k2go_about_sec_app">Aplikácia K2Go</string>
+    <string name="k2go_about_sec_library">Knižnica</string>
+    <string name="k2go_about_processor">Procesor</string>
+    <string name="k2go_about_runs_32">Spúšťa 32-bitové aplikácie</string>
+    <string name="k2go_about_yes">Áno</string>
+    <string name="k2go_about_no">Nie</string>
+    <string name="k2go_about_version">Verzia</string>
+    <string name="k2go_about_runs_as">Beží ako</string>
+    <string name="k2go_about_architecture">Architektúra</string>
+    <string name="k2go_about_bits_abi">%1$d bitov (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bitov (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Nenainštalované</string>
+    <string name="k2go_about_unknown">Neznáme</string>
+    <string name="k2go_about_copy">Kopírovať podrobnosti</string>
+    <string name="k2go_about_copied">Podrobnosti skopírované</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

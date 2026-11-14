@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">Mai târziu</string>
     <string name="k2go_privacy_restart_later_note">Salvat. Modificarea se aplică la următoarea deschidere a aplicației.</string>
     <string name="k2go_privacy_restarting">Se repornește %1$s. Revine în aproximativ 30 de secunde.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Acest telefon</string>
+    <string name="k2go_about_sec_app">Aplicația K2Go</string>
+    <string name="k2go_about_sec_library">Bibliotecă</string>
+    <string name="k2go_about_processor">Procesor</string>
+    <string name="k2go_about_runs_32">Rulează aplicații pe 32 de biți</string>
+    <string name="k2go_about_yes">Da</string>
+    <string name="k2go_about_no">Nu</string>
+    <string name="k2go_about_version">Versiune</string>
+    <string name="k2go_about_runs_as">Rulează ca</string>
+    <string name="k2go_about_architecture">Arhitectură</string>
+    <string name="k2go_about_bits_abi">%1$d biți (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d biți (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Neinstalată</string>
+    <string name="k2go_about_unknown">Necunoscută</string>
+    <string name="k2go_about_copy">Copiază detaliile</string>
+    <string name="k2go_about_copied">Detalii copiate</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

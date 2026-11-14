@@ -52,8 +52,13 @@ public final class AbiSource {
      */
     public static LibraryHost moduleHost(Context ctx) {
         java.io.File root = SystemStateEvaluator.rootfsDir(ctx);
-        if (!root.isDirectory()) return LibraryHost.freshInstall(appAbi());
+        if (!libraryTreePresent(root)) return LibraryHost.freshInstall(appAbi());
         return new LibraryHost(InstalledLibraryAbi.read(root), KiwixLibrarySupport.read(root));
+    }
+
+    /** True when a library tree exists at {@code root} (it may still be mid-restore or mid-Clone). */
+    public static boolean libraryTreePresent(java.io.File root) {
+        return root != null && root.isDirectory();
     }
 
     /** {@link LibraryArch#canRun(String, String, boolean)} for this app on this phone. */

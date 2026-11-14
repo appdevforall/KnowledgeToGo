@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">Để sau</string>
     <string name="k2go_privacy_restart_later_note">Đã lưu. Thay đổi sẽ áp dụng vào lần mở ứng dụng tiếp theo.</string>
     <string name="k2go_privacy_restarting">Đang khởi động lại %1$s. Sẽ trở lại sau khoảng 30 giây.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Điện thoại này</string>
+    <string name="k2go_about_sec_app">Ứng dụng K2Go</string>
+    <string name="k2go_about_sec_library">Thư viện</string>
+    <string name="k2go_about_processor">Bộ xử lý</string>
+    <string name="k2go_about_runs_32">Chạy ứng dụng 32 bit</string>
+    <string name="k2go_about_yes">Có</string>
+    <string name="k2go_about_no">Không</string>
+    <string name="k2go_about_version">Phiên bản</string>
+    <string name="k2go_about_runs_as">Chạy dưới dạng</string>
+    <string name="k2go_about_architecture">Kiến trúc</string>
+    <string name="k2go_about_bits_abi">%1$d bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Chưa cài đặt</string>
+    <string name="k2go_about_unknown">Không xác định</string>
+    <string name="k2go_about_copy">Sao chép chi tiết</string>
+    <string name="k2go_about_copied">Đã sao chép chi tiết</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

@@ -1603,4 +1603,22 @@
     <string name="k2go_privacy_restart_later">பிறகு</string>
     <string name="k2go_privacy_restart_later_note">சேமிக்கப்பட்டது. அடுத்த முறை ஆப் திறக்கும்போது மாற்றம் பயன்படுத்தப்படும்.</string>
     <string name="k2go_privacy_restarting">%1$s மீண்டும் தொடங்குகிறது. சுமார் 30 வினாடிகளில் திரும்பும்.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">இந்த ஃபோன்</string>
+    <string name="k2go_about_sec_app">K2Go ஆப்</string>
+    <string name="k2go_about_sec_library">நூலகம்</string>
+    <string name="k2go_about_processor">செயலி</string>
+    <string name="k2go_about_runs_32">32-பிட் ஆப்களை இயக்கும்</string>
+    <string name="k2go_about_yes">ஆம்</string>
+    <string name="k2go_about_no">இல்லை</string>
+    <string name="k2go_about_version">பதிப்பு</string>
+    <string name="k2go_about_runs_as">இயங்கும் விதம்</string>
+    <string name="k2go_about_architecture">கட்டமைப்பு</string>
+    <string name="k2go_about_bits_abi">%1$d-பிட் (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d-பிட் (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">நிறுவப்படவில்லை</string>
+    <string name="k2go_about_unknown">தெரியவில்லை</string>
+    <string name="k2go_about_copy">விவரங்களை நகலெடு</string>
+    <string name="k2go_about_copied">விவரங்கள் நகலெடுக்கப்பட்டன</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

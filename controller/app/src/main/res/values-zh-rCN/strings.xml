@@ -1584,4 +1584,22 @@
     <string name="k2go_privacy_restart_later">稍后</string>
     <string name="k2go_privacy_restart_later_note">已保存。更改将在下次打开应用时生效。</string>
     <string name="k2go_privacy_restarting">正在重新启动 %1$s。约 30 秒后恢复。</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">此手机</string>
+    <string name="k2go_about_sec_app">K2Go 应用</string>
+    <string name="k2go_about_sec_library">资料库</string>
+    <string name="k2go_about_processor">处理器</string>
+    <string name="k2go_about_runs_32">可运行 32 位应用</string>
+    <string name="k2go_about_yes">是</string>
+    <string name="k2go_about_no">否</string>
+    <string name="k2go_about_version">版本</string>
+    <string name="k2go_about_runs_as">运行模式</string>
+    <string name="k2go_about_architecture">架构</string>
+    <string name="k2go_about_bits_abi">%1$d 位（%2$s）</string>
+    <string name="k2go_about_bits_debian">%1$d 位（Debian %2$s）</string>
+    <string name="k2go_about_not_installed">未安装</string>
+    <string name="k2go_about_unknown">未知</string>
+    <string name="k2go_about_copy">复制详细信息</string>
+    <string name="k2go_about_copied">已复制详细信息</string>
+    <string name="k2go_about_android_value">%1$s（API %2$d）</string>
 </resources>

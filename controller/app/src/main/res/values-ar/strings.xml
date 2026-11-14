@@ -1583,4 +1583,22 @@
     <string name="k2go_privacy_restart_later">لاحقًا</string>
     <string name="k2go_privacy_restart_later_note">تم الحفظ. يُطبَّق التغيير في المرة القادمة التي يُفتح فيها التطبيق.</string>
     <string name="k2go_privacy_restarting">جارٍ إعادة تشغيل %1$s. سيعود خلال نحو 30 ثانية.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">هذا الهاتف</string>
+    <string name="k2go_about_sec_app">تطبيق K2Go</string>
+    <string name="k2go_about_sec_library">المكتبة</string>
+    <string name="k2go_about_processor">المعالج</string>
+    <string name="k2go_about_runs_32">يشغّل تطبيقات 32 بت</string>
+    <string name="k2go_about_yes">نعم</string>
+    <string name="k2go_about_no">لا</string>
+    <string name="k2go_about_version">الإصدار</string>
+    <string name="k2go_about_runs_as">يعمل كـ</string>
+    <string name="k2go_about_architecture">البنية</string>
+    <string name="k2go_about_bits_abi">%1$d بت (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d بت (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">غير مثبتة</string>
+    <string name="k2go_about_unknown">غير معروف</string>
+    <string name="k2go_about_copy">نسخ التفاصيل</string>
+    <string name="k2go_about_copied">تم نسخ التفاصيل</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

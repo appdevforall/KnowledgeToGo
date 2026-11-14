@@ -1590,4 +1590,22 @@
     <string name="k2go_privacy_restart_later">Αργότερα</string>
     <string name="k2go_privacy_restart_later_note">Αποθηκεύτηκε. Η αλλαγή εφαρμόζεται την επόμενη φορά που θα ανοίξει η εφαρμογή.</string>
     <string name="k2go_privacy_restarting">Γίνεται επανεκκίνηση του %1$s. Επιστρέφει σε περίπου 30 δευτερόλεπτα.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Αυτό το τηλέφωνο</string>
+    <string name="k2go_about_sec_app">Εφαρμογή K2Go</string>
+    <string name="k2go_about_sec_library">Βιβλιοθήκη</string>
+    <string name="k2go_about_processor">Επεξεργαστής</string>
+    <string name="k2go_about_runs_32">Εκτελεί εφαρμογές 32 bit</string>
+    <string name="k2go_about_yes">Ναι</string>
+    <string name="k2go_about_no">Όχι</string>
+    <string name="k2go_about_version">Έκδοση</string>
+    <string name="k2go_about_runs_as">Εκτελείται ως</string>
+    <string name="k2go_about_architecture">Αρχιτεκτονική</string>
+    <string name="k2go_about_bits_abi">%1$d bit (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bit (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Δεν έχει εγκατασταθεί</string>
+    <string name="k2go_about_unknown">Άγνωστο</string>
+    <string name="k2go_about_copy">Αντιγραφή λεπτομερειών</string>
+    <string name="k2go_about_copied">Οι λεπτομέρειες αντιγράφηκαν</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

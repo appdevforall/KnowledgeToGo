@@ -1584,4 +1584,22 @@
     <string name="k2go_privacy_restart_later">後で</string>
     <string name="k2go_privacy_restart_later_note">保存しました。変更は次にアプリを開いたときに適用されます。</string>
     <string name="k2go_privacy_restarting">%1$s を再起動しています。約 30 秒で戻ります。</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">このスマートフォン</string>
+    <string name="k2go_about_sec_app">K2Go アプリ</string>
+    <string name="k2go_about_sec_library">ライブラリ</string>
+    <string name="k2go_about_processor">プロセッサ</string>
+    <string name="k2go_about_runs_32">32 ビットアプリを実行可能</string>
+    <string name="k2go_about_yes">はい</string>
+    <string name="k2go_about_no">いいえ</string>
+    <string name="k2go_about_version">バージョン</string>
+    <string name="k2go_about_runs_as">実行モード</string>
+    <string name="k2go_about_architecture">アーキテクチャ</string>
+    <string name="k2go_about_bits_abi">%1$d ビット (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d ビット (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">未インストール</string>
+    <string name="k2go_about_unknown">不明</string>
+    <string name="k2go_about_copy">詳細をコピー</string>
+    <string name="k2go_about_copied">詳細をコピーしました</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

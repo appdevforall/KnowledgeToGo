@@ -1600,4 +1600,22 @@
     <string name="k2go_privacy_restart_later">Vėliau</string>
     <string name="k2go_privacy_restart_later_note">Išsaugota. Pakeitimas bus pritaikytas kitą kartą atidarius programą.</string>
     <string name="k2go_privacy_restarting">%1$s paleidžiama iš naujo. Grįš maždaug po 30 sekundžių.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Šis telefonas</string>
+    <string name="k2go_about_sec_app">K2Go programėlė</string>
+    <string name="k2go_about_sec_library">Biblioteka</string>
+    <string name="k2go_about_processor">Procesorius</string>
+    <string name="k2go_about_runs_32">Paleidžia 32 bitų programėles</string>
+    <string name="k2go_about_yes">Taip</string>
+    <string name="k2go_about_no">Ne</string>
+    <string name="k2go_about_version">Versija</string>
+    <string name="k2go_about_runs_as">Veikia kaip</string>
+    <string name="k2go_about_architecture">Architektūra</string>
+    <string name="k2go_about_bits_abi">%1$d bitų (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bitų (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">Neįdiegta</string>
+    <string name="k2go_about_unknown">Nežinoma</string>
+    <string name="k2go_about_copy">Kopijuoti išsamią informaciją</string>
+    <string name="k2go_about_copied">Informacija nukopijuota</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>

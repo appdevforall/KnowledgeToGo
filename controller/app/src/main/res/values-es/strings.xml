@@ -1659,4 +1659,22 @@
     <string name="k2go_privacy_restart_later">Más tarde</string>
     <string name="k2go_privacy_restart_later_note">Guardado. El cambio se aplica la próxima vez que se abra la app.</string>
     <string name="k2go_privacy_restarting">Reiniciando %1$s. Vuelve en unos 30 segundos.</string>
+    <!-- About > App version details. Machine-translated: needs human review -->
+    <string name="k2go_about_sec_phone">Este teléfono</string>
+    <string name="k2go_about_sec_app">App K2Go</string>
+    <string name="k2go_about_sec_library">Biblioteca</string>
+    <string name="k2go_about_processor">Procesador</string>
+    <string name="k2go_about_runs_32">Ejecuta apps de 32 bits</string>
+    <string name="k2go_about_yes">Sí</string>
+    <string name="k2go_about_no">No</string>
+    <string name="k2go_about_version">Versión</string>
+    <string name="k2go_about_runs_as">Se ejecuta como</string>
+    <string name="k2go_about_architecture">Arquitectura</string>
+    <string name="k2go_about_bits_abi">%1$d bits (%2$s)</string>
+    <string name="k2go_about_bits_debian">%1$d bits (Debian %2$s)</string>
+    <string name="k2go_about_not_installed">No instalada</string>
+    <string name="k2go_about_unknown">Desconocida</string>
+    <string name="k2go_about_copy">Copiar detalles</string>
+    <string name="k2go_about_copied">Detalles copiados</string>
+    <string name="k2go_about_android_value">%1$s (API %2$d)</string>
 </resources>
