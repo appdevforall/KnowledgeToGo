@@ -7,23 +7,56 @@ GRADLE = '''
     defaultConfig {
         versionCode 71
         def ciSuffix = ""
-        versionName "v1.2.0${ciSuffix}"
+        versionName "v1.2.0-rc.1${ciSuffix}"
     }
 '''
+FINAL = GRADLE.replace("v1.2.0-rc.1", "v1.2.0")
 
 
 class VersionTest(unittest.TestCase):
-    def test_reads_version_and_code_base(self):
-        self.assertEqual("v1.2.0", pp.version_name(GRADLE))
+    def test_reads_label_and_code_base(self):
+        self.assertEqual("v1.2.0-rc.1", pp.version_name(GRADLE))
+        self.assertEqual("v1.2.0", pp.version_name(FINAL))
         self.assertEqual(71, pp.version_code_base(GRADLE))
 
-    def test_rejects_a_prerelease_in_the_binary(self):
-        with self.assertRaises(pp.PlanError):
-            pp.version_name(GRADLE.replace("v1.2.0", "v1.2.0-rc.1"))
+    def test_rejects_other_labels(self):
+        for bad in ("v1.2.0-beta", "v1.2.0-rc1", "1.2.0", "v1.2.0-rc.1-x"):
+            with self.assertRaises(pp.PlanError):
+                pp.version_name(GRADLE.replace("v1.2.0-rc.1", bad))
 
     def test_reports_a_missing_version(self):
         with self.assertRaises(pp.PlanError):
             pp.version_name("versionCode 71")
+
+
+class CandidateTagTest(unittest.TestCase):
+    def test_label_is_the_next_candidate(self):
+        self.assertEqual("v1.2.0-rc.1", pp.candidate_tag({"v1.1.0"}, "v1.2.0-rc.1"))
+        self.assertEqual("v1.2.0-rc.2", pp.candidate_tag({"v1.2.0-rc.1"}, "v1.2.0-rc.2"))
+
+    def test_used_skipped_and_final_labels_are_refused(self):
+        tags = {"v1.1.0", "v1.2.0-rc.1"}
+        for bad in ("v1.2.0-rc.1", "v1.2.0-rc.3", "v1.2.0"):
+            with self.assertRaises(pp.PlanError):
+                pp.candidate_tag(tags, bad)
+
+    def test_a_released_version_is_closed(self):
+        with self.assertRaises(pp.PlanError):
+            pp.candidate_tag({"v1.2.0", "v1.2.0-rc.1"}, "v1.2.0-rc.2")
+
+
+class CheckReleaseTest(unittest.TestCase):
+    def test_final_build_matches_its_tag(self):
+        self.assertEqual("v1.2.0", pp.check_release(FINAL, "v1.2.0"))
+
+    def test_an_rc_build_is_never_released_as_final(self):
+        with self.assertRaises(pp.PlanError):
+            pp.check_release(GRADLE, "v1.2.0")
+
+    def test_tag_and_label_must_be_the_same_final_version(self):
+        for tag in ("v1.2.1", "v1.2.0-rc.1"):
+            with self.assertRaises(pp.PlanError):
+                pp.check_release(FINAL if tag == "v1.2.1" else GRADLE, tag)
 
 
 class RcTagTest(unittest.TestCase):

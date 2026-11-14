@@ -29,6 +29,11 @@ jobs:
           ref: ${{ inputs.tag }}
           submodules: recursive
 
+      # Fail before any build or upload when the tagged build is not that exact final version.
+      - name: Require versionName to equal the release tag
+        working-directory: ${{ github.workspace }}
+        run: python3 tools/play-publish/play_publish.py check-release --gradle controller/app/build.gradle --tag "$RELEASE_TAG"
+
       # TODO (Future): Add a Jira step here to verify if the version exists in Jira
       # or to extract release notes directly from a Jira board.
 
