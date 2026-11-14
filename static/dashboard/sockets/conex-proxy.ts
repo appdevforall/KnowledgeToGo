@@ -11,7 +11,7 @@ import http from 'http';
 const CONEX_HOST = '127.0.0.1';
 
 // The core's port, env-overridable to match its own CONEX_PORT default (9500).
-function conexPort(): number {
+export function conexPort(): number {
     return Number(process.env.CONEX_PORT) || 9500;
 }
 
