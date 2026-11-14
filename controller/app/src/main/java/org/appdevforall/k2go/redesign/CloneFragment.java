@@ -1,7 +1,5 @@
 package org.appdevforall.k2go.redesign;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -224,8 +222,8 @@ public class CloneFragment extends Fragment {
         sizeContent = v.findViewById(R.id.k2go_clone_size_content);
         sizeTotal = v.findViewById(R.id.k2go_clone_size_total);
         receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
-        paste = v.findViewById(R.id.k2go_clone_paste);
-        receiveStart = v.findViewById(R.id.k2go_clone_receive_start);
+        paste = v.findViewById(R.id.k2go_code_paste);
+        receiveStart = v.findViewById(R.id.k2go_code_use);
         rcvSteps = v.findViewById(R.id.k2go_rcv_steps);
         rcvCaption = v.findViewById(R.id.k2go_rcv_caption);
         rcvIntro = v.findViewById(R.id.k2go_rcv_intro);
@@ -235,8 +233,8 @@ public class CloneFragment extends Fragment {
         rcvSkip = v.findViewById(R.id.k2go_rcv_skip);
         rcvSkipHint = v.findViewById(R.id.k2go_rcv_skiphint);
         rcvCamNote = v.findViewById(R.id.k2go_rcv_camnote);
-        rcvShowPaste = v.findViewById(R.id.k2go_rcv_showpaste);
-        pasteBlock = v.findViewById(R.id.k2go_rcv_pasteblock);
+        rcvShowPaste = v.findViewById(R.id.k2go_code_showpaste);
+        pasteBlock = v.findViewById(R.id.k2go_code_pasteblock);
         rcvIncompat = v.findViewById(R.id.k2go_rcv_incompat);
         incompatWhy = v.findViewById(R.id.k2go_rcv_incompat_why);
         incompatWhyText = v.findViewById(R.id.k2go_rcv_incompat_whytext);
@@ -282,11 +280,11 @@ public class CloneFragment extends Fragment {
         confirmFresh = v.findViewById(R.id.k2go_rcv_confirm_fresh);
         v.findViewById(R.id.k2go_rcv_confirm_go).setOnClickListener(x -> startReceiveTransfer());
         v.findViewById(R.id.k2go_rcv_confirm_cancel).setOnClickListener(x -> { syncVm.cancelProbe(); renderReceive(); });
-        showcode = v.findViewById(R.id.k2go_clone_showcode);
-        codeblock = v.findViewById(R.id.k2go_clone_codeblock);
-        codetext = v.findViewById(R.id.k2go_clone_codetext);
-        copyBtn = v.findViewById(R.id.k2go_clone_copy);
-        shareBtn = v.findViewById(R.id.k2go_clone_share);
+        showcode = v.findViewById(R.id.k2go_code_label);
+        codeblock = v.findViewById(R.id.k2go_code_block);
+        codetext = v.findViewById(R.id.k2go_code_text);
+        copyBtn = v.findViewById(R.id.k2go_code_copy);
+        shareBtn = v.findViewById(R.id.k2go_code_share);
         // ADFA-5154: the Get-app QR lives inline on Page 1 (secGetApp); "Can't scan? Share another way"
         // hands the installed APK to the Android share sheet.
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
@@ -306,15 +304,8 @@ public class CloneFragment extends Fragment {
             render();
         });
         // ADFA-5236: no reveal toggle — the code is shown always under a fixed label (see showCodeAsText).
-        copyBtn.setOnClickListener(x -> {
-            ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("K2Go transfer code", currentPayload));
-            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_copied), Toast.LENGTH_SHORT).show();
-        });
-        shareBtn.setOnClickListener(x -> {
-            Intent i = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, currentPayload);
-            startActivity(Intent.createChooser(i, getString(R.string.k2go_clone_chooser_send_code)));
-        });
+        copyBtn.setOnClickListener(x -> CodeText.copy(x, currentPayload));
+        shareBtn.setOnClickListener(x -> CodeText.share(requireContext(), currentPayload));
 
         receiveStart.setOnClickListener(x -> onReceiveStart());
         cancel.setOnClickListener(x -> onReceiveCancel());
@@ -1150,10 +1141,10 @@ public class CloneFragment extends Fragment {
             rcvIncompat.setVisibility(View.VISIBLE);
             incompatWhyText.setVisibility(incompatWhyOpen ? View.VISIBLE : View.GONE);
             incompatWhy.setText(R.string.k2go_clone_why_incompat);
-            setExpandChevron(incompatWhy, incompatWhyOpen, R.color.k2go_warn_ink);
+            CodeText.setExpandChevron(incompatWhy, incompatWhyOpen, R.color.k2go_warn_ink);
             incompatTechText.setVisibility(incompatTechOpen ? View.VISIBLE : View.GONE);
             incompatTech.setText(R.string.k2go_clone_technical_details);
-            setExpandChevron(incompatTech, incompatTechOpen, R.color.k2go_muted);
+            CodeText.setExpandChevron(incompatTech, incompatTechOpen, R.color.k2go_muted);
             incompatTechText.setText(getString(R.string.k2go_clone_tech_arch, bitsLabel(archBits()), bitsLabel(incompatHostBits)));
             return;
         }
@@ -1176,23 +1167,9 @@ public class CloneFragment extends Fragment {
         rcvCamNote.setVisibility(View.GONE);
         rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
         rcvShowPaste.setText(R.string.k2go_clone_scan_enter_text);
-        setExpandChevron(rcvShowPaste, pasteExpanded, R.color.k2go_teal);
+        CodeText.setExpandChevron(rcvShowPaste, pasteExpanded, R.color.k2go_teal);
         pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
         renderExitZone();   // ADFA-5155: the success-exit status band at the bottom of step 2
-    }
-
-    /** ADFA-5304: Material 3 expand/collapse affordance — one trailing icon that toggles state
-     *  (expand_more when closed, expand_less when open), tinted to the row's role colour. */
-    private void setExpandChevron(android.widget.TextView tv, boolean open, int colorRes) {
-        android.graphics.drawable.Drawable d = androidx.core.content.ContextCompat.getDrawable(
-                requireContext(), open ? R.drawable.ic_expand_less : R.drawable.ic_expand_more);
-        if (d != null) {
-            d = d.mutate();
-            androidx.core.graphics.drawable.DrawableCompat.setTint(d,
-                    androidx.core.content.ContextCompat.getColor(requireContext(), colorRes));
-        }
-        tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, d, null);
-        tv.setCompoundDrawablePadding((int) (6 * getResources().getDisplayMetrics().density));
     }
 
     // ---------------------------------------------------------- ADFA-5155: success-exit service wait

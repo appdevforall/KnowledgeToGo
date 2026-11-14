@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The sender side of the "code as text" path: the QR payload as selectable text with Copy and Share,
+     for a receiver whose camera cannot scan. Shared by Clone and Content Exchange; the host shows the
+     label and the block (merge: both land in the host's vertical LinearLayout). Wired by CodeText. -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView android:id="@+id/k2go_code_label" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" android:padding="8dp" android:gravity="start" android:text="@string/k2go_clone_scan_show_text"
+        android:textColor="@color/k2go_muted"
+        android:textAppearance="@style/TextAppearance.K2Go.Label" android:visibility="gone" />
+
+    <LinearLayout android:id="@+id/k2go_code_block" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:layout_marginTop="6dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
+        <TextView android:id="@+id/k2go_code_text" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:fontFamily="monospace" android:textIsSelectable="true" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+            android:layout_marginTop="8dp" android:gravity="end">
+            <!-- K2GO-385 (pill roles Q8): Copy / Share are inline text actions, so they use the
+                 text-button tier (ripple + 48dp target + leading icon), not raw TextViews. -->
+            <com.google.android.material.button.MaterialButton android:id="@+id/k2go_code_copy"
+                style="@style/Widget.K2Go.Button.Text" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/k2go_clone_copy_btn" app:icon="@drawable/ic_content_copy" app:iconGravity="textStart" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/k2go_code_share"
+                style="@style/Widget.K2Go.Button.Text" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="4dp" android:text="@string/k2go_clone_share_action" app:icon="@drawable/ic_share" app:iconGravity="textStart" />
+        </LinearLayout>
+    </LinearLayout>
+</merge>

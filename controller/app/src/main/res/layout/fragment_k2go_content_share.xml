@@ -97,6 +97,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
 
+        <!-- The invite as text (Copy / Share), for a receiver whose camera cannot scan (same block as Clone). -->
+        <include layout="@layout/view_k2go_code_text" />
+
         <TextView
             android:id="@+id/k2go_cxs_waiting"
             android:layout_width="match_parent"

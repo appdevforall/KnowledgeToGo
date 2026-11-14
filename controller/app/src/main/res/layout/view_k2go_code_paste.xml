@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The receiver side of the "code as text" path: "Scan didn't work? Enter the code as text" opens a
+     paste field and a "Use this code" button. Shared by Clone and Content Exchange; the host decodes
+     the text with the same parser as a scan (merge: lands in the host's vertical LinearLayout). -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView android:id="@+id/k2go_code_showpaste" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_enter_text"
+        android:textColor="@color/k2go_teal"
+        android:textAppearance="@style/TextAppearance.K2Go.Label" android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+    <LinearLayout android:id="@+id/k2go_code_pasteblock" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:layout_marginTop="6dp" android:visibility="gone">
+        <EditText android:id="@+id/k2go_code_paste" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:padding="14dp" android:background="@drawable/k2go_field_bg" android:fontFamily="monospace"
+            android:gravity="top|start" android:minLines="3" android:maxLines="6" android:inputType="textMultiLine"
+            android:hint="@string/k2go_clone_paste_hint" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
+            android:textAppearance="?attr/textAppearanceBodySmall" android:importantForAutofill="no" />
+        <Button android:id="@+id/k2go_code_use" style="@style/Widget.K2Go.Button" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:gravity="center" android:text="@string/k2go_clone_use_this_code" />
+    </LinearLayout>
+</merge>

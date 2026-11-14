@@ -28,6 +28,7 @@ import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
+import org.appdevforall.k2go.redesign.CodeText;
 import org.appdevforall.k2go.redesign.QrSection;
 import org.appdevforall.k2go.redesign.SegmentedTabs;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
@@ -41,6 +42,11 @@ public class ContentShareFragment extends Fragment {
     private View receiveRoot;
     private QrSection secJoin;
     private QrSection secReceive;
+    private View codeLabel;
+    private View codeBlock;
+    private TextView codeText;
+    /** The invite shown as text; Copy / Share hand out this exact payload. */
+    private String invitePayload = "";
     private View transportRow;
     private TextView transportHotspot;
     private TextView transportWifi;
@@ -76,6 +82,12 @@ public class ContentShareFragment extends Fragment {
         ((TextView) joinRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_join);
         ((TextView) receiveRoot.findViewById(R.id.sec_badge)).setText("2");
         ((TextView) receiveRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_receive);
+
+        codeLabel = root.findViewById(R.id.k2go_code_label);
+        codeBlock = root.findViewById(R.id.k2go_code_block);
+        codeText = root.findViewById(R.id.k2go_code_text);
+        root.findViewById(R.id.k2go_code_copy).setOnClickListener(v -> CodeText.copy(v, invitePayload));
+        root.findViewById(R.id.k2go_code_share).setOnClickListener(v -> CodeText.share(requireContext(), invitePayload));
 
         transportRow = root.findViewById(R.id.k2go_cxs_transport);
         transportHotspot = root.findViewById(R.id.k2go_cxs_transport_hotspot);
@@ -179,6 +191,7 @@ public class ContentShareFragment extends Fragment {
             }
             transportRow.setVisibility(View.GONE);
             waiting.setVisibility(View.GONE);
+            showInviteText(null);
             return;
         }
 
@@ -230,6 +243,16 @@ public class ContentShareFragment extends Fragment {
             secReceive.setFallback(requireContext(), null);
             waiting.setVisibility(View.VISIBLE);
         }
+        showInviteText(invite);
+    }
+
+    /** Show the invite as copyable text under the QR, or hide the block when there is no invite. */
+    private void showInviteText(@Nullable String invite) {
+        invitePayload = invite != null ? invite : "";
+        codeText.setText(invitePayload);
+        int vis = invite != null ? View.VISIBLE : View.GONE;
+        codeLabel.setVisibility(vis);
+        codeBlock.setVisibility(vis);
     }
 
     /** Pick the address the receive QR carries and repaint the strip (Connect/Clone mode pattern). */
@@ -251,6 +274,7 @@ public class ContentShareFragment extends Fragment {
         receiveRoot.setVisibility(View.GONE);
         transportRow.setVisibility(View.GONE);
         waiting.setVisibility(View.GONE);
+        showInviteText(null);
     }
 
     private void showSections() {
