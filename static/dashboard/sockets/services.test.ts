@@ -13,6 +13,7 @@ test('isRestartableService: accepts every upstream content service', () => {
     // The concrete cases §10 wires first.
     assert.equal(isRestartableService('kiwix'), true);
     assert.equal(isRestartableService('kolibri'), true);
+    assert.equal(isRestartableService('conex-core'), true);   // K2GO-574: service-heal restarts it
 });
 
 test('isRestartableService: rejects dash-node (k2go\'s own service, not a content service)', () => {

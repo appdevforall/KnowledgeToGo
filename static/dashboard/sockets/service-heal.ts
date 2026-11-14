@@ -15,7 +15,7 @@ import { restartService } from './services';
 /** A watched content service: its pdsm name and the loopback URL that reflects its health.
  *  kiwix first (the device-confirmed wedge, §10); the others are added here as they are
  *  device-verified — the endpoint already accepts the full supported set. */
-interface Watch { svc: string; probeUrl: string; }
+interface Watch { svc: string; probeUrl: string; method?: 'GET' | 'HEAD'; }
 
 // The box fronts content on nginx :8085 (dash-node-nginx.conf); a HEAD on the public path is
 // exactly the served page's own probe, run here on loopback. Origin/timing are env-overridable
@@ -27,6 +27,8 @@ const PROBE_TIMEOUT_MS = Number(process.env.K2GO_HEAL_PROBE_TIMEOUT_MS) || 4_000
 
 const WATCHED: Watch[] = [
     { svc: 'kiwix', probeUrl: `${PUBLIC_ORIGIN}/kiwix/` },
+    // K2GO-574: conex-core (Content Exchange) answers only GET, so probe its version route.
+    { svc: 'conex-core', probeUrl: `http://127.0.0.1:${Number(process.env.CONEX_PORT) || 9500}/v1/version`, method: 'GET' },
 ];
 
 /** Enough time has passed since the last restart attempt to try again. A per-service
@@ -56,9 +58,9 @@ export function classifyProbe(status: number | null): ProbeResult {
 
 /** HEAD the probe URL and classify the outcome. Only a 'down' verdict heals; 'absent' (404,
  *  not installed) and 'ok' are left alone. */
-async function probe(url: string): Promise<ProbeResult> {
+async function probe(url: string, method: 'GET' | 'HEAD' = 'HEAD'): Promise<ProbeResult> {
     try {
-        const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
+        const res = await fetch(url, { method, signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
         return classifyProbe(res.status);
     } catch {
         return classifyProbe(null);
@@ -72,7 +74,7 @@ export function startServiceHeal(): NodeJS.Timeout {
 
     const tick = async (): Promise<void> => {
         for (const w of WATCHED) {
-            if (await probe(w.probeUrl) !== 'down') continue;   // 'ok'/'absent' need no heal
+            if (await probe(w.probeUrl, w.method) !== 'down') continue;   // 'ok'/'absent' need no heal
             const now = Date.now();
             if (!dueForRestart(lastAttempt.get(w.svc) ?? 0, now, COOLDOWN_MS)) continue;
             lastAttempt.set(w.svc, now);
