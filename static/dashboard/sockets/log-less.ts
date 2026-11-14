@@ -97,7 +97,7 @@ export function applyLogLessOnce(
 // its process started after the change, or it does not run. Then the rotated copies from before the
 // change are deleted and the live log is emptied in place (the writers append, as with logrotate
 // copytruncate). Owner of the marker: dash-node, at startup; while a changed service still runs the
-// old config, the next start tries again. A second purge finds no rotated copy older than the change.
+// old config, the next start tries again.
 export const LOG_PURGE_MARKER = process.env.K2GO_LOG_PURGE_MARKER || '/library/dashboard/log-less-purge.done';
 
 /** Per service: the log that held client IDs (rotated copies are `<log>.N[.gz]`) and the `pgrep -f`
@@ -137,7 +137,9 @@ export function purgeOldLogsOnce(
         if (!s) continue;
         const started = startMs(s.process);
         if (started !== null && started <= changeMs) { waiting.push(svc); continue; }   // old config runs
-        for (const f of rotatedBefore(s.log, changeMs)) fs.rmSync(f, { force: true });
+        // Until the restart the old config wrote the log, so a copy rotated after the change can
+        // still hold IDs: the cutoff is the restart (or now, when the service does not run).
+        for (const f of rotatedBefore(s.log, started ?? Date.now())) fs.rmSync(f, { force: true });
         if (fs.existsSync(s.log)) fs.truncateSync(s.log, 0);
         purged.push(svc);
     }

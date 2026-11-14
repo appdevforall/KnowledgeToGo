@@ -143,6 +143,15 @@ test('purge: a service still on the old config waits; the next start purges it',
     assert.equal(fs.existsSync(b.purgeMarker), true);
 });
 
+test('purge: a copy rotated after the change but before the restart is removed too', () => {
+    const b = purgeBox(['nginx']);
+    const rotatedLater = `${b.logs.nginx.log}.3`;
+    fs.writeFileSync(rotatedLater, '10.0.0.7 - - "GET /" "Mozilla/5.0"');   // mtime now: after the marker
+    const r = purgeOldLogsOnce(b.marker, b.purgeMarker, b.logs, () => Date.now() + 1000);
+    assert.deepEqual(r.purged, ['nginx']);
+    assert.equal(fs.existsSync(rotatedLater), false);
+});
+
 test('purge: nothing before the log-less step, nothing to do when it changed nothing', () => {
     const b = purgeBox([]);
     assert.equal(purgeOldLogsOnce(path.join(b.dir, 'missing'), b.purgeMarker, b.logs, () => null).ran, false);
