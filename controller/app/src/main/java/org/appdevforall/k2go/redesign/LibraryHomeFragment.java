@@ -73,6 +73,9 @@ public class LibraryHomeFragment extends Fragment {
     // from here so services (kolibri/kiwix) get their full warm-up before anything turns red.
     private long serverAliveSinceMs = 0L;
     private int headerState = H_STARTING;
+    // K2GO-573: whether the card list was built with Kiwix allowed. A fresh 32-bit install builds Home
+    // before its tree can host Kiwix, so the list is rebuilt when this answer changes.
+    private boolean cardsAllowKiwix;
 
     private final List<Card> cards = new ArrayList<>();
     // K2GO-445: the three Code on the Go modules collapse into one "Code on the Go Dev" group tile.
@@ -203,8 +206,10 @@ public class LibraryHomeFragment extends Fragment {
         codeDevMembers.add(new Card("code",        getString(R.string.k2go_card_code),        false, moduleIcon("code")));
         codeDevMembers.add(new Card("code-addons", getString(R.string.k2go_card_code_addons), false, moduleIcon("code-addons")));
         codeDevMembers.add(new Card("code-assets", getString(R.string.k2go_card_code_assets), false, moduleIcon("code-assets")));
-        filterHidden(codeDevMembers);
-        filterHidden(cards);
+        final org.appdevforall.k2go.arch.domain.LibraryHost library = org.appdevforall.k2go.arch.data.AbiSource.moduleHost(requireContext());
+        cardsAllowKiwix = org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(true, library);
+        filterHidden(codeDevMembers, library);
+        filterHidden(cards, library);
         if (codeDevMembers.isEmpty()) {
             for (java.util.Iterator<Card> it = cards.iterator(); it.hasNext(); )
                 if (CODE_DEV.equals(it.next().endpoint)) { it.remove(); break; }
@@ -213,8 +218,7 @@ public class LibraryHomeFragment extends Fragment {
 
     // K2GO-445/415/416/573: drop a module this library cannot host (Kiwix in an old 32-bit library)
     // or one the user hid from Home. The group tile (no backing module) is never dropped here.
-    private void filterHidden(List<Card> list) {
-        final org.appdevforall.k2go.arch.domain.LibraryHost library = org.appdevforall.k2go.arch.data.AbiSource.moduleHost(requireContext());
+    private void filterHidden(List<Card> list, org.appdevforall.k2go.arch.domain.LibraryHost library) {
         for (java.util.Iterator<Card> it = list.iterator(); it.hasNext(); ) {
             Card card = it.next();
             if (!org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(card.requires64, library)) {
@@ -235,6 +239,18 @@ public class LibraryHomeFragment extends Fragment {
         } else {
             applyState(c, c.state);
         }
+    }
+
+    // K2GO-573: rebuild the cards when the library's answer changed since they were built (a fresh
+    // 32-bit install finishes while Home is open). Called on resume and when the library becomes ready,
+    // not on every poll, so the tree is not read every few seconds.
+    private void rebuildCardsIfLibraryChanged() {
+        if (!isAdded() || cardsHost == null) return;
+        boolean allow = org.appdevforall.k2go.arch.domain.LibraryArch.supportsModule(true,
+                org.appdevforall.k2go.arch.data.AbiSource.moduleHost(requireContext()));
+        if (allow == cardsAllowKiwix) return;
+        populateCards();
+        relayout();
     }
 
     private void relayout() {
@@ -576,7 +592,7 @@ public class LibraryHomeFragment extends Fragment {
         return ModuleWishlist.contains(requireContext(), m.key());
     }
 
-    @Override public void onResume() { super.onResume(); main.post(poll); }
+    @Override public void onResume() { super.onResume(); rebuildCardsIfLibraryChanged(); main.post(poll); }
     @Override public void onPause() { super.onPause(); main.removeCallbacks(poll); }
 
     // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
@@ -813,7 +829,10 @@ public class LibraryHomeFragment extends Fragment {
 
     private void setHeader(int h) {
         if (homeStatus == null) return;
+        boolean becameReady = (h == H_READY || h == H_READY_EMPTY)
+                && headerState != H_READY && headerState != H_READY_EMPTY;
         headerState = h;
+        if (becameReady) rebuildCardsIfLibraryChanged();
         String text; int dotColor;
         switch (h) {
             case H_NO_LIBRARY:  text = getString(R.string.k2go_home_no_library);  dotColor = R.color.k2go_muted; break;
