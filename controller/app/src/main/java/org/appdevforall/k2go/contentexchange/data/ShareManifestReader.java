@@ -36,6 +36,27 @@ public final class ShareManifestReader {
      * missing (unknown app / not found) are not in {@code items}, so they never produce an entry. An
      * item that cannot be addressed (no app, no localRef, or a non-numeric itemRef) is skipped.
      */
+    /**
+     * The item's exact-build id (the ZIM UUID) from its entry JSON, or null when the identity is not
+     * authoritative or has no build. Keys the kept partial of a cut transfer (K2GO-577).
+     */
+    public static String buildId(String entryJson) {
+        if (entryJson == null) {
+            return null;
+        }
+        try {
+            JSONObject dedup = new JSONObject(entryJson).optJSONObject("identity");
+            dedup = dedup != null ? dedup.optJSONObject("dedup") : null;
+            if (dedup == null || !"authoritative".equals(dedup.optString("idKind"))) {
+                return null;
+            }
+            String build = dedup.optString("build", "");
+            return build.isEmpty() || "null".equals(build) ? null : build;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static List<ImportEntry> parse(byte[] manifestBytes) throws Exception {
         List<ImportEntry> out = new ArrayList<>();
         if (manifestBytes == null || manifestBytes.length == 0) {

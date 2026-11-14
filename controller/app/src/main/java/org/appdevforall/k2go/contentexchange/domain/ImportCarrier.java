@@ -27,6 +27,44 @@ public interface ImportCarrier {
     InputStream openPayload(String name) throws IOException;
 
     /**
+     * Open one payload from byte {@code offset} to resume a cut copy (K2GO-577). The source may send
+     * the whole item instead; {@link Payload#start()} says where the body starts. Default: the whole
+     * item, not resumable (a drive source has nothing to resume).
+     */
+    default Payload openPayloadFrom(String name, long offset) throws IOException {
+        return new Payload(openPayload(name), 0L, false);
+    }
+
+    /**
+     * A payload body, the item byte it starts at, and whether the item is one exact file the source
+     * can resume (so a cut copy is worth keeping). Immutable value.
+     */
+    final class Payload {
+
+        private final InputStream stream;
+        private final long start;
+        private final boolean exact;
+
+        public Payload(InputStream stream, long start, boolean exact) {
+            this.stream = stream;
+            this.start = start;
+            this.exact = exact;
+        }
+
+        public boolean exact() {
+            return exact;
+        }
+
+        public InputStream stream() {
+            return stream;
+        }
+
+        public long start() {
+            return start;
+        }
+    }
+
+    /**
      * Signal that the run finished with every requested item delivered (a clean success). The default
      * is a no-op (a drive source has nothing to close); the network carrier uses it to tell the sender
      * gate the receiver has everything, so the share session is released. Called at most once, only on

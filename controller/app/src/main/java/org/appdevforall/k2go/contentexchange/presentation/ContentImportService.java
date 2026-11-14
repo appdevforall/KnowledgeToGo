@@ -8,8 +8,8 @@
  *               the core reads, POST /v1/import/item so the core ingests it (delegating to the app's own
  *               import), then remove the staging copy. The mirror of ContentExportService (foreground
  *               specialUse + per-item queue + retry + notification + grant release), with the bytes
- *               flowing drive -> phone staging -> box. The item is the unit of resume (per-item retry);
- *               pause/resume and within-item byte-resume are later work.
+ *               flowing drive -> phone staging -> box. The item is the unit of retry; a cut network
+ *               item with an exact-build id resumes from its kept bytes (K2GO-577).
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -37,8 +37,10 @@ import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.data.ConexCoreImportSource;
 import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
+import org.appdevforall.k2go.contentexchange.data.ShareManifestReader;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
+import org.appdevforall.k2go.contentexchange.domain.PartialPayload;
 import org.appdevforall.k2go.contentexchange.domain.ImportNoSpaceException;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ImportStatus;
@@ -49,7 +51,9 @@ import org.appdevforall.k2go.notifications.NotificationIds;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -208,6 +212,8 @@ public final class ContentImportService extends Service {
                 // No worker owns teardown: a fresh service instance may be handling this cancel, so
                 // satisfy the FGS start-foreground obligation before stopping.
                 startForeground(NOTIFICATION_ID, buildNotification(null));
+                // An explicit cancel drops kept partials; Finish keeps them for a new share (K2GO-577).
+                new BoxImportStaging(getApplicationContext()).sweepPartials(Collections.emptySet());
                 SESSION.clear();
                 stopForeground(true);
                 stopSelf();
@@ -273,7 +279,8 @@ public final class ContentImportService extends Service {
      * ingest it, then clean up the staged copy.
      *
      * <p>v1 limitation (accepted): the run state is in-memory, so a process death mid-import loses it;
-     * v1 does within-run per-item retry only. Durable op-state and byte-resume are v1.x.
+     * a cut network item keeps its partial on the staging disk, so a later run of the same build
+     * resumes it (K2GO-577).
      */
     private void drain() {
         ImportSource source = new ConexCoreImportSource(new ConexCoreDataSource());
@@ -296,6 +303,8 @@ public final class ContentImportService extends Service {
         SESSION.setSource(carrier.sourceLabel());
 
         ExportJob job = SESSION.job();
+        // A kept partial lives only while its item is in the current run (K2GO-577).
+        staging.sweepPartials(partialNames(job));
         long lastSampleAt = SystemClock.elapsedRealtime();
         long lastSampleBytes = job.copiedTotal();
 
@@ -308,10 +317,12 @@ public final class ContentImportService extends Service {
             SESSION.publish();
             notifyNow();
 
-            String stored = BoxImportStaging.safeName(SESSION.payloadName(i));
+            Staged staged = new Staged(BoxImportStaging.safeName(SESSION.payloadName(i)));
+            boolean copied = false;
             try {
-                copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job);
-                ingest(source, ref, i, stored);
+                copyToStaging(carrier, staging, SESSION.payloadName(i), partialName(i), staged, i, job);
+                copied = true;
+                ingest(source, ref, i, staged.name);
                 job.setDone(i);
             } catch (Exception e) {
                 // The staging copy or the ingest failed: mark the item and keep its slot for a retry.
@@ -320,7 +331,11 @@ public final class ContentImportService extends Service {
                 Log.w(TAG, "Import failed for " + ref.app() + "/" + ref.localRef() + ": " + e.getMessage(), e);
                 job.setFailed(i);
                 SESSION.publish();
-                staging.remove(stored);
+                // A cut transfer keeps its partial so Retry resumes it. A failed ingest drops it: the
+                // box rejected the bytes (e.g. a checksum mismatch), so they must not be resumed.
+                if (!PartialPayload.keepOnFailure(staged.resumable, copied, SESSION.isCancelled())) {
+                    staging.remove(staged.name);
+                }
                 if (isNoSpace(e)) {
                     // No room on the shared phone/box disk: stop, leave the rest pending for a Retry.
                     finishWithError("Not enough space on the device.");
@@ -328,7 +343,7 @@ public final class ContentImportService extends Service {
                 }
                 continue;
             }
-            staging.remove(stored);
+            staging.remove(staged.name);
 
             long now = SystemClock.elapsedRealtime();
             if (now - lastSampleAt >= RATE_WINDOW_MS) {
@@ -340,6 +355,7 @@ public final class ContentImportService extends Service {
         }
 
         if (SESSION.isCancelled()) {
+            staging.sweepPartials(Collections.emptySet());   // the user gave up: drop every partial
             SESSION.clear();
             stopForeground(true);
             stopSelf();
@@ -369,20 +385,41 @@ public final class ContentImportService extends Service {
      * honoring cancellation. Both streams close inside try-with-resources so a close-time failure
      * (ENOSPC on the staging disk commonly surfaces at flush/close) propagates and the item is marked
      * failed, never a silent partial written as done.
+     *
+     * <p>K2GO-577: an item with a {@code partial} name resumes from its kept bytes. The bytes are
+     * staged under that name, and kept on a cut, only when the sender says the body is the exact file
+     * ({@link ImportCarrier.Payload#exact()}); a tar (Kolibri) is staged as before and restarts at 0.
      */
     private void copyToStaging(ImportCarrier carrier, BoxImportStaging staging, String payloadName,
-                               String storedName, int i, ExportJob job)
+                               String partial, Staged staged, int i, ExportJob job)
             throws IOException {
+        long size = job.planned(i);
+        long kept = partial != null ? PartialPayload.resumeFrom(staging.length(partial), size) : 0L;
+        if (kept == size && size > 0) {
+            // A whole partial from an earlier run (it died before the ingest): the box verifies it.
+            staged.name = partial;
+            staged.resumable = true;
+            job.setCopied(i, kept);
+            return;
+        }
+        ImportCarrier.Payload payload = carrier.openPayloadFrom(payloadName, kept);
+        staged.resumable = partial != null && payload.exact();
+        if (staged.resumable) {
+            staged.name = partial;
+        } else if (partial != null) {
+            staging.remove(partial);   // not an exact file: kept bytes cannot continue it
+        }
         byte[] buffer = new byte[COPY_BUFFER];
-        long total = 0L;
+        long total = payload.start();
+        job.setCopied(i, total);
         long lastPublish = 0L;
         // Trailing-window rate: anchor at this item's copy start and re-anchor once the window is
         // wide enough. A cumulative average (all bytes / whole run elapsed) reads far too low on a
         // single large item that warms up slowly, so sample the recent throughput instead.
         long windowAt = SystemClock.elapsedRealtime();
         long windowBytes = job.copiedTotal();
-        try (InputStream in = carrier.openPayload(payloadName);
-             OutputStream out = staging.open(storedName)) {
+        try (InputStream in = payload.stream();
+             OutputStream out = staging.open(staged.name, total > 0)) {
             int read;
             while ((read = in.read(buffer)) != -1) {
                 if (SESSION.isCancelled()) {
@@ -406,6 +443,41 @@ public final class ContentImportService extends Service {
             }
             out.flush();
         }
+        if (staged.resumable && !PartialPayload.isComplete(total, size)) {
+            // A clean end short of the item (or past it) is a cut, not a copy: keep it for Retry,
+            // where a longer file restarts at 0.
+            throw new IOException("transfer ended at " + total + " of " + size + " bytes");
+        }
+    }
+
+    /** Where one item's bytes are staged, and whether they may be kept for a resume (K2GO-577). */
+    private static final class Staged {
+        String name;
+        boolean resumable;
+
+        Staged(String name) {
+            this.name = name;
+        }
+    }
+
+    /** The kept-partial name of item {@code i} for a network run, or null (K2GO-577). */
+    private static String partialName(int i) {
+        if (!SESSION.isNetwork()) {
+            return null;
+        }
+        ItemRef ref = SESSION.refAt(i);
+        return PartialPayload.name(ref.app(), ShareManifestReader.buildId(SESSION.entryJson(i)));
+    }
+
+    private static Set<String> partialNames(ExportJob job) {
+        Set<String> names = new HashSet<>();
+        for (int i = 0; i < job.size(); i++) {
+            String n = partialName(i);
+            if (n != null) {
+                names.add(n);
+            }
+        }
+        return names;
     }
 
     /**

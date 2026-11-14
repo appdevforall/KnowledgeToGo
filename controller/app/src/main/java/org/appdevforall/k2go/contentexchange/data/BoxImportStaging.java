@@ -17,11 +17,13 @@ import android.content.Context;
 
 import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.contentexchange.domain.ExportFilenames;
+import org.appdevforall.k2go.contentexchange.domain.PartialPayload;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 
 public final class BoxImportStaging {
 
@@ -48,10 +50,34 @@ public final class BoxImportStaging {
 
     /** Open the host staging file for writing, creating the staging directory if needed. */
     public OutputStream open(String storedName) throws IOException {
+        return open(storedName, false);
+    }
+
+    /** Open the host staging file, appending to the kept bytes when {@code append} (a resume). */
+    public OutputStream open(String storedName, boolean append) throws IOException {
         if (!hostDir.exists() && !hostDir.mkdirs()) {
             throw new IOException("Could not create the import staging folder");
         }
-        return new FileOutputStream(new File(hostDir, storedName));
+        return new FileOutputStream(new File(hostDir, storedName), append);
+    }
+
+    /** Bytes in a staged file, 0 when it does not exist. */
+    public long length(String storedName) {
+        return new File(hostDir, storedName).length();
+    }
+
+    /** Remove every kept partial whose name is not in {@code keep} (K2GO-577). */
+    public void sweepPartials(Set<String> keep) {
+        File[] files = hostDir.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File f : files) {
+            if (PartialPayload.isPartial(f.getName()) && !keep.contains(f.getName())) {
+                //noinspection ResultOfMethodCallIgnored
+                f.delete();
+            }
+        }
     }
 
     /** Remove a staged file after the core has ingested it (best effort). */

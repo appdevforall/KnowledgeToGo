@@ -76,4 +76,25 @@ public class ShareManifestReaderTest {
         byte[] noItems = new JSONObject().put("sessionId", "abc").toString().getBytes(StandardCharsets.UTF_8);
         assertTrue(ShareManifestReader.parse(noItems).isEmpty());
     }
+
+    @Test
+    public void buildIdIsTheAuthoritativeExactBuild() throws Exception {
+        JSONObject dedup = new JSONObject().put("build", "0c7e2d4a-1b2c-4d5e-8f90-123456789abc")
+                .put("idKind", "authoritative");
+        String entry = new JSONObject().put("identity",
+                new JSONObject().put("localRef", "a.zim").put("dedup", dedup)).toString();
+        assertEquals("0c7e2d4a-1b2c-4d5e-8f90-123456789abc", ShareManifestReader.buildId(entry));
+    }
+
+    @Test
+    public void buildIdIsNullWhenSoftMissingOrBad() throws Exception {
+        JSONObject soft = new JSONObject().put("build", "x").put("idKind", "soft");
+        JSONObject none = new JSONObject().put("build", JSONObject.NULL).put("idKind", "authoritative");
+        for (JSONObject dedup : new JSONObject[] {soft, none}) {
+            String entry = new JSONObject().put("identity", new JSONObject().put("dedup", dedup)).toString();
+            assertEquals(null, ShareManifestReader.buildId(entry));
+        }
+        assertEquals(null, ShareManifestReader.buildId(null));
+        assertEquals(null, ShareManifestReader.buildId("not json"));
+    }
 }

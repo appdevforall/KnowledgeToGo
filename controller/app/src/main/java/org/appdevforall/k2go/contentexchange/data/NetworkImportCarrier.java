@@ -6,7 +6,8 @@
  * Description : K2GO-376. The network ImportCarrier: the mirror of SafImportCarrier, but each item is
  *               read over HTTP from the sender's live conex-core gate on the shared hotspot, not from a
  *               SAF drive. readManifest() GETs the invite's manifest URL; openPayload(itemRef) GETs
- *               its sibling .../fetch/<itemRef>, retrying while the sender stages the item; the token
+ *               its sibling .../fetch/<itemRef>, retrying while the sender stages the item, with a
+ *               Range header to resume a cut item (K2GO-577); the token
  *               rides the X-Share-Token header, never the URL. Everything downstream (stage to
  *               /library/.conex-staging, POST /v1/import/item) is unchanged from the disk path, so the
  *               carrier is the only sender-specific dependency of the import service. On a clean finish
@@ -20,6 +21,7 @@ import android.net.Network;
 import android.util.Log;
 
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
+import org.appdevforall.k2go.contentexchange.domain.PartialPayload;
 import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
 import org.appdevforall.k2go.contentexchange.domain.ShareUrls;
 import org.appdevforall.k2go.sync.transport.WifiNetworkBinder;
@@ -121,6 +123,12 @@ public final class NetworkImportCarrier implements ImportCarrier {
 
     @Override
     public InputStream openPayload(String itemRef) throws IOException {
+        return openPayloadFrom(itemRef, 0L).stream();
+    }
+
+    /** Fetch one item, asking for {@code Range: bytes=offset-} to resume a cut copy (K2GO-577). */
+    @Override
+    public Payload openPayloadFrom(String itemRef, long offset) throws IOException {
         String url = ShareUrls.fetch(baseUrl, manifestUrl, itemRef);
         long deadline = System.currentTimeMillis() + FETCH_MAX_WAIT_MS;
         while (true) {
@@ -128,6 +136,9 @@ public final class NetworkImportCarrier implements ImportCarrier {
                 throw new IOException("cancelled");
             }
             HttpURLConnection c = open(url, "GET", FETCH_STALL_TIMEOUT_MS);
+            if (offset > 0) {
+                c.setRequestProperty("Range", "bytes=" + offset + "-");
+            }
             int code;
             try {
                 code = c.getResponseCode();
@@ -135,10 +146,17 @@ public final class NetworkImportCarrier implements ImportCarrier {
                 c.disconnect();
                 throw e;
             }
-            if (code == 200) {
+            if (code == 200 || code == 206) {
+                long start = PartialPayload.bodyStart(code, offset, c.getHeaderField("Content-Range"));
+                if (start < 0) {
+                    c.disconnect();
+                    throw new IOException("Share fetch: reply does not continue byte " + offset);
+                }
                 // The caller streams and closes this; closing disconnects the connection.
                 try {
-                    return new ConnectionInputStream(c, c.getInputStream());
+                    // The sender marks a byte-exact file (a ZIM) with Accept-Ranges; a tar has none.
+                    boolean exact = "bytes".equalsIgnoreCase(c.getHeaderField("Accept-Ranges"));
+                    return new Payload(new ConnectionInputStream(c, c.getInputStream()), start, exact);
                 } catch (IOException e) {
                     c.disconnect();   // never leak the socket if the body stream cannot be opened
                     throw e;
