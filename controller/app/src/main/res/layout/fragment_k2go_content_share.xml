@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- K2GO-376: share invite screen. The sender opens a scoped share session on its own conex-core, then
-     shows two stacked QR sections (reused view_k2go_qr_section): (1) join the hotspot, (2) scan to
-     receive. A foreground service holds the hotspot and the gate open until the user taps Done.
-     Material 3 tokens; no hardcoded colours. -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+     shows two stacked QR sections (reused view_k2go_qr_section): (1) join the hotspot, (2) the invite
+     the other phone scans (also shown as text). A foreground service holds the hotspot and the gate
+     open until the user taps Done. The header, the summary and the transport strip stay pinned at the
+     top and Done stays pinned at the bottom; only the sections scroll. Material 3 tokens. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="@color/k2go_paper">
+
+    <org.appdevforall.k2go.ui.K2GoHeaderView
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        app:k2goTitle="@string/k2go_cx_share_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="8dp">
 
-        <TextView
-            android:id="@+id/k2go_cxs_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="@color/k2go_ink"
-            android:text="@string/k2go_cx_share_title" />
-
+        <!-- What is shared: the item count and the total size. -->
         <TextView
             android:id="@+id/k2go_cxs_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textAppearance="@style/TextAppearance.K2Go.Body"
             android:textColor="@color/k2go_muted" />
 
         <!-- K2GO-376 transport selector (segmented strip, same pattern as Connect/Clone, painted by
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/k2go_card_bg"
             android:padding="4dp"
             android:visibility="gone">
@@ -70,38 +70,64 @@
                 android:clickable="true"
                 android:focusable="true" />
         </LinearLayout>
+    </LinearLayout>
 
-        <!-- Preparing / hotspot / error status (no dead QR frame while not ready). -->
-        <TextView
-            android:id="@+id/k2go_cxs_status"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/k2go_ink"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp">
 
-        <!-- Section 1: join the hotspot (Wi-Fi QR + SSID/password fallback). -->
-        <include
-            android:id="@+id/k2go_cxs_join"
-            layout="@layout/view_k2go_qr_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            <!-- Preparing / hotspot / error status (no dead QR frame while not ready). -->
+            <TextView
+                android:id="@+id/k2go_cxs_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/k2go_ink"
+                android:visibility="gone" />
 
-        <!-- Section 2: scan to receive (the share invite QR). -->
-        <include
-            android:id="@+id/k2go_cxs_receive"
-            layout="@layout/view_k2go_qr_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            <!-- Section 1: join the hotspot (Wi-Fi QR + SSID/password fallback). -->
+            <include
+                android:id="@+id/k2go_cxs_join"
+                layout="@layout/view_k2go_qr_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <!-- Section 2: scan to receive (the share invite QR). -->
+            <include
+                android:id="@+id/k2go_cxs_receive"
+                layout="@layout/view_k2go_qr_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <!-- The invite as text (Copy / Share), for a receiver whose camera cannot scan (same block as Clone). -->
+            <include layout="@layout/view_k2go_code_text" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Done: pinned below the scroll, always visible. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.K2Go.BottomBar">
 
         <TextView
             android:id="@+id/k2go_cxs_waiting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted"
@@ -113,7 +139,6 @@
             style="@style/Widget.K2Go.Button.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="@string/k2go_cx_share_done" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

@@ -1521,14 +1521,12 @@
     <string name="k2go_cx_export_categories">Nípa ẹ̀ka</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Pín àkóónú</string>
-    <string name="k2go_cx_share_subtitle_fmt">ń pín àwọn nǹkan %1$d</string>
     <string name="k2go_cx_share_preparing">ń múra látì pín...</string>
     <string name="k2go_cx_share_starting_hotspot">ń bẹ̀rẹ̀ hotspot...</string>
     <string name="k2go_cx_share_resolving_address">ń wá àdírẹ́sì hotspot...</string>
     <string name="k2go_cx_share_step_join">Darapọ̀</string>
     <string name="k2go_cx_share_step_receive">Gbà</string>
     <string name="k2go_cx_share_join_caption">Ṣàyẹ̀wò lórí fóònù kejì látì darapọ̀ mọ́ hotspot yìí.</string>
-    <string name="k2go_cx_share_receive_caption">Lẹ́yìn náà ṣàyẹ̀wò èyí látì gba àkóónú náà.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Fóònù yìí kò lè bẹ̀rẹ̀ hotspot látì pín.</string>
     <string name="k2go_cx_share_hotspot_failed">Kò lè bẹ̀rẹ̀ hotspot.</string>
     <string name="k2go_cx_share_need_permission">A nílò ìọ̀nda hotspot látì pín.</string>
@@ -1621,4 +1619,5 @@
     <string name="k2go_about_copy">Da àlàyé kọ</string>
     <string name="k2go_about_copied">A ti da àlàyé kọ</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Èyí dá ẹ̀dà èyíkéyìí tí ń lọ lọ́wọ́ dúró. Fóònù kejì yóò pàdánù ìlọsíwájú rẹ̀, ó sì gbọ́dọ̀ bẹ̀rẹ̀ lẹ́ẹ̀kan sí i pẹ̀lú kóòdù tuntun.</string>
 </resources>

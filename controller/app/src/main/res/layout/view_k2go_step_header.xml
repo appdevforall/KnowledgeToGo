@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One numbered step header: a teal badge and a title. The host sets the number and the title in
+     code (an include cannot set child text). Used by view_k2go_qr_section and the receive start
+     screen; bind through the include root, as the ids repeat on a page. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="horizontal" android:gravity="center_vertical">
+    <TextView android:id="@+id/sec_badge" android:layout_width="28dp" android:layout_height="28dp"
+        android:background="@drawable/k2go_badge_teal" android:gravity="center"
+        android:textColor="@color/k2go_on_teal" android:textStyle="bold" />
+    <TextView android:id="@+id/sec_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginStart="12dp" android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="@color/k2go_ink" />
+</LinearLayout>

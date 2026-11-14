@@ -178,8 +178,6 @@ app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:text="@s
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:text="@string/k2go_lbl_system" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:text="@string/k2go_lbl_total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
-app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
-app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textAppearance="?attr/textAppearanceBodyMedium" android:visibility="gone" />
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium"
 app/src/main/res/layout/fragment_k2go_clone.xml|attr-medium-xml|android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" />

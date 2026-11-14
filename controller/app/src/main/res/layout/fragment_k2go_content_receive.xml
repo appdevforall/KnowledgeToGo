@@ -44,12 +44,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/k2go_surface"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp">
+        style="@style/Widget.K2Go.BottomBar">
 
         <TextView
             android:id="@+id/k2go_cxrv_free_label"

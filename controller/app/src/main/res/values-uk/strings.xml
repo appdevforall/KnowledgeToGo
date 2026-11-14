@@ -1501,14 +1501,12 @@
     <string name="k2go_cx_export_categories">За категорією</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Поділитися вмістом</string>
-    <string name="k2go_cx_share_subtitle_fmt">Надсилання %1$d елементів</string>
     <string name="k2go_cx_share_preparing">Підготовка до надсилання...</string>
     <string name="k2go_cx_share_starting_hotspot">Запуск точки доступу...</string>
     <string name="k2go_cx_share_resolving_address">Пошук адреси точки доступу...</string>
     <string name="k2go_cx_share_step_join">Приєднатися</string>
     <string name="k2go_cx_share_step_receive">Отримати</string>
     <string name="k2go_cx_share_join_caption">Відскануйте на іншому телефоні, щоб приєднатися до цієї точки доступу.</string>
-    <string name="k2go_cx_share_receive_caption">Потім відскануйте це, щоб отримати вміст.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Цей телефон не може запустити точку доступу для надсилання.</string>
     <string name="k2go_cx_share_hotspot_failed">Не вдалося запустити точку доступу.</string>
     <string name="k2go_cx_share_need_permission">Для надсилання потрібен дозвіл на точку доступу.</string>
@@ -1601,4 +1599,5 @@
     <string name="k2go_about_copy">Копіювати відомості</string>
     <string name="k2go_about_copied">Відомості скопійовано</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Це зупиняє будь-яке поточне копіювання. Інший телефон втрачає прогрес і має почати знову з новим кодом.</string>
 </resources>

@@ -33,11 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
@@ -77,9 +73,6 @@ public class ContentManagerFragment extends Fragment {
     private Button deleteButton;
     private Button shareButton;
 
-    /** The invite-QR scanner for the receive flow (same ZXing contract Clone uses). */
-    private ActivityResultLauncher<ScanOptions> inviteScan;
-
     /** The selection captured when Share was tapped, held across the hotspot-permission round-trip. */
     private List<ContentItem> pendingShare;
     /** Runtime hotspot permission (NEARBY_WIFI_DEVICES / ACCESS_FINE_LOCATION), requested before the
@@ -115,7 +108,6 @@ public class ContentManagerFragment extends Fragment {
                 new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(), result -> onHotspotPermissionResult());
-        inviteScan = registerForActivityResult(new ScanContract(), r -> onInviteScanned(r.getContents()));
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
         importButton.setOnClickListener(v -> onImportClicked());
@@ -345,31 +337,11 @@ public class ContentManagerFragment extends Fragment {
         }
         // Tear our own hotspot down the moment Receive starts: the sender's AP IP (always 192.168.49.1)
         // collides with our own hotspot IP if we are hosting, which traps the connection locally.
-        // Stopping here lets the interface release while the user scans; ContentReceiveFragment also
-        // waits for the release before it connects. K2GO-376.
+        // Stopping here lets the interface release while the user joins and scans; ContentReceiveFragment
+        // also waits for the release before it connects. K2GO-376.
         LocalHotspotManager.get().stop();
-        ScanOptions o = new ScanOptions();
-        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-        o.setPrompt(getString(R.string.k2go_cx_receive_scan_prompt));
-        o.setBeepEnabled(false);
-        o.setBarcodeImageEnabled(false);
-        o.setOrientationLocked(false);
-        inviteScan.launch(o);
-    }
-
-    /** The scanner returned. Null means the user cancelled; a non-invite or invalid QR is rejected. */
-    private void onInviteScanned(@Nullable String contents) {
-        if (!isAdded() || contents == null) {
-            return;
-        }
-        ShareHandshake.ShareInvite invite = ShareHandshake.decode(contents);
-        if (invite == null) {
-            String msg = getString(R.string.k2go_cx_receive_invalid);
-            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
-            return;
-        }
         requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, ContentReceiveFragment.newInstance(invite))
+                .replace(R.id.k2go_setup_host, new ContentReceiveStartFragment())
                 .addToBackStack(null)
                 .commit();
     }
@@ -501,10 +473,12 @@ public class ContentManagerFragment extends Fragment {
 
     private void startShare(List<ContentItem> selected) {
         ItemRef[] refs = new ItemRef[selected.size()];
+        long bytes = 0;
         for (int i = 0; i < selected.size(); i++) {
             refs[i] = new ItemRef(selected.get(i).app(), selected.get(i).localRef());
+            bytes += selected.get(i).bytes();
         }
-        ContentShareService.start(requireContext(), refs);
+        ContentShareService.start(requireContext(), refs, bytes);
         pendingShare = null;
         viewModel.clearSelection();
         showShareProgress();

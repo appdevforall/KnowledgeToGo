@@ -1501,14 +1501,12 @@
     <string name="k2go_cx_export_categories">Kategoriye göre</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">İçeriği paylaş</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d öğe paylaşılıyor</string>
     <string name="k2go_cx_share_preparing">Paylaşım hazırlanıyor...</string>
     <string name="k2go_cx_share_starting_hotspot">Etkin nokta başlatılıyor...</string>
     <string name="k2go_cx_share_resolving_address">Etkin nokta adresi bulunuyor...</string>
     <string name="k2go_cx_share_step_join">Katıl</string>
     <string name="k2go_cx_share_step_receive">Al</string>
     <string name="k2go_cx_share_join_caption">Bu etkin noktaya katılmak için diğer telefonda tarayın.</string>
-    <string name="k2go_cx_share_receive_caption">Ardından içeriği almak için bunu tarayın.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Bu telefon paylaşım için etkin nokta başlatamıyor.</string>
     <string name="k2go_cx_share_hotspot_failed">Etkin nokta başlatılamadı.</string>
     <string name="k2go_cx_share_need_permission">Paylaşım için etkin nokta izni gerekiyor.</string>
@@ -1601,4 +1599,5 @@
     <string name="k2go_about_copy">Ayrıntıları kopyala</string>
     <string name="k2go_about_copied">Ayrıntılar kopyalandı</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Bu, devam eden tüm kopyalamaları durdurur. Diğer telefon ilerlemesini kaybeder ve yeni bir kodla yeniden başlamalıdır.</string>
 </resources>

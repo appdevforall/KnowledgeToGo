@@ -1521,14 +1521,12 @@
     <string name="k2go_cx_export_categories">வகை வாரியாக</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">உள்ளடக்கத்தைப் பகிர்</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d உருப்படிகள் பகிரப்படுகின்றன</string>
     <string name="k2go_cx_share_preparing">பகிர்வதற்குத் தயாராகிறது...</string>
     <string name="k2go_cx_share_starting_hotspot">ஹாட்ஸ்பாட் தொடங்கப்படுகிறது...</string>
     <string name="k2go_cx_share_resolving_address">ஹாட்ஸ்பாட் முகவரி கண்டறியப்படுகிறது...</string>
     <string name="k2go_cx_share_step_join">இணைக</string>
     <string name="k2go_cx_share_step_receive">பெறுக</string>
     <string name="k2go_cx_share_join_caption">இந்த ஹாட்ஸ்பாட்டில் இணைய மற்றொரு ஃபோனில் ஸ்கேன் செய்யவும்.</string>
-    <string name="k2go_cx_share_receive_caption">பிறகு உள்ளடக்கத்தைப் பெற இதை ஸ்கேன் செய்யவும்.</string>
     <string name="k2go_cx_share_hotspot_unsupported">இந்த ஃபோன் பகிர்வதற்கு ஹாட்ஸ்பாட்டைத் தொடங்க முடியாது.</string>
     <string name="k2go_cx_share_hotspot_failed">ஹாட்ஸ்பாட்டைத் தொடங்க முடியவில்லை.</string>
     <string name="k2go_cx_share_need_permission">பகிர்வதற்கு ஹாட்ஸ்பாட் அனுமதி தேவை.</string>
@@ -1621,4 +1619,5 @@
     <string name="k2go_about_copy">விவரங்களை நகலெடு</string>
     <string name="k2go_about_copied">விவரங்கள் நகலெடுக்கப்பட்டன</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">இது நடந்துகொண்டிருக்கும் எந்த நகலெடுப்பையும் நிறுத்துகிறது. மற்ற ஃபோன் அதன் முன்னேற்றத்தை இழக்கும், புதிய குறியீட்டுடன் மீண்டும் தொடங்க வேண்டும்.</string>
 </resources>

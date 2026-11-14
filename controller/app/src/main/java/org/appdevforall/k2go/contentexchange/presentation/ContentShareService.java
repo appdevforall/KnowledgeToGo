@@ -49,6 +49,7 @@ public final class ContentShareService extends Service {
 
     public static final String EXTRA_APPS = "apps";
     public static final String EXTRA_LOCAL_REFS = "localRefs";
+    public static final String EXTRA_TOTAL_BYTES = "totalBytes";
 
     private static final String CHANNEL_ID = "content_share_channel";
     private static final int NOTIFICATION_ID = NotificationIds.CONTENT_SHARE;
@@ -70,7 +71,7 @@ public final class ContentShareService extends Service {
 
     // ---- static control surface (the fragment calls these) -------------------------------------
 
-    public static void start(Context ctx, ItemRef[] refs) {
+    public static void start(Context ctx, ItemRef[] refs, long totalBytes) {
         String[] apps = new String[refs.length];
         String[] locals = new String[refs.length];
         for (int i = 0; i < refs.length; i++) {
@@ -79,7 +80,8 @@ public final class ContentShareService extends Service {
         }
         Intent i = new Intent(ctx, ContentShareService.class).setAction(ACTION_START)
                 .putExtra(EXTRA_APPS, apps)
-                .putExtra(EXTRA_LOCAL_REFS, locals);
+                .putExtra(EXTRA_LOCAL_REFS, locals)
+                .putExtra(EXTRA_TOTAL_BYTES, totalBytes);
         ContextCompat.startForegroundService(ctx, i);
     }
 
@@ -137,7 +139,7 @@ public final class ContentShareService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
-        SESSION.beginPreparing(refs.length);
+        SESSION.beginPreparing(refs.length, intent.getLongExtra(EXTRA_TOTAL_BYTES, 0L));
         startForeground(NOTIFICATION_ID, buildNotification());
         acquireHardwareLocks();
         ensureHotspot();

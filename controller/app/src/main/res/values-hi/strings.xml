@@ -1578,14 +1578,12 @@
     <string name="k2go_cx_export_categories">श्रेणी के अनुसार</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">सामग्री साझा करें</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d आइटम साझा किए जा रहे हैं</string>
     <string name="k2go_cx_share_preparing">साझा करने की तैयारी हो रही है...</string>
     <string name="k2go_cx_share_starting_hotspot">हॉटस्पॉट शुरू हो रहा है...</string>
     <string name="k2go_cx_share_resolving_address">हॉटस्पॉट पता खोजा जा रहा है...</string>
     <string name="k2go_cx_share_step_join">शामिल हों</string>
     <string name="k2go_cx_share_step_receive">प्राप्त करें</string>
     <string name="k2go_cx_share_join_caption">इस हॉटस्पॉट से जुड़ने के लिए दूसरे फ़ोन पर स्कैन करें।</string>
-    <string name="k2go_cx_share_receive_caption">फिर सामग्री प्राप्त करने के लिए इसे स्कैन करें।</string>
     <string name="k2go_cx_share_hotspot_unsupported">यह फ़ोन साझा करने के लिए हॉटस्पॉट शुरू नहीं कर सकता।</string>
     <string name="k2go_cx_share_hotspot_failed">हॉटस्पॉट शुरू नहीं किया जा सका।</string>
     <string name="k2go_cx_share_need_permission">साझा करने के लिए हॉटस्पॉट अनुमति आवश्यक है।</string>
@@ -1678,4 +1676,5 @@
     <string name="k2go_about_copy">विवरण कॉपी करें</string>
     <string name="k2go_about_copied">विवरण कॉपी हो गया</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">इससे चल रही कोई भी कॉपी रुक जाती है। दूसरा फ़ोन अपनी प्रगति खो देता है और उसे नए कोड के साथ फिर से शुरू करना होगा।</string>
 </resources>

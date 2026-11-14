@@ -1501,14 +1501,12 @@
     <string name="k2go_cx_export_categories">După categorie</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Partajează conținutul</string>
-    <string name="k2go_cx_share_subtitle_fmt">Se partajează %1$d elemente</string>
     <string name="k2go_cx_share_preparing">Se pregătește partajarea...</string>
     <string name="k2go_cx_share_starting_hotspot">Se pornește hotspotul...</string>
     <string name="k2go_cx_share_resolving_address">Se caută adresa hotspotului...</string>
     <string name="k2go_cx_share_step_join">Alătură-te</string>
     <string name="k2go_cx_share_step_receive">Primește</string>
     <string name="k2go_cx_share_join_caption">Scanează pe celălalt telefon pentru a te alătura acestui hotspot.</string>
-    <string name="k2go_cx_share_receive_caption">Apoi scanează asta pentru a primi conținutul.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Acest telefon nu poate porni un hotspot pentru partajare.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspotul nu a putut fi pornit.</string>
     <string name="k2go_cx_share_need_permission">Permisiunea pentru hotspot este necesară pentru partajare.</string>
@@ -1601,4 +1599,5 @@
     <string name="k2go_about_copy">Copiază detaliile</string>
     <string name="k2go_about_copied">Detalii copiate</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Aceasta oprește orice copiere în curs. Celălalt telefon își pierde progresul și trebuie să înceapă din nou cu un cod nou.</string>
 </resources>

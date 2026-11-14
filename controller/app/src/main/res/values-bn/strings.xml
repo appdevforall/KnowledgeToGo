@@ -1514,14 +1514,12 @@
     <string name="k2go_cx_export_categories">বিভাগ অনুসারে</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">কন্টেন্ট শেয়ার করুন</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$dটি আইটেম শেয়ার করা হচ্ছে</string>
     <string name="k2go_cx_share_preparing">শেয়ার করার প্রস্তুতি নেওয়া হচ্ছে...</string>
     <string name="k2go_cx_share_starting_hotspot">হটস্পট চালু করা হচ্ছে...</string>
     <string name="k2go_cx_share_resolving_address">হটস্পট ঠিকানা খোঁজা হচ্ছে...</string>
     <string name="k2go_cx_share_step_join">যোগ দিন</string>
     <string name="k2go_cx_share_step_receive">গ্রহণ করুন</string>
     <string name="k2go_cx_share_join_caption">এই হটস্পটে যোগ দিতে অন্য ফোনে স্ক্যান করুন।</string>
-    <string name="k2go_cx_share_receive_caption">তারপর কন্টেন্ট পেতে এটি স্ক্যান করুন।</string>
     <string name="k2go_cx_share_hotspot_unsupported">এই ফোনটি শেয়ার করার জন্য হটস্পট চালু করতে পারে না।</string>
     <string name="k2go_cx_share_hotspot_failed">হটস্পট চালু করা যায়নি।</string>
     <string name="k2go_cx_share_need_permission">শেয়ার করার জন্য হটস্পট অনুমতি প্রয়োজন।</string>
@@ -1614,4 +1612,5 @@
     <string name="k2go_about_copy">বিবরণ কপি করুন</string>
     <string name="k2go_about_copied">বিবরণ কপি হয়েছে</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">এটি চলমান যেকোনো কপি বন্ধ করে। অন্য ফোনটি তার অগ্রগতি হারায় এবং নতুন কোড দিয়ে আবার শুরু করতে হবে।</string>
 </resources>

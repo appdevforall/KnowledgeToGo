@@ -1501,14 +1501,12 @@
     <string name="k2go_cx_export_categories">Theo danh mục</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Chia sẻ nội dung</string>
-    <string name="k2go_cx_share_subtitle_fmt">Đang chia sẻ %1$d mục</string>
     <string name="k2go_cx_share_preparing">Đang chuẩn bị chia sẻ...</string>
     <string name="k2go_cx_share_starting_hotspot">Đang khởi động điểm phát sóng...</string>
     <string name="k2go_cx_share_resolving_address">Đang tìm địa chỉ điểm phát sóng...</string>
     <string name="k2go_cx_share_step_join">Tham gia</string>
     <string name="k2go_cx_share_step_receive">Nhận</string>
     <string name="k2go_cx_share_join_caption">Quét trên điện thoại kia để tham gia điểm phát sóng này.</string>
-    <string name="k2go_cx_share_receive_caption">Sau đó quét mã này để nhận nội dung.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Điện thoại này không thể khởi động điểm phát sóng để chia sẻ.</string>
     <string name="k2go_cx_share_hotspot_failed">Không thể khởi động điểm phát sóng.</string>
     <string name="k2go_cx_share_need_permission">Cần có quyền điểm phát sóng để chia sẻ.</string>
@@ -1601,4 +1599,5 @@
     <string name="k2go_about_copy">Sao chép chi tiết</string>
     <string name="k2go_about_copied">Đã sao chép chi tiết</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Thao tác này dừng mọi quá trình sao chép đang diễn ra. Điện thoại kia sẽ mất tiến trình và phải bắt đầu lại bằng mã mới.</string>
 </resources>

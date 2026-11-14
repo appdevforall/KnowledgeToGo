@@ -1502,14 +1502,12 @@
     <string name="k2go_cx_export_categories">按类别</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">共享内容</string>
-    <string name="k2go_cx_share_subtitle_fmt">正在共享 %1$d 个项目</string>
     <string name="k2go_cx_share_preparing">正在准备共享...</string>
     <string name="k2go_cx_share_starting_hotspot">正在启动热点...</string>
     <string name="k2go_cx_share_resolving_address">正在查找热点地址...</string>
     <string name="k2go_cx_share_step_join">加入</string>
     <string name="k2go_cx_share_step_receive">接收</string>
     <string name="k2go_cx_share_join_caption">在另一部手机上扫描以加入此热点。</string>
-    <string name="k2go_cx_share_receive_caption">然后扫描此码以接收内容。</string>
     <string name="k2go_cx_share_hotspot_unsupported">此手机无法启动用于共享的热点。</string>
     <string name="k2go_cx_share_hotspot_failed">无法启动热点。</string>
     <string name="k2go_cx_share_need_permission">共享需要热点权限。</string>
@@ -1602,4 +1600,5 @@
     <string name="k2go_about_copy">复制详细信息</string>
     <string name="k2go_about_copied">已复制详细信息</string>
     <string name="k2go_about_android_value">%1$s（API %2$d）</string>
+    <string name="k2go_cx_share_stop_msg">这会停止所有正在进行的复制。另一部手机会丢失进度，必须使用新代码重新开始。</string>
 </resources>

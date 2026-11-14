@@ -31,6 +31,7 @@ final class ShareSession {
     private volatile boolean active = false;   // a share run exists (set until clear)
     private volatile Phase phase = Phase.PREPARING;
     private int itemCount;
+    private long totalBytes;
     private String sessionId;
     private String token;
     private String manifestUrl;
@@ -42,9 +43,11 @@ final class ShareSession {
 
     // ---- service-side mutation -----------------------------------------------------------------
 
-    /** Start a run: the item count is fixed now; the invite arrives once conex-core opens the session. */
-    void beginPreparing(int itemCount) {
+    /** Start a run: the item count and total size are fixed now; the invite arrives once conex-core
+     *  opens the session. */
+    void beginPreparing(int itemCount, long totalBytes) {
         this.itemCount = itemCount;
+        this.totalBytes = totalBytes;
         this.sessionId = null;
         this.token = null;
         this.manifestUrl = null;
@@ -73,6 +76,7 @@ final class ShareSession {
         active = false;
         phase = Phase.PREPARING;
         itemCount = 0;
+        totalBytes = 0;
         sessionId = null;
         token = null;
         manifestUrl = null;
@@ -108,6 +112,10 @@ final class ShareSession {
 
     int itemCount() {
         return itemCount;
+    }
+
+    long totalBytes() {
+        return totalBytes;
     }
 
     String sessionId() {

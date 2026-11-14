@@ -1577,14 +1577,12 @@
     <string name="k2go_cx_export_categories">Por categoría</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Compartir contenido</string>
-    <string name="k2go_cx_share_subtitle_fmt">Compartiendo %1$d elementos</string>
     <string name="k2go_cx_share_preparing">Preparando para compartir...</string>
     <string name="k2go_cx_share_starting_hotspot">Iniciando el punto de acceso...</string>
     <string name="k2go_cx_share_resolving_address">Buscando la dirección del punto de acceso...</string>
     <string name="k2go_cx_share_step_join">Unirse</string>
     <string name="k2go_cx_share_step_receive">Recibir</string>
     <string name="k2go_cx_share_join_caption">Escanea en el otro teléfono para unirte a este punto de acceso.</string>
-    <string name="k2go_cx_share_receive_caption">Luego escanea esto para recibir el contenido.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Este teléfono no puede iniciar un punto de acceso para compartir.</string>
     <string name="k2go_cx_share_hotspot_failed">No se pudo iniciar el punto de acceso.</string>
     <string name="k2go_cx_share_need_permission">Se necesita el permiso del punto de acceso para compartir.</string>
@@ -1677,4 +1675,5 @@
     <string name="k2go_about_copy">Copiar detalles</string>
     <string name="k2go_about_copied">Detalles copiados</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
+    <string name="k2go_cx_share_stop_msg">Esto detiene cualquier copia en curso. El otro teléfono pierde su avance y debe empezar de nuevo con un código nuevo.</string>
 </resources>

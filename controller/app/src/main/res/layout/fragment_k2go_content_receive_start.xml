@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Receive over Wi-Fi: the start screen, modelled on Clone's Receive. Two numbered cards: (1) join the
+     sender's Wi-Fi in Android settings, (2) scan the invite, or enter it as text (shared paste block).
+     A valid invite opens ContentReceiveFragment. Material 3 tokens; no hardcoded colours. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/k2go_paper">
+
+    <org.appdevforall.k2go.ui.K2GoHeaderView
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        app:k2goTitle="@string/k2go_cx_receive_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp">
+
+            <!-- Step 1: join the sender's Wi-Fi (its hotspot) in Android settings. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/k2go_card_bg">
+
+                <include android:id="@+id/k2go_cxst_join_hdr" layout="@layout/view_k2go_step_header" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/k2go_clone_rcv_join_caption"
+                    android:textAppearance="@style/TextAppearance.K2Go.Body"
+                    android:textColor="@color/k2go_muted" />
+
+                <Button
+                    android:id="@+id/k2go_cxst_wifi"
+                    style="@style/Widget.K2Go.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/k2go_clone_rcv_scan_wifi" />
+            </LinearLayout>
+
+            <!-- Step 2: scan the sender invite, or paste it as text. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/k2go_card_bg">
+
+                <include android:id="@+id/k2go_cxst_receive_hdr" layout="@layout/view_k2go_step_header" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/k2go_clone_rcv_scan_caption"
+                    android:textAppearance="@style/TextAppearance.K2Go.Body"
+                    android:textColor="@color/k2go_muted" />
+
+                <Button
+                    android:id="@+id/k2go_cxst_scan"
+                    style="@style/Widget.K2Go.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/k2go_clone_rcv_scan_start" />
+
+                <include layout="@layout/view_k2go_code_paste" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

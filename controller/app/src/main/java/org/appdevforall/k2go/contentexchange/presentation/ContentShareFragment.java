@@ -6,7 +6,7 @@
  * Description : K2GO-376. Shows the Share invite: two stacked QR sections (join the hotspot, then
  *               scan to receive) once the sender foreground service has opened the share session and
  *               the hotspot is up. Reads state only (the ShareSession + the shared LocalHotspotManager
- *               state); all work is the service's. Done closes the gate + the hotspot via the service.
+ *               state); all work is the service's. Done or Back closes the gate + the hotspot via the service.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -28,9 +29,12 @@ import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
+import org.appdevforall.k2go.redesign.CodeText;
 import org.appdevforall.k2go.redesign.QrSection;
 import org.appdevforall.k2go.redesign.SegmentedTabs;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
+import org.appdevforall.k2go.util.ByteFormatter;
 
 public class ContentShareFragment extends Fragment {
 
@@ -41,6 +45,11 @@ public class ContentShareFragment extends Fragment {
     private View receiveRoot;
     private QrSection secJoin;
     private QrSection secReceive;
+    private View codeLabel;
+    private View codeBlock;
+    private TextView codeText;
+    /** The invite shown as text; Copy / Share hand out this exact payload. */
+    private String invitePayload = "";
     private View transportRow;
     private TextView transportHotspot;
     private TextView transportWifi;
@@ -72,10 +81,13 @@ public class ContentShareFragment extends Fragment {
                 R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
         secReceive = new QrSection(receiveRoot, R.id.sec_qr_frame, R.id.sec_qr, R.id.sec_qr_ph,
                 R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
-        ((TextView) joinRoot.findViewById(R.id.sec_badge)).setText("1");
-        ((TextView) joinRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_join);
-        ((TextView) receiveRoot.findViewById(R.id.sec_badge)).setText("2");
-        ((TextView) receiveRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_receive);
+        QrSection.setStep(joinRoot, "1", getString(R.string.k2go_cx_share_step_join));
+
+        codeLabel = root.findViewById(R.id.k2go_code_label);
+        codeBlock = root.findViewById(R.id.k2go_code_block);
+        codeText = root.findViewById(R.id.k2go_code_text);
+        root.findViewById(R.id.k2go_code_copy).setOnClickListener(v -> CodeText.copy(v, invitePayload));
+        root.findViewById(R.id.k2go_code_share).setOnClickListener(v -> CodeText.share(requireContext(), invitePayload));
 
         transportRow = root.findViewById(R.id.k2go_cxs_transport);
         transportHotspot = root.findViewById(R.id.k2go_cxs_transport_hotspot);
@@ -83,10 +95,27 @@ public class ContentShareFragment extends Fragment {
         transportHotspot.setOnClickListener(v -> selectTransport(false));
         transportWifi.setOnClickListener(v -> selectTransport(true));
 
-        done.setOnClickListener(v -> {
-            ContentShareService.cancel(requireContext());
-            goBack();
-        });
+        done.setOnClickListener(v -> stopAndLeave());
+        // Back ends the share like Done (a share left running would make the next Share reopen it
+        // instead of the new selection), but asks first, as Clone does: Back is easy to hit mid-transfer.
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (session.hasError()) {
+                            stopAndLeave();   // nothing is being sent
+                            return;
+                        }
+                        new BrandDialog(requireContext())
+                                .setTitle(R.string.k2go_clone_stopshare_title)
+                                // Own message, not Clone's "can start again": resume is not
+                                // guaranteed for every app yet (K2GO-577 covers ZIM only).
+                                .setMessage(R.string.k2go_cx_share_stop_msg)
+                                .setNegative(R.string.k2go_cancel, null)
+                                .setDestructive(R.string.k2go_clone_stop_confirm, () -> stopAndLeave())
+                                .show();
+                    }
+                });
         // The AP IPv4 lands a beat after the hotspot reports ON; re-render when it (or the phase) changes
         // so the receive QR appears the moment every piece is ready. Observed once, tied to the view.
         hs.state().observe(getViewLifecycleOwner(), st -> render());
@@ -137,7 +166,9 @@ public class ContentShareFragment extends Fragment {
             goBack();
             return;
         }
-        subtitle.setText(getString(R.string.k2go_cx_share_subtitle_fmt, session.itemCount()));
+        // Same "N selected : size" line Content manager showed before Share.
+        subtitle.setText(getString(R.string.k2go_cx_selected_fmt, session.itemCount(),
+                ByteFormatter.humanBytes(session.totalBytes())));
 
         if (session.hasError()) {
             showStatus(session.errorMessage() != null
@@ -179,6 +210,7 @@ public class ContentShareFragment extends Fragment {
             }
             transportRow.setVisibility(View.GONE);
             waiting.setVisibility(View.GONE);
+            showInviteText(null);
             return;
         }
 
@@ -201,6 +233,7 @@ public class ContentShareFragment extends Fragment {
             SegmentedTabs.paint(transportWifi, useWifiAddress);
         }
         joinRoot.setVisibility(both && useWifiAddress ? View.GONE : View.VISIBLE);
+        numberSteps();
         String ip = both ? (useWifiAddress ? wifiIp : hotspotIp)
                          : (hotspotIp != null ? hotspotIp : wifiIp);
 
@@ -212,7 +245,6 @@ public class ContentShareFragment extends Fragment {
                 getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
 
         // Section 2: the share invite QR. Needs the AP IPv4, which resolves a beat after ON.
-        secReceive.caption.setText(R.string.k2go_cx_share_receive_caption);
         secReceive.subCaption.setText("");
         // The core returns its own path (/v1/share/<id>/manifest); the receiver reaches it through
         // the off-box gate prefix, so the invite carries the prefixed path.
@@ -223,6 +255,7 @@ public class ContentShareFragment extends Fragment {
         if (invite == null) {
             // No dead QR at a guessed address; hold the slot until the real AP IP arrives (render reruns).
             secReceive.setQrPending(requireContext(), getString(R.string.k2go_cx_share_resolving_address));
+            secReceive.caption.setText("");   // no "Ready! Scan" until there is a QR to scan
             secReceive.setFallback(requireContext(), null);
             waiting.setVisibility(View.GONE);
         } else {
@@ -230,6 +263,16 @@ public class ContentShareFragment extends Fragment {
             secReceive.setFallback(requireContext(), null);
             waiting.setVisibility(View.VISIBLE);
         }
+        showInviteText(invite);
+    }
+
+    /** Show the invite as copyable text under the QR, or hide the block when there is no invite. */
+    private void showInviteText(@Nullable String invite) {
+        invitePayload = invite != null ? invite : "";
+        codeText.setText(invitePayload);
+        int vis = invite != null ? View.VISIBLE : View.GONE;
+        codeLabel.setVisibility(vis);
+        codeBlock.setVisibility(vis);
     }
 
     /** Pick the address the receive QR carries and repaint the strip (Connect/Clone mode pattern). */
@@ -251,12 +294,27 @@ public class ContentShareFragment extends Fragment {
         receiveRoot.setVisibility(View.GONE);
         transportRow.setVisibility(View.GONE);
         waiting.setVisibility(View.GONE);
+        showInviteText(null);
     }
 
     private void showSections() {
         status.setVisibility(View.GONE);
         joinRoot.setVisibility(View.VISIBLE);
         receiveRoot.setVisibility(View.VISIBLE);
+        numberSteps();
+    }
+
+    /** Number the steps the user sees: with the join step hidden (Wi-Fi transport), the invite is 1.
+     *  The caption is Clone's one-code / two-code wording. */
+    private void numberSteps() {
+        boolean joinShown = joinRoot.getVisibility() == View.VISIBLE;
+        QrSection.setStep(receiveRoot, joinShown ? "2" : "1", getString(R.string.k2go_cx_action_share));
+        secReceive.caption.setText(joinShown ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan);
+    }
+
+    private void stopAndLeave() {
+        ContentShareService.cancel(requireContext());
+        goBack();
     }
 
     /**
