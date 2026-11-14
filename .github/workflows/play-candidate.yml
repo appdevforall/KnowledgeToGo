@@ -2,15 +2,15 @@ name: Play candidate (send a release candidate to Google review)
 
 # K2GO-564, button 1 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Builds the Play AAB from the selected branch, takes the next versionCode from Play, sends the build
-# to Google review on the chosen track and tags the commit vX.Y.Z-rc.N. Google gives its verdict by
-# email and in Play Console (the API cannot read it). When Google approves, run "Play release" with
-# the rc tag. If Google rejects, fix the code and run this workflow again: the next run is rc.N+1.
+# to Google review on the chosen track and tags the commit with its versionName (vX.Y.Z-rc.N). Google
+# gives its verdict by email and in Play Console (the API cannot read it). If Google rejects, fix the
+# code, bump versionName to rc.N+1 and run this workflow again.
 # Runs only from main. The internal track has no formal review, so an internal run gets no rc tag
 # and cannot become a release.
 #
-# Preconditions: versionName in controller/app/build.gradle is the target version (vX.Y.Z, not yet
-# released) and controller/ci/ota-release-notes.md has a "## vX.Y.Z" entry on top. Managed
-# publishing is ON in Play Console, so an approved candidate waits instead of going live.
+# Preconditions: versionName in controller/app/build.gradle is the next candidate (vX.Y.Z-rc.N, the
+# tag this run creates) and controller/ci/ota-release-notes.md has a "## vX.Y.Z" entry on top.
+# Managed publishing is ON in Play Console, so an approved candidate waits instead of going live.
 
 on:
   workflow_dispatch:

@@ -1,8 +1,8 @@
 name: Republish APK + AAB to R2 (interim manual)
 
 # INTERIM / TEMPORARY tool (K2GO-457). It pushes the website APK (standard flavor) and the Play AAB
-# (play flavor) to Cloudflare R2 BETWEEN tagged releases, while versionName stays on 1.1.0 and only
-# versionCode moves. It OVERWRITES the live R2 objects the website serves (same filenames).
+# (play flavor) to Cloudflare R2 BETWEEN tagged releases. Files are named after versionName, so a
+# candidate build lands as K2Go-vX.Y.Z-rc.N-*. It OVERWRITES the live R2 objects the website serves (same filenames).
 #
 # What it does NOT do, on purpose:
 #   - No git tag, no GitHub Release (GitHub stays behind; R2 is the live copy).

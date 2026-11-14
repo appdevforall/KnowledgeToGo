@@ -12,10 +12,11 @@ Rule: the version header must match the release tag / `versionName` so the CI pi
 the right entry.
 
 ## v1.2.0
-Faster and more private. Official systems and your own backups install and
-restore in about half the time. Each phone now has its own identity, copies leave
-personal records behind, and a new Privacy screen keeps outside connections off
-unless you turn them on.
+Faster, simpler and more private. Official systems and your own backups install
+and restore in about half the time. One app now fits every phone: a single download
+replaces the separate 32-bit and 64-bit versions. Each phone has its own identity,
+copies do not carry personal records, and a new Privacy screen keeps outside
+connections off unless you turn them on.
 
 ## v1.1.0
 A maintenance update. Code on the Go gains its add-ons gallery and offline build
