@@ -243,6 +243,7 @@ public class ContentShareFragment extends Fragment {
         if (invite == null) {
             // No dead QR at a guessed address; hold the slot until the real AP IP arrives (render reruns).
             secReceive.setQrPending(requireContext(), getString(R.string.k2go_cx_share_resolving_address));
+            secReceive.caption.setText("");   // no "Ready! Scan" until there is a QR to scan
             secReceive.setFallback(requireContext(), null);
             waiting.setVisibility(View.GONE);
         } else {

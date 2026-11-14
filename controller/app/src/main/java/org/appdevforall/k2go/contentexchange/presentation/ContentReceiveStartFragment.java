@@ -36,11 +36,16 @@ public class ContentReceiveStartFragment extends Fragment {
     private CodeText.PasteBlock pasteCode;
     private ActivityResultLauncher<ScanOptions> inviteScan;
 
+    @Override
+    public void onCreate(@Nullable Bundle s) {
+        super.onCreate(s);
+        inviteScan = registerForActivityResult(new ScanContract(), r -> onInvite(r.getContents()));
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_content_receive_start, container, false);
-        inviteScan = registerForActivityResult(new ScanContract(), r -> onInvite(r.getContents()));
 
         QrSection.setStep(root.findViewById(R.id.k2go_cxst_join_hdr), "1", getString(R.string.k2go_cx_share_step_join));
         QrSection.setStep(root.findViewById(R.id.k2go_cxst_receive_hdr), "2",
