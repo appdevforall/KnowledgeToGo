@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_export_categories">Podle kategorie</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Sdílet obsah</string>
-    <string name="k2go_cx_share_subtitle_fmt">Sdílení %1$d položek</string>
     <string name="k2go_cx_share_preparing">Příprava sdílení...</string>
     <string name="k2go_cx_share_starting_hotspot">Spouštění hotspotu...</string>
     <string name="k2go_cx_share_resolving_address">Hledání adresy hotspotu...</string>

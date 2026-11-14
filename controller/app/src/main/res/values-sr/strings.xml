@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_export_categories">По категорији</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Дели садржај</string>
-    <string name="k2go_cx_share_subtitle_fmt">Дељење %1$d ставки</string>
     <string name="k2go_cx_share_preparing">Припрема за дељење...</string>
     <string name="k2go_cx_share_starting_hotspot">Покретање хотспота...</string>
     <string name="k2go_cx_share_resolving_address">Тражење адресе хотспота...</string>

@@ -1521,7 +1521,6 @@
     <string name="k2go_cx_export_categories">Kwa kategoria</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Shiriki maudhui</string>
-    <string name="k2go_cx_share_subtitle_fmt">Inashiriki vipengele %1$d</string>
     <string name="k2go_cx_share_preparing">Inajiandaa kushiriki...</string>
     <string name="k2go_cx_share_starting_hotspot">Inaanzisha hotspot...</string>
     <string name="k2go_cx_share_resolving_address">Inatafuta anwani ya hotspot...</string>

@@ -1501,7 +1501,6 @@
     <string name="k2go_cx_export_categories">За категорією</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Поділитися вмістом</string>
-    <string name="k2go_cx_share_subtitle_fmt">Надсилання %1$d елементів</string>
     <string name="k2go_cx_share_preparing">Підготовка до надсилання...</string>
     <string name="k2go_cx_share_starting_hotspot">Запуск точки доступу...</string>
     <string name="k2go_cx_share_resolving_address">Пошук адреси точки доступу...</string>

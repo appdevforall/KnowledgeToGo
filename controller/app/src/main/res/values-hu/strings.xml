@@ -1501,7 +1501,6 @@
     <string name="k2go_cx_export_categories">Kategória szerint</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Tartalom megosztása</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d elem megosztása</string>
     <string name="k2go_cx_share_preparing">Megosztás előkészítése...</string>
     <string name="k2go_cx_share_starting_hotspot">Hotspot indítása...</string>
     <string name="k2go_cx_share_resolving_address">Hotspot címének keresése...</string>

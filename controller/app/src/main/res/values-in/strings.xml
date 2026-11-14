@@ -1508,7 +1508,6 @@
     <string name="k2go_cx_export_categories">Menurut kategori</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Bagikan konten</string>
-    <string name="k2go_cx_share_subtitle_fmt">Membagikan %1$d item</string>
     <string name="k2go_cx_share_preparing">Menyiapkan untuk membagikan...</string>
     <string name="k2go_cx_share_starting_hotspot">Memulai hotspot...</string>
     <string name="k2go_cx_share_resolving_address">Mencari alamat hotspot...</string>

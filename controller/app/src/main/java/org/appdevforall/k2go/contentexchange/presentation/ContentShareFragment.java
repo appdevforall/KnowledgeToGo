@@ -147,8 +147,8 @@ public class ContentShareFragment extends Fragment {
             goBack();
             return;
         }
-        int n = session.itemCount();
-        subtitle.setText(getResources().getQuantityString(R.plurals.k2go_cx_share_summary, n, n,
+        // Same "N selected : size" line Content manager showed before Share.
+        subtitle.setText(getString(R.string.k2go_cx_selected_fmt, session.itemCount(),
                 ByteFormatter.humanBytes(session.totalBytes())));
 
         if (session.hasError()) {

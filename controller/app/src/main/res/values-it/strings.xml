@@ -1501,7 +1501,6 @@
     <string name="k2go_cx_export_categories">Per categoria</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Condividi contenuti</string>
-    <string name="k2go_cx_share_subtitle_fmt">Condivisione di %1$d elementi</string>
     <string name="k2go_cx_share_preparing">Preparazione della condivisione...</string>
     <string name="k2go_cx_share_starting_hotspot">Avvio dell\'hotspot...</string>
     <string name="k2go_cx_share_resolving_address">Ricerca dell\'indirizzo dell\'hotspot...</string>

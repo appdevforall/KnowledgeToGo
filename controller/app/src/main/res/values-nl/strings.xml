@@ -1501,7 +1501,6 @@
     <string name="k2go_cx_export_categories">Op categorie</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Inhoud delen</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d items delen</string>
     <string name="k2go_cx_share_preparing">Delen voorbereiden...</string>
     <string name="k2go_cx_share_starting_hotspot">Hotspot starten...</string>
     <string name="k2go_cx_share_resolving_address">Hotspot-adres zoeken...</string>

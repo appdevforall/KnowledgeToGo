@@ -1521,7 +1521,6 @@
     <string name="k2go_cx_export_categories">வகை வாரியாக</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">உள்ளடக்கத்தைப் பகிர்</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d உருப்படிகள் பகிரப்படுகின்றன</string>
     <string name="k2go_cx_share_preparing">பகிர்வதற்குத் தயாராகிறது...</string>
     <string name="k2go_cx_share_starting_hotspot">ஹாட்ஸ்பாட் தொடங்கப்படுகிறது...</string>
     <string name="k2go_cx_share_resolving_address">ஹாட்ஸ்பாட் முகவரி கண்டறியப்படுகிறது...</string>

@@ -1521,7 +1521,6 @@
     <string name="k2go_cx_export_categories">Nípa ẹ̀ka</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">Pín àkóónú</string>
-    <string name="k2go_cx_share_subtitle_fmt">ń pín àwọn nǹkan %1$d</string>
     <string name="k2go_cx_share_preparing">ń múra látì pín...</string>
     <string name="k2go_cx_share_starting_hotspot">ń bẹ̀rẹ̀ hotspot...</string>
     <string name="k2go_cx_share_resolving_address">ń wá àdírẹ́sì hotspot...</string>

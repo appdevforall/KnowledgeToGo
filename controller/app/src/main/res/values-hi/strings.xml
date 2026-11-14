@@ -1578,7 +1578,6 @@
     <string name="k2go_cx_export_categories">श्रेणी के अनुसार</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">सामग्री साझा करें</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d आइटम साझा किए जा रहे हैं</string>
     <string name="k2go_cx_share_preparing">साझा करने की तैयारी हो रही है...</string>
     <string name="k2go_cx_share_starting_hotspot">हॉटस्पॉट शुरू हो रहा है...</string>
     <string name="k2go_cx_share_resolving_address">हॉटस्पॉट पता खोजा जा रहा है...</string>

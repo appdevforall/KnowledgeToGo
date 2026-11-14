@@ -1502,7 +1502,6 @@
     <string name="k2go_cx_export_categories">카테고리별</string>
     <!-- K2GO-376 wireless Share (sender) strings (machine translation, pending human review). -->
     <string name="k2go_cx_share_title">콘텐츠 공유</string>
-    <string name="k2go_cx_share_subtitle_fmt">%1$d개 항목 공유 중</string>
     <string name="k2go_cx_share_preparing">공유 준비 중...</string>
     <string name="k2go_cx_share_starting_hotspot">핫스팅 시작 중...</string>
     <string name="k2go_cx_share_resolving_address">핫스팅 주소 찾는 중...</string>
