@@ -650,6 +650,11 @@ mkdir -p "$ROOTFS/tmp" "$ROOTFS/root"; chmod 1777 "$ROOTFS/tmp"
 # Disable them system-wide inside the rootfs so no *.rev is ever created during the
 # install, so 'rm -rf /tmp/iiab-wiki' has nothing proot chokes on. Harmless elsewhere.
 printf '[pack]\n\twriteReverseIndex = false\n' >> "$ROOTFS/etc/gitconfig"
+# K2GO-558: git finalizes objects with link(), which --link2symlink turns into a symlink to a path
+# that is then removed, so objects go missing ("bad object HEAD"). rename() is not intercepted,
+# and unpackLimit=1 keeps fetched packs whole. The app applies the same settings to older trees
+# (proot/domain/GuestGitConfig.java).
+printf '[core]\n\tcreateObject = rename\n[transfer]\n\tunpackLimit = 1\n' >> "$ROOTFS/etc/gitconfig"
 
 # --- INTERIM proot-safe environment (should move to iiab-android / upstream) --
 # Three independent chroot/proot detections misfire under proot on a desktop/
