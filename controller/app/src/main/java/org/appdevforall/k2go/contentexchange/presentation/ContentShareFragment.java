@@ -33,6 +33,7 @@ import org.appdevforall.k2go.redesign.CodeText;
 import org.appdevforall.k2go.redesign.QrSection;
 import org.appdevforall.k2go.redesign.SegmentedTabs;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
 
 public class ContentShareFragment extends Fragment {
@@ -95,13 +96,22 @@ public class ContentShareFragment extends Fragment {
         transportWifi.setOnClickListener(v -> selectTransport(true));
 
         done.setOnClickListener(v -> stopAndLeave());
-        // Back ends the share like Done: a share left running would make the next Share reopen it
-        // instead of the new selection.
+        // Back ends the share like Done (a share left running would make the next Share reopen it
+        // instead of the new selection), but asks first, as Clone does: Back is easy to hit mid-transfer.
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        stopAndLeave();
+                        if (session.hasError()) {
+                            stopAndLeave();   // nothing is being sent
+                            return;
+                        }
+                        new BrandDialog(requireContext())
+                                .setTitle(R.string.k2go_clone_stopshare_title)
+                                .setMessage(R.string.k2go_clone_stopshare_msg)
+                                .setNegative(R.string.k2go_cancel, null)
+                                .setDestructive(R.string.k2go_clone_stop_confirm, () -> stopAndLeave())
+                                .show();
                     }
                 });
         // The AP IPv4 lands a beat after the hotspot reports ON; re-render when it (or the phase) changes
