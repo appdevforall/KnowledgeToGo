@@ -26,6 +26,7 @@ import org.appdevforall.k2go.boxidentity.data.DeviceIdStore;
 import org.appdevforall.k2go.network.data.FileResolvConfWriter;
 import org.appdevforall.k2go.network.data.PrefsDnsConfigRepository;
 import org.appdevforall.k2go.network.domain.ApplyDnsUseCase;
+import org.appdevforall.k2go.proot.data.GuestGitConfigWriter;
 import org.appdevforall.k2go.proot.data.PrefsSeccompModeRepository;
 import org.appdevforall.k2go.proot.data.ProotEnvironment;
 import org.appdevforall.k2go.proot.domain.SeccompFailure;
@@ -78,6 +79,9 @@ public class PRootEngine {
                 } catch (Exception dnsEx) {
                     Log.w(TAG, "DNS apply skipped: " + dnsEx.getMessage());
                 }
+                // K2GO-558: also before every launch, so a rootfs baked without these git settings
+                // gets them before the box runs its first git fetch.
+                GuestGitConfigWriter.ensure(new File(rootfsDir));
 
                 // =========================================================
                 // THE W^X TROJAN HORSE: FAKE TERMUX PREFIX
