@@ -123,12 +123,15 @@ class KiwixAdapter(ContentAdapter):
     app = "kiwix"
     id_kind = AUTHORITATIVE
 
-    def __init__(self, zims_dir: str, indexer: str = "/usr/bin/iiab-make-kiwix-lib"):
+    def __init__(self, zims_dir: str, indexer: str = "/usr/bin/iiab-make-kiwix-lib",
+                 server: str = "/opt/iiab/kiwix/bin/kiwix-serve"):
         self._dir = zims_dir
         self._indexer = indexer
+        self._server = server
 
     def is_installed(self) -> bool:
-        return os.path.isdir(self._dir)
+        # The zims dir can exist without Kiwix (an old 32-bit library); a ZIM there has no reader.
+        return os.path.isdir(self._dir) and os.path.isfile(self._server)
 
     def list(self) -> List[ManifestItem]:
         items: List[ManifestItem] = []

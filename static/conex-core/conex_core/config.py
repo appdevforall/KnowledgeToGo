@@ -28,6 +28,7 @@ class Config:
     content_dir: str = "/library"
     zims_dir: str = "/library/zims/content/"
     kiwix_indexer: str = "/usr/bin/iiab-make-kiwix-lib"
+    kiwix_serve: str = "/opt/iiab/kiwix/bin/kiwix-serve"
     kolibri_db: str = "/library/kolibri/db.sqlite3"
     kolibri_bin: str = "/usr/bin/kolibri"
     calibre_db: str = "/library/calibre-web/metadata.db"
@@ -46,6 +47,7 @@ class Config:
             content_dir=os.environ.get("CONEX_CONTENT_DIR", "/library"),
             zims_dir=os.environ.get("CONEX_ZIMS_DIR", "/library/zims/content/"),
             kiwix_indexer=os.environ.get("CONEX_KIWIX_INDEXER", "/usr/bin/iiab-make-kiwix-lib"),
+            kiwix_serve=os.environ.get("CONEX_KIWIX_SERVE", "/opt/iiab/kiwix/bin/kiwix-serve"),
             kolibri_db=os.environ.get("CONEX_KOLIBRI_DB", "/library/kolibri/db.sqlite3"),
             kolibri_bin=os.environ.get("CONEX_KOLIBRI_BIN", "/usr/bin/kolibri"),
             calibre_db=os.environ.get("CONEX_CALIBRE_DB", "/library/calibre-web/metadata.db"),
