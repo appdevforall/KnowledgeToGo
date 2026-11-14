@@ -13,15 +13,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:orientation="vertical" android:padding="16dp" android:background="@drawable/k2go_card_bg">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:gravity="center_vertical">
-        <TextView android:id="@+id/sec_badge" android:layout_width="28dp" android:layout_height="28dp"
-            android:background="@drawable/k2go_badge_teal" android:gravity="center"
-            android:textColor="@color/k2go_on_teal" android:textStyle="bold" />
-        <TextView android:id="@+id/sec_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginStart="12dp" android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textColor="@color/k2go_ink" />
-    </LinearLayout>
+    <include layout="@layout/view_k2go_step_header" />
 
     <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="@dimen/k2go_qr_size" android:layout_height="@dimen/k2go_qr_size"
         android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">

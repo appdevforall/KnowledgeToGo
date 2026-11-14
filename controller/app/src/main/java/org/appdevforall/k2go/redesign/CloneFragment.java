@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -138,8 +137,7 @@ public class CloneFragment extends Fragment {
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
-    private EditText paste;
-    private TextView receiveStart, pStatus, pFile, pStats, cancel;
+    private TextView pStatus, pFile, pStats, cancel;
     private LinearProgressIndicator pbar;   // ADFA-5143: typed as itself, so setProgressCompat is available
     private com.airbnb.lottie.LottieAnimationView anim;   // ADFA-5143: the clone loop
     // ADFA-5143: read once — renderReceive() runs on every progress tick and this is a Settings read.
@@ -149,10 +147,10 @@ public class CloneFragment extends Fragment {
     private TextView confirmSys, confirmContent, confirmTotal;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
-    private boolean pasteExpanded = false;
+    private CodeText.PasteBlock pasteCode;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
-    private LinearLayout rcvSteps, rcvIntro, rcvNotice, pasteBlock;
-    private TextView rcvCaption, rcvScan, rcvSub, rcvSkip, rcvSkipHint, rcvCamNote, rcvShowPaste;
+    private LinearLayout rcvSteps, rcvIntro, rcvNotice;
+    private TextView rcvCaption, rcvScan, rcvSub, rcvSkip, rcvSkipHint, rcvCamNote;
     // ADFA-4784: incompatibility hard-block state (receiver). >=0 means "showing not-compatible"
     // for a scanned/pasted code advertising that host architecture.
     private LinearLayout rcvIncompat;
@@ -209,8 +207,7 @@ public class CloneFragment extends Fragment {
         secJoinBadge = joinRoot.findViewById(R.id.sec_badge);
         secJoinTitle = joinRoot.findViewById(R.id.sec_title);
         secJoinBadge.setText("1");
-        ((TextView) getAppRoot.findViewById(R.id.sec_badge)).setText("2");
-        ((TextView) getAppRoot.findViewById(R.id.sec_title)).setText(getString(R.string.k2go_badge_getapp));
+        QrSection.setStep(getAppRoot, "2", getString(R.string.k2go_badge_getapp));
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         actionFooter = v.findViewById(R.id.k2go_clone_action_footer);   // ADFA-5154: pinned action button
@@ -222,8 +219,7 @@ public class CloneFragment extends Fragment {
         sizeContent = v.findViewById(R.id.k2go_clone_size_content);
         sizeTotal = v.findViewById(R.id.k2go_clone_size_total);
         receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
-        paste = v.findViewById(R.id.k2go_code_paste);
-        receiveStart = v.findViewById(R.id.k2go_code_use);
+        pasteCode = new CodeText.PasteBlock(v, this::onReceiveStart);
         rcvSteps = v.findViewById(R.id.k2go_rcv_steps);
         rcvCaption = v.findViewById(R.id.k2go_rcv_caption);
         rcvIntro = v.findViewById(R.id.k2go_rcv_intro);
@@ -233,8 +229,6 @@ public class CloneFragment extends Fragment {
         rcvSkip = v.findViewById(R.id.k2go_rcv_skip);
         rcvSkipHint = v.findViewById(R.id.k2go_rcv_skiphint);
         rcvCamNote = v.findViewById(R.id.k2go_rcv_camnote);
-        rcvShowPaste = v.findViewById(R.id.k2go_code_showpaste);
-        pasteBlock = v.findViewById(R.id.k2go_code_pasteblock);
         rcvIncompat = v.findViewById(R.id.k2go_rcv_incompat);
         incompatWhy = v.findViewById(R.id.k2go_rcv_incompat_why);
         incompatWhyText = v.findViewById(R.id.k2go_rcv_incompat_whytext);
@@ -307,14 +301,12 @@ public class CloneFragment extends Fragment {
         copyBtn.setOnClickListener(x -> CodeText.copy(x, currentPayload));
         shareBtn.setOnClickListener(x -> CodeText.share(requireContext(), currentPayload));
 
-        receiveStart.setOnClickListener(x -> onReceiveStart());
         cancel.setOnClickListener(x -> onReceiveCancel());
         rcvScan.setOnClickListener(x -> {
             if (rStage == RStage.JOIN) openWifiSettings();
             else launchScanner(getString(R.string.k2go_clone_scan_prompt_receive));
         });
         rcvSkip.setOnClickListener(x -> { rStage = RStage.START; render(); });
-        rcvShowPaste.setOnClickListener(x -> { pasteExpanded = !pasteExpanded; renderReceive(); });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
         // ADFA-5064: same rescue as Connect — redraw the handshake/URL QR when the device's network
@@ -406,7 +398,7 @@ public class CloneFragment extends Fragment {
             if (systemPresent) setMode(Mode.HOTSPOT); else render();   // ADFA-4785: enter Send at step 1
             return;
         }
-        rStage = RStage.JOIN; pasteExpanded = false;
+        rStage = RStage.JOIN; pasteCode.collapse();
         incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false;   // ADFA-4784: fresh on entry
         render();
     }
@@ -963,9 +955,7 @@ public class CloneFragment extends Fragment {
 
     // ------------------------------------------------------------------ Receive
 
-    private void onReceiveStart() {
-        String json = paste.getText().toString().trim();
-        if (json.isEmpty()) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_paste_first), Toast.LENGTH_SHORT).show(); return; }
+    private void onReceiveStart(String json) {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
         if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_invalid), Toast.LENGTH_LONG).show(); return; }
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
@@ -1090,7 +1080,7 @@ public class CloneFragment extends Fragment {
             rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
             rcvScan.setVisibility(View.GONE); rcvSub.setVisibility(View.GONE);
             rcvSkip.setVisibility(View.GONE); rcvSkipHint.setVisibility(View.GONE);
-            rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
+            rcvCamNote.setVisibility(View.GONE); pasteCode.show(false);
             SyncTransferState.Phase ph = st.phase;
             if (ph == SyncTransferState.Phase.CONFIRM) {
                 showProgress(false);
@@ -1137,7 +1127,7 @@ public class CloneFragment extends Fragment {
             rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
             rcvScan.setVisibility(View.GONE); rcvSub.setVisibility(View.GONE);
             rcvSkip.setVisibility(View.GONE); rcvSkipHint.setVisibility(View.GONE);
-            rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
+            rcvCamNote.setVisibility(View.GONE); pasteCode.show(false);
             rcvIncompat.setVisibility(View.VISIBLE);
             incompatWhyText.setVisibility(incompatWhyOpen ? View.VISIBLE : View.GONE);
             incompatWhy.setText(R.string.k2go_clone_why_incompat);
@@ -1165,10 +1155,7 @@ public class CloneFragment extends Fragment {
         rcvSkip.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvCamNote.setVisibility(View.GONE);
-        rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvShowPaste.setText(R.string.k2go_clone_scan_enter_text);
-        CodeText.setExpandChevron(rcvShowPaste, pasteExpanded, R.color.k2go_teal);
-        pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
+        pasteCode.show(!atJoin);
         renderExitZone();   // ADFA-5155: the success-exit status band at the bottom of step 2
     }
 
@@ -1282,13 +1269,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void launchScanner(String prompt) {
-        ScanOptions o = new ScanOptions();
-        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-        o.setPrompt(prompt);
-        o.setBeepEnabled(false);
-        o.setBarcodeImageEnabled(false);
-        o.setOrientationLocked(false);
-        barcodeLauncher.launch(o);
+        barcodeLauncher.launch(CodeText.scanOptions(prompt));
     }
 
     private void onScan(String contents) {
@@ -1302,14 +1283,8 @@ public class CloneFragment extends Fragment {
     }
 
     private void openWifiSettings() {
-        try {
-            startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
-        } catch (Exception e) {
-            try {
-                startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-            } catch (Exception e2) {
-                Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_open_wifi), Toast.LENGTH_LONG).show();
-            }
+        if (!CodeText.openWifiSettings(requireContext())) {
+            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_open_wifi), Toast.LENGTH_LONG).show();
         }
     }
 

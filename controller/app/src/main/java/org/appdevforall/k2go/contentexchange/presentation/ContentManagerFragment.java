@@ -476,7 +476,8 @@ public class ContentManagerFragment extends Fragment {
         for (int i = 0; i < selected.size(); i++) {
             refs[i] = new ItemRef(selected.get(i).app(), selected.get(i).localRef());
         }
-        ContentShareService.start(requireContext(), refs);
+        SelectionSummary sel = viewModel.selection().getValue();
+        ContentShareService.start(requireContext(), refs, sel != null ? sel.bytes : 0L);
         pendingShare = null;
         viewModel.clearSelection();
         showShareProgress();

@@ -11,4 +11,10 @@
 -->
 <resources>
 
+    <!-- Share screen summary: item count and total size. -->
+    <plurals name="k2go_cx_share_summary" translatable="false">
+        <item quantity="one">Sharing %1$d item : %2$s</item>
+        <item quantity="other">Sharing %1$d items : %2$s</item>
+    </plurals>
+
 </resources>

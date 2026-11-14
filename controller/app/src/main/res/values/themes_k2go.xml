@@ -164,6 +164,17 @@
         <item name="materialButtonStyle">@style/Widget.K2Go.Button.Text.Destructive</item>
     </style>
 
+    <!-- A bar pinned under a scrolling list or form (actions, summary): the surface tone with the
+         screen gutter, so the buttons stay visible whatever the scroll position. -->
+    <style name="Widget.K2Go.BottomBar" parent="">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/k2go_surface</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
     <style name="TextAppearance.K2Go.Display" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="fontFamily">@font/atkinson_hyperlegible</item>
         <item name="android:textSize">28sp</item>

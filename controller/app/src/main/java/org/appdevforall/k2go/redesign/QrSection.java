@@ -60,6 +60,12 @@ public final class QrSection {
         fallbackValues = r.findViewById(valuesId);
     }
 
+    /** Number and title a step header (view_k2go_step_header) found under {@code root}. */
+    public static void setStep(View root, String number, CharSequence title) {
+        ((TextView) root.findViewById(R.id.sec_badge)).setText(number);
+        ((TextView) root.findViewById(R.id.sec_title)).setText(title);
+    }
+
     /** Draw {@code data} into the QR, or clear it and show {@code placeholder} in the slot. */
     public void setQr(Context ctx, String data, String placeholder) {
         stopPending();   // K2GO-375: a real QR or a static placeholder ends any "resolving…" animation

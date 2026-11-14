@@ -32,6 +32,7 @@ import org.appdevforall.k2go.redesign.CodeText;
 import org.appdevforall.k2go.redesign.QrSection;
 import org.appdevforall.k2go.redesign.SegmentedTabs;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
+import org.appdevforall.k2go.util.ByteFormatter;
 
 public class ContentShareFragment extends Fragment {
 
@@ -78,10 +79,7 @@ public class ContentShareFragment extends Fragment {
                 R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
         secReceive = new QrSection(receiveRoot, R.id.sec_qr_frame, R.id.sec_qr, R.id.sec_qr_ph,
                 R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
-        ((TextView) joinRoot.findViewById(R.id.sec_badge)).setText("1");
-        ((TextView) joinRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_join);
-        ((TextView) receiveRoot.findViewById(R.id.sec_badge)).setText("2");
-        ((TextView) receiveRoot.findViewById(R.id.sec_title)).setText(R.string.k2go_cx_share_step_receive);
+        QrSection.setStep(joinRoot, "1", getString(R.string.k2go_cx_share_step_join));
 
         codeLabel = root.findViewById(R.id.k2go_code_label);
         codeBlock = root.findViewById(R.id.k2go_code_block);
@@ -149,7 +147,9 @@ public class ContentShareFragment extends Fragment {
             goBack();
             return;
         }
-        subtitle.setText(getString(R.string.k2go_cx_share_subtitle_fmt, session.itemCount()));
+        int n = session.itemCount();
+        subtitle.setText(getResources().getQuantityString(R.plurals.k2go_cx_share_summary, n, n,
+                ByteFormatter.humanBytes(session.totalBytes())));
 
         if (session.hasError()) {
             showStatus(session.errorMessage() != null
@@ -214,6 +214,7 @@ public class ContentShareFragment extends Fragment {
             SegmentedTabs.paint(transportWifi, useWifiAddress);
         }
         joinRoot.setVisibility(both && useWifiAddress ? View.GONE : View.VISIBLE);
+        numberSteps();
         String ip = both ? (useWifiAddress ? wifiIp : hotspotIp)
                          : (hotspotIp != null ? hotspotIp : wifiIp);
 
@@ -281,6 +282,13 @@ public class ContentShareFragment extends Fragment {
         status.setVisibility(View.GONE);
         joinRoot.setVisibility(View.VISIBLE);
         receiveRoot.setVisibility(View.VISIBLE);
+        numberSteps();
+    }
+
+    /** Number the steps the user sees: with the join step hidden (Wi-Fi transport), the invite is 1. */
+    private void numberSteps() {
+        boolean joinShown = joinRoot.getVisibility() == View.VISIBLE;
+        QrSection.setStep(receiveRoot, joinShown ? "2" : "1", getString(R.string.k2go_cx_action_share));
     }
 
     /**
