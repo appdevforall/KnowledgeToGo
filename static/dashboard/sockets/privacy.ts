@@ -171,7 +171,7 @@ export function startEpochMs(ticks: number, selfTicks: number, selfStartMs: numb
 }
 
 /** Start time of the newest process that matches `pattern`, or null when none runs. */
-function processStartMs(pattern: string): number | null {
+export function processStartMs(pattern: string): number | null {
     try {
         const r = spawnSync('pgrep', ['-f', pattern], { encoding: 'utf8', timeout: 3000 });
         if (r.status !== 0 || !r.stdout) return null;
@@ -194,7 +194,7 @@ function processStartMs(pattern: string): number | null {
 }
 
 /** Same mode and owner as the file it replaces; write + fsync + rename, so a crash leaves the old file. */
-function writeAtomic(path: string, data: string): void {
+export function writeAtomic(path: string, data: string): void {
     const file = fs.realpathSync(path);   // a symlinked config keeps its link: we replace the target
     const st = fs.statSync(file);
     const tmp = file + '.k2go-tmp';
