@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Receive over Wi-Fi: the start screen, modelled on Clone's Receive. Two numbered cards: (1) join the
+     sender's Wi-Fi in Android settings, (2) scan the invite, or enter it as text (shared paste block).
+     A valid invite opens ContentReceiveFragment. Material 3 tokens; no hardcoded colours. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/k2go_cxst_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="@string/k2go_back_link"
+            android:textAppearance="@style/TextAppearance.K2Go.Body"
+            android:textColor="@color/k2go_teal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/k2go_cx_receive_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <!-- Step 1: join the sender's Wi-Fi (its hotspot) in Android settings. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/k2go_card_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/k2go_cxst_badge_join"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/k2go_badge_teal"
+                    android:gravity="center"
+                    android:textColor="@color/k2go_on_teal"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/k2go_cx_share_step_join"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textColor="@color/k2go_ink" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/k2go_clone_rcv_join_caption"
+                android:textAppearance="@style/TextAppearance.K2Go.Body"
+                android:textColor="@color/k2go_muted" />
+
+            <Button
+                android:id="@+id/k2go_cxst_wifi"
+                style="@style/Widget.K2Go.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/k2go_clone_rcv_scan_wifi" />
+        </LinearLayout>
+
+        <!-- Step 2: scan the sender invite, or paste it as text. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/k2go_card_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/k2go_cxst_badge_receive"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/k2go_badge_teal"
+                    android:gravity="center"
+                    android:textColor="@color/k2go_on_teal"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/k2go_cx_share_step_receive"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textColor="@color/k2go_ink" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/k2go_clone_rcv_scan_caption"
+                android:textAppearance="@style/TextAppearance.K2Go.Body"
+                android:textColor="@color/k2go_muted" />
+
+            <Button
+                android:id="@+id/k2go_cxst_scan"
+                style="@style/Widget.K2Go.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/k2go_clone_rcv_scan_start" />
+
+            <include layout="@layout/view_k2go_code_paste" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

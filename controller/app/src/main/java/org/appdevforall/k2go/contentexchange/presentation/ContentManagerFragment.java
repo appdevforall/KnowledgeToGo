@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,11 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
 import org.appdevforall.k2go.R;
-import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ContentGroup;
 import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
@@ -46,7 +41,6 @@ import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
-import org.appdevforall.k2go.redesign.CodeText;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
@@ -76,15 +70,8 @@ public class ContentManagerFragment extends Fragment {
     private Button exportButton;
     private Button importButton;
     private Button receiveButton;
-    private TextView showPaste;
-    private View pasteBlock;
-    private EditText paste;
-    private boolean pasteExpanded;
     private Button deleteButton;
     private Button shareButton;
-
-    /** The invite-QR scanner for the receive flow (same ZXing contract Clone uses). */
-    private ActivityResultLauncher<ScanOptions> inviteScan;
 
     /** The selection captured when Share was tapped, held across the hotspot-permission round-trip. */
     private List<ContentItem> pendingShare;
@@ -121,20 +108,10 @@ public class ContentManagerFragment extends Fragment {
                 new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(), result -> onHotspotPermissionResult());
-        inviteScan = registerForActivityResult(new ScanContract(), r -> onInviteScanned(r.getContents()));
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
         importButton.setOnClickListener(v -> onImportClicked());
         receiveButton.setOnClickListener(v -> onReceiveClicked());
-        showPaste = root.findViewById(R.id.k2go_code_showpaste);
-        pasteBlock = root.findViewById(R.id.k2go_code_pasteblock);
-        paste = root.findViewById(R.id.k2go_code_paste);
-        showPaste.setOnClickListener(v -> {
-            pasteExpanded = !pasteExpanded;
-            renderPaste();
-        });
-        root.findViewById(R.id.k2go_code_use).setOnClickListener(v -> onPasteUsed());
-        renderPaste();
         deleteButton.setEnabled(true);
         deleteButton.setOnClickListener(v -> onDeleteClicked());
         shareButton.setEnabled(true);
@@ -360,55 +337,11 @@ public class ContentManagerFragment extends Fragment {
         }
         // Tear our own hotspot down the moment Receive starts: the sender's AP IP (always 192.168.49.1)
         // collides with our own hotspot IP if we are hosting, which traps the connection locally.
-        // Stopping here lets the interface release while the user scans; ContentReceiveFragment also
-        // waits for the release before it connects. K2GO-376.
+        // Stopping here lets the interface release while the user joins and scans; ContentReceiveFragment
+        // also waits for the release before it connects. K2GO-376.
         LocalHotspotManager.get().stop();
-        ScanOptions o = new ScanOptions();
-        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-        o.setPrompt(getString(R.string.k2go_cx_receive_scan_prompt));
-        o.setBeepEnabled(false);
-        o.setBarcodeImageEnabled(false);
-        o.setOrientationLocked(false);
-        inviteScan.launch(o);
-    }
-
-    /** The paste link: "Scan didn't work? Enter the code as text" opens the paste field. */
-    private void renderPaste() {
-        showPaste.setVisibility(View.VISIBLE);
-        CodeText.setExpandChevron(showPaste, pasteExpanded, R.color.k2go_teal);
-        pasteBlock.setVisibility(pasteExpanded ? View.VISIBLE : View.GONE);
-    }
-
-    /** "Use this code": the pasted invite takes the same path as a scanned one. */
-    private void onPasteUsed() {
-        String text = paste.getText().toString().trim();
-        if (text.isEmpty()) {
-            String msg = getString(R.string.k2go_clone_toast_paste_first);
-            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
-            return;
-        }
-        if (ContentImportService.session().isRunning()) {
-            showImportProgress();
-            return;
-        }
-        LocalHotspotManager.get().stop();   // same reason as onReceiveClicked
-        onInviteScanned(text);
-    }
-
-    /** The scanner returned (or a code was pasted). Null means the user cancelled; a non-invite or
-     *  invalid code is rejected. */
-    private void onInviteScanned(@Nullable String contents) {
-        if (!isAdded() || contents == null) {
-            return;
-        }
-        ShareHandshake.ShareInvite invite = ShareHandshake.decode(contents);
-        if (invite == null) {
-            String msg = getString(R.string.k2go_cx_receive_invalid);
-            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
-            return;
-        }
         requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, ContentReceiveFragment.newInstance(invite))
+                .replace(R.id.k2go_setup_host, new ContentReceiveStartFragment())
                 .addToBackStack(null)
                 .commit();
     }

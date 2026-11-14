@@ -71,9 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/k2go_cx_receive_from_network" />
-
-        <!-- No camera, or a remote session: paste the sender invite as text (same block as Clone). -->
-        <include layout="@layout/view_k2go_code_paste" />
     </LinearLayout>
 
     <!-- Selection action bar: shown when at least one item is selected. -->
