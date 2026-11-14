@@ -1,0 +1,20 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/calibre-web/tasks/install.yml
+Summary:         Set the Calibre-Web log level to INFO in a newly provisioned app.db; the shipped app.db is DEBUG, which logs session data (K2GO-559).
+
+diff --git a/roles/calibre-web/tasks/install.yml b/roles/calibre-web/tasks/install.yml
+index 452248da5..964b48c8e 100644
+--- a/roles/calibre-web/tasks/install.yml
++++ b/roles/calibre-web/tasks/install.yml
+@@ -207,6 +207,10 @@
+     backup: yes
+   when: not appdb.stat.exists
+ 
++- name: Set the Calibre-Web log level to INFO in the new app.db (the shipped app.db is DEBUG, which logs session data)
++  command: python3 -c "import sqlite3, sys; c = sqlite3.connect(sys.argv[1]); c.execute('UPDATE settings SET config_log_level = 20 WHERE config_log_level < 20'); c.commit()" {{ calibreweb_config }}/app.db
++  when: not appdb.stat.exists
++
+ 
+ # RECORD Calibre-Web AS INSTALLED
+ 

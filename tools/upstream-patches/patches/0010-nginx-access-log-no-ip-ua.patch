@@ -1,0 +1,24 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/nginx/templates/nginx.conf.j2
+Summary:         Drop the client IP and the User-Agent from the nginx access log; the fields stay as "-" so awstats still parses it (K2GO-559).
+
+diff --git a/roles/nginx/templates/nginx.conf.j2 b/roles/nginx/templates/nginx.conf.j2
+index f4b9ec17f..b47dcb244 100644
+--- a/roles/nginx/templates/nginx.conf.j2
++++ b/roles/nginx/templates/nginx.conf.j2
+@@ -43,10 +43,12 @@ http {
+     # Logging Settings
+     ##
+ 
++    # No client IP and no User-Agent: the access log must not identify who used the server.
++    # The fields stay in place ("-") so awstats still parses the log (no visitor or browser counts).
+     log_format awstats
+-    '$remote_addr - $remote_user [$time_local] "$request" '
++    '- - $remote_user [$time_local] "$request" '
+     '$status $body_bytes_sent "$http_referer" '
+-    '"$http_user_agent" "http_x_forwarded_for"';
++    '"-" "http_x_forwarded_for"';
+ 
+     access_log {{ nginx_log_dir }}/access.log awstats;
+ 

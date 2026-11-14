@@ -1,0 +1,15 @@
+Upstream-PR:     not yet submitted
+Upstream-Status: open
+Applies-to:      roles/forgejo/templates/app.ini.j2
+Summary:         Turn off the Forgejo router log (LOGGER_ROUTER_MODE empty); it records the client address of each request (K2GO-559).
+
+diff --git a/roles/forgejo/templates/app.ini.j2 b/roles/forgejo/templates/app.ini.j2
+index 643fff769..d1eae8d09 100644
+--- a/roles/forgejo/templates/app.ini.j2
++++ b/roles/forgejo/templates/app.ini.j2
+@@ -85,3 +85,5 @@ ENABLED = false
+ ROOT_PATH = {{ forgejo_log_root }}
+ MODE = console
+ LEVEL = Info
++; No router log: it records the client address of each request.
++LOGGER_ROUTER_MODE =
