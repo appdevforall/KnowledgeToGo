@@ -66,6 +66,16 @@ existing Wi-Fi session, and the library is split between the two.
    falls back to 2.4 GHz only when 5 GHz fails.
 7. **The cable path is optional.** With no cable, Clone works as today. With a cable and no
    Wi-Fi, the cable carries the whole library.
+8. **Both sides know the state, with rsync's own daemon hooks (no wrapper around the binary).**
+   Today only the receiver knows the result (it reads the rsync output and exit code); the
+   sender's daemon logs to `/dev/null`. The sender's `rsyncd.conf` adds:
+   - `post-xfer exec`: the daemon runs a command after each transfer with `RSYNC_EXIT_STATUS`,
+     `RSYNC_PID`, `RSYNC_HOST_ADDR` and `RSYNC_USER_NAME` in its environment. The command appends
+     one line to a status file in the app cache.
+   - `transfer logging = yes` with a `log format` of file name and bytes: one line per file sent,
+     to a log file in the app cache. This gives the sender its own progress.
+   The app watches both files with a `FileObserver` (no polling). On the cable path the relay
+   also counts the bytes it forwards.
 
 ## Lifecycle (who starts, who stops, what if the process dies)
 
@@ -75,6 +85,9 @@ existing Wi-Fi session, and the library is split between the two.
   on "Stop sharing", or when the transfer ends.
 - The relay and its rsync child stop with the session. A chunk in progress is put back in the
   queue; rsync `--partial` keeps the partial file for the next attempt.
+- The status file and the transfer log belong to the sender's Clone service: it creates them
+  when the daemon starts and deletes them when the daemon stops. A stale file from a dead
+  process is deleted at the next daemon start.
 - If the app process dies, both sides lose the session. The cable then shows no app on the
   accessory side and the host write fails; the next Clone start sends a reset frame first. No
   state is persisted for the cable path.
