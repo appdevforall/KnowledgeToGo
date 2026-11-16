@@ -1,7 +1,7 @@
 # Keep a known-good copy of upstream build deps on the K2Go R2 bucket, so the bake can fall
 # back to it when the upstream host is down (K2GO-563). R2 layout: upstream/<project>/<element>/<content>.
 
-name: Mirror upstream deps to R2
+name: Deps: mirror upstream to R2
 
 on:
   workflow_dispatch:

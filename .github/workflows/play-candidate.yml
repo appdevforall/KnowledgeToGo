@@ -1,4 +1,4 @@
-name: Play candidate (send a release candidate to Google review)
+name: Play: 1. send candidate
 
 # K2GO-564, button 1 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Builds the Play AAB from the selected branch, takes the next versionCode from Play, sends the build

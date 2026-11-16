@@ -1,4 +1,4 @@
-name: Play release (publish an approved candidate)
+name: Play: 2. publish release
 
 # K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Run this after Google approved a candidate. It tags the candidate commit with the final version

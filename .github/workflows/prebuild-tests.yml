@@ -1,4 +1,4 @@
-name: Pre-build tests (gate the rootfs bake)
+name: RootFS: 1. pre-build tests
 
 # K2GO-567. Fast, NATIVE tests that must pass BEFORE the rootfs bake (bake-rootfs.yml). No proot,
 # no root. Runs the dash-node unit tests plus the contract tests, which check the REAL upstream
