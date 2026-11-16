@@ -291,6 +291,88 @@ class RsyncPuller:
                             should_cancel=should_cancel, on_progress=progress, log=_LOG,
                             activity_fn=on_disk, die_with_parent=True)
 
+    def pull_tree(self, source: dict, dest_dir: str, work_dir: str, filters=(),
+                  ignore_existing: bool = True,
+                  should_cancel: Optional[Callable[[], bool]] = None,
+                  on_progress: Optional[Callable[[int], None]] = None):
+        """Pull files of a module into ``dest_dir``, from the MODULE ROOT, picking them with the
+        client ``filters`` (rsync matches the daemon filter against paths relative to the
+        transfer root, so a subdir pull would miss the module-anchored rules). With
+        ``ignore_existing`` a file that already exists is skipped: for content-addressed files
+        (Kolibri, name = md5) it is the same file. The in-flight temp file and a kept partial
+        live in ``work_dir``, never under a final name in ``dest_dir``. Never deletes in
+        ``dest_dir`` and never touches its dir times (other content shares it). Progress is the
+        sum of the files completed, read from the client log (cumulative over retries)."""
+        kept, tmp = os.path.join(work_dir, "kept"), os.path.join(work_dir, "tmp")
+        log = os.path.join(work_dir, "transfer.log")
+        # A run that was killed (the app died) leaves its in-flight temp file here, and rsync never
+        # reuses it. Only one pull of this item runs at a time, so clear it before each run.
+        shutil.rmtree(tmp, ignore_errors=True)
+        for d in (kept, tmp, dest_dir):
+            os.makedirs(d, exist_ok=True)
+        url = f"rsync://{SHARE_USER}@{source['host']}:{source['port']}/{source['module']}/"
+        argv = [self._bin, "-r", "-t", "--omit-dir-times", f"--partial-dir={kept}",
+                f"--temp-dir={tmp}", f"--log-file={log}", "--log-file-format=%o %l",
+                f"--timeout={IO_TIMEOUT_SECONDS}", f"--contimeout={CONNECT_TIMEOUT_SECONDS}"]
+        if ignore_existing:
+            argv.append("--ignore-existing")
+        argv += [f"--filter={rule}" for rule in filters]
+        argv += [url, dest_dir.rstrip("/") + "/"]
+        env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "RSYNC_PASSWORD": source["token"]}
+        tally = _LogTally(log)
+
+        def on_disk() -> int:
+            # Completed files plus the file in flight (its temp lives in tmp): the liveness
+            # signal, since the parent rsync (the generator) moves almost nothing itself.
+            return tally.read() + _dir_bytes(tmp)
+
+        def progress(_activity: int) -> None:
+            if on_progress is not None:
+                on_progress(tally.read())
+
+        return self._runner(argv, env, dest_dir=None, should_cancel=should_cancel,
+                            on_progress=progress, log=_LOG, activity_fn=on_disk)
+
+
+def _dir_bytes(path: str) -> int:
+    """Bytes of the files directly in ``path`` (the rsync temp dir holds one in-flight file)."""
+    total = 0
+    try:
+        with os.scandir(path) as it:
+            for e in it:
+                if e.is_file(follow_symlinks=False):
+                    total += e.stat(follow_symlinks=False).st_size
+    except OSError:
+        pass
+    return total
+
+
+class _LogTally:
+    """Sums the "recv <length>" lines the rsync client appends to its log, reading only the
+    new bytes on each call (the log can hold thousands of lines)."""
+
+    _LINE = re.compile(r"\brecv (\d+)\s*$")
+
+    def __init__(self, path: str):
+        self._path = path
+        self._offset = 0
+        self._total = 0
+
+    def read(self) -> int:
+        try:
+            with open(self._path, "rb") as f:
+                f.seek(self._offset)
+                chunk = f.read()
+        except OSError:
+            return self._total
+        end = chunk.rfind(b"\n") + 1  # leave a half-written last line for the next read
+        self._offset += end
+        for line in chunk[:end].decode("utf-8", "replace").splitlines():
+            m = self._LINE.search(line)
+            if m:
+                self._total += int(m.group(1))
+        return self._total
+
 
 def sweep_partials(partial_root: str, max_age: float = PARTIAL_MAX_AGE_SECONDS,
                    now: Optional[float] = None) -> None:
