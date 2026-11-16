@@ -1534,7 +1534,6 @@
     <string name="k2go_cx_share_done">Ó parí</string>
     <string name="k2go_cx_share_stop">Dúró</string>
     <string name="k2go_cx_share_notif_title">ń pín àkóónú</string>
-    <string name="k2go_cx_share_notif_text">Hotspot àti pínpín yóò wà ní ṣíṣí.</string>
     <string name="k2go_cx_share_channel_name">Pínpín àkóónú</string>
     <string name="k2go_cx_toggle_group">Fi han tabi fi awọn nkan pamọ</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1620,4 +1619,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Èyí dá ẹ̀dà èyíkéyìí tí ń lọ lọ́wọ́ dúró. Fóònù kejì yóò pàdánù ìlọsíwájú rẹ̀, ó sì gbọ́dọ̀ bẹ̀rẹ̀ lẹ́ẹ̀kan sí i pẹ̀lú kóòdù tuntun.</string>
     <string name="k2go_connect_switch_msg">Àwọn ẹ̀rọ tí ó darapọ̀ mọ́ hotspot yìí yóò pàdánù ìsopọ̀ wọn.</string>
+    <string name="k2go_cx_share_notif_open">Pínpín yóò wà ní ṣíṣí títí o fi dá a dúró.</string>
 </resources>

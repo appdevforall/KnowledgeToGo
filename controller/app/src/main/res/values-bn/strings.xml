@@ -1527,7 +1527,6 @@
     <string name="k2go_cx_share_done">সম্পন্ন</string>
     <string name="k2go_cx_share_stop">বন্ধ করুন</string>
     <string name="k2go_cx_share_notif_title">কন্টেন্ট শেয়ার করা হচ্ছে</string>
-    <string name="k2go_cx_share_notif_text">হটস্পট এবং শেয়ার খোলা থাকে।</string>
     <string name="k2go_cx_share_channel_name">কন্টেন্ট শেয়ারিং</string>
     <string name="k2go_cx_toggle_group">আইটেম দেখান বা লুকান</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1613,4 +1612,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">এটি চলমান যেকোনো কপি বন্ধ করে। অন্য ফোনটি তার অগ্রগতি হারায় এবং নতুন কোড দিয়ে আবার শুরু করতে হবে।</string>
     <string name="k2go_connect_switch_msg">এই হটস্পটে যুক্ত ডিভাইসগুলির সংযোগ বিচ্ছিন্ন হবে।</string>
+    <string name="k2go_cx_share_notif_open">আপনি বন্ধ না করা পর্যন্ত শেয়ার খোলা থাকে।</string>
 </resources>

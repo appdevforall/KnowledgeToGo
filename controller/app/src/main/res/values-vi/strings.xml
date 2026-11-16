@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_share_done">Xong</string>
     <string name="k2go_cx_share_stop">Dừng</string>
     <string name="k2go_cx_share_notif_title">Đang chia sẻ nội dung</string>
-    <string name="k2go_cx_share_notif_text">Điểm phát sóng và phiên chia sẻ vẫn mở.</string>
     <string name="k2go_cx_share_channel_name">Chia sẻ nội dung</string>
     <string name="k2go_cx_toggle_group">Hiện hoặc ẩn các mục</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1599,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Thao tác này dừng mọi quá trình sao chép đang diễn ra. Điện thoại kia sẽ mất tiến trình và phải bắt đầu lại bằng mã mới.</string>
     <string name="k2go_connect_switch_msg">Các thiết bị đã tham gia điểm phát sóng này sẽ mất kết nối.</string>
+    <string name="k2go_cx_share_notif_open">Chia sẻ vẫn mở cho đến khi bạn dừng.</string>
 </resources>

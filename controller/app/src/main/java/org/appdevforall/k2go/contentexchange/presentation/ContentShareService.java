@@ -244,7 +244,7 @@ public final class ContentShareService extends Service {
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_cx_share_notif_title))
-                .setContentText(getString(R.string.k2go_cx_share_notif_text))
+                .setContentText(getString(R.string.k2go_cx_share_notif_open))
                 .setSmallIcon(android.R.drawable.stat_sys_upload)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

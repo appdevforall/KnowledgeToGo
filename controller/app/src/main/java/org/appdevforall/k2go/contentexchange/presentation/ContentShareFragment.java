@@ -153,11 +153,6 @@ public class ContentShareFragment extends Fragment {
                 render();
             }
         });
-        // Apply the choice on entry and on every return: Hotspot holds the hotspot (asks the
-        // permission once), Wi-Fi keeps it released.
-        if (session.hasSession() && mode().ensure()) {
-            hotspotPerm.launch(HotspotPermissions.required());
-        }
         render();
     }
 
@@ -188,6 +183,11 @@ public class ContentShareFragment extends Fragment {
         if (!session.hasSession()) {
             goBack();
             return;
+        }
+        // Apply the choice on every render, not only on resume: the service opens the session after
+        // this screen first resumes. Hotspot holds the hotspot and asks the permission at most once.
+        if (mode().ensure()) {
+            hotspotPerm.launch(HotspotPermissions.required());
         }
         // Same "N selected : size" line Content manager showed before Share.
         subtitle.setText(getString(R.string.k2go_cx_selected_fmt, session.itemCount(),
@@ -290,10 +290,7 @@ public class ContentShareFragment extends Fragment {
      * after a denied permission).
      */
     private void requestMode(HotspotMode.Mode target) {
-        LocalHotspotManager.State st = hs.state().getValue();
-        boolean dropsClients = mode().isHotspot() && target == HotspotMode.Mode.WIFI
-                && st != null && st.mayHaveClients();
-        if (!dropsClients) {
+        if (!mode().switchDropsClients(target)) {
             setMode(target);
             return;
         }

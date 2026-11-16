@@ -1591,7 +1591,6 @@
     <string name="k2go_cx_share_done">हो गया</string>
     <string name="k2go_cx_share_stop">रोकें</string>
     <string name="k2go_cx_share_notif_title">सामग्री साझा की जा रही है</string>
-    <string name="k2go_cx_share_notif_text">हॉटस्पॉट और शेयरिंग खुले रहते हैं।</string>
     <string name="k2go_cx_share_channel_name">सामग्री शेयरिंग</string>
     <string name="k2go_cx_toggle_group">आइटम दिखाएँ या छिपाएँ</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1677,4 +1676,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">इससे चल रही कोई भी कॉपी रुक जाती है। दूसरा फ़ोन अपनी प्रगति खो देता है और उसे नए कोड के साथ फिर से शुरू करना होगा।</string>
     <string name="k2go_connect_switch_msg">इस हॉटस्पॉट से जुड़े डिवाइस का कनेक्शन टूट जाएगा।</string>
+    <string name="k2go_cx_share_notif_open">जब तक आप इसे रोकते नहीं, साझा करना खुला रहता है।</string>
 </resources>

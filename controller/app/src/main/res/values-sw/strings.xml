@@ -1534,7 +1534,6 @@
     <string name="k2go_cx_share_done">Imekamilika</string>
     <string name="k2go_cx_share_stop">Simamisha</string>
     <string name="k2go_cx_share_notif_title">Inashiriki maudhui</string>
-    <string name="k2go_cx_share_notif_text">Hotspot na ushirikishaji vinasalia wazi.</string>
     <string name="k2go_cx_share_channel_name">Ushirikishaji wa maudhui</string>
     <string name="k2go_cx_toggle_group">Onyesha au ficha vipengele</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1620,4 +1619,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Hii inasimamisha unakili wowote unaoendelea. Simu nyingine inapoteza maendeleo yake na lazima ianze upya kwa msimbo mpya.</string>
     <string name="k2go_connect_switch_msg">Vifaa vilivyounganishwa kwenye hotspot hii vitapoteza muunganisho.</string>
+    <string name="k2go_cx_share_notif_open">Kushiriki kunabaki wazi hadi ukisimamishe.</string>
 </resources>

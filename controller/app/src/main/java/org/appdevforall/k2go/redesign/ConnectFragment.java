@@ -124,9 +124,7 @@ public class ConnectFragment extends Fragment {
 
     /** A tab tap. Leaving Hotspot gives it back and drops joined devices, so warn when some may be on. */
     private void requestMode(Mode target) {
-        LocalHotspotManager.State st = hs.state().getValue();
-        boolean dropsClients = hsMode.isHotspot() && target == Mode.WIFI && st != null && st.mayHaveClients();
-        if (!dropsClients) { setMode(target); return; }
+        if (!hsMode.switchDropsClients(target)) { setMode(target); return; }
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_clone_switch_title, getString(R.string.k2go_wifi)))
                 .setMessage(R.string.k2go_connect_switch_msg)

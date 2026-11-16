@@ -329,6 +329,12 @@ public final class LocalHotspotManager {
         start(context);
     }
 
+    /** True when releasing [holder] stops a hotspot that someone is, or may be, joined to. */
+    public boolean releaseDropsClients(HotspotHolders.Holder holder) {
+        State s = state.getValue();
+        return s != null && s.mayHaveClients() && holders.isOnly(holder);
+    }
+
     /** [holder] no longer needs the hotspot. Stops it when no other holder is left. */
     public void release(HotspotHolders.Holder holder) {
         if (holders.releaseLast(holder)) stop();

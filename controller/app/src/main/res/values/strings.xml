@@ -1709,7 +1709,6 @@
     <string name="k2go_cx_share_done">Done</string>
     <string name="k2go_cx_share_stop">Stop</string>
     <string name="k2go_cx_share_notif_title">Sharing content</string>
-    <string name="k2go_cx_share_notif_text">The hotspot and the share stay open.</string>
     <string name="k2go_cx_share_channel_name">Content sharing</string>
     <string name="k2go_cx_toggle_group">Show or hide items</string>
     <!-- K2GO-376 wireless Share (receiver) strings (migrated from strings_untranslated.xml). -->
@@ -1797,4 +1796,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">This stops any copy in progress. The other phone loses its progress and must start again with a new code.</string>
     <string name="k2go_connect_switch_msg">Devices joined to this hotspot lose their connection.</string>
+    <string name="k2go_cx_share_notif_open">The share stays open until you stop it.</string>
 </resources>

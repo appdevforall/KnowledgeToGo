@@ -28,6 +28,7 @@ public final class HotspotMode {
         boolean isOn();
         void acquire();
         void release();
+        boolean releaseDropsClients();
     }
 
     private final Port port;
@@ -51,6 +52,7 @@ public final class HotspotMode {
             @Override public boolean isOn() { return hs.isOn(); }
             @Override public void acquire() { hs.acquire(app, holder); }
             @Override public void release() { hs.release(holder); }
+            @Override public boolean releaseDropsClients() { return hs.releaseDropsClients(holder); }
         }, initial);
     }
 
@@ -94,6 +96,14 @@ public final class HotspotMode {
             return true;
         }
         return false;
+    }
+
+    /**
+     * True when a switch to [target] turns off a hotspot that someone may be joined to: this screen
+     * is its last holder. The screen asks the user first.
+     */
+    public boolean switchDropsClients(Mode target) {
+        return mode == Mode.HOTSPOT && target == Mode.WIFI && port.releaseDropsClients();
     }
 
     /** Re-apply on a return to the screen or after the permission answer; never asks again. */

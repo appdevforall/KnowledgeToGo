@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_share_done">تم</string>
     <string name="k2go_cx_share_stop">إيقاف</string>
     <string name="k2go_cx_share_notif_title">جارٍ مشاركة المحتوى</string>
-    <string name="k2go_cx_share_notif_text">تظل نقطة الاتصال والمشاركة مفتوحتين.</string>
     <string name="k2go_cx_share_channel_name">مشاركة المحتوى</string>
     <string name="k2go_cx_toggle_group">إظهار أو إخفاء العناصر</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1599,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">هذا يوقف أي نسخ جارٍ. يفقد الهاتف الآخر تقدّمه ويجب أن يبدأ من جديد برمز جديد.</string>
     <string name="k2go_connect_switch_msg">تفقد الأجهزة المتصلة بنقطة الاتصال هذه اتصالها.</string>
+    <string name="k2go_cx_share_notif_open">تبقى المشاركة مفتوحة حتى توقفها.</string>
 </resources>

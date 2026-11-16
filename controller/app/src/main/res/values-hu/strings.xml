@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_share_done">Kész</string>
     <string name="k2go_cx_share_stop">Leállítás</string>
     <string name="k2go_cx_share_notif_title">Tartalom megosztása</string>
-    <string name="k2go_cx_share_notif_text">A hotspot és a megosztás nyitva marad.</string>
     <string name="k2go_cx_share_channel_name">Tartalommegosztás</string>
     <string name="k2go_cx_toggle_group">Elemek megjelenítése vagy elrejtése</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1599,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Ez leállít minden folyamatban lévő másolást. A másik telefon elveszíti az előrehaladását, és új kóddal kell újrakezdenie.</string>
     <string name="k2go_connect_switch_msg">A hotspothoz csatlakozott eszközök elveszítik a kapcsolatot.</string>
+    <string name="k2go_cx_share_notif_open">A megosztás nyitva marad, amíg le nem állítja.</string>
 </resources>

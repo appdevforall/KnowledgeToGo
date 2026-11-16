@@ -1515,7 +1515,6 @@
     <string name="k2go_cx_share_done">完了</string>
     <string name="k2go_cx_share_stop">停止</string>
     <string name="k2go_cx_share_notif_title">コンテンツを共有中</string>
-    <string name="k2go_cx_share_notif_text">ホットスポットと共有は開いたままになります。</string>
     <string name="k2go_cx_share_channel_name">コンテンツ共有</string>
     <string name="k2go_cx_toggle_group">項目を表示または非表示</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1601,4 +1600,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">進行中のコピーはすべて停止します。もう一方のスマートフォンは進捗を失い、新しいコードでやり直す必要があります。</string>
     <string name="k2go_connect_switch_msg">このホットスポットに接続しているデバイスは接続が切れます。</string>
+    <string name="k2go_cx_share_notif_open">停止するまで共有は開いたままです。</string>
 </resources>

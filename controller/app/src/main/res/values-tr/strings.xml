@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_share_done">Bitti</string>
     <string name="k2go_cx_share_stop">Durdur</string>
     <string name="k2go_cx_share_notif_title">İçerik paylaşılıyor</string>
-    <string name="k2go_cx_share_notif_text">Etkin nokta ve paylaşım açık kalır.</string>
     <string name="k2go_cx_share_channel_name">İçerik paylaşımı</string>
     <string name="k2go_cx_toggle_group">Öğeleri göster veya gizle</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1599,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Bu, devam eden tüm kopyalamaları durdurur. Diğer telefon ilerlemesini kaybeder ve yeni bir kodla yeniden başlamalıdır.</string>
     <string name="k2go_connect_switch_msg">Bu etkin noktaya bağlı cihazların bağlantısı kesilir.</string>
+    <string name="k2go_cx_share_notif_open">Paylaşım siz durdurana kadar açık kalır.</string>
 </resources>

@@ -1514,7 +1514,6 @@
     <string name="k2go_cx_share_done">Готово</string>
     <string name="k2go_cx_share_stop">Зупинити</string>
     <string name="k2go_cx_share_notif_title">Надсилання вмісту</string>
-    <string name="k2go_cx_share_notif_text">Точка доступу та надсилання залишаються відкритими.</string>
     <string name="k2go_cx_share_channel_name">Обмін вмістом</string>
     <string name="k2go_cx_toggle_group">Показати або сховати елементи</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1599,5 @@
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Це зупиняє будь-яке поточне копіювання. Інший телефон втрачає прогрес і має почати знову з новим кодом.</string>
     <string name="k2go_connect_switch_msg">Пристрої, приєднані до цієї точки доступу, втратять з\'єднання.</string>
+    <string name="k2go_cx_share_notif_open">Надсилання залишається відкритим, доки ви його не зупините.</string>
 </resources>
