@@ -289,7 +289,7 @@ class RsyncPuller:
         # almost nothing while the receiver child writes, so its own I/O would look stalled.
         return self._runner(argv, env, dest_dir=os.path.dirname(dest_path),
                             should_cancel=should_cancel, on_progress=progress, log=_LOG,
-                            activity_fn=on_disk)
+                            activity_fn=on_disk, die_with_parent=True)
 
 
 def sweep_partials(partial_root: str, max_age: float = PARTIAL_MAX_AGE_SECONDS,

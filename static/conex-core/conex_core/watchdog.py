@@ -161,6 +161,17 @@ def _kill(proc: subprocess.Popen) -> None:
         pass
 
 
+def _die_with_parent() -> None:
+    """In the child, before exec: get SIGTERM when the parent dies (Linux PR_SET_PDEATHSIG). A pull
+    must not outlive the core that owns it, or a Retry starts a second writer on the same partial
+    file. Best effort: a host without prctl keeps the default."""
+    try:
+        import ctypes
+        ctypes.CDLL(None).prctl(1, signal.SIGTERM)  # 1 = PR_SET_PDEATHSIG
+    except Exception:
+        pass
+
+
 def classify_exit(returncode: int) -> SuperviseResult:
     """Map a child return code to a result. A negative code is death by signal; signal 9 (SIGKILL)
     on a child that was not cancelled is almost always the OOM killer, so it is named as such."""
@@ -181,14 +192,16 @@ def run_supervised(argv, env, *, dest_dir: Optional[str] = None,
                    poll_seconds: float = 1.0, floor_seconds: float = 120.0,
                    gap_multiplier: float = 4.0, cpu_grace: float = 3.0,
                    on_progress: Optional[Callable[[int], None]] = None,
-                   log=None, activity_fn: Optional[Callable[[], int]] = None) -> SuperviseResult:
+                   log=None, activity_fn: Optional[Callable[[], int]] = None,
+                   die_with_parent: bool = False) -> SuperviseResult:
     """Run argv as a child and supervise it by liveness. The child's stdout/stderr go to DEVNULL
     (the caller owns user output). dest_dir is the directory whose growth is the byte-progress
     fallback when /proc/<pid>/io is unreadable. should_cancel is polled each interval; True
     terminates the child and returns CANCELLED. on_progress(activity_bytes) is called each poll so
     the caller can surface progress."""
     try:
-        proc = subprocess.Popen(argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        proc = subprocess.Popen(argv, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                preexec_fn=_die_with_parent if die_with_parent and os.name == "posix" else None)
     except OSError as exc:
         # The child could not start at all (a missing binary, a bad interpreter). Own it here as a
         # clean failure rather than letting the raw OSError escape the supervisor.
