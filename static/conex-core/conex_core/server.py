@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
@@ -18,6 +19,7 @@ from .import_ops import ImportOps
 from .ports import ExportStream
 from .registry import Registry
 from .router import dispatch
+from .rsync_share import RsyncDaemon, RsyncPuller
 from .share_ops import ShareOps
 
 _MAX_BODY = 1 * 1024 * 1024  # a plan request is small; cap the read defensively
@@ -163,8 +165,13 @@ def serve(config: Config) -> None:
                         format="%(asctime)s conex-core %(levelname)s %(message)s")
     registry = Registry.load(config)
     ops = ExportOps(registry, config.staging_dir)
-    import_ops = ImportOps(registry, registry.import_root)
-    share = ShareOps(registry, ops)
+    import_ops = ImportOps(registry, registry.import_root, partial_root=config.partial_dir,
+                           puller=RsyncPuller(config.rsync_bin))
+    rsync = None
+    if config.share_rsync_port:
+        rsync = RsyncDaemon(os.path.join(config.staging_dir, "rsyncd"), config.share_rsync_port,
+                            config.rsync_bin)
+    share = ShareOps(registry, ops, rsync=rsync)
     # Reclaim op temps left by a dead process before serving (the process-death cleanup owner): a
     # fresh process holds no ops, so any op temp on disk is an orphan. Export reclaims its staging
     # temps, import its work temps; the share sweep then drops any in-memory sessions (K2GO-376

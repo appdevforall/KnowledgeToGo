@@ -33,7 +33,9 @@ from ..model import (
     Identity,
     ManifestItem,
 )
-from ..ports import ContentAdapter, ExportPlan, ExportStream
+from ..importing import volume_nearly_full
+from ..ports import ContentAdapter, ExportPlan, ExportStream, ShareFiles
+from ..watchdog import CANCELLED
 
 # openzim header: magic number is uint32 little-endian 0x044D495A at offset 0, and the
 # 16-byte UUID is at offset 8. We only need the first 24 bytes.
@@ -235,6 +237,43 @@ class KiwixAdapter(ContentAdapter):
             if exc.errno == errno.ENOSPC:
                 failure["code"] = "no_space"
             return failure
+        self._reindex()
+        return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
+
+    def share_files(self, local_ref: str) -> Optional[ShareFiles]:
+        # A ZIM is one file in the zims dir: the daemon serves only that file (K2GO-577).
+        path = self._export_path(local_ref)
+        if path is None:
+            return None
+        return ShareFiles(root=self._dir, files=[local_ref])
+
+    def pull_item(self, entry: dict, source: dict, partial_dir: str, puller,
+                  should_cancel=None, on_progress=None) -> dict:
+        # Pull the ZIM into a partial file on the same volume (resumable), then rename it into
+        # the zims dir and re-index. The rename is the commit: Kiwix never sees a partial ZIM.
+        local_ref = (entry.get("identity") or {}).get("localRef", "")
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return {"ok": False, "reason": "invalid localRef"}
+        part_dir = os.path.join(partial_dir, "kiwix")
+        os.makedirs(part_dir, exist_ok=True)
+        part = os.path.join(part_dir, local_ref)
+        result = puller.pull_file(source, local_ref, part, should_cancel=should_cancel,
+                                  on_progress=on_progress)
+        if result.state == CANCELLED:
+            return {"ok": False, "reason": "import cancelled"}
+        if not result.ok:
+            failure = {"ok": False, "reason": f"transfer {result.detail}"}
+            if volume_nearly_full(part_dir):
+                failure["code"] = "no_space"
+            return failure
+        os.makedirs(self._dir, exist_ok=True)
+        dest = os.path.join(self._dir, local_ref)
+        try:
+            os.replace(part, dest)
+        except OSError as exc:
+            if exc.errno != errno.EXDEV:
+                return {"ok": False, "reason": f"move failed: {exc}"}
+            shutil.move(part, dest)  # the partial dir is on another volume: copy once
         self._reindex()
         return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
 

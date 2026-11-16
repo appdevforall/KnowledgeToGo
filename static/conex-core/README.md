@@ -38,6 +38,10 @@ Environment (defaults match the box layout):
 
 - `CONEX_HOST` (default `127.0.0.1`), `CONEX_PORT` (default `9500`).
 - `CONEX_ZIMS_DIR` (default `/library/zims/content/`): where the ZIM files live.
+- `CONEX_SHARE_RSYNC_PORT` (default `9873`, `0` = off): the share rsync daemon port. The
+  daemon listens on all interfaces only while a share session is open (K2GO-577).
+- `CONEX_RSYNC_BIN` (default `/usr/bin/rsync`), `CONEX_PARTIAL_DIR` (default
+  `/library/.conex-partial`): the rsync binary and where a pull keeps resumable partial files.
 
 ## Endpoints
 

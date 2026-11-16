@@ -167,6 +167,11 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
                 return 500, {"error": "share unavailable"}
             items = body.get("items") if isinstance(body, dict) else None
             return share.create(items)
+        # POST /v1/share/{sessionId}/progress : the receiver reports one item's progress.
+        if len(segments) == 4 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "progress":
+            if share is None:
+                return 500, {"error": "share unavailable"}
+            return share.report_progress(segments[2], token, body)
         # POST /v1/share/{sessionId}/complete : the receiver signals a clean, done transfer.
         if len(segments) == 4 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "complete":
             if share is None:
@@ -185,7 +190,11 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
             if import_ops is None:
                 return 500, {"error": "import ops unavailable"}
             if not isinstance(body, dict):
-                return 400, {"error": "body must be {app, entry, payloadPath}"}
+                return 400, {"error": "body must be {app, entry, payloadPath} or {app, entry, source}"}
+            # A source instead of a payloadPath: pull the item from a sender's rsync module
+            # straight into place (K2GO-577).
+            if "source" in body:
+                return import_ops.start_pull(body.get("app"), body.get("entry"), body.get("source"))
             return import_ops.start(body.get("app"), body.get("entry"), body.get("payloadPath"))
         return 404, {"error": "not found"}
 
@@ -245,6 +254,12 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         if share is None:
             return 500, {"error": "share unavailable"}
         return share.manifest(segments[2], token)
+
+    # GET /v1/share/{sessionId}/progress : the receiver's last progress report per item.
+    if len(segments) == 4 and segments[0] == "v1" and segments[1] == "share" and segments[3] == "progress":
+        if share is None:
+            return 500, {"error": "share unavailable"}
+        return share.progress(segments[2], token)
 
     # GET /v1/share/{sessionId}/fetch/{itemRef} : stream one shared item (payload is an
     # ExportStream the server streams). 409 while the item stages; the receiver retries.

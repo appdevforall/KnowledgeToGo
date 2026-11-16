@@ -51,6 +51,15 @@ access logs (it is the only auth). It is opaque, bound to the session (revoking 
 revokes the token) and scoped to the item set. The only surface a token holder reaches is
 /v1/share/* scoped to this session's items; the wider /v1 API is never widened.
 
+rsync transport (K2GO-577): when the box runs the share rsync daemon, each item an adapter can
+list as files is also a read-only daemon module, named "<sessionId>-<itemRef>", with the session
+token as its password. The manifest advertises it per item ({"rsync": {port, module}}), and a
+receiver that knows rsync pulls it straight into place (resumable) instead of the HTTP fetch. The
+session owns its modules: create adds them, every close (COMPLETE, CANCEL, safety cap) removes
+them, and the last close stops the daemon. The receiver reports per-item progress to the gate
+(POST .../progress), which keeps the session fresh during a long pull (the daemon itself reports
+nothing) and gives the sender its progress view (GET .../progress).
+
 This slice is loopback only: pairing (QR, hotspot, WLAN) is a later presentation slice and is
 outside the core, the way plugging in the Ethernet cable is not part of content exchange.
 """
@@ -64,6 +73,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple, Union
 
 from .registry import Registry
+from .rsync_share import Module
 
 Response = Tuple[int, Any]
 
@@ -87,8 +97,12 @@ class _Session:
     delivered: set = field(default_factory=set)
     # itemRefs with an open (or opening) stream: single-flight + "do not cap mid-transfer".
     streaming: set = field(default_factory=set)
-    # Last activity, for the safety cap only (bumped on manifest / fetch / complete / close).
+    # Last activity, for the safety cap only (bumped on manifest / fetch / progress / complete).
     last_seen: float = field(default_factory=time.monotonic)
+    # itemRef -> the rsync daemon module that serves it (K2GO-577). Empty without the daemon.
+    modules: Dict[str, Module] = field(default_factory=dict)
+    # itemRef -> the receiver's last progress report {movedBytes, totalBytes, state}.
+    progress: Dict[str, dict] = field(default_factory=dict)
 
 
 class ShareOps:
@@ -97,10 +111,11 @@ class ShareOps:
     delegates every per-item transfer (the connection lifetime) to it."""
 
     def __init__(self, registry: Registry, export_ops,
-                 safety_cap_seconds: int = DEFAULT_SAFETY_CAP_SECONDS):
+                 safety_cap_seconds: int = DEFAULT_SAFETY_CAP_SECONDS, rsync=None):
         self._registry = registry
         self._export = export_ops
         self._cap = safety_cap_seconds
+        self._rsync = rsync  # the RsyncDaemon, or None: share over HTTP fetch only
         self._lock = threading.Lock()
         self._sessions: Dict[str, _Session] = {}
 
@@ -126,8 +141,11 @@ class ShareOps:
                 scoped.append(key)
         session_id = secrets.token_hex(16)
         token = secrets.token_urlsafe(32)
+        session = _Session(token=token, items=scoped)
+        session.modules = self._modules_for(session_id, token, scoped)
         with self._lock:
-            self._sessions[session_id] = _Session(token=token, items=scoped)
+            self._sessions[session_id] = session
+        self._sync_daemon()
         # The pointer carries no token: the QR carries the address, the token and this pointer
         # as separate fields (ADR), and the receiver sends the token as the X-Share-Token header.
         return 200, {
@@ -151,6 +169,7 @@ class ShareOps:
         found: List[dict] = []
         missing: List[dict] = []
         total = 0
+        serving = self._rsync is not None and self._rsync.running()
         for index, (app, local_ref) in enumerate(session.items):
             item_ref = str(index)
             if not self._registry.has(app):
@@ -165,6 +184,9 @@ class ShareOps:
             entry = item.to_json()
             entry["itemRef"] = item_ref
             entry["delivered"] = item_ref in session.delivered
+            module = session.modules.get(item_ref)
+            if module is not None and serving:
+                entry["rsync"] = {"port": self._rsync.port, "module": module.name}
             found.append(entry)
             total += item.bytes
         return 200, {"sessionId": session_id, "items": found, "missing": missing,
@@ -219,6 +241,44 @@ class ShareOps:
             if not keep:
                 self._release_streaming(session_id, item_ref)
 
+    def report_progress(self, session_id: str, token: Any, body: Any) -> Response:
+        """The receiver reports one item's progress {itemRef, movedBytes, totalBytes, state}.
+        Advisory, like ``delivered``: it feeds the sender's view and keeps the session fresh; a
+        state "done" also marks the item delivered."""
+        session = self._resolve(session_id, token)
+        if isinstance(session, tuple):
+            return session
+        if not isinstance(body, dict):
+            return 400, {"error": "body must be {itemRef, movedBytes, totalBytes, state}"}
+        item_ref = body.get("itemRef")
+        if not isinstance(item_ref, str) or self._item(session, item_ref) is None:
+            return 404, {"error": "unknown item"}
+        report = {}
+        for key in ("movedBytes", "totalBytes"):
+            value = body.get(key)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                return 400, {"error": f"{key} must be a non-negative integer"}
+            report[key] = value
+        state = body.get("state")
+        if state not in ("running", "done", "error"):
+            return 400, {"error": "state must be running, done or error"}
+        report["state"] = state
+        with self._lock:
+            session.progress[item_ref] = report
+            if state == "done":
+                session.delivered.add(item_ref)
+        return 200, {"ok": True}
+
+    def progress(self, session_id: str, token: Any) -> Response:
+        """The sender's view: the last progress the receiver reported per item."""
+        session = self._resolve(session_id, token)
+        if isinstance(session, tuple):
+            return session
+        with self._lock:
+            items = [dict(report, itemRef=ref, delivered=ref in session.delivered)
+                     for ref, report in sorted(session.progress.items(), key=lambda kv: int(kv[0]))]
+        return 200, {"sessionId": session_id, "items": items}
+
     def complete(self, session_id: str, token: Any) -> Response:
         """Clean-success close: the receiver has every item it wanted and releases the session.
         This is the receiver-driven close (supersedes any drop-based auto-close). Revokes the
@@ -241,6 +301,8 @@ class ShareOps:
         that single sweep avoids a second temp owner."""
         with self._lock:
             self._sessions.clear()
+        if self._rsync is not None:
+            self._rsync.sweep_startup()
 
     # ---- token + item resolution ----
 
@@ -274,6 +336,8 @@ class ShareOps:
             child_ops = list(session.item_ops.values())
         for op_id in child_ops:
             self._export.delete(op_id)  # drops each child op + removes its staged temp
+        if session.modules:
+            self._sync_daemon()  # revoke its rsync modules too (and stop an idle daemon)
         return 200, {"ok": True}
 
     @staticmethod
@@ -392,3 +456,30 @@ class ShareOps:
         for session in capped:
             for op_id in list(session.item_ops.values()):
                 self._export.delete(op_id)
+        if any(session.modules for session in capped):
+            self._sync_daemon()
+
+    # ---- rsync daemon (K2GO-577) ----
+
+    def _modules_for(self, session_id: str, token: str, items) -> Dict[str, Module]:
+        """One daemon module per item the adapter can list as files. Empty without the daemon."""
+        if self._rsync is None:
+            return {}
+        modules: Dict[str, Module] = {}
+        for index, (app, local_ref) in enumerate(items):
+            if not self._registry.has(app):
+                continue
+            files = self._registry.get(app).share_files(local_ref)
+            if files is not None:
+                item_ref = str(index)
+                modules[item_ref] = Module(name=f"{session_id}-{item_ref}", root=files.root,
+                                           files=list(files.files), secret=token)
+        return modules
+
+    def _sync_daemon(self) -> None:
+        """Make the daemon serve exactly the modules of the live sessions."""
+        if self._rsync is None:
+            return
+        with self._lock:
+            modules = [m for session in self._sessions.values() for m in session.modules.values()]
+        self._rsync.set_modules(modules)
