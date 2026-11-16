@@ -128,6 +128,23 @@ class PullItemTests(unittest.TestCase):
         self.assertFalse(adapter.pull_item(bad, SOURCE, self.partial, _Puller())["ok"])
 
 
+class DiscardTests(unittest.TestCase):
+    def test_discard_drops_the_work_dir_and_keeps_storage(self):
+        home, partial = _home(), tempfile.mkdtemp()
+        work = os.path.join(partial, "kolibri", CID, "tmp")
+        os.makedirs(work)
+        with open(os.path.join(work, ".x.mp4.ab12"), "wb") as f:
+            f.write(b"y" * 50)
+        storage_file = os.path.join(home, "content", "storage", "8", "b", F1 + ".png")
+        os.makedirs(os.path.dirname(storage_file))
+        open(storage_file, "w").close()
+        result = KolibriAdapter(os.path.join(home, "db.sqlite3")).discard_pull(
+            {"identity": {"localRef": CID}}, partial)
+        self.assertEqual(result, {"ok": True, "freedBytes": 50})
+        self.assertFalse(os.path.exists(os.path.join(partial, "kolibri", CID)))
+        self.assertTrue(os.path.exists(storage_file))
+
+
 class FinalizeTests(unittest.TestCase):
     def test_commands_scan_before_importcontent(self):
         cmds = pull_finalize_commands(CID, "/w/src", "/usr/bin/kolibri")

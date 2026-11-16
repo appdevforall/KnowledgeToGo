@@ -383,6 +383,24 @@ class KolibriAdapter(ContentAdapter):
         shutil.rmtree(work, ignore_errors=True)
         return {"ok": True, "app": "kolibri", "localRef": channel_id}
 
+    def discard_pull(self, entry: dict, partial_dir: str) -> dict:
+        # Drop the work dir (the channel DB, the in-flight temp and a kept partial). The files that
+        # already arrived stay in Kolibri storage on purpose: a later pull of the channel reuses them
+        # (decision recorded in ADR-content-exchange, K2GO-577).
+        channel_id = (entry.get("identity") or {}).get("localRef", "")
+        if not _CHANNEL_ID_RE.match(channel_id or ""):
+            return {"ok": False, "reason": "invalid channel id"}
+        work = os.path.join(partial_dir, "kolibri", channel_id)
+        freed = 0
+        for dirpath, _dirs, files in os.walk(work):
+            for name in files:
+                try:
+                    freed += os.path.getsize(os.path.join(dirpath, name))
+                except OSError:
+                    pass
+        shutil.rmtree(work, ignore_errors=True)
+        return {"ok": True, "freedBytes": freed}
+
     def _pull_failure(self, reason: str) -> dict:
         failure = {"ok": False, "reason": reason}
         if volume_nearly_full(self._home):
