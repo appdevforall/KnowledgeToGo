@@ -291,7 +291,6 @@ class RsyncPuller:
                             should_cancel=should_cancel, on_progress=progress, log=_LOG,
                             activity_fn=on_disk)
 
-
     def pull_tree(self, source: dict, dest_dir: str, work_dir: str, filters=(),
                   ignore_existing: bool = True,
                   should_cancel: Optional[Callable[[], bool]] = None,
@@ -319,12 +318,30 @@ class RsyncPuller:
         env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "RSYNC_PASSWORD": source["token"]}
         tally = _LogTally(log)
 
+        def on_disk() -> int:
+            # Completed files plus the file in flight (its temp lives in tmp): the liveness
+            # signal, since the parent rsync (the generator) moves almost nothing itself.
+            return tally.read() + _dir_bytes(tmp)
+
         def progress(_activity: int) -> None:
             if on_progress is not None:
                 on_progress(tally.read())
 
         return self._runner(argv, env, dest_dir=None, should_cancel=should_cancel,
-                            on_progress=progress, log=_LOG)
+                            on_progress=progress, log=_LOG, activity_fn=on_disk)
+
+
+def _dir_bytes(path: str) -> int:
+    """Bytes of the files directly in ``path`` (the rsync temp dir holds one in-flight file)."""
+    total = 0
+    try:
+        with os.scandir(path) as it:
+            for e in it:
+                if e.is_file(follow_symlinks=False):
+                    total += e.stat(follow_symlinks=False).st_size
+    except OSError:
+        pass
+    return total
 
 
 class _LogTally:

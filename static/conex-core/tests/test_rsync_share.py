@@ -181,6 +181,32 @@ class SourceAndPullTests(unittest.TestCase):
         self.assertIn("--append-verify", seen["argv"])
         self.assertIn(f"rsync://{SHARE_USER}@192.168.43.1:9873/abc123-0/a.zim", seen["argv"])
 
+    def test_pull_tree_pulls_from_the_module_root_and_never_touches_other_content(self):
+        work, dest = tempfile.mkdtemp(), tempfile.mkdtemp()
+        seen = {}
+
+        def runner(argv, env, **kwargs):
+            seen["argv"], seen["env"] = argv, env
+            os.makedirs(os.path.join(work, "tmp"), exist_ok=True)
+            with open(os.path.join(work, "tmp", ".x.mp4.ab12"), "wb") as f:
+                f.write(b"y" * 7)  # the file in flight
+            with open(os.path.join(work, "transfer.log"), "w") as f:
+                f.write("2026/11/16 10:00:01 [9] recv 100" + chr(10))
+            seen["activity"] = kwargs["activity_fn"]()
+            return SuperviseResult(OK, 0, "ok")
+
+        RsyncPuller("/usr/bin/rsync", runner=runner).pull_tree(
+            SOURCE, dest, work, filters=("- /databases/",))
+        argv = seen["argv"]
+        self.assertEqual(argv[-2], f"rsync://{SHARE_USER}@192.168.43.1:9873/abc123-0/")
+        for flag in ("--ignore-existing", "--omit-dir-times", "--filter=- /databases/",
+                     f"--temp-dir={os.path.join(work, 'tmp')}",
+                     f"--partial-dir={os.path.join(work, 'kept')}"):
+            self.assertIn(flag, argv)
+        self.assertFalse(any(a.startswith("--delete") for a in argv))
+        self.assertNotIn("tok", " ".join(argv))
+        self.assertEqual(seen["activity"], 107)  # completed files + the file in flight
+
     def test_sweep_removes_only_old_partials(self):
         root = tempfile.mkdtemp()
         os.makedirs(os.path.join(root, "kiwix"))

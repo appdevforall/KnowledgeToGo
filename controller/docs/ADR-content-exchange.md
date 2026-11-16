@@ -1202,5 +1202,7 @@ Open:
 - Resume of a multi-GB partial on a slow phone (the --append-verify pre-read against the rsync
   I/O timeouts): to test.
 - IIAB: the host firewall must admit TCP 9873 when the share exposure is on.
+- Kolibri content location: the share assumes KOLIBRI_HOME/content (the K2Go and IIAB default).
+  A box that moves it with Kolibri's CONTENT_DIR or CONTENT_FALLBACK_DIRS is not covered yet.
 - conex-core is delivered with the rootfs today; a live update like dash-node is planned, so
   mixed versions become rare (the HTTP fallback covers the gap).
