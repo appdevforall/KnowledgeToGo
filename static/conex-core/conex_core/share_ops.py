@@ -172,7 +172,7 @@ class ShareOps:
         found: List[dict] = []
         missing: List[dict] = []
         total = 0
-        serving = self._rsync is not None and self._rsync.running()
+        serving = self._ensure_serving(session)
         for index, (app, local_ref) in enumerate(session.items):
             item_ref = str(index)
             if not self._registry.has(app):
@@ -266,6 +266,8 @@ class ShareOps:
         if state not in ("running", "done", "error"):
             return 400, {"error": "state must be running, done or error"}
         report["state"] = state
+        if state == "running":
+            self._ensure_serving(session)  # a Retry pull needs the daemon up
         with self._lock:
             session.progress[item_ref] = report
             if state == "done":
@@ -478,6 +480,15 @@ class ShareOps:
                 modules[item_ref] = Module(name=f"{session_id}-{item_ref}", root=files.root,
                                            files=list(files.files), secret=token)
         return modules
+
+    def _ensure_serving(self, session: _Session) -> bool:
+        """True when the daemon serves this session's modules, restarting a daemon that died while
+        the session was open (set_modules restarts a dead process)."""
+        if self._rsync is None or not session.modules:
+            return False
+        if not self._rsync.running():
+            self._sync_daemon()
+        return self._rsync.running()
 
     def _sync_daemon(self) -> None:
         """Make the daemon serve exactly the modules of the live sessions."""

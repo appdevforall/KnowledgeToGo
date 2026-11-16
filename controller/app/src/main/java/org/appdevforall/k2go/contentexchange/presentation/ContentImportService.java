@@ -477,7 +477,7 @@ public final class ContentImportService extends Service {
                       NetworkImportCarrier net, ExportJob job) throws Exception {
         String itemRef = SESSION.payloadName(i);
         long[] last = {0L, 0L};                                   // moved, total
-        long[] window = {SystemClock.elapsedRealtime(), job.copiedTotal(), 0L};   // at, bytes, reportAt
+        long[] window = {-1L, 0L, 0L};                            // at, bytes, reportAt
         try {
             runBoxOp(source, () -> source.startPull(ref.app(), SESSION.entryJson(i), LOOPBACK,
                     relay.localPort(), target.module(), SESSION.shareToken()), (moved, total) -> {
@@ -485,7 +485,12 @@ public final class ContentImportService extends Service {
                 last[1] = total;
                 job.setCopied(i, moved);
                 long now = SystemClock.elapsedRealtime();
-                if (now - window[0] >= RATE_WINDOW_MS) {
+                if (window[0] < 0) {
+                    // Anchor the rate on the first reading: a resumed pull starts at its kept bytes,
+                    // which must not count as bytes moved in this window.
+                    window[0] = now;
+                    window[1] = job.copiedTotal();
+                } else if (now - window[0] >= RATE_WINDOW_MS) {
                     sampleRate(job, now - window[0], job.copiedTotal() - window[1]);
                     window[0] = now;
                     window[1] = job.copiedTotal();
@@ -545,6 +550,9 @@ public final class ContentImportService extends Service {
             pollErrors = 0;
             switch (st.state()) {
                 case DONE:
+                    if (sink != null) {
+                        sink.onMoved(st.movedBytes(), st.totalBytes());
+                    }
                     // Release the consumed op now (an idempotent drop on the box), so a finished
                     // import does not linger until the TTL sweep. This is import's normal-completion
                     // cleanup, since it has no fetch stream whose close drops the op as export does.

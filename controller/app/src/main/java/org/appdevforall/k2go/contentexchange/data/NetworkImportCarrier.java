@@ -36,6 +36,9 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * One Share session as an {@link ImportCarrier}, read over the hotspot from the sender's gate. The
@@ -81,6 +84,8 @@ public final class NetworkImportCarrier implements ImportCarrier {
     private final String token;
     private final String manifestUrl;
     private final Cancellation cancel;
+    /** Progress reports to the sender (K2GO-577). Its one thread ends on its own when idle. */
+    private final ThreadPoolExecutor reporter;
 
     public NetworkImportCarrier(Context context, String host, int port, String token,
                                 String manifestUrl, Cancellation cancel) {
@@ -90,6 +95,13 @@ public final class NetworkImportCarrier implements ImportCarrier {
         this.token = token;
         this.manifestUrl = manifestUrl;
         this.cancel = cancel != null ? cancel : () -> false;
+        this.reporter = new ThreadPoolExecutor(1, 1, 10L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(1), r -> {
+                    Thread t = new Thread(r, "share-progress");
+                    t.setDaemon(true);
+                    return t;
+                }, new ThreadPoolExecutor.DiscardOldestPolicy());
+        this.reporter.allowCoreThreadTimeOut(true);
     }
 
     @Override
@@ -188,6 +200,12 @@ public final class NetworkImportCarrier implements ImportCarrier {
         if (!ShareUrls.isValidItemRef(itemRef)) {
             return;
         }
+        // Off the import thread, so an unreachable sender never stalls the poll loop. One report
+        // in flight and one queued; an older queued report is dropped for the newer one.
+        reporter.execute(() -> postProgress(itemRef, movedBytes, totalBytes, state));
+    }
+
+    private void postProgress(String itemRef, long movedBytes, long totalBytes, String state) {
         try {
             JSONObject body = new JSONObject()
                     .put("itemRef", itemRef)

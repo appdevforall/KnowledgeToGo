@@ -275,6 +275,23 @@ class ShareGateRsyncTests(unittest.TestCase):
         self.assertEqual(view["items"], [{"itemRef": "0", "movedBytes": 5, "totalBytes": 5,
                                           "state": "done", "delivered": True}])
 
+    def test_dead_daemon_is_restarted_by_manifest_and_progress(self):
+        daemon = _RecDaemon()
+        share = self._share(_ShareFake({"a.zim": 5}), daemon)
+        _, created = share.create([{"app": "kiwix", "localRef": "a.zim"}])
+        sid, token = created["sessionId"], created["token"]
+        calls = []
+        real_set = daemon.set_modules
+        daemon.set_modules = lambda modules: calls.append(len(modules)) or real_set(modules)
+        daemon.modules = []  # the daemon died: it serves nothing
+        _, manifest = share.manifest(sid, token)
+        self.assertEqual(calls, [1])
+        self.assertIn("rsync", manifest["items"][0])
+        daemon.modules = []
+        share.report_progress(sid, token, {"itemRef": "0", "movedBytes": 1, "totalBytes": 5,
+                                           "state": "running"})
+        self.assertEqual(calls, [1, 1])
+
     def test_startup_sweep_reaches_the_daemon(self):
         daemon = _RecDaemon()
         self._share(_ShareFake({}), daemon).sweep_startup()
