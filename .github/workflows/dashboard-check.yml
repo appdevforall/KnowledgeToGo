@@ -1,4 +1,4 @@
-name: Dash: typecheck + tests
+name: "Dash: typecheck + tests"
 
 # The device dashboard (static/dashboard) is Node + TypeScript and boots via ts-node,
 # which type-checks on start — so a TS error can stop it booting. Nothing else in CI

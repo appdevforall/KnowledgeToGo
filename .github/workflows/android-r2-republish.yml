@@ -1,4 +1,4 @@
-name: App: republish to R2
+name: "App: republish to R2"
 
 # INTERIM / TEMPORARY tool (K2GO-457). It pushes the website APK (standard flavor) and the Play AAB
 # (play flavor) to Cloudflare R2 BETWEEN tagged releases. Files are named after versionName, so a

@@ -1,4 +1,4 @@
-name: Bins: build static (PRoot)
+name: "Bins: build static (PRoot)"
 
 on:
   workflow_dispatch:

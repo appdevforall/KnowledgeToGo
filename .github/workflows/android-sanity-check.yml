@@ -1,4 +1,4 @@
-name: App: CI checks
+name: "App: CI checks"
 
 on:
   # One run per PR (pull_request) and one post-merge on the integration branches.
