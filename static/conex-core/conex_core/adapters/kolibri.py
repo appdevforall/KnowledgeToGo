@@ -13,6 +13,7 @@ content nodes, and a flat join would count its bytes once per node.
 from __future__ import annotations
 
 import errno
+import json
 import logging
 import os
 import re
@@ -36,7 +37,7 @@ from ..model import (
     Identity,
     ManifestItem,
 )
-from ..ports import ContentAdapter, ExportPlan, ExportStream
+from ..ports import ContentAdapter, ExportPlan, ExportStream, ShareFiles
 
 _CHANNEL_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 
@@ -64,6 +65,39 @@ def import_commands(channel_id: str, source: str, kolibri_bin: str) -> List[List
         base + ["importchannel", "disk", channel_id, source],
         base + ["importcontent", "disk", channel_id, source],
     ]
+
+
+def pull_finalize_commands(channel_id: str, source: str, kolibri_bin: str) -> List[List[str]]:
+    """The Kolibri commands that link a pulled channel (K2GO-577), in order: register the channel
+    DB, mark the files already in storage available, then importcontent (copies nothing: every
+    file is in place) to set admin_imported on the manifest's nodes. The scan must run first:
+    importcontent alone counts files not yet marked available against free space, and fails on a
+    fuller disk. Pure (argv only). The manifest is written between the scan and importcontent."""
+    base = [kolibri_bin, "manage"]
+    return [
+        base + ["importchannel", "disk", channel_id, source],
+        base + ["scanforcontent", "--channels", channel_id, "--channel-import-mode", "none"],
+        base + ["importcontent", "disk", channel_id, source],
+    ]
+
+
+# The files a channel holds on this box: its available local files (K2GO-577 share).
+_CHANNEL_FILES_SQL = """
+SELECT DISTINCT lf.id, lf.extension
+FROM content_localfile lf
+JOIN content_file f ON f.local_file_id = lf.id
+JOIN content_contentnode cn ON cn.id = f.contentnode_id
+WHERE cn.channel_id = ? AND lf.available = 1
+"""
+
+# The nodes a channel has available after the scan, for the import manifest.
+_AVAILABLE_NODES_SQL = """
+SELECT id FROM content_contentnode
+WHERE channel_id = ? AND available = 1 AND kind != 'topic'
+"""
+
+_FILE_ID_RE = re.compile(r"^[0-9a-f]{32}$")
+_EXT_RE = re.compile(r"^[A-Za-z0-9]{1,16}$")
 
 
 def delete_command(channel_id: str, kolibri_bin: str) -> List[str]:
@@ -293,6 +327,107 @@ class KolibriAdapter(ContentAdapter):
             if not result.ok:
                 return result
         return SuperviseResult(OK, 0, "ok")
+
+    def share_files(self, local_ref: str) -> Optional[ShareFiles]:
+        # The channel DB plus the channel's available content files, relative to the content
+        # dir (K2GO-577). The files are content-addressed and immutable, and the DB already lives
+        # in content/databases, so the share stages nothing. A row with an unexpected id or
+        # extension is skipped, never written into the daemon filter.
+        if not _CHANNEL_ID_RE.match(local_ref or ""):
+            return None
+        content = os.path.join(self._home, "content")
+        db_rel = f"databases/{local_ref}.sqlite3"
+        if not os.path.isfile(os.path.join(content, db_rel)):
+            return None
+        rows = self._read(_CHANNEL_FILES_SQL, (local_ref,))
+        if rows is None:
+            return None
+        files = [db_rel] + [f"storage/{fid[0]}/{fid[1]}/{fid}.{ext}" for fid, ext in rows
+                            if _FILE_ID_RE.match(fid or "") and _EXT_RE.match(ext or "")]
+        return ShareFiles(root=content, files=files)
+
+    def pull_item(self, entry: dict, source: dict, partial_dir: str, puller,
+                  should_cancel=None, on_progress=None) -> dict:
+        # Pull the channel DB into a small work dir, the content files straight into Kolibri's
+        # storage, then link them with Kolibri's own commands (K2GO-577). The work dir is kept
+        # on a failure, so a Retry resumes; it is removed on success.
+        channel_id = (entry.get("identity") or {}).get("localRef", "")
+        if not _CHANNEL_ID_RE.match(channel_id or ""):
+            return {"ok": False, "reason": "invalid channel id"}
+        work = os.path.join(partial_dir, "kolibri", channel_id)
+        src = os.path.join(work, "src")
+        content = os.path.join(self._home, "content")
+        os.makedirs(os.path.join(src, "content"), exist_ok=True)
+        # The module root holds databases/ and storage/ (share_files). The DB goes to the work
+        # dir (the import source); the files go straight into Kolibri's storage.
+        steps = (
+            lambda: puller.pull_tree(
+                source, os.path.join(src, "content"), work, ignore_existing=False,
+                filters=("+ /databases/", f"+ /databases/{channel_id}.sqlite3", "- *"),
+                should_cancel=should_cancel),
+            lambda: puller.pull_tree(
+                source, content, work, filters=("- /databases/",),
+                should_cancel=should_cancel, on_progress=on_progress),
+        )
+        for step in steps:
+            result = step()
+            if result.state == CANCELLED:
+                return {"ok": False, "reason": "import cancelled"}
+            if not result.ok:
+                return self._pull_failure(f"transfer {result.detail}")
+        outcome = self._finalize_pull(channel_id, src, should_cancel)
+        if outcome.state == CANCELLED:
+            return {"ok": False, "reason": "import cancelled"}
+        if not outcome.ok:
+            return self._pull_failure(f"kolibri import {outcome.detail}")
+        shutil.rmtree(work, ignore_errors=True)
+        return {"ok": True, "app": "kolibri", "localRef": channel_id}
+
+    def _pull_failure(self, reason: str) -> dict:
+        failure = {"ok": False, "reason": reason}
+        if volume_nearly_full(self._home):
+            failure["code"] = "no_space"
+        return failure
+
+    def _finalize_pull(self, channel_id: str, src: str, should_cancel=None) -> SuperviseResult:
+        """Run the three Kolibri link commands under the liveness watchdog, writing the import
+        manifest after the scan. A seam, so a test need not run Kolibri."""
+        env = dict(os.environ, KOLIBRI_HOME=self._home)
+        for argv in pull_finalize_commands(channel_id, src, self._bin):
+            if argv[2] == "importcontent":
+                self._write_pull_manifest(channel_id, src)
+            result = run_supervised(argv, env, dest_dir=self._home, should_cancel=should_cancel,
+                                    log=_LOG)
+            if not result.ok:
+                return result
+        return SuperviseResult(OK, 0, "ok")
+
+    def _write_pull_manifest(self, channel_id: str, src: str) -> None:
+        """Kolibri's import manifest (content/manifest.json, which importcontent reads from its
+        source dir): the channel's nodes that are available after the scan, i.e. the nodes whose
+        files arrived. So importcontent marks exactly those admin-imported and never counts the
+        files the sender did not have."""
+        rows = self._read(_AVAILABLE_NODES_SQL, (channel_id,)) or []
+        version = self._read("SELECT version FROM content_channelmetadata WHERE id = ?",
+                             (channel_id,)) or [(0,)]
+        manifest = {"channels": [{"id": channel_id, "version": int(version[0][0] or 0),
+                                  "include_node_ids": [r[0] for r in rows]}]}
+        path = os.path.join(src, "content", "manifest.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(manifest, f)
+
+    def _read(self, sql: str, params) -> Optional[list]:
+        """Rows of a read-only query on the main DB, or None when it cannot be read."""
+        try:
+            con = sqlite3.connect(f"file:{self._db}?mode=ro", uri=True)
+        except sqlite3.Error:
+            return None
+        try:
+            return con.execute(sql, params).fetchall()
+        except sqlite3.Error:
+            return None
+        finally:
+            con.close()
 
     def delete(self, local_ref: str) -> dict:
         # Delegate to Kolibri's own delete (it refcounts shared files). Measure the reclaim as a
