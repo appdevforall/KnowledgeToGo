@@ -1619,4 +1619,5 @@
     <string name="k2go_about_copied">விவரங்கள் நகலெடுக்கப்பட்டன</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">இது நடந்துகொண்டிருக்கும் எந்த நகலெடுப்பையும் நிறுத்துகிறது. மற்ற ஃபோன் அதன் முன்னேற்றத்தை இழக்கும், புதிய குறியீட்டுடன் மீண்டும் தொடங்க வேண்டும்.</string>
+    <string name="k2go_connect_switch_msg">இந்த ஹாட்ஸ்பாட்டுடன் இணைந்த சாதனங்கள் இணைப்பை இழக்கும்.</string>
 </resources>

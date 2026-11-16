@@ -1612,4 +1612,5 @@
     <string name="k2go_about_copied">વિગતો કૉપિ થઈ</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">આ ચાલુ કોઈપણ નકલ બંધ કરે છે. બીજો ફોન તેની પ્રગતિ ગુમાવે છે અને નવા કોડ સાથે ફરી શરૂ કરવો પડશે.</string>
+    <string name="k2go_connect_switch_msg">આ હોટ્સ્પોટ સાથે જોડાયેલા ઉપકરણોનું કનેક્શન તૂટી જશે.</string>
 </resources>

@@ -1599,4 +1599,5 @@
     <string name="k2go_about_copied">تم نسخ التفاصيل</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">هذا يوقف أي نسخ جارٍ. يفقد الهاتف الآخر تقدّمه ويجب أن يبدأ من جديد برمز جديد.</string>
+    <string name="k2go_connect_switch_msg">تفقد الأجهزة المتصلة بنقطة الاتصال هذه اتصالها.</string>
 </resources>

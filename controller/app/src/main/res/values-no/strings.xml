@@ -1609,4 +1609,5 @@
     <string name="k2go_about_copied">Detaljer kopiert</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Dette stopper all kopiering som pågår. Den andre telefonen mister fremdriften og må starte på nytt med en ny kode.</string>
+    <string name="k2go_connect_switch_msg">Enheter som er koblet til denne hotspoten, mister tilkoblingen.</string>
 </resources>

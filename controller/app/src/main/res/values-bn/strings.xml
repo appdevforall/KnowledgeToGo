@@ -1612,4 +1612,5 @@
     <string name="k2go_about_copied">বিবরণ কপি হয়েছে</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">এটি চলমান যেকোনো কপি বন্ধ করে। অন্য ফোনটি তার অগ্রগতি হারায় এবং নতুন কোড দিয়ে আবার শুরু করতে হবে।</string>
+    <string name="k2go_connect_switch_msg">এই হটস্পটে যুক্ত ডিভাইসগুলির সংযোগ বিচ্ছিন্ন হবে।</string>
 </resources>

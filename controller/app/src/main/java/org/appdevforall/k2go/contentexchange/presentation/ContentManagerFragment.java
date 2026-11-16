@@ -39,7 +39,6 @@ import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
-import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
@@ -325,11 +324,8 @@ public class ContentManagerFragment extends Fragment {
             showImportProgress();
             return;
         }
-        // Tear our own hotspot down the moment Receive starts: the sender's AP IP (always 192.168.49.1)
-        // collides with our own hotspot IP if we are hosting, which traps the connection locally.
-        // Stopping here lets the interface release while the user joins and scans; ContentReceiveFragment
-        // also waits for the release before it connects. K2GO-376.
-        LocalHotspotManager.get().stop();
+        // Our own hotspot stays up here: ContentReceiveFragment stops it only when the sender's address
+        // collides with it (K2GO-376, K2GO-577), so a Wi-Fi share does not cut Connect.
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ContentReceiveStartFragment())
                 .addToBackStack(null)
