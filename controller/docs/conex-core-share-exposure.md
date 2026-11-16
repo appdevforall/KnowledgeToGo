@@ -160,6 +160,31 @@ This matrix passed against the rendered template in a stock nginx 1.27 with
 
 Remove the forward when done (`adb -s <serial> forward --remove tcp:8085`).
 
+## rsync transport: a second listener while a session is open (K2GO-577)
+
+The HTTP fetch stages and re-sends a whole item after a drop. Share now moves an item that an
+adapter can list as files (a ZIM today) with rsync, which writes in place and resumes. This
+adds one listener next to the HTTP gate:
+
+- conex-core runs `rsync --daemon` on `0.0.0.0:9873` (`CONEX_SHARE_RSYNC_PORT`; `0` turns it
+  off and Share stays HTTP only). The daemon runs ONLY while a share session is open: the
+  first session starts it, the last close (complete, cancel or the safety cap) stops it, and
+  the startup sweep kills a daemon that a dead core left behind. With no session, the port is
+  closed.
+- One read-only module per shared item, named `<sessionId>-<itemRef>` (128-bit session id).
+  A filter admits only that item's files; `list = no` hides the module list.
+- The module password is the session token. rsync authenticates by challenge and response, so
+  the token is not sent in clear. A session close removes its modules and secrets at once.
+- The daemon logs nothing (`log file = /dev/null`), so no client address is kept (K2GO-559).
+- The share manifest advertises the module per item (`rsync: {port, module}`). The receiver
+  pulls through its own box's conex-core (`POST /v1/import/item` with a `source`); a receiver
+  whose box cannot pull uses the HTTP fetch, so old and new peers still work together.
+- On K2Go the receiver app relays the pull over the hotspot network (`ShareRelay`), because
+  Android may route a box process over cellular when the hotspot has no internet.
+
+Pending for IIAB: a host firewall must admit TCP 9873 when `conex_core_share_expose` is on, or
+a receiver cannot reach the daemon.
+
 ## Scope kept (what this change does NOT do)
 
 - Does not expose the whole API: only `/v1/share/<session>/...`.
