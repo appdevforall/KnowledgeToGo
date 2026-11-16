@@ -1,4 +1,4 @@
-name: Deploy to Firebase App Distribution
+name: "App: Firebase distribution"
 
 # ADFA-4810: build & distribute on a push to ANY branch (not just main), so anyone gets a
 # Firebase build of their work without waiting for a merge. Tags (v*) are handled by

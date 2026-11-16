@@ -1,4 +1,4 @@
-name: Build and Release K2Go APKs
+name: "App: build release APKs"
 
 on:
   # K2GO-564: only play-release.yml starts a release, after Google approved the candidate, so GitHub

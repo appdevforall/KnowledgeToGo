@@ -1,4 +1,4 @@
-name: Promote K2Go RootFS
+name: "RootFS: 3. promote"
 
 # K2GO-511. Moves the production pointers (latest_*) to a tested build: by default the dev
 # channel (dev_latest_*), the exact build that was installed and tested on devices. A server-side

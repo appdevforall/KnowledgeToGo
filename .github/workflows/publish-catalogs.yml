@@ -1,4 +1,4 @@
-name: Publish content catalogs
+name: "Content: publish catalogs"
 
 # ADFA-5094 (ADR-5094): generate the Kolibri/Kiwix catalogs once a week off the build and
 # publish them + a versioned manifest to Cloudflare R2, so the app can refresh the catalog

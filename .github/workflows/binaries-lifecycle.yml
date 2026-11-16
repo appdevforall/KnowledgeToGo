@@ -1,4 +1,4 @@
-name: Binaries lifecycle (archive + retention)
+name: "Bins: archive + retention"
 
 # K2GO-506: archive every native-binaries release to R2 (never pruned), then prune old GitHub
 # releases without deleting a pinned or unarchived build. build-static-binaries.yml calls it after
