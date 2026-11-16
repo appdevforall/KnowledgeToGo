@@ -7,16 +7,21 @@ import os
 from dataclasses import dataclass
 
 DEFAULT_PORT = 9500
+#: The share rsync daemon port (K2GO-577). Above 1024: a proot box cannot bind a low port.
+DEFAULT_SHARE_RSYNC_PORT = 9873
 
 
-def _parse_port(raw: str) -> int:
+def _parse_port(raw: str, default: int = DEFAULT_PORT, allow_off: bool = False) -> int:
     """Parse a TCP port from the environment, falling back to the default on an empty,
-    non-numeric or out-of-range value instead of crashing the service at startup."""
+    non-numeric or out-of-range value instead of crashing the service at startup. With
+    ``allow_off``, 0 is kept (the feature is off)."""
     try:
         port = int(raw)
     except (TypeError, ValueError):
-        return DEFAULT_PORT
-    return port if 1 <= port <= 65535 else DEFAULT_PORT
+        return default
+    if allow_off and port == 0:
+        return 0
+    return port if 1 <= port <= 65535 else default
 
 
 @dataclass(frozen=True)
@@ -38,6 +43,12 @@ class Config:
     # multi-gigabyte channel export has room and the free-space preflight measures the right
     # disk.
     staging_dir: str = "/library/.conex-staging"
+    # K2GO-577: the share rsync daemon port (0 = off: share over HTTP fetch only), the rsync
+    # binary, and where a pull keeps resumable partial files (the content volume, so the final
+    # rename does not copy).
+    share_rsync_port: int = DEFAULT_SHARE_RSYNC_PORT
+    rsync_bin: str = "/usr/bin/rsync"
+    partial_dir: str = "/library/.conex-partial"
 
     @staticmethod
     def from_env() -> "Config":
@@ -55,4 +66,9 @@ class Config:
             credentials_file=os.environ.get(
                 "K2GO_CREDENTIALS_FILE", "/library/dashboard/credentials.json"),
             staging_dir=os.environ.get("CONEX_STAGING_DIR", "/library/.conex-staging"),
+            share_rsync_port=_parse_port(
+                os.environ.get("CONEX_SHARE_RSYNC_PORT", str(DEFAULT_SHARE_RSYNC_PORT)),
+                DEFAULT_SHARE_RSYNC_PORT, allow_off=True),
+            rsync_bin=os.environ.get("CONEX_RSYNC_BIN", "/usr/bin/rsync"),
+            partial_dir=os.environ.get("CONEX_PARTIAL_DIR", "/library/.conex-partial"),
         )

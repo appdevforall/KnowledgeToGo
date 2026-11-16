@@ -51,6 +51,12 @@ public final class ShareUrls {
         return baseUrl + sessionPrefix(manifestPath) + "/complete";
     }
 
+    /** Where the receiver reports per-item progress to the sender's gate (K2GO-577). */
+    public static String progress(String baseUrl, String manifestPath) {
+        requireOrigin(baseUrl);
+        return baseUrl + sessionPrefix(manifestPath) + "/progress";
+    }
+
     /**
      * The share-session path prefix, the manifest path with its trailing {@code /manifest} removed
      * ({@code /v1/share/<id>/manifest} -> {@code /v1/share/<id>}). Fails closed when the path is not a

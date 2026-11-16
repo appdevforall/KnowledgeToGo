@@ -22,6 +22,7 @@ public class ShareUrlsTest {
         assertEquals(BASE + "/v1/share/abc123/fetch/0", ShareUrls.fetch(BASE, MANIFEST, "0"));
         assertEquals(BASE + "/v1/share/abc123/fetch/12", ShareUrls.fetch(BASE, MANIFEST, "12"));
         assertEquals(BASE + "/v1/share/abc123/complete", ShareUrls.complete(BASE, MANIFEST));
+        assertEquals(BASE + "/v1/share/abc123/progress", ShareUrls.progress(BASE, MANIFEST));
     }
 
     @Test
