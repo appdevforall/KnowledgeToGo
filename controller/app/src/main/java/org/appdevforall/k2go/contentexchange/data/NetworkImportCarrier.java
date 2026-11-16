@@ -179,6 +179,37 @@ public final class NetworkImportCarrier implements ImportCarrier {
         }
     }
 
+    /**
+     * Best-effort report of one item's progress to the sender's gate (K2GO-577): it feeds the
+     * sender's view and keeps its session fresh during a long rsync pull, which the gate cannot see.
+     * {@code state} is "running", "done" or "error". A failure is logged and ignored.
+     */
+    public void reportProgress(String itemRef, long movedBytes, long totalBytes, String state) {
+        if (!ShareUrls.isValidItemRef(itemRef)) {
+            return;
+        }
+        try {
+            JSONObject body = new JSONObject()
+                    .put("itemRef", itemRef)
+                    .put("movedBytes", Math.max(0L, movedBytes))
+                    .put("totalBytes", Math.max(0L, totalBytes))
+                    .put("state", state);
+            HttpURLConnection c = open(ShareUrls.progress(baseUrl, manifestUrl), "POST", READ_TIMEOUT_MS);
+            try {
+                c.setDoOutput(true);
+                c.setRequestProperty("Content-Type", "application/json");
+                try (OutputStream os = c.getOutputStream()) {
+                    os.write(body.toString().getBytes(StandardCharsets.UTF_8));
+                }
+                c.getResponseCode();
+            } finally {
+                c.disconnect();
+            }
+        } catch (Exception e) {
+            Log.i(TAG, "share progress report failed: " + e.getMessage());
+        }
+    }
+
     // ---- HTTP plumbing -------------------------------------------------------------------------
 
     /** Open a connection to the sender, pinned to the Network that reaches its hotspot when one exists,

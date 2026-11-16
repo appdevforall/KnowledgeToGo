@@ -28,6 +28,15 @@ public interface ImportSource {
     String startImport(String app, String entryJson, String payloadBoxPath) throws Exception;
 
     /**
+     * Start a pull long operation (K2GO-577): the box pulls the item from a sender's rsync module
+     * ({@code host}:{@code port}, {@code module}, password {@code token}) straight into place, with
+     * no staged copy. The op is polled with {@link #importStatus} like an import; its movedBytes are
+     * the bytes on disk, so a resumed pull starts from the bytes it kept.
+     */
+    String startPull(String app, String entryJson, String host, int port, String module, String token)
+            throws Exception;
+
+    /**
      * Poll one import operation's status. {@link ImportStatus.State#GONE} means the op was swept, so
      * the caller re-starts once. Throws on a transport failure (the caller tolerates a few blips).
      */

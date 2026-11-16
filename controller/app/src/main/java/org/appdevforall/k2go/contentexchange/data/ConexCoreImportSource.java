@@ -16,6 +16,7 @@ import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ImportStatus;
 import org.appdevforall.k2go.contentexchange.domain.ImportVerdict;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.contentexchange.domain.PullUnsupportedException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,6 +64,35 @@ public final class ConexCoreImportSource implements ImportSource {
         String opId = r.optString("opId", "");
         if (opId.isEmpty()) {
             throw new Exception("import start returned no opId");
+        }
+        return opId;
+    }
+
+    @Override
+    public String startPull(String app, String entryJson, String host, int port, String module,
+                            String token) throws Exception {
+        JSONObject source = new JSONObject()
+                .put("host", host)
+                .put("port", port)
+                .put("module", module)
+                .put("token", token);
+        JSONObject body = new JSONObject()
+                .put("app", app)
+                .put("entry", new JSONObject(entryJson))
+                .put("source", source);
+        JSONObject r;
+        try {
+            r = dataSource.postImportStart(body);
+        } catch (ConexCoreDataSource.ConexHttpException e) {
+            // 400: a core older than the pull wants a payloadPath. 501: no rsync on this box.
+            if (e.code() == 400 || e.code() == 501) {
+                throw new PullUnsupportedException(e.getMessage());
+            }
+            throw e;
+        }
+        String opId = r.optString("opId", "");
+        if (opId.isEmpty()) {
+            throw new Exception("pull start returned no opId");
         }
         return opId;
     }

@@ -8,8 +8,9 @@
  *               the core reads, POST /v1/import/item so the core ingests it (delegating to the app's own
  *               import), then remove the staging copy. The mirror of ContentExportService (foreground
  *               specialUse + per-item queue + retry + notification + grant release), with the bytes
- *               flowing drive -> phone staging -> box. The item is the unit of resume (per-item retry);
- *               pause/resume and within-item byte-resume are later work.
+ *               flowing drive -> phone staging -> box. The item is the unit of resume (per-item retry).
+ *               K2GO-577: a Share item the sender offers over rsync skips the staging copy: the box
+ *               pulls it straight into place through a loopback relay, and a Retry resumes its bytes.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -37,12 +38,15 @@ import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.data.ConexCoreImportSource;
 import org.appdevforall.k2go.contentexchange.data.NetworkImportCarrier;
 import org.appdevforall.k2go.contentexchange.data.SafImportCarrier;
+import org.appdevforall.k2go.contentexchange.data.ShareRelay;
+import org.appdevforall.k2go.contentexchange.data.ShareRsyncTarget;
 import org.appdevforall.k2go.contentexchange.domain.ExportJob;
 import org.appdevforall.k2go.contentexchange.domain.ImportCarrier;
 import org.appdevforall.k2go.contentexchange.domain.ImportNoSpaceException;
 import org.appdevforall.k2go.contentexchange.domain.ImportSource;
 import org.appdevforall.k2go.contentexchange.domain.ImportStatus;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.contentexchange.domain.PullUnsupportedException;
 import org.appdevforall.k2go.download.domain.DownloadEta;
 import org.appdevforall.k2go.notifications.NotificationIds;
 
@@ -87,6 +91,10 @@ public final class ContentImportService extends Service {
     /** K2GO-376: consecutive status-poll failures tolerated before an item fails. The ingest runs
      *  minutes, so one relay blip or a busy core must not discard it (mirrors ContentExportService). */
     private static final int MAX_POLL_ERRORS = 10;
+    /** K2GO-577: gap between progress reports to the sender's gate during an rsync pull. */
+    private static final long SENDER_REPORT_INTERVAL_MS = 5000L;
+    /** The box reaches the relay on loopback (the box shares the phone's network namespace). */
+    private static final String LOOPBACK = "127.0.0.1";
 
     /** The single run state the progress fragment observes. */
     private static final ImportSession SESSION = new ImportSession();
@@ -294,10 +302,28 @@ public final class ContentImportService extends Service {
             return;
         }
         SESSION.setSource(carrier.sourceLabel());
+        NetworkImportCarrier net = carrier instanceof NetworkImportCarrier
+                ? (NetworkImportCarrier) carrier : null;
+        // The rsync relay opens with the first pulled item and closes with the run on every exit
+        // path, which also ends any live pull connection.
+        ShareRelay[] relay = {null};
+        try {
+            drainItems(source, staging, carrier, net, relay);
+        } finally {
+            if (relay[0] != null) {
+                relay[0].close();
+            }
+        }
+    }
 
+    /** The per-item loop of {@link #drain()}. {@code relay} holds the rsync relay the caller closes. */
+    private void drainItems(ImportSource source, BoxImportStaging staging, ImportCarrier carrier,
+                            @Nullable NetworkImportCarrier net, ShareRelay[] relay) {
         ExportJob job = SESSION.job();
         long lastSampleAt = SystemClock.elapsedRealtime();
         long lastSampleBytes = job.copiedTotal();
+        // False once this box refused a pull (an older core): the rest of the run uses the HTTP fetch.
+        boolean pullSupported = true;
 
         for (int i = job.firstPending(); i >= 0; i = job.firstPending()) {
             if (SESSION.isCancelled()) {
@@ -309,9 +335,27 @@ public final class ContentImportService extends Service {
             notifyNow();
 
             String stored = BoxImportStaging.safeName(SESSION.payloadName(i));
+            ShareRsyncTarget target = net != null && pullSupported
+                    ? ShareRsyncTarget.fromEntry(SESSION.entryJson(i)) : null;
             try {
-                copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job);
-                ingest(source, ref, i, stored);
+                boolean pulled = false;
+                if (target != null) {
+                    // The sender offers rsync: the box pulls the item into place, no staging copy.
+                    if (relay[0] == null) {
+                        relay[0] = new ShareRelay(getApplicationContext(), SESSION.shareHost(), target.port());
+                    }
+                    try {
+                        pull(source, ref, i, target, relay[0], net, job);
+                        pulled = true;
+                    } catch (PullUnsupportedException e) {
+                        Log.i(TAG, "box cannot pull, using the HTTP fetch: " + e.getMessage());
+                        pullSupported = false;
+                    }
+                }
+                if (!pulled) {
+                    copyToStaging(carrier, staging, SESSION.payloadName(i), stored, i, job);
+                    ingest(source, ref, i, stored);
+                }
                 job.setDone(i);
             } catch (Exception e) {
                 // The staging copy or the ingest failed: mark the item and keep its slot for a retry.
@@ -420,7 +464,63 @@ public final class ContentImportService extends Service {
      */
     private void ingest(ImportSource source, ItemRef ref, int i, String storedName) throws Exception {
         String boxPath = BoxImportStaging.boxPath(storedName);
-        String opId = source.startImport(ref.app(), SESSION.entryJson(i), boxPath);
+        runBoxOp(source, () -> source.startImport(ref.app(), SESSION.entryJson(i), boxPath), null);
+    }
+
+    /**
+     * Pull one Share item with rsync (K2GO-577): the box pulls it from the sender's daemon through the
+     * loopback relay, straight into place. The op's movedBytes are the bytes on disk, so the item bar
+     * moves with the transfer and a Retry starts from the bytes the last attempt kept. The sender gets
+     * a progress report every few seconds and a final done / error.
+     */
+    private void pull(ImportSource source, ItemRef ref, int i, ShareRsyncTarget target, ShareRelay relay,
+                      NetworkImportCarrier net, ExportJob job) throws Exception {
+        String itemRef = SESSION.payloadName(i);
+        long[] last = {0L, 0L};                                   // moved, total
+        long[] window = {SystemClock.elapsedRealtime(), job.copiedTotal(), 0L};   // at, bytes, reportAt
+        try {
+            runBoxOp(source, () -> source.startPull(ref.app(), SESSION.entryJson(i), LOOPBACK,
+                    relay.localPort(), target.module(), SESSION.shareToken()), (moved, total) -> {
+                last[0] = moved;
+                last[1] = total;
+                job.setCopied(i, moved);
+                long now = SystemClock.elapsedRealtime();
+                if (now - window[0] >= RATE_WINDOW_MS) {
+                    sampleRate(job, now - window[0], job.copiedTotal() - window[1]);
+                    window[0] = now;
+                    window[1] = job.copiedTotal();
+                }
+                if (now - window[2] >= SENDER_REPORT_INTERVAL_MS) {
+                    net.reportProgress(itemRef, moved, total, "running");
+                    window[2] = now;
+                }
+            });
+        } catch (PullUnsupportedException e) {
+            throw e;   // nothing moved: the item goes over the HTTP fetch, so no error report
+        } catch (Exception e) {
+            net.reportProgress(itemRef, last[0], last[1], "error");
+            throw e;
+        }
+        net.reportProgress(itemRef, last[1], last[1], "done");
+    }
+
+    /** Starts one box long operation; returns its opId. */
+    private interface OpStarter {
+        String start() throws Exception;
+    }
+
+    /** Receives a running op's moved / total bytes on each poll. */
+    private interface MovedSink {
+        void onMoved(long moved, long total);
+    }
+
+    /**
+     * Drive one box long operation (import or pull) to its end: poll its status, re-start once if it
+     * was swept, and throw on an error. {@code sink} is null for an import of an already-staged item.
+     */
+    private void runBoxOp(ImportSource source, OpStarter starter, @Nullable MovedSink sink)
+            throws Exception {
+        String opId = starter.start();
         boolean restarted = false;
         int pollErrors = 0;
         while (true) {
@@ -463,10 +563,13 @@ public final class ContentImportService extends Service {
                         throw new Exception("the import operation was lost");
                     }
                     restarted = true;
-                    opId = source.startImport(ref.app(), SESSION.entryJson(i), boxPath);
+                    opId = starter.start();
                     break;
                 case RUNNING:
                 default:
+                    if (sink != null) {
+                        sink.onMoved(st.movedBytes(), st.totalBytes());
+                    }
                     // Keep the session fresh so the UI shows the item is still being imported.
                     SESSION.publish();
                     maybeNotify(SystemClock.elapsedRealtime());
