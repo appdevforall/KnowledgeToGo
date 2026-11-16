@@ -4,10 +4,11 @@
 Design: controller/docs/ADR-K2GO-564-play-release-candidates.md.
 API: https://developers.google.com/android-publisher/api-ref/rest
 
-Standard library only. The JWT for the service account is signed with the openssl CLI,
-so the runner needs no pip packages.
+Standard library only. The Play API calls use a short-lived OAuth token from $PLAY_ACCESS_TOKEN.
+The workflow gets it with keyless Workload Identity Federation (google-github-actions/auth), so
+no service account key exists.
 
-Commands (the service account JSON comes from $PLAY_SERVICE_ACCOUNT_JSON):
+Commands (next-code and publish call the Play API):
   plan --gradle F --notes F --tags F     print version, rc tag and release notes as GitHub outputs
   next-code --package P --base N         print the Play versionCode for the next upload
   final-tag --rc-tag T --tags F          print the release tag for an approved candidate
@@ -15,21 +16,15 @@ Commands (the service account JSON comes from $PLAY_SERVICE_ACCOUNT_JSON):
   publish --package P --track T --aab F --code N --name S --notes-file F
 """
 import argparse
-import base64
 import json
 import os
 import re
-import subprocess
 import sys
-import tempfile
-import time
 import urllib.error
-import urllib.parse
 import urllib.request
 
 API = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications"
 UPLOAD_API = "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications"
-SCOPE = "https://www.googleapis.com/auth/androidpublisher"
 NOTES_MAX = 500  # Play limit for "What's new" per language.
 SEMVER = re.compile(r"^v\d+\.\d+\.\d+$")
 LABEL = re.compile(r"^(v\d+\.\d+\.\d+)(?:-rc\.(\d+))?$")
@@ -160,34 +155,12 @@ def track_release(track, name, code, notes):
 
 # ---- Play API --------------------------------------------------------------------------
 
-def _b64(data):
-    return base64.urlsafe_b64encode(data).rstrip(b"=")
-
-
-def access_token(account):
-    """OAuth2 service-account flow (RFC 7523): a signed JWT is exchanged for a token."""
-    now = int(time.time())
-    header = _b64(json.dumps({"alg": "RS256", "typ": "JWT"}).encode())
-    claims = _b64(json.dumps({"iss": account["client_email"], "scope": SCOPE,
-                              "aud": account["token_uri"], "iat": now, "exp": now + 3600}).encode())
-    signing_input = header + b"." + claims
-    with tempfile.NamedTemporaryFile("w", suffix=".pem", delete=False) as key:
-        key.write(account["private_key"])
-    try:
-        signature = subprocess.run(["openssl", "dgst", "-sha256", "-sign", key.name],
-                                   input=signing_input, capture_output=True, check=True).stdout
-    finally:
-        os.unlink(key.name)
-    body = urllib.parse.urlencode({"grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-                                   "assertion": (signing_input + b"." + _b64(signature)).decode()})
-    with urllib.request.urlopen(account["token_uri"], body.encode(), timeout=60) as r:
-        return json.load(r)["access_token"]
-
-
 class Play:
     def __init__(self, package):
         self.package = package
-        self.token = access_token(json.loads(os.environ["PLAY_SERVICE_ACCOUNT_JSON"]))
+        self.token = os.environ.get("PLAY_ACCESS_TOKEN", "")
+        if not self.token:
+            sys.exit("PLAY_ACCESS_TOKEN is empty: run google-github-actions/auth before this step.")
 
     def call(self, method, url, body=None, data=None, content_type="application/json"):
         if body is not None:
