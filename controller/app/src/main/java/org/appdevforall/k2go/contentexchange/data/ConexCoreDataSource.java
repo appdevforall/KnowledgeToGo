@@ -84,6 +84,11 @@ public final class ConexCoreDataSource {
         return postJson(V1 + "/import/item", body);
     }
 
+    /** {@code POST /v1/import/discard} with {@code {app, entry}}: drop a given-up pull's kept bytes. */
+    public JSONObject postImportDiscard(JSONObject body) throws Exception {
+        return postJson(V1 + "/import/discard", body);
+    }
+
     /**
      * {@code GET /v1/import/status/{opId}} -> {@code {state, movedBytes, totalBytes, error?, code?,
      * result?}}. A 404 means the op was swept; it surfaces as {@link ConexHttpException} with

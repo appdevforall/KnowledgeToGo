@@ -118,5 +118,24 @@ class RunSupervisedTest(unittest.TestCase):
         self.assertTrue(seen)   # at least one progress sample while the child ran
 
 
+    def test_activity_fn_is_the_liveness_signal(self):
+        # A child that does nothing itself, while the work it drives moves (an rsync generator
+        # whose receiver child writes): growing activity keeps it alive past the floor.
+        moved = [0]
+
+        def growing():
+            moved[0] += 1
+            return moved[0]
+
+        alive = run_supervised(
+            [sys.executable, "-c", "import time; time.sleep(0.5)"], None, poll_seconds=0.02,
+            floor_seconds=0.1, activity_fn=growing)
+        self.assertEqual(alive.state, OK)
+        stalled = run_supervised(
+            [sys.executable, "-c", "import time; time.sleep(5)"], None, poll_seconds=0.02,
+            floor_seconds=0.1, cpu_grace=1.0, activity_fn=lambda: 7)
+        self.assertEqual(stalled.state, STALLED)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: write   # push the rc tag
+  id-token: write   # keyless sign-in to Google Cloud (Workload Identity Federation)
 
 # One Play upload at a time: two parallel runs would race for the same versionCode.
 concurrency:
@@ -31,13 +32,17 @@ concurrency:
 
 env:
   PACKAGE: org.appdevforall.k2go
+  # Keyless Play credentials (no secret): the provider accepts only this repo in the google-play
+  # environment, and the robot has "Release apps to testing tracks" on this app only.
+  PLAY_WIF_PROVIDER: projects/540068336150/locations/global/workloadIdentityPools/github-actions/providers/knowledgetogo-repo
+  PLAY_SERVICE_ACCOUNT: k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com
 
 jobs:
   candidate:
     name: Build, send to review and tag the candidate
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # The environment holds PLAY_SERVICE_ACCOUNT_JSON and asks a repo admin to approve each run.
+    # A repo admin approves each run. The Google Cloud provider trusts only this environment.
     environment: google-play
 
     steps:
@@ -61,10 +66,21 @@ jobs:
         working-directory: tools/play-publish
         run: python -m unittest -v test_play_publish
 
+      # A token lasts one hour, so each Play API step asks for its own (the build sits between them).
+      - name: Sign in to Google Play (keyless)
+        id: auth_plan
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.PLAY_WIF_PROVIDER }}
+          service_account: ${{ env.PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          create_credentials_file: false
+
       - name: Plan (version, rc tag, release notes, versionCode)
         id: plan
         env:
-          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_ACCESS_TOKEN: ${{ steps.auth_plan.outputs.access_token }}
           TRACK: ${{ inputs.track }}
         run: |
           set -euo pipefail
@@ -120,10 +136,20 @@ jobs:
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
+      - name: Sign in to Google Play again (fresh token after the build)
+        id: auth_send
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.PLAY_WIF_PROVIDER }}
+          service_account: ${{ env.PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          create_credentials_file: false
+
       - name: Send to Google review
         id: send
         env:
-          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_ACCESS_TOKEN: ${{ steps.auth_send.outputs.access_token }}
           TRACK: ${{ inputs.track }}
           CODE: ${{ steps.plan.outputs.code }}
           LABEL: ${{ steps.plan.outputs.label }}

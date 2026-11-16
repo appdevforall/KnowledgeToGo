@@ -1,0 +1,17 @@
+// Standalone test APK for K2GO-576. Same AGP as controller/ so the Gradle cache is reused.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

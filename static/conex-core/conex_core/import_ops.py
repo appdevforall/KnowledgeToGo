@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 from .importing import is_within_dir
+from .rsync_share import sweep_partials, valid_source
 from .ops_base import DONE, ERROR, RUNNING, Op, OpRegistry, Response
 
 # The import work-temp prefix, created by the adapters' import_item. The startup sweep reclaims an
@@ -35,6 +36,7 @@ class _ImportOp(Op):
     moved_bytes: int = 0
     result: Optional[dict] = None
     code: Optional[str] = None  # a structural error code, e.g. "no_space"
+    local_ref: Optional[tuple] = None  # (app, localRef) of a pull, so discard can refuse a live one
 
 
 def _entry_bytes(entry: Any) -> int:
@@ -49,10 +51,15 @@ class ImportOps(OpRegistry):
     """Registry of in-flight import operations. One instance lives for the server's lifetime; the
     handler threads call in concurrently."""
 
-    def __init__(self, registry, import_root: str, ttl_seconds: int = 600):
+    def __init__(self, registry, import_root: str, ttl_seconds: int = 600,
+                 partial_root: Optional[str] = None, puller=None):
         super().__init__(ttl_seconds)
         self._registry = registry
         self._import_root = import_root
+        # K2GO-577: where a pull keeps its resumable partial files, and the rsync client. Both
+        # None disables pull (the HTTP-staged import still works).
+        self._partial_root = partial_root
+        self._puller = puller
 
     # ---- REST-facing operations (return (status, payload)) ----
 
@@ -74,6 +81,51 @@ class ImportOps(OpRegistry):
             target=self._run_import, args=(op_id, app, entry, payload_path, total), daemon=True)
         worker.start()
         return 200, {"opId": op_id, "state": RUNNING, "totalBytes": total}
+
+    def start_pull(self, app: str, entry: Any, source: Any) -> Response:
+        """Start a pull long operation (K2GO-577): the adapter pulls the item from the sender's
+        rsync module straight into place, then indexes it. Same op shape as ``start``, so the
+        client polls the same status; movedBytes is the bytes on disk, a resumed pull starts
+        from the kept bytes."""
+        self._sweep_expired()
+        if not self._registry.has(app):
+            return 404, {"error": f"unknown app: {app}"}
+        if self._puller is None or self._partial_root is None or not self._puller.available():
+            return 501, {"error": "pull unavailable on this box"}
+        if not isinstance(entry, dict):
+            return 400, {"error": "entry is required"}
+        reason = valid_source(source)
+        if reason is not None:
+            return 400, {"error": reason}
+        # Reclaim partials no retry picked up, also on a box that runs for weeks without a restart.
+        sweep_partials(self._partial_root)
+        total = _entry_bytes(entry)
+        op_id = self._new_id()
+        op = _ImportOp(app=app, state=RUNNING, total_bytes=total)
+        op.local_ref = (app, (entry.get("identity") or {}).get("localRef"))
+        self._put(op_id, op)
+        worker = threading.Thread(
+            target=self._run_pull, args=(op_id, app, entry, source, total), daemon=True)
+        worker.start()
+        return 200, {"opId": op_id, "state": RUNNING, "totalBytes": total}
+
+    def discard(self, app: str, entry: Any) -> Response:
+        """Drop what a given-up pull kept for a resume (K2GO-577): the user ended the run (Cancel or
+        Finish), so the partial bytes must not hold the disk for 48 h. Refused while a pull of the
+        same item still runs: the client aborts the op first, and a resumed pull would lose its
+        bytes."""
+        self._sweep_expired()
+        if not self._registry.has(app):
+            return 404, {"error": f"unknown app: {app}"}
+        if not isinstance(entry, dict) or self._partial_root is None:
+            return 400, {"error": "entry is required"}
+        local_ref = (entry.get("identity") or {}).get("localRef")
+        with self._lock:
+            busy = any(op.state == RUNNING and getattr(op, "local_ref", None) == (app, local_ref)
+                       for op in self._ops.values())
+        if busy:
+            return 409, {"error": "a pull of this item is still running"}
+        return 200, self._registry.get(app).discard_pull(entry, self._partial_root)
 
     def status(self, op_id: str) -> Response:
         """Report the op state, the moved-bytes heartbeat, and the result once done. A 404 means the
@@ -105,6 +157,8 @@ class ImportOps(OpRegistry):
         for name in names:
             if name.startswith(TEMP_PREFIX):
                 shutil.rmtree(os.path.join(self._import_root, name), ignore_errors=True)
+        if self._partial_root:
+            sweep_partials(self._partial_root)
 
     def _run_import(self, op_id: str, app: str, entry: Any, payload_path: str, total: int) -> None:
         """Ingest the item off the request thread, under the liveness watchdog, then flip the op to
@@ -119,9 +173,25 @@ class ImportOps(OpRegistry):
             # that fills and holds, never past 100%.
             self._touch(op_id, moved_bytes=min(moved, total) if total else moved)
 
+        self._finish_with(op_id, total, lambda: self._registry.get(app).import_item(
+            entry, payload_path, should_cancel=should_cancel, on_progress=on_progress))
+
+    def _run_pull(self, op_id: str, app: str, entry: Any, source: dict, total: int) -> None:
+        """Pull the item off the request thread. movedBytes is the partial file size, so it is
+        monotonic and already counts the bytes a resumed pull kept."""
+        should_cancel = self.should_cancel(op_id)
+
+        def on_progress(moved: int) -> None:
+            self._touch(op_id, moved_bytes=min(moved, total) if total else moved)
+
+        self._finish_with(op_id, total, lambda: self._registry.get(app).pull_item(
+            entry, source, self._partial_root, self._puller,
+            should_cancel=should_cancel, on_progress=on_progress))
+
+    def _finish_with(self, op_id: str, total: int, work) -> None:
+        """Run the adapter work, then flip the op to done or error."""
         try:
-            result = self._registry.get(app).import_item(
-                entry, payload_path, should_cancel=should_cancel, on_progress=on_progress)
+            result = work()
         except Exception as exc:  # any adapter failure surfaces as an op error with its detail
             self._transition(op_id, RUNNING, ERROR, error=f"import failed: {exc}")
             return

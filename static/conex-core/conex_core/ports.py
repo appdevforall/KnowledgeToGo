@@ -55,6 +55,14 @@ class ExportPlan:
     content_type: str
 
 
+@dataclass
+class ShareFiles:
+    """The files one item is made of, for the share rsync daemon (K2GO-577): a root dir and the
+    paths under it. The daemon serves only these, read-only."""
+    root: str
+    files: List[str]
+
+
 class ContentAdapter(ABC):
     """Read-side port for one content app."""
 
@@ -118,6 +126,25 @@ class ContentAdapter(ABC):
         bytes moved so far for the progress heartbeat. An app whose import is quick and in-process
         may ignore both. Default: not supported."""
         return {"ok": False, "reason": "import not supported"}
+
+    def share_files(self, local_ref: str) -> Optional[ShareFiles]:
+        """The files the share rsync daemon may serve for this item (K2GO-577). None: the item
+        is not shared over rsync, so a receiver uses the HTTP fetch. Default: None."""
+        return None
+
+    def pull_item(self, entry: dict, source: dict, partial_dir: str, puller,
+                  should_cancel: Optional[Callable[[], bool]] = None,
+                  on_progress: Optional[Callable[[int], None]] = None) -> dict:
+        """Pull one item from a sender's rsync module straight into place and index it
+        (K2GO-577). ``partial_dir`` is this app's dir for resumable partial files; ``puller`` is
+        the rsync client. Same result shape as ``import_item``. Default: not supported."""
+        return {"ok": False, "reason": "pull not supported"}
+
+    def discard_pull(self, entry: dict, partial_dir: str) -> dict:
+        """Remove what a given-up pull of this item kept for a resume (K2GO-577): the user ended
+        the run with Cancel or Finish, so the bytes will not be resumed. Returns {ok, freedBytes}.
+        Default: nothing kept."""
+        return {"ok": True, "freedBytes": 0}
 
     def delete(self, local_ref: str) -> dict:
         """Remove one item to reclaim space, delegating to the app's own delete (never driving

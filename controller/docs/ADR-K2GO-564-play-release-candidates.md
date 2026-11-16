@@ -50,9 +50,13 @@ says `vX.Y.Z-rc.N`, and only a build that says `vX.Y.Z` can become the release.
    (versionName `vX.Y.Z`, sent to Play, then tagged) is not designed yet, so today button 2
    refuses every rc commit. The release build runs only when `play-release.yml` calls it:
    a hand-pushed `v*` tag does not start a release.
-5. Play credentials: a Google Cloud service account with "Release apps to testing tracks" on
-   this app only. Its JSON key is the secret `PLAY_SERVICE_ACCOUNT_JSON` of the GitHub
-   environment `google-play`, which asks a repo admin to approve each run.
+5. Play credentials, keyless: the service account
+   `k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com` (Google Cloud project
+   `knowledge-to-go`) has "Release apps to testing tracks" on this app only. It has no key: the
+   organization blocks key creation. The workflow signs in with Workload Identity Federation
+   (pool `github-actions`, provider `knowledgetogo-repo`). The provider accepts only repo
+   `appdevforall/KnowledgeToGo` in the GitHub environment `google-play`, which asks a repo admin
+   to approve each run. If the repo is renamed, update the provider condition and the grant.
 
 ## Consequences
 
