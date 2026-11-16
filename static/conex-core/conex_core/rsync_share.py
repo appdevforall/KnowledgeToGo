@@ -305,6 +305,9 @@ class RsyncPuller:
         sum of the files completed, read from the client log (cumulative over retries)."""
         kept, tmp = os.path.join(work_dir, "kept"), os.path.join(work_dir, "tmp")
         log = os.path.join(work_dir, "transfer.log")
+        # A run that was killed (the app died) leaves its in-flight temp file here, and rsync never
+        # reuses it. Only one pull of this item runs at a time, so clear it before each run.
+        shutil.rmtree(tmp, ignore_errors=True)
         for d in (kept, tmp, dest_dir):
             os.makedirs(d, exist_ok=True)
         url = f"rsync://{SHARE_USER}@{source['host']}:{source['port']}/{source['module']}/"

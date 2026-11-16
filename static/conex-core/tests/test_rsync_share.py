@@ -195,8 +195,12 @@ class SourceAndPullTests(unittest.TestCase):
             seen["activity"] = kwargs["activity_fn"]()
             return SuperviseResult(OK, 0, "ok")
 
+        os.makedirs(os.path.join(work, "tmp"))
+        with open(os.path.join(work, "tmp", ".orphan.mp4.zz99"), "wb") as f:
+            f.write(b"z" * 1000)  # left by a killed run
         RsyncPuller("/usr/bin/rsync", runner=runner).pull_tree(
             SOURCE, dest, work, filters=("- /databases/",))
+        self.assertFalse(os.path.exists(os.path.join(work, "tmp", ".orphan.mp4.zz99")))
         argv = seen["argv"]
         self.assertEqual(argv[-2], f"rsync://{SHARE_USER}@192.168.43.1:9873/abc123-0/")
         for flag in ("--ignore-existing", "--omit-dir-times", "--filter=- /databases/",
