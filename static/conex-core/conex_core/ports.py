@@ -140,6 +140,12 @@ class ContentAdapter(ABC):
         the rsync client. Same result shape as ``import_item``. Default: not supported."""
         return {"ok": False, "reason": "pull not supported"}
 
+    def discard_pull(self, entry: dict, partial_dir: str) -> dict:
+        """Remove what a given-up pull of this item kept for a resume (K2GO-577): the user ended
+        the run with Cancel or Finish, so the bytes will not be resumed. Returns {ok, freedBytes}.
+        Default: nothing kept."""
+        return {"ok": True, "freedBytes": 0}
+
     def delete(self, local_ref: str) -> dict:
         """Remove one item to reclaim space, delegating to the app's own delete (never driving
         the app DB + files directly): the app owns its storage invariants and the next list()

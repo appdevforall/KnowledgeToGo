@@ -98,6 +98,17 @@ public final class ConexCoreImportSource implements ImportSource {
     }
 
     @Override
+    public void discardPull(String app, String entryJson) {
+        try {
+            dataSource.postImportDiscard(new JSONObject()
+                    .put("app", app)
+                    .put("entry", new JSONObject(entryJson)));
+        } catch (Exception ignored) {
+            // best effort: the box sweeps partials older than 48 h on its own
+        }
+    }
+
+    @Override
     public ImportStatus importStatus(String opId) throws Exception {
         JSONObject r;
         try {
