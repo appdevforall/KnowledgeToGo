@@ -118,6 +118,9 @@ class ShareOps:
         self._rsync = rsync  # the RsyncDaemon, or None: share over HTTP fetch only
         self._lock = threading.Lock()
         self._sessions: Dict[str, _Session] = {}
+        # Serializes snapshot + apply, so a stale module list never lands after a newer one (a
+        # closed session's module must not keep serving).
+        self._sync_lock = threading.Lock()
 
     # ---- REST-facing operations (return (status, payload), or (200, ExportStream)) ----
 
@@ -480,6 +483,8 @@ class ShareOps:
         """Make the daemon serve exactly the modules of the live sessions."""
         if self._rsync is None:
             return
-        with self._lock:
-            modules = [m for session in self._sessions.values() for m in session.modules.values()]
-        self._rsync.set_modules(modules)
+        with self._sync_lock:
+            with self._lock:
+                modules = [m for session in self._sessions.values()
+                           for m in session.modules.values()]
+            self._rsync.set_modules(modules)

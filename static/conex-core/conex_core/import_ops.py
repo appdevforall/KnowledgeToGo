@@ -96,6 +96,8 @@ class ImportOps(OpRegistry):
         reason = valid_source(source)
         if reason is not None:
             return 400, {"error": reason}
+        # Reclaim partials no retry picked up, also on a box that runs for weeks without a restart.
+        sweep_partials(self._partial_root)
         total = _entry_bytes(entry)
         op_id = self._new_id()
         self._put(op_id, _ImportOp(app=app, state=RUNNING, total_bytes=total))
