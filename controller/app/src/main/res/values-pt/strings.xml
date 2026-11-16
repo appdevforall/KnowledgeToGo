@@ -1588,7 +1588,6 @@
     <string name="k2go_cx_share_join_caption">Leia no outro telefone para se juntar a este hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Este telefone não consegue iniciar um hotspot para partilhar.</string>
     <string name="k2go_cx_share_hotspot_failed">Não foi possível iniciar o hotspot.</string>
-    <string name="k2go_cx_share_need_permission">A permissão do hotspot é necessária para partilhar.</string>
     <string name="k2go_cx_share_error">Não foi possível iniciar a partilha.</string>
     <string name="k2go_cx_share_waiting">Mantenha este ecrã aberto até o outro telefone terminar.</string>
     <string name="k2go_cx_share_done">Concluído</string>

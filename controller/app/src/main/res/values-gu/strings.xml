@@ -1522,7 +1522,6 @@
     <string name="k2go_cx_share_join_caption">આ હોટ્સ્પોટમાં જોડાવા માટે બીજા ફોન પર સ્કૅન કરો.</string>
     <string name="k2go_cx_share_hotspot_unsupported">આ ફોન શેર કરવા માટે હોટ્સ્પોટ શરૂ કરી શકતો નથી.</string>
     <string name="k2go_cx_share_hotspot_failed">હોટ્સ્પોટ શરૂ કરી શકાયું નથી.</string>
-    <string name="k2go_cx_share_need_permission">શેર કરવા માટે હોટ્સ્પોટ પરવાની જરૂરી છે.</string>
     <string name="k2go_cx_share_error">શેર કરવાનું શરૂ કરી શકાયું નથી.</string>
     <string name="k2go_cx_share_waiting">બીજો ફોન પૂર્ણ થાય ત્યાં સુધી આ સ્ક્રીન ખુલ્લી રાખો.</string>
     <string name="k2go_cx_share_done">પૂર્ણ થયું</string>

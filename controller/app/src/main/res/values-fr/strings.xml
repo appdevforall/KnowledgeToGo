@@ -1596,7 +1596,6 @@
     <string name="k2go_cx_share_join_caption">Scannez sur l\'autre téléphone pour rejoindre ce point d\'accès.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Ce téléphone ne peut pas démarrer un point d\'accès pour partager.</string>
     <string name="k2go_cx_share_hotspot_failed">Impossible de démarrer le point d\'accès.</string>
-    <string name="k2go_cx_share_need_permission">L\'autorisation du point d\'accès est nécessaire pour partager.</string>
     <string name="k2go_cx_share_error">Impossible de démarrer le partage.</string>
     <string name="k2go_cx_share_waiting">Gardez cet écran ouvert jusqu\'à ce que l\'autre téléphone ait terminé.</string>
     <string name="k2go_cx_share_done">Terminé</string>

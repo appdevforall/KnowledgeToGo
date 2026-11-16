@@ -1519,7 +1519,6 @@
     <string name="k2go_cx_share_join_caption">Skann på den andre telefonen for å bli med i denne hotspoten.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Denne telefonen kan ikke starte en hotspot for deling.</string>
     <string name="k2go_cx_share_hotspot_failed">Kunne ikke starte hotspoten.</string>
-    <string name="k2go_cx_share_need_permission">Hotspot-tillatelsen er nødvendig for å dele.</string>
     <string name="k2go_cx_share_error">Kunne ikke starte deling.</string>
     <string name="k2go_cx_share_waiting">Hold denne skjermen åpen til den andre telefonen er ferdig.</string>
     <string name="k2go_cx_share_done">Ferdig</string>

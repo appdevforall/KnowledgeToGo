@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Bu etkin noktaya katılmak için diğer telefonda tarayın.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Bu telefon paylaşım için etkin nokta başlatamıyor.</string>
     <string name="k2go_cx_share_hotspot_failed">Etkin nokta başlatılamadı.</string>
-    <string name="k2go_cx_share_need_permission">Paylaşım için etkin nokta izni gerekiyor.</string>
     <string name="k2go_cx_share_error">Paylaşım başlatılamadı.</string>
     <string name="k2go_cx_share_waiting">Diğer telefon bitene kadar bu ekranı açık tutun.</string>
     <string name="k2go_cx_share_done">Bitti</string>

@@ -1516,7 +1516,6 @@
     <string name="k2go_cx_share_join_caption">Сканирайте на другия телефон, за да се присъедините към тази точка за достъп.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Този телефон не може да стартира точка за достъп за споделяне.</string>
     <string name="k2go_cx_share_hotspot_failed">Точката за достъп не можа да се стартира.</string>
-    <string name="k2go_cx_share_need_permission">За споделяне е необходимо разрешение за точка за достъп.</string>
     <string name="k2go_cx_share_error">Споделянето не можа да стартира.</string>
     <string name="k2go_cx_share_waiting">Дръжте този екран отворен, докато другият телефон приключи.</string>
     <string name="k2go_cx_share_done">Готово</string>

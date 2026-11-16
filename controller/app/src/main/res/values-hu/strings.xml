@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Olvassa be a másik telefonon a hotspothoz való csatlakozáshoz.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Ez a telefon nem tud hotspotot indítani a megosztáshoz.</string>
     <string name="k2go_cx_share_hotspot_failed">A hotspot indítása nem sikerült.</string>
-    <string name="k2go_cx_share_need_permission">A megosztáshoz hotspot engedély szükséges.</string>
     <string name="k2go_cx_share_error">A megosztás indítása nem sikerült.</string>
     <string name="k2go_cx_share_waiting">Tartsa nyitva ezt a képernyőt, amíg a másik telefon be nem fejezi.</string>
     <string name="k2go_cx_share_done">Kész</string>

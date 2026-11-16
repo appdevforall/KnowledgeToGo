@@ -1510,7 +1510,6 @@
     <string name="k2go_cx_share_join_caption">このホットスポットに参加するには、もう一方のスマートフォンでスキャンしてください。</string>
     <string name="k2go_cx_share_hotspot_unsupported">このスマートフォンは共有用のホットスポットを開始できません。</string>
     <string name="k2go_cx_share_hotspot_failed">ホットスポットを開始できませんでした。</string>
-    <string name="k2go_cx_share_need_permission">共有にはホットスポットの権限が必要です。</string>
     <string name="k2go_cx_share_error">共有を開始できませんでした。</string>
     <string name="k2go_cx_share_waiting">もう一方のスマートフォンが完了するまで、この画面を開いたままにしてください。</string>
     <string name="k2go_cx_share_done">完了</string>

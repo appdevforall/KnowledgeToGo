@@ -1529,7 +1529,6 @@
     <string name="k2go_cx_share_join_caption">Changanua kwenye simu nyingine ili kujiunga na hotspot hii.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Simu hii haiwezi kuanzisha hotspot ya kushiriki.</string>
     <string name="k2go_cx_share_hotspot_failed">Imeshindwa kuanzisha hotspot.</string>
-    <string name="k2go_cx_share_need_permission">Ruhusa ya hotspot inahitajika ili kushiriki.</string>
     <string name="k2go_cx_share_error">Imeshindwa kuanza kushiriki.</string>
     <string name="k2go_cx_share_waiting">Weka skrini hii wazi hadi simu nyingine imalize.</string>
     <string name="k2go_cx_share_done">Imekamilika</string>

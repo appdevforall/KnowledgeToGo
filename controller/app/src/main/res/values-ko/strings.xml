@@ -1510,7 +1510,6 @@
     <string name="k2go_cx_share_join_caption">이 핫스팅에 참가하려면 다른 휴대전화에서 스캔하세요.</string>
     <string name="k2go_cx_share_hotspot_unsupported">이 휴대전화는 공유용 핫스팅을 시작할 수 없습니다.</string>
     <string name="k2go_cx_share_hotspot_failed">핫스팅을 시작할 수 없습니다.</string>
-    <string name="k2go_cx_share_need_permission">공유하려면 핫스팅 권한이 필요합니다.</string>
     <string name="k2go_cx_share_error">공유를 시작할 수 없습니다.</string>
     <string name="k2go_cx_share_waiting">다른 휴대전화가 완료될 때까지 이 화면을 열어 두세요.</string>
     <string name="k2go_cx_share_done">완료</string>

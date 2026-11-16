@@ -1516,7 +1516,6 @@
     <string name="k2go_cx_share_join_caption">Σαρώστε στο άλλο τηλέφωνο για να συνδεθείτε σε αυτό το hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Αυτό το τηλέφωνο δεν μπορεί να ξεκινήσει hotspot για κοινή χρήση.</string>
     <string name="k2go_cx_share_hotspot_failed">Δεν ήταν δυνατή η εκκίνηση του hotspot.</string>
-    <string name="k2go_cx_share_need_permission">Απαιτείται η άδεια hotspot για κοινή χρήση.</string>
     <string name="k2go_cx_share_error">Δεν ήταν δυνατή η έναρξη της κοινής χρήσης.</string>
     <string name="k2go_cx_share_waiting">Κρατήστε αυτήν την οθόνη ανοιχτή μέχρι να τελειώσει το άλλο τηλέφωνο.</string>
     <string name="k2go_cx_share_done">Τέλος</string>

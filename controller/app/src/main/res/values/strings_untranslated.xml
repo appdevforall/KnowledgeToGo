@@ -10,5 +10,6 @@
   strings.xml.
 -->
 <resources>
-
+    <!-- K2GO-577: Connect, Hotspot -> Wi-Fi gives the hotspot back. -->
+    <string name="k2go_connect_switch_msg" translatable="false">Devices joined to this hotspot lose their connection.</string>
 </resources>

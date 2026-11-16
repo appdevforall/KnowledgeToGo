@@ -1586,7 +1586,6 @@
     <string name="k2go_cx_share_join_caption">इस हॉटस्पॉट से जुड़ने के लिए दूसरे फ़ोन पर स्कैन करें।</string>
     <string name="k2go_cx_share_hotspot_unsupported">यह फ़ोन साझा करने के लिए हॉटस्पॉट शुरू नहीं कर सकता।</string>
     <string name="k2go_cx_share_hotspot_failed">हॉटस्पॉट शुरू नहीं किया जा सका।</string>
-    <string name="k2go_cx_share_need_permission">साझा करने के लिए हॉटस्पॉट अनुमति आवश्यक है।</string>
     <string name="k2go_cx_share_error">साझा करना शुरू नहीं किया जा सका।</string>
     <string name="k2go_cx_share_waiting">दूसरे फ़ोन के पूरा होने तक इस स्क्रीन को खुला रखें।</string>
     <string name="k2go_cx_share_done">हो गया</string>

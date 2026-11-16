@@ -1516,7 +1516,6 @@
     <string name="k2go_cx_share_join_caption">Naskenujte na druhom telefóne a pripojte sa k tomuto hotspotu.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Tento telefón nemôže spustiť hotspot na zdieľanie.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot sa nepodarilo spustiť.</string>
-    <string name="k2go_cx_share_need_permission">Na zdieľanie je potrebné povolenie hotspotu.</string>
     <string name="k2go_cx_share_error">Zdieľanie sa nepodarilo spustiť.</string>
     <string name="k2go_cx_share_waiting">Nechajte túto obrazovku otvorenú, kým druhý telefón neskončí.</string>
     <string name="k2go_cx_share_done">Hotovo</string>

@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Auf dem anderen Telefon scannen, um diesem Hotspot beizutreten.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Dieses Telefon kann keinen Hotspot zum Teilen starten.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot konnte nicht gestartet werden.</string>
-    <string name="k2go_cx_share_need_permission">Die Hotspot-Berechtigung ist zum Teilen erforderlich.</string>
     <string name="k2go_cx_share_error">Teilen konnte nicht gestartet werden.</string>
     <string name="k2go_cx_share_waiting">Lassen Sie diesen Bildschirm geöffnet, bis das andere Telefon fertig ist.</string>
     <string name="k2go_cx_share_done">Fertig</string>

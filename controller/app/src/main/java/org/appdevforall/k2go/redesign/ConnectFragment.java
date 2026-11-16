@@ -17,11 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.hotspot.HotspotMode;
+import org.appdevforall.k2go.hotspot.HotspotMode.Mode;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
 
 /**
  * Connect tab (ADFA-4776; redesigned ADFA-5154). Let a nearby device browse the library.
@@ -40,13 +43,13 @@ import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
  */
 public class ConnectFragment extends Fragment {
 
-    private enum Mode { HOTSPOT, WIFI }
-
     // ADFA-5157: the "section" holder and its setQr/setFallback logic moved to the shared QrSection
     // class so the Clone (Send) redesign reuses it instead of copying it. Three instances here — Join,
     // Open, and the single container used for Wi-Fi / failed / no-system.
 
-    private Mode mode = Mode.HOTSPOT;
+    // K2GO-577: the shared Hotspot / Wi-Fi rule (Clone and Share use it too): the choice and Connect's
+    // hold. Wi-Fi gives the hotspot back; leaving the screen keeps it, so joined devices keep browsing.
+    private HotspotMode hsMode;
     // ADFA-5150: Connect shares this device's library — with no system there is nothing to serve, and
     // the QR would point at a dead port. Read on onResume (a system is not gained while this is open).
 
@@ -63,12 +66,11 @@ public class ConnectFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
+        hsMode = HotspotMode.of(requireContext(), HotspotHolders.Holder.CONNECT, Mode.HOTSPOT);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
-                    if (HotspotPermissions.granted(requireContext())) {
-                        hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CONNECT);
-                    }
+                    hsMode.resume();
                     render();
                 });
     }
@@ -98,8 +100,8 @@ public class ConnectFragment extends Fragment {
         finish = v.findViewById(R.id.k2go_conn_finish);
         connFooter = v.findViewById(R.id.k2go_conn_footer);
 
-        tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
-        tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
+        tabHotspot.setOnClickListener(x -> requestMode(Mode.HOTSPOT));
+        tabWifi.setOnClickListener(x -> requestMode(Mode.WIFI));
         finish.setOnClickListener(x -> {
             finish.setEnabled(false);
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
@@ -120,19 +122,23 @@ public class ConnectFragment extends Fragment {
         return v;
     }
 
-    private void setMode(Mode m) {
-        mode = m;
-        if (m == Mode.HOTSPOT) ensureHotspot();
-        render();
+    /** A tab tap. Leaving Hotspot gives it back and drops joined devices, so warn when some may be on. */
+    private void requestMode(Mode target) {
+        LocalHotspotManager.State st = hs.state().getValue();
+        boolean dropsClients = hsMode.isHotspot() && target == Mode.WIFI && st != null && st.mayHaveClients();
+        if (!dropsClients) { setMode(target); return; }
+        new BrandDialog(requireContext())
+                .setTitle(getString(R.string.k2go_clone_switch_title, getString(R.string.k2go_wifi)))
+                .setMessage(R.string.k2go_connect_switch_msg)
+                .setNegative(R.string.k2go_cancel, null)
+                .setPositive(R.string.k2go_clone_switch_confirm, () -> { if (isAdded()) setMode(target); })
+                .show();
     }
 
-    private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported()) return;
-        if (HotspotPermissions.granted(requireContext())) {
-            hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CONNECT);
-        } else if (!hs.isOn()) {
-            hotspotPerm.launch(HotspotPermissions.required());
-        }
+    /** A fresh choice: Hotspot holds it (one permission prompt), Wi-Fi gives it back. */
+    private void setMode(Mode m) {
+        if (hsMode.choose(m)) hotspotPerm.launch(HotspotPermissions.required());
+        render();
     }
 
     private static String browseUrl(String ip) { return "http://" + ip + ":8085"; }
@@ -143,11 +149,9 @@ public class ConnectFragment extends Fragment {
         // ADFA-5150/5312: redraw on the way to the front — a system may have been recovered, or an
         // install may have finished, while the user was away. render() re-reads the shared verdict.
         // K2GO-439: if the hotspot permission was granted while away (e.g. in Settings), start it now so
-        // the user is not stuck on "Starting...". Only when already granted: do NOT re-launch the request
-        // here, which would re-prompt on every resume (ensureHotspot has no one-shot guard in Connect).
-        if (mode == Mode.HOTSPOT && HotspotPermissions.granted(requireContext())) {
-            ensureHotspot();
-        }
+        // the user is not stuck on "Starting...". resume() never re-launches the request, which would
+        // re-prompt on every resume.
+        hsMode.resume();
         render();
     }
 
@@ -162,8 +166,8 @@ public class ConnectFragment extends Fragment {
 
     private void render() {
         if (!isAdded() || secSingle == null) return;
-        SegmentedTabs.paint(tabHotspot, mode == Mode.HOTSPOT);
-        SegmentedTabs.paint(tabWifi, mode == Mode.WIFI);
+        SegmentedTabs.paint(tabHotspot, hsMode.isHotspot());
+        SegmentedTabs.paint(tabWifi, !hsMode.isHotspot());
         finish.setVisibility(View.GONE);
         connFooter.setVisibility(View.VISIBLE);   // default; the no-system state hides it
         advance.setVisibility(View.GONE);
@@ -178,7 +182,7 @@ public class ConnectFragment extends Fragment {
             default:
                 break;   // READY / CLONE_* -> the normal share render handles it
         }
-        if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
+        if (hsMode.isHotspot()) renderHotspot(); else renderWifi();
     }
 
     /**
@@ -233,8 +237,8 @@ public class ConnectFragment extends Fragment {
             advance.setText(R.string.k2go_home_retry);
             styleAdvance(true);
             // K2GO-471 review: hs.stop runs onDone after an async teardown; guard against the fragment
-            // being gone by then, since ensureHotspot calls requireContext().
-            advance.setOnClickListener(x -> hs.stop(() -> { if (isAdded()) ensureHotspot(); }));
+            // being gone by then. A retry is a fresh choice, so it may ask the permission again.
+            advance.setOnClickListener(x -> hs.stop(() -> { if (isAdded()) setMode(Mode.HOTSPOT); }));
             connFooter.setVisibility(View.GONE);
             return;
         }
@@ -252,17 +256,11 @@ public class ConnectFragment extends Fragment {
         boolean on = (phase == LocalHotspotManager.Phase.ON);
 
         if (on) {
-            String ssid = (st != null && st.ssid != null) ? st.ssid : "";
-            String pass = (st != null && st.passphrase != null) ? st.passphrase : "";
             // K2GO-375: one source for the hotspot IP — the reservation's owner. Null until the AP
             // interface has its address; the owner re-emits State when it lands, which reruns render().
             String ip = (st != null) ? st.hotspotIp : null;
 
-            secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
-            secJoin.caption.setText(R.string.k2go_just_scan);
-            secJoin.subCaption.setText("");
-            secJoin.setFallback(requireContext(), new String[]{
-                    getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
+            secJoin.setWifiJoin(requireContext(), st.ssid, st.passphrase, R.string.k2go_just_scan);
 
             secOpen.caption.setText(R.string.k2go_connect_readonly);
             secOpen.subCaption.setText("");

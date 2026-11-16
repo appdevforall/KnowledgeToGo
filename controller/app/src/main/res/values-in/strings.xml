@@ -1516,7 +1516,6 @@
     <string name="k2go_cx_share_join_caption">Pindai di ponsel lain untuk bergabung ke hotspot ini.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Ponsel ini tidak dapat memulai hotspot untuk berbagi.</string>
     <string name="k2go_cx_share_hotspot_failed">Tidak dapat memulai hotspot.</string>
-    <string name="k2go_cx_share_need_permission">Izin hotspot diperlukan untuk berbagi.</string>
     <string name="k2go_cx_share_error">Tidak dapat memulai berbagi.</string>
     <string name="k2go_cx_share_waiting">Biarkan layar ini terbuka hingga ponsel lain selesai.</string>
     <string name="k2go_cx_share_done">Selesai</string>

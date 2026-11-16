@@ -1526,7 +1526,6 @@
     <string name="k2go_cx_share_join_caption">Nuskaitykite kitame telefone, kad prisijungtumėte prie šios viešosios interneto prieigos.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Šis telefonas negali paleisti viešosios interneto prieigos bendrinimui.</string>
     <string name="k2go_cx_share_hotspot_failed">Nepavyko paleisti viešosios interneto prieigos.</string>
-    <string name="k2go_cx_share_need_permission">Bendrinti reikia viešosios interneto prieigos leidimo.</string>
     <string name="k2go_cx_share_error">Nepavyko pradėti bendrinimo.</string>
     <string name="k2go_cx_share_waiting">Laikykite šį ekraną atidarytą, kol kitas telefonas baigs.</string>
     <string name="k2go_cx_share_done">Atlikta</string>

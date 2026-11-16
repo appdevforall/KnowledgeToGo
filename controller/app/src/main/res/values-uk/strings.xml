@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Відскануйте на іншому телефоні, щоб приєднатися до цієї точки доступу.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Цей телефон не може запустити точку доступу для надсилання.</string>
     <string name="k2go_cx_share_hotspot_failed">Не вдалося запустити точку доступу.</string>
-    <string name="k2go_cx_share_need_permission">Для надсилання потрібен дозвіл на точку доступу.</string>
     <string name="k2go_cx_share_error">Не вдалося розпочати надсилання.</string>
     <string name="k2go_cx_share_waiting">Тримайте цей екран відкритим, доки інший телефон не завершить.</string>
     <string name="k2go_cx_share_done">Готово</string>

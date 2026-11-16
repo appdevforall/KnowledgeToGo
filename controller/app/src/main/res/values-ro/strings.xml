@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Scanează pe celălalt telefon pentru a te alătura acestui hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Acest telefon nu poate porni un hotspot pentru partajare.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspotul nu a putut fi pornit.</string>
-    <string name="k2go_cx_share_need_permission">Permisiunea pentru hotspot este necesară pentru partajare.</string>
     <string name="k2go_cx_share_error">Partajarea nu a putut fi pornită.</string>
     <string name="k2go_cx_share_waiting">Ține acest ecran deschis până când celălalt telefon termină.</string>
     <string name="k2go_cx_share_done">Gata</string>

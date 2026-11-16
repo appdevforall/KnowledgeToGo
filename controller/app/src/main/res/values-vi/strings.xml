@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">Quét trên điện thoại kia để tham gia điểm phát sóng này.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Điện thoại này không thể khởi động điểm phát sóng để chia sẻ.</string>
     <string name="k2go_cx_share_hotspot_failed">Không thể khởi động điểm phát sóng.</string>
-    <string name="k2go_cx_share_need_permission">Cần có quyền điểm phát sóng để chia sẻ.</string>
     <string name="k2go_cx_share_error">Không thể bắt đầu chia sẻ.</string>
     <string name="k2go_cx_share_waiting">Giữ màn hình này mở cho đến khi điện thoại kia hoàn tất.</string>
     <string name="k2go_cx_share_done">Xong</string>

@@ -1509,7 +1509,6 @@
     <string name="k2go_cx_share_join_caption">برای پیوستن به این نقطه اتصال، در تلفن دیگر اسکن کنید.</string>
     <string name="k2go_cx_share_hotspot_unsupported">این تلفن نمی‌تواند برای اشتراک‌گذاری نقطه اتصال راه‌اندازی کند.</string>
     <string name="k2go_cx_share_hotspot_failed">نقطه اتصال راه‌اندازی نشد.</string>
-    <string name="k2go_cx_share_need_permission">برای اشتراک‌گذاری به اجازه نقطه اتصال نیاز است.</string>
     <string name="k2go_cx_share_error">اشتراک‌گذاری آغاز نشد.</string>
     <string name="k2go_cx_share_waiting">این صفحه را باز نگه دارید تا تلفن دیگر تمام شود.</string>
     <string name="k2go_cx_share_done">انجام شد</string>

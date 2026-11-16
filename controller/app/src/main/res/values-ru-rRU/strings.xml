@@ -1585,7 +1585,6 @@
     <string name="k2go_cx_share_join_caption">Отсканируйте на другом телефоне, чтобы присоединиться к этой точке доступа.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Этот телефон не может запустить точку доступа для обмена.</string>
     <string name="k2go_cx_share_hotspot_failed">Не удалось запустить точку доступа.</string>
-    <string name="k2go_cx_share_need_permission">Для обмена требуется разрешение на точку доступа.</string>
     <string name="k2go_cx_share_error">Не удалось начать обмен.</string>
     <string name="k2go_cx_share_waiting">Держите этот экран открытым, пока другой телефон не завершит.</string>
     <string name="k2go_cx_share_done">Готово</string>

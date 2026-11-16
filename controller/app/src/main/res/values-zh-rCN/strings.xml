@@ -1510,7 +1510,6 @@
     <string name="k2go_cx_share_join_caption">在另一部手机上扫描以加入此热点。</string>
     <string name="k2go_cx_share_hotspot_unsupported">此手机无法启动用于共享的热点。</string>
     <string name="k2go_cx_share_hotspot_failed">无法启动热点。</string>
-    <string name="k2go_cx_share_need_permission">共享需要热点权限。</string>
     <string name="k2go_cx_share_error">无法开始共享。</string>
     <string name="k2go_cx_share_waiting">请保持此屏幕打开，直到另一部手机完成。</string>
     <string name="k2go_cx_share_done">完成</string>
