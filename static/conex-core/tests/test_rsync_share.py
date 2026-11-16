@@ -166,6 +166,7 @@ class SourceAndPullTests(unittest.TestCase):
             with open(dest, "wb") as f:
                 f.write(b"x" * 10)
             kwargs["on_progress"](0)
+            seen["activity"] = kwargs["activity_fn"]()
             return SuperviseResult(OK, 0, "ok")
 
         moved = []
@@ -173,6 +174,7 @@ class SourceAndPullTests(unittest.TestCase):
             SOURCE, "a.zim", dest, on_progress=moved.append)
         self.assertTrue(result.ok)
         self.assertEqual(moved, [10])
+        self.assertEqual(seen["activity"], 10)  # liveness = bytes on disk, not the parent's I/O
         self.assertNotIn("tok", " ".join(seen["argv"]))
         self.assertEqual(seen["env"]["RSYNC_PASSWORD"], "tok")
         self.assertIn("--inplace", seen["argv"])

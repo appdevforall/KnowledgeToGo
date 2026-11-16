@@ -181,7 +181,7 @@ def run_supervised(argv, env, *, dest_dir: Optional[str] = None,
                    poll_seconds: float = 1.0, floor_seconds: float = 120.0,
                    gap_multiplier: float = 4.0, cpu_grace: float = 3.0,
                    on_progress: Optional[Callable[[int], None]] = None,
-                   log=None) -> SuperviseResult:
+                   log=None, activity_fn: Optional[Callable[[], int]] = None) -> SuperviseResult:
     """Run argv as a child and supervise it by liveness. The child's stdout/stderr go to DEVNULL
     (the caller owns user output). dest_dir is the directory whose growth is the byte-progress
     fallback when /proc/<pid>/io is unreadable. should_cancel is polled each interval; True
@@ -198,6 +198,13 @@ def run_supervised(argv, env, *, dest_dir: Optional[str] = None,
     use_io = proc_io_bytes(pid) is not None
 
     def activity() -> int:
+        # A caller that knows where the work lands measures it directly (an rsync pull: the
+        # parent process is the generator and moves almost no bytes while a child receives).
+        if activity_fn is not None:
+            try:
+                return activity_fn()
+            except Exception:  # a probe must never break supervision
+                return 0
         if use_io:
             value = proc_io_bytes(pid)
             if value is not None:

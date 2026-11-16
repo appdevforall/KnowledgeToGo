@@ -275,15 +275,21 @@ class RsyncPuller:
         # The password goes in the environment, never argv (argv is visible to every process).
         env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "RSYNC_PASSWORD": source["token"]}
 
+        def on_disk() -> int:
+            try:
+                return os.path.getsize(dest_path)
+            except OSError:
+                return 0
+
         def progress(_activity: int) -> None:
             if on_progress is not None:
-                try:
-                    on_progress(os.path.getsize(dest_path))
-                except OSError:
-                    pass
+                on_progress(on_disk())
 
+        # Liveness is the bytes on disk: in a pull the parent rsync is the generator, which moves
+        # almost nothing while the receiver child writes, so its own I/O would look stalled.
         return self._runner(argv, env, dest_dir=os.path.dirname(dest_path),
-                            should_cancel=should_cancel, on_progress=progress, log=_LOG)
+                            should_cancel=should_cancel, on_progress=progress, log=_LOG,
+                            activity_fn=on_disk)
 
 
 def sweep_partials(partial_root: str, max_age: float = PARTIAL_MAX_AGE_SECONDS,
