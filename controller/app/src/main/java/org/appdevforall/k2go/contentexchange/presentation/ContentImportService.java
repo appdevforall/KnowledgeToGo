@@ -169,7 +169,37 @@ public final class ContentImportService extends Service {
     /** Clear a settled session (the "Finish" button) and release its SAF grant. Safe when idle. */
     public static void finishSession(Context ctx) {
         releaseGrant(ctx, SESSION.treeUri());
+        discardGivenUpPulls();   // Finish after a failure gives up the items that did not arrive
         SESSION.clear();
+    }
+
+    /**
+     * K2GO-577 (decision a): the user ended the run (Cancel or Finish), so the items that did not
+     * arrive will not be resumed. Ask the box to drop the bytes their rsync pulls kept, instead of
+     * holding the disk until the 48 h sweep. A drop or a Retry never comes here, so those keep their
+     * bytes. Snapshot now (the session is cleared next), then call off the main thread.
+     */
+    private static void discardGivenUpPulls() {
+        if (!SESSION.isNetwork()) {
+            return;
+        }
+        ExportJob job = SESSION.job();
+        final java.util.List<String[]> pending = new java.util.ArrayList<>();
+        for (int i = 0; i < job.size(); i++) {
+            String entry = SESSION.entryJson(i);
+            if (job.status(i) != ExportJob.DONE && ShareRsyncTarget.fromEntry(entry) != null) {
+                pending.add(new String[]{SESSION.refAt(i).app(), entry});
+            }
+        }
+        if (pending.isEmpty()) {
+            return;
+        }
+        new Thread(() -> {
+            ImportSource source = new ConexCoreImportSource(new ConexCoreDataSource());
+            for (String[] p : pending) {
+                source.discardPull(p[0], p[1]);
+            }
+        }, "content-import-discard").start();
     }
 
     /**
@@ -216,6 +246,7 @@ public final class ContentImportService extends Service {
                 // No worker owns teardown: a fresh service instance may be handling this cancel, so
                 // satisfy the FGS start-foreground obligation before stopping.
                 startForeground(NOTIFICATION_ID, buildNotification(null));
+                discardGivenUpPulls();
                 SESSION.clear();
                 stopForeground(true);
                 stopSelf();
@@ -384,6 +415,8 @@ public final class ContentImportService extends Service {
         }
 
         if (SESSION.isCancelled()) {
+            // The running pull was aborted (runBoxOp), so the box no longer writes its partial.
+            discardGivenUpPulls();
             SESSION.clear();
             stopForeground(true);
             stopSelf();

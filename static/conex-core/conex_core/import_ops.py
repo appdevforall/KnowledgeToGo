@@ -36,6 +36,7 @@ class _ImportOp(Op):
     moved_bytes: int = 0
     result: Optional[dict] = None
     code: Optional[str] = None  # a structural error code, e.g. "no_space"
+    local_ref: Optional[tuple] = None  # (app, localRef) of a pull, so discard can refuse a live one
 
 
 def _entry_bytes(entry: Any) -> int:
@@ -100,11 +101,31 @@ class ImportOps(OpRegistry):
         sweep_partials(self._partial_root)
         total = _entry_bytes(entry)
         op_id = self._new_id()
-        self._put(op_id, _ImportOp(app=app, state=RUNNING, total_bytes=total))
+        op = _ImportOp(app=app, state=RUNNING, total_bytes=total)
+        op.local_ref = (app, (entry.get("identity") or {}).get("localRef"))
+        self._put(op_id, op)
         worker = threading.Thread(
             target=self._run_pull, args=(op_id, app, entry, source, total), daemon=True)
         worker.start()
         return 200, {"opId": op_id, "state": RUNNING, "totalBytes": total}
+
+    def discard(self, app: str, entry: Any) -> Response:
+        """Drop what a given-up pull kept for a resume (K2GO-577): the user ended the run (Cancel or
+        Finish), so the partial bytes must not hold the disk for 48 h. Refused while a pull of the
+        same item still runs: the client aborts the op first, and a resumed pull would lose its
+        bytes."""
+        self._sweep_expired()
+        if not self._registry.has(app):
+            return 404, {"error": f"unknown app: {app}"}
+        if not isinstance(entry, dict) or self._partial_root is None:
+            return 400, {"error": "entry is required"}
+        local_ref = (entry.get("identity") or {}).get("localRef")
+        with self._lock:
+            busy = any(op.state == RUNNING and getattr(op, "local_ref", None) == (app, local_ref)
+                       for op in self._ops.values())
+        if busy:
+            return 409, {"error": "a pull of this item is still running"}
+        return 200, self._registry.get(app).discard_pull(entry, self._partial_root)
 
     def status(self, op_id: str) -> Response:
         """Report the op state, the moved-bytes heartbeat, and the result once done. A 404 means the

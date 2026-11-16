@@ -376,6 +376,36 @@ class PullOpTests(unittest.TestCase):
         self.assertEqual(no_pull.start_pull("kiwix", {}, SOURCE)[0], 501)
 
 
+class DiscardTests(unittest.TestCase):
+    def test_kiwix_discard_frees_the_kept_partial(self):
+        partial = tempfile.mkdtemp()
+        os.makedirs(os.path.join(partial, "kiwix"))
+        with open(os.path.join(partial, "kiwix", "a_en_all_2026-09.zim"), "wb") as f:
+            f.write(b"z" * 123)
+        adapter = KiwixAdapter(tempfile.mkdtemp(), indexer="")
+        entry = {"identity": {"localRef": "a_en_all_2026-09.zim"}}
+        self.assertEqual(adapter.discard_pull(entry, partial), {"ok": True, "freedBytes": 123})
+        self.assertEqual(adapter.discard_pull(entry, partial), {"ok": True, "freedBytes": 0})
+        self.assertFalse(adapter.discard_pull({"identity": {"localRef": "../x.zim"}}, partial)["ok"])
+
+    def test_discard_is_refused_while_a_pull_of_the_item_runs(self):
+        class _Slow(_PullAdapter):
+            def pull_item(self, entry, source, partial_dir, puller, should_cancel=None, on_progress=None):
+                while not should_cancel():
+                    time.sleep(0.01)
+                return {"ok": False, "reason": "import cancelled"}
+
+            def discard_pull(self, entry, partial_dir):
+                return {"ok": True, "freedBytes": 9}
+
+        ops = ImportOps(Registry([_Slow()]), tempfile.mkdtemp(), partial_root="/p", puller=_OkPuller())
+        entry = {"identity": {"localRef": "a.zim"}}
+        _, started = ops.start_pull("kiwix", entry, SOURCE)
+        self.assertEqual(ops.discard("kiwix", entry)[0], 409)
+        ops.delete(started["opId"])        # the client aborts the pull first
+        self.assertEqual(ops.discard("kiwix", entry), (200, {"ok": True, "freedBytes": 9}))
+
+
 class _FakePuller:
     def __init__(self, state=OK, data=b"ZIMDATA"):
         self.state = state

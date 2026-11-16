@@ -37,6 +37,13 @@ public interface ImportSource {
             throws Exception;
 
     /**
+     * Drop what a given-up pull of this item kept for a resume (K2GO-577): the user ended the run, so
+     * the partial bytes must not hold the disk. Best effort: a failure is ignored (the box sweeps old
+     * partials on its own).
+     */
+    void discardPull(String app, String entryJson);
+
+    /**
      * Poll one import operation's status. {@link ImportStatus.State#GONE} means the op was swept, so
      * the caller re-starts once. Throws on a transport failure (the caller tolerates a few blips).
      */

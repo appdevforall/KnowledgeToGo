@@ -277,6 +277,21 @@ class KiwixAdapter(ContentAdapter):
         self._reindex()
         return {"ok": True, "app": "kiwix", "localRef": local_ref, "bytes": os.path.getsize(dest)}
 
+    def discard_pull(self, entry: dict, partial_dir: str) -> dict:
+        # The kept partial is the only thing a ZIM pull leaves behind (K2GO-577).
+        local_ref = (entry.get("identity") or {}).get("localRef", "")
+        if not is_safe_local_ref(local_ref) or not local_ref.lower().endswith(".zim"):
+            return {"ok": False, "reason": "invalid localRef"}
+        part = os.path.join(partial_dir, "kiwix", local_ref)
+        try:
+            freed = os.path.getsize(part)
+            os.remove(part)
+        except FileNotFoundError:
+            freed = 0
+        except OSError as exc:
+            return {"ok": False, "reason": f"discard failed: {exc}"}
+        return {"ok": True, "freedBytes": freed}
+
     def delete(self, local_ref: str) -> dict:
         # A ZIM is self-contained, so the file IS the unit: remove it, then re-run the indexer
         # to drop its library.xml entry. freedBytes is the file size exactly (no shared bytes).

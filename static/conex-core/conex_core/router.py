@@ -183,6 +183,13 @@ def dispatch(registry: Registry, method: str, path: str, query: dict, body: Any 
         # POST /v1/import/validate : what will import and what is skipped, nothing moved.
         if segments == ["v1", "import", "validate"]:
             return _import_validate(registry, body)
+        # POST /v1/import/discard : drop what a given-up pull kept for a resume (K2GO-577).
+        if segments == ["v1", "import", "discard"]:
+            if import_ops is None:
+                return 500, {"error": "import ops unavailable"}
+            if not isinstance(body, dict):
+                return 400, {"error": "body must be {app, entry}"}
+            return import_ops.discard(body.get("app"), body.get("entry"))
         # POST /v1/import/item : start the import long operation, return its opId. Import is a long
         # op (K2GO-376): the ingest runs minutes on a real channel, so a single blocking POST times
         # out at the relay. The op starts off the request thread; the client polls import status.
