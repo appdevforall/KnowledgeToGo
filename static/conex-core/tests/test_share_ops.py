@@ -339,6 +339,66 @@ class CompleteTest(unittest.TestCase):
             self.assertEqual(share.complete(sid, token)[0], 404)  # already closed
 
 
+class EndedViewTest(unittest.TestCase):
+    """K2GO-577: after a close, GET .../progress still tells the sender how the session ended."""
+
+    def test_open_session_reports_open_and_http_deliveries(self):
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10, "b.zim": 7})], d)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"},
+                                         {"app": "kiwix", "localRef": "b.zim"}])
+            _drain(share.fetch(sid, "1", token)[1])  # an HTTP delivery, no progress report
+            status, view = share.progress(sid, token)
+            self.assertEqual(status, 200)
+            self.assertEqual(view["state"], "open")
+            self.assertEqual(view["items"], [{"itemRef": "1", "delivered": True}])
+
+    def test_complete_then_progress_says_completed(self):
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            share.report_progress(sid, token, {"itemRef": "0", "movedBytes": 10,
+                                               "totalBytes": 10, "state": "done"})
+            self.assertEqual(share.complete(sid, token)[0], 200)
+            status, view = share.progress(sid, token)
+            self.assertEqual(status, 200)
+            self.assertEqual(view["state"], "completed")
+            self.assertEqual(view["items"][0]["movedBytes"], 10)
+            self.assertEqual(share.manifest(sid, token)[0], 404)  # still closed for everything else
+
+    def test_cancel_and_expiry_are_named(self):
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d, cap=3600)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            share.delete(sid, token)
+            self.assertEqual(share.progress(sid, token)[1]["state"], "cancelled")
+            sid2, token2 = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            share._sessions[sid2].last_seen -= 4000
+            share._sweep_capped()
+            self.assertEqual(share.progress(sid2, token2)[1]["state"], "expired")
+
+    def test_ended_view_needs_the_token_and_ages_out(self):
+        from conex_core import share_ops as mod
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
+            sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+            share.complete(sid, token)
+            self.assertEqual(share.progress(sid, "wrong")[0], 404)
+            self.assertEqual(share.progress(sid, None)[0], 404)
+            share._ended[sid]["at"] -= mod.ENDED_TTL_SECONDS + 1
+            self.assertEqual(share.progress(sid, token)[0], 404)
+
+    def test_ended_records_are_bounded(self):
+        from conex_core import share_ops as mod
+        with tempfile.TemporaryDirectory() as d:
+            share, _ops, _reg = _share([_DirectFake({"a.zim": 10})], d)
+            for _ in range(mod.ENDED_MAX + 5):
+                sid, token = _create(share, [{"app": "kiwix", "localRef": "a.zim"}])
+                share.complete(sid, token)
+            self.assertLessEqual(len(share._ended), mod.ENDED_MAX)
+            self.assertEqual(share.progress(sid, token)[1]["state"], "completed")  # newest kept
+
+
 class DeliveredTest(unittest.TestCase):
     def test_delivered_only_on_clean_close_dropped_item_resumes(self):
         # delivered is set on a clean close only. A dropped item stays pending and re-fetches
