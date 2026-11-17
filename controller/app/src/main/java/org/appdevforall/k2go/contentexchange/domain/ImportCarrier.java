@@ -35,6 +35,14 @@ public interface ImportCarrier {
     default void onAllDelivered() throws IOException {
     }
 
+    /**
+     * The user gave up the run (Cancel, or Finish with items missing): tell a network sender, so its
+     * screen shows that the receiver stopped instead of a bar that never ends (K2GO-577).
+     * Best effort. A drive has no sender, so the default does nothing.
+     */
+    default void onGivenUp() {
+    }
+
     /** One file in the source folder: its display name and byte size. Immutable value. */
     final class DriveFile {
 

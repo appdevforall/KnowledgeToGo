@@ -51,6 +51,12 @@ public final class ShareUrls {
         return baseUrl + sessionPrefix(manifestPath) + "/complete";
     }
 
+    /** The share session itself: a DELETE here tells the sender the receiver gave up (K2GO-577). */
+    public static String session(String baseUrl, String manifestPath) {
+        requireOrigin(baseUrl);
+        return baseUrl + sessionPrefix(manifestPath);
+    }
+
     /** Where the receiver reports per-item progress to the sender's gate (K2GO-577). */
     public static String progress(String baseUrl, String manifestPath) {
         requireOrigin(baseUrl);
