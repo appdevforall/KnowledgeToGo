@@ -962,6 +962,7 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
         if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_invalid), Toast.LENGTH_LONG).show(); return; }
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
+        CableSession.get().paired(json);   // K2GO-576: the pairing of this copy (QR or cable)
         probeOrWarnEmpty(creds);   // ADFA-4786
     }
 
@@ -1297,6 +1298,7 @@ public class CloneFragment extends Fragment {
         if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_scan_invalid), Toast.LENGTH_LONG).show(); return; }
         Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
+        CableSession.get().paired(contents);   // K2GO-576: the pairing of this copy (QR or cable)
         probeOrWarnEmpty(creds);   // ADFA-4786
     }
 

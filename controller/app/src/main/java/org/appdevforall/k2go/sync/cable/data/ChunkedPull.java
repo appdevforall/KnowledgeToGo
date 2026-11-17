@@ -157,7 +157,10 @@ public final class ChunkedPull {
                 long done = queue.doneBytes() + wifiBytes.get() + cableBytes.get();
                 // No byte moved for a while (no path, or every path keeps failing): give up instead
                 // of retrying forever. Over Wi-Fi only, this is how a stopped sender shows up.
-                if (done != lastDone || lastPathAt == 0) lastPathAt = now;
+                // A running rsync is a live path (it may be in a slow phase); only time out when no
+                // path runs and none could start.
+                boolean running = alive(wifiWorker) || alive(cableWorker);
+                if (done != lastDone || running || lastPathAt == 0) lastPathAt = now;
                 else if (now - lastPathAt > NO_PATH_TIMEOUT_MS) {
                     stop();
                     fail(R.string.k2go_clone_cable_err_no_path, "no data from the sender for "
@@ -176,6 +179,7 @@ public final class ChunkedPull {
         } catch (Exception e) {
             if (!cancelled) fail(R.string.k2go_clone_cable_err_no_path, String.valueOf(e));
         } finally {
+            paths.onRates(-1, -1);   // no pull: the rows stop showing rates
             if (secrets != null) secrets.deleteClientPassword();
         }
     }
@@ -204,7 +208,8 @@ public final class ChunkedPull {
             lastWifiTry = now;
             // Re-pin to the network that reaches the sender now: after Wi-Fi off/on, the old pinned
             // network is gone and every app socket would fail (rsync children are not pinned).
-            WifiNetworkBinder.bindToHostNetwork(app, paths.wifiHost());
+            // No network reaches it (Wi-Fi off): drop a pin to a network that is gone.
+            if (!WifiNetworkBinder.bindToHostNetwork(app, paths.wifiHost())) WifiNetworkBinder.unbind(app);
             if (reachable(paths.wifiHost(), paths.wifiPort())) wifiWorker = worker(false);
         }
         if (!alive(cableWorker) && paths.cablePort() > 0) {
@@ -354,8 +359,11 @@ public final class ChunkedPull {
     private void fail(int userText, String detail) {
         Log.e(TAG, "clone failed: " + detail + " (last failed exit " + lastFailedExit + ")");
         LogRepository.get().append("[Clone] " + detail);
+        // Only the generic "connection lost" gives way to a killed / dropped rsync message: a stopped
+        // sender or a failed final check keeps its own, more precise text.
         RsyncOutcome.Transfer t = RsyncOutcome.classifyTransfer(lastFailedExit);
-        String msg = (t == RsyncOutcome.Transfer.KILLED || t == RsyncOutcome.Transfer.HOST_DROPPED)
+        boolean generic = userText == R.string.k2go_clone_cable_err_no_path;
+        String msg = generic && (t == RsyncOutcome.Transfer.KILLED || t == RsyncOutcome.Transfer.HOST_DROPPED)
                 ? RsyncManager.failureText(app, lastFailedExit) : app.getString(userText);
         main.post(() -> listener.onError(msg));
     }

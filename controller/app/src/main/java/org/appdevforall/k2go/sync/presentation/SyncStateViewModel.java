@@ -190,7 +190,9 @@ public class SyncStateViewModel extends ViewModel {
                     @Override public int wifiPort() { return creds.port; }
                     @Override public int cablePort() { return CableSession.get().relayPort(); }
                     @Override public boolean senderStopped() { return CableSession.get().senderStopped(); }
-                    @Override public void onRates(long wifiBps, long cableBps) { pathRates.postValue(new long[]{wifiBps, cableBps}); }
+                    @Override public void onRates(long wifiBps, long cableBps) {
+                        pathRates.postValue(wifiBps < 0 ? null : new long[]{wifiBps, cableBps});
+                    }
                 }, listener);
         pull = p;
         p.start();

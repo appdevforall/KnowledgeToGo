@@ -78,7 +78,9 @@ public final class CableSession {
     private volatile boolean senderStopped;
     /** Sender: the receiver's own Wi-Fi verdict, from the cable; null when unknown. */
     private final MutableLiveData<Boolean> peerWifi = new MutableLiveData<>(null);
-    private volatile String lastHello;        // the pairing data the receiver got last
+    private volatile String lastHello;        // the pairing data of the copy in progress (QR or cable)
+    private volatile Boolean lastWifiReport;  // the verdict last sent over this link
+    private volatile String linkedDevice;     // host side: the device name of the linked phone
     private volatile String completedHello;   // the pairing data of the last finished copy
     private volatile CableRelay relay;
     private volatile boolean permissionAsked;
@@ -106,8 +108,15 @@ public final class CableSession {
      */
     public void reportWifi(boolean reaches) {
         CableMux m = mux;
-        if (m == null || role != Role.RECEIVE) return;
+        if (m == null || role != Role.RECEIVE || Boolean.valueOf(reaches).equals(lastWifiReport)) return;
+        lastWifiReport = reaches;
         new Thread(() -> m.sendWifi(reaches), "cable-wifi").start();   // USB write: off the UI thread
+    }
+
+    /** Receiver: the pairing data that started the current copy, from a QR scan or the cable. */
+    public void paired(String payload) {
+        lastHello = payload;
+        senderStopped = false;
     }
 
     /** Receiver: the copy started from the last pairing data finished; do not offer it again. */
@@ -164,6 +173,7 @@ public final class CableSession {
         closeLink();
         helloListener = null;
         hello = null;
+        senderStopped = false;
         role = null;
         permissionAsked = false;
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
@@ -182,6 +192,12 @@ public final class CableSession {
             public void onReceive(Context c, Intent i) {
                 Log.i(TAG, "USB detached: " + i.getAction());
                 permissionAsked = false;   // the next device is a new one: ask for it
+                if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(i.getAction())) {
+                    UsbDevice d = i.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    String linked = linkedDevice;
+                    // Another USB device (hub, drive) going away must not drop the cable.
+                    if (d != null && linked != null && !linked.equals(d.getDeviceName())) return;
+                }
                 closeLink();
                 state.postValue(new State(Link.NONE, 0));
             }
@@ -260,6 +276,7 @@ public final class CableSession {
             if (UsbLink.isAccessoryMode(d)) {
                 Log.i(TAG, "opening the host side");
                 open(UsbLink.host(um, d));
+                linkedDevice = d.getDeviceName();
             } else {
                 Log.i(TAG, "switching " + d.getDeviceName() + " to accessory mode");
                 // The other phone re-enumerates in accessory mode; the next poll opens it.
@@ -310,7 +327,7 @@ public final class CableSession {
                 // A cable plugged again after a finished copy brings the same share: do not offer
                 // the same copy again. A new share on the sender has a new password, so it differs.
                 if (payload.equals(completedHello)) return;
-                lastHello = payload;
+                senderStopped = false;   // a new pairing is a new share
                 if (role == Role.RECEIVE && l != null) l.onHello(payload);
             }
 
@@ -341,6 +358,7 @@ public final class CableSession {
         }
         mux = m;
         senderStopped = false;
+        lastWifiReport = null;   // a new link: send the next verdict
         if (role == Role.SEND) sendHello(m);
         state.postValue(new State(Link.LINKED, 0));
         Log.i(TAG, "cable linked as " + role);
@@ -365,6 +383,7 @@ public final class CableSession {
     }
 
     private synchronized void closeLink() {
+        linkedDevice = null;
         CableMux m = mux;
         mux = null;
         if (m != null) m.close();

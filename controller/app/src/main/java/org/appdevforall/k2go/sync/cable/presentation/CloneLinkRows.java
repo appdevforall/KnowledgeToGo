@@ -89,16 +89,15 @@ public final class CloneLinkRows {
         boolean on = hs != null && hs.phase == LocalHotspotManager.Phase.ON;
         Context c = root.getContext();
         wifiTitle.setText(hotspotMode ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
+        if (Boolean.FALSE.equals(peerWifi)) {
+            // The receiver said over the cable that it cannot reach this phone on Wi-Fi.
+            wifiDetail.setText(R.string.k2go_clone_link_wifi_peer_unreachable);
+            paint(wifiIcon, wifiBadge, WifiLink.Level.WARN, c.getString(R.string.k2go_clone_link_badge_not_ready));
+            return;
+        }
         if (!hotspotMode) {
             // Over a Wi-Fi network: show its band; the receiver confirms that it reaches us.
             WifiLink.Band band = WifiLink.band(ownFrequency(c));
-            if (Boolean.FALSE.equals(peerWifi)) {
-                // The receiver said over the cable that it cannot reach this phone on Wi-Fi.
-                wifiDetail.setText(R.string.k2go_clone_link_wifi_peer_unreachable);
-                paint(wifiIcon, wifiBadge, WifiLink.Level.WARN,
-                        c.getString(R.string.k2go_clone_link_badge_not_ready));
-                return;
-            }
             wifiDetail.setText(R.string.k2go_clone_link_wifi_network);
             paint(wifiIcon, wifiBadge, band == WifiLink.Band.GHZ_5 ? WifiLink.Level.OK : WifiLink.Level.WARN,
                     bandText(c, band));
