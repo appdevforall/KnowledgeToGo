@@ -1617,4 +1617,8 @@
     <string name="k2go_cx_share_stop_msg">Tai sustabdo bet kokį vykstantį kopijavimą. Kitas telefonas praranda pažangą ir turi pradėti iš naujo su nauju kodu.</string>
     <string name="k2go_connect_switch_msg">Prie šios viešosios interneto prieigos prisijungę įrenginiai praras ryšį.</string>
     <string name="k2go_cx_share_notif_open">Bendrinimas lieka atviras, kol jo nesustabdysite.</string>
+    <string name="k2go_gm_catalogs_update">Atnaujinti katalogus</string>
+    <string name="k2go_gm_catalogs_updating">Atnaujinami katalogai...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogai: įtraukti į programą</string>
+    <string name="k2go_gm_catalogs_checked">Katalogai patikrinti: %1$s</string>
 </resources>

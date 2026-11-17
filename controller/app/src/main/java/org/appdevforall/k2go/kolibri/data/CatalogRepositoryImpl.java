@@ -52,25 +52,30 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
         // metadata is imported), then Studio when online, and finally the bundled tree — the
         // offline floor that lets the user browse a channel even with the box unimported and no
         // internet. Live sources win when they can answer, so the bundle is consulted last.
-        this(new BundledCatalogSource(context), liveFirst(new BundledTreeSource(context)));
-        // Keep the bundled catalog current: a weekly refresh plus an opportunistic (TTL-gated)
-        // check now. Only the Context constructor schedules — the test constructor below does not.
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
+        this(new BundledCatalogSource(context), liveFirst(context, new BundledTreeSource(context)));
+        // K2GO-580: the catalogs never refresh by themselves; the user asks (see refresh).
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.cancelAutomatic(context, CATALOG);
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.cancelAutomatic(context, TREE_CATALOG);
+    }
+
+    /** K2GO-580: user-asked refresh of the Kolibri catalog and its topic-tree bundle. */
+    public static void refresh(Context context) {
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.forceRefresh(
                 context, CATALOG, MANIFEST_URL, BASENAME);
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.refreshNow(
-                context, CATALOG, MANIFEST_URL, BASENAME);
-        // The tree bundle refreshes on the same cadence (Wi-Fi only, like every catalog: K2GO-580).
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.refreshNow(
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.forceRefresh(
                 context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
     }
 
-    /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle. */
-    private static TreeSource liveFirst(BundledTreeSource bundled) {
+    /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle.
+     *  K2GO-580: Studio is an automatic read, so it follows allowsAutomatic; else the bundle answers. */
+    private static TreeSource liveFirst(Context context, BundledTreeSource bundled) {
+        final Context app = context.getApplicationContext();
+        final StudioTreeSource studio = new StudioTreeSource();
+        TreeSource gatedStudio = id ->
+                org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(app)
+                        ? studio.fetchTree(id) : null;
         return new FallbackTreeSource(new LocalTreeSource(),
-                new FallbackTreeSource(new BundleSizedTreeSource(new StudioTreeSource(), bundled),
-                        bundled));
+                new FallbackTreeSource(new BundleSizedTreeSource(gatedStudio, bundled), bundled));
     }
 
     /** For tests and for pointing the tree source elsewhere (e.g. a local-first composite). */

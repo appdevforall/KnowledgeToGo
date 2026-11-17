@@ -1601,4 +1601,8 @@
     <string name="k2go_cx_share_stop_msg">進行中のコピーはすべて停止します。もう一方のスマートフォンは進捗を失い、新しいコードでやり直す必要があります。</string>
     <string name="k2go_connect_switch_msg">このホットスポットに接続しているデバイスは接続が切れます。</string>
     <string name="k2go_cx_share_notif_open">停止するまで共有は開いたままです。</string>
+    <string name="k2go_gm_catalogs_update">カタログを更新</string>
+    <string name="k2go_gm_catalogs_updating">カタログを更新中...</string>
+    <string name="k2go_gm_catalogs_bundled">カタログ: アプリに同梱</string>
+    <string name="k2go_gm_catalogs_checked">カタログの確認日: %1$s</string>
 </resources>

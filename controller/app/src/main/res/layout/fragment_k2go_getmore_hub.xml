@@ -83,6 +83,24 @@
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="@color/k2go_muted" />
 
+            <!-- K2GO-580: catalogs update only when the user asks (CatalogUpdateRow). Text above the
+                 action, so a long translation never collides with the button. -->
+            <TextView
+                android:id="@+id/k2go_gm_catalogs_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/k2go_gm_catalogs_update"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/k2go_gm_catalogs_update" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

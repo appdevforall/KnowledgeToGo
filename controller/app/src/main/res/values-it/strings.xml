@@ -1600,4 +1600,8 @@
     <string name="k2go_cx_share_stop_msg">Questo interrompe qualsiasi copia in corso. L\'altro telefono perde i progressi e deve ricominciare con un nuovo codice.</string>
     <string name="k2go_connect_switch_msg">I dispositivi connessi a questo hotspot perdono la connessione.</string>
     <string name="k2go_cx_share_notif_open">La condivisione resta aperta finché non la interrompi.</string>
+    <string name="k2go_gm_catalogs_update">Aggiorna cataloghi</string>
+    <string name="k2go_gm_catalogs_updating">Aggiornamento cataloghi...</string>
+    <string name="k2go_gm_catalogs_bundled">Cataloghi: inclusi nell\'app</string>
+    <string name="k2go_gm_catalogs_checked">Cataloghi controllati: %1$s</string>
 </resources>

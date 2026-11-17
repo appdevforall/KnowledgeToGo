@@ -1601,4 +1601,8 @@
     <string name="k2go_cx_share_stop_msg">진행 중인 복사가 모두 중지됩니다. 다른 휴대전화는 진행 상황을 잃으며 새 코드로 다시 시작해야 합니다.</string>
     <string name="k2go_connect_switch_msg">이 핫스팟에 연결된 기기는 연결이 끊어집니다.</string>
     <string name="k2go_cx_share_notif_open">중지할 때까지 공유가 열려 있습니다.</string>
+    <string name="k2go_gm_catalogs_update">카탈로그 업데이트</string>
+    <string name="k2go_gm_catalogs_updating">카탈로그 업데이트 중...</string>
+    <string name="k2go_gm_catalogs_bundled">카탈로그: 앱에 포함됨</string>
+    <string name="k2go_gm_catalogs_checked">카탈로그 확인: %1$s</string>
 </resources>

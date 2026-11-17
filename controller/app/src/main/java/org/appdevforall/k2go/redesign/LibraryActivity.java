@@ -998,6 +998,9 @@ public class LibraryActivity extends AppCompatActivity
      *  from onResume and from onServerReady, whichever settles last; guarded to run at most once. */
     private void maybeAutoCheckUpdate() {
         if (updateController == null || otaAutoChecked || installing || !gateDismissed) return;
+        // K2GO-580: the silent check follows allowsAutomatic; a later onResume tries again, since
+        // otaAutoChecked stays false.
+        if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(this)) return;
         otaAutoChecked = true;
         updateController.checkForUpdates(false);
     }

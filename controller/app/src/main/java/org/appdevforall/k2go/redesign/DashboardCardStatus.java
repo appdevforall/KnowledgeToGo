@@ -44,6 +44,9 @@ public final class DashboardCardStatus {
             l.onState(DashboardCardState.resolve(false, false, false, null, null, false, false));
         }
         if (!online) return;   // offline: no live check; the state above stands
+        // K2GO-580: the box's check is a git fetch to GitHub that the user did not ask for: it follows
+        // allowsAutomatic. Else the cached state above stands.
+        if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(ctx)) return;
 
         DashboardClient.updateCheck(new DashboardClient.UpdateCb() {
             @Override public void onResult(String installed, String available, boolean updateAvailable) {

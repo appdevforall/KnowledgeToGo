@@ -76,7 +76,9 @@ public final class CatalogRefreshWorker extends Worker {
         CatalogManifestClient.Result res = client.fetchManifest(manifestUrl,
                 overlay.exists() ? store.etag(name) : null);
         if (res.status == CatalogManifestClient.Status.FAILED) {
-            return Result.retry();     // offline / server hiccup: back off and try again
+            // K2GO-580: no retry. A refresh runs only when asked; a delayed retry could land on mobile
+            // data that nobody approved. The user taps again (or the next 404 asks again).
+            return Result.failure();
         }
         if (res.status == CatalogManifestClient.Status.NOT_MODIFIED) {
             store.recordChecked(name, now);

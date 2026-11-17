@@ -1600,4 +1600,8 @@
     <string name="k2go_cx_share_stop_msg">Aceasta oprește orice copiere în curs. Celălalt telefon își pierde progresul și trebuie să înceapă din nou cu un cod nou.</string>
     <string name="k2go_connect_switch_msg">Dispozitivele conectate la acest hotspot își pierd conexiunea.</string>
     <string name="k2go_cx_share_notif_open">Partajarea rămâne deschisă până când o oprești.</string>
+    <string name="k2go_gm_catalogs_update">Actualizează cataloagele</string>
+    <string name="k2go_gm_catalogs_updating">Se actualizează cataloagele...</string>
+    <string name="k2go_gm_catalogs_bundled">Cataloage: incluse în aplicație</string>
+    <string name="k2go_gm_catalogs_checked">Cataloage verificate: %1$s</string>
 </resources>

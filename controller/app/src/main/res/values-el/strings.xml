@@ -1607,4 +1607,8 @@
     <string name="k2go_cx_share_stop_msg">Αυτό σταματά κάθε αντιγραφή σε εξέλιξη. Το άλλο τηλέφωνο χάνει την πρόοδό του και πρέπει να ξεκινήσει ξανά με νέο κωδικό.</string>
     <string name="k2go_connect_switch_msg">Οι συσκευές που είναι συνδεδεμένες σε αυτό το hotspot χάνουν τη σύνδεσή τους.</string>
     <string name="k2go_cx_share_notif_open">Η κοινή χρήση παραμένει ανοιχτή μέχρι να τη σταματήσετε.</string>
+    <string name="k2go_gm_catalogs_update">Ενημέρωση καταλόγων</string>
+    <string name="k2go_gm_catalogs_updating">Ενημέρωση καταλόγων...</string>
+    <string name="k2go_gm_catalogs_bundled">Κατάλογοι: περιλαμβάνονται στην εφαρμογή</string>
+    <string name="k2go_gm_catalogs_checked">Έλεγχος καταλόγων: %1$s</string>
 </resources>

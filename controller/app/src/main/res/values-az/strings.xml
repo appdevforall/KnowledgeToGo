@@ -1620,4 +1620,8 @@
     <string name="k2go_cx_share_stop_msg">Bu, davam edən istənilən köçürməni dayandırır. Digər telefon irəliləyişini itirir və yeni kodla yenidən başlamalıdır.</string>
     <string name="k2go_connect_switch_msg">Bu hotspota qoşulmuş cihazların bağlantısı kəsiləcək.</string>
     <string name="k2go_cx_share_notif_open">Paylaşım siz dayandırana qədər açıq qalır.</string>
+    <string name="k2go_gm_catalogs_update">Kataloqları yenilə</string>
+    <string name="k2go_gm_catalogs_updating">Kataloqlar yenilənir...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloqlar: tətbiqlə birlikdə gəlir</string>
+    <string name="k2go_gm_catalogs_checked">Kataloqlar yoxlanıldı: %1$s</string>
 </resources>

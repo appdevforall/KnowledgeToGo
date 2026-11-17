@@ -1607,4 +1607,8 @@
     <string name="k2go_cx_share_stop_msg">Това спира всяко копиране в ход. Другият телефон губи напредъка си и трябва да започне отново с нов код.</string>
     <string name="k2go_connect_switch_msg">Устройствата, свързани към тази точка за достъп, губят връзката си.</string>
     <string name="k2go_cx_share_notif_open">Споделянето остава отворено, докато не го спрете.</string>
+    <string name="k2go_gm_catalogs_update">Обнови каталозите</string>
+    <string name="k2go_gm_catalogs_updating">Каталозите се обновяват...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталози: включени в приложението</string>
+    <string name="k2go_gm_catalogs_checked">Каталозите са проверени: %1$s</string>
 </resources>

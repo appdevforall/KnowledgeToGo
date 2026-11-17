@@ -76,13 +76,11 @@ public final class KiwixCatalog {
 
     /**
      * Loads the catalog (overlay if pulled, else the baked asset) off the main thread; posts back on the
-     * main thread. K2GO-390: also nudges the freshness refresh (weekly + an opportunistic TTL-gated
-     * check now, since the picker is opening). Both refreshes are network-constrained WorkManager jobs,
-     * so offline is a silent no-op -- the asset/overlay stays the offline baseline. See ADR-390.
+     * main thread. K2GO-580: opening the catalog never refreshes it; see {@link #refresh}.
      */
     public static void getOrFetch(Context context, Listener listener) {
         final Context app = context.getApplicationContext();
-        nudgeRefresh(app);
+        retireAutomaticRefresh(app);
 
         JSONObject mem;
         synchronized (KiwixCatalog.class) {
@@ -102,16 +100,13 @@ public final class KiwixCatalog {
         }).start();
     }
 
-    // Nudge the freshness refresh once per process (K2GO-390): weekly (KEEP) + an opportunistic,
-    // TTL-gated check. Network-constrained, so offline is a no-op. A 404 forces its own check
-    // (forceRefresh), so this need not run on every catalog open (the drain opens it every ~2 s).
-    private static volatile boolean refreshNudged = false;
+    // K2GO-580: cancel the automatic jobs older builds left behind, once per process.
+    private static volatile boolean automaticRetired = false;
 
-    private static void nudgeRefresh(Context app) {
-        if (refreshNudged) return;
-        refreshNudged = true;
-        CatalogRefreshScheduler.scheduleWeekly(app, CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
-        CatalogRefreshScheduler.refreshNow(app, CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
+    private static void retireAutomaticRefresh(Context app) {
+        if (automaticRetired) return;
+        automaticRetired = true;
+        CatalogRefreshScheduler.cancelAutomatic(app, CATALOG_NAME);
     }
 
     /**

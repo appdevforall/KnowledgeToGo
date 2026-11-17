@@ -1600,4 +1600,8 @@
     <string name="k2go_cx_share_stop_msg">این کار هر کپی در حال انجام را متوقف می‌کند. تلفن دیگر پیشرفت خود را از دست می‌دهد و باید با یک کد جدید دوباره شروع کند.</string>
     <string name="k2go_connect_switch_msg">دستگاه‌های متصل به این نقطه اتصال، اتصال خود را از دست می‌دهند.</string>
     <string name="k2go_cx_share_notif_open">اشتراک‌گذاری تا زمانی که آن را متوقف کنید باز می‌ماند.</string>
+    <string name="k2go_gm_catalogs_update">به‌روزرسانی فهرست‌ها</string>
+    <string name="k2go_gm_catalogs_updating">در حال به‌روزرسانی فهرست‌ها...</string>
+    <string name="k2go_gm_catalogs_bundled">فهرست‌ها: همراه برنامه</string>
+    <string name="k2go_gm_catalogs_checked">آخرین بررسی فهرست‌ها: %1$s</string>
 </resources>

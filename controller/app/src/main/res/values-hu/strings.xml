@@ -1600,4 +1600,8 @@
     <string name="k2go_cx_share_stop_msg">Ez leállít minden folyamatban lévő másolást. A másik telefon elveszíti az előrehaladását, és új kóddal kell újrakezdenie.</string>
     <string name="k2go_connect_switch_msg">A hotspothoz csatlakozott eszközök elveszítik a kapcsolatot.</string>
     <string name="k2go_cx_share_notif_open">A megosztás nyitva marad, amíg le nem állítja.</string>
+    <string name="k2go_gm_catalogs_update">Katalógusok frissítése</string>
+    <string name="k2go_gm_catalogs_updating">Katalógusok frissítése...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalógusok: az alkalmazás része</string>
+    <string name="k2go_gm_catalogs_checked">Katalógusok ellenőrizve: %1$s</string>
 </resources>

@@ -1613,4 +1613,8 @@
     <string name="k2go_cx_share_stop_msg">Ово зауставља свако копирање у току. Други телефон губи напредак и мора да почне поново са новим кодом.</string>
     <string name="k2go_connect_switch_msg">Уређаји повезани на овај хотспот губе везу.</string>
     <string name="k2go_cx_share_notif_open">Дељење остаје отворено док га не зауставите.</string>
+    <string name="k2go_gm_catalogs_update">Ажурирај каталоге</string>
+    <string name="k2go_gm_catalogs_updating">Ажурирање каталога...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталози: укључени у апликацију</string>
+    <string name="k2go_gm_catalogs_checked">Каталози проверени: %1$s</string>
 </resources>

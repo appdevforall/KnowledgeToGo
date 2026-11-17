@@ -1610,4 +1610,8 @@
     <string name="k2go_cx_share_stop_msg">Dette stopper all kopiering som pågår. Den andre telefonen mister fremdriften og må starte på nytt med en ny kode.</string>
     <string name="k2go_connect_switch_msg">Enheter som er koblet til denne hotspoten, mister tilkoblingen.</string>
     <string name="k2go_cx_share_notif_open">Delingen er åpen til du stopper den.</string>
+    <string name="k2go_gm_catalogs_update">Oppdater kataloger</string>
+    <string name="k2go_gm_catalogs_updating">Oppdaterer kataloger...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloger: følger med appen</string>
+    <string name="k2go_gm_catalogs_checked">Kataloger sjekket: %1$s</string>
 </resources>

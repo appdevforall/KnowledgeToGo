@@ -1610,4 +1610,8 @@
     <string name="k2go_cx_share_stop_msg">To zatrzymuje każde trwające kopiowanie. Drugi telefon traci postęp i musi zacząć od nowa z nowym kodem.</string>
     <string name="k2go_connect_switch_msg">Urządzenia połączone z tym hotspotem utracą połączenie.</string>
     <string name="k2go_cx_share_notif_open">Udostępnianie pozostaje otwarte, dopóki go nie zatrzymasz.</string>
+    <string name="k2go_gm_catalogs_update">Aktualizuj katalogi</string>
+    <string name="k2go_gm_catalogs_updating">Aktualizowanie katalogów...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogi: dołączone do aplikacji</string>
+    <string name="k2go_gm_catalogs_checked">Katalogi sprawdzone: %1$s</string>
 </resources>

@@ -1613,4 +1613,8 @@
     <string name="k2go_cx_share_stop_msg">এটি চলমান যেকোনো কপি বন্ধ করে। অন্য ফোনটি তার অগ্রগতি হারায় এবং নতুন কোড দিয়ে আবার শুরু করতে হবে।</string>
     <string name="k2go_connect_switch_msg">এই হটস্পটে যুক্ত ডিভাইসগুলির সংযোগ বিচ্ছিন্ন হবে।</string>
     <string name="k2go_cx_share_notif_open">আপনি বন্ধ না করা পর্যন্ত শেয়ার খোলা থাকে।</string>
+    <string name="k2go_gm_catalogs_update">ক্যাটালগ আপডেট করুন</string>
+    <string name="k2go_gm_catalogs_updating">ক্যাটালগ আপডেট হচ্ছে...</string>
+    <string name="k2go_gm_catalogs_bundled">ক্যাটালগ: অ্যাপের সাথে অন্তর্ভুক্ত</string>
+    <string name="k2go_gm_catalogs_checked">ক্যাটালগ পরীক্ষা করা হয়েছে: %1$s</string>
 </resources>

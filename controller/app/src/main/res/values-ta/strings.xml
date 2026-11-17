@@ -1620,4 +1620,8 @@
     <string name="k2go_cx_share_stop_msg">இது நடந்துகொண்டிருக்கும் எந்த நகலெடுப்பையும் நிறுத்துகிறது. மற்ற ஃபோன் அதன் முன்னேற்றத்தை இழக்கும், புதிய குறியீட்டுடன் மீண்டும் தொடங்க வேண்டும்.</string>
     <string name="k2go_connect_switch_msg">இந்த ஹாட்ஸ்பாட்டுடன் இணைந்த சாதனங்கள் இணைப்பை இழக்கும்.</string>
     <string name="k2go_cx_share_notif_open">நீங்கள் நிறுத்தும் வரை பகிர்வு திறந்திருக்கும்.</string>
+    <string name="k2go_gm_catalogs_update">அட்டவணைகளைப் புதுப்பி</string>
+    <string name="k2go_gm_catalogs_updating">அட்டவணைகள் புதுப்பிக்கப்படுகின்றன...</string>
+    <string name="k2go_gm_catalogs_bundled">அட்டவணைகள்: ஆப்புடன் சேர்க்கப்பட்டவை</string>
+    <string name="k2go_gm_catalogs_checked">அட்டவணைகள் சரிபார்க்கப்பட்டது: %1$s</string>
 </resources>
