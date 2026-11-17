@@ -20,6 +20,8 @@ public final class FeedbackFab {
     private static final String PREFS = "iiab_delivery";
     private static final String KEY_X = "fab_x_ratio";
     private static final String KEY_Y = "fab_y_ratio";
+    /** K2GO-269: the gap a dragged or restored FAB keeps from every screen edge (the layout margin). */
+    private static final float EDGE_DP = 16f;
 
     private FeedbackFab() {
     }
@@ -44,11 +46,13 @@ public final class FeedbackFab {
         final Context ctx = fab.getContext();
         final int slop = ViewConfiguration.get(ctx).getScaledTouchSlop();
         final float density = ctx.getResources().getDisplayMetrics().density;
-        final float topPx = topExclusionDp * density;
-        final float botPx = bottomExclusionDp * density;
+        // K2GO-269: the compact FAB has no shadow padding, so keep the layout margin from every edge.
+        final float edgePx = EDGE_DP * density;
+        final float topPx = Math.max(topExclusionDp * density, edgePx);
+        final float botPx = Math.max(bottomExclusionDp * density, edgePx);
 
-        fab.post(() -> applySaved(fab, topPx, botPx));
-        fab.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> applySaved(fab, topPx, botPx));
+        fab.post(() -> applySaved(fab, edgePx, topPx, botPx));
+        fab.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, orr, ob) -> applySaved(fab, edgePx, topPx, botPx));
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             float downX, downY, dX, dY;
@@ -73,7 +77,7 @@ public final class FeedbackFab {
                             if (parent == null) {
                                 return true;
                             }
-                            float nx = clamp(e.getRawX() + dX, 0, parent.getWidth() - v.getWidth());
+                            float nx = clamp(e.getRawX() + dX, edgePx, parent.getWidth() - v.getWidth() - edgePx);
                             float ny = clamp(e.getRawY() + dY, topPx,
                                     parent.getHeight() - v.getHeight() - botPx);
                             v.setX(nx);
@@ -104,7 +108,7 @@ public final class FeedbackFab {
         return Math.max(lo, Math.min(v, hi));
     }
 
-    private static void applySaved(FloatingActionButton fab, float topPx, float botPx) {
+    private static void applySaved(FloatingActionButton fab, float edgePx, float topPx, float botPx) {
         ViewGroup parent = (ViewGroup) fab.getParent();
         if (parent == null || parent.getWidth() == 0 || parent.getHeight() == 0) {
             return;
@@ -120,7 +124,7 @@ public final class FeedbackFab {
         // K2GO-406: keep a restored position inside the same top/bottom exclusions the drag uses.
         float top = Math.min(topPx, availY);
         float bottom = Math.max(top, availY - botPx);
-        fab.setX(clamp(xr * availX, 0, availX));
+        fab.setX(clamp(xr * availX, Math.min(edgePx, availX), availX - edgePx));
         fab.setY(clamp(yr * availY, top, bottom));
     }
 
