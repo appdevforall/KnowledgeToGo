@@ -48,9 +48,10 @@ says `vX.Y.Z-rc.N`, and only a build that says `vX.Y.Z` can become the release.
 4. Button 2, `play-release.yml`: accept only the newest rc of the version (each new candidate
    replaces the older one in Play) and run the release build (GitHub Release, website APKs, R2,
    OTA `update.json`). An rc build is never released as final: both the tag step and the
-   release build refuse a commit whose `versionName` is not exactly `vX.Y.Z`. The final build
-   (versionName `vX.Y.Z`, sent to Play, then tagged) is not designed yet, so today button 2
-   refuses every rc commit. The release build runs only when `play-release.yml` calls it:
+   release build refuse a commit whose `versionName` is not exactly `vX.Y.Z`. The final commit
+   is `main` after a PR that only sets `versionName "vX.Y.Z"` and its versionCode; button 2 runs
+   from `main` and tags that commit. It does not touch Google Play: sending the final build to
+   Play (for Production) is a later step. The release build runs only when `play-release.yml` calls it:
    a hand-pushed `v*` tag does not start a release.
 5. Play credentials, keyless: the service account
    `k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com` (Google Cloud project

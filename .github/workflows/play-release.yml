@@ -1,16 +1,16 @@
 name: "Play: 2. publish release"
 
 # K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
-# Run this after Google approved a candidate. It tags the candidate commit with the final version
-# (v1.2.0-rc.2 -> v1.2.0) and runs the release build: GitHub Release, website APKs, R2 and the OTA
-# update.json. An rc build is never released as final: the tagged commit must have versionName
-# "v1.2.0" (check-release), so an rc commit is refused until the final-build step exists (K2GO-564).
+# Run this from main after Google approved a candidate and main says versionName "vX.Y.Z" (the final
+# commit: same code, only the version line changed). It tags that commit with the final version and
+# runs the release build: GitHub Release, website APKs, R2 and the OTA update.json. It does not touch
+# Google Play. An rc build is never released as final (check-release).
 
 on:
   workflow_dispatch:
     inputs:
       rc_tag:
-        description: "Approved candidate tag, for example v1.2.0-rc.2"
+        description: "Approved candidate tag, for example v1.2.0-rc.3 (the final commit is main)"
         required: true
 
 concurrency:
@@ -39,16 +39,17 @@ jobs:
           # Refuses a malformed tag, a released version, and a candidate older than the newest.
           git ls-remote --tags origin 'v*' | sed 's#.*refs/tags/##; s#\^{}$##' | sort -u > "$RUNNER_TEMP/tags.txt"
           final=$(python3 tools/play-publish/play_publish.py final-tag --rc-tag "$RC_TAG" --tags "$RUNNER_TEMP/tags.txt")
-          git fetch --no-tags origin "refs/tags/$RC_TAG:refs/tags/$RC_TAG"
-          # An rc build is never released as final: the tagged commit must say versionName "$final".
-          git show "$RC_TAG:controller/app/build.gradle" > "$RUNNER_TEMP/build.gradle"
-          python3 tools/play-publish/play_publish.py check-release --gradle "$RUNNER_TEMP/build.gradle" --tag "$final"
-          git tag "$final" "$RC_TAG^{commit}"
+          # The final commit is main: an rc build is never released as final, so it must say versionName "$final".
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Run this from main, not $GITHUB_REF."; exit 1
+          fi
+          python3 tools/play-publish/play_publish.py check-release --gradle controller/app/build.gradle --tag "$final"
+          git tag "$final" "$GITHUB_SHA"
           git push origin "refs/tags/$final"
           echo "tag=$final" >> "$GITHUB_OUTPUT"
           {
-            echo "## $final tagged on $(git rev-parse "$RC_TAG^{commit}") (from $RC_TAG)"
-            echo "- Now press **Publish changes** in Play Console to release the approved AAB."
+            echo "## $final tagged on $GITHUB_SHA (approved candidate: $RC_TAG)"
+            echo "- Google Play is unchanged: the approved candidate stays on its track."
           } >> "$GITHUB_STEP_SUMMARY"
 
   # A tag pushed with GITHUB_TOKEN does not start other workflows, so call the release build here.
