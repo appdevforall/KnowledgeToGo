@@ -66,6 +66,7 @@ public class CloneFragment extends Fragment {
 
     private enum Side { SEND, RECEIVE }
     private CloneLinkRows linkRows;   // K2GO-576
+    private View rcvFooter;           // K2GO-576: pinned receive Cancel
     // ADFA-5154: the 3-step Send wizard (Join / Get app / Copy) becomes 2 pages. PREPARE shows Join ①
     // and Get app ② stacked (both QRs at once); COPY shows the transfer QR. The "Installed? Copy the
     // library ›" gate advances PREPARE -> COPY (a real prerequisite: the app must be on the other phone).
@@ -266,6 +267,7 @@ public class CloneFragment extends Fragment {
         pFile = v.findViewById(R.id.k2go_clone_pfile);
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
+        rcvFooter = v.findViewById(R.id.k2go_clone_rcv_footer);
         confirmPanel = v.findViewById(R.id.k2go_rcv_confirm);
         confirmSizes = v.findViewById(R.id.k2go_rcv_confirm_sizes);
         confirmSys = v.findViewById(R.id.k2go_rcv_confirm_sys);
@@ -286,6 +288,9 @@ public class CloneFragment extends Fragment {
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
         syncVm.pathRates().observe(getViewLifecycleOwner(), linkRows::showRates);   // K2GO-576
+        CableSession.get().peerWifi().observe(getViewLifecycleOwner(), r -> {
+            if (side == Side.SEND && !atFork) linkRows.showPeerWifi(r, hsMode.isHotspot(), LocalHotspotManager.get().state().getValue());
+        });
         transport = syncVm.getTransport();
         shareConfig = ShareConfig.defaults();
 
@@ -570,6 +575,7 @@ public class CloneFragment extends Fragment {
         if (stepTitle != null) { stepTitle.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
         SegmentedTabs.paint(tabSend, side == Side.SEND);
         SegmentedTabs.paint(tabReceive, side == Side.RECEIVE);
+        if (atFork || side != Side.RECEIVE) rcvFooter.setVisibility(View.GONE);   // K2GO-576: receive-only
 
         if (atFork) {
             cloneHdr.setVisibility(View.VISIBLE);
@@ -1029,6 +1035,7 @@ public class CloneFragment extends Fragment {
      */
     private void showProgress(boolean visible) {
         progressBox.setVisibility(visible ? View.VISIBLE : View.GONE);
+        rcvFooter.setVisibility(visible ? View.VISIBLE : View.GONE);   // K2GO-576: pinned Cancel
         if (anim == null || reduceMotion) return;
         if (visible) {
             if (!anim.isAnimating()) anim.playAnimation();
@@ -1076,10 +1083,12 @@ public class CloneFragment extends Fragment {
                     SyncTransferState now = SyncProgressRepository.get().current();
                     if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
                 }));
-        // K2GO-576: no gateway probes while a probe or pull runs: each one takes a daemon connection.
+        // K2GO-576: no daemon probes while the pull runs (it uses the daemon's few connections; the
+        // row then shows the Wi-Fi rate). Before that, also on the confirm step, keep checking.
         SyncHandshakeHelper.SyncCredentials paired = syncVm.getPendingCreds();
         linkRows.setSenderHost(paired != null ? paired.ip : null);   // Wi-Fi network or hotspot
-        linkRows.startChecks(shareConfig.rsyncPort, !busy);
+        boolean pulling = st != null && st.phase == SyncTransferState.Phase.TRANSFERRING;
+        linkRows.startChecks(shareConfig.rsyncPort, !pulling);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784

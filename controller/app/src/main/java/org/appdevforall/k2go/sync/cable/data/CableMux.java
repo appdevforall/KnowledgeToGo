@@ -43,6 +43,9 @@ public final class CableMux implements Closeable {
 
         /** The sender stopped sharing (BYE). */
         void onBye();
+
+        /** The receiver's Wi-Fi verdict: does it reach the sender on Wi-Fi. */
+        void onPeerWifi(boolean reaches);
     }
 
     /** Sender side: opens the connection that a new channel goes to. Null on the receiver. */
@@ -88,6 +91,15 @@ public final class CableMux implements Closeable {
             throw e;
         }
         pump(ch, s);
+    }
+
+    /** Receiver: tells the sender whether it reaches the sender on Wi-Fi. Best effort. */
+    public void sendWifi(boolean reaches) {
+        try {
+            send(new CableFrame(CableFrame.Type.WIFI, 0, new byte[]{(byte) (reaches ? 1 : 0)}));
+        } catch (IOException ignored) {
+            // the next check sends it again
+        }
     }
 
     /** Sender: tells the receiver that sharing stopped. Best effort: the link may be gone. */
@@ -155,6 +167,9 @@ public final class CableMux implements Closeable {
             case BYE:
                 Log.i(TAG, "the sender stopped sharing");
                 listener.onBye();
+                break;
+            case WIFI:
+                listener.onPeerWifi(f.payload.length > 0 && f.payload[0] == 1);
                 break;
         }
     }

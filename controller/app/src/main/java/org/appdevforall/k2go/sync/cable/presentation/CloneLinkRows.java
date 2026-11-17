@@ -33,7 +33,6 @@ import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
-import org.appdevforall.k2go.util.ByteFormatter;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -76,6 +75,14 @@ public final class CloneLinkRows {
         root.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    private Boolean peerWifi;   // sender: the receiver's verdict over the cable, null when unknown
+
+    /** Sender: the receiver's Wi-Fi verdict arrived over the cable. */
+    public void showPeerWifi(Boolean reaches, boolean hotspotMode, LocalHotspotManager.State hs) {
+        peerWifi = reaches;
+        showSender(hotspotMode, hs);
+    }
+
     /** Sender: the Wi-Fi row shows its own hotspot, or that it shares over the Wi-Fi network. */
     public void showSender(boolean hotspotMode, LocalHotspotManager.State hs) {
         stopChecks();
@@ -85,6 +92,13 @@ public final class CloneLinkRows {
         if (!hotspotMode) {
             // Over a Wi-Fi network: show its band; the receiver confirms that it reaches us.
             WifiLink.Band band = WifiLink.band(ownFrequency(c));
+            if (Boolean.FALSE.equals(peerWifi)) {
+                // The receiver said over the cable that it cannot reach this phone on Wi-Fi.
+                wifiDetail.setText(R.string.k2go_clone_link_wifi_peer_unreachable);
+                paint(wifiIcon, wifiBadge, WifiLink.Level.WARN,
+                        c.getString(R.string.k2go_clone_link_badge_not_ready));
+                return;
+            }
             wifiDetail.setText(R.string.k2go_clone_link_wifi_network);
             paint(wifiIcon, wifiBadge, band == WifiLink.Band.GHZ_5 ? WifiLink.Level.OK : WifiLink.Level.WARN,
                     bandText(c, band));
@@ -146,6 +160,7 @@ public final class CloneLinkRows {
             boolean answers = on && (probe ? senderAnswers(host != null ? host : gateway(wm.getDhcpInfo().gateway), port)
                     : lastAnswers);
             lastAnswers = answers;
+            if (probe) CableSession.get().reportWifi(answers);   // the sender shows the same verdict
             WifiLink.Band band = WifiLink.band(freq);
             main.post(() -> {
                 inFlight = false;
@@ -174,10 +189,16 @@ public final class CloneLinkRows {
                 : band == WifiLink.Band.GHZ_2_4 ? c.getString(R.string.k2go_clone_link_band_24) : "";
     }
 
+    /** Same unit as the transfer speed under the progress bar (MB/s, 10^6). */
+    private static String rate(long bytesPerSec) {
+        return String.format(java.util.Locale.ROOT, "%.1fMB/s", bytesPerSec / 1e6);
+    }
+
     private static boolean senderAnswers(String host, int port) {
         if (host == null) return false;
         try (Socket s = new Socket()) {
-            s.connect(new InetSocketAddress(host, port), 800);
+            // Phone to phone through a home router can take over a second (K2GO-576 tests).
+            s.connect(new InetSocketAddress(host, port), 3000);
             return true;
         } catch (Exception e) {
             return false;
@@ -196,7 +217,7 @@ public final class CloneLinkRows {
             lastAnswers = true;
             Context c = root.getContext();
             wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active,
-                    ByteFormatter.toHuman(rates[0]) + "/s"));
+                    rate(rates[0])));
         }
     }
 
@@ -213,7 +234,7 @@ public final class CloneLinkRows {
                     : R.string.k2go_clone_link_wifi_not_joined);
             paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_not_ready));
         } else if (wifiRate > 0) {
-            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active, ByteFormatter.toHuman(wifiRate) + "/s"));
+            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active, rate(wifiRate)));
             paint(wifiIcon, wifiBadge, level, bandText(c, band));
         } else {
             wifiDetail.setText(band != WifiLink.Band.GHZ_5 ? R.string.k2go_clone_link_wifi_slow
@@ -229,7 +250,7 @@ public final class CloneLinkRows {
         switch (s.link) {
             case LINKED:
                 usbDetail.setText(s.bytesPerSec > 0
-                        ? c.getString(R.string.k2go_clone_link_usb_active, ByteFormatter.toHuman(s.bytesPerSec) + "/s")
+                        ? c.getString(R.string.k2go_clone_link_usb_active, rate(s.bytesPerSec))
                         : c.getString(R.string.k2go_clone_link_usb_linked));
                 paint(usbIcon, usbBadge, WifiLink.Level.OK, c.getString(R.string.k2go_clone_link_badge_linked));
                 break;

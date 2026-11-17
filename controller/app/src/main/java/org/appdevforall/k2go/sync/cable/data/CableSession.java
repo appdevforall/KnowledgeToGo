@@ -27,6 +27,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -75,6 +76,8 @@ public final class CableSession {
     private Thread watcher;
     private volatile CableMux mux;
     private volatile boolean senderStopped;
+    /** Sender: the receiver's own Wi-Fi verdict, from the cable; null when unknown. */
+    private final MutableLiveData<Boolean> peerWifi = new MutableLiveData<>(null);
     private volatile String lastHello;        // the pairing data the receiver got last
     private volatile String completedHello;   // the pairing data of the last finished copy
     private volatile CableRelay relay;
@@ -90,6 +93,21 @@ public final class CableSession {
 
     public LiveData<State> state() {
         return state;
+    }
+
+    /** Sender: whether the receiver reaches this phone on Wi-Fi (null: no cable or no answer yet). */
+    public LiveData<Boolean> peerWifi() {
+        return peerWifi;
+    }
+
+    /**
+     * Receiver: shares its Wi-Fi verdict over the cable, so both phones show the same Wi-Fi state.
+     * Only the receiver can tell: the sender reaching the router says nothing about the path.
+     */
+    public void reportWifi(boolean reaches) {
+        CableMux m = mux;
+        if (m == null || role != Role.RECEIVE) return;
+        new Thread(() -> m.sendWifi(reaches), "cable-wifi").start();   // USB write: off the UI thread
     }
 
     /** Receiver: the copy started from the last pairing data finished; do not offer it again. */
@@ -170,8 +188,7 @@ public final class CableSession {
         };
         IntentFilter f = new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
         f.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        if (Build.VERSION.SDK_INT >= 33) app.registerReceiver(detachReceiver, f, Context.RECEIVER_NOT_EXPORTED);
-        else app.registerReceiver(detachReceiver, f);
+        ContextCompat.registerReceiver(app, detachReceiver, f, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     private synchronized void unregisterDetach() {
@@ -277,8 +294,7 @@ public final class CableSession {
         };
         permissionReceiver = r;
         IntentFilter f = new IntentFilter(ACTION_PERMISSION);
-        if (Build.VERSION.SDK_INT >= 33) app.registerReceiver(r, f, Context.RECEIVER_NOT_EXPORTED);
-        else app.registerReceiver(r, f);
+        ContextCompat.registerReceiver(app, r, f, ContextCompat.RECEIVER_NOT_EXPORTED);
         if (target instanceof UsbDevice) um.requestPermission((UsbDevice) target, pi);
         else um.requestPermission((UsbAccessory) target, pi);
     }
@@ -301,6 +317,11 @@ public final class CableSession {
             @Override
             public void onBye() {
                 senderStopped = true;
+            }
+
+            @Override
+            public void onPeerWifi(boolean reaches) {
+                peerWifi.postValue(reaches);
             }
 
             @Override
@@ -336,6 +357,7 @@ public final class CableSession {
     }
 
     private synchronized void linkClosed() {
+        peerWifi.postValue(null);
         closeRelay();
         mux = null;
         state.postValue(new State(Link.NONE, 0));

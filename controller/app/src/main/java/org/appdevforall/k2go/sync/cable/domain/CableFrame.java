@@ -34,7 +34,9 @@ public final class CableFrame {
         /** End of {@code channel}, either direction. */
         CLOSE,
         /** The sender stopped sharing: the receiver ends its pull at once instead of retrying. */
-        BYE;
+        BYE,
+        /** Receiver -> sender: one byte, 1 when the receiver reaches the sender on Wi-Fi. */
+        WIFI;
 
         static Type of(int code) {
             Type[] all = values();
