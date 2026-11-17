@@ -50,8 +50,7 @@ says `vX.Y.Z-rc.N`, and only a build that says `vX.Y.Z` can become the release.
    OTA `update.json`). An rc build is never released as final: both the tag step and the
    release build refuse a commit whose `versionName` is not exactly `vX.Y.Z`. The final commit
    is `main` after a PR that only sets `versionName "vX.Y.Z"` and its versionCode; button 2 runs
-   from `main` and tags that commit. It does not touch Google Play: sending the final build to
-   Play (for Production) is a later step. The release build runs only when `play-release.yml` calls it:
+   from `main` and tags that commit. The release build runs only when `play-release.yml` calls it:
    a hand-pushed `v*` tag does not start a release.
 5. Play credentials, keyless: the service account
    `k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com` (Google Cloud project

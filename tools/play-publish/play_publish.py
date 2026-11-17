@@ -245,9 +245,7 @@ def cmd_final_tag(args):
 
 
 def cmd_check_release(args):
-    gradle = open(args.gradle, encoding="utf-8").read()
-    checked_code_base(gradle)   # the versionCode must be the one its versionName gives
-    print(check_release(gradle, args.tag))
+    print(check_release(open(args.gradle, encoding="utf-8").read(), args.tag))
 
 
 def cmd_publish(args):

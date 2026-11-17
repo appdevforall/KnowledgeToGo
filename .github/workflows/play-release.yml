@@ -3,8 +3,8 @@ name: "Play: 2. publish release"
 # K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Run this from main after Google approved a candidate and main says versionName "vX.Y.Z" (the final
 # commit: same code, only the version line changed). It tags that commit with the final version and
-# runs the release build: GitHub Release, website APKs, R2 and the OTA update.json. It does not touch
-# Google Play. An rc build is never released as final (check-release).
+# runs the release build: GitHub Release, website APKs, R2 and the OTA update.json. An rc build is
+# never released as final (check-release).
 
 on:
   workflow_dispatch:
@@ -49,7 +49,7 @@ jobs:
           echo "tag=$final" >> "$GITHUB_OUTPUT"
           {
             echo "## $final tagged on $GITHUB_SHA (approved candidate: $RC_TAG)"
-            echo "- Google Play is unchanged: the approved candidate stays on its track."
+            echo "- Now press **Publish changes** in Play Console to release the approved AAB."
           } >> "$GITHUB_STEP_SUMMARY"
 
   # A tag pushed with GITHUB_TOKEN does not start other workflows, so call the release build here.
