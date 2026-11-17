@@ -70,7 +70,7 @@ import secrets
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .registry import Registry
 from .rsync_share import Module
@@ -82,6 +82,11 @@ Response = Tuple[int, Any]
 # survives, and a truly abandoned session is eventually reclaimed. The cap is a backstop; the
 # normal closes are COMPLETE and CANCEL.
 DEFAULT_SAFETY_CAP_SECONDS = 6 * 3600
+
+# How long a closed session still answers GET .../progress with how it ended (K2GO-577). The
+# sender polls about once a second, so minutes are plenty; the cap bounds memory.
+ENDED_TTL_SECONDS = 15 * 60
+ENDED_MAX = 64
 
 
 @dataclass
@@ -118,6 +123,10 @@ class ShareOps:
         self._rsync = rsync  # the RsyncDaemon, or None: share over HTTP fetch only
         self._lock = threading.Lock()
         self._sessions: Dict[str, _Session] = {}
+        # session_id -> {token, state, items, at}: how a closed session ended, so the sender's
+        # last poll learns "completed" instead of a bare 404 (K2GO-577). Dropped after
+        # ENDED_TTL_SECONDS; never more than ENDED_MAX entries.
+        self._ended: Dict[str, dict] = {}
         # Serializes snapshot + apply, so a stale module list never lands after a newer one (a
         # closed session's module must not keep serving).
         self._sync_lock = threading.Lock()
@@ -275,27 +284,29 @@ class ShareOps:
         return 200, {"ok": True}
 
     def progress(self, session_id: str, token: Any) -> Response:
-        """The sender's view: the last progress the receiver reported per item."""
+        """The sender's view: the last progress the receiver reported per item, and the session
+        state. "open" while the session lives; after a close, for ENDED_TTL_SECONDS, how it ended
+        ("completed", "cancelled" or "expired") with the last items (K2GO-577)."""
         session = self._resolve(session_id, token)
         if isinstance(session, tuple):
-            return session
+            ended = self._ended_view(session_id, token)
+            return ended if ended is not None else session
         with self._lock:
-            items = [dict(report, itemRef=ref, delivered=ref in session.delivered)
-                     for ref, report in sorted(session.progress.items(), key=lambda kv: int(kv[0]))]
-        return 200, {"sessionId": session_id, "items": items}
+            items = self._snapshot(session)
+        return 200, {"sessionId": session_id, "state": "open", "items": items}
 
     def complete(self, session_id: str, token: Any) -> Response:
         """Clean-success close: the receiver has every item it wanted and releases the session.
         This is the receiver-driven close (supersedes any drop-based auto-close). Revokes the
         token and every child op + temp. 404 on an unknown or already-closed session."""
-        return self._close(session_id, token)
+        return self._close(session_id, token, "completed")
 
     def delete(self, session_id: str, token: Any) -> Response:
         """Cancel (abort) close, by the host or the receiver; also the app-side closer (the
         sender's foreground service calls this in onDestroy). Revokes the token and every child
         op + temp. 404 on an unknown or already-closed session, so a double close (receiver and
         sender) is harmless: the second caller sees the gate already closed."""
-        return self._close(session_id, token)
+        return self._close(session_id, token, "cancelled")
 
     # ---- lifecycle ----
 
@@ -326,9 +337,10 @@ class ShareOps:
             session.last_seen = time.monotonic()
             return session
 
-    def _close(self, session_id: str, token: Any) -> Response:
+    def _close(self, session_id: str, token: Any, state: str) -> Response:
         """Resolve + token-check + revoke. The single close primitive behind COMPLETE and
-        CANCEL: both revoke the token and the child ops; they differ only in the app's intent."""
+        CANCEL: both revoke the token and the child ops; they differ only in the app's intent,
+        which is kept as the ended ``state`` for the sender's last poll."""
         self._sweep_capped()
         with self._lock:
             session = self._sessions.get(session_id)
@@ -338,12 +350,49 @@ class ShareOps:
             if denied is not None:
                 return denied
             self._sessions.pop(session_id, None)
+            self._remember_ended(session_id, session, state)
             child_ops = list(session.item_ops.values())
         for op_id in child_ops:
             self._export.delete(op_id)  # drops each child op + removes its staged temp
         if session.modules:
             self._sync_daemon()  # revoke its rsync modules too (and stop an idle daemon)
         return 200, {"ok": True}
+
+    @staticmethod
+    def _snapshot(session: _Session) -> List[dict]:
+        """The per-item view, under the lock: every reported item, plus items delivered over the
+        HTTP fetch (no progress report) as delivered-only rows."""
+        refs = set(session.progress) | set(session.delivered)
+        items = []
+        for ref in sorted(refs, key=int):
+            row = dict(session.progress.get(ref, {}))
+            row["itemRef"] = ref
+            row["delivered"] = ref in session.delivered
+            items.append(row)
+        return items
+
+    def _remember_ended(self, session_id: str, session: _Session, state: str) -> None:
+        """Record how a session ended (caller holds the lock). Expired entries go first, then
+        the oldest when the cap is reached."""
+        now = time.monotonic()
+        for sid, ended in list(self._ended.items()):
+            if now - ended["at"] > ENDED_TTL_SECONDS:
+                del self._ended[sid]
+        while len(self._ended) >= ENDED_MAX:
+            del self._ended[min(self._ended, key=lambda sid: self._ended[sid]["at"])]
+        self._ended[session_id] = {"token": session.token, "state": state,
+                                   "items": self._snapshot(session), "at": now}
+
+    def _ended_view(self, session_id: str, token: Any) -> Optional[Response]:
+        """How a closed session ended, for its own token only; None when unknown or too old."""
+        with self._lock:
+            ended = self._ended.get(session_id)
+            if ended is None or time.monotonic() - ended["at"] > ENDED_TTL_SECONDS:
+                return None
+            if not isinstance(token, str) or not secrets.compare_digest(token, ended["token"]):
+                return None
+            return 200, {"sessionId": session_id, "state": ended["state"],
+                         "items": [dict(row) for row in ended["items"]]}
 
     @staticmethod
     def _check_token(session: _Session, token: Any):
@@ -458,6 +507,7 @@ class ShareOps:
                 # abandoned session (no activity past the safety cap) is reclaimed.
                 if not session.streaming and now - session.last_seen > self._cap:
                     capped.append(self._sessions.pop(session_id))
+                    self._remember_ended(session_id, session, "expired")
         for session in capped:
             for op_id in list(session.item_ops.values()):
                 self._export.delete(op_id)

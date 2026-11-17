@@ -1617,4 +1617,8 @@
     <string name="k2go_cx_share_stop_msg">Tai sustabdo bet kokį vykstantį kopijavimą. Kitas telefonas praranda pažangą ir turi pradėti iš naujo su nauju kodu.</string>
     <string name="k2go_connect_switch_msg">Prie šios viešosios interneto prieigos prisijungę įrenginiai praras ryšį.</string>
     <string name="k2go_cx_share_notif_open">Bendrinimas lieka atviras, kol jo nesustabdysite.</string>
+    <string name="k2go_cx_share_sending">Siunčiama į kitą telefoną</string>
+    <string name="k2go_cx_share_complete">Perdavimas baigtas. Turinys yra kitame telefone.</string>
+    <string name="k2go_cx_share_cancelled">Kitas telefonas sustabdė perdavimą.</string>
+    <string name="k2go_cx_share_ended">Bendrinimas baigėsi.</string>
 </resources>

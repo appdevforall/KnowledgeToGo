@@ -1797,4 +1797,8 @@
     <string name="k2go_cx_share_stop_msg">This stops any copy in progress. The other phone loses its progress and must start again with a new code.</string>
     <string name="k2go_connect_switch_msg">Devices joined to this hotspot lose their connection.</string>
     <string name="k2go_cx_share_notif_open">The share stays open until you stop it.</string>
+    <string name="k2go_cx_share_sending">Sending to the other phone</string>
+    <string name="k2go_cx_share_complete">Transfer complete. The other phone has the content.</string>
+    <string name="k2go_cx_share_cancelled">The other phone stopped the transfer.</string>
+    <string name="k2go_cx_share_ended">The share ended.</string>
 </resources>

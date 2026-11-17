@@ -95,6 +95,41 @@
                 android:textColor="@color/k2go_ink"
                 android:visibility="gone" />
 
+            <!-- K2GO-577: the receiver's progress, once it starts (replaces the invite cards). -->
+            <LinearLayout
+                android:id="@+id/k2go_cxs_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/k2go_cxs_progress_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/k2go_cx_share_sending"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="@color/k2go_ink" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/k2go_cxs_progress_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:max="100"
+                    app:trackThickness="8dp"
+                    app:trackCornerRadius="4dp" />
+
+                <TextView
+                    android:id="@+id/k2go_cxs_progress_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
+
             <!-- Section 1: join the hotspot (Wi-Fi QR + SSID/password fallback). -->
             <include
                 android:id="@+id/k2go_cxs_join"

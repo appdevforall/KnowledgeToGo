@@ -1613,4 +1613,8 @@
     <string name="k2go_cx_share_stop_msg">આ ચાલુ કોઈપણ નકલ બંધ કરે છે. બીજો ફોન તેની પ્રગતિ ગુમાવે છે અને નવા કોડ સાથે ફરી શરૂ કરવો પડશે.</string>
     <string name="k2go_connect_switch_msg">આ હોટ્સ્પોટ સાથે જોડાયેલા ઉપકરણોનું કનેક્શન તૂટી જશે.</string>
     <string name="k2go_cx_share_notif_open">તમે તેને બંધ ન કરો ત્યાં સુધી શેર ખુલ્લું રહે છે.</string>
+    <string name="k2go_cx_share_sending">બીજા ફોન પર મોકલી રહ્યાં છીએ</string>
+    <string name="k2go_cx_share_complete">ટ્રાન્સફર પૂર્ણ. સામગ્રી હવે બીજા ફોન પર છે.</string>
+    <string name="k2go_cx_share_cancelled">બીજા ફોને ટ્રાન્સફર બંધ કર્યું.</string>
+    <string name="k2go_cx_share_ended">શેર સમાપ્ત થયું.</string>
 </resources>

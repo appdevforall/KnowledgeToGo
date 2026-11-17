@@ -14,6 +14,7 @@ package org.appdevforall.k2go.contentexchange.data;
 
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.contentexchange.domain.ShareProgress;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -205,6 +206,24 @@ public final class ConexCoreDataSource {
         return deleteJson(V1 + "/share/" + encodeSegment(sessionId), token);
     }
 
+    /**
+     * {@code GET /v1/share/{sessionId}/progress} (X-Share-Token): the sender's view of the receiver
+     * (K2GO-577). A closed session the box no longer knows is {@link ShareProgressReader#gone()}; a
+     * box with no progress route (conex-core before 0.4.0) returns null, so the caller stops asking.
+     */
+    public ShareProgress getShareProgress(String sessionId, String token) throws Exception {
+        try {
+            return ShareProgressReader.parse(
+                    getJson(V1 + "/share/" + encodeSegment(sessionId) + "/progress", token));
+        } catch (ConexHttpException e) {
+            if (e.code() != 404) {
+                throw e;
+            }
+            String text = e.getMessage();
+            return text != null && text.contains("unknown session") ? ShareProgressReader.gone() : null;
+        }
+    }
+
     /** The result of opening a share session: the id, the auth token, and the manifest path. */
     public static final class ShareCreated {
         public final String sessionId;
@@ -282,6 +301,11 @@ public final class ConexCoreDataSource {
     }
 
     private static JSONObject getJson(String urlStr) throws Exception {
+        return getJson(urlStr, null);
+    }
+
+    /** GET with an optional {@code X-Share-Token} header (see {@link #postJson}). */
+    private static JSONObject getJson(String urlStr, String shareToken) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
@@ -289,6 +313,9 @@ public final class ConexCoreDataSource {
             c.setReadTimeout(READ_TIMEOUT_MS);
             c.setRequestMethod("GET");
             c.setRequestProperty("Accept", "application/json");
+            if (shareToken != null) {
+                c.setRequestProperty("X-Share-Token", shareToken);
+            }
             int code = c.getResponseCode();
             boolean ok = code >= 200 && code < 400;
             String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
