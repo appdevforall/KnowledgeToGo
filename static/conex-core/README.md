@@ -48,7 +48,8 @@ Environment (defaults match the box layout):
 Share over rsync (K2GO-577): `POST /v1/import/item` with `{app, entry, source: {host, port,
 module, token}}` pulls an item from a sender's rsync module into place (same op and status as an
 import). `POST /v1/share/{id}/progress` takes the receiver's `{itemRef, movedBytes, totalBytes,
-state}`; `GET /v1/share/{id}/progress` returns it for the sender.
+state}`; `GET /v1/share/{id}/progress` returns it for the sender, with the session `state`
+(`open`, or for 15 minutes after a close `completed` / `cancelled` / `expired`).
 
 Read:
 

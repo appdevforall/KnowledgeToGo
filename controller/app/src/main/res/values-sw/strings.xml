@@ -1620,6 +1620,10 @@
     <string name="k2go_cx_share_stop_msg">Hii inasimamisha unakili wowote unaoendelea. Simu nyingine inapoteza maendeleo yake na lazima ianze upya kwa msimbo mpya.</string>
     <string name="k2go_connect_switch_msg">Vifaa vilivyounganishwa kwenye hotspot hii vitapoteza muunganisho.</string>
     <string name="k2go_cx_share_notif_open">Kushiriki kunabaki wazi hadi ukisimamishe.</string>
+    <string name="k2go_cx_share_sending">Inatuma kwa simu nyingine</string>
+    <string name="k2go_cx_share_complete">Uhamisho umekamilika. Simu nyingine ina maudhui.</string>
+    <string name="k2go_cx_share_cancelled">Simu nyingine imesimamisha uhamisho.</string>
+    <string name="k2go_cx_share_ended">Kushiriki kumeisha.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Imeshindwa kusoma orodha ya faili kutoka kwa simu inayotuma.</string>
     <string name="k2go_clone_cable_err_no_path">Muunganisho na simu inayotuma umepotea. Jiunge na hotspot yake au unganisha kebo ya USB.</string>

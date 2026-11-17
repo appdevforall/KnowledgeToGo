@@ -1607,6 +1607,10 @@
     <string name="k2go_cx_share_stop_msg">Ini menghentikan penyalinan yang sedang berlangsung. Ponsel lain kehilangan progresnya dan harus mulai lagi dengan kode baru.</string>
     <string name="k2go_connect_switch_msg">Perangkat yang tergabung ke hotspot ini akan kehilangan koneksi.</string>
     <string name="k2go_cx_share_notif_open">Berbagi tetap terbuka sampai Anda menghentikannya.</string>
+    <string name="k2go_cx_share_sending">Mengirim ke ponsel lain</string>
+    <string name="k2go_cx_share_complete">Transfer selesai. Ponsel lain sudah memiliki kontennya.</string>
+    <string name="k2go_cx_share_cancelled">Ponsel lain menghentikan transfer.</string>
+    <string name="k2go_cx_share_ended">Berbagi telah berakhir.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Tidak dapat membaca daftar file dari ponsel pengirim.</string>
     <string name="k2go_clone_cable_err_no_path">Koneksi ke ponsel pengirim terputus. Gabung ke hotspot-nya atau sambungkan kabel USB.</string>

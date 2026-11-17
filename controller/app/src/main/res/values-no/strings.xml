@@ -1610,6 +1610,10 @@
     <string name="k2go_cx_share_stop_msg">Dette stopper all kopiering som pågår. Den andre telefonen mister fremdriften og må starte på nytt med en ny kode.</string>
     <string name="k2go_connect_switch_msg">Enheter som er koblet til denne hotspoten, mister tilkoblingen.</string>
     <string name="k2go_cx_share_notif_open">Delingen er åpen til du stopper den.</string>
+    <string name="k2go_cx_share_sending">Sender til den andre telefonen</string>
+    <string name="k2go_cx_share_complete">Overføringen er fullført. Den andre telefonen har innholdet.</string>
+    <string name="k2go_cx_share_cancelled">Den andre telefonen stoppet overføringen.</string>
+    <string name="k2go_cx_share_ended">Delingen er avsluttet.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Kunne ikke lese fillisten fra telefonen som sender.</string>
     <string name="k2go_clone_cable_err_no_path">Tilkoblingen til telefonen som sender, er brutt. Koble til Wi-Fi-sonen dens eller koble til USB-kabelen.</string>

@@ -1610,6 +1610,10 @@
     <string name="k2go_cx_share_stop_msg">To zatrzymuje każde trwające kopiowanie. Drugi telefon traci postęp i musi zacząć od nowa z nowym kodem.</string>
     <string name="k2go_connect_switch_msg">Urządzenia połączone z tym hotspotem utracą połączenie.</string>
     <string name="k2go_cx_share_notif_open">Udostępnianie pozostaje otwarte, dopóki go nie zatrzymasz.</string>
+    <string name="k2go_cx_share_sending">Wysyłanie na drugi telefon</string>
+    <string name="k2go_cx_share_complete">Przesyłanie zakończone. Drugi telefon ma zawartość.</string>
+    <string name="k2go_cx_share_cancelled">Drugi telefon zatrzymał przesyłanie.</string>
+    <string name="k2go_cx_share_ended">Udostępnianie zakończone.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nie można odczytać listy plików z telefonu wysyłającego.</string>
     <string name="k2go_clone_cable_err_no_path">Utracono połączenie z telefonem wysyłającym. Połącz się z jego hotspotem lub podłącz kabel USB.</string>

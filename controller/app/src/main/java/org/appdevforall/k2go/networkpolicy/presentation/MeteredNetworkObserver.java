@@ -50,6 +50,8 @@ public final class MeteredNetworkObserver {
         started = true;
         ensureChannel(app);
         last = AndroidNetworkClassifier.classify(app);
+        // K2GO-580: a notice left by a process the system killed is stale once we start off mobile data.
+        if (last != NetworkClass.METERED) clearNotice(app);
         // observeForever keeps NetworkStateLiveData active for the process lifetime,
         // which is exactly the scope we want; no separate registration.
         NetworkStateLiveData.get(app).observeForever(token -> onNetworkChanged(app));
@@ -62,10 +64,16 @@ public final class MeteredNetworkObserver {
         last = next;
         if (next != NetworkClass.METERED) {
             SessionMeteredConsentStore.get().clear();
+            clearNotice(app);   // K2GO-580: the notice is true only while on mobile data
         }
         if (NetworkTransition.shouldWarn(previous, next)) {
             notifyMetered(app);
         }
+    }
+
+    /** Removes the mobile data notice (K2GO-580): off mobile data, at start, and when K2Go turns off. */
+    public static void clearNotice(@NonNull Context ctx) {
+        NotificationManagerCompat.from(ctx).cancel(NOTIF_ID);
     }
 
     private static void notifyMetered(@NonNull Context ctx) {

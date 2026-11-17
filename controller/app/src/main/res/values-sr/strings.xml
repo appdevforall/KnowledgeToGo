@@ -1613,6 +1613,10 @@
     <string name="k2go_cx_share_stop_msg">Ово зауставља свако копирање у току. Други телефон губи напредак и мора да почне поново са новим кодом.</string>
     <string name="k2go_connect_switch_msg">Уређаји повезани на овај хотспот губе везу.</string>
     <string name="k2go_cx_share_notif_open">Дељење остаје отворено док га не зауставите.</string>
+    <string name="k2go_cx_share_sending">Слање на други телефон</string>
+    <string name="k2go_cx_share_complete">Пренос је завршен. Садржај је на другом телефону.</string>
+    <string name="k2go_cx_share_cancelled">Други телефон је зауставио пренос.</string>
+    <string name="k2go_cx_share_ended">Дељење је завршено.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Није могуће прочитати листу датотека са телефона пошиљаоца.</string>
     <string name="k2go_clone_cable_err_no_path">Веза са телефоном пошиљаоца је изгубљена. Повежите се на његов хотспот или прикључите USB кабл.</string>

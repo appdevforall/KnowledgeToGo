@@ -1613,6 +1613,10 @@
     <string name="k2go_cx_share_stop_msg">এটি চলমান যেকোনো কপি বন্ধ করে। অন্য ফোনটি তার অগ্রগতি হারায় এবং নতুন কোড দিয়ে আবার শুরু করতে হবে।</string>
     <string name="k2go_connect_switch_msg">এই হটস্পটে যুক্ত ডিভাইসগুলির সংযোগ বিচ্ছিন্ন হবে।</string>
     <string name="k2go_cx_share_notif_open">আপনি বন্ধ না করা পর্যন্ত শেয়ার খোলা থাকে।</string>
+    <string name="k2go_cx_share_sending">অন্য ফোনে পাঠানো হচ্ছে</string>
+    <string name="k2go_cx_share_complete">স্থানান্তর সম্পূর্ণ। কনটেন্ট এখন অন্য ফোনে আছে।</string>
+    <string name="k2go_cx_share_cancelled">অন্য ফোন স্থানান্তর বন্ধ করেছে।</string>
+    <string name="k2go_cx_share_ended">শেয়ার শেষ হয়েছে।</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">প্রেরক ফোন থেকে ফাইলের তালিকা পড়া যায়নি।</string>
     <string name="k2go_clone_cable_err_no_path">প্রেরক ফোনের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। এর হটস্পটে যুক্ত হন বা USB কেবল সংযুক্ত করুন।</string>

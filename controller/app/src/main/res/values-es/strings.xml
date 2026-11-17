@@ -1676,6 +1676,10 @@
     <string name="k2go_cx_share_stop_msg">Esto detiene cualquier copia en curso. El otro teléfono pierde su avance y debe empezar de nuevo con un código nuevo.</string>
     <string name="k2go_connect_switch_msg">Los dispositivos conectados a este punto de acceso pierden la conexión.</string>
     <string name="k2go_cx_share_notif_open">El uso compartido sigue abierto hasta que lo detengas.</string>
+    <string name="k2go_cx_share_sending">Enviando al otro teléfono</string>
+    <string name="k2go_cx_share_complete">Transferencia completa. El otro teléfono ya tiene el contenido.</string>
+    <string name="k2go_cx_share_cancelled">El otro teléfono detuvo la transferencia.</string>
+    <string name="k2go_cx_share_ended">El uso compartido terminó.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">No se pudo leer la lista de archivos del teléfono emisor.</string>
     <string name="k2go_clone_cable_err_no_path">Se perdió la conexión con el teléfono emisor. Únete a su punto de acceso o conecta el cable USB.</string>

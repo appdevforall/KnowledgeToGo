@@ -1201,6 +1201,7 @@ public class LibraryActivity extends AppCompatActivity
         // autonomous and outlives the process, so tear it down now (concurrent with the box stop) and
         // confirm it before exit (finishAndExit waits on this). Fires at once when no hotspot is up.
         LocalHotspotManager.get().stop(() -> hotspotTornDown = true);
+        org.appdevforall.k2go.networkpolicy.presentation.MeteredNetworkObserver.clearNotice(this);   // K2GO-580
         // ADFA-4834: minimal shutdown feedback — a status line + the service currently stopping,
         // shown over the exit animation and kept until the environment is really stopped, so we
         // never bounce back to the Library mid-shutdown. Works with or without the Lottie.

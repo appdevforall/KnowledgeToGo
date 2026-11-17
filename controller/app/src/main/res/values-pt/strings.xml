@@ -1679,6 +1679,10 @@
     <string name="k2go_cx_share_stop_msg">Isso interrompe qualquer cópia em andamento. O outro telefone perde o progresso e precisa começar de novo com um novo código.</string>
     <string name="k2go_connect_switch_msg">Os dispositivos ligados a este hotspot perdem a ligação.</string>
     <string name="k2go_cx_share_notif_open">A partilha fica aberta até a parar.</string>
+    <string name="k2go_cx_share_sending">A enviar para o outro telefone</string>
+    <string name="k2go_cx_share_complete">Transferência concluída. O outro telefone já tem o conteúdo.</string>
+    <string name="k2go_cx_share_cancelled">O outro telefone parou a transferência.</string>
+    <string name="k2go_cx_share_ended">A partilha terminou.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Não foi possível ler a lista de ficheiros do telemóvel emissor.</string>
     <string name="k2go_clone_cable_err_no_path">A ligação ao telemóvel emissor perdeu-se. Ligue-se ao hotspot dele ou ligue o cabo USB.</string>

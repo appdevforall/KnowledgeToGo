@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">Aceasta oprește orice copiere în curs. Celălalt telefon își pierde progresul și trebuie să înceapă din nou cu un cod nou.</string>
     <string name="k2go_connect_switch_msg">Dispozitivele conectate la acest hotspot își pierd conexiunea.</string>
     <string name="k2go_cx_share_notif_open">Partajarea rămâne deschisă până când o oprești.</string>
+    <string name="k2go_cx_share_sending">Se trimite pe celălalt telefon</string>
+    <string name="k2go_cx_share_complete">Transfer finalizat. Celălalt telefon are conținutul.</string>
+    <string name="k2go_cx_share_cancelled">Celălalt telefon a oprit transferul.</string>
+    <string name="k2go_cx_share_ended">Partajarea s-a încheiat.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nu s-a putut citi lista de fișiere de pe telefonul expeditor.</string>
     <string name="k2go_clone_cable_err_no_path">Conexiunea cu telefonul expeditor s-a pierdut. Conectează-te la hotspotul lui sau conectează cablul USB.</string>

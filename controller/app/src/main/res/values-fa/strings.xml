@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">این کار هر کپی در حال انجام را متوقف می‌کند. تلفن دیگر پیشرفت خود را از دست می‌دهد و باید با یک کد جدید دوباره شروع کند.</string>
     <string name="k2go_connect_switch_msg">دستگاه‌های متصل به این نقطه اتصال، اتصال خود را از دست می‌دهند.</string>
     <string name="k2go_cx_share_notif_open">اشتراک‌گذاری تا زمانی که آن را متوقف کنید باز می‌ماند.</string>
+    <string name="k2go_cx_share_sending">در حال ارسال به تلفن دیگر</string>
+    <string name="k2go_cx_share_complete">انتقال کامل شد. محتوا اکنون روی تلفن دیگر است.</string>
+    <string name="k2go_cx_share_cancelled">تلفن دیگر انتقال را متوقف کرد.</string>
+    <string name="k2go_cx_share_ended">اشتراک‌گذاری پایان یافت.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">خواندن فهرست فایل‌ها از گوشی فرستنده ممکن نشد.</string>
     <string name="k2go_clone_cable_err_no_path">اتصال به گوشی فرستنده قطع شد. به هات‌اسپات آن بپیوندید یا کابل USB را وصل کنید.</string>

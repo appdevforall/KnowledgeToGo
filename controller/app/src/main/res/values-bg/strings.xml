@@ -1607,6 +1607,10 @@
     <string name="k2go_cx_share_stop_msg">Това спира всяко копиране в ход. Другият телефон губи напредъка си и трябва да започне отново с нов код.</string>
     <string name="k2go_connect_switch_msg">Устройствата, свързани към тази точка за достъп, губят връзката си.</string>
     <string name="k2go_cx_share_notif_open">Споделянето остава отворено, докато не го спрете.</string>
+    <string name="k2go_cx_share_sending">Изпращане към другия телефон</string>
+    <string name="k2go_cx_share_complete">Прехвърлянето завърши. Съдържанието е на другия телефон.</string>
+    <string name="k2go_cx_share_cancelled">Другият телефон спря прехвърлянето.</string>
+    <string name="k2go_cx_share_ended">Споделянето приключи.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не може да се прочете списъкът с файлове от изпращащия телефон.</string>
     <string name="k2go_clone_cable_err_no_path">Връзката с изпращащия телефон е прекъсната. Свържете се с точката му за достъп или включете USB кабела.</string>

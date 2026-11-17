@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">Ez leállít minden folyamatban lévő másolást. A másik telefon elveszíti az előrehaladását, és új kóddal kell újrakezdenie.</string>
     <string name="k2go_connect_switch_msg">A hotspothoz csatlakozott eszközök elveszítik a kapcsolatot.</string>
     <string name="k2go_cx_share_notif_open">A megosztás nyitva marad, amíg le nem állítja.</string>
+    <string name="k2go_cx_share_sending">Küldés a másik telefonra</string>
+    <string name="k2go_cx_share_complete">Az átvitel kész. A tartalom a másik telefonon van.</string>
+    <string name="k2go_cx_share_cancelled">A másik telefon leállította az átvitelt.</string>
+    <string name="k2go_cx_share_ended">A megosztás véget ért.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nem sikerült beolvasni a fájlok listáját a küldő telefonról.</string>
     <string name="k2go_clone_cable_err_no_path">Megszakadt a kapcsolat a küldő telefonnal. Csatlakozz a hotspotjához, vagy dugd be az USB-kábelt.</string>

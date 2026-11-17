@@ -1607,6 +1607,10 @@
     <string name="k2go_cx_share_stop_msg">Tým sa zastaví prebiehajúce kopírovanie. Druhý telefón stratí priebeh a musí začať znova s novým kódom.</string>
     <string name="k2go_connect_switch_msg">Zariadenia pripojené k tomuto hotspotu stratia pripojenie.</string>
     <string name="k2go_cx_share_notif_open">Zdieľanie zostane otvorené, kým ho nezastavíte.</string>
+    <string name="k2go_cx_share_sending">Odosiela sa do druhého telefónu</string>
+    <string name="k2go_cx_share_complete">Prenos je dokončený. Obsah je v druhom telefóne.</string>
+    <string name="k2go_cx_share_cancelled">Druhý telefón zastavil prenos.</string>
+    <string name="k2go_cx_share_ended">Zdieľanie skončilo.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Zoznam súborov z odosielajúceho telefónu sa nepodarilo načítať.</string>
     <string name="k2go_clone_cable_err_no_path">Spojenie s odosielajúcim telefónom sa stratilo. Pripojte sa k jeho hotspotu alebo pripojte kábel USB.</string>

@@ -1620,6 +1620,10 @@
     <string name="k2go_cx_share_stop_msg">இது நடந்துகொண்டிருக்கும் எந்த நகலெடுப்பையும் நிறுத்துகிறது. மற்ற ஃபோன் அதன் முன்னேற்றத்தை இழக்கும், புதிய குறியீட்டுடன் மீண்டும் தொடங்க வேண்டும்.</string>
     <string name="k2go_connect_switch_msg">இந்த ஹாட்ஸ்பாட்டுடன் இணைந்த சாதனங்கள் இணைப்பை இழக்கும்.</string>
     <string name="k2go_cx_share_notif_open">நீங்கள் நிறுத்தும் வரை பகிர்வு திறந்திருக்கும்.</string>
+    <string name="k2go_cx_share_sending">மற்ற ஃபோனுக்கு அனுப்புகிறது</string>
+    <string name="k2go_cx_share_complete">பரிமாற்றம் முடிந்தது. உள்ளடக்கம் இப்போது மற்ற ஃபோனில் உள்ளது.</string>
+    <string name="k2go_cx_share_cancelled">மற்ற ஃபோன் பரிமாற்றத்தை நிறுத்தியது.</string>
+    <string name="k2go_cx_share_ended">பகிர்வு முடிந்தது.</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">அனுப்பும் தொலைபேசியிலிருந்து கோப்புகளின் பட்டியலைப் படிக்க முடியவில்லை.</string>
     <string name="k2go_clone_cable_err_no_path">அனுப்பும் தொலைபேசியுடனான இணைப்பு துண்டிக்கப்பட்டது. அதன் ஹாட்ஸ்பாட்டில் இணையவும் அல்லது USB கேபிளை இணைக்கவும்.</string>
