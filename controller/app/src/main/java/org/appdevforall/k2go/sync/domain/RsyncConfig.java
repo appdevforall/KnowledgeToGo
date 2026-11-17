@@ -106,6 +106,35 @@ public final class RsyncConfig {
         return a;
     }
 
+    /**
+     * K2GO-576: a dry-run that also lists each file to copy (size and name) with
+     * {@code outFormat}, so the transfer can be cut into chunks. Same filters as the pull.
+     */
+    public static List<String> listArgs(String rsyncBinPath, String passFilePath,
+                                        String remoteUrl, String destDir, String outFormat) {
+        List<String> a = dryRunArgs(rsyncBinPath, passFilePath, remoteUrl, destDir);
+        a.add(a.size() - 2, "--out-format=" + outFormat);
+        return a;
+    }
+
+    /**
+     * K2GO-576: one chunk of a split pull: only the files listed in {@code filesFromPath}, no
+     * --delete (it needs recursion; a last whole-tree pull deletes). The list came from a
+     * filtered dry-run, so no exclude rules are needed here.
+     */
+    public static List<String> chunkArgs(String rsyncBinPath, String passFilePath,
+                                         String remoteUrl, String destDir, String filesFromPath) {
+        return new ArrayList<>(Arrays.asList(
+                rsyncBinPath,
+                "-a",
+                "--partial",
+                "--info=progress2",
+                "--files-from=" + filesFromPath,
+                "--password-file=" + passFilePath,
+                remoteUrl,
+                destDir));
+    }
+
     /** argv for the dry-run transfer-size estimate. */
     public static List<String> dryRunArgs(String rsyncBinPath, String passFilePath,
                                           String remoteUrl, String destDir) {

@@ -10,5 +10,8 @@
   strings.xml.
 -->
 <resources>
-
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list" translatable="false">Could not read the list of files from the sending phone.</string>
+    <string name="k2go_clone_cable_err_no_path" translatable="false">The connection to the sending phone is lost. Join its hotspot or connect the USB cable.</string>
+    <string name="k2go_clone_cable_err_check" translatable="false">The last check of the copy failed. Start the transfer again.</string>
 </resources>

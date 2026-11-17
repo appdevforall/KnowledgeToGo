@@ -23,6 +23,8 @@ import org.appdevforall.k2go.RsyncManager;
 import org.appdevforall.k2go.SyncHandshakeHelper;
 import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.data.ChunkedPull;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
@@ -41,6 +43,8 @@ public class SyncStateViewModel extends ViewModel {
     // finished (e.g. the user swipes the app away). The transport's native rsync child is kept alive by
     // CloneShareService; making it per-ViewModel meant onCleared() below killed it on every swipe.
     private static volatile TransportEngine transport;
+    // K2GO-576: the receive pull, over Wi-Fi and the cable. Process-scoped for the same reason.
+    private static volatile ChunkedPull pull;
 
     // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
@@ -48,6 +52,7 @@ public class SyncStateViewModel extends ViewModel {
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
     private volatile SyncHandshakeHelper.SyncCredentials pendingCreds;   // read by the probe thread
     private File pendingDestDir;
+    private volatile boolean pendingWifi; // K2GO-576: written by the probe thread
     private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
     private Context appContext; // application context, for releasing the network binding
 
@@ -74,6 +79,9 @@ public class SyncStateViewModel extends ViewModel {
      *  progress denominator so the bar climbs a fixed total instead of rsync's growing estimate. */
     public long getPendingBytes() { return pendingBytes; }
 
+    /** K2GO-576: the probe reached the sender over Wi-Fi (else only the cable can carry the pull). */
+    public boolean isPendingWifi() { return pendingWifi; }
+
     /**
      * Reachability probe + rsync dry-run, off the fragment. Publishes CONNECTING -> CALCULATING ->
      * CONFIRM (ready, with size) or ABORTED (unreachable / not enough space / dry-run error). The
@@ -83,6 +91,7 @@ public class SyncStateViewModel extends ViewModel {
         this.pendingCreds = creds;
         this.pendingDestDir = null;
         this.pendingBytes = 0L;
+        this.pendingWifi = false;
         this.appContext = appCtx.getApplicationContext();
         final SyncProgressRepository repo = SyncProgressRepository.get();
         repo.postConnecting();
@@ -113,6 +122,16 @@ public class SyncStateViewModel extends ViewModel {
             } catch (Exception e) {
                 Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed", e);
             }
+            pendingWifi = reachable;
+            // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
+            String probeHost = creds.ip;
+            int probePort = creds.port;
+            int cablePort = CableSession.get().relayPort();
+            if (!reachable && cablePort > 0) {
+                probeHost = "127.0.0.1";
+                probePort = cablePort;
+                reachable = true;
+            }
 
             if (!reachable) {
                 repo.postAborted(appCtx.getString(R.string.sync_dialog_conn_failed_title),
@@ -125,7 +144,7 @@ public class SyncStateViewModel extends ViewModel {
             pendingDestDir = destDir;
             repo.postCalculating();
 
-            getTransport().calculateTransferPlan(appCtx, shareConfig, creds.ip, creds.port,
+            getTransport().calculateTransferPlan(appCtx, shareConfig, probeHost, probePort,
                     creds.user, creds.pass, destDir.getAbsolutePath(),
                     new TransportEngine.DryRunListener() {
                         @Override
@@ -158,6 +177,31 @@ public class SyncStateViewModel extends ViewModel {
                         }
                     });
         });
+    }
+
+    /**
+     * K2GO-576: starts the receive pull on every live path. Wi-Fi only when the probe reached the
+     * sender on Wi-Fi; the cable joins whenever its relay is up, also in the middle of the copy.
+     */
+    public void startPull(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds,
+                          String destDir, TransportEngine.SyncListener listener) {
+        stopPull();
+        final boolean wifi = pendingWifi;
+        ChunkedPull p = new ChunkedPull(appCtx, shareConfig, creds.user, creds.pass, destDir,
+                new ChunkedPull.Paths() {
+                    @Override public String wifiHost() { return wifi ? creds.ip : null; }
+                    @Override public int wifiPort() { return creds.port; }
+                    @Override public int cablePort() { return CableSession.get().relayPort(); }
+                }, listener);
+        pull = p;
+        p.start();
+    }
+
+    /** K2GO-576: stops the receive pull and its rsync runs; safe to call repeatedly. */
+    public void stopPull() {
+        ChunkedPull p = pull;
+        pull = null;
+        if (p != null) p.stop();
     }
 
     /** Release the network binding put in place for a receive (ADFA-4496); safe to call repeatedly. */

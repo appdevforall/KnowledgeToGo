@@ -52,6 +52,7 @@ import org.appdevforall.k2go.sync.presentation.SyncTransferState;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 import org.appdevforall.k2go.sync.transport.QrCodec;
+import org.appdevforall.k2go.sync.cable.data.CableSession;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
 
 /**
@@ -828,6 +829,7 @@ public class CloneFragment extends Fragment {
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
+            CableSession.get().stop();   // K2GO-576
             qr.setImageBitmap(null);
             caption.setText(getString(R.string.k2go_clone_sharing_stopped));
             subCaption.setText(getString(R.string.k2go_clone_start_service_note));
@@ -838,6 +840,8 @@ public class CloneFragment extends Fragment {
         long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
         long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, libraryBits(), sysB, contentB);
+        // K2GO-576: a cable to the receiving phone carries the same payload, so it replaces the scan.
+        CableSession.get().watch(requireContext(), CableSession.Role.SEND, shareConfig.rsyncPort, payload, null);
         // ADFA-5236: encode at the rendered QR size (@dimen/k2go_qr_size) so it stays crisp per bucket.
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, getResources().getDimensionPixelSize(R.dimen.k2go_qr_size)));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
@@ -980,6 +984,7 @@ public class CloneFragment extends Fragment {
         SyncTransferState st = SyncProgressRepository.get().current();
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
             transport.stop();
+            syncVm.stopPull();   // K2GO-576
             releaseCloneEnv(false);   // ADFA-4956: overwrite aborted mid-pull, drop lock
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
@@ -1051,6 +1056,13 @@ public class CloneFragment extends Fragment {
     private void renderReceive() {
         SyncTransferState st = SyncProgressRepository.get().current();
         boolean busy = (st != null && st.isActive());
+        // K2GO-576: the cable is watched only on this screen. Its pairing data acts as a scan, and
+        // only while no probe or pull runs.
+        CableSession.get().watch(requireContext(), CableSession.Role.RECEIVE, 0, null, payload ->
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                    SyncTransferState now = SyncProgressRepository.get().current();
+                    if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
+                }));
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
@@ -1297,12 +1309,8 @@ public class CloneFragment extends Fragment {
             // orders are not discarded until it actually completes.
             org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementStarting(app,
                     org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
-            // ADFA-5160: anchor the progress bar to the dry-run's bytes-to-transfer (startProbe
-            // ran it before this point), i.e. what rsync computed for THIS transfer. Not the QR
-            // estimate: it reflects the sender's initial install and can be stale. 0 falls back
-            // to rsync's own percent.
-            long expectedTotal = syncVm.getPendingBytes();
-            transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath, expectedTotal,
+            // K2GO-576: the pull runs on Wi-Fi and the cable at once (ChunkedPull lists, then splits).
+            syncVm.startPull(app, shareConfig, fcreds, destPath,
                 new TransportEngine.SyncListener() {
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
                     @Override public void onComplete(String message) {
@@ -1426,6 +1434,8 @@ public class CloneFragment extends Fragment {
         if (!SyncProgressRepository.get().isActive() && !daemonStarted) { stopProtection(); releaseCloneEnv(); }
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
         if (!daemonStarted && !requireActivity().isChangingConfigurations()) releaseHotspot();
+        // K2GO-576: the cable follows the screen, except under a running share or pull.
+        if (!daemonStarted && !SyncProgressRepository.get().isActive()) CableSession.get().stop();
         stopApkServer();   // ADFA-4785
     }
 
