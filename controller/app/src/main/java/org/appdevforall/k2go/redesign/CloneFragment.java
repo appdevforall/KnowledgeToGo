@@ -52,6 +52,8 @@ import org.appdevforall.k2go.sync.presentation.SyncTransferState;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 import org.appdevforall.k2go.sync.transport.QrCodec;
+import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.presentation.CloneLinkRows;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
 
 /**
@@ -63,6 +65,8 @@ import org.appdevforall.k2go.sync.transport.TransportEngine;
 public class CloneFragment extends Fragment {
 
     private enum Side { SEND, RECEIVE }
+    private CloneLinkRows linkRows;   // K2GO-576
+    private View rcvFooter;           // K2GO-576: pinned receive Cancel
     // ADFA-5154: the 3-step Send wizard (Join / Get app / Copy) becomes 2 pages. PREPARE shows Join ①
     // and Get app ② stacked (both QRs at once); COPY shows the transfer QR. The "Installed? Copy the
     // library ›" gate advances PREPARE -> COPY (a real prerequisite: the app must be on the other phone).
@@ -182,6 +186,7 @@ public class CloneFragment extends Fragment {
         tabSend = v.findViewById(R.id.k2go_clone_send);
         tabReceive = v.findViewById(R.id.k2go_clone_receive);
         netRow = v.findViewById(R.id.k2go_clone_net);
+        linkRows = new CloneLinkRows(v.findViewById(R.id.k2go_clone_link), getViewLifecycleOwner());
         tabHotspot = v.findViewById(R.id.k2go_clone_hotspot);
         tabWifi = v.findViewById(R.id.k2go_clone_wifi);
         steps = v.findViewById(R.id.k2go_clone_steps);
@@ -262,6 +267,7 @@ public class CloneFragment extends Fragment {
         pFile = v.findViewById(R.id.k2go_clone_pfile);
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
+        rcvFooter = v.findViewById(R.id.k2go_clone_rcv_footer);
         confirmPanel = v.findViewById(R.id.k2go_rcv_confirm);
         confirmSizes = v.findViewById(R.id.k2go_rcv_confirm_sizes);
         confirmSys = v.findViewById(R.id.k2go_rcv_confirm_sys);
@@ -281,6 +287,10 @@ public class CloneFragment extends Fragment {
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
+        syncVm.pathRates().observe(getViewLifecycleOwner(), linkRows::showRates);   // K2GO-576
+        CableSession.get().peerWifi().observe(getViewLifecycleOwner(), r -> {
+            if (side == Side.SEND && !atFork) linkRows.showPeerWifi(r, hsMode.isHotspot(), LocalHotspotManager.get().state().getValue());
+        });
         transport = syncVm.getTransport();
         shareConfig = ShareConfig.defaults();
 
@@ -565,6 +575,7 @@ public class CloneFragment extends Fragment {
         if (stepTitle != null) { stepTitle.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
         SegmentedTabs.paint(tabSend, side == Side.SEND);
         SegmentedTabs.paint(tabReceive, side == Side.RECEIVE);
+        if (atFork || side != Side.RECEIVE) rcvFooter.setVisibility(View.GONE);   // K2GO-576: receive-only
 
         if (atFork) {
             cloneHdr.setVisibility(View.VISIBLE);
@@ -581,6 +592,8 @@ public class CloneFragment extends Fragment {
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
             receiveBox.setVisibility(View.GONE);
+            linkRows.setVisible(false);
+            linkRows.stopChecks();
             return;
         }
         forkBox.setVisibility(View.GONE);
@@ -589,6 +602,13 @@ public class CloneFragment extends Fragment {
         subtitleView.setVisibility(View.GONE);
         backHeader.setVisibility(View.VISIBLE);
         backHeader.setText(getString(side == Side.RECEIVE ? R.string.k2go_clone_back_receive : R.string.k2go_clone_back_send));
+        // K2GO-576: the Wi-Fi and USB cable rows.
+        if (side == Side.RECEIVE) {
+            linkRows.setVisible(true);   // its Wi-Fi check follows the transfer state in renderReceive
+        } else {
+            linkRows.setVisible(systemPresent);
+            linkRows.showSender(hsMode.isHotspot(), LocalHotspotManager.get().state().getValue());
+        }
 
         if (side == Side.RECEIVE) {
             netRow.setVisibility(View.GONE);
@@ -828,6 +848,7 @@ public class CloneFragment extends Fragment {
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
+            CableSession.get().stop();   // K2GO-576
             qr.setImageBitmap(null);
             caption.setText(getString(R.string.k2go_clone_sharing_stopped));
             subCaption.setText(getString(R.string.k2go_clone_start_service_note));
@@ -838,6 +859,8 @@ public class CloneFragment extends Fragment {
         long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
         long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, libraryBits(), sysB, contentB);
+        // K2GO-576: a cable to the receiving phone carries the same payload, so it replaces the scan.
+        CableSession.get().watch(requireContext(), CableSession.Role.SEND, shareConfig.rsyncPort, payload, null);
         // ADFA-5236: encode at the rendered QR size (@dimen/k2go_qr_size) so it stays crisp per bucket.
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, getResources().getDimensionPixelSize(R.dimen.k2go_qr_size)));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
@@ -939,6 +962,7 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
         if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_invalid), Toast.LENGTH_LONG).show(); return; }
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
+        CableSession.get().paired(json);   // K2GO-576: the pairing of this copy (QR or cable)
         probeOrWarnEmpty(creds);   // ADFA-4786
     }
 
@@ -979,6 +1003,7 @@ public class CloneFragment extends Fragment {
     private void onReceiveCancel() {
         SyncTransferState st = SyncProgressRepository.get().current();
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
+            syncVm.stopPull();   // K2GO-576: first, so no new chunk starts after the sweep below
             transport.stop();
             releaseCloneEnv(false);   // ADFA-4956: overwrite aborted mid-pull, drop lock
             syncVm.releaseNetwork();
@@ -1011,6 +1036,7 @@ public class CloneFragment extends Fragment {
      */
     private void showProgress(boolean visible) {
         progressBox.setVisibility(visible ? View.VISIBLE : View.GONE);
+        rcvFooter.setVisibility(visible ? View.VISIBLE : View.GONE);   // K2GO-576: pinned Cancel
         if (anim == null || reduceMotion) return;
         if (visible) {
             if (!anim.isAnimating()) anim.playAnimation();
@@ -1051,6 +1077,19 @@ public class CloneFragment extends Fragment {
     private void renderReceive() {
         SyncTransferState st = SyncProgressRepository.get().current();
         boolean busy = (st != null && st.isActive());
+        // K2GO-576: the cable is watched only on this screen. Its pairing data acts as a scan, and
+        // only while no probe or pull runs.
+        CableSession.get().watch(requireContext(), CableSession.Role.RECEIVE, 0, null, payload ->
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                    SyncTransferState now = SyncProgressRepository.get().current();
+                    if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
+                }));
+        // K2GO-576: no daemon probes while the pull runs (it uses the daemon's few connections; the
+        // row then shows the Wi-Fi rate). Before that, also on the confirm step, keep checking.
+        SyncHandshakeHelper.SyncCredentials paired = syncVm.getPendingCreds();
+        linkRows.setSenderHost(paired != null ? paired.ip : null);   // Wi-Fi network or hotspot
+        boolean pulling = st != null && st.phase == SyncTransferState.Phase.TRANSFERRING;
+        linkRows.startChecks(shareConfig.rsyncPort, !pulling);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
@@ -1123,7 +1162,7 @@ public class CloneFragment extends Fragment {
         rcvSteps.setVisibility(View.VISIBLE);
         rcvCaption.setVisibility(View.VISIBLE);
         rcvCaption.setText(atJoin ? getString(R.string.k2go_clone_rcv_join_caption)
-                : getString(R.string.k2go_clone_rcv_scan_caption));
+                : getString(R.string.k2go_clone_rcv_scan_or_cable));   // K2GO-576: the cable can replace the scan
         rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
         rcvScan.setText(atJoin ? getString(R.string.k2go_clone_rcv_scan_wifi) : getString(R.string.k2go_clone_rcv_scan_start));
@@ -1259,6 +1298,7 @@ public class CloneFragment extends Fragment {
         if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_scan_invalid), Toast.LENGTH_LONG).show(); return; }
         Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
+        CableSession.get().paired(contents);   // K2GO-576: the pairing of this copy (QR or cable)
         probeOrWarnEmpty(creds);   // ADFA-4786
     }
 
@@ -1297,12 +1337,8 @@ public class CloneFragment extends Fragment {
             // orders are not discarded until it actually completes.
             org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementStarting(app,
                     org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
-            // ADFA-5160: anchor the progress bar to the dry-run's bytes-to-transfer (startProbe
-            // ran it before this point), i.e. what rsync computed for THIS transfer. Not the QR
-            // estimate: it reflects the sender's initial install and can be stale. 0 falls back
-            // to rsync's own percent.
-            long expectedTotal = syncVm.getPendingBytes();
-            transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath, expectedTotal,
+            // K2GO-576: the pull runs on Wi-Fi and the cable at once (ChunkedPull lists, then splits).
+            syncVm.startPull(app, shareConfig, fcreds, destPath,
                 new TransportEngine.SyncListener() {
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
                     @Override public void onComplete(String message) {
@@ -1311,8 +1347,13 @@ public class CloneFragment extends Fragment {
                         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(app,
                                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
                         SyncProgressRepository.get().postSuccess(message);
+                        CableSession.get().markCompleted();   // K2GO-576: no second offer of this copy
+                        CableSession.get().stop();   // K2GO-576: the cable session ends with the pull
                     }
-                    @Override public void onError(String error) { SyncProgressRepository.get().postFailed(error); }
+                    @Override public void onError(String error) {
+                        SyncProgressRepository.get().postFailed(error);
+                        CableSession.get().stop();
+                    }
                 });
         };
         ServerController sc = server();
@@ -1411,6 +1452,7 @@ public class CloneFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (startingDots != null) startingDots.stop();   // ADFA-5154: no dangling Handler after the view is gone
+        if (linkRows != null) linkRows.stopChecks();   // K2GO-576
         // ADFA-5155: tear down the success-exit wait so no probe/countdown Handler outlives the view.
         exitHandler.removeCallbacks(exitTick);
         exitHandler.removeCallbacks(exitPollRunnable);
@@ -1426,6 +1468,8 @@ public class CloneFragment extends Fragment {
         if (!SyncProgressRepository.get().isActive() && !daemonStarted) { stopProtection(); releaseCloneEnv(); }
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
         if (!daemonStarted && !requireActivity().isChangingConfigurations()) releaseHotspot();
+        // K2GO-576: the cable follows the screen, except under a running share or pull.
+        if (!daemonStarted && !SyncProgressRepository.get().isActive()) CableSession.get().stop();
         stopApkServer();   // ADFA-4785
     }
 

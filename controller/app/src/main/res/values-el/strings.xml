@@ -1615,4 +1615,33 @@
     <string name="k2go_gm_catalogs_updating">Ενημέρωση καταλόγων...</string>
     <string name="k2go_gm_catalogs_bundled">Κατάλογοι: περιλαμβάνονται στην εφαρμογή</string>
     <string name="k2go_gm_catalogs_checked">Έλεγχος καταλόγων: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Δεν ήταν δυνατή η ανάγνωση της λίστας αρχείων από το τηλέφωνο αποστολής.</string>
+    <string name="k2go_clone_cable_err_no_path">Η σύνδεση με το τηλέφωνο αποστολής χάθηκε. Συνδεθείτε στο σημείο πρόσβασής του ή συνδέστε το καλώδιο USB.</string>
+    <string name="k2go_clone_cable_err_check">Ο τελευταίος έλεγχος του αντιγράφου απέτυχε. Ξεκινήστε ξανά τη μεταφορά.</string>
+    <string name="k2go_clone_link_wifi">Σημείο πρόσβασης Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Καλώδιο USB</string>
+    <string name="k2go_clone_link_wifi_off">Το Wi-Fi είναι απενεργοποιημένο</string>
+    <string name="k2go_clone_link_wifi_not_joined">Χωρίς σύνδεση στο σημείο πρόσβασης του τηλεφώνου αποστολής</string>
+    <string name="k2go_clone_link_wifi_found">Ο αποστολέας βρέθηκε στο σημείο πρόσβασής του</string>
+    <string name="k2go_clone_link_wifi_slow">Ο αποστολέας βρέθηκε. Αργή ζώνη.</string>
+    <string name="k2go_clone_link_hotspot_on">Σημείο πρόσβασης ενεργό. Συνδεδεμένα τηλέφωνα: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Κοινή χρήση μέσω του δικτύου Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Σημείο πρόσβασης ανενεργό</string>
+    <string name="k2go_clone_link_usb_none">Χωρίς καλώδιο</string>
+    <string name="k2go_clone_link_usb_waiting">Βρέθηκε καλώδιο. Επιτρέψτε την πρόσβαση USB και στα δύο τηλέφωνα.</string>
+    <string name="k2go_clone_link_usb_linked">Συνδέθηκε με το άλλο τηλέφωνο</string>
+    <string name="k2go_clone_link_usb_active">Μεταφορά δεδομένων: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Ανενεργό</string>
+    <string name="k2go_clone_link_badge_not_ready">Μη έτοιμο</string>
+    <string name="k2go_clone_link_badge_optional">Προαιρετικό</string>
+    <string name="k2go_clone_link_badge_waiting">Σε αναμονή</string>
+    <string name="k2go_clone_link_badge_linked">Συνδέθηκε</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Τώρα σαρώστε τον κωδικό μεταφοράς του άλλου τηλεφώνου ή συνδέστε ένα καλώδιο USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Ο αποστολέας βρέθηκε σε αυτό το δίκτυο Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Το τηλέφωνο αποστολής δεν βρέθηκε σε αυτό το δίκτυο Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Το τηλέφωνο αποστολής σταμάτησε την κοινή χρήση.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Το άλλο τηλέφωνο δεν μπορεί να συνδεθεί με αυτό το τηλέφωνο μέσω Wi-Fi</string>
 </resources>

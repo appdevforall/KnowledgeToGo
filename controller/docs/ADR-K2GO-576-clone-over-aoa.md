@@ -1,6 +1,6 @@
 # ADR-K2GO-576 : Clone adds a USB cable path (Android Open Accessory)
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-11-16
 - Ticket: K2GO-576
 - Author: AppDevForAll
@@ -49,14 +49,19 @@ existing Wi-Fi session, and the library is split between the two.
    `127.0.0.1:<port>` and forwards the bytes into the AOA stream. On the sender, the app reads
    the AOA stream and connects to its own rsync daemon on `127.0.0.1`. The rsync client uses
    `rsync://user@127.0.0.1:<port>/module`. No change to `rsyncd.conf` or to the rsync argv.
-3. **A small framed protocol on the AOA stream.** Frames carry a type (open, data, close,
-   reset), a channel id and a length, so that the dry-run and the transfer can use the cable
-   one after the other, and so that a new session can discard old bytes (the test APK showed
-   that bytes from a failed run stay in the link).
+3. **A small framed protocol on the AOA stream.** Frames carry a type (reset, hello, open,
+   data, close), a channel id and a length, so that the dry-run and the transfer can use the
+   cable one after the other, and so that a new session can discard old bytes (the test APK
+   showed that bytes from a failed run stay in the link). The hello frame carries the same
+   pairing data as the QR code (address, port, user, password, sizes), so the cable can replace
+   the scan.
 4. **The library is split between the two paths by a shared work queue.** The dry-run gives the
    file list. It is cut into chunks of similar size. The Wi-Fi rsync and the cable rsync each
    take the next chunk (`--files-from`) until the queue is empty. A faster path takes more
-   chunks; a path that fails puts its chunk back in the queue.
+   chunks; a path that fails puts its chunk back in the queue, and the other path finishes it
+   (`--partial` keeps what arrived). A cable plugged in during the transfer takes the next
+   free chunk. After the queue is empty, one last whole-tree run with `--delete` removes
+   extra files and confirms that nothing is missing.
 5. **The USB roles are detected, not chosen.** The phone that is the USB host runs the AOA host
    side. The sender should be the host: when the receiver is the host, the cable still works
    but carries less (about 7 MB/s on MediaTek). The host starts with 128 KB transfers and drops
@@ -64,8 +69,11 @@ existing Wi-Fi session, and the library is split between the two.
 6. **Without Wi-Fi, the hotspot asks for 5 GHz.** Automatic stays the default when the phone is
    on a Wi-Fi network (K2GO-561). When the phone has no Wi-Fi network, Clone asks for 5 GHz and
    falls back to 2.4 GHz only when 5 GHz fails.
-7. **The cable path is optional.** With no cable, Clone works as today. With a cable and no
-   Wi-Fi, the cable carries the whole library.
+7. **The cable path is optional, and it acts only inside Clone with the roles set.** One
+   phone is on Send and the other on Receive; the cable never starts anything outside that
+   screen, and the app does not guess the roles. With no cable, Clone works as today. With a
+   cable and no Wi-Fi, the cable carries the whole library. With the sender's hotspot verified
+   and a cable, the cable replaces the QR scan and both paths run at once.
 8. **Both sides know the state, with rsync's own daemon hooks (no wrapper around the binary).**
    Today only the receiver knows the result (it reads the rsync output and exit code); the
    sender's daemon logs to `/dev/null`. The sender's `rsyncd.conf` adds:
@@ -76,6 +84,19 @@ existing Wi-Fi session, and the library is split between the two.
      to a log file in the app cache. This gives the sender its own progress.
    The app watches both files with a `FileObserver` (no polling). On the cable path the relay
    also counts the bytes it forwards.
+
+## User interface
+
+The Clone screen shows two status rows (mock-up shared with the design team):
+
+- **Wi-Fi hotspot:** green when the receiver is on the sender's hotspot and the sender answers
+  on its rsync port (the hotspot gateway is the sender, so no network scan and no location
+  permission); amber when not joined, not verified, or on 2.4 GHz; red when Wi-Fi is off. The
+  band (5 or 2.4 GHz) is always shown. The first version verifies the hotspot only, not a
+  router network.
+- **USB cable:** grey with no cable, amber while it waits for the USB dialog, green when
+  linked, with the speed while it carries data.
+- One progress bar: the sum of both paths.
 
 ## Lifecycle (who starts, who stops, what if the process dies)
 
@@ -123,9 +144,12 @@ existing Wi-Fi session, and the library is split between the two.
 
 ## Plan
 
-1. Cable-only Clone: AOA session, relay, frames; one rsync session over the cable.
-2. Wi-Fi plus cable: the chunk queue and two rsync sessions in parallel.
-3. Measure with real files on two low-end phones (storage writes on the receiver), then tune the
+1. Domain (pure JVM, tested): frames, the decoder, the chunk planner and queue, the dry-run
+   file list.
+2. Data: the AOA session (host and accessory), the relay, pairing over the cable, the chunked
+   rsync runs on both paths at once.
+3. Presentation: the two status rows, the hotspot check, the cable as a scan.
+4. Measure with real files on two low-end phones (storage writes on the receiver), then tune the
    chunk size and the transfer size.
 
 ## Open questions

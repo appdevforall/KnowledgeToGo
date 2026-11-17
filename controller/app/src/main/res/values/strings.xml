@@ -1805,4 +1805,33 @@
     <string name="k2go_gm_catalogs_updating">Updating catalogs...</string>
     <string name="k2go_gm_catalogs_bundled">Catalogs: included with the app</string>
     <string name="k2go_gm_catalogs_checked">Catalogs checked: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Could not read the list of files from the sending phone.</string>
+    <string name="k2go_clone_cable_err_no_path">The connection to the sending phone is lost. Join its hotspot or connect the USB cable.</string>
+    <string name="k2go_clone_cable_err_check">The last check of the copy failed. Start the transfer again.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
+    <string name="k2go_clone_link_usb">USB cable</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi is off</string>
+    <string name="k2go_clone_link_wifi_not_joined">Not joined to the hotspot of the sending phone</string>
+    <string name="k2go_clone_link_wifi_found">Sender found on its hotspot</string>
+    <string name="k2go_clone_link_wifi_slow">Sender found. Slow band.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot on. Phones joined: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Sharing over the Wi-Fi network</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot off</string>
+    <string name="k2go_clone_link_usb_none">No cable</string>
+    <string name="k2go_clone_link_usb_waiting">Cable found. Allow USB access on both phones.</string>
+    <string name="k2go_clone_link_usb_linked">Linked to the other phone</string>
+    <string name="k2go_clone_link_usb_active">Carrying data: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Off</string>
+    <string name="k2go_clone_link_badge_not_ready">Not ready</string>
+    <string name="k2go_clone_link_badge_optional">Optional</string>
+    <string name="k2go_clone_link_badge_waiting">Waiting</string>
+    <string name="k2go_clone_link_badge_linked">Linked</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2.4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Now scan the other phone\'s transfer code, or connect a USB cable.</string>
+    <string name="k2go_clone_link_wifi_found_network">Sender found on this Wi-Fi network</string>
+    <string name="k2go_clone_link_wifi_not_found">Sending phone not found on this Wi-Fi network</string>
+    <string name="k2go_clone_cable_err_sender_stopped">The sending phone stopped sharing.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">The other phone cannot reach this phone on Wi-Fi</string>
 </resources>

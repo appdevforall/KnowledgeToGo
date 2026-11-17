@@ -247,19 +247,11 @@ public class RsyncManager implements TransportEngine {
                     // The cancel path already reset the screen (CloneFragment.onReceiveCancel).
                     Log.i(TAG, "Rsync client stopped by the user");
                 } else {
-                    switch (RsyncOutcome.classifyTransfer(exitCode)) {
-                        case COMPLETE:
-                            mainHandler.post(() -> listener.onComplete(context.getString(R.string.rsync_success_complete)));
-                            break;
-                        case HOST_DROPPED: // socket/stream drop (10/12/20)
-                            mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_host_dropped)));
-                            break;
-                        case KILLED: // ADFA-4496: SIGKILL (137) -> phantom-process killer reaped the transfer
-                            mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_process_killed)));
-                            break;
-                        default:
-                            mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_exit_code, exitCode)));
-                            break;
+                    if (RsyncOutcome.isSuccess(exitCode)) {
+                        mainHandler.post(() -> listener.onComplete(context.getString(R.string.rsync_success_complete)));
+                    } else {
+                        String msg = failureText(context, exitCode);
+                        mainHandler.post(() -> listener.onError(msg));
                     }
                 }
 
@@ -274,6 +266,19 @@ public class RsyncManager implements TransportEngine {
                 mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_fatal, e.getMessage())));
             }
         }).start();
+    }
+
+    /**
+     * The user message for a failed pull, one place for every pull path (K2GO-576 split pull too):
+     * a socket/stream drop (10/12/20), a SIGKILL from the phantom-process killer (137, ADFA-4496),
+     * else the exit code.
+     */
+    public static String failureText(Context context, int exitCode) {
+        switch (RsyncOutcome.classifyTransfer(exitCode)) {
+            case HOST_DROPPED: return context.getString(R.string.rsync_error_host_dropped);
+            case KILLED: return context.getString(R.string.rsync_error_process_killed);
+            default: return context.getString(R.string.rsync_error_exit_code, exitCode);
+        }
     }
 
     @Override

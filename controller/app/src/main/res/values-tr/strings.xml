@@ -1608,4 +1608,33 @@
     <string name="k2go_gm_catalogs_updating">Kataloglar güncelleniyor...</string>
     <string name="k2go_gm_catalogs_bundled">Kataloglar: uygulamayla birlikte gelir</string>
     <string name="k2go_gm_catalogs_checked">Kataloglar kontrol edildi: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Gönderen telefondan dosya listesi okunamadı.</string>
+    <string name="k2go_clone_cable_err_no_path">Gönderen telefonla bağlantı kesildi. Onun etkin noktasına katılın veya USB kablosunu takın.</string>
+    <string name="k2go_clone_cable_err_check">Kopyanın son kontrolü başarısız oldu. Aktarımı yeniden başlatın.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi etkin noktası</string>
+    <string name="k2go_clone_link_usb">USB kablosu</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi kapalı</string>
+    <string name="k2go_clone_link_wifi_not_joined">Gönderen telefonun etkin noktasına bağlı değil</string>
+    <string name="k2go_clone_link_wifi_found">Gönderen, kendi etkin noktasında bulundu</string>
+    <string name="k2go_clone_link_wifi_slow">Gönderen bulundu. Yavaş bant.</string>
+    <string name="k2go_clone_link_hotspot_on">Etkin nokta açık. Katılan telefonlar: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Wi-Fi ağı üzerinden paylaşılıyor</string>
+    <string name="k2go_clone_link_hotspot_off">Etkin nokta kapalı</string>
+    <string name="k2go_clone_link_usb_none">Kablo yok</string>
+    <string name="k2go_clone_link_usb_waiting">Kablo bulundu. Her iki telefonda da USB erişimine izin verin.</string>
+    <string name="k2go_clone_link_usb_linked">Diğer telefona bağlandı</string>
+    <string name="k2go_clone_link_usb_active">Veri aktarımı: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Kapalı</string>
+    <string name="k2go_clone_link_badge_not_ready">Hazır değil</string>
+    <string name="k2go_clone_link_badge_optional">İsteğe bağlı</string>
+    <string name="k2go_clone_link_badge_waiting">Bekliyor</string>
+    <string name="k2go_clone_link_badge_linked">Bağlandı</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Şimdi diğer telefonun aktarım kodunu tarayın veya bir USB kablosu takın.</string>
+    <string name="k2go_clone_link_wifi_found_network">Gönderen bu Wi-Fi ağında bulundu</string>
+    <string name="k2go_clone_link_wifi_not_found">Gönderen telefon bu Wi-Fi ağında bulunamadı</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Gönderen telefon paylaşımı durdurdu.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Diğer telefon Wi-Fi üzerinden bu telefona ulaşamıyor</string>
 </resources>

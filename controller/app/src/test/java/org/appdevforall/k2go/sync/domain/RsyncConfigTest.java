@@ -96,4 +96,21 @@ public class RsyncConfigTest {
         assertEquals("rsync://u@h:1/m/", a.get(9));
         assertEquals("/dest", a.get(10));
     }
+
+    @Test
+    public void listArgsAddTheOutFormatBeforeTheSource() {
+        List<String> a = RsyncConfig.listArgs("/lib/librsync.so", "/c/p", "rsync://u@h:1/m/", "/dest", "K2F %l %n");
+        assertTrue(a.contains("--dry-run"));
+        assertEquals("--out-format=K2F %l %n", a.get(a.size() - 3));
+        assertEquals("rsync://u@h:1/m/", a.get(a.size() - 2));
+    }
+
+    @Test
+    public void chunkArgsCopyOnlyTheListAndNeverDelete() {
+        List<String> a = RsyncConfig.chunkArgs("/lib/librsync.so", "/c/p", "rsync://u@127.0.0.1:40001/m/", "/dest", "/c/chunk-3.txt");
+        assertTrue(a.contains("--files-from=/c/chunk-3.txt"));
+        assertTrue(a.contains("--partial"));
+        assertFalse(a.contains("--delete"));
+        assertEquals("/dest", a.get(a.size() - 1));
+    }
 }

@@ -1618,4 +1618,33 @@
     <string name="k2go_gm_catalogs_updating">Oppdaterer kataloger...</string>
     <string name="k2go_gm_catalogs_bundled">Kataloger: følger med appen</string>
     <string name="k2go_gm_catalogs_checked">Kataloger sjekket: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Kunne ikke lese fillisten fra telefonen som sender.</string>
+    <string name="k2go_clone_cable_err_no_path">Tilkoblingen til telefonen som sender, er brutt. Koble til Wi-Fi-sonen dens eller koble til USB-kabelen.</string>
+    <string name="k2go_clone_cable_err_check">Den siste kontrollen av kopien mislyktes. Start overføringen på nytt.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi-sone</string>
+    <string name="k2go_clone_link_usb">USB-kabel</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi er av</string>
+    <string name="k2go_clone_link_wifi_not_joined">Ikke koblet til Wi-Fi-sonen til telefonen som sender</string>
+    <string name="k2go_clone_link_wifi_found">Avsender funnet på sin Wi-Fi-sone</string>
+    <string name="k2go_clone_link_wifi_slow">Avsender funnet. Tregt bånd.</string>
+    <string name="k2go_clone_link_hotspot_on">Wi-Fi-sone på. Tilkoblede telefoner: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Deler over Wi-Fi-nettverket</string>
+    <string name="k2go_clone_link_hotspot_off">Wi-Fi-sone av</string>
+    <string name="k2go_clone_link_usb_none">Ingen kabel</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel funnet. Tillat USB-tilgang på begge telefonene.</string>
+    <string name="k2go_clone_link_usb_linked">Koblet til den andre telefonen</string>
+    <string name="k2go_clone_link_usb_active">Dataoverføring: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Av</string>
+    <string name="k2go_clone_link_badge_not_ready">Ikke klar</string>
+    <string name="k2go_clone_link_badge_optional">Valgfritt</string>
+    <string name="k2go_clone_link_badge_waiting">Venter</string>
+    <string name="k2go_clone_link_badge_linked">Koblet til</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Skann nå den andre telefonens overføringskode, eller koble til en USB-kabel.</string>
+    <string name="k2go_clone_link_wifi_found_network">Avsender funnet på dette Wi-Fi-nettverket</string>
+    <string name="k2go_clone_link_wifi_not_found">Fant ikke telefonen som sender, på dette Wi-Fi-nettverket</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Telefonen som sender, sluttet å dele.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Den andre telefonen kan ikke nå denne telefonen over Wi-Fi</string>
 </resources>

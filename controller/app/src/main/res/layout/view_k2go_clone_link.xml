@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-576: Clone link status: the Wi-Fi row and the USB cable row. Bound by CloneLinkRows. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/k2go_clone_link"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginTop="8dp" android:orientation="vertical"
+    android:background="@drawable/k2go_card_bg" android:visibility="gone">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="8dp" android:paddingBottom="8dp">
+        <ImageView android:id="@+id/k2go_link_wifi_icon" android:layout_width="24dp" android:layout_height="24dp"
+            android:src="@drawable/ic_wifi" android:importantForAccessibility="no" />
+        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" android:orientation="vertical">
+            <TextView android:id="@+id/k2go_link_wifi_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/k2go_clone_link_wifi"
+                android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="?attr/colorOnSurface" />
+            <TextView android:id="@+id/k2go_link_wifi_detail" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+        <TextView android:id="@+id/k2go_link_wifi_badge" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" android:textAppearance="?attr/textAppearanceLabelLarge" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="8dp" android:paddingBottom="8dp">
+        <ImageView android:id="@+id/k2go_link_usb_icon" android:layout_width="24dp" android:layout_height="24dp"
+            android:src="@drawable/ic_usb_cable" android:importantForAccessibility="no" />
+        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/k2go_clone_link_usb"
+                android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="?attr/colorOnSurface" />
+            <TextView android:id="@+id/k2go_link_usb_detail" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+        <TextView android:id="@+id/k2go_link_usb_badge" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" android:textAppearance="?attr/textAppearanceLabelLarge" />
+    </LinearLayout>
+</LinearLayout>

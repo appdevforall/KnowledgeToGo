@@ -1695,4 +1695,33 @@
     <string name="k2go_gm_catalogs_updating">Mise à jour des catalogues...</string>
     <string name="k2go_gm_catalogs_bundled">Catalogues : inclus avec l\'app</string>
     <string name="k2go_gm_catalogs_checked">Catalogues vérifiés : %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Impossible de lire la liste des fichiers du téléphone émetteur.</string>
+    <string name="k2go_clone_cable_err_no_path">La connexion au téléphone émetteur est perdue. Rejoignez son point d\'accès ou branchez le câble USB.</string>
+    <string name="k2go_clone_cable_err_check">La dernière vérification de la copie a échoué. Relancez le transfert.</string>
+    <string name="k2go_clone_link_wifi">Point d\'accès Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Câble USB</string>
+    <string name="k2go_clone_link_wifi_off">Le Wi-Fi est désactivé</string>
+    <string name="k2go_clone_link_wifi_not_joined">Non connecté au point d\'accès du téléphone émetteur</string>
+    <string name="k2go_clone_link_wifi_found">Émetteur trouvé sur son point d\'accès</string>
+    <string name="k2go_clone_link_wifi_slow">Émetteur trouvé. Bande lente.</string>
+    <string name="k2go_clone_link_hotspot_on">Point d\'accès activé. Téléphones connectés : %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Partage via le réseau Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Point d\'accès désactivé</string>
+    <string name="k2go_clone_link_usb_none">Aucun câble</string>
+    <string name="k2go_clone_link_usb_waiting">Câble détecté. Autorisez l\'accès USB sur les deux téléphones.</string>
+    <string name="k2go_clone_link_usb_linked">Relié à l\'autre téléphone</string>
+    <string name="k2go_clone_link_usb_active">Transfert de données : %1$s</string>
+    <string name="k2go_clone_link_badge_off">Désactivé</string>
+    <string name="k2go_clone_link_badge_not_ready">Pas prêt</string>
+    <string name="k2go_clone_link_badge_optional">Facultatif</string>
+    <string name="k2go_clone_link_badge_waiting">En attente</string>
+    <string name="k2go_clone_link_badge_linked">Relié</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Scannez maintenant le code de transfert de l\'autre téléphone, ou branchez un câble USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Émetteur trouvé sur ce réseau Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Téléphone émetteur introuvable sur ce réseau Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Le téléphone émetteur a arrêté le partage.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">L\'autre téléphone ne peut pas joindre ce téléphone en Wi-Fi</string>
 </resources>

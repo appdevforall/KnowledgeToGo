@@ -1615,4 +1615,33 @@
     <string name="k2go_gm_catalogs_updating">Каталозите се обновяват...</string>
     <string name="k2go_gm_catalogs_bundled">Каталози: включени в приложението</string>
     <string name="k2go_gm_catalogs_checked">Каталозите са проверени: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Не може да се прочете списъкът с файлове от изпращащия телефон.</string>
+    <string name="k2go_clone_cable_err_no_path">Връзката с изпращащия телефон е прекъсната. Свържете се с точката му за достъп или включете USB кабела.</string>
+    <string name="k2go_clone_cable_err_check">Последната проверка на копието е неуспешна. Започнете прехвърлянето отново.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi точка за достъп</string>
+    <string name="k2go_clone_link_usb">USB кабел</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi е изключен</string>
+    <string name="k2go_clone_link_wifi_not_joined">Няма връзка с точката за достъп на изпращащия телефон</string>
+    <string name="k2go_clone_link_wifi_found">Изпращачът е открит в точката му за достъп</string>
+    <string name="k2go_clone_link_wifi_slow">Изпращачът е открит. Бавна честотна лента.</string>
+    <string name="k2go_clone_link_hotspot_on">Точката за достъп е включена. Свързани телефони: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Споделяне през Wi-Fi мрежата</string>
+    <string name="k2go_clone_link_hotspot_off">Точката за достъп е изключена</string>
+    <string name="k2go_clone_link_usb_none">Няма кабел</string>
+    <string name="k2go_clone_link_usb_waiting">Открит е кабел. Разрешете USB достъпа на двата телефона.</string>
+    <string name="k2go_clone_link_usb_linked">Свързан с другия телефон</string>
+    <string name="k2go_clone_link_usb_active">Пренос на данни: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Изкл.</string>
+    <string name="k2go_clone_link_badge_not_ready">Не е готово</string>
+    <string name="k2go_clone_link_badge_optional">По избор</string>
+    <string name="k2go_clone_link_badge_waiting">Изчакване</string>
+    <string name="k2go_clone_link_badge_linked">Свързано</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Сега сканирайте кода за прехвърляне на другия телефон или включете USB кабел.</string>
+    <string name="k2go_clone_link_wifi_found_network">Изпращачът е открит в тази Wi-Fi мрежа</string>
+    <string name="k2go_clone_link_wifi_not_found">Изпращащият телефон не е открит в тази Wi-Fi мрежа</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Изпращащият телефон спря споделянето.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Другият телефон не може да достигне този телефон през Wi-Fi</string>
 </resources>

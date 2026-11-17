@@ -1615,4 +1615,33 @@
     <string name="k2go_gm_catalogs_updating">Memperbarui katalog...</string>
     <string name="k2go_gm_catalogs_bundled">Katalog: disertakan dengan aplikasi</string>
     <string name="k2go_gm_catalogs_checked">Katalog diperiksa: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Tidak dapat membaca daftar file dari ponsel pengirim.</string>
+    <string name="k2go_clone_cable_err_no_path">Koneksi ke ponsel pengirim terputus. Gabung ke hotspot-nya atau sambungkan kabel USB.</string>
+    <string name="k2go_clone_cable_err_check">Pemeriksaan terakhir salinan gagal. Mulai transfer lagi.</string>
+    <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Kabel USB</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi mati</string>
+    <string name="k2go_clone_link_wifi_not_joined">Belum tergabung ke hotspot ponsel pengirim</string>
+    <string name="k2go_clone_link_wifi_found">Pengirim ditemukan di hotspot-nya</string>
+    <string name="k2go_clone_link_wifi_slow">Pengirim ditemukan. Pita lambat.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot aktif. Ponsel tergabung: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Berbagi melalui jaringan Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot mati</string>
+    <string name="k2go_clone_link_usb_none">Tidak ada kabel</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel terdeteksi. Izinkan akses USB di kedua ponsel.</string>
+    <string name="k2go_clone_link_usb_linked">Tertaut ke ponsel lain</string>
+    <string name="k2go_clone_link_usb_active">Transfer data: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Mati</string>
+    <string name="k2go_clone_link_badge_not_ready">Belum siap</string>
+    <string name="k2go_clone_link_badge_optional">Opsional</string>
+    <string name="k2go_clone_link_badge_waiting">Menunggu</string>
+    <string name="k2go_clone_link_badge_linked">Tertaut</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Sekarang pindai kode transfer ponsel lain, atau sambungkan kabel USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Pengirim ditemukan di jaringan Wi-Fi ini</string>
+    <string name="k2go_clone_link_wifi_not_found">Ponsel pengirim tidak ditemukan di jaringan Wi-Fi ini</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Ponsel pengirim berhenti berbagi.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Ponsel lain tidak dapat menjangkau ponsel ini melalui Wi-Fi</string>
 </resources>

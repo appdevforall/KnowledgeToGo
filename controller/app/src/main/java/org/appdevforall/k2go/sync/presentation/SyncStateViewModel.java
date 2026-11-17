@@ -23,6 +23,8 @@ import org.appdevforall.k2go.RsyncManager;
 import org.appdevforall.k2go.SyncHandshakeHelper;
 import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
+import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.data.ChunkedPull;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
@@ -41,6 +43,12 @@ public class SyncStateViewModel extends ViewModel {
     // finished (e.g. the user swipes the app away). The transport's native rsync child is kept alive by
     // CloneShareService; making it per-ViewModel meant onCleared() below killed it on every swipe.
     private static volatile TransportEngine transport;
+    // K2GO-576: the receive pull, over Wi-Fi and the cable. Process-scoped for the same reason.
+    private static volatile ChunkedPull pull;
+    // K2GO-576: {Wi-Fi, cable} bytes per second of the running pull, for the link rows.
+    private static final androidx.lifecycle.MutableLiveData<long[]> pathRates = new androidx.lifecycle.MutableLiveData<>();
+
+    public androidx.lifecycle.LiveData<long[]> pathRates() { return pathRates; }
 
     // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
@@ -113,6 +121,15 @@ public class SyncStateViewModel extends ViewModel {
             } catch (Exception e) {
                 Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed", e);
             }
+            // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
+            String probeHost = creds.ip;
+            int probePort = creds.port;
+            int cablePort = CableSession.get().relayPort();
+            if (!reachable && cablePort > 0) {
+                probeHost = "127.0.0.1";
+                probePort = cablePort;
+                reachable = true;
+            }
 
             if (!reachable) {
                 repo.postAborted(appCtx.getString(R.string.sync_dialog_conn_failed_title),
@@ -125,7 +142,7 @@ public class SyncStateViewModel extends ViewModel {
             pendingDestDir = destDir;
             repo.postCalculating();
 
-            getTransport().calculateTransferPlan(appCtx, shareConfig, creds.ip, creds.port,
+            getTransport().calculateTransferPlan(appCtx, shareConfig, probeHost, probePort,
                     creds.user, creds.pass, destDir.getAbsolutePath(),
                     new TransportEngine.DryRunListener() {
                         @Override
@@ -158,6 +175,35 @@ public class SyncStateViewModel extends ViewModel {
                         }
                     });
         });
+    }
+
+    /**
+     * K2GO-576: starts the receive pull on every live path. Wi-Fi and the cable each join whenever
+     * they reach the sender, also in the middle of the copy.
+     */
+    public void startPull(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds,
+                          String destDir, TransportEngine.SyncListener listener) {
+        stopPull();
+        ChunkedPull p = new ChunkedPull(appCtx, shareConfig, creds.user, creds.pass, destDir,
+                new ChunkedPull.Paths() {
+                    @Override public String wifiHost() { return creds.ip; }
+                    @Override public int wifiPort() { return creds.port; }
+                    @Override public int cablePort() { return CableSession.get().relayPort(); }
+                    @Override public boolean senderStopped() { return CableSession.get().senderStopped(); }
+                    @Override public void onRates(long wifiBps, long cableBps) {
+                        pathRates.postValue(wifiBps < 0 ? null : new long[]{wifiBps, cableBps});
+                    }
+                }, listener);
+        pull = p;
+        p.start();
+    }
+
+    /** K2GO-576: stops the receive pull and its rsync runs; safe to call repeatedly. */
+    public void stopPull() {
+        ChunkedPull p = pull;
+        pull = null;
+        if (p != null) p.stop();
+        pathRates.postValue(null);
     }
 
     /** Release the network binding put in place for a receive (ADFA-4496); safe to call repeatedly. */

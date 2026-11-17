@@ -1615,4 +1615,33 @@
     <string name="k2go_gm_catalogs_updating">Aktualizace katalogů...</string>
     <string name="k2go_gm_catalogs_bundled">Katalogy: součástí aplikace</string>
     <string name="k2go_gm_catalogs_checked">Katalogy zkontrolovány: %1$s</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Nepodařilo se načíst seznam souborů z odesílajícího telefonu.</string>
+    <string name="k2go_clone_cable_err_no_path">Spojení s odesílajícím telefonem bylo ztraceno. Připojte se k jeho hotspotu nebo připojte kabel USB.</string>
+    <string name="k2go_clone_cable_err_check">Poslední kontrola kopie selhala. Spusťte přenos znovu.</string>
+    <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Kabel USB</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi je vypnutá</string>
+    <string name="k2go_clone_link_wifi_not_joined">Nepřipojeno k hotspotu odesílajícího telefonu</string>
+    <string name="k2go_clone_link_wifi_found">Odesílatel nalezen na svém hotspotu</string>
+    <string name="k2go_clone_link_wifi_slow">Odesílatel nalezen. Pomalé pásmo.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot zapnutý. Připojené telefony: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Sdílení přes síť Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot vypnutý</string>
+    <string name="k2go_clone_link_usb_none">Žádný kabel</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel nalezen. Povolte přístup USB na obou telefonech.</string>
+    <string name="k2go_clone_link_usb_linked">Propojeno s druhým telefonem</string>
+    <string name="k2go_clone_link_usb_active">Přenos dat: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Vypnuto</string>
+    <string name="k2go_clone_link_badge_not_ready">Nepřipraveno</string>
+    <string name="k2go_clone_link_badge_optional">Volitelné</string>
+    <string name="k2go_clone_link_badge_waiting">Čeká se</string>
+    <string name="k2go_clone_link_badge_linked">Propojeno</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Nyní naskenujte přenosový kód druhého telefonu, nebo připojte kabel USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Odesílatel nalezen v této síti Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Odesílající telefon nebyl v této síti Wi-Fi nalezen</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Odesílající telefon přestal sdílet.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Druhý telefon se k tomuto telefonu přes Wi-Fi nemůže připojit</string>
 </resources>

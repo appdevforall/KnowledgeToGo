@@ -45,6 +45,8 @@
             <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
                 android:gravity="center" android:text="@string/k2go_wifi" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
+        <!-- K2GO-576: Wi-Fi and USB cable status rows -->
+        <include layout="@layout/view_k2go_clone_link" />
     </LinearLayout>
 
     <!-- ADFA-5154: SCROLLABLE content — fork, stepper, the two Send pages and the Receive box. -->
@@ -411,9 +413,6 @@
                         android:layout_marginTop="4dp" android:text="@string/k2go_bj_wait_body"
                         android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_info_ink" />
                 </LinearLayout>
-
-                <Button android:id="@+id/k2go_clone_cancel" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp" android:gravity="center" android:text="@string/k2go_cancel" />
             </LinearLayout>
         </LinearLayout>
         </LinearLayout>
@@ -428,5 +427,15 @@
         android:visibility="gone">
         <com.google.android.material.button.MaterialButton android:id="@+id/k2go_clone_stop" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:text="@string/k2go_clone_stop_sharing" />
+    </LinearLayout>
+
+    <!-- K2GO-576: the receive Cancel is pinned like Stop sharing, so the link rows above never push it
+         off screen. Shown with the progress box. -->
+    <LinearLayout android:id="@+id/k2go_clone_rcv_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@color/k2go_paper"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="8dp" android:paddingBottom="12dp"
+        android:visibility="gone">
+        <Button android:id="@+id/k2go_clone_cancel" style="@style/Widget.K2Go.Button.Destructive" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:text="@string/k2go_cancel" />
     </LinearLayout>
 </LinearLayout>
