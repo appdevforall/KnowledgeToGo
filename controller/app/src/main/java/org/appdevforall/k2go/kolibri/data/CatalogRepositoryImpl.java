@@ -59,15 +59,11 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
                 context, CATALOG, MANIFEST_URL, BASENAME);
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.refreshNow(
                 context, CATALOG, MANIFEST_URL, BASENAME);
-        // The tree bundle refreshes on the same cadence, but only on Wi-Fi (UNMETERED): it is ~16 MB
-        // against the catalog's ~83 KB, and the APK asset is a working floor, so a metered pull is
-        // not worth the user's mobile data.
+        // The tree bundle refreshes on the same cadence (Wi-Fi only, like every catalog: K2GO-580).
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
-                androidx.work.NetworkType.UNMETERED);
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.refreshNow(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
-                androidx.work.NetworkType.UNMETERED);
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
     }
 
     /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle. */

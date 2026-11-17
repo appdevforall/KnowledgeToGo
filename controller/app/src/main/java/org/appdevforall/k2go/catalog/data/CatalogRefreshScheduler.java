@@ -6,8 +6,8 @@
  * Description : ADFA-5094 (ADR-5094). Enqueues the catalog refresh: a weekly,
  *               network-constrained periodic job, plus an opportunistic one-shot
  *               (e.g. when the picker opens). The worker's own TTL gate keeps the
- *               one-shot cheap. Unique per catalog, KEEP so relaunches don't
- *               reset the schedule.
+ *               one-shot cheap. Unique per catalog, so relaunches don't reset the
+ *               schedule. Automatic refreshes run on Wi-Fi only (K2GO-580).
  * ============================================================================
  */
 package org.appdevforall.k2go.catalog.data;
@@ -49,42 +49,27 @@ public final class CatalogRefreshScheduler {
                 .build();
     }
 
-    /** Weekly periodic refresh over any connection. Safe to call on every launch. */
-    public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename) {
-        scheduleWeekly(ctx, name, manifestUrl, basename, NetworkType.CONNECTED);
-    }
+    // K2GO-580: automatic refreshes run only on an unmetered network (Wi-Fi), never on the user's
+    // mobile data; the catalog bundled in the APK is the floor until then. A user-started download
+    // that hits a 404 still self-heals over any connection (forceRefresh).
 
-    /**
-     * Weekly periodic refresh, enqueued once per catalog (KEEP). Safe to call on every launch.
-     * {@code netType} lets a large asset ask for {@link NetworkType#UNMETERED} so it refreshes only
-     * on Wi-Fi and never spends the user's mobile data (ADFA-5094: the tree bundle is ~16 MB).
-     */
-    public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename,
-                                      NetworkType netType) {
+    /** Weekly periodic refresh, one per catalog. Safe to call on every launch. UPDATE (not KEEP) so an
+     *  install that already holds the old any-network job gets the Wi-Fi constraint, schedule kept. */
+    public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename) {
         PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
                 CatalogRefreshWorker.class, 7, TimeUnit.DAYS)
-                .setConstraints(constraints(netType))
+                .setConstraints(constraints(NetworkType.UNMETERED))
                 .setInputData(input(name, manifestUrl, basename))
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())
                 .enqueueUniquePeriodicWork("catalog-refresh-" + name,
-                        ExistingPeriodicWorkPolicy.KEEP, req);
+                        ExistingPeriodicWorkPolicy.UPDATE, req);
     }
 
-    /** Opportunistic one-shot over any connection; the worker's TTL gate no-ops it when fresh. */
+    /** Opportunistic one-shot; the worker's TTL gate no-ops it when still fresh. */
     public static void refreshNow(Context ctx, String name, String manifestUrl, String basename) {
-        refreshNow(ctx, name, manifestUrl, basename, NetworkType.CONNECTED);
-    }
-
-    /**
-     * Opportunistic one-shot; the worker's TTL gate no-ops it when still fresh. {@code netType}
-     * constrains which connection may trigger it — {@link NetworkType#UNMETERED} keeps a large
-     * asset off mobile data (ADFA-5094).
-     */
-    public static void refreshNow(Context ctx, String name, String manifestUrl, String basename,
-                                  NetworkType netType) {
         OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
-                .setConstraints(constraints(netType))
+                .setConstraints(constraints(NetworkType.UNMETERED))
                 .setInputData(input(name, manifestUrl, basename))
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())
