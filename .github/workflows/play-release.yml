@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       rc_tag:
-        description: "Approved candidate tag, for example v1.2.0-rc.3 (the final commit is main)"
+        description: "Confirm: type the newest approved candidate tag (button 1 made it), for example v1.2.0-rc.3. main is released as v1.2.0."
         required: true
 
 # One Play upload at a time: two parallel runs would race for the same versionCode.
