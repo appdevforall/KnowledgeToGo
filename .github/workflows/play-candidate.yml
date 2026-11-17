@@ -1,4 +1,4 @@
-name: "Play: 1. send candidate"
+name: "App+Play: 1. send candidate to Play Console"
 
 # K2GO-564, button 1 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Builds the Play AAB from the selected branch with the versionCode of its versionName, sends the build
@@ -202,7 +202,7 @@ jobs:
             echo "- versionCode $CODE, commit $GITHUB_SHA"
             if [ "$TRACK" = "beta" ]; then
               echo "- Google answers by email and in Play Console (Publishing overview)."
-              echo "- Approved: run **Play release** with \`$LABEL\`, then press **Publish changes** in Play Console."
+              echo "- Approved: run **App+Play: 2. publish release** with \`$LABEL\`."
               echo "- Rejected: fix the code, then run this workflow again (next: rc.N+1)."
             else
               echo "- Internal test build: no rc tag, so it cannot become a release."
