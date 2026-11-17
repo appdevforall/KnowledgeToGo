@@ -49,7 +49,7 @@ public class IIABApplication extends Application {
         }
 
         // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by its OWN opt-in
-        // (CrashReportConsent, default ON) -- independent of usage-analytics consent, since error
+        // (CrashReportConsent, default OFF, K2GO-579) -- independent of usage-analytics consent, since error
         // reports are operational, not behavioural telemetry, and carry no PII
         // (io.sentry.send-default-pii=false). No-op unless a DSN was built in (empty DSN -> SDK
         // stays inert); manifest sets io.sentry.auto-init=false, so this is the only init path.

@@ -310,7 +310,7 @@ public final class DiskGuard {
 
     /**
      * Report the event to developers, unattended. This is an OPERATIONAL diagnostic, not behavioural
-     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default on) -- NOT the
+     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default off) -- NOT the
      * analytics backbone (opt-in, default off, which would silently drop it). A no-op when crash
      * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
      * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
