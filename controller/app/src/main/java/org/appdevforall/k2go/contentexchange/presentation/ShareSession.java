@@ -158,6 +158,17 @@ final class ShareSession {
         return progress;
     }
 
+    /** The one wording for how a share ended, for the screen and the final notification. */
+    static int endedMessage(ShareProgress p) {
+        if (p != null && p.state == ShareProgress.State.COMPLETED) {
+            return org.appdevforall.k2go.R.string.k2go_cx_share_complete;
+        }
+        if (p != null && p.state == ShareProgress.State.CANCELLED) {
+            return org.appdevforall.k2go.R.string.k2go_cx_share_cancelled;
+        }
+        return org.appdevforall.k2go.R.string.k2go_cx_share_ended;
+    }
+
     /** The share is over (the receiver finished or stopped, or the session expired): the screen
      *  shows the result until the user leaves, and nothing should hold the hotspot for it. */
     boolean isEnded() {

@@ -67,6 +67,7 @@ public final class ContentShareService extends Service {
     /** K2GO-577: polls the receiver's progress while the session is open. Stopped when the share
      *  ends, when the box cannot report progress, and in onDestroy. */
     private final ScheduledExecutorService poller = Executors.newSingleThreadScheduledExecutor();
+    private final ConexCoreDataSource core = new ConexCoreDataSource();
     private static final long POLL_MS = 1000L;
     private int lastNotifiedPercent = -1;
 
@@ -144,6 +145,9 @@ public final class ContentShareService extends Service {
             return START_NOT_STICKY;
         }
 
+        if (SESSION.isEnded()) {
+            SESSION.clear();   // an ended result left on screen: this start is a new share
+        }
         if (SESSION.hasSession()) {
             // A duplicate start while a share is live. This onStartCommand may come from
             // startForegroundService, so honor the FGS start obligation before ignoring it; the
@@ -205,7 +209,7 @@ public final class ContentShareService extends Service {
         }
         ShareProgress p;
         try {
-            p = new ConexCoreDataSource().getShareProgress(id, tok);
+            p = core.getShareProgress(id, tok);
         } catch (Exception e) {
             return;
         }
@@ -216,7 +220,17 @@ public final class ContentShareService extends Service {
         SESSION.setProgress(p);
         if (p.isEnded()) {
             poller.shutdown();
-            stopForeground(true);
+            // Leave a plain notification with the result, so a sender in another app learns it.
+            stopForeground(STOP_FOREGROUND_DETACH);
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            if (nm != null) {
+                nm.notify(NOTIFICATION_ID, new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setContentTitle(getString(R.string.k2go_cx_share_notif_title))
+                        .setContentText(getString(ShareSession.endedMessage(p)))
+                        .setSmallIcon(android.R.drawable.stat_sys_upload_done)
+                        .setAutoCancel(true)
+                        .build());
+            }
             stopSelf();
             return;
         }

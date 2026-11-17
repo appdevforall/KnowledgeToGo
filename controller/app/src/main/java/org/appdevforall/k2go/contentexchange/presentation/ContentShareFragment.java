@@ -76,7 +76,8 @@ public class ContentShareFragment extends Fragment {
         super.onCreate(s);
         // The answer re-applies the choice; it never asks again (HotspotMode keeps that latch).
         hotspotPerm = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), r -> {
-            if (isAdded() && session.hasSession()) {
+            // An ended share released the hotspot; a late answer must not take it again.
+            if (isAdded() && session.hasSession() && !session.isEnded()) {
                 mode().resume();
                 render();
             }
@@ -227,7 +228,7 @@ public class ContentShareFragment extends Fragment {
 
     /** The receiver is pulling: overall bar and bytes, no invite (K2GO-577). */
     private void showTransfer(ShareProgress p) {
-        showStatus("");
+        hideCards();
         status.setVisibility(View.GONE);
         progressBlock.setVisibility(View.VISIBLE);
         int percent = p.percent(session.totalBytes(), session.itemCount());
@@ -243,19 +244,7 @@ public class ContentShareFragment extends Fragment {
 
     /** How the share ended, in place of the stale invite (K2GO-577). */
     private void showEnded(ShareProgress p) {
-        int message;
-        switch (p.state) {
-            case COMPLETED:
-                message = R.string.k2go_cx_share_complete;
-                break;
-            case CANCELLED:
-                message = R.string.k2go_cx_share_cancelled;
-                break;
-            default:
-                message = R.string.k2go_cx_share_ended;
-                break;
-        }
-        showStatus(getString(message));
+        showStatus(getString(ShareSession.endedMessage(p)));
     }
 
     private void renderInvite() {
@@ -368,6 +357,11 @@ public class ContentShareFragment extends Fragment {
     private void showStatus(String text) {
         status.setText(text);
         status.setVisibility(View.VISIBLE);
+        hideCards();
+    }
+
+    /** Hide the invite cards, the strip, the progress and the invite text. */
+    private void hideCards() {
         secJoin.stopPending();
         secReceive.stopPending();
         joinRoot.setVisibility(View.GONE);
