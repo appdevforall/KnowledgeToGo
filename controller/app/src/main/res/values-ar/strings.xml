@@ -1604,6 +1604,10 @@
     <string name="k2go_cx_share_complete">اكتمل النقل. المحتوى موجود الآن على الهاتف الآخر.</string>
     <string name="k2go_cx_share_cancelled">أوقف الهاتف الآخر النقل.</string>
     <string name="k2go_cx_share_ended">انتهت المشاركة.</string>
+    <string name="k2go_gm_catalogs_update">تحديث الفهارس</string>
+    <string name="k2go_gm_catalogs_updating">جارٍ تحديث الفهارس...</string>
+    <string name="k2go_gm_catalogs_bundled">الفهارس: مضمّنة مع التطبيق</string>
+    <string name="k2go_gm_catalogs_checked">آخر فحص للفهارس: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">تعذّرت قراءة قائمة الملفات من الهاتف المُرسِل.</string>
     <string name="k2go_clone_cable_err_no_path">انقطع الاتصال بالهاتف المُرسِل. انضم إلى نقطة اتصاله أو صِل كابل USB.</string>

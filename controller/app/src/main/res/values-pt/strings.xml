@@ -1683,6 +1683,10 @@
     <string name="k2go_cx_share_complete">Transferência concluída. O outro telefone já tem o conteúdo.</string>
     <string name="k2go_cx_share_cancelled">O outro telefone parou a transferência.</string>
     <string name="k2go_cx_share_ended">A partilha terminou.</string>
+    <string name="k2go_gm_catalogs_update">Atualizar catálogos</string>
+    <string name="k2go_gm_catalogs_updating">Atualizando catálogos...</string>
+    <string name="k2go_gm_catalogs_bundled">Catálogos: incluídos no app</string>
+    <string name="k2go_gm_catalogs_checked">Catálogos verificados: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Não foi possível ler a lista de ficheiros do telemóvel emissor.</string>
     <string name="k2go_clone_cable_err_no_path">A ligação ao telemóvel emissor perdeu-se. Ligue-se ao hotspot dele ou ligue o cabo USB.</string>

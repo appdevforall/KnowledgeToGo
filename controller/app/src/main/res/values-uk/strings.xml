@@ -1604,6 +1604,10 @@
     <string name="k2go_cx_share_complete">Передавання завершено. Вміст уже на іншому телефоні.</string>
     <string name="k2go_cx_share_cancelled">Інший телефон зупинив передавання.</string>
     <string name="k2go_cx_share_ended">Надсилання завершено.</string>
+    <string name="k2go_gm_catalogs_update">Оновити каталоги</string>
+    <string name="k2go_gm_catalogs_updating">Оновлення каталогів...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталоги: входять у застосунок</string>
+    <string name="k2go_gm_catalogs_checked">Каталоги перевірено: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не вдалося прочитати список файлів із телефона-відправника.</string>
     <string name="k2go_clone_cable_err_no_path">Зв\'язок із телефоном-відправником втрачено. Під\'єднайтеся до його точки доступу або підключіть USB-кабель.</string>

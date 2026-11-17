@@ -1624,6 +1624,10 @@
     <string name="k2go_cx_share_complete">Gbígbé ti parí. Fóònù kejì ti ní àkóónú náà.</string>
     <string name="k2go_cx_share_cancelled">Fóònù kejì dá gbígbé dúró.</string>
     <string name="k2go_cx_share_ended">Pínpín ti parí.</string>
+    <string name="k2go_gm_catalogs_update">Ṣe imudojuiwọn awọn katalogi</string>
+    <string name="k2go_gm_catalogs_updating">Ń ṣe imudojuiwọn awọn katalogi...</string>
+    <string name="k2go_gm_catalogs_bundled">Awọn katalogi: wa pẹlu app naa</string>
+    <string name="k2go_gm_catalogs_checked">A ṣayẹwo awọn katalogi: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">A kò lè ka àkójọ àwọn fáìlì láti inú fóònù tí ń fi ránṣẹ́.</string>
     <string name="k2go_clone_cable_err_no_path">Ìsopọ̀ pẹ̀lú fóònù tí ń fi ránṣẹ́ ti sọnù. Darapọ̀ mọ́ hotspot rẹ̀ tàbí so wáyà USB pọ̀.</string>

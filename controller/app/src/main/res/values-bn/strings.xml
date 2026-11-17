@@ -1617,6 +1617,10 @@
     <string name="k2go_cx_share_complete">স্থানান্তর সম্পূর্ণ। কনটেন্ট এখন অন্য ফোনে আছে।</string>
     <string name="k2go_cx_share_cancelled">অন্য ফোন স্থানান্তর বন্ধ করেছে।</string>
     <string name="k2go_cx_share_ended">শেয়ার শেষ হয়েছে।</string>
+    <string name="k2go_gm_catalogs_update">ক্যাটালগ আপডেট করুন</string>
+    <string name="k2go_gm_catalogs_updating">ক্যাটালগ আপডেট হচ্ছে...</string>
+    <string name="k2go_gm_catalogs_bundled">ক্যাটালগ: অ্যাপের সাথে অন্তর্ভুক্ত</string>
+    <string name="k2go_gm_catalogs_checked">ক্যাটালগ পরীক্ষা করা হয়েছে: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">প্রেরক ফোন থেকে ফাইলের তালিকা পড়া যায়নি।</string>
     <string name="k2go_clone_cable_err_no_path">প্রেরক ফোনের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। এর হটস্পটে যুক্ত হন বা USB কেবল সংযুক্ত করুন।</string>

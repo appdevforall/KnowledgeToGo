@@ -33,6 +33,17 @@ public final class CatalogRefreshStore {
         return prefs.getLong(key(catalog, "last_check"), 0L);
     }
 
+    /** K2GO-580: epoch millis of the newest check across every catalog (0 if none was ever checked). */
+    public long lastCheckAnyMs() {
+        long max = 0L;
+        for (java.util.Map.Entry<String, ?> e : prefs.getAll().entrySet()) {
+            if (e.getKey().endsWith(".last_check") && e.getValue() instanceof Long) {
+                max = Math.max(max, (Long) e.getValue());
+            }
+        }
+        return max;
+    }
+
     /** Hash of the catalog currently in use (empty until a pull is applied). */
     public String activeHash(String catalog) {
         return prefs.getString(key(catalog, "hash"), "");

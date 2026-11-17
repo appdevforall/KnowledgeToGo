@@ -100,8 +100,10 @@ public class UpdateController {
             Toast.makeText(activity, R.string.ota_toast_cooldown, Toast.LENGTH_SHORT).show();
             return;
         }
-        lastUpdateCheckTime = now;
-        checkForUpdates(true);
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardThisAction(activity, () -> {   // K2GO-580
+            lastUpdateCheckTime = System.currentTimeMillis();
+            checkForUpdates(true);
+        }, () -> {});
     }
 
     public void checkForUpdates(boolean isManual) {
@@ -172,7 +174,9 @@ public class UpdateController {
         new BrandDialog(activity)
                 .setTitle(activity.getString(R.string.update_dialog_title, versionName))
                 .setMessage(activity.getString(R.string.update_dialog_message, changelog))
-                .setPositive(R.string.update_dialog_positive, () -> startDownload(downloadUrl))
+                // K2GO-580: on mobile data the user confirms before the APK download starts.
+                .setPositive(R.string.update_dialog_positive,
+                        () -> org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardThisAction(activity, () -> startDownload(downloadUrl), () -> {}))
                 .setNegative(R.string.update_dialog_negative, null)
                 .setCancelable(false)
                 .show();

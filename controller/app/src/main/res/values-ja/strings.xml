@@ -1605,6 +1605,10 @@
     <string name="k2go_cx_share_complete">転送が完了しました。もう一方のスマートフォンにコンテンツがあります。</string>
     <string name="k2go_cx_share_cancelled">もう一方のスマートフォンが転送を停止しました。</string>
     <string name="k2go_cx_share_ended">共有が終了しました。</string>
+    <string name="k2go_gm_catalogs_update">カタログを更新</string>
+    <string name="k2go_gm_catalogs_updating">カタログを更新中...</string>
+    <string name="k2go_gm_catalogs_bundled">カタログ: アプリに同梱</string>
+    <string name="k2go_gm_catalogs_checked">カタログの確認日: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">送信側のスマホからファイル一覧を読み取れませんでした。</string>
     <string name="k2go_clone_cable_err_no_path">送信側のスマホとの接続が切れました。そのホットスポットに接続するか、USB ケーブルをつないでください。</string>

@@ -1604,6 +1604,10 @@
     <string name="k2go_cx_share_complete">Az átvitel kész. A tartalom a másik telefonon van.</string>
     <string name="k2go_cx_share_cancelled">A másik telefon leállította az átvitelt.</string>
     <string name="k2go_cx_share_ended">A megosztás véget ért.</string>
+    <string name="k2go_gm_catalogs_update">Katalógusok frissítése</string>
+    <string name="k2go_gm_catalogs_updating">Katalógusok frissítése...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalógusok: az alkalmazás része</string>
+    <string name="k2go_gm_catalogs_checked">Katalógusok ellenőrizve: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nem sikerült beolvasni a fájlok listáját a küldő telefonról.</string>
     <string name="k2go_clone_cable_err_no_path">Megszakadt a kapcsolat a küldő telefonnal. Csatlakozz a hotspotjához, vagy dugd be az USB-kábelt.</string>

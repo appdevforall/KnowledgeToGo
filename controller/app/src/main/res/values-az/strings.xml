@@ -1624,6 +1624,10 @@
     <string name="k2go_cx_share_complete">Ötürmə tamamlandı. Məzmun artıq digər telefondadır.</string>
     <string name="k2go_cx_share_cancelled">Digər telefon ötürməni dayandırdı.</string>
     <string name="k2go_cx_share_ended">Paylaşım başa çatdı.</string>
+    <string name="k2go_gm_catalogs_update">Kataloqları yenilə</string>
+    <string name="k2go_gm_catalogs_updating">Kataloqlar yenilənir...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloqlar: tətbiqlə birlikdə gəlir</string>
+    <string name="k2go_gm_catalogs_checked">Kataloqlar yoxlanıldı: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Göndərən telefondan faylların siyahısını oxumaq mümkün olmadı.</string>
     <string name="k2go_clone_cable_err_no_path">Göndərən telefonla bağlantı kəsildi. Onun hotspotuna qoşulun və ya USB kabelini taxın.</string>

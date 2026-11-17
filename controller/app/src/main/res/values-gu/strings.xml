@@ -1617,6 +1617,10 @@
     <string name="k2go_cx_share_complete">ટ્રાન્સફર પૂર્ણ. સામગ્રી હવે બીજા ફોન પર છે.</string>
     <string name="k2go_cx_share_cancelled">બીજા ફોને ટ્રાન્સફર બંધ કર્યું.</string>
     <string name="k2go_cx_share_ended">શેર સમાપ્ત થયું.</string>
+    <string name="k2go_gm_catalogs_update">કેટલોગ અપડેટ કરો</string>
+    <string name="k2go_gm_catalogs_updating">કેટલોગ અપડેટ થઈ રહ્યા છે...</string>
+    <string name="k2go_gm_catalogs_bundled">કેટલોગ: એપ સાથે સમાવિષ્ટ</string>
+    <string name="k2go_gm_catalogs_checked">કેટલોગ તપાસ્યા: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">મોકલનાર ફોનમાંથી ફાઇલોની સૂચિ વાંચી શકાઈ નથી.</string>
     <string name="k2go_clone_cable_err_no_path">મોકલનાર ફોન સાથેનું કનેક્શન તૂટી ગયું છે. તેના હૉટસ્પૉટ સાથે જોડાઓ અથવા USB કેબલ જોડો.</string>

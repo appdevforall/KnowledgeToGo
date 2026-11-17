@@ -1611,6 +1611,10 @@
     <string name="k2go_cx_share_complete">Прехвърлянето завърши. Съдържанието е на другия телефон.</string>
     <string name="k2go_cx_share_cancelled">Другият телефон спря прехвърлянето.</string>
     <string name="k2go_cx_share_ended">Споделянето приключи.</string>
+    <string name="k2go_gm_catalogs_update">Обнови каталозите</string>
+    <string name="k2go_gm_catalogs_updating">Каталозите се обновяват...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталози: включени в приложението</string>
+    <string name="k2go_gm_catalogs_checked">Каталозите са проверени: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не може да се прочете списъкът с файлове от изпращащия телефон.</string>
     <string name="k2go_clone_cable_err_no_path">Връзката с изпращащия телефон е прекъсната. Свържете се с точката му за достъп или включете USB кабела.</string>

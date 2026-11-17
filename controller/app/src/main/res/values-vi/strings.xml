@@ -1604,6 +1604,10 @@
     <string name="k2go_cx_share_complete">Đã chuyển xong. Điện thoại kia đã có nội dung.</string>
     <string name="k2go_cx_share_cancelled">Điện thoại kia đã dừng chuyển.</string>
     <string name="k2go_cx_share_ended">Chia sẻ đã kết thúc.</string>
+    <string name="k2go_gm_catalogs_update">Cập nhật danh mục</string>
+    <string name="k2go_gm_catalogs_updating">Đang cập nhật danh mục...</string>
+    <string name="k2go_gm_catalogs_bundled">Danh mục: đi kèm ứng dụng</string>
+    <string name="k2go_gm_catalogs_checked">Đã kiểm tra danh mục: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Không thể đọc danh sách tệp từ điện thoại gửi.</string>
     <string name="k2go_clone_cable_err_no_path">Mất kết nối với điện thoại gửi. Hãy tham gia điểm phát sóng của nó hoặc cắm cáp USB.</string>

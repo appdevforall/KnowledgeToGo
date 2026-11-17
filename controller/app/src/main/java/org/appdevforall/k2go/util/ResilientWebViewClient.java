@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.webkit.RenderProcessGoneDetail;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -44,6 +46,11 @@ public abstract class ResilientWebViewClient extends WebViewClient {
      */
     public static final long RECOVERY_WINDOW_MS = 15_000L;
 
+    /** K2GO-522: every in-app WebView uses this client, so the WebView privacy setup runs here once. */
+    protected ResilientWebViewClient() {
+        WebViewPrivacy.apply();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public final boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
@@ -61,6 +68,23 @@ public abstract class ResilientWebViewClient extends WebViewClient {
             Log.e(TAG, "renderer recovery failed", t);
         }
         return true;   // handled: the framework must NOT crash the host app
+    }
+
+    /**
+     * K2GO-580: a page's own sub-requests to the internet (map tiles, fonts, scripts) are dropped
+     * unless {@code NetworkCostAdmission.allowsAutomatic} allows them (Wi-Fi). Local hosts (the box,
+     * the local network) always pass, and so does a page the user opens (main frame). A subclass that
+     * serves its own requests returns super for the rest.
+     */
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        if (request.isForMainFrame()
+                || org.appdevforall.k2go.networkpolicy.domain.HostScope.isLocal(request.getUrl().getHost())
+                || org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(view.getContext())) {
+            return null;   // load normally
+        }
+        return new WebResourceResponse("text/plain", "utf-8", 204, "No Content",
+                null, new java.io.ByteArrayInputStream(new byte[0]));
     }
 
     /**

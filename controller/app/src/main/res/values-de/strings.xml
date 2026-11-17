@@ -1604,6 +1604,10 @@
     <string name="k2go_cx_share_complete">Übertragung abgeschlossen. Das andere Telefon hat den Inhalt.</string>
     <string name="k2go_cx_share_cancelled">Das andere Telefon hat die Übertragung beendet.</string>
     <string name="k2go_cx_share_ended">Die Freigabe wurde beendet.</string>
+    <string name="k2go_gm_catalogs_update">Kataloge aktualisieren</string>
+    <string name="k2go_gm_catalogs_updating">Kataloge werden aktualisiert...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloge: in der App enthalten</string>
+    <string name="k2go_gm_catalogs_checked">Kataloge geprüft: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Die Dateiliste des sendenden Telefons konnte nicht gelesen werden.</string>
     <string name="k2go_clone_cable_err_no_path">Die Verbindung zum sendenden Telefon ist unterbrochen. Verbinde dich mit seinem Hotspot oder schließe das USB-Kabel an.</string>

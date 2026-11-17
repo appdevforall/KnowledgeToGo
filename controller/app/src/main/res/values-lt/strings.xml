@@ -1621,6 +1621,10 @@
     <string name="k2go_cx_share_complete">Perdavimas baigtas. Turinys yra kitame telefone.</string>
     <string name="k2go_cx_share_cancelled">Kitas telefonas sustabdė perdavimą.</string>
     <string name="k2go_cx_share_ended">Bendrinimas baigėsi.</string>
+    <string name="k2go_gm_catalogs_update">Atnaujinti katalogus</string>
+    <string name="k2go_gm_catalogs_updating">Atnaujinami katalogai...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogai: įtraukti į programą</string>
+    <string name="k2go_gm_catalogs_checked">Katalogai patikrinti: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nepavyko nuskaityti failų sąrašo iš siunčiančio telefono.</string>
     <string name="k2go_clone_cable_err_no_path">Ryšys su siunčiančiu telefonu nutrūko. Prisijunkite prie jo prieigos taško arba prijunkite USB kabelį.</string>
