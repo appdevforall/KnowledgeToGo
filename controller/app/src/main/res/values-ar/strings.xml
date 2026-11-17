@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">هذا يوقف أي نسخ جارٍ. يفقد الهاتف الآخر تقدّمه ويجب أن يبدأ من جديد برمز جديد.</string>
     <string name="k2go_connect_switch_msg">تفقد الأجهزة المتصلة بنقطة الاتصال هذه اتصالها.</string>
     <string name="k2go_cx_share_notif_open">تبقى المشاركة مفتوحة حتى توقفها.</string>
+    <string name="k2go_cx_share_sending">جارٍ الإرسال إلى الهاتف الآخر</string>
+    <string name="k2go_cx_share_complete">اكتمل النقل. المحتوى موجود الآن على الهاتف الآخر.</string>
+    <string name="k2go_cx_share_cancelled">أوقف الهاتف الآخر النقل.</string>
+    <string name="k2go_cx_share_ended">انتهت المشاركة.</string>
     <string name="k2go_gm_catalogs_update">تحديث الفهارس</string>
     <string name="k2go_gm_catalogs_updating">جارٍ تحديث الفهارس...</string>
     <string name="k2go_gm_catalogs_bundled">الفهارس: مضمّنة مع التطبيق</string>

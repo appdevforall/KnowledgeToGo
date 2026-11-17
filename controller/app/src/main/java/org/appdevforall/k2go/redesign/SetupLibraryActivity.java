@@ -146,8 +146,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
                 && !launchIntent.getBooleanExtra(EXTRA_CONTENT_MANAGER, false)
                 && !launchIntent.getBooleanExtra(EXTRA_CONTENT_ONLY, false);
         if (wizardSetup) {
-            // Fence the FAB off the top-right help icon (72dp), the same as the wizard activity.
-            org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore", 16, 72, 0);
+            // K2GO-269: the wizard placement, so the FAB stays where the welcome steps put it and does
+            // not drop back over this screen's bottom CTA.
+            org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOnWizard(this, "getmore");
             WizardHelpButton.installOn(this);
         } else {
             org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "getmore");

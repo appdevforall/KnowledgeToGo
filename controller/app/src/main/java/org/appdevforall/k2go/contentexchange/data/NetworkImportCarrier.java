@@ -171,6 +171,20 @@ public final class NetworkImportCarrier implements ImportCarrier {
     }
 
     @Override
+    public void onGivenUp() {
+        try {
+            HttpURLConnection c = open(ShareUrls.session(baseUrl, manifestUrl), "DELETE", READ_TIMEOUT_MS);
+            try {
+                c.getResponseCode();   // 404: the sender already closed it, which is fine
+            } finally {
+                c.disconnect();
+            }
+        } catch (Exception ignored) {
+            // best effort: the sender's safety cap and its own Done still end the session
+        }
+    }
+
+    @Override
     public void onAllDelivered() {
         // Best-effort clean-success close: the gate also self-bounds (safety cap) and the sender closes
         // on its own teardown, so a failure here only delays the sender's release, never the import.

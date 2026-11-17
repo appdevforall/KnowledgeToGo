@@ -46,6 +46,11 @@ public abstract class ResilientWebViewClient extends WebViewClient {
      */
     public static final long RECOVERY_WINDOW_MS = 15_000L;
 
+    /** K2GO-522: every in-app WebView uses this client, so the WebView privacy setup runs here once. */
+    protected ResilientWebViewClient() {
+        WebViewPrivacy.apply();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public final boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {

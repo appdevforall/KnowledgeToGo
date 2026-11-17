@@ -169,8 +169,30 @@ public final class ContentImportService extends Service {
     /** Clear a settled session (the "Finish" button) and release its SAF grant. Safe when idle. */
     public static void finishSession(Context ctx) {
         releaseGrant(ctx, SESSION.treeUri());
-        discardGivenUpPulls();   // Finish after a failure gives up the items that did not arrive
+        giveUp(ctx);   // Finish after a failure gives up the items that did not arrive
         SESSION.clear();
+    }
+
+    /** The user ended the run: drop the kept pull bytes and tell the sender (K2GO-577). */
+    private static void giveUp(Context ctx) {
+        discardGivenUpPulls();
+        releaseSenderOnGiveUp(ctx);
+    }
+
+    /**
+     * K2GO-577: the user ended a network run before every item arrived (Cancel, or Finish after a
+     * failure). Tell the sender, so its screen leaves the progress bar for "stopped". A full
+     * success already sent complete, so it does not come here. Snapshot now (the session is
+     * cleared next), then call off the main thread.
+     */
+    private static void releaseSenderOnGiveUp(Context ctx) {
+        if (!SESSION.isNetwork() || SESSION.allDone()) {
+            return;
+        }
+        final NetworkImportCarrier carrier = new NetworkImportCarrier(ctx.getApplicationContext(),
+                SESSION.shareHost(), SESSION.sharePort(), SESSION.shareToken(),
+                SESSION.shareManifestUrl(), () -> false);
+        new Thread(carrier::onGivenUp, "content-import-giveup").start();
     }
 
     /**
@@ -246,7 +268,7 @@ public final class ContentImportService extends Service {
                 // No worker owns teardown: a fresh service instance may be handling this cancel, so
                 // satisfy the FGS start-foreground obligation before stopping.
                 startForeground(NOTIFICATION_ID, buildNotification(null));
-                discardGivenUpPulls();
+                giveUp(this);
                 SESSION.clear();
                 stopForeground(true);
                 stopSelf();
@@ -416,7 +438,7 @@ public final class ContentImportService extends Service {
 
         if (SESSION.isCancelled()) {
             // The running pull was aborted (runBoxOp), so the box no longer writes its partial.
-            discardGivenUpPulls();
+            giveUp(this);
             SESSION.clear();
             stopForeground(true);
             stopSelf();

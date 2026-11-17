@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">Dadurch wird jede laufende Kopie gestoppt. Das andere Telefon verliert seinen Fortschritt und muss mit einem neuen Code neu beginnen.</string>
     <string name="k2go_connect_switch_msg">Geräte, die mit diesem Hotspot verbunden sind, verlieren ihre Verbindung.</string>
     <string name="k2go_cx_share_notif_open">Die Freigabe bleibt offen, bis Sie sie beenden.</string>
+    <string name="k2go_cx_share_sending">Wird an das andere Telefon gesendet</string>
+    <string name="k2go_cx_share_complete">Übertragung abgeschlossen. Das andere Telefon hat den Inhalt.</string>
+    <string name="k2go_cx_share_cancelled">Das andere Telefon hat die Übertragung beendet.</string>
+    <string name="k2go_cx_share_ended">Die Freigabe wurde beendet.</string>
     <string name="k2go_gm_catalogs_update">Kataloge aktualisieren</string>
     <string name="k2go_gm_catalogs_updating">Kataloge werden aktualisiert...</string>
     <string name="k2go_gm_catalogs_bundled">Kataloge: in der App enthalten</string>

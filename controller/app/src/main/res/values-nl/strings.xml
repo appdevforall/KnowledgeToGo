@@ -1600,6 +1600,10 @@
     <string name="k2go_cx_share_stop_msg">Dit stopt elke lopende kopie. De andere telefoon verliest zijn voortgang en moet opnieuw beginnen met een nieuwe code.</string>
     <string name="k2go_connect_switch_msg">Apparaten die met deze hotspot zijn verbonden, verliezen hun verbinding.</string>
     <string name="k2go_cx_share_notif_open">Het delen blijft open tot je het stopt.</string>
+    <string name="k2go_cx_share_sending">Verzenden naar de andere telefoon</string>
+    <string name="k2go_cx_share_complete">Overdracht voltooid. De andere telefoon heeft de inhoud.</string>
+    <string name="k2go_cx_share_cancelled">De andere telefoon heeft de overdracht gestopt.</string>
+    <string name="k2go_cx_share_ended">Het delen is beëindigd.</string>
     <string name="k2go_gm_catalogs_update">Catalogi bijwerken</string>
     <string name="k2go_gm_catalogs_updating">Catalogi bijwerken...</string>
     <string name="k2go_gm_catalogs_bundled">Catalogi: meegeleverd met de app</string>

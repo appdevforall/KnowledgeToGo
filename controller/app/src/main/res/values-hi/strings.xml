@@ -1677,6 +1677,10 @@
     <string name="k2go_cx_share_stop_msg">इससे चल रही कोई भी कॉपी रुक जाती है। दूसरा फ़ोन अपनी प्रगति खो देता है और उसे नए कोड के साथ फिर से शुरू करना होगा।</string>
     <string name="k2go_connect_switch_msg">इस हॉटस्पॉट से जुड़े डिवाइस का कनेक्शन टूट जाएगा।</string>
     <string name="k2go_cx_share_notif_open">जब तक आप इसे रोकते नहीं, साझा करना खुला रहता है।</string>
+    <string name="k2go_cx_share_sending">दूसरे फ़ोन पर भेजा जा रहा है</string>
+    <string name="k2go_cx_share_complete">ट्रांसफ़र पूरा हुआ। सामग्री अब दूसरे फ़ोन पर है।</string>
+    <string name="k2go_cx_share_cancelled">दूसरे फ़ोन ने ट्रांसफ़र रोक दिया।</string>
+    <string name="k2go_cx_share_ended">साझा करना समाप्त हुआ।</string>
     <string name="k2go_gm_catalogs_update">कैटलॉग अपडेट करें</string>
     <string name="k2go_gm_catalogs_updating">कैटलॉग अपडेट हो रहे हैं...</string>
     <string name="k2go_gm_catalogs_bundled">कैटलॉग: ऐप के साथ शामिल</string>

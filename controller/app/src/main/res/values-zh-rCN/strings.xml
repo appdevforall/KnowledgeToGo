@@ -1601,6 +1601,10 @@
     <string name="k2go_cx_share_stop_msg">这会停止所有正在进行的复制。另一部手机会丢失进度，必须使用新代码重新开始。</string>
     <string name="k2go_connect_switch_msg">已加入此热点的设备将断开连接。</string>
     <string name="k2go_cx_share_notif_open">共享会保持开启，直到你停止。</string>
+    <string name="k2go_cx_share_sending">正在发送到另一部手机</string>
+    <string name="k2go_cx_share_complete">传输完成。另一部手机已有这些内容。</string>
+    <string name="k2go_cx_share_cancelled">另一部手机停止了传输。</string>
+    <string name="k2go_cx_share_ended">共享已结束。</string>
     <string name="k2go_gm_catalogs_update">更新目录</string>
     <string name="k2go_gm_catalogs_updating">正在更新目录...</string>
     <string name="k2go_gm_catalogs_bundled">目录：随应用附带</string>

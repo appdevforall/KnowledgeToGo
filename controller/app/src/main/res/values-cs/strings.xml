@@ -1607,6 +1607,10 @@
     <string name="k2go_cx_share_stop_msg">Tím se zastaví probíhající kopírování. Druhý telefon ztratí průběh a musí začít znovu s novým kódem.</string>
     <string name="k2go_connect_switch_msg">Zařízení připojená k tomuto hotspotu ztratí připojení.</string>
     <string name="k2go_cx_share_notif_open">Sdílení zůstane otevřené, dokud ho nezastavíte.</string>
+    <string name="k2go_cx_share_sending">Odesílání do druhého telefonu</string>
+    <string name="k2go_cx_share_complete">Přenos dokončen. Obsah je v druhém telefonu.</string>
+    <string name="k2go_cx_share_cancelled">Druhý telefon přenos zastavil.</string>
+    <string name="k2go_cx_share_ended">Sdílení skončilo.</string>
     <string name="k2go_gm_catalogs_update">Aktualizovat katalogy</string>
     <string name="k2go_gm_catalogs_updating">Aktualizace katalogů...</string>
     <string name="k2go_gm_catalogs_bundled">Katalogy: součástí aplikace</string>
