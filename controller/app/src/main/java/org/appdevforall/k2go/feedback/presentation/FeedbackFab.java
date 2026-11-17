@@ -152,6 +152,16 @@ public final class FeedbackFab {
         installOn(activity, screenTag, bottomMarginDp, 0, 0);
     }
 
+    /**
+     * K2GO-269: the one placement for every setup-wizard screen. The wizard spans WizardActivity
+     * (welcome, permissions) and SetupLibraryActivity (library steps), and both show a top-right help
+     * icon and a bottom CTA cluster. One method, so the FAB does not drop back over the CTA when the
+     * wizard moves to the next activity. 140dp clears the tallest cluster (primary button + "Back").
+     */
+    public static void installOnWizard(android.app.Activity activity, String screenTag) {
+        installOn(activity, screenTag, 140, 72, 140);
+    }
+
     /** K2GO-406: {@code topExclusionDp}/{@code bottomExclusionDp} keep the draggable FAB clear of a
      *  screen's top-right help icon and its primary bottom CTA (the wizard needs both). 0 keeps the
      *  full drag range. */
@@ -166,7 +176,11 @@ public final class FeedbackFab {
         fab.setId(org.appdevforall.k2go.R.id.fab_feedback);
         fab.setImageResource(org.appdevforall.k2go.R.drawable.ic_feedback_24);
         fab.setContentDescription(activity.getString(org.appdevforall.k2go.R.string.feedback_send));
-        fab.setUseCompatPadding(true);
+        // K2GO-269: a compact 48dp disc (half an icon of space per side) instead of the 56dp default
+        // plus the invisible shadow padding, so the button covers less of a small screen. The icon
+        // stays 24dp and 48dp keeps the minimum touch target.
+        fab.setCustomSize(Math.round(48 * d));
+        fab.setMaxImageSize(Math.round(24 * d));
         // ADFA-4947: the default FAB background resolved to the same surface as k2go_card_bg
         // (k2go_surface) in both themes, so this floating, draggable button blended into whatever card
         // it hovered over. Tint it with the teal accent + on-teal icon (both flip day/night) so it
