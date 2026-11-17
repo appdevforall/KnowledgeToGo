@@ -55,9 +55,6 @@ android {
         // Analytics is a per-flavor property (see productFlavors): the "standard" flavor turns it on
         // when google-services.json is present; "fdroid" forces it off. The safe default here is OFF.
         buildConfigField "boolean", "ANALYTICS_ENABLED", "false"
-        // Default state of the crash-report opt-in (K2GO-401). True for conventional builds. The
-        // F-Droid recipe overrides this to false so that build ships crash reporting OFF by default.
-        buildConfigField "boolean", "CRASH_REPORTS_DEFAULT_ON", "true"
         // K2GO-403: the in-app OTA self-updater. On for conventional builds; the fdroid flavor forces it
         // off (F-Droid forbids an app that downloads and installs its own APK; the store updates it).
         buildConfigField "boolean", "OTA_ENABLED", "true"
@@ -126,7 +123,7 @@ android {
             isDefault = true
             buildConfigField "boolean", "ANALYTICS_ENABLED", "${hasGoogleServices}"
         }
-        // Google Play build (K2GO-398). Same as standard (Firebase OK, crash reporting default on) but
+        // Google Play build (K2GO-398). Same as standard (Firebase OK) but
         // with the in-app OTA self-updater OFF: Google Play forbids an app updating itself outside Play,
         // and Play delivers updates. REQUEST_INSTALL_PACKAGES (used only by the OTA updater) is removed in
         // src/play/AndroidManifest.xml. applicationId is unchanged: this is the same app via the Play channel.
@@ -141,7 +138,6 @@ android {
         fdroid {
             dimension "distribution"
             buildConfigField "boolean", "ANALYTICS_ENABLED", "false"
-            buildConfigField "boolean", "CRASH_REPORTS_DEFAULT_ON", "false"
             // K2GO-403: no in-app OTA self-updater in the fdroid build (F-Droid forbids self-install).
             buildConfigField "boolean", "OTA_ENABLED", "false"
         }
