@@ -1646,4 +1646,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Dabar nuskaitykite kito telefono perkėlimo kodą arba prijunkite USB kabelį.</string>
+    <string name="k2go_clone_link_wifi_found_network">Siuntėjas rastas šiame Wi-Fi tinkle</string>
+    <string name="k2go_clone_link_wifi_not_found">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Siunčiantis telefonas nustojo bendrinti.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Kitas telefonas negali pasiekti šio telefono per Wi-Fi</string>
 </resources>

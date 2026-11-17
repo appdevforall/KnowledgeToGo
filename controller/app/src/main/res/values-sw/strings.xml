@@ -1649,4 +1649,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Sasa skani msimbo wa uhamishaji wa simu nyingine, au unganisha kebo ya USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Mtumaji amepatikana kwenye mtandao huu wa Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Simu inayotuma haikupatikana kwenye mtandao huu wa Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Simu inayotuma imeacha kushiriki.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Simu nyingine haiwezi kufikia simu hii kupitia Wi-Fi</string>
 </resources>

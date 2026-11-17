@@ -1705,4 +1705,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Теперь отсканируйте код передачи другого телефона или подключите USB-кабель.</string>
+    <string name="k2go_clone_link_wifi_found_network">Отправитель найден в этой сети Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Телефон-отправитель не найден в этой сети Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Телефон-отправитель прекратил общий доступ.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Другой телефон не может связаться с этим телефоном по Wi-Fi</string>
 </resources>

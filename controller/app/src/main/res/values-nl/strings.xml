@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Scan nu de overdrachtscode van de andere telefoon, of sluit een USB-kabel aan.</string>
+    <string name="k2go_clone_link_wifi_found_network">Verzender gevonden op dit Wi-Fi-netwerk</string>
+    <string name="k2go_clone_link_wifi_not_found">Verzendende telefoon niet gevonden op dit Wi-Fi-netwerk</string>
+    <string name="k2go_clone_cable_err_sender_stopped">De verzendende telefoon is gestopt met delen.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">De andere telefoon kan deze telefoon niet bereiken via Wi-Fi</string>
 </resources>

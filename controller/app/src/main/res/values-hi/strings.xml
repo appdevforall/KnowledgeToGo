@@ -1706,4 +1706,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">अब दूसरे फ़ोन का ट्रांसफ़र कोड स्कैन करें, या USB केबल लगाएँ।</string>
+    <string name="k2go_clone_link_wifi_found_network">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर मिला</string>
+    <string name="k2go_clone_link_wifi_not_found">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर नहीं मिला</string>
+    <string name="k2go_clone_cable_err_sender_stopped">भेजने वाले फ़ोन ने शेयर करना बंद कर दिया।</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">दूसरा फ़ोन Wi-Fi पर इस फ़ोन तक नहीं पहुँच पा रहा है</string>
 </resources>

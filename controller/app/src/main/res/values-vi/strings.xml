@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Bây giờ quét mã chuyển của điện thoại kia, hoặc cắm cáp USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Đã tìm thấy máy gửi trên mạng Wi-Fi này</string>
+    <string name="k2go_clone_link_wifi_not_found">Không tìm thấy điện thoại gửi trên mạng Wi-Fi này</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Điện thoại gửi đã ngừng chia sẻ.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Điện thoại kia không thể kết nối tới điện thoại này qua Wi-Fi</string>
 </resources>

@@ -1642,4 +1642,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">હવે બીજા ફોનનો ટ્રાન્સફર કોડ સ્કૅન કરો, અથવા USB કેબલ જોડો.</string>
+    <string name="k2go_clone_link_wifi_found_network">મોકલનાર આ Wi-Fi નેટવર્ક પર મળ્યો</string>
+    <string name="k2go_clone_link_wifi_not_found">મોકલનાર ફોન આ Wi-Fi નેટવર્ક પર મળ્યો નથી</string>
+    <string name="k2go_clone_cable_err_sender_stopped">મોકલનાર ફોને શેર કરવાનું બંધ કર્યું.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">બીજો ફોન Wi-Fi પર આ ફોન સુધી પહોંચી શકતો નથી</string>
 </resources>

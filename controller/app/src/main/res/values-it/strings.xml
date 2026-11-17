@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Ora scansiona il codice di trasferimento dell\'altro telefono o collega un cavo USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Mittente trovato su questa rete Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Telefono mittente non trovato su questa rete Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Il telefono mittente ha smesso di condividere.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">L\'altro telefono non riesce a raggiungere questo telefono tramite Wi-Fi</string>
 </resources>

@@ -1630,4 +1630,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">现在扫描对方手机的传输代码，或连接 USB 数据线。</string>
+    <string name="k2go_clone_link_wifi_found_network">已在此 Wi-Fi 网络上找到发送方</string>
+    <string name="k2go_clone_link_wifi_not_found">未在此 Wi-Fi 网络上找到发送方手机</string>
+    <string name="k2go_clone_cable_err_sender_stopped">发送方手机已停止共享。</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">对方手机无法通过 Wi-Fi 连接到本手机</string>
 </resources>

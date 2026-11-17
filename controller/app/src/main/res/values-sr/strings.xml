@@ -1642,4 +1642,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Сада скенирајте код за пренос другог телефона или прикључите USB кабл.</string>
+    <string name="k2go_clone_link_wifi_found_network">Пошиљалац пронађен на овој Wi-Fi мрежи</string>
+    <string name="k2go_clone_link_wifi_not_found">Телефон пошиљаоца није пронађен на овој Wi-Fi мрежи</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Телефон пошиљаоца је престао да дели.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Други телефон не може да приступи овом телефону преко Wi-Fi мреже</string>
 </resources>

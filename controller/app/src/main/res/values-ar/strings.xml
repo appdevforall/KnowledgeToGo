@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">الآن امسح رمز النقل الخاص بالهاتف الآخر، أو صِل كابل USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">تم العثور على المُرسِل في شبكة Wi-Fi هذه</string>
+    <string name="k2go_clone_link_wifi_not_found">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه</string>
+    <string name="k2go_clone_cable_err_sender_stopped">توقّف الهاتف المُرسِل عن المشاركة.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">لا يستطيع الهاتف الآخر الوصول إلى هذا الهاتف عبر Wi-Fi</string>
 </resources>

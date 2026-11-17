@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Тепер відскануйте код передавання іншого телефона або підключіть USB-кабель.</string>
+    <string name="k2go_clone_link_wifi_found_network">Відправника знайдено в цій мережі Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Телефон-відправник не знайдено в цій мережі Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Телефон-відправник припинив спільний доступ.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Інший телефон не може зв\'язатися з цим телефоном через Wi-Fi</string>
 </resources>

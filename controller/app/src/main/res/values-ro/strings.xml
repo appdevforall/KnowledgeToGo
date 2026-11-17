@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Acum scanează codul de transfer al celuilalt telefon sau conectează un cablu USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Expeditor găsit în această rețea Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Telefonul expeditor nu a fost găsit în această rețea Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Telefonul expeditor a oprit partajarea.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Celălalt telefon nu poate accesa acest telefon prin Wi-Fi</string>
 </resources>

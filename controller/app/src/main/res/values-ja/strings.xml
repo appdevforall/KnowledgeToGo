@@ -1630,4 +1630,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">次に、相手のスマホの転送コードをスキャンするか、USB ケーブルをつないでください。</string>
+    <string name="k2go_clone_link_wifi_found_network">この Wi-Fi ネットワークで送信側を検出しました</string>
+    <string name="k2go_clone_link_wifi_not_found">この Wi-Fi ネットワークで送信側のスマホが見つかりません</string>
+    <string name="k2go_clone_cable_err_sender_stopped">送信側のスマホが共有を停止しました。</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">相手のスマホが Wi-Fi でこのスマホに接続できません</string>
 </resources>

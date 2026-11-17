@@ -1630,4 +1630,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">이제 상대방 휴대폰의 전송 코드를 스캔하거나 USB 케이블을 연결하세요.</string>
+    <string name="k2go_clone_link_wifi_found_network">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾음</string>
+    <string name="k2go_clone_link_wifi_not_found">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾을 수 없음</string>
+    <string name="k2go_clone_cable_err_sender_stopped">보내는 휴대폰이 공유를 중지했습니다.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">상대방 휴대폰이 Wi-Fi로 이 휴대폰에 연결할 수 없음</string>
 </resources>

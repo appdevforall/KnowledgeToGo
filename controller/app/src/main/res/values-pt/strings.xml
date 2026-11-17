@@ -1708,4 +1708,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Agora digitalize o código de transferência do outro telemóvel ou ligue um cabo USB.</string>
+    <string name="k2go_clone_link_wifi_found_network">Emissor encontrado nesta rede Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_not_found">Telemóvel emissor não encontrado nesta rede Wi-Fi</string>
+    <string name="k2go_clone_cable_err_sender_stopped">O telemóvel emissor deixou de partilhar.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">O outro telemóvel não consegue alcançar este telemóvel pela Wi-Fi</string>
 </resources>

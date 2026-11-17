@@ -1642,4 +1642,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">এখন অন্য ফোনের স্থানান্তর কোড স্ক্যান করুন, বা একটি USB কেবল সংযুক্ত করুন।</string>
+    <string name="k2go_clone_link_wifi_found_network">প্রেরক ফোন এই Wi-Fi নেটওয়ার্কে পাওয়া গেছে</string>
+    <string name="k2go_clone_link_wifi_not_found">প্রেরক ফোন এই Wi-Fi নেটওয়ার্কে পাওয়া যায়নি</string>
+    <string name="k2go_clone_cable_err_sender_stopped">প্রেরক ফোন শেয়ার করা বন্ধ করেছে।</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">অন্য ফোনটি Wi-Fi-এ এই ফোনে পৌঁছাতে পারছে না</string>
 </resources>

@@ -1649,4 +1649,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">İndi digər telefonun köçürmə kodunu skan edin və ya USB kabel qoşun.</string>
+    <string name="k2go_clone_link_wifi_found_network">Göndərən bu Wi-Fi şəbəkəsində tapıldı</string>
+    <string name="k2go_clone_link_wifi_not_found">Göndərən telefon bu Wi-Fi şəbəkəsində tapılmadı</string>
+    <string name="k2go_clone_cable_err_sender_stopped">Göndərən telefon paylaşmağı dayandırdı.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">Digər telefon Wi-Fi ilə bu telefona çata bilmir</string>
 </resources>

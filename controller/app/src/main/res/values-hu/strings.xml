@@ -1629,4 +1629,8 @@
     <string name="k2go_clone_link_band_5">5 GHz</string>
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Most olvasd be a másik telefon átviteli kódját, vagy csatlakoztass egy USB-kábelt.</string>
+    <string name="k2go_clone_link_wifi_found_network">Küldő megtalálva ezen a Wi-Fi hálózaton</string>
+    <string name="k2go_clone_link_wifi_not_found">A küldő telefon nem található ezen a Wi-Fi hálózaton</string>
+    <string name="k2go_clone_cable_err_sender_stopped">A küldő telefon leállította a megosztást.</string>
+    <string name="k2go_clone_link_wifi_peer_unreachable">A másik telefon nem éri el ezt a telefont Wi-Fi-n</string>
 </resources>
