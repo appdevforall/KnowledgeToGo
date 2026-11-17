@@ -180,11 +180,12 @@ public final class FeedbackFab {
         fab.setId(org.appdevforall.k2go.R.id.fab_feedback);
         fab.setImageResource(org.appdevforall.k2go.R.drawable.ic_feedback_24);
         fab.setContentDescription(activity.getString(org.appdevforall.k2go.R.string.feedback_send));
-        // K2GO-269: a compact 48dp disc (half an icon of space per side) instead of the 56dp default
-        // plus the invisible shadow padding, so the button covers less of a small screen. The icon
-        // stays 24dp and 48dp keeps the minimum touch target.
-        fab.setCustomSize(Math.round(48 * d));
+        // K2GO-269: a compact 40dp disc instead of the 56dp default plus the invisible shadow padding:
+        // half an icon of space per side, so the button covers less of a small screen. The 24dp icon
+        // keeps its size, and the touch target stays at the 48dp minimum.
+        fab.setCustomSize(Math.round(40 * d));
         fab.setMaxImageSize(Math.round(24 * d));
+        fab.setEnsureMinTouchTargetSize(true);
         // ADFA-4947: the default FAB background resolved to the same surface as k2go_card_bg
         // (k2go_surface) in both themes, so this floating, draggable button blended into whatever card
         // it hovered over. Tint it with the teal accent + on-teal icon (both flip day/night) so it
