@@ -30,9 +30,9 @@ public class GestureWebView extends WebView {
     private boolean gestureLogging = false;
     private Runnable onUserInteraction;   // ADFA-4887: notified on each touch (nav-bar auto-hide)
 
-    public GestureWebView(Context context) { super(context); }
-    public GestureWebView(Context context, AttributeSet attrs) { super(context, attrs); }
-    public GestureWebView(Context context, AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); }
+    public GestureWebView(Context context) { super(context); org.appdevforall.k2go.util.WebViewPrivacy.apply(); }
+    public GestureWebView(Context context, AttributeSet attrs) { super(context, attrs); org.appdevforall.k2go.util.WebViewPrivacy.apply(); }
+    public GestureWebView(Context context, AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); org.appdevforall.k2go.util.WebViewPrivacy.apply(); }
 
     /** Enable verbose touch logging (debug builds only). */
     public void setGestureLogging(boolean enabled) { this.gestureLogging = enabled; }

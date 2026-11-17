@@ -82,6 +82,7 @@ public class HelpViewerActivity extends AppCompatActivity
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
                 .build();
 
+        org.appdevforall.k2go.util.WebViewPrivacy.apply();   // K2GO-522
         webView = findViewById(R.id.k2go_help_webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
