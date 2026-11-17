@@ -10,7 +10,7 @@ no service account key exists.
 
 Commands (next-code and publish call the Play API):
   plan --gradle F --notes F --tags F     print version, rc tag and release notes as GitHub outputs
-  next-code --package P --base N         print the Play versionCode for the next upload
+  check-code --package P --code N        fail unless versionCode N is above every code in Play
   final-tag --rc-tag T --tags F          print the release tag for an approved candidate
   check-release --gradle F --tag T       fail unless versionName is exactly the final tag T
   publish --package P --track T --aab F --code N --name S --notes-file F
@@ -69,6 +69,29 @@ def check_release(gradle_text, tag):
     return tag
 
 
+def version_code_base_for(label):
+    """The build.gradle versionCode of a versionName: two digits per field (MAJOR, MINOR, PATCH,
+    then the stage: rc.N -> N, final -> 99), so a final follows its candidates and GitHub, OTA,
+    Play and F-Droid carry the same code. The APK multiplies it by 10 and adds the ABI digit."""
+    m = LABEL.match(label or "")
+    if not m:
+        raise PlanError("versionName %r is not vMAJOR.MINOR.PATCH[-rc.N]" % label)
+    major, minor, patch = (int(x) for x in m.group(1)[1:].split("."))
+    stage = int(m.group(2)) if m.group(2) else 99
+    if minor > 99 or patch > 99 or not 1 <= stage <= (99 if m.group(2) is None else 98):
+        raise PlanError("%s does not fit the versionCode scheme (2 digits per field, rc.1-rc.98)" % label)
+    return major * 1000000 + minor * 10000 + patch * 100 + stage
+
+
+def checked_code_base(gradle_text):
+    """build.gradle's versionCode, refused unless it is the one its versionName gives."""
+    label, base = version_name(gradle_text), version_code_base(gradle_text)
+    expected = version_code_base_for(label)
+    if base != expected:
+        raise PlanError("versionCode is %d; %s needs versionCode %d" % (base, label, expected))
+    return base
+
+
 def version_code_base(gradle_text):
     m = re.search(r"^\s*versionCode\s+(\d+)\s*$", gradle_text, re.M)
     if not m:
@@ -124,10 +147,13 @@ def release_notes(md_text, version):
     return text
 
 
-def next_version_code(used_codes, base):
-    """Play rejects a versionCode it has seen, so every upload takes the highest used + 1.
-    The floor base*10 matches the code an APK of the same build.gradle carries."""
-    return max([base * 10] + [c + 1 for c in used_codes])
+def check_version_code(used_codes, code):
+    """Play refuses a versionCode it has seen or one below its newest. The code comes from the
+    versionName, so a refusal means this label was already sent: bump to the next rc."""
+    top = max(used_codes, default=0)
+    if code <= top:
+        raise PlanError("versionCode %d is not above %d, the newest in Play; send the next rc" % (code, top))
+    return code
 
 
 def used_version_codes(tracks, bundles, apks):
@@ -195,10 +221,10 @@ def cmd_plan(args):
         f.write(notes)
     print("version=%s" % version)
     print("rc_tag=%s" % rc)
-    print("code_base=%d" % version_code_base(gradle))
+    print("code_base=%d" % checked_code_base(gradle))
 
 
-def cmd_next_code(args):
+def cmd_check_code(args):
     play = Play(args.package)
     edit = play.open_edit()
     try:
@@ -210,7 +236,7 @@ def cmd_next_code(args):
             play.call("DELETE", play.edit_url(edit))
         except SystemExit:
             pass  # Keep the first error; an unused edit expires on its own.
-    print(next_version_code(used, args.base))
+    print(check_version_code(used, args.code))
 
 
 def cmd_final_tag(args):
@@ -249,10 +275,10 @@ def main(argv=None):
     s.add_argument("--tags", required=True, help="file with one git tag name per line")
     s.add_argument("--notes-out", required=True)
     s.set_defaults(func=cmd_plan)
-    s = sub.add_parser("next-code")
+    s = sub.add_parser("check-code")
     s.add_argument("--package", required=True)
-    s.add_argument("--base", required=True, type=int)
-    s.set_defaults(func=cmd_next_code)
+    s.add_argument("--code", required=True, type=int)
+    s.set_defaults(func=cmd_check_code)
     s = sub.add_parser("final-tag")
     s.add_argument("--rc-tag", required=True)
     s.add_argument("--tags", required=True, help="file with one git tag name per line")

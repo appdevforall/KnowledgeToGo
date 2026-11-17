@@ -38,7 +38,9 @@ says `vX.Y.Z-rc.N`, and only a build that says `vX.Y.Z` can become the release.
    candidate is `rc.N+1`. A change after `vX.Y.Z` is released is a new version (`vX.Y.Z+1`).
    ([semver items 3 and 9](https://semver.org/#spec-item-9))
 2. Button 1, `play-candidate.yml`: `versionName` must be the next candidate of an unreleased
-   version. Build the Play AAB, take versionCode = highest code that Play knows + 1, send to
+   version. Build the Play AAB with the versionCode of its versionName (two digits per field:
+   MAJOR, MINOR, PATCH, stage rc.N -> N / final -> 99; APK = that x 10 + ABI digit, so GitHub,
+   OTA, Play and F-Droid carry the same code), refuse it if Play already has that code, send to
    review with `ERROR_IF_IN_REVIEW`, tag the commit with its `versionName`, and archive the AAB
    to R2. The rc tag is pushed only after Play accepts the upload. It runs only from `main`.
    A run on the internal track (no formal review) gets no rc tag.

@@ -44,7 +44,8 @@ android {
 
         // 3. Version Control (OTA)
         // NOTE: the APK carries this number x 10 (71 -> 710); see "VERSION CODE AND APK NAME" below
-        versionCode 74
+        // K2GO-564: versionCode comes from versionName, 2 digits per field (play_publish.py version_code_base_for).
+        versionCode 1020003
         // Dynamic version suffix: CI passes -PversionSuffix explicitly; local builds fall back to
         // the git short SHA (ADFA-4787) so any installed APK is traceable to its commit.
         def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix')
@@ -221,8 +222,8 @@ android {
             // would refuse the update. The OTA updater divides by 10 (update/domain/UpdateCheck).
             output.versionCodeOverride = variant.versionCode * 10
 
-            // K2GO-564: a Play candidate takes the code Play assigns next (highest used + 1),
-            // passed by .github/workflows/play-candidate.yml. Other flavors keep the rule above.
+            // K2GO-564: play-candidate.yml passes the same code (base x 10) after checking that Play
+            // has not seen it. Other flavors keep the rule above.
             if (variant.flavorName == "play" && project.hasProperty('playVersionCode')) {
                 output.versionCodeOverride = project.property('playVersionCode') as int
             }
