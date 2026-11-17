@@ -81,6 +81,8 @@ public final class ChunkedPull {
     private final AtomicLong wifiBytes = new AtomicLong();
     private final AtomicLong cableBytes = new AtomicLong();
     private volatile boolean cancelled;
+    private volatile int lastFailedExit;
+    private int lastPct;
     private volatile ChunkQueue queue;
     private volatile Thread wifiWorker;
     private volatile Thread cableWorker;
@@ -172,7 +174,7 @@ public final class ChunkedPull {
     }
 
     private void startWorkers() {
-        if (!alive(wifiWorker) && paths.wifiHost() != null && wifiWorker == null) {
+        if (wifiWorker == null && paths.wifiHost() != null) {
             wifiWorker = worker(false);
         }
         if (!alive(cableWorker) && paths.cablePort() > 0) {
@@ -213,6 +215,7 @@ public final class ChunkedPull {
                     failures = 0;
                 } else {
                     queue.requeue(c);
+                    lastFailedExit = code;
                     LogRepository.get().append("[Clone] chunk " + c.id + " failed on "
                             + (cable ? "cable" : "Wi-Fi") + " (exit " + code + "), queued again");
                     if (cable || ++failures >= 2) return;
@@ -281,7 +284,9 @@ public final class ChunkedPull {
     private void report(long done, long bytesPerSec) {
         ChunkQueue q = queue;
         long total = q == null ? 0 : q.totalBytes();
-        int pct = total > 0 ? (int) Math.min(99, done * 100 / total) : 0;
+        // ADFA-5160: never walk the bar back, also when a failed chunk goes back to the queue.
+        int pct = Math.max(lastPct, total > 0 ? (int) Math.min(99, done * 100 / total) : 0);
+        lastPct = pct;
         String speed = String.format(Locale.ROOT, "%.1fMB/s", bytesPerSec / 1e6);
         String eta = bytesPerSec > 0 ? RsyncProgress.formatEta(Math.max(0, total - done) / bytesPerSec) : "…";
         main.post(() -> {
@@ -289,10 +294,18 @@ public final class ChunkedPull {
         });
     }
 
-    /** {@code userText} goes to the screen; {@code detail} only to the logs. */
+    /**
+     * {@code userText} goes to the screen; {@code detail} only to the logs. A killed or dropped
+     * rsync keeps its own message, as in the single-path pull (RsyncOutcome).
+     */
     private void fail(int userText, String detail) {
-        Log.e(TAG, "clone failed: " + detail);
+        Log.e(TAG, "clone failed: " + detail + " (last failed exit " + lastFailedExit + ")");
         LogRepository.get().append("[Clone] " + detail);
+        switch (RsyncOutcome.classifyTransfer(lastFailedExit)) {
+            case KILLED: userText = R.string.rsync_error_process_killed; break;
+            case HOST_DROPPED: if (userText == R.string.k2go_clone_cable_err_no_path) userText = R.string.rsync_error_host_dropped; break;
+            default: break;
+        }
         String msg = app.getString(userText);
         main.post(() -> listener.onError(msg));
     }

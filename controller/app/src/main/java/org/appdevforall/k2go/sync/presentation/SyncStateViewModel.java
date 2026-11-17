@@ -79,9 +79,6 @@ public class SyncStateViewModel extends ViewModel {
      *  progress denominator so the bar climbs a fixed total instead of rsync's growing estimate. */
     public long getPendingBytes() { return pendingBytes; }
 
-    /** K2GO-576: the probe reached the sender over Wi-Fi (else only the cable can carry the pull). */
-    public boolean isPendingWifi() { return pendingWifi; }
-
     /**
      * Reachability probe + rsync dry-run, off the fragment. Publishes CONNECTING -> CALCULATING ->
      * CONFIRM (ready, with size) or ABORTED (unreachable / not enough space / dry-run error). The

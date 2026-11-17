@@ -69,12 +69,15 @@ public final class CloneLinkRows {
         root.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    /** Sender: the Wi-Fi row shows its own hotspot. */
-    public void showSender(LocalHotspotManager.State hs) {
+    /** Sender: the Wi-Fi row shows its own hotspot, or that it shares over the Wi-Fi network. */
+    public void showSender(boolean hotspotMode, LocalHotspotManager.State hs) {
         stopChecks();
         boolean on = hs != null && hs.phase == LocalHotspotManager.Phase.ON;
         Context c = root.getContext();
-        if (on) {
+        if (!hotspotMode) {
+            wifiDetail.setText(R.string.k2go_clone_link_wifi_network);
+            paintNeutral(wifiIcon, wifiBadge, "");
+        } else if (on) {
             paint(wifiIcon, wifiBadge, WifiLink.Level.OK, c.getString(R.string.k2go_clone_link_badge_linked));
             wifiDetail.setText(c.getString(R.string.k2go_clone_link_hotspot_on, hs.clients));
         } else {

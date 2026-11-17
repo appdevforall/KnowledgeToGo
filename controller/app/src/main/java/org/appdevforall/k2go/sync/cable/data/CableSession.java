@@ -76,6 +76,7 @@ public final class CableSession {
     private volatile CableMux mux;
     private volatile CableRelay relay;
     private boolean permissionAsked;
+    private BroadcastReceiver permissionReceiver;
 
     private CableSession() {
     }
@@ -104,7 +105,10 @@ public final class CableSession {
         boolean newHello = helloPayload != null && !helloPayload.equals(hello);
         hello = helloPayload;
         if (roleChanged) closeLink();
-        if (newHello && mux != null && role == Role.SEND) sendHello(mux);
+        CableMux m = mux;
+        if (newHello && m != null && role == Role.SEND) {
+            new Thread(() -> sendHello(m), "cable-hello").start();   // a USB write can block: not on the UI thread
+        }
         if (watcher == null) {
             watcher = new Thread(this::watchLoop, "cable-watch");
             watcher.setDaemon(true);
@@ -121,7 +125,19 @@ public final class CableSession {
         hello = null;
         role = null;
         permissionAsked = false;
+        unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
         state.postValue(new State(Link.NONE, 0));
+    }
+
+    private synchronized void unregisterPermission() {
+        BroadcastReceiver r = permissionReceiver;
+        permissionReceiver = null;
+        if (r == null || app == null) return;
+        try {
+            app.unregisterReceiver(r);
+        } catch (IllegalArgumentException ignored) {
+            // already unregistered
+        }
     }
 
     private void watchLoop() {
@@ -189,13 +205,10 @@ public final class CableSession {
             @Override
             public void onReceive(Context c, Intent i) {
                 permissionAsked = false; // the next poll opens the link, or asks again after a "no"
-                try {
-                    app.unregisterReceiver(this);
-                } catch (IllegalArgumentException ignored) {
-                    // already unregistered
-                }
+                unregisterPermission();
             }
         };
+        permissionReceiver = r;
         IntentFilter f = new IntentFilter(ACTION_PERMISSION);
         if (Build.VERSION.SDK_INT >= 33) app.registerReceiver(r, f, Context.RECEIVER_NOT_EXPORTED);
         else app.registerReceiver(r, f);

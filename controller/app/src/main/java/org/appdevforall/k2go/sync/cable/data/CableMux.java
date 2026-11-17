@@ -93,7 +93,7 @@ public final class CableMux implements Closeable {
 
     private void readLoop() {
         FrameDecoder decoder = new FrameDecoder();
-        byte[] b = new byte[UsbLink.READ_BUFFER];
+        byte[] b = new byte[UsbLink.MAX_READ];
         try {
             for (int r; !closed && (r = link.read(b)) > 0; ) {
                 for (CableFrame f : decoder.feed(b, 0, r)) handle(f);

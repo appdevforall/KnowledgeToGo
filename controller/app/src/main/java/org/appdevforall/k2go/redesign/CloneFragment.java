@@ -597,11 +597,10 @@ public class CloneFragment extends Fragment {
         backHeader.setText(getString(side == Side.RECEIVE ? R.string.k2go_clone_back_receive : R.string.k2go_clone_back_send));
         // K2GO-576: the Wi-Fi and USB cable rows.
         if (side == Side.RECEIVE) {
-            linkRows.setVisible(true);
-            linkRows.startChecks(shareConfig.rsyncPort);
+            linkRows.setVisible(true);   // its Wi-Fi check follows the transfer state in renderReceive
         } else {
             linkRows.setVisible(systemPresent);
-            linkRows.showSender(LocalHotspotManager.get().state().getValue());
+            linkRows.showSender(hsMode.isHotspot(), LocalHotspotManager.get().state().getValue());
         }
 
         if (side == Side.RECEIVE) {
@@ -996,8 +995,8 @@ public class CloneFragment extends Fragment {
     private void onReceiveCancel() {
         SyncTransferState st = SyncProgressRepository.get().current();
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
+            syncVm.stopPull();   // K2GO-576: first, so no new chunk starts after the sweep below
             transport.stop();
-            syncVm.stopPull();   // K2GO-576
             releaseCloneEnv(false);   // ADFA-4956: overwrite aborted mid-pull, drop lock
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
@@ -1076,6 +1075,8 @@ public class CloneFragment extends Fragment {
                     SyncTransferState now = SyncProgressRepository.get().current();
                     if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
                 }));
+        // K2GO-576: no gateway probes while a probe or pull runs: each one takes a daemon connection.
+        if (busy) linkRows.stopChecks(); else linkRows.startChecks(shareConfig.rsyncPort);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
@@ -1332,8 +1333,12 @@ public class CloneFragment extends Fragment {
                         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(app,
                                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
                         SyncProgressRepository.get().postSuccess(message);
+                        CableSession.get().stop();   // K2GO-576: the cable session ends with the pull
                     }
-                    @Override public void onError(String error) { SyncProgressRepository.get().postFailed(error); }
+                    @Override public void onError(String error) {
+                        SyncProgressRepository.get().postFailed(error);
+                        CableSession.get().stop();
+                    }
                 });
         };
         ServerController sc = server();

@@ -39,8 +39,10 @@ public abstract class UsbLink implements Closeable {
     static final String MODEL = "K2GoClone";
     private static final String[] IDS = {MANUFACTURER, MODEL, "Knowledge to Go Clone cable", "1",
             "https://appdevforall.org", "0"};
-    /** f_accessory reads return at most 16 KiB; a smaller buffer loses data. */
+    /** f_accessory needs a read buffer of at least 16 KiB; a smaller one loses data. */
     static final int READ_BUFFER = 16 * 1024;
+    /** Lets the host use 128 KiB IN transfers where its controller allows them. */
+    static final int MAX_READ = 128 * 1024;
 
     /** Reads at least one byte into {@code b} (at least READ_BUFFER long); -1 when the cable is gone. */
     public abstract int read(byte[] b) throws IOException;
