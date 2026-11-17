@@ -64,6 +64,7 @@ public final class CableMux implements Closeable {
 
     public void start() throws IOException {
         send(CableFrame.control(CableFrame.Type.RESET, 0));
+        Log.i(TAG, "mux started");
         Thread t = new Thread(this::readLoop, "cable-read");
         t.setDaemon(true);
         t.start();
@@ -115,6 +116,7 @@ public final class CableMux implements Closeable {
                 listener.onHello(new String(f.payload, StandardCharsets.UTF_8));
                 break;
             case OPEN:
+                Log.i(TAG, "OPEN channel " + f.channel);
                 if (opener == null) break;
                 try {
                     Socket s = opener.open();

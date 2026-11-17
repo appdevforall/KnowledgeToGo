@@ -1076,6 +1076,8 @@ public class CloneFragment extends Fragment {
                     if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
                 }));
         // K2GO-576: no gateway probes while a probe or pull runs: each one takes a daemon connection.
+        SyncHandshakeHelper.SyncCredentials paired = syncVm.getPendingCreds();
+        linkRows.setSenderHost(paired != null ? paired.ip : null);   // Wi-Fi network or hotspot
         linkRows.startChecks(shareConfig.rsyncPort, !busy);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);

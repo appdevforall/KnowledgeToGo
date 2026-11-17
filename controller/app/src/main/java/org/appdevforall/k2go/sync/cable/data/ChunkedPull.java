@@ -189,6 +189,8 @@ public final class ChunkedPull {
     }
 
     private Thread worker(boolean cable) {
+        Log.i(TAG, "starting the " + (cable ? "cable" : "Wi-Fi") + " path"
+                + (cable ? " on 127.0.0.1:" + paths.cablePort() : " to " + paths.wifiHost()));
         Thread t = new Thread(() -> work(cable), cable ? "clone-pull-cable" : "clone-pull-wifi");
         t.start();
         return t;
@@ -216,6 +218,7 @@ public final class ChunkedPull {
                 //noinspection ResultOfMethodCallIgnored
                 list.delete();
                 current.set(0);
+                Log.i(TAG, (cable ? "cable" : "Wi-Fi") + " chunk " + c.id + " (" + c.bytes + " bytes) exit " + code);
                 if (RsyncOutcome.isSuccess(code)) {
                     queue.complete(c);
                     failures = 0;
@@ -223,6 +226,7 @@ public final class ChunkedPull {
                 } else {
                     queue.requeue(c);
                     lastFailedExit = code;
+                    Log.w(TAG, (cable ? "cable" : "Wi-Fi") + " chunk " + c.id + " failed, exit " + code + ", queued again");
                     LogRepository.get().append("[Clone] chunk " + c.id + " failed on "
                             + (cable ? "cable" : "Wi-Fi") + " (exit " + code + "), queued again");
                     if (cable || ++failures >= 2) return;

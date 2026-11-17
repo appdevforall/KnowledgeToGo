@@ -10,5 +10,6 @@
   strings.xml.
 -->
 <resources>
-
+    <string name="k2go_clone_link_wifi_found_network" translatable="false">Sender found on this Wi-Fi network</string>
+    <string name="k2go_clone_link_wifi_not_found" translatable="false">Sending phone not found on this Wi-Fi network</string>
 </resources>

@@ -35,7 +35,6 @@ import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
 import org.appdevforall.k2go.util.ByteFormatter;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -54,6 +53,10 @@ public final class CloneLinkRows {
     private int checkPort = -1;
     private volatile boolean probeSender = true;
     private volatile boolean lastAnswers;
+    /** The sender's address from its pairing data (QR or cable), or null before pairing. */
+    private volatile String senderHost;
+    private volatile boolean probeOnce;
+    private boolean inFlight;   // main thread only: one check at a time
     private final Runnable check = this::checkWifi;
 
     public CloneLinkRows(View root, LifecycleOwner owner) {
@@ -77,8 +80,11 @@ public final class CloneLinkRows {
         boolean on = hs != null && hs.phase == LocalHotspotManager.Phase.ON;
         Context c = root.getContext();
         if (!hotspotMode) {
+            // Over a Wi-Fi network: show its band; the receiver confirms that it reaches us.
+            WifiLink.Band band = WifiLink.band(ownFrequency(c));
             wifiDetail.setText(R.string.k2go_clone_link_wifi_network);
-            paintNeutral(wifiIcon, wifiBadge, "");
+            paint(wifiIcon, wifiBadge, band == WifiLink.Band.GHZ_5 ? WifiLink.Level.OK : WifiLink.Level.WARN,
+                    bandText(c, band));
         } else if (on) {
             paint(wifiIcon, wifiBadge, WifiLink.Level.OK, c.getString(R.string.k2go_clone_link_badge_linked));
             wifiDetail.setText(c.getString(R.string.k2go_clone_link_hotspot_on, hs.clients));
@@ -95,10 +101,23 @@ public final class CloneLinkRows {
      */
     public void startChecks(int senderRsyncPort, boolean probeSender) {
         this.probeSender = probeSender;
+        main.removeCallbacks(check);   // re-check now: the pairing or the transfer state changed
+        if (checkPort == senderRsyncPort) { main.post(check); return; }
         if (checkPort == senderRsyncPort) return;
         checkPort = senderRsyncPort;
         main.removeCallbacks(check);
         main.post(check);
+    }
+
+    /**
+     * The sender's address once known (QR scan or cable). Then the row checks that address on the
+     * rsync port, so it confirms a shared Wi-Fi network too, not only the sender's hotspot. One
+     * check runs at once, also during the confirm step.
+     */
+    public void setSenderHost(String host) {
+        if (host == null ? senderHost == null : host.equals(senderHost)) return;
+        senderHost = host;
+        probeOnce = host != null;
     }
 
     public void stopChecks() {
@@ -109,16 +128,22 @@ public final class CloneLinkRows {
     @SuppressWarnings("deprecation") // getConnectionInfo / getDhcpInfo: no permission needed for these fields
     private void checkWifi() {
         final int port = checkPort;
-        if (port < 0) return;
+        if (port < 0 || inFlight) return;
+        inFlight = true;
         final Context app = root.getContext().getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             WifiManager wm = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
             boolean on = wm != null && wm.isWifiEnabled();
             int freq = on ? wm.getConnectionInfo().getFrequency() : -1;
-            boolean answers = on && (probeSender ? senderAnswers(wm.getDhcpInfo().gateway, port) : lastAnswers);
+            boolean probe = probeSender || probeOnce;
+            probeOnce = false;
+            String host = senderHost;
+            boolean answers = on && (probe ? senderAnswers(host != null ? host : gateway(wm.getDhcpInfo().gateway), port)
+                    : lastAnswers);
             lastAnswers = answers;
             WifiLink.Band band = WifiLink.band(freq);
             main.post(() -> {
+                inFlight = false;
                 if (checkPort != port) return;
                 showWifi(WifiLink.judge(on, answers, band), on, answers, band);
                 main.postDelayed(check, CHECK_MS);
@@ -126,11 +151,27 @@ public final class CloneLinkRows {
         });
     }
 
-    private static boolean senderAnswers(int gatewayLe, int port) {
-        if (gatewayLe == 0) return false;
-        byte[] ip = {(byte) gatewayLe, (byte) (gatewayLe >> 8), (byte) (gatewayLe >> 16), (byte) (gatewayLe >> 24)};
+    /** The hotspot gateway (the sender on its own hotspot), or null with no DHCP lease. */
+    private static String gateway(int le) {
+        if (le == 0) return null;
+        return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static int ownFrequency(Context c) {
+        WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        return wm != null && wm.isWifiEnabled() ? wm.getConnectionInfo().getFrequency() : -1;
+    }
+
+    private static String bandText(Context c, WifiLink.Band band) {
+        return band == WifiLink.Band.GHZ_5 ? c.getString(R.string.k2go_clone_link_band_5)
+                : band == WifiLink.Band.GHZ_2_4 ? c.getString(R.string.k2go_clone_link_band_24) : "";
+    }
+
+    private static boolean senderAnswers(String host, int port) {
+        if (host == null) return false;
         try (Socket s = new Socket()) {
-            s.connect(new InetSocketAddress(InetAddress.getByAddress(ip), port), 800);
+            s.connect(new InetSocketAddress(host, port), 800);
             return true;
         } catch (Exception e) {
             return false;
@@ -145,11 +186,14 @@ public final class CloneLinkRows {
             wifiDetail.setText(R.string.k2go_clone_link_wifi_off);
             paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_off));
         } else if (!answers) {
-            wifiDetail.setText(R.string.k2go_clone_link_wifi_not_joined);
+            // Paired over a Wi-Fi network: say "not found", not "not on its hotspot".
+            wifiDetail.setText(senderHost != null ? R.string.k2go_clone_link_wifi_not_found
+                    : R.string.k2go_clone_link_wifi_not_joined);
             paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_not_ready));
         } else {
-            wifiDetail.setText(band == WifiLink.Band.GHZ_5 ? R.string.k2go_clone_link_wifi_found
-                    : R.string.k2go_clone_link_wifi_slow);
+            wifiDetail.setText(band != WifiLink.Band.GHZ_5 ? R.string.k2go_clone_link_wifi_slow
+                    : senderHost != null ? R.string.k2go_clone_link_wifi_found_network
+                    : R.string.k2go_clone_link_wifi_found);
             paint(wifiIcon, wifiBadge, level, bandText != null ? bandText : "");
         }
     }

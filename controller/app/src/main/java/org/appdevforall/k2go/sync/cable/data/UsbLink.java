@@ -37,8 +37,10 @@ public abstract class UsbLink implements Closeable {
     // Strings the host sends; the accessory side checks manufacturer and model.
     static final String MANUFACTURER = "AppDevForAll";
     static final String MODEL = "K2GoClone";
+    // No URI: with one, Android shows a "not supported, see <URI>" notice on a phone without a
+    // matching app filter (Clone watches the accessory list itself).
     private static final String[] IDS = {MANUFACTURER, MODEL, "Knowledge to Go Clone cable", "1",
-            "https://appdevforall.org", "0"};
+            "", "0"};
     /** f_accessory needs a read buffer of at least 16 KiB; a smaller one loses data. */
     static final int READ_BUFFER = 16 * 1024;
     /** Lets the host use 128 KiB IN transfers where its controller allows them. */

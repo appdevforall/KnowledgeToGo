@@ -77,6 +77,7 @@ public final class CableSession {
     private volatile CableRelay relay;
     private boolean permissionAsked;
     private BroadcastReceiver permissionReceiver;
+    private BroadcastReceiver detachReceiver;
 
     private CableSession() {
     }
@@ -109,6 +110,7 @@ public final class CableSession {
         if (newHello && m != null && role == Role.SEND) {
             new Thread(() -> sendHello(m), "cable-hello").start();   // a USB write can block: not on the UI thread
         }
+        registerDetach();
         if (watcher == null) {
             watcher = new Thread(this::watchLoop, "cable-watch");
             watcher.setDaemon(true);
@@ -126,7 +128,39 @@ public final class CableSession {
         role = null;
         permissionAsked = false;
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
+        unregisterDetach();
         state.postValue(new State(Link.NONE, 0));
+    }
+
+    /**
+     * A blocked accessory read does not always return when the cable comes out, so the link
+     * would look alive forever. Android's detach broadcasts close it.
+     */
+    private void registerDetach() {
+        if (detachReceiver != null) return;
+        detachReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent i) {
+                Log.i(TAG, "USB detached: " + i.getAction());
+                closeLink();
+                state.postValue(new State(Link.NONE, 0));
+            }
+        };
+        IntentFilter f = new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
+        f.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        if (Build.VERSION.SDK_INT >= 33) app.registerReceiver(detachReceiver, f, Context.RECEIVER_NOT_EXPORTED);
+        else app.registerReceiver(detachReceiver, f);
+    }
+
+    private synchronized void unregisterDetach() {
+        BroadcastReceiver r = detachReceiver;
+        detachReceiver = null;
+        if (r == null || app == null) return;
+        try {
+            app.unregisterReceiver(r);
+        } catch (IllegalArgumentException ignored) {
+            // already unregistered
+        }
     }
 
     private synchronized void unregisterPermission() {
@@ -172,6 +206,7 @@ public final class CableSession {
             for (UsbAccessory a : accessories) {
                 if (!UsbLink.isOurAccessory(a)) continue;
                 if (!um.hasPermission(a)) { askPermission(um, a); return; }
+                Log.i(TAG, "opening the accessory side");
                 open(UsbLink.accessory(um, a));
                 return;
             }
@@ -179,8 +214,10 @@ public final class CableSession {
         for (UsbDevice d : um.getDeviceList().values()) {
             if (!um.hasPermission(d)) { askPermission(um, d); return; }
             if (UsbLink.isAccessoryMode(d)) {
+                Log.i(TAG, "opening the host side");
                 open(UsbLink.host(um, d));
             } else {
+                Log.i(TAG, "switching " + d.getDeviceName() + " to accessory mode");
                 // The other phone re-enumerates in accessory mode; the next poll opens it.
                 UsbLink.switchToAccessory(um, d);
                 permissionAsked = false;
@@ -196,6 +233,7 @@ public final class CableSession {
     private void askPermission(UsbManager um, Object target) {
         state.postValue(new State(Link.WAITING, 0));
         if (permissionAsked) return;
+        Log.i(TAG, "asking USB permission for " + (target instanceof UsbDevice ? "device" : "accessory"));
         permissionAsked = true;
         int flags = PendingIntent.FLAG_UPDATE_CURRENT
                 | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0);
@@ -218,7 +256,7 @@ public final class CableSession {
 
     private synchronized void open(UsbLink link) throws IOException {
         CableMux.Opener opener = role == Role.SEND
-                ? () -> new Socket(InetAddress.getLoopbackAddress(), rsyncPort)
+                ? () -> new Socket("127.0.0.1", rsyncPort)
                 : null;
         CableMux m = new CableMux(link, opener, new CableMux.Listener() {
             @Override
@@ -232,9 +270,17 @@ public final class CableSession {
                 linkClosed();
             }
         });
-        if (role == Role.RECEIVE) relay = new CableRelay(m);
+        // Start first: a link that dies at once (unplugged a moment ago, ENODEV) must not stay
+        // as "linked", or the session never tries again.
+        try {
+            m.start();
+            if (role == Role.RECEIVE) relay = new CableRelay(m);
+        } catch (IOException e) {
+            closeRelay();
+            try { link.close(); } catch (IOException ignored) { /* already gone */ }
+            throw e;
+        }
         mux = m;
-        m.start();
         if (role == Role.SEND) sendHello(m);
         state.postValue(new State(Link.LINKED, 0));
         Log.i(TAG, "cable linked as " + role);
