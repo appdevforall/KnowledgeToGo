@@ -40,6 +40,9 @@ public final class CableMux implements Closeable {
 
         /** The cable or the peer is gone. Called once. */
         void onLinkClosed();
+
+        /** The sender stopped sharing (BYE). */
+        void onBye();
     }
 
     /** Sender side: opens the connection that a new channel goes to. Null on the receiver. */
@@ -85,6 +88,15 @@ public final class CableMux implements Closeable {
             throw e;
         }
         pump(ch, s);
+    }
+
+    /** Sender: tells the receiver that sharing stopped. Best effort: the link may be gone. */
+    public void sendBye() {
+        try {
+            send(CableFrame.control(CableFrame.Type.BYE, 0));
+        } catch (IOException ignored) {
+            // the receiver also sees the link close
+        }
     }
 
     /** Payload bytes moved in both directions, for the speed on the cable row. */
@@ -139,6 +151,10 @@ public final class CableMux implements Closeable {
                 break;
             case CLOSE:
                 closeChannel(f.channel, false);
+                break;
+            case BYE:
+                Log.i(TAG, "the sender stopped sharing");
+                listener.onBye();
                 break;
         }
     }

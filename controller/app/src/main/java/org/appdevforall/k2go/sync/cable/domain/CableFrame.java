@@ -32,7 +32,9 @@ public final class CableFrame {
         OPEN,
         DATA,
         /** End of {@code channel}, either direction. */
-        CLOSE;
+        CLOSE,
+        /** The sender stopped sharing: the receiver ends its pull at once instead of retrying. */
+        BYE;
 
         static Type of(int code) {
             Type[] all = values();

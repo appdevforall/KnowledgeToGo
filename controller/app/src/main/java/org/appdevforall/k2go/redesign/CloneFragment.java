@@ -285,6 +285,7 @@ public class CloneFragment extends Fragment {
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
+        syncVm.pathRates().observe(getViewLifecycleOwner(), linkRows::showRates);   // K2GO-576
         transport = syncVm.getTransport();
         shareConfig = ShareConfig.defaults();
 
@@ -1335,6 +1336,7 @@ public class CloneFragment extends Fragment {
                         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(app,
                                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
                         SyncProgressRepository.get().postSuccess(message);
+                        CableSession.get().markCompleted();   // K2GO-576: no second offer of this copy
                         CableSession.get().stop();   // K2GO-576: the cable session ends with the pull
                     }
                     @Override public void onError(String error) {

@@ -43,6 +43,7 @@ public final class CloneLinkRows {
     private static final long CHECK_MS = 3000;
 
     private final View root;
+    private final TextView wifiTitle;
     private final ImageView wifiIcon;
     private final TextView wifiDetail;
     private final TextView wifiBadge;
@@ -62,6 +63,7 @@ public final class CloneLinkRows {
     public CloneLinkRows(View root, LifecycleOwner owner) {
         this.root = root;
         wifiIcon = root.findViewById(R.id.k2go_link_wifi_icon);
+        wifiTitle = root.findViewById(R.id.k2go_link_wifi_title);
         wifiDetail = root.findViewById(R.id.k2go_link_wifi_detail);
         wifiBadge = root.findViewById(R.id.k2go_link_wifi_badge);
         usbIcon = root.findViewById(R.id.k2go_link_usb_icon);
@@ -79,6 +81,7 @@ public final class CloneLinkRows {
         stopChecks();
         boolean on = hs != null && hs.phase == LocalHotspotManager.Phase.ON;
         Context c = root.getContext();
+        wifiTitle.setText(hotspotMode ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
         if (!hotspotMode) {
             // Over a Wi-Fi network: show its band; the receiver confirms that it reaches us.
             WifiLink.Band band = WifiLink.band(ownFrequency(c));
@@ -138,6 +141,8 @@ public final class CloneLinkRows {
             boolean probe = probeSender || probeOnce;
             probeOnce = false;
             String host = senderHost;
+            String gw = gateway(wm.getDhcpInfo().gateway);
+            boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
             boolean answers = on && (probe ? senderAnswers(host != null ? host : gateway(wm.getDhcpInfo().gateway), port)
                     : lastAnswers);
             lastAnswers = answers;
@@ -145,6 +150,7 @@ public final class CloneLinkRows {
             main.post(() -> {
                 inFlight = false;
                 if (checkPort != port) return;
+                wifiTitle.setText(viaHotspot ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
                 showWifi(WifiLink.judge(on, answers, band), on, answers, band);
                 main.postDelayed(check, CHECK_MS);
             });
@@ -178,6 +184,22 @@ public final class CloneLinkRows {
         }
     }
 
+    private volatile long wifiRate = -1;   // bytes/s on Wi-Fi during a pull, -1 when no pull runs
+
+    /**
+     * During a pull: what each path carries. A Wi-Fi path that moves data is proof that the sender
+     * answers on Wi-Fi, so the row shows it even while the daemon probe is paused.
+     */
+    public void showRates(long[] rates) {
+        wifiRate = rates == null ? -1 : rates[0];
+        if (rates != null && rates[0] > 0) {
+            lastAnswers = true;
+            Context c = root.getContext();
+            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active,
+                    ByteFormatter.toHuman(rates[0]) + "/s"));
+        }
+    }
+
     private void showWifi(WifiLink.Level level, boolean on, boolean answers, WifiLink.Band band) {
         Context c = root.getContext();
         String bandText = band == WifiLink.Band.GHZ_5 ? c.getString(R.string.k2go_clone_link_band_5)
@@ -190,6 +212,9 @@ public final class CloneLinkRows {
             wifiDetail.setText(senderHost != null ? R.string.k2go_clone_link_wifi_not_found
                     : R.string.k2go_clone_link_wifi_not_joined);
             paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_not_ready));
+        } else if (wifiRate > 0) {
+            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active, ByteFormatter.toHuman(wifiRate) + "/s"));
+            paint(wifiIcon, wifiBadge, level, bandText(c, band));
         } else {
             wifiDetail.setText(band != WifiLink.Band.GHZ_5 ? R.string.k2go_clone_link_wifi_slow
                     : senderHost != null ? R.string.k2go_clone_link_wifi_found_network

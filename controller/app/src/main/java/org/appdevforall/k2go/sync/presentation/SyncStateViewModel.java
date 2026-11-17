@@ -45,6 +45,10 @@ public class SyncStateViewModel extends ViewModel {
     private static volatile TransportEngine transport;
     // K2GO-576: the receive pull, over Wi-Fi and the cable. Process-scoped for the same reason.
     private static volatile ChunkedPull pull;
+    // K2GO-576: {Wi-Fi, cable} bytes per second of the running pull, for the link rows.
+    private static final androidx.lifecycle.MutableLiveData<long[]> pathRates = new androidx.lifecycle.MutableLiveData<>();
+
+    public androidx.lifecycle.LiveData<long[]> pathRates() { return pathRates; }
 
     // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
@@ -185,6 +189,8 @@ public class SyncStateViewModel extends ViewModel {
                     @Override public String wifiHost() { return creds.ip; }
                     @Override public int wifiPort() { return creds.port; }
                     @Override public int cablePort() { return CableSession.get().relayPort(); }
+                    @Override public boolean senderStopped() { return CableSession.get().senderStopped(); }
+                    @Override public void onRates(long wifiBps, long cableBps) { pathRates.postValue(new long[]{wifiBps, cableBps}); }
                 }, listener);
         pull = p;
         p.start();
@@ -195,6 +201,7 @@ public class SyncStateViewModel extends ViewModel {
         ChunkedPull p = pull;
         pull = null;
         if (p != null) p.stop();
+        pathRates.postValue(null);
     }
 
     /** Release the network binding put in place for a receive (ADFA-4496); safe to call repeatedly. */

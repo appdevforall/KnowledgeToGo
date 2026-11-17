@@ -36,6 +36,7 @@ import org.appdevforall.k2go.sync.domain.RsyncProgress;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.transport.SecretStore;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
+import org.appdevforall.k2go.sync.transport.WifiNetworkBinder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,6 +70,12 @@ public final class ChunkedPull {
 
         /** Local relay port of the cable, or -1 with no cable link. */
         int cablePort();
+
+        /** The sender said that it stopped sharing. */
+        boolean senderStopped();
+
+        /** Bytes per second on each path, averaged over a few seconds. Called about once a second. */
+        void onRates(long wifiBytesPerSec, long cableBytesPerSec);
     }
 
     private final Context app;
@@ -82,6 +89,12 @@ public final class ChunkedPull {
     private final Set<Process> processes = ConcurrentHashMap.newKeySet();
     private final AtomicLong wifiBytes = new AtomicLong();
     private final AtomicLong cableBytes = new AtomicLong();
+    // Bytes of finished chunks per path; with the running chunk this gives each path's total.
+    private final AtomicLong wifiDone = new AtomicLong();
+    private final AtomicLong cableDone = new AtomicLong();
+    private static final int RATE_WINDOW = 5;
+    private final long[][] window = new long[RATE_WINDOW][3];   // {time ms, wifi total, cable total}
+    private int windowNext;
     private volatile boolean cancelled;
     private volatile int lastFailedExit;
     private long lastWifiTry;
@@ -130,20 +143,28 @@ public final class ChunkedPull {
             queue = new ChunkQueue(TransferChunk.plan(files, CHUNK_BYTES, CHUNK_FILES));
             Log.i(TAG, files.size() + " files, " + queue.totalBytes() + " bytes to copy");
 
-            long lastPathAt = System.currentTimeMillis();
+            long lastPathAt = 0;
             long lastDone = 0;
             long lastTick = System.currentTimeMillis();
             while (!cancelled && !queue.isFinished()) {
-                startWorkers();
-                boolean anyPath = alive(wifiWorker) || alive(cableWorker);
-                long now = System.currentTimeMillis();
-                if (anyPath) lastPathAt = now;
-                else if (now - lastPathAt > NO_PATH_TIMEOUT_MS) {
-                    fail(R.string.k2go_clone_cable_err_no_path, "no Wi-Fi and no cable to the sender");
+                if (paths.senderStopped()) {
+                    stop();
+                    fail(R.string.k2go_clone_cable_err_sender_stopped, "the sender stopped sharing");
                     return;
                 }
+                startWorkers();
+                long now = System.currentTimeMillis();
                 long done = queue.doneBytes() + wifiBytes.get() + cableBytes.get();
-                report(done, (done - lastDone) * 1000 / Math.max(1, now - lastTick));
+                // No byte moved for a while (no path, or every path keeps failing): give up instead
+                // of retrying forever. Over Wi-Fi only, this is how a stopped sender shows up.
+                if (done != lastDone || lastPathAt == 0) lastPathAt = now;
+                else if (now - lastPathAt > NO_PATH_TIMEOUT_MS) {
+                    stop();
+                    fail(R.string.k2go_clone_cable_err_no_path, "no data from the sender for "
+                            + NO_PATH_TIMEOUT_MS / 1000 + " s");
+                    return;
+                }
+                report(done, rates(now));
                 lastDone = done;
                 lastTick = now;
                 Thread.sleep(1000);
@@ -181,6 +202,9 @@ public final class ChunkedPull {
         long now = System.currentTimeMillis();
         if (!alive(wifiWorker) && paths.wifiHost() != null && now - lastWifiTry >= WIFI_RETRY_MS) {
             lastWifiTry = now;
+            // Re-pin to the network that reaches the sender now: after Wi-Fi off/on, the old pinned
+            // network is gone and every app socket would fail (rsync children are not pinned).
+            WifiNetworkBinder.bindToHostNetwork(app, paths.wifiHost());
             if (reachable(paths.wifiHost(), paths.wifiPort())) wifiWorker = worker(false);
         }
         if (!alive(cableWorker) && paths.cablePort() > 0) {
@@ -220,6 +244,7 @@ public final class ChunkedPull {
                 current.set(0);
                 Log.i(TAG, (cable ? "cable" : "Wi-Fi") + " chunk " + c.id + " (" + c.bytes + " bytes) exit " + code);
                 if (RsyncOutcome.isSuccess(code)) {
+                    (cable ? cableDone : wifiDone).addAndGet(c.bytes);
                     queue.complete(c);
                     failures = 0;
                     lastFailedExit = 0;   // a recovered failure must not name a later one
@@ -290,6 +315,23 @@ public final class ChunkedPull {
         } finally {
             processes.remove(p);
         }
+    }
+
+    /**
+     * Per-path and total speed over the last RATE_WINDOW seconds. A chunk that finishes moves its
+     * bytes from "running" to "done" at once, so a one-second delta would show a false spike.
+     */
+    private long rates(long now) {
+        long[] cur = {now, wifiDone.get() + wifiBytes.get(), cableDone.get() + cableBytes.get()};
+        long[] old = window[windowNext];
+        window[windowNext] = cur;
+        windowNext = (windowNext + 1) % RATE_WINDOW;
+        if (old[0] == 0) return 0;
+        long ms = Math.max(1, now - old[0]);
+        long wifi = Math.max(0, (cur[1] - old[1]) * 1000 / ms);
+        long cable = Math.max(0, (cur[2] - old[2]) * 1000 / ms);
+        paths.onRates(wifi, cable);
+        return wifi + cable;
     }
 
     private void report(long done, long bytesPerSec) {

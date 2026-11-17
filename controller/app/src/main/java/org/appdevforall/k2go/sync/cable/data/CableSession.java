@@ -74,8 +74,14 @@ public final class CableSession {
     private volatile HelloListener helloListener;
     private Thread watcher;
     private volatile CableMux mux;
+    private volatile boolean senderStopped;
+    private volatile String lastHello;        // the pairing data the receiver got last
+    private volatile String completedHello;   // the pairing data of the last finished copy
     private volatile CableRelay relay;
-    private boolean permissionAsked;
+    private volatile boolean permissionAsked;
+    private volatile long permissionAskedAt;
+    /** A dialog for a device that re-enumerated (accessory switch, role swap) never answers. */
+    private static final long PERMISSION_RETRY_MS = 15_000;
     private BroadcastReceiver permissionReceiver;
     private BroadcastReceiver detachReceiver;
 
@@ -84,6 +90,16 @@ public final class CableSession {
 
     public LiveData<State> state() {
         return state;
+    }
+
+    /** Receiver: the copy started from the last pairing data finished; do not offer it again. */
+    public void markCompleted() {
+        completedHello = lastHello;
+    }
+
+    /** Receiver: the sender said over the cable that it stopped sharing (cleared by a new link). */
+    public boolean senderStopped() {
+        return senderStopped;
     }
 
     /** Receiver: the local port the rsync client uses for the cable path, or -1 with no link. */
@@ -122,6 +138,11 @@ public final class CableSession {
         Thread w = watcher;
         watcher = null;
         if (w != null) w.interrupt();
+        CableMux m = mux;
+        if (m != null && role == Role.SEND) {
+            mux = null;
+            new Thread(() -> { m.sendBye(); m.close(); }, "cable-bye").start();   // USB write: off the UI thread
+        }
         closeLink();
         helloListener = null;
         hello = null;
@@ -142,6 +163,7 @@ public final class CableSession {
             @Override
             public void onReceive(Context c, Intent i) {
                 Log.i(TAG, "USB detached: " + i.getAction());
+                permissionAsked = false;   // the next device is a new one: ask for it
                 closeLink();
                 state.postValue(new State(Link.NONE, 0));
             }
@@ -192,6 +214,11 @@ public final class CableSession {
                 return;
             } catch (Exception e) {
                 Log.w(TAG, "cable link attempt failed: " + e.getMessage());
+                try {
+                    Thread.sleep(POLL_MS);   // a failed attempt waits too: no busy loop on a dying link
+                } catch (InterruptedException ie) {
+                    return;
+                }
             }
         }
     }
@@ -232,7 +259,8 @@ public final class CableSession {
 
     private void askPermission(UsbManager um, Object target) {
         state.postValue(new State(Link.WAITING, 0));
-        if (permissionAsked) return;
+        if (permissionAsked && System.currentTimeMillis() - permissionAskedAt < PERMISSION_RETRY_MS) return;
+        permissionAskedAt = System.currentTimeMillis();
         Log.i(TAG, "asking USB permission for " + (target instanceof UsbDevice ? "device" : "accessory"));
         permissionAsked = true;
         int flags = PendingIntent.FLAG_UPDATE_CURRENT
@@ -242,6 +270,7 @@ public final class CableSession {
         BroadcastReceiver r = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent i) {
+                Log.i(TAG, "USB permission " + (i.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false) ? "granted" : "denied"));
                 permissionAsked = false; // the next poll opens the link, or asks again after a "no"
                 unregisterPermission();
             }
@@ -262,7 +291,16 @@ public final class CableSession {
             @Override
             public void onHello(String payload) {
                 HelloListener l = helloListener;
+                // A cable plugged again after a finished copy brings the same share: do not offer
+                // the same copy again. A new share on the sender has a new password, so it differs.
+                if (payload.equals(completedHello)) return;
+                lastHello = payload;
                 if (role == Role.RECEIVE && l != null) l.onHello(payload);
+            }
+
+            @Override
+            public void onBye() {
+                senderStopped = true;
             }
 
             @Override
@@ -281,6 +319,7 @@ public final class CableSession {
             throw e;
         }
         mux = m;
+        senderStopped = false;
         if (role == Role.SEND) sendHello(m);
         state.postValue(new State(Link.LINKED, 0));
         Log.i(TAG, "cable linked as " + role);
