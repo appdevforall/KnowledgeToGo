@@ -25,7 +25,7 @@ public final class WebViewPrivacy {
 
     private static boolean applied;
 
-    /** Once per process, before the first page loads. Call on the main thread. */
+    /** Once per process, before the first page loads (ResilientWebViewClient). Main thread. */
     public static void apply() {
         if (applied) return;
         applied = true;
@@ -33,7 +33,8 @@ public final class WebViewPrivacy {
                 || !WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE_REVERSE_BYPASS)) {
             return;   // old WebView: nothing to do
         }
-        // Reverse bypass: only the listed hosts use the "proxy"; port 1 refuses at once.
+        // Reverse bypass: only the listed hosts use the "proxy"; port 1 refuses at once. All other
+        // WebView hosts go direct (no system proxy); in-app pages are local, so nothing needs one.
         ProxyConfig.Builder b = new ProxyConfig.Builder()
                 .addProxyRule("127.0.0.1:1")
                 .setReverseBypassEnabled(true);

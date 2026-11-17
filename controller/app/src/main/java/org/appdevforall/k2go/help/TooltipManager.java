@@ -221,7 +221,6 @@ public final class TooltipManager {
             dismissActive();
 
             View root = LayoutInflater.from(context).inflate(R.layout.tooltip_window, null);
-            org.appdevforall.k2go.util.WebViewPrivacy.apply();   // K2GO-522
             WebView web = root.findViewById(R.id.help_webview);
             web.setWebViewClient(new ResilientWebViewClient() {
                 @Override
@@ -327,7 +326,6 @@ public final class TooltipManager {
      */
     public static void openHelpPage(final Context context, String url, String label) {
         try {
-            org.appdevforall.k2go.util.WebViewPrivacy.apply();   // K2GO-522
             final WebView web = new WebView(context);
             final BrandDialog.Handle handle = new BrandDialog(context)
                     .setTitle(label)
