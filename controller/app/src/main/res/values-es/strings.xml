@@ -1585,13 +1585,11 @@
     <string name="k2go_cx_share_join_caption">Escanea en el otro teléfono para unirte a este punto de acceso.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Este teléfono no puede iniciar un punto de acceso para compartir.</string>
     <string name="k2go_cx_share_hotspot_failed">No se pudo iniciar el punto de acceso.</string>
-    <string name="k2go_cx_share_need_permission">Se necesita el permiso del punto de acceso para compartir.</string>
     <string name="k2go_cx_share_error">No se pudo iniciar el uso compartido.</string>
     <string name="k2go_cx_share_waiting">Mantén esta pantalla abierta hasta que el otro teléfono termine.</string>
     <string name="k2go_cx_share_done">Listo</string>
     <string name="k2go_cx_share_stop">Detener</string>
     <string name="k2go_cx_share_notif_title">Compartiendo contenido</string>
-    <string name="k2go_cx_share_notif_text">El punto de acceso y el uso compartido permanecen abiertos.</string>
     <string name="k2go_cx_share_channel_name">Uso compartido de contenido</string>
     <string name="k2go_cx_toggle_group">Mostrar u ocultar elementos</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1676,4 +1674,6 @@
     <string name="k2go_about_copied">Detalles copiados</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Esto detiene cualquier copia en curso. El otro teléfono pierde su avance y debe empezar de nuevo con un código nuevo.</string>
+    <string name="k2go_connect_switch_msg">Los dispositivos conectados a este punto de acceso pierden la conexión.</string>
+    <string name="k2go_cx_share_notif_open">El uso compartido sigue abierto hasta que lo detengas.</string>
 </resources>

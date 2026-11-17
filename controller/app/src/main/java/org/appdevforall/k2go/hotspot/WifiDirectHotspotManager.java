@@ -65,6 +65,8 @@ public final class WifiDirectHotspotManager {
         void onFailed(String reason);
         /** A running group died on its own (e.g. Wi-Fi switched off). */
         void onLost(String reason);
+        /** The number of devices joined to the running group changed (K2GO-577). */
+        default void onClients(int count) { }
     }
 
     // The one owner of this manager's liveness; every async callback checks it before touching mgr/channel.
@@ -224,7 +226,12 @@ public final class WifiDirectHotspotManager {
         if (runState != RunState.UP || mgr == null || channel == null) return;
         try {
             mgr.requestGroupInfo(channel, group -> {
-                if (group != null || runState != RunState.UP) return;
+                if (runState != RunState.UP) return;
+                if (group != null) {
+                    // The same recheck that guards the group also reports who is joined (K2GO-577).
+                    if (cb != null) cb.onClients(group.getClientList().size());
+                    return;
+                }
                 if (confirming) lost("the Wi-Fi Direct group stopped");
                 else main.postDelayed(() -> recheck(true), 1000);
             });

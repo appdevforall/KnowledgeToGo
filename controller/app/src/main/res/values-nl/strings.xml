@@ -1509,13 +1509,11 @@
     <string name="k2go_cx_share_join_caption">Scan op de andere telefoon om deel te nemen aan deze hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Deze telefoon kan geen hotspot starten om te delen.</string>
     <string name="k2go_cx_share_hotspot_failed">Kan de hotspot niet starten.</string>
-    <string name="k2go_cx_share_need_permission">De hotspot-machtiging is nodig om te delen.</string>
     <string name="k2go_cx_share_error">Kan het delen niet starten.</string>
     <string name="k2go_cx_share_waiting">Houd dit scherm open totdat de andere telefoon klaar is.</string>
     <string name="k2go_cx_share_done">Klaar</string>
     <string name="k2go_cx_share_stop">Stoppen</string>
     <string name="k2go_cx_share_notif_title">Inhoud delen</string>
-    <string name="k2go_cx_share_notif_text">De hotspot en het delen blijven open.</string>
     <string name="k2go_cx_share_channel_name">Inhoud delen</string>
     <string name="k2go_cx_toggle_group">Items tonen of verbergen</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1598,6 @@
     <string name="k2go_about_copied">Details gekopieerd</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Dit stopt elke lopende kopie. De andere telefoon verliest zijn voortgang en moet opnieuw beginnen met een nieuwe code.</string>
+    <string name="k2go_connect_switch_msg">Apparaten die met deze hotspot zijn verbonden, verliezen hun verbinding.</string>
+    <string name="k2go_cx_share_notif_open">Het delen blijft open tot je het stopt.</string>
 </resources>

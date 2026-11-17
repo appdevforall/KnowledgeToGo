@@ -32,10 +32,9 @@
             android:textColor="@color/k2go_muted" />
 
         <!-- K2GO-376 transport selector (segmented strip, same pattern as Connect/Clone, painted by
-             SegmentedTabs): picks which address the receive QR carries when the sender has BOTH a hotspot
-             AP IP and a station Wi-Fi IP. Hotspot is fast and direct; Wi-Fi reuses a shared network and
-             skips the Wi-Fi Direct link. The fragment shows it only when both addresses exist; it sits
-             above the QR sections, and the join section hides when Wi-Fi is chosen. -->
+             SegmentedTabs). Hotspot (the default) holds the hotspot and the receiver joins it; Wi-Fi
+             gives the hotspot back and the receiver uses the same network, so the join section hides
+             (K2GO-577). Shown once the invite is ready. -->
         <LinearLayout
             android:id="@+id/k2go_cxs_transport"
             android:layout_width="match_parent"

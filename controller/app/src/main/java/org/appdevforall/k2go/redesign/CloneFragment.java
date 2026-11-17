@@ -40,6 +40,8 @@ import org.appdevforall.k2go.SyncHandshakeHelper;
 import org.appdevforall.k2go.env.EnvironmentLock;
 import org.appdevforall.k2go.sync.data.ApkAbiReader;
 import org.appdevforall.k2go.sync.domain.ApkShareName;
+import org.appdevforall.k2go.hotspot.HotspotMode;
+import org.appdevforall.k2go.hotspot.HotspotMode.Mode;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
@@ -61,14 +63,14 @@ import org.appdevforall.k2go.sync.transport.TransportEngine;
 public class CloneFragment extends Fragment {
 
     private enum Side { SEND, RECEIVE }
-    private enum Mode { HOTSPOT, WIFI }
     // ADFA-5154: the 3-step Send wizard (Join / Get app / Copy) becomes 2 pages. PREPARE shows Join ①
     // and Get app ② stacked (both QRs at once); COPY shows the transfer QR. The "Installed? Copy the
     // library ›" gate advances PREPARE -> COPY (a real prerequisite: the app must be on the other phone).
     private enum Page { PREPARE, COPY }
 
     private Side side = Side.SEND;
-    private Mode mode = Mode.HOTSPOT;
+    // K2GO-577: the shared Hotspot / Wi-Fi rule (also used by Share): the choice and Clone's hold.
+    private HotspotMode hsMode;
     private Page page = Page.PREPARE;
     private boolean startedStep = false;
 
@@ -110,12 +112,6 @@ public class CloneFragment extends Fragment {
     private String apkFileName;
 
     private ActivityResultLauncher<String[]> hotspotPerm;
-    // ADFA-5146: request the location permission at most once per attempt. ensureHotspot() runs on every
-    // render, and the permission callback re-renders; on OEMs that return a denied permission result
-    // synchronously that becomes unbounded recursion (render -> ensureHotspot -> launch -> sync-deny ->
-    // callback -> render …), overflowing the stack. This latch breaks the loop; setMode() clears it so a
-    // Hotspot/Wi-Fi switch is a natural retry path.
-    private boolean locationAsked = false;
 
     private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, footer;
     // ADFA-5346: the "Installed? copy the library" advance CTA is a MaterialButton (shape/size from the
@@ -169,10 +165,11 @@ public class CloneFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
+        hsMode = HotspotMode.of(requireContext(), HotspotHolders.Holder.CLONE, Mode.HOTSPOT);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
-                    if (HotspotPermissions.granted(requireContext())) acquireHotspot();
+                    hsMode.resume();   // never asks again: a synchronous deny cannot recurse (ADFA-5146)
                     render();
                 });
         barcodeLauncher = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
@@ -350,7 +347,8 @@ public class CloneFragment extends Fragment {
         // guard skip a re-start.
         if (CloneSendSession.isActive()) {
             atFork = false; side = Side.SEND; page = Page.COPY;
-            mode = CloneSendSession.isHotspot() ? Mode.HOTSPOT : Mode.WIFI;
+            hsMode = HotspotMode.of(requireContext(), HotspotHolders.Holder.CLONE,
+                    CloneSendSession.isHotspot() ? Mode.HOTSPOT : Mode.WIFI);
             tempPass = CloneSendSession.tempPass();
             hostHasRootfs = CloneSendSession.hostHasRootfs();
             shareAnyway = CloneSendSession.shareAnyway();
@@ -407,7 +405,7 @@ public class CloneFragment extends Fragment {
     // copy in progress. Warn first; elsewhere (or when the mode is unchanged) switch directly.
     private void requestMode(Mode target) {
         boolean sharing = (side == Side.SEND && page == Page.COPY && daemonStarted);
-        if (target == mode || !sharing) { setMode(target); return; }
+        if (target == hsMode.mode() || !sharing) { setMode(target); return; }
         String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_clone_switch_title, label))
@@ -418,9 +416,8 @@ public class CloneFragment extends Fragment {
     }
 
     private void setMode(Mode m) {
-        mode = m;
-        locationAsked = false;   // ADFA-5146: a mode switch is a fresh attempt — allow one more perm prompt
-        if (m == Mode.HOTSPOT) ensureHotspot(); else releaseHotspot();
+        // A switch is a fresh attempt: one more permission prompt; Wi-Fi gives the hotspot back.
+        if (hsMode.choose(m)) hotspotPerm.launch(HotspotPermissions.required());
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
         // ADFA-5154: Hotspot ① has a QR, Wi-Fi ① doesn't, so the two tabs differ in height — switching
         // mid-scroll would leave the view offset. Snap back to the top (Connect avoids this: single QR
@@ -428,26 +425,15 @@ public class CloneFragment extends Fragment {
         if (contentScroll != null) contentScroll.post(() -> contentScroll.smoothScrollTo(0, 0));
     }
 
+    // Runs on every render (ADFA-5158: start() ignores a call while a start is in flight). Asks the
+    // permission at most once per choice (ADFA-5146), so a later render never re-launches it.
     private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported()) return;
-        if (HotspotPermissions.granted(requireContext())) {
-            acquireHotspot();   // also when already up: Clone holds it, so another holder's release cannot drop it
-        } else if (!hs.isOn() && !locationAsked) {
-            // ADFA-5146: launch the request exactly once. Do NOT re-launch on later renders (incl. the one
-            // the permission callback triggers): a synchronous deny would otherwise recurse into overflow.
-            locationAsked = true;
-            hotspotPerm.launch(HotspotPermissions.required());
-        }
-    }
-
-    // ADFA-5158: renderPrepare runs on every render; start() ignores a call while a start is in flight.
-    private void acquireHotspot() {
-        hs.acquire(requireContext().getApplicationContext(), HotspotHolders.Holder.CLONE);
+        if (hsMode.ensure()) hotspotPerm.launch(HotspotPermissions.required());
     }
 
     /** K2GO-561: the Wi-Fi Direct group outlives the screen and slows Wi-Fi, so Clone lets go of it. */
     private void releaseHotspot() {
-        hs.release(HotspotHolders.Holder.CLONE);
+        hsMode.release();
     }
 
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
@@ -479,7 +465,7 @@ public class CloneFragment extends Fragment {
             act.runOnUiThread(() -> {
                 if (!isAdded()) return;
                 daemonStarting = false; daemonStarted = ok; librarySplit = split;
-                if (ok) CloneSendSession.begin(mode == Mode.HOTSPOT, tempPass, hostHasRootfs, shareAnyway, split);  // ADFA-4960: app-scope the live share so a recreated Fragment re-binds
+                if (ok) CloneSendSession.begin(hsMode.isHotspot(), tempPass, hostHasRootfs, shareAnyway, split);  // ADFA-4960: app-scope the live share so a recreated Fragment re-binds
                 else releaseCloneEnv();   // couldn't serve — boot the server back, drop the lock
                 render();
             });
@@ -634,8 +620,8 @@ public class CloneFragment extends Fragment {
         // ADFA-5154: Send is two pages. Common chrome, then the page.
         actionFooter.setVisibility(View.GONE);   // ADFA-5154: default hidden; only Copy's states re-show it
         netRow.setVisibility(View.VISIBLE);
-        SegmentedTabs.paint(tabHotspot, mode == Mode.HOTSPOT);
-        SegmentedTabs.paint(tabWifi, mode == Mode.WIFI);
+        SegmentedTabs.paint(tabHotspot, hsMode.isHotspot());
+        SegmentedTabs.paint(tabWifi, !hsMode.isHotspot());
         steps.setVisibility(View.VISIBLE);
         buildSteps();
         advance.setVisibility(View.VISIBLE);
@@ -713,7 +699,7 @@ public class CloneFragment extends Fragment {
      */
     private void renderPrepare() {
         // ---- Section ① : Join the network ----
-        if (mode == Mode.HOTSPOT) {
+        if (hsMode.isHotspot()) {
             secJoinTitle.setText(getString(R.string.k2go_clone_join_hotspot_title));
             shareWifi.setVisibility(View.GONE);
             LocalHotspotManager.State st = hs.state().getValue();
@@ -746,14 +732,8 @@ public class CloneFragment extends Fragment {
                 secJoin.caption.setText(getString(R.string.k2go_connect_starting_hotspot));
                 secJoin.subCaption.setText("");
             } else {
-                String ssid = (st.ssid != null) ? st.ssid : "";
-                String pass = (st.passphrase != null) ? st.passphrase : "";
                 secJoin.frame.setVisibility(View.VISIBLE);
-                secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
-                secJoin.caption.setText(getString(R.string.k2go_clone_point_camera_join));
-                secJoin.subCaption.setText("");
-                secJoin.setFallback(requireContext(), new String[]{
-                        getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
+                secJoin.setWifiJoin(requireContext(), st.ssid, st.passphrase, R.string.k2go_clone_point_camera_join);
             }
         } else {   // Wi-Fi: "join this Wi-Fi" isn't a QR the other camera can act on — instruct + Share
             secJoinTitle.setText(getString(R.string.k2go_clone_join_wifi_title));
@@ -770,7 +750,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void renderGetAppSection() {
-        if (mode == Mode.HOTSPOT) ensureHotspot();
+        if (hsMode.isHotspot()) ensureHotspot();
         startApkServer();
         String appIp = peerReachableIp();
         if (appIp == null || apkServer == null) {
@@ -799,12 +779,12 @@ public class CloneFragment extends Fragment {
             // hasn't been assigned yet; wait instead of guessing a fixed address that isn't universal
             // across OEMs. K2GO-375: the hotspot owner reruns render() when the AP IP lands, so no local
             // poll is needed here anymore.
-            if (mode == Mode.HOTSPOT) simpleState(getString(R.string.k2go_clone_starting_service), "");
+            if (hsMode.isHotspot()) simpleState(getString(R.string.k2go_clone_starting_service), "");
             else simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
             return;
         }
         ensureDaemon(ip);
-        renderStartState(ip, mode == Mode.HOTSPOT);
+        renderStartState(ip, hsMode.isHotspot());
     }
 
     /**
@@ -819,7 +799,7 @@ public class CloneFragment extends Fragment {
      * already reruns render() when its IP appears.
      */
     private String peerReachableIp() {
-        if (mode == Mode.HOTSPOT) {
+        if (hsMode.isHotspot()) {
             LocalHotspotManager.State st = hs.state().getValue();
             return (st != null) ? st.hotspotIp : null;
         }

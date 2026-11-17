@@ -4,9 +4,10 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-376. Shows the Share invite: two stacked QR sections (join the hotspot, then
- *               scan to receive) once the sender foreground service has opened the share session and
- *               the hotspot is up. Reads state only (the ShareSession + the shared LocalHotspotManager
- *               state); all work is the service's. Done or Back closes the gate + the hotspot via the service.
+ *               scan to receive) once the sender foreground service has opened the share session.
+ *               The Hotspot / Wi-Fi strip is the one place that takes or gives back the share's hold
+ *               on the hotspot (HotspotMode, K2GO-577). Done or Back closes the gate and the hold
+ *               via the service.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -19,6 +20,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -26,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
 import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
+import org.appdevforall.k2go.hotspot.HotspotMode;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.data.ApAddressResolver;
@@ -61,10 +65,24 @@ public class ContentShareFragment extends Fragment {
     /** One-shot guard so a re-entrant render() does not schedule the back-pop twice (K2GO-427). */
     private boolean leaving;
 
-    /** K2GO-376 transport selector: which address the receive QR carries when both exist. false =
-     *  the hotspot AP IP (the default, fast + direct); true = the station Wi-Fi IP (both phones on
-     *  the same network). Ignored when only one address is available. */
-    private boolean useWifiAddress;
+    private ActivityResultLauncher<String[]> hotspotPerm;
+
+    @Override
+    public void onCreate(@Nullable Bundle s) {
+        super.onCreate(s);
+        // The answer re-applies the choice; it never asks again (HotspotMode keeps that latch).
+        hotspotPerm = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), r -> {
+            if (isAdded() && session.hasSession()) {
+                mode().resume();
+                render();
+            }
+        });
+    }
+
+    /** This run's Hotspot / Wi-Fi choice; it lives in the session so it outlasts this view. */
+    private HotspotMode mode() {
+        return session.hotspotMode(requireContext());
+    }
 
     @Nullable
     @Override
@@ -92,8 +110,8 @@ public class ContentShareFragment extends Fragment {
         transportRow = root.findViewById(R.id.k2go_cxs_transport);
         transportHotspot = root.findViewById(R.id.k2go_cxs_transport_hotspot);
         transportWifi = root.findViewById(R.id.k2go_cxs_transport_wifi);
-        transportHotspot.setOnClickListener(v -> selectTransport(false));
-        transportWifi.setOnClickListener(v -> selectTransport(true));
+        transportHotspot.setOnClickListener(v -> requestMode(HotspotMode.Mode.HOTSPOT));
+        transportWifi.setOnClickListener(v -> requestMode(HotspotMode.Mode.WIFI));
 
         done.setOnClickListener(v -> stopAndLeave());
         // Back ends the share like Done (a share left running would make the next Share reopen it
@@ -166,6 +184,11 @@ public class ContentShareFragment extends Fragment {
             goBack();
             return;
         }
+        // Apply the choice on every render, not only on resume: the service opens the session after
+        // this screen first resumes. Hotspot holds the hotspot and asks the permission at most once.
+        if (mode().ensure()) {
+            hotspotPerm.launch(HotspotPermissions.required());
+        }
         // Same "N selected : size" line Content manager showed before Share.
         subtitle.setText(getString(R.string.k2go_cx_selected_fmt, session.itemCount(),
                 ByteFormatter.humanBytes(session.totalBytes())));
@@ -184,65 +207,51 @@ public class ContentShareFragment extends Fragment {
     }
 
     private void renderInvite() {
+        boolean hotspot = mode().isHotspot();
         LocalHotspotManager.State st = hs.state().getValue();
         LocalHotspotManager.Phase phase = st != null ? st.phase : LocalHotspotManager.Phase.OFF;
-
-        if (!LocalHotspotManager.isSupported()) {
-            showStatus(getString(R.string.k2go_cx_share_hotspot_unsupported));
-            return;
-        }
-        if (phase == LocalHotspotManager.Phase.FAILED
-                || (phase != LocalHotspotManager.Phase.ON && !HotspotPermissions.granted(requireContext()))) {
-            showStatus(getString(R.string.k2go_cx_share_hotspot_failed));
-            return;
-        }
-
-        // OFF / STARTING / ON: show the two sections; only ON has scannable codes.
-        showSections();
-        boolean on = phase == LocalHotspotManager.Phase.ON;
-        if (!on) {
-            String starting = getString(R.string.k2go_cx_share_starting_hotspot);
-            for (QrSection sec : new QrSection[]{secJoin, secReceive}) {
-                sec.setQrPending(requireContext(), starting);
-                sec.caption.setText("");
-                sec.subCaption.setText("");
-                sec.setFallback(requireContext(), null);
+        String ip;
+        if (hotspot) {
+            if (!LocalHotspotManager.isSupported()) {
+                showModeStatus(R.string.k2go_cx_share_hotspot_unsupported, R.string.k2go_connect_try_wifi);
+                return;
             }
-            transportRow.setVisibility(View.GONE);
-            waiting.setVisibility(View.GONE);
-            showInviteText(null);
-            return;
+            if (phase == LocalHotspotManager.Phase.FAILED) {
+                showModeStatus(R.string.k2go_cx_share_hotspot_failed, R.string.k2go_connect_try_wifi);
+                return;
+            }
+            if (phase != LocalHotspotManager.Phase.ON && !HotspotPermissions.granted(requireContext())) {
+                // Denied: a tap on Hotspot asks once more (HotspotMode.choose).
+                showModeStatus(R.string.k2go_cx_share_hotspot_failed, R.string.k2go_connect_enable_location);
+                return;
+            }
+            if (phase != LocalHotspotManager.Phase.ON) {
+                // OFF / STARTING: hold both slots until the hotspot is up.
+                showSections(true);
+                String starting = getString(R.string.k2go_cx_share_starting_hotspot);
+                for (QrSection sec : new QrSection[]{secJoin, secReceive}) {
+                    sec.setQrPending(requireContext(), starting);
+                    sec.caption.setText("");
+                    sec.subCaption.setText("");
+                    sec.setFallback(requireContext(), null);
+                }
+                waiting.setVisibility(View.GONE);
+                showInviteText(null);
+                return;
+            }
+            ip = st.hotspotIp;
+        } else {
+            // Wi-Fi: both phones on the same network, so there is nothing to join and no hotspot.
+            ip = ApAddressResolver.resolveStationWifiIp(requireContext());
+            if (ip == null) {
+                showModeStatus(R.string.k2go_connect_no_wifi, 0);
+                return;
+            }
         }
-
-        String ssid = st != null && st.ssid != null ? st.ssid : "";
-        String pass = st != null && st.passphrase != null ? st.passphrase : "";
-        String hotspotIp = st != null ? st.hotspotIp : null;
-        String wifiIp = ApAddressResolver.resolveStationWifiIp(requireContext());
-
-        // Transport selector: a choice only when BOTH addresses exist and differ. With one, use it and
-        // hide the strip (the common case). The hotspot is the default (fast, direct); Wi-Fi lets two
-        // phones already on the same network pull over it, avoiding the Wi-Fi Direct link. When Wi-Fi is
-        // chosen there is nothing to join, so the join-hotspot section is hidden too.
-        boolean both = hotspotIp != null && wifiIp != null && !hotspotIp.equals(wifiIp);
-        transportRow.setVisibility(both ? View.VISIBLE : View.GONE);
-        // The selection persists across a Wi-Fi blip: on Wi-Fi loss the strip just hides and the QR
-        // falls back to whatever address is left; when Wi-Fi returns (a new DHCP IP), the choice is
-        // still Wi-Fi and the QR redraws at the fresh address, instead of silently reverting to hotspot.
-        if (both) {
-            SegmentedTabs.paint(transportHotspot, !useWifiAddress);
-            SegmentedTabs.paint(transportWifi, useWifiAddress);
+        showSections(hotspot);
+        if (hotspot) {
+            secJoin.setWifiJoin(requireContext(), st.ssid, st.passphrase, R.string.k2go_cx_share_join_caption);
         }
-        joinRoot.setVisibility(both && useWifiAddress ? View.GONE : View.VISIBLE);
-        numberSteps();
-        String ip = both ? (useWifiAddress ? wifiIp : hotspotIp)
-                         : (hotspotIp != null ? hotspotIp : wifiIp);
-
-        // Section 1: join the hotspot (standard Wi-Fi auto-join QR + the credentials as fallback).
-        secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
-        secJoin.caption.setText(R.string.k2go_cx_share_join_caption);
-        secJoin.subCaption.setText("");
-        secJoin.setFallback(requireContext(), new String[]{
-                getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
 
         // Section 2: the share invite QR. Needs the AP IPv4, which resolves a beat after ON.
         secReceive.subCaption.setText("");
@@ -275,13 +284,32 @@ public class ContentShareFragment extends Fragment {
         codeBlock.setVisibility(vis);
     }
 
-    /** Pick the address the receive QR carries and repaint the strip (Connect/Clone mode pattern). */
-    private void selectTransport(boolean wifi) {
-        if (wifi == useWifiAddress) {
-            return;   // already selected; no re-encode
+    /**
+     * A tab tap. Leaving Hotspot gives the hotspot back, which drops a receiver joined to it, so warn
+     * first when someone may be connected. A tap on the current tab re-applies it (the retry path
+     * after a denied permission).
+     */
+    private void requestMode(HotspotMode.Mode target) {
+        if (!mode().switchDropsClients(target)) {
+            setMode(target);
+            return;
         }
-        useWifiAddress = wifi;
-        renderInvite();   // re-encode the receive QR at the chosen address and repaint the strip
+        new BrandDialog(requireContext())
+                .setTitle(getString(R.string.k2go_clone_switch_title, getString(R.string.k2go_cx_share_transport_wifi)))
+                .setMessage(R.string.k2go_clone_switch_msg)
+                .setNegative(R.string.k2go_cancel, null)
+                .setPositive(R.string.k2go_clone_switch_confirm, () -> setMode(target))
+                .show();
+    }
+
+    private void setMode(HotspotMode.Mode target) {
+        if (!isAdded() || !session.hasSession()) {
+            return;
+        }
+        if (mode().choose(target)) {
+            hotspotPerm.launch(HotspotPermissions.required());
+        }
+        render();
     }
 
     /** Show a single status line (preparing / hotspot / error) instead of the two QR cards. */
@@ -297,10 +325,25 @@ public class ContentShareFragment extends Fragment {
         showInviteText(null);
     }
 
-    private void showSections() {
+    /** A status under the strip: the chosen transport cannot carry the share yet. [hint] 0 = none. */
+    private void showModeStatus(int message, int hint) {
+        showStatus(hint != 0 ? getString(message) + "\n" + getString(hint) : getString(message));
+        paintTabs();
+    }
+
+    private void paintTabs() {
+        transportRow.setVisibility(View.VISIBLE);
+        boolean hotspot = mode().isHotspot();
+        SegmentedTabs.paint(transportHotspot, hotspot);
+        SegmentedTabs.paint(transportWifi, !hotspot);
+    }
+
+    /** The QR cards; the join card only on Hotspot (on Wi-Fi there is nothing to join). */
+    private void showSections(boolean join) {
         status.setVisibility(View.GONE);
-        joinRoot.setVisibility(View.VISIBLE);
+        joinRoot.setVisibility(join ? View.VISIBLE : View.GONE);
         receiveRoot.setVisibility(View.VISIBLE);
+        paintTabs();
         numberSteps();
     }
 

@@ -26,6 +26,11 @@ public final class HotspotHolders {
         return held.remove(holder) && held.isEmpty();
     }
 
+    /** True when [holder] is the only one left, so its release stops the hotspot. */
+    public synchronized boolean isOnly(Holder holder) {
+        return held.size() == 1 && held.contains(holder);
+    }
+
     /** The hotspot went down for everyone. */
     public synchronized void clear() { held.clear(); }
 

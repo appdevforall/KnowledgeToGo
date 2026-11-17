@@ -1519,13 +1519,11 @@
     <string name="k2go_cx_share_join_caption">Skann på den andre telefonen for å bli med i denne hotspoten.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Denne telefonen kan ikke starte en hotspot for deling.</string>
     <string name="k2go_cx_share_hotspot_failed">Kunne ikke starte hotspoten.</string>
-    <string name="k2go_cx_share_need_permission">Hotspot-tillatelsen er nødvendig for å dele.</string>
     <string name="k2go_cx_share_error">Kunne ikke starte deling.</string>
     <string name="k2go_cx_share_waiting">Hold denne skjermen åpen til den andre telefonen er ferdig.</string>
     <string name="k2go_cx_share_done">Ferdig</string>
     <string name="k2go_cx_share_stop">Stopp</string>
     <string name="k2go_cx_share_notif_title">Deler innhold</string>
-    <string name="k2go_cx_share_notif_text">Hotspoten og delingen forblir åpne.</string>
     <string name="k2go_cx_share_channel_name">Innholdsdeling</string>
     <string name="k2go_cx_toggle_group">Vis eller skjul elementer</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1610,4 +1608,6 @@
     <string name="k2go_about_copied">Detaljer kopiert</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Dette stopper all kopiering som pågår. Den andre telefonen mister fremdriften og må starte på nytt med en ny kode.</string>
+    <string name="k2go_connect_switch_msg">Enheter som er koblet til denne hotspoten, mister tilkoblingen.</string>
+    <string name="k2go_cx_share_notif_open">Delingen er åpen til du stopper den.</string>
 </resources>

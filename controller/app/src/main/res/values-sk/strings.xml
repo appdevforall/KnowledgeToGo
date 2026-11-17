@@ -1516,13 +1516,11 @@
     <string name="k2go_cx_share_join_caption">Naskenujte na druhom telefóne a pripojte sa k tomuto hotspotu.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Tento telefón nemôže spustiť hotspot na zdieľanie.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot sa nepodarilo spustiť.</string>
-    <string name="k2go_cx_share_need_permission">Na zdieľanie je potrebné povolenie hotspotu.</string>
     <string name="k2go_cx_share_error">Zdieľanie sa nepodarilo spustiť.</string>
     <string name="k2go_cx_share_waiting">Nechajte túto obrazovku otvorenú, kým druhý telefón neskončí.</string>
     <string name="k2go_cx_share_done">Hotovo</string>
     <string name="k2go_cx_share_stop">Zastaviť</string>
     <string name="k2go_cx_share_notif_title">Zdieľanie obsahu</string>
-    <string name="k2go_cx_share_notif_text">Hotspot a zdieľanie zóstajú otvorené.</string>
     <string name="k2go_cx_share_channel_name">Zdieľanie obsahu</string>
     <string name="k2go_cx_toggle_group">Zobraziť alebo skryť položky</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1607,4 +1605,6 @@
     <string name="k2go_about_copied">Podrobnosti skopírované</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Tým sa zastaví prebiehajúce kopírovanie. Druhý telefón stratí priebeh a musí začať znova s novým kódom.</string>
+    <string name="k2go_connect_switch_msg">Zariadenia pripojené k tomuto hotspotu stratia pripojenie.</string>
+    <string name="k2go_cx_share_notif_open">Zdieľanie zostane otvorené, kým ho nezastavíte.</string>
 </resources>

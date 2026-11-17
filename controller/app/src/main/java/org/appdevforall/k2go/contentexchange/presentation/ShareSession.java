@@ -11,8 +11,12 @@
  */
 package org.appdevforall.k2go.contentexchange.presentation;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+
+import org.appdevforall.k2go.hotspot.HotspotMode;
+import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 
 final class ShareSession {
 
@@ -36,6 +40,8 @@ final class ShareSession {
     private String token;
     private String manifestUrl;
     private String errorMessage;
+    /** The sender's Hotspot / Wi-Fi choice for this run (K2GO-577); fresh per run, Hotspot first. */
+    private HotspotMode hotspotMode;
 
     void setListener(Listener l) {
         this.listener = l;
@@ -52,6 +58,7 @@ final class ShareSession {
         this.token = null;
         this.manifestUrl = null;
         this.errorMessage = null;
+        this.hotspotMode = null;
         this.phase = Phase.PREPARING;
         this.active = true;
         publish();
@@ -81,6 +88,7 @@ final class ShareSession {
         token = null;
         manifestUrl = null;
         errorMessage = null;
+        hotspotMode = null;
         publish();
     }
 
@@ -132,5 +140,13 @@ final class ShareSession {
 
     String errorMessage() {
         return errorMessage;
+    }
+
+    /** This run's Hotspot / Wi-Fi rule, made on first use. The service releases the hold on exit. */
+    HotspotMode hotspotMode(Context context) {
+        if (hotspotMode == null) {
+            hotspotMode = HotspotMode.of(context, HotspotHolders.Holder.CONTENT_SHARE, HotspotMode.Mode.HOTSPOT);
+        }
+        return hotspotMode;
     }
 }

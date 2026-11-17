@@ -53,4 +53,13 @@ public final class HotspotHoldersTest {
         assertTrue(h.isEmpty());
         assertFalse(h.releaseLast(Holder.CONNECT));
     }
+
+    @Test public void isOnly_trueOnlyForTheLastHolder() {
+        HotspotHolders h = new HotspotHolders();
+        assertFalse(h.isOnly(Holder.CONNECT));
+        h.add(Holder.CONNECT);
+        assertTrue(h.isOnly(Holder.CONNECT));
+        h.add(Holder.CONTENT_SHARE);   // K2GO-577: Connect's release keeps the hotspot up for Share
+        assertFalse(h.isOnly(Holder.CONNECT));
+    }
 }

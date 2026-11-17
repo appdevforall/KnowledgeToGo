@@ -1509,13 +1509,11 @@
     <string name="k2go_cx_share_join_caption">Esegui la scansione sull\'altro telefono per partecipare a questo hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Questo telefono non può avviare un hotspot per la condivisione.</string>
     <string name="k2go_cx_share_hotspot_failed">Impossibile avviare l\'hotspot.</string>
-    <string name="k2go_cx_share_need_permission">L\'autorizzazione hotspot è necessaria per la condivisione.</string>
     <string name="k2go_cx_share_error">Impossibile avviare la condivisione.</string>
     <string name="k2go_cx_share_waiting">Tieni questa schermata aperta finché l\'altro telefono non ha terminato.</string>
     <string name="k2go_cx_share_done">Fatto</string>
     <string name="k2go_cx_share_stop">Interrompi</string>
     <string name="k2go_cx_share_notif_title">Condivisione dei contenuti</string>
-    <string name="k2go_cx_share_notif_text">L\'hotspot e la condivisione restano aperti.</string>
     <string name="k2go_cx_share_channel_name">Condivisione contenuti</string>
     <string name="k2go_cx_toggle_group">Mostra o nascondi gli elementi</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1600,4 +1598,6 @@
     <string name="k2go_about_copied">Dettagli copiati</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Questo interrompe qualsiasi copia in corso. L\'altro telefono perde i progressi e deve ricominciare con un nuovo codice.</string>
+    <string name="k2go_connect_switch_msg">I dispositivi connessi a questo hotspot perdono la connessione.</string>
+    <string name="k2go_cx_share_notif_open">La condivisione resta aperta finché non la interrompi.</string>
 </resources>

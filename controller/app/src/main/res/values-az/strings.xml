@@ -1529,13 +1529,11 @@
     <string name="k2go_cx_share_join_caption">Bu hotspota qoşulmaq üçün digər telefonda skan edin.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Bu telefon paylaşmaq üçün hotspot başlada bilmir.</string>
     <string name="k2go_cx_share_hotspot_failed">Hotspot başladıla bilmədi.</string>
-    <string name="k2go_cx_share_need_permission">Paylaşmaq üçün hotspot icazəsi lazımdır.</string>
     <string name="k2go_cx_share_error">Paylaşma başladıla bilmədi.</string>
     <string name="k2go_cx_share_waiting">Digər telefon bitirənə qədər bu ekranı açıq saxlayın.</string>
     <string name="k2go_cx_share_done">Hazırdır</string>
     <string name="k2go_cx_share_stop">Dayandır</string>
     <string name="k2go_cx_share_notif_title">Məzmun paylaşılır</string>
-    <string name="k2go_cx_share_notif_text">Hotspot və paylaşma açıq qalır.</string>
     <string name="k2go_cx_share_channel_name">Məzmun paylaşımı</string>
     <string name="k2go_cx_toggle_group">Elementləri göstər və ya gizlət</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1620,4 +1618,6 @@
     <string name="k2go_about_copied">Təfərrüatlar kopyalandı</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Bu, davam edən istənilən köçürməni dayandırır. Digər telefon irəliləyişini itirir və yeni kodla yenidən başlamalıdır.</string>
+    <string name="k2go_connect_switch_msg">Bu hotspota qoşulmuş cihazların bağlantısı kəsiləcək.</string>
+    <string name="k2go_cx_share_notif_open">Paylaşım siz dayandırana qədər açıq qalır.</string>
 </resources>

@@ -1529,13 +1529,11 @@
     <string name="k2go_cx_share_join_caption">இந்த ஹாட்ஸ்பாட்டில் இணைய மற்றொரு ஃபோனில் ஸ்கேன் செய்யவும்.</string>
     <string name="k2go_cx_share_hotspot_unsupported">இந்த ஃபோன் பகிர்வதற்கு ஹாட்ஸ்பாட்டைத் தொடங்க முடியாது.</string>
     <string name="k2go_cx_share_hotspot_failed">ஹாட்ஸ்பாட்டைத் தொடங்க முடியவில்லை.</string>
-    <string name="k2go_cx_share_need_permission">பகிர்வதற்கு ஹாட்ஸ்பாட் அனுமதி தேவை.</string>
     <string name="k2go_cx_share_error">பகிர்வதைத் தொடங்க முடியவில்லை.</string>
     <string name="k2go_cx_share_waiting">மற்றொரு ஃபோன் முடிக்கும் வரை இந்தத் திரையைத் திறந்தே வையுங்கள்.</string>
     <string name="k2go_cx_share_done">முடிந்தது</string>
     <string name="k2go_cx_share_stop">நிறுத்து</string>
     <string name="k2go_cx_share_notif_title">உள்ளடக்கம் பகிரப்படுகிறது</string>
-    <string name="k2go_cx_share_notif_text">ஹாட்ஸ்பாட்டும் பகிர்வும் திறந்தே இருக்கும்.</string>
     <string name="k2go_cx_share_channel_name">உள்ளடக்கப் பகிர்வு</string>
     <string name="k2go_cx_toggle_group">உருப்படிகளைக் காட்டு அல்லது மறை</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1620,4 +1618,6 @@
     <string name="k2go_about_copied">விவரங்கள் நகலெடுக்கப்பட்டன</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">இது நடந்துகொண்டிருக்கும் எந்த நகலெடுப்பையும் நிறுத்துகிறது. மற்ற ஃபோன் அதன் முன்னேற்றத்தை இழக்கும், புதிய குறியீட்டுடன் மீண்டும் தொடங்க வேண்டும்.</string>
+    <string name="k2go_connect_switch_msg">இந்த ஹாட்ஸ்பாட்டுடன் இணைந்த சாதனங்கள் இணைப்பை இழக்கும்.</string>
+    <string name="k2go_cx_share_notif_open">நீங்கள் நிறுத்தும் வரை பகிர்வு திறந்திருக்கும்.</string>
 </resources>

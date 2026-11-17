@@ -114,12 +114,25 @@ public class ContentReceiveFragment extends Fragment {
      * the kernel traps the connection on loopback (the local route beats any per-Network binding) and
      * the receiver reaches itself instead of the sender ("Could not reach the sender"). Tear our own
      * hotspot down and wait until the sender address is no longer one of our interfaces, then fetch.
-     * The hotspot stays off; only Share starts it again. K2GO-376.
+     * K2GO-376. Only on that collision (K2GO-577): a sender on the shared Wi-Fi does not touch our
+     * hotspot, so Connect keeps serving while this phone receives.
      */
     private void prepareThenFetch() {
         showConnecting();
-        LocalHotspotManager.get().stop();   // no-op if we are not hosting
-        waitHostRemoteThenFetch(0);
+        worker.execute(() -> {
+            boolean collides = NetworkInterfaces.isLocalAddress(host);
+            main.post(() -> {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+                if (collides) {
+                    LocalHotspotManager.get().stop();
+                    waitHostRemoteThenFetch(0);
+                } else {
+                    fetchManifest();
+                }
+            });
+        });
     }
 
     /** Poll off the main thread until the sender address is no longer a local interface address, then

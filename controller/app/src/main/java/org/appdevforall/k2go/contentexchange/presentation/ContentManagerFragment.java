@@ -39,14 +39,10 @@ import org.appdevforall.k2go.contentexchange.domain.ContentItem;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
 import org.appdevforall.k2go.contentexchange.domain.ManagedContent;
 import org.appdevforall.k2go.contentexchange.domain.StorageStatus;
-import org.appdevforall.k2go.hotspot.HotspotPermissions;
-import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.storage.StorageProbe;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.ByteFormatter;
-import org.appdevforall.k2go.util.SnackbarDuration;
 
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +69,6 @@ public class ContentManagerFragment extends Fragment {
     private Button deleteButton;
     private Button shareButton;
 
-    /** The selection captured when Share was tapped, held across the hotspot-permission round-trip. */
-    private List<ContentItem> pendingShare;
-    /** Runtime hotspot permission (NEARBY_WIFI_DEVICES / ACCESS_FINE_LOCATION), requested before the
-     *  share foreground service brings the hotspot up (it cannot prompt from a service). */
-    private ActivityResultLauncher<String[]> hotspotPerm;
 
     /** Set when a delete run is launched, so the manager reloads the list (and reclaimed space) when
      *  it next resumes. Cleared once the reload runs and the run has settled. */
@@ -106,8 +97,6 @@ public class ContentManagerFragment extends Fragment {
         openTree = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::onTreePicked);
         openImportTree = registerForActivityResult(
                 new ActivityResultContracts.OpenDocumentTree(), this::onImportTreePicked);
-        hotspotPerm = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(), result -> onHotspotPermissionResult());
         exportButton.setEnabled(true);
         exportButton.setOnClickListener(v -> onExportClicked());
         importButton.setOnClickListener(v -> onImportClicked());
@@ -335,11 +324,8 @@ public class ContentManagerFragment extends Fragment {
             showImportProgress();
             return;
         }
-        // Tear our own hotspot down the moment Receive starts: the sender's AP IP (always 192.168.49.1)
-        // collides with our own hotspot IP if we are hosting, which traps the connection locally.
-        // Stopping here lets the interface release while the user joins and scans; ContentReceiveFragment
-        // also waits for the release before it connects. K2GO-376.
-        LocalHotspotManager.get().stop();
+        // Our own hotspot stays up here: ContentReceiveFragment stops it only when the sender's address
+        // collides with it (K2GO-376, K2GO-577), so a Wi-Fi share does not cut Connect.
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ContentReceiveStartFragment())
                 .addToBackStack(null)
@@ -433,41 +419,16 @@ public class ContentManagerFragment extends Fragment {
 
     // ---- share ---------------------------------------------------------------------------------
 
-    /** Share: if a run is still live, just show it; otherwise capture the selection and make sure the
-     *  hotspot permission is granted (the service cannot prompt) before starting. */
+    /** Share: if a run is still live, just show it; otherwise start one over the selection. The share
+     *  screen picks Hotspot or Wi-Fi and asks the hotspot permission itself (K2GO-577). */
     private void onShareClicked() {
         if (ContentShareService.session().hasSession()) {
             showShareProgress();
             return;
         }
         List<ContentItem> selected = viewModel.selectedItems();
-        if (selected.isEmpty()) {
-            return;
-        }
-        pendingShare = selected;
-        if (!LocalHotspotManager.isSupported()) {
-            String msg = getString(R.string.k2go_cx_share_hotspot_unsupported);
-            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
-            return;
-        }
-        if (HotspotPermissions.granted(requireContext())) {
-            startShare(pendingShare);
-        } else {
-            hotspotPerm.launch(HotspotPermissions.required());
-        }
-    }
-
-    /** The hotspot-permission request returned: start when granted, otherwise say why we cannot. */
-    private void onHotspotPermissionResult() {
-        if (!isAdded()) {
-            return;
-        }
-        if (pendingShare != null && HotspotPermissions.granted(requireContext())) {
-            startShare(pendingShare);
-        } else {
-            pendingShare = null;   // the request was declined; drop the held selection
-            String msg = getString(R.string.k2go_cx_share_need_permission);
-            Snackbar.make(requireView(), msg, SnackbarDuration.millisForText(msg)).show();
+        if (!selected.isEmpty()) {
+            startShare(selected);
         }
     }
 
@@ -479,7 +440,6 @@ public class ContentManagerFragment extends Fragment {
             bytes += selected.get(i).bytes();
         }
         ContentShareService.start(requireContext(), refs, bytes);
-        pendingShare = null;
         viewModel.clearSelection();
         showShareProgress();
     }

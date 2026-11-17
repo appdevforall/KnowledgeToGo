@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.hotspot.domain.WifiQr;
 import org.appdevforall.k2go.sync.transport.QrCodec;
 import org.appdevforall.k2go.util.EllipsisAnimator;
 import org.appdevforall.k2go.util.M3Text;
@@ -107,6 +108,20 @@ public final class QrSection {
      * caption above says what this is (".. or use the following credentials instead:"). The old
      * "Scan didn't work?" / "Hide" toggle is gone.
      */
+    /**
+     * The join-the-hotspot card that Connect, Clone and Share show (K2GO-577): the Wi-Fi auto-join QR,
+     * [captionRes] under it, and the name and password as the fallback. Null values show as empty.
+     */
+    public void setWifiJoin(Context ctx, String ssid, String pass, int captionRes) {
+        String name = ssid != null ? ssid : "";
+        String key = pass != null ? pass : "";
+        setQr(ctx, WifiQr.payload(name, key), null);
+        caption.setText(captionRes);
+        subCaption.setText("");
+        setFallback(ctx, new String[]{
+                ctx.getString(R.string.k2go_fallback_wifi, name), ctx.getString(R.string.k2go_fallback_pass, key)});
+    }
+
     public void setFallback(Context ctx, String[] vals) {
         fallbackToggle.setVisibility(View.GONE);   // ADFA-5236: no reveal toggle anymore
         fallbackValues.removeAllViews();

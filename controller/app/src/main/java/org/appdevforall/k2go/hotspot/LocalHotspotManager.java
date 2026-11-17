@@ -56,19 +56,28 @@ public final class LocalHotspotManager {
         // interface has been assigned its address: ON is first emitted with this null (the reservation
         // reports started before the interface has an IP), then re-emitted with the resolved value.
         public final String hotspotIp;
+        // K2GO-577: devices joined to the hotspot, so a screen can warn before it turns the hotspot off.
+        // Known only for the Wi-Fi Direct group; CLIENTS_UNKNOWN for a LocalOnlyHotspot (no public API).
+        public final int clients;
 
-        State(Phase phase, String ssid, String passphrase, int failureReason, String hotspotIp) {
+        State(Phase phase, String ssid, String passphrase, int failureReason, String hotspotIp, int clients) {
             this.phase = phase;
             this.ssid = ssid;
             this.passphrase = passphrase;
             this.failureReason = failureReason;
             this.hotspotIp = hotspotIp;
+            this.clients = clients;
         }
 
-        static State off() { return new State(Phase.OFF, null, null, 0, null); }
-        static State starting() { return new State(Phase.STARTING, null, null, 0, null); }
-        static State on(String ssid, String pass, String ip) { return new State(Phase.ON, ssid, pass, 0, ip); }
-        static State failed(int reason) { return new State(Phase.FAILED, null, null, reason, null); }
+        /** True when someone is, or may be, joined to the hotspot. */
+        public boolean mayHaveClients() { return phase == Phase.ON && clients != 0; }
+
+        static State off() { return new State(Phase.OFF, null, null, 0, null, 0); }
+        static State starting() { return new State(Phase.STARTING, null, null, 0, null, 0); }
+        static State on(String ssid, String pass, String ip, int clients) {
+            return new State(Phase.ON, ssid, pass, 0, ip, clients);
+        }
+        static State failed(int reason) { return new State(Phase.FAILED, null, null, reason, null, 0); }
     }
 
     private static final LocalHotspotManager INSTANCE = new LocalHotspotManager();
@@ -93,6 +102,9 @@ public final class LocalHotspotManager {
     // Distinct from the LocalOnlyHotspotCallback.ERROR_* codes (1..4), so the UI can tell this apart
     // and offer a retry instead of the "couldn't start the hotspot" / enable-location hint.
     public static final int REASON_ADDRESS_UNRESOLVED = 1001;
+
+    /** {@link State#clients} when the hotspot cannot report its clients (LocalOnlyHotspot). */
+    public static final int CLIENTS_UNKNOWN = -1;
 
     // Object type kept generic so this file compiles on API < 26; cast at use sites.
     private Object reservation; // WifiManager.LocalOnlyHotspotReservation
@@ -225,7 +237,13 @@ public final class LocalHotspotManager {
                     @Override public void onUp(String ssid, String pass, String ip) {
                         if (gen != generation) { m.stop(); return; }   // superseded by a newer start/stop
                         Log.d(TAG, "Wi-Fi Direct up, ssid=" + ssid);
-                        publish(State.on(ssid, pass, ip));
+                        publish(State.on(ssid, pass, ip, 0));
+                    }
+                    @Override public void onClients(int count) {
+                        State cur = state.getValue();
+                        if (gen != generation || cur == null || cur.phase != Phase.ON
+                                || cur.clients == count) return;
+                        publish(State.on(cur.ssid, cur.passphrase, cur.hotspotIp, count));
                     }
                     @Override public void onFailed(String reason) {
                         Log.w(TAG, "Wi-Fi Direct unavailable, falling back to LocalOnlyHotspot: " + reason);
@@ -275,7 +293,7 @@ public final class LocalHotspotManager {
                     pass = unquote(pass);
                     Log.d(TAG, "LocalOnlyHotspot started, ssid=" + ssid);
                     // ON is emitted with no IP yet; the poll re-emits once the AP interface has one.
-                    publish(State.on(ssid, pass, null));
+                    publish(State.on(ssid, pass, null, CLIENTS_UNKNOWN));
                     beginHotspotIpPoll(context.getApplicationContext(), ssid, pass);
                 }
 
@@ -309,6 +327,12 @@ public final class LocalHotspotManager {
     public void acquire(Context context, HotspotHolders.Holder holder) {
         holders.add(holder);
         start(context);
+    }
+
+    /** True when releasing [holder] stops a hotspot that someone is, or may be, joined to. */
+    public boolean releaseDropsClients(HotspotHolders.Holder holder) {
+        State s = state.getValue();
+        return s != null && s.mayHaveClients() && holders.isOnly(holder);
     }
 
     /** [holder] no longer needs the hotspot. Stops it when no other holder is left. */
@@ -378,7 +402,7 @@ public final class LocalHotspotManager {
                 if (cur.hotspotIp != null) return;                  // already resolved
                 String ip = ApAddressResolver.resolveOnce(ctx, null);
                 if (ip != null) {
-                    publish(State.on(ssid, pass, ip));              // resolved: re-emit through the one path
+                    publish(State.on(ssid, pass, ip, CLIENTS_UNKNOWN));            // resolved: re-emit through the one path
                     return;
                 }
                 if (++tries >= AP_IP_MAX_POLLS) {                    // K2GO-471: terminal, not a silent stop

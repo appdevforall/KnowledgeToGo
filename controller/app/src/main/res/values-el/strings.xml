@@ -1516,13 +1516,11 @@
     <string name="k2go_cx_share_join_caption">Σαρώστε στο άλλο τηλέφωνο για να συνδεθείτε σε αυτό το hotspot.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Αυτό το τηλέφωνο δεν μπορεί να ξεκινήσει hotspot για κοινή χρήση.</string>
     <string name="k2go_cx_share_hotspot_failed">Δεν ήταν δυνατή η εκκίνηση του hotspot.</string>
-    <string name="k2go_cx_share_need_permission">Απαιτείται η άδεια hotspot για κοινή χρήση.</string>
     <string name="k2go_cx_share_error">Δεν ήταν δυνατή η έναρξη της κοινής χρήσης.</string>
     <string name="k2go_cx_share_waiting">Κρατήστε αυτήν την οθόνη ανοιχτή μέχρι να τελειώσει το άλλο τηλέφωνο.</string>
     <string name="k2go_cx_share_done">Τέλος</string>
     <string name="k2go_cx_share_stop">Διακοπή</string>
     <string name="k2go_cx_share_notif_title">Κοινή χρήση περιεχομένου</string>
-    <string name="k2go_cx_share_notif_text">Το hotspot και η κοινή χρήση παραμένουν ανοιχτά.</string>
     <string name="k2go_cx_share_channel_name">Κοινή χρήση περιεχομένου</string>
     <string name="k2go_cx_toggle_group">Εμφάνιση ή απόκρυψη στοιχείων</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1607,4 +1605,6 @@
     <string name="k2go_about_copied">Οι λεπτομέρειες αντιγράφηκαν</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Αυτό σταματά κάθε αντιγραφή σε εξέλιξη. Το άλλο τηλέφωνο χάνει την πρόοδό του και πρέπει να ξεκινήσει ξανά με νέο κωδικό.</string>
+    <string name="k2go_connect_switch_msg">Οι συσκευές που είναι συνδεδεμένες σε αυτό το hotspot χάνουν τη σύνδεσή τους.</string>
+    <string name="k2go_cx_share_notif_open">Η κοινή χρήση παραμένει ανοιχτή μέχρι να τη σταματήσετε.</string>
 </resources>

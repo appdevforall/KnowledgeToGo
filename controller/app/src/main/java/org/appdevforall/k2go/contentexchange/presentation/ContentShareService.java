@@ -5,10 +5,10 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : K2GO-376. Sender foreground service for granular wireless Share. Over the current
  *               content-manager selection it opens a scoped share session on the LOCAL conex-core
- *               (loopback), brings the hotspot up (only if it was off), holds both the hotspot and
- *               the gate open with CPU + Wi-Fi locks, and on teardown closes the gate (DELETE) and
- *               stops the hotspot only if it started it. It copies NO bytes: conex-core streams to the
- *               receiver that pulls over the hotspot. The invite/QR fragment observes SESSION.
+ *               (loopback), holds the gate open with CPU + Wi-Fi locks, and on teardown closes the
+ *               gate (DELETE) and gives back the share's hold on the hotspot. The share screen takes
+ *               that hold only when the user picks Hotspot (K2GO-577). It copies NO bytes: the
+ *               receiver pulls from conex-core. The invite/QR fragment observes SESSION.
  * ============================================================================
  */
 package org.appdevforall.k2go.contentexchange.presentation;
@@ -32,7 +32,6 @@ import androidx.core.content.ContextCompat;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
-import org.appdevforall.k2go.hotspot.HotspotPermissions;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.notifications.NotificationIds;
@@ -142,7 +141,7 @@ public final class ContentShareService extends Service {
         SESSION.beginPreparing(refs.length, intent.getLongExtra(EXTRA_TOTAL_BYTES, 0L));
         startForeground(NOTIFICATION_ID, buildNotification());
         acquireHardwareLocks();
-        ensureHotspot();
+        // No hotspot here: the share screen holds it only while the user picks Hotspot (K2GO-577).
         worker.execute(() -> openSession(refs));
         // START_STICKY (like CloneShareService): keep the process at foreground priority so the
         // process-bound hotspot and the live stream survive backgrounding and Doze.
@@ -169,20 +168,6 @@ public final class ContentShareService extends Service {
             SESSION.setReady(created.sessionId, created.token, created.manifestUrl);
         } catch (Exception e) {
             SESSION.fail(getString(R.string.k2go_cx_share_error));
-        }
-    }
-
-    /**
-     * Hold the shared hotspot for this share (starts it if off). The runtime hotspot permission is
-     * gated by the fragment before start; without it the hotspot stays off and the fragment surfaces
-     * the failure from LocalHotspotManager's state.
-     */
-    private void ensureHotspot() {
-        if (!LocalHotspotManager.isSupported()) {
-            return;
-        }
-        if (HotspotPermissions.granted(this)) {
-            LocalHotspotManager.get().acquire(getApplicationContext(), HotspotHolders.Holder.CONTENT_SHARE);
         }
     }
 
@@ -259,7 +244,7 @@ public final class ContentShareService extends Service {
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_cx_share_notif_title))
-                .setContentText(getString(R.string.k2go_cx_share_notif_text))
+                .setContentText(getString(R.string.k2go_cx_share_notif_open))
                 .setSmallIcon(android.R.drawable.stat_sys_upload)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

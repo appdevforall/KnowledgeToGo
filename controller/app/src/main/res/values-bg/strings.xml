@@ -1516,13 +1516,11 @@
     <string name="k2go_cx_share_join_caption">Сканирайте на другия телефон, за да се присъедините към тази точка за достъп.</string>
     <string name="k2go_cx_share_hotspot_unsupported">Този телефон не може да стартира точка за достъп за споделяне.</string>
     <string name="k2go_cx_share_hotspot_failed">Точката за достъп не можа да се стартира.</string>
-    <string name="k2go_cx_share_need_permission">За споделяне е необходимо разрешение за точка за достъп.</string>
     <string name="k2go_cx_share_error">Споделянето не можа да стартира.</string>
     <string name="k2go_cx_share_waiting">Дръжте този екран отворен, докато другият телефон приключи.</string>
     <string name="k2go_cx_share_done">Готово</string>
     <string name="k2go_cx_share_stop">Спиране</string>
     <string name="k2go_cx_share_notif_title">Споделяне на съдържание</string>
-    <string name="k2go_cx_share_notif_text">Точката за достъп и споделянето остават отворени.</string>
     <string name="k2go_cx_share_channel_name">Споделяне на съдържание</string>
     <string name="k2go_cx_toggle_group">Показване или скриване на елементите</string>
     <!-- K2GO-376 Share receiver strings: machine-translated, pending human review -->
@@ -1607,4 +1605,6 @@
     <string name="k2go_about_copied">Подробностите са копирани</string>
     <string name="k2go_about_android_value">%1$s (API %2$d)</string>
     <string name="k2go_cx_share_stop_msg">Това спира всяко копиране в ход. Другият телефон губи напредъка си и трябва да започне отново с нов код.</string>
+    <string name="k2go_connect_switch_msg">Устройствата, свързани към тази точка за достъп, губят връзката си.</string>
+    <string name="k2go_cx_share_notif_open">Споделянето остава отворено, докато не го спрете.</string>
 </resources>
