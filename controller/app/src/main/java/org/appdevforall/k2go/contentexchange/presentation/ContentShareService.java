@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ConexCoreDataSource;
 import org.appdevforall.k2go.contentexchange.domain.ItemRef;
+import org.appdevforall.k2go.contentexchange.domain.ShareProgress;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 import org.appdevforall.k2go.notifications.NotificationIds;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public final class ContentShareService extends Service {
 
@@ -61,6 +64,11 @@ public final class ContentShareService extends Service {
     }
 
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
+    /** K2GO-577: polls the receiver's progress while the session is open. Stopped when the share
+     *  ends, when the box cannot report progress, and in onDestroy. */
+    private final ScheduledExecutorService poller = Executors.newSingleThreadScheduledExecutor();
+    private static final long POLL_MS = 1000L;
+    private int lastNotifiedPercent = -1;
 
     // The open session on the local conex-core, held so onDestroy can close the gate. Set by the worker.
     private volatile String sessionId;
@@ -82,6 +90,18 @@ public final class ContentShareService extends Service {
                 .putExtra(EXTRA_LOCAL_REFS, locals)
                 .putExtra(EXTRA_TOTAL_BYTES, totalBytes);
         ContextCompat.startForegroundService(ctx, i);
+    }
+
+    /**
+     * Leave the share screen. An ended share already stopped the service, so only the result is
+     * cleared; a live one is cancelled (K2GO-577).
+     */
+    public static void dismiss(Context ctx) {
+        if (SESSION.isEnded()) {
+            SESSION.clear();
+        } else {
+            cancel(ctx);
+        }
     }
 
     /** Stop sharing (the user's "Done"/"Stop", and the notification action): closes the gate and the
@@ -166,8 +186,50 @@ public final class ContentShareService extends Service {
             this.sessionId = created.sessionId;
             this.token = created.token;
             SESSION.setReady(created.sessionId, created.token, created.manifestUrl);
+            poller.scheduleWithFixedDelay(this::pollProgress, POLL_MS, POLL_MS, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             SESSION.fail(getString(R.string.k2go_cx_share_error));
+        }
+    }
+
+    /**
+     * One poll of the receiver's progress (K2GO-577). A transport blip is ignored (the next poll
+     * retries). A box without the progress route stops the polling; an ended share stops the
+     * service, which releases the locks and the hotspot, and the screen keeps the result.
+     */
+    private void pollProgress() {
+        final String id = sessionId;
+        final String tok = token;
+        if (id == null || tok == null || !SESSION.hasSession()) {
+            return;
+        }
+        ShareProgress p;
+        try {
+            p = new ConexCoreDataSource().getShareProgress(id, tok);
+        } catch (Exception e) {
+            return;
+        }
+        if (p == null) {
+            poller.shutdown();
+            return;
+        }
+        SESSION.setProgress(p);
+        if (p.isEnded()) {
+            poller.shutdown();
+            stopForeground(true);
+            stopSelf();
+            return;
+        }
+        if (p.hasActivity()) {
+            int percent = p.percent(SESSION.totalBytes(), SESSION.itemCount());
+            if (percent != lastNotifiedPercent) {
+                lastNotifiedPercent = percent;
+                NotificationManager nm = getSystemService(NotificationManager.class);
+                if (nm != null) {
+                    nm.notify(NOTIFICATION_ID, buildNotification(
+                            getString(R.string.k2go_cx_export_overall_fmt, percent)));
+                }
+            }
         }
     }
 
@@ -215,6 +277,7 @@ public final class ContentShareService extends Service {
             }, "content-share-close").start();
         }
         worker.shutdownNow();
+        poller.shutdownNow();
         super.onDestroy();
     }
 
@@ -239,12 +302,16 @@ public final class ContentShareService extends Service {
     // ---- notification --------------------------------------------------------------------------
 
     private Notification buildNotification() {
+        return buildNotification(getString(R.string.k2go_cx_share_notif_open));
+    }
+
+    private Notification buildNotification(String text) {
         Intent cancel = new Intent(this, ContentShareService.class).setAction(ACTION_CANCEL);
         PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_cx_share_notif_title))
-                .setContentText(getString(R.string.k2go_cx_share_notif_open))
+                .setContentText(text)
                 .setSmallIcon(android.R.drawable.stat_sys_upload)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

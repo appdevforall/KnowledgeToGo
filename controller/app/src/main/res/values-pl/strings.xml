@@ -1610,4 +1610,8 @@
     <string name="k2go_cx_share_stop_msg">To zatrzymuje każde trwające kopiowanie. Drugi telefon traci postęp i musi zacząć od nowa z nowym kodem.</string>
     <string name="k2go_connect_switch_msg">Urządzenia połączone z tym hotspotem utracą połączenie.</string>
     <string name="k2go_cx_share_notif_open">Udostępnianie pozostaje otwarte, dopóki go nie zatrzymasz.</string>
+    <string name="k2go_cx_share_sending">Wysyłanie na drugi telefon</string>
+    <string name="k2go_cx_share_complete">Przesyłanie zakończone. Drugi telefon ma zawartość.</string>
+    <string name="k2go_cx_share_cancelled">Drugi telefon zatrzymał przesyłanie.</string>
+    <string name="k2go_cx_share_ended">Udostępnianie zakończone.</string>
 </resources>

@@ -15,6 +15,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import org.appdevforall.k2go.contentexchange.domain.ShareProgress;
 import org.appdevforall.k2go.hotspot.HotspotMode;
 import org.appdevforall.k2go.hotspot.domain.HotspotHolders;
 
@@ -42,6 +43,9 @@ final class ShareSession {
     private String errorMessage;
     /** The sender's Hotspot / Wi-Fi choice for this run (K2GO-577); fresh per run, Hotspot first. */
     private HotspotMode hotspotMode;
+    /** The receiver's last reported progress, or how the session ended (K2GO-577). Null until
+     *  the first poll, and when the box cannot report it. */
+    private volatile ShareProgress progress;
 
     void setListener(Listener l) {
         this.listener = l;
@@ -59,6 +63,7 @@ final class ShareSession {
         this.manifestUrl = null;
         this.errorMessage = null;
         this.hotspotMode = null;
+        this.progress = null;
         this.phase = Phase.PREPARING;
         this.active = true;
         publish();
@@ -89,6 +94,13 @@ final class ShareSession {
         manifestUrl = null;
         errorMessage = null;
         hotspotMode = null;
+        progress = null;
+        publish();
+    }
+
+    /** The service's poll result: the receiver's progress, or how the session ended. */
+    void setProgress(ShareProgress p) {
+        this.progress = p;
         publish();
     }
 
@@ -140,6 +152,17 @@ final class ShareSession {
 
     String errorMessage() {
         return errorMessage;
+    }
+
+    ShareProgress progress() {
+        return progress;
+    }
+
+    /** The share is over (the receiver finished or stopped, or the session expired): the screen
+     *  shows the result until the user leaves, and nothing should hold the hotspot for it. */
+    boolean isEnded() {
+        ShareProgress p = progress;
+        return active && p != null && p.isEnded();
     }
 
     /** This run's Hotspot / Wi-Fi rule, made on first use. The service releases the hold on exit. */

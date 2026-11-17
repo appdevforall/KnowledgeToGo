@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.contentexchange.data.ShareHandshake;
+import org.appdevforall.k2go.contentexchange.domain.ShareProgress;
 import org.appdevforall.k2go.contentexchange.domain.ShareTransport;
 import org.appdevforall.k2go.hotspot.HotspotMode;
 import org.appdevforall.k2go.hotspot.HotspotPermissions;
@@ -58,6 +59,9 @@ public class ContentShareFragment extends Fragment {
     private TextView transportHotspot;
     private TextView transportWifi;
     private Button done;
+    private View progressBlock;
+    private com.google.android.material.progressindicator.LinearProgressIndicator progressBar;
+    private TextView progressDetail;
 
     private final ShareSession session = ContentShareService.session();
     private final LocalHotspotManager hs = LocalHotspotManager.get();
@@ -92,6 +96,9 @@ public class ContentShareFragment extends Fragment {
         status = root.findViewById(R.id.k2go_cxs_status);
         waiting = root.findViewById(R.id.k2go_cxs_waiting);
         done = root.findViewById(R.id.k2go_cxs_done);
+        progressBlock = root.findViewById(R.id.k2go_cxs_progress);
+        progressBar = root.findViewById(R.id.k2go_cxs_progress_bar);
+        progressDetail = root.findViewById(R.id.k2go_cxs_progress_detail);
 
         joinRoot = root.findViewById(R.id.k2go_cxs_join);
         receiveRoot = root.findViewById(R.id.k2go_cxs_receive);
@@ -120,7 +127,7 @@ public class ContentShareFragment extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        if (session.hasError()) {
+                        if (session.hasError() || session.isEnded()) {
                             stopAndLeave();   // nothing is being sent
                             return;
                         }
@@ -184,6 +191,12 @@ public class ContentShareFragment extends Fragment {
             goBack();
             return;
         }
+        // K2GO-577: an ended share keeps its result on screen. The service already let go of the
+        // hotspot, so this screen must not take it again.
+        if (session.isEnded()) {
+            showEnded(session.progress());
+            return;
+        }
         // Apply the choice on every render, not only on resume: the service opens the session after
         // this screen first resumes. Hotspot holds the hotspot and asks the permission at most once.
         if (mode().ensure()) {
@@ -202,8 +215,47 @@ public class ContentShareFragment extends Fragment {
             showStatus(getString(R.string.k2go_cx_share_preparing));
             return;
         }
+        // K2GO-577: once the receiver starts, its progress replaces the invite.
+        ShareProgress progress = session.progress();
+        if (progress != null && progress.hasActivity()) {
+            showTransfer(progress);
+            return;
+        }
         // READY: the gate exists; the QR needs the hotspot up and its address resolved.
         renderInvite();
+    }
+
+    /** The receiver is pulling: overall bar and bytes, no invite (K2GO-577). */
+    private void showTransfer(ShareProgress p) {
+        showStatus("");
+        status.setVisibility(View.GONE);
+        progressBlock.setVisibility(View.VISIBLE);
+        int percent = p.percent(session.totalBytes(), session.itemCount());
+        progressBar.setProgressCompat(percent, true);
+        String overall = getString(R.string.k2go_cx_export_overall_fmt, percent);
+        long moved = p.movedBytes();
+        progressDetail.setText(moved > 0
+                ? ByteFormatter.humanBytes(moved) + " / " + ByteFormatter.humanBytes(session.totalBytes())
+                        + "  :  " + overall
+                : overall);
+        waiting.setVisibility(View.VISIBLE);
+    }
+
+    /** How the share ended, in place of the stale invite (K2GO-577). */
+    private void showEnded(ShareProgress p) {
+        int message;
+        switch (p.state) {
+            case COMPLETED:
+                message = R.string.k2go_cx_share_complete;
+                break;
+            case CANCELLED:
+                message = R.string.k2go_cx_share_cancelled;
+                break;
+            default:
+                message = R.string.k2go_cx_share_ended;
+                break;
+        }
+        showStatus(getString(message));
     }
 
     private void renderInvite() {
@@ -321,6 +373,7 @@ public class ContentShareFragment extends Fragment {
         joinRoot.setVisibility(View.GONE);
         receiveRoot.setVisibility(View.GONE);
         transportRow.setVisibility(View.GONE);
+        progressBlock.setVisibility(View.GONE);
         waiting.setVisibility(View.GONE);
         showInviteText(null);
     }
@@ -341,6 +394,7 @@ public class ContentShareFragment extends Fragment {
     /** The QR cards; the join card only on Hotspot (on Wi-Fi there is nothing to join). */
     private void showSections(boolean join) {
         status.setVisibility(View.GONE);
+        progressBlock.setVisibility(View.GONE);
         joinRoot.setVisibility(join ? View.VISIBLE : View.GONE);
         receiveRoot.setVisibility(View.VISIBLE);
         paintTabs();
@@ -356,7 +410,7 @@ public class ContentShareFragment extends Fragment {
     }
 
     private void stopAndLeave() {
-        ContentShareService.cancel(requireContext());
+        ContentShareService.dismiss(requireContext());
         goBack();
     }
 

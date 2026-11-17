@@ -1600,4 +1600,8 @@
     <string name="k2go_cx_share_stop_msg">Це зупиняє будь-яке поточне копіювання. Інший телефон втрачає прогрес і має почати знову з новим кодом.</string>
     <string name="k2go_connect_switch_msg">Пристрої, приєднані до цієї точки доступу, втратять з\'єднання.</string>
     <string name="k2go_cx_share_notif_open">Надсилання залишається відкритим, доки ви його не зупините.</string>
+    <string name="k2go_cx_share_sending">Надсилання на інший телефон</string>
+    <string name="k2go_cx_share_complete">Передавання завершено. Вміст уже на іншому телефоні.</string>
+    <string name="k2go_cx_share_cancelled">Інший телефон зупинив передавання.</string>
+    <string name="k2go_cx_share_ended">Надсилання завершено.</string>
 </resources>

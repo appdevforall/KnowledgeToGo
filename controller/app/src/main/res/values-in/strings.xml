@@ -1607,4 +1607,8 @@
     <string name="k2go_cx_share_stop_msg">Ini menghentikan penyalinan yang sedang berlangsung. Ponsel lain kehilangan progresnya dan harus mulai lagi dengan kode baru.</string>
     <string name="k2go_connect_switch_msg">Perangkat yang tergabung ke hotspot ini akan kehilangan koneksi.</string>
     <string name="k2go_cx_share_notif_open">Berbagi tetap terbuka sampai Anda menghentikannya.</string>
+    <string name="k2go_cx_share_sending">Mengirim ke ponsel lain</string>
+    <string name="k2go_cx_share_complete">Transfer selesai. Ponsel lain sudah memiliki kontennya.</string>
+    <string name="k2go_cx_share_cancelled">Ponsel lain menghentikan transfer.</string>
+    <string name="k2go_cx_share_ended">Berbagi telah berakhir.</string>
 </resources>
