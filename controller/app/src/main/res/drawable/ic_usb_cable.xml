@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-576: USB cable status icon (outline, tinted by the caller). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="#FF000000" android:strokeWidth="2" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M4.7,19.3L19,5 M21,3l-3,1 2,2z M9.26,7.68L5,12l2,5 M10,14l5,2 3.5,-3.5 M18,12l1,-1 1,1 -1,1z M11,7a1,1 0,1 1,-2 0a1,1 0,1 1,2 0z M5,20a1,1 0,1 1,-2 0a1,1 0,1 1,2 0z" />
+</vector>

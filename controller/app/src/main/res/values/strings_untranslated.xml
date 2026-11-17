@@ -14,4 +14,23 @@
     <string name="k2go_clone_cable_err_list" translatable="false">Could not read the list of files from the sending phone.</string>
     <string name="k2go_clone_cable_err_no_path" translatable="false">The connection to the sending phone is lost. Join its hotspot or connect the USB cable.</string>
     <string name="k2go_clone_cable_err_check" translatable="false">The last check of the copy failed. Start the transfer again.</string>
+    <string name="k2go_clone_link_wifi" translatable="false">Wi-Fi hotspot</string>
+    <string name="k2go_clone_link_usb" translatable="false">USB cable</string>
+    <string name="k2go_clone_link_wifi_off" translatable="false">Wi-Fi is off</string>
+    <string name="k2go_clone_link_wifi_not_joined" translatable="false">Not joined to the hotspot of the sending phone</string>
+    <string name="k2go_clone_link_wifi_found" translatable="false">Sender found on its hotspot</string>
+    <string name="k2go_clone_link_wifi_slow" translatable="false">Sender found. Slow band.</string>
+    <string name="k2go_clone_link_hotspot_on" translatable="false">Hotspot on. Phones joined: %1$d</string>
+    <string name="k2go_clone_link_hotspot_off" translatable="false">Hotspot off</string>
+    <string name="k2go_clone_link_usb_none" translatable="false">No cable</string>
+    <string name="k2go_clone_link_usb_waiting" translatable="false">Cable found. Allow USB access on both phones.</string>
+    <string name="k2go_clone_link_usb_linked" translatable="false">Linked to the other phone</string>
+    <string name="k2go_clone_link_usb_active" translatable="false">Carrying data: %1$s</string>
+    <string name="k2go_clone_link_badge_off" translatable="false">Off</string>
+    <string name="k2go_clone_link_badge_not_ready" translatable="false">Not ready</string>
+    <string name="k2go_clone_link_badge_optional" translatable="false">Optional</string>
+    <string name="k2go_clone_link_badge_waiting" translatable="false">Waiting</string>
+    <string name="k2go_clone_link_badge_linked" translatable="false">Linked</string>
+    <string name="k2go_clone_link_band_5" translatable="false">5 GHz</string>
+    <string name="k2go_clone_link_band_24" translatable="false">2.4 GHz</string>
 </resources>

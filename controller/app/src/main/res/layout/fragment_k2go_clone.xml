@@ -45,6 +45,8 @@
             <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
                 android:gravity="center" android:text="@string/k2go_wifi" android:foreground="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" />
         </LinearLayout>
+        <!-- K2GO-576: Wi-Fi and USB cable status rows -->
+        <include layout="@layout/view_k2go_clone_link" />
     </LinearLayout>
 
     <!-- ADFA-5154: SCROLLABLE content — fork, stepper, the two Send pages and the Receive box. -->

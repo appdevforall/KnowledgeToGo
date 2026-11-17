@@ -53,6 +53,7 @@ import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 import org.appdevforall.k2go.sync.transport.QrCodec;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.presentation.CloneLinkRows;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
 
 /**
@@ -64,6 +65,7 @@ import org.appdevforall.k2go.sync.transport.TransportEngine;
 public class CloneFragment extends Fragment {
 
     private enum Side { SEND, RECEIVE }
+    private CloneLinkRows linkRows;   // K2GO-576
     // ADFA-5154: the 3-step Send wizard (Join / Get app / Copy) becomes 2 pages. PREPARE shows Join ①
     // and Get app ② stacked (both QRs at once); COPY shows the transfer QR. The "Installed? Copy the
     // library ›" gate advances PREPARE -> COPY (a real prerequisite: the app must be on the other phone).
@@ -183,6 +185,7 @@ public class CloneFragment extends Fragment {
         tabSend = v.findViewById(R.id.k2go_clone_send);
         tabReceive = v.findViewById(R.id.k2go_clone_receive);
         netRow = v.findViewById(R.id.k2go_clone_net);
+        linkRows = new CloneLinkRows(v.findViewById(R.id.k2go_clone_link), getViewLifecycleOwner());
         tabHotspot = v.findViewById(R.id.k2go_clone_hotspot);
         tabWifi = v.findViewById(R.id.k2go_clone_wifi);
         steps = v.findViewById(R.id.k2go_clone_steps);
@@ -582,6 +585,8 @@ public class CloneFragment extends Fragment {
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
             receiveBox.setVisibility(View.GONE);
+            linkRows.setVisible(false);
+            linkRows.stopChecks();
             return;
         }
         forkBox.setVisibility(View.GONE);
@@ -590,6 +595,14 @@ public class CloneFragment extends Fragment {
         subtitleView.setVisibility(View.GONE);
         backHeader.setVisibility(View.VISIBLE);
         backHeader.setText(getString(side == Side.RECEIVE ? R.string.k2go_clone_back_receive : R.string.k2go_clone_back_send));
+        // K2GO-576: the Wi-Fi and USB cable rows.
+        if (side == Side.RECEIVE) {
+            linkRows.setVisible(true);
+            linkRows.startChecks(shareConfig.rsyncPort);
+        } else {
+            linkRows.setVisible(systemPresent);
+            linkRows.showSender(LocalHotspotManager.get().state().getValue());
+        }
 
         if (side == Side.RECEIVE) {
             netRow.setVisibility(View.GONE);
@@ -1419,6 +1432,7 @@ public class CloneFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (startingDots != null) startingDots.stop();   // ADFA-5154: no dangling Handler after the view is gone
+        if (linkRows != null) linkRows.stopChecks();   // K2GO-576
         // ADFA-5155: tear down the success-exit wait so no probe/countdown Handler outlives the view.
         exitHandler.removeCallbacks(exitTick);
         exitHandler.removeCallbacks(exitPollRunnable);
