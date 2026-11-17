@@ -356,7 +356,9 @@ public class InstallationPlanner {
         RootfsRepository repository =
                 new RootfsRepositoryImpl(new RootfsRemoteDataSource(), catalog);
         GetRootfsSizeUseCase useCase = new GetRootfsSizeUseCase(repository);
-        Rootfs rootfs = useCase.execute(toDomainTier(tier), catalog.detectAbi());
+        // K2GO-580: the live size is an automatic read; without allowsAutomatic the fallback size answers.
+        Rootfs rootfs = useCase.execute(toDomainTier(tier), catalog.detectAbi(),
+                org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(context));
         return ByteFormatter.toGiB(rootfs.sizeBytes());
     }
 

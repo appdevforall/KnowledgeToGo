@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">Aktarım tamamlandı. İçerik artık diğer telefonda.</string>
     <string name="k2go_cx_share_cancelled">Diğer telefon aktarımı durdurdu.</string>
     <string name="k2go_cx_share_ended">Paylaşım sona erdi.</string>
+    <string name="k2go_gm_catalogs_update">Katalogları güncelle</string>
+    <string name="k2go_gm_catalogs_updating">Kataloglar güncelleniyor...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloglar: uygulamayla birlikte gelir</string>
+    <string name="k2go_gm_catalogs_checked">Kataloglar kontrol edildi: %1$s</string>
 </resources>

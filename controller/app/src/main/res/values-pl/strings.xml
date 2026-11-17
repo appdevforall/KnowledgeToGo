@@ -1614,4 +1614,8 @@
     <string name="k2go_cx_share_complete">Przesyłanie zakończone. Drugi telefon ma zawartość.</string>
     <string name="k2go_cx_share_cancelled">Drugi telefon zatrzymał przesyłanie.</string>
     <string name="k2go_cx_share_ended">Udostępnianie zakończone.</string>
+    <string name="k2go_gm_catalogs_update">Aktualizuj katalogi</string>
+    <string name="k2go_gm_catalogs_updating">Aktualizowanie katalogów...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogi: dołączone do aplikacji</string>
+    <string name="k2go_gm_catalogs_checked">Katalogi sprawdzone: %1$s</string>
 </resources>

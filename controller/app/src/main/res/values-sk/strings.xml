@@ -1611,4 +1611,8 @@
     <string name="k2go_cx_share_complete">Prenos je dokončený. Obsah je v druhom telefóne.</string>
     <string name="k2go_cx_share_cancelled">Druhý telefón zastavil prenos.</string>
     <string name="k2go_cx_share_ended">Zdieľanie skončilo.</string>
+    <string name="k2go_gm_catalogs_update">Aktualizovať katalógy</string>
+    <string name="k2go_gm_catalogs_updating">Aktualizácia katalógov...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalógy: súčasťou aplikácie</string>
+    <string name="k2go_gm_catalogs_checked">Katalógy skontrolované: %1$s</string>
 </resources>

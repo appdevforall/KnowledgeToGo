@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">انتقال کامل شد. محتوا اکنون روی تلفن دیگر است.</string>
     <string name="k2go_cx_share_cancelled">تلفن دیگر انتقال را متوقف کرد.</string>
     <string name="k2go_cx_share_ended">اشتراک‌گذاری پایان یافت.</string>
+    <string name="k2go_gm_catalogs_update">به‌روزرسانی فهرست‌ها</string>
+    <string name="k2go_gm_catalogs_updating">در حال به‌روزرسانی فهرست‌ها...</string>
+    <string name="k2go_gm_catalogs_bundled">فهرست‌ها: همراه برنامه</string>
+    <string name="k2go_gm_catalogs_checked">آخرین بررسی فهرست‌ها: %1$s</string>
 </resources>

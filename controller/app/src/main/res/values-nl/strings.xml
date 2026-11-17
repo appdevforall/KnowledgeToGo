@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">Overdracht voltooid. De andere telefoon heeft de inhoud.</string>
     <string name="k2go_cx_share_cancelled">De andere telefoon heeft de overdracht gestopt.</string>
     <string name="k2go_cx_share_ended">Het delen is beëindigd.</string>
+    <string name="k2go_gm_catalogs_update">Catalogi bijwerken</string>
+    <string name="k2go_gm_catalogs_updating">Catalogi bijwerken...</string>
+    <string name="k2go_gm_catalogs_bundled">Catalogi: meegeleverd met de app</string>
+    <string name="k2go_gm_catalogs_checked">Catalogi gecontroleerd: %1$s</string>
 </resources>

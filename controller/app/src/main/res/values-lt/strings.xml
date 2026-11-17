@@ -1621,4 +1621,8 @@
     <string name="k2go_cx_share_complete">Perdavimas baigtas. Turinys yra kitame telefone.</string>
     <string name="k2go_cx_share_cancelled">Kitas telefonas sustabdė perdavimą.</string>
     <string name="k2go_cx_share_ended">Bendrinimas baigėsi.</string>
+    <string name="k2go_gm_catalogs_update">Atnaujinti katalogus</string>
+    <string name="k2go_gm_catalogs_updating">Atnaujinami katalogai...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogai: įtraukti į programą</string>
+    <string name="k2go_gm_catalogs_checked">Katalogai patikrinti: %1$s</string>
 </resources>

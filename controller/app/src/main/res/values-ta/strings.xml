@@ -1624,4 +1624,8 @@
     <string name="k2go_cx_share_complete">பரிமாற்றம் முடிந்தது. உள்ளடக்கம் இப்போது மற்ற ஃபோனில் உள்ளது.</string>
     <string name="k2go_cx_share_cancelled">மற்ற ஃபோன் பரிமாற்றத்தை நிறுத்தியது.</string>
     <string name="k2go_cx_share_ended">பகிர்வு முடிந்தது.</string>
+    <string name="k2go_gm_catalogs_update">அட்டவணைகளைப் புதுப்பி</string>
+    <string name="k2go_gm_catalogs_updating">அட்டவணைகள் புதுப்பிக்கப்படுகின்றன...</string>
+    <string name="k2go_gm_catalogs_bundled">அட்டவணைகள்: ஆப்புடன் சேர்க்கப்பட்டவை</string>
+    <string name="k2go_gm_catalogs_checked">அட்டவணைகள் சரிபார்க்கப்பட்டது: %1$s</string>
 </resources>

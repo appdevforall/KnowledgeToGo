@@ -1681,4 +1681,8 @@
     <string name="k2go_cx_share_complete">ट्रांसफ़र पूरा हुआ। सामग्री अब दूसरे फ़ोन पर है।</string>
     <string name="k2go_cx_share_cancelled">दूसरे फ़ोन ने ट्रांसफ़र रोक दिया।</string>
     <string name="k2go_cx_share_ended">साझा करना समाप्त हुआ।</string>
+    <string name="k2go_gm_catalogs_update">कैटलॉग अपडेट करें</string>
+    <string name="k2go_gm_catalogs_updating">कैटलॉग अपडेट हो रहे हैं...</string>
+    <string name="k2go_gm_catalogs_bundled">कैटलॉग: ऐप के साथ शामिल</string>
+    <string name="k2go_gm_catalogs_checked">कैटलॉग जाँचे गए: %1$s</string>
 </resources>

@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">Transfer finalizat. Celălalt telefon are conținutul.</string>
     <string name="k2go_cx_share_cancelled">Celălalt telefon a oprit transferul.</string>
     <string name="k2go_cx_share_ended">Partajarea s-a încheiat.</string>
+    <string name="k2go_gm_catalogs_update">Actualizează cataloagele</string>
+    <string name="k2go_gm_catalogs_updating">Se actualizează cataloagele...</string>
+    <string name="k2go_gm_catalogs_bundled">Cataloage: incluse în aplicație</string>
+    <string name="k2go_gm_catalogs_checked">Cataloage verificate: %1$s</string>
 </resources>

@@ -3,11 +3,9 @@
  * Name        : CatalogRefreshScheduler.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-5094 (ADR-5094). Enqueues the catalog refresh: a weekly,
- *               network-constrained periodic job, plus an opportunistic one-shot
- *               (e.g. when the picker opens). The worker's own TTL gate keeps the
- *               one-shot cheap. Unique per catalog, so relaunches don't reset the
- *               schedule. Automatic refreshes run on Wi-Fi only (K2GO-580).
+ * Description : ADFA-5094 (ADR-5094). Enqueues a catalog refresh. K2GO-580: a refresh
+ *               runs only when the user asks (the Get more "Update catalogs" row) or
+ *               when a user-started download hits a 404. Nothing refreshes by itself.
  * ============================================================================
  */
 package org.appdevforall.k2go.catalog.data;
@@ -16,14 +14,10 @@ import android.content.Context;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-
-import java.util.concurrent.TimeUnit;
 
 public final class CatalogRefreshScheduler {
 
@@ -31,15 +25,10 @@ public final class CatalogRefreshScheduler {
     }
 
     private static Data input(String name, String manifestUrl, String basename) {
-        return input(name, manifestUrl, basename, false);
-    }
-
-    private static Data input(String name, String manifestUrl, String basename, boolean force) {
         return new Data.Builder()
                 .putString(CatalogRefreshWorker.KEY_NAME, name)
                 .putString(CatalogRefreshWorker.KEY_MANIFEST_URL, manifestUrl)
                 .putString(CatalogRefreshWorker.KEY_BASENAME, basename)
-                .putBoolean(CatalogRefreshWorker.KEY_FORCE, force)
                 .build();
     }
 
@@ -49,32 +38,24 @@ public final class CatalogRefreshScheduler {
                 .build();
     }
 
-    // K2GO-580: automatic refreshes run only on an unmetered network (Wi-Fi), never on the user's
-    // mobile data; the catalog bundled in the APK is the floor until then. A user-started download
-    // that hits a 404 still self-heals over any connection (forceRefresh).
+    /** Tag on every refresh request, so the Get more row can watch and cancel them as one. */
+    public static final String TAG = "catalog-refresh";
 
-    /** Weekly periodic refresh, one per catalog. Safe to call on every launch. UPDATE (not KEEP) so an
-     *  install that already holds the old any-network job gets the Wi-Fi constraint, schedule kept. */
-    public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename) {
-        PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
-                CatalogRefreshWorker.class, 7, TimeUnit.DAYS)
-                .setConstraints(constraints(NetworkType.UNMETERED))
-                .setInputData(input(name, manifestUrl, basename))
-                .build();
-        WorkManager.getInstance(ctx.getApplicationContext())
-                .enqueueUniquePeriodicWork("catalog-refresh-" + name,
-                        ExistingPeriodicWorkPolicy.UPDATE, req);
+    /**
+     * K2GO-580: removes the automatic refresh jobs that older builds scheduled (weekly + on open).
+     * WorkManager keeps them across an app update, so the call sites that used to schedule them
+     * now cancel them. Idempotent and cheap.
+     */
+    // ponytail: delete once no supported install predates K2GO-580.
+    public static void cancelAutomatic(Context ctx, String name) {
+        WorkManager wm = WorkManager.getInstance(ctx.getApplicationContext());
+        wm.cancelUniqueWork("catalog-refresh-" + name);
+        wm.cancelUniqueWork("catalog-refresh-now-" + name);
     }
 
-    /** Opportunistic one-shot; the worker's TTL gate no-ops it when still fresh. */
-    public static void refreshNow(Context ctx, String name, String manifestUrl, String basename) {
-        OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
-                .setConstraints(constraints(NetworkType.UNMETERED))
-                .setInputData(input(name, manifestUrl, basename))
-                .build();
-        WorkManager.getInstance(ctx.getApplicationContext())
-                .enqueueUniqueWork("catalog-refresh-now-" + name,
-                        ExistingWorkPolicy.KEEP, req);
+    /** Stops every running or queued refresh (the Get more row's Cancel). */
+    public static void cancelAll(Context ctx) {
+        WorkManager.getInstance(ctx.getApplicationContext()).cancelAllWorkByTag(TAG);
     }
 
     /**
@@ -88,7 +69,8 @@ public final class CatalogRefreshScheduler {
         OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
                 .setConstraints(constraints(NetworkType.CONNECTED))
                 .setExpedited(androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setInputData(input(name, manifestUrl, basename, true))
+                .setInputData(input(name, manifestUrl, basename))
+                .addTag(TAG)
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())
                 .enqueueUniqueWork("catalog-refresh-force-" + name,

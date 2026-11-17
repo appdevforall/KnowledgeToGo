@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">اكتمل النقل. المحتوى موجود الآن على الهاتف الآخر.</string>
     <string name="k2go_cx_share_cancelled">أوقف الهاتف الآخر النقل.</string>
     <string name="k2go_cx_share_ended">انتهت المشاركة.</string>
+    <string name="k2go_gm_catalogs_update">تحديث الفهارس</string>
+    <string name="k2go_gm_catalogs_updating">جارٍ تحديث الفهارس...</string>
+    <string name="k2go_gm_catalogs_bundled">الفهارس: مضمّنة مع التطبيق</string>
+    <string name="k2go_gm_catalogs_checked">آخر فحص للفهارس: %1$s</string>
 </resources>

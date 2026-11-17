@@ -1605,4 +1605,8 @@
     <string name="k2go_cx_share_complete">전송이 완료되었습니다. 다른 휴대전화에 콘텐츠가 있습니다.</string>
     <string name="k2go_cx_share_cancelled">다른 휴대전화가 전송을 중지했습니다.</string>
     <string name="k2go_cx_share_ended">공유가 종료되었습니다.</string>
+    <string name="k2go_gm_catalogs_update">카탈로그 업데이트</string>
+    <string name="k2go_gm_catalogs_updating">카탈로그 업데이트 중...</string>
+    <string name="k2go_gm_catalogs_bundled">카탈로그: 앱에 포함됨</string>
+    <string name="k2go_gm_catalogs_checked">카탈로그 확인: %1$s</string>
 </resources>

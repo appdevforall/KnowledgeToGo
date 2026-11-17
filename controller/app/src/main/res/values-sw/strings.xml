@@ -1624,4 +1624,8 @@
     <string name="k2go_cx_share_complete">Uhamisho umekamilika. Simu nyingine ina maudhui.</string>
     <string name="k2go_cx_share_cancelled">Simu nyingine imesimamisha uhamisho.</string>
     <string name="k2go_cx_share_ended">Kushiriki kumeisha.</string>
+    <string name="k2go_gm_catalogs_update">Sasisha katalogi</string>
+    <string name="k2go_gm_catalogs_updating">Inasasisha katalogi...</string>
+    <string name="k2go_gm_catalogs_bundled">Katalogi: zimejumuishwa na programu</string>
+    <string name="k2go_gm_catalogs_checked">Katalogi zimekaguliwa: %1$s</string>
 </resources>

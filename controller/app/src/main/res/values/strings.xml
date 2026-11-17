@@ -1801,4 +1801,8 @@
     <string name="k2go_cx_share_complete">Transfer complete. The other phone has the content.</string>
     <string name="k2go_cx_share_cancelled">The other phone stopped the transfer.</string>
     <string name="k2go_cx_share_ended">The share ended.</string>
+    <string name="k2go_gm_catalogs_update">Update catalogs</string>
+    <string name="k2go_gm_catalogs_updating">Updating catalogs...</string>
+    <string name="k2go_gm_catalogs_bundled">Catalogs: included with the app</string>
+    <string name="k2go_gm_catalogs_checked">Catalogs checked: %1$s</string>
 </resources>

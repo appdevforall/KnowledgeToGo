@@ -1617,4 +1617,8 @@
     <string name="k2go_cx_share_complete">Пренос је завршен. Садржај је на другом телефону.</string>
     <string name="k2go_cx_share_cancelled">Други телефон је зауставио пренос.</string>
     <string name="k2go_cx_share_ended">Дељење је завршено.</string>
+    <string name="k2go_gm_catalogs_update">Ажурирај каталоге</string>
+    <string name="k2go_gm_catalogs_updating">Ажурирање каталога...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталози: укључени у апликацију</string>
+    <string name="k2go_gm_catalogs_checked">Каталози проверени: %1$s</string>
 </resources>

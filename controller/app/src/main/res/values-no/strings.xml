@@ -1614,4 +1614,8 @@
     <string name="k2go_cx_share_complete">Overføringen er fullført. Den andre telefonen har innholdet.</string>
     <string name="k2go_cx_share_cancelled">Den andre telefonen stoppet overføringen.</string>
     <string name="k2go_cx_share_ended">Delingen er avsluttet.</string>
+    <string name="k2go_gm_catalogs_update">Oppdater kataloger</string>
+    <string name="k2go_gm_catalogs_updating">Oppdaterer kataloger...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloger: følger med appen</string>
+    <string name="k2go_gm_catalogs_checked">Kataloger sjekket: %1$s</string>
 </resources>

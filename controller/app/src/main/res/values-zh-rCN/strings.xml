@@ -1605,4 +1605,8 @@
     <string name="k2go_cx_share_complete">传输完成。另一部手机已有这些内容。</string>
     <string name="k2go_cx_share_cancelled">另一部手机停止了传输。</string>
     <string name="k2go_cx_share_ended">共享已结束。</string>
+    <string name="k2go_gm_catalogs_update">更新目录</string>
+    <string name="k2go_gm_catalogs_updating">正在更新目录...</string>
+    <string name="k2go_gm_catalogs_bundled">目录：随应用附带</string>
+    <string name="k2go_gm_catalogs_checked">目录检查时间：%1$s</string>
 </resources>

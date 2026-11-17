@@ -1624,4 +1624,8 @@
     <string name="k2go_cx_share_complete">Ötürmə tamamlandı. Məzmun artıq digər telefondadır.</string>
     <string name="k2go_cx_share_cancelled">Digər telefon ötürməni dayandırdı.</string>
     <string name="k2go_cx_share_ended">Paylaşım başa çatdı.</string>
+    <string name="k2go_gm_catalogs_update">Kataloqları yenilə</string>
+    <string name="k2go_gm_catalogs_updating">Kataloqlar yenilənir...</string>
+    <string name="k2go_gm_catalogs_bundled">Kataloqlar: tətbiqlə birlikdə gəlir</string>
+    <string name="k2go_gm_catalogs_checked">Kataloqlar yoxlanıldı: %1$s</string>
 </resources>

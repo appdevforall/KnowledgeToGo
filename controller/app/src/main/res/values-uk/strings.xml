@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">Передавання завершено. Вміст уже на іншому телефоні.</string>
     <string name="k2go_cx_share_cancelled">Інший телефон зупинив передавання.</string>
     <string name="k2go_cx_share_ended">Надсилання завершено.</string>
+    <string name="k2go_gm_catalogs_update">Оновити каталоги</string>
+    <string name="k2go_gm_catalogs_updating">Оновлення каталогів...</string>
+    <string name="k2go_gm_catalogs_bundled">Каталоги: входять у застосунок</string>
+    <string name="k2go_gm_catalogs_checked">Каталоги перевірено: %1$s</string>
 </resources>

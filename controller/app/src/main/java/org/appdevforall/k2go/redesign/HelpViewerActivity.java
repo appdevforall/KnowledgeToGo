@@ -110,7 +110,8 @@ public class HelpViewerActivity extends AppCompatActivity
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return assetLoader.shouldInterceptRequest(request.getUrl());
+                WebResourceResponse r = assetLoader.shouldInterceptRequest(request.getUrl());
+                return r != null ? r : super.shouldInterceptRequest(view, request);   // K2GO-580
             }
 
             @Override

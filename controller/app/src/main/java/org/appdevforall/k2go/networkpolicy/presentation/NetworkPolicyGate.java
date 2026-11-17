@@ -44,6 +44,21 @@ public final class NetworkPolicyGate {
      */
     public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed,
                                        @NonNull Runnable onDeclined) {
+        guard(activity, onProceed, onDeclined, true);
+    }
+
+    /**
+     * K2GO-580: the same prompt for one action only (a catalog refresh, an update check, a map size
+     * estimate). "Continue" does NOT grant the session consent, so it never releases the banked
+     * download queue onto mobile data.
+     */
+    public static void guardThisAction(@NonNull Activity activity, @NonNull Runnable onProceed,
+                                       @NonNull Runnable onDeclined) {
+        guard(activity, onProceed, onDeclined, false);
+    }
+
+    private static void guard(@NonNull Activity activity, @NonNull Runnable onProceed,
+                              @NonNull Runnable onDeclined, boolean grantSession) {
         switch (NetworkCostAdmission.decideNow(activity)) {
             case ALLOW:
                 onProceed.run();
@@ -53,7 +68,7 @@ public final class NetworkPolicyGate {
                         .setTitle(R.string.k2go_netpolicy_metered_title)
                         .setMessage(R.string.k2go_netpolicy_metered_msg)
                         .setPositive(R.string.k2go_netpolicy_continue, () -> {
-                            SessionMeteredConsentStore.get().grant();
+                            if (grantSession) SessionMeteredConsentStore.get().grant();
                             onProceed.run();
                         })
                         .setNegative(R.string.k2go_netpolicy_not_now, onDeclined::run)

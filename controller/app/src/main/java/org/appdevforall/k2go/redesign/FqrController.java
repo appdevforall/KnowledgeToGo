@@ -267,6 +267,17 @@ public final class FqrController {
             toast(str(R.string.k2go_fqr_invalid));
             return;
         }
+        // K2GO-580: the estimate is the box's dry-run against the remote map data, so on mobile data the
+        // user confirms first (this action only; the download asks again with the size). Offline keeps
+        // the old path: the estimate fails into Retry and the drawn region stays (K2GO-317).
+        if (!org.appdevforall.k2go.networkpolicy.data.AndroidNetworkClassifier.hasInternet(activity)) {
+            runEstimate(name, box);
+        } else {
+            NetworkPolicyGate.guardThisAction(activity, () -> runEstimate(name, box), this::resetMapSelection);
+        }
+    }
+
+    private void runEstimate(String name, String box) {
         // "Calculating size…" while the server runs its dry-run. ADFA-5043: arm the cancel flag so a
         // bail-out here (the dialog is cancelable) drops the late estimate instead of popping consent.
         estimateCanceled = false;

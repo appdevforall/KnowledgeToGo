@@ -1604,4 +1604,8 @@
     <string name="k2go_cx_share_complete">Đã chuyển xong. Điện thoại kia đã có nội dung.</string>
     <string name="k2go_cx_share_cancelled">Điện thoại kia đã dừng chuyển.</string>
     <string name="k2go_cx_share_ended">Chia sẻ đã kết thúc.</string>
+    <string name="k2go_gm_catalogs_update">Cập nhật danh mục</string>
+    <string name="k2go_gm_catalogs_updating">Đang cập nhật danh mục...</string>
+    <string name="k2go_gm_catalogs_bundled">Danh mục: đi kèm ứng dụng</string>
+    <string name="k2go_gm_catalogs_checked">Đã kiểm tra danh mục: %1$s</string>
 </resources>

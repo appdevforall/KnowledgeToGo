@@ -1680,4 +1680,8 @@
     <string name="k2go_cx_share_complete">Transferencia completa. El otro teléfono ya tiene el contenido.</string>
     <string name="k2go_cx_share_cancelled">El otro teléfono detuvo la transferencia.</string>
     <string name="k2go_cx_share_ended">El uso compartido terminó.</string>
+    <string name="k2go_gm_catalogs_update">Actualizar catálogos</string>
+    <string name="k2go_gm_catalogs_updating">Actualizando catálogos...</string>
+    <string name="k2go_gm_catalogs_bundled">Catálogos: incluidos con la app</string>
+    <string name="k2go_gm_catalogs_checked">Catálogos revisados: %1$s</string>
 </resources>

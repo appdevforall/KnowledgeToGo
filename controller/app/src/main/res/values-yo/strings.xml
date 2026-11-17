@@ -1624,4 +1624,8 @@
     <string name="k2go_cx_share_complete">Gbígbé ti parí. Fóònù kejì ti ní àkóónú náà.</string>
     <string name="k2go_cx_share_cancelled">Fóònù kejì dá gbígbé dúró.</string>
     <string name="k2go_cx_share_ended">Pínpín ti parí.</string>
+    <string name="k2go_gm_catalogs_update">Ṣe imudojuiwọn awọn katalogi</string>
+    <string name="k2go_gm_catalogs_updating">Ń ṣe imudojuiwọn awọn katalogi...</string>
+    <string name="k2go_gm_catalogs_bundled">Awọn katalogi: wa pẹlu app naa</string>
+    <string name="k2go_gm_catalogs_checked">A ṣayẹwo awọn katalogi: %1$s</string>
 </resources>
