@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload a K2Go release candidate to Google Play (K2GO-564).
+"""Upload a K2Go release candidate or final release to Google Play (K2GO-564).
 
 Design: controller/docs/ADR-K2GO-564-play-release-candidates.md.
 API: https://developers.google.com/android-publisher/api-ref/rest
@@ -11,7 +11,8 @@ no service account key exists.
 Commands (next-code and publish call the Play API):
   plan --gradle F --notes F --tags F     print version, rc tag and release notes as GitHub outputs
   check-code --package P --code N        fail unless versionCode N is above every code in Play
-  final-tag --rc-tag T --tags F          print the release tag for an approved candidate
+  final-plan --gradle F --notes F --tags F --rc-tag T
+                                         print the release tag and code base for an approved candidate
   check-release --gradle F --tag T       fail unless versionName is exactly the final tag T
   publish --package P --track T --aab F --code N --name S --notes-file F
 """
@@ -239,9 +240,15 @@ def cmd_check_code(args):
     print(check_version_code(used, args.code))
 
 
-def cmd_final_tag(args):
+def cmd_final_plan(args):
+    gradle = open(args.gradle, encoding="utf-8").read()
     tags = set(open(args.tags, encoding="utf-8").read().split())
-    print(final_tag(tags, args.rc_tag))
+    tag = check_release(gradle, final_tag(tags, args.rc_tag))
+    notes = release_notes(open(args.notes, encoding="utf-8").read(), tag)
+    with open(args.notes_out, "w", encoding="utf-8") as f:
+        f.write(notes)
+    print("tag=%s" % tag)
+    print("code_base=%d" % checked_code_base(gradle))
 
 
 def cmd_check_release(args):
@@ -279,10 +286,13 @@ def main(argv=None):
     s.add_argument("--package", required=True)
     s.add_argument("--code", required=True, type=int)
     s.set_defaults(func=cmd_check_code)
-    s = sub.add_parser("final-tag")
-    s.add_argument("--rc-tag", required=True)
+    s = sub.add_parser("final-plan")
+    s.add_argument("--gradle", required=True)
+    s.add_argument("--notes", required=True)
     s.add_argument("--tags", required=True, help="file with one git tag name per line")
-    s.set_defaults(func=cmd_final_tag)
+    s.add_argument("--rc-tag", required=True)
+    s.add_argument("--notes-out", required=True)
+    s.set_defaults(func=cmd_final_plan)
     s = sub.add_parser("check-release")
     s.add_argument("--gradle", required=True)
     s.add_argument("--tag", required=True)

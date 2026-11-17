@@ -46,12 +46,15 @@ says `vX.Y.Z-rc.N`, and only a build that says `vX.Y.Z` can become the release.
    A run on the internal track (no formal review) gets no rc tag.
 3. Google approves or rejects (email, Play Console). A person reads the verdict.
 4. Button 2, `play-release.yml`: accept only the newest rc of the version (each new candidate
-   replaces the older one in Play) and run the release build (GitHub Release, website APKs, R2,
-   OTA `update.json`). An rc build is never released as final: both the tag step and the
-   release build refuse a commit whose `versionName` is not exactly `vX.Y.Z`. The final commit
-   is `main` after a PR that only sets `versionName "vX.Y.Z"` and its versionCode; button 2 runs
-   from `main` and tags that commit. The release build runs only when `play-release.yml` calls it:
-   a hand-pushed `v*` tag does not start a release.
+   replaces the older one in Play). The final commit is `main` after a PR that only sets
+   `versionName "vX.Y.Z"` and its versionCode; button 2 runs from `main`. It sends the final AAB
+   to the Play beta track (Open testing), and only after Play accepts the upload it tags the
+   commit and runs the release build (GitHub Release, website APKs, R2, OTA `update.json`).
+   The final build has the same code as the approved candidate, so a review rejection of it is
+   a Google policy matter, not a code defect. An rc build is never released as final: both the
+   plan step and the release build refuse a commit whose `versionName` is not exactly `vX.Y.Z`.
+   Production stays a manual step in Play Console. The release build runs only when
+   `play-release.yml` calls it: a hand-pushed `v*` tag does not start a release.
 5. Play credentials, keyless: the service account
    `k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com` (Google Cloud project
    `knowledge-to-go`) has "Release apps to testing tracks" on this app only. It has no key: the
