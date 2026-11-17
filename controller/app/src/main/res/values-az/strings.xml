@@ -1620,4 +1620,29 @@
     <string name="k2go_cx_share_stop_msg">Bu, davam edən istənilən köçürməni dayandırır. Digər telefon irəliləyişini itirir və yeni kodla yenidən başlamalıdır.</string>
     <string name="k2go_connect_switch_msg">Bu hotspota qoşulmuş cihazların bağlantısı kəsiləcək.</string>
     <string name="k2go_cx_share_notif_open">Paylaşım siz dayandırana qədər açıq qalır.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Göndərən telefondan faylların siyahısını oxumaq mümkün olmadı.</string>
+    <string name="k2go_clone_cable_err_no_path">Göndərən telefonla bağlantı kəsildi. Onun hotspotuna qoşulun və ya USB kabelini taxın.</string>
+    <string name="k2go_clone_cable_err_check">Nüsxənin son yoxlaması uğursuz oldu. Köçürməni yenidən başladın.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
+    <string name="k2go_clone_link_usb">USB kabel</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi söndürülüb</string>
+    <string name="k2go_clone_link_wifi_not_joined">Göndərən telefonun hotspotuna qoşulmayıb</string>
+    <string name="k2go_clone_link_wifi_found">Göndərən öz hotspotunda tapıldı</string>
+    <string name="k2go_clone_link_wifi_slow">Göndərən tapıldı. Yavaş diapazon.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot aktivdir. Qoşulan telefonlar: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Wi-Fi şəbəkəsi ilə paylaşılır</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot söndürülüb</string>
+    <string name="k2go_clone_link_usb_none">Kabel yoxdur</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel tapıldı. Hər iki telefonda USB girişinə icazə verin.</string>
+    <string name="k2go_clone_link_usb_linked">Digər telefonla əlaqələndirilib</string>
+    <string name="k2go_clone_link_usb_active">Məlumat ötürülməsi: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Söndürülüb</string>
+    <string name="k2go_clone_link_badge_not_ready">Hazır deyil</string>
+    <string name="k2go_clone_link_badge_optional">İstəyə bağlı</string>
+    <string name="k2go_clone_link_badge_waiting">Gözləyir</string>
+    <string name="k2go_clone_link_badge_linked">Qoşulub</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">İndi digər telefonun köçürmə kodunu skan edin və ya USB kabel qoşun.</string>
 </resources>

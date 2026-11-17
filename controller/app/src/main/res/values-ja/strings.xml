@@ -1601,4 +1601,29 @@
     <string name="k2go_cx_share_stop_msg">進行中のコピーはすべて停止します。もう一方のスマートフォンは進捗を失い、新しいコードでやり直す必要があります。</string>
     <string name="k2go_connect_switch_msg">このホットスポットに接続しているデバイスは接続が切れます。</string>
     <string name="k2go_cx_share_notif_open">停止するまで共有は開いたままです。</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">送信側のスマホからファイル一覧を読み取れませんでした。</string>
+    <string name="k2go_clone_cable_err_no_path">送信側のスマホとの接続が切れました。そのホットスポットに接続するか、USB ケーブルをつないでください。</string>
+    <string name="k2go_clone_cable_err_check">コピーの最終チェックに失敗しました。転送をもう一度開始してください。</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi ホットスポット</string>
+    <string name="k2go_clone_link_usb">USB ケーブル</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi がオフです</string>
+    <string name="k2go_clone_link_wifi_not_joined">送信側のスマホのホットスポットに未接続</string>
+    <string name="k2go_clone_link_wifi_found">送信側をホットスポット上で検出しました</string>
+    <string name="k2go_clone_link_wifi_slow">送信側を検出しました。低速の帯域です。</string>
+    <string name="k2go_clone_link_hotspot_on">ホットスポット オン。接続中のスマホ: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Wi-Fi ネットワークで共有中</string>
+    <string name="k2go_clone_link_hotspot_off">ホットスポット オフ</string>
+    <string name="k2go_clone_link_usb_none">ケーブルなし</string>
+    <string name="k2go_clone_link_usb_waiting">ケーブルを検出しました。両方のスマホで USB アクセスを許可してください。</string>
+    <string name="k2go_clone_link_usb_linked">相手のスマホとリンク済み</string>
+    <string name="k2go_clone_link_usb_active">データ転送中: %1$s</string>
+    <string name="k2go_clone_link_badge_off">オフ</string>
+    <string name="k2go_clone_link_badge_not_ready">準備未完了</string>
+    <string name="k2go_clone_link_badge_optional">任意</string>
+    <string name="k2go_clone_link_badge_waiting">待機中</string>
+    <string name="k2go_clone_link_badge_linked">リンク済み</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2.4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">次に、相手のスマホの転送コードをスキャンするか、USB ケーブルをつないでください。</string>
 </resources>

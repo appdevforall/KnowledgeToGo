@@ -1600,4 +1600,29 @@
     <string name="k2go_cx_share_stop_msg">Dit stopt elke lopende kopie. De andere telefoon verliest zijn voortgang en moet opnieuw beginnen met een nieuwe code.</string>
     <string name="k2go_connect_switch_msg">Apparaten die met deze hotspot zijn verbonden, verliezen hun verbinding.</string>
     <string name="k2go_cx_share_notif_open">Het delen blijft open tot je het stopt.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Kan de lijst met bestanden van de verzendende telefoon niet lezen.</string>
+    <string name="k2go_clone_cable_err_no_path">De verbinding met de verzendende telefoon is verbroken. Maak verbinding met de hotspot ervan of sluit de USB-kabel aan.</string>
+    <string name="k2go_clone_cable_err_check">De laatste controle van de kopie is mislukt. Start de overdracht opnieuw.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi-hotspot</string>
+    <string name="k2go_clone_link_usb">USB-kabel</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi staat uit</string>
+    <string name="k2go_clone_link_wifi_not_joined">Niet verbonden met de hotspot van de verzendende telefoon</string>
+    <string name="k2go_clone_link_wifi_found">Verzender gevonden op de eigen hotspot</string>
+    <string name="k2go_clone_link_wifi_slow">Verzender gevonden. Trage band.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot aan. Verbonden telefoons: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Delen via het Wi-Fi-netwerk</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot uit</string>
+    <string name="k2go_clone_link_usb_none">Geen kabel</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel gevonden. Sta USB-toegang toe op beide telefoons.</string>
+    <string name="k2go_clone_link_usb_linked">Gekoppeld aan de andere telefoon</string>
+    <string name="k2go_clone_link_usb_active">Gegevensoverdracht: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Uit</string>
+    <string name="k2go_clone_link_badge_not_ready">Niet klaar</string>
+    <string name="k2go_clone_link_badge_optional">Optioneel</string>
+    <string name="k2go_clone_link_badge_waiting">Wachten</string>
+    <string name="k2go_clone_link_badge_linked">Gekoppeld</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Scan nu de overdrachtscode van de andere telefoon, of sluit een USB-kabel aan.</string>
 </resources>

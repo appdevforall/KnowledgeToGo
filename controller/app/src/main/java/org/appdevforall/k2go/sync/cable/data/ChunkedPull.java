@@ -24,6 +24,7 @@ import android.util.Log;
 
 import org.appdevforall.k2go.LogRepository;
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.RsyncManager;
 import org.appdevforall.k2go.boxidentity.data.CopyExcludeFiles;
 import org.appdevforall.k2go.boxidentity.domain.CopyExcludes;
 import org.appdevforall.k2go.sync.cable.domain.ChunkQueue;
@@ -57,6 +58,7 @@ public final class ChunkedPull {
     private static final int CHUNK_FILES = 2000;
     /** With no path left (no Wi-Fi, no cable) the transfer fails after this wait. */
     private static final long NO_PATH_TIMEOUT_MS = 60_000;
+    private static final long WIFI_RETRY_MS = 5_000;
 
     /** Where each path connects. The cable port changes when the cable links again. */
     public interface Paths {
@@ -82,6 +84,7 @@ public final class ChunkedPull {
     private final AtomicLong cableBytes = new AtomicLong();
     private volatile boolean cancelled;
     private volatile int lastFailedExit;
+    private long lastWifiTry;
     private int lastPct;
     private volatile ChunkQueue queue;
     private volatile Thread wifiWorker;
@@ -174,8 +177,11 @@ public final class ChunkedPull {
     }
 
     private void startWorkers() {
-        if (wifiWorker == null && paths.wifiHost() != null) {
-            wifiWorker = worker(false);
+        // Wi-Fi joins whenever the sender answers on it, also after a cable-only start or a drop.
+        long now = System.currentTimeMillis();
+        if (!alive(wifiWorker) && paths.wifiHost() != null && now - lastWifiTry >= WIFI_RETRY_MS) {
+            lastWifiTry = now;
+            if (reachable(paths.wifiHost(), paths.wifiPort())) wifiWorker = worker(false);
         }
         if (!alive(cableWorker) && paths.cablePort() > 0) {
             cableWorker = worker(true);
@@ -213,6 +219,7 @@ public final class ChunkedPull {
                 if (RsyncOutcome.isSuccess(code)) {
                     queue.complete(c);
                     failures = 0;
+                    lastFailedExit = 0;   // a recovered failure must not name a later one
                 } else {
                     queue.requeue(c);
                     lastFailedExit = code;
@@ -245,10 +252,10 @@ public final class ChunkedPull {
         fail(R.string.k2go_clone_cable_err_check, "final pass failed on every path");
     }
 
-    /** Live paths, Wi-Fi first: {host, port}. */
+    /** Live paths, Wi-Fi first: {host, port}. Wi-Fi only when the sender answers on it. */
     private List<String[]> targets() {
         List<String[]> t = new ArrayList<>();
-        if (paths.wifiHost() != null) t.add(new String[]{paths.wifiHost(), String.valueOf(paths.wifiPort())});
+        if (paths.wifiHost() != null && reachable(paths.wifiHost(), paths.wifiPort())) t.add(new String[]{paths.wifiHost(), String.valueOf(paths.wifiPort())});
         if (paths.cablePort() > 0) t.add(new String[]{"127.0.0.1", String.valueOf(paths.cablePort())});
         return t;
     }
@@ -301,13 +308,19 @@ public final class ChunkedPull {
     private void fail(int userText, String detail) {
         Log.e(TAG, "clone failed: " + detail + " (last failed exit " + lastFailedExit + ")");
         LogRepository.get().append("[Clone] " + detail);
-        switch (RsyncOutcome.classifyTransfer(lastFailedExit)) {
-            case KILLED: userText = R.string.rsync_error_process_killed; break;
-            case HOST_DROPPED: if (userText == R.string.k2go_clone_cable_err_no_path) userText = R.string.rsync_error_host_dropped; break;
-            default: break;
-        }
-        String msg = app.getString(userText);
+        RsyncOutcome.Transfer t = RsyncOutcome.classifyTransfer(lastFailedExit);
+        String msg = (t == RsyncOutcome.Transfer.KILLED || t == RsyncOutcome.Transfer.HOST_DROPPED)
+                ? RsyncManager.failureText(app, lastFailedExit) : app.getString(userText);
         main.post(() -> listener.onError(msg));
+    }
+
+    private static boolean reachable(String host, int port) {
+        try (java.net.Socket s = new java.net.Socket()) {
+            s.connect(new java.net.InetSocketAddress(host, port), 1500);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private static boolean alive(Thread t) {

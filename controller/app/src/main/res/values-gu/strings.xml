@@ -1613,4 +1613,29 @@
     <string name="k2go_cx_share_stop_msg">આ ચાલુ કોઈપણ નકલ બંધ કરે છે. બીજો ફોન તેની પ્રગતિ ગુમાવે છે અને નવા કોડ સાથે ફરી શરૂ કરવો પડશે.</string>
     <string name="k2go_connect_switch_msg">આ હોટ્સ્પોટ સાથે જોડાયેલા ઉપકરણોનું કનેક્શન તૂટી જશે.</string>
     <string name="k2go_cx_share_notif_open">તમે તેને બંધ ન કરો ત્યાં સુધી શેર ખુલ્લું રહે છે.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">મોકલનાર ફોનમાંથી ફાઇલોની સૂચિ વાંચી શકાઈ નથી.</string>
+    <string name="k2go_clone_cable_err_no_path">મોકલનાર ફોન સાથેનું કનેક્શન તૂટી ગયું છે. તેના હૉટસ્પૉટ સાથે જોડાઓ અથવા USB કેબલ જોડો.</string>
+    <string name="k2go_clone_cable_err_check">કૉપિની છેલ્લી ચકાસણી નિષ્ફળ ગઈ. ટ્રાન્સફર ફરી શરૂ કરો.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi હૉટસ્પૉટ</string>
+    <string name="k2go_clone_link_usb">USB કેબલ</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi બંધ છે</string>
+    <string name="k2go_clone_link_wifi_not_joined">મોકલનાર ફોનના હૉટસ્પૉટ સાથે જોડાયેલ નથી</string>
+    <string name="k2go_clone_link_wifi_found">મોકલનાર તેના હૉટસ્પૉટ પર મળ્યો</string>
+    <string name="k2go_clone_link_wifi_slow">મોકલનાર મળ્યો. ધીમો બેન્ડ.</string>
+    <string name="k2go_clone_link_hotspot_on">હૉટસ્પૉટ ચાલુ. જોડાયેલા ફોન: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Wi-Fi નેટવર્ક દ્વારા શેર કરી રહ્યાં છીએ</string>
+    <string name="k2go_clone_link_hotspot_off">હૉટસ્પૉટ બંધ</string>
+    <string name="k2go_clone_link_usb_none">કેબલ નથી</string>
+    <string name="k2go_clone_link_usb_waiting">કેબલ મળ્યો. બંને ફોન પર USB ઍક્સેસની મંજૂરી આપો.</string>
+    <string name="k2go_clone_link_usb_linked">બીજા ફોન સાથે જોડાયેલ</string>
+    <string name="k2go_clone_link_usb_active">ડેટા ટ્રાન્સફર: %1$s</string>
+    <string name="k2go_clone_link_badge_off">બંધ</string>
+    <string name="k2go_clone_link_badge_not_ready">તૈયાર નથી</string>
+    <string name="k2go_clone_link_badge_optional">વૈકલ્પિક</string>
+    <string name="k2go_clone_link_badge_waiting">રાહ જોઈ રહ્યું છે</string>
+    <string name="k2go_clone_link_badge_linked">જોડાયેલ</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2.4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">હવે બીજા ફોનનો ટ્રાન્સફર કોડ સ્કૅન કરો, અથવા USB કેબલ જોડો.</string>
 </resources>

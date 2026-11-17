@@ -1613,4 +1613,29 @@
     <string name="k2go_cx_share_stop_msg">Ово зауставља свако копирање у току. Други телефон губи напредак и мора да почне поново са новим кодом.</string>
     <string name="k2go_connect_switch_msg">Уређаји повезани на овај хотспот губе везу.</string>
     <string name="k2go_cx_share_notif_open">Дељење остаје отворено док га не зауставите.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Није могуће прочитати листу датотека са телефона пошиљаоца.</string>
+    <string name="k2go_clone_cable_err_no_path">Веза са телефоном пошиљаоца је изгубљена. Повежите се на његов хотспот или прикључите USB кабл.</string>
+    <string name="k2go_clone_cable_err_check">Последња провера копије није успела. Поново покрените пренос.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi хотспот</string>
+    <string name="k2go_clone_link_usb">USB кабл</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi је искључен</string>
+    <string name="k2go_clone_link_wifi_not_joined">Није повезано на хотспот телефона пошиљаоца</string>
+    <string name="k2go_clone_link_wifi_found">Пошиљалац пронађен на свом хотспоту</string>
+    <string name="k2go_clone_link_wifi_slow">Пошиљалац пронађен. Спор опсег.</string>
+    <string name="k2go_clone_link_hotspot_on">Хотспот укључен. Повезани телефони: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Дељење преко Wi-Fi мреже</string>
+    <string name="k2go_clone_link_hotspot_off">Хотспот искључен</string>
+    <string name="k2go_clone_link_usb_none">Нема кабла</string>
+    <string name="k2go_clone_link_usb_waiting">Кабл је пронађен. Дозволите USB приступ на оба телефона.</string>
+    <string name="k2go_clone_link_usb_linked">Повезано са другим телефоном</string>
+    <string name="k2go_clone_link_usb_active">Пренос података: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Искључено</string>
+    <string name="k2go_clone_link_badge_not_ready">Није спремно</string>
+    <string name="k2go_clone_link_badge_optional">Опционо</string>
+    <string name="k2go_clone_link_badge_waiting">Чека се</string>
+    <string name="k2go_clone_link_badge_linked">Повезано</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Сада скенирајте код за пренос другог телефона или прикључите USB кабл.</string>
 </resources>

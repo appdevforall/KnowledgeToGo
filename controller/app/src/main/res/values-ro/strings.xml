@@ -1600,4 +1600,29 @@
     <string name="k2go_cx_share_stop_msg">Aceasta oprește orice copiere în curs. Celălalt telefon își pierde progresul și trebuie să înceapă din nou cu un cod nou.</string>
     <string name="k2go_connect_switch_msg">Dispozitivele conectate la acest hotspot își pierd conexiunea.</string>
     <string name="k2go_cx_share_notif_open">Partajarea rămâne deschisă până când o oprești.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Nu s-a putut citi lista de fișiere de pe telefonul expeditor.</string>
+    <string name="k2go_clone_cable_err_no_path">Conexiunea cu telefonul expeditor s-a pierdut. Conectează-te la hotspotul lui sau conectează cablul USB.</string>
+    <string name="k2go_clone_cable_err_check">Ultima verificare a copiei a eșuat. Pornește din nou transferul.</string>
+    <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Cablu USB</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi este oprit</string>
+    <string name="k2go_clone_link_wifi_not_joined">Neconectat la hotspotul telefonului expeditor</string>
+    <string name="k2go_clone_link_wifi_found">Expeditor găsit pe hotspotul său</string>
+    <string name="k2go_clone_link_wifi_slow">Expeditor găsit. Bandă lentă.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot pornit. Telefoane conectate: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Partajare prin rețeaua Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot oprit</string>
+    <string name="k2go_clone_link_usb_none">Niciun cablu</string>
+    <string name="k2go_clone_link_usb_waiting">Cablu detectat. Permite accesul USB pe ambele telefoane.</string>
+    <string name="k2go_clone_link_usb_linked">Conectat la celălalt telefon</string>
+    <string name="k2go_clone_link_usb_active">Transfer de date: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Oprit</string>
+    <string name="k2go_clone_link_badge_not_ready">Nepregătit</string>
+    <string name="k2go_clone_link_badge_optional">Opțional</string>
+    <string name="k2go_clone_link_badge_waiting">În așteptare</string>
+    <string name="k2go_clone_link_badge_linked">Conectat</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Acum scanează codul de transfer al celuilalt telefon sau conectează un cablu USB.</string>
 </resources>

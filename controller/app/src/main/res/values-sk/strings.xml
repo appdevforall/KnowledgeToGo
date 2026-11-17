@@ -1607,4 +1607,29 @@
     <string name="k2go_cx_share_stop_msg">Tým sa zastaví prebiehajúce kopírovanie. Druhý telefón stratí priebeh a musí začať znova s novým kódom.</string>
     <string name="k2go_connect_switch_msg">Zariadenia pripojené k tomuto hotspotu stratia pripojenie.</string>
     <string name="k2go_cx_share_notif_open">Zdieľanie zostane otvorené, kým ho nezastavíte.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Zoznam súborov z odosielajúceho telefónu sa nepodarilo načítať.</string>
+    <string name="k2go_clone_cable_err_no_path">Spojenie s odosielajúcim telefónom sa stratilo. Pripojte sa k jeho hotspotu alebo pripojte kábel USB.</string>
+    <string name="k2go_clone_cable_err_check">Posledná kontrola kópie zlyhala. Spustite prenos znova.</string>
+    <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
+    <string name="k2go_clone_link_usb">Kábel USB</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi je vypnutá</string>
+    <string name="k2go_clone_link_wifi_not_joined">Nepripojené k hotspotu odosielajúceho telefónu</string>
+    <string name="k2go_clone_link_wifi_found">Odosielateľ nájdený na svojom hotspote</string>
+    <string name="k2go_clone_link_wifi_slow">Odosielateľ nájdený. Pomalé pásmo.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot zapnutý. Pripojené telefóny: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Zdieľanie cez sieť Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot vypnutý</string>
+    <string name="k2go_clone_link_usb_none">Žiadny kábel</string>
+    <string name="k2go_clone_link_usb_waiting">Kábel zistený. Povoľte prístup USB na oboch telefónoch.</string>
+    <string name="k2go_clone_link_usb_linked">Prepojené s druhým telefónom</string>
+    <string name="k2go_clone_link_usb_active">Prenos dát: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Vypnuté</string>
+    <string name="k2go_clone_link_badge_not_ready">Nepripravené</string>
+    <string name="k2go_clone_link_badge_optional">Voliteľné</string>
+    <string name="k2go_clone_link_badge_waiting">Čaká sa</string>
+    <string name="k2go_clone_link_badge_linked">Prepojené</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Teraz naskenujte kód prenosu druhého telefónu alebo pripojte kábel USB.</string>
 </resources>

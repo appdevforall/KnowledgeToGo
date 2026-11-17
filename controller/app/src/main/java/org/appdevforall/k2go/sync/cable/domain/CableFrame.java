@@ -58,10 +58,17 @@ public final class CableFrame {
 
     /** Header plus payload, ready to write to the link. */
     public byte[] encode() {
-        return ByteBuffer.allocate(HEADER + payload.length)
+        byte[] b = new byte[HEADER + payload.length];
+        writeHeader(b, type, channel, payload.length);
+        System.arraycopy(payload, 0, b, HEADER, payload.length);
+        return b;
+    }
+
+    /** Writes a header into {@code buf[0..HEADER)}, for a payload already at {@code buf[HEADER..]}. */
+    public static void writeHeader(byte[] buf, Type type, int channel, int length) {
+        if (length < 0 || length > MAX_PAYLOAD) throw new IllegalArgumentException("payload " + length);
+        ByteBuffer.wrap(buf, 0, HEADER)
                 .put(MAGIC_0).put(MAGIC_1).put(VERSION).put((byte) type.ordinal())
-                .putShort((short) channel).putInt(payload.length)
-                .put(payload)
-                .array();
+                .putShort((short) channel).putInt(length);
     }
 }

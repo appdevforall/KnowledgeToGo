@@ -1676,4 +1676,29 @@
     <string name="k2go_cx_share_stop_msg">Это остановит любое текущее копирование. Другой телефон потеряет прогресс и должен будет начать заново с новым кодом.</string>
     <string name="k2go_connect_switch_msg">Устройства, подключённые к этой точке доступа, потеряют соединение.</string>
     <string name="k2go_cx_share_notif_open">Передача остаётся открытой, пока вы её не остановите.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Не удалось прочитать список файлов с телефона-отправителя.</string>
+    <string name="k2go_clone_cable_err_no_path">Связь с телефоном-отправителем потеряна. Подключитесь к его точке доступа или подсоедините USB-кабель.</string>
+    <string name="k2go_clone_cable_err_check">Последняя проверка копии не пройдена. Начните передачу заново.</string>
+    <string name="k2go_clone_link_wifi">Точка доступа Wi-Fi</string>
+    <string name="k2go_clone_link_usb">USB-кабель</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi выключен</string>
+    <string name="k2go_clone_link_wifi_not_joined">Нет подключения к точке доступа телефона-отправителя</string>
+    <string name="k2go_clone_link_wifi_found">Отправитель найден в своей точке доступа</string>
+    <string name="k2go_clone_link_wifi_slow">Отправитель найден. Медленный диапазон.</string>
+    <string name="k2go_clone_link_hotspot_on">Точка доступа включена. Подключено телефонов: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Общий доступ через сеть Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">Точка доступа выключена</string>
+    <string name="k2go_clone_link_usb_none">Нет кабеля</string>
+    <string name="k2go_clone_link_usb_waiting">Кабель обнаружен. Разрешите доступ по USB на обоих телефонах.</string>
+    <string name="k2go_clone_link_usb_linked">Связан с другим телефоном</string>
+    <string name="k2go_clone_link_usb_active">Передача данных: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Выкл.</string>
+    <string name="k2go_clone_link_badge_not_ready">Не готово</string>
+    <string name="k2go_clone_link_badge_optional">Необязательно</string>
+    <string name="k2go_clone_link_badge_waiting">Ожидание</string>
+    <string name="k2go_clone_link_badge_linked">Связано</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Теперь отсканируйте код передачи другого телефона или подключите USB-кабель.</string>
 </resources>

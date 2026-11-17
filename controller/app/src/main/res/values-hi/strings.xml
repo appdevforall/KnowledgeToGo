@@ -1677,4 +1677,29 @@
     <string name="k2go_cx_share_stop_msg">इससे चल रही कोई भी कॉपी रुक जाती है। दूसरा फ़ोन अपनी प्रगति खो देता है और उसे नए कोड के साथ फिर से शुरू करना होगा।</string>
     <string name="k2go_connect_switch_msg">इस हॉटस्पॉट से जुड़े डिवाइस का कनेक्शन टूट जाएगा।</string>
     <string name="k2go_cx_share_notif_open">जब तक आप इसे रोकते नहीं, साझा करना खुला रहता है।</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">भेजने वाले फ़ोन से फ़ाइलों की सूची नहीं पढ़ी जा सकी।</string>
+    <string name="k2go_clone_cable_err_no_path">भेजने वाले फ़ोन से कनेक्शन टूट गया है। उसके हॉटस्पॉट से जुड़ें या USB केबल लगाएँ।</string>
+    <string name="k2go_clone_cable_err_check">कॉपी की आख़िरी जाँच विफल रही। ट्रांसफ़र फिर से शुरू करें।</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi हॉटस्पॉट</string>
+    <string name="k2go_clone_link_usb">USB केबल</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi बंद है</string>
+    <string name="k2go_clone_link_wifi_not_joined">भेजने वाले फ़ोन के हॉटस्पॉट से नहीं जुड़ा</string>
+    <string name="k2go_clone_link_wifi_found">भेजने वाला फ़ोन उसके हॉटस्पॉट पर मिला</string>
+    <string name="k2go_clone_link_wifi_slow">भेजने वाला फ़ोन मिला। धीमा बैंड।</string>
+    <string name="k2go_clone_link_hotspot_on">हॉटस्पॉट चालू। जुड़े फ़ोन: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Wi-Fi नेटवर्क से शेयर किया जा रहा है</string>
+    <string name="k2go_clone_link_hotspot_off">हॉटस्पॉट बंद</string>
+    <string name="k2go_clone_link_usb_none">कोई केबल नहीं</string>
+    <string name="k2go_clone_link_usb_waiting">केबल मिली। दोनों फ़ोन पर USB ऐक्सेस की अनुमति दें।</string>
+    <string name="k2go_clone_link_usb_linked">दूसरे फ़ोन से जुड़ा</string>
+    <string name="k2go_clone_link_usb_active">डेटा ट्रांसफ़र: %1$s</string>
+    <string name="k2go_clone_link_badge_off">बंद</string>
+    <string name="k2go_clone_link_badge_not_ready">तैयार नहीं</string>
+    <string name="k2go_clone_link_badge_optional">वैकल्पिक</string>
+    <string name="k2go_clone_link_badge_waiting">प्रतीक्षा में</string>
+    <string name="k2go_clone_link_badge_linked">जुड़ा</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2.4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">अब दूसरे फ़ोन का ट्रांसफ़र कोड स्कैन करें, या USB केबल लगाएँ।</string>
 </resources>

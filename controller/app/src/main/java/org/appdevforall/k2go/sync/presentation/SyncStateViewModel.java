@@ -52,7 +52,6 @@ public class SyncStateViewModel extends ViewModel {
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
     private volatile SyncHandshakeHelper.SyncCredentials pendingCreds;   // read by the probe thread
     private File pendingDestDir;
-    private volatile boolean pendingWifi; // K2GO-576: written by the probe thread
     private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
     private Context appContext; // application context, for releasing the network binding
 
@@ -88,7 +87,6 @@ public class SyncStateViewModel extends ViewModel {
         this.pendingCreds = creds;
         this.pendingDestDir = null;
         this.pendingBytes = 0L;
-        this.pendingWifi = false;
         this.appContext = appCtx.getApplicationContext();
         final SyncProgressRepository repo = SyncProgressRepository.get();
         repo.postConnecting();
@@ -119,7 +117,6 @@ public class SyncStateViewModel extends ViewModel {
             } catch (Exception e) {
                 Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed", e);
             }
-            pendingWifi = reachable;
             // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
             String probeHost = creds.ip;
             int probePort = creds.port;
@@ -177,16 +174,15 @@ public class SyncStateViewModel extends ViewModel {
     }
 
     /**
-     * K2GO-576: starts the receive pull on every live path. Wi-Fi only when the probe reached the
-     * sender on Wi-Fi; the cable joins whenever its relay is up, also in the middle of the copy.
+     * K2GO-576: starts the receive pull on every live path. Wi-Fi and the cable each join whenever
+     * they reach the sender, also in the middle of the copy.
      */
     public void startPull(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds,
                           String destDir, TransportEngine.SyncListener listener) {
         stopPull();
-        final boolean wifi = pendingWifi;
         ChunkedPull p = new ChunkedPull(appCtx, shareConfig, creds.user, creds.pass, destDir,
                 new ChunkedPull.Paths() {
-                    @Override public String wifiHost() { return wifi ? creds.ip : null; }
+                    @Override public String wifiHost() { return creds.ip; }
                     @Override public int wifiPort() { return creds.port; }
                     @Override public int cablePort() { return CableSession.get().relayPort(); }
                 }, listener);

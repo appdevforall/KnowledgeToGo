@@ -1600,4 +1600,29 @@
     <string name="k2go_cx_share_stop_msg">Dadurch wird jede laufende Kopie gestoppt. Das andere Telefon verliert seinen Fortschritt und muss mit einem neuen Code neu beginnen.</string>
     <string name="k2go_connect_switch_msg">Geräte, die mit diesem Hotspot verbunden sind, verlieren ihre Verbindung.</string>
     <string name="k2go_cx_share_notif_open">Die Freigabe bleibt offen, bis Sie sie beenden.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Die Dateiliste des sendenden Telefons konnte nicht gelesen werden.</string>
+    <string name="k2go_clone_cable_err_no_path">Die Verbindung zum sendenden Telefon ist unterbrochen. Verbinde dich mit seinem Hotspot oder schließe das USB-Kabel an.</string>
+    <string name="k2go_clone_cable_err_check">Die letzte Prüfung der Kopie ist fehlgeschlagen. Starte die Übertragung neu.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi-Hotspot</string>
+    <string name="k2go_clone_link_usb">USB-Kabel</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi ist aus</string>
+    <string name="k2go_clone_link_wifi_not_joined">Nicht mit dem Hotspot des sendenden Telefons verbunden</string>
+    <string name="k2go_clone_link_wifi_found">Sender in seinem Hotspot gefunden</string>
+    <string name="k2go_clone_link_wifi_slow">Sender gefunden. Langsames Band.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot an. Verbundene Telefone: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Freigabe über das Wi-Fi-Netzwerk</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot aus</string>
+    <string name="k2go_clone_link_usb_none">Kein Kabel</string>
+    <string name="k2go_clone_link_usb_waiting">Kabel erkannt. Erlaube den USB-Zugriff auf beiden Telefonen.</string>
+    <string name="k2go_clone_link_usb_linked">Mit dem anderen Telefon verbunden</string>
+    <string name="k2go_clone_link_usb_active">Datenübertragung: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Aus</string>
+    <string name="k2go_clone_link_badge_not_ready">Nicht bereit</string>
+    <string name="k2go_clone_link_badge_optional">Optional</string>
+    <string name="k2go_clone_link_badge_waiting">Wartet</string>
+    <string name="k2go_clone_link_badge_linked">Verbunden</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Scanne jetzt den Übertragungscode des anderen Telefons oder schließe ein USB-Kabel an.</string>
 </resources>

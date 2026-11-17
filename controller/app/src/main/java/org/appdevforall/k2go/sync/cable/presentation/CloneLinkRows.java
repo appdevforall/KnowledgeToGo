@@ -52,6 +52,8 @@ public final class CloneLinkRows {
     private final TextView usbBadge;
     private final Handler main = new Handler(Looper.getMainLooper());
     private int checkPort = -1;
+    private volatile boolean probeSender = true;
+    private volatile boolean lastAnswers;
     private final Runnable check = this::checkWifi;
 
     public CloneLinkRows(View root, LifecycleOwner owner) {
@@ -86,8 +88,13 @@ public final class CloneLinkRows {
         }
     }
 
-    /** Receiver: checks the hotspot every few seconds until stopChecks(). */
-    public void startChecks(int senderRsyncPort) {
+    /**
+     * Receiver: checks the hotspot every few seconds until stopChecks(). With {@code probeSender}
+     * false (during a transfer) it does not connect to the sender's daemon, which allows only a few
+     * connections; it keeps the last answer and still follows Wi-Fi on/off and the band.
+     */
+    public void startChecks(int senderRsyncPort, boolean probeSender) {
+        this.probeSender = probeSender;
         if (checkPort == senderRsyncPort) return;
         checkPort = senderRsyncPort;
         main.removeCallbacks(check);
@@ -108,7 +115,8 @@ public final class CloneLinkRows {
             WifiManager wm = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
             boolean on = wm != null && wm.isWifiEnabled();
             int freq = on ? wm.getConnectionInfo().getFrequency() : -1;
-            boolean answers = on && senderAnswers(wm.getDhcpInfo().gateway, port);
+            boolean answers = on && (probeSender ? senderAnswers(wm.getDhcpInfo().gateway, port) : lastAnswers);
+            lastAnswers = answers;
             WifiLink.Band band = WifiLink.band(freq);
             main.post(() -> {
                 if (checkPort != port) return;

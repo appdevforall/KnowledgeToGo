@@ -144,13 +144,13 @@ public final class CableMux implements Closeable {
     /** Copies one local connection into DATA frames until it ends. */
     private void pump(int ch, Socket s) {
         Thread t = new Thread(() -> {
-            byte[] b = new byte[PAYLOAD];
+            // Read straight after the header slot: one buffer, no copy per frame.
+            byte[] b = new byte[CableFrame.HEADER + PAYLOAD];
             try {
                 InputStream in = s.getInputStream();
-                for (int r; (r = in.read(b)) > 0; ) {
-                    byte[] p = new byte[r];
-                    System.arraycopy(b, 0, p, 0, r);
-                    send(new CableFrame(CableFrame.Type.DATA, ch, p));
+                for (int r; (r = in.read(b, CableFrame.HEADER, PAYLOAD)) > 0; ) {
+                    CableFrame.writeHeader(b, CableFrame.Type.DATA, ch, r);
+                    link.write(b, 0, CableFrame.HEADER + r);
                     bytesOut.addAndGet(r);
                 }
             } catch (IOException ignored) {

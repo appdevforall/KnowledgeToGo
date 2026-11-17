@@ -1600,4 +1600,29 @@
     <string name="k2go_cx_share_stop_msg">این کار هر کپی در حال انجام را متوقف می‌کند. تلفن دیگر پیشرفت خود را از دست می‌دهد و باید با یک کد جدید دوباره شروع کند.</string>
     <string name="k2go_connect_switch_msg">دستگاه‌های متصل به این نقطه اتصال، اتصال خود را از دست می‌دهند.</string>
     <string name="k2go_cx_share_notif_open">اشتراک‌گذاری تا زمانی که آن را متوقف کنید باز می‌ماند.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">خواندن فهرست فایل‌ها از گوشی فرستنده ممکن نشد.</string>
+    <string name="k2go_clone_cable_err_no_path">اتصال به گوشی فرستنده قطع شد. به هات‌اسپات آن بپیوندید یا کابل USB را وصل کنید.</string>
+    <string name="k2go_clone_cable_err_check">آخرین بررسی نسخه ناموفق بود. انتقال را دوباره شروع کنید.</string>
+    <string name="k2go_clone_link_wifi">هات‌اسپات Wi-Fi</string>
+    <string name="k2go_clone_link_usb">کابل USB</string>
+    <string name="k2go_clone_link_wifi_off">Wi-Fi خاموش است</string>
+    <string name="k2go_clone_link_wifi_not_joined">به هات‌اسپات گوشی فرستنده متصل نیست</string>
+    <string name="k2go_clone_link_wifi_found">فرستنده در هات‌اسپات خود پیدا شد</string>
+    <string name="k2go_clone_link_wifi_slow">فرستنده پیدا شد. باند کند.</string>
+    <string name="k2go_clone_link_hotspot_on">هات‌اسپات روشن است. گوشی‌های متصل: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">اشتراک‌گذاری از طریق شبکه Wi-Fi</string>
+    <string name="k2go_clone_link_hotspot_off">هات‌اسپات خاموش است</string>
+    <string name="k2go_clone_link_usb_none">بدون کابل</string>
+    <string name="k2go_clone_link_usb_waiting">کابل پیدا شد. دسترسی USB را در هر دو گوشی مجاز کنید.</string>
+    <string name="k2go_clone_link_usb_linked">به گوشی دیگر متصل است</string>
+    <string name="k2go_clone_link_usb_active">انتقال داده: %1$s</string>
+    <string name="k2go_clone_link_badge_off">خاموش</string>
+    <string name="k2go_clone_link_badge_not_ready">آماده نیست</string>
+    <string name="k2go_clone_link_badge_optional">اختیاری</string>
+    <string name="k2go_clone_link_badge_waiting">در انتظار</string>
+    <string name="k2go_clone_link_badge_linked">متصل</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2.4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">اکنون کد انتقال گوشی دیگر را اسکن کنید، یا یک کابل USB وصل کنید.</string>
 </resources>

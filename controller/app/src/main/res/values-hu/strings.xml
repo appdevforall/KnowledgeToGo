@@ -1600,4 +1600,29 @@
     <string name="k2go_cx_share_stop_msg">Ez leállít minden folyamatban lévő másolást. A másik telefon elveszíti az előrehaladását, és új kóddal kell újrakezdenie.</string>
     <string name="k2go_connect_switch_msg">A hotspothoz csatlakozott eszközök elveszítik a kapcsolatot.</string>
     <string name="k2go_cx_share_notif_open">A megosztás nyitva marad, amíg le nem állítja.</string>
+    <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
+    <string name="k2go_clone_cable_err_list">Nem sikerült beolvasni a fájlok listáját a küldő telefonról.</string>
+    <string name="k2go_clone_cable_err_no_path">Megszakadt a kapcsolat a küldő telefonnal. Csatlakozz a hotspotjához, vagy dugd be az USB-kábelt.</string>
+    <string name="k2go_clone_cable_err_check">A másolat utolsó ellenőrzése sikertelen. Indítsd újra az átvitelt.</string>
+    <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
+    <string name="k2go_clone_link_usb">USB-kábel</string>
+    <string name="k2go_clone_link_wifi_off">A Wi-Fi ki van kapcsolva</string>
+    <string name="k2go_clone_link_wifi_not_joined">Nincs csatlakozva a küldő telefon hotspotjához</string>
+    <string name="k2go_clone_link_wifi_found">Küldő megtalálva a hotspotján</string>
+    <string name="k2go_clone_link_wifi_slow">Küldő megtalálva. Lassú sáv.</string>
+    <string name="k2go_clone_link_hotspot_on">Hotspot bekapcsolva. Csatlakozott telefonok: %1$d</string>
+    <string name="k2go_clone_link_wifi_network">Megosztás a Wi-Fi hálózaton</string>
+    <string name="k2go_clone_link_hotspot_off">Hotspot kikapcsolva</string>
+    <string name="k2go_clone_link_usb_none">Nincs kábel</string>
+    <string name="k2go_clone_link_usb_waiting">Kábel észlelve. Engedélyezd az USB-hozzáférést mindkét telefonon.</string>
+    <string name="k2go_clone_link_usb_linked">Összekapcsolva a másik telefonnal</string>
+    <string name="k2go_clone_link_usb_active">Adatátvitel: %1$s</string>
+    <string name="k2go_clone_link_badge_off">Ki</string>
+    <string name="k2go_clone_link_badge_not_ready">Nem kész</string>
+    <string name="k2go_clone_link_badge_optional">Opcionális</string>
+    <string name="k2go_clone_link_badge_waiting">Várakozás</string>
+    <string name="k2go_clone_link_badge_linked">Összekapcsolva</string>
+    <string name="k2go_clone_link_band_5">5 GHz</string>
+    <string name="k2go_clone_link_band_24">2,4 GHz</string>
+    <string name="k2go_clone_rcv_scan_or_cable">Most olvasd be a másik telefon átviteli kódját, vagy csatlakoztass egy USB-kábelt.</string>
 </resources>

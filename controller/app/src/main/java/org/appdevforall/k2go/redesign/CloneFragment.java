@@ -1076,7 +1076,7 @@ public class CloneFragment extends Fragment {
                     if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
                 }));
         // K2GO-576: no gateway probes while a probe or pull runs: each one takes a daemon connection.
-        if (busy) linkRows.stopChecks(); else linkRows.startChecks(shareConfig.rsyncPort);
+        linkRows.startChecks(shareConfig.rsyncPort, !busy);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
@@ -1149,7 +1149,7 @@ public class CloneFragment extends Fragment {
         rcvSteps.setVisibility(View.VISIBLE);
         rcvCaption.setVisibility(View.VISIBLE);
         rcvCaption.setText(atJoin ? getString(R.string.k2go_clone_rcv_join_caption)
-                : getString(R.string.k2go_clone_rcv_scan_caption));
+                : getString(R.string.k2go_clone_rcv_scan_or_cable));   // K2GO-576: the cable can replace the scan
         rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
         rcvScan.setText(atJoin ? getString(R.string.k2go_clone_rcv_scan_wifi) : getString(R.string.k2go_clone_rcv_scan_start));
