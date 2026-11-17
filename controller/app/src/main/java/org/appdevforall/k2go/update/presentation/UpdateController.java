@@ -100,8 +100,10 @@ public class UpdateController {
             Toast.makeText(activity, R.string.ota_toast_cooldown, Toast.LENGTH_SHORT).show();
             return;
         }
-        lastUpdateCheckTime = now;
-        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardThisAction(activity, () -> checkForUpdates(true), () -> {});   // K2GO-580
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardThisAction(activity, () -> {   // K2GO-580
+            lastUpdateCheckTime = System.currentTimeMillis();
+            checkForUpdates(true);
+        }, () -> {});
     }
 
     public void checkForUpdates(boolean isManual) {

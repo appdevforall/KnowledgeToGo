@@ -24,12 +24,11 @@ public final class CatalogRefreshScheduler {
     private CatalogRefreshScheduler() {
     }
 
-    private static Data input(String name, String manifestUrl, String basename, boolean force) {
+    private static Data input(String name, String manifestUrl, String basename) {
         return new Data.Builder()
                 .putString(CatalogRefreshWorker.KEY_NAME, name)
                 .putString(CatalogRefreshWorker.KEY_MANIFEST_URL, manifestUrl)
                 .putString(CatalogRefreshWorker.KEY_BASENAME, basename)
-                .putBoolean(CatalogRefreshWorker.KEY_FORCE, force)
                 .build();
     }
 
@@ -70,7 +69,7 @@ public final class CatalogRefreshScheduler {
         OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
                 .setConstraints(constraints(NetworkType.CONNECTED))
                 .setExpedited(androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setInputData(input(name, manifestUrl, basename, true))
+                .setInputData(input(name, manifestUrl, basename))
                 .addTag(TAG)
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())

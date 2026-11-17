@@ -36,11 +36,23 @@ public final class CatalogUpdateRow {
     public static void bind(@NonNull Fragment f, @NonNull TextView status, @NonNull Button button) {
         final Context app = f.requireContext().getApplicationContext();
         final boolean[] running = { false };
+        final java.util.Set<java.util.UUID> watched = new java.util.HashSet<>();   // runs seen in progress here
         WorkManager.getInstance(app).getWorkInfosByTagLiveData(CatalogRefreshScheduler.TAG)
                 .observe(f.getViewLifecycleOwner(), infos -> {
                     running[0] = false;
+                    boolean failed = false;
                     if (infos != null) {
-                        for (WorkInfo i : infos) if (!i.getState().isFinished()) running[0] = true;
+                        for (WorkInfo i : infos) {
+                            if (!i.getState().isFinished()) {
+                                running[0] = true;
+                                watched.add(i.getId());
+                            } else if (watched.remove(i.getId()) && i.getState() == WorkInfo.State.FAILED) {
+                                failed = true;
+                            }
+                        }
+                    }
+                    if (failed) {
+                        org.appdevforall.k2go.util.Snackbars.make(button, app.getString(R.string.ota_status_error)).show();
                     }
                     button.setText(running[0] ? R.string.k2go_dash_cancel : R.string.k2go_gm_catalogs_update);
                     status.setText(running[0] ? app.getString(R.string.k2go_gm_catalogs_updating) : checkedText(app));
