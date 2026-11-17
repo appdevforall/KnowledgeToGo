@@ -1,10 +1,11 @@
-name: "Play: 2. publish release"
+name: "App+Play: 2. publish release"
 
 # K2GO-564, button 2 of the release flow. Design: controller/docs/ADR-K2GO-564-play-release-candidates.md
 # Run this from main after Google approved a candidate and main says versionName "vX.Y.Z" (the final
-# commit: same code, only the version line changed). It tags that commit with the final version and
-# runs the release build: GitHub Release, website APKs, R2 and the OTA update.json. An rc build is
-# never released as final (check-release).
+# commit: same code, only the version line changed). It sends the final AAB to the Play beta track
+# (Open testing), and only when Play accepts the upload it tags the commit and runs the release build:
+# GitHub Release, website APKs, R2 and the OTA update.json. An rc build is never released as final
+# (check-release). Google gives its verdict by email and in Play Console (the API cannot read it).
 
 on:
   workflow_dispatch:
@@ -13,44 +14,181 @@ on:
         description: "Approved candidate tag, for example v1.2.0-rc.3 (the final commit is main)"
         required: true
 
+# One Play upload at a time: two parallel runs would race for the same versionCode.
 concurrency:
   group: play-publish
   cancel-in-progress: false
 
+env:
+  PACKAGE: org.appdevforall.k2go
+  # Keyless Play credentials, the same as play-candidate.yml.
+  PLAY_WIF_PROVIDER: projects/540068336150/locations/global/workloadIdentityPools/github-actions/providers/knowledgetogo-repo
+  PLAY_SERVICE_ACCOUNT: k2go-play-publisher@knowledge-to-go.iam.gserviceaccount.com
+
 jobs:
   tag:
-    name: Tag the approved candidate as the release
+    name: Send the final AAB to Play and tag the release
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     environment: google-play
     permissions:
-      contents: write
+      contents: write   # push the release tag
+      id-token: write   # keyless sign-in to Google Cloud (Workload Identity Federation)
     outputs:
-      tag: ${{ steps.final.outputs.tag }}
+      tag: ${{ steps.plan.outputs.tag }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
-
-      - name: Create the final tag on the candidate commit
-        id: final
-        env:
-          RC_TAG: ${{ inputs.rc_tag }}
+      - name: Require main
         run: |
-          set -euo pipefail
-          # Refuses a malformed tag, a released version, and a candidate older than the newest.
-          git ls-remote --tags origin 'v*' | sed 's#.*refs/tags/##; s#\^{}$##' | sort -u > "$RUNNER_TEMP/tags.txt"
-          final=$(python3 tools/play-publish/play_publish.py final-tag --rc-tag "$RC_TAG" --tags "$RUNNER_TEMP/tags.txt")
-          # The final commit is main: an rc build is never released as final, so it must say versionName "$final".
           if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             echo "::error::Run this from main, not $GITHUB_REF."; exit 1
           fi
-          python3 tools/play-publish/play_publish.py check-release --gradle controller/app/build.gradle --tag "$final"
-          git tag "$final" "$GITHUB_SHA"
-          git push origin "refs/tags/$final"
-          echo "tag=$final" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Unit tests (release rules)
+        working-directory: tools/play-publish
+        run: python -m unittest -v test_play_publish
+
+      - name: Sign in to Google Play (keyless)
+        id: auth_plan
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.PLAY_WIF_PROVIDER }}
+          service_account: ${{ env.PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          create_credentials_file: false
+
+      - name: Plan (release tag, release notes, versionCode)
+        id: plan
+        env:
+          PLAY_ACCESS_TOKEN: ${{ steps.auth_plan.outputs.access_token }}
+          RC_TAG: ${{ inputs.rc_tag }}
+        run: |
+          set -euo pipefail
+          # Refuses a malformed tag, a released version, a candidate older than the newest, and a
+          # commit whose versionName is not the final version (an rc build is never released as final).
+          git ls-remote --tags origin 'v*' | sed 's#.*refs/tags/##; s#\^{}$##' | sort -u > "$RUNNER_TEMP/tags.txt"
+          python tools/play-publish/play_publish.py final-plan \
+            --gradle controller/app/build.gradle \
+            --notes controller/ci/ota-release-notes.md \
+            --tags "$RUNNER_TEMP/tags.txt" \
+            --rc-tag "$RC_TAG" \
+            --notes-out "$RUNNER_TEMP/notes.txt" > "$RUNNER_TEMP/plan.env"
+          . "$RUNNER_TEMP/plan.env"
+          code=$((code_base * 10))
+          python tools/play-publish/play_publish.py check-code --package "$PACKAGE" --code "$code" > /dev/null
+          { cat "$RUNNER_TEMP/plan.env"; echo "code=$code"; } >> "$GITHUB_OUTPUT"
+          echo "$tag, versionCode $code, commit $GITHUB_SHA"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Create google-services.json
+        working-directory: controller
+        env:
+          GOOGLE_SERVICES_JSON_K2GO_ANALYTICS: ${{ secrets.GOOGLE_SERVICES_JSON_K2GO_ANALYTICS }}
+        run: echo "$GOOGLE_SERVICES_JSON_K2GO_ANALYTICS" > app/google-services.json
+
+      - name: Decode Keystore
+        working-directory: controller
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE_BASE64 }}
+        run: echo "$ENCODED_STRING" | base64 -d > keystore.jks
+
+      - name: Build and sign the Play AAB
+        working-directory: controller
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
+          CODE: ${{ steps.plan.outputs.code }}
+        run: |
+          chmod +x gradlew
+          ./gradlew bundlePlayRelease \
+            -PversionSuffix="" \
+            -PplayVersionCode="$CODE" \
+            -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+
+      - name: Sign in to Google Play again (fresh token after the build)
+        id: auth_send
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.PLAY_WIF_PROVIDER }}
+          service_account: ${{ env.PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          create_credentials_file: false
+
+      - name: Send to the Play beta track (Open testing)
+        id: send
+        env:
+          PLAY_ACCESS_TOKEN: ${{ steps.auth_send.outputs.access_token }}
+          CODE: ${{ steps.plan.outputs.code }}
+          TAG: ${{ steps.plan.outputs.tag }}
+        run: |
+          set -euo pipefail
+          aabs=$(find controller/app/build/outputs/bundle/playRelease -name '*.aab')
+          if [ "$(printf '%s\n' "$aabs" | grep -c .)" != "1" ]; then
+            echo "::error::Expected exactly one Play AAB, found: '$aabs'"; exit 1
+          fi
+          echo "aab=$aabs" >> "$GITHUB_OUTPUT"
+          python tools/play-publish/play_publish.py publish \
+            --package "$PACKAGE" --track beta --aab "$aabs" --code "$CODE" \
+            --name "$TAG ($CODE)" --notes-file "$RUNNER_TEMP/notes.txt"
+
+      # Tag only after Play accepted the upload, so a release tag always has its build in Play.
+      - name: Create the final tag
+        env:
+          TAG: ${{ steps.plan.outputs.tag }}
+          RC_TAG: ${{ inputs.rc_tag }}
+          CODE: ${{ steps.plan.outputs.code }}
+        run: |
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$TAG"
           {
-            echo "## $final tagged on $GITHUB_SHA (approved candidate: $RC_TAG)"
-            echo "- Now press **Publish changes** in Play Console to release the approved AAB."
+            echo "## $TAG tagged on $GITHUB_SHA (approved candidate: $RC_TAG)"
+            echo "- Sent to the Play beta track (Open testing), versionCode $CODE. Google answers by email and in Play Console."
+            echo "- Production stays a manual step in Play Console."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # Keep the exact AAB sent to Play (K2GO-433 archive), named after its tag. A backup copy only:
+      # the tag is already pushed, so a failure here must not stop the release build.
+      - name: Archive the AAB to Cloudflare R2
+        continue-on-error: true
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BUCKET_NAME: "k2go-apk-repo"
+          AAB: ${{ steps.send.outputs.aab }}
+          TAG: ${{ steps.plan.outputs.tag }}
+        run: |
+          aws s3 cp "$AAB" "s3://$BUCKET_NAME/K2Go-$TAG-play-release.aab" \
+            --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+            --content-type "application/octet-stream"
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f controller/keystore.jks controller/app/google-services.json
 
   # A tag pushed with GITHUB_TOKEN does not start other workflows, so call the release build here.
   release:
