@@ -5,7 +5,7 @@ import play_publish as pp
 
 GRADLE = '''
     defaultConfig {
-        versionCode 71
+        versionCode 1020001
         def ciSuffix = ""
         versionName "v1.2.0-rc.1${ciSuffix}"
     }
@@ -17,7 +17,7 @@ class VersionTest(unittest.TestCase):
     def test_reads_label_and_code_base(self):
         self.assertEqual("v1.2.0-rc.1", pp.version_name(GRADLE))
         self.assertEqual("v1.2.0", pp.version_name(FINAL))
-        self.assertEqual(71, pp.version_code_base(GRADLE))
+        self.assertEqual(1020001, pp.version_code_base(GRADLE))
 
     def test_rejects_other_labels(self):
         for bad in ("v1.2.0-beta", "v1.2.0-rc1", "1.2.0", "v1.2.0-rc.1-x"):
@@ -120,13 +120,32 @@ class NotesTest(unittest.TestCase):
 
 
 class VersionCodeTest(unittest.TestCase):
-    def test_takes_highest_used_plus_one(self):
-        self.assertEqual(721, pp.next_version_code({700, 710, 720}, 71))
+    def test_code_comes_from_the_version_name(self):
+        self.assertEqual(1020003, pp.version_code_base_for("v1.2.0-rc.3"))   # APK 10200030
+        self.assertEqual(1020099, pp.version_code_base_for("v1.2.0"))        # APK 10200990
+        self.assertEqual(1020101, pp.version_code_base_for("v1.2.1-rc.1"))
+        self.assertEqual(10000099, pp.version_code_base_for("v10.0.0"))
 
-    def test_floor_is_the_gradle_code(self):
-        # build.gradle moved ahead of Play: start at its APK code, never below it.
-        self.assertEqual(800, pp.next_version_code({720}, 80))
-        self.assertEqual(710, pp.next_version_code(set(), 71))
+    def test_final_follows_its_candidates_and_the_next_version_follows_the_final(self):
+        self.assertLess(pp.version_code_base_for("v1.2.0-rc.98"), pp.version_code_base_for("v1.2.0"))
+        self.assertLess(pp.version_code_base_for("v1.2.0"), pp.version_code_base_for("v1.2.1-rc.1"))
+
+    def test_labels_outside_the_scheme_are_refused(self):
+        for label in ("v1.100.0", "v1.2.100", "v1.2.0-rc.99", "v1.2.0-rc.0", "1.2.0"):
+            with self.assertRaises(pp.PlanError):
+                pp.version_code_base_for(label)
+
+    def test_gradle_code_must_match_its_version_name(self):
+        self.assertEqual(1020001, pp.checked_code_base(GRADLE))
+        with self.assertRaises(pp.PlanError):
+            pp.checked_code_base(GRADLE.replace("1020001", "74"))
+
+    def test_code_must_be_above_every_code_in_play(self):
+        self.assertEqual(10200030, pp.check_version_code({730, 712}, 10200030))
+        self.assertEqual(10200030, pp.check_version_code(set(), 10200030))
+        for used in ({10200030}, {10200040}):
+            with self.assertRaises(pp.PlanError):
+                pp.check_version_code(used, 10200030)
 
     def test_counts_tracks_and_uploads_never_released(self):
         tracks = {"tracks": [
