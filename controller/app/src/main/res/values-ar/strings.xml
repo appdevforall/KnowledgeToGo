@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">«%1$s» مستخدم بالفعل. اختر اسمًا مختلفًا.</string>
     <string name="k2go_fqr_calculating">جارٍ حساب حجم التنزيل…</string>
     <string name="k2go_fqr_estimate_error_title">لا يمكن تنزيل هذه المنطقة</string>
+    <string name="k2go_fqr_overlap">هذه المنطقة تتداخل مع منطقة نزّلتها بالفعل.</string>
     <string name="k2go_fqr_consent_title">تنزيل هذه المنطقة؟</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s للتنزيل، %3$s على القرص.</string>
     <string name="k2go_fqr_consent_legend">هذه المنطقة: %1$s  ·  المتاح بعدها: %2$s</string>

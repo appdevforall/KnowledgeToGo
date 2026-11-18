@@ -1047,6 +1047,7 @@
     <string name="k2go_fqr_name_taken">Το «%1$s» χρησιμοποιείται ήδη. Διάλεξε άλλο όνομα.</string>
     <string name="k2go_fqr_calculating">Υπολογισμός μεγέθους λήψης…</string>
     <string name="k2go_fqr_estimate_error_title">Δεν είναι δυνατή η λήψη αυτής της περιοχής</string>
+    <string name="k2go_fqr_overlap">Αυτή η περιοχή επικαλύπτεται με μια περιοχή που έχετε ήδη κατεβάσει.</string>
     <string name="k2go_fqr_consent_title">Λήψη αυτής της περιοχής;</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s για λήψη, %3$s στον δίσκο.</string>
     <string name="k2go_fqr_consent_legend">Αυτή η περιοχή: %1$s  ·  Ελεύθερα μετά: %2$s</string>

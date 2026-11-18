@@ -1047,6 +1047,7 @@
     <string name="k2go_fqr_name_taken">„%1$s“ вече се използва. Изберете друго име.</string>
     <string name="k2go_fqr_calculating">Изчисляване на размера за изтегляне…</string>
     <string name="k2go_fqr_estimate_error_title">Този регион не може да се изтегли</string>
+    <string name="k2go_fqr_overlap">Този регион се припокрива с регион, който вече сте изтеглили.</string>
     <string name="k2go_fqr_consent_title">Изтегляне на този регион?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s за изтегляне, %3$s на диска.</string>
     <string name="k2go_fqr_consent_legend">Този регион: %1$s  ·  Свободно след: %2$s</string>

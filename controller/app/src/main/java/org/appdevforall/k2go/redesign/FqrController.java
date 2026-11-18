@@ -288,6 +288,11 @@ public final class FqrController {
                 dismissDialog();
                 showConsent(name, box, transfer, archive, free, freeAfter);
             }
+            @Override public void onOverlap() {
+                if (estimateCanceled) return;
+                dismissDialog();
+                overlapEstimateError();
+            }
             @Override public void onError(String message) {
                 if (estimateCanceled) return;
                 dismissDialog();
@@ -1166,10 +1171,21 @@ public final class FqrController {
                 .show();
     }
 
+    /** K2GO-583: the region overlaps a downloaded one. Retry cannot help, so only OK, which clears the
+     *  selection so the user can draw another region. */
+    private void overlapEstimateError() {
+        new BrandDialog(themed)
+                .setTitle(R.string.k2go_fqr_estimate_error_title)
+                .setMessage(str(R.string.k2go_fqr_overlap))
+                .setPositive(android.R.string.ok, () -> resetMapSelection())
+                .setOnCancel(() -> resetMapSelection())
+                .show();
+    }
+
     /** K2GO-317 follow-up: an estimate failed (usually offline). Keep the drawn region and offer Retry
      *  (re-run the estimate for the same name + box), so the user does not redraw; "Not now" gives up and
-     *  clears the selection, like the consent dialog's bail-outs. The body is a LOCALIZED string (the data
-     *  layer's friendlyError is raw English); reuses install_msg_no_connection, translated in every locale. */
+     *  clears the selection, like the consent dialog's bail-outs. Reuses install_msg_no_connection,
+     *  translated in every locale. */
     private void retryableEstimateError(String name, String box) {
         new BrandDialog(themed)
                 .setTitle(R.string.k2go_fqr_estimate_error_title)

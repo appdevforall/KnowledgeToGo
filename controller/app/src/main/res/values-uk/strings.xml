@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">«%1$s» уже використовується. Виберіть іншу назву.</string>
     <string name="k2go_fqr_calculating">Обчислення розміру завантаження…</string>
     <string name="k2go_fqr_estimate_error_title">Не вдається завантажити цей регіон</string>
+    <string name="k2go_fqr_overlap">Цей регіон перетинається з регіоном, який ви вже завантажили.</string>
     <string name="k2go_fqr_consent_title">Завантажити цей регіон?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s для завантаження, %3$s на диску.</string>
     <string name="k2go_fqr_consent_legend">Цей регіон: %1$s  ·  Вільно після: %2$s</string>

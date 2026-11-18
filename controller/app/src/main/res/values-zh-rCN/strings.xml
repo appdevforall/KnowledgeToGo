@@ -1041,6 +1041,7 @@
     <string name="k2go_fqr_name_taken">“%1$s”已被使用。请选择其他名称。</string>
     <string name="k2go_fqr_calculating">正在计算下载大小…</string>
     <string name="k2go_fqr_estimate_error_title">无法下载此区域</string>
+    <string name="k2go_fqr_overlap">此区域与你已下载的区域重叠。</string>
     <string name="k2go_fqr_consent_title">下载此区域？</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — 下载 %2$s，磁盘占用 %3$s。</string>
     <string name="k2go_fqr_consent_legend">此区域：%1$s  ·  之后可用：%2$s</string>

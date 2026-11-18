@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">«%1$s» از قبل استفاده شده است. نام دیگری انتخاب کنید.</string>
     <string name="k2go_fqr_calculating">در حال محاسبه حجم دانلود…</string>
     <string name="k2go_fqr_estimate_error_title">دانلود این منطقه ممکن نیست</string>
+    <string name="k2go_fqr_overlap">این منطقه با منطقه‌ای که قبلاً دانلود کرده‌اید هم‌پوشانی دارد.</string>
     <string name="k2go_fqr_consent_title">این منطقه دانلود شود؟</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s برای دانلود، %3$s روی دیسک.</string>
     <string name="k2go_fqr_consent_legend">این منطقه: %1$s  ·  آزاد پس از آن: %2$s</string>

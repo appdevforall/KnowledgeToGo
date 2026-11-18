@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” đã được dùng. Hãy chọn tên khác.</string>
     <string name="k2go_fqr_calculating">Đang tính kích thước tải…</string>
     <string name="k2go_fqr_estimate_error_title">Không thể tải khu vực này</string>
+    <string name="k2go_fqr_overlap">Vùng này chồng lấn với một vùng bạn đã tải xuống.</string>
     <string name="k2go_fqr_consent_title">Tải khu vực này?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s để tải, %3$s trên đĩa.</string>
     <string name="k2go_fqr_consent_legend">Khu vực này: %1$s  ·  Trống sau: %2$s</string>

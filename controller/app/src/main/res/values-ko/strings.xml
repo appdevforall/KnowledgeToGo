@@ -1041,6 +1041,7 @@
     <string name="k2go_fqr_name_taken">“%1$s”은(는) 이미 사용 중입니다. 다른 이름을 선택하세요.</string>
     <string name="k2go_fqr_calculating">다운로드 크기를 계산하는 중…</string>
     <string name="k2go_fqr_estimate_error_title">이 지역을 다운로드할 수 없음</string>
+    <string name="k2go_fqr_overlap">이 지역은 이미 다운로드한 지역과 겹칩니다.</string>
     <string name="k2go_fqr_consent_title">이 지역을 다운로드하시겠어요?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — 다운로드 %2$s, 디스크 %3$s.</string>
     <string name="k2go_fqr_consent_legend">이 지역: %1$s  ·  이후 여유: %2$s</string>

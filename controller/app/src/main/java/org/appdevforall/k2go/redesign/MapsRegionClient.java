@@ -43,6 +43,8 @@ public final class MapsRegionClient {
     /** Size estimate (bytes) for the consent step. */
     public interface EstimateListener {
         void onEstimate(long transfer, long archive, long free, long freeAfter);
+        /** K2GO-583: the region overlaps a downloaded region; a retry cannot help. */
+        void onOverlap();
         void onError(String message);
     }
 
@@ -78,8 +80,9 @@ public final class MapsRegionClient {
                         f = resp.optLong("free", 0), fa = resp.optLong("free_after", 0);
                 main.post(() -> l.onEstimate(t, a, f, fa));
             } catch (Exception e) {
-                final String m = friendlyError(e.getMessage());
-                main.post(() -> l.onError(m));
+                final String m = e.getMessage();
+                if (isOverlap(m)) main.post(l::onOverlap);
+                else main.post(() -> l.onError(m));
             }
         });
     }
@@ -245,11 +248,10 @@ public final class MapsRegionClient {
         });
     }
 
-    /** Map a raw HTTP error to something a first-run user can act on (overlap is the common one). */
-    private static String friendlyError(String raw) {
-        if (raw == null) return "size estimate failed";
-        if (raw.contains("409") || raw.toLowerCase().contains("overlap")) return "This region overlaps one you already have.";
-        return "size estimate failed";
+    /** K2GO-583: the estimate failed because the box overlaps a downloaded region. The box answers
+     *  409 "overlaps an existing region" (static/dashboard/routes.ts /maps/estimate). */
+    static boolean isOverlap(String raw) {
+        return raw != null && (raw.startsWith("HTTP 409") || raw.toLowerCase(java.util.Locale.ROOT).contains("overlap"));
     }
 
     private static JSONObject httpJson(String method, String urlStr, JSONObject body) throws Exception {

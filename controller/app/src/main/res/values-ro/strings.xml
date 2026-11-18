@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">„%1$s” este deja folosit. Alege alt nume.</string>
     <string name="k2go_fqr_calculating">Se calculează dimensiunea descărcării…</string>
     <string name="k2go_fqr_estimate_error_title">Nu se poate descărca această regiune</string>
+    <string name="k2go_fqr_overlap">Această regiune se suprapune cu o regiune pe care ai descărcat-o deja.</string>
     <string name="k2go_fqr_consent_title">Descarci această regiune?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s de descărcat, %3$s pe disc.</string>
     <string name="k2go_fqr_consent_legend">Această regiune: %1$s  ·  Liber după: %2$s</string>
