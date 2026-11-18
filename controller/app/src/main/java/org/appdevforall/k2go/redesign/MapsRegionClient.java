@@ -248,10 +248,11 @@ public final class MapsRegionClient {
         });
     }
 
-    /** K2GO-583: the estimate failed because the box overlaps a downloaded region. The box answers
-     *  409 "overlaps an existing region" (static/dashboard/routes.ts /maps/estimate). */
+    /** K2GO-583: the estimate failed because the box overlaps a downloaded region. Read the text, not the
+     *  status: the box answers "overlaps an existing region" (static/dashboard/routes.ts /maps/estimate),
+     *  and other routes use 409 for a busy lock. */
     static boolean isOverlap(String raw) {
-        return raw != null && (raw.startsWith("HTTP 409") || raw.toLowerCase(java.util.Locale.ROOT).contains("overlap"));
+        return raw != null && raw.toLowerCase(java.util.Locale.ROOT).contains("overlap");
     }
 
     private static JSONObject httpJson(String method, String urlStr, JSONObject body) throws Exception {

@@ -291,7 +291,9 @@ public final class FqrController {
             @Override public void onOverlap() {
                 if (estimateCanceled) return;
                 dismissDialog();
-                overlapEstimateError();
+                // K2GO-583: Retry cannot help, so clear the drawn region and show the reason with OK only.
+                resetMapSelection();
+                errorDialog(R.string.k2go_fqr_estimate_error_title, str(R.string.k2go_fqr_overlap));
             }
             @Override public void onError(String message) {
                 if (estimateCanceled) return;
@@ -1168,17 +1170,6 @@ public final class FqrController {
                 .setTitle(titleRes)
                 .setMessage(message)
                 .setPositive(android.R.string.ok, (BrandDialog.OnClick) null)
-                .show();
-    }
-
-    /** K2GO-583: the region overlaps a downloaded one. Retry cannot help, so only OK, which clears the
-     *  selection so the user can draw another region. */
-    private void overlapEstimateError() {
-        new BrandDialog(themed)
-                .setTitle(R.string.k2go_fqr_estimate_error_title)
-                .setMessage(str(R.string.k2go_fqr_overlap))
-                .setPositive(android.R.string.ok, () -> resetMapSelection())
-                .setOnCancel(() -> resetMapSelection())
                 .show();
     }
 
