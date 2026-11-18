@@ -29,6 +29,8 @@ import org.appdevforall.k2go.util.AppExecutors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.function.Consumer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -124,14 +126,14 @@ public final class MapsRegionClient {
                     return;
                 case "paused": {   // ADFA-4894: stopped-but-resumable; report it and keep polling
                     final int pp = percent;
-                    deliver(() -> dl.onPaused(pp));
+                    deliver(l -> l.onPaused(pp));
                     break;
                 }
                 default: {   // queued / downloading / processing: report progress if known
                     final int p = percent;
                     final long sp = j.optLong("speed", 0L);
                     final int eta = j.optInt("eta", -1);   // K2GO-317: seconds remaining, -1 unknown
-                    deliver(() -> dl.onProgress(p, sp, eta));
+                    deliver(l -> l.onProgress(p, sp, eta));
                 }
             }
             main.postDelayed(pollTask, POLL_MS);
@@ -234,7 +236,14 @@ public final class MapsRegionClient {
 
     private void teardown() { main.removeCallbacks(pollTask); }
 
-    private void deliver(Runnable r) { if (dl != null) main.post(r); }
+    // K2GO-582: read the listener on the main thread, when the update runs. stopPolling() (also main)
+    // may clear it between the poll and this post; a check on the poll thread would be stale.
+    private void deliver(Consumer<DownloadListener> c) {
+        main.post(() -> {
+            DownloadListener l = dl;
+            if (l != null && !finished) c.accept(l);
+        });
+    }
 
     /** Map a raw HTTP error to something a first-run user can act on (overlap is the common one). */
     private static String friendlyError(String raw) {
