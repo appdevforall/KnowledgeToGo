@@ -1049,6 +1049,7 @@
     <string name="k2go_fqr_name_taken">«%1$s» er allerede i bruk. Velg et annet navn.</string>
     <string name="k2go_fqr_calculating">Beregner nedlastingsstørrelse…</string>
     <string name="k2go_fqr_estimate_error_title">Kan ikke laste ned denne regionen</string>
+    <string name="k2go_fqr_overlap">Denne regionen overlapper med en region du allerede har lastet ned.</string>
     <string name="k2go_fqr_consent_title">Laste ned denne regionen?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s å laste ned, %3$s på disk.</string>
     <string name="k2go_fqr_consent_legend">Denne regionen: %1$s  ·  Ledig etterpå: %2$s</string>

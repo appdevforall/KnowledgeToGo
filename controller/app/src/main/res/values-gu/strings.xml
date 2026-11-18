@@ -1053,6 +1053,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” પહેલેથી વપરાયેલું છે. અલગ નામ પસંદ કરો.</string>
     <string name="k2go_fqr_calculating">ડાઉનલોડ કદની ગણતરી થઈ રહી છે…</string>
     <string name="k2go_fqr_estimate_error_title">આ પ્રદેશ ડાઉનલોડ કરી શકાતો નથી</string>
+    <string name="k2go_fqr_overlap">આ પ્રદેશ તમે પહેલેથી ડાઉનલોડ કરેલા પ્રદેશ સાથે ઓવરલેપ થાય છે.</string>
     <string name="k2go_fqr_consent_title">આ પ્રદેશ ડાઉનલોડ કરવો છે?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — ડાઉનલોડ કરવા %2$s, ડિસ્ક પર %3$s.</string>
     <string name="k2go_fqr_consent_legend">આ પ્રદેશ: %1$s  ·  પછી ખાલી: %2$s</string>

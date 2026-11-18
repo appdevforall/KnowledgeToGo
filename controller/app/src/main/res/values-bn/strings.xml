@@ -1053,6 +1053,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” ইতিমধ্যে ব্যবহৃত। একটি ভিন্ন নাম বেছে নিন।</string>
     <string name="k2go_fqr_calculating">ডাউনলোডের আকার গণনা করা হচ্ছে…</string>
     <string name="k2go_fqr_estimate_error_title">এই অঞ্চল ডাউনলোড করা যাচ্ছে না</string>
+    <string name="k2go_fqr_overlap">এই অঞ্চলটি আপনার আগে ডাউনলোড করা একটি অঞ্চলের সাথে ওভারল্যাপ করে।</string>
     <string name="k2go_fqr_consent_title">এই অঞ্চল ডাউনলোড করবেন?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — ডাউনলোড করতে %2$s, ডিস্কে %3$s।</string>
     <string name="k2go_fqr_consent_legend">এই অঞ্চল: %1$s  ·  পরে খালি: %2$s</string>

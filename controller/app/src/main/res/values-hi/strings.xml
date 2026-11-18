@@ -1117,6 +1117,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” पहले से उपयोग में है। कोई अलग नाम चुनें।</string>
     <string name="k2go_fqr_calculating">डाउनलोड आकार की गणना हो रही है…</string>
     <string name="k2go_fqr_estimate_error_title">यह क्षेत्र डाउनलोड नहीं कर सकते</string>
+    <string name="k2go_fqr_overlap">यह क्षेत्र उस क्षेत्र से ओवरलैप करता है जिसे आप पहले ही डाउनलोड कर चुके हैं।</string>
     <string name="k2go_fqr_consent_title">यह क्षेत्र डाउनलोड करें?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — डाउनलोड के लिए %2$s, डिस्क पर %3$s।</string>
     <string name="k2go_fqr_consent_legend">यह क्षेत्र: %1$s  ·  बाद में खाली: %2$s</string>

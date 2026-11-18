@@ -1056,6 +1056,7 @@
     <string name="k2go_fqr_name_taken">„%1$s“ jau naudojamas. Pasirinkite kitą pavadinimą.</string>
     <string name="k2go_fqr_calculating">Skaičiuojamas atsisiuntimo dydis…</string>
     <string name="k2go_fqr_estimate_error_title">Šio regiono atsisiųsti negalima</string>
+    <string name="k2go_fqr_overlap">Šis regionas persidengia su jau atsisiųstu regionu.</string>
     <string name="k2go_fqr_consent_title">Atsisiųsti šį regioną?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s atsisiųsti, %3$s diske.</string>
     <string name="k2go_fqr_consent_legend">Šis regionas: %1$s  ·  Po to laisva: %2$s</string>

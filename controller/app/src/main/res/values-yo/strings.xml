@@ -1060,6 +1060,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” ti wà ní lílò tẹ́lẹ̀. Yan orúkọ mìíràn.</string>
     <string name="k2go_fqr_calculating">Ń ṣírò ìwọ̀n gbígbà sílẹ̀…</string>
     <string name="k2go_fqr_estimate_error_title">Kò lè gba agbègbè yìí sílẹ̀</string>
+    <string name="k2go_fqr_overlap">Agbègbè yìí bá agbègbè kan tí o ti gbà sílẹ̀ tẹ́lẹ̀ pàdé.</string>
     <string name="k2go_fqr_consent_title">Gba agbègbè yìí sílẹ̀?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s láti gbà sílẹ̀, %3$s lórí diskì.</string>
     <string name="k2go_fqr_consent_legend">Agbègbè yìí: %1$s  ·  Òfìfo lẹ́yìn: %2$s</string>

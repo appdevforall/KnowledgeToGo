@@ -1047,6 +1047,7 @@
     <string name="k2go_fqr_name_taken">„%1$s“ sa už používa. Vyber iný názov.</string>
     <string name="k2go_fqr_calculating">Vypočítava sa veľkosť sťahovania…</string>
     <string name="k2go_fqr_estimate_error_title">Túto oblasť nemožno stiahnuť</string>
+    <string name="k2go_fqr_overlap">Táto oblasť sa prekrýva s oblasťou, ktorú ste už stiahli.</string>
     <string name="k2go_fqr_consent_title">Stiahnuť túto oblasť?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s na stiahnutie, %3$s na disku.</string>
     <string name="k2go_fqr_consent_legend">Táto oblasť: %1$s  ·  Voľné potom: %2$s</string>

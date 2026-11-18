@@ -1116,6 +1116,7 @@
     <string name="k2go_fqr_name_taken">«%1$s» уже используется. Выберите другое имя.</string>
     <string name="k2go_fqr_calculating">Подсчёт размера загрузки…</string>
     <string name="k2go_fqr_estimate_error_title">Не удаётся загрузить этот регион</string>
+    <string name="k2go_fqr_overlap">Этот регион пересекается с уже загруженным регионом.</string>
     <string name="k2go_fqr_consent_title">Загрузить этот регион?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s для загрузки, %3$s на диске.</string>
     <string name="k2go_fqr_consent_legend">Этот регион: %1$s  ·  Свободно после: %2$s</string>

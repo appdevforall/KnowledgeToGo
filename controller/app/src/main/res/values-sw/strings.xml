@@ -1060,6 +1060,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” tayari inatumika. Chagua jina tofauti.</string>
     <string name="k2go_fqr_calculating">Inakokotoa ukubwa wa upakuaji…</string>
     <string name="k2go_fqr_estimate_error_title">Haiwezi kupakua eneo hili</string>
+    <string name="k2go_fqr_overlap">Eneo hili linaingiliana na eneo ambalo tayari umepakua.</string>
     <string name="k2go_fqr_consent_title">Pakua eneo hili?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s kupakua, %3$s kwenye diski.</string>
     <string name="k2go_fqr_consent_legend">Eneo hili: %1$s  ·  Wazi baadaye: %2$s</string>

@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” zaten kullanımda. Farklı bir ad seç.</string>
     <string name="k2go_fqr_calculating">İndirme boyutu hesaplanıyor…</string>
     <string name="k2go_fqr_estimate_error_title">Bu bölge indirilemiyor</string>
+    <string name="k2go_fqr_overlap">Bu bölge, daha önce indirdiğiniz bir bölgeyle çakışıyor.</string>
     <string name="k2go_fqr_consent_title">Bu bölge indirilsin mi?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — indirmek için %2$s, diskte %3$s.</string>
     <string name="k2go_fqr_consent_legend">Bu bölge: %1$s  ·  Sonrasında boş: %2$s</string>

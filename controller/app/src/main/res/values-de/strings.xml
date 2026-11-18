@@ -1040,6 +1040,7 @@
     <string name="k2go_fqr_name_taken">„%1$s“ wird bereits verwendet. Wähle einen anderen Namen.</string>
     <string name="k2go_fqr_calculating">Download-Größe wird berechnet…</string>
     <string name="k2go_fqr_estimate_error_title">Diese Region kann nicht heruntergeladen werden</string>
+    <string name="k2go_fqr_overlap">Diese Region überschneidet sich mit einer Region, die Sie bereits heruntergeladen haben.</string>
     <string name="k2go_fqr_consent_title">Diese Region herunterladen?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s zum Herunterladen, %3$s auf dem Speicher.</string>
     <string name="k2go_fqr_consent_legend">Diese Region: %1$s  ·  Frei danach: %2$s</string>

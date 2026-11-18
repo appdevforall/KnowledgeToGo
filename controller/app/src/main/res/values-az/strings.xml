@@ -1060,6 +1060,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” artıq istifadə olunur. Başqa ad seç.</string>
     <string name="k2go_fqr_calculating">Yükləmə ölçüsü hesablanır…</string>
     <string name="k2go_fqr_estimate_error_title">Bu region yüklənə bilmir</string>
+    <string name="k2go_fqr_overlap">Bu bölgə artıq endirdiyiniz bir bölgə ilə üst-üstə düşür.</string>
     <string name="k2go_fqr_consent_title">Bu region yüklənsin?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — yükləmək üçün %2$s, diskdə %3$s.</string>
     <string name="k2go_fqr_consent_legend">Bu region: %1$s  ·  Sonra boş: %2$s</string>

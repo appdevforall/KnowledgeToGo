@@ -1060,6 +1060,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” ஏற்கனவே பயன்பாட்டில் உள்ளது. வேறு பெயரைத் தேர்ந்தெடுக்கவும்.</string>
     <string name="k2go_fqr_calculating">பதிவிறக்க அளவு கணக்கிடப்படுகிறது…</string>
     <string name="k2go_fqr_estimate_error_title">இந்தப் பகுதியைப் பதிவிறக்க முடியாது</string>
+    <string name="k2go_fqr_overlap">இந்தப் பகுதி நீங்கள் ஏற்கனவே பதிவிறக்கிய பகுதியுடன் மேற்பொருந்துகிறது.</string>
     <string name="k2go_fqr_consent_title">இந்தப் பகுதியைப் பதிவிறக்கவா?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — பதிவிறக்க %2$s, வட்டில் %3$s.</string>
     <string name="k2go_fqr_consent_legend">இந்தப் பகுதி: %1$s  ·  பிறகு காலி: %2$s</string>

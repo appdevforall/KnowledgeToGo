@@ -1047,6 +1047,7 @@
     <string name="k2go_fqr_name_taken">“%1$s” sudah dipakai. Pilih nama lain.</string>
     <string name="k2go_fqr_calculating">Menghitung ukuran unduhan…</string>
     <string name="k2go_fqr_estimate_error_title">Tidak bisa mengunduh wilayah ini</string>
+    <string name="k2go_fqr_overlap">Wilayah ini tumpang tindih dengan wilayah yang sudah Anda unduh.</string>
     <string name="k2go_fqr_consent_title">Unduh wilayah ini?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s untuk diunduh, %3$s di disk.</string>
     <string name="k2go_fqr_consent_legend">Wilayah ini: %1$s  ·  Kosong setelahnya: %2$s</string>
