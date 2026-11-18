@@ -1635,8 +1635,6 @@
     <string name="k2go_clone_cable_err_check">Àyẹ̀wò ìkẹyìn ẹ̀dà náà kùnà. Bẹ̀rẹ̀ ìgbésẹ̀ náà lẹ́ẹ̀kan sí i.</string>
     <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
     <string name="k2go_clone_link_usb">Wáyà USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi wà ní pípa</string>
-    <string name="k2go_clone_link_wifi_not_joined">Kò darapọ̀ mọ́ hotspot fóònù tí ń fi ránṣẹ́</string>
     <string name="k2go_clone_link_wifi_found">A rí olùfiránṣẹ́ lórí hotspot rẹ̀</string>
     <string name="k2go_clone_link_wifi_slow">A rí olùfiránṣẹ́. Ìgbì tí ó lọ́ra.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot wà ní títàn. Àwọn fóònù tí ó darapọ̀: %1$d</string>
@@ -1655,7 +1653,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Nísinsìnyí ya kóòdù ìgbésẹ̀ fóònù mìíràn, tàbí so wáyà USB pọ̀.</string>
     <string name="k2go_clone_link_wifi_found_network">A rí olùfiránṣẹ́ lórí nẹ́tíwọ̀ọ̀kì Wi-Fi yìí</string>
-    <string name="k2go_clone_link_wifi_not_found">A kò rí fóònù tí ń fi ránṣẹ́ lórí nẹ́tíwọ̀ọ̀kì Wi-Fi yìí</string>
     <string name="k2go_clone_cable_err_sender_stopped">Fóònù tí ń fi ránṣẹ́ ti dá pínpín dúró.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Fóònù mìíràn kò lè dé fóònù yìí lórí Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi wà ní pípa. Tàn án, tàbí so wáyà USB pọ̀.</string>
+    <string name="k2go_clone_link_no_network">Kò sopọ̀ mọ́ nẹ́tíwọ̀ọ̀kì Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">A kò lò ó. Ẹ̀dà ń lọ nípasẹ̀ wáyà USB.</string>
+    <string name="k2go_clone_link_not_on_network">A kò lò ó. Fóònù kejì kò sí lórí nẹ́tíwọ̀ọ̀kì Wi-Fi yìí.</string>
+    <string name="k2go_clone_link_waiting_code">Ti sopọ̀ mọ́ Wi-Fi. A ó ṣàyẹ̀wò fóònù kejì lẹ́yìn tí o bá ṣàyẹ̀wò kóòdù rẹ̀.</string>
+    <string name="k2go_clone_link_not_found_action">A kò rí fóònù tí ń fi ránṣẹ́ lórí nẹ́tíwọ̀ọ̀kì Wi-Fi yìí. Darapọ̀ mọ́ nẹ́tíwọ̀ọ̀kì rẹ̀, tàbí so wáyà USB pọ̀.</string>
+    <string name="k2go_clone_link_hotspot_starting">Ń tan hotspot</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot wà ní títàn</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot wà ní títàn. Ń dúró de fóònù kejì.</string>
+    <string name="k2go_clone_link_network_waiting">Ń pín nípasẹ̀ nẹ́tíwọ̀ọ̀kì Wi-Fi yìí. Ń dúró de fóònù kejì.</string>
+    <string name="k2go_clone_link_usb_done">Ẹ̀dà ti parí. O lè yọ wáyà USB kúrò.</string>
+    <string name="k2go_clone_link_badge_not_used">A kò lò ó</string>
+    <string name="k2go_clone_link_badge_starting">Ń bẹ̀rẹ̀</string>
+    <string name="k2go_clone_unplug_cable">O lè yọ wáyà USB kúrò.</string>
 </resources>

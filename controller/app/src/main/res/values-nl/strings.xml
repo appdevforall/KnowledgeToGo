@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">De laatste controle van de kopie is mislukt. Start de overdracht opnieuw.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi-hotspot</string>
     <string name="k2go_clone_link_usb">USB-kabel</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi staat uit</string>
-    <string name="k2go_clone_link_wifi_not_joined">Niet verbonden met de hotspot van de verzendende telefoon</string>
     <string name="k2go_clone_link_wifi_found">Verzender gevonden op de eigen hotspot</string>
     <string name="k2go_clone_link_wifi_slow">Verzender gevonden. Trage band.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot aan. Verbonden telefoons: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Scan nu de overdrachtscode van de andere telefoon, of sluit een USB-kabel aan.</string>
     <string name="k2go_clone_link_wifi_found_network">Verzender gevonden op dit Wi-Fi-netwerk</string>
-    <string name="k2go_clone_link_wifi_not_found">Verzendende telefoon niet gevonden op dit Wi-Fi-netwerk</string>
     <string name="k2go_clone_cable_err_sender_stopped">De verzendende telefoon is gestopt met delen.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">De andere telefoon kan deze telefoon niet bereiken via Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi staat uit. Zet het aan of sluit een USB-kabel aan.</string>
+    <string name="k2go_clone_link_no_network">Niet verbonden met een Wi-Fi-netwerk</string>
+    <string name="k2go_clone_link_cable_only">Niet gebruikt. De kopie gaat via de USB-kabel.</string>
+    <string name="k2go_clone_link_not_on_network">Niet gebruikt. De andere telefoon zit niet op dit Wi-Fi-netwerk.</string>
+    <string name="k2go_clone_link_waiting_code">Verbonden met Wi-Fi. De andere telefoon wordt gecontroleerd nadat je zijn code scant.</string>
+    <string name="k2go_clone_link_not_found_action">Verzendende telefoon niet gevonden op dit Wi-Fi-netwerk. Maak verbinding met zijn netwerk of sluit een USB-kabel aan.</string>
+    <string name="k2go_clone_link_hotspot_starting">Hotspot wordt gestart</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot aan</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot aan. Wachten op de andere telefoon.</string>
+    <string name="k2go_clone_link_network_waiting">Delen via dit Wi-Fi-netwerk. Wachten op de andere telefoon.</string>
+    <string name="k2go_clone_link_usb_done">Kopie voltooid. Je kunt de USB-kabel loskoppelen.</string>
+    <string name="k2go_clone_link_badge_not_used">Niet gebruikt</string>
+    <string name="k2go_clone_link_badge_starting">Starten</string>
+    <string name="k2go_clone_unplug_cable">Je kunt de USB-kabel loskoppelen.</string>
 </resources>

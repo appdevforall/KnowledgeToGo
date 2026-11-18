@@ -1078,8 +1078,8 @@ public class CloneFragment extends Fragment {
         SyncTransferState st = SyncProgressRepository.get().current();
         boolean busy = (st != null && st.isActive());
         // K2GO-576: the cable is watched only on this screen. Its pairing data acts as a scan, and
-        // only while no probe or pull runs.
-        CableSession.get().watch(requireContext(), CableSession.Role.RECEIVE, 0, null, payload ->
+        // only while no probe or pull runs. K2GO-584: not after a finished copy.
+        if (!exitInProgress && !CableSession.get().copyDone()) CableSession.get().watch(requireContext(), CableSession.Role.RECEIVE, 0, null, payload ->
                 new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                     SyncTransferState now = SyncProgressRepository.get().current();
                     if (isAdded() && side == Side.RECEIVE && (now == null || !now.isActive())) onScan(payload);
@@ -1089,7 +1089,8 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials paired = syncVm.getPendingCreds();
         linkRows.setSenderHost(paired != null ? paired.ip : null);   // Wi-Fi network or hotspot
         boolean pulling = st != null && st.phase == SyncTransferState.Phase.TRANSFERRING;
-        linkRows.startChecks(shareConfig.rsyncPort, !pulling);
+        if (exitInProgress) linkRows.stopChecks();   // K2GO-584: the copy is done; keep the last state
+        else linkRows.startChecks(shareConfig.rsyncPort, !pulling);
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
@@ -1346,9 +1347,10 @@ public class CloneFragment extends Fragment {
                         // one had pending was placed against a system that is gone.
                         org.appdevforall.k2go.system.data.ContentStateInvalidator.replacementSucceeded(app,
                                 org.appdevforall.k2go.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
+                        // K2GO-576/584: ends the cable session and tells the sender; before the success
+                        // state, so the success dialog knows whether the cable was used.
+                        CableSession.get().finishCopy();
                         SyncProgressRepository.get().postSuccess(message);
-                        CableSession.get().markCompleted();   // K2GO-576: no second offer of this copy
-                        CableSession.get().stop();   // K2GO-576: the cable session ends with the pull
                     }
                     @Override public void onError(String error) {
                         SyncProgressRepository.get().postFailed(error);
@@ -1392,6 +1394,7 @@ public class CloneFragment extends Fragment {
             startExitPoll();
             new BrandDialog(requireContext())
                     .setTitle(R.string.k2go_clone_copy_complete)
+                    .setMessage(CableSession.get().copyDone() ? getString(R.string.k2go_clone_unplug_cable) : null)   // K2GO-584
                     .setCancelable(false)
                     .setPositive(android.R.string.ok, () -> {
                         exitAck = true;

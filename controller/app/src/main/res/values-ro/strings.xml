@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">Ultima verificare a copiei a eșuat. Pornește din nou transferul.</string>
     <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
     <string name="k2go_clone_link_usb">Cablu USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi este oprit</string>
-    <string name="k2go_clone_link_wifi_not_joined">Neconectat la hotspotul telefonului expeditor</string>
     <string name="k2go_clone_link_wifi_found">Expeditor găsit pe hotspotul său</string>
     <string name="k2go_clone_link_wifi_slow">Expeditor găsit. Bandă lentă.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot pornit. Telefoane conectate: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Acum scanează codul de transfer al celuilalt telefon sau conectează un cablu USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Expeditor găsit în această rețea Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Telefonul expeditor nu a fost găsit în această rețea Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Telefonul expeditor a oprit partajarea.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Celălalt telefon nu poate accesa acest telefon prin Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi este oprit. Pornește-l sau conectează un cablu USB.</string>
+    <string name="k2go_clone_link_no_network">Nu este conectat la o rețea Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Nefolosit. Copierea se face prin cablul USB.</string>
+    <string name="k2go_clone_link_not_on_network">Nefolosit. Celălalt telefon nu este în această rețea Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Conectat la Wi-Fi. Celălalt telefon este verificat după ce îi scanezi codul.</string>
+    <string name="k2go_clone_link_not_found_action">Telefonul expeditor nu a fost găsit în această rețea Wi-Fi. Conectează-te la rețeaua lui sau conectează un cablu USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Se pornește hotspotul</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot pornit</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot pornit. Se așteaptă celălalt telefon.</string>
+    <string name="k2go_clone_link_network_waiting">Partajare prin această rețea Wi-Fi. Se așteaptă celălalt telefon.</string>
+    <string name="k2go_clone_link_usb_done">Copierea s-a încheiat. Poți deconecta cablul USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Nefolosit</string>
+    <string name="k2go_clone_link_badge_starting">Pornire</string>
+    <string name="k2go_clone_unplug_cable">Poți deconecta cablul USB.</string>
 </resources>

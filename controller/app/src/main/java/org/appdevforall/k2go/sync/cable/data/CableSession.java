@@ -12,6 +12,9 @@
  *               Lifecycle: Clone calls watch() and stop(); a detach or a dead
  *               link closes the mux and the session watches again. Nothing is
  *               persisted. Process-wide, like CloneSendSession.
+ *               "Copy done over the cable" (K2GO-584): set by finishCopy() on the
+ *               receiver and by the DONE frame on the sender; cleared by stop(),
+ *               a new pairing (paired) or a new share (new hello).
  * ============================================================================
  */
 package org.appdevforall.k2go.sync.cable.data;
@@ -45,14 +48,19 @@ public final class CableSession {
 
     public enum Link { NONE, WAITING, LINKED }
 
-    /** What the cable row shows. {@code bytesPerSec} > 0 means the cable carries data. */
+    /**
+     * What the cable row shows. {@code bytesPerSec} > 0 means the cable carries data. {@code done}:
+     * a copy finished while the cable was linked, so the cable can be removed.
+     */
     public static final class State {
         public final Link link;
         public final long bytesPerSec;
+        public final boolean done;
 
-        State(Link link, long bytesPerSec) {
+        State(Link link, long bytesPerSec, boolean done) {
             this.link = link;
             this.bytesPerSec = bytesPerSec;
+            this.done = done;
         }
     }
 
@@ -67,7 +75,7 @@ public final class CableSession {
         return INSTANCE;
     }
 
-    private final MutableLiveData<State> state = new MutableLiveData<>(new State(Link.NONE, 0));
+    private final MutableLiveData<State> state = new MutableLiveData<>(new State(Link.NONE, 0, false));
     private Context app;
     private Role role;
     private int rsyncPort;
@@ -76,6 +84,7 @@ public final class CableSession {
     private Thread watcher;
     private volatile CableMux mux;
     private volatile boolean senderStopped;
+    private volatile boolean copyDone;   // a copy finished while the cable was linked
     /** Sender: the receiver's own Wi-Fi verdict, from the cable; null when unknown. */
     private final MutableLiveData<Boolean> peerWifi = new MutableLiveData<>(null);
     private volatile String lastHello;        // the pairing data of the copy in progress (QR or cable)
@@ -117,11 +126,28 @@ public final class CableSession {
     public void paired(String payload) {
         lastHello = payload;
         senderStopped = false;
+        copyDone = false;
     }
 
-    /** Receiver: the copy started from the last pairing data finished; do not offer it again. */
-    public void markCompleted() {
+    /**
+     * Receiver: the copy from the last pairing data finished. It is not offered again, the sender
+     * hears DONE over the cable, and the session stops like stop().
+     */
+    public synchronized void finishCopy() {
         completedHello = lastHello;
+        CableMux m = mux;
+        if (m != null) {
+            mux = null;
+            new Thread(() -> { m.sendDone(); m.close(); }, "cable-done").start();   // USB write: off the UI thread
+        }
+        stop();
+        copyDone = m != null;
+        post(Link.NONE, 0);
+    }
+
+    /** A copy finished while the cable was linked, so the cable can be removed. */
+    public boolean copyDone() {
+        return copyDone;
     }
 
     /** Receiver: the sender said over the cable that it stopped sharing (cleared by a new link). */
@@ -148,6 +174,7 @@ public final class CableSession {
         this.role = role;
         boolean newHello = helloPayload != null && !helloPayload.equals(hello);
         hello = helloPayload;
+        if (newHello) copyDone = false;   // a new share
         if (roleChanged) closeLink();
         CableMux m = mux;
         if (newHello && m != null && role == Role.SEND) {
@@ -178,7 +205,12 @@ public final class CableSession {
         permissionAsked = false;
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
         unregisterDetach();
-        state.postValue(new State(Link.NONE, 0));
+        copyDone = false;
+        post(Link.NONE, 0);
+    }
+
+    private void post(Link link, long bytesPerSec) {
+        state.postValue(new State(link, bytesPerSec, copyDone));
     }
 
     /**
@@ -199,7 +231,7 @@ public final class CableSession {
                     if (d != null && linked != null && !linked.equals(d.getDeviceName())) return;
                 }
                 closeLink();
-                state.postValue(new State(Link.NONE, 0));
+                post(Link.NONE, 0);
             }
         };
         IntentFilter f = new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
@@ -239,7 +271,7 @@ public final class CableSession {
                     lastBytes = 0;
                 } else {
                     long b = m.bytesMoved();
-                    state.postValue(new State(Link.LINKED, (b - lastBytes) * 1000 / POLL_MS));
+                    post(Link.LINKED, (b - lastBytes) * 1000 / POLL_MS);
                     lastBytes = b;
                 }
                 Thread.sleep(POLL_MS);
@@ -282,17 +314,17 @@ public final class CableSession {
                 // The other phone re-enumerates in accessory mode; the next poll opens it.
                 UsbLink.switchToAccessory(um, d);
                 permissionAsked = false;
-                state.postValue(new State(Link.WAITING, 0));
+                post(Link.WAITING, 0);
             }
             return;
         }
         if (state.getValue() != null && state.getValue().link != Link.NONE) {
-            state.postValue(new State(Link.NONE, 0));
+            post(Link.NONE, 0);
         }
     }
 
     private void askPermission(UsbManager um, Object target) {
-        state.postValue(new State(Link.WAITING, 0));
+        post(Link.WAITING, 0);
         if (permissionAsked && System.currentTimeMillis() - permissionAskedAt < PERMISSION_RETRY_MS) return;
         permissionAskedAt = System.currentTimeMillis();
         Log.i(TAG, "asking USB permission for " + (target instanceof UsbDevice ? "device" : "accessory"));
@@ -342,6 +374,12 @@ public final class CableSession {
             }
 
             @Override
+            public void onDone() {
+                copyDone = true;
+                post(Link.LINKED, 0);
+            }
+
+            @Override
             public void onLinkClosed() {
                 linkClosed();
             }
@@ -360,7 +398,7 @@ public final class CableSession {
         senderStopped = false;
         lastWifiReport = null;   // a new link: send the next verdict
         if (role == Role.SEND) sendHello(m);
-        state.postValue(new State(Link.LINKED, 0));
+        post(Link.LINKED, 0);
         Log.i(TAG, "cable linked as " + role);
     }
 
@@ -378,7 +416,7 @@ public final class CableSession {
         peerWifi.postValue(null);
         closeRelay();
         mux = null;
-        state.postValue(new State(Link.NONE, 0));
+        post(Link.NONE, 0);
         Log.i(TAG, "cable link closed");
     }
 

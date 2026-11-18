@@ -46,6 +46,9 @@ public final class CableMux implements Closeable {
 
         /** The receiver's Wi-Fi verdict: does it reach the sender on Wi-Fi. */
         void onPeerWifi(boolean reaches);
+
+        /** The receiver finished the copy (DONE). */
+        void onDone();
     }
 
     /** Sender side: opens the connection that a new channel goes to. Null on the receiver. */
@@ -111,6 +114,15 @@ public final class CableMux implements Closeable {
         }
     }
 
+    /** Receiver: tells the sender that the copy is complete. Best effort: the link may be gone. */
+    public void sendDone() {
+        try {
+            send(CableFrame.control(CableFrame.Type.DONE, 0));
+        } catch (IOException ignored) {
+            // the sender then only sees the link close
+        }
+    }
+
     /** Payload bytes moved in both directions, for the speed on the cable row. */
     public long bytesMoved() {
         return bytesIn.get() + bytesOut.get();
@@ -170,6 +182,9 @@ public final class CableMux implements Closeable {
                 break;
             case WIFI:
                 listener.onPeerWifi(f.payload.length > 0 && f.payload[0] == 1);
+                break;
+            case DONE:
+                listener.onDone();
                 break;
         }
     }

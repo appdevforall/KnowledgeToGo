@@ -1635,8 +1635,6 @@
     <string name="k2go_clone_cable_err_check">Nüsxənin son yoxlaması uğursuz oldu. Köçürməni yenidən başladın.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
     <string name="k2go_clone_link_usb">USB kabel</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi söndürülüb</string>
-    <string name="k2go_clone_link_wifi_not_joined">Göndərən telefonun hotspotuna qoşulmayıb</string>
     <string name="k2go_clone_link_wifi_found">Göndərən öz hotspotunda tapıldı</string>
     <string name="k2go_clone_link_wifi_slow">Göndərən tapıldı. Yavaş diapazon.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot aktivdir. Qoşulan telefonlar: %1$d</string>
@@ -1655,7 +1653,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">İndi digər telefonun köçürmə kodunu skan edin və ya USB kabel qoşun.</string>
     <string name="k2go_clone_link_wifi_found_network">Göndərən bu Wi-Fi şəbəkəsində tapıldı</string>
-    <string name="k2go_clone_link_wifi_not_found">Göndərən telefon bu Wi-Fi şəbəkəsində tapılmadı</string>
     <string name="k2go_clone_cable_err_sender_stopped">Göndərən telefon paylaşmağı dayandırdı.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Digər telefon Wi-Fi ilə bu telefona çata bilmir</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi söndürülüb. Onu yandırın və ya USB kabeli qoşun.</string>
+    <string name="k2go_clone_link_no_network">Wi-Fi şəbəkəsinə qoşulmayıb</string>
+    <string name="k2go_clone_link_cable_only">İstifadə olunmur. Kopyalama USB kabeli ilə gedir.</string>
+    <string name="k2go_clone_link_not_on_network">İstifadə olunmur. Digər telefon bu Wi-Fi şəbəkəsində deyil.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi-a qoşulub. Digər telefon onun kodunu skan etdikdən sonra yoxlanılır.</string>
+    <string name="k2go_clone_link_not_found_action">Göndərən telefon bu Wi-Fi şəbəkəsində tapılmadı. Onun şəbəkəsinə qoşulun və ya USB kabeli qoşun.</string>
+    <string name="k2go_clone_link_hotspot_starting">Hotspot işə salınır</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot aktivdir</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot aktivdir. Digər telefon gözlənilir.</string>
+    <string name="k2go_clone_link_network_waiting">Bu Wi-Fi şəbəkəsi ilə paylaşılır. Digər telefon gözlənilir.</string>
+    <string name="k2go_clone_link_usb_done">Kopyalama tamamlandı. USB kabelini ayıra bilərsiniz.</string>
+    <string name="k2go_clone_link_badge_not_used">İstifadə olunmur</string>
+    <string name="k2go_clone_link_badge_starting">Başlayır</string>
+    <string name="k2go_clone_unplug_cable">USB kabelini ayıra bilərsiniz.</string>
 </resources>

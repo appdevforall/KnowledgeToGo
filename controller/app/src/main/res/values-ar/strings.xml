@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">فشل الفحص الأخير للنسخة. ابدأ النقل من جديد.</string>
     <string name="k2go_clone_link_wifi">نقطة اتصال Wi-Fi</string>
     <string name="k2go_clone_link_usb">كابل USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi متوقف</string>
-    <string name="k2go_clone_link_wifi_not_joined">غير متصل بنقطة اتصال الهاتف المُرسِل</string>
     <string name="k2go_clone_link_wifi_found">تم العثور على المُرسِل في نقطة اتصاله</string>
     <string name="k2go_clone_link_wifi_slow">تم العثور على المُرسِل. نطاق بطيء.</string>
     <string name="k2go_clone_link_hotspot_on">نقطة الاتصال مفعّلة. الهواتف المتصلة: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">الآن امسح رمز النقل الخاص بالهاتف الآخر، أو صِل كابل USB.</string>
     <string name="k2go_clone_link_wifi_found_network">تم العثور على المُرسِل في شبكة Wi-Fi هذه</string>
-    <string name="k2go_clone_link_wifi_not_found">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه</string>
     <string name="k2go_clone_cable_err_sender_stopped">توقّف الهاتف المُرسِل عن المشاركة.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">لا يستطيع الهاتف الآخر الوصول إلى هذا الهاتف عبر Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi متوقف. شغّله أو وصّل كابل USB.</string>
+    <string name="k2go_clone_link_no_network">غير متصل بشبكة Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">غير مستخدم. النسخ يتم عبر كابل USB.</string>
+    <string name="k2go_clone_link_not_on_network">غير مستخدم. الهاتف الآخر ليس على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_waiting_code">متصل بشبكة Wi-Fi. يتم التحقق من الهاتف الآخر بعد مسح رمزه.</string>
+    <string name="k2go_clone_link_not_found_action">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه. انضم إلى شبكته أو وصّل كابل USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">جارٍ تشغيل نقطة الاتصال</string>
+    <string name="k2go_clone_link_hotspot_ready">نقطة الاتصال مفعّلة</string>
+    <string name="k2go_clone_link_hotspot_waiting">نقطة الاتصال مفعّلة. في انتظار الهاتف الآخر.</string>
+    <string name="k2go_clone_link_network_waiting">المشاركة عبر شبكة Wi-Fi هذه. في انتظار الهاتف الآخر.</string>
+    <string name="k2go_clone_link_usb_done">اكتمل النسخ. يمكنك فصل كابل USB.</string>
+    <string name="k2go_clone_link_badge_not_used">غير مستخدم</string>
+    <string name="k2go_clone_link_badge_starting">جارٍ البدء</string>
+    <string name="k2go_clone_unplug_cable">يمكنك فصل كابل USB.</string>
 </resources>

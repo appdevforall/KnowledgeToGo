@@ -54,7 +54,9 @@ existing Wi-Fi session, and the library is split between the two.
    cable one after the other, and so that a new session can discard old bytes (the test APK
    showed that bytes from a failed run stay in the link). The hello frame carries the same
    pairing data as the QR code (address, port, user, password, sizes), so the cable can replace
-   the scan.
+   the scan. Later frames (bye, wifi, done) carry the sender's stop, the receiver's Wi-Fi
+   verdict, and the end of the copy (K2GO-584). An older peer reads an unknown frame type as a
+   bad frame and closes the link.
 4. **The library is split between the two paths by a shared work queue.** The dry-run gives the
    file list. It is cut into chunks of similar size. The Wi-Fi rsync and the cable rsync each
    take the next chunk (`--files-from`) until the queue is empty. A faster path takes more
@@ -87,15 +89,27 @@ existing Wi-Fi session, and the library is split between the two.
 
 ## User interface
 
-The Clone screen shows two status rows (mock-up shared with the design team):
+The Clone screen shows two status rows: Wi-Fi and USB cable. One rule (`LinkRule`, pure JVM)
+picks the colour and the text for both rows on both phones (K2GO-584):
 
-- **Wi-Fi hotspot:** green when the receiver is on the sender's hotspot and the sender answers
-  on its rsync port (the hotspot gateway is the sender, so no network scan and no location
-  permission); amber when not joined, not verified, or on 2.4 GHz; red when Wi-Fi is off. The
-  band (5 or 2.4 GHz) is always shown. The first version verifies the hotspot only, not a
-  router network.
+- **Green:** the path is verified, or it carries data.
+- **Grey:** waiting (for the code or for the other phone), not used, optional, or done.
+- **Amber:** the user must do something, and no other path can carry the copy (the USB
+  dialog; after pairing, no Wi-Fi path and no cable; Wi-Fi off and no cable).
+- No red in these rows: a failed copy goes to the "Copy stopped" dialog.
+
+- **Wi-Fi, receiver:** it asks the sender's rsync port: the hotspot gateway before pairing, the
+  paired address after (no network scan, no location permission). Before pairing a silent
+  gateway means "not known yet" (the phone may be on a router), so the row is grey and says the
+  other phone is checked after the code. The band is shown; 2.4 GHz is slower, not a warning.
+  The network name is not shown: it needs the location permission.
+- **Wi-Fi, sender:** its hotspot (starting, waiting, phones joined) or its Wi-Fi network. It turns
+  green when a phone joins the hotspot or when the receiver's verdict "reaches" arrives over the
+  cable.
 - **USB cable:** grey with no cable, amber while it waits for the USB dialog, green when
-  linked, with the speed while it carries data.
+  linked, with the speed while it carries data. After a copy over the cable both phones say
+  that the cable can be removed: the receiver sends a done frame before it closes the link, and
+  the sender also shows it in the Clone notification.
 - One progress bar: the sum of both paths.
 
 ## Lifecycle (who starts, who stops, what if the process dies)

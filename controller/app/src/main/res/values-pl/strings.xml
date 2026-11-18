@@ -1625,8 +1625,6 @@
     <string name="k2go_clone_cable_err_check">Ostatnie sprawdzenie kopii nie powiodło się. Rozpocznij transfer ponownie.</string>
     <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
     <string name="k2go_clone_link_usb">Kabel USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi jest wyłączone</string>
-    <string name="k2go_clone_link_wifi_not_joined">Brak połączenia z hotspotem telefonu wysyłającego</string>
     <string name="k2go_clone_link_wifi_found">Nadawca znaleziony w swoim hotspocie</string>
     <string name="k2go_clone_link_wifi_slow">Nadawca znaleziony. Wolne pasmo.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot włączony. Połączone telefony: %1$d</string>
@@ -1645,7 +1643,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Teraz zeskanuj kod transferu drugiego telefonu lub podłącz kabel USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Nadawca znaleziony w tej sieci Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Nie znaleziono telefonu wysyłającego w tej sieci Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Telefon wysyłający przestał udostępniać.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Drugi telefon nie może połączyć się z tym telefonem przez Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi jest wyłączone. Włącz je lub podłącz kabel USB.</string>
+    <string name="k2go_clone_link_no_network">Brak połączenia z siecią Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Nieużywane. Kopia idzie przez kabel USB.</string>
+    <string name="k2go_clone_link_not_on_network">Nieużywane. Drugi telefon nie jest w tej sieci Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Połączono z Wi-Fi. Drugi telefon zostanie sprawdzony po zeskanowaniu jego kodu.</string>
+    <string name="k2go_clone_link_not_found_action">Nie znaleziono telefonu wysyłającego w tej sieci Wi-Fi. Dołącz do jego sieci lub podłącz kabel USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Uruchamianie hotspotu</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot włączony</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot włączony. Oczekiwanie na drugi telefon.</string>
+    <string name="k2go_clone_link_network_waiting">Udostępnianie przez tę sieć Wi-Fi. Oczekiwanie na drugi telefon.</string>
+    <string name="k2go_clone_link_usb_done">Kopiowanie zakończone. Możesz odłączyć kabel USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Nieużywane</string>
+    <string name="k2go_clone_link_badge_starting">Uruchamianie</string>
+    <string name="k2go_clone_unplug_cable">Możesz odłączyć kabel USB.</string>
 </resources>

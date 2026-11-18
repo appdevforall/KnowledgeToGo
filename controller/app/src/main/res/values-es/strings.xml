@@ -1691,8 +1691,6 @@
     <string name="k2go_clone_cable_err_check">Falló la última comprobación de la copia. Vuelve a iniciar la transferencia.</string>
     <string name="k2go_clone_link_wifi">Punto de acceso Wi-Fi</string>
     <string name="k2go_clone_link_usb">Cable USB</string>
-    <string name="k2go_clone_link_wifi_off">La Wi-Fi está desactivada</string>
-    <string name="k2go_clone_link_wifi_not_joined">No conectado al punto de acceso del teléfono emisor</string>
     <string name="k2go_clone_link_wifi_found">Emisor encontrado en su punto de acceso</string>
     <string name="k2go_clone_link_wifi_slow">Emisor encontrado. Banda lenta.</string>
     <string name="k2go_clone_link_hotspot_on">Punto de acceso activo. Teléfonos conectados: %1$d</string>
@@ -1711,7 +1709,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Ahora escanea el código de transferencia del otro teléfono o conecta un cable USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Emisor encontrado en esta red Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">No se encontró el teléfono emisor en esta red Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">El teléfono emisor dejó de compartir.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">El otro teléfono no puede conectar con este teléfono por Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">La Wi-Fi está desactivada. Actívala o conecta un cable USB.</string>
+    <string name="k2go_clone_link_no_network">No conectado a una red Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">No se usa. La copia usa el cable USB.</string>
+    <string name="k2go_clone_link_not_on_network">No se usa. El otro teléfono no está en esta red Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Conectado a Wi-Fi. El otro teléfono se comprueba cuando escaneas su código.</string>
+    <string name="k2go_clone_link_not_found_action">No se encontró el teléfono emisor en esta red Wi-Fi. Únete a su red o conecta un cable USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Activando el punto de acceso</string>
+    <string name="k2go_clone_link_hotspot_ready">Punto de acceso activo</string>
+    <string name="k2go_clone_link_hotspot_waiting">Punto de acceso activo. Esperando al otro teléfono.</string>
+    <string name="k2go_clone_link_network_waiting">Compartiendo por esta red Wi-Fi. Esperando al otro teléfono.</string>
+    <string name="k2go_clone_link_usb_done">Copia completa. Ya puedes desconectar el cable USB.</string>
+    <string name="k2go_clone_link_badge_not_used">No se usa</string>
+    <string name="k2go_clone_link_badge_starting">Iniciando</string>
+    <string name="k2go_clone_unplug_cable">Ya puedes desconectar el cable USB.</string>
 </resources>

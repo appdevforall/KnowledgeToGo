@@ -1628,8 +1628,6 @@
     <string name="k2go_clone_cable_err_check">Последња провера копије није успела. Поново покрените пренос.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi хотспот</string>
     <string name="k2go_clone_link_usb">USB кабл</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi је искључен</string>
-    <string name="k2go_clone_link_wifi_not_joined">Није повезано на хотспот телефона пошиљаоца</string>
     <string name="k2go_clone_link_wifi_found">Пошиљалац пронађен на свом хотспоту</string>
     <string name="k2go_clone_link_wifi_slow">Пошиљалац пронађен. Спор опсег.</string>
     <string name="k2go_clone_link_hotspot_on">Хотспот укључен. Повезани телефони: %1$d</string>
@@ -1648,7 +1646,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Сада скенирајте код за пренос другог телефона или прикључите USB кабл.</string>
     <string name="k2go_clone_link_wifi_found_network">Пошиљалац пронађен на овој Wi-Fi мрежи</string>
-    <string name="k2go_clone_link_wifi_not_found">Телефон пошиљаоца није пронађен на овој Wi-Fi мрежи</string>
     <string name="k2go_clone_cable_err_sender_stopped">Телефон пошиљаоца је престао да дели.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Други телефон не може да приступи овом телефону преко Wi-Fi мреже</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi је искључен. Укључите га или повежите USB кабл.</string>
+    <string name="k2go_clone_link_no_network">Нема везе са Wi-Fi мрежом</string>
+    <string name="k2go_clone_link_cable_only">Не користи се. Копија иде преко USB кабла.</string>
+    <string name="k2go_clone_link_not_on_network">Не користи се. Други телефон није на овој Wi-Fi мрежи.</string>
+    <string name="k2go_clone_link_waiting_code">Повезано на Wi-Fi. Други телефон се проверава када скенирате његов код.</string>
+    <string name="k2go_clone_link_not_found_action">Телефон пошиљаоца није пронађен на овој Wi-Fi мрежи. Повежите се на његову мрежу или повежите USB кабл.</string>
+    <string name="k2go_clone_link_hotspot_starting">Покретање хотспота</string>
+    <string name="k2go_clone_link_hotspot_ready">Хотспот укључен</string>
+    <string name="k2go_clone_link_hotspot_waiting">Хотспот укључен. Чека се други телефон.</string>
+    <string name="k2go_clone_link_network_waiting">Дељење преко ове Wi-Fi мреже. Чека се други телефон.</string>
+    <string name="k2go_clone_link_usb_done">Копирање је завршено. Можете да искључите USB кабл.</string>
+    <string name="k2go_clone_link_badge_not_used">Не користи се</string>
+    <string name="k2go_clone_link_badge_starting">Покретање</string>
+    <string name="k2go_clone_unplug_cable">Можете да искључите USB кабл.</string>
 </resources>

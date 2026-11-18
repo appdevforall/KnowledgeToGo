@@ -1812,8 +1812,6 @@
     <string name="k2go_clone_cable_err_check">The last check of the copy failed. Start the transfer again.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
     <string name="k2go_clone_link_usb">USB cable</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi is off</string>
-    <string name="k2go_clone_link_wifi_not_joined">Not joined to the hotspot of the sending phone</string>
     <string name="k2go_clone_link_wifi_found">Sender found on its hotspot</string>
     <string name="k2go_clone_link_wifi_slow">Sender found. Slow band.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot on. Phones joined: %1$d</string>
@@ -1832,7 +1830,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Now scan the other phone\'s transfer code, or connect a USB cable.</string>
     <string name="k2go_clone_link_wifi_found_network">Sender found on this Wi-Fi network</string>
-    <string name="k2go_clone_link_wifi_not_found">Sending phone not found on this Wi-Fi network</string>
     <string name="k2go_clone_cable_err_sender_stopped">The sending phone stopped sharing.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">The other phone cannot reach this phone on Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi is off. Turn it on, or connect a USB cable.</string>
+    <string name="k2go_clone_link_no_network">Not connected to a Wi-Fi network</string>
+    <string name="k2go_clone_link_cable_only">Not used. The copy uses the USB cable.</string>
+    <string name="k2go_clone_link_not_on_network">Not used. The other phone is not on this Wi-Fi network.</string>
+    <string name="k2go_clone_link_waiting_code">Connected to Wi-Fi. The other phone is checked after you scan its code.</string>
+    <string name="k2go_clone_link_not_found_action">Sending phone not found on this Wi-Fi network. Join its network, or connect a USB cable.</string>
+    <string name="k2go_clone_link_hotspot_starting">Starting the hotspot</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot on</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot on. Waiting for the other phone.</string>
+    <string name="k2go_clone_link_network_waiting">Sharing over this Wi-Fi network. Waiting for the other phone.</string>
+    <string name="k2go_clone_link_usb_done">Copy complete. You can unplug the USB cable.</string>
+    <string name="k2go_clone_link_badge_not_used">Not used</string>
+    <string name="k2go_clone_link_badge_starting">Starting</string>
+    <string name="k2go_clone_unplug_cable">You can unplug the USB cable.</string>
 </resources>

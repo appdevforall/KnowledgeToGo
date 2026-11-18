@@ -1622,8 +1622,6 @@
     <string name="k2go_clone_cable_err_check">Posledná kontrola kópie zlyhala. Spustite prenos znova.</string>
     <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
     <string name="k2go_clone_link_usb">Kábel USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi je vypnutá</string>
-    <string name="k2go_clone_link_wifi_not_joined">Nepripojené k hotspotu odosielajúceho telefónu</string>
     <string name="k2go_clone_link_wifi_found">Odosielateľ nájdený na svojom hotspote</string>
     <string name="k2go_clone_link_wifi_slow">Odosielateľ nájdený. Pomalé pásmo.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot zapnutý. Pripojené telefóny: %1$d</string>
@@ -1642,7 +1640,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Teraz naskenujte kód prenosu druhého telefónu alebo pripojte kábel USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Odosielateľ nájdený v tejto sieti Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Odosielajúci telefón sa v tejto sieti Wi-Fi nenašiel</string>
     <string name="k2go_clone_cable_err_sender_stopped">Odosielajúci telefón prestal zdieľať.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Druhý telefón sa k tomuto telefónu cez Wi-Fi nedokáže pripojiť</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi je vypnutá. Zapnite ju alebo pripojte kábel USB.</string>
+    <string name="k2go_clone_link_no_network">Nepripojené k sieti Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Nepoužíva sa. Kópia ide cez kábel USB.</string>
+    <string name="k2go_clone_link_not_on_network">Nepoužíva sa. Druhý telefón nie je v tejto sieti Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Pripojené k Wi-Fi. Druhý telefón sa overí po naskenovaní jeho kódu.</string>
+    <string name="k2go_clone_link_not_found_action">Odosielajúci telefón sa v tejto sieti Wi-Fi nenašiel. Pripojte sa k jeho sieti alebo pripojte kábel USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Spúšťa sa hotspot</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot zapnutý</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot zapnutý. Čaká sa na druhý telefón.</string>
+    <string name="k2go_clone_link_network_waiting">Zdieľanie cez túto sieť Wi-Fi. Čaká sa na druhý telefón.</string>
+    <string name="k2go_clone_link_usb_done">Kopírovanie dokončené. Kábel USB môžete odpojiť.</string>
+    <string name="k2go_clone_link_badge_not_used">Nepoužíva sa</string>
+    <string name="k2go_clone_link_badge_starting">Spúšťa sa</string>
+    <string name="k2go_clone_unplug_cable">Kábel USB môžete odpojiť.</string>
 </resources>

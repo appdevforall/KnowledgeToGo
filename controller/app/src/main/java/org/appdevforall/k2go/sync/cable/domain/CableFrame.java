@@ -36,7 +36,9 @@ public final class CableFrame {
         /** The sender stopped sharing: the receiver ends its pull at once instead of retrying. */
         BYE,
         /** Receiver -> sender: one byte, 1 when the receiver reaches the sender on Wi-Fi. */
-        WIFI;
+        WIFI,
+        /** Receiver -> sender: the copy is complete; the cable can be removed (K2GO-584). */
+        DONE;
 
         static Type of(int code) {
             Type[] all = values();

@@ -1702,8 +1702,6 @@
     <string name="k2go_clone_cable_err_check">La dernière vérification de la copie a échoué. Relancez le transfert.</string>
     <string name="k2go_clone_link_wifi">Point d\'accès Wi-Fi</string>
     <string name="k2go_clone_link_usb">Câble USB</string>
-    <string name="k2go_clone_link_wifi_off">Le Wi-Fi est désactivé</string>
-    <string name="k2go_clone_link_wifi_not_joined">Non connecté au point d\'accès du téléphone émetteur</string>
     <string name="k2go_clone_link_wifi_found">Émetteur trouvé sur son point d\'accès</string>
     <string name="k2go_clone_link_wifi_slow">Émetteur trouvé. Bande lente.</string>
     <string name="k2go_clone_link_hotspot_on">Point d\'accès activé. Téléphones connectés : %1$d</string>
@@ -1722,7 +1720,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Scannez maintenant le code de transfert de l\'autre téléphone, ou branchez un câble USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Émetteur trouvé sur ce réseau Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Téléphone émetteur introuvable sur ce réseau Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Le téléphone émetteur a arrêté le partage.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">L\'autre téléphone ne peut pas joindre ce téléphone en Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Le Wi-Fi est désactivé. Activez-le ou branchez un câble USB.</string>
+    <string name="k2go_clone_link_no_network">Non connecté à un réseau Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Non utilisé. La copie passe par le câble USB.</string>
+    <string name="k2go_clone_link_not_on_network">Non utilisé. L\'autre téléphone n\'est pas sur ce réseau Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Connecté au Wi-Fi. L\'autre téléphone est vérifié après la lecture de son code.</string>
+    <string name="k2go_clone_link_not_found_action">Téléphone émetteur introuvable sur ce réseau Wi-Fi. Rejoignez son réseau ou branchez un câble USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Démarrage du point d\'accès</string>
+    <string name="k2go_clone_link_hotspot_ready">Point d\'accès activé</string>
+    <string name="k2go_clone_link_hotspot_waiting">Point d\'accès activé. En attente de l\'autre téléphone.</string>
+    <string name="k2go_clone_link_network_waiting">Partage via ce réseau Wi-Fi. En attente de l\'autre téléphone.</string>
+    <string name="k2go_clone_link_usb_done">Copie terminée. Vous pouvez débrancher le câble USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Non utilisé</string>
+    <string name="k2go_clone_link_badge_starting">Démarrage</string>
+    <string name="k2go_clone_unplug_cable">Vous pouvez débrancher le câble USB.</string>
 </resources>

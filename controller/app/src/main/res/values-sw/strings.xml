@@ -1635,8 +1635,6 @@
     <string name="k2go_clone_cable_err_check">Ukaguzi wa mwisho wa nakala umeshindwa. Anzisha uhamishaji tena.</string>
     <string name="k2go_clone_link_wifi">Hotspot ya Wi-Fi</string>
     <string name="k2go_clone_link_usb">Kebo ya USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi imezimwa</string>
-    <string name="k2go_clone_link_wifi_not_joined">Haijaunganishwa kwenye hotspot ya simu inayotuma</string>
     <string name="k2go_clone_link_wifi_found">Mtumaji amepatikana kwenye hotspot yake</string>
     <string name="k2go_clone_link_wifi_slow">Mtumaji amepatikana. Bendi ya polepole.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot imewashwa. Simu zilizounganishwa: %1$d</string>
@@ -1655,7 +1653,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Sasa skani msimbo wa uhamishaji wa simu nyingine, au unganisha kebo ya USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Mtumaji amepatikana kwenye mtandao huu wa Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Simu inayotuma haikupatikana kwenye mtandao huu wa Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Simu inayotuma imeacha kushiriki.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Simu nyingine haiwezi kufikia simu hii kupitia Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi imezimwa. Iwashe, au unganisha kebo ya USB.</string>
+    <string name="k2go_clone_link_no_network">Haijaunganishwa kwenye mtandao wa Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Haitumiki. Nakala inapita kwenye kebo ya USB.</string>
+    <string name="k2go_clone_link_not_on_network">Haitumiki. Simu nyingine haiko kwenye mtandao huu wa Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Imeunganishwa kwenye Wi-Fi. Simu nyingine inakaguliwa baada ya kuchanganua msimbo wake.</string>
+    <string name="k2go_clone_link_not_found_action">Simu inayotuma haikupatikana kwenye mtandao huu wa Wi-Fi. Jiunge na mtandao wake, au unganisha kebo ya USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Inawasha hotspot</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot imewashwa</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot imewashwa. Inasubiri simu nyingine.</string>
+    <string name="k2go_clone_link_network_waiting">Inashiriki kupitia mtandao huu wa Wi-Fi. Inasubiri simu nyingine.</string>
+    <string name="k2go_clone_link_usb_done">Kunakili kumekamilika. Unaweza kuchomoa kebo ya USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Haitumiki</string>
+    <string name="k2go_clone_link_badge_starting">Inaanza</string>
+    <string name="k2go_clone_unplug_cable">Unaweza kuchomoa kebo ya USB.</string>
 </resources>
