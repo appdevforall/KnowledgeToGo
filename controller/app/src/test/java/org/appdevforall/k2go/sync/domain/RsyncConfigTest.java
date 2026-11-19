@@ -42,6 +42,18 @@ public class RsyncConfigTest {
     }
 
     @Test
+    public void daemonLogHasNoFileNames() {
+        String conf = RsyncConfig.buildDaemonConf("/c/rsyncd.pid", "/c/rsyncd.lock", 8730,
+                "iiab_sync", "/data/share", "iiab_peer", "/c/rsyncd.secrets", null, "/c/rsyncd.log");
+        assertTrue(conf.contains("log file = /c/rsyncd.log\n"));
+        assertTrue(conf.contains("log format = %o\n"));
+        String none = RsyncConfig.buildDaemonConf("/c/rsyncd.pid", "/c/rsyncd.lock", 8730,
+                "iiab_sync", "/data/share", "iiab_peer", "/c/rsyncd.secrets");
+        assertTrue(none.contains("log file = /dev/null\n"));
+        assertFalse(none.contains("transfer logging"));
+    }
+
+    @Test
     public void remoteUrlIsWellFormed() {
         assertEquals("rsync://iiab_peer@192.168.1.50:8730/iiab_sync/",
                 RsyncConfig.buildRemoteUrl("iiab_peer", "192.168.1.50", 8730, "iiab_sync"));

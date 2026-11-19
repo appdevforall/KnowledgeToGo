@@ -9,104 +9,123 @@ import org.appdevforall.k2go.sync.cable.domain.LinkRule.Text;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Tone;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink.Band;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Cable;
+import org.appdevforall.k2go.sync.cable.domain.ShareSessions.WifiPeer;
 import org.junit.Test;
 
 public class LinkRuleTest {
 
-    // receive(wifiOn, onNetwork, paired, answers, viaHotspot, carrying, band, cableLinked)
+    // receive(wifiOn, onNetwork, paired, answers, viaHotspot, carrying, band, cableLinked, checked)
 
     @Test
     public void receiverOnRouterBeforeCodeIsNeutral() {
         assertEquals(row(Tone.NEUTRAL, Text.WAITING_CODE, Badge.BAND),
-                LinkRule.receive(true, true, false, false, true, false, Band.GHZ_5, false));
+                LinkRule.receive(true, true, false, false, true, false, Band.GHZ_5, false, true));
     }
 
     @Test
     public void receiverOnSenderHotspotIsGreenBeforeCode() {
         assertEquals(row(Tone.OK, Text.FOUND_HOTSPOT, Badge.BAND),
-                LinkRule.receive(true, true, false, true, true, false, Band.GHZ_5, false));
+                LinkRule.receive(true, true, false, true, true, false, Band.GHZ_5, false, true));
     }
 
     @Test
     public void receiverPairedNamesThePath() {
         assertEquals(row(Tone.OK, Text.FOUND_NETWORK, Badge.BAND),
-                LinkRule.receive(true, true, true, true, false, false, Band.GHZ_5, false));
+                LinkRule.receive(true, true, true, true, false, false, Band.GHZ_5, false, true));
         assertEquals(row(Tone.OK, Text.FOUND_HOTSPOT, Badge.BAND),
-                LinkRule.receive(true, true, true, true, true, false, Band.GHZ_5, false));
+                LinkRule.receive(true, true, true, true, true, false, Band.GHZ_5, false, true));
     }
 
     @Test
     public void slowBandIsNotAWarning() {
         assertEquals(row(Tone.OK, Text.SLOW_BAND, Badge.BAND),
-                LinkRule.receive(true, true, true, true, false, false, Band.GHZ_2_4, false));
+                LinkRule.receive(true, true, true, true, false, false, Band.GHZ_2_4, false, true));
     }
 
     @Test
     public void receiverAmberOnlyWhenNoOtherPath() {
         assertEquals(row(Tone.ACTION, Text.NOT_FOUND, Badge.NOT_READY),
-                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, false));
+                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, false, true));
         assertEquals(row(Tone.NEUTRAL, Text.NOT_ON_NETWORK, Badge.NOT_USED),
-                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, true));
+                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, true, true));
     }
 
     @Test
     public void wifiOffIsActionWithoutCableAndNeutralWithCable() {
         assertEquals(row(Tone.ACTION, Text.WIFI_OFF, Badge.OFF),
-                LinkRule.receive(false, false, false, false, true, false, Band.NONE, false));
+                LinkRule.receive(false, false, false, false, true, false, Band.NONE, false, true));
         assertEquals(row(Tone.NEUTRAL, Text.CABLE_ONLY, Badge.OFF),
-                LinkRule.receive(false, false, true, false, false, false, Band.NONE, true));
+                LinkRule.receive(false, false, true, false, false, false, Band.NONE, true, true));
     }
 
     @Test
     public void noNetwork() {
         assertEquals(row(Tone.ACTION, Text.NO_NETWORK, Badge.NOT_READY),
-                LinkRule.receive(true, false, false, false, true, false, Band.NONE, false));
+                LinkRule.receive(true, false, false, false, true, false, Band.NONE, false, true));
         assertEquals(row(Tone.NEUTRAL, Text.CABLE_ONLY, Badge.NOT_USED),
-                LinkRule.receive(true, false, false, false, true, false, Band.NONE, true));
+                LinkRule.receive(true, false, false, false, true, false, Band.NONE, true, true));
     }
 
     @Test
     public void carryingIsGreen() {
         assertEquals(row(Tone.OK, Text.CARRYING, Badge.BAND),
-                LinkRule.receive(true, true, true, true, false, true, Band.GHZ_2_4, true));
+                LinkRule.receive(true, true, true, true, false, true, Band.GHZ_2_4, true, true));
     }
 
-    // send(hotspotMode, hotspot, clients, ownBand, peerReaches, cableLinked)
+    @Test
+    public void receiverMakesNoClaimBeforeItChecksTheSender() {
+        assertEquals(row(Tone.NEUTRAL, Text.NOT_CHECKED, Badge.WAITING),
+                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, true, false));
+        assertEquals(row(Tone.NEUTRAL, Text.NOT_CHECKED, Badge.WAITING),
+                LinkRule.receive(true, true, true, false, false, false, Band.GHZ_5, false, false));
+    }
+
+    // send(hotspotMode, hotspot, clients, ownBand, peerReaches, cableLinked, wifiPeer)
+
+    @Test
+    public void senderDaemonLogWins() {
+        assertEquals(row(Tone.OK, Text.PEER_ON_WIFI, Badge.BAND),
+                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, false, true, WifiPeer.CONNECTED));
+        assertEquals(row(Tone.OK, Text.PEER_ON_WIFI, Badge.LINKED),
+                LinkRule.send(true, Hotspot.ON, 0, Band.NONE, null, false, WifiPeer.CONNECTED));
+        assertEquals(row(Tone.NEUTRAL, Text.PEER_DONE_WIFI, Badge.DONE),
+                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, null, false, WifiPeer.ENDED));
+    }
 
     @Test
     public void senderHotspotStates() {
         assertEquals(row(Tone.NEUTRAL, Text.HOTSPOT_STARTING, Badge.STARTING),
-                LinkRule.send(true, Hotspot.STARTING, 0, Band.NONE, null, false));
+                LinkRule.send(true, Hotspot.STARTING, 0, Band.NONE, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.NEUTRAL, Text.HOTSPOT_WAITING, Badge.READY),
-                LinkRule.send(true, Hotspot.ON, 0, Band.NONE, null, false));
+                LinkRule.send(true, Hotspot.ON, 0, Band.NONE, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.NEUTRAL, Text.HOTSPOT_ON, Badge.READY),
-                LinkRule.send(true, Hotspot.ON, -1, Band.NONE, null, false));
+                LinkRule.send(true, Hotspot.ON, -1, Band.NONE, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.OK, Text.HOTSPOT_JOINED, Badge.LINKED),
-                LinkRule.send(true, Hotspot.ON, 1, Band.NONE, null, false));
+                LinkRule.send(true, Hotspot.ON, 1, Band.NONE, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.OK, Text.HOTSPOT_ON, Badge.LINKED),
-                LinkRule.send(true, Hotspot.ON, -1, Band.NONE, true, true));
+                LinkRule.send(true, Hotspot.ON, -1, Band.NONE, true, true, WifiPeer.NONE));
         assertEquals(row(Tone.ACTION, Text.HOTSPOT_OFF, Badge.NOT_READY),
-                LinkRule.send(true, Hotspot.OFF, 0, Band.NONE, null, false));
+                LinkRule.send(true, Hotspot.OFF, 0, Band.NONE, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.NEUTRAL, Text.CABLE_ONLY, Badge.NOT_USED),
-                LinkRule.send(true, Hotspot.OFF, 0, Band.NONE, null, true));
+                LinkRule.send(true, Hotspot.OFF, 0, Band.NONE, null, true, WifiPeer.NONE));
     }
 
     @Test
     public void senderRouterWaitsUntilTheReceiverConfirms() {
         assertEquals(row(Tone.NEUTRAL, Text.NETWORK_WAITING, Badge.BAND),
-                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, null, false));
+                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, null, false, WifiPeer.NONE));
         assertEquals(row(Tone.OK, Text.NETWORK_SHARING, Badge.BAND),
-                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_2_4, true, true));
+                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_2_4, true, true, WifiPeer.NONE));
         assertEquals(row(Tone.ACTION, Text.NO_NETWORK, Badge.NOT_READY),
-                LinkRule.send(false, Hotspot.OFF, 0, Band.NONE, null, false));
+                LinkRule.send(false, Hotspot.OFF, 0, Band.NONE, null, false, WifiPeer.NONE));
     }
 
     @Test
     public void senderPeerNotOnWifiIsNotUsed() {
         assertEquals(row(Tone.NEUTRAL, Text.NOT_ON_NETWORK, Badge.NOT_USED),
-                LinkRule.send(true, Hotspot.ON, 0, Band.GHZ_5, false, true));
+                LinkRule.send(true, Hotspot.ON, 0, Band.GHZ_5, false, true, WifiPeer.NONE));
         assertEquals(row(Tone.NEUTRAL, Text.NOT_ON_NETWORK, Badge.NOT_USED),
-                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, false, true));
+                LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, false, true, WifiPeer.NONE));
     }
 
     // cable(link, carrying, done, present)

@@ -35,6 +35,9 @@ import java.io.PrintWriter;
 public class RsyncManager implements TransportEngine {
 
     private static final String TAG = "IIAB-RsyncManager";
+    /** K2GO-584: the share daemon log, in the cache dir (DaemonLog reads it). */
+    public static final String DAEMON_LOG = "rsyncd.log";
+    private volatile File daemonLog;   // deleted by stop(): it names the receiver's address
     private volatile Process rsyncProcess;
     private volatile String rsyncBinPath; // ADFA-4539: so stop() can find our per-connection children in /proc
     private volatile boolean isCancelled = false; // S10: read/written across threads
@@ -71,6 +74,9 @@ public class RsyncManager implements TransportEngine {
             File configFile = new File(cacheDir, "rsyncd.conf");
             File pidFile = new File(cacheDir, "rsyncd.pid");
             File lockFile = new File(cacheDir, "rsyncd.lock");
+            File logFile = new File(cacheDir, DAEMON_LOG);
+            logFile.delete();   // K2GO-584: the log holds only this share's sessions
+            daemonLog = logFile;
 
             if (pidFile.exists()) {
                 pidFile.delete();
@@ -88,7 +94,7 @@ public class RsyncManager implements TransportEngine {
             String configContent = RsyncConfig.buildDaemonConf(
                     pidFile.getAbsolutePath(), lockFile.getAbsolutePath(), config.rsyncPort,
                     config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath(),
-                    excludes.getAbsolutePath());
+                    excludes.getAbsolutePath(), logFile.getAbsolutePath());
 
             writeTextToFile(configFile, configContent);
 
@@ -364,6 +370,19 @@ public class RsyncManager implements TransportEngine {
         // librsync.so path), which covers the connection children on both the share
         // (daemon) and receive (client) sides.
         killOurRsyncProcesses();
+        deleteDaemonLog();
+    }
+
+    /** K2GO-584 (privacy): the share log does not outlive the share. */
+    private void deleteDaemonLog() {
+        File f = daemonLog;
+        daemonLog = null;
+        if (f != null && f.exists() && !f.delete()) Log.w(TAG, "could not delete the share log");
+    }
+
+    /** K2GO-584 (privacy): Turn off removes a share log left by a process that died while sharing. */
+    public static void deleteDaemonLog(Context context) {
+        new File(context.getCacheDir(), DAEMON_LOG).delete();
     }
 
     /**

@@ -42,11 +42,25 @@ public final class RsyncConfig {
     public static String buildDaemonConf(String pidPath, String lockPath, int port,
                                          String moduleName, String sharePath,
                                          String user, String secretsPath, String excludeFromPath) {
+        return buildDaemonConf(pidPath, lockPath, port, moduleName, sharePath, user, secretsPath,
+                excludeFromPath, null);
+    }
+
+    /**
+     * Same, plus the daemon log (may be null: no log). K2GO-584: the log is how the sharing phone
+     * learns that a receiver connected and finished, also over Wi-Fi.
+     */
+    public static String buildDaemonConf(String pidPath, String lockPath, int port,
+                                         String moduleName, String sharePath,
+                                         String user, String secretsPath, String excludeFromPath,
+                                         String logPath) {
         return "pid file = " + pidPath + "\n" +
                 "lock file = " + lockPath + "\n" +
                 "port = " + port + "\n" +
                 "use chroot = no\n" +
-                "log file = /dev/null\n" +
+                "log file = " + (logPath != null ? logPath : "/dev/null") + "\n" +
+                // One bare "send" per sent file: no file names, no addresses. A dry run logs none.
+                (logPath != null ? "transfer logging = yes\nlog format = %o\n" : "") +
                 "reverse lookup = no\n" +
                 "\n" +
                 "[" + moduleName + "]\n" +

@@ -22,10 +22,10 @@ public final class LinkRule {
         // Wi-Fi row, both phones
         WIFI_OFF, NO_NETWORK, CABLE_ONLY, NOT_ON_NETWORK, CARRYING,
         // Wi-Fi row, receiver
-        WAITING_CODE, FOUND_HOTSPOT, FOUND_NETWORK, SLOW_BAND, NOT_FOUND,
+        WAITING_CODE, FOUND_HOTSPOT, FOUND_NETWORK, SLOW_BAND, NOT_FOUND, NOT_CHECKED,
         // Wi-Fi row, sender
         HOTSPOT_STARTING, HOTSPOT_OFF, HOTSPOT_ON, HOTSPOT_WAITING, HOTSPOT_JOINED,
-        NETWORK_WAITING, NETWORK_SHARING,
+        NETWORK_WAITING, NETWORK_SHARING, PEER_ON_WIFI, PEER_DONE_WIFI,
         // USB cable row
         CABLE_NONE, CABLE_PRESENT, CABLE_SWITCHING, CABLE_ASK, CABLE_DENIED, CABLE_PEER, CABLE_LINKED, CABLE_DONE
     }
@@ -77,10 +77,11 @@ public final class LinkRule {
      *
      * @param onNetwork  the phone has a Wi-Fi network (a DHCP gateway)
      * @param viaHotspot the sender is the gateway (its hotspot), or nothing is paired yet
+     * @param checked    the last check tried the paired sender's address (false: not tried yet)
      */
     public static Row receive(boolean wifiOn, boolean onNetwork, boolean paired, boolean answers,
                               boolean viaHotspot, boolean carrying, WifiLink.Band band,
-                              boolean cableLinked) {
+                              boolean cableLinked, boolean checked) {
         if (!wifiOn) {
             return cableLinked ? row(Tone.NEUTRAL, Text.CABLE_ONLY, Badge.OFF)
                     : row(Tone.ACTION, Text.WIFI_OFF, Badge.OFF);
@@ -95,6 +96,8 @@ public final class LinkRule {
             return row(Tone.OK, viaHotspot ? Text.FOUND_HOTSPOT : Text.FOUND_NETWORK, Badge.BAND);
         }
         if (!paired) return row(Tone.NEUTRAL, Text.WAITING_CODE, Badge.BAND);
+        // A silent sender is known only after a check of its address: no claim before that.
+        if (!checked) return row(Tone.NEUTRAL, Text.NOT_CHECKED, Badge.WAITING);
         return cableLinked ? row(Tone.NEUTRAL, Text.NOT_ON_NETWORK, Badge.NOT_USED)
                 : row(Tone.ACTION, Text.NOT_FOUND, Badge.NOT_READY);
     }
@@ -105,9 +108,15 @@ public final class LinkRule {
      * @param clients     phones joined to the hotspot, or a negative value when unknown
      * @param ownBand     this phone's Wi-Fi band, NONE when it is not on a network
      * @param peerReaches the receiver's verdict over the cable, null when unknown
+     * @param wifiPeer    what this phone's own rsync daemon saw from a receiver on Wi-Fi
      */
     public static Row send(boolean hotspotMode, Hotspot hotspot, int clients, WifiLink.Band ownBand,
-                           Boolean peerReaches, boolean cableLinked) {
+                           Boolean peerReaches, boolean cableLinked, ShareSessions.WifiPeer wifiPeer) {
+        // The daemon saw the receiver on Wi-Fi: direct proof, it wins over any other input.
+        if (wifiPeer == ShareSessions.WifiPeer.CONNECTED) {
+            return row(Tone.OK, Text.PEER_ON_WIFI, hotspotMode ? Badge.LINKED : Badge.BAND);
+        }
+        if (wifiPeer == ShareSessions.WifiPeer.ENDED) return row(Tone.NEUTRAL, Text.PEER_DONE_WIFI, Badge.DONE);
         // The verdict travels only on the cable, so a "no" means the cable carries the copy.
         if (Boolean.FALSE.equals(peerReaches)) return row(Tone.NEUTRAL, Text.NOT_ON_NETWORK, Badge.NOT_USED);
         boolean peerFound = Boolean.TRUE.equals(peerReaches);
