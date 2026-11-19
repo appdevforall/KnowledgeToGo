@@ -2,7 +2,7 @@
 
 Fast, native tests that run BEFORE the rootfs bake (no proot, no root), with our
 upstream patches applied. If they fail, the bake must not run. The workflow is
-`.github/workflows/prebuild-tests.yml`.
+`.github/workflows/rootfs-1-prebuild-tests.yml`.
 
 Layout: one directory per area/feature, so files never mix. Each test owns its
 directory and fixtures.

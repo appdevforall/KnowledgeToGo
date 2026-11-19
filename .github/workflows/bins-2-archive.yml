@@ -1,7 +1,7 @@
 name: "Bins: 2. archive + retention"
 
 # K2GO-506: archive every native-binaries release to R2 (never pruned), then prune old GitHub
-# releases without deleting a pinned or unarchived build. build-static-binaries.yml calls it after
+# releases without deleting a pinned or unarchived build. bins-1-build.yml calls it after
 # each publish. Run it by hand to backfill the archive, or with dry_run to preview a prune.
 # See controller/docs/UPDATING_NATIVE_BINARIES.md.
 

@@ -3,7 +3,7 @@
 Builds the static native binaries the APK ships in `jniLibs/<arch>/`
 (`proot`, `aria2c`, `tar`, `gzip`, `xz`, `rsync`, `nano`, `less`) from
 termux-packages, via **`build_static.sh`**. CI workflow
-`.github/workflows/build-static-binaries.yml` runs the build and then gates the
+`.github/workflows/bins-1-build.yml` runs the build and then gates the
 release with **`smoke-native-binaries.sh`** (in this directory).
 
 ## Outputs
@@ -56,7 +56,7 @@ binaries-lifecycle.sh sync|prune      # DRY_RUN=1 reports only
 `sync` archives every `binaries-*` release to R2 (`binaries/<tag>/`, never deleted).
 `prune` deletes old GitHub releases but keeps the newest 6, every tag that a branch or a `v*`
 tag pins, and every release not archived yet. `test-binaries-lifecycle.sh` checks these rules
-with fake `gh`/`aws` (no network). The workflow `binaries-lifecycle.yml` runs the test, then
+with fake `gh`/`aws` (no network). The workflow `bins-2-archive.yml` runs the test, then
 the script; see `controller/docs/UPDATING_NATIVE_BINARIES.md`.
 
 ## Tickets

@@ -21,11 +21,11 @@ Public at `https://k2go-download.appdevforall.org`.
 
 | Key | Content | Written by | Lifecycle |
 |-----|---------|------------|-----------|
-| `K2Go-<version>-release.apk`, `K2Go-<version>-play-release.aab` (root) | Website APKs; the Play AAB of the retired manual fallback | `play-release.yml`; formerly `android-r2-republish.yml` (deprecated, K2GO-585) | Overwritten per release |
-| `K2Go-<vX.Y.Z-rc.N or vX.Y.Z-internal.CODE>-play-release.aab` (root) | Each Play AAB sent to Play, as uploaded | `play-candidate.yml` (K2GO-564) | Written once per run, never overwritten |
-| `update.json` (root) | OTA manifest for the standard flavor | `play-release.yml` | Overwritten per release |
-| `catalogs/<file>`, `catalogs/<name>.manifest.json` | Content catalogs (Kolibri, Kiwix, Maps) and their manifests (sha256, url) | `publish-catalogs.yml` (weekly) | Overwritten |
-| `binaries/<tag>/termux-binaries-latest.zip` (+ `.sha256`) | Native binaries archive, one folder per `binaries-*` release | `binaries-lifecycle.yml` (K2GO-506) | Written once per release, never deleted |
+| `K2Go-<version>-release.apk`, `K2Go-<version>-play-release.aab` (root) | Website APKs; the Play AAB of the retired manual fallback | `app-play-2-release.yml`; formerly `android-r2-republish.yml` (deprecated, K2GO-585) | Overwritten per release |
+| `K2Go-<vX.Y.Z-rc.N or vX.Y.Z-internal.CODE>-play-release.aab` (root) | Each Play AAB sent to Play, as uploaded | `app-play-1-candidate.yml` (K2GO-564) | Written once per run, never overwritten |
+| `update.json` (root) | OTA manifest for the standard flavor | `app-play-2-release.yml` | Overwritten per release |
+| `catalogs/<file>`, `catalogs/<name>.manifest.json` | Content catalogs (Kolibri, Kiwix, Maps) and their manifests (sha256, url) | `content-catalogs.yml` (weekly) | Overwritten |
+| `binaries/<tag>/termux-binaries-latest.zip` (+ `.sha256`) | Native binaries archive, one folder per `binaries-*` release | `bins-2-archive.yml` (K2GO-506) | Written once per release, never deleted |
 
 The APKs at the root predate these rules. They stay there because the website and
 `update.json` link to them.
@@ -33,14 +33,14 @@ The APKs at the root predate these rules. They stay there because the website an
 ## Bucket `k2go-rootfs`
 
 Public at the R2 dev URL in the repository variable `ROOTFS_PUBLIC_BASE`
-(the default is in `bake-rootfs.yml`).
+(the default is in `rootfs-2-bake.yml`).
 
 | Key | Content | Written by | Lifecycle |
 |-----|---------|------------|-----------|
-| `k2go_*_<tier>_<abi>.tar.gz` (+ `.meta4`, `.sha256`, `.installed`, `.torrent`) | Dated rootfs images | `bake-rootfs.yml` | Newest 7 per tier and ABI; older ones are deleted |
-| `latest_<tier>_<abi>.meta4`, `latest_<tier>_<abi>.installed` | Stable pointers to the current image | `bake-rootfs.yml` | Overwritten, last |
-| `build-<tier>-<abi>.log`, `PUBLISH_QUEUE.tsv` | Installer logs (input for the size catalogs) and the publish queue | `bake-rootfs.yml` | Overwritten |
-| `proot-distro-v<version>/` | Debian base from the proot-distro release (+ `.sha256`) | `bake-rootfs.yml` (seeded once) | Static |
+| `k2go_*_<tier>_<abi>.tar.gz` (+ `.meta4`, `.sha256`, `.installed`, `.torrent`) | Dated rootfs images | `rootfs-2-bake.yml` | Newest 7 per tier and ABI; older ones are deleted |
+| `latest_<tier>_<abi>.meta4`, `latest_<tier>_<abi>.installed` | Stable pointers to the current image | `rootfs-2-bake.yml` | Overwritten, last |
+| `build-<tier>-<abi>.log`, `PUBLISH_QUEUE.tsv` | Installer logs (input for the size catalogs) and the publish queue | `rootfs-2-bake.yml` | Overwritten |
+| `proot-distro-v<version>/` | Debian base from the proot-distro release (+ `.sha256`) | `rootfs-2-bake.yml` (seeded once) | Static |
 
 ## Code on the Go build assets
 

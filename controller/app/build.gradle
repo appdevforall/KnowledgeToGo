@@ -222,7 +222,7 @@ android {
             // would refuse the update. The OTA updater divides by 10 (update/domain/UpdateCheck).
             output.versionCodeOverride = variant.versionCode * 10
 
-            // K2GO-564: play-candidate.yml passes the same code (base x 10) after checking that Play
+            // K2GO-564: app-play-1-candidate.yml passes the same code (base x 10) after checking that Play
             // has not seen it. Other flavors keep the rule above.
             if (variant.flavorName == "play" && project.hasProperty('playVersionCode')) {
                 output.versionCodeOverride = project.property('playVersionCode') as int

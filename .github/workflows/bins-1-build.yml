@@ -143,7 +143,7 @@ jobs:
   # and every tag that main or a v* tag pins, and deletes only releases already archived in R2.
   lifecycle:
     needs: publish
-    uses: ./.github/workflows/binaries-lifecycle.yml
+    uses: ./.github/workflows/bins-2-archive.yml
     secrets: inherit
     permissions:
       contents: write

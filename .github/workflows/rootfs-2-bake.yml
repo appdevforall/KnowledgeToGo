@@ -90,7 +90,7 @@ jobs:
   # without touching this one, which stays pure construction); the bake runs only if it passes.
   prebuild-tests:
     if: ${{ inputs.run_prebuild_tests }}
-    uses: ./.github/workflows/prebuild-tests.yml
+    uses: ./.github/workflows/rootfs-1-prebuild-tests.yml
 
   # The Debian base every tier is built on is a proot-distro v4.29.0 release asset
   # (github.com/termux/proot-distro), fetched from the upstream release. It is STATIC, so seed it
