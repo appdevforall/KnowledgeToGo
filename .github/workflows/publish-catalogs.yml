@@ -3,7 +3,7 @@ name: "Content: publish catalogs"
 # ADFA-5094 (ADR-5094): generate the Kolibri/Kiwix catalogs once a week off the build and
 # publish them + a versioned manifest to Cloudflare R2, so the app can refresh the catalog
 # without an APK release. Reuses the R2 pattern the release build uses for update.json
-# (android-release-build.yml): aws s3 cp with the CLOUDFLARE_* vars, fixed keys that overwrite
+# (the release job of play-release.yml): aws s3 cp with the CLOUDFLARE_* vars, fixed keys that overwrite
 # so a URL always resolves to the latest. Content stays on the Nginx mirror; only the catalog
 # metadata is published here, served from k2go-download.appdevforall.org/catalogs/.
 on:

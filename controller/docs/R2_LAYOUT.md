@@ -21,9 +21,9 @@ Public at `https://k2go-download.appdevforall.org`.
 
 | Key | Content | Written by | Lifecycle |
 |-----|---------|------------|-----------|
-| `K2Go-<version>-release.apk`, `K2Go-<version>-play-release.aab` (root) | Website APKs; the Play AAB of the retired manual fallback | `android-release-build.yml`; formerly `android-r2-republish.yml` (deprecated, K2GO-585) | Overwritten per release |
+| `K2Go-<version>-release.apk`, `K2Go-<version>-play-release.aab` (root) | Website APKs; the Play AAB of the retired manual fallback | `play-release.yml`; formerly `android-r2-republish.yml` (deprecated, K2GO-585) | Overwritten per release |
 | `K2Go-<vX.Y.Z-rc.N or vX.Y.Z-internal.CODE>-play-release.aab` (root) | Each Play AAB sent to Play, as uploaded | `play-candidate.yml` (K2GO-564) | Written once per run, never overwritten |
-| `update.json` (root) | OTA manifest for the standard flavor | `android-release-build.yml` | Overwritten per release |
+| `update.json` (root) | OTA manifest for the standard flavor | `play-release.yml` | Overwritten per release |
 | `catalogs/<file>`, `catalogs/<name>.manifest.json` | Content catalogs (Kolibri, Kiwix, Maps) and their manifests (sha256, url) | `publish-catalogs.yml` (weekly) | Overwritten |
 | `binaries/<tag>/termux-binaries-latest.zip` (+ `.sha256`) | Native binaries archive, one folder per `binaries-*` release | `binaries-lifecycle.yml` (K2GO-506) | Written once per release, never deleted |
 
