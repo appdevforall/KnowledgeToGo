@@ -13,8 +13,8 @@
     <!-- K2GO-584 prototype: the cable is plugged in, the Clone cable link has not started. -->
     <string name="k2go_clone_link_usb_present" translatable="false">Cable connected. Waiting for the Clone service to start.</string>
     <!-- K2GO-584 prototype: the cable is open, the other phone does not answer. -->
-    <string name="k2go_clone_link_usb_peer_send" translatable="false">Waiting for the other phone. On it, open Clone and tap Receive.</string>
-    <string name="k2go_clone_link_usb_peer_receive" translatable="false">Waiting for the other phone. On it, open Clone > Send and go to step 3, Copy.</string>
+    <string name="k2go_clone_link_usb_peer_send" translatable="false">Waiting for the other phone. On it, open Clone, tap Receive and answer any USB dialog.</string>
+    <string name="k2go_clone_link_usb_peer_receive" translatable="false">Waiting for the other phone. On it, open Clone > Send, go to step 3 (Copy) and answer any USB dialog.</string>
     <string name="k2go_clone_link_usb_switching" translatable="false">Cable found. Connecting to the other phone.</string>
     <string name="k2go_clone_link_usb_ask" translatable="false">Tap OK in the USB dialog on this phone.</string>
     <string name="k2go_clone_link_usb_denied" translatable="false">USB access was not allowed. Unplug the cable and plug it in again.</string>

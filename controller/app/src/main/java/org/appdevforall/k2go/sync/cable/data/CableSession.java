@@ -410,13 +410,59 @@ public final class CableSession {
         else um.requestPermission((UsbAccessory) target, pi);
     }
 
-    private synchronized void open(UsbLink link) throws IOException {
-        CableMux.Opener opener = role == Role.SEND
+    /**
+     * Runs on the watcher thread. The first USB write blocks while the peer is not reading, so it
+     * runs outside the session lock: stop() on the UI thread must never wait for it (ANR).
+     */
+    private void open(UsbLink link) throws IOException {
+        CableMux m;
+        Role r;
+        synchronized (this) {
+            r = role;
+            if (Thread.currentThread() != watcher || r == null) {   // stopped meanwhile
+                try { link.close(); } catch (IOException ignored) { /* already gone */ }
+                return;
+            }
+            peerSeen = false;
+            post(Link.PEER, 0);   // the first write can block while the peer is not reading
+            m = newMux(link, r);
+        }
+        // Start first: a link that dies at once (unplugged a moment ago, ENODEV) must not stay
+        // as "linked", or the session never tries again.
+        try {
+            m.start();
+        } catch (IOException e) {
+            try { link.close(); } catch (IOException ignored) { /* already gone */ }
+            post(Link.NONE, 0);   // a stale accessory after a replug: nothing answers on it
+            throw e;
+        }
+        synchronized (this) {
+            if (Thread.currentThread() != watcher || role != r) {   // stopped while the write blocked
+                m.close();
+                return;
+            }
+            if (r == Role.RECEIVE) {
+                try {
+                    relay = new CableRelay(m);
+                } catch (IOException e) {
+                    m.close();
+                    throw e;
+                }
+            }
+            mux = m;
+            senderStopped = false;
+            lastWifiReport = null;   // a new link: send the next verdict
+        }
+        if (r == Role.SEND) sendHello(m);   // a USB write: outside the lock too
+        post(peerSeen ? Link.LINKED : Link.PEER, 0);
+        Log.i(TAG, "cable open as " + r + ", waiting for the other phone");
+    }
+
+    private CableMux newMux(UsbLink link, Role r) {
+        CableMux.Opener opener = r == Role.SEND
                 ? () -> new Socket("127.0.0.1", rsyncPort)
                 : null;
-        peerSeen = false;
-        post(Link.PEER, 0);   // the first write can block while the peer is not reading
-        CableMux m = new CableMux(link, opener, new CableMux.Listener() {
+        return new CableMux(link, opener, new CableMux.Listener() {
             @Override
             public void onPeer() {
                 peerSeen = true;
@@ -455,23 +501,6 @@ public final class CableSession {
                 linkClosed();
             }
         });
-        // Start first: a link that dies at once (unplugged a moment ago, ENODEV) must not stay
-        // as "linked", or the session never tries again.
-        try {
-            m.start();
-            if (role == Role.RECEIVE) relay = new CableRelay(m);
-        } catch (IOException e) {
-            closeRelay();
-            try { link.close(); } catch (IOException ignored) { /* already gone */ }
-            post(Link.NONE, 0);   // a stale accessory after a replug: nothing answers on it
-            throw e;
-        }
-        mux = m;
-        senderStopped = false;
-        lastWifiReport = null;   // a new link: send the next verdict
-        if (role == Role.SEND) sendHello(m);
-        post(peerSeen ? Link.LINKED : Link.PEER, 0);
-        Log.i(TAG, "cable open as " + role + ", waiting for the other phone");
     }
 
     private void sendHello(CableMux m) {
