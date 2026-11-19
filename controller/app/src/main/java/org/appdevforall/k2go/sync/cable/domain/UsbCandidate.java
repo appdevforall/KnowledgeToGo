@@ -10,6 +10,8 @@
  *               keyboard, webcam or audio device does not, so it gets no
  *               permission dialog and no accessory switch. A phone in MIDI
  *               mode looks like an audio device and is not switched.
+ *               A candidate that has no accessory mode (an iPhone, or a phone
+ *               that refuses the switch) cannot use Clone.
  * ============================================================================
  */
 package org.appdevforall.k2go.sync.cable.domain;
@@ -24,7 +26,21 @@ public final class UsbCandidate {
             0xEF,   // miscellaneous: USB tethering (RNDIS on some phones)
     };
 
+    /** Apple devices have no Android accessory mode: no permission dialog, no switch. */
+    private static final int APPLE_VID = 0x05AC;
+
+    /**
+     * Switch refusals in a row before a device counts as one without accessory mode. A phone
+     * that is still re-enumerating can refuse one request.
+     */
+    public static final int SWITCH_TRIES = 3;
+
     private UsbCandidate() {
+    }
+
+    /** True when the device is known to have no accessory mode, before any permission. */
+    public static boolean hasNoAccessoryMode(int vendorId) {
+        return vendorId == APPLE_VID;
     }
 
     /** True when the device can be the other phone. */

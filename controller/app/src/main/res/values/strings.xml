@@ -1818,7 +1818,8 @@
     <string name="k2go_clone_link_wifi_network">Sharing over the Wi-Fi network</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot off</string>
     <string name="k2go_clone_link_usb_none">No cable</string>
-    <string name="k2go_clone_link_usb_present">USB cable connected. Clone links over it when both phones are ready.</string>
+    <string name="k2go_clone_link_usb_present">USB cable connected. If a phone is at the other end, open Clone on it.</string>
+    <string name="k2go_clone_link_usb_unsupported">The device on this cable cannot use Clone.</string>
     <string name="k2go_clone_link_usb_peer_send">Waiting for the other phone. On it, open Clone, tap Receive and answer any USB dialog.</string>
     <string name="k2go_clone_link_usb_peer_receive">Waiting for the other phone. On it, open Clone > Send, go to step 3 (Copy) and answer any USB dialog.</string>
     <string name="k2go_clone_link_usb_switching">Cable found. Connecting to the other phone.</string>

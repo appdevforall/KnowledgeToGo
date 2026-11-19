@@ -27,7 +27,8 @@ public final class LinkRule {
         HOTSPOT_STARTING, HOTSPOT_OFF, HOTSPOT_ON, HOTSPOT_WAITING, HOTSPOT_JOINED,
         NETWORK_WAITING, NETWORK_SHARING, PEER_ON_WIFI, PEER_DONE_WIFI,
         // USB cable row
-        CABLE_NONE, CABLE_PRESENT, CABLE_SWITCHING, CABLE_ASK, CABLE_DENIED, CABLE_PEER, CABLE_LINKED, CABLE_DONE
+        CABLE_NONE, CABLE_PRESENT, CABLE_UNSUPPORTED, CABLE_SWITCHING, CABLE_ASK, CABLE_DENIED, CABLE_PEER,
+        CABLE_LINKED, CABLE_DONE
     }
 
     public enum Badge { BAND, OFF, NOT_READY, NOT_USED, STARTING, READY, LINKED, WAITING, OPTIONAL, DONE }
@@ -150,6 +151,8 @@ public final class LinkRule {
         DENIED,
         /** The cable is open, but the other phone does not answer (Clone is not ready on it). */
         PEER,
+        /** The device on the cable has no accessory mode (an iPhone, for example): Clone cannot use it. */
+        UNSUPPORTED,
         LINKED
     }
 
@@ -167,8 +170,11 @@ public final class LinkRule {
             case DENIED: return row(Tone.ACTION, Text.CABLE_DENIED, Badge.NOT_READY);
             case PEER: return row(Tone.ACTION, Text.CABLE_PEER, Badge.WAITING);
             case SWITCHING: return row(Tone.NEUTRAL, Text.CABLE_SWITCHING, Badge.WAITING);
+            case UNSUPPORTED: return row(Tone.NEUTRAL, Text.CABLE_UNSUPPORTED, Badge.NOT_USED);
             default:
-                return present ? row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.WAITING)
+                // A phone that is only the USB device cannot tell a computer from a phone at the
+                // other end: only the other phone starts the link. So no promise and no "Waiting".
+                return present ? row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.OPTIONAL)
                         : row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL);
         }
     }

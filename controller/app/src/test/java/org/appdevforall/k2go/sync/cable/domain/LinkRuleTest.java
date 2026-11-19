@@ -133,7 +133,9 @@ public class LinkRuleTest {
     @Test
     public void cableRowSaysWhatToDoAndWhere() {
         assertEquals(row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL), LinkRule.cable(Cable.NONE, false, false, false));
-        assertEquals(row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.WAITING), LinkRule.cable(Cable.NONE, false, false, true));
+        // A plain cable (to a computer, or to a phone without Clone open) promises nothing.
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.OPTIONAL), LinkRule.cable(Cable.NONE, false, false, true));
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_UNSUPPORTED, Badge.NOT_USED), LinkRule.cable(Cable.UNSUPPORTED, false, false, true));
         assertEquals(row(Tone.NEUTRAL, Text.CABLE_SWITCHING, Badge.WAITING), LinkRule.cable(Cable.SWITCHING, false, false, true));
         assertEquals(row(Tone.ACTION, Text.CABLE_ASK, Badge.WAITING), LinkRule.cable(Cable.ASK_HERE, false, false, true));
         assertEquals(row(Tone.ACTION, Text.CABLE_DENIED, Badge.NOT_READY), LinkRule.cable(Cable.DENIED, false, false, true));

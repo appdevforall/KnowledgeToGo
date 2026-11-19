@@ -69,6 +69,13 @@ public abstract class UsbLink implements Closeable {
         return MANUFACTURER.equals(a.getManufacturer()) && MODEL.equals(a.getModel());
     }
 
+    /** The device refused the accessory protocol request (no AOA support, or not ready yet). */
+    public static final class NoAccessoryMode extends IOException {
+        NoAccessoryMode() {
+            super("the other device does not support AOA");
+        }
+    }
+
     /** Asks the phone at the other end to restart its USB function in accessory mode. */
     public static void switchToAccessory(UsbManager um, UsbDevice d) throws IOException {
         UsbDeviceConnection c = um.openDevice(d);
@@ -76,7 +83,7 @@ public abstract class UsbLink implements Closeable {
         try {
             byte[] v = new byte[2];
             if (c.controlTransfer(0xC0, 51, 0, 0, v, 2, 1000) < 2 || v[0] == 0) {
-                throw new IOException("the other device does not support AOA");
+                throw new NoAccessoryMode();
             }
             for (int i = 0; i < IDS.length; i++) {
                 byte[] s = (IDS[i] + "\0").getBytes(StandardCharsets.UTF_8);

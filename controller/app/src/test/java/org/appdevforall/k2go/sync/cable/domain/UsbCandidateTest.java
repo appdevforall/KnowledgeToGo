@@ -34,4 +34,11 @@ public class UsbCandidateTest {
         assertFalse(UsbCandidate.canBePhone(false, new int[]{1, 1, 3}));
         assertFalse(UsbCandidate.canBePhone(false, new int[]{0x0E, 0x0E}));   // webcam
     }
+
+    @Test
+    public void appleHasNoAccessoryMode() {
+        assertTrue(UsbCandidate.hasNoAccessoryMode(0x05AC));
+        assertFalse(UsbCandidate.hasNoAccessoryMode(0x04E8));   // Samsung
+        assertFalse(UsbCandidate.hasNoAccessoryMode(0x18D1));   // Google, also the AOA ids
+    }
 }

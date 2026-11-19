@@ -35,6 +35,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Cable;
+import org.appdevforall.k2go.sync.cable.domain.UsbCandidate;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -96,6 +97,10 @@ public final class CableSession {
     private volatile String pendingKey;
     /** A target the user refused; asked again only after a replug. */
     private volatile String deniedKey;
+    /** A device without accessory mode (refused the switch SWITCH_TRIES times); tried again only after a replug. */
+    private volatile String unsupportedKey;
+    private volatile String refusedKey;   // the device that refused the last switch request
+    private volatile int refusals;        // its refusals in a row
     /** The system "open with" flow (manifest filter) may grant first; wait this long for it. */
     private static final long SYSTEM_GRANT_GRACE_MS = 3_000;
     /** A K2Go screen is in front. False while a system USB dialog covers the app: then we do not stack ours. */
@@ -236,11 +241,18 @@ public final class CableSession {
         role = null;
         pendingKey = null;
         deniedKey = null;
+        clearUnsupported();
         graceKey = null;
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
         unregisterDetach();
         copyDone = false;
         post(Cable.NONE, 0);
+    }
+
+    private void clearUnsupported() {
+        unsupportedKey = null;
+        refusedKey = null;
+        refusals = 0;
     }
 
     private void post(Cable link, long bytesPerSec) {
@@ -258,6 +270,7 @@ public final class CableSession {
             public void onReceive(Context c, Intent i) {
                 Log.i(TAG, "USB detached: " + i.getAction());
                 deniedKey = null;   // a replug is a new try
+                clearUnsupported();
                 if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(i.getAction())) {
                     UsbDevice d = i.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     String linked = linkedDevice;
@@ -337,10 +350,15 @@ public final class CableSession {
                 return;
             }
         }
+        boolean unsupported = false;
         for (UsbDevice d : um.getDeviceList().values()) {
             if (!UsbLink.mayBePhone(d)) continue;   // hub, drive, keyboard
             boolean aoa = UsbLink.isAccessoryMode(d);
             String key = "dev:" + d.getDeviceName();
+            if (!aoa && (key.equals(unsupportedKey) || UsbCandidate.hasNoAccessoryMode(d.getVendorId()))) {
+                unsupported = true;   // no dialog and no switch request
+                continue;
+            }
             if (!um.hasPermission(d)) { askPermission(um, d, key, aoa); return; }
             if (aoa) {
                 Log.i(TAG, "opening the host side");
@@ -348,14 +366,22 @@ public final class CableSession {
                 linkedDevice = d.getDeviceName();
             } else {
                 Log.i(TAG, "switching " + d.getDeviceName() + " to accessory mode");
-                // The other phone re-enumerates in accessory mode; the next poll opens it.
-                UsbLink.switchToAccessory(um, d);
-                post(Cable.SWITCHING, 0);
+                post(Cable.SWITCHING, 0);   // also while a refusal is retried
+                try {
+                    UsbLink.switchToAccessory(um, d);
+                } catch (UsbLink.NoAccessoryMode e) {
+                    refusals = key.equals(refusedKey) ? refusals + 1 : 1;
+                    refusedKey = key;
+                    if (refusals >= UsbCandidate.SWITCH_TRIES) unsupportedKey = key;
+                    throw e;
+                }
+                refusedKey = null;   // the other phone re-enumerates in accessory mode; the next poll opens it
             }
             return;
         }
-        if (state.getValue() != null && state.getValue().link != Cable.NONE) {
-            post(Cable.NONE, 0);
+        Cable now = unsupported ? Cable.UNSUPPORTED : Cable.NONE;
+        if (state.getValue() != null && state.getValue().link != now) {
+            post(now, 0);
         }
     }
 

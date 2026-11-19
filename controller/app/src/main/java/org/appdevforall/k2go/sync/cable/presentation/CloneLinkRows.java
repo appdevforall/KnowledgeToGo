@@ -357,6 +357,7 @@ public final class CloneLinkRows {
             case NETWORK_SHARING: return R.string.k2go_clone_link_wifi_network;
             case CABLE_NONE: return R.string.k2go_clone_link_usb_none;
             case CABLE_PRESENT: return R.string.k2go_clone_link_usb_present;
+            case CABLE_UNSUPPORTED: return R.string.k2go_clone_link_usb_unsupported;
             case CABLE_SWITCHING: return R.string.k2go_clone_link_usb_switching;
             case CABLE_ASK: return R.string.k2go_clone_link_usb_ask;
             case CABLE_DENIED: return R.string.k2go_clone_link_usb_denied;
