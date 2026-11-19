@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.color.MaterialColors;
@@ -32,6 +33,7 @@ import com.google.android.material.color.MaterialColors;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.data.UsbPresence;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
@@ -63,7 +65,8 @@ public final class CloneLinkRows {
 
     // Main thread only: the last inputs of each row, so a change of one input repaints the row.
     private CableSession.State cable;
-    private Probe probe;                 // receiver: the last Wi-Fi check, null before the first
+    private boolean cablePresent;        // a USB data cable is plugged in (system USB state)
+    private Probe probe;                // receiver: the last Wi-Fi check, null before the first
     private boolean senderSide;
     private boolean hotspotMode;
     private LocalHotspotManager.State hotspot;
@@ -102,6 +105,23 @@ public final class CloneLinkRows {
             showCable();
             // The Wi-Fi row depends on whether the cable can carry the copy; the state repeats every second.
             if (cableLinked() != wasLinked) showWifi();
+        });
+        UsbPresence presence = new UsbPresence(root.getContext());
+        presence.present().observe(owner, p -> {
+            cablePresent = Boolean.TRUE.equals(p);
+            showCable();
+            showWifi();   // the Wi-Fi text mentions the cable
+        });
+        owner.getLifecycle().addObserver(new DefaultLifecycleObserver() {
+            @Override
+            public void onStart(LifecycleOwner o) {
+                presence.start();
+            }
+
+            @Override
+            public void onStop(LifecycleOwner o) {
+                presence.stop();
+            }
         });
     }
 
@@ -248,8 +268,8 @@ public final class CloneLinkRows {
     private void showCable() {
         CableSession.State s = cable;
         if (s == null) return;
-        LinkRule.Row row = LinkRule.cable(s.link == CableSession.Link.LINKED, s.link == CableSession.Link.WAITING,
-                s.bytesPerSec > 0, s.done);
+        LinkRule.Row row = LinkRule.cable(LinkRule.Cable.valueOf(s.link.name()), s.bytesPerSec > 0, s.done,
+                cablePresent);
         paint(usbIcon, usbDetail, usbBadge, row, WifiLink.Band.NONE, 0, s.bytesPerSec);
     }
 
@@ -271,6 +291,10 @@ public final class CloneLinkRows {
         badge.setText(badgeText(c, row.badge, band));
         detail.setText(row.text == LinkRule.Text.CARRYING ? c.getString(R.string.k2go_clone_link_usb_active, rate(bytesPerSec))
                 : row.text == LinkRule.Text.HOTSPOT_JOINED ? c.getString(R.string.k2go_clone_link_hotspot_on, clients)
+                // The cable is plugged in: do not ask the user to connect one.
+                : row.text == LinkRule.Text.NOT_FOUND && cablePresent ? c.getString(R.string.k2go_clone_link_not_found_cable)
+                : row.text == LinkRule.Text.CABLE_PEER ? c.getString(senderSide ? R.string.k2go_clone_link_usb_peer_send
+                        : R.string.k2go_clone_link_usb_peer_receive)
                 : c.getString(textRes(row.text)));
     }
 
@@ -310,7 +334,10 @@ public final class CloneLinkRows {
             case NETWORK_WAITING: return R.string.k2go_clone_link_network_waiting;
             case NETWORK_SHARING: return R.string.k2go_clone_link_wifi_network;
             case CABLE_NONE: return R.string.k2go_clone_link_usb_none;
-            case CABLE_WAITING: return R.string.k2go_clone_link_usb_waiting;
+            case CABLE_PRESENT: return R.string.k2go_clone_link_usb_present;
+            case CABLE_SWITCHING: return R.string.k2go_clone_link_usb_switching;
+            case CABLE_ASK: return R.string.k2go_clone_link_usb_ask;
+            case CABLE_DENIED: return R.string.k2go_clone_link_usb_denied;
             case CABLE_LINKED: return R.string.k2go_clone_link_usb_linked;
             case CABLE_DONE: return R.string.k2go_clone_link_usb_done;
             default: throw new IllegalArgumentException(t.name());   // CARRYING, HOTSPOT_JOINED take an argument

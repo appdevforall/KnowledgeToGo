@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-584: a phone in Android Open Accessory mode (Google 0x18D1, PID 0x2D00 and 0x2D01). -->
+<resources>
+    <usb-device vendor-id="6353" product-id="11520" />
+    <usb-device vendor-id="6353" product-id="11521" />
+</resources>

@@ -38,7 +38,9 @@ public final class CableFrame {
         /** Receiver -> sender: one byte, 1 when the receiver reaches the sender on Wi-Fi. */
         WIFI,
         /** Receiver -> sender: the copy is complete; the cable can be removed (K2GO-584). */
-        DONE;
+        DONE,
+        /** Keepalive, both directions: a link with no frame for a few seconds is dead (K2GO-584). */
+        PING;
 
         static Type of(int code) {
             Type[] all = values();

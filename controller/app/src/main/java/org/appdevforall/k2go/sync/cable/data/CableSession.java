@@ -34,6 +34,8 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.appdevforall.k2go.sync.cable.domain.UsbCandidate;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -46,7 +48,8 @@ public final class CableSession {
 
     public enum Role { SEND, RECEIVE }
 
-    public enum Link { NONE, WAITING, LINKED }
+    /** Same meaning as LinkRule.Cable: what the cable row shows. */
+    public enum Link { NONE, SWITCHING, ASK_HERE, DENIED, PEER, LINKED }
 
     /**
      * What the cable row shows. {@code bytesPerSec} > 0 means the cable carries data. {@code done}:
@@ -92,10 +95,22 @@ public final class CableSession {
     private volatile String linkedDevice;     // host side: the device name of the linked phone
     private volatile String completedHello;   // the pairing data of the last finished copy
     private volatile CableRelay relay;
-    private volatile boolean permissionAsked;
-    private volatile long permissionAskedAt;
-    /** A dialog for a device that re-enumerated (accessory switch, role swap) never answers. */
-    private static final long PERMISSION_RETRY_MS = 15_000;
+    /** The target of the open permission dialog; one dialog per target, no repeat. */
+    private volatile String pendingKey;
+    /** A target the user refused; asked again only after a replug. */
+    private volatile String deniedKey;
+    /** The system "open with" flow (manifest filter) may grant first; wait this long for it. */
+    private static final long SYSTEM_GRANT_GRACE_MS = 3_000;
+    /** A K2Go screen is in front. False while a system USB dialog covers the app: then we do not stack ours. */
+    private volatile boolean inFront = true;
+    private volatile long frontSince;      // when K2Go came to the front (0: before tracking)
+    private volatile long pendingSince;    // when the open dialog was asked for
+    private static final long FRONT_SETTLE_MS = 1_500;
+    private boolean resumeTracked;
+    private volatile String graceKey;
+    private volatile long graceSince;
+    /** The peer mux answered: only then is the cable "linked". */
+    private volatile boolean peerSeen;
     private BroadcastReceiver permissionReceiver;
     private BroadcastReceiver detachReceiver;
 
@@ -181,11 +196,28 @@ public final class CableSession {
             new Thread(() -> sendHello(m), "cable-hello").start();   // a USB write can block: not on the UI thread
         }
         registerDetach();
+        trackResumed(ctx);
         if (watcher == null) {
             watcher = new Thread(this::watchLoop, "cable-watch");
             watcher.setDaemon(true);
             watcher.start();
         }
+    }
+
+    /** Process-wide and registered once, like this session. */
+    private void trackResumed(Context ctx) {
+        if (resumeTracked) return;
+        resumeTracked = true;
+        ((android.app.Application) app).registerActivityLifecycleCallbacks(
+                new android.app.Application.ActivityLifecycleCallbacks() {
+                    @Override public void onActivityResumed(android.app.Activity a) { inFront = true; frontSince = System.currentTimeMillis(); }
+                    @Override public void onActivityPaused(android.app.Activity a) { inFront = false; }
+                    @Override public void onActivityCreated(android.app.Activity a, android.os.Bundle b) { }
+                    @Override public void onActivityStarted(android.app.Activity a) { }
+                    @Override public void onActivityStopped(android.app.Activity a) { }
+                    @Override public void onActivitySaveInstanceState(android.app.Activity a, android.os.Bundle b) { }
+                    @Override public void onActivityDestroyed(android.app.Activity a) { }
+                });
     }
 
     public synchronized void stop() {
@@ -202,7 +234,9 @@ public final class CableSession {
         hello = null;
         senderStopped = false;
         role = null;
-        permissionAsked = false;
+        pendingKey = null;
+        deniedKey = null;
+        graceKey = null;
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
         unregisterDetach();
         copyDone = false;
@@ -223,7 +257,7 @@ public final class CableSession {
             @Override
             public void onReceive(Context c, Intent i) {
                 Log.i(TAG, "USB detached: " + i.getAction());
-                permissionAsked = false;   // the next device is a new one: ask for it
+                deniedKey = null;   // a replug is a new try
                 if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(i.getAction())) {
                     UsbDevice d = i.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     String linked = linkedDevice;
@@ -271,7 +305,7 @@ public final class CableSession {
                     lastBytes = 0;
                 } else {
                     long b = m.bytesMoved();
-                    post(Link.LINKED, (b - lastBytes) * 1000 / POLL_MS);
+                    post(peerSeen ? Link.LINKED : Link.PEER, (b - lastBytes) * 1000 / POLL_MS);
                     lastBytes = b;
                 }
                 Thread.sleep(POLL_MS);
@@ -297,15 +331,18 @@ public final class CableSession {
         if (accessories != null) {
             for (UsbAccessory a : accessories) {
                 if (!UsbLink.isOurAccessory(a)) continue;
-                if (!um.hasPermission(a)) { askPermission(um, a); return; }
+                if (!um.hasPermission(a)) { askPermission(um, a, "acc", true); return; }
                 Log.i(TAG, "opening the accessory side");
                 open(UsbLink.accessory(um, a));
                 return;
             }
         }
         for (UsbDevice d : um.getDeviceList().values()) {
-            if (!um.hasPermission(d)) { askPermission(um, d); return; }
-            if (UsbLink.isAccessoryMode(d)) {
+            boolean aoa = UsbLink.isAccessoryMode(d);
+            if (!UsbCandidate.canBePhone(aoa, interfaceClasses(d))) continue;   // hub, drive, keyboard
+            String key = "dev:" + d.getDeviceName();
+            if (!um.hasPermission(d)) { askPermission(um, d, key, aoa); return; }
+            if (aoa) {
                 Log.i(TAG, "opening the host side");
                 open(UsbLink.host(um, d));
                 linkedDevice = d.getDeviceName();
@@ -313,8 +350,7 @@ public final class CableSession {
                 Log.i(TAG, "switching " + d.getDeviceName() + " to accessory mode");
                 // The other phone re-enumerates in accessory mode; the next poll opens it.
                 UsbLink.switchToAccessory(um, d);
-                permissionAsked = false;
-                post(Link.WAITING, 0);
+                post(Link.SWITCHING, 0);
             }
             return;
         }
@@ -323,12 +359,33 @@ public final class CableSession {
         }
     }
 
-    private void askPermission(UsbManager um, Object target) {
-        post(Link.WAITING, 0);
-        if (permissionAsked && System.currentTimeMillis() - permissionAskedAt < PERMISSION_RETRY_MS) return;
-        permissionAskedAt = System.currentTimeMillis();
-        Log.i(TAG, "asking USB permission for " + (target instanceof UsbDevice ? "device" : "accessory"));
-        permissionAsked = true;
+    private static int[] interfaceClasses(UsbDevice d) {
+        int[] c = new int[d.getInterfaceCount()];
+        for (int i = 0; i < c.length; i++) c[i] = d.getInterface(i).getInterfaceClass();
+        return c;
+    }
+
+    /**
+     * One dialog per target: no repeat while it is open, none after a "no" until a replug.
+     * {@code systemMayGrant}: our accessory and the AOA device match the manifest filter, so the
+     * system "open with" dialog may grant first; wait for it before showing ours.
+     */
+    private void askPermission(UsbManager um, Object target, String key, boolean systemMayGrant) {
+        if (key.equals(deniedKey)) { post(Link.DENIED, 0); return; }
+        post(Link.ASK_HERE, 0);
+        long now = System.currentTimeMillis();
+        // Let the system act on a new device first: it may open its own window (an "open with"
+        // dialog for our filters, or Files for an MTP phone) that would hide our dialog.
+        if (!key.equals(graceKey)) { graceKey = key; graceSince = now; return; }
+        if (now - graceSince < (systemMayGrant ? SYSTEM_GRANT_GRACE_MS : FRONT_SETTLE_MS)) return;
+        // Another window is on top: ask once K2Go is in front again, so our dialog is seen.
+        if (!inFront || now - frontSince < FRONT_SETTLE_MS) return;
+        // K2Go is in front with our dialog still unanswered: another window buried it. Show it again.
+        if (key.equals(pendingKey) && now - pendingSince < FRONT_SETTLE_MS) return;
+        Log.i(TAG, "asking USB permission for " + key);
+        pendingKey = key;
+        pendingSince = now;
+        unregisterPermission();   // one receiver at a time
         int flags = PendingIntent.FLAG_UPDATE_CURRENT
                 | (Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_MUTABLE : 0);
         PendingIntent pi = PendingIntent.getBroadcast(app, 0,
@@ -336,8 +393,13 @@ public final class CableSession {
         BroadcastReceiver r = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent i) {
-                Log.i(TAG, "USB permission " + (i.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false) ? "granted" : "denied"));
-                permissionAsked = false; // the next poll opens the link, or asks again after a "no"
+                boolean granted = i.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
+                UsbDevice d = i.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                String answered = d != null ? "dev:" + d.getDeviceName() : "acc";
+                Log.i(TAG, "USB permission " + (granted ? "granted" : "denied") + " for " + answered);
+                if (!answered.equals(key)) return;   // an older dialog for a device that is gone
+                pendingKey = null;
+                if (!granted) deniedKey = key;
                 unregisterPermission();
             }
         };
@@ -352,7 +414,16 @@ public final class CableSession {
         CableMux.Opener opener = role == Role.SEND
                 ? () -> new Socket("127.0.0.1", rsyncPort)
                 : null;
+        peerSeen = false;
+        post(Link.PEER, 0);   // the first write can block while the peer is not reading
         CableMux m = new CableMux(link, opener, new CableMux.Listener() {
+            @Override
+            public void onPeer() {
+                peerSeen = true;
+                post(Link.LINKED, 0);
+                Log.i(TAG, "the other phone answered over the cable");
+            }
+
             @Override
             public void onHello(String payload) {
                 HelloListener l = helloListener;
@@ -392,14 +463,15 @@ public final class CableSession {
         } catch (IOException e) {
             closeRelay();
             try { link.close(); } catch (IOException ignored) { /* already gone */ }
+            post(Link.NONE, 0);   // a stale accessory after a replug: nothing answers on it
             throw e;
         }
         mux = m;
         senderStopped = false;
         lastWifiReport = null;   // a new link: send the next verdict
         if (role == Role.SEND) sendHello(m);
-        post(Link.LINKED, 0);
-        Log.i(TAG, "cable linked as " + role);
+        post(peerSeen ? Link.LINKED : Link.PEER, 0);
+        Log.i(TAG, "cable open as " + role + ", waiting for the other phone");
     }
 
     private void sendHello(CableMux m) {

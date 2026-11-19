@@ -140,6 +140,26 @@
 
         <activity android:name=".feedback.crash.presentation.CrashReportActivity" />
         <activity android:name=".QrActivity" />
+        <!-- K2GO-584: lets the system grant the Clone cable USB permission ("Always open"). -->
+        <activity
+            android:name=".sync.cable.presentation.CableUsbActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
+                android:resource="@xml/cable_usb_accessory" />
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/cable_usb_device" />
+        </activity>
         <!-- ADFA-5339: transparent confirm gate for the notification's "Cancel update" action. Not
              exported — only the app's own notification PendingIntent starts it. -->
         <activity

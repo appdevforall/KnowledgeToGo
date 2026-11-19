@@ -27,7 +27,7 @@ public final class LinkRule {
         HOTSPOT_STARTING, HOTSPOT_OFF, HOTSPOT_ON, HOTSPOT_WAITING, HOTSPOT_JOINED,
         NETWORK_WAITING, NETWORK_SHARING,
         // USB cable row
-        CABLE_NONE, CABLE_WAITING, CABLE_LINKED, CABLE_DONE
+        CABLE_NONE, CABLE_PRESENT, CABLE_SWITCHING, CABLE_ASK, CABLE_DENIED, CABLE_PEER, CABLE_LINKED, CABLE_DONE
     }
 
     public enum Badge { BAND, OFF, NOT_READY, NOT_USED, STARTING, READY, LINKED, WAITING, OPTIONAL, DONE }
@@ -129,14 +129,38 @@ public final class LinkRule {
                 : row(Tone.NEUTRAL, Text.NETWORK_WAITING, Badge.BAND);
     }
 
+    /** The cable link, as the session sees it on this phone. */
+    public enum Cable {
+        /** No Clone cable link (a plain USB cable may still be plugged in). */
+        NONE,
+        /** Our phone switched the other phone to accessory mode; it reconnects in a moment. */
+        SWITCHING,
+        /** A USB dialog on this phone waits for the user. */
+        ASK_HERE,
+        /** The user refused USB access; it is asked again only after a replug. */
+        DENIED,
+        /** The cable is open, but the other phone does not answer (Clone is not ready on it). */
+        PEER,
+        LINKED
+    }
+
     /**
      * USB cable row, both phones. {@code done}: a copy finished while the cable was linked. Data on
      * the cable after that is a new copy (a second phone on the same share), so it wins.
+     * {@code present}: a USB data cable is plugged in.
      */
-    public static Row cable(boolean linked, boolean waiting, boolean carrying, boolean done) {
+    public static Row cable(Cable link, boolean carrying, boolean done, boolean present) {
+        boolean linked = link == Cable.LINKED;
         if (done && !(linked && carrying)) return row(Tone.NEUTRAL, Text.CABLE_DONE, Badge.DONE);
-        if (linked) return row(Tone.OK, carrying ? Text.CARRYING : Text.CABLE_LINKED, Badge.LINKED);
-        if (waiting) return row(Tone.ACTION, Text.CABLE_WAITING, Badge.WAITING);
-        return row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL);
+        switch (link) {
+            case LINKED: return row(Tone.OK, carrying ? Text.CARRYING : Text.CABLE_LINKED, Badge.LINKED);
+            case ASK_HERE: return row(Tone.ACTION, Text.CABLE_ASK, Badge.WAITING);
+            case DENIED: return row(Tone.ACTION, Text.CABLE_DENIED, Badge.NOT_READY);
+            case PEER: return row(Tone.ACTION, Text.CABLE_PEER, Badge.WAITING);
+            case SWITCHING: return row(Tone.NEUTRAL, Text.CABLE_SWITCHING, Badge.WAITING);
+            default:
+                return present ? row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.WAITING)
+                        : row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL);
+        }
     }
 }

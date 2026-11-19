@@ -35,6 +35,9 @@ public final class CableMux implements Closeable {
     private static final int PAYLOAD = 32 * 1024;
 
     public interface Listener {
+        /** The first frame from the peer arrived: a K2Go mux runs on the other side. Called once. */
+        void onPeer();
+
         /** The peer sent its pairing data (the QR payload). */
         void onHello(String payload);
 
@@ -64,6 +67,9 @@ public final class CableMux implements Closeable {
     private final AtomicLong bytesIn = new AtomicLong();
     private final AtomicLong bytesOut = new AtomicLong();
     private volatile boolean closed;
+    private volatile long lastRx;   // last frame from the peer, 0 before the first
+    private static final long PING_MS = 2_000;
+    private static final long DEAD_MS = 6_000;
 
     public CableMux(UsbLink link, Opener opener, Listener listener) {
         this.link = link;
@@ -77,6 +83,9 @@ public final class CableMux implements Closeable {
         Thread t = new Thread(this::readLoop, "cable-read");
         t.setDaemon(true);
         t.start();
+        Thread k = new Thread(this::keepAlive, "cable-ping");
+        k.setDaemon(true);
+        k.start();
     }
 
     public void sendHello(String payload) throws IOException {
@@ -131,9 +140,26 @@ public final class CableMux implements Closeable {
     private void readLoop() {
         FrameDecoder decoder = new FrameDecoder();
         byte[] b = new byte[UsbLink.MAX_READ];
+        boolean peerSeen = false;
         try {
             for (int r; !closed && (r = link.read(b)) > 0; ) {
-                for (CableFrame f : decoder.feed(b, 0, r)) handle(f);
+                for (CableFrame f : decoder.feed(b, 0, r)) {
+                    lastRx = System.currentTimeMillis();
+                    if (!peerSeen) {
+                        peerSeen = true;
+                        listener.onPeer();
+                        // Our start RESET may have hit a peer that was not reading yet: answer once,
+                        // so the peer also sees a frame from us.
+                        new Thread(() -> {
+                            try {
+                                send(CableFrame.control(CableFrame.Type.RESET, 0));
+                            } catch (IOException ignored) {
+                                // the link is closing
+                            }
+                        }, "cable-ack").start();
+                    }
+                    handle(f);
+                }
             }
         } catch (IOException e) {
             Log.w(TAG, "cable read ended: " + e.getMessage());
@@ -186,6 +212,35 @@ public final class CableMux implements Closeable {
             case DONE:
                 listener.onDone();
                 break;
+            case PING:
+                break;   // the read itself proves the peer is alive
+        }
+    }
+
+    /**
+     * A peer that dies (app killed, phone off) does not always end our blocked USB read, so the
+     * link would look alive forever. Each side sends PING every PING_MS; no frame for DEAD_MS
+     * after the peer answered once closes the link.
+     */
+    private void keepAlive() {
+        try {
+            while (!closed) {
+                Thread.sleep(PING_MS);
+                if (closed) return;
+                if (lastRx > 0 && System.currentTimeMillis() - lastRx > DEAD_MS) {
+                    Log.w(TAG, "no frame from the peer for " + DEAD_MS + " ms: link closed");
+                    close();
+                    return;
+                }
+                try {
+                    send(CableFrame.control(CableFrame.Type.PING, 0));
+                } catch (IOException e) {
+                    close();
+                    return;
+                }
+            }
+        } catch (InterruptedException ignored) {
+            // closing
         }
     }
 

@@ -8,6 +8,7 @@ import org.appdevforall.k2go.sync.cable.domain.LinkRule.Hotspot;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Text;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Tone;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink.Band;
+import org.appdevforall.k2go.sync.cable.domain.LinkRule.Cable;
 import org.junit.Test;
 
 public class LinkRuleTest {
@@ -108,20 +109,24 @@ public class LinkRuleTest {
                 LinkRule.send(false, Hotspot.OFF, 0, Band.GHZ_5, false, true));
     }
 
-    // cable(linked, waiting, carrying, done)
+    // cable(link, carrying, done, present)
 
     @Test
-    public void cableRow() {
-        assertEquals(row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL), LinkRule.cable(false, false, false, false));
-        assertEquals(row(Tone.ACTION, Text.CABLE_WAITING, Badge.WAITING), LinkRule.cable(false, true, false, false));
-        assertEquals(row(Tone.OK, Text.CABLE_LINKED, Badge.LINKED), LinkRule.cable(true, false, false, false));
-        assertEquals(row(Tone.OK, Text.CARRYING, Badge.LINKED), LinkRule.cable(true, false, true, false));
+    public void cableRowSaysWhatToDoAndWhere() {
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_NONE, Badge.OPTIONAL), LinkRule.cable(Cable.NONE, false, false, false));
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_PRESENT, Badge.WAITING), LinkRule.cable(Cable.NONE, false, false, true));
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_SWITCHING, Badge.WAITING), LinkRule.cable(Cable.SWITCHING, false, false, true));
+        assertEquals(row(Tone.ACTION, Text.CABLE_ASK, Badge.WAITING), LinkRule.cable(Cable.ASK_HERE, false, false, true));
+        assertEquals(row(Tone.ACTION, Text.CABLE_DENIED, Badge.NOT_READY), LinkRule.cable(Cable.DENIED, false, false, true));
+        assertEquals(row(Tone.ACTION, Text.CABLE_PEER, Badge.WAITING), LinkRule.cable(Cable.PEER, false, false, true));
+        assertEquals(row(Tone.OK, Text.CABLE_LINKED, Badge.LINKED), LinkRule.cable(Cable.LINKED, false, false, true));
+        assertEquals(row(Tone.OK, Text.CARRYING, Badge.LINKED), LinkRule.cable(Cable.LINKED, true, false, true));
     }
 
     @Test
     public void doneWinsOverTheLinkState() {
-        assertEquals(row(Tone.NEUTRAL, Text.CABLE_DONE, Badge.DONE), LinkRule.cable(false, false, false, true));
-        assertEquals(row(Tone.NEUTRAL, Text.CABLE_DONE, Badge.DONE), LinkRule.cable(true, false, false, true));
-        assertEquals(row(Tone.OK, Text.CARRYING, Badge.LINKED), LinkRule.cable(true, false, true, true));
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_DONE, Badge.DONE), LinkRule.cable(Cable.NONE, false, true, true));
+        assertEquals(row(Tone.NEUTRAL, Text.CABLE_DONE, Badge.DONE), LinkRule.cable(Cable.LINKED, false, true, true));
+        assertEquals(row(Tone.OK, Text.CARRYING, Badge.LINKED), LinkRule.cable(Cable.LINKED, true, true, true));
     }
 }
