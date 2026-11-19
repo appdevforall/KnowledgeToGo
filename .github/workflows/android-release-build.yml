@@ -3,7 +3,7 @@ name: "App: build release APKs"
 on:
   # K2GO-564: only play-release.yml starts a release, after Google approved the candidate, so GitHub
   # and Play ship the same commit. A hand-pushed v* tag does not start this workflow.
-  # Manual builds that go to R2 between releases live in android-r2-republish.yml.
+  # The interim R2 republish tool is retired (.github/deprecated-workflows/android-r2-republish.yml).
   workflow_call:
     inputs:
       tag:
