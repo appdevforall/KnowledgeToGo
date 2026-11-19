@@ -1616,8 +1616,6 @@
     <string name="k2go_clone_cable_err_check">사본의 마지막 확인에 실패했습니다. 전송을 다시 시작하세요.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi 핫스팟</string>
     <string name="k2go_clone_link_usb">USB 케이블</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi가 꺼져 있음</string>
-    <string name="k2go_clone_link_wifi_not_joined">보내는 휴대폰의 핫스팟에 접속되지 않음</string>
     <string name="k2go_clone_link_wifi_found">보내는 휴대폰을 핫스팟에서 찾음</string>
     <string name="k2go_clone_link_wifi_slow">보내는 휴대폰을 찾음. 느린 대역.</string>
     <string name="k2go_clone_link_hotspot_on">핫스팟 켜짐. 연결된 휴대폰: %1$d</string>
@@ -1636,7 +1634,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">이제 상대방 휴대폰의 전송 코드를 스캔하거나 USB 케이블을 연결하세요.</string>
     <string name="k2go_clone_link_wifi_found_network">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾음</string>
-    <string name="k2go_clone_link_wifi_not_found">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾을 수 없음</string>
     <string name="k2go_clone_cable_err_sender_stopped">보내는 휴대폰이 공유를 중지했습니다.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">상대방 휴대폰이 Wi-Fi로 이 휴대폰에 연결할 수 없음</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi가 꺼져 있습니다. 켜거나 USB 케이블을 연결하세요.</string>
+    <string name="k2go_clone_link_no_network">Wi-Fi 네트워크에 연결되지 않음</string>
+    <string name="k2go_clone_link_cable_only">사용 안 함. 복사는 USB 케이블로 진행됩니다.</string>
+    <string name="k2go_clone_link_not_on_network">사용 안 함. 다른 휴대폰이 이 Wi-Fi 네트워크에 없습니다.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi에 연결됨. 다른 휴대폰은 코드를 스캔한 후 확인합니다.</string>
+    <string name="k2go_clone_link_not_found_action">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾을 수 없습니다. 해당 네트워크에 연결하거나 USB 케이블을 연결하세요.</string>
+    <string name="k2go_clone_link_hotspot_starting">핫스팟 시작 중</string>
+    <string name="k2go_clone_link_hotspot_ready">핫스팟 켜짐</string>
+    <string name="k2go_clone_link_hotspot_waiting">핫스팟 켜짐. 다른 휴대폰을 기다리는 중입니다.</string>
+    <string name="k2go_clone_link_network_waiting">이 Wi-Fi 네트워크로 공유 중. 다른 휴대폰을 기다리는 중입니다.</string>
+    <string name="k2go_clone_link_usb_done">복사 완료. 이제 USB 케이블을 분리해도 됩니다.</string>
+    <string name="k2go_clone_link_badge_not_used">사용 안 함</string>
+    <string name="k2go_clone_link_badge_starting">시작 중</string>
+    <string name="k2go_clone_unplug_cable">이제 USB 케이블을 분리해도 됩니다.</string>
 </resources>

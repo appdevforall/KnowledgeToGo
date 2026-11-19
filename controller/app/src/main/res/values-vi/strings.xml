@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">Lần kiểm tra cuối cùng của bản sao không thành công. Hãy bắt đầu chuyển lại.</string>
     <string name="k2go_clone_link_wifi">Điểm phát sóng Wi-Fi</string>
     <string name="k2go_clone_link_usb">Cáp USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi đang tắt</string>
-    <string name="k2go_clone_link_wifi_not_joined">Chưa tham gia điểm phát sóng của điện thoại gửi</string>
     <string name="k2go_clone_link_wifi_found">Đã tìm thấy máy gửi trên điểm phát sóng của nó</string>
     <string name="k2go_clone_link_wifi_slow">Đã tìm thấy máy gửi. Băng tần chậm.</string>
     <string name="k2go_clone_link_hotspot_on">Điểm phát sóng đang bật. Điện thoại đã tham gia: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Bây giờ quét mã chuyển của điện thoại kia, hoặc cắm cáp USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Đã tìm thấy máy gửi trên mạng Wi-Fi này</string>
-    <string name="k2go_clone_link_wifi_not_found">Không tìm thấy điện thoại gửi trên mạng Wi-Fi này</string>
     <string name="k2go_clone_cable_err_sender_stopped">Điện thoại gửi đã ngừng chia sẻ.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Điện thoại kia không thể kết nối tới điện thoại này qua Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi đang tắt. Hãy bật Wi-Fi hoặc cắm cáp USB.</string>
+    <string name="k2go_clone_link_no_network">Chưa kết nối mạng Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Không dùng. Bản sao đi qua cáp USB.</string>
+    <string name="k2go_clone_link_not_on_network">Không dùng. Điện thoại kia không ở trên mạng Wi-Fi này.</string>
+    <string name="k2go_clone_link_waiting_code">Đã kết nối Wi-Fi. Điện thoại kia được kiểm tra sau khi bạn quét mã của nó.</string>
+    <string name="k2go_clone_link_not_found_action">Không tìm thấy điện thoại gửi trên mạng Wi-Fi này. Hãy tham gia mạng của nó hoặc cắm cáp USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Đang bật điểm phát sóng</string>
+    <string name="k2go_clone_link_hotspot_ready">Điểm phát sóng đang bật</string>
+    <string name="k2go_clone_link_hotspot_waiting">Điểm phát sóng đang bật. Đang chờ điện thoại kia.</string>
+    <string name="k2go_clone_link_network_waiting">Đang chia sẻ qua mạng Wi-Fi này. Đang chờ điện thoại kia.</string>
+    <string name="k2go_clone_link_usb_done">Đã sao chép xong. Bạn có thể rút cáp USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Không dùng</string>
+    <string name="k2go_clone_link_badge_starting">Đang khởi động</string>
+    <string name="k2go_clone_unplug_cable">Bạn có thể rút cáp USB.</string>
 </resources>

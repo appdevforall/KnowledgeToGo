@@ -1628,8 +1628,6 @@
     <string name="k2go_clone_cable_err_check">કૉપિની છેલ્લી ચકાસણી નિષ્ફળ ગઈ. ટ્રાન્સફર ફરી શરૂ કરો.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi હૉટસ્પૉટ</string>
     <string name="k2go_clone_link_usb">USB કેબલ</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi બંધ છે</string>
-    <string name="k2go_clone_link_wifi_not_joined">મોકલનાર ફોનના હૉટસ્પૉટ સાથે જોડાયેલ નથી</string>
     <string name="k2go_clone_link_wifi_found">મોકલનાર તેના હૉટસ્પૉટ પર મળ્યો</string>
     <string name="k2go_clone_link_wifi_slow">મોકલનાર મળ્યો. ધીમો બેન્ડ.</string>
     <string name="k2go_clone_link_hotspot_on">હૉટસ્પૉટ ચાલુ. જોડાયેલા ફોન: %1$d</string>
@@ -1648,7 +1646,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">હવે બીજા ફોનનો ટ્રાન્સફર કોડ સ્કૅન કરો, અથવા USB કેબલ જોડો.</string>
     <string name="k2go_clone_link_wifi_found_network">મોકલનાર આ Wi-Fi નેટવર્ક પર મળ્યો</string>
-    <string name="k2go_clone_link_wifi_not_found">મોકલનાર ફોન આ Wi-Fi નેટવર્ક પર મળ્યો નથી</string>
     <string name="k2go_clone_cable_err_sender_stopped">મોકલનાર ફોને શેર કરવાનું બંધ કર્યું.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">બીજો ફોન Wi-Fi પર આ ફોન સુધી પહોંચી શકતો નથી</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi બંધ છે. તેને ચાલુ કરો, અથવા USB કેબલ જોડો.</string>
+    <string name="k2go_clone_link_no_network">કોઈ Wi-Fi નેટવર્ક સાથે જોડાયેલ નથી</string>
+    <string name="k2go_clone_link_cable_only">વપરાતું નથી. કૉપિ USB કેબલ દ્વારા થાય છે.</string>
+    <string name="k2go_clone_link_not_on_network">વપરાતું નથી. બીજો ફોન આ Wi-Fi નેટવર્ક પર નથી.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi સાથે જોડાયેલ. બીજા ફોનનો કોડ સ્કૅન કર્યા પછી તેની તપાસ થાય છે.</string>
+    <string name="k2go_clone_link_not_found_action">મોકલનાર ફોન આ Wi-Fi નેટવર્ક પર મળ્યો નથી. તેના નેટવર્કમાં જોડાઓ, અથવા USB કેબલ જોડો.</string>
+    <string name="k2go_clone_link_hotspot_starting">હૉટસ્પૉટ શરૂ થઈ રહ્યું છે</string>
+    <string name="k2go_clone_link_hotspot_ready">હૉટસ્પૉટ ચાલુ</string>
+    <string name="k2go_clone_link_hotspot_waiting">હૉટસ્પૉટ ચાલુ. બીજા ફોનની રાહ જોઈ રહ્યાં છીએ.</string>
+    <string name="k2go_clone_link_network_waiting">આ Wi-Fi નેટવર્ક દ્વારા શેર કરી રહ્યાં છીએ. બીજા ફોનની રાહ જોઈ રહ્યાં છીએ.</string>
+    <string name="k2go_clone_link_usb_done">કૉપિ પૂર્ણ. તમે USB કેબલ કાઢી શકો છો.</string>
+    <string name="k2go_clone_link_badge_not_used">વપરાતું નથી</string>
+    <string name="k2go_clone_link_badge_starting">શરૂ થઈ રહ્યું છે</string>
+    <string name="k2go_clone_unplug_cable">તમે USB કેબલ કાઢી શકો છો.</string>
 </resources>

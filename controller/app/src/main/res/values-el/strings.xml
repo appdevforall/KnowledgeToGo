@@ -1622,8 +1622,6 @@
     <string name="k2go_clone_cable_err_check">Ο τελευταίος έλεγχος του αντιγράφου απέτυχε. Ξεκινήστε ξανά τη μεταφορά.</string>
     <string name="k2go_clone_link_wifi">Σημείο πρόσβασης Wi-Fi</string>
     <string name="k2go_clone_link_usb">Καλώδιο USB</string>
-    <string name="k2go_clone_link_wifi_off">Το Wi-Fi είναι απενεργοποιημένο</string>
-    <string name="k2go_clone_link_wifi_not_joined">Χωρίς σύνδεση στο σημείο πρόσβασης του τηλεφώνου αποστολής</string>
     <string name="k2go_clone_link_wifi_found">Ο αποστολέας βρέθηκε στο σημείο πρόσβασής του</string>
     <string name="k2go_clone_link_wifi_slow">Ο αποστολέας βρέθηκε. Αργή ζώνη.</string>
     <string name="k2go_clone_link_hotspot_on">Σημείο πρόσβασης ενεργό. Συνδεδεμένα τηλέφωνα: %1$d</string>
@@ -1642,7 +1640,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Τώρα σαρώστε τον κωδικό μεταφοράς του άλλου τηλεφώνου ή συνδέστε ένα καλώδιο USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Ο αποστολέας βρέθηκε σε αυτό το δίκτυο Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Το τηλέφωνο αποστολής δεν βρέθηκε σε αυτό το δίκτυο Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Το τηλέφωνο αποστολής σταμάτησε την κοινή χρήση.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Το άλλο τηλέφωνο δεν μπορεί να συνδεθεί με αυτό το τηλέφωνο μέσω Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Το Wi-Fi είναι απενεργοποιημένο. Ενεργοποιήστε το ή συνδέστε καλώδιο USB.</string>
+    <string name="k2go_clone_link_no_network">Δεν υπάρχει σύνδεση σε δίκτυο Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Δεν χρησιμοποιείται. Η αντιγραφή γίνεται μέσω του καλωδίου USB.</string>
+    <string name="k2go_clone_link_not_on_network">Δεν χρησιμοποιείται. Το άλλο τηλέφωνο δεν είναι σε αυτό το δίκτυο Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Συνδεδεμένο στο Wi-Fi. Το άλλο τηλέφωνο ελέγχεται αφού σαρώσετε τον κωδικό του.</string>
+    <string name="k2go_clone_link_not_found_action">Το τηλέφωνο αποστολής δεν βρέθηκε σε αυτό το δίκτυο Wi-Fi. Συνδεθείτε στο δίκτυό του ή συνδέστε καλώδιο USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">Εκκίνηση σημείου πρόσβασης</string>
+    <string name="k2go_clone_link_hotspot_ready">Σημείο πρόσβασης ενεργό</string>
+    <string name="k2go_clone_link_hotspot_waiting">Σημείο πρόσβασης ενεργό. Αναμονή για το άλλο τηλέφωνο.</string>
+    <string name="k2go_clone_link_network_waiting">Κοινή χρήση μέσω αυτού του δικτύου Wi-Fi. Αναμονή για το άλλο τηλέφωνο.</string>
+    <string name="k2go_clone_link_usb_done">Η αντιγραφή ολοκληρώθηκε. Μπορείτε να αποσυνδέσετε το καλώδιο USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Δεν χρησιμοποιείται</string>
+    <string name="k2go_clone_link_badge_starting">Εκκίνηση</string>
+    <string name="k2go_clone_unplug_cable">Μπορείτε να αποσυνδέσετε το καλώδιο USB.</string>
 </resources>

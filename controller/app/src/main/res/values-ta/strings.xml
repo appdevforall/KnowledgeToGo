@@ -1635,8 +1635,6 @@
     <string name="k2go_clone_cable_err_check">நகலின் கடைசிச் சரிபார்ப்பு தோல்வியடைந்தது. பரிமாற்றத்தை மீண்டும் தொடங்கவும்.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi ஹாட்ஸ்பாட்</string>
     <string name="k2go_clone_link_usb">USB கேபிள்</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi முடக்கத்தில் உள்ளது</string>
-    <string name="k2go_clone_link_wifi_not_joined">அனுப்பும் தொலைபேசியின் ஹாட்ஸ்பாட்டில் இணையவில்லை</string>
     <string name="k2go_clone_link_wifi_found">அனுப்புநர் அதன் ஹாட்ஸ்பாட்டில் கண்டறியப்பட்டது</string>
     <string name="k2go_clone_link_wifi_slow">அனுப்புநர் கண்டறியப்பட்டது. மெதுவான அலைவரிசை.</string>
     <string name="k2go_clone_link_hotspot_on">ஹாட்ஸ்பாட் இயக்கத்தில். இணைந்த தொலைபேசிகள்: %1$d</string>
@@ -1655,7 +1653,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">இப்போது மற்ற தொலைபேசியின் பரிமாற்றக் குறியீட்டை ஸ்கேன் செய்யவும், அல்லது USB கேபிளை இணைக்கவும்.</string>
     <string name="k2go_clone_link_wifi_found_network">அனுப்புநர் இந்த Wi-Fi நெட்வொர்க்கில் கண்டறியப்பட்டது</string>
-    <string name="k2go_clone_link_wifi_not_found">அனுப்பும் தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் கண்டறியப்படவில்லை</string>
     <string name="k2go_clone_cable_err_sender_stopped">அனுப்பும் தொலைபேசி பகிர்வதை நிறுத்தியது.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">மற்ற தொலைபேசியால் Wi-Fi வழியாக இந்தத் தொலைபேசியை அணுக முடியவில்லை</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi முடக்கத்தில் உள்ளது. அதை இயக்கவும், அல்லது USB கேபிளை இணைக்கவும்.</string>
+    <string name="k2go_clone_link_no_network">Wi-Fi நெட்வொர்க்குடன் இணைக்கப்படவில்லை</string>
+    <string name="k2go_clone_link_cable_only">பயன்படுத்தப்படவில்லை. நகல் USB கேபிள் வழியாக நடக்கிறது.</string>
+    <string name="k2go_clone_link_not_on_network">பயன்படுத்தப்படவில்லை. மற்ற தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் இல்லை.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi உடன் இணைக்கப்பட்டது. மற்ற தொலைபேசியின் குறியீட்டை ஸ்கேன் செய்த பிறகு அது சரிபார்க்கப்படும்.</string>
+    <string name="k2go_clone_link_not_found_action">அனுப்பும் தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் கண்டறியப்படவில்லை. அதன் நெட்வொர்க்கில் சேரவும், அல்லது USB கேபிளை இணைக்கவும்.</string>
+    <string name="k2go_clone_link_hotspot_starting">ஹாட்ஸ்பாட் தொடங்குகிறது</string>
+    <string name="k2go_clone_link_hotspot_ready">ஹாட்ஸ்பாட் இயக்கத்தில்</string>
+    <string name="k2go_clone_link_hotspot_waiting">ஹாட்ஸ்பாட் இயக்கத்தில். மற்ற தொலைபேசிக்காகக் காத்திருக்கிறது.</string>
+    <string name="k2go_clone_link_network_waiting">இந்த Wi-Fi நெட்வொர்க் வழியாகப் பகிரப்படுகிறது. மற்ற தொலைபேசிக்காகக் காத்திருக்கிறது.</string>
+    <string name="k2go_clone_link_usb_done">நகல் முடிந்தது. USB கேபிளைத் துண்டிக்கலாம்.</string>
+    <string name="k2go_clone_link_badge_not_used">பயன்படுத்தப்படவில்லை</string>
+    <string name="k2go_clone_link_badge_starting">தொடங்குகிறது</string>
+    <string name="k2go_clone_unplug_cable">USB கேபிளைத் துண்டிக்கலாம்.</string>
 </resources>

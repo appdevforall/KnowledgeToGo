@@ -1616,8 +1616,6 @@
     <string name="k2go_clone_cable_err_check">副本的最后检查失败。请重新开始传输。</string>
     <string name="k2go_clone_link_wifi">Wi-Fi 热点</string>
     <string name="k2go_clone_link_usb">USB 数据线</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi 已关闭</string>
-    <string name="k2go_clone_link_wifi_not_joined">未加入发送方手机的热点</string>
     <string name="k2go_clone_link_wifi_found">已在其热点上找到发送方</string>
     <string name="k2go_clone_link_wifi_slow">已找到发送方。频段较慢。</string>
     <string name="k2go_clone_link_hotspot_on">热点已开启。已加入的手机：%1$d</string>
@@ -1636,7 +1634,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">现在扫描对方手机的传输代码，或连接 USB 数据线。</string>
     <string name="k2go_clone_link_wifi_found_network">已在此 Wi-Fi 网络上找到发送方</string>
-    <string name="k2go_clone_link_wifi_not_found">未在此 Wi-Fi 网络上找到发送方手机</string>
     <string name="k2go_clone_cable_err_sender_stopped">发送方手机已停止共享。</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">对方手机无法通过 Wi-Fi 连接到本手机</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi 已关闭。请打开 Wi-Fi，或连接 USB 数据线。</string>
+    <string name="k2go_clone_link_no_network">未连接到 Wi-Fi 网络</string>
+    <string name="k2go_clone_link_cable_only">未使用。复制通过 USB 数据线进行。</string>
+    <string name="k2go_clone_link_not_on_network">未使用。另一部手机不在此 Wi-Fi 网络上。</string>
+    <string name="k2go_clone_link_waiting_code">已连接 Wi-Fi。扫描另一部手机的代码后会检查它。</string>
+    <string name="k2go_clone_link_not_found_action">未在此 Wi-Fi 网络上找到发送方手机。请加入它的网络，或连接 USB 数据线。</string>
+    <string name="k2go_clone_link_hotspot_starting">正在开启热点</string>
+    <string name="k2go_clone_link_hotspot_ready">热点已开启</string>
+    <string name="k2go_clone_link_hotspot_waiting">热点已开启。正在等待另一部手机。</string>
+    <string name="k2go_clone_link_network_waiting">正在通过此 Wi-Fi 网络共享。正在等待另一部手机。</string>
+    <string name="k2go_clone_link_usb_done">复制完成。现在可以拔下 USB 数据线。</string>
+    <string name="k2go_clone_link_badge_not_used">未使用</string>
+    <string name="k2go_clone_link_badge_starting">正在启动</string>
+    <string name="k2go_clone_unplug_cable">现在可以拔下 USB 数据线。</string>
 </resources>

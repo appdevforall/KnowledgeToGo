@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">آخرین بررسی نسخه ناموفق بود. انتقال را دوباره شروع کنید.</string>
     <string name="k2go_clone_link_wifi">هات‌اسپات Wi-Fi</string>
     <string name="k2go_clone_link_usb">کابل USB</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi خاموش است</string>
-    <string name="k2go_clone_link_wifi_not_joined">به هات‌اسپات گوشی فرستنده متصل نیست</string>
     <string name="k2go_clone_link_wifi_found">فرستنده در هات‌اسپات خود پیدا شد</string>
     <string name="k2go_clone_link_wifi_slow">فرستنده پیدا شد. باند کند.</string>
     <string name="k2go_clone_link_hotspot_on">هات‌اسپات روشن است. گوشی‌های متصل: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">اکنون کد انتقال گوشی دیگر را اسکن کنید، یا یک کابل USB وصل کنید.</string>
     <string name="k2go_clone_link_wifi_found_network">فرستنده در این شبکه Wi-Fi پیدا شد</string>
-    <string name="k2go_clone_link_wifi_not_found">گوشی فرستنده در این شبکه Wi-Fi پیدا نشد</string>
     <string name="k2go_clone_cable_err_sender_stopped">گوشی فرستنده اشتراک‌گذاری را متوقف کرد.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">گوشی دیگر از طریق Wi-Fi به این گوشی دسترسی ندارد</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi خاموش است. آن را روشن کنید یا کابل USB وصل کنید.</string>
+    <string name="k2go_clone_link_no_network">به شبکه Wi-Fi متصل نیست</string>
+    <string name="k2go_clone_link_cable_only">استفاده نمی‌شود. کپی از طریق کابل USB انجام می‌شود.</string>
+    <string name="k2go_clone_link_not_on_network">استفاده نمی‌شود. گوشی دیگر در این شبکه Wi-Fi نیست.</string>
+    <string name="k2go_clone_link_waiting_code">به Wi-Fi متصل است. گوشی دیگر پس از اسکن کد آن بررسی می‌شود.</string>
+    <string name="k2go_clone_link_not_found_action">گوشی فرستنده در این شبکه Wi-Fi پیدا نشد. به شبکه آن بپیوندید یا کابل USB وصل کنید.</string>
+    <string name="k2go_clone_link_hotspot_starting">در حال روشن کردن هات‌اسپات</string>
+    <string name="k2go_clone_link_hotspot_ready">هات‌اسپات روشن است</string>
+    <string name="k2go_clone_link_hotspot_waiting">هات‌اسپات روشن است. در انتظار گوشی دیگر.</string>
+    <string name="k2go_clone_link_network_waiting">اشتراک‌گذاری از طریق این شبکه Wi-Fi. در انتظار گوشی دیگر.</string>
+    <string name="k2go_clone_link_usb_done">کپی کامل شد. می‌توانید کابل USB را جدا کنید.</string>
+    <string name="k2go_clone_link_badge_not_used">استفاده نمی‌شود</string>
+    <string name="k2go_clone_link_badge_starting">در حال شروع</string>
+    <string name="k2go_clone_unplug_cable">می‌توانید کابل USB را جدا کنید.</string>
 </resources>

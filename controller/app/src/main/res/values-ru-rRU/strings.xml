@@ -1691,8 +1691,6 @@
     <string name="k2go_clone_cable_err_check">Последняя проверка копии не пройдена. Начните передачу заново.</string>
     <string name="k2go_clone_link_wifi">Точка доступа Wi-Fi</string>
     <string name="k2go_clone_link_usb">USB-кабель</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi выключен</string>
-    <string name="k2go_clone_link_wifi_not_joined">Нет подключения к точке доступа телефона-отправителя</string>
     <string name="k2go_clone_link_wifi_found">Отправитель найден в своей точке доступа</string>
     <string name="k2go_clone_link_wifi_slow">Отправитель найден. Медленный диапазон.</string>
     <string name="k2go_clone_link_hotspot_on">Точка доступа включена. Подключено телефонов: %1$d</string>
@@ -1711,7 +1709,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Теперь отсканируйте код передачи другого телефона или подключите USB-кабель.</string>
     <string name="k2go_clone_link_wifi_found_network">Отправитель найден в этой сети Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Телефон-отправитель не найден в этой сети Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Телефон-отправитель прекратил общий доступ.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Другой телефон не может связаться с этим телефоном по Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi выключен. Включите его или подключите USB-кабель.</string>
+    <string name="k2go_clone_link_no_network">Нет подключения к сети Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Не используется. Копирование идет по USB-кабелю.</string>
+    <string name="k2go_clone_link_not_on_network">Не используется. Другой телефон не в этой сети Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Подключено к Wi-Fi. Другой телефон проверяется после сканирования его кода.</string>
+    <string name="k2go_clone_link_not_found_action">Телефон-отправитель не найден в этой сети Wi-Fi. Подключитесь к его сети или подключите USB-кабель.</string>
+    <string name="k2go_clone_link_hotspot_starting">Запуск точки доступа</string>
+    <string name="k2go_clone_link_hotspot_ready">Точка доступа включена</string>
+    <string name="k2go_clone_link_hotspot_waiting">Точка доступа включена. Ожидание другого телефона.</string>
+    <string name="k2go_clone_link_network_waiting">Общий доступ через эту сеть Wi-Fi. Ожидание другого телефона.</string>
+    <string name="k2go_clone_link_usb_done">Копирование завершено. Можно отключить USB-кабель.</string>
+    <string name="k2go_clone_link_badge_not_used">Не используется</string>
+    <string name="k2go_clone_link_badge_starting">Запуск</string>
+    <string name="k2go_clone_unplug_cable">Можно отключить USB-кабель.</string>
 </resources>

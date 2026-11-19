@@ -1632,8 +1632,6 @@
     <string name="k2go_clone_cable_err_check">Paskutinis kopijos patikrinimas nepavyko. Pradėkite perkėlimą iš naujo.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi prieigos taškas</string>
     <string name="k2go_clone_link_usb">USB kabelis</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi išjungtas</string>
-    <string name="k2go_clone_link_wifi_not_joined">Neprisijungta prie siunčiančio telefono prieigos taško</string>
     <string name="k2go_clone_link_wifi_found">Siuntėjas rastas savo prieigos taške</string>
     <string name="k2go_clone_link_wifi_slow">Siuntėjas rastas. Lėta juosta.</string>
     <string name="k2go_clone_link_hotspot_on">Prieigos taškas įjungtas. Prisijungę telefonai: %1$d</string>
@@ -1652,7 +1650,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Dabar nuskaitykite kito telefono perkėlimo kodą arba prijunkite USB kabelį.</string>
     <string name="k2go_clone_link_wifi_found_network">Siuntėjas rastas šiame Wi-Fi tinkle</string>
-    <string name="k2go_clone_link_wifi_not_found">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas</string>
     <string name="k2go_clone_cable_err_sender_stopped">Siunčiantis telefonas nustojo bendrinti.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Kitas telefonas negali pasiekti šio telefono per Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi išjungtas. Įjunkite jį arba prijunkite USB kabelį.</string>
+    <string name="k2go_clone_link_no_network">Neprisijungta prie Wi-Fi tinklo</string>
+    <string name="k2go_clone_link_cable_only">Nenaudojama. Kopijuojama per USB kabelį.</string>
+    <string name="k2go_clone_link_not_on_network">Nenaudojama. Kitas telefonas nėra šiame Wi-Fi tinkle.</string>
+    <string name="k2go_clone_link_waiting_code">Prisijungta prie Wi-Fi. Kitas telefonas tikrinamas nuskaičius jo kodą.</string>
+    <string name="k2go_clone_link_not_found_action">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas. Prisijunkite prie jo tinklo arba prijunkite USB kabelį.</string>
+    <string name="k2go_clone_link_hotspot_starting">Paleidžiamas prieigos taškas</string>
+    <string name="k2go_clone_link_hotspot_ready">Prieigos taškas įjungtas</string>
+    <string name="k2go_clone_link_hotspot_waiting">Prieigos taškas įjungtas. Laukiama kito telefono.</string>
+    <string name="k2go_clone_link_network_waiting">Bendrinama per šį Wi-Fi tinklą. Laukiama kito telefono.</string>
+    <string name="k2go_clone_link_usb_done">Kopijavimas baigtas. Galite atjungti USB kabelį.</string>
+    <string name="k2go_clone_link_badge_not_used">Nenaudojama</string>
+    <string name="k2go_clone_link_badge_starting">Paleidžiama</string>
+    <string name="k2go_clone_unplug_cable">Galite atjungti USB kabelį.</string>
 </resources>

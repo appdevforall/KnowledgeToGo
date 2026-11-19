@@ -1622,8 +1622,6 @@
     <string name="k2go_clone_cable_err_check">Последната проверка на копието е неуспешна. Започнете прехвърлянето отново.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi точка за достъп</string>
     <string name="k2go_clone_link_usb">USB кабел</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi е изключен</string>
-    <string name="k2go_clone_link_wifi_not_joined">Няма връзка с точката за достъп на изпращащия телефон</string>
     <string name="k2go_clone_link_wifi_found">Изпращачът е открит в точката му за достъп</string>
     <string name="k2go_clone_link_wifi_slow">Изпращачът е открит. Бавна честотна лента.</string>
     <string name="k2go_clone_link_hotspot_on">Точката за достъп е включена. Свързани телефони: %1$d</string>
@@ -1642,7 +1640,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Сега сканирайте кода за прехвърляне на другия телефон или включете USB кабел.</string>
     <string name="k2go_clone_link_wifi_found_network">Изпращачът е открит в тази Wi-Fi мрежа</string>
-    <string name="k2go_clone_link_wifi_not_found">Изпращащият телефон не е открит в тази Wi-Fi мрежа</string>
     <string name="k2go_clone_cable_err_sender_stopped">Изпращащият телефон спря споделянето.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Другият телефон не може да достигне този телефон през Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi е изключен. Включете го или свържете USB кабел.</string>
+    <string name="k2go_clone_link_no_network">Няма връзка с Wi-Fi мрежа</string>
+    <string name="k2go_clone_link_cable_only">Не се използва. Копирането е през USB кабела.</string>
+    <string name="k2go_clone_link_not_on_network">Не се използва. Другият телефон не е в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_waiting_code">Свързан с Wi-Fi. Другият телефон се проверява, след като сканирате кода му.</string>
+    <string name="k2go_clone_link_not_found_action">Изпращащият телефон не е открит в тази Wi-Fi мрежа. Присъединете се към мрежата му или свържете USB кабел.</string>
+    <string name="k2go_clone_link_hotspot_starting">Точката за достъп се включва</string>
+    <string name="k2go_clone_link_hotspot_ready">Точката за достъп е включена</string>
+    <string name="k2go_clone_link_hotspot_waiting">Точката за достъп е включена. Изчакване на другия телефон.</string>
+    <string name="k2go_clone_link_network_waiting">Споделяне през тази Wi-Fi мрежа. Изчакване на другия телефон.</string>
+    <string name="k2go_clone_link_usb_done">Копирането завърши. Можете да изключите USB кабела.</string>
+    <string name="k2go_clone_link_badge_not_used">Не се използва</string>
+    <string name="k2go_clone_link_badge_starting">Стартиране</string>
+    <string name="k2go_clone_unplug_cable">Можете да изключите USB кабела.</string>
 </resources>

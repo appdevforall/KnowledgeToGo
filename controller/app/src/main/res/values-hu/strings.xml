@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">A másolat utolsó ellenőrzése sikertelen. Indítsd újra az átvitelt.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi hotspot</string>
     <string name="k2go_clone_link_usb">USB-kábel</string>
-    <string name="k2go_clone_link_wifi_off">A Wi-Fi ki van kapcsolva</string>
-    <string name="k2go_clone_link_wifi_not_joined">Nincs csatlakozva a küldő telefon hotspotjához</string>
     <string name="k2go_clone_link_wifi_found">Küldő megtalálva a hotspotján</string>
     <string name="k2go_clone_link_wifi_slow">Küldő megtalálva. Lassú sáv.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot bekapcsolva. Csatlakozott telefonok: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Most olvasd be a másik telefon átviteli kódját, vagy csatlakoztass egy USB-kábelt.</string>
     <string name="k2go_clone_link_wifi_found_network">Küldő megtalálva ezen a Wi-Fi hálózaton</string>
-    <string name="k2go_clone_link_wifi_not_found">A küldő telefon nem található ezen a Wi-Fi hálózaton</string>
     <string name="k2go_clone_cable_err_sender_stopped">A küldő telefon leállította a megosztást.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">A másik telefon nem éri el ezt a telefont Wi-Fi-n</string>
+    <string name="k2go_clone_link_wifi_off_action">A Wi-Fi ki van kapcsolva. Kapcsold be, vagy csatlakoztass USB-kábelt.</string>
+    <string name="k2go_clone_link_no_network">Nincs Wi-Fi hálózathoz csatlakozva</string>
+    <string name="k2go_clone_link_cable_only">Nincs használatban. A másolás az USB-kábelen megy.</string>
+    <string name="k2go_clone_link_not_on_network">Nincs használatban. A másik telefon nincs ezen a Wi-Fi hálózaton.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi-hez csatlakozva. A másik telefon ellenőrzése a kódja beolvasása után történik.</string>
+    <string name="k2go_clone_link_not_found_action">A küldő telefon nem található ezen a Wi-Fi hálózaton. Csatlakozz a hálózatához, vagy csatlakoztass USB-kábelt.</string>
+    <string name="k2go_clone_link_hotspot_starting">Hotspot indítása</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot bekapcsolva</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot bekapcsolva. Várakozás a másik telefonra.</string>
+    <string name="k2go_clone_link_network_waiting">Megosztás ezen a Wi-Fi hálózaton. Várakozás a másik telefonra.</string>
+    <string name="k2go_clone_link_usb_done">A másolás kész. Kihúzhatod az USB-kábelt.</string>
+    <string name="k2go_clone_link_badge_not_used">Nincs használatban</string>
+    <string name="k2go_clone_link_badge_starting">Indítás</string>
+    <string name="k2go_clone_unplug_cable">Kihúzhatod az USB-kábelt.</string>
 </resources>

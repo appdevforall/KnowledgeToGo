@@ -1692,8 +1692,6 @@
     <string name="k2go_clone_cable_err_check">कॉपी की आख़िरी जाँच विफल रही। ट्रांसफ़र फिर से शुरू करें।</string>
     <string name="k2go_clone_link_wifi">Wi-Fi हॉटस्पॉट</string>
     <string name="k2go_clone_link_usb">USB केबल</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi बंद है</string>
-    <string name="k2go_clone_link_wifi_not_joined">भेजने वाले फ़ोन के हॉटस्पॉट से नहीं जुड़ा</string>
     <string name="k2go_clone_link_wifi_found">भेजने वाला फ़ोन उसके हॉटस्पॉट पर मिला</string>
     <string name="k2go_clone_link_wifi_slow">भेजने वाला फ़ोन मिला। धीमा बैंड।</string>
     <string name="k2go_clone_link_hotspot_on">हॉटस्पॉट चालू। जुड़े फ़ोन: %1$d</string>
@@ -1712,7 +1710,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">अब दूसरे फ़ोन का ट्रांसफ़र कोड स्कैन करें, या USB केबल लगाएँ।</string>
     <string name="k2go_clone_link_wifi_found_network">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर मिला</string>
-    <string name="k2go_clone_link_wifi_not_found">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर नहीं मिला</string>
     <string name="k2go_clone_cable_err_sender_stopped">भेजने वाले फ़ोन ने शेयर करना बंद कर दिया।</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">दूसरा फ़ोन Wi-Fi पर इस फ़ोन तक नहीं पहुँच पा रहा है</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi बंद है। इसे चालू करें, या USB केबल लगाएँ।</string>
+    <string name="k2go_clone_link_no_network">किसी Wi-Fi नेटवर्क से नहीं जुड़ा</string>
+    <string name="k2go_clone_link_cable_only">उपयोग में नहीं। कॉपी USB केबल से हो रही है।</string>
+    <string name="k2go_clone_link_not_on_network">उपयोग में नहीं। दूसरा फ़ोन इस Wi-Fi नेटवर्क पर नहीं है।</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi से जुड़ा है। दूसरे फ़ोन का कोड स्कैन करने के बाद उसकी जाँच होती है।</string>
+    <string name="k2go_clone_link_not_found_action">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर नहीं मिला। उसके नेटवर्क से जुड़ें, या USB केबल लगाएँ।</string>
+    <string name="k2go_clone_link_hotspot_starting">हॉटस्पॉट शुरू हो रहा है</string>
+    <string name="k2go_clone_link_hotspot_ready">हॉटस्पॉट चालू</string>
+    <string name="k2go_clone_link_hotspot_waiting">हॉटस्पॉट चालू। दूसरे फ़ोन की प्रतीक्षा है।</string>
+    <string name="k2go_clone_link_network_waiting">इस Wi-Fi नेटवर्क से शेयर किया जा रहा है। दूसरे फ़ोन की प्रतीक्षा है।</string>
+    <string name="k2go_clone_link_usb_done">कॉपी पूरी हुई। अब आप USB केबल निकाल सकते हैं।</string>
+    <string name="k2go_clone_link_badge_not_used">उपयोग में नहीं</string>
+    <string name="k2go_clone_link_badge_starting">शुरू हो रहा है</string>
+    <string name="k2go_clone_unplug_cable">अब आप USB केबल निकाल सकते हैं।</string>
 </resources>

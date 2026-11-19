@@ -1694,8 +1694,6 @@
     <string name="k2go_clone_cable_err_check">A última verificação da cópia falhou. Inicie a transferência novamente.</string>
     <string name="k2go_clone_link_wifi">Hotspot Wi-Fi</string>
     <string name="k2go_clone_link_usb">Cabo USB</string>
-    <string name="k2go_clone_link_wifi_off">A Wi-Fi está desligada</string>
-    <string name="k2go_clone_link_wifi_not_joined">Não ligado ao hotspot do telemóvel emissor</string>
     <string name="k2go_clone_link_wifi_found">Emissor encontrado no seu hotspot</string>
     <string name="k2go_clone_link_wifi_slow">Emissor encontrado. Banda lenta.</string>
     <string name="k2go_clone_link_hotspot_on">Hotspot ligado. Telemóveis conectados: %1$d</string>
@@ -1714,7 +1712,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Agora digitalize o código de transferência do outro telemóvel ou ligue um cabo USB.</string>
     <string name="k2go_clone_link_wifi_found_network">Emissor encontrado nesta rede Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Telemóvel emissor não encontrado nesta rede Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">O telemóvel emissor deixou de partilhar.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">O outro telemóvel não consegue alcançar este telemóvel pela Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">A Wi-Fi está desligada. Ligue-a ou ligue um cabo USB.</string>
+    <string name="k2go_clone_link_no_network">Sem ligação a uma rede Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Não usado. A cópia passa pelo cabo USB.</string>
+    <string name="k2go_clone_link_not_on_network">Não usado. O outro telemóvel não está nesta rede Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Ligado à Wi-Fi. O outro telemóvel é verificado depois de ler o código dele.</string>
+    <string name="k2go_clone_link_not_found_action">Telemóvel emissor não encontrado nesta rede Wi-Fi. Junte-se à rede dele ou ligue um cabo USB.</string>
+    <string name="k2go_clone_link_hotspot_starting">A iniciar o hotspot</string>
+    <string name="k2go_clone_link_hotspot_ready">Hotspot ligado</string>
+    <string name="k2go_clone_link_hotspot_waiting">Hotspot ligado. À espera do outro telemóvel.</string>
+    <string name="k2go_clone_link_network_waiting">A partilhar por esta rede Wi-Fi. À espera do outro telemóvel.</string>
+    <string name="k2go_clone_link_usb_done">Cópia concluída. Já pode desligar o cabo USB.</string>
+    <string name="k2go_clone_link_badge_not_used">Não usado</string>
+    <string name="k2go_clone_link_badge_starting">A iniciar</string>
+    <string name="k2go_clone_unplug_cable">Já pode desligar o cabo USB.</string>
 </resources>

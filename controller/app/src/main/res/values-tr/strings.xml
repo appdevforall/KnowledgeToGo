@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">Kopyanın son kontrolü başarısız oldu. Aktarımı yeniden başlatın.</string>
     <string name="k2go_clone_link_wifi">Wi-Fi etkin noktası</string>
     <string name="k2go_clone_link_usb">USB kablosu</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi kapalı</string>
-    <string name="k2go_clone_link_wifi_not_joined">Gönderen telefonun etkin noktasına bağlı değil</string>
     <string name="k2go_clone_link_wifi_found">Gönderen, kendi etkin noktasında bulundu</string>
     <string name="k2go_clone_link_wifi_slow">Gönderen bulundu. Yavaş bant.</string>
     <string name="k2go_clone_link_hotspot_on">Etkin nokta açık. Katılan telefonlar: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Şimdi diğer telefonun aktarım kodunu tarayın veya bir USB kablosu takın.</string>
     <string name="k2go_clone_link_wifi_found_network">Gönderen bu Wi-Fi ağında bulundu</string>
-    <string name="k2go_clone_link_wifi_not_found">Gönderen telefon bu Wi-Fi ağında bulunamadı</string>
     <string name="k2go_clone_cable_err_sender_stopped">Gönderen telefon paylaşımı durdurdu.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Diğer telefon Wi-Fi üzerinden bu telefona ulaşamıyor</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi kapalı. Açın veya bir USB kablosu bağlayın.</string>
+    <string name="k2go_clone_link_no_network">Bir Wi-Fi ağına bağlı değil</string>
+    <string name="k2go_clone_link_cable_only">Kullanılmıyor. Kopyalama USB kablosu üzerinden yapılıyor.</string>
+    <string name="k2go_clone_link_not_on_network">Kullanılmıyor. Diğer telefon bu Wi-Fi ağında değil.</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi\'ye bağlı. Diğer telefon, kodunu taradıktan sonra kontrol edilir.</string>
+    <string name="k2go_clone_link_not_found_action">Gönderen telefon bu Wi-Fi ağında bulunamadı. Onun ağına katılın veya bir USB kablosu bağlayın.</string>
+    <string name="k2go_clone_link_hotspot_starting">Etkin nokta başlatılıyor</string>
+    <string name="k2go_clone_link_hotspot_ready">Etkin nokta açık</string>
+    <string name="k2go_clone_link_hotspot_waiting">Etkin nokta açık. Diğer telefon bekleniyor.</string>
+    <string name="k2go_clone_link_network_waiting">Bu Wi-Fi ağı üzerinden paylaşılıyor. Diğer telefon bekleniyor.</string>
+    <string name="k2go_clone_link_usb_done">Kopyalama tamamlandı. USB kablosunu çıkarabilirsiniz.</string>
+    <string name="k2go_clone_link_badge_not_used">Kullanılmıyor</string>
+    <string name="k2go_clone_link_badge_starting">Başlatılıyor</string>
+    <string name="k2go_clone_unplug_cable">USB kablosunu çıkarabilirsiniz.</string>
 </resources>

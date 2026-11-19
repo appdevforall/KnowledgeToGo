@@ -1616,8 +1616,6 @@
     <string name="k2go_clone_cable_err_check">コピーの最終チェックに失敗しました。転送をもう一度開始してください。</string>
     <string name="k2go_clone_link_wifi">Wi-Fi ホットスポット</string>
     <string name="k2go_clone_link_usb">USB ケーブル</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi がオフです</string>
-    <string name="k2go_clone_link_wifi_not_joined">送信側のスマホのホットスポットに未接続</string>
     <string name="k2go_clone_link_wifi_found">送信側をホットスポット上で検出しました</string>
     <string name="k2go_clone_link_wifi_slow">送信側を検出しました。低速の帯域です。</string>
     <string name="k2go_clone_link_hotspot_on">ホットスポット オン。接続中のスマホ: %1$d</string>
@@ -1636,7 +1634,19 @@
     <string name="k2go_clone_link_band_24">2.4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">次に、相手のスマホの転送コードをスキャンするか、USB ケーブルをつないでください。</string>
     <string name="k2go_clone_link_wifi_found_network">この Wi-Fi ネットワークで送信側を検出しました</string>
-    <string name="k2go_clone_link_wifi_not_found">この Wi-Fi ネットワークで送信側のスマホが見つかりません</string>
     <string name="k2go_clone_cable_err_sender_stopped">送信側のスマホが共有を停止しました。</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">相手のスマホが Wi-Fi でこのスマホに接続できません</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi がオフです。オンにするか、USB ケーブルを接続してください。</string>
+    <string name="k2go_clone_link_no_network">Wi-Fi ネットワークに接続されていません</string>
+    <string name="k2go_clone_link_cable_only">未使用。コピーは USB ケーブルで行います。</string>
+    <string name="k2go_clone_link_not_on_network">未使用。もう一方のスマホはこの Wi-Fi ネットワークにありません。</string>
+    <string name="k2go_clone_link_waiting_code">Wi-Fi に接続済み。もう一方のスマホはコードをスキャンした後に確認します。</string>
+    <string name="k2go_clone_link_not_found_action">この Wi-Fi ネットワークで送信側のスマホが見つかりません。そのネットワークに参加するか、USB ケーブルを接続してください。</string>
+    <string name="k2go_clone_link_hotspot_starting">ホットスポットを開始中</string>
+    <string name="k2go_clone_link_hotspot_ready">ホットスポット オン</string>
+    <string name="k2go_clone_link_hotspot_waiting">ホットスポット オン。もう一方のスマホを待っています。</string>
+    <string name="k2go_clone_link_network_waiting">この Wi-Fi ネットワークで共有中。もう一方のスマホを待っています。</string>
+    <string name="k2go_clone_link_usb_done">コピーが完了しました。USB ケーブルを外せます。</string>
+    <string name="k2go_clone_link_badge_not_used">未使用</string>
+    <string name="k2go_clone_link_badge_starting">開始中</string>
+    <string name="k2go_clone_unplug_cable">USB ケーブルを外せます。</string>
 </resources>

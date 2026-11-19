@@ -10,6 +10,9 @@
  *               EXTRA_TAB nav_clone), unlike WatchdogService's generic one that points at MainActivity.
  *               Distinct channel + notification id so it never collides with WatchdogService. Clone uses
  *               this instead of WatchdogService, so it owns its own locks (no double-acquire).
+ *               K2GO-584: after a copy over the cable the text says the cable can be removed;
+ *               it follows CableSession while the service lives (observer set in onCreate,
+ *               removed in onDestroy).
  * ============================================================================
  */
 package org.appdevforall.k2go.redesign;
@@ -28,8 +31,10 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.Observer;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.sync.cable.data.CableSession;
 
 public final class CloneShareService extends Service {
 
@@ -42,11 +47,20 @@ public final class CloneShareService extends Service {
 
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
+    private boolean cableDone;
+    private boolean foreground;
+    private final Observer<CableSession.State> cableObserver = s -> {
+        if (s == null || s.done == cableDone) return;
+        cableDone = s.done;
+        NotificationManager m = getSystemService(NotificationManager.class);
+        if (foreground && m != null) m.notify(NOTIFICATION_ID, buildNotification());
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        CableSession.get().state().observeForever(cableObserver);
     }
 
     @Override
@@ -65,6 +79,7 @@ public final class CloneShareService extends Service {
             return START_NOT_STICKY;
         }
         startForeground(NOTIFICATION_ID, buildNotification());
+        foreground = true;
         acquireHardwareLocks();
         Log.i(TAG, "clone share protection ON");
         // START_STICKY (like WatchdogService, no stopWithTask/onTaskRemoved): keep the process at
@@ -92,6 +107,8 @@ public final class CloneShareService extends Service {
 
     @Override
     public void onDestroy() {
+        CableSession.get().state().removeObserver(cableObserver);
+        foreground = false;
         releaseHardwareLocks();
         stopForeground(true);
         Log.i(TAG, "clone share protection OFF");
@@ -117,7 +134,7 @@ public final class CloneShareService extends Service {
         PendingIntent contentIntent = OpReturnNavigator.notify(this, OpReturnNavigator.cloneShare(this));
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_clone_notif_title))
-                .setContentText(getString(R.string.k2go_clone_notif_text))
+                .setContentText(getString(cableDone ? R.string.k2go_clone_link_usb_done : R.string.k2go_clone_notif_text))
                 .setSmallIcon(android.R.drawable.stat_sys_upload)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)

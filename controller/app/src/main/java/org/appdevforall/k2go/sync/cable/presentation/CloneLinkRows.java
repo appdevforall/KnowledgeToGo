@@ -4,11 +4,12 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : The two status rows of the Clone screen (K2GO-576): Wi-Fi and
- *               USB cable. The cable row follows CableSession. On the receiver,
- *               the Wi-Fi row checks every few seconds that the phone is on the
- *               sender's hotspot: the hotspot gateway is the sender, so it asks
- *               the gateway on the rsync port (no network scan, no location
- *               permission). On the sender, the row shows the hotspot state.
+ *               USB cable. LinkRule picks the colour and the text (K2GO-584);
+ *               this class collects the inputs and paints. On the receiver, the
+ *               Wi-Fi row checks every few seconds whether the sender answers on
+ *               the rsync port: the hotspot gateway before pairing, the paired
+ *               address after (no network scan, no location permission). On the
+ *               sender, the row shows its hotspot or its Wi-Fi network.
  *               Lifecycle: Clone binds it in onCreateView; the receiver checks
  *               stop with stopChecks() and with the view's lifecycle.
  * ============================================================================
@@ -31,6 +32,7 @@ import com.google.android.material.color.MaterialColors;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.domain.LinkRule;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -59,6 +61,32 @@ public final class CloneLinkRows {
     private boolean inFlight;   // main thread only: one check at a time
     private final Runnable check = this::checkWifi;
 
+    // Main thread only: the last inputs of each row, so a change of one input repaints the row.
+    private CableSession.State cable;
+    private Probe probe;                 // receiver: the last Wi-Fi check, null before the first
+    private boolean senderSide;
+    private boolean hotspotMode;
+    private LocalHotspotManager.State hotspot;
+    private Boolean peerWifi;            // sender: the receiver's verdict over the cable, null when unknown
+    private long wifiRate = -1;          // receiver: bytes/s on Wi-Fi during a pull, -1 when no pull runs
+
+    /** One receiver Wi-Fi check. */
+    private static final class Probe {
+        final boolean on;
+        final boolean onNetwork;
+        final boolean answers;
+        final boolean viaHotspot;
+        final WifiLink.Band band;
+
+        Probe(boolean on, boolean onNetwork, boolean answers, boolean viaHotspot, WifiLink.Band band) {
+            this.on = on;
+            this.onNetwork = onNetwork;
+            this.answers = answers;
+            this.viaHotspot = viaHotspot;
+            this.band = band;
+        }
+    }
+
     public CloneLinkRows(View root, LifecycleOwner owner) {
         this.root = root;
         wifiIcon = root.findViewById(R.id.k2go_link_wifi_icon);
@@ -68,14 +96,18 @@ public final class CloneLinkRows {
         usbIcon = root.findViewById(R.id.k2go_link_usb_icon);
         usbDetail = root.findViewById(R.id.k2go_link_usb_detail);
         usbBadge = root.findViewById(R.id.k2go_link_usb_badge);
-        CableSession.get().state().observe(owner, this::showCable);
+        CableSession.get().state().observe(owner, s -> {
+            boolean wasLinked = cableLinked();
+            cable = s;
+            showCable();
+            // The Wi-Fi row depends on whether the cable can carry the copy; the state repeats every second.
+            if (cableLinked() != wasLinked) showWifi();
+        });
     }
 
     public void setVisible(boolean visible) {
         root.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
-
-    private Boolean peerWifi;   // sender: the receiver's verdict over the cable, null when unknown
 
     /** Sender: the receiver's Wi-Fi verdict arrived over the cable. */
     public void showPeerWifi(Boolean reaches, boolean hotspotMode, LocalHotspotManager.State hs) {
@@ -86,42 +118,22 @@ public final class CloneLinkRows {
     /** Sender: the Wi-Fi row shows its own hotspot, or that it shares over the Wi-Fi network. */
     public void showSender(boolean hotspotMode, LocalHotspotManager.State hs) {
         stopChecks();
-        boolean on = hs != null && hs.phase == LocalHotspotManager.Phase.ON;
-        Context c = root.getContext();
-        wifiTitle.setText(hotspotMode ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
-        if (Boolean.FALSE.equals(peerWifi)) {
-            // The receiver said over the cable that it cannot reach this phone on Wi-Fi.
-            wifiDetail.setText(R.string.k2go_clone_link_wifi_peer_unreachable);
-            paint(wifiIcon, wifiBadge, WifiLink.Level.WARN, c.getString(R.string.k2go_clone_link_badge_not_ready));
-            return;
-        }
-        if (!hotspotMode) {
-            // Over a Wi-Fi network: show its band; the receiver confirms that it reaches us.
-            WifiLink.Band band = WifiLink.band(ownFrequency(c));
-            wifiDetail.setText(R.string.k2go_clone_link_wifi_network);
-            paint(wifiIcon, wifiBadge, band == WifiLink.Band.GHZ_5 ? WifiLink.Level.OK : WifiLink.Level.WARN,
-                    bandText(c, band));
-        } else if (on) {
-            paint(wifiIcon, wifiBadge, WifiLink.Level.OK, c.getString(R.string.k2go_clone_link_badge_linked));
-            wifiDetail.setText(c.getString(R.string.k2go_clone_link_hotspot_on, hs.clients));
-        } else {
-            paint(wifiIcon, wifiBadge, WifiLink.Level.WARN, c.getString(R.string.k2go_clone_link_badge_not_ready));
-            wifiDetail.setText(R.string.k2go_clone_link_hotspot_off);
-        }
+        senderSide = true;
+        this.hotspotMode = hotspotMode;
+        hotspot = hs;
+        showWifi();
     }
 
     /**
-     * Receiver: checks the hotspot every few seconds until stopChecks(). With {@code probeSender}
+     * Receiver: checks the Wi-Fi every few seconds until stopChecks(). With {@code probeSender}
      * false (during a transfer) it does not connect to the sender's daemon, which allows only a few
      * connections; it keeps the last answer and still follows Wi-Fi on/off and the band.
      */
     public void startChecks(int senderRsyncPort, boolean probeSender) {
+        senderSide = false;
         this.probeSender = probeSender;
         main.removeCallbacks(check);   // re-check now: the pairing or the transfer state changed
-        if (checkPort == senderRsyncPort) { main.post(check); return; }
-        if (checkPort == senderRsyncPort) return;
         checkPort = senderRsyncPort;
-        main.removeCallbacks(check);
         main.post(check);
     }
 
@@ -151,21 +163,20 @@ public final class CloneLinkRows {
             WifiManager wm = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
             boolean on = wm != null && wm.isWifiEnabled();
             int freq = on ? wm.getConnectionInfo().getFrequency() : -1;
-            boolean probe = probeSender || probeOnce;
+            boolean probeNow = probeSender || probeOnce;
             probeOnce = false;
             String host = senderHost;
-            String gw = gateway(wm.getDhcpInfo().gateway);
+            String gw = on ? gateway(wm.getDhcpInfo().gateway) : null;
             boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
-            boolean answers = on && (probe ? senderAnswers(host != null ? host : gateway(wm.getDhcpInfo().gateway), port)
-                    : lastAnswers);
+            boolean answers = on && (probeNow ? senderAnswers(host != null ? host : gw, port) : lastAnswers);
             lastAnswers = answers;
-            if (probe) CableSession.get().reportWifi(answers);   // the sender shows the same verdict
-            WifiLink.Band band = WifiLink.band(freq);
+            if (probeNow) CableSession.get().reportWifi(answers);   // the sender shows the same verdict
+            Probe p = new Probe(on, gw != null, answers, viaHotspot, WifiLink.band(freq));
             main.post(() -> {
                 inFlight = false;
                 if (checkPort != port) return;
-                wifiTitle.setText(viaHotspot ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
-                showWifi(WifiLink.judge(on, answers, band), on, answers, band);
+                probe = p;
+                showWifi();
                 main.postDelayed(check, CHECK_MS);
             });
         });
@@ -181,11 +192,6 @@ public final class CloneLinkRows {
     private static int ownFrequency(Context c) {
         WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         return wm != null && wm.isWifiEnabled() ? wm.getConnectionInfo().getFrequency() : -1;
-    }
-
-    private static String bandText(Context c, WifiLink.Band band) {
-        return band == WifiLink.Band.GHZ_5 ? c.getString(R.string.k2go_clone_link_band_5)
-                : band == WifiLink.Band.GHZ_2_4 ? c.getString(R.string.k2go_clone_link_band_24) : "";
     }
 
     /** Same unit as the transfer speed under the progress bar (MB/s, 10^6). */
@@ -204,77 +210,110 @@ public final class CloneLinkRows {
         }
     }
 
-    private volatile long wifiRate = -1;   // bytes/s on Wi-Fi during a pull, -1 when no pull runs
-
     /**
-     * During a pull: what each path carries. A Wi-Fi path that moves data is proof that the sender
-     * answers on Wi-Fi, so the row shows it even while the daemon probe is paused.
+     * Receiver, during a pull: what each path carries. A Wi-Fi path that moves data is proof that
+     * the sender answers on Wi-Fi, so the row shows it even while the daemon probe is paused.
      */
     public void showRates(long[] rates) {
         wifiRate = rates == null ? -1 : rates[0];
-        if (rates != null && rates[0] > 0) {
-            lastAnswers = true;
-            Context c = root.getContext();
-            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active,
-                    rate(rates[0])));
-        }
+        if (rates != null && rates[0] > 0) lastAnswers = true;
+        if (!senderSide) showWifi();
     }
 
-    private void showWifi(WifiLink.Level level, boolean on, boolean answers, WifiLink.Band band) {
+    private boolean cableLinked() {
+        return cable != null && cable.link == CableSession.Link.LINKED;
+    }
+
+    private void showWifi() {
         Context c = root.getContext();
-        String bandText = band == WifiLink.Band.GHZ_5 ? c.getString(R.string.k2go_clone_link_band_5)
-                : band == WifiLink.Band.GHZ_2_4 ? c.getString(R.string.k2go_clone_link_band_24) : null;
-        if (!on) {
-            wifiDetail.setText(R.string.k2go_clone_link_wifi_off);
-            paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_off));
-        } else if (!answers) {
-            // Paired over a Wi-Fi network: say "not found", not "not on its hotspot".
-            wifiDetail.setText(senderHost != null ? R.string.k2go_clone_link_wifi_not_found
-                    : R.string.k2go_clone_link_wifi_not_joined);
-            paint(wifiIcon, wifiBadge, level, c.getString(R.string.k2go_clone_link_badge_not_ready));
-        } else if (wifiRate > 0) {
-            wifiDetail.setText(c.getString(R.string.k2go_clone_link_usb_active, rate(wifiRate)));
-            paint(wifiIcon, wifiBadge, level, bandText(c, band));
-        } else {
-            wifiDetail.setText(band != WifiLink.Band.GHZ_5 ? R.string.k2go_clone_link_wifi_slow
-                    : senderHost != null ? R.string.k2go_clone_link_wifi_found_network
-                    : R.string.k2go_clone_link_wifi_found);
-            paint(wifiIcon, wifiBadge, level, bandText != null ? bandText : "");
+        if (senderSide) {
+            WifiLink.Band band = hotspotMode ? WifiLink.Band.NONE : WifiLink.band(ownFrequency(c));
+            int clients = hotspot != null ? hotspot.clients : -1;
+            LinkRule.Row row = LinkRule.send(hotspotMode, hotspotPhase(hotspot), clients, band, peerWifi, cableLinked());
+            wifiTitle.setText(hotspotMode ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
+            paint(wifiIcon, wifiDetail, wifiBadge, row, band, clients, 0);
+            return;
         }
+        Probe p = probe;
+        if (p == null) return;   // the first check has not answered yet
+        boolean paired = senderHost != null;
+        boolean carrying = wifiRate > 0;
+        LinkRule.Row row = LinkRule.receive(p.on, p.onNetwork, paired, p.answers || carrying, p.viaHotspot,
+                carrying, p.band, cableLinked());
+        boolean hotspotTitle = p.viaHotspot && (paired || p.answers);
+        wifiTitle.setText(hotspotTitle ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
+        paint(wifiIcon, wifiDetail, wifiBadge, row, p.band, 0, wifiRate);
     }
 
-    private void showCable(CableSession.State s) {
+    private void showCable() {
+        CableSession.State s = cable;
         if (s == null) return;
+        LinkRule.Row row = LinkRule.cable(s.link == CableSession.Link.LINKED, s.link == CableSession.Link.WAITING,
+                s.bytesPerSec > 0, s.done);
+        paint(usbIcon, usbDetail, usbBadge, row, WifiLink.Band.NONE, 0, s.bytesPerSec);
+    }
+
+    private static LinkRule.Hotspot hotspotPhase(LocalHotspotManager.State hs) {
+        if (hs == null) return LinkRule.Hotspot.OFF;
+        if (hs.phase == LocalHotspotManager.Phase.ON) return LinkRule.Hotspot.ON;
+        if (hs.phase == LocalHotspotManager.Phase.STARTING) return LinkRule.Hotspot.STARTING;
+        return LinkRule.Hotspot.OFF;
+    }
+
+    private void paint(ImageView icon, TextView detail, TextView badge, LinkRule.Row row,
+                       WifiLink.Band band, int clients, long bytesPerSec) {
         Context c = root.getContext();
-        switch (s.link) {
-            case LINKED:
-                usbDetail.setText(s.bytesPerSec > 0
-                        ? c.getString(R.string.k2go_clone_link_usb_active, rate(s.bytesPerSec))
-                        : c.getString(R.string.k2go_clone_link_usb_linked));
-                paint(usbIcon, usbBadge, WifiLink.Level.OK, c.getString(R.string.k2go_clone_link_badge_linked));
-                break;
-            case WAITING:
-                usbDetail.setText(R.string.k2go_clone_link_usb_waiting);
-                paint(usbIcon, usbBadge, WifiLink.Level.WARN, c.getString(R.string.k2go_clone_link_badge_waiting));
-                break;
-            default:
-                usbDetail.setText(R.string.k2go_clone_link_usb_none);
-                paintNeutral(usbIcon, usbBadge, c.getString(R.string.k2go_clone_link_badge_optional));
+        int color = row.tone == LinkRule.Tone.OK ? ContextCompat.getColor(c, R.color.status_success)
+                : row.tone == LinkRule.Tone.ACTION ? ContextCompat.getColor(c, R.color.status_warning)
+                : MaterialColors.getColor(root, com.google.android.material.R.attr.colorOnSurfaceVariant);
+        icon.setColorFilter(color);
+        badge.setTextColor(color);
+        badge.setText(badgeText(c, row.badge, band));
+        detail.setText(row.text == LinkRule.Text.CARRYING ? c.getString(R.string.k2go_clone_link_usb_active, rate(bytesPerSec))
+                : row.text == LinkRule.Text.HOTSPOT_JOINED ? c.getString(R.string.k2go_clone_link_hotspot_on, clients)
+                : c.getString(textRes(row.text)));
+    }
+
+    private static String badgeText(Context c, LinkRule.Badge b, WifiLink.Band band) {
+        switch (b) {
+            case BAND:
+                return band == WifiLink.Band.GHZ_5 ? c.getString(R.string.k2go_clone_link_band_5)
+                        : band == WifiLink.Band.GHZ_2_4 ? c.getString(R.string.k2go_clone_link_band_24) : "";
+            case OFF: return c.getString(R.string.k2go_clone_link_badge_off);
+            case NOT_READY: return c.getString(R.string.k2go_clone_link_badge_not_ready);
+            case NOT_USED: return c.getString(R.string.k2go_clone_link_badge_not_used);
+            case STARTING: return c.getString(R.string.k2go_clone_link_badge_starting);
+            case READY: return c.getString(R.string.k2go_state_ready);
+            case LINKED: return c.getString(R.string.k2go_clone_link_badge_linked);
+            case WAITING: return c.getString(R.string.k2go_clone_link_badge_waiting);
+            case OPTIONAL: return c.getString(R.string.k2go_clone_link_badge_optional);
+            case DONE: return c.getString(R.string.k2go_done);
+            default: return "";
         }
     }
 
-    private void paint(ImageView icon, TextView badge, WifiLink.Level level, String text) {
-        int color = ContextCompat.getColor(root.getContext(), level == WifiLink.Level.OK ? R.color.status_success
-                : level == WifiLink.Level.WARN ? R.color.status_warning : R.color.status_danger);
-        icon.setColorFilter(color);
-        badge.setTextColor(color);
-        badge.setText(text);
-    }
-
-    private void paintNeutral(ImageView icon, TextView badge, String text) {
-        int color = MaterialColors.getColor(root, com.google.android.material.R.attr.colorOnSurfaceVariant);
-        icon.setColorFilter(color);
-        badge.setTextColor(color);
-        badge.setText(text);
+    private static int textRes(LinkRule.Text t) {
+        switch (t) {
+            case WIFI_OFF: return R.string.k2go_clone_link_wifi_off_action;
+            case NO_NETWORK: return R.string.k2go_clone_link_no_network;
+            case CABLE_ONLY: return R.string.k2go_clone_link_cable_only;
+            case NOT_ON_NETWORK: return R.string.k2go_clone_link_not_on_network;
+            case WAITING_CODE: return R.string.k2go_clone_link_waiting_code;
+            case FOUND_HOTSPOT: return R.string.k2go_clone_link_wifi_found;
+            case FOUND_NETWORK: return R.string.k2go_clone_link_wifi_found_network;
+            case SLOW_BAND: return R.string.k2go_clone_link_wifi_slow;
+            case NOT_FOUND: return R.string.k2go_clone_link_not_found_action;
+            case HOTSPOT_STARTING: return R.string.k2go_clone_link_hotspot_starting;
+            case HOTSPOT_OFF: return R.string.k2go_clone_link_hotspot_off;
+            case HOTSPOT_ON: return R.string.k2go_clone_link_hotspot_ready;
+            case HOTSPOT_WAITING: return R.string.k2go_clone_link_hotspot_waiting;
+            case NETWORK_WAITING: return R.string.k2go_clone_link_network_waiting;
+            case NETWORK_SHARING: return R.string.k2go_clone_link_wifi_network;
+            case CABLE_NONE: return R.string.k2go_clone_link_usb_none;
+            case CABLE_WAITING: return R.string.k2go_clone_link_usb_waiting;
+            case CABLE_LINKED: return R.string.k2go_clone_link_usb_linked;
+            case CABLE_DONE: return R.string.k2go_clone_link_usb_done;
+            default: throw new IllegalArgumentException(t.name());   // CARRYING, HOTSPOT_JOINED take an argument
+        }
     }
 }

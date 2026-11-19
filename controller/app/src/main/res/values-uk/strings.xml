@@ -1615,8 +1615,6 @@
     <string name="k2go_clone_cable_err_check">Остання перевірка копії не вдалася. Почніть передавання знову.</string>
     <string name="k2go_clone_link_wifi">Точка доступу Wi-Fi</string>
     <string name="k2go_clone_link_usb">USB-кабель</string>
-    <string name="k2go_clone_link_wifi_off">Wi-Fi вимкнено</string>
-    <string name="k2go_clone_link_wifi_not_joined">Не під\'єднано до точки доступу телефона-відправника</string>
     <string name="k2go_clone_link_wifi_found">Відправника знайдено в його точці доступу</string>
     <string name="k2go_clone_link_wifi_slow">Відправника знайдено. Повільний діапазон.</string>
     <string name="k2go_clone_link_hotspot_on">Точку доступу ввімкнено. Під\'єднано телефонів: %1$d</string>
@@ -1635,7 +1633,19 @@
     <string name="k2go_clone_link_band_24">2,4 GHz</string>
     <string name="k2go_clone_rcv_scan_or_cable">Тепер відскануйте код передавання іншого телефона або підключіть USB-кабель.</string>
     <string name="k2go_clone_link_wifi_found_network">Відправника знайдено в цій мережі Wi-Fi</string>
-    <string name="k2go_clone_link_wifi_not_found">Телефон-відправник не знайдено в цій мережі Wi-Fi</string>
     <string name="k2go_clone_cable_err_sender_stopped">Телефон-відправник припинив спільний доступ.</string>
-    <string name="k2go_clone_link_wifi_peer_unreachable">Інший телефон не може зв\'язатися з цим телефоном через Wi-Fi</string>
+    <string name="k2go_clone_link_wifi_off_action">Wi-Fi вимкнено. Увімкніть його або під\'єднайте USB-кабель.</string>
+    <string name="k2go_clone_link_no_network">Немає з\'єднання з мережею Wi-Fi</string>
+    <string name="k2go_clone_link_cable_only">Не використовується. Копіювання йде через USB-кабель.</string>
+    <string name="k2go_clone_link_not_on_network">Не використовується. Інший телефон не в цій мережі Wi-Fi.</string>
+    <string name="k2go_clone_link_waiting_code">Під\'єднано до Wi-Fi. Інший телефон перевіряється після сканування його коду.</string>
+    <string name="k2go_clone_link_not_found_action">Телефон-відправник не знайдено в цій мережі Wi-Fi. Приєднайтеся до його мережі або під\'єднайте USB-кабель.</string>
+    <string name="k2go_clone_link_hotspot_starting">Запуск точки доступу</string>
+    <string name="k2go_clone_link_hotspot_ready">Точку доступу ввімкнено</string>
+    <string name="k2go_clone_link_hotspot_waiting">Точку доступу ввімкнено. Очікування іншого телефона.</string>
+    <string name="k2go_clone_link_network_waiting">Спільний доступ через цю мережу Wi-Fi. Очікування іншого телефона.</string>
+    <string name="k2go_clone_link_usb_done">Копіювання завершено. Можна від\'єднати USB-кабель.</string>
+    <string name="k2go_clone_link_badge_not_used">Не використовується</string>
+    <string name="k2go_clone_link_badge_starting">Запуск</string>
+    <string name="k2go_clone_unplug_cable">Можна від\'єднати USB-кабель.</string>
 </resources>
