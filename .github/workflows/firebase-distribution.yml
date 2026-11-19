@@ -1,8 +1,8 @@
 name: "App: Firebase distribution"
 
 # ADFA-4810: build & distribute on a push to ANY branch (not just main), so anyone gets a
-# Firebase build of their work without waiting for a merge. Tags (v*) are handled by
-# android-release-build.yml (production signing -> GitHub Release + R2) and are excluded here.
+# Firebase build of their work without waiting for a merge. Releases (v* tags) come from
+# play-release.yml (production signing -> GitHub Release + R2) and are excluded here.
 # One signing key for everything on Firebase: the production keystore (same signature as the
 # main tester build), so testers never have to uninstall between builds.
 on:
