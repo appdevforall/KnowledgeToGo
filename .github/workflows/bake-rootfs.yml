@@ -1,4 +1,4 @@
-name: "RootFS: 2. bake + publish"
+name: "RootFS: 2. bake + upload"
 
 # ADFA-5334. Builds the rootfs images with tools/rootfs-builder/build-iiab-rootfs.sh
 # (native proot on arm64 runners) and publishes them to Cloudflare R2 (k2go-rootfs).
