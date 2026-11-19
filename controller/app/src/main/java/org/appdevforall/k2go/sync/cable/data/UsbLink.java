@@ -22,6 +22,8 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
 
+import org.appdevforall.k2go.sync.cable.domain.UsbCandidate;
+
 import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,6 +56,13 @@ public abstract class UsbLink implements Closeable {
     public static boolean isAccessoryMode(UsbDevice d) {
         return d.getVendorId() == GOOGLE_VID
                 && d.getProductId() >= AOA_PID_FIRST && d.getProductId() <= AOA_PID_LAST;
+    }
+
+    /** The device can be the other phone (UsbCandidate): not a hub, drive or keyboard. No permission needed. */
+    public static boolean mayBePhone(UsbDevice d) {
+        int[] classes = new int[d.getInterfaceCount()];
+        for (int i = 0; i < classes.length; i++) classes[i] = d.getInterface(i).getInterfaceClass();
+        return UsbCandidate.canBePhone(isAccessoryMode(d), classes);
     }
 
     public static boolean isOurAccessory(UsbAccessory a) {

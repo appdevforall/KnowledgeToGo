@@ -20,10 +20,18 @@ public class UsbCandidateTest {
     }
 
     @Test
+    public void phoneInUsbTetheringModeIsACandidate() {
+        assertTrue(UsbCandidate.canBePhone(false, new int[]{2, 10}));      // NCM
+        assertTrue(UsbCandidate.canBePhone(false, new int[]{0xE0, 10}));   // RNDIS
+        assertTrue(UsbCandidate.canBePhone(false, new int[]{0xEF, 10}));   // RNDIS, misc class
+    }
+
+    @Test
     public void hubDriveKeyboardAndAudioAreNot() {
         assertFalse(UsbCandidate.canBePhone(false, new int[]{9}));
         assertFalse(UsbCandidate.canBePhone(false, new int[]{8}));
         assertFalse(UsbCandidate.canBePhone(false, new int[]{3, 3}));
         assertFalse(UsbCandidate.canBePhone(false, new int[]{1, 1, 3}));
+        assertFalse(UsbCandidate.canBePhone(false, new int[]{0x0E, 0x0E}));   // webcam
     }
 }

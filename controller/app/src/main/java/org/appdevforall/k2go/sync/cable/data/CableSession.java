@@ -35,7 +35,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import org.appdevforall.k2go.sync.cable.domain.LinkRule.Cable;
-import org.appdevforall.k2go.sync.cable.domain.UsbCandidate;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -339,8 +338,8 @@ public final class CableSession {
             }
         }
         for (UsbDevice d : um.getDeviceList().values()) {
+            if (!UsbLink.mayBePhone(d)) continue;   // hub, drive, keyboard
             boolean aoa = UsbLink.isAccessoryMode(d);
-            if (!UsbCandidate.canBePhone(aoa, interfaceClasses(d))) continue;   // hub, drive, keyboard
             String key = "dev:" + d.getDeviceName();
             if (!um.hasPermission(d)) { askPermission(um, d, key, aoa); return; }
             if (aoa) {
@@ -358,12 +357,6 @@ public final class CableSession {
         if (state.getValue() != null && state.getValue().link != Cable.NONE) {
             post(Cable.NONE, 0);
         }
-    }
-
-    private static int[] interfaceClasses(UsbDevice d) {
-        int[] c = new int[d.getInterfaceCount()];
-        for (int i = 0; i < c.length; i++) c[i] = d.getInterface(i).getInterfaceClass();
-        return c;
     }
 
     /**
