@@ -1650,7 +1650,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi je vypnutá. Zapněte ji, nebo připojte kabel USB.</string>
     <string name="k2go_clone_link_no_network">Nepřipojeno k síti Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Nepoužívá se. Kopie jde přes kabel USB.</string>
-    <string name="k2go_clone_link_not_on_network">Nepoužívá se. Druhý telefon není v této síti Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Nepoužívá se. Oba telefony se v této síti Wi-Fi navzájem nedosáhnou.</string>
+    <string name="k2go_clone_link_not_checked">Ověřuje se, zda je druhý telefon v této síti Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Druhý telefon se k tomuto telefonu připojil přes Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Druhý telefon dokončil kopírování přes Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Připojeno k Wi-Fi. Druhý telefon se ověří po naskenování jeho kódu.</string>
     <string name="k2go_clone_link_not_found_action">Odesílající telefon nebyl v této síti Wi-Fi nalezen. Připojte se k jeho síti, nebo připojte kabel USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Spouštění hotspotu</string>

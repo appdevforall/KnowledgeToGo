@@ -1663,7 +1663,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi söndürülüb. Onu yandırın və ya USB kabeli qoşun.</string>
     <string name="k2go_clone_link_no_network">Wi-Fi şəbəkəsinə qoşulmayıb</string>
     <string name="k2go_clone_link_cable_only">İstifadə olunmur. Kopyalama USB kabeli ilə gedir.</string>
-    <string name="k2go_clone_link_not_on_network">İstifadə olunmur. Digər telefon bu Wi-Fi şəbəkəsində deyil.</string>
+    <string name="k2go_clone_link_not_on_network">İstifadə olunmur. İki telefon bu Wi-Fi şəbəkəsində bir-birinə çata bilmir.</string>
+    <string name="k2go_clone_link_not_checked">Digər telefonun bu Wi-Fi şəbəkəsində olub-olmadığı yoxlanılır.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Digər telefon Wi-Fi üzərindən bu telefona qoşuldu.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Digər telefon Wi-Fi üzərindən kopyalamanı bitirdi.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi-a qoşulub. Digər telefon onun kodunu skan etdikdən sonra yoxlanılır.</string>
     <string name="k2go_clone_link_not_found_action">Göndərən telefon bu Wi-Fi şəbəkəsində tapılmadı. Onun şəbəkəsinə qoşulun və ya USB kabeli qoşun.</string>
     <string name="k2go_clone_link_hotspot_starting">Hotspot işə salınır</string>

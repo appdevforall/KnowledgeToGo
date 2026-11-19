@@ -1663,7 +1663,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi imezimwa. Iwashe, au unganisha kebo ya USB.</string>
     <string name="k2go_clone_link_no_network">Haijaunganishwa kwenye mtandao wa Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Haitumiki. Nakala inapita kwenye kebo ya USB.</string>
-    <string name="k2go_clone_link_not_on_network">Haitumiki. Simu nyingine haiko kwenye mtandao huu wa Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Haitumiki. Simu hizi mbili hazifikiani kwenye mtandao huu wa Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">Inakagua kama simu nyingine iko kwenye mtandao huu wa Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Simu nyingine imefikia simu hii kupitia Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Simu nyingine imemaliza kunakili kupitia Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Imeunganishwa kwenye Wi-Fi. Simu nyingine inakaguliwa baada ya kuchanganua msimbo wake.</string>
     <string name="k2go_clone_link_not_found_action">Simu inayotuma haikupatikana kwenye mtandao huu wa Wi-Fi. Jiunge na mtandao wake, au unganisha kebo ya USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Inawasha hotspot</string>

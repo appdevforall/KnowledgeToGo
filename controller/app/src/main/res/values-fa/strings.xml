@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi خاموش است. آن را روشن کنید یا کابل USB وصل کنید.</string>
     <string name="k2go_clone_link_no_network">به شبکه Wi-Fi متصل نیست</string>
     <string name="k2go_clone_link_cable_only">استفاده نمی‌شود. کپی از طریق کابل USB انجام می‌شود.</string>
-    <string name="k2go_clone_link_not_on_network">استفاده نمی‌شود. گوشی دیگر در این شبکه Wi-Fi نیست.</string>
+    <string name="k2go_clone_link_not_on_network">استفاده نمی‌شود. دو گوشی در این شبکه Wi-Fi به هم دسترسی ندارند.</string>
+    <string name="k2go_clone_link_not_checked">در حال بررسی اینکه گوشی دیگر در این شبکه Wi-Fi است یا نه.</string>
+    <string name="k2go_clone_link_peer_on_wifi">گوشی دیگر از طریق Wi-Fi به این گوشی متصل شد.</string>
+    <string name="k2go_clone_link_peer_done_wifi">گوشی دیگر کپی از طریق Wi-Fi را تمام کرد.</string>
     <string name="k2go_clone_link_waiting_code">به Wi-Fi متصل است. گوشی دیگر پس از اسکن کد آن بررسی می‌شود.</string>
     <string name="k2go_clone_link_not_found_action">گوشی فرستنده در این شبکه Wi-Fi پیدا نشد. به شبکه آن بپیوندید یا کابل USB وصل کنید.</string>
     <string name="k2go_clone_link_hotspot_starting">در حال روشن کردن هات‌اسپات</string>

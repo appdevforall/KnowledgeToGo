@@ -1650,7 +1650,10 @@
     <string name="k2go_clone_link_wifi_off_action">Το Wi-Fi είναι απενεργοποιημένο. Ενεργοποιήστε το ή συνδέστε καλώδιο USB.</string>
     <string name="k2go_clone_link_no_network">Δεν υπάρχει σύνδεση σε δίκτυο Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Δεν χρησιμοποιείται. Η αντιγραφή γίνεται μέσω του καλωδίου USB.</string>
-    <string name="k2go_clone_link_not_on_network">Δεν χρησιμοποιείται. Το άλλο τηλέφωνο δεν είναι σε αυτό το δίκτυο Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Δεν χρησιμοποιείται. Τα δύο τηλέφωνα δεν επικοινωνούν μεταξύ τους σε αυτό το δίκτυο Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">Έλεγχος αν το άλλο τηλέφωνο είναι σε αυτό το δίκτυο Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Το άλλο τηλέφωνο συνδέθηκε με αυτό το τηλέφωνο μέσω Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Το άλλο τηλέφωνο ολοκλήρωσε την αντιγραφή μέσω Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Συνδεδεμένο στο Wi-Fi. Το άλλο τηλέφωνο ελέγχεται αφού σαρώσετε τον κωδικό του.</string>
     <string name="k2go_clone_link_not_found_action">Το τηλέφωνο αποστολής δεν βρέθηκε σε αυτό το δίκτυο Wi-Fi. Συνδεθείτε στο δίκτυό του ή συνδέστε καλώδιο USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Εκκίνηση σημείου πρόσβασης</string>

@@ -10,10 +10,5 @@
   strings.xml.
 -->
 <resources>
-    <!-- K2GO-584: Wi-Fi row, the sender's address is not checked yet. -->
-    <string name="k2go_clone_link_not_checked" translatable="false">Checking if the other phone is on this Wi-Fi network.</string>
-    <!-- K2GO-584: sender Wi-Fi row, from its own rsync daemon log. -->
-    <string name="k2go_clone_link_peer_on_wifi" translatable="false">The other phone reached this phone over Wi-Fi.</string>
-    <string name="k2go_clone_link_peer_done_wifi" translatable="false">The other phone finished copying over Wi-Fi.</string>
 
 </resources>

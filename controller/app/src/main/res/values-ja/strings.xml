@@ -1644,7 +1644,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi がオフです。オンにするか、USB ケーブルを接続してください。</string>
     <string name="k2go_clone_link_no_network">Wi-Fi ネットワークに接続されていません</string>
     <string name="k2go_clone_link_cable_only">未使用。コピーは USB ケーブルで行います。</string>
-    <string name="k2go_clone_link_not_on_network">未使用。もう一方のスマホはこの Wi-Fi ネットワークにありません。</string>
+    <string name="k2go_clone_link_not_on_network">未使用。この Wi-Fi ネットワークでは 2 台のスマホが互いに接続できません。</string>
+    <string name="k2go_clone_link_not_checked">もう一方のスマホがこの Wi-Fi ネットワークにあるか確認しています。</string>
+    <string name="k2go_clone_link_peer_on_wifi">もう一方のスマホが Wi-Fi でこのスマホに接続しました。</string>
+    <string name="k2go_clone_link_peer_done_wifi">もう一方のスマホが Wi-Fi でのコピーを完了しました。</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi に接続済み。もう一方のスマホはコードをスキャンした後に確認します。</string>
     <string name="k2go_clone_link_not_found_action">この Wi-Fi ネットワークで送信側のスマホが見つかりません。そのネットワークに参加するか、USB ケーブルを接続してください。</string>
     <string name="k2go_clone_link_hotspot_starting">ホットスポットを開始中</string>

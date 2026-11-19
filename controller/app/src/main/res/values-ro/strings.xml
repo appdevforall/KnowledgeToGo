@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi este oprit. Pornește-l sau conectează un cablu USB.</string>
     <string name="k2go_clone_link_no_network">Nu este conectat la o rețea Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Nefolosit. Copierea se face prin cablul USB.</string>
-    <string name="k2go_clone_link_not_on_network">Nefolosit. Celălalt telefon nu este în această rețea Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Nefolosit. Cele două telefoane nu se pot accesa reciproc în această rețea Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">Se verifică dacă celălalt telefon este în această rețea Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Celălalt telefon s-a conectat la acest telefon prin Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Celălalt telefon a terminat copierea prin Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Conectat la Wi-Fi. Celălalt telefon este verificat după ce îi scanezi codul.</string>
     <string name="k2go_clone_link_not_found_action">Telefonul expeditor nu a fost găsit în această rețea Wi-Fi. Conectează-te la rețeaua lui sau conectează un cablu USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Se pornește hotspotul</string>

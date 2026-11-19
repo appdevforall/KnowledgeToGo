@@ -1644,7 +1644,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi 已关闭。请打开 Wi-Fi，或连接 USB 数据线。</string>
     <string name="k2go_clone_link_no_network">未连接到 Wi-Fi 网络</string>
     <string name="k2go_clone_link_cable_only">未使用。复制通过 USB 数据线进行。</string>
-    <string name="k2go_clone_link_not_on_network">未使用。另一部手机不在此 Wi-Fi 网络上。</string>
+    <string name="k2go_clone_link_not_on_network">未使用。两部手机在此 Wi-Fi 网络上无法互相连接。</string>
+    <string name="k2go_clone_link_not_checked">正在检查另一部手机是否在此 Wi-Fi 网络上。</string>
+    <string name="k2go_clone_link_peer_on_wifi">另一部手机已通过 Wi-Fi 连接到此手机。</string>
+    <string name="k2go_clone_link_peer_done_wifi">另一部手机已通过 Wi-Fi 完成复制。</string>
     <string name="k2go_clone_link_waiting_code">已连接 Wi-Fi。扫描另一部手机的代码后会检查它。</string>
     <string name="k2go_clone_link_not_found_action">未在此 Wi-Fi 网络上找到发送方手机。请加入它的网络，或连接 USB 数据线。</string>
     <string name="k2go_clone_link_hotspot_starting">正在开启热点</string>

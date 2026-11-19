@@ -1841,6 +1841,9 @@
     <string name="k2go_clone_link_no_network">Not connected to a Wi-Fi network</string>
     <string name="k2go_clone_link_cable_only">Not used. The copy uses the USB cable.</string>
     <string name="k2go_clone_link_not_on_network">Not used. The two phones do not reach each other on this Wi-Fi network.</string>
+    <string name="k2go_clone_link_not_checked">Checking if the other phone is on this Wi-Fi network.</string>
+    <string name="k2go_clone_link_peer_on_wifi">The other phone reached this phone over Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">The other phone finished copying over Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Connected to Wi-Fi. The other phone is checked after you scan its code.</string>
     <string name="k2go_clone_link_not_found_action">Sending phone not found on this Wi-Fi network. Join its network, or connect a USB cable.</string>
     <string name="k2go_clone_link_hotspot_starting">Starting the hotspot</string>

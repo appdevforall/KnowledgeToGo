@@ -1656,7 +1656,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi બંધ છે. તેને ચાલુ કરો, અથવા USB કેબલ જોડો.</string>
     <string name="k2go_clone_link_no_network">કોઈ Wi-Fi નેટવર્ક સાથે જોડાયેલ નથી</string>
     <string name="k2go_clone_link_cable_only">વપરાતું નથી. કૉપિ USB કેબલ દ્વારા થાય છે.</string>
-    <string name="k2go_clone_link_not_on_network">વપરાતું નથી. બીજો ફોન આ Wi-Fi નેટવર્ક પર નથી.</string>
+    <string name="k2go_clone_link_not_on_network">વપરાતું નથી. આ Wi-Fi નેટવર્ક પર બંને ફોન એકબીજા સુધી પહોંચતા નથી.</string>
+    <string name="k2go_clone_link_not_checked">બીજો ફોન આ Wi-Fi નેટવર્ક પર છે કે નહીં તે તપાસી રહ્યા છીએ.</string>
+    <string name="k2go_clone_link_peer_on_wifi">બીજો ફોન Wi-Fi દ્વારા આ ફોન સાથે જોડાયો.</string>
+    <string name="k2go_clone_link_peer_done_wifi">બીજા ફોને Wi-Fi દ્વારા કૉપિ કરવાનું પૂર્ણ કર્યું.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi સાથે જોડાયેલ. બીજા ફોનનો કોડ સ્કૅન કર્યા પછી તેની તપાસ થાય છે.</string>
     <string name="k2go_clone_link_not_found_action">મોકલનાર ફોન આ Wi-Fi નેટવર્ક પર મળ્યો નથી. તેના નેટવર્કમાં જોડાઓ, અથવા USB કેબલ જોડો.</string>
     <string name="k2go_clone_link_hotspot_starting">હૉટસ્પૉટ શરૂ થઈ રહ્યું છે</string>

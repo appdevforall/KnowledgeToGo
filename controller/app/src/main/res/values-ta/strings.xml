@@ -1663,7 +1663,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi முடக்கத்தில் உள்ளது. அதை இயக்கவும், அல்லது USB கேபிளை இணைக்கவும்.</string>
     <string name="k2go_clone_link_no_network">Wi-Fi நெட்வொர்க்குடன் இணைக்கப்படவில்லை</string>
     <string name="k2go_clone_link_cable_only">பயன்படுத்தப்படவில்லை. நகல் USB கேபிள் வழியாக நடக்கிறது.</string>
-    <string name="k2go_clone_link_not_on_network">பயன்படுத்தப்படவில்லை. மற்ற தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் இல்லை.</string>
+    <string name="k2go_clone_link_not_on_network">பயன்படுத்தப்படவில்லை. இந்த Wi-Fi நெட்வொர்க்கில் இரு தொலைபேசிகளும் ஒன்றையொன்று அணுக முடியவில்லை.</string>
+    <string name="k2go_clone_link_not_checked">மற்ற தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் உள்ளதா எனச் சரிபார்க்கிறது.</string>
+    <string name="k2go_clone_link_peer_on_wifi">மற்ற தொலைபேசி Wi-Fi வழியாக இந்தத் தொலைபேசியை அணுகியது.</string>
+    <string name="k2go_clone_link_peer_done_wifi">மற்ற தொலைபேசி Wi-Fi வழியாக நகலெடுப்பதை முடித்தது.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi உடன் இணைக்கப்பட்டது. மற்ற தொலைபேசியின் குறியீட்டை ஸ்கேன் செய்த பிறகு அது சரிபார்க்கப்படும்.</string>
     <string name="k2go_clone_link_not_found_action">அனுப்பும் தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் கண்டறியப்படவில்லை. அதன் நெட்வொர்க்கில் சேரவும், அல்லது USB கேபிளை இணைக்கவும்.</string>
     <string name="k2go_clone_link_hotspot_starting">ஹாட்ஸ்பாட் தொடங்குகிறது</string>

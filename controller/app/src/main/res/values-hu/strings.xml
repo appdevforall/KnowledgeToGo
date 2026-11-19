@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">A Wi-Fi ki van kapcsolva. Kapcsold be, vagy csatlakoztass USB-kábelt.</string>
     <string name="k2go_clone_link_no_network">Nincs Wi-Fi hálózathoz csatlakozva</string>
     <string name="k2go_clone_link_cable_only">Nincs használatban. A másolás az USB-kábelen megy.</string>
-    <string name="k2go_clone_link_not_on_network">Nincs használatban. A másik telefon nincs ezen a Wi-Fi hálózaton.</string>
+    <string name="k2go_clone_link_not_on_network">Nincs használatban. A két telefon nem éri el egymást ezen a Wi-Fi hálózaton.</string>
+    <string name="k2go_clone_link_not_checked">Annak ellenőrzése, hogy a másik telefon ezen a Wi-Fi hálózaton van-e.</string>
+    <string name="k2go_clone_link_peer_on_wifi">A másik telefon Wi-Fi-n keresztül elérte ezt a telefont.</string>
+    <string name="k2go_clone_link_peer_done_wifi">A másik telefon befejezte a másolást Wi-Fi-n keresztül.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi-hez csatlakozva. A másik telefon ellenőrzése a kódja beolvasása után történik.</string>
     <string name="k2go_clone_link_not_found_action">A küldő telefon nem található ezen a Wi-Fi hálózaton. Csatlakozz a hálózatához, vagy csatlakoztass USB-kábelt.</string>
     <string name="k2go_clone_link_hotspot_starting">Hotspot indítása</string>

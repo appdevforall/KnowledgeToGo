@@ -1722,7 +1722,10 @@
     <string name="k2go_clone_link_wifi_off_action">A Wi-Fi está desligada. Ligue-a ou ligue um cabo USB.</string>
     <string name="k2go_clone_link_no_network">Sem ligação a uma rede Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Não usado. A cópia passa pelo cabo USB.</string>
-    <string name="k2go_clone_link_not_on_network">Não usado. O outro telemóvel não está nesta rede Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Não usado. Os dois telemóveis não se alcançam nesta rede Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">A verificar se o outro telemóvel está nesta rede Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">O outro telemóvel ligou-se a este telemóvel por Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">O outro telemóvel terminou a cópia por Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Ligado à Wi-Fi. O outro telemóvel é verificado depois de ler o código dele.</string>
     <string name="k2go_clone_link_not_found_action">Telemóvel emissor não encontrado nesta rede Wi-Fi. Junte-se à rede dele ou ligue um cabo USB.</string>
     <string name="k2go_clone_link_hotspot_starting">A iniciar o hotspot</string>

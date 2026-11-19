@@ -1644,7 +1644,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi가 꺼져 있습니다. 켜거나 USB 케이블을 연결하세요.</string>
     <string name="k2go_clone_link_no_network">Wi-Fi 네트워크에 연결되지 않음</string>
     <string name="k2go_clone_link_cable_only">사용 안 함. 복사는 USB 케이블로 진행됩니다.</string>
-    <string name="k2go_clone_link_not_on_network">사용 안 함. 다른 휴대폰이 이 Wi-Fi 네트워크에 없습니다.</string>
+    <string name="k2go_clone_link_not_on_network">사용 안 함. 이 Wi-Fi 네트워크에서 두 휴대폰이 서로 연결되지 않습니다.</string>
+    <string name="k2go_clone_link_not_checked">다른 휴대폰이 이 Wi-Fi 네트워크에 있는지 확인하는 중입니다.</string>
+    <string name="k2go_clone_link_peer_on_wifi">다른 휴대폰이 Wi-Fi로 이 휴대폰에 연결했습니다.</string>
+    <string name="k2go_clone_link_peer_done_wifi">다른 휴대폰이 Wi-Fi로 복사를 완료했습니다.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi에 연결됨. 다른 휴대폰은 코드를 스캔한 후 확인합니다.</string>
     <string name="k2go_clone_link_not_found_action">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾을 수 없습니다. 해당 네트워크에 연결하거나 USB 케이블을 연결하세요.</string>
     <string name="k2go_clone_link_hotspot_starting">핫스팟 시작 중</string>

@@ -1719,7 +1719,10 @@
     <string name="k2go_clone_link_wifi_off_action">La Wi-Fi está desactivada. Actívala o conecta un cable USB.</string>
     <string name="k2go_clone_link_no_network">No conectado a una red Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">No se usa. La copia usa el cable USB.</string>
-    <string name="k2go_clone_link_not_on_network">No se usa. El otro teléfono no está en esta red Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">No se usa. Los dos teléfonos no se alcanzan entre sí en esta red Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">Comprobando si el otro teléfono está en esta red Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">El otro teléfono se conectó a este teléfono por Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">El otro teléfono terminó de copiar por Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Conectado a Wi-Fi. El otro teléfono se comprueba cuando escaneas su código.</string>
     <string name="k2go_clone_link_not_found_action">No se encontró el teléfono emisor en esta red Wi-Fi. Únete a su red o conecta un cable USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Activando el punto de acceso</string>

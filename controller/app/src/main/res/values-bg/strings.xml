@@ -1650,7 +1650,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi е изключен. Включете го или свържете USB кабел.</string>
     <string name="k2go_clone_link_no_network">Няма връзка с Wi-Fi мрежа</string>
     <string name="k2go_clone_link_cable_only">Не се използва. Копирането е през USB кабела.</string>
-    <string name="k2go_clone_link_not_on_network">Не се използва. Другият телефон не е в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_not_on_network">Не се използва. Двата телефона не се достигат един друг в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_not_checked">Проверява се дали другият телефон е в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Другият телефон се свърза с този телефон през Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Другият телефон завърши копирането през Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Свързан с Wi-Fi. Другият телефон се проверява, след като сканирате кода му.</string>
     <string name="k2go_clone_link_not_found_action">Изпращащият телефон не е открит в тази Wi-Fi мрежа. Присъединете се към мрежата му или свържете USB кабел.</string>
     <string name="k2go_clone_link_hotspot_starting">Точката за достъп се включва</string>

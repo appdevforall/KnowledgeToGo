@@ -1653,7 +1653,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi er av. Slå det på, eller koble til en USB-kabel.</string>
     <string name="k2go_clone_link_no_network">Ikke koblet til et Wi-Fi-nettverk</string>
     <string name="k2go_clone_link_cable_only">Ikke i bruk. Kopien går via USB-kabelen.</string>
-    <string name="k2go_clone_link_not_on_network">Ikke i bruk. Den andre telefonen er ikke på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_not_on_network">Ikke i bruk. De to telefonene når ikke hverandre på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_not_checked">Sjekker om den andre telefonen er på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Den andre telefonen nådde denne telefonen over Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Den andre telefonen er ferdig med å kopiere over Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Koblet til Wi-Fi. Den andre telefonen sjekkes etter at du skanner koden dens.</string>
     <string name="k2go_clone_link_not_found_action">Fant ikke telefonen som sender, på dette Wi-Fi-nettverket. Koble til nettverket dens, eller koble til en USB-kabel.</string>
     <string name="k2go_clone_link_hotspot_starting">Starter Wi-Fi-sonen</string>

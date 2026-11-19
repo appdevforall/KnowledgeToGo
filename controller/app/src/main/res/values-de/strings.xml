@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi ist aus. Schalte es ein oder schließe ein USB-Kabel an.</string>
     <string name="k2go_clone_link_no_network">Nicht mit einem Wi-Fi-Netzwerk verbunden</string>
     <string name="k2go_clone_link_cable_only">Nicht verwendet. Die Kopie läuft über das USB-Kabel.</string>
-    <string name="k2go_clone_link_not_on_network">Nicht verwendet. Das andere Telefon ist nicht in diesem Wi-Fi-Netzwerk.</string>
+    <string name="k2go_clone_link_not_on_network">Nicht verwendet. Die beiden Telefone erreichen sich in diesem Wi-Fi-Netzwerk nicht.</string>
+    <string name="k2go_clone_link_not_checked">Es wird geprüft, ob das andere Telefon in diesem Wi-Fi-Netzwerk ist.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Das andere Telefon hat dieses Telefon über Wi-Fi erreicht.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Das andere Telefon hat das Kopieren über Wi-Fi abgeschlossen.</string>
     <string name="k2go_clone_link_waiting_code">Mit Wi-Fi verbunden. Das andere Telefon wird geprüft, wenn du seinen Code scannst.</string>
     <string name="k2go_clone_link_not_found_action">Sendendes Telefon in diesem Wi-Fi-Netzwerk nicht gefunden. Tritt seinem Netzwerk bei oder schließe ein USB-Kabel an.</string>
     <string name="k2go_clone_link_hotspot_starting">Hotspot wird gestartet</string>

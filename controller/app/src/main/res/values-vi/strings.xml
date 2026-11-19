@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi đang tắt. Hãy bật Wi-Fi hoặc cắm cáp USB.</string>
     <string name="k2go_clone_link_no_network">Chưa kết nối mạng Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Không dùng. Bản sao đi qua cáp USB.</string>
-    <string name="k2go_clone_link_not_on_network">Không dùng. Điện thoại kia không ở trên mạng Wi-Fi này.</string>
+    <string name="k2go_clone_link_not_on_network">Không dùng. Hai điện thoại không kết nối được với nhau trên mạng Wi-Fi này.</string>
+    <string name="k2go_clone_link_not_checked">Đang kiểm tra xem điện thoại kia có ở trên mạng Wi-Fi này không.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Điện thoại kia đã kết nối với điện thoại này qua Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Điện thoại kia đã sao chép xong qua Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Đã kết nối Wi-Fi. Điện thoại kia được kiểm tra sau khi bạn quét mã của nó.</string>
     <string name="k2go_clone_link_not_found_action">Không tìm thấy điện thoại gửi trên mạng Wi-Fi này. Hãy tham gia mạng của nó hoặc cắm cáp USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Đang bật điểm phát sóng</string>

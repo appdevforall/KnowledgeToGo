@@ -1643,7 +1643,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi متوقف. شغّله أو وصّل كابل USB.</string>
     <string name="k2go_clone_link_no_network">غير متصل بشبكة Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">غير مستخدم. النسخ يتم عبر كابل USB.</string>
-    <string name="k2go_clone_link_not_on_network">غير مستخدم. الهاتف الآخر ليس على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_not_on_network">غير مستخدم. لا يصل الهاتفان أحدهما إلى الآخر على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_not_checked">جارٍ التحقق مما إذا كان الهاتف الآخر على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_peer_on_wifi">وصل الهاتف الآخر إلى هذا الهاتف عبر Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">أنهى الهاتف الآخر النسخ عبر Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">متصل بشبكة Wi-Fi. يتم التحقق من الهاتف الآخر بعد مسح رمزه.</string>
     <string name="k2go_clone_link_not_found_action">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه. انضم إلى شبكته أو وصّل كابل USB.</string>
     <string name="k2go_clone_link_hotspot_starting">جارٍ تشغيل نقطة الاتصال</string>

@@ -1650,7 +1650,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi mati. Nyalakan, atau hubungkan kabel USB.</string>
     <string name="k2go_clone_link_no_network">Tidak terhubung ke jaringan Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Tidak dipakai. Salinan melalui kabel USB.</string>
-    <string name="k2go_clone_link_not_on_network">Tidak dipakai. Ponsel lain tidak ada di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_not_on_network">Tidak dipakai. Kedua ponsel tidak dapat saling menjangkau di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_not_checked">Memeriksa apakah ponsel lain ada di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Ponsel lain terhubung ke ponsel ini lewat Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Ponsel lain selesai menyalin lewat Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Terhubung ke Wi-Fi. Ponsel lain diperiksa setelah Anda memindai kodenya.</string>
     <string name="k2go_clone_link_not_found_action">Ponsel pengirim tidak ditemukan di jaringan Wi-Fi ini. Gabung ke jaringannya, atau hubungkan kabel USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Memulai hotspot</string>

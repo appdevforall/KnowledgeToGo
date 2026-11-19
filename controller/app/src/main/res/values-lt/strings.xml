@@ -1660,7 +1660,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi išjungtas. Įjunkite jį arba prijunkite USB kabelį.</string>
     <string name="k2go_clone_link_no_network">Neprisijungta prie Wi-Fi tinklo</string>
     <string name="k2go_clone_link_cable_only">Nenaudojama. Kopijuojama per USB kabelį.</string>
-    <string name="k2go_clone_link_not_on_network">Nenaudojama. Kitas telefonas nėra šiame Wi-Fi tinkle.</string>
+    <string name="k2go_clone_link_not_on_network">Nenaudojama. Šiame Wi-Fi tinkle abu telefonai nepasiekia vienas kito.</string>
+    <string name="k2go_clone_link_not_checked">Tikrinama, ar kitas telefonas yra šiame Wi-Fi tinkle.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Kitas telefonas pasiekė šį telefoną per Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Kitas telefonas baigė kopijuoti per Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Prisijungta prie Wi-Fi. Kitas telefonas tikrinamas nuskaičius jo kodą.</string>
     <string name="k2go_clone_link_not_found_action">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas. Prisijunkite prie jo tinklo arba prijunkite USB kabelį.</string>
     <string name="k2go_clone_link_hotspot_starting">Paleidžiamas prieigos taškas</string>

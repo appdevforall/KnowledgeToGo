@@ -1653,7 +1653,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi jest wyłączone. Włącz je lub podłącz kabel USB.</string>
     <string name="k2go_clone_link_no_network">Brak połączenia z siecią Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Nieużywane. Kopia idzie przez kabel USB.</string>
-    <string name="k2go_clone_link_not_on_network">Nieużywane. Drugi telefon nie jest w tej sieci Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Nieużywane. Oba telefony nie łączą się ze sobą w tej sieci Wi-Fi.</string>
+    <string name="k2go_clone_link_not_checked">Sprawdzanie, czy drugi telefon jest w tej sieci Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Drugi telefon połączył się z tym telefonem przez Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Drugi telefon zakończył kopiowanie przez Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Połączono z Wi-Fi. Drugi telefon zostanie sprawdzony po zeskanowaniu jego kodu.</string>
     <string name="k2go_clone_link_not_found_action">Nie znaleziono telefonu wysyłającego w tej sieci Wi-Fi. Dołącz do jego sieci lub podłącz kabel USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Uruchamianie hotspotu</string>

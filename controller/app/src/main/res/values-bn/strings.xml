@@ -1656,7 +1656,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi বন্ধ আছে। এটি চালু করুন, অথবা USB কেবল যুক্ত করুন।</string>
     <string name="k2go_clone_link_no_network">কোনো Wi-Fi নেটওয়ার্কে যুক্ত নয়</string>
     <string name="k2go_clone_link_cable_only">ব্যবহার হচ্ছে না। কপি USB কেবল দিয়ে হচ্ছে।</string>
-    <string name="k2go_clone_link_not_on_network">ব্যবহার হচ্ছে না। অন্য ফোনটি এই Wi-Fi নেটওয়ার্কে নেই।</string>
+    <string name="k2go_clone_link_not_on_network">ব্যবহার হচ্ছে না। এই Wi-Fi নেটওয়ার্কে দুটি ফোন একে অপরের কাছে পৌঁছাতে পারছে না।</string>
+    <string name="k2go_clone_link_not_checked">অন্য ফোনটি এই Wi-Fi নেটওয়ার্কে আছে কি না যাচাই করা হচ্ছে।</string>
+    <string name="k2go_clone_link_peer_on_wifi">অন্য ফোনটি Wi-Fi-এর মাধ্যমে এই ফোনের সাথে যুক্ত হয়েছে।</string>
+    <string name="k2go_clone_link_peer_done_wifi">অন্য ফোনটি Wi-Fi-এর মাধ্যমে কপি করা শেষ করেছে।</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi-তে যুক্ত। অন্য ফোনের কোড স্ক্যান করার পরে সেটি যাচাই করা হয়।</string>
     <string name="k2go_clone_link_not_found_action">প্রেরক ফোন এই Wi-Fi নেটওয়ার্কে পাওয়া যায়নি। তার নেটওয়ার্কে যোগ দিন, অথবা USB কেবল যুক্ত করুন।</string>
     <string name="k2go_clone_link_hotspot_starting">হটস্পট চালু হচ্ছে</string>
