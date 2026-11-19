@@ -1631,7 +1631,8 @@
     <string name="k2go_clone_link_wifi_network">Deler over Wi-Fi-nettverket</string>
     <string name="k2go_clone_link_hotspot_off">Wi-Fi-sone av</string>
     <string name="k2go_clone_link_usb_none">Ingen kabel</string>
-    <string name="k2go_clone_link_usb_present">USB-kabel tilkoblet. Klon kobler til via den når begge telefonene er klare.</string>
+    <string name="k2go_clone_link_usb_present">USB-kabel tilkoblet. Hvis det er en telefon i den andre enden, åpne Klon på den.</string>
+    <string name="k2go_clone_link_usb_unsupported">Enheten på denne kabelen kan ikke bruke Klon.</string>
     <string name="k2go_clone_link_usb_peer_send">Venter på den andre telefonen. Åpne Klon på den, trykk på Motta og svar på eventuelle USB-dialoger.</string>
     <string name="k2go_clone_link_usb_peer_receive">Venter på den andre telefonen. Åpne Klon > Send på den, gå til steg 3 (Kopier) og svar på eventuelle USB-dialoger.</string>
     <string name="k2go_clone_link_usb_switching">Kabel funnet. Kobler til den andre telefonen.</string>

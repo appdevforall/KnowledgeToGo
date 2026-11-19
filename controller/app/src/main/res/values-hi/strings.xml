@@ -1698,7 +1698,8 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi नेटवर्क से शेयर किया जा रहा है</string>
     <string name="k2go_clone_link_hotspot_off">हॉटस्पॉट बंद</string>
     <string name="k2go_clone_link_usb_none">कोई केबल नहीं</string>
-    <string name="k2go_clone_link_usb_present">USB केबल जुड़ी है। दोनों फ़ोन तैयार होने पर क्लोन इसके ज़रिए जुड़ता है।</string>
+    <string name="k2go_clone_link_usb_present">USB केबल जुड़ी है। अगर दूसरे सिरे पर फ़ोन है, तो उस पर क्लोन खोलें।</string>
+    <string name="k2go_clone_link_usb_unsupported">इस केबल से जुड़ा डिवाइस क्लोन का उपयोग नहीं कर सकता।</string>
     <string name="k2go_clone_link_usb_peer_send">दूसरे फ़ोन का इंतज़ार है। उस पर क्लोन खोलें, प्राप्त करें पर टैप करें और हर USB डायलॉग का जवाब दें।</string>
     <string name="k2go_clone_link_usb_peer_receive">दूसरे फ़ोन का इंतज़ार है। उस पर क्लोन > भेजें खोलें, चरण 3 (कॉपी) पर जाएँ और हर USB डायलॉग का जवाब दें।</string>
     <string name="k2go_clone_link_usb_switching">केबल मिली। दूसरे फ़ोन से जुड़ रहा है।</string>

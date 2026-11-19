@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">اشتراک‌گذاری از طریق شبکه Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">هات‌اسپات خاموش است</string>
     <string name="k2go_clone_link_usb_none">بدون کابل</string>
-    <string name="k2go_clone_link_usb_present">کابل USB وصل شد. وقتی هر دو گوشی آماده باشند، کلون از طریق آن متصل می‌شود.</string>
+    <string name="k2go_clone_link_usb_present">کابل USB وصل شد. اگر در سر دیگر کابل گوشی است، کلون را در آن باز کنید.</string>
+    <string name="k2go_clone_link_usb_unsupported">دستگاه متصل به این کابل نمی‌تواند از کلون استفاده کند.</string>
     <string name="k2go_clone_link_usb_peer_send">در انتظار گوشی دیگر. در آن گوشی، کلون را باز کنید، روی دریافت ضربه بزنید و به هر پنجره USB پاسخ دهید.</string>
     <string name="k2go_clone_link_usb_peer_receive">در انتظار گوشی دیگر. در آن گوشی، کلون > ارسال را باز کنید، به گام ۳ (کپی) بروید و به هر پنجره USB پاسخ دهید.</string>
     <string name="k2go_clone_link_usb_switching">کابل پیدا شد. در حال اتصال به گوشی دیگر.</string>

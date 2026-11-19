@@ -1628,7 +1628,8 @@
     <string name="k2go_clone_link_wifi_network">Berbagi melalui jaringan Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot mati</string>
     <string name="k2go_clone_link_usb_none">Tidak ada kabel</string>
-    <string name="k2go_clone_link_usb_present">Kabel USB terhubung. Klon tersambung lewat kabel ini saat kedua ponsel siap.</string>
+    <string name="k2go_clone_link_usb_present">Kabel USB terhubung. Jika ada ponsel di ujung lainnya, buka Klon di ponsel itu.</string>
+    <string name="k2go_clone_link_usb_unsupported">Perangkat di kabel ini tidak dapat menggunakan Klon.</string>
     <string name="k2go_clone_link_usb_peer_send">Menunggu ponsel lain. Di ponsel itu, buka Klon, ketuk Terima, lalu tanggapi dialog USB apa pun.</string>
     <string name="k2go_clone_link_usb_peer_receive">Menunggu ponsel lain. Di ponsel itu, buka Klon > Kirim, buka langkah 3 (Salin), lalu tanggapi dialog USB apa pun.</string>
     <string name="k2go_clone_link_usb_switching">Kabel terdeteksi. Menghubungkan ke ponsel lain.</string>

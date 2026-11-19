@@ -1628,7 +1628,8 @@
     <string name="k2go_clone_link_wifi_network">Zdieľanie cez sieť Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot vypnutý</string>
     <string name="k2go_clone_link_usb_none">Žiadny kábel</string>
-    <string name="k2go_clone_link_usb_present">Kábel USB pripojený. Klonovať sa cez neho prepojí, keď budú oba telefóny pripravené.</string>
+    <string name="k2go_clone_link_usb_present">Kábel USB pripojený. Ak je na druhom konci telefón, otvorte na ňom Klonovať.</string>
+    <string name="k2go_clone_link_usb_unsupported">Zariadenie na tomto kábli nemôže použiť Klonovať.</string>
     <string name="k2go_clone_link_usb_peer_send">Čaká sa na druhý telefón. Na ňom otvorte Klonovať, klepnite na Prijať a odpovedzte na prípadný dialóg USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Čaká sa na druhý telefón. Na ňom otvorte Klonovať > Odoslať, prejdite na krok 3 (Kopírovať) a odpovedzte na prípadný dialóg USB.</string>
     <string name="k2go_clone_link_usb_switching">Kábel zistený. Pripája sa k druhému telefónu.</string>

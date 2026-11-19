@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Спільний доступ через мережу Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Точку доступу вимкнено</string>
     <string name="k2go_clone_link_usb_none">Немає кабелю</string>
-    <string name="k2go_clone_link_usb_present">USB-кабель під\'єднано. Клонувати під\'єднається через нього, коли обидва телефони будуть готові.</string>
+    <string name="k2go_clone_link_usb_present">USB-кабель під\'єднано. Якщо на іншому кінці телефон, відкрийте на ньому Клонувати.</string>
+    <string name="k2go_clone_link_usb_unsupported">Пристрій на цьому кабелі не може використовувати Клонувати.</string>
     <string name="k2go_clone_link_usb_peer_send">Очікування іншого телефона. На ньому відкрийте Клонувати, торкніться Отримати й дайте відповідь у будь-якому діалозі USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Очікування іншого телефона. На ньому відкрийте Клонувати > Надіслати, перейдіть до кроку 3 (Копіювати) й дайте відповідь у будь-якому діалозі USB.</string>
     <string name="k2go_clone_link_usb_switching">Кабель виявлено. Під\'єднання до іншого телефона.</string>

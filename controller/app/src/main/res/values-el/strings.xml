@@ -1628,7 +1628,8 @@
     <string name="k2go_clone_link_wifi_network">Κοινή χρήση μέσω του δικτύου Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Σημείο πρόσβασης ανενεργό</string>
     <string name="k2go_clone_link_usb_none">Χωρίς καλώδιο</string>
-    <string name="k2go_clone_link_usb_present">Το καλώδιο USB συνδέθηκε. Η Κλωνοποίηση συνδέεται μέσω αυτού όταν και τα δύο τηλέφωνα είναι έτοιμα.</string>
+    <string name="k2go_clone_link_usb_present">Το καλώδιο USB συνδέθηκε. Αν στην άλλη άκρη είναι τηλέφωνο, ανοίξτε την Κλωνοποίηση σε αυτό.</string>
+    <string name="k2go_clone_link_usb_unsupported">Η συσκευή σε αυτό το καλώδιο δεν μπορεί να χρησιμοποιήσει την Κλωνοποίηση.</string>
     <string name="k2go_clone_link_usb_peer_send">Αναμονή για το άλλο τηλέφωνο. Σε αυτό, ανοίξτε την Κλωνοποίηση, πατήστε Παραλαβή και απαντήστε σε κάθε παράθυρο διαλόγου USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Αναμονή για το άλλο τηλέφωνο. Σε αυτό, ανοίξτε Κλωνοποίηση > Αποστολή, μεταβείτε στο βήμα 3 (Αντιγραφή) και απαντήστε σε κάθε παράθυρο διαλόγου USB.</string>
     <string name="k2go_clone_link_usb_switching">Βρέθηκε καλώδιο. Σύνδεση με το άλλο τηλέφωνο.</string>

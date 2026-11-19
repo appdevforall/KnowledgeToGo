@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">المشاركة عبر شبكة Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">نقطة الاتصال متوقفة</string>
     <string name="k2go_clone_link_usb_none">لا يوجد كابل</string>
-    <string name="k2go_clone_link_usb_present">كابل USB متصل. يتصل استنساخ عبره عندما يكون الهاتفان جاهزين.</string>
+    <string name="k2go_clone_link_usb_present">كابل USB متصل. إذا كان هاتف في الطرف الآخر، فافتح استنساخ عليه.</string>
+    <string name="k2go_clone_link_usb_unsupported">لا يمكن للجهاز الموصول بهذا الكابل استخدام استنساخ.</string>
     <string name="k2go_clone_link_usb_peer_send">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ، واضغط على استلام، ثم أجب عن أي مربع حوار USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ > إرسال، وانتقل إلى الخطوة 3 (نسخ)، ثم أجب عن أي مربع حوار USB.</string>
     <string name="k2go_clone_link_usb_switching">تم العثور على الكابل. جارٍ الاتصال بالهاتف الآخر.</string>

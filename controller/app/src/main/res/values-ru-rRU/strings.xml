@@ -1697,7 +1697,8 @@
     <string name="k2go_clone_link_wifi_network">Общий доступ через сеть Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Точка доступа выключена</string>
     <string name="k2go_clone_link_usb_none">Нет кабеля</string>
-    <string name="k2go_clone_link_usb_present">USB-кабель подключён. Когда оба телефона будут готовы, Клонировать установит связь через него.</string>
+    <string name="k2go_clone_link_usb_present">USB-кабель подключён. Если на другом конце телефон, откройте на нём Клонировать.</string>
+    <string name="k2go_clone_link_usb_unsupported">Устройство на этом кабеле не может использовать Клонировать.</string>
     <string name="k2go_clone_link_usb_peer_send">Ожидание другого телефона. На нём откройте Клонировать, нажмите Получить и ответьте на любой диалог USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Ожидание другого телефона. На нём откройте Клонировать > Отправить, перейдите к шагу 3 (Копировать) и ответьте на любой диалог USB.</string>
     <string name="k2go_clone_link_usb_switching">Кабель обнаружен. Подключение к другому телефону.</string>

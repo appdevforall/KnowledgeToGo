@@ -1641,7 +1641,8 @@
     <string name="k2go_clone_link_wifi_network">Ń pín nípasẹ̀ nẹ́tíwọ̀ọ̀kì Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot wà ní pípa</string>
     <string name="k2go_clone_link_usb_none">Kò sí wáyà</string>
-    <string name="k2go_clone_link_usb_present">A ti so wáyà USB pọ̀. Ẹ̀dà máa so pọ̀ nípasẹ̀ rẹ̀ nígbà tí fóònù méjèèjì bá ti ṣetán.</string>
+    <string name="k2go_clone_link_usb_present">A ti so wáyà USB pọ̀. Tí fóònù bá wà ní òpin kejì, ṣí Ẹ̀dà lórí rẹ̀.</string>
+    <string name="k2go_clone_link_usb_unsupported">Ẹ̀rọ tó wà lórí wáyà yìí kò lè lo Ẹ̀dà.</string>
     <string name="k2go_clone_link_usb_peer_send">Ń dúró de fóònù kejì. Lórí rẹ̀, ṣí Ẹ̀dà, tẹ Gbà kí o sì dáhùn ìbánisọ̀rọ̀ USB èyíkéyìí.</string>
     <string name="k2go_clone_link_usb_peer_receive">Ń dúró de fóònù kejì. Lórí rẹ̀, ṣí Ẹ̀dà > Fi ránṣẹ́, lọ sí ìgbésẹ̀ 3 (Ṣẹ̀dà) kí o sì dáhùn ìbánisọ̀rọ̀ USB èyíkéyìí.</string>
     <string name="k2go_clone_link_usb_switching">A rí wáyà. Ń so pọ̀ mọ́ fóònù kejì.</string>

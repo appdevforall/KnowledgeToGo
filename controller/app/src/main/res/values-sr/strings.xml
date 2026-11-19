@@ -1634,7 +1634,8 @@
     <string name="k2go_clone_link_wifi_network">Дељење преко Wi-Fi мреже</string>
     <string name="k2go_clone_link_hotspot_off">Хотспот искључен</string>
     <string name="k2go_clone_link_usb_none">Нема кабла</string>
-    <string name="k2go_clone_link_usb_present">USB кабл је повезан. Клонирај се повезује преко њега када оба телефона буду спремна.</string>
+    <string name="k2go_clone_link_usb_present">USB кабл је повезан. Ако је на другом крају телефон, отворите Клонирај на њему.</string>
+    <string name="k2go_clone_link_usb_unsupported">Уређај на овом каблу не може да користи Клонирај.</string>
     <string name="k2go_clone_link_usb_peer_send">Чека се други телефон. На њему отворите Клонирај, додирните Прими и одговорите на сваки USB дијалог.</string>
     <string name="k2go_clone_link_usb_peer_receive">Чека се други телефон. На њему отворите Клонирај > Пошаљи, идите на 3. корак (Копирај) и одговорите на сваки USB дијалог.</string>
     <string name="k2go_clone_link_usb_switching">Кабл је пронађен. Повезивање са другим телефоном.</string>

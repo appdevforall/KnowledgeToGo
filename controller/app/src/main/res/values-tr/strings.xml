@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi ağı üzerinden paylaşılıyor</string>
     <string name="k2go_clone_link_hotspot_off">Etkin nokta kapalı</string>
     <string name="k2go_clone_link_usb_none">Kablo yok</string>
-    <string name="k2go_clone_link_usb_present">USB kablosu bağlı. Her iki telefon hazır olduğunda Klonla bu kablo üzerinden bağlanır.</string>
+    <string name="k2go_clone_link_usb_present">USB kablosu bağlı. Diğer uçta bir telefon varsa, o telefonda Klonla\'yı açın.</string>
+    <string name="k2go_clone_link_usb_unsupported">Bu kablodaki cihaz Klonla\'yı kullanamaz.</string>
     <string name="k2go_clone_link_usb_peer_send">Diğer telefon bekleniyor. O telefonda Klonla\'yı açın, Al\'a dokunun ve tüm USB iletişim kutularını yanıtlayın.</string>
     <string name="k2go_clone_link_usb_peer_receive">Diğer telefon bekleniyor. O telefonda Klonla > Gönder\'i açın, 3. adıma (Kopyala) gidin ve tüm USB iletişim kutularını yanıtlayın.</string>
     <string name="k2go_clone_link_usb_switching">Kablo bulundu. Diğer telefona bağlanılıyor.</string>

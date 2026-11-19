@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Megosztás a Wi-Fi hálózaton</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot kikapcsolva</string>
     <string name="k2go_clone_link_usb_none">Nincs kábel</string>
-    <string name="k2go_clone_link_usb_present">USB-kábel csatlakoztatva. A Klónozás ezen keresztül kapcsolódik, amikor mindkét telefon készen áll.</string>
+    <string name="k2go_clone_link_usb_present">USB-kábel csatlakoztatva. Ha a másik végén telefon van, nyisd meg rajta a Klónozás részt.</string>
+    <string name="k2go_clone_link_usb_unsupported">A kábelen lévő eszköz nem tudja használni a Klónozás funkciót.</string>
     <string name="k2go_clone_link_usb_peer_send">Várakozás a másik telefonra. Azon nyisd meg a Klónozás részt, koppints a Fogadás gombra, és válaszolj minden USB-párbeszédablakra.</string>
     <string name="k2go_clone_link_usb_peer_receive">Várakozás a másik telefonra. Azon nyisd meg a Klónozás > Küldés részt, lépj a 3. lépésre (Másolás), és válaszolj minden USB-párbeszédablakra.</string>
     <string name="k2go_clone_link_usb_switching">Kábel észlelve. Csatlakozás a másik telefonhoz.</string>

@@ -1622,7 +1622,8 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi ネットワークで共有中</string>
     <string name="k2go_clone_link_hotspot_off">ホットスポット オフ</string>
     <string name="k2go_clone_link_usb_none">ケーブルなし</string>
-    <string name="k2go_clone_link_usb_present">USB ケーブルが接続されています。両方のスマホの準備ができると、クローンがこのケーブルで接続します。</string>
+    <string name="k2go_clone_link_usb_present">USB ケーブルが接続されています。反対側がスマホなら、そのスマホでクローンを開いてください。</string>
+    <string name="k2go_clone_link_usb_unsupported">このケーブルにつながっているデバイスはクローンを使用できません。</string>
     <string name="k2go_clone_link_usb_peer_send">もう一方のスマホを待っています。そのスマホでクローンを開き、受信をタップして、USB ダイアログが表示されたら応答してください。</string>
     <string name="k2go_clone_link_usb_peer_receive">もう一方のスマホを待っています。そのスマホでクローン > 送信を開き、ステップ 3（コピー）に進んで、USB ダイアログが表示されたら応答してください。</string>
     <string name="k2go_clone_link_usb_switching">ケーブルを検出しました。もう一方のスマホに接続しています。</string>

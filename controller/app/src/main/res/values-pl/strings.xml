@@ -1631,7 +1631,8 @@
     <string name="k2go_clone_link_wifi_network">Udostępnianie przez sieć Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot wyłączony</string>
     <string name="k2go_clone_link_usb_none">Brak kabla</string>
-    <string name="k2go_clone_link_usb_present">Kabel USB podłączony. Klonuj połączy się przez niego, gdy oba telefony będą gotowe.</string>
+    <string name="k2go_clone_link_usb_present">Kabel USB podłączony. Jeśli na drugim końcu jest telefon, otwórz na nim Klonuj.</string>
+    <string name="k2go_clone_link_usb_unsupported">Urządzenie na tym kablu nie może używać funkcji Klonuj.</string>
     <string name="k2go_clone_link_usb_peer_send">Oczekiwanie na drugi telefon. Na nim otwórz Klonuj, dotknij Odbierz i odpowiedz na każde okno dialogowe USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Oczekiwanie na drugi telefon. Na nim otwórz Klonuj > Wyślij, przejdź do kroku 3 (Kopiuj) i odpowiedz na każde okno dialogowe USB.</string>
     <string name="k2go_clone_link_usb_switching">Wykryto kabel. Łączenie z drugim telefonem.</string>

@@ -1634,7 +1634,8 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi নেটওয়ার্কের মাধ্যমে শেয়ার করা হচ্ছে</string>
     <string name="k2go_clone_link_hotspot_off">হটস্পট বন্ধ</string>
     <string name="k2go_clone_link_usb_none">কোনো কেবল নেই</string>
-    <string name="k2go_clone_link_usb_present">USB কেবল যুক্ত হয়েছে। দুটি ফোন প্রস্তুত হলে ক্লোন এর মাধ্যমে সংযোগ করে।</string>
+    <string name="k2go_clone_link_usb_present">USB কেবল যুক্ত হয়েছে। অন্য প্রান্তে একটি ফোন থাকলে, সেই ফোনে ক্লোন খুলুন।</string>
+    <string name="k2go_clone_link_usb_unsupported">এই কেবলে যুক্ত ডিভাইসটি ক্লোন ব্যবহার করতে পারে না।</string>
     <string name="k2go_clone_link_usb_peer_send">অন্য ফোনের জন্য অপেক্ষা করা হচ্ছে। সেই ফোনে ক্লোন খুলুন, গ্রহণ করুন ট্যাপ করুন এবং যেকোনো USB ডায়ালগের উত্তর দিন।</string>
     <string name="k2go_clone_link_usb_peer_receive">অন্য ফোনের জন্য অপেক্ষা করা হচ্ছে। সেই ফোনে ক্লোন > পাঠান খুলুন, ধাপ ৩ (কপি)-এ যান এবং যেকোনো USB ডায়ালগের উত্তর দিন।</string>
     <string name="k2go_clone_link_usb_switching">কেবল পাওয়া গেছে। অন্য ফোনের সাথে সংযোগ করা হচ্ছে।</string>

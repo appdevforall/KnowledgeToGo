@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Đang chia sẻ qua mạng Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Điểm phát sóng đang tắt</string>
     <string name="k2go_clone_link_usb_none">Không có cáp</string>
-    <string name="k2go_clone_link_usb_present">Đã cắm cáp USB. Sao chép sẽ kết nối qua cáp khi cả hai điện thoại sẵn sàng.</string>
+    <string name="k2go_clone_link_usb_present">Đã cắm cáp USB. Nếu đầu kia là điện thoại, hãy mở Sao chép trên điện thoại đó.</string>
+    <string name="k2go_clone_link_usb_unsupported">Thiết bị trên cáp này không thể dùng Sao chép.</string>
     <string name="k2go_clone_link_usb_peer_send">Đang chờ điện thoại kia. Trên điện thoại đó, mở Sao chép, nhấn Nhận và trả lời mọi hộp thoại USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Đang chờ điện thoại kia. Trên điện thoại đó, mở Sao chép > Gửi, chuyển đến bước 3 (Sao chép) và trả lời mọi hộp thoại USB.</string>
     <string name="k2go_clone_link_usb_switching">Đã phát hiện cáp. Đang kết nối với điện thoại kia.</string>

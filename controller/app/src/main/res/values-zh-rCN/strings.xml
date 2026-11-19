@@ -1622,7 +1622,8 @@
     <string name="k2go_clone_link_wifi_network">通过 Wi-Fi 网络共享</string>
     <string name="k2go_clone_link_hotspot_off">热点已关闭</string>
     <string name="k2go_clone_link_usb_none">无数据线</string>
-    <string name="k2go_clone_link_usb_present">USB 数据线已连接。两部手机都准备好后，克隆会通过它连接。</string>
+    <string name="k2go_clone_link_usb_present">USB 数据线已连接。如果另一端是手机，请在那部手机上打开克隆。</string>
+    <string name="k2go_clone_link_usb_unsupported">这条数据线连接的设备无法使用克隆。</string>
     <string name="k2go_clone_link_usb_peer_send">正在等待另一部手机。在那部手机上打开克隆，点按接收，并响应所有 USB 对话框。</string>
     <string name="k2go_clone_link_usb_peer_receive">正在等待另一部手机。在那部手机上打开克隆 > 发送，前往第 3 步（复制），并响应所有 USB 对话框。</string>
     <string name="k2go_clone_link_usb_switching">已检测到数据线。正在连接另一部手机。</string>

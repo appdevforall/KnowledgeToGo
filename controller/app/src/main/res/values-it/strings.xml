@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Condivisione tramite la rete Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot disattivato</string>
     <string name="k2go_clone_link_usb_none">Nessun cavo</string>
-    <string name="k2go_clone_link_usb_present">Cavo USB collegato. Clona si collega tramite il cavo quando entrambi i telefoni sono pronti.</string>
+    <string name="k2go_clone_link_usb_present">Cavo USB collegato. Se all\'altro capo c\'è un telefono, apri Clona su di esso.</string>
+    <string name="k2go_clone_link_usb_unsupported">Il dispositivo su questo cavo non può usare Clona.</string>
     <string name="k2go_clone_link_usb_peer_send">In attesa dell\'altro telefono. Su di esso, apri Clona, tocca Ricevi e rispondi a qualsiasi finestra di dialogo USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">In attesa dell\'altro telefono. Su di esso, apri Clona > Invia, vai al passaggio 3 (Copia) e rispondi a qualsiasi finestra di dialogo USB.</string>
     <string name="k2go_clone_link_usb_switching">Cavo rilevato. Connessione all\'altro telefono.</string>

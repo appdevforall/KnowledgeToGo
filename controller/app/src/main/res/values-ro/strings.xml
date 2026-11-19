@@ -1621,7 +1621,8 @@
     <string name="k2go_clone_link_wifi_network">Partajare prin rețeaua Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot oprit</string>
     <string name="k2go_clone_link_usb_none">Niciun cablu</string>
-    <string name="k2go_clone_link_usb_present">Cablu USB conectat. Clonare se conectează prin el când ambele telefoane sunt pregătite.</string>
+    <string name="k2go_clone_link_usb_present">Cablu USB conectat. Dacă la celălalt capăt este un telefon, deschide Clonare pe el.</string>
+    <string name="k2go_clone_link_usb_unsupported">Dispozitivul de pe acest cablu nu poate folosi Clonare.</string>
     <string name="k2go_clone_link_usb_peer_send">Se așteaptă celălalt telefon. Pe acesta, deschide Clonare, atinge Primește și răspunde la orice dialog USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">Se așteaptă celălalt telefon. Pe acesta, deschide Clonare > Trimite, mergi la pasul 3 (Copiază) și răspunde la orice dialog USB.</string>
     <string name="k2go_clone_link_usb_switching">Cablu detectat. Se conectează la celălalt telefon.</string>

@@ -1634,7 +1634,8 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi નેટવર્ક દ્વારા શેર કરી રહ્યાં છીએ</string>
     <string name="k2go_clone_link_hotspot_off">હૉટસ્પૉટ બંધ</string>
     <string name="k2go_clone_link_usb_none">કેબલ નથી</string>
-    <string name="k2go_clone_link_usb_present">USB કેબલ જોડાયેલ છે. બંને ફોન તૈયાર થાય ત્યારે ક્લોન તેના દ્વારા જોડાય છે.</string>
+    <string name="k2go_clone_link_usb_present">USB કેબલ જોડાયેલ છે. બીજા છેડે ફોન હોય, તો તેના પર ક્લોન ખોલો.</string>
+    <string name="k2go_clone_link_usb_unsupported">આ કેબલ પરનું ઉપકરણ ક્લોનનો ઉપયોગ કરી શકતું નથી.</string>
     <string name="k2go_clone_link_usb_peer_send">બીજા ફોનની રાહ જોવાય છે. તેના પર ક્લોન ખોલો, મેળવો ટૅપ કરો અને કોઈપણ USB સંવાદનો જવાબ આપો.</string>
     <string name="k2go_clone_link_usb_peer_receive">બીજા ફોનની રાહ જોવાય છે. તેના પર ક્લોન > મોકલો ખોલો, સ્ટેપ 3 (કૉપિ કરો) પર જાઓ અને કોઈપણ USB સંવાદનો જવાબ આપો.</string>
     <string name="k2go_clone_link_usb_switching">કેબલ મળ્યો. બીજા ફોન સાથે જોડાઈ રહ્યું છે.</string>

@@ -1628,7 +1628,8 @@
     <string name="k2go_clone_link_wifi_network">Споделяне през Wi-Fi мрежата</string>
     <string name="k2go_clone_link_hotspot_off">Точката за достъп е изключена</string>
     <string name="k2go_clone_link_usb_none">Няма кабел</string>
-    <string name="k2go_clone_link_usb_present">USB кабелът е свързан. Клониране се свързва през него, когато двата телефона са готови.</string>
+    <string name="k2go_clone_link_usb_present">USB кабелът е свързан. Ако в другия край има телефон, отворете Клониране на него.</string>
+    <string name="k2go_clone_link_usb_unsupported">Устройството на този кабел не може да използва Клониране.</string>
     <string name="k2go_clone_link_usb_peer_send">Изчакване на другия телефон. На него отворете Клониране, докоснете Получаване и отговорете на всеки USB диалог.</string>
     <string name="k2go_clone_link_usb_peer_receive">Изчакване на другия телефон. На него отворете Клониране > Изпрати, отидете на стъпка 3 (Копирай) и отговорете на всеки USB диалог.</string>
     <string name="k2go_clone_link_usb_switching">Открит е кабел. Свързване с другия телефон.</string>

@@ -1708,7 +1708,8 @@
     <string name="k2go_clone_link_wifi_network">Partage via le réseau Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Point d\'accès désactivé</string>
     <string name="k2go_clone_link_usb_none">Aucun câble</string>
-    <string name="k2go_clone_link_usb_present">Câble USB branché. Cloner l\'utilise dès que les deux téléphones sont prêts.</string>
+    <string name="k2go_clone_link_usb_present">Câble USB branché. Si un téléphone est à l\'autre bout, ouvrez Cloner sur celui-ci.</string>
+    <string name="k2go_clone_link_usb_unsupported">L\'appareil branché sur ce câble ne peut pas utiliser Cloner.</string>
     <string name="k2go_clone_link_usb_peer_send">En attente de l\'autre téléphone. Sur celui-ci, ouvrez Cloner, appuyez sur Recevoir et répondez à toute boîte de dialogue USB.</string>
     <string name="k2go_clone_link_usb_peer_receive">En attente de l\'autre téléphone. Sur celui-ci, ouvrez Cloner > Envoyer, passez à l\'étape 3 (Copier) et répondez à toute boîte de dialogue USB.</string>
     <string name="k2go_clone_link_usb_switching">Câble détecté. Connexion à l\'autre téléphone.</string>
