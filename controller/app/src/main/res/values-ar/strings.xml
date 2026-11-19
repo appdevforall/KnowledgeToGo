@@ -1621,7 +1621,13 @@
     <string name="k2go_clone_link_wifi_network">المشاركة عبر شبكة Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">نقطة الاتصال متوقفة</string>
     <string name="k2go_clone_link_usb_none">لا يوجد كابل</string>
-    <string name="k2go_clone_link_usb_waiting">تم اكتشاف الكابل. اسمح بالوصول عبر USB على كلا الهاتفين.</string>
+    <string name="k2go_clone_link_usb_present">كابل USB متصل. يتصل استنساخ عبره عندما يكون الهاتفان جاهزين.</string>
+    <string name="k2go_clone_link_usb_peer_send">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ، واضغط على استلام، ثم أجب عن أي مربع حوار USB.</string>
+    <string name="k2go_clone_link_usb_peer_receive">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ > إرسال، وانتقل إلى الخطوة 3 (نسخ)، ثم أجب عن أي مربع حوار USB.</string>
+    <string name="k2go_clone_link_usb_switching">تم العثور على الكابل. جارٍ الاتصال بالهاتف الآخر.</string>
+    <string name="k2go_clone_link_usb_ask">اضغط على موافق في مربع حوار USB على هذا الهاتف.</string>
+    <string name="k2go_clone_link_usb_denied">لم يُسمح بالوصول عبر USB. افصل الكابل ثم وصّله مرة أخرى.</string>
+    <string name="k2go_clone_link_not_found_cable">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه.</string>
     <string name="k2go_clone_link_usb_linked">مرتبط بالهاتف الآخر</string>
     <string name="k2go_clone_link_usb_active">نقل البيانات: %1$s</string>
     <string name="k2go_clone_link_badge_off">متوقف</string>

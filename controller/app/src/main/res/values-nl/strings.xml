@@ -1621,7 +1621,13 @@
     <string name="k2go_clone_link_wifi_network">Delen via het Wi-Fi-netwerk</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot uit</string>
     <string name="k2go_clone_link_usb_none">Geen kabel</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel gevonden. Sta USB-toegang toe op beide telefoons.</string>
+    <string name="k2go_clone_link_usb_present">USB-kabel aangesloten. Klonen maakt er verbinding via zodra beide telefoons klaar zijn.</string>
+    <string name="k2go_clone_link_usb_peer_send">Wachten op de andere telefoon. Open daarop Klonen, tik op Ontvangen en beantwoord elk USB-dialoogvenster.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Wachten op de andere telefoon. Open daarop Klonen > Verzenden, ga naar stap 3 (Kopiëren) en beantwoord elk USB-dialoogvenster.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel gevonden. Verbinden met de andere telefoon.</string>
+    <string name="k2go_clone_link_usb_ask">Tik op OK in het USB-dialoogvenster op deze telefoon.</string>
+    <string name="k2go_clone_link_usb_denied">USB-toegang is niet toegestaan. Koppel de kabel los en sluit hem opnieuw aan.</string>
+    <string name="k2go_clone_link_not_found_cable">Verzendende telefoon niet gevonden op dit Wi-Fi-netwerk.</string>
     <string name="k2go_clone_link_usb_linked">Gekoppeld aan de andere telefoon</string>
     <string name="k2go_clone_link_usb_active">Gegevensoverdracht: %1$s</string>
     <string name="k2go_clone_link_badge_off">Uit</string>

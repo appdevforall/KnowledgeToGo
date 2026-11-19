@@ -1641,7 +1641,13 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi şəbəkəsi ilə paylaşılır</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot söndürülüb</string>
     <string name="k2go_clone_link_usb_none">Kabel yoxdur</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel tapıldı. Hər iki telefonda USB girişinə icazə verin.</string>
+    <string name="k2go_clone_link_usb_present">USB kabel qoşulub. Hər iki telefon hazır olanda Klonla bu kabel üzərindən əlaqə qurur.</string>
+    <string name="k2go_clone_link_usb_peer_send">Digər telefon gözlənilir. Orada Klonla bölməsini açın, Al düyməsinə toxunun və istənilən USB dialoquna cavab verin.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Digər telefon gözlənilir. Orada Klonla > Göndər açın, 3-cü addıma (Köçür) keçin və istənilən USB dialoquna cavab verin.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel tapıldı. Digər telefona qoşulur.</string>
+    <string name="k2go_clone_link_usb_ask">Bu telefondakı USB dialoqunda OK düyməsinə toxunun.</string>
+    <string name="k2go_clone_link_usb_denied">USB girişinə icazə verilmədi. Kabeli ayırın və yenidən qoşun.</string>
+    <string name="k2go_clone_link_not_found_cable">Göndərən telefon bu Wi-Fi şəbəkəsində tapılmadı.</string>
     <string name="k2go_clone_link_usb_linked">Digər telefonla əlaqələndirilib</string>
     <string name="k2go_clone_link_usb_active">Məlumat ötürülməsi: %1$s</string>
     <string name="k2go_clone_link_badge_off">Söndürülüb</string>

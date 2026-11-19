@@ -1641,7 +1641,13 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi நெட்வொர்க் வழியாகப் பகிரப்படுகிறது</string>
     <string name="k2go_clone_link_hotspot_off">ஹாட்ஸ்பாட் முடக்கத்தில்</string>
     <string name="k2go_clone_link_usb_none">கேபிள் இல்லை</string>
-    <string name="k2go_clone_link_usb_waiting">கேபிள் கண்டறியப்பட்டது. இரு தொலைபேசிகளிலும் USB அணுகலை அனுமதிக்கவும்.</string>
+    <string name="k2go_clone_link_usb_present">USB கேபிள் இணைக்கப்பட்டது. இரு தொலைபேசிகளும் தயாரானதும் நகல் இதன் வழியாக இணைக்கும்.</string>
+    <string name="k2go_clone_link_usb_peer_send">மற்ற தொலைபேசிக்காகக் காத்திருக்கிறது. அதில் நகல் என்பதைத் திறந்து, பெறு என்பதைத் தட்டி, எந்த USB உரையாடலுக்கும் பதிலளிக்கவும்.</string>
+    <string name="k2go_clone_link_usb_peer_receive">மற்ற தொலைபேசிக்காகக் காத்திருக்கிறது. அதில் நகல் > அனுப்பு என்பதைத் திறந்து, படி 3 (நகல்)-க்குச் சென்று, எந்த USB உரையாடலுக்கும் பதிலளிக்கவும்.</string>
+    <string name="k2go_clone_link_usb_switching">கேபிள் கண்டறியப்பட்டது. மற்ற தொலைபேசியுடன் இணைக்கிறது.</string>
+    <string name="k2go_clone_link_usb_ask">இந்தத் தொலைபேசியின் USB உரையாடலில் சரி என்பதைத் தட்டவும்.</string>
+    <string name="k2go_clone_link_usb_denied">USB அணுகல் அனுமதிக்கப்படவில்லை. கேபிளைத் துண்டித்து மீண்டும் இணைக்கவும்.</string>
+    <string name="k2go_clone_link_not_found_cable">அனுப்பும் தொலைபேசி இந்த Wi-Fi நெட்வொர்க்கில் கண்டறியப்படவில்லை.</string>
     <string name="k2go_clone_link_usb_linked">மற்ற தொலைபேசியுடன் இணைக்கப்பட்டது</string>
     <string name="k2go_clone_link_usb_active">தரவுப் பரிமாற்றம்: %1$s</string>
     <string name="k2go_clone_link_badge_off">முடக்கம்</string>

@@ -1622,7 +1622,13 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi 네트워크로 공유 중</string>
     <string name="k2go_clone_link_hotspot_off">핫스팟 꺼짐</string>
     <string name="k2go_clone_link_usb_none">케이블 없음</string>
-    <string name="k2go_clone_link_usb_waiting">케이블이 감지되었습니다. 두 휴대폰 모두에서 USB 액세스를 허용하세요.</string>
+    <string name="k2go_clone_link_usb_present">USB 케이블이 연결되었습니다. 두 휴대폰이 모두 준비되면 복제가 이 케이블로 연결됩니다.</string>
+    <string name="k2go_clone_link_usb_peer_send">다른 휴대폰을 기다리는 중입니다. 그 휴대폰에서 복제를 열고 받기를 탭한 다음 USB 대화상자가 나타나면 응답하세요.</string>
+    <string name="k2go_clone_link_usb_peer_receive">다른 휴대폰을 기다리는 중입니다. 그 휴대폰에서 복제 > 전송을 열고 3단계(복사)로 이동한 다음 USB 대화상자가 나타나면 응답하세요.</string>
+    <string name="k2go_clone_link_usb_switching">케이블이 감지되었습니다. 다른 휴대폰에 연결하는 중입니다.</string>
+    <string name="k2go_clone_link_usb_ask">이 휴대폰의 USB 대화상자에서 확인을 탭하세요.</string>
+    <string name="k2go_clone_link_usb_denied">USB 액세스가 허용되지 않았습니다. 케이블을 뽑았다가 다시 연결하세요.</string>
+    <string name="k2go_clone_link_not_found_cable">이 Wi-Fi 네트워크에서 보내는 휴대폰을 찾을 수 없습니다.</string>
     <string name="k2go_clone_link_usb_linked">상대방 휴대폰과 연결됨</string>
     <string name="k2go_clone_link_usb_active">데이터 전송 중: %1$s</string>
     <string name="k2go_clone_link_badge_off">꺼짐</string>

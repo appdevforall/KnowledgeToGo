@@ -1621,7 +1621,13 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi ağı üzerinden paylaşılıyor</string>
     <string name="k2go_clone_link_hotspot_off">Etkin nokta kapalı</string>
     <string name="k2go_clone_link_usb_none">Kablo yok</string>
-    <string name="k2go_clone_link_usb_waiting">Kablo bulundu. Her iki telefonda da USB erişimine izin verin.</string>
+    <string name="k2go_clone_link_usb_present">USB kablosu bağlı. Her iki telefon hazır olduğunda Klonla bu kablo üzerinden bağlanır.</string>
+    <string name="k2go_clone_link_usb_peer_send">Diğer telefon bekleniyor. O telefonda Klonla\'yı açın, Al\'a dokunun ve tüm USB iletişim kutularını yanıtlayın.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Diğer telefon bekleniyor. O telefonda Klonla > Gönder\'i açın, 3. adıma (Kopyala) gidin ve tüm USB iletişim kutularını yanıtlayın.</string>
+    <string name="k2go_clone_link_usb_switching">Kablo bulundu. Diğer telefona bağlanılıyor.</string>
+    <string name="k2go_clone_link_usb_ask">Bu telefondaki USB iletişim kutusunda Tamam\'a dokunun.</string>
+    <string name="k2go_clone_link_usb_denied">USB erişimine izin verilmedi. Kabloyu çıkarıp yeniden takın.</string>
+    <string name="k2go_clone_link_not_found_cable">Gönderen telefon bu Wi-Fi ağında bulunamadı.</string>
     <string name="k2go_clone_link_usb_linked">Diğer telefona bağlandı</string>
     <string name="k2go_clone_link_usb_active">Veri aktarımı: %1$s</string>
     <string name="k2go_clone_link_badge_off">Kapalı</string>

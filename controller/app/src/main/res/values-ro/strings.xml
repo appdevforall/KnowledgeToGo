@@ -1621,7 +1621,13 @@
     <string name="k2go_clone_link_wifi_network">Partajare prin rețeaua Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot oprit</string>
     <string name="k2go_clone_link_usb_none">Niciun cablu</string>
-    <string name="k2go_clone_link_usb_waiting">Cablu detectat. Permite accesul USB pe ambele telefoane.</string>
+    <string name="k2go_clone_link_usb_present">Cablu USB conectat. Clonare se conectează prin el când ambele telefoane sunt pregătite.</string>
+    <string name="k2go_clone_link_usb_peer_send">Se așteaptă celălalt telefon. Pe acesta, deschide Clonare, atinge Primește și răspunde la orice dialog USB.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Se așteaptă celălalt telefon. Pe acesta, deschide Clonare > Trimite, mergi la pasul 3 (Copiază) și răspunde la orice dialog USB.</string>
+    <string name="k2go_clone_link_usb_switching">Cablu detectat. Se conectează la celălalt telefon.</string>
+    <string name="k2go_clone_link_usb_ask">Atinge OK în dialogul USB de pe acest telefon.</string>
+    <string name="k2go_clone_link_usb_denied">Accesul USB nu a fost permis. Deconectează cablul și conectează-l din nou.</string>
+    <string name="k2go_clone_link_not_found_cable">Telefonul expeditor nu a fost găsit în această rețea Wi-Fi.</string>
     <string name="k2go_clone_link_usb_linked">Conectat la celălalt telefon</string>
     <string name="k2go_clone_link_usb_active">Transfer de date: %1$s</string>
     <string name="k2go_clone_link_badge_off">Oprit</string>

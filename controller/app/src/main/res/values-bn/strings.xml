@@ -1634,7 +1634,13 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi নেটওয়ার্কের মাধ্যমে শেয়ার করা হচ্ছে</string>
     <string name="k2go_clone_link_hotspot_off">হটস্পট বন্ধ</string>
     <string name="k2go_clone_link_usb_none">কোনো কেবল নেই</string>
-    <string name="k2go_clone_link_usb_waiting">কেবল পাওয়া গেছে। দুটি ফোনেই USB অ্যাক্সেসের অনুমতি দিন।</string>
+    <string name="k2go_clone_link_usb_present">USB কেবল যুক্ত হয়েছে। দুটি ফোন প্রস্তুত হলে ক্লোন এর মাধ্যমে সংযোগ করে।</string>
+    <string name="k2go_clone_link_usb_peer_send">অন্য ফোনের জন্য অপেক্ষা করা হচ্ছে। সেই ফোনে ক্লোন খুলুন, গ্রহণ করুন ট্যাপ করুন এবং যেকোনো USB ডায়ালগের উত্তর দিন।</string>
+    <string name="k2go_clone_link_usb_peer_receive">অন্য ফোনের জন্য অপেক্ষা করা হচ্ছে। সেই ফোনে ক্লোন > পাঠান খুলুন, ধাপ ৩ (কপি)-এ যান এবং যেকোনো USB ডায়ালগের উত্তর দিন।</string>
+    <string name="k2go_clone_link_usb_switching">কেবল পাওয়া গেছে। অন্য ফোনের সাথে সংযোগ করা হচ্ছে।</string>
+    <string name="k2go_clone_link_usb_ask">এই ফোনের USB ডায়ালগে ঠিক আছে ট্যাপ করুন।</string>
+    <string name="k2go_clone_link_usb_denied">USB অ্যাক্সেসের অনুমতি দেওয়া হয়নি। কেবলটি খুলে আবার লাগান।</string>
+    <string name="k2go_clone_link_not_found_cable">প্রেরক ফোন এই Wi-Fi নেটওয়ার্কে পাওয়া যায়নি।</string>
     <string name="k2go_clone_link_usb_linked">অন্য ফোনের সাথে সংযুক্ত</string>
     <string name="k2go_clone_link_usb_active">ডেটা স্থানান্তর: %1$s</string>
     <string name="k2go_clone_link_badge_off">বন্ধ</string>

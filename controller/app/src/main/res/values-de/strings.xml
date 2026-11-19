@@ -1621,7 +1621,13 @@
     <string name="k2go_clone_link_wifi_network">Freigabe über das Wi-Fi-Netzwerk</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot aus</string>
     <string name="k2go_clone_link_usb_none">Kein Kabel</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel erkannt. Erlaube den USB-Zugriff auf beiden Telefonen.</string>
+    <string name="k2go_clone_link_usb_present">USB-Kabel verbunden. Klonen verbindet sich darüber, sobald beide Telefone bereit sind.</string>
+    <string name="k2go_clone_link_usb_peer_send">Warte auf das andere Telefon. Öffne dort Klonen, tippe auf Empfangen und beantworte jeden USB-Dialog.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Warte auf das andere Telefon. Öffne dort Klonen > Senden, gehe zu Schritt 3 (Kopieren) und beantworte jeden USB-Dialog.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel erkannt. Verbindung mit dem anderen Telefon wird hergestellt.</string>
+    <string name="k2go_clone_link_usb_ask">Tippe im USB-Dialog auf diesem Telefon auf OK.</string>
+    <string name="k2go_clone_link_usb_denied">USB-Zugriff wurde nicht erlaubt. Ziehe das Kabel ab und stecke es wieder ein.</string>
+    <string name="k2go_clone_link_not_found_cable">Sendendes Telefon in diesem Wi-Fi-Netzwerk nicht gefunden.</string>
     <string name="k2go_clone_link_usb_linked">Mit dem anderen Telefon verbunden</string>
     <string name="k2go_clone_link_usb_active">Datenübertragung: %1$s</string>
     <string name="k2go_clone_link_badge_off">Aus</string>

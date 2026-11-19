@@ -1700,7 +1700,13 @@
     <string name="k2go_clone_link_wifi_network">A partilhar pela rede Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot desligado</string>
     <string name="k2go_clone_link_usb_none">Sem cabo</string>
-    <string name="k2go_clone_link_usb_waiting">Cabo detetado. Permita o acesso USB em ambos os telemóveis.</string>
+    <string name="k2go_clone_link_usb_present">Cabo USB ligado. Clonar liga-se através dele quando ambos os telemóveis estiverem prontos.</string>
+    <string name="k2go_clone_link_usb_peer_send">A aguardar o outro telemóvel. Nele, abra Clonar, toque em Receber e responda a qualquer caixa de diálogo USB.</string>
+    <string name="k2go_clone_link_usb_peer_receive">A aguardar o outro telemóvel. Nele, abra Clonar > Enviar, vá ao passo 3 (Copiar) e responda a qualquer caixa de diálogo USB.</string>
+    <string name="k2go_clone_link_usb_switching">Cabo detetado. A ligar ao outro telemóvel.</string>
+    <string name="k2go_clone_link_usb_ask">Toque em OK na caixa de diálogo USB deste telemóvel.</string>
+    <string name="k2go_clone_link_usb_denied">O acesso USB não foi permitido. Desligue o cabo e volte a ligá-lo.</string>
+    <string name="k2go_clone_link_not_found_cable">Telemóvel emissor não encontrado nesta rede Wi-Fi.</string>
     <string name="k2go_clone_link_usb_linked">Ligado ao outro telemóvel</string>
     <string name="k2go_clone_link_usb_active">Transferência de dados: %1$s</string>
     <string name="k2go_clone_link_badge_off">Desligado</string>
