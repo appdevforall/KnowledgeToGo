@@ -2,7 +2,7 @@ name: "RootFS: 2. bake + publish"
 
 # ADFA-5334. Builds the rootfs images with tools/rootfs-builder/build-iiab-rootfs.sh
 # (native proot on arm64 runners) and publishes them to Cloudflare R2 (k2go-rootfs).
-# Supersedes the old QEMU/Docker bake-rootfs.yml.disabled.
+# Supersedes the old QEMU/Docker bake (.github/deprecated-workflows/bake-rootfs-qemu.yml).
 #
 # Split by architecture into two parallel jobs (one arm64 node each), each building
 # ALL tiers (basic, standard, full, matomo). ~1.5h per node. The APK is NOT touched

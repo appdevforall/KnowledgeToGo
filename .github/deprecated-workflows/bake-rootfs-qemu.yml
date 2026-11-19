@@ -1,3 +1,6 @@
+# DEPRECATED 2026-11-19 (K2GO-585). GitHub does not run this file: it is outside .github/workflows.
+# Kept for reference only. To restore it, move it back to .github/workflows.
+#
 name: Bake IIAB-oA RootFS Images
 
 on:
