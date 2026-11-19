@@ -1,4 +1,4 @@
-name: "Bins: bump check"
+name: "Test+Bins: bump check"
 
 # Guards the native-binaries pin: if the release tag changes, the integrity
 # manifest must change in the same PR (see controller/docs/UPDATING_NATIVE_BINARIES.md).
