@@ -273,9 +273,10 @@ public final class CloneLinkRows {
         }
         Probe p = probe;
         if (p == null) return;   // the first check has not answered yet
-        boolean paired = senderHost != null;
+        String host = senderHost;   // volatile: read once
+        boolean paired = host != null;
         boolean carrying = wifiRate > 0;
-        boolean checked = paired && senderHost.equals(p.probed);
+        boolean checked = paired && host.equals(p.probed);
         LinkRule.Row row = LinkRule.receive(p.on, p.onNetwork, paired, p.answers || carrying, p.viaHotspot,
                 carrying, p.band, cableLinked(), checked);
         boolean hotspotTitle = p.viaHotspot && (paired || p.answers);

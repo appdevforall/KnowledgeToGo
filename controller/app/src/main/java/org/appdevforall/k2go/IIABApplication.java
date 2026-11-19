@@ -31,6 +31,8 @@ public class IIABApplication extends Application {
         org.appdevforall.k2go.apptheme.data.AppThemeController.restore(this);
         // ADFA-4640: wire up persistence for the server log (survives app restarts).
         org.appdevforall.k2go.LogRepository.get().init(this);
+        // K2GO-584 (privacy): a share log left by a process that died while sharing.
+        org.appdevforall.k2go.RsyncManager.deleteDaemonLog(this);
         // ADFA-5343 (Phase 1): establish the app-scoped server-lifecycle reconciler.
         // ADFA-5343 (Phase 4a): start its own background tick so it can bring the box up / re-drive a flap
         // with NO foreground Activity. The tick stands down while an Activity is foregrounded (the Activity
