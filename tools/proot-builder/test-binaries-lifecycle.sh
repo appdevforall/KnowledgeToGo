@@ -5,7 +5,7 @@
 #
 # Runs the script against fake gh and aws commands and a throwaway git repo, then
 # checks what it archives and deletes. Needs bash and git only: no network, no
-# secrets. binaries-lifecycle.yml runs it before it touches GitHub or R2.
+# secrets. bins-2-archive.yml runs it before it touches GitHub or R2.
 #
 # Usage: test-binaries-lifecycle.sh [path/to/binaries-lifecycle.sh]
 # =============================================================================

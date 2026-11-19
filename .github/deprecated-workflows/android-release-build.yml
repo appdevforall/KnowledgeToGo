@@ -1,0 +1,211 @@
+# DEPRECATED 2026-11-19 (K2GO-585). GitHub does not run this file: it is outside .github/workflows.
+# Kept for reference only; review for deletion before 1.3.0. To restore it, move it back to .github/workflows.
+# Its job now runs inline as the "release" job of app-play-2-release.yml.
+#
+name: "App: build release APKs"
+
+on:
+  # K2GO-564: only play-release.yml starts a release, after Google approved the candidate, so GitHub
+  # and Play ship the same commit. A hand-pushed v* tag does not start this workflow.
+  # The interim R2 republish tool is retired (.github/deprecated-workflows/android-r2-republish.yml).
+  workflow_call:
+    inputs:
+      tag:
+        description: "Release tag to build, for example v1.2.0"
+        type: string
+        required: true
+
+jobs:
+  build-and-release:
+    name: Build Release APKs & Upload to R2
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+
+    defaults:
+      run:
+        working-directory: ./controller
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag }}
+          submodules: recursive
+
+      # Fail before any build or upload when the tagged build is not that exact final version.
+      - name: Require versionName to equal the release tag
+        working-directory: ${{ github.workspace }}
+        run: python3 tools/play-publish/play_publish.py check-release --gradle controller/app/build.gradle --tag "$RELEASE_TAG"
+
+      # TODO (Future): Add a Jira step here to verify if the version exists in Jira
+      # or to extract release notes directly from a Jira board.
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # ADFA-4466: the google-services plugin needs google-services.json at build time;
+      # inject it from the dedicated K2Go analytics secret so the build compiles.
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_K2GO_ANALYTICS: ${{ secrets.GOOGLE_SERVICES_JSON_K2GO_ANALYTICS }}
+        run: echo "$GOOGLE_SERVICES_JSON_K2GO_ANALYTICS" > app/google-services.json
+
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$ENCODED_STRING" | base64 -d > keystore.jks
+
+      # --- VERSION AUDIT ---
+
+      - name: Log Pinned Binary Version
+        run: |
+          echo "=========================================="
+          echo "Compiling with native binaries pinned to:"
+          cat binary_version.txt
+          echo ""
+          echo "=========================================="
+
+      # --- BUILD AND SIGNING ---
+
+      - name: Build and Sign Release APKs
+        env:
+          # :app:syncNativeArtifacts queries the GitHub API for the pinned binaries
+          # release; unauthenticated it gets HTTP 403 (shared-runner rate limit), so
+          # provide the auto token for the M15 authenticated-retry fallback (build.gradle).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # ADFA-4533: GlitchTip DSN for release builds
+          SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
+        run: |
+          # Release tags ship a clean version (v1.0.0), no commit hash. build.gradle only
+          # falls back to the git SHA suffix when versionSuffix is absent; pass it empty here.
+          # In-APK traceability is unaffected: BuildConfig.GIT_SHA still records the commit.
+          # K2GO-431: build both flavors. standard -> GitHub + R2 + OTA update.json (as before);
+          # fdroid -> R2 only (F-Droid distributes it; it carries no in-app OTA).
+          # K2GO-564: the Play AAB is built and archived by play-candidate.yml; Google approves that
+          # exact build, so the release does not build a second one.
+          ./gradlew assembleStandardRelease assembleFdroidRelease \
+            -PversionSuffix="" \
+            -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+
+      # --- GITHUB RELEASES ---
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          # Marks a "-beta" tag as a pre-release. rc tags never reach this workflow (K2GO-564).
+          tag_name: ${{ env.RELEASE_TAG }}
+          prerelease: ${{ contains(env.RELEASE_TAG, '-beta') }}
+          files: controller/**/build/outputs/apk/standard/release/*.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- CLOUDFLARE R2 UPLOAD ---
+
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BUCKET_NAME: "k2go-apk-repo"
+        run: |
+          # K2GO-431: upload BOTH flavors (standard + fdroid) to R2. The flavor dir sits between
+          # apk/ and release/ (apk/standard/release, apk/fdroid/release); the old apk/release path
+          # never matched a flavored build.
+          for apk in $(find . -path "*/build/outputs/apk/*/release/*.apk"); do
+            filename=$(basename "$apk")
+            echo "Uploading $filename to Cloudflare R2 ($BUCKET_NAME)..."
+            
+            # Use aws-cli configured to point to Cloudflare's S3-compatible API
+            aws s3 cp "$apk" "s3://$BUCKET_NAME/$filename" \
+              --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+              --content-type "application/vnd.android.package-archive"
+          done
+
+      # --- OTA MANIFEST (update.json) ---
+      # ADFA-4984: publish the OTA manifest LAST, after the APKs are already in R2, so it never
+      # points at a missing binary. update.json is a fixed key -> it overwrites the previous manifest
+      # and always resolves to the latest release (no .1/.2 copies). The changelog is copied verbatim
+      # from the top entry of controller/ci/ota-release-notes.md, which must match the release tag.
+      - name: Generate and upload update.json
+        working-directory: ${{ github.workspace }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BUCKET_NAME: "k2go-apk-repo"
+        run: |
+          set -euo pipefail
+          TAG="$RELEASE_TAG"
+          echo "Release tag: $TAG"
+
+          # versionCodeBase = the app module's raw versionCode (the app divides the installed
+          # code, base x 10, by 10 to compare). First versionCode in controller/app/build.gradle.
+          VCODE=$(grep -oE 'versionCode[[:space:]]+[0-9]+' controller/app/build.gradle | head -1 | grep -oE '[0-9]+')
+          echo "versionCodeBase: $VCODE"
+
+          # Top entry of controller/ci/ota-release-notes.md; its header must equal the tag (guard against stale notes).
+          HEADER=$(grep -m1 '^## ' controller/ci/ota-release-notes.md | sed 's/^##[[:space:]]*//')
+          if [ "$HEADER" != "$TAG" ]; then
+            echo "::error::controller/ci/ota-release-notes.md top entry '$HEADER' does not match tag '$TAG'. Update the notes before tagging."
+            exit 1
+          fi
+          # Body = the lines between the first '## ' header and the next one (blank lines trimmed).
+          CHANGELOG=$(awk '/^## /{n++; next} n==1{print}' controller/ci/ota-release-notes.md | sed '/^[[:space:]]*$/d')
+          echo "Changelog:"; printf '%s\n' "$CHANGELOG"
+
+          # The one standard APK just uploaded to R2 (K2GO-565: no ABI splits).
+          # OTA update.json covers the standard flavor only (fdroid ships with OTA disabled).
+          APK=$(find controller -path "*/build/outputs/apk/standard/release/*.apk" -printf '%f\n')
+          echo "apk=$APK"
+          if [ -z "$APK" ] || [ "$(printf '%s\n' "$APK" | wc -l)" -ne 1 ]; then
+            echo "::error::Expected exactly one standard APK, found: '$APK'. Aborting instead of publishing a wrong manifest."
+            exit 1
+          fi
+
+          # jq escapes the multiline changelog safely into a JSON string. Installs up to v1.1 pick
+          # apk_arm64_v8a / apk_armeabi_v7a by ABI, so those keys also name the one APK. Remove
+          # those two keys when no v1.1 install remains (v1.2+ reads apk_universal only).
+          jq -n \
+            --argjson vcode "$VCODE" \
+            --arg vname "$TAG" \
+            --arg changelog "$CHANGELOG" \
+            --arg apk "$APK" \
+            '{versionCodeBase: $vcode, versionName: $vname, changelog: $changelog,
+              apk_universal: $apk, apk_arm64_v8a: $apk, apk_armeabi_v7a: $apk}' \
+            > update.json
+          echo "----- update.json -----"; cat update.json
+
+          # Upload LAST (after the APKs). Fixed key -> overwrites the previous manifest.
+          aws s3 cp update.json "s3://$BUCKET_NAME/update.json" \
+            --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+            --content-type "application/json"
+
+      # TODO (Future): Add Jira finalization step here to automatically mark
+      # the Jira version as "Released" and close the corresponding tickets.
+
+      # TODO (Future): Add a Slack notification step to announce the official release
+      # with links to the GitHub Release page and direct Cloudflare downloads.
+
+      # --- SECURITY CLEANUP ---
+
+      - name: Cleanup Keystore
+        if: always()
+        run: rm -f keystore.jks

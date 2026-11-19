@@ -44,8 +44,8 @@ prevents. The CI check `binary-bump-consistency` enforces it.
 - **R2** archives every release and never deletes it:
   `https://k2go-download.appdevforall.org/binaries/<tag>/termux-binaries-latest.zip`
   (and `.sha256`). Use it for debugging, or to restore a release that GitHub rotated out.
-- The workflow **Binaries lifecycle** (`binaries-lifecycle.yml`) does the archive and the
-  prune. `build-static-binaries.yml` calls it after each publish. Run it by hand to backfill
+- The workflow **Binaries lifecycle** (`bins-2-archive.yml`) does the archive and the
+  prune. `bins-1-build.yml` calls it after each publish. Run it by hand to backfill
   the archive, or with `dry_run` to see what a prune would delete.
 - **Provenance:** builds from K2GO-506 on carry a signed build attestation. Verify a copy from
   any source (GitHub, R2, a box) against the workflow run that built it:
