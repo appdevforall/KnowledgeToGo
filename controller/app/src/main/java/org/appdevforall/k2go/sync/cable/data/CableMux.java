@@ -41,8 +41,8 @@ public final class CableMux implements Closeable {
         /** The peer sent its pairing data (the QR payload). */
         void onHello(String payload);
 
-        /** The cable or the peer is gone. Called once. */
-        void onLinkClosed();
+        /** The cable or the peer is gone. Called once, with this mux. */
+        void onLinkClosed(CableMux mux);
 
         /** The sender stopped sharing (BYE). */
         void onBye();
@@ -132,6 +132,10 @@ public final class CableMux implements Closeable {
         }
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
+
     /** Payload bytes moved in both directions, for the speed on the cable row. */
     public long bytesMoved() {
         return bytesIn.get() + bytesOut.get();
@@ -149,10 +153,11 @@ public final class CableMux implements Closeable {
                         peerSeen = true;
                         listener.onPeer();
                         // Our start RESET may have hit a peer that was not reading yet: answer once,
-                        // so the peer also sees a frame from us.
+                        // so the peer also sees a frame from us. PING: a late RESET would close
+                        // channels that are open by then.
                         new Thread(() -> {
                             try {
-                                send(CableFrame.control(CableFrame.Type.RESET, 0));
+                                send(CableFrame.control(CableFrame.Type.PING, 0));
                             } catch (IOException ignored) {
                                 // the link is closing
                             }
@@ -303,6 +308,6 @@ public final class CableMux implements Closeable {
         } catch (IOException ignored) {
             // nothing left to release
         }
-        listener.onLinkClosed();
+        listener.onLinkClosed(this);
     }
 }

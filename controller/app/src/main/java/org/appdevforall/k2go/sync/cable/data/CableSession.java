@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.appdevforall.k2go.sync.cable.domain.LinkRule.Cable;
 import org.appdevforall.k2go.sync.cable.domain.UsbCandidate;
 
 import java.io.IOException;
@@ -48,19 +49,16 @@ public final class CableSession {
 
     public enum Role { SEND, RECEIVE }
 
-    /** Same meaning as LinkRule.Cable: what the cable row shows. */
-    public enum Link { NONE, SWITCHING, ASK_HERE, DENIED, PEER, LINKED }
-
     /**
      * What the cable row shows. {@code bytesPerSec} > 0 means the cable carries data. {@code done}:
      * a copy finished while the cable was linked, so the cable can be removed.
      */
     public static final class State {
-        public final Link link;
+        public final Cable link;
         public final long bytesPerSec;
         public final boolean done;
 
-        State(Link link, long bytesPerSec, boolean done) {
+        State(Cable link, long bytesPerSec, boolean done) {
             this.link = link;
             this.bytesPerSec = bytesPerSec;
             this.done = done;
@@ -78,7 +76,7 @@ public final class CableSession {
         return INSTANCE;
     }
 
-    private final MutableLiveData<State> state = new MutableLiveData<>(new State(Link.NONE, 0, false));
+    private final MutableLiveData<State> state = new MutableLiveData<>(new State(Cable.NONE, 0, false));
     private Context app;
     private Role role;
     private int rsyncPort;
@@ -106,11 +104,14 @@ public final class CableSession {
     private volatile long frontSince;      // when K2Go came to the front (0: before tracking)
     private volatile long pendingSince;    // when the open dialog was asked for
     private static final long FRONT_SETTLE_MS = 1_500;
+    private static final long PENDING_RETRY_MS = 10_000;
     private boolean resumeTracked;
     private volatile String graceKey;
     private volatile long graceSince;
     /** The peer mux answered: only then is the cable "linked". */
     private volatile boolean peerSeen;
+    /** The link open() is starting; set and cleared by open(), closed by closeLink(). */
+    private UsbLink opening;
     private BroadcastReceiver permissionReceiver;
     private BroadcastReceiver detachReceiver;
 
@@ -157,7 +158,7 @@ public final class CableSession {
         }
         stop();
         copyDone = m != null;
-        post(Link.NONE, 0);
+        post(Cable.NONE, 0);
     }
 
     /** A copy finished while the cable was linked, so the cable can be removed. */
@@ -240,10 +241,10 @@ public final class CableSession {
         unregisterPermission();   // a dialog nobody answered must not leave a receiver behind
         unregisterDetach();
         copyDone = false;
-        post(Link.NONE, 0);
+        post(Cable.NONE, 0);
     }
 
-    private void post(Link link, long bytesPerSec) {
+    private void post(Cable link, long bytesPerSec) {
         state.postValue(new State(link, bytesPerSec, copyDone));
     }
 
@@ -265,7 +266,7 @@ public final class CableSession {
                     if (d != null && linked != null && !linked.equals(d.getDeviceName())) return;
                 }
                 closeLink();
-                post(Link.NONE, 0);
+                post(Cable.NONE, 0);
             }
         };
         IntentFilter f = new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
@@ -305,7 +306,7 @@ public final class CableSession {
                     lastBytes = 0;
                 } else {
                     long b = m.bytesMoved();
-                    post(peerSeen ? Link.LINKED : Link.PEER, (b - lastBytes) * 1000 / POLL_MS);
+                    post(peerSeen ? Cable.LINKED : Cable.PEER, (b - lastBytes) * 1000 / POLL_MS);
                     lastBytes = b;
                 }
                 Thread.sleep(POLL_MS);
@@ -350,12 +351,12 @@ public final class CableSession {
                 Log.i(TAG, "switching " + d.getDeviceName() + " to accessory mode");
                 // The other phone re-enumerates in accessory mode; the next poll opens it.
                 UsbLink.switchToAccessory(um, d);
-                post(Link.SWITCHING, 0);
+                post(Cable.SWITCHING, 0);
             }
             return;
         }
-        if (state.getValue() != null && state.getValue().link != Link.NONE) {
-            post(Link.NONE, 0);
+        if (state.getValue() != null && state.getValue().link != Cable.NONE) {
+            post(Cable.NONE, 0);
         }
     }
 
@@ -371,8 +372,8 @@ public final class CableSession {
      * system "open with" dialog may grant first; wait for it before showing ours.
      */
     private void askPermission(UsbManager um, Object target, String key, boolean systemMayGrant) {
-        if (key.equals(deniedKey)) { post(Link.DENIED, 0); return; }
-        post(Link.ASK_HERE, 0);
+        if (key.equals(deniedKey)) { post(Cable.DENIED, 0); return; }
+        post(Cable.ASK_HERE, 0);
         long now = System.currentTimeMillis();
         // Let the system act on a new device first: it may open its own window (an "open with"
         // dialog for our filters, or Files for an MTP phone) that would hide our dialog.
@@ -380,8 +381,10 @@ public final class CableSession {
         if (now - graceSince < (systemMayGrant ? SYSTEM_GRANT_GRACE_MS : FRONT_SETTLE_MS)) return;
         // Another window is on top: ask once K2Go is in front again, so our dialog is seen.
         if (!inFront || now - frontSince < FRONT_SETTLE_MS) return;
-        // K2Go is in front with our dialog still unanswered: another window buried it. Show it again.
-        if (key.equals(pendingKey) && now - pendingSince < FRONT_SETTLE_MS) return;
+        // Our dialog is open or still coming up (slow phones): K2Go has not left the front since we
+        // asked. Ask again only when K2Go came back with no answer (another window buried the
+        // dialog), or when no dialog showed at all for PENDING_RETRY_MS.
+        if (key.equals(pendingKey) && frontSince <= pendingSince && now - pendingSince < PENDING_RETRY_MS) return;
         Log.i(TAG, "asking USB permission for " + key);
         pendingKey = key;
         pendingSince = now;
@@ -424,7 +427,8 @@ public final class CableSession {
                 return;
             }
             peerSeen = false;
-            post(Link.PEER, 0);   // the first write can block while the peer is not reading
+            opening = link;
+            post(Cable.PEER, 0);   // the first write can block while the peer is not reading
             m = newMux(link, r);
         }
         // Start first: a link that dies at once (unplugged a moment ago, ENODEV) must not stay
@@ -432,12 +436,19 @@ public final class CableSession {
         try {
             m.start();
         } catch (IOException e) {
+            synchronized (this) {
+                if (opening == link) opening = null;
+                // A stale accessory after a replug: nothing answers on it.
+                if (Thread.currentThread() == watcher) post(Cable.NONE, 0);
+            }
             try { link.close(); } catch (IOException ignored) { /* already gone */ }
-            post(Link.NONE, 0);   // a stale accessory after a replug: nothing answers on it
             throw e;
         }
         synchronized (this) {
-            if (Thread.currentThread() != watcher || role != r) {   // stopped while the write blocked
+            boolean ours = opening == link;   // closeLink() takes it while the write blocks
+            if (ours) opening = null;
+            // Stopped while the write blocked, or the link died already: the next poll tries again.
+            if (!ours || Thread.currentThread() != watcher || role != r || m.isClosed()) {
                 m.close();
                 return;
             }
@@ -454,7 +465,7 @@ public final class CableSession {
             lastWifiReport = null;   // a new link: send the next verdict
         }
         if (r == Role.SEND) sendHello(m);   // a USB write: outside the lock too
-        post(peerSeen ? Link.LINKED : Link.PEER, 0);
+        post(peerSeen ? Cable.LINKED : Cable.PEER, 0);
         Log.i(TAG, "cable open as " + r + ", waiting for the other phone");
     }
 
@@ -466,7 +477,7 @@ public final class CableSession {
             @Override
             public void onPeer() {
                 peerSeen = true;
-                post(Link.LINKED, 0);
+                post(Cable.LINKED, 0);
                 Log.i(TAG, "the other phone answered over the cable");
             }
 
@@ -493,12 +504,12 @@ public final class CableSession {
             @Override
             public void onDone() {
                 copyDone = true;
-                post(Link.LINKED, 0);
+                post(Cable.LINKED, 0);
             }
 
             @Override
-            public void onLinkClosed() {
-                linkClosed();
+            public void onLinkClosed(CableMux closed) {
+                linkClosed(closed);
             }
         });
     }
@@ -513,16 +524,22 @@ public final class CableSession {
         }
     }
 
-    private synchronized void linkClosed() {
+    private synchronized void linkClosed(CableMux closed) {
+        if (mux != null && mux != closed) return;   // an older link: the current one stays
         peerWifi.postValue(null);
         closeRelay();
         mux = null;
-        post(Link.NONE, 0);
+        post(Cable.NONE, 0);
         Log.i(TAG, "cable link closed");
     }
 
     private synchronized void closeLink() {
         linkedDevice = null;
+        UsbLink o = opening;   // open() is blocked in its first write on it
+        opening = null;
+        if (o != null) {
+            try { o.close(); } catch (IOException ignored) { /* already gone */ }
+        }
         CableMux m = mux;
         mux = null;
         if (m != null) m.close();

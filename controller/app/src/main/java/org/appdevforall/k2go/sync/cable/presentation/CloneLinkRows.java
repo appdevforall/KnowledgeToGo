@@ -241,7 +241,7 @@ public final class CloneLinkRows {
     }
 
     private boolean cableLinked() {
-        return cable != null && cable.link == CableSession.Link.LINKED;
+        return cable != null && cable.link == LinkRule.Cable.LINKED;
     }
 
     private void showWifi() {
@@ -268,7 +268,7 @@ public final class CloneLinkRows {
     private void showCable() {
         CableSession.State s = cable;
         if (s == null) return;
-        LinkRule.Row row = LinkRule.cable(LinkRule.Cable.valueOf(s.link.name()), s.bytesPerSec > 0, s.done,
+        LinkRule.Row row = LinkRule.cable(s.link, s.bytesPerSec > 0, s.done,
                 cablePresent);
         paint(usbIcon, usbDetail, usbBadge, row, WifiLink.Band.NONE, 0, s.bytesPerSec);
     }
