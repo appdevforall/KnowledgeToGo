@@ -1,6 +1,6 @@
 # ADR-K2GO-554 : Signed official rootfs skips the second archive pass
 
-- Status: Accepted (2026-11-12, with Amendment 1)
+- Status: Accepted (2026-11-12, with Amendment 1; Amendment 3 on 2026-11-20)
 - Date: 2026-11-07
 - Ticket: K2GO-554 (relates to K2GO-555, K2GO-372, K2GO-511, K2GO-457, ADFA-5110)
 - Author: AppDevForAll
@@ -262,6 +262,7 @@ Instrumented tests in the app process (same ART and BouncyCastle as production).
   A3 this is not an identity gap. To use only HTTP, the app must give aria2 a meta4
   without the metaurl (the same local-meta4 handoff as A6), or the builder must stop
   writing the metaurl. DHT and LPD were enabled in 2026-05 with no recorded reason.
+  Superseded by C1 (Amendment 3, K2GO-588): BitTorrent is removed.
 - A5. Trusted import (amends D7). An import needs the tarball and its `.minisig`
   (2 files). Identity: A2. Integrity: one SHA-256 pass of the tarball against the
   manifest `sha256` and `size`. Then the import skips the listing and the treehash.
@@ -308,6 +309,39 @@ manifest (only the `-t` value changes); (3) new bakes carry the manifest. An old
   estimate) and of a signed restore. A manifest without `usize` keeps the full path.
   A restore picks one file; the app finds `X.tar.json` or `X.tar.gz.minisig` next to
   it by name (`ArchivePair`).
+
+## Amendment 3 (2026-11-20, K2GO-588): BitTorrent removed (supersedes A4)
+
+Context: K2GO-588 makes "Keep offline" mean real network silence, and the app sends
+nothing to third parties that the user did not start (privacy by default). A
+BitTorrent session announces the phone to a tracker and to peers, and DHT and LPD
+add more traffic. On 2026-11-20 a OnePlus 7T download of
+`latest_basic_arm64-v8a.meta4` (build 2026.321) ended in the aria2 state `SEED`,
+which exists only for BitTorrent: the published meta4 still carries the torrent
+metaurl.
+
+- C1. The rootfs download is HTTP only. Both measures apply, so neither alone is
+  load-bearing:
+  - The app (`Aria2Manager`) gives aria2 a local copy of the meta4 without the
+    `<metaurl>` elements (`--metalink-file`, `MetalinkHttpOnly`). This is the
+    local-meta4 handoff of A4/A6. It covers the meta4 files that are already
+    published. The IPv4 profiler uses the same copy. If the app cannot read the
+    meta4, it reports a network problem (as aria2 exit 6) and does not fall back to
+    the URL.
+  - aria2 runs with `--enable-dht=false --enable-dht6=false --bt-enable-lpd=false
+    --enable-peer-exchange=false` (the aria2 default is DHT on). `--seed-time=0` and
+    the `dht.dat` file are removed; the app deletes a leftover `dht.dat`.
+  - The builder deletes the `.torrent` and removes the `<metaurl>` line from the
+    meta4 before the bake signs it, so new meta4 files are HTTP only and their
+    sha-256 in the signed manifest matches the copy that aria2 reads (A6 stays
+    possible).
+- C2. Integrity does not change: aria2 checks the meta4 SHA-256 pieces
+  (`--check-integrity`), then DownloadVerifier checks the file (A3).
+- C3. Cost: no peer download. The HTTP mirrors (R2 and its mirror) carry all the
+  traffic, which is what the measured downloads already used.
+- C4. The box (dash-node) aria2 for ZIM, maps and other content has no BitTorrent
+  flags, and the Kiwix meta4 files have no metaurl (checked 2026-11-20). No change.
+- C5. Old `.torrent` files on R2 are pruned with their tarball (`rootfs-2-bake.yml`).
 
 ## Out of scope
 
