@@ -71,7 +71,7 @@ public final class CableMux implements Closeable {
     private volatile long lastRx;         // last bytes from the cable, or the end of local work
     private volatile boolean peerPings;   // the peer runs the keepalive (an older K2Go does not)
     private volatile boolean busy;        // the read thread writes to a local socket
-    private static final long PING_MS = 2_000;
+    private static final long PING_MS = 1_000;
 
     public CableMux(UsbLink link, Opener opener, Listener listener) {
         this.link = link;
