@@ -102,6 +102,8 @@ public class LibraryActivity extends AppCompatActivity
     // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
     private org.appdevforall.k2go.update.presentation.UpdateController updateController;
     private boolean otaAutoChecked = false;
+    /** K2GO-552: the admin-password notice runs once per launch, once the library is usable. */
+    private boolean authNoticeChecked = false;
 
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
@@ -828,6 +830,7 @@ public class LibraryActivity extends AppCompatActivity
         setGateStatusBar(false);   // gate is lifting; return the status-bar icons to the theme default
         hideInstallProgress();
         maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
+        maybeCheckAuthNotice();
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
@@ -957,6 +960,7 @@ public class LibraryActivity extends AppCompatActivity
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
+        maybeCheckAuthNotice();
         maybeStartDiskGuardReport();   // K2GO-391
     }
 
@@ -1003,6 +1007,21 @@ public class LibraryActivity extends AppCompatActivity
         if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(this)) return;
         otaAutoChecked = true;
         updateController.checkForUpdates(false);
+    }
+
+    /** K2GO-552: once per launch, after the gate opened and never during a first install (same rule as
+     *  the OTA check): warn about a broken auto-login or a factory admin password. */
+    private void maybeCheckAuthNotice() {
+        if (authNoticeChecked || installing || !gateDismissed) return;
+        authNoticeChecked = true;
+        org.appdevforall.k2go.auth.presentation.AuthNoticeController.check(this, this::openAuthentication);
+    }
+
+    private void openAuthentication() {
+        currentTab = R.id.nav_settings;
+        showTab(currentTab);
+        syncSelection(currentTab);
+        openSettingsSub(SettingsSubFragment.newInstance("authentication"));
     }
 
     @Override

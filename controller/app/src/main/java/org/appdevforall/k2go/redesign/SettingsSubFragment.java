@@ -467,14 +467,46 @@ public class SettingsSubFragment extends Fragment {
 
     // ---- Authentication (ADFA-5044): manage the admin sign-ins the box uses for Books (Calibre-Web)
     //      and Courses (Kolibri) — the same store the WebView auto-login (ADFA-5043) relies on.
-    //      List → per-service editor with the DNS-style "use a custom sign-in" switch (off = box
-    //      default, on = reveal fields). Wired to /k2go-api/credentials/:service via CredentialsClient. ----
+    //      List -> per-service screen (K2GO-552: auth.presentation.ServicePasswordSection). ----
     private void buildAuthentication(Context ctx, LinearLayout list) {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_hint));
         authServiceRow(ctx, list, "calibre", getString(R.string.k2go_auth_svc_books), "Calibre-Web");
         authServiceRow(ctx, list, "kolibri", getString(R.string.k2go_auth_svc_courses), "Kolibri");
         authServiceRow(ctx, list, "forgejo", getString(R.string.k2go_card_forgejo), "Forgejo");   // K2GO-417
-        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_note));
+        factoryReminderRow(ctx, list);
+    }
+
+    /** K2GO-552: turns the start-up "factory password in use" reminder back on (or off). Turning it
+     *  off at start-up asks for a confirmation first (AuthNoticeController). */
+    private void factoryReminderRow(Context ctx, LinearLayout list) {
+        final org.appdevforall.k2go.auth.data.FactoryReminderStore store =
+                new org.appdevforall.k2go.auth.data.FactoryReminderStore(ctx);
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = SettingsUi.dp(ctx, 16);
+        row.setPadding(p16, p16, p16, p16);
+        row.addView(K2GoText.body(ctx, getString(R.string.k2go_auth_reminder_switch), R.color.k2go_ink),
+                new LinearLayout.LayoutParams(0, -2, 1f));
+        final MaterialSwitch sw = new MaterialSwitch(ctx);
+        sw.setMinimumHeight(0);
+        sw.setChecked(!store.isOff());
+        final boolean[] reverting = {false};
+        sw.setOnCheckedChangeListener((b, on) -> {
+            if (reverting[0]) return;
+            if (on) { store.turnOn(); return; }
+            // Off asks first, like "Don't show again" at start; "Keep reminders" puts the switch back.
+            org.appdevforall.k2go.auth.presentation.AuthNoticeController.confirmStop(ctx, () -> { }, () -> {
+                reverting[0] = true;
+                sw.setChecked(true);
+                reverting[0] = false;
+            });
+        });
+        row.addView(sw, new LinearLayout.LayoutParams(-2, -2));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = SettingsUi.dp(ctx, 16);
+        list.addView(row, lp);
     }
 
     /** A navigable row per service with a state badge (Default / Custom / Not installed). A service
@@ -520,13 +552,22 @@ public class SettingsSubFragment extends Fragment {
                 setBadge(badge, getString(R.string.k2go_auth_chip_notinstalled), R.color.k2go_muted);
                 return;
             }
-            CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
-                @Override public void onOk(String user, String pass, boolean isDefault) {
+            // K2GO-552: the badge comes from a live sign-in, so a password changed inside the service shows.
+            new org.appdevforall.k2go.auth.data.PasswordRepositoryImpl().status(service,
+                    new org.appdevforall.k2go.auth.domain.PasswordRepository.Callback<org.appdevforall.k2go.auth.domain.PasswordState>() {
+                @Override public void onResult(org.appdevforall.k2go.auth.domain.PasswordState st) {
                     if (!isAdded()) return;
-                    if (isDefault) setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
-                    else setBadge(badge, getString(R.string.k2go_auth_chip_custom), R.color.k2go_teal);
+                    if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.MISMATCH) {
+                        setBadge(badge, getString(R.string.k2go_auth_chip_mismatch), R.color.k2go_clay);
+                    } else if (st.usesFactoryPassword()) {
+                        setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
+                    } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.OK) {
+                        setBadge(badge, getString(R.string.k2go_auth_chip_custom), R.color.k2go_teal);
+                    }
                 }
-                @Override public void onErr() { /* leave the badge hidden on a load error */ }
+                @Override public void onFailure(org.appdevforall.k2go.auth.domain.PasswordRepository.Failure f) {
+                    /* leave the badge hidden on a load error */
+                }
             });
         });
     }
@@ -542,177 +583,8 @@ public class SettingsSubFragment extends Fragment {
                 : "forgejo".equals(service) ? R.string.k2go_auth_sub_hostcode   // K2GO-417
                 : R.string.k2go_auth_sub_courses;
         SettingsUi.caption(ctx, list, getString(subRes));
-
-        // Subtle "not running yet" line (no banner) — only shown when the service isn't reachable.
-        final TextView note = K2GoText.label(ctx, getString(R.string.k2go_auth_not_running), R.color.k2go_muted);
-        note.setVisibility(View.GONE);
-        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(-1, -2);
-        nlp.topMargin = SettingsUi.dp(ctx, 4);
-        list.addView(note, nlp);
-
-        // The single control: "Use a custom sign-in".
-        LinearLayout toggleRow = new LinearLayout(ctx);
-        toggleRow.setOrientation(LinearLayout.HORIZONTAL);
-        toggleRow.setGravity(Gravity.CENTER_VERTICAL);
-        toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
-        int p16 = SettingsUi.dp(ctx, 16);
-        toggleRow.setPadding(p16, p16, p16, p16);
-        toggleRow.addView(K2GoText.body(ctx, getString(R.string.k2go_auth_custom_toggle), R.color.k2go_ink),
-                new LinearLayout.LayoutParams(0, -2, 1f));
-        final MaterialSwitch sw = new MaterialSwitch(ctx);
-        sw.setMinimumHeight(0);
-        toggleRow.addView(sw, new LinearLayout.LayoutParams(-2, -2));
-        LinearLayout.LayoutParams trlp = new LinearLayout.LayoutParams(-1, -2);
-        trlp.topMargin = SettingsUi.dp(ctx, 16);
-        list.addView(toggleRow, trlp);
-
-        // OFF group: a subtle status line (check + text) + a short hint. Not a big banner.
-        final LinearLayout offGroup = new LinearLayout(ctx);
-        offGroup.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams oglp = new LinearLayout.LayoutParams(-1, -2);
-        oglp.topMargin = SettingsUi.dp(ctx, 16);
-        list.addView(offGroup, oglp);
-
-        LinearLayout statusRow = new LinearLayout(ctx);
-        statusRow.setOrientation(LinearLayout.HORIZONTAL);
-        statusRow.setGravity(Gravity.CENTER_VERTICAL);
-        TextView check = K2GoText.body(ctx, "✓", R.color.k2go_leaf);
-        LinearLayout.LayoutParams cklp = new LinearLayout.LayoutParams(-2, -2);
-        cklp.rightMargin = SettingsUi.dp(ctx, 8);
-        check.setLayoutParams(cklp);
-        statusRow.addView(check);
-        statusRow.addView(K2GoText.body(ctx, getString(R.string.k2go_auth_using_default), R.color.k2go_ink));
-        offGroup.addView(statusRow);
-
-        TextView toggleHint = K2GoText.label(ctx, getString(R.string.k2go_auth_toggle_hint), R.color.k2go_muted);
-        LinearLayout.LayoutParams thlp = new LinearLayout.LayoutParams(-1, -2);
-        thlp.topMargin = SettingsUi.dp(ctx, 12);
-        toggleHint.setLayoutParams(thlp);
-        offGroup.addView(toggleHint);
-
-        // ON group: the edit fields.
-        final LinearLayout fields = new LinearLayout(ctx);
-        fields.setOrientation(LinearLayout.VERTICAL);
-        fields.setVisibility(View.GONE);
-        list.addView(fields, new LinearLayout.LayoutParams(-1, -2));
-
-        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_username), ""));
-        final EditText username = dnsInput(ctx);
-        fields.addView(username);
-
-        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_password), ""));
-        final EditText password = dnsInput(ctx);
-        password.setInputType(android.text.InputType.TYPE_CLASS_TEXT
-                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        password.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
-        attachEyeToggle(password);   // eye lives inside the field (no floating "Show")
-        fields.addView(password);
-
-        TextView eyeHint = K2GoText.label(ctx, getString(R.string.k2go_auth_eye_hint), R.color.k2go_muted);
-        LinearLayout.LayoutParams ehlp = new LinearLayout.LayoutParams(-2, -2);
-        ehlp.topMargin = SettingsUi.dp(ctx, 6);
-        eyeHint.setLayoutParams(ehlp);
-        fields.addView(eyeHint);
-
-        // ADFA-5346: filled M3 button via the shared style overlay.
-        final com.google.android.material.button.MaterialButton save = new com.google.android.material.button.MaterialButton(
-                new android.view.ContextThemeWrapper(ctx, R.style.ThemeOverlay_K2Go_Button_Filled), null);
-        save.setText(getString(R.string.k2go_auth_save));
-        LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(-1, -2);
-        svlp.topMargin = SettingsUi.dp(ctx, 16);
-        fields.addView(save, svlp);
-
-        // Reset = revert to the box default = simply flip the switch off.
-        final TextView reset = K2GoText.label(ctx, getString(R.string.k2go_auth_reset), R.color.k2go_teal);
-        reset.setClickable(true);
-        reset.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
-        rslp.topMargin = SettingsUi.dp(ctx, 12);
-        reset.setLayoutParams(rslp);
-        fields.addView(reset);
-
-        final TextView status = K2GoText.label(ctx, "", R.color.k2go_muted);
-        status.setVisibility(View.GONE);
-        fields.addView(status);
-
-        // Save is enabled only once a password is typed (the box never returns the stored one).
-        final Runnable refreshSave = () -> {
-            boolean ok = password.getText().length() > 0;
-            save.setEnabled(ok);
-            save.setClickable(ok);
-            save.setAlpha(ok ? 1f : 0.5f);
-        };
-        password.addTextChangedListener(new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void afterTextChanged(android.text.Editable s) { refreshSave.run(); }
-        });
-        refreshSave.run();
-
-        final boolean[] suppress = {false};   // avoid the reset side-effect during programmatic toggles
-        sw.setOnCheckedChangeListener((b, on) -> {
-            fields.setVisibility(on ? View.VISIBLE : View.GONE);
-            offGroup.setVisibility(on ? View.GONE : View.VISIBLE);
-            if (on) { refreshSave.run(); return; }
-            if (suppress[0]) return;
-            // Turning custom off = go back to the box default.
-            CredentialsClient.reset(service, new CredentialsClient.ResetCb() {
-                @Override public void onOk(String user, String pass, boolean isDefault) {
-                    if (!isAdded()) return;
-                    username.setText(user);
-                    // Re-prefill the default sign-in (same as first entry), so re-enabling custom
-                    // shows the full pair instead of a blank password.
-                    password.setText(pass);
-                }
-                @Override public void onErr() { /* the box keeps the previous value on error */ }
-            });
-        });
-
-        save.setOnClickListener(v -> {
-            String u = username.getText().toString().trim();
-            String p = password.getText().toString();
-            if (u.isEmpty() || p.isEmpty()) { setStatus(status, getString(R.string.k2go_auth_need_both), R.color.k2go_clay); return; }
-            setStatus(status, getString(R.string.k2go_auth_saving), R.color.k2go_muted);
-            CredentialsClient.save(service, u, p, new CredentialsClient.SaveCb() {
-                @Override public void onOk(boolean verified) {
-                    if (!isAdded()) return;
-                    setStatus(status, getString(verified ? R.string.k2go_auth_verified : R.string.k2go_auth_saved), R.color.k2go_teal);
-                }
-                @Override public void onErr(int code) {
-                    if (!isAdded()) return;
-                    int msg = code == 401 ? R.string.k2go_auth_bad
-                            : code == 403 ? R.string.k2go_auth_noperm : R.string.k2go_auth_failed;
-                    setStatus(status, getString(msg), R.color.k2go_clay);
-                }
-            });
-        });
-
-        reset.setOnClickListener(v -> sw.setChecked(false));   // the switch listener does the revert
-
-        // Initial state: switch reflects default (off) vs custom (on); username prefilled either way.
-        CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
-            @Override public void onOk(String user, String pass, boolean isDefault) {
-                if (!isAdded()) return;
-                username.setText(user);
-                // The box returns the password only while still at the factory default, so the form
-                // can prefill the full sign-in; a custom password never comes back and stays blank.
-                if (!pass.isEmpty()) password.setText(pass);
-                suppress[0] = true;
-                sw.setChecked(!isDefault);
-                suppress[0] = false;
-                fields.setVisibility(isDefault ? View.GONE : View.VISIBLE);
-                offGroup.setVisibility(isDefault ? View.VISIBLE : View.GONE);
-                refreshSave.run();
-            }
-            @Override public void onErr() {
-                if (!isAdded()) return;
-                // Surface on `note` (always present) — `status` lives inside the fields, hidden in default state.
-                note.setText(getString(R.string.k2go_auth_load_failed));
-                note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
-                note.setVisibility(View.VISIBLE);
-            }
-        });
-        probeService(service, reachable -> { if (isAdded()) note.setVisibility(reachable ? View.GONE : View.VISIBLE); });
+        // K2GO-552: change, repair and reset the admin password inside the service itself.
+        org.appdevforall.k2go.auth.presentation.ServicePasswordSection.build(this, list, service);
     }
 
     // ---- Hotspot (K2GO-127): the local Wi-Fi Direct hotspot's name, password and band. Same
@@ -895,39 +767,7 @@ public class SettingsSubFragment extends Fragment {
         }
     }
 
-    /** Wire the Material "visibility" eye as the end drawable inside a password field (tap to toggle).
-     *  The icons ship white-filled (repo convention) and are tinted to the muted colour at usage. */
-    @android.annotation.SuppressLint("ClickableViewAccessibility")
-    private void attachEyeToggle(final EditText field) {
-        final android.content.res.ColorStateList tint = android.content.res.ColorStateList.valueOf(
-                ContextCompat.getColor(field.getContext(), R.color.k2go_muted));
-        field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_24, 0);
-        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(field, tint);
-        field.setOnTouchListener((v, ev) -> {
-            if (ev.getAction() != android.view.MotionEvent.ACTION_UP) return false;
-            android.graphics.drawable.Drawable d = field.getCompoundDrawablesRelative()[2];
-            if (d == null) return false;
-            int dw = d.getBounds().width();
-            // The end drawable sits on the right in LTR and on the left in RTL; hit-test the correct edge.
-            boolean rtl = field.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-            boolean hit = rtl
-                    ? ev.getX() <= field.getPaddingStart() + dw
-                    : ev.getX() >= field.getWidth() - field.getPaddingEnd() - dw;
-            if (!hit) return false;
-            boolean hidden = field.getTransformationMethod() != null;
-            if (hidden) {
-                field.setTransformationMethod(null);
-                field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_off_24, 0);
-            } else {
-                field.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
-                field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_24, 0);
-            }
-            androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(field, tint);
-            field.setSelection(field.getText().length());
-            v.performClick();
-            return true;
-        });
-    }
+    private void attachEyeToggle(final EditText field) { org.appdevforall.k2go.ui.K2GoInputs.attachEyeToggle(field); }
 
     /** Best-effort reachability probe of a service page (calibre → /books/, kolibri → /kolibri/). */
     private void probeService(String service, Probe cb) {
@@ -961,32 +801,10 @@ public class SettingsSubFragment extends Fragment {
     }
 
     private View dnsFieldLabel(Context ctx, String label, String hintRight) {
-        LinearLayout row = new LinearLayout(ctx);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        TextView l = K2GoText.label(ctx, label, R.color.k2go_teal);
-        l.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
-        row.addView(l);
-        row.addView(K2GoText.label(ctx, hintRight, R.color.k2go_muted));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
-        lp.topMargin = SettingsUi.dp(ctx, 16);
-        row.setLayoutParams(lp);
-        return row;
+        return org.appdevforall.k2go.ui.K2GoInputs.fieldLabel(ctx, label, hintRight);
     }
 
-    private EditText dnsInput(Context ctx) {
-        EditText e = new EditText(ctx);
-        e.setBackgroundResource(R.drawable.k2go_lang_box_bg);
-        int p = SettingsUi.dp(ctx, 14);
-        e.setPadding(p, p, p, p);
-        e.setSingleLine(true);
-        e.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        e.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
-        e.setHintTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
-        lp.topMargin = SettingsUi.dp(ctx, 8);
-        e.setLayoutParams(lp);
-        return e;
-    }
+    private EditText dnsInput(Context ctx) { return org.appdevforall.k2go.ui.K2GoInputs.textInput(ctx); }
 
     private String versionName(Context ctx) {
         try {
