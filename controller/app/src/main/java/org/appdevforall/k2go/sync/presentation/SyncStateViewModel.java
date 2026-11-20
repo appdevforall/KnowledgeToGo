@@ -112,8 +112,9 @@ public class SyncStateViewModel extends ViewModel {
             WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
 
             // A pull start is its own run of checks: it may use one direct-link repair (K2GO-587).
-            boolean reachable = SenderReach.connect(appCtx, creds.ip, creds.port, 2000, false).answers;
-            if (!reachable) Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed");
+            SenderReach.Result reach = SenderReach.connect(appCtx, creds.ip, creds.port, 2000, false);
+            boolean reachable = reach.answers;
+            if (!reachable) Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed: " + reach.why);
             // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
             String probeHost = creds.ip;
             int probePort = creds.port;

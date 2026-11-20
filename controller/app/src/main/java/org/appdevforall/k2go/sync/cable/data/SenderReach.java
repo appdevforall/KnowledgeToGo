@@ -31,14 +31,27 @@ public final class SenderReach {
 
     private static final String TAG = "SenderReach";
 
-    /** One check: does the sender answer, and did this check use the repair. */
+    /** One check: does the sender answer, did this check use the repair, and why not, for the log. */
     public static final class Result {
         public final boolean answers;
         public final boolean repaired;
+        public final String why;   // the last connect error, null when the sender answers
 
-        Result(boolean answers, boolean repaired) {
+        Result(boolean answers, boolean repaired, String why) {
             this.answers = answers;
             this.repaired = repaired;
+            this.why = why;
+        }
+    }
+
+    /** One connect: its outcome and the error text. */
+    private static final class Try {
+        final Outcome outcome;
+        final String why;
+
+        Try(Outcome outcome, String why) {
+            this.outcome = outcome;
+            this.why = why;
         }
     }
 
@@ -50,15 +63,16 @@ public final class SenderReach {
      * comes from DirectLinkRepair.triedAfter, or false for a check that starts its own run.
      */
     public static Result connect(Context c, String host, int port, int timeoutMs, boolean triedInThisRun) {
-        if (host == null) return new Result(false, false);
-        Outcome first = outcome(host, port, timeoutMs);
-        if (first == Outcome.ANSWERS) return new Result(true, false);
+        if (host == null) return new Result(false, false, "no address");
+        Try first = attempt(host, port, timeoutMs);
+        if (first.outcome == Outcome.ANSWERS) return new Result(true, false, null);
         WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!DirectLinkRepair.shouldRepair(first, host.equals(gateway(wm)), triedInThisRun)) {
-            return new Result(false, false);
+        if (!DirectLinkRepair.shouldRepair(first.outcome, host.equals(gateway(wm)), triedInThisRun)
+                || !dropDirectLink(wm, host)) {
+            return new Result(false, false, first.why);
         }
-        if (!dropDirectLink(wm, host)) return new Result(false, false);
-        return new Result(outcome(host, port, timeoutMs) == Outcome.ANSWERS, true);
+        Try second = attempt(host, port, timeoutMs);
+        return new Result(second.outcome == Outcome.ANSWERS, true, second.why);
     }
 
     /** The Wi-Fi gateway (a router, or the sender on its own hotspot), or null with no DHCP lease. */
@@ -69,15 +83,16 @@ public final class SenderReach {
         return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
     }
 
-    private static Outcome outcome(String host, int port, int timeoutMs) {
+    private static Try attempt(String host, int port, int timeoutMs) {
         try (Socket s = new Socket()) {
             s.connect(new InetSocketAddress(host, port), timeoutMs);
-            return Outcome.ANSWERS;
+            return new Try(Outcome.ANSWERS, null);
         } catch (Exception e) {
-            // No log: before pairing the receiver checks the router every few seconds.
+            // No log here: before pairing the receiver checks the router every few seconds.
             // Android reports a refusal as ConnectException "... ECONNREFUSED (Connection refused)".
-            boolean refused = e instanceof ConnectException && String.valueOf(e.getMessage()).contains("ECONNREFUSED");
-            return refused ? Outcome.REFUSED : Outcome.NO_ANSWER;
+            String why = String.valueOf(e.getMessage());
+            boolean refused = e instanceof ConnectException && why.contains("ECONNREFUSED");
+            return new Try(refused ? Outcome.REFUSED : Outcome.NO_ANSWER, why);
         }
     }
 
