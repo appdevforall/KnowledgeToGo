@@ -75,6 +75,7 @@ public class BooksConfirmFragment extends Fragment {
         Button add = root.findViewById(R.id.k2go_bconf_add);
         add.setText(getString(banks ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt, cart.size()));
         add.setEnabled(!cart.isEmpty());
+        if (!banks) org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(add);   // K2GO-588
         add.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();

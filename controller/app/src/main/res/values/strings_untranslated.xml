@@ -10,5 +10,8 @@
   strings.xml.
 -->
 <resources>
+    <string name="k2go_offline_action_title" translatable="false">This needs the internet</string>
+    <string name="k2go_offline_action_msg" translatable="false">You chose Keep offline. To do this, the app must connect to the internet. You can allow it for this action only.</string>
+    <string name="k2go_offline_action_allow_once" translatable="false">Allow only this time</string>
 
 </resources>

@@ -102,6 +102,7 @@ public class GetMoreHubFragment extends Fragment {
             if (title != null) title.setText(R.string.k2go_setup_library_title);
             View cont = root.findViewById(R.id.k2go_gm_continue);
             cont.setVisibility(View.VISIBLE);
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(cont);   // K2GO-588
             cont.setOnClickListener(v -> {
                 if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).startWizardInstall();
             });

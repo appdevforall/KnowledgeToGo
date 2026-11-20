@@ -232,6 +232,7 @@ public final class KolibriConfirmFragment extends Fragment {
                 }
                 liveNote.setVisibility(View.GONE);
                 confirm.setEnabled(allowedByFit);
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(confirm);   // K2GO-588
                 confirm.setOnClickListener(x -> startLive(chosen));
                 break;
 
@@ -398,9 +399,10 @@ public final class KolibriConfirmFragment extends Fragment {
         // commit -- the order is banked either way, so a declined order is not lost; the actual HOLD is
         // enforced in ContentAdmission (the drain waits for consent or Wi-Fi and the order shows as
         // Queued on the index, exactly as Kolibri already defers a busy-line order). The prompt's only
-        // job is to grant consent (on Continue) so the drain may start now.
-        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
-                requireActivity(), () -> commitLive(toDownload), () -> commitLive(toDownload));
+        // job is to grant consent (on Continue) so the drain may start now. K2GO-588: Keep offline
+        // commits nothing.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(
+                requireActivity(), () -> commitLive(toDownload), () -> commitLive(toDownload), () -> {});
     }
 
     private void commitLive(List<Channel> toDownload) {
