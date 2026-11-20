@@ -197,8 +197,10 @@ public final class ModuleActionSheet {
                 final ModuleActions.InstalledAction ia = ModuleActions.installed(key);
                 final ModuleActions.Gate gate = ia == null ? null : ia.gate;
                 if (ia != null && gate == null) {
-                    content.addView(row(ctx, ia.iconRes, act.getString(ia.labelRes),
-                            Emphasis.ACCENT, null, false, v -> ia.handler.run(act, v)));
+                    View urow = row(ctx, ia.iconRes, act.getString(ia.labelRes),
+                            Emphasis.ACCENT, null, false, v -> ia.handler.run(act, v));
+                    org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(urow);   // K2GO-588
+                    content.addView(urow);
                 } else if (ia != null) {
                     final LinearLayout host = content;
                     org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
@@ -207,6 +209,7 @@ public final class ModuleActionSheet {
                             if (!dlg.isShowing()) return;
                             View arow = row(ctx, ia.iconRes, act.getString(ia.labelRes),
                                     Emphasis.ACCENT, null, false, v -> ia.handler.run(act, v));
+                            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(arow);   // K2GO-588
                             host.addView(arow, host.indexOfChild(about) + 1);
                         });
                     });

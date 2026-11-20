@@ -83,9 +83,11 @@ public final class NetworkPolicyGate {
                               @NonNull Runnable onDeclined, @NonNull Runnable onKeptOffline,
                               boolean grantSession) {
         NetworkPolicyDecision decision = NetworkCostAdmission.decideNow(activity);
+        boolean online = OnlineConsent.isEnabled(activity);
         // K2GO-588: with Keep offline, the user allows the internet for this one action only. Nothing
-        // is stored, so the next action asks again. No network: the offline snackbar is enough.
-        if (decision != NetworkPolicyDecision.BLOCKED_NO_NETWORK && !OnlineConsent.isEnabled(activity)) {
+        // is stored, so the next action asks again. No network: the offline snackbar is enough, and
+        // nothing is banked, since a later drain would connect for an order nobody allowed.
+        if (decision != NetworkPolicyDecision.BLOCKED_NO_NETWORK && !online) {
             new BrandDialog(activity)
                     .setTitle(R.string.k2go_offline_action_title)
                     .setMessage(R.string.k2go_offline_action_msg)
@@ -97,7 +99,7 @@ public final class NetworkPolicyGate {
                     .show();
             return;
         }
-        decide(activity, decision, onProceed, onDeclined, grantSession);
+        decide(activity, decision, onProceed, online ? onDeclined : onKeptOffline, grantSession);
     }
 
     private static void decide(@NonNull Activity activity, @NonNull NetworkPolicyDecision decision,
