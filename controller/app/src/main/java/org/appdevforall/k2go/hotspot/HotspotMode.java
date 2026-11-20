@@ -59,7 +59,7 @@ public final class HotspotMode {
     /**
      * The first choice of a sharing screen: the Wi-Fi network the phone is already on, else the
      * hotspot. A Wi-Fi Direct group started for nothing can break a direct Wi-Fi link (TDLS)
-     * between the two phones on the same network (K2GO-584).
+     * between the two phones on the same network (K2GO-587).
      */
     public static Mode initialFor(boolean onWifiNetwork) {
         return onWifiNetwork ? Mode.WIFI : Mode.HOTSPOT;

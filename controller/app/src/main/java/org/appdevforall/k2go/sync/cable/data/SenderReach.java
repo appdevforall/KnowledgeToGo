@@ -3,7 +3,7 @@
  * Name        : SenderReach.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : Does the sender answer on its rsync port over Wi-Fi (K2GO-584)?
+ * Description : Does the sender answer on its rsync port over Wi-Fi (K2GO-587)?
  *               Two phones on one Wi-Fi network set up a direct link (TDLS) by
  *               themselves under heavy traffic. When the sender then starts a
  *               Wi-Fi Direct group, some drivers end their side of that link
@@ -32,7 +32,7 @@ public final class SenderReach {
 
     /**
      * The paired sender at {@code host:port} accepts a connection, after one direct-link drop if
-     * needed. Only for the sender's own address: a router has no direct link to drop.
+     * needed. The gateway (a router, or the sender's own hotspot) has no direct link to drop.
      */
     public static boolean connect(Context c, String host, int port, int timeoutMs) {
         if (host == null) return false;
@@ -40,7 +40,16 @@ public final class SenderReach {
         if (why == null) return true;
         Log.i(TAG, host + ":" + port + " does not answer (" + why + ")");   // refused vs timeout
         WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (host.equals(gateway(wm))) return false;
         return dropDirectLink(wm, host) && failure(host, port, timeoutMs) == null;
+    }
+
+    /** The Wi-Fi gateway (a router, or the sender on its own hotspot), or null with no DHCP lease. */
+    @SuppressWarnings("deprecation") // getDhcpInfo: no permission needed for the gateway
+    public static String gateway(WifiManager wm) {
+        int le = wm != null ? wm.getDhcpInfo().gateway : 0;
+        if (le == 0) return null;
+        return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
     }
 
     /** A plain connect, with no repair. */

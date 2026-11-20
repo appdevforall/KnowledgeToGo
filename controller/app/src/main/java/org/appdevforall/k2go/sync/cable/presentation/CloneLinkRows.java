@@ -181,6 +181,7 @@ public final class CloneLinkRows {
         if (host == null ? senderHost == null : host.equals(senderHost)) return;
         senderHost = host;
         probeOnce = host != null;
+        repairTried = false;   // a new sender gets its own repair
     }
 
     public void stopChecks() {
@@ -201,11 +202,10 @@ public final class CloneLinkRows {
             String host = senderHost;
             boolean probeNow = probeSender || probeOnce || (host != null && !lastAnswers);
             probeOnce = false;
-            String gw = on ? gateway(wm.getDhcpInfo().gateway) : null;
+            String gw = on ? SenderReach.gateway(wm) : null;
             boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
             String target = host != null ? host : gw;
-            // A direct link exists only to the sender on a shared network; one repair per run of "no".
-            boolean repair = !viaHotspot && !repairTried;
+            boolean repair = host != null && !repairTried;   // one repair per run of "no"
             // Phone to phone through a home router can take over a second (K2GO-576 tests).
             boolean answers = on && (probeNow
                     ? (repair ? SenderReach.connect(app, host, port, 3000) : SenderReach.answers(target, port, 3000))
@@ -224,12 +224,6 @@ public final class CloneLinkRows {
                 main.postDelayed(check, CHECK_MS);
             });
         });
-    }
-
-    /** The hotspot gateway (the sender on its own hotspot), or null with no DHCP lease. */
-    private static String gateway(int le) {
-        if (le == 0) return null;
-        return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
     }
 
     /** The phone is on a Wi-Fi network: the same signal that shows the band in the Wi-Fi row. */
