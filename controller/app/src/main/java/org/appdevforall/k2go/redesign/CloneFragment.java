@@ -403,7 +403,9 @@ public class CloneFragment extends Fragment {
             // a phone with a system is the natural source for both the app and the system.)
             systemPresent = org.appdevforall.k2go.SystemStateEvaluator.isSystemInstalled(requireContext());
             page = Page.PREPARE;
-            if (systemPresent) setMode(Mode.HOTSPOT); else render();   // ADFA-4785: enter Send at step 1
+            // ADFA-4785: enter Send at step 1. K2GO-587: on the phone's Wi-Fi network when it is on one.
+            if (systemPresent) setMode(HotspotMode.initialFor(CloneLinkRows.onWifiNetwork(requireContext())));
+            else render();
             return;
         }
         rStage = RStage.JOIN; pasteCode.collapse();
