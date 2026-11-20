@@ -1675,4 +1675,11 @@
     <string name="k2go_online_body_usage">%1$s może udostępniać anonimowe dane o użytkowaniu i raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych i nie śledzimy niczego o osobach korzystających z Twoich udostępnionych treści.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
     <string name="k2go_online_body_crash">%1$s może wysyłać raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
     <string name="k2go_webview_offline_page">Ta strona jest w internecie. Strony w aplikacji działają tylko offline.</string>
+    <string name="k2go_offline_action_title">To wymaga internetu</string>
+    <string name="k2go_offline_action_msg">Wybrano \"Zachowaj offline\". Aby to zrobić, aplikacja musi połączyć się z internetem. Możesz na to zezwolić tylko dla tej czynności.</string>
+    <string name="k2go_offline_action_allow_once">Zezwól tylko tym razem</string>
+    <string name="k2go_feedback_kept_offline">Aplikacja ma ustawienie \"Zachowaj offline\", więc nie wysyła opinii. Aby to zmienić, włącz \"%1$s\" w Ustawienia &gt; Informacje.</string>
+    <string name="k2go_feedback_third_party_title">Wysłać inną aplikacją?</string>
+    <string name="k2go_feedback_third_party_msg">Aplikacja ma ustawienie \"Zachowaj offline\". Aplikacja, którą wybierzesz do wysłania raportu, na przykład poczta e-mail, może połączyć się z internetem.</string>
+    <string name="k2go_privacy_kept_offline">Aplikacja ma ustawienie \"Zachowaj offline\", więc te usługi pozostają wyłączone. Aby to zmienić, włącz \"%1$s\" w Ustawienia &gt; Informacje.</string>
 </resources>

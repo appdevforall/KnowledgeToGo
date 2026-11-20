@@ -1672,4 +1672,11 @@
     <string name="k2go_online_body_usage">%1$s dapat membagikan data penggunaan anonim dan laporan kerusakan, serta dapat memeriksa pembaruan katalog dan aplikasi dengan sendirinya saat ponsel terhubung ke Wi-Fi. Tidak ada informasi pribadi yang dikumpulkan, dan tidak ada yang dilacak tentang orang yang menggunakan konten yang kamu bagikan.\n\nTetap luring: aplikasi tidak terhubung ke internet dengan sendirinya.</string>
     <string name="k2go_online_body_crash">%1$s dapat mengirim laporan kerusakan, serta dapat memeriksa pembaruan katalog dan aplikasi dengan sendirinya saat ponsel terhubung ke Wi-Fi. Tidak ada informasi pribadi yang dikumpulkan.\n\nTetap luring: aplikasi tidak terhubung ke internet dengan sendirinya.</string>
     <string name="k2go_webview_offline_page">Halaman ini ada di internet. Halaman di dalam aplikasi hanya berfungsi secara luring.</string>
+    <string name="k2go_offline_action_title">Ini memerlukan internet</string>
+    <string name="k2go_offline_action_msg">Anda memilih \"Tetap luring\". Untuk melakukan ini, aplikasi harus terhubung ke internet. Anda dapat mengizinkannya hanya untuk tindakan ini.</string>
+    <string name="k2go_offline_action_allow_once">Izinkan kali ini saja</string>
+    <string name="k2go_feedback_kept_offline">Aplikasi diatur ke \"Tetap luring\", jadi tidak mengirim masukan. Untuk mengubahnya, aktifkan \"%1$s\" di Setelan &gt; Tentang.</string>
+    <string name="k2go_feedback_third_party_title">Kirim dengan aplikasi lain?</string>
+    <string name="k2go_feedback_third_party_msg">Aplikasi diatur ke \"Tetap luring\". Aplikasi yang Anda pilih untuk mengirim laporan, misalnya email, dapat terhubung ke internet.</string>
+    <string name="k2go_privacy_kept_offline">Aplikasi diatur ke \"Tetap luring\", jadi layanan ini tetap mati. Untuk mengubahnya, aktifkan \"%1$s\" di Setelan &gt; Tentang.</string>
 </resources>

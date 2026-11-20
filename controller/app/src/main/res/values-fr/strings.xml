@@ -1752,4 +1752,11 @@
     <string name="k2go_online_body_usage">%1$s peut partager des données d\'utilisation anonymes et des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie, et rien n\'est suivi concernant les personnes qui utilisent votre contenu partagé.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
     <string name="k2go_online_body_crash">%1$s peut envoyer des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
     <string name="k2go_webview_offline_page">Cette page se trouve sur Internet. Les pages de l\'application fonctionnent uniquement hors ligne.</string>
+    <string name="k2go_offline_action_title">Cette action nécessite Internet</string>
+    <string name="k2go_offline_action_msg">Vous avez choisi \"Rester hors ligne\". Pour faire ceci, l\'application doit se connecter à Internet. Vous pouvez l\'autoriser pour cette action uniquement.</string>
+    <string name="k2go_offline_action_allow_once">Autoriser cette fois seulement</string>
+    <string name="k2go_feedback_kept_offline">L\'application est réglée sur \"Rester hors ligne\", elle n\'envoie donc pas de commentaires. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
+    <string name="k2go_feedback_third_party_title">Envoyer avec une autre application ?</string>
+    <string name="k2go_feedback_third_party_msg">L\'application est réglée sur \"Rester hors ligne\". L\'application que vous choisissez pour envoyer le rapport, par exemple la messagerie, peut se connecter à Internet.</string>
+    <string name="k2go_privacy_kept_offline">L\'application est réglée sur \"Rester hors ligne\", ces services restent donc désactivés. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
 </resources>

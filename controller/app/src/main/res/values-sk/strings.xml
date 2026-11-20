@@ -1672,4 +1672,11 @@
     <string name="k2go_online_body_usage">%1$s môže zdieľať anonymné údaje o používaní a hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje a nesleduje sa nič o ľuďoch, ktorí používajú váš zdieľaný obsah.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
     <string name="k2go_online_body_crash">%1$s môže odosielať hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
     <string name="k2go_webview_offline_page">Táto stránka je na internete. Stránky v aplikácii fungujú iba offline.</string>
+    <string name="k2go_offline_action_title">Táto akcia vyžaduje internet</string>
+    <string name="k2go_offline_action_msg">Zvolili ste \"Ponechať offline\". Na vykonanie tejto akcie sa aplikácia musí pripojiť k internetu. Môžete to povoliť len pre túto akciu.</string>
+    <string name="k2go_offline_action_allow_once">Povoliť len tentoraz</string>
+    <string name="k2go_feedback_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto neodosiela spätnú väzbu. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
+    <string name="k2go_feedback_third_party_title">Odoslať inou aplikáciou?</string>
+    <string name="k2go_feedback_third_party_msg">Aplikácia je nastavená na \"Ponechať offline\". Aplikácia, ktorú zvolíte na odoslanie hlásenia, napríklad e-mail, sa môže pripojiť k internetu.</string>
+    <string name="k2go_privacy_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto tieto služby zostávajú vypnuté. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
 </resources>

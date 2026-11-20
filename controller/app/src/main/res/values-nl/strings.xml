@@ -1665,4 +1665,11 @@
     <string name="k2go_online_body_usage">%1$s kan anonieme gebruiksgegevens en crashrapporten delen, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld, en er wordt niets bijgehouden over de mensen die jouw gedeelde inhoud gebruiken.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
     <string name="k2go_online_body_crash">%1$s kan crashrapporten verzenden, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
     <string name="k2go_webview_offline_page">Deze pagina staat op internet. Pagina\'s in de app werken alleen offline.</string>
+    <string name="k2go_offline_action_title">Hiervoor is internet nodig</string>
+    <string name="k2go_offline_action_msg">Je hebt \"Offline houden\" gekozen. Hiervoor moet de app verbinding maken met internet. Je kunt het alleen voor deze actie toestaan.</string>
+    <string name="k2go_offline_action_allow_once">Alleen deze keer toestaan</string>
+    <string name="k2go_feedback_kept_offline">De app staat op \"Offline houden\" en stuurt dus geen feedback. Zet \"%1$s\" aan in Instellingen &gt; Over om dit te wijzigen.</string>
+    <string name="k2go_feedback_third_party_title">Verzenden met een andere app?</string>
+    <string name="k2go_feedback_third_party_msg">De app staat op \"Offline houden\". De app die je kiest om het rapport te verzenden, bijvoorbeeld e-mail, kan verbinding maken met internet.</string>
+    <string name="k2go_privacy_kept_offline">De app staat op \"Offline houden\", dus deze diensten blijven uit. Zet \"%1$s\" aan in Instellingen &gt; Over om dit te wijzigen.</string>
 </resources>

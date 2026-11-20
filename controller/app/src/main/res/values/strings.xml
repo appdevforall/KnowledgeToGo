@@ -1862,4 +1862,11 @@
     <string name="k2go_online_body_usage">%1$s can share anonymous usage data and crash reports, and can check for catalog and app updates on its own when the phone is on Wi-Fi. No personal information is collected, and nothing about the people who use your shared content is tracked.\n\nKeep offline: the app does not connect to the internet on its own.</string>
     <string name="k2go_online_body_crash">%1$s can send crash reports, and can check for catalog and app updates on its own when the phone is on Wi-Fi. No personal information is collected.\n\nKeep offline: the app does not connect to the internet on its own.</string>
     <string name="k2go_webview_offline_page">This page is on the internet. Pages inside the app work offline only.</string>
+    <string name="k2go_offline_action_title">This needs the internet</string>
+    <string name="k2go_offline_action_msg">You chose Keep offline. To do this, the app must connect to the internet. You can allow it for this action only.</string>
+    <string name="k2go_offline_action_allow_once">Allow only this time</string>
+    <string name="k2go_feedback_kept_offline">The app is set to Keep offline, so it does not send feedback. To change it, turn on \"%1$s\" in Settings &gt; About.</string>
+    <string name="k2go_feedback_third_party_title">Send with another app?</string>
+    <string name="k2go_feedback_third_party_msg">The app is set to Keep offline. The app that you choose to send the report, for example email, can connect to the internet.</string>
+    <string name="k2go_privacy_kept_offline">The app is set to Keep offline, so these services stay off. To change it, turn on \"%1$s\" in Settings &gt; About.</string>
 </resources>

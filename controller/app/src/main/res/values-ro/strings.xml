@@ -1665,4 +1665,11 @@
     <string name="k2go_online_body_usage">%1$s poate partaja date de utilizare anonime și rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale și nu se urmărește nimic despre persoanele care folosesc conținutul tău partajat.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
     <string name="k2go_online_body_crash">%1$s poate trimite rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
     <string name="k2go_webview_offline_page">Această pagină este pe internet. Paginile din aplicație funcționează doar offline.</string>
+    <string name="k2go_offline_action_title">Este nevoie de internet</string>
+    <string name="k2go_offline_action_msg">Ai ales \"Păstrează offline\". Pentru asta, aplicația trebuie să se conecteze la internet. Poți permite acest lucru doar pentru această acțiune.</string>
+    <string name="k2go_offline_action_allow_once">Permite doar de această dată</string>
+    <string name="k2go_feedback_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci nu trimite feedback. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
+    <string name="k2go_feedback_third_party_title">Trimiți cu altă aplicație?</string>
+    <string name="k2go_feedback_third_party_msg">Aplicația este setată pe \"Păstrează offline\". Aplicația pe care o alegi pentru a trimite raportul, de exemplu e-mailul, se poate conecta la internet.</string>
+    <string name="k2go_privacy_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci aceste servicii rămân oprite. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
 </resources>

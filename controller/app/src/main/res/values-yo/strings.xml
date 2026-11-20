@@ -1685,4 +1685,11 @@
     <string name="k2go_online_body_usage">%1$s lè pín dátà ìlò aláìlórúkọ àti àwọn ìjábọ̀ ìparun, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ, kò sì sí ohunkóhun tí a ń tọpasẹ̀ nípa àwọn ènìyàn tó ń lo àkóónú tí o pín.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
     <string name="k2go_online_body_crash">%1$s lè fi àwọn ìjábọ̀ ìparun ránṣẹ́, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
     <string name="k2go_webview_offline_page">Ojú-ewé yìí wà lórí íńtánẹ́ẹ̀tì. Àwọn ojú-ewé inú ìṣàmúlò ń ṣiṣẹ́ láìsí íńtánẹ́ẹ̀tì nìkan.</string>
+    <string name="k2go_offline_action_title">Èyí nílò íńtánẹ́ẹ̀tì</string>
+    <string name="k2go_offline_action_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". Láti ṣe èyí, ìṣàmúlò gbọ́dọ̀ sopọ̀ mọ́ íńtánẹ́ẹ̀tì. O lè gbà á láàyè fún ìṣe yìí nìkan.</string>
+    <string name="k2go_offline_action_allow_once">Gbà láàyè ní ẹ̀ẹ̀kan yìí nìkan</string>
+    <string name="k2go_feedback_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà kò fi èsì ránṣẹ́. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
+    <string name="k2go_feedback_third_party_title">Fi ránṣẹ́ pẹ̀lú ìṣàmúlò mìíràn?</string>
+    <string name="k2go_feedback_third_party_msg">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". Ìṣàmúlò tí o bá yàn láti fi ìjábọ̀ náà ránṣẹ́, fún àpẹẹrẹ ímeèlì, lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_privacy_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà àwọn iṣẹ́ wọ̀nyí wà ní pípa. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
 </resources>

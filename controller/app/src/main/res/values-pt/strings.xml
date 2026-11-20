@@ -1744,4 +1744,11 @@
     <string name="k2go_online_body_usage">O %1$s pode partilhar dados de utilização anónimos e relatórios de falhas, e pode procurar por si só atualizações do catálogo e da aplicação quando o telemóvel está ligado a Wi-Fi. Não são recolhidas informações pessoais e não é registado nada sobre as pessoas que usam o teu conteúdo partilhado.\n\nManter offline: a aplicação não se liga à internet por si só.</string>
     <string name="k2go_online_body_crash">O %1$s pode enviar relatórios de falhas, e pode procurar por si só atualizações do catálogo e da aplicação quando o telemóvel está ligado a Wi-Fi. Não são recolhidas informações pessoais.\n\nManter offline: a aplicação não se liga à internet por si só.</string>
     <string name="k2go_webview_offline_page">Esta página está na internet. As páginas dentro da aplicação só funcionam offline.</string>
+    <string name="k2go_offline_action_title">Isto precisa de internet</string>
+    <string name="k2go_offline_action_msg">Escolheu \"Manter offline\". Para fazer isto, a aplicação tem de se ligar à internet. Pode permiti-lo apenas para esta ação.</string>
+    <string name="k2go_offline_action_allow_once">Permitir só desta vez</string>
+    <string name="k2go_feedback_kept_offline">A aplicação está definida como \"Manter offline\", por isso não envia comentários. Para alterar, ative \"%1$s\" em Definições &gt; Acerca.</string>
+    <string name="k2go_feedback_third_party_title">Enviar com outra aplicação?</string>
+    <string name="k2go_feedback_third_party_msg">A aplicação está definida como \"Manter offline\". A aplicação que escolher para enviar o relatório, por exemplo o email, pode ligar-se à internet.</string>
+    <string name="k2go_privacy_kept_offline">A aplicação está definida como \"Manter offline\", por isso estes serviços ficam desligados. Para alterar, ative \"%1$s\" em Definições &gt; Acerca.</string>
 </resources>

@@ -1666,4 +1666,11 @@
     <string name="k2go_online_body_usage">%1$s 可以共享匿名使用数据和崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息，也不会跟踪使用你所共享内容的任何人。\n\n“保持离线”：应用不会自行连接互联网。</string>
     <string name="k2go_online_body_crash">%1$s 可以发送崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息。\n\n“保持离线”：应用不会自行连接互联网。</string>
     <string name="k2go_webview_offline_page">此页面位于互联网上。应用内的页面仅可离线使用。</string>
+    <string name="k2go_offline_action_title">此操作需要联网</string>
+    <string name="k2go_offline_action_msg">您选择了“保持离线”。要执行此操作，应用必须连接到互联网。您可以仅允许本次操作联网。</string>
+    <string name="k2go_offline_action_allow_once">仅允许本次</string>
+    <string name="k2go_feedback_kept_offline">应用已设为“保持离线”，因此不会发送反馈。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
+    <string name="k2go_feedback_third_party_title">用其他应用发送？</string>
+    <string name="k2go_feedback_third_party_msg">应用已设为“保持离线”。您选择用来发送报告的应用（例如电子邮件）可能会连接到互联网。</string>
+    <string name="k2go_privacy_kept_offline">应用已设为“保持离线”，因此这些服务保持关闭。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
 </resources>
