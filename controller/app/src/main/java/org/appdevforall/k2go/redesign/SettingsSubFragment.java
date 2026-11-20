@@ -209,6 +209,10 @@ public class SettingsSubFragment extends Fragment {
             org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).applyConsent();
             if (!checked) io.sentry.Sentry.close();   // nothing more leaves for GlitchTip in this session
             org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
+            if (getActivity() != null) {
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(
+                        getActivity().findViewById(R.id.fab_feedback));
+            }
         });
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
     }

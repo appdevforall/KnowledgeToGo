@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,6 +64,16 @@ public class FeedbackFragment extends Fragment {
                 getString(R.string.feedback_cat_content)});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter);
+
+        // K2GO-588: with Keep offline, this screen sends nothing; the note says where to change it.
+        if (!org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(requireContext())) {
+            send.setEnabled(false);
+            forceCrash.setEnabled(false);
+            TextView note = v.findViewById(R.id.feedback_offline_note);
+            note.setText(getString(R.string.k2go_feedback_kept_offline,
+                    getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel())));
+            note.setVisibility(View.VISIBLE);
+        }
 
         send.setOnClickListener(view -> {
             String msg = message.getText().toString().trim();

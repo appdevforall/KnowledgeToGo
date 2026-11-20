@@ -202,7 +202,25 @@ public final class FeedbackFab {
                 android.view.Gravity.BOTTOM | android.view.Gravity.END);
         lp.setMargins(m, m, m, Math.round(bottomMarginDp * d));
         root.addView(fab, lp);
-        attach(fab, () -> sendFeedback(activity, screenTag), topExclusionDp, bottomExclusionDp);
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(fab);
+        attach(fab, () -> confirmThenSend(activity, screenTag), topExclusionDp, bottomExclusionDp);
+    }
+
+    /**
+     * K2GO-588: the report leaves through an app the user picks (email, chat), which the app does not
+     * control. With Keep offline, say so first; the user continues or cancels.
+     */
+    private static void confirmThenSend(android.app.Activity activity, String screenTag) {
+        if (org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(activity)) {
+            sendFeedback(activity, screenTag);
+            return;
+        }
+        new org.appdevforall.k2go.ui.dialog.BrandDialog(activity)
+                .setTitle(org.appdevforall.k2go.R.string.k2go_feedback_third_party_title)
+                .setMessage(org.appdevforall.k2go.R.string.k2go_feedback_third_party_msg)
+                .setPositive(org.appdevforall.k2go.R.string.setup_continue, () -> sendFeedback(activity, screenTag))
+                .setNegative(org.appdevforall.k2go.R.string.cancel, () -> { })
+                .show();
     }
 
     /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it off.

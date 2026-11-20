@@ -67,6 +67,14 @@
                 android:text="@string/feedback_force_crash"
                 android:textAllCaps="false"
                 android:visibility="gone" />
+            <TextView
+                android:id="@+id/feedback_offline_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
