@@ -29,12 +29,6 @@ public final class UsbCandidate {
     /** Apple devices have no Android accessory mode: no permission dialog, no switch. */
     private static final int APPLE_VID = 0x05AC;
 
-    /**
-     * Switch refusals in a row before a device counts as one without accessory mode. A phone
-     * that is still re-enumerating can refuse one request.
-     */
-    public static final int SWITCH_TRIES = 3;
-
     private UsbCandidate() {
     }
 
