@@ -1622,7 +1622,14 @@
     <string name="k2go_clone_link_wifi_network">通过 Wi-Fi 网络共享</string>
     <string name="k2go_clone_link_hotspot_off">热点已关闭</string>
     <string name="k2go_clone_link_usb_none">无数据线</string>
-    <string name="k2go_clone_link_usb_waiting">已检测到数据线。请在两部手机上允许 USB 访问。</string>
+    <string name="k2go_clone_link_usb_present">USB 数据线已连接。如果另一端是手机，请在那部手机上打开克隆。</string>
+    <string name="k2go_clone_link_usb_unsupported">这条数据线连接的设备无法使用克隆。</string>
+    <string name="k2go_clone_link_usb_peer_send">正在等待另一部手机。在那部手机上打开克隆，点按接收，并响应所有 USB 对话框。</string>
+    <string name="k2go_clone_link_usb_peer_receive">正在等待另一部手机。在那部手机上打开克隆 > 发送，前往第 3 步（复制），并响应所有 USB 对话框。</string>
+    <string name="k2go_clone_link_usb_switching">已检测到数据线。正在连接另一部手机。</string>
+    <string name="k2go_clone_link_usb_ask">在此手机的 USB 对话框中点按确定。</string>
+    <string name="k2go_clone_link_usb_denied">未允许 USB 访问。请拔下数据线后重新插入。</string>
+    <string name="k2go_clone_link_not_found_cable">未在此 Wi-Fi 网络上找到发送方手机。</string>
     <string name="k2go_clone_link_usb_linked">已与对方手机连接</string>
     <string name="k2go_clone_link_usb_active">正在传输数据：%1$s</string>
     <string name="k2go_clone_link_badge_off">关闭</string>
@@ -1638,7 +1645,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi 已关闭。请打开 Wi-Fi，或连接 USB 数据线。</string>
     <string name="k2go_clone_link_no_network">未连接到 Wi-Fi 网络</string>
     <string name="k2go_clone_link_cable_only">未使用。复制通过 USB 数据线进行。</string>
-    <string name="k2go_clone_link_not_on_network">未使用。另一部手机不在此 Wi-Fi 网络上。</string>
+    <string name="k2go_clone_link_not_on_network">未使用。两部手机在此 Wi-Fi 网络上无法互相连接。</string>
+    <string name="k2go_clone_link_not_checked">正在检查另一部手机是否在此 Wi-Fi 网络上。</string>
+    <string name="k2go_clone_link_peer_on_wifi">另一部手机已通过 Wi-Fi 连接到此手机。</string>
+    <string name="k2go_clone_link_peer_done_wifi">另一部手机已通过 Wi-Fi 完成复制。</string>
     <string name="k2go_clone_link_waiting_code">已连接 Wi-Fi。扫描另一部手机的代码后会检查它。</string>
     <string name="k2go_clone_link_not_found_action">未在此 Wi-Fi 网络上找到发送方手机。请加入它的网络，或连接 USB 数据线。</string>
     <string name="k2go_clone_link_hotspot_starting">正在开启热点</string>

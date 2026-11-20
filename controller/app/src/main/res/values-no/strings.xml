@@ -1631,7 +1631,14 @@
     <string name="k2go_clone_link_wifi_network">Deler over Wi-Fi-nettverket</string>
     <string name="k2go_clone_link_hotspot_off">Wi-Fi-sone av</string>
     <string name="k2go_clone_link_usb_none">Ingen kabel</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel funnet. Tillat USB-tilgang på begge telefonene.</string>
+    <string name="k2go_clone_link_usb_present">USB-kabel tilkoblet. Hvis det er en telefon i den andre enden, åpne Klon på den.</string>
+    <string name="k2go_clone_link_usb_unsupported">Enheten på denne kabelen kan ikke bruke Klon.</string>
+    <string name="k2go_clone_link_usb_peer_send">Venter på den andre telefonen. Åpne Klon på den, trykk på Motta og svar på eventuelle USB-dialoger.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Venter på den andre telefonen. Åpne Klon > Send på den, gå til steg 3 (Kopier) og svar på eventuelle USB-dialoger.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel funnet. Kobler til den andre telefonen.</string>
+    <string name="k2go_clone_link_usb_ask">Trykk på OK i USB-dialogen på denne telefonen.</string>
+    <string name="k2go_clone_link_usb_denied">USB-tilgang ble ikke tillatt. Koble fra kabelen og koble den til igjen.</string>
+    <string name="k2go_clone_link_not_found_cable">Fant ikke telefonen som sender, på dette Wi-Fi-nettverket.</string>
     <string name="k2go_clone_link_usb_linked">Koblet til den andre telefonen</string>
     <string name="k2go_clone_link_usb_active">Dataoverføring: %1$s</string>
     <string name="k2go_clone_link_badge_off">Av</string>
@@ -1647,7 +1654,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi er av. Slå det på, eller koble til en USB-kabel.</string>
     <string name="k2go_clone_link_no_network">Ikke koblet til et Wi-Fi-nettverk</string>
     <string name="k2go_clone_link_cable_only">Ikke i bruk. Kopien går via USB-kabelen.</string>
-    <string name="k2go_clone_link_not_on_network">Ikke i bruk. Den andre telefonen er ikke på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_not_on_network">Ikke i bruk. De to telefonene når ikke hverandre på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_not_checked">Sjekker om den andre telefonen er på dette Wi-Fi-nettverket.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Den andre telefonen nådde denne telefonen over Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Den andre telefonen er ferdig med å kopiere over Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Koblet til Wi-Fi. Den andre telefonen sjekkes etter at du skanner koden dens.</string>
     <string name="k2go_clone_link_not_found_action">Fant ikke telefonen som sender, på dette Wi-Fi-nettverket. Koble til nettverket dens, eller koble til en USB-kabel.</string>
     <string name="k2go_clone_link_hotspot_starting">Starter Wi-Fi-sonen</string>

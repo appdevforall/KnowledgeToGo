@@ -1621,7 +1621,14 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi ağı üzerinden paylaşılıyor</string>
     <string name="k2go_clone_link_hotspot_off">Etkin nokta kapalı</string>
     <string name="k2go_clone_link_usb_none">Kablo yok</string>
-    <string name="k2go_clone_link_usb_waiting">Kablo bulundu. Her iki telefonda da USB erişimine izin verin.</string>
+    <string name="k2go_clone_link_usb_present">USB kablosu bağlı. Diğer uçta bir telefon varsa, o telefonda Klonla\'yı açın.</string>
+    <string name="k2go_clone_link_usb_unsupported">Bu kablodaki cihaz Klonla\'yı kullanamaz.</string>
+    <string name="k2go_clone_link_usb_peer_send">Diğer telefon bekleniyor. O telefonda Klonla\'yı açın, Al\'a dokunun ve tüm USB iletişim kutularını yanıtlayın.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Diğer telefon bekleniyor. O telefonda Klonla > Gönder\'i açın, 3. adıma (Kopyala) gidin ve tüm USB iletişim kutularını yanıtlayın.</string>
+    <string name="k2go_clone_link_usb_switching">Kablo bulundu. Diğer telefona bağlanılıyor.</string>
+    <string name="k2go_clone_link_usb_ask">Bu telefondaki USB iletişim kutusunda Tamam\'a dokunun.</string>
+    <string name="k2go_clone_link_usb_denied">USB erişimine izin verilmedi. Kabloyu çıkarıp yeniden takın.</string>
+    <string name="k2go_clone_link_not_found_cable">Gönderen telefon bu Wi-Fi ağında bulunamadı.</string>
     <string name="k2go_clone_link_usb_linked">Diğer telefona bağlandı</string>
     <string name="k2go_clone_link_usb_active">Veri aktarımı: %1$s</string>
     <string name="k2go_clone_link_badge_off">Kapalı</string>
@@ -1637,7 +1644,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi kapalı. Açın veya bir USB kablosu bağlayın.</string>
     <string name="k2go_clone_link_no_network">Bir Wi-Fi ağına bağlı değil</string>
     <string name="k2go_clone_link_cable_only">Kullanılmıyor. Kopyalama USB kablosu üzerinden yapılıyor.</string>
-    <string name="k2go_clone_link_not_on_network">Kullanılmıyor. Diğer telefon bu Wi-Fi ağında değil.</string>
+    <string name="k2go_clone_link_not_on_network">Kullanılmıyor. İki telefon bu Wi-Fi ağında birbirine ulaşamıyor.</string>
+    <string name="k2go_clone_link_not_checked">Diğer telefonun bu Wi-Fi ağında olup olmadığı kontrol ediliyor.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Diğer telefon Wi-Fi üzerinden bu telefona ulaştı.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Diğer telefon Wi-Fi üzerinden kopyalamayı bitirdi.</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi\'ye bağlı. Diğer telefon, kodunu taradıktan sonra kontrol edilir.</string>
     <string name="k2go_clone_link_not_found_action">Gönderen telefon bu Wi-Fi ağında bulunamadı. Onun ağına katılın veya bir USB kablosu bağlayın.</string>
     <string name="k2go_clone_link_hotspot_starting">Etkin nokta başlatılıyor</string>

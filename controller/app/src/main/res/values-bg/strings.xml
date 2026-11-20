@@ -1628,7 +1628,14 @@
     <string name="k2go_clone_link_wifi_network">Споделяне през Wi-Fi мрежата</string>
     <string name="k2go_clone_link_hotspot_off">Точката за достъп е изключена</string>
     <string name="k2go_clone_link_usb_none">Няма кабел</string>
-    <string name="k2go_clone_link_usb_waiting">Открит е кабел. Разрешете USB достъпа на двата телефона.</string>
+    <string name="k2go_clone_link_usb_present">USB кабелът е свързан. Ако в другия край има телефон, отворете Клониране на него.</string>
+    <string name="k2go_clone_link_usb_unsupported">Устройството на този кабел не може да използва Клониране.</string>
+    <string name="k2go_clone_link_usb_peer_send">Изчакване на другия телефон. На него отворете Клониране, докоснете Получаване и отговорете на всеки USB диалог.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Изчакване на другия телефон. На него отворете Клониране > Изпрати, отидете на стъпка 3 (Копирай) и отговорете на всеки USB диалог.</string>
+    <string name="k2go_clone_link_usb_switching">Открит е кабел. Свързване с другия телефон.</string>
+    <string name="k2go_clone_link_usb_ask">Докоснете Добре в USB диалога на този телефон.</string>
+    <string name="k2go_clone_link_usb_denied">USB достъпът не е разрешен. Изключете кабела и го включете отново.</string>
+    <string name="k2go_clone_link_not_found_cable">Изпращащият телефон не е открит в тази Wi-Fi мрежа.</string>
     <string name="k2go_clone_link_usb_linked">Свързан с другия телефон</string>
     <string name="k2go_clone_link_usb_active">Пренос на данни: %1$s</string>
     <string name="k2go_clone_link_badge_off">Изкл.</string>
@@ -1644,7 +1651,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi е изключен. Включете го или свържете USB кабел.</string>
     <string name="k2go_clone_link_no_network">Няма връзка с Wi-Fi мрежа</string>
     <string name="k2go_clone_link_cable_only">Не се използва. Копирането е през USB кабела.</string>
-    <string name="k2go_clone_link_not_on_network">Не се използва. Другият телефон не е в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_not_on_network">Не се използва. Двата телефона не се достигат един друг в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_not_checked">Проверява се дали другият телефон е в тази Wi-Fi мрежа.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Другият телефон се свърза с този телефон през Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Другият телефон завърши копирането през Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Свързан с Wi-Fi. Другият телефон се проверява, след като сканирате кода му.</string>
     <string name="k2go_clone_link_not_found_action">Изпращащият телефон не е открит в тази Wi-Fi мрежа. Присъединете се към мрежата му или свържете USB кабел.</string>
     <string name="k2go_clone_link_hotspot_starting">Точката за достъп се включва</string>

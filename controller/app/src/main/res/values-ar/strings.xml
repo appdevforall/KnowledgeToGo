@@ -1621,7 +1621,14 @@
     <string name="k2go_clone_link_wifi_network">المشاركة عبر شبكة Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">نقطة الاتصال متوقفة</string>
     <string name="k2go_clone_link_usb_none">لا يوجد كابل</string>
-    <string name="k2go_clone_link_usb_waiting">تم اكتشاف الكابل. اسمح بالوصول عبر USB على كلا الهاتفين.</string>
+    <string name="k2go_clone_link_usb_present">كابل USB متصل. إذا كان هاتف في الطرف الآخر، فافتح استنساخ عليه.</string>
+    <string name="k2go_clone_link_usb_unsupported">لا يمكن للجهاز الموصول بهذا الكابل استخدام استنساخ.</string>
+    <string name="k2go_clone_link_usb_peer_send">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ، واضغط على استلام، ثم أجب عن أي مربع حوار USB.</string>
+    <string name="k2go_clone_link_usb_peer_receive">في انتظار الهاتف الآخر. على ذلك الهاتف، افتح استنساخ > إرسال، وانتقل إلى الخطوة 3 (نسخ)، ثم أجب عن أي مربع حوار USB.</string>
+    <string name="k2go_clone_link_usb_switching">تم العثور على الكابل. جارٍ الاتصال بالهاتف الآخر.</string>
+    <string name="k2go_clone_link_usb_ask">اضغط على موافق في مربع حوار USB على هذا الهاتف.</string>
+    <string name="k2go_clone_link_usb_denied">لم يُسمح بالوصول عبر USB. افصل الكابل ثم وصّله مرة أخرى.</string>
+    <string name="k2go_clone_link_not_found_cable">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه.</string>
     <string name="k2go_clone_link_usb_linked">مرتبط بالهاتف الآخر</string>
     <string name="k2go_clone_link_usb_active">نقل البيانات: %1$s</string>
     <string name="k2go_clone_link_badge_off">متوقف</string>
@@ -1637,7 +1644,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi متوقف. شغّله أو وصّل كابل USB.</string>
     <string name="k2go_clone_link_no_network">غير متصل بشبكة Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">غير مستخدم. النسخ يتم عبر كابل USB.</string>
-    <string name="k2go_clone_link_not_on_network">غير مستخدم. الهاتف الآخر ليس على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_not_on_network">غير مستخدم. لا يصل الهاتفان أحدهما إلى الآخر على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_not_checked">جارٍ التحقق مما إذا كان الهاتف الآخر على شبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_link_peer_on_wifi">وصل الهاتف الآخر إلى هذا الهاتف عبر Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">أنهى الهاتف الآخر النسخ عبر Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">متصل بشبكة Wi-Fi. يتم التحقق من الهاتف الآخر بعد مسح رمزه.</string>
     <string name="k2go_clone_link_not_found_action">لم يتم العثور على الهاتف المُرسِل في شبكة Wi-Fi هذه. انضم إلى شبكته أو وصّل كابل USB.</string>
     <string name="k2go_clone_link_hotspot_starting">جارٍ تشغيل نقطة الاتصال</string>

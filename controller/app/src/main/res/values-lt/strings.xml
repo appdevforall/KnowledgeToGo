@@ -1638,7 +1638,14 @@
     <string name="k2go_clone_link_wifi_network">Bendrinama per Wi-Fi tinklą</string>
     <string name="k2go_clone_link_hotspot_off">Prieigos taškas išjungtas</string>
     <string name="k2go_clone_link_usb_none">Nėra kabelio</string>
-    <string name="k2go_clone_link_usb_waiting">Kabelis aptiktas. Leiskite USB prieigą abiejuose telefonuose.</string>
+    <string name="k2go_clone_link_usb_present">USB kabelis prijungtas. Jei kitame gale yra telefonas, atidarykite jame Klonuoti.</string>
+    <string name="k2go_clone_link_usb_unsupported">Prie šio kabelio prijungtas įrenginys negali naudoti Klonuoti.</string>
+    <string name="k2go_clone_link_usb_peer_send">Laukiama kito telefono. Jame atidarykite Klonuoti, palieskite Gauti ir atsakykite į bet kurį USB dialogą.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Laukiama kito telefono. Jame atidarykite Klonuoti > Siųsti, pereikite į 3 žingsnį (Kopijuoti) ir atsakykite į bet kurį USB dialogą.</string>
+    <string name="k2go_clone_link_usb_switching">Kabelis aptiktas. Jungiamasi prie kito telefono.</string>
+    <string name="k2go_clone_link_usb_ask">Šio telefono USB dialoge palieskite Gerai.</string>
+    <string name="k2go_clone_link_usb_denied">USB prieiga neleista. Atjunkite kabelį ir vėl jį prijunkite.</string>
+    <string name="k2go_clone_link_not_found_cable">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas.</string>
     <string name="k2go_clone_link_usb_linked">Susieta su kitu telefonu</string>
     <string name="k2go_clone_link_usb_active">Duomenų perdavimas: %1$s</string>
     <string name="k2go_clone_link_badge_off">Išjungta</string>
@@ -1654,7 +1661,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi išjungtas. Įjunkite jį arba prijunkite USB kabelį.</string>
     <string name="k2go_clone_link_no_network">Neprisijungta prie Wi-Fi tinklo</string>
     <string name="k2go_clone_link_cable_only">Nenaudojama. Kopijuojama per USB kabelį.</string>
-    <string name="k2go_clone_link_not_on_network">Nenaudojama. Kitas telefonas nėra šiame Wi-Fi tinkle.</string>
+    <string name="k2go_clone_link_not_on_network">Nenaudojama. Šiame Wi-Fi tinkle abu telefonai nepasiekia vienas kito.</string>
+    <string name="k2go_clone_link_not_checked">Tikrinama, ar kitas telefonas yra šiame Wi-Fi tinkle.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Kitas telefonas pasiekė šį telefoną per Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Kitas telefonas baigė kopijuoti per Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Prisijungta prie Wi-Fi. Kitas telefonas tikrinamas nuskaičius jo kodą.</string>
     <string name="k2go_clone_link_not_found_action">Siunčiantis telefonas šiame Wi-Fi tinkle nerastas. Prisijunkite prie jo tinklo arba prijunkite USB kabelį.</string>
     <string name="k2go_clone_link_hotspot_starting">Paleidžiamas prieigos taškas</string>

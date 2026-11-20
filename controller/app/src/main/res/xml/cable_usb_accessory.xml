@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-584: the accessory that a K2Go host phone announces (UsbLink.MANUFACTURER / MODEL). -->
+<resources>
+    <usb-accessory manufacturer="AppDevForAll" model="K2GoClone" />
+</resources>

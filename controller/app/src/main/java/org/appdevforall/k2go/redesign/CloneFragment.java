@@ -1019,7 +1019,7 @@ public class CloneFragment extends Fragment {
         if (!isAdded() || st == null) return;
         Log.i("IIAB-Clone", "recv state=" + st.phase + " title=" + st.title + " msg=" + st.message);
         if (st.seq > lastSeq) {
-            if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
+            if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; syncVm.pairingDone(); showReceiveTerminal(true, st.message); }
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
         // ADFA-5155: on the success exit we WANT renderReceive — it draws step 2 with the exit status

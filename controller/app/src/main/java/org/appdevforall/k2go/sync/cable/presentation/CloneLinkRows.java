@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.color.MaterialColors;
@@ -32,7 +33,10 @@ import com.google.android.material.color.MaterialColors;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.data.ShareLogWatch;
+import org.appdevforall.k2go.sync.cable.data.UsbPresence;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule;
+import org.appdevforall.k2go.sync.cable.domain.ShareSessions;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -55,6 +59,7 @@ public final class CloneLinkRows {
     private int checkPort = -1;
     private volatile boolean probeSender = true;
     private volatile boolean lastAnswers;
+    private volatile String lastProbed;   // the address the last answer is about
     /** The sender's address from its pairing data (QR or cable), or null before pairing. */
     private volatile String senderHost;
     private volatile boolean probeOnce;
@@ -63,12 +68,14 @@ public final class CloneLinkRows {
 
     // Main thread only: the last inputs of each row, so a change of one input repaints the row.
     private CableSession.State cable;
-    private Probe probe;                 // receiver: the last Wi-Fi check, null before the first
+    private boolean cablePresent;        // a USB data cable is plugged in (system USB state)
+    private Probe probe;                // receiver: the last Wi-Fi check, null before the first
     private boolean senderSide;
     private boolean hotspotMode;
     private LocalHotspotManager.State hotspot;
     private Boolean peerWifi;            // sender: the receiver's verdict over the cable, null when unknown
     private long wifiRate = -1;          // receiver: bytes/s on Wi-Fi during a pull, -1 when no pull runs
+    private ShareSessions.WifiPeer wifiPeer = ShareSessions.WifiPeer.NONE;   // sender: from its daemon log
 
     /** One receiver Wi-Fi check. */
     private static final class Probe {
@@ -77,13 +84,16 @@ public final class CloneLinkRows {
         final boolean answers;
         final boolean viaHotspot;
         final WifiLink.Band band;
+        final String probed;   // the address the answer is about, null before any check
 
-        Probe(boolean on, boolean onNetwork, boolean answers, boolean viaHotspot, WifiLink.Band band) {
+        Probe(boolean on, boolean onNetwork, boolean answers, boolean viaHotspot, WifiLink.Band band,
+              String probed) {
             this.on = on;
             this.onNetwork = onNetwork;
             this.answers = answers;
             this.viaHotspot = viaHotspot;
             this.band = band;
+            this.probed = probed;
         }
     }
 
@@ -102,6 +112,30 @@ public final class CloneLinkRows {
             showCable();
             // The Wi-Fi row depends on whether the cable can carry the copy; the state repeats every second.
             if (cableLinked() != wasLinked) showWifi();
+        });
+        ShareLogWatch shareLog = new ShareLogWatch(root.getContext());
+        shareLog.peer().observe(owner, p -> {
+            wifiPeer = p;
+            if (senderSide) showWifi();
+        });
+        UsbPresence presence = new UsbPresence(root.getContext());
+        presence.present().observe(owner, p -> {
+            cablePresent = Boolean.TRUE.equals(p);
+            showCable();
+            showWifi();   // the Wi-Fi text mentions the cable
+        });
+        owner.getLifecycle().addObserver(new DefaultLifecycleObserver() {
+            @Override
+            public void onStart(LifecycleOwner o) {
+                presence.start();
+                shareLog.start();
+            }
+
+            @Override
+            public void onStop(LifecycleOwner o) {
+                presence.stop();
+                shareLog.stop();
+            }
         });
     }
 
@@ -168,10 +202,12 @@ public final class CloneLinkRows {
             String host = senderHost;
             String gw = on ? gateway(wm.getDhcpInfo().gateway) : null;
             boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
-            boolean answers = on && (probeNow ? senderAnswers(host != null ? host : gw, port) : lastAnswers);
+            String target = host != null ? host : gw;
+            boolean answers = on && (probeNow ? senderAnswers(target, port) : lastAnswers);
             lastAnswers = answers;
+            if (probeNow) lastProbed = on ? target : null;
             if (probeNow) CableSession.get().reportWifi(answers);   // the sender shows the same verdict
-            Probe p = new Probe(on, gw != null, answers, viaHotspot, WifiLink.band(freq));
+            Probe p = new Probe(on, gw != null, answers, viaHotspot, WifiLink.band(freq), lastProbed);
             main.post(() -> {
                 inFlight = false;
                 if (checkPort != port) return;
@@ -221,7 +257,7 @@ public final class CloneLinkRows {
     }
 
     private boolean cableLinked() {
-        return cable != null && cable.link == CableSession.Link.LINKED;
+        return cable != null && cable.link == LinkRule.Cable.LINKED;
     }
 
     private void showWifi() {
@@ -229,17 +265,20 @@ public final class CloneLinkRows {
         if (senderSide) {
             WifiLink.Band band = hotspotMode ? WifiLink.Band.NONE : WifiLink.band(ownFrequency(c));
             int clients = hotspot != null ? hotspot.clients : -1;
-            LinkRule.Row row = LinkRule.send(hotspotMode, hotspotPhase(hotspot), clients, band, peerWifi, cableLinked());
+            LinkRule.Row row = LinkRule.send(hotspotMode, hotspotPhase(hotspot), clients, band, peerWifi, cableLinked(),
+                    wifiPeer);
             wifiTitle.setText(hotspotMode ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
             paint(wifiIcon, wifiDetail, wifiBadge, row, band, clients, 0);
             return;
         }
         Probe p = probe;
         if (p == null) return;   // the first check has not answered yet
-        boolean paired = senderHost != null;
+        String host = senderHost;   // volatile: read once
+        boolean paired = host != null;
         boolean carrying = wifiRate > 0;
+        boolean checked = paired && host.equals(p.probed);
         LinkRule.Row row = LinkRule.receive(p.on, p.onNetwork, paired, p.answers || carrying, p.viaHotspot,
-                carrying, p.band, cableLinked());
+                carrying, p.band, cableLinked(), checked);
         boolean hotspotTitle = p.viaHotspot && (paired || p.answers);
         wifiTitle.setText(hotspotTitle ? R.string.k2go_clone_link_wifi : R.string.k2go_wifi);
         paint(wifiIcon, wifiDetail, wifiBadge, row, p.band, 0, wifiRate);
@@ -248,8 +287,8 @@ public final class CloneLinkRows {
     private void showCable() {
         CableSession.State s = cable;
         if (s == null) return;
-        LinkRule.Row row = LinkRule.cable(s.link == CableSession.Link.LINKED, s.link == CableSession.Link.WAITING,
-                s.bytesPerSec > 0, s.done);
+        LinkRule.Row row = LinkRule.cable(s.link, s.bytesPerSec > 0, s.done,
+                cablePresent);
         paint(usbIcon, usbDetail, usbBadge, row, WifiLink.Band.NONE, 0, s.bytesPerSec);
     }
 
@@ -271,6 +310,10 @@ public final class CloneLinkRows {
         badge.setText(badgeText(c, row.badge, band));
         detail.setText(row.text == LinkRule.Text.CARRYING ? c.getString(R.string.k2go_clone_link_usb_active, rate(bytesPerSec))
                 : row.text == LinkRule.Text.HOTSPOT_JOINED ? c.getString(R.string.k2go_clone_link_hotspot_on, clients)
+                // The cable is plugged in: do not ask the user to connect one.
+                : row.text == LinkRule.Text.NOT_FOUND && cablePresent ? c.getString(R.string.k2go_clone_link_not_found_cable)
+                : row.text == LinkRule.Text.CABLE_PEER ? c.getString(senderSide ? R.string.k2go_clone_link_usb_peer_send
+                        : R.string.k2go_clone_link_usb_peer_receive)
                 : c.getString(textRes(row.text)));
     }
 
@@ -298,6 +341,9 @@ public final class CloneLinkRows {
             case NO_NETWORK: return R.string.k2go_clone_link_no_network;
             case CABLE_ONLY: return R.string.k2go_clone_link_cable_only;
             case NOT_ON_NETWORK: return R.string.k2go_clone_link_not_on_network;
+            case NOT_CHECKED: return R.string.k2go_clone_link_not_checked;
+            case PEER_ON_WIFI: return R.string.k2go_clone_link_peer_on_wifi;
+            case PEER_DONE_WIFI: return R.string.k2go_clone_link_peer_done_wifi;
             case WAITING_CODE: return R.string.k2go_clone_link_waiting_code;
             case FOUND_HOTSPOT: return R.string.k2go_clone_link_wifi_found;
             case FOUND_NETWORK: return R.string.k2go_clone_link_wifi_found_network;
@@ -310,7 +356,11 @@ public final class CloneLinkRows {
             case NETWORK_WAITING: return R.string.k2go_clone_link_network_waiting;
             case NETWORK_SHARING: return R.string.k2go_clone_link_wifi_network;
             case CABLE_NONE: return R.string.k2go_clone_link_usb_none;
-            case CABLE_WAITING: return R.string.k2go_clone_link_usb_waiting;
+            case CABLE_PRESENT: return R.string.k2go_clone_link_usb_present;
+            case CABLE_UNSUPPORTED: return R.string.k2go_clone_link_usb_unsupported;
+            case CABLE_SWITCHING: return R.string.k2go_clone_link_usb_switching;
+            case CABLE_ASK: return R.string.k2go_clone_link_usb_ask;
+            case CABLE_DENIED: return R.string.k2go_clone_link_usb_denied;
             case CABLE_LINKED: return R.string.k2go_clone_link_usb_linked;
             case CABLE_DONE: return R.string.k2go_clone_link_usb_done;
             default: throw new IllegalArgumentException(t.name());   // CARRYING, HOTSPOT_JOINED take an argument

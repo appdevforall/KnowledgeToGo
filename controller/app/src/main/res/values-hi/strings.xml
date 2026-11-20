@@ -1698,7 +1698,14 @@
     <string name="k2go_clone_link_wifi_network">Wi-Fi नेटवर्क से शेयर किया जा रहा है</string>
     <string name="k2go_clone_link_hotspot_off">हॉटस्पॉट बंद</string>
     <string name="k2go_clone_link_usb_none">कोई केबल नहीं</string>
-    <string name="k2go_clone_link_usb_waiting">केबल मिली। दोनों फ़ोन पर USB ऐक्सेस की अनुमति दें।</string>
+    <string name="k2go_clone_link_usb_present">USB केबल जुड़ी है। अगर दूसरे सिरे पर फ़ोन है, तो उस पर क्लोन खोलें।</string>
+    <string name="k2go_clone_link_usb_unsupported">इस केबल से जुड़ा डिवाइस क्लोन का उपयोग नहीं कर सकता।</string>
+    <string name="k2go_clone_link_usb_peer_send">दूसरे फ़ोन का इंतज़ार है। उस पर क्लोन खोलें, प्राप्त करें पर टैप करें और हर USB डायलॉग का जवाब दें।</string>
+    <string name="k2go_clone_link_usb_peer_receive">दूसरे फ़ोन का इंतज़ार है। उस पर क्लोन > भेजें खोलें, चरण 3 (कॉपी) पर जाएँ और हर USB डायलॉग का जवाब दें।</string>
+    <string name="k2go_clone_link_usb_switching">केबल मिली। दूसरे फ़ोन से जुड़ रहा है।</string>
+    <string name="k2go_clone_link_usb_ask">इस फ़ोन पर USB डायलॉग में OK पर टैप करें।</string>
+    <string name="k2go_clone_link_usb_denied">USB ऐक्सेस की अनुमति नहीं मिली। केबल निकालें और फिर से लगाएँ।</string>
+    <string name="k2go_clone_link_not_found_cable">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर नहीं मिला।</string>
     <string name="k2go_clone_link_usb_linked">दूसरे फ़ोन से जुड़ा</string>
     <string name="k2go_clone_link_usb_active">डेटा ट्रांसफ़र: %1$s</string>
     <string name="k2go_clone_link_badge_off">बंद</string>
@@ -1714,7 +1721,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi बंद है। इसे चालू करें, या USB केबल लगाएँ।</string>
     <string name="k2go_clone_link_no_network">किसी Wi-Fi नेटवर्क से नहीं जुड़ा</string>
     <string name="k2go_clone_link_cable_only">उपयोग में नहीं। कॉपी USB केबल से हो रही है।</string>
-    <string name="k2go_clone_link_not_on_network">उपयोग में नहीं। दूसरा फ़ोन इस Wi-Fi नेटवर्क पर नहीं है।</string>
+    <string name="k2go_clone_link_not_on_network">उपयोग में नहीं। इस Wi-Fi नेटवर्क पर दोनों फ़ोन एक-दूसरे तक नहीं पहुँचते।</string>
+    <string name="k2go_clone_link_not_checked">जाँच की जा रही है कि दूसरा फ़ोन इस Wi-Fi नेटवर्क पर है या नहीं।</string>
+    <string name="k2go_clone_link_peer_on_wifi">दूसरा फ़ोन Wi-Fi से इस फ़ोन तक पहुँच गया।</string>
+    <string name="k2go_clone_link_peer_done_wifi">दूसरे फ़ोन ने Wi-Fi से कॉपी करना पूरा किया।</string>
     <string name="k2go_clone_link_waiting_code">Wi-Fi से जुड़ा है। दूसरे फ़ोन का कोड स्कैन करने के बाद उसकी जाँच होती है।</string>
     <string name="k2go_clone_link_not_found_action">भेजने वाला फ़ोन इस Wi-Fi नेटवर्क पर नहीं मिला। उसके नेटवर्क से जुड़ें, या USB केबल लगाएँ।</string>
     <string name="k2go_clone_link_hotspot_starting">हॉटस्पॉट शुरू हो रहा है</string>

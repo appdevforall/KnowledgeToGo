@@ -1628,7 +1628,14 @@
     <string name="k2go_clone_link_wifi_network">Berbagi melalui jaringan Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot mati</string>
     <string name="k2go_clone_link_usb_none">Tidak ada kabel</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel terdeteksi. Izinkan akses USB di kedua ponsel.</string>
+    <string name="k2go_clone_link_usb_present">Kabel USB terhubung. Jika ada ponsel di ujung lainnya, buka Klon di ponsel itu.</string>
+    <string name="k2go_clone_link_usb_unsupported">Perangkat di kabel ini tidak dapat menggunakan Klon.</string>
+    <string name="k2go_clone_link_usb_peer_send">Menunggu ponsel lain. Di ponsel itu, buka Klon, ketuk Terima, lalu tanggapi dialog USB apa pun.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Menunggu ponsel lain. Di ponsel itu, buka Klon > Kirim, buka langkah 3 (Salin), lalu tanggapi dialog USB apa pun.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel terdeteksi. Menghubungkan ke ponsel lain.</string>
+    <string name="k2go_clone_link_usb_ask">Ketuk OK di dialog USB pada ponsel ini.</string>
+    <string name="k2go_clone_link_usb_denied">Akses USB tidak diizinkan. Cabut kabel lalu colokkan lagi.</string>
+    <string name="k2go_clone_link_not_found_cable">Ponsel pengirim tidak ditemukan di jaringan Wi-Fi ini.</string>
     <string name="k2go_clone_link_usb_linked">Tertaut ke ponsel lain</string>
     <string name="k2go_clone_link_usb_active">Transfer data: %1$s</string>
     <string name="k2go_clone_link_badge_off">Mati</string>
@@ -1644,7 +1651,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi mati. Nyalakan, atau hubungkan kabel USB.</string>
     <string name="k2go_clone_link_no_network">Tidak terhubung ke jaringan Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Tidak dipakai. Salinan melalui kabel USB.</string>
-    <string name="k2go_clone_link_not_on_network">Tidak dipakai. Ponsel lain tidak ada di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_not_on_network">Tidak dipakai. Kedua ponsel tidak dapat saling menjangkau di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_not_checked">Memeriksa apakah ponsel lain ada di jaringan Wi-Fi ini.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Ponsel lain terhubung ke ponsel ini lewat Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Ponsel lain selesai menyalin lewat Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Terhubung ke Wi-Fi. Ponsel lain diperiksa setelah Anda memindai kodenya.</string>
     <string name="k2go_clone_link_not_found_action">Ponsel pengirim tidak ditemukan di jaringan Wi-Fi ini. Gabung ke jaringannya, atau hubungkan kabel USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Memulai hotspot</string>

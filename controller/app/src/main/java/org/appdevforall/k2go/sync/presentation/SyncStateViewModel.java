@@ -211,6 +211,11 @@ public class SyncStateViewModel extends ViewModel {
         if (appContext != null) WifiNetworkBinder.unbind(appContext);
     }
 
+    /** K2GO-584: the copy finished; its sender is not the sender of the next scan. */
+    public void pairingDone() {
+        pendingCreds = null;
+    }
+
     /** User declined the transfer (or cancelled mid-probe): stop any dry-run and reset. */
     public void cancelProbe() {
         pendingCreds = null;   // a probe still waiting for the hotspot to go away bails out

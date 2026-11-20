@@ -1628,7 +1628,14 @@
     <string name="k2go_clone_link_wifi_network">Sdílení přes síť Wi-Fi</string>
     <string name="k2go_clone_link_hotspot_off">Hotspot vypnutý</string>
     <string name="k2go_clone_link_usb_none">Žádný kabel</string>
-    <string name="k2go_clone_link_usb_waiting">Kabel nalezen. Povolte přístup USB na obou telefonech.</string>
+    <string name="k2go_clone_link_usb_present">Kabel USB připojen. Pokud je na druhém konci telefon, otevřete na něm Klonovat.</string>
+    <string name="k2go_clone_link_usb_unsupported">Zařízení na tomto kabelu nemůže použít Klonovat.</string>
+    <string name="k2go_clone_link_usb_peer_send">Čeká se na druhý telefon. Na něm otevřete Klonovat, klepněte na Přijmout a odpovězte na případný dialog USB.</string>
+    <string name="k2go_clone_link_usb_peer_receive">Čeká se na druhý telefon. Na něm otevřete Klonovat > Odeslat, přejděte na krok 3 (Kopírovat) a odpovězte na případný dialog USB.</string>
+    <string name="k2go_clone_link_usb_switching">Kabel nalezen. Připojování k druhému telefonu.</string>
+    <string name="k2go_clone_link_usb_ask">Klepněte na OK v dialogu USB na tomto telefonu.</string>
+    <string name="k2go_clone_link_usb_denied">Přístup USB nebyl povolen. Odpojte kabel a znovu jej připojte.</string>
+    <string name="k2go_clone_link_not_found_cable">Odesílající telefon nebyl v této síti Wi-Fi nalezen.</string>
     <string name="k2go_clone_link_usb_linked">Propojeno s druhým telefonem</string>
     <string name="k2go_clone_link_usb_active">Přenos dat: %1$s</string>
     <string name="k2go_clone_link_badge_off">Vypnuto</string>
@@ -1644,7 +1651,10 @@
     <string name="k2go_clone_link_wifi_off_action">Wi-Fi je vypnutá. Zapněte ji, nebo připojte kabel USB.</string>
     <string name="k2go_clone_link_no_network">Nepřipojeno k síti Wi-Fi</string>
     <string name="k2go_clone_link_cable_only">Nepoužívá se. Kopie jde přes kabel USB.</string>
-    <string name="k2go_clone_link_not_on_network">Nepoužívá se. Druhý telefon není v této síti Wi-Fi.</string>
+    <string name="k2go_clone_link_not_on_network">Nepoužívá se. Oba telefony se v této síti Wi-Fi navzájem nedosáhnou.</string>
+    <string name="k2go_clone_link_not_checked">Ověřuje se, zda je druhý telefon v této síti Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_on_wifi">Druhý telefon se k tomuto telefonu připojil přes Wi-Fi.</string>
+    <string name="k2go_clone_link_peer_done_wifi">Druhý telefon dokončil kopírování přes Wi-Fi.</string>
     <string name="k2go_clone_link_waiting_code">Připojeno k Wi-Fi. Druhý telefon se ověří po naskenování jeho kódu.</string>
     <string name="k2go_clone_link_not_found_action">Odesílající telefon nebyl v této síti Wi-Fi nalezen. Připojte se k jeho síti, nebo připojte kabel USB.</string>
     <string name="k2go_clone_link_hotspot_starting">Spouštění hotspotu</string>
