@@ -156,6 +156,9 @@ public class WizardActivity extends AppCompatActivity {
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());
         render();
+        // K2GO-588: a launch that resumes at the setup choice (permissions already granted) still
+        // asks the privacy question once; nothing below it may connect before the answer.
+        if (step == 3) maybeAskAnalytics(() -> { });
 
         // ADFA-4797: on a recreate (e.g. right after a language change) fade the screen in
         // instead of a hard flash; first launch (b == null) stays instant.
