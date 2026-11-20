@@ -36,6 +36,7 @@ import org.appdevforall.k2go.sync.cable.data.CableSession;
 import org.appdevforall.k2go.sync.cable.data.SenderReach;
 import org.appdevforall.k2go.sync.cable.data.ShareLogWatch;
 import org.appdevforall.k2go.sync.cable.data.UsbPresence;
+import org.appdevforall.k2go.sync.cable.domain.DirectLinkRepair;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule;
 import org.appdevforall.k2go.sync.cable.domain.ShareSessions;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
@@ -62,7 +63,7 @@ public final class CloneLinkRows {
     /** The sender's address from its pairing data (QR or cable), or null before pairing. */
     private volatile String senderHost;
     private volatile boolean probeOnce;
-    private volatile boolean repairTried;   // set by a "no" after a repair, cleared by a "yes"
+    private volatile boolean repairTried;   // DirectLinkRepair.triedAfter: the run of "no" used its repair
     private boolean inFlight;   // main thread only: one check at a time
     private final Runnable check = this::checkWifi;
 
@@ -161,8 +162,8 @@ public final class CloneLinkRows {
     /**
      * Receiver: checks the Wi-Fi every few seconds until stopChecks(). With {@code probeSender}
      * false (during a transfer) it keeps a "yes" without a new connection, because the sender's
-     * daemon allows only a few; a "no" is checked again (a failed connect takes no connection). It
-     * still follows Wi-Fi on/off and the band.
+     * daemon allows only a few; a "no" is checked again until its repair is used (a failed connect
+     * takes no connection). It still follows Wi-Fi on/off and the band.
      */
     public void startChecks(int senderRsyncPort, boolean probeSender) {
         senderSide = false;
@@ -200,18 +201,21 @@ public final class CloneLinkRows {
             boolean on = wm != null && wm.isWifiEnabled();
             int freq = on ? wm.getConnectionInfo().getFrequency() : -1;
             String host = senderHost;
-            boolean probeNow = probeSender || probeOnce || (host != null && !lastAnswers);
+            // During a transfer a "no" is checked again only while its repair is unused.
+            boolean probeNow = probeSender || probeOnce || (host != null && !lastAnswers && !repairTried);
             probeOnce = false;
             String gw = on ? SenderReach.gateway(wm) : null;
             boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
             String target = host != null ? host : gw;
-            boolean repair = host != null && !repairTried;   // one repair per run of "no"
-            // Phone to phone through a home router can take over a second (K2GO-576 tests).
-            boolean answers = on && (probeNow
-                    ? (repair ? SenderReach.connect(app, host, port, 3000) : SenderReach.answers(target, port, 3000))
-                    : lastAnswers);
-            if (probeNow && repair && on && !answers) repairTried = true;
-            if (answers) repairTried = false;
+            boolean answers = lastAnswers;
+            if (probeNow && on) {
+                // Phone to phone through a home router can take over a second (K2GO-576 tests).
+                SenderReach.Result r = SenderReach.connect(app, target, port, 3000, repairTried);
+                answers = r.answers;
+                repairTried = DirectLinkRepair.triedAfter(repairTried, r.repaired, r.answers);
+            } else if (!on) {
+                answers = false;
+            }
             lastAnswers = answers;
             if (probeNow) lastProbed = on ? target : null;
             if (probeNow) CableSession.get().reportWifi(answers);   // the sender shows the same verdict

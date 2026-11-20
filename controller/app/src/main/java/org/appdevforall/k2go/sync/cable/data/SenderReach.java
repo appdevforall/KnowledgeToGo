@@ -8,8 +8,8 @@
  *               themselves under heavy traffic. When the sender then starts a
  *               Wi-Fi Direct group, some drivers end their side of that link
  *               without telling the receiver, which keeps sending into the dead
- *               link until Wi-Fi restarts. So a failed connect drops the link
- *               on this phone and tries once more, through the router.
+ *               link until Wi-Fi restarts. DirectLinkRepair decides when this
+ *               phone drops the link and tries once more, through the router.
  *               https://developer.android.com/reference/android/net/wifi/WifiManager#setTdlsEnabled(java.net.InetAddress,%20boolean)
  * ============================================================================
  */
@@ -19,6 +19,10 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import org.appdevforall.k2go.sync.cable.domain.DirectLinkRepair;
+import org.appdevforall.k2go.sync.cable.domain.DirectLinkRepair.Outcome;
+
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -27,21 +31,34 @@ public final class SenderReach {
 
     private static final String TAG = "SenderReach";
 
+    /** One check: does the sender answer, and did this check use the repair. */
+    public static final class Result {
+        public final boolean answers;
+        public final boolean repaired;
+
+        Result(boolean answers, boolean repaired) {
+            this.answers = answers;
+            this.repaired = repaired;
+        }
+    }
+
     private SenderReach() {
     }
 
     /**
-     * The paired sender at {@code host:port} accepts a connection, after one direct-link drop if
-     * needed. The gateway (a router, or the sender's own hotspot) has no direct link to drop.
+     * Connects to {@code host:port}. The caller owns the run of failed checks: {@code triedInThisRun}
+     * comes from DirectLinkRepair.triedAfter, or false for a check that starts its own run.
      */
-    public static boolean connect(Context c, String host, int port, int timeoutMs) {
-        if (host == null) return false;
-        String why = failure(host, port, timeoutMs);
-        if (why == null) return true;
-        Log.i(TAG, host + ":" + port + " does not answer (" + why + ")");   // refused vs timeout
+    public static Result connect(Context c, String host, int port, int timeoutMs, boolean triedInThisRun) {
+        if (host == null) return new Result(false, false);
+        Outcome first = outcome(host, port, timeoutMs);
+        if (first == Outcome.ANSWERS) return new Result(true, false);
         WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (host.equals(gateway(wm))) return false;
-        return dropDirectLink(wm, host) && failure(host, port, timeoutMs) == null;
+        if (!DirectLinkRepair.shouldRepair(first, host.equals(gateway(wm)), triedInThisRun)) {
+            return new Result(false, false);
+        }
+        if (!dropDirectLink(wm, host)) return new Result(false, false);
+        return new Result(outcome(host, port, timeoutMs) == Outcome.ANSWERS, true);
     }
 
     /** The Wi-Fi gateway (a router, or the sender on its own hotspot), or null with no DHCP lease. */
@@ -52,18 +69,15 @@ public final class SenderReach {
         return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
     }
 
-    /** A plain connect, with no repair. */
-    public static boolean answers(String host, int port, int timeoutMs) {
-        return host != null && failure(host, port, timeoutMs) == null;
-    }
-
-    /** Null when the connect works, else the reason. */
-    private static String failure(String host, int port, int timeoutMs) {
+    private static Outcome outcome(String host, int port, int timeoutMs) {
         try (Socket s = new Socket()) {
             s.connect(new InetSocketAddress(host, port), timeoutMs);
-            return null;
+            return Outcome.ANSWERS;
         } catch (Exception e) {
-            return String.valueOf(e.getMessage());
+            // No log: before pairing the receiver checks the router every few seconds.
+            // Android reports a refusal as ConnectException "... ECONNREFUSED (Connection refused)".
+            boolean refused = e instanceof ConnectException && String.valueOf(e.getMessage()).contains("ECONNREFUSED");
+            return refused ? Outcome.REFUSED : Outcome.NO_ANSWER;
         }
     }
 

@@ -111,7 +111,8 @@ public class SyncStateViewModel extends ViewModel {
             // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
             WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
 
-            boolean reachable = SenderReach.connect(appCtx, creds.ip, creds.port, 2000);
+            // A pull start is its own run of checks: it may use one direct-link repair (K2GO-587).
+            boolean reachable = SenderReach.connect(appCtx, creds.ip, creds.port, 2000, false).answers;
             if (!reachable) Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed");
             // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
             String probeHost = creds.ip;
