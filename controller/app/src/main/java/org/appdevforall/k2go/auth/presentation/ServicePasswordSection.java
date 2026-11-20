@@ -121,7 +121,10 @@ public final class ServicePasswordSection {
                 ServicePasswordViewModel.UiState now = vm.ui().getValue();
                 enable(repairSave, now != null && !now.busy);
             }
-            @Override public void onErr() { }
+            @Override public void onErr() {
+                // Repair needs the stored username; without it the button stays off, so say why.
+                if (host.isAdded()) user.setText(ctx.getString(R.string.k2go_auth_load_failed));
+            }
         });
 
         vm.ui().observe(host.getViewLifecycleOwner(), ui -> {
