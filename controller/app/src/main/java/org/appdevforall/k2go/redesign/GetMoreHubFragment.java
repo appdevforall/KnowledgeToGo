@@ -119,13 +119,6 @@ public class GetMoreHubFragment extends Fragment {
         return root;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle s) {
-        super.onViewCreated(view, s);
-        org.appdevforall.k2go.catalog.presentation.CatalogUpdateRow.bind(this,
-                view.findViewById(R.id.k2go_gm_catalogs_status), view.findViewById(R.id.k2go_gm_catalogs_update));
-    }
-
     /** Pre-install: a card is offered based on the chosen tier, not a live probe. Books ships only
      *  in Full (Calibre-Web); Wikipedia and Maps ship in every tier; Courses (Kolibri) is TBD. */
     private void computeWizardAvailability() {
