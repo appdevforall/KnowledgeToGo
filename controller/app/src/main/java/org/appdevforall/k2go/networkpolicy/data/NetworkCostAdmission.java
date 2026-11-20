@@ -41,12 +41,14 @@ public final class NetworkCostAdmission {
     }
 
     /**
-     * K2GO-580: may the app connect out on its own, with no user tap (an update check, a live
-     * catalog read)? Only on an unmetered network. Session consent does not count here: it covers
-     * what the user asked for, not traffic the user cannot see. A user tap goes through NetworkPolicyGate.
+     * K2GO-580 / K2GO-588: may the app connect out on its own, with no user tap (an update check, a
+     * live catalog read)? Only when the user chose to request online content (OnlineConsent) and the
+     * network is unmetered. Session consent does not count here: it covers what the user asked for,
+     * not traffic the user cannot see. A user tap goes through NetworkPolicyGate.
      */
     public static boolean allowsAutomatic(@NonNull Context ctx) {
-        return AndroidNetworkClassifier.classify(ctx)
+        return org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(ctx)
+                && AndroidNetworkClassifier.classify(ctx)
                 == org.appdevforall.k2go.networkpolicy.domain.NetworkClass.UNMETERED;
     }
 }

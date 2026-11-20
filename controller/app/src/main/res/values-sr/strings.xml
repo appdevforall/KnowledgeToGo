@@ -1671,4 +1671,11 @@
     <string name="k2go_clone_link_badge_not_used">Не користи се</string>
     <string name="k2go_clone_link_badge_starting">Покретање</string>
     <string name="k2go_clone_unplug_cable">Можете да искључите USB кабл.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Приватност и онлајн садржај</string>
+    <string name="k2go_online_accept_usage">Дели податке о коришћењу и захтевај онлајн садржај</string>
+    <string name="k2go_online_accept_crash">Пошаљи извештаје о падовима и захтевај онлајн садржај</string>
+    <string name="k2go_online_body_usage">%1$s може да дели анонимне податке о коришћењу и извештаје о падовима, и може сам да проверава ажурирања каталога и апликације када је телефон повезан на Wi-Fi. Не прикупљају се лични подаци и не прати се ништа о људима који користе ваш дељени садржај.\n\nЗадржи офлајн: апликација се сама не повезује на интернет.</string>
+    <string name="k2go_online_body_crash">%1$s може да шаље извештаје о падовима, и може сам да проверава ажурирања каталога и апликације када је телефон повезан на Wi-Fi. Не прикупљају се лични подаци.\n\nЗадржи офлајн: апликација се сама не повезује на интернет.</string>
+    <string name="k2go_webview_offline_page">Ова страница је на интернету. Странице у апликацији раде само офлајн.</string>
 </resources>

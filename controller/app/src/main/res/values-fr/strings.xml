@@ -1745,4 +1745,11 @@
     <string name="k2go_clone_link_badge_not_used">Non utilisé</string>
     <string name="k2go_clone_link_badge_starting">Démarrage</string>
     <string name="k2go_clone_unplug_cable">Vous pouvez débrancher le câble USB.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Confidentialité et contenu en ligne</string>
+    <string name="k2go_online_accept_usage">Partager les données d\'utilisation et demander du contenu en ligne</string>
+    <string name="k2go_online_accept_crash">Envoyer les rapports de plantage et demander du contenu en ligne</string>
+    <string name="k2go_online_body_usage">%1$s peut partager des données d\'utilisation anonymes et des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie, et rien n\'est suivi concernant les personnes qui utilisent votre contenu partagé.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
+    <string name="k2go_online_body_crash">%1$s peut envoyer des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
+    <string name="k2go_webview_offline_page">Cette page se trouve sur Internet. Les pages de l\'application fonctionnent uniquement hors ligne.</string>
 </resources>

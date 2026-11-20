@@ -1671,4 +1671,11 @@
     <string name="k2go_clone_link_badge_not_used">ব্যবহার হচ্ছে না</string>
     <string name="k2go_clone_link_badge_starting">শুরু হচ্ছে</string>
     <string name="k2go_clone_unplug_cable">আপনি এখন USB কেবল খুলে ফেলতে পারেন।</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">গোপনীয়তা ও অনলাইন কনটেন্ট</string>
+    <string name="k2go_online_accept_usage">ব্যবহারের ডেটা শেয়ার করুন ও অনলাইন কনটেন্ট চান</string>
+    <string name="k2go_online_accept_crash">ক্র্যাশ রিপোর্ট পাঠান ও অনলাইন কনটেন্ট চান</string>
+    <string name="k2go_online_body_usage">%1$s বেনামী ব্যবহারের ডেটা ও ক্র্যাশ রিপোর্ট শেয়ার করতে পারে, এবং ফোন Wi-Fi-তে থাকলে নিজে থেকেই ক্যাটালগ ও অ্যাপের আপডেট দেখতে পারে। কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না, এবং আপনার শেয়ার করা কনটেন্ট যাঁরা ব্যবহার করেন তাঁদের সম্পর্কে কিছুই ট্র্যাক করা হয় না।\n\nঅফলাইন রাখুন: অ্যাপ নিজে থেকে ইন্টারনেটে সংযুক্ত হয় না।</string>
+    <string name="k2go_online_body_crash">%1$s ক্র্যাশ রিপোর্ট পাঠাতে পারে, এবং ফোন Wi-Fi-তে থাকলে নিজে থেকেই ক্যাটালগ ও অ্যাপের আপডেট দেখতে পারে। কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না।\n\nঅফলাইন রাখুন: অ্যাপ নিজে থেকে ইন্টারনেটে সংযুক্ত হয় না।</string>
+    <string name="k2go_webview_offline_page">এই পৃষ্ঠাটি ইন্টারনেটে আছে। অ্যাপের ভেতরের পৃষ্ঠাগুলো শুধু অফলাইনে কাজ করে।</string>
 </resources>

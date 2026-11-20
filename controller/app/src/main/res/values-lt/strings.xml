@@ -1675,4 +1675,11 @@
     <string name="k2go_clone_link_badge_not_used">Nenaudojama</string>
     <string name="k2go_clone_link_badge_starting">Paleidžiama</string>
     <string name="k2go_clone_unplug_cable">Galite atjungti USB kabelį.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privatumas ir internetinis turinys</string>
+    <string name="k2go_online_accept_usage">Bendrinti naudojimo duomenis ir užklausti internetinio turinio</string>
+    <string name="k2go_online_accept_crash">Siųsti strigčių ataskaitas ir užklausti internetinio turinio</string>
+    <string name="k2go_online_body_usage">„%1$s“ gali bendrinti anoniminius naudojimo duomenis ir strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama, ir niekas nesekamas apie žmones, kurie naudoja jūsų bendrinamą turinį.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
+    <string name="k2go_online_body_crash">„%1$s“ gali siųsti strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
+    <string name="k2go_webview_offline_page">Šis puslapis yra internete. Programos puslapiai veikia tik neprisijungus.</string>
 </resources>

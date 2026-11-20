@@ -21,7 +21,7 @@ import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
 import org.appdevforall.k2go.applang.domain.AppLanguage;
 import org.appdevforall.k2go.applang.domain.SupportedAppLanguages;
-import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import java.util.Locale;
 
 /**
@@ -202,24 +202,22 @@ public class WizardActivity extends AppCompatActivity {
         }
     }
 
-    /** One-time usage-stats consent prompt; runs {@code onDone} after the choice (or immediately
-     *  if already asked here or in the legacy flow). Reuses the analytics_enroll_* strings. */
+    /** K2GO-588: the one-time privacy choice, asked in every build (F-Droid too: crash reports and
+     *  online content); runs {@code onDone} after the choice, or at once if it was asked before. */
     private void maybeAskAnalytics(Runnable onDone) {
-        // ADFA-5337: no analytics compiled in (no google-services.json) → nothing to consent to; skip.
-        if (!org.appdevforall.k2go.BuildConfig.ANALYTICS_ENABLED) { onDone.run(); return; }
-        if (AnalyticsConsent.wasAsked(this)) { onDone.run(); return; }
+        if (OnlineConsent.wasAsked(this)) { onDone.run(); return; }
         new BrandDialog(this)
-                .setTitle(R.string.analytics_enroll_title)
-                .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
+                .setTitle(R.string.k2go_online_title)
+                .setMessage(getString(OnlineConsent.choiceBody(), getString(R.string.app_name)))
                 .setCancelable(false)
-                .setPositive(R.string.analytics_enroll_accept, () -> setAnalytics(true, onDone))
+                .setPositive(OnlineConsent.choiceLabel(), () -> setAnalytics(true, onDone))
                 .setNegative(R.string.analytics_enroll_decline, () -> setAnalytics(false, onDone))
                 .show();
     }
 
     private void setAnalytics(boolean on, Runnable onDone) {
-        AnalyticsConsent.setEnabled(this, on);
-        AnalyticsConsent.markAsked(this);
+        OnlineConsent.setEnabled(this, on);
+        OnlineConsent.markAsked(this);
         org.appdevforall.k2go.analytics.AnalyticsClient.with(this).applyConsent();
         onDone.run();
     }

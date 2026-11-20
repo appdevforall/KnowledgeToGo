@@ -1665,4 +1665,11 @@
     <string name="k2go_clone_link_badge_not_used">Nepoužíva sa</string>
     <string name="k2go_clone_link_badge_starting">Spúšťa sa</string>
     <string name="k2go_clone_unplug_cable">Kábel USB môžete odpojiť.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Súkromie a online obsah</string>
+    <string name="k2go_online_accept_usage">Zdieľať údaje o používaní a vyžiadať online obsah</string>
+    <string name="k2go_online_accept_crash">Odosielať hlásenia o zlyhaniach a vyžiadať online obsah</string>
+    <string name="k2go_online_body_usage">%1$s môže zdieľať anonymné údaje o používaní a hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje a nesleduje sa nič o ľuďoch, ktorí používajú váš zdieľaný obsah.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
+    <string name="k2go_online_body_crash">%1$s môže odosielať hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
+    <string name="k2go_webview_offline_page">Táto stránka je na internete. Stránky v aplikácii fungujú iba offline.</string>
 </resources>
