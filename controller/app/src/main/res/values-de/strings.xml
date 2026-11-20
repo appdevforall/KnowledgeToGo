@@ -1669,7 +1669,8 @@
     <string name="k2go_offline_action_msg">Du hast \"Offline behalten\" gewählt. Dafür muss sich die App mit dem Internet verbinden. Du kannst es nur für diese Aktion erlauben.</string>
     <string name="k2go_offline_action_allow_once">Nur dieses Mal erlauben</string>
     <string name="k2go_feedback_kept_offline">Die App ist auf \"Offline behalten\" eingestellt und sendet daher kein Feedback. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
-    <string name="k2go_feedback_third_party_title">Mit einer anderen App senden?</string>
-    <string name="k2go_feedback_third_party_msg">Die App ist auf \"Offline behalten\" eingestellt. Die App, die du zum Senden des Berichts wählst, zum Beispiel E-Mail, kann sich mit dem Internet verbinden.</string>
+    <string name="k2go_feedback_third_party_title">Dies kann sich mit dem Internet verbinden</string>
+    <string name="k2go_feedback_third_party_msg">Du hast \"Offline behalten\" gewählt. Feedback wird mit einer anderen App gesendet, zum Beispiel E-Mail, und diese App kann sich mit dem Internet verbinden.</string>
     <string name="k2go_privacy_kept_offline">Die App ist auf \"Offline behalten\" eingestellt, daher bleiben diese Dienste aus. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
+    <string name="k2go_feedback_send_anyway">Trotzdem senden</string>
 </resources>

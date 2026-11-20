@@ -1670,7 +1670,8 @@
     <string name="k2go_offline_action_msg">「オフラインのまま」を選択しています。この操作を行うには、アプリをインターネットに接続する必要があります。この操作に限り許可できます。</string>
     <string name="k2go_offline_action_allow_once">今回のみ許可</string>
     <string name="k2go_feedback_kept_offline">アプリは「オフラインのまま」に設定されているため、フィードバックを送信しません。変更するには、設定 &gt; 情報で\"%1$s\"をオンにしてください。</string>
-    <string name="k2go_feedback_third_party_title">別のアプリで送信しますか？</string>
-    <string name="k2go_feedback_third_party_msg">アプリは「オフラインのまま」に設定されています。レポートの送信に選んだアプリ（例: メール）は、インターネットに接続する場合があります。</string>
+    <string name="k2go_feedback_third_party_title">インターネットに接続する場合があります</string>
+    <string name="k2go_feedback_third_party_msg">「オフラインのまま」を選択しています。フィードバックは別のアプリ（例: メール）で送信され、そのアプリはインターネットに接続する場合があります。</string>
     <string name="k2go_privacy_kept_offline">アプリは「オフラインのまま」に設定されているため、これらのサービスはオフのままです。変更するには、設定 &gt; 情報で\"%1$s\"をオンにしてください。</string>
+    <string name="k2go_feedback_send_anyway">このまま送信</string>
 </resources>

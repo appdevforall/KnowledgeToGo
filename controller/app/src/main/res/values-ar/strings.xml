@@ -1669,7 +1669,8 @@
     <string name="k2go_offline_action_msg">لقد اخترت \"الإبقاء دون اتصال\". للقيام بذلك، يجب أن يتصل التطبيق بالإنترنت. يمكنك السماح بذلك لهذا الإجراء فقط.</string>
     <string name="k2go_offline_action_allow_once">السماح هذه المرة فقط</string>
     <string name="k2go_feedback_kept_offline">التطبيق مضبوط على \"الإبقاء دون اتصال\"، لذا لا يرسل الملاحظات. لتغيير ذلك، فعّل \"%1$s\" في الإعدادات &gt; حول.</string>
-    <string name="k2go_feedback_third_party_title">هل تريد الإرسال باستخدام تطبيق آخر؟</string>
-    <string name="k2go_feedback_third_party_msg">التطبيق مضبوط على \"الإبقاء دون اتصال\". التطبيق الذي تختاره لإرسال التقرير، مثل البريد الإلكتروني، يمكنه الاتصال بالإنترنت.</string>
+    <string name="k2go_feedback_third_party_title">يمكن أن يتصل هذا بالإنترنت</string>
+    <string name="k2go_feedback_third_party_msg">لقد اخترت \"الإبقاء دون اتصال\". تُرسل الملاحظات باستخدام تطبيق آخر، مثل البريد الإلكتروني، ويمكن لهذا التطبيق الاتصال بالإنترنت.</string>
     <string name="k2go_privacy_kept_offline">التطبيق مضبوط على \"الإبقاء دون اتصال\"، لذا تبقى هذه الخدمات متوقفة. لتغيير ذلك، فعّل \"%1$s\" في الإعدادات &gt; حول.</string>
+    <string name="k2go_feedback_send_anyway">إرسال على أي حال</string>
 </resources>

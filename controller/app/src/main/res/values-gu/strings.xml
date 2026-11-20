@@ -1682,7 +1682,8 @@
     <string name="k2go_offline_action_msg">તમે \"ઑફલાઇન રાખો\" પસંદ કર્યું છે. આ કરવા માટે, ઍપને ઇન્ટરનેટ સાથે કનેક્ટ થવું પડશે. તમે ફક્ત આ ક્રિયા માટે તેની મંજૂરી આપી શકો છો.</string>
     <string name="k2go_offline_action_allow_once">ફક્ત આ વખતે મંજૂરી આપો</string>
     <string name="k2go_feedback_kept_offline">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે, તેથી તે પ્રતિસાદ મોકલતી નથી. તેને બદલવા માટે, સેટિંગ્સ &gt; વિશે માં \"%1$s\" ચાલુ કરો.</string>
-    <string name="k2go_feedback_third_party_title">બીજી ઍપથી મોકલવું છે?</string>
-    <string name="k2go_feedback_third_party_msg">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે. રિપોર્ટ મોકલવા માટે તમે જે ઍપ પસંદ કરો છો, જેમ કે ઇમેઇલ, તે ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે.</string>
+    <string name="k2go_feedback_third_party_title">આ ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે</string>
+    <string name="k2go_feedback_third_party_msg">તમે \"ઑફલાઇન રાખો\" પસંદ કર્યું છે. પ્રતિસાદ બીજી ઍપથી મોકલવામાં આવે છે, જેમ કે ઇમેઇલ, અને તે ઍપ ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે.</string>
     <string name="k2go_privacy_kept_offline">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે, તેથી આ સેવાઓ બંધ રહે છે. તેને બદલવા માટે, સેટિંગ્સ &gt; વિશે માં \"%1$s\" ચાલુ કરો.</string>
+    <string name="k2go_feedback_send_anyway">છતાં મોકલો</string>
 </resources>

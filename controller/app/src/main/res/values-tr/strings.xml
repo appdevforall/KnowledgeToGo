@@ -1669,7 +1669,8 @@
     <string name="k2go_offline_action_msg">\"Çevrimdışı tut\" seçeneğini seçtiniz. Bunu yapmak için uygulamanın internete bağlanması gerekir. Buna yalnızca bu işlem için izin verebilirsiniz.</string>
     <string name="k2go_offline_action_allow_once">Yalnızca bu kez izin ver</string>
     <string name="k2go_feedback_kept_offline">Uygulama \"Çevrimdışı tut\" olarak ayarlı, bu yüzden geri bildirim göndermez. Bunu değiştirmek için Ayarlar &gt; Hakkında bölümünde \"%1$s\" seçeneğini açın.</string>
-    <string name="k2go_feedback_third_party_title">Başka bir uygulamayla gönderilsin mi?</string>
-    <string name="k2go_feedback_third_party_msg">Uygulama \"Çevrimdışı tut\" olarak ayarlı. Raporu göndermek için seçtiğiniz uygulama, örneğin e-posta, internete bağlanabilir.</string>
+    <string name="k2go_feedback_third_party_title">Bu, internete bağlanabilir</string>
+    <string name="k2go_feedback_third_party_msg">\"Çevrimdışı tut\" seçeneğini seçtiniz. Geri bildirim başka bir uygulamayla, örneğin e-postayla gönderilir ve bu uygulama internete bağlanabilir.</string>
     <string name="k2go_privacy_kept_offline">Uygulama \"Çevrimdışı tut\" olarak ayarlı, bu yüzden bu hizmetler kapalı kalır. Bunu değiştirmek için Ayarlar &gt; Hakkında bölümünde \"%1$s\" seçeneğini açın.</string>
+    <string name="k2go_feedback_send_anyway">Yine de gönder</string>
 </resources>

@@ -1669,7 +1669,8 @@
     <string name="k2go_offline_action_msg">Bạn đã chọn \"Giữ ngoại tuyến\". Để làm việc này, ứng dụng phải kết nối internet. Bạn có thể chỉ cho phép đối với thao tác này.</string>
     <string name="k2go_offline_action_allow_once">Chỉ cho phép lần này</string>
     <string name="k2go_feedback_kept_offline">Ứng dụng đang đặt ở chế độ \"Giữ ngoại tuyến\", nên không gửi phản hồi. Để thay đổi, hãy bật \"%1$s\" trong Cài đặt &gt; Giới thiệu.</string>
-    <string name="k2go_feedback_third_party_title">Gửi bằng ứng dụng khác?</string>
-    <string name="k2go_feedback_third_party_msg">Ứng dụng đang đặt ở chế độ \"Giữ ngoại tuyến\". Ứng dụng bạn chọn để gửi báo cáo, ví dụ email, có thể kết nối internet.</string>
+    <string name="k2go_feedback_third_party_title">Việc này có thể kết nối internet</string>
+    <string name="k2go_feedback_third_party_msg">Bạn đã chọn \"Giữ ngoại tuyến\". Phản hồi được gửi bằng ứng dụng khác, ví dụ email, và ứng dụng đó có thể kết nối internet.</string>
     <string name="k2go_privacy_kept_offline">Ứng dụng đang đặt ở chế độ \"Giữ ngoại tuyến\", nên các dịch vụ này vẫn tắt. Để thay đổi, hãy bật \"%1$s\" trong Cài đặt &gt; Giới thiệu.</string>
+    <string name="k2go_feedback_send_anyway">Vẫn gửi</string>
 </resources>

@@ -1689,7 +1689,8 @@
     <string name="k2go_offline_action_msg">\"Oflayn saxla\" seçimini etdiniz. Bunu etmək üçün tətbiq internetə qoşulmalıdır. Buna yalnız bu əməliyyat üçün icazə verə bilərsiniz.</string>
     <string name="k2go_offline_action_allow_once">Yalnız bu dəfə icazə ver</string>
     <string name="k2go_feedback_kept_offline">Tətbiq \"Oflayn saxla\" rejimindədir, ona görə rəy göndərmir. Bunu dəyişmək üçün Ayarlar &gt; Haqqında bölməsində \"%1$s\" seçimini aktiv edin.</string>
-    <string name="k2go_feedback_third_party_title">Başqa tətbiqlə göndərilsin?</string>
-    <string name="k2go_feedback_third_party_msg">Tətbiq \"Oflayn saxla\" rejimindədir. Hesabatı göndərmək üçün seçdiyiniz tətbiq, məsələn e-poçt, internetə qoşula bilər.</string>
+    <string name="k2go_feedback_third_party_title">Bu, internetə qoşula bilər</string>
+    <string name="k2go_feedback_third_party_msg">\"Oflayn saxla\" seçimini etdiniz. Rəy başqa tətbiqlə, məsələn e-poçtla göndərilir və həmin tətbiq internetə qoşula bilər.</string>
     <string name="k2go_privacy_kept_offline">Tətbiq \"Oflayn saxla\" rejimindədir, ona görə bu xidmətlər söndürülmüş qalır. Bunu dəyişmək üçün Ayarlar &gt; Haqqında bölməsində \"%1$s\" seçimini aktiv edin.</string>
+    <string name="k2go_feedback_send_anyway">Yenə də göndər</string>
 </resources>

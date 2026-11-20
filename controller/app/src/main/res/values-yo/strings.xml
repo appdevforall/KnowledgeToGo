@@ -1689,7 +1689,8 @@
     <string name="k2go_offline_action_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". Láti ṣe èyí, ìṣàmúlò gbọ́dọ̀ sopọ̀ mọ́ íńtánẹ́ẹ̀tì. O lè gbà á láàyè fún ìṣe yìí nìkan.</string>
     <string name="k2go_offline_action_allow_once">Gbà láàyè ní ẹ̀ẹ̀kan yìí nìkan</string>
     <string name="k2go_feedback_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà kò fi èsì ránṣẹ́. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
-    <string name="k2go_feedback_third_party_title">Fi ránṣẹ́ pẹ̀lú ìṣàmúlò mìíràn?</string>
-    <string name="k2go_feedback_third_party_msg">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". Ìṣàmúlò tí o bá yàn láti fi ìjábọ̀ náà ránṣẹ́, fún àpẹẹrẹ ímeèlì, lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_feedback_third_party_title">Èyí lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì</string>
+    <string name="k2go_feedback_third_party_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". A ń fi èsì ránṣẹ́ pẹ̀lú ìṣàmúlò mìíràn, fún àpẹẹrẹ ímeèlì, ìṣàmúlò náà sì lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì.</string>
     <string name="k2go_privacy_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà àwọn iṣẹ́ wọ̀nyí wà ní pípa. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
+    <string name="k2go_feedback_send_anyway">Fi ránṣẹ́ bó ti wù kó rí</string>
 </resources>

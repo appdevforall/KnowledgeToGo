@@ -1756,7 +1756,8 @@
     <string name="k2go_offline_action_msg">Vous avez choisi \"Rester hors ligne\". Pour faire ceci, l\'application doit se connecter à Internet. Vous pouvez l\'autoriser pour cette action uniquement.</string>
     <string name="k2go_offline_action_allow_once">Autoriser cette fois seulement</string>
     <string name="k2go_feedback_kept_offline">L\'application est réglée sur \"Rester hors ligne\", elle n\'envoie donc pas de commentaires. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
-    <string name="k2go_feedback_third_party_title">Envoyer avec une autre application ?</string>
-    <string name="k2go_feedback_third_party_msg">L\'application est réglée sur \"Rester hors ligne\". L\'application que vous choisissez pour envoyer le rapport, par exemple la messagerie, peut se connecter à Internet.</string>
+    <string name="k2go_feedback_third_party_title">Ceci peut se connecter à Internet</string>
+    <string name="k2go_feedback_third_party_msg">Vous avez choisi \"Rester hors ligne\". Les commentaires sont envoyés avec une autre application, par exemple la messagerie, et cette application peut se connecter à Internet.</string>
     <string name="k2go_privacy_kept_offline">L\'application est réglée sur \"Rester hors ligne\", ces services restent donc désactivés. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
+    <string name="k2go_feedback_send_anyway">Envoyer quand même</string>
 </resources>

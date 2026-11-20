@@ -1745,7 +1745,8 @@
     <string name="k2go_offline_action_msg">Elegiste \"Mantener sin conexión\". Para hacer esto, la app debe conectarse a internet. Puedes permitirlo solo para esta acción.</string>
     <string name="k2go_offline_action_allow_once">Permitir solo esta vez</string>
     <string name="k2go_feedback_kept_offline">La app está configurada en \"Mantener sin conexión\", así que no envía comentarios. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
-    <string name="k2go_feedback_third_party_title">¿Enviar con otra app?</string>
-    <string name="k2go_feedback_third_party_msg">La app está configurada en \"Mantener sin conexión\". La app que elijas para enviar el informe, por ejemplo el correo, puede conectarse a internet.</string>
+    <string name="k2go_feedback_third_party_title">Esto puede conectarse a internet</string>
+    <string name="k2go_feedback_third_party_msg">Elegiste \"Mantener sin conexión\". Los comentarios se envían con otra app, por ejemplo el correo, y esa app puede conectarse a internet.</string>
     <string name="k2go_privacy_kept_offline">La app está configurada en \"Mantener sin conexión\", así que estos servicios siguen apagados. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
+    <string name="k2go_feedback_send_anyway">Enviar de todos modos</string>
 </resources>

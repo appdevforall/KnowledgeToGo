@@ -1682,7 +1682,8 @@
     <string name="k2go_offline_action_msg">আপনি \"অফলাইন রাখুন\" বেছে নিয়েছেন। এটি করতে অ্যাপটিকে ইন্টারনেটে সংযুক্ত হতে হবে। আপনি শুধু এই কাজের জন্য এর অনুমতি দিতে পারেন।</string>
     <string name="k2go_offline_action_allow_once">শুধু এবার অনুমতি দিন</string>
     <string name="k2go_feedback_kept_offline">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে, তাই এটি মতামত পাঠায় না। এটি বদলাতে, সেটিংস &gt; সম্পর্কে-তে \"%1$s\" চালু করুন।</string>
-    <string name="k2go_feedback_third_party_title">অন্য অ্যাপ দিয়ে পাঠাবেন?</string>
-    <string name="k2go_feedback_third_party_msg">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে। রিপোর্ট পাঠাতে আপনি যে অ্যাপটি বেছে নেবেন, যেমন ইমেল, সেটি ইন্টারনেটে সংযুক্ত হতে পারে।</string>
+    <string name="k2go_feedback_third_party_title">এটি ইন্টারনেটে সংযুক্ত হতে পারে</string>
+    <string name="k2go_feedback_third_party_msg">আপনি \"অফলাইন রাখুন\" বেছে নিয়েছেন। মতামত অন্য একটি অ্যাপ দিয়ে পাঠানো হয়, যেমন ইমেল, এবং সেই অ্যাপটি ইন্টারনেটে সংযুক্ত হতে পারে।</string>
     <string name="k2go_privacy_kept_offline">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে, তাই এই পরিষেবাগুলো বন্ধ থাকে। এটি বদলাতে, সেটিংস &gt; সম্পর্কে-তে \"%1$s\" চালু করুন।</string>
+    <string name="k2go_feedback_send_anyway">তবুও পাঠান</string>
 </resources>

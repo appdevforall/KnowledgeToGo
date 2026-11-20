@@ -1748,7 +1748,8 @@
     <string name="k2go_offline_action_msg">Escolheu \"Manter offline\". Para fazer isto, a aplicação tem de se ligar à internet. Pode permiti-lo apenas para esta ação.</string>
     <string name="k2go_offline_action_allow_once">Permitir só desta vez</string>
     <string name="k2go_feedback_kept_offline">A aplicação está definida como \"Manter offline\", por isso não envia comentários. Para alterar, ative \"%1$s\" em Definições &gt; Acerca.</string>
-    <string name="k2go_feedback_third_party_title">Enviar com outra aplicação?</string>
-    <string name="k2go_feedback_third_party_msg">A aplicação está definida como \"Manter offline\". A aplicação que escolher para enviar o relatório, por exemplo o email, pode ligar-se à internet.</string>
+    <string name="k2go_feedback_third_party_title">Isto pode ligar-se à internet</string>
+    <string name="k2go_feedback_third_party_msg">Escolheu \"Manter offline\". Os comentários são enviados com outra aplicação, por exemplo o email, e essa aplicação pode ligar-se à internet.</string>
     <string name="k2go_privacy_kept_offline">A aplicação está definida como \"Manter offline\", por isso estes serviços ficam desligados. Para alterar, ative \"%1$s\" em Definições &gt; Acerca.</string>
+    <string name="k2go_feedback_send_anyway">Enviar mesmo assim</string>
 </resources>

@@ -1679,7 +1679,8 @@
     <string name="k2go_offline_action_msg">Du valgte \"Hold offline\". For å gjøre dette må appen koble til internett. Du kan tillate det bare for denne handlingen.</string>
     <string name="k2go_offline_action_allow_once">Tillat bare denne gangen</string>
     <string name="k2go_feedback_kept_offline">Appen er satt til \"Hold offline\", så den sender ikke tilbakemeldinger. For å endre det, slå på \"%1$s\" i Innstillinger &gt; Om.</string>
-    <string name="k2go_feedback_third_party_title">Sende med en annen app?</string>
-    <string name="k2go_feedback_third_party_msg">Appen er satt til \"Hold offline\". Appen du velger for å sende rapporten, for eksempel e-post, kan koble til internett.</string>
+    <string name="k2go_feedback_third_party_title">Dette kan koble til internett</string>
+    <string name="k2go_feedback_third_party_msg">Du valgte \"Hold offline\". Tilbakemeldinger sendes med en annen app, for eksempel e-post, og den appen kan koble til internett.</string>
     <string name="k2go_privacy_kept_offline">Appen er satt til \"Hold offline\", så disse tjenestene forblir av. For å endre det, slå på \"%1$s\" i Innstillinger &gt; Om.</string>
+    <string name="k2go_feedback_send_anyway">Send likevel</string>
 </resources>

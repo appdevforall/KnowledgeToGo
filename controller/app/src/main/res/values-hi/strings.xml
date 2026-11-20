@@ -1746,7 +1746,8 @@
     <string name="k2go_offline_action_msg">आपने \"ऑफ़लाइन रखें\" चुना है। यह करने के लिए ऐप को इंटरनेट से कनेक्ट होना होगा। आप इसकी अनुमति केवल इस कार्रवाई के लिए दे सकते हैं।</string>
     <string name="k2go_offline_action_allow_once">केवल इस बार अनुमति दें</string>
     <string name="k2go_feedback_kept_offline">ऐप \"ऑफ़लाइन रखें\" पर सेट है, इसलिए यह फ़ीडबैक नहीं भेजता। इसे बदलने के लिए, सेटिंग्स &gt; परिचय में \"%1$s\" चालू करें।</string>
-    <string name="k2go_feedback_third_party_title">किसी दूसरे ऐप से भेजें?</string>
-    <string name="k2go_feedback_third_party_msg">ऐप \"ऑफ़लाइन रखें\" पर सेट है। रिपोर्ट भेजने के लिए आप जो ऐप चुनते हैं, जैसे ईमेल, वह इंटरनेट से कनेक्ट हो सकता है।</string>
+    <string name="k2go_feedback_third_party_title">यह इंटरनेट से कनेक्ट हो सकता है</string>
+    <string name="k2go_feedback_third_party_msg">आपने \"ऑफ़लाइन रखें\" चुना है। फ़ीडबैक किसी दूसरे ऐप से भेजा जाता है, जैसे ईमेल, और वह ऐप इंटरनेट से कनेक्ट हो सकता है।</string>
     <string name="k2go_privacy_kept_offline">ऐप \"ऑफ़लाइन रखें\" पर सेट है, इसलिए ये सेवाएँ बंद रहती हैं। इसे बदलने के लिए, सेटिंग्स &gt; परिचय में \"%1$s\" चालू करें।</string>
+    <string name="k2go_feedback_send_anyway">फिर भी भेजें</string>
 </resources>

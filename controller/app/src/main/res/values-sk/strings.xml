@@ -1676,7 +1676,8 @@
     <string name="k2go_offline_action_msg">Zvolili ste \"Ponechať offline\". Na vykonanie tejto akcie sa aplikácia musí pripojiť k internetu. Môžete to povoliť len pre túto akciu.</string>
     <string name="k2go_offline_action_allow_once">Povoliť len tentoraz</string>
     <string name="k2go_feedback_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto neodosiela spätnú väzbu. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
-    <string name="k2go_feedback_third_party_title">Odoslať inou aplikáciou?</string>
-    <string name="k2go_feedback_third_party_msg">Aplikácia je nastavená na \"Ponechať offline\". Aplikácia, ktorú zvolíte na odoslanie hlásenia, napríklad e-mail, sa môže pripojiť k internetu.</string>
+    <string name="k2go_feedback_third_party_title">Toto sa môže pripojiť k internetu</string>
+    <string name="k2go_feedback_third_party_msg">Zvolili ste \"Ponechať offline\". Spätná väzba sa odosiela inou aplikáciou, napríklad e-mailom, a táto aplikácia sa môže pripojiť k internetu.</string>
     <string name="k2go_privacy_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto tieto služby zostávajú vypnuté. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
+    <string name="k2go_feedback_send_anyway">Napriek tomu odoslať</string>
 </resources>

@@ -1670,7 +1670,8 @@
     <string name="k2go_offline_action_msg">您选择了“保持离线”。要执行此操作，应用必须连接到互联网。您可以仅允许本次操作联网。</string>
     <string name="k2go_offline_action_allow_once">仅允许本次</string>
     <string name="k2go_feedback_kept_offline">应用已设为“保持离线”，因此不会发送反馈。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
-    <string name="k2go_feedback_third_party_title">用其他应用发送？</string>
-    <string name="k2go_feedback_third_party_msg">应用已设为“保持离线”。您选择用来发送报告的应用（例如电子邮件）可能会连接到互联网。</string>
+    <string name="k2go_feedback_third_party_title">这可能会连接到互联网</string>
+    <string name="k2go_feedback_third_party_msg">您选择了“保持离线”。反馈会通过其他应用（例如电子邮件）发送，该应用可能会连接到互联网。</string>
     <string name="k2go_privacy_kept_offline">应用已设为“保持离线”，因此这些服务保持关闭。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
+    <string name="k2go_feedback_send_anyway">仍然发送</string>
 </resources>

@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,10 +48,23 @@ public class FeedbackFragment extends Fragment {
         EditText message = v.findViewById(R.id.feedback_message);
         Button send = v.findViewById(R.id.feedback_send);
 
+        // K2GO-588: with Keep offline, this screen sends nothing. The buttons look grey but stay
+        // tappable, so a tap can say why and where to change it.
+        final boolean keptOffline =
+                !org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(requireContext());
+        if (keptOffline) {
+            send.setAlpha(0.5f);
+        }
+
         Button forceCrash = v.findViewById(R.id.feedback_force_crash);
         if (BuildConfig.DEBUG) {
             forceCrash.setVisibility(View.VISIBLE);
+            if (keptOffline) forceCrash.setAlpha(0.5f);
             forceCrash.setOnClickListener(x -> {
+                if (keptOffline) {
+                    explainKeptOffline(x);
+                    return;
+                }
                 throw new RuntimeException("K2Go test crash");
             });
         }
@@ -65,17 +77,11 @@ public class FeedbackFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter);
 
-        // K2GO-588: with Keep offline, this screen sends nothing; the note says where to change it.
-        if (!org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(requireContext())) {
-            send.setEnabled(false);
-            forceCrash.setEnabled(false);
-            TextView note = v.findViewById(R.id.feedback_offline_note);
-            note.setText(getString(R.string.k2go_feedback_kept_offline,
-                    getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel())));
-            note.setVisibility(View.VISIBLE);
-        }
-
         send.setOnClickListener(view -> {
+            if (keptOffline) {
+                explainKeptOffline(view);
+                return;
+            }
             String msg = message.getText().toString().trim();
             if (msg.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.feedback_empty_message, Toast.LENGTH_SHORT).show();
@@ -99,6 +105,11 @@ public class FeedbackFragment extends Fragment {
                 Toast.makeText(requireContext(), R.string.feedback_no_email_app, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void explainKeptOffline(View anchor) {
+        org.appdevforall.k2go.util.Snackbars.make(anchor, getString(R.string.k2go_feedback_kept_offline,
+                getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel()))).show();
     }
 
     private static FeedbackType typeFor(int position) {

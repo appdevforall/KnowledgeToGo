@@ -1669,7 +1669,8 @@
     <string name="k2go_offline_action_msg">Ai ales \"Păstrează offline\". Pentru asta, aplicația trebuie să se conecteze la internet. Poți permite acest lucru doar pentru această acțiune.</string>
     <string name="k2go_offline_action_allow_once">Permite doar de această dată</string>
     <string name="k2go_feedback_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci nu trimite feedback. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
-    <string name="k2go_feedback_third_party_title">Trimiți cu altă aplicație?</string>
-    <string name="k2go_feedback_third_party_msg">Aplicația este setată pe \"Păstrează offline\". Aplicația pe care o alegi pentru a trimite raportul, de exemplu e-mailul, se poate conecta la internet.</string>
+    <string name="k2go_feedback_third_party_title">Aceasta se poate conecta la internet</string>
+    <string name="k2go_feedback_third_party_msg">Ai ales \"Păstrează offline\". Feedbackul este trimis cu altă aplicație, de exemplu e-mailul, iar acea aplicație se poate conecta la internet.</string>
     <string name="k2go_privacy_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci aceste servicii rămân oprite. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
+    <string name="k2go_feedback_send_anyway">Trimite oricum</string>
 </resources>

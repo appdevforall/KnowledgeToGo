@@ -1866,7 +1866,8 @@
     <string name="k2go_offline_action_msg">You chose Keep offline. To do this, the app must connect to the internet. You can allow it for this action only.</string>
     <string name="k2go_offline_action_allow_once">Allow only this time</string>
     <string name="k2go_feedback_kept_offline">The app is set to Keep offline, so it does not send feedback. To change it, turn on \"%1$s\" in Settings &gt; About.</string>
-    <string name="k2go_feedback_third_party_title">Send with another app?</string>
-    <string name="k2go_feedback_third_party_msg">The app is set to Keep offline. The app that you choose to send the report, for example email, can connect to the internet.</string>
+    <string name="k2go_feedback_third_party_title">This can connect to the internet</string>
+    <string name="k2go_feedback_third_party_msg">You chose Keep offline. Feedback is sent with another app, for example email, and that app can connect to the internet.</string>
     <string name="k2go_privacy_kept_offline">The app is set to Keep offline, so these services stay off. To change it, turn on \"%1$s\" in Settings &gt; About.</string>
+    <string name="k2go_feedback_send_anyway">Send anyway</string>
 </resources>

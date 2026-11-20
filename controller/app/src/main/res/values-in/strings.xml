@@ -1676,7 +1676,8 @@
     <string name="k2go_offline_action_msg">Anda memilih \"Tetap luring\". Untuk melakukan ini, aplikasi harus terhubung ke internet. Anda dapat mengizinkannya hanya untuk tindakan ini.</string>
     <string name="k2go_offline_action_allow_once">Izinkan kali ini saja</string>
     <string name="k2go_feedback_kept_offline">Aplikasi diatur ke \"Tetap luring\", jadi tidak mengirim masukan. Untuk mengubahnya, aktifkan \"%1$s\" di Setelan &gt; Tentang.</string>
-    <string name="k2go_feedback_third_party_title">Kirim dengan aplikasi lain?</string>
-    <string name="k2go_feedback_third_party_msg">Aplikasi diatur ke \"Tetap luring\". Aplikasi yang Anda pilih untuk mengirim laporan, misalnya email, dapat terhubung ke internet.</string>
+    <string name="k2go_feedback_third_party_title">Ini dapat terhubung ke internet</string>
+    <string name="k2go_feedback_third_party_msg">Anda memilih \"Tetap luring\". Masukan dikirim dengan aplikasi lain, misalnya email, dan aplikasi itu dapat terhubung ke internet.</string>
     <string name="k2go_privacy_kept_offline">Aplikasi diatur ke \"Tetap luring\", jadi layanan ini tetap mati. Untuk mengubahnya, aktifkan \"%1$s\" di Setelan &gt; Tentang.</string>
+    <string name="k2go_feedback_send_anyway">Tetap kirim</string>
 </resources>
