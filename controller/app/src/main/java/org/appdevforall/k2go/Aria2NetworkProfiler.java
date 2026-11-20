@@ -29,18 +29,18 @@ public class Aria2NetworkProfiler {
      * Runs a real-world speed test by downloading the target file for a few seconds.
      * Returns TRUE if IPv4 proves to be more stable and faster.
      */
-    public static boolean shouldForceIpv4(File aria2Bin, File downloadDir, File dhtFile, String targetUrl, Handler mainHandler, Aria2Manager.DownloadListener listener) {
+    public static boolean shouldForceIpv4(File aria2Bin, File downloadDir, String source, Handler mainHandler, Aria2Manager.DownloadListener listener) {
         Log.i(TAG, "Starting Network Profiling (Time-Boxed Race)...");
 
         // 1. Test IPv4 (Forced)
         mainHandler.post(() -> listener.onProgress(0, "Test IPv4", "Wait"));
         Log.i(TAG, "=== TEST 1: FORCED IPv4 ROUTE ===");
-        double speedIpv4 = runTimeBoxedTest(aria2Bin, downloadDir, dhtFile, targetUrl, true);
+        double speedIpv4 = runTimeBoxedTest(aria2Bin, downloadDir, source, true);
 
         // 2. Test Default (Usually IPv6 preferred)
         mainHandler.post(() -> listener.onProgress(0, "Test IPv6", "Wait"));
         Log.i(TAG, "=== TEST 2: DEFAULT ROUTE (IPv6 Preferred) ===");
-        double speedDefault = runTimeBoxedTest(aria2Bin, downloadDir, dhtFile, targetUrl, false);
+        double speedDefault = runTimeBoxedTest(aria2Bin, downloadDir, source, false);
 
         Log.i(TAG, "=== FINAL PROFILING RESULTS ===");
         Log.i(TAG, String.format("Sustained Speed IPv4: %.2f KB/s", speedIpv4));
@@ -66,7 +66,7 @@ public class Aria2NetworkProfiler {
         return forceIpv4;
     }
 
-    private static double runTimeBoxedTest(File aria2Bin, File downloadDir, File dhtFile, String url, boolean forceIpv4) {
+    private static double runTimeBoxedTest(File aria2Bin, File downloadDir, String source, boolean forceIpv4) {
         Process process = null;
         double lastRecordedSpeedKB = 0.0;
 
@@ -80,8 +80,9 @@ public class Aria2NetworkProfiler {
             // Match your baseline configuration
             command.add("--max-connection-per-server=4");
             command.add("--split=4");
-            command.add("--enable-dht=true");
-            command.add("--dht-file-path=" + dhtFile.getAbsolutePath());
+            // K2GO-588: HTTP only, like the real download (Aria2Manager).
+            command.add("--enable-dht=false");
+            command.add("--enable-dht6=false");
             command.add("--check-certificate=false");
 
             if (forceIpv4) {
@@ -91,7 +92,7 @@ public class Aria2NetworkProfiler {
             command.add("--console-log-level=warn");
             command.add("--summary-interval=1"); // Need speed output every second
             command.add("--download-result=hide");
-            command.add(url);
+            command.add(source);
 
             ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
