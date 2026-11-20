@@ -25,6 +25,7 @@ import org.appdevforall.k2go.SystemStateEvaluator;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
 import org.appdevforall.k2go.sync.cable.data.ChunkedPull;
+import org.appdevforall.k2go.sync.cable.data.SenderReach;
 import org.appdevforall.k2go.sync.domain.ShareConfig;
 import org.appdevforall.k2go.sync.transport.NetworkInterfaces;
 import org.appdevforall.k2go.sync.transport.TransportEngine;
@@ -32,8 +33,6 @@ import org.appdevforall.k2go.sync.transport.WifiNetworkBinder;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.io.File;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 
 public class SyncStateViewModel extends ViewModel {
 
@@ -112,15 +111,8 @@ public class SyncStateViewModel extends ViewModel {
             // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
             WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
 
-            boolean reachable = false;
-            try {
-                Socket socket = new Socket();
-                socket.connect(new InetSocketAddress(creds.ip, creds.port), 2000);
-                socket.close();
-                reachable = true;
-            } catch (Exception e) {
-                Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed", e);
-            }
+            boolean reachable = SenderReach.connect(appCtx, creds.ip, creds.port, 2000);
+            if (!reachable) Log.w(TAG, "Reachability probe to " + creds.ip + ":" + creds.port + " failed");
             // K2GO-576: no Wi-Fi path, but a cable link: the dry-run goes over the cable.
             String probeHost = creds.ip;
             int probePort = creds.port;

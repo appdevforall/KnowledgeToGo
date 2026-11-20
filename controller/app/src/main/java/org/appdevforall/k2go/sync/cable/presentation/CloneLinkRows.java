@@ -33,6 +33,7 @@ import com.google.android.material.color.MaterialColors;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.hotspot.LocalHotspotManager;
 import org.appdevforall.k2go.sync.cable.data.CableSession;
+import org.appdevforall.k2go.sync.cable.data.SenderReach;
 import org.appdevforall.k2go.sync.cable.data.ShareLogWatch;
 import org.appdevforall.k2go.sync.cable.data.UsbPresence;
 import org.appdevforall.k2go.sync.cable.domain.LinkRule;
@@ -40,8 +41,6 @@ import org.appdevforall.k2go.sync.cable.domain.ShareSessions;
 import org.appdevforall.k2go.sync.cable.domain.WifiLink;
 import org.appdevforall.k2go.util.AppExecutors;
 
-import java.net.InetSocketAddress;
-import java.net.Socket;
 
 public final class CloneLinkRows {
 
@@ -63,6 +62,7 @@ public final class CloneLinkRows {
     /** The sender's address from its pairing data (QR or cable), or null before pairing. */
     private volatile String senderHost;
     private volatile boolean probeOnce;
+    private volatile boolean repairTried;   // set by a "no" after a repair, cleared by a "yes"
     private boolean inFlight;   // main thread only: one check at a time
     private final Runnable check = this::checkWifi;
 
@@ -160,8 +160,9 @@ public final class CloneLinkRows {
 
     /**
      * Receiver: checks the Wi-Fi every few seconds until stopChecks(). With {@code probeSender}
-     * false (during a transfer) it does not connect to the sender's daemon, which allows only a few
-     * connections; it keeps the last answer and still follows Wi-Fi on/off and the band.
+     * false (during a transfer) it keeps a "yes" without a new connection, because the sender's
+     * daemon allows only a few; a "no" is checked again (a failed connect takes no connection). It
+     * still follows Wi-Fi on/off and the band.
      */
     public void startChecks(int senderRsyncPort, boolean probeSender) {
         senderSide = false;
@@ -197,13 +198,20 @@ public final class CloneLinkRows {
             WifiManager wm = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
             boolean on = wm != null && wm.isWifiEnabled();
             int freq = on ? wm.getConnectionInfo().getFrequency() : -1;
-            boolean probeNow = probeSender || probeOnce;
-            probeOnce = false;
             String host = senderHost;
+            boolean probeNow = probeSender || probeOnce || (host != null && !lastAnswers);
+            probeOnce = false;
             String gw = on ? gateway(wm.getDhcpInfo().gateway) : null;
             boolean viaHotspot = host == null || host.equals(gw);   // the hotspot gateway is the sender
             String target = host != null ? host : gw;
-            boolean answers = on && (probeNow ? senderAnswers(target, port) : lastAnswers);
+            // A direct link exists only to the sender on a shared network; one repair per run of "no".
+            boolean repair = !viaHotspot && !repairTried;
+            // Phone to phone through a home router can take over a second (K2GO-576 tests).
+            boolean answers = on && (probeNow
+                    ? (repair ? SenderReach.connect(app, host, port, 3000) : SenderReach.answers(target, port, 3000))
+                    : lastAnswers);
+            if (probeNow && repair && on && !answers) repairTried = true;
+            if (answers) repairTried = false;
             lastAnswers = answers;
             if (probeNow) lastProbed = on ? target : null;
             if (probeNow) CableSession.get().reportWifi(answers);   // the sender shows the same verdict
@@ -224,6 +232,11 @@ public final class CloneLinkRows {
         return (le & 0xFF) + "." + ((le >> 8) & 0xFF) + "." + ((le >> 16) & 0xFF) + "." + ((le >> 24) & 0xFF);
     }
 
+    /** The phone is on a Wi-Fi network: the same signal that shows the band in the Wi-Fi row. */
+    public static boolean onWifiNetwork(Context c) {
+        return WifiLink.band(ownFrequency(c)) != WifiLink.Band.NONE;
+    }
+
     @SuppressWarnings("deprecation")
     private static int ownFrequency(Context c) {
         WifiManager wm = (WifiManager) c.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -233,17 +246,6 @@ public final class CloneLinkRows {
     /** Same unit as the transfer speed under the progress bar (MB/s, 10^6). */
     private static String rate(long bytesPerSec) {
         return String.format(java.util.Locale.ROOT, "%.1fMB/s", bytesPerSec / 1e6);
-    }
-
-    private static boolean senderAnswers(String host, int port) {
-        if (host == null) return false;
-        try (Socket s = new Socket()) {
-            // Phone to phone through a home router can take over a second (K2GO-576 tests).
-            s.connect(new InetSocketAddress(host, port), 3000);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
