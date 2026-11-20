@@ -11,8 +11,11 @@ package org.appdevforall.k2go.sync.cable.domain;
 
 public final class PeerAlive {
 
-    /** Each side sends PING every 1 s; three missed PINGs mean the peer is gone (K2GO-587). */
-    public static final long DEAD_MS = 3_000;
+    /** Each side sends PING this often (K2GO-587). */
+    public static final long PING_MS = 1_000;
+
+    /** Three missed PINGs mean the peer is gone. */
+    public static final long DEAD_MS = 3 * PING_MS;
 
     private PeerAlive() {
     }
