@@ -1264,7 +1264,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autenticación</string>
     <string name="k2go_settings_authentication_sub">Inicios de sesión para Calibre-Web (libros) y Kolibri (cursos)</string>
-    <string name="k2go_auth_hint">Los accesos que K2Go usa para Libros y Cursos. Actualiza uno si cambió la contraseña de su servicio.</string>
     <string name="k2go_auth_password">Contraseña</string>
     <string name="k2go_auth_save">Guardar</string>
     <string name="k2go_auth_verified">Verificado y guardado</string>
@@ -1721,4 +1720,46 @@
     <string name="k2go_clone_link_badge_not_used">No se usa</string>
     <string name="k2go_clone_link_badge_starting">Iniciando</string>
     <string name="k2go_clone_unplug_cable">Ya puedes desconectar el cable USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Usuario: %1$s</string>
+    <string name="k2go_auth_pw_checking">Comprobando el inicio de sesión...</string>
+    <string name="k2go_auth_pw_state_ok">La app inicia sesión con la contraseña que configuraste.</string>
+    <string name="k2go_auth_pw_state_factory">Contraseña de fábrica en uso. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión.</string>
+    <string name="k2go_auth_pw_state_mismatch">La contraseña se cambió en el servicio. El inicio de sesión automático no funciona hasta que la repares.</string>
+    <string name="k2go_auth_pw_state_unreachable">El servicio no está en marcha. Inícialo para cambiar la contraseña.</string>
+    <string name="k2go_auth_pw_change_title">Cambiar contraseña</string>
+    <string name="k2go_auth_pw_new">Nueva contraseña</string>
+    <string name="k2go_auth_pw_confirm">Escribe de nuevo la nueva contraseña</string>
+    <string name="k2go_auth_pw_rule">Al menos 8 caracteres, con una mayúscula, una minúscula, un número y un símbolo.</string>
+    <string name="k2go_auth_pw_change_button">Cambiar contraseña</string>
+    <string name="k2go_auth_pw_repair_title">Reparar</string>
+    <string name="k2go_auth_pw_repair_hint">Escribe la contraseña que usa ahora el servicio. La app la comprueba y la guarda.</string>
+    <string name="k2go_auth_pw_reset">Restablecer la contraseña de fábrica</string>
+    <string name="k2go_auth_pw_reset_title">¿Restablecer la contraseña de fábrica?</string>
+    <string name="k2go_auth_pw_reset_msg">El servicio vuelve a tener su contraseña de fábrica. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión hasta que la cambies.</string>
+    <string name="k2go_auth_pw_reset_confirm">Restablecer</string>
+    <string name="k2go_auth_pw_working">Trabajando en ello. Puede tardar un minuto...</string>
+    <string name="k2go_auth_pw_changed">Contraseña cambiada.</string>
+    <string name="k2go_auth_pw_changed_unverified">Hecho. El servicio aún no confirmó el inicio de sesión. Vuelve a comprobarlo en un minuto.</string>
+    <string name="k2go_auth_pw_reset_done">Contraseña de fábrica restaurada.</string>
+    <string name="k2go_auth_pw_not_same">Las dos contraseñas no coinciden.</string>
+    <string name="k2go_auth_pw_weak">Esta contraseña no cumple la regla que aparece bajo los campos.</string>
+    <string name="k2go_auth_pw_err_mismatch">El servicio no acepta la contraseña guardada. Repárala primero o restablécela.</string>
+    <string name="k2go_auth_pw_err_busy">Hay otro cambio en curso para este servicio. Espera e inténtalo de nuevo.</string>
+    <string name="k2go_auth_pw_err_unreachable">El servicio no responde. Inícialo e inténtalo de nuevo.</string>
+    <string name="k2go_auth_pw_err_failed">La contraseña no se cambió. Inténtalo de nuevo.</string>
+    <string name="k2go_auth_chip_mismatch">No coincide</string>
+    <string name="k2go_auth_reminder_switch">Recordármelo al iniciar mientras haya una contraseña de fábrica en uso</string>
+    <string name="k2go_auth_notice_mismatch_title">El inicio de sesión automático no funciona</string>
+    <string name="k2go_auth_notice_mismatch_msg">La contraseña de administrador de %1$s se cambió fuera de esta app. Repárala o restablécela en Ajustes, Autenticación.</string>
+    <string name="k2go_auth_notice_factory_title">Contraseñas de fábrica en uso</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s todavía usan la contraseña de administrador de fábrica. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión y cambiar tu biblioteca. Cámbiala en Ajustes, Autenticación.</string>
+    <string name="k2go_auth_notice_open">Abrir Autenticación</string>
+    <string name="k2go_auth_notice_close">Cerrar</string>
+    <string name="k2go_auth_notice_never">No volver a mostrar</string>
+    <string name="k2go_auth_notice_never_title">¿Dejar de mostrar estos recordatorios?</string>
+    <string name="k2go_auth_notice_never_msg">Con la contraseña de fábrica, cualquiera que comparta tu Wi-Fi o punto de acceso puede iniciar sesión en tu biblioteca y cambiarla. Si solo tú usas este teléfono, el riesgo es bajo. Puedes volver a activar los recordatorios en Ajustes, Autenticación.</string>
+    <string name="k2go_auth_notice_never_confirm">Dejar de recordar</string>
+    <string name="k2go_auth_notice_never_keep">Mantener recordatorios</string>
+    <string name="k2go_auth_list_hint">Contraseñas de administrador que K2Go usa para Leer un libro, Tomar un curso y Aloja tu código. Cámbialas aquí para que la app y la caja estén sincronizadas.</string>
 </resources>

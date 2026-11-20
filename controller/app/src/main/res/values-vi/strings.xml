@@ -1188,7 +1188,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Xác thực</string>
     <string name="k2go_settings_authentication_sub">Đăng nhập cho Calibre-Web (sách) và Kolibri (khóa học)</string>
-    <string name="k2go_auth_hint">Các thông tin đăng nhập K2Go dùng cho Sách và Khóa học. Cập nhật một mục nếu mật khẩu dịch vụ đã thay đổi.</string>
     <string name="k2go_auth_password">Mật khẩu</string>
     <string name="k2go_auth_save">Lưu</string>
     <string name="k2go_auth_verified">Đã xác minh và lưu</string>
@@ -1645,4 +1644,46 @@
     <string name="k2go_clone_link_badge_not_used">Không dùng</string>
     <string name="k2go_clone_link_badge_starting">Đang khởi động</string>
     <string name="k2go_clone_unplug_cable">Bạn có thể rút cáp USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Người dùng: %1$s</string>
+    <string name="k2go_auth_pw_checking">Đang kiểm tra đăng nhập...</string>
+    <string name="k2go_auth_pw_state_ok">Ứng dụng đăng nhập bằng mật khẩu bạn đã đặt.</string>
+    <string name="k2go_auth_pw_state_factory">Đang dùng mật khẩu mặc định. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập.</string>
+    <string name="k2go_auth_pw_state_mismatch">Mật khẩu đã bị thay đổi trong dịch vụ. Đăng nhập tự động sẽ không hoạt động cho đến khi bạn sửa nó.</string>
+    <string name="k2go_auth_pw_state_unreachable">Dịch vụ không chạy. Hãy khởi động dịch vụ để đổi mật khẩu.</string>
+    <string name="k2go_auth_pw_change_title">Đổi mật khẩu</string>
+    <string name="k2go_auth_pw_new">Mật khẩu mới</string>
+    <string name="k2go_auth_pw_confirm">Nhập lại mật khẩu mới</string>
+    <string name="k2go_auth_pw_rule">Ít nhất 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký hiệu.</string>
+    <string name="k2go_auth_pw_change_button">Đổi mật khẩu</string>
+    <string name="k2go_auth_pw_repair_title">Sửa</string>
+    <string name="k2go_auth_pw_repair_hint">Nhập mật khẩu mà dịch vụ đang dùng. Ứng dụng sẽ kiểm tra và lưu mật khẩu này.</string>
+    <string name="k2go_auth_pw_reset">Đặt lại về mật khẩu mặc định</string>
+    <string name="k2go_auth_pw_reset_title">Đặt lại về mật khẩu mặc định?</string>
+    <string name="k2go_auth_pw_reset_msg">Dịch vụ sẽ dùng lại mật khẩu mặc định. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập cho đến khi bạn đổi nó.</string>
+    <string name="k2go_auth_pw_reset_confirm">Đặt lại</string>
+    <string name="k2go_auth_pw_working">Đang xử lý. Việc này có thể mất một phút...</string>
+    <string name="k2go_auth_pw_changed">Đã đổi mật khẩu.</string>
+    <string name="k2go_auth_pw_changed_unverified">Xong. Dịch vụ chưa xác nhận đăng nhập. Hãy kiểm tra lại sau một phút.</string>
+    <string name="k2go_auth_pw_reset_done">Đã khôi phục mật khẩu mặc định.</string>
+    <string name="k2go_auth_pw_not_same">Hai mật khẩu không giống nhau.</string>
+    <string name="k2go_auth_pw_weak">Mật khẩu này không theo quy tắc bên dưới các ô.</string>
+    <string name="k2go_auth_pw_err_mismatch">Dịch vụ không chấp nhận mật khẩu đã lưu. Hãy sửa nó trước, hoặc đặt lại.</string>
+    <string name="k2go_auth_pw_err_busy">Một thay đổi khác cho dịch vụ này đang chạy. Hãy chờ và thử lại.</string>
+    <string name="k2go_auth_pw_err_unreachable">Dịch vụ không phản hồi. Hãy khởi động dịch vụ và thử lại.</string>
+    <string name="k2go_auth_pw_err_failed">Mật khẩu chưa được đổi. Hãy thử lại.</string>
+    <string name="k2go_auth_chip_mismatch">Không khớp</string>
+    <string name="k2go_auth_reminder_switch">Nhắc tôi khi khởi động nếu vẫn đang dùng mật khẩu mặc định</string>
+    <string name="k2go_auth_notice_mismatch_title">Đăng nhập tự động không hoạt động</string>
+    <string name="k2go_auth_notice_mismatch_msg">Mật khẩu quản trị của %1$s đã bị thay đổi bên ngoài ứng dụng này. Hãy sửa hoặc đặt lại trong Cài đặt, Xác thực.</string>
+    <string name="k2go_auth_notice_factory_title">Đang dùng mật khẩu mặc định</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s vẫn dùng mật khẩu quản trị mặc định. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập và thay đổi thư viện của bạn. Hãy đổi mật khẩu trong Cài đặt, Xác thực.</string>
+    <string name="k2go_auth_notice_open">Mở Xác thực</string>
+    <string name="k2go_auth_notice_close">Đóng</string>
+    <string name="k2go_auth_notice_never">Không hiển thị lại</string>
+    <string name="k2go_auth_notice_never_title">Dừng các lời nhắc này?</string>
+    <string name="k2go_auth_notice_never_msg">Với mật khẩu mặc định, bất kỳ ai dùng chung Wi-Fi hoặc điểm phát sóng của bạn đều có thể đăng nhập vào thư viện và thay đổi nó. Nếu chỉ mình bạn dùng điện thoại này, rủi ro là thấp. Bạn có thể bật lại lời nhắc trong Cài đặt, Xác thực.</string>
+    <string name="k2go_auth_notice_never_confirm">Dừng lời nhắc</string>
+    <string name="k2go_auth_notice_never_keep">Giữ lời nhắc</string>
+    <string name="k2go_auth_list_hint">Mật khẩu quản trị mà K2Go dùng cho Sách, Khóa học và Lưu trữ mã. Hãy đổi chúng ở đây để ứng dụng và hộp luôn khớp nhau.</string>
 </resources>

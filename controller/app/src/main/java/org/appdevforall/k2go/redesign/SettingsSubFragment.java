@@ -469,7 +469,7 @@ public class SettingsSubFragment extends Fragment {
     //      and Courses (Kolibri) — the same store the WebView auto-login (ADFA-5043) relies on.
     //      List -> per-service screen (K2GO-552: auth.presentation.ServicePasswordSection). ----
     private void buildAuthentication(Context ctx, LinearLayout list) {
-        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_hint));
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_hint));
         authServiceRow(ctx, list, "calibre", getString(R.string.k2go_auth_svc_books), "Calibre-Web");
         authServiceRow(ctx, list, "kolibri", getString(R.string.k2go_auth_svc_courses), "Kolibri");
         authServiceRow(ctx, list, "forgejo", getString(R.string.k2go_card_forgejo), "Forgejo");   // K2GO-417

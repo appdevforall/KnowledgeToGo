@@ -1195,7 +1195,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Έλεγχος ταυτότητας</string>
     <string name="k2go_settings_authentication_sub">Συνδέσεις για Calibre-Web (βιβλία) και Kolibri (μαθήματα)</string>
-    <string name="k2go_auth_hint">Οι συνδέσεις που χρησιμοποιεί το K2Go για Βιβλία και Μαθήματα. Ενημερώστε μία αν άλλαξε ο κωδικός της υπηρεσίας της.</string>
     <string name="k2go_auth_password">Κωδικός πρόσβασης</string>
     <string name="k2go_auth_save">Αποθήκευση</string>
     <string name="k2go_auth_verified">Επαληθεύτηκε και αποθηκεύτηκε</string>
@@ -1652,4 +1651,46 @@
     <string name="k2go_clone_link_badge_not_used">Δεν χρησιμοποιείται</string>
     <string name="k2go_clone_link_badge_starting">Εκκίνηση</string>
     <string name="k2go_clone_unplug_cable">Μπορείτε να αποσυνδέσετε το καλώδιο USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Χρήστης: %1$s</string>
+    <string name="k2go_auth_pw_checking">Έλεγχος σύνδεσης...</string>
+    <string name="k2go_auth_pw_state_ok">Η εφαρμογή συνδέεται με τον κωδικό που όρισες.</string>
+    <string name="k2go_auth_pw_state_factory">Χρησιμοποιείται ο εργοστασιακός κωδικός. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί.</string>
+    <string name="k2go_auth_pw_state_mismatch">Ο κωδικός άλλαξε στην υπηρεσία. Η αυτόματη σύνδεση δεν λειτουργεί μέχρι να τον επιδιορθώσεις.</string>
+    <string name="k2go_auth_pw_state_unreachable">Η υπηρεσία δεν εκτελείται. Ξεκίνησέ την για να αλλάξεις τον κωδικό.</string>
+    <string name="k2go_auth_pw_change_title">Αλλαγή κωδικού</string>
+    <string name="k2go_auth_pw_new">Νέος κωδικός</string>
+    <string name="k2go_auth_pw_confirm">Πληκτρολόγησε ξανά τον νέο κωδικό</string>
+    <string name="k2go_auth_pw_rule">Τουλάχιστον 8 χαρακτήρες, με ένα κεφαλαίο γράμμα, ένα πεζό γράμμα, ένα ψηφίο και ένα σύμβολο.</string>
+    <string name="k2go_auth_pw_change_button">Αλλαγή κωδικού</string>
+    <string name="k2go_auth_pw_repair_title">Επιδιόρθωση</string>
+    <string name="k2go_auth_pw_repair_hint">Πληκτρολόγησε τον κωδικό που χρησιμοποιεί τώρα η υπηρεσία. Η εφαρμογή τον ελέγχει και τον κρατά.</string>
+    <string name="k2go_auth_pw_reset">Επαναφορά στον εργοστασιακό κωδικό</string>
+    <string name="k2go_auth_pw_reset_title">Επαναφορά στον εργοστασιακό κωδικό;</string>
+    <string name="k2go_auth_pw_reset_msg">Η υπηρεσία παίρνει ξανά τον εργοστασιακό της κωδικό. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί μέχρι να τον αλλάξεις.</string>
+    <string name="k2go_auth_pw_reset_confirm">Επαναφορά</string>
+    <string name="k2go_auth_pw_working">Γίνεται επεξεργασία. Μπορεί να πάρει ένα λεπτό...</string>
+    <string name="k2go_auth_pw_changed">Ο κωδικός άλλαξε.</string>
+    <string name="k2go_auth_pw_changed_unverified">Έγινε. Η υπηρεσία δεν επιβεβαίωσε ακόμη τη σύνδεση. Έλεγξε ξανά σε ένα λεπτό.</string>
+    <string name="k2go_auth_pw_reset_done">Ο εργοστασιακός κωδικός επανήλθε.</string>
+    <string name="k2go_auth_pw_not_same">Οι δύο κωδικοί δεν είναι ίδιοι.</string>
+    <string name="k2go_auth_pw_weak">Αυτός ο κωδικός δεν ακολουθεί τον κανόνα κάτω από τα πεδία.</string>
+    <string name="k2go_auth_pw_err_mismatch">Η υπηρεσία δεν δέχεται τον αποθηκευμένο κωδικό. Επιδιόρθωσέ τον πρώτα ή κάνε επαναφορά.</string>
+    <string name="k2go_auth_pw_err_busy">Εκτελείται άλλη αλλαγή για αυτή την υπηρεσία. Περίμενε και δοκίμασε ξανά.</string>
+    <string name="k2go_auth_pw_err_unreachable">Η υπηρεσία δεν αποκρίνεται. Ξεκίνησέ την και δοκίμασε ξανά.</string>
+    <string name="k2go_auth_pw_err_failed">Ο κωδικός δεν άλλαξε. Δοκίμασε ξανά.</string>
+    <string name="k2go_auth_chip_mismatch">Δεν ταιριάζει</string>
+    <string name="k2go_auth_reminder_switch">Υπενθύμιση στην εκκίνηση όσο χρησιμοποιείται εργοστασιακός κωδικός</string>
+    <string name="k2go_auth_notice_mismatch_title">Η αυτόματη σύνδεση δεν λειτουργεί</string>
+    <string name="k2go_auth_notice_mismatch_msg">Ο κωδικός διαχειριστή του %1$s άλλαξε εκτός αυτής της εφαρμογής. Επιδιόρθωσέ τον ή κάνε επαναφορά στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
+    <string name="k2go_auth_notice_factory_title">Εργοστασιακοί κωδικοί σε χρήση</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s χρησιμοποιούν ακόμη τον εργοστασιακό κωδικό διαχειριστή. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί και να αλλάξει τη βιβλιοθήκη σου. Άλλαξέ τον στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
+    <string name="k2go_auth_notice_open">Άνοιγμα ελέγχου ταυτότητας</string>
+    <string name="k2go_auth_notice_close">Κλείσιμο</string>
+    <string name="k2go_auth_notice_never">Να μην εμφανιστεί ξανά</string>
+    <string name="k2go_auth_notice_never_title">Διακοπή αυτών των υπενθυμίσεων;</string>
+    <string name="k2go_auth_notice_never_msg">Με τον εργοστασιακό κωδικό, όποιος μοιράζεται το Wi-Fi ή το hotspot σου μπορεί να συνδεθεί στη βιβλιοθήκη σου και να την αλλάξει. Αν χρησιμοποιείς μόνο εσύ αυτό το τηλέφωνο, ο κίνδυνος είναι μικρός. Μπορείς να ενεργοποιήσεις ξανά τις υπενθυμίσεις στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
+    <string name="k2go_auth_notice_never_confirm">Διακοπή υπενθυμίσεων</string>
+    <string name="k2go_auth_notice_never_keep">Διατήρηση υπενθυμίσεων</string>
+    <string name="k2go_auth_list_hint">Κωδικοί διαχειριστή που χρησιμοποιεί το K2Go για Διάβασε ένα βιβλίο, Παρακολούθησε ένα μάθημα και Φιλοξενία κώδικα. Άλλαξέ τους εδώ, ώστε η εφαρμογή και το κουτί να μένουν συγχρονισμένα.</string>
 </resources>

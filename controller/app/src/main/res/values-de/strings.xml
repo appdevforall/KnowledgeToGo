@@ -1188,7 +1188,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Authentifizierung</string>
     <string name="k2go_settings_authentication_sub">Anmeldungen für Calibre-Web (Bücher) und Kolibri (Kurse)</string>
-    <string name="k2go_auth_hint">Anmeldungen, die K2Go für Bücher und Kurse verwendet. Aktualisiere eine, wenn sich das Passwort ihres Dienstes geändert hat.</string>
     <string name="k2go_auth_password">Passwort</string>
     <string name="k2go_auth_save">Speichern</string>
     <string name="k2go_auth_verified">Geprüft und gespeichert</string>
@@ -1645,4 +1644,46 @@
     <string name="k2go_clone_link_badge_not_used">Nicht verwendet</string>
     <string name="k2go_clone_link_badge_starting">Startet</string>
     <string name="k2go_clone_unplug_cable">Du kannst das USB-Kabel abziehen.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Benutzer: %1$s</string>
+    <string name="k2go_auth_pw_checking">Anmeldung wird geprüft...</string>
+    <string name="k2go_auth_pw_state_ok">Die App meldet sich mit dem Passwort an, das du festgelegt hast.</string>
+    <string name="k2go_auth_pw_state_factory">Werkspasswort aktiv. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden.</string>
+    <string name="k2go_auth_pw_state_mismatch">Das Passwort wurde im Dienst geändert. Die automatische Anmeldung funktioniert erst wieder, wenn du es reparierst.</string>
+    <string name="k2go_auth_pw_state_unreachable">Der Dienst läuft nicht. Starte ihn, um das Passwort zu ändern.</string>
+    <string name="k2go_auth_pw_change_title">Passwort ändern</string>
+    <string name="k2go_auth_pw_new">Neues Passwort</string>
+    <string name="k2go_auth_pw_confirm">Neues Passwort wiederholen</string>
+    <string name="k2go_auth_pw_rule">Mindestens 8 Zeichen, mit einem Großbuchstaben, einem Kleinbuchstaben, einer Ziffer und einem Sonderzeichen.</string>
+    <string name="k2go_auth_pw_change_button">Passwort ändern</string>
+    <string name="k2go_auth_pw_repair_title">Reparieren</string>
+    <string name="k2go_auth_pw_repair_hint">Gib das Passwort ein, das der Dienst jetzt verwendet. Die App prüft es und speichert es.</string>
+    <string name="k2go_auth_pw_reset">Auf Werkspasswort zurücksetzen</string>
+    <string name="k2go_auth_pw_reset_title">Auf Werkspasswort zurücksetzen?</string>
+    <string name="k2go_auth_pw_reset_msg">Der Dienst erhält wieder sein Werkspasswort. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden, bis du es änderst.</string>
+    <string name="k2go_auth_pw_reset_confirm">Zurücksetzen</string>
+    <string name="k2go_auth_pw_working">Wird bearbeitet. Das kann eine Minute dauern...</string>
+    <string name="k2go_auth_pw_changed">Passwort geändert.</string>
+    <string name="k2go_auth_pw_changed_unverified">Fertig. Der Dienst hat die Anmeldung noch nicht bestätigt. Prüfe es in einer Minute erneut.</string>
+    <string name="k2go_auth_pw_reset_done">Werkspasswort wiederhergestellt.</string>
+    <string name="k2go_auth_pw_not_same">Die beiden Passwörter stimmen nicht überein.</string>
+    <string name="k2go_auth_pw_weak">Dieses Passwort erfüllt die Regel unter den Feldern nicht.</string>
+    <string name="k2go_auth_pw_err_mismatch">Der Dienst akzeptiert das gespeicherte Passwort nicht. Repariere es zuerst oder setze es zurück.</string>
+    <string name="k2go_auth_pw_err_busy">Für diesen Dienst läuft bereits eine andere Änderung. Warte und versuche es erneut.</string>
+    <string name="k2go_auth_pw_err_unreachable">Der Dienst antwortet nicht. Starte ihn und versuche es erneut.</string>
+    <string name="k2go_auth_pw_err_failed">Das Passwort wurde nicht geändert. Versuche es erneut.</string>
+    <string name="k2go_auth_chip_mismatch">Stimmt nicht überein</string>
+    <string name="k2go_auth_reminder_switch">Beim Start erinnern, solange ein Werkspasswort aktiv ist</string>
+    <string name="k2go_auth_notice_mismatch_title">Automatische Anmeldung funktioniert nicht</string>
+    <string name="k2go_auth_notice_mismatch_msg">Das Admin-Passwort von %1$s wurde außerhalb dieser App geändert. Repariere es oder setze es zurück unter Einstellungen, Authentifizierung.</string>
+    <string name="k2go_auth_notice_factory_title">Werkspasswörter aktiv</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s verwenden noch das Admin-Werkspasswort. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden und deine Bibliothek ändern. Ändere es unter Einstellungen, Authentifizierung.</string>
+    <string name="k2go_auth_notice_open">Authentifizierung öffnen</string>
+    <string name="k2go_auth_notice_close">Schließen</string>
+    <string name="k2go_auth_notice_never">Nicht mehr anzeigen</string>
+    <string name="k2go_auth_notice_never_title">Diese Erinnerungen beenden?</string>
+    <string name="k2go_auth_notice_never_msg">Mit dem Werkspasswort kann sich jeder, der dein Wi-Fi oder deinen Hotspot nutzt, bei deiner Bibliothek anmelden und sie ändern. Wenn nur du dieses Telefon nutzt, ist das Risiko gering. Du kannst die Erinnerungen unter Einstellungen, Authentifizierung wieder einschalten.</string>
+    <string name="k2go_auth_notice_never_confirm">Erinnerungen beenden</string>
+    <string name="k2go_auth_notice_never_keep">Erinnerungen behalten</string>
+    <string name="k2go_auth_list_hint">Admin-Passwörter, die K2Go für Ein Buch lesen, Einen Kurs belegen und Code hosten verwendet. Ändere sie hier, damit App und Box synchron bleiben.</string>
 </resources>

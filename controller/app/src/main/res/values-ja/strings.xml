@@ -1189,7 +1189,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">認証</string>
     <string name="k2go_settings_authentication_sub">Calibre-Web（書籍）と Kolibri（コース）のサインイン</string>
-    <string name="k2go_auth_hint">K2Go が本とコースに使うサインイン。サービスのパスワードが変わったら更新してください。</string>
     <string name="k2go_auth_password">パスワード</string>
     <string name="k2go_auth_save">保存</string>
     <string name="k2go_auth_verified">確認して保存しました</string>
@@ -1646,4 +1645,46 @@
     <string name="k2go_clone_link_badge_not_used">未使用</string>
     <string name="k2go_clone_link_badge_starting">開始中</string>
     <string name="k2go_clone_unplug_cable">USB ケーブルを外せます。</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">ユーザー: %1$s</string>
+    <string name="k2go_auth_pw_checking">サインインを確認しています...</string>
+    <string name="k2go_auth_pw_state_ok">アプリは設定したパスワードでサインインします。</string>
+    <string name="k2go_auth_pw_state_factory">初期パスワードを使用中です。同じWi-Fiまたはホットスポットにいる人なら誰でもサインインできます。</string>
+    <string name="k2go_auth_pw_state_mismatch">サービス側でパスワードが変更されました。修復するまで自動サインインは動作しません。</string>
+    <string name="k2go_auth_pw_state_unreachable">サービスが動いていません。パスワードを変更するにはサービスを起動してください。</string>
+    <string name="k2go_auth_pw_change_title">パスワードを変更</string>
+    <string name="k2go_auth_pw_new">新しいパスワード</string>
+    <string name="k2go_auth_pw_confirm">新しいパスワードをもう一度入力</string>
+    <string name="k2go_auth_pw_rule">8文字以上で、大文字、小文字、数字、記号をそれぞれ含めてください。</string>
+    <string name="k2go_auth_pw_change_button">パスワードを変更</string>
+    <string name="k2go_auth_pw_repair_title">修復</string>
+    <string name="k2go_auth_pw_repair_hint">サービスが現在使用しているパスワードを入力してください。アプリが確認して保存します。</string>
+    <string name="k2go_auth_pw_reset">初期パスワードに戻す</string>
+    <string name="k2go_auth_pw_reset_title">初期パスワードに戻しますか？</string>
+    <string name="k2go_auth_pw_reset_msg">サービスのパスワードが初期パスワードに戻ります。変更するまで、同じWi-Fiまたはホットスポットにいる人なら誰でもサインインできます。</string>
+    <string name="k2go_auth_pw_reset_confirm">戻す</string>
+    <string name="k2go_auth_pw_working">処理中です。1分ほどかかることがあります...</string>
+    <string name="k2go_auth_pw_changed">パスワードを変更しました。</string>
+    <string name="k2go_auth_pw_changed_unverified">完了しました。サービスはまだサインインを確認していません。1分後にもう一度確認してください。</string>
+    <string name="k2go_auth_pw_reset_done">初期パスワードに戻しました。</string>
+    <string name="k2go_auth_pw_not_same">2つのパスワードが一致しません。</string>
+    <string name="k2go_auth_pw_weak">このパスワードは入力欄の下のルールを満たしていません。</string>
+    <string name="k2go_auth_pw_err_mismatch">サービスが保存済みのパスワードを受け付けません。先に修復するか、初期パスワードに戻してください。</string>
+    <string name="k2go_auth_pw_err_busy">このサービスの別の変更を実行中です。しばらく待ってからもう一度お試しください。</string>
+    <string name="k2go_auth_pw_err_unreachable">サービスが応答しません。起動してからもう一度お試しください。</string>
+    <string name="k2go_auth_pw_err_failed">パスワードは変更されませんでした。もう一度お試しください。</string>
+    <string name="k2go_auth_chip_mismatch">一致しません</string>
+    <string name="k2go_auth_reminder_switch">初期パスワードの使用中は起動時に知らせる</string>
+    <string name="k2go_auth_notice_mismatch_title">自動サインインが動作しません</string>
+    <string name="k2go_auth_notice_mismatch_msg">%1$s の管理者パスワードがこのアプリの外で変更されました。設定、認証で修復するか、初期パスワードに戻してください。</string>
+    <string name="k2go_auth_notice_factory_title">初期パスワードを使用中</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s はまだ初期の管理者パスワードを使用しています。同じWi-Fiまたはホットスポットにいる人なら誰でもサインインして、ライブラリを変更できます。設定、認証で変更してください。</string>
+    <string name="k2go_auth_notice_open">認証を開く</string>
+    <string name="k2go_auth_notice_close">閉じる</string>
+    <string name="k2go_auth_notice_never">今後表示しない</string>
+    <string name="k2go_auth_notice_never_title">リマインダーを停止しますか？</string>
+    <string name="k2go_auth_notice_never_msg">初期パスワードのままだと、Wi-Fiやホットスポットを共有する人なら誰でもライブラリにサインインして変更できます。このスマートフォンを使うのが自分だけなら、リスクは低いです。リマインダーは設定、認証でもう一度オンにできます。</string>
+    <string name="k2go_auth_notice_never_confirm">リマインダーを停止</string>
+    <string name="k2go_auth_notice_never_keep">リマインダーを続ける</string>
+    <string name="k2go_auth_list_hint">K2Goが「本を読む」「コースを受ける」「コードをホスト」で使う管理者パスワードです。アプリとボックスの状態をそろえるため、ここで変更してください。</string>
 </resources>

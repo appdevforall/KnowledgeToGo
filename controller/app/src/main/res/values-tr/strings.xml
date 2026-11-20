@@ -1188,7 +1188,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Kimlik doğrulama</string>
     <string name="k2go_settings_authentication_sub">Calibre-Web (kitaplar) ve Kolibri (kurslar) için oturum açmalar</string>
-    <string name="k2go_auth_hint">K2Go\'nun Kitaplar ve Kurslar için kullandığı oturum açmalar. Hizmetin parolası değiştiyse birini güncelleyin.</string>
     <string name="k2go_auth_password">Parola</string>
     <string name="k2go_auth_save">Kaydet</string>
     <string name="k2go_auth_verified">Doğrulandı ve kaydedildi</string>
@@ -1645,4 +1644,46 @@
     <string name="k2go_clone_link_badge_not_used">Kullanılmıyor</string>
     <string name="k2go_clone_link_badge_starting">Başlatılıyor</string>
     <string name="k2go_clone_unplug_cable">USB kablosunu çıkarabilirsiniz.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Kullanıcı: %1$s</string>
+    <string name="k2go_auth_pw_checking">Oturum açma kontrol ediliyor...</string>
+    <string name="k2go_auth_pw_state_ok">Uygulama, belirlediğiniz parolayla oturum açıyor.</string>
+    <string name="k2go_auth_pw_state_factory">Fabrika parolası kullanılıyor. Aynı Wi-Fi veya etkin noktadaki herkes oturum açabilir.</string>
+    <string name="k2go_auth_pw_state_mismatch">Parola serviste değiştirildi. Siz onarana kadar otomatik oturum açma çalışmaz.</string>
+    <string name="k2go_auth_pw_state_unreachable">Servis çalışmıyor. Parolayı değiştirmek için servisi başlatın.</string>
+    <string name="k2go_auth_pw_change_title">Parolayı değiştir</string>
+    <string name="k2go_auth_pw_new">Yeni parola</string>
+    <string name="k2go_auth_pw_confirm">Yeni parolayı tekrar yazın</string>
+    <string name="k2go_auth_pw_rule">En az 8 karakter; bir büyük harf, bir küçük harf, bir rakam ve bir sembol içermeli.</string>
+    <string name="k2go_auth_pw_change_button">Parolayı değiştir</string>
+    <string name="k2go_auth_pw_repair_title">Onar</string>
+    <string name="k2go_auth_pw_repair_hint">Servisin şu an kullandığı parolayı yazın. Uygulama parolayı kontrol eder ve saklar.</string>
+    <string name="k2go_auth_pw_reset">Fabrika parolasına sıfırla</string>
+    <string name="k2go_auth_pw_reset_title">Fabrika parolasına sıfırlansın mı?</string>
+    <string name="k2go_auth_pw_reset_msg">Servis yeniden fabrika parolasını alır. Siz değiştirene kadar aynı Wi-Fi veya etkin noktadaki herkes oturum açabilir.</string>
+    <string name="k2go_auth_pw_reset_confirm">Sıfırla</string>
+    <string name="k2go_auth_pw_working">İşlem sürüyor. Bu bir dakika sürebilir...</string>
+    <string name="k2go_auth_pw_changed">Parola değiştirildi.</string>
+    <string name="k2go_auth_pw_changed_unverified">Tamamlandı. Servis oturum açmayı henüz onaylamadı. Bir dakika sonra tekrar kontrol edin.</string>
+    <string name="k2go_auth_pw_reset_done">Fabrika parolası geri yüklendi.</string>
+    <string name="k2go_auth_pw_not_same">İki parola aynı değil.</string>
+    <string name="k2go_auth_pw_weak">Bu parola, alanların altındaki kurala uymuyor.</string>
+    <string name="k2go_auth_pw_err_mismatch">Servis kayıtlı parolayı kabul etmiyor. Önce onarın veya sıfırlayın.</string>
+    <string name="k2go_auth_pw_err_busy">Bu servis için başka bir değişiklik sürüyor. Bekleyin ve tekrar deneyin.</string>
+    <string name="k2go_auth_pw_err_unreachable">Servis yanıt vermiyor. Servisi başlatın ve tekrar deneyin.</string>
+    <string name="k2go_auth_pw_err_failed">Parola değişmedi. Tekrar deneyin.</string>
+    <string name="k2go_auth_chip_mismatch">Eşleşmiyor</string>
+    <string name="k2go_auth_reminder_switch">Fabrika parolası kullanılırken açılışta hatırlat</string>
+    <string name="k2go_auth_notice_mismatch_title">Otomatik oturum açma çalışmıyor</string>
+    <string name="k2go_auth_notice_mismatch_msg">%1$s yönetici parolası bu uygulamanın dışında değiştirildi. Ayarlar, Kimlik doğrulama bölümünde onarın veya sıfırlayın.</string>
+    <string name="k2go_auth_notice_factory_title">Fabrika parolaları kullanılıyor</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s hâlâ fabrika yönetici parolasını kullanıyor. Aynı Wi-Fi veya etkin noktadaki herkes oturum açıp kitaplığınızı değiştirebilir. Parolayı Ayarlar, Kimlik doğrulama bölümünde değiştirin.</string>
+    <string name="k2go_auth_notice_open">Kimlik doğrulamayı aç</string>
+    <string name="k2go_auth_notice_close">Kapat</string>
+    <string name="k2go_auth_notice_never">Bir daha gösterme</string>
+    <string name="k2go_auth_notice_never_title">Bu hatırlatmalar durdurulsun mu?</string>
+    <string name="k2go_auth_notice_never_msg">Fabrika parolasıyla, Wi-Fi veya etkin noktanızı paylaşan herkes kitaplığınızda oturum açıp onu değiştirebilir. Bu telefonu yalnızca siz kullanıyorsanız risk düşüktür. Hatırlatmaları Ayarlar, Kimlik doğrulama bölümünde yeniden açabilirsiniz.</string>
+    <string name="k2go_auth_notice_never_confirm">Hatırlatmaları durdur</string>
+    <string name="k2go_auth_notice_never_keep">Hatırlatmaları sürdür</string>
+    <string name="k2go_auth_list_hint">K2Go uygulamasının Kitaplar, Kurslar ve Kodu barındır için kullandığı yönetici parolaları. Uygulama ve sunucu uyumlu kalsın diye parolaları burada değiştirin.</string>
 </resources>

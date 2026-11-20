@@ -1188,7 +1188,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Verificatie</string>
     <string name="k2go_settings_authentication_sub">Aanmeldingen voor Calibre-Web (boeken) en Kolibri (cursussen)</string>
-    <string name="k2go_auth_hint">De aanmeldingen die K2Go gebruikt voor Boeken en Cursussen. Werk er een bij als het wachtwoord van die service is gewijzigd.</string>
     <string name="k2go_auth_password">Wachtwoord</string>
     <string name="k2go_auth_save">Opslaan</string>
     <string name="k2go_auth_verified">Geverifieerd en opgeslagen</string>
@@ -1645,4 +1644,46 @@
     <string name="k2go_clone_link_badge_not_used">Niet gebruikt</string>
     <string name="k2go_clone_link_badge_starting">Starten</string>
     <string name="k2go_clone_unplug_cable">Je kunt de USB-kabel loskoppelen.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Gebruiker: %1$s</string>
+    <string name="k2go_auth_pw_checking">Aanmelding controleren...</string>
+    <string name="k2go_auth_pw_state_ok">De app meldt zich aan met het wachtwoord dat je hebt ingesteld.</string>
+    <string name="k2go_auth_pw_state_factory">Fabriekswachtwoord in gebruik. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden.</string>
+    <string name="k2go_auth_pw_state_mismatch">Het wachtwoord is in de dienst gewijzigd. Automatisch aanmelden werkt pas weer als je het herstelt.</string>
+    <string name="k2go_auth_pw_state_unreachable">De dienst is niet actief. Start de dienst om het wachtwoord te wijzigen.</string>
+    <string name="k2go_auth_pw_change_title">Wachtwoord wijzigen</string>
+    <string name="k2go_auth_pw_new">Nieuw wachtwoord</string>
+    <string name="k2go_auth_pw_confirm">Typ het nieuwe wachtwoord opnieuw</string>
+    <string name="k2go_auth_pw_rule">Minstens 8 tekens, met een hoofdletter, een kleine letter, een cijfer en een symbool.</string>
+    <string name="k2go_auth_pw_change_button">Wachtwoord wijzigen</string>
+    <string name="k2go_auth_pw_repair_title">Herstellen</string>
+    <string name="k2go_auth_pw_repair_hint">Typ het wachtwoord dat de dienst nu gebruikt. De app controleert het en bewaart het.</string>
+    <string name="k2go_auth_pw_reset">Terugzetten naar fabriekswachtwoord</string>
+    <string name="k2go_auth_pw_reset_title">Terugzetten naar fabriekswachtwoord?</string>
+    <string name="k2go_auth_pw_reset_msg">De dienst krijgt weer het fabriekswachtwoord. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden tot je het wijzigt.</string>
+    <string name="k2go_auth_pw_reset_confirm">Terugzetten</string>
+    <string name="k2go_auth_pw_working">Bezig. Dit kan een minuut duren...</string>
+    <string name="k2go_auth_pw_changed">Wachtwoord gewijzigd.</string>
+    <string name="k2go_auth_pw_changed_unverified">Klaar. De dienst heeft de aanmelding nog niet bevestigd. Controleer het over een minuut opnieuw.</string>
+    <string name="k2go_auth_pw_reset_done">Fabriekswachtwoord teruggezet.</string>
+    <string name="k2go_auth_pw_not_same">De twee wachtwoorden zijn niet hetzelfde.</string>
+    <string name="k2go_auth_pw_weak">Dit wachtwoord volgt de regel onder de velden niet.</string>
+    <string name="k2go_auth_pw_err_mismatch">De dienst accepteert het opgeslagen wachtwoord niet. Herstel het eerst, of zet het terug.</string>
+    <string name="k2go_auth_pw_err_busy">Er loopt al een andere wijziging voor deze dienst. Wacht en probeer het opnieuw.</string>
+    <string name="k2go_auth_pw_err_unreachable">De dienst reageert niet. Start de dienst en probeer het opnieuw.</string>
+    <string name="k2go_auth_pw_err_failed">Het wachtwoord is niet gewijzigd. Probeer het opnieuw.</string>
+    <string name="k2go_auth_chip_mismatch">Komt niet overeen</string>
+    <string name="k2go_auth_reminder_switch">Herinner me bij het starten zolang een fabriekswachtwoord in gebruik is</string>
+    <string name="k2go_auth_notice_mismatch_title">Automatisch aanmelden werkt niet</string>
+    <string name="k2go_auth_notice_mismatch_msg">Het beheerderswachtwoord van %1$s is buiten deze app gewijzigd. Herstel het of zet het terug in Instellingen, Verificatie.</string>
+    <string name="k2go_auth_notice_factory_title">Fabriekswachtwoorden in gebruik</string>
+    <string name="k2go_auth_notice_factory_msg">Deze diensten gebruiken nog het fabrieksbeheerderswachtwoord: %1$s. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden en je bibliotheek wijzigen. Wijzig het in Instellingen, Verificatie.</string>
+    <string name="k2go_auth_notice_open">Verificatie openen</string>
+    <string name="k2go_auth_notice_close">Sluiten</string>
+    <string name="k2go_auth_notice_never">Niet meer tonen</string>
+    <string name="k2go_auth_notice_never_title">Deze herinneringen stoppen?</string>
+    <string name="k2go_auth_notice_never_msg">Met het fabriekswachtwoord kan iedereen die je Wi-Fi of hotspot deelt zich aanmelden bij je bibliotheek en die wijzigen. Als alleen jij deze telefoon gebruikt, is het risico klein. Je kunt de herinneringen weer aanzetten in Instellingen, Verificatie.</string>
+    <string name="k2go_auth_notice_never_confirm">Herinneringen stoppen</string>
+    <string name="k2go_auth_notice_never_keep">Herinneringen houden</string>
+    <string name="k2go_auth_list_hint">Beheerderswachtwoorden die K2Go gebruikt voor Een boek lezen, Een cursus volgen en Code hosten. Wijzig ze hier, zodat de app en de box gelijk blijven.</string>
 </resources>

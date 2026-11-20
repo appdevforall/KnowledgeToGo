@@ -1267,7 +1267,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autenticação</string>
     <string name="k2go_settings_authentication_sub">Inícios de sessão para Calibre-Web (livros) e Kolibri (cursos)</string>
-    <string name="k2go_auth_hint">Os acessos que o K2Go usa para Livros e Cursos. Atualize um se a palavra-passe do seu serviço mudou.</string>
     <string name="k2go_auth_password">Palavra-passe</string>
     <string name="k2go_auth_save">Guardar</string>
     <string name="k2go_auth_verified">Verificado e guardado</string>
@@ -1724,4 +1723,46 @@
     <string name="k2go_clone_link_badge_not_used">Não usado</string>
     <string name="k2go_clone_link_badge_starting">A iniciar</string>
     <string name="k2go_clone_unplug_cable">Já pode desligar o cabo USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Usuário: %1$s</string>
+    <string name="k2go_auth_pw_checking">Verificação do acesso...</string>
+    <string name="k2go_auth_pw_state_ok">A app entra com a senha que você definiu.</string>
+    <string name="k2go_auth_pw_state_factory">Senha de fábrica em uso. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar.</string>
+    <string name="k2go_auth_pw_state_mismatch">A senha foi alterada no serviço. O acesso automático não funciona até reparar a senha.</string>
+    <string name="k2go_auth_pw_state_unreachable">O serviço não está em execução. Inicie-o para alterar a senha.</string>
+    <string name="k2go_auth_pw_change_title">Alterar senha</string>
+    <string name="k2go_auth_pw_new">Nova senha</string>
+    <string name="k2go_auth_pw_confirm">Digite a nova senha novamente</string>
+    <string name="k2go_auth_pw_rule">Pelo menos 8 caracteres, com uma letra maiúscula, uma letra minúscula, um algarismo e um símbolo.</string>
+    <string name="k2go_auth_pw_change_button">Alterar senha</string>
+    <string name="k2go_auth_pw_repair_title">Reparar</string>
+    <string name="k2go_auth_pw_repair_hint">Digite a senha que o serviço usa agora. A app verifica e guarda a senha.</string>
+    <string name="k2go_auth_pw_reset">Repor a senha de fábrica</string>
+    <string name="k2go_auth_pw_reset_title">Repor a senha de fábrica?</string>
+    <string name="k2go_auth_pw_reset_msg">O serviço volta a ter a senha de fábrica. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar até você a alterar.</string>
+    <string name="k2go_auth_pw_reset_confirm">Repor</string>
+    <string name="k2go_auth_pw_working">Em curso. Isto pode levar um minuto...</string>
+    <string name="k2go_auth_pw_changed">Senha alterada.</string>
+    <string name="k2go_auth_pw_changed_unverified">Concluído. O serviço ainda não confirmou o acesso. Verifique novamente daqui a um minuto.</string>
+    <string name="k2go_auth_pw_reset_done">Senha de fábrica reposta.</string>
+    <string name="k2go_auth_pw_not_same">As duas senhas não são iguais.</string>
+    <string name="k2go_auth_pw_weak">Esta senha não segue a regra abaixo dos campos.</string>
+    <string name="k2go_auth_pw_err_mismatch">O serviço não aceita a senha guardada. Repare-a primeiro ou reponha-a.</string>
+    <string name="k2go_auth_pw_err_busy">Outra alteração para este serviço está em curso. Aguarde e tente novamente.</string>
+    <string name="k2go_auth_pw_err_unreachable">O serviço não responde. Inicie-o e tente novamente.</string>
+    <string name="k2go_auth_pw_err_failed">A senha não foi alterada. Tente novamente.</string>
+    <string name="k2go_auth_chip_mismatch">Não corresponde</string>
+    <string name="k2go_auth_reminder_switch">Lembrar ao iniciar enquanto uma senha de fábrica estiver em uso</string>
+    <string name="k2go_auth_notice_mismatch_title">O acesso automático não funciona</string>
+    <string name="k2go_auth_notice_mismatch_msg">A senha de administrador de %1$s foi alterada fora desta app. Repare-a ou reponha-a em Definições, Autenticação.</string>
+    <string name="k2go_auth_notice_factory_title">Senhas de fábrica em uso</string>
+    <string name="k2go_auth_notice_factory_msg">Estes serviços ainda usam a senha de administrador de fábrica: %1$s. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar e alterar a sua biblioteca. Altere-a em Definições, Autenticação.</string>
+    <string name="k2go_auth_notice_open">Abrir Autenticação</string>
+    <string name="k2go_auth_notice_close">Fechar</string>
+    <string name="k2go_auth_notice_never">Não mostrar novamente</string>
+    <string name="k2go_auth_notice_never_title">Parar estes lembretes?</string>
+    <string name="k2go_auth_notice_never_msg">Com a senha de fábrica, qualquer pessoa que partilhe a sua rede Wi-Fi ou hotspot pode entrar na sua biblioteca e alterá-la. Se só você usa este telefone, o risco é baixo. Pode voltar a ativar os lembretes em Definições, Autenticação.</string>
+    <string name="k2go_auth_notice_never_confirm">Parar lembretes</string>
+    <string name="k2go_auth_notice_never_keep">Manter lembretes</string>
+    <string name="k2go_auth_list_hint">Senhas de administrador que o K2Go usa para Ler um livro, Fazer um curso e Hospedar código. Altere-as aqui para que a app e o servidor fiquem em sintonia.</string>
 </resources>

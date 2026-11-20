@@ -1198,7 +1198,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Uwierzytelnianie</string>
     <string name="k2go_settings_authentication_sub">Logowania do Calibre-Web (książki) i Kolibri (kursy)</string>
-    <string name="k2go_auth_hint">Loginy, których K2Go używa do Książek i Kursów. Zaktualizuj jeden, jeśli zmieniło się hasło danej usługi.</string>
     <string name="k2go_auth_password">Hasło</string>
     <string name="k2go_auth_save">Zapisz</string>
     <string name="k2go_auth_verified">Zweryfikowano i zapisano</string>
@@ -1655,4 +1654,46 @@
     <string name="k2go_clone_link_badge_not_used">Nieużywane</string>
     <string name="k2go_clone_link_badge_starting">Uruchamianie</string>
     <string name="k2go_clone_unplug_cable">Możesz odłączyć kabel USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Użytkownik: %1$s</string>
+    <string name="k2go_auth_pw_checking">Sprawdzanie logowania...</string>
+    <string name="k2go_auth_pw_state_ok">Aplikacja loguje się hasłem ustawionym przez Ciebie.</string>
+    <string name="k2go_auth_pw_state_factory">Używane jest hasło fabryczne. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować.</string>
+    <string name="k2go_auth_pw_state_mismatch">Hasło zostało zmienione w usłudze. Automatyczne logowanie nie działa, dopóki go nie naprawisz.</string>
+    <string name="k2go_auth_pw_state_unreachable">Usługa nie działa. Uruchom ją, aby zmienić hasło.</string>
+    <string name="k2go_auth_pw_change_title">Zmień hasło</string>
+    <string name="k2go_auth_pw_new">Nowe hasło</string>
+    <string name="k2go_auth_pw_confirm">Wpisz ponownie nowe hasło</string>
+    <string name="k2go_auth_pw_rule">Co najmniej 8 znaków, w tym wielka litera, mała litera, cyfra i symbol.</string>
+    <string name="k2go_auth_pw_change_button">Zmień hasło</string>
+    <string name="k2go_auth_pw_repair_title">Napraw</string>
+    <string name="k2go_auth_pw_repair_hint">Wpisz hasło, którego usługa używa teraz. Aplikacja je sprawdzi i zapamięta.</string>
+    <string name="k2go_auth_pw_reset">Przywróć hasło fabryczne</string>
+    <string name="k2go_auth_pw_reset_title">Przywrócić hasło fabryczne?</string>
+    <string name="k2go_auth_pw_reset_msg">Usługa ponownie otrzyma swoje hasło fabryczne. Dopóki go nie zmienisz, każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować.</string>
+    <string name="k2go_auth_pw_reset_confirm">Przywróć</string>
+    <string name="k2go_auth_pw_working">Trwa praca. To może potrwać minutę...</string>
+    <string name="k2go_auth_pw_changed">Hasło zostało zmienione.</string>
+    <string name="k2go_auth_pw_changed_unverified">Gotowe. Usługa jeszcze nie potwierdziła logowania. Sprawdź ponownie za minutę.</string>
+    <string name="k2go_auth_pw_reset_done">Przywrócono hasło fabryczne.</string>
+    <string name="k2go_auth_pw_not_same">Hasła nie są takie same.</string>
+    <string name="k2go_auth_pw_weak">To hasło nie spełnia reguły podanej pod polami.</string>
+    <string name="k2go_auth_pw_err_mismatch">Usługa nie akceptuje zapisanego hasła. Najpierw je napraw albo przywróć.</string>
+    <string name="k2go_auth_pw_err_busy">Trwa inna zmiana dla tej usługi. Poczekaj i spróbuj ponownie.</string>
+    <string name="k2go_auth_pw_err_unreachable">Usługa nie odpowiada. Uruchom ją i spróbuj ponownie.</string>
+    <string name="k2go_auth_pw_err_failed">Hasło nie zostało zmienione. Spróbuj ponownie.</string>
+    <string name="k2go_auth_chip_mismatch">Niezgodne</string>
+    <string name="k2go_auth_reminder_switch">Przypominaj przy uruchomieniu, gdy używane jest hasło fabryczne</string>
+    <string name="k2go_auth_notice_mismatch_title">Automatyczne logowanie nie działa</string>
+    <string name="k2go_auth_notice_mismatch_msg">Hasło administratora usługi %1$s zostało zmienione poza tą aplikacją. Napraw je lub przywróć w: Ustawienia, Uwierzytelnianie.</string>
+    <string name="k2go_auth_notice_factory_title">Używane są hasła fabryczne</string>
+    <string name="k2go_auth_notice_factory_msg">Te usługi nadal używają fabrycznego hasła administratora: %1$s. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
+    <string name="k2go_auth_notice_open">Otwórz Uwierzytelnianie</string>
+    <string name="k2go_auth_notice_close">Zamknij</string>
+    <string name="k2go_auth_notice_never">Nie pokazuj ponownie</string>
+    <string name="k2go_auth_notice_never_title">Wyłączyć te przypomnienia?</string>
+    <string name="k2go_auth_notice_never_msg">Przy haśle fabrycznym każdy, kto korzysta z Twojej sieci Wi-Fi lub hotspotu, może zalogować się do Twojej biblioteki i ją zmienić. Jeśli tylko Ty używasz tego telefonu, ryzyko jest niskie. Przypomnienia możesz ponownie włączyć w: Ustawienia, Uwierzytelnianie.</string>
+    <string name="k2go_auth_notice_never_confirm">Wyłącz przypomnienia</string>
+    <string name="k2go_auth_notice_never_keep">Zachowaj przypomnienia</string>
+    <string name="k2go_auth_list_hint">Hasła administratora, których K2Go używa dla kart: Przeczytaj książkę, Weź udział w kursie i Hostuj kod. Zmieniaj je tutaj, aby aplikacja i serwer pozostały zgodne.</string>
 </resources>

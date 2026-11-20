@@ -1264,7 +1264,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Аутентификация</string>
     <string name="k2go_settings_authentication_sub">Входы для Calibre-Web (книги) и Kolibri (курсы)</string>
-    <string name="k2go_auth_hint">Входы, которые K2Go использует для Книг и Курсов. Обновите один, если пароль его службы изменился.</string>
     <string name="k2go_auth_password">Пароль</string>
     <string name="k2go_auth_save">Сохранить</string>
     <string name="k2go_auth_verified">Проверено и сохранено</string>
@@ -1721,4 +1720,46 @@
     <string name="k2go_clone_link_badge_not_used">Не используется</string>
     <string name="k2go_clone_link_badge_starting">Запуск</string>
     <string name="k2go_clone_unplug_cable">Можно отключить USB-кабель.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Пользователь: %1$s</string>
+    <string name="k2go_auth_pw_checking">Проверка входа...</string>
+    <string name="k2go_auth_pw_state_ok">Приложение входит с заданным вами паролем.</string>
+    <string name="k2go_auth_pw_state_factory">Используется заводской пароль. Любой в той же сети Wi-Fi или точке доступа может войти.</string>
+    <string name="k2go_auth_pw_state_mismatch">Пароль был изменён в сервисе. Автоматический вход не работает, пока вы его не исправите.</string>
+    <string name="k2go_auth_pw_state_unreachable">Сервис не запущен. Запустите его, чтобы изменить пароль.</string>
+    <string name="k2go_auth_pw_change_title">Изменить пароль</string>
+    <string name="k2go_auth_pw_new">Новый пароль</string>
+    <string name="k2go_auth_pw_confirm">Введите новый пароль ещё раз</string>
+    <string name="k2go_auth_pw_rule">Не менее 8 символов, включая заглавную букву, строчную букву, цифру и символ.</string>
+    <string name="k2go_auth_pw_change_button">Изменить пароль</string>
+    <string name="k2go_auth_pw_repair_title">Исправить</string>
+    <string name="k2go_auth_pw_repair_hint">Введите пароль, который сервис использует сейчас. Приложение проверит и сохранит его.</string>
+    <string name="k2go_auth_pw_reset">Сбросить на заводской пароль</string>
+    <string name="k2go_auth_pw_reset_title">Сбросить на заводской пароль?</string>
+    <string name="k2go_auth_pw_reset_msg">Сервису вернётся заводской пароль. Любой в той же сети Wi-Fi или точке доступа сможет войти, пока вы его не измените.</string>
+    <string name="k2go_auth_pw_reset_confirm">Сбросить</string>
+    <string name="k2go_auth_pw_working">Выполняется. Это может занять минуту...</string>
+    <string name="k2go_auth_pw_changed">Пароль изменён.</string>
+    <string name="k2go_auth_pw_changed_unverified">Готово. Сервис ещё не подтвердил вход. Проверьте снова через минуту.</string>
+    <string name="k2go_auth_pw_reset_done">Заводской пароль восстановлен.</string>
+    <string name="k2go_auth_pw_not_same">Пароли не совпадают.</string>
+    <string name="k2go_auth_pw_weak">Этот пароль не соответствует правилу под полями.</string>
+    <string name="k2go_auth_pw_err_mismatch">Сервис не принимает сохранённый пароль. Сначала исправьте его или сбросьте.</string>
+    <string name="k2go_auth_pw_err_busy">Для этого сервиса уже выполняется другое изменение. Подождите и повторите попытку.</string>
+    <string name="k2go_auth_pw_err_unreachable">Сервис не отвечает. Запустите его и повторите попытку.</string>
+    <string name="k2go_auth_pw_err_failed">Пароль не изменён. Повторите попытку.</string>
+    <string name="k2go_auth_chip_mismatch">Не совпадает</string>
+    <string name="k2go_auth_reminder_switch">Напоминать при запуске, пока используется заводской пароль</string>
+    <string name="k2go_auth_notice_mismatch_title">Автоматический вход не работает</string>
+    <string name="k2go_auth_notice_mismatch_msg">Пароль администратора %1$s был изменён вне этого приложения. Исправьте или сбросьте его в разделе Настройки, Аутентификация.</string>
+    <string name="k2go_auth_notice_factory_title">Используются заводские пароли</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s всё ещё используют заводской пароль администратора. Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
+    <string name="k2go_auth_notice_open">Открыть Аутентификацию</string>
+    <string name="k2go_auth_notice_close">Закрыть</string>
+    <string name="k2go_auth_notice_never">Больше не показывать</string>
+    <string name="k2go_auth_notice_never_title">Отключить эти напоминания?</string>
+    <string name="k2go_auth_notice_never_msg">С заводским паролем любой, кто использует вашу сеть Wi-Fi или точку доступа, может войти в вашу библиотеку и изменить её. Если этим телефоном пользуетесь только вы, риск невелик. Напоминания можно снова включить в разделе Настройки, Аутентификация.</string>
+    <string name="k2go_auth_notice_never_confirm">Отключить напоминания</string>
+    <string name="k2go_auth_notice_never_keep">Оставить напоминания</string>
+    <string name="k2go_auth_list_hint">Пароли администратора, которые K2Go использует для разделов Книги, Курсы и Хостинг кода. Меняйте их здесь, чтобы приложение и сервер оставались согласованными.</string>
 </resources>

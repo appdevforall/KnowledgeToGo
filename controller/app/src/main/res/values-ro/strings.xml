@@ -1188,7 +1188,6 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentificare</string>
     <string name="k2go_settings_authentication_sub">Autentificări pentru Calibre-Web (cărți) și Kolibri (cursuri)</string>
-    <string name="k2go_auth_hint">Autentificările pe care K2Go le folosește pentru Cărți și Cursuri. Actualizați una dacă s-a schimbat parola serviciului.</string>
     <string name="k2go_auth_password">Parolă</string>
     <string name="k2go_auth_save">Salvează</string>
     <string name="k2go_auth_verified">Verificat și salvat</string>
@@ -1645,4 +1644,46 @@
     <string name="k2go_clone_link_badge_not_used">Nefolosit</string>
     <string name="k2go_clone_link_badge_starting">Pornire</string>
     <string name="k2go_clone_unplug_cable">Poți deconecta cablul USB.</string>
+    <!-- K2GO-552 admin passwords (machine-translated, pending human review). -->
+    <string name="k2go_auth_pw_user">Utilizator: %1$s</string>
+    <string name="k2go_auth_pw_checking">Se verifică autentificarea...</string>
+    <string name="k2go_auth_pw_state_ok">Aplicația se autentifică cu parola pe care ai setat-o.</string>
+    <string name="k2go_auth_pw_state_factory">Se folosește parola din fabrică. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica.</string>
+    <string name="k2go_auth_pw_state_mismatch">Parola a fost schimbată în serviciu. Autentificarea automată nu funcționează până nu o repari.</string>
+    <string name="k2go_auth_pw_state_unreachable">Serviciul nu rulează. Pornește-l pentru a schimba parola.</string>
+    <string name="k2go_auth_pw_change_title">Schimbă parola</string>
+    <string name="k2go_auth_pw_new">Parolă nouă</string>
+    <string name="k2go_auth_pw_confirm">Introdu din nou parola nouă</string>
+    <string name="k2go_auth_pw_rule">Cel puțin 8 caractere, cu o literă mare, o literă mică, o cifră și un simbol.</string>
+    <string name="k2go_auth_pw_change_button">Schimbă parola</string>
+    <string name="k2go_auth_pw_repair_title">Reparare</string>
+    <string name="k2go_auth_pw_repair_hint">Introdu parola pe care o folosește acum serviciul. Aplicația o verifică și o păstrează.</string>
+    <string name="k2go_auth_pw_reset">Resetează la parola din fabrică</string>
+    <string name="k2go_auth_pw_reset_title">Resetezi la parola din fabrică?</string>
+    <string name="k2go_auth_pw_reset_msg">Serviciul primește din nou parola din fabrică. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica până când o schimbi.</string>
+    <string name="k2go_auth_pw_reset_confirm">Resetează</string>
+    <string name="k2go_auth_pw_working">Se lucrează. Poate dura un minut...</string>
+    <string name="k2go_auth_pw_changed">Parola a fost schimbată.</string>
+    <string name="k2go_auth_pw_changed_unverified">Gata. Serviciul nu a confirmat încă autentificarea. Verifică din nou peste un minut.</string>
+    <string name="k2go_auth_pw_reset_done">Parola din fabrică a fost restabilită.</string>
+    <string name="k2go_auth_pw_not_same">Cele două parole nu sunt identice.</string>
+    <string name="k2go_auth_pw_weak">Această parolă nu respectă regula de sub câmpuri.</string>
+    <string name="k2go_auth_pw_err_mismatch">Serviciul nu acceptă parola salvată. Repar-o mai întâi sau reseteaz-o.</string>
+    <string name="k2go_auth_pw_err_busy">O altă modificare pentru acest serviciu este în curs. Așteaptă și încearcă din nou.</string>
+    <string name="k2go_auth_pw_err_unreachable">Serviciul nu răspunde. Pornește-l și încearcă din nou.</string>
+    <string name="k2go_auth_pw_err_failed">Parola nu s-a schimbat. Încearcă din nou.</string>
+    <string name="k2go_auth_chip_mismatch">Nu se potrivește</string>
+    <string name="k2go_auth_reminder_switch">Amintește-mi la pornire cât timp se folosește o parolă din fabrică</string>
+    <string name="k2go_auth_notice_mismatch_title">Autentificarea automată nu funcționează</string>
+    <string name="k2go_auth_notice_mismatch_msg">Parola de administrator pentru %1$s a fost schimbată în afara acestei aplicații. Repar-o sau reseteaz-o în Setări, Autentificare.</string>
+    <string name="k2go_auth_notice_factory_title">Parole din fabrică în uz</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s folosesc încă parola de administrator din fabrică. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica și îți poate modifica biblioteca. Schimbă parola în Setări, Autentificare.</string>
+    <string name="k2go_auth_notice_open">Deschide Autentificare</string>
+    <string name="k2go_auth_notice_close">Închide</string>
+    <string name="k2go_auth_notice_never">Nu mai afișa</string>
+    <string name="k2go_auth_notice_never_title">Oprești aceste mementouri?</string>
+    <string name="k2go_auth_notice_never_msg">Cu parola din fabrică, oricine folosește aceeași rețea Wi-Fi sau hotspot se poate autentifica în biblioteca ta și o poate modifica. Dacă doar tu folosești acest telefon, riscul este mic. Poți activa din nou mementourile în Setări, Autentificare.</string>
+    <string name="k2go_auth_notice_never_confirm">Oprește mementourile</string>
+    <string name="k2go_auth_notice_never_keep">Păstrează mementourile</string>
+    <string name="k2go_auth_list_hint">Parolele de administrator pe care K2Go le folosește pentru Cărți, Cursuri și Găzduiește cod. Schimbă-le aici, ca aplicația și serverul să rămână sincronizate.</string>
 </resources>

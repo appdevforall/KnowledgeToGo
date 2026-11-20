@@ -672,7 +672,6 @@
     <!-- ADFA-5044: Settings → Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Authentication</string>
     <string name="k2go_settings_authentication_sub">Sign-ins for Calibre-Web (books) and Kolibri (courses)</string>
-    <string name="k2go_auth_hint">Sign-ins K2Go uses for Books &amp; Courses. Update one if its service password changed.</string>
     <string name="k2go_auth_password">Password</string>
     <string name="k2go_auth_save">Save</string>
     <string name="k2go_auth_verified">Verified and saved</string>
@@ -1842,4 +1841,46 @@
     <string name="k2go_clone_link_badge_not_used">Not used</string>
     <string name="k2go_clone_link_badge_starting">Starting</string>
     <string name="k2go_clone_unplug_cable">You can unplug the USB cable.</string>
+    <!-- K2GO-552: admin password change, repair, reset and the start notice. -->
+    <string name="k2go_auth_pw_user">User: %1$s</string>
+    <string name="k2go_auth_pw_checking">Checking the sign-in...</string>
+    <string name="k2go_auth_pw_state_ok">The app signs in with the password you set.</string>
+    <string name="k2go_auth_pw_state_factory">Factory password in use. Anyone on the same Wi-Fi or hotspot can sign in.</string>
+    <string name="k2go_auth_pw_state_mismatch">The password was changed in the service. Automatic sign-in does not work until you repair it.</string>
+    <string name="k2go_auth_pw_state_unreachable">The service is not running. Start it to change the password.</string>
+    <string name="k2go_auth_pw_change_title">Change password</string>
+    <string name="k2go_auth_pw_new">New password</string>
+    <string name="k2go_auth_pw_confirm">Type the new password again</string>
+    <string name="k2go_auth_pw_rule">At least 8 characters, with an upper-case letter, a lower-case letter, a digit and a symbol.</string>
+    <string name="k2go_auth_pw_change_button">Change password</string>
+    <string name="k2go_auth_pw_repair_title">Repair</string>
+    <string name="k2go_auth_pw_repair_hint">Type the password that the service uses now. The app checks it and keeps it.</string>
+    <string name="k2go_auth_pw_reset">Reset to the factory password</string>
+    <string name="k2go_auth_pw_reset_title">Reset to the factory password?</string>
+    <string name="k2go_auth_pw_reset_msg">The service gets its factory password again. Anyone on the same Wi-Fi or hotspot can sign in until you change it.</string>
+    <string name="k2go_auth_pw_reset_confirm">Reset</string>
+    <string name="k2go_auth_pw_working">Working on it. This can take a minute...</string>
+    <string name="k2go_auth_pw_changed">Password changed.</string>
+    <string name="k2go_auth_pw_changed_unverified">Done. The service did not confirm the sign-in yet. Check again in one minute.</string>
+    <string name="k2go_auth_pw_reset_done">Factory password restored.</string>
+    <string name="k2go_auth_pw_not_same">The two passwords are not the same.</string>
+    <string name="k2go_auth_pw_weak">This password does not follow the rule below the fields.</string>
+    <string name="k2go_auth_pw_err_mismatch">The service does not accept the stored password. Repair it first, or reset it.</string>
+    <string name="k2go_auth_pw_err_busy">Another change for this service is running. Wait and try again.</string>
+    <string name="k2go_auth_pw_err_unreachable">The service does not respond. Start it and try again.</string>
+    <string name="k2go_auth_pw_err_failed">The password did not change. Try again.</string>
+    <string name="k2go_auth_chip_mismatch">Does not match</string>
+    <string name="k2go_auth_reminder_switch">Remind me at start while a factory password is in use</string>
+    <string name="k2go_auth_notice_mismatch_title">Automatic sign-in does not work</string>
+    <string name="k2go_auth_notice_mismatch_msg">The admin password of %1$s was changed outside this app. Repair it or reset it in Settings, Authentication.</string>
+    <string name="k2go_auth_notice_factory_title">Factory passwords in use</string>
+    <string name="k2go_auth_notice_factory_msg">%1$s still use the factory admin password. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
+    <string name="k2go_auth_notice_open">Open Authentication</string>
+    <string name="k2go_auth_notice_close">Close</string>
+    <string name="k2go_auth_notice_never">Don\'t show again</string>
+    <string name="k2go_auth_notice_never_title">Stop these reminders?</string>
+    <string name="k2go_auth_notice_never_msg">With the factory password, anyone who shares your Wi-Fi or hotspot can sign in to your library and change it. If only you use this phone, the risk is low. You can turn the reminders on again in Settings, Authentication.</string>
+    <string name="k2go_auth_notice_never_confirm">Stop reminders</string>
+    <string name="k2go_auth_notice_never_keep">Keep reminders</string>
+    <string name="k2go_auth_list_hint">Admin passwords that K2Go uses for Books, Courses and Host code. Change them here, so the app and the box stay in step.</string>
 </resources>
