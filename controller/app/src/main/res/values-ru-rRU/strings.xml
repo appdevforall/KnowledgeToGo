@@ -9,24 +9,12 @@
     <string name="connection_log_label">Журнал подключений</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">НАСТРОЙКИ</string>
 
 
-    <string name="setup_title">Начальная настройка</string>
-    <string name="setup_welcome">Добро пожаловать в мастер настройки %1$s.\n\nДля правильной работы нам требуются следующие разрешения:</string>
-    <string name="setup_continue">Продолжить</string>
 
-    <string name="setup_perm_battery">Отключить оптимизацию батареи</string>
-    <string name="setup_perm_notifications">Push-уведомления</string>
-    <string name="setup_perm_storage">Доступ к локальному хранилищу</string>
-    <string name="setup_perm_overlay">Показывать поверх других окон</string>
-    <string name="setup_lang_title">Язык контента</string>
-    <string name="setup_lang_desc">Пожалуйста, выберите ваш язык, так как это будет учитываться при запросе контента.</string>
-    <string name="setup_manage_all_permissions">Управление всеми разрешениями</string>
 
     <string name="notif_perm_denied">Разрешение на уведомления отклонено</string>
     <string name="notif_perm_granted">Разрешение на уведомления предоставлено</string>
-    <string name="revoke_permission_warning">Чтобы отозвать разрешения, вы должны сделать это в настройках системы.</string>
 
     <string name="dash_device">Загрузка устройства...</string>
     <string name="dash_main_storage">Основная память</string>
@@ -433,7 +421,6 @@
     <string name="log_server_stop_error">[Ошибка остановки] %1$s</string>
     <string name="log_critical_binary_missing">КРИТИЧЕСКАЯ ОШИБКА: %1$s отсутствует в нативных библиотеках!</string>
 
-    <string name="setup_back_blocked_msg">Пожалуйста, завершите настройку для продолжения.</string>
     <string name="sync_scanner_prompt">Отсканируйте QR-код Хоста K2Go</string>
 
     <string name="kiwix_dialog_lang_label">Язык Kiwix</string>
@@ -497,12 +484,6 @@
     <string name="ota_error_verify_failed">Не удалось проверить обновление, оно не установлено. Попробуйте ещё раз.</string>
     <string name="ota_error_download_failed">Не удалось загрузить обновление. Попробуйте ещё раз.</string>
     <string name="ota_msg_enable_unknown_sources">Разрешите установку обновлений из этого приложения, затем снова нажмите «Обновить».</string>
-    <string name="settings_nav_setup">Настройка</string>
-    <string name="settings_nav_feedback">Отзыв</string>
-    <string name="settings_nav_about">О программе</string>
-    <string name="about_version">Версия %1$s</string>
-    <string name="settings_title">Настройки</string>
-    <string name="action_done">Готово</string>
     <string name="feedback_type_label">Тип</string>
     <string name="feedback_cat_bug">Ошибка</string>
     <string name="feedback_cat_suggestion">Предложение</string>
@@ -518,22 +499,13 @@
     <string name="rsync_error_process_killed">Android остановил процесс передачи (ограничение фоновых процессов). Чтобы избежать этого, включите «Отключить ограничения дочерних процессов» в параметрах разработчика или настройте ADB.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Конфиденциальность и аналитика</string>
-    <string name="analytics_enroll_body">%1$s собирает анонимные сведения об использовании, чтобы помочь нам исправлять ошибки и улучшать приложение. Личные данные не собираются и не передаются, и ничего не отслеживается о людях, которые используют ваш общий контент.\n\nОтправлять анонимные данные отправляет эти сведения, когда телефон в сети. Оставить офлайн не отправляет ничего, даже если телефон в сети.</string>
-    <string name="analytics_enroll_accept">Отправлять анонимные данные</string>
     <string name="analytics_enroll_decline">Оставить офлайн</string>
-    <string name="settings_analytics_title">Отправлять анонимные данные</string>
-    <string name="settings_analytics_desc">Анонимные сведения об использовании для исправления ошибок и улучшения приложения — без личных данных и ничего о людях, которые используют ваш общий контент. Можно изменить в любое время.</string>
     <string name="phantom_warn_title">Передача может прерваться</string>
     <string name="phantom_warn_body">На Android 12+ система может остановить передачу в фоне (лимит процессов). Чтобы избежать этого, отключите «ограничения дочерних процессов» или продолжите всё равно — большие передачи могут прерваться.</string>
     <string name="phantom_warn_open_dev">Открыть параметры разработчика</string>
     <string name="phantom_warn_continue">Всё равно продолжить</string>
 
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Язык приложения</string>
-    <string name="setup_app_lang_desc">Выберите язык экранов самого приложения. “Системный по умолчанию” следует настройкам телефона.</string>
-    <string name="setup_app_lang_system">Системный по умолчанию (как на телефоне)</string>
-    <string name="setup_language_section">Язык</string>
 
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Загрузка %1$s…</string>
@@ -654,8 +626,6 @@
     <string name="k2go_settings_app_version">Версия приложения</string>
     <string name="k2go_settings_check_updates">Проверить обновления</string>
     <string name="k2go_settings_permissions">Разрешения</string>
-    <string name="k2go_settings_usage_stats">Делиться статистикой использования</string>
-    <string name="k2go_settings_crash_reports">Отправлять отчёты о сбоях</string>
     <string name="k2go_settings_licenses">Лицензии с открытым исходным кодом</string>
     <string name="k2go_settings_privacy">Конфиденциальность</string>
     <string name="k2go_settings_power_users">Для опытных пользователей.</string>
@@ -1681,10 +1651,6 @@
     <string name="k2go_cx_share_complete">Передача завершена. Содержимое уже на другом телефоне.</string>
     <string name="k2go_cx_share_cancelled">Другой телефон остановил передачу.</string>
     <string name="k2go_cx_share_ended">Передача закончена.</string>
-    <string name="k2go_gm_catalogs_update">Обновить каталоги</string>
-    <string name="k2go_gm_catalogs_updating">Обновление каталогов...</string>
-    <string name="k2go_gm_catalogs_bundled">Каталоги: входят в приложение</string>
-    <string name="k2go_gm_catalogs_checked">Каталоги проверены: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не удалось прочитать список файлов с телефона-отправителя.</string>
     <string name="k2go_clone_cable_err_no_path">Связь с телефоном-отправителем потеряна. Подключитесь к его точке доступа или подсоедините USB-кабель.</string>

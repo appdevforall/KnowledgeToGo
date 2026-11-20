@@ -8,19 +8,8 @@
     <string name="connection_log_label">Kumbukumbu ya Seva</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">MIPANGILIO</string>
-    <string name="setup_title">Usanidi wa Awali</string>
-    <string name="setup_welcome">Karibu kwenye mchawi wa usanidi wa %1$s.\n\nIli ifanye kazi vizuri, tunahitaji ruhusa zifuatazo:</string>
-    <string name="setup_continue">Endelea</string>
-    <string name="setup_perm_battery">Zima Uboreshaji wa Betri</string>
-    <string name="setup_perm_notifications">Arifa za Kusukuma</string>
-    <string name="setup_perm_storage">Ufikiaji wa Hifadhi ya Ndani</string>
-    <string name="setup_perm_overlay">Onyesha juu ya programu nyingine</string>
-    <string name="setup_lang_title">Lugha ya Maudhui</string>
-    <string name="setup_lang_desc">Tafadhali chagua lugha yako kwani itazingatiwa unapoomba maudhui.</string>
     <string name="notif_perm_denied">Ruhusa ya arifa imekataliwa</string>
     <string name="notif_perm_granted">Ruhusa ya arifa imetolewa</string>
-    <string name="revoke_permission_warning">Ili kubatilisha ruhusa, lazima ufanye hivyo kutoka kwenye mipangilio ya mfumo.</string>
     <string name="dash_device">Inapakia kifaa…</string>
     <string name="dash_main_storage">Hifadhi</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Mipangilio Imehifadhiwa</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">inaendeshwa na App Dev for All</string>
-    <string name="setup_manage_all_permissions">Dhibiti Ruhusa Zote</string>
     <string name="update_dialog_title">Toleo jipya linapatikana: %1$s</string>
     <string name="update_dialog_message">Je, unataka kusasisha programu?\n\nMapya:\n%1$s</string>
     <string name="update_dialog_positive">Sasisha</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Inasimamisha mazingira ya IIAB kwa upole…</string>
     <string name="log_server_stop_error">[Hitilafu ya Kusimamisha] %1$s</string>
     <string name="log_critical_binary_missing">MUHIMU: %1$s inakosekana kwenye maktaba asilia!</string>
-    <string name="setup_back_blocked_msg">Tafadhali kamilisha usanidi ili kuendelea.</string>
     <string name="sync_scanner_prompt">Changanua Msimbo wa QR wa Mwenyeji wa K2Go</string>
     <string name="kiwix_dialog_lang_label">Lugha ya Kiwix</string>
     <string name="kiwix_dialog_variants_label">Matoleo ya ZIM Yanayopatikana</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">Imeletwa, lakini nakala rudufu hii haina manifest ya rootfs iliyopachikwa, kwa hivyo haikuweza kuthibitishwa kikamilifu.</string>
     <string name="install_error_corrupt">Nakala rudufu hii ilishindwa ukaguzi wake wa uadilifu (huenda imeharibika au imebadilishwa), kwa hivyo haikutumika.</string>
     <string name="install_warn_no_checksum">Imeletwa. Nakala rudufu hii haina hakikisho la uadilifu kwa sababu iliundwa kwenye kifaa cha mkononi.</string>
-    <string name="settings_nav_setup">Usanidi</string>
-    <string name="settings_nav_feedback">Maoni</string>
-    <string name="settings_nav_about">Kuhusu</string>
-    <string name="about_version">Toleo %1$s</string>
-    <string name="settings_title">Mipangilio</string>
-    <string name="action_done">Imekamilika</string>
     <string name="feedback_type_label">Aina</string>
     <string name="feedback_cat_bug">Hitilafu</string>
     <string name="feedback_cat_suggestion">Pendekezo</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Ondoa</string>
     <string name="rsync_error_process_killed">Android imesimamisha mchakato wa uhamishaji (kikomo cha michakato ya nyuma cha mfumo). Ili kuzuia hili, washa “Zima vizuizi vya michakato mtoto” katika Chaguo za msanidi, au sanidi uboreshaji wa ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Faragha na uchanganuzi</string>
-    <string name="analytics_enroll_body">%1$s hukusanya taarifa za matumizi zisizojulikana ili kutusaidia kurekebisha hitilafu na kuboresha programu. Hakuna taarifa binafsi zinazokusanywa au kushirikiwa, na hakuna kinachofuatiliwa kuhusu watu wanaotumia maudhui unayoshiriki.\n\nShiriki data isiyojulikana hutuma taarifa hizi simu ikiwa mtandaoni. Weka nje ya mtandao haitumi chochote, hata kama simu iko mtandaoni.</string>
-    <string name="analytics_enroll_accept">Shiriki data isiyojulikana</string>
     <string name="analytics_enroll_decline">Weka nje ya mtandao</string>
-    <string name="settings_analytics_title">Shiriki data isiyojulikana</string>
-    <string name="settings_analytics_desc">Taarifa za matumizi zisizojulikana ili kurekebisha hitilafu na kuboresha programu — hakuna data binafsi na hakuna kuhusu watu wanaotumia maudhui unayoshiriki. Badilisha wakati wowote.</string>
     <string name="phantom_warn_title">Uhamishaji unaweza kukatizwa</string>
     <string name="phantom_warn_body">Kwenye Android 12+ mfumo unaweza kusimamisha uhamishaji unapoendeshwa nyuma (kikomo cha phantom-process). Ili kulizuia, zima “vizuizi vya michakato mtoto”, au endelea hata hivyo — uhamishaji mkubwa unaweza kukatizwa.</string>
     <string name="phantom_warn_open_dev">Fungua Chaguo za msanidi</string>
     <string name="phantom_warn_continue">Endelea hata hivyo</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Lugha ya Programu</string>
-    <string name="setup_app_lang_desc">Chagua lugha ya skrini za programu yenyewe. “Chaguomsingi cha mfumo” hufuata simu yako.</string>
-    <string name="setup_app_lang_system">Chaguomsingi cha mfumo (fuata simu)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Lugha</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Inapakua %1$s…</string>
     <string name="portal_download_failed">Haikuweza kuanza upakuaji.</string>
@@ -598,8 +570,6 @@
     <string name="k2go_settings_app_version">Toleo la programu</string>
     <string name="k2go_settings_check_updates">Angalia masasisho</string>
     <string name="k2go_settings_permissions">Ruhusa</string>
-    <string name="k2go_settings_usage_stats">Shiriki takwimu za matumizi</string>
-    <string name="k2go_settings_crash_reports">Tuma ripoti za hitilafu</string>
     <string name="k2go_settings_licenses">Leseni za chanzo huria</string>
     <string name="k2go_settings_privacy">Faragha</string>
     <string name="k2go_settings_power_users">Kwa watumiaji wa hali ya juu.</string>
@@ -1625,10 +1595,6 @@
     <string name="k2go_cx_share_complete">Uhamisho umekamilika. Simu nyingine ina maudhui.</string>
     <string name="k2go_cx_share_cancelled">Simu nyingine imesimamisha uhamisho.</string>
     <string name="k2go_cx_share_ended">Kushiriki kumeisha.</string>
-    <string name="k2go_gm_catalogs_update">Sasisha katalogi</string>
-    <string name="k2go_gm_catalogs_updating">Inasasisha katalogi...</string>
-    <string name="k2go_gm_catalogs_bundled">Katalogi: zimejumuishwa na programu</string>
-    <string name="k2go_gm_catalogs_checked">Katalogi zimekaguliwa: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Imeshindwa kusoma orodha ya faili kutoka kwa simu inayotuma.</string>
     <string name="k2go_clone_cable_err_no_path">Muunganisho na simu inayotuma umepotea. Jiunge na hotspot yake au unganisha kebo ya USB.</string>

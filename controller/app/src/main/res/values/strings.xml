@@ -9,24 +9,13 @@
     <string name="connection_log_label">Server Log</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">SETTINGS</string>
 
 
 
-    <string name="setup_title">Initial Setup</string>
-    <string name="setup_welcome">Welcome to the %1$s setup wizard.\n\nIn order to work properly, we need the following permissions:</string>
-    <string name="setup_continue">Continue</string>
 
-    <string name="setup_perm_battery">Disable Battery Optimization</string>
-    <string name="setup_perm_notifications">Push Notifications</string>
-    <string name="setup_perm_storage">Local Storage Access</string>
-    <string name="setup_perm_overlay">Show over other apps</string>
-    <string name="setup_lang_title">Content Language</string>
-    <string name="setup_lang_desc">Please select your language as it will be considered when requesting content.</string>
 
     <string name="notif_perm_denied">Notification permission denied</string>
     <string name="notif_perm_granted">Notification permission granted</string>
-    <string name="revoke_permission_warning">To revoke permissions, you must do it from system settings.</string>
 
 
     <string name="dash_device">Loading device...</string>
@@ -167,7 +156,6 @@
     <string name="settings_saved">Settings Saved</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
-    <string name="setup_manage_all_permissions">Manage All Permissions</string>
 
     <string name="update_dialog_title">New version available: %1$s</string>
     <string name="update_dialog_message">Do you want to update the application?\n\nWhat\'s new:\n%1$s</string>
@@ -460,7 +448,6 @@
     <string name="log_server_stop_error">[Stop Error] %1$s</string>
     <string name="log_critical_binary_missing">CRITICAL: %1$s is missing from native libs!</string>
 
-    <string name="setup_back_blocked_msg">Please complete the setup to continue.</string>
     <string name="sync_scanner_prompt">Scan the K2Go Host QR Code</string>
 
     <string name="kiwix_dialog_lang_label">Kiwix Language</string>
@@ -518,12 +505,6 @@
     <string name="install_warn_manifest_missing">Imported, but this backup has no embedded rootfs manifest, so it could not be fully verified.</string>
     <string name="install_error_corrupt">This backup failed its integrity check (it may be corrupted or altered), so it was not used.</string>
     <string name="install_warn_no_checksum">Imported. This backup has no integrity checksum because it was created on a mobile device.</string>
-    <string name="settings_nav_setup">Setup</string>
-    <string name="settings_nav_feedback">Feedback</string>
-    <string name="settings_nav_about">About</string>
-    <string name="about_version">Version %1$s</string>
-    <string name="settings_title">Settings</string>
-    <string name="action_done">Done</string>
     <string name="feedback_type_label">Type</string>
     <string name="feedback_cat_bug">Bug</string>
     <string name="feedback_cat_suggestion">Suggestion</string>
@@ -541,23 +522,14 @@
     <string name="rsync_error_process_killed">Android stopped the transfer process (system background-process limit). To prevent this, enable “Disable child process restrictions” in Developer options, or set up the ADB optimization.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Privacy &amp; analytics</string>
-    <string name="analytics_enroll_body">%1$s collects anonymous usage information to help us fix bugs and improve the app. No personal information is collected or shared, and nothing about the people who use your shared content is tracked.\n\nShare anonymous data sends this information when the phone is online. Keep offline sends nothing, even if the phone is online.</string>
-    <string name="analytics_enroll_accept">Share anonymous data</string>
     <string name="analytics_enroll_decline">Keep offline</string>
-    <string name="settings_analytics_title">Share anonymous data</string>
-    <string name="settings_analytics_desc">Anonymous usage information to help us fix bugs and improve the app — no personal data, and nothing about the people who use your shared content. Change anytime.</string>
     <string name="phantom_warn_title">Transfer may be interrupted</string>
     <string name="phantom_warn_body">On Android 12+ the system can stop the transfer while it runs in the background (phantom-process limit). To prevent it, disable “child process restrictions”, or continue anyway — large transfers may be interrupted.</string>
     <string name="phantom_warn_open_dev">Open Developer options</string>
     <string name="phantom_warn_continue">Continue anyway</string>
 
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">App Language</string>
-    <string name="setup_app_lang_desc">Choose the language for the app\'s own screens. “System default” follows your phone.</string>
-    <string name="setup_app_lang_system">System default (follow phone)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Language</string>
 
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Downloading %1$s…</string>
@@ -707,8 +679,6 @@
     <string name="k2go_settings_app_version">App version</string>
     <string name="k2go_settings_check_updates">Check for updates</string>
     <string name="k2go_settings_permissions">Permissions</string>
-    <string name="k2go_settings_usage_stats">Share usage statistics</string>
-    <string name="k2go_settings_crash_reports">Send crash reports</string>
     <string name="k2go_settings_licenses">Open-source licenses</string>
     <string name="k2go_settings_privacy">Privacy</string>
     <string name="k2go_settings_power_users">For power users.</string>
@@ -1802,10 +1772,6 @@
     <string name="k2go_cx_share_complete">Transfer complete. The other phone has the content.</string>
     <string name="k2go_cx_share_cancelled">The other phone stopped the transfer.</string>
     <string name="k2go_cx_share_ended">The share ended.</string>
-    <string name="k2go_gm_catalogs_update">Update catalogs</string>
-    <string name="k2go_gm_catalogs_updating">Updating catalogs...</string>
-    <string name="k2go_gm_catalogs_bundled">Catalogs: included with the app</string>
-    <string name="k2go_gm_catalogs_checked">Catalogs checked: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Could not read the list of files from the sending phone.</string>
     <string name="k2go_clone_cable_err_no_path">The connection to the sending phone is lost. Join its hotspot or connect the USB cable.</string>
