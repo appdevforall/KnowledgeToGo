@@ -827,9 +827,15 @@ public class LibraryHomeFragment extends Fragment {
         else setHeader(H_READY_EMPTY);   // server up, nothing installed to explore
     }
 
-    /** K2GO-552: the header says "Ready" (the server is up and no installed card is still connecting). */
+    /**
+     * K2GO-552: the header says "Ready" AND every card has answered its probe in this process, so the
+     * probe evidence says which services are installed. Right after the cards are built the header
+     * can say "Ready" before any probe answered (a card starts GRAY, and GRAY does not gate).
+     */
     boolean isReady() {
-        return headerState == H_READY || headerState == H_READY_EMPTY;
+        if (headerState != H_READY && headerState != H_READY_EMPTY) return false;
+        for (Card c : cards) if (PlatformEvidence.last(c.endpoint) == null) return false;
+        return true;
     }
 
     private void setHeader(int h) {
@@ -838,8 +844,9 @@ public class LibraryHomeFragment extends Fragment {
                 && headerState != H_READY && headerState != H_READY_EMPTY;
         headerState = h;
         if (becameReady) rebuildCardsIfLibraryChanged();
-        // K2GO-552: the password notice waits for "Ready", when the services have answered.
-        if (becameReady && getActivity() instanceof LibraryActivity) {
+        // K2GO-552: the password notice waits for "Ready" with every probe answered (isReady). Each
+        // probe answer updates the header, so ask on every "Ready" update; the activity runs it once.
+        if ((h == H_READY || h == H_READY_EMPTY) && getActivity() instanceof LibraryActivity) {
             ((LibraryActivity) getActivity()).maybeCheckAuthNotice();
         }
         String text; int dotColor;
