@@ -1658,4 +1658,11 @@
     <string name="k2go_clone_link_badge_not_used">Kullanılmıyor</string>
     <string name="k2go_clone_link_badge_starting">Başlatılıyor</string>
     <string name="k2go_clone_unplug_cable">USB kablosunu çıkarabilirsiniz.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Gizlilik ve çevrimiçi içerik</string>
+    <string name="k2go_online_accept_usage">Kullanım verilerini paylaş ve çevrimiçi içerik iste</string>
+    <string name="k2go_online_accept_crash">Çökme raporları gönder ve çevrimiçi içerik iste</string>
+    <string name="k2go_online_body_usage">%1$s anonim kullanım verilerini ve çökme raporlarını paylaşabilir, telefon Wi-Fi\'ye bağlıyken katalog ve uygulama güncellemelerini kendiliğinden denetleyebilir. Hiçbir kişisel bilgi toplanmaz ve paylaştığınız içeriği kullanan kişiler hakkında hiçbir şey izlenmez.\n\nÇevrimdışı tut: uygulama internete kendiliğinden bağlanmaz.</string>
+    <string name="k2go_online_body_crash">%1$s çökme raporları gönderebilir, telefon Wi-Fi\'ye bağlıyken katalog ve uygulama güncellemelerini kendiliğinden denetleyebilir. Hiçbir kişisel bilgi toplanmaz.\n\nÇevrimdışı tut: uygulama internete kendiliğinden bağlanmaz.</string>
+    <string name="k2go_webview_offline_page">Bu sayfa internette. Uygulamanın içindeki sayfalar yalnızca çevrimdışı çalışır.</string>
 </resources>

@@ -1668,4 +1668,11 @@
     <string name="k2go_clone_link_badge_not_used">Nieużywane</string>
     <string name="k2go_clone_link_badge_starting">Uruchamianie</string>
     <string name="k2go_clone_unplug_cable">Możesz odłączyć kabel USB.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Prywatność i treści online</string>
+    <string name="k2go_online_accept_usage">Udostępniaj dane o użytkowaniu i pobieraj treści online</string>
+    <string name="k2go_online_accept_crash">Wysyłaj raporty o awariach i pobieraj treści online</string>
+    <string name="k2go_online_body_usage">%1$s może udostępniać anonimowe dane o użytkowaniu i raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych i nie śledzimy niczego o osobach korzystających z Twoich udostępnionych treści.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
+    <string name="k2go_online_body_crash">%1$s może wysyłać raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
+    <string name="k2go_webview_offline_page">Ta strona jest w internecie. Strony w aplikacji działają tylko offline.</string>
 </resources>

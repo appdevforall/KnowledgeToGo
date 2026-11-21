@@ -1678,4 +1678,11 @@
     <string name="k2go_clone_link_badge_not_used">A kò lò ó</string>
     <string name="k2go_clone_link_badge_starting">Ń bẹ̀rẹ̀</string>
     <string name="k2go_clone_unplug_cable">O lè yọ wáyà USB kúrò.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Ìpamọ́ àti àkóónú orí ayélujára</string>
+    <string name="k2go_online_accept_usage">Pín dátà ìlò kí o sì béèrè àkóónú orí ayélujára</string>
+    <string name="k2go_online_accept_crash">Fi àwọn ìjábọ̀ ìparun ránṣẹ́ kí o sì béèrè àkóónú orí ayélujára</string>
+    <string name="k2go_online_body_usage">%1$s lè pín dátà ìlò aláìlórúkọ àti àwọn ìjábọ̀ ìparun, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ, kò sì sí ohunkóhun tí a ń tọpasẹ̀ nípa àwọn ènìyàn tó ń lo àkóónú tí o pín.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
+    <string name="k2go_online_body_crash">%1$s lè fi àwọn ìjábọ̀ ìparun ránṣẹ́, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
+    <string name="k2go_webview_offline_page">Ojú-ewé yìí wà lórí íńtánẹ́ẹ̀tì. Àwọn ojú-ewé inú ìṣàmúlò ń ṣiṣẹ́ láìsí íńtánẹ́ẹ̀tì nìkan.</string>
 </resources>

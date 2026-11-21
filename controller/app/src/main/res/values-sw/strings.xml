@@ -1678,4 +1678,11 @@
     <string name="k2go_clone_link_badge_not_used">Haitumiki</string>
     <string name="k2go_clone_link_badge_starting">Inaanza</string>
     <string name="k2go_clone_unplug_cable">Unaweza kuchomoa kebo ya USB.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Faragha na maudhui ya mtandaoni</string>
+    <string name="k2go_online_accept_usage">Shiriki data ya matumizi na uombe maudhui ya mtandaoni</string>
+    <string name="k2go_online_accept_crash">Tuma ripoti za hitilafu na uombe maudhui ya mtandaoni</string>
+    <string name="k2go_online_body_usage">%1$s inaweza kushiriki data ya matumizi isiyojulikana na ripoti za hitilafu, na inaweza kukagua yenyewe masasisho ya katalogi na programu simu ikiwa kwenye Wi-Fi. Hakuna taarifa binafsi zinazokusanywa, na hakuna kinachofuatiliwa kuhusu watu wanaotumia maudhui unayoshiriki.\n\nWeka nje ya mtandao: programu haiunganishi kwenye intaneti yenyewe.</string>
+    <string name="k2go_online_body_crash">%1$s inaweza kutuma ripoti za hitilafu, na inaweza kukagua yenyewe masasisho ya katalogi na programu simu ikiwa kwenye Wi-Fi. Hakuna taarifa binafsi zinazokusanywa.\n\nWeka nje ya mtandao: programu haiunganishi kwenye intaneti yenyewe.</string>
+    <string name="k2go_webview_offline_page">Ukurasa huu uko kwenye intaneti. Kurasa zilizo ndani ya programu hufanya kazi nje ya mtandao pekee.</string>
 </resources>

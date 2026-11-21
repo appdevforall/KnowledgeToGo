@@ -104,7 +104,6 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
 
-        <activity android:name=".SetupActivity" />
 
         <!-- ADFA-4725: new content-first UI shell (scoped Material 3 theme). -->
         <activity

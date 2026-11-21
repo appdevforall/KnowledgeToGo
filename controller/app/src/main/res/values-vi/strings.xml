@@ -1658,4 +1658,11 @@
     <string name="k2go_clone_link_badge_not_used">Không dùng</string>
     <string name="k2go_clone_link_badge_starting">Đang khởi động</string>
     <string name="k2go_clone_unplug_cable">Bạn có thể rút cáp USB.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Quyền riêng tư và nội dung trực tuyến</string>
+    <string name="k2go_online_accept_usage">Chia sẻ dữ liệu sử dụng và yêu cầu nội dung trực tuyến</string>
+    <string name="k2go_online_accept_crash">Gửi báo cáo sự cố và yêu cầu nội dung trực tuyến</string>
+    <string name="k2go_online_body_usage">%1$s có thể chia sẻ dữ liệu sử dụng ẩn danh và báo cáo sự cố, đồng thời có thể tự kiểm tra bản cập nhật danh mục và ứng dụng khi điện thoại kết nối Wi-Fi. Không thu thập thông tin cá nhân nào, và không theo dõi bất kỳ điều gì về những người dùng nội dung bạn chia sẻ.\n\nGiữ ngoại tuyến: ứng dụng không tự kết nối internet.</string>
+    <string name="k2go_online_body_crash">%1$s có thể gửi báo cáo sự cố, đồng thời có thể tự kiểm tra bản cập nhật danh mục và ứng dụng khi điện thoại kết nối Wi-Fi. Không thu thập thông tin cá nhân nào.\n\nGiữ ngoại tuyến: ứng dụng không tự kết nối internet.</string>
+    <string name="k2go_webview_offline_page">Trang này nằm trên internet. Các trang trong ứng dụng chỉ hoạt động ngoại tuyến.</string>
 </resources>

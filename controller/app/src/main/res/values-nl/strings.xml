@@ -1658,4 +1658,11 @@
     <string name="k2go_clone_link_badge_not_used">Niet gebruikt</string>
     <string name="k2go_clone_link_badge_starting">Starten</string>
     <string name="k2go_clone_unplug_cable">Je kunt de USB-kabel loskoppelen.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privacy en online-inhoud</string>
+    <string name="k2go_online_accept_usage">Gebruiksgegevens delen en online-inhoud aanvragen</string>
+    <string name="k2go_online_accept_crash">Crashrapporten verzenden en online-inhoud aanvragen</string>
+    <string name="k2go_online_body_usage">%1$s kan anonieme gebruiksgegevens en crashrapporten delen, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld, en er wordt niets bijgehouden over de mensen die jouw gedeelde inhoud gebruiken.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
+    <string name="k2go_online_body_crash">%1$s kan crashrapporten verzenden, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
+    <string name="k2go_webview_offline_page">Deze pagina staat op internet. Pagina\'s in de app werken alleen offline.</string>
 </resources>

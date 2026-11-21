@@ -1658,4 +1658,11 @@
     <string name="k2go_clone_link_badge_not_used">استفاده نمی‌شود</string>
     <string name="k2go_clone_link_badge_starting">در حال شروع</string>
     <string name="k2go_clone_unplug_cable">می‌توانید کابل USB را جدا کنید.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">حریم خصوصی و محتوای آنلاین</string>
+    <string name="k2go_online_accept_usage">اشتراک داده‌های استفاده و درخواست محتوای آنلاین</string>
+    <string name="k2go_online_accept_crash">ارسال گزارش‌های خرابی و درخواست محتوای آنلاین</string>
+    <string name="k2go_online_body_usage">%1$s می‌تواند داده‌های استفادهٔ ناشناس و گزارش‌های خرابی را به اشتراک بگذارد و وقتی تلفن به Wi-Fi متصل است، خودش به‌روزرسانی‌های کاتالوگ و برنامه را بررسی کند. هیچ اطلاعات شخصی جمع‌آوری نمی‌شود و هیچ چیزی دربارهٔ افرادی که از محتوای اشتراکی شما استفاده می‌کنند ردیابی نمی‌شود.\n\nآفلاین بماند: برنامه خودش به اینترنت وصل نمی‌شود.</string>
+    <string name="k2go_online_body_crash">%1$s می‌تواند گزارش‌های خرابی را ارسال کند و وقتی تلفن به Wi-Fi متصل است، خودش به‌روزرسانی‌های کاتالوگ و برنامه را بررسی کند. هیچ اطلاعات شخصی جمع‌آوری نمی‌شود.\n\nآفلاین بماند: برنامه خودش به اینترنت وصل نمی‌شود.</string>
+    <string name="k2go_webview_offline_page">این صفحه در اینترنت است. صفحه‌های داخل برنامه فقط به‌صورت آفلاین کار می‌کنند.</string>
 </resources>

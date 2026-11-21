@@ -50,15 +50,24 @@ public class IIABApplication extends Application {
             Log.e("IIABApplication", "Error initializing Conscrypt", e);
         }
 
-        // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by its OWN opt-in
-        // (CrashReportConsent, default OFF, K2GO-579) -- independent of usage-analytics consent, since error
-        // reports are operational, not behavioural telemetry, and carry no PII
-        // (io.sentry.send-default-pii=false). No-op unless a DSN was built in (empty DSN -> SDK
+        // K2GO-588: no outbound request before the first app call goes out with a device-revealing
+        // User-Agent; every HttpURLConnection without its own agent sends this neutral one.
+        System.setProperty("http.agent", "K2Go");
+
+        // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by the one privacy choice
+        // (OnlineConsent, default off, K2GO-588). No-op unless a DSN was built in (empty DSN -> SDK
         // stays inert); manifest sets io.sentry.auto-init=false, so this is the only init path.
         // Init here (before our handler) so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
+        // Crash events only: no session tracking (it contacts GlitchTip at every start and return
+        // from background, with no crash). beforeSend drops events if the choice goes off later.
         try {
-            if (org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(this)) {
-                io.sentry.android.core.SentryAndroid.init(this);
+            if (org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(this)) {
+                final android.content.Context app = this;
+                io.sentry.android.core.SentryAndroid.init(this, options -> {
+                    options.setEnableAutoSessionTracking(false);
+                    options.setBeforeSend((event, hint) ->
+                            org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(app) ? event : null);
+                });
             }
         } catch (Throwable t) {
             Log.e("IIABApplication", "Sentry init skipped", t);

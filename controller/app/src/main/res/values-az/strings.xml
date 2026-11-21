@@ -1678,4 +1678,11 @@
     <string name="k2go_clone_link_badge_not_used">İstifadə olunmur</string>
     <string name="k2go_clone_link_badge_starting">Başlayır</string>
     <string name="k2go_clone_unplug_cable">USB kabelini ayıra bilərsiniz.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Məxfilik və onlayn məzmun</string>
+    <string name="k2go_online_accept_usage">İstifadə məlumatlarını paylaş və onlayn məzmun istə</string>
+    <string name="k2go_online_accept_crash">Qəza hesabatlarını göndər və onlayn məzmun istə</string>
+    <string name="k2go_online_body_usage">%1$s anonim istifadə məlumatlarını və qəza hesabatlarını paylaşa bilər, telefon Wi-Fi şəbəkəsinə qoşulduqda isə kataloq və tətbiq yeniləmələrini özü yoxlaya bilər. Heç bir şəxsi məlumat toplanmır və paylaşdığınız məzmundan istifadə edən insanlar haqqında heç nə izlənmir.\n\nOflayn saxla: tətbiq internetə özü qoşulmur.</string>
+    <string name="k2go_online_body_crash">%1$s qəza hesabatlarını göndərə bilər, telefon Wi-Fi şəbəkəsinə qoşulduqda isə kataloq və tətbiq yeniləmələrini özü yoxlaya bilər. Heç bir şəxsi məlumat toplanmır.\n\nOflayn saxla: tətbiq internetə özü qoşulmur.</string>
+    <string name="k2go_webview_offline_page">Bu səhifə internetdədir. Tətbiq daxilindəki səhifələr yalnız oflayn işləyir.</string>
 </resources>

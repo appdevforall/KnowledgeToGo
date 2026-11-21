@@ -1671,4 +1671,11 @@
     <string name="k2go_clone_link_badge_not_used">વપરાતું નથી</string>
     <string name="k2go_clone_link_badge_starting">શરૂ થઈ રહ્યું છે</string>
     <string name="k2go_clone_unplug_cable">તમે USB કેબલ કાઢી શકો છો.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">ગોપનીયતા અને ઑનલાઇન સામગ્રી</string>
+    <string name="k2go_online_accept_usage">વપરાશ ડેટા શેર કરો અને ઑનલાઇન સામગ્રીની વિનંતી કરો</string>
+    <string name="k2go_online_accept_crash">ક્રેશ રિપોર્ટ મોકલો અને ઑનલાઇન સામગ્રીની વિનંતી કરો</string>
+    <string name="k2go_online_body_usage">%1$s અનામી વપરાશ ડેટા અને ક્રેશ રિપોર્ટ શેર કરી શકે છે, અને ફોન Wi-Fi પર હોય ત્યારે જાતે કૅટલૉગ અને ઍપ અપડેટ તપાસી શકે છે. કોઈ વ્યક્તિગત માહિતી એકત્રિત કરાતી નથી, અને તમે શેર કરેલી સામગ્રીનો ઉપયોગ કરનારા લોકો વિશે કંઈ ટ્રૅક કરાતું નથી.\n\nઑફલાઇન રાખો: ઍપ જાતે ઇન્ટરનેટ સાથે કનેક્ટ થતી નથી.</string>
+    <string name="k2go_online_body_crash">%1$s ક્રેશ રિપોર્ટ મોકલી શકે છે, અને ફોન Wi-Fi પર હોય ત્યારે જાતે કૅટલૉગ અને ઍપ અપડેટ તપાસી શકે છે. કોઈ વ્યક્તિગત માહિતી એકત્રિત કરાતી નથી.\n\nઑફલાઇન રાખો: ઍપ જાતે ઇન્ટરનેટ સાથે કનેક્ટ થતી નથી.</string>
+    <string name="k2go_webview_offline_page">આ પેજ ઇન્ટરનેટ પર છે. ઍપની અંદરનાં પેજ ફક્ત ઑફલાઇન કામ કરે છે.</string>
 </resources>

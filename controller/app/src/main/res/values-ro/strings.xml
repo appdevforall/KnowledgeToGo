@@ -1658,4 +1658,11 @@
     <string name="k2go_clone_link_badge_not_used">Nefolosit</string>
     <string name="k2go_clone_link_badge_starting">Pornire</string>
     <string name="k2go_clone_unplug_cable">Poți deconecta cablul USB.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Confidențialitate și conținut online</string>
+    <string name="k2go_online_accept_usage">Partajează date de utilizare și solicită conținut online</string>
+    <string name="k2go_online_accept_crash">Trimite rapoarte de eroare și solicită conținut online</string>
+    <string name="k2go_online_body_usage">%1$s poate partaja date de utilizare anonime și rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale și nu se urmărește nimic despre persoanele care folosesc conținutul tău partajat.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
+    <string name="k2go_online_body_crash">%1$s poate trimite rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
+    <string name="k2go_webview_offline_page">Această pagină este pe internet. Paginile din aplicație funcționează doar offline.</string>
 </resources>
