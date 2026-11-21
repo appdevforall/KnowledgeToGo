@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag whose fdroid APK is on R2, for example v1.2.0"
+        description: "Release tag (REQUIRED). Type it to confirm, for example v1.2.0. Its fdroid APK must be on R2."
         required: true
       staging:
         description: "Publish to fdroid-staging/ instead of the live fdroid/"
