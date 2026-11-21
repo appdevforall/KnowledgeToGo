@@ -1,0 +1,21 @@
+# F-Droid metadata of Knowledge to Go for the self-hosted repository (K2GO-421).
+# fdroid update reads the version, the permissions and the signer from the APK itself.
+Categories:
+  - Reading
+  - Science & Education
+License: GPL-3.0-or-later
+AuthorName: App Dev for All
+WebSite: https://appdevforall.org/knowledgetogo/
+SourceCode: https://github.com/appdevforall/KnowledgeToGo
+IssueTracker: https://github.com/appdevforall/KnowledgeToGo/issues
+
+AutoName: Knowledge to Go
+Summary: Turn a phone into an offline library server
+Description: |-
+  Knowledge to Go turns an Android phone into a small offline library server.
+  Other phones and computers on the same Wi-Fi open the library in a browser,
+  with no internet connection.
+
+  This repository is self-hosted by App Dev for All. It ships the F-Droid flavor
+  of the app: no usage analytics, and no in-app updater. Crash reports are off
+  until you turn them on.
