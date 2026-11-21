@@ -827,12 +827,21 @@ public class LibraryHomeFragment extends Fragment {
         else setHeader(H_READY_EMPTY);   // server up, nothing installed to explore
     }
 
+    /** K2GO-552: the header says "Ready" (the server is up and no installed card is still connecting). */
+    boolean isReady() {
+        return headerState == H_READY || headerState == H_READY_EMPTY;
+    }
+
     private void setHeader(int h) {
         if (homeStatus == null) return;
         boolean becameReady = (h == H_READY || h == H_READY_EMPTY)
                 && headerState != H_READY && headerState != H_READY_EMPTY;
         headerState = h;
         if (becameReady) rebuildCardsIfLibraryChanged();
+        // K2GO-552: the password notice waits for "Ready", when the services have answered.
+        if (becameReady && getActivity() instanceof LibraryActivity) {
+            ((LibraryActivity) getActivity()).maybeCheckAuthNotice();
+        }
         String text; int dotColor;
         switch (h) {
             case H_NO_LIBRARY:  text = getString(R.string.k2go_home_no_library);  dotColor = R.color.k2go_muted; break;

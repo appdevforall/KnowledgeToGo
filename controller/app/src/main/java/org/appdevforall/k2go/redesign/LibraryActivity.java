@@ -1009,10 +1009,13 @@ public class LibraryActivity extends AppCompatActivity
         updateController.checkForUpdates(false);
     }
 
-    /** K2GO-552: once per launch, after the gate opened and never during a first install (same rule as
-     *  the OTA check): warn about a broken auto-login or a factory admin password. */
-    private void maybeCheckAuthNotice() {
+    /** K2GO-552: once per launch, after the gate opened, never during a first install (same rule as
+     *  the OTA check), and only when Home says "Ready" (the services answered): warn about a broken
+     *  auto-login or a factory admin password. Home calls it when its header turns "Ready". */
+    void maybeCheckAuthNotice() {
         if (authNoticeChecked || installing || !gateDismissed) return;
+        androidx.fragment.app.Fragment f = getSupportFragmentManager().findFragmentById(R.id.k2go_nav_host);
+        if (!(f instanceof LibraryHomeFragment) || !((LibraryHomeFragment) f).isReady()) return;
         authNoticeChecked = true;
         org.appdevforall.k2go.auth.presentation.AuthNoticeController.check(this, this::openAuthentication);
     }
