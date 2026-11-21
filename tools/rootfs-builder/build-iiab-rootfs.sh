@@ -23,7 +23,7 @@
 #
 # Output:
 #   - k2go_<date>_<tier>_<iiab-sha>_<arch>.tar.gz      (top-level = installed-rootfs/iiab/)
-#   - k2go_<...>.tar.gz.meta4 / .torrent               (per-artifact, mkmetalink)
+#   - k2go_<...>.tar.gz.meta4                         (per-artifact, mkmetalink; HTTP only)
 #   - latest_<tier>_<arch>.meta4   (STABLE pointer the APK requests; a copy of the
 #     per-artifact .meta4. Inside it, <url> mirrors point at the full-named tarball,
 #     so this stable name always resolves to the newest build.)
@@ -922,6 +922,8 @@ cp -f "${OUTDIR}/${ARTIFACT}.installed" "${OUTDIR}/${INSTALLED}"
 # ----------------------------- 5) Generate .meta4 (Metalink, via mkmetalink) --
 # mkmetalink (Go) builds a valid Metalink v4 (.meta4) + matching .torrent.
 #   https://github.com/chapmanjacobd/mkmetalink
+# K2GO-588 (ADR-K2GO-554 A4): the downloads are HTTP only. The .torrent is deleted and the
+# <metaurl> line is removed from the .meta4, else aria2 turns the download into BitTorrent.
 # We pass the publish + mirror base URLs so the .meta4 carries the same <url>
 # entries the APK/aria2 expect (priority 10 = primary, 11 = mirror). It names its
 # output after the artifact; the APK requests a STABLE name, so we copy it to
@@ -942,10 +944,12 @@ done
   || die "mkmetalink failed to generate the metalink."
 GEN_META4="${OUTDIR}/${ARTIFACT}.meta4"
 [[ -f "$GEN_META4" ]] || die "mkmetalink did not produce ${GEN_META4}"
+sed -i '/<metaurl[ >]/d' "$GEN_META4"
+grep -q '<metaurl' "$GEN_META4" && die "a <metaurl> is still in ${GEN_META4}"
+rm -f "${OUTDIR}/${ARTIFACT}.torrent"
 cp -f "$GEN_META4" "${OUTDIR}/${META4}"
 ok "Metalink ready: ${OUTDIR}/${META4}  (copy of ${ARTIFACT}.meta4)"
 ok "Sources in .meta4: primary ${PUBLISH_URL%/}/ + ${#MIRRORS[@]} mirror(s)."
-ok "(also produced: ${ARTIFACT}.torrent in ${OUTDIR})"
 
 # ----------------------------- Summary ----------------------------------------
 echo

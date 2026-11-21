@@ -307,8 +307,8 @@ jobs:
           source "$GITHUB_WORKSPACE/tools/rootfs-builder/r2-cp.sh"   # s3cp: aws s3 cp with retries
           cd dist
 
-          # Big artifacts first, then their per-artifact sidecars (.meta4/.sha256/.installed/
-          # .torrent). Pointers, logs and the queue stay for the publish job.
+          # Big artifacts first, then their per-artifact sidecars (.meta4/.sha256/.installed).
+          # No .torrent since K2GO-588. Pointers, logs and the queue stay for the publish job.
           shopt -s nullglob
           for f in k2go_*.tar.gz; do
             echo ">> upload artifact $f"
@@ -412,6 +412,7 @@ jobs:
               if (( n > KEEP )); then
                 for key in "${keys[@]:0:n-KEEP}"; do
                   echo ">> prune $key (+ sidecars)"
+                  # .torrent: older bakes published one (before K2GO-588); prune it with its tarball.
                   for ext in '' .meta4 .sha256 .installed .torrent .minisig; do
                     aws s3 rm "s3://${BUCKET_NAME}/${key}${ext}" --endpoint-url "$ENDPOINT" || true
                   done

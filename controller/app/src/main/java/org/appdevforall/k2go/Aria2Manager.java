@@ -188,11 +188,8 @@ public class Aria2Manager {
                 File downloadDir = new File(SystemStateEvaluator.rootfsBaseDir(context), "downloads");
                 if (!downloadDir.exists()) downloadDir.mkdirs();
 
-                // Secure DHT file within our app (avoids the com.termux crash)
-                File dhtFile = new File(context.getFilesDir(), "dht.dat");
-                if (!dhtFile.exists()) {
-                    try { dhtFile.createNewFile(); } catch (Exception e) { Log.w(TAG, "Could not create dht.dat"); }
-                }
+                // K2GO-588: no BitTorrent any more; remove the DHT state that older builds kept.
+                new File(context.getFilesDir(), "dht.dat").delete();
 
                 // --- Extract SSL Certificate from assets ---
                 File caCertFile = new File(context.getFilesDir(), "cacert.pem");
@@ -213,7 +210,25 @@ public class Aria2Manager {
                 // --split mirror count, and reconciling whatever is already on disk so that
                 // stopping and restarting a download is safe (no wasted re-download, and the
                 // network profiler never trips over a leftover completed file).
-                MetalinkFile mf = MetalinkSplit.isMetalinkUrl(url) ? fetchMetalink(url) : null;
+                // K2GO-588 (ADR-K2GO-554 A4): aria2 gets a local copy of the .meta4 without its
+                // <metaurl>, so the download is HTTP only. Without that copy aria2 would read the URL
+                // and turn the torrent metaurl into a BitTorrent session, so a failed read stops here.
+                File httpOnlyMeta = new File(context.getCacheDir(), "rootfs-http-only.meta4");
+                MetalinkFile mf = null;
+                String source = url;
+                if (MetalinkSplit.isMetalinkUrl(url)) {
+                    mf = fetchMetalink(url, httpOnlyMeta);
+                    if (mf == null) {
+                        if (postLatchedStop(mainHandler, listener)) return;
+                        // The same answer aria2 gives for a network problem (exit 6), so the caller
+                        // offers a retry as before.
+                        mainHandler.post(() -> listener.onError(
+                                org.appdevforall.k2go.download.domain.Aria2Exit.label(6),
+                                org.appdevforall.k2go.download.domain.Aria2Exit.Kind.TRANSIENT));
+                        return;
+                    }
+                    source = "--metalink-file=" + httpOnlyMeta.getAbsolutePath();
+                }
                 // resumeOrRepair: an existing (partial or complete-but-corrupt) file is on
                 // disk. Keep it and let the main aria2 run below salvage it via
                 // --check-integrity against the .meta4 piece hashes (re-downloading only the
@@ -274,7 +289,7 @@ public class Aria2Manager {
                 // right, only the preamble was wasted.
                 boolean resuming = resumeOrRepair || hasControlFile(downloadDir);
                 boolean forceIpv4 = resuming ? false
-                        : Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
+                        : Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, source, mainHandler, listener);
                 // ----------------------------------------------------
 
                 // 3. Build the command dynamically.
@@ -283,9 +298,9 @@ public class Aria2Manager {
                 // "Get more" downloads. Keep both aligned so behaviour matches; if you change flags
                 // here, mirror them there (and note any intentional divergence). Known divergences:
                 // the server uses Debian's system CA (no bundled cacert), the container resolver
-                // (--async-dns=false) instead of ApplyDnsUseCase + the IPv4 profiler, and has no
-                // DHT/BitTorrent yet; only this app path pre-reconciles/resumes via MetalinkSplit +
-                // DownloadVerifier before invoking aria2.
+                // (--async-dns=false) instead of ApplyDnsUseCase + the IPv4 profiler. Neither path
+                // uses BitTorrent (K2GO-588). Only this app path pre-reconciles/resumes via
+                // MetalinkSplit + DownloadVerifier before invoking aria2.
                 java.util.List<String> command = new java.util.ArrayList<>();
                 command.add(aria2Bin.getAbsolutePath());
                 command.add("--dir=" + downloadDir.getAbsolutePath());
@@ -305,10 +320,12 @@ public class Aria2Manager {
                 // while downloading. On mismatch aria2 exits non-zero, so onError fires
                 // and the archive is never extracted/executed.
                 command.add("--check-integrity=true");
-                command.add("--enable-dht=true");
-                command.add("--dht-file-path=" + dhtFile.getAbsolutePath());
-                command.add("--bt-enable-lpd=true");
-                command.add("--seed-time=0");
+                // K2GO-588: HTTP only. The metaurl is gone from the .meta4 above; these keep aria2
+                // from any peer traffic even so (its default is DHT on).
+                command.add("--enable-dht=false");
+                command.add("--enable-dht6=false");
+                command.add("--bt-enable-lpd=false");
+                command.add("--enable-peer-exchange=false");
 
                 // --- Apply SSL Certificate Validation (D6: always strict; cacert
                 // presence was already enforced above, so there is no insecure path) ---
@@ -375,7 +392,7 @@ public class Aria2Manager {
                     command.add("--disable-ipv6=true");
                 }
 
-                command.add(url);
+                command.add(source);
 
                 ProcessBuilder pb = new ProcessBuilder(command);
 
@@ -384,16 +401,7 @@ public class Aria2Manager {
                 // null, so a stop arriving in that window latches the reason and kills nothing.
                 // Without this the caller's cleanup could delete the download directory and aria2
                 // would then start, recreate it and write fresh residue behind it.
-                if (stopRequest == Stop.CANCEL) {
-                    Log.d(TAG, "Download cancelled before aria2 was started.");
-                    mainHandler.post(listener::onCancelled);
-                    return;
-                }
-                if (stopRequest == Stop.PAUSE) {
-                    Log.d(TAG, "Download paused before aria2 was started.");
-                    mainHandler.post(listener::onPaused);
-                    return;
-                }
+                if (postLatchedStop(mainHandler, listener)) return;
 
                 // Redirect errors to the same input stream
                 pb.redirectErrorStream(true);
@@ -613,8 +621,23 @@ public class Aria2Manager {
     /**
      * Helper method to copy files from the APK assets folder to internal storage.
      */
+    /** ADFA-5119: a stop latched before aria2 started; reports it and returns true. */
+    private boolean postLatchedStop(Handler mainHandler, DownloadListener listener) {
+        if (stopRequest == Stop.CANCEL) {
+            Log.d(TAG, "Download cancelled before aria2 was started.");
+            mainHandler.post(listener::onCancelled);
+            return true;
+        }
+        if (stopRequest == Stop.PAUSE) {
+            Log.d(TAG, "Download paused before aria2 was started.");
+            mainHandler.post(listener::onPaused);
+            return true;
+        }
+        return false;
+    }
+
     /** ADFA-4676: fetch + parse the .meta4 into a verifiable MetalinkFile, or null on any error. */
-    private MetalinkFile fetchMetalink(String url) {
+    private MetalinkFile fetchMetalink(String url, File httpOnlyCopy) {
         HttpURLConnection conn = null;
         try {
             conn = (HttpURLConnection) new URL(url).openConnection();
@@ -624,9 +647,22 @@ public class Aria2Manager {
             if (conn.getResponseCode() != 200) {
                 return null;
             }
+            byte[] raw;
             try (InputStream in = conn.getInputStream()) {
-                return MetalinkFile.parse(in);
+                java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
+                byte[] chunk = new byte[16384];
+                int n;
+                while ((n = in.read(chunk)) > 0) buf.write(chunk, 0, n);
+                raw = buf.toByteArray();
             }
+            MetalinkFile mf = MetalinkFile.parse(new java.io.ByteArrayInputStream(raw));
+            // K2GO-588: the copy that aria2 reads, without the BitTorrent metaurl.
+            try (java.io.Writer w = new java.io.OutputStreamWriter(
+                    new java.io.FileOutputStream(httpOnlyCopy), java.nio.charset.StandardCharsets.UTF_8)) {
+                w.write(org.appdevforall.k2go.download.domain.MetalinkHttpOnly.of(
+                        new String(raw, java.nio.charset.StandardCharsets.UTF_8)));
+            }
+            return mf;
         } catch (Exception e) {
             Log.w(TAG, "fetchMetalink fallback (" + e.getMessage() + ")");
             return null;
