@@ -1685,4 +1685,12 @@
     <string name="k2go_online_body_usage">%1$s inaweza kushiriki data ya matumizi isiyojulikana na ripoti za hitilafu, na inaweza kukagua yenyewe masasisho ya katalogi na programu simu ikiwa kwenye Wi-Fi. Hakuna taarifa binafsi zinazokusanywa, na hakuna kinachofuatiliwa kuhusu watu wanaotumia maudhui unayoshiriki.\n\nWeka nje ya mtandao: programu haiunganishi kwenye intaneti yenyewe.</string>
     <string name="k2go_online_body_crash">%1$s inaweza kutuma ripoti za hitilafu, na inaweza kukagua yenyewe masasisho ya katalogi na programu simu ikiwa kwenye Wi-Fi. Hakuna taarifa binafsi zinazokusanywa.\n\nWeka nje ya mtandao: programu haiunganishi kwenye intaneti yenyewe.</string>
     <string name="k2go_webview_offline_page">Ukurasa huu uko kwenye intaneti. Kurasa zilizo ndani ya programu hufanya kazi nje ya mtandao pekee.</string>
+    <string name="k2go_offline_action_title">Hii inahitaji intaneti</string>
+    <string name="k2go_offline_action_msg">Ulichagua \"Weka nje ya mtandao\". Ili kufanya hivi, programu lazima iunganishwe kwenye intaneti. Unaweza kuruhusu kwa kitendo hiki tu.</string>
+    <string name="k2go_offline_action_allow_once">Ruhusu mara hii tu</string>
+    <string name="k2go_feedback_kept_offline">Programu imewekwa kwenye \"Weka nje ya mtandao\", kwa hivyo haitumi maoni. Ili kubadilisha, washa \"%1$s\" katika Mipangilio &gt; Kuhusu.</string>
+    <string name="k2go_feedback_third_party_title">Hii inaweza kuunganishwa kwenye intaneti</string>
+    <string name="k2go_feedback_third_party_msg">Ulichagua \"Weka nje ya mtandao\". Maoni hutumwa kwa programu nyingine, kwa mfano barua pepe, na programu hiyo inaweza kuunganishwa kwenye intaneti.</string>
+    <string name="k2go_privacy_kept_offline">Programu imewekwa kwenye \"Weka nje ya mtandao\", kwa hivyo huduma hizi zinabaki zimezimwa. Ili kubadilisha, washa \"%1$s\" katika Mipangilio &gt; Kuhusu.</string>
+    <string name="k2go_feedback_send_anyway">Tuma hata hivyo</string>
 </resources>

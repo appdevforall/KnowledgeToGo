@@ -187,8 +187,9 @@ public class SettingsSubFragment extends Fragment {
                 v -> openSub("about:version"));
         // ADFA-4984: manual OTA entry ("update on the air"). LibraryActivity owns the UpdateController.
         // K2GO-403: hidden in the fdroid build, which ships no in-app updater (updates come from F-Droid).
+        View check = null;
         if (org.appdevforall.k2go.BuildConfig.OTA_ENABLED) {
-            SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
+            check = SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
                 if (getActivity() instanceof LibraryActivity) {
                     org.appdevforall.k2go.update.presentation.UpdateController uc =
                             ((LibraryActivity) getActivity()).updateController();
@@ -196,6 +197,8 @@ public class SettingsSubFragment extends Fragment {
                 }
             });
         }
+        final View needsInternet = check;
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
         // K2GO-588: the one privacy choice (usage data where the build has analytics, crash reports,
         // automatic connections). Off stops crash events at once (beforeSend); on starts crash
@@ -205,6 +208,11 @@ public class SettingsSubFragment extends Fragment {
             OnlineConsent.setEnabled(ctx, checked);
             org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).applyConsent();
             if (!checked) io.sentry.Sentry.close();   // nothing more leaves for GlitchTip in this session
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
+            if (getActivity() != null) {
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(
+                        getActivity().findViewById(R.id.fab_feedback));
+            }
         });
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
     }

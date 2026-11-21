@@ -36,6 +36,9 @@ public final class CatalogRefreshWorker extends Worker {
     public static final String KEY_NAME = "name";
     public static final String KEY_MANIFEST_URL = "manifest_url";
     public static final String KEY_BASENAME = "basename";
+    // K2GO-390: bypass the TTL gate for an on-demand check (e.g. a 404 self-heal needs to look now,
+    // even if the weekly check ran recently). The ETag conditional GET still keeps it cheap.
+    public static final String KEY_FORCE = "force";
 
     public CatalogRefreshWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -54,8 +57,21 @@ public final class CatalogRefreshWorker extends Worker {
 
         CatalogRefreshStore store = new CatalogRefreshStore(ctx);
         long now = System.currentTimeMillis();
-        // K2GO-580: every refresh is asked for (the Get more button or a download 404), so it always
-        // checks; the old TTL and failure backoff only guarded automatic refreshes.
+        boolean force = getInputData().getBoolean(KEY_FORCE, false);
+        // K2GO-588: an automatic run reads the online choice when it runs, so a job queued before the
+        // user chose Keep offline does not connect. A forced run is part of a download the user started.
+        if (!force && !org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(ctx)) {
+            return Result.success();
+        }
+        if (!force && !CatalogFreshness.dueForCheck(store.lastCheckMs(name), now, CatalogFreshness.DEFAULT_TTL_MS)) {
+            return Result.success();   // still fresh; do not hit the network
+        }
+        // K2GO-476: a pull that failed recently (a bad publish) is not repeated on every open.
+        long lastFailure = store.lastFailureMs(name);
+        if (!force && lastFailure > 0
+                && !CatalogFreshness.dueForCheck(lastFailure, now, CatalogFreshness.FAILURE_BACKOFF_MS)) {
+            return Result.success();
+        }
 
         // K2GO-476: a check counts only once it has an answer. Recording it before the download
         // let one failed pull hide behind the TTL for a week.
@@ -65,9 +81,9 @@ public final class CatalogRefreshWorker extends Worker {
         CatalogManifestClient.Result res = client.fetchManifest(manifestUrl,
                 overlay.exists() ? store.etag(name) : null);
         if (res.status == CatalogManifestClient.Status.FAILED) {
-            // K2GO-580: no retry. A refresh runs only when asked; a delayed retry could land on mobile
-            // data that nobody approved. The user taps again (or the next 404 asks again).
-            return Result.failure();
+            // Automatic: back off and try again (the Wi-Fi constraint still holds). Forced: no retry,
+            // since a delayed retry could land on mobile data; the next 404 asks again (K2GO-580).
+            return force ? Result.failure() : Result.retry();
         }
         if (res.status == CatalogManifestClient.Status.NOT_MODIFIED) {
             store.recordChecked(name, now);

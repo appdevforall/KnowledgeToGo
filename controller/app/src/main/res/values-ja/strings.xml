@@ -1666,4 +1666,12 @@
     <string name="k2go_online_body_usage">%1$s は匿名の使用状況データとクラッシュレポートを共有でき、スマホが Wi-Fi に接続しているときにカタログとアプリの更新を自動で確認できます。個人情報は収集されず、共有したコンテンツを使う人々についても何も追跡しません。\n\n「オフラインのまま」：アプリが自動でインターネットに接続することはありません。</string>
     <string name="k2go_online_body_crash">%1$s はクラッシュレポートを送信でき、スマホが Wi-Fi に接続しているときにカタログとアプリの更新を自動で確認できます。個人情報は収集されません。\n\n「オフラインのまま」：アプリが自動でインターネットに接続することはありません。</string>
     <string name="k2go_webview_offline_page">このページはインターネット上にあります。アプリ内のページはオフラインでのみ動作します。</string>
+    <string name="k2go_offline_action_title">インターネット接続が必要です</string>
+    <string name="k2go_offline_action_msg">「オフラインのまま」を選択しています。この操作を行うには、アプリをインターネットに接続する必要があります。この操作に限り許可できます。</string>
+    <string name="k2go_offline_action_allow_once">今回のみ許可</string>
+    <string name="k2go_feedback_kept_offline">アプリは「オフラインのまま」に設定されているため、フィードバックを送信しません。変更するには、設定 &gt; 情報で\"%1$s\"をオンにしてください。</string>
+    <string name="k2go_feedback_third_party_title">インターネットに接続する場合があります</string>
+    <string name="k2go_feedback_third_party_msg">「オフラインのまま」を選択しています。フィードバックは別のアプリ（例: メール）で送信され、そのアプリはインターネットに接続する場合があります。</string>
+    <string name="k2go_privacy_kept_offline">アプリは「オフラインのまま」に設定されているため、これらのサービスはオフのままです。変更するには、設定 &gt; 情報で\"%1$s\"をオンにしてください。</string>
+    <string name="k2go_feedback_send_anyway">このまま送信</string>
 </resources>

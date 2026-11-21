@@ -1665,4 +1665,12 @@
     <string name="k2go_online_body_usage">%1$s có thể chia sẻ dữ liệu sử dụng ẩn danh và báo cáo sự cố, đồng thời có thể tự kiểm tra bản cập nhật danh mục và ứng dụng khi điện thoại kết nối Wi-Fi. Không thu thập thông tin cá nhân nào, và không theo dõi bất kỳ điều gì về những người dùng nội dung bạn chia sẻ.\n\nGiữ ngoại tuyến: ứng dụng không tự kết nối internet.</string>
     <string name="k2go_online_body_crash">%1$s có thể gửi báo cáo sự cố, đồng thời có thể tự kiểm tra bản cập nhật danh mục và ứng dụng khi điện thoại kết nối Wi-Fi. Không thu thập thông tin cá nhân nào.\n\nGiữ ngoại tuyến: ứng dụng không tự kết nối internet.</string>
     <string name="k2go_webview_offline_page">Trang này nằm trên internet. Các trang trong ứng dụng chỉ hoạt động ngoại tuyến.</string>
+    <string name="k2go_offline_action_title">Thao tác này cần internet</string>
+    <string name="k2go_offline_action_msg">Bạn đã chọn \"Giữ ngoại tuyến\". Để làm việc này, ứng dụng phải kết nối internet. Bạn có thể chỉ cho phép đối với thao tác này.</string>
+    <string name="k2go_offline_action_allow_once">Chỉ cho phép lần này</string>
+    <string name="k2go_feedback_kept_offline">Ứng dụng đang đặt ở chế độ \"Giữ ngoại tuyến\", nên không gửi phản hồi. Để thay đổi, hãy bật \"%1$s\" trong Cài đặt &gt; Giới thiệu.</string>
+    <string name="k2go_feedback_third_party_title">Việc này có thể kết nối internet</string>
+    <string name="k2go_feedback_third_party_msg">Bạn đã chọn \"Giữ ngoại tuyến\". Phản hồi được gửi bằng ứng dụng khác, ví dụ email, và ứng dụng đó có thể kết nối internet.</string>
+    <string name="k2go_privacy_kept_offline">Ứng dụng đang đặt ở chế độ \"Giữ ngoại tuyến\", nên các dịch vụ này vẫn tắt. Để thay đổi, hãy bật \"%1$s\" trong Cài đặt &gt; Giới thiệu.</string>
+    <string name="k2go_feedback_send_anyway">Vẫn gửi</string>
 </resources>

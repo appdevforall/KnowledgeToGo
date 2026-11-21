@@ -1665,4 +1665,12 @@
     <string name="k2go_online_body_usage">A(z) %1$s megoszthat névtelen használati adatokat és összeomlási jelentéseket, és Wi-Fi-kapcsolat esetén magától kereshet katalógus- és alkalmazásfrissítéseket. Semmilyen személyes adatot nem gyűjtünk, és semmit sem követünk nyomon a megosztott tartalmadat használó emberekről.\n\nMarad offline: az alkalmazás magától nem csatlakozik az internethez.</string>
     <string name="k2go_online_body_crash">A(z) %1$s küldhet összeomlási jelentéseket, és Wi-Fi-kapcsolat esetén magától kereshet katalógus- és alkalmazásfrissítéseket. Semmilyen személyes adatot nem gyűjtünk.\n\nMarad offline: az alkalmazás magától nem csatlakozik az internethez.</string>
     <string name="k2go_webview_offline_page">Ez az oldal az interneten van. Az alkalmazáson belüli oldalak csak offline működnek.</string>
+    <string name="k2go_offline_action_title">Ehhez internet kell</string>
+    <string name="k2go_offline_action_msg">A \"Marad offline\" lehetőséget választottad. Ehhez az alkalmazásnak csatlakoznia kell az internethez. Csak erre a műveletre engedélyezheted.</string>
+    <string name="k2go_offline_action_allow_once">Csak most engedélyezem</string>
+    <string name="k2go_feedback_kept_offline">Az alkalmazás \"Marad offline\" módra van állítva, ezért nem küld visszajelzést. A módosításhoz kapcsold be a(z) \"%1$s\" beállítást itt: Beállítások &gt; Névjegy.</string>
+    <string name="k2go_feedback_third_party_title">Ez csatlakozhat az internethez</string>
+    <string name="k2go_feedback_third_party_msg">A \"Marad offline\" lehetőséget választottad. A visszajelzést egy másik alkalmazás küldi el, például az e-mail, és ez az alkalmazás csatlakozhat az internethez.</string>
+    <string name="k2go_privacy_kept_offline">Az alkalmazás \"Marad offline\" módra van állítva, ezért ezek a szolgáltatások kikapcsolva maradnak. A módosításhoz kapcsold be a(z) \"%1$s\" beállítást itt: Beállítások &gt; Névjegy.</string>
+    <string name="k2go_feedback_send_anyway">Küldés mégis</string>
 </resources>

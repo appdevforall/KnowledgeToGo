@@ -1682,4 +1682,12 @@
     <string name="k2go_online_body_usage">„%1$s“ gali bendrinti anoniminius naudojimo duomenis ir strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama, ir niekas nesekamas apie žmones, kurie naudoja jūsų bendrinamą turinį.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
     <string name="k2go_online_body_crash">„%1$s“ gali siųsti strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
     <string name="k2go_webview_offline_page">Šis puslapis yra internete. Programos puslapiai veikia tik neprisijungus.</string>
+    <string name="k2go_offline_action_title">Tam reikia interneto</string>
+    <string name="k2go_offline_action_msg">Pasirinkote „Palikti neprisijungus“. Kad tai atliktų, programa turi prisijungti prie interneto. Galite tai leisti tik šiam veiksmui.</string>
+    <string name="k2go_offline_action_allow_once">Leisti tik šį kartą</string>
+    <string name="k2go_feedback_kept_offline">Programoje nustatyta „Palikti neprisijungus“, todėl ji nesiunčia atsiliepimų. Norėdami tai pakeisti, įjunkite \"%1$s\" skiltyje Nustatymai &gt; Apie.</string>
+    <string name="k2go_feedback_third_party_title">Tai gali prisijungti prie interneto</string>
+    <string name="k2go_feedback_third_party_msg">Pasirinkote „Palikti neprisijungus“. Atsiliepimai siunčiami kita programa, pavyzdžiui, el. paštu, ir ta programa gali prisijungti prie interneto.</string>
+    <string name="k2go_privacy_kept_offline">Programoje nustatyta „Palikti neprisijungus“, todėl šios paslaugos lieka išjungtos. Norėdami tai pakeisti, įjunkite \"%1$s\" skiltyje Nustatymai &gt; Apie.</string>
+    <string name="k2go_feedback_send_anyway">Vis tiek siųsti</string>
 </resources>

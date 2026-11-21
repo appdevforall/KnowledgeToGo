@@ -22,12 +22,19 @@ public final class Snackbars {
     /** Snackbar whose on-screen time scales with the text length. */
     public static Snackbar make(View view, CharSequence text) {
         String s = (text == null) ? null : text.toString();
-        return Snackbar.make(view, text, SnackbarDuration.millisForText(s));
+        return fit(Snackbar.make(view, text, SnackbarDuration.millisForText(s)));
     }
 
     /** Overload for a string resource id. */
     public static Snackbar make(View view, int resId) {
         CharSequence text = view.getResources().getText(resId);
-        return Snackbar.make(view, text, SnackbarDuration.millisForText(text.toString()));
+        return fit(Snackbar.make(view, text, SnackbarDuration.millisForText(text.toString())));
+    }
+
+    /** K2GO-588: the Material default of 2 lines cut long messages (and most translations). */
+    private static Snackbar fit(Snackbar bar) {
+        android.widget.TextView t = bar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        if (t != null) t.setMaxLines(5);
+        return bar;
     }
 }

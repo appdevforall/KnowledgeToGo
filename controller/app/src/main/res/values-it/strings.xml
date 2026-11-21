@@ -1665,4 +1665,12 @@
     <string name="k2go_online_body_usage">%1$s può condividere dati di utilizzo anonimi e rapporti di arresto anomalo, e può cercare da sola aggiornamenti del catalogo e dell\'app quando il telefono è connesso al Wi-Fi. Non vengono raccolte informazioni personali e non viene tracciato nulla sulle persone che usano i tuoi contenuti condivisi.\n\nMantieni offline: l\'app non si connette a internet da sola.</string>
     <string name="k2go_online_body_crash">%1$s può inviare rapporti di arresto anomalo, e può cercare da sola aggiornamenti del catalogo e dell\'app quando il telefono è connesso al Wi-Fi. Non vengono raccolte informazioni personali.\n\nMantieni offline: l\'app non si connette a internet da sola.</string>
     <string name="k2go_webview_offline_page">Questa pagina è su internet. Le pagine all\'interno dell\'app funzionano solo offline.</string>
+    <string name="k2go_offline_action_title">Serve la connessione a internet</string>
+    <string name="k2go_offline_action_msg">Hai scelto \"Mantieni offline\". Per farlo, l\'app deve connettersi a internet. Puoi consentirlo solo per questa azione.</string>
+    <string name="k2go_offline_action_allow_once">Consenti solo questa volta</string>
+    <string name="k2go_feedback_kept_offline">L\'app è impostata su \"Mantieni offline\", quindi non invia feedback. Per cambiarlo, attiva \"%1$s\" in Impostazioni &gt; Informazioni.</string>
+    <string name="k2go_feedback_third_party_title">Questo può connettersi a internet</string>
+    <string name="k2go_feedback_third_party_msg">Hai scelto \"Mantieni offline\". Il feedback viene inviato con un\'altra app, per esempio l\'email, e quell\'app può connettersi a internet.</string>
+    <string name="k2go_privacy_kept_offline">L\'app è impostata su \"Mantieni offline\", quindi questi servizi restano spenti. Per cambiarlo, attiva \"%1$s\" in Impostazioni &gt; Informazioni.</string>
+    <string name="k2go_feedback_send_anyway">Invia comunque</string>
 </resources>

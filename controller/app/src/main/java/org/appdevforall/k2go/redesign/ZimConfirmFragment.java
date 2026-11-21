@@ -102,6 +102,7 @@ public class ZimConfirmFragment extends Fragment {
         Button start = root.findViewById(R.id.k2go_zconf_start);
         start.setText(getString(banks ? R.string.k2go_zim_add_setup_fmt : R.string.k2go_zim_start_fmt, gb(totalMb)));
         start.setEnabled(fits && total > 0);
+        if (!banks) org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(start);   // K2GO-588
         start.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();

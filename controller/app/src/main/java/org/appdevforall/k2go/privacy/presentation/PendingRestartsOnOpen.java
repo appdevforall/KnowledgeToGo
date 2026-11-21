@@ -11,16 +11,19 @@ package org.appdevforall.k2go.privacy.presentation;
 import android.content.Context;
 import android.util.Log;
 
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.appdevforall.k2go.privacy.data.EnvironmentLockGate;
 import org.appdevforall.k2go.privacy.data.PrivacyRepositoryImpl;
 import org.appdevforall.k2go.privacy.domain.ApplyPendingRestartsUseCase;
+import org.appdevforall.k2go.privacy.domain.KeepBoxOfflineUseCase;
 import org.appdevforall.k2go.redesign.RestReadiness;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.util.List;
 
 /** "Later" and the one-time off on update apply the next time the app opens. Waits for the box API,
- *  then asks the lifecycle owner to restart only the services the box reports as pending. */
+ *  then asks the lifecycle owner to restart only the services the box reports as pending.
+ *  K2GO-588: with Keep offline, every outbound switch is first set off, so the restart applies it. */
 public final class PendingRestartsOnOpen {
 
     private static final String TAG = "K2Go-Privacy";
@@ -38,8 +41,13 @@ public final class PendingRestartsOnOpen {
                     if (System.currentTimeMillis() > deadline) return;   // box not up: next open
                     Thread.sleep(POLL_MS);
                 }
+                PrivacyRepositoryImpl repository = new PrivacyRepositoryImpl();
+                if (!OnlineConsent.isEnabled(app)) {
+                    List<String> off = new KeepBoxOfflineUseCase(repository).execute();
+                    if (!off.isEmpty()) Log.i(TAG, "keep offline: outbound off for " + off);
+                }
                 List<String> restarted = new ApplyPendingRestartsUseCase(
-                        new PrivacyRepositoryImpl(), new EnvironmentLockGate(app)).execute();
+                        repository, new EnvironmentLockGate(app)).execute();
                 if (!restarted.isEmpty()) Log.i(TAG, "pending privacy changes: restart " + restarted);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

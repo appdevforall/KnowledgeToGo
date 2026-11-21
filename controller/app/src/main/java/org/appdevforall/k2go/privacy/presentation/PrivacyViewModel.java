@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import org.appdevforall.k2go.privacy.domain.GetOutboundSwitchesUseCase;
+import org.appdevforall.k2go.privacy.domain.KeepBoxOfflineUseCase;
 import org.appdevforall.k2go.privacy.domain.OutboundSwitch;
 import org.appdevforall.k2go.privacy.domain.PrivacyException;
 import org.appdevforall.k2go.privacy.domain.PrivacyRepository;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.function.BooleanSupplier;
 import java.util.concurrent.Executors;
 
 /** The box owns the state; this keeps no copy past the last answer, and re-reads on {@link #load()}.
@@ -56,16 +58,21 @@ public class PrivacyViewModel extends ViewModel {
     private final GetOutboundSwitchesUseCase getSwitches;
     private final PrivacyRepository repository;
     private final RestartServiceUseCase restart;
+    private final KeepBoxOfflineUseCase keepOffline;
+    private final BooleanSupplier online;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<PrivacyUiState> state = new MutableLiveData<>(
             new PrivacyUiState(PrivacyUiState.Status.LOADING, Collections.emptyList(), null));
     private final MutableLiveData<Notice> notice = new MutableLiveData<>();
 
     public PrivacyViewModel(GetOutboundSwitchesUseCase getSwitches, PrivacyRepository repository,
-                            RestartServiceUseCase restart) {
+                            RestartServiceUseCase restart, KeepBoxOfflineUseCase keepOffline,
+                            BooleanSupplier online) {
         this.getSwitches = getSwitches;
         this.repository = repository;
         this.restart = restart;
+        this.keepOffline = keepOffline;
+        this.online = online;
     }
 
     public LiveData<PrivacyUiState> state() { return state; }
@@ -77,7 +84,12 @@ public class PrivacyViewModel extends ViewModel {
         state.setValue(new PrivacyUiState(PrivacyUiState.Status.LOADING, current().switches, null));
         executor.execute(() -> {
             try {
-                state.postValue(new PrivacyUiState(PrivacyUiState.Status.READY, getSwitches.execute(), null));
+                // K2GO-588: with Keep offline, a service that is still on is set off first; the box
+                // restarts it at the next app open (PendingRestartsOnOpen).
+                boolean keptOffline = !online.getAsBoolean();
+                if (keptOffline) keepOffline.execute();
+                state.postValue(new PrivacyUiState(PrivacyUiState.Status.READY, getSwitches.execute(), null,
+                        keptOffline));
             } catch (PrivacyException e) {
                 state.postValue(new PrivacyUiState(statusOf(e), Collections.emptyList(), null));
             }
@@ -86,7 +98,7 @@ public class PrivacyViewModel extends ViewModel {
 
     public void setOutbound(String service, boolean outbound) {
         PrivacyUiState now = current();
-        if (now.busy() || now.status != PrivacyUiState.Status.READY) return;
+        if (now.busy() || now.status != PrivacyUiState.Status.READY || now.keptOffline) return;
         if (sameAsReported(now.switches, service, outbound)) return;   // nothing to change on the box
         final List<OutboundSwitch> before = now.switches;
         // While in flight the switch shows the requested value; the box's answer replaces it.

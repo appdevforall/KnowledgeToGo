@@ -84,7 +84,7 @@ public class PrivacyFragment extends Fragment {
                     return;
                 }
                 for (OutboundSwitch sw : st.switches) {
-                    list.addView(switchRow(ctx, sw, st.busy()));
+                    list.addView(switchRow(ctx, sw, st.busy(), st.keptOffline));
                 }
         }
     }
@@ -124,7 +124,7 @@ public class PrivacyFragment extends Fragment {
         return OutboundSwitch.FORGEJO.equals(service) ? "Forgejo" : "Kolibri";
     }
 
-    private View switchRow(Context ctx, OutboundSwitch sw, boolean locked) {
+    private View switchRow(Context ctx, OutboundSwitch sw, boolean locked, boolean keptOffline) {
         boolean kolibri = OutboundSwitch.KOLIBRI.equals(sw.service());
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -149,7 +149,13 @@ public class PrivacyFragment extends Fragment {
         MaterialSwitch toggle = new MaterialSwitch(ctx);
         toggle.setMinimumHeight(0);
         toggle.setChecked(sw.outbound());
-        toggle.setEnabled(!locked);
+        toggle.setEnabled(!locked && !keptOffline);
+        if (keptOffline) {
+            // K2GO-588: the disabled switch lets the tap through to the row, which says where to change it.
+            toggle.setClickable(false);
+            row.setOnClickListener(v -> snack(v, getString(R.string.k2go_privacy_kept_offline,
+                    getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel()))));
+        }
         // A click, not a checked-change: only the user's tap may send a change, never a state that
         // Android or a re-render sets. Posted: the new state rebuilds the list, so let the click finish.
         toggle.setOnClickListener(v -> {

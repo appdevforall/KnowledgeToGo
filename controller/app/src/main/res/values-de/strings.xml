@@ -1665,4 +1665,12 @@
     <string name="k2go_online_body_usage">%1$s kann anonyme Nutzungsdaten und Absturzberichte teilen und selbstständig nach Katalog- und App-Updates suchen, wenn das Telefon mit WLAN verbunden ist. Es werden keine personenbezogenen Daten erfasst, und nichts über die Personen, die deine geteilten Inhalte nutzen, wird verfolgt.\n\nOffline behalten: Die App verbindet sich nicht selbstständig mit dem Internet.</string>
     <string name="k2go_online_body_crash">%1$s kann Absturzberichte senden und selbstständig nach Katalog- und App-Updates suchen, wenn das Telefon mit WLAN verbunden ist. Es werden keine personenbezogenen Daten erfasst.\n\nOffline behalten: Die App verbindet sich nicht selbstständig mit dem Internet.</string>
     <string name="k2go_webview_offline_page">Diese Seite ist im Internet. Seiten in der App funktionieren nur offline.</string>
+    <string name="k2go_offline_action_title">Dafür ist Internet nötig</string>
+    <string name="k2go_offline_action_msg">Du hast \"Offline behalten\" gewählt. Dafür muss sich die App mit dem Internet verbinden. Du kannst es nur für diese Aktion erlauben.</string>
+    <string name="k2go_offline_action_allow_once">Nur dieses Mal erlauben</string>
+    <string name="k2go_feedback_kept_offline">Die App ist auf \"Offline behalten\" eingestellt und sendet daher kein Feedback. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
+    <string name="k2go_feedback_third_party_title">Dies kann sich mit dem Internet verbinden</string>
+    <string name="k2go_feedback_third_party_msg">Du hast \"Offline behalten\" gewählt. Feedback wird mit einer anderen App gesendet, zum Beispiel E-Mail, und diese App kann sich mit dem Internet verbinden.</string>
+    <string name="k2go_privacy_kept_offline">Die App ist auf \"Offline behalten\" eingestellt, daher bleiben diese Dienste aus. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
+    <string name="k2go_feedback_send_anyway">Trotzdem senden</string>
 </resources>

@@ -21,11 +21,18 @@ public final class PrivacyUiState {
     public final List<OutboundSwitch> switches;
     /** The service whose change is in flight, or null. The switches are locked while it is set. */
     public final String busyService;
+    /** K2GO-588: the app is kept offline, so every switch is off and cannot be turned on here. */
+    public final boolean keptOffline;
 
     PrivacyUiState(Status status, List<OutboundSwitch> switches, String busyService) {
+        this(status, switches, busyService, false);
+    }
+
+    PrivacyUiState(Status status, List<OutboundSwitch> switches, String busyService, boolean keptOffline) {
         this.status = status;
         this.switches = Collections.unmodifiableList(switches);
         this.busyService = busyService;
+        this.keptOffline = keptOffline;
     }
 
     public boolean busy() { return busyService != null; }

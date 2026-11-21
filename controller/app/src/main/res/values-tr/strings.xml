@@ -1665,4 +1665,12 @@
     <string name="k2go_online_body_usage">%1$s anonim kullanım verilerini ve çökme raporlarını paylaşabilir, telefon Wi-Fi\'ye bağlıyken katalog ve uygulama güncellemelerini kendiliğinden denetleyebilir. Hiçbir kişisel bilgi toplanmaz ve paylaştığınız içeriği kullanan kişiler hakkında hiçbir şey izlenmez.\n\nÇevrimdışı tut: uygulama internete kendiliğinden bağlanmaz.</string>
     <string name="k2go_online_body_crash">%1$s çökme raporları gönderebilir, telefon Wi-Fi\'ye bağlıyken katalog ve uygulama güncellemelerini kendiliğinden denetleyebilir. Hiçbir kişisel bilgi toplanmaz.\n\nÇevrimdışı tut: uygulama internete kendiliğinden bağlanmaz.</string>
     <string name="k2go_webview_offline_page">Bu sayfa internette. Uygulamanın içindeki sayfalar yalnızca çevrimdışı çalışır.</string>
+    <string name="k2go_offline_action_title">Bunun için internet gerekli</string>
+    <string name="k2go_offline_action_msg">\"Çevrimdışı tut\" seçeneğini seçtiniz. Bunu yapmak için uygulamanın internete bağlanması gerekir. Buna yalnızca bu işlem için izin verebilirsiniz.</string>
+    <string name="k2go_offline_action_allow_once">Yalnızca bu kez izin ver</string>
+    <string name="k2go_feedback_kept_offline">Uygulama \"Çevrimdışı tut\" olarak ayarlı, bu yüzden geri bildirim göndermez. Bunu değiştirmek için Ayarlar &gt; Hakkında bölümünde \"%1$s\" seçeneğini açın.</string>
+    <string name="k2go_feedback_third_party_title">Bu, internete bağlanabilir</string>
+    <string name="k2go_feedback_third_party_msg">\"Çevrimdışı tut\" seçeneğini seçtiniz. Geri bildirim başka bir uygulamayla, örneğin e-postayla gönderilir ve bu uygulama internete bağlanabilir.</string>
+    <string name="k2go_privacy_kept_offline">Uygulama \"Çevrimdışı tut\" olarak ayarlı, bu yüzden bu hizmetler kapalı kalır. Bunu değiştirmek için Ayarlar &gt; Hakkında bölümünde \"%1$s\" seçeneğini açın.</string>
+    <string name="k2go_feedback_send_anyway">Yine de gönder</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.appdevforall.k2go.privacy.data.EnvironmentLockGate;
 import org.appdevforall.k2go.privacy.data.PrivacyRepositoryImpl;
 import org.appdevforall.k2go.privacy.domain.GetOutboundSwitchesUseCase;
+import org.appdevforall.k2go.privacy.domain.KeepBoxOfflineUseCase;
 import org.appdevforall.k2go.privacy.domain.PrivacyRepository;
 import org.appdevforall.k2go.privacy.domain.RestartServiceUseCase;
 
@@ -35,7 +36,9 @@ public class PrivacyViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(PrivacyViewModel.class)) {
             PrivacyRepository repository = new PrivacyRepositoryImpl();
             return (T) new PrivacyViewModel(new GetOutboundSwitchesUseCase(repository), repository,
-                    new RestartServiceUseCase(repository, new EnvironmentLockGate(appContext)));
+                    new RestartServiceUseCase(repository, new EnvironmentLockGate(appContext)),
+                    new KeepBoxOfflineUseCase(repository),
+                    () -> org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(appContext));
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

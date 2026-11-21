@@ -1672,4 +1672,12 @@
     <string name="k2go_online_body_usage">%1$s může sdílet anonymní data o používání a hlášení o pádech a může sám kontrolovat aktualizace katalogu a aplikace, když je telefon připojen k Wi-Fi. Neshromažďují se žádné osobní údaje a nesleduje se nic o lidech, kteří používají váš sdílený obsah.\n\nPonechat offline: aplikace se sama nepřipojuje k internetu.</string>
     <string name="k2go_online_body_crash">%1$s může odesílat hlášení o pádech a může sám kontrolovat aktualizace katalogu a aplikace, když je telefon připojen k Wi-Fi. Neshromažďují se žádné osobní údaje.\n\nPonechat offline: aplikace se sama nepřipojuje k internetu.</string>
     <string name="k2go_webview_offline_page">Tato stránka je na internetu. Stránky v aplikaci fungují pouze offline.</string>
+    <string name="k2go_offline_action_title">Tato akce vyžaduje internet</string>
+    <string name="k2go_offline_action_msg">Zvolili jste \"Ponechat offline\". K provedení této akce se aplikace musí připojit k internetu. Můžete to povolit jen pro tuto akci.</string>
+    <string name="k2go_offline_action_allow_once">Povolit jen tentokrát</string>
+    <string name="k2go_feedback_kept_offline">Aplikace je nastavena na \"Ponechat offline\", proto neodesílá zpětnou vazbu. Chcete-li to změnit, zapněte \"%1$s\" v Nastavení &gt; O aplikaci.</string>
+    <string name="k2go_feedback_third_party_title">Toto se může připojit k internetu</string>
+    <string name="k2go_feedback_third_party_msg">Zvolili jste \"Ponechat offline\". Zpětná vazba se odesílá jinou aplikací, například e-mailem, a tato aplikace se může připojit k internetu.</string>
+    <string name="k2go_privacy_kept_offline">Aplikace je nastavena na \"Ponechat offline\", proto tyto služby zůstávají vypnuté. Chcete-li to změnit, zapněte \"%1$s\" v Nastavení &gt; O aplikaci.</string>
+    <string name="k2go_feedback_send_anyway">Přesto odeslat</string>
 </resources>

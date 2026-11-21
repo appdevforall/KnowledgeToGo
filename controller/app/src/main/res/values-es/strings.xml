@@ -1741,4 +1741,12 @@
     <string name="k2go_online_body_usage">%1$s puede compartir datos de uso anónimos e informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal, y no se rastrea nada sobre las personas que usan tu contenido compartido.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
     <string name="k2go_online_body_crash">%1$s puede enviar informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
     <string name="k2go_webview_offline_page">Esta página está en internet. Las páginas dentro de la app solo funcionan sin conexión.</string>
+    <string name="k2go_offline_action_title">Esto necesita internet</string>
+    <string name="k2go_offline_action_msg">Elegiste \"Mantener sin conexión\". Para hacer esto, la app debe conectarse a internet. Puedes permitirlo solo para esta acción.</string>
+    <string name="k2go_offline_action_allow_once">Permitir solo esta vez</string>
+    <string name="k2go_feedback_kept_offline">La app está configurada en \"Mantener sin conexión\", así que no envía comentarios. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
+    <string name="k2go_feedback_third_party_title">Esto puede conectarse a internet</string>
+    <string name="k2go_feedback_third_party_msg">Elegiste \"Mantener sin conexión\". Los comentarios se envían con otra app, por ejemplo el correo, y esa app puede conectarse a internet.</string>
+    <string name="k2go_privacy_kept_offline">La app está configurada en \"Mantener sin conexión\", así que estos servicios siguen apagados. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
+    <string name="k2go_feedback_send_anyway">Enviar de todos modos</string>
 </resources>
