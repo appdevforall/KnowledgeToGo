@@ -828,13 +828,19 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     /**
-     * K2GO-552: the header says "Ready" AND every card has answered its probe in this process, so the
-     * probe evidence says which services are installed. Right after the cards are built the header
-     * can say "Ready" before any probe answered (a card starts GRAY, and GRAY does not gate).
+     * K2GO-552: the header says "Ready" AND every card has a real probe answer in this process
+     * (PRESENT or ABSENT), so the evidence says which services are installed and the installed ones
+     * answer. Two gaps make the header alone too early: right after the cards are built it can say
+     * "Ready" before any probe answered (a card starts GRAY, and GRAY does not gate); and a probe
+     * records its answer before the card shows it. NONE (no answer yet: nginx is up, the service is
+     * not) does not count.
      */
     boolean isReady() {
         if (headerState != H_READY && headerState != H_READY_EMPTY) return false;
-        for (Card c : cards) if (PlatformEvidence.last(c.endpoint) == null) return false;
+        for (Card c : cards) {
+            PlatformPresence.Evidence ev = PlatformEvidence.last(c.endpoint);
+            if (ev != PlatformPresence.Evidence.PRESENT && ev != PlatformPresence.Evidence.ABSENT) return false;
+        }
         return true;
     }
 
