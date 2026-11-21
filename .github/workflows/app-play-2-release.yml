@@ -4,7 +4,7 @@ name: "App+Play: 2. publish release"
 # Run this from main after Google approved a candidate and main says versionName "vX.Y.Z" (the final
 # commit: same code, only the version line changed). It sends the final AAB to the Play beta track
 # (Open testing), and only when Play accepts the upload it tags the commit and runs the release build:
-# GitHub Release, website APKs, R2 and the OTA update.json. An rc build is never released as final
+# GitHub Release, website APKs, R2, the OTA update.json and the F-Droid repo (K2GO-421). An rc build is never released as final
 # (check-release). Google gives its verdict by email and in Play Console (the API cannot read it).
 
 on:
@@ -387,3 +387,15 @@ jobs:
       - name: Cleanup Keystore
         if: always()
         run: rm -f keystore.jks
+
+  # K2GO-421: the self-hosted F-Droid repository, from the fdroid APK that the release job put on R2.
+  fdroid-repo:
+    name: F-Droid repository
+    needs: [tag, release]
+    permissions:
+      contents: read
+    uses: ./.github/workflows/app-fdroid-repo.yml
+    with:
+      tag: ${{ needs.tag.outputs.tag }}
+      staging: false
+    secrets: inherit
