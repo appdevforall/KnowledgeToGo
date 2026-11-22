@@ -402,7 +402,10 @@ public final class KolibriConfirmFragment extends Fragment {
         // job is to grant consent (on Continue) so the drain may start now. K2GO-588: Keep offline
         // commits nothing.
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(
-                requireActivity(), () -> commitLive(toDownload), () -> commitLive(toDownload), () -> {});
+                requireActivity(), () -> {
+                    org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.COURSES.key());
+                    commitLive(toDownload);
+                }, () -> commitLive(toDownload), () -> {});
     }
 
     private void commitLive(List<Channel> toDownload) {

@@ -40,8 +40,13 @@ public final class NetworkPolicyGate {
      * stays enabled: a tap goes through the gate, which offers to allow it for this action only.
      */
     public static void markNeedsInternet(@Nullable View control) {
+        markNeedsInternet(control, 1f);
+    }
+
+    /** The same, for a control whose own look sets {@code onlineAlpha} (for example 0.6 when idle). */
+    public static void markNeedsInternet(@Nullable View control, float onlineAlpha) {
         if (control == null) return;
-        control.setAlpha(OnlineConsent.isEnabled(control.getContext()) ? 1f : 0.5f);
+        control.setAlpha(OnlineConsent.isEnabled(control.getContext()) ? onlineAlpha : 0.5f);
     }
 
     /** Two-arg form: decline/offline is a no-op (the order stays banked and drains later). */
@@ -94,7 +99,7 @@ public final class NetworkPolicyGate {
                     .setPositive(R.string.analytics_enroll_decline, onKeptOffline::run)
                     .setNegative(R.string.k2go_offline_action_allow_once,
                             () -> decide(activity, NetworkCostAdmission.decideNow(activity),
-                                    onProceed, onDeclined, grantSession))
+                                    onProceed, onKeptOffline, grantSession))
                     .setOnCancel(onKeptOffline::run)
                     .show();
             return;

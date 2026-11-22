@@ -35,7 +35,8 @@ public final class ModuleProvisioner {
 
     /** True when there are modules scheduled to install. */
     public static boolean hasPending(Context ctx) {
-        return ModuleWishlist.has(ctx);
+        // K2GO-588: a saved order waits while the app is kept offline and the user did not allow it.
+        return ModuleWishlist.has(ctx) && org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.MODULES);
     }
 
     /**

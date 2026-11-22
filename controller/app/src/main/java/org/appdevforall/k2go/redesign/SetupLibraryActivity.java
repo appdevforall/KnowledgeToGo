@@ -343,6 +343,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // is also held headless by ContentAdmission, so a banked order never starts on metered data
         // without consent. K2GO-588: Keep offline banks nothing; the picks stay in the cart.
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(this, () -> {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
             bank.run();
             ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
             startActivity(new Intent(this, SetupProgressActivity.class));
@@ -380,6 +381,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // K2GO-404: gate the rootfs (aria2) download on metered cost. Wrap the whole commit so a
         // decline plants no InstallGuard marker (a marker with no install behind it forces recovery).
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            // K2GO-588: the install also allows the content picked in the wizard (banked, drains later).
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.COURSES.key());
             org.appdevforall.k2go.InstallGuard.begin(this);
             Intent i = new Intent(this, InstallService.class);
             i.setAction(InstallService.ACTION_START);
@@ -568,6 +573,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // (ContentAdmission also holds it on metered-without-consent). K2GO-588: Keep offline banks
         // nothing. Same shape as startZimDownload.
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(this, () -> {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
             bank.run();
             // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
             // calling its service directly, and that had a real consequence beyond symmetry: the
@@ -630,6 +636,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             // (mapsWizardConfirm) + that headless integration ride with the install/rootfs PR. Decline or
             // offline just does not enter the index; nothing is banked.
             org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+                org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.MAPS.key());
                 String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
                 String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
                 String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
@@ -691,7 +698,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             // the START (like the rootfs/maps installs); a decline leaves the modules banked.
             InstallConfirm.gate(this, op, () ->
                     org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this,
-                            () -> startActivity(new Intent(this, SetupProgressActivity.class))));
+                            () -> {
+                                org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.MODULES);
+                                startActivity(new Intent(this, SetupProgressActivity.class));
+                            }));
         });
     }
 
