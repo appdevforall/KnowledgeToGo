@@ -9,7 +9,7 @@ public class HostScopeTest {
 
     @Test
     public void localHostsStayLocal() {
-        for (String h : new String[] {null, "", "localhost", "LOCALHOST", "box.localhost", "k2go.local",
+        for (String h : new String[] {null, "", "localhost", "LOCALHOST", "box", "box.localhost", "k2go.local",
                 "127.0.0.1", "10.0.0.5", "172.16.0.1", "172.31.255.255", "192.168.43.1", "169.254.1.1",
                 "::1", "[::1]", "fe80::1", "fd12::3"}) {
             assertTrue(h, HostScope.isLocal(h));
