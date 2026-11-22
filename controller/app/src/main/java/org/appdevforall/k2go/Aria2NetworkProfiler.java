@@ -81,8 +81,7 @@ public class Aria2NetworkProfiler {
             command.add("--max-connection-per-server=4");
             command.add("--split=4");
             // K2GO-588: HTTP only, like the real download (Aria2Manager).
-            command.add("--enable-dht=false");
-            command.add("--enable-dht6=false");
+            java.util.Collections.addAll(command, Aria2Manager.HTTP_ONLY_FLAGS);
             command.add("--check-certificate=false");
 
             if (forceIpv4) {

@@ -61,4 +61,21 @@ public class MetalinkHttpOnlyTest {
     public void nullStaysNull() {
         assertNull(MetalinkHttpOnly.of(null));
     }
+
+    @Test
+    public void removesANamespacePrefixedMetaurl() {
+        String in = "<ml:file name=\"a\">\n  <ml:metaurl mediatype=\"torrent\">x.torrent</ml:metaurl>\n"
+                + "  <ml:url>https://m/a</ml:url>\n</ml:file>\n";
+        String out = MetalinkHttpOnly.of(in);
+        assertTrue(MetalinkHttpOnly.isHttpOnly(out));
+        assertTrue(out.contains("<ml:url>https://m/a</ml:url>"));
+    }
+
+    @Test
+    public void isHttpOnlyFailsClosed() {
+        assertTrue(MetalinkHttpOnly.isHttpOnly(MetalinkHttpOnly.of(PUBLISHED)));
+        assertFalse(MetalinkHttpOnly.isHttpOnly(PUBLISHED));
+        assertFalse(MetalinkHttpOnly.isHttpOnly("<file>\n</METAURL>\n</file>"));
+        assertFalse(MetalinkHttpOnly.isHttpOnly(null));
+    }
 }

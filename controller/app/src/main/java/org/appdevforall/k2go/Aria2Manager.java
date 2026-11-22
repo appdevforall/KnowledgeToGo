@@ -39,6 +39,23 @@ public class Aria2Manager {
     private static final String TAG = "IIAB-Aria2-Native";
     /** K2GO-554: upper bound for a signature sidecar read; a minisig is about 300 bytes. */
     private static final int SIDECAR_MAX_BYTES = 16 * 1024;
+    /** K2GO-588: a real .meta4 is a few KiB; a larger body is not one. */
+    private static final int METALINK_MAX_BYTES = 1024 * 1024;
+
+    /**
+     * K2GO-588: aria2 options that keep a download HTTP only. The .meta4 copy has no metaurl; these
+     * are the second barrier if one ever got through (aria2 has DHT on by default, and DHT/LPD/PEX
+     * off does not stop a tracker announce).
+     */
+    static final String[] HTTP_ONLY_FLAGS = {
+            "--follow-torrent=false",
+            "--enable-dht=false",
+            "--enable-dht6=false",
+            "--bt-enable-lpd=false",
+            "--enable-peer-exchange=false",
+            "--bt-exclude-tracker=*",
+            "--seed-time=0",
+    };
     /**
      * ADFA-4895: volatile for the same reason as the flag below, and it is the more important of
      * the two. It is assigned on the download thread and read by {@code stopDownload()} on the
@@ -210,21 +227,23 @@ public class Aria2Manager {
                 // --split mirror count, and reconciling whatever is already on disk so that
                 // stopping and restarting a download is safe (no wasted re-download, and the
                 // network profiler never trips over a leftover completed file).
-                // K2GO-588 (ADR-K2GO-554 A4): aria2 gets a local copy of the .meta4 without its
-                // <metaurl>, so the download is HTTP only. Without that copy aria2 would read the URL
-                // and turn the torrent metaurl into a BitTorrent session, so a failed read stops here.
-                File httpOnlyMeta = new File(context.getCacheDir(), "rootfs-http-only.meta4");
+                // K2GO-588 (ADR-K2GO-554 Amendment 3): aria2 gets a local copy of the .meta4 without
+                // its <metaurl>, so the download is HTTP only. Without that copy aria2 would read the
+                // URL and turn the torrent metaurl into a BitTorrent session, so a failed read stops.
+                File httpOnlyMeta = new File(context.getFilesDir(), "rootfs-http-only.meta4");
                 MetalinkFile mf = null;
                 String source = url;
                 if (MetalinkSplit.isMetalinkUrl(url)) {
-                    mf = fetchMetalink(url, httpOnlyMeta);
+                    int[] failExit = {6};
+                    mf = fetchMetalink(url, httpOnlyMeta, failExit);
                     if (mf == null) {
                         if (postLatchedStop(mainHandler, listener)) return;
-                        // The same answer aria2 gives for a network problem (exit 6), so the caller
-                        // offers a retry as before.
+                        // Answer as aria2 would: exit 6 (network) offers a retry; exit 3 (not found,
+                        // or not a usable .meta4) fails at once.
+                        int code = failExit[0];
                         mainHandler.post(() -> listener.onError(
-                                org.appdevforall.k2go.download.domain.Aria2Exit.label(6),
-                                org.appdevforall.k2go.download.domain.Aria2Exit.Kind.TRANSIENT));
+                                org.appdevforall.k2go.download.domain.Aria2Exit.label(code),
+                                org.appdevforall.k2go.download.domain.Aria2Exit.kindOf(code)));
                         return;
                     }
                     source = "--metalink-file=" + httpOnlyMeta.getAbsolutePath();
@@ -320,12 +339,10 @@ public class Aria2Manager {
                 // while downloading. On mismatch aria2 exits non-zero, so onError fires
                 // and the archive is never extracted/executed.
                 command.add("--check-integrity=true");
-                // K2GO-588: HTTP only. The metaurl is gone from the .meta4 above; these keep aria2
-                // from any peer traffic even so (its default is DHT on).
-                command.add("--enable-dht=false");
-                command.add("--enable-dht6=false");
-                command.add("--bt-enable-lpd=false");
-                command.add("--enable-peer-exchange=false");
+                java.util.Collections.addAll(command, HTTP_ONLY_FLAGS);
+                // K2GO-588: a partial file from an older build has a BitTorrent control file whose
+                // piece length can differ from the HTTP .meta4; continue (aria2 re-checks the pieces).
+                command.add("--allow-piece-length-change=true");
 
                 // --- Apply SSL Certificate Validation (D6: always strict; cacert
                 // presence was already enforced above, so there is no insecure path) ---
@@ -618,9 +635,6 @@ public class Aria2Manager {
         }
     }
 
-    /**
-     * Helper method to copy files from the APK assets folder to internal storage.
-     */
     /** ADFA-5119: a stop latched before aria2 started; reports it and returns true. */
     private boolean postLatchedStop(Handler mainHandler, DownloadListener listener) {
         if (stopRequest == Stop.CANCEL) {
@@ -636,15 +650,21 @@ public class Aria2Manager {
         return false;
     }
 
-    /** ADFA-4676: fetch + parse the .meta4 into a verifiable MetalinkFile, or null on any error. */
-    private MetalinkFile fetchMetalink(String url, File httpOnlyCopy) {
+    /**
+     * ADFA-4676: fetch + parse the .meta4 into a verifiable MetalinkFile, or null on any error. On
+     * null, {@code failExit[0]} is the aria2 exit code that matches: 6 for a network problem, 3 for
+     * an HTTP 4xx or a body that is not a usable HTTP-only .meta4.
+     */
+    private MetalinkFile fetchMetalink(String url, File httpOnlyCopy, int[] failExit) {
         HttpURLConnection conn = null;
         try {
             conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(10000);
             conn.setRequestProperty("User-Agent", "K2Go");
-            if (conn.getResponseCode() != 200) {
+            int status = conn.getResponseCode();
+            if (status != 200) {
+                failExit[0] = (status >= 400 && status < 500) ? 3 : 6;
                 return null;
             }
             byte[] raw;
@@ -652,15 +672,35 @@ public class Aria2Manager {
                 java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
                 byte[] chunk = new byte[16384];
                 int n;
-                while ((n = in.read(chunk)) > 0) buf.write(chunk, 0, n);
+                while ((n = in.read(chunk)) > 0) {
+                    buf.write(chunk, 0, n);
+                    if (buf.size() > METALINK_MAX_BYTES) {
+                        failExit[0] = 3;
+                        return null;
+                    }
+                }
                 raw = buf.toByteArray();
             }
-            MetalinkFile mf = MetalinkFile.parse(new java.io.ByteArrayInputStream(raw));
-            // K2GO-588: the copy that aria2 reads, without the BitTorrent metaurl.
+            MetalinkFile mf;
+            String httpOnly;
+            try {
+                mf = MetalinkFile.parse(new java.io.ByteArrayInputStream(raw));
+                httpOnly = org.appdevforall.k2go.download.domain.MetalinkHttpOnly.of(
+                        new String(raw, java.nio.charset.StandardCharsets.UTF_8));
+            } catch (Exception e) {
+                Log.w(TAG, "fetchMetalink: not a usable .meta4 (" + e.getMessage() + ")");
+                failExit[0] = 3;
+                return null;
+            }
+            // K2GO-588: fail closed if any metaurl is left; never hand aria2 a BitTorrent source.
+            if (!org.appdevforall.k2go.download.domain.MetalinkHttpOnly.isHttpOnly(httpOnly)) {
+                Log.w(TAG, "fetchMetalink: metaurl left after the strip; refusing " + url);
+                failExit[0] = 3;
+                return null;
+            }
             try (java.io.Writer w = new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(httpOnlyCopy), java.nio.charset.StandardCharsets.UTF_8)) {
-                w.write(org.appdevforall.k2go.download.domain.MetalinkHttpOnly.of(
-                        new String(raw, java.nio.charset.StandardCharsets.UTF_8)));
+                w.write(httpOnly);
             }
             return mf;
         } catch (Exception e) {

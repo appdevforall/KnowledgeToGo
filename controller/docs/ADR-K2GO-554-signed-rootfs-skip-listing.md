@@ -320,21 +320,33 @@ add more traffic. On 2026-11-20 a OnePlus 7T download of
 which exists only for BitTorrent: the published meta4 still carries the torrent
 metaurl.
 
-- C1. The rootfs download is HTTP only. Both measures apply, so neither alone is
-  load-bearing:
+- C1. The rootfs download is HTTP only. Each measure alone stops BitTorrent:
   - The app (`Aria2Manager`) gives aria2 a local copy of the meta4 without the
-    `<metaurl>` elements (`--metalink-file`, `MetalinkHttpOnly`). This is the
-    local-meta4 handoff of A4/A6. It covers the meta4 files that are already
-    published. The IPv4 profiler uses the same copy. If the app cannot read the
-    meta4, it reports a network problem (as aria2 exit 6) and does not fall back to
-    the URL.
-  - aria2 runs with `--enable-dht=false --enable-dht6=false --bt-enable-lpd=false
-    --enable-peer-exchange=false` (the aria2 default is DHT on). `--seed-time=0` and
-    the `dht.dat` file are removed; the app deletes a leftover `dht.dat`.
+    `<metaurl>` elements (`--metalink-file`, `MetalinkHttpOnly`, also with a namespace
+    prefix). This is the local-meta4 handoff of A4/A6. It covers the meta4 files that
+    are already published. The IPv4 profiler uses the same copy. If any metaurl text
+    is left after the strip, the app refuses the meta4 (fail closed). If the app
+    cannot read the meta4, it reports a network problem (aria2 exit 6) for a network
+    error or an HTTP 5xx, and "resource not found" (exit 3, fails at once) for an
+    HTTP 4xx, a body over 1 MiB, or a body that is not a meta4. It does not fall back
+    to the URL.
+  - aria2 runs with `--follow-torrent=false --enable-dht=false --enable-dht6=false
+    --bt-enable-lpd=false --enable-peer-exchange=false --bt-exclude-tracker=*
+    --seed-time=0` (`Aria2Manager.HTTP_ONLY_FLAGS`). DHT, LPD and PEX off do not stop
+    a tracker announce; `--bt-exclude-tracker=*` does, and `--seed-time=0` ends a
+    session at 100%. The `dht.dat` file is removed; the app deletes a leftover one.
+    `--allow-piece-length-change=true` lets a partial file from an older build (its
+    control file came from the BitTorrent session) continue over HTTP.
   - The builder deletes the `.torrent` and removes the `<metaurl>` line from the
-    meta4 before the bake signs it, so new meta4 files are HTTP only and their
-    sha-256 in the signed manifest matches the copy that aria2 reads (A6 stays
-    possible).
+    meta4 before the bake signs it, and fails the bake if any metaurl text is left.
+    New meta4 files are HTTP only and their sha-256 in the signed manifest matches
+    the copy that aria2 reads. Older bakes signed the meta4 with the metaurl, so A6,
+    when it lands, must hash the raw bytes that it fetched, not the local copy.
+- C1a. The app reads the meta4 and the `.minisig` with the Android trust store. Android
+  7.0 (API 24) does not trust ISRG Root X1, the root of the R2 host, so
+  `network_security_config.xml` adds that root (`res/raw/isrg_root_x1.pem`) to the
+  system store. Before this amendment a failed app read fell back to aria2, which uses
+  the bundled `cacert.pem`; that fallback is the BitTorrent path, so it is gone.
 - C2. Integrity does not change: aria2 checks the meta4 SHA-256 pieces
   (`--check-integrity`), then DownloadVerifier checks the file (A3).
 - C3. Cost: no peer download. The HTTP mirrors (R2 and its mirror) carry all the
