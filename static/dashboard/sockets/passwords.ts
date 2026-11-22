@@ -25,7 +25,9 @@ export function isStrongPassword(pw: string): boolean {
         && /[^\p{L}\s0-9]/u.test(pw);
 }
 
-export type ProbeResult = 'ok' | 'rejected' | 'unreachable';
+/** 'absent': the service rejects the sign-in because the admin account is not present (never created,
+ *  or deleted by the user). Not a changed password: nothing to check, repair or change. */
+export type ProbeResult = 'ok' | 'rejected' | 'absent' | 'unreachable';
 export type Probe = (service: ServiceName, cred: Credential) => Promise<ProbeResult>;
 export type SetPassword = (service: ServiceName, username: string, password: string) => Promise<void>;
 
@@ -40,22 +42,46 @@ export const probeLogin: Probe = async (service, cred) => {
         else await verifyCalibreCredentials(cred.username, cred.password);
         return 'ok';
     } catch (e) {
+        let rejected: boolean;
         if (e instanceof KolibriAuthError) {
             if (e.reason === 'permission') return 'ok';   // signs in; content rights are another check
-            return e.reason === 'credentials' ? 'rejected' : 'unreachable';
+            rejected = e.reason === 'credentials';
+        } else if (e instanceof ForgejoAuthError) {
+            rejected = e.reason === 'credentials';
+        } else {
+            rejected = /invalid.*cred/i.test(e instanceof Error ? e.message : '');
         }
-        if (e instanceof ForgejoAuthError) {
-            if (e.reason !== 'credentials') return 'unreachable';
-            // A Forgejo without its admin account (its seed has not run yet; the seed creates the account
-            // with the stored copy) also rejects. That is not a changed password, and Repair cannot fix
-            // it, so it is not 'rejected'. forgejoStatus owns the "admin exists" fact.
-            return (await forgejoStatus()).adminExists ? 'rejected' : 'unreachable';
-        }
-        return /invalid.*cred/i.test(e instanceof Error ? e.message : '') ? 'rejected' : 'unreachable';
+        if (!rejected) return 'unreachable';
+        return await accountPresent(service, cred.username) === false ? 'absent' : 'rejected';
     }
 };
 
+/** Is the admin account present in the service? Asked only after a rejected sign-in. null = could not
+ *  tell: the caller keeps 'rejected', so a real changed password is never hidden. */
+async function accountPresent(service: ServiceName, username: string): Promise<boolean | null> {
+    if (service === 'forgejo') {
+        const s = await forgejoStatus();   // owns the "admin exists" fact (public GET /users/{admin})
+        return s.reachable ? s.adminExists : null;
+    }
+    const env = { K2GO_USER: username };
+    const code = service === 'calibre'
+        ? await exitCode(CALIBRE_PY, ['-c', CALIBRE_HAS, CALIBRE_DB], env)
+        : await exitCode('kolibri', ['manage', 'shell', '-c', KOLIBRI_HAS],
+            { ...env, KOLIBRI_HOME: process.env.KOLIBRI_HOME || '/library/kolibri/' });
+    return code === 0 ? true : code === 3 ? false : null;
+}
+
 const RUN_TIMEOUT_MS = 120_000;
+
+/** Runs a command without a shell and resolves to its exit code (null: it did not run or end). */
+function exitCode(cmd: string, args: string[], env: Record<string, string>): Promise<number | null> {
+    return new Promise((resolve) => {
+        execFile(cmd, args, { env: { ...process.env, ...env }, timeout: RUN_TIMEOUT_MS }, (err) => {
+            if (!err) { resolve(0); return; }
+            resolve(typeof err.code === 'number' ? err.code : null);
+        });
+    });
+}
 
 /** Runs a command without a shell. The error never carries the arguments: they hold the password. */
 function run(cmd: string, args: string[], env: Record<string, string> = {}): Promise<void> {
@@ -81,6 +107,20 @@ const CALIBRE_SET = [
     '    (generate_password_hash(os.environ["K2GO_PASSWORD"]), os.environ["K2GO_USER"])).rowcount',
     'db.commit()',
     'sys.exit(0 if n == 1 else 3)',
+].join('\n');
+
+// Exit 0: the account is present; exit 3: it is not. The user name comes in the environment.
+const CALIBRE_HAS = [
+    'import os, sqlite3, sys',
+    'db = sqlite3.connect(sys.argv[1])',
+    'r = db.execute("SELECT 1 FROM user WHERE lower(name) = lower(?)", (os.environ["K2GO_USER"],)).fetchone()',
+    'sys.exit(0 if r else 3)',
+].join('\n');
+
+const KOLIBRI_HAS = [
+    'import os, sys',
+    'from kolibri.core.auth.models import FacilityUser',
+    'sys.exit(0 if FacilityUser.objects.filter(username=os.environ["K2GO_USER"]).exists() else 3)',
 ].join('\n');
 
 const KOLIBRI_SET = [
@@ -111,7 +151,7 @@ export const setServicePassword: SetPassword = (service, username, password) => 
 const DEFAULT_DEPS: PasswordDeps = { probe: probeLogin, setPassword: setServicePassword };
 
 export type PasswordErrorCode =
-    'weak_password' | 'busy' | 'env_managed' | 'mismatch' | 'unreachable' | 'set_failed';
+    'weak_password' | 'busy' | 'env_managed' | 'mismatch' | 'no_account' | 'unreachable' | 'set_failed';
 
 export class PasswordError extends Error {
     constructor(readonly code: PasswordErrorCode, message: string) {
@@ -123,7 +163,7 @@ export class PasswordError extends Error {
 export function httpStatusFor(code: PasswordErrorCode): number {
     switch (code) {
         case 'weak_password': return 400;
-        case 'busy': case 'env_managed': case 'mismatch': return 409;
+        case 'busy': case 'env_managed': case 'mismatch': case 'no_account': return 409;
         case 'unreachable': return 503;
         default: return 500;
     }
@@ -131,7 +171,7 @@ export function httpStatusFor(code: PasswordErrorCode): number {
 
 export interface PasswordStatus {
     service: ServiceName;
-    state: 'ok' | 'mismatch' | 'unreachable';
+    state: 'ok' | 'mismatch' | 'no_account' | 'unreachable';
     /** true: the service accepts its factory password. null: not known (not checked). */
     factoryDefault: boolean | null;
 }
@@ -142,7 +182,10 @@ export async function passwordStatus(service: ServiceName, deps: PasswordDeps = 
     const r = await deps.probe(service, cred);
     // On a mismatch the factory password is not tried: a second failed sign-in would use up
     // Calibre-Web's login limit, and the repair comes first anyway.
-    if (r !== 'ok') return { service, state: r === 'rejected' ? 'mismatch' : 'unreachable', factoryDefault: null };
+    if (r !== 'ok') {
+        const state = r === 'rejected' ? 'mismatch' : r === 'absent' ? 'no_account' : 'unreachable';
+        return { service, state, factoryDefault: null };
+    }
     if (cred.username.toLowerCase() === factory.username.toLowerCase()) {
         return { service, state: 'ok', factoryDefault: cred.password === factory.password };
     }
@@ -192,6 +235,7 @@ export async function changePassword(
     return exclusive(service, async () => {
         const now = await deps.probe(service, cred);
         if (now === 'rejected') throw new PasswordError('mismatch', `${service} rejects the stored password`);
+        if (now === 'absent') throw new PasswordError('no_account', `${service} has no admin account`);
         if (now === 'unreachable') throw new PasswordError('unreachable', `${service} does not respond`);
         const next = { username: cred.username, password: newPassword };
         return apply(service, next, () => setCredential(service, next), deps);

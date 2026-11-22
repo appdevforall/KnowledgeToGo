@@ -30,6 +30,7 @@ function fakeService(initial: Record<string, string>, opts: { setFails?: boolean
         probe: async (_s: Svc, c) => {
             calls.push(`probe:${c.username}:${c.password}`);
             if (opts.down) return 'unreachable';
+            if (!(c.username in accounts)) return 'absent';   // the account is not present
             return accounts[c.username] === c.password ? 'ok' : 'rejected';
         },
         setPassword: async (_s: Svc, u, p) => {
@@ -75,6 +76,22 @@ test('status: service down', async () => {
     resetStore();
     const f = fakeService({}, { down: true });
     assert.equal((await pw.passwordStatus('forgejo', f.deps)).state, 'unreachable');
+});
+
+test('status: admin account not present -> no_account, not mismatch', async () => {
+    resetStore();
+    const f = fakeService({ someoneElse: 'x' });
+    assert.deepEqual(await pw.passwordStatus('forgejo', f.deps),
+        { service: 'forgejo', state: 'no_account', factoryDefault: null });
+});
+
+test('change: admin account not present -> no_account, nothing set', async () => {
+    resetStore();
+    const f = fakeService({});
+    await assert.rejects(pw.changePassword('calibre', 'K2go-Test-1', f.deps),
+        (e: unknown) => e instanceof pw.PasswordError && e.code === 'no_account');
+    assert.equal(f.calls.filter((c) => c.startsWith('set:')).length, 0);
+    assert.equal(pw.httpStatusFor('no_account'), 409);
 });
 
 test('change: stored copy first, then set, then save, then the new one signs in', async () => {
