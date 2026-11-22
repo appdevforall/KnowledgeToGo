@@ -17,6 +17,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -111,7 +112,7 @@ public final class AuthNoticeController {
             LinearLayout row = new LinearLayout(ctx);
             row.setOrientation(LinearLayout.HORIZONTAL);
             for (int j = i; j < i + 2; j++) {
-                View cell = j < services.size() ? serviceItem(ctx, services.get(j)) : new View(ctx);
+                View cell = j < services.size() ? serviceItem(ctx, services.get(j)) : new Space(ctx);   // Space measures 0 high; a View takes all the height it is offered
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
                 if (j > i) lp.setMarginStart(gap);
                 row.addView(cell, lp);
