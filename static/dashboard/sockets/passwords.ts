@@ -7,6 +7,7 @@
 // one signs in (reported as `verified`). If the process dies between the set and the save, the next
 // status check reports 'mismatch' and the user repairs it in Settings > Authentication.
 import { execFile } from 'child_process';
+import * as fs from 'fs';
 import {
     ServiceName, Credential, getCredential, setCredential, clearCredential, factoryCredential,
 } from './credentials';
@@ -15,14 +16,33 @@ import { login as forgejoLogin, ForgejoAuthError } from './forgejo.session';
 import { forgejoStatus } from './forgejo.status';
 import { verifyCalibreCredentials } from './books.query';
 
-/** One rule for the three services: Calibre-Web's default policy, the strictest of them
- *  (Forgejo needs 8 characters, Kolibri has no rule). A password that passes signs in everywhere. */
-export function isStrongPassword(pw: string): boolean {
-    return pw.length >= 8
-        && /\p{Ll}/u.test(pw)
-        && /\p{Lu}/u.test(pw)
-        && /[0-9]/.test(pw)
-        && /[^\p{L}\s0-9]/u.test(pw);
+/** The shortest admin password K2Go takes. Only the length counts, no mix of character kinds
+ *  (NIST SP 800-63B). Calibre-Web's own policy does not apply (the hash goes to its database, see
+ *  CALIBRE_SET) and Kolibri has no rule. Forgejo can ask for more (minPasswordLength). */
+export const MIN_PASSWORD_LENGTH = 6;
+const FORGEJO_INI = '/etc/forgejo/app.ini';
+
+/** Forgejo's own minimum, `[security] MIN_PASSWORD_LENGTH` (default 8): its admin tool refuses a
+ *  shorter password. */
+export function forgejoMinLength(ini: string): number {
+    const m = /^\s*MIN_PASSWORD_LENGTH\s*=\s*(\d+)/m.exec(ini);
+    return m ? Number(m[1]) : 8;
+}
+
+/** The minimum length for one service: K2Go's minimum, or more when the service asks for more. The
+ *  app gets it in the status, so the rule has one source. */
+export function minPasswordLength(
+    service: ServiceName, readIni: () => string = () => fs.readFileSync(FORGEJO_INI, 'utf8'),
+): number {
+    if (service !== 'forgejo') return MIN_PASSWORD_LENGTH;
+    let own = 8;
+    try { own = forgejoMinLength(readIni()); } catch { /* no file: Forgejo's default */ }
+    return Math.max(MIN_PASSWORD_LENGTH, own);
+}
+
+/** Characters, not UTF-16 units: an emoji is one. */
+export function passwordFits(service: ServiceName, pw: string): boolean {
+    return [...pw].length >= minPasswordLength(service);
 }
 
 /** 'absent': the service rejects the sign-in because the admin account is not present (never created,
@@ -169,24 +189,27 @@ export interface PasswordStatus {
     state: 'ok' | 'mismatch' | 'no_account' | 'unreachable';
     /** true: the service accepts its factory password. null: not known (not checked). */
     factoryDefault: boolean | null;
+    /** The shortest new password this service takes (minPasswordLength). */
+    minLength: number;
 }
 
 export async function passwordStatus(service: ServiceName, deps: PasswordDeps = DEFAULT_DEPS): Promise<PasswordStatus> {
     const cred = getCredential(service);
     const factory = factoryCredential(service);
+    const minLength = minPasswordLength(service);
     const r = await deps.probe(service, cred);
     // On a mismatch the factory password is not tried: a second failed sign-in would use up
     // Calibre-Web's login limit, and the repair comes first anyway.
     if (r !== 'ok') {
         const state = r === 'rejected' ? 'mismatch' : r === 'absent' ? 'no_account' : 'unreachable';
-        return { service, state, factoryDefault: null };
+        return { service, state, factoryDefault: null, minLength };
     }
     if (cred.username.toLowerCase() === factory.username.toLowerCase()) {
-        return { service, state: 'ok', factoryDefault: cred.password === factory.password };
+        return { service, state: 'ok', factoryDefault: cred.password === factory.password, minLength };
     }
     // The stored copy is another account: the factory account can still take the public password.
     const d = await deps.probe(service, factory);
-    return { service, state: 'ok', factoryDefault: d === 'ok' ? true : d === 'rejected' ? false : null };
+    return { service, state: 'ok', factoryDefault: d === 'ok' ? true : d === 'rejected' ? false : null, minLength };
 }
 
 // One change per service at a time. In memory only: a restart clears it with the process.
@@ -224,7 +247,7 @@ async function apply(
 export async function changePassword(
     service: ServiceName, newPassword: string, deps: PasswordDeps = DEFAULT_DEPS,
 ): Promise<boolean> {
-    if (!isStrongPassword(newPassword)) throw new PasswordError('weak_password', 'password too weak');
+    if (!passwordFits(service, newPassword)) throw new PasswordError('weak_password', 'password too short');
     const cred = getCredential(service);
     notEnv(cred, service);
     return exclusive(service, async () => {

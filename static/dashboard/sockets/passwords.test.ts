@@ -46,29 +46,32 @@ function resetStore(): void {
     fs.rmSync(process.env.K2GO_CREDENTIALS_FILE as string, { force: true });
 }
 
-test('password rule: the Calibre-Web policy', () => {
-    assert.equal(pw.isStrongPassword('K2go-Test-1'), true);
-    assert.equal(pw.isStrongPassword('Ñandú-2026'), true);
-    assert.equal(pw.isStrongPassword('changeme'), false);
-    assert.equal(pw.isStrongPassword('K2go-T1'), false);     // 7 characters
-    assert.equal(pw.isStrongPassword('k2go-test-1'), false); // no upper case
-    assert.equal(pw.isStrongPassword('K2GO-TEST-1'), false); // no lower case
-    assert.equal(pw.isStrongPassword('Kgo-Test-xy'), false); // no digit
-    assert.equal(pw.isStrongPassword('K2goTest12'), false);  // no special character
+test('password rule: only the length counts', () => {
+    assert.equal(pw.passwordFits('kolibri', 'perros'), true);    // 6 characters, no other rule
+    assert.equal(pw.passwordFits('calibre', 'perro'), false);    // 5 characters
+    assert.equal(pw.passwordFits('kolibri', '\u00d1and\u00fas'), true);    // accented letters count once
+    assert.equal(pw.minPasswordLength('calibre'), pw.MIN_PASSWORD_LENGTH);
+});
+
+test('password rule: Forgejo asks for its own minimum', () => {
+    assert.equal(pw.forgejoMinLength('[security]\nINSTALL_LOCK = true\n'), 8);   // Forgejo default
+    assert.equal(pw.forgejoMinLength('[security]\nMIN_PASSWORD_LENGTH = 10\n'), 10);
+    assert.equal(pw.minPasswordLength('forgejo', () => 'MIN_PASSWORD_LENGTH = 4'), pw.MIN_PASSWORD_LENGTH);
+    assert.equal(pw.minPasswordLength('forgejo', () => { throw new Error('no file'); }), 8);
 });
 
 test('status: factory default in use', async () => {
     resetStore();
     const f = fakeService({ Admin: 'changeme' });
     assert.deepEqual(await pw.passwordStatus('kolibri', f.deps),
-        { service: 'kolibri', state: 'ok', factoryDefault: true });
+        { service: 'kolibri', state: 'ok', factoryDefault: true, minLength: 6 });
 });
 
 test('status: changed in the service only -> mismatch, with one sign-in attempt', async () => {
     resetStore();
     const f = fakeService({ Admin: 'Other-pass-1' });
     assert.deepEqual(await pw.passwordStatus('calibre', f.deps),
-        { service: 'calibre', state: 'mismatch', factoryDefault: null });
+        { service: 'calibre', state: 'mismatch', factoryDefault: null, minLength: 6 });
     assert.equal(f.calls.length, 1);
 });
 
@@ -82,7 +85,7 @@ test('status: admin account not present -> no_account, not mismatch', async () =
     resetStore();
     const f = fakeService({ someoneElse: 'x' });
     assert.deepEqual(await pw.passwordStatus('forgejo', f.deps),
-        { service: 'forgejo', state: 'no_account', factoryDefault: null });
+        { service: 'forgejo', state: 'no_account', factoryDefault: null, minLength: 8 });
 });
 
 test('change: admin account not present -> no_account, nothing set', async () => {
@@ -101,13 +104,13 @@ test('change: stored copy first, then set, then save, then the new one signs in'
     assert.deepEqual(f.calls, ['probe:Admin:changeme', 'set:Admin:K2go-Test-1', 'probe:Admin:K2go-Test-1']);
     assert.equal(cred.getCredential('kolibri').password, 'K2go-Test-1');
     assert.deepEqual(await pw.passwordStatus('kolibri', f.deps),
-        { service: 'kolibri', state: 'ok', factoryDefault: false });
+        { service: 'kolibri', state: 'ok', factoryDefault: false, minLength: 6 });
 });
 
 test('change: a weak password never reaches the service', async () => {
     resetStore();
     const f = fakeService({ Admin: 'changeme' });
-    await assert.rejects(pw.changePassword('kolibri', 'changeme2', f.deps), { code: 'weak_password' });
+    await assert.rejects(pw.changePassword('kolibri', 'perro', f.deps), { code: 'weak_password' });
     assert.equal(f.calls.length, 0);
 });
 
