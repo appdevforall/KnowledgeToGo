@@ -1700,6 +1700,7 @@
     <string name="k2go_auth_notice_factory_msg">Zavod admin parolu hələ də burada işləyir: %1$s. Eyni Wi-Fi və ya hotspotda olan hər kəs daxil olub kitabxananızı dəyişə bilər. Onu Ayarlar, Kimlik doğrulama bölməsində dəyişin.</string>
     <string name="k2go_auth_chip_no_account">Admin hesabı yoxdur</string>
     <string name="k2go_auth_pw_state_no_account">Admin hesabı bu xidmətdə mövcud deyil.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) üçün admin hesabı yoxdur.</string>
     <string name="k2go_auth_notice_open">Kimlik doğrulamanı aç</string>
     <string name="k2go_auth_notice_close">Bağla</string>
     <string name="k2go_auth_notice_never">Bir daha göstərmə</string>

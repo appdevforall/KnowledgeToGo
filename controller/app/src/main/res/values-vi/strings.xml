@@ -1680,6 +1680,7 @@
     <string name="k2go_auth_notice_factory_msg">Mật khẩu quản trị mặc định vẫn dùng được trong: %1$s. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập và thay đổi thư viện của bạn. Hãy đổi mật khẩu trong Cài đặt, Xác thực.</string>
     <string name="k2go_auth_chip_no_account">Không có tài khoản quản trị</string>
     <string name="k2go_auth_pw_state_no_account">Tài khoản quản trị không có trong dịch vụ này.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) không có tài khoản quản trị.</string>
     <string name="k2go_auth_notice_open">Mở Xác thực</string>
     <string name="k2go_auth_notice_close">Đóng</string>
     <string name="k2go_auth_notice_never">Không hiển thị lại</string>

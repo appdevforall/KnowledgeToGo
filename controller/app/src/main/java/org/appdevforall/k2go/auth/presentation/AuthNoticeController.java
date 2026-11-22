@@ -21,6 +21,7 @@ import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.auth.data.FactoryReminderStore;
 import org.appdevforall.k2go.auth.data.PasswordRepositoryImpl;
 import org.appdevforall.k2go.auth.domain.AuthNotice;
+import org.appdevforall.k2go.auth.domain.AuthServices;
 import org.appdevforall.k2go.auth.domain.PasswordRepository;
 import org.appdevforall.k2go.auth.domain.PasswordState;
 import org.appdevforall.k2go.system.data.PlatformEvidence;
@@ -33,16 +34,6 @@ import java.util.List;
 public final class AuthNoticeController {
     private AuthNoticeController() {}
 
-    private static final String[] SERVICES = {"calibre", "kolibri", "forgejo"};
-
-    /** Product names: proper names, the same in every language. */
-    private static String productName(String service) {
-        switch (service) {
-            case "calibre": return "Calibre-Web";
-            case "kolibri": return "Kolibri";
-            default: return "Forgejo";
-        }
-    }
 
     /** The Home probe endpoint of each service: the key of PlatformEvidence. */
     private static String endpoint(String service) {
@@ -58,7 +49,7 @@ public final class AuthNoticeController {
      */
     public static void check(@NonNull Activity act, @NonNull Runnable openAuthentication) {
         final List<String> asked = new ArrayList<>();
-        for (String s : SERVICES) {
+        for (String s : AuthServices.ALL) {
             if (PlatformEvidence.last(endpoint(s)) != PlatformPresence.Evidence.ABSENT) asked.add(s);
         }
         if (asked.isEmpty()) return;
@@ -84,7 +75,7 @@ public final class AuthNoticeController {
     private static void show(Activity act, AuthNotice notice, Runnable openAuthentication) {
         if (notice.kind == AuthNotice.Kind.NONE) return;
         List<String> names = new ArrayList<>();
-        for (String s : notice.services) names.add(productName(s));
+        for (String s : notice.services) names.add(AuthServices.productName(s));
         String list = TextUtils.join(", ", names);
         ContextThemeWrapper ctx = new ContextThemeWrapper(act, R.style.Theme_K2Go);
         if (notice.kind == AuthNotice.Kind.MISMATCH) {

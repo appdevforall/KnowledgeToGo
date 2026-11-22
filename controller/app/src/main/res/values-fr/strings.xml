@@ -1767,6 +1767,7 @@
     <string name="k2go_auth_notice_factory_msg">Le mot de passe administrateur d\'usine fonctionne encore dans : %1$s. Toute personne sur le même Wi-Fi ou point d\'accès peut se connecter et modifier votre bibliothèque. Changez-le dans Paramètres, Authentification.</string>
     <string name="k2go_auth_chip_no_account">Aucun compte administrateur</string>
     <string name="k2go_auth_pw_state_no_account">Le compte administrateur n\'est pas présent dans ce service.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) n\'a pas de compte administrateur.</string>
     <string name="k2go_auth_notice_open">Ouvrir Authentification</string>
     <string name="k2go_auth_notice_close">Fermer</string>
     <string name="k2go_auth_notice_never">Ne plus afficher</string>

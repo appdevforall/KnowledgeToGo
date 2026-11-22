@@ -38,6 +38,13 @@ public class AuthNoticeTest {
         assertEquals(AuthNotice.Kind.NONE, n.kind);
     }
 
+    @Test public void onlyOkOrMismatchHasAnAccount() {
+        assertEquals(true, new PasswordState("calibre", PasswordState.Sync.OK, true).hasAccount());
+        assertEquals(true, new PasswordState("calibre", PasswordState.Sync.MISMATCH, null).hasAccount());
+        assertEquals(false, new PasswordState("forgejo", PasswordState.Sync.NO_ACCOUNT, null).hasAccount());
+        assertEquals(false, new PasswordState("kolibri", PasswordState.Sync.UNREACHABLE, null).hasAccount());
+    }
+
     @Test public void noAdminAccountShowsNothing() {
         AuthNotice n = AuthNotice.decide(Arrays.asList(
                 new PasswordState("forgejo", PasswordState.Sync.NO_ACCOUNT, null)), false);

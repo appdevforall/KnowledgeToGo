@@ -136,6 +136,8 @@ public final class ServicePasswordSection {
             boolean noAccount = s != null && s.sync == PasswordState.Sync.NO_ACCOUNT;
             repair.setVisibility(mismatch ? View.VISIBLE : View.GONE);
             enable(change, !ui.busy && reachable && !mismatch && !noAccount);
+            enable(newPw, !noAccount);
+            enable(confirmPw, !noAccount);
             enable(repairSave, !ui.busy && user.getTag() != null);
             enable(reset, !ui.busy && reachable && !noAccount);
             renderResult(ctx, result, ui);

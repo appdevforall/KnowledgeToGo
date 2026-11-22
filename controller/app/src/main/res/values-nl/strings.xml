@@ -1680,6 +1680,7 @@
     <string name="k2go_auth_notice_factory_msg">Het fabrieksbeheerderswachtwoord werkt nog in: %1$s. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden en je bibliotheek wijzigen. Wijzig het in Instellingen, Verificatie.</string>
     <string name="k2go_auth_chip_no_account">Geen beheerdersaccount</string>
     <string name="k2go_auth_pw_state_no_account">Het beheerdersaccount is niet aanwezig in deze dienst.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) heeft geen beheerdersaccount.</string>
     <string name="k2go_auth_notice_open">Verificatie openen</string>
     <string name="k2go_auth_notice_close">Sluiten</string>
     <string name="k2go_auth_notice_never">Niet meer tonen</string>

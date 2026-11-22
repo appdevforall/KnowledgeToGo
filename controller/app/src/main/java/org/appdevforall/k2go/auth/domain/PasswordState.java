@@ -28,4 +28,9 @@ public final class PasswordState {
     public boolean usesFactoryPassword() {
         return sync == Sync.OK && Boolean.TRUE.equals(factoryDefault);
     }
+
+    /** The service has an admin account that K2Go can manage (its password can be changed or repaired). */
+    public boolean hasAccount() {
+        return sync == Sync.OK || sync == Sync.MISMATCH;
+    }
 }

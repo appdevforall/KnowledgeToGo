@@ -1693,6 +1693,7 @@
     <string name="k2go_auth_notice_factory_msg">Фабричка администраторска лозинка и даље ради у: %1$s. Свако на истој Wi-Fi мрежи или хотспоту може да се пријави и промени вашу библиотеку. Промените је у Подешавања, Потврда идентитета.</string>
     <string name="k2go_auth_chip_no_account">Нема администраторског налога</string>
     <string name="k2go_auth_pw_state_no_account">Администраторски налог не постоји у овој услузи.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) нема администраторски налог.</string>
     <string name="k2go_auth_notice_open">Отвори Потврду идентитета</string>
     <string name="k2go_auth_notice_close">Затвори</string>
     <string name="k2go_auth_notice_never">Не приказуј поново</string>

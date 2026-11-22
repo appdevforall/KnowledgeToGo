@@ -1882,6 +1882,8 @@
     <string name="k2go_auth_chip_no_account">No admin account</string>
     <!-- Settings > Authentication > a service: state line when the admin account is not present (never created, or deleted). -->
     <string name="k2go_auth_pw_state_no_account">The admin account is not present in this service.</string>
+    <!-- Settings > Authentication list: message when the user taps a service that has no admin account. %1$s = screen name, for example "Host code"; %2$s = product, for example "Forgejo". -->
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) has no admin account.</string>
     <string name="k2go_auth_notice_open">Open Authentication</string>
     <string name="k2go_auth_notice_close">Close</string>
     <string name="k2go_auth_notice_never">Don\'t show again</string>

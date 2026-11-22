@@ -1690,6 +1690,7 @@
     <string name="k2go_auth_notice_factory_msg">Fabryczne hasło administratora nadal działa w: %1$s. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
     <string name="k2go_auth_chip_no_account">Brak konta administratora</string>
     <string name="k2go_auth_pw_state_no_account">W tej usłudze nie ma konta administratora.</string>
+    <string name="k2go_auth_no_account_snack">%1$s (%2$s) nie ma konta administratora.</string>
     <string name="k2go_auth_notice_open">Otwórz Uwierzytelnianie</string>
     <string name="k2go_auth_notice_close">Zamknij</string>
     <string name="k2go_auth_notice_never">Nie pokazuj ponownie</string>

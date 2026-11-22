@@ -470,15 +470,36 @@ public class SettingsSubFragment extends Fragment {
     //      List -> per-service screen (K2GO-552: auth.presentation.ServicePasswordSection). ----
     private void buildAuthentication(Context ctx, LinearLayout list) {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_hint));
-        authServiceRow(ctx, list, "calibre", getString(R.string.k2go_auth_svc_books), "Calibre-Web");
-        authServiceRow(ctx, list, "kolibri", getString(R.string.k2go_auth_svc_courses), "Kolibri");
-        authServiceRow(ctx, list, "forgejo", getString(R.string.k2go_card_forgejo), "Forgejo");   // K2GO-417
-        factoryReminderRow(ctx, list);
+        // K2GO-552: when no service has an admin account, the factory reminder has nothing to remind
+        // about, so its switch locks. Each row reports once; the lock reads only these live answers.
+        final Runnable[] lockReminder = {null};
+        final java.util.List<String> services = org.appdevforall.k2go.auth.domain.AuthServices.ALL;
+        final int[] pending = {services.size()};
+        final boolean[] anyAccount = {false};
+        final java.util.function.Consumer<Boolean> report = has -> {
+            if (has) anyAccount[0] = true;
+            if (--pending[0] == 0 && !anyAccount[0] && lockReminder[0] != null) lockReminder[0].run();
+        };
+        for (String id : services) {
+            authServiceRow(ctx, list, id, getString(authScreenName(id)),
+                    org.appdevforall.k2go.auth.domain.AuthServices.productName(id), report);
+        }
+        lockReminder[0] = factoryReminderRow(ctx, list);
     }
 
     /** K2GO-552: turns the start-up "factory password in use" reminder back on (or off). Turning it
      *  off at start-up asks for a confirmation first (AuthNoticeController). */
-    private void factoryReminderRow(Context ctx, LinearLayout list) {
+    /** The screen name of a service in Settings > Authentication (K2GO-417 added Forgejo). */
+    private static int authScreenName(String id) {
+        switch (id) {
+            case "calibre": return R.string.k2go_auth_svc_books;
+            case "kolibri": return R.string.k2go_auth_svc_courses;
+            default: return R.string.k2go_card_forgejo;
+        }
+    }
+
+    /** Returns the lock: it shows the switch off and disabled without changing the stored choice. */
+    private Runnable factoryReminderRow(Context ctx, LinearLayout list) {
         final org.appdevforall.k2go.auth.data.FactoryReminderStore store =
                 new org.appdevforall.k2go.auth.data.FactoryReminderStore(ctx);
         LinearLayout row = new LinearLayout(ctx);
@@ -507,11 +528,19 @@ public class SettingsSubFragment extends Fragment {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.topMargin = SettingsUi.dp(ctx, 16);
         list.addView(row, lp);
+        return () -> {
+            reverting[0] = true;
+            sw.setChecked(false);
+            reverting[0] = false;
+            sw.setEnabled(false);
+            row.setAlpha(0.5f);
+        };
     }
 
     /** A navigable row per service with a state badge (Default / Custom / Not installed). A service
      *  that isn't reachable is dimmed but stays tappable so the sign-in can be pre-set. */
-    private void authServiceRow(Context ctx, LinearLayout list, String service, String name, String platform) {
+    private void authServiceRow(Context ctx, LinearLayout list, String service, String name, String platform,
+                                java.util.function.Consumer<Boolean> hasAccount) {
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -550,6 +579,7 @@ public class SettingsSubFragment extends Fragment {
             row.setAlpha(reachable ? 1f : 0.5f);
             if (!reachable) {
                 setBadge(badge, getString(R.string.k2go_auth_chip_notinstalled), R.color.k2go_muted);
+                hasAccount.accept(false);
                 return;
             }
             // K2GO-552: the badge comes from a live sign-in, so a password changed inside the service shows.
@@ -557,10 +587,15 @@ public class SettingsSubFragment extends Fragment {
                     new org.appdevforall.k2go.auth.domain.PasswordRepository.Callback<org.appdevforall.k2go.auth.domain.PasswordState>() {
                 @Override public void onResult(org.appdevforall.k2go.auth.domain.PasswordState st) {
                     if (!isAdded()) return;
+                    hasAccount.accept(st.hasAccount());
                     if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.MISMATCH) {
                         setBadge(badge, getString(R.string.k2go_auth_chip_mismatch), R.color.k2go_clay);
                     } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.NO_ACCOUNT) {
-                        row.setAlpha(0.5f);   // K2GO-552: no admin account, nothing to manage
+                        // K2GO-552: no admin account, nothing to manage: the row says so and does not open.
+                        row.setAlpha(0.5f);
+                        chev.setVisibility(View.GONE);
+                        row.setOnClickListener(v -> org.appdevforall.k2go.util.Snackbars.make(v,
+                                getString(R.string.k2go_auth_no_account_snack, name, platform)).show());
                         setBadge(badge, getString(R.string.k2go_auth_chip_no_account), R.color.k2go_muted);
                     } else if (st.usesFactoryPassword()) {
                         setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
@@ -570,6 +605,7 @@ public class SettingsSubFragment extends Fragment {
                 }
                 @Override public void onFailure(org.appdevforall.k2go.auth.domain.PasswordRepository.Failure f) {
                     /* leave the badge hidden on a load error */
+                    if (isAdded()) hasAccount.accept(true);   // unknown: never lock the reminder on a guess
                 }
             });
         });
