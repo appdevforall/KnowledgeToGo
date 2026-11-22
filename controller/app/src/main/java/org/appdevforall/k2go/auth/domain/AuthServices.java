@@ -20,6 +20,11 @@ public final class AuthServices {
     public static final List<String> ALL =
             Collections.unmodifiableList(Arrays.asList("calibre", "kolibri", "forgejo"));
 
+    /** The page of the service on the box and the key of its Home probe ("/books/" for Calibre-Web). */
+    public static String homeEndpoint(String id) {
+        return "calibre".equals(id) ? "books" : id;
+    }
+
     /** The product name: a proper name, the same in every language. */
     public static String productName(String id) {
         switch (id) {

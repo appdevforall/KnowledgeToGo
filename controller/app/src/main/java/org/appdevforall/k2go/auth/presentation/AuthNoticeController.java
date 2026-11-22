@@ -35,11 +35,6 @@ public final class AuthNoticeController {
     private AuthNoticeController() {}
 
 
-    /** The Home probe endpoint of each service: the key of PlatformEvidence. */
-    private static String endpoint(String service) {
-        return "calibre".equals(service) ? "books" : service;
-    }
-
     /**
      * Checks the services and shows at most one notice. Call it when Home turns "Ready"
      * (LibraryActivity.onLibraryReady): the services answered their Home probes by then, so one
@@ -50,7 +45,7 @@ public final class AuthNoticeController {
     public static void check(@NonNull Activity act, @NonNull Runnable openAuthentication) {
         final List<String> asked = new ArrayList<>();
         for (String s : AuthServices.ALL) {
-            if (PlatformEvidence.last(endpoint(s)) != PlatformPresence.Evidence.ABSENT) asked.add(s);
+            if (PlatformEvidence.last(AuthServices.homeEndpoint(s)) != PlatformPresence.Evidence.ABSENT) asked.add(s);
         }
         if (asked.isEmpty()) return;
         final PasswordRepository repo = new PasswordRepositoryImpl();
