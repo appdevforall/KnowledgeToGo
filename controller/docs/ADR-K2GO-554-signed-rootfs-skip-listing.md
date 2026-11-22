@@ -320,7 +320,8 @@ add more traffic. On 2026-11-20 a OnePlus 7T download of
 which exists only for BitTorrent: the published meta4 still carries the torrent
 metaurl.
 
-- C1. The rootfs download is HTTP only. Each measure alone stops BitTorrent:
+- C1. The rootfs download is HTTP only. Two measures; each one is meant to stop BitTorrent alone (only the
+  metaurl strip was measured on a device, 2026-11-20):
   - The app (`Aria2Manager`) gives aria2 a local copy of the meta4 without the
     `<metaurl>` elements (`--metalink-file`, `MetalinkHttpOnly`, also with a namespace
     prefix). This is the local-meta4 handoff of A4/A6. It covers the meta4 files that
