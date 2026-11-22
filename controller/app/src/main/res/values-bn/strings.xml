@@ -1661,7 +1661,7 @@
     <string name="k2go_auth_pw_user">ব্যবহারকারী: %1$s</string>
     <string name="k2go_auth_pw_checking">সাইন-ইন যাচাই করা হচ্ছে...</string>
     <string name="k2go_auth_pw_state_ok">আপনার সেট করা পাসওয়ার্ড দিয়ে অ্যাপ সাইন ইন করে।</string>
-    <string name="k2go_auth_pw_state_factory">ফ্যাক্টরি পাসওয়ার্ড ব্যবহার হচ্ছে। একই Wi-Fi বা হটস্পটে থাকা যে কেউ সাইন ইন করতে পারে।</string>
+    <string name="k2go_auth_pw_state_factory">ফ্যাক্টরি পাসওয়ার্ড ব্যবহার হচ্ছে। একই Wi-Fi বা হটস্পটে থাকা যে কেউ অ্যাডমিন হিসেবে সাইন ইন করতে পারে।</string>
     <string name="k2go_auth_pw_state_mismatch">সার্ভিসে পাসওয়ার্ড বদলানো হয়েছে। আপনি এটি মেরামত না করা পর্যন্ত স্বয়ংক্রিয় সাইন-ইন কাজ করবে না।</string>
     <string name="k2go_auth_pw_state_unreachable">সার্ভিসটি চলছে না। পাসওয়ার্ড বদলাতে এটি চালু করুন।</string>
     <string name="k2go_auth_pw_change_title">পাসওয়ার্ড বদলান</string>
@@ -1671,6 +1671,7 @@
         <item quantity="one">কমপক্ষে %1$d অক্ষর</item>
         <item quantity="other">কমপক্ষে %1$d অক্ষর</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">অক্ষর ও সংখ্যা</string>
     <string name="k2go_auth_pw_rule_match">দুটি পাসওয়ার্ড মিলেছে</string>
     <string name="k2go_auth_pw_change_button">পাসওয়ার্ড বদলান</string>
     <string name="k2go_auth_pw_repair_title">মেরামত</string>

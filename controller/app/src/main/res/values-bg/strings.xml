@@ -1655,7 +1655,7 @@
     <string name="k2go_auth_pw_user">Потребител: %1$s</string>
     <string name="k2go_auth_pw_checking">Проверка на вписването...</string>
     <string name="k2go_auth_pw_state_ok">Приложението се вписва с паролата, която сте задали.</string>
-    <string name="k2go_auth_pw_state_factory">Използва се фабричната парола. Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише.</string>
+    <string name="k2go_auth_pw_state_factory">Използва се фабричната парола. Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише като администратор.</string>
     <string name="k2go_auth_pw_state_mismatch">Паролата е променена в услугата. Автоматичното вписване не работи, докато не я поправите.</string>
     <string name="k2go_auth_pw_state_unreachable">Услугата не работи. Стартирайте я, за да смените паролата.</string>
     <string name="k2go_auth_pw_change_title">Смяна на паролата</string>
@@ -1665,6 +1665,7 @@
         <item quantity="one">Поне %1$d знак</item>
         <item quantity="other">Поне %1$d знака</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Букви и цифри</string>
     <string name="k2go_auth_pw_rule_match">Двете пароли съвпадат</string>
     <string name="k2go_auth_pw_change_button">Смени паролата</string>
     <string name="k2go_auth_pw_repair_title">Поправяне</string>

@@ -1724,7 +1724,7 @@
     <string name="k2go_auth_pw_user">Пользователь: %1$s</string>
     <string name="k2go_auth_pw_checking">Проверка входа...</string>
     <string name="k2go_auth_pw_state_ok">Приложение входит с заданным вами паролем.</string>
-    <string name="k2go_auth_pw_state_factory">Используется заводской пароль. Любой в той же сети Wi-Fi или точке доступа может войти.</string>
+    <string name="k2go_auth_pw_state_factory">Используется заводской пароль. Любой в той же сети Wi-Fi или точке доступа может войти как администратор.</string>
     <string name="k2go_auth_pw_state_mismatch">Пароль был изменён в сервисе. Автоматический вход не работает, пока вы его не исправите.</string>
     <string name="k2go_auth_pw_state_unreachable">Сервис не запущен. Запустите его, чтобы изменить пароль.</string>
     <string name="k2go_auth_pw_change_title">Изменить пароль</string>
@@ -1736,6 +1736,7 @@
         <item quantity="many">Не менее %1$d символов</item>
         <item quantity="other">Не менее %1$d символа</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Буквы и цифры</string>
     <string name="k2go_auth_pw_rule_match">Оба пароля совпадают</string>
     <string name="k2go_auth_pw_change_button">Изменить пароль</string>
     <string name="k2go_auth_pw_repair_title">Исправить</string>

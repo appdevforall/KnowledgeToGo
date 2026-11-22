@@ -3,8 +3,8 @@
  * Name        : PasswordRule.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-552. The live checks under "Change password": only the length counts (the box
- *               sends the minimum per service in the status), and the two fields must be the same.
+ * Description : K2GO-552. The live checks under "Change password": the length (the box sends the
+ *               minimum per service in the status), a letter and a digit, and the same two fields.
  *               The box checks the length again; this only shows the user what is missing.
  * ============================================================================
  */
@@ -17,6 +17,20 @@ public final class PasswordRule {
      *  and the box decides. */
     public static boolean longEnough(String pw, int minLength) {
         return minLength <= 0 || (pw != null && pw.codePointCount(0, pw.length()) >= minLength);
+    }
+
+    /** At least one letter and one digit, in any script. */
+    public static boolean hasLetterAndDigit(String pw) {
+        if (pw == null) return false;
+        boolean letter = false;
+        boolean digit = false;
+        for (int i = 0; i < pw.length(); ) {
+            int c = pw.codePointAt(i);
+            letter |= Character.isLetter(c);
+            digit |= Character.isDigit(c);
+            i += Character.charCount(c);
+        }
+        return letter && digit;
     }
 
     /** Both fields typed and the same. */

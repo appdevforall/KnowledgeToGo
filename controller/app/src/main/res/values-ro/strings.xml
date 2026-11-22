@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Utilizator: %1$s</string>
     <string name="k2go_auth_pw_checking">Se verifică autentificarea...</string>
     <string name="k2go_auth_pw_state_ok">Aplicația se autentifică cu parola pe care ai setat-o.</string>
-    <string name="k2go_auth_pw_state_factory">Se folosește parola din fabrică. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica.</string>
+    <string name="k2go_auth_pw_state_factory">Se folosește parola din fabrică. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica drept administrator.</string>
     <string name="k2go_auth_pw_state_mismatch">Parola a fost schimbată în serviciu. Autentificarea automată nu funcționează până nu o repari.</string>
     <string name="k2go_auth_pw_state_unreachable">Serviciul nu rulează. Pornește-l pentru a schimba parola.</string>
     <string name="k2go_auth_pw_change_title">Schimbă parola</string>
@@ -1659,6 +1659,7 @@
         <item quantity="few">Cel puțin %1$d caractere</item>
         <item quantity="other">Cel puțin %1$d de caractere</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Litere și cifre</string>
     <string name="k2go_auth_pw_rule_match">Cele două parole coincid</string>
     <string name="k2go_auth_pw_change_button">Schimbă parola</string>
     <string name="k2go_auth_pw_repair_title">Reparare</string>

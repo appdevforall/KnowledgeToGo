@@ -49,8 +49,9 @@ public class PasswordRepositoryImplTest {
         assertNull(s.factoryDefault);
 
         s = PasswordRepositoryImpl.parseState("forgejo",
-                new JSONObject("{\"state\":\"ok\",\"factoryDefault\":false,\"minLength\":8}"));
+                new JSONObject("{\"state\":\"ok\",\"factoryDefault\":false,\"minLength\":8,\"letterAndDigit\":true}"));
         assertEquals(8, s.minLength);
+        assertEquals(true, s.letterAndDigit);
         assertEquals(0, PasswordRepositoryImpl.parseState("kolibri",
                 new JSONObject("{\"state\":\"ok\"}")).minLength);   // an older box: not known
     }

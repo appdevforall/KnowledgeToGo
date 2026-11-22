@@ -1724,7 +1724,7 @@
     <string name="k2go_auth_pw_user">Usuario: %1$s</string>
     <string name="k2go_auth_pw_checking">Comprobando el inicio de sesión...</string>
     <string name="k2go_auth_pw_state_ok">La app inicia sesión con la contraseña que configuraste.</string>
-    <string name="k2go_auth_pw_state_factory">Contraseña de fábrica en uso. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión.</string>
+    <string name="k2go_auth_pw_state_factory">Contraseña de fábrica en uso. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión como administrador.</string>
     <string name="k2go_auth_pw_state_mismatch">La contraseña se cambió en el servicio. El inicio de sesión automático no funciona hasta que la repares.</string>
     <string name="k2go_auth_pw_state_unreachable">El servicio no está en marcha. Inícialo para cambiar la contraseña.</string>
     <string name="k2go_auth_pw_change_title">Cambiar contraseña</string>
@@ -1735,6 +1735,7 @@
         <item quantity="many">Al menos %1$d caracteres</item>
         <item quantity="other">Al menos %1$d caracteres</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Letras y números</string>
     <string name="k2go_auth_pw_rule_match">Las dos contraseñas coinciden</string>
     <string name="k2go_auth_pw_change_button">Cambiar contraseña</string>
     <string name="k2go_auth_pw_repair_title">Reparar</string>

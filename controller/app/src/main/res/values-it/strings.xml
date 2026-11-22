@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Utente: %1$s</string>
     <string name="k2go_auth_pw_checking">Verifica dell\'accesso...</string>
     <string name="k2go_auth_pw_state_ok">L\'app accede con la password che hai impostato.</string>
-    <string name="k2go_auth_pw_state_factory">Password di fabbrica in uso. Chiunque sulla stessa rete Wi-Fi o hotspot può accedere.</string>
+    <string name="k2go_auth_pw_state_factory">Password di fabbrica in uso. Chiunque sulla stessa rete Wi-Fi o hotspot può accedere come amministratore.</string>
     <string name="k2go_auth_pw_state_mismatch">La password è stata cambiata nel servizio. L\'accesso automatico non funziona finché non la ripari.</string>
     <string name="k2go_auth_pw_state_unreachable">Il servizio non è in esecuzione. Avvialo per cambiare la password.</string>
     <string name="k2go_auth_pw_change_title">Cambia password</string>
@@ -1659,6 +1659,7 @@
         <item quantity="many">Almeno %1$d caratteri</item>
         <item quantity="other">Almeno %1$d caratteri</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Lettere e numeri</string>
     <string name="k2go_auth_pw_rule_match">Le due password coincidono</string>
     <string name="k2go_auth_pw_change_button">Cambia password</string>
     <string name="k2go_auth_pw_repair_title">Ripara</string>

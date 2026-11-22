@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Người dùng: %1$s</string>
     <string name="k2go_auth_pw_checking">Đang kiểm tra đăng nhập...</string>
     <string name="k2go_auth_pw_state_ok">Ứng dụng đăng nhập bằng mật khẩu bạn đã đặt.</string>
-    <string name="k2go_auth_pw_state_factory">Đang dùng mật khẩu mặc định. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập.</string>
+    <string name="k2go_auth_pw_state_factory">Đang dùng mật khẩu mặc định. Bất kỳ ai trên cùng mạng Wi-Fi hoặc điểm phát sóng đều có thể đăng nhập với quyền quản trị.</string>
     <string name="k2go_auth_pw_state_mismatch">Mật khẩu đã bị thay đổi trong dịch vụ. Đăng nhập tự động sẽ không hoạt động cho đến khi bạn sửa nó.</string>
     <string name="k2go_auth_pw_state_unreachable">Dịch vụ không chạy. Hãy khởi động dịch vụ để đổi mật khẩu.</string>
     <string name="k2go_auth_pw_change_title">Đổi mật khẩu</string>
@@ -1657,6 +1657,7 @@
     <plurals name="k2go_auth_pw_rule_length">
         <item quantity="other">Ít nhất %1$d ký tự</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Chữ và số</string>
     <string name="k2go_auth_pw_rule_match">Hai mật khẩu khớp nhau</string>
     <string name="k2go_auth_pw_change_button">Đổi mật khẩu</string>
     <string name="k2go_auth_pw_repair_title">Sửa</string>

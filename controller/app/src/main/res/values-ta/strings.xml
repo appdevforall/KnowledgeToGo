@@ -1668,7 +1668,7 @@
     <string name="k2go_auth_pw_user">பயனர்: %1$s</string>
     <string name="k2go_auth_pw_checking">உள்நுழைவைச் சரிபார்க்கிறது...</string>
     <string name="k2go_auth_pw_state_ok">நீங்கள் அமைத்த கடவுச்சொல்லுடன் செயலி உள்நுழைகிறது.</string>
-    <string name="k2go_auth_pw_state_factory">தொழிற்சாலை கடவுச்சொல் பயன்பாட்டில் உள்ளது. அதே Wi-Fi அல்லது ஹாட்ஸ்பாட்டில் உள்ள எவரும் உள்நுழையலாம்.</string>
+    <string name="k2go_auth_pw_state_factory">தொழிற்சாலை கடவுச்சொல் பயன்பாட்டில் உள்ளது. அதே Wi-Fi அல்லது ஹாட்ஸ்பாட்டில் உள்ள எவரும் நிர்வாகியாக உள்நுழையலாம்.</string>
     <string name="k2go_auth_pw_state_mismatch">சேவையில் கடவுச்சொல் மாற்றப்பட்டது. நீங்கள் அதைச் சரிசெய்யும் வரை தானியங்கு உள்நுழைவு வேலை செய்யாது.</string>
     <string name="k2go_auth_pw_state_unreachable">சேவை இயங்கவில்லை. கடவுச்சொல்லை மாற்ற அதைத் தொடங்கவும்.</string>
     <string name="k2go_auth_pw_change_title">கடவுச்சொல்லை மாற்று</string>
@@ -1678,6 +1678,7 @@
         <item quantity="one">குறைந்தது %1$d எழுத்து</item>
         <item quantity="other">குறைந்தது %1$d எழுத்துகள்</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">எழுத்துகள் மற்றும் எண்கள்</string>
     <string name="k2go_auth_pw_rule_match">இரண்டு கடவுச்சொற்களும் பொருந்துகின்றன</string>
     <string name="k2go_auth_pw_change_button">கடவுச்சொல்லை மாற்று</string>
     <string name="k2go_auth_pw_repair_title">சரிசெய்</string>

@@ -1649,7 +1649,7 @@
     <string name="k2go_auth_pw_user">用户：%1$s</string>
     <string name="k2go_auth_pw_checking">正在检查登录...</string>
     <string name="k2go_auth_pw_state_ok">应用使用你设置的密码登录。</string>
-    <string name="k2go_auth_pw_state_factory">正在使用出厂密码。同一 Wi-Fi 或热点上的任何人都能登录。</string>
+    <string name="k2go_auth_pw_state_factory">正在使用出厂密码。同一 Wi-Fi 或热点上的任何人都能以管理员身份登录。</string>
     <string name="k2go_auth_pw_state_mismatch">服务中的密码已被更改。在你修复之前，自动登录无法使用。</string>
     <string name="k2go_auth_pw_state_unreachable">服务未运行。请先启动服务，再更改密码。</string>
     <string name="k2go_auth_pw_change_title">更改密码</string>
@@ -1658,6 +1658,7 @@
     <plurals name="k2go_auth_pw_rule_length">
         <item quantity="other">至少 %1$d 个字符</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">字母和数字</string>
     <string name="k2go_auth_pw_rule_match">两次输入的密码一致</string>
     <string name="k2go_auth_pw_change_button">更改密码</string>
     <string name="k2go_auth_pw_repair_title">修复</string>

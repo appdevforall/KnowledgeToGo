@@ -1658,7 +1658,7 @@
     <string name="k2go_auth_pw_user">Bruker: %1$s</string>
     <string name="k2go_auth_pw_checking">Kontrollerer påloggingen...</string>
     <string name="k2go_auth_pw_state_ok">Appen logger på med passordet du har angitt.</string>
-    <string name="k2go_auth_pw_state_factory">Fabrikkpassord er i bruk. Alle på samme Wi-Fi eller hotspot kan logge på.</string>
+    <string name="k2go_auth_pw_state_factory">Fabrikkpassord er i bruk. Alle på samme Wi-Fi eller hotspot kan logge på som administrator.</string>
     <string name="k2go_auth_pw_state_mismatch">Passordet ble endret i tjenesten. Automatisk pålogging virker ikke før du reparerer det.</string>
     <string name="k2go_auth_pw_state_unreachable">Tjenesten kjører ikke. Start den for å endre passordet.</string>
     <string name="k2go_auth_pw_change_title">Endre passord</string>
@@ -1668,6 +1668,7 @@
         <item quantity="one">Minst %1$d tegn</item>
         <item quantity="other">Minst %1$d tegn</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Bokstaver og tall</string>
     <string name="k2go_auth_pw_rule_match">Begge passordene er like</string>
     <string name="k2go_auth_pw_change_button">Endre passord</string>
     <string name="k2go_auth_pw_repair_title">Reparer</string>

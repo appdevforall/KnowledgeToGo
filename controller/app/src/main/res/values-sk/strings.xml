@@ -1655,7 +1655,7 @@
     <string name="k2go_auth_pw_user">Používateľ: %1$s</string>
     <string name="k2go_auth_pw_checking">Kontroluje sa prihlásenie...</string>
     <string name="k2go_auth_pw_state_ok">Aplikácia sa prihlasuje heslom, ktoré ste nastavili.</string>
-    <string name="k2go_auth_pw_state_factory">Používa sa výrobné heslo. Ktokoľvek v rovnakej sieti Wi-Fi alebo hotspote sa môže prihlásiť.</string>
+    <string name="k2go_auth_pw_state_factory">Používa sa výrobné heslo. Ktokoľvek v rovnakej sieti Wi-Fi alebo hotspote sa môže prihlásiť ako správca.</string>
     <string name="k2go_auth_pw_state_mismatch">Heslo bolo zmenené v službe. Automatické prihlásenie nefunguje, kým ho neopravíte.</string>
     <string name="k2go_auth_pw_state_unreachable">Služba nebeží. Spustite ju, aby ste mohli zmeniť heslo.</string>
     <string name="k2go_auth_pw_change_title">Zmeniť heslo</string>
@@ -1667,6 +1667,7 @@
         <item quantity="many">Aspoň %1$d znaku</item>
         <item quantity="other">Aspoň %1$d znakov</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Písmená a číslice</string>
     <string name="k2go_auth_pw_rule_match">Obe heslá sa zhodujú</string>
     <string name="k2go_auth_pw_change_button">Zmeniť heslo</string>
     <string name="k2go_auth_pw_repair_title">Oprava</string>

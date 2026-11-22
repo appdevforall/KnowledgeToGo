@@ -1846,7 +1846,7 @@
     <string name="k2go_auth_pw_user">User: %1$s</string>
     <string name="k2go_auth_pw_checking">Checking the sign-in...</string>
     <string name="k2go_auth_pw_state_ok">The app signs in with the password you set.</string>
-    <string name="k2go_auth_pw_state_factory">Factory password in use. Anyone on the same Wi-Fi or hotspot can sign in.</string>
+    <string name="k2go_auth_pw_state_factory">Factory password in use. Anyone on the same Wi-Fi or hotspot can sign in as admin.</string>
     <string name="k2go_auth_pw_state_mismatch">The password was changed in the service. Automatic sign-in does not work until you repair it.</string>
     <string name="k2go_auth_pw_state_unreachable">The service is not running. Start it to change the password.</string>
     <string name="k2go_auth_pw_change_title">Change password</string>
@@ -1857,6 +1857,8 @@
         <item quantity="one">At least %1$d character</item>
         <item quantity="other">At least %1$d characters</item>
     </plurals>
+    <!-- Change password: live check, the new password has at least one letter and one digit. -->
+    <string name="k2go_auth_pw_rule_kinds">Letters and numbers</string>
     <!-- Change password: live check, the two password fields are the same. -->
     <string name="k2go_auth_pw_rule_match">Both passwords match</string>
     <string name="k2go_auth_pw_change_button">Change password</string>

@@ -1655,7 +1655,7 @@
     <string name="k2go_auth_pw_user">Χρήστης: %1$s</string>
     <string name="k2go_auth_pw_checking">Έλεγχος σύνδεσης...</string>
     <string name="k2go_auth_pw_state_ok">Η εφαρμογή συνδέεται με τον κωδικό που όρισες.</string>
-    <string name="k2go_auth_pw_state_factory">Χρησιμοποιείται ο εργοστασιακός κωδικός. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί.</string>
+    <string name="k2go_auth_pw_state_factory">Χρησιμοποιείται ο εργοστασιακός κωδικός. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί ως διαχειριστής.</string>
     <string name="k2go_auth_pw_state_mismatch">Ο κωδικός άλλαξε στην υπηρεσία. Η αυτόματη σύνδεση δεν λειτουργεί μέχρι να τον επιδιορθώσεις.</string>
     <string name="k2go_auth_pw_state_unreachable">Η υπηρεσία δεν εκτελείται. Ξεκίνησέ την για να αλλάξεις τον κωδικό.</string>
     <string name="k2go_auth_pw_change_title">Αλλαγή κωδικού</string>
@@ -1665,6 +1665,7 @@
         <item quantity="one">Τουλάχιστον %1$d χαρακτήρας</item>
         <item quantity="other">Τουλάχιστον %1$d χαρακτήρες</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Γράμματα και αριθμοί</string>
     <string name="k2go_auth_pw_rule_match">Οι δύο κωδικοί ταιριάζουν</string>
     <string name="k2go_auth_pw_change_button">Αλλαγή κωδικού</string>
     <string name="k2go_auth_pw_repair_title">Επιδιόρθωση</string>

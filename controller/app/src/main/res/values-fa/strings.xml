@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">کاربر: %1$s</string>
     <string name="k2go_auth_pw_checking">در حال بررسی ورود...</string>
     <string name="k2go_auth_pw_state_ok">برنامه با رمز عبوری که تنظیم کرده‌اید وارد می‌شود.</string>
-    <string name="k2go_auth_pw_state_factory">رمز عبور کارخانه در حال استفاده است. هر کسی در همان Wi-Fi یا هات‌اسپات می‌تواند وارد شود.</string>
+    <string name="k2go_auth_pw_state_factory">رمز عبور کارخانه در حال استفاده است. هر کسی در همان Wi-Fi یا هات‌اسپات می‌تواند به‌عنوان مدیر وارد شود.</string>
     <string name="k2go_auth_pw_state_mismatch">رمز عبور در سرویس تغییر کرده است. تا آن را ترمیم نکنید، ورود خودکار کار نمی‌کند.</string>
     <string name="k2go_auth_pw_state_unreachable">سرویس در حال اجرا نیست. برای تغییر رمز عبور آن را اجرا کنید.</string>
     <string name="k2go_auth_pw_change_title">تغییر رمز عبور</string>
@@ -1658,6 +1658,7 @@
         <item quantity="one">دست‌کم %1$d نویسه</item>
         <item quantity="other">دست‌کم %1$d نویسه</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">حروف و اعداد</string>
     <string name="k2go_auth_pw_rule_match">هر دو رمز عبور یکسان هستند</string>
     <string name="k2go_auth_pw_change_button">تغییر رمز عبور</string>
     <string name="k2go_auth_pw_repair_title">ترمیم</string>

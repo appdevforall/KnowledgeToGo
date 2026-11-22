@@ -1668,7 +1668,7 @@
     <string name="k2go_auth_pw_user">Olùmúlò: %1$s</string>
     <string name="k2go_auth_pw_checking">Ń ṣàyẹ̀wò ìwọlé...</string>
     <string name="k2go_auth_pw_state_ok">Áàpù náà ń wọlé pẹ̀lú ọ̀rọ̀ìgbaniwọlé tí o ṣètò.</string>
-    <string name="k2go_auth_pw_state_factory">Ọ̀rọ̀ìgbaniwọlé àtilẹ̀wá ni à ń lò. Ẹnikẹ́ni lórí Wi-Fi tàbí hotspot kan náà lè wọlé.</string>
+    <string name="k2go_auth_pw_state_factory">Ọ̀rọ̀ìgbaniwọlé àtilẹ̀wá ni à ń lò. Ẹnikẹ́ni lórí Wi-Fi tàbí hotspot kan náà lè wọlé gẹ́gẹ́ bí alábòójútó.</string>
     <string name="k2go_auth_pw_state_mismatch">Wọ́n ti yí ọ̀rọ̀ìgbaniwọlé padà nínú iṣẹ́ náà. Ìwọlé aládàáṣe kò ní ṣiṣẹ́ títí tí o fi tún un ṣe.</string>
     <string name="k2go_auth_pw_state_unreachable">Iṣẹ́ náà kò ṣiṣẹ́ lọ́wọ́. Bẹ̀rẹ̀ rẹ̀ láti yí ọ̀rọ̀ìgbaniwọlé padà.</string>
     <string name="k2go_auth_pw_change_title">Yí ọ̀rọ̀ìgbaniwọlé padà</string>
@@ -1677,6 +1677,7 @@
     <plurals name="k2go_auth_pw_rule_length">
         <item quantity="other">Ó kéré tán ohun kíkọ %1$d</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Lẹ́tà àti nọ́mbà</string>
     <string name="k2go_auth_pw_rule_match">Ọ̀rọ̀ìgbaniwọlé méjèèjì bá ara wọn mu</string>
     <string name="k2go_auth_pw_change_button">Yí ọ̀rọ̀ìgbaniwọlé padà</string>
     <string name="k2go_auth_pw_repair_title">Tún un ṣe</string>

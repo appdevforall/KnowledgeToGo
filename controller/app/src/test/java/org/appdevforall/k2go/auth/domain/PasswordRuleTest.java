@@ -14,13 +14,21 @@ public class PasswordRuleTest {
     }
 
     @Test public void countsCharactersNotUnits() {
-        assertTrue(PasswordRule.longEnough("Ñandús", 6));
-        assertTrue(PasswordRule.longEnough("🔑abcde", 6));   // a key emoji is one character
-        assertFalse(PasswordRule.longEnough("🔑abcd", 6));
+        assertTrue(PasswordRule.longEnough("\u00d1and\u00fas", 6));
+        assertTrue(PasswordRule.longEnough("\ud83d\udd11abcde", 6));   // a key emoji is one character
+        assertFalse(PasswordRule.longEnough("\ud83d\udd11abcd", 6));
     }
 
     @Test public void unknownMinimumPasses() {
         assertTrue(PasswordRule.longEnough("a", 0));
+    }
+
+    @Test public void needsALetterAndADigit() {
+        assertTrue(PasswordRule.hasLetterAndDigit("perro1"));
+        assertFalse(PasswordRule.hasLetterAndDigit("perros"));
+        assertFalse(PasswordRule.hasLetterAndDigit("123456"));
+        assertFalse(PasswordRule.hasLetterAndDigit("changeme"));   // the factory password
+        assertTrue(PasswordRule.hasLetterAndDigit("\u0645\u0664"));     // Arabic letter and Arabic-Indic digit
     }
 
     @Test public void bothFieldsMustBeTypedAndTheSame() {

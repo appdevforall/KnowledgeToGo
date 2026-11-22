@@ -1665,7 +1665,7 @@
     <string name="k2go_auth_pw_user">Naudotojas: %1$s</string>
     <string name="k2go_auth_pw_checking">Tikrinamas prisijungimas...</string>
     <string name="k2go_auth_pw_state_ok">Programa prisijungia jūsų nustatytu slaptažodžiu.</string>
-    <string name="k2go_auth_pw_state_factory">Naudojamas gamyklinis slaptažodis. Prisijungti gali bet kas tame pačiame Wi-Fi tinkle ar prieigos taške.</string>
+    <string name="k2go_auth_pw_state_factory">Naudojamas gamyklinis slaptažodis. Bet kas tame pačiame Wi-Fi tinkle ar prieigos taške gali prisijungti kaip administratorius.</string>
     <string name="k2go_auth_pw_state_mismatch">Slaptažodis buvo pakeistas paslaugoje. Automatinis prisijungimas neveiks, kol jo nepataisysite.</string>
     <string name="k2go_auth_pw_state_unreachable">Paslauga neveikia. Paleiskite ją, kad pakeistumėte slaptažodį.</string>
     <string name="k2go_auth_pw_change_title">Keisti slaptažodį</string>
@@ -1677,6 +1677,7 @@
         <item quantity="many">Bent %1$d simbolio</item>
         <item quantity="other">Bent %1$d simbolių</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Raidės ir skaičiai</string>
     <string name="k2go_auth_pw_rule_match">Abu slaptažodžiai sutampa</string>
     <string name="k2go_auth_pw_change_button">Keisti slaptažodį</string>
     <string name="k2go_auth_pw_repair_title">Pataisyti</string>

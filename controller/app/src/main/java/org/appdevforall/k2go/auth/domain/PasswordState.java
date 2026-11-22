@@ -18,18 +18,21 @@ public final class PasswordState {
     public final Sync sync;
     /** TRUE: the service accepts its factory password. null: not known. */
     public final Boolean factoryDefault;
-    /** The shortest new password the service takes, from the box. 0: not known. */
+    /** The rule for a new password, from the box: the shortest length (0: not known) and whether it
+     *  needs a letter and a digit. */
     public final int minLength;
+    public final boolean letterAndDigit;
 
     public PasswordState(String service, Sync sync, Boolean factoryDefault) {
-        this(service, sync, factoryDefault, 0);
+        this(service, sync, factoryDefault, 0, false);
     }
 
-    public PasswordState(String service, Sync sync, Boolean factoryDefault, int minLength) {
+    public PasswordState(String service, Sync sync, Boolean factoryDefault, int minLength, boolean letterAndDigit) {
         this.service = service;
         this.sync = sync;
         this.factoryDefault = factoryDefault;
         this.minLength = minLength;
+        this.letterAndDigit = letterAndDigit;
     }
 
     public boolean usesFactoryPassword() {

@@ -1735,7 +1735,7 @@
     <string name="k2go_auth_pw_user">Utilisateur : %1$s</string>
     <string name="k2go_auth_pw_checking">Vérification de la connexion...</string>
     <string name="k2go_auth_pw_state_ok">L\'app se connecte avec le mot de passe que vous avez défini.</string>
-    <string name="k2go_auth_pw_state_factory">Mot de passe d\'usine utilisé. Toute personne sur le même Wi-Fi ou point d\'accès peut se connecter.</string>
+    <string name="k2go_auth_pw_state_factory">Mot de passe d\'usine utilisé. Toute personne sur le même Wi-Fi ou point d\'accès peut se connecter en tant qu\'administrateur.</string>
     <string name="k2go_auth_pw_state_mismatch">Le mot de passe a été modifié dans le service. La connexion automatique ne fonctionne pas tant que vous ne l\'avez pas réparé.</string>
     <string name="k2go_auth_pw_state_unreachable">Le service n\'est pas démarré. Démarrez-le pour changer le mot de passe.</string>
     <string name="k2go_auth_pw_change_title">Changer le mot de passe</string>
@@ -1746,6 +1746,7 @@
         <item quantity="many">Au moins %1$d caractères</item>
         <item quantity="other">Au moins %1$d caractères</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Lettres et chiffres</string>
     <string name="k2go_auth_pw_rule_match">Les deux mots de passe correspondent</string>
     <string name="k2go_auth_pw_change_button">Changer le mot de passe</string>
     <string name="k2go_auth_pw_repair_title">Réparer</string>

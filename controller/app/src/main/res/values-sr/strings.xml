@@ -1661,7 +1661,7 @@
     <string name="k2go_auth_pw_user">Корисник: %1$s</string>
     <string name="k2go_auth_pw_checking">Провера пријаве...</string>
     <string name="k2go_auth_pw_state_ok">Апликација се пријављује лозинком коју сте поставили.</string>
-    <string name="k2go_auth_pw_state_factory">Користи се фабричка лозинка. Свако на истој Wi-Fi мрежи или хотспоту може да се пријави.</string>
+    <string name="k2go_auth_pw_state_factory">Користи се фабричка лозинка. Свако на истој Wi-Fi мрежи или хотспоту може да се пријави као администратор.</string>
     <string name="k2go_auth_pw_state_mismatch">Лозинка је промењена у услузи. Аутоматска пријава не ради док је не поправите.</string>
     <string name="k2go_auth_pw_state_unreachable">Услуга није покренута. Покрените је да бисте променили лозинку.</string>
     <string name="k2go_auth_pw_change_title">Промени лозинку</string>
@@ -1672,6 +1672,7 @@
         <item quantity="few">Најмање %1$d знака</item>
         <item quantity="other">Најмање %1$d знакова</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Слова и бројеви</string>
     <string name="k2go_auth_pw_rule_match">Обе лозинке се подударају</string>
     <string name="k2go_auth_pw_change_button">Промени лозинку</string>
     <string name="k2go_auth_pw_repair_title">Поправка</string>

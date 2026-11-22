@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Gebruiker: %1$s</string>
     <string name="k2go_auth_pw_checking">Aanmelding controleren...</string>
     <string name="k2go_auth_pw_state_ok">De app meldt zich aan met het wachtwoord dat je hebt ingesteld.</string>
-    <string name="k2go_auth_pw_state_factory">Fabriekswachtwoord in gebruik. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden.</string>
+    <string name="k2go_auth_pw_state_factory">Fabriekswachtwoord in gebruik. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden als beheerder.</string>
     <string name="k2go_auth_pw_state_mismatch">Het wachtwoord is in de dienst gewijzigd. Automatisch aanmelden werkt pas weer als je het herstelt.</string>
     <string name="k2go_auth_pw_state_unreachable">De dienst is niet actief. Start de dienst om het wachtwoord te wijzigen.</string>
     <string name="k2go_auth_pw_change_title">Wachtwoord wijzigen</string>
@@ -1658,6 +1658,7 @@
         <item quantity="one">Minstens %1$d teken</item>
         <item quantity="other">Minstens %1$d tekens</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Letters en cijfers</string>
     <string name="k2go_auth_pw_rule_match">Beide wachtwoorden komen overeen</string>
     <string name="k2go_auth_pw_change_button">Wachtwoord wijzigen</string>
     <string name="k2go_auth_pw_repair_title">Herstellen</string>

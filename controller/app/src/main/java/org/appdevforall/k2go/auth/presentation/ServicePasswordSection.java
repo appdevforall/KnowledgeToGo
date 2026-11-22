@@ -96,23 +96,32 @@ public final class ServicePasswordSection {
         final TextView ruleLength = K2GoText.label(ctx, "", R.color.k2go_muted);
         ruleLength.setVisibility(View.GONE);
         list.addView(ruleLength, top(ctx, 8));
+        final TextView ruleKinds = K2GoText.label(ctx, "", R.color.k2go_muted);
+        ruleKinds.setVisibility(View.GONE);
+        list.addView(ruleKinds, top(ctx, 4));
         final TextView ruleSame = K2GoText.label(ctx, "", R.color.k2go_muted);
         list.addView(ruleSame, top(ctx, 4));
         final MaterialButton change = filledButton(ctx, R.string.k2go_auth_pw_change_button);
         list.addView(change, top(ctx, 16));
         final int[] minLength = {0};
+        final boolean[] letterAndDigit = {false};
         final boolean[] canChange = {false};   // from the service state; the checks come on top
         final Runnable checkRules = () -> {
             String pw = newPw.getText().toString();
             boolean longOk = PasswordRule.longEnough(pw, minLength[0]);
+            boolean kindsOk = !letterAndDigit[0] || PasswordRule.hasLetterAndDigit(pw);
             boolean sameOk = PasswordRule.same(pw, confirmPw.getText().toString());
             if (minLength[0] > 0) {
                 mark(ctx, ruleLength, longOk, ctx.getResources().getQuantityString(
                         R.plurals.k2go_auth_pw_rule_length, minLength[0], minLength[0]));
                 ruleLength.setVisibility(View.VISIBLE);
             }
+            if (letterAndDigit[0]) {
+                mark(ctx, ruleKinds, kindsOk, ctx.getString(R.string.k2go_auth_pw_rule_kinds));
+                ruleKinds.setVisibility(View.VISIBLE);
+            }
             mark(ctx, ruleSame, sameOk, ctx.getString(R.string.k2go_auth_pw_rule_match));
-            enable(change, canChange[0] && longOk && sameOk);
+            enable(change, canChange[0] && longOk && kindsOk && sameOk);
         };
         TextWatcher onType = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence c, int a, int b, int n) { }
@@ -146,7 +155,7 @@ public final class ServicePasswordSection {
         CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
             @Override public void onOk(String username, String password, boolean isDefault) {
                 if (!host.isAdded()) return;
-                user.setText(ctx.getString(R.string.k2go_auth_pw_user, username));
+                user.setText(boldValue(ctx.getString(R.string.k2go_auth_pw_user, username), username));
                 user.setTag(username);   // the repair keeps the stored username
                 ServicePasswordViewModel.UiState now = vm.ui().getValue();
                 enable(repairSave, now != null && !now.busy);
@@ -166,7 +175,7 @@ public final class ServicePasswordSection {
             boolean noAccount = s != null && s.sync == PasswordState.Sync.NO_ACCOUNT;
             repair.setVisibility(mismatch ? View.VISIBLE : View.GONE);
             canChange[0] = !ui.busy && reachable && !mismatch && !noAccount;
-            if (s != null) minLength[0] = s.minLength;
+            if (s != null) { minLength[0] = s.minLength; letterAndDigit[0] = s.letterAndDigit; }
             checkRules.run();
             enable(newPw, !noAccount);
             enable(confirmPw, !noAccount);
@@ -181,6 +190,17 @@ public final class ServicePasswordSection {
             if (!ui.busy && (ui.result == ServicePasswordViewModel.Result.REPAIRED
                     || ui.result == ServicePasswordViewModel.Result.REPAIRED_UNVERIFIED)) repairPw.setText("");
         });
+    }
+
+    /** The text with its value in bold ("User: **Admin**"). The value is found in the translated text,
+     *  so the word order of each language stays. */
+    private static CharSequence boldValue(String text, String value) {
+        int at = text.lastIndexOf(value);
+        if (at < 0 || value.isEmpty()) return text;
+        android.text.SpannableString s = new android.text.SpannableString(text);
+        s.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), at, at + value.length(),
+                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return s;
     }
 
     /** A live check: a check mark in the ok colour when it is met, an empty circle when not yet. */

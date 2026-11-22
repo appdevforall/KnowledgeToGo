@@ -1668,7 +1668,7 @@
     <string name="k2go_auth_pw_user">İstifadəçi: %1$s</string>
     <string name="k2go_auth_pw_checking">Giriş yoxlanılır...</string>
     <string name="k2go_auth_pw_state_ok">Tətbiq təyin etdiyiniz parolla daxil olur.</string>
-    <string name="k2go_auth_pw_state_factory">Zavod parolu istifadə olunur. Eyni Wi-Fi və ya hotspotda olan hər kəs daxil ola bilər.</string>
+    <string name="k2go_auth_pw_state_factory">Zavod parolu istifadə olunur. Eyni Wi-Fi və ya hotspotda olan hər kəs admin kimi daxil ola bilər.</string>
     <string name="k2go_auth_pw_state_mismatch">Parol xidmətdə dəyişdirilib. Siz onu bərpa edənə qədər avtomatik giriş işləmir.</string>
     <string name="k2go_auth_pw_state_unreachable">Xidmət işləmir. Parolu dəyişmək üçün onu başladın.</string>
     <string name="k2go_auth_pw_change_title">Parolu dəyiş</string>
@@ -1678,6 +1678,7 @@
         <item quantity="one">Ən azı %1$d simvol</item>
         <item quantity="other">Ən azı %1$d simvol</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Hərflər və rəqəmlər</string>
     <string name="k2go_auth_pw_rule_match">Hər iki parol eynidir</string>
     <string name="k2go_auth_pw_change_button">Parolu dəyiş</string>
     <string name="k2go_auth_pw_repair_title">Bərpa et</string>

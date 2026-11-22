@@ -1668,7 +1668,7 @@
     <string name="k2go_auth_pw_user">Mtumiaji: %1$s</string>
     <string name="k2go_auth_pw_checking">Inakagua kuingia...</string>
     <string name="k2go_auth_pw_state_ok">Programu inaingia kwa nenosiri uliloweka.</string>
-    <string name="k2go_auth_pw_state_factory">Nenosiri la kiwandani linatumika. Mtu yeyote kwenye Wi-Fi au hotspot ileile anaweza kuingia.</string>
+    <string name="k2go_auth_pw_state_factory">Nenosiri la kiwandani linatumika. Mtu yeyote kwenye Wi-Fi au hotspot ileile anaweza kuingia kama msimamizi.</string>
     <string name="k2go_auth_pw_state_mismatch">Nenosiri lilibadilishwa kwenye huduma. Kuingia kiotomatiki hakufanyi kazi hadi ulirekebishe.</string>
     <string name="k2go_auth_pw_state_unreachable">Huduma haifanyi kazi. Iwashe ili kubadilisha nenosiri.</string>
     <string name="k2go_auth_pw_change_title">Badilisha nenosiri</string>
@@ -1678,6 +1678,7 @@
         <item quantity="one">Angalau herufi %1$d</item>
         <item quantity="other">Angalau herufi %1$d</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Herufi na nambari</string>
     <string name="k2go_auth_pw_rule_match">Nenosiri zote mbili zinalingana</string>
     <string name="k2go_auth_pw_change_button">Badilisha nenosiri</string>
     <string name="k2go_auth_pw_repair_title">Rekebisha</string>

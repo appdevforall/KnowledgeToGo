@@ -1649,7 +1649,7 @@
     <string name="k2go_auth_pw_user">ユーザー: %1$s</string>
     <string name="k2go_auth_pw_checking">サインインを確認しています...</string>
     <string name="k2go_auth_pw_state_ok">アプリは設定したパスワードでサインインします。</string>
-    <string name="k2go_auth_pw_state_factory">初期パスワードを使用中です。同じWi-Fiまたはホットスポットにいる人なら誰でもサインインできます。</string>
+    <string name="k2go_auth_pw_state_factory">初期パスワードを使用中です。同じWi-Fiまたはホットスポットにいる人なら誰でも管理者としてサインインできます。</string>
     <string name="k2go_auth_pw_state_mismatch">サービス側でパスワードが変更されました。修復するまで自動サインインは動作しません。</string>
     <string name="k2go_auth_pw_state_unreachable">サービスが動いていません。パスワードを変更するにはサービスを起動してください。</string>
     <string name="k2go_auth_pw_change_title">パスワードを変更</string>
@@ -1658,6 +1658,7 @@
     <plurals name="k2go_auth_pw_rule_length">
         <item quantity="other">%1$d 文字以上</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">文字と数字</string>
     <string name="k2go_auth_pw_rule_match">2 つのパスワードが一致しています</string>
     <string name="k2go_auth_pw_change_button">パスワードを変更</string>
     <string name="k2go_auth_pw_repair_title">修復</string>

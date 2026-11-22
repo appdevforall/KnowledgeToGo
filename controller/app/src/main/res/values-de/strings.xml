@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Benutzer: %1$s</string>
     <string name="k2go_auth_pw_checking">Anmeldung wird geprüft...</string>
     <string name="k2go_auth_pw_state_ok">Die App meldet sich mit dem Passwort an, das du festgelegt hast.</string>
-    <string name="k2go_auth_pw_state_factory">Werkspasswort aktiv. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden.</string>
+    <string name="k2go_auth_pw_state_factory">Werkspasswort aktiv. Jeder im selben Wi-Fi oder Hotspot kann sich als Admin anmelden.</string>
     <string name="k2go_auth_pw_state_mismatch">Das Passwort wurde im Dienst geändert. Die automatische Anmeldung funktioniert erst wieder, wenn du es reparierst.</string>
     <string name="k2go_auth_pw_state_unreachable">Der Dienst läuft nicht. Starte ihn, um das Passwort zu ändern.</string>
     <string name="k2go_auth_pw_change_title">Passwort ändern</string>
@@ -1658,6 +1658,7 @@
         <item quantity="one">Mindestens %1$d Zeichen</item>
         <item quantity="other">Mindestens %1$d Zeichen</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Buchstaben und Ziffern</string>
     <string name="k2go_auth_pw_rule_match">Beide Passwörter stimmen überein</string>
     <string name="k2go_auth_pw_change_button">Passwort ändern</string>
     <string name="k2go_auth_pw_repair_title">Reparieren</string>

@@ -1727,7 +1727,7 @@
     <string name="k2go_auth_pw_user">Usuário: %1$s</string>
     <string name="k2go_auth_pw_checking">Verificação do acesso...</string>
     <string name="k2go_auth_pw_state_ok">A app entra com a senha que você definiu.</string>
-    <string name="k2go_auth_pw_state_factory">Senha de fábrica em uso. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar.</string>
+    <string name="k2go_auth_pw_state_factory">Senha de fábrica em uso. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar como administrador.</string>
     <string name="k2go_auth_pw_state_mismatch">A senha foi alterada no serviço. O acesso automático não funciona até reparar a senha.</string>
     <string name="k2go_auth_pw_state_unreachable">O serviço não está em execução. Inicie-o para alterar a senha.</string>
     <string name="k2go_auth_pw_change_title">Alterar senha</string>
@@ -1738,6 +1738,7 @@
         <item quantity="many">Pelo menos %1$d caracteres</item>
         <item quantity="other">Pelo menos %1$d caracteres</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Letras e números</string>
     <string name="k2go_auth_pw_rule_match">As duas senhas são iguais</string>
     <string name="k2go_auth_pw_change_button">Alterar senha</string>
     <string name="k2go_auth_pw_repair_title">Reparar</string>

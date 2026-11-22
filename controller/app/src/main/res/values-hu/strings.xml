@@ -1648,7 +1648,7 @@
     <string name="k2go_auth_pw_user">Felhasználó: %1$s</string>
     <string name="k2go_auth_pw_checking">Bejelentkezés ellenőrzése...</string>
     <string name="k2go_auth_pw_state_ok">Az alkalmazás az Ön által beállított jelszóval jelentkezik be.</string>
-    <string name="k2go_auth_pw_state_factory">Gyári jelszó van használatban. Ugyanazon a Wi-Fi-n vagy hotspoton bárki bejelentkezhet.</string>
+    <string name="k2go_auth_pw_state_factory">Gyári jelszó van használatban. Ugyanazon a Wi-Fi-n vagy hotspoton bárki bejelentkezhet rendszergazdaként.</string>
     <string name="k2go_auth_pw_state_mismatch">A jelszót a szolgáltatásban módosították. Az automatikus bejelentkezés nem működik, amíg ki nem javítja.</string>
     <string name="k2go_auth_pw_state_unreachable">A szolgáltatás nem fut. Indítsa el a jelszó módosításához.</string>
     <string name="k2go_auth_pw_change_title">Jelszó módosítása</string>
@@ -1658,6 +1658,7 @@
         <item quantity="one">Legalább %1$d karakter</item>
         <item quantity="other">Legalább %1$d karakter</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Betűk és számok</string>
     <string name="k2go_auth_pw_rule_match">A két jelszó egyezik</string>
     <string name="k2go_auth_pw_change_button">Jelszó módosítása</string>
     <string name="k2go_auth_pw_repair_title">Javítás</string>

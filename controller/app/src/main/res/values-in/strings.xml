@@ -1655,7 +1655,7 @@
     <string name="k2go_auth_pw_user">Pengguna: %1$s</string>
     <string name="k2go_auth_pw_checking">Memeriksa proses masuk...</string>
     <string name="k2go_auth_pw_state_ok">Aplikasi masuk dengan kata sandi yang Anda tetapkan.</string>
-    <string name="k2go_auth_pw_state_factory">Kata sandi pabrik sedang digunakan. Siapa pun di Wi-Fi atau hotspot yang sama dapat masuk.</string>
+    <string name="k2go_auth_pw_state_factory">Kata sandi pabrik sedang digunakan. Siapa pun di Wi-Fi atau hotspot yang sama dapat masuk sebagai admin.</string>
     <string name="k2go_auth_pw_state_mismatch">Kata sandi telah diubah di layanan. Masuk otomatis tidak berfungsi sampai Anda memperbaikinya.</string>
     <string name="k2go_auth_pw_state_unreachable">Layanan tidak berjalan. Jalankan layanan untuk mengubah kata sandi.</string>
     <string name="k2go_auth_pw_change_title">Ubah kata sandi</string>
@@ -1664,6 +1664,7 @@
     <plurals name="k2go_auth_pw_rule_length">
         <item quantity="other">Minimal %1$d karakter</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">Huruf dan angka</string>
     <string name="k2go_auth_pw_rule_match">Kedua kata sandi cocok</string>
     <string name="k2go_auth_pw_change_button">Ubah kata sandi</string>
     <string name="k2go_auth_pw_repair_title">Perbaiki</string>

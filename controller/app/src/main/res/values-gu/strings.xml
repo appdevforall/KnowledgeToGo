@@ -1661,7 +1661,7 @@
     <string name="k2go_auth_pw_user">વપરાશકર્તા: %1$s</string>
     <string name="k2go_auth_pw_checking">સાઇન-ઇન તપાસી રહ્યા છીએ...</string>
     <string name="k2go_auth_pw_state_ok">ઍપ તમે સેટ કરેલા પાસવર્ડથી સાઇન ઇન કરે છે.</string>
-    <string name="k2go_auth_pw_state_factory">ફેક્ટરી પાસવર્ડ વપરાશમાં છે. એ જ Wi-Fi અથવા હૉટસ્પૉટ પરનું કોઈપણ સાઇન ઇન કરી શકે છે.</string>
+    <string name="k2go_auth_pw_state_factory">ફેક્ટરી પાસવર્ડ વપરાશમાં છે. એ જ Wi-Fi અથવા હૉટસ્પૉટ પરનું કોઈપણ એડમિન તરીકે સાઇન ઇન કરી શકે છે.</string>
     <string name="k2go_auth_pw_state_mismatch">સેવામાં પાસવર્ડ બદલાયો છે. તમે તેને સુધારો નહીં ત્યાં સુધી આપમેળે સાઇન-ઇન કામ નહીં કરે.</string>
     <string name="k2go_auth_pw_state_unreachable">સેવા ચાલી રહી નથી. પાસવર્ડ બદલવા માટે તેને શરૂ કરો.</string>
     <string name="k2go_auth_pw_change_title">પાસવર્ડ બદલો</string>
@@ -1671,6 +1671,7 @@
         <item quantity="one">ઓછામાં ઓછા %1$d અક્ષર</item>
         <item quantity="other">ઓછામાં ઓછા %1$d અક્ષર</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">અક્ષરો અને અંકો</string>
     <string name="k2go_auth_pw_rule_match">બંને પાસવર્ડ મેળ ખાય છે</string>
     <string name="k2go_auth_pw_change_button">પાસવર્ડ બદલો</string>
     <string name="k2go_auth_pw_repair_title">સુધારો</string>

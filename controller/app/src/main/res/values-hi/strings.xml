@@ -1725,7 +1725,7 @@
     <string name="k2go_auth_pw_user">उपयोगकर्ता: %1$s</string>
     <string name="k2go_auth_pw_checking">साइन-इन जाँचा जा रहा है...</string>
     <string name="k2go_auth_pw_state_ok">ऐप आपके सेट किए गए पासवर्ड से साइन इन करता है।</string>
-    <string name="k2go_auth_pw_state_factory">फ़ैक्टरी पासवर्ड उपयोग में है। उसी Wi-Fi या हॉटस्पॉट पर कोई भी साइन इन कर सकता है।</string>
+    <string name="k2go_auth_pw_state_factory">फ़ैक्टरी पासवर्ड उपयोग में है। उसी Wi-Fi या हॉटस्पॉट पर कोई भी एडमिन के रूप में साइन इन कर सकता है।</string>
     <string name="k2go_auth_pw_state_mismatch">सेवा में पासवर्ड बदल दिया गया है। जब तक आप इसे ठीक नहीं करते, स्वचालित साइन-इन काम नहीं करेगा।</string>
     <string name="k2go_auth_pw_state_unreachable">सेवा नहीं चल रही है। पासवर्ड बदलने के लिए इसे शुरू करें।</string>
     <string name="k2go_auth_pw_change_title">पासवर्ड बदलें</string>
@@ -1735,6 +1735,7 @@
         <item quantity="one">कम से कम %1$d अक्षर</item>
         <item quantity="other">कम से कम %1$d अक्षर</item>
     </plurals>
+    <string name="k2go_auth_pw_rule_kinds">अक्षर और अंक</string>
     <string name="k2go_auth_pw_rule_match">दोनों पासवर्ड मेल खाते हैं</string>
     <string name="k2go_auth_pw_change_button">पासवर्ड बदलें</string>
     <string name="k2go_auth_pw_repair_title">ठीक करें</string>
