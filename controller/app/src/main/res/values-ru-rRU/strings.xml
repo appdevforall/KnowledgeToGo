@@ -1730,7 +1730,13 @@
     <string name="k2go_auth_pw_change_title">Изменить пароль</string>
     <string name="k2go_auth_pw_new">Новый пароль</string>
     <string name="k2go_auth_pw_confirm">Введите новый пароль ещё раз</string>
-    <string name="k2go_auth_pw_rule">Не менее 8 символов, включая заглавную букву, строчную букву, цифру и символ.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Не менее %1$d символа</item>
+        <item quantity="few">Не менее %1$d символов</item>
+        <item quantity="many">Не менее %1$d символов</item>
+        <item quantity="other">Не менее %1$d символа</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Оба пароля совпадают</string>
     <string name="k2go_auth_pw_change_button">Изменить пароль</string>
     <string name="k2go_auth_pw_repair_title">Исправить</string>
     <string name="k2go_auth_pw_repair_hint">Введите пароль, который сервис использует сейчас. Приложение проверит и сохранит его.</string>

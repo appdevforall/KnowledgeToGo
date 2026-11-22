@@ -1671,7 +1671,13 @@
     <string name="k2go_auth_pw_change_title">Keisti slaptažodį</string>
     <string name="k2go_auth_pw_new">Naujas slaptažodis</string>
     <string name="k2go_auth_pw_confirm">Įveskite naują slaptažodį dar kartą</string>
-    <string name="k2go_auth_pw_rule">Bent 8 simboliai: didžioji raidė, mažoji raidė, skaitmuo ir specialusis simbolis.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Bent %1$d simbolis</item>
+        <item quantity="few">Bent %1$d simboliai</item>
+        <item quantity="many">Bent %1$d simbolio</item>
+        <item quantity="other">Bent %1$d simbolių</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Abu slaptažodžiai sutampa</string>
     <string name="k2go_auth_pw_change_button">Keisti slaptažodį</string>
     <string name="k2go_auth_pw_repair_title">Pataisyti</string>
     <string name="k2go_auth_pw_repair_hint">Įveskite slaptažodį, kurį paslauga naudoja dabar. Programa jį patikrins ir išsaugos.</string>

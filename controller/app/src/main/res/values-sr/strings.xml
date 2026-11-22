@@ -1667,7 +1667,12 @@
     <string name="k2go_auth_pw_change_title">Промени лозинку</string>
     <string name="k2go_auth_pw_new">Нова лозинка</string>
     <string name="k2go_auth_pw_confirm">Поново унесите нову лозинку</string>
-    <string name="k2go_auth_pw_rule">Најмање 8 знакова, са великим словом, малим словом, цифром и симболом.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Најмање %1$d знак</item>
+        <item quantity="few">Најмање %1$d знака</item>
+        <item quantity="other">Најмање %1$d знакова</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Обе лозинке се подударају</string>
     <string name="k2go_auth_pw_change_button">Промени лозинку</string>
     <string name="k2go_auth_pw_repair_title">Поправка</string>
     <string name="k2go_auth_pw_repair_hint">Унесите лозинку коју услуга сада користи. Апликација је проверава и чува.</string>

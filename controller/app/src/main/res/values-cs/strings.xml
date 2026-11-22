@@ -1661,7 +1661,13 @@
     <string name="k2go_auth_pw_change_title">Změnit heslo</string>
     <string name="k2go_auth_pw_new">Nové heslo</string>
     <string name="k2go_auth_pw_confirm">Zadej nové heslo znovu</string>
-    <string name="k2go_auth_pw_rule">Alespoň 8 znaků, s velkým písmenem, malým písmenem, číslicí a symbolem.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Alespoň %1$d znak</item>
+        <item quantity="few">Alespoň %1$d znaky</item>
+        <item quantity="many">Alespoň %1$d znaku</item>
+        <item quantity="other">Alespoň %1$d znaků</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Obě hesla se shodují</string>
     <string name="k2go_auth_pw_change_button">Změnit heslo</string>
     <string name="k2go_auth_pw_repair_title">Opravit</string>
     <string name="k2go_auth_pw_repair_hint">Zadej heslo, které služba nyní používá. Aplikace ho ověří a uloží.</string>

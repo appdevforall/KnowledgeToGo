@@ -1667,7 +1667,11 @@
     <string name="k2go_auth_pw_change_title">পাসওয়ার্ড বদলান</string>
     <string name="k2go_auth_pw_new">নতুন পাসওয়ার্ড</string>
     <string name="k2go_auth_pw_confirm">নতুন পাসওয়ার্ডটি আবার লিখুন</string>
-    <string name="k2go_auth_pw_rule">কমপক্ষে ৮টি অক্ষর, তাতে একটি বড় হাতের অক্ষর, একটি ছোট হাতের অক্ষর, একটি সংখ্যা এবং একটি চিহ্ন থাকতে হবে।</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">কমপক্ষে %1$d অক্ষর</item>
+        <item quantity="other">কমপক্ষে %1$d অক্ষর</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">দুটি পাসওয়ার্ড মিলেছে</string>
     <string name="k2go_auth_pw_change_button">পাসওয়ার্ড বদলান</string>
     <string name="k2go_auth_pw_repair_title">মেরামত</string>
     <string name="k2go_auth_pw_repair_hint">সার্ভিসটি এখন যে পাসওয়ার্ড ব্যবহার করে সেটি লিখুন। অ্যাপ এটি যাচাই করে সংরক্ষণ করে।</string>

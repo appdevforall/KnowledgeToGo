@@ -1664,7 +1664,11 @@
     <string name="k2go_auth_pw_change_title">Endre passord</string>
     <string name="k2go_auth_pw_new">Nytt passord</string>
     <string name="k2go_auth_pw_confirm">Skriv inn det nye passordet igjen</string>
-    <string name="k2go_auth_pw_rule">Minst 8 tegn, med en stor bokstav, en liten bokstav, et siffer og et symbol.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Minst %1$d tegn</item>
+        <item quantity="other">Minst %1$d tegn</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Begge passordene er like</string>
     <string name="k2go_auth_pw_change_button">Endre passord</string>
     <string name="k2go_auth_pw_repair_title">Reparer</string>
     <string name="k2go_auth_pw_repair_hint">Skriv inn passordet som tjenesten bruker nå. Appen kontrollerer det og tar vare på det.</string>

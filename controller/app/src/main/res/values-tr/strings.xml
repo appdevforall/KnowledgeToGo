@@ -1654,7 +1654,11 @@
     <string name="k2go_auth_pw_change_title">Parolayı değiştir</string>
     <string name="k2go_auth_pw_new">Yeni parola</string>
     <string name="k2go_auth_pw_confirm">Yeni parolayı tekrar yazın</string>
-    <string name="k2go_auth_pw_rule">En az 8 karakter; bir büyük harf, bir küçük harf, bir rakam ve bir sembol içermeli.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">En az %1$d karakter</item>
+        <item quantity="other">En az %1$d karakter</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">İki parola aynı</string>
     <string name="k2go_auth_pw_change_button">Parolayı değiştir</string>
     <string name="k2go_auth_pw_repair_title">Onar</string>
     <string name="k2go_auth_pw_repair_hint">Servisin şu an kullandığı parolayı yazın. Uygulama parolayı kontrol eder ve saklar.</string>

@@ -1674,7 +1674,11 @@
     <string name="k2go_auth_pw_change_title">கடவுச்சொல்லை மாற்று</string>
     <string name="k2go_auth_pw_new">புதிய கடவுச்சொல்</string>
     <string name="k2go_auth_pw_confirm">புதிய கடவுச்சொல்லை மீண்டும் உள்ளிடவும்</string>
-    <string name="k2go_auth_pw_rule">குறைந்தது 8 எழுத்துகள்: ஒரு பெரிய எழுத்து, ஒரு சிறிய எழுத்து, ஒரு இலக்கம் மற்றும் ஒரு குறியீடு.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">குறைந்தது %1$d எழுத்து</item>
+        <item quantity="other">குறைந்தது %1$d எழுத்துகள்</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">இரண்டு கடவுச்சொற்களும் பொருந்துகின்றன</string>
     <string name="k2go_auth_pw_change_button">கடவுச்சொல்லை மாற்று</string>
     <string name="k2go_auth_pw_repair_title">சரிசெய்</string>
     <string name="k2go_auth_pw_repair_hint">சேவை இப்போது பயன்படுத்தும் கடவுச்சொல்லை உள்ளிடவும். செயலி அதைச் சரிபார்த்து சேமிக்கும்.</string>

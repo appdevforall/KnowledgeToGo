@@ -1654,7 +1654,12 @@
     <string name="k2go_auth_pw_change_title">Schimbă parola</string>
     <string name="k2go_auth_pw_new">Parolă nouă</string>
     <string name="k2go_auth_pw_confirm">Introdu din nou parola nouă</string>
-    <string name="k2go_auth_pw_rule">Cel puțin 8 caractere, cu o literă mare, o literă mică, o cifră și un simbol.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Cel puțin %1$d caracter</item>
+        <item quantity="few">Cel puțin %1$d caractere</item>
+        <item quantity="other">Cel puțin %1$d de caractere</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Cele două parole coincid</string>
     <string name="k2go_auth_pw_change_button">Schimbă parola</string>
     <string name="k2go_auth_pw_repair_title">Reparare</string>
     <string name="k2go_auth_pw_repair_hint">Introdu parola pe care o folosește acum serviciul. Aplicația o verifică și o păstrează.</string>

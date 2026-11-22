@@ -1674,7 +1674,11 @@
     <string name="k2go_auth_pw_change_title">Badilisha nenosiri</string>
     <string name="k2go_auth_pw_new">Nenosiri jipya</string>
     <string name="k2go_auth_pw_confirm">Andika nenosiri jipya tena</string>
-    <string name="k2go_auth_pw_rule">Angalau herufi 8, zikiwemo herufi kubwa, herufi ndogo, tarakimu na alama.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Angalau herufi %1$d</item>
+        <item quantity="other">Angalau herufi %1$d</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Nenosiri zote mbili zinalingana</string>
     <string name="k2go_auth_pw_change_button">Badilisha nenosiri</string>
     <string name="k2go_auth_pw_repair_title">Rekebisha</string>
     <string name="k2go_auth_pw_repair_hint">Andika nenosiri ambalo huduma inatumia sasa. Programu inalikagua na kulihifadhi.</string>

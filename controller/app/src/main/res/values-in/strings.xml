@@ -1661,7 +1661,10 @@
     <string name="k2go_auth_pw_change_title">Ubah kata sandi</string>
     <string name="k2go_auth_pw_new">Kata sandi baru</string>
     <string name="k2go_auth_pw_confirm">Ketik ulang kata sandi baru</string>
-    <string name="k2go_auth_pw_rule">Minimal 8 karakter, dengan huruf besar, huruf kecil, angka, dan simbol.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="other">Minimal %1$d karakter</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Kedua kata sandi cocok</string>
     <string name="k2go_auth_pw_change_button">Ubah kata sandi</string>
     <string name="k2go_auth_pw_repair_title">Perbaiki</string>
     <string name="k2go_auth_pw_repair_hint">Ketik kata sandi yang sekarang digunakan layanan. Aplikasi akan memeriksa dan menyimpannya.</string>

@@ -1654,7 +1654,11 @@
     <string name="k2go_auth_pw_change_title">تغییر رمز عبور</string>
     <string name="k2go_auth_pw_new">رمز عبور جدید</string>
     <string name="k2go_auth_pw_confirm">رمز عبور جدید را دوباره وارد کنید</string>
-    <string name="k2go_auth_pw_rule">دست‌کم ۸ نویسه، با یک حرف بزرگ، یک حرف کوچک، یک رقم و یک نماد.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">دست‌کم %1$d نویسه</item>
+        <item quantity="other">دست‌کم %1$d نویسه</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">هر دو رمز عبور یکسان هستند</string>
     <string name="k2go_auth_pw_change_button">تغییر رمز عبور</string>
     <string name="k2go_auth_pw_repair_title">ترمیم</string>
     <string name="k2go_auth_pw_repair_hint">رمز عبوری را که سرویس اکنون استفاده می‌کند وارد کنید. برنامه آن را بررسی و نگه‌داری می‌کند.</string>

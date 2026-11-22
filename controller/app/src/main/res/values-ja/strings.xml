@@ -1655,7 +1655,10 @@
     <string name="k2go_auth_pw_change_title">パスワードを変更</string>
     <string name="k2go_auth_pw_new">新しいパスワード</string>
     <string name="k2go_auth_pw_confirm">新しいパスワードをもう一度入力</string>
-    <string name="k2go_auth_pw_rule">8文字以上で、大文字、小文字、数字、記号をそれぞれ含めてください。</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="other">%1$d 文字以上</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">2 つのパスワードが一致しています</string>
     <string name="k2go_auth_pw_change_button">パスワードを変更</string>
     <string name="k2go_auth_pw_repair_title">修復</string>
     <string name="k2go_auth_pw_repair_hint">サービスが現在使用しているパスワードを入力してください。アプリが確認して保存します。</string>

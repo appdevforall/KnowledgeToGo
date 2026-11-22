@@ -59,7 +59,7 @@ public final class PasswordRepositoryImpl implements PasswordRepository {
             default: sync = PasswordState.Sync.UNREACHABLE; break;
         }
         Boolean factory = o.isNull("factoryDefault") ? null : o.optBoolean("factoryDefault");
-        return new PasswordState(service, sync, factory);
+        return new PasswordState(service, sync, factory, o.optInt("minLength", 0));
     }
 
     @Override

@@ -1655,7 +1655,10 @@
     <string name="k2go_auth_pw_change_title">更改密码</string>
     <string name="k2go_auth_pw_new">新密码</string>
     <string name="k2go_auth_pw_confirm">再次输入新密码</string>
-    <string name="k2go_auth_pw_rule">至少 8 个字符，包含一个大写字母、一个小写字母、一个数字和一个符号。</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="other">至少 %1$d 个字符</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">两次输入的密码一致</string>
     <string name="k2go_auth_pw_change_button">更改密码</string>
     <string name="k2go_auth_pw_repair_title">修复</string>
     <string name="k2go_auth_pw_repair_hint">输入服务当前使用的密码。应用会检查并保存它。</string>

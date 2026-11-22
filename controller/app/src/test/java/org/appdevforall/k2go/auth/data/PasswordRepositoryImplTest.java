@@ -47,5 +47,11 @@ public class PasswordRepositoryImplTest {
                 new JSONObject("{\"state\":\"no_account\",\"factoryDefault\":null}"));
         assertEquals(PasswordState.Sync.NO_ACCOUNT, s.sync);
         assertNull(s.factoryDefault);
+
+        s = PasswordRepositoryImpl.parseState("forgejo",
+                new JSONObject("{\"state\":\"ok\",\"factoryDefault\":false,\"minLength\":8}"));
+        assertEquals(8, s.minLength);
+        assertEquals(0, PasswordRepositoryImpl.parseState("kolibri",
+                new JSONObject("{\"state\":\"ok\"}")).minLength);   // an older box: not known
     }
 }

@@ -1661,7 +1661,13 @@
     <string name="k2go_auth_pw_change_title">Zmeniť heslo</string>
     <string name="k2go_auth_pw_new">Nové heslo</string>
     <string name="k2go_auth_pw_confirm">Zadajte nové heslo znova</string>
-    <string name="k2go_auth_pw_rule">Aspoň 8 znakov vrátane veľkého písmena, malého písmena, číslice a symbolu.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Aspoň %1$d znak</item>
+        <item quantity="few">Aspoň %1$d znaky</item>
+        <item quantity="many">Aspoň %1$d znaku</item>
+        <item quantity="other">Aspoň %1$d znakov</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Obe heslá sa zhodujú</string>
     <string name="k2go_auth_pw_change_button">Zmeniť heslo</string>
     <string name="k2go_auth_pw_repair_title">Oprava</string>
     <string name="k2go_auth_pw_repair_hint">Zadajte heslo, ktoré služba teraz používa. Aplikácia ho overí a uloží.</string>

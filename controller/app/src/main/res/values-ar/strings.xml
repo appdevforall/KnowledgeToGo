@@ -1654,7 +1654,15 @@
     <string name="k2go_auth_pw_change_title">تغيير كلمة المرور</string>
     <string name="k2go_auth_pw_new">كلمة المرور الجديدة</string>
     <string name="k2go_auth_pw_confirm">اكتب كلمة المرور الجديدة مرة أخرى</string>
-    <string name="k2go_auth_pw_rule">8 أحرف على الأقل، منها حرف كبير وحرف صغير ورقم ورمز.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="zero">%1$d حرف على الأقل</item>
+        <item quantity="one">حرف واحد على الأقل (%1$d)</item>
+        <item quantity="two">حرفان على الأقل (%1$d)</item>
+        <item quantity="few">%1$d أحرف على الأقل</item>
+        <item quantity="many">%1$d حرفًا على الأقل</item>
+        <item quantity="other">%1$d حرف على الأقل</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">كلمتا المرور متطابقتان</string>
     <string name="k2go_auth_pw_change_button">تغيير كلمة المرور</string>
     <string name="k2go_auth_pw_repair_title">إصلاح</string>
     <string name="k2go_auth_pw_repair_hint">اكتب كلمة المرور التي تستخدمها الخدمة الآن. يتحقق التطبيق منها ويحفظها.</string>

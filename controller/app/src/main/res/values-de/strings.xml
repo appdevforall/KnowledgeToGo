@@ -1654,7 +1654,11 @@
     <string name="k2go_auth_pw_change_title">Passwort ändern</string>
     <string name="k2go_auth_pw_new">Neues Passwort</string>
     <string name="k2go_auth_pw_confirm">Neues Passwort wiederholen</string>
-    <string name="k2go_auth_pw_rule">Mindestens 8 Zeichen, mit einem Großbuchstaben, einem Kleinbuchstaben, einer Ziffer und einem Sonderzeichen.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Mindestens %1$d Zeichen</item>
+        <item quantity="other">Mindestens %1$d Zeichen</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Beide Passwörter stimmen überein</string>
     <string name="k2go_auth_pw_change_button">Passwort ändern</string>
     <string name="k2go_auth_pw_repair_title">Reparieren</string>
     <string name="k2go_auth_pw_repair_hint">Gib das Passwort ein, das der Dienst jetzt verwendet. Die App prüft es und speichert es.</string>

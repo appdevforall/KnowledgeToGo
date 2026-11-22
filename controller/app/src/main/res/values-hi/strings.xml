@@ -1731,7 +1731,11 @@
     <string name="k2go_auth_pw_change_title">पासवर्ड बदलें</string>
     <string name="k2go_auth_pw_new">नया पासवर्ड</string>
     <string name="k2go_auth_pw_confirm">नया पासवर्ड फिर से लिखें</string>
-    <string name="k2go_auth_pw_rule">कम से कम 8 अक्षर, जिनमें एक बड़ा अक्षर, एक छोटा अक्षर, एक अंक और एक चिह्न हो।</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">कम से कम %1$d अक्षर</item>
+        <item quantity="other">कम से कम %1$d अक्षर</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">दोनों पासवर्ड मेल खाते हैं</string>
     <string name="k2go_auth_pw_change_button">पासवर्ड बदलें</string>
     <string name="k2go_auth_pw_repair_title">ठीक करें</string>
     <string name="k2go_auth_pw_repair_hint">सेवा अभी जो पासवर्ड उपयोग करती है, वह लिखें। ऐप उसे जाँचकर सहेज लेता है।</string>

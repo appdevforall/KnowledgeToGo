@@ -1852,7 +1852,13 @@
     <string name="k2go_auth_pw_change_title">Change password</string>
     <string name="k2go_auth_pw_new">New password</string>
     <string name="k2go_auth_pw_confirm">Type the new password again</string>
-    <string name="k2go_auth_pw_rule">At least 8 characters, with an upper-case letter, a lower-case letter, a digit and a symbol.</string>
+    <!-- Change password: live check under the fields. %1$d = the shortest password the service takes (6, or 8 for Forgejo). A check mark comes before it when it is met. -->
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">At least %1$d character</item>
+        <item quantity="other">At least %1$d characters</item>
+    </plurals>
+    <!-- Change password: live check, the two password fields are the same. -->
+    <string name="k2go_auth_pw_rule_match">Both passwords match</string>
     <string name="k2go_auth_pw_change_button">Change password</string>
     <string name="k2go_auth_pw_repair_title">Repair</string>
     <string name="k2go_auth_pw_repair_hint">Type the password that the service uses now. The app checks it and keeps it.</string>

@@ -1667,7 +1667,11 @@
     <string name="k2go_auth_pw_change_title">પાસવર્ડ બદલો</string>
     <string name="k2go_auth_pw_new">નવો પાસવર્ડ</string>
     <string name="k2go_auth_pw_confirm">નવો પાસવર્ડ ફરીથી લખો</string>
-    <string name="k2go_auth_pw_rule">ઓછામાં ઓછા 8 અક્ષરો, જેમાં એક મોટો અક્ષર, એક નાનો અક્ષર, એક અંક અને એક ચિહ્ન હોય.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">ઓછામાં ઓછા %1$d અક્ષર</item>
+        <item quantity="other">ઓછામાં ઓછા %1$d અક્ષર</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">બંને પાસવર્ડ મેળ ખાય છે</string>
     <string name="k2go_auth_pw_change_button">પાસવર્ડ બદલો</string>
     <string name="k2go_auth_pw_repair_title">સુધારો</string>
     <string name="k2go_auth_pw_repair_hint">સેવા હાલમાં જે પાસવર્ડ વાપરે છે તે લખો. ઍપ તેને તપાસે છે અને સાચવે છે.</string>

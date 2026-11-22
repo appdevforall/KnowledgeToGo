@@ -1661,7 +1661,11 @@
     <string name="k2go_auth_pw_change_title">Αλλαγή κωδικού</string>
     <string name="k2go_auth_pw_new">Νέος κωδικός</string>
     <string name="k2go_auth_pw_confirm">Πληκτρολόγησε ξανά τον νέο κωδικό</string>
-    <string name="k2go_auth_pw_rule">Τουλάχιστον 8 χαρακτήρες, με ένα κεφαλαίο γράμμα, ένα πεζό γράμμα, ένα ψηφίο και ένα σύμβολο.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Τουλάχιστον %1$d χαρακτήρας</item>
+        <item quantity="other">Τουλάχιστον %1$d χαρακτήρες</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Οι δύο κωδικοί ταιριάζουν</string>
     <string name="k2go_auth_pw_change_button">Αλλαγή κωδικού</string>
     <string name="k2go_auth_pw_repair_title">Επιδιόρθωση</string>
     <string name="k2go_auth_pw_repair_hint">Πληκτρολόγησε τον κωδικό που χρησιμοποιεί τώρα η υπηρεσία. Η εφαρμογή τον ελέγχει και τον κρατά.</string>

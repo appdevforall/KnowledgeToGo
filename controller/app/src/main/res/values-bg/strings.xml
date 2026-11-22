@@ -1661,7 +1661,11 @@
     <string name="k2go_auth_pw_change_title">Смяна на паролата</string>
     <string name="k2go_auth_pw_new">Нова парола</string>
     <string name="k2go_auth_pw_confirm">Въведете новата парола отново</string>
-    <string name="k2go_auth_pw_rule">Поне 8 знака, с главна буква, малка буква, цифра и символ.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Поне %1$d знак</item>
+        <item quantity="other">Поне %1$d знака</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Двете пароли съвпадат</string>
     <string name="k2go_auth_pw_change_button">Смени паролата</string>
     <string name="k2go_auth_pw_repair_title">Поправяне</string>
     <string name="k2go_auth_pw_repair_hint">Въведете паролата, която услугата използва сега. Приложението я проверява и я запазва.</string>

@@ -1654,7 +1654,10 @@
     <string name="k2go_auth_pw_change_title">Đổi mật khẩu</string>
     <string name="k2go_auth_pw_new">Mật khẩu mới</string>
     <string name="k2go_auth_pw_confirm">Nhập lại mật khẩu mới</string>
-    <string name="k2go_auth_pw_rule">Ít nhất 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký hiệu.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="other">Ít nhất %1$d ký tự</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Hai mật khẩu khớp nhau</string>
     <string name="k2go_auth_pw_change_button">Đổi mật khẩu</string>
     <string name="k2go_auth_pw_repair_title">Sửa</string>
     <string name="k2go_auth_pw_repair_hint">Nhập mật khẩu mà dịch vụ đang dùng. Ứng dụng sẽ kiểm tra và lưu mật khẩu này.</string>

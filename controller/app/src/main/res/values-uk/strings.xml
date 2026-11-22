@@ -1654,7 +1654,13 @@
     <string name="k2go_auth_pw_change_title">Змінити пароль</string>
     <string name="k2go_auth_pw_new">Новий пароль</string>
     <string name="k2go_auth_pw_confirm">Введіть новий пароль ще раз</string>
-    <string name="k2go_auth_pw_rule">Щонайменше 8 символів, з великою літерою, малою літерою, цифрою та символом.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Щонайменше %1$d символ</item>
+        <item quantity="few">Щонайменше %1$d символи</item>
+        <item quantity="many">Щонайменше %1$d символів</item>
+        <item quantity="other">Щонайменше %1$d символу</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Обидва паролі збігаються</string>
     <string name="k2go_auth_pw_change_button">Змінити пароль</string>
     <string name="k2go_auth_pw_repair_title">Виправлення</string>
     <string name="k2go_auth_pw_repair_hint">Введіть пароль, який сервіс використовує зараз. Застосунок перевірить і збереже його.</string>

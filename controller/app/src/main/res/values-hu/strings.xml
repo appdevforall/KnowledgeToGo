@@ -1654,7 +1654,11 @@
     <string name="k2go_auth_pw_change_title">Jelszó módosítása</string>
     <string name="k2go_auth_pw_new">Új jelszó</string>
     <string name="k2go_auth_pw_confirm">Írja be újra az új jelszót</string>
-    <string name="k2go_auth_pw_rule">Legalább 8 karakter, benne nagybetű, kisbetű, számjegy és szimbólum.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Legalább %1$d karakter</item>
+        <item quantity="other">Legalább %1$d karakter</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">A két jelszó egyezik</string>
     <string name="k2go_auth_pw_change_button">Jelszó módosítása</string>
     <string name="k2go_auth_pw_repair_title">Javítás</string>
     <string name="k2go_auth_pw_repair_hint">Írja be a jelszót, amelyet a szolgáltatás most használ. Az alkalmazás ellenőrzi és megőrzi.</string>

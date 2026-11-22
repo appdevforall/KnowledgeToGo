@@ -1733,7 +1733,12 @@
     <string name="k2go_auth_pw_change_title">Alterar senha</string>
     <string name="k2go_auth_pw_new">Nova senha</string>
     <string name="k2go_auth_pw_confirm">Digite a nova senha novamente</string>
-    <string name="k2go_auth_pw_rule">Pelo menos 8 caracteres, com uma letra maiúscula, uma letra minúscula, um algarismo e um símbolo.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Pelo menos %1$d caractere</item>
+        <item quantity="many">Pelo menos %1$d caracteres</item>
+        <item quantity="other">Pelo menos %1$d caracteres</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">As duas senhas são iguais</string>
     <string name="k2go_auth_pw_change_button">Alterar senha</string>
     <string name="k2go_auth_pw_repair_title">Reparar</string>
     <string name="k2go_auth_pw_repair_hint">Digite a senha que o serviço usa agora. A app verifica e guarda a senha.</string>

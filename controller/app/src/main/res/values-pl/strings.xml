@@ -1664,7 +1664,13 @@
     <string name="k2go_auth_pw_change_title">Zmień hasło</string>
     <string name="k2go_auth_pw_new">Nowe hasło</string>
     <string name="k2go_auth_pw_confirm">Wpisz ponownie nowe hasło</string>
-    <string name="k2go_auth_pw_rule">Co najmniej 8 znaków, w tym wielka litera, mała litera, cyfra i symbol.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Co najmniej %1$d znak</item>
+        <item quantity="few">Co najmniej %1$d znaki</item>
+        <item quantity="many">Co najmniej %1$d znaków</item>
+        <item quantity="other">Co najmniej %1$d znaku</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Oba hasła są takie same</string>
     <string name="k2go_auth_pw_change_button">Zmień hasło</string>
     <string name="k2go_auth_pw_repair_title">Napraw</string>
     <string name="k2go_auth_pw_repair_hint">Wpisz hasło, którego usługa używa teraz. Aplikacja je sprawdzi i zapamięta.</string>

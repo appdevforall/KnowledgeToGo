@@ -1674,7 +1674,11 @@
     <string name="k2go_auth_pw_change_title">Parolu dəyiş</string>
     <string name="k2go_auth_pw_new">Yeni parol</string>
     <string name="k2go_auth_pw_confirm">Yeni parolu yenidən yazın</string>
-    <string name="k2go_auth_pw_rule">Ən azı 8 simvol: bir böyük hərf, bir kiçik hərf, bir rəqəm və bir xüsusi simvol.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Ən azı %1$d simvol</item>
+        <item quantity="other">Ən azı %1$d simvol</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Hər iki parol eynidir</string>
     <string name="k2go_auth_pw_change_button">Parolu dəyiş</string>
     <string name="k2go_auth_pw_repair_title">Bərpa et</string>
     <string name="k2go_auth_pw_repair_hint">Xidmətin indi istifadə etdiyi parolu yazın. Tətbiq onu yoxlayır və saxlayır.</string>

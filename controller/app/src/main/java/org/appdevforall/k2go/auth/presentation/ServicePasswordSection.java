@@ -12,6 +12,8 @@
 package org.appdevforall.k2go.auth.presentation;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +29,7 @@ import com.google.android.material.button.MaterialButton;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.auth.data.CredentialsClient;
+import org.appdevforall.k2go.auth.domain.PasswordRule;
 import org.appdevforall.k2go.auth.domain.PasswordState;
 import org.appdevforall.k2go.ui.K2GoInputs;
 import org.appdevforall.k2go.ui.K2GoText;
@@ -88,9 +91,36 @@ public final class ServicePasswordSection {
         list.addView(K2GoInputs.fieldLabel(ctx, ctx.getString(R.string.k2go_auth_pw_confirm), ""));
         final EditText confirmPw = K2GoInputs.passwordInput(ctx);
         list.addView(confirmPw);
-        list.addView(K2GoText.label(ctx, ctx.getString(R.string.k2go_auth_pw_rule), R.color.k2go_muted), top(ctx, 8));
+        // Live checks, as on a web sign-up form: each one shows a check mark when it is met. The
+        // minimum length comes from the box in the status (one source); the box checks it again.
+        final TextView ruleLength = K2GoText.label(ctx, "", R.color.k2go_muted);
+        ruleLength.setVisibility(View.GONE);
+        list.addView(ruleLength, top(ctx, 8));
+        final TextView ruleSame = K2GoText.label(ctx, "", R.color.k2go_muted);
+        list.addView(ruleSame, top(ctx, 4));
         final MaterialButton change = filledButton(ctx, R.string.k2go_auth_pw_change_button);
         list.addView(change, top(ctx, 16));
+        final int[] minLength = {0};
+        final boolean[] canChange = {false};   // from the service state; the checks come on top
+        final Runnable checkRules = () -> {
+            String pw = newPw.getText().toString();
+            boolean longOk = PasswordRule.longEnough(pw, minLength[0]);
+            boolean sameOk = PasswordRule.same(pw, confirmPw.getText().toString());
+            if (minLength[0] > 0) {
+                mark(ctx, ruleLength, longOk, ctx.getResources().getQuantityString(
+                        R.plurals.k2go_auth_pw_rule_length, minLength[0], minLength[0]));
+                ruleLength.setVisibility(View.VISIBLE);
+            }
+            mark(ctx, ruleSame, sameOk, ctx.getString(R.string.k2go_auth_pw_rule_match));
+            enable(change, canChange[0] && longOk && sameOk);
+        };
+        TextWatcher onType = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence c, int a, int b, int n) { }
+            @Override public void onTextChanged(CharSequence c, int a, int b, int n) { }
+            @Override public void afterTextChanged(Editable e) { checkRules.run(); }
+        };
+        newPw.addTextChangedListener(onType);
+        confirmPw.addTextChangedListener(onType);
 
         final TextView result = K2GoText.label(ctx, "", R.color.k2go_muted);
         result.setVisibility(View.GONE);
@@ -135,7 +165,9 @@ public final class ServicePasswordSection {
             // No admin account in the service: nothing to change, repair or reset; all gray.
             boolean noAccount = s != null && s.sync == PasswordState.Sync.NO_ACCOUNT;
             repair.setVisibility(mismatch ? View.VISIBLE : View.GONE);
-            enable(change, !ui.busy && reachable && !mismatch && !noAccount);
+            canChange[0] = !ui.busy && reachable && !mismatch && !noAccount;
+            if (s != null) minLength[0] = s.minLength;
+            checkRules.run();
             enable(newPw, !noAccount);
             enable(confirmPw, !noAccount);
             enable(repairSave, !ui.busy && user.getTag() != null);
@@ -149,6 +181,12 @@ public final class ServicePasswordSection {
             if (!ui.busy && (ui.result == ServicePasswordViewModel.Result.REPAIRED
                     || ui.result == ServicePasswordViewModel.Result.REPAIRED_UNVERIFIED)) repairPw.setText("");
         });
+    }
+
+    /** A live check: a check mark in the ok colour when it is met, an empty circle when not yet. */
+    private static void mark(Context ctx, TextView v, boolean met, String text) {
+        v.setText((met ? "\u2713  " : "\u25cb  ") + text);
+        v.setTextColor(ContextCompat.getColor(ctx, met ? R.color.k2go_ok_ink : R.color.k2go_muted));
     }
 
     private static void renderState(Context ctx, TextView v, PasswordState s) {

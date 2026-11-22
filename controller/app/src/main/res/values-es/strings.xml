@@ -1730,7 +1730,12 @@
     <string name="k2go_auth_pw_change_title">Cambiar contraseña</string>
     <string name="k2go_auth_pw_new">Nueva contraseña</string>
     <string name="k2go_auth_pw_confirm">Escribe de nuevo la nueva contraseña</string>
-    <string name="k2go_auth_pw_rule">Al menos 8 caracteres, con una mayúscula, una minúscula, un número y un símbolo.</string>
+    <plurals name="k2go_auth_pw_rule_length">
+        <item quantity="one">Al menos %1$d carácter</item>
+        <item quantity="many">Al menos %1$d caracteres</item>
+        <item quantity="other">Al menos %1$d caracteres</item>
+    </plurals>
+    <string name="k2go_auth_pw_rule_match">Las dos contraseñas coinciden</string>
     <string name="k2go_auth_pw_change_button">Cambiar contraseña</string>
     <string name="k2go_auth_pw_repair_title">Reparar</string>
     <string name="k2go_auth_pw_repair_hint">Escribe la contraseña que usa ahora el servicio. La app la comprueba y la guarda.</string>
