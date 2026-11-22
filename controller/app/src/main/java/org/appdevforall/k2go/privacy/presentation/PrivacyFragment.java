@@ -151,17 +151,19 @@ public class PrivacyFragment extends Fragment {
         toggle.setChecked(sw.outbound());
         toggle.setEnabled(!locked && !keptOffline);
         if (keptOffline) {
-            // K2GO-588: the disabled switch lets the tap through to the row, which says where to change it.
+            // K2GO-588: the disabled switch lets the tap through to the row, which says where to change
+            // it. No click listener on the switch: setting one makes it clickable again.
             toggle.setClickable(false);
             row.setOnClickListener(v -> snack(v, getString(R.string.k2go_privacy_kept_offline,
-                    getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel()))));
+                    getString(org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.choiceLabel()))));
+        } else {
+            // A click, not a checked-change: only the user's tap may send a change, never a state that
+            // Android or a re-render sets. Posted: the new state rebuilds the list, so let the click finish.
+            toggle.setOnClickListener(v -> {
+                final boolean checked = toggle.isChecked();
+                v.post(() -> vm.setOutbound(sw.service(), checked));
+            });
         }
-        // A click, not a checked-change: only the user's tap may send a change, never a state that
-        // Android or a re-render sets. Posted: the new state rebuilds the list, so let the click finish.
-        toggle.setOnClickListener(v -> {
-            final boolean checked = toggle.isChecked();
-            v.post(() -> vm.setOutbound(sw.service(), checked));
-        });
         row.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
         return row;
     }

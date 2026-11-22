@@ -54,11 +54,24 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
         // internet. Live sources win when they can answer, so the bundle is consulted last.
         this(new BundledCatalogSource(context), liveFirst(context, new BundledTreeSource(context)));
         // Keep the bundled catalog and its tree bundle current (K2GO-588: only with the online
-        // choice on). Only the Context constructor schedules; the test constructor below does not.
+        // choice on). Only the Context constructor schedules, once per process; the test
+        // constructor below does not.
+        if (!refreshSynced) {
+            refreshSynced = true;
+            syncRefresh(context);
+        }
+    }
+
+    private static volatile boolean refreshSynced = false;
+
+    /** K2GO-588: schedules or cancels the automatic refresh of the catalog and its tree bundle to
+     *  match the privacy choice. */
+    public static void syncRefresh(Context ctx) {
+        Context app = ctx.getApplicationContext();
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.syncAutomatic(
-                context, CATALOG, MANIFEST_URL, BASENAME);
+                app, CATALOG, MANIFEST_URL, BASENAME);
         org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.syncAutomatic(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
+                app, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
     }
 
     /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle.

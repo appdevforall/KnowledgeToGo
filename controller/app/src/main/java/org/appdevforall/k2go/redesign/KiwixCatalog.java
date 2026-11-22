@@ -107,7 +107,12 @@ public final class KiwixCatalog {
     private static void nudgeRefresh(Context app) {
         if (refreshNudged) return;
         refreshNudged = true;
-        CatalogRefreshScheduler.syncAutomatic(app, CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
+        syncRefresh(app);
+    }
+
+    /** K2GO-588: schedules or cancels the automatic refresh to match the privacy choice. */
+    public static void syncRefresh(Context ctx) {
+        CatalogRefreshScheduler.syncAutomatic(ctx.getApplicationContext(), CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
     }
 
     /**

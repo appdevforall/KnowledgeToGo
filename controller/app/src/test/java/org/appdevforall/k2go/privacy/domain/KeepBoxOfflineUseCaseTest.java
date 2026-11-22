@@ -2,6 +2,7 @@ package org.appdevforall.k2go.privacy.domain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,12 +12,12 @@ import org.junit.Test;
 
 public class KeepBoxOfflineUseCaseTest {
 
-    private static final class FakeRepo implements PrivacyRepository {
+    private static class FakeRepo implements PrivacyRepository {
         final List<OutboundSwitch> reported;
         final List<String> writes = new ArrayList<>();
         FakeRepo(OutboundSwitch... s) { reported = Arrays.asList(s); }
         @Override public List<OutboundSwitch> list() { return reported; }
-        @Override public boolean set(String s, boolean o) {
+        @Override public boolean set(String s, boolean o) throws PrivacyException {
             writes.add(s + "=" + o);
             return true;
         }
@@ -39,6 +40,27 @@ public class KeepBoxOfflineUseCaseTest {
                 new OutboundSwitch(OutboundSwitch.FORGEJO, true, false, true));
         assertTrue(new KeepBoxOfflineUseCase(repo).execute().isEmpty());
         assertTrue(repo.writes.isEmpty());
+    }
+
+    @Test
+    public void aFailingServiceDoesNotStopTheOthers() {
+        FakeRepo repo = new FakeRepo(
+                new OutboundSwitch(OutboundSwitch.KOLIBRI, true, true),
+                new OutboundSwitch(OutboundSwitch.FORGEJO, true, true)) {
+            @Override public boolean set(String s, boolean o) throws PrivacyException {
+                if (s.equals(OutboundSwitch.KOLIBRI)) {
+                    throw new PrivacyException(PrivacyException.Reason.FAILED, "kolibri");
+                }
+                return super.set(s, o);
+            }
+        };
+        try {
+            new KeepBoxOfflineUseCase(repo).execute();
+            fail("the failure must be reported");
+        } catch (PrivacyException e) {
+            assertEquals("kolibri", e.getMessage());
+        }
+        assertEquals(Arrays.asList("forgejo=false"), repo.writes);
     }
 
     @Test

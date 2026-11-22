@@ -22,15 +22,22 @@ public final class KeepBoxOfflineUseCase {
         this.repository = repository;
     }
 
-    /** Returns the services it switched off. */
+    /** Returns the services it switched off. A service that fails does not stop the others; the
+     *  first failure is thrown after all of them were tried, so the caller can retry later. */
     public List<String> execute() throws PrivacyException {
         List<String> switched = new ArrayList<>();
+        PrivacyException first = null;
         for (OutboundSwitch s : repository.list()) {
             if (s.installed() && s.outbound()) {
-                repository.set(s.service(), false);
-                switched.add(s.service());
+                try {
+                    repository.set(s.service(), false);
+                    switched.add(s.service());
+                } catch (PrivacyException e) {
+                    if (first == null) first = e;
+                }
             }
         }
+        if (first != null) throw first;
         return switched;
     }
 }
