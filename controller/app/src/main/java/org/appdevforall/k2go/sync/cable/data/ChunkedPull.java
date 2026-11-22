@@ -123,7 +123,9 @@ public final class ChunkedPull {
     }
 
     public void stop() {
-        cancelled = true;
+        synchronized (this) {   // with the onWriteStarting call in run()
+            cancelled = true;
+        }
         ChunkQueue q = queue;
         if (q != null) q.cancel();
         for (Process p : processes) p.destroy();
@@ -142,6 +144,12 @@ public final class ChunkedPull {
             }
             queue = new ChunkQueue(TransferChunk.plan(files, CHUNK_BYTES, CHUNK_FILES));
             Log.i(TAG, files.size() + " files, " + queue.totalBytes() + " bytes to copy");
+            // The list is a dry-run. From here rsync writes into the tree. Under the lock, so that after
+            // stop() returns the call has either finished or will not come.
+            synchronized (this) {
+                if (cancelled) return;
+                listener.onWriteStarting();
+            }
 
             long lastPathAt = 0;
             long lastDone = 0;

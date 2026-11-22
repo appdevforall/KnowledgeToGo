@@ -403,7 +403,9 @@ public class CloneFragment extends Fragment {
             // a phone with a system is the natural source for both the app and the system.)
             systemPresent = org.appdevforall.k2go.SystemStateEvaluator.isSystemInstalled(requireContext());
             page = Page.PREPARE;
-            if (systemPresent) setMode(Mode.HOTSPOT); else render();   // ADFA-4785: enter Send at step 1
+            // ADFA-4785: enter Send at step 1. K2GO-587: on the phone's Wi-Fi network when it is on one.
+            if (systemPresent) setMode(HotspotMode.initialFor(CloneLinkRows.onWifiNetwork(requireContext())));
+            else render();
             return;
         }
         rStage = RStage.JOIN; pasteCode.collapse();
@@ -1005,6 +1007,8 @@ public class CloneFragment extends Fragment {
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
             syncVm.stopPull();   // K2GO-576: first, so no new chunk starts after the sweep below
             transport.stop();
+            // After stopPull the marker is final: present only when the pull started to write.
+            cloneGuardHeld = org.appdevforall.k2go.InstallGuard.isLive(requireContext());
             releaseCloneEnv(false);   // ADFA-4956: overwrite aborted mid-pull, drop lock
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
@@ -1325,8 +1329,8 @@ public class CloneFragment extends Fragment {
         // tree. releaseCloneEnv() on the terminal state boots the replaced system back.
         EnvironmentLock.acquire(app, EnvironmentLock.Owner.CLONE);
         cloneLockHeld = true;
-        org.appdevforall.k2go.InstallGuard.begin(app);
-        cloneGuardHeld = true;
+        // The InstallGuard marker comes with the first write (onWriteStarting): a pull that fails
+        // before it, for example on an old pairing code, leaves the library intact.
         SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
         final String destPath = dest.getAbsolutePath();
         final SyncHandshakeHelper.SyncCredentials fcreds = creds;
@@ -1341,6 +1345,7 @@ public class CloneFragment extends Fragment {
             // K2GO-576: the pull runs on Wi-Fi and the cable at once (ChunkedPull lists, then splits).
             syncVm.startPull(app, shareConfig, fcreds, destPath,
                 new TransportEngine.SyncListener() {
+                    @Override public void onWriteStarting() { org.appdevforall.k2go.InstallGuard.begin(app); }
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
                     @Override public void onComplete(String message) {
                         // The local rootfs is now the other device's, so anything this

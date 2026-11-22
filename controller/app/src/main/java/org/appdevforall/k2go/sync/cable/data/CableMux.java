@@ -71,7 +71,6 @@ public final class CableMux implements Closeable {
     private volatile long lastRx;         // last bytes from the cable, or the end of local work
     private volatile boolean peerPings;   // the peer runs the keepalive (an older K2Go does not)
     private volatile boolean busy;        // the read thread writes to a local socket
-    private static final long PING_MS = 2_000;
 
     public CableMux(UsbLink link, Opener opener, Listener listener) {
         this.link = link;
@@ -234,13 +233,13 @@ public final class CableMux implements Closeable {
 
     /**
      * A peer that dies (app killed, phone off) does not always end our blocked USB read, so the
-     * link would look alive forever. Each side sends PING every PING_MS; PeerAlive decides when
-     * silence closes the link.
+     * link would look alive forever. Each side sends PING every PeerAlive.PING_MS; PeerAlive
+     * decides when silence closes the link.
      */
     private void keepAlive() {
         try {
             while (!closed) {
-                Thread.sleep(PING_MS);
+                Thread.sleep(PeerAlive.PING_MS);
                 if (closed) return;
                 if (PeerAlive.isDead(peerPings, busy, System.currentTimeMillis() - lastRx)) {
                     Log.w(TAG, "nothing from the peer for " + PeerAlive.DEAD_MS + " ms: link closed");

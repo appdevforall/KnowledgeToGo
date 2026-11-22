@@ -102,6 +102,8 @@ public class LibraryActivity extends AppCompatActivity
     // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
     private org.appdevforall.k2go.update.presentation.UpdateController updateController;
     private boolean otaAutoChecked = false;
+    /** K2GO-552: the admin-password notice runs once per launch, once the library is usable. */
+    private boolean authNoticeChecked = false;
 
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
@@ -831,7 +833,7 @@ public class LibraryActivity extends AppCompatActivity
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
-        if (reduceMotion()) { bootGate.setVisibility(View.GONE); return; }
+        if (reduceMotion()) { bootGate.setVisibility(View.GONE); maybeCheckAuthNotice(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("B_OPEN_FLIP");
@@ -841,6 +843,7 @@ public class LibraryActivity extends AppCompatActivity
                 if (bootGate != null) {
                     bootGate.setVisibility(View.GONE);
                 }
+                maybeCheckAuthNotice();   // K2GO-552: the notice comes after the gate is gone
             }
         });
         bootGate.playAnimation();
@@ -957,6 +960,7 @@ public class LibraryActivity extends AppCompatActivity
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
+        maybeCheckAuthNotice();
         maybeStartDiskGuardReport();   // K2GO-391
     }
 
@@ -1003,6 +1007,26 @@ public class LibraryActivity extends AppCompatActivity
         if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(this)) return;
         otaAutoChecked = true;
         updateController.checkForUpdates(false);
+    }
+
+    /** K2GO-552: once per launch, after the gate opened AND its open animation ended (the gate view is
+     *  gone, so the notice is the first thing over Home), never during a first install (same rule as
+     *  the OTA check), and only when Home says "Ready" (the services answered): warn about a broken
+     *  auto-login or a factory admin password. Home calls it when its header turns "Ready". */
+    void maybeCheckAuthNotice() {
+        if (authNoticeChecked || installing || !gateDismissed) return;
+        if (bootGate != null && bootGate.getVisibility() != View.GONE) return;
+        androidx.fragment.app.Fragment f = getSupportFragmentManager().findFragmentById(R.id.k2go_nav_host);
+        if (!(f instanceof LibraryHomeFragment) || !((LibraryHomeFragment) f).isReady()) return;
+        authNoticeChecked = true;
+        org.appdevforall.k2go.auth.presentation.AuthNoticeController.check(this, this::openAuthentication);
+    }
+
+    private void openAuthentication() {
+        currentTab = R.id.nav_settings;
+        showTab(currentTab);
+        syncSelection(currentTab);
+        openSettingsSub(SettingsSubFragment.newInstance("authentication"));
     }
 
     @Override
