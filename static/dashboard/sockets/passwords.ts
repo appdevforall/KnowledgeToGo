@@ -12,6 +12,7 @@ import {
 } from './credentials';
 import { login as kolibriLogin, KolibriAuthError } from './kolibri.session';
 import { login as forgejoLogin, ForgejoAuthError } from './forgejo.session';
+import { forgejoStatus } from './forgejo.status';
 import { verifyCalibreCredentials } from './books.query';
 
 /** One rule for the three services: Calibre-Web's default policy, the strictest of them
@@ -43,7 +44,13 @@ export const probeLogin: Probe = async (service, cred) => {
             if (e.reason === 'permission') return 'ok';   // signs in; content rights are another check
             return e.reason === 'credentials' ? 'rejected' : 'unreachable';
         }
-        if (e instanceof ForgejoAuthError) return e.reason === 'credentials' ? 'rejected' : 'unreachable';
+        if (e instanceof ForgejoAuthError) {
+            if (e.reason !== 'credentials') return 'unreachable';
+            // A Forgejo without its admin account (its seed has not run yet; the seed creates the account
+            // with the stored copy) also rejects. That is not a changed password, and Repair cannot fix
+            // it, so it is not 'rejected'. forgejoStatus owns the "admin exists" fact.
+            return (await forgejoStatus()).adminExists ? 'rejected' : 'unreachable';
+        }
         return /invalid.*cred/i.test(e instanceof Error ? e.message : '') ? 'rejected' : 'unreachable';
     }
 };
