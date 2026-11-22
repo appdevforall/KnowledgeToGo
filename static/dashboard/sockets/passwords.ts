@@ -16,9 +16,10 @@ import { login as forgejoLogin, ForgejoAuthError } from './forgejo.session';
 import { forgejoStatus } from './forgejo.status';
 import { verifyCalibreCredentials } from './books.query';
 
-/** The shortest admin password K2Go takes. Only the length counts, no mix of character kinds
- *  (NIST SP 800-63B). Calibre-Web's own policy does not apply (the hash goes to its database, see
- *  CALIBRE_SET) and Kolibri has no rule. Forgejo can ask for more (minPasswordLength). */
+/** The shortest admin password K2Go takes. With hasLetterAndDigit it is the whole rule: simple to
+ *  meet, and it keeps out the factory password. Calibre-Web's own policy does not apply (the hash
+ *  goes to its database, see CALIBRE_SET) and Kolibri has no rule. Forgejo can ask for a longer one
+ *  (minPasswordLength). */
 export const MIN_PASSWORD_LENGTH = 6;
 const FORGEJO_INI = '/etc/forgejo/app.ini';
 
@@ -40,9 +41,14 @@ export function minPasswordLength(
     return Math.max(MIN_PASSWORD_LENGTH, own);
 }
 
-/** Characters, not UTF-16 units: an emoji is one. */
+/** At least one letter and one digit, in any script. */
+export function hasLetterAndDigit(pw: string): boolean {
+    return /\p{L}/u.test(pw) && /\p{Nd}/u.test(pw);
+}
+
+/** The whole rule. Characters, not UTF-16 units: an emoji is one. */
 export function passwordFits(service: ServiceName, pw: string): boolean {
-    return [...pw].length >= minPasswordLength(service);
+    return [...pw].length >= minPasswordLength(service) && hasLetterAndDigit(pw);
 }
 
 /** 'absent': the service rejects the sign-in because the admin account is not present (never created,
@@ -189,8 +195,10 @@ export interface PasswordStatus {
     state: 'ok' | 'mismatch' | 'no_account' | 'unreachable';
     /** true: the service accepts its factory password. null: not known (not checked). */
     factoryDefault: boolean | null;
-    /** The shortest new password this service takes (minPasswordLength). */
+    /** The rule for a new password, so the app shows it from one source: the shortest length
+     *  (minPasswordLength) and whether it needs a letter and a digit (hasLetterAndDigit). */
     minLength: number;
+    letterAndDigit: boolean;
 }
 
 export async function passwordStatus(service: ServiceName, deps: PasswordDeps = DEFAULT_DEPS): Promise<PasswordStatus> {
@@ -202,14 +210,14 @@ export async function passwordStatus(service: ServiceName, deps: PasswordDeps = 
     // Calibre-Web's login limit, and the repair comes first anyway.
     if (r !== 'ok') {
         const state = r === 'rejected' ? 'mismatch' : r === 'absent' ? 'no_account' : 'unreachable';
-        return { service, state, factoryDefault: null, minLength };
+        return { service, state, factoryDefault: null, minLength, letterAndDigit: true };
     }
     if (cred.username.toLowerCase() === factory.username.toLowerCase()) {
-        return { service, state: 'ok', factoryDefault: cred.password === factory.password, minLength };
+        return { service, state: 'ok', factoryDefault: cred.password === factory.password, minLength, letterAndDigit: true };
     }
     // The stored copy is another account: the factory account can still take the public password.
     const d = await deps.probe(service, factory);
-    return { service, state: 'ok', factoryDefault: d === 'ok' ? true : d === 'rejected' ? false : null, minLength };
+    return { service, state: 'ok', factoryDefault: d === 'ok' ? true : d === 'rejected' ? false : null, minLength, letterAndDigit: true };
 }
 
 // One change per service at a time. In memory only: a restart clears it with the process.

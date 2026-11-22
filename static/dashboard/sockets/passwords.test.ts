@@ -46,10 +46,13 @@ function resetStore(): void {
     fs.rmSync(process.env.K2GO_CREDENTIALS_FILE as string, { force: true });
 }
 
-test('password rule: only the length counts', () => {
-    assert.equal(pw.passwordFits('kolibri', 'perros'), true);    // 6 characters, no other rule
-    assert.equal(pw.passwordFits('calibre', 'perro'), false);    // 5 characters
-    assert.equal(pw.passwordFits('kolibri', '\u00d1and\u00fas'), true);    // accented letters count once
+test('password rule: 6 characters with a letter and a digit', () => {
+    assert.equal(pw.passwordFits('kolibri', 'perro1'), true);    // 6 characters, a letter, a digit
+    assert.equal(pw.passwordFits('calibre', 'perr1'), false);    // 5 characters
+    assert.equal(pw.passwordFits('kolibri', 'perros'), false);   // no digit
+    assert.equal(pw.passwordFits('kolibri', '123456'), false);   // no letter
+    assert.equal(pw.passwordFits('kolibri', 'changeme'), false); // the factory password has no digit
+    assert.equal(pw.passwordFits('kolibri', '\u00d1and\u00fa1'), true);    // accented letters count once
     assert.equal(pw.minPasswordLength('calibre'), pw.MIN_PASSWORD_LENGTH);
 });
 
@@ -64,14 +67,14 @@ test('status: factory default in use', async () => {
     resetStore();
     const f = fakeService({ Admin: 'changeme' });
     assert.deepEqual(await pw.passwordStatus('kolibri', f.deps),
-        { service: 'kolibri', state: 'ok', factoryDefault: true, minLength: 6 });
+        { service: 'kolibri', state: 'ok', factoryDefault: true, minLength: 6, letterAndDigit: true });
 });
 
 test('status: changed in the service only -> mismatch, with one sign-in attempt', async () => {
     resetStore();
     const f = fakeService({ Admin: 'Other-pass-1' });
     assert.deepEqual(await pw.passwordStatus('calibre', f.deps),
-        { service: 'calibre', state: 'mismatch', factoryDefault: null, minLength: 6 });
+        { service: 'calibre', state: 'mismatch', factoryDefault: null, minLength: 6, letterAndDigit: true });
     assert.equal(f.calls.length, 1);
 });
 
@@ -85,7 +88,7 @@ test('status: admin account not present -> no_account, not mismatch', async () =
     resetStore();
     const f = fakeService({ someoneElse: 'x' });
     assert.deepEqual(await pw.passwordStatus('forgejo', f.deps),
-        { service: 'forgejo', state: 'no_account', factoryDefault: null, minLength: 8 });
+        { service: 'forgejo', state: 'no_account', factoryDefault: null, minLength: 8, letterAndDigit: true });
 });
 
 test('change: admin account not present -> no_account, nothing set', async () => {
@@ -104,7 +107,7 @@ test('change: stored copy first, then set, then save, then the new one signs in'
     assert.deepEqual(f.calls, ['probe:Admin:changeme', 'set:Admin:K2go-Test-1', 'probe:Admin:K2go-Test-1']);
     assert.equal(cred.getCredential('kolibri').password, 'K2go-Test-1');
     assert.deepEqual(await pw.passwordStatus('kolibri', f.deps),
-        { service: 'kolibri', state: 'ok', factoryDefault: false, minLength: 6 });
+        { service: 'kolibri', state: 'ok', factoryDefault: false, minLength: 6, letterAndDigit: true });
 });
 
 test('change: a weak password never reaches the service', async () => {
