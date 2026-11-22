@@ -9,7 +9,8 @@ means a chain: run the steps in order, or one step calls the next. `Test+` marks
 | Name in Actions | File | When it runs | What it changes |
 |---|---|---|---|
 | App+Play: 1. send candidate to Play Console | `app-play-1-candidate.yml` | Manual, from `main` | Sends the Play AAB to Google review, tags `vX.Y.Z-rc.N`, archives the AAB to R2 |
-| App+Play: 2. publish release | `app-play-2-release.yml` | Manual, after Google approves the candidate | Final AAB to the Play beta track, final tag, GitHub Release, website APKs on R2, OTA `update.json` |
+| App+Play: 2. publish release | `app-play-2-release.yml` | Manual, after Google approves the candidate | Final AAB to the Play beta track, final tag, GitHub Release, website APKs on R2, OTA `update.json`; then calls `app-fdroid-repo.yml` |
+| App: publish F-Droid repo | `app-fdroid-repo.yml` | Called by App+Play step 2; manual (staging by default) | F-Droid repo on R2: `fdroid/` (live) or `fdroid-staging/` |
 | App: Firebase distribution | `app-firebase.yml` | Each push to `main` or to a branch with a ticket key | Tester build on Firebase |
 | Bins: 1. build static (PRoot) | `bins-1-build.yml` | Weekly (Sunday) and manual | New `binaries-*` release; then calls step 2 |
 | Bins: 2. archive + retention | `bins-2-archive.yml` | Called by step 1, or manual (dry run option) | Archives binaries to R2, prunes old releases |

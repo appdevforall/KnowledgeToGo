@@ -1,0 +1,81 @@
+name: "App: publish F-Droid repo"
+
+# K2GO-421: the self-hosted F-Droid repository on R2 (k2go-apk-repo, prefix fdroid/).
+# Design: controller/docs/ADR-K2GO-421-self-hosted-fdroid-repo.md. Tool: tools/fdroid-repo/.
+#
+# - Called by "App+Play: 2. publish release" after the release APKs are on R2 (staging false).
+# - Manual: publish a release that is on R2 already. Staging (default) writes fdroid-staging/,
+#   a separate repo with its own URL, so the live repo does not change.
+# The repo index is signed with the app signing key (the same secrets as the APK).
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+      staging:
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (REQUIRED). Type it to confirm, for example v1.2.0. Its fdroid APK must be on R2."
+        required: true
+      staging:
+        description: "Publish to fdroid-staging/ instead of the live fdroid/"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish the F-Droid repository
+    runs-on: ubuntu-latest
+    # Two runs at once would race on the same index.
+    concurrency:
+      group: fdroid-repo
+      cancel-in-progress: false
+    env:
+      TAG: ${{ inputs.tag }}
+      PREFIX: ${{ inputs.staging && 'fdroid-staging' || 'fdroid' }}
+      BASE_URL: https://k2go-download.appdevforall.org
+      BUCKET_NAME: k2go-apk-repo
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Require a release tag
+        run: |
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'$TAG' is not a release tag (vX.Y.Z). Release candidates do not go to the F-Droid repo."
+            exit 1
+          fi
+
+      - name: Unit tests (fdroid-repo)
+        working-directory: tools/fdroid-repo
+        run: python3 -m unittest -v test_fdroid_repo
+
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE_BASE64 }}
+        run: echo "$ENCODED_STRING" | base64 -d > "$RUNNER_TEMP/keystore.jks"
+
+      - name: Publish
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          KEYSTORE_FILE: ${{ runner.temp }}/keystore.jks
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          WORK: ${{ runner.temp }}/fdroid-work
+        run: bash tools/fdroid-repo/publish.sh
+
+      - name: Cleanup Keystore
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keystore.jks" "$RUNNER_TEMP/fdroid-work/keystore.jks"

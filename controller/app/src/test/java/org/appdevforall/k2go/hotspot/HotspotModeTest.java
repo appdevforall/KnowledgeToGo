@@ -26,6 +26,12 @@ public class HotspotModeTest {
     }
 
     @Test
+    public void startsOnTheWifiNetworkOnlyWhenThePhoneIsOnOne() {
+        assertEquals(HotspotMode.Mode.WIFI, HotspotMode.initialFor(true));
+        assertEquals(HotspotMode.Mode.HOTSPOT, HotspotMode.initialFor(false));
+    }
+
+    @Test
     public void hotspotHoldsAndWifiReleases() {
         FakePort port = new FakePort();
         HotspotMode m = new HotspotMode(port, HotspotMode.Mode.HOTSPOT);
