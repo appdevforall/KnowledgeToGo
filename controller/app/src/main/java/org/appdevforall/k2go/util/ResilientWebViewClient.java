@@ -71,17 +71,28 @@ public abstract class ResilientWebViewClient extends WebViewClient {
     }
 
     /**
-     * K2GO-580: a page's own sub-requests to the internet (map tiles, fonts, scripts) are dropped
-     * unless {@code NetworkCostAdmission.allowsAutomatic} allows them (Wi-Fi). Local hosts (the box,
-     * the local network) always pass, and so does a page the user opens (main frame). A subclass that
+     * K2GO-588: an in-app WebView shows the box and the app's own pages. Local hosts (the box, the
+     * local network) always load. An internet page (main frame) never opens here. A page's own
+     * internet sub-requests (map tiles, fonts) load only when {@code NetworkCostAdmission.allowsAutomatic}
+     * allows them: the privacy choice is on and the network is unmetered (K2GO-580). A subclass that
      * serves its own requests returns super for the rest.
      */
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        if (request.isForMainFrame()
-                || org.appdevforall.k2go.networkpolicy.domain.HostScope.isLocal(request.getUrl().getHost())
-                || org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(view.getContext())) {
+        if (org.appdevforall.k2go.networkpolicy.domain.HostScope.isLocal(request.getUrl().getHost())) {
             return null;   // load normally
+        }
+        if (!request.isForMainFrame()
+                && org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(view.getContext())) {
+            return null;
+        }
+        if (request.isForMainFrame()) {
+            // An internet page in place of a blank screen: say why it does not open.
+            String msg = android.text.TextUtils.htmlEncode(
+                    view.getContext().getString(org.appdevforall.k2go.R.string.k2go_webview_offline_page));
+            byte[] html = ("<html><body style='font-family:sans-serif;padding:16px'>" + msg + "</body></html>")
+                    .getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            return new WebResourceResponse("text/html", "utf-8", new java.io.ByteArrayInputStream(html));
         }
         return new WebResourceResponse("text/plain", "utf-8", 204, "No Content",
                 null, new java.io.ByteArrayInputStream(new byte[0]));

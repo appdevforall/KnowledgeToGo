@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import org.appdevforall.k2go.BuildConfig;
 import org.appdevforall.k2go.analytics.domain.AnalyticsBuckets;
-import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.appdevforall.k2go.delivery.data.InstallId;
 import org.appdevforall.k2go.feedback.data.FeedbackDiagnostics;
 
@@ -18,7 +18,7 @@ import org.appdevforall.k2go.feedback.data.FeedbackDiagnostics;
  * shared store-and-forward backbone and the Cloudflare Worker are out of scope for now.
  *
  * <p><b>Consent-gated:</b> every method is a no-op unless the operator has opted in
- * ({@link AnalyticsConsent}, default OFF). Collection is also toggled at the SDK level through
+ * ({@link OnlineConsent}, default OFF). Collection is also toggled at the SDK level through
  * {@link FirebaseAnalyticsBridge} so nothing is gathered while consent is OFF. Advertising ID /
  * SSAID collection is disabled in the standard-flavor manifest.
  *
@@ -50,7 +50,7 @@ public final class AnalyticsClient {
         if (!BuildConfig.ANALYTICS_ENABLED) {
             return;   // fdroid flavor, or standard without google-services.json: nothing to sync
         }
-        FirebaseAnalyticsBridge.setCollectionEnabled(app, AnalyticsConsent.isEnabled(app));
+        FirebaseAnalyticsBridge.setCollectionEnabled(app, OnlineConsent.isEnabled(app));
     }
 
     // -------------------------------------------------------------- app lifecycle
@@ -188,7 +188,7 @@ public final class AnalyticsClient {
         if (!BuildConfig.ANALYTICS_ENABLED) {
             return false;   // fdroid flavor, or standard without google-services.json: analytics off
         }
-        boolean consent = AnalyticsConsent.isEnabled(app);
+        boolean consent = OnlineConsent.isEnabled(app);
         FirebaseAnalyticsBridge.setCollectionEnabled(app, consent);
         return consent;
     }

@@ -8,19 +8,8 @@
     <string name="connection_log_label">سجل الخادم</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">الإعدادات</string>
-    <string name="setup_title">الإعداد الأولي</string>
-    <string name="setup_welcome">مرحبًا بك في معالج إعداد %1$s.\n\nلكي يعمل بشكل صحيح، نحتاج إلى الأذونات التالية:</string>
-    <string name="setup_continue">متابعة</string>
-    <string name="setup_perm_battery">تعطيل تحسين البطارية</string>
-    <string name="setup_perm_notifications">الإشعارات الفورية</string>
-    <string name="setup_perm_storage">الوصول إلى التخزين المحلي</string>
-    <string name="setup_perm_overlay">العرض فوق التطبيقات الأخرى</string>
-    <string name="setup_lang_title">لغة المحتوى</string>
-    <string name="setup_lang_desc">يرجى اختيار لغتك؛ ستُؤخذ في الاعتبار عند طلب المحتوى.</string>
     <string name="notif_perm_denied">تم رفض إذن الإشعارات</string>
     <string name="notif_perm_granted">تم منح إذن الإشعارات</string>
-    <string name="revoke_permission_warning">لإلغاء الأذونات، يجب فعل ذلك من إعدادات النظام.</string>
     <string name="dash_device">جارٍ تحميل الجهاز…</string>
     <string name="dash_main_storage">التخزين</string>
     <string name="dash_ram_memory">ذاكرة الوصول العشوائي</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">تم حفظ الإعدادات</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">بدعم من App Dev for All</string>
-    <string name="setup_manage_all_permissions">إدارة جميع الأذونات</string>
     <string name="update_dialog_title">إصدار جديد متاح: %1$s</string>
     <string name="update_dialog_message">هل تريد تحديث التطبيق؟\n\nما الجديد:\n%1$s</string>
     <string name="update_dialog_positive">تحديث</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">جارٍ إيقاف بيئة IIAB بأمان…</string>
     <string name="log_server_stop_error">[خطأ الإيقاف] %1$s</string>
     <string name="log_critical_binary_missing">حرج: %1$s مفقود من المكتبات الأصلية!</string>
-    <string name="setup_back_blocked_msg">يرجى إكمال الإعداد للمتابعة.</string>
     <string name="sync_scanner_prompt">امسح رمز QR الخاص بمضيف K2Go</string>
     <string name="kiwix_dialog_lang_label">لغة Kiwix</string>
     <string name="kiwix_dialog_variants_label">متغيرات ZIM المتاحة</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">تم الاستيراد، لكن هذه النسخة الاحتياطية لا تحتوي على بيان rootfs مضمَّن، لذا تعذّر التحقق منها بالكامل.</string>
     <string name="install_error_corrupt">لم تجتز هذه النسخة الاحتياطية فحص السلامة (قد تكون تالفة أو مُعدَّلة)، لذا لم تُستخدم.</string>
     <string name="install_warn_no_checksum">تم الاستيراد. هذه النسخة الاحتياطية ليس لها مجموع تحقق للسلامة لأنها أُنشئت على جهاز محمول.</string>
-    <string name="settings_nav_setup">الإعداد</string>
-    <string name="settings_nav_feedback">الملاحظات</string>
-    <string name="settings_nav_about">حول</string>
-    <string name="about_version">الإصدار %1$s</string>
-    <string name="settings_title">الإعدادات</string>
-    <string name="action_done">تم</string>
     <string name="feedback_type_label">النوع</string>
     <string name="feedback_cat_bug">خطأ</string>
     <string name="feedback_cat_suggestion">اقتراح</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">إرسال التقرير</string>
     <string name="crash_report_dismiss">تجاهل</string>
     <string name="rsync_error_process_killed">أوقف أندرويد عملية النقل (حد عمليات الخلفية للنظام). لمنع ذلك، فعّل ”تعطيل قيود العمليات الفرعية“ في خيارات المطوّر، أو أعدّ تحسين ADB.</string>
-    <string name="analytics_enroll_title">الخصوصية والتحليلات</string>
-    <string name="analytics_enroll_body">يجمع %1$s معلومات استخدام مجهولة المصدر لمساعدتنا في إصلاح الأخطاء وتحسين التطبيق. لا يتم جمع أو مشاركة أي معلومات شخصية، ولا يتم تتبّع أي شيء عن الأشخاص الذين يستخدمون المحتوى الذي تشاركه.\n\nيرسل خيار «مشاركة بيانات مجهولة» هذه المعلومات عندما يكون الهاتف متصلاً بالإنترنت. ولا يرسل خيار «الإبقاء دون اتصال» أي شيء، حتى لو كان الهاتف متصلاً بالإنترنت.</string>
-    <string name="analytics_enroll_accept">مشاركة بيانات مجهولة</string>
     <string name="analytics_enroll_decline">الإبقاء دون اتصال</string>
-    <string name="settings_analytics_title">مشاركة بيانات مجهولة</string>
-    <string name="settings_analytics_desc">معلومات استخدام مجهولة لإصلاح الأخطاء وتحسين التطبيق — لا بيانات شخصية ولا شيء عن الأشخاص الذين يستخدمون المحتوى الذي تشاركه. يمكن تغييره في أي وقت.</string>
     <string name="phantom_warn_title">قد يُقاطع النقل</string>
     <string name="phantom_warn_body">في أندرويد 12+ يمكن للنظام إيقاف النقل أثناء تشغيله في الخلفية (حد العمليات الوهمية). لمنع ذلك، عطّل ”قيود العمليات الفرعية“، أو تابع على أي حال — قد تُقاطع عمليات النقل الكبيرة.</string>
     <string name="phantom_warn_open_dev">فتح خيارات المطوّر</string>
     <string name="phantom_warn_continue">المتابعة على أي حال</string>
-    <string name="setup_app_lang_title">لغة التطبيق</string>
-    <string name="setup_app_lang_desc">اختر لغة شاشات التطبيق نفسه. ”افتراضي النظام“ يتبع هاتفك.</string>
-    <string name="setup_app_lang_system">افتراضي النظام (اتباع الهاتف)</string>
-    <string name="setup_language_section">اللغة</string>
     <string name="portal_download_started">جارٍ تنزيل %1$s…</string>
     <string name="portal_download_failed">تعذّر بدء التنزيل.</string>
     <string name="lohs_label">نقطة اتصال محلية فقط</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">إصدار التطبيق</string>
     <string name="k2go_settings_check_updates">التحقّق من التحديثات</string>
     <string name="k2go_settings_permissions">الأذونات</string>
-    <string name="k2go_settings_usage_stats">مشاركة إحصاءات الاستخدام</string>
-    <string name="k2go_settings_crash_reports">إرسال تقارير الأعطال</string>
     <string name="k2go_settings_licenses">تراخيص المصدر المفتوح</string>
     <string name="k2go_settings_privacy">الخصوصية</string>
     <string name="k2go_settings_power_users">للمستخدمين المتقدّمين.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">اكتمل النقل. المحتوى موجود الآن على الهاتف الآخر.</string>
     <string name="k2go_cx_share_cancelled">أوقف الهاتف الآخر النقل.</string>
     <string name="k2go_cx_share_ended">انتهت المشاركة.</string>
-    <string name="k2go_gm_catalogs_update">تحديث الفهارس</string>
-    <string name="k2go_gm_catalogs_updating">جارٍ تحديث الفهارس...</string>
-    <string name="k2go_gm_catalogs_bundled">الفهارس: مضمّنة مع التطبيق</string>
-    <string name="k2go_gm_catalogs_checked">آخر فحص للفهارس: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">تعذّرت قراءة قائمة الملفات من الهاتف المُرسِل.</string>
     <string name="k2go_clone_cable_err_no_path">انقطع الاتصال بالهاتف المُرسِل. انضم إلى نقطة اتصاله أو صِل كابل USB.</string>
@@ -1700,6 +1666,21 @@
     <string name="k2go_auth_notice_never_confirm">إيقاف التذكيرات</string>
     <string name="k2go_auth_notice_never_keep">إبقاء التذكيرات</string>
     <string name="k2go_auth_list_hint">كلمات مرور المسؤول التي يستخدمها K2Go للبطاقات: اقرأ كتابًا، وخذ دورة، واستضف الشيفرة. غيّرها هنا ليبقى التطبيق والصندوق متوافقين.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">الخصوصية والمحتوى عبر الإنترنت</string>
+    <string name="k2go_online_accept_usage">مشاركة بيانات الاستخدام وطلب المحتوى عبر الإنترنت</string>
+    <string name="k2go_online_accept_crash">إرسال تقارير الأعطال وطلب المحتوى عبر الإنترنت</string>
+    <string name="k2go_online_body_usage">يمكن لـ %1$s مشاركة بيانات استخدام مجهولة المصدر وتقارير الأعطال، ويمكنه التحقق من تحديثات الكتالوج والتطبيق تلقائيًا عندما يكون الهاتف متصلاً بشبكة واي فاي. لا يتم جمع أي معلومات شخصية، ولا يتم تتبّع أي شيء عن الأشخاص الذين يستخدمون المحتوى الذي تشاركه.\n\nالإبقاء دون اتصال: لا يتصل التطبيق بالإنترنت من تلقاء نفسه.</string>
+    <string name="k2go_online_body_crash">يمكن لـ %1$s إرسال تقارير الأعطال، ويمكنه التحقق من تحديثات الكتالوج والتطبيق تلقائيًا عندما يكون الهاتف متصلاً بشبكة واي فاي. لا يتم جمع أي معلومات شخصية.\n\nالإبقاء دون اتصال: لا يتصل التطبيق بالإنترنت من تلقاء نفسه.</string>
+    <string name="k2go_webview_offline_page">هذه الصفحة موجودة على الإنترنت. الصفحات داخل التطبيق تعمل دون اتصال فقط.</string>
+    <string name="k2go_offline_action_title">يتطلب هذا الاتصال بالإنترنت</string>
+    <string name="k2go_offline_action_msg">لقد اخترت \"الإبقاء دون اتصال\". للقيام بذلك، يجب أن يتصل التطبيق بالإنترنت. يمكنك السماح بذلك لهذا الإجراء فقط.</string>
+    <string name="k2go_offline_action_allow_once">السماح هذه المرة فقط</string>
+    <string name="k2go_feedback_kept_offline">التطبيق مضبوط على \"الإبقاء دون اتصال\"، لذا لا يرسل الملاحظات. لتغيير ذلك، فعّل \"%1$s\" في الإعدادات &gt; حول.</string>
+    <string name="k2go_feedback_third_party_title">يمكن أن يتصل هذا بالإنترنت</string>
+    <string name="k2go_feedback_third_party_msg">لقد اخترت \"الإبقاء دون اتصال\". تُرسل الملاحظات باستخدام تطبيق آخر، مثل البريد الإلكتروني، ويمكن لهذا التطبيق الاتصال بالإنترنت.</string>
+    <string name="k2go_privacy_kept_offline">التطبيق مضبوط على \"الإبقاء دون اتصال\"، لذا تبقى هذه الخدمات متوقفة. لتغيير ذلك، فعّل \"%1$s\" في الإعدادات &gt; حول.</string>
+    <string name="k2go_feedback_send_anyway">إرسال على أي حال</string>
     <string name="k2go_mod_phase_canceled">أُلغي</string>
     <string name="k2go_setup_modules_stopped">توقّف التثبيت. تحقّق من كل وحدة أدناه.</string>
 </resources>

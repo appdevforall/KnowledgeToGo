@@ -8,19 +8,8 @@
     <string name="connection_log_label">Дневник сервера</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">ПОДЕШАВАЊА</string>
-    <string name="setup_title">Почетно подешавање</string>
-    <string name="setup_welcome">Добро дошли у чаробњак за подешавање %1$s.\n\nДа би радила исправно, потребне су нам следеће дозволе:</string>
-    <string name="setup_continue">Настави</string>
-    <string name="setup_perm_battery">Онемогући оптимизацију батерије</string>
-    <string name="setup_perm_notifications">Push обавештења</string>
-    <string name="setup_perm_storage">Приступ локалном складишту</string>
-    <string name="setup_perm_overlay">Приказ преко других апликација</string>
-    <string name="setup_lang_title">Језик садржаја</string>
-    <string name="setup_lang_desc">Изаберите свој језик јер ће се узети у обзир при захтевању садржаја.</string>
     <string name="notif_perm_denied">Дозвола за обавештења одбијена</string>
     <string name="notif_perm_granted">Дозвола за обавештења одобрена</string>
-    <string name="revoke_permission_warning">Да бисте опозвали дозволе, то морате урадити из системских подешавања.</string>
     <string name="dash_device">Учитавање уређаја…</string>
     <string name="dash_main_storage">Складиште</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Подешавања сачувана</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">покреће App Dev for All</string>
-    <string name="setup_manage_all_permissions">Управљај свим дозволама</string>
     <string name="update_dialog_title">Доступна нова верзија: %1$s</string>
     <string name="update_dialog_message">Да ли желите да ажурирате апликацију?\n\nШта је ново:\n%1$s</string>
     <string name="update_dialog_positive">Ажурирај</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Уредно заустављање IIAB окружења…</string>
     <string name="log_server_stop_error">[Грешка заустављања] %1$s</string>
     <string name="log_critical_binary_missing">КРИТИЧНО: %1$s недостаје из native библиотека!</string>
-    <string name="setup_back_blocked_msg">Завршите подешавање да бисте наставили.</string>
     <string name="sync_scanner_prompt">Скенирајте QR код K2Go домаћина</string>
     <string name="kiwix_dialog_lang_label">Kiwix језик</string>
     <string name="kiwix_dialog_variants_label">Доступне ZIM варијанте</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Увезено, али ова резервна копија нема уграђен rootfs manifest, па се није могла потпуно верификовати.</string>
     <string name="install_error_corrupt">Ова резервна копија није прошла проверу интегритета (можда је оштећена или измењена), па није коришћена.</string>
     <string name="install_warn_no_checksum">Увезено. Ова резервна копија нема контролну суму интегритета јер је креирана на мобилном уређају.</string>
-    <string name="settings_nav_setup">Подешавање</string>
-    <string name="settings_nav_feedback">Повратне информације</string>
-    <string name="settings_nav_about">О апликацији</string>
-    <string name="about_version">Верзија %1$s</string>
-    <string name="settings_title">Подешавања</string>
-    <string name="action_done">Готово</string>
     <string name="feedback_type_label">Тип</string>
     <string name="feedback_cat_bug">Грешка</string>
     <string name="feedback_cat_suggestion">Предлог</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Пошаљи извештај</string>
     <string name="crash_report_dismiss">Одбаци</string>
     <string name="rsync_error_process_killed">Android је зауставио процес преноса (системско ограничење позадинских процеса). Да бисте то спречили, омогућите „Онемогући ограничења подређених процеса“ у Опцијама за програмере, или подесите ADB оптимизацију.</string>
-    <string name="analytics_enroll_title">Приватност и аналитика</string>
-    <string name="analytics_enroll_body">%1$s прикупља анонимне податке о коришћењу да би нам помогао да исправимо грешке и побољшамо апликацију. Не прикупљају се нити деле лични подаци и не прати се ништа о људима који користе ваш дељени садржај.\n\nДели анонимне податке шаље ове податке када је телефон на мрежи. Задржи офлајн не шаље ништа, чак и када је телефон на мрежи.</string>
-    <string name="analytics_enroll_accept">Дели анонимне податке</string>
     <string name="analytics_enroll_decline">Задржи офлајн</string>
-    <string name="settings_analytics_title">Дели анонимне податке</string>
-    <string name="settings_analytics_desc">Анонимни подаци о коришћењу за исправку грешака и побољшање апликације — без личних података и ништа о људима који користе ваш дељени садржај. Може се променити било кад.</string>
     <string name="phantom_warn_title">Пренос може бити прекинут</string>
     <string name="phantom_warn_body">На Android 12+ систем може зауставити пренос док ради у позадини (ограничење phantom процеса). Да бисте то спречили, онемогућите „ограничења подређених процеса“, или ипак наставите — велики преноси могу бити прекинути.</string>
     <string name="phantom_warn_open_dev">Отвори Опције за програмере</string>
     <string name="phantom_warn_continue">Ипак настави</string>
-    <string name="setup_app_lang_title">Језик апликације</string>
-    <string name="setup_app_lang_desc">Изаберите језик за екране саме апликације. „Системски подразумевано“ прати ваш телефон.</string>
-    <string name="setup_app_lang_system">Системски подразумевано (прати телефон)</string>
-    <string name="setup_language_section">Језик</string>
     <string name="portal_download_started">Преузимање %1$s…</string>
     <string name="portal_download_failed">Није могуће започети преузимање.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -591,8 +563,6 @@
     <string name="k2go_settings_app_version">Верзија апликације</string>
     <string name="k2go_settings_check_updates">Провери ажурирања</string>
     <string name="k2go_settings_permissions">Дозволе</string>
-    <string name="k2go_settings_usage_stats">Дели статистику коришћења</string>
-    <string name="k2go_settings_crash_reports">Пошаљи извештаје о падовима</string>
     <string name="k2go_settings_licenses">Лиценце отвореног кода</string>
     <string name="k2go_settings_privacy">Приватност</string>
     <string name="k2go_settings_power_users">За напредне кориснике.</string>
@@ -1604,10 +1574,6 @@
     <string name="k2go_cx_share_complete">Пренос је завршен. Садржај је на другом телефону.</string>
     <string name="k2go_cx_share_cancelled">Други телефон је зауставио пренос.</string>
     <string name="k2go_cx_share_ended">Дељење је завршено.</string>
-    <string name="k2go_gm_catalogs_update">Ажурирај каталоге</string>
-    <string name="k2go_gm_catalogs_updating">Ажурирање каталога...</string>
-    <string name="k2go_gm_catalogs_bundled">Каталози: укључени у апликацију</string>
-    <string name="k2go_gm_catalogs_checked">Каталози проверени: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Није могуће прочитати листу датотека са телефона пошиљаоца.</string>
     <string name="k2go_clone_cable_err_no_path">Веза са телефоном пошиљаоца је изгубљена. Повежите се на његов хотспот или прикључите USB кабл.</string>
@@ -1710,6 +1676,21 @@
     <string name="k2go_auth_notice_never_confirm">Искључи подсетнике</string>
     <string name="k2go_auth_notice_never_keep">Задржи подсетнике</string>
     <string name="k2go_auth_list_hint">Администраторске лозинке које K2Go користи за Књиге, Курсеве и Хостуј код. Мењајте их овде, да би апликација и сервер остали усклађени.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Приватност и онлајн садржај</string>
+    <string name="k2go_online_accept_usage">Дели податке о коришћењу и захтевај онлајн садржај</string>
+    <string name="k2go_online_accept_crash">Пошаљи извештаје о падовима и захтевај онлајн садржај</string>
+    <string name="k2go_online_body_usage">%1$s може да дели анонимне податке о коришћењу и извештаје о падовима, и може сам да проверава ажурирања каталога и апликације када је телефон повезан на Wi-Fi. Не прикупљају се лични подаци и не прати се ништа о људима који користе ваш дељени садржај.\n\nЗадржи офлајн: апликација се сама не повезује на интернет.</string>
+    <string name="k2go_online_body_crash">%1$s може да шаље извештаје о падовима, и може сам да проверава ажурирања каталога и апликације када је телефон повезан на Wi-Fi. Не прикупљају се лични подаци.\n\nЗадржи офлајн: апликација се сама не повезује на интернет.</string>
+    <string name="k2go_webview_offline_page">Ова страница је на интернету. Странице у апликацији раде само офлајн.</string>
+    <string name="k2go_offline_action_title">За ово је потребан интернет</string>
+    <string name="k2go_offline_action_msg">Изабрали сте \"Задржи офлајн\". Да би ово урадила, апликација мора да се повеже на интернет. Можете то дозволити само за ову радњу.</string>
+    <string name="k2go_offline_action_allow_once">Дозволи само овај пут</string>
+    <string name="k2go_feedback_kept_offline">Апликација је подешена на \"Задржи офлајн\", па не шаље повратне информације. Да бисте то променили, укључите \"%1$s\" у Подешавања &gt; О апликацији.</string>
+    <string name="k2go_feedback_third_party_title">Ово може да се повеже на интернет</string>
+    <string name="k2go_feedback_third_party_msg">Изабрали сте \"Задржи офлајн\". Повратне информације се шаљу другом апликацијом, на пример имејлом, и та апликација може да се повеже на интернет.</string>
+    <string name="k2go_privacy_kept_offline">Апликација је подешена на \"Задржи офлајн\", па ове услуге остају искључене. Да бисте то променили, укључите \"%1$s\" у Подешавања &gt; О апликацији.</string>
+    <string name="k2go_feedback_send_anyway">Ипак пошаљи</string>
     <string name="k2go_mod_phase_canceled">Отказано</string>
     <string name="k2go_setup_modules_stopped">Инсталација је заустављена. Проверите сваки модул испод.</string>
 </resources>

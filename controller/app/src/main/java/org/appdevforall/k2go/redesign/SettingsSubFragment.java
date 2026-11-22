@@ -22,7 +22,7 @@ import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.applang.data.LanguageResolver;
 import org.appdevforall.k2go.applang.domain.AppLanguage;
 import org.appdevforall.k2go.applang.domain.SupportedAppLanguages;
-import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -187,8 +187,9 @@ public class SettingsSubFragment extends Fragment {
                 v -> openSub("about:version"));
         // ADFA-4984: manual OTA entry ("update on the air"). LibraryActivity owns the UpdateController.
         // K2GO-403: hidden in the fdroid build, which ships no in-app updater (updates come from F-Droid).
+        View check = null;
         if (org.appdevforall.k2go.BuildConfig.OTA_ENABLED) {
-            SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
+            check = SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
                 if (getActivity() instanceof LibraryActivity) {
                     org.appdevforall.k2go.update.presentation.UpdateController uc =
                             ((LibraryActivity) getActivity()).updateController();
@@ -196,22 +197,22 @@ public class SettingsSubFragment extends Fragment {
                 }
             });
         }
+        final View needsInternet = check;
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
-        // ADFA-5337: hide the usage-statistics toggle when analytics is compiled out (no
-        // google-services.json), since there's nothing to share and the switch would do nothing.
-        if (org.appdevforall.k2go.BuildConfig.ANALYTICS_ENABLED) {
-            SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_usage_stats), AnalyticsConsent.isEnabled(ctx), checked -> {
-                AnalyticsConsent.setEnabled(ctx, checked);
-                org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).applyConsent();
-            });
-        }
-        // K2GO-401: crash reports (Sentry -> GlitchTip) are FOSS and unconditional, so the toggle
-        // always shows. Pref-only: DiskGuard honors it per capture (immediate); the startup-gated
-        // Sentry init applies on the next launch. (Immediate runtime apply was dropped: a mid-session
-        // Sentry re-init disturbs the uncaught-handler order IIABApplication establishes at startup.)
-        SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_crash_reports),
-                org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(ctx),
-                checked -> org.appdevforall.k2go.delivery.data.CrashReportConsent.setEnabled(ctx, checked));
+        // K2GO-588: the one privacy choice (usage data where the build has analytics, crash reports,
+        // automatic connections). OnlineChoiceEffects applies a change at once.
+        SettingsUi.toggle(ctx, list,
+                getString(org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.choiceLabel()),
+                OnlineConsent.isEnabled(ctx), checked -> {
+            OnlineConsent.setEnabled(ctx, checked);
+            org.appdevforall.k2go.delivery.OnlineChoiceEffects.apply(ctx);
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
+            if (getActivity() != null) {
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(
+                        getActivity().findViewById(R.id.fab_feedback));
+            }
+        });
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
     }
 

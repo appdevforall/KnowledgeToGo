@@ -8,19 +8,8 @@
     <string name="connection_log_label">Serverlogboek</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">INSTELLINGEN</string>
-    <string name="setup_title">Eerste installatie</string>
-    <string name="setup_welcome">Welkom bij de installatiewizard van %1$s.\n\nOm goed te werken hebben we de volgende machtigingen nodig:</string>
-    <string name="setup_continue">Doorgaan</string>
-    <string name="setup_perm_battery">Batterijoptimalisatie uitschakelen</string>
-    <string name="setup_perm_notifications">Pushmeldingen</string>
-    <string name="setup_perm_storage">Toegang tot lokale opslag</string>
-    <string name="setup_perm_overlay">Boven andere apps weergeven</string>
-    <string name="setup_lang_title">Inhoudstaal</string>
-    <string name="setup_lang_desc">Kies je taal; hiermee wordt rekening gehouden bij het aanvragen van inhoud.</string>
     <string name="notif_perm_denied">Meldingsmachtiging geweigerd</string>
     <string name="notif_perm_granted">Meldingsmachtiging verleend</string>
-    <string name="revoke_permission_warning">Om machtigingen in te trekken, moet je dat doen via de systeeminstellingen.</string>
     <string name="dash_device">Apparaat laden…</string>
     <string name="dash_main_storage">Opslag</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Instellingen opgeslagen</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">mogelijk gemaakt door App Dev for All</string>
-    <string name="setup_manage_all_permissions">Alle machtigingen beheren</string>
     <string name="update_dialog_title">Nieuwe versie beschikbaar: %1$s</string>
     <string name="update_dialog_message">Wil je de applicatie bijwerken?\n\nWat is er nieuw:\n%1$s</string>
     <string name="update_dialog_positive">Bijwerken</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB-omgeving netjes stoppen…</string>
     <string name="log_server_stop_error">[Stopfout] %1$s</string>
     <string name="log_critical_binary_missing">KRITIEK: %1$s ontbreekt in de native libs!</string>
-    <string name="setup_back_blocked_msg">Voltooi de installatie om door te gaan.</string>
     <string name="sync_scanner_prompt">Scan de QR-code van de K2Go-host</string>
     <string name="kiwix_dialog_lang_label">Kiwix-taal</string>
     <string name="kiwix_dialog_variants_label">Beschikbare ZIM-varianten</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Geïmporteerd, maar deze back-up heeft geen ingebed rootfs-manifest, dus kon niet volledig worden geverifieerd.</string>
     <string name="install_error_corrupt">Deze back-up is niet door de integriteitscontrole gekomen (mogelijk beschadigd of gewijzigd), dus is niet gebruikt.</string>
     <string name="install_warn_no_checksum">Geïmporteerd. Deze back-up heeft geen integriteitscontrolesom omdat die op een mobiel apparaat is gemaakt.</string>
-    <string name="settings_nav_setup">Installatie</string>
-    <string name="settings_nav_feedback">Feedback</string>
-    <string name="settings_nav_about">Over</string>
-    <string name="about_version">Versie %1$s</string>
-    <string name="settings_title">Instellingen</string>
-    <string name="action_done">Klaar</string>
     <string name="feedback_type_label">Type</string>
     <string name="feedback_cat_bug">Bug</string>
     <string name="feedback_cat_suggestion">Suggestie</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Rapport verzenden</string>
     <string name="crash_report_dismiss">Negeren</string>
     <string name="rsync_error_process_killed">Android heeft het overdrachtsproces gestopt (systeemlimiet voor achtergrondprocessen). Om dit te voorkomen, schakel je “Beperkingen onderliggende processen uitschakelen” in bij Ontwikkelaarsopties, of stel je de ADB-optimalisatie in.</string>
-    <string name="analytics_enroll_title">Privacy en analyse</string>
-    <string name="analytics_enroll_body">%1$s verzamelt anonieme gebruiksinformatie om ons te helpen bugs op te lossen en de app te verbeteren. Er wordt geen persoonlijke informatie verzameld of gedeeld, en er wordt niets bijgehouden over de mensen die jouw gedeelde inhoud gebruiken.\n\nAnonieme gegevens delen verzendt deze informatie wanneer de telefoon online is. Offline houden verzendt niets, zelfs als de telefoon online is.</string>
-    <string name="analytics_enroll_accept">Anonieme gegevens delen</string>
     <string name="analytics_enroll_decline">Offline houden</string>
-    <string name="settings_analytics_title">Anonieme gegevens delen</string>
-    <string name="settings_analytics_desc">Anonieme gebruiksinformatie om bugs op te lossen en de app te verbeteren — geen persoonlijke gegevens en niets over de mensen die jouw gedeelde inhoud gebruiken. Altijd aanpasbaar.</string>
     <string name="phantom_warn_title">Overdracht kan worden onderbroken</string>
     <string name="phantom_warn_body">Op Android 12+ kan het systeem de overdracht stoppen terwijl deze op de achtergrond draait (limiet voor fantoomprocessen). Om dit te voorkomen, schakel je “beperkingen onderliggende processen” uit, of ga je toch door — grote overdrachten kunnen worden onderbroken.</string>
     <string name="phantom_warn_open_dev">Ontwikkelaarsopties openen</string>
     <string name="phantom_warn_continue">Toch doorgaan</string>
-    <string name="setup_app_lang_title">App-taal</string>
-    <string name="setup_app_lang_desc">Kies de taal voor de eigen schermen van de app. “Systeemstandaard” volgt je telefoon.</string>
-    <string name="setup_app_lang_system">Systeemstandaard (telefoon volgen)</string>
-    <string name="setup_language_section">Taal</string>
     <string name="portal_download_started">%1$s downloaden…</string>
     <string name="portal_download_failed">Kan de download niet starten.</string>
     <string name="lohs_label">Alleen-lokale hotspot</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">App-versie</string>
     <string name="k2go_settings_check_updates">Controleren op updates</string>
     <string name="k2go_settings_permissions">Machtigingen</string>
-    <string name="k2go_settings_usage_stats">Gebruiksstatistieken delen</string>
-    <string name="k2go_settings_crash_reports">Crashrapporten verzenden</string>
     <string name="k2go_settings_licenses">Opensource-licenties</string>
     <string name="k2go_settings_privacy">Privacy</string>
     <string name="k2go_settings_power_users">Voor gevorderde gebruikers.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">Overdracht voltooid. De andere telefoon heeft de inhoud.</string>
     <string name="k2go_cx_share_cancelled">De andere telefoon heeft de overdracht gestopt.</string>
     <string name="k2go_cx_share_ended">Het delen is beëindigd.</string>
-    <string name="k2go_gm_catalogs_update">Catalogi bijwerken</string>
-    <string name="k2go_gm_catalogs_updating">Catalogi bijwerken...</string>
-    <string name="k2go_gm_catalogs_bundled">Catalogi: meegeleverd met de app</string>
-    <string name="k2go_gm_catalogs_checked">Catalogi gecontroleerd: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Kan de lijst met bestanden van de verzendende telefoon niet lezen.</string>
     <string name="k2go_clone_cable_err_no_path">De verbinding met de verzendende telefoon is verbroken. Maak verbinding met de hotspot ervan of sluit de USB-kabel aan.</string>
@@ -1696,6 +1662,21 @@
     <string name="k2go_auth_notice_never_confirm">Herinneringen stoppen</string>
     <string name="k2go_auth_notice_never_keep">Herinneringen houden</string>
     <string name="k2go_auth_list_hint">Beheerderswachtwoorden die K2Go gebruikt voor Een boek lezen, Een cursus volgen en Code hosten. Wijzig ze hier, zodat de app en de box gelijk blijven.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privacy en online-inhoud</string>
+    <string name="k2go_online_accept_usage">Gebruiksgegevens delen en online-inhoud aanvragen</string>
+    <string name="k2go_online_accept_crash">Crashrapporten verzenden en online-inhoud aanvragen</string>
+    <string name="k2go_online_body_usage">%1$s kan anonieme gebruiksgegevens en crashrapporten delen, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld, en er wordt niets bijgehouden over de mensen die jouw gedeelde inhoud gebruiken.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
+    <string name="k2go_online_body_crash">%1$s kan crashrapporten verzenden, en kan zelf controleren op catalogus- en app-updates wanneer de telefoon met Wi-Fi verbonden is. Er wordt geen persoonlijke informatie verzameld.\n\nOffline houden: de app maakt niet uit zichzelf verbinding met internet.</string>
+    <string name="k2go_webview_offline_page">Deze pagina staat op internet. Pagina\'s in de app werken alleen offline.</string>
+    <string name="k2go_offline_action_title">Hiervoor is internet nodig</string>
+    <string name="k2go_offline_action_msg">Je hebt \"Offline houden\" gekozen. Hiervoor moet de app verbinding maken met internet. Je kunt het alleen voor deze actie toestaan.</string>
+    <string name="k2go_offline_action_allow_once">Alleen deze keer toestaan</string>
+    <string name="k2go_feedback_kept_offline">De app staat op \"Offline houden\" en stuurt dus geen feedback. Zet \"%1$s\" aan in Instellingen &gt; Over om dit te wijzigen.</string>
+    <string name="k2go_feedback_third_party_title">Dit kan verbinding maken met internet</string>
+    <string name="k2go_feedback_third_party_msg">Je hebt \"Offline houden\" gekozen. Feedback wordt verzonden met een andere app, bijvoorbeeld e-mail, en die app kan verbinding maken met internet.</string>
+    <string name="k2go_privacy_kept_offline">De app staat op \"Offline houden\", dus deze diensten blijven uit. Zet \"%1$s\" aan in Instellingen &gt; Over om dit te wijzigen.</string>
+    <string name="k2go_feedback_send_anyway">Toch verzenden</string>
     <string name="k2go_mod_phase_canceled">Geannuleerd</string>
     <string name="k2go_setup_modules_stopped">De installatie is gestopt. Controleer hieronder elke module.</string>
 </resources>

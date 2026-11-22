@@ -8,19 +8,8 @@
     <string name="connection_log_label">Serverprotokoll</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">EINSTELLUNGEN</string>
-    <string name="setup_title">Ersteinrichtung</string>
-    <string name="setup_welcome">Willkommen beim Einrichtungsassistenten von %1$s.\n\nDamit alles richtig funktioniert, benötigen wir folgende Berechtigungen:</string>
-    <string name="setup_continue">Weiter</string>
-    <string name="setup_perm_battery">Akku-Optimierung deaktivieren</string>
-    <string name="setup_perm_notifications">Push-Benachrichtigungen</string>
-    <string name="setup_perm_storage">Zugriff auf lokalen Speicher</string>
-    <string name="setup_perm_overlay">Über anderen Apps anzeigen</string>
-    <string name="setup_lang_title">Inhaltssprache</string>
-    <string name="setup_lang_desc">Bitte wähle deine Sprache; sie wird beim Anfordern von Inhalten berücksichtigt.</string>
     <string name="notif_perm_denied">Benachrichtigungsberechtigung verweigert</string>
     <string name="notif_perm_granted">Benachrichtigungsberechtigung erteilt</string>
-    <string name="revoke_permission_warning">Um Berechtigungen zu widerrufen, musst du dies in den Systemeinstellungen tun.</string>
     <string name="dash_device">Gerät wird geladen…</string>
     <string name="dash_main_storage">Speicher</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Einstellungen gespeichert</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">unterstützt von App Dev for All</string>
-    <string name="setup_manage_all_permissions">Alle Berechtigungen verwalten</string>
     <string name="update_dialog_title">Neue Version verfügbar: %1$s</string>
     <string name="update_dialog_message">Möchtest du die Anwendung aktualisieren?\n\nNeuerungen:\n%1$s</string>
     <string name="update_dialog_positive">Aktualisieren</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB-Umgebung wird ordnungsgemäß gestoppt…</string>
     <string name="log_server_stop_error">[Stopp-Fehler] %1$s</string>
     <string name="log_critical_binary_missing">KRITISCH: %1$s fehlt in den nativen Bibliotheken!</string>
-    <string name="setup_back_blocked_msg">Bitte schließe die Einrichtung ab, um fortzufahren.</string>
     <string name="sync_scanner_prompt">Scanne den QR-Code des K2Go-Hosts</string>
     <string name="kiwix_dialog_lang_label">Kiwix-Sprache</string>
     <string name="kiwix_dialog_variants_label">Verfügbare ZIM-Varianten</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Importiert, aber diese Sicherung hat kein eingebettetes rootfs-Manifest und konnte daher nicht vollständig verifiziert werden.</string>
     <string name="install_error_corrupt">Diese Sicherung hat ihre Integritätsprüfung nicht bestanden (sie könnte beschädigt oder verändert sein) und wurde daher nicht verwendet.</string>
     <string name="install_warn_no_checksum">Importiert. Diese Sicherung hat keine Integritätsprüfsumme, da sie auf einem Mobilgerät erstellt wurde.</string>
-    <string name="settings_nav_setup">Einrichtung</string>
-    <string name="settings_nav_feedback">Feedback</string>
-    <string name="settings_nav_about">Über</string>
-    <string name="about_version">Version %1$s</string>
-    <string name="settings_title">Einstellungen</string>
-    <string name="action_done">Fertig</string>
     <string name="feedback_type_label">Typ</string>
     <string name="feedback_cat_bug">Fehler</string>
     <string name="feedback_cat_suggestion">Vorschlag</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Bericht senden</string>
     <string name="crash_report_dismiss">Verwerfen</string>
     <string name="rsync_error_process_killed">Android hat den Übertragungsprozess gestoppt (Systemlimit für Hintergrundprozesse). Um dies zu verhindern, aktiviere „Kindprozess-Beschränkungen deaktivieren“ in den Entwickleroptionen oder richte die ADB-Optimierung ein.</string>
-    <string name="analytics_enroll_title">Datenschutz &amp; Analyse</string>
-    <string name="analytics_enroll_body">%1$s erfasst anonyme Nutzungsinformationen, um uns zu helfen, Fehler zu beheben und die App zu verbessern. Es werden keine personenbezogenen Daten erfasst oder geteilt, und nichts über die Personen, die deine geteilten Inhalte nutzen, wird verfolgt.\n\nAnonyme Daten teilen sendet diese Informationen, wenn das Telefon online ist. Offline behalten sendet nichts, auch wenn das Telefon online ist.</string>
-    <string name="analytics_enroll_accept">Anonyme Daten teilen</string>
     <string name="analytics_enroll_decline">Offline behalten</string>
-    <string name="settings_analytics_title">Anonyme Daten teilen</string>
-    <string name="settings_analytics_desc">Anonyme Nutzungsinformationen, um Fehler zu beheben und die App zu verbessern – keine personenbezogenen Daten und nichts über die Personen, die deine geteilten Inhalte nutzen. Jederzeit änderbar.</string>
     <string name="phantom_warn_title">Übertragung könnte unterbrochen werden</string>
     <string name="phantom_warn_body">Ab Android 12 kann das System die Übertragung stoppen, während sie im Hintergrund läuft (Phantomprozess-Limit). Um dies zu verhindern, deaktiviere „Kindprozess-Beschränkungen“ oder fahre trotzdem fort — große Übertragungen könnten unterbrochen werden.</string>
     <string name="phantom_warn_open_dev">Entwickleroptionen öffnen</string>
     <string name="phantom_warn_continue">Trotzdem fortfahren</string>
-    <string name="setup_app_lang_title">App-Sprache</string>
-    <string name="setup_app_lang_desc">Wähle die Sprache für die eigenen Bildschirme der App. „Systemstandard“ folgt deinem Telefon.</string>
-    <string name="setup_app_lang_system">Systemstandard (Telefon folgen)</string>
-    <string name="setup_language_section">Sprache</string>
     <string name="portal_download_started">%1$s wird heruntergeladen…</string>
     <string name="portal_download_failed">Der Download konnte nicht gestartet werden.</string>
     <string name="lohs_label">Hotspot Nur-Lokal</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">App-Version</string>
     <string name="k2go_settings_check_updates">Nach Updates suchen</string>
     <string name="k2go_settings_permissions">Berechtigungen</string>
-    <string name="k2go_settings_usage_stats">Nutzungsstatistiken teilen</string>
-    <string name="k2go_settings_crash_reports">Absturzberichte senden</string>
     <string name="k2go_settings_licenses">Open-Source-Lizenzen</string>
     <string name="k2go_settings_privacy">Datenschutz</string>
     <string name="k2go_settings_power_users">Für Power-User.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">Übertragung abgeschlossen. Das andere Telefon hat den Inhalt.</string>
     <string name="k2go_cx_share_cancelled">Das andere Telefon hat die Übertragung beendet.</string>
     <string name="k2go_cx_share_ended">Die Freigabe wurde beendet.</string>
-    <string name="k2go_gm_catalogs_update">Kataloge aktualisieren</string>
-    <string name="k2go_gm_catalogs_updating">Kataloge werden aktualisiert...</string>
-    <string name="k2go_gm_catalogs_bundled">Kataloge: in der App enthalten</string>
-    <string name="k2go_gm_catalogs_checked">Kataloge geprüft: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Die Dateiliste des sendenden Telefons konnte nicht gelesen werden.</string>
     <string name="k2go_clone_cable_err_no_path">Die Verbindung zum sendenden Telefon ist unterbrochen. Verbinde dich mit seinem Hotspot oder schließe das USB-Kabel an.</string>
@@ -1696,6 +1662,21 @@
     <string name="k2go_auth_notice_never_confirm">Erinnerungen beenden</string>
     <string name="k2go_auth_notice_never_keep">Erinnerungen behalten</string>
     <string name="k2go_auth_list_hint">Admin-Passwörter, die K2Go für Ein Buch lesen, Einen Kurs belegen und Code hosten verwendet. Ändere sie hier, damit App und Box synchron bleiben.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Datenschutz und Online-Inhalte</string>
+    <string name="k2go_online_accept_usage">Nutzungsdaten teilen und Online-Inhalte anfordern</string>
+    <string name="k2go_online_accept_crash">Absturzberichte senden und Online-Inhalte anfordern</string>
+    <string name="k2go_online_body_usage">%1$s kann anonyme Nutzungsdaten und Absturzberichte teilen und selbstständig nach Katalog- und App-Updates suchen, wenn das Telefon mit WLAN verbunden ist. Es werden keine personenbezogenen Daten erfasst, und nichts über die Personen, die deine geteilten Inhalte nutzen, wird verfolgt.\n\nOffline behalten: Die App verbindet sich nicht selbstständig mit dem Internet.</string>
+    <string name="k2go_online_body_crash">%1$s kann Absturzberichte senden und selbstständig nach Katalog- und App-Updates suchen, wenn das Telefon mit WLAN verbunden ist. Es werden keine personenbezogenen Daten erfasst.\n\nOffline behalten: Die App verbindet sich nicht selbstständig mit dem Internet.</string>
+    <string name="k2go_webview_offline_page">Diese Seite ist im Internet. Seiten in der App funktionieren nur offline.</string>
+    <string name="k2go_offline_action_title">Dafür ist Internet nötig</string>
+    <string name="k2go_offline_action_msg">Du hast \"Offline behalten\" gewählt. Dafür muss sich die App mit dem Internet verbinden. Du kannst es nur für diese Aktion erlauben.</string>
+    <string name="k2go_offline_action_allow_once">Nur dieses Mal erlauben</string>
+    <string name="k2go_feedback_kept_offline">Die App ist auf \"Offline behalten\" eingestellt und sendet daher kein Feedback. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
+    <string name="k2go_feedback_third_party_title">Dies kann sich mit dem Internet verbinden</string>
+    <string name="k2go_feedback_third_party_msg">Du hast \"Offline behalten\" gewählt. Feedback wird mit einer anderen App gesendet, zum Beispiel E-Mail, und diese App kann sich mit dem Internet verbinden.</string>
+    <string name="k2go_privacy_kept_offline">Die App ist auf \"Offline behalten\" eingestellt, daher bleiben diese Dienste aus. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
+    <string name="k2go_feedback_send_anyway">Trotzdem senden</string>
     <string name="k2go_mod_phase_canceled">Abgebrochen</string>
     <string name="k2go_setup_modules_stopped">Die Installation wurde beendet. Prüfen Sie unten jedes Modul.</string>
 </resources>

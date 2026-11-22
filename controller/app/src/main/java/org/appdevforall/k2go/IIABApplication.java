@@ -50,19 +50,15 @@ public class IIABApplication extends Application {
             Log.e("IIABApplication", "Error initializing Conscrypt", e);
         }
 
-        // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by its OWN opt-in
-        // (CrashReportConsent, default OFF, K2GO-579) -- independent of usage-analytics consent, since error
-        // reports are operational, not behavioural telemetry, and carry no PII
-        // (io.sentry.send-default-pii=false). No-op unless a DSN was built in (empty DSN -> SDK
-        // stays inert); manifest sets io.sentry.auto-init=false, so this is the only init path.
-        // Init here (before our handler) so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
-        try {
-            if (org.appdevforall.k2go.delivery.data.CrashReportConsent.isEnabled(this)) {
-                io.sentry.android.core.SentryAndroid.init(this);
-            }
-        } catch (Throwable t) {
-            Log.e("IIABApplication", "Sentry init skipped", t);
-        }
+        // K2GO-588: no outbound request before the first app call goes out with a device-revealing
+        // User-Agent; every HttpURLConnection without its own agent sends this neutral one.
+        System.setProperty("http.agent", "K2Go");
+
+        // K2GO-588: the one privacy choice replaces the two old opt-ins; their answers are dropped
+        // and the user is asked again (OnlineChoiceDialog). Crash reports start here, before our
+        // handler, so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
+        org.appdevforall.k2go.delivery.data.OnlineConsent.dropOldAnswers(this);
+        org.appdevforall.k2go.delivery.OnlineChoiceEffects.startCrashReports(this);
 
         // Capture uncaught exceptions into a crash report, offered on next launch.
         Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();

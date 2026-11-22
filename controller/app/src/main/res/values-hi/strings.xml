@@ -9,24 +9,12 @@
     <string name="connection_log_label">कनेक्शन लॉग</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">सेटिंग्स</string>
 
 
-    <string name="setup_title">प्रारंभिक सेटअप</string>
-    <string name="setup_welcome">%1$s सेटअप विज़ार्ड में आपका स्वागत है।\n\nठीक से काम करने के लिए, हमें निम्नलिखित अनुमतियों की आवश्यकता है:</string>
-    <string name="setup_continue">जारी रखें</string>
 
-    <string name="setup_perm_battery">बैटरी अनुकूलन अक्षम करें</string>
-    <string name="setup_perm_notifications">पुश सूचनाएं</string>
-    <string name="setup_perm_storage">स्थानीय स्टोरेज एक्सेस</string>
-    <string name="setup_perm_overlay">अन्य ऐप्स के ऊपर दिखाएं</string>
-    <string name="setup_lang_title">सामग्री की भाषा</string>
-    <string name="setup_lang_desc">कृपया अपनी भाषा चुनें, क्योंकि सामग्री का अनुरोध करते समय इस पर विचार किया जाएगा।</string>
-    <string name="setup_manage_all_permissions">सभी अनुमतियां प्रबंधित करें</string>
 
     <string name="notif_perm_denied">सूचना अनुमति अस्वीकार कर दी गई</string>
     <string name="notif_perm_granted">सूचना अनुमति दी गई</string>
-    <string name="revoke_permission_warning">अनुमतियां रद्द करने के लिए, आपको सिस्टम सेटिंग्स से ऐसा करना होगा।</string>
 
     <string name="dash_device">डिवाइस लोड हो रहा है...</string>
     <string name="dash_main_storage">स्टोरेज</string>
@@ -434,7 +422,6 @@
     <string name="log_server_stop_error">[स्टॉप त्रुटि] %1$s</string>
     <string name="log_critical_binary_missing">क्रिटिकल: नेटिव लाइब्रेरी से %1$s गायब है!</string>
 
-    <string name="setup_back_blocked_msg">कृपया जारी रखने के लिए सेटअप पूरा करें।</string>
     <string name="sync_scanner_prompt">K2Go होस्ट QR कोड स्कैन करें</string>
 
     <string name="kiwix_dialog_lang_label">Kiwix भाषा</string>
@@ -498,12 +485,6 @@
     <string name="ota_error_verify_failed">अपडेट सत्यापित नहीं हो सका और इंस्टॉल नहीं हुआ। कृपया पुनः प्रयास करें।</string>
     <string name="ota_error_download_failed">अपडेट डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।</string>
     <string name="ota_msg_enable_unknown_sources">इस ऐप से अपडेट इंस्टॉल करने की अनुमति दें, फिर पुनः अपडेट पर टैप करें।</string>
-    <string name="settings_nav_setup">सेटअप</string>
-    <string name="settings_nav_feedback">प्रतिक्रिया</string>
-    <string name="settings_nav_about">परिचय</string>
-    <string name="about_version">संस्करण %1$s</string>
-    <string name="settings_title">सेटिंग</string>
-    <string name="action_done">हो गया</string>
     <string name="feedback_type_label">प्रकार</string>
     <string name="feedback_cat_bug">समस्या</string>
     <string name="feedback_cat_suggestion">सुझाव</string>
@@ -519,22 +500,13 @@
     <string name="rsync_error_process_killed">Android ने ट्रांसफ़र प्रोसेस रोक दी (बैकग्राउंड प्रोसेस सीमा)। इसे रोकने के लिए, डेवलपर विकल्प में “चाइल्ड प्रोसेस प्रतिबंध अक्षम करें” चालू करें, या ADB सेट करें।</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">गोपनीयता और विश्लेषण</string>
-    <string name="analytics_enroll_body">%1$s बग ठीक करने और ऐप को बेहतर बनाने में हमारी मदद के लिए अनाम उपयोग जानकारी एकत्र करता है। कोई व्यक्तिगत जानकारी एकत्र या साझा नहीं की जाती, और आपकी साझा की गई सामग्री का उपयोग करने वाले लोगों के बारे में कुछ भी ट्रैक नहीं किया जाता।\n\nअनाम डेटा साझा करें फ़ोन के ऑनलाइन होने पर यह जानकारी भेजता है। ऑफ़लाइन रखें कुछ भी नहीं भेजता, भले ही फ़ोन ऑनलाइन हो।</string>
-    <string name="analytics_enroll_accept">अनाम डेटा साझा करें</string>
     <string name="analytics_enroll_decline">ऑफ़लाइन रखें</string>
-    <string name="settings_analytics_title">अनाम डेटा साझा करें</string>
-    <string name="settings_analytics_desc">बग ठीक करने और ऐप बेहतर बनाने के लिए अनाम उपयोग जानकारी — कोई व्यक्तिगत डेटा नहीं, और आपकी साझा सामग्री का उपयोग करने वालों के बारे में कुछ नहीं। कभी भी बदलें।</string>
     <string name="phantom_warn_title">ट्रांसफ़र बाधित हो सकता है</string>
     <string name="phantom_warn_body">Android 12+ पर सिस्टम बैकग्राउंड में चल रहे ट्रांसफ़र को रोक सकता है (प्रोसेस सीमा)। इससे बचने के लिए, “चाइल्ड प्रोसेस प्रतिबंध” अक्षम करें, या फिर भी जारी रखें — बड़े ट्रांसफ़र बाधित हो सकते हैं।</string>
     <string name="phantom_warn_open_dev">डेवलपर विकल्प खोलें</string>
     <string name="phantom_warn_continue">फिर भी जारी रखें</string>
 
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">ऐप की भाषा</string>
-    <string name="setup_app_lang_desc">ऐप की अपनी स्क्रीन के लिए भाषा चुनें। “सिस्टम डिफ़ॉल्ट” आपके फ़ोन का अनुसरण करता है।</string>
-    <string name="setup_app_lang_system">सिस्टम डिफ़ॉल्ट (फ़ोन का अनुसरण करें)</string>
-    <string name="setup_language_section">भाषा</string>
 
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">%1$s डाउनलोड हो रहा है…</string>
@@ -655,8 +627,6 @@
     <string name="k2go_settings_app_version">ऐप संस्करण</string>
     <string name="k2go_settings_check_updates">अपडेट जाँचें</string>
     <string name="k2go_settings_permissions">अनुमतियाँ</string>
-    <string name="k2go_settings_usage_stats">उपयोग आँकड़े साझा करें</string>
-    <string name="k2go_settings_crash_reports">क्रैश रिपोर्ट भेजें</string>
     <string name="k2go_settings_licenses">ओपन-सोर्स लाइसेंस</string>
     <string name="k2go_settings_privacy">गोपनीयता</string>
     <string name="k2go_settings_power_users">पावर यूज़र्स के लिए।</string>
@@ -1668,10 +1638,6 @@
     <string name="k2go_cx_share_complete">ट्रांसफ़र पूरा हुआ। सामग्री अब दूसरे फ़ोन पर है।</string>
     <string name="k2go_cx_share_cancelled">दूसरे फ़ोन ने ट्रांसफ़र रोक दिया।</string>
     <string name="k2go_cx_share_ended">साझा करना समाप्त हुआ।</string>
-    <string name="k2go_gm_catalogs_update">कैटलॉग अपडेट करें</string>
-    <string name="k2go_gm_catalogs_updating">कैटलॉग अपडेट हो रहे हैं...</string>
-    <string name="k2go_gm_catalogs_bundled">कैटलॉग: ऐप के साथ शामिल</string>
-    <string name="k2go_gm_catalogs_checked">कैटलॉग जाँचे गए: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">भेजने वाले फ़ोन से फ़ाइलों की सूची नहीं पढ़ी जा सकी।</string>
     <string name="k2go_clone_cable_err_no_path">भेजने वाले फ़ोन से कनेक्शन टूट गया है। उसके हॉटस्पॉट से जुड़ें या USB केबल लगाएँ।</string>
@@ -1773,6 +1739,21 @@
     <string name="k2go_auth_notice_never_confirm">रिमाइंडर बंद करें</string>
     <string name="k2go_auth_notice_never_keep">रिमाइंडर रखें</string>
     <string name="k2go_auth_list_hint">K2Go इन कार्डों के लिए ये एडमिन पासवर्ड उपयोग करता है: किताब पढ़ें, कोर्स करें और कोड होस्ट करें। इन्हें यहीं बदलें, ताकि ऐप और बॉक्स में तालमेल बना रहे।</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">गोपनीयता और ऑनलाइन सामग्री</string>
+    <string name="k2go_online_accept_usage">उपयोग डेटा साझा करें और ऑनलाइन सामग्री का अनुरोध करें</string>
+    <string name="k2go_online_accept_crash">क्रैश रिपोर्ट भेजें और ऑनलाइन सामग्री का अनुरोध करें</string>
+    <string name="k2go_online_body_usage">%1$s अनाम उपयोग डेटा और क्रैश रिपोर्ट साझा कर सकता है, और फ़ोन के Wi-Fi पर होने पर खुद ही कैटलॉग और ऐप अपडेट की जाँच कर सकता है। कोई व्यक्तिगत जानकारी एकत्र नहीं की जाती, और आपकी साझा की गई सामग्री का उपयोग करने वाले लोगों के बारे में कुछ भी ट्रैक नहीं किया जाता।\n\nऑफ़लाइन रखें: ऐप अपने आप इंटरनेट से कनेक्ट नहीं होता।</string>
+    <string name="k2go_online_body_crash">%1$s क्रैश रिपोर्ट भेज सकता है, और फ़ोन के Wi-Fi पर होने पर खुद ही कैटलॉग और ऐप अपडेट की जाँच कर सकता है। कोई व्यक्तिगत जानकारी एकत्र नहीं की जाती।\n\nऑफ़लाइन रखें: ऐप अपने आप इंटरनेट से कनेक्ट नहीं होता।</string>
+    <string name="k2go_webview_offline_page">यह पेज इंटरनेट पर है। ऐप के अंदर के पेज केवल ऑफ़लाइन काम करते हैं।</string>
+    <string name="k2go_offline_action_title">इसके लिए इंटरनेट चाहिए</string>
+    <string name="k2go_offline_action_msg">आपने \"ऑफ़लाइन रखें\" चुना है। यह करने के लिए ऐप को इंटरनेट से कनेक्ट होना होगा। आप इसकी अनुमति केवल इस कार्रवाई के लिए दे सकते हैं।</string>
+    <string name="k2go_offline_action_allow_once">केवल इस बार अनुमति दें</string>
+    <string name="k2go_feedback_kept_offline">ऐप \"ऑफ़लाइन रखें\" पर सेट है, इसलिए यह फ़ीडबैक नहीं भेजता। इसे बदलने के लिए, सेटिंग्स &gt; परिचय में \"%1$s\" चालू करें।</string>
+    <string name="k2go_feedback_third_party_title">यह इंटरनेट से कनेक्ट हो सकता है</string>
+    <string name="k2go_feedback_third_party_msg">आपने \"ऑफ़लाइन रखें\" चुना है। फ़ीडबैक किसी दूसरे ऐप से भेजा जाता है, जैसे ईमेल, और वह ऐप इंटरनेट से कनेक्ट हो सकता है।</string>
+    <string name="k2go_privacy_kept_offline">ऐप \"ऑफ़लाइन रखें\" पर सेट है, इसलिए ये सेवाएँ बंद रहती हैं। इसे बदलने के लिए, सेटिंग्स &gt; परिचय में \"%1$s\" चालू करें।</string>
+    <string name="k2go_feedback_send_anyway">फिर भी भेजें</string>
     <string name="k2go_mod_phase_canceled">रद्द किया गया</string>
     <string name="k2go_setup_modules_stopped">इंस्टॉल रुक गया। नीचे हर मॉड्यूल देखें।</string>
 </resources>

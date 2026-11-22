@@ -192,6 +192,7 @@ public class ModuleDetailFragment extends Fragment {
                                     installNowBtn.setOnClickListener(v ->
                                             org.appdevforall.k2go.forgejo.presentation.ForgejoRepoRefresh.start(
                                                     requireActivity(), installNowBtn));
+                                    org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(installNowBtn);   // K2GO-588
                                     installNowBtn.setVisibility(View.VISIBLE);
                                 }
                             });
@@ -204,6 +205,7 @@ public class ModuleDetailFragment extends Fragment {
                     if (ia != null && ia.gate == null) {
                         installNowBtn.setText(ia.labelRes);
                         installNowBtn.setOnClickListener(v -> ia.handler.run(requireActivity(), installNowBtn));
+                        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(installNowBtn);   // K2GO-588
                         installNowBtn.setVisibility(View.VISIBLE);
                     }
                     return;   // a module cannot be uninstalled or reinstalled here (repos action aside)

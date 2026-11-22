@@ -148,13 +148,17 @@ public class InstallationPlanner {
                 }
             }
 
+            // K2GO-588: an automatic read with no user tap: only with the online choice on.
+            if (!org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(context)) {
+                new Handler(Looper.getMainLooper()).post(() -> listener.onError("offline"));
+                return;
+            }
+
             try {
                 URL url = new URL(KIWIX_URL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
-
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder html = new StringBuilder();
                 String line;

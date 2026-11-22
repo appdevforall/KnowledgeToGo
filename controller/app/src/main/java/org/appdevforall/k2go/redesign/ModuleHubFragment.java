@@ -564,6 +564,7 @@ public class ModuleHubFragment extends Fragment {
         // ADFA-5339: the confirm dialog matches the pill — pass the last-known "update available".
         final boolean[] up = {false};
         rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host, up[0]));
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(rebuild);   // K2GO-588
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);

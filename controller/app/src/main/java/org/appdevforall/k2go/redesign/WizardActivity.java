@@ -15,13 +15,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
 import org.appdevforall.k2go.applang.domain.AppLanguage;
 import org.appdevforall.k2go.applang.domain.SupportedAppLanguages;
-import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
 import java.util.Locale;
 
 /**
@@ -156,6 +154,9 @@ public class WizardActivity extends AppCompatActivity {
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());
         render();
+        // K2GO-588: a launch that resumes at the setup choice (permissions already granted) still
+        // asks the privacy question once; nothing below it may connect before the answer.
+        if (step == 3) maybeAskAnalytics(this::render);
 
         // ADFA-4797: on a recreate (e.g. right after a language change) fade the screen in
         // instead of a hard flash; first launch (b == null) stays instant.
@@ -202,26 +203,9 @@ public class WizardActivity extends AppCompatActivity {
         }
     }
 
-    /** One-time usage-stats consent prompt; runs {@code onDone} after the choice (or immediately
-     *  if already asked here or in the legacy flow). Reuses the analytics_enroll_* strings. */
+    /** K2GO-588: the one-time privacy choice; runs {@code onDone} after it, or at once. */
     private void maybeAskAnalytics(Runnable onDone) {
-        // ADFA-5337: no analytics compiled in (no google-services.json) → nothing to consent to; skip.
-        if (!org.appdevforall.k2go.BuildConfig.ANALYTICS_ENABLED) { onDone.run(); return; }
-        if (AnalyticsConsent.wasAsked(this)) { onDone.run(); return; }
-        new BrandDialog(this)
-                .setTitle(R.string.analytics_enroll_title)
-                .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
-                .setCancelable(false)
-                .setPositive(R.string.analytics_enroll_accept, () -> setAnalytics(true, onDone))
-                .setNegative(R.string.analytics_enroll_decline, () -> setAnalytics(false, onDone))
-                .show();
-    }
-
-    private void setAnalytics(boolean on, Runnable onDone) {
-        AnalyticsConsent.setEnabled(this, on);
-        AnalyticsConsent.markAsked(this);
-        org.appdevforall.k2go.analytics.AnalyticsClient.with(this).applyConsent();
-        onDone.run();
+        org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.askOnce(this, onDone);
     }
 
     private void goBack() {
@@ -268,6 +252,8 @@ public class WizardActivity extends AppCompatActivity {
                 title.setText(getString(R.string.k2go_setup_library_title));
                 subtitle.setText(getString(R.string.k2go_wiz_setup_sub));
                 primary.setVisibility(View.GONE);
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate
+                        .markNeedsInternet(findViewById(R.id.setup_download));
                 break;
         }
     }

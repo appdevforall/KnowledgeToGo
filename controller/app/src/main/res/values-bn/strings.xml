@@ -8,19 +8,8 @@
     <string name="connection_log_label">সার্ভার লগ</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">সেটিংস</string>
-    <string name="setup_title">প্রাথমিক সেটআপ</string>
-    <string name="setup_welcome">%1$s সেটআপ উইজার্ডে স্বাগতম।\n\nসঠিকভাবে কাজ করার জন্য, আমাদের নিম্নলিখিত অনুমতিগুলো প্রয়োজন:</string>
-    <string name="setup_continue">চালিয়ে যান</string>
-    <string name="setup_perm_battery">ব্যাটারি অপ্টিমাইজেশন বন্ধ করুন</string>
-    <string name="setup_perm_notifications">পুশ নোটিফিকেশন</string>
-    <string name="setup_perm_storage">লোকাল স্টোরেজ অ্যাক্সেস</string>
-    <string name="setup_perm_overlay">অন্যান্য অ্যাপের উপরে দেখান</string>
-    <string name="setup_lang_title">কন্টেন্টের ভাষা</string>
-    <string name="setup_lang_desc">অনুগ্রহ করে আপনার ভাষা নির্বাচন করুন কারণ কন্টেন্ট অনুরোধ করার সময় এটি বিবেচনা করা হবে।</string>
     <string name="notif_perm_denied">নোটিফিকেশন অনুমতি প্রত্যাখ্যান করা হয়েছে</string>
     <string name="notif_perm_granted">নোটিফিকেশন অনুমতি দেওয়া হয়েছে</string>
-    <string name="revoke_permission_warning">অনুমতি প্রত্যাহার করতে, আপনাকে সিস্টেম সেটিংস থেকে তা করতে হবে।</string>
     <string name="dash_device">ডিভাইস লোড হচ্ছে…</string>
     <string name="dash_main_storage">স্টোরেজ</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">সেটিংস সংরক্ষিত হয়েছে</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
-    <string name="setup_manage_all_permissions">সমস্ত অনুমতি পরিচালনা করুন</string>
     <string name="update_dialog_title">নতুন সংস্করণ উপলব্ধ: %1$s</string>
     <string name="update_dialog_message">আপনি কি অ্যাপ্লিকেশনটি আপডেট করতে চান?\n\nনতুন কী আছে:\n%1$s</string>
     <string name="update_dialog_positive">আপডেট করুন</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB পরিবেশ সুশৃঙ্খলভাবে বন্ধ করা হচ্ছে…</string>
     <string name="log_server_stop_error">[বন্ধ ত্রুটি] %1$s</string>
     <string name="log_critical_binary_missing">সংকটজনক: %1$s নেটিভ লাইব্রেরি থেকে অনুপস্থিত!</string>
-    <string name="setup_back_blocked_msg">চালিয়ে যেতে অনুগ্রহ করে সেটআপ সম্পূর্ণ করুন।</string>
     <string name="sync_scanner_prompt">K2Go হোস্ট QR কোড স্ক্যান করুন</string>
     <string name="kiwix_dialog_lang_label">Kiwix ভাষা</string>
     <string name="kiwix_dialog_variants_label">উপলব্ধ ZIM ভ্যারিয়েন্ট</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">ইম্পোর্ট করা হয়েছে, কিন্তু এই ব্যাকআপে কোনো এমবেডেড rootfs manifest নেই, তাই এটি সম্পূর্ণভাবে যাচাই করা যায়নি।</string>
     <string name="install_error_corrupt">এই ব্যাকআপটি এর অখণ্ডতা পরীক্ষায় ব্যর্থ হয়েছে (এটি নষ্ট বা পরিবর্তিত হতে পারে), তাই এটি ব্যবহার করা হয়নি।</string>
     <string name="install_warn_no_checksum">ইম্পোর্ট করা হয়েছে। এই ব্যাকআপে কোনো অখণ্ডতা চেকসাম নেই কারণ এটি একটি মোবাইল ডিভাইসে তৈরি করা হয়েছিল।</string>
-    <string name="settings_nav_setup">সেটআপ</string>
-    <string name="settings_nav_feedback">প্রতিক্রিয়া</string>
-    <string name="settings_nav_about">সম্পর্কে</string>
-    <string name="about_version">সংস্করণ %1$s</string>
-    <string name="settings_title">সেটিংস</string>
-    <string name="action_done">সম্পন্ন</string>
     <string name="feedback_type_label">ধরন</string>
     <string name="feedback_cat_bug">বাগ</string>
     <string name="feedback_cat_suggestion">পরামর্শ</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">রিপোর্ট পাঠান</string>
     <string name="crash_report_dismiss">খারিজ করুন</string>
     <string name="rsync_error_process_killed">Android স্থানান্তর প্রক্রিয়া বন্ধ করেছে (সিস্টেমের ব্যাকগ্রাউন্ড-প্রসেস সীমা)। এটি রোধ করতে, ডেভেলপার অপশনে “চাইল্ড প্রসেস সীমাবদ্ধতা নিষ্ক্রিয় করুন” সক্ষম করুন, অথবা ADB অপ্টিমাইজেশন সেটআপ করুন।</string>
-    <string name="analytics_enroll_title">গোপনীয়তা ও বিশ্লেষণ</string>
-    <string name="analytics_enroll_body">%1$s বাগ ঠিক করতে এবং অ্যাপ উন্নত করতে আমাদের সাহায্য করার জন্য বেনামী ব্যবহারের তথ্য সংগ্রহ করে। কোনো ব্যক্তিগত তথ্য সংগ্রহ বা শেয়ার করা হয় না, এবং আপনার শেয়ার করা কনটেন্ট যারা ব্যবহার করেন তাঁদের সম্পর্কে কিছুই ট্র্যাক করা হয় না।\n\nবেনামী ডেটা শেয়ার করুন ফোন অনলাইন থাকলে এই তথ্য পাঠায়। অফলাইন রাখুন কিছুই পাঠায় না, এমনকি ফোন অনলাইন থাকলেও।</string>
-    <string name="analytics_enroll_accept">বেনামী ডেটা শেয়ার করুন</string>
     <string name="analytics_enroll_decline">অফলাইন রাখুন</string>
-    <string name="settings_analytics_title">বেনামী ডেটা শেয়ার করুন</string>
-    <string name="settings_analytics_desc">বাগ ঠিক করতে ও অ্যাপ উন্নত করতে বেনামী ব্যবহারের তথ্য — কোনো ব্যক্তিগত ডেটা নেই, এবং আপনার শেয়ার করা কনটেন্ট যারা ব্যবহার করেন তাঁদের সম্পর্কে কিছু নেই। যেকোনো সময় পরিবর্তন করুন।</string>
     <string name="phantom_warn_title">স্থানান্তর বাধাগ্রস্ত হতে পারে</string>
     <string name="phantom_warn_body">Android 12+ এ সিস্টেম ব্যাকগ্রাউন্ডে চলার সময় স্থানান্তর বন্ধ করতে পারে (ফ্যান্টম-প্রসেস সীমা)। এটি রোধ করতে, “চাইল্ড প্রসেস সীমাবদ্ধতা” নিষ্ক্রিয় করুন, অথবা তবুও চালিয়ে যান — বড় স্থানান্তর বাধাগ্রস্ত হতে পারে।</string>
     <string name="phantom_warn_open_dev">ডেভেলপার অপশন খুলুন</string>
     <string name="phantom_warn_continue">তবুও চালিয়ে যান</string>
-    <string name="setup_app_lang_title">অ্যাপের ভাষা</string>
-    <string name="setup_app_lang_desc">অ্যাপের নিজস্ব স্ক্রিনের জন্য ভাষা বেছে নিন। “সিস্টেম ডিফল্ট” আপনার ফোন অনুসরণ করে।</string>
-    <string name="setup_app_lang_system">সিস্টেম ডিফল্ট (ফোন অনুসরণ করে)</string>
-    <string name="setup_language_section">ভাষা</string>
     <string name="portal_download_started">%1$s ডাউনলোড হচ্ছে…</string>
     <string name="portal_download_failed">ডাউনলোড শুরু করা যায়নি।</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -591,8 +563,6 @@
     <string name="k2go_settings_app_version">অ্যাপ সংস্করণ</string>
     <string name="k2go_settings_check_updates">আপডেট পরীক্ষা করুন</string>
     <string name="k2go_settings_permissions">অনুমতিসমূহ</string>
-    <string name="k2go_settings_usage_stats">ব্যবহার পরিসংখ্যান শেয়ার করুন</string>
-    <string name="k2go_settings_crash_reports">ক্র্যাশ রিপোর্ট পাঠান</string>
     <string name="k2go_settings_licenses">ওপেন-সোর্স লাইসেন্স</string>
     <string name="k2go_settings_privacy">গোপনীয়তা</string>
     <string name="k2go_settings_power_users">পাওয়ার ব্যবহারকারীদের জন্য।</string>
@@ -1604,10 +1574,6 @@
     <string name="k2go_cx_share_complete">স্থানান্তর সম্পূর্ণ। কনটেন্ট এখন অন্য ফোনে আছে।</string>
     <string name="k2go_cx_share_cancelled">অন্য ফোন স্থানান্তর বন্ধ করেছে।</string>
     <string name="k2go_cx_share_ended">শেয়ার শেষ হয়েছে।</string>
-    <string name="k2go_gm_catalogs_update">ক্যাটালগ আপডেট করুন</string>
-    <string name="k2go_gm_catalogs_updating">ক্যাটালগ আপডেট হচ্ছে...</string>
-    <string name="k2go_gm_catalogs_bundled">ক্যাটালগ: অ্যাপের সাথে অন্তর্ভুক্ত</string>
-    <string name="k2go_gm_catalogs_checked">ক্যাটালগ পরীক্ষা করা হয়েছে: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">প্রেরক ফোন থেকে ফাইলের তালিকা পড়া যায়নি।</string>
     <string name="k2go_clone_cable_err_no_path">প্রেরক ফোনের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। এর হটস্পটে যুক্ত হন বা USB কেবল সংযুক্ত করুন।</string>
@@ -1709,6 +1675,21 @@
     <string name="k2go_auth_notice_never_confirm">অনুস্মারক বন্ধ করুন</string>
     <string name="k2go_auth_notice_never_keep">অনুস্মারক রাখুন</string>
     <string name="k2go_auth_list_hint">অ্যাডমিন পাসওয়ার্ড, যা K2Go একটি বই পড়ুন, একটি কোর্স করুন এবং কোড হোস্ট করুন-এর জন্য ব্যবহার করে। অ্যাপ ও বক্স যাতে মিলে থাকে, তাই এগুলো এখানে বদলান।</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">গোপনীয়তা ও অনলাইন কনটেন্ট</string>
+    <string name="k2go_online_accept_usage">ব্যবহারের ডেটা শেয়ার করুন ও অনলাইন কনটেন্ট চান</string>
+    <string name="k2go_online_accept_crash">ক্র্যাশ রিপোর্ট পাঠান ও অনলাইন কনটেন্ট চান</string>
+    <string name="k2go_online_body_usage">%1$s বেনামী ব্যবহারের ডেটা ও ক্র্যাশ রিপোর্ট শেয়ার করতে পারে, এবং ফোন Wi-Fi-তে থাকলে নিজে থেকেই ক্যাটালগ ও অ্যাপের আপডেট দেখতে পারে। কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না, এবং আপনার শেয়ার করা কনটেন্ট যাঁরা ব্যবহার করেন তাঁদের সম্পর্কে কিছুই ট্র্যাক করা হয় না।\n\nঅফলাইন রাখুন: অ্যাপ নিজে থেকে ইন্টারনেটে সংযুক্ত হয় না।</string>
+    <string name="k2go_online_body_crash">%1$s ক্র্যাশ রিপোর্ট পাঠাতে পারে, এবং ফোন Wi-Fi-তে থাকলে নিজে থেকেই ক্যাটালগ ও অ্যাপের আপডেট দেখতে পারে। কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না।\n\nঅফলাইন রাখুন: অ্যাপ নিজে থেকে ইন্টারনেটে সংযুক্ত হয় না।</string>
+    <string name="k2go_webview_offline_page">এই পৃষ্ঠাটি ইন্টারনেটে আছে। অ্যাপের ভেতরের পৃষ্ঠাগুলো শুধু অফলাইনে কাজ করে।</string>
+    <string name="k2go_offline_action_title">এর জন্য ইন্টারনেট দরকার</string>
+    <string name="k2go_offline_action_msg">আপনি \"অফলাইন রাখুন\" বেছে নিয়েছেন। এটি করতে অ্যাপটিকে ইন্টারনেটে সংযুক্ত হতে হবে। আপনি শুধু এই কাজের জন্য এর অনুমতি দিতে পারেন।</string>
+    <string name="k2go_offline_action_allow_once">শুধু এবার অনুমতি দিন</string>
+    <string name="k2go_feedback_kept_offline">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে, তাই এটি মতামত পাঠায় না। এটি বদলাতে, সেটিংস &gt; সম্পর্কে-তে \"%1$s\" চালু করুন।</string>
+    <string name="k2go_feedback_third_party_title">এটি ইন্টারনেটে সংযুক্ত হতে পারে</string>
+    <string name="k2go_feedback_third_party_msg">আপনি \"অফলাইন রাখুন\" বেছে নিয়েছেন। মতামত অন্য একটি অ্যাপ দিয়ে পাঠানো হয়, যেমন ইমেল, এবং সেই অ্যাপটি ইন্টারনেটে সংযুক্ত হতে পারে।</string>
+    <string name="k2go_privacy_kept_offline">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে, তাই এই পরিষেবাগুলো বন্ধ থাকে। এটি বদলাতে, সেটিংস &gt; সম্পর্কে-তে \"%1$s\" চালু করুন।</string>
+    <string name="k2go_feedback_send_anyway">তবুও পাঠান</string>
     <string name="k2go_mod_phase_canceled">বাতিল করা হয়েছে</string>
     <string name="k2go_setup_modules_stopped">ইনস্টল বন্ধ হয়েছে। নিচে প্রতিটি মডিউল দেখুন।</string>
 </resources>

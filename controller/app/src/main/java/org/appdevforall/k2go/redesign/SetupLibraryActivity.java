@@ -334,17 +334,20 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
      * one, which {@code ACTION_START} would have overwritten.
      */
     public void startZimDownload() {
-        ZimWishlist.add(this, selection().zimCart());
-        selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
-        // K2GO-395 (ADR-395 sec.10): the order is banked above, unconditionally, so it is never lost.
-        // The gate wraps only the drain + navigation: it prompts on a metered network and, on consent
-        // (or Wi-Fi), drains and opens progress; declined or offline the order stays queued and a later
-        // pass drains it. The drain is also held headless by ContentAdmission, so a banked order never
-        // starts on metered data without consent even via the wizard-bank path or a background re-drain.
-        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+        Runnable bank = () -> {
+            ZimWishlist.add(this, selection().zimCart());
+            selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
+        };
+        // K2GO-395 (ADR-395 sec.10): on consent (or Wi-Fi) the order is banked, drained and progress
+        // opens; declined on metered data or offline, it is banked and a later pass drains it. The drain
+        // is also held headless by ContentAdmission, so a banked order never starts on metered data
+        // without consent. K2GO-588: Keep offline banks nothing; the picks stay in the cart.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(this, () -> {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
+            bank.run();
             ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
             startActivity(new Intent(this, SetupProgressActivity.class));
-        });
+        }, bank, () -> {});
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
@@ -378,6 +381,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
         // K2GO-404: gate the rootfs (aria2) download on metered cost. Wrap the whole commit so a
         // decline plants no InstallGuard marker (a marker with no install behind it forces recovery).
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+            // K2GO-588: the install also allows the content picked in the wizard (banked, drains later).
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.COURSES.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.MAPS.key());
             org.appdevforall.k2go.InstallGuard.begin(this);
             Intent i = new Intent(this, InstallService.class);
             i.setAction(InstallService.ACTION_START);
@@ -553,17 +561,21 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
     /** ADFA-4910: Books Confirm terminal in live mode — hand the picks to the download service and
      *  open the downloads screen (per-book checklist + retry). */
     public void startBooksDownload() {
-        for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
-            String[] v = e.getValue();
-            BooksWishlist.add(this, e.getKey(),
-                    v != null && v.length > 0 ? v[0] : "",
-                    v != null && v.length > 2 ? v[2] : "");
-        }
-        selection().booksCart().clear();
-        // K2GO-395 (ADR-395 sec.10): the order is banked above; gate only the drain + navigation, so
-        // a declined or offline order stays queued (ContentAdmission also holds it on metered-without-
-        // consent). Same shape as startZimDownload.
-        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+        Runnable bank = () -> {
+            for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
+                String[] v = e.getValue();
+                BooksWishlist.add(this, e.getKey(),
+                        v != null && v.length > 0 ? v[0] : "",
+                        v != null && v.length > 2 ? v[2] : "");
+            }
+            selection().booksCart().clear();
+        };
+        // K2GO-395 (ADR-395 sec.10): a declined or offline order is banked and stays queued
+        // (ContentAdmission also holds it on metered-without-consent). K2GO-588: Keep offline banks
+        // nothing. Same shape as startZimDownload.
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardOrder(this, () -> {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
+            bank.run();
             // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
             // calling its service directly, and that had a real consequence beyond symmetry: the
             // service registers its session asynchronously in onStartCommand, so for a moment nothing
@@ -578,7 +590,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             // detail "when books is the only stream" made the landing depend on state the user cannot
             // see, and the index is what ends the run.
             startActivity(new Intent(this, SetupProgressActivity.class));
-        });
+        }, bank, () -> {});
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
@@ -625,6 +637,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             // (mapsWizardConfirm) + that headless integration ride with the install/rootfs PR. Decline or
             // offline just does not enter the index; nothing is banked.
             org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this, () -> {
+                org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.MAPS.key());
                 String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
                 String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
                 String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
@@ -686,7 +699,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             // the START (like the rootfs/maps installs); a decline leaves the modules banked.
             InstallConfirm.gate(this, op, () ->
                     org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(this,
-                            () -> startActivity(new Intent(this, SetupProgressActivity.class))));
+                            () -> {
+                                org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.MODULES);
+                                startActivity(new Intent(this, SetupProgressActivity.class));
+                            }));
         });
     }
 

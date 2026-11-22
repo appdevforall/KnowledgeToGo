@@ -8,19 +8,8 @@
     <string name="connection_log_label">서버 로그</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">설정</string>
-    <string name="setup_title">초기 설정</string>
-    <string name="setup_welcome">%1$s 설정 마법사에 오신 것을 환영합니다.\n\n올바르게 작동하려면 다음 권한이 필요합니다:</string>
-    <string name="setup_continue">계속</string>
-    <string name="setup_perm_battery">배터리 최적화 비활성화</string>
-    <string name="setup_perm_notifications">푸시 알림</string>
-    <string name="setup_perm_storage">로컬 저장소 접근</string>
-    <string name="setup_perm_overlay">다른 앱 위에 표시</string>
-    <string name="setup_lang_title">콘텐츠 언어</string>
-    <string name="setup_lang_desc">언어를 선택하세요. 콘텐츠를 요청할 때 반영됩니다.</string>
     <string name="notif_perm_denied">알림 권한이 거부되었습니다</string>
     <string name="notif_perm_granted">알림 권한이 허용되었습니다</string>
-    <string name="revoke_permission_warning">권한을 취소하려면 시스템 설정에서 해야 합니다.</string>
     <string name="dash_device">기기를 불러오는 중…</string>
     <string name="dash_main_storage">저장소</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">설정이 저장되었습니다</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
-    <string name="setup_manage_all_permissions">모든 권한 관리</string>
     <string name="update_dialog_title">새 버전 사용 가능: %1$s</string>
     <string name="update_dialog_message">애플리케이션을 업데이트하시겠습니까?\n\n새로운 기능:\n%1$s</string>
     <string name="update_dialog_positive">업데이트</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB 환경을 정상적으로 중지하는 중…</string>
     <string name="log_server_stop_error">[중지 오류] %1$s</string>
     <string name="log_critical_binary_missing">심각: 네이티브 라이브러리에서 %1$s이(가) 없습니다!</string>
-    <string name="setup_back_blocked_msg">계속하려면 설정을 완료하세요.</string>
     <string name="sync_scanner_prompt">K2Go 호스트 QR 코드를 스캔하세요</string>
     <string name="kiwix_dialog_lang_label">Kiwix 언어</string>
     <string name="kiwix_dialog_variants_label">사용 가능한 ZIM 변형</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">가져왔지만 이 백업에는 포함된 rootfs 매니페스트가 없어 완전히 확인할 수 없었습니다.</string>
     <string name="install_error_corrupt">이 백업은 무결성 검사를 통과하지 못해(손상되었거나 변경되었을 수 있음) 사용되지 않았습니다.</string>
     <string name="install_warn_no_checksum">가져왔습니다. 이 백업은 모바일 기기에서 생성되어 무결성 체크섬이 없습니다.</string>
-    <string name="settings_nav_setup">설정</string>
-    <string name="settings_nav_feedback">피드백</string>
-    <string name="settings_nav_about">정보</string>
-    <string name="about_version">버전 %1$s</string>
-    <string name="settings_title">설정</string>
-    <string name="action_done">완료</string>
     <string name="feedback_type_label">유형</string>
     <string name="feedback_cat_bug">버그</string>
     <string name="feedback_cat_suggestion">제안</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">보고서 보내기</string>
     <string name="crash_report_dismiss">무시</string>
     <string name="rsync_error_process_killed">Android가 전송 프로세스를 중지했습니다(시스템 백그라운드 프로세스 제한). 이를 방지하려면 개발자 옵션에서 “자식 프로세스 제한 비활성화”를 켜거나 ADB 최적화를 설정하세요.</string>
-    <string name="analytics_enroll_title">개인정보 및 분석</string>
-    <string name="analytics_enroll_body">%1$s은(는) 버그를 수정하고 앱을 개선하는 데 도움이 되도록 익명 사용 정보를 수집합니다. 개인정보는 수집하거나 공유하지 않으며, 공유한 콘텐츠를 사용하는 사람들에 대해서도 아무것도 추적하지 않습니다.\n\n익명 데이터 공유는 휴대폰이 온라인일 때 이 정보를 보냅니다. 오프라인 유지는 휴대폰이 온라인이어도 아무것도 보내지 않습니다.</string>
-    <string name="analytics_enroll_accept">익명 데이터 공유</string>
     <string name="analytics_enroll_decline">오프라인 유지</string>
-    <string name="settings_analytics_title">익명 데이터 공유</string>
-    <string name="settings_analytics_desc">버그 수정과 앱 개선을 위한 익명 사용 정보 — 개인 데이터 없음, 공유한 콘텐츠를 사용하는 사람들에 대한 정보 없음. 언제든지 변경할 수 있습니다.</string>
     <string name="phantom_warn_title">전송이 중단될 수 있습니다</string>
     <string name="phantom_warn_body">Android 12 이상에서는 백그라운드에서 실행되는 동안 시스템이 전송을 중지할 수 있습니다(팬텀 프로세스 제한). 이를 방지하려면 “자식 프로세스 제한”을 비활성화하거나 그래도 계속하세요 — 대용량 전송은 중단될 수 있습니다.</string>
     <string name="phantom_warn_open_dev">개발자 옵션 열기</string>
     <string name="phantom_warn_continue">그래도 계속</string>
-    <string name="setup_app_lang_title">앱 언어</string>
-    <string name="setup_app_lang_desc">앱 자체 화면의 언어를 선택하세요. “시스템 기본값”은 휴대폰을 따릅니다.</string>
-    <string name="setup_app_lang_system">시스템 기본값(휴대폰 따르기)</string>
-    <string name="setup_language_section">언어</string>
     <string name="portal_download_started">%1$s 다운로드 중…</string>
     <string name="portal_download_failed">다운로드를 시작할 수 없습니다.</string>
     <string name="lohs_label">로컬 전용 핫스팟</string>
@@ -579,8 +551,6 @@
     <string name="k2go_settings_app_version">앱 버전</string>
     <string name="k2go_settings_check_updates">업데이트 확인</string>
     <string name="k2go_settings_permissions">권한</string>
-    <string name="k2go_settings_usage_stats">사용 통계 공유</string>
-    <string name="k2go_settings_crash_reports">충돌 보고서 보내기</string>
     <string name="k2go_settings_licenses">오픈소스 라이선스</string>
     <string name="k2go_settings_privacy">개인정보 보호</string>
     <string name="k2go_settings_power_users">고급 사용자용.</string>
@@ -1592,10 +1562,6 @@
     <string name="k2go_cx_share_complete">전송이 완료되었습니다. 다른 휴대전화에 콘텐츠가 있습니다.</string>
     <string name="k2go_cx_share_cancelled">다른 휴대전화가 전송을 중지했습니다.</string>
     <string name="k2go_cx_share_ended">공유가 종료되었습니다.</string>
-    <string name="k2go_gm_catalogs_update">카탈로그 업데이트</string>
-    <string name="k2go_gm_catalogs_updating">카탈로그 업데이트 중...</string>
-    <string name="k2go_gm_catalogs_bundled">카탈로그: 앱에 포함됨</string>
-    <string name="k2go_gm_catalogs_checked">카탈로그 확인: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">보내는 휴대폰에서 파일 목록을 읽을 수 없습니다.</string>
     <string name="k2go_clone_cable_err_no_path">보내는 휴대폰과의 연결이 끊어졌습니다. 해당 핫스팟에 접속하거나 USB 케이블을 연결하세요.</string>
@@ -1696,6 +1662,21 @@
     <string name="k2go_auth_notice_never_confirm">알림 중지</string>
     <string name="k2go_auth_notice_never_keep">알림 유지</string>
     <string name="k2go_auth_list_hint">K2Go가 책 읽기, 코스 수강, 코드 호스팅에 사용하는 관리자 비밀번호입니다. 앱과 박스가 서로 맞도록 여기에서 변경하세요.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">개인정보 보호 및 온라인 콘텐츠</string>
+    <string name="k2go_online_accept_usage">사용 데이터 공유 및 온라인 콘텐츠 요청</string>
+    <string name="k2go_online_accept_crash">충돌 보고서 보내기 및 온라인 콘텐츠 요청</string>
+    <string name="k2go_online_body_usage">%1$s은(는) 익명 사용 데이터와 충돌 보고서를 공유할 수 있으며, 휴대폰이 Wi-Fi에 연결되어 있을 때 카탈로그와 앱 업데이트를 자동으로 확인할 수 있습니다. 개인정보는 수집하지 않으며, 공유한 콘텐츠를 사용하는 사람들에 대해서도 아무것도 추적하지 않습니다.\n\n오프라인 유지: 앱이 스스로 인터넷에 연결하지 않습니다.</string>
+    <string name="k2go_online_body_crash">%1$s은(는) 충돌 보고서를 보낼 수 있으며, 휴대폰이 Wi-Fi에 연결되어 있을 때 카탈로그와 앱 업데이트를 자동으로 확인할 수 있습니다. 개인정보는 수집하지 않습니다.\n\n오프라인 유지: 앱이 스스로 인터넷에 연결하지 않습니다.</string>
+    <string name="k2go_webview_offline_page">이 페이지는 인터넷에 있습니다. 앱 안의 페이지는 오프라인에서만 작동합니다.</string>
+    <string name="k2go_offline_action_title">인터넷 연결이 필요합니다</string>
+    <string name="k2go_offline_action_msg">\"오프라인 유지\"를 선택했습니다. 이 작업을 하려면 앱이 인터넷에 연결해야 합니다. 이 작업에 한해서만 허용할 수 있습니다.</string>
+    <string name="k2go_offline_action_allow_once">이번만 허용</string>
+    <string name="k2go_feedback_kept_offline">앱이 \"오프라인 유지\"로 설정되어 있어 피드백을 보내지 않습니다. 변경하려면 설정 &gt; 정보에서 \"%1$s\"을(를) 켜세요.</string>
+    <string name="k2go_feedback_third_party_title">인터넷에 연결될 수 있습니다</string>
+    <string name="k2go_feedback_third_party_msg">\"오프라인 유지\"를 선택했습니다. 피드백은 다른 앱(예: 이메일)으로 보내지며, 그 앱은 인터넷에 연결될 수 있습니다.</string>
+    <string name="k2go_privacy_kept_offline">앱이 \"오프라인 유지\"로 설정되어 있어 이 서비스들은 꺼진 상태로 유지됩니다. 변경하려면 설정 &gt; 정보에서 \"%1$s\"을(를) 켜세요.</string>
+    <string name="k2go_feedback_send_anyway">그래도 보내기</string>
     <string name="k2go_mod_phase_canceled">취소됨</string>
     <string name="k2go_setup_modules_stopped">설치가 중지되었습니다. 아래에서 각 모듈을 확인하세요.</string>
 </resources>

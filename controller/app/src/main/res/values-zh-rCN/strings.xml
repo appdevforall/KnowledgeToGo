@@ -8,19 +8,8 @@
     <string name="connection_log_label">服务器日志</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">设置</string>
-    <string name="setup_title">初始设置</string>
-    <string name="setup_welcome">欢迎使用 %1$s 设置向导。\n\n为了正常运行，我们需要以下权限：</string>
-    <string name="setup_continue">继续</string>
-    <string name="setup_perm_battery">禁用电池优化</string>
-    <string name="setup_perm_notifications">推送通知</string>
-    <string name="setup_perm_storage">访问本地存储</string>
-    <string name="setup_perm_overlay">显示在其他应用之上</string>
-    <string name="setup_lang_title">内容语言</string>
-    <string name="setup_lang_desc">请选择你的语言；请求内容时会予以考虑。</string>
     <string name="notif_perm_denied">通知权限被拒绝</string>
     <string name="notif_perm_granted">通知权限已授予</string>
-    <string name="revoke_permission_warning">要撤销权限，必须在系统设置中进行。</string>
     <string name="dash_device">正在加载设备…</string>
     <string name="dash_main_storage">存储</string>
     <string name="dash_ram_memory">内存</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">设置已保存</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">由 App Dev for All 提供支持</string>
-    <string name="setup_manage_all_permissions">管理所有权限</string>
     <string name="update_dialog_title">有新版本可用: %1$s</string>
     <string name="update_dialog_message">你要更新此应用吗？\n\n新功能:\n%1$s</string>
     <string name="update_dialog_positive">更新</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">正在正常停止 IIAB 环境…</string>
     <string name="log_server_stop_error">[停止错误] %1$s</string>
     <string name="log_critical_binary_missing">严重: 原生库中缺少 %1$s！</string>
-    <string name="setup_back_blocked_msg">请完成设置以继续。</string>
     <string name="sync_scanner_prompt">扫描 K2Go 主机二维码</string>
     <string name="kiwix_dialog_lang_label">Kiwix 语言</string>
     <string name="kiwix_dialog_variants_label">可用的 ZIM 变体</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">已导入，但此备份没有嵌入的 rootfs 清单，因此无法完全验证。</string>
     <string name="install_error_corrupt">此备份未通过完整性检查（可能已损坏或被更改），因此未被使用。</string>
     <string name="install_warn_no_checksum">已导入。此备份没有完整性校验和，因为它是在移动设备上创建的。</string>
-    <string name="settings_nav_setup">设置</string>
-    <string name="settings_nav_feedback">反馈</string>
-    <string name="settings_nav_about">关于</string>
-    <string name="about_version">版本 %1$s</string>
-    <string name="settings_title">设置</string>
-    <string name="action_done">完成</string>
     <string name="feedback_type_label">类型</string>
     <string name="feedback_cat_bug">错误</string>
     <string name="feedback_cat_suggestion">建议</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">发送报告</string>
     <string name="crash_report_dismiss">忽略</string>
     <string name="rsync_error_process_killed">Android 停止了传输进程（系统后台进程限制）。为防止此情况，请在开发者选项中启用“禁用子进程限制”，或设置 ADB 优化。</string>
-    <string name="analytics_enroll_title">隐私与分析</string>
-    <string name="analytics_enroll_body">%1$s 会收集匿名使用信息，以帮助我们修复错误并改进应用。不会收集或共享任何个人信息，也不会跟踪使用你所共享内容的任何人。\n\n“共享匿名数据”会在手机联网时发送这些信息。“保持离线”不会发送任何内容，即使手机联网也是如此。</string>
-    <string name="analytics_enroll_accept">共享匿名数据</string>
     <string name="analytics_enroll_decline">保持离线</string>
-    <string name="settings_analytics_title">共享匿名数据</string>
-    <string name="settings_analytics_desc">用于修复错误和改进应用的匿名使用信息——没有个人数据，也没有关于使用你所共享内容的人的任何信息。可随时更改。</string>
     <string name="phantom_warn_title">传输可能被中断</string>
     <string name="phantom_warn_body">在 Android 12+ 上，系统可能会在传输于后台运行时将其停止（幻影进程限制）。为防止此情况，请禁用“子进程限制”，或仍然继续 — 大型传输可能会被中断。</string>
     <string name="phantom_warn_open_dev">打开开发者选项</string>
     <string name="phantom_warn_continue">仍然继续</string>
-    <string name="setup_app_lang_title">应用语言</string>
-    <string name="setup_app_lang_desc">选择应用自身界面的语言。“系统默认”跟随你的手机。</string>
-    <string name="setup_app_lang_system">系统默认（跟随手机）</string>
-    <string name="setup_language_section">语言</string>
     <string name="portal_download_started">正在下载 %1$s…</string>
     <string name="portal_download_failed">无法开始下载。</string>
     <string name="lohs_label">仅本地热点</string>
@@ -579,8 +551,6 @@
     <string name="k2go_settings_app_version">应用版本</string>
     <string name="k2go_settings_check_updates">检查更新</string>
     <string name="k2go_settings_permissions">权限</string>
-    <string name="k2go_settings_usage_stats">共享使用统计</string>
-    <string name="k2go_settings_crash_reports">发送崩溃报告</string>
     <string name="k2go_settings_licenses">开源许可证</string>
     <string name="k2go_settings_privacy">隐私</string>
     <string name="k2go_settings_power_users">适合高级用户。</string>
@@ -1592,10 +1562,6 @@
     <string name="k2go_cx_share_complete">传输完成。另一部手机已有这些内容。</string>
     <string name="k2go_cx_share_cancelled">另一部手机停止了传输。</string>
     <string name="k2go_cx_share_ended">共享已结束。</string>
-    <string name="k2go_gm_catalogs_update">更新目录</string>
-    <string name="k2go_gm_catalogs_updating">正在更新目录...</string>
-    <string name="k2go_gm_catalogs_bundled">目录：随应用附带</string>
-    <string name="k2go_gm_catalogs_checked">目录检查时间：%1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">无法从发送方手机读取文件列表。</string>
     <string name="k2go_clone_cable_err_no_path">与发送方手机的连接已断开。请加入其热点或连接 USB 数据线。</string>
@@ -1696,6 +1662,21 @@
     <string name="k2go_auth_notice_never_confirm">停止提醒</string>
     <string name="k2go_auth_notice_never_keep">保留提醒</string>
     <string name="k2go_auth_list_hint">K2Go 用于图书、课程和托管代码的管理员密码。请在这里更改，让应用和盒子保持一致。</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">隐私与在线内容</string>
+    <string name="k2go_online_accept_usage">共享使用数据并请求在线内容</string>
+    <string name="k2go_online_accept_crash">发送崩溃报告并请求在线内容</string>
+    <string name="k2go_online_body_usage">%1$s 可以共享匿名使用数据和崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息，也不会跟踪使用你所共享内容的任何人。\n\n“保持离线”：应用不会自行连接互联网。</string>
+    <string name="k2go_online_body_crash">%1$s 可以发送崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息。\n\n“保持离线”：应用不会自行连接互联网。</string>
+    <string name="k2go_webview_offline_page">此页面位于互联网上。应用内的页面仅可离线使用。</string>
+    <string name="k2go_offline_action_title">此操作需要联网</string>
+    <string name="k2go_offline_action_msg">您选择了“保持离线”。要执行此操作，应用必须连接到互联网。您可以仅允许本次操作联网。</string>
+    <string name="k2go_offline_action_allow_once">仅允许本次</string>
+    <string name="k2go_feedback_kept_offline">应用已设为“保持离线”，因此不会发送反馈。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
+    <string name="k2go_feedback_third_party_title">这可能会连接到互联网</string>
+    <string name="k2go_feedback_third_party_msg">您选择了“保持离线”。反馈会通过其他应用（例如电子邮件）发送，该应用可能会连接到互联网。</string>
+    <string name="k2go_privacy_kept_offline">应用已设为“保持离线”，因此这些服务保持关闭。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
+    <string name="k2go_feedback_send_anyway">仍然发送</string>
     <string name="k2go_mod_phase_canceled">已取消</string>
     <string name="k2go_setup_modules_stopped">安装已停止。请检查下方的每个模块。</string>
 </resources>

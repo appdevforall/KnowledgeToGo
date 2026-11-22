@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission;
+import org.appdevforall.k2go.networkpolicy.domain.NetworkPolicyDecision;
 import org.appdevforall.k2go.networkpolicy.data.SessionMeteredConsentStore;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.util.Snackbars;
@@ -32,6 +35,20 @@ public final class NetworkPolicyGate {
 
     private NetworkPolicyGate() {}
 
+    /**
+     * K2GO-588: a control that needs the internet looks grey while the app is kept offline, but it
+     * stays enabled: a tap goes through the gate, which offers to allow it for this action only.
+     */
+    public static void markNeedsInternet(@Nullable View control) {
+        markNeedsInternet(control, 1f);
+    }
+
+    /** The same, for a control whose own look sets {@code onlineAlpha} (for example 0.6 when idle). */
+    public static void markNeedsInternet(@Nullable View control, float onlineAlpha) {
+        if (control == null) return;
+        control.setAlpha(OnlineConsent.isEnabled(control.getContext()) ? onlineAlpha : 0.5f);
+    }
+
     /** Two-arg form: decline/offline is a no-op (the order stays banked and drains later). */
     public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed) {
         guardHeavyStart(activity, onProceed, () -> {});
@@ -44,7 +61,17 @@ public final class NetworkPolicyGate {
      */
     public static void guardHeavyStart(@NonNull Activity activity, @NonNull Runnable onProceed,
                                        @NonNull Runnable onDeclined) {
-        guard(activity, onProceed, onDeclined, true);
+        guard(activity, onProceed, onDeclined, onDeclined, true);
+    }
+
+    /**
+     * K2GO-588: for a caller that banks its order before the gate. {@code onKeptOffline} runs when
+     * the user keeps the app offline, so the caller takes the order back: a banked order drains on a
+     * later pass, and that pass must not connect for an order the user did not allow.
+     */
+    public static void guardOrder(@NonNull Activity activity, @NonNull Runnable onProceed,
+                                  @NonNull Runnable onDeclined, @NonNull Runnable onKeptOffline) {
+        guard(activity, onProceed, onDeclined, onKeptOffline, true);
     }
 
     /**
@@ -54,12 +81,36 @@ public final class NetworkPolicyGate {
      */
     public static void guardThisAction(@NonNull Activity activity, @NonNull Runnable onProceed,
                                        @NonNull Runnable onDeclined) {
-        guard(activity, onProceed, onDeclined, false);
+        guard(activity, onProceed, onDeclined, onDeclined, false);
     }
 
     private static void guard(@NonNull Activity activity, @NonNull Runnable onProceed,
-                              @NonNull Runnable onDeclined, boolean grantSession) {
-        switch (NetworkCostAdmission.decideNow(activity)) {
+                              @NonNull Runnable onDeclined, @NonNull Runnable onKeptOffline,
+                              boolean grantSession) {
+        NetworkPolicyDecision decision = NetworkCostAdmission.decideNow(activity);
+        boolean online = OnlineConsent.isEnabled(activity);
+        // K2GO-588: with Keep offline, the user allows the internet for this one action only. Nothing
+        // is stored, so the next action asks again. No network: the offline snackbar is enough, and
+        // nothing is banked, since a later drain would connect for an order nobody allowed.
+        if (decision != NetworkPolicyDecision.BLOCKED_NO_NETWORK && !online) {
+            new BrandDialog(activity)
+                    .setTitle(R.string.k2go_offline_action_title)
+                    .setMessage(R.string.k2go_offline_action_msg)
+                    .setPositive(R.string.analytics_enroll_decline, onKeptOffline::run)
+                    .setNegative(R.string.k2go_offline_action_allow_once,
+                            () -> decide(activity, NetworkCostAdmission.decideNow(activity),
+                                    onProceed, onKeptOffline, grantSession))
+                    .setOnCancel(onKeptOffline::run)
+                    .show();
+            return;
+        }
+        decide(activity, decision, onProceed, online ? onDeclined : onKeptOffline, grantSession);
+    }
+
+    private static void decide(@NonNull Activity activity, @NonNull NetworkPolicyDecision decision,
+                               @NonNull Runnable onProceed, @NonNull Runnable onDeclined,
+                               boolean grantSession) {
+        switch (decision) {
             case ALLOW:
                 onProceed.run();
                 return;

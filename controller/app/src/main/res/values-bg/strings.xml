@@ -8,19 +8,8 @@
     <string name="connection_log_label">Дневник на сървъра</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">НАСТРОЙКИ</string>
-    <string name="setup_title">Първоначална настройка</string>
-    <string name="setup_welcome">Добре дошли в помощника за настройка на %1$s.\n\nЗа да работи правилно, се нуждаем от следните разрешения:</string>
-    <string name="setup_continue">Продължи</string>
-    <string name="setup_perm_battery">Изключване на оптимизацията на батерията</string>
-    <string name="setup_perm_notifications">Push известия</string>
-    <string name="setup_perm_storage">Достъп до локалното хранилище</string>
-    <string name="setup_perm_overlay">Показване над други приложения</string>
-    <string name="setup_lang_title">Език на съдържанието</string>
-    <string name="setup_lang_desc">Моля, изберете вашия език, тъй като той ще бъде взет предвид при заявка за съдържание.</string>
     <string name="notif_perm_denied">Разрешението за известия е отказано</string>
     <string name="notif_perm_granted">Разрешението за известия е предоставено</string>
-    <string name="revoke_permission_warning">За да отмените разрешенията, трябва да го направите от системните настройки.</string>
     <string name="dash_device">Зарежда се устройството…</string>
     <string name="dash_main_storage">Хранилище</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Настройките са запазени</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">осигурено от App Dev for All</string>
-    <string name="setup_manage_all_permissions">Управление на всички разрешения</string>
     <string name="update_dialog_title">Налична е нова версия: %1$s</string>
     <string name="update_dialog_message">Искате ли да актуализирате приложението?\n\nКакво е новото:\n%1$s</string>
     <string name="update_dialog_positive">Актуализирай</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Плавно спиране на средата IIAB…</string>
     <string name="log_server_stop_error">[Грешка при спиране] %1$s</string>
     <string name="log_critical_binary_missing">КРИТИЧНО: %1$s липсва от нативните библиотеки!</string>
-    <string name="setup_back_blocked_msg">Моля, завършете настройката, за да продължите.</string>
     <string name="sync_scanner_prompt">Сканирайте QR кода на хоста K2Go</string>
     <string name="kiwix_dialog_lang_label">Език на Kiwix</string>
     <string name="kiwix_dialog_variants_label">Налични варианти на ZIM</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">Импортирано, но това резервно копие няма вграден манифест на rootfs, затова не можа да бъде напълно проверено.</string>
     <string name="install_error_corrupt">Това резервно копие не премина проверката за цялост (може да е повредено или променено), затова не беше използвано.</string>
     <string name="install_warn_no_checksum">Импортирано. Това резервно копие няма контролна сума за цялост, защото е създадено на мобилно устройство.</string>
-    <string name="settings_nav_setup">Настройка</string>
-    <string name="settings_nav_feedback">Обратна връзка</string>
-    <string name="settings_nav_about">Относно</string>
-    <string name="about_version">Версия %1$s</string>
-    <string name="settings_title">Настройки</string>
-    <string name="action_done">Готово</string>
     <string name="feedback_type_label">Тип</string>
     <string name="feedback_cat_bug">Грешка</string>
     <string name="feedback_cat_suggestion">Предложение</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Отхвърли</string>
     <string name="rsync_error_process_killed">Android спря процеса на прехвърляне (системен лимит за фонови процеси). За да предотвратите това, активирайте „Изключване на ограниченията за дъщерни процеси“ в Опциите за разработчици или настройте оптимизацията на ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Поверителност и анализ</string>
-    <string name="analytics_enroll_body">%1$s събира анонимна информация за използването, за да ни помогне да поправяме грешки и да подобряваме приложението. Не се събира и не се споделя лична информация и не се проследява нищо за хората, които използват споделеното от вас съдържание.\n\nСподеляне на анонимни данни изпраща тази информация, когато телефонът е онлайн. Само офлайн не изпраща нищо, дори когато телефонът е онлайн.</string>
-    <string name="analytics_enroll_accept">Споделяне на анонимни данни</string>
     <string name="analytics_enroll_decline">Само офлайн</string>
-    <string name="settings_analytics_title">Споделяне на анонимни данни</string>
-    <string name="settings_analytics_desc">Анонимна информация за използването, за да поправяме грешки и да подобряваме приложението — без лични данни и нищо за хората, които използват споделеното от вас съдържание. Може да се променя по всяко време.</string>
     <string name="phantom_warn_title">Прехвърлянето може да бъде прекъснато</string>
     <string name="phantom_warn_body">На Android 12+ системата може да спре прехвърлянето, докато то се изпълнява на заден план (лимит за phantom процеси). За да го предотвратите, изключете „ограниченията за дъщерни процеси“ или продължете все пак — големите прехвърляния може да бъдат прекъснати.</string>
     <string name="phantom_warn_open_dev">Отвори Опциите за разработчици</string>
     <string name="phantom_warn_continue">Продължи все пак</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Език на приложението</string>
-    <string name="setup_app_lang_desc">Изберете езика за собствените екрани на приложението. „Системно по подразбиране“ следва вашия телефон.</string>
-    <string name="setup_app_lang_system">Системно по подразбиране (следвай телефона)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Език</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Изтегляне на %1$s…</string>
     <string name="portal_download_failed">Изтеглянето не можа да започне.</string>
@@ -585,8 +557,6 @@
     <string name="k2go_settings_app_version">Версия на приложението</string>
     <string name="k2go_settings_check_updates">Проверка за актуализации</string>
     <string name="k2go_settings_permissions">Разрешения</string>
-    <string name="k2go_settings_usage_stats">Споделяне на статистика за използване</string>
-    <string name="k2go_settings_crash_reports">Изпращане на отчети за сривове</string>
     <string name="k2go_settings_licenses">Лицензи с отворен код</string>
     <string name="k2go_settings_privacy">Поверителност</string>
     <string name="k2go_settings_power_users">За напреднали потребители.</string>
@@ -1598,10 +1568,6 @@
     <string name="k2go_cx_share_complete">Прехвърлянето завърши. Съдържанието е на другия телефон.</string>
     <string name="k2go_cx_share_cancelled">Другият телефон спря прехвърлянето.</string>
     <string name="k2go_cx_share_ended">Споделянето приключи.</string>
-    <string name="k2go_gm_catalogs_update">Обнови каталозите</string>
-    <string name="k2go_gm_catalogs_updating">Каталозите се обновяват...</string>
-    <string name="k2go_gm_catalogs_bundled">Каталози: включени в приложението</string>
-    <string name="k2go_gm_catalogs_checked">Каталозите са проверени: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не може да се прочете списъкът с файлове от изпращащия телефон.</string>
     <string name="k2go_clone_cable_err_no_path">Връзката с изпращащия телефон е прекъсната. Свържете се с точката му за достъп или включете USB кабела.</string>
@@ -1703,6 +1669,21 @@
     <string name="k2go_auth_notice_never_confirm">Спри напомнянията</string>
     <string name="k2go_auth_notice_never_keep">Запази напомнянията</string>
     <string name="k2go_auth_list_hint">Администраторски пароли, които K2Go използва за Прочети книга, Запиши се на курс и Хостинг на код. Сменяйте ги тук, за да остават приложението и кутията в синхрон.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Поверителност и онлайн съдържание</string>
+    <string name="k2go_online_accept_usage">Споделяне на данни за употреба и заявяване на онлайн съдържание</string>
+    <string name="k2go_online_accept_crash">Изпращане на отчети за сривове и заявяване на онлайн съдържание</string>
+    <string name="k2go_online_body_usage">%1$s може да споделя анонимни данни за използването и отчети за сривове и може сам да проверява за актуализации на каталога и приложението, когато телефонът е свързан с Wi-Fi. Не се събира лична информация и не се проследява нищо за хората, които използват споделеното от вас съдържание.\n\nСамо офлайн: приложението не се свързва с интернет от само себе си.</string>
+    <string name="k2go_online_body_crash">%1$s може да изпраща отчети за сривове и може сам да проверява за актуализации на каталога и приложението, когато телефонът е свързан с Wi-Fi. Не се събира лична информация.\n\nСамо офлайн: приложението не се свързва с интернет от само себе си.</string>
+    <string name="k2go_webview_offline_page">Тази страница е в интернет. Страниците в приложението работят само офлайн.</string>
+    <string name="k2go_offline_action_title">Това изисква интернет</string>
+    <string name="k2go_offline_action_msg">Избрахте \"Само офлайн\". За да направи това, приложението трябва да се свърже с интернет. Можете да го разрешите само за това действие.</string>
+    <string name="k2go_offline_action_allow_once">Разреши само този път</string>
+    <string name="k2go_feedback_kept_offline">Приложението е настроено на \"Само офлайн\", затова не изпраща обратна връзка. За да промените това, включете \"%1$s\" в Настройки &gt; Относно.</string>
+    <string name="k2go_feedback_third_party_title">Това може да се свърже с интернет</string>
+    <string name="k2go_feedback_third_party_msg">Избрахте \"Само офлайн\". Обратната връзка се изпраща с друго приложение, например имейл, и то може да се свърже с интернет.</string>
+    <string name="k2go_privacy_kept_offline">Приложението е настроено на \"Само офлайн\", затова тези услуги остават изключени. За да промените това, включете \"%1$s\" в Настройки &gt; Относно.</string>
+    <string name="k2go_feedback_send_anyway">Изпрати въпреки това</string>
     <string name="k2go_mod_phase_canceled">Отменено</string>
     <string name="k2go_setup_modules_stopped">Инсталирането спря. Проверете всеки модул по-долу.</string>
 </resources>

@@ -11,7 +11,15 @@
   which is the minimum that lets a device pull from an ad-hoc peer : HTTPS would need a shared
   certificate the on-the-spot QR pairing has no way to provision. HTTPS stays available everywhere
   (e.g. the OTA self-update). Native aria2 downloads run in a separate process, not governed here.
+  K2GO-588: Android 7.0 (API 24) does not trust ISRG Root X1, the root of the R2 download host
+  (Let's Encrypt). The app reads the rootfs .meta4 and .minisig itself, so it adds that one root to
+  the system store. aria2 uses the bundled cacert.pem, which has the same root.
 -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/isrg_root_x1" />
+        </trust-anchors>
+    </base-config>
 </network-security-config>

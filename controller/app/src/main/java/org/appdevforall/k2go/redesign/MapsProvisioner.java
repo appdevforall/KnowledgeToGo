@@ -30,7 +30,8 @@ public final class MapsProvisioner {
 
     /** True when there is a banked maps selection waiting to be applied. */
     public static boolean hasPending(Context ctx) {
-        return MapsWishlist.has(ctx);
+        // K2GO-588: a saved order waits while the app is kept offline and the user did not allow it.
+        return MapsWishlist.has(ctx) && org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, org.appdevforall.k2go.system.domain.ContentType.MAPS.key());
     }
 
     /**

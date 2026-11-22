@@ -102,6 +102,7 @@ public class GetMoreHubFragment extends Fragment {
             if (title != null) title.setText(R.string.k2go_setup_library_title);
             View cont = root.findViewById(R.id.k2go_gm_continue);
             cont.setVisibility(View.VISIBLE);
+            org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(cont);   // K2GO-588
             cont.setOnClickListener(v -> {
                 if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).startWizardInstall();
             });
@@ -116,13 +117,6 @@ public class GetMoreHubFragment extends Fragment {
         }
         buildCards();   // live mode shows "checking…" until probes resolve
         return root;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle s) {
-        super.onViewCreated(view, s);
-        org.appdevforall.k2go.catalog.presentation.CatalogUpdateRow.bind(this,
-                view.findViewById(R.id.k2go_gm_catalogs_status), view.findViewById(R.id.k2go_gm_catalogs_update));
     }
 
     /** Pre-install: a card is offered based on the chosen tier, not a live probe. Books ships only

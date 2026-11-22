@@ -44,7 +44,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.SystemStateEvaluator;
-import org.appdevforall.k2go.delivery.data.CrashReportConsent;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.appdevforall.k2go.diskguard.data.FirehoseSignalSource;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardEscalation;
 import org.appdevforall.k2go.diskguard.domain.DiskGuardPolicy;
@@ -310,7 +310,7 @@ public final class DiskGuard {
 
     /**
      * Report the event to developers, unattended. This is an OPERATIONAL diagnostic, not behavioural
-     * analytics, so it goes to GlitchTip via Sentry (CrashReportConsent, default off) -- NOT the
+     * analytics, so it goes to GlitchTip via Sentry (OnlineConsent, default off) -- NOT the
      * analytics backbone (opt-in, default off, which would silently drop it). A no-op when crash
      * reporting is off or Sentry has no DSN. See IIABApplication (ADFA-4533) and ADR-386 section 7.
      * The user-facing, user-sent report is a separate channel (the closing K2GO-386 ticket).
@@ -318,7 +318,7 @@ public final class DiskGuard {
     private static void report(Context ctx, String source, String action, long floorBytes, boolean reaped,
                               long reclaimed, int count, List<String> paths) {
         try {
-            if (!CrashReportConsent.isEnabled(ctx)) return;
+            if (!OnlineConsent.isEnabled(ctx)) return;
             Sentry.withScope(scope -> {
                 scope.setLevel(SentryLevel.WARNING);
                 scope.setTag("event", "disk_guard");
