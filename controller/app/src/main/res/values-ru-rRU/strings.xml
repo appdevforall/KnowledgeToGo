@@ -1752,8 +1752,8 @@
     <string name="k2go_auth_reminder_switch">Напоминать при запуске, пока используется заводской пароль</string>
     <string name="k2go_auth_notice_mismatch_title">Автоматический вход не работает</string>
     <string name="k2go_auth_notice_mismatch_msg">Пароль администратора %1$s был изменён вне этого приложения. Исправьте или сбросьте его в разделе Настройки, Аутентификация.</string>
-    <string name="k2go_auth_notice_factory_title">Используются заводские пароли</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s всё ещё используют заводской пароль администратора. Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
+    <string name="k2go_auth_notice_factory_title">Используется заводской пароль</string>
+    <string name="k2go_auth_notice_factory_msg">Заводской пароль администратора всё ещё работает в: %1$s. Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
     <string name="k2go_auth_notice_open">Открыть Аутентификацию</string>
     <string name="k2go_auth_notice_close">Закрыть</string>
     <string name="k2go_auth_notice_never">Больше не показывать</string>

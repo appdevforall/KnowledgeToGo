@@ -1683,8 +1683,8 @@
     <string name="k2go_auth_reminder_switch">Připomenout při spuštění, dokud se používá tovární heslo</string>
     <string name="k2go_auth_notice_mismatch_title">Automatické přihlášení nefunguje</string>
     <string name="k2go_auth_notice_mismatch_msg">Heslo správce pro %1$s bylo změněno mimo tuto aplikaci. Oprav ho nebo ho obnov v Nastavení, Ověření.</string>
-    <string name="k2go_auth_notice_factory_title">Používají se tovární hesla</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s stále používají tovární heslo správce. Kdokoli ve stejné Wi-Fi nebo hotspotu se může přihlásit a změnit tvou knihovnu. Změň ho v Nastavení, Ověření.</string>
+    <string name="k2go_auth_notice_factory_title">Používá se tovární heslo</string>
+    <string name="k2go_auth_notice_factory_msg">Tovární heslo správce stále funguje v: %1$s. Kdokoli ve stejné Wi-Fi nebo hotspotu se může přihlásit a změnit tvou knihovnu. Změň ho v Nastavení, Ověření.</string>
     <string name="k2go_auth_notice_open">Otevřít Ověření</string>
     <string name="k2go_auth_notice_close">Zavřít</string>
     <string name="k2go_auth_notice_never">Už nezobrazovat</string>

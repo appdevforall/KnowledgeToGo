@@ -1842,6 +1842,7 @@
     <string name="k2go_clone_link_badge_starting">Starting</string>
     <string name="k2go_clone_unplug_cable">You can unplug the USB cable.</string>
     <!-- K2GO-552: admin password change, repair, reset and the start notice. -->
+    <!-- Settings > Authentication > a service: the admin user name. %1$s = user name, for example "Admin". -->
     <string name="k2go_auth_pw_user">User: %1$s</string>
     <string name="k2go_auth_pw_checking">Checking the sign-in...</string>
     <string name="k2go_auth_pw_state_ok">The app signs in with the password you set.</string>
@@ -1872,9 +1873,11 @@
     <string name="k2go_auth_chip_mismatch">Does not match</string>
     <string name="k2go_auth_reminder_switch">Remind me at start while a factory password is in use</string>
     <string name="k2go_auth_notice_mismatch_title">Automatic sign-in does not work</string>
+    <!-- Start-up notice when a service rejects the stored admin password. %1$s = service names, for example "Forgejo" or "Calibre-Web, Kolibri". -->
     <string name="k2go_auth_notice_mismatch_msg">The admin password of %1$s was changed outside this app. Repair it or reset it in Settings, Authentication.</string>
-    <string name="k2go_auth_notice_factory_title">Factory passwords in use</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s still use the factory admin password. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
+    <string name="k2go_auth_notice_factory_title">Factory password in use</string>
+    <!-- Start-up notice while a service still takes the factory admin password. %1$s = service names, for example "Calibre-Web" or "Calibre-Web, Kolibri, Forgejo". -->
+    <string name="k2go_auth_notice_factory_msg">The factory admin password still works in: %1$s. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
     <string name="k2go_auth_notice_open">Open Authentication</string>
     <string name="k2go_auth_notice_close">Close</string>
     <string name="k2go_auth_notice_never">Don\'t show again</string>

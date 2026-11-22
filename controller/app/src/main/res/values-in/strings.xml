@@ -1684,7 +1684,7 @@
     <string name="k2go_auth_notice_mismatch_title">Masuk otomatis tidak berfungsi</string>
     <string name="k2go_auth_notice_mismatch_msg">Kata sandi admin %1$s diubah di luar aplikasi ini. Perbaiki atau setel ulang di Setelan, Autentikasi.</string>
     <string name="k2go_auth_notice_factory_title">Kata sandi pabrik sedang digunakan</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s masih memakai kata sandi admin pabrik. Siapa pun di Wi-Fi atau hotspot yang sama dapat masuk dan mengubah pustaka Anda. Ubah di Setelan, Autentikasi.</string>
+    <string name="k2go_auth_notice_factory_msg">Kata sandi admin pabrik masih berfungsi di: %1$s. Siapa pun di Wi-Fi atau hotspot yang sama dapat masuk dan mengubah pustaka Anda. Ubah di Setelan, Autentikasi.</string>
     <string name="k2go_auth_notice_open">Buka Autentikasi</string>
     <string name="k2go_auth_notice_close">Tutup</string>
     <string name="k2go_auth_notice_never">Jangan tampilkan lagi</string>

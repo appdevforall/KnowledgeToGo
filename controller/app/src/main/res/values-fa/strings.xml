@@ -1676,8 +1676,8 @@
     <string name="k2go_auth_reminder_switch">تا وقتی رمز عبور کارخانه در استفاده است، هنگام شروع یادآوری کن</string>
     <string name="k2go_auth_notice_mismatch_title">ورود خودکار کار نمی‌کند</string>
     <string name="k2go_auth_notice_mismatch_msg">رمز عبور مدیر %1$s بیرون از این برنامه تغییر کرده است. آن را در تنظیمات، احراز هویت ترمیم یا بازنشانی کنید.</string>
-    <string name="k2go_auth_notice_factory_title">رمزهای عبور کارخانه در حال استفاده‌اند</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s هنوز از رمز عبور مدیر کارخانه استفاده می‌کنند. هر کسی در همان Wi-Fi یا هات‌اسپات می‌تواند وارد شود و کتابخانه شما را تغییر دهد. آن را در تنظیمات، احراز هویت تغییر دهید.</string>
+    <string name="k2go_auth_notice_factory_title">رمز عبور کارخانه در حال استفاده است</string>
+    <string name="k2go_auth_notice_factory_msg">رمز عبور مدیر کارخانه هنوز در این موارد کار می‌کند: %1$s. هر کسی در همان Wi-Fi یا هات‌اسپات می‌تواند وارد شود و کتابخانه شما را تغییر دهد. آن را در تنظیمات، احراز هویت تغییر دهید.</string>
     <string name="k2go_auth_notice_open">باز کردن احراز هویت</string>
     <string name="k2go_auth_notice_close">بستن</string>
     <string name="k2go_auth_notice_never">دیگر نشان نده</string>

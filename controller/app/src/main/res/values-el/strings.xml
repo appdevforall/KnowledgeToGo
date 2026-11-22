@@ -1683,8 +1683,8 @@
     <string name="k2go_auth_reminder_switch">Υπενθύμιση στην εκκίνηση όσο χρησιμοποιείται εργοστασιακός κωδικός</string>
     <string name="k2go_auth_notice_mismatch_title">Η αυτόματη σύνδεση δεν λειτουργεί</string>
     <string name="k2go_auth_notice_mismatch_msg">Ο κωδικός διαχειριστή του %1$s άλλαξε εκτός αυτής της εφαρμογής. Επιδιόρθωσέ τον ή κάνε επαναφορά στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
-    <string name="k2go_auth_notice_factory_title">Εργοστασιακοί κωδικοί σε χρήση</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s χρησιμοποιούν ακόμη τον εργοστασιακό κωδικό διαχειριστή. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί και να αλλάξει τη βιβλιοθήκη σου. Άλλαξέ τον στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
+    <string name="k2go_auth_notice_factory_title">Εργοστασιακός κωδικός σε χρήση</string>
+    <string name="k2go_auth_notice_factory_msg">Ο εργοστασιακός κωδικός διαχειριστή λειτουργεί ακόμη σε: %1$s. Όποιος είναι στο ίδιο Wi-Fi ή hotspot μπορεί να συνδεθεί και να αλλάξει τη βιβλιοθήκη σου. Άλλαξέ τον στις Ρυθμίσεις, Έλεγχος ταυτότητας.</string>
     <string name="k2go_auth_notice_open">Άνοιγμα ελέγχου ταυτότητας</string>
     <string name="k2go_auth_notice_close">Κλείσιμο</string>
     <string name="k2go_auth_notice_never">Να μην εμφανιστεί ξανά</string>

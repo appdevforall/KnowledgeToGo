@@ -1676,8 +1676,8 @@
     <string name="k2go_auth_reminder_switch">Herinner me bij het starten zolang een fabriekswachtwoord in gebruik is</string>
     <string name="k2go_auth_notice_mismatch_title">Automatisch aanmelden werkt niet</string>
     <string name="k2go_auth_notice_mismatch_msg">Het beheerderswachtwoord van %1$s is buiten deze app gewijzigd. Herstel het of zet het terug in Instellingen, Verificatie.</string>
-    <string name="k2go_auth_notice_factory_title">Fabriekswachtwoorden in gebruik</string>
-    <string name="k2go_auth_notice_factory_msg">Deze diensten gebruiken nog het fabrieksbeheerderswachtwoord: %1$s. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden en je bibliotheek wijzigen. Wijzig het in Instellingen, Verificatie.</string>
+    <string name="k2go_auth_notice_factory_title">Fabriekswachtwoord in gebruik</string>
+    <string name="k2go_auth_notice_factory_msg">Het fabrieksbeheerderswachtwoord werkt nog in: %1$s. Iedereen op dezelfde Wi-Fi of hotspot kan zich aanmelden en je bibliotheek wijzigen. Wijzig het in Instellingen, Verificatie.</string>
     <string name="k2go_auth_notice_open">Verificatie openen</string>
     <string name="k2go_auth_notice_close">Sluiten</string>
     <string name="k2go_auth_notice_never">Niet meer tonen</string>

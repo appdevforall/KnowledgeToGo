@@ -1686,8 +1686,8 @@
     <string name="k2go_auth_reminder_switch">Przypominaj przy uruchomieniu, gdy używane jest hasło fabryczne</string>
     <string name="k2go_auth_notice_mismatch_title">Automatyczne logowanie nie działa</string>
     <string name="k2go_auth_notice_mismatch_msg">Hasło administratora usługi %1$s zostało zmienione poza tą aplikacją. Napraw je lub przywróć w: Ustawienia, Uwierzytelnianie.</string>
-    <string name="k2go_auth_notice_factory_title">Używane są hasła fabryczne</string>
-    <string name="k2go_auth_notice_factory_msg">Te usługi nadal używają fabrycznego hasła administratora: %1$s. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
+    <string name="k2go_auth_notice_factory_title">Używane jest hasło fabryczne</string>
+    <string name="k2go_auth_notice_factory_msg">Fabryczne hasło administratora nadal działa w: %1$s. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
     <string name="k2go_auth_notice_open">Otwórz Uwierzytelnianie</string>
     <string name="k2go_auth_notice_close">Zamknij</string>
     <string name="k2go_auth_notice_never">Nie pokazuj ponownie</string>

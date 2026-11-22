@@ -1693,8 +1693,8 @@
     <string name="k2go_auth_reminder_switch">Priminti paleidžiant, kol naudojamas gamyklinis slaptažodis</string>
     <string name="k2go_auth_notice_mismatch_title">Automatinis prisijungimas neveikia</string>
     <string name="k2go_auth_notice_mismatch_msg">Paslaugos %1$s administratoriaus slaptažodis buvo pakeistas ne šioje programoje. Pataisykite arba atkurkite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
-    <string name="k2go_auth_notice_factory_title">Naudojami gamykliniai slaptažodžiai</string>
-    <string name="k2go_auth_notice_factory_msg">Šios paslaugos vis dar naudoja gamyklinį administratoriaus slaptažodį: %1$s. Bet kas tame pačiame Wi-Fi tinkle ar prieigos taške gali prisijungti ir pakeisti jūsų biblioteką. Pakeiskite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
+    <string name="k2go_auth_notice_factory_title">Naudojamas gamyklinis slaptažodis</string>
+    <string name="k2go_auth_notice_factory_msg">Gamyklinis administratoriaus slaptažodis vis dar veikia: %1$s. Bet kas tame pačiame Wi-Fi tinkle ar prieigos taške gali prisijungti ir pakeisti jūsų biblioteką. Pakeiskite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
     <string name="k2go_auth_notice_open">Atidaryti tapatybės nustatymą</string>
     <string name="k2go_auth_notice_close">Uždaryti</string>
     <string name="k2go_auth_notice_never">Daugiau nerodyti</string>

@@ -1683,8 +1683,8 @@
     <string name="k2go_auth_reminder_switch">Напомняне при стартиране, докато се използва фабрична парола</string>
     <string name="k2go_auth_notice_mismatch_title">Автоматичното вписване не работи</string>
     <string name="k2go_auth_notice_mismatch_msg">Администраторската парола на %1$s е променена извън това приложение. Поправете я или върнете фабричната в Настройки, Удостоверяване.</string>
-    <string name="k2go_auth_notice_factory_title">Използват се фабрични пароли</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s все още използват фабричната администраторска парола. Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише и да промени библиотеката ви. Сменете я в Настройки, Удостоверяване.</string>
+    <string name="k2go_auth_notice_factory_title">Използва се фабрична парола</string>
+    <string name="k2go_auth_notice_factory_msg">Фабричната администраторска парола все още работи в: %1$s. Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише и да промени библиотеката ви. Сменете я в Настройки, Удостоверяване.</string>
     <string name="k2go_auth_notice_open">Отвори Удостоверяване</string>
     <string name="k2go_auth_notice_close">Затвори</string>
     <string name="k2go_auth_notice_never">Не показвай отново</string>

@@ -1689,8 +1689,8 @@
     <string name="k2go_auth_reminder_switch">Подсети ме при покретању док се користи фабричка лозинка</string>
     <string name="k2go_auth_notice_mismatch_title">Аутоматска пријава не ради</string>
     <string name="k2go_auth_notice_mismatch_msg">Администраторска лозинка за %1$s је промењена ван ове апликације. Поправите је или вратите фабричку у Подешавања, Потврда идентитета.</string>
-    <string name="k2go_auth_notice_factory_title">Користе се фабричке лозинке</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s и даље користе фабричку администраторску лозинку. Свако на истој Wi-Fi мрежи или хотспоту може да се пријави и промени вашу библиотеку. Промените је у Подешавања, Потврда идентитета.</string>
+    <string name="k2go_auth_notice_factory_title">Користи се фабричка лозинка</string>
+    <string name="k2go_auth_notice_factory_msg">Фабричка администраторска лозинка и даље ради у: %1$s. Свако на истој Wi-Fi мрежи или хотспоту може да се пријави и промени вашу библиотеку. Промените је у Подешавања, Потврда идентитета.</string>
     <string name="k2go_auth_notice_open">Отвори Потврду идентитета</string>
     <string name="k2go_auth_notice_close">Затвори</string>
     <string name="k2go_auth_notice_never">Не приказуј поново</string>

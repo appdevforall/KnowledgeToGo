@@ -1687,7 +1687,7 @@
     <string name="k2go_auth_notice_mismatch_title">Automatisk pålogging virker ikke</string>
     <string name="k2go_auth_notice_mismatch_msg">Administratorpassordet for %1$s ble endret utenfor denne appen. Reparer eller tilbakestill det i Innstillinger, Autentisering.</string>
     <string name="k2go_auth_notice_factory_title">Fabrikkpassord er i bruk</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s bruker fortsatt fabrikkpassordet for administrator. Alle på samme Wi-Fi eller hotspot kan logge på og endre biblioteket ditt. Endre det i Innstillinger, Autentisering.</string>
+    <string name="k2go_auth_notice_factory_msg">Fabrikkpassordet for administrator virker fortsatt i: %1$s. Alle på samme Wi-Fi eller hotspot kan logge på og endre biblioteket ditt. Endre det i Innstillinger, Autentisering.</string>
     <string name="k2go_auth_notice_open">Åpne Autentisering</string>
     <string name="k2go_auth_notice_close">Lukk</string>
     <string name="k2go_auth_notice_never">Ikke vis igjen</string>

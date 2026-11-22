@@ -1677,7 +1677,7 @@
     <string name="k2go_auth_notice_mismatch_title">L\'accesso automatico non funziona</string>
     <string name="k2go_auth_notice_mismatch_msg">La password di amministratore di %1$s è stata cambiata fuori da questa app. Riparala o ripristinala in Impostazioni, Autenticazione.</string>
     <string name="k2go_auth_notice_factory_title">Password di fabbrica in uso</string>
-    <string name="k2go_auth_notice_factory_msg">Questi servizi usano ancora la password di amministratore di fabbrica: %1$s. Chiunque sulla stessa rete Wi-Fi o hotspot può accedere e modificare la tua libreria. Cambiala in Impostazioni, Autenticazione.</string>
+    <string name="k2go_auth_notice_factory_msg">La password di amministratore di fabbrica funziona ancora in: %1$s. Chiunque sulla stessa rete Wi-Fi o hotspot può accedere e modificare la tua libreria. Cambiala in Impostazioni, Autenticazione.</string>
     <string name="k2go_auth_notice_open">Apri Autenticazione</string>
     <string name="k2go_auth_notice_close">Chiudi</string>
     <string name="k2go_auth_notice_never">Non mostrare più</string>

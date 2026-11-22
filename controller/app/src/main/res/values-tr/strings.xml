@@ -1676,8 +1676,8 @@
     <string name="k2go_auth_reminder_switch">Fabrika parolası kullanılırken açılışta hatırlat</string>
     <string name="k2go_auth_notice_mismatch_title">Otomatik oturum açma çalışmıyor</string>
     <string name="k2go_auth_notice_mismatch_msg">%1$s yönetici parolası bu uygulamanın dışında değiştirildi. Ayarlar, Kimlik doğrulama bölümünde onarın veya sıfırlayın.</string>
-    <string name="k2go_auth_notice_factory_title">Fabrika parolaları kullanılıyor</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s hâlâ fabrika yönetici parolasını kullanıyor. Aynı Wi-Fi veya etkin noktadaki herkes oturum açıp kitaplığınızı değiştirebilir. Parolayı Ayarlar, Kimlik doğrulama bölümünde değiştirin.</string>
+    <string name="k2go_auth_notice_factory_title">Fabrika parolası kullanılıyor</string>
+    <string name="k2go_auth_notice_factory_msg">Fabrika yönetici parolası hâlâ şurada çalışıyor: %1$s. Aynı Wi-Fi veya etkin noktadaki herkes oturum açıp kitaplığınızı değiştirebilir. Parolayı Ayarlar, Kimlik doğrulama bölümünde değiştirin.</string>
     <string name="k2go_auth_notice_open">Kimlik doğrulamayı aç</string>
     <string name="k2go_auth_notice_close">Kapat</string>
     <string name="k2go_auth_notice_never">Bir daha gösterme</string>

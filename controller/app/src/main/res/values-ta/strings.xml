@@ -1696,8 +1696,8 @@
     <string name="k2go_auth_reminder_switch">தொழிற்சாலை கடவுச்சொல் பயன்பாட்டில் இருக்கும்போது தொடக்கத்தில் நினைவூட்டு</string>
     <string name="k2go_auth_notice_mismatch_title">தானியங்கு உள்நுழைவு வேலை செய்யவில்லை</string>
     <string name="k2go_auth_notice_mismatch_msg">%1$s இன் நிர்வாகி கடவுச்சொல் இந்தச் செயலிக்கு வெளியே மாற்றப்பட்டது. அமைப்புகள், அங்கீகாரம் என்பதில் அதைச் சரிசெய்யவும் அல்லது மீட்டமைக்கவும்.</string>
-    <string name="k2go_auth_notice_factory_title">தொழிற்சாலை கடவுச்சொற்கள் பயன்பாட்டில் உள்ளன</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s இன்னும் தொழிற்சாலை நிர்வாகி கடவுச்சொல்லைப் பயன்படுத்துகின்றன. அதே Wi-Fi அல்லது ஹாட்ஸ்பாட்டில் உள்ள எவரும் உள்நுழைந்து உங்கள் நூலகத்தை மாற்றலாம். அமைப்புகள், அங்கீகாரம் என்பதில் அதை மாற்றவும்.</string>
+    <string name="k2go_auth_notice_factory_title">தொழிற்சாலை கடவுச்சொல் பயன்பாட்டில் உள்ளது</string>
+    <string name="k2go_auth_notice_factory_msg">தொழிற்சாலை நிர்வாகி கடவுச்சொல் இன்னும் இவற்றில் செயல்படுகிறது: %1$s. அதே Wi-Fi அல்லது ஹாட்ஸ்பாட்டில் உள்ள எவரும் உள்நுழைந்து உங்கள் நூலகத்தை மாற்றலாம். அமைப்புகள், அங்கீகாரம் என்பதில் அதை மாற்றவும்.</string>
     <string name="k2go_auth_notice_open">அங்கீகாரத்தைத் திற</string>
     <string name="k2go_auth_notice_close">மூடு</string>
     <string name="k2go_auth_notice_never">மீண்டும் காட்டாதே</string>

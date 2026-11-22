@@ -1755,8 +1755,8 @@
     <string name="k2go_auth_reminder_switch">Lembrar ao iniciar enquanto uma senha de fábrica estiver em uso</string>
     <string name="k2go_auth_notice_mismatch_title">O acesso automático não funciona</string>
     <string name="k2go_auth_notice_mismatch_msg">A senha de administrador de %1$s foi alterada fora desta app. Repare-a ou reponha-a em Definições, Autenticação.</string>
-    <string name="k2go_auth_notice_factory_title">Senhas de fábrica em uso</string>
-    <string name="k2go_auth_notice_factory_msg">Estes serviços ainda usam a senha de administrador de fábrica: %1$s. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar e alterar a sua biblioteca. Altere-a em Definições, Autenticação.</string>
+    <string name="k2go_auth_notice_factory_title">Senha de fábrica em uso</string>
+    <string name="k2go_auth_notice_factory_msg">A senha de administrador de fábrica ainda funciona em: %1$s. Qualquer pessoa na mesma rede Wi-Fi ou hotspot pode entrar e alterar a sua biblioteca. Altere-a em Definições, Autenticação.</string>
     <string name="k2go_auth_notice_open">Abrir Autenticação</string>
     <string name="k2go_auth_notice_close">Fechar</string>
     <string name="k2go_auth_notice_never">Não mostrar novamente</string>

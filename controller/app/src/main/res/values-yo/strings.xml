@@ -1697,7 +1697,7 @@
     <string name="k2go_auth_notice_mismatch_title">Ìwọlé aládàáṣe kò ṣiṣẹ́</string>
     <string name="k2go_auth_notice_mismatch_msg">Wọ́n ti yí ọ̀rọ̀ìgbaniwọlé alábòójútó %1$s padà níta áàpù yìí. Tún un ṣe tàbí padà sí àtilẹ̀wá nínú Ìtòlẹ́sẹẹsẹ, Ìfọwọ́sí.</string>
     <string name="k2go_auth_notice_factory_title">Ọ̀rọ̀ìgbaniwọlé àtilẹ̀wá ni à ń lò</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s ṣì ń lo ọ̀rọ̀ìgbaniwọlé alábòójútó àtilẹ̀wá. Ẹnikẹ́ni lórí Wi-Fi tàbí hotspot kan náà lè wọlé kí ó sì yí ibi ìkàwé rẹ padà. Yí i padà nínú Ìtòlẹ́sẹẹsẹ, Ìfọwọ́sí.</string>
+    <string name="k2go_auth_notice_factory_msg">Ọ̀rọ̀ìgbaniwọlé alábòójútó àtilẹ̀wá ṣì ń ṣiṣẹ́ nínú: %1$s. Ẹnikẹ́ni lórí Wi-Fi tàbí hotspot kan náà lè wọlé kí ó sì yí ibi ìkàwé rẹ padà. Yí i padà nínú Ìtòlẹ́sẹẹsẹ, Ìfọwọ́sí.</string>
     <string name="k2go_auth_notice_open">Ṣí Ìfọwọ́sí</string>
     <string name="k2go_auth_notice_close">Pa á dé</string>
     <string name="k2go_auth_notice_never">Má ṣe fihàn mọ́</string>

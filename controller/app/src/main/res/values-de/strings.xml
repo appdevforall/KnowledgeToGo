@@ -1676,8 +1676,8 @@
     <string name="k2go_auth_reminder_switch">Beim Start erinnern, solange ein Werkspasswort aktiv ist</string>
     <string name="k2go_auth_notice_mismatch_title">Automatische Anmeldung funktioniert nicht</string>
     <string name="k2go_auth_notice_mismatch_msg">Das Admin-Passwort von %1$s wurde außerhalb dieser App geändert. Repariere es oder setze es zurück unter Einstellungen, Authentifizierung.</string>
-    <string name="k2go_auth_notice_factory_title">Werkspasswörter aktiv</string>
-    <string name="k2go_auth_notice_factory_msg">%1$s verwenden noch das Admin-Werkspasswort. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden und deine Bibliothek ändern. Ändere es unter Einstellungen, Authentifizierung.</string>
+    <string name="k2go_auth_notice_factory_title">Werkspasswort aktiv</string>
+    <string name="k2go_auth_notice_factory_msg">Das Admin-Werkspasswort funktioniert noch in: %1$s. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden und deine Bibliothek ändern. Ändere es unter Einstellungen, Authentifizierung.</string>
     <string name="k2go_auth_notice_open">Authentifizierung öffnen</string>
     <string name="k2go_auth_notice_close">Schließen</string>
     <string name="k2go_auth_notice_never">Nicht mehr anzeigen</string>
