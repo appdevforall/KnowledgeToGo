@@ -32,7 +32,8 @@ public final class ZimProvisioner {
 
     /** True when there is a banked ZIM order waiting to be provisioned. */
     public static boolean hasPending(Context ctx) {
-        return ZimWishlist.size(ctx) > 0;
+        // K2GO-588: a saved order waits while the app is kept offline and the user did not allow it.
+        return ZimWishlist.size(ctx) > 0 && org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
     }
 
     /** Resolve the wishlist against the offline catalog and hand it to ZimDownloadService.

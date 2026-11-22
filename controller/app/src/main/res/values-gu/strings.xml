@@ -8,19 +8,8 @@
     <string name="connection_log_label">સર્વર લૉગ</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">સેટિંગ્સ</string>
-    <string name="setup_title">પ્રારંભિક સેટઅપ</string>
-    <string name="setup_welcome">%1$s સેટઅપ વિઝાર્ડમાં આપનું સ્વાગત છે.\n\nયોગ્ય રીતે કામ કરવા માટે, અમને નીચેની પરવાનગીઓ જોઈએ છે:</string>
-    <string name="setup_continue">ચાલુ રાખો</string>
-    <string name="setup_perm_battery">બૅટરી ઑપ્ટિમાઇઝેશન બંધ કરો</string>
-    <string name="setup_perm_notifications">પુશ સૂચનાઓ</string>
-    <string name="setup_perm_storage">સ્થાનિક સ્ટોરેજ ઍક્સેસ</string>
-    <string name="setup_perm_overlay">અન્ય ઍપ્સ પર બતાવો</string>
-    <string name="setup_lang_title">સામગ્રી ભાષા</string>
-    <string name="setup_lang_desc">કૃપા કરી તમારી ભાષા પસંદ કરો; સામગ્રી માગતી વખતે તેને ધ્યાનમાં લેવામાં આવશે.</string>
     <string name="notif_perm_denied">સૂચના પરવાનગી નકારી</string>
     <string name="notif_perm_granted">સૂચના પરવાનગી આપી</string>
-    <string name="revoke_permission_warning">પરવાનગીઓ રદ કરવા માટે, તમારે તે સિસ્ટમ સેટિંગ્સમાંથી કરવી પડશે.</string>
     <string name="dash_device">ઉપકરણ લોડ થઈ રહ્યું છે…</string>
     <string name="dash_main_storage">સ્ટોરેજ</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">સેટિંગ્સ સાચવ્યાં</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All દ્વારા સંચાલિત</string>
-    <string name="setup_manage_all_permissions">બધી પરવાનગીઓ મેનેજ કરો</string>
     <string name="update_dialog_title">નવું સંસ્કરણ ઉપલબ્ધ: %1$s</string>
     <string name="update_dialog_message">શું તમે ઍપ્લિકેશન અપડેટ કરવા માગો છો?\n\nનવું શું છે:\n%1$s</string>
     <string name="update_dialog_positive">અપડેટ કરો</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB વાતાવરણ સરળતાથી બંધ થઈ રહ્યું છે…</string>
     <string name="log_server_stop_error">[બંધ ભૂલ] %1$s</string>
     <string name="log_critical_binary_missing">ગંભીર: %1$s નેટિવ libs માંથી ખૂટે છે!</string>
-    <string name="setup_back_blocked_msg">ચાલુ રાખવા માટે કૃપા કરી સેટઅપ પૂર્ણ કરો.</string>
     <string name="sync_scanner_prompt">K2Go હોસ્ટ QR કોડ સ્કૅન કરો</string>
     <string name="kiwix_dialog_lang_label">Kiwix ભાષા</string>
     <string name="kiwix_dialog_variants_label">ઉપલબ્ધ ZIM વેરિઅન્ટ્સ</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">આયાત થયું, પરંતુ આ બૅકઅપમાં કોઈ એમ્બેડેડ rootfs manifest નથી, તેથી તેને સંપૂર્ણપણે ચકાસી શકાયું નહીં.</string>
     <string name="install_error_corrupt">આ બૅકઅપ તેની અખંડિતતા તપાસમાં નિષ્ફળ થયું (તે ભ્રષ્ટ અથવા બદલાયેલું હોઈ શકે છે), તેથી તેનો ઉપયોગ થયો ન હતો.</string>
     <string name="install_warn_no_checksum">આયાત થયું. આ બૅકઅપમાં કોઈ અખંડિતતા ચેકસમ નથી કારણ કે તે મોબાઇલ ઉપકરણ પર બનાવવામાં આવ્યું હતું.</string>
-    <string name="settings_nav_setup">સેટઅપ</string>
-    <string name="settings_nav_feedback">પ્રતિસાદ</string>
-    <string name="settings_nav_about">વિશે</string>
-    <string name="about_version">સંસ્કરણ %1$s</string>
-    <string name="settings_title">સેટિંગ્સ</string>
-    <string name="action_done">થઈ ગયું</string>
     <string name="feedback_type_label">પ્રકાર</string>
     <string name="feedback_cat_bug">બગ</string>
     <string name="feedback_cat_suggestion">સૂચન</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">અહેવાલ મોકલો</string>
     <string name="crash_report_dismiss">રદ કરો</string>
     <string name="rsync_error_process_killed">Android એ ટ્રાન્સફર પ્રક્રિયા બંધ કરી (સિસ્ટમ બૅકગ્રાઉન્ડ-પ્રક્રિયા મર્યાદા). આને અટકાવવા માટે, ડેવલપર વિકલ્પોમાં “ચાઇલ્ડ પ્રક્રિયા પ્રતિબંધો અક્ષમ કરો” ચાલુ કરો, અથવા ADB ઑપ્ટિમાઇઝેશન સેટ કરો.</string>
-    <string name="analytics_enroll_title">ગોપનીયતા અને વિશ્લેષણ</string>
-    <string name="analytics_enroll_body">%1$s બગ ઠીક કરવા અને ઍપ સુધારવામાં અમારી મદદ માટે અનામી વપરાશ માહિતી એકત્રિત કરે છે. કોઈ વ્યક્તિગત માહિતી એકત્રિત કે શેર કરાતી નથી, અને તમે શેર કરેલી સામગ્રી વાપરનારા લોકો વિશે કંઈ ટ્રૅક કરાતું નથી.\n\nઅનામી ડેટા શેર કરો ફોન ઑનલાઇન હોય ત્યારે આ માહિતી મોકલે છે. ઑફલાઇન રાખો કંઈ મોકલતું નથી, ભલે ફોન ઑનલાઇન હોય.</string>
-    <string name="analytics_enroll_accept">અનામી ડેટા શેર કરો</string>
     <string name="analytics_enroll_decline">ઑફલાઇન રાખો</string>
-    <string name="settings_analytics_title">અનામી ડેટા શેર કરો</string>
-    <string name="settings_analytics_desc">બગ ઠીક કરવા અને ઍપ સુધારવા માટે અનામી વપરાશ માહિતી — કોઈ વ્યક્તિગત ડેટા નહીં, અને તમે શેર કરેલી સામગ્રી વાપરનારા વિશે કંઈ નહીં. ગમે ત્યારે બદલો.</string>
     <string name="phantom_warn_title">ટ્રાન્સફર વિક્ષેપિત થઈ શકે છે</string>
     <string name="phantom_warn_body">Android 12+ પર સિસ્ટમ ટ્રાન્સફર બૅકગ્રાઉન્ડમાં ચાલતું હોય ત્યારે તેને બંધ કરી શકે છે (phantom-process મર્યાદા). આને અટકાવવા માટે, “ચાઇલ્ડ પ્રક્રિયા પ્રતિબંધો” અક્ષમ કરો, અથવા તેમ છતાં ચાલુ રાખો — મોટા ટ્રાન્સફર વિક્ષેપિત થઈ શકે છે.</string>
     <string name="phantom_warn_open_dev">ડેવલપર વિકલ્પો ખોલો</string>
     <string name="phantom_warn_continue">તેમ છતાં ચાલુ રાખો</string>
-    <string name="setup_app_lang_title">ઍપ ભાષા</string>
-    <string name="setup_app_lang_desc">ઍપની પોતાની સ્ક્રીન માટે ભાષા પસંદ કરો. “સિસ્ટમ મૂળભૂત” તમારા ફોનને અનુસરે છે.</string>
-    <string name="setup_app_lang_system">સિસ્ટમ મૂળભૂત (ફોનને અનુસરો)</string>
-    <string name="setup_language_section">ભાષા</string>
     <string name="portal_download_started">%1$s ડાઉનલોડ થઈ રહ્યું છે…</string>
     <string name="portal_download_failed">ડાઉનલોડ શરૂ કરી શકાયું નહીં.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -591,8 +563,6 @@
     <string name="k2go_settings_app_version">ઍપ વર્ઝન</string>
     <string name="k2go_settings_check_updates">અપડેટ્સ તપાસો</string>
     <string name="k2go_settings_permissions">પરવાનગીઓ</string>
-    <string name="k2go_settings_usage_stats">વપરાશ આંકડા શેર કરો</string>
-    <string name="k2go_settings_crash_reports">ક્રેશ રિપોર્ટ મોકલો</string>
     <string name="k2go_settings_licenses">ઓપન-સોર્સ લાઇસન્સ</string>
     <string name="k2go_settings_privacy">ગોપનીયતા</string>
     <string name="k2go_settings_power_users">પાવર યુઝર્સ માટે.</string>
@@ -1604,10 +1574,6 @@
     <string name="k2go_cx_share_complete">ટ્રાન્સફર પૂર્ણ. સામગ્રી હવે બીજા ફોન પર છે.</string>
     <string name="k2go_cx_share_cancelled">બીજા ફોને ટ્રાન્સફર બંધ કર્યું.</string>
     <string name="k2go_cx_share_ended">શેર સમાપ્ત થયું.</string>
-    <string name="k2go_gm_catalogs_update">કેટલોગ અપડેટ કરો</string>
-    <string name="k2go_gm_catalogs_updating">કેટલોગ અપડેટ થઈ રહ્યા છે...</string>
-    <string name="k2go_gm_catalogs_bundled">કેટલોગ: એપ સાથે સમાવિષ્ટ</string>
-    <string name="k2go_gm_catalogs_checked">કેટલોગ તપાસ્યા: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">મોકલનાર ફોનમાંથી ફાઇલોની સૂચિ વાંચી શકાઈ નથી.</string>
     <string name="k2go_clone_cable_err_no_path">મોકલનાર ફોન સાથેનું કનેક્શન તૂટી ગયું છે. તેના હૉટસ્પૉટ સાથે જોડાઓ અથવા USB કેબલ જોડો.</string>
@@ -1716,4 +1682,12 @@
     <string name="k2go_online_body_usage">%1$s અનામી વપરાશ ડેટા અને ક્રેશ રિપોર્ટ શેર કરી શકે છે, અને ફોન Wi-Fi પર હોય ત્યારે જાતે કૅટલૉગ અને ઍપ અપડેટ તપાસી શકે છે. કોઈ વ્યક્તિગત માહિતી એકત્રિત કરાતી નથી, અને તમે શેર કરેલી સામગ્રીનો ઉપયોગ કરનારા લોકો વિશે કંઈ ટ્રૅક કરાતું નથી.\n\nઑફલાઇન રાખો: ઍપ જાતે ઇન્ટરનેટ સાથે કનેક્ટ થતી નથી.</string>
     <string name="k2go_online_body_crash">%1$s ક્રેશ રિપોર્ટ મોકલી શકે છે, અને ફોન Wi-Fi પર હોય ત્યારે જાતે કૅટલૉગ અને ઍપ અપડેટ તપાસી શકે છે. કોઈ વ્યક્તિગત માહિતી એકત્રિત કરાતી નથી.\n\nઑફલાઇન રાખો: ઍપ જાતે ઇન્ટરનેટ સાથે કનેક્ટ થતી નથી.</string>
     <string name="k2go_webview_offline_page">આ પેજ ઇન્ટરનેટ પર છે. ઍપની અંદરનાં પેજ ફક્ત ઑફલાઇન કામ કરે છે.</string>
+    <string name="k2go_offline_action_title">આ માટે ઇન્ટરનેટ જરૂરી છે</string>
+    <string name="k2go_offline_action_msg">તમે \"ઑફલાઇન રાખો\" પસંદ કર્યું છે. આ કરવા માટે, ઍપને ઇન્ટરનેટ સાથે કનેક્ટ થવું પડશે. તમે ફક્ત આ ક્રિયા માટે તેની મંજૂરી આપી શકો છો.</string>
+    <string name="k2go_offline_action_allow_once">ફક્ત આ વખતે મંજૂરી આપો</string>
+    <string name="k2go_feedback_kept_offline">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે, તેથી તે પ્રતિસાદ મોકલતી નથી. તેને બદલવા માટે, સેટિંગ્સ &gt; વિશે માં \"%1$s\" ચાલુ કરો.</string>
+    <string name="k2go_feedback_third_party_title">આ ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે</string>
+    <string name="k2go_feedback_third_party_msg">તમે \"ઑફલાઇન રાખો\" પસંદ કર્યું છે. પ્રતિસાદ બીજી ઍપથી મોકલવામાં આવે છે, જેમ કે ઇમેઇલ, અને તે ઍપ ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે.</string>
+    <string name="k2go_privacy_kept_offline">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે, તેથી આ સેવાઓ બંધ રહે છે. તેને બદલવા માટે, સેટિંગ્સ &gt; વિશે માં \"%1$s\" ચાલુ કરો.</string>
+    <string name="k2go_feedback_send_anyway">છતાં મોકલો</string>
 </resources>

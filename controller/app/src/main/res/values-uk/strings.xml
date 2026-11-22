@@ -8,19 +8,8 @@
     <string name="connection_log_label">Журнал сервера</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">НАЛАШТУВАННЯ</string>
-    <string name="setup_title">Початкове налаштування</string>
-    <string name="setup_welcome">Ласкаво просимо до майстра налаштування %1$s.\n\nЩоб працювати належним чином, нам потрібні такі дозволи:</string>
-    <string name="setup_continue">Продовжити</string>
-    <string name="setup_perm_battery">Вимкнути оптимізацію батареї</string>
-    <string name="setup_perm_notifications">Push-сповіщення</string>
-    <string name="setup_perm_storage">Доступ до локального сховища</string>
-    <string name="setup_perm_overlay">Показувати поверх інших застосунків</string>
-    <string name="setup_lang_title">Мова вмісту</string>
-    <string name="setup_lang_desc">Будь ласка, виберіть свою мову; вона враховуватиметься під час запиту вмісту.</string>
     <string name="notif_perm_denied">Дозвіл на сповіщення відхилено</string>
     <string name="notif_perm_granted">Дозвіл на сповіщення надано</string>
-    <string name="revoke_permission_warning">Щоб відкликати дозволи, це потрібно зробити в налаштуваннях системи.</string>
     <string name="dash_device">Завантаження пристрою…</string>
     <string name="dash_main_storage">Сховище</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Налаштування збережено</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">працює на App Dev for All</string>
-    <string name="setup_manage_all_permissions">Керувати всіма дозволами</string>
     <string name="update_dialog_title">Доступна нова версія: %1$s</string>
     <string name="update_dialog_message">Бажаєте оновити застосунок?\n\nЩо нового:\n%1$s</string>
     <string name="update_dialog_positive">Оновити</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Плавна зупинка середовища IIAB…</string>
     <string name="log_server_stop_error">[Помилка зупинки] %1$s</string>
     <string name="log_critical_binary_missing">КРИТИЧНО: %1$s відсутній у власних бібліотеках!</string>
-    <string name="setup_back_blocked_msg">Завершіть налаштування, щоб продовжити.</string>
     <string name="sync_scanner_prompt">Відскануйте QR-код хоста K2Go</string>
     <string name="kiwix_dialog_lang_label">Мова Kiwix</string>
     <string name="kiwix_dialog_variants_label">Доступні варіанти ZIM</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Імпортовано, але ця резервна копія не має вбудованого маніфесту rootfs, тому її не вдалося повністю перевірити.</string>
     <string name="install_error_corrupt">Ця резервна копія не пройшла перевірку цілісності (можливо, пошкоджена або змінена), тому її не використано.</string>
     <string name="install_warn_no_checksum">Імпортовано. Ця резервна копія не має контрольної суми цілісності, оскільки була створена на мобільному пристрої.</string>
-    <string name="settings_nav_setup">Налаштування</string>
-    <string name="settings_nav_feedback">Відгук</string>
-    <string name="settings_nav_about">Про застосунок</string>
-    <string name="about_version">Версія %1$s</string>
-    <string name="settings_title">Налаштування</string>
-    <string name="action_done">Готово</string>
     <string name="feedback_type_label">Тип</string>
     <string name="feedback_cat_bug">Помилка</string>
     <string name="feedback_cat_suggestion">Пропозиція</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Надіслати звіт</string>
     <string name="crash_report_dismiss">Відхилити</string>
     <string name="rsync_error_process_killed">Android зупинив процес передачі (системне обмеження фонових процесів). Щоб запобігти цьому, увімкніть «Вимкнути обмеження дочірніх процесів» у параметрах розробника або налаштуйте оптимізацію ADB.</string>
-    <string name="analytics_enroll_title">Конфіденційність та аналітика</string>
-    <string name="analytics_enroll_body">%1$s збирає анонімні відомості про використання, щоб допомогти нам виправляти помилки й покращувати застосунок. Особисті дані не збираються й не передаються, і нічого не відстежується про людей, які використовують ваш спільний контент.\n\nНадсилати анонімні дані надсилає ці відомості, коли телефон онлайн. Залишити офлайн не надсилає нічого, навіть коли телефон онлайн.</string>
-    <string name="analytics_enroll_accept">Надсилати анонімні дані</string>
     <string name="analytics_enroll_decline">Залишити офлайн</string>
-    <string name="settings_analytics_title">Надсилати анонімні дані</string>
-    <string name="settings_analytics_desc">Анонімні відомості про використання для виправлення помилок і покращення застосунку — без особистих даних і нічого про людей, які використовують ваш спільний контент. Можна змінити будь-коли.</string>
     <string name="phantom_warn_title">Передачу може бути перервано</string>
     <string name="phantom_warn_body">На Android 12+ система може зупинити передачу під час її виконання у фоні (обмеження фантомних процесів). Щоб запобігти цьому, вимкніть «обмеження дочірніх процесів» або продовжте все одно — великі передачі можуть бути перервані.</string>
     <string name="phantom_warn_open_dev">Відкрити параметри розробника</string>
     <string name="phantom_warn_continue">Все одно продовжити</string>
-    <string name="setup_app_lang_title">Мова застосунку</string>
-    <string name="setup_app_lang_desc">Виберіть мову для власних екранів застосунку. «Системна за замовчуванням» відповідає вашому телефону.</string>
-    <string name="setup_app_lang_system">Системна за замовчуванням (за телефоном)</string>
-    <string name="setup_language_section">Мова</string>
     <string name="portal_download_started">Завантаження %1$s…</string>
     <string name="portal_download_failed">Не вдалося почати завантаження.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">Версія застосунку</string>
     <string name="k2go_settings_check_updates">Перевірити оновлення</string>
     <string name="k2go_settings_permissions">Дозволи</string>
-    <string name="k2go_settings_usage_stats">Надсилати статистику використання</string>
-    <string name="k2go_settings_crash_reports">Надсилати звіти про збої</string>
     <string name="k2go_settings_licenses">Ліцензії з відкритим кодом</string>
     <string name="k2go_settings_privacy">Конфіденційність</string>
     <string name="k2go_settings_power_users">Для досвідчених користувачів.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">Передавання завершено. Вміст уже на іншому телефоні.</string>
     <string name="k2go_cx_share_cancelled">Інший телефон зупинив передавання.</string>
     <string name="k2go_cx_share_ended">Надсилання завершено.</string>
-    <string name="k2go_gm_catalogs_update">Оновити каталоги</string>
-    <string name="k2go_gm_catalogs_updating">Оновлення каталогів...</string>
-    <string name="k2go_gm_catalogs_bundled">Каталоги: входять у застосунок</string>
-    <string name="k2go_gm_catalogs_checked">Каталоги перевірено: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Не вдалося прочитати список файлів із телефона-відправника.</string>
     <string name="k2go_clone_cable_err_no_path">Зв\'язок із телефоном-відправником втрачено. Під\'єднайтеся до його точки доступу або підключіть USB-кабель.</string>
@@ -1705,4 +1671,12 @@
     <string name="k2go_online_body_usage">%1$s може надсилати анонімні дані про використання та звіти про збої, а також сам перевіряти оновлення каталогу й застосунку, коли телефон підключено до Wi-Fi. Особисті дані не збираються, і нічого не відстежується про людей, які використовують ваш спільний вміст.\n\nЗалишити офлайн: застосунок сам не підключається до інтернету.</string>
     <string name="k2go_online_body_crash">%1$s може надсилати звіти про збої, а також сам перевіряти оновлення каталогу й застосунку, коли телефон підключено до Wi-Fi. Особисті дані не збираються.\n\nЗалишити офлайн: застосунок сам не підключається до інтернету.</string>
     <string name="k2go_webview_offline_page">Ця сторінка в інтернеті. Сторінки в застосунку працюють лише офлайн.</string>
+    <string name="k2go_offline_action_title">Для цього потрібен інтернет</string>
+    <string name="k2go_offline_action_msg">Ви вибрали \"Залишити офлайн\". Щоб виконати це, застосунок має підключитися до інтернету. Ви можете дозволити це лише для цієї дії.</string>
+    <string name="k2go_offline_action_allow_once">Дозволити лише цього разу</string>
+    <string name="k2go_feedback_kept_offline">У застосунку вибрано \"Залишити офлайн\", тому він не надсилає відгуки. Щоб змінити це, увімкніть \"%1$s\" у розділі Налаштування &gt; Про застосунок.</string>
+    <string name="k2go_feedback_third_party_title">Це може підключитися до інтернету</string>
+    <string name="k2go_feedback_third_party_msg">Ви вибрали \"Залишити офлайн\". Відгук надсилається через інший застосунок, наприклад пошту, і цей застосунок може підключитися до інтернету.</string>
+    <string name="k2go_privacy_kept_offline">У застосунку вибрано \"Залишити офлайн\", тому ці служби залишаються вимкненими. Щоб змінити це, увімкніть \"%1$s\" у розділі Налаштування &gt; Про застосунок.</string>
+    <string name="k2go_feedback_send_anyway">Усе одно надіслати</string>
 </resources>

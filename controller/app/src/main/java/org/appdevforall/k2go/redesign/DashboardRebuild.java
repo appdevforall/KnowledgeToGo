@@ -108,7 +108,10 @@ public final class DashboardRebuild {
                     org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
                             host.requireActivity(), () -> startRest(host, anchor, updateSite));
                 } else {
-                    startProot(host);
+                    // K2GO-588: the proot rebuild (dash-node older than 1.2.0) also fetches, so it
+                    // asks first too.
+                    org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.guardHeavyStart(
+                            host.requireActivity(), () -> startProot(host));
                 }
             });
         });

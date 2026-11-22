@@ -138,6 +138,7 @@ public class DashboardDetailFragment extends Fragment {
         rebuild = root.findViewById(R.id.k2go_moddet_schedule);
         rebuild.setText(R.string.k2go_dash_rebuild);
         rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root, updateAvailable));
+        org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(rebuild);   // K2GO-588
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
         updatingRow = buildUpdatingRow(rebuild);   // ADFA-5333: in-progress bar (hidden until updating)
@@ -247,11 +248,12 @@ public class DashboardDetailFragment extends Fragment {
         if (rebuild != null) {
             if (s.primaryIsUpdate()) {
                 rebuild.setText(R.string.k2go_dash_update);
-                rebuild.setAlpha(1f);
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(rebuild, 1f);   // K2GO-588
             } else {
                 rebuild.setText(R.string.k2go_dash_rebuild);
                 // De-emphasize only when we KNOW we're on the latest; offline/checking stay full.
-                rebuild.setAlpha(s.kind() == DashboardCardState.Kind.UP_TO_DATE ? 0.6f : 1f);
+                org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(rebuild,
+                        s.kind() == DashboardCardState.Kind.UP_TO_DATE ? 0.6f : 1f);   // K2GO-588
             }
         }
         if (rebuildHint != null) {
@@ -410,7 +412,7 @@ public class DashboardDetailFragment extends Fragment {
         updating = on;
         if (updatingRow != null) updatingRow.setVisibility(on ? View.VISIBLE : View.GONE);
         if (updatingCancel != null) updatingCancel.setEnabled(on);   // re-enable when a new update shows
-        if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
+        if (rebuild != null) { rebuild.setEnabled(!on); org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(rebuild, on ? 0.5f : 1f); }
         if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
         if (on) {
             // K2GO-383: start indeterminate with the plain label; the service's ACTION_PROGRESS then

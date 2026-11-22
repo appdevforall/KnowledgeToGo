@@ -86,6 +86,7 @@ public class MapsConfirmFragment extends Fragment {
                 SetupLibraryActivity.replacingSystem(this));
 
         Button start = root.findViewById(R.id.k2go_start_btn);
+        if (!wizard) org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(start);   // K2GO-588
         start.setText(getString(wizard ? R.string.k2go_maps_add_setup_fmt : R.string.k2go_maps_start_building, fmt(total)));
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {

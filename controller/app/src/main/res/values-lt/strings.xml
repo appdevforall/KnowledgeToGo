@@ -8,19 +8,8 @@
     <string name="connection_log_label">Serverio žurnalas</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">NUSTATYMAI</string>
-    <string name="setup_title">Pradinė sąranka</string>
-    <string name="setup_welcome">Sveiki atvykę į %1$s sąrankos vediklį.\n\nKad viskas veiktų tinkamai, mums reikia šių leidimų:</string>
-    <string name="setup_continue">Tęsti</string>
-    <string name="setup_perm_battery">Išjungti baterijos optimizavimą</string>
-    <string name="setup_perm_notifications">Tiesioginiai pranešimai</string>
-    <string name="setup_perm_storage">Prieiga prie vietinės saugyklos</string>
-    <string name="setup_perm_overlay">Rodyti virš kitų programų</string>
-    <string name="setup_lang_title">Turinio kalba</string>
-    <string name="setup_lang_desc">Pasirinkite savo kalbą; į ją bus atsižvelgta užklausiant turinį.</string>
     <string name="notif_perm_denied">Pranešimų leidimas atmestas</string>
     <string name="notif_perm_granted">Pranešimų leidimas suteiktas</string>
-    <string name="revoke_permission_warning">Norėdami atšaukti leidimus, tai turite padaryti sistemos nustatymuose.</string>
     <string name="dash_device">Įkeliamas įrenginys…</string>
     <string name="dash_main_storage">Saugykla</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Nustatymai išsaugoti</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">sukurta App Dev for All</string>
-    <string name="setup_manage_all_permissions">Tvarkyti visus leidimus</string>
     <string name="update_dialog_title">Yra nauja versija: %1$s</string>
     <string name="update_dialog_message">Ar norite atnaujinti programą?\n\nKas naujo:\n%1$s</string>
     <string name="update_dialog_positive">Atnaujinti</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Švelniai stabdoma IIAB aplinka…</string>
     <string name="log_server_stop_error">[Stabdymo klaida] %1$s</string>
     <string name="log_critical_binary_missing">KRITINĖ: %1$s trūksta vietinėse bibliotekose!</string>
-    <string name="setup_back_blocked_msg">Norėdami tęsti, užbaikite sąranką.</string>
     <string name="sync_scanner_prompt">Nuskaitykite K2Go prieglobio QR kodą</string>
     <string name="kiwix_dialog_lang_label">Kiwix kalba</string>
     <string name="kiwix_dialog_variants_label">Galimi ZIM variantai</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">Importuota, tačiau šioje atsarginėje kopijoje nėra įterpto rootfs manifesto, todėl jos nepavyko visiškai patikrinti.</string>
     <string name="install_error_corrupt">Ši atsarginė kopija neišlaikė vientisumo patikros (ji gali būti sugadinta arba pakeista), todėl nebuvo panaudota.</string>
     <string name="install_warn_no_checksum">Importuota. Ši atsarginė kopija neturi vientisumo kontrolinės sumos, nes buvo sukurta mobiliajame įrenginyje.</string>
-    <string name="settings_nav_setup">Sąranka</string>
-    <string name="settings_nav_feedback">Atsiliepimai</string>
-    <string name="settings_nav_about">Apie</string>
-    <string name="about_version">Versija %1$s</string>
-    <string name="settings_title">Nustatymai</string>
-    <string name="action_done">Atlikta</string>
     <string name="feedback_type_label">Tipas</string>
     <string name="feedback_cat_bug">Klaida</string>
     <string name="feedback_cat_suggestion">Pasiūlymas</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Atmesti</string>
     <string name="rsync_error_process_killed">Android sustabdė perdavimo procesą (sistemos foninių procesų riba). Kad to išvengtumėte, kūrėjo parinktyse įjunkite „Išjungti antrinių procesų apribojimus“ arba nustatykite ADB optimizavimą.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Privatumas ir analitika</string>
-    <string name="analytics_enroll_body">„%1$s“ renka anoniminę naudojimo informaciją, kad padėtų mums taisyti klaidas ir tobulinti programą. Jokia asmeninė informacija nerenkama ir nebendrinama, ir niekas nesekamas apie žmones, kurie naudoja jūsų bendrinamą turinį.\n\n„Bendrinti anoniminius duomenis“ išsiunčia šią informaciją, kai telefonas prisijungęs. „Palikti neprisijungus“ nieko nesiunčia, net jei telefonas prisijungęs.</string>
-    <string name="analytics_enroll_accept">Bendrinti anoniminius duomenis</string>
     <string name="analytics_enroll_decline">Palikti neprisijungus</string>
-    <string name="settings_analytics_title">Bendrinti anoniminius duomenis</string>
-    <string name="settings_analytics_desc">Anoniminė naudojimo informacija klaidoms taisyti ir programai tobulinti — jokių asmens duomenų ir nieko apie žmones, naudojančius jūsų bendrinamą turinį. Galima keisti bet kada.</string>
     <string name="phantom_warn_title">Perdavimas gali būti nutrauktas</string>
     <string name="phantom_warn_body">Android 12+ sistema gali sustabdyti perdavimą, kai jis vyksta fone (fantominių procesų riba). Kad to išvengtumėte, išjunkite „antrinių procesų apribojimus“ arba vis tiek tęskite — dideli perdavimai gali būti nutraukti.</string>
     <string name="phantom_warn_open_dev">Atidaryti kūrėjo parinktis</string>
     <string name="phantom_warn_continue">Vis tiek tęsti</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Programos kalba</string>
-    <string name="setup_app_lang_desc">Pasirinkite kalbą pačios programos ekranams. „Sistemos numatytoji“ atitinka jūsų telefoną.</string>
-    <string name="setup_app_lang_system">Sistemos numatytoji (atitinka telefoną)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Kalba</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Atsisiunčiama %1$s…</string>
     <string name="portal_download_failed">Nepavyko pradėti atsisiuntimo.</string>
@@ -585,8 +557,6 @@
     <string name="k2go_settings_app_version">Programos versija</string>
     <string name="k2go_settings_check_updates">Tikrinti, ar yra naujinių</string>
     <string name="k2go_settings_permissions">Leidimai</string>
-    <string name="k2go_settings_usage_stats">Bendrinti naudojimo statistiką</string>
-    <string name="k2go_settings_crash_reports">Siųsti strigčių ataskaitas</string>
     <string name="k2go_settings_licenses">Atvirojo kodo licencijos</string>
     <string name="k2go_settings_privacy">Privatumas</string>
     <string name="k2go_settings_power_users">Patyrusiems naudotojams.</string>
@@ -1608,10 +1578,6 @@
     <string name="k2go_cx_share_complete">Perdavimas baigtas. Turinys yra kitame telefone.</string>
     <string name="k2go_cx_share_cancelled">Kitas telefonas sustabdė perdavimą.</string>
     <string name="k2go_cx_share_ended">Bendrinimas baigėsi.</string>
-    <string name="k2go_gm_catalogs_update">Atnaujinti katalogus</string>
-    <string name="k2go_gm_catalogs_updating">Atnaujinami katalogai...</string>
-    <string name="k2go_gm_catalogs_bundled">Katalogai: įtraukti į programą</string>
-    <string name="k2go_gm_catalogs_checked">Katalogai patikrinti: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nepavyko nuskaityti failų sąrašo iš siunčiančio telefono.</string>
     <string name="k2go_clone_cable_err_no_path">Ryšys su siunčiančiu telefonu nutrūko. Prisijunkite prie jo prieigos taško arba prijunkite USB kabelį.</string>
@@ -1722,4 +1688,12 @@
     <string name="k2go_online_body_usage">„%1$s“ gali bendrinti anoniminius naudojimo duomenis ir strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama, ir niekas nesekamas apie žmones, kurie naudoja jūsų bendrinamą turinį.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
     <string name="k2go_online_body_crash">„%1$s“ gali siųsti strigčių ataskaitas, o kai telefonas prijungtas prie Wi-Fi, gali pati tikrinti katalogo ir programos naujinius. Jokia asmeninė informacija nerenkama.\n\n„Palikti neprisijungus“: programa pati neprisijungia prie interneto.</string>
     <string name="k2go_webview_offline_page">Šis puslapis yra internete. Programos puslapiai veikia tik neprisijungus.</string>
+    <string name="k2go_offline_action_title">Tam reikia interneto</string>
+    <string name="k2go_offline_action_msg">Pasirinkote „Palikti neprisijungus“. Kad tai atliktų, programa turi prisijungti prie interneto. Galite tai leisti tik šiam veiksmui.</string>
+    <string name="k2go_offline_action_allow_once">Leisti tik šį kartą</string>
+    <string name="k2go_feedback_kept_offline">Programoje nustatyta „Palikti neprisijungus“, todėl ji nesiunčia atsiliepimų. Norėdami tai pakeisti, įjunkite \"%1$s\" skiltyje Nustatymai &gt; Apie.</string>
+    <string name="k2go_feedback_third_party_title">Tai gali prisijungti prie interneto</string>
+    <string name="k2go_feedback_third_party_msg">Pasirinkote „Palikti neprisijungus“. Atsiliepimai siunčiami kita programa, pavyzdžiui, el. paštu, ir ta programa gali prisijungti prie interneto.</string>
+    <string name="k2go_privacy_kept_offline">Programoje nustatyta „Palikti neprisijungus“, todėl šios paslaugos lieka išjungtos. Norėdami tai pakeisti, įjunkite \"%1$s\" skiltyje Nustatymai &gt; Apie.</string>
+    <string name="k2go_feedback_send_anyway">Vis tiek siųsti</string>
 </resources>

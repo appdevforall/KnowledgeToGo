@@ -8,19 +8,8 @@
     <string name="connection_log_label">Denník servera</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">NASTAVENIA</string>
-    <string name="setup_title">Úvodné nastavenie</string>
-    <string name="setup_welcome">Vitajte v sprievodcovi nastavením %1$s.\n\nAby aplikácia fungovala správne, potrebujeme nasledujúce povolenia:</string>
-    <string name="setup_continue">Pokračovať</string>
-    <string name="setup_perm_battery">Vypnúť optimalizáciu batérie</string>
-    <string name="setup_perm_notifications">Push notifikácie</string>
-    <string name="setup_perm_storage">Prístup k lokálnemu úložisku</string>
-    <string name="setup_perm_overlay">Zobrazovať cez iné aplikácie</string>
-    <string name="setup_lang_title">Jazyk obsahu</string>
-    <string name="setup_lang_desc">Vyberte prosím svoj jazyk; zohľadní sa pri vyžiadaní obsahu.</string>
     <string name="notif_perm_denied">Povolenie na notifikácie zamietnuté</string>
     <string name="notif_perm_granted">Povolenie na notifikácie udelené</string>
-    <string name="revoke_permission_warning">Ak chcete odvolať povolenia, musíte to urobiť v systémových nastaveniach.</string>
     <string name="dash_device">Načítava sa zariadenie…</string>
     <string name="dash_main_storage">Úložisko</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Nastavenia uložené</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">poháňané App Dev for All</string>
-    <string name="setup_manage_all_permissions">Spravovať všetky povolenia</string>
     <string name="update_dialog_title">Dostupná nová verzia: %1$s</string>
     <string name="update_dialog_message">Chcete aktualizovať aplikáciu?\n\nČo je nové:\n%1$s</string>
     <string name="update_dialog_positive">Aktualizovať</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Prostredie IIAB sa zastavuje spôsobne…</string>
     <string name="log_server_stop_error">[Chyba zastavenia] %1$s</string>
     <string name="log_critical_binary_missing">KRITICKÉ: %1$s chýba v natívnych knižniciach!</string>
-    <string name="setup_back_blocked_msg">Na pokračovanie prosím dokončite nastavenie.</string>
     <string name="sync_scanner_prompt">Naskenujte QR kód hostiteľa K2Go</string>
     <string name="kiwix_dialog_lang_label">Jazyk Kiwix</string>
     <string name="kiwix_dialog_variants_label">Dostupné varianty ZIM</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">Importované, ale táto záloha nemá vložený manifest rootfs, takže ju nebolo možné úplne overiť.</string>
     <string name="install_error_corrupt">Táto záloha neprešla kontrolou integrity (môže byť poškodená alebo pozmenená), takže nebola použitá.</string>
     <string name="install_warn_no_checksum">Importované. Táto záloha nemá kontrolný súčet integrity, pretože bola vytvorená na mobilnom zariadení.</string>
-    <string name="settings_nav_setup">Nastavenie</string>
-    <string name="settings_nav_feedback">Spätná väzba</string>
-    <string name="settings_nav_about">O aplikácii</string>
-    <string name="about_version">Verzia %1$s</string>
-    <string name="settings_title">Nastavenia</string>
-    <string name="action_done">Hotovo</string>
     <string name="feedback_type_label">Typ</string>
     <string name="feedback_cat_bug">Chyba</string>
     <string name="feedback_cat_suggestion">Návrh</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Zamietnuť</string>
     <string name="rsync_error_process_killed">Android zastavil proces prenosu (systémový limit procesov na pozadí). Aby ste tomu predišli, zapnite „Vypnúť obmedzenia podriadených procesov“ v Možnostiach pre vývojárov alebo nastavte optimalizáciu ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Súkromie a analytika</string>
-    <string name="analytics_enroll_body">%1$s zhromažďuje anonymné informácie o používaní, aby nám pomohol opravovať chyby a vylepšovať aplikáciu. Nezhromažďujú sa ani nezdieľajú žiadne osobné údaje a nesleduje sa nič o ľuďoch, ktorí používajú váš zdieľaný obsah.\n\nZdieľať anonymné údaje odošle tieto informácie, keď je telefón online. Ponechať offline neodošle nič, aj keď je telefón online.</string>
-    <string name="analytics_enroll_accept">Zdieľať anonymné údaje</string>
     <string name="analytics_enroll_decline">Ponechať offline</string>
-    <string name="settings_analytics_title">Zdieľať anonymné údaje</string>
-    <string name="settings_analytics_desc">Anonymné informácie o používaní na opravu chýb a vylepšenie aplikácie — žiadne osobné údaje a nič o ľuďoch, ktorí používajú váš zdieľaný obsah. Možno kedykoľvek zmeniť.</string>
     <string name="phantom_warn_title">Prenos môže byť prerušený</string>
     <string name="phantom_warn_body">V systéme Android 12+ môže systém zastaviť prenos počas jeho behu na pozadí (limit phantom procesov). Aby ste tomu predišli, vypnite „obmedzenia podriadených procesov“ alebo pokračujte napriek tomu — veľké prenosy môžu byť prerušené.</string>
     <string name="phantom_warn_open_dev">Otvoriť Možnosti pre vývojárov</string>
     <string name="phantom_warn_continue">Pokračovať napriek tomu</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Jazyk aplikácie</string>
-    <string name="setup_app_lang_desc">Vyberte jazyk pre vlastné obrazovky aplikácie. „Predvolené systémom“ sa riadi vaším telefónom.</string>
-    <string name="setup_app_lang_system">Predvolené systémom (riadiť sa telefónom)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Jazyk</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Sťahuje sa %1$s…</string>
     <string name="portal_download_failed">Nepodarilo sa spustiť sťahovanie.</string>
@@ -585,8 +557,6 @@
     <string name="k2go_settings_app_version">Verzia aplikácie</string>
     <string name="k2go_settings_check_updates">Skontrolovať aktualizácie</string>
     <string name="k2go_settings_permissions">Povolenia</string>
-    <string name="k2go_settings_usage_stats">Zdieľať štatistiky používania</string>
-    <string name="k2go_settings_crash_reports">Odosielať hlásenia o zlyhaniach</string>
     <string name="k2go_settings_licenses">Licencie open-source</string>
     <string name="k2go_settings_privacy">Súkromie</string>
     <string name="k2go_settings_power_users">Pre pokročilých používateľov.</string>
@@ -1598,10 +1568,6 @@
     <string name="k2go_cx_share_complete">Prenos je dokončený. Obsah je v druhom telefóne.</string>
     <string name="k2go_cx_share_cancelled">Druhý telefón zastavil prenos.</string>
     <string name="k2go_cx_share_ended">Zdieľanie skončilo.</string>
-    <string name="k2go_gm_catalogs_update">Aktualizovať katalógy</string>
-    <string name="k2go_gm_catalogs_updating">Aktualizácia katalógov...</string>
-    <string name="k2go_gm_catalogs_bundled">Katalógy: súčasťou aplikácie</string>
-    <string name="k2go_gm_catalogs_checked">Katalógy skontrolované: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Zoznam súborov z odosielajúceho telefónu sa nepodarilo načítať.</string>
     <string name="k2go_clone_cable_err_no_path">Spojenie s odosielajúcim telefónom sa stratilo. Pripojte sa k jeho hotspotu alebo pripojte kábel USB.</string>
@@ -1712,4 +1678,12 @@
     <string name="k2go_online_body_usage">%1$s môže zdieľať anonymné údaje o používaní a hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje a nesleduje sa nič o ľuďoch, ktorí používajú váš zdieľaný obsah.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
     <string name="k2go_online_body_crash">%1$s môže odosielať hlásenia o zlyhaniach a môže sám kontrolovať aktualizácie katalógu a aplikácie, keď je telefón pripojený k Wi-Fi. Nezhromažďujú sa žiadne osobné údaje.\n\nPonechať offline: aplikácia sa sama nepripája na internet.</string>
     <string name="k2go_webview_offline_page">Táto stránka je na internete. Stránky v aplikácii fungujú iba offline.</string>
+    <string name="k2go_offline_action_title">Táto akcia vyžaduje internet</string>
+    <string name="k2go_offline_action_msg">Zvolili ste \"Ponechať offline\". Na vykonanie tejto akcie sa aplikácia musí pripojiť k internetu. Môžete to povoliť len pre túto akciu.</string>
+    <string name="k2go_offline_action_allow_once">Povoliť len tentoraz</string>
+    <string name="k2go_feedback_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto neodosiela spätnú väzbu. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
+    <string name="k2go_feedback_third_party_title">Toto sa môže pripojiť k internetu</string>
+    <string name="k2go_feedback_third_party_msg">Zvolili ste \"Ponechať offline\". Spätná väzba sa odosiela inou aplikáciou, napríklad e-mailom, a táto aplikácia sa môže pripojiť k internetu.</string>
+    <string name="k2go_privacy_kept_offline">Aplikácia je nastavená na \"Ponechať offline\", preto tieto služby zostávajú vypnuté. Ak to chcete zmeniť, zapnite \"%1$s\" v Nastavenia &gt; O aplikácii.</string>
+    <string name="k2go_feedback_send_anyway">Napriek tomu odoslať</string>
 </resources>

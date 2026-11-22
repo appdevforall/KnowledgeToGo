@@ -76,11 +76,12 @@ public final class KiwixCatalog {
 
     /**
      * Loads the catalog (overlay if pulled, else the baked asset) off the main thread; posts back on the
-     * main thread. K2GO-580: opening the catalog never refreshes it; see {@link #refresh}.
+     * main thread. K2GO-390: also nudges the freshness refresh once per process (weekly + an
+     * opportunistic TTL-gated check), only with the online choice on (K2GO-588). See ADR-390.
      */
     public static void getOrFetch(Context context, Listener listener) {
         final Context app = context.getApplicationContext();
-        retireAutomaticRefresh(app);
+        nudgeRefresh(app);
 
         JSONObject mem;
         synchronized (KiwixCatalog.class) {
@@ -100,13 +101,18 @@ public final class KiwixCatalog {
         }).start();
     }
 
-    // K2GO-580: cancel the automatic jobs older builds left behind, once per process.
-    private static volatile boolean automaticRetired = false;
+    // Once per process: the drain opens the catalog every ~2 s, and a 404 forces its own check.
+    private static volatile boolean refreshNudged = false;
 
-    private static void retireAutomaticRefresh(Context app) {
-        if (automaticRetired) return;
-        automaticRetired = true;
-        CatalogRefreshScheduler.cancelAutomatic(app, CATALOG_NAME);
+    private static void nudgeRefresh(Context app) {
+        if (refreshNudged) return;
+        refreshNudged = true;
+        syncRefresh(app);
+    }
+
+    /** K2GO-588: schedules or cancels the automatic refresh to match the privacy choice. */
+    public static void syncRefresh(Context ctx) {
+        CatalogRefreshScheduler.syncAutomatic(ctx.getApplicationContext(), CATALOG_NAME, MANIFEST_URL, CSV_ASSET);
     }
 
     /**

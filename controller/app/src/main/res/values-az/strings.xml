@@ -8,19 +8,8 @@
     <string name="connection_log_label">Server jurnalı</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">TƏNZİMLƏMƏLƏR</string>
-    <string name="setup_title">İlkin quraşdırma</string>
-    <string name="setup_welcome">%1$s quraşdırma sehrbazına xoş gəlmisiniz.\n\nDüzgün işləmək üçün aşağıdakı icazələr lazımdır:</string>
-    <string name="setup_continue">Davam et</string>
-    <string name="setup_perm_battery">Batareya optimallaşdırmasını söndür</string>
-    <string name="setup_perm_notifications">Push bildirişləri</string>
-    <string name="setup_perm_storage">Yerli yaddaşa giriş</string>
-    <string name="setup_perm_overlay">Digər tətbiqlərin üzərində göstər</string>
-    <string name="setup_lang_title">Məzmun dili</string>
-    <string name="setup_lang_desc">Zəhmət olmasa dilinizi seçin; məzmun tələb edərkən nəzərə alınacaq.</string>
     <string name="notif_perm_denied">Bildiriş icazəsi rədd edildi</string>
     <string name="notif_perm_granted">Bildiriş icazəsi verildi</string>
-    <string name="revoke_permission_warning">İcazələri ləğv etmək üçün bunu sistem tənzimləmələrindən etməlisiniz.</string>
     <string name="dash_device">Cihaz yüklənir…</string>
     <string name="dash_main_storage">Yaddaş</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Tənzimləmələr yadda saxlanıldı</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All tərəfindən təmin edilir</string>
-    <string name="setup_manage_all_permissions">Bütün icazələri idarə et</string>
     <string name="update_dialog_title">Yeni versiya mövcuddur: %1$s</string>
     <string name="update_dialog_message">Tətbiqi yeniləmək istəyirsiniz?\n\nYeniliklər:\n%1$s</string>
     <string name="update_dialog_positive">Yenilə</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">IIAB mühiti səlis şəkildə dayandırılır…</string>
     <string name="log_server_stop_error">[Dayandırma Xətası] %1$s</string>
     <string name="log_critical_binary_missing">KRİTİK: %1$s nativ kitabxanalarda çatışmır!</string>
-    <string name="setup_back_blocked_msg">Davam etmək üçün quraşdırmanı tamamlayın.</string>
     <string name="sync_scanner_prompt">K2Go Host QR kodunu skan edin</string>
     <string name="kiwix_dialog_lang_label">Kiwix dili</string>
     <string name="kiwix_dialog_variants_label">Mövcud ZIM variantları</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">İdxal edildi, lakin bu yedəyin daxili rootfs manifesti yoxdur, ona görə tam doğrulana bilmədi.</string>
     <string name="install_error_corrupt">Bu yedək bütövlük yoxlamasından keçmədi (korlanmış və ya dəyişdirilmiş ola bilər), ona görə istifadə edilmədi.</string>
     <string name="install_warn_no_checksum">İdxal edildi. Bu yedəyin bütövlük yoxlama məbləği yoxdur, çünki mobil cihazda yaradılıb.</string>
-    <string name="settings_nav_setup">Quraşdırma</string>
-    <string name="settings_nav_feedback">Rəy</string>
-    <string name="settings_nav_about">Haqqında</string>
-    <string name="about_version">Versiya %1$s</string>
-    <string name="settings_title">Tənzimləmələr</string>
-    <string name="action_done">Bitdi</string>
     <string name="feedback_type_label">Növ</string>
     <string name="feedback_cat_bug">Xəta</string>
     <string name="feedback_cat_suggestion">Təklif</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Ləğv et</string>
     <string name="rsync_error_process_killed">Android ötürmə prosesini dayandırdı (sistemin fon prosesi məhdudiyyəti). Bunun qarşısını almaq üçün Tərtibatçı seçimlərində “Uşaq prosesi məhdudiyyətlərini söndür” seçimini aktivləşdirin və ya ADB optimallaşdırmasını quraşdırın.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Məxfilik və analitika</string>
-    <string name="analytics_enroll_body">%1$s, xətaları düzəltməyə və tətbiqi təkmilləşdirməyə kömək etmək üçün anonim istifadə məlumatı toplayır. Heç bir şəxsi məlumat toplanmır və paylaşılmır və paylaşdığınız məzmundan istifadə edən insanlar haqqında heç nə izlənmir.\n\nAnonim məlumatları paylaş telefon onlayn olduqda bu məlumatı göndərir. Oflayn saxla telefon onlayn olsa belə heç nə göndərmir.</string>
-    <string name="analytics_enroll_accept">Anonim məlumatları paylaş</string>
     <string name="analytics_enroll_decline">Oflayn saxla</string>
-    <string name="settings_analytics_title">Anonim məlumatları paylaş</string>
-    <string name="settings_analytics_desc">Xətaları düzəltmək və tətbiqi təkmilləşdirmək üçün anonim istifadə məlumatı — şəxsi məlumat yoxdur və paylaşdığınız məzmundan istifadə edənlər haqqında heç nə yoxdur. İstənilən vaxt dəyişin.</string>
     <string name="phantom_warn_title">Ötürmə kəsilə bilər</string>
     <string name="phantom_warn_body">Android 12+ sistemində sistem ötürməni fonda işləyərkən dayandıra bilər (fantom-proses məhdudiyyəti). Bunun qarşısını almaq üçün “uşaq prosesi məhdudiyyətlərini” söndürün və ya yenə də davam edin — böyük ötürmələr kəsilə bilər.</string>
     <string name="phantom_warn_open_dev">Tərtibatçı seçimlərini aç</string>
     <string name="phantom_warn_continue">Yenə də davam et</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Tətbiq dili</string>
-    <string name="setup_app_lang_desc">Tətbiqin öz ekranları üçün dili seçin. “Sistem susmaya görə” telefonunuza uyğunlaşır.</string>
-    <string name="setup_app_lang_system">Sistem susmaya görə (telefona uyğun)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Dil</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">%1$s endirilir…</string>
     <string name="portal_download_failed">Endirmə başladıla bilmədi.</string>
@@ -598,8 +570,6 @@
     <string name="k2go_settings_app_version">Tətbiq versiyası</string>
     <string name="k2go_settings_check_updates">Yeniləmələri yoxla</string>
     <string name="k2go_settings_permissions">İcazələr</string>
-    <string name="k2go_settings_usage_stats">İstifadə statistikasını paylaş</string>
-    <string name="k2go_settings_crash_reports">Qəza hesabatlarını göndər</string>
     <string name="k2go_settings_licenses">Açıq mənbə lisenziyaları</string>
     <string name="k2go_settings_privacy">Məxfilik</string>
     <string name="k2go_settings_power_users">Təcrübəli istifadəçilər üçün.</string>
@@ -1611,10 +1581,6 @@
     <string name="k2go_cx_share_complete">Ötürmə tamamlandı. Məzmun artıq digər telefondadır.</string>
     <string name="k2go_cx_share_cancelled">Digər telefon ötürməni dayandırdı.</string>
     <string name="k2go_cx_share_ended">Paylaşım başa çatdı.</string>
-    <string name="k2go_gm_catalogs_update">Kataloqları yenilə</string>
-    <string name="k2go_gm_catalogs_updating">Kataloqlar yenilənir...</string>
-    <string name="k2go_gm_catalogs_bundled">Kataloqlar: tətbiqlə birlikdə gəlir</string>
-    <string name="k2go_gm_catalogs_checked">Kataloqlar yoxlanıldı: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Göndərən telefondan faylların siyahısını oxumaq mümkün olmadı.</string>
     <string name="k2go_clone_cable_err_no_path">Göndərən telefonla bağlantı kəsildi. Onun hotspotuna qoşulun və ya USB kabelini taxın.</string>
@@ -1723,4 +1689,12 @@
     <string name="k2go_online_body_usage">%1$s anonim istifadə məlumatlarını və qəza hesabatlarını paylaşa bilər, telefon Wi-Fi şəbəkəsinə qoşulduqda isə kataloq və tətbiq yeniləmələrini özü yoxlaya bilər. Heç bir şəxsi məlumat toplanmır və paylaşdığınız məzmundan istifadə edən insanlar haqqında heç nə izlənmir.\n\nOflayn saxla: tətbiq internetə özü qoşulmur.</string>
     <string name="k2go_online_body_crash">%1$s qəza hesabatlarını göndərə bilər, telefon Wi-Fi şəbəkəsinə qoşulduqda isə kataloq və tətbiq yeniləmələrini özü yoxlaya bilər. Heç bir şəxsi məlumat toplanmır.\n\nOflayn saxla: tətbiq internetə özü qoşulmur.</string>
     <string name="k2go_webview_offline_page">Bu səhifə internetdədir. Tətbiq daxilindəki səhifələr yalnız oflayn işləyir.</string>
+    <string name="k2go_offline_action_title">Bunun üçün internet lazımdır</string>
+    <string name="k2go_offline_action_msg">\"Oflayn saxla\" seçimini etdiniz. Bunu etmək üçün tətbiq internetə qoşulmalıdır. Buna yalnız bu əməliyyat üçün icazə verə bilərsiniz.</string>
+    <string name="k2go_offline_action_allow_once">Yalnız bu dəfə icazə ver</string>
+    <string name="k2go_feedback_kept_offline">Tətbiq \"Oflayn saxla\" rejimindədir, ona görə rəy göndərmir. Bunu dəyişmək üçün Ayarlar &gt; Haqqında bölməsində \"%1$s\" seçimini aktiv edin.</string>
+    <string name="k2go_feedback_third_party_title">Bu, internetə qoşula bilər</string>
+    <string name="k2go_feedback_third_party_msg">\"Oflayn saxla\" seçimini etdiniz. Rəy başqa tətbiqlə, məsələn e-poçtla göndərilir və həmin tətbiq internetə qoşula bilər.</string>
+    <string name="k2go_privacy_kept_offline">Tətbiq \"Oflayn saxla\" rejimindədir, ona görə bu xidmətlər söndürülmüş qalır. Bunu dəyişmək üçün Ayarlar &gt; Haqqında bölməsində \"%1$s\" seçimini aktiv edin.</string>
+    <string name="k2go_feedback_send_anyway">Yenə də göndər</string>
 </resources>

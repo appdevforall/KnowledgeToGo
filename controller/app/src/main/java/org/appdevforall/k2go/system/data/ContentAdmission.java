@@ -71,6 +71,12 @@ public final class ContentAdmission {
             Log.d(TAG, stream.key() + " drain deferred: proot (runrole) or dashboard-update work is in flight");
             return false;
         }
+        // K2GO-588: Keep offline holds a saved order until the user allows its kind (or turns the
+        // choice on). Deferred, not failed: the order stays saved and Pending downloads lists it.
+        if (!org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, stream.key())) {
+            Log.d(TAG, stream.key() + " drain deferred: kept offline, not allowed");
+            return false;
+        }
         if (PendingContent.anyUnfinished(ctx)) {
             Log.d(TAG, stream.key() + " drain deferred: a content stream still has work to do");
             return false;

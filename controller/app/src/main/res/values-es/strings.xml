@@ -8,23 +8,11 @@
     <string name="connection_log_label">Log de Conexión</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">AJUSTES</string>
 
 
-    <string name="setup_title">Configuración Inicial</string>
-    <string name="setup_welcome">Bienvenido al asistente de configuración de %1$s.\n\nPara funcionar correctamente, necesitamos los siguientes permisos:</string>
-    <string name="setup_continue">Continuar</string>
-    <string name="setup_perm_battery">Desactivar Optimización de Batería</string>
-    <string name="setup_perm_notifications">Notificaciones Push</string>
-    <string name="setup_perm_storage">Acceso al almacenamiento local</string>
-    <string name="setup_perm_overlay">Mostrar sobre otras apps</string>
-    <string name="setup_lang_title">Idioma del contenido</string>
-    <string name="setup_lang_desc">Por favor, seleccione su idioma, ya que se tomará en cuenta al solicitar contenido.</string>
-    <string name="setup_manage_all_permissions">Administrar todos los permisos</string>
 
     <string name="notif_perm_denied">Permiso de notificaciones denegado</string>
     <string name="notif_perm_granted">Permiso de notificaciones concedido</string>
-    <string name="revoke_permission_warning">Para revocar permisos, debe hacerlo desde los ajustes del sistema.</string>
 
     <string name="dash_device">Cargando el dispositivo...</string>
     <string name="dash_main_storage">Disco</string>
@@ -435,7 +423,6 @@
     <string name="log_server_stop_error">[Error de detención] %1$s</string>
     <string name="log_critical_binary_missing">CRÍTICO: ¡Falta %1$s en las librerías nativas!</string>
 
-    <string name="setup_back_blocked_msg">Por favor complete la configuración para continuar.</string>
     <string name="sync_scanner_prompt">Escanee el código QR del Anfitrión K2Go</string>
 
     <string name="kiwix_dialog_lang_label">Idioma de Kiwix</string>
@@ -497,12 +484,6 @@
     <string name="dns_status_testing">Probando…</string>
     <string name="network_advanced_label">Configuración avanzada</string>
     <string name="setup_dns">Configurar DNS</string>
-    <string name="settings_nav_setup">Configuración</string>
-    <string name="settings_nav_feedback">Comentarios</string>
-    <string name="settings_nav_about">Acerca de</string>
-    <string name="about_version">Versión %1$s</string>
-    <string name="settings_title">Ajustes</string>
-    <string name="action_done">Listo</string>
     <string name="feedback_type_label">Tipo</string>
     <string name="feedback_cat_bug">Problema</string>
     <string name="feedback_cat_suggestion">Sugerencia</string>
@@ -518,22 +499,13 @@
     <string name="rsync_error_process_killed">Android detuvo el proceso de transferencia (límite de procesos en segundo plano). Para evitarlo, activa «Desactivar restricciones de procesos secundarios» en Opciones de desarrollador, o configura ADB.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Privacidad y analítica</string>
-    <string name="analytics_enroll_body">%1$s recopila información de uso anónima para ayudarnos a corregir errores y mejorar la app. No se recopila ni comparte información personal, y no se rastrea nada sobre las personas que usan tu contenido compartido.\n\nCompartir datos anónimos envía esta información cuando el teléfono está en línea. Mantener sin conexión no envía nada, incluso si el teléfono está en línea.</string>
-    <string name="analytics_enroll_accept">Compartir datos anónimos</string>
     <string name="analytics_enroll_decline">Mantener sin conexión</string>
-    <string name="settings_analytics_title">Compartir datos anónimos</string>
-    <string name="settings_analytics_desc">Información de uso anónima para ayudarnos a corregir errores y mejorar la app: sin datos personales y sin nada sobre las personas que usan tu contenido compartido. Puedes cambiarlo cuando quieras.</string>
     <string name="phantom_warn_title">La transferencia podría interrumpirse</string>
     <string name="phantom_warn_body">En Android 12+ el sistema puede detener la transferencia mientras corre en segundo plano (límite de procesos). Para evitarlo, desactiva «restricciones de procesos secundarios», o continúa de todas formas — las transferencias grandes podrían interrumpirse.</string>
     <string name="phantom_warn_open_dev">Abrir Opciones de desarrollador</string>
     <string name="phantom_warn_continue">Continuar de todas formas</string>
 
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Idioma de la app</string>
-    <string name="setup_app_lang_desc">Elige el idioma de las pantallas de la app. “Predeterminado del sistema” sigue tu teléfono.</string>
-    <string name="setup_app_lang_system">Predeterminado del sistema (seguir el teléfono)</string>
-    <string name="setup_language_section">Idioma</string>
 
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Descargando %1$s…</string>
@@ -654,8 +626,6 @@
     <string name="k2go_settings_app_version">Versión de la app</string>
     <string name="k2go_settings_check_updates">Buscar actualizaciones</string>
     <string name="k2go_settings_permissions">Permisos</string>
-    <string name="k2go_settings_usage_stats">Compartir estadísticas de uso</string>
-    <string name="k2go_settings_crash_reports">Enviar informes de fallos</string>
     <string name="k2go_settings_licenses">Licencias de código abierto</string>
     <string name="k2go_settings_privacy">Privacidad</string>
     <string name="k2go_settings_power_users">Para usuarios avanzados.</string>
@@ -1667,10 +1637,6 @@
     <string name="k2go_cx_share_complete">Transferencia completa. El otro teléfono ya tiene el contenido.</string>
     <string name="k2go_cx_share_cancelled">El otro teléfono detuvo la transferencia.</string>
     <string name="k2go_cx_share_ended">El uso compartido terminó.</string>
-    <string name="k2go_gm_catalogs_update">Actualizar catálogos</string>
-    <string name="k2go_gm_catalogs_updating">Actualizando catálogos...</string>
-    <string name="k2go_gm_catalogs_bundled">Catálogos: incluidos con la app</string>
-    <string name="k2go_gm_catalogs_checked">Catálogos revisados: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">No se pudo leer la lista de archivos del teléfono emisor.</string>
     <string name="k2go_clone_cable_err_no_path">Se perdió la conexión con el teléfono emisor. Únete a su punto de acceso o conecta el cable USB.</string>
@@ -1780,4 +1746,12 @@
     <string name="k2go_online_body_usage">%1$s puede compartir datos de uso anónimos e informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal, y no se rastrea nada sobre las personas que usan tu contenido compartido.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
     <string name="k2go_online_body_crash">%1$s puede enviar informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
     <string name="k2go_webview_offline_page">Esta página está en internet. Las páginas dentro de la app solo funcionan sin conexión.</string>
+    <string name="k2go_offline_action_title">Esto necesita internet</string>
+    <string name="k2go_offline_action_msg">Elegiste \"Mantener sin conexión\". Para hacer esto, la app debe conectarse a internet. Puedes permitirlo solo para esta acción.</string>
+    <string name="k2go_offline_action_allow_once">Permitir solo esta vez</string>
+    <string name="k2go_feedback_kept_offline">La app está configurada en \"Mantener sin conexión\", así que no envía comentarios. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
+    <string name="k2go_feedback_third_party_title">Esto puede conectarse a internet</string>
+    <string name="k2go_feedback_third_party_msg">Elegiste \"Mantener sin conexión\". Los comentarios se envían con otra app, por ejemplo el correo, y esa app puede conectarse a internet.</string>
+    <string name="k2go_privacy_kept_offline">La app está configurada en \"Mantener sin conexión\", así que estos servicios siguen apagados. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
+    <string name="k2go_feedback_send_anyway">Enviar de todos modos</string>
 </resources>

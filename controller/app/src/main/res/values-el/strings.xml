@@ -8,19 +8,8 @@
     <string name="connection_log_label">Αρχείο καταγραφής διακομιστή</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">ΡΥΘΜΙΣΕΙΣ</string>
-    <string name="setup_title">Αρχική ρύθμιση</string>
-    <string name="setup_welcome">Καλώς ήρθατε στον οδηγό ρύθμισης %1$s.\n\nΓια να λειτουργήσει σωστά, χρειαζόμαστε τις εξής άδειες:</string>
-    <string name="setup_continue">Συνέχεια</string>
-    <string name="setup_perm_battery">Απενεργοποίηση βελτιστοποίησης μπαταρίας</string>
-    <string name="setup_perm_notifications">Ειδοποιήσεις push</string>
-    <string name="setup_perm_storage">Πρόσβαση σε τοπικό χώρο αποθήκευσης</string>
-    <string name="setup_perm_overlay">Εμφάνιση πάνω από άλλες εφαρμογές</string>
-    <string name="setup_lang_title">Γλώσσα περιεχομένου</string>
-    <string name="setup_lang_desc">Επιλέξτε τη γλώσσα σας, καθώς θα ληφθεί υπόψη κατά την αίτηση περιεχομένου.</string>
     <string name="notif_perm_denied">Η άδεια ειδοποιήσεων απορρίφθηκε</string>
     <string name="notif_perm_granted">Η άδεια ειδοποιήσεων χορηγήθηκε</string>
-    <string name="revoke_permission_warning">Για να ανακαλέσετε άδειες, πρέπει να το κάνετε από τις ρυθμίσεις του συστήματος.</string>
     <string name="dash_device">Φόρτωση συσκευής…</string>
     <string name="dash_main_storage">Αποθήκευση</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Οι ρυθμίσεις αποθηκεύτηκαν</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
-    <string name="setup_manage_all_permissions">Διαχείριση όλων των αδειών</string>
     <string name="update_dialog_title">Διαθέσιμη νέα έκδοση: %1$s</string>
     <string name="update_dialog_message">Θέλετε να ενημερώσετε την εφαρμογή;\n\nΤι νέο υπάρχει:\n%1$s</string>
     <string name="update_dialog_positive">Ενημέρωση</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Ομαλός τερματισμός του περιβάλλοντος IIAB…</string>
     <string name="log_server_stop_error">[Σφάλμα διακοπής] %1$s</string>
     <string name="log_critical_binary_missing">ΚΡΙΣΙΜΟ: Το %1$s λείπει από τις εγγενείς βιβλιοθήκες!</string>
-    <string name="setup_back_blocked_msg">Ολοκληρώστε τη ρύθμιση για να συνεχίσετε.</string>
     <string name="sync_scanner_prompt">Σαρώστε τον κωδικό QR του K2Go Host</string>
     <string name="kiwix_dialog_lang_label">Γλώσσα Kiwix</string>
     <string name="kiwix_dialog_variants_label">Διαθέσιμες παραλλαγές ZIM</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">Εισήχθη, αλλά αυτό το αντίγραφο ασφαλείας δεν έχει ενσωματωμένο manifest rootfs, οπότε δεν ήταν δυνατή η πλήρης επαλήθευσή του.</string>
     <string name="install_error_corrupt">Αυτό το αντίγραφο ασφαλείας απέτυχε στον έλεγχο ακεραιότητας (ενδέχεται να είναι κατεστραμμένο ή αλλοιωμένο), οπότε δεν χρησιμοποιήθηκε.</string>
     <string name="install_warn_no_checksum">Εισήχθη. Αυτό το αντίγραφο ασφαλείας δεν έχει checksum ακεραιότητας επειδή δημιουργήθηκε σε κινητή συσκευή.</string>
-    <string name="settings_nav_setup">Ρύθμιση</string>
-    <string name="settings_nav_feedback">Σχόλια</string>
-    <string name="settings_nav_about">Σχετικά</string>
-    <string name="about_version">Έκδοση %1$s</string>
-    <string name="settings_title">Ρυθμίσεις</string>
-    <string name="action_done">Ολοκληρώθηκε</string>
     <string name="feedback_type_label">Τύπος</string>
     <string name="feedback_cat_bug">Σφάλμα</string>
     <string name="feedback_cat_suggestion">Πρόταση</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Απόρριψη</string>
     <string name="rsync_error_process_killed">Το Android σταμάτησε τη διεργασία μεταφοράς (όριο διεργασιών παρασκηνίου του συστήματος). Για να το αποτρέψετε, ενεργοποιήστε την επιλογή “Απενεργοποίηση περιορισμών θυγατρικών διεργασιών” στις Επιλογές προγραμματιστή ή ρυθμίστε τη βελτιστοποίηση ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Απόρρητο και αναλυτικά</string>
-    <string name="analytics_enroll_body">Το %1$s συλλέγει ανώνυμες πληροφορίες χρήσης για να μας βοηθήσει να διορθώνουμε σφάλματα και να βελτιώνουμε την εφαρμογή. Δεν συλλέγονται ούτε κοινοποιούνται προσωπικές πληροφορίες και δεν παρακολουθείται τίποτα σχετικά με τα άτομα που χρησιμοποιούν το κοινόχρηστο περιεχόμενό σας.\n\nΗ Κοινή χρήση ανώνυμων δεδομένων στέλνει αυτές τις πληροφορίες όταν το τηλέφωνο είναι συνδεδεμένο. Η Διατήρηση εκτός σύνδεσης δεν στέλνει τίποτα, ακόμη κι αν το τηλέφωνο είναι συνδεδεμένο.</string>
-    <string name="analytics_enroll_accept">Κοινή χρήση ανώνυμων δεδομένων</string>
     <string name="analytics_enroll_decline">Διατήρηση εκτός σύνδεσης</string>
-    <string name="settings_analytics_title">Κοινή χρήση ανώνυμων δεδομένων</string>
-    <string name="settings_analytics_desc">Ανώνυμες πληροφορίες χρήσης για διόρθωση σφαλμάτων και βελτίωση της εφαρμογής — χωρίς προσωπικά δεδομένα και τίποτα σχετικά με τα άτομα που χρησιμοποιούν το κοινόχρηστο περιεχόμενό σας. Αλλάζει οποτεδήποτε.</string>
     <string name="phantom_warn_title">Η μεταφορά ενδέχεται να διακοπεί</string>
     <string name="phantom_warn_body">Στο Android 12+ το σύστημα μπορεί να σταματήσει τη μεταφορά ενώ εκτελείται στο παρασκήνιο (όριο phantom-process). Για να το αποτρέψετε, απενεργοποιήστε τους “περιορισμούς θυγατρικών διεργασιών” ή συνεχίστε ούτως ή άλλως — οι μεγάλες μεταφορές ενδέχεται να διακοπούν.</string>
     <string name="phantom_warn_open_dev">Άνοιγμα Επιλογών προγραμματιστή</string>
     <string name="phantom_warn_continue">Συνέχεια ούτως ή άλλως</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Γλώσσα εφαρμογής</string>
-    <string name="setup_app_lang_desc">Επιλέξτε τη γλώσσα για τις οθόνες της ίδιας της εφαρμογής. Η “Προεπιλογή συστήματος” ακολουθεί το τηλέφωνό σας.</string>
-    <string name="setup_app_lang_system">Προεπιλογή συστήματος (ακολουθεί το τηλέφωνο)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Γλώσσα</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Λήψη %1$s…</string>
     <string name="portal_download_failed">Δεν ήταν δυνατή η έναρξη της λήψης.</string>
@@ -585,8 +557,6 @@
     <string name="k2go_settings_app_version">Έκδοση εφαρμογής</string>
     <string name="k2go_settings_check_updates">Έλεγχος για ενημερώσεις</string>
     <string name="k2go_settings_permissions">Άδειες</string>
-    <string name="k2go_settings_usage_stats">Κοινή χρήση στατιστικών χρήσης</string>
-    <string name="k2go_settings_crash_reports">Αποστολή αναφορών σφαλμάτων</string>
     <string name="k2go_settings_licenses">Άδειες ανοιχτού κώδικα</string>
     <string name="k2go_settings_privacy">Απόρρητο</string>
     <string name="k2go_settings_power_users">Για προχωρημένους χρήστες.</string>
@@ -1598,10 +1568,6 @@
     <string name="k2go_cx_share_complete">Η μεταφορά ολοκληρώθηκε. Το άλλο τηλέφωνο έχει το περιεχόμενο.</string>
     <string name="k2go_cx_share_cancelled">Το άλλο τηλέφωνο σταμάτησε τη μεταφορά.</string>
     <string name="k2go_cx_share_ended">Η κοινή χρήση τελείωσε.</string>
-    <string name="k2go_gm_catalogs_update">Ενημέρωση καταλόγων</string>
-    <string name="k2go_gm_catalogs_updating">Ενημέρωση καταλόγων...</string>
-    <string name="k2go_gm_catalogs_bundled">Κατάλογοι: περιλαμβάνονται στην εφαρμογή</string>
-    <string name="k2go_gm_catalogs_checked">Έλεγχος καταλόγων: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Δεν ήταν δυνατή η ανάγνωση της λίστας αρχείων από το τηλέφωνο αποστολής.</string>
     <string name="k2go_clone_cable_err_no_path">Η σύνδεση με το τηλέφωνο αποστολής χάθηκε. Συνδεθείτε στο σημείο πρόσβασής του ή συνδέστε το καλώδιο USB.</string>
@@ -1710,4 +1676,12 @@
     <string name="k2go_online_body_usage">Το %1$s μπορεί να μοιράζεται ανώνυμα δεδομένα χρήσης και αναφορές σφαλμάτων και να ελέγχει μόνο του για ενημερώσεις καταλόγου και εφαρμογής όταν το τηλέφωνο είναι συνδεδεμένο σε Wi-Fi. Δεν συλλέγονται προσωπικές πληροφορίες και δεν παρακολουθείται τίποτα σχετικά με τα άτομα που χρησιμοποιούν το περιεχόμενο που μοιράζεστε.\n\nΔιατήρηση εκτός σύνδεσης: η εφαρμογή δεν συνδέεται μόνη της στο διαδίκτυο.</string>
     <string name="k2go_online_body_crash">Το %1$s μπορεί να στέλνει αναφορές σφαλμάτων και να ελέγχει μόνο του για ενημερώσεις καταλόγου και εφαρμογής όταν το τηλέφωνο είναι συνδεδεμένο σε Wi-Fi. Δεν συλλέγονται προσωπικές πληροφορίες.\n\nΔιατήρηση εκτός σύνδεσης: η εφαρμογή δεν συνδέεται μόνη της στο διαδίκτυο.</string>
     <string name="k2go_webview_offline_page">Αυτή η σελίδα βρίσκεται στο διαδίκτυο. Οι σελίδες μέσα στην εφαρμογή λειτουργούν μόνο εκτός σύνδεσης.</string>
+    <string name="k2go_offline_action_title">Απαιτείται σύνδεση στο διαδίκτυο</string>
+    <string name="k2go_offline_action_msg">Επιλέξατε \"Διατήρηση εκτός σύνδεσης\". Για να γίνει αυτό, η εφαρμογή πρέπει να συνδεθεί στο διαδίκτυο. Μπορείτε να το επιτρέψετε μόνο για αυτή την ενέργεια.</string>
+    <string name="k2go_offline_action_allow_once">Να επιτραπεί μόνο αυτή τη φορά</string>
+    <string name="k2go_feedback_kept_offline">Η εφαρμογή έχει ρυθμιστεί σε \"Διατήρηση εκτός σύνδεσης\", οπότε δεν στέλνει σχόλια. Για να το αλλάξετε, ενεργοποιήστε το \"%1$s\" στις Ρυθμίσεις &gt; Σχετικά.</string>
+    <string name="k2go_feedback_third_party_title">Αυτό μπορεί να συνδεθεί στο διαδίκτυο</string>
+    <string name="k2go_feedback_third_party_msg">Επιλέξατε \"Διατήρηση εκτός σύνδεσης\". Τα σχόλια στέλνονται με άλλη εφαρμογή, για παράδειγμα το email, και αυτή η εφαρμογή μπορεί να συνδεθεί στο διαδίκτυο.</string>
+    <string name="k2go_privacy_kept_offline">Η εφαρμογή έχει ρυθμιστεί σε \"Διατήρηση εκτός σύνδεσης\", οπότε αυτές οι υπηρεσίες παραμένουν απενεργοποιημένες. Για να το αλλάξετε, ενεργοποιήστε το \"%1$s\" στις Ρυθμίσεις &gt; Σχετικά.</string>
+    <string name="k2go_feedback_send_anyway">Αποστολή ούτως ή άλλως</string>
 </resources>

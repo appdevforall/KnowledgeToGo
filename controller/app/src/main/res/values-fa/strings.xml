@@ -8,19 +8,8 @@
     <string name="connection_log_label">گزارش سرور</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">تنظیمات</string>
-    <string name="setup_title">راه‌اندازی اولیه</string>
-    <string name="setup_welcome">به دستیار راه‌اندازی %1$s خوش آمدید.\n\nبرای عملکرد صحیح، به مجوزهای زیر نیاز داریم:</string>
-    <string name="setup_continue">ادامه</string>
-    <string name="setup_perm_battery">غیرفعال کردن بهینه‌سازی باتری</string>
-    <string name="setup_perm_notifications">اعلان‌های فوری</string>
-    <string name="setup_perm_storage">دسترسی به حافظه محلی</string>
-    <string name="setup_perm_overlay">نمایش روی برنامه‌های دیگر</string>
-    <string name="setup_lang_title">زبان محتوا</string>
-    <string name="setup_lang_desc">لطفاً زبان خود را انتخاب کنید؛ هنگام درخواست محتوا در نظر گرفته می‌شود.</string>
     <string name="notif_perm_denied">مجوز اعلان رد شد</string>
     <string name="notif_perm_granted">مجوز اعلان اعطا شد</string>
-    <string name="revoke_permission_warning">برای لغو مجوزها، باید این کار را از تنظیمات سیستم انجام دهید.</string>
     <string name="dash_device">در حال بارگذاری دستگاه…</string>
     <string name="dash_main_storage">حافظه</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">تنظیمات ذخیره شد</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">قدرت‌گرفته از App Dev for All</string>
-    <string name="setup_manage_all_permissions">مدیریت همه مجوزها</string>
     <string name="update_dialog_title">نسخه جدید موجود است: %1$s</string>
     <string name="update_dialog_message">آیا می‌خواهید برنامه را به‌روزرسانی کنید؟\n\nتازه‌ها:\n%1$s</string>
     <string name="update_dialog_positive">به‌روزرسانی</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">در حال توقف محیط IIAB به‌آرامی…</string>
     <string name="log_server_stop_error">[خطای توقف] %1$s</string>
     <string name="log_critical_binary_missing">بحرانی: %1$s در کتابخانه‌های بومی وجود ندارد!</string>
-    <string name="setup_back_blocked_msg">لطفاً برای ادامه، راه‌اندازی را کامل کنید.</string>
     <string name="sync_scanner_prompt">کد QR میزبان K2Go را اسکن کنید</string>
     <string name="kiwix_dialog_lang_label">زبان Kiwix</string>
     <string name="kiwix_dialog_variants_label">انواع ZIM موجود</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">وارد شد، اما این پشتیبان دارای manifest جاسازی‌شده rootfs نیست، بنابراین نتوانست به‌طور کامل تأیید شود.</string>
     <string name="install_error_corrupt">این پشتیبان در بررسی یکپارچگی خود ناموفق بود (ممکن است خراب یا تغییریافته باشد)، بنابراین استفاده نشد.</string>
     <string name="install_warn_no_checksum">وارد شد. این پشتیبان به دلیل ایجاد شدن روی یک دستگاه همراه، جمع‌کنترل یکپارچگی ندارد.</string>
-    <string name="settings_nav_setup">راه‌اندازی</string>
-    <string name="settings_nav_feedback">بازخورد</string>
-    <string name="settings_nav_about">درباره</string>
-    <string name="about_version">نسخه %1$s</string>
-    <string name="settings_title">تنظیمات</string>
-    <string name="action_done">انجام شد</string>
     <string name="feedback_type_label">نوع</string>
     <string name="feedback_cat_bug">اشکال</string>
     <string name="feedback_cat_suggestion">پیشنهاد</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">ارسال گزارش</string>
     <string name="crash_report_dismiss">رد کردن</string>
     <string name="rsync_error_process_killed">Android فرآیند انتقال را متوقف کرد (محدودیت فرآیند پس‌زمینه سیستم). برای جلوگیری از این، «غیرفعال کردن محدودیت‌های فرآیند فرزند» را در گزینه‌های توسعه‌دهنده فعال کنید، یا بهینه‌سازی ADB را راه‌اندازی کنید.</string>
-    <string name="analytics_enroll_title">حریم خصوصی و تحلیل‌ها</string>
-    <string name="analytics_enroll_body">%1$s اطلاعات استفادهٔ ناشناس جمع‌آوری می‌کند تا به ما در رفع اشکالات و بهبود برنامه کمک کند. هیچ اطلاعات شخصی جمع‌آوری یا به اشتراک گذاشته نمی‌شود و هیچ چیزی دربارهٔ افرادی که از محتوای اشتراکی شما استفاده می‌کنند ردیابی نمی‌شود.\n\nاشتراک داده‌های ناشناس این اطلاعات را زمانی که گوشی آنلاین است ارسال می‌کند. آفلاین بماند هیچ چیزی ارسال نمی‌کند، حتی اگر گوشی آنلاین باشد.</string>
-    <string name="analytics_enroll_accept">اشتراک داده‌های ناشناس</string>
     <string name="analytics_enroll_decline">آفلاین بماند</string>
-    <string name="settings_analytics_title">اشتراک داده‌های ناشناس</string>
-    <string name="settings_analytics_desc">اطلاعات استفادهٔ ناشناس برای رفع اشکالات و بهبود برنامه — بدون داده‌های شخصی و هیچ چیزی دربارهٔ افرادی که از محتوای اشتراکی شما استفاده می‌کنند. هر زمان قابل تغییر است.</string>
     <string name="phantom_warn_title">انتقال ممکن است قطع شود</string>
     <string name="phantom_warn_body">در Android 12+ سیستم می‌تواند انتقال را در حین اجرا در پس‌زمینه متوقف کند (محدودیت فرآیند شبح). برای جلوگیری از آن، «محدودیت‌های فرآیند فرزند» را غیرفعال کنید، یا به هر حال ادامه دهید — انتقال‌های بزرگ ممکن است قطع شوند.</string>
     <string name="phantom_warn_open_dev">باز کردن گزینه‌های توسعه‌دهنده</string>
     <string name="phantom_warn_continue">به هر حال ادامه بده</string>
-    <string name="setup_app_lang_title">زبان برنامه</string>
-    <string name="setup_app_lang_desc">زبان صفحه‌های خود برنامه را انتخاب کنید. «پیش‌فرض سیستم» از تلفن شما پیروی می‌کند.</string>
-    <string name="setup_app_lang_system">پیش‌فرض سیستم (پیروی از تلفن)</string>
-    <string name="setup_language_section">زبان</string>
     <string name="portal_download_started">در حال دانلود %1$s…</string>
     <string name="portal_download_failed">دانلود شروع نشد.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">نسخه برنامه</string>
     <string name="k2go_settings_check_updates">بررسی به‌روزرسانی‌ها</string>
     <string name="k2go_settings_permissions">دسترسی‌ها</string>
-    <string name="k2go_settings_usage_stats">اشتراک‌گذاری آمار استفاده</string>
-    <string name="k2go_settings_crash_reports">ارسال گزارش‌های خرابی</string>
     <string name="k2go_settings_licenses">مجوزهای متن‌باز</string>
     <string name="k2go_settings_privacy">حریم خصوصی</string>
     <string name="k2go_settings_power_users">برای کاربران حرفه‌ای.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">انتقال کامل شد. محتوا اکنون روی تلفن دیگر است.</string>
     <string name="k2go_cx_share_cancelled">تلفن دیگر انتقال را متوقف کرد.</string>
     <string name="k2go_cx_share_ended">اشتراک‌گذاری پایان یافت.</string>
-    <string name="k2go_gm_catalogs_update">به‌روزرسانی فهرست‌ها</string>
-    <string name="k2go_gm_catalogs_updating">در حال به‌روزرسانی فهرست‌ها...</string>
-    <string name="k2go_gm_catalogs_bundled">فهرست‌ها: همراه برنامه</string>
-    <string name="k2go_gm_catalogs_checked">آخرین بررسی فهرست‌ها: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">خواندن فهرست فایل‌ها از گوشی فرستنده ممکن نشد.</string>
     <string name="k2go_clone_cable_err_no_path">اتصال به گوشی فرستنده قطع شد. به هات‌اسپات آن بپیوندید یا کابل USB را وصل کنید.</string>
@@ -1703,4 +1669,12 @@
     <string name="k2go_online_body_usage">%1$s می‌تواند داده‌های استفادهٔ ناشناس و گزارش‌های خرابی را به اشتراک بگذارد و وقتی تلفن به Wi-Fi متصل است، خودش به‌روزرسانی‌های کاتالوگ و برنامه را بررسی کند. هیچ اطلاعات شخصی جمع‌آوری نمی‌شود و هیچ چیزی دربارهٔ افرادی که از محتوای اشتراکی شما استفاده می‌کنند ردیابی نمی‌شود.\n\nآفلاین بماند: برنامه خودش به اینترنت وصل نمی‌شود.</string>
     <string name="k2go_online_body_crash">%1$s می‌تواند گزارش‌های خرابی را ارسال کند و وقتی تلفن به Wi-Fi متصل است، خودش به‌روزرسانی‌های کاتالوگ و برنامه را بررسی کند. هیچ اطلاعات شخصی جمع‌آوری نمی‌شود.\n\nآفلاین بماند: برنامه خودش به اینترنت وصل نمی‌شود.</string>
     <string name="k2go_webview_offline_page">این صفحه در اینترنت است. صفحه‌های داخل برنامه فقط به‌صورت آفلاین کار می‌کنند.</string>
+    <string name="k2go_offline_action_title">این کار به اینترنت نیاز دارد</string>
+    <string name="k2go_offline_action_msg">شما \"آفلاین بماند\" را انتخاب کرده‌اید. برای انجام این کار، برنامه باید به اینترنت وصل شود. می‌توانید فقط برای این کار اجازه دهید.</string>
+    <string name="k2go_offline_action_allow_once">فقط این بار اجازه بده</string>
+    <string name="k2go_feedback_kept_offline">برنامه روی \"آفلاین بماند\" تنظیم شده است، پس بازخورد نمی‌فرستد. برای تغییر آن، \"%1$s\" را در تنظیمات &gt; درباره روشن کنید.</string>
+    <string name="k2go_feedback_third_party_title">این می‌تواند به اینترنت وصل شود</string>
+    <string name="k2go_feedback_third_party_msg">شما \"آفلاین بماند\" را انتخاب کرده‌اید. بازخورد با برنامه دیگری فرستاده می‌شود، مثلاً ایمیل، و آن برنامه می‌تواند به اینترنت وصل شود.</string>
+    <string name="k2go_privacy_kept_offline">برنامه روی \"آفلاین بماند\" تنظیم شده است، پس این سرویس‌ها خاموش می‌مانند. برای تغییر آن، \"%1$s\" را در تنظیمات &gt; درباره روشن کنید.</string>
+    <string name="k2go_feedback_send_anyway">به هر حال ارسال شود</string>
 </resources>

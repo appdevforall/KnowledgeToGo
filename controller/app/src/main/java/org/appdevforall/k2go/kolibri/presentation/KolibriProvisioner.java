@@ -39,7 +39,8 @@ public final class KolibriProvisioner {
 
     /** True when there is a banked Kolibri order waiting. */
     public static boolean hasPending(Context ctx) {
-        return banked(ctx).length() > 0;
+        // K2GO-588: a saved order waits while the app is kept offline and the user did not allow it.
+        return banked(ctx).length() > 0 && org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, org.appdevforall.k2go.system.domain.ContentType.COURSES.key());
     }
 
     /**

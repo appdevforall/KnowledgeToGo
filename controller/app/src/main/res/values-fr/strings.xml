@@ -9,24 +9,12 @@
     <string name="connection_log_label">Journal de connexion</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">PARAMÈTRES</string>
 
 
-    <string name="setup_title">Configuration initiale</string>
-    <string name="setup_welcome">Bienvenue dans l\'assistant de configuration de %1$s.\n\nPour fonctionner correctement, nous avons besoin des autorisations suivantes :</string>
-    <string name="setup_continue">Continuer</string>
 
-    <string name="setup_perm_battery">Désactiver l\'optimisation de la batterie</string>
-    <string name="setup_perm_notifications">Notifications Push</string>
-    <string name="setup_perm_storage">Accès au stockage local</string>
-    <string name="setup_perm_overlay">Afficher sur les autres applications</string>
-    <string name="setup_lang_title">Langue du contenu</string>
-    <string name="setup_lang_desc">Veuillez sélectionner votre langue, car elle sera prise en compte lors de la demande de contenu.</string>
-    <string name="setup_manage_all_permissions">Gérer toutes les autorisations</string>
 
     <string name="notif_perm_denied">Autorisation de notification refusée</string>
     <string name="notif_perm_granted">Autorisation de notification accordée</string>
-    <string name="revoke_permission_warning">Pour révoquer des autorisations, vous devez le faire depuis les paramètres système.</string>
 
     <string name="dash_device">Chargement de l\'appareil...</string>
     <string name="dash_main_storage">Stockage</string>
@@ -433,7 +421,6 @@
     <string name="log_server_stop_error">[Erreur d\'arrêt] %1$s</string>
     <string name="log_critical_binary_missing">CRITIQUE : %1$s est manquant dans les bibliothèques natives !</string>
 
-    <string name="setup_back_blocked_msg">Veuillez terminer la configuration pour continuer.</string>
     <string name="sync_scanner_prompt">Scannez le code QR de l\'Hôte K2Go</string>
 
     <string name="kiwix_dialog_lang_label">Langue de Kiwix</string>
@@ -498,12 +485,6 @@
     <string name="ota_error_verify_failed">La mise à jour n\'a pas pu être vérifiée et n\'a pas été installée. Veuillez réessayer.</string>
     <string name="ota_error_download_failed">Le téléchargement de la mise à jour a échoué. Veuillez réessayer.</string>
     <string name="ota_msg_enable_unknown_sources">Autorisez l\'installation des mises à jour depuis cette application, puis appuyez à nouveau sur Mettre à jour.</string>
-    <string name="settings_nav_setup">Configuration</string>
-    <string name="settings_nav_feedback">Commentaires</string>
-    <string name="settings_nav_about">À propos</string>
-    <string name="about_version">Version %1$s</string>
-    <string name="settings_title">Paramètres</string>
-    <string name="action_done">Terminé</string>
     <string name="feedback_type_label">Type</string>
     <string name="feedback_cat_bug">Anomalie</string>
     <string name="feedback_cat_suggestion">Suggestion</string>
@@ -519,22 +500,13 @@
     <string name="rsync_error_process_killed">Android a arrêté le processus de transfert (limite de processus en arrière-plan). Pour l’éviter, activez « Désactiver les restrictions des processus enfants » dans les options pour développeurs, ou configurez ADB.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Confidentialité et analyses</string>
-    <string name="analytics_enroll_body">%1$s recueille des informations d\'utilisation anonymes pour nous aider à corriger des bugs et améliorer l\'application. Aucune information personnelle n\'est recueillie ni partagée, et rien n\'est suivi concernant les personnes qui utilisent votre contenu partagé.\n\nPartager des données anonymes envoie ces informations lorsque le téléphone est en ligne. Rester hors ligne n\'envoie rien, même si le téléphone est en ligne.</string>
-    <string name="analytics_enroll_accept">Partager des données anonymes</string>
     <string name="analytics_enroll_decline">Rester hors ligne</string>
-    <string name="settings_analytics_title">Partager des données anonymes</string>
-    <string name="settings_analytics_desc">Informations d\'utilisation anonymes pour corriger des bugs et améliorer l\'application — aucune donnée personnelle, et rien concernant les personnes qui utilisent votre contenu partagé. Modifiable à tout moment.</string>
     <string name="phantom_warn_title">Le transfert peut être interrompu</string>
     <string name="phantom_warn_body">Sur Android 12+, le système peut arrêter le transfert en arrière-plan (limite de processus). Pour l’éviter, désactivez « restrictions des processus enfants », ou continuez quand même — les gros transferts peuvent être interrompus.</string>
     <string name="phantom_warn_open_dev">Ouvrir les options pour développeurs</string>
     <string name="phantom_warn_continue">Continuer quand même</string>
 
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Langue de l\'application</string>
-    <string name="setup_app_lang_desc">Choisissez la langue des écrans de l\'application. “Par défaut du système” suit votre téléphone.</string>
-    <string name="setup_app_lang_system">Par défaut du système (suivre le téléphone)</string>
-    <string name="setup_language_section">Langue</string>
 
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Téléchargement de %1$s…</string>
@@ -655,8 +627,6 @@
     <string name="k2go_settings_app_version">Version de l\'appli</string>
     <string name="k2go_settings_check_updates">Rechercher des mises à jour</string>
     <string name="k2go_settings_permissions">Autorisations</string>
-    <string name="k2go_settings_usage_stats">Partager les statistiques d\'utilisation</string>
-    <string name="k2go_settings_crash_reports">Envoyer les rapports de plantage</string>
     <string name="k2go_settings_licenses">Licences open source</string>
     <string name="k2go_settings_privacy">Confidentialité</string>
     <string name="k2go_settings_power_users">Pour les utilisateurs avancés.</string>
@@ -1678,10 +1648,6 @@
     <string name="k2go_cx_share_complete">Transfert terminé. L\'autre téléphone a le contenu.</string>
     <string name="k2go_cx_share_cancelled">L\'autre téléphone a arrêté le transfert.</string>
     <string name="k2go_cx_share_ended">Le partage est terminé.</string>
-    <string name="k2go_gm_catalogs_update">Mettre à jour les catalogues</string>
-    <string name="k2go_gm_catalogs_updating">Mise à jour des catalogues...</string>
-    <string name="k2go_gm_catalogs_bundled">Catalogues : inclus avec l\'app</string>
-    <string name="k2go_gm_catalogs_checked">Catalogues vérifiés : %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Impossible de lire la liste des fichiers du téléphone émetteur.</string>
     <string name="k2go_clone_cable_err_no_path">La connexion au téléphone émetteur est perdue. Rejoignez son point d\'accès ou branchez le câble USB.</string>
@@ -1791,4 +1757,12 @@
     <string name="k2go_online_body_usage">%1$s peut partager des données d\'utilisation anonymes et des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie, et rien n\'est suivi concernant les personnes qui utilisent votre contenu partagé.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
     <string name="k2go_online_body_crash">%1$s peut envoyer des rapports de plantage, et peut vérifier de lui-même les mises à jour du catalogue et de l\'application lorsque le téléphone est connecté au Wi-Fi. Aucune information personnelle n\'est recueillie.\n\nRester hors ligne : l\'application ne se connecte pas à Internet d\'elle-même.</string>
     <string name="k2go_webview_offline_page">Cette page se trouve sur Internet. Les pages de l\'application fonctionnent uniquement hors ligne.</string>
+    <string name="k2go_offline_action_title">Cette action nécessite Internet</string>
+    <string name="k2go_offline_action_msg">Vous avez choisi \"Rester hors ligne\". Pour faire ceci, l\'application doit se connecter à Internet. Vous pouvez l\'autoriser pour cette action uniquement.</string>
+    <string name="k2go_offline_action_allow_once">Autoriser cette fois seulement</string>
+    <string name="k2go_feedback_kept_offline">L\'application est réglée sur \"Rester hors ligne\", elle n\'envoie donc pas de commentaires. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
+    <string name="k2go_feedback_third_party_title">Ceci peut se connecter à Internet</string>
+    <string name="k2go_feedback_third_party_msg">Vous avez choisi \"Rester hors ligne\". Les commentaires sont envoyés avec une autre application, par exemple la messagerie, et cette application peut se connecter à Internet.</string>
+    <string name="k2go_privacy_kept_offline">L\'application est réglée sur \"Rester hors ligne\", ces services restent donc désactivés. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
+    <string name="k2go_feedback_send_anyway">Envoyer quand même</string>
 </resources>

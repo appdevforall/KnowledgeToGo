@@ -31,7 +31,8 @@ public final class BooksProvisioner {
 
     /** True when there is a banked Books order waiting to be provisioned. */
     public static boolean hasPending(Context ctx) {
-        return BooksWishlist.size(ctx) > 0;
+        // K2GO-588: a saved order waits while the app is kept offline and the user did not allow it.
+        return BooksWishlist.size(ctx) > 0 && org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allows(ctx, org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
     }
 
     /** Hand the wishlist to BooksDownloadService (requires the server to be up) and clear it.

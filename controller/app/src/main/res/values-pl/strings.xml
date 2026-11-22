@@ -8,19 +8,8 @@
     <string name="connection_log_label">Dziennik serwera</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">USTAWIENIA</string>
-    <string name="setup_title">Konfiguracja początkowa</string>
-    <string name="setup_welcome">Witamy w kreatorze konfiguracji %1$s.\n\nAby działać prawidłowo, potrzebujemy następujących uprawnień:</string>
-    <string name="setup_continue">Kontynuuj</string>
-    <string name="setup_perm_battery">Wyłącz optymalizację baterii</string>
-    <string name="setup_perm_notifications">Powiadomienia push</string>
-    <string name="setup_perm_storage">Dostęp do pamięci lokalnej</string>
-    <string name="setup_perm_overlay">Wyświetlanie nad innymi aplikacjami</string>
-    <string name="setup_lang_title">Język treści</string>
-    <string name="setup_lang_desc">Wybierz swój język; zostanie on uwzględniony przy pobieraniu treści.</string>
     <string name="notif_perm_denied">Odmówiono uprawnienia do powiadomień</string>
     <string name="notif_perm_granted">Przyznano uprawnienie do powiadomień</string>
-    <string name="revoke_permission_warning">Aby cofnąć uprawnienia, musisz zrobić to w ustawieniach systemu.</string>
     <string name="dash_device">Ładowanie urządzenia…</string>
     <string name="dash_main_storage">Pamięć</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Ustawienia zapisane</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">obsługiwane przez App Dev for All</string>
-    <string name="setup_manage_all_permissions">Zarządzaj wszystkimi uprawnieniami</string>
     <string name="update_dialog_title">Dostępna nowa wersja: %1$s</string>
     <string name="update_dialog_message">Czy chcesz zaktualizować aplikację?\n\nCo nowego:\n%1$s</string>
     <string name="update_dialog_positive">Aktualizuj</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Płynne zatrzymywanie środowiska IIAB…</string>
     <string name="log_server_stop_error">[Błąd zatrzymania] %1$s</string>
     <string name="log_critical_binary_missing">KRYTYCZNE: %1$s brakuje w natywnych bibliotekach!</string>
-    <string name="setup_back_blocked_msg">Ukończ konfigurację, aby kontynuować.</string>
     <string name="sync_scanner_prompt">Zeskanuj kod QR hosta K2Go</string>
     <string name="kiwix_dialog_lang_label">Język Kiwix</string>
     <string name="kiwix_dialog_variants_label">Dostępne warianty ZIM</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Zaimportowano, ale ta kopia zapasowa nie ma osadzonego manifestu rootfs, więc nie mogła zostać w pełni zweryfikowana.</string>
     <string name="install_error_corrupt">Ta kopia zapasowa nie przeszła kontroli integralności (może być uszkodzona lub zmieniona), więc nie została użyta.</string>
     <string name="install_warn_no_checksum">Zaimportowano. Ta kopia zapasowa nie ma sumy kontrolnej integralności, ponieważ została utworzona na urządzeniu mobilnym.</string>
-    <string name="settings_nav_setup">Konfiguracja</string>
-    <string name="settings_nav_feedback">Opinia</string>
-    <string name="settings_nav_about">Informacje</string>
-    <string name="about_version">Wersja %1$s</string>
-    <string name="settings_title">Ustawienia</string>
-    <string name="action_done">Gotowe</string>
     <string name="feedback_type_label">Typ</string>
     <string name="feedback_cat_bug">Błąd</string>
     <string name="feedback_cat_suggestion">Sugestia</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Wyślij raport</string>
     <string name="crash_report_dismiss">Odrzuć</string>
     <string name="rsync_error_process_killed">Android zatrzymał proces transferu (systemowy limit procesów w tle). Aby temu zapobiec, włącz „Wyłącz ograniczenia procesów potomnych” w opcjach deweloperskich lub skonfiguruj optymalizację ADB.</string>
-    <string name="analytics_enroll_title">Prywatność i analityka</string>
-    <string name="analytics_enroll_body">%1$s zbiera anonimowe informacje o użytkowaniu, aby pomóc nam naprawiać błędy i ulepszać aplikację. Nie zbieramy ani nie udostępniamy żadnych danych osobowych i nie śledzimy niczego o osobach korzystających z Twoich udostępnionych treści.\n\nUdostępnij dane anonimowe wysyła te informacje, gdy telefon jest online. Zachowaj offline nie wysyła niczego, nawet gdy telefon jest online.</string>
-    <string name="analytics_enroll_accept">Udostępnij dane anonimowe</string>
     <string name="analytics_enroll_decline">Zachowaj offline</string>
-    <string name="settings_analytics_title">Udostępnij dane anonimowe</string>
-    <string name="settings_analytics_desc">Anonimowe informacje o użytkowaniu, aby naprawiać błędy i ulepszać aplikację — bez danych osobowych i niczego o osobach korzystających z Twoich udostępnionych treści. Można zmienić w każdej chwili.</string>
     <string name="phantom_warn_title">Transfer może zostać przerwany</string>
     <string name="phantom_warn_body">W systemie Android 12+ system może zatrzymać transfer podczas jego działania w tle (limit procesów phantom). Aby temu zapobiec, wyłącz „ograniczenia procesów potomnych” lub kontynuuj mimo to — duże transfery mogą zostać przerwane.</string>
     <string name="phantom_warn_open_dev">Otwórz opcje deweloperskie</string>
     <string name="phantom_warn_continue">Kontynuuj mimo to</string>
-    <string name="setup_app_lang_title">Język aplikacji</string>
-    <string name="setup_app_lang_desc">Wybierz język dla własnych ekranów aplikacji. „Domyślny systemowy” podąża za Twoim telefonem.</string>
-    <string name="setup_app_lang_system">Domyślny systemowy (podąża za telefonem)</string>
-    <string name="setup_language_section">Język</string>
     <string name="portal_download_started">Pobieranie %1$s…</string>
     <string name="portal_download_failed">Nie udało się rozpocząć pobierania.</string>
     <string name="lohs_label">Hotspot tylko lokalny</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">Wersja aplikacji</string>
     <string name="k2go_settings_check_updates">Sprawdź aktualizacje</string>
     <string name="k2go_settings_permissions">Uprawnienia</string>
-    <string name="k2go_settings_usage_stats">Udostępniaj statystyki użytkowania</string>
-    <string name="k2go_settings_crash_reports">Wysyłaj raporty o awariach</string>
     <string name="k2go_settings_licenses">Licencje open-source</string>
     <string name="k2go_settings_privacy">Prywatność</string>
     <string name="k2go_settings_power_users">Dla zaawansowanych użytkowników.</string>
@@ -1601,10 +1571,6 @@
     <string name="k2go_cx_share_complete">Przesyłanie zakończone. Drugi telefon ma zawartość.</string>
     <string name="k2go_cx_share_cancelled">Drugi telefon zatrzymał przesyłanie.</string>
     <string name="k2go_cx_share_ended">Udostępnianie zakończone.</string>
-    <string name="k2go_gm_catalogs_update">Aktualizuj katalogi</string>
-    <string name="k2go_gm_catalogs_updating">Aktualizowanie katalogów...</string>
-    <string name="k2go_gm_catalogs_bundled">Katalogi: dołączone do aplikacji</string>
-    <string name="k2go_gm_catalogs_checked">Katalogi sprawdzone: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nie można odczytać listy plików z telefonu wysyłającego.</string>
     <string name="k2go_clone_cable_err_no_path">Utracono połączenie z telefonem wysyłającym. Połącz się z jego hotspotem lub podłącz kabel USB.</string>
@@ -1715,4 +1681,12 @@
     <string name="k2go_online_body_usage">%1$s może udostępniać anonimowe dane o użytkowaniu i raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych i nie śledzimy niczego o osobach korzystających z Twoich udostępnionych treści.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
     <string name="k2go_online_body_crash">%1$s może wysyłać raporty o awariach oraz samodzielnie sprawdzać aktualizacje katalogu i aplikacji, gdy telefon jest połączony z Wi-Fi. Nie zbieramy żadnych danych osobowych.\n\nZachowaj offline: aplikacja nie łączy się sama z internetem.</string>
     <string name="k2go_webview_offline_page">Ta strona jest w internecie. Strony w aplikacji działają tylko offline.</string>
+    <string name="k2go_offline_action_title">To wymaga internetu</string>
+    <string name="k2go_offline_action_msg">Wybrano \"Zachowaj offline\". Aby to zrobić, aplikacja musi połączyć się z internetem. Możesz na to zezwolić tylko dla tej czynności.</string>
+    <string name="k2go_offline_action_allow_once">Zezwól tylko tym razem</string>
+    <string name="k2go_feedback_kept_offline">Aplikacja ma ustawienie \"Zachowaj offline\", więc nie wysyła opinii. Aby to zmienić, włącz \"%1$s\" w Ustawienia &gt; Informacje.</string>
+    <string name="k2go_feedback_third_party_title">To może połączyć się z internetem</string>
+    <string name="k2go_feedback_third_party_msg">Wybrano \"Zachowaj offline\". Opinia jest wysyłana inną aplikacją, na przykład pocztą e-mail, a ta aplikacja może połączyć się z internetem.</string>
+    <string name="k2go_privacy_kept_offline">Aplikacja ma ustawienie \"Zachowaj offline\", więc te usługi pozostają wyłączone. Aby to zmienić, włącz \"%1$s\" w Ustawienia &gt; Informacje.</string>
+    <string name="k2go_feedback_send_anyway">Wyślij mimo to</string>
 </resources>

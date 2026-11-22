@@ -18,7 +18,8 @@ import org.appdevforall.k2go.delivery.data.OnlineConsent;
 /**
  * K2GO-588: every change of the choice (onboarding, Settings) calls {@link #apply(Context)}, and the
  * app start calls {@link #startCrashReports(Context)}. Gates that read the choice on each call
- * (network admission, Sentry beforeSend) need nothing here.
+ * (network admission, saved-order admission, Sentry beforeSend) need nothing here. The app open
+ * also re-applies Keep offline to the box (PendingRestartsOnOpen), which covers a restore or a clone.
  */
 public final class OnlineChoiceEffects {
 
@@ -26,15 +27,21 @@ public final class OnlineChoiceEffects {
 
     private OnlineChoiceEffects() {}
 
-    /** Applies the stored choice now: analytics collection, and crash reports on or off. */
+    /** Applies the stored choice now: analytics, crash reports, the catalog jobs and the box. */
     public static void apply(Context ctx) {
         Context app = ctx.getApplicationContext();
         AnalyticsClient.with(app).applyConsent();
+        org.appdevforall.k2go.redesign.KiwixCatalog.syncRefresh(app);
+        org.appdevforall.k2go.kolibri.data.CatalogRepositoryImpl.syncRefresh(app);
         if (OnlineConsent.isEnabled(app)) {
             startCrashReports(app);
-        } else if (io.sentry.Sentry.isEnabled()) {
-            // close() flushes and waits for the transport (seconds): never on the main thread.
-            new Thread(io.sentry.Sentry::close, "sentry-close").start();
+        } else {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.clear();
+            if (io.sentry.Sentry.isEnabled()) {
+                // close() flushes and waits for the transport (seconds): never on the main thread.
+                new Thread(io.sentry.Sentry::close, "sentry-close").start();
+            }
+            org.appdevforall.k2go.privacy.presentation.PendingRestartsOnOpen.keepOfflineNow(app);
         }
     }
 

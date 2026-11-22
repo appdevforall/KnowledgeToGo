@@ -8,19 +8,8 @@
     <string name="connection_log_label">Tjenerlogg</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">INNSTILLINGER</string>
-    <string name="setup_title">Førstegangsoppsett</string>
-    <string name="setup_welcome">Velkommen til oppsettsveiviseren for %1$s.\n\nFor å fungere riktig trenger vi følgende tillatelser:</string>
-    <string name="setup_continue">Fortsett</string>
-    <string name="setup_perm_battery">Slå av batterioptimalisering</string>
-    <string name="setup_perm_notifications">Push-varsler</string>
-    <string name="setup_perm_storage">Tilgang til lokal lagring</string>
-    <string name="setup_perm_overlay">Vis over andre apper</string>
-    <string name="setup_lang_title">Innholdsspråk</string>
-    <string name="setup_lang_desc">Velg språket ditt, ettersom det tas i betraktning når det bes om innhold.</string>
     <string name="notif_perm_denied">Varseltillatelse avslått</string>
     <string name="notif_perm_granted">Varseltillatelse gitt</string>
-    <string name="revoke_permission_warning">For å tilbakekalle tillatelser må du gjøre det fra systeminnstillingene.</string>
     <string name="dash_device">Laster inn enhet…</string>
     <string name="dash_main_storage">Lagring</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Innstillinger lagret</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">drevet av App Dev for All</string>
-    <string name="setup_manage_all_permissions">Administrer alle tillatelser</string>
     <string name="update_dialog_title">Ny versjon tilgjengelig: %1$s</string>
     <string name="update_dialog_message">Vil du oppdatere applikasjonen?\n\nHva er nytt:\n%1$s</string>
     <string name="update_dialog_positive">Oppdater</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Stopper IIAB-miljøet på en ryddig måte…</string>
     <string name="log_server_stop_error">[Stoppfeil] %1$s</string>
     <string name="log_critical_binary_missing">KRITISK: %1$s mangler fra innebygde biblioteker!</string>
-    <string name="setup_back_blocked_msg">Fullfør oppsettet for å fortsette.</string>
     <string name="sync_scanner_prompt">Skann QR-koden til K2Go-verten</string>
     <string name="kiwix_dialog_lang_label">Kiwix-språk</string>
     <string name="kiwix_dialog_variants_label">Tilgjengelige ZIM-varianter</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Importert, men denne sikkerhetskopien har ikke et innebygd rootfs-manifest, så den kunne ikke verifiseres fullstendig.</string>
     <string name="install_error_corrupt">Denne sikkerhetskopien besto ikke integritetskontrollen (den kan være ødelagt eller endret), så den ble ikke brukt.</string>
     <string name="install_warn_no_checksum">Importert. Denne sikkerhetskopien har ingen integritetskontrollsum fordi den ble opprettet på en mobil enhet.</string>
-    <string name="settings_nav_setup">Oppsett</string>
-    <string name="settings_nav_feedback">Tilbakemelding</string>
-    <string name="settings_nav_about">Om</string>
-    <string name="about_version">Versjon %1$s</string>
-    <string name="settings_title">Innstillinger</string>
-    <string name="action_done">Ferdig</string>
     <string name="feedback_type_label">Type</string>
     <string name="feedback_cat_bug">Feil</string>
     <string name="feedback_cat_suggestion">Forslag</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Send rapport</string>
     <string name="crash_report_dismiss">Avvis</string>
     <string name="rsync_error_process_killed">Android stoppet overføringsprosessen (systemets grense for bakgrunnsprosesser). For å forhindre dette, aktiver «Deaktiver begrensninger for underprosesser» i Utvikleralternativer, eller sett opp ADB-optimaliseringen.</string>
-    <string name="analytics_enroll_title">Personvern og analyse</string>
-    <string name="analytics_enroll_body">%1$s samler inn anonym bruksinformasjon for å hjelpe oss med å rette feil og forbedre appen. Ingen personlig informasjon samles inn eller deles, og ingenting spores om personene som bruker det delte innholdet ditt.\n\nDel anonyme data sender denne informasjonen når telefonen er tilkoblet. Hold offline sender ingenting, selv om telefonen er tilkoblet.</string>
-    <string name="analytics_enroll_accept">Del anonyme data</string>
     <string name="analytics_enroll_decline">Hold offline</string>
-    <string name="settings_analytics_title">Del anonyme data</string>
-    <string name="settings_analytics_desc">Anonym bruksinformasjon for å rette feil og forbedre appen – ingen personlige data og ingenting om personene som bruker det delte innholdet ditt. Kan endres når som helst.</string>
     <string name="phantom_warn_title">Overføringen kan bli avbrutt</string>
     <string name="phantom_warn_body">På Android 12+ kan systemet stoppe overføringen mens den kjører i bakgrunnen (phantom-prosessgrense). For å forhindre det, deaktiver «begrensninger for underprosesser», eller fortsett likevel — store overføringer kan bli avbrutt.</string>
     <string name="phantom_warn_open_dev">Åpne Utvikleralternativer</string>
     <string name="phantom_warn_continue">Fortsett likevel</string>
-    <string name="setup_app_lang_title">App-språk</string>
-    <string name="setup_app_lang_desc">Velg språket for appens egne skjermer. «Systemstandard» følger telefonen din.</string>
-    <string name="setup_app_lang_system">Systemstandard (følg telefonen)</string>
-    <string name="setup_language_section">Språk</string>
     <string name="portal_download_started">Laster ned %1$s…</string>
     <string name="portal_download_failed">Kunne ikke starte nedlastingen.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">Appversjon</string>
     <string name="k2go_settings_check_updates">Se etter oppdateringer</string>
     <string name="k2go_settings_permissions">Tillatelser</string>
-    <string name="k2go_settings_usage_stats">Del bruksstatistikk</string>
-    <string name="k2go_settings_crash_reports">Send krasjrapporter</string>
     <string name="k2go_settings_licenses">Åpen kildekode-lisenser</string>
     <string name="k2go_settings_privacy">Personvern</string>
     <string name="k2go_settings_power_users">For avanserte brukere.</string>
@@ -1601,10 +1571,6 @@
     <string name="k2go_cx_share_complete">Overføringen er fullført. Den andre telefonen har innholdet.</string>
     <string name="k2go_cx_share_cancelled">Den andre telefonen stoppet overføringen.</string>
     <string name="k2go_cx_share_ended">Delingen er avsluttet.</string>
-    <string name="k2go_gm_catalogs_update">Oppdater kataloger</string>
-    <string name="k2go_gm_catalogs_updating">Oppdaterer kataloger...</string>
-    <string name="k2go_gm_catalogs_bundled">Kataloger: følger med appen</string>
-    <string name="k2go_gm_catalogs_checked">Kataloger sjekket: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Kunne ikke lese fillisten fra telefonen som sender.</string>
     <string name="k2go_clone_cable_err_no_path">Tilkoblingen til telefonen som sender, er brutt. Koble til Wi-Fi-sonen dens eller koble til USB-kabelen.</string>
@@ -1713,4 +1679,12 @@
     <string name="k2go_online_body_usage">%1$s kan dele anonyme bruksdata og krasjrapporter, og kan selv se etter katalog- og appoppdateringer når telefonen er koblet til Wi-Fi. Ingen personlig informasjon samles inn, og ingenting spores om personene som bruker det delte innholdet ditt.\n\nHold offline: appen kobler seg ikke til internett på egen hånd.</string>
     <string name="k2go_online_body_crash">%1$s kan sende krasjrapporter, og kan selv se etter katalog- og appoppdateringer når telefonen er koblet til Wi-Fi. Ingen personlig informasjon samles inn.\n\nHold offline: appen kobler seg ikke til internett på egen hånd.</string>
     <string name="k2go_webview_offline_page">Denne siden er på internett. Sider i appen fungerer bare offline.</string>
+    <string name="k2go_offline_action_title">Dette krever internett</string>
+    <string name="k2go_offline_action_msg">Du valgte \"Hold offline\". For å gjøre dette må appen koble til internett. Du kan tillate det bare for denne handlingen.</string>
+    <string name="k2go_offline_action_allow_once">Tillat bare denne gangen</string>
+    <string name="k2go_feedback_kept_offline">Appen er satt til \"Hold offline\", så den sender ikke tilbakemeldinger. For å endre det, slå på \"%1$s\" i Innstillinger &gt; Om.</string>
+    <string name="k2go_feedback_third_party_title">Dette kan koble til internett</string>
+    <string name="k2go_feedback_third_party_msg">Du valgte \"Hold offline\". Tilbakemeldinger sendes med en annen app, for eksempel e-post, og den appen kan koble til internett.</string>
+    <string name="k2go_privacy_kept_offline">Appen er satt til \"Hold offline\", så disse tjenestene forblir av. For å endre det, slå på \"%1$s\" i Innstillinger &gt; Om.</string>
+    <string name="k2go_feedback_send_anyway">Send likevel</string>
 </resources>

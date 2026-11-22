@@ -8,19 +8,8 @@
     <string name="connection_log_label">Jurnal server</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">SETĂRI</string>
-    <string name="setup_title">Configurare inițială</string>
-    <string name="setup_welcome">Bine ai venit la asistentul de configurare %1$s.\n\nPentru a funcționa corect, avem nevoie de următoarele permisiuni:</string>
-    <string name="setup_continue">Continuă</string>
-    <string name="setup_perm_battery">Dezactivează optimizarea bateriei</string>
-    <string name="setup_perm_notifications">Notificări push</string>
-    <string name="setup_perm_storage">Acces la stocarea locală</string>
-    <string name="setup_perm_overlay">Afișare peste alte aplicații</string>
-    <string name="setup_lang_title">Limba conținutului</string>
-    <string name="setup_lang_desc">Te rugăm să selectezi limba ta, deoarece va fi luată în considerare la solicitarea conținutului.</string>
     <string name="notif_perm_denied">Permisiune de notificare refuzată</string>
     <string name="notif_perm_granted">Permisiune de notificare acordată</string>
-    <string name="revoke_permission_warning">Pentru a revoca permisiunile, trebuie să faci acest lucru din setările sistemului.</string>
     <string name="dash_device">Se încarcă dispozitivul…</string>
     <string name="dash_main_storage">Stocare</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">Setări salvate</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
-    <string name="setup_manage_all_permissions">Gestionează toate permisiunile</string>
     <string name="update_dialog_title">Versiune nouă disponibilă: %1$s</string>
     <string name="update_dialog_message">Dorești să actualizezi aplicația?\n\nNoutăți:\n%1$s</string>
     <string name="update_dialog_positive">Actualizează</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Se oprește mediul IIAB în mod controlat…</string>
     <string name="log_server_stop_error">[Eroare la oprire] %1$s</string>
     <string name="log_critical_binary_missing">CRITIC: %1$s lipsește din bibliotecile native!</string>
-    <string name="setup_back_blocked_msg">Te rugăm să finalizezi configurarea pentru a continua.</string>
     <string name="sync_scanner_prompt">Scanează codul QR al gazdei K2Go</string>
     <string name="kiwix_dialog_lang_label">Limba Kiwix</string>
     <string name="kiwix_dialog_variants_label">Variante ZIM disponibile</string>
@@ -430,12 +417,6 @@
     <string name="install_warn_manifest_missing">Importat, dar această copie de rezervă nu are un manifest rootfs încorporat, așa că nu a putut fi verificată complet.</string>
     <string name="install_error_corrupt">Această copie de rezervă a eșuat la verificarea integrității (poate fi coruptă sau modificată), așa că nu a fost folosită.</string>
     <string name="install_warn_no_checksum">Importat. Această copie de rezervă nu are sumă de control a integrității deoarece a fost creată pe un dispozitiv mobil.</string>
-    <string name="settings_nav_setup">Configurare</string>
-    <string name="settings_nav_feedback">Feedback</string>
-    <string name="settings_nav_about">Despre</string>
-    <string name="about_version">Versiune %1$s</string>
-    <string name="settings_title">Setări</string>
-    <string name="action_done">Gata</string>
     <string name="feedback_type_label">Tip</string>
     <string name="feedback_cat_bug">Eroare</string>
     <string name="feedback_cat_suggestion">Sugestie</string>
@@ -449,20 +430,11 @@
     <string name="crash_report_send">Trimite raportul</string>
     <string name="crash_report_dismiss">Respinge</string>
     <string name="rsync_error_process_killed">Android a oprit procesul de transfer (limita de procese de fundal a sistemului). Pentru a preveni acest lucru, activează „Dezactivează restricțiile proceselor copil” în Opțiunile pentru dezvoltatori sau configurează optimizarea ADB.</string>
-    <string name="analytics_enroll_title">Confidențialitate și analize</string>
-    <string name="analytics_enroll_body">%1$s colectează informații de utilizare anonime pentru a ne ajuta să reparăm erori și să îmbunătățim aplicația. Nu se colectează și nu se partajează informații personale și nu se urmărește nimic despre persoanele care folosesc conținutul tău partajat.\n\nPartajează date anonime trimite aceste informații când telefonul este online. Păstrează offline nu trimite nimic, chiar dacă telefonul este online.</string>
-    <string name="analytics_enroll_accept">Partajează date anonime</string>
     <string name="analytics_enroll_decline">Păstrează offline</string>
-    <string name="settings_analytics_title">Partajează date anonime</string>
-    <string name="settings_analytics_desc">Informații de utilizare anonime pentru a repara erori și a îmbunătăți aplicația — fără date personale și nimic despre persoanele care folosesc conținutul tău partajat. Se poate schimba oricând.</string>
     <string name="phantom_warn_title">Transferul poate fi întrerupt</string>
     <string name="phantom_warn_body">Pe Android 12+, sistemul poate opri transferul în timp ce rulează în fundal (limita de procese fantomă). Pentru a preveni acest lucru, dezactivează „restricțiile proceselor copil” sau continuă oricum — transferurile mari pot fi întrerupte.</string>
     <string name="phantom_warn_open_dev">Deschide Opțiunile pentru dezvoltatori</string>
     <string name="phantom_warn_continue">Continuă oricum</string>
-    <string name="setup_app_lang_title">Limba aplicației</string>
-    <string name="setup_app_lang_desc">Alege limba pentru propriile ecrane ale aplicației. „Implicit sistem” urmează telefonul tău.</string>
-    <string name="setup_app_lang_system">Implicit sistem (urmează telefonul)</string>
-    <string name="setup_language_section">Limbă</string>
     <string name="portal_download_started">Se descarcă %1$s…</string>
     <string name="portal_download_failed">Nu s-a putut începe descărcarea.</string>
     <string name="lohs_label">Hotspot LocalOnly</string>
@@ -578,8 +550,6 @@
     <string name="k2go_settings_app_version">Versiunea aplicației</string>
     <string name="k2go_settings_check_updates">Caută actualizări</string>
     <string name="k2go_settings_permissions">Permisiuni</string>
-    <string name="k2go_settings_usage_stats">Partajează statisticile de utilizare</string>
-    <string name="k2go_settings_crash_reports">Trimite rapoarte de eroare</string>
     <string name="k2go_settings_licenses">Licențe open-source</string>
     <string name="k2go_settings_privacy">Confidențialitate</string>
     <string name="k2go_settings_power_users">Pentru utilizatori avansați.</string>
@@ -1591,10 +1561,6 @@
     <string name="k2go_cx_share_complete">Transfer finalizat. Celălalt telefon are conținutul.</string>
     <string name="k2go_cx_share_cancelled">Celălalt telefon a oprit transferul.</string>
     <string name="k2go_cx_share_ended">Partajarea s-a încheiat.</string>
-    <string name="k2go_gm_catalogs_update">Actualizează cataloagele</string>
-    <string name="k2go_gm_catalogs_updating">Se actualizează cataloagele...</string>
-    <string name="k2go_gm_catalogs_bundled">Cataloage: incluse în aplicație</string>
-    <string name="k2go_gm_catalogs_checked">Cataloage verificate: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">Nu s-a putut citi lista de fișiere de pe telefonul expeditor.</string>
     <string name="k2go_clone_cable_err_no_path">Conexiunea cu telefonul expeditor s-a pierdut. Conectează-te la hotspotul lui sau conectează cablul USB.</string>
@@ -1704,4 +1670,12 @@
     <string name="k2go_online_body_usage">%1$s poate partaja date de utilizare anonime și rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale și nu se urmărește nimic despre persoanele care folosesc conținutul tău partajat.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
     <string name="k2go_online_body_crash">%1$s poate trimite rapoarte de eroare și poate căuta singură actualizări ale catalogului și ale aplicației când telefonul este conectat la Wi-Fi. Nu se colectează informații personale.\n\nPăstrează offline: aplicația nu se conectează singură la internet.</string>
     <string name="k2go_webview_offline_page">Această pagină este pe internet. Paginile din aplicație funcționează doar offline.</string>
+    <string name="k2go_offline_action_title">Este nevoie de internet</string>
+    <string name="k2go_offline_action_msg">Ai ales \"Păstrează offline\". Pentru asta, aplicația trebuie să se conecteze la internet. Poți permite acest lucru doar pentru această acțiune.</string>
+    <string name="k2go_offline_action_allow_once">Permite doar de această dată</string>
+    <string name="k2go_feedback_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci nu trimite feedback. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
+    <string name="k2go_feedback_third_party_title">Aceasta se poate conecta la internet</string>
+    <string name="k2go_feedback_third_party_msg">Ai ales \"Păstrează offline\". Feedbackul este trimis cu altă aplicație, de exemplu e-mailul, iar acea aplicație se poate conecta la internet.</string>
+    <string name="k2go_privacy_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci aceste servicii rămân oprite. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
+    <string name="k2go_feedback_send_anyway">Trimite oricum</string>
 </resources>

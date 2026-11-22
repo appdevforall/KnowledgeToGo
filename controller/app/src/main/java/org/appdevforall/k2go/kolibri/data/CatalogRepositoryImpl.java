@@ -53,22 +53,25 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
         // offline floor that lets the user browse a channel even with the box unimported and no
         // internet. Live sources win when they can answer, so the bundle is consulted last.
         this(new BundledCatalogSource(context), liveFirst(context, new BundledTreeSource(context)));
-        // K2GO-580: the catalogs never refresh by themselves; the user asks (see refresh).
-        if (!automaticRetired) {
-            automaticRetired = true;
-            org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.cancelAutomatic(context, CATALOG);
-            org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.cancelAutomatic(context, TREE_CATALOG);
+        // Keep the bundled catalog and its tree bundle current (K2GO-588: only with the online
+        // choice on). Only the Context constructor schedules, once per process; the test
+        // constructor below does not.
+        if (!refreshSynced) {
+            refreshSynced = true;
+            syncRefresh(context);
         }
     }
 
-    private static volatile boolean automaticRetired = false;
+    private static volatile boolean refreshSynced = false;
 
-    /** K2GO-580: user-asked refresh of the Kolibri catalog and its topic-tree bundle. */
-    public static void refresh(Context context) {
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.forceRefresh(
-                context, CATALOG, MANIFEST_URL, BASENAME);
-        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.forceRefresh(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
+    /** K2GO-588: schedules or cancels the automatic refresh of the catalog and its tree bundle to
+     *  match the privacy choice. */
+    public static void syncRefresh(Context ctx) {
+        Context app = ctx.getApplicationContext();
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.syncAutomatic(
+                app, CATALOG, MANIFEST_URL, BASENAME);
+        org.appdevforall.k2go.catalog.data.CatalogRefreshScheduler.syncAutomatic(
+                app, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
     }
 
     /** K2GO-476: box, then Studio with the bundle's folder sizes filled in, then the bundle.

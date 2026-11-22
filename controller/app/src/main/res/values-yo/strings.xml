@@ -8,19 +8,8 @@
     <string name="connection_log_label">Àkọsílẹ̀ Sáfà</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
-    <string name="settings_label">ÀWỌN ÌṢÀGBÉKALẸ̀</string>
-    <string name="setup_title">Ìṣàgbékalẹ̀ Àkọ́kọ́</string>
-    <string name="setup_welcome">Káàbọ̀ sí olùtọ́ọ̀nà ìṣàgbékalẹ̀ %1$s.\n\nKí ó lè ṣiṣẹ́ dáadáa, a nílò àwọn ìgbàláàyè wọ̀nyí:</string>
-    <string name="setup_continue">Tẹ̀síwájú</string>
-    <string name="setup_perm_battery">Pa Ìdinku Lílo Bátìrì</string>
-    <string name="setup_perm_notifications">Àwọn Ìfitónilétí Títì</string>
-    <string name="setup_perm_storage">Àǹfààní sí Ibi Ìpamọ́ Àdúgbò</string>
-    <string name="setup_perm_overlay">Fi hàn lórí àwọn app mìíràn</string>
-    <string name="setup_lang_title">Èdè Àkóónú</string>
-    <string name="setup_lang_desc">Jọ̀wọ́ yan èdè rẹ nítorí pé a óò gbé e yẹ̀wò nígbà tí a bá ń béèrè àkóónú.</string>
     <string name="notif_perm_denied">A kọ̀ ìgbàláàyè ìfitónilétí</string>
     <string name="notif_perm_granted">A fún ní ìgbàláàyè ìfitónilétí</string>
-    <string name="revoke_permission_warning">Láti gba ìgbàláàyè padà, o gbọ́dọ̀ ṣe é láti inú àwọn ìṣàgbékalẹ̀ ètò.</string>
     <string name="dash_device">Ń gbé ẹ̀rọ wọlé…</string>
     <string name="dash_main_storage">Ibi Ìpamọ́</string>
     <string name="dash_ram_memory">RAM</string>
@@ -131,7 +120,6 @@
     <string name="settings_saved">A ti Fi Àwọn Ìṣàgbékalẹ̀ Pamọ́</string>
     <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">tí App Dev for All ń mú ṣiṣẹ́</string>
-    <string name="setup_manage_all_permissions">Ṣàkóso Gbogbo Àwọn Ìgbàláàyè</string>
     <string name="update_dialog_title">Ẹ̀yà tuntun wà: %1$s</string>
     <string name="update_dialog_message">Ṣé o fẹ́ ṣàtúnṣe app náà?\n\nOhun tuntun:\n%1$s</string>
     <string name="update_dialog_positive">Ṣàtúnṣe</string>
@@ -383,7 +371,6 @@
     <string name="log_server_stopping_gracefully">Ń dá àyíká IIAB dúró pẹ̀lú ọ̀làjú…</string>
     <string name="log_server_stop_error">[Àṣìṣe Ìdúró] %1$s</string>
     <string name="log_critical_binary_missing">PÀTÀKÌ: %1$s kò sí nínú àwọn ibi ìkówèésí àdánidá!</string>
-    <string name="setup_back_blocked_msg">Jọ̀wọ́ parí ìṣàgbékalẹ̀ láti tẹ̀síwájú.</string>
     <string name="sync_scanner_prompt">Ṣàyẹ̀wò Kóòdù QR Alápèjọ K2Go</string>
     <string name="kiwix_dialog_lang_label">Èdè Kiwix</string>
     <string name="kiwix_dialog_variants_label">Àwọn Onírúurú ZIM Tí ó Wà</string>
@@ -431,12 +418,6 @@
     <string name="install_warn_manifest_missing">A ti mú un wọlé, ṣùgbọ́n àkọsílẹ̀ ìṣọ̀wọ́ yìí kò ní manifest rootfs tí a fi sínú rẹ̀, nítorí náà a kò lè ṣàyẹ̀wò rẹ̀ ní kíkún.</string>
     <string name="install_error_corrupt">Àkọsílẹ̀ ìṣọ̀wọ́ yìí kùnà àyẹ̀wò ìdúróṣinṣin rẹ̀ (ó lè ti bàjẹ́ tàbí kí a ti yí i padà), nítorí náà a kò lò ó.</string>
     <string name="install_warn_no_checksum">A ti mú un wọlé. Àkọsílẹ̀ ìṣọ̀wọ́ yìí kò ní àyẹ̀wò ìdúróṣinṣin nítorí pé a dá a lórí ẹ̀rọ alágbèéká.</string>
-    <string name="settings_nav_setup">Ìṣàgbékalẹ̀</string>
-    <string name="settings_nav_feedback">Èsì</string>
-    <string name="settings_nav_about">Nípa</string>
-    <string name="about_version">Ẹ̀yà %1$s</string>
-    <string name="settings_title">Àwọn Ìṣàgbékalẹ̀</string>
-    <string name="action_done">Ó Ti Ṣe Tán</string>
     <string name="feedback_type_label">Irú</string>
     <string name="feedback_cat_bug">Àṣìṣe</string>
     <string name="feedback_cat_suggestion">Àbá</string>
@@ -451,22 +432,13 @@
     <string name="crash_report_dismiss">Kọ̀ ọ́ sílẹ̀</string>
     <string name="rsync_error_process_killed">Android dá iṣẹ́ gbígbé lọ dúró (ààlà iṣẹ́ ẹ̀yìn ètò). Láti dènà èyí, tan “Pa àwọn ìdíwọ́ iṣẹ́ ọmọ” nínú Àwọn Àṣàyàn Olùdàgbàsókè, tàbí ṣàgbékalẹ̀ ìdàgbàsókè ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Àṣírí àti ìtúpalẹ̀</string>
-    <string name="analytics_enroll_body">%1$s ń kó ìsọfúnni ìlò aláìlórúkọ jọ láti ràn wá lọ́wọ́ láti tún àwọn àsìṣe ṣe àti láti mú ìṣàmúlò dára sí i. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ tàbí pín, kò sì sí ohunkóhun tí a ń tọpasẹ̀ nípa àwọn ènìyàn tó ń lo àkóónú tí o pín.\n\nPín àkójọ dátà aláìlórúkọ ń fi ìsọfúnni yìí ránṣẹ́ nígbà tí fóònù bá wà lórí íńtánẹ́ẹ̀tì. Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì kì í fi ohunkóhun ránṣẹ́, kódà tí fóònù bá wà lórí íńtánẹ́ẹ̀tì.</string>
-    <string name="analytics_enroll_accept">Pín àkójọ dátà aláìlórúkọ</string>
     <string name="analytics_enroll_decline">Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì</string>
-    <string name="settings_analytics_title">Pín àkójọ dátà aláìlórúkọ</string>
-    <string name="settings_analytics_desc">Ìsọfúnni ìlò aláìlórúkọ láti tún àwọn àsìṣe ṣe àti mú ìṣàmúlò dára — kò sí dátà ara-ẹni, kò sì sí ohunkóhun nípa àwọn tó ń lo àkóónú tí o pín. Yí padà nígbàkigbà.</string>
     <string name="phantom_warn_title">Gbígbé lọ lè dídùró</string>
     <string name="phantom_warn_body">Lórí Android 12+ ètò náà lè dá gbígbé lọ dúró nígbà tí ó bá ń ṣiṣẹ́ ní ẹ̀yìn (ààlà iṣẹ́ phantom). Láti dènà rẹ̀, pa “àwọn ìdíwọ́ iṣẹ́ ọmọ”, tàbí tẹ̀síwájú lọ́nàkọnà — àwọn gbígbé lọ ńlá lè dídùró.</string>
     <string name="phantom_warn_open_dev">Ṣí Àwọn Àṣàyàn Olùdàgbàsókè</string>
     <string name="phantom_warn_continue">Tẹ̀síwájú lọ́nàkọnà</string>
     <!-- App UI language selector (ADFA-4304) -->
-    <string name="setup_app_lang_title">Èdè App</string>
-    <string name="setup_app_lang_desc">Yan èdè fún àwọn àwòrán ti app fúnrararẹ̀. “Àbáwọlé ètò” ń tẹ̀lé fóònù rẹ.</string>
-    <string name="setup_app_lang_system">Àbáwọlé ètò (tẹ̀lé fóònù)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
-    <string name="setup_language_section">Èdè</string>
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Ń gba %1$s sílẹ̀…</string>
     <string name="portal_download_failed">A kò lè bẹ̀rẹ̀ ìgbàsílẹ̀.</string>
@@ -598,8 +570,6 @@
     <string name="k2go_settings_app_version">Ẹ̀dà áàpù</string>
     <string name="k2go_settings_check_updates">Ṣàyẹ̀wò fún ìmúdójúìwọ̀n</string>
     <string name="k2go_settings_permissions">Àwọn ìyọ̀ǹda</string>
-    <string name="k2go_settings_usage_stats">Pín ìṣirò ìlò</string>
-    <string name="k2go_settings_crash_reports">Fi awọn ijabọ ìparun ránṣẹ́</string>
     <string name="k2go_settings_licenses">Àwọn ìwé àṣẹ orísun-ṣíṣí</string>
     <string name="k2go_settings_privacy">Àṣírí</string>
     <string name="k2go_settings_power_users">Fún àwọn olùlò tó jáfáfá.</string>
@@ -1611,10 +1581,6 @@
     <string name="k2go_cx_share_complete">Gbígbé ti parí. Fóònù kejì ti ní àkóónú náà.</string>
     <string name="k2go_cx_share_cancelled">Fóònù kejì dá gbígbé dúró.</string>
     <string name="k2go_cx_share_ended">Pínpín ti parí.</string>
-    <string name="k2go_gm_catalogs_update">Ṣe imudojuiwọn awọn katalogi</string>
-    <string name="k2go_gm_catalogs_updating">Ń ṣe imudojuiwọn awọn katalogi...</string>
-    <string name="k2go_gm_catalogs_bundled">Awọn katalogi: wa pẹlu app naa</string>
-    <string name="k2go_gm_catalogs_checked">A ṣayẹwo awọn katalogi: %1$s</string>
     <!-- K2GO-576: Clone over Wi-Fi and the USB cable -->
     <string name="k2go_clone_cable_err_list">A kò lè ka àkójọ àwọn fáìlì láti inú fóònù tí ń fi ránṣẹ́.</string>
     <string name="k2go_clone_cable_err_no_path">Ìsopọ̀ pẹ̀lú fóònù tí ń fi ránṣẹ́ ti sọnù. Darapọ̀ mọ́ hotspot rẹ̀ tàbí so wáyà USB pọ̀.</string>
@@ -1722,4 +1688,12 @@
     <string name="k2go_online_body_usage">%1$s lè pín dátà ìlò aláìlórúkọ àti àwọn ìjábọ̀ ìparun, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ, kò sì sí ohunkóhun tí a ń tọpasẹ̀ nípa àwọn ènìyàn tó ń lo àkóónú tí o pín.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
     <string name="k2go_online_body_crash">%1$s lè fi àwọn ìjábọ̀ ìparun ránṣẹ́, ó sì lè ṣàyẹ̀wò àwọn àtúnṣe kátálọ́ọ̀gì àti ìṣàmúlò fúnra rẹ̀ nígbà tí fóònù bá wà lórí Wi-Fi. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ.\n\nPa á mọ́ àìsí-íńtánẹ́ẹ̀tì: ìṣàmúlò kì í sopọ̀ mọ́ íńtánẹ́ẹ̀tì fúnra rẹ̀.</string>
     <string name="k2go_webview_offline_page">Ojú-ewé yìí wà lórí íńtánẹ́ẹ̀tì. Àwọn ojú-ewé inú ìṣàmúlò ń ṣiṣẹ́ láìsí íńtánẹ́ẹ̀tì nìkan.</string>
+    <string name="k2go_offline_action_title">Èyí nílò íńtánẹ́ẹ̀tì</string>
+    <string name="k2go_offline_action_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". Láti ṣe èyí, ìṣàmúlò gbọ́dọ̀ sopọ̀ mọ́ íńtánẹ́ẹ̀tì. O lè gbà á láàyè fún ìṣe yìí nìkan.</string>
+    <string name="k2go_offline_action_allow_once">Gbà láàyè ní ẹ̀ẹ̀kan yìí nìkan</string>
+    <string name="k2go_feedback_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà kò fi èsì ránṣẹ́. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
+    <string name="k2go_feedback_third_party_title">Èyí lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì</string>
+    <string name="k2go_feedback_third_party_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". A ń fi èsì ránṣẹ́ pẹ̀lú ìṣàmúlò mìíràn, fún àpẹẹrẹ ímeèlì, ìṣàmúlò náà sì lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì.</string>
+    <string name="k2go_privacy_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà àwọn iṣẹ́ wọ̀nyí wà ní pípa. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
+    <string name="k2go_feedback_send_anyway">Fi ránṣẹ́ bó ti wù kó rí</string>
 </resources>
