@@ -1680,6 +1680,7 @@
     <string name="k2go_auth_notice_factory_title">正在使用出厂密码</string>
     <string name="k2go_auth_notice_factory_msg">出厂管理员密码在以下服务中仍然有效：%1$s。同一 Wi-Fi 或热点上的任何人都能登录并更改你的图书馆。请在 设置，身份验证 中更改密码。</string>
     <string name="k2go_auth_chip_no_account">无管理员账户</string>
+    <string name="k2go_auth_chip_not_running">未运行</string>
     <string name="k2go_auth_pw_state_no_account">此服务中没有管理员账户。</string>
     <string name="k2go_auth_no_account_snack">%1$s（%2$s）没有管理员账户。</string>
     <string name="k2go_auth_notice_open">打开身份验证</string>

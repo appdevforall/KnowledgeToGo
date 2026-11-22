@@ -1689,6 +1689,7 @@
     <string name="k2go_auth_notice_factory_title">Fabrikkpassord er i bruk</string>
     <string name="k2go_auth_notice_factory_msg">Fabrikkpassordet for administrator virker fortsatt i: %1$s. Alle på samme Wi-Fi eller hotspot kan logge på og endre biblioteket ditt. Endre det i Innstillinger, Autentisering.</string>
     <string name="k2go_auth_chip_no_account">Ingen administratorkonto</string>
+    <string name="k2go_auth_chip_not_running">Kjører ikke</string>
     <string name="k2go_auth_pw_state_no_account">Administratorkontoen finnes ikke i denne tjenesten.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) har ingen administratorkonto.</string>
     <string name="k2go_auth_notice_open">Åpne Autentisering</string>

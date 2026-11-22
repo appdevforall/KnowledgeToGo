@@ -470,21 +470,23 @@ public class SettingsSubFragment extends Fragment {
     //      List -> per-service screen (K2GO-552: auth.presentation.ServicePasswordSection). ----
     private void buildAuthentication(Context ctx, LinearLayout list) {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_hint));
-        // K2GO-552: when no service has an admin account, the factory reminder has nothing to remind
-        // about, so its switch locks. Each row reports once; the lock reads only these live answers.
-        final Runnable[] lockReminder = {null};
+        // K2GO-552: when no service has an admin account it can manage now (no account, stopped or not
+        // installed), the factory reminder has nothing to remind about, so its switch locks. The lock
+        // reads only the last live answer of each row; a row that asks again (a tap) reports again.
         final java.util.List<String> services = org.appdevforall.k2go.auth.domain.AuthServices.ALL;
-        final int[] pending = {services.size()};
-        final boolean[] anyAccount = {false};
-        final java.util.function.Consumer<Boolean> report = has -> {
-            if (has) anyAccount[0] = true;
-            if (--pending[0] == 0 && !anyAccount[0] && lockReminder[0] != null) lockReminder[0].run();
-        };
+        final java.util.Map<String, Boolean> hasAccount = new java.util.HashMap<>();
+        final java.util.concurrent.atomic.AtomicReference<java.util.function.Consumer<Boolean>> setLocked =
+                new java.util.concurrent.atomic.AtomicReference<>();
         for (String id : services) {
             authServiceRow(ctx, list, id, getString(authScreenName(id)),
-                    org.appdevforall.k2go.auth.domain.AuthServices.productName(id), report);
+                    org.appdevforall.k2go.auth.domain.AuthServices.productName(id), has -> {
+                        hasAccount.put(id, has);
+                        if (hasAccount.size() == services.size() && setLocked.get() != null) {
+                            setLocked.get().accept(!hasAccount.containsValue(true));
+                        }
+                    });
         }
-        lockReminder[0] = factoryReminderRow(ctx, list);
+        setLocked.set(factoryReminderRow(ctx, list));   // before any answer: the answers come on a later main-thread turn
     }
 
     /** K2GO-552: turns the start-up "factory password in use" reminder back on (or off). Turning it
@@ -498,8 +500,9 @@ public class SettingsSubFragment extends Fragment {
         }
     }
 
-    /** Returns the lock: it shows the switch off and disabled without changing the stored choice. */
-    private Runnable factoryReminderRow(Context ctx, LinearLayout list) {
+    /** Returns the lock: locked shows the switch off and disabled without changing the stored choice;
+     *  unlocked shows the stored choice again. */
+    private java.util.function.Consumer<Boolean> factoryReminderRow(Context ctx, LinearLayout list) {
         final org.appdevforall.k2go.auth.data.FactoryReminderStore store =
                 new org.appdevforall.k2go.auth.data.FactoryReminderStore(ctx);
         LinearLayout row = new LinearLayout(ctx);
@@ -528,17 +531,18 @@ public class SettingsSubFragment extends Fragment {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.topMargin = SettingsUi.dp(ctx, 16);
         list.addView(row, lp);
-        return () -> {
+        return locked -> {
             reverting[0] = true;
-            sw.setChecked(false);
+            sw.setChecked(!locked && !store.isOff());
             reverting[0] = false;
-            sw.setEnabled(false);
-            row.setAlpha(0.5f);
+            sw.setEnabled(!locked);
+            row.setAlpha(locked ? 0.5f : 1f);
         };
     }
 
-    /** A navigable row per service with a state badge (Default / Custom / Not installed). A service
-     *  that isn't reachable is dimmed but stays tappable so the sign-in can be pre-set. */
+    /** A navigable row per service with a state badge (Default / Custom / Not running / Not
+     *  installed). A service that does not answer is dimmed, and a tap asks only that service again:
+     *  no timer, and no new sign-in to the other services (a failed one counts toward a lock). */
     private void authServiceRow(Context ctx, LinearLayout list, String service, String name, String platform,
                                 java.util.function.Consumer<Boolean> hasAccount) {
         LinearLayout row = new LinearLayout(ctx);
@@ -548,7 +552,6 @@ public class SettingsSubFragment extends Fragment {
         int p16 = SettingsUi.dp(ctx, 16);   // card padding on the 4dp grid, matching SettingsUi.baseRow
         row.setPadding(p16, p16, p16, p16);
         row.setClickable(true);
-        row.setOnClickListener(v -> openSub("auth:" + service));
         LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(-1, -2);
         rlp.topMargin = SettingsUi.dp(ctx, 8);
         list.addView(row, rlp);
@@ -573,42 +576,54 @@ public class SettingsSubFragment extends Fragment {
         chev.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         row.addView(chev);
 
-        row.setAlpha(0.5f);
-        probeService(service, reachable -> {
-            if (!isAdded()) return;
-            row.setAlpha(reachable ? 1f : 0.5f);
-            if (!reachable) {
-                setBadge(badge, getString(R.string.k2go_auth_chip_notinstalled), R.color.k2go_muted);
-                hasAccount.accept(false);
-                return;
-            }
+        final Runnable[] resolve = {null};
+        resolve[0] = () -> {
+            row.setAlpha(0.5f);
+            badge.setVisibility(View.GONE);
+            row.setOnClickListener(null);   // opens only after the service answers
+            probeService(service, ev -> {
+                if (!isAdded()) return;
+                boolean reachable = ev == org.appdevforall.k2go.system.domain.PlatformPresence.Evidence.PRESENT;
+                row.setAlpha(reachable ? 1f : 0.5f);
+                if (!reachable) {
+                    // The shared probe's answer: a 404 is "not installed"; no answer is "not running".
+                    boolean absent = ev == org.appdevforall.k2go.system.domain.PlatformPresence.Evidence.ABSENT;
+                    setBadge(badge, getString(absent ? R.string.k2go_auth_chip_notinstalled
+                            : R.string.k2go_auth_chip_not_running), R.color.k2go_muted);
+                    row.setOnClickListener(v -> resolve[0].run());
+                    hasAccount.accept(false);
+                    return;
+                }
+                row.setOnClickListener(v -> openSub("auth:" + service));
             // K2GO-552: the badge comes from a live sign-in, so a password changed inside the service shows.
-            new org.appdevforall.k2go.auth.data.PasswordRepositoryImpl().status(service,
-                    new org.appdevforall.k2go.auth.domain.PasswordRepository.Callback<org.appdevforall.k2go.auth.domain.PasswordState>() {
-                @Override public void onResult(org.appdevforall.k2go.auth.domain.PasswordState st) {
-                    if (!isAdded()) return;
-                    hasAccount.accept(st.hasAccount());
-                    if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.MISMATCH) {
-                        setBadge(badge, getString(R.string.k2go_auth_chip_mismatch), R.color.k2go_clay);
-                    } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.NO_ACCOUNT) {
-                        // K2GO-552: no admin account, nothing to manage: the row says so and does not open.
-                        row.setAlpha(0.5f);
-                        chev.setVisibility(View.GONE);
-                        row.setOnClickListener(v -> org.appdevforall.k2go.util.Snackbars.make(v,
-                                getString(R.string.k2go_auth_no_account_snack, name, platform)).show());
-                        setBadge(badge, getString(R.string.k2go_auth_chip_no_account), R.color.k2go_muted);
-                    } else if (st.usesFactoryPassword()) {
-                        setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
-                    } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.OK) {
-                        setBadge(badge, getString(R.string.k2go_auth_chip_custom), R.color.k2go_teal);
+                new org.appdevforall.k2go.auth.data.PasswordRepositoryImpl().status(service,
+                        new org.appdevforall.k2go.auth.domain.PasswordRepository.Callback<org.appdevforall.k2go.auth.domain.PasswordState>() {
+                    @Override public void onResult(org.appdevforall.k2go.auth.domain.PasswordState st) {
+                        if (!isAdded()) return;
+                        hasAccount.accept(st.hasAccount());
+                        if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.MISMATCH) {
+                            setBadge(badge, getString(R.string.k2go_auth_chip_mismatch), R.color.k2go_clay);
+                        } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.NO_ACCOUNT) {
+                            // K2GO-552: no admin account, nothing to manage: the row says so and does not open.
+                            row.setAlpha(0.5f);
+                            chev.setVisibility(View.GONE);
+                            row.setOnClickListener(v -> org.appdevforall.k2go.util.Snackbars.make(v,
+                                    getString(R.string.k2go_auth_no_account_snack, name, platform)).show());
+                            setBadge(badge, getString(R.string.k2go_auth_chip_no_account), R.color.k2go_muted);
+                        } else if (st.usesFactoryPassword()) {
+                            setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
+                        } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.OK) {
+                            setBadge(badge, getString(R.string.k2go_auth_chip_custom), R.color.k2go_teal);
+                        }
                     }
-                }
-                @Override public void onFailure(org.appdevforall.k2go.auth.domain.PasswordRepository.Failure f) {
-                    /* leave the badge hidden on a load error */
-                    if (isAdded()) hasAccount.accept(true);   // unknown: never lock the reminder on a guess
-                }
+                    @Override public void onFailure(org.appdevforall.k2go.auth.domain.PasswordRepository.Failure f) {
+                        /* leave the badge hidden on a load error */
+                        if (isAdded()) hasAccount.accept(true);   // unknown: never lock the reminder on a guess
+                    }
+                });
             });
-        });
+        };
+        resolve[0].run();
     }
 
     /** Style + reveal the service state badge (Default / Custom / Not installed). */
@@ -808,30 +823,18 @@ public class SettingsSubFragment extends Fragment {
 
     private void attachEyeToggle(final EditText field) { org.appdevforall.k2go.ui.K2GoInputs.attachEyeToggle(field); }
 
-    /** Best-effort reachability probe of a service page (calibre → /books/, kolibri → /kolibri/). */
-    private void probeService(String service, Probe cb) {
-        final String endpoint = "calibre".equals(service) ? "books" : service;
-        final String url = org.appdevforall.k2go.config.BoxEndpoints.BASE + "/" + endpoint + "/";
+    /** K2GO-552: the service page through the shared probe (the same rule as Home), on a worker
+     *  thread; the answer comes back on the main thread. */
+    private void probeService(String service,
+                              java.util.function.Consumer<org.appdevforall.k2go.system.domain.PlatformPresence.Evidence> cb) {
+        final String endpoint = org.appdevforall.k2go.auth.domain.AuthServices.homeEndpoint(service);
         final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
         org.appdevforall.k2go.util.AppExecutors.get().io().execute(() -> {
-            boolean ok = false;
-            java.net.HttpURLConnection c = null;
-            try {
-                c = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
-                c.setConnectTimeout(2500);
-                c.setReadTimeout(2500);
-                int code = c.getResponseCode();
-                ok = code >= 200 && code < 500;   // any answer (even 401/403) means the service is up
-            } catch (Exception ignore) {
-            } finally {
-                if (c != null) c.disconnect();
-            }
-            final boolean r = ok;
-            main.post(() -> cb.onResult(r));
+            final org.appdevforall.k2go.system.domain.PlatformPresence.Evidence ev =
+                    org.appdevforall.k2go.system.data.PlatformProbe.probe(endpoint);
+            main.post(() -> cb.accept(ev));
         });
     }
-
-    private interface Probe { void onResult(boolean reachable); }
 
     private void setStatus(TextView status, String text, int colorRes) {
         status.setText(text);

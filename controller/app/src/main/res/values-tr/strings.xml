@@ -1679,6 +1679,7 @@
     <string name="k2go_auth_notice_factory_title">Fabrika parolası kullanılıyor</string>
     <string name="k2go_auth_notice_factory_msg">Fabrika yönetici parolası hâlâ şurada çalışıyor: %1$s. Aynı Wi-Fi veya etkin noktadaki herkes oturum açıp kitaplığınızı değiştirebilir. Parolayı Ayarlar, Kimlik doğrulama bölümünde değiştirin.</string>
     <string name="k2go_auth_chip_no_account">Yönetici hesabı yok</string>
+    <string name="k2go_auth_chip_not_running">Çalışmıyor</string>
     <string name="k2go_auth_pw_state_no_account">Yönetici hesabı bu hizmette yok.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) için yönetici hesabı yok.</string>
     <string name="k2go_auth_notice_open">Kimlik doğrulamayı aç</string>

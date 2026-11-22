@@ -1680,6 +1680,7 @@
     <string name="k2go_auth_notice_factory_title">初期パスワードを使用中</string>
     <string name="k2go_auth_notice_factory_msg">初期の管理者パスワードがまだ使えます: %1$s。同じWi-Fiまたはホットスポットにいる人なら誰でもサインインして、ライブラリを変更できます。設定、認証で変更してください。</string>
     <string name="k2go_auth_chip_no_account">管理者アカウントなし</string>
+    <string name="k2go_auth_chip_not_running">停止中</string>
     <string name="k2go_auth_pw_state_no_account">このサービスには管理者アカウントがありません。</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) には管理者アカウントがありません。</string>
     <string name="k2go_auth_notice_open">認証を開く</string>

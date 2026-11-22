@@ -1679,6 +1679,7 @@
     <string name="k2go_auth_notice_factory_title">رمز عبور کارخانه در حال استفاده است</string>
     <string name="k2go_auth_notice_factory_msg">رمز عبور مدیر کارخانه هنوز در این موارد کار می‌کند: %1$s. هر کسی در همان Wi-Fi یا هات‌اسپات می‌تواند وارد شود و کتابخانه شما را تغییر دهد. آن را در تنظیمات، احراز هویت تغییر دهید.</string>
     <string name="k2go_auth_chip_no_account">حساب مدیر وجود ندارد</string>
+    <string name="k2go_auth_chip_not_running">در حال اجرا نیست</string>
     <string name="k2go_auth_pw_state_no_account">حساب مدیر در این سرویس وجود ندارد.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) حساب مدیر ندارد.</string>
     <string name="k2go_auth_notice_open">باز کردن احراز هویت</string>

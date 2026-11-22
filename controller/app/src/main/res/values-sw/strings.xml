@@ -1699,6 +1699,7 @@
     <string name="k2go_auth_notice_factory_title">Nenosiri la kiwandani linatumika</string>
     <string name="k2go_auth_notice_factory_msg">Nenosiri la msimamizi la kiwandani bado linafanya kazi katika: %1$s. Mtu yeyote kwenye Wi-Fi au hotspot ileile anaweza kuingia na kubadilisha maktaba yako. Libadilishe katika Mipangilio, Uthibitishaji.</string>
     <string name="k2go_auth_chip_no_account">Hakuna akaunti ya msimamizi</string>
+    <string name="k2go_auth_chip_not_running">Haiendeshwi</string>
     <string name="k2go_auth_pw_state_no_account">Akaunti ya msimamizi haipo katika huduma hii.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) haina akaunti ya msimamizi.</string>
     <string name="k2go_auth_notice_open">Fungua Uthibitishaji</string>

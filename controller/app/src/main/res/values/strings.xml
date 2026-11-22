@@ -1880,6 +1880,8 @@
     <string name="k2go_auth_notice_factory_msg">The factory admin password still works in: %1$s. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
     <!-- Settings > Authentication list: badge of a service whose admin account is not present. -->
     <string name="k2go_auth_chip_no_account">No admin account</string>
+    <!-- Settings > Authentication list: badge of an installed service that does not answer now (stopped). -->
+    <string name="k2go_auth_chip_not_running">Not running</string>
     <!-- Settings > Authentication > a service: state line when the admin account is not present (never created, or deleted). -->
     <string name="k2go_auth_pw_state_no_account">The admin account is not present in this service.</string>
     <!-- Settings > Authentication list: message when the user taps a service that has no admin account. %1$s = screen name, for example "Host code"; %2$s = product, for example "Forgejo". -->

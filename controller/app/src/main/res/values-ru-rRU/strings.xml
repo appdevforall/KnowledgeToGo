@@ -1755,6 +1755,7 @@
     <string name="k2go_auth_notice_factory_title">Используется заводской пароль</string>
     <string name="k2go_auth_notice_factory_msg">Заводской пароль администратора всё ещё работает в: %1$s. Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
     <string name="k2go_auth_chip_no_account">Нет учётной записи администратора</string>
+    <string name="k2go_auth_chip_not_running">Не запущен</string>
     <string name="k2go_auth_pw_state_no_account">Учётной записи администратора нет в этой службе.</string>
     <string name="k2go_auth_no_account_snack">В %1$s (%2$s) нет учётной записи администратора.</string>
     <string name="k2go_auth_notice_open">Открыть Аутентификацию</string>

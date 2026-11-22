@@ -1699,6 +1699,7 @@
     <string name="k2go_auth_notice_factory_title">Ọ̀rọ̀ìgbaniwọlé àtilẹ̀wá ni à ń lò</string>
     <string name="k2go_auth_notice_factory_msg">Ọ̀rọ̀ìgbaniwọlé alábòójútó àtilẹ̀wá ṣì ń ṣiṣẹ́ nínú: %1$s. Ẹnikẹ́ni lórí Wi-Fi tàbí hotspot kan náà lè wọlé kí ó sì yí ibi ìkàwé rẹ padà. Yí i padà nínú Ìtòlẹ́sẹẹsẹ, Ìfọwọ́sí.</string>
     <string name="k2go_auth_chip_no_account">Kò sí àkọọ́lẹ̀ alábòójútó</string>
+    <string name="k2go_auth_chip_not_running">Kò ń ṣiṣẹ́</string>
     <string name="k2go_auth_pw_state_no_account">Àkọọ́lẹ̀ alábòójútó kò sí nínú iṣẹ́ yìí.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) kò ní àkọọ́lẹ̀ alábòójútó.</string>
     <string name="k2go_auth_notice_open">Ṣí Ìfọwọ́sí</string>

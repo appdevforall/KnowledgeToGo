@@ -1686,6 +1686,7 @@
     <string name="k2go_auth_notice_factory_title">Používá se tovární heslo</string>
     <string name="k2go_auth_notice_factory_msg">Tovární heslo správce stále funguje v: %1$s. Kdokoli ve stejné Wi-Fi nebo hotspotu se může přihlásit a změnit tvou knihovnu. Změň ho v Nastavení, Ověření.</string>
     <string name="k2go_auth_chip_no_account">Žádný účet správce</string>
+    <string name="k2go_auth_chip_not_running">Neběží</string>
     <string name="k2go_auth_pw_state_no_account">Účet správce v této službě není.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) nemá účet správce.</string>
     <string name="k2go_auth_notice_open">Otevřít Ověření</string>

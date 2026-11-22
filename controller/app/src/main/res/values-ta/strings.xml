@@ -1699,6 +1699,7 @@
     <string name="k2go_auth_notice_factory_title">தொழிற்சாலை கடவுச்சொல் பயன்பாட்டில் உள்ளது</string>
     <string name="k2go_auth_notice_factory_msg">தொழிற்சாலை நிர்வாகி கடவுச்சொல் இன்னும் இவற்றில் செயல்படுகிறது: %1$s. அதே Wi-Fi அல்லது ஹாட்ஸ்பாட்டில் உள்ள எவரும் உள்நுழைந்து உங்கள் நூலகத்தை மாற்றலாம். அமைப்புகள், அங்கீகாரம் என்பதில் அதை மாற்றவும்.</string>
     <string name="k2go_auth_chip_no_account">நிர்வாகி கணக்கு இல்லை</string>
+    <string name="k2go_auth_chip_not_running">இயங்கவில்லை</string>
     <string name="k2go_auth_pw_state_no_account">இந்தச் சேவையில் நிர்வாகி கணக்கு இல்லை.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) இல் நிர்வாகி கணக்கு இல்லை.</string>
     <string name="k2go_auth_notice_open">அங்கீகாரத்தைத் திற</string>

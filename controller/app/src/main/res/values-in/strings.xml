@@ -1686,6 +1686,7 @@
     <string name="k2go_auth_notice_factory_title">Kata sandi pabrik sedang digunakan</string>
     <string name="k2go_auth_notice_factory_msg">Kata sandi admin pabrik masih berfungsi di: %1$s. Siapa pun di Wi-Fi atau hotspot yang sama dapat masuk dan mengubah pustaka Anda. Ubah di Setelan, Autentikasi.</string>
     <string name="k2go_auth_chip_no_account">Tidak ada akun admin</string>
+    <string name="k2go_auth_chip_not_running">Tidak berjalan</string>
     <string name="k2go_auth_pw_state_no_account">Akun admin tidak ada di layanan ini.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) tidak memiliki akun admin.</string>
     <string name="k2go_auth_notice_open">Buka Autentikasi</string>

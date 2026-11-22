@@ -1679,6 +1679,7 @@
     <string name="k2go_auth_notice_factory_title">Password di fabbrica in uso</string>
     <string name="k2go_auth_notice_factory_msg">La password di amministratore di fabbrica funziona ancora in: %1$s. Chiunque sulla stessa rete Wi-Fi o hotspot può accedere e modificare la tua libreria. Cambiala in Impostazioni, Autenticazione.</string>
     <string name="k2go_auth_chip_no_account">Nessun account amministratore</string>
+    <string name="k2go_auth_chip_not_running">Non in esecuzione</string>
     <string name="k2go_auth_pw_state_no_account">L\'account amministratore non è presente in questo servizio.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) non ha un account amministratore.</string>
     <string name="k2go_auth_notice_open">Apri Autenticazione</string>

@@ -1692,6 +1692,7 @@
     <string name="k2go_auth_notice_factory_title">ફેક્ટરી પાસવર્ડ વપરાશમાં છે</string>
     <string name="k2go_auth_notice_factory_msg">ફેક્ટરી એડમિન પાસવર્ડ હજી અહીં કામ કરે છે: %1$s. એ જ Wi-Fi અથવા હૉટસ્પૉટ પરનું કોઈપણ સાઇન ઇન કરીને તમારી લાઇબ્રેરી બદલી શકે છે. સેટિંગ્સ, પ્રમાણીકરણમાં તેને બદલો.</string>
     <string name="k2go_auth_chip_no_account">એડમિન એકાઉન્ટ નથી</string>
+    <string name="k2go_auth_chip_not_running">ચાલુ નથી</string>
     <string name="k2go_auth_pw_state_no_account">આ સેવામાં એડમિન એકાઉન્ટ હાજર નથી.</string>
     <string name="k2go_auth_no_account_snack">%1$s (%2$s) માં એડમિન એકાઉન્ટ નથી.</string>
     <string name="k2go_auth_notice_open">પ્રમાણીકરણ ખોલો</string>
