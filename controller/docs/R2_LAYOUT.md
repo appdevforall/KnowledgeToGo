@@ -37,7 +37,7 @@ Public at the R2 dev URL in the repository variable `ROOTFS_PUBLIC_BASE`
 
 | Key | Content | Written by | Lifecycle |
 |-----|---------|------------|-----------|
-| `k2go_*_<tier>_<abi>.tar.gz` (+ `.meta4`, `.sha256`, `.installed`, `.torrent`) | Dated rootfs images | `rootfs-2-bake.yml` | Newest 7 per tier and ABI; older ones are deleted |
+| `k2go_*_<tier>_<abi>.tar.gz` (+ `.meta4`, `.sha256`, `.installed`; older images also have a `.torrent`, no longer built since K2GO-588) | Dated rootfs images | `rootfs-2-bake.yml` | Newest 7 per tier and ABI; older ones are deleted |
 | `latest_<tier>_<abi>.meta4`, `latest_<tier>_<abi>.installed` | Stable pointers to the current image | `rootfs-2-bake.yml` | Overwritten, last |
 | `build-<tier>-<abi>.log`, `PUBLISH_QUEUE.tsv` | Installer logs (input for the size catalogs) and the publish queue | `rootfs-2-bake.yml` | Overwritten |
 | `proot-distro-v<version>/` | Debian base from the proot-distro release (+ `.sha256`) | `rootfs-2-bake.yml` (seeded once) | Static |
