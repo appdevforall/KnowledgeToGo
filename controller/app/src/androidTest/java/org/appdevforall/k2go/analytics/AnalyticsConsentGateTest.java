@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,15 +30,22 @@ public class AnalyticsConsentGateTest {
         return ApplicationProvider.getApplicationContext();
     }
 
+    private boolean before;
+
+    @Before
+    public void setUp() {
+        before = OnlineConsent.isEnabled(ctx());
+    }
+
     @After
     public void tearDown() {
-        OnlineConsent.setEnabled(ctx(), false);
+        OnlineConsent.setEnabled(ctx(), before);
     }
 
     @Test
     public void consentDefaultsOff() {
         Context ctx = ctx();
-        OnlineConsent.setEnabled(ctx, false);
+        ctx.getSharedPreferences("iiab_delivery", Context.MODE_PRIVATE).edit().remove("online_choice").commit();
         assertFalse(OnlineConsent.isEnabled(ctx));
     }
 

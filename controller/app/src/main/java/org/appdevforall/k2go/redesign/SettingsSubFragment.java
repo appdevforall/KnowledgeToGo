@@ -201,13 +201,12 @@ public class SettingsSubFragment extends Fragment {
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
         // K2GO-588: the one privacy choice (usage data where the build has analytics, crash reports,
-        // automatic connections). Off stops crash events at once (beforeSend); on starts crash
-        // reports at the next launch, because a mid-session Sentry init disturbs the
-        // uncaught-handler order that IIABApplication sets at startup.
-        SettingsUi.toggle(ctx, list, getString(OnlineConsent.choiceLabel()), OnlineConsent.isEnabled(ctx), checked -> {
+        // automatic connections). OnlineChoiceEffects applies a change at once.
+        SettingsUi.toggle(ctx, list,
+                getString(org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.choiceLabel()),
+                OnlineConsent.isEnabled(ctx), checked -> {
             OnlineConsent.setEnabled(ctx, checked);
-            org.appdevforall.k2go.analytics.AnalyticsClient.with(ctx).applyConsent();
-            if (!checked) io.sentry.Sentry.close();   // nothing more leaves for GlitchTip in this session
+            org.appdevforall.k2go.delivery.OnlineChoiceEffects.apply(ctx);
             org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(needsInternet);
             if (getActivity() != null) {
                 org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(

@@ -71,14 +71,20 @@ public abstract class ResilientWebViewClient extends WebViewClient {
     }
 
     /**
-     * K2GO-588: an in-app WebView never reaches the internet, whatever the privacy choice: it shows
-     * the box and the app's own pages. Only local hosts (the box, the local network) load; anything
-     * a page needs must ship offline. A subclass that serves its own requests returns super for the rest.
+     * K2GO-588: an in-app WebView shows the box and the app's own pages. Local hosts (the box, the
+     * local network) always load. An internet page (main frame) never opens here. A page's own
+     * internet sub-requests (map tiles, fonts) load only when {@code NetworkCostAdmission.allowsAutomatic}
+     * allows them: the privacy choice is on and the network is unmetered (K2GO-580). A subclass that
+     * serves its own requests returns super for the rest.
      */
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         if (org.appdevforall.k2go.networkpolicy.domain.HostScope.isLocal(request.getUrl().getHost())) {
             return null;   // load normally
+        }
+        if (!request.isForMainFrame()
+                && org.appdevforall.k2go.networkpolicy.data.NetworkCostAdmission.allowsAutomatic(view.getContext())) {
+            return null;
         }
         if (request.isForMainFrame()) {
             // An internet page in place of a blank screen: say why it does not open.

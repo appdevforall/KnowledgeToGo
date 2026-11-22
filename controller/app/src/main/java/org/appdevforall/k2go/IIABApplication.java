@@ -54,24 +54,11 @@ public class IIABApplication extends Application {
         // User-Agent; every HttpURLConnection without its own agent sends this neutral one.
         System.setProperty("http.agent", "K2Go");
 
-        // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by the one privacy choice
-        // (OnlineConsent, default off, K2GO-588). No-op unless a DSN was built in (empty DSN -> SDK
-        // stays inert); manifest sets io.sentry.auto-init=false, so this is the only init path.
-        // Init here (before our handler) so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
-        // Crash events only: no session tracking (it contacts GlitchTip at every start and return
-        // from background, with no crash). beforeSend drops events if the choice goes off later.
-        try {
-            if (org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(this)) {
-                final android.content.Context app = this;
-                io.sentry.android.core.SentryAndroid.init(this, options -> {
-                    options.setEnableAutoSessionTracking(false);
-                    options.setBeforeSend((event, hint) ->
-                            org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(app) ? event : null);
-                });
-            }
-        } catch (Throwable t) {
-            Log.e("IIABApplication", "Sentry init skipped", t);
-        }
+        // K2GO-588: the one privacy choice replaces the two old opt-ins; their answers are dropped
+        // and the user is asked again (OnlineChoiceDialog). Crash reports start here, before our
+        // handler, so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
+        org.appdevforall.k2go.delivery.data.OnlineConsent.dropOldAnswers(this);
+        org.appdevforall.k2go.delivery.OnlineChoiceEffects.startCrashReports(this);
 
         // Capture uncaught exceptions into a crash report, offered on next launch.
         Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
