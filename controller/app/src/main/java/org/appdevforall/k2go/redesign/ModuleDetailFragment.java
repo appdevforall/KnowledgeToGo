@@ -255,7 +255,7 @@ public class ModuleDetailFragment extends Fragment {
                 if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.clearSeed(requireContext());
             } else {
                 ModuleWishlist.add(requireContext(), c.key());
-                if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), forgejoRepos.isChecked());
+                if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.recordIncludeRepos(requireContext(), forgejoRepos.isChecked());
             }
             requireActivity().getOnBackPressedDispatcher().onBackPressed();   // back to the hub (shows ✓)
         });
@@ -271,8 +271,8 @@ public class ModuleDetailFragment extends Fragment {
                     ((SetupLibraryActivity) getActivity()).openMapsChoose();   // ADFA-4958: maps needs its content selector first
                 } else {
                     ModuleWishlist.add(requireContext(), c.key());
-                    // K2GO-417: bank the seed with the opt-in captured on this screen before we leave it.
-                    if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.bankSeed(requireContext(), forgejoRepos.isChecked());
+                    // K2GO-417: record the repos opt-in of this screen; the batch start banks the seed (K2GO-592).
+                    if (isForgejo) org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.recordIncludeRepos(requireContext(), forgejoRepos.isChecked());
                     ((SetupLibraryActivity) getActivity()).openModuleIndex();
                 }
             }

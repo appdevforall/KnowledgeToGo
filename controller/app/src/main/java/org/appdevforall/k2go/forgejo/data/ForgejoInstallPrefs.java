@@ -23,7 +23,10 @@ import android.content.SharedPreferences;
  *
  * <p>Lifecycle (single owner of each transition, so the marker cannot leak):
  * <ul>
- *   <li>SET by the UI when a Forgejo install is committed ({@link #bankSeed}).</li>
+ *   <li>SET when a module batch that installs Forgejo starts ({@link #bankSeed(Context)}, called
+ *       only by {@code ModuleProvisioner.startBatch}, the one path every install goes through:
+ *       K2GO-592). A screen only records the repos opt-in ({@link #recordIncludeRepos}). The
+ *       re-seed actions (Install repos, Retry of a failed seed) call {@link #bankSeed(Context, boolean)}.</li>
  *   <li>CLEARED by the seed service (K2GO-423) on a seeded box, on a box with no Forgejo (the
  *       install did not land, so there is nothing to seed), or after {@link #MAX_ATTEMPTS} failed
  *       attempts (best-effort gives up rather than running forever).</li>
@@ -44,7 +47,17 @@ public final class ForgejoInstallPrefs {
         return ctx.getApplicationContext().getSharedPreferences(FILE, Context.MODE_PRIVATE);
     }
 
-    /** Bank a seed for the just-committed Forgejo install. {@code includeRepos} = seed the example repos too. */
+    /** Bank a seed for a Forgejo install batch. Keeps the repos opt-in that a screen recorded (default on). */
+    public static void bankSeed(Context ctx) {
+        bankSeed(ctx, includeRepos(ctx));
+    }
+
+    /** Record the repos opt-in for the next Forgejo install. No seed is owed until the batch starts. */
+    public static void recordIncludeRepos(Context ctx, boolean includeRepos) {
+        prefs(ctx).edit().putBoolean(KEY_INCLUDE_REPOS, includeRepos).apply();
+    }
+
+    /** Bank a seed with an explicit opt-in (a re-seed). {@code includeRepos} = seed the example repos too. */
     public static void bankSeed(Context ctx, boolean includeRepos) {
         prefs(ctx).edit()
                 .putBoolean(KEY_PENDING, true)
@@ -57,7 +70,7 @@ public final class ForgejoInstallPrefs {
         return prefs(ctx).getBoolean(KEY_PENDING, false);
     }
 
-    /** The opt-in for the example repos captured when the install was committed (default on). */
+    /** The opt-in for the example repos (default on). */
     public static boolean includeRepos(Context ctx) {
         return prefs(ctx).getBoolean(KEY_INCLUDE_REPOS, true);
     }
