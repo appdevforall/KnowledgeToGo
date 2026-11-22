@@ -834,7 +834,7 @@ public class LibraryActivity extends AppCompatActivity
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
-        if (reduceMotion()) { bootGate.setVisibility(View.GONE); maybeCheckAuthNotice(); return; }
+        if (reduceMotion()) { bootGate.setVisibility(View.GONE); askOnlineChoiceThenAuthNotice(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("B_OPEN_FLIP");
@@ -844,7 +844,7 @@ public class LibraryActivity extends AppCompatActivity
                 if (bootGate != null) {
                     bootGate.setVisibility(View.GONE);
                 }
-                maybeCheckAuthNotice();   // K2GO-552: the notice comes after the gate is gone
+                askOnlineChoiceThenAuthNotice();   // K2GO-552/588: after the gate is gone
             }
         });
         bootGate.playAnimation();
@@ -960,9 +960,8 @@ public class LibraryActivity extends AppCompatActivity
         if (preparing != null) preparing.onResumed();   // K2GO-553: the reconciler may boot during the splash
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
-        maybeAskOnlineChoice();   // K2GO-588
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
-        maybeCheckAuthNotice();
+        askOnlineChoiceThenAuthNotice();   // K2GO-588, K2GO-552
         maybeStartDiskGuardReport();   // K2GO-391
     }
 
@@ -995,15 +994,26 @@ public class LibraryActivity extends AppCompatActivity
     }
 
     /** K2GO-588: an install from before the one privacy choice is asked once, after the boot gate
-     *  and never during a first install (the wizard asks then). Until the answer: Keep offline. */
-    private void maybeAskOnlineChoice() {
+     *  and never during a first install (the wizard asks then). Until the answer: Keep offline.
+     *  Called when the gate opens (cold start) and from onResume (the gate was already open). */
+    private void maybeAskOnlineChoice(Runnable after) {
         if (onlineChoiceAsking || installing || !gateDismissed
-                || org.appdevforall.k2go.delivery.data.OnlineConsent.wasAsked(this)) return;
+                || org.appdevforall.k2go.delivery.data.OnlineConsent.wasAsked(this)) {
+            if (!onlineChoiceAsking) after.run();
+            return;
+        }
         onlineChoiceAsking = true;
         org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.askOnce(this, () -> {
             onlineChoiceAsking = false;
             maybeAutoCheckUpdate();
+            after.run();
         });
+    }
+
+    /** The gate is gone: first the one-time privacy question, then the admin-password notice, so
+     *  the two dialogs never stack. */
+    private void askOnlineChoiceThenAuthNotice() {
+        maybeAskOnlineChoice(this::maybeCheckAuthNotice);
     }
 
     /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
