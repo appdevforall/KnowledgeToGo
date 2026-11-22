@@ -203,24 +203,7 @@ public final class FeedbackFab {
         lp.setMargins(m, m, m, Math.round(bottomMarginDp * d));
         root.addView(fab, lp);
         org.appdevforall.k2go.networkpolicy.presentation.NetworkPolicyGate.markNeedsInternet(fab);
-        attach(fab, () -> confirmThenSend(activity, screenTag), topExclusionDp, bottomExclusionDp);
-    }
-
-    /**
-     * K2GO-588: the report leaves through an app the user picks (email, chat), which the app does not
-     * control. With Keep offline, say first that this can connect; Keep offline is the primary choice.
-     */
-    private static void confirmThenSend(android.app.Activity activity, String screenTag) {
-        if (org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(activity)) {
-            sendFeedback(activity, screenTag);
-            return;
-        }
-        new org.appdevforall.k2go.ui.dialog.BrandDialog(activity)
-                .setTitle(org.appdevforall.k2go.R.string.k2go_feedback_third_party_title)
-                .setMessage(org.appdevforall.k2go.R.string.k2go_feedback_third_party_msg)
-                .setPositive(org.appdevforall.k2go.R.string.analytics_enroll_decline, () -> { })
-                .setNegative(org.appdevforall.k2go.R.string.k2go_feedback_send_anyway, () -> sendFeedback(activity, screenTag))
-                .show();
+        attach(fab, () -> sendFeedback(activity, screenTag), topExclusionDp, bottomExclusionDp);
     }
 
     /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it off.
@@ -245,6 +228,24 @@ public final class FeedbackFab {
     public static void sendFeedback(android.app.Activity activity, String screen,
                                     org.appdevforall.k2go.feedback.domain.FeedbackType type,
                                     String message) {
+        // K2GO-588: the report leaves through an app the user picks (email, chat), which the app does
+        // not control. With Keep offline, say first that this can connect; Keep offline is primary.
+        if (!org.appdevforall.k2go.delivery.data.OnlineConsent.isEnabled(activity)) {
+            new org.appdevforall.k2go.ui.dialog.BrandDialog(activity)
+                    .setTitle(org.appdevforall.k2go.R.string.k2go_feedback_third_party_title)
+                    .setMessage(org.appdevforall.k2go.R.string.k2go_feedback_third_party_msg)
+                    .setPositive(org.appdevforall.k2go.R.string.analytics_enroll_decline, () -> { })
+                    .setNegative(org.appdevforall.k2go.R.string.k2go_feedback_send_anyway,
+                            () -> handOff(activity, screen, type, message))
+                    .show();
+            return;
+        }
+        handOff(activity, screen, type, message);
+    }
+
+    private static void handOff(android.app.Activity activity, String screen,
+                                org.appdevforall.k2go.feedback.domain.FeedbackType type,
+                                String message) {
         org.appdevforall.k2go.feedback.data.FeedbackScreenshot.capture(activity, path -> {
             if (activity.isFinishing() || activity.isDestroyed()) {
                 return;   // ADFA-4932: activity gone between tap and the async capture callback

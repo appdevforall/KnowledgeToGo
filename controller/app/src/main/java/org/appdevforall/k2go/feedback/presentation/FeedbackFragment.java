@@ -109,7 +109,7 @@ public class FeedbackFragment extends Fragment {
 
     private void explainKeptOffline(View anchor) {
         org.appdevforall.k2go.util.Snackbars.make(anchor, getString(R.string.k2go_feedback_kept_offline,
-                getString(org.appdevforall.k2go.delivery.data.OnlineConsent.choiceLabel()))).show();
+                getString(org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.choiceLabel()))).show();
     }
 
     private static FeedbackType typeFor(int position) {
