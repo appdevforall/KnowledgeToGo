@@ -1703,4 +1703,6 @@
     <string name="k2go_auth_notice_never_confirm">Спри напомнянията</string>
     <string name="k2go_auth_notice_never_keep">Запази напомнянията</string>
     <string name="k2go_auth_list_hint">Администраторски пароли, които K2Go използва за Прочети книга, Запиши се на курс и Хостинг на код. Сменяйте ги тук, за да остават приложението и кутията в синхрон.</string>
+    <string name="k2go_mod_phase_canceled">Отменено</string>
+    <string name="k2go_setup_modules_stopped">Инсталирането спря. Проверете всеки модул по-долу.</string>
 </resources>

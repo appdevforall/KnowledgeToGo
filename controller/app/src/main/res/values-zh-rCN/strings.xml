@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">停止提醒</string>
     <string name="k2go_auth_notice_never_keep">保留提醒</string>
     <string name="k2go_auth_list_hint">K2Go 用于图书、课程和托管代码的管理员密码。请在这里更改，让应用和盒子保持一致。</string>
+    <string name="k2go_mod_phase_canceled">已取消</string>
+    <string name="k2go_setup_modules_stopped">安装已停止。请检查下方的每个模块。</string>
 </resources>

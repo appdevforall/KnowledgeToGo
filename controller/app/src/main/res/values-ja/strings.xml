@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">リマインダーを停止</string>
     <string name="k2go_auth_notice_never_keep">リマインダーを続ける</string>
     <string name="k2go_auth_list_hint">K2Goが「本を読む」「コースを受ける」「コードをホスト」で使う管理者パスワードです。アプリとボックスの状態をそろえるため、ここで変更してください。</string>
+    <string name="k2go_mod_phase_canceled">キャンセルしました</string>
+    <string name="k2go_setup_modules_stopped">インストールが停止しました。下の各モジュールを確認してください。</string>
 </resources>

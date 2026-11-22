@@ -1705,4 +1705,6 @@
     <string name="k2go_auth_notice_never_confirm">Vypnout připomenutí</string>
     <string name="k2go_auth_notice_never_keep">Ponechat připomenutí</string>
     <string name="k2go_auth_list_hint">Hesla správce, která K2Go používá pro Přečíst knihu, Absolvovat kurz a Hostovat kód. Měň je zde, aby aplikace a box zůstaly v souladu.</string>
+    <string name="k2go_mod_phase_canceled">Zrušeno</string>
+    <string name="k2go_setup_modules_stopped">Instalace se zastavila. Zkontrolujte níže každý modul.</string>
 </resources>

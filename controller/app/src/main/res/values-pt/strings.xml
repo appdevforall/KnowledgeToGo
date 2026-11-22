@@ -1776,4 +1776,6 @@
     <string name="k2go_auth_notice_never_confirm">Parar lembretes</string>
     <string name="k2go_auth_notice_never_keep">Manter lembretes</string>
     <string name="k2go_auth_list_hint">Senhas de administrador que o K2Go usa para Ler um livro, Fazer um curso e Hospedar código. Altere-as aqui para que a app e o servidor fiquem em sintonia.</string>
+    <string name="k2go_mod_phase_canceled">Cancelado</string>
+    <string name="k2go_setup_modules_stopped">A instalação parou. Verifique cada módulo abaixo.</string>
 </resources>

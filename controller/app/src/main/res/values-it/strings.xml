@@ -1697,4 +1697,6 @@
     <string name="k2go_auth_notice_never_confirm">Interrompi promemoria</string>
     <string name="k2go_auth_notice_never_keep">Mantieni promemoria</string>
     <string name="k2go_auth_list_hint">Password di amministratore che K2Go usa per Leggere un libro, Seguire un corso e Ospita il codice. Cambiale qui, così l\'app e il server restano allineati.</string>
+    <string name="k2go_mod_phase_canceled">Annullata</string>
+    <string name="k2go_setup_modules_stopped">L\'installazione si è interrotta. Controlla ogni modulo qui sotto.</string>
 </resources>

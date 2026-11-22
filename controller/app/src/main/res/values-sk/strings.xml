@@ -1705,4 +1705,6 @@
     <string name="k2go_auth_notice_never_confirm">Vypnúť pripomienky</string>
     <string name="k2go_auth_notice_never_keep">Ponechať pripomienky</string>
     <string name="k2go_auth_list_hint">Heslá správcu, ktoré K2Go používa pre Knihy, Kurzy a Hostovať kód. Meňte ich tu, aby aplikácia a server zostali v súlade.</string>
+    <string name="k2go_mod_phase_canceled">Zrušené</string>
+    <string name="k2go_setup_modules_stopped">Inštalácia sa zastavila. Skontrolujte nižšie každý modul.</string>
 </resources>

@@ -1702,4 +1702,6 @@
     <string name="k2go_auth_notice_never_confirm">Hentikan pengingat</string>
     <string name="k2go_auth_notice_never_keep">Tetap ingatkan</string>
     <string name="k2go_auth_list_hint">Kata sandi admin yang digunakan K2Go untuk Baca buku, Ikuti kursus, dan Hosting kode. Ubah di sini agar aplikasi dan kotak tetap selaras.</string>
+    <string name="k2go_mod_phase_canceled">Dibatalkan</string>
+    <string name="k2go_setup_modules_stopped">Pemasangan berhenti. Periksa setiap modul di bawah.</string>
 </resources>

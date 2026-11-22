@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">알림 중지</string>
     <string name="k2go_auth_notice_never_keep">알림 유지</string>
     <string name="k2go_auth_list_hint">K2Go가 책 읽기, 코스 수강, 코드 호스팅에 사용하는 관리자 비밀번호입니다. 앱과 박스가 서로 맞도록 여기에서 변경하세요.</string>
+    <string name="k2go_mod_phase_canceled">취소됨</string>
+    <string name="k2go_setup_modules_stopped">설치가 중지되었습니다. 아래에서 각 모듈을 확인하세요.</string>
 </resources>

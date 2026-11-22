@@ -1716,4 +1716,6 @@
     <string name="k2go_auth_notice_never_confirm">Xatırlatmaları dayandır</string>
     <string name="k2go_auth_notice_never_keep">Xatırlatmaları saxla</string>
     <string name="k2go_auth_list_hint">K2Go-nun Kitab oxu, Kurs keç və Kodu saxla üçün istifadə etdiyi admin parolları. Tətbiq və qutu uyğun qalsın deyə onları burada dəyişin.</string>
+    <string name="k2go_mod_phase_canceled">Ləğv edildi</string>
+    <string name="k2go_setup_modules_stopped">Quraşdırma dayandı. Aşağıda hər modulu yoxlayın.</string>
 </resources>

@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">Emlékeztetők leállítása</string>
     <string name="k2go_auth_notice_never_keep">Emlékeztetők megtartása</string>
     <string name="k2go_auth_list_hint">A K2Go ezekhez használja ezeket a rendszergazdai jelszavakat: Könyv olvasása, Kurzus elvégzése és Kód tárolása. Itt módosítsa őket, hogy az alkalmazás és a doboz összhangban maradjon.</string>
+    <string name="k2go_mod_phase_canceled">Megszakítva</string>
+    <string name="k2go_setup_modules_stopped">A telepítés leállt. Alább ellenőrizze az egyes modulokat.</string>
 </resources>

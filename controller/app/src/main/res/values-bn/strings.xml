@@ -1709,4 +1709,6 @@
     <string name="k2go_auth_notice_never_confirm">অনুস্মারক বন্ধ করুন</string>
     <string name="k2go_auth_notice_never_keep">অনুস্মারক রাখুন</string>
     <string name="k2go_auth_list_hint">অ্যাডমিন পাসওয়ার্ড, যা K2Go একটি বই পড়ুন, একটি কোর্স করুন এবং কোড হোস্ট করুন-এর জন্য ব্যবহার করে। অ্যাপ ও বক্স যাতে মিলে থাকে, তাই এগুলো এখানে বদলান।</string>
+    <string name="k2go_mod_phase_canceled">বাতিল করা হয়েছে</string>
+    <string name="k2go_setup_modules_stopped">ইনস্টল বন্ধ হয়েছে। নিচে প্রতিটি মডিউল দেখুন।</string>
 </resources>

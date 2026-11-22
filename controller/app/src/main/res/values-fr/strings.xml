@@ -1784,4 +1784,6 @@
     <string name="k2go_auth_notice_never_confirm">Arrêter les rappels</string>
     <string name="k2go_auth_notice_never_keep">Garder les rappels</string>
     <string name="k2go_auth_list_hint">Mots de passe administrateur que K2Go utilise pour Lire un livre, Suivre un cours et Héberger le code. Changez-les ici pour que l\'app et le boîtier restent synchronisés.</string>
+    <string name="k2go_mod_phase_canceled">Annulé</string>
+    <string name="k2go_setup_modules_stopped">L\'installation s\'est arrêtée. Vérifiez chaque module ci-dessous.</string>
 </resources>

@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">Hatırlatmaları durdur</string>
     <string name="k2go_auth_notice_never_keep">Hatırlatmaları sürdür</string>
     <string name="k2go_auth_list_hint">K2Go uygulamasının Kitaplar, Kurslar ve Kodu barındır için kullandığı yönetici parolaları. Uygulama ve sunucu uyumlu kalsın diye parolaları burada değiştirin.</string>
+    <string name="k2go_mod_phase_canceled">İptal edildi</string>
+    <string name="k2go_setup_modules_stopped">Kurulum durdu. Aşağıdaki her modülü kontrol edin.</string>
 </resources>

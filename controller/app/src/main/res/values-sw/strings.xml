@@ -1716,4 +1716,6 @@
     <string name="k2go_auth_notice_never_confirm">Zima vikumbusho</string>
     <string name="k2go_auth_notice_never_keep">Endelea na vikumbusho</string>
     <string name="k2go_auth_list_hint">Manenosiri ya msimamizi ambayo K2Go inatumia kwa Vitabu, Kozi na Pangisha msimbo. Yabadilishe hapa, ili programu na kisanduku vibaki sawa.</string>
+    <string name="k2go_mod_phase_canceled">Imeghairiwa</string>
+    <string name="k2go_setup_modules_stopped">Usakinishaji umesimama. Kagua kila moduli hapa chini.</string>
 </resources>

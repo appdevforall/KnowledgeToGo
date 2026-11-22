@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">Herinneringen stoppen</string>
     <string name="k2go_auth_notice_never_keep">Herinneringen houden</string>
     <string name="k2go_auth_list_hint">Beheerderswachtwoorden die K2Go gebruikt voor Een boek lezen, Een cursus volgen en Code hosten. Wijzig ze hier, zodat de app en de box gelijk blijven.</string>
+    <string name="k2go_mod_phase_canceled">Geannuleerd</string>
+    <string name="k2go_setup_modules_stopped">De installatie is gestopt. Controleer hieronder elke module.</string>
 </resources>

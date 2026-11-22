@@ -1698,4 +1698,6 @@
     <string name="k2go_auth_notice_never_confirm">Вимкнути нагадування</string>
     <string name="k2go_auth_notice_never_keep">Залишити нагадування</string>
     <string name="k2go_auth_list_hint">Паролі адміністратора, які K2Go використовує для розділів Книги, Курси та Хостинг коду. Змінюйте їх тут, щоб застосунок і сервер залишалися узгодженими.</string>
+    <string name="k2go_mod_phase_canceled">Скасовано</string>
+    <string name="k2go_setup_modules_stopped">Встановлення зупинилося. Перевірте кожен модуль нижче.</string>
 </resources>

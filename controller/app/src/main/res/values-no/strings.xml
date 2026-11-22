@@ -1706,4 +1706,6 @@
     <string name="k2go_auth_notice_never_confirm">Slå av påminnelser</string>
     <string name="k2go_auth_notice_never_keep">Behold påminnelser</string>
     <string name="k2go_auth_list_hint">Administratorpassord som K2Go bruker for Les en bok, Ta et kurs og Vert for kode. Endre dem her, slik at appen og boksen holder seg i takt.</string>
+    <string name="k2go_mod_phase_canceled">Avbrutt</string>
+    <string name="k2go_setup_modules_stopped">Installasjonen stoppet. Sjekk hver modul nedenfor.</string>
 </resources>

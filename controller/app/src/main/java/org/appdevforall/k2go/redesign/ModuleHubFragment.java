@@ -496,15 +496,19 @@ public class ModuleHubFragment extends Fragment {
         // already there cannot meaningfully be waiting to be installed, and if a stale wishlist
         // entry survived an install, saying "Scheduled" over it would be the older lie again.
         boolean scheduled = !isInstalled && !unknown && ModuleWishlist.contains(requireContext(), c.key());
+        boolean canceled = failed && org.appdevforall.k2go.install.presentation.ModuleQueueRepository.get()
+                .current().wasCanceled(c.key());
         // K2GO-385 (PR3): a lifecycle state is a read-only STATUS -- dot + text, semantic colour, no
         // ripple (the shared K2GoStatusBadge) -- not an outlined pill that reads like a button.
         LinearLayout pill = K2GoStatusBadge.create(requireContext(),
                 isInstalled ? getString(R.string.k2go_mod_phase_done)
+                        : canceled ? getString(R.string.k2go_mod_phase_canceled)   // K2GO-593
                         : failed ? getString(R.string.k2go_mod_phase_failed)
                                 : unknown ? getString(R.string.k2go_state_no_answer)
                                         : scheduled ? getString(R.string.k2go_mod_scheduled)
                                                 : getString(R.string.k2go_state_not_installed),
                 isInstalled ? R.color.k2go_leaf
+                        : canceled ? R.color.k2go_muted
                         : failed ? R.color.k2go_clay
                                 : unknown ? R.color.k2go_amber_text
                                         : scheduled ? R.color.k2go_teal : R.color.k2go_muted);

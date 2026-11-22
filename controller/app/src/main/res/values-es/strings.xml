@@ -1773,4 +1773,6 @@
     <string name="k2go_auth_notice_never_confirm">Dejar de recordar</string>
     <string name="k2go_auth_notice_never_keep">Mantener recordatorios</string>
     <string name="k2go_auth_list_hint">Contraseñas de administrador que K2Go usa para Leer un libro, Tomar un curso y Aloja tu código. Cámbialas aquí para que la app y la caja estén sincronizadas.</string>
+    <string name="k2go_mod_phase_canceled">Cancelado</string>
+    <string name="k2go_setup_modules_stopped">La instalación se detuvo. Revise cada módulo abajo.</string>
 </resources>

@@ -1715,4 +1715,6 @@
     <string name="k2go_auth_notice_never_confirm">Išjungti priminimus</string>
     <string name="k2go_auth_notice_never_keep">Palikti priminimus</string>
     <string name="k2go_auth_list_hint">Administratoriaus slaptažodžiai, kuriuos K2Go naudoja šioms kortelėms: Skaityti knygą, Baigti kursą ir Talpinti kodą. Keiskite juos čia, kad programa ir serveris liktų suderinti.</string>
+    <string name="k2go_mod_phase_canceled">Atšaukta</string>
+    <string name="k2go_setup_modules_stopped">Diegimas sustojo. Patikrinkite kiekvieną modulį žemiau.</string>
 </resources>

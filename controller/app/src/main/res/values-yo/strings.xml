@@ -1715,4 +1715,6 @@
     <string name="k2go_auth_notice_never_confirm">Dá ìránnilétí dúró</string>
     <string name="k2go_auth_notice_never_keep">Pa ìránnilétí mọ́</string>
     <string name="k2go_auth_list_hint">Àwọn ọ̀rọ̀ìgbaniwọlé alábòójútó tí K2Go ń lò fún Àwọn ìwé, Àwọn ẹ̀kọ́ àti Gbàlejò kóòdù. Yí wọn padà níbí, kí áàpù àti àpótí náà lè wà ní ìbámu.</string>
+    <string name="k2go_mod_phase_canceled">Ti fagilé</string>
+    <string name="k2go_setup_modules_stopped">Fífi sórí ẹ̀rọ ti dúró. Ṣàyẹ̀wò módù kọ̀ọ̀kan nísàlẹ̀.</string>
 </resources>

@@ -1904,4 +1904,8 @@
     <string name="k2go_auth_notice_never_confirm">Stop reminders</string>
     <string name="k2go_auth_notice_never_keep">Keep reminders</string>
     <string name="k2go_auth_list_hint">Admin passwords that K2Go uses for Books, Courses and Host code. Change them here, so the app and the box stay in step.</string>
+    <!-- K2GO-593: status of a module after the user stopped its install with Cancel. Shown in the module list, the setup screen and the module install screen. -->
+    <string name="k2go_mod_phase_canceled">Canceled</string>
+    <!-- K2GO-593: header of the setup screen when a module install ended with a failed or canceled module. -->
+    <string name="k2go_setup_modules_stopped">The install stopped. Check each module below.</string>
 </resources>

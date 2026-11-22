@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">Erinnerungen beenden</string>
     <string name="k2go_auth_notice_never_keep">Erinnerungen behalten</string>
     <string name="k2go_auth_list_hint">Admin-Passwörter, die K2Go für Ein Buch lesen, Einen Kurs belegen und Code hosten verwendet. Ändere sie hier, damit App und Box synchron bleiben.</string>
+    <string name="k2go_mod_phase_canceled">Abgebrochen</string>
+    <string name="k2go_setup_modules_stopped">Die Installation wurde beendet. Prüfen Sie unten jedes Modul.</string>
 </resources>

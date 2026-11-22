@@ -1700,4 +1700,6 @@
     <string name="k2go_auth_notice_never_confirm">إيقاف التذكيرات</string>
     <string name="k2go_auth_notice_never_keep">إبقاء التذكيرات</string>
     <string name="k2go_auth_list_hint">كلمات مرور المسؤول التي يستخدمها K2Go للبطاقات: اقرأ كتابًا، وخذ دورة، واستضف الشيفرة. غيّرها هنا ليبقى التطبيق والصندوق متوافقين.</string>
+    <string name="k2go_mod_phase_canceled">أُلغي</string>
+    <string name="k2go_setup_modules_stopped">توقّف التثبيت. تحقّق من كل وحدة أدناه.</string>
 </resources>

@@ -1703,4 +1703,6 @@
     <string name="k2go_auth_notice_never_confirm">Διακοπή υπενθυμίσεων</string>
     <string name="k2go_auth_notice_never_keep">Διατήρηση υπενθυμίσεων</string>
     <string name="k2go_auth_list_hint">Κωδικοί διαχειριστή που χρησιμοποιεί το K2Go για Διάβασε ένα βιβλίο, Παρακολούθησε ένα μάθημα και Φιλοξενία κώδικα. Άλλαξέ τους εδώ, ώστε η εφαρμογή και το κουτί να μένουν συγχρονισμένα.</string>
+    <string name="k2go_mod_phase_canceled">Ακυρώθηκε</string>
+    <string name="k2go_setup_modules_stopped">Η εγκατάσταση σταμάτησε. Ελέγξτε παρακάτω κάθε module.</string>
 </resources>

@@ -1710,4 +1710,6 @@
     <string name="k2go_auth_notice_never_confirm">Искључи подсетнике</string>
     <string name="k2go_auth_notice_never_keep">Задржи подсетнике</string>
     <string name="k2go_auth_list_hint">Администраторске лозинке које K2Go користи за Књиге, Курсеве и Хостуј код. Мењајте их овде, да би апликација и сервер остали усклађени.</string>
+    <string name="k2go_mod_phase_canceled">Отказано</string>
+    <string name="k2go_setup_modules_stopped">Инсталација је заустављена. Проверите сваки модул испод.</string>
 </resources>

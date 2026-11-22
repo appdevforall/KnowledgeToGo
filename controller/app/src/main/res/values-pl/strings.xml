@@ -1708,4 +1708,6 @@
     <string name="k2go_auth_notice_never_confirm">Wyłącz przypomnienia</string>
     <string name="k2go_auth_notice_never_keep">Zachowaj przypomnienia</string>
     <string name="k2go_auth_list_hint">Hasła administratora, których K2Go używa dla kart: Przeczytaj książkę, Weź udział w kursie i Hostuj kod. Zmieniaj je tutaj, aby aplikacja i serwer pozostały zgodne.</string>
+    <string name="k2go_mod_phase_canceled">Anulowano</string>
+    <string name="k2go_setup_modules_stopped">Instalacja została zatrzymana. Sprawdź poniżej każdy moduł.</string>
 </resources>

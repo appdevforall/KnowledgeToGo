@@ -1773,4 +1773,6 @@
     <string name="k2go_auth_notice_never_confirm">रिमाइंडर बंद करें</string>
     <string name="k2go_auth_notice_never_keep">रिमाइंडर रखें</string>
     <string name="k2go_auth_list_hint">K2Go इन कार्डों के लिए ये एडमिन पासवर्ड उपयोग करता है: किताब पढ़ें, कोर्स करें और कोड होस्ट करें। इन्हें यहीं बदलें, ताकि ऐप और बॉक्स में तालमेल बना रहे।</string>
+    <string name="k2go_mod_phase_canceled">रद्द किया गया</string>
+    <string name="k2go_setup_modules_stopped">इंस्टॉल रुक गया। नीचे हर मॉड्यूल देखें।</string>
 </resources>

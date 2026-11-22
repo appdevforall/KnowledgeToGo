@@ -1695,4 +1695,6 @@
     <string name="k2go_auth_notice_never_confirm">Dừng lời nhắc</string>
     <string name="k2go_auth_notice_never_keep">Giữ lời nhắc</string>
     <string name="k2go_auth_list_hint">Mật khẩu quản trị mà K2Go dùng cho Sách, Khóa học và Lưu trữ mã. Hãy đổi chúng ở đây để ứng dụng và hộp luôn khớp nhau.</string>
+    <string name="k2go_mod_phase_canceled">Đã hủy</string>
+    <string name="k2go_setup_modules_stopped">Quá trình cài đặt đã dừng. Hãy kiểm tra từng mô-đun bên dưới.</string>
 </resources>

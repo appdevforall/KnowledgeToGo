@@ -1696,4 +1696,6 @@
     <string name="k2go_auth_notice_never_confirm">توقف یادآوری‌ها</string>
     <string name="k2go_auth_notice_never_keep">حفظ یادآوری‌ها</string>
     <string name="k2go_auth_list_hint">رمزهای عبور مدیر که K2Go برای خواندن یک کتاب، گذراندن یک دوره و میزبانی کد استفاده می‌کند. آن‌ها را اینجا تغییر دهید تا برنامه و جعبه هماهنگ بمانند.</string>
+    <string name="k2go_mod_phase_canceled">لغو شد</string>
+    <string name="k2go_setup_modules_stopped">نصب متوقف شد. هر ماژول را در پایین بررسی کنید.</string>
 </resources>

@@ -1716,4 +1716,6 @@
     <string name="k2go_auth_notice_never_confirm">நினைவூட்டல்களை நிறுத்து</string>
     <string name="k2go_auth_notice_never_keep">நினைவூட்டல்களை வைத்திரு</string>
     <string name="k2go_auth_list_hint">புத்தகங்கள், பாடநெறிகள் மற்றும் குறியீட்டை ஹோஸ்ட் செய் ஆகியவற்றுக்கு K2Go பயன்படுத்தும் நிர்வாகி கடவுச்சொற்கள். செயலியும் பெட்டியும் ஒத்திசைவாக இருக்க, அவற்றை இங்கே மாற்றவும்.</string>
+    <string name="k2go_mod_phase_canceled">ரத்துசெய்யப்பட்டது</string>
+    <string name="k2go_setup_modules_stopped">நிறுவல் நின்றது. கீழே ஒவ்வொரு தொகுதியையும் சரிபார்க்கவும்.</string>
 </resources>

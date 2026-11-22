@@ -1709,4 +1709,6 @@
     <string name="k2go_auth_notice_never_confirm">રિમાઇન્ડર બંધ કરો</string>
     <string name="k2go_auth_notice_never_keep">રિમાઇન્ડર રાખો</string>
     <string name="k2go_auth_list_hint">એડમિન પાસવર્ડ, જે K2Go પુસ્તક વાંચો, કોર્સ કરો અને કોડ હોસ્ટ કરો માટે વાપરે છે. ઍપ અને બૉક્સ સુમેળમાં રહે તે માટે તેમને અહીં બદલો.</string>
+    <string name="k2go_mod_phase_canceled">રદ કર્યું</string>
+    <string name="k2go_setup_modules_stopped">ઇન્સ્ટૉલ અટકી ગયું. નીચે દરેક મૉડ્યુલ તપાસો.</string>
 </resources>

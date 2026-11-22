@@ -1697,4 +1697,6 @@
     <string name="k2go_auth_notice_never_confirm">Oprește mementourile</string>
     <string name="k2go_auth_notice_never_keep">Păstrează mementourile</string>
     <string name="k2go_auth_list_hint">Parolele de administrator pe care K2Go le folosește pentru Cărți, Cursuri și Găzduiește cod. Schimbă-le aici, ca aplicația și serverul să rămână sincronizate.</string>
+    <string name="k2go_mod_phase_canceled">Anulată</string>
+    <string name="k2go_setup_modules_stopped">Instalarea s-a oprit. Verifică fiecare modul de mai jos.</string>
 </resources>
