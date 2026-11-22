@@ -37,6 +37,9 @@ echo running > "$STATUS" 2>/dev/null || true
     export FORGEJO_REPOS="$FORGEJO_REPOS_FULL"
   fi
   if seed_forgejo; then
+    # K2GO-592: refresh right after the seed. Only the refresh writes the status description of
+    # each repo. Best-effort: a refresh problem does not fail the seed.
+    refresh_forgejo || true
     echo done > "$STATUS" 2>/dev/null || true
   else
     echo error > "$STATUS" 2>/dev/null || true
