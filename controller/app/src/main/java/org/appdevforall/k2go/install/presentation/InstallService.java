@@ -1102,7 +1102,7 @@ public final class InstallService extends Service {
         // heartbeat — but this line says so in the log, so the missing backstop is noticed, not hidden.
         if (moduleWriteDirRel(moduleKey) == null) {
             log("[Stall] no write-dir backstop mapped for '" + moduleKey
-                    + "'; stall watch relies on the log heartbeat only");
+                    + "'; stall watch relies on the log heartbeat and the Ansible temp dir");
         }
         moduleStallCheck = new Runnable() {
             @Override public void run() {
@@ -1154,13 +1154,27 @@ public final class InstallService extends Service {
         if (prootEngine != null) prootEngine.killProcess();
     }
 
-    /** Total bytes under the module's write directory on the host rootfs, or -1 if unknown/absent. */
+    /**
+     * K2GO-592: Ansible get_url downloads into its own temp dir and moves the file to the module dir
+     * only at the end, so a long download grows this dir, not the module dir.
+     */
+    private static final String ANSIBLE_TMP_REL = "root/.ansible/tmp";
+
+    /**
+     * Total bytes under the module's write directory plus the Ansible temp dir on the host rootfs,
+     * or -1 if neither is there. A change in either one is movement.
+     */
     private long moduleWriteDirSize(String key) {
+        if (debianRootfs == null) return -1L;
+        long total = -1L;
         String rel = moduleWriteDirRel(key);
-        if (rel == null || debianRootfs == null) return -1L;
-        File d = new File(debianRootfs, rel);
-        if (!d.isDirectory()) return -1L;
-        return boundedDirSize(d, 20000);
+        for (String r : new String[]{rel, ANSIBLE_TMP_REL}) {
+            if (r == null) continue;
+            File d = new File(debianRootfs, r);
+            if (!d.isDirectory()) continue;
+            total = Math.max(total, 0L) + boundedDirSize(d, 20000);
+        }
+        return total;
     }
 
     /**
@@ -1179,7 +1193,7 @@ public final class InstallService extends Service {
             case "maps":       return "library/downloads/maps";      // aria2c logs a 60s summary here throughout the download
             case "matomo":     return "library/www/matomo";
             case "kolibri":    return "var/cache/apt/archives";       // chatty on stdout too; disk is the fallback
-            case "forgejo":    return "library/forgejo";             // K2GO-417: ~100 MB binary download from codeberg is silent to ansible; the growing binary here is the only progress signal (else the 360s hard-stall false-kills it)
+            case "forgejo":    return "library/forgejo";             // K2GO-417: final home of the ~100 MB binary; while it downloads, the growth is in ANSIBLE_TMP_REL (K2GO-592)
             default:           return null;
         }
     }
