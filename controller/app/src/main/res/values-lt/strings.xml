@@ -1694,7 +1694,8 @@
     <string name="k2go_auth_notice_mismatch_title">Automatinis prisijungimas neveikia</string>
     <string name="k2go_auth_notice_mismatch_msg">Paslaugos %1$s administratoriaus slaptažodis buvo pakeistas ne šioje programoje. Pataisykite arba atkurkite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
     <string name="k2go_auth_notice_factory_title">Naudojamas gamyklinis slaptažodis</string>
-    <string name="k2go_auth_notice_factory_msg">Gamyklinis administratoriaus slaptažodis vis dar veikia: %1$s. Bet kas tame pačiame Wi-Fi tinkle ar prieigos taške gali prisijungti ir pakeisti jūsų biblioteką. Pakeiskite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
+    <string name="k2go_auth_notice_factory_lead">Gamyklinis administratoriaus slaptažodis vis dar veikia:</string>
+    <string name="k2go_auth_notice_factory_risk">Bet kas tame pačiame Wi-Fi tinkle ar prieigos taške gali prisijungti ir pakeisti jūsų biblioteką. Pakeiskite jį skiltyje Nustatymai, Tapatybės nustatymas.</string>
     <string name="k2go_auth_chip_no_account">Nėra administratoriaus paskyros</string>
     <string name="k2go_auth_chip_not_running">Neveikia</string>
     <string name="k2go_auth_pw_state_no_account">Šioje paslaugoje administratoriaus paskyros nėra.</string>

@@ -1753,7 +1753,8 @@
     <string name="k2go_auth_notice_mismatch_title">Автоматический вход не работает</string>
     <string name="k2go_auth_notice_mismatch_msg">Пароль администратора %1$s был изменён вне этого приложения. Исправьте или сбросьте его в разделе Настройки, Аутентификация.</string>
     <string name="k2go_auth_notice_factory_title">Используется заводской пароль</string>
-    <string name="k2go_auth_notice_factory_msg">Заводской пароль администратора всё ещё работает в: %1$s. Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
+    <string name="k2go_auth_notice_factory_lead">Заводской пароль администратора всё ещё работает в:</string>
+    <string name="k2go_auth_notice_factory_risk">Любой в той же сети Wi-Fi или точке доступа может войти и изменить вашу библиотеку. Измените его в разделе Настройки, Аутентификация.</string>
     <string name="k2go_auth_chip_no_account">Нет учётной записи администратора</string>
     <string name="k2go_auth_chip_not_running">Не запущен</string>
     <string name="k2go_auth_pw_state_no_account">Учётной записи администратора нет в этой службе.</string>

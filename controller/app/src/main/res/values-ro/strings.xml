@@ -1677,7 +1677,8 @@
     <string name="k2go_auth_notice_mismatch_title">Autentificarea automată nu funcționează</string>
     <string name="k2go_auth_notice_mismatch_msg">Parola de administrator pentru %1$s a fost schimbată în afara acestei aplicații. Repar-o sau reseteaz-o în Setări, Autentificare.</string>
     <string name="k2go_auth_notice_factory_title">Parolă din fabrică în uz</string>
-    <string name="k2go_auth_notice_factory_msg">Parola de administrator din fabrică încă funcționează în: %1$s. Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica și îți poate modifica biblioteca. Schimbă parola în Setări, Autentificare.</string>
+    <string name="k2go_auth_notice_factory_lead">Parola de administrator din fabrică încă funcționează în:</string>
+    <string name="k2go_auth_notice_factory_risk">Oricine este în aceeași rețea Wi-Fi sau hotspot se poate autentifica și îți poate modifica biblioteca. Schimbă parola în Setări, Autentificare.</string>
     <string name="k2go_auth_chip_no_account">Niciun cont de administrator</string>
     <string name="k2go_auth_chip_not_running">Oprit</string>
     <string name="k2go_auth_pw_state_no_account">Contul de administrator nu există în acest serviciu.</string>

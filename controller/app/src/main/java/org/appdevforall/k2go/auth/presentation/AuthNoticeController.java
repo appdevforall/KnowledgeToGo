@@ -14,6 +14,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -26,6 +30,7 @@ import org.appdevforall.k2go.auth.domain.PasswordRepository;
 import org.appdevforall.k2go.auth.domain.PasswordState;
 import org.appdevforall.k2go.system.data.PlatformEvidence;
 import org.appdevforall.k2go.system.domain.PlatformPresence;
+import org.appdevforall.k2go.ui.K2GoText;
 import org.appdevforall.k2go.ui.dialog.BrandDialog;
 
 import java.util.ArrayList;
@@ -69,11 +74,11 @@ public final class AuthNoticeController {
 
     private static void show(Activity act, AuthNotice notice, Runnable openAuthentication) {
         if (notice.kind == AuthNotice.Kind.NONE) return;
-        List<String> names = new ArrayList<>();
-        for (String s : notice.services) names.add(AuthServices.productName(s));
-        String list = TextUtils.join(", ", names);
         ContextThemeWrapper ctx = new ContextThemeWrapper(act, R.style.Theme_K2Go);
         if (notice.kind == AuthNotice.Kind.MISMATCH) {
+            List<String> names = new ArrayList<>();
+            for (String s : notice.services) names.add(AuthServices.productName(s));
+            String list = TextUtils.join(", ", names);
             new BrandDialog(ctx)
                     .setTitle(R.string.k2go_auth_notice_mismatch_title)
                     .setMessage(act.getString(R.string.k2go_auth_notice_mismatch_msg, list))
@@ -84,11 +89,59 @@ public final class AuthNoticeController {
         }
         new BrandDialog(ctx)
                 .setTitle(R.string.k2go_auth_notice_factory_title)
-                .setMessage(act.getString(R.string.k2go_auth_notice_factory_msg, list))
+                .setMessage(R.string.k2go_auth_notice_factory_lead)
+                .setContentView(serviceList(ctx, notice.services, ctx.getString(R.string.k2go_auth_notice_factory_risk)))
                 .setPositive(R.string.k2go_auth_notice_open, openAuthentication::run)
                 .setNeutral(R.string.k2go_auth_notice_never, () -> confirmStop(ctx, () -> { }, () -> { }))
+                .setNeutralColor(R.color.k2go_warn_ink)   // allowed, but not advised
                 .setNegative(R.string.k2go_auth_notice_close, null)
                 .show();
+    }
+
+    /**
+     * The services as bullet items in two columns, each one its screen name over the product name in
+     * parentheses ("Read a book" / "(Calibre-Web)"), then the risk line. Two columns keep a long list
+     * short: the rows grow as N / 2.
+     */
+    private static View serviceList(Context ctx, List<String> services, String risk) {
+        LinearLayout column = new LinearLayout(ctx);
+        column.setOrientation(LinearLayout.VERTICAL);
+        int gap = Math.round(8 * ctx.getResources().getDisplayMetrics().density);
+        for (int i = 0; i < services.size(); i += 2) {
+            LinearLayout row = new LinearLayout(ctx);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            for (int j = i; j < i + 2; j++) {
+                View cell = j < services.size() ? serviceItem(ctx, services.get(j)) : new View(ctx);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                if (j > i) lp.setMarginStart(gap);
+                row.addView(cell, lp);
+            }
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (i > 0) rlp.topMargin = gap;
+            column.addView(row, rlp);
+        }
+        TextView riskView = K2GoText.label(ctx, risk, R.color.dash_text_secondary);   // as the dialog message
+        riskView.setLineSpacing(4 * ctx.getResources().getDisplayMetrics().density, 1f);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = Math.round(12 * ctx.getResources().getDisplayMetrics().density);
+        column.addView(riskView, lp);
+        return column;
+    }
+
+    private static View serviceItem(Context ctx, String service) {
+        LinearLayout item = new LinearLayout(ctx);
+        item.setOrientation(LinearLayout.HORIZONTAL);
+        item.addView(K2GoText.label(ctx, "•  ", R.color.k2go_ink));   // bullet
+        LinearLayout text = new LinearLayout(ctx);
+        text.setOrientation(LinearLayout.VERTICAL);
+        TextView name = K2GoText.label(ctx, ctx.getString(AuthScreenNames.of(service)), R.color.k2go_ink);
+        name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
+        text.addView(name);
+        text.addView(K2GoText.label(ctx, "(" + AuthServices.productName(service) + ")", R.color.k2go_muted));
+        item.addView(text);
+        return item;
     }
 
     /** Turning the reminder off always asks first, from the notice or from the Settings switch: the

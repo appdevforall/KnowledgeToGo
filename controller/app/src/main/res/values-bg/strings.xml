@@ -1684,7 +1684,8 @@
     <string name="k2go_auth_notice_mismatch_title">Автоматичното вписване не работи</string>
     <string name="k2go_auth_notice_mismatch_msg">Администраторската парола на %1$s е променена извън това приложение. Поправете я или върнете фабричната в Настройки, Удостоверяване.</string>
     <string name="k2go_auth_notice_factory_title">Използва се фабрична парола</string>
-    <string name="k2go_auth_notice_factory_msg">Фабричната администраторска парола все още работи в: %1$s. Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише и да промени библиотеката ви. Сменете я в Настройки, Удостоверяване.</string>
+    <string name="k2go_auth_notice_factory_lead">Фабричната администраторска парола все още работи в:</string>
+    <string name="k2go_auth_notice_factory_risk">Всеки в същата Wi-Fi мрежа или точка за достъп може да се впише и да промени библиотеката ви. Сменете я в Настройки, Удостоверяване.</string>
     <string name="k2go_auth_chip_no_account">Няма администраторски акаунт</string>
     <string name="k2go_auth_chip_not_running">Не работи</string>
     <string name="k2go_auth_pw_state_no_account">Администраторският акаунт не присъства в тази услуга.</string>

@@ -1677,7 +1677,8 @@
     <string name="k2go_auth_notice_mismatch_title">تسجيل الدخول التلقائي لا يعمل</string>
     <string name="k2go_auth_notice_mismatch_msg">تم تغيير كلمة مرور المسؤول لـ %1$s خارج هذا التطبيق. أصلحها أو أعد تعيينها في الإعدادات، المصادقة.</string>
     <string name="k2go_auth_notice_factory_title">كلمة مرور المصنع قيد الاستخدام</string>
-    <string name="k2go_auth_notice_factory_msg">لا تزال كلمة مرور المسؤول الافتراضية من المصنع تعمل في: %1$s. يمكن لأي شخص على شبكة Wi-Fi نفسها أو نقطة الاتصال نفسها تسجيل الدخول وتغيير مكتبتك. غيّرها في الإعدادات، المصادقة.</string>
+    <string name="k2go_auth_notice_factory_lead">لا تزال كلمة مرور المسؤول الافتراضية من المصنع تعمل في:</string>
+    <string name="k2go_auth_notice_factory_risk">يمكن لأي شخص على شبكة Wi-Fi نفسها أو نقطة الاتصال نفسها تسجيل الدخول وتغيير مكتبتك. غيّرها في الإعدادات، المصادقة.</string>
     <string name="k2go_auth_chip_no_account">لا يوجد حساب مسؤول</string>
     <string name="k2go_auth_chip_not_running">متوقف</string>
     <string name="k2go_auth_pw_state_no_account">حساب المسؤول غير موجود في هذه الخدمة.</string>

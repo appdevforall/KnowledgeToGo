@@ -830,11 +830,10 @@ public class LibraryActivity extends AppCompatActivity
         setGateStatusBar(false);   // gate is lifting; return the status-bar icons to the theme default
         hideInstallProgress();
         maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
-        maybeCheckAuthNotice();
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.appdevforall.k2go.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
-        if (reduceMotion()) { bootGate.setVisibility(View.GONE); return; }
+        if (reduceMotion()) { bootGate.setVisibility(View.GONE); maybeCheckAuthNotice(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("B_OPEN_FLIP");
@@ -844,6 +843,7 @@ public class LibraryActivity extends AppCompatActivity
                 if (bootGate != null) {
                     bootGate.setVisibility(View.GONE);
                 }
+                maybeCheckAuthNotice();   // K2GO-552: the notice comes after the gate is gone
             }
         });
         bootGate.playAnimation();
@@ -1009,11 +1009,13 @@ public class LibraryActivity extends AppCompatActivity
         updateController.checkForUpdates(false);
     }
 
-    /** K2GO-552: once per launch, after the gate opened, never during a first install (same rule as
+    /** K2GO-552: once per launch, after the gate opened AND its open animation ended (the gate view is
+     *  gone, so the notice is the first thing over Home), never during a first install (same rule as
      *  the OTA check), and only when Home says "Ready" (the services answered): warn about a broken
      *  auto-login or a factory admin password. Home calls it when its header turns "Ready". */
     void maybeCheckAuthNotice() {
         if (authNoticeChecked || installing || !gateDismissed) return;
+        if (bootGate != null && bootGate.getVisibility() != View.GONE) return;
         androidx.fragment.app.Fragment f = getSupportFragmentManager().findFragmentById(R.id.k2go_nav_host);
         if (!(f instanceof LibraryHomeFragment) || !((LibraryHomeFragment) f).isReady()) return;
         authNoticeChecked = true;

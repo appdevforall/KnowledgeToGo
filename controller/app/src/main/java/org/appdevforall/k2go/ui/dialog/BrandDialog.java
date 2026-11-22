@@ -80,6 +80,7 @@ public final class BrandDialog {
     private OnClick negativeClick;
     private CharSequence neutralText;
     private OnClick neutralClick;
+    @ColorRes private int neutralColorRes;
     private boolean cancelable = true;
     private OnClick cancelClick;
     private boolean dismissOnPositive = true;
@@ -215,6 +216,13 @@ public final class BrandDialog {
 
     public BrandDialog setNeutral(@StringRes int text, @Nullable OnClick click) {
         return setNeutral(context.getString(text), click);
+    }
+
+    /** K2GO-552: the neutral button in a colour token instead of muted, e.g. {@code k2go_warn_ink} for
+     *  a choice that is allowed but not advised ("Don't show again"). */
+    public BrandDialog setNeutralColor(@ColorRes int colorRes) {
+        this.neutralColorRes = colorRes;
+        return this;
     }
 
     public BrandDialog setCancelable(boolean cancelable) {
@@ -369,6 +377,7 @@ public final class BrandDialog {
         }
         if (neutralText != null) {
             neutral.setText(neutralText);
+            if (neutralColorRes != 0) neutral.setTextColor(ContextCompat.getColor(context, neutralColorRes));
             neutral.setVisibility(View.VISIBLE);
             neutral.setOnClickListener(v -> {
                 if (neutralClick != null) {

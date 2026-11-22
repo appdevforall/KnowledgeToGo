@@ -1764,7 +1764,8 @@
     <string name="k2go_auth_notice_mismatch_title">La connexion automatique ne fonctionne pas</string>
     <string name="k2go_auth_notice_mismatch_msg">Le mot de passe administrateur de %1$s a été modifié en dehors de cette app. Réparez-le ou rétablissez-le dans Paramètres, Authentification.</string>
     <string name="k2go_auth_notice_factory_title">Mot de passe d\'usine utilisé</string>
-    <string name="k2go_auth_notice_factory_msg">Le mot de passe administrateur d\'usine fonctionne encore dans : %1$s. Toute personne sur le même Wi-Fi ou point d\'accès peut se connecter et modifier votre bibliothèque. Changez-le dans Paramètres, Authentification.</string>
+    <string name="k2go_auth_notice_factory_lead">Le mot de passe administrateur d\'usine fonctionne encore dans :</string>
+    <string name="k2go_auth_notice_factory_risk">Toute personne sur le même Wi-Fi ou point d\'accès peut se connecter et modifier votre bibliothèque. Changez-le dans Paramètres, Authentification.</string>
     <string name="k2go_auth_chip_no_account">Aucun compte administrateur</string>
     <string name="k2go_auth_chip_not_running">Arrêté</string>
     <string name="k2go_auth_pw_state_no_account">Le compte administrateur n\'est pas présent dans ce service.</string>

@@ -1687,7 +1687,8 @@
     <string name="k2go_auth_notice_mismatch_title">Automatyczne logowanie nie działa</string>
     <string name="k2go_auth_notice_mismatch_msg">Hasło administratora usługi %1$s zostało zmienione poza tą aplikacją. Napraw je lub przywróć w: Ustawienia, Uwierzytelnianie.</string>
     <string name="k2go_auth_notice_factory_title">Używane jest hasło fabryczne</string>
-    <string name="k2go_auth_notice_factory_msg">Fabryczne hasło administratora nadal działa w: %1$s. Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
+    <string name="k2go_auth_notice_factory_lead">Fabryczne hasło administratora nadal działa w:</string>
+    <string name="k2go_auth_notice_factory_risk">Każdy w tej samej sieci Wi-Fi lub hotspocie może się zalogować i zmienić Twoją bibliotekę. Zmień je w: Ustawienia, Uwierzytelnianie.</string>
     <string name="k2go_auth_chip_no_account">Brak konta administratora</string>
     <string name="k2go_auth_chip_not_running">Nie działa</string>
     <string name="k2go_auth_pw_state_no_account">W tej usłudze nie ma konta administratora.</string>

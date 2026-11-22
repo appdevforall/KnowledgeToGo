@@ -1876,8 +1876,10 @@
     <!-- Start-up notice when a service rejects the stored admin password. %1$s = service names, for example "Forgejo" or "Calibre-Web, Kolibri". -->
     <string name="k2go_auth_notice_mismatch_msg">The admin password of %1$s was changed outside this app. Repair it or reset it in Settings, Authentication.</string>
     <string name="k2go_auth_notice_factory_title">Factory password in use</string>
-    <!-- Start-up notice while a service still takes the factory admin password. %1$s = service names, for example "Calibre-Web" or "Calibre-Web, Kolibri, Forgejo". -->
-    <string name="k2go_auth_notice_factory_msg">The factory admin password still works in: %1$s. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
+    <!-- Start-up notice while a service still takes the factory admin password. The services follow this line as a list (screen name, then the product name in parentheses). -->
+    <string name="k2go_auth_notice_factory_lead">The factory admin password still works in:</string>
+    <!-- Start-up notice: the risk, after the list of services above. -->
+    <string name="k2go_auth_notice_factory_risk">Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
     <!-- Settings > Authentication list: badge of a service whose admin account is not present. -->
     <string name="k2go_auth_chip_no_account">No admin account</string>
     <!-- Settings > Authentication list: badge of an installed service that does not answer now (stopped). -->

@@ -478,7 +478,7 @@ public class SettingsSubFragment extends Fragment {
         final java.util.concurrent.atomic.AtomicReference<java.util.function.Consumer<Boolean>> setLocked =
                 new java.util.concurrent.atomic.AtomicReference<>();
         for (String id : services) {
-            authServiceRow(ctx, list, id, getString(authScreenName(id)),
+            authServiceRow(ctx, list, id, getString(org.appdevforall.k2go.auth.presentation.AuthScreenNames.of(id)),
                     org.appdevforall.k2go.auth.domain.AuthServices.productName(id), has -> {
                         hasAccount.put(id, has);
                         if (hasAccount.size() == services.size() && setLocked.get() != null) {
@@ -490,17 +490,8 @@ public class SettingsSubFragment extends Fragment {
     }
 
     /** K2GO-552: turns the start-up "factory password in use" reminder back on (or off). Turning it
-     *  off at start-up asks for a confirmation first (AuthNoticeController). */
-    /** The screen name of a service in Settings > Authentication (K2GO-417 added Forgejo). */
-    private static int authScreenName(String id) {
-        switch (id) {
-            case "calibre": return R.string.k2go_auth_svc_books;
-            case "kolibri": return R.string.k2go_auth_svc_courses;
-            default: return R.string.k2go_card_forgejo;
-        }
-    }
-
-    /** Returns the lock: locked shows the switch off and disabled without changing the stored choice;
+     *  off at start-up asks for a confirmation first (AuthNoticeController).
+     *  Returns the lock: locked shows the switch off and disabled without changing the stored choice;
      *  unlocked shows the stored choice again. */
     private java.util.function.Consumer<Boolean> factoryReminderRow(Context ctx, LinearLayout list) {
         final org.appdevforall.k2go.auth.data.FactoryReminderStore store =
