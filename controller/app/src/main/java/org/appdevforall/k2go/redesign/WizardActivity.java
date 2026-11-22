@@ -15,13 +15,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import org.appdevforall.k2go.ui.dialog.BrandDialog;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.applang.data.AppLocaleController;
 import org.appdevforall.k2go.applang.data.ContentLanguage;
 import org.appdevforall.k2go.applang.domain.AppLanguage;
 import org.appdevforall.k2go.applang.domain.SupportedAppLanguages;
-import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import java.util.Locale;
 
 /**
@@ -205,24 +203,9 @@ public class WizardActivity extends AppCompatActivity {
         }
     }
 
-    /** K2GO-588: the one-time privacy choice, asked in every build (F-Droid too: crash reports and
-     *  online content); runs {@code onDone} after the choice, or at once if it was asked before. */
+    /** K2GO-588: the one-time privacy choice; runs {@code onDone} after it, or at once. */
     private void maybeAskAnalytics(Runnable onDone) {
-        if (OnlineConsent.wasAsked(this)) { onDone.run(); return; }
-        new BrandDialog(this)
-                .setTitle(R.string.k2go_online_title)
-                .setMessage(getString(OnlineConsent.choiceBody(), getString(R.string.app_name)))
-                .setCancelable(false)
-                .setPositive(OnlineConsent.choiceLabel(), () -> setAnalytics(true, onDone))
-                .setNegative(R.string.analytics_enroll_decline, () -> setAnalytics(false, onDone))
-                .show();
-    }
-
-    private void setAnalytics(boolean on, Runnable onDone) {
-        OnlineConsent.setEnabled(this, on);
-        OnlineConsent.markAsked(this);
-        org.appdevforall.k2go.analytics.AnalyticsClient.with(this).applyConsent();
-        onDone.run();
+        org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.askOnce(this, onDone);
     }
 
     private void goBack() {

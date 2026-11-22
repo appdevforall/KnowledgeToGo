@@ -102,6 +102,7 @@ public class LibraryActivity extends AppCompatActivity
     // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
     private org.appdevforall.k2go.update.presentation.UpdateController updateController;
     private boolean otaAutoChecked = false;
+    private boolean onlineChoiceAsking = false;   // K2GO-588: the one-time question is showing
     /** K2GO-552: the admin-password notice runs once per launch, once the library is usable. */
     private boolean authNoticeChecked = false;
 
@@ -959,6 +960,7 @@ public class LibraryActivity extends AppCompatActivity
         if (preparing != null) preparing.onResumed();   // K2GO-553: the reconciler may boot during the splash
         if (serverController != null) serverController.onResume();
         if (updateController != null) updateController.registerDownloadReceiver();
+        maybeAskOnlineChoice();   // K2GO-588
         maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
         maybeCheckAuthNotice();
         maybeStartDiskGuardReport();   // K2GO-391
@@ -990,6 +992,18 @@ public class LibraryActivity extends AppCompatActivity
         org.appdevforall.k2go.env.EnvironmentProgress.clearLineListener(pdsmLines);
         if (serverController != null) serverController.onPause();
         if (updateController != null) updateController.unregisterDownloadReceiver();
+    }
+
+    /** K2GO-588: an install from before the one privacy choice is asked once, after the boot gate
+     *  and never during a first install (the wizard asks then). Until the answer: Keep offline. */
+    private void maybeAskOnlineChoice() {
+        if (onlineChoiceAsking || installing || !gateDismissed
+                || org.appdevforall.k2go.delivery.data.OnlineConsent.wasAsked(this)) return;
+        onlineChoiceAsking = true;
+        org.appdevforall.k2go.delivery.presentation.OnlineChoiceDialog.askOnce(this, () -> {
+            onlineChoiceAsking = false;
+            maybeAutoCheckUpdate();
+        });
     }
 
     /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
