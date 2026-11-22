@@ -42,11 +42,15 @@ export const probeLogin: Probe = async (service, cred) => {
         else await verifyCalibreCredentials(cred.username, cred.password);
         return 'ok';
     } catch (e) {
-        let rejected: boolean;
         if (e instanceof KolibriAuthError) {
             if (e.reason === 'permission') return 'ok';   // signs in; content rights are another check
-            rejected = e.reason === 'credentials';
-        } else if (e instanceof ForgejoAuthError) {
+            // Kolibri says itself when the account is not present: HTTP 400 NOT_FOUND on "username"
+            // (a wrong password is a 401).
+            if (e.reason === 'protocol' && /"NOT_FOUND"[^}]*"field":"username"/.test(e.message)) return 'absent';
+            return e.reason === 'credentials' ? 'rejected' : 'unreachable';
+        }
+        let rejected: boolean;
+        if (e instanceof ForgejoAuthError) {
             rejected = e.reason === 'credentials';
         } else {
             rejected = /invalid.*cred/i.test(e instanceof Error ? e.message : '');
@@ -56,18 +60,15 @@ export const probeLogin: Probe = async (service, cred) => {
     }
 };
 
-/** Is the admin account present in the service? Asked only after a rejected sign-in. null = could not
+/** Is the admin account present in Forgejo or Calibre-Web? Asked only after a rejected sign-in. null = could not
  *  tell: the caller keeps 'rejected', so a real changed password is never hidden. */
 async function accountPresent(service: ServiceName, username: string): Promise<boolean | null> {
     if (service === 'forgejo') {
         const s = await forgejoStatus();   // owns the "admin exists" fact (public GET /users/{admin})
         return s.reachable ? s.adminExists : null;
     }
-    const env = { K2GO_USER: username };
-    const code = service === 'calibre'
-        ? await exitCode(CALIBRE_PY, ['-c', CALIBRE_HAS, CALIBRE_DB], env)
-        : await exitCode('kolibri', ['manage', 'shell', '-c', KOLIBRI_HAS],
-            { ...env, KOLIBRI_HOME: process.env.KOLIBRI_HOME || '/library/kolibri/' });
+    if (service !== 'calibre') return null;   // Kolibri answers it in the sign-in itself (above)
+    const code = await exitCode(CALIBRE_PY, ['-c', CALIBRE_HAS, CALIBRE_DB], { K2GO_USER: username });
     return code === 0 ? true : code === 3 ? false : null;
 }
 
@@ -115,12 +116,6 @@ const CALIBRE_HAS = [
     'db = sqlite3.connect(sys.argv[1])',
     'r = db.execute("SELECT 1 FROM user WHERE lower(name) = lower(?)", (os.environ["K2GO_USER"],)).fetchone()',
     'sys.exit(0 if r else 3)',
-].join('\n');
-
-const KOLIBRI_HAS = [
-    'import os, sys',
-    'from kolibri.core.auth.models import FacilityUser',
-    'sys.exit(0 if FacilityUser.objects.filter(username=os.environ["K2GO_USER"]).exists() else 3)',
 ].join('\n');
 
 const KOLIBRI_SET = [
