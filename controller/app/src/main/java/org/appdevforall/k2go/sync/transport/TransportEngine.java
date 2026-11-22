@@ -33,6 +33,13 @@ public interface TransportEngine {
         void onComplete(String message);
 
         void onError(String error);
+
+        /**
+         * The pull is about to write into the destination for the first time. Before this, a failure
+         * leaves the destination as it was. Called once, on the pull thread, before the first write.
+         */
+        default void onWriteStarting() {
+        }
     }
 
     /** Callback for the dry-run transfer-size estimate. */

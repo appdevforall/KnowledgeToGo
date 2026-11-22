@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdevforall.k2go.PortalActivity;
@@ -29,6 +27,7 @@ import org.appdevforall.k2go.ServerStateRepository;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.kolibri.presentation.KolibriProvisioner;
 import org.appdevforall.k2go.system.data.PlatformEvidence;
+import org.appdevforall.k2go.system.data.PlatformProbe;
 import org.appdevforall.k2go.system.domain.PlatformPresence;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -397,11 +396,8 @@ public class LibraryHomeFragment extends Fragment {
         } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
-                final PlatformPresence.Evidence ev = probe(c.endpoint);
-                // Recorded off the main thread and before any view gate: what an endpoint said
-                // is a fact about the box, and throwing it away because the fragment went is
-                // exactly the case the store exists for.
-                PlatformEvidence.record(c.endpoint, ev);
+                // Records the answer in PlatformEvidence before any view gate (K2GO-552).
+                final PlatformPresence.Evidence ev = PlatformProbe.probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
@@ -564,8 +560,7 @@ public class LibraryHomeFragment extends Fragment {
 
             // Fresh probe so the label and the tap routing are current.
             AppExecutors.get().io().execute(() -> {
-                final PlatformPresence.Evidence ev = probe(m.endpoint);
-                PlatformEvidence.record(m.endpoint, ev);
+                final PlatformPresence.Evidence ev = PlatformProbe.probe(m.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(m, GREEN);
@@ -747,9 +742,7 @@ public class LibraryHomeFragment extends Fragment {
                 continue;
             }
             AppExecutors.get().io().execute(() -> {
-                final PlatformPresence.Evidence ev = probe(c.endpoint);
-                // Before the view gate, deliberately — see the retry path above.
-                PlatformEvidence.record(c.endpoint, ev);
+                final PlatformPresence.Evidence ev = PlatformProbe.probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
@@ -827,12 +820,34 @@ public class LibraryHomeFragment extends Fragment {
         else setHeader(H_READY_EMPTY);   // server up, nothing installed to explore
     }
 
+    /**
+     * K2GO-552: the header says "Ready" AND every card has a real probe answer in this process
+     * (PRESENT or ABSENT), so the evidence says which services are installed and the installed ones
+     * answer. Two gaps make the header alone too early: right after the cards are built it can say
+     * "Ready" before any probe answered (a card starts GRAY, and GRAY does not gate); and a probe
+     * records its answer before the card shows it. NONE (no answer yet: nginx is up, the service is
+     * not) does not count.
+     */
+    boolean isReady() {
+        if (headerState != H_READY && headerState != H_READY_EMPTY) return false;
+        for (Card c : cards) {
+            PlatformPresence.Evidence ev = PlatformEvidence.last(c.endpoint);
+            if (ev != PlatformPresence.Evidence.PRESENT && ev != PlatformPresence.Evidence.ABSENT) return false;
+        }
+        return true;
+    }
+
     private void setHeader(int h) {
         if (homeStatus == null) return;
         boolean becameReady = (h == H_READY || h == H_READY_EMPTY)
                 && headerState != H_READY && headerState != H_READY_EMPTY;
         headerState = h;
         if (becameReady) rebuildCardsIfLibraryChanged();
+        // K2GO-552: the password notice waits for "Ready" with every probe answered (isReady). Each
+        // probe answer updates the header, so ask on every "Ready" update; the activity runs it once.
+        if ((h == H_READY || h == H_READY_EMPTY) && getActivity() instanceof LibraryActivity) {
+            ((LibraryActivity) getActivity()).maybeCheckAuthNotice();
+        }
         String text; int dotColor;
         switch (h) {
             case H_NO_LIBRARY:  text = getString(R.string.k2go_home_no_library);  dotColor = R.color.k2go_muted; break;
@@ -1004,36 +1019,6 @@ public class LibraryHomeFragment extends Fragment {
 
     private void tint(View v, int colorRes) {
         v.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), colorRes)));
-    }
-
-    /**
-     * ADFA-5061: what the endpoint said, in the model's words.
-     *
-     * <p>This used to return dot colours — GREEN, GRAY, AMBER — which is
-     * {@code PRESENT}/{@code ABSENT}/{@code NONE} computed identically and named after paint.
-     * The sheet then read the paint back out and re-derived the verdict, so one rule existed in
-     * three places and the two a user could hit were the copies. It reports evidence now;
-     * {@link PlatformPresence} owns what the evidence is worth, and the colour is chosen from
-     * the answer rather than being the answer.
-     */
-    private static PlatformPresence.Evidence probe(String endpoint) {
-        HttpURLConnection c = null;
-        try {
-            URL u = new URL(BoxEndpoints.BASE + "/" + endpoint + "/");
-            c = (HttpURLConnection) u.openConnection();
-            c.setUseCaches(false);
-            c.setConnectTimeout(1500);
-            c.setReadTimeout(1500);
-            c.setRequestMethod("GET");
-            int code = c.getResponseCode();
-            if (code >= 200 && code < 400) return PlatformPresence.Evidence.PRESENT;
-            return code == 404 ? PlatformPresence.Evidence.ABSENT
-                    : PlatformPresence.Evidence.NONE;
-        } catch (Exception e) {
-            return PlatformPresence.Evidence.NONE;
-        } finally {
-            if (c != null) c.disconnect();
-        }
     }
 }
 

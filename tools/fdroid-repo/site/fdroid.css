@@ -1,0 +1,40 @@
+/* The F-Droid repository page. It adds to styles.css (the add-ons site) and uses
+   only its variables, so light and dark follow that file. */
+
+/* The app icon is as tall as the text beside it (name to "Source code", about 13.5rem on a
+   wide screen). On a phone the icon goes on top, and the text gets the full width below it,
+   the same as the QR code and the button. */
+.app-card { display:grid; grid-template-columns:clamp(9rem,24vw,13.5rem) 1fr; gap:28px;
+            align-items:center;
+            padding:24px; margin:0 0 8px;
+            background:var(--card); border:1px solid var(--rule); border-radius:12px;
+            box-shadow:0 1px 2px rgba(35,52,144,.05); }
+.app-card .icon { width:100%; height:auto; aspect-ratio:1; border-radius:22%; }
+@media (max-width:640px) {
+  .app-card { grid-template-columns:1fr; gap:20px; padding:20px; }
+  .app-card .icon { width:min(60vw,13.5rem); justify-self:center; }
+}
+.app-card h2 { font-size:1.25rem; margin:0 0 4px; padding:0; border:0;
+               display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.app-card .summary { margin:0 0 10px; }
+.app-card dl { display:grid; grid-template-columns:max-content 1fr; gap:2px 16px;
+               margin:0; font-size:.9rem; }
+.app-card dt { color:var(--dim); }
+.app-card dd { margin:0; overflow-wrap:anywhere; }
+
+.add-repo { display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+.add-repo .qr { width:168px; height:168px; padding:8px; border-radius:8px;
+                background:#ffffff; border:1px solid var(--rule); }
+.add-repo p { margin:0 0 10px; }
+.button { display:inline-block; background:var(--brand); color:var(--on-brand);
+          border-radius:999px; padding:11px 24px; font-weight:600; }
+.button:hover { background:var(--brand-light); color:var(--on-brand); text-decoration:none; }
+@media (prefers-color-scheme: dark) {
+  /* --brand goes near-black in dark (styles.css), so use the link color */
+  .button { background:var(--link); color:#0f1424; }
+  .button:hover { background:var(--link-hover); color:#0f1424; }
+}
+
+.fingerprint { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+               font-size:.85rem; overflow-wrap:anywhere; }
+.page ol li, .page ul li { margin-bottom:8px; }

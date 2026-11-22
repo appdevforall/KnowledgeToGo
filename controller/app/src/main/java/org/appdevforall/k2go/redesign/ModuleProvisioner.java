@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs;
+import org.appdevforall.k2go.forgejo.domain.ForgejoSeedRule;
 import org.appdevforall.k2go.install.presentation.InstallService;
 import org.appdevforall.k2go.install.presentation.ModuleQueueRepository;
 import org.appdevforall.k2go.system.data.SystemDoor;
@@ -94,6 +96,9 @@ public final class ModuleProvisioner {
         if (ctx == null || modules == null || modules.length == 0) return;
         final Context app = ctx.getApplicationContext();
         ModuleBatch.save(app, modules);
+        // K2GO-592: every Forgejo install owes its seed (admin account, org, repos), whatever screen
+        // scheduled it. Banked before the queue starts, so the install index sees it when the batch ends.
+        if (ForgejoSeedRule.owedBy(modules)) ForgejoInstallPrefs.bankSeed(app);
         Intent i = new Intent(app, InstallService.class).setAction(InstallService.ACTION_START_MODULES);
         i.putExtra(InstallService.EXTRA_MODULES, modules);
         if (extras != null) i.putExtras(extras);
