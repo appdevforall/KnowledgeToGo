@@ -118,6 +118,11 @@ export function getCredential(service: ServiceName): ResolvedCredential {
     return { ...DEFAULTS[service], origin: 'default' };
 }
 
+/** The factory sign-in of a service (what the rootfs build provisions). */
+export function factoryCredential(service: ServiceName): Credential {
+    return { ...DEFAULTS[service] };
+}
+
 /** Persists an override. Does NOT validate against the service: the REST route
  *  does that, and only calls in here after a successful login. */
 export function setCredential(service: ServiceName, cred: Credential): void {

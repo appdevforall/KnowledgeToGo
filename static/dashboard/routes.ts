@@ -19,6 +19,9 @@ import {
 } from './sockets/kolibri.query';
 import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogin } from './sockets/kolibri.session';
 import { login as forgejoLogin, ForgejoAuthError } from './sockets/forgejo.session';
+import {
+    passwordStatus, changePassword, resetPassword, PasswordError, httpStatusFor,
+} from './sockets/passwords';
 import { forgejoStatus } from './sockets/forgejo.status';
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
@@ -1132,6 +1135,47 @@ apiRouter.delete('/credentials/:service', (req: Request, res: Response): void =>
         res.json({ ok: true, ...describeCredential(service) });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'reset failed' });
+    }
+});
+
+// K2GO-552: change the admin password inside the service itself, or put the factory one back.
+// The answer carries only a code (see passwords.ts); the detail stays in the log.
+function sendPasswordError(res: Response, service: string, e: unknown): void {
+    if (e instanceof PasswordError) {
+        console.warn(`[passwords] ${service}: ${e.code}: ${e.message}`);
+        res.status(httpStatusFor(e.code)).json({ error: e.code });
+        return;
+    }
+    console.error(`[passwords] ${service}: ${e instanceof Error ? e.message : String(e)}`);
+    res.status(500).json({ error: 'set_failed' });
+}
+
+apiRouter.get('/credentials/:service/status', async (req: Request, res: Response): Promise<void> => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+    res.set('Cache-Control', 'no-store');
+    res.json(await passwordStatus(service));
+});
+
+apiRouter.post('/credentials/:service/password', async (req: Request, res: Response): Promise<void> => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+    try {
+        const verified = await changePassword(service, String((req.body as { password?: unknown })?.password ?? ''));
+        res.json({ ok: true, verified, ...describeCredential(service) });
+    } catch (e) {
+        sendPasswordError(res, service, e);
+    }
+});
+
+apiRouter.post('/credentials/:service/reset', async (req: Request, res: Response): Promise<void> => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+    try {
+        const verified = await resetPassword(service);
+        res.json({ ok: true, verified, ...describeCredential(service) });
+    } catch (e) {
+        sendPasswordError(res, service, e);
     }
 });
 
