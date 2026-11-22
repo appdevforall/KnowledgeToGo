@@ -36,6 +36,7 @@ public final class OnlineChoiceEffects {
         if (OnlineConsent.isEnabled(app)) {
             startCrashReports(app);
         } else {
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.clear();
             if (io.sentry.Sentry.isEnabled()) {
                 // close() flushes and waits for the transport (seconds): never on the main thread.
                 new Thread(io.sentry.Sentry::close, "sentry-close").start();

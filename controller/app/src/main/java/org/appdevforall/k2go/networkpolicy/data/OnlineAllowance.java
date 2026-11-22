@@ -37,6 +37,11 @@ public final class OnlineAllowance {
         ALLOWED.add(kind);
     }
 
+    /** K2GO-588: the user chose Keep offline: every earlier allow ends, so a queued order waits. */
+    public static void clear() {
+        ALLOWED.clear();
+    }
+
     public static boolean allows(Context ctx, String kind) {
         return OnlineConsent.isEnabled(ctx) || ALLOWED.contains(kind);
     }

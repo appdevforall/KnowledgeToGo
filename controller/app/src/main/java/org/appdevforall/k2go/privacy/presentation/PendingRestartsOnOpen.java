@@ -61,7 +61,13 @@ public final class PendingRestartsOnOpen {
                 PrivacyRepositoryImpl repository = new PrivacyRepositoryImpl();
                 List<String> off = keepOfflineIfChosen(app, repository);
                 if (new EnvironmentLockGate(app).isBusy()) return;   // the next open restarts them
-                for (String service : off) repository.requestRestart(service);
+                for (String service : off) {
+                    try {
+                        repository.requestRestart(service);
+                    } catch (Exception e) {
+                        Log.w(TAG, "keep offline: restart of " + service + " failed (" + e.getMessage() + ")");
+                    }
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Exception e) {

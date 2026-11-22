@@ -385,6 +385,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.appde
             org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.ZIM.key());
             org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.BOOKS.key());
             org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.COURSES.key());
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(org.appdevforall.k2go.system.domain.ContentType.MAPS.key());
             org.appdevforall.k2go.InstallGuard.begin(this);
             Intent i = new Intent(this, InstallService.class);
             i.setAction(InstallService.ACTION_START);
