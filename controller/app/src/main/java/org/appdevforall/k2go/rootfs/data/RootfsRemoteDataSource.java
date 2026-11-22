@@ -49,7 +49,7 @@ public class RootfsRemoteDataSource {
         try {
             URL url = new URL(metaUrl);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
             conn.setConnectTimeout(TIMEOUT_MS);
             conn.setReadTimeout(TIMEOUT_MS);
 

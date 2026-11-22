@@ -24,6 +24,7 @@ public final class HostScope {
         if (h.startsWith("[") && h.endsWith("]")) h = h.substring(1, h.length() - 1);
         if (h.equals("localhost") || h.endsWith(".localhost") || h.endsWith(".local")) return true;
         if (h.indexOf(':') >= 0) return isLocalV6(h);
+        if (h.indexOf('.') < 0) return true;   // a single label (box): a local name, never a domain
         String[] p = h.split("\\.", -1);
         if (p.length != 4) return false;   // a domain name: the internet
         int[] o = new int[4];

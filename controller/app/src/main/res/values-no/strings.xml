@@ -1706,4 +1706,11 @@
     <string name="k2go_auth_notice_never_confirm">Slå av påminnelser</string>
     <string name="k2go_auth_notice_never_keep">Behold påminnelser</string>
     <string name="k2go_auth_list_hint">Administratorpassord som K2Go bruker for Les en bok, Ta et kurs og Vert for kode. Endre dem her, slik at appen og boksen holder seg i takt.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Personvern og nettinnhold</string>
+    <string name="k2go_online_accept_usage">Del bruksdata og be om nettinnhold</string>
+    <string name="k2go_online_accept_crash">Send krasjrapporter og be om nettinnhold</string>
+    <string name="k2go_online_body_usage">%1$s kan dele anonyme bruksdata og krasjrapporter, og kan selv se etter katalog- og appoppdateringer når telefonen er koblet til Wi-Fi. Ingen personlig informasjon samles inn, og ingenting spores om personene som bruker det delte innholdet ditt.\n\nHold offline: appen kobler seg ikke til internett på egen hånd.</string>
+    <string name="k2go_online_body_crash">%1$s kan sende krasjrapporter, og kan selv se etter katalog- og appoppdateringer når telefonen er koblet til Wi-Fi. Ingen personlig informasjon samles inn.\n\nHold offline: appen kobler seg ikke til internett på egen hånd.</string>
+    <string name="k2go_webview_offline_page">Denne siden er på internett. Sider i appen fungerer bare offline.</string>
 </resources>

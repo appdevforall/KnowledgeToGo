@@ -8,8 +8,9 @@ import android.content.Context;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.appdevforall.k2go.delivery.data.AnalyticsConsent;
+import org.appdevforall.k2go.delivery.data.OnlineConsent;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,34 +30,41 @@ public class AnalyticsConsentGateTest {
         return ApplicationProvider.getApplicationContext();
     }
 
+    private boolean before;
+
+    @Before
+    public void setUp() {
+        before = OnlineConsent.isEnabled(ctx());
+    }
+
     @After
     public void tearDown() {
-        AnalyticsConsent.setEnabled(ctx(), false);
+        OnlineConsent.setEnabled(ctx(), before);
     }
 
     @Test
     public void consentDefaultsOff() {
         Context ctx = ctx();
-        AnalyticsConsent.setEnabled(ctx, false);
-        assertFalse(AnalyticsConsent.isEnabled(ctx));
+        ctx.getSharedPreferences("iiab_delivery", Context.MODE_PRIVATE).edit().remove("online_choice").commit();
+        assertFalse(OnlineConsent.isEnabled(ctx));
     }
 
     @Test
     public void gatedPath_doesNotThrow_whenConsentOff() {
         Context ctx = ctx();
-        AnalyticsConsent.setEnabled(ctx, false);
+        OnlineConsent.setEnabled(ctx, false);
         emitAll(AnalyticsClient.with(ctx));
-        assertFalse(AnalyticsConsent.isEnabled(ctx));
+        assertFalse(OnlineConsent.isEnabled(ctx));
     }
 
     @Test
     public void emitPath_doesNotThrow_whenConsentOn() {
         Context ctx = ctx();
-        AnalyticsConsent.setEnabled(ctx, true);
+        OnlineConsent.setEnabled(ctx, true);
         AnalyticsClient client = AnalyticsClient.with(ctx);
         client.applyConsent();
         emitAll(client);
-        assertTrue(AnalyticsConsent.isEnabled(ctx));
+        assertTrue(OnlineConsent.isEnabled(ctx));
     }
 
     private void emitAll(AnalyticsClient client) {

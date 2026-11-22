@@ -1776,4 +1776,11 @@
     <string name="k2go_auth_notice_never_confirm">Parar lembretes</string>
     <string name="k2go_auth_notice_never_keep">Manter lembretes</string>
     <string name="k2go_auth_list_hint">Senhas de administrador que o K2Go usa para Ler um livro, Fazer um curso e Hospedar código. Altere-as aqui para que a app e o servidor fiquem em sintonia.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privacidade e conteúdo online</string>
+    <string name="k2go_online_accept_usage">Partilhar dados de utilização e pedir conteúdo online</string>
+    <string name="k2go_online_accept_crash">Enviar relatórios de falhas e pedir conteúdo online</string>
+    <string name="k2go_online_body_usage">O %1$s pode partilhar dados de utilização anónimos e relatórios de falhas, e pode procurar por si só atualizações do catálogo e da aplicação quando o telemóvel está ligado a Wi-Fi. Não são recolhidas informações pessoais e não é registado nada sobre as pessoas que usam o teu conteúdo partilhado.\n\nManter offline: a aplicação não se liga à internet por si só.</string>
+    <string name="k2go_online_body_crash">O %1$s pode enviar relatórios de falhas, e pode procurar por si só atualizações do catálogo e da aplicação quando o telemóvel está ligado a Wi-Fi. Não são recolhidas informações pessoais.\n\nManter offline: a aplicação não se liga à internet por si só.</string>
+    <string name="k2go_webview_offline_page">Esta página está na internet. As páginas dentro da aplicação só funcionam offline.</string>
 </resources>

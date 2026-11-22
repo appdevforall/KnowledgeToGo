@@ -1696,4 +1696,11 @@
     <string name="k2go_auth_notice_never_confirm">リマインダーを停止</string>
     <string name="k2go_auth_notice_never_keep">リマインダーを続ける</string>
     <string name="k2go_auth_list_hint">K2Goが「本を読む」「コースを受ける」「コードをホスト」で使う管理者パスワードです。アプリとボックスの状態をそろえるため、ここで変更してください。</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">プライバシーとオンラインコンテンツ</string>
+    <string name="k2go_online_accept_usage">使用状況データを共有してオンラインコンテンツを取得</string>
+    <string name="k2go_online_accept_crash">クラッシュレポートを送信してオンラインコンテンツを取得</string>
+    <string name="k2go_online_body_usage">%1$s は匿名の使用状況データとクラッシュレポートを共有でき、スマホが Wi-Fi に接続しているときにカタログとアプリの更新を自動で確認できます。個人情報は収集されず、共有したコンテンツを使う人々についても何も追跡しません。\n\n「オフラインのまま」：アプリが自動でインターネットに接続することはありません。</string>
+    <string name="k2go_online_body_crash">%1$s はクラッシュレポートを送信でき、スマホが Wi-Fi に接続しているときにカタログとアプリの更新を自動で確認できます。個人情報は収集されません。\n\n「オフラインのまま」：アプリが自動でインターネットに接続することはありません。</string>
+    <string name="k2go_webview_offline_page">このページはインターネット上にあります。アプリ内のページはオフラインでのみ動作します。</string>
 </resources>

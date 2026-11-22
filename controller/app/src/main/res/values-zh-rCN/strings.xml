@@ -1696,4 +1696,11 @@
     <string name="k2go_auth_notice_never_confirm">停止提醒</string>
     <string name="k2go_auth_notice_never_keep">保留提醒</string>
     <string name="k2go_auth_list_hint">K2Go 用于图书、课程和托管代码的管理员密码。请在这里更改，让应用和盒子保持一致。</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">隐私与在线内容</string>
+    <string name="k2go_online_accept_usage">共享使用数据并请求在线内容</string>
+    <string name="k2go_online_accept_crash">发送崩溃报告并请求在线内容</string>
+    <string name="k2go_online_body_usage">%1$s 可以共享匿名使用数据和崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息，也不会跟踪使用你所共享内容的任何人。\n\n“保持离线”：应用不会自行连接互联网。</string>
+    <string name="k2go_online_body_crash">%1$s 可以发送崩溃报告，并可在手机连接 Wi-Fi 时自动检查目录和应用更新。不会收集任何个人信息。\n\n“保持离线”：应用不会自行连接互联网。</string>
+    <string name="k2go_webview_offline_page">此页面位于互联网上。应用内的页面仅可离线使用。</string>
 </resources>

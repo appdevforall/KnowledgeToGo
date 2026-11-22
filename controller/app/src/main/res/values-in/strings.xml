@@ -1702,4 +1702,11 @@
     <string name="k2go_auth_notice_never_confirm">Hentikan pengingat</string>
     <string name="k2go_auth_notice_never_keep">Tetap ingatkan</string>
     <string name="k2go_auth_list_hint">Kata sandi admin yang digunakan K2Go untuk Baca buku, Ikuti kursus, dan Hosting kode. Ubah di sini agar aplikasi dan kotak tetap selaras.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privasi dan konten daring</string>
+    <string name="k2go_online_accept_usage">Bagikan data penggunaan dan minta konten daring</string>
+    <string name="k2go_online_accept_crash">Kirim laporan kerusakan dan minta konten daring</string>
+    <string name="k2go_online_body_usage">%1$s dapat membagikan data penggunaan anonim dan laporan kerusakan, serta dapat memeriksa pembaruan katalog dan aplikasi dengan sendirinya saat ponsel terhubung ke Wi-Fi. Tidak ada informasi pribadi yang dikumpulkan, dan tidak ada yang dilacak tentang orang yang menggunakan konten yang kamu bagikan.\n\nTetap luring: aplikasi tidak terhubung ke internet dengan sendirinya.</string>
+    <string name="k2go_online_body_crash">%1$s dapat mengirim laporan kerusakan, serta dapat memeriksa pembaruan katalog dan aplikasi dengan sendirinya saat ponsel terhubung ke Wi-Fi. Tidak ada informasi pribadi yang dikumpulkan.\n\nTetap luring: aplikasi tidak terhubung ke internet dengan sendirinya.</string>
+    <string name="k2go_webview_offline_page">Halaman ini ada di internet. Halaman di dalam aplikasi hanya berfungsi secara luring.</string>
 </resources>

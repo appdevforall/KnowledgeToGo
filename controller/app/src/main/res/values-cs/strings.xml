@@ -1705,4 +1705,11 @@
     <string name="k2go_auth_notice_never_confirm">Vypnout připomenutí</string>
     <string name="k2go_auth_notice_never_keep">Ponechat připomenutí</string>
     <string name="k2go_auth_list_hint">Hesla správce, která K2Go používá pro Přečíst knihu, Absolvovat kurz a Hostovat kód. Měň je zde, aby aplikace a box zůstaly v souladu.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Soukromí a online obsah</string>
+    <string name="k2go_online_accept_usage">Sdílet data o používání a vyžádat online obsah</string>
+    <string name="k2go_online_accept_crash">Odesílat hlášení o pádech a vyžádat online obsah</string>
+    <string name="k2go_online_body_usage">%1$s může sdílet anonymní data o používání a hlášení o pádech a může sám kontrolovat aktualizace katalogu a aplikace, když je telefon připojen k Wi-Fi. Neshromažďují se žádné osobní údaje a nesleduje se nic o lidech, kteří používají váš sdílený obsah.\n\nPonechat offline: aplikace se sama nepřipojuje k internetu.</string>
+    <string name="k2go_online_body_crash">%1$s může odesílat hlášení o pádech a může sám kontrolovat aktualizace katalogu a aplikace, když je telefon připojen k Wi-Fi. Neshromažďují se žádné osobní údaje.\n\nPonechat offline: aplikace se sama nepřipojuje k internetu.</string>
+    <string name="k2go_webview_offline_page">Tato stránka je na internetu. Stránky v aplikaci fungují pouze offline.</string>
 </resources>

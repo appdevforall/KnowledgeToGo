@@ -1773,4 +1773,11 @@
     <string name="k2go_auth_notice_never_confirm">Dejar de recordar</string>
     <string name="k2go_auth_notice_never_keep">Mantener recordatorios</string>
     <string name="k2go_auth_list_hint">Contraseñas de administrador que K2Go usa para Leer un libro, Tomar un curso y Aloja tu código. Cámbialas aquí para que la app y la caja estén sincronizadas.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Privacidad y contenido en línea</string>
+    <string name="k2go_online_accept_usage">Compartir datos de uso y solicitar contenido en línea</string>
+    <string name="k2go_online_accept_crash">Enviar informes de fallos y solicitar contenido en línea</string>
+    <string name="k2go_online_body_usage">%1$s puede compartir datos de uso anónimos e informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal, y no se rastrea nada sobre las personas que usan tu contenido compartido.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
+    <string name="k2go_online_body_crash">%1$s puede enviar informes de fallos, y puede buscar por sí misma actualizaciones del catálogo y de la app cuando el teléfono está conectado a Wi-Fi. No se recopila información personal.\n\nMantener sin conexión: la app no se conecta a internet por sí misma.</string>
+    <string name="k2go_webview_offline_page">Esta página está en internet. Las páginas dentro de la app solo funcionan sin conexión.</string>
 </resources>

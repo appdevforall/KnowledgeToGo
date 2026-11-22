@@ -1696,4 +1696,11 @@
     <string name="k2go_auth_notice_never_confirm">Emlékeztetők leállítása</string>
     <string name="k2go_auth_notice_never_keep">Emlékeztetők megtartása</string>
     <string name="k2go_auth_list_hint">A K2Go ezekhez használja ezeket a rendszergazdai jelszavakat: Könyv olvasása, Kurzus elvégzése és Kód tárolása. Itt módosítsa őket, hogy az alkalmazás és a doboz összhangban maradjon.</string>
+    <!-- K2GO-588: one privacy choice -->
+    <string name="k2go_online_title">Adatvédelem és online tartalom</string>
+    <string name="k2go_online_accept_usage">Használati adatok megosztása és online tartalom kérése</string>
+    <string name="k2go_online_accept_crash">Összeomlási jelentések küldése és online tartalom kérése</string>
+    <string name="k2go_online_body_usage">A(z) %1$s megoszthat névtelen használati adatokat és összeomlási jelentéseket, és Wi-Fi-kapcsolat esetén magától kereshet katalógus- és alkalmazásfrissítéseket. Semmilyen személyes adatot nem gyűjtünk, és semmit sem követünk nyomon a megosztott tartalmadat használó emberekről.\n\nMarad offline: az alkalmazás magától nem csatlakozik az internethez.</string>
+    <string name="k2go_online_body_crash">A(z) %1$s küldhet összeomlási jelentéseket, és Wi-Fi-kapcsolat esetén magától kereshet katalógus- és alkalmazásfrissítéseket. Semmilyen személyes adatot nem gyűjtünk.\n\nMarad offline: az alkalmazás magától nem csatlakozik az internethez.</string>
+    <string name="k2go_webview_offline_page">Ez az oldal az interneten van. Az alkalmazáson belüli oldalak csak offline működnek.</string>
 </resources>
