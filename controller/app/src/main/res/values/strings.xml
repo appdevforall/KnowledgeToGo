@@ -1878,6 +1878,10 @@
     <string name="k2go_auth_notice_factory_title">Factory password in use</string>
     <!-- Start-up notice while a service still takes the factory admin password. %1$s = service names, for example "Calibre-Web" or "Calibre-Web, Kolibri, Forgejo". -->
     <string name="k2go_auth_notice_factory_msg">The factory admin password still works in: %1$s. Anyone on the same Wi-Fi or hotspot can sign in and change your library. Change it in Settings, Authentication.</string>
+    <!-- Settings > Authentication list: badge of a service whose admin account is not present. -->
+    <string name="k2go_auth_chip_no_account">No admin account</string>
+    <!-- Settings > Authentication > a service: state line when the admin account is not present (never created, or deleted). -->
+    <string name="k2go_auth_pw_state_no_account">The admin account is not present in this service.</string>
     <string name="k2go_auth_notice_open">Open Authentication</string>
     <string name="k2go_auth_notice_close">Close</string>
     <string name="k2go_auth_notice_never">Don\'t show again</string>

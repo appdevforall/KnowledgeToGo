@@ -1691,6 +1691,8 @@
     <string name="k2go_auth_notice_mismatch_msg">%1$s-এর অ্যাডমিন পাসওয়ার্ড এই অ্যাপের বাইরে বদলানো হয়েছে। সেটিংস, প্রমাণীকরণ-এ গিয়ে এটি মেরামত বা রিসেট করুন।</string>
     <string name="k2go_auth_notice_factory_title">ফ্যাক্টরি পাসওয়ার্ড ব্যবহার হচ্ছে</string>
     <string name="k2go_auth_notice_factory_msg">ফ্যাক্টরি অ্যাডমিন পাসওয়ার্ড এখনও কাজ করছে: %1$s। একই Wi-Fi বা হটস্পটে থাকা যে কেউ সাইন ইন করে আপনার লাইব্রেরি বদলাতে পারে। সেটিংস, প্রমাণীকরণ-এ গিয়ে এটি বদলান।</string>
+    <string name="k2go_auth_chip_no_account">অ্যাডমিন অ্যাকাউন্ট নেই</string>
+    <string name="k2go_auth_pw_state_no_account">এই পরিষেবায় অ্যাডমিন অ্যাকাউন্টটি নেই।</string>
     <string name="k2go_auth_notice_open">প্রমাণীকরণ খুলুন</string>
     <string name="k2go_auth_notice_close">বন্ধ করুন</string>
     <string name="k2go_auth_notice_never">আর দেখাবেন না</string>

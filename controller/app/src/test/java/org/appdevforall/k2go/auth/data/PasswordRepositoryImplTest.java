@@ -42,5 +42,10 @@ public class PasswordRepositoryImplTest {
 
         s = PasswordRepositoryImpl.parseState("forgejo", new JSONObject("{\"state\":\"unreachable\"}"));
         assertEquals(PasswordState.Sync.UNREACHABLE, s.sync);
+
+        s = PasswordRepositoryImpl.parseState("forgejo",
+                new JSONObject("{\"state\":\"no_account\",\"factoryDefault\":null}"));
+        assertEquals(PasswordState.Sync.NO_ACCOUNT, s.sync);
+        assertNull(s.factoryDefault);
     }
 }

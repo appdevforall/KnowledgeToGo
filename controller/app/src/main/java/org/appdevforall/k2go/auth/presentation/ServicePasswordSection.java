@@ -132,10 +132,12 @@ public final class ServicePasswordSection {
             if (s != null) renderState(ctx, state, s);
             boolean mismatch = s != null && s.sync == PasswordState.Sync.MISMATCH;
             boolean reachable = s != null && s.sync != PasswordState.Sync.UNREACHABLE;
+            // No admin account in the service: nothing to change, repair or reset; all gray.
+            boolean noAccount = s != null && s.sync == PasswordState.Sync.NO_ACCOUNT;
             repair.setVisibility(mismatch ? View.VISIBLE : View.GONE);
-            enable(change, !ui.busy && reachable && !mismatch);
+            enable(change, !ui.busy && reachable && !mismatch && !noAccount);
             enable(repairSave, !ui.busy && user.getTag() != null);
-            enable(reset, !ui.busy && reachable);
+            enable(reset, !ui.busy && reachable && !noAccount);
             renderResult(ctx, result, ui);
             if (!ui.busy && (ui.result == ServicePasswordViewModel.Result.CHANGED
                     || ui.result == ServicePasswordViewModel.Result.CHANGED_UNVERIFIED)) {
@@ -152,6 +154,8 @@ public final class ServicePasswordSection {
         int color;
         if (s.sync == PasswordState.Sync.MISMATCH) {
             text = R.string.k2go_auth_pw_state_mismatch; color = R.color.k2go_clay;
+        } else if (s.sync == PasswordState.Sync.NO_ACCOUNT) {
+            text = R.string.k2go_auth_pw_state_no_account; color = R.color.k2go_muted;
         } else if (s.sync == PasswordState.Sync.UNREACHABLE) {
             text = R.string.k2go_auth_pw_state_unreachable; color = R.color.k2go_muted;
         } else if (s.usesFactoryPassword()) {

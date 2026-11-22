@@ -1685,6 +1685,8 @@
     <string name="k2go_auth_notice_mismatch_msg">Heslo správcu služby %1$s bolo zmenené mimo tejto aplikácie. Opravte ho alebo obnovte v časti Nastavenia, Overenie.</string>
     <string name="k2go_auth_notice_factory_title">Používa sa výrobné heslo</string>
     <string name="k2go_auth_notice_factory_msg">Výrobné heslo správcu stále funguje v: %1$s. Ktokoľvek v rovnakej sieti Wi-Fi alebo hotspote sa môže prihlásiť a zmeniť vašu knižnicu. Zmeňte ho v časti Nastavenia, Overenie.</string>
+    <string name="k2go_auth_chip_no_account">Žiadny účet správcu</string>
+    <string name="k2go_auth_pw_state_no_account">Účet správcu v tejto službe nie je.</string>
     <string name="k2go_auth_notice_open">Otvoriť Overenie</string>
     <string name="k2go_auth_notice_close">Zavrieť</string>
     <string name="k2go_auth_notice_never">Už nezobrazovať</string>

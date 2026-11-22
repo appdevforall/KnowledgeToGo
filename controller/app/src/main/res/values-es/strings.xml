@@ -1754,6 +1754,8 @@
     <string name="k2go_auth_notice_mismatch_msg">La contraseña de administrador de %1$s se cambió fuera de esta app. Repárala o restablécela en Ajustes, Autenticación.</string>
     <string name="k2go_auth_notice_factory_title">Contraseña de fábrica en uso</string>
     <string name="k2go_auth_notice_factory_msg">La contraseña de administrador de fábrica todavía funciona en: %1$s. Cualquiera en la misma red Wi-Fi o punto de acceso puede iniciar sesión y cambiar tu biblioteca. Cámbiala en Ajustes, Autenticación.</string>
+    <string name="k2go_auth_chip_no_account">Sin cuenta de administrador</string>
+    <string name="k2go_auth_pw_state_no_account">La cuenta de administrador no está presente en este servicio.</string>
     <string name="k2go_auth_notice_open">Abrir Autenticación</string>
     <string name="k2go_auth_notice_close">Cerrar</string>
     <string name="k2go_auth_notice_never">No volver a mostrar</string>

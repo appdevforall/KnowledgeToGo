@@ -11,7 +11,8 @@ package org.appdevforall.k2go.auth.domain;
 
 public final class PasswordState {
 
-    public enum Sync { OK, MISMATCH, UNREACHABLE }
+    /** NO_ACCOUNT: the admin account is not present in the service (never created, or deleted). */
+    public enum Sync { OK, MISMATCH, NO_ACCOUNT, UNREACHABLE }
 
     public final String service;
     public final Sync sync;

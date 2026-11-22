@@ -559,6 +559,9 @@ public class SettingsSubFragment extends Fragment {
                     if (!isAdded()) return;
                     if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.MISMATCH) {
                         setBadge(badge, getString(R.string.k2go_auth_chip_mismatch), R.color.k2go_clay);
+                    } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.NO_ACCOUNT) {
+                        row.setAlpha(0.5f);   // K2GO-552: no admin account, nothing to manage
+                        setBadge(badge, getString(R.string.k2go_auth_chip_no_account), R.color.k2go_muted);
                     } else if (st.usesFactoryPassword()) {
                         setBadge(badge, getString(R.string.k2go_auth_chip_default), R.color.k2go_muted);
                     } else if (st.sync == org.appdevforall.k2go.auth.domain.PasswordState.Sync.OK) {

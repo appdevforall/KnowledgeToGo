@@ -1755,6 +1755,8 @@
     <string name="k2go_auth_notice_mismatch_msg">%1$s का एडमिन पासवर्ड इस ऐप के बाहर बदला गया था। इसे सेटिंग्स, प्रमाणीकरण में ठीक करें या रीसेट करें।</string>
     <string name="k2go_auth_notice_factory_title">फ़ैक्टरी पासवर्ड उपयोग में है</string>
     <string name="k2go_auth_notice_factory_msg">फ़ैक्टरी एडमिन पासवर्ड अभी भी यहाँ काम करता है: %1$s। उसी Wi-Fi या हॉटस्पॉट पर कोई भी साइन इन करके आपकी लाइब्रेरी बदल सकता है। इसे सेटिंग्स, प्रमाणीकरण में बदलें।</string>
+    <string name="k2go_auth_chip_no_account">कोई एडमिन खाता नहीं</string>
+    <string name="k2go_auth_pw_state_no_account">इस सेवा में एडमिन खाता मौजूद नहीं है।</string>
     <string name="k2go_auth_notice_open">प्रमाणीकरण खोलें</string>
     <string name="k2go_auth_notice_close">बंद करें</string>
     <string name="k2go_auth_notice_never">फिर से न दिखाएँ</string>

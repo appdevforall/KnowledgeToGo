@@ -55,6 +55,7 @@ public final class PasswordRepositoryImpl implements PasswordRepository {
         switch (o.optString("state", "")) {
             case "ok": sync = PasswordState.Sync.OK; break;
             case "mismatch": sync = PasswordState.Sync.MISMATCH; break;
+            case "no_account": sync = PasswordState.Sync.NO_ACCOUNT; break;
             default: sync = PasswordState.Sync.UNREACHABLE; break;
         }
         Boolean factory = o.isNull("factoryDefault") ? null : o.optBoolean("factoryDefault");

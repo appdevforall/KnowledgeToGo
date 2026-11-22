@@ -1678,6 +1678,8 @@
     <string name="k2go_auth_notice_mismatch_msg">A(z) %1$s szolgáltatás rendszergazdai jelszavát ezen az alkalmazáson kívül módosították. Javítsa ki vagy állítsa vissza itt: Beállítások, Hitelesítés.</string>
     <string name="k2go_auth_notice_factory_title">Gyári jelszó van használatban</string>
     <string name="k2go_auth_notice_factory_msg">A gyári rendszergazdai jelszó még működik itt: %1$s. Ugyanazon a Wi-Fi-n vagy hotspoton bárki bejelentkezhet és módosíthatja a könyvtárát. Módosítsa itt: Beállítások, Hitelesítés.</string>
+    <string name="k2go_auth_chip_no_account">Nincs rendszergazdai fiók</string>
+    <string name="k2go_auth_pw_state_no_account">A rendszergazdai fiók nincs meg ebben a szolgáltatásban.</string>
     <string name="k2go_auth_notice_open">Hitelesítés megnyitása</string>
     <string name="k2go_auth_notice_close">Bezárás</string>
     <string name="k2go_auth_notice_never">Ne jelenjen meg újra</string>

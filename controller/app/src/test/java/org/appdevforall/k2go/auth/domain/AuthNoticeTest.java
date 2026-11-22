@@ -37,4 +37,10 @@ public class AuthNoticeTest {
                 new PasswordState("forgejo", PasswordState.Sync.UNREACHABLE, null)), false);
         assertEquals(AuthNotice.Kind.NONE, n.kind);
     }
+
+    @Test public void noAdminAccountShowsNothing() {
+        AuthNotice n = AuthNotice.decide(Arrays.asList(
+                new PasswordState("forgejo", PasswordState.Sync.NO_ACCOUNT, null)), false);
+        assertEquals(AuthNotice.Kind.NONE, n.kind);
+    }
 }

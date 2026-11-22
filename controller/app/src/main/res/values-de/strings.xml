@@ -1678,6 +1678,8 @@
     <string name="k2go_auth_notice_mismatch_msg">Das Admin-Passwort von %1$s wurde außerhalb dieser App geändert. Repariere es oder setze es zurück unter Einstellungen, Authentifizierung.</string>
     <string name="k2go_auth_notice_factory_title">Werkspasswort aktiv</string>
     <string name="k2go_auth_notice_factory_msg">Das Admin-Werkspasswort funktioniert noch in: %1$s. Jeder im selben Wi-Fi oder Hotspot kann sich anmelden und deine Bibliothek ändern. Ändere es unter Einstellungen, Authentifizierung.</string>
+    <string name="k2go_auth_chip_no_account">Kein Admin-Konto</string>
+    <string name="k2go_auth_pw_state_no_account">Das Admin-Konto ist in diesem Dienst nicht vorhanden.</string>
     <string name="k2go_auth_notice_open">Authentifizierung öffnen</string>
     <string name="k2go_auth_notice_close">Schließen</string>
     <string name="k2go_auth_notice_never">Nicht mehr anzeigen</string>
