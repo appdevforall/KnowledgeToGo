@@ -953,8 +953,10 @@ public final class InstallService extends Service {
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
         // K2GO-464: refresh the stale rootfs apt index before the runrole, or a pinned dep 404s as the
         // box ages. Best-effort (short timeout, || true) so an offline/local-only install still runs.
+        // K2GO-593: a Cancel SIGKILLs the runrole, also during dpkg; finish any interrupted dpkg first.
         final String installCmd =
-                "apt-get -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 update || true ; " + runroleCmd;
+                "DEBIAN_FRONTEND=noninteractive dpkg --configure -a || true ; "
+                + "apt-get -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 update || true ; " + runroleCmd;
 
         // K2GO-394: the runrole (post-processing) as a deferred step. For maps it runs only AFTER the
         // base maps are downloaded through dash-node (the gate below); other modules run it at once.
@@ -1074,7 +1076,9 @@ public final class InstallService extends Service {
         if (prootEngine == null) prootEngine = new PRootEngine();
         String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + module + "_install: False' >> /etc/iiab/local_vars.yml && " +
-                "echo '" + module + "_enabled: False' >> /etc/iiab/local_vars.yml";
+                "echo '" + module + "_enabled: False' >> /etc/iiab/local_vars.yml ; " +
+                // K2GO-593: a killed runrole leaves its task dirs (a partial download) behind.
+                "rm -rf /root/.ansible/tmp/ansible-tmp-*";
         prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), revertCmd, new PRootEngine.OutputListener() {
             @Override public void onOutputLine(String line) { }
             @Override public void onProcessExit(int exitCode) { then.run(); }
@@ -1140,10 +1144,8 @@ public final class InstallService extends Service {
      * unset so that callback runs (the cancel path suppresses it). {@code gen} drops a kill queued for
      * a module that has since ended.
      *
-     * <p>Known limit (shared with doCancel): killProcess SIGKILLs proot, orphaning its in-container
-     * child. Low impact by the role's own flags -- aria2c self-exits (max-tries=5, timeout=60) and the
-     * meta4 fetch just idles a socket; neither firehoses disk, so recovery works regardless. Reap the
-     * orphan (reuse EnvironmentProcess's /proc sweep) only if a retry-conflict is ever observed.
+     * <p>K2GO-593: forceKill SIGKILLs proot, and PTRACE_O_EXITKILL (K2GO-544) makes the kernel kill
+     * its box processes too, so no orphan keeps working after the kill.
      */
     private void hardStallKill(final String moduleKey, final int gen) {
         if (gen != moduleStallGen || finished || cancelled || moduleStallKilled) return;
@@ -1151,7 +1153,7 @@ public final class InstallService extends Service {
         log("[Stall] '" + moduleKey + "' made no progress for " + (MODULE_HARD_STALL_MS / 1000)
                 + "s; killing the runrole so it fails through to Retry");
         stopModuleStallWatch();
-        if (prootEngine != null) prootEngine.killProcess();
+        if (prootEngine != null) prootEngine.forceKill();   // K2GO-593: SIGTERM did not end proot
     }
 
     /**
@@ -1702,22 +1704,26 @@ public final class InstallService extends Service {
         }
         if (moduleMode) {
             // ADFA-4898 P5: user-confirmed cancel of a running module install. Kill the in-flight runrole
-            // (proot runs with --kill-on-exit, so its container children go with it), roll back that
+            // and its box processes (forceKill below), roll back that
             // module's speculative <mod>_install so a cancel is not left looking installed, and surface it
             // as failed so the existing per-module Retry is offered immediately. Ordering mirrors
             // finishModuleQueue: clear InstallGuard BEFORE postDone so the server-restart observer (the
             // server was pdsm-stopped for the runroles) is not raced by teardown's later clear.
             final String cur = ModuleQueueRepository.get().current().currentModule;
             stopModuleStallWatch();   // ADFA-4898 P4
-            if (prootEngine != null) prootEngine.killProcess();
+            // K2GO-593: SIGKILL, not SIGTERM. On SIGTERM proot stayed up and the runrole kept downloading.
+            if (prootEngine != null) prootEngine.forceKill();
             if (failedModules == null) failedModules = new java.util.ArrayList<>();
+            // K2GO-593: the user stopped it, so it is not an error; only earlier real failures notify.
+            final java.util.List<String> realFailures = new java.util.ArrayList<>(failedModules);
+            if (cur != null) realFailures.remove(cur);
             if (cur != null && !failedModules.contains(cur)) failedModules.add(cur);
             final java.util.List<String> failedSnapshot = new java.util.ArrayList<>(failedModules);
             final Runnable finishCancel = () -> {
                 persistClearQueue();
                 org.appdevforall.k2go.InstallGuard.end(this);
-                ModuleQueueRepository.get().postDone(failedSnapshot);
-                if (!failedSnapshot.isEmpty()) InstallNotifications.postModuleFailure(this, failedSnapshot);
+                ModuleQueueRepository.get().postCanceled(failedSnapshot, cur);
+                if (!realFailures.isEmpty()) InstallNotifications.postModuleFailure(this, realFailures);
                 teardown();
             };
             if (cur != null) revertModuleInLocalVars(cur, finishCancel);   // best-effort rollback, then finish

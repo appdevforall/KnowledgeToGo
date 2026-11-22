@@ -43,11 +43,17 @@ public final class ModuleQueueState {
     public final long etaSeconds;
     /** Modules whose runrole failed in this batch. Only meaningful on DONE. */
     public final List<String> failedModules;
+    /**
+     * K2GO-593: the module the user stopped with Cancel, or null. It is also in
+     * {@link #failedModules} (it did not install, so Retry is offered); this only says why, so the
+     * UI shows "Canceled" instead of an error. Only meaningful on DONE.
+     */
+    public final String canceledModule;
     /** Monotonic sequence for one-shot effects (finish/fail snackbars exactly once). */
     public final long seq;
 
     private ModuleQueueState(Phase phase, String currentModule, int remaining, int percent,
-                             long etaSeconds, List<String> failedModules, long seq) {
+                             long etaSeconds, List<String> failedModules, String canceledModule, long seq) {
         this.phase = phase;
         this.currentModule = currentModule;
         this.remaining = Math.max(0, remaining);
@@ -56,6 +62,7 @@ public final class ModuleQueueState {
         this.failedModules = failedModules != null
                 ? Collections.unmodifiableList(failedModules)
                 : Collections.emptyList();
+        this.canceledModule = canceledModule;
         this.seq = seq;
     }
 
@@ -83,8 +90,13 @@ public final class ModuleQueueState {
         return phase == Phase.DONE && failedModules.contains(moduleKey);
     }
 
+    /** K2GO-593: true when the user stopped {@code moduleKey} with Cancel in the batch that just ended. */
+    public boolean wasCanceled(String moduleKey) {
+        return phase == Phase.DONE && canceledModule != null && canceledModule.equals(moduleKey);
+    }
+
     public static ModuleQueueState idle() {
-        return new ModuleQueueState(Phase.IDLE, null, 0, INDETERMINATE, ETA_UNKNOWN, null, 0L);
+        return new ModuleQueueState(Phase.IDLE, null, 0, INDETERMINATE, ETA_UNKNOWN, null, null, 0L);
     }
 
     /** Running with no determinate progress (indeterminate spinner). */
@@ -99,14 +111,20 @@ public final class ModuleQueueState {
 
     /** ADFA-5228: running with a determinate percent and an estimated seconds-remaining. */
     public static ModuleQueueState running(String currentModule, int remaining, int percent, long etaSeconds) {
-        return new ModuleQueueState(Phase.RUNNING, currentModule, remaining, percent, etaSeconds, null, 0L);
+        return new ModuleQueueState(Phase.RUNNING, currentModule, remaining, percent, etaSeconds, null, null, 0L);
     }
 
     public static ModuleQueueState done(List<String> failedModules) {
-        return new ModuleQueueState(Phase.DONE, null, 0, INDETERMINATE, ETA_UNKNOWN, failedModules, 0L);
+        return done(failedModules, null);
+    }
+
+    /** K2GO-593: the batch ended because the user canceled {@code canceledModule} (also in failedModules). */
+    public static ModuleQueueState done(List<String> failedModules, String canceledModule) {
+        return new ModuleQueueState(Phase.DONE, null, 0, INDETERMINATE, ETA_UNKNOWN, failedModules,
+                canceledModule, 0L);
     }
 
     ModuleQueueState withSeq(long seq) {
-        return new ModuleQueueState(phase, currentModule, remaining, percent, etaSeconds, failedModules, seq);
+        return new ModuleQueueState(phase, currentModule, remaining, percent, etaSeconds, failedModules, canceledModule, seq);
     }
 }
