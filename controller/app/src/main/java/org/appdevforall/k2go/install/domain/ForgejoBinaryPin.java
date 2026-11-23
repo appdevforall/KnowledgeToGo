@@ -40,6 +40,37 @@ public final class ForgejoBinaryPin {
     }
 
     /**
+     * The forgejo_version that the owner wrote in local_vars (a line without the marker), or null when
+     * there is none or it is "latest". With an owner pin the app does not download: the role
+     * downloads the version the owner chose, as before.
+     */
+    public static String ownerPin(java.util.List<String> localVarsLines) {
+        if (localVarsLines == null) return null;
+        String pin = null;
+        for (String raw : localVarsLines) {
+            if (raw == null || raw.trim().endsWith(MARKER)) continue;
+            java.util.regex.Matcher m = OWNER_LINE.matcher(raw);
+            if (m.matches()) pin = m.group(1);   // the last one wins, as in YAML
+        }
+        return pin == null || "latest".equals(pin) ? null : pin;
+    }
+
+    private static final java.util.regex.Pattern OWNER_LINE = java.util.regex.Pattern.compile(
+            "^forgejo_version[ \\t]*:[ \\t]*[\"']?([^\"'#\\s]+)[\"']?[ \\t]*(#.*)?$");
+
+    /**
+     * The batch order with Forgejo first. Its download runs before the server stop, while its row
+     * already runs, so a module before it in the list would look done. The others keep their order.
+     */
+    public static String[] downloadFirst(String[] modules) {
+        if (modules == null) return null;
+        java.util.List<String> out = new java.util.ArrayList<>(modules.length);
+        for (String m : modules) if (MODULE.equals(m)) out.add(m);
+        for (String m : modules) if (!MODULE.equals(m)) out.add(m);
+        return out.toArray(new String[0]);
+    }
+
+    /**
      * The shell command that pins {@code version}, or null when the version is not X.Y.Z. A pin that a
      * killed run left is removed first, so there is never more than one marked line.
      */

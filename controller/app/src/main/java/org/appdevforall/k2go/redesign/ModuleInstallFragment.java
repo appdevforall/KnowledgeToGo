@@ -96,7 +96,7 @@ public class ModuleInstallFragment extends Fragment {
         logListener = new LogRepository.Listener() {
             @Override public void onAppend(String line) {
                 if (!isAdded() || line == null) return;
-                if (!terminalDone && installing()) status.setText(line);
+                if (!terminalDone && installing() && !downloading) status.setText(line);
                 if (logPanel.isExpanded()) { pushLine(line); renderLog(); }
             }
             @Override public void onCleared() {

@@ -8,6 +8,7 @@
  */
 package org.appdevforall.k2go.install.domain;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -38,6 +39,34 @@ public class ForgejoBinaryPinTest {
             assertFalse(String.valueOf(bad), ForgejoBinaryPin.isVersion(bad));
             assertNull(String.valueOf(bad), ForgejoBinaryPin.pinCommand(bad));
         }
+    }
+
+    @Test
+    public void ownerPinIsAnUnmarkedVersionLine() {
+        assertEquals("17.0.1", ForgejoBinaryPin.ownerPin(java.util.Arrays.asList(
+                "forgejo_install: True", "forgejo_version: 17.0.1")));
+        assertEquals("17.0.1", ForgejoBinaryPin.ownerPin(java.util.Arrays.asList(
+                "forgejo_version: \"17.0.1\"   # keep this release")));
+        assertEquals("17.0.1", ForgejoBinaryPin.ownerPin(java.util.Arrays.asList(
+                "forgejo_version: '16.0.0'", "forgejo_version: 17.0.1")));   // the last one wins
+    }
+
+    @Test
+    public void ourOwnPinLatestAndCommentsAreNotAnOwnerPin() {
+        assertNull(ForgejoBinaryPin.ownerPin(java.util.Arrays.asList(
+                "forgejo_version: \"17.0.2\"  # k2go-forgejo-bin")));
+        assertNull(ForgejoBinaryPin.ownerPin(java.util.Arrays.asList("forgejo_version: latest")));
+        assertNull(ForgejoBinaryPin.ownerPin(java.util.Arrays.asList("#forgejo_version: 17.0.1")));
+        assertNull(ForgejoBinaryPin.ownerPin(java.util.Collections.<String>emptyList()));
+        assertNull(ForgejoBinaryPin.ownerPin(null));
+    }
+
+    @Test
+    public void forgejoGoesFirstAndTheOthersKeepTheirOrder() {
+        assertArrayEquals(new String[]{"forgejo", "kiwix", "kolibri"},
+                ForgejoBinaryPin.downloadFirst(new String[]{"kiwix", "forgejo", "kolibri"}));
+        assertArrayEquals(new String[]{"kiwix", "kolibri"},
+                ForgejoBinaryPin.downloadFirst(new String[]{"kiwix", "kolibri"}));
     }
 
     @Test

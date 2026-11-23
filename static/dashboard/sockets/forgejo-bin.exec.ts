@@ -10,10 +10,12 @@
 // The box resolves the version (the same codeberg API as the role) and makes the URL; the app sends
 // no URL. aria2 writes to forgejo-<ver>.part and the runner renames it at the end, so the final name
 // exists only for a complete file (a partial at the final name would make get_url skip and the GPG
-// check fail).
+// check fail). The file is checked against the release's published sha-256 (forgejo_sha256_url in the
+// role): a wrong file at the final name would fail the GPG check on every Retry.
 import { jobs, RunnerContext, PausedError, CanceledError } from './jobs';
 import { downloadWithAria2, stopError } from './aria2-download';
 import { withRetry } from './net-retry';
+import crypto from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -70,25 +72,76 @@ export function removePartials(dir: string, keepVersion: string | null = null): 
     }
 }
 
-/** The tag of the latest Forgejo release, without the leading "v" (the role's regex_replace). */
-async function latestVersion(ctx: RunnerContext): Promise<string> {
+/** One GET with the neutral agent, a timeout, and the job's stop signal. */
+async function fetchText(ctx: RunnerContext, url: string, accept: string): Promise<{ status: number; text: string }> {
     const ac = new AbortController();
     const onStop = () => ac.abort();
     ctx.signal.addEventListener('abort', onStop, { once: true });
     const timer = setTimeout(() => ac.abort(), API_TIMEOUT_MS);
     try {
-        const res = await fetch(RELEASES_API, {
-            headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' },
-            signal: ac.signal,
-        });
-        if (!res.ok) throw new Error(`release lookup failed: HTTP ${res.status}`);
-        const body = await res.json() as { tag_name?: unknown };
-        const version = typeof body.tag_name === 'string' ? body.tag_name.replace(/^v/, '') : '';
-        if (!isForgejoVersion(version)) throw new Error(`release lookup gave a bad version: ${String(body.tag_name)}`);
-        return version;
+        const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT, Accept: accept }, signal: ac.signal });
+        return { status: res.status, text: await res.text() };
     } finally {
         clearTimeout(timer);
         ctx.signal.removeEventListener('abort', onStop);
+    }
+}
+
+/** Not worth a retry: the server answered, and the answer is wrong. */
+class BadAnswer extends Error {}
+
+/** The tag of the latest Forgejo release, without the leading "v" (the role's regex_replace). */
+async function latestVersion(ctx: RunnerContext): Promise<string> {
+    const { status, text } = await fetchText(ctx, RELEASES_API, 'application/json');
+    if (status !== 200) throw new Error(`release lookup failed: HTTP ${status}`);
+    let tag: unknown;
+    try { tag = (JSON.parse(text) as { tag_name?: unknown }).tag_name; } catch { tag = undefined; }
+    const version = typeof tag === 'string' ? tag.replace(/^v/, '') : '';
+    if (!isForgejoVersion(version)) throw new BadAnswer(`release lookup gave a bad version: ${String(tag)}`);
+    return version;
+}
+
+/** The first field of a `sha256sum` line ("<64 hex>  <name>"), or null. */
+export function parseSha256(text: string): string | null {
+    const m = /^([0-9a-fA-F]{64})(\s|$)/.exec(text.trim());
+    return m ? m[1].toLowerCase() : null;
+}
+
+/** The release's published sha-256 (forgejo_sha256_url in the role), or null when it has none (404). */
+async function releaseSha256(ctx: RunnerContext, url: string): Promise<string | null> {
+    const { status, text } = await fetchText(ctx, `${url}.sha256`, 'text/plain');
+    if (status === 404) return null;
+    if (status !== 200) throw new Error(`checksum lookup failed: HTTP ${status}`);
+    const sha = parseSha256(text);
+    if (!sha) throw new BadAnswer('the checksum file is not a sha-256 line');
+    return sha;
+}
+
+export function fileSha256(file: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const h = crypto.createHash('sha256');
+        fs.createReadStream(file).on('error', reject).on('data', (c) => h.update(c)).on('end', () => resolve(h.digest('hex')));
+    });
+}
+
+/** aria2 exit 32: the downloaded bytes do not match --checksum. */
+const ARIA2_CHECKSUM_FAILED = 32;
+
+async function lookup<T>(ctx: RunnerContext, fn: () => Promise<T>): Promise<T> {
+    try {
+        const v = await withRetry(fn, {
+            delaysMs: RETRY_DELAYS,
+            signal: ctx.signal,
+            isCanceled: ctx.isCanceled,
+            isTransient: (e) => !(e instanceof BadAnswer),
+            onRetry: ({ attempt }) => ctx.reportRetry(attempt, RETRY_DELAYS.length),
+        });
+        ctx.reportRetry(0, 0);
+        return v;
+    } catch (e) {
+        const se = stopError(ctx);
+        if (se) throw se;
+        throw e;
     }
 }
 
@@ -97,36 +150,32 @@ const forgejoBinRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (!suffix) throw new Error(`no Forgejo binary for CPU architecture ${os.machine()}`);
 
     ctx.update({ phase: 'downloading', percent: -1, speed: 0, eta: -1, detail: 'forgejo version' });
-    let version: string;
-    try {
-        version = await withRetry(() => latestVersion(ctx), {
-            delaysMs: RETRY_DELAYS,
-            signal: ctx.signal,
-            isCanceled: ctx.isCanceled,
-            isTransient: (e) => !(e instanceof Error && /bad version/.test(e.message)),
-            onRetry: ({ attempt }) => ctx.reportRetry(attempt, RETRY_DELAYS.length),
-        });
-    } catch (e) {
-        const se = stopError(ctx);
-        if (se) throw se;
-        throw e;
-    }
-    ctx.reportRetry(0, 0);
+    const version = await lookup(ctx, () => latestVersion(ctx));
+    const url = forgejoUrl(version, suffix);
+    const sha = await lookup(ctx, () => releaseSha256(ctx, url));
+    if (!sha) ctx.log(`[forgejo-bin] no published sha-256 for ${version}; the role GPG check still runs`);
     const result = JSON.stringify({ version });
 
     fs.mkdirSync(BIN_DIR, { recursive: true });
     removePartials(BIN_DIR, version);   // a partial of an older release cannot be resumed
     const dest = finalPath(BIN_DIR, version);
     if (fs.existsSync(dest)) {
-        removePartials(BIN_DIR);
-        ctx.log(`[forgejo-bin] ${path.basename(dest)} is already there`);
-        ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: version, result });
-        return;
+        // A wrong file here would fail the role's GPG check on every Retry, so it must not be kept.
+        if (sha && await fileSha256(dest) !== sha) {
+            ctx.log(`[forgejo-bin] ${path.basename(dest)} does not match the release sha-256; downloading it again`);
+            fs.rmSync(dest, { force: true });
+        } else {
+            removePartials(BIN_DIR);
+            ctx.log(`[forgejo-bin] ${path.basename(dest)} is already there`);
+            ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: version, result });
+            return;
+        }
     }
 
     const part = `forgejo-${version}${PART}`;
     const inputFile = path.join(os.tmpdir(), `k2go-forgejo-bin-${process.pid}.aria2-input`);
-    fs.writeFileSync(inputFile, `${forgejoUrl(version, suffix)}\n  out=${part}\n`);
+    // With checksum=, aria2 verifies the whole file at the end and exits 32 on a mismatch.
+    fs.writeFileSync(inputFile, `${url}\n  out=${part}\n${sha ? `  checksum=sha-256=${sha}\n` : ''}`);
     ctx.update({ phase: 'downloading', percent: -1, speed: 0, eta: -1, detail: version });
     try {
         await downloadWithAria2(ctx, { destDir: BIN_DIR, inputFile });
@@ -134,6 +183,10 @@ const forgejoBinRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         const se = stopError(ctx);
         if (se instanceof PausedError) throw se;   // keep the partial: Resume continues it
         if (se instanceof CanceledError) { removePartials(BIN_DIR); throw se; }
+        if ((e as { code?: number }).code === ARIA2_CHECKSUM_FAILED) {
+            removePartials(BIN_DIR);               // wrong bytes: a Retry must start from 0
+            throw new Error('the Forgejo download does not match the release sha-256');
+        }
         throw e;                                    // keep the partial: Retry continues it
     } finally {
         try { fs.rmSync(inputFile, { force: true }); } catch { /* best effort */ }

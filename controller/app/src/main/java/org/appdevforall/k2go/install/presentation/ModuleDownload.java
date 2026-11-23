@@ -60,6 +60,7 @@ public final class ModuleDownload {
     private DownloadHold.StoppedBy stoppedBy = DownloadHold.StoppedBy.NOBODY;
     private boolean ended;
     private int lastPercent = -1;
+    private String lastDetail;
 
     ModuleDownload(@NonNull Context ctx, @NonNull String module, @NonNull String jobType,
                    @NonNull JSONObject body, @NonNull Callback callback, @NonNull LogSink logSink) {
@@ -209,7 +210,12 @@ public final class ModuleDownload {
 
             @Override public void onIndexing() { }
 
-            @Override public void onLog(String line) { logSink.log("[" + module + "-dl] " + line); }
+            @Override public void onLog(String line) {
+                // The poll repeats the job detail every second: log it only when it changes.
+                if (line.equals(lastDetail)) return;
+                lastDetail = line;
+                logSink.log("[" + module + "-dl] " + line);
+            }
 
             @Override public void onDone() { onDone(null); }
 

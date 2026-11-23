@@ -875,8 +875,15 @@ public final class InstallService extends Service {
         if (!anyRealModule) { installNextModule(); return; }
         // K2GO-593: pdsm stop also stops dash-node, so its download must end before the stop.
         if (moduleQueue.contains(ForgejoBinaryPin.MODULE) && forgejoPinVersion == null) {
-            downloadForgejoBinaryThen(this::runModuleQueue);
-            return;
+            String ownerPin = ForgejoBinaryPin.ownerPin(readLocalVars());
+            if (ownerPin != null) {
+                // The owner chose a version: the role downloads that one, as before.
+                log("[forgejo] local_vars pins forgejo_version " + ownerPin + "; the role downloads the binary");
+                forgejoPinVersion = "";
+            } else {
+                downloadForgejoBinaryThen(this::runModuleQueue);
+                return;
+            }
         }
         updateNotification(getString(R.string.server_shutting_down));
         log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
@@ -1317,6 +1324,17 @@ public final class InstallService extends Service {
         moduleDownload.start();
     }
 
+    /** The lines of the box's local_vars.yml, or an empty list when it cannot be read. */
+    private java.util.List<String> readLocalVars() {
+        try {
+            return java.nio.file.Files.readAllLines(
+                    new File(debianRootfs, "etc/iiab/local_vars.yml").toPath(),
+                    java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return java.util.Collections.emptyList();
+        }
+    }
+
     /**
      * K2GO-593: download the Forgejo binary through dash-node (job "forgejo-bin") while the server is
      * still up, then run {@code then}. The box resolves the version and writes the file where the role
@@ -1333,6 +1351,8 @@ public final class InstallService extends Service {
             throw new IllegalStateException(e);   // a literal body cannot fail
         }
         log("[forgejo] downloading the Forgejo binary via dash-node before the install");
+        // The download is part of the Forgejo install: its row runs, opens the card, and can cancel.
+        ModuleQueueRepository.get().postRunning(module, Math.max(0, moduleQueue.size() - 1));
         moduleDownload = new ModuleDownload(this, module, ForgejoBinaryPin.JOB_TYPE, body, new ModuleDownload.Callback() {
             @Override public void onDone(org.json.JSONObject result) {
                 moduleDownload = null;

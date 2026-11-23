@@ -14,16 +14,23 @@ process.env.K2GO_JOBS_DB = path.join(tmp, 'jobs.db');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mod = require('./forgejo-bin.exec') as typeof import('./forgejo-bin.exec');
-const { forgejoSuffix, isForgejoVersion, forgejoUrl, removePartials, forgejoBinRunner } = mod;
+const { forgejoSuffix, isForgejoVersion, forgejoUrl, removePartials, forgejoBinRunner, parseSha256 } = mod;
 import type { RunnerContext, JobUpdate } from './jobs';
 import { CanceledError } from './jobs';
+import crypto from 'crypto';
 
 const SUFFIX = forgejoSuffix(os.machine());
+const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
 
-function stubFetch(tag: unknown, seen: Array<Record<string, string>>): () => void {
+/** The release API answers `tag`; the .sha256 file answers `sha` (null = the release has none, 404). */
+function stubFetch(tag: unknown, seen: Array<Record<string, string>>, sha: string | null = null): () => void {
     const orig = globalThis.fetch;
-    globalThis.fetch = (async (_url: unknown, init?: { headers?: Record<string, string> }) => {
+    globalThis.fetch = (async (url: unknown, init?: { headers?: Record<string, string> }) => {
         seen.push(init?.headers ?? {});
+        if (String(url).endsWith('.sha256')) {
+            return sha === null ? new Response('not found', { status: 404 })
+                : new Response(`${sha}  forgejo-17.0.2-linux-${SUFFIX}\n`, { status: 200 });
+        }
         return new Response(JSON.stringify({ tag_name: tag }), { status: 200 });
     }) as typeof fetch;
     return () => { globalThis.fetch = orig; };
@@ -189,6 +196,60 @@ test('runner: Pause keeps the partial for Resume', { skip: !SUFFIX }, async () =
         box.state = state;
         await assert.rejects(forgejoBinRunner(ctx), /paused/);
         assert.deepEqual(fs.readdirSync(BIN).sort(), ['forgejo-17.0.2.part', 'forgejo-17.0.2.part.aria2']);
+    } finally { restore(); }
+});
+
+test('parseSha256 reads the first field of a sha256sum line', () => {
+    const h = 'A'.repeat(64);
+    assert.equal(parseSha256(`${h}  forgejo-17.0.2-linux-arm64\n`), 'a'.repeat(64));
+    assert.equal(parseSha256(h), 'a'.repeat(64));
+    assert.equal(parseSha256('<html>not found</html>'), null);
+    assert.equal(parseSha256('abc  file'), null);
+});
+
+test('runner: a file that matches the release sha-256 is kept', { skip: !SUFFIX }, async () => {
+    reset();
+    fs.mkdirSync(BIN, { recursive: true });
+    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2'), 'binary');
+    const restore = stubFetch('v17.0.2', [], sha256('binary'));
+    try {
+        const { ctx, updates, state } = fakeCtx(() => assert.fail('no aria2 expected'));
+        await forgejoBinRunner(ctx);
+        assert.equal(state.spawned, 0);
+        assert.equal(updates[updates.length - 1].phase, 'done');
+    } finally { restore(); }
+});
+
+test('runner: a file that does not match the release sha-256 is downloaded again', { skip: !SUFFIX }, async () => {
+    reset();
+    fs.mkdirSync(BIN, { recursive: true });
+    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2'), 'corrupt');
+    const restore = stubFetch('v17.0.2', [], sha256('binary'));
+    try {
+        const { ctx, state } = fakeCtx((args, child) => {
+            const input = fs.readFileSync(args[args.indexOf('-i') + 1], 'utf8');
+            assert.match(input, new RegExp(`checksum=sha-256=${sha256('binary')}`));
+            assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2')), false);   // the wrong file is gone
+            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'binary');
+            child.emit('exit', 0, null);
+        });
+        await forgejoBinRunner(ctx);
+        assert.equal(state.spawned, 1);
+        assert.equal(fs.readFileSync(path.join(BIN, 'forgejo-17.0.2'), 'utf8'), 'binary');
+    } finally { restore(); }
+});
+
+test('runner: a checksum failure (aria2 exit 32) removes the partial', { skip: !SUFFIX }, async () => {
+    reset();
+    const restore = stubFetch('v17.0.2', [], sha256('binary'));
+    try {
+        const { ctx } = fakeCtx((_args, child) => {
+            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'wrong');
+            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
+            child.emit('exit', 32, null);
+        });
+        await assert.rejects(forgejoBinRunner(ctx), /does not match the release sha-256/);
+        assert.deepEqual(fs.readdirSync(BIN), []);
     } finally { restore(); }
 });
 
