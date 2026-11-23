@@ -1,61 +1,57 @@
 /*
  * ============================================================================
- * Name        : MapsDownloadRepository.java
+ * Name        : ModuleDownloadRepository.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2GO-394. The one place the maps download progress lives, so the
- *               install-progress UI observes it instead of polling aria2 itself.
+ * Description : K2GO-394, K2GO-593. The one place where the progress of a
+ *               module's download lives, so the install screens observe it.
  * ============================================================================
  */
-package org.appdevforall.k2go.maps.presentation;
+package org.appdevforall.k2go.install.presentation;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import org.appdevforall.k2go.maps.domain.MapsDownloadProgress;
+import org.appdevforall.k2go.install.domain.ModuleDownloadProgress;
 
 /**
- * The subordinate download bar's single source (K2GO-394). {@code InstallService} writes it from the
- * dash-node poll ({@code RestContentClient.Listener} for the "basemaps" job); the progress screen
- * observes it beside {@code ModuleQueueRepository} (the phase spine). One writer, so there is no
- * second place inventing a download percent.
- *
- * <p>Starts and resets to {@link MapsDownloadProgress#none()} -- the honest "nothing to show", which
- * is also what a non-maps module leaves it at, so the UI simply shows the phase-only Variant 3.
+ * The download bar's single source. {@link ModuleDownload} writes it from the dash-node poll; the
+ * install screens observe it beside {@code ModuleQueueRepository} (the phase spine). One writer, so no
+ * second place makes up a download percent. It is {@link ModuleDownloadProgress#none()} when no
+ * module downloads, so a module with no download shows only its phase.
  */
-public final class MapsDownloadRepository {
+public final class ModuleDownloadRepository {
 
-    private static final MapsDownloadRepository INSTANCE = new MapsDownloadRepository();
+    private static final ModuleDownloadRepository INSTANCE = new ModuleDownloadRepository();
 
-    private final MutableLiveData<MapsDownloadProgress> state =
-            new MutableLiveData<>(MapsDownloadProgress.none());
+    private final MutableLiveData<ModuleDownloadProgress> state =
+            new MutableLiveData<>(ModuleDownloadProgress.none());
+    // postValue is applied later on the main thread; current() must see the last write at once.
+    private volatile ModuleDownloadProgress last = ModuleDownloadProgress.none();
 
-    private MapsDownloadRepository() {
+    private ModuleDownloadRepository() {
     }
 
-    public static MapsDownloadRepository get() {
+    public static ModuleDownloadRepository get() {
         return INSTANCE;
     }
 
-    public LiveData<MapsDownloadProgress> state() {
+    public LiveData<ModuleDownloadProgress> state() {
         return state;
     }
 
-    public MapsDownloadProgress current() {
-        MapsDownloadProgress v = state.getValue();
-        return v != null ? v : MapsDownloadProgress.none();
+    public ModuleDownloadProgress current() {
+        return last;
     }
 
-    /**
-     * Post a new snapshot. {@code postValue} on purpose: the poll listener delivers on the main thread
-     * but InstallService clears from its background install thread, so the write must be thread-safe.
-     */
-    public void post(MapsDownloadProgress p) {
-        state.postValue(p != null ? p : MapsDownloadProgress.none());
+    /** Post a new snapshot. postValue, because the writers run on the main and on worker threads. */
+    public void post(ModuleDownloadProgress p) {
+        last = p != null ? p : ModuleDownloadProgress.none();
+        state.postValue(last);
     }
 
-    /** Clear back to "nothing downloading" -- on teardown, or when the download finishes. */
+    /** Back to "nothing downloads": when the download ends, and on teardown. */
     public void clear() {
-        state.postValue(MapsDownloadProgress.none());
+        post(ModuleDownloadProgress.none());
     }
 }

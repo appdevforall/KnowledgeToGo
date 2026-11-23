@@ -47,6 +47,7 @@ import org.appdevforall.k2go.deploy.domain.ModuleName;
 import org.appdevforall.k2go.download.domain.DownloadRetryPolicy;
 import org.appdevforall.k2go.install.data.InstallStateStore;
 import org.appdevforall.k2go.install.domain.AnsibleRunOutcome;
+import org.appdevforall.k2go.install.domain.ForgejoBinaryPin;
 import org.appdevforall.k2go.sync.transport.NetworkStateLiveData;
 
 import java.io.BufferedReader;
@@ -206,9 +207,12 @@ public final class InstallService extends Service {
     private static String sRetryMapsVector, sRetryMapsSat, sRetryMapsTerrain;
     private static boolean sRetryMapsSearch;
     private boolean mapsSearchOn;
-    // K2GO-394: the base-map download client for the maps module (dash-node "basemaps" job). Held so
-    // the UI's Pause/Resume/Cancel reach the in-flight download; null when nothing is downloading.
-    private volatile org.appdevforall.k2go.content.RestContentClient mapsClient;
+    // K2GO-394, K2GO-593: the module download through dash-node (maps base maps, the Forgejo binary).
+    // Held so the UI's Pause/Resume/Cancel reach it; null when nothing downloads.
+    private volatile ModuleDownload moduleDownload;
+    // K2GO-593: the Forgejo version that dash-node downloaded, which the forgejo runrole pins. "" when
+    // the download did not give one (the role then downloads by itself); null before the download.
+    private volatile String forgejoPinVersion;
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -238,6 +242,9 @@ public final class InstallService extends Service {
      */
     private void onValidatedNetworkReturned() {
         if (finished || cancelled) return;
+        // K2GO-593: a module download holds on mobile data with no consent and continues on Wi-Fi.
+        ModuleDownload md = moduleDownload;
+        if (md != null) md.evaluate();
         // K2GO-394: the maps base-map download is NOT driven from here -- dash-node owns its transport
         // resilience (its "basemaps" job re-runs aria2 with --continue and reports "Reconnecting n/5"),
         // the same self-healing path as ZIMs. The app just polls it. The manual Pause/Resume button
@@ -332,6 +339,7 @@ public final class InstallService extends Service {
             // recreation (theme toggle / rotation) and can never launch two concurrent runroles.
             String[] mods = intent.getStringArrayExtra(EXTRA_MODULES);
             moduleQueue = new java.util.ArrayDeque<>();
+            forgejoPinVersion = null;   // K2GO-593: each batch downloads (or finds) the binary again
             if (mods != null) {
                 for (String m : mods) if (m != null && !m.isEmpty()) moduleQueue.add(m);
             }
@@ -865,6 +873,11 @@ public final class InstallService extends Service {
         boolean anyRealModule = false;
         for (String m : moduleQueue) if (!"maps".equals(m)) { anyRealModule = true; break; }
         if (!anyRealModule) { installNextModule(); return; }
+        // K2GO-593: pdsm stop also stops dash-node, so its download must end before the stop.
+        if (moduleQueue.contains(ForgejoBinaryPin.MODULE) && forgejoPinVersion == null) {
+            downloadForgejoBinaryThen(this::runModuleQueue);
+            return;
+        }
         updateNotification(getString(R.string.server_shutting_down));
         log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
         if (prootEngine == null) prootEngine = new PRootEngine();
@@ -945,12 +958,18 @@ public final class InstallService extends Service {
 
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
-        final String runroleCmd = ("maps".equals(nextModule) && hasMapsConfig)
+        final String plainCmd = ("maps".equals(nextModule) && hasMapsConfig)
                 ? mapsInstallCmd()
                 : "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
+        // K2GO-593: pin the version that dash-node downloaded, for this run only, so the role uses that
+        // file. pinCommand is null for a version that is not X.Y.Z: then the role downloads by itself.
+        final String pin = ForgejoBinaryPin.MODULE.equals(nextModule)
+                ? ForgejoBinaryPin.pinCommand(forgejoPinVersion) : null;
+        final String runroleCmd = pin == null ? plainCmd
+                : pin + " && " + plainCmd + " ; rc=$? ; " + ForgejoBinaryPin.UNPIN + " ; exit $rc";
         // K2GO-464: refresh the stale rootfs apt index before the runrole, or a pinned dep 404s as the
         // box ages. Best-effort (short timeout, || true) so an offline/local-only install still runs.
         // K2GO-593: a Cancel SIGKILLs the runrole, also during dpkg; finish any interrupted dpkg first.
@@ -1077,8 +1096,9 @@ public final class InstallService extends Service {
         String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + module + "_install: False' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + module + "_enabled: False' >> /etc/iiab/local_vars.yml ; " +
-                // K2GO-593: a killed runrole leaves its task dirs (a partial download) behind.
-                "rm -rf /root/.ansible/tmp/ansible-tmp-*";
+                // K2GO-593: a killed runrole leaves its task dirs (a partial download) behind, and
+                // the forgejo version pin of that run.
+                "rm -rf /root/.ansible/tmp/ansible-tmp-* ; " + ForgejoBinaryPin.UNPIN;
         prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), revertCmd, new PRootEngine.OutputListener() {
             @Override public void onOutputLine(String line) { }
             @Override public void onProcessExit(int exitCode) { then.run(); }
@@ -1274,35 +1294,16 @@ public final class InstallService extends Service {
         }
         log("[maps] downloading " + ids.size() + " base-map file(s) via dash-node: "
                 + android.text.TextUtils.join(", ", ids));
-        final org.appdevforall.k2go.content.RestContentClient client =
-                new org.appdevforall.k2go.content.RestContentClient("basemaps");
-        mapsClient = client;
-        client.start(body, new org.appdevforall.k2go.content.RestContentClient.Listener() {
-            @Override public void onProgress(int percent, String speed) {
-                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
-                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.active(percent, speed));
-            }
-            @Override public void onReconnecting(int attempt, int total) {
-                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
-                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.reconnecting(attempt, total));
-            }
-            @Override public void onPaused(int percent) {
-                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().post(
-                        org.appdevforall.k2go.maps.domain.MapsDownloadProgress.paused(percent));
-            }
-            @Override public void onIndexing() { /* base maps have no index phase */ }
-            @Override public void onLog(String line) { log("[maps-dl] " + line); }
-            @Override public void onDone() {
-                mapsClient = null;
-                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+        moduleDownload = new ModuleDownload(this, module, "basemaps", body, new ModuleDownload.Callback() {
+            @Override public void onDone(org.json.JSONObject result) {
+                moduleDownload = null;
                 if (cancelled) return;
                 log("[maps] base-map download complete; running the role");
                 // Keep the runrole off the poll's main-thread callback (it reads assets / prefs).
                 org.appdevforall.k2go.util.AppExecutors.get().io().execute(onReady);
             }
             @Override public void onError(String message) {
-                mapsClient = null;
-                org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+                moduleDownload = null;
                 if (cancelled) return;
                 failedModules.add(module);
                 log("[Install] FAILED: " + module + " base-map download (" + message + ")");
@@ -1312,7 +1313,53 @@ public final class InstallService extends Service {
                 org.appdevforall.k2go.util.AppExecutors.get().io().execute(
                         () -> revertModuleInLocalVars(module, InstallService.this::finishModuleQueue));
             }
-        });
+        }, this::log);
+        moduleDownload.start();
+    }
+
+    /**
+     * K2GO-593: download the Forgejo binary through dash-node (job "forgejo-bin") while the server is
+     * still up, then run {@code then}. The box resolves the version and writes the file where the role
+     * looks for it; the forgejo runrole pins that version, so its get_url skips the download and its GPG
+     * check verifies the file. A failed download fails only Forgejo (Retry is offered) and the other
+     * modules of the batch still install. No local_vars edit was made yet, so nothing is reverted.
+     */
+    private void downloadForgejoBinaryThen(Runnable then) {
+        final String module = ForgejoBinaryPin.MODULE;
+        org.json.JSONObject body;
+        try {
+            body = new org.json.JSONObject().put("ids", new org.json.JSONArray().put(module));
+        } catch (org.json.JSONException e) {
+            throw new IllegalStateException(e);   // a literal body cannot fail
+        }
+        log("[forgejo] downloading the Forgejo binary via dash-node before the install");
+        moduleDownload = new ModuleDownload(this, module, ForgejoBinaryPin.JOB_TYPE, body, new ModuleDownload.Callback() {
+            @Override public void onDone(org.json.JSONObject result) {
+                moduleDownload = null;
+                if (cancelled) return;
+                String version = result != null ? result.optString("version", "") : "";
+                if (ForgejoBinaryPin.isVersion(version)) {
+                    log("[forgejo] binary " + version + " is ready; the role uses it");
+                } else {
+                    log("[forgejo] WARNING: no valid version from the box; the role downloads the binary");
+                    version = "";
+                }
+                forgejoPinVersion = version;
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(then);
+            }
+            @Override public void onError(String message) {
+                moduleDownload = null;
+                if (cancelled) return;
+                log("[Install] FAILED: " + module + " download (" + message + ")");
+                failedModules.add(module);
+                org.appdevforall.k2go.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(module, false);
+                moduleQueue.remove(module);
+                persistQueue();
+                forgejoPinVersion = "";
+                org.appdevforall.k2go.util.AppExecutors.get().io().execute(then);
+            }
+        }, this::log);
+        moduleDownload.start();
     }
 
     /**
@@ -1466,12 +1513,11 @@ public final class InstallService extends Service {
      */
     private void doPause() {
         if (finished || cancelled) return;
-        // K2GO-394: a maps base-map download pauses through dash-node (the "basemaps" job), not the
-        // rootfs aria2 the checks below govern. The poll reflects the paused state on the download bar.
-        org.appdevforall.k2go.content.RestContentClient pauseClient = mapsClient;
-        if (pauseClient != null) {
-            log("[maps] pause requested");
-            pauseClient.pause();
+        // K2GO-394, K2GO-593: a module download pauses through dash-node, not the rootfs aria2 that the
+        // checks below govern.
+        ModuleDownload pauseDownload = moduleDownload;
+        if (pauseDownload != null) {
+            pauseDownload.pause();
             return;
         }
         if (!InstallProgressRepository.get().current().isRunning()) return;
@@ -1645,11 +1691,10 @@ public final class InstallService extends Service {
      */
     private void doResume() {
         if (finished || cancelled) return;
-        // K2GO-394: resume a maps download through dash-node (aria2 --continue picks up the partial).
-        org.appdevforall.k2go.content.RestContentClient resumeClient = mapsClient;
-        if (resumeClient != null) {
-            log("[maps] resume requested");
-            resumeClient.resume();
+        // K2GO-394, K2GO-593: resume a module download through dash-node (aria2 --continue).
+        ModuleDownload resumeDownload = moduleDownload;
+        if (resumeDownload != null) {
+            resumeDownload.resume();
             return;
         }
         if (!InstallProgressRepository.get().current().isHeld()) return;
@@ -1711,7 +1756,11 @@ public final class InstallService extends Service {
             // server was pdsm-stopped for the runroles) is not raced by teardown's later clear.
             // K2GO-593: during pdsm stop no module is current yet; the cancel stops the first one.
             final String running = ModuleQueueRepository.get().current().currentModule;
-            final String cur = running != null ? running : (moduleQueue != null ? moduleQueue.peek() : null);
+            // K2GO-593: a cancel during the download before the stop cancels the module that downloads.
+            final ModuleDownload downloading = moduleDownload;
+            final String cur = running != null ? running
+                    : downloading != null ? downloading.module()
+                    : (moduleQueue != null ? moduleQueue.peek() : null);
             stopModuleStallWatch();   // ADFA-4898 P4
             // K2GO-593: SIGKILL, not SIGTERM. On SIGTERM proot stayed up and the runrole kept downloading.
             if (prootEngine != null) prootEngine.forceKill();
@@ -1842,10 +1891,10 @@ public final class InstallService extends Service {
         // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.
         cancelHeldWindow();
         cancelPendingRetry();
-        // K2GO-394: cancel an in-flight base-map download and clear its bar.
-        org.appdevforall.k2go.content.RestContentClient mc = mapsClient;
-        if (mc != null) { mc.cancel(); mapsClient = null; }
-        org.appdevforall.k2go.maps.presentation.MapsDownloadRepository.get().clear();
+        // K2GO-394, K2GO-593: cancel an in-flight module download (the box removes its partial).
+        ModuleDownload md = moduleDownload;
+        if (md != null) { md.cancel(); moduleDownload = null; }
+        ModuleDownloadRepository.get().clear();
         if (clearMarker) {
             org.appdevforall.k2go.InstallGuard.end(this);
         } else {

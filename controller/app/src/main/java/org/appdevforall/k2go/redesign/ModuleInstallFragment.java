@@ -52,6 +52,7 @@ public class ModuleInstallFragment extends Fragment {
     private TextView progressPct, progressEta;
     private org.appdevforall.k2go.widget.LiveLogPanel logPanel;   // K2GO-374: shared details panel
     private boolean terminalDone = false;   // this module reached done/failed → stop live status
+    private boolean downloading = false;    // K2GO-593: the download card shows this module's download
     private final ArrayDeque<String> logLines = new ArrayDeque<>();
     private LogRepository.Listener logListener;
 
@@ -74,6 +75,10 @@ public class ModuleInstallFragment extends Fragment {
         org.appdevforall.k2go.util.ProgressVisuals.applyForModule(root, key);
         logPanel = root.findViewById(R.id.k2go_modinst_log_panel);
         logPanel.setOnExpandListener(this::seedLog);   // K2GO-374: seed from the snapshot on expand
+
+        // K2GO-593: a module that downloads before its role (Forgejo) shows the shared download card.
+        new DownloadCard(root, key == null ? "" : key, R.string.k2go_dl_program_title)
+                .observe(getViewLifecycleOwner(), shown -> { downloading = shown; updateStatus(); });
 
         updateStatus();
         ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> updateStatus());
@@ -140,6 +145,13 @@ public class ModuleInstallFragment extends Fragment {
         if (mq.phase == ModuleQueueState.Phase.DONE) {
             terminalDone = true;
             status.setText(getString(R.string.k2go_mod_phase_done));
+            return;
+        }
+        if (downloading) {
+            org.appdevforall.k2go.install.domain.ModuleDownloadProgress dl =
+                    org.appdevforall.k2go.install.presentation.ModuleDownloadRepository.get().current();
+            status.setText(getString(dl.isHeld() ? R.string.k2go_mod_phase_queued
+                    : dl.isPaused() ? R.string.k2go_dl_paused : R.string.k2go_mod_phase_downloading));
             return;
         }
         if (installing()) {

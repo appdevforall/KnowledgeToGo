@@ -87,6 +87,9 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- K2GO-593: the shared download card, for a module that downloads before its role. -->
+        <include layout="@layout/view_k2go_download_card" />
+
         <TextView
             android:id="@+id/k2go_modinst_status"
             android:layout_width="match_parent"
