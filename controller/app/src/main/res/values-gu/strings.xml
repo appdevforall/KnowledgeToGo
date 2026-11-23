@@ -1692,4 +1692,10 @@
     <string name="k2go_feedback_send_anyway">છતાં મોકલો</string>
     <string name="k2go_mod_phase_canceled">રદ કર્યું</string>
     <string name="k2go_setup_modules_stopped">ઇન્સ્ટૉલ અટકી ગયું. નીચે દરેક મૉડ્યુલ તપાસો.</string>
+    <string name="k2go_dl_program_title">પ્રોગ્રામ ડાઉનલોડ થઈ રહ્યો છે</string>
+    <string name="k2go_dl_speed">%1$s/સે</string>
+    <string name="k2go_dl_speed_eta">%1$s/સે, %2$s</string>
+    <string name="k2go_dl_held_metered">Wi-Fi ની રાહ જોઈ રહ્યું છે. તમે મંજૂરી ન આપો ત્યાં સુધી ડાઉનલોડ મોબાઇલ ડેટા વાપરતું નથી.</string>
+    <string name="k2go_dl_held_offline">રાહ જોઈ રહ્યું છે. ઍપ ઑફલાઇન રાખવામાં આવી છે, તેથી તમે મંજૂરી ન આપો ત્યાં સુધી ડાઉનલોડ કનેક્ટ થતું નથી.</string>
+    <string name="k2go_mod_phase_downloading">ડાઉનલોડ થઈ રહ્યું છે…</string>
 </resources>

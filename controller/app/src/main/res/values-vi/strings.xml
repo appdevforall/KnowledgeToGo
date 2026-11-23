@@ -1678,4 +1678,10 @@
     <string name="k2go_feedback_send_anyway">Vẫn gửi</string>
     <string name="k2go_mod_phase_canceled">Đã hủy</string>
     <string name="k2go_setup_modules_stopped">Quá trình cài đặt đã dừng. Hãy kiểm tra từng mô-đun bên dưới.</string>
+    <string name="k2go_dl_program_title">Đang tải xuống chương trình</string>
+    <string name="k2go_dl_speed">%1$s/giây</string>
+    <string name="k2go_dl_speed_eta">%1$s/giây, %2$s</string>
+    <string name="k2go_dl_held_metered">Đang chờ Wi-Fi. Bản tải xuống không dùng dữ liệu di động cho đến khi bạn cho phép.</string>
+    <string name="k2go_dl_held_offline">Đang chờ. Ứng dụng được giữ ngoại tuyến, vì vậy bản tải xuống không kết nối cho đến khi bạn cho phép.</string>
+    <string name="k2go_mod_phase_downloading">Đang tải xuống…</string>
 </resources>

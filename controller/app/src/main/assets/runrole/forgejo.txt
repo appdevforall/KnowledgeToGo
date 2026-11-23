@@ -1,0 +1,47 @@
+Assert that "forgejo_install is sameas true" (boolean not string etc)
+Assert that "forgejo_enabled | type_debug == 'bool'" (boolean not string etc)
+Install Forgejo if 'forgejo_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Assert forgejo_db_engine is a supported value ('sqlite' or 'mariadb')
+Query Codeberg for the latest Forgejo release
+Set forgejo_version from the latest release tag
+Assert forgejo_version is a valid X.Y.Z release
+Record (initial) disk space used
+Stop existing Forgejo systemd service (if reinstalling, not proot)
+Stop existing Forgejo via pdsm (if reinstalling, proot)
+Ensure group 'forgejo' exists
+Create user 'forgejo'
+Create /library/forgejo directory structure
+Make directories data, log, backups writable (0750)
+Check whether Forgejo is already installed (app.ini present)
+Detect the existing install's DB engine (engine-change guard)
+Refuse an unsupported DB engine change on an existing install
+Compute a backup timestamp (proot-safe, no fact dependency)
+Back up Forgejo (forgejo dump) to /library/forgejo/backups before swapping the binary
+Fail if we detect an unsupported CPU architecture
+Verify the downloaded Forgejo binary against its GPG signature (fail closed)
+Find installed Forgejo binaries in /library/forgejo/bin
+mkdir /etc/forgejo (0770 root:forgejo)
+Generate Forgejo secrets once (guarded by 'creates'), referenced by *_URI in app.ini
+Secure the generated secret files (0640 root:forgejo)
+Set 'mysql_install: True' and 'mysql_enabled: True'
+MYSQL - run 'mysql' role
+FAIL (STOP THE INSTALL) IF 'mysql_installed is undefined'
+Create MySQL database for Forgejo: forgejo
+Create MySQL username (forgejo) with password, for above database
+Install /etc/forgejo/app.ini from template (0664 root:forgejo)
+Install systemd unit /etc/systemd/system/forgejo.service (not proot)
+Record (final) disk space used
+Set 'forgejo_installed: True'
+Add 'forgejo_installed: True' to /etc/iiab/iiab_state.yml
+Enable/Disable Forgejo (systemd or pdsm) and NGINX
+Enable & Restart 'forgejo' systemd service, if forgejo_enabled (not proot)
+Disable & Stop 'forgejo' systemd service, if not forgejo_enabled (not proot)
+Enable 'forgejo' via pdsm (proot)
+Restart 'forgejo' via pdsm (proot)
+Stop 'forgejo' via pdsm (proot)
+Disable 'forgejo' via pdsm (proot)
+Enable http://box/forgejo via NGINX, by installing /etc/nginx/conf.d/forgejo-nginx.conf from template
+Disable http://box/forgejo via NGINX, by removing /etc/nginx/conf.d/forgejo-nginx.conf
+Reload 'nginx' systemd service (not proot)
+Restart 'nginx' via pdsm (proot)
+Add 'forgejo' variable values to /etc/iiab/iiab.ini

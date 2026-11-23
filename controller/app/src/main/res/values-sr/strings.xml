@@ -1693,4 +1693,10 @@
     <string name="k2go_feedback_send_anyway">Ипак пошаљи</string>
     <string name="k2go_mod_phase_canceled">Отказано</string>
     <string name="k2go_setup_modules_stopped">Инсталација је заустављена. Проверите сваки модул испод.</string>
+    <string name="k2go_dl_program_title">Преузимање програма</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Чекање на Wi-Fi. Преузимање не користи мобилне податке док то не дозволите.</string>
+    <string name="k2go_dl_held_offline">Чекање. Апликација је задржана офлајн, па се преузимање не повезује док то не дозволите.</string>
+    <string name="k2go_mod_phase_downloading">Преузимање…</string>
 </resources>

@@ -7,9 +7,9 @@
  *               and the box read live elsewhere (redesign.DashboardVersion), so this stays a plain,
  *               unit-testable registry with no Android or network dependency.
  *
- *               Forgejo needs the dashboard build that ships its repo status/refresh endpoints (1.3.7):
- *               an older dash-node makes "Install repos"/"Update repos" and the seed break silently, so
- *               installing Forgejo is HARD-blocked below that version. Code on the Go add-ons (K2GO-99)
+ *               Forgejo needs the dashboard build that ships its repo status/refresh endpoints (1.3.7)
+ *               and the forgejo-bin download job (1.6.5, K2GO-593): an older dash-node breaks the
+ *               install, so installing Forgejo is HARD-blocked below that version. Code on the Go add-ons (K2GO-99)
  *               needs the dashboard build that ships the /addons/refresh endpoints (1.3.8), so the gallery
  *               can update, so it is HARD-blocked below that version too. Other modules have no hard minimum
  *               (a soft "update the dashboard" suggestion applies to all installs, handled in the gate).
@@ -25,7 +25,8 @@ public final class DashNodeRequirement {
     /** {major, minor, patch} minimum dash-node for {@code moduleKey}, or null when it has no hard minimum. */
     @Nullable
     public static int[] minFor(@Nullable String moduleKey) {
-        if ("forgejo".equals(moduleKey)) return new int[]{1, 3, 7};
+        // K2GO-593: 1.6.5 has the forgejo-bin job, which downloads the binary before the install.
+        if ("forgejo".equals(moduleKey)) return new int[]{1, 6, 5};
         if ("code_addons".equals(moduleKey)) return new int[]{1, 3, 8};   // K2GO-99: needs /addons/refresh
         // K2GO-437: code_assets install (runrole) and browsing (WebView) do NOT use the dash-node
         // refresh endpoints; only the "Update build assets" action does, and it degrades gracefully

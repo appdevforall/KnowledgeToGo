@@ -1757,4 +1757,10 @@
     <string name="k2go_feedback_send_anyway">Всё равно отправить</string>
     <string name="k2go_mod_phase_canceled">Отменено</string>
     <string name="k2go_setup_modules_stopped">Установка остановлена. Проверьте каждый модуль ниже.</string>
+    <string name="k2go_dl_program_title">Загрузка программы</string>
+    <string name="k2go_dl_speed">%1$s/с</string>
+    <string name="k2go_dl_speed_eta">%1$s/с, %2$s</string>
+    <string name="k2go_dl_held_metered">Ожидание Wi-Fi. Загрузка не использует мобильные данные, пока вы не разрешите.</string>
+    <string name="k2go_dl_held_offline">Ожидание. Приложение оставлено офлайн, поэтому загрузка не подключается, пока вы не разрешите.</string>
+    <string name="k2go_mod_phase_downloading">Загрузка…</string>
 </resources>

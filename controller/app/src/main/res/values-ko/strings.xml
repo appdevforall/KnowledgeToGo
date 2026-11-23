@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">그래도 보내기</string>
     <string name="k2go_mod_phase_canceled">취소됨</string>
     <string name="k2go_setup_modules_stopped">설치가 중지되었습니다. 아래에서 각 모듈을 확인하세요.</string>
+    <string name="k2go_dl_program_title">프로그램 다운로드 중</string>
+    <string name="k2go_dl_speed">%1$s/초</string>
+    <string name="k2go_dl_speed_eta">%1$s/초, %2$s</string>
+    <string name="k2go_dl_held_metered">Wi-Fi를 기다리는 중입니다. 허용하기 전까지 다운로드에 모바일 데이터를 사용하지 않습니다.</string>
+    <string name="k2go_dl_held_offline">대기 중입니다. 앱이 오프라인으로 유지되므로 허용하기 전까지 다운로드가 연결되지 않습니다.</string>
+    <string name="k2go_mod_phase_downloading">다운로드 중…</string>
 </resources>

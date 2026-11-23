@@ -1680,4 +1680,10 @@
     <string name="k2go_feedback_send_anyway">Trimite oricum</string>
     <string name="k2go_mod_phase_canceled">Anulată</string>
     <string name="k2go_setup_modules_stopped">Instalarea s-a oprit. Verifică fiecare modul de mai jos.</string>
+    <string name="k2go_dl_program_title">Se descarcă programul</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Se așteaptă Wi-Fi. Descărcarea nu folosește date mobile până nu permiți.</string>
+    <string name="k2go_dl_held_offline">În așteptare. Aplicația este păstrată offline, așa că descărcarea nu se conectează până nu permiți.</string>
+    <string name="k2go_mod_phase_downloading">Se descarcă…</string>
 </resources>

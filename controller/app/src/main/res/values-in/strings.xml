@@ -1685,4 +1685,10 @@
     <string name="k2go_feedback_send_anyway">Tetap kirim</string>
     <string name="k2go_mod_phase_canceled">Dibatalkan</string>
     <string name="k2go_setup_modules_stopped">Pemasangan berhenti. Periksa setiap modul di bawah.</string>
+    <string name="k2go_dl_program_title">Mengunduh program</string>
+    <string name="k2go_dl_speed">%1$s/d</string>
+    <string name="k2go_dl_speed_eta">%1$s/d, %2$s</string>
+    <string name="k2go_dl_held_metered">Menunggu Wi-Fi. Unduhan tidak menggunakan data seluler sampai Anda mengizinkannya.</string>
+    <string name="k2go_dl_held_offline">Menunggu. Aplikasi tetap luring, jadi unduhan tidak tersambung sampai Anda mengizinkannya.</string>
+    <string name="k2go_mod_phase_downloading">Mengunduh…</string>
 </resources>

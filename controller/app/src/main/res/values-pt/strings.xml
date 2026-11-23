@@ -1759,4 +1759,10 @@
     <string name="k2go_feedback_send_anyway">Enviar mesmo assim</string>
     <string name="k2go_mod_phase_canceled">Cancelado</string>
     <string name="k2go_setup_modules_stopped">A instalação parou. Verifique cada módulo abaixo.</string>
+    <string name="k2go_dl_program_title">Baixando o programa</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Aguardando Wi-Fi. O download não usa dados móveis até você permitir.</string>
+    <string name="k2go_dl_held_offline">Aguardando. O app é mantido offline, então o download não se conecta até você permitir.</string>
+    <string name="k2go_mod_phase_downloading">Baixando…</string>
 </resources>

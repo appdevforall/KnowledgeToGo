@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">Toch verzenden</string>
     <string name="k2go_mod_phase_canceled">Geannuleerd</string>
     <string name="k2go_setup_modules_stopped">De installatie is gestopt. Controleer hieronder elke module.</string>
+    <string name="k2go_dl_program_title">Het programma wordt gedownload</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Wachten op Wi-Fi. De download gebruikt geen mobiele data totdat je het toestaat.</string>
+    <string name="k2go_dl_held_offline">Wachten. De app blijft offline, dus de download maakt geen verbinding totdat je het toestaat.</string>
+    <string name="k2go_mod_phase_downloading">Downloaden…</string>
 </resources>
