@@ -13,6 +13,7 @@ import './sockets/kolibri.exec';
 import './sockets/code_assets.exec';   // K2GO-443: build-assets runner (aria2 job engine)
 import './sockets/code_addons.exec';   // K2GO-443: add-ons gallery runner (aria2 job engine)
 import './sockets/forgejo.exec';        // K2GO-443: forgejo repo-refresh runner (git, per-repo progress)
+import './sockets/forgejo-bin.exec';    // K2GO-593: forgejo binary download before the module install
 import { apiRouter } from './routes';
 import { startServiceHeal } from './sockets/service-heal';
 import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
