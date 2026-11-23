@@ -118,6 +118,7 @@ const forgejoBinRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     removePartials(BIN_DIR, version);   // a partial of an older release cannot be resumed
     const dest = finalPath(BIN_DIR, version);
     if (fs.existsSync(dest)) {
+        removePartials(BIN_DIR);
         ctx.log(`[forgejo-bin] ${path.basename(dest)} is already there`);
         ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: version, result });
         return;

@@ -96,12 +96,15 @@ test('runner: a binary that is already there ends the job with no download', { s
     reset();
     fs.mkdirSync(BIN, { recursive: true });
     fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2'), 'binary');
+    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'old partial');
+    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
     const headers: Array<Record<string, string>> = [];
     const restore = stubFetch('v17.0.2', headers);
     try {
         const { ctx, updates, state } = fakeCtx(() => assert.fail('no aria2 expected'));
         await forgejoBinRunner(ctx);
         assert.equal(state.spawned, 0);
+        assert.deepEqual(fs.readdirSync(BIN), ['forgejo-17.0.2']);   // an old partial is removed
         const last = updates[updates.length - 1];
         assert.equal(last.phase, 'done');
         assert.deepEqual(JSON.parse(String(last.result)), { version: '17.0.2' });
