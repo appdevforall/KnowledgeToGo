@@ -44,7 +44,7 @@ const ZIMS_DIR = '/library/zims/content/';
 const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
-const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets', 'code-addons', 'forgejo'];
+const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri', 'basemaps', 'code-assets', 'code-addons', 'forgejo', 'forgejo-bin'];
 function isType(t: string): t is JobType {
     return (VALID_TYPES as string[]).includes(t);
 }
@@ -1247,7 +1247,8 @@ apiRouter.post('/:type/download', (req: Request, res: Response): void => {
     // K2GO-443: these types must run one job at a time: code-assets / code-addons stage into ONE shared
     // tree (/library/www/<type>.new), and forgejo fetches+pushes the same repo set (two concurrent runs
     // would race the staging / the repos). The app re-attaches via start-or-attach; this is the hard guard.
-    const SINGLE_RUN_TYPES = ['code-assets', 'code-addons', 'forgejo'];
+    // K2GO-593: forgejo-bin writes one partial file.
+    const SINGLE_RUN_TYPES = ['code-assets', 'code-addons', 'forgejo', 'forgejo-bin'];
     if (SINGLE_RUN_TYPES.includes(type)
         && jobs.list(type).some((j) =>
             ['queued', 'downloading', 'indexing', 'processing', 'paused'].includes(j.phase))) {

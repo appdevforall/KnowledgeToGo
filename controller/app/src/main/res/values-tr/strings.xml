@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">Yine de gönder</string>
     <string name="k2go_mod_phase_canceled">İptal edildi</string>
     <string name="k2go_setup_modules_stopped">Kurulum durdu. Aşağıdaki her modülü kontrol edin.</string>
+    <string name="k2go_dl_program_title">Program indiriliyor</string>
+    <string name="k2go_dl_speed">%1$s/sn</string>
+    <string name="k2go_dl_speed_eta">%1$s/sn, %2$s</string>
+    <string name="k2go_dl_held_metered">Wi-Fi bekleniyor. Siz izin verene kadar indirme mobil veri kullanmaz.</string>
+    <string name="k2go_dl_held_offline">Bekleniyor. Uygulama çevrimdışı tutuluyor, bu yüzden siz izin verene kadar indirme bağlanmaz.</string>
+    <string name="k2go_mod_phase_downloading">İndiriliyor…</string>
 </resources>

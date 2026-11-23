@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">Küldés mégis</string>
     <string name="k2go_mod_phase_canceled">Megszakítva</string>
     <string name="k2go_setup_modules_stopped">A telepítés leállt. Alább ellenőrizze az egyes modulokat.</string>
+    <string name="k2go_dl_program_title">A program letöltése</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Várakozás Wi-Fi-re. A letöltés nem használ mobiladatot, amíg nem engedélyezi.</string>
+    <string name="k2go_dl_held_offline">Várakozás. Az alkalmazás offline marad, ezért a letöltés nem csatlakozik, amíg nem engedélyezi.</string>
+    <string name="k2go_mod_phase_downloading">Letöltés…</string>
 </resources>

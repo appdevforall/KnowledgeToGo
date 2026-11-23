@@ -10,9 +10,9 @@ import org.junit.Test;
 public class DashNodeRequirementTest {
 
     @Test
-    public void forgejoRequiresOneThreeSeven() {
-        assertArrayEquals(new int[]{1, 3, 7}, DashNodeRequirement.minFor("forgejo"));
-        assertEquals("1.3.7", DashNodeRequirement.minLabel("forgejo"));
+    public void forgejoRequiresOneSixFive() {
+        assertArrayEquals(new int[]{1, 6, 5}, DashNodeRequirement.minFor("forgejo"));
+        assertEquals("1.6.5", DashNodeRequirement.minLabel("forgejo"));
     }
 
     @Test

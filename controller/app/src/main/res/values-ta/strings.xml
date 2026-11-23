@@ -1699,4 +1699,10 @@
     <string name="k2go_feedback_send_anyway">இருந்தாலும் அனுப்பு</string>
     <string name="k2go_mod_phase_canceled">ரத்துசெய்யப்பட்டது</string>
     <string name="k2go_setup_modules_stopped">நிறுவல் நின்றது. கீழே ஒவ்வொரு தொகுதியையும் சரிபார்க்கவும்.</string>
+    <string name="k2go_dl_program_title">நிரல் பதிவிறக்கப்படுகிறது</string>
+    <string name="k2go_dl_speed">%1$s/வி</string>
+    <string name="k2go_dl_speed_eta">%1$s/வி, %2$s</string>
+    <string name="k2go_dl_held_metered">Wi-Fi க்காகக் காத்திருக்கிறது. நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் மொபைல் டேட்டாவைப் பயன்படுத்தாது.</string>
+    <string name="k2go_dl_held_offline">காத்திருக்கிறது. பயன்பாடு ஆஃப்லைனில் வைக்கப்பட்டுள்ளது, எனவே நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் இணைக்காது.</string>
+    <string name="k2go_mod_phase_downloading">பதிவிறக்கப்படுகிறது…</string>
 </resources>

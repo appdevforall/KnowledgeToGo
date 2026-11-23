@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2GO-394, K2GO-593: the download card of a module install (maps base maps, the Forgejo binary).
+     One layout for every module with a download, bound by redesign/DownloadCard from
+     ModuleDownloadRepository. Hidden (gone) while nothing downloads. A thinner bar than the
+     phase bar, the percent, the speed and time left, Pause/Resume, and a second button that
+     allows the network when the download waits for it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/k2go_dl_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/k2go_info_bg"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/k2go_dl_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textAppearance="?attr/textAppearanceTitleSmall"
+        android:textColor="@color/k2go_info_ink" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/k2go_dl_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        app:trackThickness="4dp"
+        android:indeterminate="false" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/k2go_dl_pct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_info_ink" />
+
+        <TextView
+            android:id="@+id/k2go_dl_rate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_info_ink" />
+    </LinearLayout>
+
+    <!-- Why a held download waits. Gone in the other states. -->
+    <TextView
+        android:id="@+id/k2go_dl_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/k2go_info_ink"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/k2go_dl_pause"
+            style="@style/Widget.K2Go.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="44dp"
+            android:text="@string/k2go_dl_pause" />
+
+        <Button
+            android:id="@+id/k2go_dl_allow"
+            style="@style/Widget.K2Go.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="44dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

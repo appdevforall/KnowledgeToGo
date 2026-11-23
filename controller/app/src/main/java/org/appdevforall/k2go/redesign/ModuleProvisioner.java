@@ -96,6 +96,8 @@ public final class ModuleProvisioner {
     public static void startBatch(Context ctx, String[] modules, android.os.Bundle extras) {
         if (ctx == null || modules == null || modules.length == 0) return;
         final Context app = ctx.getApplicationContext();
+        // K2GO-593: Forgejo downloads before the server stop, so it is the first row of the batch.
+        modules = org.appdevforall.k2go.install.domain.ForgejoBinaryPin.downloadFirst(modules);
         ModuleBatch.save(app, modules);
         // K2GO-592: every Forgejo install owes its seed (admin account, org, repos), whatever screen
         // scheduled it. Banked before the queue starts, so the install index sees it when the batch ends.

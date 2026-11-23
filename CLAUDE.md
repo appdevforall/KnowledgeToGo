@@ -334,6 +334,24 @@ One source per fact: the app ABI and the installed library's ABI (ADR-K2GO-571).
   (`DeepOpService`), backup identity + name (`BackupEngine`), 64-bit-only module gate
   (`ModuleCards.runsOn`), fresh-install arch (`SystemStateEvaluator.termuxArch`).
 
+**Standard flow (K2GO-593): proot module install progress and download**
+Maps (K2GO-394) and Forgejo use it; a new proot module follows it.
+
+- `install/domain/`: `ModuleDownloadProgress` (the download bar state), `DownloadHold` (hold a box
+  download on mobile data with no consent or with Keep offline; reuses `NetworkPolicy`),
+  `ForgejoBinaryPin` (the version pin of one run). Pure JVM, unit-tested.
+- `install/presentation/`: `ModuleDownload` owns one dash-node download job (start, pause, resume,
+  cancel, hold; "who stopped it" lives only here). `ModuleDownloadRepository` is the one source of
+  the download bar; `ModuleQueueRepository` stays the one source of the install bar.
+  `InstallService.postModuleStart` is the one rule: a role with a task table starts at 0% before its
+  download, so both bars show.
+- `redesign/ModuleProgressPanel` + `view_k2go_module_progress`: install bar over download card, the
+  same on every install screen; it keeps no state.
+- dash-node: the download runs before `pdsm stop` (the stop also stops dash-node); the box resolves
+  the URL and checks the file (`sockets/forgejo-bin.exec.ts`).
+- A new module with a download: a dash-node job type, a pre-download step in `InstallService`, a
+  task table in `assets/runrole/`, and the panel in its screen.
+
 **Legacy (NOT yet layered)**: the redesign retired the original god classes
 `MainActivity` and `DeployFragment` (they no longer exist; DONE-slice seams above
 that still name them are pre-redesign records). The current god-tier classes,

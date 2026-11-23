@@ -1698,4 +1698,10 @@
     <string name="k2go_feedback_send_anyway">Fi ránṣẹ́ bó ti wù kó rí</string>
     <string name="k2go_mod_phase_canceled">Ti fagilé</string>
     <string name="k2go_setup_modules_stopped">Fífi sórí ẹ̀rọ ti dúró. Ṣàyẹ̀wò módù kọ̀ọ̀kan nísàlẹ̀.</string>
+    <string name="k2go_dl_program_title">Ń gba ètò náà sílẹ̀</string>
+    <string name="k2go_dl_speed">%1$s/ìs</string>
+    <string name="k2go_dl_speed_eta">%1$s/ìs, %2$s</string>
+    <string name="k2go_dl_held_metered">Ń dúró de Wi-Fi. Ìgbàsílẹ̀ kò ní lo data alagbeka títí o fi gbà á láàyè.</string>
+    <string name="k2go_dl_held_offline">Ń dúró. A pa ìṣàmúlò mọ́ àìsí-íńtánẹ́ẹ̀tì, nítorí náà ìgbàsílẹ̀ kò ní sopọ̀ títí o fi gbà á láàyè.</string>
+    <string name="k2go_mod_phase_downloading">Ń gba sílẹ̀…</string>
 </resources>

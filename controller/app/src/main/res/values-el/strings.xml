@@ -1686,4 +1686,10 @@
     <string name="k2go_feedback_send_anyway">Αποστολή ούτως ή άλλως</string>
     <string name="k2go_mod_phase_canceled">Ακυρώθηκε</string>
     <string name="k2go_setup_modules_stopped">Η εγκατάσταση σταμάτησε. Ελέγξτε παρακάτω κάθε module.</string>
+    <string name="k2go_dl_program_title">Λήψη του προγράμματος</string>
+    <string name="k2go_dl_speed">%1$s/δ</string>
+    <string name="k2go_dl_speed_eta">%1$s/δ, %2$s</string>
+    <string name="k2go_dl_held_metered">Αναμονή για Wi-Fi. Η λήψη δεν χρησιμοποιεί δεδομένα κινητής μέχρι να το επιτρέψετε.</string>
+    <string name="k2go_dl_held_offline">Αναμονή. Η εφαρμογή διατηρείται εκτός σύνδεσης, οπότε η λήψη δεν συνδέεται μέχρι να το επιτρέψετε.</string>
+    <string name="k2go_mod_phase_downloading">Λήψη…</string>
 </resources>

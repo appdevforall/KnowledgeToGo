@@ -1699,4 +1699,10 @@
     <string name="k2go_feedback_send_anyway">Tuma hata hivyo</string>
     <string name="k2go_mod_phase_canceled">Imeghairiwa</string>
     <string name="k2go_setup_modules_stopped">Usakinishaji umesimama. Kagua kila moduli hapa chini.</string>
+    <string name="k2go_dl_program_title">Inapakua programu</string>
+    <string name="k2go_dl_speed">%1$s/sek</string>
+    <string name="k2go_dl_speed_eta">%1$s/sek, %2$s</string>
+    <string name="k2go_dl_held_metered">Inasubiri Wi-Fi. Upakuaji hautumii data ya simu hadi utakaporuhusu.</string>
+    <string name="k2go_dl_held_offline">Inasubiri. Programu imewekwa nje ya mtandao, kwa hivyo upakuaji hauunganishi hadi utakaporuhusu.</string>
+    <string name="k2go_mod_phase_downloading">Inapakua…</string>
 </resources>

@@ -1692,4 +1692,10 @@
     <string name="k2go_feedback_send_anyway">তবুও পাঠান</string>
     <string name="k2go_mod_phase_canceled">বাতিল করা হয়েছে</string>
     <string name="k2go_setup_modules_stopped">ইনস্টল বন্ধ হয়েছে। নিচে প্রতিটি মডিউল দেখুন।</string>
+    <string name="k2go_dl_program_title">প্রোগ্রাম ডাউনলোড হচ্ছে</string>
+    <string name="k2go_dl_speed">%1$s/সে</string>
+    <string name="k2go_dl_speed_eta">%1$s/সে, %2$s</string>
+    <string name="k2go_dl_held_metered">Wi-Fi-এর জন্য অপেক্ষা করছে। আপনি অনুমতি না দেওয়া পর্যন্ত ডাউনলোডটি মোবাইল ডেটা ব্যবহার করে না।</string>
+    <string name="k2go_dl_held_offline">অপেক্ষা করছে। অ্যাপটি অফলাইন রাখা হয়েছে, তাই আপনি অনুমতি না দেওয়া পর্যন্ত ডাউনলোডটি সংযুক্ত হয় না।</string>
+    <string name="k2go_mod_phase_downloading">ডাউনলোড হচ্ছে…</string>
 </resources>

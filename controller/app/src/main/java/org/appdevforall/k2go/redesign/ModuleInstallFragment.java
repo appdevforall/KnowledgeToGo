@@ -47,9 +47,6 @@ public class ModuleInstallFragment extends Fragment {
 
     private String key;
     private TextView status;
-    private View progressRow;                                                                 // ADFA-5228
-    private com.google.android.material.progressindicator.LinearProgressIndicator progress;
-    private TextView progressPct, progressEta;
     private org.appdevforall.k2go.widget.LiveLogPanel logPanel;   // K2GO-374: shared details panel
     private boolean terminalDone = false;   // this module reached done/failed → stop live status
     private final ArrayDeque<String> logLines = new ArrayDeque<>();
@@ -66,14 +63,16 @@ public class ModuleInstallFragment extends Fragment {
         title.setText(c != null ? getString(c.detailTitleRes) : (key == null ? "" : key));
 
         status = root.findViewById(R.id.k2go_modinst_status);
-        progressRow = root.findViewById(R.id.k2go_modinst_progress_row);   // ADFA-5228
-        progress = root.findViewById(R.id.k2go_modinst_progress);
-        progressPct = root.findViewById(R.id.k2go_modinst_progress_pct);
-        progressEta = root.findViewById(R.id.k2go_modinst_progress_eta);
         // ADFA-5074: the key is passed so a module that earns its own art can be matched.
         org.appdevforall.k2go.util.ProgressVisuals.applyForModule(root, key);
         logPanel = root.findViewById(R.id.k2go_modinst_log_panel);
         logPanel.setOnExpandListener(this::seedLog);   // K2GO-374: seed from the snapshot on expand
+
+        // K2GO-593: the standard proot install panel (install bar + download card).
+        new ModuleProgressPanel(root, key == null ? "" : key, R.string.k2go_dl_program_title)
+                .observe(getViewLifecycleOwner());
+        org.appdevforall.k2go.install.presentation.ModuleDownloadRepository.get().state()
+                .observe(getViewLifecycleOwner(), p -> updateStatus());
 
         updateStatus();
         ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> updateStatus());
@@ -91,7 +90,7 @@ public class ModuleInstallFragment extends Fragment {
         logListener = new LogRepository.Listener() {
             @Override public void onAppend(String line) {
                 if (!isAdded() || line == null) return;
-                if (!terminalDone && installing()) status.setText(line);
+                if (!terminalDone && installing() && !downloading()) status.setText(line);
                 if (logPanel.isExpanded()) { pushLine(line); renderLog(); }
             }
             @Override public void onCleared() {
@@ -102,6 +101,11 @@ public class ModuleInstallFragment extends Fragment {
         LogRepository.get().addListener(logListener);
 
         return root;
+    }
+
+    /** True while THIS module downloads before its role (the one source: ModuleDownloadRepository). */
+    private boolean downloading() {
+        return org.appdevforall.k2go.install.presentation.ModuleDownloadRepository.get().isDownloading(key);
     }
 
     /** True while THIS module is the one currently running. */
@@ -116,18 +120,6 @@ public class ModuleInstallFragment extends Fragment {
         if (status == null || !isAdded()) return;
         ModuleQueueState mq = ModuleQueueRepository.get().current();
 
-        // ADFA-5228: determinate bar above the status line while THIS module installs; hidden when
-        // it isn't running or has no task table (percent < 0), leaving the animation alone.
-        if (progressRow != null) {
-            boolean showBar = installing() && mq.percent >= 0;
-            progressRow.setVisibility(showBar ? View.VISIBLE : View.GONE);
-            if (showBar) {
-                progress.setProgressCompat(mq.percent, true);
-                progressPct.setText(mq.percent + "%");
-                progressEta.setText(org.appdevforall.k2go.install.presentation.EtaText.of(requireContext(), mq.etaSeconds));
-            }
-        }
-
         // ADFA-4898: one predicate for "did this module fail" across every surface (hub pill, detail
         // Retry/Back, this progress line) — ModuleQueueState.didFail(key). Was hand-rolled here as
         // failedModules.contains(...); routed through the shared atom so the three can't drift apart.
@@ -140,6 +132,13 @@ public class ModuleInstallFragment extends Fragment {
         if (mq.phase == ModuleQueueState.Phase.DONE) {
             terminalDone = true;
             status.setText(getString(R.string.k2go_mod_phase_done));
+            return;
+        }
+        if (downloading()) {
+            org.appdevforall.k2go.install.domain.ModuleDownloadProgress dl =
+                    org.appdevforall.k2go.install.presentation.ModuleDownloadRepository.get().current();
+            status.setText(getString(dl.isHeld() ? R.string.k2go_mod_phase_queued
+                    : dl.isPaused() ? R.string.k2go_dl_paused : R.string.k2go_mod_phase_downloading));
             return;
         }
         if (installing()) {

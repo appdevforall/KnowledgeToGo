@@ -1681,4 +1681,10 @@
     <string name="k2go_feedback_send_anyway">Усе одно надіслати</string>
     <string name="k2go_mod_phase_canceled">Скасовано</string>
     <string name="k2go_setup_modules_stopped">Встановлення зупинилося. Перевірте кожен модуль нижче.</string>
+    <string name="k2go_dl_program_title">Завантаження програми</string>
+    <string name="k2go_dl_speed">%1$s/с</string>
+    <string name="k2go_dl_speed_eta">%1$s/с, %2$s</string>
+    <string name="k2go_dl_held_metered">Очікування Wi-Fi. Завантаження не використовує мобільні дані, доки ви не дозволите.</string>
+    <string name="k2go_dl_held_offline">Очікування. Застосунок залишено офлайн, тому завантаження не підключається, доки ви не дозволите.</string>
+    <string name="k2go_mod_phase_downloading">Завантаження…</string>
 </resources>

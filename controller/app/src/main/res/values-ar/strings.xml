@@ -1683,4 +1683,10 @@
     <string name="k2go_feedback_send_anyway">إرسال على أي حال</string>
     <string name="k2go_mod_phase_canceled">أُلغي</string>
     <string name="k2go_setup_modules_stopped">توقّف التثبيت. تحقّق من كل وحدة أدناه.</string>
+    <string name="k2go_dl_program_title">جارٍ تنزيل البرنامج</string>
+    <string name="k2go_dl_speed">%1$s/ث</string>
+    <string name="k2go_dl_speed_eta">%1$s/ث، %2$s</string>
+    <string name="k2go_dl_held_metered">في انتظار شبكة الواي فاي. لن يستخدم التنزيل بيانات الجوال حتى تسمح بذلك.</string>
+    <string name="k2go_dl_held_offline">في الانتظار. التطبيق مضبوط على البقاء دون اتصال، لذلك لن يتصل التنزيل حتى تسمح بذلك.</string>
+    <string name="k2go_mod_phase_downloading">جارٍ التنزيل…</string>
 </resources>

@@ -74,9 +74,8 @@ public final class ModuleRetry {
         final Runnable start = () -> {
             // K2GO-588/593: the gate let this retry connect, also "Allow only this time" with Keep
             // offline; record it as the start path does, so the run's download does not ask again.
-            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow("maps".equals(moduleKey)
-                    ? org.appdevforall.k2go.system.domain.ContentType.MAPS.key()
-                    : org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.MODULES);
+            org.appdevforall.k2go.networkpolicy.data.OnlineAllowance.allow(
+                    org.appdevforall.k2go.install.presentation.ModuleDownload.allowanceKind(moduleKey));
             InstallService.retryModules(ctx, Collections.singletonList(moduleKey));
             if (onStarted != null) onStarted.run();
         };
