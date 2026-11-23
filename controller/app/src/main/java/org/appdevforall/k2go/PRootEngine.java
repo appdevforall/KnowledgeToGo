@@ -419,7 +419,7 @@ public class PRootEngine {
      */
     public void forceKill() {
         final Process p = currentProcess;
-        if (p == null) return;
+        if (p == null || !isAlive(p)) return;   // an ended command's pid can belong to another process now
         // Not destroyForcibly(): on the device it left proot running, the same as destroy().
         int pid = pidOf(p);
         if (pid > 0) {
@@ -430,6 +430,16 @@ public class PRootEngine {
             p.destroy();
         }
         reap(p);
+    }
+
+    /** Process.isAlive() is API 26+, minSdk is 24: exitValue() throws while the process runs. */
+    private static boolean isAlive(Process p) {
+        try {
+            p.exitValue();
+            return false;
+        } catch (IllegalThreadStateException running) {
+            return true;
+        }
     }
 
     /** The pid of a child process, or -1 if unknown. Process.pid() is API 33+, minSdk is 24. */

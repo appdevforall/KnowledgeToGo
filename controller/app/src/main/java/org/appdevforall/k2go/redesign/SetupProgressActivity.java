@@ -1243,8 +1243,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     /**
      * ADFA-4898 P5: strong confirmation before cancelling a running module install, then send
-     * ACTION_CANCEL. The service kills the runrole (proot --kill-on-exit), rolls back the speculative
-     * flag and marks the module failed; the base system is untouched and the server restarts.
+     * ACTION_CANCEL. The service SIGKILLs the runrole proot, so the kernel ends its box processes
+     * (K2GO-593), rolls back the speculative flag and marks the module canceled; the base system is
+     * untouched and the server restarts.
      */
     private void confirmCancelModule() {
         // K2GO-385: cancel-running-install confirm -> the shared BrandDialog (destructive).

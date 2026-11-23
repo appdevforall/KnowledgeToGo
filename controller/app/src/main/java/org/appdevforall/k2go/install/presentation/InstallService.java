@@ -955,7 +955,7 @@ public final class InstallService extends Service {
         // box ages. Best-effort (short timeout, || true) so an offline/local-only install still runs.
         // K2GO-593: a Cancel SIGKILLs the runrole, also during dpkg; finish any interrupted dpkg first.
         final String installCmd =
-                "DEBIAN_FRONTEND=noninteractive dpkg --configure -a || true ; "
+                "DEBIAN_FRONTEND=noninteractive dpkg --force-confdef --force-confold --configure -a < /dev/null || true ; "
                 + "apt-get -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 update || true ; " + runroleCmd;
 
         // K2GO-394: the runrole (post-processing) as a deferred step. For maps it runs only AFTER the
@@ -1709,14 +1709,15 @@ public final class InstallService extends Service {
             // as failed so the existing per-module Retry is offered immediately. Ordering mirrors
             // finishModuleQueue: clear InstallGuard BEFORE postDone so the server-restart observer (the
             // server was pdsm-stopped for the runroles) is not raced by teardown's later clear.
-            final String cur = ModuleQueueRepository.get().current().currentModule;
+            // K2GO-593: during pdsm stop no module is current yet; the cancel stops the first one.
+            final String running = ModuleQueueRepository.get().current().currentModule;
+            final String cur = running != null ? running : (moduleQueue != null ? moduleQueue.peek() : null);
             stopModuleStallWatch();   // ADFA-4898 P4
             // K2GO-593: SIGKILL, not SIGTERM. On SIGTERM proot stayed up and the runrole kept downloading.
             if (prootEngine != null) prootEngine.forceKill();
             if (failedModules == null) failedModules = new java.util.ArrayList<>();
             // K2GO-593: the user stopped it, so it is not an error; only earlier real failures notify.
             final java.util.List<String> realFailures = new java.util.ArrayList<>(failedModules);
-            if (cur != null) realFailures.remove(cur);
             if (cur != null && !failedModules.contains(cur)) failedModules.add(cur);
             final java.util.List<String> failedSnapshot = new java.util.ArrayList<>(failedModules);
             final Runnable finishCancel = () -> {
