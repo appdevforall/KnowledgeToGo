@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">仍然发送</string>
     <string name="k2go_mod_phase_canceled">已取消</string>
     <string name="k2go_setup_modules_stopped">安装已停止。请检查下方的每个模块。</string>
+    <string name="k2go_dl_program_title">正在下载程序</string>
+    <string name="k2go_dl_speed">%1$s/秒</string>
+    <string name="k2go_dl_speed_eta">%1$s/秒，%2$s</string>
+    <string name="k2go_dl_held_metered">正在等待 Wi-Fi。在您允许之前，下载不会使用移动数据。</string>
+    <string name="k2go_dl_held_offline">正在等待。应用保持离线，因此在您允许之前，下载不会联网。</string>
+    <string name="k2go_mod_phase_downloading">正在下载…</string>
 </resources>

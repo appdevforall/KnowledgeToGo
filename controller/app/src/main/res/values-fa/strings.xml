@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">به هر حال ارسال شود</string>
     <string name="k2go_mod_phase_canceled">لغو شد</string>
     <string name="k2go_setup_modules_stopped">نصب متوقف شد. هر ماژول را در پایین بررسی کنید.</string>
+    <string name="k2go_dl_program_title">در حال دانلود برنامه</string>
+    <string name="k2go_dl_speed">%1$s/ثانیه</string>
+    <string name="k2go_dl_speed_eta">%1$s/ثانیه، %2$s</string>
+    <string name="k2go_dl_held_metered">در انتظار Wi-Fi. دانلود تا زمانی که اجازه ندهید از داده تلفن همراه استفاده نمی‌کند.</string>
+    <string name="k2go_dl_held_offline">در انتظار. برنامه آفلاین نگه داشته شده است، بنابراین دانلود تا زمانی که اجازه ندهید وصل نمی‌شود.</string>
+    <string name="k2go_mod_phase_downloading">در حال دانلود…</string>
 </resources>

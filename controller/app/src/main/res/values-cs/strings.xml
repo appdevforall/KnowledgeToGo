@@ -1688,4 +1688,10 @@
     <string name="k2go_feedback_send_anyway">Přesto odeslat</string>
     <string name="k2go_mod_phase_canceled">Zrušeno</string>
     <string name="k2go_setup_modules_stopped">Instalace se zastavila. Zkontrolujte níže každý modul.</string>
+    <string name="k2go_dl_program_title">Stahování programu</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Čekání na Wi-Fi. Stahování nepoužije mobilní data, dokud to nepovolíte.</string>
+    <string name="k2go_dl_held_offline">Čekání. Aplikace je ponechána offline, proto se stahování nepřipojí, dokud to nepovolíte.</string>
+    <string name="k2go_mod_phase_downloading">Stahování…</string>
 </resources>

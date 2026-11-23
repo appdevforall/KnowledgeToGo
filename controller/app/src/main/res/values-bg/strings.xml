@@ -1686,4 +1686,10 @@
     <string name="k2go_feedback_send_anyway">Изпрати въпреки това</string>
     <string name="k2go_mod_phase_canceled">Отменено</string>
     <string name="k2go_setup_modules_stopped">Инсталирането спря. Проверете всеки модул по-долу.</string>
+    <string name="k2go_dl_program_title">Изтегляне на програмата</string>
+    <string name="k2go_dl_speed">%1$s/сек</string>
+    <string name="k2go_dl_speed_eta">%1$s/сек, %2$s</string>
+    <string name="k2go_dl_held_metered">Изчакване на Wi-Fi. Изтеглянето не използва мобилни данни, докато не го разрешите.</string>
+    <string name="k2go_dl_held_offline">Изчакване. Приложението е оставено офлайн, затова изтеглянето не се свързва, докато не го разрешите.</string>
+    <string name="k2go_mod_phase_downloading">Изтегляне…</string>
 </resources>

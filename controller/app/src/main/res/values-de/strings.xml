@@ -1679,4 +1679,10 @@
     <string name="k2go_feedback_send_anyway">Trotzdem senden</string>
     <string name="k2go_mod_phase_canceled">Abgebrochen</string>
     <string name="k2go_setup_modules_stopped">Die Installation wurde beendet. Prüfen Sie unten jedes Modul.</string>
+    <string name="k2go_dl_program_title">Programm wird heruntergeladen</string>
+    <string name="k2go_dl_speed">%1$s/s</string>
+    <string name="k2go_dl_speed_eta">%1$s/s, %2$s</string>
+    <string name="k2go_dl_held_metered">Warten auf WLAN. Der Download nutzt keine mobilen Daten, bis Sie es erlauben.</string>
+    <string name="k2go_dl_held_offline">Wartet. Die App bleibt offline, daher stellt der Download keine Verbindung her, bis Sie es erlauben.</string>
+    <string name="k2go_mod_phase_downloading">Wird heruntergeladen…</string>
 </resources>
