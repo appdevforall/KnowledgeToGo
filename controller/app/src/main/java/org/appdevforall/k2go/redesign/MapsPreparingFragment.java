@@ -58,9 +58,6 @@ public class MapsPreparingFragment extends Fragment {
     }
 
     private TextView status;
-    private View progressRow;                                                                 // ADFA-5228
-    private com.google.android.material.progressindicator.LinearProgressIndicator progress;
-    private TextView progressPct, progressEta;
     private boolean fromIndex = false;  // ADFA-4901: hosted by the Finishing-setup index (observe only)
     private boolean launched = false;   // ADFA-4900: guard against re-launching maps on view recreation
 
@@ -80,10 +77,6 @@ public class MapsPreparingFragment extends Fragment {
 
         status = root.findViewById(R.id.k2go_prep_status);
         status.setText(getString(R.string.k2go_maps_phase_prepared));
-        progressRow = root.findViewById(R.id.k2go_prep_progress_row);   // ADFA-5228
-        progress = root.findViewById(R.id.k2go_prep_progress);
-        progressPct = root.findViewById(R.id.k2go_prep_progress_pct);
-        progressEta = root.findViewById(R.id.k2go_prep_progress_eta);
         // ADFA-4919: the fromIndex=false branch below is the DEPRECATED standalone Get More route
         // (its own "Run in background", no index, no gate). Get More now routes through the install
         // index (SetupLibraryActivity.openMapsIndex), so this branch is unreachable in that flow.
@@ -117,16 +110,6 @@ public class MapsPreparingFragment extends Fragment {
         // terminal and always wins.
         ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> {
             if (st == null) return;
-            // ADFA-5228: determinate bar while maps installs; hidden if maps has no table (percent < 0).
-            if (progressRow != null) {
-                boolean showBar = st.phase == ModuleQueueState.Phase.RUNNING && st.percent >= 0;
-                progressRow.setVisibility(showBar ? View.VISIBLE : View.GONE);
-                if (showBar) {
-                    progress.setProgressCompat(st.percent, true);
-                    progressPct.setText(st.percent + "%");
-                    progressEta.setText(org.appdevforall.k2go.install.presentation.EtaText.of(requireContext(), st.etaSeconds));
-                }
-            }
             if (st.phase == ModuleQueueState.Phase.RUNNING) {
                 if (logLines.isEmpty()) status.setText(getString(R.string.k2go_maps_phase_building));
             } else if (st.phase == ModuleQueueState.Phase.DONE) {
@@ -137,8 +120,8 @@ public class MapsPreparingFragment extends Fragment {
             }
         });
 
-        // K2GO-394, K2GO-593: the shared download card, shown while the base maps download.
-        new DownloadCard(root, "maps", R.string.k2go_maps_dl_title).observe(getViewLifecycleOwner(), null);
+        // K2GO-593: the standard proot install panel (install bar + base-map download card).
+        new ModuleProgressPanel(root, "maps", R.string.k2go_maps_dl_title).observe(getViewLifecycleOwner());
 
         // ADFA-4901: collapsible live log. The status line mirrors the latest line; expanding shows
         // the full terminal (LogRepository snapshot + live appends), auto-scrolled.

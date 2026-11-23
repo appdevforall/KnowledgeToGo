@@ -44,6 +44,12 @@ public final class ModuleDownloadRepository {
         return last;
     }
 
+    /** Whether {@code module} has a download in progress now (active, paused, held or reconnecting). */
+    public boolean isDownloading(String module) {
+        ModuleDownloadProgress p = last;
+        return p.isRunning() && p.isFor(module);
+    }
+
     /** Post a new snapshot. postValue, because the writers run on the main and on worker threads. */
     public void post(ModuleDownloadProgress p) {
         last = p != null ? p : ModuleDownloadProgress.none();

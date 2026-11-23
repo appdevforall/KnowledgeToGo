@@ -34,13 +34,10 @@ import org.appdevforall.k2go.networkpolicy.data.OnlineAllowance;
 import org.appdevforall.k2go.networkpolicy.data.SessionMeteredConsentStore;
 
 /**
- * The view half of a module download. It only renders {@link ModuleDownloadRepository} for one module
- * and sends the user's taps to {@link InstallService}; it keeps no download state of its own.
+ * The download half of {@link ModuleProgressPanel}. It only renders {@link ModuleDownloadRepository} for
+ * one module and sends the user's taps to {@link InstallService}; it keeps no download state of its own.
  */
-public final class DownloadCard {
-
-    /** Whether the card shows something for this module now (the host uses it for its status line). */
-    public interface OnShown { void onShown(boolean shown); }
+final class DownloadCard {
 
     private final Context ctx;
     private final String module;
@@ -48,14 +45,13 @@ public final class DownloadCard {
     private final LinearProgressIndicator bar;
     private final TextView pct, rate, note;
     private final Button pause, allow;
-    private OnShown onShown;
 
     /**
      * @param root     a view that contains view_k2go_download_card
      * @param module   the module key whose download this card shows
      * @param titleRes the card title
      */
-    public DownloadCard(@NonNull View root, @NonNull String module, @StringRes int titleRes) {
+    DownloadCard(@NonNull View root, @NonNull String module, @StringRes int titleRes) {
         this.ctx = root.getContext();
         this.module = module;
         card = root.findViewById(R.id.k2go_dl_card);
@@ -72,10 +68,8 @@ public final class DownloadCard {
     }
 
     /** Observe the download for the life of {@code owner}. */
-    public DownloadCard observe(@NonNull LifecycleOwner owner, OnShown onShown) {
-        this.onShown = onShown;
+    void observe(@NonNull LifecycleOwner owner) {
         ModuleDownloadRepository.get().state().observe(owner, this::render);
-        return this;
     }
 
     private ModuleDownloadProgress current() {
@@ -89,7 +83,6 @@ public final class DownloadCard {
     private void render(ModuleDownloadProgress p) {
         boolean shown = p != null && p.isRunning() && p.isFor(module);
         card.setVisibility(shown ? View.VISIBLE : View.GONE);
-        if (onShown != null) onShown.onShown(shown);
         if (!shown) return;
 
         note.setVisibility(p.isHeld() ? View.VISIBLE : View.GONE);

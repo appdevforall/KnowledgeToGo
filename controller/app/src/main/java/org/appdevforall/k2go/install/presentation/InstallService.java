@@ -959,9 +959,7 @@ public final class InstallService extends Service {
         final long startMs = System.currentTimeMillis();
         final int remainingSnapshot = moduleQueue.size();
         final int[] lastPct = { Integer.MIN_VALUE };
-        if (progress.hasTable()) {
-            ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 0);
-        }
+        if (progress.hasTable()) postModuleStart(nextModule, remainingSnapshot, true);
 
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
@@ -1324,6 +1322,17 @@ public final class InstallService extends Service {
         moduleDownload.start();
     }
 
+    /**
+     * K2GO-593: the one rule for the install bar when a module starts, before its download (if it has
+     * one) and before its role. A role with a task table starts the bar at 0%, so the install bar and
+     * the download card show together (the maps pattern, K2GO-394); with no table the module runs with
+     * no percent. The bar then moves only from the role's task stream.
+     */
+    private void postModuleStart(String module, int remaining, boolean hasTaskTable) {
+        if (hasTaskTable) ModuleQueueRepository.get().postRunning(module, remaining, 0);
+        else ModuleQueueRepository.get().postRunning(module, remaining);
+    }
+
     /** The lines of the box's local_vars.yml, or an empty list when it cannot be read. */
     private java.util.List<String> readLocalVars() {
         // Not java.nio.file: it is API 26, and minSdk is 24.
@@ -1355,7 +1364,8 @@ public final class InstallService extends Service {
         }
         log("[forgejo] downloading the Forgejo binary via dash-node before the install");
         // The download is part of the Forgejo install: its row runs, opens the card, and can cancel.
-        ModuleQueueRepository.get().postRunning(module, Math.max(0, moduleQueue.size() - 1));
+        postModuleStart(module, Math.max(0, moduleQueue.size() - 1),
+                !RunroleTables.tasksFor(this, org.appdevforall.k2go.deploy.domain.RoleNames.roleFor(module)).isEmpty());
         moduleDownload = new ModuleDownload(this, module, ForgejoBinaryPin.JOB_TYPE, body, new ModuleDownload.Callback() {
             @Override public void onDone(org.json.JSONObject result) {
                 moduleDownload = null;
