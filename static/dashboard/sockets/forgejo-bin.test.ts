@@ -86,32 +86,35 @@ test('forgejoUrl is the role forgejo_download_url', () => {
         'https://codeberg.org/forgejo/forgejo/releases/download/v17.0.2/forgejo-17.0.2-linux-arm64');
 });
 
-test('removePartials keeps binaries, .asc files and the partial of keepVersion', () => {
+const STAGE = path.join(BIN, '.k2go-download');
+const STAGED = path.join(STAGE, `forgejo-17.0.2-linux-${SUFFIX}`);
+
+test('removePartials empties the staging folder except keepVersion, and never touches bin itself', () => {
     reset();
-    fs.mkdirSync(BIN, { recursive: true });
-    const names = ['forgejo-17.0.2', 'forgejo-17.0.2.asc', 'forgejo-17.0.1.part', 'forgejo-17.0.1.part.aria2',
-        'forgejo-17.0.2.part', 'forgejo-17.0.2.part.aria2', 'other.part'];
-    for (const n of names) fs.writeFileSync(path.join(BIN, n), 'x');
+    fs.mkdirSync(STAGE, { recursive: true });
+    for (const n of ['forgejo-17.0.2', 'forgejo-17.0.2.asc']) fs.writeFileSync(path.join(BIN, n), 'x');
+    for (const n of ['forgejo-17.0.1-linux-arm64', 'forgejo-17.0.1-linux-arm64.aria2',
+        'forgejo-17.0.2-linux-arm64', 'forgejo-17.0.2-linux-arm64.aria2']) fs.writeFileSync(path.join(STAGE, n), 'x');
     removePartials(BIN, '17.0.2');
-    assert.deepEqual(fs.readdirSync(BIN).sort(),
-        ['forgejo-17.0.2', 'forgejo-17.0.2.asc', 'forgejo-17.0.2.part', 'forgejo-17.0.2.part.aria2', 'other.part']);
+    assert.deepEqual(fs.readdirSync(STAGE).sort(), ['forgejo-17.0.2-linux-arm64', 'forgejo-17.0.2-linux-arm64.aria2']);
     removePartials(BIN);
-    assert.deepEqual(fs.readdirSync(BIN).sort(), ['forgejo-17.0.2', 'forgejo-17.0.2.asc', 'other.part']);
+    assert.deepEqual(fs.readdirSync(STAGE), []);
+    assert.deepEqual(fs.readdirSync(BIN).sort(), ['.k2go-download', 'forgejo-17.0.2', 'forgejo-17.0.2.asc']);
 });
 
 test('runner: a binary that is already there ends the job with no download', { skip: !SUFFIX }, async () => {
     reset();
-    fs.mkdirSync(BIN, { recursive: true });
+    fs.mkdirSync(STAGE, { recursive: true });
     fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2'), 'binary');
-    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'old partial');
-    fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
+    fs.writeFileSync(STAGED, 'old partial');
+    fs.writeFileSync(`${STAGED}.aria2`, 'ctl');
     const headers: Array<Record<string, string>> = [];
     const restore = stubFetch('v17.0.2', headers);
     try {
         const { ctx, updates, state } = fakeCtx(() => assert.fail('no aria2 expected'));
         await forgejoBinRunner(ctx);
         assert.equal(state.spawned, 0);
-        assert.deepEqual(fs.readdirSync(BIN), ['forgejo-17.0.2']);   // an old partial is removed
+        assert.deepEqual(fs.readdirSync(STAGE), []);   // an old partial is removed
         const last = updates[updates.length - 1];
         assert.equal(last.phase, 'done');
         assert.deepEqual(JSON.parse(String(last.result)), { version: '17.0.2' });
@@ -130,19 +133,19 @@ test('runner: a bad release tag fails at once, with no retry', { skip: !SUFFIX }
     } finally { restore(); }
 });
 
-test('runner: a complete download is renamed to the final name, mode 0775', { skip: !SUFFIX }, async () => {
+test('runner: aria2 downloads the URL into the staging folder; the file moves to the final name, mode 0775', { skip: !SUFFIX }, async () => {
     reset();
-    const restore = stubFetch('v17.0.2', []);
+    const restore = stubFetch('v17.0.2', [], sha256('binary'));
     try {
         const { ctx, updates } = fakeCtx((args, child) => {
-            const input = fs.readFileSync(args[args.indexOf('-i') + 1], 'utf8');
-            assert.match(input, /forgejo-17\.0\.2-linux-/);
-            assert.match(input, /out=forgejo-17\.0\.2\.part/);
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'binary');
+            assert.equal(args[args.indexOf('-d') + 1], STAGE);
+            assert.ok(args.includes(`https://codeberg.org/forgejo/forgejo/releases/download/v17.0.2/forgejo-17.0.2-linux-${SUFFIX}`));
+            fs.writeFileSync(STAGED, 'binary');
             child.emit('exit', 0, null);
         });
         await forgejoBinRunner(ctx);
-        assert.deepEqual(fs.readdirSync(BIN), ['forgejo-17.0.2']);
+        assert.deepEqual(fs.readdirSync(BIN).sort(), ['.k2go-download', 'forgejo-17.0.2']);
+        assert.deepEqual(fs.readdirSync(STAGE), []);
         if (process.platform !== 'win32') {
             assert.equal(fs.statSync(path.join(BIN, 'forgejo-17.0.2')).mode & 0o777, 0o775);
         }
@@ -155,13 +158,13 @@ test('runner: an aria2 run that leaves its control file is not complete', { skip
     const restore = stubFetch('v17.0.2', []);
     try {
         const { ctx } = fakeCtx((_args, child) => {
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'half');
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
+            fs.writeFileSync(STAGED, 'half');
+            fs.writeFileSync(`${STAGED}.aria2`, 'ctl');
             child.emit('exit', 0, null);
         });
         await assert.rejects(forgejoBinRunner(ctx), /did not complete/);
         assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2')), false);
-        assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2.part')), true);   // kept for Retry
+        assert.equal(fs.existsSync(STAGED), true);   // kept for Retry
     } finally { restore(); }
 });
 
@@ -171,14 +174,15 @@ test('runner: Cancel removes the partial and its control file', { skip: !SUFFIX 
     try {
         const box: { state?: { canceled: boolean } } = {};
         const { ctx, state } = fakeCtx((_args, child) => {
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'half');
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
+            fs.writeFileSync(STAGED, 'half');
+            fs.writeFileSync(`${STAGED}.aria2`, 'ctl');
             box.state!.canceled = true;
             child.emit('exit', null, 'SIGKILL');
         });
         box.state = state;
         await assert.rejects(forgejoBinRunner(ctx), CanceledError);
-        assert.deepEqual(fs.readdirSync(BIN), []);
+        assert.deepEqual(fs.readdirSync(STAGE), []);
+        assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2')), false);
     } finally { restore(); }
 });
 
@@ -188,14 +192,14 @@ test('runner: Pause keeps the partial for Resume', { skip: !SUFFIX }, async () =
     try {
         const box: { state?: { paused: boolean } } = {};
         const { ctx, state } = fakeCtx((_args, child) => {
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'half');
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
+            fs.writeFileSync(STAGED, 'half');
+            fs.writeFileSync(`${STAGED}.aria2`, 'ctl');
             box.state!.paused = true;
             child.emit('exit', null, 'SIGTERM');
         });
         box.state = state;
         await assert.rejects(forgejoBinRunner(ctx), /paused/);
-        assert.deepEqual(fs.readdirSync(BIN).sort(), ['forgejo-17.0.2.part', 'forgejo-17.0.2.part.aria2']);
+        assert.deepEqual(fs.readdirSync(STAGE).sort(), [path.basename(STAGED), `${path.basename(STAGED)}.aria2`]);
     } finally { restore(); }
 });
 
@@ -226,11 +230,9 @@ test('runner: a file that does not match the release sha-256 is downloaded again
     fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2'), 'corrupt');
     const restore = stubFetch('v17.0.2', [], sha256('binary'));
     try {
-        const { ctx, state } = fakeCtx((args, child) => {
-            const input = fs.readFileSync(args[args.indexOf('-i') + 1], 'utf8');
-            assert.match(input, new RegExp(`checksum=sha-256=${sha256('binary')}`));
+        const { ctx, state } = fakeCtx((_args, child) => {
             assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2')), false);   // the wrong file is gone
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'binary');
+            fs.writeFileSync(STAGED, 'binary');
             child.emit('exit', 0, null);
         });
         await forgejoBinRunner(ctx);
@@ -239,17 +241,17 @@ test('runner: a file that does not match the release sha-256 is downloaded again
     } finally { restore(); }
 });
 
-test('runner: a checksum failure (aria2 exit 32) removes the partial', { skip: !SUFFIX }, async () => {
+test('runner: a download that does not match the release sha-256 is removed', { skip: !SUFFIX }, async () => {
     reset();
     const restore = stubFetch('v17.0.2', [], sha256('binary'));
     try {
         const { ctx } = fakeCtx((_args, child) => {
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part'), 'wrong');
-            fs.writeFileSync(path.join(BIN, 'forgejo-17.0.2.part.aria2'), 'ctl');
-            child.emit('exit', 32, null);
+            fs.writeFileSync(STAGED, 'wrong');
+            child.emit('exit', 0, null);
         });
         await assert.rejects(forgejoBinRunner(ctx), /does not match the release sha-256/);
-        assert.deepEqual(fs.readdirSync(BIN), []);
+        assert.deepEqual(fs.readdirSync(STAGE), []);
+        assert.equal(fs.existsSync(path.join(BIN, 'forgejo-17.0.2')), false);
     } finally { restore(); }
 });
 

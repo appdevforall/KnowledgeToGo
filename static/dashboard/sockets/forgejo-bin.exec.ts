@@ -8,10 +8,12 @@
 // its GPG check (fail closed) on this file.
 //
 // The box resolves the version (the same codeberg API as the role) and makes the URL; the app sends
-// no URL. aria2 writes to forgejo-<ver>.part and the runner renames it at the end, so the final name
-// exists only for a complete file (a partial at the final name would make get_url skip and the GPG
-// check fail). The file is checked against the release's published sha-256 (forgejo_sha256_url in the
-// role): a wrong file at the final name would fail the GPG check on every Retry.
+// no URL. aria2 downloads into bin/.k2go-download (under the URL's file name: the canonical flags have
+// -Z, and aria2 ignores `out` with -Z), and the runner moves the file to forgejo-<ver> at the end, so
+// the final name exists only for a complete file (a partial there would make get_url skip and the GPG
+// check fail). Before the move, the file is checked against the release's published sha-256
+// (forgejo_sha256_url in the role): a wrong file at the final name would fail the GPG check on every
+// Retry.
 import { jobs, RunnerContext, PausedError, CanceledError } from './jobs';
 import { downloadWithAria2, stopError } from './aria2-download';
 import { withRetry } from './net-retry';
@@ -28,7 +30,8 @@ const DOWNLOAD_BASE = 'https://codeberg.org/forgejo/forgejo/releases/download';
 // K2G-P5: a neutral agent, the same one books.exec.ts sends.
 const USER_AGENT = 'K2Go Dashboard/1.0 (https://github.com/appdevforall/KnowledgeToGo)';
 const API_TIMEOUT_MS = 20_000;
-const PART = '.part';
+/** Not forgejo-*, so the role's cleanup of superseded binaries never matches it. */
+const STAGE_NAME = '.k2go-download';
 const RETRY_DELAYS = [3_000, 6_000, 9_000, 18_000, 36_000];
 
 /** The role's iset_suffixes map, keyed on `uname -m` (os.machine), the value the role reads. */
@@ -58,17 +61,21 @@ export function finalPath(dir: string, version: string): string {
     return path.join(dir, `forgejo-${version}`);
 }
 
+export function stageDir(binDir: string): string {
+    return path.join(binDir, STAGE_NAME);
+}
+
 /**
- * Remove the partial downloads (forgejo-<ver>.part and its .aria2 control file) in dir, except the
- * ones of keepVersion. Never touches a complete forgejo-<ver> binary or its .asc.
+ * Remove the partial downloads in binDir's staging folder, except the files of keepVersion
+ * (forgejo-<ver>-linux-<arch> and its .aria2 control file). Never touches a binary in binDir itself.
  */
-export function removePartials(dir: string, keepVersion: string | null = null): void {
+export function removePartials(binDir: string, keepVersion: string | null = null): void {
+    const dir = stageDir(binDir);
     let names: string[] = [];
     try { names = fs.readdirSync(dir); } catch { return; }
     for (const n of names) {
-        const m = /^forgejo-([0-9]+\.[0-9]+\.[0-9]+)\.part(\.aria2)?$/.exec(n);
-        if (!m || m[1] === keepVersion) continue;
-        try { fs.rmSync(path.join(dir, n), { force: true }); } catch { /* best effort */ }
+        if (keepVersion !== null && n.startsWith(`forgejo-${keepVersion}-linux-`)) continue;
+        try { fs.rmSync(path.join(dir, n), { recursive: true, force: true }); } catch { /* best effort */ }
     }
 }
 
@@ -124,9 +131,6 @@ export function fileSha256(file: string): Promise<string> {
     });
 }
 
-/** aria2 exit 32: the downloaded bytes do not match --checksum. */
-const ARIA2_CHECKSUM_FAILED = 32;
-
 async function lookup<T>(ctx: RunnerContext, fn: () => Promise<T>): Promise<T> {
     try {
         const v = await withRetry(fn, {
@@ -172,32 +176,29 @@ const forgejoBinRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         }
     }
 
-    const part = `forgejo-${version}${PART}`;
-    const inputFile = path.join(os.tmpdir(), `k2go-forgejo-bin-${process.pid}.aria2-input`);
-    // With checksum=, aria2 verifies the whole file at the end and exits 32 on a mismatch.
-    fs.writeFileSync(inputFile, `${url}\n  out=${part}\n${sha ? `  checksum=sha-256=${sha}\n` : ''}`);
+    const stage = stageDir(BIN_DIR);
+    const staged = path.join(stage, path.basename(url));
+    fs.mkdirSync(stage, { recursive: true });
     ctx.update({ phase: 'downloading', percent: -1, speed: 0, eta: -1, detail: version });
     try {
-        await downloadWithAria2(ctx, { destDir: BIN_DIR, inputFile });
+        await downloadWithAria2(ctx, { destDir: stage, urls: [url] });
     } catch (e) {
         const se = stopError(ctx);
         if (se instanceof PausedError) throw se;   // keep the partial: Resume continues it
         if (se instanceof CanceledError) { removePartials(BIN_DIR); throw se; }
-        if ((e as { code?: number }).code === ARIA2_CHECKSUM_FAILED) {
-            removePartials(BIN_DIR);               // wrong bytes: a Retry must start from 0
-            throw new Error('the Forgejo download does not match the release sha-256');
-        }
         throw e;                                    // keep the partial: Retry continues it
-    } finally {
-        try { fs.rmSync(inputFile, { force: true }); } catch { /* best effort */ }
     }
 
-    const partPath = path.join(BIN_DIR, part);
-    if (!fs.existsSync(partPath) || fs.existsSync(`${partPath}.aria2`)) {
+    if (!fs.existsSync(staged) || fs.existsSync(`${staged}.aria2`)) {
         throw new Error('the Forgejo download did not complete');
     }
-    fs.renameSync(partPath, dest);
+    if (sha && await fileSha256(staged) !== sha) {
+        removePartials(BIN_DIR);                    // wrong bytes: a Retry must start from 0
+        throw new Error('the Forgejo download does not match the release sha-256');
+    }
+    fs.renameSync(staged, dest);
     fs.chmodSync(dest, 0o775);   // the role's get_url mode
+    removePartials(BIN_DIR);
     ctx.update({ phase: 'done', percent: 100, speed: 0, eta: -1, detail: version, result });
 };
 
