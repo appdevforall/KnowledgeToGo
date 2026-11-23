@@ -1326,13 +1326,16 @@ public final class InstallService extends Service {
 
     /** The lines of the box's local_vars.yml, or an empty list when it cannot be read. */
     private java.util.List<String> readLocalVars() {
-        try {
-            return java.nio.file.Files.readAllLines(
-                    new File(debianRootfs, "etc/iiab/local_vars.yml").toPath(),
-                    java.nio.charset.StandardCharsets.UTF_8);
+        // Not java.nio.file: it is API 26, and minSdk is 24.
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(
+                new File(debianRootfs, "etc/iiab/local_vars.yml")), java.nio.charset.StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = r.readLine()) != null) lines.add(line);
         } catch (Exception e) {
             return java.util.Collections.emptyList();
         }
+        return lines;
     }
 
     /**
