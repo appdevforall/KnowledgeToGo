@@ -199,11 +199,18 @@ public final class ModuleDownload {
             @Override public void onPaused(int percent) {
                 synchronized (ModuleDownload.this) {
                     if (ended) return;
+                    // The box's percent at the stop: the bar showed the last poll before it.
+                    int before = lastPercent;
                     if (percent >= 0) lastPercent = percent;
-                    // A paused job that nobody here stopped: a job from an earlier run that this run
-                    // re-attached to, or the poll before a resume took effect. Both mean: continue.
+                    ModuleDownloadProgress cur = ModuleDownloadRepository.get().current();
                     if (stoppedBy == DownloadHold.StoppedBy.NOBODY) {
+                        // A paused job that nobody here stopped: a job from an earlier run that this
+                        // run re-attached to, or the poll before a resume took effect: continue.
                         if (holdReason() == null) client.resume(); else hold(holdReason());
+                    } else if (lastPercent != before && (cur.isPaused() || cur.isHeld())) {
+                        ModuleDownloadRepository.get().post(cur.isPaused()
+                                ? ModuleDownloadProgress.paused(module, lastPercent)
+                                : ModuleDownloadProgress.held(module, lastPercent, cur.holdReason));
                     }
                 }
             }
