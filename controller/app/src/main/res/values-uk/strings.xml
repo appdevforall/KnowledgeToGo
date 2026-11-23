@@ -1679,4 +1679,6 @@
     <string name="k2go_feedback_third_party_msg">Ви вибрали \"Залишити офлайн\". Відгук надсилається через інший застосунок, наприклад пошту, і цей застосунок може підключитися до інтернету.</string>
     <string name="k2go_privacy_kept_offline">У застосунку вибрано \"Залишити офлайн\", тому ці служби залишаються вимкненими. Щоб змінити це, увімкніть \"%1$s\" у розділі Налаштування &gt; Про застосунок.</string>
     <string name="k2go_feedback_send_anyway">Усе одно надіслати</string>
+    <string name="k2go_mod_phase_canceled">Скасовано</string>
+    <string name="k2go_setup_modules_stopped">Встановлення зупинилося. Перевірте кожен модуль нижче.</string>
 </resources>

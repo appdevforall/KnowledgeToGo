@@ -1757,4 +1757,6 @@
     <string name="k2go_feedback_third_party_msg">Escolheu \"Manter offline\". Os comentários são enviados com outra aplicação, por exemplo o email, e essa aplicação pode ligar-se à internet.</string>
     <string name="k2go_privacy_kept_offline">A aplicação está definida como \"Manter offline\", por isso estes serviços ficam desligados. Para alterar, ative \"%1$s\" em Definições &gt; Acerca.</string>
     <string name="k2go_feedback_send_anyway">Enviar mesmo assim</string>
+    <string name="k2go_mod_phase_canceled">Cancelado</string>
+    <string name="k2go_setup_modules_stopped">A instalação parou. Verifique cada módulo abaixo.</string>
 </resources>

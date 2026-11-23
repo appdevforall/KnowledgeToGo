@@ -1754,4 +1754,6 @@
     <string name="k2go_feedback_third_party_msg">Elegiste \"Mantener sin conexión\". Los comentarios se envían con otra app, por ejemplo el correo, y esa app puede conectarse a internet.</string>
     <string name="k2go_privacy_kept_offline">La app está configurada en \"Mantener sin conexión\", así que estos servicios siguen apagados. Para cambiarlo, activa \"%1$s\" en Ajustes &gt; Acerca de.</string>
     <string name="k2go_feedback_send_anyway">Enviar de todos modos</string>
+    <string name="k2go_mod_phase_canceled">Cancelado</string>
+    <string name="k2go_setup_modules_stopped">La instalación se detuvo. Revise cada módulo abajo.</string>
 </resources>

@@ -1684,4 +1684,6 @@
     <string name="k2go_feedback_third_party_msg">Избрахте \"Само офлайн\". Обратната връзка се изпраща с друго приложение, например имейл, и то може да се свърже с интернет.</string>
     <string name="k2go_privacy_kept_offline">Приложението е настроено на \"Само офлайн\", затова тези услуги остават изключени. За да промените това, включете \"%1$s\" в Настройки &gt; Относно.</string>
     <string name="k2go_feedback_send_anyway">Изпрати въпреки това</string>
+    <string name="k2go_mod_phase_canceled">Отменено</string>
+    <string name="k2go_setup_modules_stopped">Инсталирането спря. Проверете всеки модул по-долу.</string>
 </resources>

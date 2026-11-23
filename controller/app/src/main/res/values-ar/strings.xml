@@ -1681,4 +1681,6 @@
     <string name="k2go_feedback_third_party_msg">لقد اخترت \"الإبقاء دون اتصال\". تُرسل الملاحظات باستخدام تطبيق آخر، مثل البريد الإلكتروني، ويمكن لهذا التطبيق الاتصال بالإنترنت.</string>
     <string name="k2go_privacy_kept_offline">التطبيق مضبوط على \"الإبقاء دون اتصال\"، لذا تبقى هذه الخدمات متوقفة. لتغيير ذلك، فعّل \"%1$s\" في الإعدادات &gt; حول.</string>
     <string name="k2go_feedback_send_anyway">إرسال على أي حال</string>
+    <string name="k2go_mod_phase_canceled">أُلغي</string>
+    <string name="k2go_setup_modules_stopped">توقّف التثبيت. تحقّق من كل وحدة أدناه.</string>
 </resources>

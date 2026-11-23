@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">Du hast \"Offline behalten\" gewählt. Feedback wird mit einer anderen App gesendet, zum Beispiel E-Mail, und diese App kann sich mit dem Internet verbinden.</string>
     <string name="k2go_privacy_kept_offline">Die App ist auf \"Offline behalten\" eingestellt, daher bleiben diese Dienste aus. Um das zu ändern, aktiviere \"%1$s\" unter Einstellungen &gt; Über.</string>
     <string name="k2go_feedback_send_anyway">Trotzdem senden</string>
+    <string name="k2go_mod_phase_canceled">Abgebrochen</string>
+    <string name="k2go_setup_modules_stopped">Die Installation wurde beendet. Prüfen Sie unten jedes Modul.</string>
 </resources>

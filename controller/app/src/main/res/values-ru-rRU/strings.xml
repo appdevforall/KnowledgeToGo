@@ -1755,4 +1755,6 @@
     <string name="k2go_feedback_third_party_msg">Вы выбрали \"Оставить офлайн\". Отзыв отправляется через другое приложение, например почту, и это приложение может подключиться к интернету.</string>
     <string name="k2go_privacy_kept_offline">В приложении выбрано \"Оставить офлайн\", поэтому эти службы остаются выключенными. Чтобы изменить это, включите \"%1$s\" в разделе Настройки &gt; О приложении.</string>
     <string name="k2go_feedback_send_anyway">Всё равно отправить</string>
+    <string name="k2go_mod_phase_canceled">Отменено</string>
+    <string name="k2go_setup_modules_stopped">Установка остановлена. Проверьте каждый модуль ниже.</string>
 </resources>

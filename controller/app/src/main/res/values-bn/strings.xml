@@ -1690,4 +1690,6 @@
     <string name="k2go_feedback_third_party_msg">আপনি \"অফলাইন রাখুন\" বেছে নিয়েছেন। মতামত অন্য একটি অ্যাপ দিয়ে পাঠানো হয়, যেমন ইমেল, এবং সেই অ্যাপটি ইন্টারনেটে সংযুক্ত হতে পারে।</string>
     <string name="k2go_privacy_kept_offline">অ্যাপটি \"অফলাইন রাখুন\"-এ সেট করা আছে, তাই এই পরিষেবাগুলো বন্ধ থাকে। এটি বদলাতে, সেটিংস &gt; সম্পর্কে-তে \"%1$s\" চালু করুন।</string>
     <string name="k2go_feedback_send_anyway">তবুও পাঠান</string>
+    <string name="k2go_mod_phase_canceled">বাতিল করা হয়েছে</string>
+    <string name="k2go_setup_modules_stopped">ইনস্টল বন্ধ হয়েছে। নিচে প্রতিটি মডিউল দেখুন।</string>
 </resources>

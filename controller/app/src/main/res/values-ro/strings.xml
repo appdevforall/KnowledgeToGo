@@ -1678,4 +1678,6 @@
     <string name="k2go_feedback_third_party_msg">Ai ales \"Păstrează offline\". Feedbackul este trimis cu altă aplicație, de exemplu e-mailul, iar acea aplicație se poate conecta la internet.</string>
     <string name="k2go_privacy_kept_offline">Aplicația este setată pe \"Păstrează offline\", deci aceste servicii rămân oprite. Pentru a schimba, activează \"%1$s\" în Setări &gt; Despre.</string>
     <string name="k2go_feedback_send_anyway">Trimite oricum</string>
+    <string name="k2go_mod_phase_canceled">Anulată</string>
+    <string name="k2go_setup_modules_stopped">Instalarea s-a oprit. Verifică fiecare modul de mai jos.</string>
 </resources>

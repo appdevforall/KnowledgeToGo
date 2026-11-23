@@ -1684,4 +1684,6 @@
     <string name="k2go_feedback_third_party_msg">Επιλέξατε \"Διατήρηση εκτός σύνδεσης\". Τα σχόλια στέλνονται με άλλη εφαρμογή, για παράδειγμα το email, και αυτή η εφαρμογή μπορεί να συνδεθεί στο διαδίκτυο.</string>
     <string name="k2go_privacy_kept_offline">Η εφαρμογή έχει ρυθμιστεί σε \"Διατήρηση εκτός σύνδεσης\", οπότε αυτές οι υπηρεσίες παραμένουν απενεργοποιημένες. Για να το αλλάξετε, ενεργοποιήστε το \"%1$s\" στις Ρυθμίσεις &gt; Σχετικά.</string>
     <string name="k2go_feedback_send_anyway">Αποστολή ούτως ή άλλως</string>
+    <string name="k2go_mod_phase_canceled">Ακυρώθηκε</string>
+    <string name="k2go_setup_modules_stopped">Η εγκατάσταση σταμάτησε. Ελέγξτε παρακάτω κάθε module.</string>
 </resources>

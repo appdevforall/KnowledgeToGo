@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">「オフラインのまま」を選択しています。フィードバックは別のアプリ（例: メール）で送信され、そのアプリはインターネットに接続する場合があります。</string>
     <string name="k2go_privacy_kept_offline">アプリは「オフラインのまま」に設定されているため、これらのサービスはオフのままです。変更するには、設定 &gt; 情報で\"%1$s\"をオンにしてください。</string>
     <string name="k2go_feedback_send_anyway">このまま送信</string>
+    <string name="k2go_mod_phase_canceled">キャンセルしました</string>
+    <string name="k2go_setup_modules_stopped">インストールが停止しました。下の各モジュールを確認してください。</string>
 </resources>

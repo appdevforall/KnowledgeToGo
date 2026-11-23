@@ -1683,4 +1683,6 @@
     <string name="k2go_feedback_third_party_msg">Anda memilih \"Tetap luring\". Masukan dikirim dengan aplikasi lain, misalnya email, dan aplikasi itu dapat terhubung ke internet.</string>
     <string name="k2go_privacy_kept_offline">Aplikasi diatur ke \"Tetap luring\", jadi layanan ini tetap mati. Untuk mengubahnya, aktifkan \"%1$s\" di Setelan &gt; Tentang.</string>
     <string name="k2go_feedback_send_anyway">Tetap kirim</string>
+    <string name="k2go_mod_phase_canceled">Dibatalkan</string>
+    <string name="k2go_setup_modules_stopped">Pemasangan berhenti. Periksa setiap modul di bawah.</string>
 </resources>

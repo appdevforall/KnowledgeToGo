@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">您选择了“保持离线”。反馈会通过其他应用（例如电子邮件）发送，该应用可能会连接到互联网。</string>
     <string name="k2go_privacy_kept_offline">应用已设为“保持离线”，因此这些服务保持关闭。如需更改，请在 设置 &gt; 关于 中开启\"%1$s\"。</string>
     <string name="k2go_feedback_send_anyway">仍然发送</string>
+    <string name="k2go_mod_phase_canceled">已取消</string>
+    <string name="k2go_setup_modules_stopped">安装已停止。请检查下方的每个模块。</string>
 </resources>

@@ -1697,4 +1697,6 @@
     <string name="k2go_feedback_third_party_msg">\"Oflayn saxla\" seçimini etdiniz. Rəy başqa tətbiqlə, məsələn e-poçtla göndərilir və həmin tətbiq internetə qoşula bilər.</string>
     <string name="k2go_privacy_kept_offline">Tətbiq \"Oflayn saxla\" rejimindədir, ona görə bu xidmətlər söndürülmüş qalır. Bunu dəyişmək üçün Ayarlar &gt; Haqqında bölməsində \"%1$s\" seçimini aktiv edin.</string>
     <string name="k2go_feedback_send_anyway">Yenə də göndər</string>
+    <string name="k2go_mod_phase_canceled">Ləğv edildi</string>
+    <string name="k2go_setup_modules_stopped">Quraşdırma dayandı. Aşağıda hər modulu yoxlayın.</string>
 </resources>

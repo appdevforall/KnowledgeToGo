@@ -1885,4 +1885,8 @@
     <string name="k2go_feedback_third_party_msg">You chose Keep offline. Feedback is sent with another app, for example email, and that app can connect to the internet.</string>
     <string name="k2go_privacy_kept_offline">The app is set to Keep offline, so these services stay off. To change it, turn on \"%1$s\" in Settings &gt; About.</string>
     <string name="k2go_feedback_send_anyway">Send anyway</string>
+    <!-- K2GO-593: status of a module after the user stopped its install with Cancel. Shown in the module list, the setup screen and the module install screen. -->
+    <string name="k2go_mod_phase_canceled">Canceled</string>
+    <!-- K2GO-593: header of the setup screen when a module install ended with a failed or canceled module. -->
+    <string name="k2go_setup_modules_stopped">The install stopped. Check each module below.</string>
 </resources>

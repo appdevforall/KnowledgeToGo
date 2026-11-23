@@ -1696,4 +1696,6 @@
     <string name="k2go_feedback_third_party_msg">Pasirinkote „Palikti neprisijungus“. Atsiliepimai siunčiami kita programa, pavyzdžiui, el. paštu, ir ta programa gali prisijungti prie interneto.</string>
     <string name="k2go_privacy_kept_offline">Programoje nustatyta „Palikti neprisijungus“, todėl šios paslaugos lieka išjungtos. Norėdami tai pakeisti, įjunkite \"%1$s\" skiltyje Nustatymai &gt; Apie.</string>
     <string name="k2go_feedback_send_anyway">Vis tiek siųsti</string>
+    <string name="k2go_mod_phase_canceled">Atšaukta</string>
+    <string name="k2go_setup_modules_stopped">Diegimas sustojo. Patikrinkite kiekvieną modulį žemiau.</string>
 </resources>

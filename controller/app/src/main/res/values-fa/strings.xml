@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">شما \"آفلاین بماند\" را انتخاب کرده‌اید. بازخورد با برنامه دیگری فرستاده می‌شود، مثلاً ایمیل، و آن برنامه می‌تواند به اینترنت وصل شود.</string>
     <string name="k2go_privacy_kept_offline">برنامه روی \"آفلاین بماند\" تنظیم شده است، پس این سرویس‌ها خاموش می‌مانند. برای تغییر آن، \"%1$s\" را در تنظیمات &gt; درباره روشن کنید.</string>
     <string name="k2go_feedback_send_anyway">به هر حال ارسال شود</string>
+    <string name="k2go_mod_phase_canceled">لغو شد</string>
+    <string name="k2go_setup_modules_stopped">نصب متوقف شد. هر ماژول را در پایین بررسی کنید.</string>
 </resources>

@@ -387,6 +387,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
      *  short-circuit on isComplete would be wrong right after a Retry, which re-banks the marker while
      *  the repository is still FAILED until the service reopens the session: that window must read as
      *  active so the pipeline keeps tracking the retried seed instead of stopping the poll. */
+    /** K2GO-593: the Forgejo role of this module run failed or was canceled, so its seed never
+     *  starts. Read only in a module-install flow; a post-install seed run must not read a stale
+     *  queue verdict. */
+    private static boolean forgejoRoleFailedHere(boolean moduleShown) {
+        return moduleShown && ModuleQueueRepository.get().current().didFail("forgejo");
+    }
+
     private boolean forgejoSeedActive() {
         return org.appdevforall.k2go.forgejo.data.ForgejoInstallPrefs.isSeedPending(this)
                 || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().isRunning();
@@ -480,7 +487,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         // K2GO-423: the Forgejo seed row, after the content rows (the seed runs after the role). Shown
         // once it is imminent (module server up) or already has a session, so it does not sit as
         // "Queued" through the whole runrole while the module row already tells that story.
-        if (forgejoSeedInSession()
+        if (forgejoSeedInSession() && !forgejoRoleFailedHere(moduleShown)   // K2GO-593: no seed follows then
                 && (serverObservedUp() || postInstallSeed
                     || org.appdevforall.k2go.forgejo.presentation.ForgejoSeedRepository.get().hasSession())) {
             sections.addView(forgejoSeedRow());
@@ -544,7 +551,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
                 && (moduleShown || postInstallSeed)
                 // The forgejo runrole failing releases the gate ONLY in a module-install flow; a
                 // post-install seed run (postInstallSeed) must not read a stale/unrelated queue verdict.
-                && !(moduleShown && mq.didFail("forgejo"));
+                && !forgejoRoleFailedHere(moduleShown);
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
         // ADFA-4954: ModuleQueueRepository is process-scoped, so a DONE phase left by an
@@ -589,9 +596,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         boolean moduleFlow = moduleInSession();
         // ADFA-4898: the module batch reached its terminal with at least one runrole failed. The server
         // itself came up (so this is NOT moduleServerFailed), and a green "Adding your content" here read
-        // the failed batch as a clean success. Keep the SAME amber "installing" header it had before the
-        // failure — no new copy — and let the failure + Retry surface per-module below (hub pill + detail),
-        // not in this batch-level header.
+        // the failed batch as a clean success. K2GO-593: the amber header now says the install stopped
+        // (it said "installing" while nothing ran); the failure + Retry still surface per-module below.
         boolean moduleFailed = moduleFlow && prootFailed > 0;
         // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
         // ended with a failed module (kept on the same amber install line, never a green success).
@@ -674,6 +680,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
             case SLOW: return R.string.k2go_setup_slow;
             case STARTING: return R.string.k2go_setup_starting;
             case INSTALLING: return R.string.install_busy_modules;
+            case STOPPED: return R.string.k2go_setup_modules_stopped;   // K2GO-593
             case WAITING_FOR_NETWORK: return R.string.k2go_setup_waiting_network;   // K2GO-408
             case ADDING:
             default: return R.string.k2go_setup_adding;
@@ -1108,14 +1115,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
         TextView sub = new TextView(this);
         sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         String state;
-        if (failed) state = getString(R.string.k2go_mod_phase_failed);
+        boolean canceled = failed && mq.wasCanceled(key);   // K2GO-593: a user stop is not an error
+        if (canceled) state = getString(R.string.k2go_mod_phase_canceled);
+        else if (failed) state = getString(R.string.k2go_mod_phase_failed);
         else if (done) state = getString(R.string.k2go_setup_state_done);
         else if (running) state = mq.percent >= 0                       // ADFA-5228: show the % when determinate
                 ? getString(R.string.k2go_mod_phase_installing) + "  " + mq.percent + "%"
                 : getString(R.string.k2go_mod_phase_installing);
         else state = getString(R.string.k2go_mod_phase_queued);
         sub.setText(state);
-        sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
+        sub.setTextColor(ContextCompat.getColor(this, failed && !canceled ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
         addRowProgressBar(col, mq, running);   // ADFA-5228
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -1234,8 +1243,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.appd
 
     /**
      * ADFA-4898 P5: strong confirmation before cancelling a running module install, then send
-     * ACTION_CANCEL. The service kills the runrole (proot --kill-on-exit), rolls back the speculative
-     * flag and marks the module failed; the base system is untouched and the server restarts.
+     * ACTION_CANCEL. The service SIGKILLs the runrole proot, so the kernel ends its box processes
+     * (K2GO-593), rolls back the speculative flag and marks the module canceled; the base system is
+     * untouched and the server restarts.
      */
     private void confirmCancelModule() {
         // K2GO-385: cancel-running-install confirm -> the shared BrandDialog (destructive).

@@ -133,7 +133,8 @@ public class ModuleInstallFragment extends Fragment {
         // failedModules.contains(...); routed through the shared atom so the three can't drift apart.
         if (mq.didFail(key)) {
             terminalDone = true;
-            status.setText(getString(R.string.k2go_mod_phase_failed));
+            status.setText(getString(mq.wasCanceled(key)   // K2GO-593: a user stop is not an error
+                    ? R.string.k2go_mod_phase_canceled : R.string.k2go_mod_phase_failed));
             return;
         }
         if (mq.phase == ModuleQueueState.Phase.DONE) {

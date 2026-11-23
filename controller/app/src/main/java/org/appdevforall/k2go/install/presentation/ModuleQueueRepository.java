@@ -78,6 +78,8 @@ public final class ModuleQueueRepository {
     /** ADFA-5228: running with a determinate percent and an estimated seconds-remaining. */
     public void postRunning(String currentModule, int remaining, int percent, long etaSeconds) { post(ModuleQueueState.running(currentModule, remaining, percent, etaSeconds)); }
     public void postDone(List<String> failedModules)             { stalled.postValue(false); post(ModuleQueueState.done(failedModules)); }
+    /** K2GO-593: the batch ended on a user Cancel of {@code canceledModule}. */
+    public void postCanceled(List<String> failedModules, String canceledModule) { stalled.postValue(false); post(ModuleQueueState.done(failedModules, canceledModule)); }
     public void postIdle()                                       { stalled.postValue(false); post(ModuleQueueState.idle()); }
 
     private synchronized void post(ModuleQueueState s) {

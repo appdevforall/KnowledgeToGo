@@ -1696,4 +1696,6 @@
     <string name="k2go_feedback_third_party_msg">O yan \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\". A ń fi èsì ránṣẹ́ pẹ̀lú ìṣàmúlò mìíràn, fún àpẹẹrẹ ímeèlì, ìṣàmúlò náà sì lè sopọ̀ mọ́ íńtánẹ́ẹ̀tì.</string>
     <string name="k2go_privacy_kept_offline">A ṣètò ìṣàmúlò sí \"Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì\", nítorí náà àwọn iṣẹ́ wọ̀nyí wà ní pípa. Láti yí i padà, tan \"%1$s\" ní Ìtòlẹ́sẹẹsẹ &gt; Nípa.</string>
     <string name="k2go_feedback_send_anyway">Fi ránṣẹ́ bó ti wù kó rí</string>
+    <string name="k2go_mod_phase_canceled">Ti fagilé</string>
+    <string name="k2go_setup_modules_stopped">Fífi sórí ẹ̀rọ ti dúró. Ṣàyẹ̀wò módù kọ̀ọ̀kan nísàlẹ̀.</string>
 </resources>

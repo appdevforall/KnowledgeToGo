@@ -1690,4 +1690,6 @@
     <string name="k2go_feedback_third_party_msg">તમે \"ઑફલાઇન રાખો\" પસંદ કર્યું છે. પ્રતિસાદ બીજી ઍપથી મોકલવામાં આવે છે, જેમ કે ઇમેઇલ, અને તે ઍપ ઇન્ટરનેટ સાથે કનેક્ટ થઈ શકે છે.</string>
     <string name="k2go_privacy_kept_offline">ઍપ \"ઑફલાઇન રાખો\" પર સેટ છે, તેથી આ સેવાઓ બંધ રહે છે. તેને બદલવા માટે, સેટિંગ્સ &gt; વિશે માં \"%1$s\" ચાલુ કરો.</string>
     <string name="k2go_feedback_send_anyway">છતાં મોકલો</string>
+    <string name="k2go_mod_phase_canceled">રદ કર્યું</string>
+    <string name="k2go_setup_modules_stopped">ઇન્સ્ટૉલ અટકી ગયું. નીચે દરેક મૉડ્યુલ તપાસો.</string>
 </resources>

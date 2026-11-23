@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">\"Çevrimdışı tut\" seçeneğini seçtiniz. Geri bildirim başka bir uygulamayla, örneğin e-postayla gönderilir ve bu uygulama internete bağlanabilir.</string>
     <string name="k2go_privacy_kept_offline">Uygulama \"Çevrimdışı tut\" olarak ayarlı, bu yüzden bu hizmetler kapalı kalır. Bunu değiştirmek için Ayarlar &gt; Hakkında bölümünde \"%1$s\" seçeneğini açın.</string>
     <string name="k2go_feedback_send_anyway">Yine de gönder</string>
+    <string name="k2go_mod_phase_canceled">İptal edildi</string>
+    <string name="k2go_setup_modules_stopped">Kurulum durdu. Aşağıdaki her modülü kontrol edin.</string>
 </resources>

@@ -227,11 +227,9 @@ public class ModuleDetailFragment extends Fragment {
                     // — where the batch we just re-fired shows its rows, progress and log. NOT onBackPressed:
                     // that dropped the user on the hub, which during an install only shows "Adding content"
                     // with no route to the progress (the bug seen retrying from Module management).
-                    schedule.setOnClickListener(v -> {
-                        if (ModuleRetry.fire(v, c.key())) {
-                            startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
-                        }
-                    });
+                    schedule.setOnClickListener(v -> ModuleRetry.fire(v, c.key(), () -> {
+                        if (isAdded()) startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
+                    }));
                     schedule.setVisibility(View.VISIBLE);
                     installNowBtn.setText(R.string.k2go_setup_back);
                     installNowBtn.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());

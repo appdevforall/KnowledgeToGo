@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">A \"Marad offline\" lehetőséget választottad. A visszajelzést egy másik alkalmazás küldi el, például az e-mail, és ez az alkalmazás csatlakozhat az internethez.</string>
     <string name="k2go_privacy_kept_offline">Az alkalmazás \"Marad offline\" módra van állítva, ezért ezek a szolgáltatások kikapcsolva maradnak. A módosításhoz kapcsold be a(z) \"%1$s\" beállítást itt: Beállítások &gt; Névjegy.</string>
     <string name="k2go_feedback_send_anyway">Küldés mégis</string>
+    <string name="k2go_mod_phase_canceled">Megszakítva</string>
+    <string name="k2go_setup_modules_stopped">A telepítés leállt. Alább ellenőrizze az egyes modulokat.</string>
 </resources>

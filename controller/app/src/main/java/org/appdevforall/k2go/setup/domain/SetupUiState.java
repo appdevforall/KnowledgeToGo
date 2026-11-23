@@ -19,7 +19,7 @@ public final class SetupUiState {
     public enum StatusTone { NEUTRAL, WAITING }
 
     /** The status line message (mapped to a string resource by the Activity). */
-    public enum StatusMessage { STARTING, SLOW, ADDING, INSTALLING, WAITING_FOR_NETWORK }
+    public enum StatusMessage { STARTING, SLOW, ADDING, INSTALLING, WAITING_FOR_NETWORK, STOPPED }
 
     /** The bottom-controls mode (mapped to show()/scheduleRedirect()/cancelRedirect() by the Activity). */
     /** FINISH_PARTIAL (K2GO-475): Finish plus a note, never the auto-redirect, so the user reads it. */
@@ -58,7 +58,7 @@ public final class SetupUiState {
         if (in.batchServerSlow) message = StatusMessage.SLOW;                       // could not bring services up in time
         else if (in.batchServerSettling) message = StatusMessage.STARTING;          // reconciler is (re)starting the server
         else if (in.moduleFlow && !in.batchServerUp) message = StatusMessage.INSTALLING;   // runroles in flight
-        else if (in.moduleFailed) message = StatusMessage.INSTALLING;               // keep the amber install header on a failed batch
+        else if (in.moduleFailed) message = StatusMessage.STOPPED;                  // K2GO-593: the batch ended; nothing installs now
         else if (in.moduleFlow) message = StatusMessage.ADDING;                     // module done + server up
         else if (!in.servicesReady) message = in.slowByPolls ? StatusMessage.SLOW : StatusMessage.STARTING;
         else message = StatusMessage.ADDING;
@@ -70,7 +70,9 @@ public final class SetupUiState {
         else if (in.failure) controls = Controls.FINISH_FAILURE;
         else controls = Controls.RUNNING;
 
-        return new SetupUiState(tone, message, amberWaiting, controls, in.runInBackgroundEnabled);
+        // K2GO-593: a stopped batch keeps the amber dot, but no animated dots: nothing runs now.
+        boolean animate = amberWaiting && message != StatusMessage.STOPPED;
+        return new SetupUiState(tone, message, animate, controls, in.runInBackgroundEnabled);
     }
 
     /** The inputs the rule reads, gathered by the Activity from its live sources. */

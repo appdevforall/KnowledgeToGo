@@ -61,9 +61,19 @@ public class SetupUiStateTest {
     }
 
     @Test
-    public void failedModuleKeepsInstallingHeader() {
+    public void failedModuleShowsStoppedHeader() {
+        // K2GO-593: the batch ended (server up again); "installing" would say work still runs.
         SetupUiState ui = new SetupUiState.Inputs()
                 .moduleFlow(true).batchServerUp(true).moduleFailed(true).build();
+        assertEquals(SetupUiState.StatusMessage.STOPPED, ui.message);
+        assertEquals(SetupUiState.StatusTone.WAITING, ui.tone);
+        assertFalse(ui.animate);   // nothing runs, so no animated dots
+    }
+
+    @Test
+    public void failedModuleBeforeServerUpStillInstalling() {
+        SetupUiState ui = new SetupUiState.Inputs()
+                .moduleFlow(true).batchServerUp(false).moduleFailed(true).build();
         assertEquals(SetupUiState.StatusMessage.INSTALLING, ui.message);
     }
 

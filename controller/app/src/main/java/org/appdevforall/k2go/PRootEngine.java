@@ -408,6 +408,55 @@ public class PRootEngine {
         final Process p = currentProcess;
         if (p == null) return;
         p.destroy();
+        reap(p);
+    }
+
+    /**
+     * K2GO-593: stop the command and every box process it started. {@link #killProcess} sends
+     * SIGTERM, and proot does not exit on it: it stays until its guests end, so a cancelled runrole
+     * kept downloading. SIGKILL ends proot, and PTRACE_O_EXITKILL (K2GO-544) then makes the kernel
+     * kill all its guests.
+     */
+    public void forceKill() {
+        final Process p = currentProcess;
+        if (p == null || !isAlive(p)) return;   // an ended command's pid can belong to another process now
+        // Not destroyForcibly(): on the device it left proot running, the same as destroy().
+        int pid = pidOf(p);
+        if (pid > 0) {
+            android.os.Process.sendSignal(pid, android.os.Process.SIGNAL_KILL);
+            Log.i(TAG, "K2GO-593: SIGKILL sent to proot pid " + pid);
+        } else {
+            Log.w(TAG, "K2GO-593: proot pid unknown; falling back to destroy()");
+            p.destroy();
+        }
+        reap(p);
+    }
+
+    /** Process.isAlive() is API 26+, minSdk is 24: exitValue() throws while the process runs. */
+    private static boolean isAlive(Process p) {
+        try {
+            p.exitValue();
+            return false;
+        } catch (IllegalThreadStateException running) {
+            return true;
+        }
+    }
+
+    /** The pid of a child process, or -1 if unknown. Process.pid() is API 33+, minSdk is 24. */
+    static int pidOf(Process p) {
+        java.util.regex.Matcher m =
+                java.util.regex.Pattern.compile("pid=(\\d+)").matcher(String.valueOf(p));
+        if (m.find()) return Integer.parseInt(m.group(1));
+        try {
+            java.lang.reflect.Field f = p.getClass().getDeclaredField("pid");
+            f.setAccessible(true);
+            return f.getInt(p);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    private static void reap(final Process p) {
         // Reap the child off the caller's thread so it does not linger as a
         // zombie / hold proot mounts. Process.waitFor(timeout) is API 26+ and
         // minSdk is 24, so we drain on the shared io() executor instead of

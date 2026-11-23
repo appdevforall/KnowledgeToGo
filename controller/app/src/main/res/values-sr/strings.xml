@@ -1691,4 +1691,6 @@
     <string name="k2go_feedback_third_party_msg">Изабрали сте \"Задржи офлајн\". Повратне информације се шаљу другом апликацијом, на пример имејлом, и та апликација може да се повеже на интернет.</string>
     <string name="k2go_privacy_kept_offline">Апликација је подешена на \"Задржи офлајн\", па ове услуге остају искључене. Да бисте то променили, укључите \"%1$s\" у Подешавања &gt; О апликацији.</string>
     <string name="k2go_feedback_send_anyway">Ипак пошаљи</string>
+    <string name="k2go_mod_phase_canceled">Отказано</string>
+    <string name="k2go_setup_modules_stopped">Инсталација је заустављена. Проверите сваки модул испод.</string>
 </resources>

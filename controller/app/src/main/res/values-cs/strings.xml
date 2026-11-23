@@ -1686,4 +1686,6 @@
     <string name="k2go_feedback_third_party_msg">Zvolili jste \"Ponechat offline\". Zpětná vazba se odesílá jinou aplikací, například e-mailem, a tato aplikace se může připojit k internetu.</string>
     <string name="k2go_privacy_kept_offline">Aplikace je nastavena na \"Ponechat offline\", proto tyto služby zůstávají vypnuté. Chcete-li to změnit, zapněte \"%1$s\" v Nastavení &gt; O aplikaci.</string>
     <string name="k2go_feedback_send_anyway">Přesto odeslat</string>
+    <string name="k2go_mod_phase_canceled">Zrušeno</string>
+    <string name="k2go_setup_modules_stopped">Instalace se zastavila. Zkontrolujte níže každý modul.</string>
 </resources>

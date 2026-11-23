@@ -1687,4 +1687,6 @@
     <string name="k2go_feedback_third_party_msg">Du valgte \"Hold offline\". Tilbakemeldinger sendes med en annen app, for eksempel e-post, og den appen kan koble til internett.</string>
     <string name="k2go_privacy_kept_offline">Appen er satt til \"Hold offline\", så disse tjenestene forblir av. For å endre det, slå på \"%1$s\" i Innstillinger &gt; Om.</string>
     <string name="k2go_feedback_send_anyway">Send likevel</string>
+    <string name="k2go_mod_phase_canceled">Avbrutt</string>
+    <string name="k2go_setup_modules_stopped">Installasjonen stoppet. Sjekk hver modul nedenfor.</string>
 </resources>

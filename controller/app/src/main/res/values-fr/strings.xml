@@ -1765,4 +1765,6 @@
     <string name="k2go_feedback_third_party_msg">Vous avez choisi \"Rester hors ligne\". Les commentaires sont envoyés avec une autre application, par exemple la messagerie, et cette application peut se connecter à Internet.</string>
     <string name="k2go_privacy_kept_offline">L\'application est réglée sur \"Rester hors ligne\", ces services restent donc désactivés. Pour changer cela, activez \"%1$s\" dans Paramètres &gt; À propos.</string>
     <string name="k2go_feedback_send_anyway">Envoyer quand même</string>
+    <string name="k2go_mod_phase_canceled">Annulé</string>
+    <string name="k2go_setup_modules_stopped">L\'installation s\'est arrêtée. Vérifiez chaque module ci-dessous.</string>
 </resources>

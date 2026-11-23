@@ -1697,4 +1697,6 @@
     <string name="k2go_feedback_third_party_msg">Ulichagua \"Weka nje ya mtandao\". Maoni hutumwa kwa programu nyingine, kwa mfano barua pepe, na programu hiyo inaweza kuunganishwa kwenye intaneti.</string>
     <string name="k2go_privacy_kept_offline">Programu imewekwa kwenye \"Weka nje ya mtandao\", kwa hivyo huduma hizi zinabaki zimezimwa. Ili kubadilisha, washa \"%1$s\" katika Mipangilio &gt; Kuhusu.</string>
     <string name="k2go_feedback_send_anyway">Tuma hata hivyo</string>
+    <string name="k2go_mod_phase_canceled">Imeghairiwa</string>
+    <string name="k2go_setup_modules_stopped">Usakinishaji umesimama. Kagua kila moduli hapa chini.</string>
 </resources>

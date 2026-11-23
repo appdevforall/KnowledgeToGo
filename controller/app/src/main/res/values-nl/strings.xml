@@ -1677,4 +1677,6 @@
     <string name="k2go_feedback_third_party_msg">Je hebt \"Offline houden\" gekozen. Feedback wordt verzonden met een andere app, bijvoorbeeld e-mail, en die app kan verbinding maken met internet.</string>
     <string name="k2go_privacy_kept_offline">De app staat op \"Offline houden\", dus deze diensten blijven uit. Zet \"%1$s\" aan in Instellingen &gt; Over om dit te wijzigen.</string>
     <string name="k2go_feedback_send_anyway">Toch verzenden</string>
+    <string name="k2go_mod_phase_canceled">Geannuleerd</string>
+    <string name="k2go_setup_modules_stopped">De installatie is gestopt. Controleer hieronder elke module.</string>
 </resources>
