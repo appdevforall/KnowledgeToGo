@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K2Go School: student</title>
+<style>
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  body { display: flex; flex-direction: column; }
+  header { padding: 4px 6px; background: #C9711C; color: #fff; display: flex; align-items: center; gap: 8px; }
+  header button { font: inherit; margin-left: auto; }
+  #stage { flex: 1; overflow: hidden; position: relative; }
+  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <span id="name"></span>
+  <span id="status">Connecting...</span>
+  <button id="done">Done</button>
+</header>
+<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="follow.js"></script>
+<script>
+'use strict';
+(function () {
+  var stage = document.getElementById('stage');
+  var frame = document.getElementById('frame');
+  var statusEl = document.getElementById('status');
+  var doneBtn = document.getElementById('done');
+  var name = School.params.get('n') || ('S' + Math.floor(Math.random() * 900 + 100));
+  document.getElementById('name').textContent = name;
+
+  var KEY = 'k2go-school-token';
+  var token = null;
+  try { token = sessionStorage.getItem(KEY); } catch (e) { token = null; }
+
+  var last = null;          // last lesson from the teacher
+  var loading = false;
+  var done = false;
+  var ackTimer = null;
+  var lastAck = 0;
+  var live = null;
+  var lastSeen = 0;
+  var joining = false;
+
+  School.watchFit(stage, frame);
+
+  function join() {
+    joining = true;
+    return fetch('join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name })
+    }).then(function (r) {
+      if (!r.ok) { throw new Error('join ' + r.status); }
+      return r.json();
+    }).then(function (j) {
+      token = j.token;
+      try { sessionStorage.setItem(KEY, token); } catch (e) { /* private mode: join again on reload */ }
+    }).finally(function () { joining = false; });
+  }
+
+  function rejoin() {
+    if (joining) { return; }
+    token = null;
+    if (live) { live.close(); }
+    statusEl.textContent = 'Joining...';
+    join().then(connect).catch(function () { statusEl.textContent = 'Class not reachable'; });
+  }
+
+  function sendAck() {
+    ackTimer = null;
+    if (!last || !token) { return; }
+    lastAck = performance.now();
+    var win = frame.contentWindow;
+    fetch('ack', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token, seq: last.seq, done: done,
+        dy: Math.round(win.scrollY) - last.y,
+        h: win.document.documentElement.scrollHeight
+      })
+    }).then(function (r) { if (r.status === 401) { rejoin(); } }).catch(function () {});
+  }
+
+  // Ack at most 5 times a second, and always the last message.
+  function ack() {
+    if (ackTimer) { return; }
+    ackTimer = setTimeout(sendAck, Math.max(0, 200 - (performance.now() - lastAck)));
+  }
+
+  function follow() {
+    if (!last || loading) { return; }
+    var current = frame.src ? School.framePath(frame) : '';
+    if (current !== last.url) {
+      // Done means done with this page; the box clears it too.
+      if (done) { done = false; doneBtn.textContent = 'Done'; }
+      loading = true;
+      statusEl.textContent = 'Opening...';
+      frame.src = last.url;
+      return;
+    }
+    School.applyAnchor(frame.contentWindow, last.a, last.y);
+    statusEl.textContent = 'Following';
+    requestAnimationFrame(ack);
+  }
+
+  frame.addEventListener('load', function () {
+    School.normalize(frame.contentDocument);
+    loading = false;
+    follow();
+  });
+
+  doneBtn.onclick = function () {
+    done = !done;
+    doneBtn.textContent = done ? 'Not done' : 'Done';
+    ack();
+  };
+
+  // The box sends a "ping" event every 15 s. A connection that the box dropped under load can
+  // stay open on the phone with no error, so a watchdog opens a new one when nothing comes.
+  function connect() {
+    if (live) { live.close(); }
+    lastSeen = performance.now();
+    live = new EventSource('live?token=' + encodeURIComponent(token));
+    live.onmessage = function (ev) {
+      lastSeen = performance.now();
+      try { last = JSON.parse(ev.data); } catch (e) { return; }
+      follow();
+    };
+    live.addEventListener('ping', function () { lastSeen = performance.now(); });
+    live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
+  }
+
+  setInterval(function () {
+    if (joining) { return; }
+    if (!live || live.readyState === EventSource.CLOSED) {
+      // A refused channel (for example 401 after a box restart) does not retry by itself.
+      rejoin();
+    } else if (performance.now() - lastSeen > 35000) {
+      statusEl.textContent = 'Reconnecting...';
+      connect();
+    }
+  }, 5000);
+
+  if (token) { connect(); } else { rejoin(); }
+})();
+</script>
+</body>
+</html>

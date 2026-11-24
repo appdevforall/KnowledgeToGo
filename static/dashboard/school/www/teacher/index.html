@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K2Go School: teacher</title>
+<style>
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  body { display: flex; flex-direction: column; }
+  header { padding: 4px 6px; background: #1F5FBF; color: #fff; }
+  header button, header input { font: inherit; margin: 2px 2px 2px 0; }
+  header input { width: 9em; }
+  #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: #fff; color: #111; border-radius: 3px; }
+  #students span.done { background: #17924A; color: #fff; }
+  #students span.off { opacity: 0.5; }
+  #stats { white-space: pre; font: 12px monospace; }
+  #stage { flex: 1; overflow: hidden; position: relative; }
+  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <button data-path="/kiwix/content/k2go_welcome/A/index.html">Kiwix</button>
+    <button data-path="/info/FAQ.html">Long page</button>
+    <input id="path" placeholder="/kiwix/content/...">
+    <button id="go">Open</button>
+  </div>
+  <div>
+    <button id="auto">Auto-scroll</button>
+    <button id="lag">Lag test</button>
+    <span id="count">0 online</span>
+  </div>
+  <div id="students"></div>
+  <div id="stats"></div>
+</header>
+<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="../follow.js"></script>
+<script>
+'use strict';
+(function () {
+  var stage = document.getElementById('stage');
+  var frame = document.getElementById('frame');
+  var countEl = document.getElementById('count');
+  var studentsEl = document.getElementById('students');
+  var statsEl = document.getElementById('stats');
+  var HZ = parseInt(School.params.get('hz'), 10) || 20;
+
+  var seq = 0;
+  var sentAt = {};          // seq -> send time (ms), to measure the round trip
+  var roster = [];          // from the box: the one owner of who is in the class
+  var rtt = {};             // student id -> last round trip (ms), from acks
+  var names = {};           // student id -> name
+  var lagRun = null;        // { rtts: { name: [ms] } } while a lag test runs
+  var pending = false;
+  var lastSend = 0;
+
+  School.watchFit(stage, frame);
+
+  function publish() {
+    var win = frame.contentWindow;
+    seq += 1;
+    var msg = {
+      seq: seq,
+      url: School.framePath(frame),
+      a: School.anchorOf(win),
+      y: Math.round(win.scrollY)
+    };
+    sentAt[seq] = performance.now();
+    delete sentAt[seq - 500];
+    lastSend = performance.now();
+    fetch('publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(msg)
+    }).catch(function () { countEl.textContent = 'box not reachable'; });
+  }
+
+  // Send at most HZ messages a second, and always the last position.
+  function onScroll() {
+    if (pending) { return; }
+    pending = true;
+    var wait = Math.max(0, 1000 / HZ - (performance.now() - lastSend));
+    setTimeout(function () { pending = false; publish(); }, wait);
+  }
+
+  frame.addEventListener('load', function () {
+    School.normalize(frame.contentDocument);
+    frame.contentWindow.addEventListener('scroll', onScroll, { passive: true });
+    publish();
+  });
+
+  function open(path) { if (path) { frame.src = path; } }
+  document.querySelectorAll('[data-path]').forEach(function (b) {
+    b.onclick = function () { open(b.getAttribute('data-path')); };
+  });
+  document.getElementById('go').onclick = function () {
+    open(document.getElementById('path').value.trim());
+  };
+
+  var autoTimer = null;
+  document.getElementById('auto').onclick = function () {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; return; }
+    autoTimer = setInterval(function () {
+      var win = frame.contentWindow;
+      var max = win.document.documentElement.scrollHeight - win.innerHeight;
+      win.scrollTo(0, win.scrollY >= max ? 0 : win.scrollY + 4);
+    }, 16);
+  };
+
+  // Lag test: 20 jumps, 600 ms apart, to random places in the page.
+  document.getElementById('lag').onclick = function () {
+    if (lagRun) { return; }
+    lagRun = { rtts: {} };
+    var n = 0;
+    var t = setInterval(function () {
+      var win = frame.contentWindow;
+      var max = win.document.documentElement.scrollHeight - win.innerHeight;
+      win.scrollTo(0, Math.round(Math.random() * max));
+      if (++n >= 20) {
+        clearInterval(t);
+        setTimeout(function () { showStats(); lagRun = null; }, 1500);
+      }
+    }, 600);
+  };
+
+  function pct(list, p) {
+    var s = list.slice().sort(function (x, y) { return x - y; });
+    return s[Math.min(s.length - 1, Math.floor(p * s.length))];
+  }
+
+  function showStats() {
+    var lines = ['round trip ms (one way is about half): name n p50 p95 max'];
+    Object.keys(lagRun.rtts).forEach(function (name) {
+      var r = lagRun.rtts[name];
+      lines.push(name + ' ' + r.length + ' ' + pct(r, 0.5) + ' ' + pct(r, 0.95) + ' ' + Math.max.apply(null, r));
+    });
+    statsEl.textContent = lines.join('\n');
+  }
+
+  function render() {
+    var online = 0;
+    studentsEl.innerHTML = '';
+    roster.forEach(function (s) {
+      if (s.online) { online += 1; }
+      var el = document.createElement('span');
+      el.textContent = s.name + ' ' + (rtt[s.id] === undefined ? '-' : rtt[s.id] + 'ms') + (s.done ? ' Done' : '');
+      el.className = (s.done ? 'done' : '') + (s.online ? '' : ' off');
+      studentsEl.appendChild(el);
+    });
+    countEl.textContent = online + ' online';
+  }
+
+  // A dash-node restart answers 502 for a moment, which closes an EventSource for good; and the
+  // box forgets the lesson. So: reopen the channel when it closes or goes quiet, and send the
+  // lesson again on each open.
+  var live = null;
+  var lastSeen = 0;
+  function connect() {
+    if (live) { live.close(); }
+    lastSeen = performance.now();
+    live = new EventSource('live');
+    live.onopen = function () {
+      if (frame.contentWindow.location.protocol !== 'about:') { publish(); }   // a page is loaded
+    };
+    live.onmessage = onEvent;
+    live.addEventListener('ping', function () { lastSeen = performance.now(); });
+  }
+  setInterval(function () {
+    if (live.readyState === EventSource.CLOSED || performance.now() - lastSeen > 35000) {
+      countEl.textContent = 'reconnecting';
+      connect();
+    }
+  }, 5000);
+
+  function onEvent(ev) {
+    var m;
+    lastSeen = performance.now();
+    try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (m.type === 'roster') {
+      roster = m.students;
+      roster.forEach(function (s) { names[s.id] = s.name; });
+    } else if (m.type === 'ack' && sentAt[m.seq] !== undefined) {
+      rtt[m.id] = Math.round(performance.now() - sentAt[m.seq]);
+      if (lagRun) {
+        var name = names[m.id] || m.id;
+        (lagRun.rtts[name] = lagRun.rtts[name] || []).push(rtt[m.id]);
+      }
+    }
+    render();
+  }
+  connect();
+
+  open(School.params.get('path') || '/kiwix/content/k2go_welcome/A/index.html');
+})();
+</script>
+</body>
+</html>
