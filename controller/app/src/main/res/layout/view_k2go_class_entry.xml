@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go School: class entry on the Connect screen (school/presentation/ClassEntry). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/k2go_class_entry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/k2go_class_title"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="@color/k2go_ink" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/k2go_class_body"
+        android:textAppearance="@style/TextAppearance.K2Go.Label"
+        android:textColor="@color/k2go_muted" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/k2go_class_teach"
+        style="@style/Widget.K2Go.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/k2go_class_teach" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/k2go_class_join"
+        style="@style/Widget.K2Go.Button.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/k2go_class_join" />
+</LinearLayout>

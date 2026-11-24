@@ -151,6 +151,8 @@
                 android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_connect_available"
                 android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted"
                 android:visibility="gone" />
+            <!-- K2Go School (feature/k2go-school): Teach a class / Join a class. -->
+            <include layout="@layout/view_k2go_class_entry" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

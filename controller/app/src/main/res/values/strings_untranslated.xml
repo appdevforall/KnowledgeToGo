@@ -10,4 +10,17 @@
   strings.xml.
 -->
 <resources>
+    <!-- K2Go School (feature/k2go-school): class entry on the Connect screen. -->
+    <!-- Title of the class section on the Connect screen. -->
+    <string name="k2go_class_title" translatable="false">Class</string>
+    <!-- Body of the class section: what the two buttons do. -->
+    <string name="k2go_class_body" translatable="false">Lead a class from this phone, or follow the class on the teacher\'s phone.</string>
+    <!-- Button: the teacher opens the class page on this phone. -->
+    <string name="k2go_class_teach" translatable="false">Teach a class</string>
+    <!-- Button: a student scans the teacher\'s code to follow the class. -->
+    <string name="k2go_class_join" translatable="false">Join a class</string>
+    <!-- Prompt on the QR scanner when a student joins a class. -->
+    <string name="k2go_class_scan_prompt" translatable="false">Scan the Open code on the teacher\'s Connect screen.</string>
+    <!-- Message when the scanned code is not the address of a K2Go library. -->
+    <string name="k2go_class_bad_code" translatable="false">This code is not the address of a K2Go library. Scan the Open code on the teacher\'s Connect screen.</string>
 </resources>
