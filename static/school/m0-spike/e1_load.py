@@ -20,6 +20,8 @@ import time
 import urllib.request
 
 CHANNEL = 'e1'
+# Express has one class channel: send the page the students already show, so they stay on it.
+EXPRESS_URL = '/kiwix/content/wikipedia_en_ray-charles_maxi_2026-08/Ray_Charles'
 
 
 class Client:
@@ -29,13 +31,14 @@ class Client:
         self.writer = None
 
 
-async def run_client(c, host, port, run_id, opened):
+async def run_client(c, host, port, run_id, opened, path):
     answered = False
     try:
         reader, writer = await asyncio.wait_for(asyncio.open_connection(host, port), 10)
         c.writer = writer
-        writer.write(('GET /school/sub/%s HTTP/1.1\r\nHost: %s\r\n'
-                      'Accept: text/event-stream\r\n\r\n' % (CHANNEL, host)).encode())
+        # HTTP/1.0: no chunked framing, so a data line never splits across chunks in this parser.
+        writer.write(('GET %s HTTP/1.0\r\nHost: %s\r\n'
+                      'Accept: text/event-stream\r\n\r\n' % (path, host)).encode())
         await writer.drain()
         status = await asyncio.wait_for(reader.readline(), 10)
         c.ok = b' 200 ' in status
@@ -59,13 +62,26 @@ async def run_client(c, host, port, run_id, opened):
             opened.release()
 
 
-def publish(pub, msg):
-    req = urllib.request.Request(pub + '/school/pub/' + CHANNEL, data=json.dumps(msg).encode(),
-                                 method='POST')
+def publish(pub, msg, mode='nchan'):
+    if mode == 'express':
+        msg = dict(msg, url=EXPRESS_URL)
+        req = urllib.request.Request(pub + '/school/teacher/publish', data=json.dumps(msg).encode(),
+                                     headers={'Content-Type': 'application/json'}, method='POST')
+    else:
+        req = urllib.request.Request(pub + '/school/pub/' + CHANNEL, data=json.dumps(msg).encode(),
+                                     method='POST')
     urllib.request.urlopen(req, timeout=10).read()
 
 
-def subscribers(pub):
+def join(box, port):
+    req = urllib.request.Request('http://%s:%d/school/join' % (box, port), data=b'{"name":"e1"}',
+                                 headers={'Content-Type': 'application/json'}, method='POST')
+    return json.loads(urllib.request.urlopen(req, timeout=10).read())['token']
+
+
+def subscribers(pub, mode='nchan'):
+    if mode == 'express':
+        return None
     req = urllib.request.Request(pub + '/school/pub/' + CHANNEL,
                                  headers={'Accept': 'application/json'})
     try:
@@ -87,24 +103,33 @@ async def step(n, args, port):
     run_id = '%d-%d' % (n, int(time.time()))
     opened = asyncio.Semaphore(0)
     clients = [Client() for _ in range(n)]
+    loop = asyncio.get_running_loop()
+    paths = ['/school/sub/' + CHANNEL] * n
+    if args.mode == 'express':
+        paths = []
+        for _ in range(n):
+            try:
+                paths.append('/school/live?token=' + await loop.run_in_executor(None, join, args.box, port))
+            except OSError:
+                break
+        clients = clients[:len(paths)]
     tasks = []
     for i, c in enumerate(clients):
-        tasks.append(asyncio.ensure_future(run_client(c, args.box, port, run_id, opened)))
+        tasks.append(asyncio.ensure_future(run_client(c, args.box, port, run_id, opened, paths[i])))
         if i % 50 == 49:
             await asyncio.sleep(0.2)
-    for _ in range(n):
+    for _ in range(len(clients)):
         try:
             await asyncio.wait_for(opened.acquire(), 30)
         except asyncio.TimeoutError:
             break
     await asyncio.sleep(1)
     open_ok = sum(1 for c in clients if c.ok)
-    subs = await asyncio.get_running_loop().run_in_executor(None, subscribers, args.pub)
-    loop = asyncio.get_running_loop()
+    subs = await loop.run_in_executor(None, subscribers, args.pub, args.mode)
     for seq in range(args.msgs):
         try:
             await loop.run_in_executor(None, publish, args.pub,
-                                       {'run': run_id, 'seq': seq, 't': time.time()})
+                                       {'run': run_id, 'seq': seq, 't': time.time()}, args.mode)
         except OSError as e:  # the box drops the publisher too when it is full
             print('%5d publish failed: %s' % (n, e), flush=True)
             break
@@ -137,6 +162,8 @@ async def main():
     ap.add_argument('--msgs', type=int, default=5)
     ap.add_argument('--interval', type=float, default=1.0)
     ap.add_argument('--rest', type=float, default=3.0)
+    ap.add_argument('--mode', choices=['nchan', 'express'], default='nchan',
+                    help='nchan: the M0 spike locations; express: the dash-node school router')
     args = ap.parse_args()
     print('    N   open   subs  received/expected  p50ms  p95ms  maxms  kiwixms')
     for n in [int(s) for s in args.steps.split(',')]:
