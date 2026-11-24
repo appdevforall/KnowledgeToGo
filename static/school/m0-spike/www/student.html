@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K2Go School: student (M0 spike)</title>
+<style>
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  body { display: flex; flex-direction: column; }
+  header { padding: 4px 6px; background: #C9711C; color: #fff; display: flex; align-items: center; gap: 8px; }
+  header button { font: inherit; margin-left: auto; }
+  #stage { flex: 1; overflow: hidden; position: relative; }
+  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <span id="name"></span>
+  <span id="status">Connecting...</span>
+  <button id="done">Done</button>
+</header>
+<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="follow.js"></script>
+<script>
+'use strict';
+(function () {
+  var stage = document.getElementById('stage');
+  var frame = document.getElementById('frame');
+  var statusEl = document.getElementById('status');
+  var name = School.params.get('n') || ('S' + Math.floor(Math.random() * 900 + 100));
+  var id = name + '-' + Math.random().toString(36).slice(2, 8);
+  document.getElementById('name').textContent = name;
+
+  var last = null;          // last message from the teacher
+  var loading = false;
+  var done = false;
+  var ackTimer = null;
+  var lastAck = 0;
+
+  School.watchFit(stage, frame);
+
+  function sendAck() {
+    ackTimer = null;
+    lastAck = performance.now();
+    var dy = Math.round(frame.contentWindow.scrollY) - last.y;
+    fetch('ack', {
+      method: 'POST',
+      body: JSON.stringify({ id: id, name: name, seq: last.seq, done: done, dy: dy,
+        h: frame.contentWindow.document.documentElement.scrollHeight })
+    });
+  }
+
+  // Ack at most 5 times a second, and always the last message.
+  function ack() {
+    if (!last || ackTimer) { return; }
+    ackTimer = setTimeout(sendAck, Math.max(0, 200 - (performance.now() - lastAck)));
+  }
+
+  function follow() {
+    if (!last || loading) { return; }
+    var current = frame.src ? School.framePath(frame) : '';
+    if (current !== last.url) {
+      loading = true;
+      statusEl.textContent = 'Opening...';
+      frame.src = last.url;
+      return;
+    }
+    School.applyAnchor(frame.contentWindow, last.a, last.y);
+    statusEl.textContent = 'Following';
+    requestAnimationFrame(ack);
+  }
+
+  frame.addEventListener('load', function () {
+    School.normalize(frame.contentDocument);
+    loading = false;
+    follow();
+  });
+
+  document.getElementById('done').onclick = function () {
+    done = !done;
+    this.textContent = done ? 'Not done' : 'Done';
+    ack();
+  };
+
+  // The box sends a "ping" event every 15 s. A connection that the box dropped under load can
+  // stay open on the phone with no error, so a watchdog opens a new one when nothing comes.
+  var live = null;
+  var lastSeen = 0;
+  function connect() {
+    if (live) { live.close(); }
+    lastSeen = performance.now();
+    live = new EventSource('sub/class');
+    live.onmessage = function (ev) {
+      lastSeen = performance.now();
+      try { last = JSON.parse(ev.data); } catch (e) { return; }
+      follow();
+    };
+    live.addEventListener('ping', function () { lastSeen = performance.now(); });
+    live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
+  }
+  setInterval(function () {
+    if (live.readyState === EventSource.CLOSED || performance.now() - lastSeen > 35000) {
+      statusEl.textContent = 'Reconnecting...';
+      connect();
+    }
+  }, 5000);
+  connect();
+})();
+</script>
+</body>
+</html>

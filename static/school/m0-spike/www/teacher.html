@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K2Go School: teacher (M0 spike)</title>
+<style>
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  body { display: flex; flex-direction: column; }
+  header { padding: 4px 6px; background: #1F5FBF; color: #fff; }
+  header button, header input { font: inherit; margin: 2px 2px 2px 0; }
+  header input { width: 9em; }
+  #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: #fff; color: #111; border-radius: 3px; }
+  #students span.done { background: #17924A; color: #fff; }
+  #stats { white-space: pre; font: 12px monospace; }
+  #stage { flex: 1; overflow: hidden; position: relative; }
+  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <button data-path="/kiwix/content/k2go_welcome/A/index.html">Kiwix</button>
+    <button data-path="/info/FAQ.html">Long page</button>
+    <input id="path" placeholder="/kiwix/content/...">
+    <button id="go">Open</button>
+  </div>
+  <div>
+    <button id="auto">Auto-scroll</button>
+    <button id="lag">Lag test</button>
+    <span id="count">0 listening</span>
+  </div>
+  <div id="students"></div>
+  <div id="stats"></div>
+</header>
+<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="follow.js"></script>
+<script>
+'use strict';
+(function () {
+  var stage = document.getElementById('stage');
+  var frame = document.getElementById('frame');
+  var countEl = document.getElementById('count');
+  var studentsEl = document.getElementById('students');
+  var statsEl = document.getElementById('stats');
+  var HZ = parseInt(School.params.get('hz'), 10) || 20;
+
+  var seq = 0;
+  var sentAt = {};          // seq -> send time (ms), to measure the round trip
+  var students = {};        // id -> { name, rtt, done, seen }
+  var lagRun = null;        // { rtts: { name: [ms] } } while a lag test runs
+  var pending = false;
+  var lastSend = 0;
+  var myH = 0;
+
+  School.watchFit(stage, frame);
+
+  function publish() {
+    var win = frame.contentWindow;
+    seq += 1;
+    var msg = {
+      seq: seq,
+      url: School.framePath(frame),
+      a: School.anchorOf(win),
+      y: Math.round(win.scrollY),
+      h: win.document.documentElement.scrollHeight
+    };
+    myH = msg.h;
+    sentAt[seq] = performance.now();
+    delete sentAt[seq - 500];
+    lastSend = performance.now();
+    fetch('pub/class', { method: 'POST', body: JSON.stringify(msg) });
+  }
+
+  // Send at most HZ messages a second, and always the last position.
+  function onScroll() {
+    if (pending) { return; }
+    pending = true;
+    var wait = Math.max(0, 1000 / HZ - (performance.now() - lastSend));
+    setTimeout(function () { pending = false; publish(); }, wait);
+  }
+
+  frame.addEventListener('load', function () {
+    School.normalize(frame.contentDocument);
+    frame.contentWindow.addEventListener('scroll', onScroll, { passive: true });
+    publish();
+  });
+
+  function open(path) { if (path) { frame.src = path; } }
+  document.querySelectorAll('[data-path]').forEach(function (b) {
+    b.onclick = function () { open(b.getAttribute('data-path')); };
+  });
+  document.getElementById('go').onclick = function () {
+    open(document.getElementById('path').value.trim());
+  };
+
+  var autoTimer = null;
+  document.getElementById('auto').onclick = function () {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; return; }
+    autoTimer = setInterval(function () {
+      var win = frame.contentWindow;
+      var max = win.document.documentElement.scrollHeight - win.innerHeight;
+      win.scrollTo(0, win.scrollY >= max ? 0 : win.scrollY + 4);
+    }, 16);
+  };
+
+  // Lag test: 20 jumps, 600 ms apart, to random places in the page.
+  document.getElementById('lag').onclick = function () {
+    if (lagRun) { return; }
+    lagRun = { rtts: {} };
+    var n = 0;
+    var t = setInterval(function () {
+      var win = frame.contentWindow;
+      var max = win.document.documentElement.scrollHeight - win.innerHeight;
+      win.scrollTo(0, Math.round(Math.random() * max));
+      if (++n >= 20) {
+        clearInterval(t);
+        setTimeout(function () { showStats(); lagRun = null; }, 1500);
+      }
+    }, 600);
+  };
+
+  function pct(list, p) {
+    var s = list.slice().sort(function (x, y) { return x - y; });
+    return s[Math.min(s.length - 1, Math.floor(p * s.length))];
+  }
+
+  function showStats() {
+    var lines = ['round trip ms (one way is about half): name n p50 p95 max'];
+    Object.keys(lagRun.rtts).forEach(function (name) {
+      var r = lagRun.rtts[name];
+      lines.push(name + ' ' + r.length + ' ' + pct(r, 0.5) + ' ' + pct(r, 0.95) + ' ' + Math.max.apply(null, r));
+    });
+    statsEl.textContent = lines.join('\n');
+  }
+
+  function render() {
+    var now = performance.now();
+    studentsEl.innerHTML = '';
+    Object.keys(students).forEach(function (id) {
+      var s = students[id];
+      if (now - s.seen > 30000) { return; }
+      var el = document.createElement('span');
+      el.textContent = s.name + ' ' + (s.rtt === null ? '-' : s.rtt + 'ms') + (s.done ? ' Done' : '') +
+        ' dy' + s.dy + ' h' + s.h;
+      if (s.done) { el.className = 'done'; }
+      studentsEl.appendChild(el);
+    });
+  }
+
+  var acks = new EventSource('acks');
+  acks.onmessage = function (ev) {
+    var m;
+    try { m = JSON.parse(ev.data); } catch (e) { return; }
+    var s = students[m.id] || (students[m.id] = { name: m.name, rtt: null, done: false });
+    s.name = m.name;
+    s.seen = performance.now();
+    s.done = !!m.done;
+    s.dy = m.dy;
+    s.h = m.h;
+    if (sentAt[m.seq] !== undefined) {
+      s.rtt = Math.round(s.seen - sentAt[m.seq]);
+      if (lagRun) { (lagRun.rtts[s.name] = lagRun.rtts[s.name] || []).push(s.rtt); }
+    }
+    render();
+  };
+
+  // The publisher location answers a GET with the channel info (nchan).
+  setInterval(function () {
+    fetch('pub/class', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : { subscribers: 0 }; })
+      .then(function (info) { countEl.textContent = info.subscribers + ' listening, h' + myH; })
+      .catch(function () { countEl.textContent = 'channel not reachable'; });
+    render();
+  }, 2000);
+
+  open(School.params.get('path') || '/kiwix/content/k2go_welcome/A/index.html');
+})();
+</script>
+</body>
+</html>
