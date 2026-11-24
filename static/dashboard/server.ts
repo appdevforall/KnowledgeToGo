@@ -15,6 +15,7 @@ import './sockets/code_addons.exec';   // K2GO-443: add-ons gallery runner (aria
 import './sockets/forgejo.exec';        // K2GO-443: forgejo repo-refresh runner (git, per-repo progress)
 import './sockets/forgejo-bin.exec';    // K2GO-593: forgejo binary download before the module install
 import { apiRouter } from './routes';
+import { schoolRouter } from './school/router';   // K2Go School (feature/k2go-school)
 import { startServiceHeal } from './sockets/service-heal';
 import { startLogRotation, stopLogRotation } from './sockets/log-rotate';
 import { applyPrivacyDefaultsOnce, PRIVACY_DEFAULTS_MARKER, PRIVACY_SWITCHES } from './sockets/privacy';
@@ -53,6 +54,8 @@ app.use(helmet({
 // the router stays mounted at /api; nginx exposes it on the box under /k2go-api.
 app.use(express.json());
 app.use('/api', apiRouter);
+// nginx exposes /school/ to the class network and /school/teacher/ to localhost only.
+app.use('/school', schoolRouter);
 
 // ADFA-5011: PORT is env-overridable so a staged build can be smoke-tested on a temp port
 // (e.g. 4010) before it is swapped live on 4000 — see tools/rebuild-dashboard.sh.
