@@ -207,6 +207,18 @@ test('marks: at most MAX_MARKS; remove by id; clear; ids are not used again', ()
     room.addMark('/p', { k: 'b', b: 99, t: 'a' });
     const again = room.marks()!.list.find((m) => m.b === 99)!;
     assert.ok(!ids.includes(again.id));
+    const box = { k: 'r' as const, b: 1, t: 'a', y: 0, eb: 2, et: 'a', ey: 10, x: 5, w: 50 };
+    room.removeMark('/p', ids[1]);
+    assert.deepEqual(room.addMark('/p', box), { changed: true });
+    const id = room.marks()!.list.find((m) => m.k === 'r')!.id;
+    const at = room.marks()!.list.findIndex((m) => m.id === id);
+    assert.deepEqual(room.moveMark('/p', id, { ...box, x: 40, o: 1 }), { changed: true });
+    const moved = room.marks()!.list[at];
+    assert.equal(moved.id, id);                                                     // same id, same place in the list
+    assert.deepEqual({ ...moved, id: 0 }, { ...box, x: 40, o: 1, id: 0 });
+    assert.deepEqual(room.moveMark('/p', id, { ...box, x: 40, o: 1 }), { changed: false });   // no move
+    assert.deepEqual(room.moveMark('/p', 999, box), { changed: false });            // gone
+    assert.deepEqual(room.moveMark('/other', id, box), { refused: 'other-page' });
     assert.deepEqual(room.clearMarks('/p'), { changed: true });
     assert.deepEqual(room.clearMarks('/p'), { changed: false });
     assert.deepEqual(room.marks()!.list, []);

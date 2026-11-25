@@ -132,6 +132,15 @@ test('marks: the teacher marks; a late student and a teacher page get them; a ne
             { ip: '127.0.0.1', want: (d) => (d as { type: string; list?: unknown[] }).type === 'marks' && (d as { list: unknown[] }).list.length === 1 });
         assert.equal((await marks({ op: 'remove', url: '/p', id: 99 })).status, 204);
         assert.equal(((await again).data as { list: unknown[] }).list.length, 1);
+        // A move: the mark keeps its id; the new place is checked as an add.
+        const box1 = { k: 'r', b: 0, t: 'a', y: 0, eb: 1, et: 'b', ey: 20, x: 10, w: 40 };
+        assert.equal((await marks({ op: 'add', url: '/p', mark: box1 })).status, 204);
+        assert.equal((await marks({ op: 'move', url: '/p', id: 2, mark: { k: 'r' } })).status, 400);
+        const movedEv = firstEvent(box, '/school/live', 'marks',
+            { cookie: cookieOf(j.token), want: (d) => (d as { list: { x?: number }[] }).list.some((m) => m.x === 90) });
+        await new Promise((ok) => setTimeout(ok, 100));
+        assert.equal((await marks({ op: 'move', url: '/p', id: 2, mark: { ...box1, x: 90 } })).status, 204);
+        assert.deepEqual(((await movedEv).data as { list: unknown[] }).list[1], { ...box1, x: 90, id: 2 });
         // A student on the channel hears the clear of a new page.
         const cleared = firstEvent(box, '/school/live', 'marks',
             { cookie: cookieOf(j.token), want: (d) => (d as { url: string }).url === '/q' });

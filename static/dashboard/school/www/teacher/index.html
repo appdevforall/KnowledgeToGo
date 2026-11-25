@@ -188,7 +188,7 @@
   var tool = null;          // the mark tool that is on (state of this page only): null, 'pen', 'box', 'oval' or 'eraser'
   var drag = null;          // the drag of a tool (onPointerDown)
   var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
-  var pendingMark = null;      // the mark of the last drag, shown until the box answers
+  var pendingMark = null;   // the mark of the last drag, shown until the box answers: { mark, moves: id or null }
   var tapEndsSelection = false;
   var toolBtns = {
     pen: document.getElementById('markPen'),
@@ -353,8 +353,10 @@
     if (!win || path === null) { return; }
     var list = marks.url === path ? marks.list : [];
     // The marks of the box, and the words of a drag that the box does not have yet. Only the marks
-    // of the box take a tap (an id).
-    var shown = list.concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark] : []);
+    // of the box take a tap (an id). A shape that moves shows at its new place only.
+    var moving = drag && drag.kind === 'move' ? drag.id : pendingMark ? pendingMark.moves : null;
+    var shown = list.filter(function (m) { return m.id !== moving; })
+      .concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark.mark] : []);
     try {
       var p = SchoolMarks.draw(win, shown);
       painted = { doc: win.document, layer: p.layer, drawn: p.drawn.filter(function (d) { return d.id !== undefined; }) };
@@ -478,11 +480,72 @@
     drag = { kind: tool, x0: ev.clientX + win.scrollX, y0: ev.clientY + win.scrollY, x1: ev.clientX, y1: ev.clientY,
       sy: ev.clientY, el: el, from: from, mark: null, speed: 0, armed: false, looping: false };
     if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); }
+    var shape = tool === 'pen' ? null : shapeAt(ev.clientX, ev.clientY);
+    if (shape) {
+      var d = drag;
+      d.hold = setTimeout(function () { lift(d, shape); }, HOLD_MS);
+    }
     dragMoved();
+  }
+
+  // A long press on a box or a circle, or near it (MOVE_PAD), lifts it: the drag moves it and the
+  // release puts it there. A finger that moves before HOLD_MS draws a new box, also inside a box.
+  var HOLD_MS = 450;
+  var MOVE_PAD = 16;
+  var SLOP_PX = 8;
+
+  // The box or circle near a point of the page (client coordinates): { id, rect } (rect in page
+  // coordinates), or null.
+  function shapeAt(x, y) {
+    var win = view.win();
+    if (!painted.layer || painted.doc !== win.document) { return null; }
+    var o = painted.layer.getBoundingClientRect();
+    var s = SchoolMarks.shapeAt(painted.drawn, x - o.left, y - o.top, MOVE_PAD);
+    if (!s) { return null; }
+    var dx = o.left + win.scrollX;
+    var dy = o.top + win.scrollY;
+    return { id: s.id, rect: { left: s.rect.left + dx, top: s.rect.top + dy, right: s.rect.right + dx, bottom: s.rect.bottom + dy } };
+  }
+
+  function lift(d, shape) {
+    d.hold = null;
+    var stored = marks.list.filter(function (m) { return m.id === shape.id; })[0];
+    if (drag !== d || !stored || marks.url !== view.path()) { return; }
+    d.kind = 'move';
+    d.id = shape.id;
+    d.oval = stored.o === 1;
+    d.page = shape.rect;
+    // The lifted shape: its frame with a shadow under it, a little larger.
+    d.el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
+      'box-sizing: border-box; border: 4px solid rgb(255, 200, 0); transform: scale(1.04); ' +
+      'box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 10px 24px rgba(0, 0, 0, 0.5);' + (d.oval ? ' border-radius: 50%;' : ''));
+    paintMarks();
+    dragMoved();
+  }
+
+  // The client rectangle of a shape that moves: where it was plus the move of the finger, inside
+  // the width of the page.
+  function movedRect(d) {
+    var win = view.win();
+    var w = d.page.right - d.page.left;
+    var dx = d.x1 + win.scrollX - d.x0;
+    var dy = d.y1 + win.scrollY - d.y0;
+    var left = Math.max(0, Math.min(d.page.left + dx, win.document.documentElement.clientWidth - w)) - win.scrollX;
+    var top = d.page.top + dy - win.scrollY;
+    return { left: left, top: top, right: left + w, bottom: top + d.page.bottom - d.page.top };
+  }
+
+  // The finger went SLOP_PX from where it pressed: no long press.
+  function moveFar(d) {
+    var win = view.win();
+    var dx = d.x1 + win.scrollX - d.x0;
+    var dy = d.y1 + win.scrollY - d.y0;
+    return dx * dx + dy * dy > SLOP_PX * SLOP_PX;
   }
 
   // Removes the guide of the drag, if any. The words that a drag showed stay until the box answers.
   function endDrag() {
+    if (drag && drag.hold) { clearTimeout(drag.hold); }
     if (drag && drag.el.parentNode) { drag.el.parentNode.removeChild(drag.el); }
     drag = null;
   }
@@ -501,8 +564,9 @@
     var win = view.win();
     var x0 = drag.x0 - win.scrollX;
     var y0 = drag.y0 - win.scrollY;
+    if (drag.hold && moveFar(drag)) { clearTimeout(drag.hold); drag.hold = null; }
     if (drag.kind !== 'pen') {
-      var r = dragRect();
+      var r = drag.kind === 'move' ? movedRect(drag) : dragRect();
       drag.el.style.left = r.left + 'px';
       drag.el.style.top = r.top + 'px';
       drag.el.style.width = (r.right - r.left) + 'px';
@@ -572,17 +636,31 @@
   function onPointerUp(ev) {
     if (!drag || !ev.isPrimary) { return; }
     var d = drag;
-    var r = dragRect();
+    var r = d.kind === 'move' ? movedRect(d) : dragRect();
     endDrag();
+    if (d.kind === 'move') { putShape(ev, d, r); return; }
     if (ev.type === 'pointercancel' || tool !== d.kind) { paintMarks(); return; }
     var m = d.kind === 'pen' ? d.mark : SchoolMarks.boxMark(view.win(), r);
     if (!m && d.kind !== 'pen') { note(t(TOOL_HELP[d.kind])); }   // too small: a tap, not a box
     if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
-      if (d.kind === 'pen') { pendingMark = m; }
+      if (d.kind === 'pen') { pendingMark = { mark: m, moves: null }; }
       sendMark({ op: 'add', mark: m }, view.path());
     }
+    paintMarks();
+  }
+
+  // The release of a lifted shape: it goes to the box at its new place. A shape that did not move
+  // stays as it was.
+  function putShape(ev, d, r) {
+    dragSent = true;
+    if (ev.type === 'pointercancel' || !tool || tool === 'pen' || tool === 'eraser' || !moveFar(d)) { paintMarks(); return; }
+    var m = SchoolMarks.boxMark(view.win(), r);
+    if (!m) { paintMarks(); note(t('markNotSent')); return; }
+    if (d.oval) { m.o = 1; }
+    pendingMark = { mark: m, moves: d.id };
+    sendMark({ op: 'move', id: d.id, mark: m }, view.path());
     paintMarks();
   }
 

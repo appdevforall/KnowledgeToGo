@@ -68,6 +68,21 @@
     return best ? best.id : null;
   }
 
+  // The box or oval under the point or near it (pad, layer coordinates): { id, rect }, or null. The
+  // smallest one wins (a box inside a box).
+  function shapeAt(drawn, x, y, pad) {
+    var best = null;
+    drawn.forEach(function (d) {
+      if (d.k !== 'r') { return; }
+      d.rects.forEach(function (r) {
+        if (x < r.left - pad || x > r.right + pad || y < r.top - pad || y > r.bottom + pad) { return; }
+        var area = (r.right - r.left) * (r.bottom - r.top);
+        if (!best || area < best.area) { best = { id: d.id, rect: r, area: area }; }
+      });
+    });
+    return best ? { id: best.id, rect: best.rect } : null;
+  }
+
   // The index of the student block for mark block b with print t, or -1. Only the same block
   // counts: on another version of the page a mark at a near place would mark other words.
   function sameBlock(prints, b, t) {
@@ -363,6 +378,7 @@
   return {
     mergeLines: mergeLines,
     hitTest: hitTest,
+    shapeAt: shapeAt,
     boxRect: boxRect,
     blockAtY: blockAtY,
     boxMark: boxMark,

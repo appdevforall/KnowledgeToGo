@@ -61,6 +61,19 @@ test('wordAround with Intl.Segmenter: no punctuation in a word, words of a langu
     assert.ok(w && w.start === 0 && w.end < text.length, JSON.stringify(w));               // a word, not the whole text
 });
 
+test('shapeAt: a box or oval under the point or near it, the smallest one', () => {
+    const drawn = [
+        { id: 1, k: 'b', rects: [r(0, 0, 400, 100)] },
+        { id: 2, k: 'r', rects: [r(10, 10, 300, 90)] },
+        { id: 3, k: 'r', rects: [r(50, 30, 100, 60)] },
+    ];
+    assert.equal(M.shapeAt(drawn, 60, 40, 16).id, 3);       // inside both boxes: the small one
+    assert.equal(M.shapeAt(drawn, 200, 50, 16).id, 2);
+    assert.equal(M.shapeAt(drawn, 305, 50, 16).id, 2);      // near the edge, out of it
+    assert.equal(M.shapeAt(drawn, 330, 50, 16), null);      // too far; a block mark is no shape
+    assert.deepEqual(M.shapeAt(drawn, 60, 40, 16).rect, r(50, 30, 100, 60));
+});
+
 test('phraseBetween: from the first word to the last one, in any order of the drag', () => {
     const texts = ['First paragraph here.', '', 'Second one, longer.'];
     const prints = ['p0', 'p1', 'p2'];

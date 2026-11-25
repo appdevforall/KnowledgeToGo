@@ -373,6 +373,17 @@ export class ClassRoom {
         return { changed: true };
     }
 
+    // The teacher moved a mark: mark is its new place. It keeps its id. A mark that is gone (an
+    // eraser on another page of the teacher) changes nothing.
+    moveMark(url: string, id: unknown, mark: Mark): MarkResult {
+        const s = this.lessonPage(url);
+        if ('refused' in s) return s;
+        const i = s.marks.findIndex((m) => m.id === id);
+        if (i < 0 || sameMark(s.marks[i], mark)) return { changed: false };
+        s.marks = s.marks.map((m, k) => (k === i ? { ...mark, id: m.id } : m));
+        return { changed: true };
+    }
+
     removeMark(url: string, id: unknown): MarkResult {
         const s = this.lessonPage(url);
         if ('refused' in s) return s;

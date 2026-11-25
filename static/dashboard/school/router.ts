@@ -210,13 +210,13 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         const body = (req.body ?? {}) as { op?: unknown; url?: unknown; mark?: unknown; id?: unknown };
         const url = typeof body.url === 'string' ? body.url : '';
         let r;
-        if (body.op === 'add') {
+        if (body.op === 'add' || body.op === 'move') {
             const valid = validMark(body.mark);
             if ('error' in valid) {
                 res.status(400).json(valid.error === 'long' ? { error: 'long', max: MAX_MARK_BLOCKS } : { error: 'invalid mark' });
                 return;
             }
-            r = classroom.addMark(url, valid.mark);
+            r = body.op === 'add' ? classroom.addMark(url, valid.mark) : classroom.moveMark(url, body.id, valid.mark);
         } else if (body.op === 'remove') {
             r = classroom.removeMark(url, body.id);
         } else if (body.op === 'clear') {
