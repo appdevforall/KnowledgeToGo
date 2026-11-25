@@ -140,6 +140,13 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
             case STOP_SEARCH:
                 finder.stop();
                 break;
+            case CHECK:
+                final int r = round;
+                io.execute(() -> {
+                    String there = probe.codeAt(c.address);
+                    main.post(() -> { if (running && r == round) act(rule.confirmed(c, there), c); });
+                });
+                break;
             case MOVE:
                 finder.stop();
                 Log.i(TAG, "class found again at a new address");

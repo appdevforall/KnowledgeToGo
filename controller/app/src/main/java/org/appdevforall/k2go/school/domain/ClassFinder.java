@@ -12,6 +12,10 @@ package org.appdevforall.k2go.school.domain;
 public interface ClassFinder {
 
     interface Listener {
+        /**
+         * A class at one address. The same class can come at more than one address (the network
+         * can still have an old one): each comes as its own call, with the same key.
+         */
         void onFound(FoundClass found);
 
         /** The class with this {@link FoundClass#key} left the network. */

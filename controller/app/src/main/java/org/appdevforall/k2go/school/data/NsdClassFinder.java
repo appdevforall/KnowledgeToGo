@@ -25,9 +25,11 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -152,8 +154,13 @@ public final class NsdClassFinder implements ClassFinder {
                     boolean mine = free(this);
                     if (gen == generation && present.contains(name)) {
                         tries.remove(name);
-                        FoundClass c = FoundClass.of(name, code(info), ipv4(info), info.getPort(), BoxEndpoints.PORT);
-                        if (c != null) listener.onFound(c);
+                        // The network can still give an old address next to the new one: one
+                        // candidate each; the box at each address confirms or not.
+                        String code = code(info);
+                        for (String address : ipv4s(info)) {
+                            FoundClass c = FoundClass.of(name, code, address, info.getPort(), BoxEndpoints.PORT);
+                            if (c != null) listener.onFound(c);
+                        }
                     }
                     if (mine) resolveNext(generation);
                 });
@@ -200,14 +207,16 @@ public final class NsdClassFinder implements ClassFinder {
     }
 
     /** The student page needs an IPv4 address (the scanned code rules); IPv6 only is not a class. */
-    private static String ipv4(NsdServiceInfo info) {
+    private static List<String> ipv4s(NsdServiceInfo info) {
+        List<String> out = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             for (InetAddress a : info.getHostAddresses()) {
-                if (a instanceof Inet4Address) return a.getHostAddress();
+                if (a instanceof Inet4Address) out.add(a.getHostAddress());
             }
-            return null;
+            return out;
         }
         InetAddress h = info.getHost();
-        return h instanceof Inet4Address ? h.getHostAddress() : null;
+        if (h instanceof Inet4Address) out.add(h.getHostAddress());
+        return out;
     }
 }

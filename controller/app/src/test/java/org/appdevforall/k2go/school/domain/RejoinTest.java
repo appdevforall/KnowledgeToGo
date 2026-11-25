@@ -27,7 +27,12 @@ public class RejoinTest {
         assertTrue(r.searching());
         assertEquals(Action.NONE, r.found(at("9XQ2", "192.168.1.170")));    // another class
         assertEquals(Action.NONE, r.found(at("4F7K", "192.168.1.167")));    // the old address
-        assertEquals(Action.MOVE, r.found(at("4F7K", "192.168.1.170")));
+        FoundClass moved = at("4F7K", "192.168.1.170");
+        assertEquals(Action.CHECK, r.found(moved));
+        assertEquals(Action.NONE, r.confirmed(moved, null));         // an old address: no box there
+        assertEquals(Action.NONE, r.confirmed(moved, "9XQ2"));       // another class there now
+        assertTrue(r.searching());
+        assertEquals(Action.MOVE, r.confirmed(moved, "4F7K"));
         assertEquals("192.168.1.170", r.address());
         assertFalse(r.searching());
         assertEquals(Action.NONE, r.probed("4F7K"));

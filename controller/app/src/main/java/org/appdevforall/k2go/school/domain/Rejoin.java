@@ -13,8 +13,9 @@ package org.appdevforall.k2go.school.domain;
  * the Wi-Fi or the box comes back at that address. This rule covers the other case: the teacher
  * box is at a new address (a new IP after a Wi-Fi change). The app asks the box at the current
  * address for its class code; when the class is not there for {@link #MISSES_TO_SEARCH} probes in
- * a row, it searches the network for the same code, and a class with that code at another address
- * is the same class: the student moves there. Main thread only.
+ * a row, it searches the network for the same code. A class with that code at another address,
+ * when the box there confirms the code, is the same class: the student moves there. (The network
+ * can still give an old address, so a found address alone is not enough.) Main thread only.
  */
 public final class Rejoin {
 
@@ -23,6 +24,8 @@ public final class Rejoin {
         /** Start a search, or start it again: the network may still give an old address. */
         SEARCH,
         STOP_SEARCH,
+        /** Ask the box at the found address for its code, then call {@link #confirmed}. */
+        CHECK,
         /** Open the student page at {@link #address()}. */
         MOVE
     }
@@ -64,13 +67,22 @@ public final class Rejoin {
         return Action.NONE;
     }
 
-    /** The search found a class. The same code at another address: move there. */
+    /** The search found a class. The same code at another address: check that box. */
     public Action found(FoundClass c) {
-        if (!searching || c == null || !code.equals(c.code) || c.address.equals(address)) return Action.NONE;
+        return elsewhere(c) ? Action.CHECK : Action.NONE;
+    }
+
+    /** The box at the address of {@code c} answered {@code codeThere}. The same class: move there. */
+    public Action confirmed(FoundClass c, String codeThere) {
+        if (!elsewhere(c) || !code.equals(codeThere)) return Action.NONE;
         address = c.address;
         misses = 0;
         searching = false;
         return Action.MOVE;
+    }
+
+    private boolean elsewhere(FoundClass c) {
+        return searching && c != null && code.equals(c.code) && !c.address.equals(address);
     }
 
     private Action stopSearch() {
