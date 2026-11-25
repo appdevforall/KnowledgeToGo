@@ -8,7 +8,6 @@
  */
 package org.appdevforall.k2go.school.presentation;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -73,16 +72,22 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
 
     /**
      * The one call of the portal screen: when it shows a student page opened from Class > Join,
-     * the screen finds its class again after a drop. {@code web} gives the current WebView.
-     * Returns the observer (the portal asks it which hosts belong to the class), or null.
+     * the screen finds its class again after a drop. {@code web} gives the current WebView;
+     * {@code moved} gets the student URL at the new address, so a new start of the screen loads
+     * it (review N2). Returns the observer (the portal asks it which hosts belong to the class),
+     * or null.
      */
     public static ClassRejoin attachIfStudent(androidx.appcompat.app.AppCompatActivity screen,
-                                              Supplier<WebView> web) {
+                                              Supplier<WebView> web, Consumer<String> moved) {
         android.content.Intent i = screen.getIntent();
         String code = i.getStringExtra(EXTRA_CODE);
         String address = i.getStringExtra(EXTRA_ADDRESS);
         if (code == null || address == null || !ClassLinks.isClassCode(code)) return null;
-        ClassRejoin r = create(screen, code, address, moveIn(web));
+        Rejoin rule = new androidx.lifecycle.ViewModelProvider(screen).get(RejoinViewModel.class)
+                .rule(code, address);
+        Consumer<String> open = moveIn(web).andThen(moved);
+        ClassRejoin r = new ClassRejoin(rule, new HttpClassProbe(), new NsdClassFinder(screen),
+                AppExecutors.get().io(), open);
         screen.getLifecycle().addObserver(r);
         return r;
     }
@@ -120,16 +125,6 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
 
     /** True for an address where the box confirmed the class of this screen (see {@link Rejoin}). */
     public boolean isClassHost(String host) { return rule.isClassHost(host); }
-
-    /**
-     * @param code    the class code that the student joined
-     * @param address the IPv4 address of the teacher box
-     * @param open    opens a student page URL in the screen (main thread)
-     */
-    public static ClassRejoin create(Context ctx, String code, String address, Consumer<String> open) {
-        return new ClassRejoin(new Rejoin(code, address), new HttpClassProbe(),
-                new NsdClassFinder(ctx), AppExecutors.get().io(), open);
-    }
 
     ClassRejoin(Rejoin rule, ClassProbe probe, ClassFinder finder, Executor io, Consumer<String> open) {
         this.rule = rule;

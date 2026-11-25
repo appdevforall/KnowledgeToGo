@@ -197,7 +197,7 @@ public class PortalActivity extends AppCompatActivity {
             getLifecycle().addObserver(org.appdevforall.k2go.school.presentation.ClassAnnouncement.create(this));
         }
         // K2Go School: a student page finds its class again after a drop (new teacher address).
-        classRejoin = org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView);
+        classRejoin = org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView, vm::moveTarget);
 
         // ADFA-4887: there is no in-WebView home page anymore, so Home is a Fullscreen toggle.
         // Enters full immersive (system bars hidden) and hides our bar too — but the bar stays

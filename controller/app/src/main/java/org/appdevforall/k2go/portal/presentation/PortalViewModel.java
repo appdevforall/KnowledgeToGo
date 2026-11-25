@@ -48,6 +48,12 @@ public class PortalViewModel extends ViewModel {
     }
 
     /**
+     * The page moved to another address for good (K2Go School: the class is at a new teacher
+     * address). A new start of the screen loads this URL, not the first one.
+     */
+    public void moveTarget(String url) { targetUrl = url; }
+
+    /**
      * K2GO-419: true when the portal may auto-recover (rebuild + reload) after a renderer death.
      * False when a second death lands within {@link ResilientWebViewClient#RECOVERY_WINDOW_MS}, so the caller
      * breaks the loop (inform the user and leave) instead of reloading a page that keeps killing the
