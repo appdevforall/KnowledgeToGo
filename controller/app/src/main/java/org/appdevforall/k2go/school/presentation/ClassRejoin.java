@@ -91,16 +91,30 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     /**
      * Opens the student page at the new address with the class token of the old page, so the box
      * keeps one entry for this student (the new address is a new origin, with no stored token).
+     * The new page replaces the old one in the history: Back must not open the old address. When
+     * the old page cannot run the replace (an error page), the screen loads the URL.
      */
     private static Consumer<String> moveIn(Supplier<WebView> web) {
         return url -> {
             WebView w = web.get();
             if (w == null) return;
             w.evaluateJavascript(READ_TOKEN, js -> {
+                String target = ClassLinks.withToken(url, ClassLinks.tokenFromJs(js));
                 WebView now = web.get();
-                if (now != null) now.loadUrl(ClassLinks.withToken(url, ClassLinks.tokenFromJs(js)));
+                if (now == null) return;
+                now.evaluateJavascript(replaceWith(target), done -> {
+                    WebView last = web.get();
+                    if (!"true".equals(done) && last != null) last.loadUrl(target);
+                });
             });
         };
+    }
+
+    /** JS that replaces the page with {@code url}. The URL is a checked box address, a percent-
+     *  encoded query and a hex token; the quote escape is a second guard. */
+    private static String replaceWith(String url) {
+        String q = "'" + url.replace("\\", "\\\\").replace("'", "\\'") + "'";
+        return "(function(){try{location.replace(" + q + ");return true;}catch(e){return false;}})()";
     }
 
     /**
