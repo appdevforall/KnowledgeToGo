@@ -6,7 +6,7 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import express from 'express';
 import { ClassRoom, JOIN_LIMIT } from './class';
-import { createSchoolRouter, cookieToken, TOKEN_COOKIE } from './router';
+import { createSchoolRouter, cookieToken, schoolErrors, TOKEN_COOKIE } from './router';
 
 interface Box { port: number; close: () => Promise<void> }
 
@@ -14,6 +14,7 @@ async function startBox(room = new ClassRoom()): Promise<Box> {
     const app = express();
     app.use(express.json({ limit: '4kb' }));
     app.use('/school', createSchoolRouter(room));
+    app.use('/school', schoolErrors);
     const server = http.createServer(app);
     await new Promise<void>((ok) => server.listen(0, '127.0.0.1', ok));
     return {
@@ -236,5 +237,24 @@ test('class language: the join answer and "self" carry the language of the teach
         const self = await firstEvent(box, '/school/live', 'self', { cookie: cookieOf(j.token) });
         assert.equal((self.data as { lang: string }).lang, 'es');
         page.destroy();
+    } finally { await box.close(); }
+});
+
+test('a malformed JSON body gets 400 with a short answer, no stack trace (review L1)', async () => {
+    const box = await startBox();
+    try {
+        const r = await new Promise<Answer>((ok, fail) => {
+            const req = http.request({ host: '127.0.0.1', port: box.port, method: 'POST', path: '/school/join',
+                headers: { 'Content-Type': 'application/json', 'X-Real-IP': '192.168.1.90' } }, (res) => {
+                let body = '';
+                res.setEncoding('utf8');
+                res.on('data', (c: string) => { body += c; });
+                res.on('end', () => ok({ status: res.statusCode ?? 0, body }));
+            });
+            req.on('error', fail);
+            req.end('{bad');
+        });
+        assert.equal(r.status, 400);
+        assert.equal(r.body, '{"error":"bad request"}');
     } finally { await box.close(); }
 });

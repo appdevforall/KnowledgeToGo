@@ -227,4 +227,14 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
     return router;
 }
 
+// An error under /school/ (for example a malformed JSON body from express.json) gets a short
+// answer: the default handler of Express sends the stack and the file paths of the box, and
+// /school/ is open to the class network (review L1). Mount it after the router, on /school.
+export function schoolErrors(err: unknown, _req: Request, res: Response, next: NextFunction): void {
+    if (res.headersSent) { next(err); return; }
+    const status = (err as { status?: unknown })?.status;
+    const client = typeof status === 'number' && status >= 400 && status < 500;
+    res.status(client ? status : 500).json({ error: client ? 'bad request' : 'server error' });
+}
+
 export const schoolRouter = createSchoolRouter(new ClassRoom());
