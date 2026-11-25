@@ -22,6 +22,7 @@ public class FoundClassTest {
         assertNull(FoundClass.of("K2Go class", "4F7K", "192.168.1.167", 80, PORT));
         assertNull(FoundClass.of("K2Go class", "4F7K", "192.168.1.300", 8085, PORT));
         assertNull(FoundClass.of("K2Go class", "4F7K", "evil.example/x?", 8085, PORT));
+        assertNull(FoundClass.of("K2Go class", "4F7K", "203.0.113.9", 8085, PORT));     // not on the LAN
         assertNull(FoundClass.of("K2Go class", "4F7K", null, 8085, PORT));
         assertNull(FoundClass.of(null, "4F7K", "192.168.1.167", 8085, PORT));
         assertNull(FoundClass.of("K2Go class", null, "192.168.1.167", 8085, PORT));     // no code

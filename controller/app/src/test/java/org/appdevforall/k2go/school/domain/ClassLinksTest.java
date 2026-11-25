@@ -21,8 +21,21 @@ public class ClassLinksTest {
                 ClassLinks.studentUrlFromCode("http://192.168.1.167:8085", PORT));
         assertEquals("http://192.168.49.1:8085/school/student.html",
                 ClassLinks.studentUrlFromCode("  http://192.168.49.1:8085/home  ", PORT));
-        assertEquals("http://box.lan:8085/school/student.html",
-                ClassLinks.studentUrlFromCode("http://box.lan:8085/", PORT));
+        assertEquals("http://10.0.0.5:8085/school/student.html",
+                ClassLinks.studentUrlFromCode("http://10.0.0.5:8085", PORT));
+        assertEquals("http://172.31.255.1:8085/school/student.html",
+                ClassLinks.studentUrlFromCode("http://172.31.255.1:8085", PORT));
+    }
+
+    @Test public void onlyAPrivateIpv4AddressIsAccepted() {
+        assertNull(ClassLinks.studentUrlFromCode("http://box.lan:8085/", PORT));              // a name
+        assertNull(ClassLinks.studentUrlFromCode("http://any-site.example:8085", PORT));
+        assertNull(ClassLinks.studentUrlFromCode("http://8.8.8.8:8085", PORT));               // public
+        assertNull(ClassLinks.studentUrlFromCode("http://172.32.0.1:8085", PORT));            // past 172.16/12
+        assertNull(ClassLinks.studentUrlFromCode("http://172.15.0.1:8085", PORT));
+        assertNull(ClassLinks.studentUrlFromCode("http://192.169.1.1:8085", PORT));
+        assertNull(ClassLinks.studentUrlFromCode("http://127.0.0.1:8085", PORT));             // this phone
+        assertNull(ClassLinks.studentUrlFromCode("http://010.0.0.1:8085", PORT));             // octal: 8.0.0.1
     }
 
     @Test public void teachIsAvailableOnlyWhenTheTeacherPageAnswers200() {

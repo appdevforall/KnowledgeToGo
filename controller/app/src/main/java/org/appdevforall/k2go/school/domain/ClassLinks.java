@@ -129,8 +129,10 @@ public final class ClassLinks {
 
     /**
      * The student page for a scanned code, or null when the code is not a box address on
-     * {@code port}. Only plain http to the box port is accepted, so a code cannot send the
-     * student WebView to another site.
+     * {@code port}. Only plain http to the box port of a private IPv4 address (10/8, 172.16/12,
+     * 192.168/16) is accepted: a teacher box is on the local network, and Connect and the class
+     * announcement give its IPv4 address. So a code cannot send the student WebView to another
+     * site (review S7).
      */
     public static String studentUrlFromCode(String code, int port) {
         if (code == null) return null;
@@ -138,17 +140,24 @@ public final class ClassLinks {
         if (!m.matches()) return null;
         String host = m.group(1);
         if (m.group(2) == null || Integer.parseInt(m.group(2)) != port) return null;
-        if (IPV4_LIKE.matcher(host).matches() && !isIpv4(host)) return null;
+        if (!isPrivateIpv4(host)) return null;
         return "http://" + host + ":" + port + STUDENT_PATH;
     }
 
-    private static boolean isIpv4(String host) {
+    private static boolean isPrivateIpv4(String host) {
+        if (!IPV4_LIKE.matcher(host).matches()) return false;
         String[] parts = host.split("\\.", -1);
         if (parts.length != 4) return false;
-        for (String p : parts) {
-            if (p.isEmpty() || p.length() > 3) return false;
-            if (Integer.parseInt(p) > 255) return false;
+        int[] b = new int[4];
+        for (int i = 0; i < 4; i++) {
+            // A leading zero is octal for a browser ("010" is 8): refuse it.
+            if (parts[i].isEmpty() || parts[i].length() > 3
+                    || (parts[i].length() > 1 && parts[i].charAt(0) == '0')) return false;
+            b[i] = Integer.parseInt(parts[i]);
+            if (b[i] > 255) return false;
         }
-        return true;
+        return b[0] == 10
+                || (b[0] == 172 && b[1] >= 16 && b[1] <= 31)
+                || (b[0] == 192 && b[1] == 168);
     }
 }
