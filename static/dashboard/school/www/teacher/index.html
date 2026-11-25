@@ -898,6 +898,7 @@
   // box forgets the lesson. So: reopen the channel when it closes or goes quiet, and send the
   // lesson again on each open. role=page: this channel keeps the class open (router.ts).
   var live = null;
+  var shownCode = null;     // the class code that this page showed last (the box owns the code)
   function connect() {
     if (live) { live.close(); }
     alive.seen();
@@ -920,8 +921,15 @@
     if (m.type === 'lesson') { start(m.lesson); return; }
     if (m.type === 'ended') { showEnded(); return; }   // another teacher page ended the class
     if (m.type === 'marks') { marks = { url: m.url, list: m.list }; pendingMark = null; paintMarks(); return; }
-    // The students choose the class by this code in Class > Join.
-    if (m.type === 'class') { codeEl.textContent = m.code ? t('classCode', m.code) : ''; return; }
+    // The students choose the class by this code in Class > Join. Another code on a reconnect: the
+    // box forgot the class (a dash-node restart) and opened a new one, so the students must join
+    // again (review M2). The box keeps no class over a restart.
+    if (m.type === 'class') {
+      if (m.code && shownCode && m.code !== shownCode) { note(t('classAgain'), true); }
+      if (m.code) { shownCode = m.code; }
+      codeEl.textContent = m.code ? t('classCode', m.code) : '';
+      return;
+    }
     if (m.type === 'roster') {
       roster = m.students;
       var inClass = {};
