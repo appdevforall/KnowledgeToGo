@@ -23,6 +23,15 @@ public class ClassLinksTest {
                 ClassLinks.studentUrlFromCode("http://box.lan:8085/", PORT));
     }
 
+    @Test public void teachIsAvailableOnlyWhenTheTeacherPageAnswers200() {
+        assertEquals(ClassLinks.Teach.AVAILABLE, ClassLinks.teachFromStatus(200));
+        assertEquals(ClassLinks.Teach.NO_MODULE, ClassLinks.teachFromStatus(404));   // no /school/ route
+        assertEquals(ClassLinks.Teach.NO_MODULE, ClassLinks.teachFromStatus(302));   // redirect: not the page
+        assertEquals(ClassLinks.Teach.NO_MODULE, ClassLinks.teachFromStatus(204));
+        assertEquals(ClassLinks.Teach.NO_BOX, ClassLinks.teachFromStatus(502));      // route, dash-node down
+        assertEquals(ClassLinks.Teach.NO_BOX, ClassLinks.teachFromStatus(ClassLinks.NO_ANSWER));
+    }
+
     @Test public void otherCodesAreRefused() {
         assertNull(ClassLinks.studentUrlFromCode(null, PORT));
         assertNull(ClassLinks.studentUrlFromCode("", PORT));

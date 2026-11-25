@@ -26,7 +26,30 @@ public final class ClassLinks {
             "^http://([A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?)(?::(\\d{1,5}))?(?:/.*)?$");
     private static final Pattern IPV4_LIKE = Pattern.compile("^[0-9.]+$");
 
+    /** HTTP status value for "the box did not answer" (no connection, time-out). */
+    public static final int NO_ANSWER = -1;
+
+    /** What this phone's box can do for the teacher, from one GET of the teacher page. */
+    public enum Teach {
+        /** The box serves the teacher page. */
+        AVAILABLE,
+        /** The box answers, but it has no class module. */
+        NO_MODULE,
+        /** The box does not answer, or it answers with a server error. */
+        NO_BOX
+    }
+
     private ClassLinks() {}
+
+    /**
+     * The teacher state for the HTTP status of a GET of the teacher page, without redirects.
+     * Only 200 is the page. A 5xx is a box that has the route but cannot serve it now.
+     */
+    public static Teach teachFromStatus(int status) {
+        if (status == 200) return Teach.AVAILABLE;
+        if (status == NO_ANSWER || status >= 500) return Teach.NO_BOX;
+        return Teach.NO_MODULE;
+    }
 
     /** The teacher page on this phone's box. {@code boxBase} is scheme + host + port, no slash. */
     public static String teacherUrl(String boxBase) {
