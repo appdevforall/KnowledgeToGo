@@ -207,18 +207,25 @@
     eraser: document.getElementById('markEraser')
   };
   // The teacher ended the class. The mark outlives the page: the app loads the teacher page again
-  // after a theme change (seconds), and that must not open a new class. The mark holds the time of
-  // the end and counts for ENDED_MS only: the next "Teach a class" opens a class (review I1).
-  // Exit and "Start a new class" remove it; the X of the app runs no page code, so the time ends it.
+  // after a theme change (seconds), and that must not open a new class. The mark holds the last time
+  // that an end screen was alive (written each ENDED_BEAT_MS while it shows) and counts for ENDED_MS
+  // only: the next "Teach a class" opens a class (review I1). Exit and "Start a new class" remove it;
+  // the X of the app runs no page code, so the time ends it.
   var ENDED_KEY = 'k2go-school-ended';
   var ENDED_MS = 5 * 60 * 1000;
+  var ENDED_BEAT_MS = 60 * 1000;
+  var endedBeat = null;
   var ended = false;
   try {
     var endedAt = Number(localStorage.getItem(ENDED_KEY));
     ended = Date.now() - endedAt >= 0 && Date.now() - endedAt < ENDED_MS;
     if (!ended) { localStorage.removeItem(ENDED_KEY); }
   } catch (e) { ended = false; }
+  function markEnded() {
+    try { localStorage.setItem(ENDED_KEY, String(Date.now())); } catch (e) { /* no storage: a reload opens a class */ }
+  }
   function forgetEnded() {
+    clearInterval(endedBeat);   // a beat after Exit must not write the mark again
     try { localStorage.removeItem(ENDED_KEY); } catch (e) { /* no storage */ }
   }
 
@@ -289,7 +296,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(msg)
-    }).catch(function () { setConn(t('boxNotReachable')); });
+    }).catch(function () { note(t('boxNotReachable')); });   // the channel owns connText
   }
 
   // Send at most HZ messages a second, and always the last position.
@@ -772,10 +779,9 @@
   document.getElementById('exit').addEventListener('click', forgetEnded);
 
   function showEnded() {
-    // A page that loads with the mark keeps its time: a reload does not make the mark live longer.
-    if (!ended) {
-      try { localStorage.setItem(ENDED_KEY, String(Date.now())); } catch (e) { /* no storage: a reload opens a class */ }
-    }
+    markEnded();
+    clearInterval(endedBeat);
+    endedBeat = setInterval(markEnded, ENDED_BEAT_MS);
     ended = true;
     if (live) { live.close(); live = null; }
     document.querySelector('header').hidden = true;
