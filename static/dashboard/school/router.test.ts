@@ -155,3 +155,74 @@ test('live: the token comes from the cookie, the seat stays the same over a reco
         page.destroy();
     } finally { await box.close(); }
 });
+
+// An SSE channel that stays open; seen() resolves when an event of that name came.
+function listen(box: Box, path: string, cookie: string): { seen: (name: string) => Promise<void>; close: () => void } {
+    const names: string[] = [];
+    const waiters: { name: string; ok: () => void }[] = [];
+    const req = http.request({ host: '127.0.0.1', port: box.port, path, headers: { 'X-Real-IP': '192.168.1.40', Cookie: cookie } }, (res) => {
+        let buf = '';
+        res.setEncoding('utf8');
+        res.on('data', (c: string) => {
+            buf += c;
+            const blocks = buf.split('\n\n');
+            buf = blocks.pop() ?? '';
+            for (const b of blocks) {
+                const name = /^event: (.*)$/m.exec(b)?.[1] ?? 'message';
+                names.push(name);
+                waiters.filter((w) => w.name === name).forEach((w) => w.ok());
+            }
+        });
+        res.on('error', () => { /* closed */ });
+    });
+    req.on('error', () => { /* closed by the test or the box */ });
+    req.end();
+    return {
+        seen: (name) => (names.includes(name) ? Promise.resolve() : new Promise((ok) => { waiters.push({ name, ok }); })),
+        close: () => { req.destroy(); },
+    };
+}
+
+test('live: an unknown token gets 401 on the channel and on an ack', async () => {
+    const box = await startBox();
+    try {
+        const page = await teacherPage(box);
+        assert.equal((await firstEvent(box, '/school/live', 'self', { cookie: cookieOf('0'.repeat(32)) })).status, 401);
+        assert.equal((await firstEvent(box, '/school/live', 'self')).status, 401);   // no cookie
+        assert.equal((await request(box, 'POST', '/school/ack', { json: { token: '0'.repeat(32) } })).status, 401);
+        page.destroy();
+    } finally { await box.close(); }
+});
+
+test('live: a second channel with the same token tells the first one "replaced"', async () => {
+    const box = await startBox();
+    try {
+        const page = await teacherPage(box);
+        const s = JSON.parse((await request(box, 'POST', '/school/join', { json: {} })).body) as { token: string };
+        const first = listen(box, '/school/live', cookieOf(s.token));
+        await first.seen('self');
+        const second = listen(box, '/school/live', cookieOf(s.token));
+        await second.seen('self');
+        await first.seen('replaced');
+        first.close();
+        second.close();
+        page.destroy();
+    } finally { await box.close(); }
+});
+
+test('ack: Done goes to the roster of the teacher; the ack names the seat, not the token', async () => {
+    const box = await startBox();
+    try {
+        const page = await teacherPage(box);
+        const s = JSON.parse((await request(box, 'POST', '/school/join', { json: {} })).body) as { token: string; seat: number };
+        const ack = firstEvent(box, '/school/teacher/live', 'message',
+            { ip: '127.0.0.1', want: (d) => (d as { type?: string }).type === 'ack' });
+        await new Promise((ok) => setTimeout(ok, 50));   // the teacher channel is open
+        assert.equal((await request(box, 'POST', '/school/ack', { json: { token: s.token, seq: 7, done: true } })).status, 204);
+        assert.deepEqual((await ack).data, { type: 'ack', seat: s.seat, seq: 7, match: true });
+        const roster = await firstEvent(box, '/school/teacher/live', 'message',
+            { ip: '127.0.0.1', want: (d) => (d as { type?: string }).type === 'roster' });
+        assert.deepEqual((roster.data as { students: unknown[] }).students, [{ seat: s.seat, online: false, done: true, quiet: false }]);
+        page.destroy();
+    } finally { await box.close(); }
+});
