@@ -137,6 +137,13 @@ schoolRouter.post('/teacher/publish', (req: Request, res: Response): void => {
     res.status(204).end();
 });
 
+// The class is open while a teacher page is connected to its channel. The app on this phone reads
+// it to announce the class on the Wi-Fi (mDNS); the box is the one owner of the fact.
+schoolRouter.get('/teacher/state', (_req: Request, res: Response): void => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ open: teacherStreams.size > 0 });
+});
+
 schoolRouter.get('/teacher/live', (req: Request, res: Response): void => {
     openStream(res);
     // A teacher page that loads again (a reload, a new app screen, a theme change) goes back to
