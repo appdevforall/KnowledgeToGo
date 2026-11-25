@@ -92,10 +92,12 @@
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
+        <!-- PortalActivity keeps its WebView over these changes: a reload would take a student out
+             of the class page. The nav chrome has icons only, so fontScale needs no relayout. -->
         <activity
             android:name=".PortalActivity"
             android:exported="false"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|fontScale"
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.K2Go"/> <!-- ADFA-4886: Material 3 DayNight + app typography for the WebView chrome -->
 

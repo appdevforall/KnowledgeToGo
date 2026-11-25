@@ -613,7 +613,19 @@ public class PortalActivity extends AppCompatActivity {
         if (kolibriGuard != null) kolibriGuard.detach();   // K2GO-395
         if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
         hideVideoFullscreen();   // K2GO-473: if destroyed mid-fullscreen, notify the player callback + detach the view
+        destroyWebView();
         super.onDestroy();
+    }
+
+    /** A WebView that is not destroyed keeps its page running after the screen closes (a class
+     *  page then stays in the class as a ghost student). destroy() ends the page and its channels. */
+    private void destroyWebView() {
+        if (webView == null) return;   // onRendererGone: the base already destroyed it
+        webView.stopLoading();
+        android.view.ViewParent parent = webView.getParent();
+        if (parent instanceof android.view.ViewGroup) ((android.view.ViewGroup) parent).removeView(webView);
+        webView.destroy();
+        webView = null;
     }
 
     @Override
