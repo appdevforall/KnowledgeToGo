@@ -99,9 +99,15 @@ export function validLesson(raw: unknown): Lesson | null {
 // the old class (lesson, seats, Done marks) goes into the next one.
 interface Session {
     code: string;
+    lang: string | null;    // the language of the teacher page: the student pages use it too
     lesson: Lesson | null;
     lessonId: number;
     byToken: Map<string, Student>;
+}
+
+// A language key as the class pages use it (www/text.js): 2 or 3 lower-case letters.
+export function cleanLang(raw: unknown): string | null {
+    return typeof raw === 'string' && /^[a-z]{2,3}$/.test(raw) ? raw : null;
 }
 
 export type JoinResult =
@@ -124,11 +130,13 @@ export class ClassRoom {
         private readonly newCode: () => string = newClassCode,
     ) {}
 
-    teacherOpen(): void {
+    // lang: the language of the teacher page. The last teacher page that opens sets it.
+    teacherOpen(lang: unknown = null): void {
         if (this.lapsed()) this.session = null;
         if (!this.session) {
-            this.session = { code: this.newCode(), lesson: null, lessonId: 0, byToken: new Map() };
+            this.session = { code: this.newCode(), lang: null, lesson: null, lessonId: 0, byToken: new Map() };
         }
+        this.session.lang = cleanLang(lang) ?? this.session.lang;
         this.teachers += 1;
         this.closedAt = null;
     }
@@ -150,6 +158,9 @@ export class ClassRoom {
     state(): ClassState {
         return { open: this.session !== null, code: this.session ? this.session.code : null };
     }
+
+    // The language of the class (of its teacher page), or null.
+    lang(): string | null { return this.session ? this.session.lang : null; }
 
     // The class ends: the students, their tokens and the lesson go. The next teacher page that
     // opens starts a new class with a new code.

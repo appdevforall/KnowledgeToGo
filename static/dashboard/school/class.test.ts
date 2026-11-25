@@ -264,3 +264,19 @@ test('end: the class closes at once, the students and the lesson go, the next cl
 test('newClassCode: 4 characters from the easy-to-read set', () => {
     for (let i = 0; i < 200; i += 1) assert.match(newClassCode(), /^[2-9A-HJ-NP-Z]{4}$/);
 });
+
+test('class language: the teacher page sets it; a bad value is ignored; a new class starts with none', () => {
+    let t = 0;
+    const room = new ClassRoom(10, counter(), () => t, () => 'C1');
+    assert.equal(room.lang(), null);
+    room.teacherOpen('es');
+    assert.equal(room.lang(), 'es');
+    room.teacherOpen('<b>');                 // not a language key: the class keeps its language
+    assert.equal(room.lang(), 'es');
+    room.teacherOpen('fr');                  // the teacher page loads again in another language
+    assert.equal(room.lang(), 'fr');
+    room.end();
+    assert.equal(room.lang(), null);
+    room.teacherOpen();
+    assert.equal(room.lang(), null);
+});

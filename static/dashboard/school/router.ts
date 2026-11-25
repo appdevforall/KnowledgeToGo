@@ -121,7 +121,7 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
             return;
         }
         const code = classroom.state().code;
-        res.status(201).json({ token: r.student.token, seat: r.student.seat, code });
+        res.status(201).json({ token: r.student.token, seat: r.student.seat, code, lang: classroom.lang() });
         rosterToTeachers();
     });
 
@@ -133,7 +133,7 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         if (now) send(res, now.lesson, undefined, now.id);   // a late student gets the page at once
         // After the lesson: a page that comes back with its token gets its seat, its class and its
         // Done mark of this page (the box owns them; the page keeps the token and the class code).
-        send(res, { done: student.done, seat: student.seat, code: classroom.state().code }, 'self');
+        send(res, { done: student.done, seat: student.seat, code: classroom.state().code, lang: classroom.lang() }, 'self');
         // One channel per student: a new one (reload, reconnect) replaces the old one, which can
         // be dead with no error (the heartbeat of the new one would keep it open). A live old one
         // is another tab of the same phone with the same token: tell it, so it does not open again.
@@ -197,11 +197,12 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
     });
 
     // Only the teacher page (?role=page) opens the class. Other channels, for example a recorder of
-    // a test, get the same events and do not keep a class open.
+    // a test, get the same events and do not keep a class open. ?lang=: the language of the teacher
+    // page; the student pages of the class use it (join answer and "self").
     router.get('/teacher/live', (req: Request, res: Response): void => {
         const page = req.query.role === 'page';
         openStream(res);
-        if (page) classroom.teacherOpen();
+        if (page) classroom.teacherOpen(req.query.lang);
         // A teacher page that loads again (a reload, a new app screen, a theme change) goes back
         // to the lesson of the class, not to its start page.
         const now = classroom.current();

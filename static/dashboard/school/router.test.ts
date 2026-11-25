@@ -69,9 +69,9 @@ function firstEvent(box: Box, path: string, event: string, opts: { ip?: string; 
 }
 
 // A teacher page channel that stays open (the class is open while it lives).
-function teacherPage(box: Box): Promise<http.ClientRequest> {
+function teacherPage(box: Box, lang = ''): Promise<http.ClientRequest> {
     return new Promise((ok) => {
-        const req = http.request({ host: '127.0.0.1', port: box.port, path: '/school/teacher/live?role=page', headers: { 'X-Real-IP': '127.0.0.1' } },
+        const req = http.request({ host: '127.0.0.1', port: box.port, path: `/school/teacher/live?role=page${lang ? `&lang=${lang}` : ''}`, headers: { 'X-Real-IP': '127.0.0.1' } },
             (res) => { res.once('data', () => ok(req)); });
         req.on('error', () => { /* closed by the test */ });
         req.end();
@@ -223,6 +223,18 @@ test('ack: Done goes to the roster of the teacher; the ack names the seat, not t
         const roster = await firstEvent(box, '/school/teacher/live', 'message',
             { ip: '127.0.0.1', want: (d) => (d as { type?: string }).type === 'roster' });
         assert.deepEqual((roster.data as { students: unknown[] }).students, [{ seat: s.seat, online: false, done: true, quiet: false }]);
+        page.destroy();
+    } finally { await box.close(); }
+});
+
+test('class language: the join answer and "self" carry the language of the teacher page', async () => {
+    const box = await startBox();
+    try {
+        const page = await teacherPage(box, 'es');
+        const j = JSON.parse((await request(box, 'POST', '/school/join', { json: {} })).body) as { token: string; lang: string };
+        assert.equal(j.lang, 'es');
+        const self = await firstEvent(box, '/school/live', 'self', { cookie: cookieOf(j.token) });
+        assert.equal((self.data as { lang: string }).lang, 'es');
         page.destroy();
     } finally { await box.close(); }
 });
