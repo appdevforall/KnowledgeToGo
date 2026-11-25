@@ -373,14 +373,19 @@ export class ClassRoom {
         return { changed: true };
     }
 
-    // The teacher moved a mark: mark is its new place. It keeps its id. A mark that is gone (an
-    // eraser on another page of the teacher) changes nothing.
+    // The teacher moved a box or an oval: mark is its new place. It keeps its id. A mark that is
+    // gone (an eraser on another page of the teacher) or is no box changes nothing. A box moved onto
+    // the same place as another box stays one mark.
     moveMark(url: string, id: unknown, mark: Mark): MarkResult {
         const s = this.lessonPage(url);
         if ('refused' in s) return s;
         const i = s.marks.findIndex((m) => m.id === id);
-        if (i < 0 || sameMark(s.marks[i], mark)) return { changed: false };
-        s.marks = s.marks.map((m, k) => (k === i ? { ...mark, id: m.id } : m));
+        if (i < 0 || s.marks[i].k !== 'r' || mark.k !== 'r' || sameMark(s.marks[i], mark)) return { changed: false };
+        if (s.marks.some((m) => sameMark(m, mark))) {
+            s.marks = s.marks.filter((_m, k) => k !== i);
+        } else {
+            s.marks = s.marks.map((m, k) => (k === i ? { ...mark, id: m.id } : m));
+        }
         return { changed: true };
     }
 

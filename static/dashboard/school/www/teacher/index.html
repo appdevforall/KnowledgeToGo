@@ -354,8 +354,9 @@
     var list = marks.url === path ? marks.list : [];
     // The marks of the box, and the words of a drag that the box does not have yet. Only the marks
     // of the box take a tap (an id). A shape that moves shows at its new place only.
-    var moving = drag && drag.kind === 'move' ? drag.id : pendingMark ? pendingMark.moves : null;
-    var shown = list.filter(function (m) { return m.id !== moving; })
+    var lifted = drag && drag.kind === 'move' ? drag.id : null;
+    var moved = pendingMark ? pendingMark.moves : null;
+    var shown = list.filter(function (m) { return m.id === undefined || (m.id !== lifted && m.id !== moved); })
       .concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark.mark] : []);
     try {
       var p = SchoolMarks.draw(win, shown);
@@ -481,7 +482,7 @@
       sy: ev.clientY, el: el, from: from, mark: null, speed: 0, armed: false, looping: false };
     if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); }
     var shape = tool === 'pen' ? null : shapeAt(ev.clientX, ev.clientY);
-    if (shape) {
+    if (shape !== null) {
       var d = drag;
       d.hold = setTimeout(function () { lift(d, shape); }, HOLD_MS);
     }
@@ -494,27 +495,37 @@
   var MOVE_PAD = 16;
   var SLOP_PX = 8;
 
-  // The box or circle near a point of the page (client coordinates): { id, rect } (rect in page
-  // coordinates), or null.
+  // The id of the box or circle near a point of the page (client coordinates), or null.
   function shapeAt(x, y) {
     var win = view.win();
     if (!painted.layer || painted.doc !== win.document) { return null; }
     var o = painted.layer.getBoundingClientRect();
     var s = SchoolMarks.shapeAt(painted.drawn, x - o.left, y - o.top, MOVE_PAD);
-    if (!s) { return null; }
-    var dx = o.left + win.scrollX;
-    var dy = o.top + win.scrollY;
-    return { id: s.id, rect: { left: s.rect.left + dx, top: s.rect.top + dy, right: s.rect.right + dx, bottom: s.rect.bottom + dy } };
+    return s ? s.id : null;
   }
 
-  function lift(d, shape) {
+  // The place of a drawn shape in page coordinates now, or null. Across, it is the place of the box
+  // (x, w), not the drawn rect: a drawn rect is cut to the width of this page.
+  function shapeRect(id, stored) {
+    var win = view.win();
+    if (!painted.layer || painted.doc !== win.document) { return null; }
+    var d = painted.drawn.filter(function (x) { return x.id === id; })[0];
+    if (!d) { return null; }
+    var o = painted.layer.getBoundingClientRect();
+    var dy = o.top + win.scrollY;
+    return { left: stored.x, top: d.rects[0].top + dy, right: stored.x + stored.w, bottom: d.rects[0].bottom + dy };
+  }
+
+  function lift(d, id) {
     d.hold = null;
-    var stored = marks.list.filter(function (m) { return m.id === shape.id; })[0];
-    if (drag !== d || !stored || marks.url !== view.path()) { return; }
+    var stored = marks.list.filter(function (m) { return m.id === id; })[0];
+    if (drag !== d || !stored || stored.k !== 'r' || marks.url !== view.path()) { return; }
+    var rect = shapeRect(id, stored);   // after any change of the layout in the hold time
+    if (!rect) { return; }
     d.kind = 'move';
-    d.id = shape.id;
+    d.id = id;
     d.oval = stored.o === 1;
-    d.page = shape.rect;
+    d.page = rect;
     // The lifted shape: its frame with a shadow under it, a little larger.
     d.el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
       'box-sizing: border-box; border: 4px solid rgb(255, 200, 0); transform: scale(1.04); ' +
@@ -645,7 +656,7 @@
     if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
-      if (d.kind === 'pen') { pendingMark = { mark: m, moves: null }; }
+      if (d.kind === 'pen') { pendingMark = { mark: m, moves: null }; }   // a waiting move shows at its old place until the box answers
       sendMark({ op: 'add', mark: m }, view.path());
     }
     paintMarks();
