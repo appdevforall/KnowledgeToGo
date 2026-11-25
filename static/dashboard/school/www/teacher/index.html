@@ -400,7 +400,6 @@
         if (onMark === null) { note(t('markOutside')); }
         return;
       }
-      note(t('markPenHelp'));
     }
     // A mouse or a pen that leaves the frame still ends the drag here (a touch does so by itself).
     try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* an old WebView */ }
@@ -467,6 +466,9 @@
     var d = drag;
     var r = dragRect();
     endDrag();
+    // The help of the tool comes back after the drag: a note that changes its height during a drag
+    // moves the page under the finger.
+    note(t(TOOL_HELP[d.kind]));
     if (ev.type === 'pointercancel' || !marking || tool !== d.kind) { paintMarks(); return; }
     if (d.kind === 'pen' && !d.moved && d.onMark !== null) {
       dragSent = true;
