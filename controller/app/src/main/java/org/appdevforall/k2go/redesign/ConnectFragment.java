@@ -62,13 +62,10 @@ public class ConnectFragment extends Fragment {
     private com.google.android.material.button.MaterialButton advance;
     private LinearLayout steps, two, single, hint;
     private QrSection secJoin, secOpen, secSingle;
-    // K2Go School (feature/k2go-school): Teach a class / Join a class.
-    private org.appdevforall.k2go.school.presentation.ClassEntry classEntry;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
-        classEntry = new org.appdevforall.k2go.school.presentation.ClassEntry(this);
         hsMode = HotspotMode.of(requireContext(), HotspotHolders.Holder.CONNECT, Mode.HOTSPOT);
         hotspotPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
@@ -102,7 +99,6 @@ public class ConnectFragment extends Fragment {
         advance = v.findViewById(R.id.k2go_conn_advance);
         finish = v.findViewById(R.id.k2go_conn_finish);
         connFooter = v.findViewById(R.id.k2go_conn_footer);
-        classEntry.attach(v);
 
         tabHotspot.setOnClickListener(x -> requestMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> requestMode(Mode.WIFI));

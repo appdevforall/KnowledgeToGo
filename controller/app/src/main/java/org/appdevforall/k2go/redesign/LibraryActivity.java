@@ -866,6 +866,8 @@ public class LibraryActivity extends AppCompatActivity
             f = new LibraryHomeFragment();
         } else if (itemId == R.id.nav_connect) {
             f = new ConnectFragment();
+        } else if (itemId == R.id.nav_class) {
+            f = new org.appdevforall.k2go.school.presentation.ClassFragment();   // K2Go School
         } else if (itemId == R.id.nav_clone) {
             f = new CloneFragment();
         } else if (itemId == R.id.nav_settings) {
