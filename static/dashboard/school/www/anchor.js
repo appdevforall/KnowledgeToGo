@@ -200,6 +200,7 @@
     nextVisible: nextVisible,
     locate: locate,
     blocksOf: blocksOf,
+    textNodes: textNodes,
     anchorOf: anchorOf,
     applyAnchor: applyAnchor
   };

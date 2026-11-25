@@ -31,6 +31,7 @@
 <script src="text.js"></script>
 <script src="anchor.js"></script>
 <script src="follow.js"></script>
+<script src="marks.js"></script>
 <script>
 'use strict';
 (function () {
@@ -99,10 +100,17 @@
   var joining = false;
   var replaced = false;     // another tab of this phone follows the class with the same token
   var ended = false;        // the teacher ended the class: no channel, no join, no ack
+  var marks = null;         // the marks of the lesson page, as the box sent them: { url, list }
+  var painted = { doc: null, list: null };   // what paintMarks() drew last
+  var NO_MARKS = [];
 
   var view = School.view(stage, function (win) {
     // A late image or the class font changes the layout under the anchor: apply it again.
-    School.onLayout(win, function () { if (onPage()) { apply(); } });
+    School.onLayout(win, function () {
+      if (!onPage()) { return; }
+      painted.doc = null;   // the layout changed: draw the marks again
+      apply();
+    });
     follow();
   });
 
@@ -201,6 +209,20 @@
   function apply() {
     match = SchoolAnchor.applyAnchor(view.win(), last.a);
     setStatus(match ? 'following' : 'followingOther');
+    paintMarks();
+  }
+
+  // Draws the marks of the teacher when they are for the page on the screen. A lesson message
+  // comes up to 20 times a second: draw only for a new list or a new page, or after a layout change.
+  function paintMarks() {
+    if (!onPage()) { return; }
+    var doc = view.win().document;
+    var list = marks && marks.url === last.url ? marks.list : NO_MARKS;
+    if (painted.doc === doc && painted.list === list) { return; }
+    try {
+      SchoolMarks.draw(view.win(), list);
+      painted = { doc: doc, list: list };
+    } catch (e) { /* the page has no layout yet: the next message or layout change tries again */ }
   }
 
   function follow() {
@@ -265,6 +287,11 @@
       follow();
     };
     live.addEventListener('ping', function () { alive.seen(); });
+    live.addEventListener('marks', function (ev) {
+      alive.seen();
+      try { marks = JSON.parse(ev.data); } catch (e) { return; }
+      paintMarks();
+    });
     // The seat, the class and the Done mark that the box keeps for this student (this page for Done).
     live.addEventListener('self', function (ev) {
       var me;
