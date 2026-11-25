@@ -130,6 +130,10 @@ schoolRouter.post('/teacher/publish', (req: Request, res: Response): void => {
 
 schoolRouter.get('/teacher/live', (req: Request, res: Response): void => {
     openStream(res);
+    // A teacher page that loads again (a reload, a new app screen, a theme change) goes back to
+    // the lesson of the class, not to its start page.
+    const now = classroom.current();
+    send(res, { type: 'lesson', lesson: now ? now.lesson : null });
     send(res, { type: 'roster', students: classroom.roster() });
     teacherStreams.add(res);
     res.on('close', () => { teacherStreams.delete(res); });

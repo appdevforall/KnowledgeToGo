@@ -56,6 +56,8 @@
   var lagRun = null;        // { rtts: { name: [ms] } } while a lag test runs
   var pending = false;
   var lastSend = 0;
+  var started = false;      // the first page is open (the lesson of the box, or the start page)
+  var resumeAt = null;      // the anchor of the box lesson, applied when its page loads
 
   School.watchFit(stage, frame);
 
@@ -86,10 +88,21 @@
     frame.contentWindow.addEventListener('scroll', onScroll, { passive: true });
     // A late image or the class font can move the block at the top edge: send the place again.
     School.onLayout(frame.contentWindow, onScroll);
+    if (resumeAt) { SchoolAnchor.applyAnchor(frame.contentWindow, resumeAt); resumeAt = null; }
     publish();
   });
 
   function open(path) { if (path) { frame.src = path; } }
+
+  // The box keeps the lesson of the class. A page that loads again opens that lesson at the same
+  // place, so the students stay where they are. A path in the address wins.
+  function start(lesson) {
+    if (started) { return; }
+    started = true;
+    var path = School.params.get('path');
+    if (!path && lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); return; }
+    open(path || '/kiwix/content/k2go_welcome/A/index.html');
+  }
   document.querySelectorAll('[data-path]').forEach(function (b) {
     b.onclick = function () { open(b.getAttribute('data-path')); };
   });
@@ -172,6 +185,7 @@
     var m;
     alive.seen();
     try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (m.type === 'lesson') { start(m.lesson); return; }
     if (m.type === 'roster') {
       roster = m.students;
       names = {};
@@ -192,8 +206,7 @@
     render();
   }
   connect();
-
-  open(School.params.get('path') || '/kiwix/content/k2go_welcome/A/index.html');
+  setTimeout(function () { start(null); }, 3000);   // the channel does not open: the start page
 })();
 </script>
 </body>
