@@ -246,7 +246,8 @@ if verify_live; then
     # Now safe to advance the source so the reported version + the next build match the running dist.
     # Additive tar after dropping the pure-source subdirs; runtime state (node_modules, *.sqlite3 job
     # storage, books/catalog.db) is left in place.
-    for d in sockets views public test; do rm -rf "$LIVE/$d"; done
+    # school: the K2Go School pages, also source only, so a page removed in the repo goes (review L6).
+    for d in sockets views public test school; do rm -rf "$LIVE/$d"; done
     ( cd "$STAGE" && tar --exclude=node_modules --exclude=dist -cf - . ) | ( cd "$LIVE" && tar -xf - ) || log "warn: source sync incomplete"
     # nginx reads /etc/nginx/conf.d, not /library/dashboard, so mirror the vhost then reload nginx.
     [ -f "$LIVE/dash-node-nginx.conf" ] && { cp -f "$LIVE/dash-node-nginx.conf" "$NGINX_CONF_DIR/dash-node-nginx.conf"; chmod 0600 "$NGINX_CONF_DIR/dash-node-nginx.conf"; }

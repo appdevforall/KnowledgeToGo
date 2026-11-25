@@ -43,7 +43,8 @@ echo "[dev-push] syncing $SRC -> $DEST (preserving node_modules + runtime state)
 # tar is proot-safe (rsync's fchmodat2 isn't translated) but additive. First drop the
 # pure-source subdirs so removed files don't linger; these hold source only, so runtime
 # state (node_modules, dist, and *.sqlite3 job storage at the dashboard root) is untouched.
-for d in sockets views public test; do rm -rf "$DEST/$d"; done
+# school: the K2Go School pages, also source only (review L6).
+for d in sockets views public test school; do rm -rf "$DEST/$d"; done
 ( cd "$SRC" && tar --exclude=node_modules --exclude=dist -cf - . ) | ( cd "$DEST" && tar -xf - )
 
 echo "[dev-push] clean rebuild (TS -> dist/)..."
