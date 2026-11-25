@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ClassRoom, cleanName, validLesson, MAX_NAME } from './class';
+import { ClassRoom, cleanName, validLesson, MAX_NAME, CLASS_GAP_MS, newClassCode } from './class';
 
 function counter(): () => string {
     let n = 0;
@@ -114,4 +114,33 @@ test('silent: an open channel with no word for too long is dead; an ack keeps it
     assert.equal(room.silent(s, 90000), false);
     room.open(s);                                  // a new channel counts as a word
     assert.equal(room.silent(s, 90000), false);
+});
+
+test('class code: new when a class opens, kept over a short teacher gap, new after a long one', () => {
+    let t = 0;
+    let n = 0;
+    const room = new ClassRoom(1000, counter(), () => t, () => `C${++n}`);
+    assert.deepEqual(room.state(), { open: false, code: null });
+    room.teacherOpen();
+    assert.deepEqual(room.state(), { open: true, code: 'C1' });
+    room.teacherOpen();                      // a second teacher channel (reload overlap)
+    room.teacherClose();
+    assert.deepEqual(room.state(), { open: true, code: 'C1' });
+    room.teacherClose();
+    assert.deepEqual(room.state(), { open: false, code: null });   // closed: no code on the network
+    t += CLASS_GAP_MS;                       // the page comes back in time: same class
+    room.teacherOpen();
+    assert.deepEqual(room.state(), { open: true, code: 'C1' });
+    room.teacherClose();
+    t += CLASS_GAP_MS + 1;                   // too late: a new class
+    room.teacherOpen();
+    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    room.teacherClose();
+    room.teacherClose();                     // an extra close does not go below zero
+    room.teacherOpen();
+    assert.equal(room.state().open, true);
+});
+
+test('newClassCode: 4 characters from the easy-to-read set', () => {
+    for (let i = 0; i < 200; i += 1) assert.match(newClassCode(), /^[2-9A-HJ-NP-Z]{4}$/);
 });

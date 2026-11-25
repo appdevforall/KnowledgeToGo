@@ -126,6 +126,15 @@ schoolRouter.post('/ack', (req: Request, res: Response): void => {
     res.status(204).end();
 });
 
+// Is a class open, and its code. The box is the one owner of both. The teacher app reads it to
+// announce the class on the Wi-Fi (mDNS); a student app reads it to check a class it found and to
+// find its class again after a drop. Only the open flag and the random code: no name, no device
+// data (K2G-P5). The same two values are in the mDNS announcement.
+schoolRouter.get('/state', (_req: Request, res: Response): void => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.json(classroom.state());
+});
+
 schoolRouter.use('/teacher', localOnly);
 
 schoolRouter.post('/teacher/publish', (req: Request, res: Response): void => {
@@ -137,13 +146,6 @@ schoolRouter.post('/teacher/publish', (req: Request, res: Response): void => {
     res.status(204).end();
 });
 
-// The class is open while a teacher page is connected to its channel. The app on this phone reads
-// it to announce the class on the Wi-Fi (mDNS); the box is the one owner of the fact.
-schoolRouter.get('/teacher/state', (_req: Request, res: Response): void => {
-    res.setHeader('Cache-Control', 'no-store');
-    res.json({ open: teacherStreams.size > 0 });
-});
-
 schoolRouter.get('/teacher/live', (req: Request, res: Response): void => {
     openStream(res);
     // A teacher page that loads again (a reload, a new app screen, a theme change) goes back to
@@ -151,8 +153,13 @@ schoolRouter.get('/teacher/live', (req: Request, res: Response): void => {
     const now = classroom.current();
     send(res, { type: 'lesson', lesson: now ? now.lesson : null });
     send(res, { type: 'roster', students: classroom.roster() });
+    classroom.teacherOpen();
+    send(res, { type: 'class', code: classroom.state().code });
     teacherStreams.add(res);
-    res.on('close', () => { teacherStreams.delete(res); });
+    res.on('close', () => {
+        teacherStreams.delete(res);
+        classroom.teacherClose();
+    });
 });
 
 // The pages change with each deploy: no cache. The class font does not change (a new font gets

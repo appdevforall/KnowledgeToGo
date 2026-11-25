@@ -36,6 +36,26 @@ export const OFFLINE_EXPIRE_MS = 120000;
 // one minute, because a browser runs the timers of a hidden page only once a minute.
 export const SILENT_MS = 90000;
 const MAX_LESSON_BYTES = 2048;
+// A teacher page that comes back within this time (a reload, a theme change, a box restart of the
+// page) continues the same class, with the same code. After it, a new class gets a new code.
+export const CLASS_GAP_MS = 60000;
+// The class code: what the students see in the list and the teacher sees on the page. No 0/O and
+// 1/I, so it is easy to read aloud. Random per class: it does not identify the phone (K2G-P5).
+export const CODE_CHARS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+export const CODE_LENGTH = 4;
+
+export function newClassCode(): string {
+    const bytes = crypto.randomBytes(CODE_LENGTH);
+    let code = '';
+    for (let i = 0; i < CODE_LENGTH; i += 1) code += CODE_CHARS[bytes[i] % CODE_CHARS.length];
+    return code;
+}
+
+// What the box tells the class network: is a class open, and its code. Nothing else.
+export interface ClassState {
+    open: boolean;
+    code: string | null;
+}
 
 export function cleanName(raw: unknown): string {
     const name = String(raw ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, MAX_NAME);
@@ -56,12 +76,34 @@ export class ClassRoom {
     private readonly byToken = new Map<string, Student>();
     private lesson: Lesson | null = null;
     private lessonId = 0;
+    // The class is open while a teacher page is connected to the class channel.
+    private teachers = 0;
+    private code: string | null = null;
+    private closedAt: number | null = null;
 
     constructor(
         private readonly maxStudents = 1000,
         private readonly newToken: () => string = () => crypto.randomBytes(16).toString('hex'),
         private readonly now: () => number = Date.now,
+        private readonly newCode: () => string = newClassCode,
     ) {}
+
+    teacherOpen(): void {
+        const gone = this.closedAt !== null && this.now() - this.closedAt > CLASS_GAP_MS;
+        if (this.teachers === 0 && (this.code === null || gone)) this.code = this.newCode();
+        this.teachers += 1;
+        this.closedAt = null;
+    }
+
+    teacherClose(): void {
+        this.teachers = Math.max(0, this.teachers - 1);
+        if (this.teachers === 0) this.closedAt = this.now();
+    }
+
+    state(): ClassState {
+        const open = this.teachers > 0;
+        return { open, code: open ? this.code : null };
+    }
 
     join(name: unknown): Student | null {
         if (this.byToken.size >= this.maxStudents) this.dropOffline();

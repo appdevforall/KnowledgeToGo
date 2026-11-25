@@ -29,6 +29,7 @@
   <div>
     <button id="auto">Auto-scroll</button>
     <button id="lag">Lag test</button>
+    <span id="code"></span>
     <span id="count">0 online</span>
   </div>
   <div id="students"></div>
@@ -43,6 +44,7 @@
   var stage = document.getElementById('stage');
   var frame = document.getElementById('frame');
   var countEl = document.getElementById('count');
+  var codeEl = document.getElementById('code');
   var studentsEl = document.getElementById('students');
   var statsEl = document.getElementById('stats');
   var HZ = parseInt(School.params.get('hz'), 10) || 20;
@@ -196,6 +198,8 @@
     alive.seen();
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'lesson') { start(m.lesson); return; }
+    // The students choose the class by this code in Class > Join.
+    if (m.type === 'class') { codeEl.textContent = m.code ? 'Class ' + m.code : ''; return; }
     if (m.type === 'roster') {
       roster = m.students;
       names = {};
