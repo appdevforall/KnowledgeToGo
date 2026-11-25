@@ -23,8 +23,8 @@
     <string name="k2go_class_checking" translatable="false">Checking the library on this phone...</string>
     <!-- Teacher card, when the library on this phone answers but has no class module. -->
     <string name="k2go_class_no_module" translatable="false">The class module is not installed in the library on this phone.</string>
-    <!-- Teacher card, when the library on this phone does not answer (it is stopped or starting). -->
-    <string name="k2go_class_no_box" translatable="false">The library on this phone does not answer now. Wait until it runs, then open this tab again.</string>
+    <!-- Teacher card, when the library on this phone does not run (it is stopped or starting). The card changes by itself when the library runs. -->
+    <string name="k2go_class_no_box" translatable="false">The library on this phone does not run now. When it runs, you can teach a class here.</string>
     <!-- Card title and button: a student scans the teacher's code to follow the class. -->
     <string name="k2go_class_join" translatable="false">Join a class</string>
     <!-- Body of the student card. -->

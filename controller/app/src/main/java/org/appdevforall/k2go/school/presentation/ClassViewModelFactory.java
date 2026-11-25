@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.appdevforall.k2go.ServerStateRepository;
 import org.appdevforall.k2go.school.data.HttpTeacherPage;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -22,7 +23,9 @@ public class ClassViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ClassViewModel.class)) {
-            return (T) new ClassViewModel(new HttpTeacherPage(), AppExecutors.get().io());
+            ServerStateRepository server = ServerStateRepository.get();
+            return (T) new ClassViewModel(new HttpTeacherPage(), AppExecutors.get().io(),
+                    server.state(), server::hasObservation);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
