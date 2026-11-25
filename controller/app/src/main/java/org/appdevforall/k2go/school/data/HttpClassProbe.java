@@ -31,7 +31,7 @@ public final class HttpClassProbe implements ClassProbe {
     HttpClassProbe(int port) { this.port = port; }   // tests
 
     @Override
-    public String codeAt(String host) {
+    public Answer ask(String host) {
         HttpURLConnection c = null;
         try {
             c = (HttpURLConnection) new URL(ClassLinks.stateUrl(host, port)).openConnection();
@@ -41,7 +41,8 @@ public final class HttpClassProbe implements ClassProbe {
             c.setReadTimeout(2000);
             if (c.getResponseCode() != 200) return null;
             try (InputStream in = c.getInputStream()) {
-                return ClassLinks.codeFromState(read(in));
+                String body = read(in);
+                return ClassLinks.isState(body) ? new Answer(ClassLinks.codeFromState(body)) : null;
             }
         } catch (IOException e) {
             return null;

@@ -43,7 +43,6 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     private static final String TAG = "K2GoSchool";
 
     private final Rejoin rule;
-    private final String query;   // the part of the student URL after the path (the name)
     private final ClassProbe probe;
     private final ClassFinder finder;
     private final Executor io;
@@ -62,13 +61,11 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     // Intent extras of a student page opened from Class > Join (ClassFragment).
     static final String EXTRA_CODE = "K2GO_CLASS_CODE";
     static final String EXTRA_ADDRESS = "K2GO_CLASS_ADDRESS";
-    static final String EXTRA_QUERY = "K2GO_CLASS_QUERY";
 
     /** Adds the student extras to the intent of the portal screen. */
-    static void putExtras(android.content.Intent i, FoundClass c, String query) {
+    static void putExtras(android.content.Intent i, FoundClass c) {
         i.putExtra(EXTRA_CODE, c.code);
         i.putExtra(EXTRA_ADDRESS, c.address);
-        i.putExtra(EXTRA_QUERY, query);
     }
 
     // The student page keeps its class token here (school/www/student.html).
@@ -85,7 +82,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
         String code = i.getStringExtra(EXTRA_CODE);
         String address = i.getStringExtra(EXTRA_ADDRESS);
         if (code == null || address == null || !ClassLinks.isClassCode(code)) return null;
-        ClassRejoin r = create(screen, code, address, i.getStringExtra(EXTRA_QUERY), moveIn(web));
+        ClassRejoin r = create(screen, code, address, moveIn(web));
         screen.getLifecycle().addObserver(r);
         return r;
     }
@@ -114,8 +111,8 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
         };
     }
 
-    /** JS that replaces the page with {@code url}: a checked box address, a percent-encoded query
-     *  and a hex token. The quote escape is a second guard. */
+    /** JS that replaces the page with {@code url}: a checked box address and a hex token in the
+     *  fragment. The quote escape is a second guard. */
     private static String replaceWith(String url) {
         String q = "'" + url.replace("\\", "\\\\").replace("'", "\\'") + "'";
         return "(function(){try{location.replace(" + q + ");return true;}catch(e){return false;}})()";
@@ -127,19 +124,15 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     /**
      * @param code    the class code that the student joined
      * @param address the IPv4 address of the teacher box
-     * @param query   the query of the student URL (for example "?n=Galaxy%20A16"), or ""
      * @param open    opens a student page URL in the screen (main thread)
      */
-    public static ClassRejoin create(Context ctx, String code, String address, String query,
-                                     Consumer<String> open) {
-        return new ClassRejoin(new Rejoin(code, address), query, new HttpClassProbe(),
+    public static ClassRejoin create(Context ctx, String code, String address, Consumer<String> open) {
+        return new ClassRejoin(new Rejoin(code, address), new HttpClassProbe(),
                 new NsdClassFinder(ctx), AppExecutors.get().io(), open);
     }
 
-    ClassRejoin(Rejoin rule, String query, ClassProbe probe, ClassFinder finder, Executor io,
-                Consumer<String> open) {
+    ClassRejoin(Rejoin rule, ClassProbe probe, ClassFinder finder, Executor io, Consumer<String> open) {
         this.rule = rule;
-        this.query = query == null ? "" : query;
         this.probe = probe;
         this.finder = finder;
         this.io = io;
@@ -150,7 +143,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     public void onStart(@NonNull LifecycleOwner owner) {
         running = true;
         round++;
-        main.postDelayed(tick, PROBE_MS);
+        if (!rule.ended()) main.postDelayed(tick, PROBE_MS);
     }
 
     @Override
@@ -165,11 +158,13 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
         final int r = round;
         final String at = rule.address();
         io.execute(() -> {
-            String code = probe.codeAt(at);
+            ClassProbe.Answer answer = probe.ask(at);
             main.post(() -> {
                 if (!running || r != round) return;
-                if (at.equals(rule.address())) act(rule.probed(code), null);   // else: it moved meanwhile
-                main.postDelayed(tick, PROBE_MS);
+                if (at.equals(rule.address())) {   // else: it moved meanwhile
+                    act(rule.probed(answer == null ? null : answer.code, answer != null), null);
+                }
+                if (!rule.ended()) main.postDelayed(tick, PROBE_MS);
             });
         });
     }
@@ -193,7 +188,11 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
             case MOVE:
                 finder.stop();
                 Log.i(TAG, "class found again at a new address");
-                open.accept(c.studentUrl + query);
+                open.accept(c.studentUrl);
+                break;
+            case END:
+                finder.stop();   // the class ended: no search for its code, no more probes
+                Log.i(TAG, "class ended: the student screen stops the search");
                 break;
             default:
                 break;

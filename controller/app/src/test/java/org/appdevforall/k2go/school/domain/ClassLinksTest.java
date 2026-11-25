@@ -75,11 +75,20 @@ public class ClassLinksTest {
         assertNull(ClassLinks.tokenFromJs("null"));
         assertNull(ClassLinks.tokenFromJs("\"<script>\""));
         assertNull(ClassLinks.tokenFromJs(null));
-        assertEquals("http://h:8085/school/student.html?n=A&t=" + t,
-                ClassLinks.withToken("http://h:8085/school/student.html?n=A", t));
-        assertEquals("http://h:8085/school/student.html?t=" + t,
+        // In the fragment: never sent to a server, so in no access log (review B1).
+        assertEquals("http://h:8085/school/student.html#t=" + t,
                 ClassLinks.withToken("http://h:8085/school/student.html", t));
-        assertEquals("http://h:8085/school/student.html?n=A",
-                ClassLinks.withToken("http://h:8085/school/student.html?n=A", null));
+        assertEquals("http://h:8085/school/student.html#t=" + t,
+                ClassLinks.withToken("http://h:8085/school/student.html#t=old", t));
+        assertEquals("http://h:8085/school/student.html",
+                ClassLinks.withToken("http://h:8085/school/student.html", null));
+    }
+
+    @Test public void aClassStateIsAnAnswerOfAClassBox() {
+        assertTrue(ClassLinks.isState("{\"open\":false,\"code\":null}"));
+        assertTrue(ClassLinks.isState("{\"open\": true, \"code\":\"4F7K\"}"));
+        assertFalse(ClassLinks.isState("<html>404</html>"));
+        assertFalse(ClassLinks.isState("{\"open\":maybe}"));
+        assertFalse(ClassLinks.isState(null));
     }
 }

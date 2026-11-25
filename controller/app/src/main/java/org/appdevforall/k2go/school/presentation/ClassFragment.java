@@ -8,12 +8,8 @@
  */
 package org.appdevforall.k2go.school.presentation;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,20 +145,17 @@ public final class ClassFragment extends Fragment {
             Snackbar.make(anchor, msg, SnackbarDuration.millisForText(msg)).show();
             return;
         }
-        startActivity(portal(url + nameQuery()));
+        startActivity(portal(url));
     }
 
-    /** A class from the list: the student page, and what the screen needs to find it again. */
+    /**
+     * A class from the list: the student page, and what the screen needs to find it again. No
+     * name and no device data go to the box: the box gives the phone a seat number (K2G-P5).
+     */
     private void join(FoundClass c) {
-        String query = nameQuery();
-        Intent i = portal(c.studentUrl + query);
-        ClassRejoin.putExtras(i, c, query);
+        Intent i = portal(c.studentUrl);
+        ClassRejoin.putExtras(i, c);
         startActivity(i);
-    }
-
-    /** The teacher sees this name in the class list. It goes only to the teacher box (K2G-P5). */
-    private String nameQuery() {
-        return "?n=" + Uri.encode(deviceName(requireContext()));
     }
 
     private void open(String url) {
@@ -173,13 +166,5 @@ public final class ClassFragment extends Fragment {
         Intent i = new Intent(requireContext(), PortalActivity.class);
         i.putExtra("TARGET_URL", url);
         return i;
-    }
-
-    /** The name the user gave the phone in Android settings, else the model. */
-    private static String deviceName(Context ctx) {
-        String name = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1   // DEVICE_NAME: API 25
-                ? Settings.Global.getString(ctx.getContentResolver(), Settings.Global.DEVICE_NAME)
-                : null;
-        return (name == null || name.trim().isEmpty()) ? Build.MODEL : name.trim();
     }
 }

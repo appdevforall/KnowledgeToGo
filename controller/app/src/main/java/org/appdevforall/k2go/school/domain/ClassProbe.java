@@ -13,8 +13,21 @@ public interface ClassProbe {
 
     /**
      * BLOCKS: one GET of the class state on the box at {@code host} (an IPv4 address, or
-     * "localhost" for this phone's box). Returns the code of the open class, or null when no class
-     * is open or the box does not answer.
+     * "localhost" for this phone's box). Returns the box answer, or null when no box answers there
+     * (no connection, a time-out, or an answer that is not a class state).
      */
-    String codeAt(String host);
+    Answer ask(String host);
+
+    /** BLOCKS: the code of the open class at {@code host}, or null (no class open, or no answer). */
+    default String codeAt(String host) {
+        Answer a = ask(host);
+        return a == null ? null : a.code;
+    }
+
+    /** What a box answered: the code of its open class, or null when the box has no class open. */
+    final class Answer {
+        public final String code;
+
+        public Answer(String code) { this.code = code; }
+    }
 }

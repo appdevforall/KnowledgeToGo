@@ -58,4 +58,20 @@ public class RejoinTest {
         assertEquals(Action.NONE, r.probed(null));
         assertFalse(r.searching());
     }
+
+    @Test public void aBoxThatSaysNoClassEndsTheSearchForGood() {
+        Rejoin r = new Rejoin("4F7K", "192.168.1.167");
+        assertEquals(Action.NONE, r.probed(null, false));       // no answer: a miss
+        assertEquals(Action.SEARCH, r.probed(null, false));
+        assertEquals(Action.NONE, r.probed("9XQ2", true));     // another class there: a miss
+        assertFalse(r.ended());
+        assertEquals(Action.END, r.probed(null, true));         // the box says: no class open
+        assertTrue(r.ended());
+        assertFalse(r.searching());
+        assertEquals(Action.NONE, r.probed("4F7K", true));     // nothing after the end
+        FoundClass moved = at("4F7K", "192.168.1.170");
+        assertEquals(Action.NONE, r.found(moved));
+        assertEquals(Action.NONE, r.confirmed(moved, "4F7K"));
+        assertEquals("192.168.1.167", r.address());
+    }
 }

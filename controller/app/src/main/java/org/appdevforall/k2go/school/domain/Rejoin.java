@@ -27,7 +27,9 @@ public final class Rejoin {
         /** Ask the box at the found address for its code, then call {@link #confirmed}. */
         CHECK,
         /** Open the student page at {@link #address()}. */
-        MOVE
+        MOVE,
+        /** The box at the address says that no class is open: the class ended. Stop all. */
+        END
     }
 
     /** Probes with no class at the current address before the search starts. */
@@ -43,6 +45,7 @@ public final class Rejoin {
     private final java.util.Set<String> classHosts = new java.util.HashSet<>();
     private int misses;
     private boolean searching;
+    private boolean ended;
 
     public Rejoin(String code, String address) {
         this.code = code;
@@ -60,8 +63,25 @@ public final class Rejoin {
 
     public boolean searching() { return searching; }
 
+    /** True after {@link Action#END}: no more probes and no search. */
+    public boolean ended() { return ended; }
+
     /** One probe of the box at the current address: the code of its open class, or null. */
-    public Action probed(String codeThere) {
+    public Action probed(String codeThere) { return probed(codeThere, codeThere != null); }
+
+    /**
+     * One probe of the box at the current address. {@code answered}: a class box answered there;
+     * then a null code says that no class is open: the class ended (End class, or the teacher
+     * left). A box that answers with another code is a miss: the address can be another teacher
+     * box now.
+     */
+    public Action probed(String codeThere, boolean answered) {
+        if (ended) return Action.NONE;
+        if (answered && codeThere == null) {
+            ended = true;
+            searching = false;
+            return Action.END;
+        }
         if (code.equals(codeThere)) {
             misses = 0;
             return stopSearch();
@@ -78,12 +98,12 @@ public final class Rejoin {
 
     /** The search found a class. The same code at another address: check that box. */
     public Action found(FoundClass c) {
-        return elsewhere(c) ? Action.CHECK : Action.NONE;
+        return !ended && elsewhere(c) ? Action.CHECK : Action.NONE;
     }
 
     /** The box at the address of {@code c} answered {@code codeThere}. The same class: move there. */
     public Action confirmed(FoundClass c, String codeThere) {
-        if (!elsewhere(c) || !code.equals(codeThere)) return Action.NONE;
+        if (ended || !elsewhere(c) || !code.equals(codeThere)) return Action.NONE;
         address = c.address;
         classHosts.add(address);
         misses = 0;
