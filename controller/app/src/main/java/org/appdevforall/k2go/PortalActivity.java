@@ -606,6 +606,7 @@ public class PortalActivity extends AppCompatActivity {
             } else {
                 setEnabled(false);   // the default: close the screen
                 getOnBackPressedDispatcher().onBackPressed();
+                setEnabled(true);    // the default can keep the screen (a task root only moves back)
             }
         }
     };
