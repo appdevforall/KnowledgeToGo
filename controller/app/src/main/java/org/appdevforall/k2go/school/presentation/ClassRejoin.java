@@ -12,6 +12,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -20,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner;
 import org.appdevforall.k2go.school.data.HttpClassProbe;
 import org.appdevforall.k2go.school.data.NsdClassFinder;
 import org.appdevforall.k2go.school.domain.ClassFinder;
+import org.appdevforall.k2go.school.domain.ClassLinks;
 import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.school.domain.FoundClass;
 import org.appdevforall.k2go.school.domain.Rejoin;
@@ -27,6 +29,7 @@ import org.appdevforall.k2go.util.AppExecutors;
 
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Lives with the screen of the student page while it is on the screen (onStart to onStop, for the
@@ -68,17 +71,36 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
         i.putExtra(EXTRA_QUERY, query);
     }
 
+    // The student page keeps its class token here (school/www/student.html).
+    private static final String READ_TOKEN = "localStorage.getItem('k2go-school-token')";
+
     /**
      * The one call of the portal screen: when it shows a student page opened from Class > Join,
-     * the screen finds its class again after a drop.
+     * the screen finds its class again after a drop. {@code web} gives the current WebView.
      */
     public static void attachIfStudent(androidx.appcompat.app.AppCompatActivity screen,
-                                       Consumer<String> open) {
+                                       Supplier<WebView> web) {
         android.content.Intent i = screen.getIntent();
         String code = i.getStringExtra(EXTRA_CODE);
         String address = i.getStringExtra(EXTRA_ADDRESS);
         if (code == null || address == null) return;
-        screen.getLifecycle().addObserver(create(screen, code, address, i.getStringExtra(EXTRA_QUERY), open));
+        screen.getLifecycle().addObserver(
+                create(screen, code, address, i.getStringExtra(EXTRA_QUERY), moveIn(web)));
+    }
+
+    /**
+     * Opens the student page at the new address with the class token of the old page, so the box
+     * keeps one entry for this student (the new address is a new origin, with no stored token).
+     */
+    private static Consumer<String> moveIn(Supplier<WebView> web) {
+        return url -> {
+            WebView w = web.get();
+            if (w == null) return;
+            w.evaluateJavascript(READ_TOKEN, js -> {
+                WebView now = web.get();
+                if (now != null) now.loadUrl(ClassLinks.withToken(url, ClassLinks.tokenFromJs(js)));
+            });
+        };
     }
 
     /**

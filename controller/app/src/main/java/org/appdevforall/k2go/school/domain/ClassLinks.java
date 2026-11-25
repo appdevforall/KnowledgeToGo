@@ -36,6 +36,8 @@ public final class ClassLinks {
     // The box makes the code (school/class.ts): 4 characters, no 0/O and no 1/I.
     private static final Pattern CLASS_CODE = Pattern.compile("^[2-9A-HJ-NP-Z]{4}$");
     private static final Pattern OPEN_TRUE = Pattern.compile("\"open\"\\s*:\\s*true\\b");
+    // A class token as the box makes it (school/class.ts), as a JSON string from the page.
+    private static final Pattern TOKEN_JS = Pattern.compile("^\"([0-9a-f]{16,64})\"$");
     private static final Pattern CODE_FIELD = Pattern.compile("\"code\"\\s*:\\s*\"([^\"]*)\"");
 
     // http://<host>[:port][/anything]. The host is a dotted IPv4 address or a host name.
@@ -96,6 +98,19 @@ public final class ClassLinks {
         if (body == null || !OPEN_TRUE.matcher(body).find()) return null;
         Matcher m = CODE_FIELD.matcher(body);
         return m.find() && isClassCode(m.group(1)) ? m.group(1) : null;
+    }
+
+    /** The class token in a JSON string from the student page, or null (no token, or not a token). */
+    public static String tokenFromJs(String json) {
+        if (json == null) return null;
+        Matcher m = TOKEN_JS.matcher(json.trim());
+        return m.matches() ? m.group(1) : null;
+    }
+
+    /** The student page URL with the class token of the old address, for the page to use it. */
+    public static String withToken(String studentUrl, String token) {
+        if (token == null) return studentUrl;
+        return studentUrl + (studentUrl.indexOf('?') < 0 ? "?" : "&") + "t=" + token;
     }
 
     /**

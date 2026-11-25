@@ -49,6 +49,13 @@
   var KEY = 'k2go-school-token';
   var token = null;
   try { token = localStorage.getItem(KEY); } catch (e) { token = null; }
+  // The app moved this student to a new box address (a new origin, so no stored token): it
+  // brings the token of the old address, so the student stays the same student.
+  var moved = School.params.get('t');
+  if (moved && /^[0-9a-f]{16,64}$/.test(moved)) {
+    token = moved;
+    try { localStorage.setItem(KEY, token); } catch (e) { /* no storage */ }
+  }
   nameEl.textContent = name;   // the box sends the name of this token on each open ("self")
   var hereBtn = document.getElementById('here');
   var whoForm = document.getElementById('who');

@@ -68,4 +68,18 @@ public class ClassLinksTest {
         assertFalse(ClassLinks.isClassCode("1I0O"));
         assertFalse(ClassLinks.isClassCode("4F7K5"));
     }
+
+    @Test public void theTokenOfTheOldAddressGoesToTheNewPage() {
+        String t = "0123456789abcdef0123456789abcdef";
+        assertEquals(t, ClassLinks.tokenFromJs("\"" + t + "\""));
+        assertNull(ClassLinks.tokenFromJs("null"));
+        assertNull(ClassLinks.tokenFromJs("\"<script>\""));
+        assertNull(ClassLinks.tokenFromJs(null));
+        assertEquals("http://h:8085/school/student.html?n=A&t=" + t,
+                ClassLinks.withToken("http://h:8085/school/student.html?n=A", t));
+        assertEquals("http://h:8085/school/student.html?t=" + t,
+                ClassLinks.withToken("http://h:8085/school/student.html", t));
+        assertEquals("http://h:8085/school/student.html?n=A",
+                ClassLinks.withToken("http://h:8085/school/student.html?n=A", null));
+    }
 }
