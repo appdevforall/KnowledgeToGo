@@ -849,6 +849,15 @@
 
   function setText(el, text) { if (el.textContent !== text) { el.textContent = text; } }
 
+  // The seats of a group as a list in the language of the page: its own commas and "and" (review
+  // T2). An old WebView with no Intl.ListFormat (Chrome 71 and older) gets commas.
+  var listFormat = null;
+  try { listFormat = new Intl.ListFormat(SchoolText.lang(), { type: 'conjunction' }); } catch (e) { listFormat = null; }
+  function seatList(labels) {
+    if (!labels.length) { return '-'; }
+    return listFormat ? listFormat.format(labels) : labels.join(', ');
+  }
+
   function render() {
     metrics.renders += 1;
     var now = performance.now();
@@ -859,12 +868,12 @@
       groups[s.done ? 'done' : 'notDone'].push(label);
     });
     ['ok', 'slow', 'bad'].forEach(function (g) { setText(statusBtns[g].querySelector('b'), String(groups[g].length)); });
-    setText(statusBtns.done.querySelector('b'), groups.done.length + '/' + roster.length);
+    setText(statusBtns.done.querySelector('b'), t('doneOf', groups.done.length, roster.length));
     Object.keys(statusBtns).forEach(function (g) { statusBtns[g].setAttribute('aria-pressed', String(group === g)); });
     // A tap on Done shows the seats that are not done: the teacher waits for these.
     var list = group === 'done' ? groups.notDone : group ? groups[group] : null;
     seatsEl.hidden = !list;
-    if (list) { setText(seatsEl, t(GROUP_SEATS[group], list.join(', ') || '-')); }
+    if (list) { setText(seatsEl, t(GROUP_SEATS[group], seatList(list))); }
     if (DEBUG) { renderDebug(now); }
   }
 
