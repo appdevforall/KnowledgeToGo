@@ -39,9 +39,7 @@
   #stats { white-space: pre; font: 12px monospace; }
   /* The mark tools: tap targets of 40 px, also on a small phone (Nokia 6: 360 x 640). */
   button.tool { min-height: 40px; padding: 4px 10px; }
-  #mark[aria-pressed="true"], #markBox[aria-pressed="true"], #markWords { background: var(--mark); color: var(--mark-fg); border: 1px solid var(--mark-fg); }
-  #markWords { position: absolute; right: 12px; bottom: 16px; z-index: 5; font: inherit; border-radius: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+  button.tool[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); border: 1px solid var(--mark-fg); }
   #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
   #ended button { font: inherit; padding: 8px 16px; }
   [hidden] { display: none !important; }
@@ -53,6 +51,7 @@
     <button id="library" data-t="library"></button>
     <button id="back" data-t="back" disabled></button>
     <button id="mark" class="tool" data-t="mark" aria-pressed="false" disabled></button>
+    <button id="markPen" class="tool" data-t="markPen" aria-pressed="false" hidden></button>
     <button id="markBox" class="tool" data-t="markBox" aria-pressed="false" hidden></button>
     <button id="clearMarks" class="tool" hidden></button>
     <span id="code"></span>
@@ -86,9 +85,6 @@
   </div>
 </header>
 <div id="stage">
-  <!-- Over the page, not in the header: the header must not change height while the teacher drags
-       the selection handles. -->
-  <button id="markWords" class="tool" data-t="markWords" hidden></button>
   <div id="ended" hidden>
     <p data-t="ended"></p>
     <button id="again" data-t="startAgain"></button>
@@ -159,14 +155,14 @@
   var marks = { url: null, list: [] };
   var painted = { doc: null, layer: null, drawn: [] };
   var marking = false;
-  var boxTool = false;      // in mark mode: a drag draws a box (state of this page only)
-  var drag = null;          // the box that the teacher draws: { x0, y0, x1, y1, el }
-  var boxSent = false;      // a drag sent a box: the click that a mouse makes after it marks nothing
-  var phrase = null;        // the text selection on the page as a mark: { url, mark } or { url, error }
+  var tool = null;          // the tool of Mark mode: null, 'pen' or 'box' (setTool)
+  var drag = null;          // the drag of a tool: { kind, x0, y0, x1, y1, el, from, mark }
+  var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
+  var pending = null;       // the mark of the last drag, shown until the box answers
   var tapEndsSelection = false;
   var markBtn = document.getElementById('mark');
+  var penBtn = document.getElementById('markPen');
   var boxBtn = document.getElementById('markBox');
-  var wordsBtn = document.getElementById('markWords');
   var clearBtn = document.getElementById('clearMarks');
   // The teacher ended the class. The mark outlives the page: the app loads the teacher page again
   // after a theme change, and that must not open a new class. Only "Start a new class" clears it.
@@ -261,19 +257,16 @@
     win.document.addEventListener('pointermove', onPointerMove, true);
     win.document.addEventListener('pointerup', onPointerUp, true);
     win.document.addEventListener('pointercancel', onPointerUp, true);
-    // The box tool: no drag of a picture, and no menu after a long press (it would cancel the box).
+    // A tool: no drag of a picture, and no menu after a long press (it would cancel the drag).
     ['dragstart', 'contextmenu'].forEach(function (type) {
-      win.document.addEventListener(type, function (ev) { if (marking && boxTool) { ev.preventDefault(); } }, true);
+      win.document.addEventListener(type, function (ev) { if (marking && tool) { ev.preventDefault(); } }, true);
     });
     win.document.addEventListener('click', onMarkTap, true);   // before onLink: a tap that marks opens no link
     win.document.addEventListener('click', onLink, true);
-    win.document.addEventListener('selectionchange', onSelection);
     if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
-    endDrag();                // a box drawn on the old page does not go to this one
+    endDrag();                // a drag on the old page does not go to this one
+    pending = null;
     setMarking(false);
-    clearTimeout(selectionTimer);
-    phrase = null;            // a selection of the old page does not go to this one
-    wordsBtn.hidden = true;
     paintMarks();
     var path = view.path();
     if (trail[trail.length - 1] !== path) { trail.push(path); }
@@ -306,9 +299,12 @@
     var path = view.path();
     if (!win || path === null) { return; }
     var list = marks.url === path ? marks.list : [];
+    // The marks of the box, and the words of a drag that the box does not have yet. Only the marks
+    // of the box take a tap (an id).
+    var shown = list.concat(drag && drag.mark ? [drag.mark] : [], pending ? [pending] : []);
     try {
-      var p = SchoolMarks.draw(win, list);
-      painted = { doc: win.document, layer: p.layer, drawn: p.drawn };
+      var p = SchoolMarks.draw(win, shown);
+      painted = { doc: win.document, layer: p.layer, drawn: p.drawn.filter(function (d) { return d.id !== undefined; }) };
     } catch (e) {
       painted = { doc: null, layer: null, drawn: [] };
     }
@@ -318,36 +314,42 @@
 
   function setMarking(on) {
     marking = on;
-    endDrag();
-    markBtn.setAttribute('aria-pressed', String(on));
+    penBtn.hidden = !on;
     boxBtn.hidden = !on;
-    setBoxTool(false);
+    markBtn.setAttribute('aria-pressed', String(on));
+    setTool(null);
   }
 
-  // The box tool: a drag on the page draws a box and does not scroll the page.
-  var BOX_TOOL_ID = 'k2go-box-tool';
-  function setBoxTool(on) {
-    boxTool = on;
+  // The tools of Mark mode (state of this page only). null: a tap marks a paragraph, a cell or a
+  // picture. 'pen': a drag marks the words from the first one to the last one. 'box': a drag draws
+  // a box. With a tool on, the page does not scroll: the drag marks.
+  var TOOL_STYLE_ID = 'k2go-mark-tool';
+  var TOOL_HELP = { pen: 'markPenHelp', box: 'markBoxHelp' };
+  function setTool(name) {
+    tool = name;
     endDrag();
-    boxBtn.setAttribute('aria-pressed', String(on));
-    note(marking ? t(on ? 'markBoxHelp' : 'markHelp') : '');
+    penBtn.setAttribute('aria-pressed', String(tool === 'pen'));
+    boxBtn.setAttribute('aria-pressed', String(tool === 'box'));
+    note(marking ? t(TOOL_HELP[tool] || 'markHelp') : '');
+    if (tool) { try { view.win().getSelection().removeAllRanges(); } catch (e) { /* no selection */ } }
     var doc = view.win() && view.win().document;
     if (!doc || !doc.documentElement) { return; }
-    var style = doc.getElementById(BOX_TOOL_ID);
-    if (on && !style) {
+    var style = doc.getElementById(TOOL_STYLE_ID);
+    if (tool && !style) {
       style = doc.createElement('style');
-      style.id = BOX_TOOL_ID;
-      // No scroll, no text selection, no drag of a picture: the drag draws the box.
+      style.id = TOOL_STYLE_ID;
+      // No scroll, no text selection, no drag of a picture: the drag marks.
       style.textContent = 'html, body, body * { touch-action: none !important; user-select: none !important; ' +
         '-webkit-user-select: none !important; -webkit-user-drag: none !important; }';
       doc.documentElement.appendChild(style);
-    } else if (!on && style) {
+    } else if (!tool && style) {
       style.parentNode.removeChild(style);
     }
   }
 
   // A change of the marks goes to the box; the box sends the new list to all pages of the class.
-  // url: the page that the teacher marked (the box refuses a mark for another page).
+  // url: the page that the teacher marked (the box refuses a mark for another page). A refused mark
+  // draws the list of the box again (a drag shows its words until the answer).
   function sendMark(change, url) {
     change.url = url;
     fetch('marks', {
@@ -355,12 +357,13 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(change)
     }).then(function (r) {
-      if (r.status === 422 || r.status === 400 || r.status === 409) {
-        return r.json().then(function (j) {
-          note(j.error === 'full' ? t('marksFull', j.max) : j.error === 'long' ? t('markLong', j.max) : t('markNotSent'));
-        });
-      }
-    }).catch(function () { note(t('boxNotReachable')); });
+      if (r.status === 204) { return; }   // the box sends the new list
+      pending = null;
+      paintMarks();
+      return r.json().then(function (j) {
+        note(j.error === 'full' ? t('marksFull', j.max) : j.error === 'long' ? t('markLong', j.max) : t('markNotSent'));
+      }, function () { note(t('markNotSent')); });
+    }).catch(function () { pending = null; paintMarks(); note(t('boxNotReachable')); });
   }
 
   function hasSelection(win) {
@@ -368,26 +371,52 @@
     return !!sel && !sel.isCollapsed;
   }
 
-  // The first tap after a text selection only ends the selection: it marks nothing.
-  // With the box tool, a press starts a box.
-  function onPointerDown(ev) {
-    tapEndsSelection = hasSelection(view.win());
-    boxSent = false;
-    if (!marking || !boxTool || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
-    ev.preventDefault();
-    endDrag();
-    // A mouse or a pen that leaves the frame still ends the box here (a touch does so by itself).
-    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* an old WebView */ }
-    var doc = view.win().document;
-    var el = doc.createElement('div');
-    el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
-      'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); left: ' + ev.clientX + 'px; top: ' +
-      ev.clientY + 'px; width: 0; height: 0;');
-    doc.documentElement.appendChild(el);
-    drag = { x0: ev.clientX, y0: ev.clientY, x1: ev.clientX, y1: ev.clientY, el: el };
+  // The mark under a point of the page on the screen (client coordinates), or null.
+  function markAt(x, y) {
+    var win = view.win();
+    if (!painted.layer || painted.doc !== win.document) { return null; }
+    var o = painted.layer.getBoundingClientRect();
+    return SchoolMarks.hitTest(painted.drawn, x - o.left, y - o.top);
   }
 
-  // Removes the box that the teacher draws, if any.
+  // The first tap after a text selection only ends the selection: it marks nothing.
+  // With a tool, a press starts a drag; with the marker, a press on a mark is a tap that removes it.
+  function onPointerDown(ev) {
+    tapEndsSelection = hasSelection(view.win());
+    dragSent = false;
+    if (!marking || !tool || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
+    ev.preventDefault();
+    endDrag();
+    var win = view.win();
+    var doc = win.document;
+    var from = null;
+    var onMark = null;
+    if (tool === 'pen') {
+      // A press on a word starts a drag, also inside a box or a marked paragraph. A press with no
+      // move on a mark removes the mark (onPointerUp); a press on a mark with no word: onMarkTap.
+      onMark = markAt(ev.clientX, ev.clientY);
+      from = SchoolMarks.wordAt(win, ev.clientX, ev.clientY);
+      if (!from) {
+        if (onMark === null) { note(t('markOutside')); }
+        return;
+      }
+      note(t('markPenHelp'));
+    }
+    // A mouse or a pen that leaves the frame still ends the drag here (a touch does so by itself).
+    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* an old WebView */ }
+    // The guide: the box as it grows, or a dotted line from the first word to the finger.
+    var el = doc.createElement('div');
+    el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
+      'left: ' + ev.clientX + 'px; top: ' + ev.clientY + 'px; width: 0; height: 0; transform-origin: 0 0; ' +
+      (tool === 'box' ? 'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);'
+        : 'border-top: 3px dotted rgb(255, 200, 0); filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));'));
+    doc.documentElement.appendChild(el);
+    drag = { kind: tool, x0: ev.clientX, y0: ev.clientY, x1: ev.clientX, y1: ev.clientY, el: el, from: from, mark: null,
+      onMark: onMark, moved: false };
+    if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); preview(); }
+  }
+
+  // Removes the guide of the drag, if any. The words that a drag showed stay until the box answers.
   function endDrag() {
     if (drag && drag.el.parentNode) { drag.el.parentNode.removeChild(drag.el); }
     drag = null;
@@ -398,73 +427,78 @@
       right: Math.max(drag.x0, drag.x1), bottom: Math.max(drag.y0, drag.y1) };
   }
 
+  // The marker shows the words of the drag at once, drawn again at most once a frame.
+  var previewQueued = false;
+  function preview() {
+    if (previewQueued) { return; }
+    previewQueued = true;
+    requestAnimationFrame(function () { previewQueued = false; paintMarks(); });
+  }
+
   function onPointerMove(ev) {
     if (!drag || !ev.isPrimary) { return; }
-    if (ev.pointerType !== 'touch' && ev.buttons === 0) { endDrag(); return; }   // the button went up out of view
+    if (ev.pointerType !== 'touch' && ev.buttons === 0) { endDrag(); paintMarks(); return; }   // the button went up out of view
     ev.preventDefault();
     drag.x1 = ev.clientX;
     drag.y1 = ev.clientY;
-    var r = dragRect();
-    drag.el.style.left = r.left + 'px';
-    drag.el.style.top = r.top + 'px';
-    drag.el.style.width = (r.right - r.left) + 'px';
-    drag.el.style.height = (r.bottom - r.top) + 'px';
+    if (drag.kind === 'box') {
+      var r = dragRect();
+      drag.el.style.left = r.left + 'px';
+      drag.el.style.top = r.top + 'px';
+      drag.el.style.width = (r.right - r.left) + 'px';
+      drag.el.style.height = (r.bottom - r.top) + 'px';
+      return;
+    }
+    var dx = drag.x1 - drag.x0;
+    var dy = drag.y1 - drag.y0;
+    drag.el.style.width = Math.sqrt(dx * dx + dy * dy) + 'px';
+    drag.el.style.transform = 'rotate(' + Math.atan2(dy, dx) + 'rad)';
+    if (dx * dx + dy * dy > 64) { drag.moved = true; }
+    var to = SchoolMarks.wordAt(view.win(), ev.clientX, ev.clientY);
+    if (!to) { return; }   // between two blocks: the words stay as they were
+    drag.mark = SchoolMarks.dragMark(view.win(), drag.from, to);
+    preview();
   }
 
-  // The end of a drag sends the box. A short drag is a tap: onMarkTap handles it.
+  // The end of a drag sends the mark. A short box drag is a tap: onMarkTap handles it. With the
+  // marker, a tap on a word marks that word.
   function onPointerUp(ev) {
     if (!drag || !ev.isPrimary) { return; }
+    var d = drag;
     var r = dragRect();
     endDrag();
-    if (ev.type === 'pointercancel' || !marking || !boxTool) { return; }
-    var m = SchoolMarks.boxMark(view.win(), r);
-    if (m) { boxSent = true; sendMark({ op: 'add', mark: m }, view.path()); }
+    if (ev.type === 'pointercancel' || !marking || tool !== d.kind) { paintMarks(); return; }
+    if (d.kind === 'pen' && !d.moved && d.onMark !== null) {
+      dragSent = true;
+      paintMarks();
+      sendMark({ op: 'remove', id: d.onMark }, view.path());
+      return;
+    }
+    var m = d.kind === 'box' ? SchoolMarks.boxMark(view.win(), r) : d.mark;
+    if (m) {
+      dragSent = true;
+      if (d.kind === 'pen') { pending = m; }
+      sendMark({ op: 'add', mark: m }, view.path());
+    }
+    paintMarks();
   }
 
-  // Mark mode: a tap on a mark removes it, a tap on a block marks it. No link opens.
+  // Mark mode: a tap on a mark removes it, a tap on a block marks it (no tool). No link opens.
   function onMarkTap(ev) {
     if (!marking || ev.button !== 0) { return; }
     ev.preventDefault();
     ev.stopPropagation();
-    if (tapEndsSelection || boxSent || !publishable) { return; }
-    var win = view.win();
-    if (painted.layer && painted.doc === win.document) {
-      var o = painted.layer.getBoundingClientRect();
-      var id = SchoolMarks.hitTest(painted.drawn, ev.clientX - o.left, ev.clientY - o.top);
-      if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); return; }
-    }
-    if (boxTool) { return; }   // the box tool draws boxes: a tap only removes a mark
-    var m = SchoolMarks.blockMark(win.document, ev.target);
+    if (tapEndsSelection || dragSent || !publishable) { return; }
+    var id = markAt(ev.clientX, ev.clientY);
+    if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); return; }
+    if (tool) { return; }   // a tool marks with a drag: a tap only removes a mark
+    var m = SchoolMarks.blockMark(view.win().document, ev.target);
     if (m) { sendMark({ op: 'add', mark: m }, view.path()); }
   }
 
-  // A text selection on the page shows "Mark the words". The mark is made at once: a tap on the
-  // button can clear the selection before the click comes.
-  var selectionTimer = null;
-  function onSelection() {
-    var win = view.win();
-    if (publishable && win && hasSelection(win)) {
-      clearTimeout(selectionTimer);
-      phrase = SchoolMarks.phraseMark(win);
-      if (phrase) { phrase.url = view.path(); }
-      wordsBtn.hidden = false;
-      return;
-    }
-    clearTimeout(selectionTimer);
-    selectionTimer = setTimeout(function () { phrase = null; wordsBtn.hidden = true; }, 500);
-  }
-
   markBtn.onclick = function () { setMarking(!marking); };
-  boxBtn.onclick = function () { setBoxTool(!boxTool); };
-  wordsBtn.onclick = function () {
-    var p = phrase;
-    phrase = null;
-    wordsBtn.hidden = true;
-    try { view.win().getSelection().removeAllRanges(); } catch (e) { /* no selection */ }
-    if (!p) { return; }
-    if (p.error) { note(t('markOutside')); return; }
-    sendMark({ op: 'add', mark: p.mark }, p.url);
-  };
+  penBtn.onclick = function () { setTool(tool === 'pen' ? null : 'pen'); };
+  boxBtn.onclick = function () { setTool(tool === 'box' ? null : 'box'); };
   clearBtn.onclick = function () { sendMark({ op: 'clear' }, view.path()); };
 
   // The box keeps the lesson of the class. A page that loads again opens that lesson at the same
@@ -659,7 +693,7 @@
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'lesson') { start(m.lesson); return; }
     if (m.type === 'ended') { showEnded(); return; }   // another teacher page ended the class
-    if (m.type === 'marks') { marks = { url: m.url, list: m.list }; paintMarks(); return; }
+    if (m.type === 'marks') { marks = { url: m.url, list: m.list }; pending = null; paintMarks(); return; }
     // The students choose the class by this code in Class > Join.
     if (m.type === 'class') { codeEl.textContent = m.code ? t('classCode', m.code) : ''; return; }
     if (m.type === 'roster') {

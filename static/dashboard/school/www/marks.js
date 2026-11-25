@@ -1,6 +1,6 @@
 // K2Go School: the marks of the teacher on the lesson page (M2). The box keeps the list
-// (class.ts); this file turns a mark into rectangles on the page, and a tap or a text selection of
-// the teacher into a mark. A mark uses the blocks of anchor.js: block index, print, characters.
+// (class.ts); this file turns a mark into rectangles on the page, and a tap or a drag of the
+// teacher into a mark. A mark uses the blocks of anchor.js: block index, print, characters.
 // The marks show in one layer over the page, not in the page text: the text nodes of the page
 // stay as they are (the anchor counts characters in them). The pure functions have unit tests
 // (school/marks.test.ts).
@@ -274,29 +274,90 @@
     return { b: b, s: s, eb: eb, e: e };
   }
 
-  // A phrase mark for the text selection in win: { mark }, { error: 'outside' }, or null
-  // (no selection). An end of the selection outside the blocks (between two paragraphs) moves to
-  // the first or last block that the selection holds.
-  function phraseMark(win) {
-    var doc = win.document;
-    var sel = win.getSelection ? win.getSelection() : null;
-    if (!sel || sel.isCollapsed || !sel.rangeCount) { return null; }
-    var range = sel.getRangeAt(0);
-    var blocks = Anchor.blocksOf(doc);
-    var b = blockOf(blocks, range.startContainer);
-    var eb = blockOf(blocks, range.endContainer);
-    var s = b >= 0 ? charsBefore(doc, blocks.list[b], range.startContainer, range.startOffset) : 0;
-    var e = eb >= 0 ? charsBefore(doc, blocks.list[eb], range.endContainer, range.endOffset) : 0;
-    if (b < 0 || eb < 0) {
-      var inside = [];
-      blocks.list.forEach(function (el, i) { if (range.intersectsNode(el)) { inside.push(i); } });
-      if (!inside.length) { return { error: 'outside' }; }
-      if (b < 0) { b = inside[0]; s = 0; }
-      if (eb < 0) { eb = inside[inside.length - 1]; e = blocks.list[eb].textContent.length; }
+  // The word of text at character c: { start, end } (end not included), or null when c is not in
+  // a word. A caret right after a word (the finger on the right half of its last letter) counts for
+  // that word. segments(text), if given, cuts the text into [{ start, end, word }] (Intl.Segmenter:
+  // also for languages with no spaces, and with no punctuation in the word); else the words are the
+  // parts between spaces.
+  function wordAround(text, c, segments) {
+    var i = Math.min(Math.max(c, 0), text.length);
+    if (segments) {
+      var list = segments(text);
+      var after = null;
+      for (var k = 0; k < list.length; k++) {
+        var s = list[k];
+        if (!s.word) { continue; }
+        if (s.start <= i && i < s.end) { return { start: s.start, end: s.end }; }
+        if (s.end === i) { after = { start: s.start, end: s.end }; }
+      }
+      return after;
     }
-    var p = trimEnds(function (i) { return blocks.list[i].textContent; }, b, s, eb, e);
-    if (!p) { return { error: 'outside' }; }
-    return { mark: { k: 'p', b: p.b, t: blocks.prints[p.b], s: p.s, eb: p.eb, et: blocks.prints[p.eb], e: p.e } };
+    if ((i >= text.length || /\s/.test(text.charAt(i))) && i > 0 && !/\s/.test(text.charAt(i - 1))) { i -= 1; }
+    if (i >= text.length || /\s/.test(text.charAt(i))) { return null; }
+    var a = i;
+    var z = i + 1;
+    while (a > 0 && !/\s/.test(text.charAt(a - 1))) { a -= 1; }
+    while (z < text.length && !/\s/.test(text.charAt(z))) { z += 1; }
+    return { start: a, end: z };
+  }
+
+  // text(i), prints: the text and the print of block i. a, z: the words under the finger at the
+  // start and at the end of a drag, { b, start, end }, in any order. Gives the phrase mark from the
+  // first word to the last one, all words in between included, or null.
+  function phraseBetween(text, prints, a, z) {
+    var first = a;
+    var last = z;
+    if (z.b < a.b || (z.b === a.b && z.start < a.start)) { first = z; last = a; }
+    var p = trimEnds(text, first.b, first.start, last.b, last.end);
+    if (!p) { return null; }
+    return { k: 'p', b: p.b, t: prints[p.b], s: p.s, eb: p.eb, et: prints[p.eb], e: p.e };
+  }
+
+  // Intl.Segmenter (Chrome 87 and later) as segments() of wordAround, or null (an old WebView).
+  var segmenters = {};
+  function segmentsFor(lang) {
+    if (typeof Intl === 'undefined' || !Intl.Segmenter) { return null; }
+    var key = lang || '';
+    if (!segmenters[key]) {
+      var seg = new Intl.Segmenter(lang || undefined, { granularity: 'word' });
+      segmenters[key] = function (text) {
+        var out = [];
+        var it = seg.segment(text)[Symbol.iterator]();
+        for (var n = it.next(); !n.done; n = it.next()) {
+          out.push({ start: n.value.index, end: n.value.index + n.value.segment.length, word: !!n.value.isWordLike });
+        }
+        return out;
+      };
+    }
+    return segmenters[key];
+  }
+
+  // The word under the point (client coordinates of the page in win): { b, start, end }, or null
+  // (no text there, or the point is out of its block). The word stays in its text node: a line
+  // break (<br>) or the next table cell adds no character to the text, so a word must not go over
+  // it.
+  function wordAt(win, x, y) {
+    var doc = win.document;
+    if (!doc.caretRangeFromPoint) { return null; }
+    var caret = doc.caretRangeFromPoint(x, y);
+    if (!caret || caret.startContainer.nodeType !== 3) { return null; }
+    var blocks = Anchor.blocksOf(doc);
+    var b = blockOf(blocks, caret.startContainer);
+    if (b < 0) { return null; }
+    var el = blocks.list[b];
+    var r = el.getBoundingClientRect();
+    if (y < r.top || y > r.bottom) { return null; }   // the nearest caret of a gap between blocks
+    var node = caret.startContainer;
+    var w = wordAround(node.data, caret.startOffset, segmentsFor(doc.documentElement.lang));
+    if (!w) { return null; }
+    var base = charsBefore(doc, el, node, 0);
+    return { b: b, start: base + w.start, end: base + w.end };
+  }
+
+  // The phrase mark for a drag from word a to word z of the page in win, or null.
+  function dragMark(win, a, z) {
+    var blocks = Anchor.blocksOf(win.document);
+    return phraseBetween(function (i) { return blocks.list[i].textContent; }, blocks.prints, a, z);
   }
 
   return {
@@ -310,6 +371,10 @@
     clamp: clamp,
     draw: draw,
     blockMark: blockMark,
-    phraseMark: phraseMark
+    wordAround: wordAround,
+    segmentsFor: segmentsFor,
+    phraseBetween: phraseBetween,
+    wordAt: wordAt,
+    dragMark: dragMark
   };
 });

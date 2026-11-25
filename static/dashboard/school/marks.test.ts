@@ -39,6 +39,42 @@ test('isLight: light text means a dark page', () => {
     assert.equal(M.isLight(''), false);
 });
 
+test('wordAround: the word at a character, also right after it; none in a space', () => {
+    const text = 'In his early years,  Charles';
+    assert.deepEqual(M.wordAround(text, 8), { start: 7, end: 12 });     // "early"
+    assert.deepEqual(M.wordAround(text, 7), { start: 7, end: 12 });
+    assert.deepEqual(M.wordAround(text, 12), { start: 7, end: 12 });    // the caret right after it
+    assert.deepEqual(M.wordAround(text, 18), { start: 13, end: 19 });   // "years," with its comma
+    assert.equal(M.wordAround(text, 20), null);                         // in the double space
+    assert.deepEqual(M.wordAround(text, 28), { start: 21, end: 28 });   // the end of the text
+    assert.equal(M.wordAround('', 0), null);
+});
+
+test('wordAround with Intl.Segmenter: no punctuation in a word, words of a language with no spaces', () => {
+    const en = M.segmentsFor('en');
+    assert.deepEqual(M.wordAround('early years, Charles', 9, en), { start: 6, end: 11 });   // "years", no comma
+    assert.deepEqual(M.wordAround('early years, Charles', 11, en), { start: 6, end: 11 });  // the caret after it
+    assert.equal(M.wordAround('a , b', 2, en), null);                                      // the comma alone
+    const zh = M.segmentsFor('zh');
+    const text = '中文句子没有空格在这里';
+    const w = M.wordAround(text, 0, zh);
+    assert.ok(w && w.start === 0 && w.end < text.length, JSON.stringify(w));               // a word, not the whole text
+});
+
+test('phraseBetween: from the first word to the last one, in any order of the drag', () => {
+    const texts = ['First paragraph here.', '', 'Second one, longer.'];
+    const prints = ['p0', 'p1', 'p2'];
+    const text = (i: number) => texts[i];
+    const a = { b: 0, start: 6, end: 15 };     // "paragraph"
+    const z = { b: 2, start: 7, end: 11 };     // "one,"
+    const mark = { k: 'p', b: 0, t: 'p0', s: 6, eb: 2, et: 'p2', e: 11 };
+    assert.deepEqual(M.phraseBetween(text, prints, a, z), mark);
+    assert.deepEqual(M.phraseBetween(text, prints, z, a), mark);      // a drag upwards
+    assert.deepEqual(M.phraseBetween(text, prints, a, a), { k: 'p', b: 0, t: 'p0', s: 6, eb: 0, et: 'p0', e: 15 });
+    const back = { b: 0, start: 0, end: 5 };   // "First", left of a on the same line
+    assert.deepEqual(M.phraseBetween(text, prints, a, back), { k: 'p', b: 0, t: 'p0', s: 0, eb: 0, et: 'p0', e: 15 });
+});
+
 test('clamp: a rect stays inside the page', () => {
     assert.deepEqual(M.clamp(r(-2, -2, 402, 50), 400, 1000), r(0, 0, 400, 50));
     assert.deepEqual(M.clamp(r(10, 990, 20, 1002), 400, 1000), r(10, 990, 20, 1000));
