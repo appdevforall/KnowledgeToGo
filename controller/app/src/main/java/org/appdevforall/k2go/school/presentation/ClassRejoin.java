@@ -39,6 +39,8 @@ import java.util.function.Supplier;
 public final class ClassRejoin implements DefaultLifecycleObserver {
 
     static final long PROBE_MS = 5000;
+    /** The probe after the search gave up: the class can still come back at its address. */
+    static final long SLOW_PROBE_MS = 30000;
     private static final String TAG = "K2GoSchool";
 
     private final Rejoin rule;
@@ -159,7 +161,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
                 if (at.equals(rule.address())) {   // else: it moved meanwhile
                     act(rule.probed(answer == null ? null : answer.code, answer != null), null);
                 }
-                if (!rule.ended()) main.postDelayed(tick, PROBE_MS);
+                if (!rule.ended()) main.postDelayed(tick, rule.gaveUp() ? SLOW_PROBE_MS : PROBE_MS);
             });
         });
     }

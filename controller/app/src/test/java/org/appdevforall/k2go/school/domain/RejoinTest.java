@@ -55,8 +55,11 @@ public class RejoinTest {
         Action last = Action.NONE;
         for (int i = 3; i <= Rejoin.GIVE_UP_MISSES; i++) last = r.probed(null);
         assertEquals(Action.STOP_SEARCH, last);          // the class ended: no search for ever
+        assertTrue(r.gaveUp());                          // the screen probes less often
         assertEquals(Action.NONE, r.probed(null));
         assertFalse(r.searching());
+        assertEquals(Action.NONE, r.probed("4F7K"));     // back at the address after all
+        assertFalse(r.gaveUp());
     }
 
     @Test public void aBoxThatSaysNoClassEndsTheSearchForGood() {

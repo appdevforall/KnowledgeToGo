@@ -63,6 +63,12 @@ public final class Rejoin {
 
     public boolean searching() { return searching; }
 
+    /**
+     * True after {@link #GIVE_UP_MISSES} probes with no class: the search stopped, and the screen
+     * asks the box less often (review L4). The class can still come back at the address.
+     */
+    public boolean gaveUp() { return misses >= GIVE_UP_MISSES; }
+
     /** True after {@link Action#END}: no more probes and no search. */
     public boolean ended() { return ended; }
 
