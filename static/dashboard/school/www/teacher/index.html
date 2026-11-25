@@ -217,11 +217,13 @@
   // A note floats over the page and goes away after NOTE_MS. keep: it stays until the next note.
   // action: { label, run } shows a button in the note.
   // A short note over a kept connection note shows the connection note again when it goes.
+  // No text: the connection note while the channel is down, else no note (review M3).
   var NOTE_MS = 4000;
   var noteTimer = null;
   var connText = '';   // the state of the channel to the box, while it is not open
   function note(text, keep, action) {
     clearTimeout(noteTimer);
+    if (!text && connText) { text = connText; keep = true; action = null; }
     if (toastText.textContent !== (text || '')) { toastText.textContent = text || ''; }
     toastEl.hidden = !text;
     toastAction.hidden = !action;
@@ -230,7 +232,7 @@
       toastAction.onclick = action.run;
     }
     if (text && !keep) {
-      noteTimer = setTimeout(function () { if (connText) { note(connText, true); } else { toastEl.hidden = true; } }, NOTE_MS);
+      noteTimer = setTimeout(function () { note(''); }, NOTE_MS);
     }
   }
 
