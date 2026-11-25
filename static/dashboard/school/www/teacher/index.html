@@ -17,29 +17,47 @@
   }
   html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
-  header { padding: 4px 6px; background: var(--head); color: var(--head-fg); }
-  header button, header input { font: inherit; margin: 2px 2px 2px 0; }
-  header input { width: 9em; }
-  #bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
-  #end { margin-left: auto; }
-  #confirm, #note { margin-top: 4px; padding: 4px 6px; border-radius: 3px; background: var(--note); color: var(--note-fg); }
-  #status { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: center; }
+  /* The header: one row of icon buttons (tap targets of 40 px, also on a small phone, Nokia 6:
+     360 x 640) and one status line. Notes, the seats of a group and the end question float over the
+     page: the header keeps its height, so the page does not move under the finger. */
+  header { position: relative; z-index: 6; padding: 2px 6px 4px; background: var(--head); color: var(--head-fg); }
+  header input { font: inherit; width: 9em; }
+  #bar { display: flex; align-items: center; gap: 2px; }
+  #end { margin-inline-start: auto; }   /* the end of the bar, also right to left */
+  button.icon { width: 40px; height: 40px; margin: 0; padding: 0; display: inline-flex; align-items: center;
+    justify-content: center; border: 1px solid transparent; border-radius: 8px; background: none; color: inherit; }
+  button.icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round; }
+  button.icon:disabled { opacity: 0.35; }
+  button.icon[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); border-color: var(--mark-fg); }
+  .sep { width: 1px; height: 24px; margin: 0 4px; background: currentColor; opacity: 0.3; }
+  #line { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-height: 22px; }
+  #status { display: flex; flex-wrap: wrap; gap: 0 2px; align-items: center; }
   #status button { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: 12px;
-    border: 1px solid transparent; background: none; color: inherit; }
+    border: 1px solid transparent; background: none; color: inherit; font: inherit; }
   #status button[aria-pressed="true"] { border-color: var(--head-fg); }
   #status b { font-variant-numeric: tabular-nums; }
   .light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 1px var(--light-ring); }
   .light.ok { background: var(--ok); }
   .light.slow { background: var(--slow); }
   .light.bad { background: var(--bad); }
-  #seats { margin-top: 4px; }
+  .pop { position: absolute; left: 6px; right: 6px; top: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px;
+    background: var(--note); color: var(--note-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+  .pop button { font: inherit; min-height: 36px; margin: 4px 4px 0 0; }
+  #toast { position: absolute; left: 12px; right: 12px; bottom: 16px; z-index: 5; display: flex; align-items: center;
+    gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--note); color: var(--note-fg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+  #toast button { margin-inline-start: auto; font: inherit; min-height: 36px; white-space: nowrap; }
+  /* The eraser: "Clear all" in a small chip at a top corner, not a note over the bottom lines. */
+  #clearAll { position: absolute; top: 8px; inset-inline-end: 8px; z-index: 5; min-height: 36px; padding: 4px 12px;
+    font: inherit; border: 1px solid var(--mark-fg); border-radius: 18px; background: var(--mark); color: var(--mark-fg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); }
+  /* Right to left: the arrows of Back and End class point the other way. */
+  [dir="rtl"] #back svg, [dir="rtl"] #end svg { transform: scaleX(-1); }
   #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: var(--chip); color: var(--chip-fg); border-radius: 3px; }
   #students span.done { background: var(--done); color: var(--done-fg); }
   #students span.off { opacity: 0.5; }
   #stats { white-space: pre; font: 12px monospace; }
-  /* The mark tools: tap targets of 40 px, also on a small phone (Nokia 6: 360 x 640). */
-  button.tool { min-height: 40px; padding: 4px 10px; }
-  button.tool[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); border: 1px solid var(--mark-fg); }
   #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
   #ended button { font: inherit; padding: 8px 16px; }
   [hidden] { display: none !important; }
@@ -47,13 +65,18 @@
 </head>
 <body>
 <header>
+  <!-- Icons, not words: less text to translate, less height. Each button has a label for screen readers (data-a). -->
   <div id="bar">
-    <button id="library" data-t="library"></button>
-    <button id="back" data-t="back" disabled></button>
-    <button id="mark" class="tool" data-t="mark" aria-pressed="false" disabled></button>
-    <button id="markPen" class="tool" data-t="markPen" aria-pressed="false" hidden></button>
-    <button id="markBox" class="tool" data-t="markBox" aria-pressed="false" hidden></button>
-    <button id="clearMarks" class="tool" hidden></button>
+    <button id="library" class="icon" data-a="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6v14"/></svg></button>
+    <button id="back" class="icon" data-a="back" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <span class="sep"></span>
+    <button id="markPen" class="icon" data-a="markPen" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21h6"/><path d="M8 17l-3 3"/><path d="M8 17l2 2 9-9-4-4-9 9z"/><path d="M13 8l3 3"/></svg></button>
+    <button id="markBox" class="icon" data-a="markBox" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1" stroke-dasharray="3 3"/></svg></button>
+    <button id="markOval" class="icon" data-a="markOval" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="7"/></svg></button>
+    <button id="markEraser" class="icon" data-a="markEraser" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16l9-9 6 6-6 6H8z"/><path d="M9 11l6 6"/><path d="M13 20h7"/></svg></button>
+    <button id="end" class="icon" data-a="endClass"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4H6v16h8"/><path d="M10 12h10"/><path d="M17 9l3 3-3 3"/></svg></button>
+  </div>
+  <div id="line">
     <span id="code"></span>
     <span id="status" translate="no">
       <button data-group="ok" aria-pressed="false"><i class="light ok"></i><span class="label"></span> <b>0</b></button>
@@ -61,17 +84,14 @@
       <button data-group="bad" aria-pressed="false"><i class="light bad"></i><span class="label"></span> <b>0</b></button>
       <button data-group="done" aria-pressed="false"><span class="label"></span> <b>0/0</b></button>
     </span>
-    <span id="conn"></span>
-    <button id="end" data-t="endClass"></button>
   </div>
   <!-- The seats of the group that the teacher tapped. -->
-  <div id="seats" translate="no" hidden></div>
-  <div id="confirm" hidden>
-    <span data-t="endConfirm"></span>
+  <div id="seats" class="pop" translate="no" hidden></div>
+  <div id="confirm" class="pop" hidden>
+    <span data-t="endConfirm"></span><br>
     <button id="endYes" data-t="endClass"></button>
     <button id="endNo" data-t="cancel"></button>
   </div>
-  <div id="note" hidden></div>
   <!-- Test tools (?debug=1): not for a class. The round trip of each seat is here. -->
   <div id="debug" hidden>
     <div id="students"></div>
@@ -85,6 +105,9 @@
   </div>
 </header>
 <div id="stage">
+  <!-- Notes float over the page and go away by themselves; an open tool keeps its own. -->
+  <div id="toast" role="status" hidden><span id="toastText"></span><button id="toastAction" hidden></button></div>
+  <button id="clearAll" hidden></button>
   <div id="ended" hidden>
     <p data-t="ended"></p>
     <button id="again" data-t="startAgain"></button>
@@ -98,12 +121,14 @@
 'use strict';
 (function () {
   var stage = document.getElementById('stage');
-  var connEl = document.getElementById('conn');
+  var clearAllBtn = document.getElementById('clearAll');
   var codeEl = document.getElementById('code');
   var seatsEl = document.getElementById('seats');
   var studentsEl = document.getElementById('students');
   var statsEl = document.getElementById('stats');
-  var noteEl = document.getElementById('note');
+  var toastEl = document.getElementById('toast');
+  var toastText = document.getElementById('toastText');
+  var toastAction = document.getElementById('toastAction');
   var backBtn = document.getElementById('back');
   var confirmEl = document.getElementById('confirm');
   var HZ = parseInt(School.params.get('hz'), 10) || 20;
@@ -111,8 +136,13 @@
   // The words come from text.js, in the language of this page; the class carries it to the
   // students (live?lang=).
   SchoolText.apply(document);
-  document.querySelector('header').dir = SchoolText.dir();
+  document.documentElement.dir = SchoolText.dir();   // the header and the notes
   var t = SchoolText.text;
+  // The icon buttons: their words for a screen reader (and a mouse pointer on a PC).
+  document.querySelectorAll('[data-a]').forEach(function (el) {
+    el.setAttribute('aria-label', t(el.getAttribute('data-a')));
+    el.title = t(el.getAttribute('data-a'));
+  });
   function seatLabel(n) { return t('seat', (n < 10 ? '0' : '') + n); }
   // The status groups: the word on the line, and the sentence that lists the seats of the group.
   var GROUP_WORD = { ok: 'ok', slow: 'slow', bad: 'bad', done: 'done' };
@@ -151,19 +181,20 @@
   var pageGen = 0;          // page loads: a late status check of an older page does nothing
   var trail = [];           // the pages that the teacher opened, for Back
   // Marks (M2). The box keeps the marks of the lesson page; this page draws what the box sends and
-  // sends each change to the box. marking: a tap marks a block (state of this page only).
+  // sends each change to the box.
   var marks = { url: null, list: [] };
   var painted = { doc: null, layer: null, drawn: [] };
-  var marking = false;
-  var tool = null;          // the tool of Mark mode: null, 'pen' or 'box' (setTool)
-  var drag = null;          // the drag of a tool: { kind, x0, y0, x1, y1, el, from, mark }
+  var tool = null;          // the mark tool that is on (state of this page only): null, 'pen', 'box', 'oval' or 'eraser'
+  var drag = null;          // the drag of a tool (onPointerDown)
   var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
   var pending = null;       // the mark of the last drag, shown until the box answers
   var tapEndsSelection = false;
-  var markBtn = document.getElementById('mark');
-  var penBtn = document.getElementById('markPen');
-  var boxBtn = document.getElementById('markBox');
-  var clearBtn = document.getElementById('clearMarks');
+  var toolBtns = {
+    pen: document.getElementById('markPen'),
+    box: document.getElementById('markBox'),
+    oval: document.getElementById('markOval'),
+    eraser: document.getElementById('markEraser')
+  };
   // The teacher ended the class. The mark outlives the page: the app loads the teacher page again
   // after a theme change, and that must not open a new class. Only "Start a new class" clears it.
   var ENDED_KEY = 'k2go-school-ended';
@@ -172,9 +203,30 @@
 
   var view = School.view(stage, onReady);
 
-  function note(text) {
-    noteEl.textContent = text || '';
-    noteEl.hidden = !text;
+  // A note floats over the page and goes away after NOTE_MS. keep: it stays until the next note.
+  // action: { label, run } shows a button in the note.
+  // A short note over a kept connection note shows the connection note again when it goes.
+  var NOTE_MS = 4000;
+  var noteTimer = null;
+  var connText = '';   // the state of the channel to the box, while it is not open
+  function note(text, keep, action) {
+    clearTimeout(noteTimer);
+    if (toastText.textContent !== (text || '')) { toastText.textContent = text || ''; }
+    toastEl.hidden = !text;
+    toastAction.hidden = !action;
+    if (action) {
+      toastAction.textContent = action.label;
+      toastAction.onclick = action.run;
+    }
+    if (text && !keep) {
+      noteTimer = setTimeout(function () { if (connText) { note(connText, true); } else { toastEl.hidden = true; } }, NOTE_MS);
+    }
+  }
+
+  function setConn(text) {
+    var was = connText;
+    connText = text;
+    if (text) { note(text, true); } else if (was && toastText.textContent === was) { note(''); }
   }
 
   // The Kiwix library opens a book in its viewer, at viewer#<book>/<path>, which shows the book in
@@ -214,7 +266,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(msg)
-    }).catch(function () { connEl.textContent = t('boxNotReachable'); });
+    }).catch(function () { setConn(t('boxNotReachable')); });
   }
 
   // Send at most HZ messages a second, and always the last position.
@@ -246,7 +298,7 @@
 
   function onReady(win) {
     publishable = false;   // until the checks below pass for this page
-    markBtn.disabled = true;
+    setToolsOn(false);
     var content = contentOf(win.location);
     if (content) { open(content); return; }   // a viewer page that a link did not change
     win.addEventListener('scroll', onScroll, { passive: true });
@@ -259,14 +311,14 @@
     win.document.addEventListener('pointercancel', onPointerUp, true);
     // A tool: no drag of a picture, and no menu after a long press (it would cancel the drag).
     ['dragstart', 'contextmenu'].forEach(function (type) {
-      win.document.addEventListener(type, function (ev) { if (marking && tool) { ev.preventDefault(); } }, true);
+      win.document.addEventListener(type, function (ev) { if (tool) { ev.preventDefault(); } }, true);
     });
     win.document.addEventListener('click', onMarkTap, true);   // before onLink: a tap that marks opens no link
     win.document.addEventListener('click', onLink, true);
     if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
     endDrag();                // a drag on the old page does not go to this one
     pending = null;
-    setMarking(false);
+    setTool(null);
     paintMarks();
     var path = view.path();
     if (trail[trail.length - 1] !== path) { trail.push(path); }
@@ -274,7 +326,7 @@
     backBtn.disabled = trail.length < 2;
     var mine = ++pageGen;
     if (isLibrary(win.location.pathname)) {
-      note(t('openBook'));
+      note(t('openBook'), true);
       return;
     }
     // A page that answers an error never goes to the class (rehearsal F4).
@@ -282,11 +334,11 @@
       if (mine !== pageGen) { return; }
       if (status >= 200 && status < 400) {
         publishable = true;
-        markBtn.disabled = false;
+        setToolsOn(true);
         note('');
         publish();
       } else {
-        note(status ? t('notFound', status) : t('noPageAnswer'));
+        note(status ? t('notFound', status) : t('noPageAnswer'), true);
       }
     });
   }
@@ -308,44 +360,56 @@
     } catch (e) {
       painted = { doc: null, layer: null, drawn: [] };
     }
-    clearBtn.hidden = !list.length;
-    clearBtn.textContent = t('clearMarks', list.length);
+    eraserChip(list.length);
   }
 
-  function setMarking(on) {
-    marking = on;
-    penBtn.hidden = !on;
-    boxBtn.hidden = !on;
-    markBtn.setAttribute('aria-pressed', String(on));
-    setTool(null);
+  // The mark tools are on only for a page that can go to the class.
+  function setToolsOn(on) {
+    Object.keys(toolBtns).forEach(function (k) { toolBtns[k].disabled = !on; });
+    if (!on) { setTool(null); }
   }
 
-  // The tools of Mark mode (state of this page only). null: a tap marks a paragraph, a cell or a
-  // picture. 'pen': a drag marks the words from the first one to the last one. 'box': a drag draws
-  // a box. With a tool on, the page does not scroll: the drag marks.
+  // A tool is the mark mode: with a tool on, a tap opens no link. null: the page as usual.
+  //   pen: a drag marks the words from the first one to the last one; a tap on a picture marks it.
+  //   box, oval: a drag draws a box or an oval.
+  //   eraser: a tap on a mark removes it; its note can clear all marks.
+  // With pen, box or oval, the page does not scroll by the finger: the drag marks, and the page
+  // scrolls when the finger comes near its top or bottom edge.
   var TOOL_STYLE_ID = 'k2go-mark-tool';
-  var TOOL_HELP = { pen: 'markPenHelp', box: 'markBoxHelp' };
+  var TOOL_HELP = { pen: 'markPenHelp', box: 'markBoxHelp', oval: 'markOvalHelp', eraser: 'markEraserHelp' };
   function setTool(name) {
     tool = name;
     endDrag();
-    penBtn.setAttribute('aria-pressed', String(tool === 'pen'));
-    boxBtn.setAttribute('aria-pressed', String(tool === 'box'));
-    note(marking ? t(TOOL_HELP[tool] || 'markHelp') : '');
+    Object.keys(toolBtns).forEach(function (k) { toolBtns[k].setAttribute('aria-pressed', String(tool === k)); });
+    note(tool ? t(TOOL_HELP[tool]) : '');
+    eraserChip(markCount());
     if (tool) { try { view.win().getSelection().removeAllRanges(); } catch (e) { /* no selection */ } }
     var doc = view.win() && view.win().document;
     if (!doc || !doc.documentElement) { return; }
     var style = doc.getElementById(TOOL_STYLE_ID);
-    if (tool && !style) {
+    var drags = tool && tool !== 'eraser';
+    if (drags && !style) {
       style = doc.createElement('style');
       style.id = TOOL_STYLE_ID;
       // No scroll, no text selection, no drag of a picture: the drag marks.
       style.textContent = 'html, body, body * { touch-action: none !important; user-select: none !important; ' +
         '-webkit-user-select: none !important; -webkit-user-drag: none !important; }';
       doc.documentElement.appendChild(style);
-    } else if (!tool && style) {
+    } else if (!drags && style) {
       style.parentNode.removeChild(style);
     }
   }
+
+  function markCount() {
+    return marks.url === view.path() ? marks.list.length : 0;
+  }
+
+  // With the eraser on and marks on the page: "Clear all (n)".
+  function eraserChip(n) {
+    clearAllBtn.hidden = !(tool === 'eraser' && n);
+    if (!clearAllBtn.hidden) { clearAllBtn.textContent = t('clearMarks', n); }
+  }
+  clearAllBtn.onclick = function () { sendMark({ op: 'clear' }, view.path()); };
 
   // A change of the marks goes to the box; the box sends the new list to all pages of the class.
   // url: the page that the teacher marked (the box refuses a mark for another page). A refused mark
@@ -380,39 +444,40 @@
   }
 
   // The first tap after a text selection only ends the selection: it marks nothing.
-  // With a tool, a press starts a drag; with the marker, a press on a mark is a tap that removes it.
+  // With pen, box or oval, a press starts a drag (the pen only on a word).
   function onPointerDown(ev) {
     tapEndsSelection = hasSelection(view.win());
     dragSent = false;
-    if (!marking || !tool || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
+    if (!tool || tool === 'eraser' || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
     ev.preventDefault();
     endDrag();
     var win = view.win();
     var doc = win.document;
     var from = null;
-    var onMark = null;
     if (tool === 'pen') {
-      // A press on a word starts a drag, also inside a box or a marked paragraph. A press with no
-      // move on a mark removes the mark (onPointerUp); a press on a mark with no word: onMarkTap.
-      onMark = markAt(ev.clientX, ev.clientY);
       from = SchoolMarks.wordAt(win, ev.clientX, ev.clientY);
       if (!from) {
-        if (onMark === null) { note(t('markOutside')); }
+        var media = ev.target && ev.target.closest ? ev.target.closest('img, video') : null;
+        if (!media) { note(t('markOutside')); }   // a picture: onMarkTap marks it
         return;
       }
     }
     // A mouse or a pen that leaves the frame still ends the drag here (a touch does so by itself).
     try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* an old WebView */ }
-    // The guide: the box as it grows, or a dotted line from the first word to the finger.
+    toastEl.hidden = true;   // the note must not hide the words under the finger
+    // The guide: the box or the oval as it grows, or a dotted line from the first word to the finger.
     var el = doc.createElement('div');
     el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
-      'left: ' + ev.clientX + 'px; top: ' + ev.clientY + 'px; width: 0; height: 0; transform-origin: 0 0; ' +
-      (tool === 'box' ? 'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);'
-        : 'border-top: 3px dotted rgb(255, 200, 0); filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));'));
+      'left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; ' +
+      (tool === 'pen' ? 'border-top: 3px dotted rgb(255, 200, 0); filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));'
+        : 'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);' +
+          (tool === 'oval' ? ' border-radius: 50%;' : '')));
     doc.documentElement.appendChild(el);
-    drag = { kind: tool, x0: ev.clientX, y0: ev.clientY, x1: ev.clientX, y1: ev.clientY, el: el, from: from, mark: null,
-      onMark: onMark, moved: false };
-    if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); preview(); }
+    // x0, y0: the start in page coordinates, so the start holds when the page scrolls.
+    drag = { kind: tool, x0: ev.clientX + win.scrollX, y0: ev.clientY + win.scrollY, x1: ev.clientX, y1: ev.clientY,
+      sy: ev.clientY, el: el, from: from, mark: null, speed: 0, armed: false, looping: false };
+    if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); }
+    dragMoved();
   }
 
   // Removes the guide of the drag, if any. The words that a drag showed stay until the box answers.
@@ -421,9 +486,37 @@
     drag = null;
   }
 
+  // The rectangle of a box drag in client coordinates.
   function dragRect() {
-    return { left: Math.min(drag.x0, drag.x1), top: Math.min(drag.y0, drag.y1),
-      right: Math.max(drag.x0, drag.x1), bottom: Math.max(drag.y0, drag.y1) };
+    var win = view.win();
+    var x0 = drag.x0 - win.scrollX;
+    var y0 = drag.y0 - win.scrollY;
+    return { left: Math.min(x0, drag.x1), top: Math.min(y0, drag.y1),
+      right: Math.max(x0, drag.x1), bottom: Math.max(y0, drag.y1) };
+  }
+
+  // The finger moved, or the page scrolled under it: the guide and the words of the drag follow.
+  function dragMoved() {
+    var win = view.win();
+    var x0 = drag.x0 - win.scrollX;
+    var y0 = drag.y0 - win.scrollY;
+    if (drag.kind !== 'pen') {
+      var r = dragRect();
+      drag.el.style.left = r.left + 'px';
+      drag.el.style.top = r.top + 'px';
+      drag.el.style.width = (r.right - r.left) + 'px';
+      drag.el.style.height = (r.bottom - r.top) + 'px';
+      return;
+    }
+    var dx = drag.x1 - x0;
+    var dy = drag.y1 - y0;
+    drag.el.style.left = x0 + 'px';
+    drag.el.style.top = y0 + 'px';
+    drag.el.style.width = Math.sqrt(dx * dx + dy * dy) + 'px';
+    drag.el.style.transform = 'rotate(' + Math.atan2(dy, dx) + 'rad)';
+    var to = SchoolMarks.wordAt(win, drag.x1, Math.min(Math.max(drag.y1, 1), win.innerHeight - 1));
+    if (to) { drag.mark = SchoolMarks.dragMark(win, drag.from, to); }   // between two blocks: as it was
+    preview();
   }
 
   // The marker shows the words of the drag at once, drawn again at most once a frame.
@@ -434,49 +527,56 @@
     requestAnimationFrame(function () { previewQueued = false; paintMarks(); });
   }
 
+  // A finger near the top or bottom edge of the page scrolls it, faster nearer the edge, so one
+  // drag can mark more than a screen. The publish of the scroll moves the students too.
+  var EDGE_PX = 48;
+  var EDGE_MAX_PX = 16;   // the most per frame
+  // A drag that starts near an edge (the first or last lines) scrolls only after the finger moved
+  // ARM_PX toward that edge: else a mark on those lines would move the page of the whole class.
+  var ARM_PX = 16;
+  function edgeScroll() {
+    var d = drag;
+    if (!d) { return; }
+    var h = view.win().innerHeight;
+    var y = d.y1;
+    var v = y > h - EDGE_PX ? Math.ceil((y - (h - EDGE_PX)) / EDGE_PX * EDGE_MAX_PX)
+      : y < EDGE_PX ? -Math.ceil((EDGE_PX - y) / EDGE_PX * EDGE_MAX_PX) : 0;
+    if (!d.armed && (Math.abs(y - d.sy) >= ARM_PX && (v > 0 ? y > d.sy : y < d.sy))) { d.armed = true; }
+    d.speed = d.armed ? Math.max(-EDGE_MAX_PX, Math.min(EDGE_MAX_PX, v)) : 0;
+    if (d.speed === 0 || d.looping) { return; }
+    d.looping = true;
+    var step = function () {
+      if (drag !== d || d.speed === 0) { d.looping = false; return; }
+      var win = view.win();
+      var before = win.scrollY;
+      win.scrollBy(0, d.speed);
+      if (win.scrollY === before) { d.looping = false; return; }   // the end of the page
+      dragMoved();
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
   function onPointerMove(ev) {
     if (!drag || !ev.isPrimary) { return; }
     if (ev.pointerType !== 'touch' && ev.buttons === 0) { endDrag(); paintMarks(); return; }   // the button went up out of view
     ev.preventDefault();
     drag.x1 = ev.clientX;
     drag.y1 = ev.clientY;
-    if (drag.kind === 'box') {
-      var r = dragRect();
-      drag.el.style.left = r.left + 'px';
-      drag.el.style.top = r.top + 'px';
-      drag.el.style.width = (r.right - r.left) + 'px';
-      drag.el.style.height = (r.bottom - r.top) + 'px';
-      return;
-    }
-    var dx = drag.x1 - drag.x0;
-    var dy = drag.y1 - drag.y0;
-    drag.el.style.width = Math.sqrt(dx * dx + dy * dy) + 'px';
-    drag.el.style.transform = 'rotate(' + Math.atan2(dy, dx) + 'rad)';
-    if (dx * dx + dy * dy > 64) { drag.moved = true; }
-    var to = SchoolMarks.wordAt(view.win(), ev.clientX, ev.clientY);
-    if (!to) { return; }   // between two blocks: the words stay as they were
-    drag.mark = SchoolMarks.dragMark(view.win(), drag.from, to);
-    preview();
+    dragMoved();
+    edgeScroll();
   }
 
-  // The end of a drag sends the mark. A short box drag is a tap: onMarkTap handles it. With the
-  // marker, a tap on a word marks that word.
+  // The end of a drag sends the mark. A short box drag is a tap: onMarkTap handles it.
   function onPointerUp(ev) {
     if (!drag || !ev.isPrimary) { return; }
     var d = drag;
     var r = dragRect();
     endDrag();
-    // The help of the tool comes back after the drag: a note that changes its height during a drag
-    // moves the page under the finger.
-    note(t(TOOL_HELP[d.kind]));
-    if (ev.type === 'pointercancel' || !marking || tool !== d.kind) { paintMarks(); return; }
-    if (d.kind === 'pen' && !d.moved && d.onMark !== null) {
-      dragSent = true;
-      paintMarks();
-      sendMark({ op: 'remove', id: d.onMark }, view.path());
-      return;
-    }
-    var m = d.kind === 'box' ? SchoolMarks.boxMark(view.win(), r) : d.mark;
+    if (ev.type === 'pointercancel' || tool !== d.kind) { paintMarks(); return; }
+    var m = d.kind === 'pen' ? d.mark : SchoolMarks.boxMark(view.win(), r);
+    if (!m && d.kind !== 'pen') { note(t(TOOL_HELP[d.kind])); }   // too small: a tap, not a box
+    if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
       if (d.kind === 'pen') { pending = m; }
@@ -485,23 +585,31 @@
     paintMarks();
   }
 
-  // Mark mode: a tap on a mark removes it, a tap on a block marks it (no tool). No link opens.
+  // A tap with a tool on opens no link. The eraser removes the mark under the tap; the pen marks a
+  // picture.
   function onMarkTap(ev) {
-    if (!marking || ev.button !== 0) { return; }
+    if (!tool || ev.button !== 0) { return; }
     ev.preventDefault();
     ev.stopPropagation();
     if (tapEndsSelection || dragSent || !publishable) { return; }
-    var id = markAt(ev.clientX, ev.clientY);
-    if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); return; }
-    if (tool) { return; }   // a tool marks with a drag: a tap only removes a mark
-    var m = SchoolMarks.blockMark(view.win().document, ev.target);
+    if (tool === 'eraser') {
+      var id = markAt(ev.clientX, ev.clientY);
+      if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); }
+      return;
+    }
+    var media = tool === 'pen' && ev.target && ev.target.closest ? ev.target.closest('img, video') : null;
+    if (!media) { return; }
+    // A picture that is a block gets a block mark. A picture in a text block (an infobox cell, a
+    // list item) gets a box around it: a block mark would fill the cell and its words.
+    var win = view.win();
+    var isBlock = SchoolAnchor.blocksOf(win.document).list.indexOf(media) >= 0;
+    var m = isBlock ? SchoolMarks.blockMark(win.document, media) : SchoolMarks.boxMark(win, media.getBoundingClientRect());
     if (m) { sendMark({ op: 'add', mark: m }, view.path()); }
   }
 
-  markBtn.onclick = function () { setMarking(!marking); };
-  penBtn.onclick = function () { setTool(tool === 'pen' ? null : 'pen'); };
-  boxBtn.onclick = function () { setTool(tool === 'box' ? null : 'box'); };
-  clearBtn.onclick = function () { sendMark({ op: 'clear' }, view.path()); };
+  Object.keys(toolBtns).forEach(function (k) {
+    toolBtns[k].onclick = function () { setTool(tool === k ? null : k); };
+  });
 
   // The box keeps the lesson of the class. A page that loads again opens that lesson at the same
   // place, so the students stay where they are. A path in the address wins.
@@ -528,7 +636,12 @@
   };
 
   // End class: the box tells the students and forgets the class; the app stops the announcement.
-  document.getElementById('end').onclick = function () { confirmEl.hidden = false; };
+  document.getElementById('end').onclick = function () {
+    group = null;
+    render();
+    confirmEl.hidden = false;
+    document.getElementById('endYes').focus();
+  };
   document.getElementById('endNo').onclick = function () { confirmEl.hidden = true; };
   document.getElementById('endYes').onclick = function () {
     fetch('end', { method: 'POST' }).then(function (r) {
@@ -549,6 +662,9 @@
     if (live) { live.close(); live = null; }
     try { localStorage.setItem(ENDED_KEY, '1'); } catch (e) { /* no storage: a reload opens a class */ }
     document.querySelector('header').hidden = true;
+    setTool(null);
+    connText = '';
+    note('');
     document.getElementById('ended').hidden = false;
   }
 
@@ -679,13 +795,13 @@
     alive.seen();
     live = new EventSource('live?role=page&lang=' + encodeURIComponent(SchoolText.lang()));
     live.onopen = function () {
-      connEl.textContent = '';
+      setConn('');
       if (view.path() !== null) { publish(); }   // a page is loaded
     };
     live.onmessage = onEvent;
     live.addEventListener('ping', function () { alive.seen(); });
   }
-  function reconnect() { if (ended) { return; } connEl.textContent = t('reconnecting'); connect(); }
+  function reconnect() { if (ended) { return; } setConn(t('reconnecting')); connect(); }
   var alive = School.keepAlive({ live: function () { return live; }, reopen: reconnect, onClosed: reconnect });
 
   function onEvent(ev) {
