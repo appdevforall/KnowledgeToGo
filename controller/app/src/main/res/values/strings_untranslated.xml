@@ -25,10 +25,18 @@
     <string name="k2go_class_no_module" translatable="false">The class module is not installed in the library on this phone.</string>
     <!-- Teacher card, when the library on this phone does not run (it is stopped or starting). The card changes by itself when the library runs. -->
     <string name="k2go_class_no_box" translatable="false">The library on this phone does not run now. When it runs, you can teach a class here.</string>
-    <!-- Card title and button: a student scans the teacher's code to follow the class. -->
+    <!-- Title of the student card: a student finds the class of a teacher and follows it. -->
     <string name="k2go_class_join" translatable="false">Join a class</string>
-    <!-- Body of the student card. -->
-    <string name="k2go_class_join_body" translatable="false">Connect to the network of the teacher first. Then scan the Open code on the teacher\'s Connect screen.</string>
+    <!-- Body of the student card. Below it, a list of the classes found, then a button to scan a code. -->
+    <string name="k2go_class_join_body" translatable="false">Use the same Wi-Fi as the teacher. The classes on this Wi-Fi show here. Tap a class to join it.</string>
+    <!-- Student card, during the first seconds of the search for classes on the Wi-Fi. -->
+    <string name="k2go_class_finding" translatable="false">Looking for classes on this Wi-Fi...</string>
+    <!-- Student card, when the search found no class. The search continues: a class that opens later shows. -->
+    <string name="k2go_class_none_found" translatable="false">No class found on this Wi-Fi. Make sure that this phone uses the same Wi-Fi as the teacher, and that the teacher opened the class. Or scan the code of the teacher.</string>
+    <!-- Student card: a button for one class found on the Wi-Fi. A tap joins the class. %1$s: the network address of the teacher's phone, for example 192.168.1.167. -->
+    <string name="k2go_class_found_item" translatable="false">Join the class at %1$s</string>
+    <!-- Student card: the fallback button that opens the QR scanner (the Open code on the teacher's Connect screen). -->
+    <string name="k2go_class_scan" translatable="false">Scan a code</string>
     <!-- Prompt on the QR scanner when a student joins a class. -->
     <string name="k2go_class_scan_prompt" translatable="false">Scan the Open code on the teacher\'s Connect screen.</string>
     <!-- Message when the scanned code is not the address of a K2Go library. -->

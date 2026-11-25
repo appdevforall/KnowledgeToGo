@@ -17,9 +17,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import org.appdevforall.k2go.ServerState;
+import org.appdevforall.k2go.school.domain.ClassFinder;
 import org.appdevforall.k2go.school.domain.ClassLinks;
+import org.appdevforall.k2go.school.domain.FoundClass;
 import org.appdevforall.k2go.school.domain.TeacherPage;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.BooleanSupplier;
 
@@ -28,6 +35,8 @@ import java.util.function.BooleanSupplier;
  * the server tick); this model does not ask the box for it. "The library has the class module" has
  * no app owner: only the box knows it, so one GET of the teacher page answers it, each time the
  * library comes up and each time the tab shows. The value is for the screen only.
+ * The classes on the Wi-Fi have one owner, the network (mDNS): the list shows what the finder
+ * reports while the tab shows, and it is empty again at the next start.
  */
 public class ClassViewModel extends ViewModel {
 
@@ -40,14 +49,28 @@ public class ClassViewModel extends ViewModel {
     private final Observer<ServerState> onServer = s -> decide(false);
     private final Handler main = new Handler(Looper.getMainLooper());
 
+    /** After this time with no class found, the tab says that it found none. */
+    static final long SEARCH_MS = 5000;
+    private final ClassFinder finder;
+    // Main thread only. Insertion order: a class stays at its place in the list.
+    private final Map<String, FoundClass> found = new LinkedHashMap<>();
+    private final MutableLiveData<List<FoundClass>> classes = new MutableLiveData<>(Collections.emptyList());
+    private final MutableLiveData<Boolean> searching = new MutableLiveData<>(false);
+    private final Runnable searchEnd = () -> searching.setValue(false);
+    private final ClassFinder.Listener onFinder = new ClassFinder.Listener() {
+        @Override public void onFound(FoundClass c) { found.put(c.key, c); publishClasses(); }
+        @Override public void onLost(String key) { if (found.remove(key) != null) publishClasses(); }
+    };
+
     // Main thread only. lastUp: the library state of the last decision (null before the first).
     private Boolean lastUp;
     // A GET answer is shown only if no newer decision came while it ran.
     private int generation;
 
     public ClassViewModel(TeacherPage teacherPage, Executor io,
-                          LiveData<ServerState> server, BooleanSupplier observed) {
+                          LiveData<ServerState> server, BooleanSupplier observed, ClassFinder finder) {
         this.teacherPage = teacherPage;
+        this.finder = finder;
         this.io = io;
         this.server = server;
         this.observed = observed;
@@ -55,6 +78,32 @@ public class ClassViewModel extends ViewModel {
     }
 
     public LiveData<ClassLinks.Teach> teach() { return teach; }
+
+    /** The open classes on the Wi-Fi, in the order they were found. */
+    public LiveData<List<FoundClass>> classes() { return classes; }
+
+    /** True during the first {@link #SEARCH_MS} of a search. */
+    public LiveData<Boolean> searching() { return searching; }
+
+    /** Starts to look for classes on the Wi-Fi. Call {@link #stopFinding()} when the tab hides. */
+    public void startFinding() {
+        found.clear();
+        publishClasses();
+        searching.setValue(true);
+        main.removeCallbacks(searchEnd);
+        main.postDelayed(searchEnd, SEARCH_MS);
+        finder.start(onFinder);
+    }
+
+    public void stopFinding() {
+        main.removeCallbacks(searchEnd);
+        searching.setValue(false);
+        finder.stop();
+    }
+
+    private void publishClasses() {
+        classes.setValue(Collections.unmodifiableList(new ArrayList<>(found.values())));
+    }
 
     /** Asks the box again for the module, so a module installed or removed meanwhile shows. */
     public void check() { decide(true); }
@@ -83,5 +132,6 @@ public class ClassViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         server.removeObserver(onServer);
+        stopFinding();
     }
 }

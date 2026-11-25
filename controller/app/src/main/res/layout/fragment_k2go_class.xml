@@ -87,7 +87,8 @@
                     android:text="@string/k2go_class_teach" />
             </LinearLayout>
 
-            <!-- Student: scan the teacher's Connect "Open" code. -->
+            <!-- Student: the classes that teacher boxes announce on the Wi-Fi; the scan of the
+                 teacher's Connect "Open" code stays as the fallback. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,13 +112,37 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textColor="@color/k2go_muted" />
 
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/k2go_class_searching"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/k2go_class_find_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/k2go_class_finding"
+                    android:textAppearance="@style/TextAppearance.K2Go.Label"
+                    android:textColor="@color/k2go_ink" />
+
+                <!-- One button per class found (item_k2go_class_found), filled in code. -->
+                <LinearLayout
+                    android:id="@+id/k2go_class_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/k2go_class_join"
                     style="@style/Widget.K2Go.Button.Outlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/k2go_class_join" />
+                    android:text="@string/k2go_class_scan" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
