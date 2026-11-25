@@ -106,6 +106,14 @@ public class ClassLinksTest {
         assertFalse(ClassLinks.isState(null));
     }
 
+    @Test public void classPagesAreThePathsUnderSchool() {
+        assertTrue(ClassLinks.isClassPage("http://localhost:8085/school/teacher/"));
+        assertTrue(ClassLinks.isClassPage("http://192.168.1.158:8085/school/student.html#c=4F7K"));
+        assertFalse(ClassLinks.isClassPage("http://localhost:8085/kiwix/content/x/A/school/y"));
+        assertFalse(ClassLinks.isClassPage("http://localhost:8085/schoolbook"));
+        assertFalse(ClassLinks.isClassPage(null));
+    }
+
     @Test public void aClassOfTheListGoesWithItsCodeInTheFragment() {
         assertEquals("http://h:8085/school/student.html#c=4F7K",
                 ClassLinks.withClass("http://h:8085/school/student.html", "4F7K"));

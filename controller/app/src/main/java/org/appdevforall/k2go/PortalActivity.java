@@ -115,9 +115,24 @@ public class PortalActivity extends AppCompatActivity {
         });
     }
 
+    // K2Go School: fontScale is in configChanges so that a class page keeps its place. Every other
+    // page starts the screen again on a new system text size, as before (review L5).
+    private float fontScale;
+
+    @Override
+    public void onConfigurationChanged(@androidx.annotation.NonNull android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.fontScale == fontScale) return;
+        fontScale = newConfig.fontScale;
+        if (webView != null && !org.appdevforall.k2go.school.domain.ClassLinks.isClassPage(webView.getUrl())) {
+            recreate();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fontScale = getResources().getConfiguration().fontScale;
         setContentView(R.layout.activity_portal);
         org.appdevforall.k2go.help.TooltipWiring.wireAll(getWindow().getDecorView());
 

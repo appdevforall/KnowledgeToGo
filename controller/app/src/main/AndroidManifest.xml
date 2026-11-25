@@ -93,7 +93,8 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
         <!-- PortalActivity keeps its WebView over these changes: a reload would take a student out
-             of the class page. The nav chrome has icons only, so fontScale needs no relayout. -->
+             of the class page. The nav chrome has icons only, so fontScale needs no relayout; a page
+             outside the class starts the screen again on a new fontScale (onConfigurationChanged). -->
         <activity
             android:name=".PortalActivity"
             android:exported="false"

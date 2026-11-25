@@ -45,6 +45,7 @@ public final class ClassLinks {
     private static final Pattern CODE = Pattern.compile(
             "^http://([A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?)(?::(\\d{1,5}))?(?:/.*)?$");
     private static final Pattern IPV4_LIKE = Pattern.compile("^[0-9.]+$");
+    private static final Pattern CLASS_PAGE = Pattern.compile("^http://[^/?#]+/school/");
 
     /** HTTP status value for "the box did not answer" (no connection, time-out). */
     public static final int NO_ANSWER = -1;
@@ -79,6 +80,11 @@ public final class ClassLinks {
     /** True when {@code url} opens the teacher page on this phone's box. */
     public static boolean isTeacherUrl(String url, String boxBase) {
         return url != null && url.startsWith(teacherUrl(boxBase));
+    }
+
+    /** True when {@code url} is a class page (teacher or student) on a box: a path under /school/. */
+    public static boolean isClassPage(String url) {
+        return url != null && CLASS_PAGE.matcher(url).find();
     }
 
     /** The class state on the box at {@code host} (an address, or "localhost") and {@code port}. */
