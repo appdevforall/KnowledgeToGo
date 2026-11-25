@@ -121,6 +121,7 @@ public class PortalActivity extends AppCompatActivity {
         org.appdevforall.k2go.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
         vm = new ViewModelProvider(this).get(PortalViewModel.class);
+        getOnBackPressedDispatcher().addCallback(this, back);
 
         // 1. Basic WebView configuration
         webView = findViewById(R.id.myWebView);
@@ -593,16 +594,21 @@ public class PortalActivity extends AppCompatActivity {
         if (customViewCallback != null) { customViewCallback.onCustomViewHidden(); customViewCallback = null; }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (customView != null) {   // in video fullscreen: exit it first, do not leave the viewer
-            hideVideoFullscreen();
-        } else if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
+    /** With targetSdk 36 on Android 16 (predictive back) the system does not call onBackPressed():
+     *  only callbacks on the dispatcher see Back. Without this one, Back always closed the screen. */
+    private final androidx.activity.OnBackPressedCallback back = new androidx.activity.OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (customView != null) {   // in video fullscreen: exit it first, do not leave the viewer
+                hideVideoFullscreen();
+            } else if (webView != null && webView.canGoBack()) {
+                webView.goBack();
+            } else {
+                setEnabled(false);   // the default: close the screen
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         }
-    }
+    };
 
     @Override
     protected void onDestroy() {
