@@ -309,6 +309,7 @@ test('class session: one code per class, kept over a short teacher gap; a long g
     room.teacherClose();                     // an extra close does not go below zero
     t += CLASS_GAP_MS + 1;
     assert.equal(room.lapsed(), true);       // the router ends it and tells the students
+    room.end();                              // (router endClass)
     room.teacherOpen();                      // too late: a new class
     assert.deepEqual(room.state(), { open: true, code: 'C2' });
     assert.equal(room.lapsed(), false);
@@ -326,6 +327,8 @@ test('class session: a new class has no lesson, seat or Done mark of the old one
     room.publish({ url: '/old' });
     room.teacherClose();                     // the teacher leaves with no "End class"
     t += CLASS_GAP_MS + 1;
+    assert.equal(room.lapsed(), true);
+    room.end();                              // the router ends a lapsed class (endClass)
     room.teacherOpen();                      // the next lesson day
     assert.deepEqual(room.state(), { open: true, code: 'C2' });
     assert.equal(room.current(), null);

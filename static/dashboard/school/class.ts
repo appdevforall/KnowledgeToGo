@@ -227,8 +227,8 @@ export class ClassRoom {
     ) {}
 
     // lang: the language of the teacher page. The last teacher page that opens sets it.
+    // A lapsed class must end first (the router calls endClass), so its students hear it.
     teacherOpen(lang: unknown = null): void {
-        if (this.lapsed()) this.session = null;
         if (!this.session) {
             this.session = {
                 code: this.newCode(), lang: null, lesson: null, lessonId: 0, marks: [], markId: 0, byToken: new Map(),

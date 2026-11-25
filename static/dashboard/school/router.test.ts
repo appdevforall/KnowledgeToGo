@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import http from 'http';
 import { AddressInfo } from 'net';
 import express from 'express';
-import { ClassRoom, JOIN_LIMIT } from './class';
+import { ClassRoom, CLASS_GAP_MS, JOIN_LIMIT } from './class';
 import { createSchoolRouter, cookieToken, schoolErrors, TOKEN_COOKIE } from './router';
 
 interface Box { port: number; close: () => Promise<void> }
@@ -245,6 +245,32 @@ function listen(box: Box, path: string, cookie: string): { seen: (name: string) 
         close: () => { req.destroy(); },
     };
 }
+
+test('a teacher page that comes back after the class gap ends the old class first (review M1)', async () => {
+    let t = 0;
+    let n = 0;
+    const room = new ClassRoom(50, undefined, () => t, () => `C${++n}A`);
+    const box = await startBox(room);
+    try {
+        const page = await teacherPage(box);
+        const j = JSON.parse((await request(box, 'POST', '/school/join', { json: {} })).body) as { token: string };
+        const student = listen(box, '/school/live', cookieOf(j.token));
+        await student.seen('self');
+        page.destroy();
+        // The box sees the close a moment later: move the clock past the gap until it counts.
+        for (let i = 0; i < 100 && !room.lapsed(); i += 1) {
+            await new Promise((ok) => setTimeout(ok, 10));
+            t += CLASS_GAP_MS + 1;
+        }
+        assert.equal(room.lapsed(), true);
+        const again = await teacherPage(box);           // before the ping round
+        await student.seen('ended');
+        assert.deepEqual(room.state(), { open: true, code: 'C2A' });
+        assert.equal((await request(box, 'POST', '/school/ack', { json: { token: j.token } })).status, 401);
+        student.close();
+        again.destroy();
+    } finally { await box.close(); }
+});
 
 test('live: an unknown token gets 401 on the channel and on an ack', async () => {
     const box = await startBox();

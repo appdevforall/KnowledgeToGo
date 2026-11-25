@@ -251,6 +251,9 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
     router.get('/teacher/live', (req: Request, res: Response): void => {
         const page = req.query.role === 'page';
         openStream(res);
+        // A teacher page that comes back after the class gap starts a new class. The old class
+        // ends here, before the ping round sees it, so its students hear "ended" (review M1).
+        if (classroom.lapsed()) endClass();
         if (page) classroom.teacherOpen(req.query.lang);
         // A teacher page that loads again (a reload, a new app screen, a theme change) goes back
         // to the lesson of the class, not to its start page.
