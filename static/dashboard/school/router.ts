@@ -146,19 +146,32 @@ schoolRouter.post('/teacher/publish', (req: Request, res: Response): void => {
     res.status(204).end();
 });
 
+// "End class": the students get "ended" and lose their channel, the box forgets the class. The
+// teacher app stops the Wi-Fi announcement at its next read of /state.
+schoolRouter.post('/teacher/end', (_req: Request, res: Response): void => {
+    classroom.end();
+    studentStreams.forEach((_student, s) => { s.write('event: ended\ndata: 1\n\n'); s.end(); });
+    toTeachers({ type: 'ended' });
+    rosterToTeachers();
+    res.status(204).end();
+});
+
+// Only the teacher page (?role=page) opens the class. Other channels, for example a recorder of a
+// test, get the same events and do not keep a class open.
 schoolRouter.get('/teacher/live', (req: Request, res: Response): void => {
+    const page = req.query.role === 'page';
     openStream(res);
     // A teacher page that loads again (a reload, a new app screen, a theme change) goes back to
     // the lesson of the class, not to its start page.
     const now = classroom.current();
     send(res, { type: 'lesson', lesson: now ? now.lesson : null });
     send(res, { type: 'roster', students: classroom.roster() });
-    classroom.teacherOpen();
+    if (page) classroom.teacherOpen();
     send(res, { type: 'class', code: classroom.state().code });
     teacherStreams.add(res);
     res.on('close', () => {
         teacherStreams.delete(res);
-        classroom.teacherClose();
+        if (page) classroom.teacherClose();
     });
 });
 

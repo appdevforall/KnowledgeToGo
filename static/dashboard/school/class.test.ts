@@ -141,6 +141,25 @@ test('class code: new when a class opens, kept over a short teacher gap, new aft
     assert.equal(room.state().open, true);
 });
 
+test('end: the class closes at once, the students and the lesson go, the next class is new', () => {
+    let n = 0;
+    const room = new ClassRoom(1000, counter(), Date.now, () => `C${++n}`);
+    room.teacherOpen();
+    const s = room.join('Student A')!;
+    room.open(s);
+    room.publish({ url: '/kiwix/content/x/A/y' });
+    room.end();
+    assert.deepEqual(room.state(), { open: false, code: null });   // the page is still connected
+    assert.deepEqual(room.roster(), []);
+    assert.equal(room.student(s.token), undefined);                // its token stops working
+    assert.equal(room.current(), null);
+    room.teacherClose();
+    room.teacherOpen();                                            // "Start a new class", at once
+    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    room.teacherOpen();                                            // a second page of the same class
+    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+});
+
 test('newClassCode: 4 characters from the easy-to-read set', () => {
     for (let i = 0; i < 200; i += 1) assert.match(newClassCode(), /^[2-9A-HJ-NP-Z]{4}$/);
 });

@@ -76,7 +76,8 @@ export class ClassRoom {
     private readonly byToken = new Map<string, Student>();
     private lesson: Lesson | null = null;
     private lessonId = 0;
-    // The class is open while a teacher page is connected to the class channel.
+    // The class is open while a teacher page is connected to the class channel and the class has
+    // a code. "End class" clears the code: the class closes also before the page disconnects.
     private teachers = 0;
     private code: string | null = null;
     private closedAt: number | null = null;
@@ -90,7 +91,7 @@ export class ClassRoom {
 
     teacherOpen(): void {
         const gone = this.closedAt !== null && this.now() - this.closedAt > CLASS_GAP_MS;
-        if (this.teachers === 0 && (this.code === null || gone)) this.code = this.newCode();
+        if (this.code === null || (this.teachers === 0 && gone)) this.code = this.newCode();
         this.teachers += 1;
         this.closedAt = null;
     }
@@ -101,8 +102,16 @@ export class ClassRoom {
     }
 
     state(): ClassState {
-        const open = this.teachers > 0;
+        const open = this.teachers > 0 && this.code !== null;
         return { open, code: open ? this.code : null };
+    }
+
+    // The teacher ends the class: the students, their tokens and the lesson go. The next teacher
+    // page that opens starts a new class with a new code.
+    end(): void {
+        this.byToken.clear();
+        this.lesson = null;
+        this.code = null;
     }
 
     join(name: unknown): Student | null {
