@@ -71,10 +71,24 @@
   // The box forgets a student after some time offline (or after a restart): join again.
   function rejoin() {
     if (joining || replaced) { return; }
+    // Another tab of this phone may have joined already: use its token, do not join twice.
+    var stored = null;
+    try { stored = localStorage.getItem(KEY); } catch (e) { stored = null; }
+    if (stored && stored !== token) {
+      token = stored;
+      if (document.visibilityState === 'hidden') { stopHere(); } else { connect(); }   // the visible tab keeps the class
+      return;
+    }
     token = null;
     if (live) { live.close(); }
     statusEl.textContent = 'Joining...';
     join().then(connect).catch(function () { statusEl.textContent = 'Class not reachable'; });
+  }
+
+  // A 401 says the box forgot this token. An answer for an older token (the page already uses a
+  // newer one) is no reason to join again: that made a second student.
+  function onForgotten(sent) {
+    return function (r) { if (r.status === 401 && sent === token) { rejoin(); } };
   }
 
   function sendAck() {
@@ -85,7 +99,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: token, seq: last.seq, done: done, match: match })
-    }).then(function (r) { if (r.status === 401) { rejoin(); } }).catch(function () {});
+    }).then(onForgotten(token)).catch(function () {});
   }
 
   // "Still here" every 10 s: the box closes a channel that it does not hear from (router.ts).
@@ -95,7 +109,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: token })
-    }).then(function (r) { if (r.status === 401) { rejoin(); } }).catch(function () {});
+    }).then(onForgotten(token)).catch(function () {});
   }, 10000);
 
   // Ack at most 5 times a second, and always the last message.
@@ -135,6 +149,13 @@
     follow();
   });
 
+  function stopHere() {
+    replaced = true;
+    if (live) { live.close(); }
+    statusEl.textContent = 'Open in another tab';
+    hereBtn.hidden = false;
+  }
+
   hereBtn.onclick = function () { statusEl.textContent = 'Connecting...'; connect(); };
 
   doneBtn.onclick = function () {
@@ -160,14 +181,10 @@
     live.addEventListener('self', function (ev) {
       try { done = JSON.parse(ev.data).done === true; } catch (e) { return; }
       doneBtn.textContent = done ? 'Not done' : 'Done';
+      if (!last) { statusEl.textContent = 'Waiting for the teacher'; }   // the channel is open, no lesson yet
     });
     // A newer channel with this token took the place (another tab): stop, do not open again.
-    live.addEventListener('replaced', function () {
-      replaced = true;
-      live.close();
-      statusEl.textContent = 'Open in another tab';
-      hereBtn.hidden = false;
-    });
+    live.addEventListener('replaced', stopHere);
     live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
   }
 
