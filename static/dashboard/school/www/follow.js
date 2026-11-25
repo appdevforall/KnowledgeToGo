@@ -17,8 +17,8 @@ var School = (function () {
     frame.style.transform = 'scale(' + scale + ')';
   }
 
-  function watchFit(stage, frame) {
-    var fit = function () { fitFrame(stage, frame); };
+  function watchFit(stage, frames) {
+    var fit = function () { frames.forEach(function (f) { fitFrame(stage, f); }); };
     window.addEventListener('resize', fit);
     fit();
   }
@@ -65,11 +65,131 @@ var School = (function () {
     if (doc.fonts && doc.fonts.ready) { doc.fonts.ready.then(fire); }
   }
 
-  // Path of the page in the frame, relative to the box origin. No hash: a change of hash only
-  // fires no load event in the student frame, and the anchor already gives the place.
-  function framePath(frame) {
-    var l = frame.contentWindow.location;
-    return l.pathname + l.search;
+  // The lesson view: two frames on the stage. A new page loads in the hidden frame; the page on
+  // the screen stays until the new one has the class font and its first layout, and onReady
+  // applied the anchor. Then the new page fades in over the old one: no white or empty frame
+  // between two pages. A page that navigates by itself (a form, a link that the page does not
+  // open with open()) loads in place, with no fade.
+  // onReady(win) runs for each page load, with the new page already on view.win().
+  var FONT_WAIT_MS = 1500;    // the longest wait for the class font; then the page shows anyway
+  var LOAD_WAIT_MS = 20000;   // a load with no load event: give up the hidden page
+  var FADE_MS = 200;          // the CSS transition of the pages (opacity) is shorter
+  function view(stage, onReady) {
+    var a = document.createElement('iframe');
+    var b = document.createElement('iframe');
+    [a, b].forEach(function (f) {
+      f.title = 'Lesson';
+      f.addEventListener('load', function () { loaded(f); });
+      stage.appendChild(f);
+    });
+    var front = a;
+    var back = b;
+    var asked = {};         // per frame: the URL that open() gave it, and the path where it landed
+    var loadingUrl = null;  // the URL that the hidden frame loads
+    var gen = 0;            // open() count: a late callback of an older open does nothing
+    var loadTimer = null;
+    var blankTimer = null;
+    watchFit(stage, [a, b]);
+
+    function key(f) { return f === a ? 'a' : 'b'; }
+
+    // The path of the page in a frame, relative to the box origin. No hash: a change of hash only
+    // fires no load event in the student frame, and the anchor already gives the place.
+    function pathOf(f) {
+      try {
+        var l = f.contentWindow.location;
+        return l.protocol === 'about:' ? null : l.pathname + l.search;
+      } catch (e) { return null; }   // another origin: not a class page
+    }
+
+    function docOf(f) {
+      try { return f.contentDocument; } catch (e) { return null; }
+    }
+
+    function whenFontReady(doc, done) {
+      var called = false;
+      var go = function () { if (!called) { called = true; done(); } };
+      setTimeout(go, FONT_WAIT_MS);
+      if (params.get('font') === 'native' || !doc.fonts || !doc.fonts.load) { go(); return; }
+      doc.fonts.load('16px "' + FONT + '"').then(go, go);
+    }
+
+    function show(old) {
+      clearTimeout(blankTimer);
+      front.className = 'front';
+      if (loadingUrl !== null) { return; }   // the old frame loads the next page already
+      old.className = 'old';   // stays under the new page until the fade ends
+      blankTimer = setTimeout(function () {
+        old.className = '';
+        try { old.contentWindow.location.replace('about:blank'); } catch (e) { old.src = 'about:blank'; }
+      }, FADE_MS);
+    }
+
+    // timedOut: no load event came in LOAD_WAIT_MS; take the hidden frame as it is.
+    function loaded(f, timedOut) {
+      var doc = docOf(f);
+      var path = pathOf(f);
+      if (f === back) {
+        // about:blank of an old page; it can come late, after open() gave the frame a new URL.
+        if (loadingUrl === null || (!path && doc && !timedOut)) { return; }
+        clearTimeout(loadTimer);
+      } else {
+        if (!path) { return; }
+        asked[key(f)] = null;   // it navigated by itself: no URL of open() for this page
+      }
+      if (doc) { normalize(doc); }
+      var mine = gen;
+      var ready = function () {
+        if (f === back) {
+          if (mine !== gen || loadingUrl === null) { return; }   // a newer open() runs
+          asked[key(f)] = { url: loadingUrl, landed: path };
+          loadingUrl = null;
+          stage.classList.remove('loading');
+          var old = front;
+          front = back;
+          back = old;
+          if (path) { onReady(front.contentWindow); }
+          // The next frame paints the anchor that onReady applied; then the page shows. A hidden
+          // page gets no animation frame: the timer shows it anyway.
+          var shown = false;
+          var reveal = function () { if (!shown) { shown = true; show(old); } };
+          requestAnimationFrame(reveal);
+          setTimeout(reveal, 100);
+        } else if (f === front) {
+          onReady(f.contentWindow);
+        }
+      };
+      if (doc && path) { whenFontReady(doc, ready); } else { ready(); }
+    }
+
+    function open(url) {
+      gen += 1;
+      clearTimeout(blankTimer);
+      clearTimeout(loadTimer);
+      back.className = '';
+      loadingUrl = url;
+      asked[key(back)] = null;
+      stage.classList.add('loading');
+      // replace: a lesson page is no history entry, so Back in the browser leaves the class page.
+      try { back.contentWindow.location.replace(url); } catch (e) { back.src = url; }
+      var mine = gen;
+      loadTimer = setTimeout(function () { if (mine === gen) { loaded(back, true); } }, LOAD_WAIT_MS);
+    }
+
+    return {
+      win: function () { return front.contentWindow; },
+      // The path of the page on the screen, or null (no page yet, or not a page of this box).
+      path: function () { return pathOf(front); },
+      open: open,
+      loading: function () { return loadingUrl !== null; },
+      // True when the page on the screen is url, or the page where url landed after a redirect
+      // (the path is then another one, but this is the page for url: do not load it again).
+      isAt: function (url) {
+        var p = pathOf(front);
+        var o = asked[key(front)];
+        return p !== null && (p === url || (o !== null && o !== undefined && o.url === url && o.landed === p));
+      }
+    };
   }
 
   // Watchdog of a live channel (EventSource). A channel can die with no error event (M0: after
@@ -95,10 +215,9 @@ var School = (function () {
   return {
     params: params,
     WIDTH: WIDTH,
-    watchFit: watchFit,
+    view: view,
     normalize: normalize,
     onLayout: onLayout,
-    framePath: framePath,
     keepAlive: keepAlive
   };
 })();

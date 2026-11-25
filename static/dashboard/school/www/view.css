@@ -1,0 +1,11 @@
+/* K2Go School: the lesson view of the teacher and student pages (School.view in follow.js).
+   The page sets --bg (the stage while no page shows), --page and --accent. */
+#stage { flex: 1; overflow: hidden; position: relative; background: var(--bg); }
+/* The lesson pages are light pages: a page with no background of its own shows --page. */
+#stage iframe { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; background: var(--page);
+  opacity: 0; pointer-events: none; z-index: 0; transition: opacity 150ms; }
+#stage iframe.old { opacity: 1; z-index: 1; transition: none; }
+#stage iframe.front { opacity: 1; pointer-events: auto; z-index: 2; }
+#stage.loading::before { content: ''; position: absolute; left: 0; top: 0; z-index: 3; height: 3px; width: 30%;
+  background: var(--accent); animation: k2go-load 1s linear infinite; }
+@keyframes k2go-load { from { transform: translateX(-100%); } to { transform: translateX(340%); } }

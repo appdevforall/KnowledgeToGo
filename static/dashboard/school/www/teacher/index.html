@@ -3,51 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>K2Go School: teacher</title>
+<link rel="stylesheet" href="../view.css">
 <style>
-  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  :root { --bg: #fff; --fg: #111; --head: #1F5FBF; --head-fg: #fff; --chip: #fff; --chip-fg: #111; --done: #17924A;
+    --note: #FFF4CC; --note-fg: #111; --page: #fff; --accent: #1F5FBF; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121212; --fg: #eee; --head: #173F7A; --chip: #2A2A2A; --chip-fg: #eee; --done: #1E7A43;
+      --note: #4A3F10; --note-fg: #eee; --accent: #8AB4F8; }
+  }
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
-  header { padding: 4px 6px; background: #1F5FBF; color: #fff; }
+  header { padding: 4px 6px; background: var(--head); color: var(--head-fg); }
   header button, header input { font: inherit; margin: 2px 2px 2px 0; }
   header input { width: 9em; }
-  #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: #fff; color: #111; border-radius: 3px; }
-  #students span.done { background: #17924A; color: #fff; }
+  #bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+  #end { margin-left: auto; }
+  #confirm, #note { margin-top: 4px; padding: 4px 6px; border-radius: 3px; background: var(--note); color: var(--note-fg); }
+  #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: var(--chip); color: var(--chip-fg); border-radius: 3px; }
+  #students span.done { background: var(--done); color: #fff; }
   #students span.off { opacity: 0.5; }
   #stats { white-space: pre; font: 12px monospace; }
-  #stage { flex: 1; overflow: hidden; position: relative; }
-  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+  #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
+  #ended button { font: inherit; padding: 8px 16px; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <header>
-  <div>
-    <button data-path="/kiwix/content/k2go_welcome/A/index.html">Kiwix</button>
+  <div id="bar">
+    <button id="library">Library</button>
+    <button id="back" disabled>Back</button>
+    <span id="code"></span>
+    <span id="count">0 online</span>
+    <button id="end">End class</button>
+  </div>
+  <div id="confirm" hidden>
+    End the class for all students?
+    <button id="endYes">End class</button>
+    <button id="endNo">Cancel</button>
+  </div>
+  <div id="note" hidden></div>
+  <div id="students"></div>
+  <!-- Test tools (?debug=1): not for a class. -->
+  <div id="debug" hidden>
+    <button data-path="/kiwix/content/k2go_welcome/A/index.html">Welcome</button>
     <button data-path="/info/FAQ.html">Long page</button>
     <input id="path" placeholder="/kiwix/content/...">
     <button id="go">Open</button>
-  </div>
-  <div>
     <button id="auto">Auto-scroll</button>
     <button id="lag">Lag test</button>
-    <span id="code"></span>
-    <span id="count">0 online</span>
+    <div id="stats"></div>
   </div>
-  <div id="students"></div>
-  <div id="stats"></div>
 </header>
-<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<div id="stage">
+  <div id="ended" hidden>
+    <p>The class ended.</p>
+    <button id="again">Start a new class</button>
+  </div>
+</div>
 <script src="../anchor.js"></script>
 <script src="../follow.js"></script>
 <script>
 'use strict';
 (function () {
   var stage = document.getElementById('stage');
-  var frame = document.getElementById('frame');
   var countEl = document.getElementById('count');
   var codeEl = document.getElementById('code');
   var studentsEl = document.getElementById('students');
   var statsEl = document.getElementById('stats');
+  var noteEl = document.getElementById('note');
+  var backBtn = document.getElementById('back');
+  var confirmEl = document.getElementById('confirm');
   var HZ = parseInt(School.params.get('hz'), 10) || 20;
+  // The teacher chooses a book in the Kiwix library; the class follows the pages of the books.
+  var LIBRARY = '/kiwix/';
 
   var seq = 0;
   var sentAt = {};          // seq -> send time (ms), to measure the round trip
@@ -61,14 +92,47 @@
   var started = false;      // the first page is open (the lesson of the box, or the start page)
   var byTimer = false;      // the start page came from the time-out: send nothing until the box answers
   var resumeAt = null;      // the anchor of the box lesson, applied when its page loads
+  var publishable = false;  // the page on the screen can go to the class (a content page, no error)
+  var pageGen = 0;          // page loads: a late status check of an older page does nothing
+  var trail = [];           // the pages that the teacher opened, for Back
+  // The teacher ended the class. The mark outlives the page: the app loads the teacher page again
+  // after a theme change, and that must not open a new class. Only "Start a new class" clears it.
+  var ENDED_KEY = 'k2go-school-ended';
+  var ended = false;
+  try { ended = localStorage.getItem(ENDED_KEY) === '1'; } catch (e) { ended = false; }
 
-  School.watchFit(stage, frame);
+  var view = School.view(stage, onReady);
+
+  function note(text) {
+    noteEl.textContent = text || '';
+    noteEl.hidden = !text;
+  }
+
+  // The Kiwix library opens a book in its viewer, at viewer#<book>/<path>, which shows the book in
+  // an inner frame. The class follows the content page itself (rehearsal F1: the viewer path
+  // sent the students to the library in a loop). u: a Location or a URL.
+  function contentOf(u) {
+    if (!/^\/kiwix\/viewer\/?$/.test(u.pathname) || u.hash.length < 2) { return null; }
+    return '/kiwix/content/' + u.hash.slice(1);
+  }
+
+  // The library, also its page for browsers with no JavaScript.
+  function isLibrary(pathname) { return /^\/kiwix(\/|\/nojs(\/.*)?)?$/.test(pathname); }
+
+  // The HTTP status of the page in the frame. responseStatus is in Chrome 109 and later; an older
+  // WebView asks the box again.
+  function checkStatus(win, done) {
+    var nav = win.performance && win.performance.getEntriesByType ? win.performance.getEntriesByType('navigation')[0] : null;
+    if (nav && nav.responseStatus) { done(nav.responseStatus); return; }
+    fetch(win.location.pathname + win.location.search, { method: 'HEAD', cache: 'no-store' })
+      .then(function (r) { done(r.status); }, function () { done(0); });
+  }
 
   function publish() {
-    if (byTimer) { return; }   // the box lesson can still come: do not replace it with the start page
-    var win = frame.contentWindow;
+    if (byTimer || !publishable || ended) { return; }   // byTimer: the box lesson can still come
+    var win = view.win();
     seq += 1;
-    var msg = { seq: seq, url: School.framePath(frame), a: SchoolAnchor.anchorOf(win) };
+    var msg = { seq: seq, url: view.path(), a: SchoolAnchor.anchorOf(win) };
     sentAt[seq] = performance.now();
     delete sentAt[seq - 500];
     lastSend = performance.now();
@@ -87,16 +151,57 @@
     setTimeout(function () { pending = false; publish(); }, wait);
   }
 
-  frame.addEventListener('load', function () {
-    School.normalize(frame.contentDocument);
-    frame.contentWindow.addEventListener('scroll', onScroll, { passive: true });
-    // A late image or the class font can move the block at the top edge: send the place again.
-    School.onLayout(frame.contentWindow, onScroll);
-    if (resumeAt) { SchoolAnchor.applyAnchor(frame.contentWindow, resumeAt); resumeAt = null; }
-    publish();
-  });
+  // A link in the lesson opens through the view (no white flash, the viewer becomes the content
+  // page). A link out of the box opens nothing: the students cannot follow it.
+  function onLink(ev) {
+    if (ev.defaultPrevented || ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) { return; }
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (!a || a.hasAttribute('download')) { return; }
+    var url;
+    try { url = new URL(a.href); } catch (e) { return; }
+    if (url.protocol === 'javascript:') { return; }
+    var here = view.win().location;
+    if (url.origin === location.origin && url.pathname === here.pathname && url.search === here.search) { return; }   // a place in this page
+    ev.preventDefault();
+    if (url.origin !== location.origin) {
+      note('This link goes out of the box. The class can open only the pages of this box.');
+      return;
+    }
+    open(contentOf(url) || url.pathname + url.search + url.hash);
+  }
 
-  function open(path) { if (path) { byTimer = false; frame.src = path; } }
+  function onReady(win) {
+    publishable = false;   // until the checks below pass for this page
+    var content = contentOf(win.location);
+    if (content) { open(content); return; }   // a viewer page that a link did not change
+    win.addEventListener('scroll', onScroll, { passive: true });
+    // A late image or the class font can move the block at the top edge: send the place again.
+    School.onLayout(win, onScroll);
+    win.document.addEventListener('click', onLink, true);
+    if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
+    var path = view.path();
+    if (trail[trail.length - 1] !== path) { trail.push(path); }
+    if (trail.length > 50) { trail.shift(); }
+    backBtn.disabled = trail.length < 2;
+    var mine = ++pageGen;
+    if (isLibrary(win.location.pathname)) {
+      note('Open a book. The students see the pages of the book, not the library.');
+      return;
+    }
+    // A page that answers an error never goes to the class (rehearsal F4).
+    checkStatus(win, function (status) {
+      if (mine !== pageGen) { return; }
+      if (status >= 200 && status < 400) {
+        publishable = true;
+        note('');
+        publish();
+      } else {
+        note('This page was not found (' + (status || 'no answer') + '). The students stay on the last page.');
+      }
+    });
+  }
+
+  function open(path) { if (path) { byTimer = false; view.open(path); } }
 
   // The box keeps the lesson of the class. A page that loads again opens that lesson at the same
   // place, so the students stay where they are. A path in the address wins.
@@ -112,9 +217,42 @@
     started = true;
     var path = School.params.get('path');
     if (!path && lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); return; }
-    open(path || '/kiwix/content/k2go_welcome/A/index.html');
+    open(path || LIBRARY);
     byTimer = !!timeout && !path;
   }
+  document.getElementById('library').onclick = function () { open(LIBRARY); };
+  backBtn.onclick = function () {
+    if (trail.length < 2) { return; }
+    trail.pop();
+    open(trail[trail.length - 1]);
+  };
+
+  // End class: the box tells the students and forgets the class; the app stops the announcement.
+  document.getElementById('end').onclick = function () { confirmEl.hidden = false; };
+  document.getElementById('endNo').onclick = function () { confirmEl.hidden = true; };
+  document.getElementById('endYes').onclick = function () {
+    fetch('end', { method: 'POST' }).then(function (r) {
+      if (!r.ok) { throw new Error('end ' + r.status); }
+      showEnded();
+    }).catch(function () {
+      confirmEl.hidden = true;
+      note('The box did not answer. Try again.');
+    });
+  };
+  document.getElementById('again').onclick = function () {
+    try { localStorage.removeItem(ENDED_KEY); } catch (e) { /* no storage */ }
+    location.reload();
+  };
+
+  function showEnded() {
+    ended = true;
+    if (live) { live.close(); live = null; }
+    try { localStorage.setItem(ENDED_KEY, '1'); } catch (e) { /* no storage: a reload opens a class */ }
+    document.querySelector('header').hidden = true;
+    document.getElementById('ended').hidden = false;
+  }
+
+  if (School.params.get('debug') === '1') { document.getElementById('debug').hidden = false; }
   document.querySelectorAll('[data-path]').forEach(function (b) {
     b.onclick = function () { open(b.getAttribute('data-path')); };
   });
@@ -126,7 +264,7 @@
   document.getElementById('auto').onclick = function () {
     if (autoTimer) { clearInterval(autoTimer); autoTimer = null; return; }
     autoTimer = setInterval(function () {
-      var win = frame.contentWindow;
+      var win = view.win();
       var max = win.document.documentElement.scrollHeight - win.innerHeight;
       win.scrollTo(0, win.scrollY >= max ? 0 : win.scrollY + 4);
     }, 16);
@@ -138,7 +276,7 @@
     lagRun = { rtts: {} };
     var n = 0;
     var t = setInterval(function () {
-      var win = frame.contentWindow;
+      var win = view.win();
       var max = win.document.documentElement.scrollHeight - win.innerHeight;
       win.scrollTo(0, Math.round(Math.random() * max));
       if (++n >= 20) {
@@ -178,19 +316,19 @@
 
   // A dash-node restart answers 502 for a moment, which closes an EventSource for good; and the
   // box forgets the lesson. So: reopen the channel when it closes or goes quiet, and send the
-  // lesson again on each open.
+  // lesson again on each open. role=page: this channel keeps the class open (router.ts).
   var live = null;
   function connect() {
     if (live) { live.close(); }
     alive.seen();
-    live = new EventSource('live');
+    live = new EventSource('live?role=page');
     live.onopen = function () {
-      if (frame.contentWindow.location.protocol !== 'about:') { publish(); }   // a page is loaded
+      if (view.path() !== null) { publish(); }   // a page is loaded
     };
     live.onmessage = onEvent;
     live.addEventListener('ping', function () { alive.seen(); });
   }
-  function reconnect() { countEl.textContent = 'reconnecting'; connect(); }
+  function reconnect() { if (ended) { return; } countEl.textContent = 'reconnecting'; connect(); }
   var alive = School.keepAlive({ live: function () { return live; }, reopen: reconnect, onClosed: reconnect });
 
   function onEvent(ev) {
@@ -198,6 +336,7 @@
     alive.seen();
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'lesson') { start(m.lesson); return; }
+    if (m.type === 'ended') { showEnded(); return; }   // another teacher page ended the class
     // The students choose the class by this code in Class > Join.
     if (m.type === 'class') { codeEl.textContent = m.code ? 'Class ' + m.code : ''; return; }
     if (m.type === 'roster') {
@@ -219,6 +358,8 @@
     }
     render();
   }
+
+  if (ended) { showEnded(); return; }
   connect();
   setTimeout(function () { start(null, true); }, 3000);   // no channel yet: the start page
 })();

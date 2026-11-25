@@ -3,15 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>K2Go School: student</title>
+<link rel="stylesheet" href="view.css">
 <style>
-  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: #fff; color: #111; }
+  :root { --bg: #fff; --fg: #111; --head: #C9711C; --head-fg: #fff; --who: #F3E3D3; --page: #fff; --accent: #C9711C; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121212; --fg: #eee; --head: #8A4A10; --who: #3A2A1C; --accent: #F0A050; }
+  }
+  html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
-  header { padding: 4px 6px; background: #C9711C; color: #fff; display: flex; align-items: center; gap: 8px; }
+  header { padding: 4px 6px; background: var(--head); color: var(--head-fg); display: flex; align-items: center; gap: 8px; }
   header button { font: inherit; margin-left: auto; }
-  #stage { flex: 1; overflow: hidden; position: relative; }
-  #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
-  #who { padding: 6px; background: #F3E3D3; display: flex; gap: 6px; align-items: center; }
+  #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
+  #ended[hidden] { display: none; }
+  #who { padding: 6px; background: var(--who); display: flex; gap: 6px; align-items: center; }
   #who[hidden] { display: none; }
   #who input { font: inherit; flex: 1; min-width: 0; }
   #who button { font: inherit; }
@@ -30,14 +36,13 @@
   <button type="submit">Join</button>
   <button type="button" id="whoCancel">Cancel</button>
 </form>
-<div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<div id="stage"><div id="ended" hidden>The class ended.</div></div>
 <script src="anchor.js"></script>
 <script src="follow.js"></script>
 <script>
 'use strict';
 (function () {
   var stage = document.getElementById('stage');
-  var frame = document.getElementById('frame');
   var statusEl = document.getElementById('status');
   var doneBtn = document.getElementById('done');
   var nameEl = document.getElementById('name');
@@ -63,15 +68,19 @@
 
   var last = null;          // last lesson from the teacher: { seq, url, a }
   var match = true;         // the student shows the same block as the teacher
-  var loading = false;
   var done = false;
   var ackTimer = null;
   var lastAck = 0;
   var live = null;
   var joining = false;
   var replaced = false;     // another tab of this phone follows the class with the same token
+  var ended = false;        // the teacher ended the class: no channel, no join, no ack
 
-  School.watchFit(stage, frame);
+  var view = School.view(stage, function (win) {
+    // A late image or the class font changes the layout under the anchor: apply it again.
+    School.onLayout(win, function () { if (onPage()) { apply(); } });
+    follow();
+  });
 
   function join() {
     joining = true;
@@ -92,7 +101,7 @@
 
   // The box forgets a student after some time offline (or after a restart): join again.
   function rejoin() {
-    if (joining || replaced) { return; }
+    if (joining || replaced || ended) { return; }
     // Another tab of this phone may have joined already: use its token, do not join twice.
     var stored = null;
     try { stored = localStorage.getItem(KEY); } catch (e) { stored = null; }
@@ -115,7 +124,7 @@
 
   function sendAck() {
     ackTimer = null;
-    if (!last || !token || replaced) { return; }
+    if (!last || !token || replaced || ended) { return; }
     lastAck = performance.now();
     fetch('ack', {
       method: 'POST',
@@ -126,7 +135,7 @@
 
   // "Still here" every 10 s: the box closes a channel that it does not hear from (router.ts).
   setInterval(function () {
-    if (!token || replaced) { return; }
+    if (!token || replaced || ended) { return; }
     fetch('ack', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -140,36 +149,43 @@
     ackTimer = setTimeout(sendAck, Math.max(0, 200 - (performance.now() - lastAck)));
   }
 
+  // A lesson URL that redirects (for example a book to its main page) lands on another path:
+  // that is still the page of the lesson, so it does not load again (rehearsal F1: a loop).
   function onPage() {
-    return !loading && last && frame.src && School.framePath(frame) === last.url;
+    return !view.loading() && last && view.isAt(last.url);
   }
 
   function apply() {
-    match = SchoolAnchor.applyAnchor(frame.contentWindow, last.a);
+    match = SchoolAnchor.applyAnchor(view.win(), last.a);
     statusEl.textContent = match ? 'Following' : 'Following (the page is not the same)';
   }
 
   function follow() {
-    if (!last || loading) { return; }
+    if (!last || ended || view.loading()) { return; }
     if (!onPage()) {
       // Done means done with this page; the box clears it too.
       if (done) { done = false; doneBtn.textContent = 'Done'; }
-      loading = true;
       statusEl.textContent = 'Opening...';
-      frame.src = last.url;
+      view.open(last.url);
       return;
     }
     apply();
     requestAnimationFrame(ack);
   }
 
-  frame.addEventListener('load', function () {
-    School.normalize(frame.contentDocument);
-    // A late image or the class font changes the layout under the anchor: apply it again.
-    School.onLayout(frame.contentWindow, function () { if (onPage()) { apply(); } });
-    loading = false;
-    follow();
-  });
+  // The teacher ended the class. The box forgot this student: the token goes too.
+  function onEnded() {
+    ended = true;
+    if (live) { live.close(); live = null; }
+    token = null;
+    try { localStorage.removeItem(KEY); } catch (e) { /* no storage */ }
+    statusEl.textContent = 'The class ended';
+    doneBtn.hidden = true;
+    document.getElementById('other').hidden = true;
+    hereBtn.hidden = true;
+    whoForm.hidden = true;
+    document.getElementById('ended').hidden = false;
+  }
 
   function stopHere() {
     replaced = true;
@@ -236,14 +252,15 @@
     });
     // A newer channel with this token took the place (another tab): stop, do not open again.
     live.addEventListener('replaced', stopHere);
+    live.addEventListener('ended', onEnded);
     live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
   }
 
   var alive = School.keepAlive({
     live: function () { return live; },
-    reopen: function () { if (!replaced) { statusEl.textContent = 'Reconnecting...'; connect(); } },
+    reopen: function () { if (!replaced && !ended) { statusEl.textContent = 'Reconnecting...'; connect(); } },
     // A refused channel (for example 401 after a box restart) does not retry by itself.
-    onClosed: function () { if (!joining && !replaced) { rejoin(); } }
+    onClosed: function () { if (!joining && !replaced && !ended) { rejoin(); } }
   });
 
   if (token) { connect(); } else { rejoin(); }
