@@ -112,11 +112,12 @@ export function validLesson(raw: unknown): Lesson | null {
 //   box:    a rectangle in frame CSS px (the frame has the same width on every phone, follow.js):
 //           x and w across the page; the top edge y px below the top of block b, the bottom edge
 //           ey px below the top of block eb. Each edge follows its own block when the page flows
-//           again (another text size), so a box around a picture stays on the picture.
+//           again (another text size), so a box around a picture stays on the picture. o: 1 for
+//           an oval in the same rectangle.
 export type Mark =
     | { k: 'b'; b: number; t: string; cell?: number }
     | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number }
-    | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number };
+    | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number; o?: 1 };
 
 // The box gives each mark an id: the teacher removes a mark by its id.
 export type StoredMark = Mark & { id: number };
@@ -166,7 +167,8 @@ export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | '
         const x = px(m.x, -MAX_MARK_ACROSS, MAX_MARK_ACROSS);
         const w = px(m.w, 1, MAX_MARK_ACROSS);
         if (y === null || eb === null || et === null || ey === null || x === null || w === null) return invalid;
-        return { mark: { k: 'r', b, t, y, eb, et, ey, x, w } };
+        if (m.o !== undefined && m.o !== 1) return invalid;
+        return { mark: m.o === 1 ? { k: 'r', b, t, y, eb, et, ey, x, w, o: 1 } : { k: 'r', b, t, y, eb, et, ey, x, w } };
     }
     return invalid;
 }

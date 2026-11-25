@@ -180,7 +180,7 @@
         var d = doc.createElement('div');
         d.setAttribute('style', TOP + 'left: ' + box.left + 'px; top: ' +
           box.top + 'px; width: ' + (box.right - box.left) + 'px; height: ' + (box.bottom - box.top) + 'px; ' +
-          (frame ? FRAME : fill));
+          (frame ? FRAME : fill) + (m.o === 1 ? ' border-radius: 50%;' : ''));
         layer.appendChild(d);
         return box;
       }).filter(function (box) { return box !== null; });

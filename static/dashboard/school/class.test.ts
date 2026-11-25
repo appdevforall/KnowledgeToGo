@@ -163,6 +163,9 @@ test('validMark: only the known kinds and fields, numbers in range', () => {
     assert.deepEqual(validMark({ ...box, w: 5000 }), invalid);
     assert.deepEqual(validMark({ ...box, ey: 2e6 }), invalid);
     assert.deepEqual(validMark({ ...box, et: '<' }), invalid);
+    assert.deepEqual(validMark({ ...box, o: 1 }), { mark: { ...box, o: 1 } });    // an oval
+    assert.deepEqual(validMark({ ...box, o: 2 }), invalid);
+    assert.deepEqual(validMark({ ...box, o: true }), invalid);
     assert.deepEqual(validMark({ k: 'x', b: 1, t: 'a' }), invalid);
     assert.deepEqual(validMark([]), invalid);
     assert.deepEqual(validMark(null), invalid);
