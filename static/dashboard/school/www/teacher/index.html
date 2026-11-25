@@ -57,11 +57,13 @@
   var pending = false;
   var lastSend = 0;
   var started = false;      // the first page is open (the lesson of the box, or the start page)
+  var byTimer = false;      // the start page came from the time-out: send nothing until the box answers
   var resumeAt = null;      // the anchor of the box lesson, applied when its page loads
 
   School.watchFit(stage, frame);
 
   function publish() {
+    if (byTimer) { return; }   // the box lesson can still come: do not replace it with the start page
     var win = frame.contentWindow;
     seq += 1;
     var msg = { seq: seq, url: School.framePath(frame), a: SchoolAnchor.anchorOf(win) };
@@ -92,16 +94,24 @@
     publish();
   });
 
-  function open(path) { if (path) { frame.src = path; } }
+  function open(path) { if (path) { byTimer = false; frame.src = path; } }
 
   // The box keeps the lesson of the class. A page that loads again opens that lesson at the same
   // place, so the students stay where they are. A path in the address wins.
-  function start(lesson) {
-    if (started) { return; }
+  // With no channel after 3 s the start page opens, but sends nothing until the box answers: a
+  // late lesson then still wins, unless the teacher opened a page meanwhile.
+  function start(lesson, timeout) {
+    if (started) {
+      if (!byTimer || timeout) { return; }
+      byTimer = false;
+      if (lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); } else { publish(); }
+      return;
+    }
     started = true;
     var path = School.params.get('path');
     if (!path && lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); return; }
     open(path || '/kiwix/content/k2go_welcome/A/index.html');
+    byTimer = !!timeout && !path;
   }
   document.querySelectorAll('[data-path]').forEach(function (b) {
     b.onclick = function () { open(b.getAttribute('data-path')); };
@@ -206,7 +216,7 @@
     render();
   }
   connect();
-  setTimeout(function () { start(null); }, 3000);   // the channel does not open: the start page
+  setTimeout(function () { start(null, true); }, 3000);   // no channel yet: the start page
 })();
 </script>
 </body>
