@@ -2,8 +2,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    ClassRoom, Student, validLesson, CLASS_GAP_MS, JOIN_LIMIT, JOIN_WINDOW_MS, OFFLINE_GRACE_MS, QUIET_MS,
-    newClassCode,
+    ClassRoom, Student, validLesson, validMark, CLASS_GAP_MS, JOIN_LIMIT, JOIN_WINDOW_MS, MAX_MARK_BLOCKS,
+    MAX_MARKS, OFFLINE_GRACE_MS, QUIET_MS, newClassCode,
 } from './class';
 
 function counter(): () => string {
@@ -137,6 +137,68 @@ test('publish: keeps the last lesson for late students; a new page clears Done',
     assert.ok(room.current()!.id > scroll.id);
     room.end();
     assert.equal(room.publish({ url: '/p3' }), null);   // no class: nothing to publish
+});
+
+test('validMark: only the known kinds and fields, numbers in range', () => {
+    const invalid = { error: 'invalid' };
+    assert.deepEqual(validMark({ k: 'b', b: 3, t: 'abc1', extra: 'x' }), { mark: { k: 'b', b: 3, t: 'abc1' } });
+    assert.deepEqual(validMark({ k: 'b', b: 3, t: 'abc1', cell: 2 }), { mark: { k: 'b', b: 3, t: 'abc1', cell: 2 } });
+    assert.deepEqual(validMark({ k: 'p', b: 3, t: 'a', s: 4, eb: 3, et: 'a', e: 9 }),
+        { mark: { k: 'p', b: 3, t: 'a', s: 4, eb: 3, et: 'a', e: 9 } });
+    assert.ok('mark' in validMark({ k: 'p', b: 3, t: 'a', s: 40, eb: 4, et: 'b', e: 2 }));   // ends in the next block
+    assert.deepEqual(validMark({ k: 'p', b: 3, t: 'a', s: 4, eb: 3, et: 'a', e: 4 }), invalid);   // empty
+    assert.deepEqual(validMark({ k: 'p', b: 3, t: 'a', s: 4, eb: 2, et: 'a', e: 9 }), invalid);   // ends before it starts
+    assert.ok('mark' in validMark({ k: 'p', b: 0, t: 'a', s: 0, eb: MAX_MARK_BLOCKS - 1, et: 'a', e: 1 }));
+    assert.deepEqual(validMark({ k: 'p', b: 0, t: 'a', s: 0, eb: MAX_MARK_BLOCKS, et: 'a', e: 1 }), { error: 'long' });
+    assert.deepEqual(validMark({ k: 'b', b: -1, t: 'a' }), invalid);
+    assert.deepEqual(validMark({ k: 'b', b: 1.5, t: 'a' }), invalid);
+    assert.deepEqual(validMark({ k: 'b', b: '1', t: 'a' }), invalid);
+    assert.deepEqual(validMark({ k: 'b', b: 1, t: '<b>' }), invalid);
+    assert.deepEqual(validMark({ k: 'b', b: 1, t: 'a', cell: -2 }), invalid);
+    assert.deepEqual(validMark({ k: 'x', b: 1, t: 'a' }), invalid);
+    assert.deepEqual(validMark([]), invalid);
+    assert.deepEqual(validMark(null), invalid);
+});
+
+test('marks: belong to the lesson page; a new page and the end of the class clear them', () => {
+    const room = openRoom();
+    const block = { k: 'b' as const, b: 1, t: 'a' };
+    assert.deepEqual(room.addMark('/p1', block), { refused: 'other-page' });   // no lesson yet
+    assert.equal(room.marks(), null);
+    room.publish({ url: '/p1' });
+    assert.deepEqual(room.addMark('/p1', block), { changed: true });
+    assert.deepEqual(room.addMark('/p1', { ...block }), { changed: false });      // two fast taps: one mark
+    assert.deepEqual(room.addMark('/p2', block), { refused: 'other-page' });
+    assert.equal(room.publish({ url: '/p1', a: { b: 9 } })!.newPage, false);      // a scroll keeps them
+    assert.deepEqual(room.marks(), { url: '/p1', list: [{ ...block, id: 1 }] });
+    assert.equal(room.publish({ url: '/p2' })!.newPage, true);
+    assert.deepEqual(room.marks(), { url: '/p2', list: [] });
+    room.addMark('/p2', block);
+    room.end();
+    room.teacherOpen();
+    assert.equal(room.marks(), null);                                          // a new class: no marks
+    assert.deepEqual(room.addMark('/p3', block), { refused: 'other-page' });
+    room.end();
+    assert.deepEqual(room.addMark('/p3', block), { refused: 'no-class' });
+});
+
+test('marks: at most MAX_MARKS; remove by id; clear; ids are not used again', () => {
+    const room = openRoom();
+    room.publish({ url: '/p' });
+    for (let i = 0; i < MAX_MARKS; i += 1) {
+        assert.deepEqual(room.addMark('/p', { k: 'b', b: i, t: 'a' }), { changed: true });
+    }
+    const ids = room.marks()!.list.map((m) => m.id);
+    assert.deepEqual(room.addMark('/p', { k: 'b', b: 99, t: 'a' }), { refused: 'full' });
+    assert.deepEqual(room.removeMark('/p', ids[0]), { changed: true });
+    assert.deepEqual(room.removeMark('/p', ids[0]), { changed: false });          // already gone
+    assert.deepEqual(room.removeMark('/other', ids[1]), { refused: 'other-page' });
+    room.addMark('/p', { k: 'b', b: 99, t: 'a' });
+    const again = room.marks()!.list.find((m) => m.b === 99)!;
+    assert.ok(!ids.includes(again.id));
+    assert.deepEqual(room.clearMarks('/p'), { changed: true });
+    assert.deepEqual(room.clearMarks('/p'), { changed: false });
+    assert.deepEqual(room.marks()!.list, []);
 });
 
 test('prune: a student offline for too long leaves; a short drop keeps the place', () => {

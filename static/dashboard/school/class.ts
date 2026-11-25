@@ -53,6 +53,12 @@ export const QUIET_MS = 12000;
 export const JOIN_LIMIT = 5;
 export const JOIN_WINDOW_MS = 60000;
 const MAX_LESSON_BYTES = 2048;
+// Marks (M2): the parts of the lesson page that the teacher marked. A limit, so that a page stays
+// readable and the list stays small on 30 phones.
+export const MAX_MARKS = 10;
+// A phrase mark can go over at most this many blocks.
+export const MAX_MARK_BLOCKS = 20;
+const MAX_MARK_INDEX = 1000000;
 // A teacher page that comes back within this time (a reload, a theme change) continues the same
 // class, with the same code. With no teacher page for longer, the class ends by itself.
 export const CLASS_GAP_MS = 60000;
@@ -95,6 +101,68 @@ export function validLesson(raw: unknown): Lesson | null {
     return raw as Lesson;
 }
 
+// A mark, with the block system of www/anchor.js: b is a block index, t its print (so a student
+// with another version of the page does not show the mark at a wrong place).
+//   block:  the whole block; cell: one cell of a table row block.
+//   phrase: from character s of block b to character e (not included) of block eb.
+export type Mark =
+    | { k: 'b'; b: number; t: string; cell?: number }
+    | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number };
+
+// The box gives each mark an id: the teacher removes a mark by its id.
+export type StoredMark = Mark & { id: number };
+
+function index(raw: unknown): number | null {
+    return typeof raw === 'number' && Number.isInteger(raw) && raw >= 0 && raw <= MAX_MARK_INDEX ? raw : null;
+}
+
+function print(raw: unknown): string | null {
+    return typeof raw === 'string' && /^[0-9a-z]{1,8}$/.test(raw) ? raw : null;
+}
+
+// A clean copy of a mark from the teacher page. Only the known fields go on: the box sends the
+// mark to all students. 'long': a phrase over more than MAX_MARK_BLOCKS blocks (the teacher page
+// tells the teacher).
+export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | 'long' } {
+    const invalid = { error: 'invalid' as const };
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return invalid;
+    const m = raw as Record<string, unknown>;
+    const b = index(m.b);
+    const t = print(m.t);
+    if (b === null || t === null) return invalid;
+    if (m.k === 'b') {
+        if (m.cell === undefined) return { mark: { k: 'b', b, t } };
+        const cell = index(m.cell);
+        return cell === null ? invalid : { mark: { k: 'b', b, t, cell } };
+    }
+    if (m.k === 'p') {
+        const s = index(m.s);
+        const eb = index(m.eb);
+        const et = print(m.et);
+        const e = index(m.e);
+        if (s === null || eb === null || et === null || e === null) return invalid;
+        if (eb < b || (eb === b && e <= s)) return invalid;
+        if (eb - b >= MAX_MARK_BLOCKS) return { error: 'long' };
+        return { mark: { k: 'p', b, t, s, eb, et, e } };
+    }
+    return invalid;
+}
+
+function sameMark(stored: StoredMark, mark: Mark): boolean {
+    const { id: _id, ...fields } = stored;
+    return JSON.stringify(fields) === JSON.stringify(mark);
+}
+
+// The marks of the lesson page. url: the lesson page (the marks belong to it).
+export interface Marks {
+    url: string;
+    list: StoredMark[];
+}
+
+export type MarkRefusal = 'no-class' | 'other-page' | 'full';
+// The result of a mark operation: changed is false when the list stays the same.
+export type MarkResult = { changed: boolean } | { refused: MarkRefusal };
+
 // One class: its code, its lesson and its students. A new class is a new object, so nothing of
 // the old class (lesson, seats, Done marks) goes into the next one.
 interface Session {
@@ -102,6 +170,9 @@ interface Session {
     lang: string | null;    // the language of the teacher page: the student pages use it too
     lesson: Lesson | null;
     lessonId: number;
+    // The marks of the lesson page: a new page clears them (publish).
+    marks: StoredMark[];
+    markId: number;
     byToken: Map<string, Student>;
 }
 
@@ -134,7 +205,9 @@ export class ClassRoom {
     teacherOpen(lang: unknown = null): void {
         if (this.lapsed()) this.session = null;
         if (!this.session) {
-            this.session = { code: this.newCode(), lang: null, lesson: null, lessonId: 0, byToken: new Map() };
+            this.session = {
+                code: this.newCode(), lang: null, lesson: null, lessonId: 0, marks: [], markId: 0, byToken: new Map(),
+            };
         }
         this.session.lang = cleanLang(lang) ?? this.session.lang;
         this.teachers += 1;
@@ -241,15 +314,55 @@ export class ClassRoom {
 
     setDone(student: Student, done: boolean): void { student.done = done; }
 
-    // A new page clears the Done marks: Done means done with this page. null: no class.
+    // A new page clears the Done marks (Done means done with this page) and the marks of the old
+    // page. null: no class.
     publish(lesson: Lesson): { id: number; lesson: Lesson; newPage: boolean } | null {
         const s = this.session;
         if (!s) return null;
         const newPage = !s.lesson || s.lesson.url !== lesson.url;
-        if (newPage) s.byToken.forEach((st) => { st.done = false; });
+        if (newPage) {
+            s.byToken.forEach((st) => { st.done = false; });
+            s.marks = [];
+        }
         s.lesson = lesson;
         s.lessonId += 1;
         return { id: s.lessonId, lesson, newPage };
+    }
+
+    // The marks of the lesson page, or null (no class, or no lesson yet).
+    marks(): Marks | null {
+        const s = this.session;
+        return s && s.lesson ? { url: s.lesson.url, list: s.marks } : null;
+    }
+
+    // url: the page that the teacher marked. A mark for another page (a new page went out while the
+    // teacher marked) is refused.
+    addMark(url: string, mark: Mark): MarkResult {
+        const s = this.lessonPage(url);
+        if ('refused' in s) return s;
+        // The same mark twice (two fast taps) stays one mark.
+        if (s.marks.some((m) => sameMark(m, mark))) return { changed: false };
+        if (s.marks.length >= MAX_MARKS) return { refused: 'full' };
+        s.markId += 1;
+        s.marks = [...s.marks, { ...mark, id: s.markId }];
+        return { changed: true };
+    }
+
+    removeMark(url: string, id: unknown): MarkResult {
+        const s = this.lessonPage(url);
+        if ('refused' in s) return s;
+        const left = s.marks.filter((m) => m.id !== id);
+        const changed = left.length !== s.marks.length;
+        s.marks = left;
+        return { changed };
+    }
+
+    clearMarks(url: string): MarkResult {
+        const s = this.lessonPage(url);
+        if ('refused' in s) return s;
+        const changed = s.marks.length > 0;
+        s.marks = [];
+        return { changed };
     }
 
     current(): { id: number; lesson: Lesson } | null {
@@ -265,6 +378,13 @@ export class ClassRoom {
     }
 
     joinClients(): number { return this.joins.size; }
+
+    private lessonPage(url: unknown): Session | { refused: MarkRefusal } {
+        const s = this.session;
+        if (!s) return { refused: 'no-class' };
+        if (!s.lesson || s.lesson.url !== url) return { refused: 'other-page' };
+        return s;
+    }
 
     // The lowest free seat, so the numbers stay small. A seat is free again when its student
     // leaves the class.

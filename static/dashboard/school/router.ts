@@ -8,7 +8,7 @@
 // no access log for /school/ (dash-node-nginx.conf).
 import express, { NextFunction, Request, Response, Router } from 'express';
 import path from 'path';
-import { ClassRoom, Student, validLesson } from './class';
+import { ClassRoom, MAX_MARK_BLOCKS, MAX_MARKS, Student, validLesson, validMark } from './class';
 
 const PING_MS = 10000;     // the watchdog of the pages counts on it (www/follow.js)
 // The teacher page shows a student as "bad" when the box marks it quiet (QUIET_MS). This round
@@ -75,6 +75,17 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         }, 300);
     }
 
+    // The marks of the lesson page. The box is the one owner of the list: the teacher page draws it
+    // from here too. A change goes to all pages of the class. An operation that changed nothing
+    // goes back to the teacher pages only: a teacher page that missed a change (a box restart)
+    // shows the list of the box again.
+    const NO_MARKS = { url: null, list: [] };
+    function marksOut(students: boolean): void {
+        const marks = classroom.marks() ?? NO_MARKS;
+        if (students) studentStreams.forEach((_student, s) => send(s, marks, 'marks'));
+        toTeachers({ type: 'marks', ...marks });
+    }
+
     // The class ends ("End class", or no teacher page for too long): the students get "ended"
     // and lose their channel, the box forgets the class. The teacher app stops the Wi-Fi
     // announcement at its next read of /state.
@@ -131,6 +142,8 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         openStream(res);
         const now = classroom.current();
         if (now) send(res, now.lesson, undefined, now.id);   // a late student gets the page at once
+        const marks = classroom.marks();
+        if (marks) send(res, marks, 'marks');                  // and its marks
         // After the lesson: a page that comes back with its token gets its seat, its class and its
         // Done mark of this page (the box owns them; the page keeps the token and the class code).
         send(res, { done: student.done, seat: student.seat, code: classroom.state().code, lang: classroom.lang() }, 'self');
@@ -187,7 +200,37 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         const sent = classroom.publish(lesson);
         if (!sent) { res.status(409).json({ error: 'no-class' }); return; }
         studentStreams.forEach((_student, s) => send(s, sent.lesson, undefined, sent.id));
+        if (sent.newPage) marksOut(true);   // the marks of the old page go
         if (sent.newPage) rosterToTeachers();
+        res.status(204).end();
+    });
+
+    // The teacher marks a part of the lesson page (M2). url: the page that the teacher marked.
+    router.post('/teacher/marks', (req: Request, res: Response): void => {
+        const body = (req.body ?? {}) as { op?: unknown; url?: unknown; mark?: unknown; id?: unknown };
+        const url = typeof body.url === 'string' ? body.url : '';
+        let r;
+        if (body.op === 'add') {
+            const valid = validMark(body.mark);
+            if ('error' in valid) {
+                res.status(400).json(valid.error === 'long' ? { error: 'long', max: MAX_MARK_BLOCKS } : { error: 'invalid mark' });
+                return;
+            }
+            r = classroom.addMark(url, valid.mark);
+        } else if (body.op === 'remove') {
+            r = classroom.removeMark(url, body.id);
+        } else if (body.op === 'clear') {
+            r = classroom.clearMarks(url);
+        } else {
+            res.status(400).json({ error: 'invalid op' });
+            return;
+        }
+        if ('refused' in r) {
+            // The page shows the limits of the box: they live in class.ts only.
+            res.status(r.refused === 'full' ? 422 : 409).json(r.refused === 'full' ? { error: 'full', max: MAX_MARKS } : { error: r.refused });
+            return;
+        }
+        marksOut(r.changed);
         res.status(204).end();
     });
 
@@ -207,6 +250,7 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         // to the lesson of the class, not to its start page.
         const now = classroom.current();
         send(res, { type: 'lesson', lesson: now ? now.lesson : null });
+        send(res, { type: 'marks', ...(classroom.marks() ?? NO_MARKS) });
         send(res, { type: 'roster', students: classroom.roster() });
         send(res, { type: 'class', code: classroom.state().code });
         teacherStreams.add(res);

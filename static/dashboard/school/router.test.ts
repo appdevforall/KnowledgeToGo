@@ -90,11 +90,55 @@ test('cookieToken: reads the class cookie among others', () => {
 test('teacher routes answer only localhost', async () => {
     const box = await startBox();
     try {
-        for (const path of ['/school/teacher/publish', '/school/TEACHER/publish', '/school/teacher/end']) {
+        for (const path of ['/school/teacher/publish', '/school/TEACHER/publish', '/school/teacher/end', '/school/teacher/marks']) {
             assert.equal((await request(box, 'POST', path, { json: { url: '/p' } })).status, 404, path);
         }
         assert.equal((await request(box, 'GET', '/school/teacher/live?role=page')).status, 404);
         assert.equal((await request(box, 'POST', '/school/teacher/end', { ip: '127.0.0.1' })).status, 204);
+    } finally { await box.close(); }
+});
+
+test('marks: a teacher channel gets an empty list when the box has no lesson (a restart)', async () => {
+    const box = await startBox();
+    try {
+        const teacher = await firstEvent(box, '/school/teacher/live', 'message',
+            { ip: '127.0.0.1', want: (d) => (d as { type: string }).type === 'marks' });
+        assert.deepEqual(teacher.data, { type: 'marks', url: null, list: [] });
+    } finally { await box.close(); }
+});
+
+test('marks: the teacher marks; a late student and a teacher page get them; a new page clears them', async () => {
+    const box = await startBox();
+    const local = { ip: '127.0.0.1' };
+    const marks = (json: unknown) => request(box, 'POST', '/school/teacher/marks', { ...local, json });
+    try {
+        const page = await teacherPage(box);
+        const mark = { k: 'b', b: 2, t: 'x1' };
+        assert.equal((await marks({ op: 'add', url: '/p', mark })).status, 409);   // no lesson yet
+        assert.equal((await request(box, 'POST', '/school/teacher/publish', { ...local, json: { url: '/p' } })).status, 204);
+        assert.equal((await marks({ op: 'add', url: '/p', mark: { k: 'b' } })).status, 400);
+        assert.equal((await marks({ op: 'paint', url: '/p' })).status, 400);
+        const long = await marks({ op: 'add', url: '/p', mark: { k: 'p', b: 0, t: 'a', s: 0, eb: 40, et: 'a', e: 1 } });
+        assert.deepEqual([long.status, JSON.parse(long.body)], [400, { error: 'long', max: 20 }]);
+        assert.equal((await marks({ op: 'add', url: '/p', mark })).status, 204);
+        const j = JSON.parse((await request(box, 'POST', '/school/join', { json: {} })).body) as { token: string };
+        const late = await firstEvent(box, '/school/live', 'marks', { cookie: cookieOf(j.token) });
+        assert.deepEqual(late.data, { url: '/p', list: [{ ...mark, id: 1 }] });
+        const teacher = await firstEvent(box, '/school/teacher/live', 'message',
+            { ip: '127.0.0.1', want: (d) => (d as { type: string }).type === 'marks' });
+        assert.deepEqual(teacher.data, { type: 'marks', url: '/p', list: [{ ...mark, id: 1 }] });
+        // A remove that changes nothing still answers the teacher pages with the list of the box.
+        const again = firstEvent(box, '/school/teacher/live', 'message',
+            { ip: '127.0.0.1', want: (d) => (d as { type: string; list?: unknown[] }).type === 'marks' && (d as { list: unknown[] }).list.length === 1 });
+        assert.equal((await marks({ op: 'remove', url: '/p', id: 99 })).status, 204);
+        assert.equal(((await again).data as { list: unknown[] }).list.length, 1);
+        // A student on the channel hears the clear of a new page.
+        const cleared = firstEvent(box, '/school/live', 'marks',
+            { cookie: cookieOf(j.token), want: (d) => (d as { url: string }).url === '/q' });
+        await new Promise((ok) => setTimeout(ok, 100));
+        assert.equal((await request(box, 'POST', '/school/teacher/publish', { ...local, json: { url: '/q' } })).status, 204);
+        assert.deepEqual((await cleared).data, { url: '/q', list: [] });
+        page.destroy();
     } finally { await box.close(); }
 });
 
