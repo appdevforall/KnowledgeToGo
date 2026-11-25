@@ -1,6 +1,7 @@
 /* K2Go School: the lesson view of the teacher and student pages (School.view in follow.js), and
    the end screen of a class. The page sets --bg (the stage while no page shows), --fg, --page,
-   --accent, --head and --head-fg. */
+   --accent, --head and --head-fg, from the color tokens of the app (K2G-3). */
+[hidden] { display: none !important; }
 #stage { flex: 1; overflow: hidden; position: relative; background: var(--bg); }
 /* The lesson pages are light pages: a page with no background of its own shows --page. */
 #stage iframe { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; background: var(--page);
@@ -16,10 +17,15 @@
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; }
 #ended[hidden] { display: none; }
 #ended p { margin: 0; }
-/* The button of the class pages: large and round, in the color of the head bar. .quiet: an outline. */
+/* The button of the class pages (Material 3: a full round button): large, in the color of the head
+   bar. .quiet: an outline in the color of the text. .small: a button in a bar (40 px high). */
 .pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; margin: 0;
   padding: 0 24px; border: 2px solid var(--head); border-radius: 24px; background: var(--head); color: var(--head-fg);
   font: inherit; font-size: 18px; text-decoration: none; cursor: pointer; }
-.pill.quiet { background: transparent; color: var(--fg); border-color: currentColor; }
+.pill.quiet { background: transparent; color: inherit; border-color: currentColor; }
+.pill.small { min-height: 40px; padding: 0 16px; font-size: 14px; white-space: nowrap; }
+/* On the head bar: the colors of the bar the other way round. */
+header .pill { background: var(--head-fg); color: var(--head); border-color: var(--head-fg); }
+header .pill.quiet { background: transparent; color: var(--head-fg); }
 .pill svg { width: 24px; height: 24px; flex: none; fill: currentColor; }
 [dir="rtl"] .pill svg[data-icon="door_open"] { transform: scaleX(-1); }

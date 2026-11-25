@@ -7,13 +7,20 @@
 <title>K2Go School: teacher</title>
 <link rel="stylesheet" href="../view.css">
 <style>
-  :root { --bg: #fff; --fg: #111; --head: #1F5FBF; --head-fg: #fff; --chip: #fff; --chip-fg: #111; --done: #17924A; --done-fg: #fff;
-    --note: #FFF4CC; --note-fg: #111; --page: #fff; --accent: #1F5FBF;
-    --ok: #1E9E4A; --slow: #E8A317; --bad: #D93025; --light-ring: #fff; --mark: #FFD500; --mark-fg: #111; }
+  /* The color tokens of the app (res/values/colors.xml and values-night, K2G-3):
+     --bg surface_background, --fg text_primary, --accent accent, --head-fg text_on_accent.
+     --head is accent, and accent_muted at night: white on the night accent is 2.8:1, under the
+     WCAG AA 4.5:1 of the 14 px text of the head bar. --page stays white: the lesson pages are light. */
+  /* --chip surface_card, --chip-fg text_primary, --done status_success (debug only; --done-fg
+     text_on_accent, at night text_on_warning), --ok --slow --bad
+     status_success, status_warning, status_danger. --note: chrome_surface and chrome_on_surface,
+     dark in both modes (a snackbar). --mark: the color of the marker, fixed (marks.js). */
+  :root { --bg: #F4F5F7; --fg: #202124; --head: #2E7D32; --head-fg: #FFFFFF; --chip: #FFFFFF; --chip-fg: #202124;
+    --done: #2E7D32; --done-fg: #FFFFFF; --note: #1A1A1A; --note-fg: #FFFFFF; --page: #fff; --accent: #2E7D32;
+    --ok: #2E7D32; --slow: #E65100; --bad: #C62828; --mark: #FFD500; --mark-fg: #111; }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #121212; --fg: #eee; --head: #173F7A; --chip: #2A2A2A; --chip-fg: #eee; --done: #1E7A43;
-      --note: #4A3F10; --note-fg: #eee; --accent: #8AB4F8;
-      --ok: #5BD07F; --slow: #FDD663; --bad: #F28B82; --light-ring: #173F7A; }
+    :root { --bg: #121212; --fg: #FAFAFA; --head: #2E5A30; --chip: #1E1E1E; --chip-fg: #FAFAFA; --done: #66BB6A;
+      --done-fg: #212121; --accent: #4CAF50; --ok: #66BB6A; --slow: #FFB300; --bad: #EF5350; }
   }
   html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
@@ -32,21 +39,24 @@
   .sep { width: 1px; height: 24px; margin: 0 4px; background: currentColor; opacity: 0.3; }
   #line { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-height: 22px; }
   #status { display: flex; flex-wrap: wrap; gap: 0 2px; align-items: center; }
-  #status button { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: 12px;
-    border: 1px solid transparent; background: none; color: inherit; font: inherit; }
-  #status button[aria-pressed="true"] { border-color: var(--head-fg); }
+  /* The status groups are chips on the head bar: the lights keep their color on any bar. */
+  #status { gap: 4px; }
+  #status button { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: 12px;
+    border: 1px solid transparent; background: var(--chip); color: var(--chip-fg); font: inherit; }
+  #status button[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); border-color: var(--mark-fg); }
   #status b { font-variant-numeric: tabular-nums; }
-  .light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 1px var(--light-ring); }
+  .light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
   .light.ok { background: var(--ok); }
   .light.slow { background: var(--slow); }
   .light.bad { background: var(--bad); }
   .pop { position: absolute; left: 6px; right: 6px; top: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px;
     background: var(--note); color: var(--note-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
-  .pop button { font: inherit; min-height: 36px; margin: 4px 4px 0 0; }
+  .pop .pill { margin: 8px 8px 0 0; background: var(--head); color: var(--head-fg); border-color: var(--head); }
+  .pop .pill.quiet { background: transparent; color: inherit; border-color: currentColor; }
   #toast { position: absolute; left: 12px; right: 12px; bottom: 16px; z-index: 5; display: flex; align-items: center;
     gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--note); color: var(--note-fg);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
-  #toast button { margin-inline-start: auto; font: inherit; min-height: 36px; white-space: nowrap; }
+  #toast button { margin-inline-start: auto; }
   /* The eraser: "Clear all" in a small chip at a top corner, not a note over the bottom lines. */
   #clearAll { position: absolute; top: 8px; inset-inline-end: 8px; z-index: 5; min-height: 36px; padding: 4px 12px;
     font: inherit; border: 1px solid var(--mark-fg); border-radius: 18px; background: var(--mark); color: var(--mark-fg);
@@ -88,8 +98,8 @@
   <div id="seats" class="pop" translate="no" hidden></div>
   <div id="confirm" class="pop" hidden>
     <span data-t="endConfirm"></span><br>
-    <button id="endYes" data-t="endClass"></button>
-    <button id="endNo" data-t="cancel"></button>
+    <button id="endYes" class="pill small" data-t="endClass"></button>
+    <button id="endNo" class="pill small quiet" data-t="cancel"></button>
   </div>
   <!-- Test tools (?debug=1): not for a class. The round trip of each seat is here. -->
   <div id="debug" hidden>
@@ -105,7 +115,7 @@
 </header>
 <div id="stage">
   <!-- Notes float over the page and go away by themselves; an open tool keeps its own. -->
-  <div id="toast" role="status" hidden><span id="toastText"></span><button id="toastAction" hidden></button></div>
+  <div id="toast" role="status" hidden><span id="toastText"></span><button id="toastAction" class="pill small quiet" hidden></button></div>
   <button id="clearAll" hidden></button>
   <!-- Exit: the app closes the class screen at this address (as its X); a browser goes to the library. -->
   <div id="ended" hidden>

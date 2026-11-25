@@ -7,14 +7,18 @@
 <title>K2Go School: student</title>
 <link rel="stylesheet" href="view.css">
 <style>
-  :root { --bg: #fff; --fg: #111; --head: #C9711C; --head-fg: #fff; --page: #fff; --accent: #C9711C; }
+  /* The color tokens of the app (res/values/colors.xml and values-night, K2G-3):
+     --bg surface_background, --fg text_primary, --accent accent, --head-fg text_on_accent.
+     --head is accent, and accent_muted at night: white on the night accent is 2.8:1, under the
+     WCAG AA 4.5:1 of the 14 px text of the head bar. --page stays white: the lesson pages are light. */
+  :root { --bg: #F4F5F7; --fg: #202124; --head: #2E7D32; --head-fg: #FFFFFF; --page: #fff; --accent: #2E7D32; }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #121212; --fg: #eee; --head: #8A4A10; --accent: #F0A050; }
+    :root { --bg: #121212; --fg: #FAFAFA; --head: #2E5A30; --accent: #4CAF50; }
   }
   html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
-  header { padding: 4px 6px; background: var(--head); color: var(--head-fg); display: flex; align-items: center; gap: 8px; }
-  header button { font: inherit; margin-left: auto; }
+  header { padding: 4px 8px; background: var(--head); color: var(--head-fg); display: flex; align-items: center; gap: 8px; }
+  #status { flex: 1; }   /* the buttons go to the end of the bar, also right to left */
   #seat { font-weight: bold; }
 </style>
 </head>
@@ -22,8 +26,8 @@
 <header translate="no">
   <span id="seat"></span>
   <span id="status"></span>
-  <button id="here" data-t="followHere" hidden></button>
-  <button id="done"></button>
+  <button id="here" class="pill small" data-t="followHere" hidden></button>
+  <button id="done" class="pill small"></button>
 </header>
 <div id="stage">
   <!-- Exit: the app closes the class screen at this address (as its X); a browser goes to the library. -->
@@ -49,6 +53,11 @@
     shown = Array.prototype.slice.call(arguments);
     statusEl.textContent = SchoolText.text.apply(null, shown);
   }
+  // Done on: the button says "Not done" in an outline (Done off is a full button).
+  function showDone() {
+    doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+    doneBtn.classList.toggle('quiet', done);
+  }
   function setSeat(n) {
     seat = n;
     seatEl.textContent = SchoolText.text('seat', (n < 10 ? '0' : '') + n);
@@ -57,7 +66,7 @@
     SchoolText.apply(document);
     headerEl.dir = SchoolText.dir();
     document.getElementById('ended').dir = SchoolText.dir();
-    doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+    showDone();
     statusEl.textContent = SchoolText.text.apply(null, shown);
     if (seat) { setSeat(seat); }
   }
@@ -231,7 +240,7 @@
     if (!last || ended || view.loading()) { return; }
     if (!onPage()) {
       // Done means done with this page; the box clears it too.
-      if (done) { done = false; doneBtn.textContent = SchoolText.text('done'); }
+      if (done) { done = false; showDone(); }
       setStatus('opening');
       view.open(last.url);
       return;
@@ -271,7 +280,7 @@
 
   doneBtn.onclick = function () {
     done = !done;
-    doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+    showDone();
     ack();
   };
 
@@ -299,7 +308,7 @@
       var me;
       try { me = JSON.parse(ev.data); } catch (e) { return; }
       done = me.done === true;
-      doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+      showDone();
       useClassLang(me.lang);
       if (me.seat) { setSeat(me.seat); }
       setClass(me.code);
