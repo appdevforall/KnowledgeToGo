@@ -22,6 +22,7 @@ import org.appdevforall.k2go.school.domain.FoundClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,9 @@ import java.util.concurrent.Executor;
  * leaves the Wi-Fi sends no goodbye, and the network keeps its announcement for about 2 minutes.
  * When the network knows a class that no box confirms (the teacher may be back at a new address),
  * the search starts again, at most every {@link #RESEARCH_MS}, so the network gives the new
- * address. The list is for the screen only, and it is empty again at the next search.
+ * address, up to {@link #MAX_RESEARCHES} times in a row (review N4: a teacher that left keeps its
+ * announcement on the network for about 2 minutes). The list is for the screen only, and it is
+ * empty again at the next search.
  */
 public class FindClassesViewModel extends ViewModel {
 
@@ -42,6 +45,8 @@ public class FindClassesViewModel extends ViewModel {
     static final long SEARCH_MS = 5000;
     static final long CHECK_MS = 5000;
     static final long RESEARCH_MS = 10000;
+    /** Searches in a row for a class that no box confirms: one minute, then the tab waits. */
+    static final int MAX_RESEARCHES = 6;
 
     private final ClassFinder finder;
     private final ClassProbe probe;
@@ -57,8 +62,13 @@ public class FindClassesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> searching = new MutableLiveData<>(false);
     // A probe answer of an older search changes nothing.
     private int round;
+    // key -> number of its newest probe: only the newest answer counts (review N3: an older probe
+    // to a dead address can end last). Cleared only at a new search: a key that is lost and found
+    // again keeps counting, so an old probe of it cannot match.
+    private final Map<String, Integer> probeOf = new HashMap<>();
     private boolean running;
     private long lastSearchAt;
+    private int researches;   // searches in a row with a class that no box confirms
 
     private final Runnable searchEnd = () -> searching.setValue(false);
     private final Runnable check = this::checkAll;
@@ -95,6 +105,8 @@ public class FindClassesViewModel extends ViewModel {
         round++;
         known.clear();
         shown.clear();
+        probeOf.clear();
+        researches = 0;
         publish();
         searching.setValue(true);
         main.postDelayed(searchEnd, SEARCH_MS);
@@ -118,6 +130,7 @@ public class FindClassesViewModel extends ViewModel {
         List<FoundClass> candidates = new ArrayList<>(at.values());
         Collections.reverse(candidates);
         final int r = round;
+        final int mine = probeOf.merge(key, 1, Integer::sum);
         io.execute(() -> {
             FoundClass open = null;
             for (FoundClass c : candidates) {
@@ -126,6 +139,7 @@ public class FindClassesViewModel extends ViewModel {
             final FoundClass confirmed = open;
             main.post(() -> {
                 if (!running || r != round || !known.containsKey(key)) return;
+                if (!Integer.valueOf(mine).equals(probeOf.get(key))) return;   // a newer probe runs
                 if (confirmed != null) shown.put(key, confirmed);
                 else shown.remove(key);
                 publish();
@@ -137,7 +151,10 @@ public class FindClassesViewModel extends ViewModel {
         if (!running) return;
         for (String key : new ArrayList<>(known.keySet())) confirm(key);
         long now = SystemClock.elapsedRealtime();
-        if (shown.size() < known.size() && now - lastSearchAt >= RESEARCH_MS) {
+        if (shown.size() >= known.size()) {
+            researches = 0;
+        } else if (now - lastSearchAt >= RESEARCH_MS && researches < MAX_RESEARCHES) {
+            researches++;
             lastSearchAt = now;
             finder.stop();   // a new search asks the network again: it gives the current address
             finder.start(onFinder);
