@@ -1705,4 +1705,20 @@
     <string name="k2go_dl_held_metered">Inasubiri Wi-Fi. Upakuaji hautumii data ya simu hadi utakaporuhusu.</string>
     <string name="k2go_dl_held_offline">Inasubiri. Programu imewekwa nje ya mtandao, kwa hivyo upakuaji hauunganishi hadi utakaporuhusu.</string>
     <string name="k2go_mod_phase_downloading">Inapakua…</string>
+    <string name="k2go_tab_class">Darasa</string>
+    <string name="k2go_class_body">Ongoza darasa kutoka kwenye simu hii, au fuata darasa kwenye simu ya mwalimu.</string>
+    <string name="k2go_class_teach">Fundisha darasa</string>
+    <string name="k2go_class_teach_body">Fungua ukurasa wa darasa wa maktaba kwenye simu hii. Wanafunzi wanaona unachoonyesha.</string>
+    <string name="k2go_class_checking">Inakagua maktaba kwenye simu hii...</string>
+    <string name="k2go_class_no_module">Moduli ya darasa haijasakinishwa kwenye maktaba ya simu hii.</string>
+    <string name="k2go_class_no_box">Maktaba kwenye simu hii haifanyi kazi sasa. Ikianza kufanya kazi, unaweza kufundisha darasa hapa.</string>
+    <string name="k2go_class_join">Jiunge na darasa</string>
+    <string name="k2go_class_join_body">Madarasa yaliyo wazi kwenye Wi-Fi hii yanaonekana hapa. Gusa darasa lenye msimbo unaoonyeshwa kwenye skrini ya mwalimu.</string>
+    <string name="k2go_class_finding">Inatafuta madarasa kwenye Wi-Fi hii...</string>
+    <string name="k2go_class_none_found">Hakuna darasa lililopatikana. Hakikisha simu hii iko kwenye Wi-Fi ile ile na mwalimu.</string>
+    <string name="k2go_class_search_again">Tafuta tena</string>
+    <string name="k2go_class_found_item">Jiunge na darasa %1$s</string>
+    <string name="k2go_class_scan">Changanua msimbo</string>
+    <string name="k2go_class_scan_prompt">Changanua msimbo wa Fungua kwenye skrini ya Unganisha ya mwalimu.</string>
+    <string name="k2go_class_bad_code">Msimbo huu si anwani ya maktaba ya K2Go. Changanua msimbo wa Fungua kwenye skrini ya Unganisha ya mwalimu.</string>
 </resources>

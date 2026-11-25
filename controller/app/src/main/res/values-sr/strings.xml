@@ -1699,4 +1699,20 @@
     <string name="k2go_dl_held_metered">Чекање на Wi-Fi. Преузимање не користи мобилне податке док то не дозволите.</string>
     <string name="k2go_dl_held_offline">Чекање. Апликација је задржана офлајн, па се преузимање не повезује док то не дозволите.</string>
     <string name="k2go_mod_phase_downloading">Преузимање…</string>
+    <string name="k2go_tab_class">Час</string>
+    <string name="k2go_class_body">Водите час са овог телефона или пратите час на телефону наставника.</string>
+    <string name="k2go_class_teach">Одржи час</string>
+    <string name="k2go_class_teach_body">Отворите страницу часа у библиотеци на овом телефону. Ученици виде оно што показујете.</string>
+    <string name="k2go_class_checking">Провера библиотеке на овом телефону...</string>
+    <string name="k2go_class_no_module">Модул за час није инсталиран у библиотеци на овом телефону.</string>
+    <string name="k2go_class_no_box">Библиотека на овом телефону сада не ради. Када ради, можете овде да одржите час.</string>
+    <string name="k2go_class_join">Придружи се часу</string>
+    <string name="k2go_class_join_body">Отворени часови на овој Wi-Fi мрежи приказују се овде. Додирните час са кодом који приказује екран наставника.</string>
+    <string name="k2go_class_finding">Тражење часова на овој Wi-Fi мрежи...</string>
+    <string name="k2go_class_none_found">Није пронађен ниједан час. Проверите да ли је овај телефон на истој Wi-Fi мрежи као наставник.</string>
+    <string name="k2go_class_search_again">Тражи поново</string>
+    <string name="k2go_class_found_item">Придружи се часу %1$s</string>
+    <string name="k2go_class_scan">Скенирај код</string>
+    <string name="k2go_class_scan_prompt">Скенирајте код „Отвори“ на наставниковом екрану „Повежи“.</string>
+    <string name="k2go_class_bad_code">Овај код није адреса K2Go библиотеке. Скенирајте код „Отвори“ на наставниковом екрану „Повежи“.</string>
 </resources>

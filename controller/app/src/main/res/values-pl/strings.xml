@@ -1697,4 +1697,20 @@
     <string name="k2go_dl_held_metered">Oczekiwanie na Wi-Fi. Pobieranie nie używa danych komórkowych, dopóki na to nie zezwolisz.</string>
     <string name="k2go_dl_held_offline">Oczekiwanie. Aplikacja pozostaje offline, więc pobieranie nie łączy się, dopóki na to nie zezwolisz.</string>
     <string name="k2go_mod_phase_downloading">Pobieranie…</string>
+    <string name="k2go_tab_class">Lekcja</string>
+    <string name="k2go_class_body">Prowadź lekcję z tego telefonu lub śledź lekcję na telefonie nauczyciela.</string>
+    <string name="k2go_class_teach">Prowadź lekcję</string>
+    <string name="k2go_class_teach_body">Otwórz stronę lekcji w bibliotece na tym telefonie. Uczniowie widzą to, co pokazujesz.</string>
+    <string name="k2go_class_checking">Sprawdzanie biblioteki na tym telefonie...</string>
+    <string name="k2go_class_no_module">Moduł lekcji nie jest zainstalowany w bibliotece na tym telefonie.</string>
+    <string name="k2go_class_no_box">Biblioteka na tym telefonie teraz nie działa. Gdy zacznie działać, możesz tu prowadzić lekcję.</string>
+    <string name="k2go_class_join">Dołącz do lekcji</string>
+    <string name="k2go_class_join_body">Otwarte lekcje w tej sieci Wi-Fi są widoczne tutaj. Dotknij lekcji z kodem widocznym na ekranie nauczyciela.</string>
+    <string name="k2go_class_finding">Szukanie lekcji w tej sieci Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nie znaleziono lekcji. Upewnij się, że ten telefon jest w tej samej sieci Wi-Fi co nauczyciel.</string>
+    <string name="k2go_class_search_again">Szukaj ponownie</string>
+    <string name="k2go_class_found_item">Dołącz do lekcji %1$s</string>
+    <string name="k2go_class_scan">Zeskanuj kod</string>
+    <string name="k2go_class_scan_prompt">Zeskanuj kod Otwórz na ekranie Połącz nauczyciela.</string>
+    <string name="k2go_class_bad_code">Ten kod nie jest adresem biblioteki K2Go. Zeskanuj kod Otwórz na ekranie Połącz nauczyciela.</string>
 </resources>

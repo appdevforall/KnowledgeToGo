@@ -1687,4 +1687,20 @@
     <string name="k2go_dl_held_metered">Очікування Wi-Fi. Завантаження не використовує мобільні дані, доки ви не дозволите.</string>
     <string name="k2go_dl_held_offline">Очікування. Застосунок залишено офлайн, тому завантаження не підключається, доки ви не дозволите.</string>
     <string name="k2go_mod_phase_downloading">Завантаження…</string>
+    <string name="k2go_tab_class">Урок</string>
+    <string name="k2go_class_body">Проводьте урок з цього телефона або стежте за уроком на телефоні вчителя.</string>
+    <string name="k2go_class_teach">Провести урок</string>
+    <string name="k2go_class_teach_body">Відкрийте сторінку уроку в бібліотеці на цьому телефоні. Учні бачать те, що ви показуєте.</string>
+    <string name="k2go_class_checking">Перевірка бібліотеки на цьому телефоні...</string>
+    <string name="k2go_class_no_module">Модуль уроків не встановлено в бібліотеці на цьому телефоні.</string>
+    <string name="k2go_class_no_box">Бібліотека на цьому телефоні зараз не працює. Коли вона працюватиме, ви зможете провести урок тут.</string>
+    <string name="k2go_class_join">Приєднатися до уроку</string>
+    <string name="k2go_class_join_body">Тут показано відкриті уроки в цій мережі Wi-Fi. Торкніться уроку з кодом, який показує екран учителя.</string>
+    <string name="k2go_class_finding">Пошук уроків у цій мережі Wi-Fi...</string>
+    <string name="k2go_class_none_found">Уроків не знайдено. Переконайтеся, що цей телефон у тій самій мережі Wi-Fi, що й телефон учителя.</string>
+    <string name="k2go_class_search_again">Шукати знову</string>
+    <string name="k2go_class_found_item">Приєднатися до уроку %1$s</string>
+    <string name="k2go_class_scan">Сканувати код</string>
+    <string name="k2go_class_scan_prompt">Відскануйте код «Відкрити» на екрані «Підключити» вчителя.</string>
+    <string name="k2go_class_bad_code">Цей код не є адресою бібліотеки K2Go. Відскануйте код «Відкрити» на екрані «Підключити» вчителя.</string>
 </resources>

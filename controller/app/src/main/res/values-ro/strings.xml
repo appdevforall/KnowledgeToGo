@@ -1686,4 +1686,20 @@
     <string name="k2go_dl_held_metered">Se așteaptă Wi-Fi. Descărcarea nu folosește date mobile până nu permiți.</string>
     <string name="k2go_dl_held_offline">În așteptare. Aplicația este păstrată offline, așa că descărcarea nu se conectează până nu permiți.</string>
     <string name="k2go_mod_phase_downloading">Se descarcă…</string>
+    <string name="k2go_tab_class">Lecție</string>
+    <string name="k2go_class_body">Condu o lecție de pe acest telefon sau urmărește lecția pe telefonul profesorului.</string>
+    <string name="k2go_class_teach">Predă o lecție</string>
+    <string name="k2go_class_teach_body">Deschide pagina lecției din bibliotecă pe acest telefon. Elevii văd ce le arăți.</string>
+    <string name="k2go_class_checking">Se verifică biblioteca de pe acest telefon...</string>
+    <string name="k2go_class_no_module">Modulul de lecții nu este instalat în biblioteca de pe acest telefon.</string>
+    <string name="k2go_class_no_box">Biblioteca de pe acest telefon nu rulează acum. Când rulează, poți preda o lecție aici.</string>
+    <string name="k2go_class_join">Intră într-o lecție</string>
+    <string name="k2go_class_join_body">Lecțiile deschise pe această rețea Wi-Fi apar aici. Atinge lecția cu codul pe care îl arată ecranul profesorului.</string>
+    <string name="k2go_class_finding">Se caută lecții pe această rețea Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nu s-a găsit nicio lecție. Verifică dacă acest telefon este pe aceeași rețea Wi-Fi ca profesorul.</string>
+    <string name="k2go_class_search_again">Caută din nou</string>
+    <string name="k2go_class_found_item">Intră în lecția %1$s</string>
+    <string name="k2go_class_scan">Scanează un cod</string>
+    <string name="k2go_class_scan_prompt">Scanează codul „Deschide” de pe ecranul „Conectare” al profesorului.</string>
+    <string name="k2go_class_bad_code">Acest cod nu este adresa unei biblioteci K2Go. Scanează codul „Deschide” de pe ecranul „Conectare” al profesorului.</string>
 </resources>

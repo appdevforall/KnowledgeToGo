@@ -1695,4 +1695,20 @@
     <string name="k2go_dl_held_metered">Venter på Wi-Fi. Nedlastingen bruker ikke mobildata før du tillater det.</string>
     <string name="k2go_dl_held_offline">Venter. Appen holdes offline, så nedlastingen kobler ikke til før du tillater det.</string>
     <string name="k2go_mod_phase_downloading">Laster ned…</string>
+    <string name="k2go_tab_class">Time</string>
+    <string name="k2go_class_body">Led en time fra denne telefonen, eller følg timen på lærerens telefon.</string>
+    <string name="k2go_class_teach">Hold en time</string>
+    <string name="k2go_class_teach_body">Åpne timesiden i biblioteket på denne telefonen. Elevene ser det du viser.</string>
+    <string name="k2go_class_checking">Sjekker biblioteket på denne telefonen...</string>
+    <string name="k2go_class_no_module">Timemodulen er ikke installert i biblioteket på denne telefonen.</string>
+    <string name="k2go_class_no_box">Biblioteket på denne telefonen kjører ikke nå. Når det kjører, kan du holde en time her.</string>
+    <string name="k2go_class_join">Bli med i en time</string>
+    <string name="k2go_class_join_body">Åpne timer på dette Wi-Fi-nettet vises her. Trykk på timen med koden som vises på lærerens skjerm.</string>
+    <string name="k2go_class_finding">Ser etter timer på dette Wi-Fi-nettet...</string>
+    <string name="k2go_class_none_found">Fant ingen time. Sjekk at denne telefonen er på samme Wi-Fi som læreren.</string>
+    <string name="k2go_class_search_again">Søk på nytt</string>
+    <string name="k2go_class_found_item">Bli med i time %1$s</string>
+    <string name="k2go_class_scan">Skann en kode</string>
+    <string name="k2go_class_scan_prompt">Skann Åpne-koden på lærerens Koble til-skjerm.</string>
+    <string name="k2go_class_bad_code">Denne koden er ikke adressen til et K2Go-bibliotek. Skann Åpne-koden på lærerens Koble til-skjerm.</string>
 </resources>

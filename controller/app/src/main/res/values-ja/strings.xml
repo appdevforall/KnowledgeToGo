@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi を待機中です。許可するまで、ダウンロードにモバイルデータは使用されません。</string>
     <string name="k2go_dl_held_offline">待機中です。アプリはオフラインのままなので、許可するまでダウンロードは接続しません。</string>
     <string name="k2go_mod_phase_downloading">ダウンロード中…</string>
+    <string name="k2go_tab_class">授業</string>
+    <string name="k2go_class_body">このスマホで授業を進めるか、先生のスマホの授業に参加します。</string>
+    <string name="k2go_class_teach">授業を行う</string>
+    <string name="k2go_class_teach_body">このスマホでライブラリの授業ページを開きます。生徒にはあなたが表示している内容が表示されます。</string>
+    <string name="k2go_class_checking">このスマホのライブラリを確認しています...</string>
+    <string name="k2go_class_no_module">このスマホのライブラリに授業モジュールがインストールされていません。</string>
+    <string name="k2go_class_no_box">このスマホのライブラリは現在実行されていません。実行中になると、ここで授業を行えます。</string>
+    <string name="k2go_class_join">授業に参加</string>
+    <string name="k2go_class_join_body">この Wi-Fi で開かれている授業がここに表示されます。先生の画面に表示されているコードの授業をタップしてください。</string>
+    <string name="k2go_class_finding">この Wi-Fi で授業を探しています...</string>
+    <string name="k2go_class_none_found">授業が見つかりません。このスマホが先生と同じ Wi-Fi に接続されていることを確認してください。</string>
+    <string name="k2go_class_search_again">再検索</string>
+    <string name="k2go_class_found_item">授業 %1$s に参加</string>
+    <string name="k2go_class_scan">コードをスキャン</string>
+    <string name="k2go_class_scan_prompt">先生の「接続」画面にある「開く」コードをスキャンしてください。</string>
+    <string name="k2go_class_bad_code">このコードは K2Go ライブラリのアドレスではありません。先生の「接続」画面にある「開く」コードをスキャンしてください。</string>
 </resources>

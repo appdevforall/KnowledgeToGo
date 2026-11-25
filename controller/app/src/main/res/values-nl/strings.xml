@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Wachten op Wi-Fi. De download gebruikt geen mobiele data totdat je het toestaat.</string>
     <string name="k2go_dl_held_offline">Wachten. De app blijft offline, dus de download maakt geen verbinding totdat je het toestaat.</string>
     <string name="k2go_mod_phase_downloading">Downloaden…</string>
+    <string name="k2go_tab_class">Les</string>
+    <string name="k2go_class_body">Geef les vanaf deze telefoon, of volg de les op de telefoon van de leraar.</string>
+    <string name="k2go_class_teach">Les geven</string>
+    <string name="k2go_class_teach_body">Open de lespagina van de bibliotheek op deze telefoon. De leerlingen zien wat je laat zien.</string>
+    <string name="k2go_class_checking">De bibliotheek op deze telefoon controleren...</string>
+    <string name="k2go_class_no_module">De lesmodule is niet geïnstalleerd in de bibliotheek op deze telefoon.</string>
+    <string name="k2go_class_no_box">De bibliotheek op deze telefoon draait nu niet. Als hij draait, kun je hier les geven.</string>
+    <string name="k2go_class_join">Deelnemen aan een les</string>
+    <string name="k2go_class_join_body">De open lessen op deze Wi-Fi verschijnen hier. Tik op de les met de code die op het scherm van de leraar staat.</string>
+    <string name="k2go_class_finding">Lessen zoeken op deze Wi-Fi...</string>
+    <string name="k2go_class_none_found">Geen les gevonden. Zorg dat deze telefoon op dezelfde Wi-Fi zit als de leraar.</string>
+    <string name="k2go_class_search_again">Opnieuw zoeken</string>
+    <string name="k2go_class_found_item">Deelnemen aan les %1$s</string>
+    <string name="k2go_class_scan">Code scannen</string>
+    <string name="k2go_class_scan_prompt">Scan de code Openen op het scherm Verbinden van de leraar.</string>
+    <string name="k2go_class_bad_code">Deze code is niet het adres van een K2Go-bibliotheek. Scan de code Openen op het scherm Verbinden van de leraar.</string>
 </resources>

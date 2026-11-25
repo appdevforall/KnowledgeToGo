@@ -1694,4 +1694,20 @@
     <string name="k2go_dl_held_metered">Čaká sa na Wi-Fi. Sťahovanie nepoužije mobilné dáta, kým to nepovolíte.</string>
     <string name="k2go_dl_held_offline">Čaká sa. Aplikácia je ponechaná offline, preto sa sťahovanie nepripojí, kým to nepovolíte.</string>
     <string name="k2go_mod_phase_downloading">Sťahuje sa…</string>
+    <string name="k2go_tab_class">Hodina</string>
+    <string name="k2go_class_body">Veďte hodinu z tohto telefónu alebo sledujte hodinu na telefóne učiteľa.</string>
+    <string name="k2go_class_teach">Viesť hodinu</string>
+    <string name="k2go_class_teach_body">Otvorte stránku hodiny v knižnici na tomto telefóne. Žiaci vidia to, čo ukazujete.</string>
+    <string name="k2go_class_checking">Kontroluje sa knižnica na tomto telefóne...</string>
+    <string name="k2go_class_no_module">Modul hodín nie je nainštalovaný v knižnici na tomto telefóne.</string>
+    <string name="k2go_class_no_box">Knižnica na tomto telefóne teraz nebeží. Keď bude bežať, môžete tu viesť hodinu.</string>
+    <string name="k2go_class_join">Pripojiť sa k hodine</string>
+    <string name="k2go_class_join_body">Otvorené hodiny v tejto sieti Wi-Fi sa zobrazia tu. Ťuknite na hodinu s kódom, ktorý ukazuje obrazovka učiteľa.</string>
+    <string name="k2go_class_finding">Hľadajú sa hodiny v tejto sieti Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nenašla sa žiadna hodina. Skontrolujte, či je tento telefón v rovnakej sieti Wi-Fi ako učiteľ.</string>
+    <string name="k2go_class_search_again">Hľadať znova</string>
+    <string name="k2go_class_found_item">Pripojiť sa k hodine %1$s</string>
+    <string name="k2go_class_scan">Naskenovať kód</string>
+    <string name="k2go_class_scan_prompt">Naskenujte kód „Otvoriť“ na obrazovke „Pripojiť“ u učiteľa.</string>
+    <string name="k2go_class_bad_code">Tento kód nie je adresa knižnice K2Go. Naskenujte kód „Otvoriť“ na obrazovke „Pripojiť“ u učiteľa.</string>
 </resources>

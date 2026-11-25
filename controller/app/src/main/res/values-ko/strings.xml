@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi를 기다리는 중입니다. 허용하기 전까지 다운로드에 모바일 데이터를 사용하지 않습니다.</string>
     <string name="k2go_dl_held_offline">대기 중입니다. 앱이 오프라인으로 유지되므로 허용하기 전까지 다운로드가 연결되지 않습니다.</string>
     <string name="k2go_mod_phase_downloading">다운로드 중…</string>
+    <string name="k2go_tab_class">수업</string>
+    <string name="k2go_class_body">이 휴대폰으로 수업을 진행하거나, 선생님 휴대폰의 수업을 따라가세요.</string>
+    <string name="k2go_class_teach">수업 진행</string>
+    <string name="k2go_class_teach_body">이 휴대폰에서 라이브러리의 수업 페이지를 엽니다. 학생에게는 화면에 보여 주는 내용이 그대로 보입니다.</string>
+    <string name="k2go_class_checking">이 휴대폰의 라이브러리를 확인하는 중...</string>
+    <string name="k2go_class_no_module">이 휴대폰의 라이브러리에 수업 모듈이 설치되어 있지 않습니다.</string>
+    <string name="k2go_class_no_box">이 휴대폰의 라이브러리가 지금 실행 중이 아닙니다. 실행되면 여기서 수업을 진행할 수 있습니다.</string>
+    <string name="k2go_class_join">수업 참여</string>
+    <string name="k2go_class_join_body">이 Wi-Fi에서 열린 수업이 여기에 표시됩니다. 선생님 화면에 보이는 코드의 수업을 탭하세요.</string>
+    <string name="k2go_class_finding">이 Wi-Fi에서 수업을 찾는 중...</string>
+    <string name="k2go_class_none_found">수업을 찾지 못했습니다. 이 휴대폰이 선생님과 같은 Wi-Fi에 연결되어 있는지 확인하세요.</string>
+    <string name="k2go_class_search_again">다시 검색</string>
+    <string name="k2go_class_found_item">%1$s 수업 참여</string>
+    <string name="k2go_class_scan">코드 스캔</string>
+    <string name="k2go_class_scan_prompt">선생님의 \'연결\' 화면에 있는 \'열기\' 코드를 스캔하세요.</string>
+    <string name="k2go_class_bad_code">이 코드는 K2Go 라이브러리 주소가 아닙니다. 선생님의 \'연결\' 화면에 있는 \'열기\' 코드를 스캔하세요.</string>
 </resources>

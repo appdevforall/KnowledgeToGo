@@ -1765,4 +1765,20 @@
     <string name="k2go_dl_held_metered">Aguardando Wi-Fi. O download não usa dados móveis até você permitir.</string>
     <string name="k2go_dl_held_offline">Aguardando. O app é mantido offline, então o download não se conecta até você permitir.</string>
     <string name="k2go_mod_phase_downloading">Baixando…</string>
+    <string name="k2go_tab_class">Aula</string>
+    <string name="k2go_class_body">Dê uma aula a partir deste telemóvel ou siga a aula no telemóvel do professor.</string>
+    <string name="k2go_class_teach">Dar uma aula</string>
+    <string name="k2go_class_teach_body">Abra a página da aula da biblioteca neste telemóvel. Os alunos veem o que mostrar.</string>
+    <string name="k2go_class_checking">A verificar a biblioteca neste telemóvel...</string>
+    <string name="k2go_class_no_module">O módulo de aula não está instalado na biblioteca deste telemóvel.</string>
+    <string name="k2go_class_no_box">A biblioteca deste telemóvel não está a funcionar. Quando estiver, pode dar uma aula aqui.</string>
+    <string name="k2go_class_join">Entrar numa aula</string>
+    <string name="k2go_class_join_body">As aulas abertas nesta rede Wi-Fi aparecem aqui. Toque na aula com o código que o ecrã do professor mostra.</string>
+    <string name="k2go_class_finding">A procurar aulas nesta rede Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nenhuma aula encontrada. Confirme que este telemóvel está na mesma rede Wi-Fi que o professor.</string>
+    <string name="k2go_class_search_again">Procurar novamente</string>
+    <string name="k2go_class_found_item">Entrar na aula %1$s</string>
+    <string name="k2go_class_scan">Ler um código</string>
+    <string name="k2go_class_scan_prompt">Leia o código Abrir no ecrã Conectar do professor.</string>
+    <string name="k2go_class_bad_code">Este código não é o endereço de uma biblioteca K2Go. Leia o código Abrir no ecrã Conectar do professor.</string>
 </resources>

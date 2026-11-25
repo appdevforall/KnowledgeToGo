@@ -1704,4 +1704,20 @@
     <string name="k2go_dl_held_metered">Ń dúró de Wi-Fi. Ìgbàsílẹ̀ kò ní lo data alagbeka títí o fi gbà á láàyè.</string>
     <string name="k2go_dl_held_offline">Ń dúró. A pa ìṣàmúlò mọ́ àìsí-íńtánẹ́ẹ̀tì, nítorí náà ìgbàsílẹ̀ kò ní sopọ̀ títí o fi gbà á láàyè.</string>
     <string name="k2go_mod_phase_downloading">Ń gba sílẹ̀…</string>
+    <string name="k2go_tab_class">Kíláàsì</string>
+    <string name="k2go_class_body">Darí kíláàsì láti fóònù yìí, tàbí tẹ̀lé kíláàsì lórí fóònù olùkọ́.</string>
+    <string name="k2go_class_teach">Kọ́ kíláàsì</string>
+    <string name="k2go_class_teach_body">Ṣí ojú-ìwé kíláàsì ti ilé-ìkàwé lórí fóònù yìí. Àwọn akẹ́kọ̀ọ́ ń rí ohun tí o fi hàn.</string>
+    <string name="k2go_class_checking">Ń ṣàyẹ̀wò ilé-ìkàwé lórí fóònù yìí...</string>
+    <string name="k2go_class_no_module">A kò fi mọ́dùùlù kíláàsì sínú ilé-ìkàwé lórí fóònù yìí.</string>
+    <string name="k2go_class_no_box">Ilé-ìkàwé lórí fóònù yìí kò ṣiṣẹ́ báyìí. Nígbà tí ó bá ń ṣiṣẹ́, o lè kọ́ kíláàsì níbí.</string>
+    <string name="k2go_class_join">Darapọ̀ mọ́ kíláàsì</string>
+    <string name="k2go_class_join_body">Àwọn kíláàsì tó ṣí sílẹ̀ lórí Wi-Fi yìí ń hàn níbí. Tẹ kíláàsì tí ó ní kóòdù tí ojú-iboju olùkọ́ fi hàn.</string>
+    <string name="k2go_class_finding">Ń wá àwọn kíláàsì lórí Wi-Fi yìí...</string>
+    <string name="k2go_class_none_found">A kò rí kíláàsì kankan. Rí i dájú pé fóònù yìí wà lórí Wi-Fi kan náà pẹ̀lú olùkọ́.</string>
+    <string name="k2go_class_search_again">Wá lẹ́ẹ̀kan sí i</string>
+    <string name="k2go_class_found_item">Darapọ̀ mọ́ kíláàsì %1$s</string>
+    <string name="k2go_class_scan">Ya kóòdù</string>
+    <string name="k2go_class_scan_prompt">Ya kóòdù “Ṣí” lórí ojú-iboju “So pọ̀” ti olùkọ́.</string>
+    <string name="k2go_class_bad_code">Kóòdù yìí kì í ṣe àdírẹ́sì ilé-ìkàwé K2Go. Ya kóòdù “Ṣí” lórí ojú-iboju “So pọ̀” ti olùkọ́.</string>
 </resources>

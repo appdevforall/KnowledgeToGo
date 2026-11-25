@@ -1773,4 +1773,20 @@
     <string name="k2go_dl_held_metered">En attente du Wi-Fi. Le téléchargement n\'utilise pas les données mobiles tant que vous ne l\'autorisez pas.</string>
     <string name="k2go_dl_held_offline">En attente. L\'application reste hors ligne, donc le téléchargement ne se connecte pas tant que vous ne l\'autorisez pas.</string>
     <string name="k2go_mod_phase_downloading">Téléchargement…</string>
+    <string name="k2go_tab_class">Classe</string>
+    <string name="k2go_class_body">Animez une classe depuis ce téléphone, ou suivez la classe sur le téléphone de l\'enseignant.</string>
+    <string name="k2go_class_teach">Animer une classe</string>
+    <string name="k2go_class_teach_body">Ouvrez la page de classe de la bibliothèque sur ce téléphone. Les élèves voient ce que vous montrez.</string>
+    <string name="k2go_class_checking">Vérification de la bibliothèque sur ce téléphone...</string>
+    <string name="k2go_class_no_module">Le module de classe n\'est pas installé dans la bibliothèque de ce téléphone.</string>
+    <string name="k2go_class_no_box">La bibliothèque de ce téléphone ne fonctionne pas pour le moment. Quand elle fonctionne, vous pouvez animer une classe ici.</string>
+    <string name="k2go_class_join">Rejoindre une classe</string>
+    <string name="k2go_class_join_body">Les classes ouvertes sur ce Wi-Fi s\'affichent ici. Touchez la classe dont le code s\'affiche sur l\'écran de l\'enseignant.</string>
+    <string name="k2go_class_finding">Recherche de classes sur ce Wi-Fi...</string>
+    <string name="k2go_class_none_found">Aucune classe trouvée. Vérifiez que ce téléphone est sur le même Wi-Fi que l\'enseignant.</string>
+    <string name="k2go_class_search_again">Rechercher à nouveau</string>
+    <string name="k2go_class_found_item">Rejoindre la classe %1$s</string>
+    <string name="k2go_class_scan">Scanner un code</string>
+    <string name="k2go_class_scan_prompt">Scannez le code Ouvrir sur l\'écran Connecter de l\'enseignant.</string>
+    <string name="k2go_class_bad_code">Ce code n\'est pas l\'adresse d\'une bibliothèque K2Go. Scannez le code Ouvrir sur l\'écran Connecter de l\'enseignant.</string>
 </resources>

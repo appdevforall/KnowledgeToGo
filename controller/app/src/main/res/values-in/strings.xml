@@ -1691,4 +1691,20 @@
     <string name="k2go_dl_held_metered">Menunggu Wi-Fi. Unduhan tidak menggunakan data seluler sampai Anda mengizinkannya.</string>
     <string name="k2go_dl_held_offline">Menunggu. Aplikasi tetap luring, jadi unduhan tidak tersambung sampai Anda mengizinkannya.</string>
     <string name="k2go_mod_phase_downloading">Mengunduh…</string>
+    <string name="k2go_tab_class">Kelas</string>
+    <string name="k2go_class_body">Pimpin kelas dari ponsel ini, atau ikuti kelas di ponsel guru.</string>
+    <string name="k2go_class_teach">Mengajar kelas</string>
+    <string name="k2go_class_teach_body">Buka halaman kelas dari pustaka di ponsel ini. Siswa melihat apa yang Anda tunjukkan.</string>
+    <string name="k2go_class_checking">Memeriksa pustaka di ponsel ini...</string>
+    <string name="k2go_class_no_module">Modul kelas tidak terpasang di pustaka pada ponsel ini.</string>
+    <string name="k2go_class_no_box">Pustaka di ponsel ini sedang tidak berjalan. Saat berjalan, Anda dapat mengajar kelas di sini.</string>
+    <string name="k2go_class_join">Gabung ke kelas</string>
+    <string name="k2go_class_join_body">Kelas yang terbuka di Wi-Fi ini muncul di sini. Ketuk kelas dengan kode yang tampil di layar guru.</string>
+    <string name="k2go_class_finding">Mencari kelas di Wi-Fi ini...</string>
+    <string name="k2go_class_none_found">Tidak ada kelas yang ditemukan. Pastikan ponsel ini terhubung ke Wi-Fi yang sama dengan guru.</string>
+    <string name="k2go_class_search_again">Cari lagi</string>
+    <string name="k2go_class_found_item">Gabung ke kelas %1$s</string>
+    <string name="k2go_class_scan">Pindai kode</string>
+    <string name="k2go_class_scan_prompt">Pindai kode Buka di layar Sambungkan milik guru.</string>
+    <string name="k2go_class_bad_code">Kode ini bukan alamat pustaka K2Go. Pindai kode Buka di layar Sambungkan milik guru.</string>
 </resources>

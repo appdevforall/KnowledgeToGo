@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">در انتظار Wi-Fi. دانلود تا زمانی که اجازه ندهید از داده تلفن همراه استفاده نمی‌کند.</string>
     <string name="k2go_dl_held_offline">در انتظار. برنامه آفلاین نگه داشته شده است، بنابراین دانلود تا زمانی که اجازه ندهید وصل نمی‌شود.</string>
     <string name="k2go_mod_phase_downloading">در حال دانلود…</string>
+    <string name="k2go_tab_class">کلاس</string>
+    <string name="k2go_class_body">از این تلفن یک کلاس را اداره کنید، یا کلاس را روی تلفن معلم دنبال کنید.</string>
+    <string name="k2go_class_teach">برگزاری کلاس</string>
+    <string name="k2go_class_teach_body">صفحهٔ کلاس کتابخانه را روی این تلفن باز کنید. دانش‌آموزان آنچه را نشان می‌دهید می‌بینند.</string>
+    <string name="k2go_class_checking">در حال بررسی کتابخانه روی این تلفن...</string>
+    <string name="k2go_class_no_module">ماژول کلاس در کتابخانهٔ این تلفن نصب نیست.</string>
+    <string name="k2go_class_no_box">کتابخانهٔ این تلفن اکنون اجرا نمی‌شود. وقتی اجرا شود، می‌توانید اینجا کلاس برگزار کنید.</string>
+    <string name="k2go_class_join">پیوستن به کلاس</string>
+    <string name="k2go_class_join_body">کلاس‌های باز در این Wi-Fi اینجا نشان داده می‌شوند. روی کلاسی بزنید که کد آن روی صفحهٔ معلم نشان داده می‌شود.</string>
+    <string name="k2go_class_finding">در حال جست‌وجوی کلاس‌ها در این Wi-Fi...</string>
+    <string name="k2go_class_none_found">هیچ کلاسی پیدا نشد. مطمئن شوید که این تلفن روی همان Wi-Fi معلم است.</string>
+    <string name="k2go_class_search_again">جست‌وجوی دوباره</string>
+    <string name="k2go_class_found_item">پیوستن به کلاس %1$s</string>
+    <string name="k2go_class_scan">اسکن یک کد</string>
+    <string name="k2go_class_scan_prompt">کد «باز کردن» را در صفحهٔ «اتصال» معلم اسکن کنید.</string>
+    <string name="k2go_class_bad_code">این کد نشانی یک کتابخانهٔ K2Go نیست. کد «باز کردن» را در صفحهٔ «اتصال» معلم اسکن کنید.</string>
 </resources>

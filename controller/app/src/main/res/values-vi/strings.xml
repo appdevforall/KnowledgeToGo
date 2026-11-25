@@ -1684,4 +1684,20 @@
     <string name="k2go_dl_held_metered">Đang chờ Wi-Fi. Bản tải xuống không dùng dữ liệu di động cho đến khi bạn cho phép.</string>
     <string name="k2go_dl_held_offline">Đang chờ. Ứng dụng được giữ ngoại tuyến, vì vậy bản tải xuống không kết nối cho đến khi bạn cho phép.</string>
     <string name="k2go_mod_phase_downloading">Đang tải xuống…</string>
+    <string name="k2go_tab_class">Lớp học</string>
+    <string name="k2go_class_body">Dẫn dắt lớp học từ điện thoại này, hoặc theo dõi lớp học trên điện thoại của giáo viên.</string>
+    <string name="k2go_class_teach">Dạy một lớp học</string>
+    <string name="k2go_class_teach_body">Mở trang lớp học của thư viện trên điện thoại này. Học sinh thấy những gì bạn hiển thị.</string>
+    <string name="k2go_class_checking">Đang kiểm tra thư viện trên điện thoại này...</string>
+    <string name="k2go_class_no_module">Mô-đun lớp học chưa được cài trong thư viện trên điện thoại này.</string>
+    <string name="k2go_class_no_box">Thư viện trên điện thoại này hiện không chạy. Khi thư viện chạy, bạn có thể dạy lớp học tại đây.</string>
+    <string name="k2go_class_join">Tham gia lớp học</string>
+    <string name="k2go_class_join_body">Các lớp học đang mở trên Wi-Fi này hiển thị tại đây. Chạm vào lớp học có mã mà màn hình của giáo viên hiển thị.</string>
+    <string name="k2go_class_finding">Đang tìm lớp học trên Wi-Fi này...</string>
+    <string name="k2go_class_none_found">Không tìm thấy lớp học nào. Hãy đảm bảo điện thoại này ở cùng Wi-Fi với giáo viên.</string>
+    <string name="k2go_class_search_again">Tìm lại</string>
+    <string name="k2go_class_found_item">Tham gia lớp %1$s</string>
+    <string name="k2go_class_scan">Quét mã</string>
+    <string name="k2go_class_scan_prompt">Quét mã “Mở” trên màn hình “Kết nối” của giáo viên.</string>
+    <string name="k2go_class_bad_code">Mã này không phải địa chỉ của thư viện K2Go. Quét mã “Mở” trên màn hình “Kết nối” của giáo viên.</string>
 </resources>

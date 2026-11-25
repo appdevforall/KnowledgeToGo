@@ -1689,4 +1689,20 @@
     <string name="k2go_dl_held_metered">في انتظار شبكة الواي فاي. لن يستخدم التنزيل بيانات الجوال حتى تسمح بذلك.</string>
     <string name="k2go_dl_held_offline">في الانتظار. التطبيق مضبوط على البقاء دون اتصال، لذلك لن يتصل التنزيل حتى تسمح بذلك.</string>
     <string name="k2go_mod_phase_downloading">جارٍ التنزيل…</string>
+    <string name="k2go_tab_class">الصف</string>
+    <string name="k2go_class_body">أدِر صفًا من هذا الهاتف، أو تابع الصف على هاتف المعلم.</string>
+    <string name="k2go_class_teach">تدريس صف</string>
+    <string name="k2go_class_teach_body">افتح صفحة الصف في المكتبة على هذا الهاتف. يرى الطلاب ما تعرضه.</string>
+    <string name="k2go_class_checking">جارٍ التحقق من المكتبة على هذا الهاتف...</string>
+    <string name="k2go_class_no_module">وحدة الصف غير مثبتة في المكتبة على هذا الهاتف.</string>
+    <string name="k2go_class_no_box">المكتبة على هذا الهاتف لا تعمل الآن. عندما تعمل، يمكنك تدريس صف هنا.</string>
+    <string name="k2go_class_join">الانضمام إلى صف</string>
+    <string name="k2go_class_join_body">تظهر هنا الصفوف المفتوحة على شبكة الواي فاي هذه. اضغط على الصف الذي يحمل الرمز الظاهر على شاشة المعلم.</string>
+    <string name="k2go_class_finding">جارٍ البحث عن صفوف على شبكة الواي فاي هذه...</string>
+    <string name="k2go_class_none_found">لم يتم العثور على أي صف. تأكد من أن هذا الهاتف على نفس شبكة الواي فاي التي يستخدمها المعلم.</string>
+    <string name="k2go_class_search_again">البحث مرة أخرى</string>
+    <string name="k2go_class_found_item">الانضمام إلى الصف %1$s</string>
+    <string name="k2go_class_scan">مسح رمز</string>
+    <string name="k2go_class_scan_prompt">امسح رمز «فتح» على شاشة «اتصال» لدى المعلم.</string>
+    <string name="k2go_class_bad_code">هذا الرمز ليس عنوان مكتبة K2Go. امسح رمز «فتح» على شاشة «اتصال» لدى المعلم.</string>
 </resources>

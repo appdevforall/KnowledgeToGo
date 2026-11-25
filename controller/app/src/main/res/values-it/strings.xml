@@ -1686,4 +1686,20 @@
     <string name="k2go_dl_held_metered">In attesa del Wi-Fi. Il download non usa i dati mobili finché non lo consenti.</string>
     <string name="k2go_dl_held_offline">In attesa. L\'app è mantenuta offline, quindi il download non si connette finché non lo consenti.</string>
     <string name="k2go_mod_phase_downloading">Download in corso…</string>
+    <string name="k2go_tab_class">Lezione</string>
+    <string name="k2go_class_body">Guida una lezione da questo telefono, oppure segui la lezione sul telefono dell\'insegnante.</string>
+    <string name="k2go_class_teach">Tieni una lezione</string>
+    <string name="k2go_class_teach_body">Apri la pagina della lezione della libreria su questo telefono. Gli studenti vedono ciò che mostri.</string>
+    <string name="k2go_class_checking">Controllo della libreria su questo telefono...</string>
+    <string name="k2go_class_no_module">Il modulo lezione non è installato nella libreria di questo telefono.</string>
+    <string name="k2go_class_no_box">La libreria di questo telefono ora non è attiva. Quando è attiva, puoi tenere una lezione qui.</string>
+    <string name="k2go_class_join">Partecipa a una lezione</string>
+    <string name="k2go_class_join_body">Le lezioni aperte su questa rete Wi-Fi appaiono qui. Tocca la lezione con il codice mostrato sullo schermo dell\'insegnante.</string>
+    <string name="k2go_class_finding">Ricerca di lezioni su questa rete Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nessuna lezione trovata. Assicurati che questo telefono sia sulla stessa rete Wi-Fi dell\'insegnante.</string>
+    <string name="k2go_class_search_again">Cerca di nuovo</string>
+    <string name="k2go_class_found_item">Partecipa alla lezione %1$s</string>
+    <string name="k2go_class_scan">Scansiona un codice</string>
+    <string name="k2go_class_scan_prompt">Scansiona il codice Apri nella schermata Connetti dell\'insegnante.</string>
+    <string name="k2go_class_bad_code">Questo codice non è l\'indirizzo di una libreria K2Go. Scansiona il codice Apri nella schermata Connetti dell\'insegnante.</string>
 </resources>

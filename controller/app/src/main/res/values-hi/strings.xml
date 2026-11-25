@@ -1762,4 +1762,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi की प्रतीक्षा में। जब तक आप अनुमति नहीं देते, डाउनलोड मोबाइल डेटा का उपयोग नहीं करता।</string>
     <string name="k2go_dl_held_offline">प्रतीक्षा में। ऐप को ऑफ़लाइन रखा गया है, इसलिए जब तक आप अनुमति नहीं देते, डाउनलोड कनेक्ट नहीं होता।</string>
     <string name="k2go_mod_phase_downloading">डाउनलोड हो रहा है…</string>
+    <string name="k2go_tab_class">कक्षा</string>
+    <string name="k2go_class_body">इस फ़ोन से कक्षा चलाएँ, या शिक्षक के फ़ोन पर कक्षा के साथ चलें।</string>
+    <string name="k2go_class_teach">कक्षा पढ़ाएँ</string>
+    <string name="k2go_class_teach_body">इस फ़ोन पर लाइब्रेरी का कक्षा पेज खोलें। छात्र वही देखते हैं जो आप दिखाते हैं।</string>
+    <string name="k2go_class_checking">इस फ़ोन पर लाइब्रेरी की जाँच हो रही है...</string>
+    <string name="k2go_class_no_module">इस फ़ोन की लाइब्रेरी में कक्षा मॉड्यूल इंस्टॉल नहीं है।</string>
+    <string name="k2go_class_no_box">इस फ़ोन की लाइब्रेरी अभी नहीं चल रही है। जब यह चलेगी, तब आप यहाँ कक्षा पढ़ा सकते हैं।</string>
+    <string name="k2go_class_join">कक्षा से जुड़ें</string>
+    <string name="k2go_class_join_body">इस Wi-Fi पर खुली कक्षाएँ यहाँ दिखती हैं। उस कक्षा पर टैप करें जिसका कोड शिक्षक की स्क्रीन पर दिखता है।</string>
+    <string name="k2go_class_finding">इस Wi-Fi पर कक्षाएँ खोजी जा रही हैं...</string>
+    <string name="k2go_class_none_found">कोई कक्षा नहीं मिली। पक्का करें कि यह फ़ोन उसी Wi-Fi पर है जिस पर शिक्षक है।</string>
+    <string name="k2go_class_search_again">फिर से खोजें</string>
+    <string name="k2go_class_found_item">कक्षा %1$s से जुड़ें</string>
+    <string name="k2go_class_scan">कोड स्कैन करें</string>
+    <string name="k2go_class_scan_prompt">शिक्षक की \"कनेक्ट करें\" स्क्रीन पर \"खोलें\" कोड स्कैन करें।</string>
+    <string name="k2go_class_bad_code">यह कोड किसी K2Go लाइब्रेरी का पता नहीं है। शिक्षक की \"कनेक्ट करें\" स्क्रीन पर \"खोलें\" कोड स्कैन करें।</string>
 </resources>

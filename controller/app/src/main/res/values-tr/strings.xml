@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi bekleniyor. Siz izin verene kadar indirme mobil veri kullanmaz.</string>
     <string name="k2go_dl_held_offline">Bekleniyor. Uygulama çevrimdışı tutuluyor, bu yüzden siz izin verene kadar indirme bağlanmaz.</string>
     <string name="k2go_mod_phase_downloading">İndiriliyor…</string>
+    <string name="k2go_tab_class">Ders</string>
+    <string name="k2go_class_body">Bu telefondan bir ders yönetin ya da dersi öğretmenin telefonunda takip edin.</string>
+    <string name="k2go_class_teach">Ders ver</string>
+    <string name="k2go_class_teach_body">Bu telefonda kitaplığın ders sayfasını açın. Öğrenciler sizin gösterdiğinizi görür.</string>
+    <string name="k2go_class_checking">Bu telefondaki kitaplık denetleniyor...</string>
+    <string name="k2go_class_no_module">Ders modülü bu telefondaki kitaplıkta kurulu değil.</string>
+    <string name="k2go_class_no_box">Bu telefondaki kitaplık şu anda çalışmıyor. Çalıştığında burada ders verebilirsiniz.</string>
+    <string name="k2go_class_join">Derse katıl</string>
+    <string name="k2go_class_join_body">Bu Wi-Fi\'deki açık dersler burada görünür. Öğretmenin ekranında görünen koda sahip derse dokunun.</string>
+    <string name="k2go_class_finding">Bu Wi-Fi\'de dersler aranıyor...</string>
+    <string name="k2go_class_none_found">Ders bulunamadı. Bu telefonun öğretmenle aynı Wi-Fi\'de olduğundan emin olun.</string>
+    <string name="k2go_class_search_again">Tekrar ara</string>
+    <string name="k2go_class_found_item">%1$s dersine katıl</string>
+    <string name="k2go_class_scan">Kod tara</string>
+    <string name="k2go_class_scan_prompt">Öğretmenin “Bağlan” ekranındaki “Aç” kodunu tarayın.</string>
+    <string name="k2go_class_bad_code">Bu kod bir K2Go kitaplığının adresi değil. Öğretmenin “Bağlan” ekranındaki “Aç” kodunu tarayın.</string>
 </resources>

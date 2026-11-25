@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Várakozás Wi-Fi-re. A letöltés nem használ mobiladatot, amíg nem engedélyezi.</string>
     <string name="k2go_dl_held_offline">Várakozás. Az alkalmazás offline marad, ezért a letöltés nem csatlakozik, amíg nem engedélyezi.</string>
     <string name="k2go_mod_phase_downloading">Letöltés…</string>
+    <string name="k2go_tab_class">Óra</string>
+    <string name="k2go_class_body">Vezess órát erről a telefonról, vagy kövesd az órát a tanár telefonján.</string>
+    <string name="k2go_class_teach">Óra tartása</string>
+    <string name="k2go_class_teach_body">Nyisd meg a könyvtár óraoldalát ezen a telefonon. A diákok azt látják, amit te mutatsz.</string>
+    <string name="k2go_class_checking">A könyvtár ellenőrzése ezen a telefonon...</string>
+    <string name="k2go_class_no_module">Az óramodul nincs telepítve a telefon könyvtárában.</string>
+    <string name="k2go_class_no_box">A telefon könyvtára most nem fut. Ha fut, itt tarthatsz órát.</string>
+    <string name="k2go_class_join">Csatlakozás órához</string>
+    <string name="k2go_class_join_body">Az ezen a Wi-Fi-n nyitott órák itt jelennek meg. Koppints arra az órára, amelynek a kódja a tanár képernyőjén látható.</string>
+    <string name="k2go_class_finding">Órák keresése ezen a Wi-Fi-n...</string>
+    <string name="k2go_class_none_found">Nem található óra. Ellenőrizd, hogy a telefon ugyanazon a Wi-Fi-n van-e, mint a tanár.</string>
+    <string name="k2go_class_search_again">Keresés újra</string>
+    <string name="k2go_class_found_item">Csatlakozás az órához: %1$s</string>
+    <string name="k2go_class_scan">Kód beolvasása</string>
+    <string name="k2go_class_scan_prompt">Olvasd be a Megnyitás kódot a tanár Csatlakozás képernyőjén.</string>
+    <string name="k2go_class_bad_code">Ez a kód nem egy K2Go könyvtár címe. Olvasd be a Megnyitás kódot a tanár Csatlakozás képernyőjén.</string>
 </resources>

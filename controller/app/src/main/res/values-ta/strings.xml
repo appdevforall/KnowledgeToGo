@@ -1705,4 +1705,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi க்காகக் காத்திருக்கிறது. நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் மொபைல் டேட்டாவைப் பயன்படுத்தாது.</string>
     <string name="k2go_dl_held_offline">காத்திருக்கிறது. பயன்பாடு ஆஃப்லைனில் வைக்கப்பட்டுள்ளது, எனவே நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் இணைக்காது.</string>
     <string name="k2go_mod_phase_downloading">பதிவிறக்கப்படுகிறது…</string>
+    <string name="k2go_tab_class">வகுப்பு</string>
+    <string name="k2go_class_body">இந்தத் தொலைபேசியிலிருந்து வகுப்பை நடத்தவும், அல்லது ஆசிரியரின் தொலைபேசியில் வகுப்பைப் பின்தொடரவும்.</string>
+    <string name="k2go_class_teach">வகுப்பு நடத்தவும்</string>
+    <string name="k2go_class_teach_body">இந்தத் தொலைபேசியில் நூலகத்தின் வகுப்புப் பக்கத்தைத் திறக்கவும். நீங்கள் காட்டுவதை மாணவர்கள் பார்க்கிறார்கள்.</string>
+    <string name="k2go_class_checking">இந்தத் தொலைபேசியில் நூலகம் சரிபார்க்கப்படுகிறது...</string>
+    <string name="k2go_class_no_module">இந்தத் தொலைபேசியின் நூலகத்தில் வகுப்புத் தொகுதி நிறுவப்படவில்லை.</string>
+    <string name="k2go_class_no_box">இந்தத் தொலைபேசியில் நூலகம் இப்போது இயங்கவில்லை. அது இயங்கும்போது, இங்கே வகுப்பு நடத்தலாம்.</string>
+    <string name="k2go_class_join">வகுப்பில் சேரவும்</string>
+    <string name="k2go_class_join_body">இந்த Wi-Fi-இல் திறந்துள்ள வகுப்புகள் இங்கே தோன்றும். ஆசிரியரின் திரை காட்டும் குறியீடு உள்ள வகுப்பைத் தட்டவும்.</string>
+    <string name="k2go_class_finding">இந்த Wi-Fi-இல் வகுப்புகள் தேடப்படுகின்றன...</string>
+    <string name="k2go_class_none_found">வகுப்பு எதுவும் கிடைக்கவில்லை. இந்தத் தொலைபேசி ஆசிரியரின் அதே Wi-Fi-இல் உள்ளதா எனச் சரிபார்க்கவும்.</string>
+    <string name="k2go_class_search_again">மீண்டும் தேடு</string>
+    <string name="k2go_class_found_item">வகுப்பு %1$s-இல் சேரவும்</string>
+    <string name="k2go_class_scan">குறியீட்டை ஸ்கேன் செய்</string>
+    <string name="k2go_class_scan_prompt">ஆசிரியரின் “இணை” திரையில் உள்ள “திற” குறியீட்டை ஸ்கேன் செய்யவும்.</string>
+    <string name="k2go_class_bad_code">இந்தக் குறியீடு K2Go நூலகத்தின் முகவரி அல்ல. ஆசிரியரின் “இணை” திரையில் உள்ள “திற” குறியீட்டை ஸ்கேன் செய்யவும்.</string>
 </resources>

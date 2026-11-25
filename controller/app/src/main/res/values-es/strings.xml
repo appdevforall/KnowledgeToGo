@@ -1762,4 +1762,20 @@
     <string name="k2go_dl_held_metered">Esperando Wi-Fi. La descarga no usa datos móviles hasta que lo permitas.</string>
     <string name="k2go_dl_held_offline">En espera. La app se mantiene sin conexión, así que la descarga no se conecta hasta que lo permitas.</string>
     <string name="k2go_mod_phase_downloading">Descargando…</string>
+    <string name="k2go_tab_class">Clase</string>
+    <string name="k2go_class_body">Dirige una clase desde este teléfono o sigue la clase en el teléfono del docente.</string>
+    <string name="k2go_class_teach">Dar una clase</string>
+    <string name="k2go_class_teach_body">Abre la página de clase de la biblioteca en este teléfono. Los estudiantes ven lo que muestras.</string>
+    <string name="k2go_class_checking">Comprobando la biblioteca en este teléfono...</string>
+    <string name="k2go_class_no_module">El módulo de clase no está instalado en la biblioteca de este teléfono.</string>
+    <string name="k2go_class_no_box">La biblioteca de este teléfono no está en funcionamiento. Cuando funcione, podrás dar una clase aquí.</string>
+    <string name="k2go_class_join">Unirse a una clase</string>
+    <string name="k2go_class_join_body">Las clases abiertas en esta red Wi-Fi aparecen aquí. Toca la clase con el código que muestra la pantalla del docente.</string>
+    <string name="k2go_class_finding">Buscando clases en esta red Wi-Fi...</string>
+    <string name="k2go_class_none_found">No se encontró ninguna clase. Asegúrate de que este teléfono esté en la misma red Wi-Fi que el docente.</string>
+    <string name="k2go_class_search_again">Buscar de nuevo</string>
+    <string name="k2go_class_found_item">Unirse a la clase %1$s</string>
+    <string name="k2go_class_scan">Escanear un código</string>
+    <string name="k2go_class_scan_prompt">Escanea el código Abrir en la pantalla Conectar del docente.</string>
+    <string name="k2go_class_bad_code">Este código no es la dirección de una biblioteca K2Go. Escanea el código Abrir en la pantalla Conectar del docente.</string>
 </resources>

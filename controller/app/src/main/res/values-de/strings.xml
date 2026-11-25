@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">Warten auf WLAN. Der Download nutzt keine mobilen Daten, bis Sie es erlauben.</string>
     <string name="k2go_dl_held_offline">Wartet. Die App bleibt offline, daher stellt der Download keine Verbindung her, bis Sie es erlauben.</string>
     <string name="k2go_mod_phase_downloading">Wird heruntergeladen…</string>
+    <string name="k2go_tab_class">Klasse</string>
+    <string name="k2go_class_body">Leite eine Klasse von diesem Telefon aus, oder folge der Klasse auf dem Telefon der Lehrkraft.</string>
+    <string name="k2go_class_teach">Klasse unterrichten</string>
+    <string name="k2go_class_teach_body">Öffne die Klassenseite der Bibliothek auf diesem Telefon. Die Lernenden sehen, was du zeigst.</string>
+    <string name="k2go_class_checking">Bibliothek auf diesem Telefon wird geprüft...</string>
+    <string name="k2go_class_no_module">Das Klassenmodul ist in der Bibliothek auf diesem Telefon nicht installiert.</string>
+    <string name="k2go_class_no_box">Die Bibliothek auf diesem Telefon läuft gerade nicht. Wenn sie läuft, kannst du hier eine Klasse unterrichten.</string>
+    <string name="k2go_class_join">Klasse beitreten</string>
+    <string name="k2go_class_join_body">Die offenen Klassen in diesem WLAN erscheinen hier. Tippe auf die Klasse mit dem Code, den der Bildschirm der Lehrkraft zeigt.</string>
+    <string name="k2go_class_finding">Klassen in diesem WLAN werden gesucht...</string>
+    <string name="k2go_class_none_found">Keine Klasse gefunden. Stelle sicher, dass dieses Telefon im selben WLAN ist wie die Lehrkraft.</string>
+    <string name="k2go_class_search_again">Erneut suchen</string>
+    <string name="k2go_class_found_item">Klasse %1$s beitreten</string>
+    <string name="k2go_class_scan">Code scannen</string>
+    <string name="k2go_class_scan_prompt">Scanne den Code Öffnen auf dem Bildschirm Verbinden der Lehrkraft.</string>
+    <string name="k2go_class_bad_code">Dieser Code ist nicht die Adresse einer K2Go-Bibliothek. Scanne den Code Öffnen auf dem Bildschirm Verbinden der Lehrkraft.</string>
 </resources>

@@ -1694,4 +1694,20 @@
     <string name="k2go_dl_held_metered">Čekání na Wi-Fi. Stahování nepoužije mobilní data, dokud to nepovolíte.</string>
     <string name="k2go_dl_held_offline">Čekání. Aplikace je ponechána offline, proto se stahování nepřipojí, dokud to nepovolíte.</string>
     <string name="k2go_mod_phase_downloading">Stahování…</string>
+    <string name="k2go_tab_class">Třída</string>
+    <string name="k2go_class_body">Veďte hodinu z tohoto telefonu, nebo sledujte hodinu na telefonu učitele.</string>
+    <string name="k2go_class_teach">Učit třídu</string>
+    <string name="k2go_class_teach_body">Otevřete stránku třídy v knihovně na tomto telefonu. Žáci vidí, co ukazujete.</string>
+    <string name="k2go_class_checking">Kontrola knihovny na tomto telefonu...</string>
+    <string name="k2go_class_no_module">Modul třídy není nainstalován v knihovně na tomto telefonu.</string>
+    <string name="k2go_class_no_box">Knihovna na tomto telefonu teď neběží. Až poběží, můžete zde učit třídu.</string>
+    <string name="k2go_class_join">Připojit se ke třídě</string>
+    <string name="k2go_class_join_body">Zde se zobrazují otevřené třídy v této síti Wi-Fi. Klepněte na třídu s kódem, který ukazuje obrazovka učitele.</string>
+    <string name="k2go_class_finding">Hledání tříd v této síti Wi-Fi...</string>
+    <string name="k2go_class_none_found">Nebyla nalezena žádná třída. Ujistěte se, že je tento telefon ve stejné síti Wi-Fi jako učitel.</string>
+    <string name="k2go_class_search_again">Hledat znovu</string>
+    <string name="k2go_class_found_item">Připojit se ke třídě %1$s</string>
+    <string name="k2go_class_scan">Naskenovat kód</string>
+    <string name="k2go_class_scan_prompt">Naskenujte kód Otevřít na obrazovce Připojit u učitele.</string>
+    <string name="k2go_class_bad_code">Tento kód není adresa knihovny K2Go. Naskenujte kód Otevřít na obrazovce Připojit u učitele.</string>
 </resources>

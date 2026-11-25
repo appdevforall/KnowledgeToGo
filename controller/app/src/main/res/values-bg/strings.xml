@@ -1692,4 +1692,20 @@
     <string name="k2go_dl_held_metered">Изчакване на Wi-Fi. Изтеглянето не използва мобилни данни, докато не го разрешите.</string>
     <string name="k2go_dl_held_offline">Изчакване. Приложението е оставено офлайн, затова изтеглянето не се свързва, докато не го разрешите.</string>
     <string name="k2go_mod_phase_downloading">Изтегляне…</string>
+    <string name="k2go_tab_class">Клас</string>
+    <string name="k2go_class_body">Водете час от този телефон или следвайте часа на телефона на учителя.</string>
+    <string name="k2go_class_teach">Водене на час</string>
+    <string name="k2go_class_teach_body">Отворете страницата на класа в библиотеката на този телефон. Учениците виждат това, което показвате.</string>
+    <string name="k2go_class_checking">Проверка на библиотеката на този телефон...</string>
+    <string name="k2go_class_no_module">Модулът за клас не е инсталиран в библиотеката на този телефон.</string>
+    <string name="k2go_class_no_box">Библиотеката на този телефон не работи в момента. Когато работи, можете да водите час тук.</string>
+    <string name="k2go_class_join">Присъединяване към клас</string>
+    <string name="k2go_class_join_body">Отворените класове в тази Wi-Fi мрежа се показват тук. Докоснете класа с кода, който показва екранът на учителя.</string>
+    <string name="k2go_class_finding">Търсене на класове в тази Wi-Fi мрежа...</string>
+    <string name="k2go_class_none_found">Не е намерен клас. Уверете се, че този телефон е в същата Wi-Fi мрежа като учителя.</string>
+    <string name="k2go_class_search_again">Ново търсене</string>
+    <string name="k2go_class_found_item">Присъединяване към клас %1$s</string>
+    <string name="k2go_class_scan">Сканиране на код</string>
+    <string name="k2go_class_scan_prompt">Сканирайте кода Отваряне на екрана Свързване на учителя.</string>
+    <string name="k2go_class_bad_code">Този код не е адрес на библиотека K2Go. Сканирайте кода Отваряне на екрана Свързване на учителя.</string>
 </resources>

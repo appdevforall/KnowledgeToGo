@@ -1705,4 +1705,20 @@
     <string name="k2go_dl_held_metered">Wi-Fi gözlənilir. Siz icazə verənə qədər yükləmə mobil internetdən istifadə etmir.</string>
     <string name="k2go_dl_held_offline">Gözləyir. Tətbiq oflayn saxlanılır, ona görə də siz icazə verənə qədər yükləmə qoşulmur.</string>
     <string name="k2go_mod_phase_downloading">Yüklənir…</string>
+    <string name="k2go_tab_class">Sinif</string>
+    <string name="k2go_class_body">Bu telefondan dərs aparın və ya müəllimin telefonundakı dərsi izləyin.</string>
+    <string name="k2go_class_teach">Dərs keçin</string>
+    <string name="k2go_class_teach_body">Bu telefonda kitabxananın sinif səhifəsini açın. Şagirdlər sizin göstərdiyinizi görür.</string>
+    <string name="k2go_class_checking">Bu telefondakı kitabxana yoxlanılır...</string>
+    <string name="k2go_class_no_module">Sinif modulu bu telefondakı kitabxanada quraşdırılmayıb.</string>
+    <string name="k2go_class_no_box">Bu telefondakı kitabxana indi işləmir. İşləyəndə burada dərs keçə bilərsiniz.</string>
+    <string name="k2go_class_join">Sinfə qoşulun</string>
+    <string name="k2go_class_join_body">Bu Wi-Fi şəbəkəsindəki açıq siniflər burada görünür. Müəllimin ekranında göstərilən kodlu sinfə toxunun.</string>
+    <string name="k2go_class_finding">Bu Wi-Fi şəbəkəsində siniflər axtarılır...</string>
+    <string name="k2go_class_none_found">Heç bir sinif tapılmadı. Bu telefonun müəllimlə eyni Wi-Fi şəbəkəsində olduğuna əmin olun.</string>
+    <string name="k2go_class_search_again">Yenidən axtar</string>
+    <string name="k2go_class_found_item">%1$s sinfinə qoşul</string>
+    <string name="k2go_class_scan">Kodu skan edin</string>
+    <string name="k2go_class_scan_prompt">Müəllimin Qoşul ekranındakı Aç kodunu skan edin.</string>
+    <string name="k2go_class_bad_code">Bu kod K2Go kitabxanasının ünvanı deyil. Müəllimin Qoşul ekranındakı Aç kodunu skan edin.</string>
 </resources>

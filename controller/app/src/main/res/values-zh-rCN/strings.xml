@@ -1685,4 +1685,20 @@
     <string name="k2go_dl_held_metered">正在等待 Wi-Fi。在您允许之前，下载不会使用移动数据。</string>
     <string name="k2go_dl_held_offline">正在等待。应用保持离线，因此在您允许之前，下载不会联网。</string>
     <string name="k2go_mod_phase_downloading">正在下载…</string>
+    <string name="k2go_tab_class">课堂</string>
+    <string name="k2go_class_body">在此手机上主持课堂，或在老师的手机上跟随课堂。</string>
+    <string name="k2go_class_teach">主持课堂</string>
+    <string name="k2go_class_teach_body">在此手机上打开图书馆的课堂页面。学生会看到您展示的内容。</string>
+    <string name="k2go_class_checking">正在检查此手机上的图书馆...</string>
+    <string name="k2go_class_no_module">此手机上的图书馆未安装课堂模块。</string>
+    <string name="k2go_class_no_box">此手机上的图书馆现在没有运行。运行后，您可以在此主持课堂。</string>
+    <string name="k2go_class_join">加入课堂</string>
+    <string name="k2go_class_join_body">此 Wi-Fi 上开放的课堂会显示在这里。请点按带有老师屏幕上所示代码的课堂。</string>
+    <string name="k2go_class_finding">正在此 Wi-Fi 上查找课堂...</string>
+    <string name="k2go_class_none_found">未找到课堂。请确保此手机与老师连接在同一 Wi-Fi 上。</string>
+    <string name="k2go_class_search_again">重新搜索</string>
+    <string name="k2go_class_found_item">加入课堂 %1$s</string>
+    <string name="k2go_class_scan">扫描代码</string>
+    <string name="k2go_class_scan_prompt">扫描老师“连接”屏幕上的“打开”代码。</string>
+    <string name="k2go_class_bad_code">此代码不是 K2Go 图书馆的地址。请扫描老师“连接”屏幕上的“打开”代码。</string>
 </resources>
