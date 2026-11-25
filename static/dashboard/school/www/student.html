@@ -107,7 +107,7 @@
   var view = School.view(stage, function (win) {
     // A late image or the class font changes the layout under the anchor: apply it again.
     School.onLayout(win, function () {
-      if (!onPage()) { return; }
+      if (ended || !onPage()) { return; }
       painted.doc = null;   // the layout changed: draw the marks again
       apply();
     });
