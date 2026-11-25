@@ -72,6 +72,7 @@ public class PortalActivity extends AppCompatActivity {
     private GestureWebView webView;
     private org.appdevforall.k2go.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
     private org.appdevforall.k2go.school.presentation.ClassRejoin classRejoin;   // K2Go School: student page only
+    private org.appdevforall.k2go.school.presentation.ClassScreen classScreen;   // K2Go School: screen on in class
     private org.appdevforall.k2go.redesign.KiwixManageController kiwixMgr;   // ADFA-5004: ZIM delete (only on /kiwix/)
     private org.appdevforall.k2go.redesign.KolibriGuardController kolibriGuard;   // K2GO-395: metered gate for native Kolibri import (only on /kolibri/)
     private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
@@ -206,13 +207,17 @@ public class PortalActivity extends AppCompatActivity {
 
         // Resolve the target URL once (domain), surviving rotation via the ViewModel.
         final String finalTargetUrl = vm.targetUrl(getIntent().getStringExtra("TARGET_URL"));
+        // K2Go School: the screen stays on while it shows a class page of an open class.
+        classScreen = new org.appdevforall.k2go.school.presentation.ClassScreen(getWindow());
         // K2Go School: while the teacher page is open, students find the class on the Wi-Fi.
         if (org.appdevforall.k2go.school.domain.ClassLinks.isTeacherUrl(
                 getIntent().getStringExtra("TARGET_URL"), BoxEndpoints.BASE)) {
-            getLifecycle().addObserver(org.appdevforall.k2go.school.presentation.ClassAnnouncement.create(this));
+            getLifecycle().addObserver(org.appdevforall.k2go.school.presentation.ClassAnnouncement.create(
+                    this, classScreen::classOpen));
         }
         // K2Go School: a student page finds its class again after a drop (new teacher address).
-        classRejoin = org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView, vm::moveTarget);
+        classRejoin = org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView,
+                vm::moveTarget, classScreen::classOpen);
 
         // ADFA-4887: there is no in-WebView home page anymore, so Home is a Fullscreen toggle.
         // Enters full immersive (system bars hidden) and hides our bar too — but the bar stays
@@ -290,6 +295,7 @@ public class PortalActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                classScreen.pageStarted(url);
                 vm.setLoading(true);
                 btnReload.setImageResource(R.drawable.ic_stop); // Change to Stop
                 btnReload.setContentDescription(getString(R.string.k2go_nav_stop));

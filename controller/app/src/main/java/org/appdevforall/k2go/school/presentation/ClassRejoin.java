@@ -48,6 +48,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     private final ClassFinder finder;
     private final Executor io;
     private final Consumer<String> open;
+    private final Consumer<Boolean> classOpen;   // true until the class ended or the search gave up
     private final Handler main = new Handler(Looper.getMainLooper());
     // Main thread only.
     private boolean running;
@@ -76,11 +77,13 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
      * The one call of the portal screen: when it shows a student page opened from Class > Join,
      * the screen finds its class again after a drop. {@code web} gives the current WebView;
      * {@code moved} gets the student URL at the new address, so a new start of the screen loads
-     * it (review N2). Returns the observer (the portal asks it which hosts belong to the class),
-     * or null.
+     * it (review N2). {@code classOpen} gets the state of the class (main thread): true until the
+     * class ended or the search for it gave up. Returns the observer (the portal asks it which hosts
+     * belong to the class), or null.
      */
     public static ClassRejoin attachIfStudent(androidx.appcompat.app.AppCompatActivity screen,
-                                              Supplier<WebView> web, Consumer<String> moved) {
+                                              Supplier<WebView> web, Consumer<String> moved,
+                                              Consumer<Boolean> classOpen) {
         android.content.Intent i = screen.getIntent();
         String code = i.getStringExtra(EXTRA_CODE);
         String address = i.getStringExtra(EXTRA_ADDRESS);
@@ -89,7 +92,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
                 .rule(code, address);
         Consumer<String> open = moveIn(web).andThen(moved);
         ClassRejoin r = new ClassRejoin(rule, new HttpClassProbe(), new NsdClassFinder(screen),
-                AppExecutors.get().io(), open);
+                AppExecutors.get().io(), open, classOpen);
         screen.getLifecycle().addObserver(r);
         return r;
     }
@@ -128,18 +131,23 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     /** True for an address where the box confirmed the class of this screen (see {@link Rejoin}). */
     public boolean isClassHost(String host) { return rule.isClassHost(host); }
 
-    ClassRejoin(Rejoin rule, ClassProbe probe, ClassFinder finder, Executor io, Consumer<String> open) {
+    ClassRejoin(Rejoin rule, ClassProbe probe, ClassFinder finder, Executor io, Consumer<String> open,
+                Consumer<Boolean> classOpen) {
         this.rule = rule;
         this.probe = probe;
         this.finder = finder;
         this.io = io;
         this.open = open;
+        this.classOpen = classOpen;
     }
+
+    private void tellOpen() { classOpen.accept(!rule.ended() && !rule.gaveUp()); }
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
         running = true;
         round++;
+        tellOpen();
         if (!rule.ended()) main.postDelayed(tick, PROBE_MS);
     }
 
@@ -161,6 +169,7 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
                 if (at.equals(rule.address())) {   // else: it moved meanwhile
                     act(rule.probed(answer == null ? null : answer.code, answer != null), null);
                 }
+                tellOpen();
                 if (!rule.ended()) main.postDelayed(tick, rule.gaveUp() ? SLOW_PROBE_MS : PROBE_MS);
             });
         });

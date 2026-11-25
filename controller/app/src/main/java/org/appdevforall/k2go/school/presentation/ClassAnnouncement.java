@@ -24,6 +24,7 @@ import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 /**
  * Lives with the screen of the teacher page. The box owns "the class is open" (a teacher page is
@@ -43,6 +44,7 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
     private final ClassProbe probe;
     private final ClassAdvertiser advertiser;
     private final Executor io;
+    private final Consumer<Boolean> classOpen;   // each answer of the box: is the class open
     private final Handler main = new Handler(Looper.getMainLooper());
     // Main thread only.
     private final Announcement steps = new Announcement();
@@ -63,14 +65,17 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
         }
     };
 
-    public static ClassAnnouncement create(Context ctx) {
-        return new ClassAnnouncement(new HttpClassProbe(), new NsdClassAdvertiser(ctx), AppExecutors.get().io());
+    /** {@code classOpen} gets each answer of the box (main thread): true while the class is open. */
+    public static ClassAnnouncement create(Context ctx, Consumer<Boolean> classOpen) {
+        return new ClassAnnouncement(new HttpClassProbe(), new NsdClassAdvertiser(ctx), AppExecutors.get().io(),
+                classOpen);
     }
 
-    ClassAnnouncement(ClassProbe probe, ClassAdvertiser advertiser, Executor io) {
+    ClassAnnouncement(ClassProbe probe, ClassAdvertiser advertiser, Executor io, Consumer<Boolean> classOpen) {
         this.probe = probe;
         this.advertiser = advertiser;
         this.io = io;
+        this.classOpen = classOpen;
     }
 
     @Override
@@ -92,6 +97,7 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
             String code = probe.codeAt(LOCAL_BOX);
             main.post(() -> {
                 if (!polling) return;
+                classOpen.accept(code != null);
                 act(steps.want(code));
                 // Ask often until the class opens (the students wait for it), then less often; less
                 // often also after failed registers (review L3).

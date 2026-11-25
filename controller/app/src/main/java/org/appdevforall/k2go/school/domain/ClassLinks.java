@@ -82,6 +82,15 @@ public final class ClassLinks {
         return url != null && url.startsWith(teacherUrl(boxBase));
     }
 
+    /**
+     * The screen stays on while it shows a class page and the class is open, as during a video: a
+     * student must not lose the teacher's page to the screen saver (maintainer, 2026-11-25).
+     * {@code classOpen} comes from the box (the class observers of the screen); with no answer, off.
+     */
+    public static boolean keepScreenOn(String url, boolean classOpen) {
+        return classOpen && isClassPage(url);
+    }
+
     /** True when {@code url} is a class page (teacher or student) on a box: a path under /school/. */
     public static boolean isClassPage(String url) {
         return url != null && CLASS_PAGE.matcher(url).find();

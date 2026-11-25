@@ -114,6 +114,14 @@ public class ClassLinksTest {
         assertFalse(ClassLinks.isClassPage(null));
     }
 
+    @Test public void theScreenStaysOnOnlyOnAClassPageOfAnOpenClass() {
+        assertTrue(ClassLinks.keepScreenOn("http://localhost:8085/school/teacher/", true));
+        assertTrue(ClassLinks.keepScreenOn("http://192.168.1.158:8085/school/student.html", true));
+        assertFalse(ClassLinks.keepScreenOn("http://192.168.1.158:8085/school/student.html", false));
+        assertFalse(ClassLinks.keepScreenOn("http://localhost:8085/kiwix/content/x/A/y", true));
+        assertFalse(ClassLinks.keepScreenOn(null, true));
+    }
+
     @Test public void aClassOfTheListGoesWithItsCodeInTheFragment() {
         assertEquals("http://h:8085/school/student.html#c=4F7K",
                 ClassLinks.withClass("http://h:8085/school/student.html", "4F7K"));
