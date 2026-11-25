@@ -20,6 +20,18 @@ public final class ClassLinks {
 
     public static final String TEACHER_PATH = "/school/teacher/";
     public static final String STUDENT_PATH = "/school/student.html";
+    /** Box answer {@code {"open":true|false}}: is a teacher page connected to the class now. */
+    public static final String TEACHER_STATE_PATH = TEACHER_PATH + "state";
+
+    /** DNS-SD service type of an open class on the local network (mDNS). */
+    public static final String SERVICE_TYPE = "_k2go-class._tcp";
+    /**
+     * The service name that a teacher box asks for. Not personal data (K2G-P5). The network makes
+     * it unique (for example "K2Go class (2)") when two boxes ask for it.
+     */
+    public static final String SERVICE_NAME = "K2Go class";
+
+    private static final Pattern OPEN_TRUE = Pattern.compile("\"open\"\\s*:\\s*true\\b");
 
     // http://<host>[:port][/anything]. The host is a dotted IPv4 address or a host name.
     private static final Pattern CODE = Pattern.compile(
@@ -54,6 +66,21 @@ public final class ClassLinks {
     /** The teacher page on this phone's box. {@code boxBase} is scheme + host + port, no slash. */
     public static String teacherUrl(String boxBase) {
         return boxBase + TEACHER_PATH;
+    }
+
+    /** True when {@code url} opens the teacher page on this phone's box. */
+    public static boolean isTeacherUrl(String url, String boxBase) {
+        return url != null && url.startsWith(teacherUrl(boxBase));
+    }
+
+    /** The class state on this phone's box. {@code boxBase} is scheme + host + port, no slash. */
+    public static String teacherStateUrl(String boxBase) {
+        return boxBase + TEACHER_STATE_PATH;
+    }
+
+    /** True only for a box answer that says the class is open. No answer or another body: closed. */
+    public static boolean openFromState(String body) {
+        return body != null && OPEN_TRUE.matcher(body).find();
     }
 
     /**

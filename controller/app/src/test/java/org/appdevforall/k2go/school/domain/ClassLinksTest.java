@@ -1,7 +1,9 @@
 package org.appdevforall.k2go.school.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -43,5 +45,22 @@ public class ClassLinksTest {
         assertNull(ClassLinks.studentUrlFromCode("http://999.1.1.1:8085", PORT));
         assertNull(ClassLinks.studentUrlFromCode("http://1.2.3:8085", PORT));
         assertNull(ClassLinks.studentUrlFromCode("javascript:alert(1)", PORT));
+    }
+
+    @Test public void teacherUrlAndStateUrlAreOnTheLocalBox() {
+        assertTrue(ClassLinks.isTeacherUrl("http://localhost:8085/school/teacher/", "http://localhost:8085"));
+        assertFalse(ClassLinks.isTeacherUrl("http://localhost:8085/school/student.html", "http://localhost:8085"));
+        assertFalse(ClassLinks.isTeacherUrl(null, "http://localhost:8085"));
+        assertEquals("http://localhost:8085/school/teacher/state", ClassLinks.teacherStateUrl("http://localhost:8085"));
+    }
+
+    @Test public void onlyAnOpenTrueAnswerIsAnOpenClass() {
+        assertTrue(ClassLinks.openFromState("{\"open\":true}"));
+        assertTrue(ClassLinks.openFromState("{ \"open\" : true }"));
+        assertFalse(ClassLinks.openFromState("{\"open\":false}"));
+        assertFalse(ClassLinks.openFromState("{\"open\":trueish}"));
+        assertFalse(ClassLinks.openFromState("<html>404</html>"));
+        assertFalse(ClassLinks.openFromState(""));
+        assertFalse(ClassLinks.openFromState(null));
     }
 }

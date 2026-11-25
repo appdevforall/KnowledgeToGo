@@ -190,6 +190,11 @@ public class PortalActivity extends AppCompatActivity {
 
         // Resolve the target URL once (domain), surviving rotation via the ViewModel.
         final String finalTargetUrl = vm.targetUrl(getIntent().getStringExtra("TARGET_URL"));
+        // K2Go School: while the teacher page is open, students find the class on the Wi-Fi.
+        if (org.appdevforall.k2go.school.domain.ClassLinks.isTeacherUrl(
+                getIntent().getStringExtra("TARGET_URL"), BoxEndpoints.BASE)) {
+            getLifecycle().addObserver(org.appdevforall.k2go.school.presentation.ClassAnnouncement.create(this));
+        }
 
         // ADFA-4887: there is no in-WebView home page anymore, so Home is a Fullscreen toggle.
         // Enters full immersive (system bars hidden) and hides our bar too — but the bar stays
