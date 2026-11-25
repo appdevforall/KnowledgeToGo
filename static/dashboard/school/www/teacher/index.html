@@ -172,7 +172,7 @@
   var lagRun = null;        // { rtts: { seat label: [ms] } } while a lag test runs
   var metrics = { renders: 0, events: 0 };   // debug: the render rate (B2)
   window.k2goTeacherMetrics = metrics;
-  var pending = false;
+  var sendQueued = false;  // a publish of the scroll waits (onScroll)
   var lastSend = 0;
   var started = false;      // the first page is open (the lesson of the box, or the start page)
   var byTimer = false;      // the start page came from the time-out: send nothing until the box answers
@@ -187,7 +187,7 @@
   var tool = null;          // the mark tool that is on (state of this page only): null, 'pen', 'box', 'oval' or 'eraser'
   var drag = null;          // the drag of a tool (onPointerDown)
   var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
-  var pending = null;       // the mark of the last drag, shown until the box answers
+  var pendingMark = null;      // the mark of the last drag, shown until the box answers
   var tapEndsSelection = false;
   var toolBtns = {
     pen: document.getElementById('markPen'),
@@ -271,10 +271,10 @@
 
   // Send at most HZ messages a second, and always the last position.
   function onScroll() {
-    if (pending) { return; }
-    pending = true;
+    if (sendQueued) { return; }
+    sendQueued = true;
     var wait = Math.max(0, 1000 / HZ - (performance.now() - lastSend));
-    setTimeout(function () { pending = false; publish(); }, wait);
+    setTimeout(function () { sendQueued = false; publish(); }, wait);
   }
 
   // A link in the lesson opens through the view (no white flash, the viewer becomes the content
@@ -317,7 +317,7 @@
     win.document.addEventListener('click', onLink, true);
     if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
     endDrag();                // a drag on the old page does not go to this one
-    pending = null;
+    pendingMark = null;
     setTool(null);
     paintMarks();
     var path = view.path();
@@ -353,7 +353,7 @@
     var list = marks.url === path ? marks.list : [];
     // The marks of the box, and the words of a drag that the box does not have yet. Only the marks
     // of the box take a tap (an id).
-    var shown = list.concat(drag && drag.mark ? [drag.mark] : [], pending ? [pending] : []);
+    var shown = list.concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark] : []);
     try {
       var p = SchoolMarks.draw(win, shown);
       painted = { doc: win.document, layer: p.layer, drawn: p.drawn.filter(function (d) { return d.id !== undefined; }) };
@@ -422,12 +422,12 @@
       body: JSON.stringify(change)
     }).then(function (r) {
       if (r.status === 204) { return; }   // the box sends the new list
-      pending = null;
+      pendingMark = null;
       paintMarks();
       return r.json().then(function (j) {
         note(j.error === 'full' ? t('marksFull', j.max) : j.error === 'long' ? t('markLong', j.max) : t('markNotSent'));
       }, function () { note(t('markNotSent')); });
-    }).catch(function () { pending = null; paintMarks(); note(t('boxNotReachable')); });
+    }).catch(function () { pendingMark = null; paintMarks(); note(t('boxNotReachable')); });
   }
 
   function hasSelection(win) {
@@ -579,7 +579,7 @@
     if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
-      if (d.kind === 'pen') { pending = m; }
+      if (d.kind === 'pen') { pendingMark = m; }
       sendMark({ op: 'add', mark: m }, view.path());
     }
     paintMarks();
@@ -811,7 +811,7 @@
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'lesson') { start(m.lesson); return; }
     if (m.type === 'ended') { showEnded(); return; }   // another teacher page ended the class
-    if (m.type === 'marks') { marks = { url: m.url, list: m.list }; pending = null; paintMarks(); return; }
+    if (m.type === 'marks') { marks = { url: m.url, list: m.list }; pendingMark = null; paintMarks(); return; }
     // The students choose the class by this code in Class > Join.
     if (m.type === 'class') { codeEl.textContent = m.code ? t('classCode', m.code) : ''; return; }
     if (m.type === 'roster') {
