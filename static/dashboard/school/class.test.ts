@@ -155,6 +155,14 @@ test('validMark: only the known kinds and fields, numbers in range', () => {
     assert.deepEqual(validMark({ k: 'b', b: '1', t: 'a' }), invalid);
     assert.deepEqual(validMark({ k: 'b', b: 1, t: '<b>' }), invalid);
     assert.deepEqual(validMark({ k: 'b', b: 1, t: 'a', cell: -2 }), invalid);
+    const box = { k: 'r', b: 2, t: 'a', y: -4, eb: 5, et: 'b', ey: 30, x: 10, w: 100 };
+    assert.deepEqual(validMark({ ...box, z: 1 }), { mark: box });
+    assert.deepEqual(validMark({ ...box, w: 0 }), invalid);              // no width
+    assert.deepEqual(validMark({ ...box, x: 1.5 }), invalid);
+    assert.deepEqual(validMark({ ...box, x: -5000 }), invalid);          // far off the page
+    assert.deepEqual(validMark({ ...box, w: 5000 }), invalid);
+    assert.deepEqual(validMark({ ...box, ey: 2e6 }), invalid);
+    assert.deepEqual(validMark({ ...box, et: '<' }), invalid);
     assert.deepEqual(validMark({ k: 'x', b: 1, t: 'a' }), invalid);
     assert.deepEqual(validMark([]), invalid);
     assert.deepEqual(validMark(null), invalid);

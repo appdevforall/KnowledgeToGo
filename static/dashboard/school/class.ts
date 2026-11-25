@@ -59,6 +59,10 @@ export const MAX_MARKS = 10;
 // A phrase mark can go over at most this many blocks.
 export const MAX_MARK_BLOCKS = 20;
 const MAX_MARK_INDEX = 1000000;
+// Frame CSS px of a box mark. Down the page: far more than a page. Across the page: some frame
+// widths (the frame is 400 px wide), so a box stays near the page.
+const MAX_MARK_PX = 1000000;
+const MAX_MARK_ACROSS = 2000;
 // A teacher page that comes back within this time (a reload, a theme change) continues the same
 // class, with the same code. With no teacher page for longer, the class ends by itself.
 export const CLASS_GAP_MS = 60000;
@@ -105,15 +109,24 @@ export function validLesson(raw: unknown): Lesson | null {
 // with another version of the page does not show the mark at a wrong place).
 //   block:  the whole block; cell: one cell of a table row block.
 //   phrase: from character s of block b to character e (not included) of block eb.
+//   box:    a rectangle in frame CSS px (the frame has the same width on every phone, follow.js):
+//           x and w across the page; the top edge y px below the top of block b, the bottom edge
+//           ey px below the top of block eb. Each edge follows its own block when the page flows
+//           again (another text size), so a box around a picture stays on the picture.
 export type Mark =
     | { k: 'b'; b: number; t: string; cell?: number }
-    | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number };
+    | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number }
+    | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number };
 
 // The box gives each mark an id: the teacher removes a mark by its id.
 export type StoredMark = Mark & { id: number };
 
 function index(raw: unknown): number | null {
     return typeof raw === 'number' && Number.isInteger(raw) && raw >= 0 && raw <= MAX_MARK_INDEX ? raw : null;
+}
+
+function px(raw: unknown, min: number, max = MAX_MARK_PX): number | null {
+    return typeof raw === 'number' && Number.isInteger(raw) && raw >= min && raw <= max ? raw : null;
 }
 
 function print(raw: unknown): string | null {
@@ -144,6 +157,16 @@ export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | '
         if (eb < b || (eb === b && e <= s)) return invalid;
         if (eb - b >= MAX_MARK_BLOCKS) return { error: 'long' };
         return { mark: { k: 'p', b, t, s, eb, et, e } };
+    }
+    if (m.k === 'r') {
+        const y = px(m.y, -MAX_MARK_PX);
+        const eb = index(m.eb);
+        const et = print(m.et);
+        const ey = px(m.ey, -MAX_MARK_PX);
+        const x = px(m.x, -MAX_MARK_ACROSS, MAX_MARK_ACROSS);
+        const w = px(m.w, 1, MAX_MARK_ACROSS);
+        if (y === null || eb === null || et === null || ey === null || x === null || w === null) return invalid;
+        return { mark: { k: 'r', b, t, y, eb, et, ey, x, w } };
     }
     return invalid;
 }

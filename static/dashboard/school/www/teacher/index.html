@@ -39,7 +39,7 @@
   #stats { white-space: pre; font: 12px monospace; }
   /* The mark tools: tap targets of 40 px, also on a small phone (Nokia 6: 360 x 640). */
   button.tool { min-height: 40px; padding: 4px 10px; }
-  #mark[aria-pressed="true"], #markWords { background: var(--mark); color: var(--mark-fg); border: 1px solid var(--mark-fg); }
+  #mark[aria-pressed="true"], #markBox[aria-pressed="true"], #markWords { background: var(--mark); color: var(--mark-fg); border: 1px solid var(--mark-fg); }
   #markWords { position: absolute; right: 12px; bottom: 16px; z-index: 5; font: inherit; border-radius: 20px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
   #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
@@ -53,6 +53,7 @@
     <button id="library" data-t="library"></button>
     <button id="back" data-t="back" disabled></button>
     <button id="mark" class="tool" data-t="mark" aria-pressed="false" disabled></button>
+    <button id="markBox" class="tool" data-t="markBox" aria-pressed="false" hidden></button>
     <button id="clearMarks" class="tool" hidden></button>
     <span id="code"></span>
     <span id="status" translate="no">
@@ -158,9 +159,13 @@
   var marks = { url: null, list: [] };
   var painted = { doc: null, layer: null, drawn: [] };
   var marking = false;
+  var boxTool = false;      // in mark mode: a drag draws a box (state of this page only)
+  var drag = null;          // the box that the teacher draws: { x0, y0, x1, y1, el }
+  var boxSent = false;      // a drag sent a box: the click that a mouse makes after it marks nothing
   var phrase = null;        // the text selection on the page as a mark: { url, mark } or { url, error }
   var tapEndsSelection = false;
   var markBtn = document.getElementById('mark');
+  var boxBtn = document.getElementById('markBox');
   var wordsBtn = document.getElementById('markWords');
   var clearBtn = document.getElementById('clearMarks');
   // The teacher ended the class. The mark outlives the page: the app loads the teacher page again
@@ -253,10 +258,18 @@
     // and draw the marks again.
     School.onLayout(win, function () { onScroll(); paintMarks(); });
     win.document.addEventListener('pointerdown', onPointerDown, true);
+    win.document.addEventListener('pointermove', onPointerMove, true);
+    win.document.addEventListener('pointerup', onPointerUp, true);
+    win.document.addEventListener('pointercancel', onPointerUp, true);
+    // The box tool: no drag of a picture, and no menu after a long press (it would cancel the box).
+    ['dragstart', 'contextmenu'].forEach(function (type) {
+      win.document.addEventListener(type, function (ev) { if (marking && boxTool) { ev.preventDefault(); } }, true);
+    });
     win.document.addEventListener('click', onMarkTap, true);   // before onLink: a tap that marks opens no link
     win.document.addEventListener('click', onLink, true);
     win.document.addEventListener('selectionchange', onSelection);
     if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
+    endDrag();                // a box drawn on the old page does not go to this one
     setMarking(false);
     clearTimeout(selectionTimer);
     phrase = null;            // a selection of the old page does not go to this one
@@ -305,8 +318,32 @@
 
   function setMarking(on) {
     marking = on;
+    endDrag();
     markBtn.setAttribute('aria-pressed', String(on));
-    note(on ? t('markHelp') : '');
+    boxBtn.hidden = !on;
+    setBoxTool(false);
+  }
+
+  // The box tool: a drag on the page draws a box and does not scroll the page.
+  var BOX_TOOL_ID = 'k2go-box-tool';
+  function setBoxTool(on) {
+    boxTool = on;
+    endDrag();
+    boxBtn.setAttribute('aria-pressed', String(on));
+    note(marking ? t(on ? 'markBoxHelp' : 'markHelp') : '');
+    var doc = view.win() && view.win().document;
+    if (!doc || !doc.documentElement) { return; }
+    var style = doc.getElementById(BOX_TOOL_ID);
+    if (on && !style) {
+      style = doc.createElement('style');
+      style.id = BOX_TOOL_ID;
+      // No scroll, no text selection, no drag of a picture: the drag draws the box.
+      style.textContent = 'html, body, body * { touch-action: none !important; user-select: none !important; ' +
+        '-webkit-user-select: none !important; -webkit-user-drag: none !important; }';
+      doc.documentElement.appendChild(style);
+    } else if (!on && style) {
+      style.parentNode.removeChild(style);
+    }
   }
 
   // A change of the marks goes to the box; the box sends the new list to all pages of the class.
@@ -332,20 +369,71 @@
   }
 
   // The first tap after a text selection only ends the selection: it marks nothing.
-  function onPointerDown() { tapEndsSelection = hasSelection(view.win()); }
+  // With the box tool, a press starts a box.
+  function onPointerDown(ev) {
+    tapEndsSelection = hasSelection(view.win());
+    boxSent = false;
+    if (!marking || !boxTool || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
+    ev.preventDefault();
+    endDrag();
+    // A mouse or a pen that leaves the frame still ends the box here (a touch does so by itself).
+    try { ev.target.setPointerCapture(ev.pointerId); } catch (e) { /* an old WebView */ }
+    var doc = view.win().document;
+    var el = doc.createElement('div');
+    el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
+      'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); left: ' + ev.clientX + 'px; top: ' +
+      ev.clientY + 'px; width: 0; height: 0;');
+    doc.documentElement.appendChild(el);
+    drag = { x0: ev.clientX, y0: ev.clientY, x1: ev.clientX, y1: ev.clientY, el: el };
+  }
+
+  // Removes the box that the teacher draws, if any.
+  function endDrag() {
+    if (drag && drag.el.parentNode) { drag.el.parentNode.removeChild(drag.el); }
+    drag = null;
+  }
+
+  function dragRect() {
+    return { left: Math.min(drag.x0, drag.x1), top: Math.min(drag.y0, drag.y1),
+      right: Math.max(drag.x0, drag.x1), bottom: Math.max(drag.y0, drag.y1) };
+  }
+
+  function onPointerMove(ev) {
+    if (!drag || !ev.isPrimary) { return; }
+    if (ev.pointerType !== 'touch' && ev.buttons === 0) { endDrag(); return; }   // the button went up out of view
+    ev.preventDefault();
+    drag.x1 = ev.clientX;
+    drag.y1 = ev.clientY;
+    var r = dragRect();
+    drag.el.style.left = r.left + 'px';
+    drag.el.style.top = r.top + 'px';
+    drag.el.style.width = (r.right - r.left) + 'px';
+    drag.el.style.height = (r.bottom - r.top) + 'px';
+  }
+
+  // The end of a drag sends the box. A short drag is a tap: onMarkTap handles it.
+  function onPointerUp(ev) {
+    if (!drag || !ev.isPrimary) { return; }
+    var r = dragRect();
+    endDrag();
+    if (ev.type === 'pointercancel' || !marking || !boxTool) { return; }
+    var m = SchoolMarks.boxMark(view.win(), r);
+    if (m) { boxSent = true; sendMark({ op: 'add', mark: m }, view.path()); }
+  }
 
   // Mark mode: a tap on a mark removes it, a tap on a block marks it. No link opens.
   function onMarkTap(ev) {
     if (!marking || ev.button !== 0) { return; }
     ev.preventDefault();
     ev.stopPropagation();
-    if (tapEndsSelection || !publishable) { return; }
+    if (tapEndsSelection || boxSent || !publishable) { return; }
     var win = view.win();
     if (painted.layer && painted.doc === win.document) {
       var o = painted.layer.getBoundingClientRect();
       var id = SchoolMarks.hitTest(painted.drawn, ev.clientX - o.left, ev.clientY - o.top);
       if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); return; }
     }
+    if (boxTool) { return; }   // the box tool draws boxes: a tap only removes a mark
     var m = SchoolMarks.blockMark(win.document, ev.target);
     if (m) { sendMark({ op: 'add', mark: m }, view.path()); }
   }
@@ -367,6 +455,7 @@
   }
 
   markBtn.onclick = function () { setMarking(!marking); };
+  boxBtn.onclick = function () { setBoxTool(!boxTool); };
   wordsBtn.onclick = function () {
     var p = phrase;
     phrase = null;

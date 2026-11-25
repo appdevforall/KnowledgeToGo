@@ -44,16 +44,43 @@ test('clamp: a rect stays inside the page', () => {
     assert.deepEqual(M.clamp(r(10, 990, 20, 1002), 400, 1000), r(10, 990, 20, 1000));
 });
 
+test('boxRect: x holds across the page; each edge holds its place in its own block', () => {
+    const m = { x: 40, y: 10, ey: 30, w: 100 };
+    const origin = { left: 0 };
+    assert.deepEqual(M.boxRect({ top: 200 }, { top: 240 }, origin, m), r(40, 210, 140, 270));
+    // Bigger text: the blocks move apart, the box grows with the part of the page that it holds.
+    assert.deepEqual(M.boxRect({ top: 300 }, { top: 380 }, origin, m), r(40, 310, 140, 410));
+    assert.deepEqual(M.boxRect({ top: 0 }, { top: 0 }, { left: 8 }, { ...m, y: -20 }), r(48, -20, 148, 30));
+    assert.equal(M.boxRect({ top: 200 }, { top: 100 }, origin, m), null);   // the edges cross
+});
+
+test('blockAtY: the block under the edge, the one that overlaps the box across first', () => {
+    const b = (top: number, bottom: number, left = 0, right = 400) => ({ top, bottom, left, right });
+    // 0: a paragraph; 1: a text column and 2: a picture beside it, at the same height; 3: a block below.
+    const rects = [b(0, 50), b(60, 200, 0, 190), b(60, 140, 210, 400), b(60, 60), b(220, 300)];
+    assert.equal(M.blockAtY(rects, 10, 0, 400, true), 0);
+    assert.equal(M.blockAtY(rects, 100, 220, 380, true), 2);     // the picture, not the text beside it
+    assert.equal(M.blockAtY(rects, 100, 10, 100, true), 1);
+    assert.equal(M.blockAtY(rects, 100, 400, 500, true), 1);     // no overlap across: the first one
+    assert.equal(M.blockAtY(rects, 55, 0, 400, true), 1);        // a top edge in a gap: the block below
+    assert.equal(M.blockAtY(rects, 55, 0, 400, false), 0);       // a bottom edge in a gap: the block above
+    assert.equal(M.blockAtY(rects, -10, 0, 400, false), 0);      // above all: the first block
+    assert.equal(M.blockAtY(rects, 400, 0, 400, true), 4);       // below all: the last block
+    assert.equal(M.blockAtY([], 10, 0, 400, true), -1);
+});
+
 test('hitTest: a phrase wins over the block around it; then the smallest mark; else null', () => {
     const drawn = [
         { id: 1, k: 'b', rects: [r(0, 0, 400, 100)] },
         { id: 2, k: 'p', rects: [r(10, 20, 100, 40), r(0, 40, 50, 60)] },
         { id: 3, k: 'b', rects: [r(0, 0, 200, 50)] },
+        { id: 4, k: 'r', rects: [r(0, 0, 400, 300)] },
     ];
     assert.equal(M.hitTest(drawn, 20, 30), 2);
     assert.equal(M.hitTest(drawn, 20, 55), 2);
     assert.equal(M.hitTest(drawn, 150, 30), 3);    // the smaller block
     assert.equal(M.hitTest(drawn, 300, 80), 1);
-    assert.equal(M.hitTest(drawn, 300, 120), null);
+    assert.equal(M.hitTest(drawn, 300, 120), 4);    // only the box is there
+    assert.equal(M.hitTest(drawn, 300, 400), null);
     assert.equal(M.hitTest([], 0, 0), null);
 });

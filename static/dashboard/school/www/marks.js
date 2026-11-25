@@ -20,8 +20,11 @@
   // multiply would make the text yellow on an almost black page. A clear yellow band keeps the
   // light text readable on it.
   var DARK_FILL = 'background: rgba(255, 200, 0, 0.35); border-radius: 2px;';
-  // A picture gets a frame, not a fill: a fill hides a dark picture.
+  // A picture and a box get a frame, not a fill: a fill hides a dark picture. The thin dark edge
+  // shows the frame on a light page.
   var FRAME = 'box-shadow: inset 0 0 0 4px rgb(255, 200, 0), 0 0 0 1px rgba(0, 0, 0, 0.6);';
+  // A box smaller than this (frame px) is a tap, not a box.
+  var MIN_BOX = 12;
   var PAD = 2;
 
   // rects: client rects of a text range ({ left, top, right, bottom }). Gives one rectangle per
@@ -48,14 +51,15 @@
   }
 
   // drawn: [{ id, k, rects }] as draw() gives it. The mark under the point (layer coordinates), or
-  // null. A phrase wins over the block around it; then the smallest mark.
+  // null. A phrase wins over the block around it, a block over a box (a box shows only a frame, so
+  // a tap inside it can mean the block under it); then the smallest mark.
   function hitTest(drawn, x, y) {
     var best = null;
     drawn.forEach(function (d) {
       d.rects.forEach(function (r) {
         if (x < r.left || x > r.right || y < r.top || y > r.bottom) { return; }
         var area = (r.right - r.left) * (r.bottom - r.top);
-        var rank = d.k === 'b' ? 1 : 0;
+        var rank = d.k === 'p' ? 0 : d.k === 'b' ? 1 : 2;
         if (!best || rank < best.rank || (rank === best.rank && area < best.area)) {
           best = { id: d.id, rank: rank, area: area };
         }
@@ -82,8 +86,19 @@
     return null;
   }
 
+  // The position of a box mark on this page, or null (its edges cross). topR, bottomR: the client
+  // rects of the blocks of its top and bottom edge; origin: the client position of the page origin.
+  // x holds across the page (the frame width is the same on every phone); each edge holds its place
+  // in its block.
+  function boxRect(topR, bottomR, origin, m) {
+    var top = topR.top + m.y;
+    var bottom = bottomR.top + m.ey;
+    if (bottom - top < 1) { return null; }
+    return { left: origin.left + m.x, top: top, right: origin.left + m.x + m.w, bottom: bottom };
+  }
+
   // The client rects of a mark on this page, or null when its blocks are not on this page.
-  function clientRects(doc, blocks, m) {
+  function clientRects(doc, blocks, m, origin) {
     var i = sameBlock(blocks.prints, m.b, m.t);
     if (i < 0) { return null; }
     var el = blocks.list[i];
@@ -106,6 +121,15 @@
       range.setStart(start.node, start.off);
       range.setEnd(end.node, end.off);
       return mergeLines(Array.prototype.slice.call(range.getClientRects()));
+    }
+    if (m.k === 'r') {
+      var k = sameBlock(blocks.prints, m.eb, m.et);
+      if (k < 0) { return null; }
+      var topR = el.getBoundingClientRect();
+      var bottomR = blocks.list[k].getBoundingClientRect();
+      if (topR.height <= 0 || bottomR.height <= 0) { return null; }   // hidden, or a picture not loaded yet
+      var box = boxRect(topR, bottomR, origin, m);
+      return box ? [box] : null;
     }
     return null;
   }
@@ -144,21 +168,23 @@
     var origin = layer.getBoundingClientRect();
     var blocks = Anchor.blocksOf(doc);
     list.forEach(function (m) {
-      var rects = clientRects(doc, blocks, m);
+      var rects = clientRects(doc, blocks, m, origin);
       if (!rects || !rects.length) { return; }
       var el = blocks.list[sameBlock(blocks.prints, m.b, m.t)];
-      var media = m.k === 'b' && /^(IMG|VIDEO)$/.test(el.tagName);
+      var frame = m.k === 'r' || (m.k === 'b' && /^(IMG|VIDEO)$/.test(el.tagName));
       var fill = isLight(win.getComputedStyle(el).color) ? DARK_FILL : FILL;
       var local = rects.map(function (r) {
         var box = clamp({ left: r.left - origin.left, top: r.top - origin.top, right: r.right - origin.left,
           bottom: r.bottom - origin.top }, pageW, pageH);
+        if (box.right - box.left < 1 || box.bottom - box.top < 1) { return null; }   // off the page
         var d = doc.createElement('div');
         d.setAttribute('style', TOP + 'left: ' + box.left + 'px; top: ' +
           box.top + 'px; width: ' + (box.right - box.left) + 'px; height: ' + (box.bottom - box.top) + 'px; ' +
-          (media ? FRAME : fill));
+          (frame ? FRAME : fill));
         layer.appendChild(d);
         return box;
-      });
+      }).filter(function (box) { return box !== null; });
+      if (!local.length) { return; }
       drawn.push({ id: m.id, k: m.k, rects: local });
     });
     return { layer: layer, drawn: drawn };
@@ -182,6 +208,48 @@
     var cell = blocks.list[i].tagName === 'TR' && target.closest ? target.closest('td, th') : null;
     if (cell && cell.parentElement === blocks.list[i]) { m.cell = cell.cellIndex; }
     return m;
+  }
+
+  // A box mark for a rectangle that the teacher drew (client coordinates of the page in win), or
+  // null (too small: a tap; or no block on the page). Each edge hangs on the block under it.
+  function boxMark(win, rect) {
+    var w = Math.round(rect.right - rect.left);
+    if (w < MIN_BOX || rect.bottom - rect.top < MIN_BOX) { return null; }
+    var blocks = Anchor.blocksOf(win.document);
+    var rects = blocks.list.map(function (el) { return el.getBoundingClientRect(); });
+    var i = blockAtY(rects, rect.top, rect.left, rect.right, true);
+    var k = blockAtY(rects, rect.bottom, rect.left, rect.right, false);
+    if (i < 0 || k < 0) { return null; }
+    return {
+      k: 'r', b: i, t: blocks.prints[i], y: Math.round(rect.top - rects[i].top),
+      eb: k, et: blocks.prints[k], ey: Math.round(rect.bottom - rects[k].top),
+      x: Math.round(rect.left + win.scrollX), w: w
+    };
+  }
+
+  // rects: the block rects in page order. The block under y: among the blocks that hold y, the
+  // first one that overlaps the box across (x0..x1), else the first one. An edge in a gap between
+  // two blocks hangs on the block inside the box: the top edge (down) on the nearest block below,
+  // the bottom edge on the nearest block above. Else the other one, else -1.
+  function blockAtY(rects, y, x0, x1, down) {
+    var holds = -1;
+    var above = -1;
+    var below = -1;
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.bottom - r.top <= 0) { continue; }
+      if (r.top <= y && y < r.bottom) {
+        if (r.right > x0 && r.left < x1) { return i; }
+        if (holds < 0) { holds = i; }
+      } else if (r.bottom <= y && (above < 0 || r.bottom > rects[above].bottom)) {
+        above = i;
+      } else if (r.top > y && (below < 0 || r.top < rects[below].top)) {
+        below = i;
+      }
+    }
+    if (holds >= 0) { return holds; }
+    if (down) { return below >= 0 ? below : above; }
+    return above >= 0 ? above : below;
   }
 
   // The characters of block el before (node, off).
@@ -234,6 +302,9 @@
   return {
     mergeLines: mergeLines,
     hitTest: hitTest,
+    boxRect: boxRect,
+    blockAtY: blockAtY,
+    boxMark: boxMark,
     trimEnds: trimEnds,
     isLight: isLight,
     clamp: clamp,
