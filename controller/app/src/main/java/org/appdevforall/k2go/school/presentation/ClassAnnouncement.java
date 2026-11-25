@@ -16,20 +16,20 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import org.appdevforall.k2go.school.data.HttpClassState;
+import org.appdevforall.k2go.school.data.HttpClassProbe;
 import org.appdevforall.k2go.school.data.NsdClassAdvertiser;
 import org.appdevforall.k2go.school.domain.Announcement;
 import org.appdevforall.k2go.school.domain.ClassAdvertiser;
-import org.appdevforall.k2go.school.domain.ClassState;
+import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.util.concurrent.Executor;
 
 /**
  * Lives with the screen of the teacher page. The box owns "the class is open" (a teacher page is
- * connected to the class channel); this observer asks it (every {@link #FIRST_POLL_MS} until the
- * class is on the network, then every {@link #POLL_MS}) and keeps the
- * network announcement in step. When the screen goes, the announcement goes. If the app process
+ * connected to the class channel) and the class code. This observer asks it (every
+ * {@link #FIRST_POLL_MS} until the class is on the network, then every {@link #POLL_MS}) and keeps
+ * the network announcement in step: a new code replaces the old one. When the screen goes, the announcement goes. If the app process
  * dies, the system removes it.
  */
 public final class ClassAnnouncement implements DefaultLifecycleObserver {
@@ -38,7 +38,9 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
     static final long FIRST_POLL_MS = 1000;
     private static final int MAX_OFF_TRIES = 3;
 
-    private final ClassState state;
+    private static final String LOCAL_BOX = "localhost";
+
+    private final ClassProbe probe;
     private final ClassAdvertiser advertiser;
     private final Executor io;
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -56,17 +58,17 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
             steps.failed();
             // With the screen gone no poll comes: try the unregister again, so the class leaves.
             if (!polling && steps.registered() && offTries++ < MAX_OFF_TRIES) {
-                main.postDelayed(() -> act(steps.want(false)), POLL_MS);
+                main.postDelayed(() -> act(steps.want(null)), POLL_MS);
             }
         }
     };
 
     public static ClassAnnouncement create(Context ctx) {
-        return new ClassAnnouncement(new HttpClassState(), new NsdClassAdvertiser(ctx), AppExecutors.get().io());
+        return new ClassAnnouncement(new HttpClassProbe(), new NsdClassAdvertiser(ctx), AppExecutors.get().io());
     }
 
-    ClassAnnouncement(ClassState state, ClassAdvertiser advertiser, Executor io) {
-        this.state = state;
+    ClassAnnouncement(ClassProbe probe, ClassAdvertiser advertiser, Executor io) {
+        this.probe = probe;
         this.advertiser = advertiser;
         this.io = io;
     }
@@ -81,16 +83,16 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
     public void onDestroy(@NonNull LifecycleOwner owner) {
         polling = false;
         main.removeCallbacks(poll);
-        act(steps.want(false));
+        act(steps.want(null));
     }
 
     private void poll() {
         if (!polling) return;
         io.execute(() -> {
-            boolean open = state.open();
+            String code = probe.codeAt(LOCAL_BOX);
             main.post(() -> {
                 if (!polling) return;
-                act(steps.want(open));
+                act(steps.want(code));
                 // Ask often until the class opens (the students wait for it), then less often.
                 main.postDelayed(poll, steps.registered() ? POLL_MS : FIRST_POLL_MS);
             });
@@ -98,7 +100,7 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
     }
 
     private void act(Announcement.Action a) {
-        if (a == Announcement.Action.REGISTER) advertiser.register(result);
+        if (a == Announcement.Action.REGISTER) advertiser.register(steps.toRegister(), result);
         else if (a == Announcement.Action.UNREGISTER) advertiser.unregister();
     }
 }

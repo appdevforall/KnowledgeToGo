@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.appdevforall.k2go.ServerStateRepository;
+import org.appdevforall.k2go.school.data.HttpClassProbe;
 import org.appdevforall.k2go.school.data.HttpTeacherPage;
 import org.appdevforall.k2go.school.data.NsdClassFinder;
 import org.appdevforall.k2go.util.AppExecutors;
@@ -32,7 +33,11 @@ public class ClassViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ClassViewModel.class)) {
             ServerStateRepository server = ServerStateRepository.get();
             return (T) new ClassViewModel(new HttpTeacherPage(), AppExecutors.get().io(),
-                    server.state(), server::hasObservation, new NsdClassFinder(app));
+                    server.state(), server::hasObservation);
+        }
+        if (modelClass.isAssignableFrom(FindClassesViewModel.class)) {
+            return (T) new FindClassesViewModel(new NsdClassFinder(app), new HttpClassProbe(),
+                    AppExecutors.get().io());
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

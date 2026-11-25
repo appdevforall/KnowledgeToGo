@@ -51,16 +51,21 @@ public class ClassLinksTest {
         assertTrue(ClassLinks.isTeacherUrl("http://localhost:8085/school/teacher/", "http://localhost:8085"));
         assertFalse(ClassLinks.isTeacherUrl("http://localhost:8085/school/student.html", "http://localhost:8085"));
         assertFalse(ClassLinks.isTeacherUrl(null, "http://localhost:8085"));
-        assertEquals("http://localhost:8085/school/teacher/state", ClassLinks.teacherStateUrl("http://localhost:8085"));
+        assertEquals("http://192.168.1.167:8085/school/state", ClassLinks.stateUrl("192.168.1.167", 8085));
+        assertEquals("http://localhost:8085/school/state", ClassLinks.stateUrl("localhost", 8085));
     }
 
-    @Test public void onlyAnOpenTrueAnswerIsAnOpenClass() {
-        assertTrue(ClassLinks.openFromState("{\"open\":true}"));
-        assertTrue(ClassLinks.openFromState("{ \"open\" : true }"));
-        assertFalse(ClassLinks.openFromState("{\"open\":false}"));
-        assertFalse(ClassLinks.openFromState("{\"open\":trueish}"));
-        assertFalse(ClassLinks.openFromState("<html>404</html>"));
-        assertFalse(ClassLinks.openFromState(""));
-        assertFalse(ClassLinks.openFromState(null));
+    @Test public void onlyAnOpenClassWithAClassCodeGivesACode() {
+        assertEquals("4F7K", ClassLinks.codeFromState("{\"open\":true,\"code\":\"4F7K\"}"));
+        assertEquals("4F7K", ClassLinks.codeFromState("{ \"code\" : \"4F7K\", \"open\" : true }"));
+        assertNull(ClassLinks.codeFromState("{\"open\":false,\"code\":null}"));
+        assertNull(ClassLinks.codeFromState("{\"open\":true,\"code\":null}"));
+        assertNull(ClassLinks.codeFromState("{\"open\":true,\"code\":\"4f7k\"}"));
+        assertNull(ClassLinks.codeFromState("{\"open\":trueish,\"code\":\"4F7K\"}"));
+        assertNull(ClassLinks.codeFromState("<html>404</html>"));
+        assertNull(ClassLinks.codeFromState(null));
+        assertTrue(ClassLinks.isClassCode("29ZZ"));
+        assertFalse(ClassLinks.isClassCode("1I0O"));
+        assertFalse(ClassLinks.isClassCode("4F7K5"));
     }
 }

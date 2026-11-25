@@ -19,8 +19,11 @@ public interface ClassAdvertiser {
         void failed();
     }
 
-    /** Starts the registration. {@code callback} also gets the result of the next unregister. */
-    void register(Callback callback);
+    /**
+     * Starts the registration of the class with this code. {@code callback} also gets the result
+     * of the next unregister.
+     */
+    void register(String code, Callback callback);
 
     /** Starts the unregistration of the registered service. */
     void unregister();

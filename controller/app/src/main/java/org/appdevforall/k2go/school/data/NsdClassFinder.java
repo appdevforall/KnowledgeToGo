@@ -23,6 +23,7 @@ import org.appdevforall.k2go.school.domain.FoundClass;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -151,7 +152,7 @@ public final class NsdClassFinder implements ClassFinder {
                     boolean mine = free(this);
                     if (gen == generation && present.contains(name)) {
                         tries.remove(name);
-                        FoundClass c = FoundClass.of(name, ipv4(info), info.getPort(), BoxEndpoints.PORT);
+                        FoundClass c = FoundClass.of(name, code(info), ipv4(info), info.getPort(), BoxEndpoints.PORT);
                         if (c != null) listener.onFound(c);
                     }
                     if (mine) resolveNext(generation);
@@ -191,6 +192,11 @@ public final class NsdClassFinder implements ClassFinder {
         int next = n == null ? 1 : n + 1;
         tries.put(name, next);
         return next <= MAX_TRIES;
+    }
+
+    private static String code(NsdServiceInfo info) {
+        byte[] v = info.getAttributes().get(ClassLinks.TXT_CODE);
+        return v == null ? null : new String(v, StandardCharsets.US_ASCII);
     }
 
     /** The student page needs an IPv4 address (the scanned code rules); IPv6 only is not a class. */

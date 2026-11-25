@@ -28,13 +28,15 @@
     <!-- Title of the student card: a student finds the class of a teacher and follows it. -->
     <string name="k2go_class_join" translatable="false">Join a class</string>
     <!-- Body of the student card. Below it, a list of the classes found, then a button to scan a code. -->
-    <string name="k2go_class_join_body" translatable="false">Use the same Wi-Fi as the teacher. The classes on this Wi-Fi show here. Tap a class to join it.</string>
+    <string name="k2go_class_join_body" translatable="false">The open classes on this Wi-Fi show here. Tap the class with the code that the teacher\'s screen shows.</string>
     <!-- Student card, during the first seconds of the search for classes on the Wi-Fi. -->
     <string name="k2go_class_finding" translatable="false">Looking for classes on this Wi-Fi...</string>
-    <!-- Student card, when the search found no class. The search continues: a class that opens later shows. -->
-    <string name="k2go_class_none_found" translatable="false">No class found on this Wi-Fi. Make sure that this phone uses the same Wi-Fi as the teacher, and that the teacher opened the class. Or scan the code of the teacher.</string>
-    <!-- Student card: a button for one class found on the Wi-Fi. A tap joins the class. %1$s: the network address of the teacher's phone, for example 192.168.1.167. -->
-    <string name="k2go_class_found_item" translatable="false">Join the class at %1$s</string>
+    <!-- Student card, when the search found no class. Below it: the "Search again" button. A class that opens later also shows by itself. -->
+    <string name="k2go_class_none_found" translatable="false">No class found. Make sure that this phone is on the same Wi-Fi as the teacher.</string>
+    <!-- Student card: the button that starts the search for classes again. -->
+    <string name="k2go_class_search_again" translatable="false">Search again</string>
+    <!-- Student card: a button for one open class on the Wi-Fi. A tap joins the class. %1$s: the class code, 4 letters and digits (for example 4F7K); the teacher's screen shows the same code. -->
+    <string name="k2go_class_found_item" translatable="false">Join class %1$s</string>
     <!-- Student card: the fallback button that opens the QR scanner (the Open code on the teacher's Connect screen). -->
     <string name="k2go_class_scan" translatable="false">Scan a code</string>
     <!-- Prompt on the QR scanner when a student joins a class. -->

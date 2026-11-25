@@ -52,17 +52,21 @@ public final class ClassFragment extends Fragment {
 
     private ActivityResultLauncher<ScanOptions> scan;
     private ClassViewModel vm;
+    private FindClassesViewModel find;
     private MaterialButton teach;
     private TextView teachStatus;
     private LinearProgressIndicator searchingBar;
     private TextView findStatus;
     private LinearLayout foundList;
+    private MaterialButton searchAgain;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
         scan = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
-        vm = new ViewModelProvider(this, new ClassViewModelFactory(requireContext())).get(ClassViewModel.class);
+        ClassViewModelFactory factory = new ClassViewModelFactory(requireContext());
+        vm = new ViewModelProvider(this, factory).get(ClassViewModel.class);
+        find = new ViewModelProvider(this, factory).get(FindClassesViewModel.class);
     }
 
     @Nullable
@@ -78,41 +82,44 @@ public final class ClassFragment extends Fragment {
         searchingBar = v.findViewById(R.id.k2go_class_searching);
         findStatus = v.findViewById(R.id.k2go_class_find_status);
         foundList = v.findViewById(R.id.k2go_class_found);
+        searchAgain = v.findViewById(R.id.k2go_class_search_again);
+        searchAgain.setOnClickListener(x -> find.start());
         teach.setOnClickListener(x -> open(ClassLinks.teacherUrl(BoxEndpoints.BASE)));
         v.findViewById(R.id.k2go_class_join).setOnClickListener(
                 x -> scan.launch(CodeText.scanOptions(getString(R.string.k2go_class_scan_prompt))));
         vm.teach().observe(getViewLifecycleOwner(), this::renderTeach);
-        vm.classes().observe(getViewLifecycleOwner(), c -> renderFound());
-        vm.searching().observe(getViewLifecycleOwner(), b -> renderFound());
+        find.classes().observe(getViewLifecycleOwner(), c -> renderFound());
+        find.searching().observe(getViewLifecycleOwner(), b -> renderFound());
     }
 
     @Override
     public void onStart() {
         super.onStart();
         vm.check();   // also after the portal or the scanner was in front
-        vm.startFinding();
+        find.start();
     }
 
     @Override
     public void onStop() {
-        vm.stopFinding();   // no search while the tab is not on the screen (battery)
+        find.stop();   // no search while the tab is not on the screen (battery)
         super.onStop();
     }
 
     private void renderFound() {
-        List<FoundClass> found = vm.classes().getValue();
+        List<FoundClass> found = find.classes().getValue();
         boolean none = found == null || found.isEmpty();
-        boolean searching = Boolean.TRUE.equals(vm.searching().getValue());
+        boolean searching = Boolean.TRUE.equals(find.searching().getValue());
         searchingBar.setVisibility(none && searching ? View.VISIBLE : View.GONE);
         findStatus.setVisibility(none ? View.VISIBLE : View.GONE);
+        searchAgain.setVisibility(none && !searching ? View.VISIBLE : View.GONE);
         findStatus.setText(searching ? R.string.k2go_class_finding : R.string.k2go_class_none_found);
         foundList.removeAllViews();
         if (none) return;
         LayoutInflater inf = LayoutInflater.from(foundList.getContext());
         for (FoundClass c : found) {
             MaterialButton b = (MaterialButton) inf.inflate(R.layout.item_k2go_class_found, foundList, false);
-            b.setText(getString(R.string.k2go_class_found_item, c.address));
-            b.setOnClickListener(x -> join(c.studentUrl));
+            b.setText(getString(R.string.k2go_class_found_item, c.code));
+            b.setOnClickListener(x -> join(c));
             foundList.addView(b);
         }
     }
@@ -142,19 +149,30 @@ public final class ClassFragment extends Fragment {
             Snackbar.make(anchor, msg, SnackbarDuration.millisForText(msg)).show();
             return;
         }
-        join(url);
+        startActivity(portal(url + nameQuery()));
     }
 
-    private void join(String studentUrl) {
-        // The teacher sees this name in the class list. It goes only to the teacher box, when the
-        // student joins (K2G-P5).
-        open(studentUrl + "?n=" + Uri.encode(deviceName(requireContext())));
+    /** A class from the list: the student page, and what the screen needs to find it again. */
+    private void join(FoundClass c) {
+        String query = nameQuery();
+        Intent i = portal(c.studentUrl + query);
+        ClassRejoin.putExtras(i, c, query);
+        startActivity(i);
+    }
+
+    /** The teacher sees this name in the class list. It goes only to the teacher box (K2G-P5). */
+    private String nameQuery() {
+        return "?n=" + Uri.encode(deviceName(requireContext()));
     }
 
     private void open(String url) {
+        startActivity(portal(url));
+    }
+
+    private Intent portal(String url) {
         Intent i = new Intent(requireContext(), PortalActivity.class);
         i.putExtra("TARGET_URL", url);
-        startActivity(i);
+        return i;
     }
 
     /** The name the user gave the phone in Android settings, else the model. */

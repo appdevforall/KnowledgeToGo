@@ -38,10 +38,12 @@ public final class NsdClassAdvertiser implements ClassAdvertiser {
     }
 
     @Override
-    public void register(Callback cb) {
+    public void register(String code, Callback cb) {
         callback = cb;
         NsdServiceInfo info = new NsdServiceInfo();
-        info.setServiceName(ClassLinks.SERVICE_NAME);
+        // Only the random class code goes on the network: no device or person data (K2G-P5).
+        info.setServiceName(ClassLinks.SERVICE_NAME + " " + code);
+        info.setAttribute(ClassLinks.TXT_CODE, code);
         info.setServiceType(ClassLinks.SERVICE_TYPE);
         info.setPort(BoxEndpoints.PORT);
         // NsdManager refuses a listener that is still in use: one listener per registration.

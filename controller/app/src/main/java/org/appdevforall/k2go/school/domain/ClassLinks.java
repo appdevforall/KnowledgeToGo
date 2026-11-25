@@ -20,18 +20,23 @@ public final class ClassLinks {
 
     public static final String TEACHER_PATH = "/school/teacher/";
     public static final String STUDENT_PATH = "/school/student.html";
-    /** Box answer {@code {"open":true|false}}: is a teacher page connected to the class now. */
-    public static final String TEACHER_STATE_PATH = TEACHER_PATH + "state";
+    /** Box answer {@code {"open":true,"code":"4F7K"}}: is a class open on the box, and its code. */
+    public static final String STATE_PATH = "/school/state";
 
     /** DNS-SD service type of an open class on the local network (mDNS). */
     public static final String SERVICE_TYPE = "_k2go-class._tcp";
     /**
-     * The service name that a teacher box asks for. Not personal data (K2G-P5). The network makes
-     * it unique (for example "K2Go class (2)") when two boxes ask for it.
+     * The start of the service name that a teacher box asks for; the class code follows. Not
+     * personal data (K2G-P5). The network makes the name unique when two boxes ask for it.
      */
     public static final String SERVICE_NAME = "K2Go class";
+    /** The one TXT key of the service: the class code. */
+    public static final String TXT_CODE = "code";
 
+    // The box makes the code (school/class.ts): 4 characters, no 0/O and no 1/I.
+    private static final Pattern CLASS_CODE = Pattern.compile("^[2-9A-HJ-NP-Z]{4}$");
     private static final Pattern OPEN_TRUE = Pattern.compile("\"open\"\\s*:\\s*true\\b");
+    private static final Pattern CODE_FIELD = Pattern.compile("\"code\"\\s*:\\s*\"([^\"]*)\"");
 
     // http://<host>[:port][/anything]. The host is a dotted IPv4 address or a host name.
     private static final Pattern CODE = Pattern.compile(
@@ -73,14 +78,24 @@ public final class ClassLinks {
         return url != null && url.startsWith(teacherUrl(boxBase));
     }
 
-    /** The class state on this phone's box. {@code boxBase} is scheme + host + port, no slash. */
-    public static String teacherStateUrl(String boxBase) {
-        return boxBase + TEACHER_STATE_PATH;
+    /** The class state on the box at {@code host} (an address, or "localhost") and {@code port}. */
+    public static String stateUrl(String host, int port) {
+        return "http://" + host + ":" + port + STATE_PATH;
     }
 
-    /** True only for a box answer that says the class is open. No answer or another body: closed. */
-    public static boolean openFromState(String body) {
-        return body != null && OPEN_TRUE.matcher(body).find();
+    /** True for a class code as the box makes it. */
+    public static boolean isClassCode(String code) {
+        return code != null && CLASS_CODE.matcher(code).matches();
+    }
+
+    /**
+     * The code of the open class in a box answer, or null when no class is open, the body is not
+     * a box answer, or the code is not a class code.
+     */
+    public static String codeFromState(String body) {
+        if (body == null || !OPEN_TRUE.matcher(body).find()) return null;
+        Matcher m = CODE_FIELD.matcher(body);
+        return m.find() && isClassCode(m.group(1)) ? m.group(1) : null;
     }
 
     /**
