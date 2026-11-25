@@ -12,6 +12,21 @@ release with **`smoke-native-binaries.sh`** (in this directory).
 - `cacert.pem` — Mozilla CA bundle (fetched from curl.se) for aria2c TLS; the app
   also ships it as an asset and passes `--check-certificate=true --ca-certificate=<cacert>`.
 
+## Pinned sources
+`termux-pins.env` pins the termux-packages commit and the builder image (by digest).
+`make-manifest.sh` writes both in `ninja_manifest.json`. Without the pin, each build took
+the newest termux-packages, and an upstream change came in with no review: rsync IDN
+(K2GO-414), and NDK r30 on 2026-09-23 (the abort below). Move a pin in its own commit,
+and test the new bundle on a phone with Linux older than 4.14 and on a new kernel.
+
+## Old kernels: the NDK r30 arc4random
+A static binary carries the libc.a of the NDK, not the libc of the phone. The NDK r30
+`arc4random` aborts when `madvise(MADV_WIPEONFORK)` fails (Linux older than 4.14), and
+every static program calls it before `main()`: all static binaries stop at start (exit
+134) on those phones. `ndk-static-arc4random.sh` runs in the builder container before
+the first build and puts `static-arc4random.c` in libc.a in place of the two arc4random
+members. The smoke test fails a bundle that still has the abort text.
+
 ## Static-linking policy
 Goal: binaries are statically linked so they don't depend on system libraries.
 

@@ -24,6 +24,10 @@ Update them **together, in the same commit** whenever you bump to a new binaries
    git commit -m "chore: bump native binaries to <tag>"
    ```
 
+Before you pin a new release, run its 8 binaries (`lib*.so --version`) on a phone with Linux
+older than 4.14 and on a phone with a new kernel. CI runs on new kernels only. The sources of a
+release are pinned in `tools/proot-builder/termux-pins.env` (see the README there).
+
 ## Why (background)
 
 `ninja_manifest.json` is the integrity source of truth and is **version-controlled on purpose**
