@@ -17,9 +17,12 @@ var School = (function () {
     frame.style.transform = 'scale(' + scale + ')';
   }
 
+  // The stage changes size with the window, and with the header above it (a note, a button that
+  // shows or hides, a line that wraps on a small phone).
   function watchFit(stage, frames) {
     var fit = function () { frames.forEach(function (f) { fitFrame(stage, f); }); };
-    window.addEventListener('resize', fit);
+    if (window.ResizeObserver) { new ResizeObserver(fit).observe(stage); }
+    else { window.addEventListener('resize', fit); }
     fit();
   }
 
