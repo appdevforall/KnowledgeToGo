@@ -7,7 +7,7 @@
 <title>K2Go School: teacher</title>
 <link rel="stylesheet" href="../view.css">
 <style>
-  :root { --bg: #fff; --fg: #111; --head: #1F5FBF; --head-fg: #fff; --chip: #fff; --chip-fg: #111; --done: #17924A;
+  :root { --bg: #fff; --fg: #111; --head: #1F5FBF; --head-fg: #fff; --chip: #fff; --chip-fg: #111; --done: #17924A; --done-fg: #fff;
     --note: #FFF4CC; --note-fg: #111; --page: #fff; --accent: #1F5FBF;
     --ok: #1E9E4A; --slow: #E8A317; --bad: #D93025; --light-ring: #fff; }
   @media (prefers-color-scheme: dark) {
@@ -34,7 +34,7 @@
   .light.bad { background: var(--bad); }
   #seats { margin-top: 4px; }
   #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: var(--chip); color: var(--chip-fg); border-radius: 3px; }
-  #students span.done { background: var(--done); color: #fff; }
+  #students span.done { background: var(--done); color: var(--done-fg); }
   #students span.off { opacity: 0.5; }
   #stats { white-space: pre; font: 12px monospace; }
   #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px; }
