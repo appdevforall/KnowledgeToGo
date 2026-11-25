@@ -15,6 +15,11 @@ test('validLesson: only a path on the same box', () => {
     assert.ok(validLesson({ url: '/kiwix/content/x/A/y', a: { b: 3, o: 0.5 } }));
     assert.equal(validLesson({ url: 'http://evil.example/' }), null);
     assert.equal(validLesson({ url: '//evil.example/' }), null);
+    assert.equal(validLesson({ url: '/\\evil.example/' }), null);      // a browser reads it as //evil.example
+    assert.equal(validLesson({ url: '/\\/evil.example/' }), null);
+    assert.equal(validLesson({ url: '/\t/evil.example/' }), null);     // the URL parser drops tab and newline
+    assert.equal(validLesson({ url: '/\n/evil.example/' }), null);
+    assert.ok(validLesson({ url: '/kiwix/content/x/A/y?q=1#top' }));
     assert.equal(validLesson({ url: 'javascript:alert(1)' }), null);
     assert.equal(validLesson({}), null);
     assert.equal(validLesson([]), null);

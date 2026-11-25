@@ -75,11 +75,22 @@ export interface ClassState {
 }
 
 // A lesson URL must be a path on the same box: the student frame loads it, and the scroll works
-// only for a page of the same origin.
+// only for a page of the same origin. A browser reads "/\host" as "//host" (another site), so the
+// check parses the URL as a browser does and refuses a backslash (review S6).
+const SAME_BOX = 'http://box';
+export function sameBoxPath(url: string): boolean {
+    if (!url.startsWith('/') || url.includes('\\')) return false;
+    try {
+        return new URL(url, SAME_BOX).origin === SAME_BOX;
+    } catch {
+        return false;
+    }
+}
+
 export function validLesson(raw: unknown): Lesson | null {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
     const url = (raw as { url?: unknown }).url;
-    if (typeof url !== 'string' || !url.startsWith('/') || url.startsWith('//')) return null;
+    if (typeof url !== 'string' || !sameBoxPath(url)) return null;
     if (JSON.stringify(raw).length > MAX_LESSON_BYTES) return null;
     return raw as Lesson;
 }
