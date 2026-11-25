@@ -92,12 +92,12 @@ public final class ClassLinks {
         return classOpen && isClassPage(url);
     }
 
-    /** True when {@code url} is a class page (teacher or student) on a box: a path under /school/. */
     /** The Exit button of a student page after the class ended: the app closes the class screen. */
     public static boolean isExit(String url) {
         return url != null && EXIT_PAGE.matcher(url).find();
     }
 
+    /** True when {@code url} is a class page (teacher or student) on a box: a path under /school/. */
     public static boolean isClassPage(String url) {
         return url != null && CLASS_PAGE.matcher(url).find();
     }

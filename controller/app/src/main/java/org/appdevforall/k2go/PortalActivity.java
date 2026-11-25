@@ -274,16 +274,17 @@ public class PortalActivity extends AppCompatActivity {
                 String url = request.getUrl().toString();
                 String host = request.getUrl().getHost();
 
-                // K2Go School: Exit after the class ended does what the X of the bar does.
-                if (org.appdevforall.k2go.school.domain.ClassLinks.isExit(url)) {
-                    finish();
-                    return true;
-                }
-
                 // Internal server link stays in the WebView (and travels through the proxy). K2Go
                 // School: the teacher box of the class, at an address that its box confirmed, too.
                 if (NavigationPolicy.isInternalHost(host)
                         || (classRejoin != null && classRejoin.isClassHost(host))) {
+                    // K2Go School: Exit after the class ended does what the X of the bar does. Only
+                    // the page itself: a lesson frame that goes there does not close the screen.
+                    if (request.isForMainFrame()
+                            && org.appdevforall.k2go.school.domain.ClassLinks.isExit(url)) {
+                        finish();
+                        return true;
+                    }
                     if (fqr != null) fqr.prepareForUrl(url);   // ADFA-4879: add the FQR bridge only on /maps/
                     if (kolibriGuard != null) kolibriGuard.prepareForUrl(url);   // K2GO-395: Kolibri gate only on /kolibri/
                     return false;
