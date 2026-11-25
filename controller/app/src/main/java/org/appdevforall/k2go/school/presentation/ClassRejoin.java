@@ -91,10 +91,12 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     /**
      * Opens the student page at the new address with the class token of the old page, so the box
      * keeps one entry for this student (the new address is a new origin, with no stored token).
-     * The new page replaces the old one in the history: Back must not open the old address. When
-     * the old page cannot run the replace (an error page), the screen loads the URL.
+     * The screen loads it with loadUrl: a navigation that the page starts (location.replace) goes
+     * to the portal rule, which sends a host that is not this phone to the browser. When the new
+     * page shows, the history is cleared, so Back does not open the old (dead) address.
      */
     private static Consumer<String> moveIn(Supplier<WebView> web) {
+        Handler ui = new Handler(Looper.getMainLooper());
         return url -> {
             WebView w = web.get();
             if (w == null) return;
@@ -102,19 +104,20 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
                 String target = ClassLinks.withToken(url, ClassLinks.tokenFromJs(js));
                 WebView now = web.get();
                 if (now == null) return;
-                now.evaluateJavascript(replaceWith(target), done -> {
-                    WebView last = web.get();
-                    if (!"true".equals(done) && last != null) last.loadUrl(target);
-                });
+                now.loadUrl(target);
+                clearHistoryWhenShown(ui, web, target, CLEAR_TRIES);
             });
         };
     }
 
-    /** JS that replaces the page with {@code url}. The URL is a checked box address, a percent-
-     *  encoded query and a hex token; the quote escape is a second guard. */
-    private static String replaceWith(String url) {
-        String q = "'" + url.replace("\\", "\\\\").replace("'", "\\'") + "'";
-        return "(function(){try{location.replace(" + q + ");return true;}catch(e){return false;}})()";
+    private static final int CLEAR_TRIES = 20;   // every 500 ms: 10 s
+    private static void clearHistoryWhenShown(Handler ui, Supplier<WebView> web, String url, int tries) {
+        ui.postDelayed(() -> {
+            WebView w = web.get();
+            if (w == null) return;
+            if (url.equals(w.getUrl()) && w.getProgress() == 100) w.clearHistory();
+            else if (tries > 1) clearHistoryWhenShown(ui, web, url, tries - 1);
+        }, 500);
     }
 
     /**
