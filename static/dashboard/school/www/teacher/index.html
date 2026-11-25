@@ -35,6 +35,7 @@
   <div id="stats"></div>
 </header>
 <div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="../anchor.js"></script>
 <script src="../follow.js"></script>
 <script>
 'use strict';
@@ -50,6 +51,7 @@
   var sentAt = {};          // seq -> send time (ms), to measure the round trip
   var roster = [];          // from the box: the one owner of who is in the class
   var rtt = {};             // student id -> last round trip (ms), from acks
+  var match = {};           // student id -> false when its page is not the same, from acks
   var names = {};           // student id -> name
   var lagRun = null;        // { rtts: { name: [ms] } } while a lag test runs
   var pending = false;
@@ -60,12 +62,7 @@
   function publish() {
     var win = frame.contentWindow;
     seq += 1;
-    var msg = {
-      seq: seq,
-      url: School.framePath(frame),
-      a: School.anchorOf(win),
-      y: Math.round(win.scrollY)
-    };
+    var msg = { seq: seq, url: School.framePath(frame), a: SchoolAnchor.anchorOf(win) };
     sentAt[seq] = performance.now();
     delete sentAt[seq - 500];
     lastSend = performance.now();
@@ -87,6 +84,8 @@
   frame.addEventListener('load', function () {
     School.normalize(frame.contentDocument);
     frame.contentWindow.addEventListener('scroll', onScroll, { passive: true });
+    // A late image or the class font can move the block at the top edge: send the place again.
+    School.onLayout(frame.contentWindow, onScroll);
     publish();
   });
 
@@ -144,7 +143,8 @@
     roster.forEach(function (s) {
       if (s.online) { online += 1; }
       var el = document.createElement('span');
-      el.textContent = s.name + ' ' + (rtt[s.id] === undefined ? '-' : rtt[s.id] + 'ms') + (s.done ? ' Done' : '');
+      el.textContent = s.name + ' ' + (rtt[s.id] === undefined ? '-' : rtt[s.id] + 'ms') + (s.done ? ' Done' : '') +
+        (match[s.id] === false ? ' (other page)' : '');
       el.className = (s.done ? 'done' : '') + (s.online ? '' : ' off');
       studentsEl.appendChild(el);
     });
@@ -155,32 +155,34 @@
   // box forgets the lesson. So: reopen the channel when it closes or goes quiet, and send the
   // lesson again on each open.
   var live = null;
-  var lastSeen = 0;
   function connect() {
     if (live) { live.close(); }
-    lastSeen = performance.now();
+    alive.seen();
     live = new EventSource('live');
     live.onopen = function () {
       if (frame.contentWindow.location.protocol !== 'about:') { publish(); }   // a page is loaded
     };
     live.onmessage = onEvent;
-    live.addEventListener('ping', function () { lastSeen = performance.now(); });
+    live.addEventListener('ping', function () { alive.seen(); });
   }
-  setInterval(function () {
-    if (live.readyState === EventSource.CLOSED || performance.now() - lastSeen > 35000) {
-      countEl.textContent = 'reconnecting';
-      connect();
-    }
-  }, 5000);
+  function reconnect() { countEl.textContent = 'reconnecting'; connect(); }
+  var alive = School.keepAlive({ live: function () { return live; }, reopen: reconnect, onClosed: reconnect });
 
   function onEvent(ev) {
     var m;
-    lastSeen = performance.now();
+    alive.seen();
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'roster') {
       roster = m.students;
+      names = {};
       roster.forEach(function (s) { names[s.id] = s.name; });
+      // Students that the box expired leave no trace here.
+      Object.keys(rtt).forEach(function (id) { if (!names[id]) { delete rtt[id]; delete match[id]; } });
     } else if (m.type === 'ack' && sentAt[m.seq] !== undefined) {
+      // A student that comes back (reload, Wi-Fi) applies an old message: that is no round trip.
+      // A real one takes less than 1 s on the class LAN (M0: p95 330 ms).
+      if (performance.now() - sentAt[m.seq] > 3000) { return; }
+      match[m.id] = m.match;
       rtt[m.id] = Math.round(performance.now() - sentAt[m.seq]);
       if (lagRun) {
         var name = names[m.id] || m.id;

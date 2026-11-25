@@ -20,6 +20,7 @@
   <button id="done">Done</button>
 </header>
 <div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
+<script src="anchor.js"></script>
 <script src="follow.js"></script>
 <script>
 'use strict';
@@ -35,13 +36,13 @@
   var token = null;
   try { token = sessionStorage.getItem(KEY); } catch (e) { token = null; }
 
-  var last = null;          // last lesson from the teacher
+  var last = null;          // last lesson from the teacher: { seq, url, a }
+  var match = true;         // the student shows the same block as the teacher
   var loading = false;
   var done = false;
   var ackTimer = null;
   var lastAck = 0;
   var live = null;
-  var lastSeen = 0;
   var joining = false;
 
   School.watchFit(stage, frame);
@@ -61,6 +62,7 @@
     }).finally(function () { joining = false; });
   }
 
+  // The box forgets a student after some time offline (or after a restart): join again.
   function rejoin() {
     if (joining) { return; }
     token = null;
@@ -73,17 +75,22 @@
     ackTimer = null;
     if (!last || !token) { return; }
     lastAck = performance.now();
-    var win = frame.contentWindow;
     fetch('ack', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: token, seq: last.seq, done: done,
-        dy: Math.round(win.scrollY) - last.y,
-        h: win.document.documentElement.scrollHeight
-      })
+      body: JSON.stringify({ token: token, seq: last.seq, done: done, match: match })
     }).then(function (r) { if (r.status === 401) { rejoin(); } }).catch(function () {});
   }
+
+  // "Still here" every 10 s: the box closes a channel that it does not hear from (router.ts).
+  setInterval(function () {
+    if (!token) { return; }
+    fetch('ack', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token })
+    }).then(function (r) { if (r.status === 401) { rejoin(); } }).catch(function () {});
+  }, 10000);
 
   // Ack at most 5 times a second, and always the last message.
   function ack() {
@@ -91,10 +98,18 @@
     ackTimer = setTimeout(sendAck, Math.max(0, 200 - (performance.now() - lastAck)));
   }
 
+  function onPage() {
+    return !loading && last && frame.src && School.framePath(frame) === last.url;
+  }
+
+  function apply() {
+    match = SchoolAnchor.applyAnchor(frame.contentWindow, last.a);
+    statusEl.textContent = match ? 'Following' : 'Following (the page is not the same)';
+  }
+
   function follow() {
     if (!last || loading) { return; }
-    var current = frame.src ? School.framePath(frame) : '';
-    if (current !== last.url) {
+    if (!onPage()) {
       // Done means done with this page; the box clears it too.
       if (done) { done = false; doneBtn.textContent = 'Done'; }
       loading = true;
@@ -102,13 +117,14 @@
       frame.src = last.url;
       return;
     }
-    School.applyAnchor(frame.contentWindow, last.a, last.y);
-    statusEl.textContent = 'Following';
+    apply();
     requestAnimationFrame(ack);
   }
 
   frame.addEventListener('load', function () {
     School.normalize(frame.contentDocument);
+    // A late image or the class font changes the layout under the anchor: apply it again.
+    School.onLayout(frame.contentWindow, function () { if (onPage()) { apply(); } });
     loading = false;
     follow();
   });
@@ -119,31 +135,26 @@
     ack();
   };
 
-  // The box sends a "ping" event every 15 s. A connection that the box dropped under load can
-  // stay open on the phone with no error, so a watchdog opens a new one when nothing comes.
+  // On each open the box sends the last lesson, so after a drop the student is back in place.
   function connect() {
     if (live) { live.close(); }
-    lastSeen = performance.now();
+    alive.seen();
     live = new EventSource('live?token=' + encodeURIComponent(token));
     live.onmessage = function (ev) {
-      lastSeen = performance.now();
+      alive.seen();
       try { last = JSON.parse(ev.data); } catch (e) { return; }
       follow();
     };
-    live.addEventListener('ping', function () { lastSeen = performance.now(); });
+    live.addEventListener('ping', function () { alive.seen(); });
     live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
   }
 
-  setInterval(function () {
-    if (joining) { return; }
-    if (!live || live.readyState === EventSource.CLOSED) {
-      // A refused channel (for example 401 after a box restart) does not retry by itself.
-      rejoin();
-    } else if (performance.now() - lastSeen > 35000) {
-      statusEl.textContent = 'Reconnecting...';
-      connect();
-    }
-  }, 5000);
+  var alive = School.keepAlive({
+    live: function () { return live; },
+    reopen: function () { statusEl.textContent = 'Reconnecting...'; connect(); },
+    // A refused channel (for example 401 after a box restart) does not retry by itself.
+    onClosed: function () { if (!joining) { rejoin(); } }
+  });
 
   if (token) { connect(); } else { rejoin(); }
 })();
