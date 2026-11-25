@@ -192,6 +192,12 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         res.json(classroom.state());
     });
 
+    // Exit of the student page after the class ended. The app closes the class screen at this
+    // address and does not load it; a browser goes to the library of the box.
+    router.get('/exit', (_req: Request, res: Response): void => {
+        res.redirect(303, '/');
+    });
+
     router.use('/teacher', localOnly);
 
     router.post('/teacher/publish', (req: Request, res: Response): void => {

@@ -46,6 +46,7 @@ public final class ClassLinks {
             "^http://([A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?)(?::(\\d{1,5}))?(?:/.*)?$");
     private static final Pattern IPV4_LIKE = Pattern.compile("^[0-9.]+$");
     private static final Pattern CLASS_PAGE = Pattern.compile("^http://[^/?#]+/school/");
+    private static final Pattern EXIT_PAGE = Pattern.compile("^http://[^/?#]+/school/exit(?:[?#]|$)");
 
     /** HTTP status value for "the box did not answer" (no connection, time-out). */
     public static final int NO_ANSWER = -1;
@@ -92,6 +93,11 @@ public final class ClassLinks {
     }
 
     /** True when {@code url} is a class page (teacher or student) on a box: a path under /school/. */
+    /** The Exit button of a student page after the class ended: the app closes the class screen. */
+    public static boolean isExit(String url) {
+        return url != null && EXIT_PAGE.matcher(url).find();
+    }
+
     public static boolean isClassPage(String url) {
         return url != null && CLASS_PAGE.matcher(url).find();
     }

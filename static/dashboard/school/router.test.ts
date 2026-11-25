@@ -107,6 +107,15 @@ test('marks: a teacher channel gets an empty list when the box has no lesson (a 
     } finally { await box.close(); }
 });
 
+test('exit: a browser goes to the library of the box', async () => {
+    const box = await startBox();
+    try {
+        const r = await request(box, 'GET', '/school/exit', {});
+        assert.equal(r.status, 303);
+        assert.match(r.body, /Redirecting to \/$/);
+    } finally { await box.close(); }
+});
+
 test('marks: the teacher marks; a late student and a teacher page get them; a new page clears them', async () => {
     const box = await startBox();
     const local = { ip: '127.0.0.1' };

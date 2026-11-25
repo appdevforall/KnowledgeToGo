@@ -274,6 +274,12 @@ public class PortalActivity extends AppCompatActivity {
                 String url = request.getUrl().toString();
                 String host = request.getUrl().getHost();
 
+                // K2Go School: Exit after the class ended does what the X of the bar does.
+                if (org.appdevforall.k2go.school.domain.ClassLinks.isExit(url)) {
+                    finish();
+                    return true;
+                }
+
                 // Internal server link stays in the WebView (and travels through the proxy). K2Go
                 // School: the teacher box of the class, at an address that its box confirmed, too.
                 if (NavigationPolicy.isInternalHost(host)

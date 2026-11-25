@@ -122,6 +122,15 @@ public class ClassLinksTest {
         assertFalse(ClassLinks.keepScreenOn(null, true));
     }
 
+    @Test public void exitIsTheExitAddressOfAClassBox() {
+        assertTrue(ClassLinks.isExit("http://192.168.1.158:8085/school/exit"));
+        assertTrue(ClassLinks.isExit("http://localhost:8085/school/exit?x=1"));
+        assertFalse(ClassLinks.isExit("http://192.168.1.158:8085/school/exits"));
+        assertFalse(ClassLinks.isExit("http://192.168.1.158:8085/kiwix/content/a/school/exit"));
+        assertFalse(ClassLinks.isExit("https://example.com/school/exitx"));
+        assertFalse(ClassLinks.isExit(null));
+    }
+
     @Test public void aClassOfTheListGoesWithItsCodeInTheFragment() {
         assertEquals("http://h:8085/school/student.html#c=4F7K",
                 ClassLinks.withClass("http://h:8085/school/student.html", "4F7K"));
