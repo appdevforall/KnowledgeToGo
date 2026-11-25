@@ -8,10 +8,12 @@
 <link rel="stylesheet" href="../view.css">
 <style>
   :root { --bg: #fff; --fg: #111; --head: #1F5FBF; --head-fg: #fff; --chip: #fff; --chip-fg: #111; --done: #17924A;
-    --note: #FFF4CC; --note-fg: #111; --page: #fff; --accent: #1F5FBF; }
+    --note: #FFF4CC; --note-fg: #111; --page: #fff; --accent: #1F5FBF;
+    --ok: #1E9E4A; --slow: #E8A317; --bad: #D93025; --light-ring: #fff; }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #121212; --fg: #eee; --head: #173F7A; --chip: #2A2A2A; --chip-fg: #eee; --done: #1E7A43;
-      --note: #4A3F10; --note-fg: #eee; --accent: #8AB4F8; }
+      --note: #4A3F10; --note-fg: #eee; --accent: #8AB4F8;
+      --ok: #5BD07F; --slow: #FDD663; --bad: #F28B82; --light-ring: #173F7A; }
   }
   html, body { margin: 0; height: 100%; font: 14px/1.3 sans-serif; background: var(--bg); color: var(--fg); }
   body { display: flex; flex-direction: column; }
@@ -21,6 +23,16 @@
   #bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
   #end { margin-left: auto; }
   #confirm, #note { margin-top: 4px; padding: 4px 6px; border-radius: 3px; background: var(--note); color: var(--note-fg); }
+  #status { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: center; }
+  #status button { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: 12px;
+    border: 1px solid transparent; background: none; color: inherit; }
+  #status button[aria-pressed="true"] { border-color: var(--head-fg); }
+  #status b { font-variant-numeric: tabular-nums; }
+  .light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 1px var(--light-ring); }
+  .light.ok { background: var(--ok); }
+  .light.slow { background: var(--slow); }
+  .light.bad { background: var(--bad); }
+  #seats { margin-top: 4px; }
   #students span { display: inline-block; margin: 2px 4px 0 0; padding: 0 4px; background: var(--chip); color: var(--chip-fg); border-radius: 3px; }
   #students span.done { background: var(--done); color: #fff; }
   #students span.off { opacity: 0.5; }
@@ -36,18 +48,26 @@
     <button id="library">Library</button>
     <button id="back" disabled>Back</button>
     <span id="code"></span>
-    <span id="count">0 online</span>
+    <span id="status" translate="no">
+      <button data-group="ok" aria-pressed="false"><i class="light ok"></i><span class="label"></span> <b>0</b></button>
+      <button data-group="slow" aria-pressed="false"><i class="light slow"></i><span class="label"></span> <b>0</b></button>
+      <button data-group="bad" aria-pressed="false"><i class="light bad"></i><span class="label"></span> <b>0</b></button>
+      <button data-group="done" aria-pressed="false"><span class="label"></span> <b>0/0</b></button>
+    </span>
+    <span id="conn"></span>
     <button id="end">End class</button>
   </div>
+  <!-- The seats of the group that the teacher tapped. -->
+  <div id="seats" translate="no" hidden></div>
   <div id="confirm" hidden>
     End the class for all students?
     <button id="endYes">End class</button>
     <button id="endNo">Cancel</button>
   </div>
   <div id="note" hidden></div>
-  <div id="students"></div>
-  <!-- Test tools (?debug=1): not for a class. -->
+  <!-- Test tools (?debug=1): not for a class. The round trip of each seat is here. -->
   <div id="debug" hidden>
+    <div id="students"></div>
     <button data-path="/kiwix/content/k2go_welcome/A/index.html">Welcome</button>
     <button data-path="/info/FAQ.html">Long page</button>
     <input id="path" placeholder="/kiwix/content/...">
@@ -69,24 +89,46 @@
 'use strict';
 (function () {
   var stage = document.getElementById('stage');
-  var countEl = document.getElementById('count');
+  var connEl = document.getElementById('conn');
   var codeEl = document.getElementById('code');
+  var seatsEl = document.getElementById('seats');
   var studentsEl = document.getElementById('students');
   var statsEl = document.getElementById('stats');
   var noteEl = document.getElementById('note');
   var backBtn = document.getElementById('back');
   var confirmEl = document.getElementById('confirm');
   var HZ = parseInt(School.params.get('hz'), 10) || 20;
+  var DEBUG = School.params.get('debug') === '1';
+  // The words of the page, in one place for a translation.
+  var T = {
+    seat: 'Eq. ', ok: 'ok', slow: 'slow', bad: 'bad', done: 'Done', notDone: 'Not done', none: '-'
+  };
+  function seatLabel(n) { return T.seat + (n < 10 ? '0' : '') + n; }
+  // The status of a seat (the status line). The box marks a student quiet after 12 s with no word
+  // (class.ts QUIET_MS). Rehearsal round trip publish -> ack: p50 69 ms, p95 320 ms, p99 504 ms.
+  //   bad:  channel closed, quiet, the page is not the same, or a message of the teacher not acked
+  //         for BEHIND_MS (the student does not follow: for example a page that does not load).
+  //   slow: the median of the last RTT_COUNT round trips is over SLOW_MS.
+  //   ok:   the rest.
+  var SLOW_MS = 500;
+  var BEHIND_MS = 15000;
+  var RTT_COUNT = 5;
+  // B2: the page renders at most every RENDER_MS, not on each ack (57 acks a second with 30
+  // students), and each second for the statuses that change with time.
+  var RENDER_MS = 250;
   // The teacher chooses a book in the Kiwix library; the class follows the pages of the books.
   var LIBRARY = '/kiwix/';
 
   var seq = 0;
   var sentAt = {};          // seq -> send time (ms), to measure the round trip
-  var roster = [];          // from the box: the one owner of who is in the class
-  var rtt = {};             // student id -> last round trip (ms), from acks
-  var match = {};           // student id -> false when its page is not the same, from acks
-  var names = {};           // student id -> name
-  var lagRun = null;        // { rtts: { name: [ms] } } while a lag test runs
+  var roster = [];          // from the box: the one owner of who is in the class (seats)
+  // seat -> { rtts: last round trips (ms), match: false when its page is not the same,
+  //           waiting: send time of the oldest message that it did not ack, or null }. From acks.
+  var seen = {};
+  var group = null;         // the group whose seats show (a tap on the status line)
+  var lagRun = null;        // { rtts: { seat label: [ms] } } while a lag test runs
+  var metrics = { renders: 0, events: 0 };   // debug: the render rate (B2)
+  window.k2goTeacherMetrics = metrics;
   var pending = false;
   var lastSend = 0;
   var started = false;      // the first page is open (the lesson of the box, or the start page)
@@ -133,14 +175,19 @@
     var win = view.win();
     seq += 1;
     var msg = { seq: seq, url: view.path(), a: SchoolAnchor.anchorOf(win) };
-    sentAt[seq] = performance.now();
+    var now = performance.now();
+    sentAt[seq] = now;
     delete sentAt[seq - 500];
-    lastSend = performance.now();
+    lastSend = now;
+    roster.forEach(function (s) {
+      var st = seatData(s.seat);
+      if (st.waiting === null) { st.waiting = now; }
+    });
     fetch('publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(msg)
-    }).catch(function () { countEl.textContent = 'box not reachable'; });
+    }).catch(function () { connEl.textContent = 'box not reachable'; });
   }
 
   // Send at most HZ messages a second, and always the last position.
@@ -252,7 +299,7 @@
     document.getElementById('ended').hidden = false;
   }
 
-  if (School.params.get('debug') === '1') { document.getElementById('debug').hidden = false; }
+  if (DEBUG) { document.getElementById('debug').hidden = false; }
   document.querySelectorAll('[data-path]').forEach(function (b) {
     b.onclick = function () { open(b.getAttribute('data-path')); };
   });
@@ -292,27 +339,83 @@
   }
 
   function showStats() {
-    var lines = ['round trip ms (one way is about half): name n p50 p95 max'];
-    Object.keys(lagRun.rtts).forEach(function (name) {
-      var r = lagRun.rtts[name];
-      lines.push(name + ' ' + r.length + ' ' + pct(r, 0.5) + ' ' + pct(r, 0.95) + ' ' + Math.max.apply(null, r));
+    var lines = ['round trip ms (one way is about half): seat n p50 p95 max'];
+    Object.keys(lagRun.rtts).forEach(function (seat) {
+      var r = lagRun.rtts[seat];
+      lines.push(seat + ' ' + r.length + ' ' + pct(r, 0.5) + ' ' + pct(r, 0.95) + ' ' + Math.max.apply(null, r));
     });
     statsEl.textContent = lines.join('\n');
   }
 
+  function seatData(seat) {
+    return seen[seat] || (seen[seat] = { rtts: [], match: true, waiting: null });
+  }
+
+  function statusOf(s, now) {
+    var st = seen[s.seat];
+    if (!s.online || s.quiet) { return 'bad'; }
+    if (st) {
+      if (st.match === false) { return 'bad'; }
+      if (st.waiting !== null && now - st.waiting > BEHIND_MS) { return 'bad'; }
+      if (st.rtts.length && pct(st.rtts, 0.5) > SLOW_MS) { return 'slow'; }
+    }
+    return 'ok';
+  }
+
+  var statusBtns = {};
+  document.querySelectorAll('#status button').forEach(function (b) {
+    var g = b.getAttribute('data-group');
+    statusBtns[g] = b;
+    b.querySelector('.label').textContent = T[g];
+    b.onclick = function () { group = group === g ? null : g; render(); };
+  });
+
+  function setText(el, text) { if (el.textContent !== text) { el.textContent = text; } }
+
   function render() {
-    var online = 0;
+    metrics.renders += 1;
+    var now = performance.now();
+    var groups = { ok: [], slow: [], bad: [], done: [], notDone: [] };
+    roster.forEach(function (s) {
+      var label = seatLabel(s.seat);
+      groups[statusOf(s, now)].push(label);
+      groups[s.done ? 'done' : 'notDone'].push(label);
+    });
+    ['ok', 'slow', 'bad'].forEach(function (g) { setText(statusBtns[g].querySelector('b'), String(groups[g].length)); });
+    setText(statusBtns.done.querySelector('b'), groups.done.length + '/' + roster.length);
+    Object.keys(statusBtns).forEach(function (g) { statusBtns[g].setAttribute('aria-pressed', String(group === g)); });
+    // A tap on Done shows the seats that are not done: the teacher waits for these.
+    var list = group === 'done' ? groups.notDone : group ? groups[group] : null;
+    seatsEl.hidden = !list;
+    if (list) { setText(seatsEl, (group === 'done' ? T.notDone : T[group]) + ': ' + (list.join(', ') || T.none)); }
+    if (DEBUG) { renderDebug(now); }
+  }
+
+  // ?debug=1: each seat with its round trip, as the test tools need it.
+  function renderDebug(now) {
     studentsEl.innerHTML = '';
     roster.forEach(function (s) {
-      if (s.online) { online += 1; }
+      var st = seen[s.seat];
       var el = document.createElement('span');
-      el.textContent = s.name + ' ' + (rtt[s.id] === undefined ? '-' : rtt[s.id] + 'ms') + (s.done ? ' Done' : '') +
-        (match[s.id] === false ? ' (other page)' : '');
+      var last = st && st.rtts.length ? st.rtts[st.rtts.length - 1] + 'ms' : '-';
+      el.textContent = seatLabel(s.seat) + ' ' + last + ' ' + statusOf(s, now) + (s.done ? ' Done' : '') +
+        (st && st.match === false ? ' (other page)' : '');
       el.className = (s.done ? 'done' : '') + (s.online ? '' : ' off');
       studentsEl.appendChild(el);
     });
-    countEl.textContent = online + ' online';
   }
+
+  var renderTimer = null;
+  var lastRender = 0;
+  function scheduleRender() {
+    if (renderTimer) { return; }
+    renderTimer = setTimeout(function () {
+      renderTimer = null;
+      lastRender = performance.now();
+      render();
+    }, Math.max(0, RENDER_MS - (performance.now() - lastRender)));
+  }
+  setInterval(scheduleRender, 1000);   // "behind" changes with time
 
   // A dash-node restart answers 502 for a moment, which closes an EventSource for good; and the
   // box forgets the lesson. So: reopen the channel when it closes or goes quiet, and send the
@@ -323,16 +426,18 @@
     alive.seen();
     live = new EventSource('live?role=page');
     live.onopen = function () {
+      connEl.textContent = '';
       if (view.path() !== null) { publish(); }   // a page is loaded
     };
     live.onmessage = onEvent;
     live.addEventListener('ping', function () { alive.seen(); });
   }
-  function reconnect() { if (ended) { return; } countEl.textContent = 'reconnecting'; connect(); }
+  function reconnect() { if (ended) { return; } connEl.textContent = 'reconnecting'; connect(); }
   var alive = School.keepAlive({ live: function () { return live; }, reopen: reconnect, onClosed: reconnect });
 
   function onEvent(ev) {
     var m;
+    metrics.events += 1;
     alive.seen();
     try { m = JSON.parse(ev.data); } catch (e) { return; }
     if (m.type === 'lesson') { start(m.lesson); return; }
@@ -341,22 +446,27 @@
     if (m.type === 'class') { codeEl.textContent = m.code ? 'Class ' + m.code : ''; return; }
     if (m.type === 'roster') {
       roster = m.students;
-      names = {};
-      roster.forEach(function (s) { names[s.id] = s.name; });
+      var inClass = {};
+      roster.forEach(function (st) { inClass[st.seat] = true; });
       // Students that the box expired leave no trace here.
-      Object.keys(rtt).forEach(function (id) { if (!names[id]) { delete rtt[id]; delete match[id]; } });
-    } else if (m.type === 'ack' && sentAt[m.seq] !== undefined) {
+      Object.keys(seen).forEach(function (seat) { if (!inClass[seat]) { delete seen[seat]; } });
+    } else if (m.type === 'ack') {
+      var st = seatData(m.seat);
+      st.match = m.match;
+      // The student acks the last message that it has: the messages after it still wait.
+      st.waiting = m.seq >= seq ? null : sentAt[m.seq + 1] !== undefined ? sentAt[m.seq + 1] : st.waiting;
       // A student that comes back (reload, Wi-Fi) applies an old message: that is no round trip.
       // A real one takes less than 1 s on the class LAN (M0: p95 330 ms).
-      if (performance.now() - sentAt[m.seq] > 3000) { return; }
-      match[m.id] = m.match;
-      rtt[m.id] = Math.round(performance.now() - sentAt[m.seq]);
+      if (sentAt[m.seq] === undefined || performance.now() - sentAt[m.seq] > 3000) { return; }
+      var ms = Math.round(performance.now() - sentAt[m.seq]);
+      st.rtts.push(ms);
+      if (st.rtts.length > RTT_COUNT) { st.rtts.shift(); }
       if (lagRun) {
-        var name = names[m.id] || m.id;
-        (lagRun.rtts[name] = lagRun.rtts[name] || []).push(rtt[m.id]);
+        var label = seatLabel(m.seat);
+        (lagRun.rtts[label] = lagRun.rtts[label] || []).push(ms);
       }
     }
-    render();
+    scheduleRender();
   }
 
   if (ended) { showEnded(); return; }
