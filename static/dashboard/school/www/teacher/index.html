@@ -45,8 +45,8 @@
 <body>
 <header>
   <div id="bar">
-    <button id="library">Library</button>
-    <button id="back" disabled>Back</button>
+    <button id="library" data-t="library"></button>
+    <button id="back" data-t="back" disabled></button>
     <span id="code"></span>
     <span id="status" translate="no">
       <button data-group="ok" aria-pressed="false"><i class="light ok"></i><span class="label"></span> <b>0</b></button>
@@ -55,14 +55,14 @@
       <button data-group="done" aria-pressed="false"><span class="label"></span> <b>0/0</b></button>
     </span>
     <span id="conn"></span>
-    <button id="end">End class</button>
+    <button id="end" data-t="endClass"></button>
   </div>
   <!-- The seats of the group that the teacher tapped. -->
   <div id="seats" translate="no" hidden></div>
   <div id="confirm" hidden>
-    End the class for all students?
-    <button id="endYes">End class</button>
-    <button id="endNo">Cancel</button>
+    <span data-t="endConfirm"></span>
+    <button id="endYes" data-t="endClass"></button>
+    <button id="endNo" data-t="cancel"></button>
   </div>
   <div id="note" hidden></div>
   <!-- Test tools (?debug=1): not for a class. The round trip of each seat is here. -->
@@ -79,10 +79,11 @@
 </header>
 <div id="stage">
   <div id="ended" hidden>
-    <p>The class ended.</p>
-    <button id="again">Start a new class</button>
+    <p data-t="ended"></p>
+    <button id="again" data-t="startAgain"></button>
   </div>
 </div>
+<script src="../text.js"></script>
 <script src="../anchor.js"></script>
 <script src="../follow.js"></script>
 <script>
@@ -99,11 +100,15 @@
   var confirmEl = document.getElementById('confirm');
   var HZ = parseInt(School.params.get('hz'), 10) || 20;
   var DEBUG = School.params.get('debug') === '1';
-  // The words of the page, in one place for a translation.
-  var T = {
-    seat: 'Eq. ', ok: 'ok', slow: 'slow', bad: 'bad', done: 'Done', notDone: 'Not done', none: '-'
-  };
-  function seatLabel(n) { return T.seat + (n < 10 ? '0' : '') + n; }
+  // The words come from text.js, in the language of this page; the class carries it to the
+  // students (live?lang=).
+  SchoolText.apply(document);
+  document.querySelector('header').dir = SchoolText.dir();
+  var t = SchoolText.text;
+  function seatLabel(n) { return t('seat', (n < 10 ? '0' : '') + n); }
+  // The status groups: the word on the line, and the sentence that lists the seats of the group.
+  var GROUP_WORD = { ok: 'ok', slow: 'slow', bad: 'bad', done: 'done' };
+  var GROUP_SEATS = { ok: 'seatsOk', slow: 'seatsSlow', bad: 'seatsBad', done: 'seatsNotDone' };
   // The status of a seat (the status line). The box marks a student quiet after 12 s with no word
   // (class.ts QUIET_MS). Rehearsal round trip publish -> ack: p50 69 ms, p95 320 ms, p99 504 ms.
   //   bad:  channel closed, quiet, the page is not the same, or a message of the teacher not acked
@@ -187,7 +192,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(msg)
-    }).catch(function () { connEl.textContent = 'box not reachable'; });
+    }).catch(function () { connEl.textContent = t('boxNotReachable'); });
   }
 
   // Send at most HZ messages a second, and always the last position.
@@ -211,7 +216,7 @@
     if (url.origin === location.origin && url.pathname === here.pathname && url.search === here.search) { return; }   // a place in this page
     ev.preventDefault();
     if (url.origin !== location.origin) {
-      note('This link goes out of the box. The class can open only the pages of this box.');
+      note(t('linkOut'));
       return;
     }
     open(contentOf(url) || url.pathname + url.search + url.hash);
@@ -232,7 +237,7 @@
     backBtn.disabled = trail.length < 2;
     var mine = ++pageGen;
     if (isLibrary(win.location.pathname)) {
-      note('Open a book. The students see the pages of the book, not the library.');
+      note(t('openBook'));
       return;
     }
     // A page that answers an error never goes to the class (rehearsal F4).
@@ -243,7 +248,7 @@
         note('');
         publish();
       } else {
-        note('This page was not found (' + (status || 'no answer') + '). The students stay on the last page.');
+        note(status ? t('notFound', status) : t('noPageAnswer'));
       }
     });
   }
@@ -283,7 +288,7 @@
       showEnded();
     }).catch(function () {
       confirmEl.hidden = true;
-      note('The box did not answer. Try again.');
+      note(t('boxNoAnswer'));
     });
   };
   document.getElementById('again').onclick = function () {
@@ -366,7 +371,7 @@
   document.querySelectorAll('#status button').forEach(function (b) {
     var g = b.getAttribute('data-group');
     statusBtns[g] = b;
-    b.querySelector('.label').textContent = T[g];
+    b.querySelector('.label').textContent = t(GROUP_WORD[g]);
     b.onclick = function () { group = group === g ? null : g; render(); };
   });
 
@@ -387,7 +392,7 @@
     // A tap on Done shows the seats that are not done: the teacher waits for these.
     var list = group === 'done' ? groups.notDone : group ? groups[group] : null;
     seatsEl.hidden = !list;
-    if (list) { setText(seatsEl, (group === 'done' ? T.notDone : T[group]) + ': ' + (list.join(', ') || T.none)); }
+    if (list) { setText(seatsEl, t(GROUP_SEATS[group], list.join(', ') || '-')); }
     if (DEBUG) { renderDebug(now); }
   }
 
@@ -424,7 +429,7 @@
   function connect() {
     if (live) { live.close(); }
     alive.seen();
-    live = new EventSource('live?role=page');
+    live = new EventSource('live?role=page&lang=' + encodeURIComponent(SchoolText.lang()));
     live.onopen = function () {
       connEl.textContent = '';
       if (view.path() !== null) { publish(); }   // a page is loaded
@@ -432,7 +437,7 @@
     live.onmessage = onEvent;
     live.addEventListener('ping', function () { alive.seen(); });
   }
-  function reconnect() { if (ended) { return; } connEl.textContent = 'reconnecting'; connect(); }
+  function reconnect() { if (ended) { return; } connEl.textContent = t('reconnecting'); connect(); }
   var alive = School.keepAlive({ live: function () { return live; }, reopen: reconnect, onClosed: reconnect });
 
   function onEvent(ev) {
@@ -443,7 +448,7 @@
     if (m.type === 'lesson') { start(m.lesson); return; }
     if (m.type === 'ended') { showEnded(); return; }   // another teacher page ended the class
     // The students choose the class by this code in Class > Join.
-    if (m.type === 'class') { codeEl.textContent = m.code ? 'Class ' + m.code : ''; return; }
+    if (m.type === 'class') { codeEl.textContent = m.code ? t('classCode', m.code) : ''; return; }
     if (m.type === 'roster') {
       roster = m.students;
       var inClass = {};

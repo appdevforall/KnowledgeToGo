@@ -23,11 +23,12 @@
 <body>
 <header translate="no">
   <span id="seat"></span>
-  <span id="status">Connecting...</span>
-  <button id="here" hidden>Follow here</button>
-  <button id="done">Done</button>
+  <span id="status"></span>
+  <button id="here" data-t="followHere" hidden></button>
+  <button id="done"></button>
 </header>
-<div id="stage"><div id="ended" hidden>The class ended.</div></div>
+<div id="stage"><div id="ended" data-t="ended" hidden></div></div>
+<script src="text.js"></script>
 <script src="anchor.js"></script>
 <script src="follow.js"></script>
 <script>
@@ -37,15 +38,28 @@
   var statusEl = document.getElementById('status');
   var doneBtn = document.getElementById('done');
   var seatEl = document.getElementById('seat');
-  // The words of the page, in one place for a translation. The class identifies phones, not
-  // people: the box gives this phone a seat number, and no name goes to the box (K2G-P5).
-  var T = {
-    seat: 'Eq. ',
-    waiting: 'Waiting for the class',
-    full: 'The class is full',
-    busy: 'Too many joins. Wait...'
-  };
-  function seatLabel(n) { return T.seat + (n < 10 ? '0' : '') + n; }
+  var headerEl = document.querySelector('header');
+  // The words come from text.js. The class identifies phones, not people: the box gives this phone
+  // a seat number, and no name goes to the box (K2G-P5).
+  var seat = null;
+  var shown = ['connecting'];   // the status text: a text.js key and its values
+  function setStatus() {
+    shown = Array.prototype.slice.call(arguments);
+    statusEl.textContent = SchoolText.text.apply(null, shown);
+  }
+  function setSeat(n) {
+    seat = n;
+    seatEl.textContent = SchoolText.text('seat', (n < 10 ? '0' : '') + n);
+  }
+  function showWords() {
+    SchoolText.apply(document);
+    headerEl.dir = SchoolText.dir();
+    doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+    statusEl.textContent = SchoolText.text.apply(null, shown);
+    if (seat) { setSeat(seat); }
+  }
+  // The class carries the language of its teacher page (the box keeps it).
+  function useClassLang(lang) { if (SchoolText.use(lang)) { showWords(); } }
 
   // localStorage, not sessionStorage: the token must outlive the page. The app loads the page again
   // after a theme change or after Android stopped it, and the student must stay the same student.
@@ -97,7 +111,8 @@
     }).then(function (j) {
       token = j.token;
       setClass(j.code);
-      seatEl.textContent = seatLabel(j.seat);
+      useClassLang(j.lang);
+      setSeat(j.seat);
       try { localStorage.setItem(KEY, token); } catch (e) { /* private mode: join again on reload */ }
     }).finally(function () { joining = false; });
   }
@@ -113,7 +128,7 @@
   function onJoinRefused(err) {
     var status = err && err.status;
     if (status === 409 && classCode) { onEnded(); return; }
-    statusEl.textContent = status === 409 ? T.waiting : status === 503 ? T.full : status === 429 ? T.busy : 'Class not reachable';
+    setStatus(status === 409 ? 'waitingClass' : status === 503 ? 'full' : status === 429 ? 'busy' : 'notReachable');
   }
 
   // The box forgets a student after some time offline (or after a restart): join again.
@@ -129,7 +144,7 @@
     }
     token = null;
     if (live) { live.close(); }
-    statusEl.textContent = 'Joining...';
+    setStatus('joining');
     join().then(connect, onJoinRefused);
   }
 
@@ -182,8 +197,8 @@
     if (!last || ended || view.loading()) { return; }
     if (!onPage()) {
       // Done means done with this page; the box clears it too.
-      if (done) { done = false; doneBtn.textContent = 'Done'; }
-      statusEl.textContent = 'Opening...';
+      if (done) { done = false; doneBtn.textContent = SchoolText.text('done'); }
+      setStatus('opening');
       view.open(last.url);
       return;
     }
@@ -199,7 +214,7 @@
     classCode = null;
     setCookie(null);
     try { localStorage.removeItem(KEY); localStorage.removeItem(CLASS_KEY); } catch (e) { /* no storage */ }
-    statusEl.textContent = 'The class ended';
+    setStatus('ended');
     doneBtn.hidden = true;
     hereBtn.hidden = true;
     document.getElementById('ended').hidden = false;
@@ -208,7 +223,7 @@
   function stopHere() {
     replaced = true;
     if (live) { live.close(); }
-    statusEl.textContent = 'Open in another tab';
+    setStatus('otherTab');
     hereBtn.hidden = false;
   }
 
@@ -218,11 +233,11 @@
     document.cookie = 'k2go-school=' + (value || '') + '; path=/school/; SameSite=Strict' + (value ? '' : '; max-age=0');
   }
 
-  hereBtn.onclick = function () { statusEl.textContent = 'Connecting...'; connect(); };
+  hereBtn.onclick = function () { setStatus('connecting'); connect(); };
 
   doneBtn.onclick = function () {
     done = !done;
-    doneBtn.textContent = done ? 'Not done' : 'Done';
+    doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
     ack();
   };
 
@@ -245,24 +260,26 @@
       var me;
       try { me = JSON.parse(ev.data); } catch (e) { return; }
       done = me.done === true;
-      doneBtn.textContent = done ? 'Not done' : 'Done';
-      if (me.seat) { seatEl.textContent = seatLabel(me.seat); }
+      doneBtn.textContent = SchoolText.text(done ? 'undoDone' : 'done');
+      useClassLang(me.lang);
+      if (me.seat) { setSeat(me.seat); }
       setClass(me.code);
-      if (!last) { statusEl.textContent = 'Waiting for the teacher'; }   // the channel is open, no lesson yet
+      if (!last) { setStatus('waitingTeacher'); }   // the channel is open, no lesson yet
     });
     // A newer channel with this token took the place (another tab): stop, do not open again.
     live.addEventListener('replaced', stopHere);
     live.addEventListener('ended', onEnded);
-    live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
+    live.onerror = function () { setStatus('reconnecting'); };
   }
 
   var alive = School.keepAlive({
     live: function () { return live; },
-    reopen: function () { if (!replaced && !ended) { statusEl.textContent = 'Reconnecting...'; connect(); } },
+    reopen: function () { if (!replaced && !ended) { setStatus('reconnecting'); connect(); } },
     // A refused channel (for example 401 after a box restart) does not retry by itself.
     onClosed: function () { if (!joining && !replaced && !ended) { rejoin(); } }
   });
 
+  showWords();
   if (token) { connect(); } else { rejoin(); }
 })();
 </script>
