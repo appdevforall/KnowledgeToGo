@@ -31,6 +31,14 @@ test('trimEnds: the ends move to the nearest block with text; no text left gives
     assert.equal(M.trimEnds(text, 3, 5, 3, 5), null);
 });
 
+test('isLight: light text means a dark page', () => {
+    assert.equal(M.isLight('rgb(238, 238, 238)'), true);
+    assert.equal(M.isLight('rgba(255, 255, 255, 0.87)'), true);
+    assert.equal(M.isLight('rgb(32, 33, 34)'), false);
+    assert.equal(M.isLight('rgb(6, 69, 173)'), false);       // a link blue
+    assert.equal(M.isLight(''), false);
+});
+
 test('clamp: a rect stays inside the page', () => {
     assert.deepEqual(M.clamp(r(-2, -2, 402, 50), 400, 1000), r(0, 0, 400, 50));
     assert.deepEqual(M.clamp(r(10, 990, 20, 1002), 400, 1000), r(10, 990, 20, 1000));

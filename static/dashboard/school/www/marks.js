@@ -16,6 +16,10 @@
   // makes no group of its own that the rects would blend into.
   var TOP = 'position: absolute; margin: 0; padding: 0; border: 0; z-index: 2147483647; ';
   var FILL = 'background: rgb(255, 222, 50); mix-blend-mode: multiply; border-radius: 2px;';
+  // A page in dark mode (light text on a dark page, for example a Kiwix book in a dark theme):
+  // multiply would make the text yellow on an almost black page. A clear yellow band keeps the
+  // light text readable on it.
+  var DARK_FILL = 'background: rgba(255, 200, 0, 0.35); border-radius: 2px;';
   // A picture gets a frame, not a fill: a fill hides a dark picture.
   var FRAME = 'box-shadow: inset 0 0 0 4px rgb(255, 200, 0), 0 0 0 1px rgba(0, 0, 0, 0.6);';
   var PAD = 2;
@@ -106,6 +110,14 @@
     return null;
   }
 
+  // True for a light color ("rgb(r, g, b)" or "rgba(...)" as getComputedStyle gives it): light
+  // text is on a dark page.
+  function isLight(color) {
+    var c = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/.exec(String(color || ''));
+    if (!c) { return false; }
+    return (0.2126 * c[1] + 0.7152 * c[2] + 0.0722 * c[3]) / 255 > 0.5;
+  }
+
   // A rect in page coordinates, cut to the page (w x h).
   function clamp(r, w, h) {
     return { left: Math.max(0, r.left), top: Math.max(0, r.top), right: Math.min(w, r.right), bottom: Math.min(h, r.bottom) };
@@ -134,14 +146,16 @@
     list.forEach(function (m) {
       var rects = clientRects(doc, blocks, m);
       if (!rects || !rects.length) { return; }
-      var media = m.k === 'b' && /^(IMG|VIDEO)$/.test(blocks.list[sameBlock(blocks.prints, m.b, m.t)].tagName);
+      var el = blocks.list[sameBlock(blocks.prints, m.b, m.t)];
+      var media = m.k === 'b' && /^(IMG|VIDEO)$/.test(el.tagName);
+      var fill = isLight(win.getComputedStyle(el).color) ? DARK_FILL : FILL;
       var local = rects.map(function (r) {
         var box = clamp({ left: r.left - origin.left, top: r.top - origin.top, right: r.right - origin.left,
           bottom: r.bottom - origin.top }, pageW, pageH);
         var d = doc.createElement('div');
         d.setAttribute('style', TOP + 'left: ' + box.left + 'px; top: ' +
           box.top + 'px; width: ' + (box.right - box.left) + 'px; height: ' + (box.bottom - box.top) + 'px; ' +
-          (media ? FRAME : FILL));
+          (media ? FRAME : fill));
         layer.appendChild(d);
         return box;
       });
@@ -221,6 +235,7 @@
     mergeLines: mergeLines,
     hitTest: hitTest,
     trimEnds: trimEnds,
+    isLight: isLight,
     clamp: clamp,
     draw: draw,
     blockMark: blockMark,
