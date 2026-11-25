@@ -58,4 +58,33 @@ public class AnnouncementTest {
         assertFalse(a.registered());
         assertEquals(Action.REGISTER, a.want("4F7K"));
     }
+
+    @Test public void failedRegistersWaitLongerUpToAMaximum() {
+        Announcement a = new Announcement();
+        assertEquals(1000, a.nextPollMs(1000, 3000));          // no class on the network yet
+        long[] expected = {2000, 4000, 8000, 16000, 30000, 30000};
+        for (long e : expected) {
+            assertEquals(Announcement.Action.REGISTER, a.want("4F7K"));
+            a.failed();
+            assertEquals(e, a.nextPollMs(1000, 3000));
+        }
+        assertEquals(Announcement.Action.REGISTER, a.want("4F7K"));
+        assertEquals(Announcement.Action.NONE, a.done(true));
+        assertEquals(3000, a.nextPollMs(1000, 3000));          // on the network: the steady pace
+        assertEquals(Announcement.Action.UNREGISTER, a.want(null));
+        assertEquals(Announcement.Action.NONE, a.done(false));
+        assertEquals(1000, a.nextPollMs(1000, 3000));          // a success clears the failures
+    }
+
+    @Test public void anotherClassStartsWithNoWait() {
+        Announcement a = new Announcement();
+        assertEquals(Announcement.Action.REGISTER, a.want("4F7K"));
+        a.failed();
+        a.want("4F7K");
+        a.failed();
+        assertEquals(4000, a.nextPollMs(1000, 3000));
+        a.want(null);                                           // the class ended
+        assertEquals(1000, a.nextPollMs(1000, 3000));
+        assertEquals(Announcement.Action.REGISTER, a.want("9XQ2"));   // a new class
+    }
 }

@@ -93,8 +93,9 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
             main.post(() -> {
                 if (!polling) return;
                 act(steps.want(code));
-                // Ask often until the class opens (the students wait for it), then less often.
-                main.postDelayed(poll, steps.registered() ? POLL_MS : FIRST_POLL_MS);
+                // Ask often until the class opens (the students wait for it), then less often; less
+                // often also after failed registers (review L3).
+                main.postDelayed(poll, steps.nextPollMs(FIRST_POLL_MS, POLL_MS));
             });
         });
     }
