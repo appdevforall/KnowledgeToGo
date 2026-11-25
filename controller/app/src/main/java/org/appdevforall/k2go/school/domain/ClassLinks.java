@@ -92,7 +92,7 @@ public final class ClassLinks {
         return classOpen && isClassPage(url);
     }
 
-    /** The Exit button of a student page after the class ended: the app closes the class screen. */
+    /** The Exit button of a class page after the class ended: the app closes the class screen. */
     public static boolean isExit(String url) {
         return url != null && EXIT_PAGE.matcher(url).find();
     }
