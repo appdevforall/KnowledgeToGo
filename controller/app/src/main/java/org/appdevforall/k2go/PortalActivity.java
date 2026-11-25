@@ -618,10 +618,11 @@ public class PortalActivity extends AppCompatActivity {
     }
 
     /** A WebView that is not destroyed keeps its page running after the screen closes (a class
-     *  page then stays in the class as a ghost student). destroy() ends the page and its channels. */
+     *  page then stays in the class as a ghost student). destroy() ends the page and its channels.
+     *  No stopLoading() first: it closes the live channel while the page still runs, and the class
+     *  page joins again as a new student. */
     private void destroyWebView() {
         if (webView == null) return;   // onRendererGone: the base already destroyed it
-        webView.stopLoading();
         android.view.ViewParent parent = webView.getParent();
         if (parent instanceof android.view.ViewGroup) ((android.view.ViewGroup) parent).removeView(webView);
         webView.destroy();
