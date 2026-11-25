@@ -464,6 +464,12 @@ if [ "${#ARCHS[@]}" -eq 0 ]; then
 fi
 echo ">> Building architectures: ${ARCHS[*]##*:}"
 
+# --- NDK libc.a: an arc4random that does not abort on Linux older than 4.14 ---
+# Before the first build-package.sh, so every static link takes it. See ndk-static-arc4random.sh.
+mkdir -p "$TERMUX_REPO/iiab-ndk"
+cp "$SCRIPT_DIR/ndk-static-arc4random.sh" "$SCRIPT_DIR/static-arc4random.c" "$TERMUX_REPO/iiab-ndk/"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh
+
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
     TERMUX_ARCH="${mapping%%:*}"
