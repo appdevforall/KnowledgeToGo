@@ -17,6 +17,7 @@
 <header>
   <span id="name"></span>
   <span id="status">Connecting...</span>
+  <button id="here" hidden>Follow here</button>
   <button id="done">Done</button>
 </header>
 <div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
@@ -32,9 +33,13 @@
   var name = School.params.get('n') || ('S' + Math.floor(Math.random() * 900 + 100));
   document.getElementById('name').textContent = name;
 
+  // localStorage, not sessionStorage: the token must outlive the page. The app loads the page again
+  // after a theme change or after Android stopped it, and the student must stay the same student.
+  // A token that the box forgot gets a 401, and the page joins again.
   var KEY = 'k2go-school-token';
   var token = null;
-  try { token = sessionStorage.getItem(KEY); } catch (e) { token = null; }
+  try { token = localStorage.getItem(KEY); } catch (e) { token = null; }
+  var hereBtn = document.getElementById('here');
 
   var last = null;          // last lesson from the teacher: { seq, url, a }
   var match = true;         // the student shows the same block as the teacher
@@ -44,6 +49,7 @@
   var lastAck = 0;
   var live = null;
   var joining = false;
+  var replaced = false;     // another tab of this phone follows the class with the same token
 
   School.watchFit(stage, frame);
 
@@ -58,13 +64,13 @@
       return r.json();
     }).then(function (j) {
       token = j.token;
-      try { sessionStorage.setItem(KEY, token); } catch (e) { /* private mode: join again on reload */ }
+      try { localStorage.setItem(KEY, token); } catch (e) { /* private mode: join again on reload */ }
     }).finally(function () { joining = false; });
   }
 
   // The box forgets a student after some time offline (or after a restart): join again.
   function rejoin() {
-    if (joining) { return; }
+    if (joining || replaced) { return; }
     token = null;
     if (live) { live.close(); }
     statusEl.textContent = 'Joining...';
@@ -73,7 +79,7 @@
 
   function sendAck() {
     ackTimer = null;
-    if (!last || !token) { return; }
+    if (!last || !token || replaced) { return; }
     lastAck = performance.now();
     fetch('ack', {
       method: 'POST',
@@ -84,7 +90,7 @@
 
   // "Still here" every 10 s: the box closes a channel that it does not hear from (router.ts).
   setInterval(function () {
-    if (!token) { return; }
+    if (!token || replaced) { return; }
     fetch('ack', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -129,6 +135,8 @@
     follow();
   });
 
+  hereBtn.onclick = function () { statusEl.textContent = 'Connecting...'; connect(); };
+
   doneBtn.onclick = function () {
     done = !done;
     doneBtn.textContent = done ? 'Not done' : 'Done';
@@ -138,6 +146,8 @@
   // On each open the box sends the last lesson, so after a drop the student is back in place.
   function connect() {
     if (live) { live.close(); }
+    replaced = false;
+    hereBtn.hidden = true;
     alive.seen();
     live = new EventSource('live?token=' + encodeURIComponent(token));
     live.onmessage = function (ev) {
@@ -146,14 +156,26 @@
       follow();
     };
     live.addEventListener('ping', function () { alive.seen(); });
+    // The Done mark that the box keeps for this student and this page.
+    live.addEventListener('self', function (ev) {
+      try { done = JSON.parse(ev.data).done === true; } catch (e) { return; }
+      doneBtn.textContent = done ? 'Not done' : 'Done';
+    });
+    // A newer channel with this token took the place (another tab): stop, do not open again.
+    live.addEventListener('replaced', function () {
+      replaced = true;
+      live.close();
+      statusEl.textContent = 'Open in another tab';
+      hereBtn.hidden = false;
+    });
     live.onerror = function () { statusEl.textContent = 'Reconnecting...'; };
   }
 
   var alive = School.keepAlive({
     live: function () { return live; },
-    reopen: function () { statusEl.textContent = 'Reconnecting...'; connect(); },
+    reopen: function () { if (!replaced) { statusEl.textContent = 'Reconnecting...'; connect(); } },
     // A refused channel (for example 401 after a box restart) does not retry by itself.
-    onClosed: function () { if (!joining) { rejoin(); } }
+    onClosed: function () { if (!joining && !replaced) { rejoin(); } }
   });
 
   if (token) { connect(); } else { rejoin(); }
