@@ -241,7 +241,11 @@ function listen(box: Box, path: string, cookie: string): { seen: (name: string) 
     req.on('error', () => { /* closed by the test or the box */ });
     req.end();
     return {
-        seen: (name) => (names.includes(name) ? Promise.resolve() : new Promise((ok) => { waiters.push({ name, ok }); })),
+        // A missing event fails the test after 5 s: it does not hang (the channel keeps the box open).
+        seen: (name) => (names.includes(name) ? Promise.resolve() : new Promise((ok, fail) => {
+            const timer = setTimeout(() => fail(new Error(`no "${name}" event`)), 5000);
+            waiters.push({ name, ok: () => { clearTimeout(timer); ok(); } });
+        })),
         close: () => { req.destroy(); },
     };
 }
