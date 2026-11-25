@@ -88,8 +88,9 @@ schoolRouter.get('/live', (req: Request, res: Response): void => {
     openStream(res);
     const now = classroom.current();
     if (now) send(res, now.lesson, undefined, now.id);   // a late student gets the page at once
-    // After the lesson: a page that comes back with its token gets its Done mark of this page.
-    send(res, { done: student.done }, 'self');
+    // After the lesson: a page that comes back with its token gets its name and its Done mark of
+    // this page (the box owns both; the page keeps only the token).
+    send(res, { done: student.done, name: student.name }, 'self');
     // One channel per student: a new one (reload, reconnect) replaces the old one, which can be
     // dead with no error (the heartbeat of the new one would keep it open). A live old one is
     // another tab of the same phone with the same token: tell it, so it does not open again.

@@ -11,6 +11,10 @@
   header button { font: inherit; margin-left: auto; }
   #stage { flex: 1; overflow: hidden; position: relative; }
   #frame { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+  #who { padding: 6px; background: #F3E3D3; display: flex; gap: 6px; align-items: center; }
+  #who[hidden] { display: none; }
+  #who input { font: inherit; flex: 1; min-width: 0; }
+  #who button { font: inherit; }
 </style>
 </head>
 <body>
@@ -18,8 +22,14 @@
   <span id="name"></span>
   <span id="status">Connecting...</span>
   <button id="here" hidden>Follow here</button>
+  <button id="other">Another student</button>
   <button id="done">Done</button>
 </header>
+<form id="who" hidden>
+  <input id="whoName" maxlength="24" placeholder="Your name" autocomplete="off">
+  <button type="submit">Join</button>
+  <button type="button" id="whoCancel">Cancel</button>
+</form>
 <div id="stage"><iframe id="frame" title="Lesson"></iframe></div>
 <script src="anchor.js"></script>
 <script src="follow.js"></script>
@@ -30,8 +40,8 @@
   var frame = document.getElementById('frame');
   var statusEl = document.getElementById('status');
   var doneBtn = document.getElementById('done');
+  var nameEl = document.getElementById('name');
   var name = School.params.get('n') || ('S' + Math.floor(Math.random() * 900 + 100));
-  document.getElementById('name').textContent = name;
 
   // localStorage, not sessionStorage: the token must outlive the page. The app loads the page again
   // after a theme change or after Android stopped it, and the student must stay the same student.
@@ -39,7 +49,10 @@
   var KEY = 'k2go-school-token';
   var token = null;
   try { token = localStorage.getItem(KEY); } catch (e) { token = null; }
+  nameEl.textContent = name;   // the box sends the name of this token on each open ("self")
   var hereBtn = document.getElementById('here');
+  var whoForm = document.getElementById('who');
+  var whoName = document.getElementById('whoName');
 
   var last = null;          // last lesson from the teacher: { seq, url, a }
   var match = true;         // the student shows the same block as the teacher
@@ -64,6 +77,8 @@
       return r.json();
     }).then(function (j) {
       token = j.token;
+      name = j.name;
+      nameEl.textContent = name;
       try { localStorage.setItem(KEY, token); } catch (e) { /* private mode: join again on reload */ }
     }).finally(function () { joining = false; });
   }
@@ -156,6 +171,32 @@
     hereBtn.hidden = false;
   }
 
+  // A phone that two students share: the next student leaves the identity of the first one (its
+  // entry goes offline, and the box removes it after 2 min) and joins with its own name.
+  document.getElementById('other').onclick = function () {
+    whoName.value = '';
+    whoForm.hidden = false;
+    whoName.focus();
+  };
+  document.getElementById('whoCancel').onclick = function () { whoForm.hidden = true; };
+  whoForm.onsubmit = function (ev) {
+    ev.preventDefault();
+    var next = whoName.value.trim();
+    if (!next) { whoName.focus(); return; }
+    if (joining) { statusEl.textContent = 'Joining... try again'; return; }   // a join for the old name runs
+    whoForm.hidden = true;
+    if (live) { live.close(); live = null; }
+    token = null;
+    replaced = false;
+    hereBtn.hidden = true;
+    try { localStorage.removeItem(KEY); } catch (e) { /* no storage */ }
+    done = false;
+    doneBtn.textContent = 'Done';
+    name = next;
+    nameEl.textContent = name;
+    rejoin();
+  };
+
   hereBtn.onclick = function () { statusEl.textContent = 'Connecting...'; connect(); };
 
   doneBtn.onclick = function () {
@@ -177,10 +218,13 @@
       follow();
     };
     live.addEventListener('ping', function () { alive.seen(); });
-    // The Done mark that the box keeps for this student and this page.
+    // The name and the Done mark that the box keeps for this student (this page for Done).
     live.addEventListener('self', function (ev) {
-      try { done = JSON.parse(ev.data).done === true; } catch (e) { return; }
+      var me;
+      try { me = JSON.parse(ev.data); } catch (e) { return; }
+      done = me.done === true;
       doneBtn.textContent = done ? 'Not done' : 'Done';
+      if (me.name) { name = me.name; nameEl.textContent = name; }
       if (!last) { statusEl.textContent = 'Waiting for the teacher'; }   // the channel is open, no lesson yet
     });
     // A newer channel with this token took the place (another tab): stop, do not open again.
