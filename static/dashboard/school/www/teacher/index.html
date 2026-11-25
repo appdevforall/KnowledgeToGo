@@ -44,6 +44,7 @@
   #status button { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: 12px;
     border: 1px solid transparent; background: var(--chip); color: var(--chip-fg); font: inherit; }
   #status button[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); border-color: var(--mark-fg); }
+  #status button[aria-pressed="true"] .light { box-shadow: 0 0 0 1px var(--mark-fg); }   /* a light on the yellow chip */
   #status b { font-variant-numeric: tabular-nums; }
   .light { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
   .light.ok { background: var(--ok); }
@@ -51,7 +52,7 @@
   .light.bad { background: var(--bad); }
   .pop { position: absolute; left: 6px; right: 6px; top: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px;
     background: var(--note); color: var(--note-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
-  .pop .pill { margin: 8px 8px 0 0; background: var(--head); color: var(--head-fg); border-color: var(--head); }
+  .pop .pill { margin: 8px 0 0; margin-inline-end: 8px; background: var(--head); color: var(--head-fg); border-color: var(--head); }
   .pop .pill.quiet { background: transparent; color: inherit; border-color: currentColor; }
   #toast { position: absolute; left: 12px; right: 12px; bottom: 16px; z-index: 5; display: flex; align-items: center;
     gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--note); color: var(--note-fg);
@@ -67,7 +68,6 @@
   #students span.done { background: var(--done); color: var(--done-fg); }
   #students span.off { opacity: 0.5; }
   #stats { white-space: pre; font: 12px monospace; }
-  [hidden] { display: none !important; }
 </style>
 </head>
 <body>

@@ -15,7 +15,6 @@
 /* The end of a class: the words and the buttons in the middle of the screen. */
 #ended { position: absolute; inset: 0; z-index: 4; background: var(--bg); padding: 24px; font-size: 18px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; }
-#ended[hidden] { display: none; }
 #ended p { margin: 0; }
 /* The button of the class pages (Material 3: a full round button): large, in the color of the head
    bar. .quiet: an outline in the color of the text. .small: a button in a bar (40 px high). */
@@ -23,7 +22,7 @@
   padding: 0 24px; border: 2px solid var(--head); border-radius: 24px; background: var(--head); color: var(--head-fg);
   font: inherit; font-size: 18px; text-decoration: none; cursor: pointer; }
 .pill.quiet { background: transparent; color: inherit; border-color: currentColor; }
-.pill.small { min-height: 40px; padding: 0 16px; font-size: 14px; white-space: nowrap; }
+.pill.small { min-height: 40px; padding: 0 16px; font-size: 14px; }
 /* On the head bar: the colors of the bar the other way round. */
 header .pill { background: var(--head-fg); color: var(--head); border-color: var(--head-fg); }
 header .pill.quiet { background: transparent; color: var(--head-fg); }
