@@ -148,6 +148,18 @@ else
   skip "static-linkage check (need readelf or file)"
 fi
 
+# 1c) Old-kernel contract: the NDK r30 libc.a arc4random aborts at start when
+# madvise(MADV_WIPEONFORK) fails (Linux older than 4.14). build_static.sh replaces it
+# (ndk-static-arc4random.sh), so its abort text must not be in a static binary. This
+# host has a new kernel and cannot show the abort, so the check reads the file: the
+# abort text, or the ChaCha constant that only the NDK arc4random carries.
+no_wipeonfork_abort() {
+  local f bad=""
+  for f in $REQUIRED_STATIC; do grep -q -e 'MADV_WIPEONFORK failed' -e 'expand 32-byte k' "$BIN/$f" && bad="$bad $f"; done
+  [ -z "$bad" ] || { echo "has the NDK arc4random abort:$bad"; return 1; }
+}
+chk "static binaries do not abort on Linux older than 4.14 (no NDK arc4random)" no_wipeonfork_abort
+
 # 2) tar — round-trip + the app's gzip|tar -xvf - extraction path
 tar_roundtrip() { run_bin "$BIN/libtar.so" -cf arc.tar -C src . || return 1; rm -rf out && mkdir out; run_bin "$BIN/libtar.so" -xf arc.tar -C out || return 1; diff -r src out; }
 runchk "tar create+extract round-trip is byte-identical" libtar.so tar_roundtrip
