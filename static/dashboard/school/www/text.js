@@ -82,7 +82,7 @@ var SchoolText = (function () {
   // The language of the class. Returns true when the page must set its words again.
   function use(l) {
     var next = known(l);
-    if (asked || !next || next === lang) { return false; }
+    if ((asked && known(asked)) || !next || next === lang) { return false; }
     lang = next;
     document.documentElement.lang = lang;
     return true;

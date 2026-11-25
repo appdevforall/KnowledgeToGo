@@ -76,6 +76,7 @@ public class FindClassesViewModel extends ViewModel {
         @Override public void onFound(FoundClass c) {
             Map<String, FoundClass> at = known.get(c.key);
             if (at == null) known.put(c.key, at = new LinkedHashMap<>());
+            if (!at.containsKey(c.address)) researches = 0;   // a new address: search again if needed
             at.remove(c.address);   // the newest report goes last: it is checked first
             at.put(c.address, c);
             confirm(c.key);

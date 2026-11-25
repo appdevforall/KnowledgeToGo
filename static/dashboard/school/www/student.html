@@ -69,6 +69,14 @@
   var token = null;
   var classCode = null;
   try { token = localStorage.getItem(KEY); classCode = localStorage.getItem(CLASS_KEY); } catch (e) { token = null; }
+  // Class > Join in the app names the class in the fragment (#c=). A stored token of another class
+  // (the phone missed its end) goes: this page joins the class that the student chose.
+  var chosen = /(?:^#|&)c=([2-9A-HJ-NP-Z]{4})(?:&|$)/.exec(location.hash);
+  if (chosen && chosen[1] !== classCode) {
+    token = null;
+    classCode = chosen[1];
+    try { localStorage.removeItem(KEY); localStorage.setItem(CLASS_KEY, classCode); } catch (e) { /* no storage */ }
+  }
   // The app moved this student to a new box address (a new origin, so no stored token): it
   // brings the token of the old address in the fragment (#t=, never sent to a server), so the
   // student stays the same student. The fragment then goes from the address and the history.
@@ -76,6 +84,8 @@
   if (moved) {
     token = moved[1];
     try { localStorage.setItem(KEY, token); } catch (e) { /* no storage */ }
+  }
+  if (location.hash) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* old browser */ }
   }
   var hereBtn = document.getElementById('here');
@@ -190,7 +200,7 @@
 
   function apply() {
     match = SchoolAnchor.applyAnchor(view.win(), last.a);
-    statusEl.textContent = match ? 'Following' : 'Following (the page is not the same)';
+    setStatus(match ? 'following' : 'followingOther');
   }
 
   function follow() {

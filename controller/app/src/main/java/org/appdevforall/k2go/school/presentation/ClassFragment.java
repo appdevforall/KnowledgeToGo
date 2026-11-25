@@ -153,7 +153,7 @@ public final class ClassFragment extends Fragment {
      * name and no device data go to the box: the box gives the phone a seat number (K2G-P5).
      */
     private void join(FoundClass c) {
-        Intent i = portal(c.studentUrl);
+        Intent i = portal(ClassLinks.withClass(c.studentUrl, c.code));
         ClassRejoin.putExtras(i, c);
         startActivity(i);
     }

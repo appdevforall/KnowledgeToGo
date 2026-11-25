@@ -102,6 +102,16 @@ public class ClassLinksTest {
         assertTrue(ClassLinks.isState("{\"open\": true, \"code\":\"4F7K\"}"));
         assertFalse(ClassLinks.isState("<html>404</html>"));
         assertFalse(ClassLinks.isState("{\"open\":maybe}"));
+        assertFalse(ClassLinks.isState("{\"open\":true,\"code\":\"4f7k\"}"));   // open, but no class code
         assertFalse(ClassLinks.isState(null));
+    }
+
+    @Test public void aClassOfTheListGoesWithItsCodeInTheFragment() {
+        assertEquals("http://h:8085/school/student.html#c=4F7K",
+                ClassLinks.withClass("http://h:8085/school/student.html", "4F7K"));
+        assertEquals("http://h:8085/school/student.html#c=4F7K",
+                ClassLinks.withClass("http://h:8085/school/student.html#c=OLD1", "4F7K"));
+        assertEquals("http://h:8085/school/student.html",
+                ClassLinks.withClass("http://h:8085/school/student.html", "4f7k"));      // not a code
     }
 }
