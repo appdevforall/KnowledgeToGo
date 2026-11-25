@@ -10,6 +10,8 @@ export interface Student {
     name: string;
     streams: number;    // open live channels of this student (a reload can overlap two)
     done: boolean;
+    offlineSince: number | null;   // ms; null while a live channel is open
+    lastHeard: number;             // ms; the last join, channel open or ack of the student
 }
 
 export interface RosterEntry {
@@ -26,6 +28,13 @@ export interface Lesson {
 }
 
 export const MAX_NAME = 24;
+// A student with no open channel for this long leaves the class: a Wi-Fi drop of some seconds
+// keeps the place, a phone that left does not stay in the teacher list for ever.
+export const OFFLINE_EXPIRE_MS = 120000;
+// A phone that loses the Wi-Fi does not close its channel: the box sees no error for minutes.
+// The page sends an ack every 10 s; a channel with no word for this long is dead. Longer than
+// one minute, because a browser runs the timers of a hidden page only once a minute.
+export const SILENT_MS = 90000;
 const MAX_LESSON_BYTES = 2048;
 
 export function cleanName(raw: unknown): string {
@@ -51,13 +60,17 @@ export class ClassRoom {
     constructor(
         private readonly maxStudents = 1000,
         private readonly newToken: () => string = () => crypto.randomBytes(16).toString('hex'),
+        private readonly now: () => number = Date.now,
     ) {}
 
     join(name: unknown): Student | null {
         if (this.byToken.size >= this.maxStudents) this.dropOffline();
         if (this.byToken.size >= this.maxStudents) return null;
         const token = this.newToken();
-        const student: Student = { id: token.slice(0, 8), token, name: cleanName(name), streams: 0, done: false };
+        const student: Student = {
+            id: token.slice(0, 8), token, name: cleanName(name), streams: 0, done: false,
+            offlineSince: this.now(), lastHeard: this.now(),
+        };
         this.byToken.set(token, student);
         return student;
     }
@@ -66,9 +79,37 @@ export class ClassRoom {
         return typeof token === 'string' ? this.byToken.get(token) : undefined;
     }
 
-    open(student: Student): void { student.streams += 1; }
+    open(student: Student): void {
+        student.streams += 1;
+        student.offlineSince = null;
+        student.lastHeard = this.now();
+    }
 
-    close(student: Student): void { student.streams = Math.max(0, student.streams - 1); }
+    heard(student: Student): void { student.lastHeard = this.now(); }
+
+    // True when the open channels of this student are dead: no word for maxMs.
+    silent(student: Student, maxMs = SILENT_MS): boolean {
+        return student.streams > 0 && this.now() - student.lastHeard > maxMs;
+    }
+
+    close(student: Student): void {
+        student.streams = Math.max(0, student.streams - 1);
+        if (student.streams === 0) student.offlineSince = this.now();
+    }
+
+    // Removes the students that are offline for longer than maxMs. Their token stops working;
+    // if the phone comes back, the page joins again. Returns how many left.
+    expireOffline(maxMs = OFFLINE_EXPIRE_MS): number {
+        const limit = this.now() - maxMs;
+        let gone = 0;
+        for (const [token, s] of this.byToken) {
+            if (s.offlineSince !== null && s.offlineSince <= limit) {
+                this.byToken.delete(token);
+                gone += 1;
+            }
+        }
+        return gone;
+    }
 
     setDone(student: Student, done: boolean): void { student.done = done; }
 

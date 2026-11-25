@@ -9,7 +9,7 @@ function counter(): () => string {
 }
 
 test('cleanName: trims, drops control chars, caps the length, never empty', () => {
-    assert.equal(cleanName('  Ana  '), 'Ana');
+    assert.equal(cleanName('  Student A  '), 'Student A');
     assert.equal(cleanName('A\u0000b\nc'), 'Abc');
     assert.equal(cleanName('x'.repeat(100)).length, MAX_NAME);
     assert.equal(cleanName(''), 'Student');
@@ -29,11 +29,11 @@ test('validLesson: only a path on the same box', () => {
 
 test('join: gives a token; the student is online only while a channel is open', () => {
     const room = new ClassRoom(10, counter());
-    const s = room.join('Ana')!;
+    const s = room.join('Student A')!;
     assert.equal(room.student(s.token), s);
     assert.equal(room.student('nope'), undefined);
     assert.equal(room.student(42), undefined);
-    assert.deepEqual(room.roster(), [{ id: s.id, name: 'Ana', online: false, done: false }]);
+    assert.deepEqual(room.roster(), [{ id: s.id, name: 'Student A', online: false, done: false }]);
     room.open(s);
     room.open(s);   // a reload can overlap two channels
     room.close(s);
@@ -59,7 +59,7 @@ test('join: a full class drops students with no open channel, else refuses', () 
 test('publish: keeps the last lesson for late students; a new page clears Done', () => {
     const room = new ClassRoom(10, counter());
     assert.equal(room.current(), null);
-    const s = room.join('Ana')!;
+    const s = room.join('Student A')!;
     const first = room.publish({ url: '/p1', y: 0 });
     assert.equal(first.newPage, true);
     room.setDone(s, true);
@@ -70,4 +70,48 @@ test('publish: keeps the last lesson for late students; a new page clears Done',
     room.publish({ url: '/p2', y: 0 });
     assert.equal(room.roster()[0].done, false);
     assert.ok(room.current()!.id > scroll.id);
+});
+
+test('expireOffline: a student offline for too long leaves; a short drop keeps the place', () => {
+    let now = 1000;
+    const room = new ClassRoom(10, counter(), () => now);
+    const stays = room.join('Stays')!;
+    const drops = room.join('Drops')!;
+    const never = room.join('Never opened')!;
+    room.open(stays);
+    room.open(drops);
+    now += 10000;
+    room.close(drops);           // Wi-Fi off
+    now += 30000;
+    assert.equal(room.expireOffline(60000), 0);
+    room.open(drops);            // Wi-Fi back after 30 s: same place
+    now += 60000;
+    assert.equal(room.expireOffline(60000), 1);   // the one that never opened a channel
+    assert.equal(room.student(never.token), undefined);
+    assert.deepEqual(room.roster().map((s) => s.name), ['Stays', 'Drops']);
+    room.close(stays);
+    now += 59999;
+    assert.equal(room.expireOffline(60000), 0);
+    now += 1;
+    assert.equal(room.expireOffline(60000), 1);
+    assert.equal(room.student(stays.token), undefined);
+    assert.equal(room.student(drops.token), drops);
+});
+
+test('silent: an open channel with no word for too long is dead; an ack keeps it alive', () => {
+    let now = 0;
+    const room = new ClassRoom(10, counter(), () => now);
+    const s = room.join('Student A')!;
+    assert.equal(room.silent(s, 90000), false);   // no channel: nothing to close
+    room.open(s);
+    now += 60000;
+    room.heard(s);
+    now += 90000;
+    assert.equal(room.silent(s, 90000), false);
+    now += 1;
+    assert.equal(room.silent(s, 90000), true);
+    room.close(s);
+    assert.equal(room.silent(s, 90000), false);
+    room.open(s);                                  // a new channel counts as a word
+    assert.equal(room.silent(s, 90000), false);
 });
