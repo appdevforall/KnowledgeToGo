@@ -71,6 +71,7 @@ public class PortalActivity extends AppCompatActivity {
 
     private GestureWebView webView;
     private org.appdevforall.k2go.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
+    private org.appdevforall.k2go.school.presentation.ClassRejoin classRejoin;   // K2Go School: student page only
     private org.appdevforall.k2go.redesign.KiwixManageController kiwixMgr;   // ADFA-5004: ZIM delete (only on /kiwix/)
     private org.appdevforall.k2go.redesign.KolibriGuardController kolibriGuard;   // K2GO-395: metered gate for native Kolibri import (only on /kolibri/)
     private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
@@ -196,7 +197,7 @@ public class PortalActivity extends AppCompatActivity {
             getLifecycle().addObserver(org.appdevforall.k2go.school.presentation.ClassAnnouncement.create(this));
         }
         // K2Go School: a student page finds its class again after a drop (new teacher address).
-        org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView);
+        classRejoin = org.appdevforall.k2go.school.presentation.ClassRejoin.attachIfStudent(this, () -> webView);
 
         // ADFA-4887: there is no in-WebView home page anymore, so Home is a Fullscreen toggle.
         // Enters full immersive (system bars hidden) and hides our bar too — but the bar stays
@@ -253,8 +254,10 @@ public class PortalActivity extends AppCompatActivity {
                 String url = request.getUrl().toString();
                 String host = request.getUrl().getHost();
 
-                // Internal server link stays in the WebView (and travels through the proxy).
-                if (NavigationPolicy.isInternalHost(host)) {
+                // Internal server link stays in the WebView (and travels through the proxy). K2Go
+                // School: the teacher box of the class, at an address that its box confirmed, too.
+                if (NavigationPolicy.isInternalHost(host)
+                        || (classRejoin != null && classRejoin.isClassHost(host))) {
                     if (fqr != null) fqr.prepareForUrl(url);   // ADFA-4879: add the FQR bridge only on /maps/
                     if (kolibriGuard != null) kolibriGuard.prepareForUrl(url);   // K2GO-395: Kolibri gate only on /kolibri/
                     return false;

@@ -32,7 +32,12 @@ public class RejoinTest {
         assertEquals(Action.NONE, r.confirmed(moved, null));         // an old address: no box there
         assertEquals(Action.NONE, r.confirmed(moved, "9XQ2"));       // another class there now
         assertTrue(r.searching());
+        assertFalse(r.isClassHost("192.168.1.170"));                 // found, not confirmed: not allowed
         assertEquals(Action.MOVE, r.confirmed(moved, "4F7K"));
+        assertTrue(r.isClassHost("192.168.1.170"));
+        assertTrue(r.isClassHost("192.168.1.167"));
+        assertFalse(r.isClassHost("192.168.1.1"));
+        assertFalse(r.isClassHost(null));
         assertEquals("192.168.1.170", r.address());
         assertFalse(r.searching());
         assertEquals(Action.NONE, r.probed("4F7K"));

@@ -77,26 +77,28 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
     /**
      * The one call of the portal screen: when it shows a student page opened from Class > Join,
      * the screen finds its class again after a drop. {@code web} gives the current WebView.
+     * Returns the observer (the portal asks it which hosts belong to the class), or null.
      */
-    public static void attachIfStudent(androidx.appcompat.app.AppCompatActivity screen,
-                                       Supplier<WebView> web) {
+    public static ClassRejoin attachIfStudent(androidx.appcompat.app.AppCompatActivity screen,
+                                              Supplier<WebView> web) {
         android.content.Intent i = screen.getIntent();
         String code = i.getStringExtra(EXTRA_CODE);
         String address = i.getStringExtra(EXTRA_ADDRESS);
-        if (code == null || address == null) return;
-        screen.getLifecycle().addObserver(
-                create(screen, code, address, i.getStringExtra(EXTRA_QUERY), moveIn(web)));
+        if (code == null || address == null || !ClassLinks.isClassCode(code)) return null;
+        ClassRejoin r = create(screen, code, address, i.getStringExtra(EXTRA_QUERY), moveIn(web));
+        screen.getLifecycle().addObserver(r);
+        return r;
     }
 
     /**
      * Opens the student page at the new address with the class token of the old page, so the box
      * keeps one entry for this student (the new address is a new origin, with no stored token).
-     * The screen loads it with loadUrl: a navigation that the page starts (location.replace) goes
-     * to the portal rule, which sends a host that is not this phone to the browser. When the new
-     * page shows, the history is cleared, so Back does not open the old (dead) address.
+     * location.replace puts the new page in place of the old one: Back does not open the old
+     * (dead) address. The portal keeps it in the app because the box at that address confirmed
+     * the class ({@link #isClassHost}). When the old page cannot run it (an error page), the
+     * screen loads the URL.
      */
     private static Consumer<String> moveIn(Supplier<WebView> web) {
-        Handler ui = new Handler(Looper.getMainLooper());
         return url -> {
             WebView w = web.get();
             if (w == null) return;
@@ -104,21 +106,23 @@ public final class ClassRejoin implements DefaultLifecycleObserver {
                 String target = ClassLinks.withToken(url, ClassLinks.tokenFromJs(js));
                 WebView now = web.get();
                 if (now == null) return;
-                now.loadUrl(target);
-                clearHistoryWhenShown(ui, web, target, CLEAR_TRIES);
+                now.evaluateJavascript(replaceWith(target), done -> {
+                    WebView last = web.get();
+                    if (!"true".equals(done) && last != null) last.loadUrl(target);
+                });
             });
         };
     }
 
-    private static final int CLEAR_TRIES = 20;   // every 500 ms: 10 s
-    private static void clearHistoryWhenShown(Handler ui, Supplier<WebView> web, String url, int tries) {
-        ui.postDelayed(() -> {
-            WebView w = web.get();
-            if (w == null) return;
-            if (url.equals(w.getUrl()) && w.getProgress() == 100) w.clearHistory();
-            else if (tries > 1) clearHistoryWhenShown(ui, web, url, tries - 1);
-        }, 500);
+    /** JS that replaces the page with {@code url}: a checked box address, a percent-encoded query
+     *  and a hex token. The quote escape is a second guard. */
+    private static String replaceWith(String url) {
+        String q = "'" + url.replace("\\", "\\\\").replace("'", "\\'") + "'";
+        return "(function(){try{location.replace(" + q + ");return true;}catch(e){return false;}})()";
     }
+
+    /** True for an address where the box confirmed the class of this screen (see {@link Rejoin}). */
+    public boolean isClassHost(String host) { return rule.isClassHost(host); }
 
     /**
      * @param code    the class code that the student joined

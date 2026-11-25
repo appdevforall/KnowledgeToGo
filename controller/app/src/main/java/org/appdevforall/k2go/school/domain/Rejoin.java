@@ -39,13 +39,22 @@ public final class Rejoin {
 
     private final String code;
     private String address;
+    // Every address where the box confirmed this class: the student screen may open these.
+    private final java.util.Set<String> classHosts = new java.util.HashSet<>();
     private int misses;
     private boolean searching;
 
     public Rejoin(String code, String address) {
         this.code = code;
         this.address = address;
+        classHosts.add(address);   // the list showed the class only after its box confirmed it
     }
+
+    /**
+     * True for an address where the box confirmed this class. The student screen keeps these in
+     * the app (other hosts go to the browser); no other address of the network gets in.
+     */
+    public boolean isClassHost(String host) { return host != null && classHosts.contains(host); }
 
     public String address() { return address; }
 
@@ -76,6 +85,7 @@ public final class Rejoin {
     public Action confirmed(FoundClass c, String codeThere) {
         if (!elsewhere(c) || !code.equals(codeThere)) return Action.NONE;
         address = c.address;
+        classHosts.add(address);
         misses = 0;
         searching = false;
         return Action.MOVE;
