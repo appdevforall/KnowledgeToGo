@@ -1,0 +1,355 @@
+/*
+ * ============================================================================
+ * Name        : SchoolFragment.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : K2Go School trust: Settings > School. Create the school (device zero), save and
+ *               restore the backup of the school key (phase 3 of the school trust design).
+ * ============================================================================
+ */
+package org.appdevforall.k2go.school.trust.presentation;
+
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+
+import org.appdevforall.k2go.R;
+import org.appdevforall.k2go.school.trust.domain.SchoolSetup;
+import org.appdevforall.k2go.ui.K2GoHeaderView;
+import org.appdevforall.k2go.ui.K2GoInputs;
+import org.appdevforall.k2go.ui.K2GoText;
+import org.appdevforall.k2go.ui.dialog.BrandDialog;
+import org.appdevforall.k2go.util.Snackbars;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class SchoolFragment extends Fragment {
+
+    private static final String KEY_CREATING = "creating";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_UNTIL = "until";
+    private static final long DAY = 86400;
+
+    private SchoolViewModel vm;
+    private LinearLayout list;
+    private ActivityResultLauncher<String> saveBackup;
+    private ActivityResultLauncher<String[]> openBackup;
+    // The create form, while it shows. Passwords are not kept over a rotation.
+    private boolean creating;
+    private String formName = "";
+    private long formUntil;   // seconds, the last second of the chosen day (UTC); 0: no date yet
+
+    @Override
+    public void onCreate(@Nullable Bundle s) {
+        super.onCreate(s);
+        vm = new ViewModelProvider(this, new SchoolViewModelFactory(requireContext())).get(SchoolViewModel.class);
+        saveBackup = registerForActivityResult(new ActivityResultContracts.CreateDocument("application/octet-stream"), uri -> {
+            if (uri != null) vm.writeBackup(uri);
+        });
+        openBackup = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null) askRestorePassword(uri);
+        });
+        if (s != null) {
+            creating = s.getBoolean(KEY_CREATING);
+            formName = s.getString(KEY_NAME, "");
+            formUntil = s.getLong(KEY_UNTIL);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putBoolean(KEY_CREATING, creating);
+        out.putString(KEY_NAME, formName);
+        out.putLong(KEY_UNTIL, formUntil);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
+        View root = inflater.inflate(R.layout.fragment_k2go_settings_sub, c, false);
+        ((K2GoHeaderView) root.findViewById(R.id.k2go_sub_header)).setTitle(getString(R.string.k2go_settings_school));
+        list = root.findViewById(R.id.k2go_sub_list);
+        vm.state().observe(getViewLifecycleOwner(), this::render);
+        vm.notice().observe(getViewLifecycleOwner(), n -> {
+            if (n != null && n.take()) onNotice(root, n);
+        });
+        vm.load();
+        return root;
+    }
+
+    private void render(SchoolViewModel.State st) {
+        if (list == null || st == null) return;
+        Context ctx = requireContext();
+        list.removeAllViews();
+        list.addView(K2GoText.body(ctx, getString(R.string.k2go_school_intro), R.color.k2go_muted));
+        switch (st.kind) {
+            case DEVICE_ZERO:
+                creating = false;
+                renderDeviceZero(ctx, st);
+                break;
+            case MEMBER:
+                creating = false;
+                list.addView(card(ctx, getString(R.string.k2go_school_member, st.name)));
+                break;
+            case NONE:
+            default:
+                if (creating) renderCreate(ctx, st.busy);
+                else renderNone(ctx, st.busy);
+        }
+        // Room under the last item so the floating feedback button never covers it (as in About).
+        list.addView(new View(ctx), new LinearLayout.LayoutParams(-1, dp(ctx, 96)));
+    }
+
+    private void renderNone(Context ctx, boolean busy) {
+        list.addView(card(ctx, getString(R.string.k2go_school_none)));
+        MaterialButton create = button(ctx, R.string.k2go_school_create, true);
+        create.setOnClickListener(v -> {
+            creating = true;
+            render(vm.state().getValue());
+        });
+        list.addView(create, top(ctx, 16));
+        MaterialButton restore = button(ctx, R.string.k2go_school_restore, false);
+        restore.setOnClickListener(v -> openBackup.launch(new String[] {"*/*"}));
+        list.addView(restore, top(ctx, 8));
+        create.setEnabled(!busy);
+        restore.setEnabled(!busy);
+        if (busy) list.addView(working(ctx));
+    }
+
+    private void renderCreate(Context ctx, boolean busy) {
+        list.addView(K2GoInputs.fieldLabel(ctx, getString(R.string.k2go_school_name), ""), top(ctx, 16));
+        final EditText name = K2GoInputs.textInput(ctx);
+        name.setText(formName);
+        list.addView(name);
+
+        list.addView(K2GoInputs.fieldLabel(ctx, getString(R.string.k2go_school_year_end), ""), top(ctx, 8));
+        final MaterialButton date = button(ctx, 0, false);
+        date.setText(formUntil > 0 ? dateText(formUntil) : getString(R.string.k2go_school_year_end_pick));
+        date.setOnClickListener(v -> pickDate());
+        list.addView(date);
+
+        list.addView(K2GoInputs.fieldLabel(ctx, getString(R.string.k2go_school_password), ""), top(ctx, 8));
+        final EditText pw = K2GoInputs.passwordInput(ctx);
+        list.addView(pw);
+        list.addView(K2GoInputs.fieldLabel(ctx, getString(R.string.k2go_school_password_again), ""));
+        final EditText again = K2GoInputs.passwordInput(ctx);
+        list.addView(again);
+
+        // Live checks, as under "Change password" (the same translated sentences).
+        final TextView ruleLength = K2GoText.label(ctx, "", R.color.k2go_muted);
+        list.addView(ruleLength, top(ctx, 8));
+        final TextView ruleSame = K2GoText.label(ctx, "", R.color.k2go_muted);
+        list.addView(ruleSame, top(ctx, 4));
+        list.addView(K2GoText.label(ctx, getString(R.string.k2go_school_password_note), R.color.k2go_muted), top(ctx, 12));
+
+        final MaterialButton create = button(ctx, R.string.k2go_school_create_button, true);
+        list.addView(create, top(ctx, 16));
+        MaterialButton cancel = button(ctx, R.string.k2go_cancel, false);
+        cancel.setOnClickListener(v -> {
+            creating = false;
+            render(vm.state().getValue());
+        });
+        list.addView(cancel, top(ctx, 8));
+
+        final Runnable check = () -> {
+            formName = name.getText().toString();
+            String p = pw.getText().toString();
+            boolean longOk = p.codePointCount(0, p.length()) >= SchoolSetup.MIN_PASSWORD;
+            boolean sameOk = !p.isEmpty() && p.equals(again.getText().toString());
+            mark(ctx, ruleLength, longOk, getResources().getQuantityString(
+                    R.plurals.k2go_auth_pw_rule_length, SchoolSetup.MIN_PASSWORD, SchoolSetup.MIN_PASSWORD));
+            mark(ctx, ruleSame, sameOk, getString(R.string.k2go_auth_pw_rule_match));
+            create.setEnabled(!busy && longOk && sameOk && !formName.trim().isEmpty() && formUntil > 0);
+        };
+        TextWatcher onType = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int n) { }
+            @Override public void onTextChanged(CharSequence s, int a, int b, int n) { }
+            @Override public void afterTextChanged(Editable e) { check.run(); }
+        };
+        name.addTextChangedListener(onType);
+        pw.addTextChangedListener(onType);
+        again.addTextChangedListener(onType);
+        check.run();
+        create.setOnClickListener(v -> vm.create(name.getText().toString(), formUntil,
+                pw.getText().toString(), again.getText().toString()));
+        name.setEnabled(!busy);
+        pw.setEnabled(!busy);
+        again.setEnabled(!busy);
+        date.setEnabled(!busy);
+        cancel.setEnabled(!busy);
+        if (busy) list.addView(working(ctx));
+    }
+
+    private void renderDeviceZero(Context ctx, SchoolViewModel.State st) {
+        list.addView(card(ctx, getString(R.string.k2go_school_device_zero, st.name)));
+        list.addView(info(ctx, getString(R.string.k2go_school_id), st.school), top(ctx, 8));
+        list.addView(info(ctx, getString(R.string.k2go_school_until), dateText(st.until)), top(ctx, 8));
+        MaterialButton backup = button(ctx, R.string.k2go_school_backup, true);
+        backup.setOnClickListener(v -> saveBackup.launch(vm.backupName()));
+        list.addView(backup, top(ctx, 16));
+        list.addView(K2GoText.label(ctx, getString(R.string.k2go_school_backup_hint), R.color.k2go_muted), top(ctx, 8));
+    }
+
+    /** The end of the school year: today or later, at most two years ahead (SchoolSetup checks it too). */
+    private void pickDate() {
+        long nowMs = System.currentTimeMillis();
+        CalendarConstraints limits = new CalendarConstraints.Builder()
+                .setStart(nowMs)
+                .setEnd(nowMs + SchoolSetup.MAX_YEAR_SECONDS * 1000)
+                .setValidator(DateValidatorPointForward.now())
+                .build();
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.k2go_school_year_end)
+                .setCalendarConstraints(limits)
+                .setSelection(formUntil > 0 ? (formUntil - DAY + 1) * 1000 : nowMs + 300 * DAY * 1000)
+                .build();
+        picker.addOnPositiveButtonClickListener(sel -> {
+            if (sel == null) return;
+            formUntil = sel / 1000 + DAY - 1;   // the picker gives the day at 00:00 UTC: keep the whole day
+            render(vm.state().getValue());
+        });
+        picker.show(getChildFragmentManager(), "school-year-end");
+    }
+
+    private void askRestorePassword(Uri file) {
+        Context ctx = requireContext();
+        final EditText pw = K2GoInputs.passwordInput(ctx);
+        new BrandDialog(ctx)
+                .setTitle(R.string.k2go_school_restore_title)
+                .setContentView(pw)
+                .setPositive(R.string.k2go_school_restore_button, () -> vm.restore(file, pw.getText().toString()))
+                .setNegative(R.string.k2go_cancel, null)
+                .show();
+    }
+
+    private void onNotice(View root, SchoolViewModel.Notice n) {
+        switch (n.kind) {
+            case CREATED:
+                new BrandDialog(requireContext())
+                        .setTitle(R.string.k2go_school_backup_ask_title)
+                        .setMessage(R.string.k2go_school_backup_ask_msg)
+                        .setPositive(R.string.k2go_school_backup_now, () -> saveBackup.launch(vm.backupName()))
+                        .setNegative(R.string.k2go_school_backup_later, null)
+                        .show();
+                break;
+            case RESTORED:     snack(root, getString(R.string.k2go_school_restored)); break;
+            case BACKUP_SAVED: snack(root, getString(R.string.k2go_school_backup_saved)); break;
+            case BACKUP_FAILED: snack(root, getString(R.string.k2go_school_backup_failed)); break;
+            case RESULT:
+            default:           snack(root, resultText(n)); break;
+        }
+    }
+
+    private String resultText(SchoolViewModel.Notice n) {
+        switch (n.result) {
+            case NAME: return getString(R.string.k2go_school_err_name);
+            case DATE: return getString(R.string.k2go_school_err_date);
+            case PASSWORD_SHORT: return getResources().getQuantityString(
+                    R.plurals.k2go_auth_pw_rule_length, SchoolSetup.MIN_PASSWORD, SchoolSetup.MIN_PASSWORD);
+            case PASSWORD_DIFFERENT: return getString(R.string.k2go_auth_pw_rule_match);
+            case ALREADY_IN_SCHOOL:
+            case OTHER_SCHOOL: return getString(R.string.k2go_school_err_other_school, n.otherSchool == null ? "" : n.otherSchool);
+            case NOT_A_BACKUP: return getString(R.string.k2go_school_err_not_backup);
+            case WRONG_PASSWORD: return getString(R.string.k2go_school_err_password);
+            case FAILED:
+            default: return getString(R.string.k2go_school_err_failed);
+        }
+    }
+
+    private static String dateText(long seconds) {
+        DateFormat f = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        f.setTimeZone(TimeZone.getTimeZone("UTC"));   // the picker works in UTC days
+        return f.format(new Date(seconds * 1000));
+    }
+
+    private static void mark(Context ctx, TextView v, boolean met, String text) {
+        v.setText((met ? "✓  " : "○  ") + text);
+        v.setTextColor(ContextCompat.getColor(ctx, met ? R.color.k2go_ok_ink : R.color.k2go_muted));
+    }
+
+    private void snack(View anchor, String text) {
+        Snackbars.make(anchor, text).show();
+    }
+
+    private View card(Context ctx, String text) {
+        LinearLayout box = new LinearLayout(ctx);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = dp(ctx, 16);
+        box.setPadding(p16, p16, p16, p16);
+        box.addView(K2GoText.body(ctx, text, R.color.k2go_ink));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(ctx, 16);
+        box.setLayoutParams(lp);
+        return box;
+    }
+
+    private View info(Context ctx, String title, String value) {
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = dp(ctx, 16);
+        row.setPadding(p16, p16, p16, p16);
+        row.addView(K2GoText.label(ctx, title, R.color.k2go_muted));
+        row.addView(K2GoText.body(ctx, value, R.color.k2go_ink));
+        return row;
+    }
+
+    private View working(Context ctx) {
+        LinearLayout box = new LinearLayout(ctx);
+        box.setOrientation(LinearLayout.HORIZONTAL);
+        box.setGravity(Gravity.CENTER_VERTICAL);
+        CircularProgressIndicator p = new CircularProgressIndicator(ctx);
+        p.setIndeterminate(true);
+        box.addView(p, new LinearLayout.LayoutParams(-2, -2));
+        TextView t = K2GoText.label(ctx, getString(R.string.k2go_school_working), R.color.k2go_muted);
+        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(0, -2, 1f);
+        tlp.leftMargin = dp(ctx, 12);
+        box.addView(t, tlp);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(ctx, 16);
+        box.setLayoutParams(lp);
+        return box;
+    }
+
+    private static MaterialButton button(Context ctx, int textRes, boolean filled) {
+        MaterialButton b = new MaterialButton(new android.view.ContextThemeWrapper(ctx,
+                filled ? R.style.ThemeOverlay_K2Go_Button_Filled : R.style.ThemeOverlay_K2Go_Button_Outlined), null);
+        if (textRes != 0) b.setText(ctx.getString(textRes));
+        return b;
+    }
+
+    private static LinearLayout.LayoutParams top(Context ctx, int dpTop) {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(ctx, dpTop);
+        return lp;
+    }
+
+    private static int dp(Context c, int v) { return Math.round(v * c.getResources().getDisplayMetrics().density); }
+}

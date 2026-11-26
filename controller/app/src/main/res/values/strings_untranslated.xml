@@ -12,4 +12,48 @@
 <resources>
     <!-- Class tab, in place of "Teach a class" when the school made this phone a student phone (school role file). -->
     <string name="k2go_class_student_phone" translatable="false">This is a student phone. Only a teacher phone can open a class. You can join a class below.</string>
+
+    <!-- Settings > School (school trust, device zero). The row in Settings and its subtitle. -->
+    <string name="k2go_settings_school" translatable="false">School</string>
+    <string name="k2go_settings_school_sub" translatable="false">The school key, teachers and students</string>
+    <!-- Settings > School: the text at the top of the screen. -->
+    <string name="k2go_school_intro" translatable="false">A school keeps its classes safe with a school key. One phone keeps the key: device zero. It approves the teacher phones.</string>
+    <string name="k2go_school_none" translatable="false">This phone is not part of a school.</string>
+    <string name="k2go_school_create" translatable="false">Create a school on this phone</string>
+    <string name="k2go_school_restore" translatable="false">Restore the school key from a backup</string>
+    <!-- Settings > School > Create: the fields. -->
+    <string name="k2go_school_name" translatable="false">School name</string>
+    <string name="k2go_school_year_end" translatable="false">End of the school year</string>
+    <string name="k2go_school_year_end_pick" translatable="false">Choose a date</string>
+    <string name="k2go_school_password" translatable="false">School password</string>
+    <string name="k2go_school_password_again" translatable="false">Type the school password again</string>
+    <string name="k2go_school_password_note" translatable="false">Write the password on paper and keep it with the backup. Without it, nobody can open the backup.</string>
+    <string name="k2go_school_create_button" translatable="false">Create the school</string>
+    <string name="k2go_school_working" translatable="false">Making the school key. This can take some seconds.</string>
+    <!-- Settings > School: the errors of the form and of the restore. -->
+    <string name="k2go_school_err_name" translatable="false">Write the name of the school (80 characters or less).</string>
+    <string name="k2go_school_err_date" translatable="false">Choose a date in the next two years.</string>
+    <string name="k2go_school_err_failed" translatable="false">The school key was not saved. Try again.</string>
+    <!-- %1$s = the name of the school that this phone belongs to. -->
+    <string name="k2go_school_err_other_school" translatable="false">This phone belongs to %1$s. It cannot keep the key of another school.</string>
+    <string name="k2go_school_err_not_backup" translatable="false">This file is not a backup of a school key.</string>
+    <string name="k2go_school_err_password" translatable="false">The password is not correct.</string>
+    <!-- Settings > School on device zero. %1$s = the school name. -->
+    <string name="k2go_school_device_zero" translatable="false">This phone is device zero of %1$s. It keeps the school key: keep it in a safe place.</string>
+    <string name="k2go_school_id" translatable="false">School ID</string>
+    <string name="k2go_school_until" translatable="false">School year ends</string>
+    <string name="k2go_school_backup" translatable="false">Save a backup of the school key</string>
+    <string name="k2go_school_backup_hint" translatable="false">Save it on the microSD card. If this phone is lost or reset, the backup and the password give back the school key.</string>
+    <string name="k2go_school_backup_ask_title" translatable="false">Save a backup now?</string>
+    <string name="k2go_school_backup_ask_msg" translatable="false">Without a backup, a lost or reset phone means a new school key, and every phone must join the school again.</string>
+    <string name="k2go_school_backup_now" translatable="false">Save a backup</string>
+    <string name="k2go_school_backup_later" translatable="false">Later</string>
+    <string name="k2go_school_backup_saved" translatable="false">The backup is saved.</string>
+    <string name="k2go_school_backup_failed" translatable="false">The backup was not saved.</string>
+    <!-- Settings > School > Restore: the password dialog and the result. -->
+    <string name="k2go_school_restore_title" translatable="false">Password of the backup</string>
+    <string name="k2go_school_restore_button" translatable="false">Restore</string>
+    <string name="k2go_school_restored" translatable="false">The school key is on this phone again.</string>
+    <!-- Settings > School on a teacher or student phone. %1$s = the school name. -->
+    <string name="k2go_school_member" translatable="false">This phone belongs to %1$s.</string>
 </resources>

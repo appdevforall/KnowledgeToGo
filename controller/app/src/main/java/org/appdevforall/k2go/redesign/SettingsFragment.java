@@ -70,6 +70,13 @@ public class SettingsFragment extends Fragment {
                         new org.appdevforall.k2go.privacy.presentation.PrivacyFragment());
             }
         });
+        // K2Go School: the school key (device zero), and later the teachers and the students.
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_school), getString(R.string.k2go_settings_school_sub), null, v -> {
+            if (getActivity() instanceof LibraryActivity) {
+                ((LibraryActivity) getActivity()).openSettingsSub(
+                        new org.appdevforall.k2go.school.trust.presentation.SchoolFragment());
+            }
+        });
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_hotspot), getString(R.string.k2go_settings_hotspot_sub), null, v -> openSub("hotspot"));
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_advanced), getString(R.string.k2go_settings_advanced_sub), null, v -> openSub("advanced"));
 
