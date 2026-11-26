@@ -270,6 +270,16 @@ STUB
     grep -q 'kernel_supports_exitkill() ?' "$evc"         || { echo "!! [IIAB] event.c anchor 'PTRACE_O_TRACEEXIT);' not found"; exit 1; }
     grep -q 'static bool kernel_supports_exitkill' "$evc" || { echo "!! [IIAB] event.c anchor '#include \"compat.h\"' not found"; exit 1; }
 
+    # --- K2GO-597: a SIGSYS is "ours" only when PRoot itself voided the syscall. ---
+    # PRoot reads an unknown syscall number as PR_void, the same value as a syscall that it voided.
+    # The Android 8 to 10 app seccomp filter traps clock_gettime64 (403 on ARM), which PRoot does not
+    # know, so PRoot swallowed that SIGSYS and wrote no result: glibc got no -ENOSYS, did not fall back
+    # to clock_gettime, and node aborted in the 32-bit box. Read the raw number that set_sysnum(PR_void)
+    # writes (SYSCALL_AVOIDER). The (int) casts match the si_syscall check, also for 32-bit on 64-bit.
+    grep -q '(int) peek_reg(tracee, CURRENT, SYSARG_NUM) == (int) SYSCALL_AVOIDER' "$evc" || \
+        sed -i 's/(get_sysnum(tracee, CURRENT) == PR_void);$/((int) peek_reg(tracee, CURRENT, SYSARG_NUM) == (int) SYSCALL_AVOIDER);/' "$evc"
+    grep -q '(int) peek_reg(tracee, CURRENT, SYSARG_NUM) == (int) SYSCALL_AVOIDER' "$evc" || { echo "!! [IIAB] event.c anchor 'get_sysnum(tracee, CURRENT) == PR_void' not found"; exit 1; }
+
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
 }
