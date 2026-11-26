@@ -245,6 +245,8 @@
       try { shown = SchoolPlace.apply(view.win(), kind, last.a); } finally { applying = false; }
       if (shown === null) { return false; }
       match = shown;
+    } else if (last.a && last.a.app) {
+      match = false;   // the place of an app that this page does not know (a page older than the box)
     } else {
       match = SchoolAnchor.applyAnchor(view.win(), last.a);
     }

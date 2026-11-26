@@ -1,7 +1,7 @@
 // K2Go School: the type of a lesson page, and the place in the apps of the box that the class
-// follows (maps, PDF in Calibre-Web). A Kiwix page uses the block anchor (anchor.js).
-// The place lives in the app (MapLibre, pdf.js): this file reads it there each time and keeps no
-// copy. Design: k2go-school/notes/follow-content-design.md. The pure functions have unit
+// follows (maps, PDF and EPUB in Calibre-Web). A Kiwix page uses the block anchor (anchor.js).
+// The place lives in the app (MapLibre, pdf.js, epub.js): this file reads it there each time and
+// keeps no copy. Design: k2go-school/notes/follow-content-design.md. The pure functions have unit
 // tests (school/place.test.ts); the DOM part is thin.
 'use strict';
 
@@ -12,13 +12,14 @@
   // The Kiwix library, also its page for browsers with no JavaScript.
   function isLibrary(path) { return /^\/kiwix(\/|\/nojs(\/.*)?)?$/.test(path); }
 
-  // 'page' (a Kiwix page, block anchor), 'map', 'pdf', or null: a page that only the
+  // 'page' (a Kiwix page, block anchor), 'map', 'pdf', 'epub', or null: a page that only the
   // teacher sees (the libraries, the box start page, and the apps that the class does not follow:
   // a list of what follows, so that a new app on the box start page does not go to the class).
   function kindOf(path) {
     var p = String(path || '').split(/[?#]/)[0];
     if (/^\/maps\/(index\.html)?$/.test(p)) { return 'map'; }
-    if (/^\/books\/read\/\d+\/pdf$/.test(p)) { return 'pdf'; }
+    var book = /^\/books\/read\/\d+\/(pdf|epub)$/.exec(p);
+    if (book) { return book[1]; }
     if (/^\/kiwix\//.test(p) && !isLibrary(p)) { return 'page'; }
     return null;
   }
@@ -61,6 +62,7 @@
   function valid(a, kind) {
     if (!a || a.app !== kind) { return false; }
     if (kind === 'map') { return num(a.lat) && num(a.lon) && num(a.z) && num(a.b) && num(a.p); }
+    if (kind === 'epub') { return typeof a.cfi === 'string' && a.cfi.indexOf('epubcfi(') === 0; }
     if (kind === 'pdf') { return num(a.page) && a.page >= 1 && num(a.top) && num(a.left) && (num(a.z) || typeof a.z === 'string'); }
     return false;
   }
@@ -86,6 +88,12 @@
         var pdf = win.PDFViewerApplication;
         return pdf && pdf.pdfDocument && pdf.pdfViewer && pdf.pdfViewer.pagesCount > 0 && pdf.pdfViewer._location ? pdf : null;
       }
+      if (kind === 'epub') {
+        // The Calibre-Web reader keeps its reader in a global; the rendition has a location after
+        // it showed its first page.
+        var r = win.reader;
+        return r && r.rendition && r.rendition.location && r.rendition.location.start ? r.rendition : null;
+      }
     } catch (e) { /* another origin, or the page goes */ }
     return null;
   }
@@ -94,6 +102,7 @@
   function read(win, kind) {
     var app = appOf(win, kind);
     if (!app) { return null; }
+    if (kind === 'epub') { return { app: 'epub', cfi: app.location.start.cfi }; }
     if (kind === 'pdf') {
       // _location is what pdf.js sends with its "updateviewarea" event. pdf.js 4.5 as Calibre-Web
       // bundles it; a newer pdf.js can rename it, and then the PDF does not follow (null).
@@ -111,6 +120,20 @@
     var app = appOf(win, kind);
     if (!app) { return null; }
     var now = read(win, kind);
+    if (kind === 'epub') {
+      // The page on the screen holds the CFI, or the reader shows the page that holds it. The page
+      // height differs between phones, so the page can start some lines before the teacher's.
+      var loc = app.location;
+      var CFI = win.ePub && win.ePub.CFI;
+      if (CFI) {
+        var cmp = new CFI();
+        try {
+          if (cmp.compare(loc.start.cfi, a.cfi) <= 0 && cmp.compare(a.cfi, loc.end.cfi) <= 0) { return true; }
+        } catch (e) { /* a CFI of another book: display() refuses it */ }
+      }
+      app.display(a.cfi).catch(function () { /* not in this book */ });
+      return true;
+    }
     if (kind === 'pdf') {
       if (pdfAt(now, a)) { return true; }
       var v = app.pdfViewer;
@@ -144,7 +167,12 @@
         setTimeout(hook, Date.now() - start < WAIT_MS ? 250 : 2000);
         return;
       }
-      if (kind === 'pdf') { app.eventBus.on('updateviewarea', moved); } else { app.on('move', moved); }
+      if (kind === 'pdf') { app.eventBus.on('updateviewarea', moved); }
+      else if (kind === 'epub') {
+        // The book pages are in an inner frame: epub.js passes their events on.
+        ['touchstart', 'keydown', 'mousedown'].forEach(function (type) { app.on(type, input); });
+        app.on('relocated', moved);
+      } else { app.on('move', moved); }
       onMove(false);   // the app is ready: not a move, so an early touch does not count
     })();
   }

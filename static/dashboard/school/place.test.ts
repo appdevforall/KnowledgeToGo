@@ -92,3 +92,13 @@ test('pdf: the scale goes to pdf.js as a name or as a factor; the place has page
     assert.equal(P.valid(want, 'map'), false);
     assert.equal(P.openUrl('/books/read/2/pdf', want), '/books/read/2/pdf');
 });
+
+test('epub: the Calibre-Web EPUB reader follows a CFI', () => {
+    assert.equal(P.kindOf('/books/read/1/epub'), 'epub');
+    assert.equal(P.kindOf('/books/read/1/epub#epubcfi(/6/8!/4/2/1:0)'), 'epub');
+    assert.equal(P.isApp('epub'), true);
+    assert.equal(P.valid({ app: 'epub', cfi: 'epubcfi(/6/8!/4/2/1:0)' }, 'epub'), true);
+    assert.equal(P.valid({ app: 'epub', cfi: '/6/8' }, 'epub'), false);
+    assert.equal(P.valid({ app: 'epub' }, 'epub'), false);
+    assert.equal(P.valid({ app: 'epub', cfi: 'epubcfi(/6/8!/4/2/1:0)' }, 'pdf'), false);
+});
