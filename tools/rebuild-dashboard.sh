@@ -147,7 +147,7 @@ log "rebuild start (branch=$BRANCH, clone=$CLONE_DIR)"
 # 1) refresh the clone to the tip of the branch (deterministic; discards any local drift).
 log "git fetch + reset --hard origin/$BRANCH"
 _fetch_rc=0
-_fetch_err="$(git -C "$CLONE_DIR" fetch origin "$BRANCH" 2>&1)" || _fetch_rc=$?
+_fetch_err="$(LC_ALL=C git -C "$CLONE_DIR" fetch origin "$BRANCH" 2>&1)" || _fetch_rc=$?
 [ -n "$_fetch_err" ] && echo "$_fetch_err" >>"$LOG"
 if [ "$_fetch_rc" -ne 0 ]; then
     # A deleted branch is not "offline". Say it, and never move the box to another branch by itself.
@@ -260,19 +260,20 @@ log "restart dash-node"
 log "verifying live :4000"
 if verify_live; then
     log "live OK — finalizing (source + package.json + nginx)"
+    # Record the branch of the build that now runs, FIRST: the dist that runs is from BRANCH now, so
+    # a stop during the source sync below cannot leave a record of the old branch. Only here: a
+    # failed rebuild keeps the record of the build it kept. Update and the update check follow it.
+    if printf '%s\n' "$BRANCH" > "$BRANCH_RECORD.tmp" && mv -f "$BRANCH_RECORD.tmp" "$BRANCH_RECORD"; then
+        log "box tracks branch $BRANCH"
+    else
+        log "warn: could not record branch $BRANCH in $BRANCH_RECORD"
+    fi
     # Now safe to advance the source so the reported version + the next build match the running dist.
     # Additive tar after dropping the pure-source subdirs; runtime state (node_modules, *.sqlite3 job
     # storage, books/catalog.db) is left in place.
     # school: the K2Go School pages, also source only, so a page removed in the repo goes (review L6).
     for d in sockets views public test school; do rm -rf "$LIVE/$d"; done
     ( cd "$STAGE" && tar --exclude=node_modules --exclude=dist -cf - . ) | ( cd "$LIVE" && tar -xf - ) || log "warn: source sync incomplete"
-    # Record the branch of the build that now runs, with its package.json, so Update and the update
-    # check stay on this branch. Only here: a failed rebuild keeps the record of the build it kept.
-    if printf '%s\n' "$BRANCH" > "$BRANCH_RECORD.tmp" && mv -f "$BRANCH_RECORD.tmp" "$BRANCH_RECORD"; then
-        log "box tracks branch $BRANCH"
-    else
-        log "warn: could not record branch $BRANCH in $BRANCH_RECORD"
-    fi
     # nginx reads /etc/nginx/conf.d, not /library/dashboard, so mirror the vhost then reload nginx.
     [ -f "$LIVE/dash-node-nginx.conf" ] && { cp -f "$LIVE/dash-node-nginx.conf" "$NGINX_CONF_DIR/dash-node-nginx.conf"; chmod 0600 "$NGINX_CONF_DIR/dash-node-nginx.conf"; }
     /usr/local/bin/pdsm restart nginx >>"$LOG" 2>&1 || log "warn: pdsm restart nginx returned non-zero"

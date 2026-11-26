@@ -55,7 +55,9 @@ public final class DashboardCardStatus {
                         true, true, updateAvailable, installed, available, true, updateAvailable));
             }
             @Override public void onBranchMissing(String branch) {
-                // A definite answer, but not about versions: the cache keeps its last value.
+                // No update can come from a branch that is gone: clear the last-known flag, so the
+                // Update suggestion before a module batch (DashNodeGate) does not offer one.
+                UpdateStatusCache.save(ctx, false);
                 l.onState(DashboardCardState.branchMissing(branch));
             }
             @Override public void onErr(String message) {

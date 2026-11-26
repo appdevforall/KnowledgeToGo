@@ -752,7 +752,9 @@ const UPDATE_PKG_IN_CLONE = 'static/dashboard/package.json';
 /** Run git inside the on-device clone with a hard timeout; resolves stdout, rejects on non-zero/timeout. */
 function gitInClone(args: string[], timeoutMs: number): Promise<string> {
     return new Promise((resolve, reject) => {
-        const p = spawn('git', ['-C', UPDATE_CLONE_DIR, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+        // C locale: isBranchMissing() reads the English git message.
+        const p = spawn('git', ['-C', UPDATE_CLONE_DIR, ...args],
+            { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, LC_ALL: 'C' } });
         let out = '', err = '';
         const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error('git timed out')); }, timeoutMs);
         p.stdout.on('data', (d) => { out += d; });
