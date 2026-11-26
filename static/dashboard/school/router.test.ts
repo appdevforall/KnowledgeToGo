@@ -7,13 +7,14 @@ import { AddressInfo } from 'net';
 import express from 'express';
 import { ClassRoom, CLASS_GAP_MS, JOIN_LIMIT } from './class';
 import { createSchoolRouter, cookieToken, schoolErrors, TOKEN_COOKIE } from './router';
+import { SchoolRole } from './role';
 
 interface Box { port: number; close: () => Promise<void> }
 
-async function startBox(room = new ClassRoom()): Promise<Box> {
+async function startBox(room = new ClassRoom(), roleOf: () => SchoolRole = () => 'none'): Promise<Box> {
     const app = express();
     app.use(express.json({ limit: '4kb' }));
-    app.use('/school', createSchoolRouter(room));
+    app.use('/school', createSchoolRouter(room, roleOf));
     app.use('/school', schoolErrors);
     const server = http.createServer(app);
     await new Promise<void>((ok) => server.listen(0, '127.0.0.1', ok));
@@ -95,6 +96,27 @@ test('teacher routes answer only localhost', async () => {
         }
         assert.equal((await request(box, 'GET', '/school/teacher/live?role=page')).status, 404);
         assert.equal((await request(box, 'POST', '/school/teacher/end', { ip: '127.0.0.1' })).status, 204);
+    } finally { await box.close(); }
+});
+
+test('a student phone opens no class: every teacher route answers 403; join and state stay', async () => {
+    let role: SchoolRole = 'student';
+    const box = await startBox(new ClassRoom(), () => role);
+    const local = { ip: '127.0.0.1' };
+    try {
+        assert.equal((await request(box, 'POST', '/school/teacher/start', { ...local, json: { name: 'Fake' } })).status, 403);
+        assert.equal((await request(box, 'GET', '/school/teacher/live?role=page', local)).status, 403);
+        assert.equal((await request(box, 'GET', '/school/teacher/', local)).status, 403);
+        for (const p of ['/school/teacher/publish', '/school/teacher/marks', '/school/teacher/end']) {
+            assert.equal((await request(box, 'POST', p, { ...local, json: { url: '/p' } })).status, 403, p);
+        }
+        assert.equal((await request(box, 'POST', '/school/teacher/start', { json: {} })).status, 404);   // localOnly first
+        assert.equal(JSON.parse((await request(box, 'GET', '/school/state')).body).code, null);
+        // The role is read on each request: the school changes it, the box follows.
+        role = 'teacher';
+        assert.equal((await request(box, 'POST', '/school/teacher/start', { ...local, json: {} })).status, 201);
+        role = 'none';
+        assert.equal((await request(box, 'POST', '/school/teacher/end', local)).status, 204);
     } finally { await box.close(); }
 });
 

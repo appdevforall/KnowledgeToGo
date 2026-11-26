@@ -31,6 +31,7 @@ import org.appdevforall.k2go.proot.data.PrefsSeccompModeRepository;
 import org.appdevforall.k2go.proot.data.ProotEnvironment;
 import org.appdevforall.k2go.proot.domain.SeccompFailure;
 import org.appdevforall.k2go.proot.domain.SeccompMode;
+import org.appdevforall.k2go.school.data.SchoolRoleFile;
 
 public class PRootEngine {
     private static final String TAG = "IIAB-PRootEngine";
@@ -186,6 +187,16 @@ public class PRootEngine {
                     args.add(deviceId.getCanonicalPath() + ":" + DeviceIdStore.GUEST_PATH);
                 } catch (Exception idEx) {
                     Log.w(TAG, "Device ID bind skipped: " + idEx.getMessage());
+                }
+
+                // The school role: dash-node refuses the teacher routes on a student phone. A folder
+                // bind, so a role that the school sets while the box runs shows at once.
+                File roleDir = SchoolRoleFile.dir(context);
+                if (roleDir.isDirectory() || roleDir.mkdirs()) {
+                    args.add("-b");
+                    args.add(roleDir.getCanonicalPath() + ":" + SchoolRoleFile.GUEST_DIR);
+                } else {
+                    Log.w(TAG, "School role bind skipped: cannot create " + roleDir);
                 }
 
                 // 4. Set Working Directory

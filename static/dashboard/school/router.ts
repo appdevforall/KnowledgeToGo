@@ -9,6 +9,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import path from 'path';
 import { ClassRoom, MAX_MARK_BLOCKS, MAX_MARKS, Student, validLesson, validMark } from './class';
+import { readRole, SchoolRole } from './role';
 
 const PING_MS = 10000;     // the watchdog of the pages counts on it (www/follow.js)
 // The teacher page shows a student as "bad" when the box marks it quiet (QUIET_MS). This round
@@ -56,7 +57,8 @@ function localOnly(req: Request, res: Response, next: NextFunction): void {
 }
 
 // One router per class room. The box has one (schoolRouter); a test makes its own.
-export function createSchoolRouter(classroom: ClassRoom): Router {
+// roleOf: the role of this phone (role.ts); a test gives its own.
+export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRole = readRole): Router {
     const studentStreams = new Map<Response, Student>();
     const teacherStreams = new Set<Response>();
 
@@ -207,6 +209,11 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
     });
 
     router.use('/teacher', localOnly);
+    // A student phone opens no class: no teacher page, no start, no live channel (book chapter 08).
+    router.use('/teacher', (_req: Request, res: Response, next: NextFunction): void => {
+        if (roleOf() === 'student') { res.status(403).json({ error: 'student phone' }); return; }
+        next();
+    });
 
     router.post('/teacher/publish', (req: Request, res: Response): void => {
         const lesson = validLesson(req.body);
