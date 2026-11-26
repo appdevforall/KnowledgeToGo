@@ -4,7 +4,7 @@
 // The state is in memory: a dash-node restart clears it, and the class ends.
 //
 // A class identifies phones, not people: each student token gets a seat number in the class
-// ("Eq. 01" on the pages). No name goes to the box (K2G-P5). One phone is one seat: the
+// ("Seat 01" on the pages). No name goes to the box (K2G-P5). One phone is one seat: the
 // "Another student" button of a shared phone was removed.
 import crypto from 'crypto';
 
