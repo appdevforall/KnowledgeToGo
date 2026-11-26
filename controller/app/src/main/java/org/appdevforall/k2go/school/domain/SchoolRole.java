@@ -10,7 +10,9 @@ package org.appdevforall.k2go.school.domain;
 
 /**
  * The role that the school gives a phone at school setup (book chapter 08, "Good" level). No role is
- * the default: the phone can teach, join and open the developer terminal, as before roles.
+ * the default: the phone can teach and join, as before roles. The terminal stays open on every phone
+ * (maintainer, 2026-11-26): with the school trust (phase 5), a change on a student phone affects only
+ * that phone (school-trust-design.md).
  *
  * <p>The box reads the same file with the same rule (static/dashboard/school/role.ts): keep them equal.
  */
@@ -30,7 +32,4 @@ public enum SchoolRole {
 
     /** A student phone cannot open a class. */
     public boolean canTeach() { return this != STUDENT; }
-
-    /** A student phone has no developer terminal. */
-    public boolean canUseTerminal() { return this != STUDENT; }
 }

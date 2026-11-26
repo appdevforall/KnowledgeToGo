@@ -28,12 +28,9 @@ public class SchoolRoleTest {
         assertEquals(SchoolRole.STUDENT, SchoolRole.parse("teacherx"));
     }
 
-    @Test public void onlyAStudentLosesTeachingAndTheTerminal() {
+    @Test public void onlyAStudentCannotTeach() {
         assertTrue(SchoolRole.NONE.canTeach());
-        assertTrue(SchoolRole.NONE.canUseTerminal());
         assertTrue(SchoolRole.TEACHER.canTeach());
-        assertTrue(SchoolRole.TEACHER.canUseTerminal());
         assertFalse(SchoolRole.STUDENT.canTeach());
-        assertFalse(SchoolRole.STUDENT.canUseTerminal());
     }
 }

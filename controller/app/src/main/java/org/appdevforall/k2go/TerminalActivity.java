@@ -29,8 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import org.appdevforall.k2go.school.data.SchoolRoleFile;
-
 public class TerminalActivity extends AppCompatActivity implements TerminalController.Host {
 
     // Load native C++ engine (termux). Was previously loaded by MainActivity's static block.
@@ -44,30 +42,11 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // A student phone has no terminal. Settings hides the row; this also covers the keep-alive
-        // notification of a session that ran before the school set the role.
-        if (closedForRole()) return;
         setContentView(R.layout.terminal_activity);
 
         terminalController = new TerminalController(this, this);
         terminalController.bind();
         openTerminal();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        closedForRole();   // the role was set in this terminal, and the user comes back to it
-    }
-
-    private boolean closedForRole() {
-        if (SchoolRoleFile.role(this).canUseTerminal()) return false;
-        // Its sessions end too; the store then stops the keep-alive service and its notification.
-        for (com.termux.terminal.TerminalSession s : new java.util.ArrayList<>(TerminalSessionStore.get().sessions())) {
-            s.finishIfRunning();
-        }
-        finish();
-        return true;
     }
 
     @Override
