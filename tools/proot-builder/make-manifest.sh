@@ -10,6 +10,9 @@
 # =============================================================================
 set -e
 OUTPUT_DIR="${1:?usage: make-manifest.sh <out-dir>}"
+# The sources of this bundle go in the manifest (the assemble job has no termux checkout).
+. "$(dirname "$0")/termux-pins.env"
+: "${TERMUX_PACKAGES_COMMIT:?missing in termux-pins.env}" "${TERMUX_BUILDER_IMAGE:?missing in termux-pins.env}"
 
 echo ">> [IIAB] Generating Supply Chain Manifest and Certificates..."
 
@@ -23,6 +26,8 @@ cat <<EOF > "$MANIFEST_FILE"
 {
   "build_date": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
   "builder_info": "IIAB build_static.sh",
+  "termux_packages_commit": "$TERMUX_PACKAGES_COMMIT",
+  "builder_image": "$TERMUX_BUILDER_IMAGE",
   "binaries": {
 EOF
 

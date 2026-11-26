@@ -85,14 +85,26 @@ echo "[2/4] Preparing termux-packages environment in $BUILD_DIR..."
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
-if [ ! -d "termux-packages" ]; then
-    git clone --depth 1 https://github.com/termux/termux-packages.git
-else
-    cd termux-packages
-    git restore .
-    git pull
-    cd ..
+# The termux-packages commit and the builder image are pinned (termux-pins.env): the newest
+# termux-packages can change the NDK or a package without notice. run-docker.sh reads the image
+# from TERMUX_BUILDER_IMAGE_NAME.
+. "$SCRIPT_DIR/termux-pins.env"
+export TERMUX_BUILDER_IMAGE_NAME="$TERMUX_BUILDER_IMAGE"
+echo ">> termux-packages $TERMUX_PACKAGES_COMMIT, image $TERMUX_BUILDER_IMAGE"
+# run-docker.sh reuses an existing builder container and then ignores the image pin.
+if docker container inspect termux-package-builder >/dev/null 2>&1; then
+    used="$(docker container inspect -f '{{.Config.Image}}' termux-package-builder)"
+    [ "$used" = "$TERMUX_BUILDER_IMAGE" ] || { echo "ERROR: container termux-package-builder uses '$used', not the pinned image. Remove it: docker rm -f termux-package-builder"; exit 1; }
 fi
+if [ ! -d "termux-packages/.git" ]; then
+    git init -q termux-packages
+    git -C termux-packages remote add origin https://github.com/termux/termux-packages.git
+fi
+# checkout -f also removes the IIAB patches of an earlier run (tracked files only).
+git -C termux-packages fetch -q --depth 1 origin "$TERMUX_PACKAGES_COMMIT"
+git -C termux-packages checkout -q -f --detach FETCH_HEAD
+[ "$(git -C termux-packages rev-parse HEAD)" = "$TERMUX_PACKAGES_COMMIT" ] \
+    || { echo "ERROR: termux-packages is not at $TERMUX_PACKAGES_COMMIT"; exit 1; }
 
 # FIX FOR DOCKER PERMISSION DENIED:
 # Docker runs as UID 1000 (builder). We must ensure these directories are writable by anyone.
@@ -451,6 +463,12 @@ if [ "${#ARCHS[@]}" -eq 0 ]; then
     exit 1
 fi
 echo ">> Building architectures: ${ARCHS[*]##*:}"
+
+# --- NDK libc.a: an arc4random that does not abort on Linux older than 4.14 ---
+# Before the first build-package.sh, so every static link takes it. See ndk-static-arc4random.sh.
+mkdir -p "$TERMUX_REPO/iiab-ndk"
+cp "$SCRIPT_DIR/ndk-static-arc4random.sh" "$SCRIPT_DIR/static-arc4random.c" "$TERMUX_REPO/iiab-ndk/"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh
 
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
