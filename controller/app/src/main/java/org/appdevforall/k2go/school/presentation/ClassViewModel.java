@@ -20,16 +20,20 @@ import org.appdevforall.k2go.ServerState;
 import org.appdevforall.k2go.school.domain.ClassLinks;
 import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.school.domain.ClassStarter;
+import org.appdevforall.k2go.school.domain.SchoolRole;
 import org.appdevforall.k2go.school.domain.TeacherPage;
 
 import java.util.concurrent.Executor;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 /**
  * Two owners, one fact each. "The library runs" comes from the app's server state (one publisher,
  * the server tick); this model does not ask the box for it. "The library has the class module" has
  * no app owner: only the box knows it, so one GET of the teacher page answers it, each time the
- * library comes up and each time the tab shows. The value is for the screen only.
+ * library comes up and each time the tab shows. The value is for the screen only. "The school made
+ * this a student phone" is the role file (SchoolRoleFile): read again each time the tab shows, as
+ * the role changes only while the terminal is in front.
  */
 public class ClassViewModel extends ViewModel {
 
@@ -39,6 +43,7 @@ public class ClassViewModel extends ViewModel {
     private final Executor io;
     private final LiveData<ServerState> server;
     private final BooleanSupplier observed;
+    private final Supplier<SchoolRole> role;
     // null while the first check runs.
     private final MutableLiveData<ClassLinks.Teach> teach = new MutableLiveData<>(null);
     // The next step of "Teach a class", for the screen: null while there is none. The screen calls
@@ -52,17 +57,20 @@ public class ClassViewModel extends ViewModel {
 
     // Main thread only. lastUp: the library state of the last decision (null before the first).
     private Boolean lastUp;
+    // Main thread only: the role of the last read (each time the tab shows).
+    private boolean studentPhone;
     // A GET answer is shown only if no newer decision came while it ran.
     private int generation;
 
     public ClassViewModel(TeacherPage teacherPage, ClassProbe probe, ClassStarter starter, Executor io,
-                          LiveData<ServerState> server, BooleanSupplier observed) {
+                          LiveData<ServerState> server, BooleanSupplier observed, Supplier<SchoolRole> role) {
         this.teacherPage = teacherPage;
         this.probe = probe;
         this.starter = starter;
         this.io = io;
         this.server = server;
         this.observed = observed;
+        this.role = role;
         server.observeForever(onServer);
     }
 
@@ -128,6 +136,13 @@ public class ClassViewModel extends ViewModel {
     public void check() { decide(true); }
 
     private void decide(boolean again) {
+        if (again) studentPhone = !role.get().canTeach();
+        if (studentPhone) {
+            lastUp = null;   // a role removed later decides again on the next tick
+            ++generation;    // a GET that runs now does not show
+            teach.setValue(ClassLinks.Teach.STUDENT_PHONE);
+            return;
+        }
         if (!observed.getAsBoolean()) return;   // the first tick did not run yet: keep "checking"
         ServerState s = server.getValue();
         boolean up = s != null && s.alive;

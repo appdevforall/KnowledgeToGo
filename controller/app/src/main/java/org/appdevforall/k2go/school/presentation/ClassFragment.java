@@ -303,6 +303,7 @@ public final class ClassFragment extends Fragment {
             return;
         }
         int msg = t == null ? R.string.k2go_class_checking
+                : t == ClassLinks.Teach.STUDENT_PHONE ? R.string.k2go_class_student_phone
                 : t == ClassLinks.Teach.NO_MODULE ? R.string.k2go_class_no_module
                 : R.string.k2go_class_no_box;
         teachStatus.setText(msg);

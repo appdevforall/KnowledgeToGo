@@ -10,4 +10,6 @@
   strings.xml.
 -->
 <resources>
+    <!-- Class tab, in place of "Teach a class" when the school made this phone a student phone (school role file). -->
+    <string name="k2go_class_student_phone" translatable="false">This is a student phone. Only a teacher phone can open a class. You can join a class below.</string>
 </resources>

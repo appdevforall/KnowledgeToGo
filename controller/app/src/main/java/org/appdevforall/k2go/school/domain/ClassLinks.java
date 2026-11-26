@@ -58,7 +58,9 @@ public final class ClassLinks {
         /** The box answers, but it has no class module. */
         NO_MODULE,
         /** The box does not answer, or it answers with a server error. */
-        NO_BOX
+        NO_BOX,
+        /** The school made this phone a student phone (SchoolRole): it cannot open a class. */
+        STUDENT_PHONE
     }
 
     private ClassLinks() {}

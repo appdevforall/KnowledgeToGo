@@ -19,6 +19,7 @@ import org.appdevforall.k2go.school.data.HttpClassProbe;
 import org.appdevforall.k2go.school.data.HttpTeacherPage;
 import org.appdevforall.k2go.school.data.HttpClassStarter;
 import org.appdevforall.k2go.school.data.NsdClassFinder;
+import org.appdevforall.k2go.school.data.SchoolRoleFile;
 import org.appdevforall.k2go.util.AppExecutors;
 
 public class ClassViewModelFactory implements ViewModelProvider.Factory {
@@ -35,7 +36,7 @@ public class ClassViewModelFactory implements ViewModelProvider.Factory {
             ServerStateRepository server = ServerStateRepository.get();
             return (T) new ClassViewModel(new HttpTeacherPage(), new HttpClassProbe(), new HttpClassStarter(),
                     AppExecutors.get().io(),
-                    server.state(), server::hasObservation);
+                    server.state(), server::hasObservation, () -> SchoolRoleFile.role(app));
         }
         if (modelClass.isAssignableFrom(FindClassesViewModel.class)) {
             return (T) new FindClassesViewModel(new NsdClassFinder(app), new HttpClassProbe(),
