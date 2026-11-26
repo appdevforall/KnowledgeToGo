@@ -192,6 +192,42 @@ test('validMark: only the known kinds and fields, numbers in range', () => {
     assert.deepEqual(validMark(null), invalid);
 });
 
+test('validMark: a mark of the map holds map places only, whole numbers in range', () => {
+    const invalid = { error: 'invalid' };
+    const arrow = { k: 'a' as const, geo: [-3703790, 40416775, -3690000, 40420000] };    // 1/1000000 degree
+    assert.deepEqual(validMark({ ...arrow, b: 1, t: 'a', z: 'x' }), { mark: arrow });         // only the known fields
+    assert.deepEqual(validMark({ ...arrow, o: 1 }), invalid);                                // an arrow is no oval
+    assert.deepEqual(validMark({ k: 'a', geo: [1, 2, 3] }), invalid);                        // two places
+    assert.deepEqual(validMark({ k: 'a', geo: [1, 2, 3, 4.5] }), invalid);
+    assert.deepEqual(validMark({ k: 'a', geo: [1, 2, 3, '4'] }), invalid);
+    assert.deepEqual(validMark({ k: 'a', geo: [541e6, 0, 0, 0] }), invalid);                // longitude out of range
+    assert.deepEqual(validMark({ k: 'a', geo: [0, 91e6, 0, 0] }), invalid);                 // latitude out of range
+    assert.deepEqual(validMark({ k: 'a', geo: [179e6, 0, 181e6, 0] }), { mark: { k: 'a', geo: [179e6, 0, 181e6, 0] } });   // over the 180 line
+    assert.deepEqual(validMark({ k: 'a', geo: 'x' }), invalid);
+    const box = { k: 'r' as const, geo: [0, 10, 20, 10, 20, 0, 0, 0] };
+    assert.deepEqual(validMark(box), { mark: box });
+    assert.deepEqual(validMark({ ...box, o: 1 }), { mark: { ...box, o: 1 } });
+    assert.deepEqual(validMark({ ...box, o: 2 }), invalid);
+    assert.deepEqual(validMark({ k: 'r', geo: [0, 10, 20, 10] }), invalid);                 // four corners
+    assert.deepEqual(validMark({ k: 'b', geo: [0, 0, 1, 1] }), invalid);
+    assert.deepEqual(validMark({ k: 'p', geo: [0, 0, 1, 1] }), invalid);
+});
+
+test('moveMark: an arrow of the map moves; a box of the map stays a box', () => {
+    const room = openRoom();
+    room.publish({ url: '/maps/' });
+    const arrow = { k: 'a' as const, geo: [0, 0, 1000, 1000] };
+    const box = { k: 'r' as const, geo: [0, 10, 20, 10, 20, 0, 0, 0], o: 1 as const };
+    room.addMark('/maps/', arrow);
+    room.addMark('/maps/', box);
+    const [a, r] = room.marks()!.list.map((m) => m.id);
+    assert.deepEqual(room.moveMark('/maps/', a, { k: 'a', geo: [5, 5, 1005, 1005] }), { changed: true });
+    assert.deepEqual(room.marks()!.list[0], { k: 'a', geo: [5, 5, 1005, 1005], id: a });
+    assert.deepEqual(room.moveMark('/maps/', a, box), { changed: false });                  // an arrow stays an arrow
+    assert.deepEqual(room.moveMark('/maps/', r, { k: 'a', geo: [0, 0, 9, 9] }), { changed: false });
+    assert.deepEqual(room.moveMark('/maps/', r, { ...box, geo: [1, 11, 21, 11, 21, 1, 1, 1] }), { changed: true });
+});
+
 test('marks: belong to the lesson page; a new page and the end of the class clear them', () => {
     const room = openRoom();
     const block = { k: 'b' as const, b: 1, t: 'a' };

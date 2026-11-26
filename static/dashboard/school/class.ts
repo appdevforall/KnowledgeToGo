@@ -70,6 +70,12 @@ const MAX_CFI = 500;
 const CFI = /^epubcfi\(\/[^\p{Cc}]*\)$/u;
 // The corners of an EPUB box, in 1/100 of the font size from its first and last word.
 const MAX_CORNER = 100000;
+// A mark on the box map (www/mapmarks.js): places in 1/1000000 of a degree. The first place is in
+// the world from -180 to 180 degrees; the others of a shape over the 180 degree line can go some
+// way past it.
+const GEO_E6 = 1000000;
+const MAX_LON = 540 * GEO_E6;
+const MAX_LAT = 90 * GEO_E6;
 // A teacher page that comes back within this time (a reload, a theme change) continues the same
 // class, with the same code. With no teacher page for longer, the class ends by itself.
 export const CLASS_GAP_MS = 60000;
@@ -151,12 +157,17 @@ export function validLesson(raw: unknown): Lesson | null {
 // of epub.js). k is 'p' (the words), 'r' (a box; o: 1 an oval) or 'b' (a picture). A box has the
 // place of its corners from the first and the last word of the range (x, y, ex, ey), or none (the
 // box goes around the words).
+// A mark on the box map (www/mapmarks.js) has map places, geo: [lon, lat, ...] in 1/1000000 of a
+// degree. k is 'a' (an arrow from the first place to the second one) or 'r' (a box through four
+// corners; o: 1 an oval).
 export type Mark =
     | { k: 'b'; b: number; t: string; cell?: number }
     | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number }
     | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number; o?: 1 }
     | { k: 'p' | 'b'; cfi: string }
-    | { k: 'r'; cfi: string; o?: 1; x?: number; y?: number; ex?: number; ey?: number };
+    | { k: 'r'; cfi: string; o?: 1; x?: number; y?: number; ex?: number; ey?: number }
+    | { k: 'a'; geo: number[] }
+    | { k: 'r'; geo: number[]; o?: 1 };
 
 // The box gives each mark an id: the teacher removes a mark by its id.
 export type StoredMark = Mark & { id: number };
@@ -167,6 +178,14 @@ function index(raw: unknown): number | null {
 
 function px(raw: unknown, min: number, max = MAX_MARK_PX): number | null {
     return typeof raw === 'number' && Number.isInteger(raw) && raw >= min && raw <= max ? raw : null;
+}
+
+// The places of a map mark: n pairs of whole numbers, longitude then latitude, in range. Null for
+// anything else.
+function geo(raw: unknown, n: number): number[] | null {
+    if (!Array.isArray(raw) || raw.length !== n * 2) return null;
+    const out = raw.map((v, i) => px(v, i % 2 === 0 ? -MAX_LON : -MAX_LAT, i % 2 === 0 ? MAX_LON : MAX_LAT));
+    return out.every((v) => v !== null) ? (out as number[]) : null;
 }
 
 function print(raw: unknown): string | null {
@@ -197,6 +216,16 @@ export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | '
         const ey = px(m.ey, -MAX_CORNER, MAX_CORNER);
         if (x === null || y === null || ex === null || ey === null) return invalid;
         return { mark: { k: 'r', cfi: m.cfi, ...shape, x, y, ex, ey } };
+    }
+    if (m.geo !== undefined) {
+        if (m.k === 'a') {
+            const g = geo(m.geo, 2);
+            return g && m.o === undefined ? { mark: { k: 'a', geo: g } } : invalid;
+        }
+        if (m.k !== 'r' || (m.o !== undefined && m.o !== 1)) return invalid;
+        const g = geo(m.geo, 4);
+        if (!g) return invalid;
+        return { mark: m.o === 1 ? { k: 'r', geo: g, o: 1 } : { k: 'r', geo: g } };
     }
     const b = index(m.b);
     const t = print(m.t);
@@ -449,14 +478,15 @@ export class ClassRoom {
         return { changed: true };
     }
 
-    // The teacher moved a box or an oval: mark is its new place. It keeps its id. A mark that is
-    // gone (an eraser on another page of the teacher) or is no box changes nothing. A box moved onto
-    // the same place as another box stays one mark.
+    // The teacher moved a box, an oval or an arrow of the map: mark is its new place, of the same
+    // kind. It keeps its id. A mark that is gone (an eraser on another page of the teacher) or that
+    // cannot move changes nothing. A shape moved onto the same place as another one stays one mark.
     moveMark(url: string, id: unknown, mark: Mark): MarkResult {
         const s = this.lessonPage(url);
         if ('refused' in s) return s;
         const i = s.marks.findIndex((m) => m.id === id);
-        if (i < 0 || s.marks[i].k !== 'r' || mark.k !== 'r' || sameMark(s.marks[i], mark)) return { changed: false };
+        const old = s.marks[i];
+        if (i < 0 || (old.k !== 'r' && old.k !== 'a') || mark.k !== old.k || sameMark(old, mark)) return { changed: false };
         if (s.marks.some((m) => sameMark(m, mark))) {
             s.marks = s.marks.filter((_m, k) => k !== i);
         } else {
