@@ -219,6 +219,7 @@ public class SchoolFragment extends Fragment {
     /** The end of the school year: today or later, at most two years ahead (SchoolSetup checks it too). */
     private void pickDate() {
         long nowMs = System.currentTimeMillis();
+        if (formUntil > 0 && formUntil * 1000 < nowMs) formUntil = 0;   // a day kept from before is over
         CalendarConstraints limits = new CalendarConstraints.Builder()
                 .setStart(nowMs)
                 .setEnd(nowMs + SchoolSetup.MAX_YEAR_SECONDS * 1000)

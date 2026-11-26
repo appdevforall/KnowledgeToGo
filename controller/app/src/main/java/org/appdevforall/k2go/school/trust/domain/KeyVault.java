@@ -32,7 +32,8 @@ public final class KeyVault {
      */
     public static final int ITERATIONS = 120_000;
     private static final int MIN_ITERATIONS = 10_000;
-    private static final int MAX_ITERATIONS = 5_000_000;
+    // A backup file sets the count: a high value would keep a slow phone busy for minutes.
+    private static final int MAX_ITERATIONS = 4 * ITERATIONS;
 
     private KeyVault() {}
 

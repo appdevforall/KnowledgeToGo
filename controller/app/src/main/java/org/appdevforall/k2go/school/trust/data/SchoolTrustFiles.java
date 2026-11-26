@@ -121,7 +121,7 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
     }
 
     /** At most {@code max} bytes; null when the stream has more. */
-    public static byte[] readAll(InputStream in, int max) throws IOException {
+    private static byte[] readAll(InputStream in, int max) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buf = new byte[4096];
         int n;
@@ -140,6 +140,9 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
             out.write(data);
             out.getFD().sync();
         }
+        // rename replaces the old file in one step on Android (Linux). Delete first only where it
+        // cannot (a Windows JVM in the unit tests), so a stop never leaves no key file on a phone.
+        if (tmp.renameTo(f)) return;
         if (f.exists() && !f.delete() || !tmp.renameTo(f)) throw new IOException("cannot write " + f);
     }
 }

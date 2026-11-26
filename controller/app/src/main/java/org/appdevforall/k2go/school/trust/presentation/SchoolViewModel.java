@@ -15,7 +15,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import org.appdevforall.k2go.school.trust.data.SchoolTrustFiles;
 import org.appdevforall.k2go.school.trust.domain.SchoolSetup;
 import org.appdevforall.k2go.school.trust.domain.SchoolTrustRepository;
 import org.appdevforall.k2go.school.trust.domain.TrustRecords;
@@ -126,7 +125,7 @@ public class SchoolViewModel extends ViewModel {
         io.execute(() -> {
             byte[] bytes = null;
             try (InputStream in = resolver.openInputStream(file)) {
-                if (in != null) bytes = SchoolTrustFiles.readAll(in, 16 * 1024);
+                if (in != null) bytes = readAll(in, 16 * 1024);
             } catch (Exception ignored) {
                 // a file that cannot be read is not a backup
             }
@@ -162,6 +161,18 @@ public class SchoolViewModel extends ViewModel {
     public String backupName() {
         State s = state.getValue();
         return "k2go-school-" + (s != null && s.school != null ? s.school : "key") + ".k2key";
+    }
+
+    /** At most {@code max} bytes; null when the file is longer (it is not a backup). */
+    private static byte[] readAll(InputStream in, int max) throws java.io.IOException {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        int n;
+        while ((n = in.read(buf)) > 0) {
+            out.write(buf, 0, n);
+            if (out.size() > max) return null;
+        }
+        return out.toByteArray();
     }
 
     private String otherSchoolName() {
