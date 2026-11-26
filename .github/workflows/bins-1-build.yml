@@ -99,9 +99,41 @@ jobs:
     - name: Contract test — armeabi-v7a (emulated)
       run: ./tools/proot-builder/smoke-native-binaries.sh --jnilibs "${{ github.workspace }}/artifacts" --arch armeabi-v7a
 
+  # K2GO-595: gate on real kernels. The runners have a new kernel, and proot only fakes uname, so a
+  # fault for old phones (the NDK r30 arc4random, K2GO-594) passed the smoke test. This job boots
+  # pinned kernels from 3.16 to 6.12 in QEMU and runs the bundle and each build customization on
+  # both ABIs. A failure blocks the publish job below.
+  kernel-matrix:
+    name: Native binaries on real kernels (K2GO-595)
+    needs: assemble
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project code
+      uses: actions/checkout@v5
+
+    - name: Download freshly built binaries
+      uses: actions/download-artifact@v7
+      with:
+        name: termux-ninja-binaries
+        path: ${{ github.workspace }}/artifacts
+
+    - name: Tools (QEMU, static cross compilers for the probes)
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y qemu-system-arm cpio gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf libc6-dev-arm64-cross libc6-dev-armhf-cross
+
+    - name: Cache the pinned kernels
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/k2go-kernel-matrix
+        key: kernel-matrix-${{ hashFiles('tools/proot-builder/kernel-matrix/kernels.lock') }}
+
+    - name: Run the kernel matrix
+      run: bash tools/proot-builder/kernel-matrix/run-kernel-matrix.sh --jnilibs "${{ github.workspace }}/artifacts"
+
   publish:
     name: Publish rolling release
-    needs: [assemble, smoke-test]
+    needs: [assemble, smoke-test, kernel-matrix]
     runs-on: ubuntu-latest
     permissions:
       contents: write

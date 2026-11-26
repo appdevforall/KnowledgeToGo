@@ -64,6 +64,29 @@ real launch; foreign arch under QEMU → proot is version-only). A dynamic binar
 integrity-only; **aria2c's real download (TLS+DNS) is validated on-device or in an
 Android-emulator job**, never on a plain runner.
 
+## Real kernels: `kernel-matrix/run-kernel-matrix.sh`
+```
+run-kernel-matrix.sh --jnilibs <dir> [--cache <dir>] [--kernels "3.16 4.4"]
+```
+The smoke test runs on the new kernel of the runner, and proot only fakes what `uname`
+says. A fault that shows only on an old phone kernel passes it (K2GO-594: the NDK r30
+`arc4random` aborted on Linux older than 4.14). This script boots the real kernels of
+`kernel-matrix/kernels.lock` (3.16, 4.4, 4.9, 4.15, 6.12, pinned by SHA-256) in QEMU and
+runs the bundle on both ABIs (armeabi-v7a through the 32-bit compat mode of the arm64
+kernel, as on a phone). `guest-init.sh` is the test list. Each test names the
+`build_static.sh` customization it covers: static start, the tar/gzip/xz/rsync round-trips,
+the proot launch, fork, `fchmodat2`, `futex_time64` and EXITKILL.
+
+proot runs with the options of the app (`PRootEngine`) and with its seccomp fallback
+(ADFA-5362): when proot aborts with one of the markers of `SeccompFailure.java`, the test
+runs again with `PROOT_NO_SECCOMP=1`, and the result line says "seccomp off". The kernel
+4.4 needs it. Any other failure, or a VM that does not end, fails the script. In
+`bins-1-build.yml` the job `kernel-matrix` must pass before `publish`.
+
+Needs: `qemu-system-aarch64`, `cpio`, `dpkg-deb`, `curl`, `aarch64-linux-gnu-gcc` and
+`arm-linux-gnueabihf-gcc` (for the static probes of `probe.c`). aria2c is dynamic and does
+not run in the VM: check it on a device.
+
 ## Retention and archive: `binaries-lifecycle.sh`
 ```
 binaries-lifecycle.sh sync|prune      # DRY_RUN=1 reports only
@@ -77,4 +100,4 @@ the script; see `controller/docs/UPDATING_NATIVE_BINARIES.md`.
 ## Tickets
 Epic **ADFA-1028** · gate **ADFA-4465** · xz static fix **ADFA-4468** ·
 version-adoption umbrella **ADFA-4464**.
-Retention and R2 archive: **K2GO-506**.
+Retention and R2 archive: **K2GO-506**. Real-kernel matrix: **K2GO-595**.
