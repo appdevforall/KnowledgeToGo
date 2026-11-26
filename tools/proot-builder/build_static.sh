@@ -468,7 +468,14 @@ echo ">> Building architectures: ${ARCHS[*]##*:}"
 # Before the first build-package.sh, so every static link takes it. See ndk-static-arc4random.sh.
 mkdir -p "$TERMUX_REPO/iiab-ndk"
 cp "$SCRIPT_DIR/ndk-static-arc4random.sh" "$SCRIPT_DIR/static-arc4random.c" "$TERMUX_REPO/iiab-ndk/"
-./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh
+# The container cannot write to the NDK (AppArmor), so the host copies the changed libc.a in.
+NDK_LIBC="output/iiab-ndk-libc"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh build "$NDK_LIBC"
+while read -r file target; do
+    docker cp "$TERMUX_REPO/$NDK_LIBC/$file" "${CONTAINER_NAME:-termux-package-builder}:$target"
+done < "$TERMUX_REPO/$NDK_LIBC/install.list"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh check
+./scripts/run-docker.sh rm -rf "$NDK_LIBC"
 
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
