@@ -24,7 +24,8 @@ public final class TrustRecords {
     public static final int VERSION = 1;
     private static final Pattern HEX16 = Pattern.compile("[0-9a-f]{16}");
     private static final int MAX_KEY = 200;
-    private static final int MAX_SERIALS = 500;
+    /** A removed list must fit in one token (SignedToken.MAX_LENGTH): about 25 chars per serial. */
+    public static final int MAX_SERIALS = 120;
 
     private TrustRecords() {}
 

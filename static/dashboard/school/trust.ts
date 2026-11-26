@@ -12,6 +12,8 @@ import crypto from 'crypto';
 
 export const TRUST_V = 1;
 export const MAX_TOKEN = 4096;
+// A removed list must fit in one token: about 25 chars per serial in base64.
+export const MAX_SERIALS = 120;
 // Domain separation for the class proof: the bytes are never a JSON body.
 const PROOF_TAG = 'k2go-class-proof';
 
@@ -95,7 +97,7 @@ export function readRemoved(root: RootRecord, token: unknown): RemovedList | nul
     if (!t) return null;
     const o = t.json;
     if (o.school !== root.school || !isTime(o.issued) || !Array.isArray(o.serials)
-        || o.serials.length > 500 || !o.serials.every((s) => typeof s === 'string' && SERIAL.test(s))) return null;
+        || o.serials.length > MAX_SERIALS || !o.serials.every((s) => typeof s === 'string' && SERIAL.test(s))) return null;
     if (!verifyBytes(root.rootKey, t.body, t.sig)) return null;
     return { kind: 'removed', v: TRUST_V, school: root.school, issued: o.issued, serials: o.serials as string[] };
 }

@@ -66,9 +66,12 @@ public final class TrustCodec {
         return new TeacherCheck(TrustCheck.teacher(root, t, cert, removed, now), cert);
     }
 
-    /** Device zero: a certificate for one teacher phone. */
+    /** Device zero: a certificate for one teacher phone. It refuses fields that a reader refuses. */
     public static String signTeacher(PrivateKey rootKey, String school, String teacherKeySpkiB64, String label,
                                      String serial, long from, long until) {
+        if (TrustRecords.Teacher.of(TrustRecords.VERSION, school, teacherKeySpkiB64, label, serial, from, until) == null) {
+            throw new IllegalArgumentException("certificate field not valid");
+        }
         JSONObject o = new JSONObject();
         try {
             o.put("kind", "teacher").put("v", TrustRecords.VERSION).put("school", school).put("key", teacherKeySpkiB64)
@@ -79,8 +82,11 @@ public final class TrustCodec {
         return sign(rootKey, o);
     }
 
-    /** Device zero: the list of removed teacher certificates. */
+    /** Device zero: the list of removed teacher certificates. It refuses a list that a reader refuses. */
     public static String signRemoved(PrivateKey rootKey, String school, long issued, List<String> serials) {
+        if (TrustRecords.Removed.of(TrustRecords.VERSION, school, issued, serials) == null) {
+            throw new IllegalArgumentException("removed list not valid");
+        }
         JSONObject o = new JSONObject();
         try {
             o.put("kind", "removed").put("v", TrustRecords.VERSION).put("school", school).put("issued", issued)
@@ -93,7 +99,9 @@ public final class TrustCodec {
 
     private static String sign(PrivateKey key, JSONObject o) {
         byte[] body = o.toString().getBytes(StandardCharsets.UTF_8);
-        return SignedToken.of(body, TrustKeys.sign(key, body)).compact();
+        String token = SignedToken.of(body, TrustKeys.sign(key, body)).compact();
+        if (token.length() > SignedToken.MAX_LENGTH) throw new IllegalArgumentException("token too long");
+        return token;
     }
 
     private static JSONObject body(SignedToken t, String kind) {

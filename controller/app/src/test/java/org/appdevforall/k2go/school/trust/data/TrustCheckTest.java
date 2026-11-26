@@ -153,6 +153,29 @@ public class TrustCheckTest {
         assertEquals(Verdict.VERIFIED, TrustCodec.checkTeacher(ROOT, j.optString("teacher"), null, NOW).verdict);
     }
 
+    @Test public void theSignersRefuseWhatTheReadersRefuse() throws Exception {
+        PrivateKey root = privateKey(V.optJSONObject("keys").optString("rootPkcs8"));
+        String spki = V.optJSONObject("keys").optString("teacherSpki");
+        String longLabel = "Room 3B with a label that is longer than forty characters";
+        assertThrows(() -> TrustCodec.signTeacher(root, ROOT.school, spki, longLabel, "f6f6f6f6f6f6f6f6", 0, 1));
+        assertThrows(() -> TrustCodec.signTeacher(root, ROOT.school, spki, "R", "not-hex", 0, 1));
+        java.util.List<String> many = new java.util.ArrayList<>();
+        for (int i = 0; i < TrustRecords.MAX_SERIALS; i++) many.add(String.format("%016x", i));
+        String full = TrustCodec.signRemoved(root, ROOT.school, NOW, many);   // the largest list fits
+        assertEquals(TrustRecords.MAX_SERIALS, TrustCodec.readRemoved(ROOT, full).serials.size());
+        many.add("ffffffffffffffff");
+        assertThrows(() -> TrustCodec.signRemoved(root, ROOT.school, NOW, many));
+    }
+
+    private static void assertThrows(Runnable r) {
+        try {
+            r.run();
+        } catch (IllegalArgumentException expected) {
+            return;
+        }
+        throw new AssertionError("no IllegalArgumentException");
+    }
+
     @Test public void base64RoundTrip() {
         for (int n = 0; n < 40; n++) {
             byte[] b = new byte[n];
