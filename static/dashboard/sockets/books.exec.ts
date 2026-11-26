@@ -54,8 +54,8 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         throw new Error('Calibre-Web authentication failed');
     }
 
-    // The host that worked last in this job (null = start at the catalog URL). When the main site
-    // fails one time, the next books of this job go to the mirror first (books.sources.ts).
+    // The host that worked last in this job (null = start at the first source, the mirror). When a
+    // source fails one time, the next books of this job go to the one that worked (books.sources.ts).
     let preferredHost: string | null = null;
     const download = async (sources: string[]): Promise<Uint8Array<ArrayBuffer>> => {
         const { body, host } = await fetchFirst(sources, {
