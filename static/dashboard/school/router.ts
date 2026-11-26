@@ -10,6 +10,7 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 import path from 'path';
 import { ClassRoom, MAX_MARK_BLOCKS, MAX_MARKS, Student, validLesson, validMark } from './class';
 import { readRole, SchoolRole } from './role';
+import { Ring } from './ring';
 
 const PING_MS = 10000;     // the watchdog of the pages counts on it (www/follow.js)
 // The teacher page shows a student as "bad" when the box marks it quiet (QUIET_MS). This round
@@ -58,7 +59,8 @@ function localOnly(req: Request, res: Response, next: NextFunction): void {
 
 // One router per class room. The box has one (schoolRouter); a test makes its own.
 // roleOf: the role of this phone (role.ts); a test gives its own.
-export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRole = readRole): Router {
+// ring: the setup ring of the school trust (ring.ts); a test gives its own.
+export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRole = readRole, ring: Ring = new Ring()): Router {
     const studentStreams = new Map<Response, Student>();
     const teacherStreams = new Set<Response>();
 
@@ -208,11 +210,49 @@ export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRol
         res.redirect(303, '/');
     });
 
+    // The setup ring, for the phones on the class network: join with the PIN, then (teacher ring)
+    // ask for the answer of device zero. POST bodies only: no nonce or id in an address.
+    router.post('/ring/join', (req: Request, res: Response): void => {
+        const r = ring.join(clientIp(req), req.body, Date.now());
+        res.setHeader('Cache-Control', 'no-store');
+        res.status(r.status).json(r.body);
+    });
+
+    router.post('/ring/result', (req: Request, res: Response): void => {
+        const r = ring.result(req.body, Date.now());
+        res.setHeader('Cache-Control', 'no-store');
+        res.status(r.status).json(r.body);
+    });
+
     router.use('/teacher', localOnly);
     // A student phone opens no class: no teacher page, no start, no live channel (book chapter 08).
     router.use('/teacher', (_req: Request, res: Response, next: NextFunction): void => {
         if (roleOf() === 'student') { res.status(403).json({ error: 'student phone' }); return; }
         next();
+    });
+
+    // The app of this phone opens the ring (it gives the PIN and the root record), reads the
+    // requests, answers them with the certificates that it signed, and closes the ring.
+    router.post('/teacher/ring/open', (req: Request, res: Response): void => {
+        const b = (req.body ?? {}) as { kind?: unknown; pin?: unknown; root?: unknown };
+        if (!ring.open(b.kind, b.pin, b.root, Date.now())) { res.status(400).json({ error: 'invalid' }); return; }
+        res.status(204).end();
+    });
+
+    router.get('/teacher/ring', (_req: Request, res: Response): void => {
+        res.setHeader('Cache-Control', 'no-store');
+        res.json(ring.view(Date.now()));
+    });
+
+    router.post('/teacher/ring/answer', (req: Request, res: Response): void => {
+        const b = (req.body ?? {}) as { id?: unknown; cert?: unknown };
+        if (!ring.answer(b.id, b.cert, Date.now())) { res.status(409).json({ error: 'no-request' }); return; }
+        res.status(204).end();
+    });
+
+    router.post('/teacher/ring/close', (_req: Request, res: Response): void => {
+        ring.close('host');
+        res.status(204).end();
     });
 
     router.post('/teacher/publish', (req: Request, res: Response): void => {
