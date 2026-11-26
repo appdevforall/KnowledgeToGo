@@ -87,8 +87,7 @@
                     android:text="@string/k2go_class_teach" />
             </LinearLayout>
 
-            <!-- Student: the classes that teacher boxes announce on the Wi-Fi; the scan of the
-                 teacher's Connect "Open" code stays as the fallback. -->
+            <!-- Student: the classes that teacher boxes announce on the Wi-Fi. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,13 +144,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
 
+                <!-- Hidden for now: the class list is the only join path. The scan path has no
+                     class screen support yet. Its code stays for the later QR work. -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/k2go_class_join"
                     style="@style/Widget.K2Go.Button.Outlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/k2go_class_scan" />
+                    android:text="@string/k2go_class_scan"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

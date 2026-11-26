@@ -40,8 +40,9 @@ import java.util.List;
 
 /**
  * Opens the class pages of the teacher box in the portal WebView: one APK, two roles. The teacher
- * opens its own box; a student taps a class that a teacher box announces on the Wi-Fi, or scans
- * the teacher's Connect "Open" code. The pages and the live channel live on the box (dash-node),
+ * opens its own box; a student taps a class that a teacher box announces on the Wi-Fi. The scan
+ * of the teacher's Connect "Open" code stays in the code, but its button is hidden for now (see
+ * the layout). The pages and the live channel live on the box (dash-node),
  * so this tab holds no class state. It does not touch the hotspot.
  */
 public final class ClassFragment extends Fragment {
