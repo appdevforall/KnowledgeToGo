@@ -1,0 +1,15 @@
+# kernels.lock: the pinned inputs of run-kernel-matrix.sh (K2GO-595).
+# <name> <sha256> <url>
+# Kernels: arm64 kernel packages of Debian and Ubuntu, used only for their vmlinuz. Each one is a
+# real Linux version that phones in the support range run: 3.16 (older than 3.18), 4.4 and 4.9
+# (older than 4.14, no MADV_WIPEONFORK), 4.15 (older than 5.1, no futex_time64), 6.12 (newer than
+# 6.6, has fchmodat2). The arm64 kernels also run armeabi-v7a programs (32-bit compat), as phones do.
+# URLs are archives that do not delete files (archive.debian.org, snapshot.debian.org, ports.ubuntu.com).
+3.16 3700cbd91e48468843a2d5041b32a8ad0f56b15864fcb0bab5398016c639a981 http://archive.debian.org/debian/pool/main/l/linux/linux-image-3.16.0-6-arm64_3.16.56-1+deb8u1_arm64.deb
+4.4 6a379a0d4d1d329a839c15c1656bb498301707d00dd35a227b58cb42b41392df http://ports.ubuntu.com/ubuntu-ports/pool/main/l/linux/linux-image-4.4.0-210-generic_4.4.0-210.242_arm64.deb
+4.9 100871e08955bc1d4f7d15faaa2a23c4a7345fb30ca2ed84434cebef87ba538f http://archive.debian.org/debian/pool/main/l/linux/linux-image-4.9.0-13-arm64_4.9.228-1_arm64.deb
+4.15 64bcc0255f9dfbc69365bf44ccbe32419b9ebddb9c39309256755a085a90dd0a http://ports.ubuntu.com/ubuntu-ports/pool/main/l/linux/linux-image-4.15.0-213-generic_4.15.0-213.224_arm64.deb
+6.12 e0261b7e2ab499379b8b2c384fc28d9a51f762f40d071c8ed51e05e6e83ba879 https://snapshot.debian.org/file/8abcd3ef0af7a4d299094b77e9f9f187b927d62c
+# Static busybox: the shell of the VM (arm64) and of the proot test rootfs (one per ABI).
+busybox-arm64 253b6111898747d64c20aa255c20f5d1bbd3e9547e38bb12a550cd1ca5793e36 http://archive.debian.org/debian/pool/main/b/busybox/busybox-static_1.30.1-4_arm64.deb
+busybox-armhf ea1ee96420013d8404d677a81c92eb54adbf58852ffaa6722a39245025157304 http://archive.debian.org/debian/pool/main/b/busybox/busybox-static_1.30.1-4_armhf.deb
