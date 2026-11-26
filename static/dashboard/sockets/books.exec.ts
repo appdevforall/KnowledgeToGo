@@ -7,7 +7,7 @@
 import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
 import { withRetry } from './net-retry';
 import { presentTitles, getCalibreSession } from './books.query';
-import { bookSources, sourceOrder } from './books.sources';
+import { bookSources, fetchFirst, hostOf, isTransient } from './books.sources';
 import fs from 'fs';
 import path from 'path';
 
@@ -37,17 +37,6 @@ const SYSTEM_USER_AGENT = 'K2Go Dashboard/1.0 (https://github.com/appdevforall/K
 
 interface BookItem { id?: string; title?: string; url?: string; }
 
-// Retry network drops and timeouts and 5xx; a 4xx is the server's final word.
-function isTransient(err: unknown): boolean {
-    const status = (err as { status?: number })?.status;
-    if (typeof status === 'number') return status >= 500;
-    return true;
-}
-
-function hostOf(url: string): string {
-    try { return new URL(url).host; } catch { return url; }
-}
-
 const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR, { recursive: true });
 
@@ -65,40 +54,21 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         throw new Error('Calibre-Web authentication failed');
     }
 
-    // The source that worked last (0 = the catalog URL on www.gutenberg.org). When the main site
+    // The host that worked last in this job (null = start at the catalog URL). When the main site
     // fails one time, the next books of this job go to the mirror first (books.sources.ts).
-    let preferred = 0;
-    // Download one EPUB: try each source one time, in sourceOrder. A failure (HTTP error, network
-    // error or a per-source timeout) moves on to the next source at once. When all sources fail,
-    // throw the error that is worth a retry (network, timeout, 5xx) before a final 4xx.
-    const download = async (sources: string[]): Promise<ArrayBuffer> => {
-        let failure: unknown = null;
-        for (const i of sourceOrder(sources.length, preferred)) {
-            const host = hostOf(sources[i]);
-            // Cancel (ctx.signal) is terminal; the timeout only ends this source.
-            const signal = AbortSignal.any([ctx.signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]);
-            try {
-                const response = await fetch(sources[i], {
-                    headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
-                    signal,
-                });
-                if (!response.ok) {
-                    await response.body?.cancel().catch(() => undefined);   // free the connection
-                    const e = new Error(`HTTP ${response.status} from ${host}`);
-                    (e as { status?: number }).status = response.status;
-                    throw e;
-                }
-                const body = await response.arrayBuffer();
-                if (i !== preferred) ctx.log(`[books] using ${host} for the next books`);
-                preferred = i;
-                return body;
-            } catch (err) {
-                if (ctx.signal.aborted) throw err;
-                ctx.log(`[books] ${host}: ${err instanceof Error ? err.message : String(err)}`);
-                if (failure === null || !isTransient(failure)) failure = err;
-            }
-        }
-        throw failure;
+    let preferredHost: string | null = null;
+    const download = async (sources: string[]): Promise<Uint8Array<ArrayBuffer>> => {
+        const { body, host } = await fetchFirst(sources, {
+            fetch,
+            headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
+            signal: ctx.signal,
+            stallMs: FETCH_TIMEOUT_MS,
+            preferredHost,
+            log: (line) => ctx.log(line),
+        });
+        if (host !== (preferredHost ?? hostOf(sources[0]))) ctx.log(`[books] using ${host} for the next books`);
+        preferredHost = host;
+        return body;
     };
 
     let done = 0;
