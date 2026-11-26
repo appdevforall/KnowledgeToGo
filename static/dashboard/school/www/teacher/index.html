@@ -204,6 +204,7 @@
   var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
   var pendingMark = null;   // the mark of the last drag, shown until the box answers: { mark, moves: id or null }
   var tapEndsSelection = false;
+  var pressAt = null;       // the client point of the last press: a press that moved is a pan, not a tap
   var toolBtns = {
     pen: document.getElementById('markPen'),
     box: document.getElementById('markBox'),
@@ -414,6 +415,11 @@
     var r = s.map.getContainer().getBoundingClientRect();
     return { x: x - r.left, y: y - r.top };
   }
+  // A point of the map container, or null out of it (another part of the maps page).
+  function onMapAt(s, x, y) {
+    var r = s.map.getContainer().getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom ? mapPoint(s, x, y) : null;
+  }
   var MAP_MARKS = {
     media: null,
     arrow: true,
@@ -422,7 +428,7 @@
       var p = mapPoint(s, x, y);
       return SchoolMapMarks.markAt(s.map, p.x, p.y, pad);
     },
-    wordAt: function (s, x, y) { return mapPoint(s, x, y); },
+    wordAt: function (s, x, y) { return onMapAt(s, x, y); },
     dragMark: function (s, a, z) { return SchoolMapMarks.arrowMark(s.map, a, z); },
     boxMark: function (s, r) {
       var o = mapPoint(s, 0, 0);
@@ -645,6 +651,7 @@
     if (!s) { return; }   // the reader around the book: its buttons work as usual
     tapEndsSelection = hasSelection(s.win);
     dragSent = false;
+    pressAt = { x: ev.clientX, y: ev.clientY };
     if (!tool || tool === 'eraser' || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
     ev.preventDefault();
     endDrag();
@@ -655,7 +662,7 @@
       from = s.E.wordAt(s, ev.clientX, ev.clientY);
       if (!from) {
         var media = ev.target && ev.target.closest ? ev.target.closest(s.E.media) : null;
-        if (!media) { note(t('markOutside')); }   // a picture: onMarkTap marks it
+        if (!media) { note(t(s.E.arrow ? toolHelp('pen') : 'markOutside')); }   // a picture: onMarkTap marks it
         return;
       }
     }
@@ -910,6 +917,8 @@
     ev.stopPropagation();
     if (tapEndsSelection || dragSent || !publishable) { return; }
     if (tool === 'eraser') {
+      // The eraser lets the map move: a click at the end of a mouse pan is no tap on a mark.
+      if (pressAt && Math.abs(ev.clientX - pressAt.x) + Math.abs(ev.clientY - pressAt.y) > SLOP_PX) { return; }
       var id = markAt(s, ev.clientX, ev.clientY);
       if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); }
       return;

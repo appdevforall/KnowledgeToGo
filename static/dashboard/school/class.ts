@@ -259,6 +259,11 @@ export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | '
     return invalid;
 }
 
+// The family of a mark: a page of blocks, an EPUB book (cfi) or the map (geo).
+function family(m: Mark): string {
+    return 'geo' in m ? 'geo' : 'cfi' in m ? 'cfi' : 'block';
+}
+
 function sameMark(stored: StoredMark, mark: Mark): boolean {
     const { id: _id, ...fields } = stored;
     return JSON.stringify(fields) === JSON.stringify(mark);
@@ -486,7 +491,9 @@ export class ClassRoom {
         if ('refused' in s) return s;
         const i = s.marks.findIndex((m) => m.id === id);
         const old = s.marks[i];
-        if (i < 0 || (old.k !== 'r' && old.k !== 'a') || mark.k !== old.k || sameMark(old, mark)) return { changed: false };
+        if (i < 0 || (old.k !== 'r' && old.k !== 'a') || mark.k !== old.k || family(mark) !== family(old) || sameMark(old, mark)) {
+            return { changed: false };
+        }
         if (s.marks.some((m) => sameMark(m, mark))) {
             s.marks = s.marks.filter((_m, k) => k !== i);
         } else {

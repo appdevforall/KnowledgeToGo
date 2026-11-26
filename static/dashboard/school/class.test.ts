@@ -226,6 +226,9 @@ test('moveMark: an arrow of the map moves; a box of the map stays a box', () => 
     assert.deepEqual(room.moveMark('/maps/', a, box), { changed: false });                  // an arrow stays an arrow
     assert.deepEqual(room.moveMark('/maps/', r, { k: 'a', geo: [0, 0, 9, 9] }), { changed: false });
     assert.deepEqual(room.moveMark('/maps/', r, { ...box, geo: [1, 11, 21, 11, 21, 1, 1, 1] }), { changed: true });
+    // A box of the map does not become a box of a page or a book.
+    assert.deepEqual(room.moveMark('/maps/', r, { k: 'r', b: 1, t: 'a', y: 0, eb: 2, et: 'a', ey: 10, x: 5, w: 50 }), { changed: false });
+    assert.deepEqual(room.moveMark('/maps/', r, { k: 'r', cfi: 'epubcfi(/6/4!/4/2)' }), { changed: false });
 });
 
 test('marks: belong to the lesson page; a new page and the end of the class clear them', () => {

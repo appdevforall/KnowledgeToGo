@@ -18,6 +18,7 @@
   else { root.SchoolMapMarks = factory(); }
 })(this, function () {
   var E6 = 1000000;
+  var MAX_LAT = 85.051129;   // the edge of the web map (Mercator)
   var LAYER_CLASS = 'k2go-map-marks';
   // The shortest arrow and the smallest box (screen px): a shorter drag is a tap.
   var MIN_PX = 12;
@@ -39,11 +40,17 @@
   function turnsTo(lng, near) { return Math.round((near - lng) / 360) * 360; }
 
   // The geo of places [{ lng, lat }]. The first place goes into the world from -180 to 180
-  // degrees, and the others move with it (a box over the 180 degree line keeps its shape).
+  // degrees, and the others move with it (a box over the 180 degree line keeps its shape). A place
+  // near the horizon of a tilted map can be very far: the others stay within one turn (360
+  // degrees) of the first one and within the latitudes of the map, so the box accepts the mark.
   function geoOf(places) {
     var out = [];
     var shift = places.length ? turnsTo(places[0].lng, 0) : 0;
-    places.forEach(function (p) { out.push(e6(p.lng + shift), e6(p.lat)); });
+    var lng0 = places.length ? places[0].lng + shift : 0;
+    places.forEach(function (p) {
+      var lng = Math.max(lng0 - 360, Math.min(lng0 + 360, p.lng + shift));
+      out.push(e6(lng), e6(Math.max(-MAX_LAT, Math.min(MAX_LAT, p.lat))));
+    });
     return out;
   }
 
@@ -160,12 +167,23 @@
     });
   }
 
+  // On the globe (a phone can turn it on) a place on the far side has a screen point too: a mark
+  // with such a place is not drawn.
+  function hidden(map, m) {
+    var tr = map.transform;
+    if (!tr || typeof tr.isLocationOccluded !== 'function') { return false; }
+    return placesOf(m).some(function (p) {
+      try { return tr.isLocationOccluded({ lng: p[0], lat: p[1] }); } catch (e) { return false; }
+    });
+  }
+
   // The marks of the list on the screen: [{ id, k, o, pts }], pts in px of the map container.
   // A mark of another kind (a Kiwix page, a book) is not here.
   function shapesOf(map, list) {
     var out = [];
     list.forEach(function (m) {
       if (!Array.isArray(m.geo) || (m.k !== 'a' && m.k !== 'r')) { return; }
+      if (hidden(map, m)) { return; }
       var pts = screenOf(map, m);
       if (pts.some(function (p) { return !isFinite(p[0]) || !isFinite(p[1]); })) { return; }
       out.push({ id: m.id, k: m.k, o: m.o, pts: pts });
@@ -210,16 +228,21 @@
   function layerOf(map) {
     var box = map.getContainer();
     var layer = box.querySelector('svg.' + LAYER_CLASS);
-    if (layer) { return layer; }
-    layer = el(box.ownerDocument, 'svg', { class: LAYER_CLASS, 'aria-hidden': 'true' });
-    // Over the canvas, under the controls of the map (z-index 2).
-    layer.setAttribute('style', 'position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 1; ' +
-      'pointer-events: none; overflow: hidden;');
-    layer.k2goList = [];
-    var again = function () { render(layer, shapesOf(map, layer.k2goList)); };
-    map.on('move', again);
-    map.on('resize', again);
-    box.appendChild(layer);
+    if (!layer) {
+      layer = el(box.ownerDocument, 'svg', { class: LAYER_CLASS, 'aria-hidden': 'true' });
+      // Over the canvas, under the controls of the map (z-index 2).
+      layer.setAttribute('style', 'position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 1; ' +
+        'pointer-events: none; overflow: hidden;');
+      layer.k2goList = [];
+      box.appendChild(layer);
+    }
+    // The maps page can make a new map in the same container: the layer follows the map of now.
+    if (layer.k2goMap !== map) {
+      layer.k2goMap = map;
+      var again = function () { if (layer.k2goMap === map) { render(layer, shapesOf(map, layer.k2goList)); } };
+      map.on('move', again);
+      map.on('resize', again);
+    }
     return layer;
   }
 
@@ -276,6 +299,7 @@
     inside: inside,
     hit: hit,
     shapesOf: shapesOf,
+    hidden: hidden,
     draw: draw,
     markAt: markAt,
     arrowMark: arrowMark,

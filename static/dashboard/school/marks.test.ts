@@ -224,6 +224,8 @@ test('map places: whole numbers of 1/1000000 degree; the first place goes into -
     // A teacher on the world copy to the right: the shape keeps its width over the 180 degree line.
     assert.deepEqual(G.geoOf([{ lng: 539, lat: 0 }, { lng: 541, lat: 1 }]), [179000000, 0, 181000000, 1000000]);
     assert.deepEqual(G.placesOf({ geo: [179000000, 0, 181000000, 1000000] }), [[179, 0], [181, 1]]);
+    // A place near the horizon of a tilted map: within one turn of the first place, and on the map.
+    assert.deepEqual(G.geoOf([{ lng: 10, lat: 50 }, { lng: 2000, lat: 89.9 }]), [10000000, 50000000, 370000000, 85051129]);
     assert.equal(G.turnsTo(-170, 175), 360);      // the copy nearest to the view
     assert.equal(G.turnsTo(10, 20), 0);
 });
@@ -267,4 +269,8 @@ test('map marks: from screen points to places and back, with a fake map', () => 
     assert.equal(G.boxMark(map, { left: 100, top: 100, right: 105, bottom: 200 }), null);
     assert.deepEqual(G.moveMark(map, { ...box, o: 1, id: 3 }, 10, -20), { k: 'r', o: 1, geo: [-90000, 120000, 110000, 120000, 110000, 20000, -90000, 20000] });
     assert.deepEqual(G.shapesOf(map, [{ k: 'b', b: 1, t: 'a' }, { k: 'p', cfi: 'epubcfi(/6)' }]), []);   // other kinds
+    // The globe: a mark with a place on the far side is not drawn.
+    const globe = { ...map, transform: { isLocationOccluded: (p: { lng: number }) => p.lng > 90 } };
+    assert.equal(G.shapesOf(globe, [{ k: 'a', geo: [0, 0, 100000000, 0], id: 1 }]).length, 0);
+    assert.equal(G.shapesOf(globe, [{ k: 'a', geo: [0, 0, 1000000, 0], id: 1 }]).length, 1);
 });
