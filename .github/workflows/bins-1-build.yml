@@ -134,6 +134,8 @@ jobs:
   publish:
     name: Publish rolling release
     needs: [assemble, smoke-test, kernel-matrix]
+    # Only main publishes. A run on another branch builds and tests, and stops here.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
