@@ -123,7 +123,14 @@ export class Ring {
         }
         if (typeof b.key !== 'string' || b.key.length === 0 || b.key.length > 200) return { status: 400, body: { error: 'invalid' } };
         if (!same(b.proof, mac(this.pin, 'k2go-ring-join', b.nonce, b.key))) return this.wrongPin(address);
-        for (const r of this.requests.values()) if (r.key === b.key) return { status: 202, body: { id: r.id } };
+        // The same key again (a new join after Cancel or an app restart): the same request, and the
+        // answer goes to the newest join, which proved the PIN with its own nonce.
+        for (const r of this.requests.values()) {
+            if (r.key === b.key) {
+                r.nonce = b.nonce;
+                return { status: 202, body: { id: r.id } };
+            }
+        }
         if (this.requests.size >= MAX_REQUESTS) return { status: 409, body: { error: 'full' } };
         const id = crypto.randomBytes(8).toString('hex');
         this.requests.set(id, { id, nonce: b.nonce, key: b.key, at: now });

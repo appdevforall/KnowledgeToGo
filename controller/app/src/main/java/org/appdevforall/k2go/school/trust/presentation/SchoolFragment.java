@@ -444,7 +444,12 @@ public class SchoolFragment extends Fragment {
         new BrandDialog(ctx)
                 .setTitle(R.string.k2go_school_pin_title)
                 .setContentView(pin)
-                .setPositive(R.string.k2go_school_join_button, () -> ringVm.join(r, pin.getText().toString()))
+                .setPositive(R.string.k2go_school_join_button, () -> {
+                    String p = pin.getText().toString();
+                    // Only 4 digits go to the ring: a short PIN would cost one of the tries of this phone.
+                    if (p.matches("[0-9]{4}")) ringVm.join(r, p);
+                    else snack(requireView(), getString(R.string.k2go_school_err_wrong_pin));
+                })
                 .setNegative(R.string.k2go_cancel, null)
                 .show();
     }

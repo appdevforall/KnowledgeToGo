@@ -55,6 +55,12 @@ test('a teacher ring: request, approve, the phone gets the certificate with a MA
     const id = (join.body as { id: string }).id;
     // The same key again: the same request.
     assert.deepEqual(r.join('10.0.0.5', { nonce: NONCE, key, proof: mac(PIN, 'k2go-ring-join', NONCE, key) }, 1).body, { id });
+    // A new join of the same key with a new nonce (after Cancel): the answer goes to the new nonce.
+    const again = 'nonce-second-join-123';
+    assert.deepEqual(r.join('10.0.0.5', { nonce: again, key, proof: mac(PIN, 'k2go-ring-join', again, key) }, 1).body, { id });
+    assert.equal(r.result({ id, nonce: NONCE }, 2).status, 404);
+    assert.equal(r.result({ id, nonce: again }, 2).status, 202);
+    r.join('10.0.0.5', { nonce: NONCE, key, proof: mac(PIN, 'k2go-ring-join', NONCE, key) }, 1);
     // A proof without the key does not pass in a teacher ring.
     assert.equal(r.join('10.0.0.6', { nonce: NONCE, key, proof: mac(PIN, 'k2go-ring-join', NONCE) }, 1).status, 403);
     assert.equal(r.result({ id, nonce: NONCE }, 2).status, 202);
