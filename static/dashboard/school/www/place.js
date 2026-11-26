@@ -120,7 +120,31 @@
     map: '.maplibregl-ctrl-group:has(> button[title="Select region for download"], > button[title="Choose region to delete"]) { display: none !important; }\n' +
       FQR_BUTTONS + ' { display: none !important; }'
   };
-  function prepare(win, kind, app) {
+  // The EPUB reader: the class font (classCss: the CSS of School.classCss in follow.js) on each
+  // page of the book, and one text size, on every phone. The reader has its own font and size
+  // setting on each phone (another font breaks the lines at other places, so the pages and the
+  // marks fall at other places). The School frame has the same width on every phone (follow.js),
+  // so the lines break at the same places; only the page height can differ.
+  var BOOK_FONT_ID = 'k2go-class-font';
+  function bookFont(rendition, classCss) {
+    var put = function (contents) {
+      var doc = contents && contents.document;
+      if (!doc || !doc.head || doc.getElementById(BOOK_FONT_ID)) { return; }
+      var style = doc.createElement('style');
+      style.id = BOOK_FONT_ID;
+      style.textContent = classCss;
+      doc.head.appendChild(style);   // last, so that it wins over the book styles
+    };
+    rendition.hooks.content.register(put);   // each section that the reader shows later
+    rendition.getContents().forEach(put);
+    rendition.themes.fontSize('100%');       // over the size that this phone saved in the reader
+  }
+
+  function prepare(win, kind, app, classCss) {
+    if (kind === 'epub') {
+      if (classCss) { bookFont(app, classCss); }
+      return;
+    }
     var css = APP_CSS[kind];
     if (!css) { return; }
     var root = kind === 'map' ? app.getContainer().getRootNode() : win.document;
@@ -174,15 +198,21 @@
       if (!frame || !c.document.caretRangeFromPoint) { continue; }
       var f = frame.getBoundingClientRect();
       var x = box.left + box.width / 2 - f.left;
-      var y = box.top + box.height / 2 - f.top;
-      if (x < 0 || x > f.width || y < 0 || y > f.height) { continue; }
-      var caret = c.document.caretRangeFromPoint(x, y);
-      if (!caret) { continue; }
-      var cfi = c.cfiFromRange(caret);
-      return typeof cfi === 'string' && cfi.indexOf('epubcfi(') === 0 ? cfi : null;
+      if (x < 0 || x > f.width) { continue; }
+      // The center can be on a picture or between two paragraphs: there the caret is in a text of
+      // spaces only, that the reader cannot show (it goes to the start of the section). Then a
+      // point a little higher or lower.
+      for (var k = 0; k < MIDDLE_TRIES.length; k++) {
+        var y = box.top + box.height * MIDDLE_TRIES[k] - f.top;
+        var caret = y >= 0 && y <= f.height ? c.document.caretRangeFromPoint(x, y) : null;
+        if (!caret || caret.startContainer.nodeType !== 3 || !/\S/.test(caret.startContainer.data)) { continue; }
+        var cfi = c.cfiFromRange(caret);
+        return typeof cfi === 'string' && cfi.indexOf('epubcfi(') === 0 ? cfi : null;
+      }
     }
     return null;
   }
+  var MIDDLE_TRIES = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8];
 
   // The place on the screen, or null while the app is not ready.
   function read(win, kind) {
@@ -253,7 +283,7 @@
   // screen is off) the app can come much later. After WAIT_MS it looks less often.
   var USER_MS = 3000;
   var WAIT_MS = 20000;
-  function watch(win, kind, onMove) {
+  function watch(win, kind, onMove, classCss) {
     var doc = win.document;
     var lastInput = -Infinity;
     var input = function () { lastInput = Date.now(); };
@@ -275,7 +305,7 @@
         ['touchstart', 'keydown', 'mousedown'].forEach(function (type) { app.on(type, input); });
         app.on('relocated', moved);
       } else { app.on('move', moved); }
-      try { prepare(win, kind, app); } catch (e) { /* the class follows the app also when it cannot hide a control */ }
+      try { prepare(win, kind, app, classCss); } catch (e) { /* the class follows the app also without these changes */ }
       onMove(false);   // the app is ready: not a move, so an early touch does not count
     })();
   }

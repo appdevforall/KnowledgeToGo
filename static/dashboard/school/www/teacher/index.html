@@ -352,7 +352,7 @@
         if (resume && SchoolPlace.apply(win, kind, resume) !== null) { resume = null; }
         if (kind === 'epub') { attachBook(); }
         onScroll();
-      });
+      }, School.classCss());
     } else if (resumeAt) {
       SchoolAnchor.applyAnchor(win, resumeAt);
     }

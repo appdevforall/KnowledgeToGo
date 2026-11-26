@@ -162,7 +162,7 @@ test('middleOf: the CFI at the center of the reader, in the book frame that is t
     const asked: number[][] = [];
     const page = (frameLeft: number, cfi: string) => ({
         window: { frameElement: { getBoundingClientRect: rect(frameLeft, 100, 800, 600) } },   // two pages wide
-        document: { caretRangeFromPoint: (x: number, y: number) => { asked.push([x, y]); return { x, y }; } },
+        document: { caretRangeFromPoint: (x: number, y: number) => { asked.push([x, y]); return { startContainer: { nodeType: 3, data: y === 300 ? '\n  ' : 'words' } }; } },
         cfiFromRange: () => cfi,
     });
     // The reader shows x 0..400 of the screen; the book frame (two pages) is scrolled by one page.
@@ -171,9 +171,41 @@ test('middleOf: the CFI at the center of the reader, in the book frame that is t
         getContents: () => [page(-400, 'epubcfi(/6/4!/4/10/1:5)')],
     };
     assert.equal(P.middleOf(rendition), 'epubcfi(/6/4!/4/10/1:5)');
-    assert.deepEqual(asked, [[600, 300]]);   // the center of the reader in the frame: its second page
+    // The center of the reader in the frame (its second page) is on a text of spaces only (a
+    // picture, a gap between paragraphs): the point a little higher.
+    assert.deepEqual(asked, [[600, 300], [600, 240]]);
     // A frame that is not at the center (the next section, still to the right): the next frame.
     const two = { ...rendition, getContents: () => [page(400, 'epubcfi(/6/6!/4/2/1:0)'), page(-400, 'epubcfi(/6/4!/4/10/1:5)')] };
     assert.equal(P.middleOf(two), 'epubcfi(/6/4!/4/10/1:5)');
     assert.equal(P.middleOf({ getContents: () => [] }), null);   // no container: the first line instead
+});
+
+test('prepare: an EPUB book gets the class font on each page and one text size', () => {
+    const style = () => ({ id: '', textContent: '' });
+    const page = () => {
+        const added: { id: string; textContent: string }[] = [];
+        const doc = {
+            head: { appendChild: (s: { id: string; textContent: string }) => { added.push(s); } },
+            createElement: style,
+            getElementById: (id: string) => added.find((s) => s.id === id) || null,
+        };
+        return { document: doc, added };
+    };
+    const now = page();
+    const later = page();
+    let hook: ((c: unknown) => void) | null = null;
+    let size = '';
+    const rendition = {
+        hooks: { content: { register: (f: (c: unknown) => void) => { hook = f; } } },
+        getContents: () => [now],
+        themes: { fontSize: (s: string) => { size = s; } },
+    };
+    P.prepare({}, 'epub', rendition, '@font-face { font-family: "K2Go Class" }');
+    assert.equal(now.added.length, 1);
+    assert.match(now.added[0].textContent, /K2Go Class/);
+    assert.equal(size, '100%');
+    hook!(later);                       // a section that the reader shows later
+    hook!(later);                       // only one style for a page
+    assert.equal(later.added.length, 1);
+    P.prepare({}, 'epub', { ...rendition, themes: { fontSize: () => { throw new Error('no'); } } }, '');   // "?font=native": nothing
 });

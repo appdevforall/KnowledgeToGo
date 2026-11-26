@@ -149,8 +149,9 @@ var School = (function () {
         if (!path) { return; }
         asked[key(f)] = null;   // it navigated by itself: no URL of open() for this page
       }
-      // The apps (a map, a PDF, a book reader) keep their own fonts: the class font would move the
-      // pdf.js text layer off the glyphs, and an app draws no text that wraps.
+      // The page of an app (a map, a PDF, the EPUB reader) keeps its own font: the class font would
+      // move the pdf.js text layer off the glyphs. The text of an EPUB book is in inner frames of
+      // the reader: it gets the class font there (place.js bookFont).
       var app = path !== null && SchoolPlace.isApp(SchoolPlace.kindOf(path));
       if (doc && !app) { normalize(doc); }
       var mine = gen;
@@ -238,6 +239,9 @@ var School = (function () {
     WIDTH: WIDTH,
     view: view,
     normalize: normalize,
+    // The CSS of the class font, for an app that puts it in its own pages (the EPUB reader,
+    // place.js), or '' with "?font=native".
+    classCss: function () { return params.get('font') === 'native' ? '' : CLASS_CSS; },
     onLayout: onLayout,
     keepAlive: keepAlive
   };

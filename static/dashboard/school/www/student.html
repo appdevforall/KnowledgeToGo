@@ -150,7 +150,7 @@
           auto += 1;
         }
         if (apply()) { ack(); }
-      });
+      }, School.classCss());
     } else {
       // A late image or the class font changes the layout under the anchor: apply it again. (An
       // app keeps its place when its page changes size.)
