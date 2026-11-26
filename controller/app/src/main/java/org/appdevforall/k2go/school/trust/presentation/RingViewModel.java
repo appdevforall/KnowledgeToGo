@@ -108,6 +108,12 @@ public class RingViewModel extends ViewModel {
     public LiveData<Boolean> waiting() { return waiting; }
     public LiveData<Event> event() { return event; }
 
+    /** The public key that this phone sent to the teacher ring that it waits for; null: none. */
+    public String waitingKey() {
+        JoinSchool.Pending p = pending;
+        return p == null ? null : p.key;
+    }
+
     public boolean canEnrollStudents() {
         return host.canEnrollStudents(System.currentTimeMillis() / 1000);
     }

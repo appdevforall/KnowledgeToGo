@@ -23,7 +23,8 @@ public final class JoinSchool {
         final String pin;
         final String nonce;
         final String id;
-        final String key;
+        /** The public key that this phone sent (device zero shows the start of its fingerprint). */
+        public final String key;
 
         Pending(SchoolRing.Found ring, String pin, String nonce, String id, String key) {
             this.ring = ring;

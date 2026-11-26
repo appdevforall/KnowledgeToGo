@@ -146,7 +146,7 @@ public class SchoolFragment extends Fragment {
         RingViewModel.Host host = ringVm.ring().getValue();
         if (host != null) {
             renderRing(ctx, host);
-        } else if (joining && st.kind == SchoolViewModel.State.Kind.NONE) {
+        } else if (joining && st.kind != SchoolViewModel.State.Kind.DEVICE_ZERO && st.teacherLabel == null) {
             renderJoin(ctx);
         } else {
             list.addView(K2GoText.body(ctx, getString(R.string.k2go_school_intro), R.color.k2go_muted));
@@ -290,6 +290,14 @@ public class SchoolFragment extends Fragment {
     private void renderMember(Context ctx, SchoolViewModel.State st) {
         if (st.teacherLabel == null) {
             list.addView(card(ctx, getString(R.string.k2go_school_member, st.name)));
+            // A student phone of this school can still join a teacher ring of the same school.
+            MaterialButton join = button(ctx, R.string.k2go_school_join, false);
+            join.setOnClickListener(v -> {
+                joining = true;
+                ringVm.startFind();
+                rerender();
+            });
+            list.addView(join, top(ctx, 16));
             return;
         }
         list.addView(card(ctx, getString(R.string.k2go_school_teacher_member, st.name, st.teacherLabel)));
@@ -353,7 +361,11 @@ public class SchoolFragment extends Fragment {
         list.addView(K2GoText.body(ctx, getString(R.string.k2go_school_join_hint), R.color.k2go_muted));
         if (Boolean.TRUE.equals(ringVm.waiting().getValue())) {
             list.addView(card(ctx, getString(R.string.k2go_school_waiting)));
-            list.addView(working(ctx));
+            String key = ringVm.waitingKey();
+            if (key != null) {
+                list.addView(K2GoText.label(ctx, getString(R.string.k2go_school_own_key, keyStart(key)), R.color.k2go_muted), top(ctx, 8));
+            }
+            list.addView(working(ctx, ""));
             MaterialButton cancel = button(ctx, R.string.k2go_cancel, false);
             cancel.setOnClickListener(v -> ringVm.cancelWaiting());
             list.addView(cancel, top(ctx, 16));

@@ -97,16 +97,12 @@
     <!-- %1$s = the school name. -->
     <string name="k2go_school_joined" translatable="false">This phone joined %1$s.</string>
     <string name="k2go_school_waiting" translatable="false">Waiting for device zero to approve this phone.</string>
+    <!-- Under the wait. %1$s = the start of the key fingerprint of this phone (8 letters and digits); device zero shows the same one. -->
+    <string name="k2go_school_own_key" translatable="false">The key of this phone starts with %1$s. Device zero must show the same.</string>
     <string name="k2go_school_err_wrong_pin" translatable="false">The PIN is not correct.</string>
     <string name="k2go_school_err_tries" translatable="false">Too many wrong PINs from this phone. Ask the teacher to open a new ring.</string>
     <string name="k2go_school_err_no_ring" translatable="false">The ring is closed.</string>
     <string name="k2go_school_err_refused" translatable="false">Device zero did not approve this phone.</string>
     <string name="k2go_school_err_bad_answer" translatable="false">The ring did not prove that it knows the PIN. It can be a false ring: ask the teacher.</string>
     <string name="k2go_school_err_no_key" translatable="false">This phone cannot keep a teacher key.</string>
-    <!-- Dashboard card and Module management row: the box tracks a branch that is not on GitHub any more. The status pill. -->
-    <string name="k2go_dash_chip_branch_missing" translatable="false">Branch not on GitHub</string>
-    <!-- The same case, the card subtitle. %1$s = the branch name, for example feature/k2go-school. -->
-    <string name="k2go_dash_branch_missing_fmt" translatable="false">The branch %1$s of this box is no longer on GitHub. The box keeps its current version.</string>
-    <!-- Module management row subtitle on a box that is not on main. %1$s = the dash-node version, %2$s = the branch name. -->
-    <string name="k2go_dash_card_sub_branch_fmt" translatable="false">REST core: installed v%1$s, branch %2$s</string>
 </resources>
