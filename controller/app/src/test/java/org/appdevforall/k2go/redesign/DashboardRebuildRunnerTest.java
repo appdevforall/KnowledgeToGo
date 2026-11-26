@@ -54,4 +54,17 @@ public class DashboardRebuildRunnerTest {
     @Test public void nullOutputIsNotOk() {
         assertFalse(PreflightResult.parse(null).ok);
     }
+
+    // The proot path takes the branch from the box record, never a branch of its own.
+    @Test public void commandsReadTheBoxBranchRecord() {
+        for (String cmd : new String[]{DashboardRebuildRunner.preflightCommand(), DashboardRebuildRunner.rebuildCommand()}) {
+            assertTrue(cmd, cmd.startsWith(DashboardRebuildRunner.READ_BRANCH));
+            assertTrue(cmd, cmd.contains("/library/dashboard/.k2go-branch"));
+            assertFalse(cmd, cmd.contains("origin main"));
+            assertFalse("the command goes inside single quotes", cmd.contains("'"));
+        }
+        assertTrue(DashboardRebuildRunner.preflightCommand().contains("git fetch origin \"$B\""));
+        assertTrue(DashboardRebuildRunner.preflightCommand().contains("preflight.sh /opt/iiab-android \"$B\""));
+        assertTrue(DashboardRebuildRunner.rebuildCommand().contains("K2GO_BRANCH=\"$B\""));
+    }
 }

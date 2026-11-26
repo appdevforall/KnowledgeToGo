@@ -103,4 +103,10 @@
     <string name="k2go_school_err_refused" translatable="false">Device zero did not approve this phone.</string>
     <string name="k2go_school_err_bad_answer" translatable="false">The ring did not prove that it knows the PIN. It can be a false ring: ask the teacher.</string>
     <string name="k2go_school_err_no_key" translatable="false">This phone cannot keep a teacher key.</string>
+    <!-- Dashboard card and Module management row: the box tracks a branch that is not on GitHub any more. The status pill. -->
+    <string name="k2go_dash_chip_branch_missing" translatable="false">Branch not on GitHub</string>
+    <!-- The same case, the card subtitle. %1$s = the branch name, for example feature/k2go-school. -->
+    <string name="k2go_dash_branch_missing_fmt" translatable="false">The branch %1$s of this box is no longer on GitHub. The box keeps its current version.</string>
+    <!-- Module management row subtitle on a box that is not on main. %1$s = the dash-node version, %2$s = the branch name. -->
+    <string name="k2go_dash_card_sub_branch_fmt" translatable="false">REST core: installed v%1$s, branch %2$s</string>
 </resources>

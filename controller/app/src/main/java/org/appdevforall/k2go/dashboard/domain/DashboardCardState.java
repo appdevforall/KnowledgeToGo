@@ -26,6 +26,8 @@ package org.appdevforall.k2go.dashboard.domain;
  *   <li>{@link Kind#UP_TO_DATE} — on the latest; the primary action is a manual Rebuild
  *       (de-emphasized).</li>
  *   <li>{@link Kind#CHECKING} — online, no result yet and nothing cached to fall back on.</li>
+ *   <li>{@link Kind#BRANCH_MISSING}: the branch that the box tracks is not on GitHub any more. The box
+ *       keeps its build; the primary action stays a manual Rebuild (which fails with the reason).</li>
  * </ul>
  *
  * <p>The version subtitle ("v1.2.7 → v1.3.0") needs both versions, which only a <em>live</em> check
@@ -34,16 +36,27 @@ package org.appdevforall.k2go.dashboard.domain;
  */
 public final class DashboardCardState {
 
-    public enum Kind { CHECKING, UP_TO_DATE, UPDATE_AVAILABLE, OFFLINE }
+    public enum Kind { CHECKING, UP_TO_DATE, UPDATE_AVAILABLE, OFFLINE, BRANCH_MISSING }
 
     private final Kind kind;
     private final String installedVersion;   // may be null/empty when unknown
     private final String targetVersion;      // non-null only for a LIVE UPDATE_AVAILABLE
+    private final String missingBranch;      // non-null only for BRANCH_MISSING
 
     private DashboardCardState(Kind kind, String installedVersion, String targetVersion) {
+        this(kind, installedVersion, targetVersion, null);
+    }
+
+    private DashboardCardState(Kind kind, String installedVersion, String targetVersion, String missingBranch) {
         this.kind = kind;
         this.installedVersion = installedVersion;
         this.targetVersion = targetVersion;
+        this.missingBranch = missingBranch;
+    }
+
+    /** The live check says that {@code branch}, the branch of the box, is not on the remote. */
+    public static DashboardCardState branchMissing(String branch) {
+        return new DashboardCardState(Kind.BRANCH_MISSING, null, null, branch);
     }
 
     /**
@@ -90,6 +103,9 @@ public final class DashboardCardState {
     /** The target version for the "vX → vY" subtitle, or null when it should not be shown (every
      *  state but a LIVE UPDATE_AVAILABLE). Present iff {@link #showsVersionArrow()}. */
     public String targetVersion() { return targetVersion; }
+
+    /** The branch name for a BRANCH_MISSING state, else null. */
+    public String missingBranch() { return missingBranch; }
 
     /** True when both versions are known and differ, so the "vX → vY" subtitle is worth showing. */
     public boolean showsVersionArrow() {

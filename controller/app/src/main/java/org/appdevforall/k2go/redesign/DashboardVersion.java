@@ -58,4 +58,26 @@ public final class DashboardVersion {
             return null;
         }
     }
+
+    /** The branch of the installed build when it is not main, else null. The box owns the record
+     *  (library/dashboard/.k2go-branch, written with the build); the app only shows it. */
+    @Nullable
+    public static String nonMainBranch(@NonNull Context ctx) {
+        File rec = new File(org.appdevforall.k2go.SystemStateEvaluator.rootfsDir(ctx),
+                "library/dashboard/.k2go-branch");
+        if (!rec.exists()) return null;
+        try (BufferedReader r = new BufferedReader(new FileReader(rec))) {
+            return nonMainBranch(r.readLine());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** Pure rule for {@link #nonMainBranch(Context)}: the first line, trimmed; null for none or main. */
+    @Nullable
+    static String nonMainBranch(@Nullable String recordLine) {
+        if (recordLine == null) return null;
+        String b = recordLine.trim();
+        return b.isEmpty() || "main".equals(b) ? null : b;
+    }
 }

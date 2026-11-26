@@ -75,4 +75,17 @@ public class DashboardCardStateTest {
         assertTrue(s.primaryIsUpdate());
         assertFalse("no installed version -> no arrow", s.showsVersionArrow());
     }
+
+    @Test public void branchMissingNamesTheBranchAndOffersNoUpdate() {
+        DashboardCardState s = DashboardCardState.branchMissing("feature/gone");
+        assertEquals(Kind.BRANCH_MISSING, s.kind());
+        assertEquals("feature/gone", s.missingBranch());
+        assertFalse("never an Update to another branch", s.primaryIsUpdate());
+        assertFalse(s.showsVersionArrow());
+        assertFalse(s.isOffline());
+    }
+
+    @Test public void otherStatesHaveNoMissingBranch() {
+        assertNull(DashboardCardState.resolve(true, true, false, "1.0.0", "1.0.0", false, false).missingBranch());
+    }
 }

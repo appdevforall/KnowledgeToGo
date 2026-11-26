@@ -54,6 +54,10 @@ public final class DashboardCardStatus {
                 l.onState(DashboardCardState.resolve(
                         true, true, updateAvailable, installed, available, true, updateAvailable));
             }
+            @Override public void onBranchMissing(String branch) {
+                // A definite answer, but not about versions: the cache keeps its last value.
+                l.onState(DashboardCardState.branchMissing(branch));
+            }
             @Override public void onErr(String message) {
                 // Online but the check failed (box stopped): fall back to the cached state, or Checking
                 // when nothing is cached. Re-read connectivity in case the network just dropped.
