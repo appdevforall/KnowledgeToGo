@@ -66,6 +66,21 @@ public final class TrustCodec {
         return new TeacherCheck(TrustCheck.teacher(root, t, cert, removed, now), cert);
     }
 
+    /** Device zero: the self-signed root record of a new school. It refuses fields that a reader refuses. */
+    public static String signRoot(PrivateKey rootKey, String rootKeySpkiB64, String school, String name, long until) {
+        if (TrustRecords.Root.of(TrustRecords.VERSION, school, name, rootKeySpkiB64, until) == null) {
+            throw new IllegalArgumentException("root field not valid");
+        }
+        JSONObject o = new JSONObject();
+        try {
+            o.put("kind", "root").put("v", TrustRecords.VERSION).put("school", school).put("name", name)
+                    .put("rootKey", rootKeySpkiB64).put("until", until);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+        return sign(rootKey, o);
+    }
+
     /** Device zero: a certificate for one teacher phone. It refuses fields that a reader refuses. */
     public static String signTeacher(PrivateKey rootKey, String school, String teacherKeySpkiB64, String label,
                                      String serial, long from, long until) {

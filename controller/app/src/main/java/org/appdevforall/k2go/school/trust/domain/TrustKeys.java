@@ -11,11 +11,15 @@ package org.appdevforall.k2go.school.trust.domain;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /** Platform crypto only (java.security): no new library (K2G-5). */
@@ -63,6 +67,38 @@ public final class TrustKeys {
             return s.verify(sig);
         } catch (Exception e) {
             return false;   // a malformed DER signature throws
+        }
+    }
+
+    /** A new P-256 key pair (device zero: the school root key). */
+    public static KeyPair generate() {
+        try {
+            KeyPairGenerator g = KeyPairGenerator.getInstance("EC");
+            g.initialize(new ECGenParameterSpec("secp256r1"));
+            return g.generateKeyPair();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /** A private key from PKCS#8 DER; null when it is not an EC key. */
+    public static PrivateKey privateKey(byte[] pkcs8) {
+        if (pkcs8 == null) return null;
+        try {
+            return KeyFactory.getInstance("EC").generatePrivate(new PKCS8EncodedKeySpec(pkcs8));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** The private key belongs to the public key {@code spki}: it signs a test message that the public key accepts. */
+    public static boolean isPair(PrivateKey key, byte[] spki) {
+        if (key == null) return false;
+        byte[] probe = "k2go-key-pair-probe".getBytes(StandardCharsets.UTF_8);
+        try {
+            return verify(spki, probe, sign(key, probe));
+        } catch (IllegalStateException e) {
+            return false;
         }
     }
 

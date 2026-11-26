@@ -160,11 +160,18 @@ public class TrustCheckTest {
         assertEquals(Verdict.VERIFIED, TrustCodec.checkTeacher(ROOT, cert, null, NOW).verdict);
         assertEquals(Collections.singletonList("e5e5e5e5e5e5e5e5"), TrustCodec.readRemoved(ROOT, removed).serials);
         // The entry for the vectors file, when it is made again (trust-vectors.gen.ts).
-        System.out.println("javaSigned: " + new JSONObject().put("teacher", cert).put("removed", removed));
+        // A root that the app made (device zero): its own new key.
+        java.security.KeyPair kp = TrustKeys.generate();
+        byte[] spkiNew = kp.getPublic().getEncoded();
+        String rootToken = TrustCodec.signRoot(kp.getPrivate(), Base64Url.encodeStandard(spkiNew),
+                TrustKeys.schoolId(spkiNew), "Escuela de prueba", NOW + 1000);
+        assertNotNull(TrustCodec.readRoot(rootToken));
+        System.out.println("javaSigned: " + new JSONObject().put("teacher", cert).put("removed", removed).put("root", rootToken));
 
         JSONObject j = V.optJSONObject("javaSigned");
         assertNotNull("trust-vectors.json has no javaSigned entry: copy the line above into it", j);
         assertEquals(Verdict.VERIFIED, TrustCodec.checkTeacher(ROOT, j.optString("teacher"), null, NOW).verdict);
+        assertNotNull("javaSigned has no root: copy the line above into it", TrustCodec.readRoot(j.optString("root", null)));
     }
 
     @Test public void theSignersRefuseWhatTheReadersRefuse() throws Exception {

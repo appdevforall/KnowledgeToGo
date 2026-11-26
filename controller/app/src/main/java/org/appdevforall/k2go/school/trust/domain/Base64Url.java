@@ -39,6 +39,13 @@ public final class Base64Url {
         return out.toString();
     }
 
+    /** Standard alphabet with padding (keys in the JSON bodies, as Node writes them). */
+    public static String encodeStandard(byte[] data) {
+        StringBuilder s = new StringBuilder(encode(data).replace('-', '+').replace('_', '/'));
+        while (s.length() % 4 != 0) s.append('=');
+        return s.toString();
+    }
+
     /** URL alphabet, no padding. null: not valid. */
     public static byte[] decode(String s) {
         return s == null ? null : decode(s, false);

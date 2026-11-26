@@ -100,4 +100,6 @@ test('a certificate that the app signed (Java) passes on the box', () => {
     assert.ok(V.javaSigned, 'trust-vectors.json has no javaSigned entry: run TrustCheckTest and add it');
     assert.equal(checkTeacher(root, V.javaSigned.teacher, null, V.now).verdict, 'verified');
     assert.deepEqual(readRemoved(root, V.javaSigned.removed)?.serials, ['e5e5e5e5e5e5e5e5']);
+    const javaRoot = readRoot(V.javaSigned.root);   // a root that device zero made in the app
+    assert.equal(javaRoot?.name, 'Escuela de prueba');
 });
