@@ -303,7 +303,9 @@ public class SettingsSubFragment extends Fragment {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_power_users));
         SettingsUi.preview(ctx, list, "ADB", null);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_network_dns), getString(R.string.setup_dns_hint), null, v -> openSub("dns"));
-        SettingsUi.row(ctx, list, "Terminal (Debian)", null, null, v -> openTerminal(ctx));
+        if (org.appdevforall.k2go.school.data.SchoolRoleFile.role(ctx).canUseTerminal()) {
+            SettingsUi.row(ctx, list, "Terminal (Debian)", null, null, v -> openTerminal(ctx));
+        }
     }
 
     private void openSub(String screen) {

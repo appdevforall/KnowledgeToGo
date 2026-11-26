@@ -955,6 +955,22 @@ public class TerminalController {
                 // K2GO-446: targetSdk 35 W^X blocks execve of app-data-dir files, so run the
                 // generated iiab script through the interpreter instead of exec'ing it directly.
                 mkshrc.append("iiab() { /system/bin/sh \"").append(iiabScript.getAbsolutePath()).append("\" \"$@\"; }\n");
+                // K2Go School: the school sets the role of this phone here (SchoolRoleFile, book
+                // chapter 08). The app only reads the file.
+                String roleDir = org.appdevforall.k2go.school.data.SchoolRoleFile.dir(activity).getAbsolutePath();
+                mkshrc.append("k2go-role() {\n")
+                      .append("  d=\"").append(roleDir).append("\"\n")
+                      .append("  case \"$1\" in\n")
+                      .append("    teacher) mkdir -p \"$d\" && echo teacher > \"$d/role\" && echo \"School role: teacher\" ;;\n")
+                      .append("    student) mkdir -p \"$d\" && echo student > \"$d/role\" && echo \"School role: student."
+                              + " When you leave the terminal, it closes and does not open again."
+                              + " To change the role, clear the storage of K2Go.\" ;;\n")
+                      .append("    none) rm -f \"$d/role\" && echo \"School role: none\" ;;\n")
+                      .append("    '') if [ -f \"$d/role\" ]; then echo \"School role: $(cat \"$d/role\")\";"
+                              + " else echo \"School role: none\"; fi ;;\n")
+                      .append("    *) echo \"Use: k2go-role teacher|student|none\"; return 2 ;;\n")
+                      .append("  esac\n")
+                      .append("}\n");
                 fosMkshrc.write(mkshrc.toString().getBytes());
                 fosMkshrc.close();
             } catch (Exception e) {
