@@ -115,20 +115,35 @@
   var marks = null;         // the marks of the lesson page, as the box sent them: { url, list }
   var painted = { doc: null, list: null };   // what paintMarks() drew last
   var NO_MARKS = [];
-  // An app (the map) can move its view by itself after the student applied the place: the page
-  // applies it again, at most AUTO_MAX times per message of the teacher (a place that the app
-  // cannot show, for example a map center out of its limits, must not loop).
+  // An app can move its view by itself after the student applied the place (the map shows the
+  // world on a load, a reader restores the last place that the phone read): the page applies the
+  // place again when the view is not at it, at most AUTO_MAX times per message of the teacher (a
+  // place that the app cannot show, for example a map center out of its limits, must not loop).
   var AUTO_MAX = 5;
   var auto = 0;
   var applying = false;     // true during SchoolPlace.apply(): the moves that it makes are not the app's own
+  var ackedSeq = null;      // the message of the teacher that the last ack was for
 
   var view = School.view(stage, function (win) {
     var kind = SchoolPlace.kindOf(win.location.pathname);
     if (SchoolPlace.isApp(kind)) {
       // A move of the student stays until the next message of the teacher, as a scroll of a page.
+      // pdf.js in a frame opens the links of a PDF in the top page: the student must stay in the
+      // class. A link out of the box opens nothing.
+      win.document.addEventListener('click', function (ev) {
+        var link = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+        if (link && (/^_(top|parent|blank)$/.test(link.target) || link.origin !== location.origin)) { ev.preventDefault(); }
+      }, true);
       SchoolPlace.watch(win, kind, function (byUser) {
-        if (byUser || applying || ended || !onPage() || auto >= AUTO_MAX) { return; }
-        auto += 1;
+        if (byUser || applying || ended || !onPage()) { return; }
+        var shown = SchoolPlace.at(win, kind, last.a);
+        // Not ready, or at the place and acked: a second ack of one message would show a longer
+        // round trip on the teacher page.
+        if (shown === null || (shown && ackedSeq === last.seq)) { return; }
+        if (!shown) {
+          if (auto >= AUTO_MAX) { return; }
+          auto += 1;
+        }
         if (apply()) { ack(); }
       });
     } else {
@@ -205,6 +220,7 @@
     ackTimer = null;
     if (!last || !token || replaced || ended) { return; }
     lastAck = performance.now();
+    ackedSeq = last.seq;
     fetch('ack', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

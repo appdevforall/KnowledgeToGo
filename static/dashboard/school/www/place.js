@@ -115,33 +115,44 @@
 
   // Shows the place. true: the view is at the place; null: the app is not ready, try again;
   // false: the place cannot show (not a place of this app).
-  function apply(win, kind, a) {
-    if (!valid(a, kind)) { return false; }
+  // The view shows the place. null: the app is not ready, or the place is not one of this app.
+  // EPUB: the page on the screen holds the CFI. The page height differs between phones, so the
+  // page can start some lines before the teacher's.
+  function at(win, kind, a) {
+    if (!valid(a, kind)) { return null; }
     var app = appOf(win, kind);
     if (!app) { return null; }
-    var now = read(win, kind);
     if (kind === 'epub') {
-      // The page on the screen holds the CFI, or the reader shows the page that holds it. The page
-      // height differs between phones, so the page can start some lines before the teacher's.
       var loc = app.location;
       var CFI = win.ePub && win.ePub.CFI;
-      if (CFI) {
+      if (!CFI) { return false; }
+      try {
         var cmp = new CFI();
-        try {
-          if (cmp.compare(loc.start.cfi, a.cfi) <= 0 && cmp.compare(a.cfi, loc.end.cfi) <= 0) { return true; }
-        } catch (e) { /* a CFI of another book: display() refuses it */ }
-      }
+        return cmp.compare(loc.start.cfi, a.cfi) <= 0 && cmp.compare(a.cfi, loc.end.cfi) <= 0;
+      } catch (e) { return false; }   // a CFI of another book: display() refuses it
+    }
+    var now = read(win, kind);
+    return kind === 'pdf' ? pdfAt(now, a) : mapAt(now, a);
+  }
+
+  function apply(win, kind, a) {
+    if (!valid(a, kind)) { return false; }
+    var shown = at(win, kind, a);
+    if (shown === null) { return null; }
+    if (shown) { return true; }
+    var app = appOf(win, kind);
+    if (kind === 'epub') {
       app.display(a.cfi).catch(function () { /* not in this book */ });
       return true;
     }
     if (kind === 'pdf') {
-      if (pdfAt(now, a)) { return true; }
+      var now = read(win, kind);
       var v = app.pdfViewer;
       if (String(now.z) !== String(a.z)) { v.currentScaleValue = pdfScaleValue(a.z); }
       v.scrollPageIntoView({ pageNumber: Math.min(a.page, v.pagesCount), destArray: [null, { name: 'XYZ' }, a.left, a.top, null], allowNegativeOffset: true });
       return true;
     }
-    if (!mapAt(now, a)) { app.jumpTo({ center: [a.lon, a.lat], zoom: a.z, bearing: a.b, pitch: a.p }); }
+    app.jumpTo({ center: [a.lon, a.lat], zoom: a.z, bearing: a.b, pitch: a.p });
     return true;
   }
 
@@ -188,6 +199,7 @@
     openUrl: openUrl,
     isApp: isApp,
     read: read,
+    at: at,
     apply: apply,
     watch: watch
   };

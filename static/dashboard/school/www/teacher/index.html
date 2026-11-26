@@ -320,6 +320,10 @@
     if (url.protocol === 'javascript:') { return; }
     var here = view.win().location;
     if (url.origin === location.origin && url.pathname === here.pathname && url.search === here.search) { return; }   // a place in this page
+    // An app (the map, a reader) opens its own links of the box itself: the table of contents of
+    // the EPUB reader has relative links that its own click handler shows.
+    var inApp = SchoolPlace.isApp(SchoolPlace.kindOf(here.pathname));
+    if (inApp && url.origin === location.origin && !/^_(top|parent|blank)$/.test(a.target)) { return; }
     ev.preventDefault();
     if (url.origin !== location.origin) {
       note(t('linkOut'));
