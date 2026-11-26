@@ -13,7 +13,8 @@ const MAX_BYTES = 64;   // the app reads the same number of bytes
 // made always takes rights away.
 export function parseRole(text: string | null): SchoolRole {
     if (text === null) return 'none';
-    return text.trim().toLowerCase() === 'teacher' ? 'teacher' : 'student';
+    // Trim as Java String.trim() does (chars up to the space), not the Unicode spaces of JS trim().
+    return text.replace(/^[\x00-\x20]+|[\x00-\x20]+$/g, '').toLowerCase() === 'teacher' ? 'teacher' : 'student';
 }
 
 // Read on each request, no cache: the file is the one owner of the role. No file (or no bind,
@@ -23,7 +24,10 @@ export function readRole(file: string = ROLE_FILE): SchoolRole {
     try {
         fd = fs.openSync(file, 'r');
     } catch (e) {
-        return (e as NodeJS.ErrnoException).code === 'ENOENT' ? 'none' : 'student';
+        // As the app: a missing file or folder is no role; a file that is there but cannot be read
+        // is a student.
+        const code = (e as NodeJS.ErrnoException).code;
+        return code === 'ENOENT' || code === 'ENOTDIR' ? 'none' : 'student';
     }
     try {
         const buf = Buffer.alloc(MAX_BYTES);

@@ -24,6 +24,7 @@ test('any other text is a student', () => {
     assert.equal(parseRole(''), 'student');
     assert.equal(parseRole('none'), 'student');
     assert.equal(parseRole('teacherx'), 'student');
+    assert.equal(parseRole('teacher '), 'student');   // Java trim() keeps it too
 });
 
 test('the role file on disk', () => {
@@ -32,6 +33,8 @@ test('the role file on disk', () => {
         const file = path.join(dir, 'role');
         assert.equal(readRole(file), 'none');
         assert.equal(readRole(path.join(dir, 'no-folder', 'role')), 'none');
+        fs.writeFileSync(path.join(dir, 'school'), 'x');   // a file in place of the folder
+        assert.equal(readRole(path.join(dir, 'school', 'role')), 'none');
         fs.writeFileSync(file, 'teacher\n');
         assert.equal(readRole(file), 'teacher');
         fs.writeFileSync(file, 'student\n');
