@@ -7,6 +7,7 @@
 import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
 import { withRetry } from './net-retry';
 import { presentTitles, getCalibreSession } from './books.query';
+import { bookSources, fetchFirst, hostOf, isTransient } from './books.sources';
 import fs from 'fs';
 import path from 'path';
 
@@ -53,6 +54,23 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         throw new Error('Calibre-Web authentication failed');
     }
 
+    // The host that worked last in this job (null = start at the catalog URL). When the main site
+    // fails one time, the next books of this job go to the mirror first (books.sources.ts).
+    let preferredHost: string | null = null;
+    const download = async (sources: string[]): Promise<Uint8Array<ArrayBuffer>> => {
+        const { body, host } = await fetchFirst(sources, {
+            fetch,
+            headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
+            signal: ctx.signal,
+            stallMs: FETCH_TIMEOUT_MS,
+            preferredHost,
+            log: (line) => ctx.log(line),
+        });
+        if (host !== (preferredHost ?? hostOf(sources[0]))) ctx.log(`[books] using ${host} for the next books`);
+        preferredHost = host;
+        return body;
+    };
+
     let done = 0;
     // ADFA-4893: idempotent resume — a relaunch skips books already in the library instead of
     // re-downloading + re-uploading them (which duplicated entries and reset the percent to 0).
@@ -72,24 +90,14 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         }
 
         const tmp = path.join(TMP_DIR, `pg_${id}.epub`);
+        const sources = bookSources(id, url);
         try {
             await withRetry(async () => {
-                // Cancel (ctx.signal) is terminal; a per-attempt timeout is retryable. Combine both
-                // for the fetch so a stall aborts, then let withRetry decide whether to try again.
-                const signal = AbortSignal.any([ctx.signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]);
-
-                const response = await fetch(url, {
-                    headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
-                    signal,
-                });
-                if (!response.ok) {
-                    const e = new Error(`HTTP ${response.status} from Gutenberg`);
-                    (e as { status?: number }).status = response.status;
-                    throw e;
-                }
-
-                const fileBuffer = await response.arrayBuffer();
+                const fileBuffer = await download(sources);
                 fs.writeFileSync(tmp, Buffer.from(fileBuffer));
+
+                // Cancel (ctx.signal) is terminal; a per-attempt timeout is retryable.
+                const signal = AbortSignal.any([ctx.signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]);
 
                 const form = new FormData();
                 form.append('csrf_token', session.csrfToken);
@@ -112,12 +120,7 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 maxMs: BOOK_RETRY_MAX_MS,
                 signal: ctx.signal,
                 isCanceled: ctx.isCanceled,
-                // Retry network drops and timeouts and 5xx; a 4xx is the server's final word.
-                isTransient: (err) => {
-                    const status = (err as { status?: number })?.status;
-                    if (typeof status === 'number') return status >= 500;
-                    return true;
-                },
+                isTransient,
                 onRetry: ({ attempt, err }) => {
                     ctx.reportRetry(attempt, BOOK_TRIES - 1);   // ADFA-4893: surface "Reconnecting… n of N" on the poll
                     ctx.log(`[books] retry ${attempt}/${BOOK_TRIES - 1} for "${title}": ${err instanceof Error ? err.message : String(err)}`);
