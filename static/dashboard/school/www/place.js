@@ -1,6 +1,7 @@
 // K2Go School: the type of a lesson page, and the place in the apps of the box that the class
-// follows (maps). A Kiwix page uses the block anchor (anchor.js).
-// The place lives in the app (MapLibre): this file reads it there each time and keeps no copy. Design: k2go-school/notes/follow-content-design.md. The pure functions have unit
+// follows (maps, PDF in Calibre-Web). A Kiwix page uses the block anchor (anchor.js).
+// The place lives in the app (MapLibre, pdf.js): this file reads it there each time and keeps no
+// copy. Design: k2go-school/notes/follow-content-design.md. The pure functions have unit
 // tests (school/place.test.ts); the DOM part is thin.
 'use strict';
 
@@ -11,12 +12,13 @@
   // The Kiwix library, also its page for browsers with no JavaScript.
   function isLibrary(path) { return /^\/kiwix(\/|\/nojs(\/.*)?)?$/.test(path); }
 
-  // 'page' (a Kiwix page, block anchor), 'map', or null: a page that only the
+  // 'page' (a Kiwix page, block anchor), 'map', 'pdf', or null: a page that only the
   // teacher sees (the libraries, the box start page, and the apps that the class does not follow:
   // a list of what follows, so that a new app on the box start page does not go to the class).
   function kindOf(path) {
     var p = String(path || '').split(/[?#]/)[0];
     if (/^\/maps\/(index\.html)?$/.test(p)) { return 'map'; }
+    if (/^\/books\/read\/\d+\/pdf$/.test(p)) { return 'pdf'; }
     if (/^\/kiwix\//.test(p) && !isLibrary(p)) { return 'page'; }
     return null;
   }
@@ -46,10 +48,20 @@
       Math.abs(now.z - want.z) < 0.01 && Math.abs(turn(now.b - want.b)) < 0.5 && Math.abs(now.p - want.p) < 0.5;
   }
 
+  // pdf.js gives the scale as a name ("auto", "page-width") or as a percent.
+  function pdfScaleValue(z) {
+    return typeof z === 'number' ? String(z / 100) : String(z);
+  }
+
+  function pdfAt(now, want) {
+    return now.page === want.page && String(now.z) === String(want.z) && Math.abs(now.top - want.top) < 4;
+  }
+
   // A place from the box (the teacher sent it) has the fields of its app.
   function valid(a, kind) {
     if (!a || a.app !== kind) { return false; }
     if (kind === 'map') { return num(a.lat) && num(a.lon) && num(a.z) && num(a.b) && num(a.p); }
+    if (kind === 'pdf') { return num(a.page) && a.page >= 1 && num(a.top) && num(a.left) && (num(a.z) || typeof a.z === 'string'); }
     return false;
   }
 
@@ -70,6 +82,10 @@
         var el = win.document.querySelector('maps-black');
         return el && el.map ? el.map : null;
       }
+      if (kind === 'pdf') {
+        var pdf = win.PDFViewerApplication;
+        return pdf && pdf.pdfDocument && pdf.pdfViewer && pdf.pdfViewer.pagesCount > 0 && pdf.pdfViewer._location ? pdf : null;
+      }
     } catch (e) { /* another origin, or the page goes */ }
     return null;
   }
@@ -78,6 +94,12 @@
   function read(win, kind) {
     var app = appOf(win, kind);
     if (!app) { return null; }
+    if (kind === 'pdf') {
+      // _location is what pdf.js sends with its "updateviewarea" event. pdf.js 4.5 as Calibre-Web
+      // bundles it; a newer pdf.js can rename it, and then the PDF does not follow (null).
+      var l = app.pdfViewer._location;
+      return { app: 'pdf', page: l.pageNumber, top: Math.round(l.top), left: Math.round(l.left), z: l.scale };
+    }
     var c = app.getCenter();
     return mapPlace(c.lat, c.lng, app.getZoom(), app.getBearing(), app.getPitch());
   }
@@ -89,6 +111,13 @@
     var app = appOf(win, kind);
     if (!app) { return null; }
     var now = read(win, kind);
+    if (kind === 'pdf') {
+      if (pdfAt(now, a)) { return true; }
+      var v = app.pdfViewer;
+      if (String(now.z) !== String(a.z)) { v.currentScaleValue = pdfScaleValue(a.z); }
+      v.scrollPageIntoView({ pageNumber: Math.min(a.page, v.pagesCount), destArray: [null, { name: 'XYZ' }, a.left, a.top, null], allowNegativeOffset: true });
+      return true;
+    }
     if (!mapAt(now, a)) { app.jumpTo({ center: [a.lon, a.lat], zoom: a.z, bearing: a.b, pitch: a.p }); }
     return true;
   }
@@ -115,7 +144,7 @@
         setTimeout(hook, Date.now() - start < WAIT_MS ? 250 : 2000);
         return;
       }
-      app.on('move', moved);
+      if (kind === 'pdf') { app.eventBus.on('updateviewarea', moved); } else { app.on('move', moved); }
       onMove(false);   // the app is ready: not a move, so an early touch does not count
     })();
   }
@@ -125,6 +154,8 @@
     isLibrary: isLibrary,
     mapPlace: mapPlace,
     mapAt: mapAt,
+    pdfScaleValue: pdfScaleValue,
+    pdfAt: pdfAt,
     valid: valid,
     openUrl: openUrl,
     isApp: isApp,

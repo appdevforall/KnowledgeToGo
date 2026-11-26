@@ -67,3 +67,28 @@ test('openUrl: a map opens at the place in its hash; other pages open as they ar
     assert.equal(P.openUrl('/maps/', null), '/maps/');
     assert.equal(P.openUrl('/kiwix/content/x/A/y', a), '/kiwix/content/x/A/y');
 });
+
+test('kindOf: the Calibre-Web PDF reader is a pdf; the catalog and other formats are for the teacher only', () => {
+    assert.equal(P.kindOf('/books/read/2/pdf'), 'pdf');
+    assert.equal(P.kindOf('/books/read/2/pdf#page=3'), 'pdf');
+    assert.equal(P.kindOf('/books/read/x/pdf'), null);
+    assert.equal(P.kindOf('/books/show/2/pdf'), null);
+    assert.equal(P.kindOf('/books/read/2/cbz'), null);
+    assert.equal(P.isApp('pdf'), true);
+});
+
+test('pdf: the scale goes to pdf.js as a name or as a factor; the place has page, top and scale', () => {
+    assert.equal(P.pdfScaleValue('auto'), 'auto');
+    assert.equal(P.pdfScaleValue(150), '1.5');
+    const want = { app: 'pdf', page: 3, top: 400, left: -13, z: 'auto' };
+    assert.equal(P.pdfAt({ app: 'pdf', page: 3, top: 402, left: -13, z: 'auto' }, want), true);
+    assert.equal(P.pdfAt({ app: 'pdf', page: 4, top: 400, left: -13, z: 'auto' }, want), false);
+    assert.equal(P.pdfAt({ app: 'pdf', page: 3, top: 300, left: -13, z: 'auto' }, want), false);
+    assert.equal(P.pdfAt({ app: 'pdf', page: 3, top: 400, left: -13, z: 150 }, want), false);
+    assert.equal(P.valid(want, 'pdf'), true);
+    assert.equal(P.valid({ ...want, z: 150 }, 'pdf'), true);
+    assert.equal(P.valid({ ...want, page: 0 }, 'pdf'), false);
+    assert.equal(P.valid({ ...want, top: null }, 'pdf'), false);
+    assert.equal(P.valid(want, 'map'), false);
+    assert.equal(P.openUrl('/books/read/2/pdf', want), '/books/read/2/pdf');
+});

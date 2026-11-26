@@ -85,6 +85,15 @@ var School = (function () {
       f.addEventListener('load', function () { loaded(f); });
       stage.appendChild(f);
     });
+    // pdf.js in a frame of the same origin sends its "webviewerloaded" event to the parent document
+    // (this page), not to its own window, where the Calibre-Web reader sets the PDF file and the
+    // worker. Without this, the PDF in the frame does not open.
+    document.addEventListener('webviewerloaded', function (ev) {
+      var src = ev.detail && ev.detail.source;
+      if (src && (src === a.contentWindow || src === b.contentWindow)) {
+        src.dispatchEvent(new CustomEvent('webviewerloaded', { detail: ev.detail }));
+      }
+    });
     var front = a;
     var back = b;
     var asked = {};         // per frame: the URL that open() gave it, and the path where it landed
