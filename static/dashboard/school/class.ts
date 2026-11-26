@@ -7,6 +7,7 @@
 // ("Seat 01" on the pages). No name goes to the box (K2G-P5). One phone is one seat: the
 // "Another student" button of a shared phone was removed.
 import crypto from 'crypto';
+import { performance } from 'perf_hooks';
 
 export interface Student {
     seat: number;
@@ -78,10 +79,36 @@ export function newClassCode(): string {
     return code;
 }
 
-// What the box tells the class network: is a class open, and its code. Nothing else.
+// What the box tells the class network: is a class open, its code, the name that the teacher gave
+// it (or null), and its age in seconds. Seconds, not a start time: the clocks of offline phones do
+// not agree.
 export interface ClassState {
     open: boolean;
     code: string | null;
+    name: string | null;
+    ageSec: number | null;
+}
+
+// A class name: "Math 101", "1 A". The teacher page asks for it when the class starts.
+export const MAX_NAME = 20;   // code points
+const CONTROL = /^[\p{Cc}\p{Cs}]$/u;
+
+// A character that can stay in a name. Bidi controls (U+202A to U+202E, U+2066 to U+2069) can turn
+// the text around the name; a lone surrogate is no character.
+function inName(ch: string): boolean {
+    const cp = ch.codePointAt(0) as number;
+    return !CONTROL.test(ch) && !(cp >= 0x202a && cp <= 0x202e) && !(cp >= 0x2066 && cp <= 0x2069);
+}
+
+// The name as the box keeps it, or null (no text). Spaces collapse to one, control characters go,
+// and the name is cut at MAX_NAME code points.
+export function cleanName(raw: unknown): string | null {
+    if (typeof raw !== 'string') return null;
+    const flat = Array.from(raw.replace(/\s+/gu, ' ')).filter(inName).join('').replace(/ {2,}/g, ' ').trim();
+    const name = Array.from(flat).slice(0, MAX_NAME).join('').trim();
+    // A name of format characters only (U+200B, U+FEFF) shows as nothing. They stay in a name with
+    // letters: ZWNJ and ZWJ are part of Persian and Indic words.
+    return /[^\s\p{Cf}]/u.test(name) ? name : null;
 }
 
 // A lesson URL must be a path on the same box: the student frame loads it, and the scroll works
@@ -192,6 +219,9 @@ export type MarkResult = { changed: boolean } | { refused: MarkRefusal };
 // the old class (lesson, seats, Done marks) goes into the next one.
 interface Session {
     code: string;
+    name: string | null;    // the teacher gives it once, at the start (setName)
+    askName: boolean;       // true until the teacher gives a name or skips: the teacher pages ask
+    openedAt: number;       // ms, the monotonic clock of the box
     lang: string | null;    // the language of the teacher page: the student pages use it too
     lesson: Lesson | null;
     lessonId: number;
@@ -222,7 +252,8 @@ export class ClassRoom {
     constructor(
         private readonly maxStudents = MAX_STUDENTS,
         private readonly newToken: () => string = () => crypto.randomBytes(16).toString('hex'),
-        private readonly now: () => number = Date.now,
+        // A monotonic clock: a change of the phone time does not move the class age or the timers.
+        private readonly now: () => number = () => performance.now(),
         private readonly newCode: () => string = newClassCode,
     ) {}
 
@@ -231,13 +262,30 @@ export class ClassRoom {
     teacherOpen(lang: unknown = null): void {
         if (!this.session) {
             this.session = {
-                code: this.newCode(), lang: null, lesson: null, lessonId: 0, marks: [], markId: 0, byToken: new Map(),
+                code: this.newCode(), name: null, askName: true, openedAt: this.now(), lang: null, lesson: null,
+                lessonId: 0, marks: [], markId: 0, byToken: new Map(),
             };
         }
         this.session.lang = cleanLang(lang) ?? this.session.lang;
         this.teachers += 1;
         this.closedAt = null;
     }
+
+    // The answer of the teacher to "name this class?": a name, or null (Skip). Once per class: no
+    // rename during the class. A teacher page that loads before the answer asks again.
+    setName(raw: unknown): 'ok' | 'invalid' | 'no-class' | 'named' {
+        const s = this.session;
+        if (!s) return 'no-class';
+        if (!s.askName) return 'named';
+        const name = raw === null ? null : cleanName(raw);
+        if (raw !== null && name === null) return 'invalid';
+        s.name = name;
+        s.askName = false;
+        return 'ok';
+    }
+
+    // True while the teacher pages must ask for the name of the class.
+    askName(): boolean { return this.session !== null && this.session.askName; }
 
     teacherClose(): void {
         this.teachers = Math.max(0, this.teachers - 1);
@@ -254,7 +302,9 @@ export class ClassRoom {
     // The class is open from the first teacher page until the end. A teacher page that loads again
     // keeps it open, so the students and the Wi-Fi announcement do not see a gap.
     state(): ClassState {
-        return { open: this.session !== null, code: this.session ? this.session.code : null };
+        const s = this.session;
+        if (!s) return { open: false, code: null, name: null, ageSec: null };
+        return { open: true, code: s.code, name: s.name, ageSec: Math.max(0, Math.floor((this.now() - s.openedAt) / 1000)) };
     }
 
     // The language of the class (of its teacher page), or null.

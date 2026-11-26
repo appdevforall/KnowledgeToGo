@@ -176,7 +176,7 @@ test('join: refused while no class is open and after End class; the page code mu
         assert.equal((await request(box, 'POST', '/school/teacher/end', { ip: '127.0.0.1' })).status, 204);
         assert.equal((await request(box, 'POST', '/school/join', { ip: '192.168.1.22', json: {} })).status, 409);
         assert.equal((await request(box, 'POST', '/school/join', { ip: '192.168.1.22', json: { code: j.code } })).status, 409);
-        assert.equal((await request(box, 'GET', '/school/state')).body, '{"open":false,"code":null}');
+        assert.equal((await request(box, 'GET', '/school/state')).body, '{"open":false,"code":null,"name":null,"ageSec":null}');
         // The token of the ended class stops working.
         assert.equal((await request(box, 'POST', '/school/ack', { json: { token: j.token } })).status, 401);
         page.destroy();
@@ -269,7 +269,7 @@ test('a teacher page that comes back after the class gap ends the old class firs
         assert.equal(room.lapsed(), true);
         const again = await teacherPage(box);           // before the ping round
         await student.seen('ended');
-        assert.deepEqual(room.state(), { open: true, code: 'C2A' });
+        assert.deepEqual(room.state(), { open: true, code: 'C2A', name: null, ageSec: 0 });
         assert.equal((await request(box, 'POST', '/school/ack', { json: { token: j.token } })).status, 401);
         student.close();
         again.destroy();
@@ -348,5 +348,43 @@ test('a malformed JSON body gets 400 with a short answer, no stack trace (review
         });
         assert.equal(r.status, 400);
         assert.equal(r.body, '{"error":"bad request"}');
+    } finally { await box.close(); }
+});
+
+test('class name: the teacher pages ask until an answer; the name goes to /state and to the teacher pages', async () => {
+    const box = await startBox();
+    const local = { ip: '127.0.0.1' };
+    const classOf = (d: unknown): boolean => (d as { type?: string }).type === 'class';
+    try {
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: 'Math' } })).status, 409);
+        const first = await firstEvent(box, '/school/teacher/live?role=page', 'message', { ...local, want: classOf });
+        assert.deepEqual({ ...(first.data as object), code: 'X' }, { type: 'class', code: 'X', name: null, ask: true });
+        // A reload of the teacher page before the answer: it asks again.
+        const again = await firstEvent(box, '/school/teacher/live?role=page', 'message', { ...local, want: classOf });
+        assert.equal((again.data as { ask: boolean }).ask, true);
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { json: { name: 'Math' } })).status, 404);
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: ' 	 ' } })).status, 400);
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: 7 } })).status, 400);
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: {} })).status, 400);
+        const named = firstEvent(box, '/school/teacher/live?role=page', 'message',
+            { ...local, want: (d) => classOf(d) && (d as { name: unknown }).name !== null });
+        await new Promise((ok) => setTimeout(ok, 50));   // the channel is open before the name goes
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: '  Math   101 ' } })).status, 204);
+        assert.deepEqual({ ...((await named).data as object), code: 'X' }, { type: 'class', code: 'X', name: 'Math 101', ask: false });
+        const st = JSON.parse((await request(box, 'GET', '/school/state')).body) as { open: boolean; name: string; ageSec: number };
+        assert.equal(st.open, true);
+        assert.equal(st.name, 'Math 101');
+        assert.equal(st.ageSec, 0);
+        const r = await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: 'Art' } });
+        assert.equal(r.status, 409);                       // no rename during the class
+        assert.equal(r.body, '{"error":"named"}');
+        assert.equal((await request(box, 'POST', '/school/teacher/end', local)).status, 204);
+        assert.equal((await request(box, 'GET', '/school/state')).body, '{"open":false,"code":null,"name":null,"ageSec":null}');
+        // The next class: Skip is an answer too.
+        await firstEvent(box, '/school/teacher/live?role=page', 'message', { ...local, want: classOf });
+        assert.equal((await request(box, 'POST', '/school/teacher/name', { ...local, json: { name: null } })).status, 204);
+        const skipped = await firstEvent(box, '/school/teacher/live?role=page', 'message', { ...local, want: classOf });
+        assert.equal((skipped.data as { ask: boolean; name: unknown }).ask, false);
+        assert.equal((skipped.data as { name: unknown }).name, null);
     } finally { await box.close(); }
 });

@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
     ClassRoom, Student, validLesson, validMark, CLASS_GAP_MS, JOIN_LIMIT, JOIN_WINDOW_MS, MAX_MARK_BLOCKS,
-    MAX_MARKS, OFFLINE_GRACE_MS, QUIET_MS, newClassCode,
+    MAX_MARKS, MAX_NAME, OFFLINE_GRACE_MS, QUIET_MS, cleanName, newClassCode,
 } from './class';
 
 function counter(): () => string {
@@ -294,24 +294,24 @@ test('class session: one code per class, kept over a short teacher gap; a long g
     let t = 0;
     let n = 0;
     const room = new ClassRoom(1000, counter(), () => t, () => `C${++n}`);
-    assert.deepEqual(room.state(), { open: false, code: null });
+    assert.deepEqual(room.state(), { open: false, code: null, name: null, ageSec: null });
     room.teacherOpen();
-    assert.deepEqual(room.state(), { open: true, code: 'C1' });
+    assert.deepEqual(room.state(), { open: true, code: 'C1', name: null, ageSec: 0 });
     room.teacherOpen();                      // a second teacher channel (reload overlap)
     room.teacherClose();
     room.teacherClose();
-    assert.deepEqual(room.state(), { open: true, code: 'C1' });   // a reload: no gap on the network
+    assert.deepEqual(room.state(), { open: true, code: 'C1', name: null, ageSec: 0 });   // a reload: no gap on the network
     t += CLASS_GAP_MS;
     assert.equal(room.lapsed(), false);
     room.teacherOpen();                      // the page comes back in time: same class
-    assert.deepEqual(room.state(), { open: true, code: 'C1' });
+    assert.deepEqual(room.state(), { open: true, code: 'C1', name: null, ageSec: 60 });
     room.teacherClose();
     room.teacherClose();                     // an extra close does not go below zero
     t += CLASS_GAP_MS + 1;
     assert.equal(room.lapsed(), true);       // the router ends it and tells the students
     room.end();                              // (router endClass)
     room.teacherOpen();                      // too late: a new class
-    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
     assert.equal(room.lapsed(), false);
 });
 
@@ -330,7 +330,7 @@ test('class session: a new class has no lesson, seat or Done mark of the old one
     assert.equal(room.lapsed(), true);
     room.end();                              // the router ends a lapsed class (endClass)
     room.teacherOpen();                      // the next lesson day
-    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
     assert.equal(room.current(), null);
     assert.deepEqual(room.roster(), []);
     assert.equal(room.student(old.student.token), undefined);
@@ -345,16 +345,16 @@ test('end: the class closes at once, the students and the lesson go, the next cl
     room.open(r.student);
     room.publish({ url: '/kiwix/content/x/A/y' });
     room.end();
-    assert.deepEqual(room.state(), { open: false, code: null });   // the page is still connected
+    assert.deepEqual(room.state(), { open: false, code: null, name: null, ageSec: null });   // the page is still connected
     assert.deepEqual(room.roster(), []);
     assert.equal(room.student(r.student.token), undefined);        // its token stops working
     assert.equal(room.current(), null);
     assert.equal(room.lapsed(), false);
     room.teacherClose();
     room.teacherOpen();                                            // "Start a new class", at once
-    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
     room.teacherOpen();                                            // a second page of the same class
-    assert.deepEqual(room.state(), { open: true, code: 'C2' });
+    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
 });
 
 test('newClassCode: 4 characters from the easy-to-read set', () => {
@@ -375,4 +375,70 @@ test('class language: the teacher page sets it; a bad value is ignored; a new cl
     assert.equal(room.lang(), null);
     room.teacherOpen();
     assert.equal(room.lang(), null);
+});
+
+test('cleanName: trim, one space, no control characters, at most MAX_NAME code points', () => {
+    assert.equal(cleanName('  Math   101 '), 'Math 101');
+    assert.equal(cleanName('1\tA\n'), '1 A');                          // tab and newline are spaces
+    assert.equal(cleanName('Ma\u0000th\u0007'), 'Math');              // C0 controls go
+    assert.equal(cleanName(`a${String.fromCodePoint(0x202e)}b${String.fromCodePoint(0x2066)}c`), 'abc');   // bidi controls go
+    assert.equal(cleanName('x\uD800y'), 'xy');                        // a lone surrogate goes
+    assert.equal(cleanName('a \u0000 b'), 'a b');                     // no double space after a drop
+    assert.equal(cleanName('x'.repeat(30)), 'x'.repeat(MAX_NAME));
+    const emoji = '\u{1F4D8}';                                          // one code point, two UTF-16 units
+    assert.equal(cleanName(emoji.repeat(25)), emoji.repeat(MAX_NAME));
+    const accent = String.fromCodePoint(0xe1);   // two UTF-8 bytes, one code point
+    assert.equal(cleanName(`Matem${accent}ticas para todos 1 A`), `Matem${accent}ticas para tod`);
+    assert.equal(cleanName(`${'y'.repeat(19)} z`), 'y'.repeat(19));     // no space at the end of the cut
+    assert.equal(cleanName('   '), null);
+    assert.equal(cleanName(String.fromCodePoint(0x200b, 0xfeff)), null);   // format characters only
+    assert.equal(cleanName(`a${String.fromCodePoint(0x200c)}b`), `a${String.fromCodePoint(0x200c)}b`);   // ZWNJ stays (Persian)
+    assert.equal(cleanName('\u0000'), null);
+    assert.equal(cleanName(42), null);
+    assert.equal(cleanName(null), null);
+});
+
+test('class name: asked until the teacher answers; a name or Skip, once per class; gone with the class', () => {
+    let n = 0;
+    const room = new ClassRoom(10, counter(), Date.now, () => `C${++n}`);
+    assert.equal(room.setName('Math'), 'no-class');
+    assert.equal(room.askName(), false);
+    room.teacherOpen();
+    assert.equal(room.askName(), true);
+    room.teacherClose();
+    room.teacherOpen();                                       // a reload before the answer: ask again
+    assert.equal(room.askName(), true);
+    assert.equal(room.setName('   '), 'invalid');
+    assert.equal(room.setName(undefined), 'invalid');
+    assert.equal(room.askName(), true);
+    assert.equal(room.setName('  Math   101 '), 'ok');
+    assert.equal(room.state().name, 'Math 101');
+    assert.equal(room.askName(), false);
+    assert.equal(room.setName('Art'), 'named');               // no rename during the class
+    assert.equal(room.setName(null), 'named');
+    assert.equal(room.state().name, 'Math 101');
+    room.end();
+    assert.equal(room.state().name, null);
+    room.teacherOpen();                                       // a new class asks again
+    assert.equal(room.askName(), true);
+    assert.equal(room.setName(null), 'ok');                   // Skip: no name, no more questions
+    assert.equal(room.askName(), false);
+    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
+    assert.equal(room.setName('Late'), 'named');
+});
+
+test('class age: whole seconds since the class opened, on the clock of the box', () => {
+    let t = 1000;
+    const room = new ClassRoom(10, counter(), () => t, () => 'C1');
+    room.teacherOpen();
+    t += 999;
+    assert.equal(room.state().ageSec, 0);
+    t += 1;
+    assert.equal(room.state().ageSec, 1);
+    t += 2 * 3600 * 1000;
+    assert.equal(room.state().ageSec, 7201);
+    room.teacherOpen();                       // a second teacher page does not start the age again
+    assert.equal(room.state().ageSec, 7201);
+    t -= 10 * 3600 * 1000;                    // the box clock went back: never a negative age
+    assert.equal(room.state().ageSec, 0);
 });

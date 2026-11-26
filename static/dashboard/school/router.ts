@@ -75,6 +75,13 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         }, 300);
     }
 
+    // The code and the name of the class, for the head bar of the teacher pages. ask: the teacher
+    // did not answer "name this class?" yet, so the teacher pages ask.
+    function classEvent(): { type: 'class'; code: string | null; name: string | null; ask: boolean } {
+        const st = classroom.state();
+        return { type: 'class', code: st.code, name: st.name, ask: classroom.askName() };
+    }
+
     // The marks of the lesson page. The box is the one owner of the list: the teacher page draws it
     // from here too. A change goes to all pages of the class. An operation that changed nothing
     // goes back to the teacher pages only: a teacher page that missed a change (a box restart)
@@ -182,11 +189,11 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         res.status(204).end();
     });
 
-    // Is a class open, and its code. The box is the one owner of both. The teacher app reads it to
-    // announce the class on the Wi-Fi (mDNS); a student app reads it to check a class it found, to
-    // find its class again after a drop, and to stop when the class ended. Only the open flag and
-    // the random code: no name, no device data (K2G-P5). The same two values are in the mDNS
-    // announcement.
+    // Is a class open, its code, name and age. The box is the one owner of all four. The teacher
+    // app reads it to announce the class on the Wi-Fi (mDNS); a student app reads it to show the
+    // class in its list, to find its class again after a drop, and to stop when the class ended.
+    // The name is what the teacher chose (the page says: no student names); no device data
+    // (K2G-P5). The mDNS announcement has the code only.
     router.get('/state', (_req: Request, res: Response): void => {
         res.setHeader('Cache-Control', 'no-store');
         res.json(classroom.state());
@@ -240,6 +247,18 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         res.status(204).end();
     });
 
+    // The answer to "name this class?", once per class: a name, or null (Skip). The box cleans the
+    // name (cleanName); all teacher pages show it next to the code and stop asking.
+    router.post('/teacher/name', (req: Request, res: Response): void => {
+        const r = classroom.setName((req.body as { name?: unknown })?.name);
+        if (r !== 'ok') {
+            res.status(r === 'invalid' ? 400 : 409).json({ error: r });
+            return;
+        }
+        toTeachers(classEvent());
+        res.status(204).end();
+    });
+
     router.post('/teacher/end', (_req: Request, res: Response): void => {
         endClass();
         res.status(204).end();
@@ -261,7 +280,7 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         send(res, { type: 'lesson', lesson: now ? now.lesson : null });
         send(res, { type: 'marks', ...(classroom.marks() ?? NO_MARKS) });
         send(res, { type: 'roster', students: classroom.roster() });
-        send(res, { type: 'class', code: classroom.state().code });
+        send(res, classEvent());
         teacherStreams.add(res);
         res.on('close', () => {
             teacherStreams.delete(res);
