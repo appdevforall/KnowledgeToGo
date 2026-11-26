@@ -24,9 +24,10 @@ Update them **together, in the same commit** whenever you bump to a new binaries
    git commit -m "chore: bump native binaries to <tag>"
    ```
 
-Before you pin a new release, run its 8 binaries (`lib*.so --version`) on a phone with Linux
-older than 4.14 and on a phone with a new kernel. CI runs on new kernels only. The sources of a
-release are pinned in `tools/proot-builder/termux-pins.env` (see the README there).
+A release is published only after the kernel matrix (K2GO-595) ran its binaries on real old
+and new kernels (3.16 to 6.12, both ABIs). aria2c is dynamic and does not run there: after a
+change to aria2c, run `libaria2c.so --version` on a phone. The sources of a release are pinned
+in `tools/proot-builder/termux-pins.env` (see the README there).
 
 ## Why (background)
 
