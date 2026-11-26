@@ -176,8 +176,8 @@ test('validMark: only the known kinds and fields, numbers in range', () => {
     assert.deepEqual(validMark({ k: 'x', cfi }), invalid);
     assert.deepEqual(validMark({ k: 'p', cfi: '/6/4!/4/2' }), invalid);                // no epubcfi()
     assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4!/4/2\n)' }), invalid);    // a control character
-    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4[capítulo1]!/4/2)' }), { mark: { k: 'p', cfi: 'epubcfi(/6/4[capítulo1]!/4/2)' } });   // an id in Spanish
-    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4!/4/2)' }), invalid);   // a C1 control character
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4[cap\u00edtulo1]!/4/2)' }), { mark: { k: 'p', cfi: 'epubcfi(/6/4[cap\u00edtulo1]!/4/2)' } });   // an id in Spanish
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4!/4/2\u0085)' }), invalid);   // a C1 control character
     // A box with its corners from its first and last word; all four, whole numbers.
     const corners = { x: -50, y: -20, ex: 30, ey: 25 };
     assert.deepEqual(validMark({ k: 'r', cfi, ...corners, o: 1 }), { mark: { k: 'r', cfi, o: 1, ...corners } });
