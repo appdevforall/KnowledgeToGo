@@ -1721,4 +1721,17 @@
     <string name="k2go_class_scan">குறியீட்டை ஸ்கேன் செய்</string>
     <string name="k2go_class_scan_prompt">ஆசிரியரின் “இணை” திரையில் உள்ள “திற” குறியீட்டை ஸ்கேன் செய்யவும்.</string>
     <string name="k2go_class_bad_code">இந்தக் குறியீடு K2Go நூலகத்தின் முகவரி அல்ல. ஆசிரியரின் “இணை” திரையில் உள்ள “திற” குறியீட்டை ஸ்கேன் செய்யவும்.</string>
+    <string name="k2go_class_age_just_now">இப்போதுதான் தொடங்கியது</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d நிமிடத்திற்கு முன் தொடங்கியது</item>
+        <item quantity="other">%1$d நிமிடங்களுக்கு முன் தொடங்கியது</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">சுமார் %1$d நிமிடத்திற்கு முன் தொடங்கியது</item>
+        <item quantity="other">சுமார் %1$d நிமிடங்களுக்கு முன் தொடங்கியது</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">சுமார் ஒரு மணிநேரத்திற்கு முன் தொடங்கியது</string>
+    <string name="k2go_class_age_about_hour_and_half">சுமார் ஒன்றரை மணிநேரத்திற்கு முன் தொடங்கியது</string>
+    <string name="k2go_class_age_about_two_hours">சுமார் இரண்டு மணிநேரத்திற்கு முன் தொடங்கியது</string>
+    <string name="k2go_class_age_over_two_hours">இரண்டு மணிநேரத்திற்கும் மேலாக முன்பு தொடங்கியது</string>
 </resources>

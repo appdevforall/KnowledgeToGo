@@ -1701,4 +1701,17 @@
     <string name="k2go_class_scan">Code scannen</string>
     <string name="k2go_class_scan_prompt">Scan de code Openen op het scherm Verbinden van de leraar.</string>
     <string name="k2go_class_bad_code">Deze code is niet het adres van een K2Go-bibliotheek. Scan de code Openen op het scherm Verbinden van de leraar.</string>
+    <string name="k2go_class_age_just_now">Zojuist begonnen</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d minuut geleden begonnen</item>
+        <item quantity="other">%1$d minuten geleden begonnen</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Ongeveer %1$d minuut geleden begonnen</item>
+        <item quantity="other">Ongeveer %1$d minuten geleden begonnen</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Ongeveer een uur geleden begonnen</string>
+    <string name="k2go_class_age_about_hour_and_half">Ongeveer anderhalf uur geleden begonnen</string>
+    <string name="k2go_class_age_about_two_hours">Ongeveer twee uur geleden begonnen</string>
+    <string name="k2go_class_age_over_two_hours">Meer dan twee uur geleden begonnen</string>
 </resources>

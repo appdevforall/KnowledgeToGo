@@ -1707,4 +1707,15 @@
     <string name="k2go_class_scan">Pindai kode</string>
     <string name="k2go_class_scan_prompt">Pindai kode Buka di layar Sambungkan milik guru.</string>
     <string name="k2go_class_bad_code">Kode ini bukan alamat pustaka K2Go. Pindai kode Buka di layar Sambungkan milik guru.</string>
+    <string name="k2go_class_age_just_now">Baru saja dimulai</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="other">Dimulai %1$d menit yang lalu</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="other">Dimulai sekitar %1$d menit yang lalu</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Dimulai sekitar satu jam yang lalu</string>
+    <string name="k2go_class_age_about_hour_and_half">Dimulai sekitar satu setengah jam yang lalu</string>
+    <string name="k2go_class_age_about_two_hours">Dimulai sekitar dua jam yang lalu</string>
+    <string name="k2go_class_age_over_two_hours">Dimulai lebih dari dua jam yang lalu</string>
 </resources>

@@ -1702,4 +1702,19 @@
     <string name="k2go_class_scan">Scanează un cod</string>
     <string name="k2go_class_scan_prompt">Scanează codul „Deschide” de pe ecranul „Conectare” al profesorului.</string>
     <string name="k2go_class_bad_code">Acest cod nu este adresa unei biblioteci K2Go. Scanează codul „Deschide” de pe ecranul „Conectare” al profesorului.</string>
+    <string name="k2go_class_age_just_now">A început chiar acum</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">A început acum %1$d minut</item>
+        <item quantity="few">A început acum %1$d minute</item>
+        <item quantity="other">A început acum %1$d de minute</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">A început acum aproximativ %1$d minut</item>
+        <item quantity="few">A început acum aproximativ %1$d minute</item>
+        <item quantity="other">A început acum aproximativ %1$d de minute</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">A început acum aproximativ o oră</string>
+    <string name="k2go_class_age_about_hour_and_half">A început acum aproximativ o oră și jumătate</string>
+    <string name="k2go_class_age_about_two_hours">A început acum aproximativ două ore</string>
+    <string name="k2go_class_age_over_two_hours">A început acum mai mult de două ore</string>
 </resources>

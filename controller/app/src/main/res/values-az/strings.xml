@@ -1721,4 +1721,17 @@
     <string name="k2go_class_scan">Kodu skan edin</string>
     <string name="k2go_class_scan_prompt">Müəllimin Qoşul ekranındakı Aç kodunu skan edin.</string>
     <string name="k2go_class_bad_code">Bu kod K2Go kitabxanasının ünvanı deyil. Müəllimin Qoşul ekranındakı Aç kodunu skan edin.</string>
+    <string name="k2go_class_age_just_now">İndicə başladı</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d dəqiqə əvvəl başladı</item>
+        <item quantity="other">%1$d dəqiqə əvvəl başladı</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Təxminən %1$d dəqiqə əvvəl başladı</item>
+        <item quantity="other">Təxminən %1$d dəqiqə əvvəl başladı</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Təxminən bir saat əvvəl başladı</string>
+    <string name="k2go_class_age_about_hour_and_half">Təxminən bir yarım saat əvvəl başladı</string>
+    <string name="k2go_class_age_about_two_hours">Təxminən iki saat əvvəl başladı</string>
+    <string name="k2go_class_age_over_two_hours">İki saatdan çox əvvəl başladı</string>
 </resources>

@@ -1702,4 +1702,19 @@
     <string name="k2go_class_scan">Scansiona un codice</string>
     <string name="k2go_class_scan_prompt">Scansiona il codice Apri nella schermata Connetti dell\'insegnante.</string>
     <string name="k2go_class_bad_code">Questo codice non è l\'indirizzo di una libreria K2Go. Scansiona il codice Apri nella schermata Connetti dell\'insegnante.</string>
+    <string name="k2go_class_age_just_now">Iniziata adesso</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Iniziata %1$d minuto fa</item>
+        <item quantity="many">Iniziata %1$d minuti fa</item>
+        <item quantity="other">Iniziata %1$d minuti fa</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Iniziata circa %1$d minuto fa</item>
+        <item quantity="many">Iniziata circa %1$d minuti fa</item>
+        <item quantity="other">Iniziata circa %1$d minuti fa</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Iniziata circa un\'ora fa</string>
+    <string name="k2go_class_age_about_hour_and_half">Iniziata circa un\'ora e mezza fa</string>
+    <string name="k2go_class_age_about_two_hours">Iniziata circa due ore fa</string>
+    <string name="k2go_class_age_over_two_hours">Iniziata più di due ore fa</string>
 </resources>

@@ -1934,4 +1934,24 @@
     <string name="k2go_class_scan_prompt">Scan the Open code on the teacher\'s Connect screen.</string>
     <!-- Message when the scanned code is not the address of a K2Go library. -->
     <string name="k2go_class_bad_code">This code is not the address of a K2Go library. Scan the Open code on the teacher\'s Connect screen.</string>
+    <!-- K2Go School: Class tab, Join list. The age of a class in each row: it started less than one minute ago. -->
+    <string name="k2go_class_age_just_now">Started just now</string>
+    <!-- Join list: the class started this many minutes ago (1 to 10). %1$d: the minutes. -->
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Started %1$d minute ago</item>
+        <item quantity="other">Started %1$d minutes ago</item>
+    </plurals>
+    <!-- Join list: the class started about this many minutes ago (15, 20, 30 or 45). %1$d: the minutes. -->
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Started about %1$d minute ago</item>
+        <item quantity="other">Started about %1$d minutes ago</item>
+    </plurals>
+    <!-- Join list: the class started about one hour ago (53 to 74 minutes). -->
+    <string name="k2go_class_age_about_one_hour">Started about an hour ago</string>
+    <!-- Join list: the class started about one and a half hours ago (75 to 104 minutes). -->
+    <string name="k2go_class_age_about_hour_and_half">Started about an hour and a half ago</string>
+    <!-- Join list: the class started about two hours ago (105 to 119 minutes). -->
+    <string name="k2go_class_age_about_two_hours">Started about two hours ago</string>
+    <!-- Join list: the class started two hours ago or more. -->
+    <string name="k2go_class_age_over_two_hours">Started more than two hours ago</string>
 </resources>

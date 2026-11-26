@@ -1701,4 +1701,17 @@
     <string name="k2go_class_scan">اسکن یک کد</string>
     <string name="k2go_class_scan_prompt">کد «باز کردن» را در صفحهٔ «اتصال» معلم اسکن کنید.</string>
     <string name="k2go_class_bad_code">این کد نشانی یک کتابخانهٔ K2Go نیست. کد «باز کردن» را در صفحهٔ «اتصال» معلم اسکن کنید.</string>
+    <string name="k2go_class_age_just_now">همین حالا شروع شد</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d دقیقه پیش شروع شد</item>
+        <item quantity="other">%1$d دقیقه پیش شروع شد</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">حدود %1$d دقیقه پیش شروع شد</item>
+        <item quantity="other">حدود %1$d دقیقه پیش شروع شد</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">حدود یک ساعت پیش شروع شد</string>
+    <string name="k2go_class_age_about_hour_and_half">حدود یک ساعت و نیم پیش شروع شد</string>
+    <string name="k2go_class_age_about_two_hours">حدود دو ساعت پیش شروع شد</string>
+    <string name="k2go_class_age_over_two_hours">بیش از دو ساعت پیش شروع شد</string>
 </resources>

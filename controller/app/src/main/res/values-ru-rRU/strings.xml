@@ -1779,4 +1779,21 @@
     <string name="k2go_class_scan">Отсканировать код</string>
     <string name="k2go_class_scan_prompt">Отсканируйте код «Открыть» на экране «Подключить» у учителя.</string>
     <string name="k2go_class_bad_code">Этот код не является адресом библиотеки K2Go. Отсканируйте код «Открыть» на экране «Подключить» у учителя.</string>
+    <string name="k2go_class_age_just_now">Начался только что</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Начался %1$d минуту назад</item>
+        <item quantity="few">Начался %1$d минуты назад</item>
+        <item quantity="many">Начался %1$d минут назад</item>
+        <item quantity="other">Начался %1$d минуты назад</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Начался около %1$d минуты назад</item>
+        <item quantity="few">Начался около %1$d минут назад</item>
+        <item quantity="many">Начался около %1$d минут назад</item>
+        <item quantity="other">Начался около %1$d минуты назад</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Начался около часа назад</string>
+    <string name="k2go_class_age_about_hour_and_half">Начался около полутора часов назад</string>
+    <string name="k2go_class_age_about_two_hours">Начался около двух часов назад</string>
+    <string name="k2go_class_age_over_two_hours">Начался более двух часов назад</string>
 </resources>

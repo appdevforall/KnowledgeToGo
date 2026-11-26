@@ -1714,4 +1714,17 @@
     <string name="k2go_class_scan">કોડ સ્કેન કરો</string>
     <string name="k2go_class_scan_prompt">શિક્ષકની “કનેક્ટ કરો” સ્ક્રીન પરનો “ખોલો” કોડ સ્કેન કરો.</string>
     <string name="k2go_class_bad_code">આ કોડ K2Go લાઇબ્રેરીનું સરનામું નથી. શિક્ષકની “કનેક્ટ કરો” સ્ક્રીન પરનો “ખોલો” કોડ સ્કેન કરો.</string>
+    <string name="k2go_class_age_just_now">હમણાં જ શરૂ થયો</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d મિનિટ પહેલાં શરૂ થયો</item>
+        <item quantity="other">%1$d મિનિટ પહેલાં શરૂ થયો</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">આશરે %1$d મિનિટ પહેલાં શરૂ થયો</item>
+        <item quantity="other">આશરે %1$d મિનિટ પહેલાં શરૂ થયો</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">આશરે એક કલાક પહેલાં શરૂ થયો</string>
+    <string name="k2go_class_age_about_hour_and_half">આશરે દોઢ કલાક પહેલાં શરૂ થયો</string>
+    <string name="k2go_class_age_about_two_hours">આશરે બે કલાક પહેલાં શરૂ થયો</string>
+    <string name="k2go_class_age_over_two_hours">બે કલાકથી વધુ સમય પહેલાં શરૂ થયો</string>
 </resources>

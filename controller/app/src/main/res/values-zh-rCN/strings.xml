@@ -1701,4 +1701,15 @@
     <string name="k2go_class_scan">扫描代码</string>
     <string name="k2go_class_scan_prompt">扫描老师“连接”屏幕上的“打开”代码。</string>
     <string name="k2go_class_bad_code">此代码不是 K2Go 图书馆的地址。请扫描老师“连接”屏幕上的“打开”代码。</string>
+    <string name="k2go_class_age_just_now">刚刚开始</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="other">%1$d 分钟前开始</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="other">约 %1$d 分钟前开始</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">约 1 小时前开始</string>
+    <string name="k2go_class_age_about_hour_and_half">约 1.5 小时前开始</string>
+    <string name="k2go_class_age_about_two_hours">约 2 小时前开始</string>
+    <string name="k2go_class_age_over_two_hours">超过 2 小时前开始</string>
 </resources>

@@ -1720,4 +1720,21 @@
     <string name="k2go_class_scan">Nuskaityti kodą</string>
     <string name="k2go_class_scan_prompt">Nuskaitykite kodą „Atverti“ mokytojo ekrane „Prisijungti“.</string>
     <string name="k2go_class_bad_code">Šis kodas nėra K2Go bibliotekos adresas. Nuskaitykite kodą „Atverti“ mokytojo ekrane „Prisijungti“.</string>
+    <string name="k2go_class_age_just_now">Ką tik prasidėjo</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Prasidėjo prieš %1$d minutę</item>
+        <item quantity="few">Prasidėjo prieš %1$d minutes</item>
+        <item quantity="many">Prasidėjo prieš %1$d minutės</item>
+        <item quantity="other">Prasidėjo prieš %1$d minučių</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Prasidėjo maždaug prieš %1$d minutę</item>
+        <item quantity="few">Prasidėjo maždaug prieš %1$d minutes</item>
+        <item quantity="many">Prasidėjo maždaug prieš %1$d minutės</item>
+        <item quantity="other">Prasidėjo maždaug prieš %1$d minučių</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Prasidėjo maždaug prieš valandą</string>
+    <string name="k2go_class_age_about_hour_and_half">Prasidėjo maždaug prieš pusantros valandos</string>
+    <string name="k2go_class_age_about_two_hours">Prasidėjo maždaug prieš dvi valandas</string>
+    <string name="k2go_class_age_over_two_hours">Prasidėjo daugiau nei prieš dvi valandas</string>
 </resources>

@@ -1715,4 +1715,19 @@
     <string name="k2go_class_scan">Скенирај код</string>
     <string name="k2go_class_scan_prompt">Скенирајте код „Отвори“ на наставниковом екрану „Повежи“.</string>
     <string name="k2go_class_bad_code">Овај код није адреса K2Go библиотеке. Скенирајте код „Отвори“ на наставниковом екрану „Повежи“.</string>
+    <string name="k2go_class_age_just_now">Почео је управо сада</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Почео је пре %1$d минут</item>
+        <item quantity="few">Почео је пре %1$d минута</item>
+        <item quantity="other">Почео је пре %1$d минута</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Почео је пре око %1$d минут</item>
+        <item quantity="few">Почео је пре око %1$d минута</item>
+        <item quantity="other">Почео је пре око %1$d минута</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Почео је пре око сат времена</string>
+    <string name="k2go_class_age_about_hour_and_half">Почео је пре око сат и по</string>
+    <string name="k2go_class_age_about_two_hours">Почео је пре око два сата</string>
+    <string name="k2go_class_age_over_two_hours">Почео је пре више од два сата</string>
 </resources>

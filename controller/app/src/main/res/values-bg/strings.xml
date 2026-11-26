@@ -1708,4 +1708,17 @@
     <string name="k2go_class_scan">Сканиране на код</string>
     <string name="k2go_class_scan_prompt">Сканирайте кода Отваряне на екрана Свързване на учителя.</string>
     <string name="k2go_class_bad_code">Този код не е адрес на библиотека K2Go. Сканирайте кода Отваряне на екрана Свързване на учителя.</string>
+    <string name="k2go_class_age_just_now">Започна току-що</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Започна преди %1$d минута</item>
+        <item quantity="other">Започна преди %1$d минути</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Започна преди около %1$d минута</item>
+        <item quantity="other">Започна преди около %1$d минути</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Започна преди около час</string>
+    <string name="k2go_class_age_about_hour_and_half">Започна преди около час и половина</string>
+    <string name="k2go_class_age_about_two_hours">Започна преди около два часа</string>
+    <string name="k2go_class_age_over_two_hours">Започна преди повече от два часа</string>
 </resources>

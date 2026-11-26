@@ -24,10 +24,21 @@ public interface ClassProbe {
         return a == null ? null : a.code;
     }
 
-    /** What a box answered: the code of its open class, or null when the box has no class open. */
+    /**
+     * What a box answered: the code of its open class, or null when the box has no class open; the
+     * name that the teacher gave the class, or null; and the age of the class in seconds, or -1.
+     */
     final class Answer {
         public final String code;
+        public final String name;
+        public final long ageSec;
 
-        public Answer(String code) { this.code = code; }
+        public Answer(String code) { this(code, null, -1); }
+
+        public Answer(String code, String name, long ageSec) {
+            this.code = code;
+            this.name = name;
+            this.ageSec = ageSec;
+        }
     }
 }

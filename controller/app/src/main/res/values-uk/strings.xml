@@ -1703,4 +1703,21 @@
     <string name="k2go_class_scan">Сканувати код</string>
     <string name="k2go_class_scan_prompt">Відскануйте код «Відкрити» на екрані «Підключити» вчителя.</string>
     <string name="k2go_class_bad_code">Цей код не є адресою бібліотеки K2Go. Відскануйте код «Відкрити» на екрані «Підключити» вчителя.</string>
+    <string name="k2go_class_age_just_now">Почався щойно</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Почався %1$d хвилину тому</item>
+        <item quantity="few">Почався %1$d хвилини тому</item>
+        <item quantity="many">Почався %1$d хвилин тому</item>
+        <item quantity="other">Почався %1$d хвилини тому</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Почався приблизно %1$d хвилину тому</item>
+        <item quantity="few">Почався приблизно %1$d хвилини тому</item>
+        <item quantity="many">Почався приблизно %1$d хвилин тому</item>
+        <item quantity="other">Почався приблизно %1$d хвилини тому</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Почався приблизно годину тому</string>
+    <string name="k2go_class_age_about_hour_and_half">Почався приблизно півтори години тому</string>
+    <string name="k2go_class_age_about_two_hours">Почався приблизно дві години тому</string>
+    <string name="k2go_class_age_over_two_hours">Почався понад дві години тому</string>
 </resources>

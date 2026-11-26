@@ -1778,4 +1778,19 @@
     <string name="k2go_class_scan">Escanear un código</string>
     <string name="k2go_class_scan_prompt">Escanea el código Abrir en la pantalla Conectar del docente.</string>
     <string name="k2go_class_bad_code">Este código no es la dirección de una biblioteca K2Go. Escanea el código Abrir en la pantalla Conectar del docente.</string>
+    <string name="k2go_class_age_just_now">Empezó hace un momento</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Empezó hace %1$d minuto</item>
+        <item quantity="many">Empezó hace %1$d minutos</item>
+        <item quantity="other">Empezó hace %1$d minutos</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Empezó hace aproximadamente %1$d minuto</item>
+        <item quantity="many">Empezó hace aproximadamente %1$d minutos</item>
+        <item quantity="other">Empezó hace aproximadamente %1$d minutos</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Empezó hace aproximadamente una hora</string>
+    <string name="k2go_class_age_about_hour_and_half">Empezó hace aproximadamente una hora y media</string>
+    <string name="k2go_class_age_about_two_hours">Empezó hace aproximadamente dos horas</string>
+    <string name="k2go_class_age_over_two_hours">Empezó hace más de dos horas</string>
 </resources>

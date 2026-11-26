@@ -1701,4 +1701,17 @@
     <string name="k2go_class_scan">Kód beolvasása</string>
     <string name="k2go_class_scan_prompt">Olvasd be a Megnyitás kódot a tanár Csatlakozás képernyőjén.</string>
     <string name="k2go_class_bad_code">Ez a kód nem egy K2Go könyvtár címe. Olvasd be a Megnyitás kódot a tanár Csatlakozás képernyőjén.</string>
+    <string name="k2go_class_age_just_now">Épp most kezdődött</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d perce kezdődött</item>
+        <item quantity="other">%1$d perce kezdődött</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Körülbelül %1$d perce kezdődött</item>
+        <item quantity="other">Körülbelül %1$d perce kezdődött</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Körülbelül egy órája kezdődött</string>
+    <string name="k2go_class_age_about_hour_and_half">Körülbelül másfél órája kezdődött</string>
+    <string name="k2go_class_age_about_two_hours">Körülbelül két órája kezdődött</string>
+    <string name="k2go_class_age_over_two_hours">Több mint két órája kezdődött</string>
 </resources>

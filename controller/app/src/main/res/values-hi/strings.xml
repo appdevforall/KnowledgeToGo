@@ -1778,4 +1778,17 @@
     <string name="k2go_class_scan">कोड स्कैन करें</string>
     <string name="k2go_class_scan_prompt">शिक्षक की \"कनेक्ट करें\" स्क्रीन पर \"खोलें\" कोड स्कैन करें।</string>
     <string name="k2go_class_bad_code">यह कोड किसी K2Go लाइब्रेरी का पता नहीं है। शिक्षक की \"कनेक्ट करें\" स्क्रीन पर \"खोलें\" कोड स्कैन करें।</string>
+    <string name="k2go_class_age_just_now">अभी-अभी शुरू हुई</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">%1$d मिनट पहले शुरू हुई</item>
+        <item quantity="other">%1$d मिनट पहले शुरू हुई</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">लगभग %1$d मिनट पहले शुरू हुई</item>
+        <item quantity="other">लगभग %1$d मिनट पहले शुरू हुई</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">लगभग एक घंटा पहले शुरू हुई</string>
+    <string name="k2go_class_age_about_hour_and_half">लगभग डेढ़ घंटा पहले शुरू हुई</string>
+    <string name="k2go_class_age_about_two_hours">लगभग दो घंटे पहले शुरू हुई</string>
+    <string name="k2go_class_age_over_two_hours">दो घंटे से अधिक पहले शुरू हुई</string>
 </resources>

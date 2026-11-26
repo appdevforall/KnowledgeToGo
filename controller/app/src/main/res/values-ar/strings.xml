@@ -1705,4 +1705,25 @@
     <string name="k2go_class_scan">مسح رمز</string>
     <string name="k2go_class_scan_prompt">امسح رمز «فتح» على شاشة «اتصال» لدى المعلم.</string>
     <string name="k2go_class_bad_code">هذا الرمز ليس عنوان مكتبة K2Go. امسح رمز «فتح» على شاشة «اتصال» لدى المعلم.</string>
+    <string name="k2go_class_age_just_now">بدأ الآن</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="zero">بدأ قبل %1$d دقيقة</item>
+        <item quantity="one">بدأ قبل دقيقة واحدة</item>
+        <item quantity="two">بدأ قبل دقيقتين</item>
+        <item quantity="few">بدأ قبل %1$d دقائق</item>
+        <item quantity="many">بدأ قبل %1$d دقيقة</item>
+        <item quantity="other">بدأ قبل %1$d دقيقة</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="zero">بدأ قبل نحو %1$d دقيقة</item>
+        <item quantity="one">بدأ قبل نحو %1$d دقيقة</item>
+        <item quantity="two">بدأ قبل نحو %1$d دقيقة</item>
+        <item quantity="few">بدأ قبل نحو %1$d دقائق</item>
+        <item quantity="many">بدأ قبل نحو %1$d دقيقة</item>
+        <item quantity="other">بدأ قبل نحو %1$d دقيقة</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">بدأ قبل نحو ساعة</string>
+    <string name="k2go_class_age_about_hour_and_half">بدأ قبل نحو ساعة ونصف</string>
+    <string name="k2go_class_age_about_two_hours">بدأ قبل نحو ساعتين</string>
+    <string name="k2go_class_age_over_two_hours">بدأ قبل أكثر من ساعتين</string>
 </resources>

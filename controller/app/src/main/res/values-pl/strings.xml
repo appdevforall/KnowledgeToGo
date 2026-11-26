@@ -1713,4 +1713,21 @@
     <string name="k2go_class_scan">Zeskanuj kod</string>
     <string name="k2go_class_scan_prompt">Zeskanuj kod Otwórz na ekranie Połącz nauczyciela.</string>
     <string name="k2go_class_bad_code">Ten kod nie jest adresem biblioteki K2Go. Zeskanuj kod Otwórz na ekranie Połącz nauczyciela.</string>
+    <string name="k2go_class_age_just_now">Rozpoczęta przed chwilą</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Rozpoczęta %1$d minutę temu</item>
+        <item quantity="few">Rozpoczęta %1$d minuty temu</item>
+        <item quantity="many">Rozpoczęta %1$d minut temu</item>
+        <item quantity="other">Rozpoczęta %1$d minuty temu</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Rozpoczęta około %1$d minuty temu</item>
+        <item quantity="few">Rozpoczęta około %1$d minut temu</item>
+        <item quantity="many">Rozpoczęta około %1$d minut temu</item>
+        <item quantity="other">Rozpoczęta około %1$d minuty temu</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Rozpoczęta około godziny temu</string>
+    <string name="k2go_class_age_about_hour_and_half">Rozpoczęta około półtorej godziny temu</string>
+    <string name="k2go_class_age_about_two_hours">Rozpoczęta około dwóch godzin temu</string>
+    <string name="k2go_class_age_over_two_hours">Rozpoczęta ponad dwie godziny temu</string>
 </resources>

@@ -1708,4 +1708,17 @@
     <string name="k2go_class_scan">Σάρωση κωδικού</string>
     <string name="k2go_class_scan_prompt">Σαρώστε τον κωδικό Άνοιγμα στην οθόνη Σύνδεση του εκπαιδευτικού.</string>
     <string name="k2go_class_bad_code">Αυτός ο κωδικός δεν είναι διεύθυνση βιβλιοθήκης K2Go. Σαρώστε τον κωδικό Άνοιγμα στην οθόνη Σύνδεση του εκπαιδευτικού.</string>
+    <string name="k2go_class_age_just_now">Ξεκίνησε μόλις τώρα</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Ξεκίνησε πριν από %1$d λεπτό</item>
+        <item quantity="other">Ξεκίνησε πριν από %1$d λεπτά</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Ξεκίνησε πριν από περίπου %1$d λεπτό</item>
+        <item quantity="other">Ξεκίνησε πριν από περίπου %1$d λεπτά</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Ξεκίνησε πριν από περίπου μία ώρα</string>
+    <string name="k2go_class_age_about_hour_and_half">Ξεκίνησε πριν από περίπου μιάμιση ώρα</string>
+    <string name="k2go_class_age_about_two_hours">Ξεκίνησε πριν από περίπου δύο ώρες</string>
+    <string name="k2go_class_age_over_two_hours">Ξεκίνησε πριν από περισσότερες από δύο ώρες</string>
 </resources>

@@ -1700,4 +1700,15 @@
     <string name="k2go_class_scan">Quét mã</string>
     <string name="k2go_class_scan_prompt">Quét mã “Mở” trên màn hình “Kết nối” của giáo viên.</string>
     <string name="k2go_class_bad_code">Mã này không phải địa chỉ của thư viện K2Go. Quét mã “Mở” trên màn hình “Kết nối” của giáo viên.</string>
+    <string name="k2go_class_age_just_now">Vừa bắt đầu</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="other">Bắt đầu %1$d phút trước</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="other">Bắt đầu khoảng %1$d phút trước</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Bắt đầu khoảng một giờ trước</string>
+    <string name="k2go_class_age_about_hour_and_half">Bắt đầu khoảng một tiếng rưỡi trước</string>
+    <string name="k2go_class_age_about_two_hours">Bắt đầu khoảng hai giờ trước</string>
+    <string name="k2go_class_age_over_two_hours">Bắt đầu hơn hai giờ trước</string>
 </resources>

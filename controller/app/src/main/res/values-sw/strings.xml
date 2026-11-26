@@ -1721,4 +1721,17 @@
     <string name="k2go_class_scan">Changanua msimbo</string>
     <string name="k2go_class_scan_prompt">Changanua msimbo wa Fungua kwenye skrini ya Unganisha ya mwalimu.</string>
     <string name="k2go_class_bad_code">Msimbo huu si anwani ya maktaba ya K2Go. Changanua msimbo wa Fungua kwenye skrini ya Unganisha ya mwalimu.</string>
+    <string name="k2go_class_age_just_now">Limeanza sasa hivi</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Lilianza dakika %1$d zilizopita</item>
+        <item quantity="other">Lilianza dakika %1$d zilizopita</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Lilianza takriban dakika %1$d zilizopita</item>
+        <item quantity="other">Lilianza takriban dakika %1$d zilizopita</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Lilianza takriban saa moja iliyopita</string>
+    <string name="k2go_class_age_about_hour_and_half">Lilianza takriban saa moja na nusu iliyopita</string>
+    <string name="k2go_class_age_about_two_hours">Lilianza takriban saa mbili zilizopita</string>
+    <string name="k2go_class_age_over_two_hours">Lilianza zaidi ya saa mbili zilizopita</string>
 </resources>

@@ -19,6 +19,8 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -32,6 +34,7 @@ import org.appdevforall.k2go.PortalActivity;
 import org.appdevforall.k2go.R;
 import org.appdevforall.k2go.config.BoxEndpoints;
 import org.appdevforall.k2go.redesign.CodeText;
+import org.appdevforall.k2go.school.domain.ClassAge;
 import org.appdevforall.k2go.school.domain.ClassLinks;
 import org.appdevforall.k2go.school.domain.FoundClass;
 import org.appdevforall.k2go.util.SnackbarDuration;
@@ -103,21 +106,62 @@ public final class ClassFragment extends Fragment {
     }
 
     private void renderFound() {
-        List<FoundClass> found = find.classes().getValue();
+        List<ClassRow> found = find.classes().getValue();
         boolean none = found == null || found.isEmpty();
         boolean searching = Boolean.TRUE.equals(find.searching().getValue());
         searchingBar.setVisibility(none && searching ? View.VISIBLE : View.GONE);
         findStatus.setVisibility(none ? View.VISIBLE : View.GONE);
         searchAgain.setVisibility(none && !searching ? View.VISIBLE : View.GONE);
         findStatus.setText(searching ? R.string.k2go_class_finding : R.string.k2go_class_none_found);
-        foundList.removeAllViews();
-        if (none) return;
-        LayoutInflater inf = LayoutInflater.from(foundList.getContext());
-        for (FoundClass c : found) {
-            MaterialButton b = (MaterialButton) inf.inflate(R.layout.item_k2go_class_found, foundList, false);
-            b.setText(getString(R.string.k2go_class_found_item, c.code));
-            b.setOnClickListener(x -> join(c));
-            foundList.addView(b);
+        if (none) {
+            foundList.removeAllViews();
+            return;
+        }
+        // The same classes in the same order (only an age or a name changed): the rows stay, so a
+        // press or the screen reader focus on a row is not lost.
+        if (!sameClasses(found)) {
+            foundList.removeAllViews();
+            LayoutInflater inf = LayoutInflater.from(foundList.getContext());
+            for (ClassRow r : found) {
+                View row = inf.inflate(R.layout.item_k2go_class_found, foundList, false);
+                row.setTag(r.found.key);
+                foundList.addView(row);
+            }
+        }
+        for (int i = 0; i < found.size(); i++) bind(foundList.getChildAt(i), found.get(i));
+    }
+
+    private boolean sameClasses(List<ClassRow> found) {
+        if (foundList.getChildCount() != found.size()) return false;
+        for (int i = 0; i < found.size(); i++) {
+            if (!found.get(i).found.key.equals(foundList.getChildAt(i).getTag())) return false;
+        }
+        return true;
+    }
+
+    private void bind(View row, ClassRow r) {
+        ((TextView) row.findViewById(R.id.k2go_class_row_code)).setText(r.found.code);
+        TextView name = row.findViewById(R.id.k2go_class_row_name);
+        name.setText(r.name);
+        name.setVisibility(r.name == null ? View.GONE : View.VISIBLE);
+        TextView age = row.findViewById(R.id.k2go_class_row_age);
+        age.setText(r.age == null ? null : ageText(r.age));
+        age.setVisibility(r.age == null ? View.GONE : View.VISIBLE);
+        row.setOnClickListener(x -> join(r.found));
+        // A screen reader says what a tap does: "Join class 4F7K".
+        ViewCompat.replaceAccessibilityAction(row, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK,
+                getString(R.string.k2go_class_found_item, r.found.code), null);
+    }
+
+    private String ageText(ClassAge a) {
+        switch (a.kind) {
+            case JUST_NOW: return getString(R.string.k2go_class_age_just_now);
+            case MINUTES: return getResources().getQuantityString(R.plurals.k2go_class_age_minutes, a.minutes, a.minutes);
+            case ABOUT_MINUTES: return getResources().getQuantityString(R.plurals.k2go_class_age_about_minutes, a.minutes, a.minutes);
+            case ABOUT_ONE_HOUR: return getString(R.string.k2go_class_age_about_one_hour);
+            case ABOUT_HOUR_AND_HALF: return getString(R.string.k2go_class_age_about_hour_and_half);
+            case ABOUT_TWO_HOURS: return getString(R.string.k2go_class_age_about_two_hours);
+            default: return getString(R.string.k2go_class_age_over_two_hours);
         }
     }
 

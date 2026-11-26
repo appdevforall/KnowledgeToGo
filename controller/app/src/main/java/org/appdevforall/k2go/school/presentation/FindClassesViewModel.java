@@ -16,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import org.appdevforall.k2go.school.domain.ClassAge;
 import org.appdevforall.k2go.school.domain.ClassFinder;
 import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.school.domain.FoundClass;
@@ -37,7 +38,8 @@ import java.util.concurrent.Executor;
  * the search starts again, at most every {@link #RESEARCH_MS}, so the network gives the new
  * address, up to {@link #MAX_RESEARCHES} times in a row (review N4: a teacher that left keeps its
  * announcement on the network for about 2 minutes). The list is for the screen only, and it is
- * empty again at the next search.
+ * empty again at the next search. Each check also reads the name and the age of the class from
+ * its box: the list shows the newest class first, and its age steps on while the tab shows.
  */
 public class FindClassesViewModel extends ViewModel {
 
@@ -56,9 +58,9 @@ public class FindClassesViewModel extends ViewModel {
     // Main thread only. Insertion order: a class stays at its place in the list.
     // key -> (address -> candidate): what the network reported in this search.
     private final Map<String, Map<String, FoundClass>> known = new LinkedHashMap<>();
-    // key -> the candidate that its box confirmed.
-    private final Map<String, FoundClass> shown = new LinkedHashMap<>();
-    private final MutableLiveData<List<FoundClass>> classes = new MutableLiveData<>(Collections.emptyList());
+    // key -> the candidate that its box confirmed, with the last answer of the box.
+    private final Map<String, Confirmed> shown = new LinkedHashMap<>();
+    private final MutableLiveData<List<ClassRow>> classes = new MutableLiveData<>(Collections.emptyList());
     private final MutableLiveData<Boolean> searching = new MutableLiveData<>(false);
     // A probe answer of an older search changes nothing.
     private int round;
@@ -93,8 +95,8 @@ public class FindClassesViewModel extends ViewModel {
         this.io = io;
     }
 
-    /** The open classes on the Wi-Fi, in the order they were found. */
-    public LiveData<List<FoundClass>> classes() { return classes; }
+    /** The open classes on the Wi-Fi, newest first. */
+    public LiveData<List<ClassRow>> classes() { return classes; }
 
     /** True during the first {@link #SEARCH_MS} of a search. */
     public LiveData<Boolean> searching() { return searching; }
@@ -133,15 +135,19 @@ public class FindClassesViewModel extends ViewModel {
         final int r = round;
         final int mine = probeOf.merge(key, 1, Integer::sum);
         io.execute(() -> {
-            FoundClass open = null;
+            Confirmed open = null;
             for (FoundClass c : candidates) {
-                if (c.code.equals(probe.codeAt(c.address))) { open = c; break; }
+                ClassProbe.Answer a = probe.ask(c.address);
+                if (a != null && c.code.equals(a.code)) {
+                    open = new Confirmed(c, a.name, a.ageSec, SystemClock.elapsedRealtime());
+                    break;
+                }
             }
-            final FoundClass confirmed = open;
+            final Confirmed confirmed = open;
             main.post(() -> {
                 if (!running || r != round || !known.containsKey(key)) return;
                 if (!Integer.valueOf(mine).equals(probeOf.get(key))) return;   // a newer probe runs
-                if (confirmed != null) shown.put(key, confirmed);
+                if (confirmed != null) shown.put(key, confirmed.sortedAs(shown.get(key)));
                 else shown.remove(key);
                 publish();
             });
@@ -163,8 +169,46 @@ public class FindClassesViewModel extends ViewModel {
         main.postDelayed(check, CHECK_MS);
     }
 
+    /** Sets the rows when what they show changed: the age step moves on about once a minute. */
     private void publish() {
-        classes.setValue(Collections.unmodifiableList(new ArrayList<>(shown.values())));
+        long now = SystemClock.elapsedRealtime();
+        List<Confirmed> newest = new ArrayList<>(shown.values());
+        // The box age is the one source; a class with no age goes last.
+        Collections.sort(newest, (a, b) -> Long.compare(b.order, a.order));
+        List<ClassRow> rows = new ArrayList<>();
+        for (Confirmed c : newest) rows.add(new ClassRow(c.found, c.name, c.ageAt(now)));
+        if (!rows.equals(classes.getValue())) classes.setValue(Collections.unmodifiableList(rows));
+    }
+
+    /** A class that its box confirmed, and the box answer (name, age) at {@code at}. */
+    private static final class Confirmed {
+        final FoundClass found;
+        final String name;
+        final long ageSec;   // -1: the box sent no age
+        final long at;       // elapsedRealtime() of the answer: this phone's clock, never the time of day
+
+        // The place in the list: the start of the class from the first answer of its box. Each
+        // answer gives a start that differs by up to one second (whole seconds, the request time):
+        // two classes that started together must not change places at each check.
+        private long order;
+
+        Confirmed(FoundClass found, String name, long ageSec, long at) {
+            this.found = found;
+            this.name = name;
+            this.ageSec = ageSec;
+            this.at = at;
+            this.order = ageSec < 0 ? Long.MIN_VALUE : at - ageSec * 1000;
+        }
+
+        /** This answer, at the place in the list of {@code before} when it is the same class. */
+        Confirmed sortedAs(Confirmed before) {
+            if (before != null && before.found.code.equals(found.code) && before.ageSec >= 0 && ageSec >= 0) {
+                order = before.order;
+            }
+            return this;
+        }
+
+        ClassAge ageAt(long now) { return ageSec < 0 ? null : ClassAge.of(ageSec + Math.max(0, now - at) / 1000); }
     }
 
     @Override

@@ -1720,4 +1720,15 @@
     <string name="k2go_class_scan">Ya kóòdù</string>
     <string name="k2go_class_scan_prompt">Ya kóòdù “Ṣí” lórí ojú-iboju “So pọ̀” ti olùkọ́.</string>
     <string name="k2go_class_bad_code">Kóòdù yìí kì í ṣe àdírẹ́sì ilé-ìkàwé K2Go. Ya kóòdù “Ṣí” lórí ojú-iboju “So pọ̀” ti olùkọ́.</string>
+    <string name="k2go_class_age_just_now">Ó ṣẹ̀ṣẹ̀ bẹ̀rẹ̀</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="other">Ó bẹ̀rẹ̀ ní ìṣẹ́jú %1$d sẹ́yìn</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="other">Ó bẹ̀rẹ̀ ní nǹkan bí ìṣẹ́jú %1$d sẹ́yìn</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Ó bẹ̀rẹ̀ ní nǹkan bí wákàtí kan sẹ́yìn</string>
+    <string name="k2go_class_age_about_hour_and_half">Ó bẹ̀rẹ̀ ní nǹkan bí wákàtí kan àti ààbọ̀ sẹ́yìn</string>
+    <string name="k2go_class_age_about_two_hours">Ó bẹ̀rẹ̀ ní nǹkan bí wákàtí méjì sẹ́yìn</string>
+    <string name="k2go_class_age_over_two_hours">Ó bẹ̀rẹ̀ ní ju wákàtí méjì lọ sẹ́yìn</string>
 </resources>

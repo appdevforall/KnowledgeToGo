@@ -1711,4 +1711,17 @@
     <string name="k2go_class_scan">Skann en kode</string>
     <string name="k2go_class_scan_prompt">Skann Åpne-koden på lærerens Koble til-skjerm.</string>
     <string name="k2go_class_bad_code">Denne koden er ikke adressen til et K2Go-bibliotek. Skann Åpne-koden på lærerens Koble til-skjerm.</string>
+    <string name="k2go_class_age_just_now">Startet akkurat nå</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Startet for %1$d minutt siden</item>
+        <item quantity="other">Startet for %1$d minutter siden</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Startet for omtrent %1$d minutt siden</item>
+        <item quantity="other">Startet for omtrent %1$d minutter siden</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Startet for omtrent en time siden</string>
+    <string name="k2go_class_age_about_hour_and_half">Startet for omtrent halvannen time siden</string>
+    <string name="k2go_class_age_about_two_hours">Startet for omtrent to timer siden</string>
+    <string name="k2go_class_age_over_two_hours">Startet for mer enn to timer siden</string>
 </resources>

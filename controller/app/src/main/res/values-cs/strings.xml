@@ -1710,4 +1710,21 @@
     <string name="k2go_class_scan">Naskenovat kód</string>
     <string name="k2go_class_scan_prompt">Naskenujte kód Otevřít na obrazovce Připojit u učitele.</string>
     <string name="k2go_class_bad_code">Tento kód není adresa knihovny K2Go. Naskenujte kód Otevřít na obrazovce Připojit u učitele.</string>
+    <string name="k2go_class_age_just_now">Zahájeno právě teď</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="one">Zahájeno před %1$d minutou</item>
+        <item quantity="few">Zahájeno před %1$d minutami</item>
+        <item quantity="many">Zahájeno před %1$d minuty</item>
+        <item quantity="other">Zahájeno před %1$d minutami</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="one">Zahájeno asi před %1$d minutou</item>
+        <item quantity="few">Zahájeno asi před %1$d minutami</item>
+        <item quantity="many">Zahájeno asi před %1$d minuty</item>
+        <item quantity="other">Zahájeno asi před %1$d minutami</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">Zahájeno asi před hodinou</string>
+    <string name="k2go_class_age_about_hour_and_half">Zahájeno asi před hodinou a půl</string>
+    <string name="k2go_class_age_about_two_hours">Zahájeno asi před dvěma hodinami</string>
+    <string name="k2go_class_age_over_two_hours">Zahájeno před více než dvěma hodinami</string>
 </resources>

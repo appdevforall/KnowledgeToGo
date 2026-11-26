@@ -1701,4 +1701,15 @@
     <string name="k2go_class_scan">코드 스캔</string>
     <string name="k2go_class_scan_prompt">선생님의 \'연결\' 화면에 있는 \'열기\' 코드를 스캔하세요.</string>
     <string name="k2go_class_bad_code">이 코드는 K2Go 라이브러리 주소가 아닙니다. 선생님의 \'연결\' 화면에 있는 \'열기\' 코드를 스캔하세요.</string>
+    <string name="k2go_class_age_just_now">방금 시작됨</string>
+    <plurals name="k2go_class_age_minutes">
+        <item quantity="other">%1$d분 전에 시작됨</item>
+    </plurals>
+    <plurals name="k2go_class_age_about_minutes">
+        <item quantity="other">약 %1$d분 전에 시작됨</item>
+    </plurals>
+    <string name="k2go_class_age_about_one_hour">약 1시간 전에 시작됨</string>
+    <string name="k2go_class_age_about_hour_and_half">약 1시간 30분 전에 시작됨</string>
+    <string name="k2go_class_age_about_two_hours">약 2시간 전에 시작됨</string>
+    <string name="k2go_class_age_over_two_hours">2시간 이상 전에 시작됨</string>
 </resources>
