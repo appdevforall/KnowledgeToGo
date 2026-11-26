@@ -79,7 +79,7 @@
     <button id="library" class="icon" data-a="library"><svg viewBox="0 -960 960 960" data-icon="menu_book" aria-hidden="true"><path d="M560-564v-68q33-14 67.5-21t72.5-7q26 0 51 4t49 10v64q-24-9-48.5-13.5T700-600q-38 0-73 9.5T560-564Zm0 220v-68q33-14 67.5-21t72.5-7q26 0 51 4t49 10v64q-24-9-48.5-13.5T700-380q-38 0-73 9t-67 27Zm0-110v-68q33-14 67.5-21t72.5-7q26 0 51 4t49 10v64q-24-9-48.5-13.5T700-490q-38 0-73 9.5T560-454ZM260-320q47 0 91.5 10.5T440-278v-394q-41-24-87-36t-93-12q-36 0-71.5 7T120-692v396q35-12 69.5-18t70.5-6Zm260 42q44-21 88.5-31.5T700-320q36 0 70.5 6t69.5 18v-396q-33-14-68.5-21t-71.5-7q-47 0-93 12t-87 36v394Zm-40 118q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740q51-30 106.5-45T700-800q52 0 102 12t96 36q11 5 16.5 15t5.5 21v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59ZM280-494Z"/></svg></button>
     <button id="back" class="icon" data-a="back" disabled><svg viewBox="0 -960 960 960" data-icon="arrow_back" aria-hidden="true"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
     <span class="sep"></span>
-    <button id="markPen" class="icon" data-a="markPen" aria-pressed="false" disabled><svg viewBox="0 -960 960 960" data-icon="ink_highlighter" aria-hidden="true"><path d="M544-400 440-504 240-304l104 104 200-200Zm-47-161 104 104 199-199-104-104-199 199Zm-84-28 216 216-229 229q-24 24-56 24t-56-24l-2-2-26 26H60l126-126-2-2q-24-24-24-56t24-56l229-229Zm0 0 227-227q24-24 56-24t56 24l104 104q24 24 24 56t-24 56L629-373 413-589Z"/></svg></button>
+    <button id="markPen" class="icon" data-a="markPen" aria-pressed="false" disabled><svg viewBox="0 -960 960 960" data-icon="ink_highlighter" aria-hidden="true"><path d="M544-400 440-504 240-304l104 104 200-200Zm-47-161 104 104 199-199-104-104-199 199Zm-84-28 216 216-229 229q-24 24-56 24t-56-24l-2-2-26 26H60l126-126-2-2q-24-24-24-56t24-56l229-229Zm0 0 227-227q24-24 56-24t56 24l104 104q24 24 24 56t-24 56L629-373 413-589Z"/></svg><svg viewBox="0 -960 960 960" data-icon="north_east" aria-hidden="true" style="display: none"><path d="m216-160-56-56 464-464H360v-80h400v400h-80v-264L216-160Z"/></svg></button>
     <button id="markBox" class="icon" data-a="markBox" aria-pressed="false" disabled><svg viewBox="0 -960 960 960" data-icon="crop_square" aria-hidden="true"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0 0v-560 560Z"/></svg></button>
     <button id="markOval" class="icon" data-a="markOval" aria-pressed="false" disabled><svg viewBox="0 -960 960 960" data-icon="circle" aria-hidden="true"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></button>
     <button id="markEraser" class="icon" data-a="markEraser" aria-pressed="false" disabled><svg viewBox="0 -960 960 960" data-icon="ink_eraser" aria-hidden="true"><path d="M690-240h190v80H610l80-80Zm-500 80-85-85q-23-23-23.5-57t22.5-58l440-456q23-24 56.5-24t56.5 23l199 199q23 23 23 57t-23 57L520-160H190Zm296-80 314-322-198-198-442 456 64 64h262Zm-6-240Z"/></svg></button>
@@ -130,6 +130,7 @@
 <script src="../follow.js"></script>
 <script src="../marks.js"></script>
 <script src="../epubmarks.js"></script>
+<script src="../mapmarks.js"></script>
 <script>
 'use strict';
 (function () {
@@ -345,12 +346,16 @@
     attach(win.document);
     win.document.addEventListener('click', onLink, true);   // after onMarkTap: a tap that marks opens no link
     var kind = SchoolPlace.kindOf(win.location.pathname);
+    setPen(kind === 'map');
+    if (kind === 'map') { attachMap(win); }
     if (SchoolPlace.isApp(kind)) {
       // The app object comes after the load (the map, the PDF file): the box lesson is applied then.
       var resume = resumeAt;
+      var mapShown = false;
       SchoolPlace.watch(win, kind, function () {
         if (resume && SchoolPlace.apply(win, kind, resume) !== null) { resume = null; }
         if (kind === 'epub') { attachBook(); }
+        if (kind === 'map' && !mapShown) { mapShown = true; paintMarks(); }   // the map is ready
         onScroll();
       }, School.classCss());
     } else if (resumeAt) {
@@ -402,13 +407,41 @@
     }
   };
 
-  // The surfaces of the page on the screen: the Kiwix page, or the pages of the EPUB book that the
-  // reader shows (each in an inner frame). None for another page.
+  // The marks of the box map (mapmarks.js). The functions here take client points of the page in
+  // the frame; mapmarks.js takes points of the map container. Any point of the map starts an
+  // arrow (the marker tool); a long press moves an arrow, a box or an oval (moveMark).
+  function mapPoint(s, x, y) {
+    var r = s.map.getContainer().getBoundingClientRect();
+    return { x: x - r.left, y: y - r.top };
+  }
+  var MAP_MARKS = {
+    media: null,
+    arrow: true,
+    draw: function (s, list) { return SchoolMapMarks.draw(s.map, list); },
+    markAt: function (s, x, y, pad) {
+      var p = mapPoint(s, x, y);
+      return SchoolMapMarks.markAt(s.map, p.x, p.y, pad);
+    },
+    wordAt: function (s, x, y) { return mapPoint(s, x, y); },
+    dragMark: function (s, a, z) { return SchoolMapMarks.arrowMark(s.map, a, z); },
+    boxMark: function (s, r) {
+      var o = mapPoint(s, 0, 0);
+      return SchoolMapMarks.boxMark(s.map, { left: r.left + o.x, top: r.top + o.y, right: r.right + o.x, bottom: r.bottom + o.y });
+    },
+    moveMark: function (s, m, dx, dy) { return SchoolMapMarks.moveMark(s.map, m, dx, dy); }
+  };
+
+  // The surfaces of the page on the screen: the Kiwix page, the pages of the EPUB book that the
+  // reader shows (each in an inner frame), or the map when it is ready. None for another page.
   function surfaces() {
     var win = view.win();
     if (!win || view.path() === null) { return []; }
     var kind = SchoolPlace.kindOf(win.location.pathname);
     if (kind === 'page') { return [{ win: win, E: PAGE_MARKS }]; }
+    if (kind === 'map') {
+      var map = SchoolPlace.appOf(win, 'map');
+      return map ? [{ win: win, map: map, E: MAP_MARKS }] : [];
+    }
     if (kind !== 'epub') { return []; }
     return SchoolPlace.bookViews(win).map(function (v) { return { win: v.win, contents: v.contents, E: SchoolEpubMarks }; });
   }
@@ -458,6 +491,31 @@
     paintMarks();
   }
 
+  // The map pans and zooms on the mouse and touch events of its page (MapLibre 5 uses no pointer
+  // events). With the marker, the box or the oval on, the finger draws: the map does not get them.
+  // The tools work on the pointer events (attach). With the eraser on, the map still moves.
+  var MAP_INPUT = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'mousedown', 'mousemove', 'mouseup', 'wheel', 'dblclick'];
+  function attachMap(win) {
+    MAP_INPUT.forEach(function (type) {
+      win.addEventListener(type, function (ev) { if (tool && tool !== 'eraser') { ev.stopPropagation(); } }, true);
+    });
+  }
+
+  // On the map the marker tool draws an arrow: its icon, its name and its help change.
+  function setPen(arrow) {
+    var btn = toolBtns.pen;
+    btn.querySelector('[data-icon="ink_highlighter"]').style.display = arrow ? 'none' : '';
+    btn.querySelector('[data-icon="north_east"]').style.display = arrow ? '' : 'none';
+    btn.setAttribute('aria-label', t(arrow ? 'markArrow' : 'markPen'));
+    btn.title = t(arrow ? 'markArrow' : 'markPen');
+  }
+
+  function toolHelp(name) {
+    var win = view.win();
+    var onMap = win && view.path() !== null && SchoolPlace.kindOf(win.location.pathname) === 'map';
+    return name === 'pen' && onMap ? 'markArrowHelp' : TOOL_HELP[name];
+  }
+
   // Draws the marks that the box sent, when they are for the page on the screen.
   function paintMarks() {
     var path = view.path();
@@ -466,8 +524,10 @@
     // of the box take a tap (an id). A shape that moves shows at its new place only.
     var lifted = drag && drag.kind === 'move' ? drag.id : null;
     var moved = pendingMark ? pendingMark.moves : null;
+    // On the map the finger draws a line (the guide); the arrow comes when the finger lifts.
+    var dragShown = drag && drag.mark && !(drag.kind === 'pen' && drag.s.E.arrow);
     var shown = list.filter(function (m) { return m.id === undefined || (m.id !== lifted && m.id !== moved); })
-      .concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark.mark] : []);
+      .concat(dragShown ? [drag.mark] : [], pendingMark ? [pendingMark.mark] : []);
     painted = [];
     surfaces().forEach(function (s) {
       try {
@@ -497,7 +557,7 @@
     tool = name;
     endDrag();
     Object.keys(toolBtns).forEach(function (k) { toolBtns[k].setAttribute('aria-pressed', String(tool === k)); });
-    note(tool ? t(TOOL_HELP[tool]) : '');
+    note(tool ? t(toolHelp(tool)) : '');
     eraserChip(markCount());
     surfaces().forEach(function (s) {
       if (tool) { try { s.win.getSelection().removeAllRanges(); } catch (e) { /* no selection */ } }
@@ -569,7 +629,9 @@
   }
 
   // The mark under a point of surface s (client coordinates), or null.
+  var ERASE_PAD = 16;
   function markAt(s, x, y) {
+    if (s.E.markAt) { return s.E.markAt(s, x, y, ERASE_PAD); }
     var p = paintedOf(s);
     if (!p || !p.layer) { return null; }
     var o = p.layer.getBoundingClientRect();
@@ -604,7 +666,8 @@
     var el = doc.createElement('div');
     el.setAttribute('style', 'position: fixed; z-index: 2147483647; pointer-events: none; margin: 0; padding: 0; ' +
       'left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; ' +
-      (tool === 'pen' ? 'border-top: 3px dotted rgb(255, 200, 0); filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));'
+      (tool === 'pen' ? (s.E.arrow ? 'border-top: 5px solid rgb(255, 200, 0);' : 'border-top: 3px dotted rgb(255, 200, 0);') +
+        ' filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));'
         : 'border: 3px dashed rgb(255, 200, 0); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);' +
           (tool === 'oval' ? ' border-radius: 50%;' : '')));
     doc.documentElement.appendChild(el);
@@ -612,7 +675,7 @@
     drag = { kind: tool, s: s, x0: ev.clientX + win.scrollX, y0: ev.clientY + win.scrollY, x1: ev.clientX, y1: ev.clientY,
       sy: ev.clientY, el: el, from: from, mark: null, speed: 0, armed: false, looping: false };
     if (from) { drag.mark = s.E.dragMark(s, from, from); }
-    var shape = tool === 'pen' ? null : shapeAt(s, ev.clientX, ev.clientY);
+    var shape = tool === 'pen' && !s.E.moveMark ? null : shapeAt(s, ev.clientX, ev.clientY);
     if (shape !== null) {
       var d = drag;
       d.hold = setTimeout(function () { lift(d, shape); }, HOLD_MS);
@@ -622,12 +685,14 @@
 
   // A long press on a box or a circle, or near it (MOVE_PAD), lifts it: the drag moves it and the
   // release puts it there. A finger that moves before HOLD_MS draws a new box, also inside a box.
+  // On the map an arrow moves too, with any tool that draws.
   var HOLD_MS = 450;
   var MOVE_PAD = 16;
   var SLOP_PX = 8;
 
   // The id of the box or circle near a point of surface s (client coordinates), or null.
   function shapeAt(s, x, y) {
+    if (s.E.markAt) { return s.E.markAt(s, x, y, MOVE_PAD); }
     var p = paintedOf(s);
     if (!p || !p.layer) { return null; }
     var o = p.layer.getBoundingClientRect();
@@ -655,7 +720,18 @@
   function lift(d, id) {
     d.hold = null;
     var stored = marks.list.filter(function (m) { return m.id === id; })[0];
-    if (drag !== d || !stored || stored.k !== 'r' || marks.url !== view.path()) { return; }
+    if (drag !== d || !stored || marks.url !== view.path()) { return; }
+    if (d.s.E.moveMark) {
+      // The map: the shape itself goes with the finger (moveMark), at its new place only.
+      d.kind = 'move';
+      d.id = id;
+      d.stored = stored;
+      d.el.style.display = 'none';
+      paintMarks();
+      dragMoved();
+      return;
+    }
+    if (stored.k !== 'r') { return; }
     var rect = shapeRect(d.s, id, stored);   // after any change of the layout in the hold time
     if (!rect) { return; }
     d.kind = 'move';
@@ -706,6 +782,12 @@
       right: Math.max(x0, drag.x1), bottom: Math.max(y0, drag.y1) };
   }
 
+  // A lifted shape of the map at the place of the finger now, or null.
+  function movedMark(d) {
+    var win = d.s.win;
+    return d.s.E.moveMark(d.s, d.stored, d.x1 + win.scrollX - d.x0, d.y1 + win.scrollY - d.y0);
+  }
+
   // The finger moved, or the page scrolled under it: the guide and the words of the drag follow.
   function dragMoved() {
     var s = drag.s;
@@ -713,6 +795,11 @@
     var x0 = drag.x0 - win.scrollX;
     var y0 = drag.y0 - win.scrollY;
     if (drag.hold && moveFar(drag)) { clearTimeout(drag.hold); drag.hold = null; }
+    if (drag.kind === 'move' && drag.stored) {
+      drag.mark = movedMark(drag);
+      preview();
+      return;
+    }
     if (drag.kind !== 'pen') {
       var r = drag.kind === 'move' ? movedRect(drag) : dragRect();
       drag.el.style.left = r.left + 'px';
@@ -750,7 +837,7 @@
   var ARM_PX = 16;
   function edgeScroll() {
     var d = drag;
-    if (!d || d.s.contents) { return; }
+    if (!d || d.s.contents || d.s.map) { return; }   // a book page and the map do not scroll
     var h = d.s.win.innerHeight;
     var y = d.y1;
     var v = y > h - EDGE_PX ? Math.ceil((y - (h - EDGE_PX)) / EDGE_PX * EDGE_MAX_PX)
@@ -785,12 +872,12 @@
   function onPointerUp(ev) {
     if (!drag || !ev.isPrimary) { return; }
     var d = drag;
-    var r = d.kind === 'move' ? movedRect(d) : dragRect();
+    var r = d.kind === 'move' ? (d.stored ? null : movedRect(d)) : dragRect();
     endDrag();
     if (d.kind === 'move') { putShape(ev, d, r); return; }
     if (ev.type === 'pointercancel' || tool !== d.kind) { paintMarks(); return; }
     var m = d.kind === 'pen' ? d.mark : d.s.E.boxMark(d.s, r);
-    if (!m && d.kind !== 'pen') { note(t(TOOL_HELP[d.kind])); }   // too small (a tap), or nothing in it
+    if (!m && (d.kind !== 'pen' || d.s.E.arrow)) { note(t(toolHelp(d.kind))); }   // too small (a tap), or nothing in it
     if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
@@ -804,8 +891,9 @@
   // stays as it was.
   function putShape(ev, d, r) {
     dragSent = true;
-    if (ev.type === 'pointercancel' || !tool || tool === 'pen' || tool === 'eraser' || !moveFar(d)) { paintMarks(); return; }
-    var m = d.s.E.boxMark(d.s, r);
+    var penMoves = !!d.s.E.moveMark;   // the map: the marker tool moves arrows and shapes too
+    if (ev.type === 'pointercancel' || !tool || (tool === 'pen' && !penMoves) || tool === 'eraser' || !moveFar(d)) { paintMarks(); return; }
+    var m = d.stored ? movedMark(d) : d.s.E.boxMark(d.s, r);
     if (!m) { paintMarks(); note(t('markNotSent')); return; }
     if (d.oval) { m.o = 1; }
     pendingMark = { mark: m, moves: d.id };
@@ -826,7 +914,7 @@
       if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); }
       return;
     }
-    var media = tool === 'pen' && ev.target && ev.target.closest ? ev.target.closest(s.E.media) : null;
+    var media = tool === 'pen' && s.E.media && ev.target && ev.target.closest ? ev.target.closest(s.E.media) : null;
     if (!media) { return; }
     var m = s.E.pictureMark(s, media);
     if (m) { sendMark({ op: 'add', mark: m }, view.path()); }

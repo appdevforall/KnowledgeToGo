@@ -204,3 +204,67 @@ test('epub fitted: a box that no longer holds its first and last word gives way 
     assert.equal(E.fitted({ k: 'r' }, rects, { a: r(100, 200, 140, 220), fa: 20, b: r(300, 200, 350, 220), fb: 20 }), null);   // no corners
     assert.equal(E.fitted({ k: 'p', x: 0, y: 0, ex: 0, ey: 0 }, rects, null), null);
 });
+
+// The marks of the box map (www/mapmarks.js).
+const G = require('./www/mapmarks.js');
+
+test('map arrow: the line stops at the base of the head; the head points to the end', () => {
+    const a = G.arrowShape(0, 0, 100, 0, 22, 13);
+    assert.deepEqual(a.line, [0, 0, 78, 0]);
+    assert.deepEqual(a.head, [[100, 0], [78, 13], [78, -13]]);
+    const short = G.arrowShape(0, 0, 0, 20, 22, 13);                  // a short arrow: a smaller head
+    assert.deepEqual(short.line, [0, 0, 0, 10]);
+    assert.equal(short.head[0][1], 20);
+    assert.ok(Math.abs(Math.abs(short.head[1][0]) - 13 * 10 / 22) < 1e-9);
+    assert.equal(G.arrowShape(5, 5, 5, 5, 22, 13), null);             // no length
+});
+
+test('map places: whole numbers of 1/1000000 degree; the first place goes into -180..180', () => {
+    assert.deepEqual(G.geoOf([{ lng: -3.7037904, lat: 40.4167754 }, { lng: -3.69, lat: 40.42 }]), [-3703790, 40416775, -3690000, 40420000]);
+    // A teacher on the world copy to the right: the shape keeps its width over the 180 degree line.
+    assert.deepEqual(G.geoOf([{ lng: 539, lat: 0 }, { lng: 541, lat: 1 }]), [179000000, 0, 181000000, 1000000]);
+    assert.deepEqual(G.placesOf({ geo: [179000000, 0, 181000000, 1000000] }), [[179, 0], [181, 1]]);
+    assert.equal(G.turnsTo(-170, 175), 360);      // the copy nearest to the view
+    assert.equal(G.turnsTo(10, 20), 0);
+});
+
+test('map hit: an arrow near its line, a box inside or near its edge, the smallest box first', () => {
+    const shapes = [
+        { id: 1, k: 'r', pts: [[0, 0], [200, 0], [200, 200], [0, 200]] },
+        { id: 2, k: 'r', pts: [[50, 50], [100, 50], [100, 100], [50, 100]] },
+        { id: 3, k: 'a', pts: [[0, 150], [150, 150]] },
+        { id: 4, k: 'r', o: 1, pts: [[300, 0], [400, 0], [400, 100], [300, 100]] },
+    ];
+    assert.equal(G.hit(shapes, 75, 75, 16), 2);         // inside both boxes: the smaller one
+    assert.equal(G.hit(shapes, 20, 20, 16), 1);
+    assert.equal(G.hit(shapes, 100, 160, 16), 3);       // near the arrow, inside a box: the arrow
+    assert.equal(G.hit(shapes, 210, 100, 16), 1);       // near the edge, outside
+    assert.equal(G.hit(shapes, 260, 100, 16), null);
+    assert.equal(G.hit(shapes, 350, 50, 16), 4);        // inside the oval
+    assert.equal(G.hit(shapes, 305, 5, 4), null);       // the corner of the box, out of the oval
+    assert.equal(G.hit([], 0, 0, 16), null);
+});
+
+test('map oval: goes through the middle of each side of the shape', () => {
+    const pts = G.ovalPoints([[0, 0], [100, 0], [100, 50], [0, 50]], 4);
+    const near = (p: number[], x: number, y: number) => Math.abs(p[0] - x) < 1e-9 && Math.abs(p[1] - y) < 1e-9;
+    assert.ok(near(pts[0], 100, 25) && near(pts[1], 50, 50) && near(pts[2], 0, 25) && near(pts[3], 50, 0));
+});
+
+test('map marks: from screen points to places and back, with a fake map', () => {
+    // A fake map: 1 px = 0.001 degree, the place (0, 0) at the screen point (200, 200).
+    const map = {
+        project: (p: number[]) => ({ x: 200 + p[0] * 1000, y: 200 - p[1] * 1000 }),
+        unproject: (p: number[]) => ({ lng: (p[0] - 200) / 1000, lat: (200 - p[1]) / 1000 }),
+        getCenter: () => ({ lng: 0, lat: 0 }),
+    };
+    assert.equal(G.arrowMark(map, { x: 200, y: 200 }, { x: 205, y: 205 }), null);              // a tap
+    const a = G.arrowMark(map, { x: 200, y: 200 }, { x: 300, y: 100 });
+    assert.deepEqual(a, { k: 'a', geo: [0, 0, 100000, 100000] });
+    assert.deepEqual(G.shapesOf(map, [{ ...a, id: 7 }]), [{ id: 7, k: 'a', o: undefined, pts: [[200, 200], [300, 100]] }]);
+    const box = G.boxMark(map, { left: 100, top: 100, right: 300, bottom: 200 });
+    assert.deepEqual(box.geo, [-100000, 100000, 100000, 100000, 100000, 0, -100000, 0]);
+    assert.equal(G.boxMark(map, { left: 100, top: 100, right: 105, bottom: 200 }), null);
+    assert.deepEqual(G.moveMark(map, { ...box, o: 1, id: 3 }, 10, -20), { k: 'r', o: 1, geo: [-90000, 120000, 110000, 120000, 110000, 20000, -90000, 20000] });
+    assert.deepEqual(G.shapesOf(map, [{ k: 'b', b: 1, t: 'a' }, { k: 'p', cfi: 'epubcfi(/6)' }]), []);   // other kinds
+});

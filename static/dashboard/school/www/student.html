@@ -39,6 +39,7 @@
 <script src="follow.js"></script>
 <script src="marks.js"></script>
 <script src="epubmarks.js"></script>
+<script src="mapmarks.js"></script>
 <script>
 'use strict';
 (function () {
@@ -140,6 +141,8 @@
           painted.doc = null;   // a new section or a new layout of the book: draw the marks again
           paintMarks();
         }
+        // The map is ready: draw its marks (they follow each move of the map by themselves).
+        if (kind === 'map' && !ended && onPage()) { paintMarks(); }
         if (byUser || applying || ended || !onPage()) { return; }
         var shown = SchoolPlace.at(win, kind, last.a);
         // Not ready, or at the place and acked: a second ack of one message would show a longer
@@ -279,7 +282,8 @@
   // Draws the marks of the teacher when they are for the page on the screen. A lesson message
   // comes up to 20 times a second: draw only for a new list or a new page, or after a layout change.
   // In an EPUB book the marks are on the pages that the reader shows (epubmarks.js); each turn to a
-  // new section or new layout of the book draws them again (watch).
+  // new section or new layout of the book draws them again (watch). On the map (mapmarks.js) the
+  // marks hold map places: their layer draws them again on each move of the map.
   function paintMarks() {
     if (!onPage()) { return; }
     var kind = SchoolPlace.kindOf(last.url);
@@ -293,6 +297,10 @@
           watchBookPage(v.win.document);
           SchoolEpubMarks.draw(v, list);
         });
+      } else if (kind === 'map') {
+        var map = SchoolPlace.appOf(view.win(), 'map');
+        if (!map) { return; }   // not ready: watch() draws when it is
+        SchoolMapMarks.draw(map, list);
       } else {
         SchoolMarks.draw(view.win(), list);
       }

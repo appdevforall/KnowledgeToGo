@@ -143,10 +143,10 @@ test('prepare: a class map page hides the region download (FQR) in the map shado
     assert.equal(inShadow.length + inHead.length, 1);
 });
 
-test('hasMarks: the teacher marks a Kiwix page and an EPUB book only', () => {
+test('hasMarks: the teacher marks a Kiwix page, an EPUB book and the map', () => {
     assert.equal(P.hasMarks('page'), true);
     assert.equal(P.hasMarks('epub'), true);
-    assert.equal(P.hasMarks('map'), false);
+    assert.equal(P.hasMarks('map'), true);
     assert.equal(P.hasMarks('pdf'), false);
     assert.equal(P.hasMarks(null), false);
 });

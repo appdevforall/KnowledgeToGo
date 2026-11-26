@@ -91,8 +91,9 @@
   // A page of an app (the class font is for Kiwix pages only).
   function isApp(kind) { return kind !== null && kind !== 'page'; }
 
-  // The teacher can mark the page: a Kiwix page (marks.js) or an EPUB book (epubmarks.js).
-  function hasMarks(kind) { return kind === 'page' || kind === 'epub'; }
+  // The teacher can mark the page: a Kiwix page (marks.js), an EPUB book (epubmarks.js) or the box
+  // map (mapmarks.js).
+  function hasMarks(kind) { return kind === 'page' || kind === 'epub' || kind === 'map'; }
 
   // The pages of the EPUB book on the screen: [{ win, contents }], one for each inner frame of the
   // reader (epub.js keeps one Contents for each).
@@ -330,6 +331,7 @@
     openUrl: openUrl,
     isApp: isApp,
     hasMarks: hasMarks,
+    appOf: appOf,
     bookViews: bookViews,
     toolCss: toolCss,
     middleOf: middleOf,

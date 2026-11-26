@@ -210,7 +210,7 @@
     var origin = layer.getBoundingClientRect();
     var blocks = Anchor.blocksOf(doc);
     list.forEach(function (m) {
-      if (m.cfi !== undefined) { return; }   // a mark of an EPUB book (epubmarks.js)
+      if (m.cfi !== undefined || m.geo !== undefined) { return; }   // a mark of an EPUB book or of the map
       var rects = clientRects(doc, blocks, m, origin);
       if (!rects || !rects.length) { return; }
       var el = blocks.list[sameBlock(blocks.prints, m.b, m.t)];
