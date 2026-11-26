@@ -125,8 +125,15 @@
   // setting on each phone (another font breaks the lines at other places, so the pages and the
   // marks fall at other places). The School frame has the same width on every phone (follow.js),
   // so the lines break at the same places; only the page height can differ.
+  // A book with a fixed layout (a picture book: text in boxes at fixed places) keeps its font.
+  // The class font arrives after the first layout and moves the text: the reader then reports its
+  // place again (a "relocated" event), so the student shows the place again, the teacher sends
+  // it, and the marks are drawn again.
   var BOOK_FONT_ID = 'k2go-class-font';
   function bookFont(rendition, classCss) {
+    var meta = rendition.book && rendition.book.package && rendition.book.package.metadata;
+    if (meta && meta.layout === 'pre-paginated') { return; }
+    var relocate = function () { try { rendition.reportLocation(); } catch (e) { /* the reader goes */ } };
     var put = function (contents) {
       var doc = contents && contents.document;
       if (!doc || !doc.head || doc.getElementById(BOOK_FONT_ID)) { return; }
@@ -134,6 +141,7 @@
       style.id = BOOK_FONT_ID;
       style.textContent = classCss;
       doc.head.appendChild(style);   // last, so that it wins over the book styles
+      if (doc.fonts && doc.fonts.addEventListener) { doc.fonts.addEventListener('loadingdone', relocate); }
     };
     rendition.hooks.content.register(put);   // each section that the reader shows later
     rendition.getContents().forEach(put);
@@ -207,7 +215,7 @@
         var caret = y >= 0 && y <= f.height ? c.document.caretRangeFromPoint(x, y) : null;
         if (!caret || caret.startContainer.nodeType !== 3 || !/\S/.test(caret.startContainer.data)) { continue; }
         var cfi = c.cfiFromRange(caret);
-        return typeof cfi === 'string' && cfi.indexOf('epubcfi(') === 0 ? cfi : null;
+        if (typeof cfi === 'string' && cfi.indexOf('epubcfi(') === 0) { return cfi; }
       }
     }
     return null;

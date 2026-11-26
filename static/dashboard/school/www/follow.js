@@ -44,7 +44,7 @@ var School = (function () {
     'html { font-size: 16px !important; -webkit-text-size-adjust: 100% !important; ' +
     'text-size-adjust: 100% !important; }\n' +
     'body, body * { font-family: "' + FONT + '", sans-serif !important; }\n' +
-    'pre, pre *, code, kbd, samp, tt { font-family: monospace !important; }\n';
+    'pre, pre *, code, code *, kbd, samp, tt { font-family: monospace !important; }\n';
 
   function normalize(doc) {
     if (params.get('font') === 'native' || !doc.head) { return; }

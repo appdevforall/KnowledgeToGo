@@ -162,21 +162,21 @@ test('middleOf: the CFI at the center of the reader, in the book frame that is t
     const asked: number[][] = [];
     const page = (frameLeft: number, cfi: string) => ({
         window: { frameElement: { getBoundingClientRect: rect(frameLeft, 100, 800, 600) } },   // two pages wide
-        document: { caretRangeFromPoint: (x: number, y: number) => { asked.push([x, y]); return { startContainer: { nodeType: 3, data: y === 300 ? '\n  ' : 'words' } }; } },
-        cfiFromRange: () => cfi,
+        document: { caretRangeFromPoint: (x: number, y: number) => { asked.push([x, y]); return { y, startContainer: { nodeType: 3, data: y === 300 ? '\n  ' : 'words' } }; } },
+        cfiFromRange: (caret: { y: number }) => cfi.replace(')', '@' + caret.y + ')'),   // the CFI tells which caret
     });
     // The reader shows x 0..400 of the screen; the book frame (two pages) is scrolled by one page.
     const rendition = {
         manager: { container: { getBoundingClientRect: rect(0, 100, 400, 600) } },
         getContents: () => [page(-400, 'epubcfi(/6/4!/4/10/1:5)')],
     };
-    assert.equal(P.middleOf(rendition), 'epubcfi(/6/4!/4/10/1:5)');
+    assert.equal(P.middleOf(rendition), 'epubcfi(/6/4!/4/10/1:5@240)');   // the caret at y 240, not the spaces at 300
     // The center of the reader in the frame (its second page) is on a text of spaces only (a
     // picture, a gap between paragraphs): the point a little higher.
     assert.deepEqual(asked, [[600, 300], [600, 240]]);
     // A frame that is not at the center (the next section, still to the right): the next frame.
     const two = { ...rendition, getContents: () => [page(400, 'epubcfi(/6/6!/4/2/1:0)'), page(-400, 'epubcfi(/6/4!/4/10/1:5)')] };
-    assert.equal(P.middleOf(two), 'epubcfi(/6/4!/4/10/1:5)');
+    assert.equal(P.middleOf(two), 'epubcfi(/6/4!/4/10/1:5@240)');
     assert.equal(P.middleOf({ getContents: () => [] }), null);   // no container: the first line instead
 });
 
@@ -207,5 +207,14 @@ test('prepare: an EPUB book gets the class font on each page and one text size',
     hook!(later);                       // a section that the reader shows later
     hook!(later);                       // only one style for a page
     assert.equal(later.added.length, 1);
-    P.prepare({}, 'epub', { ...rendition, themes: { fontSize: () => { throw new Error('no'); } } }, '');   // "?font=native": nothing
+    // "?font=native" (no class CSS), or a book with a fixed layout: no style, no hook, no size.
+    const cases: [string, unknown][] = [['', {}], ['@font-face {}', { package: { metadata: { layout: 'pre-paginated' } } }]];
+    for (const [css, book] of cases) {
+        const other = page();
+        let hooked = false;
+        P.prepare({}, 'epub', { book, hooks: { content: { register: () => { hooked = true; } } }, getContents: () => [other],
+            themes: { fontSize: () => { throw new Error('no size'); } } }, css);
+        assert.equal(other.added.length, 0);
+        assert.equal(hooked, false);
+    }
 });
