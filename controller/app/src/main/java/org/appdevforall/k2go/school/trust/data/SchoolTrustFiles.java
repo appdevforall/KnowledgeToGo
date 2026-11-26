@@ -39,11 +39,13 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
     static final int MAX_FILE = 16 * 1024;
 
     private final File rootToken;
+    private final File teacherCert;
     private final File keyFile;
 
     /** {@code noBackupDir}: Context.getNoBackupFilesDir(). */
     public SchoolTrustFiles(File noBackupDir) {
         rootToken = new File(new File(noBackupDir, "school"), "root.token");
+        teacherCert = new File(new File(noBackupDir, "school"), "teacher.cert");
         keyFile = new File(new File(noBackupDir, "school-root"), "root.k2key");
     }
 
@@ -51,6 +53,56 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
     public TrustRecords.Root root() {
         byte[] b = read(rootToken);
         return b == null ? null : TrustCodec.readRoot(new String(b, StandardCharsets.US_ASCII).trim());
+    }
+
+    @Override
+    public String rootTokenText() {
+        byte[] b = read(rootToken);
+        return b == null ? null : new String(b, StandardCharsets.US_ASCII).trim();
+    }
+
+    @Override
+    public TrustRecords.Root readRoot(String token) {
+        return TrustCodec.readRoot(token);
+    }
+
+    @Override
+    public boolean pinRoot(String token) {
+        if (TrustCodec.readRoot(token) == null) return false;
+        try {
+            write(rootToken, token.getBytes(StandardCharsets.US_ASCII));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public String teacherCertToken() {
+        byte[] b = read(teacherCert);
+        return b == null ? null : new String(b, StandardCharsets.US_ASCII).trim();
+    }
+
+    @Override
+    public boolean saveTeacherCert(String token) {
+        try {
+            write(teacherCert, token.getBytes(StandardCharsets.US_ASCII));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public TrustRecords.Teacher verifiedCert(TrustRecords.Root root, String token, long now) {
+        TrustCodec.TeacherCheck c = TrustCodec.checkTeacher(root, token, null, now);
+        return c.verdict == org.appdevforall.k2go.school.trust.domain.TrustCheck.Verdict.VERIFIED ? c.cert : null;
+    }
+
+    @Override
+    public String teacherCert(PrivateKey rootKey, TrustRecords.Root root, String teacherKeySpkiB64, String label,
+                              String serial, long from, long until) {
+        return TrustCodec.signTeacher(rootKey, root.school, teacherKeySpkiB64, label, serial, from, until);
     }
 
     @Override

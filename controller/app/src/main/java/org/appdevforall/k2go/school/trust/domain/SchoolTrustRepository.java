@@ -34,6 +34,28 @@ public interface SchoolTrustRepository {
     /** A backup file that was read back. null: not a backup of a school key. */
     Backup parseBackup(byte[] file);
 
+    /** The pinned root token as it is in the file (to give to a ring). null: no school. */
+    String rootTokenText();
+
+    /** A root token that a ring gave, checked (self-signed, school id from the key). null: not valid. */
+    TrustRecords.Root readRoot(String token);
+
+    /** Pins a root (a phone that joins a school). false: not written. */
+    boolean pinRoot(String token);
+
+    /** The certificate of this teacher phone. null: none. */
+    String teacherCertToken();
+
+    /** Keeps the certificate of this teacher phone. false: not written. */
+    boolean saveTeacherCert(String token);
+
+    /** {@code token} is a certificate of {@code root} that is valid at {@code now}. null: it is not. */
+    TrustRecords.Teacher verifiedCert(TrustRecords.Root root, String token, long now);
+
+    /** Device zero: signs a certificate for one teacher phone. */
+    String teacherCert(PrivateKey rootKey, TrustRecords.Root root, String teacherKeySpkiB64, String label,
+                       String serial, long from, long until);
+
     /** The content of a backup file: a checked root and its sealed key. */
     final class Backup {
         public final String rootToken;
