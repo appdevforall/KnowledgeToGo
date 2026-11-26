@@ -162,17 +162,12 @@
     return { left: Math.max(0, r.left), top: Math.max(0, r.top), right: Math.min(w, r.right), bottom: Math.min(h, r.bottom) };
   }
 
-  // Draws the marks on the page in win, in a new layer. Returns the layer and what it drew, for
-  // the hit test of the teacher. A mark that is not on this page is not drawn.
-  function draw(win, list) {
-    var doc = win.document;
+  // A new empty layer for the marks of the page in doc (the old one goes), or null when there is
+  // nothing to draw.
+  function newLayer(doc, list) {
     var old = doc.getElementById(LAYER_ID);
     if (old) { old.parentNode.removeChild(old); }
-    var drawn = [];
-    if (!list || !list.length || !doc.documentElement) { return { layer: null, drawn: drawn }; }
-    // A mark stays inside the page: a rect out of it would make the page wider or longer.
-    var pageW = doc.documentElement.clientWidth;
-    var pageH = doc.documentElement.scrollHeight;
+    if (!list || !list.length || !doc.documentElement) { return null; }
     var layer = doc.createElement('div');
     layer.id = LAYER_ID;
     layer.setAttribute('aria-hidden', 'true');
@@ -180,27 +175,48 @@
       'border: 0; pointer-events: none;');
     // Out of the body: the layout watch (School.onLayout) looks at the body only.
     doc.documentElement.appendChild(layer);
+    return layer;
+  }
+
+  // Draws one mark in the layer. rects: client rects; frame: a frame, not a fill; light: the text
+  // is light (a dark page). Gives what it drew ({ id, k, rects } in layer coordinates), or null.
+  function paint(win, layer, m, rects, frame, light) {
+    var doc = win.document;
+    // A mark stays inside the page: a rect out of it would make the page wider or longer.
+    var pageW = doc.documentElement.clientWidth;
+    var pageH = doc.documentElement.scrollHeight;
+    var origin = layer.getBoundingClientRect();
+    var local = rects.map(function (r) {
+      var box = clamp({ left: r.left - origin.left, top: r.top - origin.top, right: r.right - origin.left,
+        bottom: r.bottom - origin.top }, pageW, pageH);
+      if (box.right - box.left < 1 || box.bottom - box.top < 1) { return null; }   // off the page
+      var d = doc.createElement('div');
+      d.setAttribute('style', TOP + 'left: ' + box.left + 'px; top: ' +
+        box.top + 'px; width: ' + (box.right - box.left) + 'px; height: ' + (box.bottom - box.top) + 'px; ' +
+        (frame ? FRAME : light ? DARK_FILL : FILL) + (m.o === 1 ? ' border-radius: 50%;' : ''));
+      layer.appendChild(d);
+      return box;
+    }).filter(function (box) { return box !== null; });
+    return local.length ? { id: m.id, k: m.k, rects: local } : null;
+  }
+
+  // Draws the marks on the page in win, in a new layer. Returns the layer and what it drew, for
+  // the hit test of the teacher. A mark that is not on this page is not drawn.
+  function draw(win, list) {
+    var doc = win.document;
+    var drawn = [];
+    var layer = newLayer(doc, list);
+    if (!layer) { return { layer: null, drawn: drawn }; }
     var origin = layer.getBoundingClientRect();
     var blocks = Anchor.blocksOf(doc);
     list.forEach(function (m) {
+      if (m.cfi !== undefined) { return; }   // a mark of an EPUB book (epubmarks.js)
       var rects = clientRects(doc, blocks, m, origin);
       if (!rects || !rects.length) { return; }
       var el = blocks.list[sameBlock(blocks.prints, m.b, m.t)];
       var frame = m.k === 'r' || (m.k === 'b' && /^(IMG|VIDEO)$/.test(el.tagName));
-      var fill = isLight(win.getComputedStyle(el).color) ? DARK_FILL : FILL;
-      var local = rects.map(function (r) {
-        var box = clamp({ left: r.left - origin.left, top: r.top - origin.top, right: r.right - origin.left,
-          bottom: r.bottom - origin.top }, pageW, pageH);
-        if (box.right - box.left < 1 || box.bottom - box.top < 1) { return null; }   // off the page
-        var d = doc.createElement('div');
-        d.setAttribute('style', TOP + 'left: ' + box.left + 'px; top: ' +
-          box.top + 'px; width: ' + (box.right - box.left) + 'px; height: ' + (box.bottom - box.top) + 'px; ' +
-          (frame ? FRAME : fill) + (m.o === 1 ? ' border-radius: 50%;' : ''));
-        layer.appendChild(d);
-        return box;
-      }).filter(function (box) { return box !== null; });
-      if (!local.length) { return; }
-      drawn.push({ id: m.id, k: m.k, rects: local });
+      var d = paint(win, layer, m, rects, frame, isLight(win.getComputedStyle(el).color));
+      if (d) { drawn.push(d); }
     });
     return { layer: layer, drawn: drawn };
   }
@@ -376,6 +392,7 @@
   }
 
   return {
+    MIN_BOX: MIN_BOX,
     mergeLines: mergeLines,
     hitTest: hitTest,
     shapeAt: shapeAt,
@@ -385,6 +402,8 @@
     trimEnds: trimEnds,
     isLight: isLight,
     clamp: clamp,
+    newLayer: newLayer,
+    paint: paint,
     draw: draw,
     blockMark: blockMark,
     wordAround: wordAround,

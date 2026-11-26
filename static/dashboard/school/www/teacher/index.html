@@ -129,6 +129,7 @@
 <script src="../place.js"></script>
 <script src="../follow.js"></script>
 <script src="../marks.js"></script>
+<script src="../epubmarks.js"></script>
 <script>
 'use strict';
 (function () {
@@ -196,7 +197,7 @@
   // Marks (M2). The box keeps the marks of the lesson page; this page draws what the box sends and
   // sends each change to the box.
   var marks = { url: null, list: [] };
-  var painted = { doc: null, layer: null, drawn: [] };
+  var painted = [];         // what paintMarks() drew on each surface: [{ doc, layer, drawn }]
   var tool = null;          // the mark tool that is on (state of this page only): null, 'pen', 'box', 'oval' or 'eraser'
   var drag = null;          // the drag of a tool (onPointerDown)
   var dragSent = false;     // a drag sent a mark: the click that a mouse makes after it marks nothing
@@ -341,22 +342,15 @@
     // A late image or the class font can move the block at the top edge: send the place again,
     // and draw the marks again.
     School.onLayout(win, function () { onScroll(); paintMarks(); });
-    win.document.addEventListener('pointerdown', onPointerDown, true);
-    win.document.addEventListener('pointermove', onPointerMove, true);
-    win.document.addEventListener('pointerup', onPointerUp, true);
-    win.document.addEventListener('pointercancel', onPointerUp, true);
-    // A tool: no drag of a picture, and no menu after a long press (it would cancel the drag).
-    ['dragstart', 'contextmenu'].forEach(function (type) {
-      win.document.addEventListener(type, function (ev) { if (tool) { ev.preventDefault(); } }, true);
-    });
-    win.document.addEventListener('click', onMarkTap, true);   // before onLink: a tap that marks opens no link
-    win.document.addEventListener('click', onLink, true);
+    attach(win.document);
+    win.document.addEventListener('click', onLink, true);   // after onMarkTap: a tap that marks opens no link
     var kind = SchoolPlace.kindOf(win.location.pathname);
     if (SchoolPlace.isApp(kind)) {
       // The app object comes after the load (the map, the PDF file): the box lesson is applied then.
       var resume = resumeAt;
       SchoolPlace.watch(win, kind, function () {
         if (resume && SchoolPlace.apply(win, kind, resume) !== null) { resume = null; }
+        if (kind === 'epub') { attachBook(); }
         onScroll();
       });
     } else if (resumeAt) {
@@ -381,7 +375,7 @@
       if (mine !== pageGen) { return; }
       if (status >= 200 && status < 400) {
         publishable = true;
-        setToolsOn(kind === 'page');   // marks are for Kiwix pages only
+        setToolsOn(SchoolPlace.hasMarks(kind));
         note('');
         publish();
       } else {
@@ -392,11 +386,81 @@
 
   function open(path) { if (path) { byTimer = false; view.open(path); } }
 
+  // The marks of a Kiwix page (marks.js), with the functions of epubmarks.js. A surface is a page
+  // that holds marks: { win, contents (EPUB only), E: its mark functions }.
+  var PAGE_MARKS = {
+    media: 'img, video',   // the pictures that a pen tap marks
+    draw: function (s, list) { return SchoolMarks.draw(s.win, list); },
+    wordAt: function (s, x, y) { return SchoolMarks.wordAt(s.win, x, y); },
+    dragMark: function (s, a, z) { return SchoolMarks.dragMark(s.win, a, z); },
+    boxMark: function (s, r) { return SchoolMarks.boxMark(s.win, r); },
+    // A picture that is a block gets a block mark. A picture in a text block (an infobox cell, a
+    // list item) gets a box around it: a block mark would fill the cell and its words.
+    pictureMark: function (s, media) {
+      var isBlock = SchoolAnchor.blocksOf(s.win.document).list.indexOf(media) >= 0;
+      return isBlock ? SchoolMarks.blockMark(s.win.document, media) : SchoolMarks.boxMark(s.win, media.getBoundingClientRect());
+    }
+  };
+
+  // The surfaces of the page on the screen: the Kiwix page, or the pages of the EPUB book that the
+  // reader shows (each in an inner frame). None for another page.
+  function surfaces() {
+    var win = view.win();
+    if (!win || view.path() === null) { return []; }
+    var kind = SchoolPlace.kindOf(win.location.pathname);
+    if (kind === 'page') { return [{ win: win, E: PAGE_MARKS }]; }
+    if (kind !== 'epub') { return []; }
+    return SchoolPlace.bookViews(win).map(function (v) { return { win: v.win, contents: v.contents, E: SchoolEpubMarks }; });
+  }
+
+  // The surface of an event, or null (an event on the reader around the book).
+  function surfaceOf(ev) {
+    var t = ev.target;
+    var doc = t && (t.nodeType === 9 ? t : t.ownerDocument);
+    var win = doc && doc.defaultView;
+    return surfaces().filter(function (s) { return s.win === win; })[0] || null;
+  }
+
+  function paintedOf(s) {
+    return painted.filter(function (p) { return p.doc === s.win.document; })[0] || null;
+  }
+
+  // The listeners of the tools on a surface (the page in the frame, or a page of the book).
+  function attach(doc) {
+    doc.addEventListener('pointerdown', onPointerDown, true);
+    doc.addEventListener('pointermove', onPointerMove, true);
+    doc.addEventListener('pointerup', onPointerUp, true);
+    doc.addEventListener('pointercancel', onPointerUp, true);
+    // A tool: no drag of a picture, and no menu after a long press (it would cancel the drag).
+    ['dragstart', 'contextmenu'].forEach(function (type) {
+      doc.addEventListener(type, function (ev) { if (tool) { ev.preventDefault(); } }, true);
+    });
+    doc.addEventListener('click', onMarkTap, true);   // a tap that marks opens no link
+  }
+
+  // The reader shows each section of the book in a new inner frame: its page gets the tools, and
+  // with a tool on a swipe turns no page (the reader turns pages on the touch events of the book).
+  var attachedBooks = typeof WeakSet === 'function' ? new WeakSet() : null;
+  function attachBook() {
+    if (!attachedBooks) { return; }
+    surfaces().forEach(function (s) {
+      var doc = s.win.document;
+      if (!s.contents || attachedBooks.has(doc)) { return; }
+      attachedBooks.add(doc);
+      attach(doc);
+      ['touchstart', 'touchmove', 'touchend'].forEach(function (type) {
+        s.win.addEventListener(type, function (ev) { if (tool) { ev.stopPropagation(); } }, true);
+      });
+      toolStyle(doc);
+      // A picture that loads late moves the text after it: draw the marks again.
+      doc.addEventListener('load', function () { paintMarks(); }, true);
+    });
+    paintMarks();
+  }
+
   // Draws the marks that the box sent, when they are for the page on the screen.
   function paintMarks() {
-    var win = view.win();
     var path = view.path();
-    if (!win || path === null) { return; }
     var list = marks.url === path ? marks.list : [];
     // The marks of the box, and the words of a drag that the box does not have yet. Only the marks
     // of the box take a tap (an id). A shape that moves shows at its new place only.
@@ -404,12 +468,13 @@
     var moved = pendingMark ? pendingMark.moves : null;
     var shown = list.filter(function (m) { return m.id === undefined || (m.id !== lifted && m.id !== moved); })
       .concat(drag && drag.mark ? [drag.mark] : [], pendingMark ? [pendingMark.mark] : []);
-    try {
-      var p = SchoolMarks.draw(win, shown);
-      painted = { doc: win.document, layer: p.layer, drawn: p.drawn.filter(function (d) { return d.id !== undefined; }) };
-    } catch (e) {
-      painted = { doc: null, layer: null, drawn: [] };
-    }
+    painted = [];
+    surfaces().forEach(function (s) {
+      try {
+        var p = s.E.draw(s, shown);
+        painted.push({ doc: s.win.document, layer: p.layer, drawn: p.drawn.filter(function (d) { return d.id !== undefined; }) });
+      } catch (e) { /* no layout yet: the next change draws again */ }
+    });
     eraserChip(list.length);
   }
 
@@ -426,6 +491,7 @@
   // With pen, box or oval, the page does not scroll by the finger: the drag marks, and the page
   // scrolls when the finger comes near its top or bottom edge.
   var TOOL_STYLE_ID = 'k2go-mark-tool';
+  var APP_TOOL_STYLE_ID = 'k2go-mark-tool-app';
   var TOOL_HELP = { pen: 'markPenHelp', box: 'markBoxHelp', oval: 'markOvalHelp', eraser: 'markEraserHelp' };
   function setTool(name) {
     tool = name;
@@ -433,8 +499,25 @@
     Object.keys(toolBtns).forEach(function (k) { toolBtns[k].setAttribute('aria-pressed', String(tool === k)); });
     note(tool ? t(TOOL_HELP[tool]) : '');
     eraserChip(markCount());
-    if (tool) { try { view.win().getSelection().removeAllRanges(); } catch (e) { /* no selection */ } }
-    var doc = view.win() && view.win().document;
+    surfaces().forEach(function (s) {
+      if (tool) { try { s.win.getSelection().removeAllRanges(); } catch (e) { /* no selection */ } }
+      toolStyle(s.win.document);
+    });
+    // The page turn controls of the app go off while a tool is on (place.js toolCss).
+    var win = view.win();
+    var appCss = win && view.path() !== null ? SchoolPlace.toolCss(SchoolPlace.kindOf(win.location.pathname)) : '';
+    var appStyle = win && win.document ? win.document.getElementById(APP_TOOL_STYLE_ID) : null;
+    if (tool && appCss && !appStyle && win.document.documentElement) {
+      appStyle = win.document.createElement('style');
+      appStyle.id = APP_TOOL_STYLE_ID;
+      appStyle.textContent = appCss;
+      win.document.documentElement.appendChild(appStyle);
+    } else if (!tool && appStyle) {
+      appStyle.parentNode.removeChild(appStyle);
+    }
+  }
+
+  function toolStyle(doc) {
     if (!doc || !doc.documentElement) { return; }
     var style = doc.getElementById(TOOL_STYLE_ID);
     var drags = tool && tool !== 'eraser';
@@ -485,29 +568,31 @@
     return !!sel && !sel.isCollapsed;
   }
 
-  // The mark under a point of the page on the screen (client coordinates), or null.
-  function markAt(x, y) {
-    var win = view.win();
-    if (!painted.layer || painted.doc !== win.document) { return null; }
-    var o = painted.layer.getBoundingClientRect();
-    return SchoolMarks.hitTest(painted.drawn, x - o.left, y - o.top);
+  // The mark under a point of surface s (client coordinates), or null.
+  function markAt(s, x, y) {
+    var p = paintedOf(s);
+    if (!p || !p.layer) { return null; }
+    var o = p.layer.getBoundingClientRect();
+    return SchoolMarks.hitTest(p.drawn, x - o.left, y - o.top);
   }
 
   // The first tap after a text selection only ends the selection: it marks nothing.
   // With pen, box or oval, a press starts a drag (the pen only on a word).
   function onPointerDown(ev) {
-    tapEndsSelection = hasSelection(view.win());
+    var s = surfaceOf(ev);
+    if (!s) { return; }   // the reader around the book: its buttons work as usual
+    tapEndsSelection = hasSelection(s.win);
     dragSent = false;
     if (!tool || tool === 'eraser' || !publishable || !ev.isPrimary || ev.button !== 0) { return; }
     ev.preventDefault();
     endDrag();
-    var win = view.win();
+    var win = s.win;
     var doc = win.document;
     var from = null;
     if (tool === 'pen') {
-      from = SchoolMarks.wordAt(win, ev.clientX, ev.clientY);
+      from = s.E.wordAt(s, ev.clientX, ev.clientY);
       if (!from) {
-        var media = ev.target && ev.target.closest ? ev.target.closest('img, video') : null;
+        var media = ev.target && ev.target.closest ? ev.target.closest(s.E.media) : null;
         if (!media) { note(t('markOutside')); }   // a picture: onMarkTap marks it
         return;
       }
@@ -524,10 +609,10 @@
           (tool === 'oval' ? ' border-radius: 50%;' : '')));
     doc.documentElement.appendChild(el);
     // x0, y0: the start in page coordinates, so the start holds when the page scrolls.
-    drag = { kind: tool, x0: ev.clientX + win.scrollX, y0: ev.clientY + win.scrollY, x1: ev.clientX, y1: ev.clientY,
+    drag = { kind: tool, s: s, x0: ev.clientX + win.scrollX, y0: ev.clientY + win.scrollY, x1: ev.clientX, y1: ev.clientY,
       sy: ev.clientY, el: el, from: from, mark: null, speed: 0, armed: false, looping: false };
-    if (from) { drag.mark = SchoolMarks.dragMark(win, from, from); }
-    var shape = tool === 'pen' ? null : shapeAt(ev.clientX, ev.clientY);
+    if (from) { drag.mark = s.E.dragMark(s, from, from); }
+    var shape = tool === 'pen' ? null : shapeAt(s, ev.clientX, ev.clientY);
     if (shape !== null) {
       var d = drag;
       d.hold = setTimeout(function () { lift(d, shape); }, HOLD_MS);
@@ -541,32 +626,37 @@
   var MOVE_PAD = 16;
   var SLOP_PX = 8;
 
-  // The id of the box or circle near a point of the page (client coordinates), or null.
-  function shapeAt(x, y) {
-    var win = view.win();
-    if (!painted.layer || painted.doc !== win.document) { return null; }
-    var o = painted.layer.getBoundingClientRect();
-    var s = SchoolMarks.shapeAt(painted.drawn, x - o.left, y - o.top, MOVE_PAD);
-    return s ? s.id : null;
+  // The id of the box or circle near a point of surface s (client coordinates), or null.
+  function shapeAt(s, x, y) {
+    var p = paintedOf(s);
+    if (!p || !p.layer) { return null; }
+    var o = p.layer.getBoundingClientRect();
+    var hit = SchoolMarks.shapeAt(p.drawn, x - o.left, y - o.top, MOVE_PAD);
+    return hit ? hit.id : null;
   }
 
-  // The place of a drawn shape in page coordinates now, or null. Across, it is the place of the box
-  // (x, w), not the drawn rect: a drawn rect is cut to the width of this page.
-  function shapeRect(id, stored) {
-    var win = view.win();
-    if (!painted.layer || painted.doc !== win.document) { return null; }
-    var d = painted.drawn.filter(function (x) { return x.id === id; })[0];
-    if (!d) { return null; }
-    var o = painted.layer.getBoundingClientRect();
-    var dy = o.top + win.scrollY;
-    return { left: stored.x, top: d.rects[0].top + dy, right: stored.x + stored.w, bottom: d.rects[0].bottom + dy };
+  // The place of a drawn shape in page coordinates now, or null. Across, a box of a Kiwix page has
+  // its place (x, w), not the drawn rect: a drawn rect is cut to the width of this page. A box of a
+  // book is where it is drawn; a box in two columns does not move.
+  function shapeRect(s, id, stored) {
+    var p = paintedOf(s);
+    if (!p || !p.layer) { return null; }
+    var d = p.drawn.filter(function (x) { return x.id === id; })[0];
+    var book = stored.cfi !== undefined;
+    if (!d || (book && !d.fit)) { return null; }   // a box of a book that goes around its words does not move
+    var o = p.layer.getBoundingClientRect();
+    var dx = o.left + s.win.scrollX;
+    var dy = o.top + s.win.scrollY;
+    var left = book ? d.rects[0].left + dx : stored.x;
+    var right = book ? d.rects[0].right + dx : stored.x + stored.w;
+    return { left: left, top: d.rects[0].top + dy, right: right, bottom: d.rects[0].bottom + dy };
   }
 
   function lift(d, id) {
     d.hold = null;
     var stored = marks.list.filter(function (m) { return m.id === id; })[0];
     if (drag !== d || !stored || stored.k !== 'r' || marks.url !== view.path()) { return; }
-    var rect = shapeRect(id, stored);   // after any change of the layout in the hold time
+    var rect = shapeRect(d.s, id, stored);   // after any change of the layout in the hold time
     if (!rect) { return; }
     d.kind = 'move';
     d.id = id;
@@ -583,7 +673,7 @@
   // The client rectangle of a shape that moves: where it was plus the move of the finger, inside
   // the width of the page.
   function movedRect(d) {
-    var win = view.win();
+    var win = d.s.win;
     var w = d.page.right - d.page.left;
     var dx = d.x1 + win.scrollX - d.x0;
     var dy = d.y1 + win.scrollY - d.y0;
@@ -594,7 +684,7 @@
 
   // The finger went SLOP_PX from where it pressed: no long press.
   function moveFar(d) {
-    var win = view.win();
+    var win = d.s.win;
     var dx = d.x1 + win.scrollX - d.x0;
     var dy = d.y1 + win.scrollY - d.y0;
     return dx * dx + dy * dy > SLOP_PX * SLOP_PX;
@@ -609,7 +699,7 @@
 
   // The rectangle of a box drag in client coordinates.
   function dragRect() {
-    var win = view.win();
+    var win = drag.s.win;
     var x0 = drag.x0 - win.scrollX;
     var y0 = drag.y0 - win.scrollY;
     return { left: Math.min(x0, drag.x1), top: Math.min(y0, drag.y1),
@@ -618,7 +708,8 @@
 
   // The finger moved, or the page scrolled under it: the guide and the words of the drag follow.
   function dragMoved() {
-    var win = view.win();
+    var s = drag.s;
+    var win = s.win;
     var x0 = drag.x0 - win.scrollX;
     var y0 = drag.y0 - win.scrollY;
     if (drag.hold && moveFar(drag)) { clearTimeout(drag.hold); drag.hold = null; }
@@ -636,8 +727,8 @@
     drag.el.style.top = y0 + 'px';
     drag.el.style.width = Math.sqrt(dx * dx + dy * dy) + 'px';
     drag.el.style.transform = 'rotate(' + Math.atan2(dy, dx) + 'rad)';
-    var to = SchoolMarks.wordAt(win, drag.x1, Math.min(Math.max(drag.y1, 1), win.innerHeight - 1));
-    if (to) { drag.mark = SchoolMarks.dragMark(win, drag.from, to); }   // between two blocks: as it was
+    var to = s.E.wordAt(s, drag.x1, Math.min(Math.max(drag.y1, 1), win.innerHeight - 1));
+    if (to) { drag.mark = s.E.dragMark(s, drag.from, to); }   // between two blocks: as it was
     preview();
   }
 
@@ -650,7 +741,8 @@
   }
 
   // A finger near the top or bottom edge of the page scrolls it, faster nearer the edge, so one
-  // drag can mark more than a screen. The publish of the scroll moves the students too.
+  // drag can mark more than a screen. The publish of the scroll moves the students too. (A page of
+  // a book does not scroll: the teacher turns the page.)
   var EDGE_PX = 48;
   var EDGE_MAX_PX = 16;   // the most per frame
   // A drag that starts near an edge (the first or last lines) scrolls only after the finger moved
@@ -658,8 +750,8 @@
   var ARM_PX = 16;
   function edgeScroll() {
     var d = drag;
-    if (!d) { return; }
-    var h = view.win().innerHeight;
+    if (!d || d.s.contents) { return; }
+    var h = d.s.win.innerHeight;
     var y = d.y1;
     var v = y > h - EDGE_PX ? Math.ceil((y - (h - EDGE_PX)) / EDGE_PX * EDGE_MAX_PX)
       : y < EDGE_PX ? -Math.ceil((EDGE_PX - y) / EDGE_PX * EDGE_MAX_PX) : 0;
@@ -669,7 +761,7 @@
     d.looping = true;
     var step = function () {
       if (drag !== d || d.speed === 0) { d.looping = false; return; }
-      var win = view.win();
+      var win = d.s.win;
       var before = win.scrollY;
       win.scrollBy(0, d.speed);
       if (win.scrollY === before) { d.looping = false; return; }   // the end of the page
@@ -697,8 +789,8 @@
     endDrag();
     if (d.kind === 'move') { putShape(ev, d, r); return; }
     if (ev.type === 'pointercancel' || tool !== d.kind) { paintMarks(); return; }
-    var m = d.kind === 'pen' ? d.mark : SchoolMarks.boxMark(view.win(), r);
-    if (!m && d.kind !== 'pen') { note(t(TOOL_HELP[d.kind])); }   // too small: a tap, not a box
+    var m = d.kind === 'pen' ? d.mark : d.s.E.boxMark(d.s, r);
+    if (!m && d.kind !== 'pen') { note(t(TOOL_HELP[d.kind])); }   // too small (a tap), or nothing in it
     if (m && d.kind === 'oval') { m.o = 1; }
     if (m) {
       dragSent = true;
@@ -713,7 +805,7 @@
   function putShape(ev, d, r) {
     dragSent = true;
     if (ev.type === 'pointercancel' || !tool || tool === 'pen' || tool === 'eraser' || !moveFar(d)) { paintMarks(); return; }
-    var m = SchoolMarks.boxMark(view.win(), r);
+    var m = d.s.E.boxMark(d.s, r);
     if (!m) { paintMarks(); note(t('markNotSent')); return; }
     if (d.oval) { m.o = 1; }
     pendingMark = { mark: m, moves: d.id };
@@ -724,22 +816,19 @@
   // A tap with a tool on opens no link. The eraser removes the mark under the tap; the pen marks a
   // picture.
   function onMarkTap(ev) {
-    if (!tool || ev.button !== 0) { return; }
+    var s = surfaceOf(ev);
+    if (!tool || !s || ev.button !== 0) { return; }
     ev.preventDefault();
     ev.stopPropagation();
     if (tapEndsSelection || dragSent || !publishable) { return; }
     if (tool === 'eraser') {
-      var id = markAt(ev.clientX, ev.clientY);
+      var id = markAt(s, ev.clientX, ev.clientY);
       if (id !== null) { sendMark({ op: 'remove', id: id }, view.path()); }
       return;
     }
-    var media = tool === 'pen' && ev.target && ev.target.closest ? ev.target.closest('img, video') : null;
+    var media = tool === 'pen' && ev.target && ev.target.closest ? ev.target.closest(s.E.media) : null;
     if (!media) { return; }
-    // A picture that is a block gets a block mark. A picture in a text block (an infobox cell, a
-    // list item) gets a box around it: a block mark would fill the cell and its words.
-    var win = view.win();
-    var isBlock = SchoolAnchor.blocksOf(win.document).list.indexOf(media) >= 0;
-    var m = isBlock ? SchoolMarks.blockMark(win.document, media) : SchoolMarks.boxMark(win, media.getBoundingClientRect());
+    var m = s.E.pictureMark(s, media);
     if (m) { sendMark({ op: 'add', mark: m }, view.path()); }
   }
 

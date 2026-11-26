@@ -38,6 +38,7 @@
 <script src="place.js"></script>
 <script src="follow.js"></script>
 <script src="marks.js"></script>
+<script src="epubmarks.js"></script>
 <script>
 'use strict';
 (function () {
@@ -135,6 +136,10 @@
         if (link && (/^_(top|parent|blank)$/.test(link.target) || link.origin !== location.origin)) { ev.preventDefault(); }
       }, true);
       SchoolPlace.watch(win, kind, function (byUser) {
+        if (kind === 'epub' && !ended && onPage()) {
+          painted.doc = null;   // a new section or a new layout of the book: draw the marks again
+          paintMarks();
+        }
         if (byUser || applying || ended || !onPage()) { return; }
         var shown = SchoolPlace.at(win, kind, last.a);
         // Not ready, or at the place and acked: a second ack of one message would show a longer
@@ -273,15 +278,34 @@
 
   // Draws the marks of the teacher when they are for the page on the screen. A lesson message
   // comes up to 20 times a second: draw only for a new list or a new page, or after a layout change.
+  // In an EPUB book the marks are on the pages that the reader shows (epubmarks.js); each turn to a
+  // new section or new layout of the book draws them again (watch).
   function paintMarks() {
-    if (!onPage() || SchoolPlace.isApp(SchoolPlace.kindOf(last.url))) { return; }
+    if (!onPage()) { return; }
+    var kind = SchoolPlace.kindOf(last.url);
+    if (!SchoolPlace.hasMarks(kind)) { return; }
     var doc = view.win().document;
     var list = marks && marks.url === last.url ? marks.list : NO_MARKS;
     if (painted.doc === doc && painted.list === list) { return; }
     try {
-      SchoolMarks.draw(view.win(), list);
+      if (kind === 'epub') {
+        SchoolPlace.bookViews(view.win()).forEach(function (v) {
+          watchBookPage(v.win.document);
+          SchoolEpubMarks.draw(v, list);
+        });
+      } else {
+        SchoolMarks.draw(view.win(), list);
+      }
       painted = { doc: doc, list: list };
     } catch (e) { /* the page has no layout yet: the next message or layout change tries again */ }
+  }
+
+  // A picture of a book page that loads late moves the text after it: draw the marks again.
+  var watchedBookPages = typeof WeakSet === 'function' ? new WeakSet() : null;
+  function watchBookPage(doc) {
+    if (!watchedBookPages || watchedBookPages.has(doc)) { return; }
+    watchedBookPages.add(doc);
+    doc.addEventListener('load', function () { painted.doc = null; paintMarks(); }, true);
   }
 
   function follow() {

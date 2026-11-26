@@ -64,6 +64,12 @@ const MAX_MARK_INDEX = 1000000;
 // widths (the frame is 400 px wide), so a box stays near the page.
 const MAX_MARK_PX = 1000000;
 const MAX_MARK_ACROSS = 2000;
+// An EPUB CFI. A range CFI of a long phrase is about 60 characters; the ids of the book (in
+// brackets) can make it longer, and they can have letters of any language. No control characters.
+const MAX_CFI = 500;
+const CFI = /^epubcfi\(\/[^\p{Cc}]*\)$/u;
+// The corners of an EPUB box, in 1/100 of the font size from its first and last word.
+const MAX_CORNER = 100000;
 // A teacher page that comes back within this time (a reload, a theme change) continues the same
 // class, with the same code. With no teacher page for longer, the class ends by itself.
 export const CLASS_GAP_MS = 60000;
@@ -141,10 +147,16 @@ export function validLesson(raw: unknown): Lesson | null {
 //           ey px below the top of block eb. Each edge follows its own block when the page flows
 //           again (another text size), so a box around a picture stays on the picture. o: 1 for
 //           an oval in the same rectangle.
+// A mark in an EPUB book (www/epubmarks.js) has no block: cfi is a range of the book (an EPUB CFI
+// of epub.js). k is 'p' (the words), 'r' (a box; o: 1 an oval) or 'b' (a picture). A box has the
+// place of its corners from the first and the last word of the range (x, y, ex, ey), or none (the
+// box goes around the words).
 export type Mark =
     | { k: 'b'; b: number; t: string; cell?: number }
     | { k: 'p'; b: number; t: string; s: number; eb: number; et: string; e: number }
-    | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number; o?: 1 };
+    | { k: 'r'; b: number; t: string; y: number; eb: number; et: string; ey: number; x: number; w: number; o?: 1 }
+    | { k: 'p' | 'b'; cfi: string }
+    | { k: 'r'; cfi: string; o?: 1; x?: number; y?: number; ex?: number; ey?: number };
 
 // The box gives each mark an id: the teacher removes a mark by its id.
 export type StoredMark = Mark & { id: number };
@@ -168,6 +180,24 @@ export function validMark(raw: unknown): { mark: Mark } | { error: 'invalid' | '
     const invalid = { error: 'invalid' as const };
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return invalid;
     const m = raw as Record<string, unknown>;
+    if (m.cfi !== undefined) {
+        if (typeof m.cfi !== 'string' || m.cfi.length > MAX_CFI || !CFI.test(m.cfi)) return invalid;
+        if (m.k !== 'p' && m.k !== 'r' && m.k !== 'b') return invalid;
+        if (m.k !== 'r') {
+            return m.o === undefined && m.x === undefined ? { mark: { k: m.k, cfi: m.cfi } } : invalid;
+        }
+        if (m.o !== undefined && m.o !== 1) return invalid;
+        const shape = m.o === 1 ? { o: 1 as const } : {};
+        if (m.x === undefined && m.y === undefined && m.ex === undefined && m.ey === undefined) {
+            return { mark: { k: 'r', cfi: m.cfi, ...shape } };
+        }
+        const x = px(m.x, -MAX_CORNER, MAX_CORNER);
+        const y = px(m.y, -MAX_CORNER, MAX_CORNER);
+        const ex = px(m.ex, -MAX_CORNER, MAX_CORNER);
+        const ey = px(m.ey, -MAX_CORNER, MAX_CORNER);
+        if (x === null || y === null || ex === null || ey === null) return invalid;
+        return { mark: { k: 'r', cfi: m.cfi, ...shape, x, y, ex, ey } };
+    }
     const b = index(m.b);
     const t = print(m.t);
     if (b === null || t === null) return invalid;

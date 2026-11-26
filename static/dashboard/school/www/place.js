@@ -88,8 +88,22 @@
     return url.split('#')[0] + '#' + [a.lat, a.lon, a.p, a.b, a.z].join('/');
   }
 
-  // A page of an app (the class font and the marks are for Kiwix pages only).
+  // A page of an app (the class font is for Kiwix pages only).
   function isApp(kind) { return kind !== null && kind !== 'page'; }
+
+  // The teacher can mark the page: a Kiwix page (marks.js) or an EPUB book (epubmarks.js).
+  function hasMarks(kind) { return kind === 'page' || kind === 'epub'; }
+
+  // The pages of the EPUB book on the screen: [{ win, contents }], one for each inner frame of the
+  // reader (epub.js keeps one Contents for each).
+  function bookViews(win) {
+    try {
+      var r = win.reader;
+      var list = r && r.rendition ? r.rendition.getContents() : [];
+      return list.filter(function (c) { return c && c.window && c.document && c.document.body; })
+        .map(function (c) { return { win: c.window, contents: c }; });
+    } catch (e) { return []; }
+  }
 
   // What a class does not do in an app page. The map: no download of a region (FQR). The regions
   // are on the box before the class, and the download needs the app (the Library > Maps card), not
@@ -115,6 +129,15 @@
     style.textContent = css;
     where.appendChild(style);
   }
+
+  // With a mark tool on, the finger of the teacher marks: the controls of the app that turn the
+  // page on a tap go off. The EPUB reader of Calibre-Web has a "previous" and a "next" area over
+  // each side of the book (on a phone, 120 px of the 400 px on each side). The arrow keys and the
+  // table of contents still turn the page.
+  var TOOL_CSS = {
+    epub: '#prev, #next { visibility: hidden !important; pointer-events: none !important; }'
+  };
+  function toolCss(kind) { return TOOL_CSS[kind] || ''; }
 
   // The app object of the page in the frame, or null while it is not ready.
   function appOf(win, kind) {
@@ -239,6 +262,9 @@
     valid: valid,
     openUrl: openUrl,
     isApp: isApp,
+    hasMarks: hasMarks,
+    bookViews: bookViews,
+    toolCss: toolCss,
     prepare: prepare,
     read: read,
     at: at,

@@ -142,3 +142,17 @@ test('prepare: a class map page hides the region download (FQR) in the map shado
     P.prepare(win, 'epub', {});
     assert.equal(inShadow.length + inHead.length, 1);
 });
+
+test('hasMarks: the teacher marks a Kiwix page and an EPUB book only', () => {
+    assert.equal(P.hasMarks('page'), true);
+    assert.equal(P.hasMarks('epub'), true);
+    assert.equal(P.hasMarks('map'), false);
+    assert.equal(P.hasMarks('pdf'), false);
+    assert.equal(P.hasMarks(null), false);
+});
+
+test('toolCss: with a mark tool on, the EPUB reader turns no page on a tap at its sides', () => {
+    assert.match(P.toolCss('epub'), /#prev, #next \{[^}]*pointer-events: none/);
+    assert.equal(P.toolCss('page'), '');
+    assert.equal(P.toolCss(null), '');
+});

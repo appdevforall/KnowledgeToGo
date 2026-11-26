@@ -167,6 +167,27 @@ test('validMark: only the known kinds and fields, numbers in range', () => {
     assert.deepEqual(validMark({ ...box, o: 2 }), invalid);
     assert.deepEqual(validMark({ ...box, o: true }), invalid);
     assert.deepEqual(validMark({ k: 'x', b: 1, t: 'a' }), invalid);
+    // EPUB marks: a CFI range of the book, no block.
+    const cfi = 'epubcfi(/6/4[ch1]!/4,/2/1:0,/6/1:9)';
+    assert.deepEqual(validMark({ k: 'p', cfi, b: 3 }), { mark: { k: 'p', cfi } });
+    assert.deepEqual(validMark({ k: 'r', cfi, o: 1 }), { mark: { k: 'r', cfi, o: 1 } });
+    assert.deepEqual(validMark({ k: 'b', cfi }), { mark: { k: 'b', cfi } });
+    assert.deepEqual(validMark({ k: 'p', cfi, o: 1 }), invalid);                       // an oval is a box
+    assert.deepEqual(validMark({ k: 'x', cfi }), invalid);
+    assert.deepEqual(validMark({ k: 'p', cfi: '/6/4!/4/2' }), invalid);                // no epubcfi()
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4!/4/2\n)' }), invalid);    // a control character
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4[capítulo1]!/4/2)' }), { mark: { k: 'p', cfi: 'epubcfi(/6/4[capítulo1]!/4/2)' } });   // an id in Spanish
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/6/4!/4/2)' }), invalid);   // a C1 control character
+    // A box with its corners from its first and last word; all four, whole numbers.
+    const corners = { x: -50, y: -20, ex: 30, ey: 25 };
+    assert.deepEqual(validMark({ k: 'r', cfi, ...corners, o: 1 }), { mark: { k: 'r', cfi, o: 1, ...corners } });
+    assert.deepEqual(validMark({ k: 'r', cfi, ...corners }), { mark: { k: 'r', cfi, ...corners } });
+    assert.deepEqual(validMark({ k: 'r', cfi, x: 1, y: 2, ex: 3 }), invalid);          // a corner value is missing
+    assert.deepEqual(validMark({ k: 'r', cfi, ...corners, ey: 1.5 }), invalid);
+    assert.deepEqual(validMark({ k: 'r', cfi, ...corners, x: 2e6 }), invalid);
+    assert.deepEqual(validMark({ k: 'p', cfi, ...corners }), invalid);                 // corners are for a box
+    assert.deepEqual(validMark({ k: 'p', cfi: 'epubcfi(/' + '2/'.repeat(250) + ')' }), invalid);   // too long
+    assert.deepEqual(validMark({ k: 'p', cfi: 5 }), invalid);
     assert.deepEqual(validMark([]), invalid);
     assert.deepEqual(validMark(null), invalid);
 });
@@ -205,7 +226,7 @@ test('marks: at most MAX_MARKS; remove by id; clear; ids are not used again', ()
     assert.deepEqual(room.removeMark('/p', ids[0]), { changed: false });          // already gone
     assert.deepEqual(room.removeMark('/other', ids[1]), { refused: 'other-page' });
     room.addMark('/p', { k: 'b', b: 99, t: 'a' });
-    const again = room.marks()!.list.find((m) => m.b === 99)!;
+    const again = room.marks()!.list.find((m) => 'b' in m && m.b === 99)!;
     assert.ok(!ids.includes(again.id));
     const box = { k: 'r' as const, b: 1, t: 'a', y: 0, eb: 2, et: 'a', ey: 10, x: 5, w: 50 };
     room.removeMark('/p', ids[1]);

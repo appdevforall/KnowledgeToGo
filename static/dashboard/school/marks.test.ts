@@ -133,3 +133,74 @@ test('hitTest: a phrase wins over the block around it; then the smallest mark; e
     assert.equal(M.hitTest(drawn, 300, 400), null);
     assert.equal(M.hitTest([], 0, 0), null);
 });
+
+// The EPUB marks (www/epubmarks.js): a CFI range of the book, drawn on each phone where its words are.
+const E = require('./www/epubmarks.js');
+
+test('epub inSection: only a CFI of the section on the screen', () => {
+    assert.equal(E.inSection('epubcfi(/6/4[ch1]!/4/2/1:0)', '/6/4[ch1]'), true);
+    assert.equal(E.inSection('epubcfi(/6/4[ch1]!/4,/2/1:0,/6/1:9)', '/6/4[ch1]'), true);   // a range
+    assert.equal(E.inSection('epubcfi(/6/14[ch6]!/4/2/1:0)', '/6/4[ch1]'), false);         // another section
+    assert.equal(E.inSection('epubcfi(/6/4[ch1]x!/4/2/1:0)', '/6/4[ch1]'), false);
+    assert.equal(E.inSection('epubcfi(/6/4[ch1]!/4/2/1:0)', ''), false);
+    assert.equal(E.inSection(undefined, '/6/4[ch1]'), false);
+});
+
+test('epub columns: the rects of each column of the page, in column order', () => {
+    const cols = E.columns([
+        r(420, 10, 700, 30),     // column 2, line 1
+        r(20, 300, 300, 320),    // column 1, last line
+        r(20, 280, 380, 300),    // column 1
+        r(420, 30, 520, 50),     // column 2, line 2
+        r(500, 60, 500, 80),     // empty
+    ]);
+    assert.deepEqual(cols, [[r(20, 300, 300, 320), r(20, 280, 380, 300)], [r(420, 10, 700, 30), r(420, 30, 520, 50)]]);
+    assert.deepEqual(E.columns([]), []);
+});
+
+test('epub shapes: words get one rect per line; a box and an oval go around each column', () => {
+    const rects = [r(20, 280, 380, 300), r(20, 300, 120, 320), r(420, 10, 700, 30)];
+    assert.deepEqual(E.shapes({ k: 'p' }, rects), [r(20, 280, 380, 300), r(20, 300, 120, 320), r(420, 10, 700, 30)]);
+    assert.deepEqual(E.shapes({ k: 'r' }, rects), [r(17, 277, 383, 323), r(417, 7, 703, 33)]);
+    assert.deepEqual(E.shapes({ k: 'b' }, [r(50, 50, 150, 100)]), [r(47, 47, 153, 103)]);
+    const oval = E.shapes({ k: 'r', o: 1 }, [r(0, 0, 94, 44)])[0];
+    // The corners of the box are on the oval: ((x/a)^2 + (y/b)^2 = 1 at a corner).
+    const a = (oval.right - oval.left) / 2;
+    const b = (oval.bottom - oval.top) / 2;
+    const cx = (oval.left + oval.right) / 2;
+    const cy = (oval.top + oval.bottom) / 2;
+    assert.ok(Math.abs(((-3 - cx) / a) ** 2 + ((-3 - cy) / b) ** 2 - 1) < 1e-9);
+});
+
+test('epub corners: a drawn box keeps its size on the teacher page and follows its words', () => {
+    const a = r(100, 200, 140, 220);     // the first word in the box
+    const b = r(300, 240, 350, 260);     // the last word in the box
+    const drawn = r(90, 195, 360, 270);
+    const c = E.corners(a, 20, b, 20, drawn);
+    assert.deepEqual(c, { x: -50, y: -25, ex: 50, ey: 50 });
+    assert.deepEqual(E.cornerBox(a, 20, b, 20, c), drawn);                        // the same box
+    // Another phone: the words are at other places, the font is larger.
+    assert.deepEqual(E.cornerBox(r(20, 400, 70, 425), 25, r(260, 450, 320, 475), 25, c), r(7.5, 393.75, 332.5, 487.5));
+    // The line breaks between the two words: the corners cross, no box (the outline instead).
+    assert.equal(E.cornerBox(r(300, 200, 350, 220), 20, r(20, 240, 60, 260), 20, { x: 0, y: 0, ex: -200, ey: 0 }), null);
+});
+
+test('epub shapes: a box with corners is the drawn box; in two columns it goes around the words', () => {
+    const m = { k: 'r', x: -50, y: -25, ex: 50, ey: 50 };
+    const ends = { a: r(100, 200, 140, 220), fa: 20, b: r(300, 240, 350, 260), fb: 20 };
+    assert.deepEqual(E.shapes(m, [r(100, 200, 380, 220), r(20, 240, 350, 260)], ends), [r(90, 195, 360, 270)]);
+    assert.deepEqual(E.shapes({ ...m, o: 1 }, [r(100, 200, 380, 220)], ends), [r(90, 195, 360, 270)]);   // an oval: the same box
+    assert.deepEqual(E.shapes(m, [r(20, 280, 380, 300), r(420, 10, 700, 30)], ends), [r(17, 277, 383, 303), r(417, 7, 703, 33)]);
+    assert.deepEqual(E.shapes(m, [r(20, 280, 380, 300)], null), [r(17, 277, 383, 303)]);                   // no words found
+});
+
+test('epub fitted: a box that no longer holds its first and last word gives way to the outline', () => {
+    const m = { k: 'r', x: -50, y: -25, ex: 50, ey: 50 };
+    const rects = [r(100, 200, 380, 220)];
+    assert.deepEqual(E.fitted(m, rects, { a: r(100, 200, 140, 220), fa: 20, b: r(300, 200, 350, 220), fb: 20 }), r(90, 195, 360, 230));
+    // On a narrow phone the last word wraps to the next line, at its start: the box from the corners
+    // is thin and leaves the last word out, so no fitted box.
+    assert.equal(E.fitted(m, [r(100, 200, 380, 220), r(20, 240, 120, 260)], { a: r(100, 200, 140, 220), fa: 20, b: r(20, 240, 120, 260), fb: 20 }), null);
+    assert.equal(E.fitted({ k: 'r' }, rects, { a: r(100, 200, 140, 220), fa: 20, b: r(300, 200, 350, 220), fb: 20 }), null);   // no corners
+    assert.equal(E.fitted({ k: 'p', x: 0, y: 0, ex: 0, ey: 0 }, rects, null), null);
+});
