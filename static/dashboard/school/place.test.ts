@@ -218,3 +218,28 @@ test('prepare: an EPUB book gets the class font on each page and one text size',
         assert.equal(hooked, false);
     }
 });
+
+test('book page: no download in a class; the cover opens the first reader that the class follows', () => {
+    assert.equal(P.isBookPage('/books/book/5'), true);
+    assert.equal(P.isBookPage('/books/book/5?x=1'), true);
+    assert.equal(P.isBookPage('/books/read/5/epub'), false);
+    assert.equal(P.isBookPage('/books/'), false);
+    const doc = (paths: string[]) => ({ querySelectorAll: () => paths.map((p) => ({ pathname: p })) });
+    assert.equal(P.readerOf(doc(['/books/download/5/epub/5.epub', '/books/read/5/mp4', '/books/read/5/epub'])), '/books/read/5/epub');
+    assert.equal(P.readerOf(doc(['/books/read/7/pdf', '/books/read/7/epub'])), '/books/read/7/pdf');
+    assert.equal(P.readerOf(doc(['/books/download/5/epub/5.epub'])), null);
+    // The page gets the style; a tap on the cover opens the reader in the class frame.
+    let tap: ((ev: { preventDefault: () => void }) => void) | null = null;
+    const added: { textContent: string }[] = [];
+    const page = {
+        ...doc(['/books/read/5/epub']),
+        head: { appendChild: (el: { textContent: string }) => added.push(el) },
+        createElement: () => ({ textContent: '' }),
+        getElementById: () => ({ addEventListener: (_t: string, f: typeof tap) => { tap = f; } }),
+    };
+    const opened: string[] = [];
+    P.bookPage(page, (p: string) => opened.push(p));
+    assert.ok(added[0].textContent.includes('#Download'));
+    tap!({ preventDefault: () => {} });
+    assert.deepEqual(opened, ['/books/read/5/epub']);
+});

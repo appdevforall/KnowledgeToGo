@@ -163,6 +163,42 @@
     where.appendChild(style);
   }
 
+  // The Calibre-Web page of one book (teacher only: the class follows the reader, not this page).
+  // In a class nobody downloads a book (the maintainer, 2026-11-26): the download buttons go, and
+  // a tap on the cover opens the reader, as "Read in Browser" does. One format: a "Download :"
+  // button and a link for the format (btnGroupDrop1<format>); more formats: a dropdown button
+  // btnGroupDrop1 and its menu. Calibre-Web owns this page: a deliberate workaround, as the FQR
+  // rule of the map. A browser with no :has keeps an empty frame of the button group.
+  function isBookPage(path) { return /^\/books\/book\/\d+$/.test(String(path || '').split(/[?#]/)[0]); }
+  var BOOK_PAGE_CSS = '.btn-group:has(> #Download), .btn-group:has(> [id^="btnGroupDrop"]) { display: none !important; }\n' +
+    '#Download, [id^="btnGroupDrop"], [aria-labelledby^="btnGroupDrop"] { display: none !important; }\n' +
+    // The button bar of the page lies over the cover (the cover floats left): the cover goes above it.
+    '#detailcover { cursor: pointer; position: relative; z-index: 1; }';
+
+  // The path of the first reader on the book page that the class follows (EPUB or PDF), or null.
+  function readerOf(doc) {
+    var links = doc.querySelectorAll('a[href]');
+    for (var i = 0; i < links.length; i++) {
+      var p = links[i].pathname;
+      if (/^\/books\/read\//.test(p) && kindOf(p)) { return p; }
+    }
+    return null;
+  }
+
+  // Prepares the book page in doc for a class. open(path) opens a page in the class frame.
+  function bookPage(doc, open) {
+    var style = doc.createElement('style');
+    style.textContent = BOOK_PAGE_CSS;
+    (doc.head || doc.documentElement).appendChild(style);
+    var cover = doc.getElementById('detailcover');
+    var reader = readerOf(doc);
+    if (!cover || !reader) { return; }
+    cover.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      open(reader);
+    });
+  }
+
   // With a mark tool on, the finger of the teacher marks: the controls of the app that turn the
   // page on a tap go off. The EPUB reader of Calibre-Web has a "previous" and a "next" area over
   // each side of the book (on a phone, 120 px of the 400 px on each side). The arrow keys and the
@@ -334,6 +370,9 @@
     appOf: appOf,
     bookViews: bookViews,
     toolCss: toolCss,
+    isBookPage: isBookPage,
+    readerOf: readerOf,
+    bookPage: bookPage,
     middleOf: middleOf,
     prepare: prepare,
     read: read,

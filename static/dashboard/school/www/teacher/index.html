@@ -372,6 +372,7 @@
     if (trail.length > 50) { trail.shift(); }
     backBtn.disabled = trail.length < 2;
     var mine = ++pageGen;
+    if (SchoolPlace.isBookPage(win.location.pathname)) { SchoolPlace.bookPage(win.document, open); }
     if (kind === null) {
       note(t('notFollowed'), true);
       return;
