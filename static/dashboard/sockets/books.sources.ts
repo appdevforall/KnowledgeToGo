@@ -1,21 +1,22 @@
 // sockets/books.sources.ts
 //
-// Where the books runner downloads one Gutenberg EPUB from. The catalog URL points to
-// www.gutenberg.org only. When that site fails (it answered 503 "down for maintenance" for days in
-// 2026-11), the same file is on the Gutenberg mirror, which keeps the generated EPUB files under
-// the same /cache/epub/<id>/ path. No network of its own (fetch is passed in), so it is
-// unit-tested without a network.
+// Where the books runner downloads one Gutenberg EPUB from. The mirror comes first: Project
+// Gutenberg asks automated clients to use a mirror, not the main site, and the main site was down
+// for days in 2026-11 (503 "down for maintenance"). The mirror keeps the generated EPUB files under
+// the same /cache/epub/<id>/ path; the catalog URL on www.gutenberg.org is the fallback. No network
+// of its own (fetch is passed in), so it is unit-tested without a network.
 
 /** Gutenberg mirrors that serve /cache/epub/<id>/pg<id>-images-3.epub (checked 2026-11-25). */
 export const GUTENBERG_MIRRORS = ['https://gutenberg.pglaf.org'];
 
-/** The download sources for one book: the catalog URL first, then each mirror. Every catalog row
+/** The download sources for one book: each mirror first, then the catalog URL. Every catalog row
  *  is an "EPUB3 with images" URL (`/ebooks/<id>.epub3.images`); the mirror name of that file is
- *  `pg<id>-images-3.epub`. A mirror URL needs a numeric id: else only the catalog URL is used. */
+ *  `pg<id>-images-3.epub`. A mirror URL needs a numeric id and an "EPUB3 with images" catalog
+ *  URL: else only the catalog URL is used, so the mirror never changes the format. */
 export function bookSources(id: string, url: string): string[] {
-    if (!/^\d+$/.test(id)) return [url];
+    if (!/^\d+$/.test(id) || !url.endsWith(`/ebooks/${id}.epub3.images`)) return [url];
     const mirrors = GUTENBERG_MIRRORS.map((m) => `${m}/cache/epub/${id}/pg${id}-images-3.epub`);
-    return [url, ...mirrors.filter((m) => m !== url)];
+    return [...mirrors, url];
 }
 
 export function hostOf(url: string): string {
@@ -23,8 +24,8 @@ export function hostOf(url: string): string {
 }
 
 /** The order in which to try the sources: the source on `preferredHost` (the host that worked
- *  last) first, then the others in list order. So after one failure of the main site, the next
- *  books of the job go to the mirror first and do not wait for the failure again. */
+ *  last) first, then the others in list order. So after one failure of a source, the next books
+ *  of the job go to the source that worked and do not wait for the failure again. */
 export function sourceOrder(sources: string[], preferredHost: string | null): string[] {
     const first = sources.findIndex((s) => hostOf(s) === preferredHost);
     return first <= 0 ? sources.slice() : [sources[first], ...sources.filter((_, i) => i !== first)];
