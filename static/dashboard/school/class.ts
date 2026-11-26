@@ -55,8 +55,10 @@ export const JOIN_LIMIT = 5;
 export const JOIN_WINDOW_MS = 60000;
 const MAX_LESSON_BYTES = 2048;
 // Marks (M2): the parts of the lesson page that the teacher marked. A limit, so that a page stays
-// readable and the list stays small on 30 phones.
-export const MAX_MARKS = 10;
+// readable and the list stays small on 30 phones. One limit for every kind of page (a Kiwix page, a
+// whole EPUB book, the whole map): 20 (the maintainer, 2026-11-26; it was 10). The largest list (20
+// EPUB marks with long CFIs) is about 11 KB per change.
+export const MAX_MARKS = 20;
 // A phrase mark can go over at most this many blocks.
 export const MAX_MARK_BLOCKS = 20;
 const MAX_MARK_INDEX = 1000000;
