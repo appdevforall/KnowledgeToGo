@@ -54,6 +54,10 @@
     background: var(--note); color: var(--note-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
   .pop .pill { margin: 8px 0 0; margin-inline-end: 8px; background: var(--head); color: var(--head-fg); border-color: var(--head); }
   .pop .pill.quiet { background: transparent; color: inherit; border-color: currentColor; }
+  #nameAsk label, #nameAsk .help { display: block; }
+  #nameAsk input { box-sizing: border-box; width: 100%; min-height: 40px; margin: 8px 0 4px; padding: 0 8px; font-size: 16px;
+    border: 1px solid var(--chip-fg); border-radius: 4px; background: var(--chip); color: var(--chip-fg); }
+  #nameAsk .help { font-size: 12px; opacity: 0.8; }
   #toast { position: absolute; left: 12px; right: 12px; bottom: 16px; z-index: 5; display: flex; align-items: center;
     gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--note); color: var(--note-fg);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
@@ -101,6 +105,15 @@
     <button id="endYes" class="pill small" data-t="endClass"></button>
     <button id="endNo" class="pill small quiet" data-t="cancel"></button>
   </div>
+  <!-- The name of the class (optional): asked once, by the page that opened the class. The box
+       keeps the name until the class ends; no rename during the class. -->
+  <form id="nameAsk" class="pop" hidden>
+    <label for="nameInput" data-t="nameAsk"></label>
+    <input id="nameInput" maxlength="20" autocomplete="off" enterkeyhint="done" aria-describedby="nameHelp">
+    <span id="nameHelp" class="help" data-t="nameHelp"></span>
+    <button type="submit" class="pill small" data-t="nameSave"></button>
+    <button id="nameSkip" type="button" class="pill small quiet" data-t="nameSkip"></button>
+  </form>
   <!-- Test tools (?debug=1): not for a class. The round trip of each seat is here. -->
   <div id="debug" hidden>
     <div id="students"></div>
@@ -754,14 +767,65 @@
     open(trail[trail.length - 1]);
   };
 
+  // The name of the class. The box says when to ask (the class event: ask) until the teacher
+  // answers: a name, or Skip (null). An empty field is Skip. The box cleans the name and sends it to
+  // the head bar of all teacher pages.
+  var nameAsk = document.getElementById('nameAsk');
+  var nameInput = document.getElementById('nameInput');
+  var asking = false;       // the box asks for the name of the class (the last class event)
+  var askedFor = null;      // the class code of the question on the screen
+  function askName(code) {
+    if (!nameAsk.hidden && askedFor === code) { return; }   // a reconnect keeps what the teacher typed
+    askedFor = code;
+    group = null;
+    render();
+    confirmEl.hidden = true;
+    nameInput.value = '';
+    nameAsk.hidden = false;
+    nameInput.focus();
+  }
+  function answerName(name) {
+    nameAsk.hidden = true;
+    fetch('name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name })
+    }).then(function (r) {
+      // 400: no character can stay in a name: ask again. 409: another teacher page answered, or the
+      // class ended.
+      if (r.status >= 500) { throw new Error('name ' + r.status); }
+      if (r.status === 400) { nameAsk.hidden = false; nameInput.focus(); }
+    }).catch(function () {
+      nameAsk.hidden = false;
+      note(t('boxNoAnswer'));
+    });
+  }
+  nameAsk.onsubmit = function (ev) {
+    ev.preventDefault();
+    answerName(nameInput.value.trim() || null);
+  };
+  document.getElementById('nameSkip').onclick = function () { answerName(null); };
+  nameInput.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') { answerName(null); }
+  });
+  // The name is a value in the sentence of the head bar: isolated, so that a name in the other
+  // direction (a Latin name on an Arabic page) does not move the code. The box drops these marks
+  // from a name (class.ts).
+  var FSI = String.fromCharCode(0x2068);
+  var PDI = String.fromCharCode(0x2069);
+
   // End class: the box tells the students and forgets the class; the app stops the announcement.
   document.getElementById('end').onclick = function () {
     group = null;
     render();
+    nameAsk.hidden = true;
     confirmEl.hidden = false;
     document.getElementById('endYes').focus();
   };
-  document.getElementById('endNo').onclick = function () { confirmEl.hidden = true; };
+  document.getElementById('endNo').onclick = function () {
+    confirmEl.hidden = true;
+    nameAsk.hidden = !asking;   // the name question comes back
+  };
   document.getElementById('endYes').onclick = function () {
     fetch('end', { method: 'POST' }).then(function (r) {
       if (!r.ok) { throw new Error('end ' + r.status); }
@@ -952,7 +1016,9 @@
     if (m.type === 'class') {
       if (m.code && shownCode && m.code !== shownCode) { note(t('classAgain'), true); }
       if (m.code) { shownCode = m.code; }
-      codeEl.textContent = m.code ? t('classCode', m.code) : '';
+      codeEl.textContent = !m.code ? '' : m.name ? t('classCodeNamed', m.code, FSI + m.name + PDI) : t('classCode', m.code);
+      asking = !!(m.ask && m.code);
+      if (asking) { askName(m.code); } else { nameAsk.hidden = true; }
       return;
     }
     if (m.type === 'roster') {
