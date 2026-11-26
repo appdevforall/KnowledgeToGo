@@ -35,6 +35,7 @@
 </div>
 <script src="text.js"></script>
 <script src="anchor.js"></script>
+<script src="place.js"></script>
 <script src="follow.js"></script>
 <script src="marks.js"></script>
 <script>
@@ -114,14 +115,31 @@
   var marks = null;         // the marks of the lesson page, as the box sent them: { url, list }
   var painted = { doc: null, list: null };   // what paintMarks() drew last
   var NO_MARKS = [];
+  // An app (the map) can move its view by itself after the student applied the place: the page
+  // applies it again, at most AUTO_MAX times per message of the teacher (a place that the app
+  // cannot show, for example a map center out of its limits, must not loop).
+  var AUTO_MAX = 5;
+  var auto = 0;
+  var applying = false;     // true during SchoolPlace.apply(): the moves that it makes are not the app's own
 
   var view = School.view(stage, function (win) {
-    // A late image or the class font changes the layout under the anchor: apply it again.
-    School.onLayout(win, function () {
-      if (ended || !onPage()) { return; }
-      painted.doc = null;   // the layout changed: draw the marks again
-      apply();
-    });
+    var kind = SchoolPlace.kindOf(win.location.pathname);
+    if (SchoolPlace.isApp(kind)) {
+      // A move of the student stays until the next message of the teacher, as a scroll of a page.
+      SchoolPlace.watch(win, kind, function (byUser) {
+        if (byUser || applying || ended || !onPage() || auto >= AUTO_MAX) { return; }
+        auto += 1;
+        if (apply()) { ack(); }
+      });
+    } else {
+      // A late image or the class font changes the layout under the anchor: apply it again. (An
+      // app keeps its place when its page changes size.)
+      School.onLayout(win, function () {
+        if (ended || !onPage()) { return; }
+        painted.doc = null;   // the layout changed: draw the marks again
+        apply();
+      });
+    }
     follow();
   });
 
@@ -217,16 +235,28 @@
     return !view.loading() && last && view.isAt(last.url);
   }
 
+  // Shows the place of the teacher. False while the app of the page is not ready: watch() applies
+  // the place when it is.
   function apply() {
-    match = SchoolAnchor.applyAnchor(view.win(), last.a);
+    var kind = SchoolPlace.kindOf(last.url);
+    if (SchoolPlace.isApp(kind)) {
+      var shown;
+      applying = true;
+      try { shown = SchoolPlace.apply(view.win(), kind, last.a); } finally { applying = false; }
+      if (shown === null) { return false; }
+      match = shown;
+    } else {
+      match = SchoolAnchor.applyAnchor(view.win(), last.a);
+    }
     setStatus(match ? 'following' : 'followingOther');
     paintMarks();
+    return true;
   }
 
   // Draws the marks of the teacher when they are for the page on the screen. A lesson message
   // comes up to 20 times a second: draw only for a new list or a new page, or after a layout change.
   function paintMarks() {
-    if (!onPage()) { return; }
+    if (!onPage() || SchoolPlace.isApp(SchoolPlace.kindOf(last.url))) { return; }
     var doc = view.win().document;
     var list = marks && marks.url === last.url ? marks.list : NO_MARKS;
     if (painted.doc === doc && painted.list === list) { return; }
@@ -242,11 +272,10 @@
       // Done means done with this page; the box clears it too.
       if (done) { done = false; showDone(); }
       setStatus('opening');
-      view.open(last.url);
+      view.open(SchoolPlace.openUrl(last.url, last.a));
       return;
     }
-    apply();
-    requestAnimationFrame(ack);
+    if (apply()) { requestAnimationFrame(ack); }
   }
 
   // The teacher ended the class. The box forgot this student: the token goes too.
@@ -295,6 +324,7 @@
     live.onmessage = function (ev) {
       alive.seen();
       try { last = JSON.parse(ev.data); } catch (e) { return; }
+      auto = 0;
       follow();
     };
     live.addEventListener('ping', function () { alive.seen(); });

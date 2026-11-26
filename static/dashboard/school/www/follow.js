@@ -140,7 +140,10 @@ var School = (function () {
         if (!path) { return; }
         asked[key(f)] = null;   // it navigated by itself: no URL of open() for this page
       }
-      if (doc) { normalize(doc); }
+      // The apps (a map, a PDF, a book reader) keep their own fonts: the class font would move the
+      // pdf.js text layer off the glyphs, and an app draws no text that wraps.
+      var app = path !== null && SchoolPlace.isApp(SchoolPlace.kindOf(path));
+      if (doc && !app) { normalize(doc); }
       var mine = gen;
       var ready = function () {
         if (f === back) {
@@ -162,7 +165,7 @@ var School = (function () {
           onReady(f.contentWindow);
         }
       };
-      if (doc && path) { whenFontReady(doc, ready); } else { ready(); }
+      if (doc && path && !app) { whenFontReady(doc, ready); } else { ready(); }
     }
 
     function open(url) {
@@ -174,7 +177,13 @@ var School = (function () {
       asked[key(back)] = null;
       stage.classList.add('loading');
       // replace: a lesson page is no history entry, so Back in the browser leaves the class page.
-      try { back.contentWindow.location.replace(url); } catch (e) { back.src = url; }
+      // The hidden frame can still hold the same page (a fast page change): a new hash alone then
+      // loads nothing and fires no load event, so the page loads again.
+      var samePage = pathOf(back) === url.split('#')[0];
+      try {
+        back.contentWindow.location.replace(url);
+        if (samePage) { back.contentWindow.location.reload(); }
+      } catch (e) { back.src = url; }
       var mine = gen;
       loadTimer = setTimeout(function () { if (mine === gen) { loaded(back, true); } }, LOAD_WAIT_MS);
     }

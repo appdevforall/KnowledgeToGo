@@ -126,6 +126,7 @@
 </div>
 <script src="../text.js"></script>
 <script src="../anchor.js"></script>
+<script src="../place.js"></script>
 <script src="../follow.js"></script>
 <script src="../marks.js"></script>
 <script>
@@ -170,8 +171,9 @@
   // B2: the page renders at most every RENDER_MS, not on each ack (57 acks a second with 30
   // students), and each second for the statuses that change with time.
   var RENDER_MS = 250;
-  // The teacher chooses a book in the Kiwix library; the class follows the pages of the books.
-  var LIBRARY = '/kiwix/';
+  // The teacher chooses a book or a map on the box start page (Kiwix, Maps, Books); the class
+  // follows the pages of the books and the map (place.js kindOf).
+  var LIBRARY = '/home/';
 
   var seq = 0;
   var sentAt = {};          // seq -> send time (ms), to measure the round trip
@@ -267,9 +269,6 @@
     return '/kiwix/content/' + u.hash.slice(1);
   }
 
-  // The library, also its page for browsers with no JavaScript.
-  function isLibrary(pathname) { return /^\/kiwix(\/|\/nojs(\/.*)?)?$/.test(pathname); }
-
   // The HTTP status of the page in the frame. responseStatus is in Chrome 109 and later; an older
   // WebView asks the box again.
   function checkStatus(win, done) {
@@ -282,8 +281,11 @@
   function publish() {
     if (byTimer || !publishable || ended) { return; }   // byTimer: the box lesson can still come
     var win = view.win();
+    var kind = SchoolPlace.kindOf(win.location.pathname);
+    var a = kind === 'page' ? SchoolAnchor.anchorOf(win) : SchoolPlace.read(win, kind);
+    if (!a) { return; }   // the app is not ready: watch() sends the place when it is
     seq += 1;
-    var msg = { seq: seq, url: view.path(), a: SchoolAnchor.anchorOf(win) };
+    var msg = { seq: seq, url: view.path(), a: a };
     var now = performance.now();
     sentAt[seq] = now;
     delete sentAt[seq - 500];
@@ -345,7 +347,18 @@
     });
     win.document.addEventListener('click', onMarkTap, true);   // before onLink: a tap that marks opens no link
     win.document.addEventListener('click', onLink, true);
-    if (resumeAt) { SchoolAnchor.applyAnchor(win, resumeAt); resumeAt = null; }
+    var kind = SchoolPlace.kindOf(win.location.pathname);
+    if (SchoolPlace.isApp(kind)) {
+      // The app object comes after the load (the map, the PDF file): the box lesson is applied then.
+      var resume = resumeAt;
+      SchoolPlace.watch(win, kind, function () {
+        if (resume && SchoolPlace.apply(win, kind, resume) !== null) { resume = null; }
+        onScroll();
+      });
+    } else if (resumeAt) {
+      SchoolAnchor.applyAnchor(win, resumeAt);
+    }
+    resumeAt = null;
     endDrag();                // a drag on the old page does not go to this one
     pendingMark = null;
     setTool(null);
@@ -355,8 +368,8 @@
     if (trail.length > 50) { trail.shift(); }
     backBtn.disabled = trail.length < 2;
     var mine = ++pageGen;
-    if (isLibrary(win.location.pathname)) {
-      note(t('openBook'), true);
+    if (kind === null) {
+      note(t('notFollowed'), true);
       return;
     }
     // A page that answers an error never goes to the class (rehearsal F4).
@@ -364,7 +377,7 @@
       if (mine !== pageGen) { return; }
       if (status >= 200 && status < 400) {
         publishable = true;
-        setToolsOn(true);
+        setToolsOn(kind === 'page');   // marks are for Kiwix pages only
         note('');
         publish();
       } else {
@@ -738,12 +751,12 @@
     if (started) {
       if (!byTimer || timeout) { return; }
       byTimer = false;
-      if (lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); } else { publish(); }
+      if (lesson && lesson.url) { resumeAt = lesson.a || null; open(SchoolPlace.openUrl(lesson.url, lesson.a)); } else { publish(); }
       return;
     }
     started = true;
     var path = School.params.get('path');
-    if (!path && lesson && lesson.url) { resumeAt = lesson.a || null; open(lesson.url); return; }
+    if (!path && lesson && lesson.url) { resumeAt = lesson.a || null; open(SchoolPlace.openUrl(lesson.url, lesson.a)); return; }
     open(path || LIBRARY);
     byTimer = !!timeout && !path;
   }
