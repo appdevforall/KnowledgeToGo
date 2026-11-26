@@ -245,3 +245,17 @@ test('book page: no download in a class; the cover opens the first reader that t
     tap!({ defaultPrevented: true, preventDefault: () => {} } as never);   // a link handled the tap
     assert.deepEqual(opened, ['/books/read/5/epub']);
 });
+
+test('text.js: the map words of the mark tools are in each language', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const src: string = fs.readFileSync(path.join(__dirname, 'www', 'text.js'), 'utf8');
+    const langs = src.split('\n').filter((l) => /^ {4}[a-z]+: \{/.test(l));
+    assert.equal(langs.length, 34);
+    langs.forEach((l) => {
+        const table = JSON.parse(l.slice(l.indexOf('{'), l.lastIndexOf('}') + 1));
+        ['markArrow', 'markArrowHelp', 'markBoxMapHelp', 'markOvalMapHelp'].forEach((k) => {
+            assert.ok(typeof table[k] === 'string' && table[k].length > 0, l.slice(0, 8) + ' ' + k);
+        });
+    });
+});

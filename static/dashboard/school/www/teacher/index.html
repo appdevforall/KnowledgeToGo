@@ -517,10 +517,12 @@
     btn.title = t(arrow ? 'markArrow' : 'markPen');
   }
 
+  // On the map the help says how the map moves again (there is no page to scroll).
+  var MAP_HELP = { pen: 'markArrowHelp', box: 'markBoxMapHelp', oval: 'markOvalMapHelp' };
   function toolHelp(name) {
     var win = view.win();
     var onMap = win && view.path() !== null && SchoolPlace.kindOf(win.location.pathname) === 'map';
-    return name === 'pen' && onMap ? 'markArrowHelp' : TOOL_HELP[name];
+    return onMap && MAP_HELP[name] ? MAP_HELP[name] : TOOL_HELP[name];
   }
 
   // Draws the marks that the box sent, when they are for the page on the screen.
