@@ -111,6 +111,20 @@ for abi in arm64-v8a armeabi-v7a; do
         [ "$rc" -eq "$want" ] && say "$abi" futex_time64-native PASS "kernel result $rc as expected" \
             || say "$abi" futex_time64-native FAIL "probe exit $rc, expected $want: $(cat /tmp/out)"
         ptest "$abi" futex_time64-in-proot "probe in proot" $PROOT -r "$R" -w / /probe futex_time64
+        # The Android 8 to 10 app filter (K2GO-597): proot and the box inherit a filter that traps
+        # clock_gettime64 (403) and the proot avoider (222). proot must answer ENOSYS, so glibc
+        # falls back to clock_gettime; it must not swallow the SIGSYS as a syscall that it voided.
+        # The fault showed on kernels older than 4.8 (3.18 on a phone, 4.4 here); the old proot
+        # passes this test on 4.9 and later.
+        if "/r/$abi/probe" seccomp-trap 403 /bin/busybox true >/tmp/out 2>&1; then
+            ptest "$abi" clock_gettime64-app-filter "clock_gettime64 under the app filter" \
+                "/r/$abi/probe" seccomp-trap 222,403 $PROOT -r "$R" -w / /probe clock_gettime64
+        elif [ "$KV" -lt 3019 ]; then
+            # arm64 has seccomp filters since Linux 3.19; an Android 8 phone always has them.
+            say "$abi" clock_gettime64-app-filter SKIP "this kernel cannot install a seccomp filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+        else
+            say "$abi" clock_gettime64-app-filter FAIL "the probe could not install the filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+        fi
     fi
 
     # PTRACE_O_EXITKILL (K2GO-544, K2GO-550): a daemon in proot dies when proot is SIGKILLed.
