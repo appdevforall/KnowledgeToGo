@@ -25,7 +25,9 @@ A static binary carries the libc.a of the NDK, not the libc of the phone. The ND
 every static program calls it before `main()`: all static binaries stop at start (exit
 134) on those phones. `ndk-static-arc4random.sh` runs in the builder container before
 the first build and puts `static-arc4random.c` in libc.a in place of the two arc4random
-members. The smoke test fails a bundle that still has the abort text.
+members. The restricted AppArmor profile of termux denies writes to the NDK from the
+container, so the script writes the changed libc.a to `output/` and `build_static.sh`
+copies it in with `docker cp`. The smoke test fails a bundle that still has the abort text.
 
 ## Static-linking policy
 Goal: binaries are statically linked so they don't depend on system libraries.

@@ -92,9 +92,12 @@ cd "$BUILD_DIR"
 export TERMUX_BUILDER_IMAGE_NAME="$TERMUX_BUILDER_IMAGE"
 echo ">> termux-packages $TERMUX_PACKAGES_COMMIT, image $TERMUX_BUILDER_IMAGE"
 # run-docker.sh reuses an existing builder container and then ignores the image pin.
-if docker container inspect termux-package-builder >/dev/null 2>&1; then
-    used="$(docker container inspect -f '{{.Config.Image}}' termux-package-builder)"
-    [ "$used" = "$TERMUX_BUILDER_IMAGE" ] || { echo "ERROR: container termux-package-builder uses '$used', not the pinned image. Remove it: docker rm -f termux-package-builder"; exit 1; }
+# The container name and the sudo use follow the rules of run-docker.sh.
+BUILDER="${CONTAINER_NAME:-termux-package-builder}"
+DOCKER="docker"; [ -z "${TERMUX_DOCKER_USE_SUDO:-}" ] || DOCKER="sudo docker"
+if $DOCKER container inspect "$BUILDER" >/dev/null 2>&1; then
+    used="$($DOCKER container inspect -f '{{.Config.Image}}' "$BUILDER")"
+    [ "$used" = "$TERMUX_BUILDER_IMAGE" ] || { echo "ERROR: container $BUILDER uses '$used', not the pinned image. Remove it: $DOCKER rm -f $BUILDER"; exit 1; }
 fi
 if [ ! -d "termux-packages/.git" ]; then
     git init -q termux-packages
@@ -468,7 +471,14 @@ echo ">> Building architectures: ${ARCHS[*]##*:}"
 # Before the first build-package.sh, so every static link takes it. See ndk-static-arc4random.sh.
 mkdir -p "$TERMUX_REPO/iiab-ndk"
 cp "$SCRIPT_DIR/ndk-static-arc4random.sh" "$SCRIPT_DIR/static-arc4random.c" "$TERMUX_REPO/iiab-ndk/"
-./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh
+# The container cannot write to the NDK (AppArmor), so the host copies the changed libc.a in.
+NDK_LIBC="output/iiab-ndk-libc"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh build "$NDK_LIBC"
+while read -r file target; do
+    $DOCKER cp "$TERMUX_REPO/$NDK_LIBC/$file" "$BUILDER:$target"
+done < "$TERMUX_REPO/$NDK_LIBC/install.list"
+./scripts/run-docker.sh bash ./iiab-ndk/ndk-static-arc4random.sh check
+./scripts/run-docker.sh rm -rf "$NDK_LIBC"
 
 echo "[4/4] Starting compilation process..."
 for mapping in "${ARCHS[@]}"; do
