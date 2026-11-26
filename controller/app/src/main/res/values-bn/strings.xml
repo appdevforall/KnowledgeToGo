@@ -1699,14 +1699,13 @@
     <string name="k2go_dl_held_offline">অপেক্ষা করছে। অ্যাপটি অফলাইন রাখা হয়েছে, তাই আপনি অনুমতি না দেওয়া পর্যন্ত ডাউনলোডটি সংযুক্ত হয় না।</string>
     <string name="k2go_mod_phase_downloading">ডাউনলোড হচ্ছে…</string>
     <string name="k2go_tab_class">ক্লাস</string>
-    <string name="k2go_class_body">এই ফোন থেকে ক্লাস পরিচালনা করুন, অথবা শিক্ষকের ফোনে ক্লাস অনুসরণ করুন।</string>
+    <string name="k2go_class_body">একটি ক্লাস পরিচালনা করুন বা শিক্ষকের ক্লাস অনুসরণ করুন।</string>
     <string name="k2go_class_teach">ক্লাস নিন</string>
-    <string name="k2go_class_teach_body">এই ফোনে লাইব্রেরির ক্লাস পৃষ্ঠা খুলুন। আপনি যা দেখান, শিক্ষার্থীরা তা দেখে।</string>
+    <string name="k2go_class_teach_body">আপনি যা দেখান শিক্ষার্থীরা তা দেখে।</string>
     <string name="k2go_class_checking">এই ফোনের লাইব্রেরি পরীক্ষা করা হচ্ছে...</string>
     <string name="k2go_class_no_module">এই ফোনের লাইব্রেরিতে ক্লাস মডিউল ইনস্টল করা নেই।</string>
     <string name="k2go_class_no_box">এই ফোনের লাইব্রেরি এখন চলছে না। এটি চললে আপনি এখানে ক্লাস নিতে পারবেন।</string>
     <string name="k2go_class_join">ক্লাসে যোগ দিন</string>
-    <string name="k2go_class_join_body">এই Wi-Fi-এর খোলা ক্লাসগুলো এখানে দেখা যায়। শিক্ষকের স্ক্রিনে দেখানো কোডের ক্লাসটিতে ট্যাপ করুন।</string>
     <string name="k2go_class_finding">এই Wi-Fi-এ ক্লাস খোঁজা হচ্ছে...</string>
     <string name="k2go_class_none_found">কোনো ক্লাস পাওয়া যায়নি। নিশ্চিত করুন যে এই ফোনটি শিক্ষকের মতো একই Wi-Fi-এ আছে।</string>
     <string name="k2go_class_search_again">আবার খুঁজুন</string>
@@ -1727,4 +1726,34 @@
     <string name="k2go_class_age_about_hour_and_half">প্রায় দেড় ঘণ্টা আগে শুরু হয়েছে</string>
     <string name="k2go_class_age_about_two_hours">প্রায় দুই ঘণ্টা আগে শুরু হয়েছে</string>
     <string name="k2go_class_age_over_two_hours">দুই ঘণ্টারও বেশি আগে শুরু হয়েছে</string>
+    <string name="k2go_class_or">অথবা</string>
+    <string name="k2go_class_one_open">এই Wi-Fi-তে একটি খোলা ক্লাস আছে।</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">এই Wi-Fi-তে %1$dটি খোলা ক্লাস আছে।</item>
+        <item quantity="other">এই Wi-Fi-তে %1$dটি খোলা ক্লাস আছে।</item>
+    </plurals>
+    <string name="k2go_class_choose">একটি ক্লাস বেছে নিন</string>
+    <string name="k2go_class_search_hint">ID বা নাম দিয়ে খুঁজুন</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">নাম ও শুরু</string>
+    <string name="k2go_class_no_match">এই ID বা নামের কোনো ক্লাস নেই।</string>
+    <string name="k2go_class_name_title">আপনি কি এই ক্লাসের একটি নাম দিতে চান?</string>
+    <string name="k2go_class_name_hint">ক্লাসের নাম</string>
+    <string name="k2go_class_name_help">যেমন: গণিত 101 বা 1 ক। শিক্ষার্থীদের নাম ব্যবহার করবেন না।</string>
+    <string name="k2go_class_name_skip">এড়িয়ে যান</string>
+    <string name="k2go_class_name_start">শুরু করুন</string>
+    <string name="k2go_class_ago_just_now">এইমাত্র</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d মিনিট আগে</item>
+        <item quantity="other">%1$d মিনিট আগে</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">প্রায় %1$d মিনিট আগে</item>
+        <item quantity="other">প্রায় %1$d মিনিট আগে</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">প্রায় এক ঘণ্টা আগে</string>
+    <string name="k2go_class_ago_about_hour_and_half">প্রায় দেড় ঘণ্টা আগে</string>
+    <string name="k2go_class_ago_about_two_hours">প্রায় দুই ঘণ্টা আগে</string>
+    <string name="k2go_class_ago_over_two_hours">দুই ঘণ্টারও বেশি আগে</string>
+    <string name="k2go_class_start_failed">ক্লাস শুরু হয়নি। আবার চেষ্টা করুন।</string>
 </resources>

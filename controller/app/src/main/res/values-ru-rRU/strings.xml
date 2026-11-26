@@ -1764,14 +1764,13 @@
     <string name="k2go_dl_held_offline">Ожидание. Приложение оставлено офлайн, поэтому загрузка не подключается, пока вы не разрешите.</string>
     <string name="k2go_mod_phase_downloading">Загрузка…</string>
     <string name="k2go_tab_class">Урок</string>
-    <string name="k2go_class_body">Проводите урок с этого телефона или следите за уроком на телефоне учителя.</string>
+    <string name="k2go_class_body">Проводите урок или следите за уроком учителя.</string>
     <string name="k2go_class_teach">Провести урок</string>
-    <string name="k2go_class_teach_body">Откройте страницу урока в библиотеке на этом телефоне. Ученики видят то, что вы показываете.</string>
+    <string name="k2go_class_teach_body">Ученики видят то, что вы показываете.</string>
     <string name="k2go_class_checking">Проверка библиотеки на этом телефоне...</string>
     <string name="k2go_class_no_module">Модуль уроков не установлен в библиотеке на этом телефоне.</string>
     <string name="k2go_class_no_box">Библиотека на этом телефоне сейчас не работает. Когда она будет работать, вы сможете провести урок здесь.</string>
     <string name="k2go_class_join">Присоединиться к уроку</string>
-    <string name="k2go_class_join_body">Здесь показаны открытые уроки в этой сети Wi-Fi. Нажмите на урок с кодом, который показан на экране учителя.</string>
     <string name="k2go_class_finding">Поиск уроков в этой сети Wi-Fi...</string>
     <string name="k2go_class_none_found">Уроки не найдены. Убедитесь, что этот телефон в той же сети Wi-Fi, что и телефон учителя.</string>
     <string name="k2go_class_search_again">Искать снова</string>
@@ -1796,4 +1795,40 @@
     <string name="k2go_class_age_about_hour_and_half">Начался около полутора часов назад</string>
     <string name="k2go_class_age_about_two_hours">Начался около двух часов назад</string>
     <string name="k2go_class_age_over_two_hours">Начался более двух часов назад</string>
+    <string name="k2go_class_or">или</string>
+    <string name="k2go_class_one_open">В этой сети Wi-Fi открыт один урок.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">В этой сети Wi-Fi открыт %1$d урок.</item>
+        <item quantity="few">В этой сети Wi-Fi открыто %1$d урока.</item>
+        <item quantity="many">В этой сети Wi-Fi открыто %1$d уроков.</item>
+        <item quantity="other">В этой сети Wi-Fi открыто %1$d урока.</item>
+    </plurals>
+    <string name="k2go_class_choose">Выбрать урок</string>
+    <string name="k2go_class_search_hint">Поиск по ID или названию</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Название и начало</string>
+    <string name="k2go_class_no_match">Нет урока с таким ID или названием.</string>
+    <string name="k2go_class_name_title">Хотите дать этому уроку название?</string>
+    <string name="k2go_class_name_hint">Название урока</string>
+    <string name="k2go_class_name_help">Например: Математика 101 или 1 А. Не используйте имена учеников.</string>
+    <string name="k2go_class_name_skip">Пропустить</string>
+    <string name="k2go_class_name_start">Начать</string>
+    <string name="k2go_class_ago_just_now">Только что</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d минуту назад</item>
+        <item quantity="few">%1$d минуты назад</item>
+        <item quantity="many">%1$d минут назад</item>
+        <item quantity="other">%1$d минуты назад</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Около %1$d минуты назад</item>
+        <item quantity="few">Около %1$d минут назад</item>
+        <item quantity="many">Около %1$d минут назад</item>
+        <item quantity="other">Около %1$d минуты назад</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Около часа назад</string>
+    <string name="k2go_class_ago_about_hour_and_half">Около полутора часов назад</string>
+    <string name="k2go_class_ago_about_two_hours">Около двух часов назад</string>
+    <string name="k2go_class_ago_over_two_hours">Более двух часов назад</string>
+    <string name="k2go_class_start_failed">Урок не начался. Попробуйте ещё раз.</string>
 </resources>

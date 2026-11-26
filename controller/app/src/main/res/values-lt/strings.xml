@@ -1705,14 +1705,13 @@
     <string name="k2go_dl_held_offline">Laukiama. Programa paliekama neprisijungus, todėl atsisiuntimas neprisijungia, kol to neleisite.</string>
     <string name="k2go_mod_phase_downloading">Atsisiunčiama…</string>
     <string name="k2go_tab_class">Pamoka</string>
-    <string name="k2go_class_body">Veskite pamoką iš šio telefono arba sekite pamoką mokytojo telefone.</string>
+    <string name="k2go_class_body">Veskite pamoką arba sekite mokytojo pamoką.</string>
     <string name="k2go_class_teach">Vesti pamoką</string>
-    <string name="k2go_class_teach_body">Atverkite bibliotekos pamokos puslapį šiame telefone. Mokiniai mato tai, ką rodote jūs.</string>
+    <string name="k2go_class_teach_body">Mokiniai mato tai, ką rodote.</string>
     <string name="k2go_class_checking">Tikrinama biblioteka šiame telefone...</string>
     <string name="k2go_class_no_module">Pamokos modulis neįdiegtas šio telefono bibliotekoje.</string>
     <string name="k2go_class_no_box">Šio telefono biblioteka dabar neveikia. Kai ji veiks, galėsite čia vesti pamoką.</string>
     <string name="k2go_class_join">Prisijungti prie pamokos</string>
-    <string name="k2go_class_join_body">Atviros pamokos šiame „Wi-Fi“ tinkle rodomos čia. Bakstelėkite pamoką su kodu, kurį rodo mokytojo ekranas.</string>
     <string name="k2go_class_finding">Ieškoma pamokų šiame „Wi-Fi“ tinkle...</string>
     <string name="k2go_class_none_found">Pamokų nerasta. Įsitikinkite, kad šis telefonas prijungtas prie to paties „Wi-Fi“ kaip ir mokytojo.</string>
     <string name="k2go_class_search_again">Ieškoti dar kartą</string>
@@ -1737,4 +1736,40 @@
     <string name="k2go_class_age_about_hour_and_half">Prasidėjo maždaug prieš pusantros valandos</string>
     <string name="k2go_class_age_about_two_hours">Prasidėjo maždaug prieš dvi valandas</string>
     <string name="k2go_class_age_over_two_hours">Prasidėjo daugiau nei prieš dvi valandas</string>
+    <string name="k2go_class_or">arba</string>
+    <string name="k2go_class_one_open">Šiame Wi-Fi tinkle yra viena atvira pamoka.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Šiame Wi-Fi tinkle yra %1$d atvira pamoka.</item>
+        <item quantity="few">Šiame Wi-Fi tinkle yra %1$d atviros pamokos.</item>
+        <item quantity="many">Šiame Wi-Fi tinkle yra %1$d atviros pamokos.</item>
+        <item quantity="other">Šiame Wi-Fi tinkle yra %1$d atvirų pamokų.</item>
+    </plurals>
+    <string name="k2go_class_choose">Pasirinkite pamoką</string>
+    <string name="k2go_class_search_hint">Ieškoti pagal ID arba pavadinimą</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Pavadinimas ir pradžia</string>
+    <string name="k2go_class_no_match">Nėra pamokos su šiuo ID arba pavadinimu.</string>
+    <string name="k2go_class_name_title">Ar norite suteikti šiai pamokai pavadinimą?</string>
+    <string name="k2go_class_name_hint">Pamokos pavadinimas</string>
+    <string name="k2go_class_name_help">Pavyzdžiui: Matematika 101 arba 1 A. Nenaudokite mokinių vardų.</string>
+    <string name="k2go_class_name_skip">Praleisti</string>
+    <string name="k2go_class_name_start">Pradėti</string>
+    <string name="k2go_class_ago_just_now">Ką tik</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Prieš %1$d minutę</item>
+        <item quantity="few">Prieš %1$d minutes</item>
+        <item quantity="many">Prieš %1$d minutės</item>
+        <item quantity="other">Prieš %1$d minučių</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Maždaug prieš %1$d minutę</item>
+        <item quantity="few">Maždaug prieš %1$d minutes</item>
+        <item quantity="many">Maždaug prieš %1$d minutės</item>
+        <item quantity="other">Maždaug prieš %1$d minučių</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Maždaug prieš valandą</string>
+    <string name="k2go_class_ago_about_hour_and_half">Maždaug prieš pusantros valandos</string>
+    <string name="k2go_class_ago_about_two_hours">Maždaug prieš dvi valandas</string>
+    <string name="k2go_class_ago_over_two_hours">Daugiau nei prieš dvi valandas</string>
+    <string name="k2go_class_start_failed">Pamoka neprasidėjo. Bandykite dar kartą.</string>
 </resources>

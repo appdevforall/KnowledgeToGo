@@ -1695,14 +1695,13 @@
     <string name="k2go_dl_held_offline">Čekání. Aplikace je ponechána offline, proto se stahování nepřipojí, dokud to nepovolíte.</string>
     <string name="k2go_mod_phase_downloading">Stahování…</string>
     <string name="k2go_tab_class">Třída</string>
-    <string name="k2go_class_body">Veďte hodinu z tohoto telefonu, nebo sledujte hodinu na telefonu učitele.</string>
+    <string name="k2go_class_body">Veďte hodinu, nebo sledujte hodinu učitele.</string>
     <string name="k2go_class_teach">Učit třídu</string>
-    <string name="k2go_class_teach_body">Otevřete stránku třídy v knihovně na tomto telefonu. Žáci vidí, co ukazujete.</string>
+    <string name="k2go_class_teach_body">Žáci vidí, co ukazujete.</string>
     <string name="k2go_class_checking">Kontrola knihovny na tomto telefonu...</string>
     <string name="k2go_class_no_module">Modul třídy není nainstalován v knihovně na tomto telefonu.</string>
     <string name="k2go_class_no_box">Knihovna na tomto telefonu teď neběží. Až poběží, můžete zde učit třídu.</string>
     <string name="k2go_class_join">Připojit se ke třídě</string>
-    <string name="k2go_class_join_body">Zde se zobrazují otevřené třídy v této síti Wi-Fi. Klepněte na třídu s kódem, který ukazuje obrazovka učitele.</string>
     <string name="k2go_class_finding">Hledání tříd v této síti Wi-Fi...</string>
     <string name="k2go_class_none_found">Nebyla nalezena žádná třída. Ujistěte se, že je tento telefon ve stejné síti Wi-Fi jako učitel.</string>
     <string name="k2go_class_search_again">Hledat znovu</string>
@@ -1727,4 +1726,40 @@
     <string name="k2go_class_age_about_hour_and_half">Zahájeno asi před hodinou a půl</string>
     <string name="k2go_class_age_about_two_hours">Zahájeno asi před dvěma hodinami</string>
     <string name="k2go_class_age_over_two_hours">Zahájeno před více než dvěma hodinami</string>
+    <string name="k2go_class_or">nebo</string>
+    <string name="k2go_class_one_open">V této síti Wi-Fi je jedna otevřená hodina.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">V této síti Wi-Fi je %1$d otevřená hodina.</item>
+        <item quantity="few">V této síti Wi-Fi jsou %1$d otevřené hodiny.</item>
+        <item quantity="many">V této síti Wi-Fi je %1$d otevřené hodiny.</item>
+        <item quantity="other">V této síti Wi-Fi je %1$d otevřených hodin.</item>
+    </plurals>
+    <string name="k2go_class_choose">Vyberte hodinu</string>
+    <string name="k2go_class_search_hint">Hledat podle ID nebo názvu</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Název a začátek</string>
+    <string name="k2go_class_no_match">Žádná hodina nemá toto ID ani název.</string>
+    <string name="k2go_class_name_title">Chcete této hodině dát název?</string>
+    <string name="k2go_class_name_hint">Název hodiny</string>
+    <string name="k2go_class_name_help">Například: Matematika 101 nebo 1 A. Nepoužívejte jména žáků.</string>
+    <string name="k2go_class_name_skip">Přeskočit</string>
+    <string name="k2go_class_name_start">Začít</string>
+    <string name="k2go_class_ago_just_now">Právě teď</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Před %1$d minutou</item>
+        <item quantity="few">Před %1$d minutami</item>
+        <item quantity="many">Před %1$d minuty</item>
+        <item quantity="other">Před %1$d minutami</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Asi před %1$d minutou</item>
+        <item quantity="few">Asi před %1$d minutami</item>
+        <item quantity="many">Asi před %1$d minuty</item>
+        <item quantity="other">Asi před %1$d minutami</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Asi před hodinou</string>
+    <string name="k2go_class_ago_about_hour_and_half">Asi před hodinou a půl</string>
+    <string name="k2go_class_ago_about_two_hours">Asi před dvěma hodinami</string>
+    <string name="k2go_class_ago_over_two_hours">Před více než dvěma hodinami</string>
+    <string name="k2go_class_start_failed">Hodina se nespustila. Zkuste to znovu.</string>
 </resources>

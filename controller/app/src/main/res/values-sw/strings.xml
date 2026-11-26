@@ -1706,14 +1706,13 @@
     <string name="k2go_dl_held_offline">Inasubiri. Programu imewekwa nje ya mtandao, kwa hivyo upakuaji hauunganishi hadi utakaporuhusu.</string>
     <string name="k2go_mod_phase_downloading">Inapakua…</string>
     <string name="k2go_tab_class">Darasa</string>
-    <string name="k2go_class_body">Ongoza darasa kutoka kwenye simu hii, au fuata darasa kwenye simu ya mwalimu.</string>
+    <string name="k2go_class_body">Ongoza darasa au fuata darasa la mwalimu.</string>
     <string name="k2go_class_teach">Fundisha darasa</string>
-    <string name="k2go_class_teach_body">Fungua ukurasa wa darasa wa maktaba kwenye simu hii. Wanafunzi wanaona unachoonyesha.</string>
+    <string name="k2go_class_teach_body">Wanafunzi wanaona unachoonyesha.</string>
     <string name="k2go_class_checking">Inakagua maktaba kwenye simu hii...</string>
     <string name="k2go_class_no_module">Moduli ya darasa haijasakinishwa kwenye maktaba ya simu hii.</string>
     <string name="k2go_class_no_box">Maktaba kwenye simu hii haifanyi kazi sasa. Ikianza kufanya kazi, unaweza kufundisha darasa hapa.</string>
     <string name="k2go_class_join">Jiunge na darasa</string>
-    <string name="k2go_class_join_body">Madarasa yaliyo wazi kwenye Wi-Fi hii yanaonekana hapa. Gusa darasa lenye msimbo unaoonyeshwa kwenye skrini ya mwalimu.</string>
     <string name="k2go_class_finding">Inatafuta madarasa kwenye Wi-Fi hii...</string>
     <string name="k2go_class_none_found">Hakuna darasa lililopatikana. Hakikisha simu hii iko kwenye Wi-Fi ile ile na mwalimu.</string>
     <string name="k2go_class_search_again">Tafuta tena</string>
@@ -1734,4 +1733,34 @@
     <string name="k2go_class_age_about_hour_and_half">Lilianza takriban saa moja na nusu iliyopita</string>
     <string name="k2go_class_age_about_two_hours">Lilianza takriban saa mbili zilizopita</string>
     <string name="k2go_class_age_over_two_hours">Lilianza zaidi ya saa mbili zilizopita</string>
+    <string name="k2go_class_or">au</string>
+    <string name="k2go_class_one_open">Kuna darasa moja lililo wazi kwenye Wi-Fi hii.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Kuna madarasa %1$d yaliyo wazi kwenye Wi-Fi hii.</item>
+        <item quantity="other">Kuna madarasa %1$d yaliyo wazi kwenye Wi-Fi hii.</item>
+    </plurals>
+    <string name="k2go_class_choose">Chagua darasa</string>
+    <string name="k2go_class_search_hint">Tafuta kwa ID au jina</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Jina na kuanza</string>
+    <string name="k2go_class_no_match">Hakuna darasa lenye ID au jina hili.</string>
+    <string name="k2go_class_name_title">Ungependa kulipa darasa hili jina?</string>
+    <string name="k2go_class_name_hint">Jina la darasa</string>
+    <string name="k2go_class_name_help">Kwa mfano: Hisabati 101 au 1 A. Usitumie majina ya wanafunzi.</string>
+    <string name="k2go_class_name_skip">Ruka</string>
+    <string name="k2go_class_name_start">Anza</string>
+    <string name="k2go_class_ago_just_now">Sasa hivi</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Dakika %1$d zilizopita</item>
+        <item quantity="other">Dakika %1$d zilizopita</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Takriban dakika %1$d zilizopita</item>
+        <item quantity="other">Takriban dakika %1$d zilizopita</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Takriban saa moja iliyopita</string>
+    <string name="k2go_class_ago_about_hour_and_half">Takriban saa moja na nusu iliyopita</string>
+    <string name="k2go_class_ago_about_two_hours">Takriban saa mbili zilizopita</string>
+    <string name="k2go_class_ago_over_two_hours">Zaidi ya saa mbili zilizopita</string>
+    <string name="k2go_class_start_failed">Darasa halikuanza. Jaribu tena.</string>
 </resources>

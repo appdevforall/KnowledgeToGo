@@ -1696,14 +1696,13 @@
     <string name="k2go_dl_held_offline">Venter. Appen holdes offline, så nedlastingen kobler ikke til før du tillater det.</string>
     <string name="k2go_mod_phase_downloading">Laster ned…</string>
     <string name="k2go_tab_class">Time</string>
-    <string name="k2go_class_body">Led en time fra denne telefonen, eller følg timen på lærerens telefon.</string>
+    <string name="k2go_class_body">Led en time eller følg lærerens time.</string>
     <string name="k2go_class_teach">Hold en time</string>
-    <string name="k2go_class_teach_body">Åpne timesiden i biblioteket på denne telefonen. Elevene ser det du viser.</string>
+    <string name="k2go_class_teach_body">Elevene ser det du viser.</string>
     <string name="k2go_class_checking">Sjekker biblioteket på denne telefonen...</string>
     <string name="k2go_class_no_module">Timemodulen er ikke installert i biblioteket på denne telefonen.</string>
     <string name="k2go_class_no_box">Biblioteket på denne telefonen kjører ikke nå. Når det kjører, kan du holde en time her.</string>
     <string name="k2go_class_join">Bli med i en time</string>
-    <string name="k2go_class_join_body">Åpne timer på dette Wi-Fi-nettet vises her. Trykk på timen med koden som vises på lærerens skjerm.</string>
     <string name="k2go_class_finding">Ser etter timer på dette Wi-Fi-nettet...</string>
     <string name="k2go_class_none_found">Fant ingen time. Sjekk at denne telefonen er på samme Wi-Fi som læreren.</string>
     <string name="k2go_class_search_again">Søk på nytt</string>
@@ -1724,4 +1723,34 @@
     <string name="k2go_class_age_about_hour_and_half">Startet for omtrent halvannen time siden</string>
     <string name="k2go_class_age_about_two_hours">Startet for omtrent to timer siden</string>
     <string name="k2go_class_age_over_two_hours">Startet for mer enn to timer siden</string>
+    <string name="k2go_class_or">eller</string>
+    <string name="k2go_class_one_open">Det er én åpen time på dette Wi-Fi-nettet.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Det er %1$d åpen time på dette Wi-Fi-nettet.</item>
+        <item quantity="other">Det er %1$d åpne timer på dette Wi-Fi-nettet.</item>
+    </plurals>
+    <string name="k2go_class_choose">Velg en time</string>
+    <string name="k2go_class_search_hint">Søk etter ID eller navn</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Navn og start</string>
+    <string name="k2go_class_no_match">Ingen time har denne ID-en eller dette navnet.</string>
+    <string name="k2go_class_name_title">Vil du gi denne timen et navn?</string>
+    <string name="k2go_class_name_hint">Navn på timen</string>
+    <string name="k2go_class_name_help">For eksempel: Matte 101 eller 1 A. Ikke bruk navn på elever.</string>
+    <string name="k2go_class_name_skip">Hopp over</string>
+    <string name="k2go_class_name_start">Start</string>
+    <string name="k2go_class_ago_just_now">Akkurat nå</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">For %1$d minutt siden</item>
+        <item quantity="other">For %1$d minutter siden</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">For omtrent %1$d minutt siden</item>
+        <item quantity="other">For omtrent %1$d minutter siden</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">For omtrent en time siden</string>
+    <string name="k2go_class_ago_about_hour_and_half">For omtrent halvannen time siden</string>
+    <string name="k2go_class_ago_about_two_hours">For omtrent to timer siden</string>
+    <string name="k2go_class_ago_over_two_hours">For mer enn to timer siden</string>
+    <string name="k2go_class_start_failed">Timen startet ikke. Prøv igjen.</string>
 </resources>

@@ -1685,14 +1685,13 @@
     <string name="k2go_dl_held_offline">Đang chờ. Ứng dụng được giữ ngoại tuyến, vì vậy bản tải xuống không kết nối cho đến khi bạn cho phép.</string>
     <string name="k2go_mod_phase_downloading">Đang tải xuống…</string>
     <string name="k2go_tab_class">Lớp học</string>
-    <string name="k2go_class_body">Dẫn dắt lớp học từ điện thoại này, hoặc theo dõi lớp học trên điện thoại của giáo viên.</string>
+    <string name="k2go_class_body">Dẫn dắt lớp học hoặc theo dõi lớp học của giáo viên.</string>
     <string name="k2go_class_teach">Dạy một lớp học</string>
-    <string name="k2go_class_teach_body">Mở trang lớp học của thư viện trên điện thoại này. Học sinh thấy những gì bạn hiển thị.</string>
+    <string name="k2go_class_teach_body">Học sinh thấy những gì bạn hiển thị.</string>
     <string name="k2go_class_checking">Đang kiểm tra thư viện trên điện thoại này...</string>
     <string name="k2go_class_no_module">Mô-đun lớp học chưa được cài trong thư viện trên điện thoại này.</string>
     <string name="k2go_class_no_box">Thư viện trên điện thoại này hiện không chạy. Khi thư viện chạy, bạn có thể dạy lớp học tại đây.</string>
     <string name="k2go_class_join">Tham gia lớp học</string>
-    <string name="k2go_class_join_body">Các lớp học đang mở trên Wi-Fi này hiển thị tại đây. Chạm vào lớp học có mã mà màn hình của giáo viên hiển thị.</string>
     <string name="k2go_class_finding">Đang tìm lớp học trên Wi-Fi này...</string>
     <string name="k2go_class_none_found">Không tìm thấy lớp học nào. Hãy đảm bảo điện thoại này ở cùng Wi-Fi với giáo viên.</string>
     <string name="k2go_class_search_again">Tìm lại</string>
@@ -1711,4 +1710,31 @@
     <string name="k2go_class_age_about_hour_and_half">Bắt đầu khoảng một tiếng rưỡi trước</string>
     <string name="k2go_class_age_about_two_hours">Bắt đầu khoảng hai giờ trước</string>
     <string name="k2go_class_age_over_two_hours">Bắt đầu hơn hai giờ trước</string>
+    <string name="k2go_class_or">hoặc</string>
+    <string name="k2go_class_one_open">Có một lớp học đang mở trên Wi-Fi này.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="other">Có %1$d lớp học đang mở trên Wi-Fi này.</item>
+    </plurals>
+    <string name="k2go_class_choose">Chọn lớp học</string>
+    <string name="k2go_class_search_hint">Tìm theo ID hoặc tên</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Tên và lúc bắt đầu</string>
+    <string name="k2go_class_no_match">Không có lớp học nào có ID hoặc tên này.</string>
+    <string name="k2go_class_name_title">Bạn có muốn đặt tên cho lớp học này không?</string>
+    <string name="k2go_class_name_hint">Tên lớp học</string>
+    <string name="k2go_class_name_help">Ví dụ: Toán 101 hoặc 1 A. Không dùng tên của học sinh.</string>
+    <string name="k2go_class_name_skip">Bỏ qua</string>
+    <string name="k2go_class_name_start">Bắt đầu</string>
+    <string name="k2go_class_ago_just_now">Vừa xong</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="other">%1$d phút trước</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="other">Khoảng %1$d phút trước</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Khoảng một giờ trước</string>
+    <string name="k2go_class_ago_about_hour_and_half">Khoảng một tiếng rưỡi trước</string>
+    <string name="k2go_class_ago_about_two_hours">Khoảng hai giờ trước</string>
+    <string name="k2go_class_ago_over_two_hours">Hơn hai giờ trước</string>
+    <string name="k2go_class_start_failed">Lớp học chưa bắt đầu. Hãy thử lại.</string>
 </resources>

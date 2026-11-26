@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">Várakozás. Az alkalmazás offline marad, ezért a letöltés nem csatlakozik, amíg nem engedélyezi.</string>
     <string name="k2go_mod_phase_downloading">Letöltés…</string>
     <string name="k2go_tab_class">Óra</string>
-    <string name="k2go_class_body">Vezess órát erről a telefonról, vagy kövesd az órát a tanár telefonján.</string>
+    <string name="k2go_class_body">Vezess órát, vagy kövesd a tanár óráját.</string>
     <string name="k2go_class_teach">Óra tartása</string>
-    <string name="k2go_class_teach_body">Nyisd meg a könyvtár óraoldalát ezen a telefonon. A diákok azt látják, amit te mutatsz.</string>
+    <string name="k2go_class_teach_body">A diákok azt látják, amit mutatsz.</string>
     <string name="k2go_class_checking">A könyvtár ellenőrzése ezen a telefonon...</string>
     <string name="k2go_class_no_module">Az óramodul nincs telepítve a telefon könyvtárában.</string>
     <string name="k2go_class_no_box">A telefon könyvtára most nem fut. Ha fut, itt tarthatsz órát.</string>
     <string name="k2go_class_join">Csatlakozás órához</string>
-    <string name="k2go_class_join_body">Az ezen a Wi-Fi-n nyitott órák itt jelennek meg. Koppints arra az órára, amelynek a kódja a tanár képernyőjén látható.</string>
     <string name="k2go_class_finding">Órák keresése ezen a Wi-Fi-n...</string>
     <string name="k2go_class_none_found">Nem található óra. Ellenőrizd, hogy a telefon ugyanazon a Wi-Fi-n van-e, mint a tanár.</string>
     <string name="k2go_class_search_again">Keresés újra</string>
@@ -1714,4 +1713,34 @@
     <string name="k2go_class_age_about_hour_and_half">Körülbelül másfél órája kezdődött</string>
     <string name="k2go_class_age_about_two_hours">Körülbelül két órája kezdődött</string>
     <string name="k2go_class_age_over_two_hours">Több mint két órája kezdődött</string>
+    <string name="k2go_class_or">vagy</string>
+    <string name="k2go_class_one_open">Ezen a Wi-Fi-hálózaton egy nyitott óra van.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Ezen a Wi-Fi-hálózaton %1$d nyitott óra van.</item>
+        <item quantity="other">Ezen a Wi-Fi-hálózaton %1$d nyitott óra van.</item>
+    </plurals>
+    <string name="k2go_class_choose">Óra kiválasztása</string>
+    <string name="k2go_class_search_hint">Keresés ID vagy név alapján</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Név és kezdés</string>
+    <string name="k2go_class_no_match">Nincs ilyen ID-jű vagy nevű óra.</string>
+    <string name="k2go_class_name_title">Szeretnél nevet adni ennek az órának?</string>
+    <string name="k2go_class_name_hint">Az óra neve</string>
+    <string name="k2go_class_name_help">Például: Matek 101 vagy 1 A. Ne használd a diákok nevét.</string>
+    <string name="k2go_class_name_skip">Kihagyás</string>
+    <string name="k2go_class_name_start">Indítás</string>
+    <string name="k2go_class_ago_just_now">Épp most</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d perce</item>
+        <item quantity="other">%1$d perce</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Körülbelül %1$d perce</item>
+        <item quantity="other">Körülbelül %1$d perce</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Körülbelül egy órája</string>
+    <string name="k2go_class_ago_about_hour_and_half">Körülbelül másfél órája</string>
+    <string name="k2go_class_ago_about_two_hours">Körülbelül két órája</string>
+    <string name="k2go_class_ago_over_two_hours">Több mint két órája</string>
+    <string name="k2go_class_start_failed">Az óra nem indult el. Próbáld újra.</string>
 </resources>

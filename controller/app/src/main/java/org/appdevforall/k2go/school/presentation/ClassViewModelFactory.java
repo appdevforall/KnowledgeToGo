@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.appdevforall.k2go.ServerStateRepository;
 import org.appdevforall.k2go.school.data.HttpClassProbe;
 import org.appdevforall.k2go.school.data.HttpTeacherPage;
+import org.appdevforall.k2go.school.data.HttpClassStarter;
 import org.appdevforall.k2go.school.data.NsdClassFinder;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -32,7 +33,8 @@ public class ClassViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ClassViewModel.class)) {
             ServerStateRepository server = ServerStateRepository.get();
-            return (T) new ClassViewModel(new HttpTeacherPage(), AppExecutors.get().io(),
+            return (T) new ClassViewModel(new HttpTeacherPage(), new HttpClassProbe(), new HttpClassStarter(),
+                    AppExecutors.get().io(),
                     server.state(), server::hasObservation);
         }
         if (modelClass.isAssignableFrom(FindClassesViewModel.class)) {

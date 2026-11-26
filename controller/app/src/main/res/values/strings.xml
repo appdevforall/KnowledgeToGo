@@ -1905,11 +1905,11 @@
     <!-- Bottom bar tab and title of the Class screen. Keep it short: the bar has 5 tabs. -->
     <string name="k2go_tab_class">Class</string>
     <!-- Subtitle of the Class screen: what the two cards do. -->
-    <string name="k2go_class_body">Lead a class from this phone, or follow the class on the teacher\'s phone.</string>
+    <string name="k2go_class_body">Lead a class or follow the teacher\'s class.</string>
     <!-- Card title and button: the teacher opens the class page on this phone. -->
     <string name="k2go_class_teach">Teach a class</string>
     <!-- Body of the teacher card. -->
-    <string name="k2go_class_teach_body">Open the class page of the library on this phone. The students see what you show.</string>
+    <string name="k2go_class_teach_body">The students see what you show.</string>
     <!-- Teacher card, while the app asks the library on this phone if it has the class module. -->
     <string name="k2go_class_checking">Checking the library on this phone...</string>
     <!-- Teacher card, when the library on this phone answers but has no class module. -->
@@ -1918,8 +1918,6 @@
     <string name="k2go_class_no_box">The library on this phone does not run now. When it runs, you can teach a class here.</string>
     <!-- Title of the student card: a student finds the class of a teacher and follows it. -->
     <string name="k2go_class_join">Join a class</string>
-    <!-- Body of the student card. Below it, a list of the classes found, then a button to scan a code. -->
-    <string name="k2go_class_join_body">The open classes on this Wi-Fi show here. Tap the class with the code that the teacher\'s screen shows.</string>
     <!-- Student card, during the first seconds of the search for classes on the Wi-Fi. -->
     <string name="k2go_class_finding">Looking for classes on this Wi-Fi...</string>
     <!-- Student card, when the search found no class. Below it: the "Search again" button. A class that opens later also shows by itself. -->
@@ -1954,4 +1952,55 @@
     <string name="k2go_class_age_about_two_hours">Started about two hours ago</string>
     <!-- Join list: the class started two hours ago or more. -->
     <string name="k2go_class_age_over_two_hours">Started more than two hours ago</string>
+    <!-- K2Go School: The word between the Teach card and the Join card of the Class tab. -->
+    <string name="k2go_class_or">or</string>
+    <!-- K2Go School: Join card: exactly one class is open on this Wi-Fi. Under it: how long ago it started. -->
+    <string name="k2go_class_one_open">There is one open class on this Wi-Fi.</string>
+    <!-- K2Go School: Join card: two or more classes are open on this Wi-Fi. %1$d: the number of classes. -->
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">There is %1$d open class on this Wi-Fi.</item>
+        <item quantity="other">There are %1$d open classes on this Wi-Fi.</item>
+    </plurals>
+    <!-- K2Go School: Join card button (two or more classes), and the title of the sheet that lists them. -->
+    <string name="k2go_class_choose">Choose a class</string>
+    <!-- K2Go School: Choose a class: the search field. ID: the 4-character class code. -->
+    <string name="k2go_class_search_hint">Search by ID or name</string>
+    <!-- K2Go School: Choose a class: the head of the column of class codes. A short word. -->
+    <string name="k2go_class_col_id">ID</string>
+    <!-- K2Go School: Choose a class: the head of the column with the class name over how long ago it started. -->
+    <string name="k2go_class_col_name_start">Name and start</string>
+    <!-- K2Go School: Choose a class: no class has the text of the search field in its ID or name. -->
+    <string name="k2go_class_no_match">No class has this ID or name.</string>
+    <!-- K2Go School: Teach a class: the title of the dialog before the class starts. The name is optional. -->
+    <string name="k2go_class_name_title">Would you like to name this class?</string>
+    <!-- K2Go School: Teach a class: the hint in the empty name field. -->
+    <string name="k2go_class_name_hint">Class name</string>
+    <!-- K2Go School: Teach a class: under the name field. "Math 101" and "1 A" are example class names. -->
+    <string name="k2go_class_name_help">For example: Math 101 or 1 A. Do not use the names of students.</string>
+    <!-- K2Go School: Teach a class: start the class with no name. -->
+    <string name="k2go_class_name_skip">Skip</string>
+    <!-- K2Go School: Teach a class: start the class with the name in the field. -->
+    <string name="k2go_class_name_start">Start</string>
+    <!-- K2Go School: Choose a class, under the column head "Name and start": the class started less than one minute ago. -->
+    <string name="k2go_class_ago_just_now">Just now</string>
+    <!-- K2Go School: Choose a class: the class started this many minutes ago (1 to 10). %1$d: the minutes. -->
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
+    </plurals>
+    <!-- K2Go School: Choose a class: the class started about this many minutes ago (15, 20, 30 or 45). %1$d: the minutes. -->
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">About %1$d minute ago</item>
+        <item quantity="other">About %1$d minutes ago</item>
+    </plurals>
+    <!-- K2Go School: Choose a class: the class started about one hour ago. -->
+    <string name="k2go_class_ago_about_one_hour">About an hour ago</string>
+    <!-- K2Go School: Choose a class: the class started about one and a half hours ago. -->
+    <string name="k2go_class_ago_about_hour_and_half">About an hour and a half ago</string>
+    <!-- K2Go School: Choose a class: the class started about two hours ago. -->
+    <string name="k2go_class_ago_about_two_hours">About two hours ago</string>
+    <!-- K2Go School: Choose a class: the class started two hours ago or more. -->
+    <string name="k2go_class_ago_over_two_hours">More than two hours ago</string>
+    <!-- K2Go School: Teach a class: the box did not open the class (no answer). A snackbar. -->
+    <string name="k2go_class_start_failed">The class did not start. Try again.</string>
 </resources>

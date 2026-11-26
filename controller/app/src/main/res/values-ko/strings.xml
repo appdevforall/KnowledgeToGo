@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">대기 중입니다. 앱이 오프라인으로 유지되므로 허용하기 전까지 다운로드가 연결되지 않습니다.</string>
     <string name="k2go_mod_phase_downloading">다운로드 중…</string>
     <string name="k2go_tab_class">수업</string>
-    <string name="k2go_class_body">이 휴대폰으로 수업을 진행하거나, 선생님 휴대폰의 수업을 따라가세요.</string>
+    <string name="k2go_class_body">수업을 진행하거나 교사의 수업을 따라가세요.</string>
     <string name="k2go_class_teach">수업 진행</string>
-    <string name="k2go_class_teach_body">이 휴대폰에서 라이브러리의 수업 페이지를 엽니다. 학생에게는 화면에 보여 주는 내용이 그대로 보입니다.</string>
+    <string name="k2go_class_teach_body">학생들은 내가 보여 주는 화면을 봅니다.</string>
     <string name="k2go_class_checking">이 휴대폰의 라이브러리를 확인하는 중...</string>
     <string name="k2go_class_no_module">이 휴대폰의 라이브러리에 수업 모듈이 설치되어 있지 않습니다.</string>
     <string name="k2go_class_no_box">이 휴대폰의 라이브러리가 지금 실행 중이 아닙니다. 실행되면 여기서 수업을 진행할 수 있습니다.</string>
     <string name="k2go_class_join">수업 참여</string>
-    <string name="k2go_class_join_body">이 Wi-Fi에서 열린 수업이 여기에 표시됩니다. 선생님 화면에 보이는 코드의 수업을 탭하세요.</string>
     <string name="k2go_class_finding">이 Wi-Fi에서 수업을 찾는 중...</string>
     <string name="k2go_class_none_found">수업을 찾지 못했습니다. 이 휴대폰이 선생님과 같은 Wi-Fi에 연결되어 있는지 확인하세요.</string>
     <string name="k2go_class_search_again">다시 검색</string>
@@ -1712,4 +1711,31 @@
     <string name="k2go_class_age_about_hour_and_half">약 1시간 30분 전에 시작됨</string>
     <string name="k2go_class_age_about_two_hours">약 2시간 전에 시작됨</string>
     <string name="k2go_class_age_over_two_hours">2시간 이상 전에 시작됨</string>
+    <string name="k2go_class_or">또는</string>
+    <string name="k2go_class_one_open">이 Wi-Fi에 열린 수업이 하나 있습니다.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="other">이 Wi-Fi에 열린 수업이 %1$d개 있습니다.</item>
+    </plurals>
+    <string name="k2go_class_choose">수업 선택</string>
+    <string name="k2go_class_search_hint">ID 또는 이름으로 검색</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">이름 및 시작</string>
+    <string name="k2go_class_no_match">이 ID 또는 이름의 수업이 없습니다.</string>
+    <string name="k2go_class_name_title">이 수업에 이름을 붙일까요?</string>
+    <string name="k2go_class_name_hint">수업 이름</string>
+    <string name="k2go_class_name_help">예: 수학 101 또는 1 A. 학생 이름은 사용하지 마세요.</string>
+    <string name="k2go_class_name_skip">건너뛰기</string>
+    <string name="k2go_class_name_start">시작</string>
+    <string name="k2go_class_ago_just_now">방금</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="other">%1$d분 전</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="other">약 %1$d분 전</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">약 1시간 전</string>
+    <string name="k2go_class_ago_about_hour_and_half">약 1시간 30분 전</string>
+    <string name="k2go_class_ago_about_two_hours">약 2시간 전</string>
+    <string name="k2go_class_ago_over_two_hours">2시간 이상 전</string>
+    <string name="k2go_class_start_failed">수업이 시작되지 않았습니다. 다시 시도하세요.</string>
 </resources>

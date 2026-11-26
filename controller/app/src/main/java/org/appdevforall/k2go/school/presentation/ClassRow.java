@@ -11,6 +11,7 @@ package org.appdevforall.k2go.school.presentation;
 import org.appdevforall.k2go.school.domain.ClassAge;
 import org.appdevforall.k2go.school.domain.FoundClass;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -27,6 +28,14 @@ public final class ClassRow {
         this.found = found;
         this.name = name;
         this.age = age;
+    }
+
+    /** "Choose a class" search: the text (trimmed, any case) is in the ID or in the name. Empty: all. */
+    public boolean matches(String query) {
+        String q = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
+        if (q.isEmpty()) return true;
+        return found.code.toLowerCase(Locale.ROOT).contains(q)
+                || (name != null && name.toLowerCase(Locale.ROOT).contains(q));
     }
 
     @Override

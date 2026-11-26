@@ -1693,14 +1693,13 @@
     <string name="k2go_dl_held_offline">Αναμονή. Η εφαρμογή διατηρείται εκτός σύνδεσης, οπότε η λήψη δεν συνδέεται μέχρι να το επιτρέψετε.</string>
     <string name="k2go_mod_phase_downloading">Λήψη…</string>
     <string name="k2go_tab_class">Τάξη</string>
-    <string name="k2go_class_body">Διδάξτε μια τάξη από αυτό το τηλέφωνο ή ακολουθήστε την τάξη στο τηλέφωνο του εκπαιδευτικού.</string>
+    <string name="k2go_class_body">Κάντε μάθημα ή παρακολουθήστε το μάθημα του εκπαιδευτικού.</string>
     <string name="k2go_class_teach">Διδασκαλία τάξης</string>
-    <string name="k2go_class_teach_body">Ανοίξτε τη σελίδα τάξης της βιβλιοθήκης σε αυτό το τηλέφωνο. Οι μαθητές βλέπουν ό,τι δείχνετε.</string>
+    <string name="k2go_class_teach_body">Οι μαθητές βλέπουν ό,τι δείχνετε.</string>
     <string name="k2go_class_checking">Έλεγχος της βιβλιοθήκης σε αυτό το τηλέφωνο...</string>
     <string name="k2go_class_no_module">Η λειτουργική μονάδα τάξης δεν είναι εγκατεστημένη στη βιβλιοθήκη αυτού του τηλεφώνου.</string>
     <string name="k2go_class_no_box">Η βιβλιοθήκη σε αυτό το τηλέφωνο δεν λειτουργεί τώρα. Όταν λειτουργεί, μπορείτε να διδάξετε μια τάξη εδώ.</string>
     <string name="k2go_class_join">Συμμετοχή σε τάξη</string>
-    <string name="k2go_class_join_body">Οι ανοιχτές τάξεις σε αυτό το Wi-Fi εμφανίζονται εδώ. Πατήστε την τάξη με τον κωδικό που δείχνει η οθόνη του εκπαιδευτικού.</string>
     <string name="k2go_class_finding">Αναζήτηση τάξεων σε αυτό το Wi-Fi...</string>
     <string name="k2go_class_none_found">Δεν βρέθηκε τάξη. Βεβαιωθείτε ότι αυτό το τηλέφωνο είναι στο ίδιο Wi-Fi με τον εκπαιδευτικό.</string>
     <string name="k2go_class_search_again">Νέα αναζήτηση</string>
@@ -1721,4 +1720,34 @@
     <string name="k2go_class_age_about_hour_and_half">Ξεκίνησε πριν από περίπου μιάμιση ώρα</string>
     <string name="k2go_class_age_about_two_hours">Ξεκίνησε πριν από περίπου δύο ώρες</string>
     <string name="k2go_class_age_over_two_hours">Ξεκίνησε πριν από περισσότερες από δύο ώρες</string>
+    <string name="k2go_class_or">ή</string>
+    <string name="k2go_class_one_open">Υπάρχει ένα ανοιχτό μάθημα σε αυτό το Wi-Fi.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Υπάρχει %1$d ανοιχτό μάθημα σε αυτό το Wi-Fi.</item>
+        <item quantity="other">Υπάρχουν %1$d ανοιχτά μαθήματα σε αυτό το Wi-Fi.</item>
+    </plurals>
+    <string name="k2go_class_choose">Επιλέξτε μάθημα</string>
+    <string name="k2go_class_search_hint">Αναζήτηση με ID ή όνομα</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Όνομα και έναρξη</string>
+    <string name="k2go_class_no_match">Κανένα μάθημα δεν έχει αυτό το ID ή όνομα.</string>
+    <string name="k2go_class_name_title">Θέλετε να δώσετε όνομα σε αυτό το μάθημα;</string>
+    <string name="k2go_class_name_hint">Όνομα μαθήματος</string>
+    <string name="k2go_class_name_help">Για παράδειγμα: Μαθηματικά 101 ή 1 Α. Μη χρησιμοποιείτε ονόματα μαθητών.</string>
+    <string name="k2go_class_name_skip">Παράλειψη</string>
+    <string name="k2go_class_name_start">Έναρξη</string>
+    <string name="k2go_class_ago_just_now">Μόλις τώρα</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Πριν από %1$d λεπτό</item>
+        <item quantity="other">Πριν από %1$d λεπτά</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Πριν από περίπου %1$d λεπτό</item>
+        <item quantity="other">Πριν από περίπου %1$d λεπτά</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Πριν από περίπου μία ώρα</string>
+    <string name="k2go_class_ago_about_hour_and_half">Πριν από περίπου μιάμιση ώρα</string>
+    <string name="k2go_class_ago_about_two_hours">Πριν από περίπου δύο ώρες</string>
+    <string name="k2go_class_ago_over_two_hours">Πριν από περισσότερες από δύο ώρες</string>
+    <string name="k2go_class_start_failed">Το μάθημα δεν ξεκίνησε. Δοκιμάστε ξανά.</string>
 </resources>

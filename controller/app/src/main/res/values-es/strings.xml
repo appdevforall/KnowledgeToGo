@@ -1763,14 +1763,13 @@
     <string name="k2go_dl_held_offline">En espera. La app se mantiene sin conexión, así que la descarga no se conecta hasta que lo permitas.</string>
     <string name="k2go_mod_phase_downloading">Descargando…</string>
     <string name="k2go_tab_class">Clase</string>
-    <string name="k2go_class_body">Dirige una clase desde este teléfono o sigue la clase en el teléfono del docente.</string>
+    <string name="k2go_class_body">Dirige una clase o sigue la clase del docente.</string>
     <string name="k2go_class_teach">Dar una clase</string>
-    <string name="k2go_class_teach_body">Abre la página de clase de la biblioteca en este teléfono. Los estudiantes ven lo que muestras.</string>
+    <string name="k2go_class_teach_body">Los estudiantes ven lo que muestras.</string>
     <string name="k2go_class_checking">Comprobando la biblioteca en este teléfono...</string>
     <string name="k2go_class_no_module">El módulo de clase no está instalado en la biblioteca de este teléfono.</string>
     <string name="k2go_class_no_box">La biblioteca de este teléfono no está en funcionamiento. Cuando funcione, podrás dar una clase aquí.</string>
     <string name="k2go_class_join">Unirse a una clase</string>
-    <string name="k2go_class_join_body">Las clases abiertas en esta red Wi-Fi aparecen aquí. Toca la clase con el código que muestra la pantalla del docente.</string>
     <string name="k2go_class_finding">Buscando clases en esta red Wi-Fi...</string>
     <string name="k2go_class_none_found">No se encontró ninguna clase. Asegúrate de que este teléfono esté en la misma red Wi-Fi que el docente.</string>
     <string name="k2go_class_search_again">Buscar de nuevo</string>
@@ -1793,4 +1792,37 @@
     <string name="k2go_class_age_about_hour_and_half">Empezó hace aproximadamente una hora y media</string>
     <string name="k2go_class_age_about_two_hours">Empezó hace aproximadamente dos horas</string>
     <string name="k2go_class_age_over_two_hours">Empezó hace más de dos horas</string>
+    <string name="k2go_class_or">o</string>
+    <string name="k2go_class_one_open">Hay una clase abierta en esta red Wi-Fi.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Hay %1$d clase abierta en esta red Wi-Fi.</item>
+        <item quantity="many">Hay %1$d clases abiertas en esta red Wi-Fi.</item>
+        <item quantity="other">Hay %1$d clases abiertas en esta red Wi-Fi.</item>
+    </plurals>
+    <string name="k2go_class_choose">Elegir una clase</string>
+    <string name="k2go_class_search_hint">Buscar por ID o nombre</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Nombre e inicio</string>
+    <string name="k2go_class_no_match">Ninguna clase tiene este ID o nombre.</string>
+    <string name="k2go_class_name_title">¿Quieres ponerle un nombre a esta clase?</string>
+    <string name="k2go_class_name_hint">Nombre de la clase</string>
+    <string name="k2go_class_name_help">Por ejemplo: Matemáticas 101 o 1 A. No uses nombres de estudiantes.</string>
+    <string name="k2go_class_name_skip">Omitir</string>
+    <string name="k2go_class_name_start">Empezar</string>
+    <string name="k2go_class_ago_just_now">Hace un momento</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Hace %1$d minuto</item>
+        <item quantity="many">Hace %1$d minutos</item>
+        <item quantity="other">Hace %1$d minutos</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Hace unos %1$d minuto</item>
+        <item quantity="many">Hace unos %1$d minutos</item>
+        <item quantity="other">Hace unos %1$d minutos</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Hace aproximadamente una hora</string>
+    <string name="k2go_class_ago_about_hour_and_half">Hace aproximadamente una hora y media</string>
+    <string name="k2go_class_ago_about_two_hours">Hace aproximadamente dos horas</string>
+    <string name="k2go_class_ago_over_two_hours">Hace más de dos horas</string>
+    <string name="k2go_class_start_failed">La clase no empezó. Inténtalo de nuevo.</string>
 </resources>

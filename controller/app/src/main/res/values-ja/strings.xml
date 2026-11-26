@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">待機中です。アプリはオフラインのままなので、許可するまでダウンロードは接続しません。</string>
     <string name="k2go_mod_phase_downloading">ダウンロード中…</string>
     <string name="k2go_tab_class">授業</string>
-    <string name="k2go_class_body">このスマホで授業を進めるか、先生のスマホの授業に参加します。</string>
+    <string name="k2go_class_body">授業を行うか、先生の授業に参加します。</string>
     <string name="k2go_class_teach">授業を行う</string>
-    <string name="k2go_class_teach_body">このスマホでライブラリの授業ページを開きます。生徒にはあなたが表示している内容が表示されます。</string>
+    <string name="k2go_class_teach_body">あなたが表示した内容を生徒が見ます。</string>
     <string name="k2go_class_checking">このスマホのライブラリを確認しています...</string>
     <string name="k2go_class_no_module">このスマホのライブラリに授業モジュールがインストールされていません。</string>
     <string name="k2go_class_no_box">このスマホのライブラリは現在実行されていません。実行中になると、ここで授業を行えます。</string>
     <string name="k2go_class_join">授業に参加</string>
-    <string name="k2go_class_join_body">この Wi-Fi で開かれている授業がここに表示されます。先生の画面に表示されているコードの授業をタップしてください。</string>
     <string name="k2go_class_finding">この Wi-Fi で授業を探しています...</string>
     <string name="k2go_class_none_found">授業が見つかりません。このスマホが先生と同じ Wi-Fi に接続されていることを確認してください。</string>
     <string name="k2go_class_search_again">再検索</string>
@@ -1712,4 +1711,31 @@
     <string name="k2go_class_age_about_hour_and_half">約 1 時間半前に開始</string>
     <string name="k2go_class_age_about_two_hours">約 2 時間前に開始</string>
     <string name="k2go_class_age_over_two_hours">2 時間以上前に開始</string>
+    <string name="k2go_class_or">または</string>
+    <string name="k2go_class_one_open">この Wi-Fi に開いている授業が 1 つあります。</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="other">この Wi-Fi に開いている授業が %1$d 件あります。</item>
+    </plurals>
+    <string name="k2go_class_choose">授業を選択</string>
+    <string name="k2go_class_search_hint">ID または名前で検索</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">名前と開始</string>
+    <string name="k2go_class_no_match">この ID または名前の授業はありません。</string>
+    <string name="k2go_class_name_title">この授業に名前を付けますか？</string>
+    <string name="k2go_class_name_hint">授業の名前</string>
+    <string name="k2go_class_name_help">例: 数学 101、1 A。生徒の名前は使わないでください。</string>
+    <string name="k2go_class_name_skip">スキップ</string>
+    <string name="k2go_class_name_start">開始</string>
+    <string name="k2go_class_ago_just_now">たった今</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="other">%1$d 分前</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="other">約 %1$d 分前</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">約 1 時間前</string>
+    <string name="k2go_class_ago_about_hour_and_half">約 1 時間半前</string>
+    <string name="k2go_class_ago_about_two_hours">約 2 時間前</string>
+    <string name="k2go_class_ago_over_two_hours">2 時間以上前</string>
+    <string name="k2go_class_start_failed">授業を開始できませんでした。もう一度お試しください。</string>
 </resources>

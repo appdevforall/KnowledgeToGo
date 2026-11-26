@@ -1706,14 +1706,13 @@
     <string name="k2go_dl_held_offline">காத்திருக்கிறது. பயன்பாடு ஆஃப்லைனில் வைக்கப்பட்டுள்ளது, எனவே நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் இணைக்காது.</string>
     <string name="k2go_mod_phase_downloading">பதிவிறக்கப்படுகிறது…</string>
     <string name="k2go_tab_class">வகுப்பு</string>
-    <string name="k2go_class_body">இந்தத் தொலைபேசியிலிருந்து வகுப்பை நடத்தவும், அல்லது ஆசிரியரின் தொலைபேசியில் வகுப்பைப் பின்தொடரவும்.</string>
+    <string name="k2go_class_body">வகுப்பை நடத்துங்கள் அல்லது ஆசிரியரின் வகுப்பைப் பின்தொடருங்கள்.</string>
     <string name="k2go_class_teach">வகுப்பு நடத்தவும்</string>
-    <string name="k2go_class_teach_body">இந்தத் தொலைபேசியில் நூலகத்தின் வகுப்புப் பக்கத்தைத் திறக்கவும். நீங்கள் காட்டுவதை மாணவர்கள் பார்க்கிறார்கள்.</string>
+    <string name="k2go_class_teach_body">நீங்கள் காட்டுவதை மாணவர்கள் பார்க்கிறார்கள்.</string>
     <string name="k2go_class_checking">இந்தத் தொலைபேசியில் நூலகம் சரிபார்க்கப்படுகிறது...</string>
     <string name="k2go_class_no_module">இந்தத் தொலைபேசியின் நூலகத்தில் வகுப்புத் தொகுதி நிறுவப்படவில்லை.</string>
     <string name="k2go_class_no_box">இந்தத் தொலைபேசியில் நூலகம் இப்போது இயங்கவில்லை. அது இயங்கும்போது, இங்கே வகுப்பு நடத்தலாம்.</string>
     <string name="k2go_class_join">வகுப்பில் சேரவும்</string>
-    <string name="k2go_class_join_body">இந்த Wi-Fi-இல் திறந்துள்ள வகுப்புகள் இங்கே தோன்றும். ஆசிரியரின் திரை காட்டும் குறியீடு உள்ள வகுப்பைத் தட்டவும்.</string>
     <string name="k2go_class_finding">இந்த Wi-Fi-இல் வகுப்புகள் தேடப்படுகின்றன...</string>
     <string name="k2go_class_none_found">வகுப்பு எதுவும் கிடைக்கவில்லை. இந்தத் தொலைபேசி ஆசிரியரின் அதே Wi-Fi-இல் உள்ளதா எனச் சரிபார்க்கவும்.</string>
     <string name="k2go_class_search_again">மீண்டும் தேடு</string>
@@ -1734,4 +1733,34 @@
     <string name="k2go_class_age_about_hour_and_half">சுமார் ஒன்றரை மணிநேரத்திற்கு முன் தொடங்கியது</string>
     <string name="k2go_class_age_about_two_hours">சுமார் இரண்டு மணிநேரத்திற்கு முன் தொடங்கியது</string>
     <string name="k2go_class_age_over_two_hours">இரண்டு மணிநேரத்திற்கும் மேலாக முன்பு தொடங்கியது</string>
+    <string name="k2go_class_or">அல்லது</string>
+    <string name="k2go_class_one_open">இந்த Wi-Fi-இல் ஒரு திறந்த வகுப்பு உள்ளது.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">இந்த Wi-Fi-இல் %1$d திறந்த வகுப்பு உள்ளது.</item>
+        <item quantity="other">இந்த Wi-Fi-இல் %1$d திறந்த வகுப்புகள் உள்ளன.</item>
+    </plurals>
+    <string name="k2go_class_choose">வகுப்பைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_class_search_hint">ID அல்லது பெயரால் தேடுக</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">பெயர் மற்றும் தொடக்கம்</string>
+    <string name="k2go_class_no_match">இந்த ID அல்லது பெயருடன் வகுப்பு இல்லை.</string>
+    <string name="k2go_class_name_title">இந்த வகுப்புக்குப் பெயர் வைக்க விரும்புகிறீர்களா?</string>
+    <string name="k2go_class_name_hint">வகுப்பின் பெயர்</string>
+    <string name="k2go_class_name_help">எடுத்துக்காட்டு: கணிதம் 101 அல்லது 1 A. மாணவர்களின் பெயர்களைப் பயன்படுத்த வேண்டாம்.</string>
+    <string name="k2go_class_name_skip">தவிர்</string>
+    <string name="k2go_class_name_start">தொடங்கு</string>
+    <string name="k2go_class_ago_just_now">இப்போதுதான்</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d நிமிடத்திற்கு முன்</item>
+        <item quantity="other">%1$d நிமிடங்களுக்கு முன்</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">சுமார் %1$d நிமிடத்திற்கு முன்</item>
+        <item quantity="other">சுமார் %1$d நிமிடங்களுக்கு முன்</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">சுமார் ஒரு மணிநேரத்திற்கு முன்</string>
+    <string name="k2go_class_ago_about_hour_and_half">சுமார் ஒன்றரை மணிநேரத்திற்கு முன்</string>
+    <string name="k2go_class_ago_about_two_hours">சுமார் இரண்டு மணிநேரத்திற்கு முன்</string>
+    <string name="k2go_class_ago_over_two_hours">இரண்டு மணிநேரத்திற்கும் மேலாக முன்பு</string>
+    <string name="k2go_class_start_failed">வகுப்பு தொடங்கவில்லை. மீண்டும் முயலவும்.</string>
 </resources>

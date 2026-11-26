@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">در انتظار. برنامه آفلاین نگه داشته شده است، بنابراین دانلود تا زمانی که اجازه ندهید وصل نمی‌شود.</string>
     <string name="k2go_mod_phase_downloading">در حال دانلود…</string>
     <string name="k2go_tab_class">کلاس</string>
-    <string name="k2go_class_body">از این تلفن یک کلاس را اداره کنید، یا کلاس را روی تلفن معلم دنبال کنید.</string>
+    <string name="k2go_class_body">کلاسی را اداره کنید یا کلاس معلم را دنبال کنید.</string>
     <string name="k2go_class_teach">برگزاری کلاس</string>
-    <string name="k2go_class_teach_body">صفحهٔ کلاس کتابخانه را روی این تلفن باز کنید. دانش‌آموزان آنچه را نشان می‌دهید می‌بینند.</string>
+    <string name="k2go_class_teach_body">دانش‌آموزان آنچه را نشان می‌دهید می‌بینند.</string>
     <string name="k2go_class_checking">در حال بررسی کتابخانه روی این تلفن...</string>
     <string name="k2go_class_no_module">ماژول کلاس در کتابخانهٔ این تلفن نصب نیست.</string>
     <string name="k2go_class_no_box">کتابخانهٔ این تلفن اکنون اجرا نمی‌شود. وقتی اجرا شود، می‌توانید اینجا کلاس برگزار کنید.</string>
     <string name="k2go_class_join">پیوستن به کلاس</string>
-    <string name="k2go_class_join_body">کلاس‌های باز در این Wi-Fi اینجا نشان داده می‌شوند. روی کلاسی بزنید که کد آن روی صفحهٔ معلم نشان داده می‌شود.</string>
     <string name="k2go_class_finding">در حال جست‌وجوی کلاس‌ها در این Wi-Fi...</string>
     <string name="k2go_class_none_found">هیچ کلاسی پیدا نشد. مطمئن شوید که این تلفن روی همان Wi-Fi معلم است.</string>
     <string name="k2go_class_search_again">جست‌وجوی دوباره</string>
@@ -1714,4 +1713,34 @@
     <string name="k2go_class_age_about_hour_and_half">حدود یک ساعت و نیم پیش شروع شد</string>
     <string name="k2go_class_age_about_two_hours">حدود دو ساعت پیش شروع شد</string>
     <string name="k2go_class_age_over_two_hours">بیش از دو ساعت پیش شروع شد</string>
+    <string name="k2go_class_or">یا</string>
+    <string name="k2go_class_one_open">یک کلاس باز در این Wi-Fi هست.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">%1$d کلاس باز در این Wi-Fi هست.</item>
+        <item quantity="other">%1$d کلاس باز در این Wi-Fi هست.</item>
+    </plurals>
+    <string name="k2go_class_choose">انتخاب کلاس</string>
+    <string name="k2go_class_search_hint">جستجو با شناسه یا نام</string>
+    <string name="k2go_class_col_id">شناسه</string>
+    <string name="k2go_class_col_name_start">نام و شروع</string>
+    <string name="k2go_class_no_match">هیچ کلاسی این شناسه یا نام را ندارد.</string>
+    <string name="k2go_class_name_title">می‌خواهید برای این کلاس نامی بگذارید؟</string>
+    <string name="k2go_class_name_hint">نام کلاس</string>
+    <string name="k2go_class_name_help">برای نمونه: ریاضی 101 یا 1 الف. از نام دانش‌آموزان استفاده نکنید.</string>
+    <string name="k2go_class_name_skip">رد شدن</string>
+    <string name="k2go_class_name_start">شروع</string>
+    <string name="k2go_class_ago_just_now">همین حالا</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d دقیقه پیش</item>
+        <item quantity="other">%1$d دقیقه پیش</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">حدود %1$d دقیقه پیش</item>
+        <item quantity="other">حدود %1$d دقیقه پیش</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">حدود یک ساعت پیش</string>
+    <string name="k2go_class_ago_about_hour_and_half">حدود یک ساعت و نیم پیش</string>
+    <string name="k2go_class_ago_about_two_hours">حدود دو ساعت پیش</string>
+    <string name="k2go_class_ago_over_two_hours">بیش از دو ساعت پیش</string>
+    <string name="k2go_class_start_failed">کلاس شروع نشد. دوباره تلاش کنید.</string>
 </resources>

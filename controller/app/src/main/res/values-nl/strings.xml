@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">Wachten. De app blijft offline, dus de download maakt geen verbinding totdat je het toestaat.</string>
     <string name="k2go_mod_phase_downloading">Downloaden…</string>
     <string name="k2go_tab_class">Les</string>
-    <string name="k2go_class_body">Geef les vanaf deze telefoon, of volg de les op de telefoon van de leraar.</string>
+    <string name="k2go_class_body">Geef een les of volg de les van de leraar.</string>
     <string name="k2go_class_teach">Les geven</string>
-    <string name="k2go_class_teach_body">Open de lespagina van de bibliotheek op deze telefoon. De leerlingen zien wat je laat zien.</string>
+    <string name="k2go_class_teach_body">De leerlingen zien wat u laat zien.</string>
     <string name="k2go_class_checking">De bibliotheek op deze telefoon controleren...</string>
     <string name="k2go_class_no_module">De lesmodule is niet geïnstalleerd in de bibliotheek op deze telefoon.</string>
     <string name="k2go_class_no_box">De bibliotheek op deze telefoon draait nu niet. Als hij draait, kun je hier les geven.</string>
     <string name="k2go_class_join">Deelnemen aan een les</string>
-    <string name="k2go_class_join_body">De open lessen op deze Wi-Fi verschijnen hier. Tik op de les met de code die op het scherm van de leraar staat.</string>
     <string name="k2go_class_finding">Lessen zoeken op deze Wi-Fi...</string>
     <string name="k2go_class_none_found">Geen les gevonden. Zorg dat deze telefoon op dezelfde Wi-Fi zit als de leraar.</string>
     <string name="k2go_class_search_again">Opnieuw zoeken</string>
@@ -1714,4 +1713,34 @@
     <string name="k2go_class_age_about_hour_and_half">Ongeveer anderhalf uur geleden begonnen</string>
     <string name="k2go_class_age_about_two_hours">Ongeveer twee uur geleden begonnen</string>
     <string name="k2go_class_age_over_two_hours">Meer dan twee uur geleden begonnen</string>
+    <string name="k2go_class_or">of</string>
+    <string name="k2go_class_one_open">Er is één open les op deze wifi.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Er is %1$d open les op deze wifi.</item>
+        <item quantity="other">Er zijn %1$d open lessen op deze wifi.</item>
+    </plurals>
+    <string name="k2go_class_choose">Kies een les</string>
+    <string name="k2go_class_search_hint">Zoeken op ID of naam</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Naam en start</string>
+    <string name="k2go_class_no_match">Geen les heeft deze ID of naam.</string>
+    <string name="k2go_class_name_title">Wilt u deze les een naam geven?</string>
+    <string name="k2go_class_name_hint">Naam van de les</string>
+    <string name="k2go_class_name_help">Bijvoorbeeld: Wiskunde 101 of 1 A. Gebruik geen namen van leerlingen.</string>
+    <string name="k2go_class_name_skip">Overslaan</string>
+    <string name="k2go_class_name_start">Starten</string>
+    <string name="k2go_class_ago_just_now">Zojuist</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d minuut geleden</item>
+        <item quantity="other">%1$d minuten geleden</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Ongeveer %1$d minuut geleden</item>
+        <item quantity="other">Ongeveer %1$d minuten geleden</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Ongeveer een uur geleden</string>
+    <string name="k2go_class_ago_about_hour_and_half">Ongeveer anderhalf uur geleden</string>
+    <string name="k2go_class_ago_about_two_hours">Ongeveer twee uur geleden</string>
+    <string name="k2go_class_ago_over_two_hours">Meer dan twee uur geleden</string>
+    <string name="k2go_class_start_failed">De les is niet gestart. Probeer het opnieuw.</string>
 </resources>

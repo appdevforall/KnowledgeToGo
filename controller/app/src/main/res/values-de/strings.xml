@@ -1686,14 +1686,13 @@
     <string name="k2go_dl_held_offline">Wartet. Die App bleibt offline, daher stellt der Download keine Verbindung her, bis Sie es erlauben.</string>
     <string name="k2go_mod_phase_downloading">Wird heruntergeladen…</string>
     <string name="k2go_tab_class">Klasse</string>
-    <string name="k2go_class_body">Leite eine Klasse von diesem Telefon aus, oder folge der Klasse auf dem Telefon der Lehrkraft.</string>
+    <string name="k2go_class_body">Leite eine Klasse oder folge der Klasse der Lehrkraft.</string>
     <string name="k2go_class_teach">Klasse unterrichten</string>
-    <string name="k2go_class_teach_body">Öffne die Klassenseite der Bibliothek auf diesem Telefon. Die Lernenden sehen, was du zeigst.</string>
+    <string name="k2go_class_teach_body">Die Lernenden sehen, was du zeigst.</string>
     <string name="k2go_class_checking">Bibliothek auf diesem Telefon wird geprüft...</string>
     <string name="k2go_class_no_module">Das Klassenmodul ist in der Bibliothek auf diesem Telefon nicht installiert.</string>
     <string name="k2go_class_no_box">Die Bibliothek auf diesem Telefon läuft gerade nicht. Wenn sie läuft, kannst du hier eine Klasse unterrichten.</string>
     <string name="k2go_class_join">Klasse beitreten</string>
-    <string name="k2go_class_join_body">Die offenen Klassen in diesem WLAN erscheinen hier. Tippe auf die Klasse mit dem Code, den der Bildschirm der Lehrkraft zeigt.</string>
     <string name="k2go_class_finding">Klassen in diesem WLAN werden gesucht...</string>
     <string name="k2go_class_none_found">Keine Klasse gefunden. Stelle sicher, dass dieses Telefon im selben WLAN ist wie die Lehrkraft.</string>
     <string name="k2go_class_search_again">Erneut suchen</string>
@@ -1714,4 +1713,34 @@
     <string name="k2go_class_age_about_hour_and_half">Vor etwa anderthalb Stunden gestartet</string>
     <string name="k2go_class_age_about_two_hours">Vor etwa zwei Stunden gestartet</string>
     <string name="k2go_class_age_over_two_hours">Vor mehr als zwei Stunden gestartet</string>
+    <string name="k2go_class_or">oder</string>
+    <string name="k2go_class_one_open">In diesem WLAN ist eine Klasse offen.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">In diesem WLAN ist %1$d Klasse offen.</item>
+        <item quantity="other">In diesem WLAN sind %1$d Klassen offen.</item>
+    </plurals>
+    <string name="k2go_class_choose">Klasse wählen</string>
+    <string name="k2go_class_search_hint">Nach ID oder Name suchen</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Name und Start</string>
+    <string name="k2go_class_no_match">Keine Klasse hat diese ID oder diesen Namen.</string>
+    <string name="k2go_class_name_title">Möchtest du dieser Klasse einen Namen geben?</string>
+    <string name="k2go_class_name_hint">Name der Klasse</string>
+    <string name="k2go_class_name_help">Zum Beispiel: Mathe 101 oder 1 A. Verwende keine Namen von Lernenden.</string>
+    <string name="k2go_class_name_skip">Überspringen</string>
+    <string name="k2go_class_name_start">Starten</string>
+    <string name="k2go_class_ago_just_now">Gerade eben</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Vor %1$d Minute</item>
+        <item quantity="other">Vor %1$d Minuten</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Vor etwa %1$d Minute</item>
+        <item quantity="other">Vor etwa %1$d Minuten</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Vor etwa einer Stunde</string>
+    <string name="k2go_class_ago_about_hour_and_half">Vor etwa anderthalb Stunden</string>
+    <string name="k2go_class_ago_about_two_hours">Vor etwa zwei Stunden</string>
+    <string name="k2go_class_ago_over_two_hours">Vor mehr als zwei Stunden</string>
+    <string name="k2go_class_start_failed">Die Klasse wurde nicht gestartet. Versuche es noch einmal.</string>
 </resources>

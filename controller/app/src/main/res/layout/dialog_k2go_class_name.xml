@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go School: the content of the "name this class?" dialog of Teach a class (ClassFragment). The box
+     keeps at most 20 characters; the field stops there too. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp">
+
+    <EditText
+        android:id="@+id/k2go_class_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:background="@drawable/k2go_lang_box_bg"
+        android:hint="@string/k2go_class_name_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences|textNoSuggestions"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:padding="12dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="@color/k2go_ink"
+        android:textColorHint="@color/k2go_muted" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/k2go_class_name_help"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/k2go_muted" />
+</LinearLayout>

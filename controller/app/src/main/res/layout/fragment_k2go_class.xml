@@ -87,7 +87,39 @@
                     android:text="@string/k2go_class_teach" />
             </LinearLayout>
 
-            <!-- Student: the classes that teacher boxes announce on the Wi-Fi. -->
+            <!-- Two ways in: teach, or join. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/k2go_hairline" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/k2go_class_or"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="@color/k2go_muted" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/k2go_hairline" />
+            </LinearLayout>
+
+            <!-- Student: the classes that teacher boxes announce on the Wi-Fi. The card keeps its size
+                 for any number of classes: one class has its own Join button, two or more open
+                 "Choose a class" (ClassFragment). -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,12 +136,22 @@
                     android:textColor="@color/k2go_ink" />
 
                 <TextView
+                    android:id="@+id/k2go_class_find_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="@string/k2go_class_join_body"
+                    android:text="@string/k2go_class_finding"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textColor="@color/k2go_muted" />
+
+                <!-- One class only: how long ago it started. -->
+                <TextView
+                    android:id="@+id/k2go_class_one_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="@color/k2go_muted"
+                    android:visibility="gone" />
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/k2go_class_searching"
@@ -118,15 +160,6 @@
                     android:layout_marginTop="12dp"
                     android:indeterminate="true"
                     android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/k2go_class_find_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/k2go_class_finding"
-                    android:textAppearance="@style/TextAppearance.K2Go.Label"
-                    android:textColor="@color/k2go_ink" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/k2go_class_search_again"
@@ -137,12 +170,14 @@
                     android:text="@string/k2go_class_search_again"
                     android:visibility="gone" />
 
-                <!-- One button per class found (item_k2go_class_found), filled in code. -->
-                <LinearLayout
-                    android:id="@+id/k2go_class_found"
+                <!-- "Join class LLGU" (one class) or "Choose a class" (two or more). -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/k2go_class_join_button"
+                    style="@style/Widget.K2Go.Button.Outlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
 
                 <!-- Hidden for now: the class list is the only join path. The scan path has no
                      class screen support yet. Its code stays for the later QR work. -->

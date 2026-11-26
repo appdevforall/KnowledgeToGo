@@ -1706,14 +1706,13 @@
     <string name="k2go_dl_held_offline">Gözləyir. Tətbiq oflayn saxlanılır, ona görə də siz icazə verənə qədər yükləmə qoşulmur.</string>
     <string name="k2go_mod_phase_downloading">Yüklənir…</string>
     <string name="k2go_tab_class">Sinif</string>
-    <string name="k2go_class_body">Bu telefondan dərs aparın və ya müəllimin telefonundakı dərsi izləyin.</string>
+    <string name="k2go_class_body">Dərs keçin və ya müəllimin dərsini izləyin.</string>
     <string name="k2go_class_teach">Dərs keçin</string>
-    <string name="k2go_class_teach_body">Bu telefonda kitabxananın sinif səhifəsini açın. Şagirdlər sizin göstərdiyinizi görür.</string>
+    <string name="k2go_class_teach_body">Şagirdlər göstərdiyinizi görür.</string>
     <string name="k2go_class_checking">Bu telefondakı kitabxana yoxlanılır...</string>
     <string name="k2go_class_no_module">Sinif modulu bu telefondakı kitabxanada quraşdırılmayıb.</string>
     <string name="k2go_class_no_box">Bu telefondakı kitabxana indi işləmir. İşləyəndə burada dərs keçə bilərsiniz.</string>
     <string name="k2go_class_join">Sinfə qoşulun</string>
-    <string name="k2go_class_join_body">Bu Wi-Fi şəbəkəsindəki açıq siniflər burada görünür. Müəllimin ekranında göstərilən kodlu sinfə toxunun.</string>
     <string name="k2go_class_finding">Bu Wi-Fi şəbəkəsində siniflər axtarılır...</string>
     <string name="k2go_class_none_found">Heç bir sinif tapılmadı. Bu telefonun müəllimlə eyni Wi-Fi şəbəkəsində olduğuna əmin olun.</string>
     <string name="k2go_class_search_again">Yenidən axtar</string>
@@ -1734,4 +1733,34 @@
     <string name="k2go_class_age_about_hour_and_half">Təxminən bir yarım saat əvvəl başladı</string>
     <string name="k2go_class_age_about_two_hours">Təxminən iki saat əvvəl başladı</string>
     <string name="k2go_class_age_over_two_hours">İki saatdan çox əvvəl başladı</string>
+    <string name="k2go_class_or">və ya</string>
+    <string name="k2go_class_one_open">Bu Wi-Fi şəbəkəsində bir açıq dərs var.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Bu Wi-Fi şəbəkəsində %1$d açıq dərs var.</item>
+        <item quantity="other">Bu Wi-Fi şəbəkəsində %1$d açıq dərs var.</item>
+    </plurals>
+    <string name="k2go_class_choose">Dərs seçin</string>
+    <string name="k2go_class_search_hint">ID və ya ada görə axtarın</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Ad və başlanğıc</string>
+    <string name="k2go_class_no_match">Bu ID və ya adla dərs yoxdur.</string>
+    <string name="k2go_class_name_title">Bu dərsə ad vermək istəyirsiniz?</string>
+    <string name="k2go_class_name_hint">Dərsin adı</string>
+    <string name="k2go_class_name_help">Məsələn: Riyaziyyat 101 və ya 1 A. Şagirdlərin adlarını yazmayın.</string>
+    <string name="k2go_class_name_skip">Keç</string>
+    <string name="k2go_class_name_start">Başla</string>
+    <string name="k2go_class_ago_just_now">İndicə</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d dəqiqə əvvəl</item>
+        <item quantity="other">%1$d dəqiqə əvvəl</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Təxminən %1$d dəqiqə əvvəl</item>
+        <item quantity="other">Təxminən %1$d dəqiqə əvvəl</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Təxminən bir saat əvvəl</string>
+    <string name="k2go_class_ago_about_hour_and_half">Təxminən bir yarım saat əvvəl</string>
+    <string name="k2go_class_ago_about_two_hours">Təxminən iki saat əvvəl</string>
+    <string name="k2go_class_ago_over_two_hours">İki saatdan çox əvvəl</string>
+    <string name="k2go_class_start_failed">Dərs başlamadı. Yenidən cəhd edin.</string>
 </resources>

@@ -1693,14 +1693,13 @@
     <string name="k2go_dl_held_offline">Изчакване. Приложението е оставено офлайн, затова изтеглянето не се свързва, докато не го разрешите.</string>
     <string name="k2go_mod_phase_downloading">Изтегляне…</string>
     <string name="k2go_tab_class">Клас</string>
-    <string name="k2go_class_body">Водете час от този телефон или следвайте часа на телефона на учителя.</string>
+    <string name="k2go_class_body">Водете час или следете часа на учителя.</string>
     <string name="k2go_class_teach">Водене на час</string>
-    <string name="k2go_class_teach_body">Отворете страницата на класа в библиотеката на този телефон. Учениците виждат това, което показвате.</string>
+    <string name="k2go_class_teach_body">Учениците виждат това, което показвате.</string>
     <string name="k2go_class_checking">Проверка на библиотеката на този телефон...</string>
     <string name="k2go_class_no_module">Модулът за клас не е инсталиран в библиотеката на този телефон.</string>
     <string name="k2go_class_no_box">Библиотеката на този телефон не работи в момента. Когато работи, можете да водите час тук.</string>
     <string name="k2go_class_join">Присъединяване към клас</string>
-    <string name="k2go_class_join_body">Отворените класове в тази Wi-Fi мрежа се показват тук. Докоснете класа с кода, който показва екранът на учителя.</string>
     <string name="k2go_class_finding">Търсене на класове в тази Wi-Fi мрежа...</string>
     <string name="k2go_class_none_found">Не е намерен клас. Уверете се, че този телефон е в същата Wi-Fi мрежа като учителя.</string>
     <string name="k2go_class_search_again">Ново търсене</string>
@@ -1721,4 +1720,34 @@
     <string name="k2go_class_age_about_hour_and_half">Започна преди около час и половина</string>
     <string name="k2go_class_age_about_two_hours">Започна преди около два часа</string>
     <string name="k2go_class_age_over_two_hours">Започна преди повече от два часа</string>
+    <string name="k2go_class_or">или</string>
+    <string name="k2go_class_one_open">В тази Wi-Fi мрежа има един отворен час.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">В тази Wi-Fi мрежа има %1$d отворен час.</item>
+        <item quantity="other">В тази Wi-Fi мрежа има %1$d отворени часа.</item>
+    </plurals>
+    <string name="k2go_class_choose">Изберете час</string>
+    <string name="k2go_class_search_hint">Търсене по ID или име</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Име и начало</string>
+    <string name="k2go_class_no_match">Няма час с това ID или име.</string>
+    <string name="k2go_class_name_title">Искате ли да дадете име на този клас?</string>
+    <string name="k2go_class_name_hint">Име на класа</string>
+    <string name="k2go_class_name_help">Например: Математика 101 или 1 А. Не използвайте имена на ученици.</string>
+    <string name="k2go_class_name_skip">Пропусни</string>
+    <string name="k2go_class_name_start">Започни</string>
+    <string name="k2go_class_ago_just_now">Току-що</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Преди %1$d минута</item>
+        <item quantity="other">Преди %1$d минути</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Преди около %1$d минута</item>
+        <item quantity="other">Преди около %1$d минути</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Преди около час</string>
+    <string name="k2go_class_ago_about_hour_and_half">Преди около час и половина</string>
+    <string name="k2go_class_ago_about_two_hours">Преди около два часа</string>
+    <string name="k2go_class_ago_over_two_hours">Преди повече от два часа</string>
+    <string name="k2go_class_start_failed">Часът не започна. Опитайте отново.</string>
 </resources>

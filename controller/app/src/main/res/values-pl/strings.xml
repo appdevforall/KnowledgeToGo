@@ -1698,14 +1698,13 @@
     <string name="k2go_dl_held_offline">Oczekiwanie. Aplikacja pozostaje offline, więc pobieranie nie łączy się, dopóki na to nie zezwolisz.</string>
     <string name="k2go_mod_phase_downloading">Pobieranie…</string>
     <string name="k2go_tab_class">Lekcja</string>
-    <string name="k2go_class_body">Prowadź lekcję z tego telefonu lub śledź lekcję na telefonie nauczyciela.</string>
+    <string name="k2go_class_body">Prowadź lekcję lub śledź lekcję nauczyciela.</string>
     <string name="k2go_class_teach">Prowadź lekcję</string>
-    <string name="k2go_class_teach_body">Otwórz stronę lekcji w bibliotece na tym telefonie. Uczniowie widzą to, co pokazujesz.</string>
+    <string name="k2go_class_teach_body">Uczniowie widzą to, co pokazujesz.</string>
     <string name="k2go_class_checking">Sprawdzanie biblioteki na tym telefonie...</string>
     <string name="k2go_class_no_module">Moduł lekcji nie jest zainstalowany w bibliotece na tym telefonie.</string>
     <string name="k2go_class_no_box">Biblioteka na tym telefonie teraz nie działa. Gdy zacznie działać, możesz tu prowadzić lekcję.</string>
     <string name="k2go_class_join">Dołącz do lekcji</string>
-    <string name="k2go_class_join_body">Otwarte lekcje w tej sieci Wi-Fi są widoczne tutaj. Dotknij lekcji z kodem widocznym na ekranie nauczyciela.</string>
     <string name="k2go_class_finding">Szukanie lekcji w tej sieci Wi-Fi...</string>
     <string name="k2go_class_none_found">Nie znaleziono lekcji. Upewnij się, że ten telefon jest w tej samej sieci Wi-Fi co nauczyciel.</string>
     <string name="k2go_class_search_again">Szukaj ponownie</string>
@@ -1730,4 +1729,40 @@
     <string name="k2go_class_age_about_hour_and_half">Rozpoczęta około półtorej godziny temu</string>
     <string name="k2go_class_age_about_two_hours">Rozpoczęta około dwóch godzin temu</string>
     <string name="k2go_class_age_over_two_hours">Rozpoczęta ponad dwie godziny temu</string>
+    <string name="k2go_class_or">lub</string>
+    <string name="k2go_class_one_open">W tej sieci Wi-Fi jest jedna otwarta lekcja.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">W tej sieci Wi-Fi jest %1$d otwarta lekcja.</item>
+        <item quantity="few">W tej sieci Wi-Fi są %1$d otwarte lekcje.</item>
+        <item quantity="many">W tej sieci Wi-Fi jest %1$d otwartych lekcji.</item>
+        <item quantity="other">W tej sieci Wi-Fi jest %1$d otwartej lekcji.</item>
+    </plurals>
+    <string name="k2go_class_choose">Wybierz lekcję</string>
+    <string name="k2go_class_search_hint">Szukaj według ID lub nazwy</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Nazwa i początek</string>
+    <string name="k2go_class_no_match">Żadna lekcja nie ma tego ID ani nazwy.</string>
+    <string name="k2go_class_name_title">Czy chcesz nadać tej lekcji nazwę?</string>
+    <string name="k2go_class_name_hint">Nazwa lekcji</string>
+    <string name="k2go_class_name_help">Na przykład: Matematyka 101 lub 1 A. Nie używaj imion uczniów.</string>
+    <string name="k2go_class_name_skip">Pomiń</string>
+    <string name="k2go_class_name_start">Rozpocznij</string>
+    <string name="k2go_class_ago_just_now">Przed chwilą</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">%1$d minutę temu</item>
+        <item quantity="few">%1$d minuty temu</item>
+        <item quantity="many">%1$d minut temu</item>
+        <item quantity="other">%1$d minuty temu</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Około %1$d minuty temu</item>
+        <item quantity="few">Około %1$d minut temu</item>
+        <item quantity="many">Około %1$d minut temu</item>
+        <item quantity="other">Około %1$d minuty temu</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Około godziny temu</string>
+    <string name="k2go_class_ago_about_hour_and_half">Około półtorej godziny temu</string>
+    <string name="k2go_class_ago_about_two_hours">Około dwóch godzin temu</string>
+    <string name="k2go_class_ago_over_two_hours">Ponad dwie godziny temu</string>
+    <string name="k2go_class_start_failed">Lekcja się nie rozpoczęła. Spróbuj ponownie.</string>
 </resources>

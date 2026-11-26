@@ -1766,14 +1766,13 @@
     <string name="k2go_dl_held_offline">Aguardando. O app é mantido offline, então o download não se conecta até você permitir.</string>
     <string name="k2go_mod_phase_downloading">Baixando…</string>
     <string name="k2go_tab_class">Aula</string>
-    <string name="k2go_class_body">Dê uma aula a partir deste telemóvel ou siga a aula no telemóvel do professor.</string>
+    <string name="k2go_class_body">Conduza uma aula ou acompanhe a aula do professor.</string>
     <string name="k2go_class_teach">Dar uma aula</string>
-    <string name="k2go_class_teach_body">Abra a página da aula da biblioteca neste telemóvel. Os alunos veem o que mostrar.</string>
+    <string name="k2go_class_teach_body">Os alunos veem o que mostra.</string>
     <string name="k2go_class_checking">A verificar a biblioteca neste telemóvel...</string>
     <string name="k2go_class_no_module">O módulo de aula não está instalado na biblioteca deste telemóvel.</string>
     <string name="k2go_class_no_box">A biblioteca deste telemóvel não está a funcionar. Quando estiver, pode dar uma aula aqui.</string>
     <string name="k2go_class_join">Entrar numa aula</string>
-    <string name="k2go_class_join_body">As aulas abertas nesta rede Wi-Fi aparecem aqui. Toque na aula com o código que o ecrã do professor mostra.</string>
     <string name="k2go_class_finding">A procurar aulas nesta rede Wi-Fi...</string>
     <string name="k2go_class_none_found">Nenhuma aula encontrada. Confirme que este telemóvel está na mesma rede Wi-Fi que o professor.</string>
     <string name="k2go_class_search_again">Procurar novamente</string>
@@ -1796,4 +1795,37 @@
     <string name="k2go_class_age_about_hour_and_half">Começou há cerca de uma hora e meia</string>
     <string name="k2go_class_age_about_two_hours">Começou há cerca de duas horas</string>
     <string name="k2go_class_age_over_two_hours">Começou há mais de duas horas</string>
+    <string name="k2go_class_or">ou</string>
+    <string name="k2go_class_one_open">Há uma aula aberta nesta rede Wi-Fi.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="one">Há %1$d aula aberta nesta rede Wi-Fi.</item>
+        <item quantity="many">Há %1$d aulas abertas nesta rede Wi-Fi.</item>
+        <item quantity="other">Há %1$d aulas abertas nesta rede Wi-Fi.</item>
+    </plurals>
+    <string name="k2go_class_choose">Escolher uma aula</string>
+    <string name="k2go_class_search_hint">Pesquisar por ID ou nome</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Nome e início</string>
+    <string name="k2go_class_no_match">Nenhuma aula tem este ID ou nome.</string>
+    <string name="k2go_class_name_title">Quer dar um nome a esta aula?</string>
+    <string name="k2go_class_name_hint">Nome da aula</string>
+    <string name="k2go_class_name_help">Por exemplo: Matemática 101 ou 1 A. Não use nomes de alunos.</string>
+    <string name="k2go_class_name_skip">Ignorar</string>
+    <string name="k2go_class_name_start">Começar</string>
+    <string name="k2go_class_ago_just_now">Agora mesmo</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="one">Há %1$d minuto</item>
+        <item quantity="many">Há %1$d minutos</item>
+        <item quantity="other">Há %1$d minutos</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="one">Há cerca de %1$d minuto</item>
+        <item quantity="many">Há cerca de %1$d minutos</item>
+        <item quantity="other">Há cerca de %1$d minutos</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Há cerca de uma hora</string>
+    <string name="k2go_class_ago_about_hour_and_half">Há cerca de uma hora e meia</string>
+    <string name="k2go_class_ago_about_two_hours">Há cerca de duas horas</string>
+    <string name="k2go_class_ago_over_two_hours">Há mais de duas horas</string>
+    <string name="k2go_class_start_failed">A aula não começou. Tente novamente.</string>
 </resources>

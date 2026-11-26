@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go School: "Choose a class" (two or more open classes), in K2GoBottomSheet: a search field
+     (ID or name) and a table of the classes, newest first. One row: item_k2go_class_found. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/k2go_class_choose"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="@color/k2go_ink" />
+
+    <EditText
+        android:id="@+id/k2go_class_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:autofillHints=""
+        android:background="@drawable/k2go_lang_box_bg"
+        android:hint="@string/k2go_class_search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="textNoSuggestions"
+        android:maxLines="1"
+        android:padding="12dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="@color/k2go_ink"
+        android:textColorHint="@color/k2go_muted" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:layout_width="88dp"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_class_col_id"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/k2go_class_col_name_start"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <!-- One row per class (item_k2go_class_found), filled in code. -->
+    <LinearLayout
+        android:id="@+id/k2go_class_rows"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/k2go_class_no_match"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/k2go_class_no_match"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="@color/k2go_muted"
+        android:visibility="gone" />
+</LinearLayout>

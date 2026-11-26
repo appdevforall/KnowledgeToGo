@@ -1692,14 +1692,13 @@
     <string name="k2go_dl_held_offline">Menunggu. Aplikasi tetap luring, jadi unduhan tidak tersambung sampai Anda mengizinkannya.</string>
     <string name="k2go_mod_phase_downloading">Mengunduh…</string>
     <string name="k2go_tab_class">Kelas</string>
-    <string name="k2go_class_body">Pimpin kelas dari ponsel ini, atau ikuti kelas di ponsel guru.</string>
+    <string name="k2go_class_body">Pimpin kelas atau ikuti kelas guru.</string>
     <string name="k2go_class_teach">Mengajar kelas</string>
-    <string name="k2go_class_teach_body">Buka halaman kelas dari pustaka di ponsel ini. Siswa melihat apa yang Anda tunjukkan.</string>
+    <string name="k2go_class_teach_body">Siswa melihat apa yang Anda tampilkan.</string>
     <string name="k2go_class_checking">Memeriksa pustaka di ponsel ini...</string>
     <string name="k2go_class_no_module">Modul kelas tidak terpasang di pustaka pada ponsel ini.</string>
     <string name="k2go_class_no_box">Pustaka di ponsel ini sedang tidak berjalan. Saat berjalan, Anda dapat mengajar kelas di sini.</string>
     <string name="k2go_class_join">Gabung ke kelas</string>
-    <string name="k2go_class_join_body">Kelas yang terbuka di Wi-Fi ini muncul di sini. Ketuk kelas dengan kode yang tampil di layar guru.</string>
     <string name="k2go_class_finding">Mencari kelas di Wi-Fi ini...</string>
     <string name="k2go_class_none_found">Tidak ada kelas yang ditemukan. Pastikan ponsel ini terhubung ke Wi-Fi yang sama dengan guru.</string>
     <string name="k2go_class_search_again">Cari lagi</string>
@@ -1718,4 +1717,31 @@
     <string name="k2go_class_age_about_hour_and_half">Dimulai sekitar satu setengah jam yang lalu</string>
     <string name="k2go_class_age_about_two_hours">Dimulai sekitar dua jam yang lalu</string>
     <string name="k2go_class_age_over_two_hours">Dimulai lebih dari dua jam yang lalu</string>
+    <string name="k2go_class_or">atau</string>
+    <string name="k2go_class_one_open">Ada satu kelas terbuka di Wi-Fi ini.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="other">Ada %1$d kelas terbuka di Wi-Fi ini.</item>
+    </plurals>
+    <string name="k2go_class_choose">Pilih kelas</string>
+    <string name="k2go_class_search_hint">Cari menurut ID atau nama</string>
+    <string name="k2go_class_col_id">ID</string>
+    <string name="k2go_class_col_name_start">Nama dan mulai</string>
+    <string name="k2go_class_no_match">Tidak ada kelas dengan ID atau nama ini.</string>
+    <string name="k2go_class_name_title">Apakah Anda ingin memberi nama kelas ini?</string>
+    <string name="k2go_class_name_hint">Nama kelas</string>
+    <string name="k2go_class_name_help">Contoh: Matematika 101 atau 1 A. Jangan gunakan nama siswa.</string>
+    <string name="k2go_class_name_skip">Lewati</string>
+    <string name="k2go_class_name_start">Mulai</string>
+    <string name="k2go_class_ago_just_now">Baru saja</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="other">%1$d menit yang lalu</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="other">Sekitar %1$d menit yang lalu</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">Sekitar satu jam yang lalu</string>
+    <string name="k2go_class_ago_about_hour_and_half">Sekitar satu setengah jam yang lalu</string>
+    <string name="k2go_class_ago_about_two_hours">Sekitar dua jam yang lalu</string>
+    <string name="k2go_class_ago_over_two_hours">Lebih dari dua jam yang lalu</string>
+    <string name="k2go_class_start_failed">Kelas tidak dimulai. Coba lagi.</string>
 </resources>

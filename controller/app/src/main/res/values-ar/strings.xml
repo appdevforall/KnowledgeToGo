@@ -1690,14 +1690,13 @@
     <string name="k2go_dl_held_offline">في الانتظار. التطبيق مضبوط على البقاء دون اتصال، لذلك لن يتصل التنزيل حتى تسمح بذلك.</string>
     <string name="k2go_mod_phase_downloading">جارٍ التنزيل…</string>
     <string name="k2go_tab_class">الصف</string>
-    <string name="k2go_class_body">أدِر صفًا من هذا الهاتف، أو تابع الصف على هاتف المعلم.</string>
+    <string name="k2go_class_body">قُد صفًا أو تابِع صف المعلم.</string>
     <string name="k2go_class_teach">تدريس صف</string>
-    <string name="k2go_class_teach_body">افتح صفحة الصف في المكتبة على هذا الهاتف. يرى الطلاب ما تعرضه.</string>
+    <string name="k2go_class_teach_body">يرى الطلاب ما تعرضه.</string>
     <string name="k2go_class_checking">جارٍ التحقق من المكتبة على هذا الهاتف...</string>
     <string name="k2go_class_no_module">وحدة الصف غير مثبتة في المكتبة على هذا الهاتف.</string>
     <string name="k2go_class_no_box">المكتبة على هذا الهاتف لا تعمل الآن. عندما تعمل، يمكنك تدريس صف هنا.</string>
     <string name="k2go_class_join">الانضمام إلى صف</string>
-    <string name="k2go_class_join_body">تظهر هنا الصفوف المفتوحة على شبكة الواي فاي هذه. اضغط على الصف الذي يحمل الرمز الظاهر على شاشة المعلم.</string>
     <string name="k2go_class_finding">جارٍ البحث عن صفوف على شبكة الواي فاي هذه...</string>
     <string name="k2go_class_none_found">لم يتم العثور على أي صف. تأكد من أن هذا الهاتف على نفس شبكة الواي فاي التي يستخدمها المعلم.</string>
     <string name="k2go_class_search_again">البحث مرة أخرى</string>
@@ -1726,4 +1725,46 @@
     <string name="k2go_class_age_about_hour_and_half">بدأ قبل نحو ساعة ونصف</string>
     <string name="k2go_class_age_about_two_hours">بدأ قبل نحو ساعتين</string>
     <string name="k2go_class_age_over_two_hours">بدأ قبل أكثر من ساعتين</string>
+    <string name="k2go_class_or">أو</string>
+    <string name="k2go_class_one_open">يوجد صف واحد مفتوح على شبكة Wi-Fi هذه.</string>
+    <plurals name="k2go_class_many_open">
+        <item quantity="zero">يوجد %1$d صفًا مفتوحًا على شبكة Wi-Fi هذه.</item>
+        <item quantity="one">يوجد صف مفتوح واحد (%1$d) على شبكة Wi-Fi هذه.</item>
+        <item quantity="two">يوجد صفان مفتوحان (%1$d) على شبكة Wi-Fi هذه.</item>
+        <item quantity="few">توجد %1$d صفوف مفتوحة على شبكة Wi-Fi هذه.</item>
+        <item quantity="many">يوجد %1$d صفًا مفتوحًا على شبكة Wi-Fi هذه.</item>
+        <item quantity="other">يوجد %1$d صفًا مفتوحًا على شبكة Wi-Fi هذه.</item>
+    </plurals>
+    <string name="k2go_class_choose">اختر صفًا</string>
+    <string name="k2go_class_search_hint">ابحث بالمعرّف أو الاسم</string>
+    <string name="k2go_class_col_id">المعرّف</string>
+    <string name="k2go_class_col_name_start">الاسم والبداية</string>
+    <string name="k2go_class_no_match">لا يوجد صف بهذا المعرّف أو الاسم.</string>
+    <string name="k2go_class_name_title">هل تريد تسمية هذا الصف؟</string>
+    <string name="k2go_class_name_hint">اسم الصف</string>
+    <string name="k2go_class_name_help">مثال: رياضيات 101 أو 1 أ. لا تستخدم أسماء الطلاب.</string>
+    <string name="k2go_class_name_skip">تخطٍّ</string>
+    <string name="k2go_class_name_start">ابدأ</string>
+    <string name="k2go_class_ago_just_now">الآن</string>
+    <plurals name="k2go_class_ago_minutes">
+        <item quantity="zero">قبل %1$d دقيقة</item>
+        <item quantity="one">قبل %1$d دقيقة</item>
+        <item quantity="two">قبل %1$d دقيقة</item>
+        <item quantity="few">قبل %1$d دقائق</item>
+        <item quantity="many">قبل %1$d دقيقة</item>
+        <item quantity="other">قبل %1$d دقيقة</item>
+    </plurals>
+    <plurals name="k2go_class_ago_about_minutes">
+        <item quantity="zero">قبل نحو %1$d دقيقة</item>
+        <item quantity="one">قبل نحو %1$d دقيقة</item>
+        <item quantity="two">قبل نحو %1$d دقيقة</item>
+        <item quantity="few">قبل نحو %1$d دقائق</item>
+        <item quantity="many">قبل نحو %1$d دقيقة</item>
+        <item quantity="other">قبل نحو %1$d دقيقة</item>
+    </plurals>
+    <string name="k2go_class_ago_about_one_hour">قبل نحو ساعة</string>
+    <string name="k2go_class_ago_about_hour_and_half">قبل نحو ساعة ونصف</string>
+    <string name="k2go_class_ago_about_two_hours">قبل نحو ساعتين</string>
+    <string name="k2go_class_ago_over_two_hours">قبل أكثر من ساعتين</string>
+    <string name="k2go_class_start_failed">لم يبدأ الصف. حاول مرة أخرى.</string>
 </resources>
