@@ -194,6 +194,7 @@
     var reader = readerOf(doc);
     if (!cover || !reader) { return; }
     cover.addEventListener('click', function (ev) {
+      if (ev.defaultPrevented) { return; }   // a link around the cover opened its page already
       ev.preventDefault();
       open(reader);
     });

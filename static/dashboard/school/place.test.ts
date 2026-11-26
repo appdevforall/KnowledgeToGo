@@ -242,4 +242,6 @@ test('book page: no download in a class; the cover opens the first reader that t
     assert.ok(added[0].textContent.includes('#Download'));
     tap!({ preventDefault: () => {} });
     assert.deepEqual(opened, ['/books/read/5/epub']);
+    tap!({ defaultPrevented: true, preventDefault: () => {} } as never);   // a link handled the tap
+    assert.deepEqual(opened, ['/books/read/5/epub']);
 });
