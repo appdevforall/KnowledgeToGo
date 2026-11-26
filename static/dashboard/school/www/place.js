@@ -131,6 +131,30 @@
   // place again (a "relocated" event), so the student shows the place again, the teacher sends
   // it, and the marks are drawn again.
   var BOOK_FONT_ID = 'k2go-class-font';
+  // The reader shows the book in page columns. A table wider than a column cannot get narrower than
+  // its longest words, so it spills over the next columns and lies over their text (seen: the
+  // tables of abbreviations of a dictionary, 3 pairs of words in each row, 672 px in a 400 px
+  // column). Such a table, and only such a table, shows its cells as wrapped lines of text.
+  var WIDE_TABLE = 'k2go-wide';
+  // A book page is XML: a row can be a child of the table with no tbody, so the rule names every tr.
+  var WIDE_TABLE_CSS = 'table.k2go-wide, table.k2go-wide tbody, table.k2go-wide thead, table.k2go-wide tfoot, ' +
+    'table.k2go-wide tr { display: block !important; width: auto !important; margin: 0 !important; ' +
+    'text-align: left !important; }\n' +
+    'table.k2go-wide td, table.k2go-wide th { display: inline !important; padding: 0 0.6em 0 0 !important; }\n' +
+    'table.k2go-wide tr { margin-bottom: 0.2em !important; }';
+  // Marks the tables of doc that are wider than its page column. Gives how many it marked.
+  function flowWideTables(doc) {
+    var page = doc.body ? doc.body.clientWidth : 0;
+    if (!(page > 0)) { return 0; }
+    var n = 0;
+    Array.prototype.forEach.call(doc.querySelectorAll('table'), function (t) {
+      if (!t.classList.contains(WIDE_TABLE) && t.getBoundingClientRect().width > page + 1) {
+        t.classList.add(WIDE_TABLE);
+        n += 1;
+      }
+    });
+    return n;
+  }
   function bookFont(rendition, classCss) {
     var meta = rendition.book && rendition.book.package && rendition.book.package.metadata;
     if (meta && meta.layout === 'pre-paginated') { return; }
@@ -140,9 +164,12 @@
       if (!doc || !doc.head || doc.getElementById(BOOK_FONT_ID)) { return; }
       var style = doc.createElement('style');
       style.id = BOOK_FONT_ID;
-      style.textContent = classCss;
+      style.textContent = classCss + '\n' + WIDE_TABLE_CSS;
       doc.head.appendChild(style);   // last, so that it wins over the book styles
-      if (doc.fonts && doc.fonts.addEventListener) { doc.fonts.addEventListener('loadingdone', relocate); }
+      var flow = function () { if (flowWideTables(doc)) { relocate(); } };
+      flow();
+      // The class font changes the width of the words: look at the tables again, then the place.
+      if (doc.fonts && doc.fonts.addEventListener) { doc.fonts.addEventListener('loadingdone', function () { flow(); relocate(); }); }
     };
     rendition.hooks.content.register(put);   // each section that the reader shows later
     rendition.getContents().forEach(put);
@@ -374,6 +401,7 @@
     isBookPage: isBookPage,
     readerOf: readerOf,
     bookPage: bookPage,
+    flowWideTables: flowWideTables,
     middleOf: middleOf,
     prepare: prepare,
     read: read,

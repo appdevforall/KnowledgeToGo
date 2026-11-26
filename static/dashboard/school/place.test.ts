@@ -259,3 +259,16 @@ test('text.js: the map words of the mark tools are in each language', () => {
         });
     });
 });
+
+test('flowWideTables: only a table wider than the page column flows as text', () => {
+    const table = (w: number) => {
+        const cls = new Set<string>();
+        return { cls, classList: { contains: (c: string) => cls.has(c), add: (c: string) => cls.add(c) }, getBoundingClientRect: () => ({ width: w }) };
+    };
+    const tables = [table(368), table(672), table(401), table(1872)];
+    const doc = { body: { clientWidth: 400 }, querySelectorAll: () => tables };
+    assert.equal(P.flowWideTables(doc), 2);
+    assert.deepEqual(tables.map((x) => x.cls.has('k2go-wide')), [false, true, false, true]);
+    assert.equal(P.flowWideTables(doc), 0);                                      // marked once
+    assert.equal(P.flowWideTables({ body: null, querySelectorAll: () => tables }), 0);   // no page yet
+});
