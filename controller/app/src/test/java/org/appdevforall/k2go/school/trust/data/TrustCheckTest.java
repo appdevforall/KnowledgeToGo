@@ -126,6 +126,20 @@ public class TrustCheckTest {
         assertNull(TrustKeys.proofBytes("", "X", "h:1"));
     }
 
+    @Test public void aCertificateEndsWithTheYearOfItsRoot() throws Exception {
+        PrivateKey root = privateKey(V.optJSONObject("keys").optString("rootPkcs8"));
+        String spki = V.optJSONObject("keys").optString("teacherSpki");
+        String cert = TrustCodec.signTeacher(root, ROOT.school, spki, "R", "d5d5d5d5d5d5d5d5", 0, ROOT.until + 1000);
+        assertEquals(Verdict.VERIFIED, TrustCodec.checkTeacher(ROOT, cert, null, ROOT.until - 1).verdict);
+        assertEquals(Verdict.EXPIRED, TrustCodec.checkTeacher(ROOT, cert, null, ROOT.until).verdict);
+    }
+
+    @Test public void listsOfTwoSchoolsDoNotMerge() {
+        TrustRecords.Removed other = TrustRecords.Removed.of(TrustRecords.VERSION, "ffffffffffffffff", NOW + 9,
+                Collections.singletonList("a1a1a1a1a1a1a1a1"));
+        assertEquals(REMOVED.serials, TrustRecords.Removed.merge(REMOVED, other).serials);
+    }
+
     @Test public void aTeacherCheckWithNoRootIsMalformed() {
         assertEquals(Verdict.MALFORMED, TrustCodec.checkTeacher(null, teacher("verified"), null, NOW).verdict);
     }

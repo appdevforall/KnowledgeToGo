@@ -108,7 +108,7 @@ public final class TrustRecords {
          */
         public static Removed merge(Removed a, Removed b) {
             if (a == null) return b;
-            if (b == null) return a;
+            if (b == null || !a.school.equals(b.school)) return a;
             TreeSet<String> all = new TreeSet<>(a.serials);
             all.addAll(b.serials);
             return new Removed(a.school, Math.max(a.issued, b.issued), all);

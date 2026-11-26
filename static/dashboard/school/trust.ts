@@ -106,7 +106,7 @@ export function readRemoved(root: RootRecord, token: unknown): RemovedList | nul
 // removed teacher back. issued: the newest of the two.
 export function mergeRemoved(a: RemovedList | null, b: RemovedList | null): RemovedList | null {
     if (!a) return b;
-    if (!b) return a;
+    if (!b || a.school !== b.school) return a;
     const serials = Array.from(new Set([...a.serials, ...b.serials])).sort();
     return { kind: 'removed', v: TRUST_V, school: a.school, issued: Math.max(a.issued, b.issued), serials };
 }
@@ -126,7 +126,8 @@ export function checkTeacher(root: RootRecord | null, token: unknown, removed: R
         kind: 'teacher', v: TRUST_V, school: o.school, key: o.key, label: o.label, serial: o.serial, from: o.from, until: o.until,
     };
     if (now < cert.from) return { verdict: 'not-yet', cert };
-    if (now >= cert.until) return { verdict: 'expired', cert };
+    // A certificate ends with the school year of its root at the latest.
+    if (now >= Math.min(cert.until, root.until)) return { verdict: 'expired', cert };
     if (removed && removed.serials.includes(cert.serial)) return { verdict: 'removed', cert };
     return { verdict: 'verified', cert };
 }

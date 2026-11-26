@@ -74,6 +74,15 @@ test('the class proof: the box holds the teacher key, for this nonce, class and 
     assert.ok(!checkProof(cert, 'n2\nABCD', 'X', 'h:1', signProof(key, 'n2', 'ABCD', 'h:1')));
 });
 
+test('a certificate ends with the school year of its root; lists of two schools do not merge', () => {
+    const rootKey = crypto.createPrivateKey({ key: Buffer.from(V.keys.rootPkcs8, 'base64'), format: 'der', type: 'pkcs8' });
+    const t = sign(rootKey, { kind: 'teacher', v: TRUST_V, school: root.school, key: V.keys.teacherSpki, label: 'R', serial: 'd5d5d5d5d5d5d5d5', from: 0, until: root.until + 1000 });
+    assert.equal(checkTeacher(root, t, null, root.until - 1).verdict, 'verified');
+    assert.equal(checkTeacher(root, t, null, root.until).verdict, 'expired');
+    const other = { kind: 'removed' as const, v: TRUST_V, school: 'ffffffffffffffff', issued: V.now + 9, serials: ['a1a1a1a1a1a1a1a1'] };
+    assert.deepEqual(mergeRemoved(removed, other), removed);
+});
+
 test('a teacher check with no root is malformed', () => {
     assert.equal(checkTeacher(null, V.teacher.verified, null, V.now).verdict, 'malformed');
 });

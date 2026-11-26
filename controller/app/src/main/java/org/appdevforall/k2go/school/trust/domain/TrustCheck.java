@@ -44,7 +44,7 @@ public final class TrustCheck {
         if (!cert.school.equals(root.school)) return Verdict.OTHER_SCHOOL;
         if (!TrustKeys.verify(root.keySpki(), token.body, token.sig)) return Verdict.BAD_SIGNATURE;
         if (now < cert.from) return Verdict.NOT_YET;
-        if (now >= cert.until) return Verdict.EXPIRED;
+        if (now >= Math.min(cert.until, root.until)) return Verdict.EXPIRED;   // the root year ends it too
         if (removed != null && removed.serials.contains(cert.serial)) return Verdict.REMOVED;
         return Verdict.VERIFIED;
     }
