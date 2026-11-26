@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>K2Go School: start</title>
+<style>
+  /* The color tokens of the app (res/values/colors.xml and values-night, K2G-3): --bg
+     surface_background, --card surface_card, --fg text_primary, --accent accent, --line divider_line. */
+  :root { --bg: #F4F5F7; --card: #FFFFFF; --fg: #202124; --accent: #2E7D32; --line: #DADCE0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121212; --card: #1E1E1E; --fg: #FAFAFA; --accent: #4CAF50; --line: #3C4043; }
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.3 sans-serif; }
+  /* One card per app that the class can follow and that the box has (place.js APPS). */
+  #cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  a.card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    min-height: 136px; padding: 16px 12px; border: 1px solid var(--line); border-radius: 16px;
+    background: var(--card); color: var(--fg); text-align: center; text-decoration: none; }
+  a.card[hidden] { display: none; }   /* the box does not have the app; display: flex would show it */
+  a.card svg { width: 40px; height: 40px; fill: var(--accent); }
+  a.card span { font-size: 17px; font-weight: 600; }
+</style>
+</head>
+<body>
+<!-- The teacher start page in the class frame: the students do not see it (place.js kindOf). -->
+<main id="cards"></main>
+<script src="text.js"></script>
+<script src="place.js"></script>
+<script>
+'use strict';
+(function () {
+  // The icons of the box start page (Material Icons, Apache License 2.0). An app with no icon here
+  // gets the book icon.
+  var ICONS = {
+    Kiwix: 'M19.3 16.9c.4-.7.7-1.5.7-2.4 0-2.5-2-4.5-4.5-4.5S11 12 11 14.5s2 4.5 4.5 4.5c.9 0 1.7-.3 2.4-.7l3.2 3.2 1.4-1.4-3.2-3.2zm-3.8.1c-1.4 0-2.5-1.1-2.5-2.5s1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5-1.1 2.5-2.5 2.5zM12 20v2C6.48 22 2 17.52 2 12S6.48 2 12 2c4.84 0 8.87 3.44 9.8 8h-2.07A8 8 0 0 0 15 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1H8v2h2v3H9l-4.79-4.79C4.08 10.79 4 11.38 4 12c0 4.41 3.59 8 8 8z',
+    Maps: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9zM12 6.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+    Books: 'M22.47 5.2c-.47-.24-.96-.44-1.47-.61v12.03c-1.14-.41-2.31-.62-3.5-.62-1.9 0-3.78.54-5.5 1.58V5.48C10.38 4.55 8.51 4 6.5 4c-1.79 0-3.48.44-4.97 1.2-.33.16-.53.51-.53.88v12.08c0 .58.47.99 1 .99.16 0 .32-.04.48-.12C3.69 18.4 5.05 18 6.5 18c2.07 0 3.98.82 5.5 2 1.52-1.18 3.43-2 5.5-2 1.45 0 2.81.4 4.02 1.04.16.08.32.12.48.12.52 0 1-.41 1-.99V6.08c0-.37-.2-.72-.53-.88zM10 16.62C8.86 16.21 7.69 16 6.5 16s-2.36.21-3.5.62V6.71C4.11 6.24 5.28 6 6.5 6c1.2 0 2.39.25 3.5.72v9.9zM19 .5l-5 5V15l5-4.5V.5z'
+  };
+  var SVG = 'http://www.w3.org/2000/svg';
+  var cards = document.getElementById('cards');
+  document.documentElement.dir = SchoolText.dir();
+
+  function card(app) {
+    var a = document.createElement('a');
+    a.className = 'card';
+    a.href = app.home;
+    var svg = document.createElementNS(SVG, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS(SVG, 'path');
+    path.setAttribute('d', ICONS[app.id] || ICONS.Books);
+    svg.appendChild(path);
+    var label = document.createElement('span');
+    label.textContent = SchoolText.text('app' + app.id);
+    a.appendChild(svg);
+    a.appendChild(label);
+    a.hidden = true;
+    return a;
+  }
+
+  // The box has an app when its start page is not "not found": the same check as the box start
+  // page (/home/). A box that does not answer shows the card: the app can still come up.
+  SchoolPlace.APPS.forEach(function (app) {
+    var a = card(app);
+    cards.appendChild(a);
+    fetch(app.home, { method: 'HEAD', cache: 'no-store' })
+      .then(function (r) { a.hidden = r.status === 404; }, function () { a.hidden = false; });
+  });
+})();
+</script>
+</body>
+</html>

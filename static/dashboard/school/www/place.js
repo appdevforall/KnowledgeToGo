@@ -12,15 +12,29 @@
   // The Kiwix library, also its page for browsers with no JavaScript.
   function isLibrary(path) { return /^\/kiwix(\/|\/nojs(\/.*)?)?$/.test(path); }
 
+  // The apps of the box that the class can follow: the one list of what follows. The teacher start
+  // page shows a card for each app here that the box has (start.html); kindOf() gives the type of
+  // a page of an app, or null for a page that the class does not follow (a library, a catalog, a
+  // format with no adapter). A new adapter (its kind in read/apply/watch) adds its app here.
+  //   id: the app, also the card (start.html) and its words (text.js 'app' + id);
+  //   home: the start page of the app on the box.
+  var APPS = [
+    { id: 'Kiwix', home: '/kiwix/', kindOf: function (p) { return /^\/kiwix\//.test(p) && !isLibrary(p) ? 'page' : null; } },
+    { id: 'Maps', home: '/maps/', kindOf: function (p) { return /^\/maps\/(index\.html)?$/.test(p) ? 'map' : null; } },
+    { id: 'Books', home: '/books/', kindOf: function (p) {
+      var read = /^\/books\/read\/\d+\/(pdf|epub)$/.exec(p);   // the Calibre-Web reader of these two formats
+      return read ? read[1] : null;
+    } }
+  ];
+
   // 'page' (a Kiwix page, block anchor), 'map', 'pdf', 'epub', or null: a page that only the
-  // teacher sees (the libraries, the box start page, and the apps that the class does not follow:
-  // a list of what follows, so that a new app on the box start page does not go to the class).
+  // teacher sees.
   function kindOf(path) {
     var p = String(path || '').split(/[?#]/)[0];
-    if (/^\/maps\/(index\.html)?$/.test(p)) { return 'map'; }
-    var book = /^\/books\/read\/\d+\/(pdf|epub)$/.exec(p);
-    if (book) { return book[1]; }
-    if (/^\/kiwix\//.test(p) && !isLibrary(p)) { return 'page'; }
+    for (var i = 0; i < APPS.length; i++) {
+      var kind = APPS[i].kindOf(p);
+      if (kind) { return kind; }
+    }
     return null;
   }
 
@@ -189,6 +203,7 @@
   }
 
   return {
+    APPS: APPS,
     kindOf: kindOf,
     isLibrary: isLibrary,
     mapPlace: mapPlace,

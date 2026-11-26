@@ -102,3 +102,27 @@ test('epub: the Calibre-Web EPUB reader follows a CFI', () => {
     assert.equal(P.valid({ app: 'epub' }, 'epub'), false);
     assert.equal(P.valid({ app: 'epub', cfi: 'epubcfi(/6/8!/4/2/1:0)' }, 'pdf'), false);
 });
+
+test('APPS: the one list of the apps that the class follows; kindOf reads it', () => {
+    ['Kiwix', 'Maps', 'Books'].forEach((id) => assert.ok(P.APPS.some((a: { id: string }) => a.id === id), id));
+    P.APPS.forEach((a: { home: string }) => assert.match(a.home, /^\/[a-z]+\/$/));
+    assert.equal(P.kindOf('/school/start.html'), null);
+    assert.equal(P.kindOf('/home/'), null);
+    assert.equal(P.kindOf('/books/read/3/mp4'), null);
+    assert.equal(P.kindOf('/maps/'), 'map');
+});
+
+test('text.js: every app of APPS has its card words in each language', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const src: string = fs.readFileSync(path.join(__dirname, 'www', 'text.js'), 'utf8');
+    const langs = src.split('\n').filter((l) => /^ {4}[a-z]+: \{/.test(l));
+    assert.equal(langs.length, 34);
+    langs.forEach((l) => {
+        const table = JSON.parse(l.slice(l.indexOf('{'), l.lastIndexOf('}') + 1));
+        P.APPS.forEach((a: { id: string }) => {
+            assert.equal(typeof table['app' + a.id], 'string', l.slice(0, 8) + ' app' + a.id);
+            assert.ok(table['app' + a.id].length > 0);
+        });
+    });
+});

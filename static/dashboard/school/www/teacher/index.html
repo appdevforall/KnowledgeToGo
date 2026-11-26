@@ -171,9 +171,9 @@
   // B2: the page renders at most every RENDER_MS, not on each ack (57 acks a second with 30
   // students), and each second for the statuses that change with time.
   var RENDER_MS = 250;
-  // The teacher chooses a book or a map on the box start page (Kiwix, Maps, Books); the class
-  // follows the pages of the books and the map (place.js kindOf).
-  var LIBRARY = '/home/';
+  // The teacher chooses an app on the class start page: one card per app that the class can follow
+  // and that the box has (start.html, place.js APPS). The class follows the pages of place.js kindOf.
+  var LIBRARY = '/school/start.html';
 
   var seq = 0;
   var sentAt = {};          // seq -> send time (ms), to measure the round trip
