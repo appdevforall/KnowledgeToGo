@@ -75,11 +75,10 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         }, 300);
     }
 
-    // The code and the name of the class, for the head bar of the teacher pages. ask: the teacher
-    // did not answer "name this class?" yet, so the teacher pages ask.
-    function classEvent(): { type: 'class'; code: string | null; name: string | null; ask: boolean } {
+    // The code and the name of the class, for the head bar of the teacher pages.
+    function classEvent(): { type: 'class'; code: string | null; name: string | null } {
         const st = classroom.state();
-        return { type: 'class', code: st.code, name: st.name, ask: classroom.askName() };
+        return { type: 'class', code: st.code, name: st.name };
     }
 
     // The marks of the lesson page. The box is the one owner of the list: the teacher page draws it
@@ -195,6 +194,8 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
     // The name is what the teacher chose (the page says: no student names); no device data
     // (K2G-P5). The mDNS announcement has the code only.
     router.get('/state', (_req: Request, res: Response): void => {
+        // A lapsed class is no open class, also before the ping round ends it.
+        if (classroom.lapsed()) endClass();
         res.setHeader('Cache-Control', 'no-store');
         res.json(classroom.state());
     });
@@ -247,16 +248,16 @@ export function createSchoolRouter(classroom: ClassRoom): Router {
         res.status(204).end();
     });
 
-    // The answer to "name this class?", once per class: a name, or null (Skip). The box cleans the
-    // name (cleanName); all teacher pages show it next to the code and stop asking.
-    router.post('/teacher/name', (req: Request, res: Response): void => {
-        const r = classroom.setName((req.body as { name?: unknown })?.name);
-        if (r !== 'ok') {
-            res.status(r === 'invalid' ? 400 : 409).json({ error: r });
+    // "Teach a class" in the app: open a class with its name (or null: no name), before the app
+    // opens the teacher page. The box cleans the name (cleanName). 409: a class is open already,
+    // with its own name; the app opens the teacher page of that class.
+    router.post('/teacher/start', (req: Request, res: Response): void => {
+        if (classroom.lapsed()) endClass();
+        if (classroom.start((req.body as { name?: unknown })?.name) === 'open') {
+            res.status(409).json({ error: 'open' });
             return;
         }
-        toTeachers(classEvent());
-        res.status(204).end();
+        res.status(201).json({ code: classroom.state().code });
     });
 
     router.post('/teacher/end', (_req: Request, res: Response): void => {

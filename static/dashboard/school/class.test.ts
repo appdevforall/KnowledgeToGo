@@ -398,33 +398,35 @@ test('cleanName: trim, one space, no control characters, at most MAX_NAME code p
     assert.equal(cleanName(null), null);
 });
 
-test('class name: asked until the teacher answers; a name or Skip, once per class; gone with the class', () => {
+test('class start: the app opens the class with its name; no rename; gone with the class', () => {
+    let t = 0;
     let n = 0;
-    const room = new ClassRoom(10, counter(), Date.now, () => `C${++n}`);
-    assert.equal(room.setName('Math'), 'no-class');
-    assert.equal(room.askName(), false);
-    room.teacherOpen();
-    assert.equal(room.askName(), true);
+    const room = new ClassRoom(10, counter(), () => t, () => `C${++n}`);
+    assert.equal(room.start('   '), 'ok');                     // an empty name: no name
+    assert.deepEqual(room.state(), { open: true, code: 'C1', name: null, ageSec: 0 });
+    assert.equal(room.start('Art'), 'open');                    // no rename during the class
+    room.end();
+    assert.equal(room.start('\u0000'), 'ok');                   // no character can stay: no name
+    assert.equal(room.state().name, null);
+    room.end();
+    assert.equal(room.start(7), 'ok');                          // not a text: no name
+    assert.equal(room.state().name, null);
+    room.end();
+    assert.equal(room.start('  Math   101 '), 'ok');
+    assert.deepEqual(room.state(), { open: true, code: 'C4', name: 'Math 101', ageSec: 0 });
+    room.teacherOpen();                                         // the teacher page comes: same class
+    assert.equal(room.state().name, 'Math 101');
     room.teacherClose();
-    room.teacherOpen();                                       // a reload before the answer: ask again
-    assert.equal(room.askName(), true);
-    assert.equal(room.setName('   '), 'invalid');
-    assert.equal(room.setName(undefined), 'invalid');
-    assert.equal(room.askName(), true);
-    assert.equal(room.setName('  Math   101 '), 'ok');
-    assert.equal(room.state().name, 'Math 101');
-    assert.equal(room.askName(), false);
-    assert.equal(room.setName('Art'), 'named');               // no rename during the class
-    assert.equal(room.setName(null), 'named');
-    assert.equal(room.state().name, 'Math 101');
     room.end();
     assert.equal(room.state().name, null);
-    room.teacherOpen();                                       // a new class asks again
-    assert.equal(room.askName(), true);
-    assert.equal(room.setName(null), 'ok');                   // Skip: no name, no more questions
-    assert.equal(room.askName(), false);
-    assert.deepEqual(room.state(), { open: true, code: 'C2', name: null, ageSec: 0 });
-    assert.equal(room.setName('Late'), 'named');
+    room.teacherOpen();                                         // a teacher page with no start: no name
+    assert.deepEqual(room.state(), { open: true, code: 'C5', name: null, ageSec: 0 });
+    room.teacherClose();
+    room.end();
+    assert.equal(room.start(null), 'ok');
+    assert.equal(room.lapsed(), false);
+    t += CLASS_GAP_MS + 1;                                      // no teacher page came
+    assert.equal(room.lapsed(), true);
 });
 
 test('class age: whole seconds since the class opened, on the clock of the box', () => {

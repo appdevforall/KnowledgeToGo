@@ -219,8 +219,7 @@ export type MarkResult = { changed: boolean } | { refused: MarkRefusal };
 // the old class (lesson, seats, Done marks) goes into the next one.
 interface Session {
     code: string;
-    name: string | null;    // the teacher gives it once, at the start (setName)
-    askName: boolean;       // true until the teacher gives a name or skips: the teacher pages ask
+    name: string | null;    // the teacher gives it in the app when the class starts (start)
     openedAt: number;       // ms, the monotonic clock of the box
     lang: string | null;    // the language of the teacher page: the student pages use it too
     lesson: Lesson | null;
@@ -257,35 +256,32 @@ export class ClassRoom {
         private readonly newCode: () => string = newClassCode,
     ) {}
 
+    private newSession(name: string | null): Session {
+        return {
+            code: this.newCode(), name, openedAt: this.now(), lang: null, lesson: null, lessonId: 0, marks: [],
+            markId: 0, byToken: new Map(),
+        };
+    }
+
     // lang: the language of the teacher page. The last teacher page that opens sets it.
     // A lapsed class must end first (the router calls endClass), so its students hear it.
     teacherOpen(lang: unknown = null): void {
-        if (!this.session) {
-            this.session = {
-                code: this.newCode(), name: null, askName: true, openedAt: this.now(), lang: null, lesson: null,
-                lessonId: 0, marks: [], markId: 0, byToken: new Map(),
-            };
-        }
+        if (!this.session) this.session = this.newSession(null);
         this.session.lang = cleanLang(lang) ?? this.session.lang;
         this.teachers += 1;
         this.closedAt = null;
     }
 
-    // The answer of the teacher to "name this class?": a name, or null (Skip). Once per class: no
-    // rename during the class. A teacher page that loads before the answer asks again.
-    setName(raw: unknown): 'ok' | 'invalid' | 'no-class' | 'named' {
-        const s = this.session;
-        if (!s) return 'no-class';
-        if (!s.askName) return 'named';
-        const name = raw === null ? null : cleanName(raw);
-        if (raw !== null && name === null) return 'invalid';
-        s.name = name;
-        s.askName = false;
+    // "Teach a class" in the app: a new class with the name that the teacher gave. A name with no
+    // character that can stay (an empty text, Skip) is no name. The teacher page opens next; with no
+    // teacher page within CLASS_GAP_MS the class ends by itself. An open class keeps its name: no
+    // rename.
+    start(rawName: unknown): 'ok' | 'open' {
+        if (this.session) return 'open';
+        this.session = this.newSession(cleanName(rawName));
+        if (this.teachers === 0) this.closedAt = this.now();
         return 'ok';
     }
-
-    // True while the teacher pages must ask for the name of the class.
-    askName(): boolean { return this.session !== null && this.session.askName; }
 
     teacherClose(): void {
         this.teachers = Math.max(0, this.teachers - 1);
