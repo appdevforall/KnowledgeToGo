@@ -149,11 +149,13 @@ var School = (function () {
         if (!path) { return; }
         asked[key(f)] = null;   // it navigated by itself: no URL of open() for this page
       }
-      // The page of an app (a map, a PDF, the EPUB reader) keeps its own font: the class font would
-      // move the pdf.js text layer off the glyphs. The text of an EPUB book is in inner frames of
-      // the reader: it gets the class font there (place.js bookFont).
-      var app = path !== null && SchoolPlace.isApp(SchoolPlace.kindOf(path));
-      if (doc && !app) { normalize(doc); }
+      // Only a Kiwix page gets the class font. The page of an app (a map, a PDF, the EPUB reader)
+      // keeps its own font: the class font would move the pdf.js text layer off the glyphs. The
+      // text of an EPUB book is in inner frames of the reader: it gets the class font there
+      // (place.js bookFont). A page that only the teacher sees (a library, the Calibre-Web pages)
+      // keeps its fonts too: the class font replaced its icon font (the icons showed as boxes).
+      var classFont = path !== null && SchoolPlace.kindOf(path) === 'page';
+      if (doc && classFont) { normalize(doc); }
       var mine = gen;
       var ready = function () {
         if (f === back) {
@@ -175,7 +177,7 @@ var School = (function () {
           onReady(f.contentWindow);
         }
       };
-      if (doc && path && !app) { whenFontReady(doc, ready); } else { ready(); }
+      if (doc && classFont) { whenFontReady(doc, ready); } else { ready(); }
     }
 
     function open(url) {
