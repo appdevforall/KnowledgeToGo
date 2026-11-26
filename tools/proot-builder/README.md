@@ -76,6 +76,10 @@ runs the bundle on both ABIs (armeabi-v7a through the 32-bit compat mode of the 
 kernel, as on a phone). `guest-init.sh` is the test list. Each test names the
 `build_static.sh` customization it covers: static start, the tar/gzip/xz/rsync round-trips,
 the proot launch, fork, `fchmodat2`, `futex_time64` and EXITKILL.
+`clock_gettime64-app-filter` (K2GO-597) runs proot under a filter like the Android 8 to 10
+app filter (SIGSYS on `clock_gettime64` and the proot avoider): the probe must get ENOSYS and
+a real time from its fallback, not a swallowed SIGSYS. The fault showed on kernels older than
+4.8 (4.4 here); arm64 3.16 has no seccomp filters, so the test is a SKIP there.
 
 proot runs with the options of the app (`PRootEngine`) and with its seccomp fallback
 (ADFA-5362): when proot aborts with one of the markers of `SeccompFailure.java`, the test
