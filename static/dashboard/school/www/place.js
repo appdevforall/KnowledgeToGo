@@ -160,11 +160,39 @@
     return null;
   }
 
+  // The place in the book at the center of the reader (an EPUB CFI), or null. Each phone breaks the
+  // pages at other places: the student page that holds the center of the teacher page shares most
+  // of its text. (With the first line of the teacher, the student page could end with that line,
+  // and show almost only the text before it.)
+  function middleOf(rendition) {
+    var box = rendition.manager && rendition.manager.container ? rendition.manager.container.getBoundingClientRect() : null;
+    if (!box || box.width <= 0 || box.height <= 0) { return null; }
+    var list = rendition.getContents();
+    for (var i = 0; i < list.length; i++) {
+      var c = list[i];
+      var frame = c.window && c.window.frameElement;
+      if (!frame || !c.document.caretRangeFromPoint) { continue; }
+      var f = frame.getBoundingClientRect();
+      var x = box.left + box.width / 2 - f.left;
+      var y = box.top + box.height / 2 - f.top;
+      if (x < 0 || x > f.width || y < 0 || y > f.height) { continue; }
+      var caret = c.document.caretRangeFromPoint(x, y);
+      if (!caret) { continue; }
+      var cfi = c.cfiFromRange(caret);
+      return typeof cfi === 'string' && cfi.indexOf('epubcfi(') === 0 ? cfi : null;
+    }
+    return null;
+  }
+
   // The place on the screen, or null while the app is not ready.
   function read(win, kind) {
     var app = appOf(win, kind);
     if (!app) { return null; }
-    if (kind === 'epub') { return { app: 'epub', cfi: app.location.start.cfi }; }
+    if (kind === 'epub') {
+      var middle = null;
+      try { middle = middleOf(app); } catch (e) { /* the first line, as before */ }
+      return { app: 'epub', cfi: middle || app.location.start.cfi };
+    }
     if (kind === 'pdf') {
       // _location is what pdf.js sends with its "updateviewarea" event. pdf.js 4.5 as Calibre-Web
       // bundles it; a newer pdf.js can rename it, and then the PDF does not follow (null).
@@ -178,8 +206,9 @@
   // Shows the place. true: the view is at the place; null: the app is not ready, try again;
   // false: the place cannot show (not a place of this app).
   // The view shows the place. null: the app is not ready, or the place is not one of this app.
-  // EPUB: the page on the screen holds the CFI. The page height differs between phones, so the
-  // page can start some lines before the teacher's.
+  // EPUB: the page on the screen holds the CFI (the center of the teacher page, middleOf). The
+  // page breaks differ between phones, so the page can start or end some lines away from the
+  // teacher's.
   function at(win, kind, a) {
     if (!valid(a, kind)) { return null; }
     var app = appOf(win, kind);
@@ -265,6 +294,7 @@
     hasMarks: hasMarks,
     bookViews: bookViews,
     toolCss: toolCss,
+    middleOf: middleOf,
     prepare: prepare,
     read: read,
     at: at,

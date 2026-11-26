@@ -156,3 +156,24 @@ test('toolCss: with a mark tool on, the EPUB reader turns no page on a tap at it
     assert.equal(P.toolCss('page'), '');
     assert.equal(P.toolCss(null), '');
 });
+
+test('middleOf: the CFI at the center of the reader, in the book frame that is there', () => {
+    const rect = (left: number, top: number, width: number, height: number) => () => ({ left, top, width, height });
+    const asked: number[][] = [];
+    const page = (frameLeft: number, cfi: string) => ({
+        window: { frameElement: { getBoundingClientRect: rect(frameLeft, 100, 800, 600) } },   // two pages wide
+        document: { caretRangeFromPoint: (x: number, y: number) => { asked.push([x, y]); return { x, y }; } },
+        cfiFromRange: () => cfi,
+    });
+    // The reader shows x 0..400 of the screen; the book frame (two pages) is scrolled by one page.
+    const rendition = {
+        manager: { container: { getBoundingClientRect: rect(0, 100, 400, 600) } },
+        getContents: () => [page(-400, 'epubcfi(/6/4!/4/10/1:5)')],
+    };
+    assert.equal(P.middleOf(rendition), 'epubcfi(/6/4!/4/10/1:5)');
+    assert.deepEqual(asked, [[600, 300]]);   // the center of the reader in the frame: its second page
+    // A frame that is not at the center (the next section, still to the right): the next frame.
+    const two = { ...rendition, getContents: () => [page(400, 'epubcfi(/6/6!/4/2/1:0)'), page(-400, 'epubcfi(/6/4!/4/10/1:5)')] };
+    assert.equal(P.middleOf(two), 'epubcfi(/6/4!/4/10/1:5)');
+    assert.equal(P.middleOf({ getContents: () => [] }), null);   // no container: the first line instead
+});
