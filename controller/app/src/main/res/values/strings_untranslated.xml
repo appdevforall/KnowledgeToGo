@@ -56,4 +56,51 @@
     <string name="k2go_school_restored" translatable="false">The school key is on this phone again.</string>
     <!-- Settings > School on a teacher or student phone. %1$s = the school name. -->
     <string name="k2go_school_member" translatable="false">This phone belongs to %1$s.</string>
+    <!-- Settings > School on a teacher phone. %1$s = the school name, %2$s = the room on its certificate. -->
+    <string name="k2go_school_teacher_member" translatable="false">This phone is a teacher phone of %1$s (%2$s).</string>
+
+    <!-- Settings > School: the setup ring (phase 4). Buttons on device zero and teacher phones. -->
+    <string name="k2go_school_approve_teachers" translatable="false">Approve teacher phones</string>
+    <string name="k2go_school_enroll_students" translatable="false">Enroll students</string>
+    <string name="k2go_school_self_teacher" translatable="false">This phone teaches too</string>
+    <string name="k2go_school_unlock_title" translatable="false">School password</string>
+    <string name="k2go_school_unlock_button" translatable="false">Open the ring</string>
+    <!-- The ring screen on the phone that opened it. -->
+    <string name="k2go_school_ring_teacher_title" translatable="false">Ring for teacher phones</string>
+    <string name="k2go_school_ring_student_title" translatable="false">Ring for students</string>
+    <string name="k2go_school_ring_pin_hint" translatable="false">Write this PIN on the board. The phones type it to join.</string>
+    <!-- %1$s = the time left, for example 9:41. -->
+    <string name="k2go_school_ring_closes" translatable="false">The ring closes in %1$s.</string>
+    <string name="k2go_school_ring_none_asked" translatable="false">No phone asked yet.</string>
+    <!-- One teacher phone that asks to join. %1$d = its number in the list, %2$s = the start of its key (letters and digits). -->
+    <string name="k2go_school_request_row" translatable="false">Phone %1$d (key %2$s)</string>
+    <string name="k2go_school_approve" translatable="false">Approve</string>
+    <string name="k2go_school_refuse" translatable="false">Refuse</string>
+    <string name="k2go_school_approved" translatable="false">Approved</string>
+    <string name="k2go_school_refused" translatable="false">Refused</string>
+    <string name="k2go_school_label_title" translatable="false">Room of this teacher phone</string>
+    <string name="k2go_school_label_hint" translatable="false">For example: Room 3B. Do not use the names of people.</string>
+    <string name="k2go_school_close_ring" translatable="false">Close the ring</string>
+    <string name="k2go_school_ring_closed_time" translatable="false">The ring closed: its time ended.</string>
+    <string name="k2go_school_ring_closed_guesses" translatable="false">The ring closed: too many wrong PINs.</string>
+    <string name="k2go_school_err_ring" translatable="false">The ring did not open. Check that the library runs.</string>
+    <!-- Joining a school, on a phone that is not part of a school. -->
+    <string name="k2go_school_join" translatable="false">Join a school</string>
+    <string name="k2go_school_join_hint" translatable="false">Ask the teacher to open a ring. Choose it here and type the PIN that is on the board.</string>
+    <string name="k2go_school_rings_looking" translatable="false">Looking for rings on this Wi-Fi.</string>
+    <!-- One ring in the list. %1$s = the school name. -->
+    <string name="k2go_school_ring_row_teacher" translatable="false">%1$s: teacher phones</string>
+    <string name="k2go_school_ring_row_student" translatable="false">%1$s: students</string>
+    <string name="k2go_school_ring_two" translatable="false">Two rings of this school are open on this Wi-Fi. Ask the teacher which one is real before you type the PIN.</string>
+    <string name="k2go_school_pin_title" translatable="false">PIN of the ring</string>
+    <string name="k2go_school_join_button" translatable="false">Join</string>
+    <!-- %1$s = the school name. -->
+    <string name="k2go_school_joined" translatable="false">This phone joined %1$s.</string>
+    <string name="k2go_school_waiting" translatable="false">Waiting for device zero to approve this phone.</string>
+    <string name="k2go_school_err_wrong_pin" translatable="false">The PIN is not correct.</string>
+    <string name="k2go_school_err_tries" translatable="false">Too many wrong PINs from this phone. Ask the teacher to open a new ring.</string>
+    <string name="k2go_school_err_no_ring" translatable="false">The ring is closed.</string>
+    <string name="k2go_school_err_refused" translatable="false">Device zero did not approve this phone.</string>
+    <string name="k2go_school_err_bad_answer" translatable="false">The ring did not prove that it knows the PIN. It can be a false ring: ask the teacher.</string>
+    <string name="k2go_school_err_no_key" translatable="false">This phone cannot keep a teacher key.</string>
 </resources>

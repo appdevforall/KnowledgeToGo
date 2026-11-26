@@ -38,16 +38,19 @@ public class SchoolViewModel extends ViewModel {
         public final String school;
         public final long until;
         public final boolean busy;
+        /** The room on the certificate of this teacher phone; null: not a teacher phone. */
+        public final String teacherLabel;
 
-        State(Kind kind, String name, String school, long until, boolean busy) {
+        State(Kind kind, String name, String school, long until, boolean busy, String teacherLabel) {
             this.kind = kind;
             this.name = name;
             this.school = school;
             this.until = until;
             this.busy = busy;
+            this.teacherLabel = teacherLabel;
         }
 
-        State busy(boolean b) { return new State(kind, name, school, until, b); }
+        State busy(boolean b) { return new State(kind, name, school, until, b, teacherLabel); }
     }
 
     /** A one-time message for the screen. take() is true only the first time. */
@@ -96,9 +99,10 @@ public class SchoolViewModel extends ViewModel {
 
     private State read(boolean busy) {
         TrustRecords.Root root = repo.root();
-        if (root == null) return new State(State.Kind.NONE, null, null, 0, busy);
+        if (root == null) return new State(State.Kind.NONE, null, null, 0, busy, null);
         State.Kind kind = repo.vault() != null ? State.Kind.DEVICE_ZERO : State.Kind.MEMBER;
-        return new State(kind, root.name, root.school, root.until, busy);
+        TrustRecords.Teacher cert = repo.verifiedCert(root, repo.teacherCertToken(), System.currentTimeMillis() / 1000);
+        return new State(kind, root.name, root.school, root.until, busy, cert == null ? null : cert.label);
     }
 
     private boolean startBusy() {

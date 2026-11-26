@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.appdevforall.k2go.school.trust.data.HttpRingBox;
+import org.appdevforall.k2go.school.trust.data.KeystoreTeacherKey;
+import org.appdevforall.k2go.school.trust.data.NsdRing;
 import org.appdevforall.k2go.school.trust.data.SchoolTrustFiles;
 import org.appdevforall.k2go.util.AppExecutors;
 
@@ -30,6 +33,10 @@ public class SchoolViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(SchoolViewModel.class)) {
             return (T) new SchoolViewModel(new SchoolTrustFiles(app.getNoBackupFilesDir()),
                     app.getContentResolver(), AppExecutors.get().io());
+        }
+        if (modelClass.isAssignableFrom(RingViewModel.class)) {
+            return (T) new RingViewModel(new SchoolTrustFiles(app.getNoBackupFilesDir()), new HttpRingBox(),
+                    new KeystoreTeacherKey(), new NsdRing(app), AppExecutors.get().io());
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
