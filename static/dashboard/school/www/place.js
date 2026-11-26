@@ -91,6 +91,31 @@
   // A page of an app (the class font and the marks are for Kiwix pages only).
   function isApp(kind) { return kind !== null && kind !== 'page'; }
 
+  // What a class does not do in an app page. The map: no download of a region (FQR). The regions
+  // are on the box before the class, and the download needs the app (the Library > Maps card), not
+  // a class page. The maps page has its own switch (REGION_DOWNLOADER_ENABLED) only when the maps
+  // role installs, so the class hides the control of its two buttons ("Select region for download",
+  // "Choose region to delete"); the download panel opens only from them. The titles come from the
+  // maps page: a new title shows the control again. The map is in the shadow root of <maps-black>,
+  // so the style goes there, when the map exists (watch). A deliberate workaround: the owner of the
+  // switch is the maps page; a carry patch that turns its downloader off in a class can replace it.
+  // A browser with no :has (WebView before 105) uses the second rule: the buttons go, an empty
+  // frame of the control can stay.
+  var FQR_BUTTONS = 'button[title="Select region for download"], button[title="Choose region to delete"]';
+  var APP_CSS = {
+    map: '.maplibregl-ctrl-group:has(> button[title="Select region for download"], > button[title="Choose region to delete"]) { display: none !important; }\n' +
+      FQR_BUTTONS + ' { display: none !important; }'
+  };
+  function prepare(win, kind, app) {
+    var css = APP_CSS[kind];
+    if (!css) { return; }
+    var root = kind === 'map' ? app.getContainer().getRootNode() : win.document;
+    var where = root.head || root;   // a shadow root has no head
+    var style = win.document.createElement('style');
+    style.textContent = css;
+    where.appendChild(style);
+  }
+
   // The app object of the page in the frame, or null while it is not ready.
   function appOf(win, kind) {
     try {
@@ -198,6 +223,7 @@
         ['touchstart', 'keydown', 'mousedown'].forEach(function (type) { app.on(type, input); });
         app.on('relocated', moved);
       } else { app.on('move', moved); }
+      try { prepare(win, kind, app); } catch (e) { /* the class follows the app also when it cannot hide a control */ }
       onMove(false);   // the app is ready: not a move, so an early touch does not count
     })();
   }
@@ -213,6 +239,7 @@
     valid: valid,
     openUrl: openUrl,
     isApp: isApp,
+    prepare: prepare,
     read: read,
     at: at,
     apply: apply,

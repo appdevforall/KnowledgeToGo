@@ -126,3 +126,19 @@ test('text.js: every app of APPS has its card words in each language', () => {
         });
     });
 });
+
+test('prepare: a class map page hides the region download (FQR) in the map shadow root; other pages get nothing', () => {
+    const inShadow: { textContent: string }[] = [];
+    const inHead: { textContent: string }[] = [];
+    const win = { document: { head: { appendChild: (el: { textContent: string }) => inHead.push(el) }, createElement: () => ({ textContent: '' }) } };
+    const map = { getContainer: () => ({ getRootNode: () => ({ appendChild: (el: { textContent: string }) => inShadow.push(el) }) }) };
+    P.prepare(win, 'map', map);
+    assert.equal(inShadow.length, 1);
+    assert.equal(inHead.length, 0);
+    const css = inShadow[0].textContent;
+    assert.match(css, /:has\(> button\[title="Select region for download"\], > button\[title="Choose region to delete"\]\)/);
+    assert.match(css, /^button\[title="Select region for download"\], button\[title="Choose region to delete"\] \{ display: none !important; \}$/m);
+    P.prepare(win, 'pdf', {});
+    P.prepare(win, 'epub', {});
+    assert.equal(inShadow.length + inHead.length, 1);
+});
