@@ -30,6 +30,7 @@ import { isRestartableService, restartService } from './sockets/services';
 import { PRIVACY_SWITCHES, findSwitch, readState, applyOutbound } from './sockets/privacy';
 import { getFirehoseState } from './sockets/log-rotate';
 import { resolveRebuildState } from './sockets/rebuild-status';
+import { readTrackedBranch, isBranchMissing } from './sockets/dash-branch';
 import { conexProxy } from './sockets/conex-proxy';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
@@ -279,17 +280,15 @@ const REBUILD_LOG_FILE = '/var/log/dash-rebuild.log';
 // How many trailing lines the Details tail returns. A whole rebuild is tens of lines, so this holds
 // the entire log with headroom; the client replaces the panel each poll rather than tracking a cursor.
 const REBUILD_LOG_TAIL = 200;
-// ADFA-5051: the remote branch that update-check compares against AND the rebuild pulls. Defaults to
-// mainline; set K2GO_DASH_BRANCH in the dash-node env to point a test box at a feature branch (e.g.
-// to exercise the live self-update before merging to main) without touching code. Keep it unset in
-// production so both always track main.
-const DASH_BRANCH = process.env.K2GO_DASH_BRANCH || 'main';
+// The remote branch that the update check compares against AND the rebuild pulls is the branch of
+// the live build: readTrackedBranch() (sockets/dash-branch.ts) reads it at each request.
 
 // Installed dash-node version (from package.json), so the module card can show it + compare.
 apiRouter.get('/system/version', (_req: Request, res: Response): void => {
     try {
         const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
-        res.json({ version: String(pkg.version || 'unknown') });
+        const tracked = readTrackedBranch();
+        res.json({ version: String(pkg.version || 'unknown'), branch: tracked.ok ? tracked.branch : 'unknown' });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'version read failed' });
     }
@@ -678,13 +677,16 @@ apiRouter.post('/system/dashboard/rebuild', (req: Request, res: Response): void 
     if (readRebuildStatus() === 'running') { res.status(409).json({ error: 'a rebuild is already running' }); return; }
     if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
     const updateSite = (req.body as { site?: unknown })?.site === true;
+    // A bad branch record stops the rebuild: it must never fall back to main without a word.
+    const tracked = readTrackedBranch();
+    if (!tracked.ok) { res.status(500).json({ error: tracked.error }); return; }
     try {
         // setsid => own session, so `pdsm restart dash-node` inside the script can't kill this run.
         // Pass the tracked branch so the REST rebuild and update-check always agree on the source.
         const child = spawn('setsid', ['sh', REBUILD_SCRIPT], {
             detached: true, stdio: 'ignore',
             // ADFA-5339: K2GO_SITE gates the finalize-time site deploy; absent/0 keeps the old behaviour.
-            env: { ...process.env, K2GO_BRANCH: DASH_BRANCH, K2GO_SITE: updateSite ? '1' : '0' },
+            env: { ...process.env, K2GO_BRANCH: tracked.branch, K2GO_SITE: updateSite ? '1' : '0' },
         });
         child.unref();
         // ADFA-5051: mark "running" synchronously here, before we answer. The detached script also sets
@@ -739,12 +741,12 @@ apiRouter.post('/system/dashboard/rebuild/cancel', (_req: Request, res: Response
 });
 
 // ADFA-5026: live "is a newer dash-node available?" check. Unlike /system/version (which reads the
-// installed package.json off disk, offline), this compares the installed version against the mainline
-// remote: git fetch + read origin/main's static/dashboard/package.json. Everything stays in the rootfs
+// installed package.json off disk, offline), this compares the installed version against the remote
+// branch of the live build (readTrackedBranch: main on a main box): git fetch + read
+// origin/<branch>:static/dashboard/package.json. Everything stays in the rootfs
 // clone and reuses its existing git auth (like the rebuild). Network-bound, so it runs with a timeout
 // and returns 503 (not 500) when the remote can't be reached, letting the app keep its last-known state.
 const UPDATE_CLONE_DIR = '/opt/iiab-android';
-const UPDATE_BRANCH = DASH_BRANCH;   // ADFA-5051: same branch the rebuild pulls (K2GO_DASH_BRANCH override)
 const UPDATE_PKG_IN_CLONE = 'static/dashboard/package.json';
 
 /** Run git inside the on-device clone with a hard timeout; resolves stdout, rejects on non-zero/timeout. */
@@ -792,19 +794,28 @@ apiRouter.get('/system/dashboard/update-check', async (_req: Request, res: Respo
         return;
     }
 
+    const tracked = readTrackedBranch();
+    if (!tracked.ok) {
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false, error: tracked.error });
+        return;
+    }
+    const branch = tracked.branch;
     try {
-        await gitInClone(['fetch', '--quiet', 'origin', UPDATE_BRANCH], 20000);
-        const remotePkg = await gitInClone(['show', `origin/${UPDATE_BRANCH}:${UPDATE_PKG_IN_CLONE}`], 10000);
+        await gitInClone(['fetch', '--quiet', 'origin', branch], 20000);
+        const remotePkg = await gitInClone(['show', `origin/${branch}:${UPDATE_PKG_IN_CLONE}`], 10000);
         const available = String(JSON.parse(remotePkg).version || 'unknown');
         const updateAvailable = installed !== 'unknown' && available !== 'unknown' && versionGt(available, installed);
-        res.json({ installed, available, updateAvailable });
+        res.json({ installed, available, updateAvailable, branch });
     } catch (e: any) {
         // Offline / no remote / clone missing: not a server fault, and git stderr can echo the remote
         // URL (which may carry the clone's auth token). Keep the detail server-side; return a generic
         // reason. 503 so the app falls back to its last-known state rather than a hard error.
         console.error('[update-check] ' + (e?.message || e));
-        res.status(503).json({ installed, available: 'unknown', updateAvailable: false,
-            error: 'update check unavailable' });
+        // A branch that is gone from GitHub is a definite answer, not "offline": say it, with its
+        // name, so the app can tell the user. The box stays on its build; it never moves to main.
+        const branchMissing = isBranchMissing(String(e?.message || ''));
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false, branch, branchMissing,
+            error: branchMissing ? 'branch not on the remote' : 'update check unavailable' });
     }
 });
 
