@@ -399,7 +399,7 @@ public final class KolibriSeedService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_kolibri_dl_notif_title))
                 .setContentText(label)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

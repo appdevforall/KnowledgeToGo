@@ -174,7 +174,7 @@ public final class DiskGuard {
             // persisted lever, and tell the user. The user re-enables the server after freeing space.
             ServerLifecycleReconciler.get().setUserWantsOn(ctx, false);
             report(ctx, "low_disk", "escalated_stopped", floorBytes, reaped, reclaimed, v.tripCount, null);
-            notifyUser(ctx, NOTIF_ID, ctx.getString(R.string.disk_guard_notif_title),
+            notifyUser(ctx, NOTIF_ID, R.drawable.ic_stat_storage, ctx.getString(R.string.disk_guard_notif_title),
                     ctx.getString(R.string.disk_guard_notif_body),
                     buildReportMessage(ctx, "low_disk", "escalated_stopped", reaped, reclaimed, v.tripCount, null));
             Log.w(TAG, "K2GO-386: recurring disk pressure (trip " + v.tripCount + "): stopped and staying down");
@@ -242,7 +242,7 @@ public final class DiskGuard {
         long reclaimed = reclaimRunawayLog(ctx);
         ServerLifecycleReconciler.get().requestReconcileNow();
         report(ctx, source, "contained_firehose", 0L, reaped, reclaimed, streak, paths);
-        notifyUser(ctx, NOTIF_ID_FIREHOSE, ctx.getString(R.string.disk_guard_firehose_title),
+        notifyUser(ctx, NOTIF_ID_FIREHOSE, R.drawable.ic_stat_shield, ctx.getString(R.string.disk_guard_firehose_title),
                 ctx.getString(R.string.disk_guard_firehose_body),
                 buildReportMessage(ctx, source, "contained_firehose", reaped, reclaimed, streak, paths));
         Log.w(TAG, "K2GO-386: contained recurring firehose (streak " + streak + "): reaped=" + reaped
@@ -372,7 +372,7 @@ public final class DiskGuard {
      * containment already happened. Each event kind passes its own notifId so one does not replace the
      * other.
      */
-    private static void notifyUser(Context ctx, int notifId, String title, String body, String reportMessage) {
+    private static void notifyUser(Context ctx, int notifId, int icon, String title, String body, String reportMessage) {
         try {
             NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -393,7 +393,7 @@ public final class DiskGuard {
                     .setContentTitle(title)
                     .setContentText(body)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
-                    .setSmallIcon(android.R.drawable.stat_sys_warning)
+                    .setSmallIcon(icon)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pi)
                     .setAutoCancel(true)

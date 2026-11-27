@@ -806,7 +806,7 @@ public final class DeepOpService extends Service {
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.deepop_notif_title))
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

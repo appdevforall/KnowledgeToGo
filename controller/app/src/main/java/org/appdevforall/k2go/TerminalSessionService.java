@@ -104,7 +104,7 @@ public class TerminalSessionService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.terminal_notif_title))
                 .setContentText(getString(R.string.terminal_notif_text))
-                .setSmallIcon(android.R.drawable.ic_menu_view)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setContentIntent(pending)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOngoing(true) // cannot be swiped away while a session is alive

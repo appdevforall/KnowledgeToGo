@@ -597,7 +597,7 @@ public final class ContentExportService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_cx_export_notif_title))
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.stat_sys_upload)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
