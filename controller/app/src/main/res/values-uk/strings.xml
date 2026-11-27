@@ -1687,4 +1687,5 @@
     <string name="k2go_dl_held_metered">Очікування Wi-Fi. Завантаження не використовує мобільні дані, доки ви не дозволите.</string>
     <string name="k2go_dl_held_offline">Очікування. Застосунок залишено офлайн, тому завантаження не підключається, доки ви не дозволите.</string>
     <string name="k2go_mod_phase_downloading">Завантаження…</string>
+    <string name="watchdog_notif_text">K2Go працює. Ваша бібліотека доступна на цьому телефоні.</string>
 </resources>

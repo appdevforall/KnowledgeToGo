@@ -1692,4 +1692,5 @@
     <string name="k2go_dl_held_metered">Αναμονή για Wi-Fi. Η λήψη δεν χρησιμοποιεί δεδομένα κινητής μέχρι να το επιτρέψετε.</string>
     <string name="k2go_dl_held_offline">Αναμονή. Η εφαρμογή διατηρείται εκτός σύνδεσης, οπότε η λήψη δεν συνδέεται μέχρι να το επιτρέψετε.</string>
     <string name="k2go_mod_phase_downloading">Λήψη…</string>
+    <string name="watchdog_notif_text">Το K2Go εκτελείται. Η βιβλιοθήκη σας είναι διαθέσιμη σε αυτό το τηλέφωνο.</string>
 </resources>

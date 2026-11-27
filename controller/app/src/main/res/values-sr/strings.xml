@@ -1699,4 +1699,5 @@
     <string name="k2go_dl_held_metered">Чекање на Wi-Fi. Преузимање не користи мобилне податке док то не дозволите.</string>
     <string name="k2go_dl_held_offline">Чекање. Апликација је задржана офлајн, па се преузимање не повезује док то не дозволите.</string>
     <string name="k2go_mod_phase_downloading">Преузимање…</string>
+    <string name="watchdog_notif_text">K2Go ради. Ваша библиотека је доступна на овом телефону.</string>
 </resources>

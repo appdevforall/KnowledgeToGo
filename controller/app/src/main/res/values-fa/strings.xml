@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">در انتظار Wi-Fi. دانلود تا زمانی که اجازه ندهید از داده تلفن همراه استفاده نمی‌کند.</string>
     <string name="k2go_dl_held_offline">در انتظار. برنامه آفلاین نگه داشته شده است، بنابراین دانلود تا زمانی که اجازه ندهید وصل نمی‌شود.</string>
     <string name="k2go_mod_phase_downloading">در حال دانلود…</string>
+    <string name="watchdog_notif_text">K2Go در حال اجراست. کتابخانه شما در این تلفن در دسترس است.</string>
 </resources>

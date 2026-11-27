@@ -1705,4 +1705,5 @@
     <string name="k2go_dl_held_metered">Inasubiri Wi-Fi. Upakuaji hautumii data ya simu hadi utakaporuhusu.</string>
     <string name="k2go_dl_held_offline">Inasubiri. Programu imewekwa nje ya mtandao, kwa hivyo upakuaji hauunganishi hadi utakaporuhusu.</string>
     <string name="k2go_mod_phase_downloading">Inapakua…</string>
+    <string name="watchdog_notif_text">K2Go inafanya kazi. Maktaba yako inapatikana kwenye simu hii.</string>
 </resources>

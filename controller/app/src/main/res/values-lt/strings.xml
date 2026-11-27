@@ -1704,4 +1704,5 @@
     <string name="k2go_dl_held_metered">Laukiama Wi-Fi. Atsisiuntimas nenaudoja mobiliųjų duomenų, kol to neleisite.</string>
     <string name="k2go_dl_held_offline">Laukiama. Programa paliekama neprisijungus, todėl atsisiuntimas neprisijungia, kol to neleisite.</string>
     <string name="k2go_mod_phase_downloading">Atsisiunčiama…</string>
+    <string name="watchdog_notif_text">K2Go veikia. Jūsų biblioteka pasiekiama šiame telefone.</string>
 </resources>

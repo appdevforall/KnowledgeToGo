@@ -1694,4 +1694,5 @@
     <string name="k2go_dl_held_metered">Čaká sa na Wi-Fi. Sťahovanie nepoužije mobilné dáta, kým to nepovolíte.</string>
     <string name="k2go_dl_held_offline">Čaká sa. Aplikácia je ponechaná offline, preto sa sťahovanie nepripojí, kým to nepovolíte.</string>
     <string name="k2go_mod_phase_downloading">Sťahuje sa…</string>
+    <string name="watchdog_notif_text">K2Go je spustený. Vaša knižnica je dostupná v tomto telefóne.</string>
 </resources>

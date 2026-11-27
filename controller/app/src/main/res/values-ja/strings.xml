@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi を待機中です。許可するまで、ダウンロードにモバイルデータは使用されません。</string>
     <string name="k2go_dl_held_offline">待機中です。アプリはオフラインのままなので、許可するまでダウンロードは接続しません。</string>
     <string name="k2go_mod_phase_downloading">ダウンロード中…</string>
+    <string name="watchdog_notif_text">K2Go は実行中です。ライブラリはこのスマートフォンで利用できます。</string>
 </resources>

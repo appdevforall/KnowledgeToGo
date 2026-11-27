@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">Wachten op Wi-Fi. De download gebruikt geen mobiele data totdat je het toestaat.</string>
     <string name="k2go_dl_held_offline">Wachten. De app blijft offline, dus de download maakt geen verbinding totdat je het toestaat.</string>
     <string name="k2go_mod_phase_downloading">Downloaden…</string>
+    <string name="watchdog_notif_text">K2Go is actief. Je bibliotheek is beschikbaar op deze telefoon.</string>
 </resources>

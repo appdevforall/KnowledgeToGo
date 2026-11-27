@@ -211,7 +211,7 @@ public class WatchdogService extends Service {
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.watchdog_notif_title))
-                .setContentText("Protecting critical background operations...")
+                .setContentText(getString(R.string.watchdog_notif_text))
                 .setSmallIcon(R.drawable.ic_stat_tethering)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

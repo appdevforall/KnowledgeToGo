@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">Warten auf WLAN. Der Download nutzt keine mobilen Daten, bis Sie es erlauben.</string>
     <string name="k2go_dl_held_offline">Wartet. Die App bleibt offline, daher stellt der Download keine Verbindung her, bis Sie es erlauben.</string>
     <string name="k2go_mod_phase_downloading">Wird heruntergeladen…</string>
+    <string name="watchdog_notif_text">K2Go läuft. Deine Bibliothek ist auf diesem Telefon verfügbar.</string>
 </resources>

@@ -1692,4 +1692,5 @@
     <string name="k2go_dl_held_metered">Изчакване на Wi-Fi. Изтеглянето не използва мобилни данни, докато не го разрешите.</string>
     <string name="k2go_dl_held_offline">Изчакване. Приложението е оставено офлайн, затова изтеглянето не се свързва, докато не го разрешите.</string>
     <string name="k2go_mod_phase_downloading">Изтегляне…</string>
+    <string name="watchdog_notif_text">K2Go работи. Вашата библиотека е достъпна на този телефон.</string>
 </resources>
