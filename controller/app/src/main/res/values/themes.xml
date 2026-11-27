@@ -16,6 +16,15 @@
         <item name="sectionHeaderBackground">@color/section_header_bg</item>
     </style>
 
+    <!-- K2GO-590: the terminal is always dark. In the light theme the edge-to-edge padding
+         showed the white window background behind white status bar icons. -->
+    <style name="Theme.IIABController.Terminal">
+        <item name="android:windowBackground">@color/terminal_background</item>
+        <item name="android:statusBarColor">@color/terminal_background</item>
+        <item name="android:navigationBarColor">@color/terminal_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <!-- Branded dialog theme (ADFA-4638): unifies AlertDialog button color to the
          brand blue. Overrides colorAccent ONLY inside dialogs; global colorAccent
          (green) is untouched. Surface follows the day/night base theme. -->
