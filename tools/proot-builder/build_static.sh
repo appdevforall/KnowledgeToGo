@@ -208,15 +208,20 @@ STUB
     # K2GO-411: translate aarch32 futex_time64 (#422) -> classic futex so 32-bit Go
     # binaries run on pre-5.1 kernels (e.g. Android 4.14, where futex_time64 is
     # ENOSYS). PRoot ships utimensat_time64 (v5.3.0); this follows the same path.
-    # Safe: PRoot has no futex arg handling and FUTEX_WAKE carries no timespec;
-    # on a 64-bit host PR_futex resolves to the native 64-bit-timespec futex.
+    # The wait operations carry a timeout with 64-bit fields, and futex reads 32-bit
+    # fields: translate_futex_time64() (step 5) copies the timeout in the 32-bit layout.
+    # A plain sysnum swap made a 500 ms wait return at once (kernel matrix,
+    # futex_time64-timeout).
     SYSD="$TERMUX_PKG_SRCDIR/src/syscall"
+    TRD="$TERMUX_PKG_SRCDIR/src/tracee"
     # 1) abstract sysnum
     grep -q 'SYSNUM(futex_time64)' "$SYSD/sysnums.list" \
         || sed -i '/^SYSNUM(futex)$/a SYSNUM(futex_time64)' "$SYSD/sysnums.list"
-    # 2) enter.c: rewrite PR_futex_time64 -> PR_futex at sysenter
+    # 2) enter.c: translate PR_futex_time64 -> PR_futex at sysenter
     grep -q 'PR_futex_time64' "$SYSD/enter.c" \
-        || { awk '/^\tcase PR_getcwd:/ && !p { print "\tcase PR_futex_time64:"; print "\t\tset_sysnum(tracee, PR_futex);"; print "\t\tstatus = 0;"; print "\t\tbreak;"; print ""; p=1 } { print }' "$SYSD/enter.c" > "$SYSD/enter.c.tmp" && mv "$SYSD/enter.c.tmp" "$SYSD/enter.c"; }
+        || { awk '/^\tcase PR_getcwd:/ && !p { print "\tcase PR_futex_time64:"; print "\t\tstatus = translate_futex_time64(tracee);"; print "\t\tbreak;"; print ""; p=1 } { print }' "$SYSD/enter.c" > "$SYSD/enter.c.tmp" && mv "$SYSD/enter.c.tmp" "$SYSD/enter.c"; }
+    grep -q '#include "tracee/seccomp.h"' "$SYSD/enter.c" \
+        || sed -i 's|^#include "tracee/mem.h"$|&\n#include "tracee/seccomp.h" /* translate_futex_time64 */|' "$SYSD/enter.c"
     # 3) ABI table: map the raw aarch32 number 422 -> PR_futex_time64 (i386 uses 422
     #    too). WITHOUT THIS the sysnum never resolves to PR_futex_time64 and the enter.c
     #    case never fires (verified on device: patch present but still ENOSYS). Anchor on
@@ -232,11 +237,90 @@ STUB
     #    so without this futex_time64 passes through untranslated unless PROOT_NO_SECCOMP).
     grep -q '{ PR_futex_time64,' "$SYSD/seccomp.c" \
         || sed -i 's/^\([[:space:]]*\){ PR_fchmodat,[[:space:]]*0 },$/&\n\1{ PR_futex_time64, 0 },/' "$SYSD/seccomp.c"
+    # 5) One translation for both paths: the sysenter of step 2, and the SIGSYS of the
+    #    Android 8 to 10 app filter, which can trap futex_time64 before any sysenter stop
+    #    (the box Go programs crashed). The timeout copy goes below the stack pointer;
+    #    both paths restore the stack pointer at the end of the syscall.
+    if ! grep -q 'int translate_futex_time64' "$TRD/seccomp.c"; then
+        sed -i 's|^void fix_and_restart_enosys_syscall(Tracee\* tracee);$|&\nint translate_futex_time64(Tracee *tracee);|' "$TRD/seccomp.h"
+        cat << 'FUTEX64' >> "$TRD/seccomp.c"
+
+#include <stdint.h> /* int32_t, INT32_MAX */
+
+/* K2GO-411: futex_time64 -> futex for the 32-bit ABIs.  The wait
+ * operations read SYSARG_4 as a timeout with 64-bit fields; futex(2)
+ * reads 32-bit fields.  Copy the timeout in the 32-bit layout below the
+ * stack pointer, which is restored at the end of the syscall.  */
+int translate_futex_time64(Tracee *tracee)
+{
+	struct { int64_t sec; int64_t nsec; } t64;
+	struct { int32_t sec; int32_t nsec; } t32;
+	word_t op = peek_reg(tracee, CURRENT, SYSARG_2) & 0x7f; /* FUTEX_CMD_MASK */
+	word_t timeout = peek_reg(tracee, CURRENT, SYSARG_4);
+	word_t address;
+	int status;
+
+	set_sysnum(tracee, PR_futex);
+
+	/* FUTEX_WAIT, LOCK_PI, WAIT_BITSET, WAIT_REQUEUE_PI, LOCK_PI2.  For
+	 * the other operations SYSARG_4 is a number, not a pointer.  */
+	if (timeout == 0 || (op != 0 && op != 6 && op != 9 && op != 11 && op != 13))
+		return 0;
+
+	status = read_data(tracee, &t64, timeout, sizeof(t64));
+	if (status < 0)
+		return status;
+
+	/* A time after 2038 waits until 2038.  A value that futex(2) rejects
+	 * stays invalid, so the kernel still returns EINVAL.  */
+	t32.sec  = t64.sec > INT32_MAX ? INT32_MAX : (t64.sec < INT32_MIN ? -1 : (int32_t) t64.sec);
+	t32.nsec = (t64.nsec > INT32_MAX || t64.nsec < INT32_MIN) ? -1 : (int32_t) t64.nsec;
+
+	address = alloc_mem(tracee, sizeof(t32));
+	if (address == 0)
+		return -EFAULT;
+	status = write_data(tracee, address, &t32, sizeof(t32));
+	if (status < 0)
+		return status;
+	poke_reg(tracee, SYSARG_4, address);
+	return 0;
+}
+FUTEX64
+        awk '/^\tcase PR_accept:$/ && !p { print "\tcase PR_futex_time64:"; print "\t\t/* K2GO-411: the app filter of Android 8 to 10 traps it (SIGSYS).  */"; print "\t\tret = translate_futex_time64(tracee);"; print "\t\tif (ret < 0) {"; print "\t\t\tset_result_after_seccomp(tracee, ret);"; print "\t\t\tbreak;"; print "\t\t}"; print "\t\trestart_syscall_after_seccomp(tracee);"; print "\t\tbreak;"; print ""; p=1 } { print }' "$TRD/seccomp.c" > "$TRD/seccomp.c.tmp" && mv "$TRD/seccomp.c.tmp" "$TRD/seccomp.c"
+    fi
+    # 6) Without the NT_ARM_SYSTEM_CALL regset (arm64 Linux older than 3.19, a phone with
+    #    3.18 and a 32-bit library) proot cannot change the syscall number. It runs the original
+    #    call with arguments that fail, then chains futex. The app filter traps that original
+    #    futex_time64, and the SIGSYS handler took it as a new call: it wrote ENOSYS over the first
+    #    argument of the chained futex (EINVAL; Forgejo crashed). The SIGSYS of that faulty call
+    #    is its failure: proot swallows it, as it does for the avoider syscall.
+    if ! grep -q 'K2GO-411: the SIGSYS of the faulty call' "$TRD/event.c"; then
+        awk '
+            /VERBOSE\(tracee, 1, "Handling syscall exit from SIGSYS"\);/ && !d {
+                print "\t\t\t\t\t/* K2GO-411: the SIGSYS of the faulty call of the sysnum"
+                print "\t\t\t\t\t * workaround (chain.c) is its failure, not a new call.  */"
+                print "\t\t\t\t\tconst bool faulty_call = tracee->chain.sysnum_workaround_state"
+                print "\t\t\t\t\t\t== SYSNUM_WORKAROUND_PROCESS_FAULTY_CALL;"
+                d = 1; w = 1
+            }
+            { print }
+            w && /tracee->restore_sysarg1_after_sigsys = true;/ {
+                print "\t\t\t\t\tif (faulty_call)"
+                print "\t\t\t\t\t\ttracee->skip_next_seccomp_signal = true;"
+                w = 0
+            }' "$TRD/event.c" > "$TRD/event.c.tmp" && mv "$TRD/event.c.tmp" "$TRD/event.c"
+    fi
     # guards
     grep -q 'SYSNUM(futex_time64)' "$SYSD/sysnums.list" || { echo "!! [IIAB] sysnums.list anchor 'SYSNUM(futex)' not found"; exit 1; }
     grep -q 'case PR_futex_time64:' "$SYSD/enter.c"     || { echo "!! [IIAB] enter.c anchor 'case PR_getcwd:' not found"; exit 1; }
     grep -q '\[ 422 \] = PR_futex_time64,' "$SYSD/sysnums-arm.h" || { echo "!! [IIAB] sysnums-arm.h anchor '[ 240 ] = PR_futex,' not found"; exit 1; }
     grep -q '{ PR_futex_time64,' "$SYSD/seccomp.c"      || { echo "!! [IIAB] seccomp.c anchor '{ PR_fchmodat, 0 }' not found"; exit 1; }
+    grep -q 'translate_futex_time64(tracee)' "$SYSD/enter.c" || { echo "!! [IIAB] enter.c futex_time64 case not translated"; exit 1; }
+    grep -q '#include "tracee/seccomp.h"' "$SYSD/enter.c" || { echo "!! [IIAB] enter.c anchor '#include \"tracee/mem.h\"' not found"; exit 1; }
+    grep -q 'int translate_futex_time64(Tracee \*tracee);' "$TRD/seccomp.h" || { echo "!! [IIAB] seccomp.h anchor 'fix_and_restart_enosys_syscall' not found"; exit 1; }
+    grep -q -F 'case PR_futex_time64:' "$TRD/seccomp.c" || { echo "!! [IIAB] tracee/seccomp.c anchor 'case PR_accept:' not found"; exit 1; }
+    grep -q 'K2GO-411: the SIGSYS of the faulty call' "$TRD/event.c" || { echo "!! [IIAB] tracee/event.c anchor 'Handling syscall exit from SIGSYS' not found"; exit 1; }
+    grep -q 'tracee->skip_next_seccomp_signal = true;' "$TRD/event.c" || { echo "!! [IIAB] tracee/event.c anchor 'restore_sysarg1_after_sigsys = true' not found"; exit 1; }
 
     # --- ADFA-5334 (ADR-5334): translate fchmodat2 (452) like fchmodat, mirroring faccessat2. ---
     # glibc>=2.39 restores directory modes via fchmodat2; proot passes it through untranslated, so

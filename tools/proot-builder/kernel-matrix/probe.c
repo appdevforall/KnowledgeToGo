@@ -10,6 +10,8 @@
  *   probe fchmodat2 <path>      syscall 452, mode 0640
  *   probe clock_gettime64       syscall 403 (32-bit ARM only) as glibc calls it: on ENOSYS, fall
  *                               back to clock_gettime. Exit 0 only for a real time.
+ *   probe futex_time64-timeout  syscall 422 FUTEX_WAIT, 3 times with a 0.9 s timeout; exit 0 only
+ *                               when the 3 waits take 2 to 5 s (a wrong timespec waits 0 s)
  *   probe seccomp-trap <n,n> <command...>
  *                               install a filter that traps (SIGSYS) these 32-bit ARM syscalls,
  *                               as the Android app filter does, then run the command in its place
@@ -113,9 +115,36 @@ int main(int argc, char** argv) {
     return 2;
 #endif
   }
+  if (argc == 2 && strcmp(argv[1], "futex_time64-timeout") == 0) {
+#if defined(__arm__)
+    /* FUTEX_WAIT with a 0.9 s timeout (64-bit timespec), 3 times, timed with the 32-bit
+     * clock_gettime, so the result does not depend on clock_gettime64. The clock of a test VM can
+     * step by 1 s, so one short wait cannot be timed. A wrong timespec conversion waits 0 s. */
+    int word = 0;
+    struct timespec t0, t1;
+    long r = 0;
+    int err = 0;
+    if (syscall(NR_CLOCK_GETTIME_ARM, CLOCK_MONOTONIC, &t0) != 0) return result(-1);
+    for (int i = 0; i < 3; i++) {
+      struct { int64_t sec; int64_t nsec; } timeout = {0, 900000000};
+      r = syscall(NR_FUTEX_TIME64, &word, 0 /* FUTEX_WAIT */, 0, &timeout, NULL, 0);
+      err = errno;
+      if (r != -1 || err != ETIMEDOUT) break;
+    }
+    if (syscall(NR_CLOCK_GETTIME_ARM, CLOCK_MONOTONIC, &t1) != 0) return result(-1);
+    long ms = (t1.tv_sec - t0.tv_sec) * 1000L + (t1.tv_nsec - t0.tv_nsec) / 1000000L;
+    printf("futex_time64 wait 3 x 900 ms: result %ld errno %d, elapsed %ld ms\n", r, r == -1 ? err : 0, ms);
+    if (r == -1 && err == ENOSYS) return 38;
+    if (r != -1 || err != ETIMEDOUT) return 1;
+    return (ms >= 2000 && ms <= 5000) ? 0 : 1;
+#else
+    printf("futex_time64 exists only on 32-bit ABIs\n");
+    return 2;
+#endif
+  }
   if (argc >= 4 && strcmp(argv[1], "seccomp-trap") == 0) {
     return seccomp_trap(argv[2], argv + 3);
   }
-  fprintf(stderr, "usage: probe futex_time64 | fchmodat2 <path> | clock_gettime64 | seccomp-trap <n,n> <command...>\n");
+  fprintf(stderr, "usage: probe futex_time64 | futex_time64-timeout | fchmodat2 <path> | clock_gettime64 | seccomp-trap <n,n> <command...>\n");
   return 2;
 }
