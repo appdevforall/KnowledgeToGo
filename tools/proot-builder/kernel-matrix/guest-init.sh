@@ -20,7 +20,12 @@ KNAME="$(sed -n 's/.*k2go\.kernel=\([^ ]*\).*/\1/p' /proc/cmdline)"
 REL="$(uname -r)"
 # 3.16 -> 3016, 4.4 -> 4004, 6.12 -> 6012
 KV="$(echo "$REL" | awk -F'[.-]' '{print $1 * 1000 + $2}')"
-echo "K2GO-KERNEL|$KNAME|$REL|$(uname -m)"
+# The VM has no real-time clock: its time starts at 0 (1970-01-01) and moves in 1 s steps.
+# gzip refuses a file time of 0 (warning, exit 2), so a tar made in the first second failed
+# gzip-tar-roundtrip (Bins run 6, 4.4). Set a fixed date before the tests.
+BOOT_CLOCK="$(date +%s)"
+date -s "2026-01-01 00:00:00" >/dev/null 2>&1
+echo "K2GO-KERNEL|$KNAME|$REL|$(uname -m)|clock at boot $BOOT_CLOCK, set to $(date +%s)"
 
 say() { echo "K2GO-TEST|$KNAME|$1|$2|$3|$4"; }
 check() { # abi test detail-on-fail command...
