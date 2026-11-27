@@ -258,7 +258,7 @@ public final class ContentDeleteService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_cx_delete_notif_title))
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.ic_menu_delete)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)

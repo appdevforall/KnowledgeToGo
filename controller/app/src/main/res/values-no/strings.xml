@@ -1695,4 +1695,5 @@
     <string name="k2go_dl_held_metered">Venter på Wi-Fi. Nedlastingen bruker ikke mobildata før du tillater det.</string>
     <string name="k2go_dl_held_offline">Venter. Appen holdes offline, så nedlastingen kobler ikke til før du tillater det.</string>
     <string name="k2go_mod_phase_downloading">Laster ned…</string>
+    <string name="watchdog_notif_text">K2Go kjører. Biblioteket ditt er tilgjengelig på denne telefonen.</string>
 </resources>

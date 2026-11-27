@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">正在等待 Wi-Fi。在您允许之前，下载不会使用移动数据。</string>
     <string name="k2go_dl_held_offline">正在等待。应用保持离线，因此在您允许之前，下载不会联网。</string>
     <string name="k2go_mod_phase_downloading">正在下载…</string>
+    <string name="watchdog_notif_text">K2Go 正在运行。您的图书馆可在此手机上使用。</string>
 </resources>

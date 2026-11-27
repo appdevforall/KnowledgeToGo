@@ -1901,4 +1901,6 @@
     <string name="k2go_dl_held_offline">Waiting. The app is kept offline, so the download does not connect until you allow it.</string>
     <!-- K2GO-593: status line of a module while it downloads before its install. -->
     <string name="k2go_mod_phase_downloading">Downloading...</string>
+    <!-- K2GO-590: body of the ongoing notification while K2Go runs (Watchdog). -->
+    <string name="watchdog_notif_text">K2Go is running. Your library is available on this phone.</string>
 </resources>

@@ -1698,4 +1698,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi ની રાહ જોઈ રહ્યું છે. તમે મંજૂરી ન આપો ત્યાં સુધી ડાઉનલોડ મોબાઇલ ડેટા વાપરતું નથી.</string>
     <string name="k2go_dl_held_offline">રાહ જોઈ રહ્યું છે. ઍપ ઑફલાઇન રાખવામાં આવી છે, તેથી તમે મંજૂરી ન આપો ત્યાં સુધી ડાઉનલોડ કનેક્ટ થતું નથી.</string>
     <string name="k2go_mod_phase_downloading">ડાઉનલોડ થઈ રહ્યું છે…</string>
+    <string name="watchdog_notif_text">K2Go ચાલી રહ્યું છે. તમારી લાઇબ્રેરી આ ફોન પર ઉપલબ્ધ છે.</string>
 </resources>

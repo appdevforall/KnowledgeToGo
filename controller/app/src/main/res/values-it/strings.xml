@@ -1686,4 +1686,5 @@
     <string name="k2go_dl_held_metered">In attesa del Wi-Fi. Il download non usa i dati mobili finché non lo consenti.</string>
     <string name="k2go_dl_held_offline">In attesa. L\'app è mantenuta offline, quindi il download non si connette finché non lo consenti.</string>
     <string name="k2go_mod_phase_downloading">Download in corso…</string>
+    <string name="watchdog_notif_text">K2Go è in esecuzione. La tua libreria è disponibile su questo telefono.</string>
 </resources>

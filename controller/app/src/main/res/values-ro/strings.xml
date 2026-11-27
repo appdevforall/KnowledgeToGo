@@ -1686,4 +1686,5 @@
     <string name="k2go_dl_held_metered">Se așteaptă Wi-Fi. Descărcarea nu folosește date mobile până nu permiți.</string>
     <string name="k2go_dl_held_offline">În așteptare. Aplicația este păstrată offline, așa că descărcarea nu se conectează până nu permiți.</string>
     <string name="k2go_mod_phase_downloading">Se descarcă…</string>
+    <string name="watchdog_notif_text">K2Go rulează. Biblioteca ta este disponibilă pe acest telefon.</string>
 </resources>

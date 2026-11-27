@@ -1684,4 +1684,5 @@
     <string name="k2go_dl_held_metered">Đang chờ Wi-Fi. Bản tải xuống không dùng dữ liệu di động cho đến khi bạn cho phép.</string>
     <string name="k2go_dl_held_offline">Đang chờ. Ứng dụng được giữ ngoại tuyến, vì vậy bản tải xuống không kết nối cho đến khi bạn cho phép.</string>
     <string name="k2go_mod_phase_downloading">Đang tải xuống…</string>
+    <string name="watchdog_notif_text">K2Go đang chạy. Thư viện của bạn có sẵn trên điện thoại này.</string>
 </resources>

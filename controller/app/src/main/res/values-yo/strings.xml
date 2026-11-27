@@ -1704,4 +1704,5 @@
     <string name="k2go_dl_held_metered">Ń dúró de Wi-Fi. Ìgbàsílẹ̀ kò ní lo data alagbeka títí o fi gbà á láàyè.</string>
     <string name="k2go_dl_held_offline">Ń dúró. A pa ìṣàmúlò mọ́ àìsí-íńtánẹ́ẹ̀tì, nítorí náà ìgbàsílẹ̀ kò ní sopọ̀ títí o fi gbà á láàyè.</string>
     <string name="k2go_mod_phase_downloading">Ń gba sílẹ̀…</string>
+    <string name="watchdog_notif_text">K2Go ń ṣiṣẹ́. Ilé-ìkàwé rẹ wà lórí fóònù yìí.</string>
 </resources>

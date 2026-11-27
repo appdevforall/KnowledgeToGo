@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi bekleniyor. Siz izin verene kadar indirme mobil veri kullanmaz.</string>
     <string name="k2go_dl_held_offline">Bekleniyor. Uygulama çevrimdışı tutuluyor, bu yüzden siz izin verene kadar indirme bağlanmaz.</string>
     <string name="k2go_mod_phase_downloading">İndiriliyor…</string>
+    <string name="watchdog_notif_text">K2Go çalışıyor. Kitaplığınız bu telefonda kullanılabilir.</string>
 </resources>

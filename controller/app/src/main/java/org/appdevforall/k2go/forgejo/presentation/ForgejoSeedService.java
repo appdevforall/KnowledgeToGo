@@ -171,7 +171,7 @@ public final class ForgejoSeedService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_forgejo_seed_notif_title))
                 .setContentText(getString(R.string.k2go_forgejo_seed_title))
-                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

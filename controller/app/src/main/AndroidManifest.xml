@@ -88,6 +88,7 @@
              so a single mechanism keeps the terminal input above the keyboard. -->
         <activity
             android:name=".TerminalActivity"
+            android:theme="@style/Theme.IIABController.Terminal"
             android:exported="false"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />

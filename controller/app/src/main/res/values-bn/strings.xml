@@ -1698,4 +1698,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi-এর জন্য অপেক্ষা করছে। আপনি অনুমতি না দেওয়া পর্যন্ত ডাউনলোডটি মোবাইল ডেটা ব্যবহার করে না।</string>
     <string name="k2go_dl_held_offline">অপেক্ষা করছে। অ্যাপটি অফলাইন রাখা হয়েছে, তাই আপনি অনুমতি না দেওয়া পর্যন্ত ডাউনলোডটি সংযুক্ত হয় না।</string>
     <string name="k2go_mod_phase_downloading">ডাউনলোড হচ্ছে…</string>
+    <string name="watchdog_notif_text">K2Go চালু আছে। আপনার লাইব্রেরি এই ফোনে উপলব্ধ।</string>
 </resources>

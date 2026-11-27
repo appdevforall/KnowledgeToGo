@@ -211,8 +211,8 @@ public class WatchdogService extends Service {
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.watchdog_notif_title))
-                .setContentText("Protecting critical background operations...")
-                .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
+                .setContentText(getString(R.string.watchdog_notif_text))
+                .setSmallIcon(R.drawable.ic_stat_tethering)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOngoing(true) // Cannot be swiped away by the user

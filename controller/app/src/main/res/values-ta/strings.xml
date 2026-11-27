@@ -1705,4 +1705,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi க்காகக் காத்திருக்கிறது. நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் மொபைல் டேட்டாவைப் பயன்படுத்தாது.</string>
     <string name="k2go_dl_held_offline">காத்திருக்கிறது. பயன்பாடு ஆஃப்லைனில் வைக்கப்பட்டுள்ளது, எனவே நீங்கள் அனுமதிக்கும் வரை பதிவிறக்கம் இணைக்காது.</string>
     <string name="k2go_mod_phase_downloading">பதிவிறக்கப்படுகிறது…</string>
+    <string name="watchdog_notif_text">K2Go இயங்குகிறது. உங்கள் நூலகம் இந்த ஃபோனில் கிடைக்கிறது.</string>
 </resources>

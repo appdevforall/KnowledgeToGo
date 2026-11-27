@@ -78,7 +78,7 @@ public final class MeteredNetworkObserver {
 
     private static void notifyMetered(@NonNull Context ctx) {
         NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                .setSmallIcon(R.drawable.ic_stat_cell)
                 .setContentTitle(ctx.getString(R.string.k2go_netpolicy_switched_title))
                 .setContentText(ctx.getString(R.string.k2go_netpolicy_switched_msg))
                 .setStyle(new NotificationCompat.BigTextStyle()

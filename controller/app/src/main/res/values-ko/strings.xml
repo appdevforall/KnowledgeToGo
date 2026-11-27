@@ -1685,4 +1685,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi를 기다리는 중입니다. 허용하기 전까지 다운로드에 모바일 데이터를 사용하지 않습니다.</string>
     <string name="k2go_dl_held_offline">대기 중입니다. 앱이 오프라인으로 유지되므로 허용하기 전까지 다운로드가 연결되지 않습니다.</string>
     <string name="k2go_mod_phase_downloading">다운로드 중…</string>
+    <string name="watchdog_notif_text">K2Go가 실행 중입니다. 이 휴대폰에서 라이브러리를 사용할 수 있습니다.</string>
 </resources>

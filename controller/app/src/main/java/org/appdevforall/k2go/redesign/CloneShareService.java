@@ -135,7 +135,7 @@ public final class CloneShareService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_clone_notif_title))
                 .setContentText(getString(cableDone ? R.string.k2go_clone_link_usb_done : R.string.k2go_clone_notif_text))
-                .setSmallIcon(android.R.drawable.stat_sys_upload)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

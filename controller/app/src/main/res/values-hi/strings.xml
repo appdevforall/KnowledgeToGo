@@ -1762,4 +1762,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi की प्रतीक्षा में। जब तक आप अनुमति नहीं देते, डाउनलोड मोबाइल डेटा का उपयोग नहीं करता।</string>
     <string name="k2go_dl_held_offline">प्रतीक्षा में। ऐप को ऑफ़लाइन रखा गया है, इसलिए जब तक आप अनुमति नहीं देते, डाउनलोड कनेक्ट नहीं होता।</string>
     <string name="k2go_mod_phase_downloading">डाउनलोड हो रहा है…</string>
+    <string name="watchdog_notif_text">K2Go चल रहा है। आपकी लाइब्रेरी इस फ़ोन पर उपलब्ध है।</string>
 </resources>

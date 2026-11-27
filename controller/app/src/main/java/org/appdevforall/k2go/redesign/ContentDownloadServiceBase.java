@@ -123,7 +123,7 @@ public abstract class ContentDownloadServiceBase extends Service implements Cont
         NotificationCompat.Builder b = new NotificationCompat.Builder(this, channelId())
                 .setContentTitle(notifTitle())
                 .setContentText(text)
-                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setSmallIcon(R.drawable.ic_stat_k2go)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)

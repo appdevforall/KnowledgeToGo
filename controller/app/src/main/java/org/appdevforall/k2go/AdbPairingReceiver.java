@@ -53,7 +53,7 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                     if (nm != null) {
                         ensureChannel(nm);
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                                .setSmallIcon(R.drawable.ic_stat_k2go)
                                 .setContentTitle("Pairing initiated")
                                 .setContentText("Returning to app...");
                         nm.notify(NOTIFICATION_ID, builder.build());
@@ -98,7 +98,7 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                     if (nmReturn != null) {
                         ensureChannel(nmReturn);
                         NotificationCompat.Builder rb = new NotificationCompat.Builder(context, CHANNEL_ID)
-                                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                                .setSmallIcon(R.drawable.ic_stat_k2go)
                                 .setContentTitle("Paired")
                                 .setContentText("Tap to return to K2Go")
                                 .setAutoCancel(true)

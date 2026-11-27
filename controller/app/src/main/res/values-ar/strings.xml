@@ -1689,4 +1689,5 @@
     <string name="k2go_dl_held_metered">في انتظار شبكة الواي فاي. لن يستخدم التنزيل بيانات الجوال حتى تسمح بذلك.</string>
     <string name="k2go_dl_held_offline">في الانتظار. التطبيق مضبوط على البقاء دون اتصال، لذلك لن يتصل التنزيل حتى تسمح بذلك.</string>
     <string name="k2go_mod_phase_downloading">جارٍ التنزيل…</string>
+    <string name="watchdog_notif_text">K2Go قيد التشغيل. مكتبتك متاحة على هذا الهاتف.</string>
 </resources>

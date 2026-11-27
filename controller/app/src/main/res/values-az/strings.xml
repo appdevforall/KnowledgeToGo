@@ -1705,4 +1705,5 @@
     <string name="k2go_dl_held_metered">Wi-Fi gözlənilir. Siz icazə verənə qədər yükləmə mobil internetdən istifadə etmir.</string>
     <string name="k2go_dl_held_offline">Gözləyir. Tətbiq oflayn saxlanılır, ona görə də siz icazə verənə qədər yükləmə qoşulmur.</string>
     <string name="k2go_mod_phase_downloading">Yüklənir…</string>
+    <string name="watchdog_notif_text">K2Go işləyir. Kitabxananız bu telefonda əlçatandır.</string>
 </resources>
