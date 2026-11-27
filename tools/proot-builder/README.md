@@ -3,8 +3,10 @@
 Builds the static native binaries the APK ships in `jniLibs/<arch>/`
 (`proot`, `aria2c`, `tar`, `gzip`, `xz`, `rsync`, `nano`, `less`) from
 termux-packages, via **`build_static.sh`**. CI workflow
-`.github/workflows/bins-1-build.yml` runs the build and then gates the
-release with **`smoke-native-binaries.sh`** (in this directory).
+`.github/workflows/bins-1-build.yml` (manual) runs the build and then gates the
+release with **`smoke-native-binaries.sh`** (in this directory). The build and the
+tests are in `bins-build-test.yml`. The weekly canary `test-bins-canary.yml` runs them
+on the newest termux-packages and builder image, and publishes nothing.
 
 ## Outputs
 - `jniLibs/<arch>/lib*.so` — the binaries (renamed `lib*.so` for APK packaging) + proot loaders.
@@ -96,7 +98,7 @@ proot runs with the options of the app (`PRootEngine`) and with its seccomp fall
 (ADFA-5362): when proot aborts with one of the markers of `SeccompFailure.java`, the test
 runs again with `PROOT_NO_SECCOMP=1`, and the result line says "seccomp off". The kernel
 4.4 needs it. Any other failure, or a VM that does not end, fails the script. In
-`bins-1-build.yml` the job `kernel-matrix` must pass before `publish`.
+`bins-1-build.yml` the job `kernel-matrix` (in `bins-build-test.yml`) must pass before `publish`.
 
 Needs: `qemu-system-aarch64`, `cpio`, `dpkg-deb`, `curl`, `aarch64-linux-gnu-gcc` and
 `arm-linux-gnueabihf-gcc` (for the static probes of `probe.c`). aria2c is dynamic and does

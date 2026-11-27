@@ -12,8 +12,9 @@ means a chain: run the steps in order, or one step calls the next. `Test+` marks
 | App+Play: 2. publish release | `app-play-2-release.yml` | Manual, after Google approves the candidate | Final AAB to the Play beta track, final tag, GitHub Release, website APKs on R2, OTA `update.json`; then calls `app-fdroid-repo.yml` |
 | App: publish F-Droid repo | `app-fdroid-repo.yml` | Called by App+Play step 2; manual (staging by default) | F-Droid repo on R2: `fdroid/` (live) or `fdroid-staging/` |
 | App: Firebase distribution | `app-firebase.yml` | Each push to `main` or to a branch with a ticket key | Tester build on Firebase |
-| Bins: 1. build static (PRoot) | `bins-1-build.yml` | Weekly (Sunday) and manual | New `binaries-*` release (a run on main only); then calls step 2 |
+| Bins: 1. build static (PRoot) | `bins-1-build.yml` | Manual, when `build_static.sh` or `termux-pins.env` changes | New `binaries-*` release (a run on main only); then calls step 2 |
 | Bins: 2. archive + retention | `bins-2-archive.yml` | Called by step 1, or manual (dry run option) | Archives binaries to R2, prunes old releases |
+| Bins: build + test (called) | `bins-build-test.yml` | Called by Bins step 1 (pinned sources) and by the Bins canary (newest upstream) | Nothing (build, smoke test, kernel matrix; the bundle is a run artifact) |
 | Content: publish catalogs | `content-catalogs.yml` | Weekly (Monday) and manual | Content catalogs on R2 |
 | Deps: mirror upstream to R2 | `deps-upstream-mirror.yml` | Weekly (Sunday) and manual | Backup copy of upstream build deps on R2 |
 | RootFS: 1. pre-build tests | `rootfs-1-prebuild-tests.yml` | Each PR to `main`; also called by step 2 | Nothing (checks only) |
@@ -21,4 +22,5 @@ means a chain: run the steps in order, or one step calls the next. `Test+` marks
 | RootFS: 3. promote | `rootfs-3-promote.yml` | Manual (dry run by default) | Copies `dev_latest_*` (or a dated image) to the stable `latest_*` |
 | Test+App: CI checks | `test-app-ci.yml` | Each push or PR to `main`/`development` (not docs-only) | Nothing (lint, unit tests, debug build) |
 | Test+Bins: bump check | `test-bins-bump.yml` | PR that changes the binaries pin | Nothing (pin and manifest must change together) |
+| Test+Bins: weekly canary (newest upstream) | `test-bins-canary.yml` | Weekly (Sunday) and manual | Nothing (builds and tests with termux-packages HEAD and the newest builder image; a failed run is the alert) |
 | Test+Dash: typecheck | `test-dash-typecheck.yml` | Push or PR that touches `static/dashboard/` | Nothing (typecheck and unit tests) |

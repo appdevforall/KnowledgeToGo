@@ -28,6 +28,18 @@ Before you pin a new release, run its 8 binaries (`lib*.so --version`) on a phon
 older than 4.14 and on a phone with a new kernel. CI runs on new kernels only. The sources of a
 release are pinned in `tools/proot-builder/termux-pins.env` (see the README there).
 
+## When to build a new release
+
+The workflow **Bins: 1. build static** (`bins-1-build.yml`) has no schedule. Run it by hand on
+`main` after a change to `tools/proot-builder/build_static.sh` or
+`tools/proot-builder/termux-pins.env`. Each run on `main` that passes the tests publishes a new
+`binaries-*` release. A run on another branch builds and tests, and publishes nothing.
+
+The weekly canary **Test+Bins: weekly canary** (`test-bins-canary.yml`) does the same build and
+tests from the newest termux-packages and the newest builder image. It publishes nothing. A
+failed run tells you that upstream changed something that breaks our build: see the commit in
+the summary of its job "Sources (newest)", and fix the build before you move a pin.
+
 ## Why (background)
 
 `ninja_manifest.json` is the integrity source of truth and is **version-controlled on purpose**

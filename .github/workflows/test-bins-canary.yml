@@ -1,0 +1,24 @@
+name: "Test+Bins: weekly canary (newest upstream)"
+
+# K2GO-506: the release build (bins-1-build.yml) uses the pinned sources and runs by hand only.
+# This canary does the same build each week from termux-packages master HEAD and the newest
+# builder image, and runs the same tests (smoke test, kernel matrix). It publishes no release,
+# makes no tag and writes nothing to R2: its token can only read. Its artifacts expire after 3 days.
+# Alert: the run fails. GitHub sends the failure notice of a scheduled run to the user who last
+# changed its cron line. The run history shows the week that upstream broke the build. The summary
+# of the job "Sources (newest)" gives the termux-packages commit and the builder image of each run.
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    uses: ./.github/workflows/bins-build-test.yml
+    with:
+      upstream: newest
+      retention-days: 3

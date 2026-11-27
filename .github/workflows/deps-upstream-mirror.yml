@@ -6,7 +6,7 @@ name: "Deps: mirror upstream to R2"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 4 * * 0"   # Sundays, like the static-binaries cron
+    - cron: "0 4 * * 0"   # Sundays, like the static-binaries canary
 
 concurrency:
   group: upstream-mirror
