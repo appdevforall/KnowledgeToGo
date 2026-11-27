@@ -78,10 +78,19 @@ runs the bundle on both ABIs (armeabi-v7a through the 32-bit compat mode of the 
 kernel, as on a phone). `guest-init.sh` is the test list. Each test names the
 `build_static.sh` customization it covers: static start, the tar/gzip/xz/rsync round-trips,
 the proot launch, fork, `fchmodat2`, `futex_time64` and EXITKILL.
-`clock_gettime64-app-filter` (K2GO-597) runs proot under a filter like the Android 8 to 10
-app filter (SIGSYS on `clock_gettime64` and the proot avoider): the probe must get ENOSYS and
-a real time from its fallback, not a swallowed SIGSYS. The fault showed on kernels older than
-4.8 (4.4 here); arm64 3.16 has no seccomp filters, so the test is a SKIP there.
+The `*-app-filter` tests run proot under a filter like the Android 8 to 10 app filter (SIGSYS
+on `clock_gettime64`, `futex_time64` and the proot avoider). `clock_gettime64-app-filter`
+(K2GO-597): the probe must get ENOSYS and a real time from its fallback, not a swallowed SIGSYS;
+the fault showed on kernels older than 4.8 (4.4 here). `futex_time64-app-filter`: proot must run
+futex in place of the trapped call (32-bit Go programs crashed). `futex_time64-timeout-*`: a
+wait must last its full timeout (3 x 0.9 s), so proot must copy the timeout in the 32-bit layout.
+arm64 3.16 has no seccomp filters, so the filter tests are a SKIP there.
+The `arm64-lib32` pass runs the 32-bit programs with the arm64 proot and its 32-bit loader (a
+32-bit library on the arm64 app, K2GO-571), once with seccomp and once with
+`PROOT_NO_SECCOMP=1` (`arm64-lib32-nosec`).
+Not covered here: an arm64 kernel older than 3.19 with seccomp filters (a vendor 3.18 on a phone).
+On such a kernel proot cannot change the syscall number of a 32-bit program, so it runs the call
+with arguments that fail and chains the translated call. Check that case on a real phone.
 
 proot runs with the options of the app (`PRootEngine`) and with its seccomp fallback
 (ADFA-5362): when proot aborts with one of the markers of `SeccompFailure.java`, the test

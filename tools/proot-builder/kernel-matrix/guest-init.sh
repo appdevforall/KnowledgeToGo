@@ -111,17 +111,26 @@ for abi in arm64-v8a armeabi-v7a; do
         [ "$rc" -eq "$want" ] && say "$abi" futex_time64-native PASS "kernel result $rc as expected" \
             || say "$abi" futex_time64-native FAIL "probe exit $rc, expected $want: $(cat /tmp/out)"
         ptest "$abi" futex_time64-in-proot "probe in proot" $PROOT -r "$R" -w / /probe futex_time64
+        # The wait operations of futex_time64 carry a timeout with 64-bit fields; futex reads
+        # 32-bit fields, so proot must copy the timeout (a wrong copy waits 0 s).
+        ptest "$abi" futex_time64-timeout-in-proot "timeout in proot" $PROOT -r "$R" -w / /probe futex_time64-timeout
         # The Android 8 to 10 app filter (K2GO-597): proot and the box inherit a filter that traps
-        # clock_gettime64 (403) and the proot avoider (222). proot must answer ENOSYS, so glibc
-        # falls back to clock_gettime; it must not swallow the SIGSYS as a syscall that it voided.
-        # The fault showed on kernels older than 4.8 (3.18 on a phone, 4.4 here); the old proot
-        # passes this test on 4.9 and later.
+        # clock_gettime64 (403), futex_time64 (422) and the proot avoider (222). For 403, proot
+        # must answer ENOSYS, so glibc falls back to clock_gettime; it must not swallow the SIGSYS
+        # as a syscall that it voided (the fault showed on kernels older than 4.8: 3.18 on a phone,
+        # 4.4 here). For 422, proot must run futex in its place (32-bit Go programs crashed).
         if "/r/$abi/probe" seccomp-trap 403 /bin/busybox true >/tmp/out 2>&1; then
             ptest "$abi" clock_gettime64-app-filter "clock_gettime64 under the app filter" \
                 "/r/$abi/probe" seccomp-trap 222,403 $PROOT -r "$R" -w / /probe clock_gettime64
+            ptest "$abi" futex_time64-app-filter "futex_time64 under the app filter" \
+                "/r/$abi/probe" seccomp-trap 222,403,422 $PROOT -r "$R" -w / /probe futex_time64
+            ptest "$abi" futex_time64-timeout-app-filter "futex_time64 timeout under the app filter" \
+                "/r/$abi/probe" seccomp-trap 222,403,422 $PROOT -r "$R" -w / /probe futex_time64-timeout
         elif [ "$KV" -lt 3019 ]; then
             # arm64 has seccomp filters since Linux 3.19; an Android 8 phone always has them.
-            say "$abi" clock_gettime64-app-filter SKIP "this kernel cannot install a seccomp filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+            for t in clock_gettime64-app-filter futex_time64-app-filter futex_time64-timeout-app-filter; do
+                say "$abi" "$t" SKIP "this kernel cannot install a seccomp filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+            done
         else
             say "$abi" clock_gettime64-app-filter FAIL "the probe could not install the filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
         fi
@@ -155,6 +164,40 @@ for abi in arm64-v8a armeabi-v7a; do
     }
     ptest "$abi" proot-exitkill "exitkill" proot_exitkill
     cd /
+done
+
+# A 32-bit library on the arm64 app (K2GO-571): the arm64 proot runs the 32-bit programs with its
+# 32-bit loader. The app filter of Android 8 to 10 has a 32-bit part, so the same futex_time64
+# tests apply. Before Linux 4.8, seccomp acts before the sysenter stop, so here only the SIGSYS
+# path of proot can translate futex_time64.
+B=/k2go/arm64-v8a
+R=/r/armeabi-v7a
+# The app keeps PROOT_NO_SECCOMP=1 for all programs once the arm64 proot aborts on a kernel (the
+# Nokia 6, Linux 3.18), so the pass runs in both modes.
+for mode in seccomp no-seccomp; do
+    [ -f "$B/libproot-loader32.so" ] && [ -d "$R" ] || break
+    abi=arm64-lib32
+    mkdir -p "/tmp/pt-$abi"
+    export PROOT_LOADER="$B/libproot-loader.so" PROOT_LOADER_32="$B/libproot-loader32.so" PROOT_TMP_DIR="/tmp/pt-$abi"
+    if [ "$mode" = seccomp ]; then unset PROOT_NO_SECCOMP; else export PROOT_NO_SECCOMP=1; abi=arm64-lib32-nosec; fi
+    PROOT="$B/libproot.so --sysvipc -0 --link2symlink --kill-on-exit -b /dev -b /proc -b /sys"
+    ptest "$abi" proot-launch "launch" sh -c "$PROOT -r $R -w / /prog --version | grep -q tar"
+    ptest "$abi" futex_time64-in-proot "probe in proot" $PROOT -r "$R" -w / /probe futex_time64
+    ptest "$abi" futex_time64-timeout-in-proot "timeout in proot" $PROOT -r "$R" -w / /probe futex_time64-timeout
+    if /r/arm64-v8a/probe seccomp-trap 403 /bin/busybox true >/tmp/out 2>&1; then
+        ptest "$abi" clock_gettime64-app-filter "clock_gettime64 under the app filter" \
+            /r/arm64-v8a/probe seccomp-trap 222,403 $PROOT -r "$R" -w / /probe clock_gettime64
+        ptest "$abi" futex_time64-app-filter "futex_time64 under the app filter" \
+            /r/arm64-v8a/probe seccomp-trap 222,403,422 $PROOT -r "$R" -w / /probe futex_time64
+        ptest "$abi" futex_time64-timeout-app-filter "futex_time64 timeout under the app filter" \
+            /r/arm64-v8a/probe seccomp-trap 222,403,422 $PROOT -r "$R" -w / /probe futex_time64-timeout
+    elif [ "$KV" -lt 3019 ]; then
+        for t in clock_gettime64-app-filter futex_time64-app-filter futex_time64-timeout-app-filter; do
+            say "$abi" "$t" SKIP "this kernel cannot install a seccomp filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+        done
+    else
+        say "$abi" clock_gettime64-app-filter FAIL "the probe could not install the filter: $(head -c 80 /tmp/out | tr '\n|' '  ')"
+    fi
 done
 
 echo "K2GO-END|$KNAME"

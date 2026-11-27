@@ -79,6 +79,8 @@ for pair in arm64-v8a:arm64 armeabi-v7a:armhf; do
     for b in tar gzip xz proot proot-loader rsync nano less; do
         cp "$JNI/$abi/lib$b.so" "$ROOT/k2go/$abi/"
     done
+    # arm64 only: the loader of 32-bit programs (a 32-bit library on the arm64 app, K2GO-571).
+    [ -f "$JNI/$abi/libproot-loader32.so" ] && cp "$JNI/$abi/libproot-loader32.so" "$ROOT/k2go/$abi/"
     cp "$WORK/bb-$deb/bin/busybox" "$ROOT/r/$abi/bin/busybox"
     cp "$WORK/probe-$deb" "$ROOT/r/$abi/probe"
     cp "$JNI/$abi/libtar.so" "$ROOT/r/$abi/prog"
