@@ -2003,4 +2003,104 @@
     <string name="k2go_class_ago_over_two_hours">More than two hours ago</string>
     <!-- K2Go School: Teach a class: the box did not open the class (no answer). A snackbar. -->
     <string name="k2go_class_start_failed">The class did not start. Try again.</string>
+    <!-- K2Go School: the school trust (device zero, setup rings, verified classes). Machine translation in the locales. -->
+    <!-- Class tab, in place of "Teach a class" on a phone of a school with no teacher certificate (a student phone). -->
+    <string name="k2go_class_student_phone">This is a student phone. Only a teacher phone can open a class. You can join a class below.</string>
+    <!-- Class tab, in place of "Teach a class" on device zero with no teacher certificate of its own. "This phone teaches too" = k2go_school_self_teacher. -->
+    <string name="k2go_class_device_zero">This is device zero of the school. To teach on it, open Settings, then School, and tap \"This phone teaches too\".</string>
+    <!-- Class tab, under an open class on a phone of a school. %1$s = the room on the certificate of the teacher phone, for example Room 3B. -->
+    <string name="k2go_class_verified">Teacher phone of your school: %1$s</string>
+    <!-- Class tab, under an open class on a phone of a school: the class is grey and cannot be joined. -->
+    <string name="k2go_class_not_verified">This class is not from a teacher of your school.</string>
+    <!-- Settings > School (school trust, device zero). The row in Settings and its subtitle. -->
+    <string name="k2go_settings_school">School</string>
+    <string name="k2go_settings_school_sub">The school key, teachers and students</string>
+    <!-- Settings > School: the text at the top of the screen. -->
+    <string name="k2go_school_intro">A school keeps its classes safe with a school key. One phone keeps the key: device zero. It approves the teacher phones.</string>
+    <string name="k2go_school_none">This phone is not part of a school.</string>
+    <string name="k2go_school_create">Create a school on this phone</string>
+    <string name="k2go_school_restore">Restore the school key from a backup</string>
+    <!-- Settings > School > Create: the fields. -->
+    <string name="k2go_school_name">School name</string>
+    <string name="k2go_school_year_end">End of the school year</string>
+    <string name="k2go_school_year_end_pick">Choose a date</string>
+    <string name="k2go_school_password">School password</string>
+    <string name="k2go_school_password_again">Type the school password again</string>
+    <string name="k2go_school_password_note">Write the password on paper and keep it with the backup. Without it, nobody can open the backup.</string>
+    <string name="k2go_school_create_button">Create the school</string>
+    <string name="k2go_school_working">Making the school key. This can take some seconds.</string>
+    <!-- Settings > School: the errors of the form and of the restore. -->
+    <string name="k2go_school_err_name">Write the name of the school (80 characters or less).</string>
+    <string name="k2go_school_err_date">Choose a date in the next two years.</string>
+    <string name="k2go_school_err_failed">The school key was not saved. Try again.</string>
+    <!-- %1$s = the name of the school that this phone belongs to. -->
+    <string name="k2go_school_err_other_school">This phone belongs to %1$s. It cannot keep the key of another school.</string>
+    <string name="k2go_school_err_not_backup">This file is not a backup of a school key.</string>
+    <string name="k2go_school_err_password">The password is not correct.</string>
+    <!-- Settings > School on device zero. %1$s = the school name. -->
+    <string name="k2go_school_device_zero">This phone is device zero of %1$s. It keeps the school key: keep it in a safe place.</string>
+    <string name="k2go_school_id">School ID</string>
+    <string name="k2go_school_until">School year ends</string>
+    <string name="k2go_school_backup">Save a backup of the school key</string>
+    <string name="k2go_school_backup_hint">Save it on the microSD card. If this phone is lost or reset, the backup and the password give back the school key.</string>
+    <string name="k2go_school_backup_ask_title">Save a backup now?</string>
+    <string name="k2go_school_backup_ask_msg">Without a backup, a lost or reset phone means a new school key, and every phone must join the school again.</string>
+    <string name="k2go_school_backup_now">Save a backup</string>
+    <string name="k2go_school_backup_later">Later</string>
+    <string name="k2go_school_backup_saved">The backup is saved.</string>
+    <string name="k2go_school_backup_failed">The backup was not saved.</string>
+    <!-- Settings > School > Restore: the password dialog and the result. -->
+    <string name="k2go_school_restore_title">Password of the backup</string>
+    <string name="k2go_school_restore_button">Restore</string>
+    <string name="k2go_school_restored">The school key is on this phone again.</string>
+    <!-- Settings > School on a teacher or student phone. %1$s = the school name. -->
+    <string name="k2go_school_member">This phone belongs to %1$s.</string>
+    <!-- Settings > School on a teacher phone. %1$s = the school name, %2$s = the room on its certificate. -->
+    <string name="k2go_school_teacher_member">This phone is a teacher phone of %1$s (%2$s).</string>
+    <!-- Settings > School: the setup ring (phase 4). Buttons on device zero and teacher phones. -->
+    <string name="k2go_school_approve_teachers">Approve teacher phones</string>
+    <string name="k2go_school_enroll_students">Enroll students</string>
+    <string name="k2go_school_self_teacher">This phone teaches too</string>
+    <string name="k2go_school_unlock_title">School password</string>
+    <string name="k2go_school_unlock_button">Open the ring</string>
+    <!-- The ring screen on the phone that opened it. -->
+    <string name="k2go_school_ring_teacher_title">Ring for teacher phones</string>
+    <string name="k2go_school_ring_student_title">Ring for students</string>
+    <string name="k2go_school_ring_pin_hint">Write this PIN on the board. The phones type it to join.</string>
+    <!-- %1$s = the time left, for example 9:41. -->
+    <string name="k2go_school_ring_closes">The ring closes in %1$s.</string>
+    <string name="k2go_school_ring_none_asked">No phone asked yet.</string>
+    <!-- One teacher phone that asks to join. %1$d = its number in the list, %2$s = the start of its key (letters and digits). -->
+    <string name="k2go_school_request_row">Phone %1$d (key %2$s)</string>
+    <string name="k2go_school_approve">Approve</string>
+    <string name="k2go_school_refuse">Refuse</string>
+    <string name="k2go_school_approved">Approved</string>
+    <string name="k2go_school_refused">Refused</string>
+    <string name="k2go_school_label_title">Room of this teacher phone</string>
+    <string name="k2go_school_label_hint">For example: Room 3B. Do not use the names of people.</string>
+    <string name="k2go_school_close_ring">Close the ring</string>
+    <string name="k2go_school_ring_closed_time">The ring closed: its time ended.</string>
+    <string name="k2go_school_ring_closed_guesses">The ring closed: too many wrong PINs.</string>
+    <string name="k2go_school_err_ring">The ring did not open. Check that the library runs.</string>
+    <!-- Joining a school, on a phone that is not part of a school. -->
+    <string name="k2go_school_join">Join a school</string>
+    <string name="k2go_school_join_hint">Ask the teacher to open a ring. Choose it here and type the PIN that is on the board.</string>
+    <string name="k2go_school_rings_looking">Looking for rings on this Wi-Fi.</string>
+    <!-- One ring in the list. %1$s = the school name. -->
+    <string name="k2go_school_ring_row_teacher">%1$s: teacher phones</string>
+    <string name="k2go_school_ring_row_student">%1$s: students</string>
+    <string name="k2go_school_ring_two">Two rings of this school are open on this Wi-Fi. Ask the teacher which one is real before you type the PIN.</string>
+    <string name="k2go_school_pin_title">PIN of the ring</string>
+    <string name="k2go_school_join_button">Join</string>
+    <!-- %1$s = the school name. -->
+    <string name="k2go_school_joined">This phone joined %1$s.</string>
+    <string name="k2go_school_waiting">Waiting for device zero to approve this phone.</string>
+    <!-- Under the wait. %1$s = the start of the key fingerprint of this phone (8 letters and digits); device zero shows the same one. -->
+    <string name="k2go_school_own_key">The key of this phone starts with %1$s. Device zero must show the same.</string>
+    <string name="k2go_school_err_wrong_pin">The PIN is not correct.</string>
+    <string name="k2go_school_err_tries">Too many wrong PINs from this phone. Ask the teacher to open a new ring.</string>
+    <string name="k2go_school_err_no_ring">The ring is closed.</string>
+    <string name="k2go_school_err_refused">Device zero did not approve this phone.</string>
+    <string name="k2go_school_err_bad_answer">The ring did not prove that it knows the PIN. It can be a false ring: ask the teacher.</string>
+    <string name="k2go_school_err_no_key">This phone cannot keep a teacher key.</string>
 </resources>
