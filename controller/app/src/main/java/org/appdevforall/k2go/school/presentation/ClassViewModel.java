@@ -61,6 +61,9 @@ public class ClassViewModel extends ViewModel {
     // Main thread only: the role of the last read (each time the tab shows). null: the phone can teach.
     private ClassLinks.Teach noTeaching;
     private int roleRead;   // only the newest role read counts
+    // Main thread only: the first role read ended. Before it, the tab shows "checking": the box answer
+    // alone (403 on a student phone) would show a wrong reason for a moment on a slow phone.
+    private boolean roleKnown;
     // A GET answer is shown only if no newer decision came while it ran.
     private int generation;
 
@@ -147,6 +150,7 @@ public class ClassViewModel extends ViewModel {
                     : deviceZero.getAsBoolean() ? ClassLinks.Teach.DEVICE_ZERO : ClassLinks.Teach.STUDENT_PHONE;
             main.post(() -> {
                 if (mine != roleRead) return;   // a newer read runs
+                roleKnown = true;
                 noTeaching = t;
                 decide(true);
             });
@@ -154,6 +158,7 @@ public class ClassViewModel extends ViewModel {
     }
 
     private void decide(boolean again) {
+        if (!roleKnown) return;   // keep "checking" until the role is known
         if (noTeaching != null) {
             lastUp = null;   // a certificate that comes later decides again on the next tick
             ++generation;    // a GET that runs now does not show
