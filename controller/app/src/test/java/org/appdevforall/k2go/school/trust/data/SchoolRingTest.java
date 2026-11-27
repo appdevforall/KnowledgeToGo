@@ -30,8 +30,12 @@ public class SchoolRingTest {
 
     /** A teacher key in memory (the app uses the Android Keystore). */
     private static SchoolRing.TeacherKey memoryKey() {
-        String pub = Base64Url.encodeStandard(TrustKeys.generate().getPublic().getEncoded());
-        return () -> pub;
+        java.security.KeyPair kp = TrustKeys.generate();
+        String pub = Base64Url.encodeStandard(kp.getPublic().getEncoded());
+        return new SchoolRing.TeacherKey() {
+            @Override public String publicKey() { return pub; }
+            @Override public byte[] sign(byte[] data) { return TrustKeys.sign(kp.getPrivate(), data); }
+        };
     }
 
     private static SchoolRing.Found ring(TrustRecords.Root root, SchoolRing.Kind kind) {
@@ -61,7 +65,7 @@ public class SchoolRingTest {
         TrustRecords.Root root = zero.root();
 
         // Device zero: the teacher ring needs the school password.
-        RingHost host = new RingHost(zero, wifi);
+        RingHost host = new RingHost(zero, wifi, memoryKey());
         assertNull(host.open(SchoolRing.Kind.TEACHER, NOW));
         assertFalse(host.unlock("not the password"));
         assertTrue(host.unlock(PW));
@@ -70,7 +74,8 @@ public class SchoolRingTest {
 
         // A teacher phone joins with a wrong PIN, then with the right one, and waits.
         SchoolTrustFiles teacherFiles = new SchoolTrustFiles(tmp.newFolder("teacher"));
-        JoinSchool teacher = new JoinSchool(teacherFiles, wifi, memoryKey());
+        SchoolRing.TeacherKey teacherKey = memoryKey();
+        JoinSchool teacher = new JoinSchool(teacherFiles, wifi, teacherKey);
         String wrong = pin.equals("0000") ? "0001" : "0000";
         assertEquals(Result.WRONG_PIN, teacher.askTeacher(ring(root, SchoolRing.Kind.TEACHER), wrong).result);
         JoinSchool.Step step = teacher.askTeacher(ring(root, SchoolRing.Kind.TEACHER), pin);
@@ -90,7 +95,7 @@ public class SchoolRingTest {
         assertFalse(host.unlocked());
 
         // The teacher phone opens a student ring (no school key needed); a student joins.
-        RingHost teacherHost = new RingHost(teacherFiles, wifi);
+        RingHost teacherHost = new RingHost(teacherFiles, wifi, teacherKey);
         assertTrue(teacherHost.canEnrollStudents(NOW));
         String studentPin = teacherHost.open(SchoolRing.Kind.STUDENT, NOW);
         assertNotNull(studentPin);
@@ -100,14 +105,14 @@ public class SchoolRingTest {
         assertEquals(Result.OK, student.student(ring(root, SchoolRing.Kind.STUDENT), studentPin));
         assertEquals(root.school, studentFiles.root().school);
         assertNull(studentFiles.teacherCertToken());
-        assertFalse(new RingHost(studentFiles, wifi).canEnrollStudents(NOW));
+        assertFalse(new RingHost(studentFiles, wifi, memoryKey()).canEnrollStudents(NOW));
     }
 
     @Test public void aRingWithoutThePinIsRefusedByThePhone() throws Exception {
         RingTestBox wifi = new RingTestBox();
         SchoolTrustFiles zero = new SchoolTrustFiles(tmp.newFolder("zero"));
         new SchoolSetup(zero).create("Escuela 1", NOW + 90 * 86400L, PW, PW, NOW);
-        String pin = new RingHost(zero, wifi).open(SchoolRing.Kind.STUDENT, NOW);
+        String pin = new RingHost(zero, wifi, memoryKey()).open(SchoolRing.Kind.STUDENT, NOW);
         wifi.answerWithWrongMac = true;   // a false ring that does not know the PIN
         SchoolTrustFiles phone = new SchoolTrustFiles(tmp.newFolder("phone"));
         assertEquals(Result.BAD_ANSWER, new JoinSchool(phone, wifi, memoryKey()).student(ring(zero.root(), SchoolRing.Kind.STUDENT), pin));
@@ -120,7 +125,7 @@ public class SchoolRingTest {
         new SchoolSetup(a).create("Escuela A", NOW + 90 * 86400L, PW, PW, NOW);
         SchoolTrustFiles b = new SchoolTrustFiles(tmp.newFolder("b"));
         new SchoolSetup(b).create("Escuela B", NOW + 90 * 86400L, PW, PW, NOW);
-        String pin = new RingHost(a, wifi).open(SchoolRing.Kind.STUDENT, NOW);
+        String pin = new RingHost(a, wifi, memoryKey()).open(SchoolRing.Kind.STUDENT, NOW);
         assertEquals(Result.OTHER_SCHOOL, new JoinSchool(b, wifi, memoryKey()).student(ring(a.root(), SchoolRing.Kind.STUDENT), pin));
     }
 
@@ -128,7 +133,7 @@ public class SchoolRingTest {
         RingTestBox wifi = new RingTestBox();
         SchoolTrustFiles zero = new SchoolTrustFiles(tmp.newFolder("zero"));
         new SchoolSetup(zero).create("Escuela 1", NOW + 90 * 86400L, PW, PW, NOW);
-        RingHost host = new RingHost(zero, wifi);
+        RingHost host = new RingHost(zero, wifi, memoryKey());
         host.unlock(PW);
         String pin = host.open(SchoolRing.Kind.TEACHER, NOW);
         SchoolTrustFiles t = new SchoolTrustFiles(tmp.newFolder("t"));
@@ -147,7 +152,7 @@ public class SchoolRingTest {
     @Test public void deviceZeroCanTeachToo() throws Exception {
         SchoolTrustFiles zero = new SchoolTrustFiles(tmp.newFolder("zero"));
         new SchoolSetup(zero).create("Escuela 1", NOW + 90 * 86400L, PW, PW, NOW);
-        RingHost host = new RingHost(zero, new RingTestBox());
+        RingHost host = new RingHost(zero, new RingTestBox(), memoryKey());
         assertFalse(host.selfTeacher(memoryKey(), "Office", NOW));   // locked
         host.unlock(PW);
         assertTrue(host.selfTeacher(memoryKey(), "Office", NOW));

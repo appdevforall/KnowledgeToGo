@@ -18,8 +18,10 @@ import androidx.lifecycle.ViewModel;
 
 import org.appdevforall.k2go.school.domain.ClassAge;
 import org.appdevforall.k2go.school.domain.ClassFinder;
+import org.appdevforall.k2go.school.domain.ClassLinks;
 import org.appdevforall.k2go.school.domain.ClassProbe;
 import org.appdevforall.k2go.school.domain.FoundClass;
+import org.appdevforall.k2go.school.trust.domain.VerifyClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +41,9 @@ import java.util.concurrent.Executor;
  * address, up to {@link #MAX_RESEARCHES} times in a row (review N4: a teacher that left keeps its
  * announcement on the network for about 2 minutes). The list is for the screen only, and it is
  * empty again at the next search. Each check also reads the name and the age of the class from
- * its box: the list shows the newest class first, and its age steps on while the tab shows.
+ * its box: the list shows the newest class first, and its age steps on while the tab shows. On a
+ * phone of a school, each check also asks the box for the chain of the class (VerifyClass): the box
+ * of the class is the one owner of its vouch, so the app keeps no copy.
  */
 public class FindClassesViewModel extends ViewModel {
 
@@ -52,6 +56,7 @@ public class FindClassesViewModel extends ViewModel {
 
     private final ClassFinder finder;
     private final ClassProbe probe;
+    private final Verifier verifier;
     private final Executor io;
     private final Handler main = new Handler(Looper.getMainLooper());
 
@@ -89,9 +94,15 @@ public class FindClassesViewModel extends ViewModel {
         }
     };
 
-    public FindClassesViewModel(ClassFinder finder, ClassProbe probe, Executor io) {
+    /** BLOCKS: the school check of a class that its box confirmed. */
+    public interface Verifier {
+        VerifyClass.Result check(FoundClass c);
+    }
+
+    public FindClassesViewModel(ClassFinder finder, ClassProbe probe, Verifier verifier, Executor io) {
         this.finder = finder;
         this.probe = probe;
+        this.verifier = verifier;
         this.io = io;
     }
 
@@ -100,6 +111,27 @@ public class FindClassesViewModel extends ViewModel {
 
     /** True during the first {@link #SEARCH_MS} of a search. */
     public LiveData<Boolean> searching() { return searching; }
+
+    /**
+     * A class code that the student scanned ({@code studentUrl}, from ClassLinks.studentUrlFromCode):
+     * the same school check as a class in the list, so a QR on the board cannot open a false class.
+     * {@code then} gets true (main thread) when the phone may open the page: a phone with no school,
+     * or a verified class. A phone of a school does not open a box with no class open (a false box
+     * can say that too).
+     */
+    public void checkScanned(String studentUrl, java.util.function.Consumer<Boolean> then) {
+        io.execute(() -> {
+            boolean ok = false;
+            try {
+                String host = ClassLinks.hostOf(studentUrl);
+                String code = host == null ? null : probe.codeAt(host);
+                ok = verifier.check(new FoundClass("scan", code, host, studentUrl)).canJoin();
+            } finally {
+                boolean result = ok;
+                main.post(() -> then.accept(result));
+            }
+        });
+    }
 
     /** Starts to look for classes on the Wi-Fi. Call {@link #stop()} when the tab hides. */
     public void start() {
@@ -139,7 +171,7 @@ public class FindClassesViewModel extends ViewModel {
             for (FoundClass c : candidates) {
                 ClassProbe.Answer a = probe.ask(c.address);
                 if (a != null && c.code.equals(a.code)) {
-                    open = new Confirmed(c, a.name, a.ageSec, SystemClock.elapsedRealtime());
+                    open = new Confirmed(c, a.name, a.ageSec, SystemClock.elapsedRealtime(), verifier.check(c));
                     break;
                 }
             }
@@ -147,7 +179,7 @@ public class FindClassesViewModel extends ViewModel {
             main.post(() -> {
                 if (!running || r != round || !known.containsKey(key)) return;
                 if (!Integer.valueOf(mine).equals(probeOf.get(key))) return;   // a newer probe runs
-                if (confirmed != null) shown.put(key, confirmed.sortedAs(shown.get(key)));
+                if (confirmed != null) shown.put(key, confirmed.sortedAs(shown.get(key)).trustedAs(shown.get(key)));
                 else shown.remove(key);
                 publish();
             });
@@ -176,7 +208,7 @@ public class FindClassesViewModel extends ViewModel {
         // The box age is the one source; a class with no age goes last.
         Collections.sort(newest, (a, b) -> Long.compare(b.order, a.order));
         List<ClassRow> rows = new ArrayList<>();
-        for (Confirmed c : newest) rows.add(new ClassRow(c.found, c.name, c.ageAt(now)));
+        for (Confirmed c : newest) rows.add(new ClassRow(c.found, c.name, c.ageAt(now), c.trust));
         if (!rows.equals(classes.getValue())) classes.setValue(Collections.unmodifiableList(rows));
     }
 
@@ -186,18 +218,38 @@ public class FindClassesViewModel extends ViewModel {
         final String name;
         final long ageSec;   // -1: the box sent no age
         final long at;       // elapsedRealtime() of the answer: this phone's clock, never the time of day
+        final VerifyClass.Result trust;
 
         // The place in the list: the start of the class from the first answer of its box. Each
         // answer gives a start that differs by up to one second (whole seconds, the request time):
         // two classes that started together must not change places at each check.
         private long order;
 
-        Confirmed(FoundClass found, String name, long ageSec, long at) {
+        Confirmed(FoundClass found, String name, long ageSec, long at, VerifyClass.Result trust) {
             this.found = found;
             this.name = name;
             this.ageSec = ageSec;
             this.at = at;
+            this.trust = trust;
             this.order = ageSec < 0 ? Long.MIN_VALUE : at - ageSec * 1000;
+        }
+
+        /**
+         * A class that was verified stays verified when its box does not answer one hello (a Wi-Fi
+         * drop), while its box still confirms the same code at the same address. Any answer of the
+         * box decides again.
+         */
+        Confirmed trustedAs(Confirmed before) {
+            if (trust.kind == VerifyClass.Kind.NO_ANSWER && before != null && before.trust.kind == VerifyClass.Kind.VERIFIED
+                    && before.found.code.equals(found.code) && before.found.address.equals(found.address)) {
+                return new Confirmed(found, name, ageSec, at, before.trust).withOrder(order);
+            }
+            return this;
+        }
+
+        private Confirmed withOrder(long o) {
+            order = o;
+            return this;
         }
 
         /** This answer, at the place in the list of {@code before} when it is the same class. */

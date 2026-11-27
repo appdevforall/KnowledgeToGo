@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- K2Go School: one class in the "Choose a class" table: the ID, then the name (gone when the class
-     has none) over the start ("2 minutes ago"). A tap joins. -->
+     has none) over the start ("2 minutes ago"), and on a phone of a school the school check. A tap
+     joins; a class that is not from a teacher of this school is grey and does not join. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -48,9 +49,18 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
+
+        <TextView
+            android:id="@+id/k2go_class_row_trust"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/k2go_class_row_go"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"

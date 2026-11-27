@@ -24,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.fragment.app.Fragment;
@@ -45,6 +46,7 @@ import org.appdevforall.k2go.redesign.K2GoBottomSheet;
 import org.appdevforall.k2go.school.domain.ClassAge;
 import org.appdevforall.k2go.school.domain.ClassLinks;
 import org.appdevforall.k2go.school.domain.FoundClass;
+import org.appdevforall.k2go.school.trust.domain.VerifyClass;
 import org.appdevforall.k2go.util.SnackbarDuration;
 
 import java.util.ArrayList;
@@ -68,6 +70,7 @@ public final class ClassFragment extends Fragment {
     private LinearProgressIndicator searchingBar;
     private TextView findStatus;
     private TextView oneAge;
+    private TextView oneTrust;
     private MaterialButton searchAgain;
     private MaterialButton joinButton;
     // The "name this class?" dialog while it shows. A rotation closes it; the step shows it again.
@@ -100,6 +103,7 @@ public final class ClassFragment extends Fragment {
         searchingBar = v.findViewById(R.id.k2go_class_searching);
         findStatus = v.findViewById(R.id.k2go_class_find_status);
         oneAge = v.findViewById(R.id.k2go_class_one_age);
+        oneTrust = v.findViewById(R.id.k2go_class_one_trust);
         searchAgain = v.findViewById(R.id.k2go_class_search_again);
         joinButton = v.findViewById(R.id.k2go_class_join_button);
         searchAgain.setOnClickListener(x -> find.start());
@@ -179,6 +183,8 @@ public final class ClassFragment extends Fragment {
         ClassAge oneClassAge = n == 1 ? found.get(0).age : null;
         oneAge.setVisibility(oneClassAge != null ? View.VISIBLE : View.GONE);
         if (oneClassAge != null) oneAge.setText(startedText(oneClassAge));
+        bindTrust(oneTrust, n == 1 ? found.get(0) : null);
+        joinButton.setEnabled(n != 1 || found.get(0).canJoin());
         if (n == 0) {
             findStatus.setText(searching ? R.string.k2go_class_finding : R.string.k2go_class_none_found);
         } else if (n == 1) {
@@ -195,8 +201,11 @@ public final class ClassFragment extends Fragment {
     private void onJoinButton() {
         List<ClassRow> found = find.classes().getValue();
         if (found == null || found.isEmpty()) return;
-        if (found.size() == 1) join(found.get(0).found);
-        else openChooser();
+        if (found.size() == 1) {
+            if (found.get(0).canJoin()) join(found.get(0).found);
+        } else {
+            openChooser();
+        }
     }
 
     /** "Choose a class": a search field and a table of the open classes. It follows the list live. */
@@ -251,14 +260,46 @@ public final class ClassFragment extends Fragment {
         return true;
     }
 
+    /**
+     * The school check of a class on a phone of a school: verified, with the room of the teacher
+     * phone, or "not from a teacher of your school". Gone on a phone with no school.
+     */
+    private void bindTrust(TextView view, @Nullable ClassRow r) {
+        VerifyClass.Kind k = r == null ? VerifyClass.Kind.NO_SCHOOL : r.trust.kind;
+        view.setVisibility(k == VerifyClass.Kind.NO_SCHOOL ? View.GONE : View.VISIBLE);
+        if (k == VerifyClass.Kind.VERIFIED) {
+            view.setText(getString(R.string.k2go_class_verified, r.trust.label));
+            view.setTextColor(ContextCompat.getColor(view.getContext(), R.color.k2go_ok_ink));
+        } else if (k == VerifyClass.Kind.NOT_VERIFIED || k == VerifyClass.Kind.NO_ANSWER) {
+            view.setText(R.string.k2go_class_not_verified);
+            view.setTextColor(ContextCompat.getColor(view.getContext(), R.color.k2go_muted));
+        }
+    }
+
     private void bindRow(View row, ClassRow r) {
-        ((TextView) row.findViewById(R.id.k2go_class_row_code)).setText(r.found.code);
+        TextView code = row.findViewById(R.id.k2go_class_row_code);
+        code.setText(r.found.code);
+        // A class that is not from a teacher of this school: grey, and a tap does nothing (design 6.4).
+        boolean can = r.canJoin();
+        code.setTextColor(ContextCompat.getColor(row.getContext(), can ? R.color.k2go_ink : R.color.k2go_muted));
+        ((TextView) row.findViewById(R.id.k2go_class_row_name)).setTextColor(
+                ContextCompat.getColor(row.getContext(), can ? R.color.k2go_ink : R.color.k2go_muted));
+        row.findViewById(R.id.k2go_class_row_go).setVisibility(can ? View.VISIBLE : View.INVISIBLE);
+        row.setFocusable(can);
+        bindTrust(row.findViewById(R.id.k2go_class_row_trust), r);
         TextView name = row.findViewById(R.id.k2go_class_row_name);
         name.setText(r.name);
         name.setVisibility(r.name == null ? View.GONE : View.VISIBLE);
         TextView age = row.findViewById(R.id.k2go_class_row_age);
         age.setText(r.age == null ? null : agoText(r.age));
         age.setVisibility(r.age == null ? View.GONE : View.VISIBLE);
+        if (!can) {
+            row.setOnClickListener(null);
+            row.setClickable(false);
+            ViewCompat.replaceAccessibilityAction(row, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK,
+                    null, null);
+            return;
+        }
         row.setOnClickListener(x -> {
             if (chooser != null) chooser.dismiss();
             join(r.found);
@@ -304,6 +345,7 @@ public final class ClassFragment extends Fragment {
         }
         int msg = t == null ? R.string.k2go_class_checking
                 : t == ClassLinks.Teach.STUDENT_PHONE ? R.string.k2go_class_student_phone
+                : t == ClassLinks.Teach.DEVICE_ZERO ? R.string.k2go_class_device_zero
                 : t == ClassLinks.Teach.NO_MODULE ? R.string.k2go_class_no_module
                 : R.string.k2go_class_no_box;
         teachStatus.setText(msg);
@@ -320,7 +362,17 @@ public final class ClassFragment extends Fragment {
             Snackbar.make(anchor, msg, SnackbarDuration.millisForText(msg)).show();
             return;
         }
-        startActivity(portal(url));
+        find.checkScanned(url, ok -> {
+            if (!isAdded()) return;
+            if (ok) {
+                startActivity(portal(url));
+                return;
+            }
+            View anchor = getView();
+            if (anchor == null) return;
+            String msg = getString(R.string.k2go_class_not_verified);
+            Snackbar.make(anchor, msg, SnackbarDuration.millisForText(msg)).show();
+        });
     }
 
     /**

@@ -13,12 +13,6 @@ import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +22,6 @@ import java.util.List;
  */
 public final class HttpRingBox implements SchoolRing.Box {
 
-    private static final int MAX_ANSWER = 16 * 1024;
     private final String local;
 
     public HttpRingBox() { this(BoxEndpoints.BASE); }
@@ -43,12 +36,12 @@ public final class HttpRingBox implements SchoolRing.Box {
         } catch (Exception e) {
             return false;
         }
-        return call("POST", local + "/school/teacher/ring/open", b).status == 204;
+        return BoxJson.call("POST", local + "/school/teacher/ring/open", b).status == 204;
     }
 
     @Override
     public SchoolRing.View view() {
-        Answer a = call("GET", local + "/school/teacher/ring", null);
+        BoxJson.Answer a = BoxJson.call("GET", local + "/school/teacher/ring", null);
         if (a.status != 200 || a.json == null) return new SchoolRing.View(false, 0, null, new ArrayList<>());
         List<SchoolRing.Request> list = new ArrayList<>();
         JSONArray rs = a.json.optJSONArray("requests");
@@ -73,12 +66,12 @@ public final class HttpRingBox implements SchoolRing.Box {
         } catch (Exception e) {
             return false;
         }
-        return call("POST", local + "/school/teacher/ring/answer", b).status == 204;
+        return BoxJson.call("POST", local + "/school/teacher/ring/answer", b).status == 204;
     }
 
     @Override
     public void close() {
-        call("POST", local + "/school/teacher/ring/close", new JSONObject());
+        BoxJson.call("POST", local + "/school/teacher/ring/close", new JSONObject());
     }
 
     @Override
@@ -90,7 +83,7 @@ public final class HttpRingBox implements SchoolRing.Box {
         } catch (Exception e) {
             return SchoolRing.Reply.of(SchoolRing.Reply.Status.FAILED);
         }
-        return reply(call("POST", remote(ring) + "/school/ring/join", b));
+        return reply(BoxJson.call("POST", remote(ring) + "/school/ring/join", b));
     }
 
     @Override
@@ -101,22 +94,22 @@ public final class HttpRingBox implements SchoolRing.Box {
         } catch (Exception e) {
             return SchoolRing.Reply.of(SchoolRing.Reply.Status.FAILED);
         }
-        return reply(call("POST", remote(ring) + "/school/ring/result", b));
+        return reply(BoxJson.call("POST", remote(ring) + "/school/ring/result", b));
     }
 
     private static String remote(SchoolRing.Found ring) {
         return "http://" + ring.address + ":" + ring.port;
     }
 
-    private static SchoolRing.Reply reply(Answer a) {
+    private static SchoolRing.Reply reply(BoxJson.Answer a) {
         switch (a.status) {
             case 200:
                 if (a.json == null) break;
-                return new SchoolRing.Reply(SchoolRing.Reply.Status.OK, str(a.json, "root"), str(a.json, "cert"),
-                        str(a.json, "mac"), null);
+                return new SchoolRing.Reply(SchoolRing.Reply.Status.OK, BoxJson.str(a.json, "root"), BoxJson.str(a.json, "cert"),
+                        BoxJson.str(a.json, "mac"), null);
             case 202:
                 return new SchoolRing.Reply(SchoolRing.Reply.Status.WAITING, null, null, null,
-                        a.json == null ? null : str(a.json, "id"));
+                        a.json == null ? null : BoxJson.str(a.json, "id"));
             case 403:
                 return SchoolRing.Reply.of(a.json != null && "refused".equals(a.json.opt("error"))
                         ? SchoolRing.Reply.Status.REFUSED : SchoolRing.Reply.Status.WRONG_PIN);
@@ -128,59 +121,5 @@ public final class HttpRingBox implements SchoolRing.Box {
                 break;
         }
         return SchoolRing.Reply.of(SchoolRing.Reply.Status.FAILED);
-    }
-
-    private static String str(JSONObject o, String name) {
-        Object x = o.opt(name);
-        return x instanceof String ? (String) x : null;
-    }
-
-    private static final class Answer {
-        final int status;
-        final JSONObject json;
-
-        Answer(int status, JSONObject json) {
-            this.status = status;
-            this.json = json;
-        }
-    }
-
-    private static Answer call(String method, String url, JSONObject body) {
-        HttpURLConnection c = null;
-        try {
-            c = (HttpURLConnection) new URL(url).openConnection();
-            c.setUseCaches(false);
-            c.setInstanceFollowRedirects(false);
-            c.setConnectTimeout(3000);
-            c.setReadTimeout(5000);
-            c.setRequestMethod(method);
-            if (body != null) {
-                byte[] bytes = body.toString().getBytes(StandardCharsets.UTF_8);
-                c.setDoOutput(true);
-                c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-                c.setFixedLengthStreamingMode(bytes.length);
-                try (OutputStream out = c.getOutputStream()) {
-                    out.write(bytes);
-                }
-            }
-            int status = c.getResponseCode();
-            InputStream in = status >= 400 ? c.getErrorStream() : c.getInputStream();
-            JSONObject json = null;
-            if (in != null) {
-                try (InputStream s = in) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    byte[] buf = new byte[4096];
-                    int n;
-                    while ((n = s.read(buf)) > 0 && out.size() <= MAX_ANSWER) out.write(buf, 0, n);
-                    String text = out.toString("UTF-8").trim();
-                    if (text.startsWith("{") && out.size() <= MAX_ANSWER) json = new JSONObject(text);
-                }
-            }
-            return new Answer(status, json);
-        } catch (Exception e) {
-            return new Answer(-1, null);
-        } finally {
-            if (c != null) c.disconnect();
-        }
     }
 }

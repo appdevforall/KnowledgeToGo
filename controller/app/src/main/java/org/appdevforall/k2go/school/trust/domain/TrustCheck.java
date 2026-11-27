@@ -8,8 +8,6 @@
  */
 package org.appdevforall.k2go.school.trust.domain;
 
-import org.appdevforall.k2go.school.domain.SchoolRole;
-
 /**
  * The rules of the school trust (design: school-trust-design.md). The box has the same rules in
  * static/dashboard/school/trust.ts; the shared vectors (trust-vectors.json) keep them equal.
@@ -50,22 +48,24 @@ public final class TrustCheck {
     }
 
     /**
-     * The role of a phone: no root, no role (as before roles); a verified certificate, a teacher;
-     * else a student. A root past its "until" still gives a student until the phone pins a root again.
+     * The class vouch when the teacher key of {@code cert} signed it, for the school and the serial of
+     * the certificate, and it is not past its time (seconds).
      */
-    public static SchoolRole role(TrustRecords.Root root, Verdict certificate) {
-        if (root == null) return SchoolRole.NONE;
-        return certificate == Verdict.VERIFIED ? SchoolRole.TEACHER : SchoolRole.STUDENT;
+    public static TrustRecords.ClassVouch vouch(TrustRecords.Teacher cert, SignedToken token,
+                                                TrustRecords.ClassVouch record, long now) {
+        if (cert == null || token == null || record == null) return null;
+        if (!record.school.equals(cert.school) || !record.serial.equals(cert.serial) || now >= record.until) return null;
+        return TrustKeys.verify(cert.keySpki(), token.body, token.sig) ? record : null;
     }
 
     /**
-     * The teacher box holds the private key of {@code cert}, for this nonce, this class code and this
-     * box address (the address that the student phone used).
+     * The teacher box holds the private key {@code keySpki} (the class key of a vouch), for this nonce,
+     * this class code and this box address (the address that the student phone used).
      */
-    public static boolean proof(TrustRecords.Teacher cert, String nonce, String code, String host, String proof) {
-        if (cert == null || proof == null || proof.length() > 200) return false;
+    public static boolean proof(byte[] keySpki, String nonce, String code, String host, String proof) {
+        if (keySpki == null || proof == null || proof.length() > 200) return false;
         byte[] data = TrustKeys.proofBytes(nonce, code, host);
         byte[] sig = Base64Url.decode(proof);
-        return data != null && sig != null && TrustKeys.verify(cert.keySpki(), data, sig);
+        return data != null && sig != null && TrustKeys.verify(keySpki, data, sig);
     }
 }

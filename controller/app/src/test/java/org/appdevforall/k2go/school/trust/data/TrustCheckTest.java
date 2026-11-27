@@ -6,8 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.appdevforall.k2go.school.domain.SchoolRole;
 import org.appdevforall.k2go.school.trust.domain.Base64Url;
+import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 import org.appdevforall.k2go.school.trust.domain.TrustCheck;
 import org.appdevforall.k2go.school.trust.domain.TrustCheck.Verdict;
 import org.appdevforall.k2go.school.trust.domain.TrustKeys;
@@ -58,7 +58,7 @@ public class TrustCheckTest {
 
     private static Verdict verdict(String token) { return TrustCodec.checkTeacher(ROOT, token, REMOVED, NOW).verdict; }
 
-    private static PrivateKey privateKey(String pkcs8B64) throws Exception {
+    static PrivateKey privateKey(String pkcs8B64) throws Exception {
         return KeyFactory.getInstance("EC").generatePrivate(new PKCS8EncodedKeySpec(Base64Url.decodeStandard(pkcs8B64)));
     }
 
@@ -101,14 +101,6 @@ public class TrustCheckTest {
         assertNull(TrustRecords.Removed.merge(null, null));
     }
 
-    @Test public void theDerivedRole() {
-        assertEquals(SchoolRole.NONE, TrustCheck.role(null, null));
-        assertEquals(SchoolRole.STUDENT, TrustCheck.role(ROOT, null));
-        assertEquals(SchoolRole.TEACHER, TrustCheck.role(ROOT, verdict(teacher("verified"))));
-        assertEquals(SchoolRole.STUDENT, TrustCheck.role(ROOT, verdict(teacher("removed"))));
-        assertEquals(SchoolRole.STUDENT, TrustCheck.role(ROOT, verdict(teacher("expired"))));
-    }
-
     @Test public void theClassProofFromTheBox() {
         TrustRecords.Teacher cert = TrustCodec.checkTeacher(ROOT, teacher("verified"), REMOVED, NOW).cert;
         JSONObject p = V.optJSONObject("proof");
@@ -116,15 +108,58 @@ public class TrustCheckTest {
         String code = p.optString("code");
         String host = p.optString("host");
         String sig = p.optString("sig");
-        assertTrue(TrustCheck.proof(cert, nonce, code, host, sig));
-        assertFalse(TrustCheck.proof(cert, nonce, "XXXX", host, sig));
-        assertFalse(TrustCheck.proof(cert, "other-nonce", code, host, sig));
-        assertFalse(TrustCheck.proof(cert, nonce, code, "192.168.1.99:8085", sig));   // relayed by another box
-        assertFalse(TrustCheck.proof(cert, nonce, code, host, "AAAA"));
-        assertFalse(TrustCheck.proof(cert, nonce + "\n" + code, "X", host, sig));
+        byte[] key = cert.keySpki();
+        assertTrue(TrustCheck.proof(key, nonce, code, host, sig));
+        assertFalse(TrustCheck.proof(key, nonce, "XXXX", host, sig));
+        assertFalse(TrustCheck.proof(key, "other-nonce", code, host, sig));
+        assertFalse(TrustCheck.proof(key, nonce, code, "192.168.1.99:8085", sig));   // relayed by another box
+        assertFalse(TrustCheck.proof(key, nonce, code, host, "AAAA"));
+        assertFalse(TrustCheck.proof(key, nonce + "\n" + code, "X", host, sig));
         assertNull(TrustKeys.proofBytes("n 2", "X", "h:1"));
         assertNull(TrustKeys.proofBytes("", "X", "h:1"));
     }
+
+    private static String vouch(String name) { return V.optJSONObject("vouch").optString(name); }
+
+    @Test public void aClassVouchOfTheBox() {
+        TrustRecords.Teacher cert = TrustCodec.checkTeacher(ROOT, teacher("verified"), REMOVED, NOW).cert;
+        TrustRecords.ClassVouch v = TrustCodec.readVouch(cert, vouch("valid"), NOW);
+        assertNotNull(v);
+        assertEquals("86GZ", v.code);
+        assertEquals(vouch("classKey"), v.classKey);
+        assertNull(TrustCodec.readVouch(cert, vouch("valid"), v.until));          // past its time
+        assertNull(TrustCodec.readVouch(cert, vouch("expired"), NOW));
+        assertNull(TrustCodec.readVouch(cert, vouch("otherSerial"), NOW));        // a vouch of another certificate
+        assertNull(TrustCodec.readVouch(cert, vouch("signedByRoot"), NOW));       // not the teacher key
+        assertNull(TrustCodec.readVouch(cert, vouch("wrongKind"), NOW));
+        JSONObject p = V.optJSONObject("vouch").optJSONObject("proof");
+        assertTrue(TrustCheck.proof(v.keySpki(), p.optString("nonce"), p.optString("code"), p.optString("host"), p.optString("sig")));
+        assertFalse(TrustCheck.proof(cert.keySpki(), p.optString("nonce"), p.optString("code"), p.optString("host"), p.optString("sig")));
+    }
+
+    /** A teacher key in memory with the TEST teacher key of the vectors (the app uses the Keystore). */
+    static SchoolRing.TeacherKey vectorTeacherKey() throws Exception {
+        PrivateKey k = privateKey(V.optJSONObject("keys").optString("teacherPkcs8"));
+        String spki = V.optJSONObject("keys").optString("teacherSpki");
+        return new SchoolRing.TeacherKey() {
+            @Override public String publicKey() { return spki; }
+            @Override public byte[] sign(byte[] data) { return TrustKeys.sign(k, data); }
+        };
+    }
+
+    /** The app signs a vouch (teacher phone); the box reads it. The box test reads "javaSigned.vouch". */
+    @Test public void aVouchThatTheAppSigns() throws Exception {
+        TrustRecords.Teacher cert = TrustCodec.checkTeacher(ROOT, teacher("verified"), REMOVED, NOW).cert;
+        String token = TrustCodec.signVouch(vectorTeacherKey(), cert, "86GZ", vouch("classKey"), NOW + 3600);
+        assertNotNull(TrustCodec.readVouch(cert, token, NOW));
+        assertNull(TrustCodec.signVouch(vectorTeacherKey(), cert, "86 GZ", vouch("classKey"), NOW + 3600));
+        System.out.println("javaSigned.vouch: " + token);
+        JSONObject j = V.optJSONObject("javaSigned");
+        assertNotNull("javaSigned has no vouch: copy the line above into it", TrustCodec.readVouch(cert, j.optString("vouch", null), NOW));
+    }
+
+    /** The vectors for the tests of the other classes of this package. */
+    static JSONObject vectorsForTests() { return V; }
 
     @Test public void aCertificateEndsWithTheYearOfItsRoot() throws Exception {
         PrivateKey root = privateKey(V.optJSONObject("keys").optString("rootPkcs8"));

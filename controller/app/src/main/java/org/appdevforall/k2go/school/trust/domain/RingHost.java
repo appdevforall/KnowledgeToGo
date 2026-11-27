@@ -20,11 +20,13 @@ public final class RingHost {
 
     private final SchoolTrustRepository repo;
     private final SchoolRing.Box box;
+    private final SchoolRing.TeacherKey teacherKey;
     private PrivateKey key;   // device zero, teacher ring only
 
-    public RingHost(SchoolTrustRepository repo, SchoolRing.Box box) {
+    public RingHost(SchoolTrustRepository repo, SchoolRing.Box box, SchoolRing.TeacherKey teacherKey) {
         this.repo = repo;
         this.box = box;
+        this.teacherKey = teacherKey;
     }
 
     /** Device zero: the school password opens the school key. false: wrong password or no key. */
@@ -44,11 +46,10 @@ public final class RingHost {
         }
     }
 
-    /** A phone may open a student ring when it is device zero or a teacher of its school. */
+    /** A phone may open a student ring when it is device zero or a teacher phone (PhoneRole). */
     public boolean canEnrollStudents(long now) {
-        TrustRecords.Root root = repo.root();
-        if (root == null) return false;
-        return repo.vault() != null || repo.verifiedCert(root, repo.teacherCertToken(), now) != null;
+        if (repo.root() == null) return false;
+        return PhoneRole.isDeviceZero(repo) || PhoneRole.ownCert(repo, teacherKey, now) != null;
     }
 
     /** Opens a ring on the box of this phone. The PIN for the screen and the board, or null. */

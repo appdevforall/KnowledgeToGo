@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.appdevforall.k2go.school.domain.FoundClass;
+import org.appdevforall.k2go.school.trust.domain.VerifyClass;
 import org.junit.Test;
 
 /** The search of "Choose a class": by ID or by name, in any case. */
@@ -11,7 +12,7 @@ public class ClassRowTest {
 
     private static ClassRow row(String code, String name) {
         return new ClassRow(new FoundClass("K2Go class " + code, code, "192.168.1.5",
-                "http://192.168.1.5:8085/school/student.html"), name, null);
+                "http://192.168.1.5:8085/school/student.html"), name, null, VerifyClass.Result.NO_SCHOOL);
     }
 
     @Test public void anEmptySearchShowsAll() {

@@ -95,7 +95,7 @@ public class RingViewModel extends ViewModel {
     public RingViewModel(SchoolTrustRepository repo, SchoolRing.Box box, SchoolRing.TeacherKey teacherKey,
                          NsdRing nsd, Executor io) {
         this.repo = repo;
-        this.host = new RingHost(repo, box);
+        this.host = new RingHost(repo, box, teacherKey);
         this.joiner = new JoinSchool(repo, box, teacherKey);
         this.teacherKey = teacherKey;
         this.nsd = nsd;

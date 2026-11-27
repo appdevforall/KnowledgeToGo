@@ -10,8 +10,14 @@
   strings.xml.
 -->
 <resources>
-    <!-- Class tab, in place of "Teach a class" when the school made this phone a student phone (school role file). -->
+    <!-- Class tab, in place of "Teach a class" on a phone of a school with no teacher certificate (a student phone). -->
     <string name="k2go_class_student_phone" translatable="false">This is a student phone. Only a teacher phone can open a class. You can join a class below.</string>
+    <!-- Class tab, in place of "Teach a class" on device zero with no teacher certificate of its own. "This phone teaches too" = k2go_school_self_teacher. -->
+    <string name="k2go_class_device_zero" translatable="false">This is device zero of the school. To teach on it, open Settings, then School, and tap "This phone teaches too".</string>
+    <!-- Class tab, under an open class on a phone of a school. %1$s = the room on the certificate of the teacher phone, for example Room 3B. -->
+    <string name="k2go_class_verified" translatable="false">Teacher phone of your school: %1$s</string>
+    <!-- Class tab, under an open class on a phone of a school: the class is grey and cannot be joined. -->
+    <string name="k2go_class_not_verified" translatable="false">This class is not from a teacher of your school.</string>
 
     <!-- Settings > School (school trust, device zero). The row in Settings and its subtitle. -->
     <string name="k2go_settings_school" translatable="false">School</string>

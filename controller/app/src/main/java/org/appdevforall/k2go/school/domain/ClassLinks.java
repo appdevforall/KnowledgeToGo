@@ -59,8 +59,10 @@ public final class ClassLinks {
         NO_MODULE,
         /** The box does not answer, or it answers with a server error. */
         NO_BOX,
-        /** The school made this phone a student phone (SchoolRole): it cannot open a class. */
-        STUDENT_PHONE
+        /** A phone of a school with no teacher certificate (SchoolRole): it cannot open a class. */
+        STUDENT_PHONE,
+        /** Device zero with no teacher certificate of its own: it approves teachers, it does not teach. */
+        DEVICE_ZERO
     }
 
     private ClassLinks() {}
@@ -178,6 +180,13 @@ public final class ClassLinks {
         if (m.group(2) == null || Integer.parseInt(m.group(2)) != port) return null;
         if (!isPrivateIpv4(host)) return null;
         return "http://" + host + ":" + port + STUDENT_PATH;
+    }
+
+    /** The host of a box URL ("http://host:port/..."), or null. */
+    public static String hostOf(String url) {
+        if (url == null) return null;
+        Matcher m = CODE.matcher(url);
+        return m.matches() ? m.group(1) : null;
     }
 
     private static boolean isPrivateIpv4(String host) {

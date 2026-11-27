@@ -15,6 +15,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import org.appdevforall.k2go.school.trust.domain.PhoneRole;
+import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 import org.appdevforall.k2go.school.trust.domain.SchoolSetup;
 import org.appdevforall.k2go.school.trust.domain.SchoolTrustRepository;
 import org.appdevforall.k2go.school.trust.domain.TrustRecords;
@@ -76,13 +78,15 @@ public class SchoolViewModel extends ViewModel {
     }
 
     private final SchoolTrustRepository repo;
+    private final SchoolRing.TeacherKey teacherKey;
     private final SchoolSetup setup;
     private final ContentResolver resolver;
     private final Executor io;
     private final MutableLiveData<State> state = new MutableLiveData<>();
     private final MutableLiveData<Notice> notice = new MutableLiveData<>();
 
-    public SchoolViewModel(SchoolTrustRepository repo, ContentResolver resolver, Executor io) {
+    public SchoolViewModel(SchoolTrustRepository repo, SchoolRing.TeacherKey teacherKey, ContentResolver resolver, Executor io) {
+        this.teacherKey = teacherKey;
         this.repo = repo;
         this.setup = new SchoolSetup(repo);
         this.resolver = resolver;
@@ -101,7 +105,8 @@ public class SchoolViewModel extends ViewModel {
         TrustRecords.Root root = repo.root();
         if (root == null) return new State(State.Kind.NONE, null, null, 0, busy, null);
         State.Kind kind = repo.vault() != null ? State.Kind.DEVICE_ZERO : State.Kind.MEMBER;
-        TrustRecords.Teacher cert = repo.verifiedCert(root, repo.teacherCertToken(), System.currentTimeMillis() / 1000);
+        // The same rule as the Class tab (PhoneRole): a certificate for the teacher key of this phone.
+        TrustRecords.Teacher cert = PhoneRole.ownCert(repo, teacherKey, System.currentTimeMillis() / 1000);
         return new State(kind, root.name, root.school, root.until, busy, cert == null ? null : cert.label);
     }
 

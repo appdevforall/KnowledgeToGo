@@ -153,6 +153,17 @@
                     android:textColor="@color/k2go_muted"
                     android:visibility="gone" />
 
+                <!-- One class only, on a phone of a school: verified (the room of the teacher phone),
+                     or not from a teacher of this school (no Join). -->
+                <TextView
+                    android:id="@+id/k2go_class_one_trust"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="@color/k2go_muted"
+                    android:visibility="gone" />
+
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/k2go_class_searching"
                     android:layout_width="match_parent"

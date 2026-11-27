@@ -52,6 +52,12 @@ public interface SchoolTrustRepository {
     /** {@code token} is a certificate of {@code root} that is valid at {@code now}. null: it is not. */
     TrustRecords.Teacher verifiedCert(TrustRecords.Root root, String token, long now);
 
+    /** {@code token} is a class vouch of the teacher of {@code cert}, valid at {@code now}. null: it is not. */
+    TrustRecords.ClassVouch readVouch(TrustRecords.Teacher cert, String token, long now);
+
+    /** A teacher phone: signs a class vouch with its teacher key. null: the key did not sign. */
+    String classVouch(SchoolRing.TeacherKey key, TrustRecords.Teacher cert, String code, String classKey, long until);
+
     /** Device zero: signs a certificate for one teacher phone. */
     String teacherCert(PrivateKey rootKey, TrustRecords.Root root, String teacherKeySpkiB64, String label,
                        String serial, long from, long until);

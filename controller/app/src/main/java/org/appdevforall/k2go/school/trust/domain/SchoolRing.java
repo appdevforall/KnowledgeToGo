@@ -101,5 +101,8 @@ public final class SchoolRing {
     public interface TeacherKey {
         /** The public key, SPKI DER base64; makes the key pair the first time. null: no key store. */
         String publicKey();
+
+        /** An ECDSA P-256 SHA-256 signature (DER) of {@code data} with the teacher key. null: no key. */
+        byte[] sign(byte[] data);
     }
 }

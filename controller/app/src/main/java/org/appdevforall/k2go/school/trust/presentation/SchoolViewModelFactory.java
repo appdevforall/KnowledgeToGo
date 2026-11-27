@@ -31,7 +31,7 @@ public class SchoolViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(SchoolViewModel.class)) {
-            return (T) new SchoolViewModel(new SchoolTrustFiles(app.getNoBackupFilesDir()),
+            return (T) new SchoolViewModel(new SchoolTrustFiles(app.getNoBackupFilesDir()), new KeystoreTeacherKey(),
                     app.getContentResolver(), AppExecutors.get().io());
         }
         if (modelClass.isAssignableFrom(RingViewModel.class)) {

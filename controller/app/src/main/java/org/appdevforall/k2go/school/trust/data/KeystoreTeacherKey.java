@@ -15,15 +15,18 @@ import android.util.Log;
 import org.appdevforall.k2go.school.trust.domain.Base64Url;
 import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 
+import java.security.Key;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.spec.ECGenParameterSpec;
 
 /**
  * The private key never leaves the Keystore: not the app, not the developer terminal (same Linux
- * user) can copy it (maintainer, 2026-11-26). Android deletes it with the app data. Phase 5 signs
- * the class proof with it in the app.
+ * user) can copy it (maintainer, 2026-11-26). Android deletes it with the app data. It signs the
+ * class vouch of each class (VouchClass); the box signs each class proof with the class key.
  */
 public final class KeystoreTeacherKey implements SchoolRing.TeacherKey {
 
@@ -47,6 +50,24 @@ public final class KeystoreTeacherKey implements SchoolRing.TeacherKey {
             return c == null ? null : Base64Url.encodeStandard(c.getPublicKey().getEncoded());
         } catch (Exception e) {
             Log.w(TAG, "teacher key not available", e);
+            return null;
+        }
+    }
+
+    /** Signs with the key in the Keystore. It never makes a key: no key, no signature. */
+    @Override
+    public synchronized byte[] sign(byte[] data) {
+        try {
+            KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
+            ks.load(null);
+            Key k = ks.getKey(ALIAS, null);
+            if (!(k instanceof PrivateKey)) return null;
+            Signature s = Signature.getInstance("SHA256withECDSA");
+            s.initSign((PrivateKey) k);
+            s.update(data);
+            return s.sign();
+        } catch (Exception e) {
+            Log.w(TAG, "teacher key did not sign", e);
             return null;
         }
     }

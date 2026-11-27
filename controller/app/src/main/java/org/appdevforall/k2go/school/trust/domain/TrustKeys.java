@@ -120,11 +120,12 @@ public final class TrustKeys {
      * chars with no space (no field can carry a newline and pass for two fields).
      */
     public static byte[] proofBytes(String nonce, String code, String host) {
-        if (!proofField(nonce) || !proofField(code) || !proofField(host)) return null;
+        if (!isProofField(nonce) || !isProofField(code) || !isProofField(host)) return null;
         return (PROOF_TAG + "\n" + nonce + "\n" + code + "\n" + host).getBytes(StandardCharsets.UTF_8);
     }
 
-    private static boolean proofField(String s) {
+    /** 1 to 100 printable ASCII chars with no space. */
+    public static boolean isProofField(String s) {
         if (s == null || s.isEmpty() || s.length() > 100) return false;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);

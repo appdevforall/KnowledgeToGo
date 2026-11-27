@@ -8,6 +8,7 @@
  */
 package org.appdevforall.k2go.school.trust.data;
 
+import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 import org.appdevforall.k2go.school.trust.domain.SignedToken;
 import org.appdevforall.k2go.school.trust.domain.TrustCheck;
 import org.appdevforall.k2go.school.trust.domain.TrustKeys;
@@ -64,6 +65,35 @@ public final class TrustCodec {
         TrustRecords.Teacher cert = o == null ? null : TrustRecords.Teacher.of(integer(o, "v"), text(o, "school"),
                 text(o, "key"), text(o, "label"), text(o, "serial"), time(o, "from"), time(o, "until"));
         return new TeacherCheck(TrustCheck.teacher(root, t, cert, removed, now), cert);
+    }
+
+    /** A class vouch of the teacher of {@code cert}, valid at {@code now}, or null. */
+    public static TrustRecords.ClassVouch readVouch(TrustRecords.Teacher cert, String token, long now) {
+        SignedToken t = SignedToken.parse(token);
+        JSONObject o = body(t, "class");
+        if (o == null) return null;
+        return TrustCheck.vouch(cert, t, TrustRecords.ClassVouch.of(integer(o, "v"), text(o, "school"), text(o, "serial"),
+                text(o, "code"), text(o, "classKey"), time(o, "until")), now);
+    }
+
+    /**
+     * A teacher phone: the vouch for one class, signed with the teacher key (Android Keystore). null:
+     * a field is not valid, or the key did not sign.
+     */
+    public static String signVouch(SchoolRing.TeacherKey key, TrustRecords.Teacher cert, String code, String classKey, long until) {
+        if (TrustRecords.ClassVouch.of(TrustRecords.VERSION, cert.school, cert.serial, code, classKey, until) == null) return null;
+        JSONObject o = new JSONObject();
+        try {
+            o.put("kind", "class").put("v", TrustRecords.VERSION).put("school", cert.school).put("serial", cert.serial)
+                    .put("code", code).put("classKey", classKey).put("until", until);
+        } catch (Exception e) {
+            return null;
+        }
+        byte[] body = o.toString().getBytes(StandardCharsets.UTF_8);
+        byte[] sig = key.sign(body);
+        if (sig == null) return null;
+        String token = SignedToken.of(body, sig).compact();
+        return token.length() > SignedToken.MAX_LENGTH ? null : token;
     }
 
     /** Device zero: the self-signed root record of a new school. It refuses fields that a reader refuses. */

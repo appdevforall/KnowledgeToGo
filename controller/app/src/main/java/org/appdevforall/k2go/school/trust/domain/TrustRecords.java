@@ -3,7 +3,7 @@
  * Name        : TrustRecords.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : K2Go School trust: the root record, the teacher certificate, the removed list.
+ * Description : K2Go School trust: the root, the teacher certificate, the removed list, the class vouch.
  * ============================================================================
  */
 package org.appdevforall.k2go.school.trust.domain;
@@ -15,7 +15,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
- * The three signed bodies and the rule for valid fields. The data layer reads the JSON and calls
+ * The signed bodies and the rule for valid fields. The data layer reads the JSON and calls
  * the factories; a factory gives null for a field that is not valid. The box has the same limits
  * (static/dashboard/school/trust.ts).
  */
@@ -81,6 +81,36 @@ public final class TrustRecords {
         }
 
         public byte[] keySpki() { return Base64Url.decodeStandard(key); }
+    }
+
+    /**
+     * A teacher phone vouches for one class: its teacher key signs the class code and the class key that
+     * its box made for this class. The box signs each class proof with the class key, so the teacher key
+     * never leaves the Android Keystore. Same limits as the box (static/dashboard/school/trust.ts).
+     */
+    public static final class ClassVouch {
+        public final String school;
+        public final String serial;
+        public final String code;
+        public final String classKey;   // SPKI DER, standard base64
+        public final long until;
+
+        private ClassVouch(String school, String serial, String code, String classKey, long until) {
+            this.school = school;
+            this.serial = serial;
+            this.code = code;
+            this.classKey = classKey;
+            this.until = until;
+        }
+
+        public static ClassVouch of(Integer v, String school, String serial, String code, String classKey, Long until) {
+            if (v == null || v != VERSION || !isText(school, 16) || !HEX16.matcher(school).matches()
+                    || !isText(serial, 16) || !HEX16.matcher(serial).matches() || !TrustKeys.isProofField(code)
+                    || !isText(classKey, MAX_KEY) || !isTime(until)) return null;
+            return new ClassVouch(school, serial, code, classKey, until);
+        }
+
+        public byte[] keySpki() { return Base64Url.decodeStandard(classKey); }
     }
 
     /** The serials of the removed teacher certificates, signed by the root. */

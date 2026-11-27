@@ -10,6 +10,7 @@ package org.appdevforall.k2go.school.trust.data;
 
 import org.appdevforall.k2go.school.trust.domain.Base64Url;
 import org.appdevforall.k2go.school.trust.domain.KeyVault;
+import org.appdevforall.k2go.school.trust.domain.SchoolRing;
 import org.appdevforall.k2go.school.trust.domain.SchoolTrustRepository;
 import org.appdevforall.k2go.school.trust.domain.TrustRecords;
 import org.json.JSONObject;
@@ -42,10 +43,18 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
     private final File teacherCert;
     private final File keyFile;
 
+    /** Where PRootEngine binds {@link #boxDir} in the box. dash-node reads the trust there (school/role.ts). */
+    public static final String GUEST_DIR = "/run/k2go/school";
+
+    /** The folder that the box sees: the root and the certificate, never the school key. */
+    public static File boxDir(File noBackupDir) {
+        return new File(noBackupDir, "school");
+    }
+
     /** {@code noBackupDir}: Context.getNoBackupFilesDir(). */
     public SchoolTrustFiles(File noBackupDir) {
-        rootToken = new File(new File(noBackupDir, "school"), "root.token");
-        teacherCert = new File(new File(noBackupDir, "school"), "teacher.cert");
+        rootToken = new File(boxDir(noBackupDir), "root.token");
+        teacherCert = new File(boxDir(noBackupDir), "teacher.cert");
         keyFile = new File(new File(noBackupDir, "school-root"), "root.k2key");
     }
 
@@ -97,6 +106,16 @@ public final class SchoolTrustFiles implements SchoolTrustRepository {
     public TrustRecords.Teacher verifiedCert(TrustRecords.Root root, String token, long now) {
         TrustCodec.TeacherCheck c = TrustCodec.checkTeacher(root, token, null, now);
         return c.verdict == org.appdevforall.k2go.school.trust.domain.TrustCheck.Verdict.VERIFIED ? c.cert : null;
+    }
+
+    @Override
+    public TrustRecords.ClassVouch readVouch(TrustRecords.Teacher cert, String token, long now) {
+        return TrustCodec.readVouch(cert, token, now);
+    }
+
+    @Override
+    public String classVouch(SchoolRing.TeacherKey key, TrustRecords.Teacher cert, String code, String classKey, long until) {
+        return TrustCodec.signVouch(key, cert, code, classKey, until);
     }
 
     @Override

@@ -21,6 +21,10 @@ import org.appdevforall.k2go.school.data.NsdClassAdvertiser;
 import org.appdevforall.k2go.school.domain.Announcement;
 import org.appdevforall.k2go.school.domain.ClassAdvertiser;
 import org.appdevforall.k2go.school.domain.ClassProbe;
+import org.appdevforall.k2go.school.trust.data.HttpVouchBox;
+import org.appdevforall.k2go.school.trust.data.KeystoreTeacherKey;
+import org.appdevforall.k2go.school.trust.data.SchoolTrustFiles;
+import org.appdevforall.k2go.school.trust.domain.VouchClass;
 import org.appdevforall.k2go.util.AppExecutors;
 
 import java.util.concurrent.Executor;
@@ -31,7 +35,9 @@ import java.util.function.Consumer;
  * connected to the class channel) and the class code. This observer asks it (every
  * {@link #FIRST_POLL_MS} until the class is on the network, then every {@link #POLL_MS}) and keeps
  * the network announcement in step: a new code replaces the old one. When the screen goes, the announcement goes. If the app process
- * dies, the system removes it.
+ * dies, the system removes it. While a class is open, each poll also asks the box if the class has
+ * a vouch of this teacher phone (VouchClass): a student phone of the school shows the class as
+ * verified only then. A phone with no teacher certificate asks nothing.
  */
 public final class ClassAnnouncement implements DefaultLifecycleObserver {
 
@@ -45,6 +51,7 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
     private final ClassAdvertiser advertiser;
     private final Executor io;
     private final Consumer<Boolean> classOpen;   // each answer of the box: is the class open
+    private final Runnable vouch;                 // BLOCKS: the class vouch (VouchClass), on io
     private final Handler main = new Handler(Looper.getMainLooper());
     // Main thread only.
     private final Announcement steps = new Announcement();
@@ -67,15 +74,19 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
 
     /** {@code classOpen} gets each answer of the box (main thread): true while the class is open. */
     public static ClassAnnouncement create(Context ctx, Consumer<Boolean> classOpen) {
+        VouchClass vouch = new VouchClass(new SchoolTrustFiles(ctx.getApplicationContext().getNoBackupFilesDir()),
+                new HttpVouchBox(), new KeystoreTeacherKey());
         return new ClassAnnouncement(new HttpClassProbe(), new NsdClassAdvertiser(ctx), AppExecutors.get().io(),
-                classOpen);
+                classOpen, () -> vouch.run(System.currentTimeMillis() / 1000));
     }
 
-    ClassAnnouncement(ClassProbe probe, ClassAdvertiser advertiser, Executor io, Consumer<Boolean> classOpen) {
+    ClassAnnouncement(ClassProbe probe, ClassAdvertiser advertiser, Executor io, Consumer<Boolean> classOpen,
+                      Runnable vouch) {
         this.probe = probe;
         this.advertiser = advertiser;
         this.io = io;
         this.classOpen = classOpen;
+        this.vouch = vouch;
     }
 
     @Override
@@ -95,6 +106,9 @@ public final class ClassAnnouncement implements DefaultLifecycleObserver {
         if (!polling) return;
         io.execute(() -> {
             String code = probe.codeAt(LOCAL_BOX);
+            // The vouch comes before the network announcement on purpose: a student phone that finds
+            // the class finds it verified. On this phone's box (localhost) the call is short.
+            if (code != null) vouch.run();
             main.post(() -> {
                 if (!polling) return;
                 classOpen.accept(code != null);
