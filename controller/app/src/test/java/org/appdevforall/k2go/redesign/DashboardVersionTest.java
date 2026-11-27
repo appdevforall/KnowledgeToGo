@@ -1,7 +1,5 @@
 package org.appdevforall.k2go.redesign;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -43,13 +41,5 @@ public class DashboardVersionTest {
     public void suffixesAreIgnored() {
         assertTrue(DashboardVersion.atLeast("1.3.7-beta", 1, 3, 7));
         assertTrue(DashboardVersion.atLeast("1.4.0+build5", 1, 3, 7));
-    }
-
-    @Test
-    public void branchRecordShowsOnlyANonMainBranch() {
-        assertNull("no record", DashboardVersion.nonMainBranch((String) null));
-        assertNull("empty record", DashboardVersion.nonMainBranch("  "));
-        assertNull("main is not shown", DashboardVersion.nonMainBranch("main"));
-        assertEquals("feature/k2go-school", DashboardVersion.nonMainBranch("feature/k2go-school "));
     }
 }

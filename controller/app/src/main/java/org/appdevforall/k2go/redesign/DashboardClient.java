@@ -45,8 +45,6 @@ public final class DashboardClient {
     public interface UpdateCb {
         void onResult(String installed, String available, boolean updateAvailable);
         void onErr(String message);
-        /** The branch that the box tracks is not on GitHub any more. The box keeps its build. */
-        default void onBranchMissing(String branch) { onErr("branch not on the remote"); }
     }
 
     /** ADFA-5051: result of triggering the live REST rebuild. {@code alreadyRunning} = the box reported
@@ -165,34 +163,10 @@ public final class DashboardClient {
                 final String available = o.optString("available", "unknown");
                 final boolean updateAvailable = o.optBoolean("updateAvailable", false);
                 MAIN.post(() -> cb.onResult(installed, available, updateAvailable));
-            } catch (HttpError e) {
-                final String gone = missingBranch(e.code, e.body);
-                if (gone != null) MAIN.post(() -> cb.onBranchMissing(gone));
-                else MAIN.post(() -> cb.onErr("update check unavailable"));
             } catch (Exception e) {
                 MAIN.post(() -> cb.onErr("update check unavailable"));
             }
         });
-    }
-
-    /** The branch name when an update-check answer says that the tracked branch is not on the
-     *  remote, else null (offline, box stopped, any other error). */
-    static String missingBranch(int code, String body) {
-        if (code != 503 || body == null) return null;
-        try {
-            JSONObject o = new JSONObject(body);
-            String b = o.optString("branch", "");
-            return o.optBoolean("branchMissing", false) && !b.isEmpty() ? b : null;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /** A non-2xx/3xx answer, with its status and body, so a caller can read a structured error. */
-    static final class HttpError extends Exception {
-        final int code;
-        final String body;
-        HttpError(int code, String body) { super("HTTP " + code + ": " + body); this.code = code; this.body = body; }
     }
 
     private static String httpGet(String urlStr) throws Exception {
@@ -207,7 +181,7 @@ public final class DashboardClient {
             c.setRequestProperty("Accept", "application/json");
             int code = c.getResponseCode();
             String text = readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());
-            if (code < 200 || code >= 400) throw new HttpError(code, text);
+            if (code < 200 || code >= 400) throw new Exception("HTTP " + code + ": " + text);
             return text;
         } finally {
             c.disconnect();

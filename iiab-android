@@ -497,8 +497,6 @@ install_iiaboa_dashboard() {
   (cd "$dash_dest" && yarn install)
   log "Building the dashboard (TypeScript -> dist/)..."
   (cd "$dash_dest" && yarn build)
-  # The branch of this build: the box update and its update check stay on it (tools/rebuild-dashboard.sh).
-  [ -f "$dash_dest/dist/server.js" ] && printf '%s\n' "$K2GO_REF" > "$dash_dest/.k2go-branch"
 
   # Books dashboard
   log "Pre-seeding Gutenberg Catalog Database..."

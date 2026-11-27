@@ -54,14 +54,7 @@ public final class DashboardRebuildRunner {
     private static final String SHELL =
             "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc";
     private static final String CLONE = "/opt/iiab-android";
-    /** The branch of the live build, owned by the box (written by the installer and the rebuild's
-     *  finalize step; dash-node reads the same file). No file = main. Read inside the proot into $B,
-     *  so the app holds no branch of its own. */
-    private static final String BRANCH_RECORD = "/library/dashboard/.k2go-branch";
-    static final String READ_BRANCH =
-            "B=$(head -n 1 " + BRANCH_RECORD + " 2>/dev/null); B=${B:-main}; "
-            + "case \"$B\" in -*|*..*|*[!A-Za-z0-9._/-]*) echo \"[rebuild] invalid branch record: $B\"; exit 2;; esac; "
-            + "echo \"[rebuild] branch $B\"; ";
+    private static final String BRANCH = "main";       // the rebuild always tracks the mainline dashboard
     private static final String TMP = "/tmp/k2go";       // where we drop the newest scripts to run them
 
     public interface Callback {
@@ -93,7 +86,14 @@ public final class DashboardRebuildRunner {
      *  change) and run the preflight from there. Nothing destructive happens here. */
     private void bootstrapAndPreflight(Callback cb) {
         cb.onLog("[rebuild] fetching latest tools + preflight…");
-        final String cmd = preflightCommand();
+        final String show = "git show origin/" + BRANCH + ":tools/";
+        final String cmd =
+                "mkdir -p " + TMP + " && cd " + CLONE
+                        + " && git fetch origin " + BRANCH
+                        + " && " + show + "preflight-dashboard.sh > " + TMP + "/preflight.sh"
+                        + " && " + show + "rebuild-dashboard.sh > " + TMP + "/rebuild.sh"
+                        + " && " + show + "dashboard-smoketest.sh > " + TMP + "/smoketest.sh"
+                        + " && sh " + TMP + "/preflight.sh";
         final StringBuilder out = new StringBuilder();
         engine.executeInContainer(ctx, rootfsDir, SHELL + " '" + cmd + "'",
                 new PRootEngine.OutputListener() {
@@ -116,7 +116,8 @@ public final class DashboardRebuildRunner {
     private void runRebuild(Callback cb) {
         cb.onLog("[rebuild] building + testing + swapping…");
         // Run the temp copy; point it at the temp smoke test so it doesn't need the clone's copy.
-        final String cmd = rebuildCommand();
+        final String cmd = "cd " + CLONE + " && K2GO_SMOKE=" + TMP + "/smoketest.sh"
+                + " K2GO_BRANCH=" + BRANCH + " sh " + TMP + "/rebuild.sh";
         engine.executeInContainer(ctx, rootfsDir, SHELL + " '" + cmd + "'",
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) { cb.onLog(line); }
@@ -129,23 +130,6 @@ public final class DashboardRebuildRunner {
                     }
                     @Override public void onError(String error) { cb.onError(error); }
                 });
-    }
-
-    /** Fetch the tracked branch, extract its newest scripts to {@link #TMP}, run the preflight. */
-    static String preflightCommand() {
-        final String show = "git show \"origin/$B:tools/";
-        return READ_BRANCH + "mkdir -p " + TMP + " && cd " + CLONE
-                + " && git fetch origin \"$B\""
-                + " && " + show + "preflight-dashboard.sh\" > " + TMP + "/preflight.sh"
-                + " && " + show + "rebuild-dashboard.sh\" > " + TMP + "/rebuild.sh"
-                + " && " + show + "dashboard-smoketest.sh\" > " + TMP + "/smoketest.sh"
-                + " && sh " + TMP + "/preflight.sh " + CLONE + " \"$B\"";
-    }
-
-    /** Run the temp copy of the rebuild on the tracked branch, with the temp smoke test. */
-    static String rebuildCommand() {
-        return READ_BRANCH + "cd " + CLONE + " && K2GO_SMOKE=" + TMP + "/smoketest.sh"
-                + " K2GO_BRANCH=\"$B\" sh " + TMP + "/rebuild.sh";
     }
 
     private void stopServices(Runnable then) { pdsm("stop", then); }

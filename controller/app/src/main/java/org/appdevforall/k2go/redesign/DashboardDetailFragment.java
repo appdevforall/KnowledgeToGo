@@ -45,7 +45,6 @@ public class DashboardDetailFragment extends Fragment {
     private ViewGroup chips;   // FlowLayout in XML — typed as ViewGroup so it wraps chips to 2 lines
     private LinearLayout statusChip;   // K2GO-385 (PR3): live status badge (dot+text), restyled in place
     private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
-    private TextView branchChip;   // the branch of the build, only on a box that is not on main
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
     private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label + Cancel)
@@ -229,8 +228,6 @@ public class DashboardDetailFragment extends Fragment {
                     K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_uptodate), R.color.k2go_leaf); break;
                 case UPDATE_AVAILABLE:
                     K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_update), R.color.k2go_amber_text); break;   // K2GO-385: amber_text (AA) + consistent with the other amber statuses
-                case BRANCH_MISSING:
-                    K2GoStatusBadge.style(statusChip, getString(R.string.k2go_dash_chip_branch_missing), R.color.k2go_amber_text); break;
             }
             statusChip.setVisibility(View.VISIBLE);
         }
@@ -242,8 +239,6 @@ public class DashboardDetailFragment extends Fragment {
             if (s.showsVersionArrow()) {
                 sub.setText(getString(R.string.k2go_dash_card_sub_update_fmt,
                         s.installedVersion(), s.targetVersion()));
-            } else if (s.kind() == DashboardCardState.Kind.BRANCH_MISSING) {
-                sub.setText(getString(R.string.k2go_dash_branch_missing_fmt, s.missingBranch()));
             } else {
                 sub.setText(R.string.k2go_dash_detail_sub);
             }
@@ -460,7 +455,6 @@ public class DashboardDetailFragment extends Fragment {
         final Context ctx = requireContext().getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             final String ver = DashboardVersion.installed(ctx);
-            final String branch = DashboardVersion.nonMainBranch(ctx);
             main.post(() -> {
                 if (!isAdded() || chips == null || ver == null) return;
                 if (versionChip == null) {
@@ -468,16 +462,6 @@ public class DashboardDetailFragment extends Fragment {
                     chips.addView(versionChip, 0);
                 } else {
                     K2GoChip.style(versionChip, "v" + ver);
-                }
-                // The branch name is data from the box, not UI text: no string resource.
-                if (branch == null) {
-                    if (branchChip != null) branchChip.setVisibility(View.GONE);
-                } else if (branchChip == null) {
-                    branchChip = K2GoChip.create(requireContext(), branch);
-                    chips.addView(branchChip, chips.indexOfChild(versionChip) + 1);
-                } else {
-                    K2GoChip.style(branchChip, branch);
-                    branchChip.setVisibility(View.VISIBLE);
                 }
             });
         });

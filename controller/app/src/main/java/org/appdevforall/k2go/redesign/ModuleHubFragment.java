@@ -583,8 +583,6 @@ public class ModuleHubFragment extends Fragment {
             if (s.showsVersionArrow()) {
                 sub.setText(getString(R.string.k2go_dash_card_sub_update_fmt,
                         s.installedVersion(), s.targetVersion()));
-            } else if (s.kind() == org.appdevforall.k2go.dashboard.domain.DashboardCardState.Kind.BRANCH_MISSING) {
-                sub.setText(getString(R.string.k2go_dash_branch_missing_fmt, s.missingBranch()));
             }
         });
     }
@@ -596,11 +594,8 @@ public class ModuleHubFragment extends Fragment {
         final Context ctx = requireContext().getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             final String ver = DashboardVersion.installed(ctx);
-            final String branch = DashboardVersion.nonMainBranch(ctx);
             main.post(() -> {
-                if (!isAdded() || ver == null) return;
-                sub.setText(branch == null ? getString(R.string.k2go_dash_card_sub_fmt, ver)
-                        : getString(R.string.k2go_dash_card_sub_branch_fmt, ver, branch));
+                if (isAdded() && ver != null) sub.setText(getString(R.string.k2go_dash_card_sub_fmt, ver));
             });
         });
     }

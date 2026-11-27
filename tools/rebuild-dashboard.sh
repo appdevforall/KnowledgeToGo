@@ -49,13 +49,9 @@ CLONE_DIR="${2:-/opt/iiab-android}"
 # Absolute path to THIS script, so the suggested command pastes and runs from any directory.
 SELF="$(cd "$(dirname "$0")" 2>/dev/null && pwd)/$(basename "$0")"
 BRANCH="${1:-${K2GO_BRANCH:-}}"
-# The branch of the live build (one line). Written only by the finalize step below and by the
-# installer; dash-node reads it for the update check and the rebuild. No file = main.
-BRANCH_RECORD="/library/dashboard/.k2go-branch"
 if [ -z "$BRANCH" ]; then
-  # Suggest the branch of the live build, else the branch the clone has checked out.
-  guess="$(head -n 1 "$BRANCH_RECORD" 2>/dev/null || true)"
-  [ -n "$guess" ] || guess="$(git -C "$CLONE_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+  # Suggest the branch the clone currently has checked out (that is almost always the one to rebuild).
+  guess="$(git -C "$CLONE_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
   if [ -z "$guess" ] || [ "$guess" = "HEAD" ]; then guess="<branch>"; fi
   {
     echo "ERROR: no branch given. This rebuild runs 'git reset --hard origin/<branch>', so a branch is"
@@ -67,10 +63,6 @@ if [ -z "$BRANCH" ]; then
   } >&2
   exit 2
 fi
-# The branch goes to git and to the record: the charset of the bake's --k2go-ref, no leading '-'.
-case "$BRANCH" in
-  -*|*..*|*[!A-Za-z0-9._/-]*) echo "ERROR: invalid branch name: $BRANCH. Nothing was changed." >&2; exit 2 ;;
-esac
 SRC="$CLONE_DIR/static/dashboard"
 LIVE="/library/dashboard"
 STAGE="/library/dashboard.staging"
@@ -146,16 +138,7 @@ log "rebuild start (branch=$BRANCH, clone=$CLONE_DIR)"
 
 # 1) refresh the clone to the tip of the branch (deterministic; discards any local drift).
 log "git fetch + reset --hard origin/$BRANCH"
-_fetch_rc=0
-_fetch_err="$(LC_ALL=C git -C "$CLONE_DIR" fetch origin "$BRANCH" 2>&1)" || _fetch_rc=$?
-[ -n "$_fetch_err" ] && echo "$_fetch_err" >>"$LOG"
-if [ "$_fetch_rc" -ne 0 ]; then
-    # A deleted branch is not "offline". Say it, and never move the box to another branch by itself.
-    case "$_fetch_err" in
-        *"couldn't find remote ref"*) fail "branch '$BRANCH' is not on GitHub. The box keeps its build and its branch. To move it, rebuild from another branch: K2GO_BRANCH=<branch> sh $CLONE_DIR/tools/rebuild-dashboard.sh" ;;
-    esac
-    fail "git fetch (offline?)"
-fi
+git -C "$CLONE_DIR" fetch origin "$BRANCH" >>"$LOG" 2>&1 || fail "git fetch (offline?)"
 git -C "$CLONE_DIR" reset --hard "origin/$BRANCH" >>"$LOG" 2>&1 || fail "git reset"
 # K2GO: name the exact commit being built, so the operator can confirm it is the intended one.
 log "building commit $(git -C "$CLONE_DIR" log -1 --format='%h %s' 2>/dev/null)"
@@ -260,14 +243,6 @@ log "restart dash-node"
 log "verifying live :4000"
 if verify_live; then
     log "live OK — finalizing (source + package.json + nginx)"
-    # Record the branch of the build that now runs, FIRST: the dist that runs is from BRANCH now, so
-    # a stop during the source sync below cannot leave a record of the old branch. Only here: a
-    # failed rebuild keeps the record of the build it kept. Update and the update check follow it.
-    if printf '%s\n' "$BRANCH" > "$BRANCH_RECORD.tmp" && mv -f "$BRANCH_RECORD.tmp" "$BRANCH_RECORD"; then
-        log "box tracks branch $BRANCH"
-    else
-        log "warn: could not record branch $BRANCH in $BRANCH_RECORD"
-    fi
     # Now safe to advance the source so the reported version + the next build match the running dist.
     # Additive tar after dropping the pure-source subdirs; runtime state (node_modules, *.sqlite3 job
     # storage, books/catalog.db) is left in place.
