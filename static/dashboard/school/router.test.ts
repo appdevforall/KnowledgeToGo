@@ -14,7 +14,7 @@ interface Box { port: number; close: () => Promise<void> }
 async function startBox(room = new ClassRoom(), roleOf: () => SchoolRole = () => 'none'): Promise<Box> {
     const app = express();
     app.use(express.json({ limit: '4kb' }));
-    app.use('/school', createSchoolRouter(room, roleOf));
+    app.use('/school', createSchoolRouter(room, () => ({ root: null, cert: null, role: roleOf() })));
     app.use('/school', schoolErrors);
     const server = http.createServer(app);
     await new Promise<void>((ok) => server.listen(0, '127.0.0.1', ok));
@@ -112,6 +112,9 @@ test('a student phone opens no class: every teacher route answers 403; join and 
         }
         assert.equal((await request(box, 'POST', '/school/teacher/start', { json: {} })).status, 404);   // localOnly first
         assert.equal(JSON.parse((await request(box, 'GET', '/school/state')).body).code, null);
+        assert.equal((await request(box, 'GET', '/school/teacher/vouch', local)).status, 403);
+        // The setup ring is not a class: device zero opens it with no teacher certificate.
+        assert.equal((await request(box, 'GET', '/school/teacher/ring', local)).status, 200);
         // The role is read on each request: the school changes it, the box follows.
         role = 'teacher';
         assert.equal((await request(box, 'POST', '/school/teacher/start', { ...local, json: {} })).status, 201);

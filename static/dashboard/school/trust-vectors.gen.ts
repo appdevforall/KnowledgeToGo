@@ -64,6 +64,24 @@ const out = {
     },
     proof: { nonce: 'n0nce-1234', code: '86GZ', host: '192.168.1.20:8085', sig: signProof(teacher.priv, 'n0nce-1234', '86GZ', '192.168.1.20:8085') },
     javaSigned: null as unknown,
+    vouch: null as unknown,
+};
+
+// The class vouch (vouch.ts): the teacher key signs the class code and a class key; the class key
+// signs the proof.
+const klass = keys();
+const vouch = (o: object, k = teacher.priv): string => sign(k, {
+    kind: 'class', v: TRUST_V, school, serial: 'a1a1a1a1a1a1a1a1', code: '86GZ', classKey: klass.spki, until: NOW + 3600, ...o,
+});
+out.vouch = {
+    classKeyPkcs8: klass.pkcs8,
+    classKey: klass.spki,
+    valid: vouch({}),
+    expired: vouch({ until: NOW - 1 }),
+    otherSerial: vouch({ serial: 'b2b2b2b2b2b2b2b2' }),
+    signedByRoot: vouch({}, root.priv),
+    wrongKind: valid,
+    proof: { nonce: 'n0nce-1234', code: '86GZ', host: '192.168.1.20:8085', sig: signProof(klass.priv, 'n0nce-1234', '86GZ', '192.168.1.20:8085') },
 };
 
 // New keys make the old "javaSigned" entry invalid: it starts empty, and the tests fail until a

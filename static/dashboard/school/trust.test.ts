@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { checkProof, checkTeacher, deriveRole, mergeRemoved, readRemoved, readRoot, RootRecord, sign, signProof, TRUST_V } from './trust';
+import { checkProof, checkTeacher, deriveRole, mergeRemoved, readRemoved, readRoot, readVouch, RootRecord, sign, signProof, TRUST_V } from './trust';
 
 const V = JSON.parse(fs.readFileSync(path.join(__dirname, 'trust-vectors.json'), 'utf8'));
 const root = readRoot(V.root) as RootRecord;
@@ -57,21 +57,21 @@ test('the derived role', () => {
     assert.equal(deriveRole(root, checkTeacher(root, V.teacher.expired, removed, V.now)), 'student');
 });
 
-test('the class proof: the box holds the teacher key, for this nonce, class and address', () => {
+test('the class proof: the box holds the key, for this nonce, class and address', () => {
     const cert = checkTeacher(root, V.teacher.verified, removed, V.now).cert!;
     const p = V.proof;
-    assert.ok(checkProof(cert, p.nonce, p.code, p.host, p.sig));
-    assert.ok(!checkProof(cert, p.nonce, 'XXXX', p.host, p.sig));
-    assert.ok(!checkProof(cert, 'other-nonce', p.code, p.host, p.sig));
-    assert.ok(!checkProof(cert, p.nonce, p.code, '192.168.1.99:8085', p.sig));   // relayed by another box
-    assert.ok(!checkProof(cert, p.nonce, p.code, p.host, 'AAAA'));
+    assert.ok(checkProof(cert.key, p.nonce, p.code, p.host, p.sig));
+    assert.ok(!checkProof(cert.key, p.nonce, 'XXXX', p.host, p.sig));
+    assert.ok(!checkProof(cert.key, 'other-nonce', p.code, p.host, p.sig));
+    assert.ok(!checkProof(cert.key, p.nonce, p.code, '192.168.1.99:8085', p.sig));   // relayed by another box
+    assert.ok(!checkProof(cert.key, p.nonce, p.code, p.host, 'AAAA'));
     // A fresh proof with the test teacher key; a field with a newline or a space is refused.
     const key = crypto.createPrivateKey({ key: Buffer.from(V.keys.teacherPkcs8, 'base64'), format: 'der', type: 'pkcs8' });
-    assert.ok(checkProof(cert, 'n2', 'ABCD', 'h:1', signProof(key, 'n2', 'ABCD', 'h:1')));
+    assert.ok(checkProof(cert.key, 'n2', 'ABCD', 'h:1', signProof(key, 'n2', 'ABCD', 'h:1')));
     assert.equal(signProof(key, 'n2\nABCD', 'X', 'h:1'), null);
     assert.equal(signProof(key, 'n 2', 'X', 'h:1'), null);
     assert.equal(signProof(key, '', 'X', 'h:1'), null);
-    assert.ok(!checkProof(cert, 'n2\nABCD', 'X', 'h:1', signProof(key, 'n2', 'ABCD', 'h:1')));
+    assert.ok(!checkProof(cert.key, 'n2\nABCD', 'X', 'h:1', signProof(key, 'n2', 'ABCD', 'h:1')));
 });
 
 test('a certificate ends with the school year of its root; lists of two schools do not merge', () => {
@@ -93,7 +93,22 @@ test('a key of another curve is refused', () => {
     const rootKey = crypto.createPrivateKey({ key: Buffer.from(V.keys.rootPkcs8, 'base64'), format: 'der', type: 'pkcs8' });
     const t = sign(rootKey, { kind: 'teacher', v: TRUST_V, school: root.school, key: spki, label: 'R', serial: 'd4d4d4d4d4d4d4d4', from: 0, until: V.now + 10 });
     const cert = checkTeacher(root, t, null, V.now).cert!;
-    assert.ok(!checkProof(cert, 'n', 'c', 'h:1', signProof(privateKey, 'n', 'c', 'h:1')));
+    assert.ok(!checkProof(cert.key, 'n', 'c', 'h:1', signProof(privateKey, 'n', 'c', 'h:1')));
+});
+
+test('a class vouch: the teacher key signs the class code and the class key', () => {
+    const cert = checkTeacher(root, V.teacher.verified, removed, V.now).cert!;
+    const v = readVouch(cert, V.vouch.valid, V.now);
+    assert.equal(v?.code, '86GZ');
+    assert.equal(v?.classKey, V.vouch.classKey);
+    assert.equal(readVouch(cert, V.vouch.valid, v!.until), null);            // past its time
+    assert.equal(readVouch(cert, V.vouch.expired, V.now), null);
+    assert.equal(readVouch(cert, V.vouch.otherSerial, V.now), null);         // a vouch of another certificate
+    assert.equal(readVouch(cert, V.vouch.signedByRoot, V.now), null);        // not the teacher key
+    assert.equal(readVouch(cert, V.vouch.wrongKind, V.now), null);
+    const p = V.vouch.proof;
+    assert.ok(checkProof(V.vouch.classKey, p.nonce, p.code, p.host, p.sig));
+    assert.ok(!checkProof(cert.key, p.nonce, p.code, p.host, p.sig));        // the class key signs, not the teacher key
 });
 
 test('a certificate that the app signed (Java) passes on the box', () => {
@@ -102,4 +117,7 @@ test('a certificate that the app signed (Java) passes on the box', () => {
     assert.deepEqual(readRemoved(root, V.javaSigned.removed)?.serials, ['e5e5e5e5e5e5e5e5']);
     const javaRoot = readRoot(V.javaSigned.root);   // a root that device zero made in the app
     assert.equal(javaRoot?.name, 'Escuela de prueba');
+    // A class vouch that a teacher phone made in the app (VouchClass); the box checks it (vouch.ts).
+    const cert = checkTeacher(root, V.teacher.verified, null, V.now).cert!;
+    assert.equal(readVouch(cert, V.javaSigned.vouch, V.now)?.classKey, V.vouch.classKey);
 });

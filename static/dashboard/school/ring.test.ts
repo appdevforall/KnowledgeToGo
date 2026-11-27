@@ -89,7 +89,7 @@ interface Box { port: number; close: () => Promise<void> }
 async function startBox(): Promise<Box> {
     const app = express();
     app.use(express.json({ limit: '16kb' }));
-    app.use('/school', createSchoolRouter(new ClassRoom(), () => 'none', new Ring()));
+    app.use('/school', createSchoolRouter(new ClassRoom(), () => ({ root: null, cert: null, role: 'none' }), new Ring()));
     app.use('/school', schoolErrors);
     const server = http.createServer(app);
     await new Promise<void>((ok) => server.listen(0, '127.0.0.1', ok));

@@ -20,6 +20,10 @@ const PROOF_TAG = 'k2go-class-proof';
 export interface RootRecord { kind: 'root'; v: number; school: string; name: string; rootKey: string; until: number }
 export interface TeacherCert { kind: 'teacher'; v: number; school: string; key: string; label: string; serial: string; from: number; until: number }
 export interface RemovedList { kind: 'removed'; v: number; school: string; issued: number; serials: string[] }
+// The teacher app vouches for one class: its teacher key (in the Android Keystore, it never leaves
+// the phone) signs the class code and a class key that the box made for this class only. The box
+// signs each class proof with the class key.
+export interface ClassVouch { kind: 'class'; v: number; school: string; serial: string; code: string; classKey: string; until: number }
 
 export type Verdict = 'verified' | 'malformed' | 'other-school' | 'bad-signature' | 'not-yet' | 'expired' | 'removed';
 export type DerivedRole = 'none' | 'teacher' | 'student';
@@ -153,16 +157,32 @@ function proofBytes(nonce: unknown, code: unknown, host: unknown): Buffer | null
     return Buffer.from([PROOF_TAG, ...fields].join('\n'), 'utf8');
 }
 
-// The teacher box proves that it holds the private key of its certificate, for this nonce, this
-// class and this address. null: a field is not valid.
-export function signProof(teacherKey: crypto.KeyObject, nonce: string, code: string, host: string): string | null {
+// The teacher box proves that it holds the class key of the vouch, for this nonce, this class and
+// this address. null: a field is not valid.
+export function signProof(classKey: crypto.KeyObject, nonce: string, code: string, host: string): string | null {
     const data = proofBytes(nonce, code, host);
-    return data ? b64url(crypto.sign('sha256', data, teacherKey)) : null;
+    return data ? b64url(crypto.sign('sha256', data, classKey)) : null;
 }
 
-export function checkProof(cert: TeacherCert, nonce: string, code: string, host: string, proof: unknown): boolean {
+// key: the class key of a vouch (SPKI DER, base64).
+export function checkProof(key: string, nonce: string, code: string, host: string, proof: unknown): boolean {
     if (typeof proof !== 'string' || proof.length > 200) return false;
     const data = proofBytes(nonce, code, host);
     const sig = unb64url(proof);
-    return !!data && !!sig && verifyBytes(cert.key, data, sig);
+    return !!data && !!sig && verifyBytes(key, data, sig);
+}
+
+// The longest time that a vouch is valid: a class does not run longer.
+export const MAX_VOUCH_S = 12 * 3600;
+
+// A class vouch of the teacher of cert: signed by the teacher key, for the school and the
+// serial of the certificate, not past its time. null: not a valid vouch.
+export function readVouch(cert: TeacherCert, token: unknown, now: number): ClassVouch | null {
+    const t = decode(token, 'class');
+    if (!t) return null;
+    const o = t.json;
+    if (o.school !== cert.school || o.serial !== cert.serial || typeof o.code !== 'string' || !PROOF_FIELD.test(o.code)
+        || !isText(o.classKey, 200) || !isTime(o.until) || now >= o.until) return null;
+    if (!verifyBytes(cert.key, t.body, t.sig)) return null;
+    return { kind: 'class', v: TRUST_V, school: o.school, serial: o.serial, code: o.code, classKey: o.classKey, until: o.until };
 }

@@ -9,8 +9,9 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import path from 'path';
 import { ClassRoom, MAX_MARK_BLOCKS, MAX_MARKS, Student, validLesson, validMark } from './class';
-import { readRole, SchoolRole } from './role';
+import { PhoneTrust, readTrust } from './role';
 import { Ring } from './ring';
+import { boxAddress, ClassVouches, HelloLimit } from './vouch';
 
 const PING_MS = 10000;     // the watchdog of the pages counts on it (www/follow.js)
 // The teacher page shows a student as "bad" when the box marks it quiet (QUIET_MS). This round
@@ -58,9 +59,11 @@ function localOnly(req: Request, res: Response, next: NextFunction): void {
 }
 
 // One router per class room. The box has one (schoolRouter); a test makes its own.
-// roleOf: the role of this phone (role.ts); a test gives its own.
+// trustOf: the school trust of this phone (role.ts); a test gives its own.
 // ring: the setup ring of the school trust (ring.ts); a test gives its own.
-export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRole = readRole, ring: Ring = new Ring()): Router {
+// vouches: the class key and the vouch of the open class (vouch.ts).
+export function createSchoolRouter(classroom: ClassRoom, trustOf: () => PhoneTrust = () => readTrust(),
+    ring: Ring = new Ring(), vouches: ClassVouches = new ClassVouches()): Router {
     const studentStreams = new Map<Response, Student>();
     const teacherStreams = new Set<Response>();
 
@@ -224,13 +227,26 @@ export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRol
         res.status(r.status).json(r.body);
     });
 
-    router.use('/teacher', localOnly);
-    // A student phone opens no class: no teacher page, no start, no live channel (book chapter 08).
-    router.use('/teacher', (_req: Request, res: Response, next: NextFunction): void => {
-        if (roleOf() === 'student') { res.status(403).json({ error: 'student phone' }); return; }
-        next();
+    // A student phone with the school root sends a nonce to each class that it finds. The box of a
+    // teacher phone answers with the chain of the class (vouch.ts). No vouch: 404, and the student
+    // phone shows the class as not verified.
+    const helloLimit = new HelloLimit();
+    router.post('/hello', (req: Request, res: Response): void => {
+        if (!helloLimit.allow(clientIp(req), Date.now())) { res.status(429).json({ error: 'tries' }); return; }
+        if (classroom.lapsed()) endClass();
+        const now = Math.floor(Date.now() / 1000);
+        const code = classroom.state().code;
+        const r = vouches.hello(code, (req.body as { nonce?: unknown })?.nonce, boxAddress(req.get('x-k2go-server')), now);
+        res.setHeader('Cache-Control', 'no-store');
+        if (!r) { res.status(404).json({ error: 'no-vouch' }); return; }
+        res.json({ code, ...r });
     });
 
+    router.use('/teacher', localOnly);
+
+    // The setup ring comes before the role guard: device zero opens a teacher ring with no teacher
+    // certificate of its own. A ring from a student phone can do no harm: the root record is
+    // public, and only the school key signs a certificate.
     // The app of this phone opens the ring (it gives the PIN and the root record), reads the
     // requests, answers them with the certificates that it signed, and closes the ring.
     router.post('/teacher/ring/open', (req: Request, res: Response): void => {
@@ -252,6 +268,29 @@ export function createSchoolRouter(classroom: ClassRoom, roleOf: () => SchoolRol
 
     router.post('/teacher/ring/close', (_req: Request, res: Response): void => {
         ring.close('host');
+        res.status(204).end();
+    });
+
+    // A phone with the school root and no verified teacher certificate is a student phone: it opens
+    // no class (no teacher page, no start, no live channel, no vouch). Book chapter 08.
+    router.use('/teacher', (_req: Request, res: Response, next: NextFunction): void => {
+        if (trustOf().role === 'student') { res.status(403).json({ error: 'student phone' }); return; }
+        next();
+    });
+
+    // The teacher app reads the class key of the open class, signs a vouch with its teacher key
+    // (Android Keystore) and gives it back. vouched: the box has a valid vouch for this class.
+    router.get('/teacher/vouch', (_req: Request, res: Response): void => {
+        if (classroom.lapsed()) endClass();
+        const code = classroom.state().code;
+        res.setHeader('Cache-Control', 'no-store');
+        res.json({ code, classKey: vouches.keyFor(code), vouched: vouches.vouched(code, Math.floor(Date.now() / 1000)) });
+    });
+
+    router.post('/teacher/vouch', (req: Request, res: Response): void => {
+        const b = (req.body ?? {}) as { code?: unknown; cert?: unknown; vouch?: unknown };
+        const ok = vouches.accept(b.code, trustOf().root, b.cert, b.vouch, Math.floor(Date.now() / 1000));
+        if (!ok) { res.status(409).json({ error: 'not-accepted' }); return; }
         res.status(204).end();
     });
 

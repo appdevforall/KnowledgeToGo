@@ -1,41 +1,45 @@
-// K2Go School: the role that the school gives this phone (book chapter 08, "Good" level).
-// The app keeps the role file in its no_backup folder and binds the folder here
-// (SchoolRoleFile.GUEST_DIR in the app). The app never writes it: the school sets it with the
-// terminal command k2go-role. Same rule as SchoolRole.java in the app: keep them equal.
+// K2Go School: the role of this phone, from the school trust (school-trust-design.md 5). The app
+// keeps the trust files in its no_backup folder and binds the folder here (SchoolTrustFiles.GUEST_DIR
+// in the app): root.token (the pinned root of the school) and teacher.cert (the certificate of a
+// teacher phone). No root: no role. A root and a verified certificate: teacher. Else: student. The
+// app derives the role with the same rule (PhoneRole.java). The role is not stored: no file can
+// say "teacher" without a certificate that the school signed.
 import fs from 'fs';
+import path from 'path';
+import { checkTeacher, deriveRole, DerivedRole, MAX_TOKEN, readRoot, RootRecord, TeacherCheck } from './trust';
 
-export type SchoolRole = 'none' | 'teacher' | 'student';
+export type SchoolRole = DerivedRole;
 
-export const ROLE_FILE = '/run/k2go/school/role';
-const MAX_BYTES = 64;   // the app reads the same number of bytes
+export const TRUST_DIR = '/run/k2go/school';
+export const ROOT_FILE = 'root.token';
+export const CERT_FILE = 'teacher.cert';
 
-// null: there is no file. Any text other than "teacher" is a student: a file that the school
-// made always takes rights away.
-export function parseRole(text: string | null): SchoolRole {
-    if (text === null) return 'none';
-    // Trim as Java String.trim() does (chars up to the space), not the Unicode spaces of JS trim().
-    return text.replace(/^[\x00-\x20]+|[\x00-\x20]+$/g, '').toLowerCase() === 'teacher' ? 'teacher' : 'student';
+// The text of a trust file, or null: no file (or no bind, for example a box started by hand), or a
+// file that is too long to be a token.
+function readToken(file: string): string | null {
+    try {
+        const st = fs.statSync(file);
+        if (!st.isFile() || st.size > MAX_TOKEN + 2) return null;
+        return fs.readFileSync(file, 'utf8').trim();
+    } catch {
+        return null;
+    }
 }
 
-// Read on each request, no cache: the file is the one owner of the role. No file (or no bind,
-// for example a box started by hand) is no role, as before roles.
-export function readRole(file: string = ROLE_FILE): SchoolRole {
-    let fd: number;
-    try {
-        fd = fs.openSync(file, 'r');
-    } catch (e) {
-        // As the app: a missing file or folder is no role; a file that is there but cannot be read
-        // is a student.
-        const code = (e as NodeJS.ErrnoException).code;
-        return code === 'ENOENT' || code === 'ENOTDIR' ? 'none' : 'student';
-    }
-    try {
-        const buf = Buffer.alloc(MAX_BYTES);
-        const n = fs.readSync(fd, buf, 0, MAX_BYTES, 0);
-        return parseRole(buf.toString('latin1', 0, n));
-    } catch {
-        return 'student';
-    } finally {
-        fs.closeSync(fd);
-    }
+export interface PhoneTrust { root: RootRecord | null; cert: TeacherCheck | null; role: SchoolRole }
+
+// Read on each request, no cache: the files are the one owner of the trust. A root file that is
+// there but not a valid root gives a student: a file of the school always takes rights away.
+export function readTrust(dir: string = TRUST_DIR, now: number = Math.floor(Date.now() / 1000)): PhoneTrust {
+    const rootText = readToken(path.join(dir, ROOT_FILE));
+    if (rootText === null) return { root: null, cert: null, role: 'none' };
+    const root = readRoot(rootText);
+    if (!root) return { root: null, cert: null, role: 'student' };
+    const certText = readToken(path.join(dir, CERT_FILE));
+    const cert = certText === null ? null : checkTeacher(root, certText, null, now);
+    return { root, cert, role: deriveRole(root, cert) };
+}
+
+export function readRole(dir: string = TRUST_DIR): SchoolRole {
+    return readTrust(dir).role;
 }
